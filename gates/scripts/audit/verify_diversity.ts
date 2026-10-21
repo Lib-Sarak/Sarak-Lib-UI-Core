@@ -1,11 +1,8 @@
 // -------------------------------------------------------------------------
 // LIMITES DECLARADOS (R18) — o que este medidor NÃO vê
 // -------------------------------------------------------------------------
-// 1. Só mede o que a `plan-25` pede: modo, navigationStyle, matiz/saturação
-//    de `primaryColor`, luminosidade de `colorBgBody`, `cardBorderRadius`,
-//    `cardBorderWidth`, `cardBackdropBlur` e `layoutDensity` — não é uma
-//    auditoria dos 422 tokens, é uma medição de DIVERSIDADE cromática e
-//    estrutural entre temas.
+// 1. Mede apenas os eixos listados abaixo — é uma comparação da diversidade
+//    cromática e estrutural entre temas, não uma auditoria de todos os tokens.
 // 2. `hueFamily` é um agrupamento HEURÍSTICO (8 famílias por faixa de matiz +
 //    "neutro" para saturação < 20) — não existe no schema nem no catálogo, é
 //    só o vocabulário desta medição. Cor cuja `primaryColor`/`colorBgBody`
@@ -19,7 +16,7 @@
 //    A faixa vem sempre dos `existentes` (nunca dos `novos`, que são o que
 //    está sendo julgado — autorreferência inflaria dispersão artificialmente
 //    para qualquer conjunto não-idêntico). Não é um valor "certo", é só o
-//    vocabulário para medir dispersão entre os 5 temas novos (critério 9 da
+//    vocabulário para medir dispersão entre os 5 temas novos (critério 8 da
 //    §3.3 da `plan-25`).
 // 4. Critério 6 (distância de matiz) só compara temas com a MESMA família E
 //    o MESMO modo — é a fronteira literal da §3.3. Comparar tudo contra tudo
@@ -27,7 +24,8 @@
 //    "mesmo espaço" que a regra protege).
 // -------------------------------------------------------------------------
 import { sarakGetDefaultDesignState } from '../../../src/core/Design/master-map.ts';
-import { SARAK_GLOBAL_THEMES, type SarakThemePreset } from '../../../src/core/Design/presets/themes/index.ts';
+import { SARAK_ALL_THEMES } from '../../../src/core/Design/presets/themes/all.ts';
+import type { SarakThemePreset } from '../../../src/core/Design/presets/themes/index.ts';
 import { parseColor } from './verify_contrast.ts';
 import { rgbToHsl } from '../../../src/core/Provider/utils/color-engine.ts';
 
@@ -91,7 +89,6 @@ function toNumber(value: unknown): number | null {
 export interface ThemeDiversityRow {
     id: string;
     mode: string;
-    navigationStyle: string;
     hue: number | null;
     saturation: number | null;
     familia: string;
@@ -113,7 +110,6 @@ export function measureTheme(theme: SarakThemePreset): ThemeDiversityRow {
     return {
         id: theme.id,
         mode: String(design.mode ?? 'dark'),
-        navigationStyle: String(design.navigationStyle ?? 'sidebar'),
         hue: h === null ? null : Math.round(h as number),
         saturation: s === null ? null : Math.round(s as number),
         familia: hueFamily(h as number | null, s as number | null),
@@ -154,9 +150,9 @@ export interface CriterioResultado {
 }
 
 /**
- * Os 9 critérios de distância da §3.3 do plan-25. `existentes` são os temas
- * de controle (os 18); `novos`, os temas sob teste. 1-6 comparam novos ×
- * existentes; 7-9 comparam os novos ENTRE SI.
+ * Critérios de distância da diversidade estética do catálogo. `existentes` são
+ * os temas de controle; `novos`, os temas sob teste. 1-6 comparam novos ×
+ * existentes; os demais comparam os novos entre si.
  */
 export function evaluateDistanceCriteria(existentes: ThemeDiversityRow[], novos: ThemeDiversityRow[]): CriterioResultado[] {
     const resultados: CriterioResultado[] = [];
@@ -237,14 +233,6 @@ export function evaluateDistanceCriteria(existentes: ThemeDiversityRow[], novos:
         detalhe: paresRepetidos.length === 0 ? 'nenhum par repetido' : paresRepetidos.join('; '),
     });
 
-    const navStyles = new Set(novos.map((r) => r.navigationStyle));
-    resultados.push({
-        criterio: 8,
-        descricao: 'os 5 cobrem ambos os navigationStyle',
-        ok: navStyles.has('sidebar') && navStyles.has('topbar'),
-        detalhe: `presentes: ${Array.from(navStyles).join(', ') || '—'}`,
-    });
-
     const [radiusMin, radiusMax] = structuralRange(existentes, (r) => r.cardBorderRadius);
     const [widthMin, widthMax] = structuralRange(existentes, (r) => r.cardBorderWidth);
     const [blurMin, blurMax] = structuralRange(existentes, (r) => r.cardBackdropBlur);
@@ -253,7 +241,7 @@ export function evaluateDistanceCriteria(existentes: ThemeDiversityRow[], novos:
     const blurBuckets = new Set(novos.map((r) => bucket3(r.cardBackdropBlur, blurMin, blurMax))).size;
     const densityBuckets = new Set(novos.map((r) => r.layoutDensity)).size;
     resultados.push({
-        criterio: 9,
+        criterio: 8,
         descricao: 'diversidade estrutural real: raio, borda, blur e densidade não podem ficar TODOS na mesma faixa',
         ok: radiusBuckets > 1 || widthBuckets > 1 || blurBuckets > 1 || densityBuckets > 1,
         detalhe: `faixas distintas — raio:${radiusBuckets} borda:${widthBuckets} blur:${blurBuckets} densidade:${densityBuckets}`,
@@ -263,11 +251,11 @@ export function evaluateDistanceCriteria(existentes: ThemeDiversityRow[], novos:
 }
 
 function printTable(rows: ThemeDiversityRow[]): void {
-    console.log('\n| tema | modo | nav | família | H | S | fundo L | raio | borda | blur | densidade |');
-    console.log('|---|---|---|---|---|---|---|---|---|---|---|');
+    console.log('\n| tema | modo | família | H | S | fundo L | raio | borda | blur | densidade |');
+    console.log('|---|---|---|---|---|---|---|---|---|---|');
     for (const r of rows) {
         console.log(
-            `| ${r.id} | ${r.mode} | ${r.navigationStyle} | ${r.familia} | ${r.hue ?? '—'} | ${r.saturation ?? '—'} | ${r.fundoL ?? '—'} | ${r.cardBorderRadius ?? '—'} | ${r.cardBorderWidth ?? '—'} | ${r.cardBackdropBlur ?? '—'} | ${r.layoutDensity} |`
+            `| ${r.id} | ${r.mode} | ${r.familia} | ${r.hue ?? '—'} | ${r.saturation ?? '—'} | ${r.fundoL ?? '—'} | ${r.cardBorderRadius ?? '—'} | ${r.cardBorderWidth ?? '—'} | ${r.cardBackdropBlur ?? '—'} | ${r.layoutDensity} |`
         );
     }
 }
@@ -299,7 +287,7 @@ function parseArgs(argv: string[]): { newIds: string[] | null } {
 function main(): void {
     console.log('--- Medidor de Diversidade de Temas (plan-25) ---');
     const { newIds } = parseArgs(process.argv.slice(2));
-    const rows = SARAK_GLOBAL_THEMES.map(measureTheme);
+    const rows = SARAK_ALL_THEMES.map(measureTheme);
     printTable(rows);
     printAggregate(aggregate(rows), 'TODOS OS TEMAS');
 

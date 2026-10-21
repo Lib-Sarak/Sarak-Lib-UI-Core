@@ -109,3 +109,22 @@ describe('ChromeSlots (Spec 48 — L1, regiões de slot do cromo)', () => {
         });
     });
 });
+
+describe('ChromeBrand — tokens de identidade', () => {
+    it('o nome da marca lê família, peso e tracking de identity*, com o desenho de sempre como reserva', () => {
+        render(<ChromeBrand brand={{ name: 'ERP' }} />);
+        const style = screen.getByText('ERP').getAttribute('style') ?? '';
+
+        expect(style).toContain('var(--sarak-identity-font, var(--font-heading');
+        expect(style).toContain('var(--sarak-identity-weight, 800)');
+        expect(style).toContain('var(--sarak-identity-tracking, 0px)');
+    });
+
+    it('o bloco leva o respiro de identityPadding em um invólucro, sem mexer na anatomia interna', () => {
+        const { container } = render(<ChromeBrand brand={{ name: 'ERP' }} />);
+        const wrapper = container.firstElementChild as HTMLElement;
+
+        expect(wrapper.getAttribute('style')).toContain('var(--sarak-identity-padding, 16px)');
+        expect(wrapper.firstElementChild?.className).toContain('px-2');
+    });
+});

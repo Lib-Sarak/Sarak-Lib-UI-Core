@@ -2,15 +2,15 @@
 
 > Este mapa responde uma pergunta que o catálogo não responde: **"onde eu posso ser radical sem quebrar
 > nada?"** A resposta é: **em quase tudo**, menos na relação de luminância dos pares de contraste listados
-> abaixo. Ele **não descreve** os 422 tokens — isso é o catálogo, e é **gerado**
+> abaixo. Ele **não descreve** o inventário vivo de tokens — isso é o catálogo, e é **gerado**
 > (`docs/component-catalog.json`, `catalog/partitions/*.json`). Copiar aqui envelheceria no primeiro token
 > novo (R17). Este arquivo é ponteiro, não fonte.
 
 ## 1. A única restrição real: os pares de contraste
 
 Um **par** é um tokenId de cor de **texto** contra o tokenId (ou cadeia) de cor de **fundo** que ele
-realmente compõe. A régua é `gates/scripts/audit/verify_contrast.ts` (`PAIRS`) — **36 pares**, todos a
-**4,5:1**. Não transcrevemos os valores aqui: leia a constante `PAIRS` no próprio arquivo, é a fonte viva.
+realmente compõe. A régua é `gates/scripts/audit/verify_contrast.ts` (`PAIRS`), com limiar **4,5:1**.
+Não transcrevemos os valores aqui: leia a constante `PAIRS` no próprio arquivo, é a fonte viva.
 O que importa saber, sem abrir o código:
 
 | Token de texto | Compõe contra (resumo) |
@@ -101,7 +101,7 @@ fundo/marca) e será corrigida com o tempo; este documento não pode divergir de
 
 ## 6. Checklist rápido antes de registrar um tema
 
-1. Preencheu os 422 via `generate_theme_template.ts`? (temas **novos** nascem completos — R33)
+1. Partiu de uma referência completa e conferiu eixos, opções e faixas com `getScaffold()` e o schema? (R33)
 2. Rodou `findMissingThemeAxes` e sabe quais eixos ficaram vazios, se algum?
 3. Rodou o solucionador e colou o relatório? Todo par "não resolvido" tem uma decisão sua registrada?
 4. Matiz e saturação dos tokens de texto são **exatamente** os que você escolheu — confira contra o

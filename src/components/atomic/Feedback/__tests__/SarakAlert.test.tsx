@@ -65,3 +65,13 @@ it('usa info por padrão e não renderiza controles opcionais quando omitidos', 
     expect(screen.getByRole('status')).toHaveAttribute('data-variant', 'info');
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
 });
+
+it('traduz o nome acessível do controle de fechar pelo idioma ativo', () => {
+    render(
+        <SarakUIProvider config={{ language: 'en' }}>
+            <SarakAlert title="Notice" message="Example." onClose={() => undefined} />
+        </SarakUIProvider>,
+    );
+
+    expect(screen.getByRole('button', { name: 'Close alert' })).toBeInTheDocument();
+});

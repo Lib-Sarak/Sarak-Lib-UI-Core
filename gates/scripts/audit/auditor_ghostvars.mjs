@@ -69,6 +69,12 @@ import path from 'path';
 //    — uma entrada que reordenar as propriedades (`transform` antes de
 //    `vars`) escapa da extração e nunca vira candidata (nem órfã, nem
 //    registrada) — sub-cobertura, não acusação falsa.
+// 6. Só o `id` de TOKEN emite `--sarak-<id>` no registro. "Token" = objeto literal do
+//    schema que declara `type:` entre as próprias chaves; `id` de opção de `select` e
+//    de grupo do schema não conta. A decisão lê chaves e chaves-fecha por texto, sem
+//    AST: uma `{` ou `}` DENTRO de uma string (descrição) que cruze o `id` pode errar o
+//    objeto delimitador e classificar mal um token (acusação falsa de fantasma, nunca
+//    omissão). Um token declarado sem `type:` não entra no registro — não há caso hoje.
 // -------------------------------------------------------------------------
 
 const SCHEMA_DIR = path.resolve('src/core/Design/schema');
@@ -77,7 +83,11 @@ const STYLES_DIR = path.resolve('src/styles');
 // hook que injeta as variáveis em runtime. Ficaram fora do registro por anos, e
 // é o que fazia a sonda de escopo ampliado acusar variável que EXISTE.
 const MANIFEST_FILE = path.resolve('src/core/Provider/manifest.ts');
-const RUNTIME_VARS_FILE = path.resolve('src/core/Design/hooks/useDesignVariables.ts');
+// O hook e o helper que ele chama (`emitColorChannels`, `emitOnColors`) escrevem variáveis em runtime.
+const RUNTIME_VARS_FILES = [
+  path.resolve('src/core/Design/hooks/useDesignVariables.ts'),
+  path.resolve('src/core/Design/hooks/designVariableHelpers.ts'),
+];
 const CONSUMER_DIRS = [
   path.resolve('src/components'),
   path.resolve('src/features'),
@@ -125,10 +135,40 @@ const kebab = (id) => id.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 const registry = new Set();
 const schemaIds = new Set(); // ids CRUS do schema (não kebab) — usados pelo R7b abaixo
 
+/** Índice da `{` que abre o objeto literal que contém a posição `index`. */
+function enclosingOpenBrace(src, index) {
+  let depth = 0;
+  for (let i = index; i >= 0; i -= 1) {
+    if (src[i] === '}') depth += 1;
+    else if (src[i] === '{') {
+      if (depth === 0) return i;
+      depth -= 1;
+    }
+  }
+  return -1;
+}
+
+/** O texto das chaves do PRÓPRIO objeto aberto em `open` — sem descer aos objetos aninhados. */
+function ownKeysText(src, open) {
+  let depth = 0;
+  let text = '';
+  for (let i = open; i < src.length; i += 1) {
+    if (src[i] === '{') depth += 1;
+    else if (src[i] === '}') depth -= 1;
+    if (depth === 0) break;
+    if (depth === 1) text += src[i];
+  }
+  return text;
+}
+
+/** `id` de TOKEN é o de um objeto que declara `type:`; o `id` de uma opção de `select` (ou de um grupo) não. */
+const isTokenId = (src, idIndex) => /\btype:\s*['"]/.test(ownKeysText(src, enclosingOpenBrace(src, idIndex)));
+
 for (const file of walk(SCHEMA_DIR, ['.ts'])) {
   const src = fs.readFileSync(file, 'utf8');
-  // auto-var: --sarak-<kebab(id)>
+  // auto-var: --sarak-<kebab(id)> — só para id de TOKEN (ver `isTokenId`)
   for (const m of src.matchAll(/\bid:\s*['"]([A-Za-z0-9]+)['"]/g)) {
+    if (!isTokenId(src, m.index)) continue;
     schemaIds.add(m[1]);
     registry.add(`--sarak-${kebab(m[1])}`);
   }
@@ -147,8 +187,8 @@ for (const file of walk(STYLES_DIR, ['.css'])) {
 // O hook de RUNTIME (`useDesignVariables.ts`) escreve `variables['--x'] = ...`
 // de verdade — é emissão comprovada por construção, sem precisar de checagem
 // adicional (diferente do manifesto, ver R7b abaixo).
-if (fs.existsSync(RUNTIME_VARS_FILE)) {
-  const src = fs.readFileSync(RUNTIME_VARS_FILE, 'utf8');
+for (const runtimeFile of RUNTIME_VARS_FILES.filter((file) => fs.existsSync(file))) {
+  const src = fs.readFileSync(runtimeFile, 'utf8');
   for (const m of src.matchAll(/['"`](--[a-z0-9-]+)['"`]/g)) registry.add(m[1]);
 }
 

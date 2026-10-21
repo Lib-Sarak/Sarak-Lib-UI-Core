@@ -200,7 +200,7 @@ npm version <major|minor|patch>
 | Gancho | Quando o npm roda | O que faz aqui |
 | --- | --- | --- |
 | `preversion` | ANTES do bump | `npm run gates:full` (build + `package:check` + suíte). **Falhou, não versiona.** |
-| `version` | DEPOIS do bump, ANTES do commit | **`migration-anchor:check` e `minor-no-removal:check` primeiro** (§5.2), depois `npm run guide && npm run build && npm run dev-kit`, e `git add` de `dist/` + `sarak-ui/` + `sarak-dev/` — os **três** artefatos gerados que carimbam a `version` |
+| `version` | DEPOIS do bump, ANTES do commit | **`migration-anchor:check` e `minor-no-removal:check` primeiro** (§5.2), depois `npm run guide && npm run build && npm run dev-kit`, e `git add` de `dist/` + `sarak-ui/` + `sarak-dev/` — os **três** artefatos gerados que carimbam a `version` — **mais** `src/buildInfo.ts` e `src/core/Provider/buildInfo.ts`, os arquivos gerados do selo de build ([[05-build-e-distribuicao]] §6): sem eles a tag sairia com `src/` diferente do `dist/` e a árvore suja |
 | `postversion` | depois do commit e da tag | `git push --follow-tags` |
 
 Formato da tag: **`vX.Y.Z`**, anotada, criada pelo próprio `npm version`.
@@ -260,7 +260,7 @@ Medido no ensaio do release (sandbox, 2026-07-28): o commit da `v1.0.1` carrega 
 Push para `main` com o **artefato publicado alterado** e **sem tag nova** é BLOQUEADO pelo anel de push
 (`.githooks/pre-push` → `gates/scripts/release/check-release-tag.mjs`). O gatilho é *"o artefato mudou"*, não *"houve
 commit"*: mudança só em `specs/` não pede tag. O mecanismo e a mensagem estão em
-[[02-enforcement-por-commit]] §4.1.
+[[02-enforcement-por-commit]] §4.3.
 
 Ao bloquear, ele **sugere** o nível lendo os commits desde a última tag — e diz, no próprio texto, que é
 sugestão. **Quem escolhe o nível é humano**, pelo motivo registrado no ADR-008: os 8 commits mais

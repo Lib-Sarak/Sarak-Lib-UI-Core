@@ -1,13 +1,14 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 import { SarakSearch } from '../SarakSearch';
 
 const renderSearch = (props: Partial<React.ComponentProps<typeof SarakSearch>> = {}) =>
     render(
         <SarakUIProvider>
-            <SarakSearch isOpen onClose={() => undefined} {...props} />
+            <SarakSearch isOpen onClose={() => undefined} items={[]} {...props} />
         </SarakUIProvider>,
     );
 
@@ -15,7 +16,7 @@ describe('SarakSearch', () => {
     it('não renderiza o campo de busca quando fechado', () => {
         render(
             <SarakUIProvider>
-                <SarakSearch isOpen={false} onClose={() => undefined} />
+                <SarakSearch isOpen={false} onClose={() => undefined} items={[]} />
             </SarakUIProvider>,
         );
         expect(screen.queryByPlaceholderText('Buscar ferramenta, registro ou configuração…')).not.toBeInTheDocument();
@@ -53,15 +54,13 @@ describe('SarakSearch', () => {
     });
 });
 
-// `items`/`onSelect` deixam quem chama alimentar a busca com a própria navegação, no
-// lugar do registro do Discovery — sem eles, o caminho do registro continua intacto.
-describe('SarakSearch — itens providos por fora (`items`/`onSelect`)', () => {
+describe('SarakSearch — itens do aplicativo (`items`/`onSelect`)', () => {
     const items = [
         { id: '/propostas', label: 'Propostas', category: 'Comercial' },
         { id: '/projetos', label: 'Projetos' },
     ];
 
-    it('lista os `items` recebidos, não o registro do Discovery', () => {
+    it('lista os itens recebidos', () => {
         renderSearch({ items });
         expect(screen.getByText('Propostas')).toBeInTheDocument();
         expect(screen.getByText('Projetos')).toBeInTheDocument();
@@ -88,13 +87,26 @@ describe('SarakSearch — itens providos por fora (`items`/`onSelect`)', () => {
         expect(onClose).toHaveBeenCalled();
     });
 
+    it.each(['Enter', ' '])('com `onSelect`, teclado %s seleciona resultado e fecha', async (key) => {
+        const onSelect = vi.fn();
+        const onClose = vi.fn();
+        const user = userEvent.setup();
+        renderSearch({ items, onSelect, onClose });
+        const result = screen.getByRole('button', { name: /Propostas/ });
+        result.focus();
+
+        await user.keyboard(key === ' ' ? ' ' : `{${key}}`);
+        expect(onSelect).toHaveBeenCalledWith('/propostas');
+        expect(onClose).toHaveBeenCalled();
+    });
+
     it('sem `onSelect`, o resultado NÃO é acionável — mesmo comportamento de sempre', () => {
         renderSearch({ items });
         const resultado = screen.getByText('Propostas').closest('button, div');
         expect(resultado?.tagName).toBe('DIV');
     });
 
-    it('sem `items`, continua usando o registro do Discovery (Shell intacto)', () => {
+    it('com uma lista vazia, mostra o estado sem resultados', () => {
         renderSearch();
         expect(screen.getByText(/Nenhum resultado para/i)).toBeInTheDocument();
     });
@@ -118,5 +130,32 @@ describe('SarakSearch — idioma que vale', () => {
         );
         expect(screen.getByPlaceholderText('Search tool, record or configuration…')).toBeInTheDocument();
         expect(screen.getByText('Available tools')).toBeInTheDocument();
+    });
+});
+
+describe('SarakSearch — teclado de busca no celular', () => {
+    it('o campo é type="search" e a tecla de ação do teclado é "Buscar"', () => {
+        renderSearch();
+        const input = screen.getByPlaceholderText('Buscar ferramenta, registro ou configuração…');
+        expect(input).toHaveAttribute('type', 'search');
+        expect(input).toHaveAttribute('enterkeyhint', 'search');
+    });
+});
+
+describe('SarakSearch — a saída anima antes de a paleta sair da página (motionEaseIn)', () => {
+    it('fechar não remove a paleta no mesmo quadro: ela sai ao fim da saída', async () => {
+        const ui = (isOpen: boolean) => (
+            <SarakUIProvider>
+                <SarakSearch isOpen={isOpen} onClose={() => undefined} items={[]} />
+            </SarakUIProvider>
+        );
+        const { rerender } = render(ui(true));
+        const placeholder = 'Buscar ferramenta, registro ou configuração…';
+        expect(screen.getByPlaceholderText(placeholder)).toBeInTheDocument();
+
+        rerender(ui(false));
+        expect(screen.getByPlaceholderText(placeholder)).toBeInTheDocument();
+
+        await waitFor(() => expect(screen.queryByPlaceholderText(placeholder)).not.toBeInTheDocument());
     });
 });

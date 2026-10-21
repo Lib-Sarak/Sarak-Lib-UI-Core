@@ -10,7 +10,7 @@ const options: SarakMultiSelectOption[] = [
     { value: 'ti', label: 'Tecnologia' },
 ];
 
-const renderMS = (props: Partial<React.ComponentProps<typeof SarakMultiSelect>> = {}) =>
+const renderMS = (props: Partial<React.ComponentProps<typeof SarakMultiSelect>> = {}): ReturnType<typeof render> =>
     render(
         <SarakUIProvider>
             <SarakMultiSelect label="Setores" options={options} {...props} />
@@ -18,6 +18,12 @@ const renderMS = (props: Partial<React.ComponentProps<typeof SarakMultiSelect>> 
     );
 
 describe('SarakMultiSelect', () => {
+    it('liga o rótulo visível ao campo de busca', () => {
+        renderMS();
+        const input = screen.getByRole('combobox', { name: 'Setores' });
+        expect(input).toHaveAttribute('aria-labelledby', screen.getByText('Setores').id);
+    });
+
     it('deve filtrar a lista ao digitar sem perder o foco do input', () => {
         renderMS();
         const input = screen.getByRole('combobox');
@@ -46,5 +52,52 @@ describe('SarakMultiSelect', () => {
         renderMS({ value: ['rh', 'fin'], onChange });
         fireEvent.mouseDown(screen.getByRole('button', { name: 'Remover Recursos Humanos' }));
         expect(onChange).toHaveBeenCalledWith(['fin']);
+    });
+});
+
+describe('Erro de campo pelo SarakFieldError', () => {
+    it('com `error`, há um role="alert" com o texto e o controle o referencia', () => {
+        render(<SarakMultiSelect options={options} error="Campo obrigatório" />);
+        const alert = screen.getByRole('alert');
+        expect(alert).toHaveTextContent('Campo obrigatório');
+        expect(alert.querySelector('svg')).not.toBeNull();
+        expect(alert.id).toMatch(/-error$/);
+        expect(screen.getByRole('combobox')).toHaveAttribute('aria-describedby', alert.id);
+    });
+
+    it('sem `error`, nada é renderizado', () => {
+        render(<SarakMultiSelect options={options} />);
+        expect(screen.queryByRole('alert')).toBeNull();
+    });
+});
+
+describe('SarakMultiSelect — textos da lib seguem o idioma', () => {
+    it('traduz o placeholder e o rótulo de remoção dos chips', () => {
+        const { unmount } = renderMS({ value: ['rh'] });
+        expect(screen.getByRole('button', { name: 'Remover Recursos Humanos' })).toBeInTheDocument();
+        unmount();
+
+        const { rerender } = render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakMultiSelect label="Departments" options={options} value={['rh']} />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByRole('button', { name: 'Remove Recursos Humanos' })).toBeInTheDocument();
+
+        rerender(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakMultiSelect label="Departments" options={options} />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByRole('combobox', { name: 'Departments' })).toHaveAttribute('placeholder', 'Search...');
+    });
+});
+
+describe('SarakMultiSelect — teclado de busca no celular', () => {
+    it('o campo de busca é type="search" e a tecla de ação do teclado é "Buscar"', () => {
+        renderMS();
+        const input = screen.getByRole('combobox', { name: 'Setores' });
+        expect(input).toHaveAttribute('type', 'search');
+        expect(input).toHaveAttribute('enterkeyhint', 'search');
     });
 });

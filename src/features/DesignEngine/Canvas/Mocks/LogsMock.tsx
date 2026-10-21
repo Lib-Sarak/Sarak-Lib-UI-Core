@@ -11,20 +11,20 @@ export const MockLogs: React.FC<any> = ({ animationVariants, animationStyle, tok
                 initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
                 animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
                 transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), duration: parseFloat(tokens.animationSpeed || '0.4') }}
-                className="sarak-card shadow-[var(--theme-shadow)] overflow-hidden relative p-0"
+                className="sarak-card shadow-[var(--dynamic-shadow)] overflow-hidden relative p-0"
             >
-                <div className="absolute inset-0 bg-white/[0.02] pointer-events-none"></div>
+                <div className="absolute inset-0 bg-theme-text/[0.02] pointer-events-none"></div>
                 <table className="w-full text-left text-2xs relative z-10">
                     <thead className="bg-[var(--theme-card)] border-b border-[var(--theme-border)]">
-                        <tr style={{ fontFamily: 'var(--font-tab, var(--font-heading))' }}>
+                        <tr style={{ fontFamily: 'var(--font-heading)' }}>
                             <th className="p-3 font-bold text-[var(--theme-muted)] uppercase tracking-wider">Payload</th>
                             <th className="p-3 font-bold text-[var(--theme-muted)] uppercase tracking-wider">Status</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-[var(--theme-border)]/30">
                         {[
-                            { name: "Scraper_V2", status: "Completed", color: "text-emerald-500" },
-                            { name: "Parser_Engine", status: "Failed", color: "text-rose-500" }
+                            { name: "Scraper_V2", status: "Completed", color: "text-[var(--sarak-status-success-color,#10b981)]" },
+                            { name: "Parser_Engine", status: "Failed", color: "text-[var(--sarak-status-error-color,#ef4444)]" }
                         ].map((row, i) => (
                             <tr key={i} className="hover:bg-[var(--theme-primary)]/5 transition-colors">
                                 <td className="p-3 font-medium text-[var(--theme-title)]">{row.name}</td>

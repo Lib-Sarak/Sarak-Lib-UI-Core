@@ -15,22 +15,21 @@
  *   cobra.
  *
  * Compara os NOMES exportados por `dist/index.d.ts` (o barril já resolvido
- * — `export *` incluso) entre a última tag `vX.Y.Z` e a árvore atual. Roda
- * dentro do script `version`, depois do `preversion` (que já rodou
+ * — `export *` incluso) e os nomes públicos da tupla `SARAK_ICON_NAMES` entre
+ * a última tag `vX.Y.Z` e a árvore atual. Roda dentro do script `version`, depois do `preversion` (que já rodou
  * `npm run build` como parte de `gates:full`) — o `dist/index.d.ts` em disco
  * já reflete o código que está prestes a virar a nova tag.
  *
  * -------------------------------------------------------------------------
  * LIMITES DECLARADOS (R18) — o que este gate NÃO vê
  * -------------------------------------------------------------------------
- * 1. Só vê REMOÇÃO DE NOME (um identificador que saiu do bloco
- *    `export { ... }` de `dist/index.d.ts`). NÃO vê mudança de
+ * 1. Vê remoções de identificadores no bloco `export { ... }` e nomes de
+ *    string na tupla pública `SARAK_ICON_NAMES`. NÃO vê mudança de
  *    COMPORTAMENTO — a `4.0.0` é a prova de uma quebra que este gate jamais
  *    pegaria, e continua sem pegar: ele NÃO teria barrado a `4.0.0`.
- * 2. Não vê mudança de TIPO/assinatura de um nome que CONTINUA exportado
- *    (ex.: uma prop opcional virando obrigatória) — só presença/ausência do
- *    identificador. Isso é o mesmo limite que `public-types:check` (Spec 45)
- *    também não fecha.
+ * 2. Não vê mudanças de tipo/assinatura de um nome que CONTINUA exportado
+ *    (ex.: uma prop opcional virando obrigatória) nem nomes removidos de outros
+ *    unions/tuplas públicos — só a tupla `SARAK_ICON_NAMES` tem conteúdo comparado.
  * 3. Assume o formato de UM BLOCO `export { ... };` só, produzido pelo
  *    dts-bundler do `tsup` — outro formato de saída de bundler não é
  *    reconhecido (`parseExportedNames` devolve conjunto vazio em silêncio).
@@ -70,6 +69,14 @@ export function parseExportedNames(dtsText) {
     return names;
 }
 
+/** Extrai nomes de ícones da tupla pública que alimenta o tipo SarakIconName. */
+export function parsePublicIconNames(dtsText) {
+    if (!parseExportedNames(dtsText).has('SARAK_ICON_NAMES')) return new Set();
+    const match = dtsText.match(/declare const SARAK_ICON_NAMES:\s*readonly\s*\[([\s\S]*?)\];/);
+    if (!match) return new Set();
+    return new Set([...match[1].matchAll(/['"]([^'"]+)['"]/g)].map((entry) => entry[1]));
+}
+
 const bumpEhMajor = (anterior, atual) => {
     const majorAnterior = Number(anterior.split('.')[0]);
     const majorAtual = Number(atual.split('.')[0]);
@@ -89,8 +96,8 @@ export function checkNoRemovalOutsideMajor({ previousVersion, currentVersion, pr
             reason: `${previousVersion} → ${currentVersion} é MAJOR — remoção é legítima sem gate (a 4.0.0 é a prova de que major sem remoção também é legítimo).`,
         };
     }
-    const antes = parseExportedNames(previousDts);
-    const depois = parseExportedNames(currentDts);
+    const antes = new Set([...parseExportedNames(previousDts), ...parsePublicIconNames(previousDts)]);
+    const depois = new Set([...parseExportedNames(currentDts), ...parsePublicIconNames(currentDts)]);
     const removidos = [...antes].filter((nome) => !depois.has(nome)).sort();
     if (removidos.length === 0) return { ok: true, skipped: false };
     return { ok: false, removed: removidos, previousVersion, currentVersion };

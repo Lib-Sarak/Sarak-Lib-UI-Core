@@ -44,23 +44,32 @@ Ponha a **data da decisão no corpo** do documento. Mantenha curto — uma a dua
 | [002](./002-remocao-motor-manifesto.md) | Remoção do renderizador de páginas por manifesto (#2) | 🟢 Aceito |
 | [003](./003-remocao-backend-proprio.md) | Remoção do backend próprio — tema é dado no código do consumidor | 🟢 Aceito |
 | [004](./004-remocao-design-agent.md) | Remoção do Design Agent (agente LLM embarcado) | 🟢 Aceito |
-| [005](./005-modelo-modulos-plugin-e-apps-separados.md) | Modelo módulos-plugin oficial e a composição apps-separados | 🟢 Aceito |
+| [005](./005-modelo-modulos-plugin-e-apps-separados.md) | Modelo módulos-plugin oficial e a composição apps-separados | 🔴 Substituído por [018](./018-um-cromo-so-e-o-consumidor-e-dono-das-rotas.md), só no que diz respeito ao modo Shell-host |
 | [006](./006-zero-marca-soberania-host.md) | A lib nunca estampa a própria marca | 🟢 Aceito |
 | [007](./007-distribuicao-por-git.md) | Distribuição por Git, sem registry npm | 🔴 Substituído por [008](./008-releases-com-tag-e-semver-em-git.md) |
 | [008](./008-releases-com-tag-e-semver-em-git.md) | Releases com tag e faixa semver em Git — sem registry | 🟢 Aceito |
 | [009](./009-persistencia-tenant-aware.md) | Persistência de tema tenant-aware e strategy configurável | 🟢 Aceito |
 | [010](./010-temas-salvos-pelo-usuario.md) | Temas salvos pelo usuário em runtime — segunda porta de persistência | 🔴 Substituído por [011](./011-tema-salvo-por-uma-porta-de-escrita.md) |
-| [011](./011-tema-salvo-por-uma-porta-de-escrita.md) | Tema salvo em runtime por UMA porta de escrita — a leitura já é `customThemes` | 🟢 Aceito |
+| [011](./011-tema-salvo-por-uma-porta-de-escrita.md) | Tema salvo em runtime por UMA porta de escrita — a leitura já é `customThemes` | 🔴 Substituído por [017](./017-porta-de-apagar-tema-simetrica-a-de-escrever.md), só no que diz respeito a apagar |
 | [012](./012-escrita-git-sob-autorizacao-do-dono.md) | Escrita no Git sob autorização expressa do dono | 🟢 Aceito |
 | [013](./013-item-de-navegacao-como-atomo-proprio.md) | Item de navegação é átomo próprio, não variante do botão de ação | 🔴 Substituído por [015](./015-metrica-do-item-de-navegacao-horizontal.md) |
 | [014](./014-cromo-do-modo-ui-kit-com-widgets-por-padrao.md) | O cromo do modo ui-kit nasce com os widgets montados, e o consumidor desliga o que não quiser | 🟢 Aceito |
 | [015](./015-metrica-do-item-de-navegacao-horizontal.md) | O item de navegação horizontal usa caixa normal e corpo legível, não tipografia de etiqueta | 🟢 Aceito |
 | [016](./016-preferencias-do-usuario-separadas-do-tema.md) | Preferência do usuário é uma camada separada do tema — sobreposta ao renderizar, nunca gravada nele | 🟢 Aceito |
+| [017](./017-porta-de-apagar-tema-simetrica-a-de-escrever.md) | Tema salvo em runtime também se apaga por uma porta — simétrica à de escrever | 🟢 Aceito |
+| [018](./018-um-cromo-so-e-o-consumidor-e-dono-das-rotas.md) | Um cromo só — o consumidor é dono das rotas, e a lib não é host | 🟢 Aceito |
+| [019](./019-arrastar-e-soltar-do-kanban.md) | O arrastar e soltar do quadro kanban é o @dnd-kit, atrás de um adaptador único | 🟢 Aceito |
+| [020](./020-gantt-casca-propria.md) | O Gantt da lib é casca própria, não componente de terceiro | 🟢 Aceito |
+| [021](./021-navegacao-na-base-do-celular.md) | No celular, a navegação vai para uma barra na base quando cabe — auto por padrão, configurável pelo tema | 🟢 Aceito |
+| [022](./022-tema-sob-demanda.md) | Os temas embarcados são carregados sob demanda — o boot leva só o tema padrão, e a UX não muda | 🟢 Aceito |
+| [023](./023-fontes-embarcadas-carregadas-sob-demanda.md) | A lib embarca as próprias fontes e as carrega sob demanda — o Google Fonts deixa de ser o padrão e vira opção do host | 🟢 Aceito |
 
 Comece pelo **001** — ele enquadra os outros três da mesma virada (002, 003, 004) e explica a regra de corte que os produziu.
 
 > **Sobre o 007 → 008:** o 008 substitui o 007 **numa única conclusão** — a de que atualização automática exigiria registry. Todo o resto do 007 (identidade de build, comando por gerenciador, aviso no `predev`, a armadilha do `baseCommit`) continua descrevendo o que vale hoje, e é por isso que ele segue sendo leitura obrigatória mesmo marcado como substituído. O protocolo desta pasta é binário de propósito: um ADR substituído **em qualquer parte** muda de status, e o ADR novo declara o recorte.
 
 > **Sobre o 010 → 011:** mesmo caso. O 011 substitui **só o recorte técnico** do 010 — as três portas (`onSaveTheme`/`onLoadThemes`/`onDeleteTheme`) viram **uma** (`options.theme.onSave`), e o tipo passa de `ThemePreset` (cujo `id` é união fechada dos temas embarcados, e por isso não aceita tema autorado em runtime) para `ThemeEntry`. O **objetivo** do 010 — usuário final salva tema sem deploy —, a coexistência com "Exportar JSON", o corte sem editar/renomear e a validação de fronteira **continuam vigentes**, e é por isso que o 010 segue sendo leitura obrigatória. Os dois se leem juntos.
+
+> **Sobre o 005 → 018:** mesmo caso. O 018 substitui **só o recorte do modo Shell-host** do 005 — o `SarakShell`, o Discovery e o registro de módulos saem, e a lib deixa de ser dona das rotas. O **modo "ui-kit + central"** do 005 — o cromo por-app, a central que alcança todas as telas por código compartilhado e `localStorage`, o limite de mesma origem — **continua vigente** e passou a ser o único modo de consumo; é por isso que o 005 segue sendo leitura obrigatória. Os dois se leem juntos.
 
 > **Sobre o 013 → 015:** mesmo caso. O 015 substitui **um valor tipográfico** do 013 — o ramo `horizontal` do item de navegação deixa a caixa alta e o espaçamento largo e ganha corpo legível. O **núcleo** do 013 — item de navegação é átomo próprio, com métrica de navegação e não de botão de ação, e a `className` do chamador vencendo o default — **continua vigente**, e é por isso que o 013 segue sendo leitura obrigatória. Os dois se leem juntos.

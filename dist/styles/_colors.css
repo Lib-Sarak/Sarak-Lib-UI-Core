@@ -6,16 +6,16 @@
 */
 
 :root, body, .sarak-design-scope {
-  --bg-body-rgb: var(--sarak-bg-body-rgb, 248, 250, 252);
-  --bg-sidebar-rgb: var(--sarak-sidebar-bg-rgb, 241, 245, 249);
-  --bg-card-rgb: var(--sarak-card-bg-rgb, 255, 255, 255);
+  --bg-body-rgb: var(--sarak-bg-body-rgb, 6, 8, 13);
+  --bg-sidebar-rgb: var(--sarak-sidebar-bg-rgb, 4, 6, 10);
+  --bg-card-rgb: var(--sarak-card-bg-rgb, 16, 22, 34);
 
-  --text-main: var(--sarak-text-main, #334155);
-  --text-title: var(--sarak-title-color, #0f172a);
-  --text-muted: var(--sarak-text-muted, #94a3b8);
+  --text-main: var(--sarak-text-main, #f2f6fb);
+  --text-title: var(--sarak-title-color, #f2f6fb);
+  --text-muted: var(--sarak-text-muted, rgba(242, 246, 251, 0.55));
   
-  --border-color: var(--sarak-card-border-color, #cbd5e1);
-  --bg-tooltip: var(--sarak-tooltip-bg, #ffffff);
-  --text-tooltip: var(--sarak-tooltip-text, #0f172a);
-  --border-tooltip: var(--sarak-tooltip-border, #cbd5e1);
+  --border-color: var(--sarak-card-border-color, rgba(255, 255, 255, 0.09));
+  --bg-tooltip: var(--sarak-tooltip-bg, var(--theme-surface));
+  --text-tooltip: var(--sarak-tooltip-text, var(--color-theme-title, #f2f6fb));
+  --border-tooltip: var(--sarak-tooltip-border, var(--theme-border));
 }

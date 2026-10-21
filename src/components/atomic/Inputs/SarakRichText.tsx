@@ -1,3 +1,4 @@
+import { SarakIcon } from "../Icon/SarakIcon";
 /**
  * SarakRichText — editor WYSIWYG blindado (Spec 11, Regra 4 · Onda 10)
  *
@@ -9,10 +10,12 @@
  * consumido pelo `model`/`coerceEventValue` do LeafNode (Spec 32).
  */
 
-import React, { useEffect, useRef } from 'react';
-import { Bold, Italic, List, ListOrdered, Link2 } from 'lucide-react';
+import React, { useEffect, useId, useRef } from 'react';
+
 import { sanitizeHtml } from '../../../core/Security/sanitizeHtml';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
+import { SarakFieldError } from '../Feedback/SarakFieldError';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 /** Allowlist semântica restrita (Regra 4): sem `style`/`script`, só marcação segura. */
 const ALLOWED_TAGS = ['p', 'br', 'b', 'strong', 'i', 'em', 'u', 's', 'ul', 'ol', 'li', 'a', 'h1', 'h2', 'h3', 'blockquote', 'code'];
@@ -30,34 +33,33 @@ export interface SarakRichTextProps {
     /** Emite o HTML JÁ sanitizado a cada mudança. */
     onChange?: (html: string) => void;
     placeholder?: string;
+    label?: string;
     disabled?: boolean;
     error?: string;
     className?: string;
 }
 
-interface ToolButton {
-    cmd: string;
-    icon: React.ReactNode;
-    label: string;
-}
-
-const TOOLS: ToolButton[] = [
-    { cmd: 'bold', icon: <Bold size={15} />, label: 'Negrito' },
-    { cmd: 'italic', icon: <Italic size={15} />, label: 'Itálico' },
-    { cmd: 'insertUnorderedList', icon: <List size={15} />, label: 'Lista' },
-    { cmd: 'insertOrderedList', icon: <ListOrdered size={15} />, label: 'Lista numerada' },
-];
+const TOOLS = [
+    { cmd: 'bold', icon: <SarakIcon name="Bold" size={15} />, labelKey: 'richTextBoldAction' },
+    { cmd: 'italic', icon: <SarakIcon name="Italic" size={15} />, labelKey: 'richTextItalicAction' },
+    { cmd: 'insertUnorderedList', icon: <SarakIcon name="List" size={15} />, labelKey: 'richTextUnorderedListAction' },
+    { cmd: 'insertOrderedList', icon: <SarakIcon name="ListOrdered" size={15} />, labelKey: 'richTextOrderedListAction' },
+] as const;
 
 export const SarakRichText: React.FC<SarakRichTextProps> = ({
     value,
     defaultValue,
     onChange,
     placeholder,
+    label,
     disabled,
     error,
     className = '',
-}) => {
+}: SarakRichTextProps): React.ReactElement => {
     const ref = useRef<HTMLDivElement>(null);
+    const reactId = useId();
+    const labelId = `${reactId}-label`;
+    const t = useLibraryText();
 
     // Semeia o conteúdo inicial uma vez (e ressincroniza só se o `value` externo divergir
     // do DOM — evita "pular" o cursor a cada tecla, que ocorreria reescrevendo sempre).
@@ -70,20 +72,20 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
         }
     }, [value]);
 
-    const emit = () => {
+    const emit = (): void => {
         if (ref.current) onChange?.(sarakSanitizeRichText(ref.current.innerHTML));
     };
 
-    const exec = (cmd: string) => {
+    const exec = (cmd: string): void => {
         if (disabled) return;
         ref.current?.focus();
         document.execCommand(cmd, false);
         emit();
     };
 
-    const addLink = () => {
+    const addLink = (): void => {
         if (disabled || typeof window === 'undefined') return;
-        const url = window.prompt('URL do link:');
+        const url = window.prompt(t('richTextLinkUrlPrompt'));
         if (url) {
             ref.current?.focus();
             document.execCommand('createLink', false, url);
@@ -92,7 +94,7 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
     };
 
     // Cola blindada (Regra 4): intercepta, sanitiza o HTML/texto e insere o conteúdo limpo.
-    const onPaste = (e: React.ClipboardEvent) => {
+    const onPaste = (e: React.ClipboardEvent<HTMLDivElement>): void => {
         e.preventDefault();
         const raw = e.clipboardData.getData('text/html') || e.clipboardData.getData('text/plain');
         const clean = sarakSanitizeRichText(raw);
@@ -102,18 +104,19 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
 
     return (
         <div className={`relative ${className}`}>
+            {label && <span id={labelId} className="text-sm font-medium">{label}</span>}
             <div
                 role="toolbar"
-                aria-label="Formatação"
+                aria-label={t('richTextToolbarAriaLabel')}
                 style={{
                     display: 'flex',
                     gap: 2,
                     padding: 4,
-                    border: 'var(--sarak-border-width, 1px) solid var(--border-color,#334155)',
+                    border: 'var(--sarak-border-width, 1px) solid var(--border-color,rgba(255,255,255,0.09))',
                     borderBottom: 'none',
-                    borderTopLeftRadius: 'var(--sarak-card-radius,12px)',
-                    borderTopRightRadius: 'var(--sarak-card-radius,12px)',
-                    background: 'var(--sarak-table-header-bg, var(--color-theme-card,#1e293b))',
+                    borderTopLeftRadius: 'var(--sarak-card-radius,10px)',
+                    borderTopRightRadius: 'var(--sarak-card-radius,10px)',
+                    background: 'var(--sarak-table-header-bg, var(--color-theme-card,#101622))',
                 }}
             >
                 {TOOLS.map((tool) => (
@@ -121,7 +124,7 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
                         key={tool.cmd}
                         variant="ghost"
                         size="sm"
-                        aria-label={tool.label}
+                        aria-label={t(tool.labelKey)}
                         icon={tool.icon}
                         disabled={disabled}
                         onClick={() => exec(tool.cmd)}
@@ -130,8 +133,8 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
                 <SarakIconButton
                     variant="ghost"
                     size="sm"
-                    aria-label="Inserir link"
-                    icon={<Link2 size={15} />}
+                    aria-label={t('richTextInsertLinkAction')}
+                    icon={<SarakIcon name="Link2" size={15} />}
                     disabled={disabled}
                     onClick={addLink}
                 />
@@ -141,7 +144,11 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
                 ref={ref}
                 role="textbox"
                 aria-multiline="true"
-                aria-label={placeholder}
+                id={reactId}
+                aria-labelledby={label ? labelId : undefined}
+                aria-label={!label ? placeholder : undefined}
+                aria-invalid={error ? true : undefined}
+                aria-describedby={error ? `${reactId}-error` : undefined}
                 data-sarak-richtext="true"
                 contentEditable={!disabled}
                 suppressContentEditableWarning
@@ -152,20 +159,18 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
                 style={{
                     minHeight: 120,
                     padding: 'var(--sarak-layout-gap-md,16px)',
-                    border: `var(--sarak-border-width, 1px) solid ${error ? 'var(--sarak-input-error-color, #ff4d4f)' : 'var(--border-color,#334155)'}`,
-                    borderBottomLeftRadius: 'var(--sarak-card-radius,12px)',
-                    borderBottomRightRadius: 'var(--sarak-card-radius,12px)',
-                    background: 'var(--sarak-input-bg, var(--color-theme-card,#1e293b))',
-                    color: 'var(--sarak-input-text-color, var(--text-muted,#94a3b8))',
+                    border: `var(--sarak-border-width, 1px) solid ${error ? 'var(--sarak-input-error-color, #ff6b6b)' : 'var(--border-color,rgba(255,255,255,0.09))'}`,
+                    borderBottomLeftRadius: 'var(--sarak-card-radius,10px)',
+                    borderBottomRightRadius: 'var(--sarak-card-radius,10px)',
+                    background: 'var(--sarak-input-bg, var(--color-theme-card,#101622))',
+                    color: 'var(--sarak-input-text-color, var(--text-muted,rgba(242,246,251,0.55)))',
                     outline: 'none',
                     opacity: disabled ? 0.5 : 1,
                     cursor: disabled ? 'not-allowed' : 'text',
                 }}
             />
 
-            {error && (
-                <p className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}>{error}</p>
-            )}
+            <SarakFieldError message={error} fieldId={reactId} />
         </div>
     );
 };

@@ -33,12 +33,16 @@ export interface TableInteractionsResult<T> {
     toggleAll: (checked: boolean) => void;
 }
 
+interface CreateEntriesOptions<T> {
+    rows: T[];
+    sort: SarakTableSort | null;
+    controlled: boolean;
+    getSortValue: (row: T, columnId: string) => unknown;
+    getRowKey?: (row: T, index: number) => React.Key;
+}
+
 const createEntries = <T,>(
-    rows: T[],
-    sort: SarakTableSort | null,
-    controlled: boolean,
-    getSortValue: (row: T, columnId: string) => unknown,
-    getRowKey?: (row: T, index: number) => React.Key,
+    { rows, sort, controlled, getSortValue, getRowKey }: CreateEntriesOptions<T>,
 ): Array<TableInteractionEntry<T>> => {
     const entries = controlled ? rows.map((row, index) => ({ row, index })) : sortTableRows(rows, sort, getSortValue);
     return entries.map((entry) => ({
@@ -70,22 +74,22 @@ export function useTableInteractions<T>({
     const keys = controlledKeys ?? internalKeys;
     const selectedKeys = useMemo(() => new Set(keys), [keys]);
     const entries = useMemo(
-        () => createEntries(rows, sort, isSortControlled, getSortValue, getRowKey),
+        () => createEntries({ rows, sort, controlled: isSortControlled, getSortValue, getRowKey }),
         [rows, sort, isSortControlled, getSortValue, getRowKey],
     );
     const allVisibleSelected = entries.length > 0 && entries.every(({ key }) => selectedKeys.has(key));
     const partiallySelected = entries.some(({ key }) => selectedKeys.has(key)) && !allVisibleSelected;
-    const publishKeys = (next: React.Key[]) => {
+    const publishKeys = (next: React.Key[]): void => {
         if (controlledKeys === undefined) setInternalKeys(next);
         onSelectionChange?.(next);
     };
-    const changeSort = (columnId: string) => {
+    const changeSort = (columnId: string): void => {
         const next = nextTableSort(sort ?? null, columnId);
         if (!isSortControlled) setInternalSort(next);
         onSortChange?.(next);
     };
-    const toggleRow = (key: React.Key, checked: boolean) => publishKeys(updateKeys(keys, key, checked));
-    const toggleAll = (checked: boolean) => {
+    const toggleRow = (key: React.Key, checked: boolean): void => publishKeys(updateKeys(keys, key, checked));
+    const toggleAll = (checked: boolean): void => {
         const next = new Set(keys);
         entries.forEach(({ key }) => checked ? next.add(key) : next.delete(key));
         publishKeys(Array.from(next));

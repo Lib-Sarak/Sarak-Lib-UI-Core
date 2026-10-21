@@ -33,7 +33,7 @@
     "tokenId": "chartGridOpacity",
     "name": "Opacidade da Grade (Gráficos)",
     "description": "Nível de opacidade das linhas guias de fundo dentro da área de plotagem de gráficos.",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "efeitos",
@@ -115,17 +115,18 @@
       "DesignInjector"
     ],
     "cssVariables": [],
+    "relatedTokens": [
+      "chartThickness"
+    ],
     "allowedValues": [
       "line",
+      "area",
       "bar",
       "pie",
       "radar",
       "scatter",
       "heatmap",
       "gauge"
-    ],
-    "relatedTokens": [
-      "chartThickness"
     ]
   },
   {
@@ -151,10 +152,6 @@
       "DesignInjector"
     ],
     "cssVariables": [],
-    "allowedValues": [
-      true,
-      false
-    ],
     "relatedTokens": [
       "chartGridOpacity"
     ]
@@ -163,7 +160,7 @@
     "tokenId": "chartThickness",
     "name": "Espessura da Linha (Gráficos)",
     "description": "Largura das linhas vetoriais (stroke-width) utilizadas em gráficos como Line ou Radar.",
-    "type": "number",
+    "type": "slider",
     "importance": 75,
     "categories": [
       "geometria",
@@ -216,42 +213,8 @@
       "DesignInjector"
     ],
     "cssVariables": [],
-    "allowedValues": [
-      true,
-      false
-    ],
     "relatedTokens": [
       "chartThickness"
-    ]
-  },
-  {
-    "tokenId": "aiPanelBg",
-    "name": "Fundo do Painel IA",
-    "description": "Cor de fundo especializada para janelas, modais e painéis contextuais de Inteligência Artificial.",
-    "type": "color",
-    "importance": 85,
-    "categories": [
-      "cores",
-      "especial",
-      "data-and-charts"
-    ],
-    "tags": [
-      "ai",
-      "panel",
-      "background",
-      "specialized"
-    ],
-    "databaseColumn": "data_and_charts",
-    "schemaOrigin": "specialized.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-ai-panel-bg"
-    ],
-    "allowedValues": null,
-    "relatedTokens": [
-      "aiGlowColor"
     ]
   },
   {
@@ -281,15 +244,13 @@
       "--sarak-ai-glow"
     ],
     "allowedValues": null,
-    "relatedTokens": [
-      "aiPanelBg"
-    ]
+    "relatedTokens": []
   },
   {
     "tokenId": "flowNodeRadius",
     "name": "Raio dos Nós (Fluxo)",
     "description": "Arredondamento das bordas dos nós visuais em diagramas de fluxo, pipelines e canvas.",
-    "type": "number",
+    "type": "slider",
     "importance": 70,
     "categories": [
       "bordas",
@@ -345,447 +306,751 @@
     "cssVariables": [
       "--sarak-flow-grid"
     ],
+    "relatedTokens": [
+      "flowNodeRadius"
+    ],
     "allowedValues": [
       "dots",
       "lines"
-    ],
-    "relatedTokens": [
-      "flowNodeRadius"
     ]
   },
   {
     "tokenId": "dotGridDotOffset",
     "name": "Grade de Pontos: Offset do Ponto",
     "description": "Offset X/Y do centro do ponto no padrão radial-gradient da grade decorativa (SarakEmptyState/AuthHero).",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["texturas", "layout", "data-and-charts"],
-    "tags": ["dot-grid", "background", "decorative"],
+    "categories": [
+      "texturas",
+      "layout",
+      "data-and-charts"
+    ],
+    "tags": [
+      "dot-grid",
+      "background",
+      "decorative"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakEmptyState", "AuthHero"],
-    "cssVariables": ["--sarak-dot-grid-dot-offset"],
-    "allowedValues": { "min": 0, "max": 10, "step": 1 },
-    "relatedTokens": ["dotGridDotSize", "dotGridTileSize"]
+    "digitalTwins": [
+      "SarakEmptyState",
+      "AuthHero"
+    ],
+    "cssVariables": [
+      "--sarak-dot-grid-dot-offset"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 10
+    },
+    "relatedTokens": [
+      "dotGridDotSize",
+      "dotGridTileSize"
+    ]
   },
   {
     "tokenId": "dotGridDotSize",
     "name": "Grade de Pontos: Raio do Ponto",
     "description": "Raio do ponto no padrão radial-gradient da grade decorativa (SarakEmptyState/AuthHero).",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["texturas", "layout", "data-and-charts"],
-    "tags": ["dot-grid", "background", "decorative"],
+    "categories": [
+      "texturas",
+      "layout",
+      "data-and-charts"
+    ],
+    "tags": [
+      "dot-grid",
+      "background",
+      "decorative"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakEmptyState", "AuthHero"],
-    "cssVariables": ["--sarak-dot-grid-dot-size"],
-    "allowedValues": { "min": 0, "max": 6, "step": 1 },
-    "relatedTokens": ["dotGridDotOffset", "dotGridTileSize"]
+    "digitalTwins": [
+      "SarakEmptyState",
+      "AuthHero"
+    ],
+    "cssVariables": [
+      "--sarak-dot-grid-dot-size"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 6
+    },
+    "relatedTokens": [
+      "dotGridDotOffset",
+      "dotGridTileSize"
+    ]
   },
   {
     "tokenId": "dotGridTileSize",
     "name": "Grade de Pontos: Tamanho do Tile",
     "description": "Tamanho do tile repetido (background-size) do padrão de grade de pontos decorativa.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["texturas", "layout", "data-and-charts"],
-    "tags": ["dot-grid", "background", "decorative"],
+    "categories": [
+      "texturas",
+      "layout",
+      "data-and-charts"
+    ],
+    "tags": [
+      "dot-grid",
+      "background",
+      "decorative"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakEmptyState", "AuthHero"],
-    "cssVariables": ["--sarak-dot-grid-tile-size"],
-    "allowedValues": { "min": 10, "max": 100, "step": 1 },
-    "relatedTokens": ["dotGridDotOffset", "dotGridDotSize"]
+    "digitalTwins": [
+      "SarakEmptyState",
+      "AuthHero"
+    ],
+    "cssVariables": [
+      "--sarak-dot-grid-tile-size"
+    ],
+    "allowedValues": {
+      "min": 10,
+      "max": 100
+    },
+    "relatedTokens": [
+      "dotGridDotOffset",
+      "dotGridDotSize"
+    ]
   },
   {
     "tokenId": "emptyStateOrbOuter",
     "name": "Empty State: Diâmetro do Anel Externo",
     "description": "Diâmetro do anel tracejado externo do modo 'geometric' do SarakEmptyState.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["layout", "decorativo", "data-and-charts"],
-    "tags": ["empty-state", "orb", "decorative"],
+    "categories": [
+      "layout",
+      "decorativo",
+      "data-and-charts"
+    ],
+    "tags": [
+      "empty-state",
+      "orb",
+      "decorative"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakEmptyState"],
-    "cssVariables": ["--sarak-empty-state-orb-outer"],
-    "allowedValues": { "min": 100, "max": 900, "step": 10 },
-    "relatedTokens": ["emptyStateOrbInner"]
+    "digitalTwins": [
+      "SarakEmptyState"
+    ],
+    "cssVariables": [
+      "--sarak-empty-state-orb-outer"
+    ],
+    "allowedValues": {
+      "min": 100,
+      "max": 900
+    },
+    "relatedTokens": [
+      "emptyStateOrbInner"
+    ]
   },
   {
     "tokenId": "emptyStateOrbInner",
     "name": "Empty State: Diâmetro do Anel Interno / Orb",
     "description": "Diâmetro do anel tracejado interno e do orb de fundo do SarakEmptyState.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["layout", "decorativo", "data-and-charts"],
-    "tags": ["empty-state", "orb", "decorative"],
+    "categories": [
+      "layout",
+      "decorativo",
+      "data-and-charts"
+    ],
+    "tags": [
+      "empty-state",
+      "orb",
+      "decorative"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakEmptyState"],
-    "cssVariables": ["--sarak-empty-state-orb-inner"],
-    "allowedValues": { "min": 100, "max": 600, "step": 10 },
-    "relatedTokens": ["emptyStateOrbOuter"]
+    "digitalTwins": [
+      "SarakEmptyState"
+    ],
+    "cssVariables": [
+      "--sarak-empty-state-orb-inner"
+    ],
+    "allowedValues": {
+      "min": 100,
+      "max": 600
+    },
+    "relatedTokens": [
+      "emptyStateOrbOuter"
+    ]
   },
   {
     "tokenId": "emptyStateOrbBlur",
     "name": "Empty State: Desfoque do Orb",
     "description": "Raio de desfoque do orb de fundo animado do modo 'abstract' do SarakEmptyState (reaproveitado pelo SarakChart).",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["efeitos", "decorativo", "data-and-charts"],
-    "tags": ["empty-state", "blur", "glow", "decorative"],
+    "categories": [
+      "efeitos",
+      "decorativo",
+      "data-and-charts"
+    ],
+    "tags": [
+      "empty-state",
+      "blur",
+      "glow",
+      "decorative"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakEmptyState", "SarakChart"],
-    "cssVariables": ["--sarak-empty-state-orb-blur"],
-    "allowedValues": { "min": 0, "max": 200, "step": 5 },
+    "digitalTwins": [
+      "SarakEmptyState",
+      "SarakChart"
+    ],
+    "cssVariables": [
+      "--sarak-empty-state-orb-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 200
+    },
     "relatedTokens": []
   },
   {
     "tokenId": "emptyStateVoidLetterOffset",
     "name": "Empty State: Offset da Letra (VOID)",
     "description": "Margem esquerda adicional (em em) do texto 'VOID' no modo 'geometric' do SarakEmptyState.",
-    "type": "number",
+    "type": "slider",
     "importance": 20,
-    "categories": ["tipografia", "decorativo", "data-and-charts"],
-    "tags": ["empty-state", "letter-spacing", "decorative"],
+    "categories": [
+      "tipografia",
+      "decorativo",
+      "data-and-charts"
+    ],
+    "tags": [
+      "empty-state",
+      "letter-spacing",
+      "decorative"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakEmptyState"],
-    "cssVariables": ["--sarak-empty-state-void-letter-offset"],
-    "allowedValues": { "min": 0, "max": 2, "step": 0.1 },
+    "digitalTwins": [
+      "SarakEmptyState"
+    ],
+    "cssVariables": [
+      "--sarak-empty-state-void-letter-offset"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 2,
+      "step": 0.1
+    },
     "relatedTokens": []
   },
   {
     "tokenId": "emptyStateRingRadius",
     "name": "Empty State: Arredondamento do Anel Tracejado",
     "description": "Border-radius do anel tracejado do modo 'abstract' do SarakEmptyState.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["geometria", "decorativo", "data-and-charts"],
-    "tags": ["empty-state", "radius", "decorative"],
+    "categories": [
+      "geometria",
+      "decorativo",
+      "data-and-charts"
+    ],
+    "tags": [
+      "empty-state",
+      "radius",
+      "decorative"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakEmptyState"],
-    "cssVariables": ["--sarak-empty-state-ring-radius"],
-    "allowedValues": { "min": 0, "max": 4, "step": 0.25 },
+    "digitalTwins": [
+      "SarakEmptyState"
+    ],
+    "cssVariables": [
+      "--sarak-empty-state-ring-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 4,
+      "step": 0.25
+    },
     "relatedTokens": []
   },
   {
     "tokenId": "emptyStateCaptionMaxWidth",
     "name": "Empty State: Largura Máxima da Legenda",
     "description": "Largura máxima do parágrafo de legenda exibido no modo 'abstract' do SarakEmptyState.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["layout", "tipografia", "data-and-charts"],
-    "tags": ["empty-state", "max-width"],
+    "categories": [
+      "layout",
+      "tipografia",
+      "data-and-charts"
+    ],
+    "tags": [
+      "empty-state",
+      "max-width"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakEmptyState"],
-    "cssVariables": ["--sarak-empty-state-caption-max-width"],
-    "allowedValues": { "min": 100, "max": 500, "step": 10 },
+    "digitalTwins": [
+      "SarakEmptyState"
+    ],
+    "cssVariables": [
+      "--sarak-empty-state-caption-max-width"
+    ],
+    "allowedValues": {
+      "min": 100,
+      "max": 500
+    },
     "relatedTokens": []
   },
   {
     "tokenId": "skeletonRowHeight",
     "name": "Skeleton: Altura Padrão da Linha",
     "description": "Altura padrão de cada linha-fantasma quando shape='text' e o consumidor não informa rowHeight.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["layout", "loading", "data-and-charts"],
-    "tags": ["skeleton", "loading", "placeholder"],
+    "categories": [
+      "layout",
+      "loading",
+      "data-and-charts"
+    ],
+    "tags": [
+      "skeleton",
+      "loading",
+      "placeholder"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakSkeleton"],
-    "cssVariables": ["--sarak-skeleton-row-height"],
-    "allowedValues": { "min": 0.25, "max": 4, "step": 0.25 },
-    "relatedTokens": ["skeletonCircleSize", "skeletonRowRadius"]
+    "digitalTwins": [
+      "SarakSkeleton"
+    ],
+    "cssVariables": [
+      "--sarak-skeleton-row-height"
+    ],
+    "allowedValues": {
+      "min": 0.25,
+      "max": 4,
+      "step": 0.25
+    },
+    "relatedTokens": [
+      "skeletonCircleSize",
+      "skeletonRowRadius"
+    ]
   },
   {
     "tokenId": "skeletonCircleSize",
     "name": "Skeleton: Diâmetro Padrão (Circle)",
     "description": "Diâmetro padrão quando shape='circle' e o consumidor não informa size.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["layout", "loading", "data-and-charts"],
-    "tags": ["skeleton", "loading", "placeholder"],
+    "categories": [
+      "layout",
+      "loading",
+      "data-and-charts"
+    ],
+    "tags": [
+      "skeleton",
+      "loading",
+      "placeholder"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakSkeleton"],
-    "cssVariables": ["--sarak-skeleton-circle-size"],
-    "allowedValues": { "min": 0.5, "max": 6, "step": 0.25 },
-    "relatedTokens": ["skeletonRowHeight", "skeletonRowRadius"]
+    "digitalTwins": [
+      "SarakSkeleton"
+    ],
+    "cssVariables": [
+      "--sarak-skeleton-circle-size"
+    ],
+    "allowedValues": {
+      "min": 0.5,
+      "max": 6,
+      "step": 0.25
+    },
+    "relatedTokens": [
+      "skeletonRowHeight",
+      "skeletonRowRadius"
+    ]
   },
   {
     "tokenId": "skeletonRowRadius",
     "name": "Skeleton: Arredondamento da Linha/Bloco",
     "description": "Border-radius das linhas-fantasma (shape='text') e blocos (shape='rect') do skeleton.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["geometria", "loading", "data-and-charts"],
-    "tags": ["skeleton", "loading", "radius"],
+    "categories": [
+      "geometria",
+      "loading",
+      "data-and-charts"
+    ],
+    "tags": [
+      "skeleton",
+      "loading",
+      "radius"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakSkeleton"],
-    "cssVariables": ["--sarak-skeleton-row-radius"],
-    "allowedValues": { "min": 0, "max": 20, "step": 1 },
-    "relatedTokens": ["skeletonRowHeight", "skeletonCircleSize"]
+    "digitalTwins": [
+      "SarakSkeleton"
+    ],
+    "cssVariables": [
+      "--sarak-skeleton-row-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 20
+    },
+    "relatedTokens": [
+      "skeletonRowHeight",
+      "skeletonCircleSize"
+    ]
   },
   {
     "tokenId": "authHeroOrbBlur",
     "name": "Auth Hero: Desfoque dos Orbs de Fundo",
     "description": "Raio de desfoque dos dois orbs de fundo animados do template AuthHero.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["efeitos", "decorativo", "data-and-charts"],
-    "tags": ["auth-hero", "blur", "glow", "template"],
+    "categories": [
+      "efeitos",
+      "decorativo",
+      "data-and-charts"
+    ],
+    "tags": [
+      "auth-hero",
+      "blur",
+      "glow",
+      "template"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["AuthHero"],
-    "cssVariables": ["--sarak-auth-hero-orb-blur"],
-    "allowedValues": { "min": 0, "max": 250, "step": 5 },
+    "digitalTwins": [
+      "AuthHero"
+    ],
+    "cssVariables": [
+      "--sarak-auth-hero-orb-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 250
+    },
     "relatedTokens": []
   },
   {
     "tokenId": "chartEngineMinHeight",
     "name": "Engine de Gráficos: Altura Mínima",
     "description": "Altura mínima do container do SarakChartEngine antes de dados carregarem.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["layout", "engines", "data-and-charts"],
-    "tags": ["chart-engine", "min-height"],
+    "categories": [
+      "layout",
+      "engines",
+      "data-and-charts"
+    ],
+    "tags": [
+      "chart-engine",
+      "min-height"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakChartEngine"],
-    "cssVariables": ["--sarak-chart-engine-min-h"],
-    "allowedValues": { "min": 100, "max": 400, "step": 10 },
-    "relatedTokens": ["engineMinHeightSm", "engineMinHeightLg"]
+    "digitalTwins": [
+      "SarakChartEngine"
+    ],
+    "cssVariables": [
+      "--sarak-chart-engine-min-h"
+    ],
+    "allowedValues": {
+      "min": 100,
+      "max": 400
+    },
+    "relatedTokens": [
+      "engineMinHeightSm",
+      "engineMinHeightLg"
+    ]
   },
   {
     "tokenId": "engineMinHeightLg",
     "name": "Engines: Altura Mínima (Grande)",
     "description": "Altura mínima compartilhada pelos engines de Chat e Flow.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["layout", "engines", "data-and-charts"],
-    "tags": ["chat-engine", "flow-engine", "min-height"],
+    "categories": [
+      "layout",
+      "engines",
+      "data-and-charts"
+    ],
+    "tags": [
+      "chat-engine",
+      "flow-engine",
+      "min-height"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakChatEngine", "SarakFlowEngine"],
-    "cssVariables": ["--sarak-engine-min-h-lg"],
-    "allowedValues": { "min": 200, "max": 800, "step": 10 },
-    "relatedTokens": ["engineMinHeightSm", "chartEngineMinHeight"]
+    "digitalTwins": [
+      "SarakChatEngine",
+      "SarakFlowEngine"
+    ],
+    "cssVariables": [
+      "--sarak-engine-min-h-lg"
+    ],
+    "allowedValues": {
+      "min": 200,
+      "max": 800
+    },
+    "relatedTokens": [
+      "engineMinHeightSm",
+      "chartEngineMinHeight"
+    ]
   },
   {
     "tokenId": "engineMinHeightSm",
     "name": "Engines: Altura Mínima (Pequena)",
     "description": "Altura mínima do fallback de carregamento do LazyEngineWrapper (reaproveitado pelo device-frame do PreviewCanvas).",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["layout", "engines", "data-and-charts"],
-    "tags": ["lazy-engine", "min-height"],
+    "categories": [
+      "layout",
+      "engines",
+      "data-and-charts"
+    ],
+    "tags": [
+      "lazy-engine",
+      "min-height"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["LazyEngineWrapper", "PreviewCanvas"],
-    "cssVariables": ["--sarak-engine-min-h-sm"],
-    "allowedValues": { "min": 100, "max": 500, "step": 10 },
-    "relatedTokens": ["engineMinHeightLg", "chartEngineMinHeight"]
+    "digitalTwins": [
+      "LazyEngineWrapper",
+      "PreviewCanvas"
+    ],
+    "cssVariables": [
+      "--sarak-engine-min-h-sm"
+    ],
+    "allowedValues": {
+      "min": 100,
+      "max": 500
+    },
+    "relatedTokens": [
+      "engineMinHeightLg",
+      "chartEngineMinHeight"
+    ]
   },
   {
     "tokenId": "chatBubbleGlassBlur",
     "name": "Chat Engine: Desfoque de Vidro da Bolha",
     "description": "Backdrop-filter blur da variante 'glass' das bolhas do SarakChatEngine.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["efeitos", "engines", "data-and-charts"],
-    "tags": ["chat-engine", "blur", "glass"],
+    "categories": [
+      "efeitos",
+      "engines",
+      "data-and-charts"
+    ],
+    "tags": [
+      "chat-engine",
+      "blur",
+      "glass"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakChatEngine"],
-    "cssVariables": ["--sarak-chat-bubble-blur"],
-    "allowedValues": { "min": 0, "max": 30, "step": 1 },
+    "digitalTwins": [
+      "SarakChatEngine"
+    ],
+    "cssVariables": [
+      "--sarak-chat-bubble-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 30
+    },
     "relatedTokens": []
   },
   {
     "tokenId": "flowNodePadding",
     "name": "Flow Engine: Padding do Nó",
     "description": "Padding interno dos nós do canvas react-flow (CSS global injetado).",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["layout", "engines", "data-and-charts"],
-    "tags": ["flow-engine", "padding"],
+    "categories": [
+      "layout",
+      "engines",
+      "data-and-charts"
+    ],
+    "tags": [
+      "flow-engine",
+      "padding"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakFlowEngine"],
-    "cssVariables": ["--sarak-flow-node-padding"],
-    "allowedValues": { "min": 0, "max": 24, "step": 1 },
-    "relatedTokens": ["flowNodeBlur", "flowHandleSize"]
+    "digitalTwins": [
+      "SarakFlowEngine"
+    ],
+    "cssVariables": [
+      "--sarak-flow-node-padding"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 24
+    },
+    "relatedTokens": [
+      "flowNodeBlur",
+      "flowHandleSize"
+    ]
   },
   {
     "tokenId": "flowNodeBlur",
     "name": "Flow Engine: Desfoque do Nó",
     "description": "Backdrop-filter blur dos nós do canvas react-flow.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["efeitos", "engines", "data-and-charts"],
-    "tags": ["flow-engine", "blur"],
+    "categories": [
+      "efeitos",
+      "engines",
+      "data-and-charts"
+    ],
+    "tags": [
+      "flow-engine",
+      "blur"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakFlowEngine"],
-    "cssVariables": ["--sarak-flow-node-blur"],
-    "allowedValues": { "min": 0, "max": 20, "step": 1 },
-    "relatedTokens": ["flowNodePadding"]
+    "digitalTwins": [
+      "SarakFlowEngine"
+    ],
+    "cssVariables": [
+      "--sarak-flow-node-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 20
+    },
+    "relatedTokens": [
+      "flowNodePadding"
+    ]
   },
   {
     "tokenId": "flowHandleSize",
     "name": "Flow Engine: Tamanho do Handle",
     "description": "Largura/altura do círculo de conexão (handle) dos nós do react-flow.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["layout", "engines", "data-and-charts"],
-    "tags": ["flow-engine", "handle", "size"],
+    "categories": [
+      "layout",
+      "engines",
+      "data-and-charts"
+    ],
+    "tags": [
+      "flow-engine",
+      "handle",
+      "size"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakFlowEngine"],
-    "cssVariables": ["--sarak-flow-handle-size"],
-    "allowedValues": { "min": 4, "max": 16, "step": 1 },
-    "relatedTokens": ["flowNodePadding"]
-  },
-  {
-    "tokenId": "visualPerspective",
-    "name": "Visual Engine: Perspectiva 3D",
-    "description": "Distância de perspectiva CSS 3D usada no showcase do SarakVisualEngine.",
-    "type": "number",
-    "importance": 25,
-    "categories": ["efeitos", "3d", "data-and-charts"],
-    "tags": ["visual-engine", "perspective", "3d"],
-    "databaseColumn": "data_and_charts",
-    "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakVisualEngine"],
-    "cssVariables": ["--sarak-visual-perspective"],
-    "allowedValues": { "min": 400, "max": 2000, "step": 50 },
-    "relatedTokens": []
-  },
-  {
-    "tokenId": "visualTranslateOffsetSm",
-    "name": "Visual Engine: Offset de Translação (Pequeno)",
-    "description": "Deslocamento 3D pequeno (translateZ/translateY) das camadas do showcase.",
-    "type": "number",
-    "importance": 25,
-    "categories": ["efeitos", "3d", "data-and-charts"],
-    "tags": ["visual-engine", "translate", "3d"],
-    "databaseColumn": "data_and_charts",
-    "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakVisualEngine"],
-    "cssVariables": ["--sarak-visual-translate-offset-sm"],
-    "allowedValues": { "min": 0, "max": 60, "step": 5 },
-    "relatedTokens": ["visualTranslateZMd"]
-  },
-  {
-    "tokenId": "visualTranslateZMd",
-    "name": "Visual Engine: Translação Z (Médio)",
-    "description": "Deslocamento 3D médio (translateZ) das camadas do showcase.",
-    "type": "number",
-    "importance": 25,
-    "categories": ["efeitos", "3d", "data-and-charts"],
-    "tags": ["visual-engine", "translate", "3d"],
-    "databaseColumn": "data_and_charts",
-    "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakVisualEngine"],
-    "cssVariables": ["--sarak-visual-translate-z-md"],
-    "allowedValues": { "min": 0, "max": 100, "step": 5 },
-    "relatedTokens": ["visualTranslateOffsetSm"]
-  },
-  {
-    "tokenId": "visualDotGridSize",
-    "name": "Visual Engine: Tamanho da Grade de Pontos",
-    "description": "Tamanho do tile do background-size do grid de pontos 3D do showcase.",
-    "type": "number",
-    "importance": 25,
-    "categories": ["texturas", "3d", "data-and-charts"],
-    "tags": ["visual-engine", "dot-grid", "background"],
-    "databaseColumn": "data_and_charts",
-    "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakVisualEngine"],
-    "cssVariables": ["--sarak-visual-dot-grid-size"],
-    "allowedValues": { "min": 5, "max": 40, "step": 1 },
-    "relatedTokens": []
-  },
-  {
-    "tokenId": "visualOrbBlur",
-    "name": "Visual Engine: Desfoque do Orb",
-    "description": "Raio de desfoque do orb flutuante animado do showcase 3D.",
-    "type": "number",
-    "importance": 25,
-    "categories": ["efeitos", "3d", "data-and-charts"],
-    "tags": ["visual-engine", "orb", "blur"],
-    "databaseColumn": "data_and_charts",
-    "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["SarakVisualEngine"],
-    "cssVariables": ["--sarak-visual-orb-blur"],
-    "allowedValues": { "min": 0, "max": 150, "step": 5 },
-    "relatedTokens": []
+    "digitalTwins": [
+      "SarakFlowEngine"
+    ],
+    "cssVariables": [
+      "--sarak-flow-handle-size"
+    ],
+    "allowedValues": {
+      "min": 4,
+      "max": 16
+    },
+    "relatedTokens": [
+      "flowNodePadding"
+    ]
   },
   {
     "tokenId": "designEngineSidebarMinWidth",
     "name": "Design Engine: Largura Mínima do Painel",
     "description": "Largura mínima do painel lateral redimensionável da própria ferramenta de customização de tema.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["layout", "design-engine", "data-and-charts"],
-    "tags": ["design-engine", "sidebar", "min-width"],
+    "categories": [
+      "layout",
+      "design-engine",
+      "data-and-charts"
+    ],
+    "tags": [
+      "design-engine",
+      "sidebar",
+      "min-width"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["ThemeCustomizationTab"],
-    "cssVariables": ["--sarak-design-engine-sidebar-min-w"],
-    "allowedValues": { "min": 200, "max": 400, "step": 10 },
-    "relatedTokens": ["designEngineSidebarMaxWidth"]
+    "digitalTwins": [
+      "ThemeCustomizationTab"
+    ],
+    "cssVariables": [
+      "--sarak-design-engine-sidebar-min-w"
+    ],
+    "allowedValues": {
+      "min": 200,
+      "max": 400
+    },
+    "relatedTokens": [
+      "designEngineSidebarMaxWidth"
+    ]
   },
   {
     "tokenId": "designEngineSidebarMaxWidth",
     "name": "Design Engine: Largura Máxima do Painel",
     "description": "Largura máxima do painel lateral redimensionável da própria ferramenta de customização de tema.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["layout", "design-engine", "data-and-charts"],
-    "tags": ["design-engine", "sidebar", "max-width"],
+    "categories": [
+      "layout",
+      "design-engine",
+      "data-and-charts"
+    ],
+    "tags": [
+      "design-engine",
+      "sidebar",
+      "max-width"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["ThemeCustomizationTab"],
-    "cssVariables": ["--sarak-design-engine-sidebar-max-w"],
-    "allowedValues": { "min": 400, "max": 900, "step": 10 },
-    "relatedTokens": ["designEngineSidebarMinWidth"]
+    "digitalTwins": [
+      "ThemeCustomizationTab"
+    ],
+    "cssVariables": [
+      "--sarak-design-engine-sidebar-max-w"
+    ],
+    "allowedValues": {
+      "min": 400,
+      "max": 900
+    },
+    "relatedTokens": [
+      "designEngineSidebarMinWidth"
+    ]
   },
   {
     "tokenId": "layoutPreviewMaxH",
     "name": "Design Engine: Altura Máxima do Preview de Código",
     "description": "Altura máxima antes do scroll interno do bloco de código de preview de template.",
-    "type": "number",
+    "type": "slider",
     "importance": 25,
-    "categories": ["layout", "design-engine", "data-and-charts"],
-    "tags": ["design-engine", "code-preview", "max-height"],
+    "categories": [
+      "layout",
+      "design-engine",
+      "data-and-charts"
+    ],
+    "tags": [
+      "design-engine",
+      "code-preview",
+      "max-height"
+    ],
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["TemplatesTab"],
-    "cssVariables": ["--sarak-layout-preview-max-h"],
-    "allowedValues": { "min": 40, "max": 300, "step": 10 },
-    "relatedTokens": []
-  },
-  {
-    "tokenId": "kbdMinWidth",
-    "name": "Design Engine: Largura Mínima da Tecla (Kbd)",
-    "description": "Largura mínima do elemento <kbd> de atalhos de teclado editáveis.",
-    "type": "number",
-    "importance": 25,
-    "categories": ["layout", "design-engine", "data-and-charts"],
-    "tags": ["design-engine", "kbd", "shortcuts"],
-    "databaseColumn": "data_and_charts",
-    "schemaOrigin": "specialized.ts",
-    "digitalTwins": ["ShortcutsTab"],
-    "cssVariables": ["--sarak-kbd-min-w"],
-    "allowedValues": { "min": 16, "max": 48, "step": 2 },
+    "digitalTwins": [
+      "TemplatesTab"
+    ],
+    "cssVariables": [
+      "--sarak-layout-preview-max-h"
+    ],
+    "allowedValues": {
+      "min": 40,
+      "max": 300
+    },
     "relatedTokens": []
   }
 ]

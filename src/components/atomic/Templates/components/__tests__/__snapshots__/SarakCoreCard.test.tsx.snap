@@ -3,31 +3,28 @@
 exports[`SarakCoreCard (Spec 42 — card classic genérico) > matches snapshot com dados neutros (sem domínio LLM) 1`] = `
 <DocumentFragment>
   <div
-    class="fixed inset-0 pointer-events-none z-[9999] opacity-[var(--sarak-noise-opacity,0)] transition-opacity duration-1000"
+    class="fixed inset-0 pointer-events-none z-[calc(var(--sarak-z-sidebar,500)_+_50)] opacity-[var(--sarak-noise-density,0.05)] transition-opacity duration-1000"
     style="mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 200px 200px; background-repeat: repeat;"
   />
   <style
     id="sarak-sovereign-bridge"
   >
-    
-            /* Sarak Sovereign Bridge - Dark Mode Hue Hijack */
-            body.dark .bg-zinc-950,
-            body.dark .bg-black\\/40,
-            body.dark .bg-zinc-950\\/40 {
-                background-color: var(--theme-card) !important;
-            }
-        
+    /* Sarak Sovereign Bridge - Dark Mode Hue Hijack */
+body.dark .bg-zinc-950:not([data-sarak-own-palette] *),
+body.dark .bg-black\\/40:not([data-sarak-own-palette] *),
+body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
+    background-color: var(--theme-card);
+}
   </style>
   <div
-    class="@container flex w-full sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all h-fit relative overflow-hidden"
+    class="@container flex w-full sarak-card group transition-all h-fit relative overflow-hidden"
     data-border-beam="0"
-    data-geometric="0"
     data-spotlight="1"
-    data-sx-card-texture-type="none"
+    data-sx-card-texture-type="micro-dots"
     style="flex-direction: column; justify-content: flex-start; align-items: stretch; gap: 0px; transition-duration: var(--duration-normal, 0.3s); padding: var(--sarak-card-padding-md); opacity: 0; transform: translateY(20px);"
   >
     <div
-      class="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+      class="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-[var(--duration-slow,0.6s)]"
     />
     <div
       class="border-beam-effect"
@@ -45,23 +42,23 @@ exports[`SarakCoreCard (Spec 42 — card classic genérico) > matches snapshot c
           style="flex-direction: column; justify-content: flex-start; align-items: stretch; gap: 0px;"
         >
           <span
-            class="text-2xs font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase"
+            class="text-2xs font-black text-[var(--sarak-primary-color,#19e3f0)] uppercase"
             style="margin-bottom: calc(var(--sarak-layout-gap-md,16px)*0.25); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
           >
             Prefeitura de Salvador
           </span>
           <h4
-            class="text-xl font-black text-[var(--color-theme-title,#ffffff)] tracking-tight group-hover:text-[var(--sarak-primary-color,#3b82f6)] transition-colors"
+            class="text-xl font-black text-[var(--color-theme-title,#f2f6fb)] tracking-tight group-hover:text-[var(--sarak-primary-color,#19e3f0)] transition-colors"
           >
             Contrato #4471
           </h4>
         </div>
         <div
-          class="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)]"
-          style="padding: calc(var(--sarak-layout-gap-md,16px) / 2); border-radius: var(--sarak-card-radius,12px);"
+          class="bg-[var(--color-theme-card,#101622)] border-[var(--border-color,rgba(255,255,255,0.09))]"
+          style="padding: calc(var(--sarak-layout-gap-md,16px) / 2); border-radius: var(--sarak-card-radius,10px);"
         >
           <svg
-            class="text-[var(--text-muted,#94a3b8)]"
+            class="text-[var(--text-muted,rgba(242,246,251,0.55))]"
             fill="currentColor"
             height="20"
             viewBox="0 0 256 256"
@@ -83,8 +80,8 @@ exports[`SarakCoreCard (Spec 42 — card classic genérico) > matches snapshot c
           style="gap: var(--sarak-layout-gap-sm,8px);"
         >
           <div
-            class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)] text-2xs font-black uppercase"
-            style="gap: calc(var(--sarak-layout-gap-md,16px)*0.25); padding: calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5); border-radius: var(--sarak-card-radius,12px);"
+            class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(25,227,240,0.15))] text-[var(--sarak-primary-color,#19e3f0)] border border-[var(--border-color,rgba(255,255,255,0.09))] text-2xs font-black uppercase"
+            style="gap: calc(var(--sarak-layout-gap-md,16px)*0.25); padding: calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5); border-radius: var(--sarak-card-radius,10px);"
           >
             <svg
               class=""
@@ -101,8 +98,8 @@ exports[`SarakCoreCard (Spec 42 — card classic genérico) > matches snapshot c
              digitalizado
           </div>
           <div
-            class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)] text-2xs font-black uppercase"
-            style="gap: calc(var(--sarak-layout-gap-md,16px)*0.25); padding: calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5); border-radius: var(--sarak-card-radius,12px);"
+            class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(25,227,240,0.15))] text-[var(--sarak-primary-color,#19e3f0)] border border-[var(--border-color,rgba(255,255,255,0.09))] text-2xs font-black uppercase"
+            style="gap: calc(var(--sarak-layout-gap-md,16px)*0.25); padding: calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5); border-radius: var(--sarak-card-radius,10px);"
           >
             <svg
               class=""
@@ -124,8 +121,8 @@ exports[`SarakCoreCard (Spec 42 — card classic genérico) > matches snapshot c
           style="gap: var(--sarak-layout-gap-sm,8px);"
         >
           <div
-            class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)] text-2xs font-black uppercase"
-            style="gap: calc(var(--sarak-layout-gap-md,16px)*0.25); padding: calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5); border-radius: var(--sarak-card-radius,12px);"
+            class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(25,227,240,0.15))] text-[var(--sarak-primary-color,#19e3f0)] border border-[var(--border-color,rgba(255,255,255,0.09))] text-2xs font-black uppercase"
+            style="gap: calc(var(--sarak-layout-gap-md,16px)*0.25); padding: calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5); border-radius: var(--sarak-card-radius,10px);"
           >
             <svg
               class=""
@@ -144,7 +141,7 @@ exports[`SarakCoreCard (Spec 42 — card classic genérico) > matches snapshot c
         </div>
       </div>
       <div
-        class="grid w-full border-t border-[var(--border-color,#334155)]"
+        class="grid w-full border-t border-[var(--border-color,rgba(255,255,255,0.09))]"
         style="gap: var(--sarak-layout-gap-md,16px); grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: var(--sarak-layout-gap-md,16px); padding-top: calc(var(--sarak-layout-gap-md,16px) * 1.5);"
       >
         <div
@@ -152,13 +149,13 @@ exports[`SarakCoreCard (Spec 42 — card classic genérico) > matches snapshot c
           style="flex-direction: column; justify-content: flex-start; align-items: stretch; gap: 0px;"
         >
           <span
-            class="text-3xs font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest"
+            class="text-3xs font-black text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-50 uppercase tracking-widest"
             style="margin-bottom: calc(var(--sarak-layout-gap-md,16px)*0.25);"
           >
             Valor mensal
           </span>
           <span
-            class="text-sm font-mono text-[var(--text-muted,#94a3b8)] font-bold"
+            class="text-sm font-mono text-[var(--text-muted,rgba(242,246,251,0.55))] font-bold"
           >
             R$ 18.500,00
           </span>
@@ -168,13 +165,13 @@ exports[`SarakCoreCard (Spec 42 — card classic genérico) > matches snapshot c
           style="flex-direction: column; justify-content: flex-start; align-items: stretch; gap: 0px;"
         >
           <span
-            class="text-3xs font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest"
+            class="text-3xs font-black text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-50 uppercase tracking-widest"
             style="margin-bottom: calc(var(--sarak-layout-gap-md,16px)*0.25);"
           >
             Vigência
           </span>
           <span
-            class="text-sm font-mono text-[var(--text-muted,#94a3b8)] font-bold"
+            class="text-sm font-mono text-[var(--text-muted,rgba(242,246,251,0.55))] font-bold"
           >
             24 meses
           </span>
@@ -184,13 +181,13 @@ exports[`SarakCoreCard (Spec 42 — card classic genérico) > matches snapshot c
           style="flex-direction: column; justify-content: flex-start; align-items: stretch; gap: 0px; grid-column: span 2 / span 2;"
         >
           <span
-            class="text-3xs font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest"
+            class="text-3xs font-black text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-50 uppercase tracking-widest"
             style="margin-bottom: calc(var(--sarak-layout-gap-md,16px)*0.25);"
           >
             Responsável
           </span>
           <span
-            class="text-sm font-mono text-[var(--text-muted,#94a3b8)] font-bold"
+            class="text-sm font-mono text-[var(--text-muted,rgba(242,246,251,0.55))] font-bold"
           >
             Diretoria Jurídica
           </span>
@@ -201,7 +198,8 @@ exports[`SarakCoreCard (Spec 42 — card classic genérico) > matches snapshot c
         style="gap: calc(var(--sarak-layout-gap-md,16px) / 2.5);"
       >
         <button
-          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all focus:outline-none rounded-btn py-4 px-6 text-sm bg-[var(--color-theme-card,#1e293b)] text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-primary-color,#3b82f6)] hover:text-[var(--text-muted,#94a3b8)] border border-[var(--sarak-primary-color,#3b82f6)]/20 active:scale-[0.98] flex-1"
+          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-4 px-6 text-sm bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))] text-[var(--text-muted,rgba(242,246,251,0.55))] hover:bg-[var(--sarak-btn-primary-bg,#19e3f0)] hover:text-[var(--sarak-btn-primary-text,#04121a)] border border-[var(--sarak-primary-color,#19e3f0)]/20 active:scale-[0.98] flex-1"
+          style="backdrop-filter: blur(8px); border: 1px solid var(--color-theme-border, rgba(255,255,255,0.09)); background-color: var(--sarak-btn-secondary-bg, rgba(255, 255, 255, 0.05));"
         >
           <span>
             <svg
@@ -220,31 +218,19 @@ exports[`SarakCoreCard (Spec 42 — card classic genérico) > matches snapshot c
           </span>
         </button>
         <button
-          class="inline-flex items-center justify-center transition-all focus:outline-none rounded-btn flex-shrink-0 w-10 h-10 text-base bg-[var(--sarak-primary-color,#3b82f6)] text-[var(--text-muted,#94a3b8)] hover:brightness-110 active:scale-[0.95] shadow-[var(--sarak-primary-color,#3b82f6)]/20 shadow-lg"
+          class="inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn flex-shrink-0 w-10 h-10 text-base bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.95] shadow-lg"
+          style="backdrop-filter: blur(8px); border: var(--sarak-border-width, 1px) solid color-mix(in srgb, var(--text-main, #f2f6fb) 10%, transparent); box-shadow: 0 var(--sarak-icon-button-frosted-shadow-offset-y, 4px) var(--sarak-icon-button-frosted-shadow-blur, 16px) 0 color-mix(in srgb, var(--sarak-card-shadow-color, #000000) 30%, transparent);"
         >
           <svg
-            class="lucide lucide-external-link"
-            fill="none"
+            class=""
+            fill="currentColor"
             height="18"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            viewBox="0 0 24 24"
+            viewBox="0 0 256 256"
             width="18"
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
-            />
-            <polyline
-              points="15 3 21 3 21 9"
-            />
-            <line
-              x1="10"
-              x2="21"
-              y1="14"
-              y2="3"
+              d="M192,136v72a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V80A16,16,0,0,1,48,64h72a8,8,0,0,1,0,16H48V208H176V136a8,8,0,0,1,16,0Zm32-96a8,8,0,0,0-8-8H152a8,8,0,0,0-5.66,13.66L172.69,72l-42.35,42.34a8,8,0,0,0,11.32,11.32L184,83.31l26.34,26.35A8,8,0,0,0,224,104Z"
             />
           </svg>
         </button>

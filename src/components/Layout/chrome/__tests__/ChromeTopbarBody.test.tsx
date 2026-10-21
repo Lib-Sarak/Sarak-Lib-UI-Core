@@ -38,11 +38,6 @@ describe('ChromeTopbarBody (tokens de cromo no modo topbar)', () => {
         expect(container.querySelector('header')!.className).toContain('relative');
     });
 
-    it('contentAlignment="center": o conteúdo ganha largura máxima centralizada', () => {
-        const { container } = renderBody({ contentAlignment: 'center' });
-        expect(container.querySelector('main')!.className).toContain('max-w-7xl');
-    });
-
     it('isNavHidden: a topbar usa a altura RECOLHIDA em vez da altura cheia', () => {
         const { container } = renderBody({ isNavHidden: true });
         const style = container.querySelector('header')!.getAttribute('style') ?? '';
@@ -62,12 +57,52 @@ describe('ChromeTopbarBody (tokens de cromo no modo topbar)', () => {
     });
 });
 
+describe('ChromeTopbarBody — quem cede quando a barra aperta (o item de navegação nunca fica menor que o texto)', () => {
+    it('a lista pede o tamanho do conteúdo e cede depois da busca; o grupo final é rígido', () => {
+        const { container } = renderBody({}, { search: <div>buscar</div> });
+        const navSlot = container.querySelector('[data-sarak-slot="nav"]') as HTMLElement;
+        expect(navSlot.className).toContain('flex-[1_1_auto]');
+        expect(navSlot.className).toContain('min-w-0');
+        expect(navSlot.contains(container.querySelector('nav'))).toBe(true);
+        // A busca encolhe 40 vezes mais que a lista (fator de encolhimento do flex): é a primeira a ceder.
+        expect((container.querySelector('[data-sarak-slot="search"]') as HTMLElement).className).toContain('[flex-shrink:40]');
+        expect((container.querySelector('header .ml-auto') as HTMLElement).className).toContain('shrink-0');
+    });
+
+    it('a barra de busca PADRÃO pede 16rem para o contêiner se medir e some abaixo de 10rem; a do consumidor só encolhe', () => {
+        const own = renderBody({}, { search: <div>buscar</div> }).container;
+        expect((own.querySelector('[data-sarak-slot="search"]') as HTMLElement).className).not.toContain('@container');
+        const factory = renderBody({}).container;
+        const slot = factory.querySelector('[data-sarak-slot="search"]') as HTMLElement;
+        expect(slot.className).toContain('@container');
+        expect(slot.className).toContain('w-64');
+        expect(slot.className).toContain('@max-[10rem]:[&>*]:hidden');
+    });
+
+    it('com a barra recolhida (ícone) a busca não pede largura fixa', () => {
+        const { container } = renderBody({ isNavHidden: true });
+        const slot = container.querySelector('[data-sarak-slot="search"]') as HTMLElement;
+        expect(slot.className).not.toContain('w-64');
+    });
+});
+
 describe('ChromeTopbarBody — slot de busca (searchPositionTopbar)', () => {
-    it('"center": a busca aparece centralizada na topbar', () => {
+    it('"center": a busca vem depois da navegação, num contêiner que toma o espaço livre e a centra; a navegação não o toma', () => {
         const { container } = renderBody({ searchPositionTopbar: 'center' }, { search: <div>buscar</div> });
-        const slot = container.querySelector('[data-sarak-slot="search"]');
-        expect(slot).not.toBeNull();
-        expect(slot?.className).toContain('mx-auto');
+        const centered = container.querySelector('[data-sarak-slot="search-center"]') as HTMLElement;
+        expect(centered).not.toBeNull();
+        expect(centered.className).toContain('flex-1');
+        expect(centered.className).toContain('justify-center');
+        expect(centered.querySelector('[data-sarak-slot="search"]')).not.toBeNull();
+        const nav = container.querySelector('nav') as HTMLElement;
+        expect(nav.className).not.toContain('flex-1');
+        expect(nav.compareDocumentPosition(centered) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
+    it('"left" (padrão): a navegação toma o espaço livre e não há contêiner de centro', () => {
+        const { container } = renderBody({ searchPositionTopbar: 'left' }, { search: <div>buscar</div> });
+        expect(container.querySelector('[data-sarak-slot="search-center"]')).toBeNull();
+        expect((container.querySelector('nav') as HTMLElement).className).toContain('flex-1');
     });
 
     it('"right": a busca aparece agrupada com o topbarEnd', () => {
@@ -86,12 +121,13 @@ describe('ChromeTopbarBody — slot de busca (searchPositionTopbar)', () => {
     });
 });
 
-describe('ChromeTopbarBody — widgets default (busca/tema/usuário/colapso)', () => {
-    it('sem `widgets`, os quatro defaults montam', () => {
+describe('ChromeTopbarBody — widgets default', () => {
+    it('sem `widgets`, os widgets de fábrica ficam oferecidos', () => {
         const { container } = renderBody({});
         expect(container.querySelector('[data-sarak-slot="search"]')).not.toBeNull();
         expect(container.querySelector('[data-sarak-widget="collapse"]')).not.toBeNull();
         expect(container.querySelector('[data-sarak-widget="user-theme"]')).not.toBeNull();
+        expect(container.querySelector('[aria-label="Notificações indisponíveis"]')).toHaveAttribute('aria-disabled', 'true');
     });
 
     it('`widgets` desliga cada default isoladamente', () => {
@@ -115,6 +151,6 @@ describe('ChromeTopbarBody — topbarNoiseOpacity (Spec 05 §2.4)', () => {
         const { container } = renderBody({}, { activeRoute: '/propostas' });
         const marker = container.querySelector('[aria-hidden="true"][style*="nav-marker-color"]') as HTMLElement | null;
         expect(marker).not.toBeNull();
-        expect(marker!.getAttribute('style')).toContain('var(--sarak-nav-marker-glow, 10)');
+        expect(marker!.getAttribute('style')).toContain('var(--sarak-nav-marker-glow, 8)');
     });
 });

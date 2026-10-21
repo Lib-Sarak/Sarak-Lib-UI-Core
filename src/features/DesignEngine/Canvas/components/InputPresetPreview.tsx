@@ -19,7 +19,7 @@ export const InputPresetPreview: React.FC<InputPresetPreviewProps> = ({ preset, 
             const borderStyles: Record<string, () => void> = {
                 'none': () => { styles.borderWidth = 0; },
                 'underline': () => {
-                    styles.borderWidth = '0 0 var(--sarak-border-width, 2px) 0';
+                    styles.borderWidth = '0 0 var(--sarak-border-width, 1px) 0';
                     styles.borderStyle = 'solid';
                 }
             };
@@ -28,7 +28,7 @@ export const InputPresetPreview: React.FC<InputPresetPreviewProps> = ({ preset, 
                 borderStyles[String(value)]();
             } else {
                 styles.borderStyle = String(value);
-                styles.borderWidth = 'var(--border-color,#334155)';
+                styles.borderWidth = 'var(--border-color,rgba(255,255,255,0.09))';
             }
         }
         if (key === 'inputShadow') styles.boxShadow = String(value);
@@ -44,10 +44,10 @@ export const InputPresetPreview: React.FC<InputPresetPreviewProps> = ({ preset, 
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.05 }}
             onClick={onApply}
-            className="group relative flex flex-col items-center justify-center p-6 rounded-2xl border border-theme-border overflow-hidden bg-[rgba(10,10,10,0.5)] hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-300"
+            className="group relative flex flex-col items-center justify-center p-6 rounded-2xl border border-theme-border overflow-hidden bg-[color-mix(in_srgb,var(--color-theme-body,#06080d)_50%,transparent)] hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
             style={{ minHeight: 'var(--sarak-preset-preview-min-height, 320px)' }}
         >
-            <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)] opacity-50"></div>
+            <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)] opacity-50"></div>
             
             <div className="relative z-10 flex items-center justify-center w-full h-full px-4 mb-6 pointer-events-none">
                 <input 
@@ -56,7 +56,7 @@ export const InputPresetPreview: React.FC<InputPresetPreviewProps> = ({ preset, 
                     readOnly
                     style={{
                         padding: 'var(--sarak-preset-preview-padding-y, 12px) var(--sarak-layout-gap-md, 16px)',
-                        fontSize: 'var(--color-theme-text, #ffffff)',
+                        fontSize: 'var(--color-theme-text, #f2f6fb)',
                         width: '100%',
                         color: 'var(--color-theme-on-primary, #020617)',
                         outline: 'none',
@@ -67,9 +67,9 @@ export const InputPresetPreview: React.FC<InputPresetPreviewProps> = ({ preset, 
                 />
             </div>
 
-            <div className="absolute bottom-0 left-0 w-full p-4 bg-black/40 backdrop-blur-md border-t border-white/5 z-20 text-left">
-                <h3 className="text-xs font-black text-white uppercase tracking-wider">{preset.name}</h3>
-                <p className="text-[var(--sarak-type-scale3xs,9px)] text-white/50 mt-1 uppercase tracking-widest leading-relaxed">{preset.description}</p>
+            <div className="absolute bottom-0 left-0 w-full p-4 bg-theme-body/40 backdrop-blur-md border-t border-theme-text/5 z-20 text-left">
+                <h3 className="text-xs font-black text-theme-text uppercase tracking-wider">{preset.name}</h3>
+                <p className="text-[var(--sarak-type-scale3xs,9px)] text-theme-text/50 mt-1 uppercase tracking-widest leading-relaxed">{preset.description}</p>
             </div>
         </motion.button>
     );

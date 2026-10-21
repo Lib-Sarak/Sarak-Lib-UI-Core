@@ -12,10 +12,7 @@ export interface ChromeCollapseToggleProps {
 }
 
 /**
- * Toggle de colapso da navegação (widget default do cromo apresentacional) — o mesmo
- * papel do chevron/hambúrguer do `SarakShell` (`SidebarNav.tsx`/`TopbarNav.tsx`),
- * reimplementado aqui porque o cromo apresentacional não compartilha componente de UI
- * com o Shell (só o token `isNavHidden`).
+ * Toggle de colapso da navegação montado pelo cromo apresentacional.
  */
 export const ChromeCollapseToggle: React.FC<ChromeCollapseToggleProps> = ({ orientation, collapsed, onToggle }) => {
     const t = useLibraryText();

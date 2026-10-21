@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { SarakAppChrome } from '../SarakAppChrome';
 import SarakUIProvider from '../../../core/Provider/SarakUIProvider';
 import { SarakDeviceProvider, type SarakDeviceType } from '../../../core/Provider/DeviceProvider';
@@ -68,5 +68,89 @@ describe('SarakAppChrome — slot search (searchPositionSidebar/Topbar)', () => 
             { searchPositionTopbar: 'hidden' },
         );
         expect(container.querySelector('[data-sarak-slot="search"]')).toBeNull();
+    });
+});
+
+describe('SarakAppChrome — largura e densidade da região de conteúdo', () => {
+    it.each(['desktop', 'tablet', 'smartphone'] as const)('aplica os tokens no modo %s', (device) => {
+        const navigationStyle = device === 'tablet' ? 'topbar' : undefined;
+        const { container } = renderAtDevice(
+            device,
+            <SarakAppChrome nav={[]} navigationStyle={navigationStyle}><div>conteúdo</div></SarakAppChrome>,
+            { maxContentWidth: '1200px', layoutDensity: 'spacious' },
+        );
+        const content = container.querySelector('[data-sarak-content]') as HTMLElement;
+
+        expect(content).toHaveStyle({
+            width: '100%',
+            maxWidth: '1200px',
+            marginInline: 'auto',
+        });
+    });
+
+    it('mantém a largura fluida quando maxContentWidth é 100%', () => {
+        const { container } = renderAtDevice(
+            'desktop',
+            <SarakAppChrome nav={[]}><div>conteúdo</div></SarakAppChrome>,
+            { maxContentWidth: '100%' },
+        );
+        const content = container.querySelector('[data-sarak-content]') as HTMLElement;
+
+        expect(content).toHaveStyle({ width: '100%', maxWidth: '100%', marginInline: 'auto' });
+    });
+});
+
+describe('SarakAppChrome — vista dividida', () => {
+    it.each(['desktop', 'tablet', 'smartphone'] as const)('expõe os dois painéis quando token e slot estão presentes no modo %s', (device) => {
+        const navigationStyle = device === 'tablet' ? 'topbar' : undefined;
+        const { container } = renderAtDevice(
+            device,
+            <SarakAppChrome
+                nav={[]}
+                navigationStyle={navigationStyle}
+                secondaryContent={<div>conteúdo secundário</div>}
+            >
+                <div>conteúdo principal</div>
+            </SarakAppChrome>,
+            { isSplitViewEnabled: true },
+        );
+        const content = container.querySelector('[data-sarak-content]') as HTMLElement;
+        const primary = content.querySelector('[data-sarak-split-panel="primary"]');
+        const secondary = content.querySelector('[data-sarak-slot="secondaryContent"]');
+
+        expect(primary).toHaveTextContent('conteúdo principal');
+        expect(secondary).toHaveTextContent('conteúdo secundário');
+        expect(content.firstElementChild).toHaveClass('grid', 'grid-cols-1', '@min-[1024px]:grid-cols-2');
+    });
+
+    it.each([
+        { situation: 'token desligado', design: {}, secondaryContent: <div>segundo</div> },
+        { situation: 'slot ausente', design: { isSplitViewEnabled: true }, secondaryContent: undefined },
+    ])('preserva o conteúdo direto quando falta $situation', ({ design, secondaryContent }) => {
+        const { container } = renderAtDevice(
+            'desktop',
+            <SarakAppChrome nav={[]} secondaryContent={secondaryContent}>
+                <div>conteúdo principal</div>
+            </SarakAppChrome>,
+            design,
+        );
+        const content = container.querySelector('[data-sarak-content]') as HTMLElement;
+
+        expect(content.innerHTML).toBe('<div>conteúdo principal</div>');
+        expect(content.querySelector('[data-sarak-slot="secondaryContent"]')).toBeNull();
+    });
+});
+
+describe('SarakAppChrome — navigationStyle salvo como `dock` (a opção saiu do schema)', () => {
+    it('o cromo de desktop volta à sidebar', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        const { container } = renderAtDevice(
+            'desktop',
+            <SarakAppChrome navItems={NAV_ITEMS}><div>x</div></SarakAppChrome>,
+            { navigationStyle: 'dock' },
+        );
+        expect(container.querySelector('aside')).not.toBeNull();
+        expect(container.querySelector('header')).toBeNull();
+        warn.mockRestore();
     });
 });

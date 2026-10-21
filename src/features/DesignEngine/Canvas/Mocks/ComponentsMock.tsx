@@ -37,7 +37,7 @@ export const MockComponents: React.FC<any> = ({ tokens }) => {
                             placeholder="Design Engine Input..." 
                             fullWidth
                         />
-                        <div className="flex items-center justify-between p-3.5 bg-white/5 rounded-input" style={{ borderRadius: 'var(--sarak-radius)' }}>
+                        <div className="flex items-center justify-between p-3.5 bg-theme-text/5 rounded-input" style={{ borderRadius: 'var(--sarak-card-radius)' }}>
                             <span className="text-2xs text-[var(--theme-title)] font-medium">Dynamic Switch</span>
                             <div className="w-10 h-5 bg-[var(--sarak-switch-active-bg,var(--theme-primary))] rounded-full relative shadow-inner">
                                 <div className="absolute top-1 right-1 w-3 h-3 bg-[var(--sarak-switch-thumb,#fff)] rounded-full shadow-md"></div>
@@ -51,10 +51,10 @@ export const MockComponents: React.FC<any> = ({ tokens }) => {
             <div className="space-y-4">
                 <div className="text-2xs font-black uppercase tracking-widest text-[var(--theme-muted)]">Badges & Indicators</div>
                 <div className="flex flex-wrap gap-2">
-                    <span className="px-3 py-1 rounded-full bg-[var(--sarak-status-success,var(--theme-success))]/10 text-[var(--sarak-status-success,var(--theme-success))] border border-[var(--sarak-status-success,var(--theme-success))]/20 text-[10px] font-black uppercase tracking-tighter">Success</span>
-                    <span className="px-3 py-1 rounded-full bg-[var(--sarak-status-error,var(--theme-error))]/10 text-[var(--sarak-status-error,var(--theme-error))] border border-[var(--sarak-status-error,var(--theme-error))]/20 text-[10px] font-black uppercase tracking-tighter">Alert</span>
+                    <span className="px-3 py-1 rounded-full bg-[var(--sarak-status-success-color,var(--theme-success))]/10 text-[var(--sarak-status-success-color,var(--theme-success))] border border-[var(--sarak-status-success-color,var(--theme-success))]/20 text-[10px] font-black uppercase tracking-tighter">Success</span>
+                    <span className="px-3 py-1 rounded-full bg-[var(--sarak-status-error-color,var(--theme-error))]/10 text-[var(--sarak-status-error-color,var(--theme-error))] border border-[var(--sarak-status-error-color,var(--theme-error))]/20 text-[10px] font-black uppercase tracking-tighter">Alert</span>
                     <span className="px-3 py-1 rounded-full bg-[var(--theme-primary)]/10 text-[var(--theme-primary)] border border-[var(--theme-primary)]/20 text-[10px] font-black uppercase tracking-tighter">Processing</span>
-                    <span className="px-3 py-1 rounded-full bg-white/5 text-white/40 border border-white/10 text-[10px] font-black uppercase tracking-tighter">Offline</span>
+                    <span className="px-3 py-1 rounded-full bg-theme-text/5 text-theme-text/40 border border-theme-text/10 text-[10px] font-black uppercase tracking-tighter">Offline</span>
                 </div>
             </div>
         </div>

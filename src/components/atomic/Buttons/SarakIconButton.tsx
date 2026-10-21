@@ -1,6 +1,7 @@
 import React, { ButtonHTMLAttributes, useState } from 'react';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
+import { CYBERPUNK_TEXT_COLORS, neumorphismButtonShadow, resolveNeonPulseClass } from '../hooks/useAtomicStyles';
 
 export interface SarakIconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     /** Define a aparência visual sem mudar o tipo HTML; sem a prop, usa `primary`. */
@@ -21,6 +22,10 @@ export interface SarakIconButtonProps extends ButtonHTMLAttributes<HTMLButtonEle
  * @sarak-encapsula button — a razão de existir deste componente é encapsular o
  *   `<button>` nativo, para teclado e leitor de tela funcionarem por construção.
  */
+// Borda e sombra do vidro: derivadas da cor de texto e da cor de sombra do tema, nos dois modos.
+const FROSTED_EDGE = 'color-mix(in srgb, var(--text-main, #f2f6fb) 10%, transparent)';
+const FROSTED_SHADOW = 'color-mix(in srgb, var(--sarak-card-shadow-color, #000000) 30%, transparent)';
+
 export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
     variant = 'primary',
     size = 'md',
@@ -36,7 +41,9 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
     const [isHovered, setIsHovered] = useState(false);
 
     const styleType = design?.btnStyleType || 'matte';
-    const glowColor = design?.btnNeonGlowColor || 'rgba(0, 242, 255, 0.4)';
+    // O brilho é a variável do token (`btnNeonGlowColor`): vale também sob o escopo embarcado, e o perigo
+    // acende na cor de erro do tema, não num vermelho fixo.
+    const glowColor = 'var(--sarak-btn-neon-glow-color, rgba(25,227,240,0.4))';
     const blurAmount = design?.btnBackdropBlur || 0;
 
     // Tamanhos estritamente quadrados
@@ -47,23 +54,23 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
         lg: 'w-12 h-12 text-lg'
     };
 
-    const baseClasses = `inline-flex items-center justify-center transition-all focus:outline-none rounded-btn flex-shrink-0 ${sizeClasses[size]}`;
+    const baseClasses = `inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn flex-shrink-0 ${sizeClasses[size]}`;
 
     // Computar cores base
-    const baseColor = variant === 'danger' ? 'var(--sarak-status-error-color,#ef4444)' : 'var(--sarak-primary-color,#3b82f6)';
-    const baseTextColor = variant === 'danger' ? 'var(--color-theme-on-primary, #020617)' : 'var(--text-muted,#94a3b8)';
-    const localGlow = variant === 'danger' ? 'rgba(239, 68, 68, 0.5)' : glowColor;
+    const localGlow = variant === 'danger'
+        ? 'color-mix(in srgb, var(--sarak-status-error-color, #ef4444) 50%, transparent)'
+        : glowColor;
 
     const getTailwindClasses = (v: string, st: string) => {
         const strats: Record<string, () => string> = {
             'primary': () => {
-                if (st === 'borderline') return 'border border-[var(--sarak-primary-color,#3b82f6)] bg-transparent hover:bg-[var(--sarak-primary-color,#3b82f6)] hover:text-[var(--text-muted,#94a3b8)] active:scale-[0.95] text-[var(--sarak-primary-color,#3b82f6)]';
-                const base = 'bg-[var(--sarak-primary-color,#3b82f6)] text-[var(--text-muted,#94a3b8)] hover:brightness-110 active:scale-[0.95]';
-                return st === 'matte' ? `${base} shadow-xl shadow-[var(--sarak-primary-color,#3b82f6)]/20` : base;
+                if (st === 'borderline') return 'border border-[var(--sarak-primary-color,#19e3f0)] bg-transparent hover:bg-[var(--sarak-btn-primary-bg,#19e3f0)] hover:text-[var(--sarak-btn-primary-text,#04121a)] active:scale-[0.95] text-[var(--sarak-primary-color,#19e3f0)]';
+                const base = 'bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.95]';
+                return st === 'matte' ? `${base} shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20` : base;
             },
-            'secondary': () => 'bg-[var(--color-theme-card,#1e293b)] text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-primary-color,#3b82f6)] hover:text-[var(--text-muted,#94a3b8)] border border-[var(--sarak-primary-color,#3b82f6)]/20 active:scale-[0.95]',
-            'ghost': () => 'bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-white/5 active:scale-[0.98]',
-            'danger': () => 'bg-[var(--sarak-status-error-color,#ef4444)] text-white hover:brightness-110 shadow-lg shadow-[var(--sarak-status-error-color,#ef4444)]/20 active:scale-[0.95]'
+            'secondary': () => 'bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))] text-[var(--text-muted,rgba(242,246,251,0.55))] hover:bg-[var(--sarak-btn-primary-bg,#19e3f0)] hover:text-[var(--sarak-btn-primary-text,#04121a)] border border-[var(--sarak-primary-color,#19e3f0)]/20 active:scale-[0.95]',
+            'ghost': () => 'bg-transparent text-[var(--sarak-primary-color,#19e3f0)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]',
+            'danger': () => 'bg-[var(--sarak-status-error-color,#ef4444)] text-[var(--sarak-on-error,#020617)] hover:brightness-110 shadow-lg shadow-[var(--sarak-status-error-color,#ef4444)]/20 active:scale-[0.95]'
         };
         return strats[v] ? strats[v]() : '';
     };
@@ -92,7 +99,7 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
             'secondary': () => {
                 dynamicStyle.boxShadow = isHovered ? `0 0 var(--sarak-icon-button-glow-blur-md, 8px) ${localGlow}` : 'none';
                 dynamicStyle.border = `var(--sarak-border-width, 1px) solid ${localGlow}`;
-                dynamicStyle.backgroundColor = `rgba(0,0,0,0.4)`;
+                dynamicStyle.backgroundColor = 'var(--sarak-btn-secondary-bg, rgba(255, 255, 255, 0.05))';
             },
             'ghost': () => {
                 dynamicStyle.boxShadow = isHovered ? `0 0 var(--sarak-icon-button-glow-blur-md, 8px) ${localGlow}` : 'none';
@@ -104,32 +111,46 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
             'primary': () => {
                 dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
                 dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
-                dynamicStyle.border = 'var(--sarak-border-width, 1px) solid rgba(255,255,255,0.1)';
-                dynamicStyle.boxShadow = '0 var(--sarak-icon-button-frosted-shadow-offset-y, 4px) var(--sarak-icon-button-frosted-shadow-blur, 16px) 0 rgba(0, 0, 0, 0.3)';
+                dynamicStyle.border = `var(--sarak-border-width, 1px) solid ${FROSTED_EDGE}`;
+                dynamicStyle.boxShadow = `0 var(--sarak-icon-button-frosted-shadow-offset-y, 4px) var(--sarak-icon-button-frosted-shadow-blur, 16px) 0 ${FROSTED_SHADOW}`;
             },
             'danger': () => {
                 dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
                 dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
-                dynamicStyle.border = 'var(--sarak-border-width, 1px) solid rgba(255,255,255,0.1)';
-                dynamicStyle.boxShadow = '0 var(--sarak-icon-button-frosted-shadow-offset-y, 4px) var(--sarak-icon-button-frosted-shadow-blur, 16px) 0 rgba(0, 0, 0, 0.3)';
+                dynamicStyle.border = `var(--sarak-border-width, 1px) solid ${FROSTED_EDGE}`;
+                dynamicStyle.boxShadow = `0 var(--sarak-icon-button-frosted-shadow-offset-y, 4px) var(--sarak-icon-button-frosted-shadow-blur, 16px) 0 ${FROSTED_SHADOW}`;
             },
             'secondary': () => {
                 dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
                 dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
-                dynamicStyle.border = 'var(--sarak-border-width, 1px) solid rgba(255,255,255,0.1)';
-                dynamicStyle.backgroundColor = 'rgba(255,255,255,0.05)';
+                dynamicStyle.border = `var(--sarak-border-width, 1px) solid ${FROSTED_EDGE}`;
+                dynamicStyle.backgroundColor = 'var(--sarak-btn-secondary-bg, rgba(255, 255, 255, 0.05))';
             }
         };
 
         if (styleType === 'neon' && neonStyles[variant]) neonStyles[variant]();
         if (styleType === 'frosted' && frostedStyles[variant]) frostedStyles[variant]();
+        if (styleType === 'neumorphism') {
+            dynamicStyle.border = 'none';
+            dynamicStyle.boxShadow = neumorphismButtonShadow(isHovered);
+        }
+        if (styleType === 'cyberpunk') {
+            // Wireframe anguloso: contorno na cor do brilho, cantos retos, sem preenchimento.
+            dynamicStyle.backgroundColor = 'transparent';
+            // Sem preenchimento, o texto "sobre a cor" sumiria contra o fundo: o ícone da variante sólida lê a própria cor.
+            const ownColor = CYBERPUNK_TEXT_COLORS[variant];
+            if (ownColor) dynamicStyle.color = ownColor;
+            dynamicStyle.border = `var(--sarak-border-width, 1px) solid ${localGlow}`;
+            dynamicStyle.borderRadius = 0;
+            dynamicStyle.boxShadow = isHovered ? `0 0 var(--sarak-icon-button-glow-blur-md, 8px) ${localGlow}` : 'none';
+        }
     };
     
     applyDynamicStyles();
 
     return (
         <button
-            className={mergeSarakClasses(baseClasses, tailwindClasses, disabledClass, className)}
+            className={mergeSarakClasses(baseClasses, tailwindClasses, resolveNeonPulseClass(design, variant), disabledClass, className)}
             disabled={disabled || isLoading}
             style={dynamicStyle}
             onMouseEnter={(e) => { setIsHovered(true); props.onMouseEnter?.(e); }}

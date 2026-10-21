@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Identidade / Branding"
 status: "🟢 Vigente"
 prioridade: "Alta"
 tags: ["spec", "zero-marca", "identidade", "branding", "soberania-host", "gate"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[006-zero-marca-soberania-host]]", "[[04-shell-e-discovery]]", "[[05-cromo-e-slots]]", "[[06-painel-de-customizacao-e-preview]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[006-zero-marca-soberania-host]]", "[[05-cromo-e-slots]]", "[[06-painel-de-customizacao-e-preview]]"]
 ---
 
 # 1. A regra
@@ -158,13 +158,12 @@ remoção), e não diz nada sobre a saúde da regra.
 
 ## 7.3 A allowlist, e como (não) entrar nela
 
-Três arquivos, cada um com **motivo comentado ao lado** (`:37-46`):
+A lista é a constante `ALLOWLIST` de `gates/scripts/contrato/check-zero-brand.mjs`, a fonte — hoje:
 
 | Arquivo | Motivo |
 | --- | --- |
 | `features/DesignEngine/Canvas/KitchenSinkPreview.tsx` | vitrine interna de componentes/temas, usada só pelo painel de autoria |
-| `features/DesignEngine/Panels/LanguageTab.tsx` | cita a marca como **texto de exemplo** dentro da ferramenta de autoria |
-| `features/DesignEngine/Panels/LayoutTab.tsx` | idem |
+| `features/DesignEngine/Panels/LayoutTab.tsx` | cita a marca como **texto de exemplo** dentro da ferramenta de autoria |
 
 **Como adicionar:** editar `ALLOWLIST` com o caminho relativo a `src/` **e** o comentário do motivo.
 
@@ -197,11 +196,10 @@ Os sinks neutralizados (`docs/migracoes.md` §"Rótulos decorativos"):
 | `SarakSearch` (rodapé) | `'Sarak Lib Search Engine'` fixo | `` `${systemName} Search Engine` `` ou `'Search Engine'` |
 | `ChatHeader` (subtítulo) | `'Agnostic Interface • Sarak Lib Engine'` | `'Agnostic Interface • Chat Engine'` |
 | `SarakChat` (default de `label`) | `'Sarak AI Chat Lab'` | `'AI Chat'` |
-| **`SarakShell`** (default de `brand`) | `{ name: 'Sarak Lib' }` | `{ name: 'Sistema' }` |
 | **`ShellUserWidget`** (usuário sem nome) | `'Sarak User'` | `'User'` |
 
-**Os dois últimos não estavam no levantamento inicial** — apareceram na confirmação em código. E o
-`SarakShell` é o mais instrutivo: `SidebarNav`/`TopbarNav` **já consumiam corretamente**
+**O último não estava no levantamento inicial** — apareceu na confirmação em código. E o caso mais
+instrutivo foi o do cromo antigo (o `SarakShell`, removido pelo [[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]): a navegação **já consumia corretamente**
 (`systemName || brand.name`); era o **default do `brand`** que nomeava a lib quando o consumidor não passava
 `manifest.brand`. **A porta certa estava certa; o vazamento entrou pela fonte do valor que passa por ela.**
 
@@ -226,6 +224,14 @@ marca do consumidor (systemName / brand.name)
 
 E **nunca heading vazio**: um componente sem nome de marca precisa mostrar o rótulo de função, não uma
 lacuna visual. Foi o que motivou `'System Core Engine'` em vez de string vazia no `SarakEmptyState`.
+
+**Marca não é só o nome da lib: é também o conceito de um produto.** Um template que carrega o vocabulário de
+um sistema (um papel "Master", um selo "Neural" ou "Secure", um protocolo com nome próprio, um recurso buscado na
+raiz do host como `/noise.png`) impõe a identidade daquele sistema a qualquer outro que o use. Por isso o
+`SarakAuthScreen` e o `SarakSocialButton` não carregam texto fixo nem conceito de produto: os rótulos vêm do
+catálogo de tradução, o host os troca por `labels`, e o logotipo de cada provedor social é um elemento que o
+host entrega ([[10-seguranca-e-acessibilidade]] §3.1). O `zero-brand:check` não vê esse caso: ele procura a
+marca **da lib**, não o vocabulário de outro produto.
 
 # 9. Backlog
 

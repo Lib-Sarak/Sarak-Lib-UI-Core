@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { SarakModal } from '../SarakModal';
@@ -63,7 +63,8 @@ describe('Jornada só-teclado (Spec 41 — E2E)', () => {
         expect(await screen.findByRole('dialog')).toBeInTheDocument();
 
         await user.keyboard('{Escape}');
-        expect(screen.queryByRole('dialog')).toBeNull();
+        // A saída anima (`motionEaseIn`): o diálogo sai da página ao fim dela, não no mesmo quadro.
+        await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
         expect(trigger).toHaveFocus();
     });
 });

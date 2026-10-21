@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "99"
+proximo_numero_plan: "121"
 ---
 
 # 0. O que é este arquivo
@@ -42,19 +42,157 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-87-processo-que-a-pratica-furou](plan/plan-87-processo-que-a-pratica-furou.md) | Fazer cada regra de processo que só existia em prosa ganhar um gatilho mecânico ou ser reescrita para o que a prática mostrou ser exequível | — | 🔴 A executar | specs/00-regras-e-invariantes.md + specs/01-gates-e-baseline.md + specs/02-enforcement-por-commit.md + specs/17-contrato-de-operacao-git.md |
-| 2 | [plan-92-selo-de-build-em-runtime](plan/plan-92-selo-de-build-em-runtime.md) | Permitir responder em um olhar qual build da lib o navegador executa, e fazer a instalacao pedir so o que o consumidor usa, com as tres camadas de cache e o kit documentados como sao | — | 🔴 A executar | specs/13-instalacao-e-atualizacao.md + arquitetura/05-build-e-distribuicao.md + arquitetura/03-superficie-publica.md + specs/12-kit-do-consumidor.md |
-| 3 | [plan-93-persistencia-fecha-o-ciclo-do-tema](plan/plan-93-persistencia-fecha-o-ciclo-do-tema.md) | Fazer o par design mais id do tema sobreviver ao ciclo inteiro de persistencia, por qualquer caminho de aplicacao, sem gravacao no boot e sem o consumidor precisar de guarda propria | — | 🔴 A executar | specs/09-temas-e-presets.md + arquitetura/03-superficie-publica.md |
-| 4 | [plan-94-um-cromo-so](plan/plan-94-um-cromo-so.md) | Descartar o modo host (SarakShell, descoberta de modulos e roteador proprio) e deixar o SarakAppChrome como o unico cromo da lib, com a barra completa por padrao, configuravel pelo sistema e com item de navegacao que e link de verdade | plan-93-persistencia-fecha-o-ciclo-do-tema | 🔴 A executar | adr/017 (nova) + arquitetura/01-forma-do-produto-e-modos-de-consumo.md + specs/05-cromo-e-slots.md + specs/04-shell-e-discovery.md (retirada) + specs/06-painel-de-customizacao-e-preview.md + 00-contexto.md |
-| 5 | [plan-95-icones-por-uma-porta-aberta-ao-consumidor](plan/plan-95-icones-por-uma-porta-aberta-ao-consumidor.md) | Fazer a familia e o peso de icone escolhidos no painel valerem para todo icone da lib, e permitir ao consumidor trazer os proprios icones por registro ou por elemento, sem lista fechada | plan-94-um-cromo-so | 🔴 A executar | arquitetura/03-superficie-publica.md + specs/09-temas-e-presets.md + specs/00-regras-e-invariantes.md + specs/01-gates-e-baseline.md |
-| 6 | [plan-88-vaos-de-gate-medidos](plan/plan-88-vaos-de-gate-medidos.md) | Fazer cinco gates passarem a ver o que a regra deles já cobra e eles hoje deixam passar, cada um provado por um caso que falha | — | 🔴 A executar | specs/01-gates-e-baseline.md + specs/00-regras-e-invariantes.md + specs/09-temas-e-presets.md + specs/15-divida-conhecida.md |
-| 7 | [plan-89-tokens-de-cromo-ligados-e-medidos](plan/plan-89-tokens-de-cromo-ligados-e-medidos.md) | Fazer todo token de layout que o painel oferece ter efeito no cromo, com a medição de navegador cobrindo tema que sobrescreve token de cromo | plan-94-um-cromo-so | 🔴 A executar | specs/05-cromo-e-slots.md + specs/11-testes-e-cobertura.md + specs/01-gates-e-baseline.md + specs/07-responsividade-e-multidispositivo.md |
-| 8 | [plan-90-css-que-so-o-navegador-mede](plan/plan-90-css-que-so-o-navegador-mede.md) | Fazer cinco defeitos de CSS da lib terem caso de navegador que falha hoje e passa depois do conserto, e medir um relato de perda de digitação no painel | plan-89-tokens-de-cromo-ligados-e-medidos | 🔴 A executar | arquitetura/02-design-engine.md + specs/11-testes-e-cobertura.md |
-| 9 | [plan-91-superficie-entrega-o-que-promete](plan/plan-91-superficie-entrega-o-que-promete.md) | Alinhar ao contrato publicado os pontos em que a superfície pública promete uma coisa e entrega outra, com o erro de campo passando a ter uma forma só | plan-90-css-que-so-o-navegador-mede | 🔴 A executar | arquitetura/03-superficie-publica.md |
-| 10 | [plan-96-templates-sem-dominio-embutido](plan/plan-96-templates-sem-dominio-embutido.md) | Fazer nenhum componente da lib conhecer URL, cliente HTTP, rota de dominio, texto fixo em portugues ou conceito de um produto, de modo que os templates sirvam a qualquer sistema | plan-95-icones-por-uma-porta-aberta-ao-consumidor | 🔴 A executar | arquitetura/03-superficie-publica.md + specs/10-seguranca-e-acessibilidade.md + specs/08-identidade-do-host-e-zero-marca.md + specs/00-regras-e-invariantes.md |
-| 11 | [plan-97-dados-tabela-estados-valor-e-metrica](plan/plan-97-dados-tabela-estados-valor-e-metrica.md) | Dar a lib o que quatro sistemas refizeram a mao para exibir dado: tabela semantica com celula customizada e os tres estados, paginacao com tamanho e resumo, valor numerico formatado com cor por sinal e cartao de metrica completo | plan-96-templates-sem-dominio-embutido | 🔴 A executar | arquitetura/03-superficie-publica.md |
-| 12 | [plan-98-dialogo-e-feedback](plan/plan-98-dialogo-e-feedback.md) | Dar a lib as pecas de dialogo e feedback que tres sistemas refizeram a mao: confirmacao imperativa, modal com tamanhos, estado de pagina com titulo e acao, barra de progresso e toast com titulo e acao | plan-97-dados-tabela-estados-valor-e-metrica | 🔴 A executar | arquitetura/03-superficie-publica.md |
+| 1 | [plan-119-kit-de-importacao-aprendido-nos-importadores](plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md) | Fazer o importador usar a lib por inteiro sem reescrever o que ela entrega, com o kit de importação ensinado pelas licoes medidas nos importadores reais e com a gestao de temas do importador completa: salvar o aplicado como novo, editar, duplicar e criar, persistidos no importador | — | 🟡 Em execução | specs/12-kit-do-consumidor.md + specs/13-instalacao-e-atualizacao.md + specs/09-temas-e-presets.md + specs/15-divida-conhecida.md |
+| 2 | [plan-120-o-que-o-importador-sente-antes-da-8-0-0](plan/plan-120-o-que-o-importador-sente-antes-da-8-0-0.md) | Fazer a 8.0.0 sair sem defeito conhecido que o importador ou o usuario final sinta: campos, props e mensagens que mentem, instalacao e PDF que exigem contorno, tokens que deixam quebrar o foco e as camadas, modal e arte de fundo fora do tema do cliente, painel com texto ilegivel e busca incompleta, e o teste que pode deixar o PR vermelho | — | 🟢 Aprovada | arquitetura/03-superficie-publica.md + specs/13-instalacao-e-atualizacao.md + arquitetura/02-design-engine.md + specs/09-temas-e-presets.md + specs/06-painel-de-customizacao-e-preview.md |
 <!-- SARAK-INDICE:FILA:FIM -->
+
+> **Ordem de execução (decisão do revisor, 2026-10-10):** a `plan-104` fechou (sintetizada em 2026-10-10); a ordem segue no despacho de 2026-10-10 abaixo. As três tocam `docs/migracoes.md`, cada uma na
+> sua subseção da próxima versão; fora isso, são disjuntas (`DataDisplay/` · `Provider/` + `Layout/chrome/` · `Inputs/` + i18n). Paralelo
+> só com a disjunção declarada pelo revisor ao despachar.
+>
+> 🚦 **Fila de 2026-10-14 — a `plan-116` (tema sob demanda) fechou; a `plan-110` é a próxima.** **Versão (decisão do dono, 2026-10-14):** as plans da fila registram a mudança na subseção `## 8.0.0` de `docs/migracoes.md`; a versão MAJOR é aplicada uma vez, ao final de todas as modificações, no merge para a `main` — nenhuma plan mexe na versão nem cria tag. O `npm run build` e o `cromo-css-real:check` são do revisor; o executor escreve os casos de `browser-tests/`.
+
+> ⚪ **A `plan-118` foi SINTETIZADA e REMOVIDA em 2026-10-16** (com o anexo `plan-118-catalogo-de-fontes.md`). Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **118** | [[05-build-e-distribuicao]] **§2.2 (nova)** — `dist/fonts/`, o manifesto gerado com um `new URL` literal por arquivo, `fonts:embed` depois do `build:js`, `THIRD-PARTY-FONTS`, o gate `fonts:check` e por que a fonte não vai no CSS · [[10-seguranca-e-acessibilidade]] §3.4 (CSP `font-src 'self'`, Google só com `'google'`, LGPD, validação da fonte do host) · [[09-temas-e-presets]] §4.4.4 (a lista de fontes, o `value` exato, pesos que a família tem, `options.fonts.custom` e `requiresFonts`) · [[12-kit-do-consumidor]] §1.1 (o que o kit ensina sobre fontes) · [[023-fontes-embarcadas-carregadas-sob-demanda]] (o desenho aceito e as três alternativas preteridas). **Ficou de fora:** a medição por família do anexo (vive no histórico do Git e no `fonts:check`, que mede de novo) e o histórico dos lotes. `00-contexto` revisado: nada a mudar. |
+
+> ⚪ **As `plan-110` e `plan-117` foram SINTETIZADAS e REMOVIDAS em 2026-10-19** (com os 19 anexos `plan-110-*.md`; a `plan-117` estava retida pela `plan-110` desde a síntese parcial de 2026-10-16). Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **110** | [[09-temas-e-presets]] **§5.3 (nova)** — o tema embarcado declara todo estético e nenhum funcional, a `contraparte` com o que carrega modo, `texture`/`cardTextureType` sem modo, a trava `theme-completeness:check` com a exceção vazia, o teto de 4,5 KB por tema, os arquétipos apontados no guia e o roteiro `docs/roteiro-de-validacao-dos-temas.md`; §5.2 (a diversidade só com eixos estéticos e a **cobertura do conjunto** como teste, `themeSetCoverage.test.ts`); §7 (o gerador da skill e o que o tema shippado exige); §4.4.4 (`contentAlignment` entre os que saíram) · [[02-design-engine]] **§10.15 (nova)** — estético × funcional e o padrão estético = `sarak-sovereign` (exceto `identityFontFamily`), declarado sem gate · [[04-contrato-de-tokens-e-paridade]] **§2.3 (nova)** — `kind`, `modeDependent`, `usage`, `interactsWith` e o `token-docs:check` com exceção vazia; §2.1 (o total em prosa virou o comando que conta) · [[12-kit-do-consumidor]] §1.1 — o que o kit ensina do cliente ao tema e o mapa "o que a lib já faz" · `00-contexto` §3 (sem contagem fixa de schemas). **Ficou de fora:** o mapa id → conceito → modo nativo (a `09` §5.2 proíbe transcrever a lista; vive no guia, §3.9), as fichas de direção, as medições por tema e as capturas (histórico do Git e galeria do dono). |
+> | **117** | [[02-design-engine]] §10.1 (atmosfera de página atrás do conteúdo no modo App, textura animada sem `transform`, arte de fundo com `cover`), §10.3 (`colorDepth`/`colorVariation` chegam ao hover e ao pressionado globais de `button`), §10.5 (saída do modal e da paleta pela curva de `motionEaseIn` e a duração de `motionDurationFast`), §10.6 (`matrixGap`, `sidebarCollapsedWidth`, raio do acordeão, `rangeActiveColor`, `navItemRadius`, `actionGlowShadow*` com `matte`, `switchLabelPosition` só no switch, busca centrada, ícone no `cyberpunk`, a ordem em que a barra de topo cede), §10.10 (`--sarak-on-nav-active`), §10.12 (valor vazio apaga o que o tema anterior escreveu) · [[04-contrato-de-tokens-e-paridade]] §4.1 e [[09-temas-e-presets]] §4.4.4 (`contentAlignment` retirado). A síntese parcial de 2026-10-16 (lotes 1 a 3) já estava em §10.4, §4.1 e §4.4.4. **Ficou de fora:** a correção dos gráficos `radar`/`heatmap` (bug corrigido, sem regra nova) e os números de custo e de medição dos lotes (histórico do Git). `00-contexto` revisado: só a contagem de schemas. |
+
+> ⚪ **A `plan-116` foi SINTETIZADA e REMOVIDA em 2026-10-14** (com o anexo `plan-116-desenho.md`). Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **116** | [[09-temas-e-presets]] §2 obs. 3 (registrar um tema embarcado: id + arquivo + `all.ts` + `loaders.ts` + `themes:catalog`), §4.3 (id inexistente cai no tema padrão no modo pedido), **§4.3.2 (novo)** — o boot só leva o tema padrão, o catálogo leve, a porta de espera, as travas `theme-boot:check`/`boot:measure` e o teto de 3 KB por tema — e **§4.3.3 (novo)** — `composeThemeDesign`: padrões → identidade → `config` do host → tema; §5/§7 e o `00-regras` (o conjunto de tema shippado é `SARAK_ALL_THEMES`); [[02-design-engine]] §3 (a tabela do Provider) e **§3.3 (novo)** — `useThemeReadiness`, `useThemeSeed`, `useDesignSync`; [[03-superficie-publica]] §7.1 (a fronteira lazy dos temas e a API do catálogo; `SARAK_GLOBAL_THEMES`/`sarakGetThemePreset` saíram); [[06-painel-de-customizacao-e-preview]] §2 (a galeria lista o catálogo leve e a prévia compõe sem herdar); o porquê e as alternativas: [[022-tema-sob-demanda]] (nasceu na execução). **Ficou de fora:** o desenho do lote 0 (medição e alternativas A/C — estão no ADR) e a versão MAJOR, aplicada no merge para a `main`. |
+>
+> ⚪ **A `plan-115` foi SINTETIZADA e REMOVIDA em 2026-10-14** (com o anexo `plan-115-residuo-da-reauditoria.md`). Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **115** | [[02-design-engine]] §9.1 (o aperto do botão cede; âncoras de cartão; `bg-theme-card` só cor), §10.2 (material e moldura em `_card-materials.css`), §10.6 (os leitores novos, `neumorphism`, o modo eco como classe do consumidor), §10.8 (o que fica `!important`; o injetor do modo claro), **§10.12 a §10.14 (novas)** — escrita sem disputa de canal e limpeza na troca e ao desmontar; os nomes do `@theme` valem no escopo do rascunho, um dono para `--color-theme-title`, as classes de raio na camada final; a escada de camadas por token e a sombra do tema nas sobreposições · [[06-painel-de-customizacao-e-preview]] §3 (descrição em todo ramo; campo numérico; cor resolvida e alfa que não perde o vínculo) · [[09-temas-e-presets]] §6.6 (grade do `step`), §6.7 (texto misturado, contrapartes), **§6.8 (nova)** — o catálogo diz o que o schema diz · [[00-regras-e-invariantes]] R4 (paridade de valor e tipo), R41 a R44 (os escopos ampliados e o `channel-dispute`) · [[01-gates-e-baseline]] §2.2 e §2.2.1. Ficou de fora: a herança na troca de tema (critério da `plan-116`), as contrapartes incompletas (`plan-110`), o vocabulário de forma sem token (`00-backlog` item 32) |
+
+> ⚪ **A `plan-114` foi SINTETIZADA e REMOVIDA em 2026-10-13** (com o anexo `plan-114-achados-da-verificacao.md`). Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **114** | [[02-design-engine]] **§10.8 a §10.11 (novas)** — cascata (o padrão do cartão na camada que cede, sem `!important`), uma variável com um dono (mestre + exceção por `exceptionOf`, reserva = padrão, Bezier com `--`), tintas e texto sobre cor sólida por contraste (`--sarak-on-*`), componente que lê o próprio token · [[06-painel-de-customizacao-e-preview]] §3 — controles por tipo (slider responsivo, `select` grava o valor, unidade declarada, cor com alfa, `ExceptionRelation`) · [[09-temas-e-presets]] §4.4.4 (intenções e tokens que saíram), **§6.6 e §6.7 (novas)** — contrato numérico acusado, contraste dos pares desenhados, a primária como cor de texto · [[10-seguranca-e-acessibilidade]] §2.1d — nenhum valor de cor busca recurso · [[00-regras-e-invariantes]] **R41 a R44 (novas)**, R40 (o painel não é leitor), R31 e a contagem · [[01-gates-e-baseline]] §2.2 e §2.2.1 (`css-important`, `variable-contract`, `fixed-translucent`, `panel-contract`) · `00-contexto` §2. Ficou de fora: o resíduo da re-auditoria de fechamento — promovido à `plan-115` |
+
+> ⚪ **As `plan-111`, `plan-112` e `plan-113` foram SINTETIZADAS e REMOVIDAS em 2026-10-12.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **111** | [[02-design-engine]] **§10 (nova)** — gradiente de fundo, tom, ruído único, materiais, geometria e cor da sombra, texturas na cor de textura · [[03-superficie-publica]] §6.8 — paleta categórica derivada das quatro cores de marca, sem cor de status · [[09-temas-e-presets]] §4.4.3 e **§4.4.4 (nova)** — fonte é valor de `THEME_FONTS`, URL derivada da lista; opções e tokens que saíram · [[00-regras-e-invariantes]] **R40 (nova)** e §1.3/§4 · [[01-gates-e-baseline]] §2.2 e §2.2.1 (`token-reader:check`) · `00-contexto` §2 (a regra que um agente viola sem perceber). Ficou de fora: nada |
+> | **112** | [[02-design-engine]] §10 — moldura (`borderType`), direção e camadas da sombra, `--dynamic-shadow`, `colorDepth`/`colorVariation`, vidro do cartão e a regra do `backdrop-filter` sozinho (§10.7) · [[09-temas-e-presets]] §4.4.4 — os 7 tokens fundidos · R40 — escopo no schema inteiro. Ficou de fora: nada |
+> | **113** | [[02-design-engine]] §10 — hover só em cartão interativo, família `motion*`, componentes que leem tokens próprios, leitor declarado (`@sarak-token-reader`) · [[09-temas-e-presets]] §4.4.4 — os tokens que saíram ou se fundiram · R40 — exceção vazia, nome ancorado · [[01-gates-e-baseline]] §2.2. Ficou de fora: as variáveis com dois donos e o que a verificação completa encontrar — promovidos à `plan-114` |
+
+> ⚪ **A `plan-109` foi SINTETIZADA e REMOVIDA em 2026-10-11.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **109** | 🆕 [[021-navegacao-na-base-do-celular]] — barra na base × gaveta, com as alternativas e o custo de cada · [[05-cromo-e-slots]] §2.3 (a navegação do celular pelo `mobileNavigationStyle`: barra na base até 5 itens, irmã do conteúdo, área segura e alvo de toque; drawer acima) · [[07-responsividade-e-multidispositivo]] §5 (linha do `SarakAppChrome`) · `adr/README.md`. O `dock` saiu do schema e do catálogo. Ficou de fora: o escopo do `chrome-token-parity`, que não varre `global.ts` (`00-backlog` item 22), e o comentário do `SarakShellNav` que cita `dock` (item 31) |
+
+> ⚪ **A `plan-107` foi SINTETIZADA e REMOVIDA em 2026-10-11.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **107** | [[07-responsividade-e-multidispositivo]] §5 — duas linhas novas na tabela do que adapta sozinho: todo acionável da lib com área tocável ≥ o token `touchTargetMin` com ponteiro de dedo (e a ponte `--sarak-touch-target-active` do Gantt), todo campo ≥ 16 px · [[10-seguranca-e-acessibilidade]] **§2.4e (nova)** — movimento reduzido em todo o documento (token e sistema, `MotionConfig`), tooltip por toque, teclado de busca. **Divergências corrigidas na mesma ação:** a `10` §2.4d dizia que a auditoria de contraste não existe, a lacuna 5.2 que o gate não foi construído e a 5.7 citava um teste removido. Ficou de fora: o chip do calendário em tablet e os `input` de checkbox/radio/range fora da regra do alvo (achados do executor, sem regra que os exija) |
+
+> ⚪ **As `plan-105`, `plan-106` e `plan-108` foram SINTETIZADAS e REMOVIDAS em 2026-10-10.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **105** | [[03-superficie-publica]] §6.9 — o controle que recebe o foco tem o nome do `label`: `<label htmlFor>` quando há elemento rotulável, `aria-labelledby` quando não há, com os átomos de cada caso. Ficou de fora: nada (os textos traduzidos já estavam na §6.9; o item 19 do backlog saiu ao promover) |
+> | **106** | [[09-temas-e-presets]] §4.7 — `defaultColorMode` do host (`system` segue o SO), nunca gravado, ignorado sem a preferência oferecida; preferência só é gravada quando o usuário escolhe · [[05-cromo-e-slots]] §1 — as chaves `fontSize`, `navigationStyle` e `language` de `widgets`, como teto. Ficou de fora: nada |
+> | **108** | [[03-superficie-publica]] §6.3 — falha de recarregamento não apaga a tela, horário da leitura e "desatualizado", `updatedAt` · §6.3.1 — dígitos tabulares no `SarakValue` e no `SarakStats`; o `SarakBadge` de status com forma, rótulo, token de status e texto escuro na variante sólida. Ficou de fora: o limite do texto escuro com cor de status escura de tema do consumidor (registrado no veredito; não é regra) |
+
+> ⚪ **A `plan-104` foi SINTETIZADA e REMOVIDA em 2026-10-10.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **104** | [[03-superficie-publica]] §6.3.1 (o `SarakDataTable` e o `SarakDataGrid` exigem `<Suspense>` de quem os usa; a implementação não é nome público) e §7.1 (a regra: fronteira só vale se o `Impl` não for nome do barril, com a medição do `dist/` e o teste que a trava). Ficou de fora: as notas consolidadas em `docs/migracoes.md` (doc do consumidor, não spec); o `@tanstack/react-virtual` agora só é importado sob demanda e continua peer obrigatória — `00-backlog` item 9 |
+
+> ⚪ **A `plan-103` foi SINTETIZADA e REMOVIDA em 2026-10-09.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **103** | [[03-superficie-publica]] **§6.11 (nova)** — `SarakCalendar` (eventos de vários dias, mês controlado ou não, teclado em grade, "+N", ponto no contêiner estreito) e `SarakGantt` (casca própria, escalas, lista e cabeçalho presos, dependências término→início, altura do host, contraste do título e marcador de hoje em qualquer tema), os tons comuns e os limites declarados (500 tarefas, sem arrastar, sem horas, sem fuso); linha `DataDisplay` da §6 · [[11-testes-e-cobertura]] §7.3 — os arquivos de `browser-tests/` passam a ser listados pelo comando, e a família "visões de projeto" entra. Ficou de fora: nada (o Gantt já tinha o [[020-gantt-casca-propria]]) |
+
+> ⚪ **As `plan-91` e `plan-102` foram SINTETIZADAS e REMOVIDAS em 2026-10-09.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **91** | [[03-superficie-publica]] §6.3 (sem `data` nem `load`, nenhum template busca nem fica preso em carregamento) · tabela da §6, linha `Cards` (o cartão composto não lê os tokens de direção e alinhamento) · **§6.9 (nova)** — o erro de campo com uma forma só (`SarakFieldError`, `role="alert"`, `aria-describedby`, `aria-invalid`) nos nove átomos, o `label` do select, os dois ícones do `SarakInput`, os rótulos acessíveis pelo i18n. Ficou de fora: o item 10 (worker do PDF) — `00-backlog` item 18, decisão do dono; os textos fixos restantes — item 19 |
+> | **102** | **[[019-arrastar-e-soltar-do-kanban]] (novo)** — `@dnd-kit` como peer opcional atrás do adaptador `useKanbanDrag`, com as três alternativas medidas, a escolha pelo risco e o gatilho de reavaliação · [[03-superficie-publica]] **§6.10 (nova)** — o contrato de `onCardMove` (índice de soltura e vizinhos; nada no mesmo lugar), toque e teclado, cartão padrão, eventos opcionais, layout, os quatro blocos do detalhe do cartão; linha `DataDisplay` da §6; §7.1 (já registrado) · [[13-instalacao-e-atualizacao]] §2 (as duas peers opcionais; a contagem de peers passa ao comando que conta) · `adr/README.md`. Ficou de fora: **a medição em aparelho e em navegador real** do quadro — por decisão do dono, ela só acontece no primeiro importador atualizado com a 8.0.0 (`00-backlog` item 20); falhou, o ADR-019 se reabre |
+
+> ⚪ **A `plan-90` foi SINTETIZADA e REMOVIDA em 2026-10-09.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **90** | [[02-design-engine]] §9.1 — o `body` mora num lugar só (`_elements.css`) e cede à classe, e sai de *"o que ainda não cede"* (fica só o `background-color !important` dele); **regra nova:** a lib alcança cartão por âncora explícita (`.sarak-card`, `.card`, `.bg-theme-card`), nunca por substring de nome de classe; custom property nunca referencia a si mesma, e a reserva vale sem o engine; o spec de navegador novo · [[11-testes-e-cobertura]] §7.3 — os dois arquivos de `browser-tests/`, as famílias novas (cascata sob textura, render sem Provider, `body`, estilo inline dos átomos, seta do select, busca do painel) e o que a medição não vê (latência de chunk). Ficou de fora: as notas de migração da 8.0.0 continuam com classificação abaixo de MAJOR em `docs/migracoes.md` (correção pela via direta, pendente) |
+
+> ⚪ **As `plan-98`, `plan-100` e `plan-101` foram SINTETIZADAS e REMOVIDAS em 2026-10-09.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **98** | [[03-superficie-publica]] **§6.7 (nova)** — `useOverlay().confirm()` com `Promise<boolean>` (`false` em cancelar, Esc, troca de overlay e desmontagem; inerte fora do Provider), `SarakModal` com cinco tamanhos por token, `SarakEmptyState` com título/descrição/ação/ícone, `SarakProgress` (limiares, indeterminado, `progressbar`), toast com título e ação (mínimo de 5 s). Ficou de fora: nada |
+> | **100** | [[06-painel-de-customizacao-e-preview]] **§2.3 (nova)** — o caminho escolher/ajustar/aplicar, "Começar de um tema", a Galeria de estilos sob demanda, a barra de ações (`Aplicar (N)` como porta única, Descartar global e por pilar, Exportar, Desfazer) e o menu Avançado · §3 (selo de dispositivo; rótulos ≥ 12 px) · §4 (toda porta que escolhe tema só altera o rascunho) · §4.2 (o desfazer na barra de ações) · §6.2 (barra do preview; empilhado pela altura do contêiner) · **§6.6 (nova)** (pilar ↔ tela em dois gestos; seis telas e "Mais telas") · §11. Ficou de fora: a medição do painel em navegador real (não há caso em `browser-tests/`; é da `plan-90`) |
+> | **101** | [[03-superficie-publica]] **§6.8 (nova)** — o motor de gráficos: tema e paleta categórica, `type` opcional, várias séries, os 17 formatos (com `waterfall`, `sankey` e `calendar`), estado vazio e ARIA, `recharts` como alternativa limitada, decisão de não trocar de biblioteca · [[09-temas-e-presets]] §4.4.3 e §10 (os sete tokens de gráfico têm consumidor). Ficou de fora: nada |
+>
+> Na mesma ação, por divergência que o HEAD desmente: [[03-superficie-publica]] §7.1 (o `SarakKanban` passou a ser
+> lazy, com `@dnd-kit` como peer opcional — a síntese completa da `plan-102` espera o veredito final dela);
+> [[06-painel-de-customizacao-e-preview]] §1 (`SarakCustomizationPanel`, nome do barril) e §6.2
+> (`SarakDeviceProvider`); [[00-contexto]] §4 (linhas para o painel e para tradução).
+
+> ⚪ **As `plan-89` e `plan-97` foram SINTETIZADAS e REMOVIDAS em 2026-10-08.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **89** | [[05-cromo-e-slots]] §2.2 (o slot `secondaryContent`: vista dividida por container query da região, 1024 px; `@container` só com a vista ativa) e §2.4 (`maxContentWidth`, `layoutDensity` com `comfortable` como identidade, `isSplitViewEnabled`; `ORPHAN_TOKENS` vazia) · [[01-gates-e-baseline]] §2.2 e §9.6 (a lista de órfãos zerou) · [[11-testes-e-cobertura]] §7.3 (a medição de navegador cobre token de cromo por recorte nomeado; sai do que ela não vê) · [[07-responsividade-e-multidispositivo]] (o modo do cromo segue a janela, a vista dividida segue a região). Ficou de fora: nada |
+> | **97** | [[03-superficie-publica]] **§6.3.1 (nova)** — tabela semântica com `render`/`align`/`onRowClick` e três estados (também nos cartões do celular), grade com `rowHeight` variável, paginação com resumo, os quatro formatadores públicos, `SarakValue` com cor por sinal pelos tokens de status, métrica completa. Ficou de fora: nada |
+
+> ⚪ **As `plan-96` e `plan-99` foram SINTETIZADAS e REMOVIDAS em 2026-10-07.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **96** | [[03-superficie-publica]] §6.3 **reescrita** — o dado vem do host: `data` ou `load`, `SarakForm` por `onSubmit`, `SarakChat` por `onSend`/`loadModels`, sem controle sem callback, sem suposição de produto sobre o dado, gráficos só com o dado do host · [[10-seguranca-e-acessibilidade]] §3.1 (login-only por padrão, cadastro/MFA/social opt-in, rótulos por `labels`, `autoComplete` do navegador, `errorVariant`; o aviso de que o gate de autenticação não existia saiu, porque existe e varre todo `src/`) e §3.2 (a lib não faz rede; `axios` não é peer) · [[08-identidade-do-host-e-zero-marca]] §8 — conceito de produto também é marca · [[00-regras-e-invariantes]] R32 (exemplo, escopo do gate e o que ele não vê) · [[13-instalacao-e-atualizacao]] §2.3 e [[05-build-e-distribuicao]] §2.1/§4 — 18 peers, 9 obrigatórias (destino que a plan não declarou e o diff exigiu). **Registrado no [[00-backlog]]:** item 11, nenhum gate impede rede nova em `src/`. A nota MAJOR já está em `docs/migracoes.md`, seção 8.0.0 |
+> | **99** | [[06-painel-de-customizacao-e-preview]] §2.1 **reescrita** — Impacto × Essencial × Completo, o campo `visualImpact` no catálogo e por que `importance` não serve; **§2.2 (nova)** — a busca por sentido (`searchTokens`: o que indexa, como casa, a ordem com o conceito forte e a densidade, o caminho `Pilar › Seção`, o limite do dicionário); §11 (os testes da busca e dos três modos). Ficou de fora: nada |
+
+> ⚪ **A `plan-95` foi SINTETIZADA e REMOVIDA em 2026-10-06.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **95** | [[03-superficie-publica]] §6.2 **reescrita** — todo ícone passa pelo `SarakIcon`: nome curado, nome registrado (`sarakRegisterIcons`) ou elemento; família, peso e espessura do tema valem para todos; nome desconhecido desenha `AlertCircle` com aviso único; marca chega por `icon` no `SarakSocialButton`; o painel de autoria fica fora · [[00-regras-e-invariantes]] **R39 (nova)** — a regra, o gate `icon-port:check` e o vão; §1.3 (38 → 39 regras, ⚠️ 12 → 13), §4 e §4.1 · [[09-temas-e-presets]] §4.2 — ícone é token como os outros, `emojiSet` deixou de ser chave · [[01-gates-e-baseline]] §2.2 e §2.2.1 · [[05-build-e-distribuicao]] §2 (o gate na fase 3). **Divergência corrigida na mesma ação:** a **R26** dizia que o consumidor só escreve os nomes curados (agora ele registra os seus) e citava `ICON_NAMES`. A nota MAJOR já estava em `docs/migracoes.md`, seção 8.0.0. Ficou de fora: o rótulo `R18` com que o Anel 1 do `pre-commit` anuncia o gate novo (código; tarefa direta despachada junto) |
+
+> ⚪ **As `plan-92` e `plan-88` foram SINTETIZADAS e REMOVIDAS em 2026-10-05.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **92** | [[05-build-e-distribuicao]] §2 (o pipeline em **fases**, com a ordem exata apontada para o script `build`: a tabela de dez etapas estava defasada), §4 (peer obrigatória × opcional, `engines.node`) e §6 (o **selo de build**: fonte única da tríade pelo `--prepare`, os dois `buildInfo.ts` gerados, o atributo `data-sarak-build-info` no `<style>` da lib ou na `.sarak-scope`, e o que o `build-info:check` confere) · [[03-superficie-publica]] **§6.6 (nova)** — `SARAK_BUILD_INFO` · [[03-versionamento-e-release]] §6 — o gancho `version` leva os dois arquivos do selo ao commit da tag · [[13-instalacao-e-atualizacao]] §2.3, §9.1 e §10 e [[12-kit-do-consumidor]] (modo "apontar", topologias, `kitStamp`, `migracoes.md` no kit, `tokens.cssVars` só com o que a engine emite, `--theme-*` internas) — **escritos durante a execução e adotados no veredito do lote 2** como síntese antecipada; conferidos de novo agora · [[00-contexto]] §4 e §8 — **três** camadas de cache, e o selo como o que diz em qual delas se está. Ficou de fora, de propósito: as 10 variáveis `--sarak-*` que o ERP consome e a lib não emite (são da plan de atualização do ERP) e a `--sarak-font-size` do CSS estático (no [[00-backlog]]) |
+> | **88** | [[01-gates-e-baseline]] §2.2 (`plan-index:check` com as referências da §4; `kit-names:check` novo; `class-merge` com a porta única; `trail-citation` com *veredito d…*), §2.2.1, §2.3 (a ordem do `build` aponta para o `package.json`), §3 (contraste: 0 pulados) e **§9.8 (nova)** — os seis alcances, com o que cada gate continua sem ver · [[00-regras-e-invariantes]] R23 (dois alcances além do kit do mantenedor), R31 (toda cadeia termina em `colorBgBody`; sai "25 pares pulados"; `SARAK_GLOBAL_THEMES`), R35 (porta única do merge) e R36 (o padrão de veredito) · [[09-temas-e-presets]] §6.5 · [[15-divida-conhecida]] — achado **23** fechado (§6), achado **18** reduzido ao par de status. **Divergências corrigidas na mesma ação:** `GLOBAL_THEMES`/`THEME_PRESET_IDS` → `SARAK_*` em [[09-temas-e-presets]] e [[00-regras-e-invariantes]]; R31 dizia que o fundo de status nunca é emitido, e é. Ficou de fora: o cabeçalho do `verify_contrast.ts` que afirma o mesmo falso (é código — item **2** do [[00-backlog]]) |
+
+> ⚪ **A `plan-94` foi SINTETIZADA e REMOVIDA em 2026-10-05.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **94** | 🆕 [[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]] — a lib não é host; **substitui só o recorte do [[005-modelo-modulos-plugin-e-apps-separados]]** que fazia da lib o host (o 005 passa a `🔴 Substituído`, e o modo "ui-kit + central" dele continua vigente) · [[01-forma-do-produto-e-modos-de-consumo]] §2, §2.1, §4 (**um** modo de consumo; sai o §4.1 do Shell-host) · [[05-cromo-e-slots]] §1, §2.1 e **§2.1.2 (nova — o item de navegação é um link de verdade)**, §2.2.1 (os oito widgets nascem montados; o que depende do consumidor aparece desabilitado, com rótulo de estado e aviso único), **§2.2.2 (a composição da barra é do sistema, nunca do tema; padrão `pinned`)**, §2.4 (todo token tem consumidor no cromo; `hidden` da busca na sidebar saiu), §2.4.1 (gate com um grupo), §9 · [[06-painel-de-customizacao-e-preview]] **§2.1.1 (nova — a seção "Composição da Barra", visível no Essencial)** e **§6.2.2 (nova — o preview desenha o cromo real)** · [[00-contexto]] §1, §3 e a tabela de roteamento · **04-shell-e-discovery retirada** (o arquivo saiu) · varredura das menções vivas ao host em [[03-superficie-publica]] (a diferença kit × gate passou de 6 para **3**), [[00-mapa-do-modulo]] (contagens refeitas), [[07-responsividade-e-multidispositivo]], [[08-identidade-do-host-e-zero-marca]], [[10-seguranca-e-acessibilidade]] §3.3 ("a lib nunca escreve na URL" voltou a ser verdade), [[11-testes-e-cobertura]], [[13-instalacao-e-atualizacao]] (o starter gera `App.tsx`) e [[01-gates-e-baseline]]. Ficou de fora, de propósito: as tabelas históricas (versões em `03-versionamento`, achados em `15-divida-conhecida`) e os ADRs 001, 002, 003, 006, 007, 009 e 014, que registram o que se sabia na época. **Dívida registrada no [[00-backlog]]:** a opção `dock` do token `navigationStyle` continua oferecida pelo schema e nenhum cromo a implementa. A mudança é **MAJOR** (`8.0.0`): 22 nomes saem do barril e o modelo de usuário do cromo é `{ name, role?, avatarUrl?, email? }` |
+
+> ⚪ **A `plan-93` foi SINTETIZADA e REMOVIDA em 2026-10-04.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **93** | 🆕 [[017-porta-de-apagar-tema-simetrica-a-de-escrever]] — a porta de apagar; **substitui só o recorte do [[011-tema-salvo-por-uma-porta-de-escrita]]** que dizia que ela não existe (o 011 passa a `🔴 Substituído`, e o resto dele continua vigente) · [[09-temas-e-presets]] §4.3 (a ordem do tema resolvido no boot: prop controlada, par salvo, `initialTheme`), §4.4.1 (trocar `tenantId` recarrega), §4.4.2 (a porta entrega **e recebe** o par; a lib não grava sem mudança; todo caminho que aplica anuncia o id antes de gravar) e §4.6 (a porta de apagar) · [[03-superficie-publica]] **§6.5 (nova)** — o contrato de tipo do Provider para quem persiste. Ficou de fora, de propósito: os três achados do `audit` que o baseline já carrega. **Efeito colateral registrado:** a `plan-94` reservava o ADR **017** e passou a reservar o **018**. A mudança de tipo de `customThemes`/`allThemes` e o `deleteTheme` obrigatório fazem da próxima release candidata a **MAJOR** |
+
+> ⚪ **A `plan-87` foi SINTETIZADA e REMOVIDA em 2026-10-03.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **87** | [[00-regras-e-invariantes]] **R38 (nova)** — a regra, o gate e o vão; §1.3 (37 → 38 regras, ⚠️ 11 → 12), §4 e §4.1 · [[01-gates-e-baseline]] §2.2 e §2.2.1 (o gate no catálogo e na tabela de onde roda) e §9.4 (a convenção `§7.3` deixou de valer para os prompts) · [[02-enforcement-por-commit]] **§2.0 (nova)** — a trava como primeiro passo dos dois hooks, de qualquer branch · [[17-contrato-de-operacao-git]] §2.0 — a porta da autorização tem forma mecânica · [[00-contexto]] §7. Os prompts, o molde e este índice foram editados pela própria execução. Ficou de fora, de propósito: a afirmação de que o commit pela UI do VS Code não dispara a trava (não foi medida; está no [[00-backlog]]) e as cinco citações de `[[00-prompt-revisor]] §7.4` por cabeçalho, que continuam válidas |
 
 > ⚪ **A `plan-86` foi SINTETIZADA e REMOVIDA em 2026-10-02.** Destino demonstrado:
 >
@@ -159,7 +297,7 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 | Status | Significado | Quem move para cá |
 |---|---|---|
 | 🔴 A executar | Spec escrita. Aguarda a **sua vez na fila** — não é autorização para começar (§5). | revisor (ao criar) |
-| 🟡 Em execução | Executor trabalhando. | executor (ao iniciar) |
+| 🟡 Em execução | Executor trabalhando. | revisor (ao entregar o prompt de execução para despacho) |
 | 🟠 Em revisão | Execução concluída no worktree, aguardando veredito. | executor (ao entregar) |
 | 🔵 Em correção | Reprovada. Prompt de correção emitido, executor refazendo. | revisor (ao reprovar) |
 | 🟢 Aprovada | Verificada pelo revisor. Pronta para o usuário commitar. | revisor (ao aprovar) |
@@ -170,15 +308,16 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > execução nova; a plan e o histórico de vereditos são os mesmos.
 
 > 🔴 **A coluna "Quem move para cá" fala do `status` DA PLAN, não deste arquivo** *(esclarecido em 2026-08-07)*.
-> Ela e a §5 pareciam se contradizer: aqui o executor "move" 🟡 e 🟠, e lá está escrito que *"só o revisor edita
+> Ela e a §5 pareciam se contradizer: aqui o executor "move" 🟠, e lá está escrito que *"só o revisor edita
 > este arquivo"*. **As duas estão certas, e o sujeito é que era ambíguo:** o executor move o `status` no
 > frontmatter da plan — que é a **fonte da verdade** (§5) — e o revisor **espelha aqui**. O executor nunca abre
 > este arquivo.
 >
 > **Isso deixou de ser detalhe quando o gate nasceu.** O `plan-index:check` (`plan-12`) compara os dois e
-> **bloqueia o commit** na divergência. Como o executor legitimamente move a plan para 🟡 antes da primeira
-> edição ([[00-prompt-executor]] §2) e para 🟠 ao entregar (§5), **toda execução cria uma divergência que só o
-> revisor pode fechar** — e o bloqueio cai sobre quem commita, que é o dono.
+> **bloqueia o commit** na divergência. O 🟡 é do **revisor**, que o move ao despachar o prompt e roda
+> `npm run plan-index` na mesma ação ([[00-prompt-revisor]] §5.3); o executor só move para 🟠
+> ao entregar ([[00-prompt-executor]] §5) — e **essa transição cria uma divergência que só o revisor pode
+> fechar**, e o bloqueio cai sobre quem commita, que é o dono.
 >
 > **A regra operacional que resolve, e é do revisor:** *espelhar o status aqui **antes de liberar qualquer
 > commit**, inclusive nas liberações parciais no meio de uma execução.* Foi a falha que apareceu na `plan-15`:
@@ -246,7 +385,7 @@ Toda plan declara, **desde o momento em que é escrita**, para onde seu conteúd
 - **Só o revisor edita este arquivo.** O executor nunca o toca; ele escreve apenas na plan que executou.
 - **O revisor espelha o status ANTES de liberar qualquer commit** — inclusive liberação parcial no meio de uma
   execução. O `plan-index:check` bloqueia o commit na divergência, e a divergência nasce de um movimento
-  **legítimo** do executor (🟡 ao iniciar, 🟠 ao entregar). Espelhar no veredito basta para o fluxo normal;
+  **legítimo** do executor (🟠 ao entregar; o 🟡 já foi movido pelo revisor ao despachar). Espelhar no veredito basta para o fluxo normal;
   espelhar **ao liberar** é o que cobre a liberação parcial. Ver a nota da §2.
 
 ---

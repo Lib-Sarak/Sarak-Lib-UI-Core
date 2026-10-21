@@ -101,7 +101,7 @@ export const SarakRadio: React.FC<SarakRadioProps> = ({
                     />
 
                     <div
-                        className="w-5 h-5 rounded-full transition-all duration-200 flex items-center justify-center border"
+                        className="w-5 h-5 rounded-full transition-all duration-[var(--duration-fast,0.2s)] flex items-center justify-center border"
                         style={radioStyle}
                     >
                         {isChecked && (
@@ -116,14 +116,14 @@ export const SarakRadio: React.FC<SarakRadioProps> = ({
                 {(label || description) && (
                     <div className={textContainerClass}>
                         {label && (
-                            <span className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">
+                            <span className="text-sm font-medium text-[var(--text-muted,rgba(242,246,251,0.55))]">
                                 {label}
                             </span>
                         )}
                         {description && (
                             <span
                                 id={descId}
-                                className="text-xs text-[var(--text-muted,#94a3b8)]"
+                                className="text-xs text-[var(--text-muted,rgba(242,246,251,0.55))]"
                             >
                                 {description}
                             </span>

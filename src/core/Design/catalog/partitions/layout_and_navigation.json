@@ -2,7 +2,7 @@
   {
     "tokenId": "isNavHidden",
     "name": "Ocultar Navegação",
-    "description": "Controla se as barras de navegação globais (sidebar, topbar) devem estar escondidas.",
+    "description": "Quando ativo, recolhe a navegação: a barra lateral fica no trilho estreito (74 px) e a barra do topo na geometria compacta — o conteúdo ganha o espaço, e o menu continua alcançável. Não a remove da tela.",
     "type": "boolean",
     "importance": 95,
     "categories": [
@@ -22,10 +22,6 @@
     ],
     "cssVariables": [
       "--is-nav-hidden"
-    ],
-    "allowedValues": [
-      true,
-      false
     ],
     "relatedTokens": [
       "sidebarWidth",
@@ -95,38 +91,10 @@
     ]
   },
   {
-    "tokenId": "contentAlignment",
-    "name": "Alinhamento do Conteúdo",
-    "description": "Comportamento da área útil da página, definindo se o conteúdo estica para 100% da tela ou fica em um container centralizado.",
-    "type": "select",
-    "importance": 95,
-    "categories": [
-      "layout",
-      "navegação",
-      "layout_and_navigation"
-    ],
-    "tags": [
-      "content",
-      "layout",
-      "alignment"
-    ],
-    "databaseColumn": "layout_and_navigation",
-    "schemaOrigin": "navigation.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [],
-    "allowedValues": [
-      "stretch",
-      "center"
-    ],
-    "relatedTokens": []
-  },
-  {
     "tokenId": "sidebarWidth",
     "name": "Largura da Sidebar",
     "description": "Largura atual (ou padrão) da barra de navegação lateral.",
-    "type": "number",
+    "type": "slider",
     "importance": 90,
     "categories": [
       "geometria",
@@ -149,8 +117,7 @@
     ],
     "allowedValues": {
       "min": 200,
-      "max": 400,
-      "step": 1
+      "max": 400
     },
     "relatedTokens": [
       "sidebarMinWidth",
@@ -161,7 +128,7 @@
     "tokenId": "shellBrandLogoSize",
     "name": "Altura do Logo da Marca",
     "description": "Altura do logo da marca exibido no cabeçalho do shell, em pixels.",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "geometria",
@@ -184,8 +151,7 @@
     ],
     "allowedValues": {
       "min": 16,
-      "max": 64,
-      "step": 1
+      "max": 64
     },
     "relatedTokens": [
       "sidebarWidth"
@@ -195,7 +161,7 @@
     "tokenId": "sidebarCollapsedWidth",
     "name": "Largura da Sidebar (Recolhida)",
     "description": "Largura da sidebar quando está no modo recolhido (só ícones, sem rótulo de texto).",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "geometria",
@@ -217,8 +183,7 @@
     ],
     "allowedValues": {
       "min": 48,
-      "max": 100,
-      "step": 1
+      "max": 100
     },
     "relatedTokens": [
       "sidebarWidth"
@@ -228,7 +193,7 @@
     "tokenId": "sidebarLabelMaxWidth",
     "name": "Largura Máxima do Rótulo (Sidebar)",
     "description": "Largura máxima do texto de nome do sistema exibido no cabeçalho da sidebar antes de truncar.",
-    "type": "number",
+    "type": "slider",
     "importance": 40,
     "categories": [
       "geometria",
@@ -250,8 +215,7 @@
     ],
     "allowedValues": {
       "min": 60,
-      "max": 240,
-      "step": 1
+      "max": 240
     },
     "relatedTokens": [
       "sidebarWidth"
@@ -261,7 +225,7 @@
     "tokenId": "sidebarMinWidth",
     "name": "Largura Mínima da Sidebar",
     "description": "Limita o tamanho mínimo da barra lateral ao ser redimensionada.",
-    "type": "number",
+    "type": "slider",
     "importance": 80,
     "categories": [
       "geometria",
@@ -283,8 +247,7 @@
     ],
     "allowedValues": {
       "min": 150,
-      "max": 300,
-      "step": 1
+      "max": 400
     },
     "relatedTokens": [
       "sidebarWidth"
@@ -294,7 +257,7 @@
     "tokenId": "sidebarMaxWidth",
     "name": "Largura Máxima da Sidebar",
     "description": "Limita o tamanho máximo da barra lateral ao ser redimensionada.",
-    "type": "number",
+    "type": "slider",
     "importance": 80,
     "categories": [
       "geometria",
@@ -315,9 +278,8 @@
       "--sidebar-max-width"
     ],
     "allowedValues": {
-      "min": 300,
-      "max": 600,
-      "step": 1
+      "min": 240,
+      "max": 600
     },
     "relatedTokens": [
       "sidebarWidth"
@@ -415,7 +377,7 @@
     "tokenId": "sidebarNoiseOpacity",
     "name": "Opacidade do Ruído (Sidebar)",
     "description": "Intensidade da textura de ruído (noise overlay) aplicada sobre a sidebar.",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "efeitos",
@@ -449,7 +411,7 @@
     "tokenId": "topbarHeight",
     "name": "Altura da Topbar",
     "description": "Altura vertical do cabeçalho de navegação (topbar).",
-    "type": "number",
+    "type": "slider",
     "importance": 90,
     "categories": [
       "geometria",
@@ -473,8 +435,7 @@
     ],
     "allowedValues": {
       "min": 48,
-      "max": 100,
-      "step": 1
+      "max": 100
     },
     "relatedTokens": [
       "topbarColor"
@@ -484,7 +445,7 @@
     "tokenId": "topbarCollapsedHeight",
     "name": "Altura da Topbar (Recolhida)",
     "description": "Altura do cabeçalho de navegação quando está no modo recolhido (hover-to-expand).",
-    "type": "number",
+    "type": "slider",
     "importance": 55,
     "categories": [
       "geometria",
@@ -505,9 +466,8 @@
       "--sarak-topbar-collapsed-height"
     ],
     "allowedValues": {
-      "min": 24,
-      "max": 56,
-      "step": 1
+      "min": 44,
+      "max": 56
     },
     "relatedTokens": [
       "topbarHeight"
@@ -517,7 +477,7 @@
     "tokenId": "brandLogoSizeCollapsed",
     "name": "Altura do Logo da Marca (Recolhida)",
     "description": "Altura do logo da marca no cabeçalho do shell quando a navegação está no modo recolhido.",
-    "type": "number",
+    "type": "slider",
     "importance": 40,
     "categories": [
       "geometria",
@@ -540,8 +500,7 @@
     ],
     "allowedValues": {
       "min": 12,
-      "max": 32,
-      "step": 1
+      "max": 32
     },
     "relatedTokens": [
       "shellBrandLogoSize"
@@ -639,7 +598,7 @@
     "tokenId": "topbarNoiseOpacity",
     "name": "Opacidade do Ruído (Topbar)",
     "description": "Intensidade da textura visual de ruído aplicada sobre o cabeçalho.",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "efeitos",
@@ -703,7 +662,7 @@
     "tokenId": "topbarLabelMaxWidth",
     "name": "Largura Máxima do Rótulo (Topbar)",
     "description": "Largura máxima do texto de nome do sistema exibido na topbar antes de truncar.",
-    "type": "number",
+    "type": "slider",
     "importance": 40,
     "categories": [
       "geometria",
@@ -725,8 +684,7 @@
     ],
     "allowedValues": {
       "min": 60,
-      "max": 300,
-      "step": 1
+      "max": 300
     },
     "relatedTokens": [
       "topbarHeight"
@@ -736,7 +694,7 @@
     "tokenId": "tabGap",
     "name": "Espaço entre Abas",
     "description": "Distância horizontal (gap) entre itens de navegação tipo tab.",
-    "type": "number",
+    "type": "slider",
     "importance": 70,
     "categories": [
       "geometria",
@@ -760,8 +718,7 @@
     ],
     "allowedValues": {
       "min": 0,
-      "max": 24,
-      "step": 1
+      "max": 24
     },
     "relatedTokens": [
       "tabSectionMargin"
@@ -771,7 +728,7 @@
     "tokenId": "tabSectionMargin",
     "name": "Margem da Seção de Abas",
     "description": "Distância de respiro (padding/margin) aplicada ao redor do container inteiro de abas.",
-    "type": "number",
+    "type": "slider",
     "importance": 70,
     "categories": [
       "geometria",
@@ -796,8 +753,7 @@
     ],
     "allowedValues": {
       "min": 0,
-      "max": 48,
-      "step": 1
+      "max": 48
     },
     "relatedTokens": [
       "tabGap"
@@ -867,7 +823,7 @@
     "tokenId": "navActiveMarkerGlow",
     "name": "Brilho do Marcador",
     "description": "Intensidade do efeito de drop-shadow brilhante sobre o marcador de menu ativo.",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "efeitos",
@@ -890,18 +846,51 @@
     ],
     "allowedValues": {
       "min": 0,
-      "max": 20,
-      "step": 1
+      "max": 40
     },
     "relatedTokens": [
       "navActiveMarkerColor"
     ]
   },
   {
+    "tokenId": "navItemRadius",
+    "name": "Raio do Item de Menu",
+    "description": "Raio dos cantos do item de navegação: a forma do fundo do item ativo e do item sob o ponteiro.",
+    "type": "slider",
+    "importance": 55,
+    "categories": [
+      "geometria",
+      "bordas",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "navigation",
+      "item",
+      "radius",
+      "border"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-nav-item-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 24
+    },
+    "relatedTokens": [
+      "sidebarActiveColor",
+      "topbarActiveColor"
+    ]
+  },
+  {
     "tokenId": "sidebarBlur",
     "name": "Backdrop Blur (Sidebar)",
     "description": "Quantidade de desfoque de fundo (backdrop-filter) aplicada à barra de navegação lateral.",
-    "type": "number",
+    "type": "slider",
     "importance": 75,
     "categories": [
       "efeitos",
@@ -924,8 +913,7 @@
     ],
     "allowedValues": {
       "min": 0,
-      "max": 50,
-      "step": 1
+      "max": 50
     },
     "relatedTokens": [
       "sidebarColor"
@@ -1014,18 +1002,107 @@
     "cssVariables": [],
     "allowedValues": [
       "top",
-      "bottom",
-      "hidden"
+      "bottom"
     ],
     "relatedTokens": [
       "searchPositionTopbar"
     ]
   },
   {
+    "tokenId": "chromeSearchPosition",
+    "name": "Composição: Busca",
+    "description": "Define se a busca fica fixa na barra, dentro do menu de preferências ou não é oferecida.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "chrome-composition"
+    ],
+    "tags": [
+      "chrome",
+      "busca",
+      "composição"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "SarakAppChrome"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "pinned",
+      "menu",
+      "off"
+    ],
+    "relatedTokens": [
+      "chromeUserPosition",
+      "chromeNotificationsPosition"
+    ]
+  },
+  {
+    "tokenId": "chromeUserPosition",
+    "name": "Composição: Usuário",
+    "description": "Define se o widget do usuário fica fixo na barra, dentro do menu de preferências ou não é oferecido.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "chrome-composition"
+    ],
+    "tags": [
+      "chrome",
+      "usuário",
+      "composição"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "SarakAppChrome"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "pinned",
+      "menu",
+      "off"
+    ],
+    "relatedTokens": [
+      "chromeSearchPosition",
+      "chromeNotificationsPosition"
+    ]
+  },
+  {
+    "tokenId": "chromeNotificationsPosition",
+    "name": "Composição: Notificações",
+    "description": "Define se as notificações ficam fixas na barra, dentro do menu de preferências ou não são oferecidas.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "chrome-composition"
+    ],
+    "tags": [
+      "chrome",
+      "notificações",
+      "composição"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "SarakAppChrome"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "pinned",
+      "menu",
+      "off"
+    ],
+    "relatedTokens": [
+      "chromeSearchPosition",
+      "chromeUserPosition"
+    ]
+  },
+  {
     "tokenId": "searchDropdownGap",
     "name": "Espaço do Dropdown de Busca",
     "description": "Distância entre o campo de busca da topbar e o dropdown de resultados exibido abaixo dele.",
-    "type": "number",
+    "type": "slider",
     "importance": 35,
     "categories": [
       "geometria",
@@ -1048,7 +1125,7 @@
     "allowedValues": {
       "min": 0,
       "max": 2,
-      "step": 0.1
+      "step": 0.5
     },
     "relatedTokens": [
       "searchDropdownWidth"
@@ -1058,7 +1135,7 @@
     "tokenId": "searchDropdownWidth",
     "name": "Largura do Dropdown de Busca",
     "description": "Largura do painel de resultados exibido abaixo do campo de busca da topbar.",
-    "type": "number",
+    "type": "slider",
     "importance": 45,
     "categories": [
       "geometria",
@@ -1080,8 +1157,7 @@
     ],
     "allowedValues": {
       "min": 240,
-      "max": 600,
-      "step": 1
+      "max": 600
     },
     "relatedTokens": [
       "searchDropdownGap"
@@ -1091,7 +1167,7 @@
     "tokenId": "scrollWidth",
     "name": "Largura da Barra",
     "description": "Largura (ou altura) principal do scrollbar do Sarak.",
-    "type": "number",
+    "type": "slider",
     "importance": 75,
     "categories": [
       "geometria",
@@ -1124,7 +1200,7 @@
     "tokenId": "scrollRadius",
     "name": "Arredondamento (Thumb)",
     "description": "Curvatura nas pontas do polegar da barra de rolagem (border-radius).",
-    "type": "number",
+    "type": "slider",
     "importance": 65,
     "categories": [
       "bordas",
@@ -1157,7 +1233,7 @@
     "tokenId": "scrollTrackOpacity",
     "name": "Opacidade do Trilho",
     "description": "Opacidade do track onde a barra de rolagem desliza.",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "efeitos",
@@ -1180,7 +1256,7 @@
     "allowedValues": {
       "min": 0,
       "max": 1,
-      "step": 0.05
+      "step": 0.01
     },
     "relatedTokens": [
       "scrollThumbOpacity"
@@ -1220,7 +1296,7 @@
     "tokenId": "scrollThumbOpacity",
     "name": "Opacidade (Thumb)",
     "description": "Opacidade padrão da barra de rolagem quando não interativa.",
-    "type": "number",
+    "type": "slider",
     "importance": 70,
     "categories": [
       "efeitos",
@@ -1253,7 +1329,7 @@
     "tokenId": "scrollThumbHoverOpacity",
     "name": "Opacidade ao Hover",
     "description": "Opacidade aplicada à barra de rolagem quando o mouse foca sobre ela.",
-    "type": "number",
+    "type": "slider",
     "importance": 70,
     "categories": [
       "interação",
@@ -1287,7 +1363,7 @@
     "tokenId": "scrollPadding",
     "name": "Espaçamento (Padding)",
     "description": "Distância (margem) da barra de rolagem em relação às bordas extremas do container.",
-    "type": "number",
+    "type": "slider",
     "importance": 65,
     "categories": [
       "layout",
@@ -1321,7 +1397,7 @@
     "tokenId": "zIndexBase",
     "name": "Base Z-Index",
     "description": "Nível Z padrão para os elementos em nível de base, logo acima do background do sistema.",
-    "type": "number",
+    "type": "slider",
     "importance": 50,
     "categories": [
       "layout",
@@ -1354,7 +1430,7 @@
     "tokenId": "zIndexSidebar",
     "name": "Sidebar Z-Index",
     "description": "Nível Z aplicado à barra lateral de navegação (Sidebar).",
-    "type": "number",
+    "type": "slider",
     "importance": 70,
     "categories": [
       "layout",
@@ -1375,9 +1451,9 @@
       "--sarak-z-sidebar"
     ],
     "allowedValues": {
-      "min": 100,
-      "max": 1000,
-      "step": 50
+      "min": 10,
+      "max": 790,
+      "step": 10
     },
     "relatedTokens": [
       "zIndexBase",
@@ -1388,7 +1464,7 @@
     "tokenId": "zIndexModal",
     "name": "Modal Z-Index",
     "description": "Nível Z aplicado a janelas modais, sobreposições críticas e pop-ups.",
-    "type": "number",
+    "type": "slider",
     "importance": 90,
     "categories": [
       "layout",
@@ -1422,7 +1498,7 @@
     "tokenId": "zIndexTooltip",
     "name": "Tooltip Z-Index",
     "description": "O nível mais alto no sistema, reservado para tooltips, toasts e drop-downs críticos.",
-    "type": "number",
+    "type": "slider",
     "importance": 95,
     "categories": [
       "layout",
@@ -1445,108 +1521,11 @@
     ],
     "allowedValues": {
       "min": 5000,
-      "max": 9999,
+      "max": 9900,
       "step": 100
     },
     "relatedTokens": [
       "zIndexModal"
     ]
-  },
-  {
-    "tokenId": "layerBackdropBlur",
-    "name": "Blur do Fundo (Modal)",
-    "description": "Nível de desfoque (backdrop-filter) aplicado no fundo das modais.",
-    "type": "number",
-    "importance": 70,
-    "categories": [
-      "efeitos",
-      "filtros",
-      "layout_and_navigation"
-    ],
-    "tags": [
-      "backdrop",
-      "blur",
-      "modal"
-    ],
-    "databaseColumn": "layout_and_navigation",
-    "schemaOrigin": "layers.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-layer-backdrop-blur"
-    ],
-    "allowedValues": {
-      "min": 0,
-      "max": 40,
-      "step": 1
-    },
-    "relatedTokens": [
-      "layerBackdropOpacity"
-    ]
-  },
-  {
-    "tokenId": "layerBackdropOpacity",
-    "name": "Escurecimento do Fundo",
-    "description": "Nível de opacidade do fundo escuro por trás de elementos sobrepostos.",
-    "type": "number",
-    "importance": 65,
-    "categories": [
-      "efeitos",
-      "filtros",
-      "layout_and_navigation"
-    ],
-    "tags": [
-      "backdrop",
-      "opacity",
-      "overlay"
-    ],
-    "databaseColumn": "layout_and_navigation",
-    "schemaOrigin": "layers.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-layer-backdrop-opacity"
-    ],
-    "allowedValues": {
-      "min": 0,
-      "max": 1,
-      "step": 0.05
-    },
-    "relatedTokens": [
-      "layerBackdropBlur"
-    ]
-  },
-  {
-    "tokenId": "layerElevationFactor",
-    "name": "Fator de Elevação",
-    "description": "Multiplicador dinâmico de profundidade para ajustar a força de drop-shadows globais.",
-    "type": "number",
-    "importance": 60,
-    "categories": [
-      "efeitos",
-      "sombra-luz",
-      "layout_and_navigation"
-    ],
-    "tags": [
-      "elevation",
-      "shadow",
-      "multiplier"
-    ],
-    "databaseColumn": "layout_and_navigation",
-    "schemaOrigin": "layers.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-layer-elevation-factor"
-    ],
-    "allowedValues": {
-      "min": 0.5,
-      "max": 2,
-      "step": 0.1
-    },
-    "relatedTokens": []
   }
 ]

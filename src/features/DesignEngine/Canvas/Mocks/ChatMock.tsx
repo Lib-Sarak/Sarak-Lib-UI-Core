@@ -18,7 +18,7 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
                 </div>
             )}
             <div
-                className={`p-3 @sm:p-4 shadow-xl max-w-[85%] relative transition-all duration-500 sarak-card
+                className={`p-3 @sm:p-4 max-w-[85%] relative transition-all duration-[var(--sarak-motion-dur-slow,0.6s)] sarak-card
                     ${isBot ? 
                         (bubbleStyle === 'glass' ? 'bg-[var(--theme-card)] backdrop-blur-md border border-[var(--theme-border)]' : 
                          bubbleStyle === 'solid' ? 'bg-[var(--theme-card)] border border-[var(--theme-border)]' : 
@@ -26,14 +26,14 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
                          'bg-transparent border-l-4 border-l-[var(--theme-primary)] rounded-none') 
                     : 
                         (bubbleStyle === 'glass' ? 'bg-[var(--theme-primary)]/20 backdrop-blur-md border border-[var(--theme-primary)]/30' : 
-                         bubbleStyle === 'solid' ? 'bg-[var(--theme-primary)] text-white' : 
+                         bubbleStyle === 'solid' ? 'bg-[var(--theme-primary)] text-theme-on-primary' : 
                          bubbleStyle === 'outline' ? 'border-2 border-[var(--theme-primary)] bg-transparent' : 
-                         'bg-white/5 border border-white/10 rounded-lg')
+                         'bg-theme-text/5 border border-theme-text/10 rounded-lg')
                     }
                 `}
                 style={{ 
                     borderRadius: bubbleStyle === 'minimal' ? (isBot ? '0' : '4px') : (isBot ? `${radius}px ${radius}px ${radius}px 0px` : `${radius}px ${radius}px 0px ${radius}px`),
-                    color: (!isBot && bubbleStyle === 'solid') ? 'white' : 'var(--theme-title)'
+                    color: (!isBot && bubbleStyle === 'solid') ? 'var(--theme-on-primary,#020617)' : 'var(--theme-title)'
                 }}
             >
                 <div className="text-[10px] @sm:text-xs font-medium leading-relaxed">
@@ -41,7 +41,7 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
                 </div>
             </div>
             {!isBot && showAvatars && (
-                <div className="w-6 h-6 @sm:w-8 @sm:h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                <div className="w-6 h-6 @sm:w-8 @sm:h-8 rounded-full bg-theme-text/5 border border-theme-text/10 flex items-center justify-center shrink-0">
                     <SarakIcon name="User" size={12} className="text-[var(--theme-title)]/60" />
                 </div>
             )}
@@ -61,7 +61,7 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
                         </div>
                         <div className="flex flex-col">
                             <span className="text-xs font-bold text-[var(--theme-title)]">Workspace Chat</span>
-                            <span className="text-[10px] text-emerald-500 font-bold flex items-center gap-1"><div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /> 3 Online</span>
+                            <span className="text-[10px] text-[var(--sarak-status-success-color,#10b981)] font-bold flex items-center gap-1"><div className="w-1.5 h-1.5 bg-[var(--sarak-status-success-color,#10b981)] rounded-full animate-pulse" /> 3 Online</span>
                         </div>
                     </div>
                 </div>
@@ -95,18 +95,18 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
             <div className="w-80 hidden @xl:flex flex-col gap-6 relative">
                 
                 {/* Variante 1: Widget Flutuante (Suporte) */}
-                <div className="sarak-card flex flex-col h-[350px] border border-[var(--theme-border)] bg-[var(--theme-card)] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.5)] rounded-2xl overflow-hidden relative">
-                    <div className="h-12 bg-[var(--theme-primary)] text-white flex items-center justify-between px-4 shrink-0 shadow-md relative z-10">
+                <div className="sarak-card flex flex-col h-[350px] border border-[var(--theme-border)] bg-[var(--theme-card)] rounded-2xl overflow-hidden relative">
+                    <div className="h-12 bg-[var(--theme-primary)] text-theme-on-primary flex items-center justify-between px-4 shrink-0 shadow-md relative z-10">
                         <span className="text-xs font-black tracking-wider flex items-center gap-2"><SarakIcon name="MessageSquare" size={14} /> Sarak Support</span>
                         <div className="flex gap-2 opacity-70"><SarakIcon name="Minimize2" size={12} /><SarakIcon name="MoreHorizontal" size={12} /></div>
                     </div>
                     <div className="flex-1 p-4 bg-gradient-to-b from-[var(--theme-card)] to-[var(--theme-body)] flex flex-col gap-3 overflow-y-auto custom-scrollbar text-[10px]">
-                        <div className="text-center text-[9px] text-white/30 uppercase tracking-widest my-2">Hoje 14:30</div>
+                        <div className="text-center text-[9px] text-theme-text/30 uppercase tracking-widest my-2">Hoje 14:30</div>
                         <ChatMessage isBot={true} text="Olá! Como posso ajudar com sua assinatura?" />
                         <ChatMessage isBot={false} text="Preciso fazer um upgrade para o plano Enterprise." />
                     </div>
                     <div className="p-3 bg-[var(--theme-card)] border-t border-[var(--theme-border)] flex items-center gap-2">
-                        <SarakIcon name="Paperclip" size={14} className="text-white/30" />
+                        <SarakIcon name="Paperclip" size={14} className="text-theme-text/30" />
                         <SarakInput type="text" placeholder="Sua dúvida..." fullWidth />
                         <SarakIcon name="Zap" size={14} className="text-[var(--theme-primary)]" />
                     </div>
@@ -114,22 +114,22 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
 
                 {/* Variante 2: In-line Comments */}
                 <div className="sarak-card flex-1 border border-[var(--theme-border)] bg-transparent rounded-2xl p-5 flex flex-col gap-4 relative">
-                    <div className="text-[10px] font-black uppercase text-[var(--theme-text-sec)] tracking-widest border-b border-[var(--theme-border)] pb-2">
+                    <div className="text-[10px] font-black uppercase text-[var(--text-secondary)] tracking-widest border-b border-[var(--theme-border)] pb-2">
                         Thread In-Line (Comentários)
                     </div>
                     <div className="flex-1 flex flex-col gap-4 overflow-y-auto custom-scrollbar">
                         <div className="flex gap-3">
                             <div className="w-6 h-6 rounded-full bg-[var(--theme-primary)]/20 flex items-center justify-center mt-1"><SarakIcon name="User" size={10} className="text-[var(--theme-primary)]" /></div>
                             <div className="flex-1">
-                                <div className="text-[10px] font-bold text-[var(--theme-title)] mb-1">DevOps Team <span className="text-white/20 font-normal ml-2">Há 2 horas</span></div>
-                                <div className="text-[10px] text-[var(--theme-text-sec)] leading-relaxed">O deploy falhou na stage 4 devido a falta de variáveis de ambiente. Alguém pode verificar?</div>
+                                <div className="text-[10px] font-bold text-[var(--theme-title)] mb-1">DevOps Team <span className="text-theme-text/20 font-normal ml-2">Há 2 horas</span></div>
+                                <div className="text-[10px] text-[var(--text-secondary)] leading-relaxed">O deploy falhou na stage 4 devido a falta de variáveis de ambiente. Alguém pode verificar?</div>
                             </div>
                         </div>
                         <div className="flex gap-3 ml-6">
-                            <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center mt-1"><SarakIcon name="Bot" size={10} className="text-emerald-500" /></div>
+                            <div className="w-6 h-6 rounded-full bg-[var(--sarak-status-success-color,#10b981)]/20 flex items-center justify-center mt-1"><SarakIcon name="Bot" size={10} className="text-[var(--sarak-status-success-color,#10b981)]" /></div>
                             <div className="flex-1">
-                                <div className="text-[10px] font-bold text-emerald-500 mb-1">CI/CD Bot <span className="text-white/20 font-normal ml-2">Há 5 min</span></div>
-                                <div className="text-[10px] text-[var(--theme-text-sec)] leading-relaxed border border-emerald-500/20 bg-emerald-500/5 p-2 rounded">Auto-fix aplicado. Secrets sincronizados do Vault. Re-iniciando pipeline.</div>
+                                <div className="text-[10px] font-bold text-[var(--sarak-status-success-color,#10b981)] mb-1">CI/CD Bot <span className="text-theme-text/20 font-normal ml-2">Há 5 min</span></div>
+                                <div className="text-[10px] text-[var(--text-secondary)] leading-relaxed border border-[var(--sarak-status-success-color,#10b981)]/20 bg-[var(--sarak-status-success-color,#10b981)]/5 p-2 rounded">Auto-fix aplicado. Secrets sincronizados do Vault. Re-iniciando pipeline.</div>
                             </div>
                         </div>
                     </div>

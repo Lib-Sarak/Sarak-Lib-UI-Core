@@ -24,7 +24,7 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | Componente | Prop | Valores aceitos |
 | --- | --- | --- |
 | `SarakAppChrome` | `navigationStyle` | `sidebar` · `topbar` · `auto` |
-| `SarakAuthScreen` | `socialConfig` | `compact` · `full` · `glass` · `sovereign` |
+| `SarakAuthScreen` | `errorVariant` | `error` · `warning` |
 | `SarakAuthScreen` | `role` | `primary` · `secondary` · `neutral` · `accent` |
 | `SarakAuthScreen` | `density` | `compact` · `standard` · `spacious` |
 | `SarakAuthScreen` | `importance` | `hero` · `base` · `subtle` |
@@ -40,8 +40,11 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakChart` | `role` | `primary` · `secondary` · `neutral` · `accent` |
 | `SarakChart` | `density` | `compact` · `standard` · `spacious` |
 | `SarakChart` | `importance` | `hero` · `base` · `subtle` |
-| `SarakChartEngine` | `type` | `line` · `area` · `bar` · `pie` · `radar` · `gauge` · `scatter` · `heatmap` · `funnel` · `treemap` · `candlestick` · `sunburst` · `histogram` · `boxplot` |
+| `SarakChartEngine` | `type` | `line` · `area` · `bar` · `pie` · `radar` · `gauge` · `scatter` · `heatmap` · `funnel` · `treemap` · `candlestick` · `sunburst` · `histogram` · `boxplot` · `waterfall` · `sankey` · `calendar` |
 | `SarakChartEngine` | `config` | `recharts` · `echarts` |
+| `SarakChartEngine` | `series` | `bar` · `line` · `area` · `left` · `right` · `chartColorPalette` · `secondaryColor` · `accentColor` · `statusSuccessColor` · `statusWarningColor` · `statusErrorColor` · `statusInfoColor` · `tertiaryColor` |
+| `SarakChartEngine` | `orientation` | `vertical` · `horizontal` |
+| `SarakChartEngine` | `legend` | `top` · `bottom` |
 | `SarakChat` | `role` | `primary` · `secondary` · `neutral` · `accent` |
 | `SarakChat` | `density` | `compact` · `standard` · `spacious` |
 | `SarakChat` | `importance` | `hero` · `base` · `subtle` |
@@ -51,13 +54,8 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakFlex` | `justify` | `flex-start` · `flex-end` · `center` · `space-between` · `space-around` · `space-evenly` |
 | `SarakFlex` | `align` | `stretch` · `flex-start` · `flex-end` · `center` · `baseline` |
 | `SarakForm` | `mode` | `create` · `edit` |
-| `SarakForm` | `actions` | `POST` · `PATCH` · `DELETE` |
-| `SarakForm` | `role` | `primary` · `secondary` · `neutral` · `accent` |
-| `SarakForm` | `density` | `compact` · `standard` · `spacious` |
-| `SarakForm` | `importance` | `hero` · `base` · `subtle` |
 | `SarakIconButton` | `variant` | `primary` · `secondary` · `ghost` · `danger` |
 | `SarakIconButton` | `size` | `xs` · `sm` · `md` · `lg` |
-| `SarakManagementGrid` | `groupActions` | `plus` · `settings` |
 | `SarakManagementGrid` | `role` | `primary` · `secondary` · `neutral` · `accent` |
 | `SarakManagementGrid` | `density` | `compact` · `standard` · `spacious` |
 | `SarakManagementGrid` | `importance` | `hero` · `base` · `subtle` |
@@ -66,33 +64,27 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakShellSearchWidget` | `variant` | `bar` · `icon` |
 | `SarakShellThemeToggle` | `variant` | `horizontal` · `vertical` · `mini` |
 | `SarakShellUserWidget` | `variant` | `horizontal` · `vertical` · `mini` |
-| `SarakSocialButton` | `provider` | `google` · `github` |
-| `SarakSocialButton` | `variant` | `glass` · `sovereign` |
+| `SarakSocialButton` | `variant` | `glass` · `solid` |
 | `SarakSpinner` | `size` | `sm` · `md` · `lg` |
-| `SarakStats` | `role` | `primary` · `secondary` · `neutral` · `accent` |
-| `SarakStats` | `density` | `compact` · `standard` · `spacious` |
-| `SarakStats` | `importance` | `hero` · `base` · `subtle` |
-| `SarakTable` | `role` | `primary` · `secondary` · `neutral` · `accent` |
-| `SarakTable` | `density` | `compact` · `standard` · `spacious` |
-| `SarakTable` | `importance` | `hero` · `base` · `subtle` |
 | `SarakTabs` | `variant` | `pills` · `underlined` · `enclosed` |
 | `SarakTypography` | `transform` | `none` · `uppercase` · `capitalize` |
+| `SarakValue` | `size` | `sm` · `md` · `lg` |
 
 ### CSS Variables públicas (namespace `--sarak-*`)
 
 Vars REAIS emitidas pelo Design Engine. Use SEMPRE com fallback — `var(--sarak-x, valor)`. Nomes fora desta lista NÃO existem e não pintam nada.
 
-`--sarak-accent-color` · `--sarak-bg-opacity` · `--sarak-body-font` · `--sarak-border-radius` · `--sarak-border-radius-lg` · `--sarak-border-radius-md` · `--sarak-border-radius-sm` · `--sarak-border-style` · `--sarak-border-type` · `--sarak-border-width` · `--sarak-card-bg` · `--sarak-card-border` · `--sarak-card-padding-md` · `--sarak-card-radius` · `--sarak-chart-thickness` · `--sarak-chat-anim-speed` · `--sarak-chat-bubble` · `--sarak-color-depth` · `--sarak-color-variation` · `--sarak-contrast-curve` · `--sarak-error-color` · `--sarak-flow-grid` · `--sarak-flow-radius` · `--sarak-font-scale` · `--sarak-font-size` · `--sarak-glass-blur` · `--sarak-glass-opacity` · `--sarak-glass-saturation` · `--sarak-heading-font` · `--sarak-icon-stroke` · `--sarak-layered-shadows` · `--sarak-layout` · `--sarak-layout-density` · `--sarak-layout-gap` · `--sarak-layout-gap-lg` · `--sarak-layout-gap-md` · `--sarak-layout-gap-sm` · `--sarak-line-height` · `--sarak-max-width` · `--sarak-mode` · `--sarak-nav-style` · `--sarak-navigation-style` · `--sarak-noise-opacity` · `--sarak-palette` · `--sarak-primary-color` · `--sarak-scrollbar-width` · `--sarak-secondary-color` · `--sarak-security-glow` · `--sarak-security-pulse` · `--sarak-shadow-intensity` · `--sarak-sidebar-active-color` · `--sarak-sidebar-bg` · `--sarak-sidebar-hover-color` · `--sarak-sidebar-noise-opacity` · `--sarak-sidebar-width` · `--sarak-success-color` · `--sarak-surface` · `--sarak-surface-color` · `--sarak-surface-intensity` · `--sarak-system-tone` · `--sarak-tab-gap` · `--sarak-tab-section-margin` · `--sarak-tertiary-color` · `--sarak-texture` · `--sarak-texture-color` · `--sarak-texture-opacity` · `--sarak-title-color` · `--sarak-topbar-active-color` · `--sarak-topbar-bg` · `--sarak-topbar-height` · `--sarak-topbar-hover-color` · `--sarak-topbar-noise-opacity` · `--sarak-warning-color`
+`--sarak-accent-color` · `--sarak-bg-gradient-angle` · `--sarak-bg-gradient-mode` · `--sarak-bg-opacity` · `--sarak-body-font` · `--sarak-border-radius` · `--sarak-border-style` · `--sarak-border-type` · `--sarak-border-width` · `--sarak-card-bg` · `--sarak-card-border` · `--sarak-card-padding-md` · `--sarak-card-radius` · `--sarak-card-shadow-blur` · `--sarak-card-shadow-expansion` · `--sarak-card-shadow-offset-x` · `--sarak-card-shadow-offset-y` · `--sarak-card-shadow-spread` · `--sarak-chart-thickness` · `--sarak-chat-anim-speed` · `--sarak-chat-bubble` · `--sarak-color-depth` · `--sarak-color-variation` · `--sarak-error-color` · `--sarak-flow-grid` · `--sarak-flow-radius` · `--sarak-font-scale` · `--sarak-font-size` · `--sarak-glass-blur` · `--sarak-glass-opacity` · `--sarak-glass-saturation` · `--sarak-heading-font` · `--sarak-icon-stroke` · `--sarak-layered-shadows` · `--sarak-layout-density` · `--sarak-layout-gap` · `--sarak-layout-gap-lg` · `--sarak-layout-gap-md` · `--sarak-layout-gap-sm` · `--sarak-line-height` · `--sarak-max-width` · `--sarak-mode` · `--sarak-nav-style` · `--sarak-navigation-style` · `--sarak-noise-density` · `--sarak-primary-color` · `--sarak-secondary-color` · `--sarak-shadow-intensity` · `--sarak-sidebar-active-color` · `--sarak-sidebar-bg` · `--sarak-sidebar-hover-color` · `--sarak-sidebar-noise-opacity` · `--sarak-sidebar-width` · `--sarak-success-color` · `--sarak-surface` · `--sarak-surface-color` · `--sarak-surface-intensity` · `--sarak-switch-style-type` · `--sarak-system-tone` · `--sarak-tab-gap` · `--sarak-tab-section-margin` · `--sarak-tertiary-color` · `--sarak-texture` · `--sarak-texture-color` · `--sarak-texture-opacity` · `--sarak-title-color` · `--sarak-topbar-active-color` · `--sarak-topbar-bg` · `--sarak-topbar-height` · `--sarak-topbar-hover-color` · `--sarak-topbar-noise-opacity` · `--sarak-warning-color`
 
-### Ícones (100 nomes válidos)
+### Ícones (117 nomes válidos)
 
 Valores aceitos por `<SarakIcon name>`, por `navItems[].icon` (`SarakAppChrome`/`SarakShellNav`) e por `mapping.icon` nos cards. O nome é o MESMO nas três famílias (`iconFamily`: `lucide` · `phosphor` · `tabler`) — trocar a família repinta todos os ícones sem mexer em nome nenhum.
 
 Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no console (`console.warn`, uma vez por nome) e desenha `AlertCircle` no lugar — degradação visível, nunca tela quebrada.
 
-`AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `Grid` · `Layout` · `LayoutDashboard` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `Eye` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `ExternalLink` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Zap` · `Chrome` · `Github`
+`AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `ListOrdered` · `Grid` · `Layout` · `LayoutDashboard` · `LayoutGrid` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `ZoomIn` · `ZoomOut` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `ShieldCheck` · `Eye` · `EyeOff` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Bold` · `Italic` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Binary` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `Link2` · `ExternalLink` · `Command` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Settings2` · `Zap` · `Sparkles` · `Compass` · `Sun` · `Moon` · `XCircle` · `ToggleLeft` · `ToggleRight`
 
-## Componentes públicos (96)
+## Componentes públicos (102)
 
 ### SARAK_DEFAULT_COLUMN_WIDTH
 
@@ -127,6 +119,16 @@ Props (`SarakActionCardProps` — `src/components/atomic/Cards/SarakActionCard.t
 | `label` | `string` | não |  |
 | `actionLabel` | `string` | não | Texto do botão de ação principal (default: "Executar"). |
 
+### SarakActivityFeed
+
+Props (`SarakActivityFeedProps` — `src/components/atomic/DataDisplay/SarakActivityFeed.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `entries` | `SarakActivityEntry[]` | sim | Entradas na ordem em que aparecem. Vazio mostra o estado vazio traduzido. |
+| `label` | `string` | não | Nome acessível da lista. Omitido, usa o texto traduzido "Histórico". |
+| `className` | `string` | não |  |
+
 ### SarakAlert
 
 Props (`SarakAlertProps` — `src/components/atomic/Feedback/SarakAlert.tsx`):
@@ -158,6 +160,7 @@ Props (`SarakAppChromeProps` — `src/components/Layout/SarakAppChrome.tsx`):
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `children` | `React.ReactNode` | sim | Conteúdo do app (a tela do próprio módulo). |
+| `secondaryContent` | `React.ReactNode` | não | Slot `secondaryContent`: segundo painel, exibido quando `isSplitViewEnabled` está ligado. |
 | `brand` | `{ name?: string; logoUrl?: string }` | não | Identidade exibida no cromo (topo da sidebar / início da topbar). |
 | `navItems` | `SarakNavItem[]` | não | Navegação ESTRUTURADA com ícone first-class (Spec 40.2 — L1). Renderiza ícone (via `SarakIcon`/`SarakIconMap`) + label, temável por token, com estado ativo acessível (`aria-current`, foco por teclado). É o caminho recomendado para o cromo por-app; tem precedência sobre `nav` quando ambos são passados. |
 | `nav` | `SarakShellNavItem[]` | não | Itens de navegação como DADO no contrato do `SarakShellNav` (modelo declarativo, `route`/`activeRoute`). Mantido para compatibilidade; prefira `navItems`. |
@@ -168,15 +171,17 @@ Props (`SarakAppChromeProps` — `src/components/Layout/SarakAppChrome.tsx`):
 | `logo` | `React.ReactNode` | não | Slot `logo` (Spec 48 — L1): logo custom/animado (`ReactNode`). Tem PRECEDÊNCIA sobre `brand.logoUrl`; o `brand.name` continua ao lado. Aparece nos três modos. |
 | `topbarStart` | `React.ReactNode` | não | Slot `topbarStart`: conteúdo no INÍCIO da barra superior (após a marca). Sem barra superior (modo sidebar) degrada para o topo da sidebar. |
 | `topbarEnd` | `React.ReactNode` | não | Slot `topbarEnd`: conteúdo no FIM da barra superior. É o mesmo lugar do `topbarActions` (alias preservado); quando os dois vêm, `topbarEnd` vence. No modo sidebar degrada para o rodapé da sidebar (comportamento atual). |
-| `search` | `React.ReactNode` | não | Slot `search`: conteúdo de busca do consumidor (tipicamente um `SarakShellSearchWidget`), posicionado por `design.searchPositionTopbar` (`left`/`center`/`right`) na topbar e `design.searchPositionSidebar` (`top`/`bottom`) na sidebar/drawer. `'hidden'` some a região mesmo com conteúdo — é o token, não a ausência de `search`, quem decide sumir. |
+| `search` | `React.ReactNode` | não | Slot `search`: conteúdo de busca do consumidor (tipicamente um `SarakShellSearchWidget`), posicionado por `design.searchPositionTopbar` (`left`/`center`/`right`) na topbar e `design.searchPositionSidebar` (`top`/`bottom`) na sidebar/drawer. A composição do widget controla se a busca default é oferecida; a região personalizada continua controlada pelo conteúdo desta prop. |
 | `sidebarHeader` | `React.ReactNode` | não | Slot `sidebarHeader`: topo da sidebar (abaixo da marca). No celular migra para o drawer. |
 | `sidebarFooter` | `React.ReactNode` | não | Slot `sidebarFooter`: rodapé da sidebar. No celular migra para o drawer. |
 | `banner` | `React.ReactNode` | não | Slot `banner`: faixa full-width no topo do cromo (aviso, promo, faixa animada). |
 | `footer` | `React.ReactNode` | não | Slot `footer`: faixa full-width na base do cromo (rodapé da página). |
 | `decoration` | `React.ReactNode` | não | Slot `decoration`: camada decorativa ATRÁS do conteúdo do cromo (imagem/animação escopada ao cromo). É ornamento — `aria-hidden` e sem captura de foco/toque. COMPLEMENTA o fundo/atmosfera global por tema (Design Engine), não o substitui. |
-| `user` | `SarakShellUser` | não | Identidade exibida no widget de usuário default (busca/tema/usuário/colapso — abaixo). |
+| `user` | `SarakShellUser` | não | Identidade exibida no widget de usuário default. |
 | `logout` | `() => void` | não | Encerra a sessão a partir do widget de usuário default. |
-| `widgets` | `SarakChromeWidgets` | não | O cromo nasce com busca (atalho Ctrl/Cmd+K incluso), alternância de tema, widget de usuário e colapso da navegação MONTADOS — sem escrever nada. Omitir esta prop mantém os quatro ligados; `false` num campo desliga só aquele, isolado dos demais. Um slot preenchido pelo consumidor (`search`) sempre vence o default correspondente. |
+| `notifications` | `SarakChromeNotification[]` | não | Notificações fornecidas pelo aplicativo para o widget da barra. |
+| `onNotificationSelect` | `(notification: SarakChromeNotification) => void` | não | Trata a seleção de uma notificação pelo usuário. |
+| `widgets` | `SarakChromeWidgets` | não | O cromo nasce com busca (atalho Ctrl/Cmd+K incluso), alternância de tema, widget de usuário, notificações e colapso da navegação MONTADOS — sem escrever nada. Omitir esta prop mantém os widgets ligados; `false` num campo desliga só aquele. Um slot preenchido pelo consumidor (`search`) sempre vence o default correspondente. |
 | `className` | `string` | não |  |
 | `style` | `React.CSSProperties` | não |  |
 
@@ -187,6 +192,7 @@ Props (`SarakAppChromeMobileProps` — `src/components/Layout/SarakAppChromeMobi
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `children` | `React.ReactNode` | sim |  |
+| `secondaryContent` | `React.ReactNode` | não |  |
 | `brand` | `{ name?: string; logoUrl?: string }` | não |  |
 | `logo` | `React.ReactNode` | não |  |
 | `nav` | `SarakShellNavItem[]` | sim |  |
@@ -202,9 +208,25 @@ Props (`SarakAppChromeMobileProps` — `src/components/Layout/SarakAppChromeMobi
 | `decoration` | `React.ReactNode` | não | Slot `decoration` — camada decorativa atrás do cromo (aria-hidden, sem foco/toque). |
 | `user` | `SarakShellUser` | não | Identidade exibida no widget de usuário default, no rodapé do drawer. |
 | `logout` | `() => void` | não |  |
-| `widgets` | `SarakChromeWidgets` | não | Opt-out dos widgets default (busca/tema/usuário) — omitir liga todos. O colapso não se aplica aqui: o próprio hambúrguer já é o controle de esconder/mostrar a nav. |
+| `notifications` | `SarakChromeNotification[]` | não |  |
+| `onNotificationSelect` | `(notification: SarakChromeNotification) => void` | não |  |
+| `widgets` | `SarakChromeWidgets` | não | Opt-out dos widgets default; o hambúrguer continua controlando a navegação no celular. |
 | `className` | `string` | não |  |
 | `rootStyle` | `React.CSSProperties` | sim |  |
+
+### SarakAssigneePicker
+
+Props (`SarakAssigneePickerProps` — `src/components/atomic/Inputs/SarakAssigneePicker.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `people` | `SarakAssigneePerson[]` | sim | Pessoas que podem ser escolhidas. Vazio mostra o estado vazio traduzido, sem campo de busca. |
+| `value` | `string \| null` | não | Id da pessoa escolhida; `null`/omitido = sem responsável. Id que não está em `people` não mostra ninguém. |
+| `onChange` | `(id: string \| null) => void` | sim | Disparado com o id da pessoa escolhida, ou `null` ao remover o responsável. |
+| `clearable` | `boolean` | não | Mostra o botão de remover o responsável escolhido. Omitido, só dá para trocar de pessoa. |
+| `label` | `string` | não | Rótulo do campo. Omitido, usa o texto traduzido "Responsável". |
+| `disabled` | `boolean` | não | Trava a busca (somente leitura, anunciada como desabilitada) e desabilita o botão de remover. |
+| `className` | `string` | não |  |
 
 ### SarakAuthScreen
 
@@ -213,6 +235,9 @@ Props (`SarakAuthScreenProps` — `src/components/atomic/Templates/SarakAuthScre
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `branding` | `{ name: string; logo?: string; }` | não |  |
+| `allowRegistration` | `boolean` | não | Permite alternar entre login e cadastro; desativado por padrão. |
+| `allowMfa` | `boolean` | não | Permite renderizar a etapa MFA quando controlada pelo host; desativado por padrão. |
+| `labels` | `Partial<Record<SarakAuthScreenLabelKey, string>>` | não | Sobrescreve títulos, descrições e rótulos com texto do host. |
 | `isRegistering` | `boolean` | não |  |
 | `setIsRegistering` | `(val: boolean) => void` | não |  |
 | `mfaStep` | `boolean` | não |  |
@@ -229,9 +254,9 @@ Props (`SarakAuthScreenProps` — `src/components/atomic/Templates/SarakAuthScre
 | `isPending` | `boolean` | não |  |
 | `onSubmit` | `(e: React.FormEvent) => void` | não |  |
 | `onSocialLogin` | `(provider: string) => void` | não |  |
-| `socialConfig` | `{ enabled: boolean; display: 'compact' \| 'full'; providers: Array<{ id: string; variant: 'glass' \| 'sovereign' }>; }` | não |  |
+| `socialConfig` | `SarakSocialConfig` | não |  |
 | `onForgot` | `() => void` | não |  |
-| `onMasterLogin` | `() => void` | não |  |
+| `errorVariant` | `'error' \| 'warning'` | não |  |
 | `onChange` | `(event: SarakAuthScreenEvent) => void` | não | Canal declarativo único — ver `SarakAuthScreenEvent`. Dispara em toda interação de negócio. |
 | `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
 | `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
@@ -249,7 +274,7 @@ Props (`SarakAutocompleteProps` — `src/components/atomic/Inputs/SarakAutocompl
 | `value` | `string` | não | Texto digitado no modo controlado. Omitido, o componente guarda a busca internamente; quem controla deve atualizá-lo após a seleção. |
 | `defaultValue` | `string` | não | Texto inicial no modo não controlado. Omitido, o campo começa vazio. |
 | `onChange` | `React.ChangeEventHandler<HTMLInputElement>` | não | Recebe o evento nativo ao digitar. Omitida, não há notificação de digitação; selecionar uma opção é informado por `onOptionSelect`. |
-| `placeholder` | `string` | não | Texto de dica do campo. Omitido, usa "Buscar...". |
+| `placeholder` | `string` | não | Texto de dica do campo. Omitido, usa o padrão traduzido da biblioteca. |
 | `onOptionSelect` | `(option: SarakAutocompleteOption) => void` | não | Recebe a opção escolhida por clique ou teclado. Omitida, a opção ainda preenche o texto do campo não controlado, sem emitir seleção externa. |
 
 Estende: `Omit<SarakInputProps, 'defaultValue' | 'onChange' | 'value'>`
@@ -277,6 +302,7 @@ Props (`SarakBadgeProps` — `src/components/atomic/Feedback/SarakBadge.tsx`):
 | `size` | `SarakBadgeSize` | não |  |
 | `pill` | `boolean` | não | Se true, o badge terá bordas mais arredondadas (estilo pill) |
 | `soft` | `boolean` | não | Se true, o fundo será translúcido/suave em vez de sólido |
+| `showStatusShape` | `boolean` | não | Exibe uma forma junto ao rótulo nas variantes de status. |
 
 Estende: `React.HTMLAttributes<HTMLSpanElement>`
 
@@ -306,6 +332,24 @@ Props (`SarakButtonProps` — `src/components/atomic/Buttons/SarakButton.tsx`):
 
 Estende: `ButtonHTMLAttributes<HTMLButtonElement>`
 
+### SarakCalendar
+
+Props (`SarakCalendarProps` — `src/components/atomic/DataDisplay/SarakCalendar/SarakCalendar.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `events` | `SarakCalendarEvent[]` | sim | Eventos do mês (e de fora dele: só os que tocam a grade visível aparecem). Vazio mostra a grade sem chips. |
+| `month` | `Date` | não | Mês exibido, no modo controlado: a navegação chama `onMonthChange` e quem chama atualiza esta prop. |
+| `onMonthChange` | `(month: Date) => void` | não | Chamado a cada troca de mês com o primeiro dia do novo mês, nos dois modos. |
+| `defaultMonth` | `Date` | não | Mês inicial no modo não controlado (sem `month`). Omitido, abre no mês de hoje. |
+| `weekStartsOn` | `SarakWeekStart` | não | Primeira coluna da semana: `0` domingo, `1` segunda. Omitido, `0`. |
+| `onEventClick` | `(event: SarakCalendarEvent) => void` | não | Clique ou `Enter` num chip de evento. |
+| `onDayClick` | `(date: Date) => void` | não | Clique ou `Enter` num dia, toque no dia em contêiner estreito, e o "+N" do dia cheio. |
+| `renderEvent` | `(event: SarakCalendarEvent) => React.ReactNode` | não | Conteúdo do chip no lugar do título. O nome acessível do chip continua sendo o título. |
+| `maxEventsPerDay` | `number` | não | Quantos chips um dia mostra antes do "+N". Omitido, `3`. |
+| `label` | `string` | não | Nome acessível da grade. Omitido, usa o texto traduzido "Calendário de <mês e ano>". |
+| `className` | `string` | não |  |
+
 ### SarakCard
 
 Props (`SarakCardProps` — `src/components/atomic/Cards/SarakCard.tsx`):
@@ -314,6 +358,7 @@ Props (`SarakCardProps` — `src/components/atomic/Cards/SarakCard.tsx`):
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | não | Conteúdo composto do cartão; se omitido, a moldura temática permanece vazia. |
 | `className` | `string` | não | Classes adicionais; se omitidas, o cartão mantém largura total e sua moldura temática. Classes utilitárias conflitantes substituem o padrão; a classe `sarak-card` é preservada para aplicar os tokens do tema. |
+| `interactive` | `boolean` | não | Marca o cartão inteiro como alvo do ponteiro: só ele sobe, cresce ou brilha no hover (`cardHoverStyle`). Omitida, o cartão é contêiner e não se move. |
 
 ### SarakCardBody
 
@@ -339,8 +384,10 @@ Props (`SarakCardGridProps` — `src/components/atomic/Templates/SarakCardGrid.t
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | não | Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre. |
-| `data` | `TData[]` | não | Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede. |
+| `data` | `TData[]` | não | Dado já carregado pelo host; quando presente, tem prioridade sobre `load`. |
+| `load` | `() => Promise<TData[]>` | não | Carrega os registros pelo mecanismo escolhido pelo host. |
+| `updatedAt` | `Date \| string \| number` | não | Horário do dado entregue diretamente pelo host. |
+| `onRetry` | `() => void` | não | Callback opcional para tentar novamente após uma falha. |
 | `label` | `string` | não |  |
 | `mapping` | `{ title: string; subtitle?: string; description?: string; badge?: string; tags?: string; icon?: string; color?: string; details?: string; input_caps?: string; output_caps?: string; input_caps_label?: string; output_caps_label?: string; description_label?: string; expand_label?: string; collapse_label?: string; }` | não | Mapa de dados do card. Cada valor é o CAMINHO de um campo do item, exceto os marcados como *literal* (texto/nome fixo escrito pelo próprio autor). Genérico por contrato (Spec 42): a Sarak não conhece domínio nenhum — nenhuma aritmética, unidade ou moeda é calculada aqui. O consumidor entrega valores prontos em `details`. |
 | `filters` | `SarakFilterConfig[]` | não |  |
@@ -382,12 +429,15 @@ Props (`SarakChartProps` — `src/components/atomic/Templates/SarakChart.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | sim | Busca `daily_trend` ou o array da resposta e usa só os 15 itens finais; obrigatório, sem fonte alternativa se omitido. |
-| `label` | `string` | não | Texto do cabeçalho; sem valor, o título fica vazio, pois não há rótulo padrão. |
-| `mapping` | `Record<string, string>` | não | Não é lida por esta implementação; omitida ou preenchida, as séries continuam usando `tokens`/`value` e `date`. |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
+| `data` | `TData[]` | não | Dado já carregado pelo host; quando presente, tem prioridade sobre load. |
+| `load` | `() => Promise<TData[]>` | não | Carrega os pontos pelo mecanismo escolhido pelo host. |
+| `updatedAt` | `Date \| string \| number` | não | Horário do dado entregue diretamente pelo host. |
+| `onRetry` | `() => void` | não | Callback opcional para tentar novamente após uma falha. |
+| `label` | `string` | não | Rótulo opcional fornecido pelo host. |
+| `mapping` | `{ value?: string; date?: string }` | não | Chaves dos campos de valor e rótulo; os defaults são value e date. |
+| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
+| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
+| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
 
 ### SarakChartEngine
 
@@ -395,9 +445,15 @@ Props (`SarakChartEngineProps` — `src/components/engines/charts/SarakChartEngi
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `type` | `'line' \| 'area' \| 'bar' \| 'pie' \| 'radar' \| 'gauge' \| 'scatter' \| 'heatmap' \| 'funnel' \| 'treemap' \| 'candlestick' \| 'sunburst' \| 'histogram' \| 'boxplot'` | sim | Seleciona o formato do gráfico; obrigatório. Com `recharts`, só `bar` vira barras e os demais formatos caem em linha. |
-| `data` | `SarakChartDataItem[]` | sim | Registros das séries; obrigatório, com campos compatíveis com o formato e as chaves configuradas. |
-| `config` | `{ xAxisKey?: string; dataKey?: string; engine?: 'recharts' \| 'echarts'; title?: string; showGradients?: boolean; showAnimation?: boolean; thickness?: number; }` | não | Ajusta chaves dos eixos e o motor; omitida, usa ECharts, eixo `name` e valor `value`. `title`, gradientes, animação e espessura não têm efeito nesta implementação. |
+| `type` | `'line' \| 'area' \| 'bar' \| 'pie' \| 'radar' \| 'gauge' \| 'scatter' \| 'heatmap' \| 'funnel' \| 'treemap' \| 'candlestick' \| 'sunburst' \| 'histogram' \| 'boxplot' \| 'waterfall' \| 'sankey' \| 'calendar'` | não | Seleciona o formato; omitido, usa `chartType` do design resolvido. `waterfall` lê `{ name, value, total? }`, `sankey` lê `{ source, target, value }` e `calendar` lê `{ date, value }`. |
+| `data` | `SarakChartDataItem[]` | sim | Registros da série, com os campos configurados por `xAxisKey` e `dataKey`. |
+| `config` | `{ xAxisKey?: string; dataKey?: string; engine?: 'recharts' \| 'echarts'; title?: string; showGradients?: boolean; showAnimation?: boolean; thickness?: number; }` | não | Ajusta chaves de leitura, motor, título, gradiente, animação e espessura. |
+| `series` | `Array<{ key: string; label?: string; type?: 'bar' \| 'line' \| 'area'; stack?: string; axis?: 'left' \| 'right'; dashed?: boolean; color?: 'chartColorPalette' \| 'secondaryColor' \| 'accentColor' \| 'statusSuccessColor' \| 'statusWarningColor' \| 'statusErrorColor' \| 'statusInfoColor' \| 'tertiaryColor'; }>` | não | Séries cartesianas; pizza, radar, funil, `waterfall`, `sankey`, `calendar` e outros formatos ignoram esta prop. `color`, quando informado, é o nome de um token de cor do tema, nunca um valor hexadecimal. |
+| `stacked` | `boolean` | não | Formatos não cartesianos, `waterfall` e `calendar` ignoram esta prop. |
+| `orientation` | `'vertical' \| 'horizontal'` | não | Formatos não cartesianos, `waterfall` e `calendar` ignoram esta prop. |
+| `legend` | `boolean \| 'top' \| 'bottom'` | não | Exibe a legenda no topo/rodapé ou define explicitamente sua visibilidade; `waterfall`, `sankey` e `calendar` ignoram esta prop. |
+| `onPointClick` | `(event: { seriesKey: string; index: number; datum: SarakChartDataItem }) => void` | não | Recebe a série, o índice e o registro original ao clicar em um ponto do ECharts. |
+| `ariaLabel` | `string` | não | Texto acessível do gráfico; omitido, usa o catálogo de i18n. |
 
 ### SarakChat
 
@@ -405,8 +461,8 @@ Props (`SarakChatProps` — `src/components/atomic/Templates/SarakChat.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | sim | Rota POST anexada a `/api`; obrigatória, e o host precisa prover o endpoint e sua autenticação. |
-| `modelsEndpoint` | `string` | não | Rota para carregar modelos; omitida, consulta `/api/llm-test-chat/models`. Passe `''` para não buscar modelos. |
+| `onSend` | `SarakChatOnSend` | sim | O host envia a mensagem e encaminha cada token recebido ao callback. |
+| `loadModels` | `SarakChatModelLoader` | não | Carrega modelos do host; omitido, a lista permanece vazia. |
 | `label` | `string` | não | Nome exibido no cabeçalho; omitido, usa `AI Chat`. |
 | `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
 | `density` | `'compact' \| 'standard' \| 'spacious'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
@@ -434,6 +490,32 @@ Props (`SarakCheckboxProps` — `src/components/atomic/Inputs/SarakCheckbox.tsx`
 | `indeterminate` | `boolean` | não |  |
 
 Estende: `Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>`
+
+### SarakChecklist
+
+Props (`SarakChecklistProps` — `src/components/atomic/DataDisplay/SarakChecklist.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `items` | `SarakChecklistItem[]` | sim | Itens na ordem em que aparecem. Vazio mostra o estado vazio traduzido. |
+| `onToggle` | `(id: string, done: boolean) => void` | sim | Disparado ao marcar ou desmarcar um item, com o id e o novo estado. A lista é controlada: quem chama atualiza `items`. |
+| `onAdd` | `(label: string) => void` | não | Criação rápida: recebe o título digitado, sem espaços nas pontas. Omitido, o campo de novo item não aparece. |
+| `onRemove` | `(id: string) => void` | não | Remover um item. Omitido, o botão de remover não aparece. |
+| `showProgress` | `boolean` | não | Mostra a barra de progresso e o contador `feitos de total`. Omitido, não aparece. |
+| `label` | `string` | não | Nome acessível da lista. Omitido, usa o texto traduzido "Lista de verificação". |
+| `className` | `string` | não |  |
+
+### SarakCommentThread
+
+Props (`SarakCommentThreadProps` — `src/components/atomic/DataDisplay/SarakCommentThread.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `comments` | `SarakComment[]` | sim | Comentários na ordem em que aparecem. Vazio mostra o estado vazio traduzido. |
+| `onSubmit` | `(text: string) => void` | sim | Disparado ao enviar (botão ou Ctrl/Cmd+Enter) com o texto sem espaços nas pontas. Texto vazio não dispara. |
+| `onDelete` | `(id: string) => void` | não | Excluir um comentário. Omitido, o botão de excluir não aparece. |
+| `label` | `string` | não | Nome acessível da seção. Omitido, usa o texto traduzido "Comentários". |
+| `className` | `string` | não |  |
 
 ### SarakContextMenu
 
@@ -469,7 +551,7 @@ Props (`SarakDataEmptyProps` — `src/components/atomic/Feedback/SarakDataEmpty.
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `message` | `string` | não | Mensagem exibida (default: "Nenhum dado encontrado."). |
+| `message` | `string` | não | Mensagem exibida; omitida, usa o texto do catálogo no idioma ativo. |
 
 ### SarakDataGrid
 
@@ -484,10 +566,6 @@ Props (`SarakDataGridProps` — `src/components/atomic/DataDisplay/SarakDataGrid
 | `height` | `number \| string` | não | Altura da janela de scroll (default: 100% do contêiner pai). |
 | `className` | `string` | não | Classe utilitária extra do contêiner. |
 
-### SarakDataGridImpl
-
-_Props não expostas por interface nomeada — consulte o arquivo do componente._
-
 ### SarakDataTable
 
 Props (`SarakDataTableProps` — `src/components/atomic/DataDisplay/SarakDataTable/SarakDataTableImpl.tsx`):
@@ -496,7 +574,7 @@ Props (`SarakDataTableProps` — `src/components/atomic/DataDisplay/SarakDataTab
 | --- | --- | --- | --- |
 | `columns` | `Array<SarakColumn<T>>` | sim | Definição declarativa das colunas (ordem inicial = ordem do array). |
 | `rows` | `T[]` | sim | Linhas de dados; a fonte real (fetch) vive fora — aqui só virtualizamos. |
-| `rowHeight` | `number` | não |  |
+| `rowHeight` | `SarakDataTableRowHeight<T>` | não |  |
 | `headerHeight` | `number` | não |  |
 | `height` | `number \| string` | não |  |
 | `overscan` | `number` | não |  |
@@ -509,11 +587,12 @@ Props (`SarakDataTableProps` — `src/components/atomic/DataDisplay/SarakDataTab
 | `onColumnResize` | `(columnId: string, width: number) => void` | não |  |
 | `onColumnReorder` | `(fromId: string, toId: string) => void` | não |  |
 | `responsive` | `boolean` | não | L2 (Spec 40.2): no smartphone colapsa para cards empilhados. Default `true`. |
+| `loading` | `boolean` | não | Exibe os estados de carregamento, erro e vazio recebidos pelo host. |
+| `error` | `string \| null` | não |  |
+| `emptyMessage` | `string` | não |  |
+| `onRetry` | `() => void` | não |  |
+| `onRowClick` | `(row: T) => void` | não | Disparado ao ativar uma linha. |
 | `className` | `string` | não |  |
-
-### SarakDataTableImpl
-
-_Props não expostas por interface nomeada — consulte o arquivo do componente._
 
 ### SarakDatePicker
 
@@ -566,6 +645,10 @@ Props (`SarakEmptyStateProps` — `src/components/atomic/Feedback/SarakEmptyStat
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `type` | `'minimal' \| 'abstract' \| 'geometric'` | não | Escolhe a composição visual (`minimal`, `abstract` ou `geometric`); sem a prop, usa `abstract`. |
+| `title` | `React.ReactNode` | não | Conteúdo principal do estado; quando informado, ativa a composição de conteúdo. |
+| `description` | `React.ReactNode` | não | Explicação complementar para o estado vazio. |
+| `action` | `React.ReactNode` | não | Ação composta pelo consumidor, normalmente um `SarakButton`. |
+| `icon` | `React.ReactNode` | não | Ícone ou ilustração composta pelo consumidor. |
 
 ### SarakExpandableCard
 
@@ -625,7 +708,7 @@ Props (`SarakFlexProps` — `src/components/atomic/Layouts/SarakFlex.tsx`):
 | `direction` | `SarakFlexDirection \| SarakResponsiveValue<SarakFlexDirection>` | não | Direção do eixo. Aceita `SarakResponsiveValue` para variar por dispositivo (opcional). |
 | `justify` | `'flex-start' \| 'flex-end' \| 'center' \| 'space-between' \| 'space-around' \| 'space-evenly' \| string` | não |  |
 | `align` | `'stretch' \| 'flex-start' \| 'flex-end' \| 'center' \| 'baseline' \| string` | não |  |
-| `gap` | `string` | não |  |
+| `gap` | `SarakLayoutGap` | não |  |
 | `wrap` | `boolean` | não | Quebra em múltiplas linhas quando não cabe (mobile-first). Default `true`: uma linha de itens nunca estoura a página no celular — reflui para baixo. Passe `false` para forçar linha única (nowrap) quando o layout exigir. |
 | `as` | `React.ElementType` | não |  |
 
@@ -647,16 +730,14 @@ Props (`SarakFormProps` — `src/components/atomic/Templates/SarakForm.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | sim | URL usada para buscar os dados em `edit` e, por padrão, salvar em ambos os modos. Obrigatória; `actions[0]` pode substituir o destino do salvamento. |
-| `label` | `string` | não | Título exibido no cabeçalho; sem a prop, o cabeçalho fica sem texto. |
-| `mapping` | `Record<string, string>` | não | Define as chaves e os rótulos dos campos. Sem ela, as chaves de `formData` viram campos e `_` é trocado por espaço; em `create`, as chaves mapeadas ausentes começam como texto vazio. |
-| `mode` | `'create' \| 'edit'` | não | Escolhe a carga inicial: `edit` busca `endpoint` e é o padrão; `create` não busca, usa `initialData` e salva por padrão com `POST`. |
-| `initialData` | `TData` | não | Dados iniciais; por padrão, um objeto vazio. Em `edit`, a resposta da busca os substitui; em `create`, são preservados. A prop é lida na montagem, então mudanças posteriores não reinicializam o formulário. |
-| `actions` | `Array<{ label: string; endpoint: string; method: 'POST' \| 'PATCH' \| 'DELETE'; }>` | não | Configura o destino e o método do botão Salvar; somente `actions[0]` é usado. Sem primeira entrada, usa `endpoint` com `POST` em `create` ou `PATCH` em `edit`. `label` e as entradas seguintes não são exibidos nem usados; em `DELETE`, `formData` vai como configuração, não como corpo. |
-| `onSuccess` | `() => void` | não | Chamado depois de um salvamento bem-sucedido. Sem a prop, o formulário salva e exibe o status, mas não notifica o chamador. |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não | Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a apresentação. |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não | Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a densidade. |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não | Opção sem efeito nesta implementação; omiti-la ou defini-la não altera a ênfase visual. |
+| `data` | `TData` | não | Dado já carregado pelo host; quando presente, tem prioridade sobre load. |
+| `load` | `() => Promise<TData>` | não | Carrega o formulário pelo mecanismo escolhido pelo host. |
+| `label` | `string` | não | Rótulo opcional fornecido pelo host. |
+| `mapping` | `Record<string, string>` | não | Define as chaves e os rótulos dos campos. |
+| `mode` | `'create' \| 'edit'` | não | Seleciona o modo de preenchimento; create não carrega dado. |
+| `initialData` | `TData` | não | Valor inicial usado no modo create ou até load concluir. |
+| `onSubmit` | `(data: TData) => void \| Promise<void>` | não | Envia os valores ao host; sem callback, o botão de envio não é exibido. |
+| `onSuccess` | `() => void \| Promise<void>` | não | Chamado após um envio bem-sucedido. |
 
 ### SarakFormGroup
 
@@ -665,9 +746,23 @@ Props (`SarakFormGroupProps` — `src/components/atomic/Layouts/SarakFormGroup.t
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `children` | `React.ReactNode` | sim |  |
-| `gap` | `string` | não | Espaçamento entre label e campo — token semântico (`spacing-md`) ou CSS válido. |
+| `gap` | `SarakLayoutGap` | não | Espaçamento entre label e campo — token semântico, número ou comprimento CSS. |
 
 Estende: `React.HTMLAttributes<HTMLDivElement>`
+
+### SarakGantt
+
+Props (`SarakGanttProps` — `src/components/atomic/DataDisplay/SarakGantt/SarakGantt.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `tasks` | `SarakGanttTask[]` | sim | Tarefas, uma por linha, na ordem recebida. Vazio mostra o estado vazio traduzido. |
+| `scale` | `SarakGanttScale` | não | Quanto cabe em cada coluna do cabeçalho: um dia, uma semana ou um mês. Omitido, `week`. |
+| `onTaskClick` | `(task: SarakGanttTask) => void` | não | Clique ou `Enter` numa barra. |
+| `rangeStart` | `SarakCalendarDate` | não | Primeiro dia exibido. Omitido, o início das tarefas com uma margem da escala. |
+| `rangeEnd` | `SarakCalendarDate` | não | Último dia exibido, inclusive. Omitido, o fim das tarefas com uma margem da escala. |
+| `label` | `string` | não | Nome acessível do cronograma. Omitido, usa o texto traduzido "Cronograma". |
+| `className` | `string` | não |  |
 
 ### SarakGrid
 
@@ -678,7 +773,7 @@ Props (`SarakGridProps` — `src/components/atomic/Layouts/SarakGrid.tsx`):
 | `children` | `React.ReactNode` | sim |  |
 | `templateColumns` | `string \| SarakResponsiveValue<string>` | não | Colunas do grid. Aceita: - `string` fixo (ex.: `"1fr 1fr 1fr"`): mobile-first por padrão — **colapsa para 1 coluna no celular** (nunca estoura a página), reflui no valor cheio em tablet/desktop. - `SarakResponsiveValue<string>` (`{ mob, tab, desk }`): o consumidor controla por dispositivo. Sem `templateColumns`, usa a estratégia de grid do Design Engine (também 1 coluna no celular). |
 | `templateAreas` | `string` | não |  |
-| `gap` | `string` | não |  |
+| `gap` | `SarakLayoutGap` | não |  |
 | `as` | `React.ElementType` | não |  |
 
 Estende: `Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>`
@@ -702,12 +797,6 @@ Props (`SarakIconProps` — `src/components/atomic/Icon/SarakIcon.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `name` | `SarakIconName \| string` | sim | Nome obrigatório do catálogo de ícones; se omitido ou desconhecido, gera um aviso e mostra o ícone de fallback. |
-| `size` | `number \| string` | não | Define a dimensão SVG; sem a prop, usa 24 px. |
-| `className` | `string` | não | Acrescenta classes ao SVG; omitida, nenhuma classe adicional é aplicada. |
-| `color` | `string` | não | Define a cor do traço ou preenchimento; omitida, o ícone herda a cor corrente. |
-| `style` | `React.CSSProperties` | não | Acrescenta estilos CSS inline ao SVG; omitida, só os estilos da família de ícone são usados. |
-| `onClick` | `() => void` | não | Encaminha o clique ao SVG; omitida, não há callback, e a prop não dá semântica de botão nem suporte de teclado. |
 
 ### SarakIconButton
 
@@ -743,9 +832,9 @@ Props (`SarakInputProps` — `src/components/atomic/Inputs/SarakInput.tsx`):
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `label` | `string` | não | Rótulo visual ligado ao campo pelo `id` (gerado quando não é informado). Sem ele, não há rótulo visível; forneça outro nome acessível se necessário. |
-| `icon` | `React.ReactNode` | não | Ícone do campo; sua posição vem do layout do tema. Quando definido, prevalece sobre `leftIcon` e `rightIcon`; sem os três, não há ícone. |
-| `leftIcon` | `React.ReactNode` | não | Ícone de compatibilidade usado somente quando `icon` não é fornecido. Sem `icon` e este valor, `rightIcon` pode ser usado; o nome da prop não fixa o lado visual. |
-| `rightIcon` | `React.ReactNode` | não | Ícone de compatibilidade usado quando `icon` e `leftIcon` não são fornecidos. A posição vem do layout do tema; sem qualquer ícone, o campo fica sem decoração. |
+| `icon` | `React.ReactNode` | não | Ícone do campo; sua posição vem do layout do tema e ele não recebe clique. Quando definido, prevalece sobre `leftIcon` e `rightIcon`; sem os três, não há ícone. |
+| `leftIcon` | `React.ReactNode` | não | Ícone do lado esquerdo, usado somente quando `icon` não é fornecido. Junto com `rightIcon`, os dois aparecem, cada um no seu lado. Sozinho, segue a posição do layout do tema. |
+| `rightIcon` | `React.ReactNode` | não | Ícone do lado direito, usado somente quando `icon` não é fornecido. Aceita clique (por exemplo, o botão de mostrar a senha). Junto com `leftIcon`, fica à direita; sozinho, segue a posição do layout do tema. |
 | `error` | `string` | não | Mensagem abaixo do campo, ligada por `aria-describedby`, que também marca `aria-invalid`. Sem a prop, não há mensagem nem estado inválido. |
 | `fullWidth` | `boolean` | não | Faz o grupo do campo ocupar toda a largura disponível. Omitida ou `false`, a largura fica a cargo do layout pai. |
 
@@ -758,8 +847,13 @@ Props (`SarakKanbanProps` — `src/components/atomic/DataDisplay/SarakKanban/Sar
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `columns` | `Array<SarakKanbanColumn<C>>` | sim | Colunas e seus cards (a ordem do array é a ordem visual). |
-| `onCardMove` | `(move: SarakCardMove) => void` | não | Disparado ao soltar um card numa coluna (origem → destino). |
-| `renderCard` | `(card: C, columnId: string) => React.ReactNode` | não | Render customizado do card (default: título + descrição). |
+| `onCardMove` | `(move: SarakCardMove) => void` | não | Disparado ao soltar um card em outro lugar: coluna e índice de origem e destino, mais os vizinhos finais. Soltar no mesmo lugar não dispara. |
+| `renderCard` | `(card: C, columnId: string) => React.ReactNode` | não | Render customizado do card (default: o cartão padrão com código, título, avatar, prioridade, prazo e subtarefas). |
+| `onCardClick` | `(card: C, columnId: string) => void` | não | Ao clicar (ou Enter) num card. Omitido, o card não é clicável. |
+| `onCardAdd` | `(columnId: string, title: string) => void` | não | Criação rápida no rodapé da coluna. Omitido, o campo não aparece. |
+| `onColumnAdd` | `(title: string) => void` | não | Nova coluna, ao fim do quadro. Omitido, o campo não aparece. |
+| `onColumnRename` | `(id: string, title: string) => void` | não | Renomear coluna pelo menu dela. Omitido, o item não aparece. |
+| `onColumnDelete` | `(id: string) => void` | não | Excluir coluna pelo menu dela. Omitido, o item não aparece. |
 | `className` | `string` | não |  |
 
 ### SarakLightbox
@@ -781,10 +875,14 @@ Props (`SarakLinkProps` — `src/components/atomic/Navigation/SarakLink.tsx`):
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `href` | `string` | sim | Destino do link. Esquemas perigosos (`javascript:`, `data:`, ...) são bloqueados. |
-| `external` | `boolean` | não | Abre em nova aba com `rel="noreferrer noopener"` + indicação visual/a11y. |
+| `external` | `boolean` | não | Abre em nova aba com `rel="noopener noreferrer"` + indicação visual/a11y. |
+| `target` | `string` | não | Contexto de navegação nativo; fora de `_self`, o navegador mantém o comportamento. |
+| `rel` | `string` | não |  |
+| `onNavigate` | `(href: string) => void` | não | Intercepta apenas clique primário simples destinado à aba atual. |
+| `onClick` | `React.MouseEventHandler<HTMLAnchorElement>` | não |  |
 | `children` | `React.ReactNode` | sim |  |
 
-Estende: `Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'target' | 'rel'>`
+Estende: `Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'target' | 'rel' | 'onClick'>`
 
 ### SarakManagementGrid
 
@@ -792,16 +890,23 @@ Props (`SarakManagementGridProps` — `src/components/atomic/Templates/SarakMana
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | sim | Rota consultada para listar e usada nas ações de ativar, remover e criar; obrigatória e compatível com esses métodos. |
-| `groupBy` | `string` | sim | Caminho do campo que separa os grupos; aceita pontos para campos aninhados e envia valores ausentes ao grupo `outros`. |
-| `ghostGroups` | `string[]` | não | Cria cartões vazios para grupos sem registros; omitida, só aparecem grupos encontrados nos dados. |
-| `mapping` | `{ id: string; title: string; status: string; isActive: string; description?: string; error?: string; }` | sim | Traduz os caminhos do registro para id, título, estado e campos opcionais; obrigatória para exibir e operar cada item. |
-| `headerActions` | `{ label: string; action: string; }[]` | não | Ações no cabeçalho; omitida, o cabeçalho não aparece. Só ações cujo texto contenha `modal` ou `add` abrem o formulário. |
-| `groupActions` | `{ label: string; icon?: 'plus' \| 'settings'; action: string; }[]` | não | Ações em cada grupo; omitida, não há botões de grupo. Ações sem `modal` ou `add` no texto não abrem o formulário. |
-| `formMapping` | `Record<string, string>` | não | Mapeia os campos do formulário de criação; omitida, o formulário recebe um mapeamento vazio. |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
+| `data` | `TItem[]` | não | Records already loaded by the host; takes precedence over load. |
+| `load` | `() => Promise<TItem[]>` | não | Loads records through the host's chosen transport. |
+| `groupBy` | `string` | sim | Path to the grouping value; supports nested fields. |
+| `ghostGroups` | `string[]` | não | Empty groups to display alongside groups found in the records. |
+| `mapping` | `{ id: string; title: string; status?: string; isActive?: string; description?: string; error?: string; }` | sim | Maps record paths to fields displayed by each item card. |
+| `label` | `string` | não |  |
+| `description` | `string` | não |  |
+| `headerActions` | `SarakManagementAction[]` | não |  |
+| `groupActions` | `SarakManagementAction[]` | não |  |
+| `formMapping` | `Record<string, string>` | não |  |
+| `onAction` | `(action: string, group?: string) => void \| Promise<void>` | não |  |
+| `onToggle` | `(item: TItem) => void \| Promise<void>` | não |  |
+| `onDelete` | `(item: TItem) => void \| Promise<void>` | não |  |
+| `onCreate` | `(data: Record<string, unknown>, group?: string) => void \| Promise<void>` | não |  |
+| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
+| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
+| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
 
 ### SarakMarkdownRenderer
 
@@ -833,15 +938,22 @@ Props (`SarakMenuItemProps` — `src/components/atomic/Navigation/SarakMenuItem.
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `icon` | `React.ReactNode` | não | Ícone à esquerda do rótulo — resolvido pelo chamador (`SarakIcon`/`IconRenderer`). |
+| `icon` | `string \| React.ReactNode` | não | Nome registrado ou elemento renderizado à esquerda do rótulo. |
 | `label` | `React.ReactNode` | sim | Rótulo do item; trunca em vez de transbordar (orientação vertical). |
 | `active` | `boolean` | não | Item corresponde à rota/seção corrente. |
 | `collapsed` | `boolean` | não | Colapsado — mostra só o ícone, sem o rótulo (sidebar recolhida/topbar estreita). |
 | `orientation` | `SarakMenuItemOrientation` | não | `vertical` = linha de lista (sidebar/drawer); `horizontal` = aba (topbar). |
 | `title` | `string` | não | Tooltip nativo; cai para o texto do rótulo quando `label` é string. |
+| `href` | `string` | não | Destino opcional; quando informado, o item é renderizado como link. |
+| `onNavigate` | `(href: string) => void` | não | Chamado apenas para clique primário simples em link destinado à aba atual. |
+| `badge` | `string \| number` | não | Indica uma quantidade ou estado adicional; também integra o nome acessível. |
+| `target` | `string` | não | Contexto de navegação nativo do link. |
+| `type` | `React.ButtonHTMLAttributes<HTMLButtonElement>['type']` | não |  |
+| `disabled` | `boolean` | não |  |
+| `onClick` | `React.MouseEventHandler<HTMLElement>` | não |  |
 | `className` | `string` | não |  |
 
-Estende: `Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'title'>`
+Estende: `Omit<React.HTMLAttributes<HTMLElement>, 'title' | 'onClick' | 'type'>`
 
 ### SarakModal
 
@@ -849,16 +961,17 @@ Props (`SarakModalProps` — `src/components/atomic/Modals/SarakModal.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `isOpen` | `boolean` | sim |  |
-| `onClose` | `() => void` | sim |  |
-| `title` | `React.ReactNode` | não |  |
-| `children` | `React.ReactNode` | não |  |
-| `footer` | `React.ReactNode` | não |  |
+| `isOpen` | `boolean` | sim | Controla se o modal está visível. |
+| `onClose` | `() => void` | sim | Chamado ao fechar pelo botão, tecla Escape ou clique no overlay habilitado. |
+| `title` | `React.ReactNode` | não | Conteúdo do cabeçalho e nome acessível do diálogo. |
+| `children` | `React.ReactNode` | não | Conteúdo principal do modal; fica em segundo plano quando `steps` é informado. |
+| `footer` | `React.ReactNode` | não | Conteúdo do rodapé; substituído pela navegação quando `steps` está informado. |
 | `steps` | `React.ReactNode[]` | não | Sub-wizard multi-step (Spec 13, Regra 2): cada passo é renderizado isolado dentro do overlay, com navegação "Voltar/Avançar" contida no rodapé. Tem precedência sobre `children`. No último passo, "Avançar" é substituído por `onComplete`. |
 | `onComplete` | `() => void` | não | Chamado ao avançar além do último passo (conclusão do wizard). |
-| `disableOverlayClick` | `boolean` | não | Se true, o clique no overlay (fundo) não fecha o modal |
-| `hideCloseButton` | `boolean` | não | Se true, o botão de fechar não é renderizado |
-| `className` | `string` | não | Classe CSS customizada para o contêiner do modal |
+| `disableOverlayClick` | `boolean` | não | Se true, o clique no overlay (fundo) não fecha o modal. |
+| `hideCloseButton` | `boolean` | não | Se true, o botão de fechar não é renderizado. |
+| `className` | `string` | não | Classe CSS customizada para o contêiner do modal. |
+| `size` | `SarakModalSize` | não | Largura máxima controlada por tokens; sem a prop, mantém os 32rem atuais. |
 
 ### SarakMultiSelect
 
@@ -890,7 +1003,7 @@ Props (`SarakPDFViewerProps` — `src/components/atomic/Media/SarakPDFViewer/Sar
 | `src` | `SarakPdfSource` | sim | Origem do documento: URL, bytes ou ArrayBuffer. |
 | `initialPage` | `number` | não | Página inicial (1-based, default: 1). |
 | `zoom` | `number` | não | Escala inicial de zoom (default: 1.2). |
-| `workerSrc` | `string` | não | URL do worker do pdf.js; default resolvido do pacote via `import.meta.url`. |
+| `workerSrc` | `string` | sim | URL do worker da versão de `pdfjs-dist` instalada pelo consumidor. Vite: `import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';` Webpack 5: `new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString()`. |
 | `onDownload` | `(src: SarakPdfSource) => void` | não | Disparado ao clicar em Download (recebe a `src` quando string). |
 | `className` | `string` | não |  |
 
@@ -910,10 +1023,27 @@ Props (`SarakPaginationProps` — `src/components/atomic/Navigation/SarakPaginat
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `current` | `number` | sim | Página atual (1-based). |
-| `total` | `number` | sim | Total de páginas. |
+| `total` | `number` | não | Total de páginas, quando o total de itens e o tamanho não derivam o valor. |
+| `pageSize` | `number` | não | Quantidade de registros por página. |
+| `pageSizeOptions` | `number[]` | não | Opções de quantidade de registros por página. |
+| `totalItems` | `number` | não | Quantidade total de registros para os resumos e o cálculo de páginas. |
+| `onPageSizeChange` | `(pageSize: number) => void` | não | Disparado ao escolher outra quantidade de registros por página. |
 | `maxVisible` | `number` | não | Máximo de botões numéricos antes de compactar com reticências (default: 7). |
 | `onChange` | `(page: number) => void` | sim | Disparado ao escolher uma página válida (diferente da atual). |
 | `className` | `string` | não |  |
+
+### SarakProgress
+
+Props (`SarakProgressProps` — `src/components/atomic/Feedback/SarakProgress.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `value` | `number` | não | Valor atual do progresso, limitado ao intervalo entre zero e `max` (padrão: 0). |
+| `max` | `number` | não | Valor que representa 100% do progresso; precisa ser positivo (padrão: 100). |
+| `thresholds` | `SarakProgressThreshold[]` | não | Limiares que escolhem a variante de cor conforme o valor atual. |
+| `label` | `string` | não | Rótulo acessível anunciado pela barra de progresso. |
+| `indeterminate` | `boolean` | não | Exibe animação indeterminada e omite o valor atual na árvore acessível. |
+| `className` | `string` | não | Classe adicional aplicada ao contêiner do componente. |
 
 ### SarakRadio
 
@@ -955,6 +1085,7 @@ Props (`SarakRichTextProps` — `src/components/atomic/Inputs/SarakRichText.tsx`
 | `defaultValue` | `string` | não | Conteúdo inicial não-controlado. |
 | `onChange` | `(html: string) => void` | não | Emite o HTML JÁ sanitizado a cada mudança. |
 | `placeholder` | `string` | não |  |
+| `label` | `string` | não |  |
 | `disabled` | `boolean` | não |  |
 | `error` | `string` | não |  |
 | `className` | `string` | não |  |
@@ -982,7 +1113,7 @@ Props (`SarakSearchProps` — `src/components/atomic/Inputs/SarakSearch.tsx`):
 | --- | --- | --- | --- |
 | `isOpen` | `boolean` | sim |  |
 | `onClose` | `() => void` | sim |  |
-| `items` | `SarakSearchItem[]` | não | Itens a listar no lugar do registro do Discovery. Quem não tem módulo registrado (o cromo apresentacional, `SarakAppChrome`) alimenta o palette com a própria navegação. Omitida, a busca segue pelo registro (`sarakGetRegisteredModules`) — o comportamento de sempre, inclusive no `SarakShell`. |
+| `items` | `SarakSearchItem[]` | sim | Itens da busca, fornecidos pela navegação do aplicativo. |
 | `onSelect` | `(id: string) => void` | não | Seleciona um item, por clique ou teclado (`Enter`/`Espaço`). Sem esta prop, os resultados não são acionáveis — o comportamento de sempre. |
 
 ### SarakSearchCard
@@ -1005,7 +1136,8 @@ Props (`SarakSelectProps` — `src/components/atomic/Inputs/SarakSelect.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `error` | `string` | não | Mensagem exibida abaixo da lista. Sem a prop, não há mensagem; o texto não é associado automaticamente ao `<select>` por `aria-describedby`. |
+| `label` | `string` | não | Rótulo visual ligado ao campo pelo `id` (gerado quando não é informado). Sem ele, não há rótulo visível; forneça outro nome acessível se necessário. |
+| `error` | `string` | não | Mensagem exibida abaixo da lista, ligada ao `<select>` por `aria-describedby` (pelo `SarakFieldError`), que também marca `aria-invalid`. Sem a prop, não há mensagem nem estado inválido. |
 | `fullWidth` | `boolean` | não | Faz o contêiner e a lista ocuparem toda a largura disponível. Omitida ou `false`, a largura depende do layout pai. |
 
 Estende: `SelectHTMLAttributes<HTMLSelectElement>`
@@ -1029,7 +1161,7 @@ Props (`SarakShellNavProps` — `src/components/atomic/Navigation/SarakShellNav.
 | `brand` | `{ name?: string; logoUrl?: string }` | não | Identidade exibida no topo do menu. |
 | `onNavigate` | `(route: string) => void` | não | Callback de navegação — o host decide como navegar (router, pushState, assign). |
 | `onChange` | `(route: string) => void` | não | Alias de `onNavigate`; ambos são chamados, na ordem. Mantido por compatibilidade. |
-| `orientation` | `'vertical' \| 'horizontal' \| 'auto'` | não | Orientação do menu (Spec 18). `'auto'` (default) segue o Design Engine: `design.navigationStyle === 'topbar'` → horizontal; qualquer outro → vertical. `'dock'`/`'glass'` do shell legado ficam fora desta spec (tratados como vertical). |
+| `orientation` | `'vertical' \| 'horizontal' \| 'auto'` | não | Orientação do menu (Spec 18). `'auto'` (default) segue o Design Engine: `design.navigationStyle === 'topbar'` → horizontal; qualquer outro → vertical. Qualquer valor desconhecido é tratado como vertical. |
 | `collapsed` | `boolean` | não | Colapsado (`isNavHidden`): só ícone, rótulo e categoria somem. |
 | `className` | `string` | não |  |
 
@@ -1040,7 +1172,9 @@ Props (`SarakShellSearchWidgetProps` — `src/components/atomic/Navigation/Sarak
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `variant` | `'bar' \| 'icon'` | não | Escolhe a barra de busca ou o gatilho de menu; omitida, usa `bar`, que fica oculto abaixo do breakpoint `md`. |
-| `onClick` | `() => void` | sim | Callback do gatilho `icon`; obrigatório. A variante padrão `bar` não o chama ao selecionar resultados. |
+| `items` | `SarakSearchItem[]` | não | Resultados fornecidos pelo aplicativo. |
+| `onClick` | `() => void` | sim | Callback do gatilho `icon`; obrigatório. |
+| `onSelect` | `(item: SarakSearchItem) => void` | não | Seleciona um resultado da variante `bar`. |
 
 ### SarakShellThemeToggle
 
@@ -1056,9 +1190,9 @@ Props (`SarakShellUserWidgetProps` — `src/components/atomic/Navigation/SarakSh
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `user` | `SarakShellUser` | não | Fornece nome, e-mail e nível usados na identidade; omitido, exibe o rótulo genérico de usuário. |
+| `user` | `SarakShellUser` | não | Fornece a identidade genérica do usuário; omitido, exibe o rótulo genérico. |
 | `logout` | `() => void` | não | Executa o encerramento de sessão e habilita o botão de sair; omitida, esse botão não é renderizado. |
-| `variant` | `'horizontal' \| 'vertical' \| 'mini'` | não | Ajusta o arranjo à barra, à lateral ou ao modo compacto; omitida, usa `vertical`. Em `mini`, o nome e o nível ficam ocultos. |
+| `variant` | `'horizontal' \| 'vertical' \| 'mini'` | não | Ajusta o arranjo à barra, à lateral ou ao modo compacto; omitida, usa `vertical`. |
 
 ### SarakSkeleton
 
@@ -1089,12 +1223,13 @@ Props (`SarakSocialButtonProps` — `src/components/atomic/Buttons/SarakSocialBu
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `provider` | `'google' \| 'github'` | sim | Escolhe o ícone e o rótulo padrão do provedor; obrigatória. |
-| `variant` | `'glass' \| 'sovereign'` | sim | Seleciona o acabamento visual; obrigatória. Um tema `sovereign` também prevalece quando esta prop é `glass`. |
-| `onClick` | `(provider: 'google' \| 'github') => void` | não | Recebe o provedor clicado; omitida, o botão continua visível, mas não executa ação. |
-| `label` | `string` | não | Substitui o rótulo e o título acessível; omitida, usa o texto padrão do provedor. |
-| `hideLabel` | `boolean` | não | Esconde o texto e reduz o botão a um ícone; omitida, mantém o rótulo visível. O título continua disponível no botão. |
-| `className` | `string` | não | Acrescenta classes ao botão com resolução de conflitos Tailwind; omitida, mantém apenas as classes internas. |
+| `provider` | `string` | sim | Provedor usado no rótulo e callback. |
+| `icon` | `React.ReactNode` | sim | Elemento de marca fornecido pelo consumidor. |
+| `variant` | `'glass' \| 'solid'` | sim | Acabamento visual fornecido pelo consumidor. |
+| `onClick` | `(provider: string) => void` | não | Recebe o provedor clicado; omitido, o botão não executa ação. |
+| `label` | `string` | não | Substitui o rótulo e o título acessível; omitido, usa o texto padrão. |
+| `hideLabel` | `boolean` | não | Esconde o texto e mantém o título acessível. |
+| `className` | `string` | não | Acrescenta classes com resolução de conflitos Tailwind. |
 
 ### SarakSparkline
 
@@ -1118,7 +1253,7 @@ Props (`SarakSpinnerProps` — `src/components/atomic/Feedback/SarakSpinner.tsx`
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `size` | `'sm' \| 'md' \| 'lg'` | não | Define o diâmetro pequeno, médio ou grande; omitido, usa `md` e os tamanhos acompanham os tokens tipográficos do tema. |
-| `label` | `string` | não | Nome acessível do progresso indeterminado; omitido ou vazio, usa `Carregando` para manter o indicador identificado. |
+| `label` | `string` | não | Nome acessível do progresso indeterminado; omitido ou vazio, usa o catálogo no idioma ativo. |
 | `className` | `string` | não | Acrescenta classes ao SVG; omitida, mantém o estilo interno. Classes de animação podem substituir a rotação em movimento permitido. |
 
 ### SarakSplitPane
@@ -1153,13 +1288,13 @@ Props (`SarakStatsProps` — `src/components/atomic/Templates/SarakStats.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | não | Busca as métricas quando `data` não é fornecida; omitido junto com `data`, o componente fica no esqueleto de carregamento. |
-| `data` | `TData` | não | Usa métricas já carregadas e evita a busca; quando presente, tem prioridade sobre `endpoint`. |
-| `label` | `string` | não | Sem efeito nesta implementação; o título dos cartões vem de `mapping` ou das chaves dos dados. |
-| `mapping` | `Record<string, string>` | não | Define as chaves e os rótulos exibidos; omitido, infere campos numéricos/textuais ou resume arrays em total, ativos e erros. |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não | Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. |
+| `data` | `TData` | não | Dado já carregado pelo host; quando presente, tem prioridade sobre load. |
+| `load` | `() => Promise<TData>` | não | Carrega as métricas pelo mecanismo escolhido pelo host. |
+| `updatedAt` | `Date \| string \| number` | não | Horário do dado entregue diretamente pelo host. |
+| `onRetry` | `() => void` | não | Callback opcional para tentar novamente após uma falha. |
+| `label` | `string` | não | Título opcional fornecido pelo host. |
+| `mapping` | `Record<string, string>` | não | Define os rótulos exibidos; omitido, usa as chaves do dado recebido. |
+| `metrics` | `Partial<Record<keyof TData & string, SarakStatsMetricConfig>>` | não | Configuração visual e de formato por chave de métrica. |
 
 ### SarakStepper
 
@@ -1185,24 +1320,17 @@ Estende: `Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>`
 
 ### SarakTable
 
-Props (`SarakTableProps` — `src/components/atomic/Templates/SarakTableProps.ts`):
+Props (`SarakTableProps` — `src/components/atomic/Templates/SarakTable.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `endpoint` | `string` | não | Sem `data`, busca por este endpoint. Com `data`, é ignorado — nenhuma chamada de rede ocorre. |
-| `data` | `TData[]` | não | Dado já em mãos (cache, SSR, outra chamada) — quando presente, renderiza direto, sem rede. |
-| `label` | `string` | não |  |
-| `mapping` | `Record<string, string>` | não |  |
-| `getRowKey` | `(row: TData, index: number) => Key` | não | Chave estável da linha para seleção; por padrão, usa row.id ou o índice original. |
-| `sort` | `SarakTableSort \| null` | não | Omitido, ordena localmente; passe null para controlar o estado sem ordenação. |
-| `onSortChange` | `(sort: SarakTableSort \| null) => void` | não | Recebe o próximo estado de ordenação; com sort, o consumidor controla a ordem das linhas. |
-| `selectable` | `boolean` | não | Habilita a seleção de linhas e a caixa das linhas visíveis. |
-| `selectedKeys` | `Key[]` | não | Chaves selecionadas controladas; omitido, a tabela gerencia a seleção. |
-| `onSelectionChange` | `(selectedKeys: Key[]) => void` | não | Recebe as chaves selecionadas atualizadas. |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
-| `responsive` | `boolean` | não | No smartphone colapsa para cards empilhados. Default `true` — mesma prop, mesmo default e mesmo efeito do irmão `SarakDataTable`, para que os dois componentes públicos de tabela não tenham APIs divergentes. |
+| `onRetry` | `() => void` | não |  |
+| `updatedAt` | `Date \| string \| number` | não |  |
+| `emptyMessage` | `string` | não |  |
+| `loading` | `boolean` | não |  |
+| `error` | `string \| null` | não |  |
+
+Estende: `BaseSarakTableProps<TData>`
 
 ### SarakTabs
 
@@ -1224,7 +1352,8 @@ Props (`SarakTextareaProps` — `src/components/atomic/Inputs/SarakTextarea.tsx`
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `error` | `string` | não | Mensagem exibida abaixo da área de texto. Sem a prop, não há mensagem; o texto não é associado automaticamente ao `<textarea>` por `aria-describedby`. |
+| `label` | `string` | não | Rótulo visual ligado à área de texto pelo `id` (gerado quando não é informado). |
+| `error` | `string` | não | Mensagem exibida abaixo da área de texto, ligada ao `<textarea>` por `aria-describedby` (pelo `SarakFieldError`), que também marca `aria-invalid`. Sem a prop, não há mensagem nem estado inválido. |
 | `fullWidth` | `boolean` | não | Faz o contêiner e a área de texto ocuparem toda a largura disponível. Omitida ou `false`, a largura depende do layout pai. |
 
 Estende: `TextareaHTMLAttributes<HTMLTextAreaElement>`
@@ -1319,4 +1448,17 @@ Props (`SarakUploaderProps` — `src/components/atomic/Inputs/SarakUploader.tsx`
 | `style` | `React.CSSProperties` | não |  |
 | `onChange` | `(files: File[]) => void` | não | Recebe os arquivos aceitos (Spec 32: `onChange(value)`). |
 | `onReject` | `(rejections: SarakFileRejection[]) => void` | não | Recebe as rejeições (ex.: arquivo maior que `maxSize`). |
+
+### SarakValue
+
+Props (`SarakValueProps` — `src/components/atomic/Atoms/SarakValue.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `value` | `number \| Date \| string \| null \| undefined` | sim |  |
+| `format` | `SarakValueFormat` | não |  |
+| `locale` | `string` | não |  |
+| `signColor` | `boolean` | não |  |
+| `size` | `'sm' \| 'md' \| 'lg'` | não |  |
+| `className` | `string` | não |  |
 

@@ -1,25 +1,8 @@
-/* Os padrões de ELEMENTO de título e texto moram em `_elements.css`, numa camada que
-   cede à classe utilitária. Fica aqui só o `body`: `_base.css`, nesta mesma camada,
-   também escreve `line-height` no `body` e só perde para este bloco por vir antes — numa
-   camada anterior, o `1.5` literal de `_base.css` venceria o token `--sarak-body-lh`. */
-body {
-    font-size: var(--sarak-body-size, 14px);
-    font-weight: var(--sarak-body-weight, 400);
-    line-height: var(--sarak-body-lh, 1.6);
-}
-
-.font-tab { font-family: var(--font-heading, 'Inter', sans-serif); }
-
-/* Atomic Font Scaling Integration */
-[data-font-scale="pp"] { --sarak-font-size: 10px; --font-size-factor: 0.7; }
-[data-font-scale="p"]  { --sarak-font-size: 12px; --font-size-factor: 0.85; }
-[data-font-scale="m"]  { --sarak-font-size: 14px; --font-size-factor: 1.0; }
-[data-font-scale="g"]  { --sarak-font-size: 16px; --font-size-factor: 1.25; }
-[data-font-scale="gg"] { --sarak-font-size: 20px; --font-size-factor: 1.5; }
+/* Os padrões de ELEMENTO de título, texto e `body` moram em `_elements.css`, numa camada
+   que cede à classe utilitária. */
+.font-tab { font-family: var(--font-heading, 'Outfit', sans-serif); }
 
 /* Tabular Numbers Enforcement */
-[data-tabular-nums="tabular-nums"],
-[data-tabular-nums="true"],
 .tabular-nums {
     font-variant-numeric: tabular-nums !important;
     font-feature-settings: "tnum" 1 !important;

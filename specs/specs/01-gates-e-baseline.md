@@ -71,16 +71,25 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Deep import | `npm run deep-import:check` | `package.json.exports` só expõe raiz + subcaminhos `.css` | **R27** | ~0,3 s |
 | Limites de gate | `npm run gate-limits:check` | Todo gate declara, no cabeçalho, o que não vê | **R18** | ~0,3 s |
 | Tipos de token | `npm run token-types:check` | `design-token-ids.ts` commitado == gerado agora a partir do schema | **R4 · R29** | precisa do schema |
-| Sincronia plan × índice | roda no Anel 1, condicional | `status` do frontmatter de cada plan bate com a coluna do [[00-indice]] | — *(vão 12, fechado)* |
-| Container query literal | `npm run container-query:check` | Nenhum arquivo de produção monta classe `@min-[…]` por interpolação de template literal, **e** `sarak-base.css` restringe o scan do Tailwind (`source(none)` + `@source` explícito), **e** todo nome de classe de container query tem medida **válida** | — *(plan-39 · endurecido pela plan-44)* | ~0,3 s |
-| Container garantido | `npm run container-query-boundary:check` | Arquivo de produção que **chama** `getGridStyles`/`getResponsiveStackStyles`/`getHeaderStyles`/`getResponsiveSpacingStyles` contém a classe `@container` em algum elemento — quem emite container query planta o container ([[07-responsividade-e-multidispositivo]] §6.1) | — *(plan-41)* | ~0,3 s |
+| Sincronia plan × índice | `npm run plan-index:check` (no Anel 1, condicional) | `status` do frontmatter de cada plan bate com a coluna do [[00-indice]], **e** toda referência da §4 de cada plan ativa — caminho em crase com barra, relativo à raiz ou a `specs/`, e `[[wikilink]]` — existe. Linha do tipo *Skill* não é resolvida (limite declarado) | **R23** *(vão 12, fechado)* |
+| Nomes do kit × barril | `npm run kit-names:check` | Todo nome importado de `@sarak/lib-ui-core` em `README.md`, `docs/*.md`, `sarak-ui/**` (`.md`/`.ts`/`.tsx`) e no `main.tsx`/`ExampleModule.tsx` que o `init` gera existe no barril; em crase, acusa o nome antigo de uma renomeação de `docs/migracoes.md` e o nome de formato público (`Sarak*`, `useSarak*`, `SARAK_*`) que não existe em `src/`. Todo arquivo chamado `migracoes.md` fica fora — cita nomes velhos de propósito. Prosa sem crase não é lida | **R23** | precisa de `dist/` |
+| Container query literal | `npm run container-query:check` | Nenhum arquivo de produção monta classe `@min-[…]` por interpolação de template literal, **e** `sarak-base.css` restringe o scan do Tailwind (`source(none)` + `@source` explícito), **e** todo nome de classe de container query tem medida **válida** | [[07-responsividade-e-multidispositivo]] §6.1 | ~0,3 s |
+| Container garantido | `npm run container-query-boundary:check` | Arquivo de produção que **chama** `getGridStyles`/`getResponsiveStackStyles`/`getHeaderStyles`/`getResponsiveSpacingStyles` contém a classe `@container` em algum elemento — quem emite container query planta o container ([[07-responsividade-e-multidispositivo]] §6.1) | [[07-responsividade-e-multidispositivo]] §6.1 | ~0,3 s |
 | Tipos públicos | `npm run public-types:check` | Todo tipo citado em assinatura pública é **importável pelo nome** a partir do barril — o `barrel:check` cobre componente, não tipo | — *(plan-45)* | ~1 s |
 | Paridade doc × persistência | `npm run persistence-doc:check` | A documentação de persistência bate com o código — mesma família do `catalog:check` | R17 *(plan-52)* | ~0,8 s |
-| Merge de classe no átomo | `npm run class-merge:check` | Átomo de `src/components/atomic/**` compõe `className` por `mergeSarakClasses`, não por concatenação de template literal — a classe do chamador vence a do átomo; a allowlist declara, com motivo, os ainda não convertidos | **R35** | ~0,2 s |
-| Citação do rastro | `npm run trail-citation:check` | Nenhuma linha **adicionada** a `src/`/`gates/`/`scripts/`/`bin/` cita `plan-N`, `veredito de` ou `achado N` sem `15-divida-conhecida`; toda entrada da allowlist tem motivo e aponta para arquivo que existe. `--staged` no hook; sem flag, worktree × `HEAD` + não rastreados | **R36** | ~0,1 s |
+| Merge de classe no átomo | `npm run class-merge:check` | Átomo de `src/components/atomic/**` compõe `className` por `mergeSarakClasses`, não por concatenação de template literal — a classe do chamador vence a do átomo; a allowlist declara, com motivo, os ainda não convertidos. **E** nenhum arquivo desse escopo importa `tailwind-merge` (por `import`, `require` ou `import()`) fora da porta `hooks/mergeSarakClasses.ts`; `__tests__/` fica livre | **R35** | ~0,2 s |
+| Leitor de token | `npm run token-reader:check` | Todo token do schema tem leitor: a variável que o motor emite (`--sarak-<kebab>` e `cssVars`) é lida em `var(` com o nome ancorado (prefixo não conta), toda opção de `select` tem regra `[data-sx-<kebab>="…"]`, `classPrefix` ou componente que a acessa pelo valor, e leitor declarado por `@sarak-token-reader <id> tabela|direto` tem teste por opção. `ALLOWLIST` com motivo, que se esvazia sozinha — e está vazia | **R40** | ~1,8 s |
+| `!important` visual | `npm run css-important:check` | Nenhum `!important` em seletor amplo de `src/styles/*.css` **nem em string/template de TypeScript** escreve propriedade visual que o componente controla; exceção declarada que vence é acusada | **R41** | ~7 s *(idem)* |
+| Contrato de variável | `npm run variable-contract:check` | Uma variável, um dono (exceção por `exceptionOf`); todo nome lido existe; toda reserva é o padrão do token — inclusive alias de fachada e nome derivado declarado em CSS; reserva sem unidade e palavra-chave inválida acusadas — sobre o schema real | **R42** | ~23 s *(2026-10-13, máquina carregada)* |
+| Disputa de canal | `npm run channel-dispute:check` | Cada variável num canal só (inline × `<style>` responsivo) em todo formato de mestre e exceção, nos modos App e Embarcado; a troca de tema não deixa variável inline órfã | **R42** | ~8 s *(2026-10-14, máquina carregada)* |
+| Cor fixa | `npm run fixed-translucent:check` | Nenhum branco/preto fixo, paleta do Tailwind, duração/atraso fixos, `rgba(var(#hex))` inválido nem classe arbitrária com espaço em `src/components/**`, `src/features/**` e parciais de CSS onde o tema decide | **R43** | ~28 s *(idem)* |
+| Contrato do painel | `npm run panel-contract:check` | Todo tipo tem controle nos dois despachantes; opção com `id` = `value`; padrão na faixa e na grade; valor de tema/preset dentro da faixa | **R44** | ~26 s *(idem)* |
+| Citação do rastro | `npm run trail-citation:check` | Nenhuma linha **adicionada** a `src/`/`gates/`/`scripts/`/`bin/` cita `plan-N`, `veredito d…` (*de*, *do*, *da*, *desta*, *dos*… — *veredito final* não casa) ou `achado N` sem `15-divida-conhecida`; toda entrada da allowlist tem motivo e aponta para arquivo que existe. `--staged` no hook; sem flag, worktree × `HEAD` + não rastreados | **R36** | ~0,1 s |
 
+| Porta de ícones | `npm run icon-port:check` | Nenhum `.ts`/`.tsx` de `src/` importa `lucide-react`, `@phosphor-icons/react` ou `@tabler/icons-react` (por `import`, reexport, `require()` ou `import()`) fora de `components/atomic/Icon/families/`; o painel de autoria (`features/DesignEngine/`) fica fora, declarado | **R39** | ~0,9 s |
 | Prefixo do barril público | `npm run prefix:check` | Todo nome exportado segue a convenção da espécie (PascalCase → `Sarak`, constante → `SARAK_`, hook → `use`, função → contém `Sarak`); allowlist exige motivo e se autolimpa | **R37** | ~0,3 s |
-| Paridade token de cromo × consumidor | `npm run chrome-token-parity:check` | Todo token de cromo coberto tem consumidor no `SarakShell` **e** no `SarakAppChrome` — a existência do consumidor, não o valor. Escopo: `schema/navigation.ts` inteiro + a seção de layout de `schema/system.ts`; a dívida fica declarada em `ORPHAN_TOKENS` | [[05-cromo-e-slots]] §2.4 | ~0,3 s |
+| Trava de escrita do agente | `node gates/scripts/contrato/check-agent-git-write.mjs` | Sessão cujo ambiente carrega `CLAUDECODE`, `AI_AGENT` ou `CLAUDE_CODE_SESSION_ID` e **não** carrega `SARAK_GIT_ESCRITA_AUTORIZADA` não commita nem empurra: o hook bloqueia antes de qualquer outro passo. Decisão exportada e testada por fixture; só `commit` e `push`, só os marcadores medidos | **R38** | ~0,06 s |
+| Paridade token de cromo × consumidor | `npm run chrome-token-parity:check` | Todo token de cromo coberto tem consumidor no `SarakAppChrome` — a existência do consumidor, não o valor. Escopo: `schema/navigation.ts` inteiro + a seção de layout de `schema/system.ts`; a dívida ficaria declarada em `ORPHAN_TOKENS`, hoje vazia | [[05-cromo-e-slots]] §2.4 | ~0,3 s |
 
 > ⚠️ **`container-query:check` (plan-39) — o que ele NÃO vê, declarado no próprio cabeçalho (R18):** é
 > **estático** — não constrói CSS. Prova só que o **nome** da classe está soletrado literal no arquivo; não
@@ -114,7 +123,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 > As exclusões são **nomeadas uma a uma**, com motivo, em `gates/allowlists/publicTypeExclusions.mjs`; o
 > gate não tem categoria genérica de dispensa.
 
-**Os três gates que não estão nesta tabela porque não são de contrato**, e as regras que cobram:
+**Os gates que não estão nesta tabela porque não são de contrato**, e as regras que cobram:
 
 | Gate | Comando | Garante | Cobra |
 | --- | --- | --- | --- |
@@ -142,7 +151,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 
 > **Por que isto está escrito agora:** em 2026-08-02 o `check-release-tag` barrou um push imprimindo *"Regra violada"* — e a regra **não existia** em spec nenhuma. Um gate que reprova citando regra inexistente deixa o leitor sem caminho do bloqueio até o contrato. As três regras acima foram escritas em [[00-regras-e-invariantes]] (`plan-13`) a partir da leitura de cada script.
 
-Os quatro primeiros são **rápidos e verdes**, e são os que rodam encadeados antes de compilar no `npm run build`. `package:check` é diferente: roda `npm pack --dry-run --json`, então **exige `dist/` buildado** — é por isso que ele mora no `prepublishOnly`, não no `build`.
+Os que rodam encadeados no `npm run build` — antes de compilar e depois do `build:js` — estão na ordem do script `build` do `package.json`, que é a fonte (não conte aqui). `package:check` é diferente: roda `npm pack --dry-run --json`, então **exige `dist/` buildado** — é por isso que ele mora no `prepublishOnly`, não no `build`.
 
 Todos têm a mesma mecânica de leitura: **saída de uma linha quando passa**. Se a linha não apareceu, leia o erro acima dela.
 
@@ -157,19 +166,24 @@ comando. A `plan-52` fechou os quatro; esta tabela é o que impede que a situaç
 | Gate | `pre-commit` | `gates:full` | `version` | `pre-push` | **CI** |
 | --- | :---: | :---: | :---: | :---: | :---: |
 | `barrel` · `catalog` · `zero-brand` · `guide` · `token-types` | Anel 1 | ✅ *(via `build`)* | ✅ | — | ✅ |
-| `deep-import` · `public-types` | Anel 1 | — | — | — | ✅ |
+| `deep-import` | Anel 1 | ✅ *(via `build`)* | ✅ | — | ✅ *(via `build`)* |
+| `public-types` | — | ✅ *(via `build`, depois do `build:js`)* | ✅ | — | ✅ *(via `build`)* |
 | `dev-kit` | **união dos 2 gatilhos** (§2.2.1 da [[02-enforcement-por-commit]]) | ✅ 1º | ✅ | — | ✅ |
 | `container-query` · `container-query-boundary` · `persistence-doc` | Anel 1 *(desde a `plan-52`)* | — | — | — | ✅ **explícito** |
 | `gate-limits` | Anel 1 | — | — | — | ✅ **explícito** |
 | `class-merge` | Anel 1 | — | — | — | ✅ **explícito** |
 | `chrome-token-parity` | Anel 1 | — | — | — | ✅ **explícito** |
-| `prefix` | — | ✅ *(via `build`)* | ✅ | — | ✅ | 
+| `token-reader` · `css-important` · `variable-contract` · `channel-dispute` · `fixed-translucent` · `panel-contract` | Anel 1 | — | — | — | ✅ **explícito** |
+| `prefix` · `kit-names` | — | ✅ *(via `build`)* | ✅ | — | ✅ *(via `build`)* |
+| `icon-port` | Anel 1 | ✅ *(via `build`)* | ✅ | — | ✅ *(via `build`)* |
 | `trail-citation` | Anel 1 (`--staged`) | — | — | — | ⛔ **não roda** — lê o staged, e um intervalo de commits incluiria histórico anterior ao gate |
+| `agent-git-write` | **1º passo, antes do Anel 0** | — | — | **1º passo**, antes do anel de release | ⛔ **não roda** — o runner não tem sessão de agente, e a decisão é sobre quem digita o comando |
 | `plan-index` | Anel 1, **condicional e pela METADE** | — | — | — | ✅ **a outra metade** |
 | `audit:baseline` (+`tsc`) | Anel 2 | ✅ `--with-tsc` *(desde a `plan-52`)* | — | — | ✅ |
 | `themes:diversity` | — | ✅ *(desde a `plan-52`)* | — | — | ✅ |
 | `build-info` · `package` · `coverage` | — | ✅ | — | — | ✅ |
 | `release:check` | — | — | — | ✅ (só `main`) | ✅ **job `release-tag`** |
+| `cromo-css-real` (`browser-tests/`, Playwright) | — | — | — | — | ✅ **job `cromo-css-real`** ([[16-integracao-continua]] §4.2.1) |
 | `migration-anchor` · `minor-no-removal` | — | — | ✅ *(desde a `plan-53`)* | — | — |
 | Segredos (Anel 0) | ✅ **sempre** | — | — | — | ⛔ **impossível** |
 
@@ -183,15 +197,16 @@ comando. A `plan-52` fechou os quatro; esta tabela é o que impede que a situaç
 
 **Onde a CI roda cada coisa** é [[16-integracao-continua]] §3 — esta coluna diz apenas *se* roda.
 
-## 2.3 `npm run build` — os quatro gates encadeados + a compilação
+## 2.3 `npm run build` — os gates encadeados + a compilação
 
 ```
 npm run build
 ```
 
-Encadeia `catalog:check → barrel:check → zero-brand:check → guide:check → build:js → build:css → build:css:scoped → copy-base-css → inject-css → generate-build-info`.
+A ordem é a do script `build` do `package.json` — a fonte, que cresce a cada gate novo. Em fases: os gates de
+fonte, a compilação, os gates que leem `dist/index.d.ts`, o CSS e o carimbo final.
 
-**Os gates vêm antes de compilar de propósito**: build vermelho por documentação defasada é comportamento desejado, não incômodo. Detalhe de cada etapa em [[05-build-e-distribuicao]].
+**Os gates de fonte vêm antes de compilar de propósito**: build vermelho por documentação defasada é comportamento desejado, não incômodo. Detalhe de cada etapa em [[05-build-e-distribuicao]].
 
 ## 2.4 `npx vitest run` — a suíte completa
 
@@ -229,18 +244,16 @@ npx tsc --noEmit
 
 Isso não contradiz o `auditor_typescript` (R3) estar verde: um procura o **token** `any` na AST, o outro **compila**. São checagens diferentes.
 
-## 2.6 Playwright — REMOVIDO em 2026-08-18
+## 2.6 Playwright — só a medição de CSS renderizado, e só na CI
 
-**Não existe mais aparato de browser neste repositório.** Saíram o config, o script `test-ct`, as duas
-dependências, o harness e os 5 arquivos de teste que dependiam deles.
+O aparato de **component test** e E2E (`playwright-ct.config.ts`, script `test-ct`, `src/**/__e2e__/`) **não
+existe**: era cobertura que nenhum pipeline executava, e verde que ninguém executa é indistinguível de sucesso.
 
-O motivo é o que esta spec inteira defende: aquilo era **cobertura que existia e não era cobrada** — não
-rodava no build, nem em hook, nem em CI. Verde que ninguém executa é indistinguível de sucesso, e vale menos
-que vermelho declarado.
-
-**Consequência que não some com a remoção:** a base ficou **sem nenhuma forma de medir CSS renderizado**, e
-isso rebaixou a **R24** de ✅ para ⚠️. O adiamento está numerado (achado **45**, [[15-divida-conhecida]] §4) e
-depende da CI para voltar a existir com onde rodar. Detalhe em [[11-testes-e-cobertura]] §7.
+O que existe é **uma** medição em navegador real: `browser-tests/*.spec.ts`, por `npm run cromo-css-real:check`
+(builda antes, porque lê `dist/`), executada pelo job `cromo-css-real` da CI ([[16-integracao-continua]] §4.2.1)
+— não por hook nem por `gates:full`. O que ela prova e o que não vê está em [[11-testes-e-cobertura]] §7.3.
+**R24** continua ⚠️: o não-vazamento do modo embarcado não é medido em CSS renderizado (achado **45**,
+[[15-divida-conhecida]] §4).
 
 # 3. O BASELINE — recontado em 2026-08-05 (plans 12 e 16)
 
@@ -270,7 +283,7 @@ depende da CI para voltar a existir com onde rodar. Detalhe em [[11-testes-e-cob
 | ↳ `auditor_authcoupling` (R32) | | ✅ **0** — nasceu verde e continua |
 | ↳ `auditor_sectionpointers` (R23·R17) | | ✅ **0** ponteiros mortos — eram 27 |
 | ↳ `auditor_composicaoatomica` (R10) | | ❌ **2** — `SarakMultiSelect` e `SarakUploader`, ambas declaradas. Eram 47, e a fronteira deixou de ser por pasta (ver **R10**) |
-| ↳ `auditor_contraste` (R31) | | ✅ **0 no modo nativo · 0 no modo oposto**, 23 temas · **18 isentos** de contraparte (os legados) · **25 pares-tema pulados**, que não são aprovação. Nasceu em 188 |
+| ↳ `auditor_contraste` (R31) | | ✅ **0 no modo nativo · 0 no modo oposto · 0 pares-tema pulados** — toda cadeia de fundo termina em base opaca (§9.8). Quantos temas e quantos isentos de contraparte, só a saída do comando diz. Nasceu em 188 |
 | `barrel:check` **(R14)** | `npm run barrel:check` | ✅ **0 faltas**, e todo nome **resolve** para o valor do componente. *(A contagem de componentes é fonte viva: o próprio comando a imprime — publicá-la aqui é o padrão que o achado **32** cataloga.)* |
 | `catalog:check` **(R17·R29)** | `npm run catalog:check` | ✅ em dia |
 | `zero-brand:check` **(R12)** | `npm run zero-brand:check` | ✅ **363 arquivos varridos, 0 violações** — o número que importa é o de violações |
@@ -681,8 +694,9 @@ O detector é barato — 40 linhas — e a `plan-06` o escreveu como sonda. Ele 
 mortas de verdade**. As outras 19 são ruído de duas classes que precisam estar codificadas **antes** de o gate
 existir, ou ele reprova o repositório inteiro:
 
-1. **`§7.3` significa "item 3 da seção 7"**, não um heading `7.3`. É convenção viva em `00-prompt-executor` §7,
-   `01-gates` §6 e `10-seguranca` §5.
+1. **`§7.3` significa "item 3 da seção 7"**, não um heading `7.3`. É convenção viva em `01-gates` §6 e
+   `10-seguranca` §5. As listas de proibições de `00-prompt-executor` §7 e `00-prompt-revisor` §9 **deixaram de
+   ser citadas assim, de fora**: citam-se pelo nome, nunca pelo número, e item novo entra onde fizer sentido.
 2. **Alvo com `## 2.1` sem um `# 2` pai** — o heading existe, o pai não.
 
 E há uma decisão de escopo, tomada em 2026-08-03: **o detector ignora `specs/plan/`**. Plan é rastro
@@ -725,6 +739,10 @@ schema inteiro e o gate valia para um arquivo. O escopo passou a incluir a seç�
 consumo do cromo. Contava um cromo que **nunca lê o token** como consumidor dele — o gate ficava verde por
 cima da própria violação que existe para pegar. CSS global saiu do escopo de arquivo dos dois grupos.
 
+**A lista de exceções zerou:** `ORPHAN_TOKENS` está vazia. Os três tokens de layout que o painel oferecia sem
+efeito (`layoutDensity`, `maxContentWidth`, `isSplitViewEnabled`) passaram a ter consumidor no cromo
+([[05-cromo-e-slots]] §2.4), e o gate cobre todos os tokens do recorte.
+
 **O que ele continua sem ver, e está declarado no cabeçalho dele (R18):**
 
 - É **textual, não por AST**: prova que existe referência ao `id` ou a uma `cssVar`, não que o consumo
@@ -749,3 +767,17 @@ de `as` como o importável, de modo que mudança de formato do bundler exige mud
 **O que ele fecha:** antes dele, a convenção vivia só na skill `ui-novo-componente` — metade da superfície
 nasceu antes dela e nada cobrava. Era o caso clássico de regra sem gate, que o §8 do [[00-contexto]]
 cataloga.
+
+## 9.8 Seis gates que passaram a ver o que a regra já cobrava
+
+Cada um destes alcances tem um caso de fixture que falha no teste do próprio gate, e o limite novo está
+declarado no cabeçalho dele (R18).
+
+| Gate | O que passa a ver | O que continua fora |
+|---|---|---|
+| `plan-index:check` (R23) | As referências da §4 de cada plan ativa: caminho em crase com barra (raiz ou `specs/`) e `[[wikilink]]` (um `<nome>.md` em qualquer pasta de `specs/`) | A linha *Skill*, que é nome e não caminho; as outras seções da plan |
+| `kit-names:check` (R23, novo) | Nome público importado de `@sarak/lib-ui-core`, ou citado em crase, no que o consumidor recebe: `README.md`, `docs/*.md`, `sarak-ui/**` e o texto que o `init` gera | Todo arquivo chamado `migracoes.md`; prosa sem crase; nome em crase de formato não público, ou que exista em algum lugar de `src/` |
+| `trail-citation:check` (R36) | *veredito* seguido de *d* e qualquer letra: *de*, *do*, *da*, *desta*, *deste*, *dessa*, *dos*, *das* | *veredito final* e outras formas sem *d*; tudo que a R36 já declarava |
+| `auditor_ghostvars` (R7) | O registro conta só `id` de **token**, o objeto do schema que declara `type:` entre as próprias chaves; `id` de opção de `select` e de grupo do schema não emitem mais variável | O registro continua permissivo por desenho (expande sufixo em toda base) e **não** serve de lista pública de variáveis; essa lista é a do kit ([[12-kit-do-consumidor]]) |
+| `auditor_contraste` (R31) | Toda cadeia de fundo de `PAIRS` termina em `colorBgBody`, então barra, botão ou superfície translúcidos são compostos sobre o corpo em vez de pulados | O par só volta a ser pulado se o tema declarar o **próprio** `colorBgBody` translúcido ou não parseável; o botão primário é medido sobre o corpo mesmo quando senta num card |
+| `class-merge:check` (R35) | Import de `tailwind-merge` em `src/components/atomic/**` fora da porta `hooks/mergeSarakClasses.ts` | `__tests__/`; tudo fora de `atomic/`; a ordem dos argumentos do merge |

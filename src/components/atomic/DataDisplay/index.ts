@@ -13,3 +13,12 @@ export type { SarakSparklineProps, SarakSparklineVariant } from './SarakSparklin
 export { SarakTreeView } from './SarakTreeView';
 export type { SarakTreeViewProps, SarakMatrixTreeNode } from './SarakTreeView';
 export * from './SarakKanban';
+// Blocos de detalhe do cartão (checklist, comentários, histórico).
+export * from './SarakChecklist';
+export * from './SarakCommentThread';
+export * from './SarakActivityFeed';
+export type { SarakTimestamp } from './relativeTime';
+// Calendário mensal de eventos.
+export * from './SarakCalendar';
+// Cronograma (Gantt).
+export * from './SarakGantt';

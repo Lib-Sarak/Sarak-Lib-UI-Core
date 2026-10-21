@@ -20,7 +20,9 @@ import {
     collectReferenceThemeIds,
     collectResponsiveProps,
     collectThemePresetIds,
+    collectTokenGroups,
 } from './collectKitSources.mjs';
+import { collectEmittedSarakCssVars } from './collectEmittedSarakCssVars.mjs';
 
 /** Guias de autoria que viajam no pacote — título lido do próprio arquivo (nunca à mão). */
 const collectShippedDocs = () => {
@@ -54,6 +56,7 @@ export const buildKitCatalog = () => {
     const barrelExports = collectBarrelExports();
     const components = buildComponentSurface(catalog, barrelExports);
     const designTokens = collectDesignTokens();
+    const cssVars = collectEmittedSarakCssVars();
 
     return {
         $comment:
@@ -71,12 +74,13 @@ export const buildKitCatalog = () => {
         },
         barrelExports,
         components,
-        tokens: catalog.tokens,
+        tokens: { ...catalog.tokens, cssVars },
         designTokens: {
             note:
                 'Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é ' +
                 'descartado com console.warn pelo Design Engine — nunca vira CSS cru.',
             count: designTokens.length,
+            groups: collectTokenGroups(),
             responsiveCapable: designTokens.filter((token) => token.responsive).map((token) => token.id),
             ids: designTokens,
         },

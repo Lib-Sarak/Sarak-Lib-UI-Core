@@ -3,7 +3,7 @@
     "tokenId": "breakpointTablet",
     "name": "Breakpoint Tablet",
     "description": "Largura mínima (px) a partir da qual o layout é tratado como tablet. Consumido pelo gerador de media-queries e pelo detector JS de dispositivo (Spec 16).",
-    "type": "number",
+    "type": "slider",
     "importance": 85,
     "categories": [
       "estrutura",
@@ -23,7 +23,11 @@
     "cssVariables": [
       "--sarak-breakpoint-tablet"
     ],
-    "allowedValues": null,
+    "allowedValues": {
+      "min": 480,
+      "max": 1024,
+      "step": 1
+    },
     "relatedTokens": [
       "breakpointDesktop"
     ]
@@ -32,7 +36,7 @@
     "tokenId": "breakpointDesktop",
     "name": "Breakpoint Desktop",
     "description": "Largura mínima (px) a partir da qual o layout é tratado como desktop. Consumido pelo gerador de media-queries e pelo detector JS de dispositivo (Spec 16).",
-    "type": "number",
+    "type": "slider",
     "importance": 85,
     "categories": [
       "estrutura",
@@ -52,7 +56,11 @@
     "cssVariables": [
       "--sarak-breakpoint-desktop"
     ],
-    "allowedValues": null,
+    "allowedValues": {
+      "min": 768,
+      "max": 1600,
+      "step": 1
+    },
     "relatedTokens": [
       "breakpointTablet"
     ]
@@ -61,7 +69,7 @@
     "tokenId": "layoutGridTemplate",
     "name": "Template de Grid Global",
     "description": "Estratégia de grid macro aplicada às seções: 12 colunas, auto-fit responsivo ou masonry.",
-    "type": "string",
+    "type": "select",
     "importance": 90,
     "categories": [
       "estrutura",
@@ -89,13 +97,15 @@
     "relatedTokens": [
       "globalSectionGap"
     ],
-    "consumerHook": ["useStructuralStyles.getGridStyles"]
+    "consumerHook": [
+      "useStructuralStyles.getGridStyles"
+    ]
   },
   {
     "tokenId": "layoutGridMinCell",
     "name": "Largura Mínima da Célula (Auto-fit)",
     "description": "Largura mínima, em pixels, que cada célula assume no modo Auto-fit Responsivo antes de o grid quebrar para uma nova coluna — decide quantas colunas cabem em cada largura de tela.",
-    "type": "number",
+    "type": "slider",
     "importance": 75,
     "categories": [
       "estrutura",
@@ -123,13 +133,15 @@
     "relatedTokens": [
       "layoutGridTemplate"
     ],
-    "consumerHook": ["useStructuralStyles.getGridStyles"]
+    "consumerHook": [
+      "useStructuralStyles.getGridStyles"
+    ]
   },
   {
     "tokenId": "globalSectionGap",
     "name": "Espaçamento entre Seções",
     "description": "Distância (gap) aplicada entre as seções e itens do grid macro global.",
-    "type": "number",
+    "type": "slider",
     "importance": 80,
     "categories": [
       "estrutura",
@@ -148,7 +160,11 @@
     "cssVariables": [
       "--sarak-global-section-gap"
     ],
-    "allowedValues": null,
+    "allowedValues": {
+      "min": 0,
+      "max": 96,
+      "step": 2
+    },
     "relatedTokens": [
       "layoutGridTemplate"
     ]
@@ -157,7 +173,7 @@
     "tokenId": "globalFlowDirection",
     "name": "Direção do Fluxo Global",
     "description": "Direção do flex dos containers genéricos globais: coluna (vertical) ou linha (horizontal).",
-    "type": "string",
+    "type": "select",
     "importance": 75,
     "categories": [
       "estrutura",
@@ -183,13 +199,15 @@
     "relatedTokens": [
       "globalFlowAlign"
     ],
-    "consumerHook": ["useStructuralStyles.getContainerStyles"]
+    "consumerHook": [
+      "useStructuralStyles.getContainerStyles"
+    ]
   },
   {
     "tokenId": "globalFlowAlign",
     "name": "Alinhamento do Fluxo Global",
     "description": "Alinhamento dos itens nos containers genéricos globais.",
-    "type": "string",
+    "type": "select",
     "importance": 70,
     "categories": [
       "estrutura",
@@ -218,13 +236,15 @@
     "relatedTokens": [
       "globalFlowDirection"
     ],
-    "consumerHook": ["useStructuralStyles.getContainerStyles"]
+    "consumerHook": [
+      "useStructuralStyles.getContainerStyles"
+    ]
   },
   {
     "tokenId": "headerAlignment",
     "name": "Alinhamento do Header",
     "description": "Distribuição horizontal dos elementos no cabeçalho das seções.",
-    "type": "string",
+    "type": "select",
     "importance": 70,
     "categories": [
       "estrutura",
@@ -250,13 +270,15 @@
       "start"
     ],
     "relatedTokens": [],
-    "consumerHook": ["useStructuralStyles.getHeaderStyles"]
+    "consumerHook": [
+      "useStructuralStyles.getHeaderStyles"
+    ]
   },
   {
     "tokenId": "formLabelPosition",
     "name": "Posição do Rótulo (Form)",
     "description": "Posição do label em relação ao campo nos grupos de formulário: acima ou à esquerda.",
-    "type": "string",
+    "type": "select",
     "importance": 70,
     "categories": [
       "estrutura",
@@ -282,13 +304,15 @@
     "relatedTokens": [
       "formFieldDensity"
     ],
-    "consumerHook": ["useStructuralStyles.getFormGroupStyles"]
+    "consumerHook": [
+      "useStructuralStyles.getFormGroupStyles"
+    ]
   },
   {
     "tokenId": "formFieldDensity",
     "name": "Densidade dos Campos (Form)",
     "description": "Espaçamento interno entre os elementos dos grupos de formulário.",
-    "type": "string",
+    "type": "select",
     "importance": 65,
     "categories": [
       "estrutura",
@@ -316,13 +340,15 @@
     "relatedTokens": [
       "formLabelPosition"
     ],
-    "consumerHook": ["useStructuralStyles.getFormGroupStyles"]
+    "consumerHook": [
+      "useStructuralStyles.getFormGroupStyles"
+    ]
   },
   {
     "tokenId": "switchLabelPosition",
     "name": "Posição do Rótulo (Switch)",
-    "description": "Posição do texto em relação ao controle nos switches e checkboxes.",
-    "type": "string",
+    "description": "Posição do texto em relação ao controle do SarakSwitch (checkbox e radio não seguem este token).",
+    "type": "select",
     "importance": 65,
     "categories": [
       "estrutura",
@@ -330,7 +356,6 @@
     ],
     "tags": [
       "switch",
-      "checkbox",
       "label"
     ],
     "databaseColumn": "structural",
@@ -347,13 +372,15 @@
       "space-between"
     ],
     "relatedTokens": [],
-    "consumerHook": ["useStructuralStyles.getSwitchLayoutStyles"]
+    "consumerHook": [
+      "useStructuralStyles.getSwitchLayoutStyles"
+    ]
   },
   {
     "tokenId": "splitPaneMinWidth",
     "name": "Split Pane: Largura Mínima do Painel Secundário",
     "description": "Largura mínima do painel à direita do divisor redimensionável do SarakSplitPane.",
-    "type": "number",
+    "type": "slider",
     "importance": 40,
     "categories": [
       "estrutura",
@@ -374,8 +401,7 @@
     ],
     "allowedValues": {
       "min": 40,
-      "max": 400,
-      "step": 10
+      "max": 400
     },
     "relatedTokens": []
   },
@@ -383,11 +409,10 @@
     "tokenId": "preferenceModePosition",
     "name": "Preferência: Modo Claro/Escuro — Posição",
     "description": "Onde a escolha de modo (claro/escuro/sistema) do usuário final aparece: não oferecida, no menu ⚙, ou fixa na barra.",
-    "type": "string",
-    "importance": 60,
+    "type": "select",
+    "importance": 80,
     "categories": [
-      "estrutura",
-      "preferencias"
+      "chrome-composition"
     ],
     "tags": [
       "preferencias",
@@ -418,11 +443,10 @@
     "tokenId": "preferenceFontSizePosition",
     "name": "Preferência: Tamanho da Fonte — Posição",
     "description": "Onde a escolha de tamanho de fonte (P/M/G) do usuário final aparece: não oferecida, no menu ⚙, ou fixa na barra.",
-    "type": "string",
-    "importance": 55,
+    "type": "select",
+    "importance": 80,
     "categories": [
-      "estrutura",
-      "preferencias"
+      "chrome-composition"
     ],
     "tags": [
       "preferencias",
@@ -450,11 +474,10 @@
     "tokenId": "preferenceNavigationStylePosition",
     "name": "Preferência: Navegação Topo/Lateral — Posição",
     "description": "Onde a escolha de orientação da navegação (topo/lateral) do usuário final aparece: não oferecida, no menu ⚙, ou fixa na barra.",
-    "type": "string",
-    "importance": 55,
+    "type": "select",
+    "importance": 80,
     "categories": [
-      "estrutura",
-      "preferencias"
+      "chrome-composition"
     ],
     "tags": [
       "preferencias",
@@ -482,11 +505,10 @@
     "tokenId": "preferenceNavCollapsePosition",
     "name": "Preferência: Navegação Recolhida — Posição",
     "description": "Onde o controle de recolher a navegação do usuário final aparece: não oferecida, no menu ⚙, ou fixa na barra.",
-    "type": "string",
-    "importance": 60,
+    "type": "select",
+    "importance": 80,
     "categories": [
-      "estrutura",
-      "preferencias"
+      "chrome-composition"
     ],
     "tags": [
       "preferencias",
@@ -514,11 +536,10 @@
     "tokenId": "preferenceLanguagePosition",
     "name": "Preferência: Idioma — Posição",
     "description": "Onde a escolha de idioma do usuário final aparece: não oferecida, no menu ⚙, ou fixa na barra.",
-    "type": "string",
-    "importance": 50,
+    "type": "select",
+    "importance": 80,
     "categories": [
-      "estrutura",
-      "preferencias"
+      "chrome-composition"
     ],
     "tags": [
       "preferencias",

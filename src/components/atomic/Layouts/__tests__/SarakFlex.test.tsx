@@ -57,11 +57,27 @@ describe('SarakFlex', () => {
         expect(flexElement.style.gap).toContain('--sarak-layout-gap-md');
     });
 
+    it('converte um gap numérico aceito pelo tipo público em pixels', () => {
+        render(
+            <SarakUIProvider>
+                <SarakFlex data-testid="flex-numeric-gap" gap={24}>
+                    <span>Flex Content</span>
+                </SarakFlex>
+            </SarakUIProvider>
+        );
+
+        expect(screen.getByTestId('flex-numeric-gap').style.gap).toBe('24px');
+    });
+
     it('avisa e cai no default quando o token é inventado, sem quebrar a tela (Spec 16)', () => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
         render(
             <SarakUIProvider>
-                <SarakFlex data-testid="flex-invalid" gap="spacing-xxl">
+                <SarakFlex
+                    data-testid="flex-invalid"
+                    // @ts-expect-error o runtime também protege callers JS e dados contornando o tipo.
+                    gap="spacing-xxl"
+                >
                     <span>Flex Content</span>
                 </SarakFlex>
             </SarakUIProvider>

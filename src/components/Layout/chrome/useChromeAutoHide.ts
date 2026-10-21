@@ -10,15 +10,8 @@ export interface ChromeAutoHideState {
 }
 
 /**
- * Comportamento de `isAutoHideEnabled` para o cromo do modo ui-kit.
- *
- * Comportamento de REFERÊNCIA que de fato funciona no Shell é o do `DockNav`
- * (`DockNav.tsx:26` + o sensor de `SarakShell.tsx:92-107`): a nav só existe no ar
- * quando visível, e uma faixa sensível na borda a revela de volta — reimplementado
- * aqui porque `src/core/Shell/` não é tocado por esta plan (§3.2). A wiring
- * equivalente do `SidebarNav` (`SidebarNav.tsx:62-69`) chama `setIsNavVisible`, mas
- * nada em `SarakShell` esconde a `SidebarNav` a partir desse estado — achado fora
- * do escopo, registrado no resumo da execução.
+ * Controla a visibilidade da navegação do cromo enquanto o ponteiro entra e sai
+ * da superfície ou da faixa que a revela.
  */
 export const useChromeAutoHide = (enabled: boolean): ChromeAutoHideState => {
     const [hovered, setHovered] = useState(false);

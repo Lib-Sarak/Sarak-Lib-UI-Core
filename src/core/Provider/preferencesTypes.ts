@@ -1,7 +1,15 @@
-import type { SarakPreferenceId, SarakPreferencePosition } from '../Design/schema/preferences';
+import type { SarakChromeWidgetId, SarakPreferenceId, SarakPreferencePosition } from '../Design/schema/preferences';
 
-export type { SarakPreferenceId, SarakPreferencePosition };
-export { PREFERENCE_IDS, PREFERENCE_POSITION_TOKEN_IDS, isPreferenceOffered, getPreferencePosition } from '../Design/schema/preferences';
+export type { SarakChromeWidgetId, SarakPreferenceId, SarakPreferencePosition };
+export {
+    CHROME_WIDGET_IDS,
+    CHROME_WIDGET_POSITION_TOKEN_IDS,
+    PREFERENCE_IDS,
+    PREFERENCE_POSITION_TOKEN_IDS,
+    getChromeWidgetPosition,
+    isPreferenceOffered,
+    getPreferencePosition,
+} from '../Design/schema/preferences';
 
 export type SarakColorModePreference = 'light' | 'dark' | 'system';
 export type SarakFontSizePreference = 'sm' | 'md' | 'lg';
@@ -23,6 +31,12 @@ export interface SarakUserPreferences {
  *  (ADR-011, mesmo espírito): a lib não conhece o usuário — quem associa a
  *  preferência a ele é o host, pela própria closure do callback. */
 export interface SarakPreferencesOptions {
+    /**
+     * Modo inicial enquanto o usuário não escolheu um modo. Só se aplica se o
+     * tema oferecer a preferência; `system` acompanha o sistema operacional.
+     * Este fallback do host nunca é persistido nem enviado a `onSave`.
+     */
+    defaultColorMode?: SarakColorModePreference;
     storageKey?: string;
     onSave?: (preferences: SarakUserPreferences) => Promise<void> | void;
     onLoad?: () => Promise<SarakUserPreferences> | SarakUserPreferences;

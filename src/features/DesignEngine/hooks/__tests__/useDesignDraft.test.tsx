@@ -2,6 +2,7 @@ import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { useDesignDraft } from '../useDesignDraft';
 import { SarakUIContextType } from '../../../../core/Provider/types';
+import { sarakGetAllDesignTokens } from '../../../../core/Design/master-map';
 describe('useDesignDraft', () => {
     it('inicializa com o draft do provedor ou fallback para o sistema', () => {
         const sarak = {
@@ -35,6 +36,57 @@ describe('useDesignDraft', () => {
 
         expect(result.current.isDirty).toBe(true);
         expect(result.current.draft['cardBorderWidth']).toBe(5);
+        expect(result.current.dirtyTokenCount).toBe(1);
+    });
+
+    it('descarta o draft completo e retorna a contagem para zero', () => {
+        const sarak = {
+            draftDesign: null,
+            systemDesign: { cardBorderWidth: 1 },
+            isDrafting: true,
+            setIsDrafting: vi.fn(),
+            lockDrafting: vi.fn()
+        } as unknown as SarakUIContextType;
+
+        const { result } = renderHook(() => useDesignDraft(sarak));
+        act(() => result.current.updateDraft('cardBorderWidth', 5));
+        expect(result.current.dirtyTokenCount).toBe(1);
+
+        act(() => result.current.discardDraft());
+
+        expect(result.current.draft['cardBorderWidth']).toBe(1);
+        expect(result.current.isDirty).toBe(false);
+        expect(result.current.dirtyTokenCount).toBe(0);
+    });
+
+    it('conta três tokens alterados e ignora tokens ausentes de um draft parcial', () => {
+        const changedTokenIds = new Set(['cardBorderWidth', 'colorBgBody', 'textColorMaster']);
+        const tokens = sarakGetAllDesignTokens().filter((token) => changedTokenIds.has(token.id));
+        const systemDesign = Object.fromEntries(tokens.map((token) => [token.id, token.defaultValue]));
+        const sarak = {
+            draftDesign: null,
+            systemDesign,
+            allThemes: [],
+            isDrafting: true,
+            setIsDrafting: vi.fn(),
+            lockDrafting: vi.fn()
+        } as unknown as SarakUIContextType;
+        const { result } = renderHook(() => useDesignDraft(sarak));
+
+        act(() => {
+            tokens.forEach((token) => {
+                const changedValue = token.defaultValue === 'codex-test-value' ? 'codex-test-value-2' : 'codex-test-value';
+                result.current.updateDraft(token.id, changedValue);
+            });
+        });
+        expect(result.current.dirtyTokenCount).toBe(3);
+
+        const partialDraftSarak = {
+            ...sarak,
+            draftDesign: {}
+        } as unknown as SarakUIContextType;
+        const { result: partialDraftResult } = renderHook(() => useDesignDraft(partialDraftSarak));
+        expect(partialDraftResult.current.dirtyTokenCount).toBe(0);
     });
 
     it('calcula isComponentDirty para um schema', () => {
@@ -213,6 +265,7 @@ describe('useDesignDraft', () => {
                 isDrafting: true,
                 setIsDrafting: vi.fn(),
                 lockDrafting: vi.fn(),
+                allThemes: [],
                 setResolvedThemeId,
                 applyFullConfigRaw: vi.fn(),
             } as unknown as SarakUIContextType;
@@ -228,16 +281,21 @@ describe('useDesignDraft', () => {
         });
 
         it('aplicar ao sistema DEPOIS de pré-visualizar anuncia o id pendente', () => {
+            const applicationOrder: string[] = [];
             const setResolvedThemeId = vi.fn();
-            const applyFullConfigRaw = vi.fn();
+            const applyFullConfigRaw = vi.fn(() => applicationOrder.push('apply'));
+            const persistDesign = vi.fn(() => applicationOrder.push(`persist:${applicationOrder.includes('theme:tema-escolhido')}`));
+            setResolvedThemeId.mockImplementation((id: string) => applicationOrder.push(`theme:${id}`));
             const sarak = {
                 draftDesign: null,
                 systemDesign: { mode: 'dark' },
                 isDrafting: true,
                 setIsDrafting: vi.fn(),
                 lockDrafting: vi.fn(),
+                allThemes: [],
                 setResolvedThemeId,
                 applyFullConfigRaw,
+                persistDesign,
             } as unknown as SarakUIContextType;
 
             const { result } = renderHook(() => useDesignDraft(sarak));
@@ -253,6 +311,8 @@ describe('useDesignDraft', () => {
 
             expect(applyFullConfigRaw).toHaveBeenCalled();
             expect(setResolvedThemeId).toHaveBeenCalledWith('tema-escolhido');
+            expect(persistDesign).toHaveBeenCalled();
+            expect(applicationOrder).toEqual(['apply', 'theme:tema-escolhido', 'persist:true']);
         });
 
         it('sem themeId (preview de preset comum), aplicar NÃO chama setResolvedThemeId', () => {
@@ -264,6 +324,7 @@ describe('useDesignDraft', () => {
                 isDrafting: true,
                 setIsDrafting: vi.fn(),
                 lockDrafting: vi.fn(),
+                allThemes: [],
                 setResolvedThemeId,
                 applyFullConfigRaw,
             } as unknown as SarakUIContextType;

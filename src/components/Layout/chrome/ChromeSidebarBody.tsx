@@ -6,17 +6,20 @@ import { ShellFontSizeControl } from '../../atomic/Navigation/ShellFontSizeContr
 import { ShellNavigationStyleControl } from '../../atomic/Navigation/ShellNavigationStyleControl';
 import { ShellPreferencesMenu } from '../../atomic/Navigation/ShellPreferencesMenu';
 import { SarakSearch } from '../../atomic/Inputs/SarakSearch';
-import type { SarakShellUser } from '../../../core/Shell/Components/types';
+import type { SarakShellUser } from '../../atomic/Navigation/SarakShellUserWidget';
 import { ChromeFrame } from './ChromeFrame';
+import { ChromeContentRegion } from './ChromeContentRegion';
 import { ChromeBrand, ChromeSearchSlot, ChromeSidebarSlot, ChromeTopbarSlot } from './ChromeSlots';
 import { ChromeCollapseToggle } from './ChromeCollapseToggle';
-import { ChromeUserThemeGroup } from './ChromeUserThemeGroup';
-import { resolveChromeAsidePositionClass, resolveChromeBodyDirectionClass, resolveChromeContentAlignmentClass } from './chromeStructuralStyles';
+import { ChromeUserThemeGroup, ChromeUserWidget } from './ChromeUserThemeGroup';
+import { ChromeNotificationsWidget, type SarakChromeNotification } from './ChromeNotificationsWidget';
+import { resolveChromeAsidePositionClass, resolveChromeBodyDirectionClass, resolveChromeContentStyle } from './chromeStructuralStyles';
 import { useChromeAutoHide } from './useChromeAutoHide';
 import { useChromeDesignTokens } from './useChromeDesignTokens';
 import { useChromeDefaultWidgets } from './useChromeDefaultWidgets';
 import { chromeNoiseLayerStyle } from './noiseTexture';
 import type { SarakChromeWidgets } from './chromeWidgets';
+import { getSarakSearchItems } from './navItem';
 
 export interface ChromeSidebarBodyProps {
     brand?: { name?: string; logoUrl?: string };
@@ -28,6 +31,7 @@ export interface ChromeSidebarBodyProps {
     endSlot?: React.ReactNode;
     sidebarHeader?: React.ReactNode;
     sidebarFooter?: React.ReactNode;
+    secondaryContent?: React.ReactNode;
     search?: React.ReactNode;
     banner?: React.ReactNode;
     footer?: React.ReactNode;
@@ -35,7 +39,9 @@ export interface ChromeSidebarBodyProps {
     /** Identidade exibida no widget de usuário default (fora do slot `sidebarFooter`). */
     user?: SarakShellUser;
     logout?: () => void;
-    /** Opt-out dos widgets default (busca/tema/usuário/colapso) — omitir liga os quatro. */
+    notifications?: SarakChromeNotification[];
+    onNotificationSelect?: (notification: SarakChromeNotification) => void;
+    /** Opt-out dos widgets default; omitir mantém a composição de fábrica ativa. */
     widgets?: SarakChromeWidgets;
     className: string;
     rootStyle: React.CSSProperties;
@@ -48,14 +54,25 @@ export interface ChromeSidebarBodyProps {
  * dos tokens de cromo que faltavam.
  */
 export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
-    brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot, sidebarHeader, sidebarFooter,
-    search, banner, footer, decoration, user, logout, widgets, className, rootStyle, children,
+    brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot, sidebarHeader, sidebarFooter, secondaryContent,
+    search, banner, footer, decoration, user, logout, notifications, onNotificationSelect, widgets, className, rootStyle, children,
 }) => {
-    const { sidebarPosition, contentAlignment, isNavHidden, isAutoHideEnabled, searchPositionSidebar } = useChromeDesignTokens();
+    const { sidebarPosition, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled, searchPositionSidebar } = useChromeDesignTokens();
     const { isVisible, sensorProps, surfaceProps } = useChromeAutoHide(isAutoHideEnabled);
-    const w = useChromeDefaultWidgets(widgets, { hasCustomSearch: Boolean(search), hasUser: Boolean(user) });
+    const w = useChromeDefaultWidgets(widgets, {
+        hasCustomSearch: Boolean(search),
+        hasUser: Boolean(user),
+        hasLogout: Boolean(logout),
+        hasNotifications: Boolean(notifications?.length),
+        hasNotificationHandler: Boolean(onNotificationSelect),
+    });
     const effectiveSearch = search ?? (w.showSearch
-        ? <SarakShellSearchWidget variant={isNavHidden ? 'icon' : 'bar'} onClick={w.openSearch} />
+        ? <SarakShellSearchWidget
+            variant={isNavHidden ? 'icon' : 'bar'}
+            onClick={w.openSearch}
+            items={getSarakSearchItems(nav)}
+            onSelect={onNavigate ? (item) => onNavigate(item.id) : undefined}
+        />
         : null);
     const showFontSize = w.preferencePlacement.pinned.includes('fontSize');
     const showNavigationStyle = w.preferencePlacement.pinned.includes('navigationStyle');
@@ -64,8 +81,15 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
     // mas a preferência continua oferecida (Spec 05 §2.3, "nada some"), então o ⚙
     // a recebe, mesmo quando nenhuma está em posição `menu` (que já a levaria).
     const collapsedExtras = w.preferencePlacement.pinned.filter((id) => id !== 'colorMode' && id !== 'navCollapsed');
-    const menuIdsToShow = isNavHidden && w.preferencePlacement.menu.length === 0 ? collapsedExtras : w.preferencePlacement.menu;
-    const hasPreferencesMenu = menuIdsToShow.length > 0;
+    const menuIdsToShow = isNavHidden ? [...new Set([...w.preferencePlacement.menu, ...collapsedExtras])] : w.preferencePlacement.menu;
+    const menuWidgets = (
+        <>
+            {w.showSearchInMenu && <SarakShellSearchWidget variant="icon" onClick={w.openSearch} />}
+            {w.showUserInMenu && <ChromeUserWidget user={user} logout={logout} variant="vertical" />}
+            {w.showNotificationsInMenu && <ChromeNotificationsWidget notifications={notifications} onSelect={onNotificationSelect} variant="vertical" />}
+        </>
+    );
+    const hasPreferencesMenu = w.widgetPlacement.menu.length > 0 || menuIdsToShow.length > 0;
 
     return (
         <ChromeFrame decoration={decoration} banner={banner} footer={footer} className={className} rootStyle={rootStyle}>
@@ -76,20 +100,23 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                 {isVisible && (
                     <aside
                         {...surfaceProps}
-                        className={`relative flex flex-col shrink-0 overflow-y-auto transition-[width] duration-300 ${resolveChromeAsidePositionClass(sidebarPosition)}`}
+                        className={`relative flex flex-col shrink-0 overflow-y-auto transition-[width,min-width] duration-[var(--duration-normal,0.3s)] ${resolveChromeAsidePositionClass(sidebarPosition)}`}
                         style={{
+                            // `zIndexSidebar`: o empilhamento da sidebar sobre o conteúdo (os popovers do cromo nascem dela).
+                            zIndex: 'var(--sarak-z-sidebar, 500)',
                             width: isNavHidden ? 'var(--sarak-sidebar-collapsed-width, 74px)' : 'var(--sarak-sidebar-width, 240px)',
                             // `sidebarMinWidth`/`sidebarMaxWidth` (Spec 05 §2.4) — limitam a
                             // largura efetiva mesmo sem redimensionamento por arraste (que o
-                            // cromo apresentacional não tem).
-                            minWidth: 'var(--sidebar-min-width, 150px)',
+                            // cromo apresentacional não tem). O piso é da lateral aberta: recolhida,
+                            // quem manda é `sidebarCollapsedWidth` (um piso de 150 a manteria em 150+).
+                            minWidth: isNavHidden ? 0 : 'var(--sidebar-min-width, 150px)',
                             maxWidth: 'var(--sidebar-max-width, 450px)',
-                            margin: 'var(--sarak-tab-section-margin, 0px)',
-                            height: 'calc(100% - (var(--sarak-tab-section-margin, 0px) * 2))',
+                            margin: 'var(--sarak-tab-section-margin, 8px)',
+                            height: 'calc(100% - (var(--sarak-tab-section-margin, 8px) * 2))',
                             background: 'var(--sarak-sidebar-bg, var(--theme-sidebar-bg, transparent))',
-                            borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',
+                            borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.09)))',
                             // `sidebarBlur`/`sidebarShadow` (Spec 05 §2.4) — sombra no lugar do shadow-2xl.
-                            backdropFilter: 'blur(var(--sarak-sidebar-blur, 0px))',
+                            backdropFilter: 'blur(var(--sarak-sidebar-blur, 10px))',
                             boxShadow: 'var(--sarak-sidebar-shadow, 10px 0 30px rgba(0,0,0,0.5))', // sarak-allow-hardcode: fallback = defaultValue do token
                         }}
                     >
@@ -116,6 +143,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                         {/* Markup preservado byte a byte do `topbarActions` no modo sidebar (compat). */}
                         {endSlot && <div data-sarak-slot="topbarEnd" className="mt-auto p-2">{endSlot}</div>}
                         <ChromeSidebarSlot region="footer">{sidebarFooter}</ChromeSidebarSlot>
+                        {w.showNotifications && <ChromeNotificationsWidget notifications={notifications} onSelect={onNotificationSelect} variant={isNavHidden ? 'mini' : 'vertical'} />}
                         {!isNavHidden && (showFontSize || showNavigationStyle || showLanguage) && (
                             <div className="flex flex-col gap-2 px-2 py-1">
                                 {showFontSize && <ShellFontSizeControl />}
@@ -136,25 +164,27 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                                     menuIds={menuIdsToShow}
                                     isNavHidden={isNavHidden}
                                     onToggleNavCollapsed={w.toggleNavHidden}
+                                    additionalRows={menuWidgets}
                                     align="start"
                                 />
                             </div>
                         )}
                     </aside>
                 )}
-                <main
-                    data-sarak-content
-                    className={`relative flex-1 min-w-0 min-h-0 overflow-auto ${resolveChromeContentAlignmentClass(contentAlignment)}`}
-                    style={{ color: 'var(--text-main, var(--color-theme-title, inherit))', padding: 'var(--sarak-layout-padding, 16px)' }}
+                <ChromeContentRegion
+                    secondaryContent={secondaryContent}
+                    isSplitViewEnabled={isSplitViewEnabled}
+                    className={`relative flex-1 min-w-0 min-h-0 overflow-auto`}
+                    style={{ color: 'var(--text-main, var(--color-theme-title, inherit))', ...resolveChromeContentStyle(layoutDensity, maxContentWidth) }}
                 >
                     {children}
-                </main>
+                </ChromeContentRegion>
             </div>
-            {w.showSearch && (
+            {w.showSearchOffered && (
                 <SarakSearch
                     isOpen={w.isSearchOpen}
                     onClose={w.closeSearch}
-                    items={nav.map((item) => ({ id: item.route, label: item.label, category: item.category }))}
+                    items={getSarakSearchItems(nav)}
                     onSelect={onNavigate}
                 />
             )}

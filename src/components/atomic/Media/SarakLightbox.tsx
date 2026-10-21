@@ -10,6 +10,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalScope';
+import { SARAK_OWN_PALETTE_ATTRIBUTE } from '../../../core/Provider/scope';
 import { useFocusTrap } from '../Modals/hooks/useFocusTrap';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
 
@@ -30,6 +31,9 @@ export interface SarakLightboxProps {
     /** Notifica a troca de mídia (avançar/retroceder). */
     onIndexChange?: (index: number) => void;
 }
+
+/** O lightbox desenha branco sobre o próprio fundo preto, em qualquer modo: sai do sequestro do modo claro. */
+const OWN_PALETTE = { [SARAK_OWN_PALETTE_ATTRIBUTE]: '' };
 
 const navBtn = 'absolute top-1/2 -translate-y-1/2 bg-white/10 text-white hover:bg-white/20 transition-colors';
 
@@ -95,7 +99,8 @@ export const SarakLightbox: React.FC<SarakLightboxProps> = ({
             aria-label="Galeria de imagens"
             tabIndex={-1}
             onKeyDown={onKeyDown}
-            className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/90"
+            className="fixed inset-0 z-[calc(var(--sarak-z-modal,2000)_+_200)] flex items-center justify-center bg-black/90"
+            {...OWN_PALETTE}
         >
             {/* Composição atômica (R10 — lote 10): SarakIconButton renderiza <button> nativo
                 por baixo, então `useFocusTrap` (seletor `button:not([disabled])`) continua

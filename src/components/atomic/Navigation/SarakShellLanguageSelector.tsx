@@ -1,9 +1,9 @@
+import { SarakIcon } from "../Icon/SarakIcon";
 import React, { useState } from 'react';
-import { Globe, Check, ChevronDown } from 'lucide-react';
+
 import { motion, AnimatePresence } from 'framer-motion';
 
-import { sarakGetLocalComponent } from '../../../core/Discovery/registry';
-import { LANGUAGES } from '../../../core/Discovery/constants';
+import { LANGUAGES } from '../../../core/i18n/languages';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakButton } from '../Buttons/SarakButton';
@@ -20,7 +20,7 @@ interface ResolvedLanguage {
     flag: string;
 }
 
-/** Idioma habilitado que não bate com o catálogo curado (`Discovery/constants`)
+/** Idioma habilitado que não bate com o catálogo curado
  *  ainda conta para a regra de montagem — é o tema quem decide o conjunto,
  *  não o catálogo de rótulos/bandeiras conhecidos. */
 const resolveLanguage = (code: string): ResolvedLanguage => {
@@ -38,16 +38,15 @@ const resolveLanguage = (code: string): ResolvedLanguage => {
 export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProps> = ({
     variant = 'horizontal'
 }) => {
-    // Discovery Logic (v11.0): Procura no Registro e no Backup Global
-    const fromRegistry = sarakGetLocalComponent('shell-language-selector');
-    const fromGlobal = (typeof window !== 'undefined'
-        ? (window as Window & { __SARAK_OVERRIDES__?: Record<string, React.ComponentType<{ variant?: string }>> }).__SARAK_OVERRIDES__?.['shell-language-selector']
-        : null);
-    const OverrideSelector = fromRegistry || fromGlobal;
-
     const { design, updatePreferences } = useSarakUI();
     const t = useLibraryText();
     const [isOpen, setIsOpen] = useState(false);
+
+    const OverrideSelector = typeof window !== 'undefined'
+        ? (window as Window & {
+            __SARAK_OVERRIDES__?: Record<string, React.ComponentType<{ variant?: string }>>;
+        }).__SARAK_OVERRIDES__?.['shell-language-selector']
+        : null;
 
     if (OverrideSelector) {
         return (
@@ -81,7 +80,7 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
                     initial={{ opacity: 0, y: isHorizontal ? 10 : -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: isHorizontal ? 10 : -10 }}
-                    className={`absolute z-[1000] w-40 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-xl shadow-2xl backdrop-blur-xl ${
+                    className={`absolute z-[calc(var(--sarak-z-sidebar,500)_+_100)] w-40 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-xl shadow-[var(--dynamic-shadow)] backdrop-blur-xl ${
                         isHorizontal ? 'top-full right-0' : 'bottom-full left-0'
                     }`}
                     style={{
@@ -102,7 +101,7 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
                                     : 'text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)]'
                             }`}
                         >
-                            {currentLang.id === lang.id && <Check size={10} />}
+                            {currentLang.id === lang.id && <SarakIcon name="Check" size={10} />}
                         </SarakMenuItem>
                     ))}
                 </motion.div>
@@ -123,7 +122,7 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
                         <span className="text-3xs font-black uppercase tracking-widest text-[var(--theme-title)]/60 group-hover:text-[var(--theme-title)]">
                             {currentLang.id}
                         </span>
-                        <ChevronDown size={10} className={`text-[var(--theme-muted)] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                        <SarakIcon name="ChevronDown" size={10} className={`text-[var(--theme-muted)] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
                     </div>
                 </SarakButton>
                 {dropdown}
@@ -136,7 +135,7 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
             <SarakMenuItem
                 onClick={() => setIsOpen(!isOpen)}
                 className="group font-tab"
-                icon={<Globe size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />}
+                icon={<SarakIcon name="Globe" size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />}
                 label={t('languageSelectorLabel')}
             >
                 <span className="text-2xs font-bold text-[var(--theme-primary)]">{currentLang.id.toUpperCase()}</span>

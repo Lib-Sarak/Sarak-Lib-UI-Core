@@ -116,15 +116,19 @@ que existe para o caso de alguém chamar `applyConfig`/`setDesign` sem passar po
 **importa** o mesmo predicado em vez de reimplementá-lo. As duas barreiras aceitam e recusam o mesmo
 conjunto por construção, não por teste espelhado.
 
-### d) `COLOR_PATTERN` rejeita `url()`
+### d) Nenhum valor de cor busca recurso
 
 ```ts
-/^(#[0-9a-fA-F]{3,8}|rgba?\(…\)|hsla?\(…\)|var\(--…\)|transparent|currentColor|inherit|none)$/
+isValidColor = isSafeCssString && !RESOURCE_IN_COLOR && COLOR_PATTERN
+// COLOR_PATTERN: hex | rgb()/rgba() | hsl()/hsla() | var(--x, reserva) | color-mix(in <espaço>, …) | palavras-chave
+// RESOURCE_IN_COLOR: url | image | image-set | cross-fade | element | paint | src — qualquer caixa, com prefixo de fabricante — e a barra invertida
 ```
 
-`validation.ts:43-46`, com o motivo escrito no comentário: **`url()` não tem razão de aparecer num valor
-de cor e é vetor clássico de SSRF/injeção.** Um tema hostil não consegue fazer o browser buscar recurso
-externo por um token de cor.
+`src/core/Provider/utils/validation.ts` (`isValidColor`, exportado para o painel gravar só o que o tema aceitaria).
+A lista negativa vale para o valor **inteiro**, em qualquer ramo — inclusive a reserva de `var()` e os argumentos de
+`color-mix` —, e a barra invertida é recusada porque escreveria o nome da função por escape. Um tema hostil não
+consegue fazer o browser buscar recurso externo por um token de cor. **Limite declarado:** a reserva de `var()`
+aceita texto sem `;<>{}` que não é cor (ex.: `1px solid red`); isso não busca recurso, mas não é cor.
 
 > **Por que isto é a garantia central, e não um detalhe:** o tema é o **único** dado que a lib processa
 > em todo boot, vindo de um lugar que ela não controla (`localStorage` é gravável por qualquer script da
@@ -258,8 +262,23 @@ nem gate. O que existe é:
 **Por que a lib não pode prometer AA:** o tema é **dado do consumidor** (§[[09-temas-e-presets]]). Ele
 pode declarar texto cinza-claro sobre fundo branco, e a lib vai obedecer — obedecer ao tema é a função
 dela. Prometer AA exigiria a lib **recusar** valores do consumidor, o que contradiz o contrato de tema.
-Uma auditoria de contraste é possível (calcular a razão dos pares shippados e avisar), mas **não
-existe hoje** — §5.2.
+A auditoria existe para o que a lib entrega: o `auditor_contraste` mede os pares de texto dos temas embarcados,
+nos dois modos (**R31**, [[01-gates-e-baseline]]); o tema do consumidor fica fora dela, e o contraste não textual
+(borda de campo, partes de gráfico) ainda não é medido ([[15-divida-conhecida]] achado **59**).
+
+### e) Toque, movimento e teclado do celular
+
+A adaptação é por CSS (`pointer: coarse`, `prefers-reduced-motion`), nunca por detecção de aparelho em JS:
+
+- **Movimento reduzido:** com o token `reducedMotion` ligado **ou** `prefers-reduced-motion: reduce`, transições e
+  animações caem a 0,01 ms em **todo** o documento (`src/styles/_motion.css`, camada `sarak-lib`, `!important`) — o
+  alcance é o do contrato do token, "em toda a aplicação", e inclui o markup do host; o `framer-motion` segue o
+  mesmo pelo `MotionConfig` do `SarakUIProvider`. Spinners e esqueletos param de girar.
+- **Tooltip** abre e fecha por toque (e um toque fora o fecha); mouse e foco continuam como antes.
+- **Busca** declara `type="search"` e `enterKeyHint="search"` (`SarakSearch`, a barra do cromo, o campo do
+  `SarakMultiSelect` e do `SarakAutocomplete`): o teclado do celular mostra "Buscar".
+
+Alvo de toque e piso de fonte do campo estão na tabela de [[07-responsividade-e-multidispositivo]] §5.
 
 # 3. O que o HOST deve prover — a fronteira, explicitamente
 
@@ -267,19 +286,25 @@ existe hoje** — §5.2.
 
 **A lib NÃO autentica ninguém.** `SarakAuthScreen`
 (`src/components/atomic/Templates/SarakAuthScreen.tsx`) **renderiza a tela de acesso**: é um componente
-React autocontido — campos e alternância de modo (login/registro/MFA) funcionam em **estado interno**, e
-**todos** os pares `value`/`setValue` são opcionais, então o host pode controlar o que quiser
-(`:53-58`, com o motivo escrito). Os dados de interação saem por callbacks/`onChange`
-(`SarakAuthScreenEvent`, `:11-18`).
+React autocontido, com os campos em **estado interno**, e **todos** os pares `value`/`setValue` são
+opcionais, então o host pode controlar o que quiser. Os dados de interação saem por `onSubmit` e `onChange`
+(`SarakAuthScreenEvent`).
+
+**Por padrão, só o login.** Cadastro (`allowRegistration`), MFA (`allowMfa`), login social
+(`socialConfig.enabled`) e "esqueci a senha" (`onForgot`) aparecem só quando o host os liga. Os rótulos vêm do
+catálogo de tradução e podem ser trocados por `labels`. O `autoComplete` é o do navegador (`username` e
+`current-password` no login, `new-password` no cadastro). A gravidade da mensagem de erro vem de `errorVariant`,
+não do texto. A tela não carrega conceito de produto nem recurso buscado na raiz do host
+([[08-identidade-do-host-e-zero-marca]]).
 
 **O que é 100% do consumidor:** provider de identidade, emissão e validação de token, onde o token mora,
 refresh, expiração, redirect de 401, logout.
 
 **A mudança real, e ela é BREAKING silenciosa:** dois hooks legados leram token de `localStorage` num
 esquema de chaves fixo, e **foram removidos**. Quem dependia da injeção automática de `Authorization`
-deixou de tê-la sem erro de compilação — o request simplesmente vai sem o header. O cliente HTTP dos
-templates (`src/shared/services/api.ts:1-25`) declara isso no cabeçalho: **não injeta `Authorization`
-sozinho**; quem precisa de request autenticado compõe o header no ponto de chamada.
+deixou de tê-la sem erro de compilação — o request simplesmente vai sem o header. Hoje a lib não tem cliente
+HTTP nenhum (§3.2): o request autenticado é do host, dentro do `load`/`onSubmit`/`onSend` que ele entrega aos
+templates.
 
 **Estado verificado hoje** (varredura desta entrega, `src/` sem testes):
 
@@ -288,37 +313,25 @@ sozinho**; quem precisa de request autenticado compõe o header no ponto de cham
 | SDK de auth importado (`supabase`, `cognito`, `keycloak`, `firebase/auth`, `@auth0`) | **0 ocorrências** ✅ |
 | Token lido de storage | **0 ocorrências** ✅ — os usos de `localStorage` em `src/` são persistência de **tema** (`useDesignManager`, `useDesignSync`, `useDesignStorageSync`) e idioma (`Controls.tsx:26,30`) |
 
-> ### ⚠️ A propriedade é verdadeira e NÃO é guardada
->
-> `plan/20-fronteira-de-autenticacao.md` §2.3 previu um **gate anti-acoplamento** e o critério de aceite
-> foi marcado concluído ("2 violações reais achadas e corrigidas"). **Esse gate não existe no
-> repositório**: não há script em `scripts/`, não há `AuthCouplingGate.test.ts`, não há varredura em
-> `run_audit`. O `AuthFlow.integration.test.tsx` citado no mesmo plano também não existe — morreu com o
-> motor de manifesto, que era o que ele exercitava.
->
-> Ou seja: hoje **nada impede** um PR de reintroduzir leitura de token ou um SDK de auth em `src/`. A
-> correção de 2026-07-19 foi feita; a **trava** que a manteria, não. Registrado em §5.3.
+**A propriedade é guardada por gate:** `auditor_authcoupling.mjs`, dentro do `run_audit` ([[00-regras-e-invariantes]]
+R32), acusa sink de credencial (`localStorage`/`sessionStorage`/cookie com chave de autenticação, header
+`Authorization` literal) e rota de autenticação embutida (`/auth`, `/login`, `/mfa`, `/oauth`, `/token`, `/sso`) em
+**qualquer** arquivo de `src/`.
 
 ## 3.2 Rede
 
-A lib **nunca chama a rede por conta própria** e **nunca embute segredo**. O cliente axios de
-`src/shared/services/api.ts` existe para os hooks de dados dos templates pesados e fixa `baseURL = '/api'`
-(`:20-24`) — quem chama é o componente que o consumidor montou, com os dados que ele passou. Não há
-telemetria, não há phone-home, não há endpoint da lib (o backend próprio foi removido —
-[[003-remocao-backend-proprio]]).
+A lib **não faz rede** e **nunca embute segredo**: não há `fetch`, `XMLHttpRequest`, cliente HTTP nem rota
+`/api` em `src/`, e `axios` não é dependência nem peer. Os templates recebem o dado pronto (`data`) ou uma
+função do host (`load`, `onSubmit`, `onSend`), que é quem chama a rede, com a autenticação dele
+([[03-superficie-publica]] §6.3). Não há telemetria, não há phone-home, não há endpoint da lib (o backend
+próprio foi removido — [[003-remocao-backend-proprio]]).
 
 ## 3.3 Roteamento
 
-**No modo ui-kit (#3):** a lib reage à rota; o host é dono da URL. O cromo apresentacional entrega a
-seleção por callback (`onNavigate`) e **não navega** — ver [[05-cromo-e-slots]].
-
-**No modo Shell-host (#1) isto é diferente, e a spec antiga simplificava:** `useSarakRouter`
-(`src/shared/hooks/useSarakRouter.ts:37-57`) **escreve na URL** — `history.pushState`/`replaceState` +
-dispatch manual de `popstate`. O módulo ativo do Shell **é** o primeiro segmento do path
-(`useSarakShell.ts:14`). Portanto: **no modo Shell-host a lib controla a URL**, e um host que já tenha
-router próprio na mesma página vai disputar o `history` com ela. Não é bug — é o contrato do modo #1 (a
-lib é o host). Mas tem de estar escrito, porque "a lib nunca controla a URL" é falso. Ver
-[[04-shell-e-discovery]].
+**A lib reage à rota; o consumidor é dono da URL** ([[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]). O cromo entrega a seleção por callback
+(`onNavigate`) e **não navega**; os itens de navegação são âncoras que o navegador segue quando não há callback
+([[05-cromo-e-slots]] §2.1.2). **A lib nunca escreve na URL** (`history.pushState`/`replaceState`): o router do
+consumidor não disputa o `history` com ela.
 
 ## 3.4 Origem, CSP e CORS
 
@@ -326,9 +339,19 @@ lib é o host). Mas tem de estar escrito, porque "a lib nunca controla a URL" é
 impede que um tema faça mal, não atesta procedência. Se o host aceita tema de fonte externa, a
 verificação de origem/integridade é dele.
 
-Sobre CSP: a lib injeta `<style>` (as cinco fontes da §2.2) e, no modo app, `<link>` de webfont do Google
-(`useSarakUIEffects`) — um host com CSP restritiva precisa permitir esses dois, ou usar
-`mode: 'embedded'` sem `injectGlobalFonts` (default `false` no embarcado, `types.ts:137-144`).
+Sobre CSP: a lib injeta `<style>` (as cinco fontes da §2.2 e um `@font-face` por família de fonte em uso). No
+padrão (`options.fonts` omitido) os arquivos de fonte são **do próprio pacote**: a diretiva é `font-src 'self'` (mais a
+origem do `baseUrl`, se for outra, e `data:` se um `custom` o usar), e **nenhum domínio de terceiro** é necessário. Os
+domínios do Google Fonts (`fonts.googleapis.com`, `fonts.gstatic.com`, `preconnect`) só entram com `options.fonts:
+'google'`, opt-in explícito do host. No modo embarcado a ilha não carrega fonte alguma sem `injectGlobalFonts`
+(default `false`).
+
+**Privacidade (LGPD).** Com o padrão ou `'none'`, o navegador do usuário final não fala com terceiro para desenhar
+texto: o IP dele não vai ao Google, e a tipografia funciona offline. `'google'` volta a fazer essa requisição — a
+transferência passa a ser do inventário do host. **Fonte do host** (`options.fonts.custom`): o nome da família passa
+por padrão restrito e a `url` por `isSafeFontUrl` (`https:`, caminho do host ou `data:font/…;base64,…`; nenhum outro
+esquema), e tudo que vai ao CSS entra escapado (`cssString`); o que falha é recusado com aviso. Registrar não amplia o
+que o tema aceita — a pilha de fontes segura continua valendo.
 
 ## 3.5 Persistência
 
@@ -382,12 +405,12 @@ lib não o traduz. Um teste de paridade exige toda chave do catálogo preenchida
 | # | Lacuna | Consequência | Onde |
 | --- | --- | --- | --- |
 | **5.1** | **Nenhum gate de a11y.** Não há `axe`, nem teste de árvore de acessibilidade agregada. A cobertura é a dos testes por componente | uma regressão de ARIA/foco passa se o teste daquele componente não a cobrir | — |
-| **5.2** | ⚠️ **Contraste medido, gate ainda não construído** (§2.4d) — `plan-12` mediu **12 dos 18 temas falham** em pelo menos 1 dos 4 pares canônicos, inclusive `minimalist-airy` (um dos `SARAK_REFERENCE_THEMES`). Regra escrita (**R31**) | gate depende de decisão do dono sobre fronteira de pares/limiar | script de medição fora do repo, anexo da `plan-12`; achado 18 em [[15-divida-conhecida]] §4.1 |
+| **5.2** | ⚠️ **Contraste de texto medido por gate; o não textual, não** (§2.4d) — o `auditor_contraste` (`run_audit`) mede os pares de texto dos temas embarcados nos dois modos (**R31**); borda de campo e partes de gráfico (WCAG 1.4.11) ficam fora | um tema embarcado com borda de campo quase invisível passa verde | `gates/scripts/audit/verify_contrast.ts`; achados 18 e **59** em [[15-divida-conhecida]] §4.1 |
 | **5.3** | ✅ **FECHADA em 2026-08-05** — `auditor_authcoupling.mjs` construído (**R32**), nasce verde | o único violador (`SarakSecurityOrchestrator`) já havia saído do contrato público na `plan-09` | — |
 | **5.4** | **`PreviewCanvas` aplica design SEM `validateDesign`** — o boot real valida, o caminho de preview não | valor fora do contrato virava CSS Variable literal no preview; foi o que expôs o drift de 21 tokens | `plan/40.4` §Nota; ver [[06-painel-de-customizacao-e-preview]] |
 | **5.5** | ✅ **FECHADA em 2026-08-04 (`plan-08`, F1)** — `AdvancedTab` chamava `localStorage.clear()`, apagando a origem inteira | `clearSarakStorage()` remove só as chaves da lib; teste prova que chave alheia sobrevive ao reset | ver [[06-painel-de-customizacao-e-preview]] §9.5 |
 | **5.6** | ✅ **FECHADA em 2026-08-04** — `focusRingWidth` agora é honrado pela regra global de foco (§2.4c) | anel de foco consistente entre link e botão | `src/styles/_elements.css:92` |
-| **5.7** | **E2E de isolamento não roda em automação** — `EmbeddedNoLeak.spec.tsx` exige build e execução manual | a garantia mais difícil de manter (não-vazamento) é a menos exercitada | [[01-gates-e-baseline]] §2.6 |
+| **5.7** | **O não-vazamento do modo embarcado não é medido em CSS renderizado** — o teste de navegador que o cobria saiu com o aparato de component test (achado **45**); a medição que existe (`browser-tests/`) não tem caso de modo embarcado | a garantia mais difícil de manter (não-vazamento) é provada só por estrutura (R24 ⚠️) | [[01-gates-e-baseline]] §2.6 · [[15-divida-conhecida]] §4.1 |
 
 **Nenhuma delas é corrigida por esta spec** — ela só escreve código-documento. As 5.5 e 5.6 são as duas
 que eu recomendaria priorizar: são pequenas, locais, e a 5.5 tem impacto em dado do consumidor.

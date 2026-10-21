@@ -11,7 +11,11 @@ const NAV = [
 ];
 
 // SarakIcon (hambúrguer) lê useSarakUI → exige o Provider.
-const renderMobile = (ui: React.ReactElement) => render(<SarakUIProvider config={{ mode: 'dark' }}>{ui}</SarakUIProvider>);
+const renderMobile = (ui: React.ReactElement, config: Record<string, unknown> = {}) =>
+    render(<SarakUIProvider config={{ mode: 'dark', ...config }}>{ui}</SarakUIProvider>);
+// O padrão (`auto`) põe a navegação numa barra na base quando há até 5 itens; estes casos medem a
+// navegação DENTRO do drawer, então forçam a gaveta. A barra tem a própria seção, mais abaixo.
+const DRAWER = { mobileNavigationStyle: 'drawer' };
 const base = { rootStyle: { minHeight: '100dvh' } };
 
 describe('SarakAppChromeMobile (Spec 40.3 — L1, drawer atrás de hambúrguer)', () => {
@@ -36,6 +40,7 @@ describe('SarakAppChromeMobile (Spec 40.3 — L1, drawer atrás de hambúrguer)'
     it('o toggle abre o drawer e revela a nav (aria-expanded=true)', () => {
         const { container } = renderMobile(
             <SarakAppChromeMobile nav={NAV} {...base}><div>x</div></SarakAppChromeMobile>,
+            DRAWER,
         );
         const toggle = container.querySelector('[aria-controls="sarak-chrome-drawer"]') as HTMLElement;
         fireEvent.click(toggle);
@@ -48,6 +53,7 @@ describe('SarakAppChromeMobile (Spec 40.3 — L1, drawer atrás de hambúrguer)'
         const onNavigate = vi.fn();
         const { container } = renderMobile(
             <SarakAppChromeMobile nav={NAV} onNavigate={onNavigate} {...base}><div>x</div></SarakAppChromeMobile>,
+            DRAWER,
         );
         const toggle = container.querySelector('[aria-controls="sarak-chrome-drawer"]') as HTMLElement;
         fireEvent.click(toggle);
@@ -136,7 +142,7 @@ describe('SarakAppChromeMobile (Spec 48 — L2, os slots têm lugar coerente no 
 describe('SarakAppChromeMobile — widgets por padrão dentro do drawer (nada some no celular)', () => {
     it('DEFAULT: com `user`/`logout`, busca/tema/usuário aparecem no drawer aberto (o hambúrguer já é o colapso)', () => {
         const { container } = renderMobile(
-            <SarakAppChromeMobile nav={NAV} user={{ username: 'ana' }} logout={vi.fn()} {...base}><div>x</div></SarakAppChromeMobile>,
+            <SarakAppChromeMobile nav={NAV} user={{ name: 'Ana' }} logout={vi.fn()} {...base}><div>x</div></SarakAppChromeMobile>,
         );
         fireEvent.click(container.querySelector('[aria-controls="sarak-chrome-drawer"]') as HTMLElement);
         expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
@@ -158,7 +164,7 @@ describe('SarakAppChromeMobile — widgets por padrão dentro do drawer (nada so
         const { container } = renderMobile(
             <SarakAppChromeMobile
                 nav={NAV}
-                user={{ username: 'ana' }}
+                user={{ name: 'Ana' }}
                 logout={vi.fn()}
                 widgets={{ search: false, themeToggle: false, user: false }}
                 {...base}
@@ -178,7 +184,7 @@ describe('SarakAppChromeMobile — idioma que vale', () => {
     it('sai em inglês com `config.language: "en"`', () => {
         const { container } = render(
             <SarakUIProvider config={{ mode: 'dark', language: 'en' }}>
-                <SarakAppChromeMobile nav={NAV} user={{ username: 'ana' }} logout={vi.fn()} {...base}>
+                <SarakAppChromeMobile nav={NAV} user={{ name: 'Ana' }} logout={vi.fn()} {...base}>
                     <div>x</div>
                 </SarakAppChromeMobile>
             </SarakUIProvider>,
@@ -186,5 +192,100 @@ describe('SarakAppChromeMobile — idioma que vale', () => {
         fireEvent.click(container.querySelector('[aria-controls="sarak-chrome-drawer"]') as HTMLElement);
         expect(screen.getByPlaceholderText('Smart search…')).toBeInTheDocument();
         expect(screen.getByTitle('Logout')).toBeInTheDocument();
+    });
+});
+
+describe('SarakAppChromeMobile — navegação na base (`mobileNavigationStyle`)', () => {
+    const NAV_3 = [
+        { label: 'Início', route: '/inicio', icon: 'Home' },
+        { label: 'Pedidos', route: '/pedidos', icon: 'List' },
+        { label: 'Contas', route: '/contas', icon: 'User' },
+    ];
+    const NAV_7 = Array.from({ length: 7 }, (_, i) => ({ label: `Destino ${i + 1}`, route: `/d${i + 1}` }));
+    const bar = (c: HTMLElement) => c.querySelector('nav[data-sarak-bottom-nav]');
+    const openDrawer = (c: HTMLElement) =>
+        fireEvent.click(c.querySelector('[aria-controls="sarak-chrome-drawer"]') as HTMLElement);
+
+    it('auto com 3 itens: a navegação está na barra da base e fora do drawer', () => {
+        const { container } = renderMobile(
+            <SarakAppChromeMobile nav={NAV_3} activeRoute="/pedidos" {...base}><div>x</div></SarakAppChromeMobile>,
+        );
+        expect(bar(container)).not.toBeNull();
+        openDrawer(container);
+        const drawer = container.querySelector('#sarak-chrome-drawer') as HTMLElement;
+        expect(drawer.querySelector('nav')).toBeNull();
+        expect(drawer.contains(bar(container))).toBe(false);
+    });
+
+    it('auto com 7 itens: a barra não existe e a navegação continua no drawer', () => {
+        const { container } = renderMobile(
+            <SarakAppChromeMobile nav={NAV_7} {...base}><div>x</div></SarakAppChromeMobile>,
+        );
+        expect(bar(container)).toBeNull();
+        openDrawer(container);
+        expect(container.querySelector('#sarak-chrome-drawer nav')).not.toBeNull();
+        expect(screen.getByText('Destino 7')).toBeInTheDocument();
+    });
+
+    it('bottom força a barra mesmo com 7 itens', () => {
+        const { container } = renderMobile(
+            <SarakAppChromeMobile nav={NAV_7} {...base}><div>x</div></SarakAppChromeMobile>,
+            { mobileNavigationStyle: 'bottom' },
+        );
+        expect(bar(container)?.querySelectorAll('a')).toHaveLength(7);
+    });
+
+    it('drawer força a gaveta mesmo com 3 itens', () => {
+        const { container } = renderMobile(
+            <SarakAppChromeMobile nav={NAV_3} {...base}><div>x</div></SarakAppChromeMobile>,
+            DRAWER,
+        );
+        expect(bar(container)).toBeNull();
+        openDrawer(container);
+        expect(container.querySelector('#sarak-chrome-drawer nav')).not.toBeNull();
+    });
+
+    it('item ativo da barra tem aria-current; clique navega por onNavigate', () => {
+        const onNavigate = vi.fn();
+        const { container } = renderMobile(
+            <SarakAppChromeMobile nav={NAV_3} activeRoute="/pedidos" onNavigate={onNavigate} {...base}><div>x</div></SarakAppChromeMobile>,
+        );
+        const active = bar(container)?.querySelector('[aria-current="page"]') as HTMLElement;
+        expect(active).toHaveTextContent('Pedidos');
+        fireEvent.click(bar(container)?.querySelector('a[href="/contas"]') as HTMLElement);
+        expect(onNavigate).toHaveBeenCalledWith('/contas');
+    });
+
+    it('com a barra ativa o hambúrguer e o drawer seguem com slots de sidebar e widgets', () => {
+        const { container } = renderMobile(
+            <SarakAppChromeMobile
+                nav={NAV_3}
+                sidebarHeader={<span>cabeçalho</span>}
+                sidebarFooter={<span>v1.2.3</span>}
+                user={{ name: 'Ana' }}
+                logout={vi.fn()}
+                {...base}
+            >
+                <div>x</div>
+            </SarakAppChromeMobile>,
+        );
+        expect(bar(container)).not.toBeNull();
+        openDrawer(container);
+        const drawer = container.querySelector('#sarak-chrome-drawer') as HTMLElement;
+        expect(drawer.contains(slotOf(container, 'sidebarHeader'))).toBe(true);
+        expect(drawer.contains(slotOf(container, 'sidebarFooter'))).toBe(true);
+        expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
+        expect(screen.getByText(/^Modo /)).toBeInTheDocument();
+        expect(screen.getByTitle('Sair')).toBeInTheDocument();
+    });
+
+    it('a barra vem depois do painel de conteúdo, dentro da raiz do cromo', () => {
+        const { container } = renderMobile(
+            <SarakAppChromeMobile nav={NAV_3} {...base}><div>x</div></SarakAppChromeMobile>,
+        );
+        const content = container.querySelector('[data-sarak-content]') as HTMLElement;
+        const nav = bar(container) as HTMLElement;
+        expect(content.parentElement).toBe(nav.parentElement);
+        expect(content.compareDocumentPosition(nav) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     });
 });

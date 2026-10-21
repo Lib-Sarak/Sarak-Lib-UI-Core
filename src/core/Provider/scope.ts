@@ -19,6 +19,13 @@ import type { SarakUIMode, SarakUIOptions } from './types';
 export const SARAK_SCOPE_CLASS = 'sarak-scope';
 
 /**
+ * Atributo que um componente da lib com paleta PRÓPRIA (branco sobre fundo preto fixo, como o lightbox)
+ * põe na raiz para sair do sequestro de tema do `SovereignThemeInjector`: nada dentro da subárvore é
+ * repintado pelo tema claro.
+ */
+export const SARAK_OWN_PALETTE_ATTRIBUTE = 'data-sarak-own-palette';
+
+/**
  * Dica de modo lida do documento ANTES de qualquer render.
  *
  * A injeção automática de CSS (Spec 08 §2) roda na IMPORTAÇÃO do módulo, muito antes

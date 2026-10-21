@@ -53,6 +53,14 @@ de seis comandos de leitura para copiar, colar e trazer de volta. Duas rodadas, 
 >
 > **A lista acima não mudou, e não é a proibição** — é o inventário do que conta como mutação. O que
 > mudou é a fronteira: ela passou a ser a **iniciativa**, não o verbo.
+>
+> 🔒 **A porta tem forma mecânica.** Quando o dono solicita e autoriza um commit ou um push, o agente escreve
+> a variável `SARAK_GIT_ESCRITA_AUTORIZADA` **na frente daquele comando**, nunca a exporta, e ela vale para
+> aquele ato e para nenhum outro. Sem ela, o `pre-commit` e o `pre-push` bloqueiam a sessão de agente antes de
+> qualquer outro passo ([[00-regras-e-invariantes]] R38 · [[02-enforcement-por-commit]] §2.0). A trava vê só
+> `commit` e `push`, só os marcadores medidos, e **um agente pode escrever a variável por conta própria** — ela
+> transforma o acidente em ato deliberado, não impede a intenção; o que segura continua sendo a política da
+> §2.1.
 
 **Por que a linha cai aí, e não em outro lugar.** Os dois motivos da §2.1 são sobre **mudança de estado**:
 a autorização de fachada só existe quando algo *acontece* sem inspeção, e a credencial que fura a proteção

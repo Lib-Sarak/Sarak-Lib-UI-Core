@@ -3,14 +3,18 @@
  *
  * Componente pesado: a virtualização (`@tanstack/react-virtual`) só é baixada quando
  * uma tabela colunar é realmente renderizada. Sempre renderize sob `<Suspense>`.
- * `SarakDataTableImpl`/tipos são exportados para teste direto (sem a fronteira de Suspense).
+ * A implementação é interna; os tipos da tabela continuam públicos.
  */
 
-import { lazy } from 'react';
+import { lazy, type LazyExoticComponent, type ReactElement } from 'react';
+import type { SarakDataTableProps } from './SarakDataTableImpl';
 
-export const SarakDataTable = lazy(() => import('./SarakDataTableImpl'));
+export const SarakDataTable: LazyExoticComponent<
+    <T>(props: SarakDataTableProps<T>) => ReactElement
+> = lazy(() => import('./SarakDataTableImpl'));
 
-export { default as SarakDataTableImpl } from './SarakDataTableImpl';
-export type { SarakDataTableProps } from './SarakDataTableImpl';
+export type { SarakDataTableProps };
+export type { SarakDataTableRowHeight } from './SarakDataTableImpl';
 export type { SarakColumn, SarakTableSort } from './columnModel';
+export type { SarakColumnAlignment } from './columnModel';
 export { sarakReorder, sarakComputeOffsets, sarakWidthOf, SARAK_DEFAULT_COLUMN_WIDTH, SARAK_MIN_COLUMN_WIDTH } from './columnModel';

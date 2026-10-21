@@ -96,3 +96,21 @@ export const isSafeMediaString = (value: string): boolean => {
     if (URI_SCHEME_PATTERN.test(inner)) return false;
     return isSafeCssString(inner);
 };
+
+/** Fonte embutida bem-formada: `data:font/<tipo>;base64,<payload base64>`, ancorada nas duas pontas. */
+const EMBEDDED_FONT_PATTERN = /^data:font\/[a-zA-Z0-9.+-]+;base64,[A-Za-z0-9+/]+={0,2}$/i;
+/** `http:` e `data:` fora do formato de fonte, e o invólucro `url(...)`, não servem para arquivo de fonte. */
+const FONT_URL_REFUSED_PREFIX = /^(?:http:|data:|url\()/i;
+
+/**
+ * Predicado do arquivo de uma fonte que o host registra (`options.fonts.custom`): o de mídia segura
+ * (`isSafeMediaString`) estreitado para fonte — aceita `https://`, caminho absoluto ou relativo do próprio host e
+ * `data:font/…;base64,…`; recusa vazio, borda com espaço ou controle, `http:`, `data:` de outro tipo, `url(...)` e
+ * qualquer outro esquema (`javascript:`, `file:`…).
+ */
+export const isSafeFontUrl = (value: unknown): boolean => {
+    if (typeof value !== 'string' || value === '' || value !== value.trim()) return false;
+    if ([...value].some((char) => char.charCodeAt(0) <= MAX_C0_CONTROL_CODE)) return false;
+    if (EMBEDDED_FONT_PATTERN.test(value)) return true;
+    return !FONT_URL_REFUSED_PREFIX.test(value) && isSafeMediaString(value);
+};

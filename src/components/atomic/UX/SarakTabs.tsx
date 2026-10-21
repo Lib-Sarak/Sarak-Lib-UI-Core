@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import { SarakButton } from '../Buttons/SarakButton';
 
 /** `border-radius` por variante (equivalente ao `rounded-*` que cada uma usava). Zero
@@ -62,12 +62,12 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
     };
 
     return (
-        <div className={twMerge("w-full flex", className)} style={{ flexDirection: 'column' }}>
+        <div className={mergeSarakClasses("w-full flex", className)} style={{ flexDirection: 'column' }}>
             <div
-                className={twMerge(
+                className={mergeSarakClasses(
                     "flex items-center",
                     variant === 'underlined' && "border-b border-[var(--theme-border)]",
-                    variant === 'pills' && "bg-black/10 rounded-xl",
+                    variant === 'pills' && "bg-theme-tint rounded-xl",
                     listClassName
                 )}
                 style={
@@ -115,18 +115,18 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
                                 isDisabled && "opacity-50 cursor-not-allowed",
                                 // Variants
                                 variant === 'underlined' && [
-                                    "hover:text-[var(--color-theme-title,#ffffff)]",
+                                    "hover:text-[var(--color-theme-title,#f2f6fb)]",
                                     isActive ? "text-[var(--theme-primary)]" : "text-[var(--theme-muted)]"
                                 ],
                                 variant === 'pills' && [
                                     "z-10",
-                                    isActive ? "text-white" : "text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#ffffff)]"
+                                    isActive ? "text-[var(--theme-on-primary,#020617)]" : "text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#f2f6fb)]"
                                 ],
                                 variant === 'enclosed' && [
                                     "border-t border-x border-transparent",
                                     isActive
-                                        ? "bg-[var(--theme-surface)] border-[var(--theme-border)] text-[var(--color-theme-title,#ffffff)] z-10"
-                                        : "bg-black/10 text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#ffffff)] hover:bg-black/20"
+                                        ? "bg-[var(--theme-surface)] border-[var(--theme-border)] text-[var(--color-theme-title,#f2f6fb)] z-10"
+                                        : "bg-theme-tint text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#f2f6fb)] hover:bg-theme-tint-hover"
                                 ]
                             )}
                             leftIcon={
@@ -154,7 +154,7 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
                                 variant === 'underlined' && isActive ? (
                                     <motion.div
                                         layoutId="sarak-tabs-underline"
-                                        className="absolute bottom-[length:calc(var(--sarak-border-width,1px)*-1)] left-0 right-0 h-[length:var(--sarak-border-width,2px)] bg-[var(--theme-primary)]"
+                                        className="absolute bottom-[length:calc(var(--sarak-border-width,1px)*-1)] left-0 right-0 h-[length:var(--sarak-border-width,1px)] bg-[var(--theme-primary)]"
                                         initial={false}
                                         transition={{ type: "spring", stiffness: 400, damping: 30 }}
                                     />

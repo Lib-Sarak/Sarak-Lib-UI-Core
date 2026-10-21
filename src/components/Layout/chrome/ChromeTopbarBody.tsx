@@ -6,17 +6,20 @@ import { ShellFontSizeControl } from '../../atomic/Navigation/ShellFontSizeContr
 import { ShellNavigationStyleControl } from '../../atomic/Navigation/ShellNavigationStyleControl';
 import { ShellPreferencesMenu } from '../../atomic/Navigation/ShellPreferencesMenu';
 import { SarakSearch } from '../../atomic/Inputs/SarakSearch';
-import type { SarakShellUser } from '../../../core/Shell/Components/types';
+import type { SarakShellUser } from '../../atomic/Navigation/SarakShellUserWidget';
 import { ChromeFrame } from './ChromeFrame';
+import { ChromeContentRegion } from './ChromeContentRegion';
 import { ChromeBrand, ChromeSearchSlot, ChromeTopbarSlot } from './ChromeSlots';
 import { ChromeCollapseToggle } from './ChromeCollapseToggle';
-import { ChromeUserThemeGroup } from './ChromeUserThemeGroup';
-import { resolveChromeContentAlignmentClass, resolveChromeNavbarLayoutClass } from './chromeStructuralStyles';
+import { ChromeUserThemeGroup, ChromeUserWidget } from './ChromeUserThemeGroup';
+import { ChromeNotificationsWidget, type SarakChromeNotification } from './ChromeNotificationsWidget';
+import { resolveChromeContentStyle, resolveChromeNavbarLayoutClass } from './chromeStructuralStyles';
 import { useChromeAutoHide } from './useChromeAutoHide';
 import { useChromeDesignTokens } from './useChromeDesignTokens';
 import { useChromeDefaultWidgets } from './useChromeDefaultWidgets';
 import { chromeNoiseLayerStyle } from './noiseTexture';
 import type { SarakChromeWidgets } from './chromeWidgets';
+import { getSarakSearchItems } from './navItem';
 
 export interface ChromeTopbarBodyProps {
     brand?: { name?: string; logoUrl?: string };
@@ -30,10 +33,13 @@ export interface ChromeTopbarBodyProps {
     banner?: React.ReactNode;
     footer?: React.ReactNode;
     decoration?: React.ReactNode;
+    secondaryContent?: React.ReactNode;
     /** Identidade exibida no widget de usuário default (fora do slot `topbarEnd`). */
     user?: SarakShellUser;
     logout?: () => void;
-    /** Opt-out dos widgets default (busca/tema/usuário/colapso) — omitir liga os quatro. */
+    notifications?: SarakChromeNotification[];
+    onNotificationSelect?: (notification: SarakChromeNotification) => void;
+    /** Opt-out dos widgets default; omitir mantém a composição de fábrica ativa. */
     widgets?: SarakChromeWidgets;
     className: string;
     rootStyle: React.CSSProperties;
@@ -45,21 +51,47 @@ export interface ChromeTopbarBodyProps {
  * pelo mesmo motivo do `ChromeSidebarBody` (teto de 250 linhas, R9).
  */
 export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
-    brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot,
-    search, banner, footer, decoration, user, logout, widgets, className, rootStyle, children,
+    brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot, secondaryContent,
+    search, banner, footer, decoration, user, logout, notifications, onNotificationSelect, widgets, className, rootStyle, children,
 }) => {
-    const { navbarLayout, contentAlignment, isNavHidden, isAutoHideEnabled, searchPositionTopbar } = useChromeDesignTokens();
+    const { navbarLayout, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled, searchPositionTopbar } = useChromeDesignTokens();
     const { isVisible, sensorProps, surfaceProps } = useChromeAutoHide(isAutoHideEnabled);
-    const w = useChromeDefaultWidgets(widgets, { hasCustomSearch: Boolean(search), hasUser: Boolean(user) });
+    const w = useChromeDefaultWidgets(widgets, {
+        hasCustomSearch: Boolean(search),
+        hasUser: Boolean(user),
+        hasLogout: Boolean(logout),
+        hasNotifications: Boolean(notifications?.length),
+        hasNotificationHandler: Boolean(onNotificationSelect),
+    });
     const effectiveSearch = search ?? (w.showSearch
-        ? <SarakShellSearchWidget variant={isNavHidden ? 'icon' : 'bar'} onClick={w.openSearch} />
+        ? <SarakShellSearchWidget
+            variant={isNavHidden ? 'icon' : 'bar'}
+            onClick={w.openSearch}
+            items={getSarakSearchItems(nav)}
+            onSelect={onNavigate ? (item) => onNavigate(item.id) : undefined}
+        />
         : null);
     const showFontSize = w.preferencePlacement.pinned.includes('fontSize');
     const showNavigationStyle = w.preferencePlacement.pinned.includes('navigationStyle');
     const showLanguage = w.preferencePlacement.pinned.includes('language');
-    const hasPreferencesMenu = w.preferencePlacement.menu.length > 0;
+    const menuWidgets = (
+        <>
+            {w.showSearchInMenu && <SarakShellSearchWidget variant="icon" onClick={w.openSearch} />}
+            {w.showUserInMenu && <ChromeUserWidget user={user} logout={logout} variant="vertical" />}
+            {w.showNotificationsInMenu && <ChromeNotificationsWidget notifications={notifications} onSelect={onNotificationSelect} variant="vertical" />}
+        </>
+    );
+    const hasMenuWidgets = w.widgetPlacement.menu.length > 0;
+    // `center`: a busca ocupa o meio do espaço livre entre a navegação e o grupo final (não o centro geométrico da barra);
+    // por isso a navegação deixa de tomar o espaço (`flex-1`) e a busca vem depois dela, num contêiner que o toma.
+    const isSearchCentered = searchPositionTopbar === 'center' && Boolean(effectiveSearch);
+    // A busca é a primeira a ceder (fator de encolhimento 40). A barra padrão pede a largura de `w-64` para o contêiner medir a si
+    // mesmo e some quando o contêiner fica abaixo do mínimo útil do campo, em vez de se desenhar quebrada por cima da marca;
+    // busca do consumidor e ícone só encolhem.
+    // sarak-allow-hardcode: o menor contêiner de container query nomeado do Tailwind (16rem) já é a largura inteira da barra; o mínimo útil do campo não tem nome nem token.
+    const searchSlotClass = search || isNavHidden ? '[flex-shrink:40]' : '@container w-64 [flex-shrink:40] @max-[10rem]:[&>*]:hidden';
     const showEndGroup = Boolean(endSlot) || (Boolean(effectiveSearch) && searchPositionTopbar === 'right')
-        || w.showThemeToggle || w.showUser || showFontSize || showNavigationStyle || showLanguage || hasPreferencesMenu;
+        || w.showThemeToggle || w.showUser || w.showNotifications || showFontSize || showNavigationStyle || showLanguage || hasMenuWidgets;
 
     return (
         <ChromeFrame decoration={decoration} banner={banner} footer={footer} className={className} rootStyle={rootStyle}>
@@ -69,12 +101,12 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
             {isVisible && (
                 <header
                     {...surfaceProps}
-                    className={`relative flex items-center gap-4 px-4 shrink-0 border-b transition-[height] duration-300 ${resolveChromeNavbarLayoutClass(navbarLayout)}`}
+                    className={`relative flex items-center gap-4 px-4 shrink-0 border-b transition-[height] duration-[var(--duration-normal,0.3s)] ${resolveChromeNavbarLayoutClass(navbarLayout)}`}
                     style={{
-                        height: isNavHidden ? 'var(--sarak-topbar-collapsed-height, 40px)' : 'var(--sarak-topbar-height, 64px)',
-                        margin: 'var(--sarak-tab-section-margin, 0px)',
+                        height: isNavHidden ? 'var(--sarak-topbar-collapsed-height, 48px)' : 'var(--sarak-topbar-height, 64px)',
+                        margin: 'var(--sarak-tab-section-margin, 8px)',
                         background: 'var(--sarak-topbar-bg, var(--theme-sidebar-bg, transparent))',
-                        borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',
+                        borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.09)))',
                     }}
                 >
                     {/* `topbarNoiseOpacity` (Spec 05 §2.4). */}
@@ -84,13 +116,22 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
                     )}
                     <ChromeBrand brand={brand} logo={logo} horizontal compact={isNavHidden} />
                     <ChromeTopbarSlot region="start">{topbarStart}</ChromeTopbarSlot>
-                    {searchPositionTopbar !== 'right' && (
-                        <ChromeSearchSlot position={searchPositionTopbar} className={searchPositionTopbar === 'center' ? 'mx-auto' : ''}>
-                            {effectiveSearch}
-                        </ChromeSearchSlot>
+                    {searchPositionTopbar !== 'right' && !isSearchCentered && (
+                        <ChromeSearchSlot position={searchPositionTopbar} className={searchSlotClass}>{effectiveSearch}</ChromeSearchSlot>
                     )}
                     {nav.length > 0 && (
-                        <SarakShellNav items={nav} activeRoute={activeRoute} onNavigate={onNavigate} orientation="horizontal" collapsed={isNavHidden} className="flex-1 min-w-0" />
+                        // O item de navegação nunca fica menor que o texto: a lista pede o tamanho do conteúdo (`auto`) e cede depois da
+                        // busca. Quando a barra aperta, cede primeiro a busca (fator de encolhimento 40; o grupo final é rígido e os rótulos
+                        // dos widgets indisponíveis somem abaixo do breakpoint `2xl`); o que ainda faltar a lista absorve (fator 1) e rola, com cada
+                        // item inteiro, e o grupo final nunca passa da borda da barra.
+                        <div data-sarak-slot="nav" className={`flex min-w-0 ${isSearchCentered ? 'flex-[0_1_auto]' : 'flex-[1_1_auto]'}`}>
+                            <SarakShellNav items={nav} activeRoute={activeRoute} onNavigate={onNavigate} orientation="horizontal" collapsed={isNavHidden} className={isSearchCentered ? 'w-full min-w-0' : 'flex-1 min-w-0'} />
+                        </div>
+                    )}
+                    {isSearchCentered && (
+                        <div data-sarak-slot="search-center" className="flex flex-1 shrink-0 justify-center">
+                            <ChromeSearchSlot position={searchPositionTopbar}>{effectiveSearch}</ChromeSearchSlot>
+                        </div>
                     )}
                     {/* Um único `ml-auto` no agrupador — dois irmãos com `ml-auto` dividiriam o
                         espaço livre entre si (regra de auto-margin do flexbox) e abririam um
@@ -112,30 +153,33 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
                                 variant="horizontal"
                                 className="flex items-center gap-2"
                             />
-                            {hasPreferencesMenu && (
+                            {w.showNotifications && <ChromeNotificationsWidget notifications={notifications} onSelect={onNotificationSelect} variant="horizontal" />}
+                            {hasMenuWidgets && (
                                 <ShellPreferencesMenu
                                     menuIds={w.preferencePlacement.menu}
                                     isNavHidden={isNavHidden}
                                     onToggleNavCollapsed={w.toggleNavHidden}
+                                    additionalRows={menuWidgets}
                                 />
                             )}
                         </div>
                     )}
                 </header>
             )}
-            <main
-                data-sarak-content
-                className={`relative flex-1 min-w-0 min-h-0 overflow-auto ${resolveChromeContentAlignmentClass(contentAlignment)}`}
-                style={{ color: 'var(--text-main, var(--color-theme-title, inherit))', padding: 'var(--sarak-layout-padding, 16px)' }}
+            <ChromeContentRegion
+                secondaryContent={secondaryContent}
+                isSplitViewEnabled={isSplitViewEnabled}
+                className={`relative flex-1 min-w-0 min-h-0 overflow-auto`}
+                style={{ color: 'var(--text-main, var(--color-theme-title, inherit))', ...resolveChromeContentStyle(layoutDensity, maxContentWidth) }}
             >
                 {children}
-            </main>
-            {w.showSearch && (
+            </ChromeContentRegion>
+            {w.showSearchOffered && (
                 <SarakSearch
                     isOpen={w.isSearchOpen}
                     onClose={w.closeSearch}
-                    items={nav.map((item) => ({ id: item.route, label: item.label, category: item.category }))}
-                    onSelect={onNavigate}
+            items={getSarakSearchItems(nav)}
+            onSelect={onNavigate}
                 />
             )}
         </ChromeFrame>

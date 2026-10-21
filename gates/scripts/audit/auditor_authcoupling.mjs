@@ -16,14 +16,15 @@
 //    template literals (segmento de path `/mfa`, `/login`, `/oauth`, `/token`,
 //    `/auth`, `/sso`, `/2fa`, `/session`) — não resolve concatenação dinâmica
 //    fora de template literal, nem `fetch(variavel)` onde a rota vem de fora.
-// 3. Varre só `src/components/` e `src/features/` — a superfície que o
-//    consumidor embute. `src/core/` (infra interna) fica fora.
+// 3. Varre toda a superfície de `src/`, incluindo `src/core/`. Exclui testes
+//    e declarações compiladas para cobrir a implementação distribuída sem
+//    auditar fixtures ou artefatos de tipos.
 // -------------------------------------------------------------------------
 import fs from 'fs';
 import path from 'path';
 import ts from 'typescript';
 
-const SCOPE = ['src/components', 'src/features'];
+const SCOPE = ['src'];
 
 const AUTH_KEY_RE = /token|session|auth|credential|jwt|refresh|bearer|password|senha/i;
 const AUTH_ROUTE_RE = /(^|\/)(mfa|login|oauth2?|token|auth|sso|2fa)(\/|$)/i;
@@ -38,7 +39,7 @@ function getFiles(dir, fileList = []) {
       if (!full.includes('__tests__') && !full.includes('__e2e__') && !full.includes('Mocks')) {
         getFiles(full, fileList);
       }
-    } else if (/\.tsx?$/.test(full) && !/\.(test|spec)\./.test(full)) {
+    } else if (/\.tsx?$/.test(full) && !/\.d\.ts$/.test(full) && !/\.(test|spec)\./.test(full)) {
       fileList.push(full);
     }
   }
@@ -134,7 +135,7 @@ for (const file of files) {
 }
 
 if (total === 0) {
-  console.log('\n[OK] Nenhum sink de credencial nem rota de autenticação embutida em componente/feature.');
+  console.log('\n[OK] Nenhum sink de credencial nem rota de autenticação embutida em src/.');
   process.exit(0);
 } else {
   console.log(`\n[ERROR] ${total} violação(ões) de R32 (acoplamento de autenticação).`);

@@ -1,4 +1,5 @@
-import React, { ReactNode, useMemo, useState, useContext, createContext } from 'react';
+import React, { ReactNode, useMemo, useState, useEffect, useRef, useCallback } from 'react';
+import { MotionConfig } from 'framer-motion';
 import { NoiseOverlay } from '../../effects/NoiseOverlay';
 import { injectSarakStyles } from './injectStyles';
 import { SARAK_CSS } from './__sarakCss';
@@ -11,82 +12,45 @@ import { SARAK_CSS } from './__sarakCss';
 injectSarakStyles(SARAK_CSS);
 
 // Novos Módulos Refatorados
-import { SarakUIContextType, SarakUIOptions, SarakUIProviderProps, SarakThemePayload, SarakThemeEntry } from './types';
-import { useRegistryManager } from './hooks/useRegistryManager';
+import type { SarakUIProviderProps, SarakThemeEntry } from './types';
 import { useDesignManager } from './hooks/useDesignManager';
 import { useBrandingManager } from './hooks/useBrandingManager';
 import { useSarakUIEffects } from './hooks/useSarakUIEffects';
+import { useSarakFonts } from './hooks/useSarakFonts';
 import { useSarakDrafting } from './hooks/useSarakDrafting';
 import { useSarakStylesheetGuard } from './hooks/useSarakStylesheetGuard';
 import { usePreferencesManager } from './hooks/usePreferencesManager';
 import { overlayPreferences } from './utils/overlayPreferences';
-import { mergeUIContextValue } from './mergeUIContextValue';
+import { UIContext, DesignOverrideContext } from './context';
 import { DesignInjector } from './components/DesignInjector';
 import { SarakScopeRoot } from './components/SarakScopeRoot';
 import { resolveSarakUIMode } from './scope';
 import { useThemeCollection } from './hooks/useThemeCollection';
+import { useThemeReadiness } from './hooks/useThemeReadiness';
 import { SovereignThemeInjector } from './components/SovereignThemeInjector';
 import { SarakBackgroundRenderer } from '../Design/components/SarakBackgroundRenderer';
 import { SarakDeviceProvider, SARAK_DEFAULT_DEVICE_BREAKPOINTS, SarakDeviceBreakpoints } from './DeviceProvider';
 import { SarakToastProvider } from '../../components/atomic/Feedback/SarakToast';
 import { SarakOverlayProvider } from '../../components/atomic/Modals/SarakOverlayProvider';
+import { useThemeDeletionHandler } from './hooks/useThemeDeletionHandler';
+import { useBodyThemeTransition } from './hooks/useBodyThemeTransition';
 
 // Re-exports para manter compatibilidade com arquivos que importam do Provider
 export * from './types';
 export { computeColorVariants } from './utils/color-engine';
 export { SARAK_DESIGN_MANIFEST } from './manifest';
 
-// --- SARAK UI BRIDGE CONTEXT ---
-export const UIContext = createContext<SarakUIContextType | undefined>(undefined);
-export const DesignOverrideContext = createContext<Partial<SarakThemePayload> | null>(null);
+export { UIContext, DesignOverrideContext } from './context';
+export { useSarakUI, useSarakUIOptional } from './hooks/useSarakUI';
 
-// Referência estável para o default de `customThemes` (Spec 44). Um array literal
-// `= []` inline no destructuring dos props seria uma referência NOVA a cada
-// render sem prop explícita — é metade da causa do loop de render infinito real
-// achado na Spec 43 §5.1 (a outra metade, o `useDesignSync` chamar `setDesign`
-// sem guard, já foi corrigida). Consumidores que passam `customThemes` inline
-// (`customThemes={[...]}` a cada render) continuam expostos ao padrão — por isso
-// o guard em `useDesignSync` é a correção definitiva; isto é só o default seguro.
+// Referência estável para o default de `customThemes` (Spec 44): um `= []` inline seria
+// uma referência NOVA a cada render — metade do loop de render infinito da Spec 43 §5.1
+// (a correção definitiva é o guard em `useDesignSync`; isto é só o default seguro).
 const EMPTY_CUSTOM_THEMES: SarakThemeEntry[] = [];
 
-// Porta PÚBLICA — código de aplicação. Lança fora do Provider de propósito: esquecer
-// o Provider é erro do consumidor. Peça interna da lib? Use `useSarakUIOptional`.
-export const useSarakUI = (): SarakUIContextType & SarakThemePayload => {
-    const context = useContext(UIContext);
-    const overrideDesign = useContext(DesignOverrideContext);
-
-    if (!context) {
-        throw new Error('useSarakUI must be used within a SarakUIProvider');
-    }
-
-    return mergeUIContextValue(context, overrideDesign);
-};
-
-// Porta INTERNA — átomos e Hooks Controladores compartilhados que já toleram `design`
-// ausente e não devem impor Provider a quem os compõe. Nunca lança; `null` fora do
-// Provider, aviso deduplicado por re-render (dep. `context` é estável enquanto não
-// houver Provider) — sob `React.StrictMode` o render é duplo em dev, e o aviso pode
-// sair duas vezes ali. NÃO é para código de aplicação: use `useSarakUI`.
-export const useSarakUIOptional = (): (SarakUIContextType & SarakThemePayload) | null => {
-    const context = useContext(UIContext);
-    const overrideDesign = useContext(DesignOverrideContext);
-
-    useMemo(() => {
-        if (!context) {
-            console.warn('[Sarak:UI] useSarakUIOptional() sem SarakUIProvider; átomo usa o próprio default.');
-        }
-    }, [context]);
-
-    return context ? mergeUIContextValue(context, overrideDesign) : null;
-};
-
-/**
- * SarakUIProvider Orchestrator (v10.1) — ponto de entrada principal da lib:
- * orquestra o estado do design, a descoberta de módulos e a injeção de estilos.
- */
-export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
+// Orquestra o design, a hidratação e a injeção de estilos; só monta depois da porta de espera do tema.
+const SarakUIProviderCore: React.FC<SarakUIProviderProps> = ({
     children,
-    discoveryEndpoints = [],
     config: initialPropsConfig = {},
     token,
     userId,
@@ -97,16 +61,19 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     onThemeChange,
     onMediaUpload
 }) => {
-    // 0. Modo de consumo (Spec 24): `app` (default, dono da página) vs `embedded` (ilha sobre
-    //    um front existente). Container da ilha por callback ref c/ estado (DesignInjector re-renderiza).
+    // 0. Modo de consumo (Spec 24): `app` (dono da página) vs `embedded` (ilha sobre um front existente).
     const mode = resolveSarakUIMode(options);
     const [scopeElement, setScopeElement] = useState<HTMLElement | null>(null);
     const isEmbedded = mode === 'embedded';
-    // 1. Gerenciamento do Registro e Discovery
-    const { registeredModules, isHydrated } = useRegistryManager(options);
+    useBodyThemeTransition(isEmbedded);
+    const [isHydrated, setIsHydrated] = useState(false);
+    useEffect(() => setIsHydrated(true), []);
 
-    // 1.5. Temas: fusão (GLOBAL_THEMES + customThemes + salvos em runtime) + porta única de escrita (ADR-011).
-    const { allThemes, saveTheme } = useThemeCollection(customThemes, options);
+    // 1.5. Temas: embarcados carregados + customThemes + salvos em runtime; porta única de escrita (ADR-011).
+    const { allThemes, themeCatalog, loadTheme, saveTheme, deleteTheme: deleteThemeFromCollection } = useThemeCollection(customThemes, options);
+    const hostConfigRef = useRef(initialPropsConfig);
+    hostConfigRef.current = initialPropsConfig;
+    const getHostConfig = useCallback(() => hostConfigRef.current, []);
 
     // 2. Gerenciamento do Estado de Design e Persistência
     const { design, setDesign, applyConfig, applyFullConfig, persistDesign, isBackendLoaded, resolvedThemeId, setResolvedThemeId } = useDesignManager({
@@ -119,12 +86,16 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         onThemeChange
     });
 
+    const deleteTheme = useThemeDeletionHandler({
+        deleteThemeFromCollection, resolvedThemeId, loadTheme, design, getHostConfig, setResolvedThemeId, applyFullConfig, persistDesign,
+    });
+
     // 2.5 Gerenciamento do Estado da Marca (Branding)
     const { branding, updateBranding } = useBrandingManager(options);
     // 2.6 Preferências do usuário — camada separada, nunca persistida no tema;
     //     `effectiveDesign` sobrepõe as OFERECIDAS pelo tema resolvido.
     const { preferences, updatePreferences, systemColorScheme } = usePreferencesManager(options, isHydrated);
-    const activeTheme = (allThemes as SarakThemeEntry[] | undefined)?.find((t) => t.id === resolvedThemeId);
+    const activeTheme = allThemes.find((theme) => theme.id === resolvedThemeId);
 
     // 3. Gerenciamento de Rascunho (Live Preview) — sobre o design BRUTO: o
     //    painel edita e comita o tema, nunca o efetivo.
@@ -137,19 +108,15 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         [liveDesign, preferences, activeTheme, systemColorScheme],
     );
 
-    // 4. Efeitos Colaterais globais (Fontes, Título, Ícone) — inertes no Modo Embarcado.
-    //    FONTE ÚNICA da identidade da aba (Spec 47): recebe as DUAS portas pelas quais
-    //    o consumidor pode nomear a página (`branding.tabName` e o `systemName` do
-    //    design) e resolve a precedência num só lugar. Sem nenhuma delas preenchida, o
-    //    `<title>`/favicon do `index.html` do host ficam intocados.
-    useSarakUIEffects(branding, mode, options?.embedded?.injectGlobalFonts, design?.systemName);
+    // 4. Efeitos globais, inertes no Modo Embarcado: identidade da aba (Spec 47) e fontes (`options.fonts`).
+    useSarakUIEffects(branding, mode, design?.systemName);
+    useSarakFonts(effectiveDesign, mode, options);
 
-    // 4.5 Guarda do stylesheet: injeção automática (Modo App) ou desfaz o CSS global (Embarcado, Spec 24).
+    // 4.5 Guarda do stylesheet (Modo App injeta; Embarcado desfaz o CSS global — Spec 24).
     useSarakStylesheetGuard(mode, scopeElement);
 
     // 6. Valor do Contexto (Memorizado)
     const uiContextValue = useMemo(() => ({
-        discoveryEndpoints: options?.endpoints?.discovery || discoveryEndpoints || [],
         design: effectiveDesign, // Estado EFETIVO — tema + preferências oferecidas sobrepostas
         systemDesign: design,    // Estado persistido (Sistema/tema), sem preferência nenhuma
         preferences,
@@ -165,12 +132,11 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         applyConfigRaw: applyConfig,
         applyFullConfigRaw: applyFullConfig,
         persistDesign,
-        registeredModules,
-        layouts: [],
         isHydrated,
         options,
         allThemes,
-        saveTheme,
+        themeCatalog, loadTheme, getHostConfig,
+        saveTheme, deleteTheme,
         activeThemeId,
         resolvedThemeId,
         setResolvedThemeId,
@@ -180,24 +146,22 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         onMediaUpload,
         activeDesign: effectiveDesign // já é o sistema (+ rascunho, se houver) + preferências
     }), [
-        discoveryEndpoints, design, effectiveDesign, preferences, updatePreferences,
+        design, effectiveDesign, preferences, updatePreferences,
         drafting.draftDesign, drafting.isDrafting,
         drafting.setIsDrafting, drafting.lockDrafting, setDesign,
         drafting.setDraftDesign, drafting.smartApplyConfig,
         drafting.smartApplyFullConfig, applyConfig, applyFullConfig,
-        persistDesign, registeredModules, isHydrated, options,
-        allThemes, saveTheme, activeThemeId, resolvedThemeId, setResolvedThemeId,
+        persistDesign, isHydrated, options,
+        allThemes, themeCatalog, loadTheme, getHostConfig, saveTheme, deleteTheme, activeThemeId, resolvedThemeId, setResolvedThemeId,
         token, branding, updateBranding, onMediaUpload
     ]);
 
-    // 7. Renderização com Strict Sync (Evita Flash de Temas)
+    // 7. Strict Sync (evita flash de temas)
     const isStrictSync = options?.persistence?.strictBackendSync === true;
     const shouldRenderChildren = isStrictSync ? isBackendLoaded : true;
 
-    // Breakpoints como DADO (Spec 16, Regra 1): os mesmos tokens que `useDesignVariables`
-    // interpola na media-query descem ao detector JS, senão CSS e JS discordam sobre o
-    // que é "tablet" assim que alguém troca o token. Memoizado porque o hook de
-    // dispositivo depende da identidade do objeto.
+    // Breakpoints como DADO (Spec 16): os tokens da media-query descem ao detector JS (senão CSS e
+    // JS discordam do que é "tablet"). Memoizado: o hook de dispositivo depende da identidade.
     const deviceBreakpoints = useMemo<SarakDeviceBreakpoints>(() => ({
         tablet: typeof design?.breakpointTablet === 'number' ? design.breakpointTablet : SARAK_DEFAULT_DEVICE_BREAKPOINTS.tablet,
         desktop: typeof design?.breakpointDesktop === 'number' ? design.breakpointDesktop : SARAK_DEFAULT_DEVICE_BREAKPOINTS.desktop
@@ -227,7 +191,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                             imageUrl={effectiveDesign?.globalBackgroundImageUrl}
                             opacity={effectiveDesign?.globalBackgroundOpacity}
                             blur={effectiveDesign?.globalBackgroundBlur}
-                            isFixed={true}
+                            backgroundPosition={effectiveDesign?.globalBackgroundPosition as 'absolute' | 'fixed' | undefined}
                             mode={effectiveDesign?.mode as 'light' | 'dark' | undefined}
                         />
                     )}
@@ -236,14 +200,28 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                         (trigger_toast / open_modal / open_drawer — Spec 25) já nascem
                         montados — o consumidor não precisa (nem deve) montá-los à mão. */}
                     {shouldRenderChildren ? (
-                        <SarakToastProvider>
-                            <SarakOverlayProvider>{children}</SarakOverlayProvider>
-                        </SarakToastProvider>
+                        <MotionConfig reducedMotion={effectiveDesign?.reducedMotion === true ? 'always' : 'user'}>
+                            <SarakToastProvider>
+                                <SarakOverlayProvider>{children}</SarakOverlayProvider>
+                            </SarakToastProvider>
+                        </MotionConfig>
                     ) : null}
                 </SarakScopeRoot>
             </UIContext.Provider>
         </SarakDeviceProvider>
     );
+};
+
+// O Provider público: porta de espera do tema sob demanda antes do núcleo; transparente sem tema forçado fora de memória.
+export const SarakUIProvider: React.FC<SarakUIProviderProps> = (props) => {
+    const requestedThemeId = props.activeThemeId || props.initialTheme || props.options?.theme?.defaultTheme;
+    const isReady = useThemeReadiness({
+        requestedThemeId,
+        controlled: Boolean(props.activeThemeId),
+        persistence: props.options?.persistence,
+    });
+    if (!isReady) return <>{props.loadingFallback ?? null}</>;
+    return <SarakUIProviderCore {...props} />;
 };
 
 export default SarakUIProvider;

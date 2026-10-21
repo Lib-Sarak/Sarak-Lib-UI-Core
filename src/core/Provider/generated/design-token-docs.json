@@ -1,0 +1,3701 @@
+{
+ "$comment": "GERADO por scripts/generate-token-types.ts — NÃO edite à mão. Fonte: o schema (src/core/Design/schema/).",
+ "groups": {
+  "global": "0. Configurações Globais",
+  "branding": "Identidade Visual",
+  "system": "Configurações de Layout",
+  "navigation": "Container de Nav",
+  "cards": "Card Geral",
+  "cardTitle": "Card de Título",
+  "cardAction": "Card de Ação",
+  "cardSearch": "Card de Busca",
+  "overlays": "Sobreposições (Overlays)",
+  "tables": "Configuração de Tabelas",
+  "typography": "Tipografia e Escala",
+  "buttons": "Botão de Ação",
+  "inputs": "Campo de Entrada (Input)",
+  "switches": "Alternadores (Toggles)",
+  "colors": "Paletas e Gradientes",
+  "data": "Gráficos & Dados",
+  "animations": "Transições e Animações",
+  "atmosphere": "Fundo e Atmosfera",
+  "chat": "Interface de Chat",
+  "status": "Cores Semânticas",
+  "engineering": "Acessibilidade e Camadas",
+  "specialized": "Ícones e Estética",
+  "motion": "Movimento e Física",
+  "scrollbars": "Barras de Rolagem",
+  "layers": "Camadas e Profundidade",
+  "advanced": "Componentes Avançados",
+  "media": "Mídia e Background",
+  "structural": "Estrutura e Macro-Layout",
+  "preferences": "Preferências do Usuário"
+ },
+ "tokens": [
+  {
+   "id": "accentColor",
+   "group": "colors",
+   "label": "Cor de Acento (Accent)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Define a cor de acento usada na malha de fundo e na terceira série de marca dos gráficos."
+  },
+  {
+   "id": "actionGlowShadowBlur",
+   "group": "buttons",
+   "label": "Sombra de Ação: Desfoque",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desfoque da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, que não é o padrão do tema padrão: o `frosted` o apaga).",
+   "interactsWith": [
+    "btnStyleType"
+   ]
+  },
+  {
+   "id": "actionGlowShadowOffsetY",
+   "group": "buttons",
+   "label": "Sombra de Ação: Offset Y",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Deslocamento vertical da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, que não é o padrão do tema padrão: o `frosted` o apaga).",
+   "interactsWith": [
+    "btnStyleType"
+   ]
+  },
+  {
+   "id": "actionGlowShadowSpread",
+   "group": "buttons",
+   "label": "Sombra de Ação: Espalhamento",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Espalhamento da sombra do botão da categoria selecionada em `SarakCatalogGrid`; só aparece com um estilo de botão que preserva o `style` do botão (`matte`, que não é o padrão do tema padrão: o `frosted` o apaga).",
+   "interactsWith": [
+    "btnStyleType"
+   ]
+  },
+  {
+   "id": "aiGlowColor",
+   "group": "specialized",
+   "label": "Cor do Brilho IA",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do indicador de \"pensando\" do `SarakChatEngine`: os três pontos e o avatar do assistente enquanto a resposta é gerada."
+  },
+  {
+   "id": "animEnabled",
+   "group": "animations",
+   "label": "Ativar Movimentos",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Liga e desliga a transição entre páginas (`SarakPageTransition`): desligada, a página troca no mesmo quadro. Não desliga as transições dos componentes.",
+   "interactsWith": [
+    "pageTransitionType"
+   ]
+  },
+  {
+   "id": "authHeroOrbBlur",
+   "group": "specialized",
+   "label": "Auth Hero: Desfoque dos Orbs de Fundo",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desfoque dos orbes de fundo da tela de autenticação (`AuthHero`); 10 px os mostra como discos e 250 px os dilui em atmosfera."
+  },
+  {
+   "id": "badgeRadius",
+   "group": "status",
+   "label": "Raio das Badges",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Arredonda as bordas das badges de status; valores altos formam uma pílula."
+  },
+  {
+   "id": "bgBaseColor",
+   "group": "atmosphere",
+   "label": "Cor de Fundo Base",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta a base das superfícies de vidro (`.sarak-glass`), o fundo da gaveta e a cor dos painéis do motor de fluxo; o corpo da página é `colorBgBody`."
+  },
+  {
+   "id": "bgGradientAngle",
+   "group": "atmosphere",
+   "label": "Direção do Gradiente",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Gira o gradiente Linear do fundo, de 0° a 360°. Nos modos Radial e Mesh o ângulo não entra na pintura.",
+   "interactsWith": [
+    "bgGradientMode"
+   ]
+  },
+  {
+   "id": "bgGradientMode",
+   "group": "atmosphere",
+   "label": "Modo de Gradiente",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Escolhe o gradiente pintado sobre o fundo da página: Sólido não desenha; Linear e Radial misturam a camada 1 com a primária; Mesh espalha quatro manchas de cor.",
+   "interactsWith": [
+    "bgGradientAngle",
+    "colorBgLayer1",
+    "colorBgLayer2"
+   ]
+  },
+  {
+   "id": "bgNoiseAnimation",
+   "group": "atmosphere",
+   "label": "Velocidade do Ruído",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Segundos por ciclo do deslocamento do padrão da textura `noise`; 0 o mantém parado. Só vale com `texture: noise`.",
+   "interactsWith": [
+    "texture"
+   ]
+  },
+  {
+   "id": "bgNoiseDensity",
+   "group": "atmosphere",
+   "label": "Intensidade do Ruído (Grão)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Opacidade do grão de filme, uma camada fixa que cobre a tela inteira acima do conteúdo em qualquer textura; 0 a apaga. Não altera o padrão da textura `noise` (esse é `textureOpacity`)."
+  },
+  {
+   "id": "bodyFont",
+   "group": "typography",
+   "label": "Fonte de Corpo",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Aplica a família tipográfica aos parágrafos, rótulos e demais textos corridos."
+  },
+  {
+   "id": "bodyLineHeight",
+   "group": "typography",
+   "label": "Altura da Linha (Corpo)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Controla o espaço entre linhas dos parágrafos e afeta a leitura de blocos longos."
+  },
+  {
+   "id": "bodySize",
+   "group": "global",
+   "label": "Tamanho Global das Fontes",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Tamanho da fonte do `body` (12 a 20 px): todo texto que herda dele muda, e as alturas do cromo acompanham. A preferência de tamanho do usuário (P/M/G) soma-se a este valor."
+  },
+  {
+   "id": "bodyWeight",
+   "group": "typography",
+   "label": "Peso do Corpo",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Controla a espessura do texto corrido sem mudar o tamanho da fonte."
+  },
+  {
+   "id": "borderBeamEnabled",
+   "group": "cards",
+   "label": "Ativar Border Beam",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Anel de luz na cor primária que gira pela borda de todo cartão (título, ação, busca e composto). Desligado (padrão), nenhuma animação roda. Fica parado fora da tela, some com movimento reduzido, e dezenas de cartões visíveis com o traço aceso custam quadros: use em poucos cartões de destaque.",
+   "interactsWith": [
+    "primaryColor",
+    "cardBorderRadius",
+    "cardBorderWidth"
+   ]
+  },
+  {
+   "id": "borderRadius",
+   "group": "system",
+   "label": "Arredondamento Padrão",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Raio de referência dos componentes sem raio próprio: acordeão, paleta de busca, motor de fluxo e outros; 0 deixa os cantos retos, inclusive no acordeão; vale escalar ou por breakpoint.",
+   "interactsWith": [
+    "cardBorderRadius"
+   ]
+  },
+  {
+   "id": "borderStyle",
+   "group": "system",
+   "label": "Estilo da Borda",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Traço das bordas que seguem o sistema (contínuo, tracejado, pontilhado ou sem borda): o cromo, o separador do painel dividido e as classes utilitárias de borda."
+  },
+  {
+   "id": "borderType",
+   "group": "atmosphere",
+   "label": "Estilo da Moldura (Border)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Estilo da borda dos cartões: Sólido, Cyber (tracejada na cor de textura), Dupla linha, Neon Glow (borda na cor de textura) ou Sem moldura (borda transparente).",
+   "interactsWith": [
+    "textureColor"
+   ]
+  },
+  {
+   "id": "borderWidth",
+   "group": "system",
+   "label": "Espessura da Borda",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Espessura das linhas divisórias do feed de atividade e do separador do painel dividido, e das demais linhas que leem a variável de borda do sistema (dados, botões de ícone com contorno)."
+  },
+  {
+   "id": "brandLogoSizeCollapsed",
+   "group": "navigation",
+   "label": "Altura do Logo da Marca (Recolhida)",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Lado do logo na barra do topo recolhida; só aparece com `isNavHidden` ligado.",
+   "interactsWith": [
+    "isNavHidden"
+   ]
+  },
+  {
+   "id": "breakpointDesktop",
+   "group": "structural",
+   "label": "Breakpoint Desktop",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura de janela a partir da qual valem os valores `desk` dos tokens responsivos e o cromo de desktop; abaixo, os de tablet.",
+   "interactsWith": [
+    "breakpointTablet"
+   ]
+  },
+  {
+   "id": "breakpointTablet",
+   "group": "structural",
+   "label": "Breakpoint Tablet",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura de janela a partir da qual a interface deixa de ser celular: abaixo dela o cromo usa a barra do celular e os valores `mob`; acima, os de tablet.",
+   "interactsWith": [
+    "breakpointDesktop"
+   ]
+  },
+  {
+   "id": "btnActiveScale",
+   "group": "buttons",
+   "label": "Escala no Clique",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Amplia ou comprime o botão enquanto está pressionado; 1 mantém a escala original."
+  },
+  {
+   "id": "btnBackdropBlur",
+   "group": "buttons",
+   "label": "Desfoque de Vidro (Backdrop Blur)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desfoca o fundo atrás dos botões no estilo frosted; outros estilos não aplicam o desfoque.",
+   "interactsWith": [
+    "btnStyleType"
+   ]
+  },
+  {
+   "id": "btnBorderRadius",
+   "group": "buttons",
+   "label": "Arredondamento (Master)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Arredonda os quatro cantos dos botões; os tokens de canto podem sobrescrever cada lado."
+  },
+  {
+   "id": "btnGhostHoverBg",
+   "group": "buttons",
+   "label": "Hover (Ghost)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o fundo do botão ghost enquanto o ponteiro está sobre ele."
+  },
+  {
+   "id": "btnHoverScale",
+   "group": "buttons",
+   "label": "Escala no Hover",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Amplia ou reduz o botão enquanto o ponteiro está sobre ele; 1 mantém a escala original."
+  },
+  {
+   "id": "btnNeonGlowColor",
+   "group": "buttons",
+   "label": "Cor do Brilho (Neon)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Define a cor do halo de botões neon e cyberpunk.",
+   "interactsWith": [
+    "btnStyleType"
+   ]
+  },
+  {
+   "id": "btnNeonPulseSpeed",
+   "group": "buttons",
+   "label": "Velocidade de Pulso (s)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Define o ciclo do halo pulsante; zero mantém estático e o estilo neon precisa estar selecionado.",
+   "interactsWith": [
+    "btnStyleType"
+   ]
+  },
+  {
+   "id": "btnPrimaryBg",
+   "group": "buttons",
+   "label": "Fundo Primário",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o fundo do botão primário e define a tinta usada por alguns estilos do botão."
+  },
+  {
+   "id": "btnPrimaryText",
+   "group": "buttons",
+   "label": "Texto Primário",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Colore o texto do botão primário; escolha contraste suficiente com btnPrimaryBg."
+  },
+  {
+   "id": "btnRadiusBL",
+   "group": "buttons",
+   "label": "Canto: Inferior Esquerdo",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Sobrepõe o arredondamento do canto inferior esquerdo do botão em relação ao mestre.",
+   "interactsWith": [
+    "btnBorderRadius"
+   ]
+  },
+  {
+   "id": "btnRadiusBR",
+   "group": "buttons",
+   "label": "Canto: Inferior Direito",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Sobrepõe o arredondamento do canto inferior direito do botão em relação ao mestre.",
+   "interactsWith": [
+    "btnBorderRadius"
+   ]
+  },
+  {
+   "id": "btnRadiusTL",
+   "group": "buttons",
+   "label": "Canto: Superior Esquerdo",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Sobrepõe o arredondamento do canto superior esquerdo do botão em relação ao mestre.",
+   "interactsWith": [
+    "btnBorderRadius"
+   ]
+  },
+  {
+   "id": "btnRadiusTR",
+   "group": "buttons",
+   "label": "Canto: Superior Direito",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Sobrepõe o arredondamento do canto superior direito do botão em relação ao mestre.",
+   "interactsWith": [
+    "btnBorderRadius"
+   ]
+  },
+  {
+   "id": "btnSecondaryBg",
+   "group": "buttons",
+   "label": "Fundo Secundário",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o fundo dos botões secundários, inclusive nas estratégias neon e frosted."
+  },
+  {
+   "id": "btnStyleType",
+   "group": "buttons",
+   "label": "Estilo do Botão",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Escolhe a aparência dos botões e ativa as regras condicionais de neon, vidro fosco, contorno ou relevo."
+  },
+  {
+   "id": "buttonIconPosition",
+   "group": "buttons",
+   "label": "Posição do Ícone",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Posiciona o ícone à esquerda ou à direita do texto nos botões que recebem um ícone."
+  },
+  {
+   "id": "buttonWidthStrategy",
+   "group": "buttons",
+   "label": "Largura do Botão",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Faz o botão acompanhar o conteúdo ou ocupar toda a largura do contêiner."
+  },
+  {
+   "id": "cardActionBtnBorderRadius",
+   "group": "cardAction",
+   "label": "Arredondamento do Botão",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Arredonda o botão de ação do `SarakActionCard`, por dispositivo."
+  },
+  {
+   "id": "cardActionBtnHoverBg",
+   "group": "cardAction",
+   "label": "Fundo do Botão no Hover",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Fundo do botão de ação do `SarakActionCard` ao passar o ponteiro ou pressionar; por padrão repete o fundo normal.",
+   "interactsWith": [
+    "cardActionBtnPrimaryBg"
+   ]
+  },
+  {
+   "id": "cardActionBtnPadding",
+   "group": "cardAction",
+   "label": "Padding Vertical do Botão",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Respiro vertical interno do botão de ação do `SarakActionCard`, em px; define a altura do botão."
+  },
+  {
+   "id": "cardActionBtnPrimaryBg",
+   "group": "cardAction",
+   "label": "Fundo do Botão de Ação",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Fundo do botão de ação do `SarakActionCard`; por padrão segue a cor primária do tema."
+  },
+  {
+   "id": "cardActionBtnText",
+   "group": "cardAction",
+   "label": "Cor do Texto do Botão",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do texto e do ícone do botão de ação do `SarakActionCard`; precisa de contraste com o fundo do botão.",
+   "interactsWith": [
+    "cardActionBtnPrimaryBg"
+   ]
+  },
+  {
+   "id": "cardActionClickScale",
+   "group": "cardAction",
+   "label": "Escala do Clique (Ação)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Quanto o botão de ação do `SarakActionCard` encolhe enquanto está pressionado, por clique ou toque; 1 não encolhe.",
+   "interactsWith": [
+    "cardActionBtnPrimaryBg"
+   ]
+  },
+  {
+   "id": "cardBackdropBlur",
+   "group": "cards",
+   "label": "Backdrop Blur (Glass)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desfoca o que passa por trás do cartão, como vidro fosco; só se vê com superfície translúcida, e o material de superfície soma desfoque a este valor.",
+   "interactsWith": [
+    "cardSurfaceOpacity"
+   ]
+  },
+  {
+   "id": "cardBackgroundColor",
+   "group": "colors",
+   "label": "Background dos Cards",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o fundo dos cartões e fornece a cor base às suas variantes."
+  },
+  {
+   "id": "cardBorderBottom",
+   "group": "cards",
+   "label": "Espessura: Base",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Sobrepõe a espessura da borda só na base do cartão; sem declarar, vale `cardBorderWidth`.",
+   "interactsWith": [
+    "cardBorderWidth"
+   ]
+  },
+  {
+   "id": "cardBorderColor",
+   "group": "colors",
+   "label": "Borda dos Cards",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o contorno dos cartões do sistema."
+  },
+  {
+   "id": "cardBorderLeft",
+   "group": "cards",
+   "label": "Espessura: Esquerda",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Sobrepõe a espessura da borda só no lado esquerdo do cartão; sem declarar, vale `cardBorderWidth`.",
+   "interactsWith": [
+    "cardBorderWidth"
+   ]
+  },
+  {
+   "id": "cardBorderOpacity",
+   "group": "cards",
+   "label": "Opacidade da Borda",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Atenua a cor da borda do cartão sem trocar a cor; zero apaga o contorno mesmo com espessura.",
+   "interactsWith": [
+    "cardBorderWidth"
+   ]
+  },
+  {
+   "id": "cardBorderRadius",
+   "group": "cards",
+   "label": "Raio da Borda (Master)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Arredonda os quatro cantos de todo cartão e do contêiner `.card` (cartões, catálogo, grade, tabela); os tokens de canto só o sobrepõem quando declarados. Aceita um valor por dispositivo."
+  },
+  {
+   "id": "cardBorderRight",
+   "group": "cards",
+   "label": "Espessura: Direita",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Sobrepõe a espessura da borda só no lado direito do cartão; sem declarar, vale `cardBorderWidth`.",
+   "interactsWith": [
+    "cardBorderWidth"
+   ]
+  },
+  {
+   "id": "cardBorderTop",
+   "group": "cards",
+   "label": "Espessura: Topo",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Sobrepõe a espessura da borda só no lado de cima do cartão, por exemplo para uma faixa de destaque; sem declarar, vale `cardBorderWidth`.",
+   "interactsWith": [
+    "cardBorderWidth"
+   ]
+  },
+  {
+   "id": "cardBorderWidth",
+   "group": "cards",
+   "label": "Espessura da Borda",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Espessura do contorno dos quatro lados de todo cartão e `.card`. Também define a espessura da linha divisória do cabeçalho e do rodapé de `SarakCard` e o contorno do `SarakImageCard`."
+  },
+  {
+   "id": "cardFooterBg",
+   "group": "cards",
+   "label": "Fundo do Footer",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o fundo do rodapé de `SarakCard.Footer`; transparente funde o rodapé ao corpo do cartão."
+  },
+  {
+   "id": "cardFooterBorder",
+   "group": "cards",
+   "label": "Linha Divisora (Top)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor da linha divisória no topo do rodapé de `SarakCard.Footer`; a espessura da linha é a de `cardBorderWidth`.",
+   "interactsWith": [
+    "cardBorderWidth"
+   ]
+  },
+  {
+   "id": "cardGeometricCut",
+   "group": "cards",
+   "label": "Corte Geométrico (Chanfro)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Recorta os quatro cantos do cartão em diagonal (chanfro), em todo cartão e `.card`. O recorte também corta a sombra e o brilho externos, que ficam visíveis só por dentro dele."
+  },
+  {
+   "id": "cardGlowColor",
+   "group": "cards",
+   "label": "Cor do Brilho (Neon)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do brilho externo do cartão e do halo do `SarakImageCard`; só aparece com intensidade acima de zero.",
+   "interactsWith": [
+    "cardGlowIntensity"
+   ]
+  },
+  {
+   "id": "cardGlowIntensity",
+   "group": "cards",
+   "label": "Intensidade do Brilho",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Opacidade do brilho externo do cartão, na cor de `cardGlowColor`; zero desliga o efeito.",
+   "interactsWith": [
+    "cardGlowColor"
+   ]
+  },
+  {
+   "id": "cardHeaderBg",
+   "group": "cards",
+   "label": "Fundo do Header",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o fundo do cabeçalho de `SarakCard.Header`; transparente funde o cabeçalho ao corpo do cartão."
+  },
+  {
+   "id": "cardHeaderBorder",
+   "group": "cards",
+   "label": "Linha Divisora (Bottom)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor da linha divisória na base do cabeçalho de `SarakCard.Header`; a espessura da linha é a de `cardBorderWidth`.",
+   "interactsWith": [
+    "cardBorderWidth"
+   ]
+  },
+  {
+   "id": "cardHeaderPadding",
+   "group": "cards",
+   "label": "Padding Vertical",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Respiro vertical interno do cabeçalho de `SarakCard.Header`, em cima e embaixo, por dispositivo."
+  },
+  {
+   "id": "cardHoverGlowIncrease",
+   "group": "cards",
+   "label": "Aumento de Brilho",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Quanto o brilho externo do cartão ganha ao passar o ponteiro, somado à intensidade de repouso e limitado a 1.",
+   "interactsWith": [
+    "cardGlowIntensity",
+    "cardGlowColor"
+   ]
+  },
+  {
+   "id": "cardHoverStyle",
+   "group": "animations",
+   "label": "Estilo de Hover (Cards)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Resposta do cartão ao ponteiro: Elevar (sobe e ganha sombra), Apenas brilho (só o brilho, sem mover) ou Expandir (cresce 2%).",
+   "interactsWith": [
+    "cardHoverTranslate"
+   ]
+  },
+  {
+   "id": "cardHoverTranslate",
+   "group": "cards",
+   "label": "Elevação no Hover (Y)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Quanto o cartão sobe (negativo) ao passar o ponteiro, quando o estilo de hover é a elevação; vale para o `SarakCard` interativo, o de título e o de imagem.",
+   "interactsWith": [
+    "cardHoverStyle"
+   ]
+  },
+  {
+   "id": "cardInnerGlowColor",
+   "group": "cards",
+   "label": "Cor do Glow Interno",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do filete luminoso que o cartão projeta para dentro do próprio contorno, somado à sombra; transparente não desenha nada.",
+   "interactsWith": [
+    "cardInnerGlowWidth"
+   ]
+  },
+  {
+   "id": "cardInnerGlowWidth",
+   "group": "cards",
+   "label": "Largura do Glow Interno",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Espessura do filete luminoso interno do cartão; zero o apaga. A cor vem de `cardInnerGlowColor`.",
+   "interactsWith": [
+    "cardInnerGlowColor"
+   ]
+  },
+  {
+   "id": "cardLayoutDirection",
+   "group": "cards",
+   "label": "Direção do Layout",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Empilha ou alinha lado a lado os blocos dos cartões de título, de ação, de busca e expansível; o `SarakCard` composto não lê este token."
+  },
+  {
+   "id": "cardPaddingMd",
+   "group": "cards",
+   "label": "Padding Interno (MD)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Respiro interno do corpo do cartão e entre os blocos do cartão composto, por dispositivo; é a escala de padding mais usada pelos cartões."
+  },
+  {
+   "id": "cardRadiusBL",
+   "group": "cards",
+   "label": "Quina Inferior Esquerda",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Sobrepõe o raio só no canto inferior esquerdo dos cartões; sem declarar, vale o raio mestre.",
+   "interactsWith": [
+    "cardBorderRadius"
+   ]
+  },
+  {
+   "id": "cardRadiusBR",
+   "group": "cards",
+   "label": "Quina Inferior Direita",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Sobrepõe o raio só no canto inferior direito dos cartões; sem declarar, vale o raio mestre.",
+   "interactsWith": [
+    "cardBorderRadius"
+   ]
+  },
+  {
+   "id": "cardRadiusTL",
+   "group": "cards",
+   "label": "Quina Superior Esquerda",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Sobrepõe o raio só no canto superior esquerdo dos cartões, para formas assimétricas; sem declarar, vale o raio mestre.",
+   "interactsWith": [
+    "cardBorderRadius"
+   ]
+  },
+  {
+   "id": "cardRadiusTR",
+   "group": "cards",
+   "label": "Quina Superior Direita",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Sobrepõe o raio só no canto superior direito dos cartões; sem declarar, vale o raio mestre.",
+   "interactsWith": [
+    "cardBorderRadius"
+   ]
+  },
+  {
+   "id": "cardSearchBgFocus",
+   "group": "cardSearch",
+   "label": "Fundo do Input Focado",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Fundo do campo do `SarakSearchCard` enquanto ele tem o foco."
+  },
+  {
+   "id": "cardSearchBorderBeamActive",
+   "group": "cardSearch",
+   "label": "Border Beam no Foco",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Anel de luz na cor primária que gira pela borda do `SarakSearchCard` só enquanto o campo de busca tem o foco; fora do foco nada anima. Ligado por padrão. `borderBeamEnabled` o mantém aceso mesmo sem foco; movimento reduzido o apaga.",
+   "interactsWith": [
+    "borderBeamEnabled",
+    "primaryColor"
+   ]
+  },
+  {
+   "id": "cardSearchPlaceholderColor",
+   "group": "cardSearch",
+   "label": "Cor do Placeholder",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do texto de exemplo do campo do `SarakSearchCard`, antes de digitar."
+  },
+  {
+   "id": "cardSearchTextFocusColor",
+   "group": "cardSearch",
+   "label": "Cor do Texto Focado",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do texto digitado no campo do `SarakSearchCard` enquanto ele tem o foco; precisa de contraste com o fundo em foco.",
+   "interactsWith": [
+    "cardSearchBgFocus"
+   ]
+  },
+  {
+   "id": "cardShadow",
+   "group": "cards",
+   "label": "Sombra do Card (CSS)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Substitui a sombra base do cartão por uma sombra CSS escrita por inteiro, com várias camadas; o brilho interno continua somado. Como carrega cor, a sombra errada num dos modos some ou pesa.",
+   "interactsWith": [
+    "cardInnerGlowColor"
+   ]
+  },
+  {
+   "id": "cardShadowBlur",
+   "group": "cards",
+   "label": "Sombra: Desfoque",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desfoque da sombra base do cartão: zero dá a sombra dura e recortada, valores altos a espalham em névoa."
+  },
+  {
+   "id": "cardShadowExpansion",
+   "group": "cards",
+   "label": "Sombra: Expansão",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Engorda (positivo) ou encolhe (negativo) a sombra base além do contorno do cartão; negativo mantém a elevação contida por baixo dele."
+  },
+  {
+   "id": "cardShadowOffsetX",
+   "group": "cards",
+   "label": "Sombra: Deslocamento Horizontal",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desloca a sombra base do cartão na horizontal; com desfoque zero e deslocamento nos dois eixos vira a sombra dura do brutalismo.",
+   "interactsWith": [
+    "cardShadowBlur",
+    "shadowOrientation"
+   ]
+  },
+  {
+   "id": "cardShadowOffsetY",
+   "group": "cards",
+   "label": "Sombra: Deslocamento Vertical",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desloca a sombra base do cartão na vertical, para baixo quando positivo; `shadowOrientation` gira a direção sobre este valor.",
+   "interactsWith": [
+    "shadowOrientation"
+   ]
+  },
+  {
+   "id": "cardShadowSpread",
+   "group": "cards",
+   "label": "Opacidade da Sombra do Card",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Opacidade da sombra base do cartão, em porcentagem; acima de 100 a cor já é cheia. A cor vem de `shadowColorMode` e a forma dos tokens `cardShadow*` de deslocamento, desfoque e expansão.",
+   "interactsWith": [
+    "shadowColorMode"
+   ]
+  },
+  {
+   "id": "cardSpotlightOpacity",
+   "group": "cards",
+   "label": "Opacidade do Spotlight",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Luz difusa na cor primária que acompanha o cursor sobre o cartão (título, ação, busca e composto) enquanto o ponteiro está nele; sem ponteiro fino, fica no centro do cartão. Zero apaga a luz e dispensa o acompanhamento.",
+   "interactsWith": [
+    "primaryColor"
+   ]
+  },
+  {
+   "id": "cardSurfaceOpacity",
+   "group": "cards",
+   "label": "Opacidade da Superfície",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Multiplica a opacidade do fundo do cartão: zero deixa o cartão sem fundo e valores altos o tornam sólido. Vale só para o fundo, o conteúdo do cartão fica opaco."
+  },
+  {
+   "id": "cardTextAlign",
+   "group": "cards",
+   "label": "Alinhamento de Texto",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Alinha o texto e distribui o conteúdo dos cartões de título, de ação e de busca; o `SarakCard` composto não lê este token."
+  },
+  {
+   "id": "cardTextureOpacity",
+   "group": "cards",
+   "label": "Opacidade da Textura",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Intensidade da textura do cartão, de invisível a cobrindo a superfície; sem um tipo de textura escolhido não há o que mostrar.",
+   "interactsWith": [
+    "cardTextureType"
+   ]
+  },
+  {
+   "id": "cardTextureType",
+   "group": "cards",
+   "label": "Textura da Superfície",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desenha uma textura sobre a superfície de todo cartão e `.card`; o tipo não muda com `mode` nem com a contraparte. O desenho é este token; a cor vem do tema: a maioria usa `textureColor`, algumas a primária ou a borda do cartão, e ruído, grão e papel não têm cor própria. `carbon` é preto fixo: prefira o escuro ou reduza `cardTextureOpacity` no claro.",
+   "interactsWith": [
+    "cardTextureOpacity",
+    "textureColor"
+   ]
+  },
+  {
+   "id": "cardTitleColor",
+   "group": "cardTitle",
+   "label": "Cor do Texto do Título",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do título do `SarakTitleCard`; precisa de contraste com o fundo do cartão nos dois modos."
+  },
+  {
+   "id": "cardTitleFontSize",
+   "group": "cardTitle",
+   "label": "Tamanho da Fonte do Título",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Tamanho da fonte do título do `SarakTitleCard`, e com ele a altura do cartão, por dispositivo."
+  },
+  {
+   "id": "cardTitleFontWeight",
+   "group": "cardTitle",
+   "label": "Peso da Fonte do Título",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Peso da fonte do título do `SarakTitleCard`; valor fora das opções cai no padrão."
+  },
+  {
+   "id": "cardTitleIconGlow",
+   "group": "cardTitle",
+   "label": "Brilho do Ícone do Título",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do halo em volta do ícone do título do `SarakTitleCard`.",
+   "interactsWith": [
+    "cardTitleIconGlowBlur"
+   ]
+  },
+  {
+   "id": "cardTitleIconGlowBlur",
+   "group": "cardTitle",
+   "label": "Desfoque do Brilho do Ícone do Título",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Quanto o halo do ícone do título se espalha; zero o apaga.",
+   "interactsWith": [
+    "cardTitleIconGlow"
+   ]
+  },
+  {
+   "id": "cardTitleLetterSpacing",
+   "group": "cardTitle",
+   "label": "Espaçamento de Letras",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Espaço entre as letras do título do `SarakTitleCard`, em px; negativo aperta e positivo abre."
+  },
+  {
+   "id": "cardVariant",
+   "group": "cards",
+   "label": "Variante de Card",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Escolhe qual cartão a `SarakCardGrid` desenha para cada registro quando a prop `variant` não é passada; é escolha de componente, não de estilo, e o tema não a declara.",
+   "interactsWith": [
+    "cardTitleFontSize",
+    "cardActionBtnPrimaryBg",
+    "cardSearchBgFocus"
+   ]
+  },
+  {
+   "id": "catalogFilterMinWidth",
+   "group": "cards",
+   "label": "Catálogo: Largura Mínima do Filtro",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura mínima de cada filtro de seleção da `SarakCardGrid`; mantém o filtro utilizável em contêiner estreito."
+  },
+  {
+   "id": "catalogItemRadius",
+   "group": "cards",
+   "label": "Catálogo: Arredondamento do Item",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Arredonda cada item do `SarakCatalogGrid`, em `rem`; costuma ser menor que o da seção, para manter a hierarquia."
+  },
+  {
+   "id": "catalogSectionRadius",
+   "group": "cards",
+   "label": "Catálogo: Arredondamento da Seção",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Arredonda a seção inteira do `SarakCatalogGrid`, em `rem` (relativo ao tamanho da fonte raiz)."
+  },
+  {
+   "id": "chartColorPalette",
+   "group": "data",
+   "label": "Paleta de Cores (Série)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Define a cor âncora da primeira série; o motor deriva as séries seguintes das cores de marca. Confira as cores emitidas e seu contraste no gráfico: elas não são cópias literais das cores de status."
+  },
+  {
+   "id": "chartEngineMinHeight",
+   "group": "specialized",
+   "label": "Engine de Gráficos: Altura Mínima",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Altura mínima reservada ao gráfico Recharts antes de os dados chegarem, para a página não saltar; é um piso de layout, não de estilo."
+  },
+  {
+   "id": "chartGridOpacity",
+   "group": "data",
+   "label": "Opacidade da Grade",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Controla a opacidade das linhas de grade dos gráficos quando a grade está ligada.",
+   "interactsWith": [
+    "chartShowGrid"
+   ]
+  },
+  {
+   "id": "chartShowGrid",
+   "group": "data",
+   "label": "Mostrar Grid de Fundo",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Exibe ou oculta as linhas de referência dos eixos dos gráficos."
+  },
+  {
+   "id": "chartSmoothing",
+   "group": "data",
+   "label": "Suavização da Linha",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Curva as linhas de dados em vez de ligar os pontos por segmentos retos.",
+   "interactsWith": [
+    "chartType"
+   ]
+  },
+  {
+   "id": "chartThickness",
+   "group": "data",
+   "label": "Espessura da Linha",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Controla a espessura das linhas nos gráficos de linha e área.",
+   "interactsWith": [
+    "chartType"
+   ]
+  },
+  {
+   "id": "chartTooltipBg",
+   "group": "data",
+   "label": "Fundo do Tooltip",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o fundo das dicas que aparecem sobre os dados dos gráficos."
+  },
+  {
+   "id": "chartType",
+   "group": "data",
+   "label": "Tipo de Gráfico",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Escolhe a forma padrão de visualização dos dados quando o componente não recebe um tipo próprio."
+  },
+  {
+   "id": "chatAnimationSpeed",
+   "group": "chat",
+   "label": "Velocidade de Digitação",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Define a duração das transições do contêiner e das bolhas de SarakChatEngine; também controla o ritmo da prévia de digitação no painel."
+  },
+  {
+   "id": "chatAttachmentNameMaxWidth",
+   "group": "chat",
+   "label": "Chat Input: Largura Máxima do Nome do Anexo",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Limita a largura do nome de arquivo anexado ao campo de chat para evitar que ele quebre o layout."
+  },
+  {
+   "id": "chatBubbleGlassBlur",
+   "group": "specialized",
+   "label": "Chat Engine: Desfoque de Vidro da Bolha",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desfoque do vidro da bolha de resposta do `SarakChatEngine`; só vale com `chatBubbleStyle: glass` (o padrão do motor).",
+   "interactsWith": [
+    "chatBubbleStyle"
+   ]
+  },
+  {
+   "id": "chatBubbleRadius",
+   "group": "chat",
+   "label": "Arredondamento das Bolhas",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Arredonda as bolhas de mensagens no chat em cada breakpoint."
+  },
+  {
+   "id": "chatBubbleStyle",
+   "group": "chat",
+   "label": "Estilo de Bolha",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Escolhe o acabamento das mensagens do chat: vidro, fundo sólido ou apresentação minimalista."
+  },
+  {
+   "id": "chatTokenSliderMinWidth",
+   "group": "chat",
+   "label": "Chat Input: Largura Mínima do Slider de Tokens",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Preserva largura mínima para o controle de limite de tokens no campo de chat."
+  },
+  {
+   "id": "chatUserBg",
+   "group": "chat",
+   "label": "Fundo (Usuário)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o fundo e a borda das mensagens enviadas pelo usuário."
+  },
+  {
+   "id": "checkboxActiveColor",
+   "group": "switches",
+   "label": "Cor do Check Selecionado",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o preenchimento e a marca dos checkboxes selecionados."
+  },
+  {
+   "id": "chromeNotificationsPosition",
+   "group": "navigation",
+   "label": "Composição: Notificações",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Posição das notificações no cromo: fixas, no menu de preferências ou não oferecidas."
+  },
+  {
+   "id": "chromeSearchPosition",
+   "group": "navigation",
+   "label": "Composição: Busca",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Posição do widget de busca no cromo: fixo na barra, dentro do menu de preferências ou não oferecido; fora da barra ele some do lugar de origem.",
+   "interactsWith": [
+    "searchPositionTopbar",
+    "searchPositionSidebar"
+   ]
+  },
+  {
+   "id": "chromeUserPosition",
+   "group": "navigation",
+   "label": "Composição: Usuário",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Posição do widget de usuário no cromo: fixo, no menu de preferências ou não oferecido; sem ele a navegação ganha o espaço."
+  },
+  {
+   "id": "colorBgBody",
+   "group": "atmosphere",
+   "label": "Fundo Global (Body)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o fundo da página inteira e a base do gradiente de fundo; as outras camadas e superfícies se leem contra esta cor."
+  },
+  {
+   "id": "colorBgLayer1",
+   "group": "atmosphere",
+   "label": "Background Layer 1",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Segunda parada do gradiente de fundo nos modos Linear e Radial (e a mancha de camada 1 da malha); com fundo Sólido não aparece.",
+   "interactsWith": [
+    "bgGradientMode"
+   ]
+  },
+  {
+   "id": "colorBgLayer2",
+   "group": "atmosphere",
+   "label": "Background Layer 2",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Terceira mancha da malha de fundo; só desenha com o gradiente Mesh. Nos outros modos o valor muda a variável e nenhum pixel.",
+   "interactsWith": [
+    "bgGradientMode"
+   ]
+  },
+  {
+   "id": "colorBgModal",
+   "group": "colors",
+   "label": "Background Modais",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o painel de conteúdo de modais e diálogos."
+  },
+  {
+   "id": "colorDepth",
+   "group": "colors",
+   "label": "Profundidade da Cor",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Controla a distância tonal das variantes geradas para as cores, incluindo o hover e o pressionado globais dos botões."
+  },
+  {
+   "id": "colorVariation",
+   "group": "colors",
+   "label": "Variação da Cor",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Controla a variação de matiz e saturação das variantes geradas, incluindo o hover e o pressionado globais dos botões."
+  },
+  {
+   "id": "contextMenuMinWidth",
+   "group": "overlays",
+   "label": "Context Menu: Largura Mínima",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura mínima do `SarakContextMenu` e do menu de preferências do cromo, em `rem`; mantém o alvo de clique confortável com poucos itens."
+  },
+  {
+   "id": "controlHeightToggle",
+   "group": "cards",
+   "label": "Kitchen Sink: Altura do Toggle",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Altura do alternador mostrado na tela de exemplo (kitchen sink) do painel de customização; não muda o `SarakSwitch` do sistema."
+  },
+  {
+   "id": "designEngineSidebarMaxWidth",
+   "group": "specialized",
+   "label": "Design Engine: Largura Máxima do Painel",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura máxima da barra lateral do painel de customização; só o painel a lê.",
+   "interactsWith": [
+    "designEngineSidebarMinWidth"
+   ]
+  },
+  {
+   "id": "designEngineSidebarMinWidth",
+   "group": "specialized",
+   "label": "Design Engine: Largura Mínima do Painel",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura mínima da barra lateral do painel de customização; só o painel a lê.",
+   "interactsWith": [
+    "designEngineSidebarMaxWidth"
+   ]
+  },
+  {
+   "id": "deviceDesktopMinWidth",
+   "group": "cards",
+   "label": "Preview Canvas: Largura Mínima do Desktop",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura mínima da moldura de desktop na pré-visualização do painel de customização; não muda componente do sistema."
+  },
+  {
+   "id": "deviceFrameRadius",
+   "group": "cards",
+   "label": "Preview Canvas: Arredondamento da Moldura",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Arredondamento da moldura externa dos dispositivos na pré-visualização do painel de customização, em `rem`; não muda componente do sistema."
+  },
+  {
+   "id": "devicePhoneHeight",
+   "group": "cards",
+   "label": "Preview Canvas: Altura do Telefone",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Altura da moldura de telefone na pré-visualização responsiva do painel de customização; não muda componente do sistema."
+  },
+  {
+   "id": "devicePhoneNotchRadius",
+   "group": "cards",
+   "label": "Preview Canvas: Arredondamento do Notch",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Arredondamento do recorte de câmera da moldura de telefone na pré-visualização do painel de customização, em `rem`; não muda componente do sistema."
+  },
+  {
+   "id": "deviceTabletHeight",
+   "group": "cards",
+   "label": "Preview Canvas: Altura do Tablet",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Altura da moldura de tablet na pré-visualização responsiva do painel de customização; não muda componente do sistema."
+  },
+  {
+   "id": "dotGridDotOffset",
+   "group": "specialized",
+   "label": "Grade de Pontos: Offset do Ponto",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Posição do ponto dentro de cada célula da grade de pontos do estado vazio geométrico e da tela de autenticação (`AuthHero`).",
+   "interactsWith": [
+    "dotGridTileSize"
+   ]
+  },
+  {
+   "id": "dotGridDotSize",
+   "group": "specialized",
+   "label": "Grade de Pontos: Raio do Ponto",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Raio de cada ponto da grade decorativa do estado vazio geométrico e da tela de autenticação (`AuthHero`).",
+   "interactsWith": [
+    "dotGridTileSize"
+   ]
+  },
+  {
+   "id": "dotGridTileSize",
+   "group": "specialized",
+   "label": "Grade de Pontos: Tamanho do Tile",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Lado da célula que se repete na grade de pontos do estado vazio geométrico e do `AuthHero`; define o espaçamento entre pontos."
+  },
+  {
+   "id": "emptyStateCaptionMaxWidth",
+   "group": "specialized",
+   "label": "Empty State: Largura Máxima da Legenda",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Largura máxima da legenda do `SarakEmptyState` abstrato; estreitar faz o texto quebrar em mais linhas e a cena crescer."
+  },
+  {
+   "id": "emptyStateOrbBlur",
+   "group": "specialized",
+   "label": "Empty State: Desfoque do Orb",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desfoque do orbe do `SarakEmptyState` abstrato; valores altos o transformam em brilho ambiente."
+  },
+  {
+   "id": "emptyStateOrbInner",
+   "group": "specialized",
+   "label": "Empty State: Diâmetro do Anel Interno / Orb",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Diâmetro do orbe do `SarakEmptyState` abstrato e do anel interno do geométrico; maior que o anel externo quebra a proporção.",
+   "interactsWith": [
+    "emptyStateOrbOuter"
+   ]
+  },
+  {
+   "id": "emptyStateOrbOuter",
+   "group": "specialized",
+   "label": "Empty State: Diâmetro do Anel Externo",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Diâmetro do anel externo tracejado do `SarakEmptyState` geométrico; aumenta a altura da cena inteira.",
+   "interactsWith": [
+    "emptyStateOrbInner"
+   ]
+  },
+  {
+   "id": "emptyStateRingRadius",
+   "group": "specialized",
+   "label": "Empty State: Arredondamento do Anel Tracejado",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Arredondamento, em `rem`, do anel tracejado do `SarakEmptyState` abstrato."
+  },
+  {
+   "id": "emptyStateVoidLetterOffset",
+   "group": "specialized",
+   "label": "Empty State: Offset da Letra (VOID)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Margem lateral, em `em`, da palavra de destaque do `SarakEmptyState` geométrico."
+  },
+  {
+   "id": "engineMinHeightLg",
+   "group": "specialized",
+   "label": "Engines: Altura Mínima (Grande)",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Altura mínima dos motores grandes (`SarakFlowEngine`, `SarakChatEngine`); piso de uso, igual em todo tema."
+  },
+  {
+   "id": "engineMinHeightSm",
+   "group": "specialized",
+   "label": "Engines: Altura Mínima (Pequena)",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Altura mínima do placeholder de carga dos motores (`LazyEngineWrapper`) enquanto o conteúdo carrega; piso de layout."
+  },
+  {
+   "id": "flowGridStyle",
+   "group": "specialized",
+   "label": "Estilo do Grid (Fluxo)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Padrão do grid de fundo do `SarakFlowEngine`: pontos ou linhas contínuas."
+  },
+  {
+   "id": "flowHandleSize",
+   "group": "specialized",
+   "label": "Flow Engine: Tamanho do Handle",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Diâmetro dos pontos de conexão arrastáveis do `SarakFlowEngine`; é o alvo do dedo na conexão, por isso não é identidade do tema."
+  },
+  {
+   "id": "flowNodeBlur",
+   "group": "specialized",
+   "label": "Flow Engine: Desfoque do Nó",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desfoque do fundo translúcido dos nós do `SarakFlowEngine`."
+  },
+  {
+   "id": "flowNodePadding",
+   "group": "specialized",
+   "label": "Flow Engine: Padding do Nó",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Respiro interno dos nós do `SarakFlowEngine`; também aumenta a altura do nó e o traçado das conexões."
+  },
+  {
+   "id": "flowNodeRadius",
+   "group": "specialized",
+   "label": "Raio dos Nós (Fluxo)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Arredondamento dos nós do `SarakFlowEngine` (vale por breakpoint)."
+  },
+  {
+   "id": "focusRingWidth",
+   "group": "engineering",
+   "label": "Largura do Anel de Foco",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Espessura do contorno de foco de teclado em botões e links; o piso de 1 px mantém o indicador visível em todo tema."
+  },
+  {
+   "id": "formFieldDensity",
+   "group": "structural",
+   "label": "Densidade dos Campos (Form)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Espaço entre rótulo e campo no `SarakFormGroup`: compacta 3 px, confortável 6 px, espaçosa 24 px.",
+   "interactsWith": [
+    "formLabelPosition"
+   ]
+  },
+  {
+   "id": "formLabelPosition",
+   "group": "structural",
+   "label": "Posição do Rótulo (Form)",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Posição do rótulo no `SarakFormGroup`: acima do campo ou à esquerda, na mesma linha.",
+   "interactsWith": [
+    "formFieldDensity"
+   ]
+  },
+  {
+   "id": "glassBlur",
+   "group": "atmosphere",
+   "label": "Backdrop Blur (Profundidade)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desfoque do que está atrás das superfícies `.sarak-glass`; é o parâmetro mais visível do vidro. 0 deixa a superfície nítida."
+  },
+  {
+   "id": "glassEdgeColor",
+   "group": "atmosphere",
+   "label": "Cor da Borda do Vidro",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor da borda das superfícies `.sarak-glass`; o padrão é um branco translúcido que some sobre fundo claro."
+  },
+  {
+   "id": "glassEdgeWidth",
+   "group": "atmosphere",
+   "label": "Espessura da Borda do Vidro",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Espessura da borda das superfícies `.sarak-glass`; 0 a remove e valores altos viram moldura."
+  },
+  {
+   "id": "glassOpacity",
+   "group": "atmosphere",
+   "label": "Opacidade do Vidro",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Opacidade do gradiente de vidro das superfícies de cartão; 0 o deixa quase transparente e valores altos o tornam o brilho dominante. Não altera o `.sarak-glass`."
+  },
+  {
+   "id": "glassRoughness",
+   "group": "atmosphere",
+   "label": "Roughness (Rugosidade)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Tira contraste do que passa por trás do vidro `.sarak-glass`: 0 deixa liso, 1 o funde num campo uniforme (contraste zero)."
+  },
+  {
+   "id": "glassSaturation",
+   "group": "atmosphere",
+   "label": "Saturação do Vidro",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Saturação das cores vistas através das superfícies `.sarak-glass`; acima de 1 as realça, abaixo de 1 as aproxima do cinza."
+  },
+  {
+   "id": "glassSpecularity",
+   "group": "atmosphere",
+   "label": "Specularity (Brilho de Luz)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Força do fio de luz interno no topo das superfícies `.sarak-glass`; 0 apaga o reflexo e 1 o torna branco puro."
+  },
+  {
+   "id": "globalBackgroundBlur",
+   "group": "media",
+   "label": "Desfoque da Imagem Global",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desfoque da imagem de fundo global; só aparece com `globalBackgroundImageUrl` preenchida.",
+   "interactsWith": [
+    "globalBackgroundImageUrl"
+   ]
+  },
+  {
+   "id": "globalBackgroundImageUrl",
+   "group": "media",
+   "label": "URL da Imagem de Fundo",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Imagem desenhada atrás de todo o conteúdo numa camada própria do Provider; ela preenche a camada com recorte (`cover`), então confira a composição em telas e alturas diferentes. Vazio não desenha. Aceita só os esquemas de mídia seguros, `data:image/svg+xml` inclusive.",
+   "interactsWith": [
+    "globalBackgroundOpacity",
+    "globalBackgroundBlur"
+   ]
+  },
+  {
+   "id": "globalBackgroundOpacity",
+   "group": "media",
+   "label": "Opacidade da Imagem Global",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Opacidade da imagem de fundo global; só aparece com `globalBackgroundImageUrl` preenchida. A imagem fica sobre `colorBgBody`.",
+   "interactsWith": [
+    "globalBackgroundImageUrl"
+   ]
+  },
+  {
+   "id": "globalBackgroundPosition",
+   "group": "media",
+   "label": "Posição da Imagem Global",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Define se a arte de fundo global rola junto com o conteúdo ou fica fixa na janela; use fixed apenas quando a composição da arte pedir um horizonte imóvel.",
+   "interactsWith": [
+    "globalBackgroundImageUrl"
+   ]
+  },
+  {
+   "id": "globalContrast",
+   "group": "atmosphere",
+   "label": "Contraste Global",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Contraste aplicado somente à camada de textura do fundo (filtro da própria textura), não à interface. Sem textura escolhida não muda nada.",
+   "interactsWith": [
+    "texture"
+   ]
+  },
+  {
+   "id": "globalFlowAlign",
+   "group": "structural",
+   "label": "Alinhamento do Fluxo Global",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Alinhamento transversal do catálogo: esticar, início, centro ou fim.",
+   "interactsWith": [
+    "globalFlowDirection"
+   ]
+  },
+  {
+   "id": "globalFlowDirection",
+   "group": "structural",
+   "label": "Direção do Fluxo Global",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Direção em que o catálogo empilha seus blocos: coluna ou linha com quebra.",
+   "interactsWith": [
+    "globalFlowAlign"
+   ]
+  },
+  {
+   "id": "globalSaturation",
+   "group": "atmosphere",
+   "label": "Saturação Global",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Satura ou dessatura somente a camada de textura do fundo (filtro da própria textura), não a interface. Sem textura escolhida não muda nada.",
+   "interactsWith": [
+    "texture"
+   ]
+  },
+  {
+   "id": "globalSectionGap",
+   "group": "structural",
+   "label": "Espaçamento entre Seções",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Espaçamento entre as seções de uma grade e de um catálogo; prevalece sobre `layoutGap` na `SarakGrid`.",
+   "interactsWith": [
+    "layoutGap"
+   ]
+  },
+  {
+   "id": "h1LetterSpacing",
+   "group": "typography",
+   "label": "Espaçamento (H1)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Aproxima ou afasta os caracteres do H1; valores negativos compactam o título."
+  },
+  {
+   "id": "h1LineHeight",
+   "group": "typography",
+   "label": "Altura da Linha (H1)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Controla o espaço entre linhas do H1; valores baixos comprimem títulos quebrados."
+  },
+  {
+   "id": "h1Size",
+   "group": "typography",
+   "label": "Tamanho (H1)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Define o tamanho do título H1 em cada breakpoint; valores muito grandes podem quebrar linhas ou ocupar a tela."
+  },
+  {
+   "id": "h1Weight",
+   "group": "typography",
+   "label": "Peso (H1)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Controla a espessura do título H1 e o peso visual do cabeçalho principal."
+  },
+  {
+   "id": "h2LineHeight",
+   "group": "typography",
+   "label": "Altura da Linha (H2)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Controla o espaço entre linhas dos títulos H2 quando ocupam mais de uma linha."
+  },
+  {
+   "id": "h2Size",
+   "group": "typography",
+   "label": "Tamanho (H2)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Define o tamanho dos títulos de seção H2 em cada breakpoint."
+  },
+  {
+   "id": "h2Weight",
+   "group": "typography",
+   "label": "Peso (H2)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Controla a espessura dos títulos H2 e sua hierarquia em relação ao H1."
+  },
+  {
+   "id": "h3Size",
+   "group": "typography",
+   "label": "Tamanho (H3)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Define o tamanho dos subtítulos H3; eles reutilizam o peso configurado para H2."
+  },
+  {
+   "id": "headerAlignment",
+   "group": "structural",
+   "label": "Alinhamento do Header",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Disposição do cabeçalho de tabelas e catálogos: título e ações espaçados, centrados ou no início."
+  },
+  {
+   "id": "headingFont",
+   "group": "typography",
+   "label": "Fonte de Títulos",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Aplica a família escolhida aos cabeçalhos HTML h1–h6 e às variantes h1, h2 e h3 de SarakTypography; permite criar contraste com a fonte do corpo."
+  },
+  {
+   "id": "headingTransform",
+   "group": "typography",
+   "label": "Transformação de Títulos",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Converte a caixa dos títulos em maiúscula, capitalizada ou preserva a digitação original."
+  },
+  {
+   "id": "iconButtonFrostedShadowBlur",
+   "group": "buttons",
+   "label": "Sombra Frosted do Icon Button: Desfoque",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Suaviza a sombra do SarakIconButton no estilo frosted.",
+   "interactsWith": [
+    "btnStyleType"
+   ]
+  },
+  {
+   "id": "iconButtonFrostedShadowOffsetY",
+   "group": "buttons",
+   "label": "Sombra Frosted do Icon Button: Offset Y",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desloca para baixo a sombra do SarakIconButton quando o estilo frosted está ativo.",
+   "interactsWith": [
+    "btnStyleType"
+   ]
+  },
+  {
+   "id": "iconButtonGlowBlurLg",
+   "group": "buttons",
+   "label": "Glow do Icon Button: Desfoque Grande",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Controla o desfoque grande do brilho de variantes primary e danger do SarakIconButton no hover.",
+   "interactsWith": [
+    "btnStyleType"
+   ]
+  },
+  {
+   "id": "iconButtonGlowBlurMd",
+   "group": "buttons",
+   "label": "Glow do Icon Button: Desfoque Médio",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Controla o desfoque médio do brilho de variantes secundária e ghost do SarakIconButton.",
+   "interactsWith": [
+    "btnStyleType"
+   ]
+  },
+  {
+   "id": "iconButtonGlowBlurSm",
+   "group": "buttons",
+   "label": "Glow do Icon Button: Desfoque Pequeno",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Controla o desfoque do brilho pequeno do SarakIconButton em repouso ou no hover.",
+   "interactsWith": [
+    "btnStyleType"
+   ]
+  },
+  {
+   "id": "iconFamily",
+   "group": "system",
+   "label": "Família de Ícones",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Família dos ícones do cromo e dos componentes: Phosphor, Lucide ou Tabler; troca o desenho de todos os ícones (Phosphor em peso, as outras em traço)."
+  },
+  {
+   "id": "iconStrokeWidth",
+   "group": "system",
+   "label": "Espessura do Ícone",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Espessura do traço dos ícones Lucide e Tabler; os ícones Phosphor, desenhados por peso, ignoram o valor.",
+   "interactsWith": [
+    "iconFamily"
+   ]
+  },
+  {
+   "id": "iconWeight",
+   "group": "system",
+   "label": "Peso / Estilo do Ícone",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Peso do ícone: na família Phosphor escolhe o desenho (fino, regular, negrito, preenchido); em Tabler ajusta a espessura do traço.",
+   "interactsWith": [
+    "iconFamily"
+   ]
+  },
+  {
+   "id": "identityAlignment",
+   "group": "branding",
+   "label": "Alinhamento",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Alinha a marca (logo e nome) dentro do bloco de identidade do cromo, na lateral e no topo: esquerda, centro ou direita."
+  },
+  {
+   "id": "identityFontFamily",
+   "group": "branding",
+   "label": "Fonte do Logo",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Família do nome da marca no cromo (só o texto, não a imagem do logo); o padrão herda a fonte de títulos do tema."
+  },
+  {
+   "id": "identityFontWeight",
+   "group": "branding",
+   "label": "Peso da Fonte",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Peso da fonte do nome da marca no cromo; pesos altos dão presença de logotipo e baixos um ar editorial."
+  },
+  {
+   "id": "identityHoverEffect",
+   "group": "branding",
+   "label": "Efeito ao Hover",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Resposta do bloco da marca sob o ponteiro: Nenhum, Brilho (sombra luminosa), Opacidade (esmaece a 70%) ou Escala (cresce 4%)."
+  },
+  {
+   "id": "identityPadding",
+   "group": "branding",
+   "label": "Padding do Container",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Respiro extra ao redor do bloco da marca no cromo, somado ao respiro base; também aumenta a altura do bloco na lateral."
+  },
+  {
+   "id": "identityTracking",
+   "group": "branding",
+   "label": "Espaçamento (Tracking)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Espaçamento entre as letras do nome da marca no cromo; positivo afasta (wordmark), negativo aperta, e o bloco inteiro cresce ou encolhe."
+  },
+  {
+   "id": "imageCardGlowBlur",
+   "group": "cards",
+   "label": "Image Card: Desfoque do Glow Interno",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Largura do halo interno que acende ao passar o ponteiro sobre o `SarakImageCard`; a cor é a de `cardGlowColor` (a primária no hover de brilho).",
+   "interactsWith": [
+    "cardGlowColor"
+   ]
+  },
+  {
+   "id": "imageCardHoverZoom",
+   "group": "cards",
+   "label": "Escala de Zoom no Hover (Imagem)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Quanto a imagem de capa do `SarakImageCard` cresce, atrás do véu e do texto, quando o ponteiro passa sobre qualquer parte do cartão; 1 deixa a imagem parada.",
+   "interactsWith": [
+    "imageCardOverlayOpacity"
+   ]
+  },
+  {
+   "id": "imageCardOverlayOpacity",
+   "group": "cards",
+   "label": "Opacidade do Overlay (Imagem)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Opacidade do véu na cor do cartão sobre a foto do `SarakImageCard`; sobe para dar leitura ao texto, desce para mostrar a foto."
+  },
+  {
+   "id": "imageCardShadowBlur",
+   "group": "cards",
+   "label": "Sombra do Image Card: Desfoque",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desfoque da sombra do `SarakImageCard`.",
+   "interactsWith": [
+    "imageCardShadowOffsetY"
+   ]
+  },
+  {
+   "id": "imageCardShadowOffsetY",
+   "group": "cards",
+   "label": "Sombra do Image Card: Offset Y",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desloca para baixo a sombra do `SarakImageCard`.",
+   "interactsWith": [
+    "imageCardShadowBlur"
+   ]
+  },
+  {
+   "id": "imageCardShadowSpread",
+   "group": "cards",
+   "label": "Sombra do Image Card: Espalhamento",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Quanto a sombra do `SarakImageCard` é contraída para dentro do cartão; valores altos a escondem sob ele.",
+   "interactsWith": [
+    "imageCardShadowBlur"
+   ]
+  },
+  {
+   "id": "inputBackdropBlur",
+   "group": "inputs",
+   "label": "Desfoque de Fundo (Blur)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desfoca o conteúdo atrás de campos translúcidos; sem fundo translúcido o desfoque não aparece.",
+   "interactsWith": [
+    "inputBg"
+   ]
+  },
+  {
+   "id": "inputBg",
+   "group": "inputs",
+   "label": "Fundo do Input",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o fundo dos campos e alimenta as variantes de foco e hover."
+  },
+  {
+   "id": "inputBorderColor",
+   "group": "inputs",
+   "label": "Cor da Borda",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o contorno dos campos em repouso."
+  },
+  {
+   "id": "inputBorderRadius",
+   "group": "inputs",
+   "label": "Arredondamento",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Arredonda os campos de entrada em cada breakpoint."
+  },
+  {
+   "id": "inputBorderType",
+   "group": "inputs",
+   "label": "Estilo da Borda",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Escolhe contorno sólido, tracejado, ausente ou somente inferior nos campos."
+  },
+  {
+   "id": "inputErrorColor",
+   "group": "inputs",
+   "label": "Cor de Erro",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta a borda e o texto do campo quando a validação indica erro."
+  },
+  {
+   "id": "inputFocusBorderColor",
+   "group": "inputs",
+   "label": "Cor da Borda (Foco)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o contorno dos campos quando recebem foco."
+  },
+  {
+   "id": "inputIconColor",
+   "group": "inputs",
+   "label": "Cor dos Ícones",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta os ícones internos e adjacentes aos campos."
+  },
+  {
+   "id": "inputIconPosition",
+   "group": "inputs",
+   "label": "Posição do Ícone",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Posiciona à esquerda ou à direita os ícones internos de campos que os exibem."
+  },
+  {
+   "id": "inputPadding",
+   "group": "inputs",
+   "label": "Espaçamento Interno (Y)",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Controla o espaço vertical interno dos campos e, com isso, sua altura e área de toque."
+  },
+  {
+   "id": "inputShadow",
+   "group": "inputs",
+   "label": "Sombra do Campo (CSS ou \"neumorphism\")",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Define a sombra dos campos; aceita CSS, neumorphism ou none."
+  },
+  {
+   "id": "inputTextColor",
+   "group": "inputs",
+   "label": "Cor do Texto",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o texto digitado nos campos."
+  },
+  {
+   "id": "isAutoHideEnabled",
+   "group": "system",
+   "label": "Auto-ocultar Menus",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Esconde a navegação até o ponteiro chegar à borda e devolve a largura ao conteúdo; ligado, a barra não aparece no primeiro quadro."
+  },
+  {
+   "id": "isNavHidden",
+   "group": "navigation",
+   "label": "Ocultar Navegação",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Recolhe a navegação: a lateral estreita para o piso de largura e esconde rótulos; o topo encolhe para a altura recolhida. É o mesmo estado que o usuário alterna pelo botão de recolher.",
+   "interactsWith": [
+    "sidebarMinWidth",
+    "topbarCollapsedHeight",
+    "brandLogoSizeCollapsed"
+   ]
+  },
+  {
+   "id": "isSplitViewEnabled",
+   "group": "system",
+   "label": "Ativar Vista Dividida (Split)",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Habilita o painel secundário ao lado do conteúdo do cromo (`secondaryContent`); desligado, o painel não é desenhado."
+  },
+  {
+   "id": "kanbanCardRadius",
+   "group": "tables",
+   "label": "Kanban: Arredondamento do Card",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Arredonda os cartões arrastáveis do `SarakKanban`, em px."
+  },
+  {
+   "id": "kanbanHeaderPaddingY",
+   "group": "tables",
+   "label": "Kanban: Padding Vertical do Cabeçalho da Coluna",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Respiro vertical do título de cada coluna do `SarakKanban`, em px."
+  },
+  {
+   "id": "kanbanHeaderTracking",
+   "group": "tables",
+   "label": "Kanban: Tracking do Cabeçalho da Coluna",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Espaço entre as letras do título de cada coluna do `SarakKanban`, em `em`."
+  },
+  {
+   "id": "layeredShadows",
+   "group": "atmosphere",
+   "label": "Sombras em Camadas (Layered)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Multiplica a opacidade das duas camadas de sombra (contato e projeção) de `.shadow-theme` e da busca; 0 as apaga e 2 as dobra."
+  },
+  {
+   "id": "layoutDensity",
+   "group": "system",
+   "label": "Densidade Visual",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Escala o respiro interno da região de conteúdo do cromo: compacto reduz a 75%, confortável mantém e espaçoso aumenta a 125%."
+  },
+  {
+   "id": "layoutGap",
+   "group": "system",
+   "label": "Espaçamento Padrão (Gap)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Espaçamento padrão entre irmãos quando o componente não define o seu: o `SarakFlex` e a `SarakGrid` (sem `globalSectionGap`) leem este valor, por breakpoint."
+  },
+  {
+   "id": "layoutGapLg",
+   "group": "system",
+   "label": "Espaçamento Grande",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Escala grande de espaçamento: entre seções e estados vazios, por breakpoint."
+  },
+  {
+   "id": "layoutGapMd",
+   "group": "system",
+   "label": "Espaçamento Médio",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Escala média de espaçamento, a mais usada: entre os grupos do cromo e nos blocos de conteúdo padrão, por breakpoint."
+  },
+  {
+   "id": "layoutGapSm",
+   "group": "system",
+   "label": "Espaçamento Pequeno",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Escala pequena de espaçamento: o respiro dos botões e dos campos do cromo e dos agrupamentos densos, por breakpoint."
+  },
+  {
+   "id": "layoutGridMinCell",
+   "group": "structural",
+   "label": "Largura Mínima da Célula (Auto-fit)",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura mínima de cada célula da grade auto-fit; célula menor cabe mais colunas, maior as reduz.",
+   "interactsWith": [
+    "layoutGridTemplate"
+   ]
+  },
+  {
+   "id": "layoutGridTemplate",
+   "group": "structural",
+   "label": "Template de Grid Global",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Como a `SarakGrid` distribui os itens: 12 colunas (cada item ocupa 4), auto-fit pela largura mínima da célula ou masonry em colunas.",
+   "interactsWith": [
+    "layoutGridMinCell"
+   ]
+  },
+  {
+   "id": "layoutPadding",
+   "group": "system",
+   "label": "Respiro do Conteúdo (Padding)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Respiro entre a região de conteúdo do cromo e as bordas, em pixels, com um valor por breakpoint; a densidade multiplica este valor."
+  },
+  {
+   "id": "layoutPreviewMaxH",
+   "group": "specialized",
+   "label": "Design Engine: Altura Máxima do Preview de Código",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Altura máxima do bloco de JSON de cada tema na aba \"Temas e JSON\" do painel; acima dela o bloco rola. Só o painel a lê."
+  },
+  {
+   "id": "managementGroupListMaxHeight",
+   "group": "cards",
+   "label": "Management Group: Altura Máxima da Lista",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Altura máxima da lista de cada grupo do `SarakManagementGrid`; acima dela a lista rola por dentro do grupo."
+  },
+  {
+   "id": "matrixBlur",
+   "group": "advanced",
+   "label": "Desfoque de Vidro (Blur)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desfoque do vidro atrás dos itens da matriz expansível; 0 os deixa nítidos."
+  },
+  {
+   "id": "matrixBorderColor",
+   "group": "advanced",
+   "label": "Cor da Borda Base",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor da borda dos itens da matriz expansível; o padrão é um branco translúcido que some sobre fundo claro."
+  },
+  {
+   "id": "matrixGap",
+   "group": "advanced",
+   "label": "Espaçamento da Matriz",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Espaço entre os sub-itens da matriz expansível (`SarakExpandableMatrix`) dentro de cada linha aberta; os filhos aninhados de um sub-item têm o espaçamento próprio."
+  },
+  {
+   "id": "matrixItemBg",
+   "group": "advanced",
+   "label": "Fundo do Item Pai",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Fundo dos itens da matriz expansível; o padrão é um branco quase transparente que não aparece sobre fundo claro."
+  },
+  {
+   "id": "matrixNodeMinWidth",
+   "group": "cards",
+   "label": "Matrix Node: Largura Mínima",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura mínima de cada nó filho da `SarakExpandableMatrix` na variante de alternador; impede que nós de pouco conteúdo fiquem espremidos."
+  },
+  {
+   "id": "matrixRadius",
+   "group": "advanced",
+   "label": "Arredondamento dos Itens",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Arredondamento dos itens da matriz expansível (`SarakExpandableMatrix`); 0 os deixa em ângulo reto."
+  },
+  {
+   "id": "maxContentWidth",
+   "group": "system",
+   "label": "Largura Máxima do Conteúdo",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Largura máxima da região de conteúdo do cromo, centralizada na tela; 100% ocupa a largura inteira."
+  },
+  {
+   "id": "mobileNavigationStyle",
+   "group": "global",
+   "label": "Navegação no Celular",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Onde a navegação fica no celular: barra na base, gaveta atrás do hambúrguer ou automático (barra com até 5 destinos, gaveta acima disso). Tablet e desktop não mudam.",
+   "interactsWith": [
+    "navigationStyle"
+   ]
+  },
+  {
+   "id": "modalActionAlignment",
+   "group": "overlays",
+   "label": "Alinhamento das Ações",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Posiciona os botões do rodapé do `SarakModal` à esquerda, ao centro ou à direita; o valor de largura total os faz preencher a linha, e no celular os empilha."
+  },
+  {
+   "id": "modalBorderRadius",
+   "group": "overlays",
+   "label": "Arredondamento (Modal)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Arredonda o painel do `SarakModal`, por dispositivo."
+  },
+  {
+   "id": "modalHeaderStyle",
+   "group": "overlays",
+   "label": "Estilo do Cabeçalho",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Muda a estrutura do cabeçalho do `SarakModal` (a posição do título e do botão de fechar), não as cores."
+  },
+  {
+   "id": "modalOverlayBlur",
+   "group": "overlays",
+   "label": "Blur do Overlay",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desfoque do que fica atrás do véu do `SarakModal`.",
+   "interactsWith": [
+    "modalOverlayColor"
+   ]
+  },
+  {
+   "id": "modalOverlayColor",
+   "group": "overlays",
+   "label": "Cor do Overlay",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do véu atrás do `SarakModal` e da gaveta (`SarakDrawer`); combina com o desfoque de `modalOverlayBlur`.",
+   "interactsWith": [
+    "modalOverlayBlur"
+   ]
+  },
+  {
+   "id": "modalWidthFull",
+   "group": "overlays",
+   "label": "Largura do Modal: Ampla",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura máxima do `SarakModal` no tamanho `full`, sempre limitada pelas margens da tela."
+  },
+  {
+   "id": "modalWidthLg",
+   "group": "overlays",
+   "label": "Largura do Modal: Grande",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura máxima do `SarakModal` no tamanho `lg`."
+  },
+  {
+   "id": "modalWidthMd",
+   "group": "overlays",
+   "label": "Largura do Modal: Média",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura máxima do `SarakModal` no tamanho `md`."
+  },
+  {
+   "id": "modalWidthSm",
+   "group": "overlays",
+   "label": "Largura do Modal: Pequena",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura máxima do `SarakModal` no tamanho `sm`."
+  },
+  {
+   "id": "modalWidthXl",
+   "group": "overlays",
+   "label": "Largura do Modal: Extra Grande",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura máxima do `SarakModal` no tamanho `xl`."
+  },
+  {
+   "id": "mode",
+   "group": "global",
+   "label": "Tema do Sistema",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Declara o modo nativo do tema: define o ícone do alternador e a mistura da vinheta. A paleta só inverte pela preferência de modo do usuário (`colorMode`), que aplica a contraparte; sozinho, o valor não repinta a tela.",
+   "interactsWith": [
+    "vignetteOpacity"
+   ]
+  },
+  {
+   "id": "monoFont",
+   "group": "typography",
+   "label": "Fonte Mono (Dados)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Aplica a família monoespaçada a valores tabulares e trechos de código."
+  },
+  {
+   "id": "motionDurationFast",
+   "group": "motion",
+   "label": "Duração Rápida (UI)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Duração das micro-interações de UI (hover, foco, campos e navegação) em CSS e a duração padrão das utilitárias `transition-*`."
+  },
+  {
+   "id": "motionDurationInstant",
+   "group": "motion",
+   "label": "Duração Instantânea",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Duração do aperto (`:active`) de botões e botões de ícone; é a mais curta do sistema."
+  },
+  {
+   "id": "motionDurationNormal",
+   "group": "motion",
+   "label": "Duração Normal",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Duração das transições de escopo médio: o corpo da página, o cartão, o acordeão, a troca de página e a classe `transition-sarak`."
+  },
+  {
+   "id": "motionDurationSlow",
+   "group": "motion",
+   "label": "Duração Lenta (Cenário)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Duração das animações longas: os pseudoelementos de brilho dos cartões, a gaveta e as barras do gráfico (`SarakChart`)."
+  },
+  {
+   "id": "motionEaseIn",
+   "group": "motion",
+   "label": "Curva de Entrada (Acceleration)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Curva da saída do modal e da paleta de busca: o painel e o fundo permanecem na página durante a saída (duração `motionDurationFast`) e somem acelerando por esta curva.",
+   "interactsWith": [
+    "motionDurationFast"
+   ]
+  },
+  {
+   "id": "motionEaseMain",
+   "group": "motion",
+   "label": "Curva Master (Ease)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Curva padrão das transições de botão, campo, cartão, corpo da página, painel e gaveta; é a curva que quase toda interação do sistema usa."
+  },
+  {
+   "id": "motionEaseOut",
+   "group": "motion",
+   "label": "Curva de Saída (Deceleration)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Curva do aperto de um botão HTML sem classe e do pulso do alternador pulsante; o `SarakButton` mantém a própria curva no aperto."
+  },
+  {
+   "id": "motionStaggerDelay",
+   "group": "motion",
+   "label": "Atraso de Cascata (Stagger)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Atraso entre a entrada de um item e a do seguinte: cada linha da `SarakTable` e cada barra do `SarakChart` espera índice × este valor. 0 entra tudo junto."
+  },
+  {
+   "id": "multiSelectInputMinWidth",
+   "group": "inputs",
+   "label": "Multi-Select: Largura Mínima do Input Interno",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Mantém largura mínima para o campo de texto do multiselect não ser comprimido pelas tags."
+  },
+  {
+   "id": "navActiveMarkerColor",
+   "group": "navigation",
+   "label": "Cor do Marcador Ativo",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do marcador luminoso ao lado do item ativo e do brilho dele.",
+   "interactsWith": [
+    "navActiveMarkerGlow"
+   ]
+  },
+  {
+   "id": "navActiveMarkerGlow",
+   "group": "navigation",
+   "label": "Brilho do Marcador",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Raio do brilho do marcador do item ativo; 0 deixa só a barrinha.",
+   "interactsWith": [
+    "navActiveMarkerColor"
+   ]
+  },
+  {
+   "id": "navbarLayout",
+   "group": "navigation",
+   "label": "Comportamento da Topbar",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Comportamento da barra do topo: fixa ao rolar, rola junto com o conteúdo ou oculta. Só vale com navegação no topo.",
+   "interactsWith": [
+    "navigationStyle"
+   ]
+  },
+  {
+   "id": "navigationStyle",
+   "group": "global",
+   "label": "Estrutura de Navegação",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Escolhe onde fica a navegação: Sidebar (coluna lateral) ou Topbar (cabeçalho). Troca a estrutura inteira do cromo; a preferência do usuário, quando oferecida, vence o valor do tema.",
+   "interactsWith": [
+    "sidebarPosition",
+    "mobileNavigationStyle"
+   ]
+  },
+  {
+   "id": "navItemActiveColor",
+   "group": "navigation",
+   "label": "Cor do Item Ativo",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do item ativo da navegação: texto, ícone e contorno do item atual, na lateral e no topo; também participa dos controles selecionados do cromo. Garanta contraste de texto e ícone nos dois modos."
+  },
+  {
+   "id": "navItemRadius",
+   "group": "navigation",
+   "label": "Raio do Item de Menu",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Raio dos cantos do item da navegação, o fundo do ativo e do hover, na lateral, no topo e no recolhido; 0 deixa o item reto e 16 ou mais o torna cápsula.",
+   "interactsWith": [
+    "sidebarActiveColor",
+    "topbarActiveColor",
+    "sidebarHoverColor",
+    "topbarHoverColor"
+   ]
+  },
+  {
+   "id": "pageTransitionType",
+   "group": "animations",
+   "label": "Transição de Página",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Efeito da troca de página: Fade, Deslizar para cima (20 px), Deslizar lateral (50 px), Zoom (±5%) ou Desativado; a duração vem de `motionDurationNormal`.",
+   "interactsWith": [
+    "animEnabled",
+    "motionDurationNormal"
+   ]
+  },
+  {
+   "id": "preferenceFontSizePosition",
+   "group": "preferences",
+   "label": "Preferência: Tamanho da Fonte",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Posição da escolha de tamanho da fonte (P/M/G): fixa, no menu de preferências ou não oferecida."
+  },
+  {
+   "id": "preferenceLanguagePosition",
+   "group": "preferences",
+   "label": "Preferência: Idioma",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Posição da escolha de idioma: fixa, no menu de preferências ou não oferecida."
+  },
+  {
+   "id": "preferenceModePosition",
+   "group": "preferences",
+   "label": "Preferência: Modo Claro/Escuro",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Posição da escolha de modo claro/escuro do usuário: fixa na barra, no menu de preferências ou não oferecida; quando some, a escolha não existe para o usuário."
+  },
+  {
+   "id": "preferenceNavCollapsePosition",
+   "group": "preferences",
+   "label": "Preferência: Navegação Recolhida",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Posição do botão de recolher a navegação: fixo, no menu de preferências ou não oferecido."
+  },
+  {
+   "id": "preferenceNavigationStylePosition",
+   "group": "preferences",
+   "label": "Preferência: Navegação Topo/Lateral",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Posição da escolha de orientação da navegação (lateral/topo): fixa, no menu de preferências ou não oferecida."
+  },
+  {
+   "id": "presetCardHoverShadowOffsetY",
+   "group": "cards",
+   "label": "Preview de Preset: Sombra de Hover — Offset Y",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Deslocamento vertical da sombra do cartão de pré-visualização de preset ao passar o ponteiro, no painel de customização; não pinta nenhum componente do sistema."
+  },
+  {
+   "id": "presetCardShadowBlur",
+   "group": "cards",
+   "label": "Preview de Preset: Sombra do Card — Desfoque",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Desfoque da sombra em repouso do cartão de preset no painel de customização; não pinta nenhum componente do sistema."
+  },
+  {
+   "id": "presetCardShadowOffsetY",
+   "group": "cards",
+   "label": "Preview de Preset: Sombra do Card — Offset Y",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Deslocamento vertical da sombra em repouso do cartão de preset no painel de customização; não pinta nenhum componente do sistema."
+  },
+  {
+   "id": "presetCardShadowSpread",
+   "group": "cards",
+   "label": "Preview de Preset: Sombra do Card — Espalhamento (negativo)",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Contração da sombra em repouso do cartão de preset no painel de customização; não pinta nenhum componente do sistema."
+  },
+  {
+   "id": "presetGlowShadowBlur",
+   "group": "cards",
+   "label": "Preview de Preset: Glow Simples — Desfoque",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Desfoque do brilho simples dos botões de pré-visualização de preset, no painel de customização; não pinta nenhum componente do sistema."
+  },
+  {
+   "id": "presetGlowShadowBlurLg",
+   "group": "cards",
+   "label": "Preview de Preset: Glow Simples — Desfoque Grande",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Desfoque do brilho grande dos botões de pré-visualização de preset, no painel de customização; não pinta nenhum componente do sistema."
+  },
+  {
+   "id": "presetGridTextureSize",
+   "group": "cards",
+   "label": "Preview de Preset: Tamanho da Textura de Grade",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Tamanho da célula da grade decorativa no fundo do cartão de preset, no painel de customização; não pinta nenhum componente do sistema."
+  },
+  {
+   "id": "presetMatteShadowBlur1",
+   "group": "cards",
+   "label": "Preview de Preset: Sombra Matte — Desfoque 1",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Desfoque da primeira camada da sombra fosca dos botões de pré-visualização, no painel de customização; não pinta nenhum componente do sistema."
+  },
+  {
+   "id": "presetMatteShadowBlur2",
+   "group": "cards",
+   "label": "Preview de Preset: Sombra Matte — Desfoque 2",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Desfoque da segunda camada da sombra fosca dos botões de pré-visualização, no painel de customização; não pinta nenhum componente do sistema."
+  },
+  {
+   "id": "presetMatteShadowOffsetY2",
+   "group": "cards",
+   "label": "Preview de Preset: Sombra Matte — Offset Y 2",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Deslocamento vertical da segunda camada da sombra fosca dos botões de pré-visualização, no painel de customização; não pinta nenhum componente do sistema."
+  },
+  {
+   "id": "presetMatteShadowSpread1",
+   "group": "cards",
+   "label": "Preview de Preset: Sombra Matte — Espalhamento 1",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Contração da primeira camada da sombra fosca dos botões de pré-visualização, no painel de customização; não pinta nenhum componente do sistema."
+  },
+  {
+   "id": "presetMatteShadowSpread2",
+   "group": "cards",
+   "label": "Preview de Preset: Sombra Matte — Espalhamento 2",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Contração da segunda camada da sombra fosca dos botões de pré-visualização, no painel de customização; não pinta nenhum componente do sistema."
+  },
+  {
+   "id": "presetMiniCardHeight",
+   "group": "cards",
+   "label": "Preview de Preset: Altura do Mini-Card",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Altura do mini-cartão que representa um preset de cartão na lista do painel de customização; não pinta nenhum componente do sistema."
+  },
+  {
+   "id": "presetMiniCardMaxWidth",
+   "group": "cards",
+   "label": "Preview de Preset: Largura Máxima do Mini-Card",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura máxima do mini-cartão que representa um preset de cartão na lista do painel de customização; não pinta nenhum componente do sistema."
+  },
+  {
+   "id": "presetPreviewMinHeight",
+   "group": "cards",
+   "label": "Preview de Preset: Altura Mínima",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Altura mínima dos cartões de pré-visualização de botão e de campo, no painel de customização; evita salto de layout e não pinta nenhum componente do sistema."
+  },
+  {
+   "id": "presetPreviewPaddingY",
+   "group": "cards",
+   "label": "Preview de Preset: Padding Vertical",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Respiro vertical dos cartões de pré-visualização de botão e de campo, no painel de customização; não pinta nenhum componente do sistema."
+  },
+  {
+   "id": "primaryColor",
+   "group": "colors",
+   "label": "Cor Primária (Base)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Define a cor de marca principal usada em links, focos, estados ativos e variantes derivadas; confirme o contraste onde ela aparece como texto nos dois modos. O fundo do botão primário é `btnPrimaryBg`."
+  },
+  {
+   "id": "progressBarHeight",
+   "group": "status",
+   "label": "Altura da Barra de Progresso",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Define a altura das barras de progresso."
+  },
+  {
+   "id": "progressBarMaxWidth",
+   "group": "cards",
+   "label": "Kitchen Sink: Largura Máxima da Barra de Progresso",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura máxima da barra de progresso mostrada na tela de exemplo (kitchen sink) do painel de customização; não muda componente do sistema."
+  },
+  {
+   "id": "progressBarRadius",
+   "group": "status",
+   "label": "Arredondamento da Barra de Progresso",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Arredonda os cantos das barras de progresso."
+  },
+  {
+   "id": "rangeActiveColor",
+   "group": "inputs",
+   "label": "Range Slider: Cor Ativa",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o trilho ativo, os polegares e as dicas dos controles de faixa."
+  },
+  {
+   "id": "reducedMotion",
+   "group": "engineering",
+   "label": "Reduzir Movimento",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Zera as transições e animações da interface (duração de 0,00001 s) e as durações usadas por JavaScript; é requisito de acessibilidade, não estilo.",
+   "interactsWith": [
+    "animEnabled"
+   ]
+  },
+  {
+   "id": "scrollPadding",
+   "group": "scrollbars",
+   "label": "Espaçamento (Padding)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Folga transparente entre o cursor da barra de rolagem e a borda do trilho (vale por breakpoint); engorda a borda do cursor."
+  },
+  {
+   "id": "scrollRadius",
+   "group": "scrollbars",
+   "label": "Arredondamento (Thumb)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Arredondamento do trilho e do cursor da barra de rolagem; valores altos formam uma pílula."
+  },
+  {
+   "id": "scrollThumbColor",
+   "group": "scrollbars",
+   "label": "Cor do Cursor (Thumb)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do cursor da barra de rolagem; a opacidade final vem de `scrollThumbOpacity` e do hover.",
+   "interactsWith": [
+    "scrollThumbOpacity",
+    "scrollThumbHoverOpacity"
+   ]
+  },
+  {
+   "id": "scrollThumbHoverOpacity",
+   "group": "scrollbars",
+   "label": "Opacidade ao Hover",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Opacidade do cursor da barra de rolagem sob o ponteiro; deve superar a de repouso para dar retorno.",
+   "interactsWith": [
+    "scrollThumbColor",
+    "scrollThumbOpacity"
+   ]
+  },
+  {
+   "id": "scrollThumbOpacity",
+   "group": "scrollbars",
+   "label": "Opacidade (Thumb)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Opacidade do cursor da barra de rolagem em repouso; baixa para não competir com o conteúdo.",
+   "interactsWith": [
+    "scrollThumbColor"
+   ]
+  },
+  {
+   "id": "scrollTrackOpacity",
+   "group": "scrollbars",
+   "label": "Opacidade do Trilho",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Opacidade do trilho da barra de rolagem, branco sobre o fundo; valores baixos deixam só o cursor aparecer."
+  },
+  {
+   "id": "scrollWidth",
+   "group": "scrollbars",
+   "label": "Largura da Barra",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Espessura da barra de rolagem de toda a interface (vale por breakpoint); valores finos são discretos e os grossos facilitam o arraste."
+  },
+  {
+   "id": "searchBackdropBlur",
+   "group": "inputs",
+   "label": "Search Palette: Desfoque do Backdrop",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desfoca o conteúdo atrás da paleta de busca enquanto ela está aberta."
+  },
+  {
+   "id": "searchDropdownGap",
+   "group": "navigation",
+   "label": "Espaço do Dropdown de Busca",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Distância, em rem, entre o topo da tela e a paleta de busca; empurra o painel para baixo.",
+   "interactsWith": [
+    "searchDropdownWidth"
+   ]
+  },
+  {
+   "id": "searchDropdownWidth",
+   "group": "navigation",
+   "label": "Largura do Dropdown de Busca",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura máxima da paleta de busca.",
+   "interactsWith": [
+    "searchDropdownGap"
+   ]
+  },
+  {
+   "id": "searchPositionSidebar",
+   "group": "navigation",
+   "label": "Posição Pesquisa (Sidebar)",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Onde a busca fica na navegação lateral: no topo ou no rodapé do bloco.",
+   "interactsWith": [
+    "navigationStyle",
+    "chromeSearchPosition"
+   ]
+  },
+  {
+   "id": "searchPositionTopbar",
+   "group": "navigation",
+   "label": "Posição Pesquisa (Topbar)",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Onde a busca fica na barra do topo: esquerda (antes da navegação), centro (no meio do espaço livre entre a navegação e o grupo final, não no centro da barra), direita (no grupo final) ou oculta.",
+   "interactsWith": [
+    "navigationStyle",
+    "chromeSearchPosition"
+   ]
+  },
+  {
+   "id": "secondaryColor",
+   "group": "colors",
+   "label": "Cor Secundária",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Define a segunda cor de marca usada em elementos de apoio e séries dos gráficos."
+  },
+  {
+   "id": "shadowAmbientAlpha",
+   "group": "atmosphere",
+   "label": "Sombra: Contato (Ambient)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Opacidade da camada de contato (curta, rente ao elemento) da sombra de `.shadow-theme` e da busca; 0 a apaga."
+  },
+  {
+   "id": "shadowColorMode",
+   "group": "atmosphere",
+   "label": "Colorização das Sombras",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Cor da sombra dos cartões: Neutro usa preto, Matizada a escurece na primária do tema e Ambiental usa um tom de baixa saturação derivado do fundo."
+  },
+  {
+   "id": "shadowIntensity",
+   "group": "atmosphere",
+   "label": "Intensidade da Sombra",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Opacidade de todo elemento com a classe `.shadow-theme` (de 0,3 a 1,0), conteúdo incluso. Não escala a sombra dos cartões."
+  },
+  {
+   "id": "shadowOrientation",
+   "group": "atmosphere",
+   "label": "Orientação das Sombras",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "De onde vem a luz: muda a direção do deslocamento da sombra dos cartões e das sobreposições (Inferior, Centro, Superior, Diagonal ou dinâmica, que segue o ponteiro)."
+  },
+  {
+   "id": "shadowProjectionAlpha",
+   "group": "atmosphere",
+   "label": "Sombra: Projeção (Alpha)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Opacidade da camada de projeção (longa) da sombra de `.shadow-theme` e da busca; 0 a apaga e 1 a torna preta."
+  },
+  {
+   "id": "shadowProjectionBlur",
+   "group": "atmosphere",
+   "label": "Sombra: Projeção (Blur)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desfoque e alcance da camada de projeção (longa) da sombra de `.shadow-theme` e da busca; 0 a deixa dura e 200 a espalha."
+  },
+  {
+   "id": "shellBrandLogoSize",
+   "group": "navigation",
+   "label": "Altura do Logo da Marca",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Lado da imagem do logo na navegação lateral; aumenta a altura do bloco da marca.",
+   "interactsWith": [
+    "navigationStyle"
+   ]
+  },
+  {
+   "id": "sidebarActiveColor",
+   "group": "navigation",
+   "label": "Ativo da Sidebar",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Fundo do item ativo da navegação lateral; o padrão é transparente, e o marcador do item vem de `navActiveMarkerColor`.",
+   "interactsWith": [
+    "navigationStyle",
+    "navActiveMarkerColor"
+   ]
+  },
+  {
+   "id": "sidebarBlur",
+   "group": "navigation",
+   "label": "Backdrop Blur (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desfoque do que passa atrás da navegação lateral, útil com cor translúcida.",
+   "interactsWith": [
+    "sidebarColor"
+   ]
+  },
+  {
+   "id": "sidebarCollapsedWidth",
+   "group": "navigation",
+   "label": "Largura da Sidebar (Recolhida)",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura da navegação lateral recolhida (só ícones); vale sem o piso de `sidebarMinWidth`, que é da lateral aberta.",
+   "interactsWith": [
+    "isNavHidden"
+   ]
+  },
+  {
+   "id": "sidebarColor",
+   "group": "navigation",
+   "label": "Cor da Sidebar (Fundo)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o fundo da navegação lateral; a cor entra na paleta derivada do cromo.",
+   "interactsWith": [
+    "navigationStyle"
+   ]
+  },
+  {
+   "id": "sidebarHoverColor",
+   "group": "navigation",
+   "label": "Hover da Sidebar",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Fundo do item da navegação lateral sob o ponteiro; o padrão é um branco translúcido.",
+   "interactsWith": [
+    "navigationStyle"
+   ]
+  },
+  {
+   "id": "sidebarLabelMaxWidth",
+   "group": "navigation",
+   "label": "Largura Máxima do Rótulo (Sidebar)",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura máxima do rótulo da marca na navegação lateral; acima dela o texto é cortado.",
+   "interactsWith": [
+    "navigationStyle"
+   ]
+  },
+  {
+   "id": "sidebarMaxWidth",
+   "group": "navigation",
+   "label": "Largura Máxima da Sidebar",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Teto de largura da navegação lateral; `sidebarWidth` acima dele é cortado.",
+   "interactsWith": [
+    "sidebarWidth"
+   ]
+  },
+  {
+   "id": "sidebarMinWidth",
+   "group": "navigation",
+   "label": "Largura Mínima da Sidebar",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Piso de largura da navegação lateral aberta; o valor também limita `sidebarWidth`. Recolhida, a largura é a de `sidebarCollapsedWidth`, sem este piso.",
+   "interactsWith": [
+    "sidebarWidth",
+    "sidebarCollapsedWidth"
+   ]
+  },
+  {
+   "id": "sidebarNoiseOpacity",
+   "group": "navigation",
+   "label": "Opacidade do Ruído (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Opacidade da textura de grão sobre a navegação lateral; 0 desliga.",
+   "interactsWith": [
+    "navigationStyle"
+   ]
+  },
+  {
+   "id": "sidebarPosition",
+   "group": "navigation",
+   "label": "Posição da Sidebar",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Lado da navegação lateral: esquerda, direita (inverte a ordem) ou flutuante (cartão arredondado com margem). Só vale com navegação lateral.",
+   "interactsWith": [
+    "navigationStyle"
+   ]
+  },
+  {
+   "id": "sidebarShadow",
+   "group": "navigation",
+   "label": "Sombra da Sidebar",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Sombra da navegação lateral, escrita como `box-shadow` completo; a cor da sombra precisa ser trocada na contraparte.",
+   "interactsWith": [
+    "navigationStyle"
+   ]
+  },
+  {
+   "id": "sidebarWidth",
+   "group": "navigation",
+   "label": "Largura da Sidebar",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura da navegação lateral (um valor por breakpoint), dentro do piso e do teto de `sidebarMinWidth` e `sidebarMaxWidth`.",
+   "interactsWith": [
+    "sidebarMinWidth",
+    "sidebarMaxWidth"
+   ]
+  },
+  {
+   "id": "skeletonCircleSize",
+   "group": "specialized",
+   "label": "Skeleton: Diâmetro Padrão (Circle)",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Diâmetro padrão do `SarakSkeleton` circular; deve imitar o avatar real que substituem, por isso depende do host e não do tema."
+  },
+  {
+   "id": "skeletonRowHeight",
+   "group": "specialized",
+   "label": "Skeleton: Altura Padrão da Linha",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Altura padrão das linhas do `SarakSkeleton`; deve imitar o conteúdo real que substituem, por isso depende do host e não do tema."
+  },
+  {
+   "id": "skeletonRowRadius",
+   "group": "specialized",
+   "label": "Skeleton: Arredondamento da Linha/Bloco",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Arredondamento das linhas e blocos do `SarakSkeleton`."
+  },
+  {
+   "id": "splitPaneMinWidth",
+   "group": "structural",
+   "label": "Split Pane: Largura Mínima do Painel Secundário",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura mínima dos dois lados do `SarakSplitPane` ao arrastar a divisória; evita fechar um painel por acidente."
+  },
+  {
+   "id": "statusErrorColor",
+   "group": "status",
+   "label": "Cor: Erro",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta erros de validação, badges de falha e estados críticos."
+  },
+  {
+   "id": "statusGlowBlur",
+   "group": "status",
+   "label": "Desfoque do Glow de Status",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Controla o espalhamento do brilho das badges na cor do status; zero desliga o efeito."
+  },
+  {
+   "id": "statusInfoColor",
+   "group": "status",
+   "label": "Cor: Info",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta badges e mensagens de informação neutra."
+  },
+  {
+   "id": "statusSuccessColor",
+   "group": "status",
+   "label": "Cor: Sucesso",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta badges e outros estados de confirmação e sucesso."
+  },
+  {
+   "id": "statusWarningColor",
+   "group": "status",
+   "label": "Cor: Alerta",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta avisos e estados que pedem atenção sem indicar falha."
+  },
+  {
+   "id": "surfaceColor",
+   "group": "colors",
+   "label": "Cor de Superfície",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Define a cor de superfície elevada publicada pelo tema e usada pelo motor de gráficos."
+  },
+  {
+   "id": "surfaceIntensity",
+   "group": "atmosphere",
+   "label": "Intensidade do Efeito de Superfície",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Escala a força do material da superfície: realce interno branco, gradiente e, no vidro, o desfoque. 0 apaga o realce; 1 o torna o traço dominante dos cartões.",
+   "interactsWith": [
+    "surfaceMaterial"
+   ]
+  },
+  {
+   "id": "surfaceMaterial",
+   "group": "atmosphere",
+   "label": "Material da Superfície",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Troca o tratamento das superfícies de cartão: Vidro Fosco (desfoque 24 px com saturação), Polido (desfoque 12 px), Industrial (listras e sombra interna) ou Orgânico (sem desfoque, sombra interna suave).",
+   "interactsWith": [
+    "surfaceIntensity"
+   ]
+  },
+  {
+   "id": "switchBackdropBlur",
+   "group": "switches",
+   "label": "Desfoque do Alternador (Vidro)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desfoca o fundo do trilho translúcido no estilo glass.",
+   "interactsWith": [
+    "switchStyleType"
+   ]
+  },
+  {
+   "id": "switchLabelPosition",
+   "group": "structural",
+   "label": "Posição do Rótulo (Switch)",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Posição do texto do `SarakSwitch` em relação ao controle: à direita, à esquerda ou nas pontas. O `SarakCheckbox` e o `SarakRadio` não seguem este token."
+  },
+  {
+   "id": "switchPulseColor",
+   "group": "switches",
+   "label": "Cor do Pulso (Pulsing Dot)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Define a cor do anel que pulsa no alternador ligado no estilo pulsing.",
+   "interactsWith": [
+    "switchStyleType"
+   ]
+  },
+  {
+   "id": "switchStyleType",
+   "group": "switches",
+   "label": "Estilo do Alternador (Switch)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Escolhe a forma e o acabamento do alternador: tátil, assimétrico, pulsante ou vidro."
+  },
+  {
+   "id": "switchThumbBg",
+   "group": "switches",
+   "label": "Cor: Switch Botão",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o botão deslizante do alternador."
+  },
+  {
+   "id": "switchTrackActiveBg",
+   "group": "switches",
+   "label": "Cor: Switch Ativo",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o trilho do alternador quando ele está ligado."
+  },
+  {
+   "id": "systemTone",
+   "group": "atmosphere",
+   "label": "Tom do Ambiente",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Acrescenta ao fundo uma grade de HUD com brilho de horizonte: Cibernético na cor de textura (grade de 20 px), Tático em monocromo (grade de 24 px). Neutro não desenha nada."
+  },
+  {
+   "id": "tabGap",
+   "group": "navigation",
+   "label": "Espaço entre Abas",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Espaço entre os itens da navegação, por breakpoint; a lateral usa metade do valor em cada eixo."
+  },
+  {
+   "id": "tableBorderColor",
+   "group": "tables",
+   "label": "Cor das Linhas",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor das linhas divisórias da `SarakTable` e da `SarakDataTable`."
+  },
+  {
+   "id": "tableBorderRadius",
+   "group": "tables",
+   "label": "Arredondamento da Tabela",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Arredonda o contêiner da `SarakTable`, por dispositivo; sem declarar, segue o raio do cartão."
+  },
+  {
+   "id": "tableCellPadding",
+   "group": "tables",
+   "label": "Densidade (Padding)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Respiro horizontal das células da `SarakDataTable` (cabeçalho e linhas), por dispositivo; a `SarakTable` usa `tableDensity`."
+  },
+  {
+   "id": "tableDensity",
+   "group": "tables",
+   "label": "Densidade da Tabela",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Escala o respiro das células da `SarakTable`: o compacto aperta e reduz a fonte, o espaçoso afrouxa; a `SarakDataTable` não lê este token."
+  },
+  {
+   "id": "tableHeaderBg",
+   "group": "tables",
+   "label": "Fundo do Cabeçalho",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Fundo do cabeçalho da `SarakTable` e da `SarakDataTable`; também pinta a barra de ferramentas do editor de texto rico e a do visualizador de PDF."
+  },
+  {
+   "id": "tableRowHoverBg",
+   "group": "tables",
+   "label": "Fundo Hover (Linha)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Fundo da linha sob o ponteiro na `SarakTable`; a `SarakDataTable` não lê este token."
+  },
+  {
+   "id": "tableZebraStriping",
+   "group": "tables",
+   "label": "Listras Alternadas (Zebra)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Alterna o fundo das linhas da `SarakTable` e da `SarakDataTable`, para seguir a linha em tabelas largas."
+  },
+  {
+   "id": "tabSectionMargin",
+   "group": "navigation",
+   "label": "Margem da Seção de Abas",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Margem vertical das seções da navegação lateral e da barra do topo, por breakpoint."
+  },
+  {
+   "id": "tertiaryColor",
+   "group": "colors",
+   "label": "Cor Terciária",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Define uma terceira cor de marca disponível para composições e séries dos gráficos."
+  },
+  {
+   "id": "textColorMaster",
+   "group": "typography",
+   "label": "Texto Principal",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Colore o texto principal de parágrafos e rótulos; títulos usam titleColor."
+  },
+  {
+   "id": "textColorMuted",
+   "group": "typography",
+   "label": "Texto Mudo / Hint",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Colore dicas e placeholders; o contraste mais baixo da escala aparece em campos e textos auxiliares."
+  },
+  {
+   "id": "textColorSecondary",
+   "group": "typography",
+   "label": "Texto Secundário",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Colore textos secundários, como descrições e metadados, para reduzir a ênfase sem os ocultar."
+  },
+  {
+   "id": "textGlowIntensity",
+   "group": "typography",
+   "label": "Intensidade de Glow (H1)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Adiciona brilho ao H1 na cor primária; zero remove o efeito."
+  },
+  {
+   "id": "textSmoothing",
+   "group": "typography",
+   "label": "Suavização (Smoothing)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Alterna o antialiasing tipográfico aplicado à página; desligado, o navegador usa a suavização padrão."
+  },
+  {
+   "id": "texture",
+   "group": "atmosphere",
+   "label": "Textura Industrial (BG)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Padrão gráfico sobreposto ao fundo da página (camada do `html`/`body`); não muda com `mode` nem com a contraparte, então escolha um padrão legível nos dois modos. `carbon` desenha preto fixo: prefira o escuro ou use opacidade baixa no claro. `none` não desenha camada e leva consigo a vinheta.",
+   "interactsWith": [
+    "textureOpacity",
+    "textureColor"
+   ]
+  },
+  {
+   "id": "textureColor",
+   "group": "colors",
+   "label": "Cor da Textura",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Dá cor às texturas de fundo e de cartão que aceitam cor do tema; alguns padrões usam a borda, a primária ou uma cor própria, então confira o desenho escolhido em vez de presumir que ele lê este token.",
+   "interactsWith": [
+    "texture",
+    "cardTextureType"
+   ]
+  },
+  {
+   "id": "textureOpacity",
+   "group": "atmosphere",
+   "label": "Opacidade da Textura",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Opacidade da textura de fundo: 0 a apaga, valores altos a tornam um elemento gráfico. Sem textura escolhida não há camada para regular.",
+   "interactsWith": [
+    "texture"
+   ]
+  },
+  {
+   "id": "titleColor",
+   "group": "colors",
+   "label": "Cor do Título",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Colore títulos e cabeçalhos do sistema, separado da cor dos parágrafos."
+  },
+  {
+   "id": "toastAccentWidth",
+   "group": "overlays",
+   "label": "Toast: Largura da Borda de Destaque",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Espessura da faixa colorida na lateral esquerda do toast, cuja cor é a do tipo da mensagem; zero a remove."
+  },
+  {
+   "id": "toastMaxWidth",
+   "group": "overlays",
+   "label": "Toast: Largura Máxima",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura máxima da notificação (toast), em `rem`; acima dela o texto quebra em linhas em vez de alargar."
+  },
+  {
+   "id": "toastMinWidth",
+   "group": "overlays",
+   "label": "Toast: Largura Mínima",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura mínima da notificação (toast), em `rem`, relativa ao tamanho da fonte raiz; evita toast curto espremido."
+  },
+  {
+   "id": "tooltipBg",
+   "group": "overlays",
+   "label": "Fundo do Tooltip",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Fundo da caixa do `SarakTooltip`.",
+   "interactsWith": [
+    "tooltipTextColor"
+   ]
+  },
+  {
+   "id": "tooltipBorderColor",
+   "group": "overlays",
+   "label": "Borda do Tooltip",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do contorno da caixa do `SarakTooltip`."
+  },
+  {
+   "id": "tooltipRadius",
+   "group": "overlays",
+   "label": "Raio do Tooltip",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Arredonda a caixa do `SarakTooltip`."
+  },
+  {
+   "id": "tooltipTextColor",
+   "group": "overlays",
+   "label": "Texto do Tooltip",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do texto da caixa do `SarakTooltip`; precisa de contraste com `tooltipBg`.",
+   "interactsWith": [
+    "tooltipBg"
+   ]
+  },
+  {
+   "id": "topbarActiveColor",
+   "group": "navigation",
+   "label": "Ativo da Topbar",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Fundo do item ativo da barra do topo; o padrão é transparente.",
+   "interactsWith": [
+    "navigationStyle"
+   ]
+  },
+  {
+   "id": "topbarCollapsedHeight",
+   "group": "navigation",
+   "label": "Altura da Topbar (Recolhida)",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Altura da barra do topo recolhida; só aparece com `isNavHidden` ligado. Abaixo do alvo mínimo de toque (`touchTargetMin`) os controles da barra transbordam com ponteiro de dedo; por isso o padrão não cai abaixo dele.",
+   "interactsWith": [
+    "isNavHidden"
+   ]
+  },
+  {
+   "id": "topbarColor",
+   "group": "navigation",
+   "label": "Cor da Topbar (Fundo)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Pinta o fundo da barra do topo; a cor entra na paleta derivada do cromo.",
+   "interactsWith": [
+    "navigationStyle"
+   ]
+  },
+  {
+   "id": "topbarHeight",
+   "group": "navigation",
+   "label": "Altura da Topbar",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Altura da barra do topo, por breakpoint.",
+   "interactsWith": [
+    "navigationStyle"
+   ]
+  },
+  {
+   "id": "topbarHoverColor",
+   "group": "navigation",
+   "label": "Hover da Topbar",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Fundo do item da barra do topo sob o ponteiro; o padrão é um branco translúcido.",
+   "interactsWith": [
+    "navigationStyle"
+   ]
+  },
+  {
+   "id": "topbarLabelMaxWidth",
+   "group": "navigation",
+   "label": "Largura Máxima do Rótulo (Topbar)",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Largura máxima do rótulo da marca na barra do topo; acima dela o texto é cortado.",
+   "interactsWith": [
+    "navigationStyle"
+   ]
+  },
+  {
+   "id": "topbarNoiseOpacity",
+   "group": "navigation",
+   "label": "Opacidade do Ruído (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Opacidade da textura de grão sobre a barra do topo; 0 desliga.",
+   "interactsWith": [
+    "navigationStyle"
+   ]
+  },
+  {
+   "id": "topbarTitleColor",
+   "group": "navigation",
+   "label": "Cor do Título (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do nome da marca na barra do topo.",
+   "interactsWith": [
+    "navigationStyle"
+   ]
+  },
+  {
+   "id": "touchTargetMin",
+   "group": "engineering",
+   "label": "Alvo Mínimo de Toque",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Piso de altura e largura dos acionáveis quando o ponteiro é o dedo (`pointer: coarse`); com mouse o desenho não muda."
+  },
+  {
+   "id": "trackingSnug",
+   "group": "typography",
+   "label": "Tracking Snug",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Controla o espaçamento de caracteres em textos curtos, um passo acima de trackingTight."
+  },
+  {
+   "id": "trackingTight",
+   "group": "typography",
+   "label": "Tracking Tight",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Controla o espaçamento de caracteres em rótulos pequenos e textos curtos em caixa alta."
+  },
+  {
+   "id": "trackingUltra",
+   "group": "typography",
+   "label": "Tracking Ultra",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Espaça fortemente o título do estado vazio; valores altos separam as letras."
+  },
+  {
+   "id": "trackingWide",
+   "group": "typography",
+   "label": "Tracking Wide",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Controla o espaçamento de textos curtos de categoria e de mensagens auxiliares."
+  },
+  {
+   "id": "trackingWider",
+   "group": "typography",
+   "label": "Tracking Wider",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Amplia o espaçamento de textos curtos que precisam de mais abertura que trackingWide."
+  },
+  {
+   "id": "trackingWidest",
+   "group": "typography",
+   "label": "Tracking Widest",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Aplica o espaçamento mais aberto da escala comum em rótulos de poucas palavras."
+  },
+  {
+   "id": "typeScale2xs",
+   "group": "typography",
+   "label": "Escala 2XS",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Define o tamanho de metadados e rótulos pequenos em componentes da biblioteca."
+  },
+  {
+   "id": "typeScale3xs",
+   "group": "typography",
+   "label": "Escala 3XS",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Define o degrau 3XS usado em rótulos compactos de cartões e indicadores."
+  },
+  {
+   "id": "typeScaleCaption",
+   "group": "typography",
+   "label": "Escala Caption",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Define o tamanho de legendas, notas e texto auxiliar."
+  },
+  {
+   "id": "typeScaleMicro",
+   "group": "typography",
+   "label": "Escala Micro",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Define a menor escala tipográfica, usada em rótulos densos; valores baixos podem prejudicar a leitura."
+  },
+  {
+   "id": "typeScaleTiny",
+   "group": "typography",
+   "label": "Escala Tiny",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Define o tamanho de textos muito pequenos usados em badges e legendas."
+  },
+  {
+   "id": "typeScaleXl",
+   "group": "typography",
+   "label": "Escala XL",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Define o tamanho XL para texto de destaque, como o campo de busca e títulos auxiliares."
+  },
+  {
+   "id": "typeScaleXs",
+   "group": "typography",
+   "label": "Escala XS",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Define o tamanho XS usado por rótulos de eixo e valores pequenos dos gráficos."
+  },
+  {
+   "id": "vignetteOpacity",
+   "group": "atmosphere",
+   "label": "Intensidade do Vignette",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Opacidade do escurecimento das bordas da tela. Só existe quando há textura de fundo escolhida; com `texture: none` não há camada de vinheta.",
+   "interactsWith": [
+    "texture",
+    "vignetteSoftness"
+   ]
+  },
+  {
+   "id": "vignetteSoftness",
+   "group": "atmosphere",
+   "label": "Suavidade das Bordas",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Onde o escurecimento das bordas começa: 0 deixa só um aro fino na borda; 60 o espalha quase até o centro. Só vale com textura de fundo escolhida.",
+   "interactsWith": [
+    "texture",
+    "vignetteOpacity"
+   ]
+  },
+  {
+   "id": "zIndexBase",
+   "group": "layers",
+   "label": "Base Z-Index",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Camada mínima do sistema; a lista do autocompletar abre nela, acima do conteúdo comum."
+  },
+  {
+   "id": "zIndexModal",
+   "group": "layers",
+   "label": "Modal Z-Index",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Camada de modais e do véu deles; as gavetas e o cartão expandido derivam dela por deslocamentos fixos."
+  },
+  {
+   "id": "zIndexSidebar",
+   "group": "layers",
+   "label": "Sidebar Z-Index",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Camada da barra de navegação; menus e busca derivam dela por deslocamentos fixos de até 200 níveis. O limite superior mantém a busca derivada abaixo da camada mínima de modal."
+  },
+  {
+   "id": "zIndexToast",
+   "group": "engineering",
+   "label": "Camada: Notificações",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Camada das notificações; topo da escada de camadas, um passo acima do tooltip."
+  },
+  {
+   "id": "zIndexTooltip",
+   "group": "layers",
+   "label": "Tooltip Z-Index",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Camada dos tooltips e do menu de contexto, logo abaixo das notificações."
+  }
+ ]
+}

@@ -1,4 +1,5 @@
 import { resolveToken } from '../../../core/Design/resolveToken';
+import type { SarakLayoutGap } from '../../../core/Design/resolveToken';
 import type { SarakResponsiveValue } from '../../../core/Design/types';
 
 /**
@@ -21,7 +22,7 @@ export type GapValue = string | number | SarakResponsiveValue<number>;
  * chamador a mentir com um cast (era o `TS2345` de `useStructuralStyles.ts:30,71,94`).
  */
 export const resolveGap = (
-    override: string | undefined,
+    override: SarakLayoutGap | undefined,
     fallback: GapValue,
     atom: string,
 ): GapValue =>

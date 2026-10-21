@@ -3,6 +3,7 @@ import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { useAtomicStyles } from '../hooks/useAtomicStyles';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { SarakFormGroup } from '../Layouts/SarakFormGroup';
+import { SarakFieldError } from '../Feedback/SarakFieldError';
 
 export interface SarakInputProps extends InputHTMLAttributes<HTMLInputElement> {
     /**
@@ -11,20 +12,21 @@ export interface SarakInputProps extends InputHTMLAttributes<HTMLInputElement> {
      */
     label?: string;
     /**
-     * Ícone do campo; sua posição vem do layout do tema. Quando definido,
-     * prevalece sobre `leftIcon` e `rightIcon`; sem os três, não há ícone.
+     * Ícone do campo; sua posição vem do layout do tema e ele não recebe clique.
+     * Quando definido, prevalece sobre `leftIcon` e `rightIcon`; sem os três,
+     * não há ícone.
      */
     icon?: React.ReactNode;
     /**
-     * Ícone de compatibilidade usado somente quando `icon` não é fornecido.
-     * Sem `icon` e este valor, `rightIcon` pode ser usado; o nome da prop não
-     * fixa o lado visual.
+     * Ícone do lado esquerdo, usado somente quando `icon` não é fornecido. Junto
+     * com `rightIcon`, os dois aparecem, cada um no seu lado. Sozinho, segue a
+     * posição do layout do tema.
      */
     leftIcon?: React.ReactNode;
     /**
-     * Ícone de compatibilidade usado quando `icon` e `leftIcon` não são
-     * fornecidos. A posição vem do layout do tema; sem qualquer ícone, o campo
-     * fica sem decoração.
+     * Ícone do lado direito, usado somente quando `icon` não é fornecido. Aceita
+     * clique (por exemplo, o botão de mostrar a senha). Junto com `leftIcon`, fica
+     * à direita; sozinho, segue a posição do layout do tema.
      */
     rightIcon?: React.ReactNode;
     /**
@@ -38,6 +40,37 @@ export interface SarakInputProps extends InputHTMLAttributes<HTMLInputElement> {
      */
     fullWidth?: boolean;
 }
+
+interface IconSlot {
+    node: React.ReactNode;
+    side: 'left' | 'right';
+    interactive: boolean;
+}
+
+/** `icon` manda; `leftIcon` + `rightIcon` ocupam um lado cada; um só segue o lado do tema. */
+const resolveIconSlots = (
+    icon: React.ReactNode,
+    leftIcon: React.ReactNode,
+    rightIcon: React.ReactNode,
+    themeSide: 'left' | 'right',
+): IconSlot[] => {
+    if (icon) return [{ node: icon, side: themeSide, interactive: false }];
+    if (leftIcon && rightIcon) {
+        return [
+            { node: leftIcon, side: 'left', interactive: false },
+            { node: rightIcon, side: 'right', interactive: true },
+        ];
+    }
+    if (leftIcon) return [{ node: leftIcon, side: themeSide, interactive: false }];
+    if (rightIcon) return [{ node: rightIcon, side: themeSide, interactive: true }];
+    return [];
+};
+
+// `z-10`: o ícone vem antes do `<input>` no DOM; com `inputBackdropBlur` o campo desfoca o que está atrás dele, e sem
+// camada própria acima do campo o ícone seria o primeiro a virar mancha.
+const ICON_SIDE_CLASS = { left: 'absolute left-3 z-10', right: 'absolute right-3 z-10' } as const;
+const ICON_INERT_CLASS = 'pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,rgba(242,246,251,0.55)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#19e3f0))]';
+const ICON_INTERACTIVE_CLASS = 'text-[var(--sarak-input-icon-color,var(--text-muted,rgba(242,246,251,0.55)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#19e3f0))]';
 
 /**
  * Componente Atômico: SarakInput
@@ -62,7 +95,7 @@ export const SarakInput: React.FC<SarakInputProps> = ({
     const design = useSarakUIOptional()?.design;
     const { getInputStyles } = useAtomicStyles();
     const { getInputIconStyles } = useStructuralStyles();
-    const { iconPositionClass, isIconRight } = getInputIconStyles();
+    const { isIconRight } = getInputIconStyles();
     const [isFocused, setIsFocused] = useState(false);
 
     // a11y (Spec 41, Regras 2/5): conecta label↔input via id e o erro via aria-describedby.
@@ -70,19 +103,17 @@ export const SarakInput: React.FC<SarakInputProps> = ({
     const inputId = props.id ?? reactId;
     const errorId = `${inputId}-error`;
 
-    const baseClasses = 'block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))]';
-    const shapeClasses = 'rounded-input py-4';
+    const baseClasses = 'block text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#101622))]';
+    const shapeClasses = 'rounded-input py-[var(--sarak-input-padding,16px)]';
     
     const widthClass = fullWidth ? 'w-full' : '';
     const disabledClass = disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : '';
     
-    // Usa o icon genérico ou fallback para left/right legados
-    const activeIcon = icon || leftIcon || rightIcon;
-    const hasIcon = !!activeIcon;
-    
-    // Se a posição estrutural for right, o padding muda de lado dinamicamente
-    const paddingLeftClass = hasIcon && !isIconRight ? 'pl-11' : 'pl-4';
-    const paddingRightClass = hasIcon && isIconRight ? 'pr-11' : 'pr-4';
+    const iconSlots = resolveIconSlots(icon, leftIcon, rightIcon, isIconRight ? 'right' : 'left');
+
+    // O padding abre espaço no lado de cada ícone renderizado
+    const paddingLeftClass = iconSlots.some((slot) => slot.side === 'left') ? 'pl-11' : 'pl-4';
+    const paddingRightClass = iconSlots.some((slot) => slot.side === 'right') ? 'pr-11' : 'pr-4';
 
     const dynamicStyle: React.CSSProperties = { 
         ...style,
@@ -95,11 +126,14 @@ export const SarakInput: React.FC<SarakInputProps> = ({
             
             <div className="flex-1 flex relative w-full" style={{ flexDirection: 'column' }}>
                 <div className="relative w-full flex items-center">
-                    {hasIcon && (
-                        <div className={`${iconPositionClass} flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#3b82f6))]`}>
-                            {activeIcon}
+                    {iconSlots.map((slot) => (
+                        <div
+                            key={slot.side}
+                            className={`${ICON_SIDE_CLASS[slot.side]} flex items-center ${slot.interactive ? ICON_INTERACTIVE_CLASS : ICON_INERT_CLASS}`}
+                        >
+                            {slot.node}
                         </div>
-                    )}
+                    ))}
                     
                     <input
                         className={`${baseClasses} ${shapeClasses} ${paddingLeftClass} ${paddingRightClass} w-full ${disabledClass}`}
@@ -114,11 +148,7 @@ export const SarakInput: React.FC<SarakInputProps> = ({
                     />
                 </div>
 
-                {error && (
-                    <p id={errorId} className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
-                        {error}
-                    </p>
-                )}
+                <SarakFieldError message={error} fieldId={inputId} />
             </div>
         </SarakFormGroup>
     );

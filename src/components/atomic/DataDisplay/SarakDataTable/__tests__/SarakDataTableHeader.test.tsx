@@ -7,7 +7,7 @@ interface Row {
     name: string;
 }
 
-const columns: Array<SarakColumn<Row>> = [{ id: 'name', header: 'Nome', sortable: true, pinned: 'left' }];
+const columns: Array<SarakColumn<Row>> = [{ id: 'name', header: 'Nome', sortable: true, pinned: 'left', align: 'right' }];
 
 describe('SarakDataTableHeader', () => {
     it('expõe ordenação de coluna e alternância de todas as linhas', () => {
@@ -39,5 +39,6 @@ describe('SarakDataTableHeader', () => {
         expect(onSort).toHaveBeenCalledWith('name');
         expect(onToggleAll).toHaveBeenCalledWith(true);
         expect(screen.getByRole('columnheader', { name: 'Seleção' })).toBeInTheDocument();
+        expect((document.querySelector('[role="columnheader"][data-column-id="name"]') as HTMLElement).style.justifyContent).toBe('flex-end');
     });
 });

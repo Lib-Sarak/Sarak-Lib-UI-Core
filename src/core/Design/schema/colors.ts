@@ -9,141 +9,164 @@ export const ColorsSchema: ComponentSchema = {
     label: 'Paletas e Gradientes',
     tokens: [
         {
-            id: 'colorPalette',
-            label: 'Paleta Ativa (Preset)',
-            type: 'select',
-            description: 'Preset de paleta cromática completa aplicado de uma vez (define combinação coerente de `primaryColor`/`secondaryColor`/`tertiaryColor`). Use como ponto de partida rápido antes de ajustar cores individuais.',
-            axis: 'color',
-            defaultValue: 'default',
-            options: [
-                { value: 'default', label: 'Padrão (Cyberpunk)' },
-                { value: 'neon', label: 'Neon Glow' },
-                { value: 'matrix', label: 'Green Matrix' },
-                { value: 'slate', label: 'Slate Industrial' },
-                { value: 'sunset', label: 'Sunset Orange' }
-            ]
-        },
-        {
             id: 'primaryColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Define a cor de marca principal usada em links, focos, estados ativos e variantes derivadas; confirme o contraste onde ela aparece como texto nos dois modos. O fundo do botão primário é `btnPrimaryBg`.",
             label: 'Cor Primária (Base)',
             type: 'color',
-            description: 'Cor de marca principal do sistema — usada em botões primários, links, elementos de destaque e como base para várias variantes automáticas (`generateVariants: true`). É a cor mais impactante na identidade visual.',
+            description: 'Cor de marca principal do sistema — links, anel de foco, estados ativos e elementos de destaque, e a base das variantes automáticas (`generateVariants: true`). O fundo do botão primário é `btnPrimaryBg` (que costuma repetir esta cor), não este token. É a cor mais impactante na identidade visual.',
             axis: 'color',
-            defaultValue: '#00f2ff',
+            defaultValue: '#19e3f0',
             generateVariants: true,
             cssVars: ['--primary-color', '--theme-primary', '--sarak-primary-color', '--sarak-color-primary']
         },
         {
             id: 'secondaryColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Define a segunda cor de marca usada em elementos de apoio e séries dos gráficos.",
             label: 'Cor Secundária',
             type: 'color',
             description: 'Segunda cor de marca, usada para complementar a primária em elementos de menor ênfase ou para criar contraste em gradientes/composições multicoloridas.',
             axis: 'color',
-            defaultValue: '#7000ff',
+            defaultValue: '#7c5cff',
             generateVariants: true,
             cssVars: ['--secondary-color', '--theme-secondary', '--sarak-secondary-color', '--sarak-color-secondary']
         },
         {
             id: 'tertiaryColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Define uma terceira cor de marca disponível para composições e séries dos gráficos.",
             label: 'Cor Terciária',
             type: 'color',
             description: 'Terceira cor de marca, usada para variar ainda mais paletas de gráficos, ilustrações ou composições que precisam de mais de duas cores de destaque.',
             axis: 'color',
-            defaultValue: '#10b981',
+            defaultValue: '#34d399',
             generateVariants: true,
             cssVars: ['--tertiary-color', '--theme-tertiary', '--sarak-tertiary-color', '--sarak-color-tertiary']
         },
         {
             id: 'accentColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Define a cor de acento usada na malha de fundo e na terceira série de marca dos gráficos.",
             label: 'Cor de Acento (Accent)',
             type: 'color',
-            description: 'Cor de destaque pontual, usada com moderação para chamar atenção a um elemento específico (ex. um badge "novo") sem competir com a cor primária.',
+            description: 'Cor de acento: a terceira cor das séries dos gráficos e uma das manchas da malha de fundo (`bgGradientMode: mesh`), além das variantes `--theme-accent-*` que o consumidor pode ler. Nenhum componente da lib a usa sozinha — um badge "novo" lê o status, não este token.',
             axis: 'color',
-            defaultValue: '#ff00d4',
+            defaultValue: '#ff4fd8',
             cssVars: ['--theme-accent', '--sarak-accent-color']
         },
         {
             id: 'surfaceColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Define a cor de superfície elevada publicada pelo tema e usada pelo motor de gráficos.",
             label: 'Cor de Superfície',
             type: 'color',
             description: 'Cor base das superfícies elevadas do sistema (cards, painéis, modais) — geralmente um tom intermediário entre o fundo geral (`colorBgBody`) e o texto, para criar hierarquia de profundidade.',
             axis: 'color',
-            defaultValue: '#1e293b',
+            defaultValue: '#101622',
             cssVars: ['--theme-surface', '--sarak-surface-color']
         },
         {
             id: 'textureColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Dá cor às texturas de fundo e de cartão que aceitam cor do tema; alguns padrões usam a borda, a primária ou uma cor própria, então confira o desenho escolhido em vez de presumir que ele lê este token.",
+            interactsWith: ['texture', 'cardTextureType'],
             label: 'Cor da Textura',
             type: 'color',
             description: 'Cor usada em overlays de textura/ruído de fundo (ex. grão, padrões sutis) — normalmente aplicada com opacidade baixa, para não competir com o conteúdo principal.',
             axis: 'color',
-            defaultValue: '#ffffff',
+            defaultValue: '#cfe9ff',
+            // Os 24 leitores de CSS pedem o canal (`--theme-texture-color-rgb`) para compor o alfa
+            // de cada textura; sem a variante, a variável nunca existia e toda textura caía na primária.
+            generateVariants: true,
             cssVars: ['--theme-texture-color', '--sarak-texture-color']
         },
         {
             id: 'titleColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Colore títulos e cabeçalhos do sistema, separado da cor dos parágrafos.",
             label: 'Cor do Título',
             type: 'color',
             description: 'Cor padrão de títulos e cabeçalhos de texto em todo o sistema — deve manter contraste alto contra `colorBgBody`/`surfaceColor`.',
             axis: 'color',
-            defaultValue: '#ffffff',
+            defaultValue: '#f2f6fb',
             cssVars: ['--theme-title-color', '--sarak-title-color']
         },
         {
             id: 'colorDepth',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Controla a distância tonal das variantes geradas para as cores, incluindo o hover e o pressionado globais dos botões.",
             label: 'Profundidade da Cor',
             type: 'number',
-            description: 'Fator que controla o quão escuras/claras ficam as variantes derivadas automaticamente das cores base (`generateVariants`) — valores maiores produzem variantes de contraste mais extremo entre si.',
+            description: 'Fator passado ao gerador das variantes de cores declaradas com `generateVariants`. Nas variantes da cor primária, os valores resultantes alimentam `--theme-primary-hover` e `--theme-primary-active`, lidos pelos estados globais de hover e pressionado de `button` em `_elements.css`.',
             axis: 'color',
+            constraints: { min: 0, max: 5, step: 1 },
             defaultValue: 1,
-            min: 1,
-            max: 5,
             cssVars: ['--sarak-color-depth']
         },
         {
             id: 'colorVariation',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Controla a variação de matiz e saturação das variantes geradas, incluindo o hover e o pressionado globais dos botões.",
             label: 'Variação da Cor',
             type: 'number',
-            description: 'Fator que controla o quanto as variantes derivadas automaticamente das cores base variam entre si em matiz/saturação — valores maiores produzem uma família de cores mais diversa a partir da mesma cor base.',
+            description: 'Fator passado ao gerador das variantes de cores declaradas com `generateVariants`. Nas variantes da cor primária, os valores resultantes alimentam `--theme-primary-hover` e `--theme-primary-active`, lidos pelos estados globais de hover e pressionado de `button` em `_elements.css`.',
             axis: 'color',
+            constraints: { min: 1, max: 5, step: 1 },
             defaultValue: 1,
-            min: 1,
-            max: 5,
             cssVars: ['--sarak-color-variation']
         },
         // --- CORES DE SUPERFÍCIE ---
         {
             id: 'colorBgModal',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Pinta o painel de conteúdo de modais e diálogos.",
             label: 'Background Modais',
             type: 'color',
             description: 'Cor de fundo do container de conteúdo de modais/diálogos — diferente do overlay/scrim atrás do modal (`modalOverlayColor` em `overlays.ts`), esta é a cor do próprio painel do modal.',
             axis: 'color',
-            defaultValue: 'rgba(15, 15, 15, 0.8)',
+            defaultValue: 'var(--theme-surface)',
             cssVars: ['--sarak-bg-modal', '--theme-modal-bg']
         },
         // --- CORES DE COMPONENTES ---
         {
             id: 'cardBackgroundColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Pinta o fundo dos cartões e fornece a cor base às suas variantes.",
             label: 'Background dos Cards',
             type: 'color',
             description: 'Cor de fundo padrão de todos os cards do sistema.',
             axis: 'color',
-            defaultValue: 'rgba(15, 23, 42, 0.6)',
+            defaultValue: '#101622',
             // `generateVariants` veio da declaração homônima de `cards.ts`, desduplicada
             // pela plan-07: era ELA que emitia as 51 variantes cromáticas (`-rgb`, `-bg`,
             // `-10`…`-50`, `-hover`, `-active`, `-light`). Remover a duplicata sem herdar
             // esta linha apagava todas — desduplicar é FUNDIR, não descartar.
             generateVariants: true,
-            cssVars: ['--card-bg', '--theme-surface', '--theme-card', '--sarak-card-bg', '--theme-card-bg']
+            cssVars: ['--card-bg', '--theme-card', '--sarak-card-bg', '--theme-card-bg']
         },
         {
             id: 'cardBorderColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Pinta o contorno dos cartões do sistema.",
             label: 'Borda dos Cards',
             type: 'color',
-            description: 'Cor de borda padrão de todos os cards do sistema — costuma ser sutil (baixa opacidade) para demarcar o card sem criar contraste forte. Ver nota de duplicação em `cardBackgroundColor`.',
+            description: 'Cor de borda padrão de todos os cards do sistema — costuma ser sutil (baixa opacidade) para demarcar o card sem criar contraste forte.',
             axis: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.1)',
-            cssVars: ['--card-border-color', '--theme-border', '--sarak-card-border-color', '--theme-card-border']
+            defaultValue: 'rgba(255, 255, 255, 0.09)',
+            cssVars: ['--card-border-color', '--theme-border', '--sarak-card-border-color']
         }
     ]
 };

@@ -3,7 +3,7 @@
 // `getResponsiveSpacingStyles`) e, até esta plan, não ESTABELECIA container nenhum:
 // sem um ancestral com `container-type`, a regra nunca casa — não cai para viewport,
 // fica no valor base para sempre. Medido em consumidor real (`plan-40`): `SarakGrid`
-// `col-12` travado em coluna única de 500px a 1440px, fora do `SarakShell`.
+// `col-12` travado em coluna única de 500px a 1440px, fora do cromo da aplicação.
 //
 // O conserto: cada componente que chama uma dessas quatro funções passou a plantar
 // `@container` — na própria raiz (a maioria) ou, quando o conteúdo com `@min-[…]` vive

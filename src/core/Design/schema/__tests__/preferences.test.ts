@@ -20,13 +20,11 @@ describe('preferences (schema)', () => {
         });
     });
 
-    it('padrão de fábrica: modo e navegação recolhida fixos; o resto, não oferecido', () => {
+    it('padrão de fábrica: todas as preferências ficam fixas na barra', () => {
         const byId = Object.fromEntries(PreferencesSchema.tokens.map((t) => [t.id, t.defaultValue]));
-        expect(byId[PREFERENCE_POSITION_TOKEN_IDS.colorMode]).toBe('pinned');
-        expect(byId[PREFERENCE_POSITION_TOKEN_IDS.navCollapsed]).toBe('pinned');
-        expect(byId[PREFERENCE_POSITION_TOKEN_IDS.fontSize]).toBe('off');
-        expect(byId[PREFERENCE_POSITION_TOKEN_IDS.navigationStyle]).toBe('off');
-        expect(byId[PREFERENCE_POSITION_TOKEN_IDS.language]).toBe('off');
+        Object.values(PREFERENCE_POSITION_TOKEN_IDS).forEach((tokenId) => {
+            expect(byId[tokenId]).toBe('pinned');
+        });
     });
 
     describe('isPreferenceOffered', () => {
@@ -34,11 +32,9 @@ describe('preferences (schema)', () => {
             // `colorMode` tem padrão de fábrica 'pinned' — ausência conta como oferecida.
             expect(isPreferenceOffered(undefined, 'colorMode')).toBe(true);
             expect(isPreferenceOffered({}, 'colorMode')).toBe(true);
-            // `fontSize` tem padrão de fábrica 'off' — ausência NÃO pode contar como oferecida,
-            // senão um design sem as chaves novas (ex.: um modelo aplicado pelo painel que
-            // substitui o design inteiro) passa a oferecer tudo, ao contrário da fábrica.
-            expect(isPreferenceOffered(undefined, 'fontSize')).toBe(false);
-            expect(isPreferenceOffered({}, 'fontSize')).toBe(false);
+            // Todos os controles têm o padrão de fábrica `pinned`.
+            expect(isPreferenceOffered(undefined, 'fontSize')).toBe(true);
+            expect(isPreferenceOffered({}, 'fontSize')).toBe(true);
         });
 
         it('só o valor "off" tira a preferência de circulação', () => {

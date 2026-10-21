@@ -150,33 +150,56 @@ export const shiftColorMode = (
     return rgbToHex(newR, newG, newB, newA);
 };
 
-export const computeColorVariants = (v: string, fallback: string) => {
+/**
+ * Forma das variantes de interação (`hover`/`active`), vinda dos tokens `colorDepth` e
+ * `colorVariation`. Ambos valem 1 por padrão e, em 1, a saída é a de antes.
+ */
+export interface ColorVariantShape {
+    /** Quanto `hover` clareia e `active` escurece: fator `1 ± 0,1 × depth`. */
+    depth?: number;
+    /** Abertura de matiz entre `hover` (+) e `active` (−): `(variation − 1) × 8°`. */
+    variation?: number;
+}
+
+const HUE_STEP_DEGREES = 8;
+
+const TRANSPARENT_VARIANTS = {
+    main: 'transparent',
+    rgb: '0, 0, 0',
+    bg: 'rgba(0, 0, 0, 0)',
+    border: 'rgba(0, 0, 0, 0)',
+    10: 'rgba(0, 0, 0, 0)',
+    20: 'rgba(0, 0, 0, 0)',
+    30: 'rgba(0, 0, 0, 0)',
+    40: 'rgba(0, 0, 0, 0)',
+    50: 'rgba(0, 0, 0, 0)',
+    hover: 'rgba(0, 0, 0, 0.05)',
+    active: 'rgba(0, 0, 0, 0.1)',
+    focus: 'rgba(0, 0, 0, 0.2)',
+    light: 'rgba(0, 0, 0, 0)'
+};
+
+/** Multiplica os canais por `factor`, depois de girar o matiz em `hueShift` graus (0 = sem conversão HSL). */
+const shadeHex = (r: number, g: number, b: number, factor: number, hueShift: number): string => {
+    const [sr, sg, sb] = hueShift === 0 ? [r, g, b] : rotateHue(r, g, b, hueShift);
+    const channel = (c: number) => Math.round(Math.min(255, Math.max(0, c * factor))).toString(16).padStart(2, '0');
+    return `#${channel(sr)}${channel(sg)}${channel(sb)}`;
+};
+
+const rotateHue = (r: number, g: number, b: number, degrees: number) => {
+    const [h, s, l] = rgbToHsl(r, g, b);
+    return hslToRgb((h + degrees + 360) % 360, s, l);
+};
+
+export const computeColorVariants = (v: string, fallback: string, shape: ColorVariantShape = {}) => {
     const { r, g, b, a } = parseToRgba(v || fallback);
-    const resolvedColor = rgbToHex(r, g, b, a);
+    if (a === 0) return TRANSPARENT_VARIANTS;
 
-    if (a === 0) {
-        return {
-            main: 'transparent',
-            rgb: '0, 0, 0',
-            bg: 'rgba(0, 0, 0, 0)',
-            border: 'rgba(0, 0, 0, 0)',
-            10: 'rgba(0, 0, 0, 0)',
-            20: 'rgba(0, 0, 0, 0)',
-            30: 'rgba(0, 0, 0, 0)',
-            40: 'rgba(0, 0, 0, 0)',
-            50: 'rgba(0, 0, 0, 0)',
-            hover: 'rgba(0, 0, 0, 0.05)',
-            active: 'rgba(0, 0, 0, 0.1)',
-            focus: 'rgba(0, 0, 0, 0.2)',
-            light: 'rgba(0, 0, 0, 0)'
-        };
-    }
-
-    const adjust = (c: number, f: number) => Math.round(Math.min(255, Math.max(0, c * f)));
-    const toH = (n: number) => n.toString(16).padStart(2, '0');
+    const depth = shape.depth ?? 1;
+    const hueSpread = ((shape.variation ?? 1) - 1) * HUE_STEP_DEGREES;
 
     return {
-        main: resolvedColor,
+        main: rgbToHex(r, g, b, a),
         rgb: `${r}, ${g}, ${b}`,
         bg: `rgba(${r}, ${g}, ${b}, 0.15)`,
         border: `rgba(${r}, ${g}, ${b}, 0.25)`,
@@ -185,8 +208,8 @@ export const computeColorVariants = (v: string, fallback: string) => {
         30: `rgba(${r}, ${g}, ${b}, 0.30)`,
         40: `rgba(${r}, ${g}, ${b}, 0.40)`,
         50: `rgba(${r}, ${g}, ${b}, 0.50)`,
-        hover: `#${toH(adjust(r, 1.1))}${toH(adjust(g, 1.1))}${toH(adjust(b, 1.1))}`,
-        active: `#${toH(adjust(r, 0.9))}${toH(adjust(g, 0.9))}${toH(adjust(b, 0.9))}`,
+        hover: shadeHex(r, g, b, 1 + 0.1 * depth, hueSpread),
+        active: shadeHex(r, g, b, 1 - 0.1 * depth, -hueSpread),
         focus: `rgba(${r}, ${g}, ${b}, 0.4)`,
         light: `rgba(${r}, ${g}, ${b}, 0.05)`
     };

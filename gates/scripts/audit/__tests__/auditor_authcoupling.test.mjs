@@ -31,6 +31,14 @@ describe('auditor_authcoupling — R32', () => {
     expect(stdout).toContain('rota de autenticação embutida');
   });
 
+  it('acusa rota de autenticação dentro de src/core', () => {
+    const { status, stdout } = runGateAgainstFixture(GATE, {
+      'src/core/profile.ts': "export const loadProfile = () => api.get('/auth/me');",
+    });
+    expect(status).toBe(1);
+    expect(stdout).toContain('rota de autenticação embutida');
+  });
+
   it('acusa header Authorization literal', () => {
     const { status, stdout } = runGateAgainstFixture(GATE, {
       'src/components/Bad2.tsx': "fetch(endpoint, { headers: { 'Authorization': token } });",

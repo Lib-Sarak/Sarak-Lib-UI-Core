@@ -13,7 +13,7 @@ import { runGateAgainstFixture } from './helpers/runGateFixture.mjs';
 const GATE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'auditor_ghostvars.mjs');
 
 const SCHEMA = {
-  'src/core/Design/schema/fixture.ts': `export const FIXTURE_SCHEMA = [{ id: 'realToken' }];`,
+  'src/core/Design/schema/fixture.ts': `export const FIXTURE_SCHEMA = [{ id: 'realToken', type: 'color' }];`,
 };
 
 describe('auditor_ghostvars — R7 vão 2 (manifesto só conta como fonte quando comprovado)', () => {

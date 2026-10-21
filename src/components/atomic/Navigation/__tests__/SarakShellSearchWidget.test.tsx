@@ -9,17 +9,6 @@ const customRender = (ui: React.ReactElement) => {
     return render(<SarakUIProvider>{ui}</SarakUIProvider>);
 };
 
-// Mock sarakGetRegisteredModules
-vi.mock('../../../../core/Discovery/registry', () => ({
-    sarakGetRegisteredModules: vi.fn(() => [
-        { id: 'app1', label: 'Dashboard App', category: 'Core' }
-    ]),
-    sarakRegisterLocalComponent: vi.fn(),
-    unregisterLocalComponent: vi.fn(),
-    registerSarakModule: vi.fn(),
-    sarakSubscribeToRegistry: vi.fn(() => () => {})
-}));
-
 describe('ShellSearchWidget', () => {
     it('renderiza na variante icon e chama onClick', () => {
         const onClickMock = vi.fn();
@@ -31,13 +20,31 @@ describe('ShellSearchWidget', () => {
     });
 
     it('renderiza na variante bar e permite busca', () => {
-        customRender(<SarakShellSearchWidget variant="bar" onClick={vi.fn()} />);
+        customRender(<SarakShellSearchWidget variant="bar" onClick={vi.fn()} items={[{ id: 'app1', label: 'Dashboard App', category: 'Core' }]} />);
         const input = screen.getByPlaceholderText('Busca inteligente…');
         expect(input).toBeInTheDocument();
 
         fireEvent.change(input, { target: { value: 'Dash' } });
         expect(screen.getByText('Resultados')).toBeInTheDocument();
         expect(screen.getByText('Dashboard App')).toBeInTheDocument();
+    });
+
+    it('selecionar resultado clicável chama onSelect com o item e fecha a lista', () => {
+        const onSelect = vi.fn();
+        customRender(
+            <SarakShellSearchWidget
+                variant="bar"
+                onClick={vi.fn()}
+                onSelect={onSelect}
+                items={[{ id: '/projetos', label: 'Projetos', category: 'Gestão' }]}
+            />,
+        );
+        fireEvent.change(screen.getByPlaceholderText('Busca inteligente…'), { target: { value: 'Projetos' } });
+        const result = screen.getByRole('link', { name: /Projetos/ });
+
+        fireEvent.click(result);
+        expect(onSelect).toHaveBeenCalledWith({ id: '/projetos', label: 'Projetos', category: 'Gestão' });
+        expect(screen.queryByRole('link', { name: /Projetos/ })).not.toBeInTheDocument();
     });
 });
 
@@ -55,5 +62,14 @@ describe('ShellSearchWidget — idioma que vale', () => {
     it('sem Provider, a variante icon sai em português (R34)', () => {
         render(<SarakShellSearchWidget variant="icon" onClick={vi.fn()} />);
         expect(screen.getByRole('button', { name: /Buscar…/i })).toBeInTheDocument();
+    });
+});
+
+describe('ShellSearchWidget — teclado de busca no celular', () => {
+    it('o campo da variante bar é type="search" e a tecla de ação do teclado é "Buscar"', () => {
+        customRender(<SarakShellSearchWidget variant="bar" onClick={vi.fn()} />);
+        const input = screen.getByPlaceholderText('Busca inteligente…');
+        expect(input).toHaveAttribute('type', 'search');
+        expect(input).toHaveAttribute('enterkeyhint', 'search');
     });
 });

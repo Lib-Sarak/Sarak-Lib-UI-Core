@@ -1,13 +1,15 @@
 import React from 'react';
-import { render, screen, renderHook } from '@testing-library/react';
+import { render, screen, renderHook, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { SarakMenuItem } from '../SarakMenuItem';
 import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
-import { SARAK_GLOBAL_THEMES } from '../../../../core/Design/presets/themes';
+import { SARAK_ALL_THEMES } from '../../../../core/Design/presets/themes/all';
 import { resolveThemeForMode } from '../../../../core/Design/presets/themes/color-engine';
 import type { SarakTokenValue } from '../../../../core/Design/types';
 import { sarakGetDefaultDesignState } from '../../../../core/Design/master-map';
 import { parseToRgba } from '../../../../core/Provider/utils/color-engine';
+
+const RAIO_DO_ITEM = 'rounded-[var(--sarak-nav-item-radius,12px)]';
 
 describe('SarakMenuItem', () => {
     it('monta sem SarakUIProvider (é átomo)', () => {
@@ -71,10 +73,10 @@ describe('SarakMenuItem', () => {
         expect(classes).toContain('shrink-0');
     });
 
-    it('orientação horizontal: caixa normal e corpo legível — pílula continua, caixa alta sai', () => {
+    it('orientação horizontal: caixa normal e corpo legível — raio pelo token, caixa alta sai', () => {
         render(<SarakMenuItem label="Aba" orientation="horizontal" />);
         const classes = screen.getByRole('button', { name: 'Aba' }).className.split(' ');
-        expect(classes).toContain('rounded-full');
+        expect(classes).toContain(RAIO_DO_ITEM);
         expect(classes).toContain('normal-case');
         expect(classes).toContain('tracking-normal');
         expect(classes).not.toContain('uppercase');
@@ -92,6 +94,81 @@ describe('SarakMenuItem', () => {
     it('title cai para o texto do rótulo quando não informado', () => {
         render(<SarakMenuItem label="Módulo" />);
         expect(screen.getByRole('button', { name: 'Módulo' })).toHaveAttribute('title', 'Módulo');
+    });
+
+    it('com href, renderiza link; clique primário simples chama onNavigate e previne a navegação nativa', () => {
+        const onNavigate = vi.fn();
+        render(<SarakMenuItem label="Projetos" href="/projetos" onNavigate={onNavigate} />);
+        const link = screen.getByRole('link', { name: 'Projetos' });
+
+        expect(link).toHaveAttribute('href', '/projetos');
+        expect(fireEvent.click(link)).toBe(false);
+        expect(onNavigate).toHaveBeenCalledWith('/projetos');
+    });
+
+    it.each([
+        ['Ctrl', { ctrlKey: true }],
+        ['Cmd', { metaKey: true }],
+        ['Shift', { shiftKey: true }],
+        ['Alt', { altKey: true }],
+    ])('mantém clique com %s para o navegador', (_modifier, init) => {
+        const onNavigate = vi.fn();
+        render(<SarakMenuItem label="Projetos" href="/projetos" onNavigate={onNavigate} />);
+        const link = screen.getByRole('link', { name: 'Projetos' });
+
+        expect(fireEvent.click(link, init)).toBe(true);
+        expect(onNavigate).not.toHaveBeenCalled();
+    });
+
+    it('mantém clique do meio e clique direito para o navegador', () => {
+        const onNavigate = vi.fn();
+        render(<SarakMenuItem label="Projetos" href="/projetos" onNavigate={onNavigate} />);
+        const link = screen.getByRole('link', { name: 'Projetos' });
+
+        expect(fireEvent(link, new MouseEvent('auxclick', { bubbles: true, button: 1, cancelable: true }))).toBe(true);
+        expect(fireEvent.click(link, { button: 2 })).toBe(true);
+        expect(fireEvent.contextMenu(link, { button: 2 })).toBe(true);
+        expect(onNavigate).not.toHaveBeenCalled();
+    });
+
+    it('target diferente de _self mantém o comportamento nativo e acrescenta rel seguro', () => {
+        const onNavigate = vi.fn();
+        render(<SarakMenuItem label="Projetos" href="/projetos" target="_blank" onNavigate={onNavigate} />);
+        const link = screen.getByRole('link', { name: 'Projetos' });
+
+        expect(link).toHaveAttribute('target', '_blank');
+        expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+        expect(fireEvent.click(link)).toBe(true);
+        expect(onNavigate).not.toHaveBeenCalled();
+    });
+
+    it('link desabilitado não tem href navegável, não recebe foco e ignora clique', () => {
+        const onNavigate = vi.fn();
+        render(<SarakMenuItem label="Projetos" href="/projetos" disabled onNavigate={onNavigate} />);
+        const link = screen.getByRole('link', { name: 'Projetos' });
+
+        expect(link).not.toHaveAttribute('href');
+        expect(link).toHaveAttribute('aria-disabled', 'true');
+        expect(link).toHaveAttribute('tabindex', '-1');
+        fireEvent.click(link);
+        expect(onNavigate).not.toHaveBeenCalled();
+    });
+
+    it('badge aparece no item e integra o nome acessível', () => {
+        render(<SarakMenuItem label="Projetos" href="/projetos" badge={4} />);
+        expect(screen.getByRole('link', { name: 'Projetos 4' })).toBeInTheDocument();
+        expect(screen.getByText('4')).toBeInTheDocument();
+    });
+});
+
+describe('SarakMenuItem — navegação com clique do meio', () => {
+    it('mantém o clique para o navegador e não chama onNavigate', () => {
+        const onNavigate = vi.fn();
+        render(<SarakMenuItem label="Projetos" href="/projetos" onNavigate={onNavigate} />);
+        const link = screen.getByRole('link', { name: 'Projetos' });
+
+        expect(fireEvent.click(link, { button: 1 })).toBe(true);
+        expect(onNavigate).not.toHaveBeenCalled();
     });
 });
 
@@ -258,7 +335,7 @@ function evaluateActiveDistinction(
  * no console — nunca medido contra o preto que `parseToRgba` devolveria.
  */
 describe('SarakMenuItem — realce do item ativo em TODO tema shippado (varredura, não amostra)', () => {
-    it.each(SARAK_GLOBAL_THEMES.map((theme) => [theme.id, theme] as const))(
+    it.each(SARAK_ALL_THEMES.map((theme) => [theme.id, theme] as const))(
         `tema "%s": o item ativo se distingue do inativo nas DUAS orientações (ΔE > ${JND_DELTA_E})`,
         (_id, theme) => {
             const design = { ...sarakGetDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
@@ -334,7 +411,7 @@ const TEMAS_AINDA_NAO_REAUTORADOS: readonly string[] = [];
  * nativo deixaria a metade da experiência real sem régua nenhuma.
  */
 describe('SarakMenuItem — realce do HOVER (fundo) em todo tema já reautorado, nos dois modos', () => {
-    const temasReautorados = SARAK_GLOBAL_THEMES.filter((theme) => !TEMAS_AINDA_NAO_REAUTORADOS.includes(theme.id));
+    const temasReautorados = SARAK_ALL_THEMES.filter((theme) => !TEMAS_AINDA_NAO_REAUTORADOS.includes(theme.id));
 
     it('a lista de temas reautorados não está vazia (a varredura abaixo não pode virar no-op silencioso)', () => {
         expect(temasReautorados.length).toBeGreaterThan(0);
@@ -393,5 +470,33 @@ describe('SarakMenuItem — a régua não mede cor não-conversível contra pret
         }
 
         warnSpy.mockRestore();
+    });
+});
+
+describe('SarakMenuItem — raio do item pelo token `navItemRadius`', () => {
+    const FORMAS: Array<[string, Pick<React.ComponentProps<typeof SarakMenuItem>, 'orientation' | 'collapsed'>]> = [
+        ['lateral', { orientation: 'vertical' }],
+        ['topo', { orientation: 'horizontal' }],
+        ['recolhido no topo', { orientation: 'horizontal', collapsed: true }],
+    ];
+
+    it.each(FORMAS)('%s: o raio vem da variável do token, sem raio fixo no átomo', (_forma, props) => {
+        render(<SarakMenuItem label="Item" icon={<span />} {...props} />);
+        const classes = screen.getByRole('button', { name: 'Item' }).className.split(' ');
+        expect(classes).toContain(RAIO_DO_ITEM);
+        expect(classes.filter((name) => /^rounded-(?!\[)/.test(name))).toEqual([]);
+    });
+
+    it('o motor emite a variável com o padrão (12px) e com o valor que o tema declara', () => {
+        const emitted = (design: Record<string, unknown>) =>
+            renderHook(() => useDesignVariables({ ...sarakGetDefaultDesignState(), ...design })).result.current.variables['--sarak-nav-item-radius'];
+        expect(emitted({})).toBe('12px');
+        expect(emitted({ navItemRadius: 0 })).toBe('0px');
+        expect(emitted({ navItemRadius: 20 })).toBe('20px');
+    });
+
+    it.each(['sarak-sovereign', 'cyberpunk-neon'])('o tema "%s" declara o raio do item', (id) => {
+        const theme = SARAK_ALL_THEMES.find((entry) => entry.id === id);
+        expect((theme?.design as Record<string, unknown>).navItemRadius).toBeTypeOf('number');
     });
 });

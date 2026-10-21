@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core (todo o módulo)"
 status: "🟢 Vigente"
 prioridade: "Máxima"
 tags: ["spec", "regras", "invariantes", "contrato", "gates", "conduta"]
-relacionados: ["[[01-gates-e-baseline]]", "[[02-enforcement-por-commit]]", "[[00-mapa-do-modulo]]", "[[03-superficie-publica]]", "[[04-contrato-de-tokens-e-paridade]]", "[[02-design-engine]]", "[[05-build-e-distribuicao]]"]
+relacionados: ["[[01-gates-e-baseline]]", "[[02-enforcement-por-commit]]", "[[17-contrato-de-operacao-git]]", "[[00-mapa-do-modulo]]", "[[03-superficie-publica]]", "[[04-contrato-de-tokens-e-paridade]]", "[[02-design-engine]]", "[[05-build-e-distribuicao]]"]
 ---
 
 # 1. Propósito
@@ -46,7 +46,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 
 ## 1.3 A contagem
 
-**37 regras: 34 verificáveis (§2) e 3 de conduta (§3).**
+**44 regras: 41 verificáveis (§2) e 3 de conduta (§3).**
 
 > ✅ **Atualizado em 2026-08-07** (síntese das plans 12 e 16): R18, R27, R28 e R32 ganharam gate e viraram ✅;
 > R10 ganhou gate parcial (HTML nativo cru) e virou ⚠️. Só **R31** seguia ⏳ — parada obrigatória da
@@ -57,7 +57,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 > reprovados. Na mesma síntese nasceu **R33** (payload de tema é contrato público). **A fila de ⏳ zerou.**
 >
 > ✅ **E ficou verde em 2026-08-11 (`plan-24-1`): 188 → 0**, nos dois modos. **R31 continua ⚠️, e de
-> propósito** — 25 pares-tema seguem pulados por fundo não determinístico. **Conformidade verde não é
+> propósito** — o par de texto de status segue fora da lista medida (R31, item 2). **Conformidade verde não é
 > cobertura plena**, e o marcador descreve a segunda.
 >
 > 🔴 **Recontagem de 2026-08-09 — seis linhas desta tabela descreviam gates que já não existiam assim.** O
@@ -81,7 +81,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 | Estado | Quantas | Quais |
 | --- | --- | --- |
 | ✅ gate pleno | **23** | R1 · R2 · R3 · R5 · R6 · **R8** · R9 · R12 · R13 · R18 · R19 · R20 · R21 · R22 · R25 · R26 · R27 · R28 · **R29** · R32 · **R33** · **R34** · **R37** |
-| ⚠️ escopo menor que a regra | **11** | R4 · R7 · R10 · R14 · R17 · R23 · **R24** · R30 · **R31** · **R35** · **R36** |
+| ⚠️ escopo menor que a regra | **18** | R4 · R7 · R10 · R14 · R17 · R23 · **R24** · R30 · **R31** · **R35** · **R36** · **R38** · **R39** · **R40** · **R41** · **R42** · **R43** · **R44** |
 | ⏳ gate a construir | **0** | — *(a categoria fica; é para cá que volta a próxima regra fechada sem gate)* |
 | 🔴 conduta | **3** | R11 · R15 · R16 |
 
@@ -94,7 +94,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 > **R8.1**, que não entra na contagem das regras numeradas. Quem confere a contagem usa
 > `grep -c "^## R"`, que conta só as numeradas.
 
-**A numeração é identidade e é definitiva.** R14 é R14 para sempre: o `.githooks/pre-commit:68-71` imprime os números na mensagem de bloqueio, e há citação em skills, specs e no próprio código. Regra que sai de categoria **leva o número consigo** — foi o que aconteceu com R10, R11, R15 e R16.
+**A numeração é identidade e é definitiva.** R14 é R14 para sempre: o `.githooks/pre-commit` imprime os números (a linha `Regra violada` de cada bloco) na mensagem de bloqueio, e há citação em skills, specs e no próprio código. Regra que sai de categoria **leva o número consigo** — foi o que aconteceu com R10, R11, R15 e R16.
 
 # 2. Regras verificáveis
 
@@ -541,7 +541,7 @@ repositório usa **três caminhos**, escolhidos pelo que a ocorrência **é**:
 <span>Search Engine</span>
 ```
 
-**Cobrada por:** `npm run zero-brand:check` (`gates/scripts/contrato/check-zero-brand.mjs`). Varre `src/` por AST — só `StringLiteral`, `JsxText` e partes fixas de template literal contam, para **não** acusar comentário que documenta a correção. O número de arquivos varridos e a confirmação de zero violação vivem em [[01-gates-e-baseline]] §3 — **o que importa é o de violações**, não o de arquivos. A allowlist tem 3 painéis **internos** do Design Engine (`KitchenSinkPreview`, `LanguageTab`, `LayoutTab`) — ferramenta de autoria da própria lib, nunca embutida pelo consumidor — e o gate também derruba **entrada de allowlist obsoleta**.
+**Cobrada por:** `npm run zero-brand:check` (`gates/scripts/contrato/check-zero-brand.mjs`). Varre `src/` por AST — só `StringLiteral`, `JsxText` e partes fixas de template literal contam, para **não** acusar comentário que documenta a correção. O número de arquivos varridos e a confirmação de zero violação vivem em [[01-gates-e-baseline]] §3 — **o que importa é o de violações**, não o de arquivos. A allowlist tem painéis **internos** do Design Engine (hoje `KitchenSinkPreview` e `LayoutTab`; a fonte é `check-zero-brand.mjs`) — ferramenta de autoria da própria lib, nunca embutida pelo consumidor — e o gate também derruba **entrada de allowlist obsoleta**.
 
 ---
 
@@ -799,7 +799,16 @@ ERRADO   "edite `src/core/Manifest/Registry/nativeComponents.ts`" → arquivo re
 
 Metavariável (`<Categoria>`) e glob (`*`) são **ignorados de propósito** (`:49-60`): um verificador que adivinha produz falso-positivo, e gate com falso-positivo é gate que se aprende a contornar — o autor simplesmente para de usar crase, que é o que dá poder a este gate.
 
-> ⚠️ **Os dois vãos declarados.** (1) **Só `sarak-dev/` é varrido** por este gate — `docs/`, `sarak-ui/` e as specs não são. (2) **Ponteiro de seção (`§N.N`) não é validado por ele**: quem cobre isso é o `auditor_sectionpointers.mjs`, e só a **autorreferência** — ponteiro `§N` que aponta para outro documento fica fora, declarado no cabeçalho do script. O achado **29**, que era a instância viva deste vão (um `§5.1` inexistente saindo em dois artefatos gerados), **fechou** — ver [[15-divida-conhecida]].
+**Dois alcances além do kit do mantenedor**, com a mesma regra:
+
+- **A §4 das plans ativas** — `npm run plan-index:check` exige que todo caminho em crase com barra e todo
+  `[[wikilink]]` da tabela de referências exista. A linha *Skill* não é resolvida.
+- **Os nomes públicos do que o consumidor recebe** — `npm run kit-names:check` (no `build`) exige que todo
+  nome importado de `@sarak/lib-ui-core`, em `README.md`, `docs/*.md`, `sarak-ui/**` e no texto gerado pelo
+  `init`, exista no barril; em crase, acusa o nome antigo de uma renomeação e o nome de formato público
+  inexistente em `src/`. Todo `migracoes.md` fica fora, e prosa sem crase não é lida.
+
+> ⚠️ **Os dois vãos declarados.** (1) **Caminho e comando só são validados em `sarak-dev/`** — em `docs/`, `sarak-ui/` e nas specs fora da §4 de uma plan, nada confere que o arquivo citado existe. (2) **Ponteiro de seção (`§N.N`) não é validado por ele**: quem cobre isso é o `auditor_sectionpointers.mjs`, e só a **autorreferência** — ponteiro `§N` que aponta para outro documento fica fora, declarado no cabeçalho do script. O achado **29**, que era a instância viva deste vão (um `§5.1` inexistente saindo em dois artefatos gerados), **fechou** — ver [[15-divida-conhecida]].
 
 ---
 
@@ -833,11 +842,11 @@ h1,h2 { margin: 0 }
 
 **Estado:** ✅ gate pleno, via suíte.
 
-**Enunciado.** Carregar **qualquer** tema shippado não emite aviso `fora do contrato` nenhum no `console.warn`. O conjunto é `GLOBAL_THEMES`, e o teste itera sobre ele — não sobre uma lista fixada aqui.
+**Enunciado.** Carregar **qualquer** tema shippado não emite aviso `fora do contrato` nenhum no `console.warn`. O conjunto é `SARAK_ALL_THEMES` (`themes/all.ts`, o catálogo inteiro — só de ferramenta), e o teste itera sobre ele — não sobre uma lista fixada aqui.
 
 **Por quê.** É o teste de coerência entre R5 e R6: se um tema **da lib** dispara o descarte de R6, a lib está entregando ao consumidor um ponto de partida que o próprio motor rejeita — e o consumidor vê o aviso, não sabe que é nosso, e vai caçar o defeito no código dele. Aviso que aparece sempre também vira aviso que ninguém lê, e aí o dia em que o warn for **dele** já não terá efeito.
 
-**Cobrada por:** o gate de suíte `src/core/Provider/utils/__tests__/shippedThemesConsoleClean.test.ts`. Ele monta o boot real (`{...masterDefaults, ...themeDesignTokens, ...config}` passado por `validateDesign`, como o `getSeedConfig` do `useDesignManager`), espia `console.warn` e afirma zero aviso — com um caso por tema, via `it.each(GLOBAL_THEMES)`.
+**Cobrada por:** o gate de suíte `src/core/Provider/utils/__tests__/shippedThemesConsoleClean.test.ts`. Ele monta o boot real (`{...masterDefaults, ...themeDesignTokens, ...config}` passado por `validateDesign`, como o `getSeedConfig` do `useDesignManager`), espia `console.warn` e afirma zero aviso — com um caso por tema, via `it.each(SARAK_ALL_THEMES)`.
 
 ---
 
@@ -845,11 +854,11 @@ h1,h2 { margin: 0 }
 
 **Estado:** ✅ gate pleno, via suíte.
 
-**Enunciado.** Os nomes de ícone que o consumidor pode escrever são os de `ICON_NAMES`, e **exatamente** eles: o catálogo gerado publica essa lista, e **as três famílias** (Lucide, Phosphor, Tabler) cobrem 1:1:1 os mesmos nomes.
+**Enunciado.** Os nomes **curados** de ícone são os de `SARAK_ICON_NAMES`, e **exatamente** eles: o catálogo gerado publica essa lista, e **as três famílias** (Lucide, Phosphor, Tabler) cobrem 1:1:1 os mesmos nomes. O consumidor acrescenta os seus por `sarakRegisterIcons` ([[03-superficie-publica]] §6.2): esses são dele e não entram no catálogo.
 
 **Por quê.** O ícone era a exceção não documentada da regra dura de tokens — *todo valor que o consumidor escreve tem de estar no catálogo*. E o defeito de nome de ícone é da pior classe: ele **não quebra a tela**, ele silenciosamente não desenha nada. Paridade entre famílias é o que permite trocar a família inteira num tema sem descobrir buracos um a um.
 
-**Cobrada por:** dois gates de suíte — `src/components/atomic/Icon/__tests__/iconCatalogParity.test.ts` (o `docs/component-catalog.json` publica exatamente `ICON_NAMES`, **na mesma ordem**; é a versão em suíte do `catalog:check`, que pega a defasagem sem depender de alguém rodar o build) e `iconContract.test.tsx` (cada família cobre exatamente `ICON_NAMES`, e nome desconhecido **degrada com aviso** em vez de estourar).
+**Cobrada por:** dois gates de suíte — `src/components/atomic/Icon/__tests__/iconCatalogParity.test.ts` (o `docs/component-catalog.json` publica exatamente `SARAK_ICON_NAMES`, **na mesma ordem**; é a versão em suíte do `catalog:check`, que pega a defasagem sem depender de alguém rodar o build) e `iconContract.test.tsx` (cada família cobre exatamente `SARAK_ICON_NAMES`, e nome desconhecido **degrada com aviso**, desenhando `AlertCircle`, em vez de estourar).
 
 ---
 
@@ -920,7 +929,8 @@ ERRADO   npx tsx scripts/generate-token-types.ts   # gera, e nada confere depois
 
 **Cobrada por:** os 5 geradores têm modo `--check`, e os 5 rodam — `catalog:check` · `guide:check` ·
 `token-types:check` dentro do `build`; `build-info:check` e `dev-kit:check` dentro do `gates:full`. A tabela
-completa de gerador × `--check` está em [[01-gates-e-baseline]] §2.2. Achado 22 em [[15-divida-conhecida]]
+completa de gerador × `--check` está em [[01-gates-e-baseline]] §2.2. (O `generate-plan-index.mjs --check`
+também existe, mas gera o índice de `specs/`, não artefato da lib — por isso fica fora da conta.) Achado 22 em [[15-divida-conhecida]]
 registra o fecho.
 
 > **`src/core/Provider/manifest.ts` NÃO entra nesta regra.** Conferido no arquivo em 2026-08-02: ele é **escrito à mão** (`DESIGN_MANIFEST`, "Sovereign Design Manifest v10.1") — não tem marca de gerado e não há gerador para ele em `scripts/`. O único arquivo de `src/` com a marca `ARQUIVO GERADO AUTOMATICAMENTE` é o `design-token-ids.ts`.
@@ -968,16 +978,15 @@ dois modos** — baseline `0` no nativo e `0` no oposto, valor corrente em `npm 
 > **vermelho com 188**, por desenho). ⚠️ desde então — ⏳ significa *"a verificação ainda não foi
 > construída"* (§1.2), e ela foi.
 >
-> **Por que NÃO subiu para ✅ quando os temas ficaram verdes** *(revisor, `plan-24-1`)*. A `plan-24-1`
-> previa ✅ na sua meta, e o resultado não autoriza: **25 pares-tema seguem PULADOS** — fundo não
-> determinístico, declarado em vez de chutado — e o par de texto de status continua fora. O gate **não vê**
-> parte do que a regra exige, que é a definição literal de ⚠️ (§1.2). Marcar ✅ aqui seria o *"✅ falso"* que
-> esta spec proíbe no aviso da §1.2. **O marcador descreve a verificação, não a conformidade** — e a
-> conformidade, hoje, está verde.
+> **Por que NÃO sobe para ✅ com os temas verdes.** Nenhum par-tema é mais pulado por cadeia de fundo
+> incompleta, mas o par de texto de status continua fora de `PAIRS` (item 2 abaixo). O gate **não vê** parte
+> do que a regra exige, que é a definição literal de ⚠️ (§1.2). Marcar ✅ aqui seria o *"✅ falso"* que esta
+> spec proíbe no aviso da §1.2. **O marcador descreve a verificação, não a conformidade** — e a conformidade,
+> hoje, está verde.
 
-**Enunciado.** **Todo tema shippado** (o conjunto `GLOBAL_THEMES`) garante contraste **WCAG AA** (4,5:1 para texto normal, 3:1 para texto grande) nos pares texto/fundo que produz. A lib **não promete AA** para tema escrito pelo consumidor.
+**Enunciado.** **Todo tema shippado** (o conjunto `SARAK_ALL_THEMES`, em `themes/all.ts`) garante contraste **WCAG AA** (4,5:1 para texto normal, 3:1 para texto grande) nos pares texto/fundo que produz. A lib **não promete AA** para tema escrito pelo consumidor.
 
-> ⚠️ **Não confunda dois conjuntos.** *"Os temas shippados"* é `GLOBAL_THEMES` inteiro, e cresce. *"Os **18** legados"* é a lista fechada de isenção de **contraparte** do `auditor_contraste` — conjunto real, nomeado, que **só encolhe**. Escrever "18" onde se quer dizer "shippados" é o erro que esta regra já cometeu.
+> ⚠️ **Não confunda dois conjuntos.** *"Os temas shippados"* é `SARAK_ALL_THEMES` (`themes/all.ts`, o catálogo inteiro — só de ferramenta) inteiro, e cresce. *"Os legados"* é a lista fechada de isenção de **contraparte** do `auditor_contraste` — conjunto real, nomeado, que **só encolhe**. Os dois tamanhos estão na saída do comando, nunca nesta prosa.
 
 **Por quê.** É o caminho do meio, e as duas metades importam. A metade que **não** se promete já estava registrada em [[10-seguranca-e-acessibilidade]] §2.4d: *"o tema é dado do consumidor; prometer AA exigiria a lib recusar valores dele, o que contradiz o contrato de tema"* (R6 descarta o que está **fora do contrato**, não o que está feio). Isso está certo — e **não cobre os temas que são da lib**, entregues como ponto de partida. Aquela spec chegou a admitir que a lib não sabia dizer se os próprios temas passavam AA. R31 fecha essa metade, e só ela.
 
@@ -993,11 +1002,13 @@ ERRADO   silêncio                     — o consumidor assume que passa
 dentro do `npm run audit`, com teste próprio. **Baseline: `reprovados: 0` e `reprovadosModoOposto: 0`** — o
 gate mede **duas passadas**, o modo nativo do tema e a contraparte gerada.
 
-**A fronteira, decidida pelo dono e agora escrita:** **36 pares reais** texto/fundo, levantados cruzando
+**A fronteira, decidida pelo dono e agora escrita:** **os pares reais** texto/fundo (36 na decisão; desde a `plan-114`, os que os componentes desenham — a contagem sai na execução), levantados cruzando
 `src/core/Design/catalog/partitions` (categorias e `relatedTokens`), a `description` de cada token no schema e o código dos
 componentes — **não** "todo par possível". Limiar **4,5:1 em todos**, sem relaxamento: a WCAG só permite 3:1
 para texto grande (≥24px), e onde `textColorMuted` renderiza são 9–14px. Cor com alfa é **composta** sobre a
-cadeia de fundo (`efetiva = alfa × cor + (1 − alfa) × fundo`), não pulada.
+cadeia de fundo (`efetiva = alfa × cor + (1 − alfa) × fundo`), não pulada. **Toda cadeia termina em
+`colorBgBody`**, a base que a pilha real de superfícies sempre tem por baixo: barra, botão, superfície ou item
+ativo translúcidos são compostos sobre o corpo.
 
 **Dois vãos FECHARAM na `plan-24-1` (2026-08-11)** — e os dois eram do motor, não do gate:
 
@@ -1013,12 +1024,13 @@ cadeia de fundo (`efetiva = alfa × cor + (1 − alfa) × fundo`), não pulada.
 
 **O que o gate ainda NÃO vê** — e é por isso que a linha segue ⚠️:
 
-1. **25 pares-tema PULADOS.** Valor em `hsl()`, `var()` ou gradiente, ou cadeia cujo elo final segue
-   translúcido: o gate **declara** em vez de chutar um fundo. **Pulado não é aprovado** — é não medido.
-2. **`statusErrorColor`/`statusSuccessColor` ficam fora**, declarados com número (**7/18** e **5/18**,
-   medidos antes da correção dos temas): o fundo real deles é `--sarak-status-*-color-bg`, que **nunca é
-   emitida** — cobrar isso do tema seria acusar o autor por defeito de componente. Achado **38** em
-   [[15-divida-conhecida]] §3.1.
+1. **Valor que não se resolve é declarado, não chutado.** `hsl()`, `var()`, gradiente, ou um `colorBgBody`
+   do próprio tema translúcido: o par sai como **pulado**, e **pulado não é aprovado** — é não medido. Nos
+   temas shippados, hoje, nenhum par cai aqui (contagem na saída do comando).
+2. **`statusErrorColor`/`statusSuccessColor` ficam fora de `PAIRS`.** O motivo escrito no cabeçalho do gate —
+   o fundo `--sarak-status-*-color-bg` nunca seria emitido — **não se reproduz** desde 2026-08-12 (achado **38**,
+   fechado, em [[15-divida-conhecida]]): a variável é emitida. O par é cobertura que falta, não isenção
+   justificada.
 3. **O tema do consumidor não é coberto** — por desenho: a regra promete AA nos **temas shippados**, não no
    dado de terceiro. Ver a nota de migração de D em `docs/migracoes.md`.
 
@@ -1033,7 +1045,7 @@ cadeia de fundo (`efetiva = alfa × cor + (1 − alfa) × fundo`), não pulada.
 
 **Enunciado.** A lib **constrói a tela** de autenticação e **entrega o evento**. Nenhum componente lê ou escreve credencial, token ou sessão, e **nenhum impõe rota, verbo ou payload de autenticação** ao importador.
 
-**Por quê.** Autenticação é do host, e só ele sabe onde o token vive. Uma lib de UI que lê `localStorage` atrás de um token, ou que decide que o endpoint de MFA é `POST {endpoint}/mfa/enable`, deixa de ser infraestrutura e vira **acoplamento**: o importador passa a ter de construir o backend no formato que a lib inventou. É a mesma família de R13 e R16 — a lib não impõe identidade, não impõe CSS, e não impõe protocolo. A prática já era essa e está escrita em voz alta no código: `src/shared/services/api.ts:7-13` diz que *"a Sarak NUNCA lê nem escreve token de autenticação"*, e o `SarakAuthScreen` só emite `onSubmit`.
+**Por quê.** Autenticação é do host, e só ele sabe onde o token vive. Uma lib de UI que lê `localStorage` atrás de um token, ou que decide que o endpoint de MFA é `POST {endpoint}/mfa/enable`, deixa de ser infraestrutura e vira **acoplamento**: o importador passa a ter de construir o backend no formato que a lib inventou. É a mesma família de R13 e R16 — a lib não impõe identidade, não impõe CSS, e não impõe protocolo. A prática é essa no código: a lib não tem cliente HTTP, os templates recebem o dado ou uma função do host ([[03-superficie-publica]] §6.3), e o `SarakAuthScreen` só emite `onSubmit`.
 
 **Certo × Errado.**
 
@@ -1041,16 +1053,16 @@ cadeia de fundo (`efetiva = alfa × cor + (1 − alfa) × fundo`), não pulada.
 // CERTO — a lib desenha e devolve o evento; quem sabe o protocolo é o host
 <SarakAuthScreen onSubmit={(credenciais) => meuBackend.login(credenciais)} />
 
-// CERTO — template de dados: recebe `endpoint` e é AGNÓSTICO sobre o que há atrás
-<SarakTable endpoint="/api/clientes" />
+// CERTO — template de dados: recebe a função do host, que faz a rede com a autenticação dele
+<SarakTable load={() => meuBackend.clientes()} />
 
 // ERRADO — a lib dita o protocolo do importador
 await api.post(`${endpoint}/mfa/enable`, { code });
 ```
 
-**Cobrada por:** `node gates/scripts/audit/auditor_authcoupling.mjs` (construído pela `plan-12`, 2026-08-05 — 9º/depois 10º auditor de `run_audit.mjs`). Detecção por AST: sinks de credencial (`localStorage`/`sessionStorage`/cookie com chave auth-ish) + header `Authorization` literal + rota embutida (string iniciada em `/` contendo `/mfa|login|oauth2?|token|auth|sso|2fa/`). **Hoje: 0 violações.**
+**Cobrada por:** `node gates/scripts/audit/auditor_authcoupling.mjs` (construído pela `plan-12`, 2026-08-05 — 9º/depois 10º auditor de `run_audit.mjs`). Varre **todo `src/`**. Detecção por AST: sinks de credencial (`localStorage`/`sessionStorage`/cookie com chave auth-ish) + header `Authorization` literal + rota embutida (string iniciada em `/` contendo `/mfa|login|oauth2?|token|auth|sso|2fa/`). **Hoje: 0 violações.**
 
-> **O gate não pode ser burro, e isto vai escrito para quem for construí-lo.** Proibir `fetch`/`axios` em `src/components/` derrubaria **12 arquivos legítimos**: os templates de dados (`SarakTable`, `SarakChart`, `SarakForm`, `SarakManagementGrid`, …) recebem um `endpoint` e são agnósticos sobre o que existe atrás dele. O que se cobra é outra coisa — **sinks de credencial** (`localStorage`/`sessionStorage`/`cookie`/`Authorization`) e **rota de autenticação embutida** (`/mfa`, `/login`, `/oauth`, `/token`).
+> **O que o gate cobra é acoplamento, não rede.** Ele procura **sinks de credencial** (`localStorage`/`sessionStorage`/`cookie`/`Authorization`) e **rota de autenticação embutida** (`/mfa`, `/login`, `/oauth`, `/token`). Que a lib não faça rede nenhuma é outra propriedade, verdadeira hoje ([[10-seguranca-e-acessibilidade]] §3.2) e **sem gate**: um `fetch` sem rota de autenticação passaria por este.
 
 > ✅ **A violação com que a regra nascia foi removida.** `useSecurityOrchestratorState.ts` chamava `GET {endpoint}/mfa/status`, `GET {endpoint}/mfa/setup`, `POST {endpoint}/mfa/enable` e `POST {endpoint}/mfa/disable` — a lib ditava o protocolo de autenticação do importador. A `plan-09` (2026-08-05, operação 4) removeu o `SarakSecurityOrchestrator` inteiro (10 arquivos) do contrato público, no major. Quando o gate `auditor_authcoupling.mjs` nasceu, na `plan-12`, o único violador já não existia mais — confirmado: **0 violações** desde o primeiro dia do gate.
 
@@ -1178,7 +1190,10 @@ ERRADO   extendTailwindMerge(...) dentro do átomo       // a configuração tem
 
 **Cobrada por:** `check-class-merge.mjs` (`npm run class-merge:check`), no Anel 1 do `.githooks/pre-commit`
 **e** no passo dos `*:check` fora do `gates:full` em `.github/workflows/gates.yml`. **Os dois lugares são
-obrigatórios**: só o hook deixaria `--no-verify` e merge pelo botão do GitHub passarem por cima. O
+obrigatórios**: só o hook deixaria `--no-verify` e merge pelo botão do GitHub passarem por cima. O mesmo gate
+cobra a **porta única**: nenhum arquivo de `src/components/atomic/**` importa `tailwind-merge` fora de
+`hooks/mergeSarakClasses.ts` (`__tests__/` à parte) — o `twMerge` cru não conhece as utilitárias próprias
+da tabela acima. O
 comportamento resultante tem teste próprio (`mergeSarakClasses.test.ts`, uma asserção por utilitária
 própria; `SarakButton.test.tsx`, `SarakIconButton.test.tsx`).
 
@@ -1218,7 +1233,8 @@ CERTO    // achado 40, 15-divida-conhecida               ← spec fixa, numeraç
 **Cobrada por:** `check-trail-citation.mjs` (`npm run trail-citation:check`), no Anel 1 do
 `.githooks/pre-commit`, sobre as linhas **adicionadas** do staged (`--staged`). Sem flag, o mesmo gate lê o
 worktree contra o `HEAD` **mais os arquivos não rastreados** — é o modo de quem revisa. Caminho com acento é
-lido sem escape. A allowlist `gates/allowlists/trailCitationExclusions.mjs` isenta, por caminho exato e com
+lido sem escape. O padrão de veredito é *veredito* seguido de *d* e qualquer letra — *de*, *do*, *da*,
+*desta*, *dos*… —, e *veredito final* não casa. A allowlist `gates/allowlists/trailCitationExclusions.mjs` isenta, por caminho exato e com
 motivo, os arquivos cujo domínio é o próprio identificador de plan. O gate também reprova entrada **sem
 motivo** ou de arquivo que **não existe mais**.
 
@@ -1256,7 +1272,7 @@ ERRADO   export type { CatalogItem }              ← colide com o tipo local do
 ERRADO   export { reorder, widthOf }              ← nome genérico de função
 CERTO    export type { SarakCatalogItem }
 CERTO    export { sarakReorder, sarakWidthOf }
-CERTO    export { useSarakDevice, getSarakModule } ← hook e função que já contêm Sarak
+CERTO    export { useSarakDevice, sarakGetThemePreset } ← hook e função que já contêm Sarak
 ```
 
 **Cobrada por:** `check-public-prefix.mjs` (`npm run prefix:check`), na cadeia do `npm run build`, logo
@@ -1270,6 +1286,200 @@ entrada e **se autolimpa**: entrada de nome já conforme ou inexistente derruba 
 - **Julga formato, não qualidade.** `SarakCoisa` passa; se o nome é bom, decide a revisão.
 - **Lê só a última linha agrupada `export { … };`** do `.d.ts`. Se o bundler mudar esse formato, a análise
   textual precisa mudar junto.
+
+---
+
+## R38 — Agente não commita nem empurra sem autorização declarada naquele comando
+
+**Estado:** ⚠️ **escopo menor que a regra** — o gate vê só `commit` e `push`, só os marcadores medidos, e a
+autorização é uma variável que um agente consegue escrever.
+
+**Enunciado.** Sessão de agente não escreve no Git (`commit`, `push`) sem a autorização do dono declarada
+**naquele comando**: a variável `SARAK_GIT_ESCRITA_AUTORIZADA` escrita na frente do comando, nunca exportada.
+Valor vazio não autoriza. O dono que digita o comando no terminal dele não precisa de nada.
+
+**Por quê.** A proibição de agente escrever no Git era só textual ([[17-contrato-de-operacao-git]] §2.0), e
+nenhum anel do `pre-commit` perguntava quem estava commitando. Um executor commitou (`bd1dc1a`) com os gates
+verdes e sem coautoria, e outros dois indexaram os próprios arquivos. O gate não impede a intenção: transforma
+o acidente em ato deliberado.
+
+**Certo × Errado.**
+
+```
+ERRADO   git commit -m "..."                            ← de dentro de sessão de agente, sem autorização
+ERRADO   $env:SARAK_GIT_ESCRITA_AUTORIZADA='1'          ← exportada e esquecida: vale para o resto da sessão
+CERTO    SARAK_GIT_ESCRITA_AUTORIZADA=1 git commit -m "..."   ← o dono pediu e autorizou aquele ato
+CERTO    o dono digita o commit no terminal dele
+```
+
+**Cobrada por:** `check-agent-git-write.mjs` (`gates/scripts/contrato/`), chamado como **primeiro passo** do
+`pre-commit` e do `pre-push`, antes do Anel 0. A decisão é a função exportada `decideAgentGitWrite(env)`, que
+recebe o ambiente por parâmetro e é testada por fixture em `__tests__/check-agent-git-write.test.mjs`. A lista
+de marcadores — `CLAUDECODE`, `AI_AGENT`, `CLAUDE_CODE_SESSION_ID` — é dado, em `AGENT_SESSION_MARKERS`, num
+lugar só. Custo medido: ~60 ms.
+
+**O vão.**
+- **Só `commit` e `push`.** Não existe hook para `add`, `stash`, `checkout`, `reset` nem `merge`.
+- **A autorização é escrevível por um agente.** A trava não impede intenção.
+- **Agente cujo marcador não está na lista passa.** Só entraram os marcadores medidos num shell de agente.
+- **Marcador vazio conta como ausente.**
+- **Não roda na CI.** O runner não tem sessão de agente, e a decisão é sobre quem digita o comando.
+
+---
+
+## R39 — Todo ícone da lib passa pela porta de ícones
+
+**Estado:** ⚠️ **escopo menor que a regra** — o gate vê só `.ts`/`.tsx` de `src/`, só nome de pacote estático,
+e não vê o painel de autoria.
+
+**Enunciado.** Nenhum arquivo da lib importa uma família de ícones (`lucide-react`, `@phosphor-icons/react`,
+`@tabler/icons-react`) fora da porta, `src/components/atomic/Icon/families/`. Componente desenha ícone por
+`SarakIcon`, com nome curado, nome registrado pelo consumidor ou elemento ([[03-superficie-publica]] §6.2).
+
+**Por quê.** O painel oferece `iconFamily`, `iconWeight` e `iconStrokeWidth`, e o catálogo promete que trocar a
+família repinta todos os ícones. Em 2026-10-02, 34 arquivos de `src/components` importavam `lucide-react` direto
+e ignoravam os três tokens: a promessa valia para metade da tela. Import direto também prende a lib aos nomes de
+uma versão do fornecedor (a linha 1.x do `lucide-react` removeu os ícones de marca).
+
+**Certo × Errado.**
+
+```
+ERRADO   import { Search } from 'lucide-react';         ← fora da porta: não segue o tema
+CERTO    <SarakIcon name="Search" />                     ← família, peso e espessura do tema
+CERTO    <SarakIcon icon={<LogoDoConsumidor />} />        ← elemento do consumidor, com o tamanho do contexto
+```
+
+**Cobrada por:** `check-icon-port.mjs` (`npm run icon-port:check`, em `gates/scripts/contrato/`), no `build`
+(depois do `prefix:check`) e no Anel 1 do `.githooks/pre-commit`; a CI o roda pelo `gates:full` → `build`.
+Lê import, reexport, `require()` e `import()` por AST, e o teste dele tem um caso de fixture por limite.
+
+**O vão.**
+- **O painel de autoria fica fora.** `src/features/DesignEngine/` mantém os próprios ícones, por desenho.
+- **Só `.ts`/`.tsx` de `src/`.** `.js`, `.jsx` e o que mora fora de `src/` não são lidos.
+- **Só nome estático.** Um nome de pacote montado em runtime, ou uma família reexportada por um módulo local,
+  escapa.
+- **Só os três nomes de pacote e seus subcaminhos.** Uma quarta família com outro nome não é reconhecida.
+
+## R40 — Todo valor que o motor emite tem leitor
+
+**Estado:** ⚠️ **escopo menor que a regra** — o gate é textual: prova que a referência existe, não que ela
+produz efeito visível; o leitor declarado por marcador é afirmação humana.
+
+**Enunciado.** Todo token do schema que o painel oferece muda a tela. A variável que o motor emite
+(`--sarak-<kebab>` e as `cssVars` do token) é lida por um CSS ou componente da lib, e toda opção de um `select`
+tem regra (`[data-sx-<kebab>="<opção>"]`, `classPrefix`) ou componente que a acessa pelo valor. Quando o valor
+chega ao leitor por tabela em JS ou direto à propriedade CSS, o arquivo do leitor declara
+`@sarak-token-reader <id> tabela|direto` em comentário, e cada opção tem teste que cita o id e o valor. Token
+sem leitor ganha leitor no componente que o rótulo nomeia, se funde no token que já desenha, ou sai do schema
+(o valor salvo cai em `removedTokenKeys.ts` e no padrão). A exceção (`ALLOWLIST`) exige motivo, se esvazia
+sozinha e está **vazia**.
+
+**Por quê.** O painel oferecia controles que não mudavam nada: em 2026-10-11, depois de os gradientes, os
+materiais, a sombra e as texturas passarem a desenhar, o escopo ampliado ao schema inteiro ainda achou 70 tokens
+sem nenhum leitor. Um tema autorado com cuidado sobre esses controles não aparece na tela, e o usuário que arrasta
+o controle conclui que o painel está quebrado.
+
+**Certo × Errado.**
+
+```
+ERRADO   schema: cardHeaderBg  →  emite --sarak-card-header-bg  →  nenhum CSS lê      ← controle morto
+CERTO    SarakCardHeader: bg-[var(--sarak-card-header-bg,transparent)]                 ← o rótulo desenha
+CERTO    // @sarak-token-reader pageTransitionType tabela  + teste por opção           ← leitor por tabela declarado
+```
+
+**Cobrada por:** `check-token-reader.mjs` (`npm run token-reader:check`, em `gates/scripts/contrato/`), no Anel 1
+do `.githooks/pre-commit` e no passo de `*:check` da CI. O teste do gate tem caso de mutação por regra (leitor
+apagado, opção sem regra, linha da tabela apagada, caso de teste apagado, nome lido só por prefixo). A prova de
+efeito é de `browser-tests/` ([[01-gates-e-baseline]] §2.6).
+
+A pré-visualização do painel (`src/features/DesignEngine/`) **não conta como leitor**, salvo para os tokens que são
+do próprio painel (`PANEL_OWN_TOKENS`, cada um com motivo).
+
+**O vão.** Os limites estão no cabeçalho do gate (R18) e saem na própria execução. Os principais:
+- **Só a direção emitido → lido.** Variável lida que nenhum token emite é do `auditor_ghostvars` (R7).
+- **Textual.** Citação em comentário de CSS ou em string solta conta como leitura; leitor sob seletor que nunca
+  casa conta como vivo.
+- **O marcador é declarativo.** Não prova que a tabela é consultada em runtime, nem que o teste afirma o efeito.
+
+## R41 — O motor dá o padrão; o componente decide
+
+**Estado:** ⚠️ **escopo menor que a regra** — o gate lê só `src/styles/*.css`; `!important` montado em TypeScript
+(injetor de estilo) e regra normal da camada final que vence a classe não são vistos.
+
+**Enunciado.** O CSS do motor não escreve, com `!important` em seletor amplo, propriedade visual que o componente
+controla por token ou por classe. O padrão mora na camada `components.sarak-elements` (`_card-defaults.css`), sem
+`!important`, e a classe utilitária e o `style` do componente vencem. Usam `!important`: o modo eco, o movimento
+reduzido e a escolha de token por atributo com valor ([[02-design-engine]] §10.8).
+
+**Por quê.** Em 2026-10-12 um bloco `!important` do cartão valia sempre (pelo `.sarak-design-scope`) e atropelava
+raio, fundo, borda, hover, transição e o modo eco de todos os cartões; o reset de `main`/`section`/`article`
+deixava o Kanban transparente. Enquanto ele existia, corrigir componente não aparecia na tela.
+
+**Cobrada por:** `check-css-important-visual.mjs` (`npm run css-important:check`), no Anel 1 e na CI; acusa a
+exceção vencida.
+
+**O vão.** Os limites estão no cabeçalho do gate (R18): seletor estreitado por atributo com valor passa, mesmo
+quando o atributo é sempre emitido; `!important` em TypeScript e regra sem `!important` da camada final não são
+lidos.
+
+## R42 — Uma variável, um dono; reserva é o padrão; nome lido existe
+
+**Estado:** ⚠️ **escopo menor que a regra** — os nomes derivados pelo motor (aliases, canais, `--sarak-on-*`) não
+têm a reserva julgada; declaração sob seletor que nunca casa conta como dono.
+
+**Enunciado.** Cada variável CSS tem um token dono; a exceção é declarada (`exceptionOf`) e só vale quando difere
+do padrão. Todo nome lido em `var()` é emitido pelo motor ou declarado em CSS da lib. Toda reserva `var(--x, F)` é
+o padrão do token (o ponto `mob` em token responsivo; palavra-chave é aceita): sem Provider, a lib desenha o tema
+padrão ([[02-design-engine]] §10.9).
+
+**Por quê.** Em 2026-10-12, 14 variáveis tinham dois donos (o raio mestre nunca chegava aos cantos; a superfície e o
+fundo do cartão disputavam `--theme-surface`), cerca de 20 nomes eram lidos sem dono e 266 reservas divergiam do
+padrão (134 só na cor primária): o resultado mudava conforme o modo e o tema.
+
+**Cobrada por:** `check-variable-contract.ts` (`npm run variable-contract:check`), no Anel 1 e na CI; importa o
+schema real e modela a emissão do motor; julga também a reserva de alias de fachada e de nome derivado declarado em
+CSS, a reserva sem unidade em variável com unidade e a palavra-chave inválida para a propriedade. E
+`check-channel-dispute.ts` (`npm run channel-dispute:check`): cada variável sai num canal só (inline ou `<style>`)
+em todo formato de mestre e exceção, nos dois modos de injeção, e a troca de tema não deixa variável órfã.
+
+**O vão.** Limites no cabeçalho do gate (R18): leitura por `getPropertyValue`, nomes derivados, a disputa entre o
+valor inline e o `<style>` responsivo.
+
+## R43 — Componente não fixa branco nem preto onde o tema decide
+
+**Estado:** ⚠️ **escopo menor que a regra** — textual; as texturas e materiais (`_atmosphere.css`, `_surfaces.css`)
+ficam fora por desenho.
+
+**Enunciado.** Componente da lib e painel não usam branco ou preto fixo (translúcido ou sólido, em classe ou
+estilo) onde o tema decide a cor: a cor vem de token ou de `color-mix` da cor de texto/superfície do tema. O texto
+sobre cor sólida é escolhido pelo motor por contraste ([[02-design-engine]] §10.10). Fundo próprio escuro, como o
+do `SarakLightbox`, é exceção declarada.
+
+**Por quê.** Os componentes nasceram para o tema escuro: em 2026-10-12, cerca de 44 brancos translúcidos sumiam no
+tema claro (estado vazio, tabela, cartão de busca, botões sociais), e 447 no painel.
+
+**Cobrada por:** `check-fixed-translucent.mjs` (`npm run fixed-translucent:check`), sobre `src/components/**`,
+`src/features/**` e parciais de CSS, no Anel 1 e na CI.
+
+**O vão.** Limites no cabeçalho do gate (R18).
+
+## R44 — O painel grava o que mostra; o tema embarcado respeita o contrato numérico
+
+**Estado:** ⚠️ **escopo menor que a regra** — o gate confere faixa e grade do padrão, mas a grade (`step`) dos
+valores de tema não é conferida.
+
+**Enunciado.** Todo tipo de token tem controle nos dois despachantes do painel; opção de `select` grava o próprio
+`value` (`id` = `value`); o padrão está dentro da faixa e da grade que o painel desenha; valor de tema ou preset
+embarcado fora da faixa do token é **acusado**, não cortado em silêncio ([[06-painel-de-customizacao-e-preview]] §3,
+[[09-temas-e-presets]] §6.6).
+
+**Por quê.** Em 2026-10-12, 37 sliders responsivos mostravam `NaN` e apagavam os breakpoints, um `select` não
+gravava nada válido, 7 tokens não tinham controle e 41 valores dos temas eram cortados sem aviso.
+
+**Cobrada por:** `check-panel-contract.ts` (`npm run panel-contract:check`), no Anel 1 e na CI; e
+`tokenContractParity.test.ts` (`auditTokenContract` acusa valor fora da faixa).
+
+**O vão.** Limites no cabeçalho do gate (R18).
 
 ---
 
@@ -1383,7 +1593,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R1 | Três camadas | ✅ | `auditor_arquitetura.mjs` | `npm run audit` |
 | R2 | Zero hardcode | ✅ | `auditor_hardcoded.mjs` | idem |
 | R3 | Zero `any` | ✅ | `auditor_typescript.mjs` | idem |
-| R4 | Paridade 3 fontes | ⚠️ | `auditor_paridade.mjs` → `verify_parity.ts` — **não vê o tipo gerado** | idem |
+| R4 | Paridade 3 fontes | ⚠️ | `auditor_paridade.mjs` → `verify_parity.ts` — confere presença, **tipo e valores permitidos** do catálogo (`catalog-drift.ts`); **não vê o tipo gerado** | idem |
 | R5 | Zero chave órfã | ✅ | `auditor_presets.mjs` → `verify_presets.ts` (+ `verify_theme_parity.ts` ⏳) | idem |
 | R6 | Contrato de valor | ✅ | `validateDesign` + `tokenContractParity.test.ts` | `npx vitest run` |
 | R7 | Namespace e fallback | ⚠️ | `auditor_ghostvars.mjs` — vê os 4 `CONSUMER_DIRS`, mas **valida só o NOME, nunca a sintaxe do fallback**, e **aceita nome que o manifesto declara e o runtime nunca emite** | `npm run audit` |
@@ -1399,7 +1609,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R20 | Baseline não regride | ✅ | `check-audit-baseline.mjs` (Anel 2) | `npm run audit:baseline` |
 | R21 | Artefato mudou, exige tag | ✅ | `check-release-tag.mjs` (`pre-push`) | `npm run release:check` |
 | R22 | Zero segredo no staged | ✅ | `verificar_commit.py` (Anel 0) | `python gates/scripts/segredo/verificar_commit.py --raiz .` |
-| R23 | Zero ponteiro morto no gerado | ⚠️ | `dev-kit/deadPointers.mjs` (caminhos/comandos em `sarak-dev/`) **+** `auditor_sectionpointers.mjs` (`§N.N`) — este **só resolve autorreferência**; o número de ponteiros cross-documento ignorados sai na própria execução | `npm run dev-kit:check` · `npm run section-pointers:check` |
+| R23 | Zero ponteiro morto no gerado | ⚠️ | `dev-kit/deadPointers.mjs` (caminhos/comandos em `sarak-dev/`) **+** `auditor_sectionpointers.mjs` (`§N.N`) — este **só resolve autorreferência**; o número de ponteiros cross-documento ignorados sai na própria execução **+** `check-kit-names.mjs` (os nomes públicos que o kit do consumidor cita existem no barril, [[01-gates-e-baseline]] §9.8) | `npm run dev-kit:check` · `npm run section-pointers:check` · `npm run kit-names:check` |
 | R24 | CSS não vaza no host | ⚠️ | `scopeCss.test.ts` · `EmbeddedMode.test.tsx` — **jsdom: provam o seletor, não o CSS renderizado**; a prova em navegador saiu com o E2E (achado 45) | `npx vitest run` |
 | R25 | Temas shippados sem ruído | ✅ | `shippedThemesConsoleClean.test.ts` | `npx vitest run` |
 | R26 | Paridade de ícones | ✅ | `iconCatalogParity.test.ts` · `iconContract.test.tsx` | `npx vitest run` |
@@ -1407,11 +1617,19 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R28 | Contrato de saída do CLI | ✅ | `checkUpdateCli.contract.test.mjs` (8 casos) | `npx vitest run` |
 | R29 | Gerado bate com a fonte | ✅ | **os 5 geradores têm `--check`, e os 5 rodam**: `token-types` · `catalog` · `guide` dentro do `build`; `build-info` e `dev-kit` no `gates:full` | `npm run catalog:check` … |
 | R30 | O TypeScript compila | ⚠️ | **0 erros, produção e teste** *(medido 2026-08-08)*; baseline em 0 ⇒ qualquer erro novo bloqueia. O vão que resta é o **gatilho**: o `--with-tsc` do Anel 2 só liga quando o staged tem `.ts`/`.tsx` | `npx tsc --noEmit` |
-| R31 | Contraste AA nos temas shippados | ⚠️ | `auditor_contraste.mjs` → `verify_contrast.ts` — **36 pares, 4,5:1, alfa composto, DUAS passadas** (nativo + modo oposto); baseline **0 e 0**. Vãos que restam: pares-tema **pulados** por fundo não determinístico e as cores de status, fora com número — contagem corrente na execução | `npm run audit` |
+| R31 | Contraste AA nos temas shippados | ⚠️ | `auditor_contraste.mjs` → `verify_contrast.ts` — **os pares que os componentes desenham (a contagem sai na execução), 4,5:1, alfa composto, DUAS passadas** (nativo + modo oposto); baseline **0 e 0**. Vãos que restam: pares-tema **pulados** por fundo não determinístico e as cores de status, fora com número — contagem corrente na execução | `npm run audit` |
 | **R33** | **Payload de tema é contrato público** | **✅** | `consumerThemeContract.test.ts` (`plan-24`) — corpus de payload de consumidor; chave que sai do domínio para de emitir e o teste falha | `npx vitest run` |
 | **R34** | **Átomo renderiza sem Provider** | **✅** | `SarakUIProvider.test.tsx` — `useSarakUIOptional` devolve `null` + `warn` em vez de lançar; **é o que tornou a R10 pagável**. O hook **não** é exportado, de propósito | `npx vitest run` |
 | **R35** | **Classe do chamador vence a do átomo** | **⚠️** | `check-class-merge.mjs` — distingue *"concatena"* de *"usa merge"*, mas **não confere a ordem** dos argumentos, e varre só `src/components/atomic/**`; allowlist declara os átomos ainda não convertidos | `npm run class-merge:check` |
 | **R36** | **O código não cita o rastro de execução** | **⚠️** | `check-trail-citation.mjs` — só as linhas **adicionadas** do staged, no Anel 1; não roda na CI; arquivo isento não é varrido | `npm run trail-citation:check` |
+| **R37** | **Todo nome do barril público carrega o prefixo da biblioteca** | **✅** | `check-public-prefix.mjs` — cadeia do `build`, depois do `public-types:check`; allowlist vazia | `npm run prefix:check` |
+| **R38** | **Agente não commita nem empurra sem autorização declarada** | **⚠️** | `check-agent-git-write.mjs` — só `commit` e `push`, só os três marcadores medidos; a variável de autorização é escrevível por um agente; não roda na CI | `node gates/scripts/contrato/check-agent-git-write.mjs` |
+| **R39** | **Todo ícone da lib passa pela porta de ícones** | **⚠️** | `check-icon-port.mjs` — só `.ts`/`.tsx` de `src/` e nome de pacote estático; o painel de autoria fica fora, por desenho | `npm run icon-port:check` |
+| **R40** | **Todo valor que o motor emite tem leitor** | **⚠️** | `check-token-reader.mjs` — schema inteiro, `ALLOWLIST` vazia; textual, marcador `@sarak-token-reader` declarativo, só a direção emitido → lido | `npm run token-reader:check` |
+| **R41** | **O motor dá o padrão; o componente decide** | **⚠️** | `check-css-important-visual.mjs` — `src/styles/*.css` **e strings/templates de TypeScript**; não vê regra sem `!important` da camada final | `npm run css-important:check` |
+| **R42** | **Uma variável, um dono; reserva é o padrão; nome lido existe** | **⚠️** | `check-variable-contract.ts` (reserva de alias e de nome derivado, unidade e palavra-chave inválida) + `check-channel-dispute.ts` (um canal por variável; nada órfão na troca de tema) — não julgam `calc()`/`color-mix()` como valor | `npm run variable-contract:check` · `npm run channel-dispute:check` |
+| **R43** | **Componente não fixa branco nem preto onde o tema decide** | **⚠️** | `check-fixed-translucent.mjs` — textual; acusa também paleta do Tailwind, duração/atraso fixos, `rgba(var(#hex))` e classe arbitrária com espaço; texturas e materiais fora | `npm run fixed-translucent:check` |
+| **R44** | **O painel grava o que mostra; tema embarcado no contrato numérico** | **⚠️** | `check-panel-contract.ts` + `tokenContractParity.test.ts` (faixa e grade do `step`) + `descricaoEmTodoRamo.test.tsx` | `npm run panel-contract:check` |
 | R32 | Indiferente à autenticação | ✅ | `auditor_authcoupling.mjs` — nasce verde | `npm run audit` |
 | **R11** | **Configuração × Expansão** | **🔴** | **nenhum — CONDUTA** | — |
 | **R15** | **Nada pesado eager** | **🔴** | **nenhum — CONDUTA.** ✅ a violação declarada FECHOU em 2026-08-09 (ver a regra) | — |
@@ -1431,6 +1649,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | `verify_presets.ts` | R5 | `gates/scripts/audit/` | ✅ via `auditor_presets.mjs` |
 | `check-barrel-parity.mjs` · `check-zero-brand.mjs` | R14 · R12 | `gates/scripts/contrato/` | ✅ `barrel:check` · `zero-brand:check` (Anel 1) |
 | `check-public-prefix.mjs` | **R37** | `gates/scripts/contrato/` | ✅ `prefix:check` (cadeia do `build`, depois do `public-types:check`) |
+| `check-kit-names.mjs` | **R23** (nomes públicos citados pelo kit do consumidor) | `gates/scripts/contrato/` | ✅ `kit-names:check` (cadeia do `build`) |
 | `check-package-contents.mjs` | **R19** | `gates/scripts/contrato/` | ✅ `package:check` (`prepublishOnly`, `gates:full`) |
 | `generate-component-catalog.mjs` · `generate-consumer-kit.mjs` · `generate-dev-kit.mjs` (modo `--check`) | R17 · **R23** · **R29** | `scripts/` — geram **e** conferem, por isso **não** migram | ✅ `catalog:check` · `guide:check` · `dev-kit:check` |
 | `check-audit-baseline.mjs` | **R20** · **R30** (contagem) | `gates/scripts/release/` | ✅ Anel 2 do `pre-commit` · `npm run audit:baseline` |
@@ -1446,6 +1665,8 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | `check-gate-limits.mjs` | **R18** | `gates/scripts/contrato/` | ✅ `npm run gate-limits:check` — contagem corrente no comando |
 | **`check-class-merge.mjs`** | **R35** | `gates/scripts/contrato/` | ✅ `npm run class-merge:check` — Anel 1 do `pre-commit` **e** o passo dos `*:check` fora do `gates:full` em `.github/workflows/gates.yml`; allowlist em `gates/allowlists/classMergeExclusions.mjs` |
 | **`check-trail-citation.mjs`** | **R36** | `gates/scripts/contrato/` | ✅ Anel 1 do `pre-commit` (`--staged`) · `npm run trail-citation:check` para revisão — **só local**, sem CI; allowlist em `gates/allowlists/trailCitationExclusions.mjs` |
+| **`check-icon-port.mjs`** | **R39** | `gates/scripts/contrato/` | ✅ `npm run icon-port:check` — no `build` (e por ele no `gates:full` e na CI) e no Anel 1 do `pre-commit` |
+| **`check-agent-git-write.mjs`** | **R38** | `gates/scripts/contrato/` | ✅ **primeiro passo** do `pre-commit` e do `pre-push`, antes do Anel 0 — **só local**, sem CI; lê o ambiente de quem digita o comando |
 
 **Das duas linhas ⏳, `@vitest/coverage-v8` fechou em 2026-08-05** (`plan-12`, Lote B) — vira `check-coverage-floor.mjs`, piso móvel (valor corrente em `gates/baselines/coverage-floor.json`), cobrado por `npm run coverage:check`, dentro do `gates:full`. **`verify_theme_parity.ts` continua ⏳**: valida **um** tema contra o dicionário e hoje só roda se alguém o chamar à mão; o que existe em gate é o `auditor_presets`, que cobra chave órfã em todos os temas embarcados de uma vez — cobertura diferente, não equivalente. Dos seis gates que não existiam em arquivo nenhum (R10, R18, R27, R28, R31, R32), **os seis existem desde 2026-08-10**: cinco pelas plans 12 e 16, e o de **R31** pela `plan-24`, depois de o dono fechar a fronteira de pares e o limiar.
 
@@ -1464,7 +1685,7 @@ Cinco coisas ficam registradas em voz alta, porque quem lê um contrato precisa 
 2. **As regras marcadas ⚠️ na tabela da §1.3 têm o escopo do gate menor que o da regra**, e cada vão está escrito na linha da própria regra, não em nota de rodapé. R14 tinha o mesmo defeito e foi corrigida em P26 **ampliando o escopo do gate junto com o conserto** — é o modelo que R18 generaliza, e R18 agora tem gate próprio (`check-gate-limits.mjs`).
 3. **As violações declaradas hoje vivem no baseline, não nesta prosa.** R30 (`tsc`) nasce com produção em hard-block a zero e teste tolerado como piso; R10 registra o resíduo dela em `auditor_composicaoatomica.violacoes`. As duas contagens correntes estão em `gates/baselines/audit-baseline.json`. R7 e R32 **fecharam** as violações com que nasceram (`--sx-*` corrigido pela `plan-07`; `SarakSecurityOrchestrator` removido pela `plan-09`, antes de o gate de R32 nascer — ele já nasceu verde). **R15 é a única que segue violada por decisão declarada**, e o motivo está na própria regra.
 4. **As duas regras que não tinham teste ganharam um**: R28 (`checkUpdateCli.contract.test.mjs`, 8 casos) e R18 (`check-gate-limits.mjs`).
-5. **Nenhuma regra existente foi renumerada nesta reestruturação.** R10, R11, R15 e R16 mudaram de **categoria** e mantiveram o número, porque o `.githooks/pre-commit:68-71` imprime números na mensagem de bloqueio e há citação em código, skills e specs.
+5. **Nenhuma regra existente foi renumerada nesta reestruturação.** R10, R11, R15 e R16 mudaram de **categoria** e mantiveram o número, porque o `.githooks/pre-commit` imprime números na mensagem de bloqueio e há citação em código, skills e specs.
 
 Nenhum destes é corrigido aqui — **regra nasce descrevendo o que é**. Cada um está catalogado com `arquivo:linha` em [[01-gates-e-baseline]] e [[15-divida-conhecida]], que é onde a dívida mora; **pagar o que os gates acusam é sempre plan própria**, na fila do [[00-indice]] — nunca efeito colateral de uma plan de regra.
 

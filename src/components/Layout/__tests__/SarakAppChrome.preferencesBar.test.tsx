@@ -21,17 +21,19 @@ const renderAtDevice = (device: SarakDeviceType, config: Record<string, unknown>
 const chrome = () => <SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>;
 
 describe('SarakAppChrome — barra configurável pelo administrador', () => {
-    it('padrão de fábrica: nenhum token de posição declarado → o ⚙ NÃO monta (a barra de hoje)', () => {
+    it('padrão de fábrica: as preferências ficam fixas sem criar o menu de preferências', () => {
         renderAtDevice('desktop', {}, chrome());
         expect(screen.queryByLabelText('Preferências')).toBeNull();
-        // As duas fixadas de sempre continuam diretas na barra.
+        expect(screen.getByRole('group', { name: 'Estilo de navegação' })).toBeInTheDocument();
         expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
     });
 
-    it('padrão de fábrica, sidebar RECOLHIDA: o ⚙ continua sem montar — não há nada além de colorMode/navCollapsed, que já têm ícone próprio', () => {
+    it('padrão de fábrica, sidebar recolhida: o menu recebe preferências que não cabem como ícone', () => {
         renderAtDevice('desktop', {}, chrome());
         fireEvent.click(screen.getByLabelText('Recolher navegação'));
-        expect(screen.queryByLabelText('Preferências')).toBeNull();
+        const trigger = screen.getByLabelText('Preferências');
+        fireEvent.click(trigger);
+        expect(within(screen.getByRole('menu')).getByText('Tamanho da fonte')).toBeInTheDocument();
     });
 
     it("uma preferência em 'menu' (fontSize) faz o ⚙ nascer, com as fixadas TAMBÉM dentro dele", () => {

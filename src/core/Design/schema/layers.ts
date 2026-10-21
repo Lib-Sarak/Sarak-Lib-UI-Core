@@ -12,6 +12,9 @@ export const LayersSchema: ComponentSchema = {
         // --- ARQUITETURA DE Z-INDEX ---
         {
             id: 'zIndexBase',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Camada mínima do sistema; a lista do autocompletar abre nela, acima do conteúdo comum.",
             label: 'Base Z-Index',
             type: 'slider',
             description: 'Índice de empilhamento (z-index) mínimo do sistema — a camada mais baixa da arquitetura de profundidade, abaixo de sidebar/modal/tooltip. Serve de piso para o restante da escala de z-index.',
@@ -22,19 +25,25 @@ export const LayersSchema: ComponentSchema = {
         },
         {
             id: 'zIndexSidebar',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Camada da barra de navegação; menus e busca derivam dela por deslocamentos fixos de até 200 níveis. O limite superior mantém a busca derivada abaixo da camada mínima de modal.",
             label: 'Sidebar Z-Index',
             type: 'slider',
-            description: 'Índice de empilhamento (z-index) da navegação (sidebar/topbar) — deve ficar acima do conteúdo comum da tela, mas abaixo de modais e tooltips, para que overlays sempre cubram a navegação quando abertos.',
+            description: 'Índice de empilhamento (z-index) da navegação (sidebar/topbar). Menus, notificações e busca podem derivar até 200 níveis acima; o teto mantém essas camadas abaixo do modal.',
             axis: 'elevation',
-            constraints: { min: 100, max: 1000, step: 50 },
+            constraints: { min: 10, max: 790, step: 10 },
             defaultValue: 500,
             cssVars: ['--sarak-z-sidebar']
         },
         {
             id: 'zIndexModal',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Camada de modais e do véu deles; as gavetas e o cartão expandido derivam dela por deslocamentos fixos.",
             label: 'Modal Z-Index',
             type: 'slider',
-            description: 'Índice de empilhamento (z-index) de modais/diálogos — deve ficar acima da navegação, mas abaixo de tooltips. Nota: existe um token homônimo (mesmo `id`) em `engineering.ts`, com range diferente (sem min/max) — `engineering.ts` vem ANTES de `layers.ts` em `MASTER_DESIGN_MAP.components`, então é a definição de `engineering.ts` que o `agent-design-operator` de fato preenche/valida hoje (`deduplicateById`, primeira ocorrência); esta entrada em `layers.ts` fica sombreada nesse consumidor específico. Pendência de higiene de schema — Spec 01/`backlog_cobertura.md`.',
+            description: 'Índice de empilhamento (z-index) de modais/diálogos — deve ficar acima da navegação, mas abaixo de tooltips.',
             axis: 'elevation',
             constraints: { min: 1000, max: 5000, step: 100 },
             defaultValue: 2000,
@@ -42,48 +51,20 @@ export const LayersSchema: ComponentSchema = {
         },
         {
             id: 'zIndexTooltip',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Camada dos tooltips e do menu de contexto, logo abaixo das notificações.",
             label: 'Tooltip Z-Index',
             type: 'slider',
-            description: 'Índice de empilhamento (z-index) de tooltips — o topo da hierarquia de camadas, garantindo que uma dica contextual sempre apareça por cima de qualquer modal/overlay já aberto.',
+            description: 'Índice de empilhamento (z-index) de tooltips — logo abaixo das notificações (`zIndexToast`), garantindo que uma dica contextual apareça por cima de qualquer modal ou sobreposição já aberta.',
             axis: 'elevation',
-            constraints: { min: 5000, max: 9999, step: 100 },
+            constraints: { min: 5000, max: 9900, step: 100 },
             defaultValue: 9000,
             cssVars: ['--sarak-z-tooltip']
         },
 
         // --- BACKDROPS ---
-        {
-            id: 'layerBackdropBlur',
-            label: 'Blur do Fundo (Modal)',
-            type: 'slider',
-            description: 'Intensidade do desfoque aplicado ao conteúdo atrás de um modal/overlay aberto — separa visualmente o conteúdo em primeiro plano do restante da tela, reforçando a hierarquia de foco.',
-            axis: 'elevation',
-            unit: 'px',
-            constraints: { min: 0, max: 40, step: 1 },
-            defaultValue: 10,
-            cssVars: ['--sarak-layer-backdrop-blur']
-        },
-        {
-            id: 'layerBackdropOpacity',
-            label: 'Escurecimento do Fundo',
-            type: 'slider',
-            description: 'Opacidade da camada escura (scrim) aplicada atrás de um modal/overlay aberto — quanto maior, mais o conteúdo de fundo é obscurecido, reforçando que ele está temporariamente inativo.',
-            axis: 'elevation',
-            constraints: { min: 0, max: 1, step: 0.05 },
-            defaultValue: 0.4,
-            cssVars: ['--sarak-layer-backdrop-opacity']
-        },
 
         // --- ELEVAÇÃO DINÂMICA ---
-        {
-            id: 'layerElevationFactor',
-            label: 'Fator de Elevação',
-            type: 'slider',
-            description: 'Multiplicador aplicado à intensidade de sombras/profundidade de elementos elevados (cards, modais, dropdowns) — valores acima de 1 exageram a sensação de profundidade; abaixo de 1 achatam o visual (clima mais flat/minimalista).',
-            axis: 'elevation',
-            constraints: { min: 0.5, max: 2, step: 0.1 },
-            defaultValue: 1,
-            cssVars: ['--sarak-layer-elevation-factor']
-        }
     ]
 };

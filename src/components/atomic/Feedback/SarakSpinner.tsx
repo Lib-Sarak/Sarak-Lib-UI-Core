@@ -1,5 +1,6 @@
 import React from 'react';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 const SIZE_TOKENS = {
     sm: 'var(--sarak-type-scale-caption, 12px)',
@@ -7,12 +8,10 @@ const SIZE_TOKENS = {
     lg: 'var(--sarak-h3-size, 24px)',
 } as const;
 
-const DEFAULT_ACCESSIBLE_LABEL = 'Carregando';
-
 export interface SarakSpinnerProps {
     /** Define o diâmetro pequeno, médio ou grande; omitido, usa `md` e os tamanhos acompanham os tokens tipográficos do tema. */
     size?: 'sm' | 'md' | 'lg';
-    /** Nome acessível do progresso indeterminado; omitido ou vazio, usa `Carregando` para manter o indicador identificado. */
+    /** Nome acessível do progresso indeterminado; omitido ou vazio, usa o catálogo no idioma ativo. */
     label?: string;
     /** Acrescenta classes ao SVG; omitida, mantém o estilo interno. Classes de animação podem substituir a rotação em movimento permitido. */
     className?: string;
@@ -20,10 +19,11 @@ export interface SarakSpinnerProps {
 
 export const SarakSpinner: React.FC<SarakSpinnerProps> = ({
     size = 'md',
-    label = DEFAULT_ACCESSIBLE_LABEL,
+    label,
     className,
 }: SarakSpinnerProps): React.ReactElement => {
-    const accessibleLabel = label.trim() ? label : DEFAULT_ACCESSIBLE_LABEL;
+    const text = useLibraryText();
+    const accessibleLabel = label?.trim() ? label : text('spinnerLoading');
 
     return (
         <svg

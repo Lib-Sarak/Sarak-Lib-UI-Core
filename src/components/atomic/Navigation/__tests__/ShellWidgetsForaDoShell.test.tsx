@@ -9,19 +9,19 @@ import { SarakShellSearchWidget } from '../SarakShellSearchWidget';
 import { SarakShellThemeToggle } from '../SarakShellThemeToggle';
 import { SarakShellUserWidget } from '../SarakShellUserWidget';
 import { SarakShellLanguageSelector } from '../SarakShellLanguageSelector';
+import { PREFERENCE_POSITION_TOKEN_IDS } from '../../../../core/Provider/preferencesTypes';
 
 /**
- * Os quatro widgets deixaram de ser internos ao `SarakShell` — este
+ * Os quatro widgets compõem slots independentes — este
  * arquivo prova que cada um monta e funciona dentro de um SLOT do
- * `SarakAppChrome`, sob o `SarakUIProvider`, SEM `SarakShell` e SEM nenhum
- * módulo registrado no Discovery. Falha se algum dos quatro voltar a
- * pressupor o Shell.
+ * `SarakAppChrome`, sob o `SarakUIProvider`, sem registro global de módulos.
+ * Falha se algum dos quatro voltar a depender do registro.
  */
-// Os defaults do cromo (busca/tema/usuário/colapso) desligam por inteiro aqui: o
-// objetivo deste arquivo é provar cada widget MONTADO À MÃO pelo consumidor num slot —
-// os defaults montariam um segundo exemplar do mesmo widget e ambiguariam as buscas
-// por texto/role/placeholder abaixo.
-const NO_DEFAULTS = { search: false, themeToggle: false, user: false, collapse: false } as const;
+// O cromo fica desligado para isolar os widgets que o consumidor monta nos slots.
+const NO_DEFAULTS = { search: false, themeToggle: false, user: false, notifications: false, collapse: false } as const;
+const NO_PREFERENCE_DEFAULTS = Object.fromEntries(
+    Object.values(PREFERENCE_POSITION_TOKEN_IDS).map((tokenId) => [tokenId, 'off']),
+);
 
 const renderNoSlot = (
     slot: React.ReactNode,
@@ -30,7 +30,7 @@ const renderNoSlot = (
     config: Record<string, unknown> = {},
 ) =>
     render(
-        <SarakUIProvider config={config}>
+        <SarakUIProvider config={{ ...NO_PREFERENCE_DEFAULTS, ...config }}>
             <SarakDeviceProvider overrideDevice="desktop">
                 <SarakAppChrome navigationStyle={navigationStyle} widgets={NO_DEFAULTS} {...{ [slotName]: slot }}>
                     <div>conteúdo do app</div>
@@ -39,8 +39,8 @@ const renderNoSlot = (
         </SarakUIProvider>,
     );
 
-describe('Widgets do cromo montados fora do SarakShell, num slot do SarakAppChrome', () => {
-    it('ShellSearchWidget: funciona sem nenhum módulo registrado no Discovery', () => {
+describe('Widgets do cromo montados em slots do SarakAppChrome', () => {
+    it('ShellSearchWidget: funciona com lista de navegação vazia', () => {
         const { container } = renderNoSlot(
             <SarakShellSearchWidget variant="bar" onClick={vi.fn()} />,
             'topbarStart',
@@ -49,12 +49,17 @@ describe('Widgets do cromo montados fora do SarakShell, num slot do SarakAppChro
         expect(container.querySelector('[data-sarak-slot="topbarStart"]')).toContainElement(input);
 
         fireEvent.change(input, { target: { value: 'qualquer coisa' } });
-        // Sem SarakShell/registro, nenhum módulo existe — a busca funciona e devolve vazio.
+        // Sem itens de navegação, a busca funciona e devolve vazio.
         expect(screen.getByText(/Nenhum resultado para/i)).toBeInTheDocument();
     });
 
-    it('ShellThemeToggle: alterna o tema sem SarakShell', () => {
-        const { container } = renderNoSlot(<SarakShellThemeToggle variant="horizontal" />, 'topbarEnd');
+    it('ShellThemeToggle: alterna o tema', () => {
+        const { container } = renderNoSlot(
+            <SarakShellThemeToggle variant="horizontal" />,
+            'topbarEnd',
+            'topbar',
+            { [PREFERENCE_POSITION_TOKEN_IDS.colorMode]: 'pinned' },
+        );
         const btn = screen.getByRole('button');
         expect(container.querySelector('[data-sarak-slot="topbarEnd"]')).toContainElement(btn);
 
@@ -63,21 +68,21 @@ describe('Widgets do cromo montados fora do SarakShell, num slot do SarakAppChro
         expect(btn.getAttribute('title')).not.toBe(titleBefore);
     });
 
-    it('ShellLanguageSelector: abre o dropdown sem SarakShell', () => {
+    it('ShellLanguageSelector: abre o dropdown', () => {
         renderNoSlot(<SarakShellLanguageSelector variant="horizontal" />, 'topbarEnd', 'topbar', { enabledLanguages: ['pt', 'en'] });
         fireEvent.click(screen.getByRole('button'));
         expect(screen.getByText('English')).toBeInTheDocument();
     });
 
-    it('ShellUserWidget: exibe o usuário e aciona logout sem SarakShell', () => {
+    it('ShellUserWidget: exibe o usuário e aciona logout', () => {
         const logout = vi.fn();
         renderNoSlot(
-            <SarakShellUserWidget user={{ username: 'visitante' }} logout={logout} variant="vertical" />,
+            <SarakShellUserWidget user={{ name: 'Visitante' }} logout={logout} variant="vertical" />,
             'sidebarFooter',
             'sidebar',
         );
-        expect(screen.getByText('visitante')).toBeInTheDocument();
-        fireEvent.click(screen.getByTitle('Sair'));
+        expect(screen.getByText('Visitante')).toBeInTheDocument();
+        fireEvent.click(screen.getByRole('button'));
         expect(logout).toHaveBeenCalled();
     });
 });

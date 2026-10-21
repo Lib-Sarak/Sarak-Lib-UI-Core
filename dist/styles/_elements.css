@@ -28,14 +28,14 @@
 
 /* Typography Personalities */
 h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading, 'Inter', sans-serif);
-    color: var(--text-title, var(--theme-title, #ffffff));
-    transition: all 0.4s ease;
+    font-family: var(--font-heading, 'Outfit', sans-serif);
+    color: var(--text-title, var(--theme-title, #f2f6fb));
+    transition: all var(--duration-normal, 0.3s) ease;
 }
 
 h1 {
     font-size: var(--sarak-h1-size, 48px);
-    font-weight: var(--sarak-h1-weight, 900);
+    font-weight: var(--sarak-h1-weight, 800);
     line-height: var(--sarak-h1-lh, 1.1);
     letter-spacing: var(--sarak-h1-ls, -1px);
     text-transform: var(--sarak-h-transform, none);
@@ -51,10 +51,10 @@ h2 {
 
 h3 {
     font-size: var(--sarak-h3-size, 24px);
-    font-weight: var(--sarak-h2-weight, 600);
+    font-weight: var(--sarak-h2-weight, 700);
 }
 
-h3, h4 { font-family: var(--font-heading, 'Inter', sans-serif); }
+h3, h4 { font-family: var(--font-heading, 'Outfit', sans-serif); }
 
 /* Sincronização de Tipografia Dinâmica — sem `!important`: regra de elemento já vence o
    valor herdado; o `!important` só servia para vencer a classe no próprio título. */
@@ -67,12 +67,12 @@ button:not(.p-0) {
                    var(--sarak-btn-radius-tr, var(--sarak-btn-border-radius, 8px))
                    var(--sarak-btn-radius-br, var(--sarak-btn-border-radius, 8px))
                    var(--sarak-btn-radius-bl, var(--sarak-btn-border-radius, 8px));
-    transition: all 0.2s var(--sarak-ease-main, cubic-bezier(0.4, 0, 0.2, 1));
+    transition: all var(--duration-fast, 0.2s) var(--sarak-motion-ease-main, cubic-bezier(0.16, 1, 0.3, 1));
 }
 
 input, select, textarea {
     border-radius: var(--sarak-input-border-radius, 8px);
-    transition: all 0.2s var(--sarak-ease-main, cubic-bezier(0.4, 0, 0.2, 1));
+    transition: all var(--duration-fast, 0.2s) var(--sarak-motion-ease-main, cubic-bezier(0.16, 1, 0.3, 1));
 }
 
 button:hover:not(.p-0) {
@@ -80,10 +80,12 @@ button:hover:not(.p-0) {
     transform: translateY(-1px) scale(var(--sarak-btn-hover-scale, 1.02));
 }
 
-/* O `transform` do estado ativo é `!important` e fica em `_utilities.css`. */
+/* O aperto do botão (`transform` do estado ativo) é padrão: `active:scale-*`, o `style` e o `whileTap` do
+   componente o vencem. Vem depois do hover (mesma especificidade) para valer com o ponteiro sobre o botão. */
 button:active:not(.p-0) {
     background-color: var(--theme-primary-active);
-    transition: transform 0.1s var(--sarak-ease-out, cubic-bezier(0.4, 0, 0.2, 1));
+    transform: translateY(0) scale(var(--sarak-btn-active-scale, 0.98));
+    transition: transform var(--sarak-motion-dur-instant, 0.1s) var(--sarak-motion-ease-out, cubic-bezier(0.16, 1, 0.3, 1));
 }
 
 /* Anel de foco global governado pelo token `focusRingWidth` (schema `engineering`,
@@ -93,4 +95,64 @@ button:focus-visible {
     outline: var(--sarak-focus-width, 2px) solid var(--theme-texture-color, var(--theme-primary));
     outline-offset: 2px;
     box-shadow: 0 0 0 4px var(--theme-primary-focus);
+}
+
+/* Peso e caixa dos títulos e do corpo: o valor da opção (`300`…`900`, `uppercase`…) é o próprio valor CSS,
+   entregue pela variável que `h1`/`h2`/`h3`/`body` leem acima.
+   @sarak-token-reader h1Weight, h2Weight, bodyWeight, headingTransform direto */
+
+/* Identidade da marca no cromo (`ChromeBrand`): leitor de `identityAlignment` e `identityHoverEffect`
+   (`data-sx-identity-*` no `html`/`body`). Mora aqui, na camada que cede: o `justify-center` do cromo
+   colapsado e qualquer classe do consumidor vencem. */
+.sarak-chrome-brand {
+    transition: opacity var(--duration-fast, 0.2s) ease, transform var(--duration-fast, 0.2s) ease, filter var(--duration-fast, 0.2s) ease;
+}
+[data-sx-identity-alignment="left"] .sarak-chrome-brand { justify-content: flex-start; }
+[data-sx-identity-alignment="center"] .sarak-chrome-brand { justify-content: center; }
+[data-sx-identity-alignment="right"] .sarak-chrome-brand { justify-content: flex-end; }
+[data-sx-identity-hover-effect="opacity"] .sarak-chrome-brand:hover { opacity: 0.7; }
+[data-sx-identity-hover-effect="scale"] .sarak-chrome-brand:hover { transform: scale(1.04); }
+[data-sx-identity-hover-effect="glow"] .sarak-chrome-brand:hover {
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--theme-primary, #19e3f0) 60%, transparent));
+}
+
+/* Padrões do `body`: cedem a qualquer classe utilitária posta nele (`leading-*`, `text-*`,
+   `font-*`, `p-*`…). Ficam aqui, num lugar só, e depois de `body, span, p, div` acima para
+   a família manter a reserva `'Inter'`. O fundo do `body` é `!important` e por isso mora na
+   camada final, em `_base.css`. */
+body {
+    color: var(--text-main);
+    transition: color var(--duration-normal) var(--ease-sarak);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-family: var(--font-main, 'Inter', sans-serif);
+    font-size: var(--sarak-body-size, 14px);
+    font-weight: var(--sarak-body-weight, 400);
+    line-height: var(--sarak-body-lh, 1.6);
+}
+
+/* O fundo já nasce no valor do tema; a transição só entra depois de um quadro pintado. */
+body[data-sarak-theme-ready="true"] {
+    transition: background-color var(--duration-normal) var(--ease-sarak), color var(--duration-normal) var(--ease-sarak);
+}
+
+/* Suavização da fonte — leitor de `textSmoothing` (`data-sx-text-smoothing`). A propriedade
+   é herdada: o atributo no `html`/`body` (App) ou no contêiner da ilha (Embarcado) vale para
+   toda a árvore. Só tem efeito no macOS; nas outras plataformas o navegador ignora. Fica
+   nesta camada para que `antialiased`/`subpixel-antialiased` do consumidor vençam. */
+[data-sx-text-smoothing="true"] {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+[data-sx-text-smoothing="false"] {
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+}
+
+/* Transição de escopo médio, escolhida por classe (`transition-sarak`): sem `!important`, na camada que cede — o
+   `transition`/`duration-*` do consumidor e a transição do cartão (`_card-defaults.css`) a vencem. */
+.transition-sarak {
+    transition: all var(--sarak-motion-dur-normal, 0.3s) var(--sarak-motion-ease-main, cubic-bezier(0.16, 1, 0.3, 1));
 }

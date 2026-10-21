@@ -10,6 +10,8 @@ import { renderShellPreferenceRow, type ShellPreferenceRowContext } from './shel
 export interface ShellPreferencesMenuProps extends Omit<ShellPreferenceRowContext, 't'> {
     /** TODAS as preferências oferecidas (fixadas inclusive). Vazio = não monta. */
     menuIds: SarakPreferenceId[];
+    /** Widgets de composição que compartilham o mesmo menu de preferências. */
+    additionalRows?: React.ReactNode;
     /** Lado da tela em que a barra vive — decide para onde o menu abre. */
     align?: 'start' | 'end';
     className?: string;
@@ -19,11 +21,8 @@ const MENU_ID = 'sarak-preferences-menu';
 
 /**
  * O widget ⚙ "Preferências" (Spec 05 §2.2.1, nova subseção "a barra
- * configurada pelo administrador") — compartilhado pelos DOIS cromos
- * (`SarakShell` e `SarakAppChrome`), porque vive em `components/atomic/`
- * como os demais widgets de cromo (`ShellThemeToggle`, `ShellUserWidget`…):
- * `core/Shell` não pode importar `components/Layout/`, então o único jeito
- * de não duplicar esta UI é morar na camada atômica.
+ * configurada pelo administrador") — vive na camada atômica para compor
+ * a barra do `SarakAppChrome` junto aos demais widgets.
  *
  * Overlay acessível: abre/fecha por teclado, ESC fecha e o foco volta ao
  * próprio botão ao fechar — mesmo modelo de `useFocusTrap` do drawer mobile
@@ -31,14 +30,14 @@ const MENU_ID = 'sarak-preferences-menu';
  * existe botão que abre um painel sem nada dentro.
  */
 export const ShellPreferencesMenu: React.FC<ShellPreferencesMenuProps> = ({
-    menuIds, isNavHidden, onToggleNavCollapsed, align = 'end', className = '',
+    menuIds, isNavHidden, onToggleNavCollapsed, additionalRows, align = 'end', className = '',
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const close = () => setIsOpen(false);
     const { containerRef, handleTrap } = useFocusTrap(isOpen, close);
     const t = useLibraryText();
 
-    if (menuIds.length === 0) return null;
+    if (menuIds.length === 0 && !additionalRows) return null;
 
     return (
         <div className={mergeSarakClasses('relative', className)} data-sarak-widget="preferences-menu">
@@ -60,17 +59,18 @@ export const ShellPreferencesMenu: React.FC<ShellPreferencesMenuProps> = ({
                     role="menu"
                     aria-label={t('preferencesLabel')}
                     onKeyDown={handleTrap}
-                    className={`absolute z-[1000] top-full mt-[var(--sarak-layout-gap-sm,8px)] min-w-[var(--sarak-context-menu-min-width,220px)] rounded-[var(--sarak-card-radius,12px)] border p-[var(--sarak-layout-gap-sm,4px)] flex shadow-2xl ${
+                    className={`absolute z-[calc(var(--sarak-z-sidebar,500)_+_100)] top-full mt-[var(--sarak-layout-gap-sm,8px)] min-w-[var(--sarak-context-menu-min-width,10rem)] rounded-[var(--sarak-card-radius,10px)] border p-[var(--sarak-layout-gap-sm,8px)] flex shadow-[var(--dynamic-shadow)] ${
                         align === 'end' ? 'right-0' : 'left-0'
                     }`}
                     style={{
                         flexDirection: 'column',
-                        gap: 'var(--sarak-layout-gap-sm, 2px)',
-                        background: 'var(--color-theme-card,#1e293b)',
-                        borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',
+                        gap: 'var(--sarak-layout-gap-sm, 8px)',
+                        background: 'var(--color-theme-card,#101622)',
+                        borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.09)))',
                     }}
                 >
                     {menuIds.map((id) => renderShellPreferenceRow(id, { isNavHidden, onToggleNavCollapsed, t }))}
+                    {additionalRows}
                 </div>
             )}
         </div>

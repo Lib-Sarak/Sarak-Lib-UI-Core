@@ -4,6 +4,7 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { SliderControl, InputControl, SwitchControl, SelectControl } from '../BasicControls';
 import { SarakUIProvider } from '../../../../../core/Provider/SarakUIProvider';
+import { TypographySchema } from '../../../../../core/Design/schema/typography';
 
 // Os átomos (SarakSlider/SarakInput/SarakSwitch/SarakSelect) leem `useSarakUI()`
 // (porta obrigatória, lança fora do Provider) — mesmo padrão de PreviewCanvas.test.tsx.
@@ -15,7 +16,7 @@ describe('SliderControl (plan-36 — debounce do commit ao rascunho)', () => {
 
     it('MEDIÇÃO: arrastar 10 pixels seguidos chama onChange (updateDraft) 1 vez, não 10 — o valor exibido acompanha CADA pixel', () => {
         const onChange = vi.fn();
-        const { container } = renderWithProvider(<SliderControl label="Raio" value={0} min={0} max={100} onChange={onChange} />);
+        const { container } = renderWithProvider(<SliderControl label="Raio" value={0} min={0} max={100} unit="px" onChange={onChange} />);
 
         const slider = screen.getByRole('slider');
         for (let pixel = 1; pixel <= 10; pixel += 1) {
@@ -38,7 +39,7 @@ describe('SliderControl (plan-36 — debounce do commit ao rascunho)', () => {
 
     it('uma pausa no meio do arrasto committa o valor daquele instante, e o arrasto seguinte conta de novo', () => {
         const onChange = vi.fn();
-        renderWithProvider(<SliderControl label="Raio" value={0} min={0} max={100} onChange={onChange} />);
+        renderWithProvider(<SliderControl label="Raio" value={0} min={0} max={100} unit="px" onChange={onChange} />);
         const slider = screen.getByRole('slider');
 
         fireEvent.change(slider, { target: { value: '5' } });
@@ -56,7 +57,7 @@ describe('SliderControl (plan-36 — debounce do commit ao rascunho)', () => {
         const onChange = vi.fn();
         const { container, rerender } = render(
             <SarakUIProvider>
-                <SliderControl label="Raio" value={5} min={0} max={100} onChange={onChange} />
+                <SliderControl label="Raio" value={5} min={0} max={100} unit="px" onChange={onChange} />
             </SarakUIProvider>,
         );
         // `getByText` sem escopo colide com o `valueLabel` que o próprio SarakSlider
@@ -65,7 +66,7 @@ describe('SliderControl (plan-36 — debounce do commit ao rascunho)', () => {
 
         rerender(
             <SarakUIProvider>
-                <SliderControl label="Raio" value={0} min={0} max={100} onChange={onChange} />
+                <SliderControl label="Raio" value={0} min={0} max={100} unit="px" onChange={onChange} />
             </SarakUIProvider>,
         );
         expect(container.textContent).toContain('0px');
@@ -96,6 +97,46 @@ describe('InputControl (plan-36 — debounce do commit ao rascunho)', () => {
     });
 });
 
+describe('InputControl numérico — nunca grava NaN e respeita a faixa', () => {
+    beforeEach(() => vi.useFakeTimers());
+    afterEach(() => vi.useRealTimers());
+
+    const type = (container: HTMLElement, text: string): void => {
+        fireEvent.change(container.querySelector('input') as HTMLInputElement, { target: { value: text } });
+    };
+
+    it('campo vazio e "-" no meio da digitação não são número: nada é gravado', () => {
+        const onChange = vi.fn();
+        const { container } = renderWithProvider(<InputControl label="Z" type="number" value={5} onChange={onChange} />);
+        type(container, '');
+        type(container, '-');
+        vi.advanceTimersByTime(500);
+        expect(onChange).not.toHaveBeenCalled();
+    });
+
+    it('o texto digitado fica no campo enquanto não é número, e o número válido é gravado uma vez', () => {
+        const onChange = vi.fn();
+        const { container } = renderWithProvider(<InputControl label="Z" type="number" value={5} onChange={onChange} />);
+        type(container, '-');
+        expect((container.querySelector('input') as HTMLInputElement).value).toBe('');
+        type(container, '12');
+        vi.advanceTimersByTime(500);
+        expect(onChange).toHaveBeenCalledTimes(1);
+        expect(onChange).toHaveBeenCalledWith(12);
+    });
+
+    it('o valor digitado é levado para dentro de [min, max]', () => {
+        const onChange = vi.fn();
+        const { container } = renderWithProvider(<InputControl label="Z" type="number" value={5} min={0} max={10} onChange={onChange} />);
+        type(container, '999');
+        vi.advanceTimersByTime(500);
+        expect(onChange).toHaveBeenLastCalledWith(10);
+        const input = container.querySelector('input') as HTMLInputElement;
+        expect(input).toHaveAttribute('min', '0');
+        expect(input).toHaveAttribute('max', '10');
+    });
+});
+
 describe('SwitchControl e SelectControl — permanecem SÍNCRONOS (interação discreta, não há o que debounce)', () => {
     it('SwitchControl chama onChange na hora, sem esperar timer', () => {
         const onChange = vi.fn();
@@ -111,5 +152,27 @@ describe('SwitchControl e SelectControl — permanecem SÍNCRONOS (interação d
         fireEvent.change(screen.getByRole('combobox'), { target: { value: 'b' } });
         expect(onChange).toHaveBeenCalledTimes(1);
         expect(onChange).toHaveBeenCalledWith('b');
+    });
+});
+
+describe('rótulos dos controles', () => {
+    it('usa o tamanho tipográfico mínimo e mantém caixa e espaçamento normais', () => {
+        renderWithProvider(
+            <>
+                <SliderControl label="Rótulo do slider" value={1} onChange={vi.fn()} />
+                <InputControl label="Rótulo do campo" value="" onChange={vi.fn()} />
+                <SwitchControl label="Rótulo da opção" value={false} onChange={vi.fn()} />
+                <SelectControl label="Rótulo da lista" options={['a']} value="a" onChange={vi.fn()} />
+            </>,
+        );
+
+        ['Rótulo do slider', 'Rótulo do campo', 'Rótulo da opção', 'Rótulo da lista'].forEach((label) => {
+            const labelElement = screen.getByText(label);
+            expect(labelElement).toHaveClass('normal-case', 'tracking-normal');
+            expect(labelElement.className).toContain('--sarak-type-scale-caption');
+        });
+
+        const captionToken = TypographySchema.tokens.find(({ id }) => id === 'typeScaleCaption');
+        expect(Number(captionToken?.defaultValue)).toBeGreaterThanOrEqual(12);
     });
 });

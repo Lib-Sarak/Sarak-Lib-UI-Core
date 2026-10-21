@@ -1,4 +1,4 @@
-export const useDeviceStyles = (previewDevice: string, isPreviewStacked: boolean | undefined) => {
+export const useDeviceStyles = (previewDevice: string) => {
     const deviceWidths = {
         desktop: '100%',
         tablet: '768px',
@@ -8,22 +8,16 @@ export const useDeviceStyles = (previewDevice: string, isPreviewStacked: boolean
 
     const getDeviceFrameStyles = () => {
         if (previewDevice === 'smartphone') {
-            return "rounded-[3rem] border-[14px] border-[#1a1a1c] shadow-[0_0_0_1px_rgba(255,255,255,0.1),_0_50px_100px_-20px_rgba(0,0,0,0.8)]";
+            return "rounded-[3rem] border-[14px] border-[color-mix(in_srgb,var(--color-theme-text,#f2f6fb)_14%,var(--color-theme-body,#06080d))] shadow-[0_0_0_1px_color-mix(in_srgb,var(--color-theme-text)_10%,transparent),_0_50px_100px_-20px_color-mix(in_srgb,var(--color-theme-body)_80%,transparent)]";
         }
         if (previewDevice === 'tablet') {
-            return "rounded-[2rem] border-[24px] border-[#1a1a1c] shadow-[0_0_0_1px_rgba(255,255,255,0.1),_0_50px_100px_-20px_rgba(0,0,0,0.8)]";
+            return "rounded-[2rem] border-[24px] border-[color-mix(in_srgb,var(--color-theme-text,#f2f6fb)_14%,var(--color-theme-body,#06080d))] shadow-[0_0_0_1px_color-mix(in_srgb,var(--color-theme-text)_10%,transparent),_0_50px_100px_-20px_color-mix(in_srgb,var(--color-theme-body)_80%,transparent)]";
         }
-        return "rounded-[2rem] border border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)]";
-    };
-
-    const getDeviceHeightClass = () => {
-        if (previewDevice !== 'desktop') return '';
-        return isPreviewStacked ? 'h-[45vh]' : 'h-full';
+        return "rounded-[2rem] border border-theme-text/10 shadow-[0_50px_100px_-20px_color-mix(in_srgb,var(--color-theme-body)_80%,transparent)]";
     };
 
     return {
         targetWidth,
         getDeviceFrameStyles,
-        getDeviceHeightClass
     };
 };

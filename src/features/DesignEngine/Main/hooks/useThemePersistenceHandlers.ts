@@ -1,10 +1,14 @@
 import { useCallback } from 'react';
-import { buildThemeExportPayload, downloadThemeJson } from '../utils/exportTheme';
+import { buildThemeExportPayload, createUniqueThemeId, downloadThemeJson, slugifyThemeId } from '../utils/exportTheme';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 
-import type { SarakDesignState, SarakThemeEntry } from '../../../../core/Provider/types';
+import type { SarakDesignState, SarakThemeEntry, SarakThemeSaveOperation } from '../../../../core/Provider/types';
 
 export interface UseThemePersistenceHandlersProps {
     draft: SarakDesignState;
+    sourceTheme?: SarakThemeEntry;
+    counterpart?: Partial<SarakDesignState>;
+    existingThemeIds: ReadonlySet<string>;
     setCurrentThemeName: (name: string) => void;
     setIsSaveModalOpen: (open: boolean) => void;
     setIsSaving: (saving: boolean) => void;
@@ -15,7 +19,11 @@ export interface UseThemePersistenceHandlersProps {
     showToast: (type: 'success' | 'warning', message: string) => void;
     handleApplyToSystem: () => void;
     /** Porta ÚNICA de "salvar em runtime" (ADR-011) — `sarak.saveTheme`. */
-    saveTheme: (theme: SarakThemeEntry) => Promise<void>;
+    saveTheme: (theme: SarakThemeEntry, operation?: SarakThemeSaveOperation) => Promise<void>;
+    setResolvedThemeId: (id: string | undefined) => void;
+    applyFullConfigRaw: (design: SarakDesignState) => void;
+    persistDesign: (design: SarakDesignState) => Promise<void>;
+    onThemeSaved?: (theme: SarakThemeEntry) => void;
 }
 
 /**
@@ -28,21 +36,32 @@ export interface UseThemePersistenceHandlersProps {
  * design ativo (localStorage via `useDesignManager`).
  */
 export function useThemePersistenceHandlers(props: UseThemePersistenceHandlersProps) {
+    const text = useLibraryText();
     const {
         draft,
+        sourceTheme,
+        counterpart,
+        existingThemeIds,
         setCurrentThemeName,
         setIsSaveModalOpen, setIsSaving,
         showToast, handleApplyToSystem,
-        saveTheme
+        saveTheme,
+        setResolvedThemeId,
+        applyFullConfigRaw,
+        persistDesign,
+        onThemeSaved,
     } = props;
 
     const handleExportTheme = useCallback((name: string) => {
         setIsSaving(true);
         try {
-            const payload = buildThemeExportPayload(draft, name);
+            const payload = buildThemeExportPayload(draft, name, counterpart);
             downloadThemeJson(payload);
-            setCurrentThemeName(payload.name);
-            showToast('success', `Tema "${payload.name}" exportado — cole o JSON em \`customThemes\` no seu código.`);
+            if (payload.requiresFonts) {
+                showToast('warning', `Tema "${payload.name}" exportado — usa fontes deste host (${payload.requiresFonts.join(', ')}): quem o importar precisa registrá-las em \`options.fonts.custom\`.`);
+            } else {
+                showToast('success', `Tema "${payload.name}" exportado — cole o JSON em \`customThemes\` no seu código.`);
+            }
             setIsSaveModalOpen(false);
         } catch (error) {
             console.error(error);
@@ -50,23 +69,51 @@ export function useThemePersistenceHandlers(props: UseThemePersistenceHandlersPr
         } finally {
             setIsSaving(false);
         }
-    }, [draft, showToast, setCurrentThemeName, setIsSaveModalOpen, setIsSaving]);
+    }, [draft, counterpart, showToast, setIsSaveModalOpen, setIsSaving]);
 
-    const handleSaveTheme = useCallback(async (name: string) => {
+    const handleSaveTheme = useCallback(async (name: string, operation: SarakThemeSaveOperation) => {
+        const normalizedName = name.trim();
+        if (!normalizedName) return;
+
+        if (operation === 'replace' && !sourceTheme) {
+            showToast('warning', text('themeSaveImporterSourceRequired'));
+            return;
+        }
+        if (operation === 'create' && sourceTheme?.name?.trim().toLowerCase() === normalizedName.toLowerCase()) {
+            showToast('warning', text('themeSaveDifferentNameRequired'));
+            return;
+        }
+
         setIsSaving(true);
         try {
-            const payload = buildThemeExportPayload(draft, name);
-            await saveTheme({ id: payload.id, name: payload.name, design: payload.design as unknown as Record<string, unknown> });
+            const payload = buildThemeExportPayload(draft, normalizedName, counterpart);
+            const id = operation === 'replace'
+                ? sourceTheme!.id
+                : createUniqueThemeId(payload.name, existingThemeIds);
+            const savedTheme: SarakThemeEntry = {
+                id,
+                name: payload.name,
+                design: payload.design as unknown as Record<string, unknown>,
+                ...(payload.contraparte ? { contraparte: payload.contraparte } : {}),
+            };
+            await saveTheme(savedTheme, operation);
+            setResolvedThemeId(id);
+            applyFullConfigRaw(payload.design);
+            await persistDesign(payload.design);
+            onThemeSaved?.(savedTheme);
             setCurrentThemeName(payload.name);
-            showToast('success', `Tema "${payload.name}" salvo — disponível nesta sessão.`);
+            const collisionMessage = operation === 'create' && id !== slugifyThemeId(payload.name)
+                ? ` ${text('themeIdAdjusted', { id })}`
+                : '';
+            showToast('success', `${text('themeSavedActivated', { name: payload.name })}${collisionMessage}`);
             setIsSaveModalOpen(false);
         } catch (error) {
             console.error(error);
-            showToast('warning', 'Erro ao salvar o tema — ele continua disponível nesta sessão.');
+            showToast('warning', text('themeSaveFailed'));
         } finally {
             setIsSaving(false);
         }
-    }, [draft, saveTheme, showToast, setCurrentThemeName, setIsSaveModalOpen, setIsSaving]);
+    }, [draft, sourceTheme, counterpart, existingThemeIds, saveTheme, setResolvedThemeId, applyFullConfigRaw, persistDesign, onThemeSaved, showToast, setCurrentThemeName, setIsSaveModalOpen, setIsSaving, text]);
 
     const handleApplyGlobalChanges = useCallback(() => {
         handleApplyToSystem();

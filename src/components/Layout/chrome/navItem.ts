@@ -1,3 +1,6 @@
+import type React from 'react';
+import type { SarakSearchItem } from '../../atomic/Inputs/SarakSearch';
+
 /**
  * Item de navegação estruturado do `SarakAppChrome` (Spec 40.2 — L1).
  *
@@ -19,12 +22,27 @@ export interface SarakNavItem {
     id: string;
     /** Rótulo exibido ao lado do ícone. */
     label: string;
-    /** Nome do ícone (resolvido pelo `SarakIcon`/`IconMap` curado). Opcional. */
-    icon?: string;
+    /** Nome registrado ou elemento do ícone fornecido pelo consumidor. Opcional. */
+    icon?: string | React.ReactNode;
     /** URL de destino — o host navega para cá (redirect de página, router, etc.). */
     href: string;
     /** Marca o item como ativo (destaque + `aria-current="page"`). */
     active?: boolean;
+    /** Impede navegação e foco sem remover o item do menu. */
+    disabled?: boolean;
+    /** Informação visual que também integra o nome acessível. */
+    badge?: string | number;
+    /** Contexto nativo da âncora. */
+    target?: string;
     /** Agrupamento visual — mesmo campo do `ShellNavItem`; itens sem categoria ficam no grupo raiz. */
     category?: string;
 }
+
+export const getSarakSearchItems = (items: readonly {
+    route: string;
+    label: string;
+    category?: string;
+    disabled?: boolean;
+}[]): SarakSearchItem[] => items
+    .filter((item) => !item.disabled)
+    .map(({ route, label, category }) => ({ id: route, label, category }));

@@ -36,7 +36,7 @@
     "tokenId": "identityPadding",
     "name": "Padding da Identidade",
     "description": "O espaço de respiro ao redor do logotipo. Evita que o logo toque nas bordas do menu.",
-    "type": "number",
+    "type": "slider",
     "importance": 40,
     "categories": [
       "identidade",
@@ -68,7 +68,7 @@
     "tokenId": "identityFontFamily",
     "name": "Fonte do Logo (Texto)",
     "description": "Se o logo for em texto, define qual família de fonte será usada independentemente da tipografia global.",
-    "type": "string",
+    "type": "font",
     "importance": 60,
     "categories": [
       "identidade",
@@ -88,7 +88,51 @@
     "cssVariables": [
       "--sarak-identity-font"
     ],
-    "allowedValues": null,
+    "allowedValues": [
+      "var(--font-heading, var(--font-main, inherit))",
+      "'Inter', sans-serif",
+      "'Outfit', sans-serif",
+      "'Roboto', sans-serif",
+      "'Montserrat', sans-serif",
+      "'Space Grotesk', sans-serif",
+      "'Plus Jakarta Sans', sans-serif",
+      "'Lexend', sans-serif",
+      "'Sora', sans-serif",
+      "'Syne', sans-serif",
+      "'Archivo', sans-serif",
+      "'Chakra Petch', sans-serif",
+      "'Nunito', sans-serif",
+      "'DM Sans', sans-serif",
+      "'Manrope', sans-serif",
+      "'Work Sans', sans-serif",
+      "'Open Sans', sans-serif",
+      "'Raleway', sans-serif",
+      "'Source Sans 3', sans-serif",
+      "'Poppins', sans-serif",
+      "'Lato', sans-serif",
+      "system-ui, -apple-system, sans-serif",
+      "'Unbounded', display",
+      "'Bebas Neue', display",
+      "'Orbitron', sans-serif",
+      "'VT323', monospace",
+      "'Oswald', sans-serif",
+      "'Playfair Display', serif",
+      "'Fraunces', serif",
+      "'Source Serif 4', serif",
+      "'Roboto Slab', serif",
+      "'Lora', serif",
+      "'Merriweather', serif",
+      "'PT Serif', serif",
+      "'Dancing Script', cursive",
+      "'Pacifico', cursive",
+      "'Satisfy', cursive",
+      "'Caveat', cursive",
+      "'Patrick Hand', cursive",
+      "'JetBrains Mono', monospace",
+      "'Fira Code', monospace",
+      "'IBM Plex Mono', monospace",
+      "'Space Mono', monospace"
+    ],
     "relatedTokens": [
       "identityFontWeight"
     ]
@@ -97,7 +141,7 @@
     "tokenId": "identityFontWeight",
     "name": "Peso da Fonte do Logo",
     "description": "O peso tipográfico da marca, variando de super fino (100) a super negrito (900).",
-    "type": "number",
+    "type": "slider",
     "importance": 50,
     "categories": [
       "identidade",
@@ -119,7 +163,8 @@
     ],
     "allowedValues": {
       "min": 100,
-      "max": 900
+      "max": 900,
+      "step": 100
     },
     "relatedTokens": [
       "identityFontFamily"
@@ -129,7 +174,7 @@
     "tokenId": "identityTracking",
     "name": "Espaçamento de Letras (Tracking) do Logo",
     "description": "Controla a distância horizontal entre as letras da marca. Para estética moderna/premium, usar tracking ligeiramente negativo (-0.05).",
-    "type": "number",
+    "type": "slider",
     "importance": 40,
     "categories": [
       "identidade",
@@ -150,39 +195,13 @@
       "--sarak-identity-tracking"
     ],
     "allowedValues": {
-      "min": -0.1,
-      "max": 0.5
+      "min": -2,
+      "max": 8,
+      "step": 0.5
     },
     "relatedTokens": [
       "identityFontFamily"
     ]
-  },
-  {
-    "tokenId": "identityRedirectUrl",
-    "name": "Link de Redirecionamento da Marca",
-    "description": "A rota/URL para a qual o usuário é enviado ao clicar no logotipo no menu de navegação.",
-    "type": "string",
-    "importance": 20,
-    "categories": [
-      "identidade",
-      "navegacao",
-      "comportamento"
-    ],
-    "tags": [
-      "ux",
-      "link"
-    ],
-    "databaseColumn": "branding_config",
-    "schemaOrigin": "branding.ts",
-    "digitalTwins": [
-      "SidebarNav",
-      "TopbarNav"
-    ],
-    "cssVariables": [
-      "--sarak-identity-link"
-    ],
-    "allowedValues": null,
-    "relatedTokens": []
   },
   {
     "tokenId": "identityHoverEffect",
@@ -217,66 +236,6 @@
     "relatedTokens": []
   },
   {
-    "tokenId": "bgBaseColor",
-    "name": "Cor de Fundo Base",
-    "description": "A cor de fundo absoluta e mais profunda do sistema. Ela afeta o contraste global. Use tons escuros para Dark Mode e claros para Light Mode.",
-    "type": "color",
-    "importance": 95,
-    "categories": [
-      "cores",
-      "fundo-global",
-      "tema-base"
-    ],
-    "tags": [
-      "core",
-      "base",
-      "acessibilidade"
-    ],
-    "databaseColumn": "branding_config",
-    "schemaOrigin": "system.ts",
-    "digitalTwins": [
-      "DesignInjector",
-      "SarakUIProvider"
-    ],
-    "cssVariables": [
-      "--sarak-bg-base"
-    ],
-    "allowedValues": null,
-    "relatedTokens": [
-      "textColorMaster",
-      "mode",
-      "colorBgBody"
-    ]
-  },
-  {
-    "tokenId": "layout",
-    "name": "Modo de Layout Global",
-    "description": "Define se a estrutura base de contêineres usará CSS Grid ou Flexbox. Altera radicalmente a distribuição espacial primária.",
-    "type": "select",
-    "importance": 85,
-    "categories": [
-      "layout",
-      "estrutura",
-      "alinhamento"
-    ],
-    "tags": [
-      "arquitetura",
-      "engine",
-      "core"
-    ],
-    "databaseColumn": "branding_config",
-    "schemaOrigin": "system.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [],
-    "allowedValues": [
-      "grid",
-      "flex"
-    ],
-    "relatedTokens": []
-  },
-  {
     "tokenId": "layoutDensity",
     "name": "Densidade Visual",
     "description": "Controla a densidade dos componentes na tela. O modo 'compacto' diminui espaçamentos; 'espaçoso' dá foco minimalista.",
@@ -297,14 +256,14 @@
       "DesignInjector"
     ],
     "cssVariables": [],
+    "relatedTokens": [
+      "layoutPadding",
+      "layoutGap"
+    ],
     "allowedValues": [
       "compact",
       "comfortable",
       "spacious"
-    ],
-    "relatedTokens": [
-      "layoutPadding",
-      "layoutGap"
     ]
   },
   {
@@ -328,19 +287,20 @@
       "DesignInjector"
     ],
     "cssVariables": [],
+    "relatedTokens": [],
     "allowedValues": [
+      "1000px",
       "1200px",
       "1440px",
       "1600px",
       "100%"
-    ],
-    "relatedTokens": []
+    ]
   },
   {
     "tokenId": "layoutPadding",
     "name": "Respiro do Conteúdo (Padding)",
     "description": "O afastamento padrão do conteúdo em relação às margens da tela principal.",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "layout",
@@ -425,7 +385,7 @@
     "tokenId": "borderRadius",
     "name": "Arredondamento Padrão Global",
     "description": "Define o quão circulares são as bordas dos elementos base. Um valor de 0 traz estética agressiva/brutalista.",
-    "type": "number",
+    "type": "slider",
     "importance": 75,
     "categories": [
       "bordas",
@@ -450,107 +410,13 @@
       "min": 0,
       "max": 40
     },
-    "relatedTokens": [
-      "borderRadiusSm",
-      "borderRadiusMd",
-      "borderRadiusLg"
-    ]
-  },
-  {
-    "tokenId": "borderRadiusSm",
-    "name": "Arredondamento Pequeno",
-    "description": "Arredondamento para componentes menores como tooltips ou badges.",
-    "type": "number",
-    "importance": 50,
-    "categories": [
-      "bordas",
-      "geometria"
-    ],
-    "tags": [
-      "estetica",
-      "radius"
-    ],
-    "databaseColumn": "branding_config",
-    "schemaOrigin": "system.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-border-radius-sm"
-    ],
-    "allowedValues": {
-      "min": 0,
-      "max": 20
-    },
-    "relatedTokens": [
-      "borderRadius"
-    ]
-  },
-  {
-    "tokenId": "borderRadiusMd",
-    "name": "Arredondamento Médio",
-    "description": "Arredondamento intermediário para modais internos ou cartões secundários.",
-    "type": "number",
-    "importance": 60,
-    "categories": [
-      "bordas",
-      "geometria"
-    ],
-    "tags": [
-      "estetica",
-      "radius"
-    ],
-    "databaseColumn": "branding_config",
-    "schemaOrigin": "system.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-border-radius-md"
-    ],
-    "allowedValues": {
-      "min": 0,
-      "max": 40
-    },
-    "relatedTokens": [
-      "borderRadius"
-    ]
-  },
-  {
-    "tokenId": "borderRadiusLg",
-    "name": "Arredondamento Grande",
-    "description": "Arredondamento para contêineres enormes, como modais principais ou cards de imagem amplos.",
-    "type": "number",
-    "importance": 65,
-    "categories": [
-      "bordas",
-      "geometria"
-    ],
-    "tags": [
-      "estetica",
-      "radius"
-    ],
-    "databaseColumn": "branding_config",
-    "schemaOrigin": "system.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-border-radius-lg"
-    ],
-    "allowedValues": {
-      "min": 0,
-      "max": 60
-    },
-    "relatedTokens": [
-      "borderRadius"
-    ]
+    "relatedTokens": []
   },
   {
     "tokenId": "borderWidth",
     "name": "Espessura da Borda Global",
     "description": "Controla a espessura padrão (em pixels) das bordas em botões, cartões e divisórias em todo o sistema.",
-    "type": "number",
+    "type": "slider",
     "importance": 65,
     "categories": [
       "bordas",
@@ -602,21 +468,21 @@
       "--border-style",
       "--sarak-border-style"
     ],
+    "relatedTokens": [
+      "borderWidth"
+    ],
     "allowedValues": [
       "solid",
       "dashed",
       "dotted",
       "none"
-    ],
-    "relatedTokens": [
-      "borderWidth"
     ]
   },
   {
     "tokenId": "layoutGap",
     "name": "Espaçamento Padrão Global (Gap)",
     "description": "O espaço padrão que divide os componentes horizontal e verticalmente.",
-    "type": "number",
+    "type": "slider",
     "importance": 80,
     "categories": [
       "layout",
@@ -648,7 +514,7 @@
     "tokenId": "layoutGapSm",
     "name": "Espaçamento Pequeno",
     "description": "Distância curta entre ícones e textos ou pequenos botões contíguos.",
-    "type": "number",
+    "type": "slider",
     "importance": 50,
     "categories": [
       "layout",
@@ -678,7 +544,7 @@
     "tokenId": "layoutGapMd",
     "name": "Espaçamento Médio",
     "description": "Distância média padrão usada na maioria das listas.",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "layout",
@@ -708,7 +574,7 @@
     "tokenId": "layoutGapLg",
     "name": "Espaçamento Grande",
     "description": "Afastamento largo para separação de grandes seções do sistema.",
-    "type": "number",
+    "type": "slider",
     "importance": 65,
     "categories": [
       "layout",
@@ -756,14 +622,14 @@
       "IconRenderer"
     ],
     "cssVariables": [],
+    "relatedTokens": [
+      "iconWeight",
+      "iconStrokeWidth"
+    ],
     "allowedValues": [
       "lucide",
       "phosphor",
       "tabler"
-    ],
-    "relatedTokens": [
-      "iconWeight",
-      "iconStrokeWidth"
     ]
   },
   {
@@ -787,6 +653,9 @@
       "IconRenderer"
     ],
     "cssVariables": [],
+    "relatedTokens": [
+      "iconFamily"
+    ],
     "allowedValues": [
       "thin",
       "light",
@@ -794,16 +663,13 @@
       "bold",
       "fill",
       "duotone"
-    ],
-    "relatedTokens": [
-      "iconFamily"
     ]
   },
   {
     "tokenId": "iconStrokeWidth",
     "name": "Espessura do Traçado do Ícone",
     "description": "A grossura das linhas que compõem o ícone vetorial. Traços finos parecem sofisticados; grossos, amigáveis.",
-    "type": "number",
+    "type": "slider",
     "importance": 70,
     "categories": [
       "icones",
@@ -824,101 +690,11 @@
       "--sarak-icon-stroke"
     ],
     "allowedValues": {
-      "min": 0.5,
-      "max": 3,
-      "step": 0.5
+      "min": 1,
+      "max": 4,
+      "step": 0.25
     },
     "relatedTokens": [
-      "iconFamily"
-    ]
-  },
-  {
-    "tokenId": "scrollbarWidth",
-    "name": "Largura da Scrollbar Global",
-    "description": "A grossura da barra de rolagem customizada da aplicação. Se for zero, a barra fica invisível.",
-    "type": "select",
-    "importance": 40,
-    "categories": [
-      "layout",
-      "interacao",
-      "scrollbar"
-    ],
-    "tags": [
-      "ux",
-      "scroll"
-    ],
-    "databaseColumn": "branding_config",
-    "schemaOrigin": "system.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--scrollbar-width"
-    ],
-    "allowedValues": [
-      "none",
-      "thin",
-      "auto"
-    ],
-    "relatedTokens": [
-      "scrollbarThumbColor"
-    ]
-  },
-  {
-    "tokenId": "scrollbarThumbColor",
-    "name": "Cor do Polegar da Scrollbar",
-    "description": "Cor primária da alça móvel da barra de rolagem.",
-    "type": "color",
-    "importance": 30,
-    "categories": [
-      "cores",
-      "interacao",
-      "scrollbar"
-    ],
-    "tags": [
-      "ux",
-      "scroll"
-    ],
-    "databaseColumn": "branding_config",
-    "schemaOrigin": "system.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--scrollbar-thumb"
-    ],
-    "allowedValues": null,
-    "relatedTokens": [
-      "scrollbarWidth"
-    ]
-  },
-  {
-    "tokenId": "industrialRegistry",
-    "name": "Modo de Registro Industrial",
-    "description": "Uma flag global que engatilha o modo 'Industrial' (interfaces técnicas de alta densidade sem muitas bordas arredondadas).",
-    "type": "boolean",
-    "importance": 90,
-    "categories": [
-      "tema",
-      "comportamento",
-      "global"
-    ],
-    "tags": [
-      "core",
-      "arquitetura",
-      "industrial"
-    ],
-    "databaseColumn": "branding_config",
-    "schemaOrigin": "system.ts",
-    "digitalTwins": [
-      "DesignInjector",
-      "SarakUIProvider"
-    ],
-    "cssVariables": [],
-    "allowedValues": null,
-    "relatedTokens": [
-      "borderRadius",
-      "layoutDensity",
       "iconFamily"
     ]
   }

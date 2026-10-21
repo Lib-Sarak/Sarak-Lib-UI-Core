@@ -9,7 +9,6 @@ exports[`Corpus congelado — payload de consumidor → CSS Variable (R6, achado
   "--sarak-card-bg": "rgba(10,15,25,0.7)",
   "--theme-card": "rgba(10,15,25,0.7)",
   "--theme-card-bg": "rgba(10,15,25,0.7)",
-  "--theme-surface": "rgba(10,15,25,0.7)",
 }
 `;
 
@@ -17,7 +16,6 @@ exports[`Corpus congelado — payload de consumidor → CSS Variable (R6, achado
 {
   "--bg-body": "#101010",
   "--primary-color": "#ff6600",
-  "--sarak-bg-base": "#0a0a0c",
   "--sarak-bg-body": "#101010",
   "--sarak-color-bg-body": "#101010",
   "--sarak-color-primary": "#ff6600",

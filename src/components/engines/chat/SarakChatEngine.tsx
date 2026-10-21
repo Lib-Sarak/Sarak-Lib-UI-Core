@@ -1,8 +1,9 @@
+import { SarakIcon } from "../../atomic/Icon/SarakIcon";
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Send, Paperclip, User, Bot, Sparkles } from 'lucide-react';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakInput } from '../../../components/atomic/Inputs/SarakInput';
@@ -58,14 +59,14 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
 
     return (
         <div 
-            className="sarak-card flex flex-col h-full min-h-[var(--sarak-engine-min-h-lg,500px)] !p-0 overflow-hidden"
+            className="sarak-card flex flex-col h-full min-h-[var(--sarak-engine-min-h-lg,500px)] p-0 overflow-hidden"
             data-sx-card-texture-type={cardTextureType}
             style={{
                 transitionDuration: 'var(--sarak-chat-anim-speed, 0.05s)'
             }}
         >
             {/* Header */}
-            <div className="p-4 border-b border-theme bg-white/5 flex items-center justify-between">
+            <div className="p-4 border-b border-theme bg-theme-tint flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <div 
                         className="w-8 h-8 flex items-center justify-center text-[var(--theme-primary)]"
@@ -74,10 +75,10 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
                             backgroundColor: 'color-mix(in srgb, var(--theme-primary) 20%, transparent)'
                         }}
                     >
-                        <Bot size={18} />
+                        <SarakIcon name="Bot" size={18} />
                     </div>
                     <div>
-                        <h3 className="text-xs font-black uppercase tracking-widest text-white/80">Sarak Assistant</h3>
+                        <h3 className="text-xs font-black uppercase tracking-widest text-[var(--text-main,#f2f6fb)]">Sarak Assistant</h3>
                         <p className="text-2xs text-[var(--theme-primary)] font-bold animate-pulse">Online & Ready</p>
                     </div>
                 </div>
@@ -94,9 +95,9 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
 
                         if (isUser) {
                             bubbleStyle.borderRadius = 'var(--sarak-chat-radius, 12px) 0px var(--sarak-chat-radius, 12px) var(--sarak-chat-radius, 12px)';
-                            bubbleStyle.backgroundColor = 'var(--sarak-chat-user-bg, rgba(255, 255, 255, 0.05))';
-                            bubbleStyle.borderColor = 'color-mix(in srgb, var(--sarak-chat-user-bg, rgba(255,255,255,0.05)) 20%, white 5%)';
-                            bubbleStyle.color = 'rgba(255, 255, 255, 0.9)';
+                            bubbleStyle.backgroundColor = 'var(--sarak-chat-user-bg, rgba(25,227,240,0.08))';
+                            bubbleStyle.borderColor = 'color-mix(in srgb, var(--sarak-chat-user-bg, rgba(25,227,240,0.08)) 20%, var(--text-main, #f2f6fb) 5%)';
+                            bubbleStyle.color = 'var(--sarak-on-chat-user, #ffffff)';
                         } else {
                             bubbleStyle.borderRadius = '0px var(--sarak-chat-radius, 12px) var(--sarak-chat-radius, 12px) var(--sarak-chat-radius, 12px)';
                             const styleStrategies: Record<string, () => void> = {
@@ -104,7 +105,7 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
                                     bubbleStyle.backgroundColor = 'transparent';
                                     bubbleStyle.borderColor = 'transparent';
                                     bubbleStyle.padding = '0';
-                                    bubbleStyle.color = 'rgba(255, 255, 255, 0.9)';
+                                    bubbleStyle.color = 'var(--sarak-text-main, #f2f6fb)';
                                 },
                                 solid: () => {
                                     bubbleStyle.backgroundColor = 'var(--theme-primary)';
@@ -112,10 +113,10 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
                                     bubbleStyle.color = 'var(--color-theme-on-primary, #020617)';
                                 },
                                 glass: () => {
-                                    bubbleStyle.backgroundColor = 'rgba(0, 0, 0, 0.4)';
-                                    bubbleStyle.borderColor = 'rgba(255, 255, 255, 0.05)';
+                                    bubbleStyle.backgroundColor = 'var(--sarak-card-bg, var(--color-theme-card, #101622))';
+                                    bubbleStyle.borderColor = 'var(--sarak-card-border-color, var(--border-color, rgba(255,255,255,0.09)))';
                                     bubbleStyle.backdropFilter = 'blur(var(--sarak-chat-bubble-blur, 12px))';
-                                    bubbleStyle.color = 'rgba(255, 255, 255, 0.9)';
+                                    bubbleStyle.color = 'var(--sarak-text-main, #f2f6fb)';
                                 }
                             };
                             
@@ -131,8 +132,8 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
                                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                             >
                                 <div className={`flex gap-4 max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-                                    <div className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center border border-white/10 ${msg.role === 'user' ? 'bg-white/5' : 'bg-[var(--theme-primary)]/20'}`}>
-                                        {msg.role === 'user' ? <User size={14} className="text-white/40" /> : <Sparkles size={14} className="text-[var(--theme-primary)]" />}
+                                    <div className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center border border-theme-tint-hover ${msg.role === 'user' ? 'bg-theme-tint' : 'bg-[var(--theme-primary)]/20'}`}>
+                                        {msg.role === 'user' ? <SarakIcon name="User" size={14} className="text-[var(--text-muted,rgba(242,246,251,0.55))]" /> : <SarakIcon name="Sparkles" size={14} className="text-[var(--theme-primary)]" />}
                                     </div>
                                     <div 
                                         className="p-4 border transition-all"
@@ -153,7 +154,7 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
                                                             {String(children).replace(/\n$/, '')}
                                                         </SyntaxHighlighter>
                                                     ) : (
-                                                        <code className="bg-white/10 px-1 rounded text-[var(--theme-primary)]" {...props}>
+                                                        <code className="bg-theme-tint-hover px-1 rounded text-[var(--theme-primary)]" {...props}>
                                                             {children}
                                                         </code>
                                                     )
@@ -169,19 +170,19 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
                     })}
                     {isLoading && (
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start gap-4">
-                            <div className="w-8 h-8 rounded-full bg-[var(--theme-primary)]/20 flex items-center justify-center animate-pulse">
-                                <Bot size={14} className="text-[var(--theme-primary)]" />
+                            <div className="w-8 h-8 rounded-full bg-[var(--sarak-ai-glow,var(--theme-primary))]/20 flex items-center justify-center animate-pulse">
+                                <SarakIcon name="Bot" size={14} className="text-[var(--sarak-ai-glow,var(--theme-primary))]" />
                             </div>
                             <div 
                                 className="flex gap-1 items-center p-4 border border-theme"
                                 style={{
                                     borderRadius: 'var(--sarak-chat-radius, 12px)',
-                                    backgroundColor: 'var(--sarak-chat-user-bg, rgba(255, 255, 255, 0.05))'
+                                    backgroundColor: 'var(--sarak-chat-user-bg, rgba(25,227,240,0.08))'
                                 }}
                             >
-                                <div className="w-1.5 h-1.5 rounded-full bg-[var(--theme-primary)] animate-bounce" />
-                                <div className="w-1.5 h-1.5 rounded-full bg-[var(--theme-primary)] animate-bounce [animation-delay:0.2s]" />
-                                <div className="w-1.5 h-1.5 rounded-full bg-[var(--theme-primary)] animate-bounce [animation-delay:0.4s]" />
+                                <div className="w-1.5 h-1.5 rounded-full bg-[var(--sarak-ai-glow,var(--theme-primary))] animate-bounce" />
+                                <div className="w-1.5 h-1.5 rounded-full bg-[var(--sarak-ai-glow,var(--theme-primary))] animate-bounce [animation-delay:var(--sarak-motion-dur-fast,0.2s)]" />
+                                <div className="w-1.5 h-1.5 rounded-full bg-[var(--sarak-ai-glow,var(--theme-primary))] animate-bounce [animation-delay:calc(var(--sarak-motion-dur-fast,0.2s)*2)]" />
                             </div>
                         </motion.div>
                     )}
@@ -189,20 +190,20 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
             </div>
 
             {/* Input Area */}
-            <div className="p-4 border-t border-theme bg-white/5">
+            <div className="p-4 border-t border-theme bg-theme-tint">
                 <form 
                     onSubmit={handleSubmit} 
-                    className="flex items-center gap-3 bg-black/20 border border-theme p-2 px-4 focus-within:border-[var(--theme-primary)]/50 transition-all"
+                    className="flex items-center gap-3 bg-theme-tint-hover border border-theme p-2 px-4 focus-within:border-[var(--theme-primary)]/50 transition-all"
                     style={{
                         borderRadius: 'var(--sarak-chat-radius, 12px)'
                     }}
                 >
-                    <SarakIconButton type="button" variant="ghost" size="sm" className="text-white/20 hover:text-white" icon={<Paperclip size={18} />} />
+                    <SarakIconButton type="button" variant="ghost" size="sm" className="text-[var(--text-muted,rgba(242,246,251,0.55))] hover:text-[var(--text-main,#f2f6fb)]" icon={<SarakIcon name="Paperclip" size={18} />} />
                     <SarakInput
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         placeholder={placeholder}
-                        className="!bg-transparent !border-none !outline-none !shadow-none !text-white flex-1"
+                        className="!bg-transparent !border-none !outline-none !shadow-none !text-[var(--text-main,#f2f6fb)] flex-1"
                         fullWidth
                     />
                     <SarakIconButton
@@ -210,8 +211,8 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
                         variant="ghost"
                         size="sm"
                         disabled={!input.trim() || isLoading}
-                        className={`rounded-xl ${input.trim() && !isLoading ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/20' : 'bg-white/5 text-white/10'}`}
-                        icon={<Send size={18} />}
+                        className={`rounded-xl ${input.trim() && !isLoading ? 'bg-[var(--theme-primary)] text-[var(--theme-on-primary,#020617)] shadow-lg shadow-[var(--theme-primary)]/20' : 'bg-theme-tint text-[var(--text-muted,rgba(242,246,251,0.55))]'}`}
+                        icon={<SarakIcon name="Send" size={18} />}
                     />
                 </form>
             </div>

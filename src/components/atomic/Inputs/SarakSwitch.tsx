@@ -60,19 +60,19 @@ export const SarakSwitch: React.FC<SarakSwitchProps> = ({
                     {...props}
                 />
                 <div
-                    className="block w-10 h-6 rounded-full transition-all duration-300 ease-in-out"
+                    className="block w-10 h-6 rounded-full transition-all duration-[var(--duration-normal,0.3s)] ease-in-out"
                     style={trackStyle}
                 ></div>
                 <div
-                    className="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-300 ease-in-out shadow-sm"
+                    className="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-[var(--duration-normal,0.3s)] ease-in-out shadow-sm"
                     style={thumbStyle}
                 ></div>
             </div>
             
             {(label || description) && (
                 <div className={layoutStyles.textContainerClass}>
-                    {label && <span className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">{label}</span>}
-                    {description && <span id={descId} className="text-xs text-[var(--text-muted,#94a3b8)]">{description}</span>}
+                    {label && <span className="text-sm font-medium text-[var(--text-muted,rgba(242,246,251,0.55))]">{label}</span>}
+                    {description && <span id={descId} className="text-xs text-[var(--text-muted,rgba(242,246,251,0.55))]">{description}</span>}
                 </div>
             )}
         </label>

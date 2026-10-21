@@ -1,66 +1,68 @@
-/* 3.1 SURFACE MASTER (v8.5 INDUSTRIAL MATERIALS) */
+/* 3.1 SURFACE MASTER — MATERIAIS DA SUPERFÍCIE */
 :root {
-    --surface-intensity: var(--sarak-surface-intensity, 0.05);
+    --surface-intensity: var(--sarak-surface-intensity, 0.5);
+    /* Placeholder de campo: o texto do campo a 30% — o mesmo que `placeholder:…/30` dos campos desenha.
+       Mora aqui para o padrão de `cardSearchPlaceholderColor` poder ser um `var()` (cor de token aceita
+       `var(--x, …)`, não `color-mix` cru). */
+    --sarak-input-placeholder-color: color-mix(in srgb, var(--sarak-input-text-color, var(--text-muted, rgba(242, 246, 251, 0.55))) 30%, transparent);
 }
 
-/* Metallic */
-[data-surface="metallic"]::before {
-    opacity: 1 !important;
-    background: linear-gradient(135deg, rgba(255,255,255,calc(var(--surface-intensity) * 0.05)) 0%, rgba(255,255,255,calc(var(--surface-intensity) * 0.2)) 25%, rgba(255,255,255,calc(var(--surface-intensity) * 0.05)) 50%, rgba(255,255,255,calc(var(--surface-intensity) * 0.15)) 75%, rgba(255,255,255,calc(var(--surface-intensity) * 0.05)) 100%);
-    background-size: 400% 400%; mix-blend-mode: soft-light;
+/* `surfaceMaterial` (`data-sx-surface-material`), `surfaceIntensity` e a moldura do CARTÃO
+   (`borderType`, `data-sx-border-type`) são lidos em `_card-materials.css`, na camada que cede à
+   classe. Aqui ficam as variáveis e a moldura do `.border-theme`.
+
+   `.border-theme` é classe da lib que o autor escolhe aplicar e que é `!important` por desenho
+   (`_utilities.css`): a moldura só a alcança com `!important` na mesma camada, e por atributo com
+   valor — o seletor é estreito. Só o contorno (estilo, cor e espessura): a sombra da moldura é do
+   cartão. */
+[data-sx-border-type="cyber"] .border-theme {
+    border-style: dashed !important;
+    border-color: color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 70%, transparent) !important;
+}
+[data-sx-border-type="double"] .border-theme {
+    border-style: double !important;
+    border-width: max(3px, var(--theme-border-width, 1px)) !important;
+}
+[data-sx-border-type="glow"] .border-theme {
+    border-color: color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 50%, transparent) !important;
+}
+[data-sx-border-type="none"] .border-theme {
+    border-color: transparent !important;
 }
 
-/* Brushed */
-[data-surface="brushed"]::before {
-    opacity: 1 !important;
-    background: repeating-linear-gradient(90deg, rgba(255,255,255,calc(var(--surface-intensity) * 0.1)) 0px, rgba(255,255,255,calc(var(--surface-intensity) * 0.1)) 1px, transparent 1px, transparent 3px), linear-gradient(to bottom, rgba(255,255,255,0.02), transparent);
-    mix-blend-mode: overlay;
+/* 10. DIREÇÃO DA SOMBRA — leitor de `shadowOrientation` (`data-sx-shadow-orientation`).
+   Cada opção só fixa um vetor (`--sarak-shadow-dir-x/y`, de -1 a 1); quem o consome é a
+   sombra do cartão (`_cards.css`) e a sombra em camadas `--sarak-dynamic-shadow`
+   (`_theme.css`), que `--dynamic-shadow` espelha. Sem o atributo vale `bottom`.
+   `dynamic` segue a luz — o oposto do ponteiro, que o `DesignInjector` publica em
+   `--sarak-light-x/y` enquanto esta opção está ativa; sem ponteiro, cai em `bottom`. */
+[data-sx-shadow-orientation="bottom"] { --sarak-shadow-dir-x: 0; --sarak-shadow-dir-y: 1; }
+[data-sx-shadow-orientation="center"] { --sarak-shadow-dir-x: 0; --sarak-shadow-dir-y: 0; }
+[data-sx-shadow-orientation="top"] { --sarak-shadow-dir-x: 0; --sarak-shadow-dir-y: -1; }
+[data-sx-shadow-orientation="bottom-right"] { --sarak-shadow-dir-x: 1; --sarak-shadow-dir-y: 1; }
+[data-sx-shadow-orientation="dynamic"] {
+    --sarak-shadow-dir-x: var(--sarak-light-x);
+    --sarak-shadow-dir-y: var(--sarak-light-y);
+}
+/* Luz parada em cima, como em `bottom`; o `DesignInjector` a escreve inline no `html` quando a opção
+   `dynamic` está ativa. Fica só em `:root` — em `body` ela sombrearia o valor inline herdado. */
+:root {
+    --sarak-light-x: 0;
+    --sarak-light-y: 1;
 }
 
-/* Acrylic */
-[data-surface="acrylic"] { backdrop-filter: blur(40px) saturate(220%) contrast(110%) !important; }
-[data-surface="acrylic"]::before { opacity: 1 !important; background: radial-gradient(at top left, rgba(255,255,255,calc(var(--surface-intensity) * 1.5)), transparent 70%); }
-
-/* Matte */
-[data-surface="matte"] { background-color: var(--card-bg) !important; backdrop-filter: none !important; }
-[data-surface="matte"]::before { display: none; }
-
-/* 3.2 NEO-BORDERS (v6.0) */
-[data-border="inlet"] .bg-theme-card, [data-border="inlet"] .sarak-shell-sidebar, [data-border="inlet"] .sarak-shell-header {
-    box-shadow: inset 0 4px 15px rgba(0,0,0,0.6), 0 1px 1px rgba(255,255,255,0.05) !important; border-color: rgba(0,0,0,0.4) !important;
+/* 11. COR DA SOMBRA — leitor de `shadowColorMode` (`data-sx-shadow-color-mode`).
+   Escolhe a COR da sombra base do cartão (`_cards.css` a compõe com a geometria dos
+   tokens `cardShadow*` e a opacidade `cardShadowSpread`). Sem o atributo vale o preto. */
+[data-sx-shadow-color-mode="neutral"] {
+    --sarak-card-shadow-color: #000;
 }
-[data-border="neon"] .bg-theme-card, [data-border="neon"] .sarak-shell-sidebar, [data-border="neon"] .sarak-shell-header {
-    border-color: var(--theme-texture-color, var(--theme-primary)) !important;
-    box-shadow: 0 0 25px rgba(var(--theme-primary-rgb, 59, 130, 246), 0.4), inset 0 0 10px rgba(var(--theme-primary-rgb, 59, 130, 246), 0.15) !important;
+/* Tingida pela primária: a sombra de um cartão ganha a cor da marca. */
+[data-sx-shadow-color-mode="colored"] {
+    --sarak-card-shadow-color: color-mix(in srgb, var(--sarak-primary-color, #19e3f0) 88%, #000);
 }
-[data-border="beveled"] .bg-theme-card, [data-border="beveled"] .sarak-shell-sidebar, [data-border="beveled"] .sarak-shell-header {
-    border-top: 1px solid rgba(255,255,255,0.25) !important; border-left: 1px solid rgba(255,255,255,0.2) !important; border-bottom: 3px solid rgba(0,0,0,0.6) !important; border-right: 3px solid rgba(0,0,0,0.5) !important;
+/* Ambiente: derivada do fundo — o fundo do tema escurecido, sem virar preto puro nem
+   marca. Em tema claro vira um cinza suave; em tema escuro, quase preto. */
+[data-sx-shadow-color-mode="ambient"] {
+    --sarak-card-shadow-color: color-mix(in srgb, var(--sarak-bg-body, var(--bg-body, #06080d)) 45%, #000);
 }
-
-/* 8. ADVANCED MATERIALS (v6.8) */
-[data-surface="metallic"] .sarak-card, [data-surface="metallic"] section {
-    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.05) 100%) !important; border: 1px solid rgba(255,255,255,0.15) !important; box-shadow: inset 0 1px 1px rgba(255,255,255,0.1), var(--dynamic-shadow);
-}
-[data-surface="brushed"] .sarak-card {
-    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 1px, transparent 1px, transparent 2px), color-mix(in srgb, var(--card-bg), transparent calc(100% * (1 - var(--glass-opacity, 0.7)))) !important;
-}
-
-/* 9. NEO-BORDERS (v6.8) */
-[data-border="neon"] .sarak-card, [data-border="neon"] .border-theme {
-    border-color: rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.5) !important; box-shadow: 0 0 10px rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.2), inset 0 0 5px rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.1);
-}
-[data-border="inlet"] .sarak-card {
-    border: 1px solid rgba(0,0,0,0.3) !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 0 1px 0 rgba(255,255,255,0.05);
-}
-[data-border="beveled"] .sarak-card {
-    border: 1px solid rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.3) !important; border-bottom: 2px solid rgba(0,0,0,0.4) !important; border-right: 2px solid rgba(0,0,0,0.4) !important;
-}
-
-/* 10. LIGHTING & DEPTH MOTOR (v6.0) */
-[data-shadow-orientation="top-down"] { --dynamic-shadow: 0 10px 30px -10px rgba(0,0,0,var(--shadow-intensity, 0.5)); }
-[data-shadow-orientation="isometric"] { --dynamic-shadow: 10px 10px 20px -5px rgba(0,0,0,var(--shadow-intensity, 0.5)); }
-[data-shadow-orientation="inner"] .sarak-card, [data-shadow-orientation="inner"] .bg-theme-card {
-    box-shadow: inset 0 2px 10px rgba(0,0,0,calc(var(--shadow-intensity) * 0.5)) !important;
-}
-[data-shadow-color-mode="match"] { --dynamic-shadow: 0 10px 40px -10px rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), var(--shadow-intensity, 0.5)); }
-[data-shadow-color-mode="adaptive"].dark { --dynamic-shadow: 0 15px 50px -15px rgba(0,0,0,0.8); }

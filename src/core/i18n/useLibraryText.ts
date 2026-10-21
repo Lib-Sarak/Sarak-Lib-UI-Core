@@ -1,5 +1,5 @@
 import { useSarakUIOptional } from '../Provider/SarakUIProvider';
-import { LANGUAGES } from '../Discovery/constants';
+import { LANGUAGES } from './languages';
 import { LIBRARY_TEXT_CATALOG, LIBRARY_TEXT_FALLBACK_LANGUAGE, type LibraryTextKey, type SarakLibraryLanguage } from './catalog';
 
 const SUPPORTED_LANGUAGES: ReadonlySet<string> = new Set(LANGUAGES.map((lang) => lang.id));

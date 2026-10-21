@@ -1,14 +1,25 @@
 import React from 'react';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import * as ComponentModule from '../SarakEmptyState';
 import { SarakEmptyState } from '../SarakEmptyState';
+import { SarakButton } from '../../Buttons/SarakButton';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 
 describe('SarakEmptyState', () => {
-    it('should be defined and export its contents without crashing', () => {
-        expect(ComponentModule).toBeDefined();
-        // TODO: Injetar testes de montagem profunda caso o componente cresça em complexidade
+    it('renderiza título, descrição, ícone e ação compostos', () => {
+        render(
+            <SarakEmptyState
+                title="Acesso restrito"
+                description="Peça acesso ao responsável pelo espaço."
+                icon={<span aria-hidden="true">🔒</span>}
+                action={<SarakButton>Solicitar acesso</SarakButton>}
+            />,
+        );
+
+        expect(screen.getByRole('status')).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Acesso restrito' })).toBeInTheDocument();
+        expect(screen.getByText('Peça acesso ao responsável pelo espaço.')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Solicitar acesso' })).toBeInTheDocument();
     });
 });
 

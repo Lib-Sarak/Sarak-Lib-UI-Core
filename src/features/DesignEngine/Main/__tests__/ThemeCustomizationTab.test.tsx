@@ -31,11 +31,34 @@ vi.mock('../../hooks/useResizable', () => ({
 // Mocks dos Sub-componentes. O PreviewCanvas expõe `onApplyFullTheme` por um botão
 // para cobrir o caminho do PresetsCatalog (aplicar tema completo pelo catálogo — L4).
 vi.mock('../../Canvas/PreviewCanvas', () => ({
-    PreviewCanvas: ({ onApplyFullTheme }: { onApplyFullTheme?: (d: Record<string, unknown>) => void }) => (
-        <div data-testid="preview-canvas">
+    PreviewCanvas: ({
+        onApplyFullTheme,
+        isDualView,
+        onCloseGallery,
+        customThemes,
+    }: {
+        onApplyFullTheme?: (d: Record<string, unknown>) => void;
+        isDualView?: boolean;
+        onCloseGallery?: () => void;
+        customThemes?: unknown;
+    }) => (
+        <div data-testid="preview-canvas" data-gallery-open={String(Boolean(isDualView))} data-has-custom-themes-prop={String(customThemes !== undefined)}>
             <button data-testid="apply-full-theme" onClick={() => onApplyFullTheme?.({ mode: 'dark', primaryColor: '#38bdf8', systemName: 'ERP Noturno' })}>
                 Apply Full
             </button>
+            <button data-testid="close-gallery" onClick={onCloseGallery}>Fechar galeria</button>
+        </div>
+    )
+}));
+
+vi.mock('../../Canvas/components/PreviewToolbar', () => ({
+    PreviewToolbar: ({ setPreviewDevice, setIsPreviewStacked }: {
+        setPreviewDevice: (device: 'desktop' | 'tablet' | 'smartphone') => void;
+        setIsPreviewStacked: (stacked: boolean) => void;
+    }) => (
+        <div data-testid="preview-toolbar">
+            <button data-testid="preview-device-tablet" onClick={() => setPreviewDevice('tablet')}>Tablet</button>
+            <button data-testid="preview-stack" onClick={() => setIsPreviewStacked(true)}>Empilhar</button>
         </div>
     )
 }));
@@ -59,9 +82,11 @@ vi.mock('../components/SaveThemeModal', () => ({
 }));
 
 vi.mock('../../../../core/Design/master-map', () => ({
+    sarakGetAllDesignTokens: vi.fn(() => []),
+    sarakGetDefaultDesignState: vi.fn(() => ({})),
     MASTER_DESIGN_MAP: {
         components: [
-            { id: 'cards', title: 'Cards', icon: () => <div data-testid="icon-cards" /> }
+            { id: 'cards', title: 'Cards', icon: () => <div data-testid="icon-cards" />, tokens: [] }
         ]
     }
 }));
@@ -82,21 +107,24 @@ const mockPersistDesign = vi.fn();
 const baseThemeEngineState = {
     sarak: { applyFullConfigRaw: mockApplyFullConfigRaw, persistDesign: mockPersistDesign },
     activePreviewApp: 'dashboard',
-    setActivePreviewApp: vi.fn(),
+    selectPreviewApp: vi.fn(),
     previewDevice: 'desktop',
     setPreviewDevice: vi.fn(),
     activePillarId: null as string | null,
     setActivePillarId: vi.fn(),
+    selectPillar: vi.fn(),
     activeSectionId: null as string | null,
     setActiveSectionId: vi.fn(),
     viewMode: 'preview',
     setViewMode: vi.fn(),
     searchQuery: '',
     setSearchQuery: vi.fn(),
-    isEssentialMode: true,
-    setIsEssentialMode: vi.fn(),
+    editMode: 'essential' as const,
+    setEditMode: vi.fn(),
     isPreviewStacked: false,
     setIsPreviewStacked: vi.fn(),
+    isGalleryOpen: false,
+    setIsGalleryOpen: vi.fn(),
     currentThemeName: '',
     setCurrentThemeName: vi.fn(),
     isSaveModalOpen: false,
@@ -124,10 +152,11 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
             draft: { mode: 'light' },
             updateDraft: vi.fn(),
             handleApplyToSystem: mockHandleApplyToSystem,
-            handleApplyComponent: vi.fn(),
             isComponentDirty: vi.fn(() => false),
             resetComponent: vi.fn(),
             isDirty: false,
+            dirtyTokenCount: 0,
+            discardDraft: vi.fn(),
             toast: null,
             showToast: vi.fn(),
             handleThemePreview: vi.fn()
@@ -137,9 +166,26 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
     it('renderiza os componentes principais no modo de preview', () => {
         render(<ThemeCustomizationTab />);
 
-        expect(screen.getByText('Design Engine')).toBeInTheDocument();
+        expect(screen.getByText('Design')).toBeInTheDocument();
         expect(screen.getByTestId('preview-canvas')).toBeInTheDocument();
+        expect(screen.getByTestId('preview-canvas')).toHaveAttribute('data-gallery-open', 'false');
+        expect(screen.getByTestId('preview-canvas')).toHaveAttribute('data-has-custom-themes-prop', 'false');
         expect(fetchSpy).not.toHaveBeenCalled();
+    });
+
+    it('abre a galeria no preview e o botão de fechar volta ao preview único', () => {
+        const setIsGalleryOpen = vi.fn();
+        vi.mocked(useThemeEngineState).mockReturnValue({
+            ...baseThemeEngineState,
+            isGalleryOpen: true,
+            setIsGalleryOpen,
+        } as any);
+
+        render(<ThemeCustomizationTab />);
+
+        expect(screen.getByTestId('preview-canvas')).toHaveAttribute('data-gallery-open', 'true');
+        fireEvent.click(screen.getByTestId('close-gallery'));
+        expect(setIsGalleryOpen).toHaveBeenCalledWith(false);
     });
 
     it('a altura é relativa ao container-pai — nunca à viewport (plan-35, fecha 06-painel-de-customizacao-e-preview.md §6.2)', () => {
@@ -183,16 +229,30 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
         expect(fetchSpy).not.toHaveBeenCalled();
     });
 
+    it('encaminha a escolha de dispositivo do preview para o estado compartilhado', () => {
+        const setPreviewDevice = vi.fn();
+        vi.mocked(useThemeEngineState).mockReturnValue({
+            ...baseThemeEngineState,
+            setPreviewDevice
+        } as any);
+
+        render(<ThemeCustomizationTab />);
+        fireEvent.click(screen.getByTestId('preview-device-tablet'));
+
+        expect(setPreviewDevice).toHaveBeenCalledWith('tablet');
+    });
+
     it('aplicar um tema completo pelo catálogo só atualiza o rascunho — não comita nem persiste', () => {
         const mockPreview = vi.fn();
         vi.mocked(useDesignDraft).mockReturnValue({
             draft: { mode: 'light' },
             updateDraft: vi.fn(),
             handleApplyToSystem: mockHandleApplyToSystem,
-            handleApplyComponent: vi.fn(),
             isComponentDirty: vi.fn(() => false),
             resetComponent: vi.fn(),
             isDirty: false,
+            dirtyTokenCount: 0,
+            discardDraft: vi.fn(),
             toast: null,
             showToast: vi.fn(),
             handleThemePreview: mockPreview
@@ -222,10 +282,11 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
             draft: { mode: 'light' },
             updateDraft: vi.fn(),
             handleApplyToSystem: mockHandleApplyToSystem,
-            handleApplyComponent: vi.fn(),
             isComponentDirty: vi.fn(() => false),
             resetComponent: vi.fn(),
             isDirty: true,
+            dirtyTokenCount: 1,
+            discardDraft: vi.fn(),
             toast: null,
             showToast: vi.fn(),
             handleThemePreview: vi.fn()
@@ -233,7 +294,7 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
 
         render(<ThemeCustomizationTab />);
 
-        const applyBtn = screen.getByText('Aplicar Alterações Globais');
+        const applyBtn = screen.getByRole('button', { name: 'Aplicar (1)' });
         fireEvent.click(applyBtn);
 
         expect(mockHandleApplyToSystem).toHaveBeenCalledTimes(1);

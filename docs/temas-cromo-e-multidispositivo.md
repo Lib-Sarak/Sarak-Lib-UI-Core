@@ -12,11 +12,13 @@ valores; **não monte um tema do zero** (é como o `ERP_THEMES` do 1º teste nas
 cor, e por isso "fonte/cromo não mudavam").
 
 ```tsx
-import { SarakUIProvider, sarakDeriveThemeFromReference } from '@sarak/lib-ui-core';
+import { SarakUIProvider, sarakDeriveThemeFromReference, sarakLoadThemePreset } from '@sarak/lib-ui-core';
 
 // Derive de um tema COMPLETO e troque poucos valores — a customização vale nos dois modos.
+// Só o `sarak-sovereign` está no boot; o claro é carregado antes (fora do boot, sob demanda).
+const claro = await sarakLoadThemePreset('minimalist-airy');
 const MEUS_TEMAS = [
-  sarakDeriveThemeFromReference('minimalist-airy', {
+  sarakDeriveThemeFromReference(claro, {
     id: 'marca-claro', name: 'Marca (claro)',
     design: { primaryColor: '#2563eb', accentColor: '#2563eb' },
   }),
@@ -32,11 +34,12 @@ const MEUS_TEMAS = [
 ```
 
 APIs relacionadas:
-- `SARAK_GLOBAL_THEMES: SarakThemePreset[]` — o catálogo completo, para escolher o ponto de partida.
-- `sarakDeriveThemeFromReference(id, { id, name, design })` — deriva um tema completo, com `contraparte`, a partir
-  de qualquer tema do catálogo. Espalhar `.design` perde a contraparte.
-- `SARAK_REFERENCE_THEMES` — o par recomendado (`minimalist-airy` claro + `sarak-sovereign` escuro), que difere em modo, cromo e fonte de propósito.
-- `sarakGetThemePreset(id)` — busca um preset por id.
+- `SARAK_THEME_CATALOG` — o catálogo leve (id, nome, modo, amostra de cor), para listar e escolher sem carregar o tema.
+- `sarakLoadThemePreset(id)` / `sarakPreloadThemes(ids)` / `sarakLoadAllThemePresets()` — carregam o tema embarcado sob demanda.
+- `sarakDeriveThemeFromReference(idOuPreset, { id, name, design })` — deriva um tema completo, com `contraparte`: `'sarak-sovereign'`
+  é síncrono; qualquer outro entra como preset já carregado. Espalhar `.design` perde a contraparte.
+- `SARAK_BOOT_THEMES` — a referência escura síncrona (`sarak-sovereign`); `sarakLoadReferenceThemes()` devolve o par completo
+  (`minimalist-airy` claro + `sarak-sovereign` escuro), que difere em modo, cromo e fonte de propósito.
 - `sarakGetDefaultDesignState()` / `sarakGetAllDesignTokens()` — o **schema vivo** de tokens (fonte da verdade; cada `token.id` é uma chave válida de `design`).
 - `sarakFindMissingThemeAxes(design)` / `sarakWarnOnIncompleteTheme(design)` — avisam se um tema custom omite um eixo inteiro (para não ficar incompleto em silêncio).
 
@@ -61,8 +64,8 @@ tokens — o JSON exportado nasce completo, pronto para colar em `customThemes`.
 
 ## 2. Cromo apresentacional (L2) — `SarakAppChrome`
 
-Topbar/sidebar temáveis **sem** o modelo de host/registro do `SarakShell`. Cada app
-renderiza o seu, isolado; a navegação é DADO e a seleção sai por callback.
+O `SarakAppChrome` é montado por cada app; a navegação é declarada em dados e a
+seleção da rota segue pelo callback para o roteador do consumidor.
 
 ### Navegação estruturada com ícone first-class (Spec 40.2 — L1)
 
@@ -83,7 +86,7 @@ const NAV: SarakNavItem[] = [
 <SarakAppChrome
   brand={{ name: 'Meu Sistema' }}
   navItems={NAV.map((it) => ({ ...it, active: it.href === rotaAtual }))}
-  onNavigate={(href) => window.location.assign(href)}  // o host decide como navegar
+  onNavigate={(href) => window.location.assign(href)}  // a aplicação decide como navegar
 >
   <MinhaTela />
 </SarakAppChrome>

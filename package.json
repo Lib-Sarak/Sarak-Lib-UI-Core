@@ -18,10 +18,12 @@
         "sarak-ui"
     ],
     "scripts": {
-        "build:css": "npx @tailwindcss/cli -i ./src/styles/sarak-base.css -o ./dist/sarak.css --minify",
-        "build:js": "tsup src/index.ts --format esm,cjs --shims --dts --clean --minify --external react,react-dom,framer-motion,lucide-react,recharts,echarts-for-react,echarts,reactflow,react-grid-layout,react-markdown,react-syntax-highlighter,react-dropzone,pdfjs-dist,clsx,tailwind-merge,date-fns,@tanstack/react-virtual",
+        "build:css": "tailwindcss -i ./src/styles/sarak-base.css -o ./dist/sarak.css --minify",
+        "build:js": "node scripts/generate-build-info.mjs --prepare && tsup src/index.ts --format esm,cjs --shims --dts --clean --minify --external react,react-dom,framer-motion,lucide-react,recharts,echarts-for-react,echarts,reactflow,react-grid-layout,react-markdown,react-syntax-highlighter,react-dropzone,pdfjs-dist,clsx,tailwind-merge,date-fns,@tanstack/react-virtual",
         "build:css:scoped": "node scripts/build-scoped-css.mjs",
-        "build": "npm run token-types:check && npm run catalog:check && npm run barrel:check && npm run zero-brand:check && npm run guide:check && npm run deep-import:check && npm run build:js && npm run public-types:check && npm run prefix:check && npm run build:css && npm run build:css:scoped && node scripts/copy-base-css.mjs && node scripts/inject-css.mjs && node scripts/generate-build-info.mjs",
+        "build": "npm run token-types:check && npm run token-docs:check && npm run themes:catalog:check && npm run catalog:check && npm run barrel:check && npm run zero-brand:check && npm run guide:check && npm run deep-import:check && npm run fonts:manifest:check && npm run build:js && npm run fonts:embed && npm run fonts:check && npm run theme-boot:check && npm run public-types:check && npm run prefix:check && npm run icon-port:check && npm run kit-names:check && npm run build:css && npm run build:css:scoped && node scripts/copy-base-css.mjs && node scripts/inject-css.mjs && node scripts/generate-build-info.mjs",
+        "themes:catalog": "npx tsx scripts/generate-theme-catalog.ts",
+        "themes:catalog:check": "npx tsx scripts/generate-theme-catalog.ts --check",
         "catalog": "node scripts/generate-component-catalog.mjs",
         "catalog:check": "node scripts/generate-component-catalog.mjs --check",
         "guide": "node scripts/generate-consumer-kit.mjs",
@@ -36,15 +38,31 @@
         "plan-index": "node scripts/generate-plan-index.mjs",
         "plan-index:check": "node gates/scripts/contrato/check-plan-index-sync.mjs && node scripts/generate-plan-index.mjs --check",
         "deep-import:check": "node gates/scripts/contrato/check-no-deep-import.mjs",
+        "theme-boot:check": "node gates/scripts/contrato/check-theme-boot-closure.mjs",
+        "boot:measure": "node scripts/measure-consumer-boot.mjs",
         "container-query:check": "node gates/scripts/contrato/check-container-query-literal.mjs",
         "persistence-doc:check": "node gates/scripts/contrato/check-persistence-doc-identifiers.mjs",
         "public-types:check": "node gates/scripts/contrato/check-public-types-parity.mjs --check",
         "prefix:check": "node gates/scripts/contrato/check-public-prefix.mjs",
+        "kit-names:check": "node gates/scripts/contrato/check-kit-names.mjs",
         "container-query-boundary:check": "node gates/scripts/contrato/check-container-query-boundary.mjs",
         "section-pointers:check": "node gates/scripts/contrato/check-section-pointers.mjs",
         "gate-limits:check": "node gates/scripts/contrato/check-gate-limits.mjs",
         "class-merge:check": "node gates/scripts/contrato/check-class-merge.mjs",
+        "icon-port:check": "node gates/scripts/contrato/check-icon-port.mjs",
         "chrome-token-parity:check": "node gates/scripts/contrato/check-chrome-token-parity.mjs",
+        "token-reader:check": "node gates/scripts/contrato/check-token-reader.mjs",
+        "css-important:check": "node gates/scripts/contrato/check-css-important-visual.mjs",
+        "fixed-translucent:check": "node gates/scripts/contrato/check-fixed-translucent.mjs",
+        "variable-contract:check": "npx tsx gates/scripts/contrato/check-variable-contract.ts",
+        "channel-dispute:check": "npx tsx gates/scripts/contrato/check-channel-dispute.ts",
+        "token-docs:check": "npx tsx gates/scripts/contrato/check-token-documentation.ts",
+        "theme-completeness:check": "npx tsx gates/scripts/contrato/check-theme-completeness.ts",
+        "fonts:embed": "npx tsx scripts/embed-fonts.ts",
+        "fonts:check": "npx tsx gates/scripts/contrato/check-fonts.ts",
+        "fonts:manifest": "npx tsx scripts/generate-font-manifest.ts",
+        "fonts:manifest:check": "npx tsx scripts/generate-font-manifest.ts --check",
+        "panel-contract:check": "npx tsx gates/scripts/contrato/check-panel-contract.ts",
         "trail-citation:check": "node gates/scripts/contrato/check-trail-citation.mjs",
         "coverage:check": "vitest run --coverage && node gates/scripts/release/check-coverage-floor.mjs",
         "composicao-atomica:check": "node gates/scripts/audit/auditor_composicaoatomica.mjs",
@@ -53,14 +71,15 @@
         "audit": "node gates/scripts/audit/run_audit.mjs",
         "themes:diversity": "npx tsx gates/scripts/audit/verify_diversity.ts",
         "themes:showcase": "npx tsx browser-tests/generate-showcase.mts",
+        "verify": "node scripts/verify-changes.mjs",
         "audit:baseline": "node gates/scripts/release/check-audit-baseline.mjs",
         "hooks:install": "node scripts/install-hooks.mjs",
-        "gates:full": "npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check && node gates/scripts/release/check-audit-baseline.mjs --with-tsc && npm run themes:diversity",
+        "gates:full": "npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check && node gates/scripts/release/check-audit-baseline.mjs --with-tsc && npm run themes:diversity && npm run boot:measure",
         "release:check": "node gates/scripts/release/check-release-tag.mjs",
         "migration-anchor:check": "node gates/scripts/contrato/check-migration-anchor.mjs",
         "minor-no-removal:check": "node gates/scripts/contrato/check-minor-no-removal.mjs",
         "preversion": "npm run gates:full",
-        "version": "npm run migration-anchor:check && npm run minor-no-removal:check && npm run guide && npm run build && npm run dev-kit && git add package.json package-lock.json dist sarak-ui sarak-dev",
+        "version": "npm run migration-anchor:check && npm run minor-no-removal:check && npm run guide && npm run build && npm run dev-kit && git add package.json package-lock.json dist sarak-ui sarak-dev src/buildInfo.ts src/core/Provider/buildInfo.ts",
         "postversion": "git push --follow-tags",
         "prepublishOnly": "npm run build && npm run package:check"
     },
@@ -86,14 +105,15 @@
         "dompurify": "^3.4.11"
     },
     "peerDependencies": {
+        "@dnd-kit/core": ">=6.3.0",
+        "@dnd-kit/sortable": ">=10.0.0",
         "@tanstack/react-virtual": ">=3.0.0",
-        "axios": "^1.6.0",
         "clsx": ">=2.1.0",
         "date-fns": ">=3.3.0",
         "echarts": ">=5.5.0",
         "echarts-for-react": ">=3.0.0",
         "framer-motion": ">=11.0.0",
-        "lucide-react": ">=0.284.0",
+        "lucide-react": ">=0.284.0 <1.0.0",
         "pdfjs-dist": ">=4.0.0",
         "react": ">=18.0.0",
         "react-dom": ">=18.0.0",
@@ -106,8 +126,99 @@
         "tailwind-merge": ">=2.2.0",
         "tailwindcss": ">=4.0.0"
     },
+    "peerDependenciesMeta": {
+        "@dnd-kit/core": {
+            "optional": true
+        },
+        "@dnd-kit/sortable": {
+            "optional": true
+        },
+        "@tanstack/react-virtual": {
+            "optional": true
+        },
+        "echarts": {
+            "optional": true
+        },
+        "echarts-for-react": {
+            "optional": true
+        },
+        "pdfjs-dist": {
+            "optional": true
+        },
+        "react-grid-layout": {
+            "optional": true
+        },
+        "react-markdown": {
+            "optional": true
+        },
+        "react-syntax-highlighter": {
+            "optional": true
+        },
+        "reactflow": {
+            "optional": true
+        },
+        "recharts": {
+            "optional": true
+        },
+        "tailwindcss": {
+            "optional": true
+        }
+    },
+    "engines": {
+        "node": ">=20.0.0"
+    },
     "devDependencies": {
+        "@dnd-kit/core": "^6.3.1",
+        "@dnd-kit/sortable": "^10.0.0",
+        "@fontsource-variable/archivo": "^5.3.0",
+        "@fontsource-variable/caveat": "^5.3.0",
+        "@fontsource-variable/cormorant-garamond": "^5.3.0",
+        "@fontsource-variable/dancing-script": "^5.3.0",
+        "@fontsource-variable/dm-sans": "^5.3.0",
+        "@fontsource-variable/eb-garamond": "^5.3.0",
+        "@fontsource-variable/figtree": "^5.3.0",
+        "@fontsource-variable/fira-code": "^5.3.0",
+        "@fontsource-variable/fraunces": "^5.3.0",
+        "@fontsource-variable/inter": "^5.3.0",
+        "@fontsource-variable/jetbrains-mono": "^5.3.0",
+        "@fontsource-variable/lexend": "^5.3.0",
+        "@fontsource-variable/lora": "^5.3.0",
+        "@fontsource-variable/manrope": "^5.3.0",
+        "@fontsource-variable/merriweather": "^5.3.0",
+        "@fontsource-variable/montserrat": "^5.3.0",
+        "@fontsource-variable/nunito": "^5.3.0",
+        "@fontsource-variable/open-sans": "^5.3.0",
+        "@fontsource-variable/orbitron": "^5.3.0",
+        "@fontsource-variable/oswald": "^5.3.0",
+        "@fontsource-variable/outfit": "^5.3.0",
+        "@fontsource-variable/playfair-display": "^5.3.0",
+        "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
+        "@fontsource-variable/raleway": "^5.3.0",
+        "@fontsource-variable/roboto": "^5.3.0",
+        "@fontsource-variable/roboto-mono": "^5.3.0",
+        "@fontsource-variable/roboto-slab": "^5.3.0",
+        "@fontsource-variable/rubik": "^5.3.0",
+        "@fontsource-variable/sora": "^5.3.0",
+        "@fontsource-variable/source-sans-3": "^5.3.1",
+        "@fontsource-variable/source-serif-4": "^5.3.1",
+        "@fontsource-variable/space-grotesk": "^5.3.0",
+        "@fontsource-variable/syne": "^5.3.0",
+        "@fontsource-variable/unbounded": "^5.3.0",
+        "@fontsource-variable/work-sans": "^5.3.0",
+        "@fontsource/anton": "^5.3.0",
+        "@fontsource/bebas-neue": "^5.3.0",
+        "@fontsource/chakra-petch": "^5.3.0",
+        "@fontsource/ibm-plex-mono": "^5.3.0",
+        "@fontsource/lato": "^5.3.0",
+        "@fontsource/pacifico": "^5.3.0",
+        "@fontsource/patrick-hand": "^5.3.0",
+        "@fontsource/poppins": "^5.3.0",
+        "@fontsource/pt-serif": "^5.3.0",
+        "@fontsource/satisfy": "^5.3.0",
+        "@fontsource/space-mono": "^5.3.0",
+        "@fontsource/vt323": "^5.3.0",
         "@playwright/test": "^1.63.0",
+        "@tailwindcss/cli": "4.2.2",
         "@tailwindcss/vite": "^4.3.0",
         "@tanstack/react-virtual": "^3.14.3",
         "@testing-library/dom": "^10.4.1",
@@ -139,6 +250,7 @@
         "tailwind-merge": "^2.2.1",
         "tailwindcss": "^4.0.0",
         "tsup": "^8.0.0",
+        "tsx": "4.23.15",
         "typescript": "^5.0.0",
         "vitest": "^4.1.8"
     }

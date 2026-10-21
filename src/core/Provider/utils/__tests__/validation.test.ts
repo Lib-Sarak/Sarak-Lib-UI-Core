@@ -22,6 +22,62 @@ describe('validateDesign (Spec 44 §2.3 — tema é dado validado, nunca CSS/HTM
         expect(warnSpy).toHaveBeenCalled();
     });
 
+    it('um `systemTone` salvo como "dark" ou "light" (opções que saíram) é descartado com aviso de valor fora do contrato', () => {
+        for (const saved of ['dark', 'light']) {
+            warnSpy.mockClear();
+            const result = validateDesign({ mode: 'dark', systemTone: saved });
+
+            expect((result as Record<string, unknown>).systemTone, saved).toBeUndefined();
+            expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('"systemTone" com valor fora do contrato'), saved);
+        }
+    });
+
+    it('aceita os três tons que o schema oferece: none, cyber e tactical', () => {
+        for (const tone of ['none', 'cyber', 'tactical']) {
+            expect((validateDesign({ systemTone: tone }) as Record<string, unknown>).systemTone, tone).toBe(tone);
+        }
+    });
+
+    it('a geometria da sombra do cartão é aceita dentro da faixa e clampada fora dela', () => {
+        const result = validateDesign({ cardShadowOffsetX: 8, cardShadowOffsetY: 999, cardShadowBlur: 0, cardShadowExpansion: -999 }) as Record<string, unknown>;
+
+        expect(result.cardShadowOffsetX).toBe(8);
+        expect(result.cardShadowOffsetY).toBe(60);
+        expect(result.cardShadowBlur).toBe(0);
+        expect(result.cardShadowExpansion).toBe(-40);
+    });
+
+    it.each([
+        ['topbarCollapsedHeight', 24, 44],
+        ['focusRingWidth', 0, 1],
+        ['zIndexSidebar', 1000, 790],
+        ['zIndexModal', 900, 1000],
+    ])('clampa e avisa valor salvo de %s fora da nova faixa', (token, savedValue, expectedValue) => {
+        warnSpy.mockClear();
+
+        const result = validateDesign({ [token]: savedValue }) as Record<string, unknown>;
+
+        expect(result[token]).toBe(expectedValue);
+        expect(warnSpy).toHaveBeenCalledWith(
+            expect.stringContaining(`Token funcional "${token}" fora da faixa`),
+            savedValue,
+            expectedValue,
+        );
+    });
+
+    it('um `navigationStyle: "dock"` salvo é descartado com aviso de valor fora do contrato (o cromo lê sidebar)', () => {
+        const result = validateDesign({ mode: 'dark', navigationStyle: 'dock' });
+        expect((result as Record<string, unknown>).navigationStyle).toBeUndefined();
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('"navigationStyle" com valor fora do contrato'), 'dock');
+    });
+
+    it('`mobileNavigationStyle` aceita auto, bottom e drawer e descarta o resto', () => {
+        for (const value of ['auto', 'bottom', 'drawer']) {
+            expect((validateDesign({ mobileNavigationStyle: value }) as Record<string, unknown>).mobileNavigationStyle).toBe(value);
+        }
+        expect((validateDesign({ mobileNavigationStyle: 'dock' }) as Record<string, unknown>).mobileNavigationStyle).toBeUndefined();
+    });
+
     it('aceita uma cor segura (`color`) e descarta um payload de breakout CSS/HTML', () => {
         const safe = validateDesign({ primaryColor: '#ff0000' });
         expect(safe.primaryColor).toBe('#ff0000');
@@ -52,6 +108,14 @@ describe('validateDesign (Spec 44 §2.3 — tema é dado validado, nunca CSS/HTM
         const second = validateDesign({ mode: 'dark', globalBackgroundBlendMode: 'screen' });
         expect((second as Record<string, unknown>).globalBackgroundBlendMode).toBeUndefined();
         expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('os dois controles de ruído que se fundiram em bgNoiseDensity são descartados, e o que sobrou é aceito', () => {
+        const result = validateDesign({ atmosphereNoiseOpacity: 0.3, noiseIntensity: 0.4, bgNoiseDensity: 0.2 }) as Record<string, unknown>;
+
+        expect(result.atmosphereNoiseOpacity).toBeUndefined();
+        expect(result.noiseIntensity).toBeUndefined();
+        expect(result.bgNoiseDensity).toBe(0.2);
     });
 
     it('clampa um token numérico/responsivo (`sidebarWidth`, min 200 max 400) dentro da faixa', () => {
@@ -186,8 +250,8 @@ describe('validateDesign — predicado de mídia embutida em tokens `image`/`fil
         expect(result.globalBackgroundImageUrl).toBeUndefined();
     });
 
-    it('mantém aceito, sem warn, o formato legado `url("https://...")` do tema shippado `nebula-space`', () => {
-        const legacy = 'url("https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1920&auto=format&fit=crop")';
+    it('mantém aceito, sem warn, o invólucro CSS legado `url()` ao validar uma imagem de fundo', () => {
+        const legacy = 'url("https://images.unsplash.com/photo-x?a=1")';
         const result = validateDesign({ globalBackgroundImageUrl: legacy });
         expect(result.globalBackgroundImageUrl).toBe(legacy);
         expect(warnSpy).not.toHaveBeenCalled();

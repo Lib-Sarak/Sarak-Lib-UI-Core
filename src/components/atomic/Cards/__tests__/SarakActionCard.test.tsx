@@ -103,3 +103,36 @@ describe('SarakActionCard (Spec 40 §2.5 — card genérico, sem domínio embuti
         expect(screen.queryByText('Custo In (1M)')).not.toBeInTheDocument();
     });
 });
+
+describe('SarakActionCard — aperto do botão e spotlight dirigidos pelo token', () => {
+    const item = { id: '1', title: 'Contrato' };
+    const mapping = { title: 'title', subtitle: 'id' };
+
+    it('o botão de ação carrega a classe em que a regra do aperto (`cardActionClickScale`) está escrita', () => {
+        render(
+            <SarakUIProvider config={{ mode: 'dark', cardActionClickScale: 0.8 }}>
+                <SarakActionCard item={item} mapping={mapping} actionLabel="Abrir" />
+            </SarakUIProvider>
+        );
+        expect(screen.getByRole('button', { name: /Abrir/ }).className).toContain('sarak-card-action-btn');
+    });
+
+    it.each([[0.4, '1'], [0, '0']])('o spotlight com cardSpotlightOpacity %s grava data-spotlight %s', (opacity, expected) => {
+        const { container } = render(
+            <SarakUIProvider config={{ mode: 'dark', cardSpotlightOpacity: opacity }}>
+                <SarakActionCard item={item} mapping={mapping} />
+            </SarakUIProvider>
+        );
+        expect(container.querySelector('.sarak-card')?.getAttribute('data-spotlight')).toBe(expected);
+    });
+
+    it.each([[true, '1'], [false, '0']])('borderBeamEnabled %s grava data-border-beam %s na raiz', (enabled, expected) => {
+        const { container } = render(
+            <SarakUIProvider config={{ mode: 'dark', borderBeamEnabled: enabled }}>
+                <SarakActionCard item={item} mapping={mapping} />
+            </SarakUIProvider>
+        );
+        expect(container.querySelector('.sarak-card')?.getAttribute('data-border-beam')).toBe(expected);
+        expect(container.querySelector('.sarak-card > .border-beam-effect')).not.toBeNull();
+    });
+});

@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
-import { SARAK_GLOBAL_THEMES, SarakThemePreset } from '../../../../core/Design/presets/themes';
+import type { SarakThemePreset } from '../../../../core/Design/presets/themes';
 import { resolveThemeForMode } from '../../../../core/Design/presets/themes/color-engine';
 import type { SarakTokenValue } from '../../../../core/Design/types';
 import { upgradeThemePayload } from '../../../../core/Design/master-map';
-import { Sparkles, Layout, Type, Layers, MousePointer2, Keyboard } from 'lucide-react';
+import { Sparkles, Layout, Type, Layers, MousePointer2, Keyboard, X } from 'lucide-react';
+import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
 import { CardsCatalog } from './CardsCatalog';
 import { AtmosphereCatalog } from './AtmosphereCatalog';
 import { TypographyCatalog } from './TypographyCatalog';
 import { ButtonsCatalog } from './ButtonsCatalog';
 import { InputsCatalog } from './InputsCatalog';
 import { PresetCard } from './PresetCard';
+import { PresetCardPending } from './PresetCardPending';
+import { useCatalogThemes } from './useCatalogThemes';
 import { CATALOG_GRID_2COL } from '../panelResponsive.presets';
 
 import { SarakDesignState, SarakUIContextType } from '../../../../core/Provider/types';
@@ -20,19 +23,20 @@ interface PresetsCatalogProps {
      * e só é anunciado ao sistema (`resolvedThemeId`) quando o rascunho é aplicado. */
     onApplyFullTheme?: (design: Partial<SarakDesignState>, themeId?: string) => void;
     currentMode: string;
-    /** Contexto do Provider — usado para ler `allThemes` (GLOBAL_THEMES + custom_themes do banco). */
+    /** Contexto do Provider — lê `themeCatalog` (lista leve) e `allThemes` (temas com `design` em memória). */
     sarak?: SarakUIContextType;
+    onClose: () => void;
 }
 
 type PresetTab = 'globals' | 'cards' | 'typography' | 'atmosphere' | 'buttons' | 'inputs';
 
 const TABS: { id: PresetTab; label: string; icon: React.ElementType }[] = [
-    { id: 'globals', label: 'Globais', icon: Sparkles },
+    { id: 'globals', label: 'Temas', icon: Sparkles },
     { id: 'cards', label: 'Cards', icon: Layout },
-    { id: 'typography', label: 'Typography', icon: Type },
-    { id: 'atmosphere', label: 'Atmosphere', icon: Layers },
-    { id: 'buttons', label: 'Buttons', icon: MousePointer2 },
-    { id: 'inputs', label: 'Inputs', icon: Keyboard },
+    { id: 'typography', label: 'Tipografia', icon: Type },
+    { id: 'atmosphere', label: 'Atmosfera', icon: Layers },
+    { id: 'buttons', label: 'Botões', icon: MousePointer2 },
+    { id: 'inputs', label: 'Campos', icon: Keyboard },
 ];
 
 export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
@@ -40,15 +44,35 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
     onApplyFullTheme,
     currentMode,
     sarak,
+    onClose,
 }) => {
     const [activeTab, setActiveTab] = useState<PresetTab>('globals');
 
-    // `sarak.allThemes` já é GLOBAL_THEMES + custom_themes do banco (SarakUIProvider.tsx).
-    // Sem `sarak`, cai para o import estático (uso isolado/testes).
-    const globalThemes = (sarak?.allThemes as SarakThemePreset[] | undefined) ?? SARAK_GLOBAL_THEMES;
+    // A lista é o catálogo LEVE (nome, modo, cor), completa na hora; o `design` de
+    // cada embarcado chega sob demanda e o cartão vira a miniatura (`useCatalogThemes`).
+    const { rows, loadTheme } = useCatalogThemes(sarak);
+
+    // O modo do USUÁRIO tem que vencer — nunca o modo nativo do tema sozinho.
+    // `resolveThemeForMode` decide entre o design nativo, a contraparte autorada ou o
+    // fallback sintetizado. Só PRÉ-VISUALIZA — o id viaja com o payload para o rascunho,
+    // e só é anunciado como `resolvedThemeId` quando o usuário aplicar
+    // (`handleApplyToSystem`; 06-painel-de-customizacao-e-preview.md §4).
+    const applyTheme = (theme: SarakThemePreset | undefined) => {
+        if (!theme) return;
+        const resolved = resolveThemeForMode(
+            { design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte },
+            currentMode as 'light' | 'dark',
+        );
+        const payload = upgradeThemePayload(resolved);
+        if (onApplyFullTheme) {
+            onApplyFullTheme(payload, theme.id);
+        } else {
+            onApplyPreset(payload);
+        }
+    };
 
     return (
-        <div className="w-full h-full flex flex-col relative bg-theme-bg">
+        <div id="presets-catalog" className="w-full h-full flex flex-col relative bg-theme-bg">
             {/* Header com navegação própria por Categoria de Preset (Schema), independente do Pilar do painel humano */}
             <div className="px-8 py-5 border-b border-theme-border flex items-center justify-between bg-theme-sidebar backdrop-blur-md sticky top-0 z-10 flex-wrap gap-4">
                 <div className="flex items-center gap-4">
@@ -56,23 +80,36 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
                         <Sparkles size={18} className="text-theme-primary" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-xs font-black uppercase text-theme-text tracking-[var(--sarak-tracking-wide,0.3em)]">Design Intelligence Catalog</span>
+                        <h2 className="text-xs font-black uppercase text-theme-text tracking-[var(--sarak-tracking-wide,0.3em)]">Galeria de estilos</h2>
                         <span className="text-[var(--sarak-type-scale3xs,9px)] font-bold text-theme-primary uppercase tracking-widest mt-0.5">
                             Categoria: {TABS.find(tab => tab.id === activeTab)?.label}
                         </span>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2 p-1 bg-black/20 rounded-xl border border-theme-border flex-wrap">
-                    {TABS.map(tab => (
-                        <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id)}
-                            className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all ${activeTab === tab.id ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
-                        >
-                            {tab.label}
-                        </button>
-                    ))}
+                <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2 p-1 bg-theme-body/20 rounded-xl border border-theme-border">
+                        {TABS.map(tab => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)}
+                                className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all ${activeTab === tab.id ? 'bg-theme-primary text-theme-text shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
+                            >
+                                {tab.label}
+                            </button>
+                        ))}
+                    </div>
+                    <SarakButton
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        leftIcon={<X size={14} />}
+                        onClick={onClose}
+                        aria-label="Fechar galeria"
+                        title="Fechar galeria"
+                    >
+                        Fechar galeria
+                    </SarakButton>
                 </div>
             </div>
 
@@ -84,35 +121,24 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
             <div className="@container flex-1 overflow-y-auto custom-scrollbar p-6 bg-[radial-gradient(ellipse_at_top_right,rgba(var(--theme-primary-rgb),0.03)_0%,transparent_50%)]">
                 {activeTab === 'globals' && (
                     <div className={`grid ${CATALOG_GRID_2COL} gap-4`}>
-                        {globalThemes.map((theme, i) => (
+                        {rows.map(({ entry, theme }, i) => (theme ? (
                             <PresetCard
-                                key={theme.id}
+                                key={entry.id}
                                 theme={theme}
                                 currentMode={currentMode}
-                                onApply={() => {
-                                    // plan-26: o modo do USUÁRIO tem que vencer — nunca o modo
-                                    // nativo do tema sozinho. `resolveThemeForMode` decide entre
-                                    // o design nativo, a contraparte autorada ou o fallback
-                                    // sintetizado (`syncThemeWithMode`, só para os 18 legados).
-                                    const resolved = resolveThemeForMode(
-                                        { design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte },
-                                        currentMode as 'light' | 'dark',
-                                    );
-                                    const payload = upgradeThemePayload(resolved);
-                                    // Só PRÉ-VISUALIZA — o id viaja com o payload para o
-                                    // rascunho, e só é anunciado como `resolvedThemeId` quando o
-                                    // usuário aplicar (`handleApplyToSystem`). Antes, o clique aqui
-                                    // já anunciava o id ao Provider, mesmo sem nada ter sido
-                                    // aplicado (06-painel-de-customizacao-e-preview.md §4).
-                                    if (onApplyFullTheme) {
-                                        onApplyFullTheme(payload, theme.id);
-                                    } else {
-                                        onApplyPreset(payload);
-                                    }
-                                }}
+                                onApply={() => applyTheme(theme)}
                                 index={i}
                             />
-                        ))}
+                        ) : (
+                            // Escolhido antes de chegar: carrega e só então aplica — o tema
+                            // atual permanece na tela até o novo estar pronto.
+                            <PresetCardPending
+                                key={entry.id}
+                                entry={entry}
+                                currentMode={currentMode}
+                                onChoose={() => { void loadTheme(entry.id).then((loaded) => applyTheme(loaded as SarakThemePreset | undefined)); }}
+                            />
+                        )))}
                     </div>
                 )}
 

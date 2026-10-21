@@ -15,6 +15,11 @@
  * `mergeSarakClasses` (`src/components/atomic/hooks/mergeSarakClasses.ts`), que usa
  * `tailwind-merge` para que a classe do chamador VENÇA a do átomo.
  *
+ * Também cobra a PORTA ÚNICA (R35): nenhum arquivo de `src/components/atomic/` importa
+ * `tailwind-merge` direto, salvo `hooks/mergeSarakClasses.ts`. O `twMerge` cru não conhece
+ * as utilitárias próprias da base (`text-2xs`, `rounded-btn`, `font-tab`) — o conflito delas
+ * passa a COEXISTIR em vez de ser resolvido. Esta frente não tem allowlist: é violação sempre.
+ *
  * A allowlist (`gates/allowlists/classMergeExclusions.mjs`) declara, com motivo, os
  * átomos que HOJE ainda concatenam `className` — convertê-los é trabalho futuro, fora
  * do escopo deste gate.
@@ -40,6 +45,13 @@
  * 4. `${className}` dentro de um COMENTÁRIO (não código) seria falso positivo — não
  *    ocorre hoje nos arquivos varridos (conferido manualmente), mas o detector não
  *    distingue comentário de código em texto puro.
+ * 5. A porta única é conferida por TEXTO do import (`from 'tailwind-merge'`,
+ *    `require('tailwind-merge')` e `import('tailwind-merge')`). Um import que monte o
+ *    nome do módulo dinamicamente, ou um reexport indireto (um arquivo que reexporte de
+ *    OUTRO módulo que importa o pacote), escapa. Cobre só `src/components/atomic/**` fora
+ *    de `__tests__/`: `Layout/`, `core/` e `features/` podem importar o pacote sem que
+ *    este gate veja. O limite 4 vale aqui também: `from 'tailwind-merge'` num comentário
+ *    seria falso positivo.
  * -------------------------------------------------------------------------
  */
 import fs from 'fs';
@@ -51,14 +63,18 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '.
 const ATOMIC_ROOT = path.join(ROOT, 'src', 'components', 'atomic');
 
 const RAW_CONCAT_RE = /\$\{className\}/;
+const DIRECT_MERGE_IMPORT_RE = /(?:from|require\(|import\()\s*['"]tailwind-merge['"]/;
+const MERGE_PORT = 'hooks/mergeSarakClasses.ts';
+const TSX_FILE_RE = /\.tsx$/;
+const TS_OR_TSX_FILE_RE = /\.tsx?$/;
 
-function walkAtomicFiles(dir, out = []) {
+function walkAtomicFiles(dir, fileRe = TSX_FILE_RE, out = []) {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
         if (entry.name === '__tests__') continue;
         const full = path.join(dir, entry.name);
         if (entry.isDirectory()) {
-            walkAtomicFiles(full, out);
-        } else if (entry.name.endsWith('.tsx')) {
+            walkAtomicFiles(full, fileRe, out);
+        } else if (fileRe.test(entry.name)) {
             out.push(full);
         }
     }
@@ -77,17 +93,30 @@ export function findRawClassNameConcatenation({ root = ATOMIC_ROOT, relativeTo =
     return found.sort();
 }
 
+/** Todo arquivo de `src/components/atomic/` que importa `tailwind-merge` direto, fora da porta única. */
+export function findDirectTailwindMergeImports({ root = ATOMIC_ROOT, relativeTo = ROOT } = {}) {
+    const found = [];
+    for (const file of walkAtomicFiles(root, TS_OR_TSX_FILE_RE)) {
+        if (path.relative(root, file).split(path.sep).join('/') === MERGE_PORT) continue;
+        if (DIRECT_MERGE_IMPORT_RE.test(fs.readFileSync(file, 'utf8'))) {
+            found.push(path.relative(relativeTo, file).split(path.sep).join('/'));
+        }
+    }
+    return found.sort();
+}
+
 /** Compara os violadores medidos contra a allowlist. Listas vazias = verde. */
 export function runClassMergeCheck({ root = ATOMIC_ROOT, relativeTo = ROOT, exclusions = CLASS_MERGE_EXCLUSIONS } = {}) {
     const violations = findRawClassNameConcatenation({ root, relativeTo });
     const naoDeclarados = violations.filter((f) => !exclusions[f]);
     const obsoletas = Object.keys(exclusions).filter((f) => !violations.includes(f));
-    return { naoDeclarados: naoDeclarados.sort(), obsoletas: obsoletas.sort() };
+    const importsDiretos = findDirectTailwindMergeImports({ root, relativeTo });
+    return { naoDeclarados: naoDeclarados.sort(), obsoletas: obsoletas.sort(), importsDiretos };
 }
 
 function main() {
     console.log('--- check-class-merge ---');
-    const { naoDeclarados, obsoletas } = runClassMergeCheck();
+    const { naoDeclarados, obsoletas, importsDiretos } = runClassMergeCheck();
 
     if (naoDeclarados.length > 0) {
         console.log(`[ERROR] ${naoDeclarados.length} átomo(s) concatenam className SEM allowlist:`);
@@ -100,7 +129,13 @@ function main() {
         obsoletas.forEach((f) => console.log(`  - ${f}`));
     }
 
-    const problems = naoDeclarados.length + obsoletas.length;
+    if (importsDiretos.length > 0) {
+        console.log(`[ERROR] ${importsDiretos.length} átomo(s) importam tailwind-merge direto, fora da porta única:`);
+        importsDiretos.forEach((f) => console.log(`  - ${f}`));
+        console.log('  Conserto: importe { mergeSarakClasses } de hooks/mergeSarakClasses — o twMerge cru não conhece text-2xs, rounded-btn nem font-tab.');
+    }
+
+    const problems = naoDeclarados.length + obsoletas.length + importsDiretos.length;
     if (problems === 0) {
         console.log(`[OK] Nenhum átomo concatena className fora da allowlist (${Object.keys(CLASS_MERGE_EXCLUSIONS).length} declarados, com motivo).`);
     } else {

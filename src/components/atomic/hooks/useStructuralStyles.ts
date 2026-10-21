@@ -1,4 +1,5 @@
 import React from 'react';
+import type { SarakLayoutGap } from '../../../core/Design/resolveToken';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { RESPONSIVE_GRID_PRESETS, GRID_LAYOUT_STRATEGIES, resolveAutoFitTemplateColumns, type ResponsiveGridPreset } from './useStructuralStyles.presets';
 import { resolveGap } from './useStructuralStyles.gap';
@@ -17,7 +18,7 @@ export const useStructuralStyles = () => {
     const getGridStyles = (
         templateColumns?: string,
         templateAreas?: string,
-        gapOverride?: string,
+        gapOverride?: SarakLayoutGap,
         responsivePreset?: ResponsiveGridPreset
     ) => {
         // plan-47: default deixou de ser 'col-12' (12 trilhas sem span, 1 filho por
@@ -54,7 +55,7 @@ export const useStructuralStyles = () => {
         direction?: 'row' | 'column' | 'row-reverse' | 'column-reverse' | string,
         justify?: string,
         align?: string,
-        gapOverride?: string
+        gapOverride?: SarakLayoutGap
     ) => {
         const gap = resolveGap(gapOverride, design?.layoutGap || 'var(--sarak-layout-gap-md, 16px)', 'SarakFlex');
         return {
@@ -71,7 +72,7 @@ export const useStructuralStyles = () => {
     // ==========================================
     // EIXO 2: FORMULÁRIOS E AGRUPAMENTOS
     // ==========================================
-    const getFormGroupStyles = (gapOverride?: string) => {
+    const getFormGroupStyles = (gapOverride?: SarakLayoutGap) => {
         const labelPos = (design?.formLabelPosition as string) || 'top';
         const density = (design?.formFieldDensity as string) || 'comfortable';
 
@@ -91,34 +92,6 @@ export const useStructuralStyles = () => {
         return {
             className: labelStrategies[labelPos] || labelStrategies['top'],
             style: { gap } as React.CSSProperties
-        };
-    };
-
-    // ==========================================
-    // EIXO 3: ANATOMIA DE CARDS
-    // ==========================================
-    const getCardStyles = () => {
-        const mediaPos = (design?.cardImagePosition as string) || 'top';
-        const contentAlign = (design?.cardContentAlignment as string) || 'start';
-
-        const mediaStrategies: Record<string, string> = {
-            'left': 'flex flex-row relative overflow-hidden',
-            'right': 'flex flex-row-reverse relative overflow-hidden',
-            'top': 'flex flex-col relative overflow-hidden'
-        };
-
-        const alignStrategies: Record<string, string> = {
-            'center': 'items-center text-center',
-            'space-between': 'justify-between',
-            'start': 'items-start'
-        };
-
-        const baseClass = mediaStrategies[mediaPos] || mediaStrategies['top'];
-        const alignClass = alignStrategies[contentAlign] || alignStrategies['start'];
-
-        return {
-            className: `${baseClass} ${alignClass}`,
-            style: {}
         };
     };
 
@@ -217,7 +190,7 @@ export const useStructuralStyles = () => {
 
         return {
             className: headerClass.trim(),
-            style: { gap: 'calc(var(--sarak-layout-gap-md, 16px) / 1.5)' }
+            style: { gap: 'calc(var(--sarak-layout-gap-md, 16px) / 1.5)' as const }
         };
     };
 
@@ -225,7 +198,6 @@ export const useStructuralStyles = () => {
         getGridStyles,
         getFlexStyles,
         getFormGroupStyles,
-        getCardStyles,
         getInputIconStyles,
         getSwitchLayoutStyles,
         getCheckboxLayoutStyles,

@@ -26,6 +26,7 @@ describe('resolveGap (ponte prop → resolutor de tokens, Spec 16)', () => {
 
     it('avisa e cai no fallback para valor inventado', () => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        // @ts-expect-error o runtime também valida valores fora do contrato quando o tipo é contornado.
         expect(resolveGap('spacing-xxl', 'DEFAULT', 'SarakFlex')).toBe('DEFAULT');
         expect(warn).toHaveBeenCalled();
         warn.mockRestore();

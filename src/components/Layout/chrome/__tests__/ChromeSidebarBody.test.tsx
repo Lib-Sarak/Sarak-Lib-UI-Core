@@ -37,11 +37,6 @@ describe('ChromeSidebarBody (tokens de cromo no modo sidebar)', () => {
         expect(container.querySelector('aside')!.className).toContain('border-r');
     });
 
-    it('contentAlignment="center": o conteúdo ganha largura máxima centralizada', () => {
-        const { container } = renderBody({ contentAlignment: 'center' });
-        expect(container.querySelector('main')!.className).toContain('max-w-7xl');
-    });
-
     it('isNavHidden: a sidebar usa a largura RECOLHIDA em vez da largura cheia', () => {
         const { container } = renderBody({ isNavHidden: true });
         const style = container.querySelector('aside')!.getAttribute('style') ?? '';
@@ -70,7 +65,7 @@ describe('ChromeSidebarBody (tokens de cromo no modo sidebar)', () => {
         const { container } = renderBody({});
         const style = container.querySelector('aside')!.getAttribute('style') ?? '';
         expect(style).toContain('margin: var(--sarak-tab-section-margin');
-        expect(style).toContain('height: calc(100% - (var(--sarak-tab-section-margin, 0px) * 2))');
+        expect(style).toContain('height: calc(100% - (var(--sarak-tab-section-margin, 8px) * 2))');
     });
 });
 
@@ -86,7 +81,7 @@ describe('ChromeSidebarBody — tokens novos ligados (Spec 05 §2.4)', () => {
     it('sidebarBlur/sidebarShadow chegam à sidebar por token, com fallback', () => {
         const { container } = renderBody({});
         const style = container.querySelector('aside')!.getAttribute('style') ?? '';
-        expect(style).toContain('var(--sarak-sidebar-blur, 0px)');
+        expect(style).toContain('var(--sarak-sidebar-blur, 10px)');
         expect(style).toContain('var(--sarak-sidebar-shadow, 10px 0 30px rgba(0,0,0,0.5))');
     });
 
@@ -95,6 +90,14 @@ describe('ChromeSidebarBody — tokens novos ligados (Spec 05 §2.4)', () => {
         const style = container.querySelector('aside')!.getAttribute('style') ?? '';
         expect(style).toContain('var(--sidebar-min-width, 150px)');
         expect(style).toContain('var(--sidebar-max-width, 450px)');
+    });
+
+    it('sidebar recolhida: o piso da largura aberta (sidebarMinWidth) não vale — a largura é a do token recolhido', () => {
+        const { container } = renderBody({ isNavHidden: true });
+        const aside = container.querySelector('aside') as HTMLElement;
+        expect(aside.style.minWidth).toBe('0px');
+        expect(aside.style.width).toBe('var(--sarak-sidebar-collapsed-width, 74px)');
+        expect(aside.getAttribute('style') ?? '').not.toContain('--sidebar-min-width');
     });
 
     it('navActiveMarkerColor/navActiveMarkerGlow: o item ativo tem marcador próprio, com o brilho por token', () => {
@@ -107,7 +110,7 @@ describe('ChromeSidebarBody — tokens novos ligados (Spec 05 §2.4)', () => {
         );
         const marker = container.querySelector('[aria-hidden="true"][style*="nav-marker-color"]') as HTMLElement | null;
         expect(marker).not.toBeNull();
-        expect(marker!.getAttribute('style')).toContain('var(--sarak-nav-marker-glow, 10)');
+        expect(marker!.getAttribute('style')).toContain('var(--sarak-nav-marker-glow, 8)');
     });
 });
 
@@ -123,15 +126,15 @@ describe('ChromeSidebarBody — slot de busca (searchPositionSidebar)', () => {
         expect(container.querySelector('[data-sarak-slot="search"]')).not.toBeNull();
     });
 
-    it('"hidden": a busca NÃO aparece mesmo com conteúdo passado', () => {
+    it('valor legado "hidden" cai em "top" e mantém a busca visível', () => {
         const { container } = render(
-            <SarakUIProvider config={{ searchPositionSidebar: 'hidden' }}>
+            <SarakUIProvider config={{ searchPositionSidebar: 'hidden' } as Record<string, unknown>}>
                 <ChromeSidebarBody nav={NAV} className="" rootStyle={{}} search={<div>buscar</div>}>
                     <div>x</div>
                 </ChromeSidebarBody>
             </SarakUIProvider>,
         );
-        expect(container.querySelector('[data-sarak-slot="search"]')).toBeNull();
+        expect(container.querySelector('[data-sarak-slot="search"]')).not.toBeNull();
     });
 });
 

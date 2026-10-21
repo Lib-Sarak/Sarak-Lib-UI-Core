@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import * as ComponentModule from '../SarakManagementGrid';
 import { UIContext } from '../../../../core/Provider/SarakUIProvider';
 import type { SarakUIContextType } from '../../../../core/Provider/types';
@@ -41,7 +41,7 @@ describe('SarakManagementGrid', () => {
     // browser real, plan-40).
     it('planta @container na raiz — ancestral do grid de grupos', () => {
         const { container } = render(
-            <SarakManagementGrid endpoint="/mock" groupBy="service" mapping={{ id: 'id', title: 'title', status: 'status', isActive: 'isActive' }} />
+            <SarakManagementGrid groupBy="service" mapping={{ id: 'id', title: 'title', status: 'status', isActive: 'isActive' }} />
         );
 
         expect(container.querySelector('[class*="@container"]')).not.toBeNull();
@@ -53,7 +53,7 @@ describe('SarakManagementGrid', () => {
     // jsdom não tem motor de layout (medição real em Chromium, no resumo da plan-47).
     it('o grid de grupos NÃO emite mais a forma quebrada (col-12) — emite auto-fit', () => {
         const { container } = render(
-            <SarakManagementGrid endpoint="/mock" groupBy="service" mapping={{ id: 'id', title: 'title', status: 'status', isActive: 'isActive' }} />
+            <SarakManagementGrid groupBy="service" mapping={{ id: 'id', title: 'title', status: 'status', isActive: 'isActive' }} />
         );
 
         const grid = container.querySelector('[class*="@container"]')?.lastElementChild as HTMLElement;
@@ -61,12 +61,26 @@ describe('SarakManagementGrid', () => {
         expect(grid.className).not.toContain('grid-cols-12');
     });
 
+    it('does not render actions unless the host supplies a callback', () => {
+        render(
+            <SarakManagementGrid
+                groupBy="category"
+                mapping={{ id: 'id', title: 'title', status: 'status', isActive: 'active' }}
+                label="Items"
+                headerActions={[{ action: 'create', label: 'Create item' }]}
+            />,
+        );
+
+        expect(screen.getByRole('heading', { name: 'Items' })).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Create item' })).not.toBeInTheDocument();
+    });
+
     // plan-49: sob `col-12` (escolha explícita de tema), o grid de grupos não emite mais
     // a forma SEM mecanismo de span — emite o default de span por breakpoint. Prova só a
     // classe emitida; NÃO prova largura real (medição em Chromium no resumo da plan-49).
     it('sob col-12 (escolha explícita de tema), o grid de grupos emite o default de span — não mais a forma sem span nenhum', () => {
         const { container } = render(
-            <SarakManagementGrid endpoint="/mock" groupBy="service" mapping={{ id: 'id', title: 'title', status: 'status', isActive: 'isActive' }} />,
+            <SarakManagementGrid groupBy="service" mapping={{ id: 'id', title: 'title', status: 'status', isActive: 'isActive' }} />,
             { wrapper: withColTwelveTheme },
         );
 

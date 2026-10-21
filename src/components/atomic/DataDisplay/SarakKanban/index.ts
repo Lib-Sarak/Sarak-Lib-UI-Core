@@ -1,9 +1,17 @@
 /**
- * SarakKanban — barrel (Spec 12, Regra 3 · Onda 10). Zero-dep (DnD HTML5 nativo) →
- * SEM `React.lazy`; registrado nativamente como componente leve.
+ * SarakKanban — barrel. Carregado sob demanda: a biblioteca de arrastar (`@dnd-kit`, peer
+ * opcional) só entra quando um quadro é de fato renderizado. A lógica pura (`kanbanModel`)
+ * fica FORA da fronteira lazy e continua exportada.
  */
 
-export { default as SarakKanban } from './SarakKanbanImpl';
+export { SarakKanban } from './SarakKanban';
 export type { SarakKanbanProps } from './SarakKanbanImpl';
-export type { SarakKanbanCard, SarakKanbanColumn, SarakCardMove } from './kanbanModel';
+export type {
+    SarakCardMove,
+    SarakKanbanAssignee,
+    SarakKanbanCard,
+    SarakKanbanColumn,
+    SarakKanbanPriority,
+    SarakKanbanSubtasks,
+} from './kanbanTypes';
 export { sarakMoveCard } from './kanbanModel';

@@ -1,111 +1,126 @@
-import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-    TrendingUp, 
-    TrendingDown, 
-    Activity, 
-    RefreshCw,
-    AlertCircle
-} from 'lucide-react';
 import { useSarakStatsData } from './hooks/useSarakStatsData';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
+import { SarakDataEmpty } from '../Feedback/SarakDataEmpty';
+import { SarakValue } from '../Atoms/SarakValue';
+import { SarakDataErrorNotice } from './SarakDataErrorNotice';
+import { SarakDataFreshness } from './SarakDataFreshness';
+import type { SarakValueFormat } from '../../../shared/format';
+import type { ReactElement, ReactNode } from 'react';
 
-export interface SarakStatsProps<TData extends Record<string, unknown>> {
-    /** Busca as métricas quando `data` não é fornecida; omitido junto com `data`, o componente fica no esqueleto de carregamento. */
-    endpoint?: string;
-    /** Usa métricas já carregadas e evita a busca; quando presente, tem prioridade sobre `endpoint`. */
-    data?: TData;
-    /** Sem efeito nesta implementação; o título dos cartões vem de `mapping` ou das chaves dos dados. */
+const STAT_SKELETON_COUNT = 4;
+const STAT_VALUE_INITIAL_OPACITY = 0.5;
+
+export interface SarakStatsMetricConfig {
+    icon?: ReactNode;
+    delta?: number;
+    format?: SarakValueFormat;
     label?: string;
-    /** Define as chaves e os rótulos exibidos; omitido, infere campos numéricos/textuais ou resume arrays em total, ativos e erros. */
-    mapping?: Record<string, string>; // { key_in_json: "Label do Contador" }
-    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
-    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
-    density?: 'compact' | 'standard' | 'spacious';
-    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
-    importance?: 'hero' | 'base' | 'subtle';
+    hint?: string;
 }
 
-/**
- * SarakStats Genérico (v6.0)
- * 
- * Exibe contadores e métricas-chave de forma elegante, servindo como
- * um mini-dashboard dinâmico para qualquer módulo.
- */
-export const SarakStats = <TData extends Record<string, unknown> = Record<string, unknown>>({ endpoint, data, label, mapping }: SarakStatsProps<TData>) => {
-    const { stats, loading, error } = useSarakStatsData<TData>(endpoint, data);
+export interface SarakStatsProps<TData extends Record<string, unknown>> {
+    /** Dado já carregado pelo host; quando presente, tem prioridade sobre load. */
+    data?: TData;
+    /** Carrega as métricas pelo mecanismo escolhido pelo host. */
+    load?: () => Promise<TData>;
+    /** Horário do dado entregue diretamente pelo host. */
+    updatedAt?: Date | string | number;
+    /** Callback opcional para tentar novamente após uma falha. */
+    onRetry?: () => void;
+    /** Título opcional fornecido pelo host. */
+    label?: string;
+    /** Define os rótulos exibidos; omitido, usa as chaves do dado recebido. */
+    mapping?: Record<string, string>;
+    /** Configuração visual e de formato por chave de métrica. */
+    metrics?: Partial<Record<keyof TData & string, SarakStatsMetricConfig>>;
+}
+
+interface SarakStatsGridProps<TData extends Record<string, unknown>> {
+    stats: TData;
+    keys: string[];
+    loading: boolean;
+    mapping?: Record<string, string>;
+    metrics?: Partial<Record<keyof TData & string, SarakStatsMetricConfig>>;
+}
+
+const SarakStatsGrid = <TData extends Record<string, unknown>>({ stats, keys, loading, mapping, metrics }: SarakStatsGridProps<TData>): ReactElement => {
+    if (loading && keys.length === 0) {
+        return <>{Array.from({ length: STAT_SKELETON_COUNT }, (_, index) => <div key={'skeleton-' + index} className="card animate-pulse rounded-[var(--sarak-card-radius,10px)]" style={{ height: 'calc(var(--sarak-layout-gap-md,16px) * 6)' }} />)}</>;
+    }
+    if (keys.length === 0) return <div role="status" className="col-span-full"><SarakDataEmpty /></div>;
+    return <>{keys.map((key) => <SarakStatsMetric key={key} metricKey={key} value={stats[key]} label={metrics?.[key]?.label ?? mapping?.[key] ?? key.replace(/_/g, ' ')} config={metrics?.[key]} />)}</>;
+};
+
+export const SarakStats = <TData extends Record<string, unknown> = Record<string, unknown>>({
+    data,
+    load,
+    updatedAt,
+    onRetry,
+    label,
+    mapping,
+    metrics,
+}: SarakStatsProps<TData>): ReactElement => {
+    const text = useLibraryText();
+    const { stats, loading, error, updatedAt: lastReadAt, loadData } = useSarakStatsData<TData>(data, load, updatedAt);
     const { getGridStyles } = useStructuralStyles();
     const statsGrid = getGridStyles(undefined, undefined, 'var(--sarak-layout-gap-md,16px)', 'statsStandard');
+    const keys = mapping ? Object.keys(mapping) : Object.keys(stats);
+    const hasData = Object.keys(stats).length > 0;
+    const retry = onRetry ?? (() => void loadData());
 
-    // Lógica de Agregação Sarak v6.5 (Se for array, resumimos)
-    const renderValue = (key: string) => {
-        if (Array.isArray(stats)) {
-            if (key === 'total' || key === 'count') return stats.length;
-            if (key === 'active') return stats.filter(i => i.isActive === true || i.status === 'active').length;
-            if (key === 'errors' || key === 'error') return stats.filter(i => i.status === 'error' || i.error_details).length;
-            return stats.length;
-        }
-        
-        const val = stats[key];
-        if (val === undefined || val === null) return '0';
-        if (typeof val === 'number' && val > 1000) return `${(val / 1000).toFixed(1)}k`;
-        return val;
-    };
+    if (error && !hasData) {
+        return <SarakDataErrorNotice error={error} />;
+    }
 
-    const keys = mapping 
-        ? Object.keys(mapping) 
-        : (Array.isArray(stats) 
-            ? ['total', 'active', 'errors'] 
-            : Object.keys(stats).filter(k => typeof stats[k] === 'number' || typeof stats[k] === 'string'));
-
-    if (error) return null;
-
-    // plan-41: `statsGrid.className` traz `@min-[1024px]:grid-cols-4` (container query) —
-    // precisa de um ANCESTRAL com `container-type`, nunca do próprio elemento (medido em
-    // `plan-41`: sem isso a classe nunca casa, fora do `SarakShell`/painel).
     return (
         <div className="@container w-full">
-            <div className={statsGrid.className} style={statsGrid.style}>
-                {loading && !Object.keys(stats).length ? (
-                    [...Array(4)].map((_, i) => (
-                        <div key={`skel-${i}`} className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] animate-pulse rounded-[var(--sarak-card-radius,12px)]" style={{ height: 'calc(var(--sarak-layout-gap-md,16px) * 6)' }} />
-                    ))
-                ) : (
-                    keys.map((key, idx) => (
-                        <div
-                            key={key}
-                            className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] hover:bg-white/[0.04] transition-all group rounded-[var(--sarak-card-radius,12px)]"
-                            style={{ padding: 'var(--sarak-layout-gap-md,16px)', transitionDuration: 'var(--duration-normal, 0.3s)' }}
-                        >
-                            <span className="text-2xs text-white/30 font-black uppercase tracking-widest block transition-colors group-hover:text-[var(--sarak-primary-color,#3b82f6)]" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) / 6)' }}>
-                                {mapping ? mapping[key] : key.replace(/_/g, ' ')}
-                            </span>
-                            <div className="flex items-center justify-between">
-                                <motion.span
-                                    key={`${key}-${renderValue(key)}`}
-                                    initial={{ opacity: 0.5, y: -5 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className="text-2xl font-black text-white tracking-tighter"
-                                    style={{ fontWeight: 'var(--sarak-h1-weight,700)' }}
-                                >
-                                    {String(renderValue(key) || '')}
-                                </motion.span>
-                                {(() => {
-                                    const levels = ['primary', 'secondary', 'accent'];
-                                    const level = levels[idx % levels.length];
-                                    return (
-                                        <div className="rounded-[var(--sarak-card-radius,12px)] transition-colors" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 3)', backgroundColor: `var(--sarak-primary-color-bg,rgba(59,130,246,0.1))`, transitionDuration: 'var(--duration-normal, 0.3s)' }}>
-                                            <Activity size={16} className="transition-colors" style={{ color: `var(--sarak-primary-color,#3b82f6)`, transitionDuration: 'var(--duration-normal, 0.3s)' }} />
-                                        </div>
-                                    );
-                                })()}
-                            </div>
-                        </div>
-                    ))
-                )}
-            </div>
+            {loading && hasData && <span className="sr-only" role="status" aria-live="polite">{text('spinnerLoading')}</span>}
+            {label && <h3 className="text-theme-title font-bold">{label}</h3>}
+            {error && <SarakDataErrorNotice error={error} onRetry={retry} />}
+            <SarakDataFreshness updatedAt={lastReadAt} stale={Boolean(error && hasData)} />
+            <div className={statsGrid.className} style={statsGrid.style}><SarakStatsGrid stats={stats} keys={keys} loading={loading} mapping={mapping} metrics={metrics} /></div>
         </div>
     );
 };
 
+interface SarakStatsMetricProps {
+    metricKey: string;
+    value: unknown;
+    label: string;
+    config?: SarakStatsMetricConfig;
+}
+
+const SarakStatsMetric = ({ metricKey, value, label, config }: SarakStatsMetricProps): ReactElement => {
+    const displayValue = value instanceof Date || typeof value === 'number' || typeof value === 'string'
+        ? value
+        : value == null ? null : String(value);
+
+    return (
+        <div
+            className="card hover:bg-theme-tint transition-all rounded-[var(--sarak-card-radius,10px)]"
+            style={{ padding: 'var(--sarak-layout-gap-md,16px)', transitionDuration: 'var(--duration-normal, 0.3s)' }}
+        >
+            {config?.icon && <div className="text-theme-muted" aria-hidden="true">{config.icon}</div>}
+            <span className="text-2xs text-theme-muted font-black uppercase tracking-widest block" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) / 6)' }}>
+                {label}
+            </span>
+            <motion.div
+                key={metricKey + '-' + String(value ?? '')}
+                initial={{ opacity: STAT_VALUE_INITIAL_OPACITY, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                style={{ fontWeight: 'var(--sarak-h1-weight,800)' }}
+            >
+                <SarakValue value={displayValue} format={config?.format} size="md" />
+            </motion.div>
+            {config?.delta !== undefined && Number.isFinite(config.delta) && (
+                <div className="text-sm font-semibold" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) / 6)' }}>
+                    {config.delta > 0 && '+'}
+                    <SarakValue value={config.delta} format={{ type: 'number' }} size="sm" />
+                </div>
+            )}
+            {config?.hint && <p className="text-xs text-theme-muted" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) / 6)' }}>{config.hint}</p>}
+        </div>
+    );
+};

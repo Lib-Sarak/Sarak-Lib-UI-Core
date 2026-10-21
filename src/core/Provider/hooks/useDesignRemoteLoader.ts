@@ -1,40 +1,71 @@
 import { useEffect, useRef, MutableRefObject } from 'react';
 import { validateDesign } from '../utils/validation';
 import { resolveEffectiveStrategy } from '../utils/persistenceStrategy';
-import { SarakUIOptions, SarakDesignState, SetDesign } from '../types';
+import { SarakUIOptions, SarakDesignState, SarakThemePayload, SetDesign } from '../types';
+
+interface LoadedTheme {
+    design: SarakThemePayload;
+    activeThemeId?: string;
+}
+
+interface RemoteLoaderProps {
+    isHydrated: boolean;
+    optionsRef: MutableRefObject<SarakUIOptions>;
+    isBackendLoaded: boolean;
+    setIsBackendLoaded: (loaded: boolean) => void;
+    setDesign: SetDesign;
+    getSeedConfig: () => SarakDesignState;
+    activeThemeId?: string;
+    setResolvedThemeId: (id: string | undefined) => void;
+    storageKey: string;
+}
+
+const isLoadedTheme = (
+    value: SarakThemePayload | LoadedTheme | null | undefined,
+): value is LoadedTheme => Boolean(value && typeof value === 'object' && 'design' in value);
+
+const resolveLoadedTheme = (
+    value: SarakThemePayload | LoadedTheme | null | undefined,
+): LoadedTheme | null => {
+    if (value === null || value === undefined) return null;
+    return isLoadedTheme(value) ? value : { design: value };
+};
 
 /**
- * Carrega o design de uma fonte remota OPCIONAL do próprio consumidor
- * (`options.persistence.onLoad`, BYO-persistência — Spec 44). A lib não tem
- * backend próprio: sem `onLoad`, o design já veio do seed/localStorage (síncrono,
- * no `useState` inicial de `useDesignManager`) e não há mais nada a buscar.
+ * Carrega o design persistido pelo consumidor e, quando disponível, o id do tema
+ * ativo. Sem `onLoad`, a semente/localStorage já forneceu o estado no boot.
  *
- * `strategy` (ADR-009 §2.2) muda dois comportamentos: `'local'` ignora `onLoad`
- * mesmo se fornecido; `'remote'` SUBSTITUI o design pela semente + `onLoad`
- * (`getSeedConfig`), em vez de fundir por cima do que veio do fallback síncrono
- * de `localStorage` — é o que impede o cache local de "vencer" por acidente.
+ * `strategy` (ADR-009 §2.2) define a origem: `'local'` ignora `onLoad`; `'remote'`
+ * substitui o fallback síncrono pela semente mais o estado remoto, para o cache
+ * local não vencer por acidente; `'hybrid'` mescla o estado remoto ao atual.
  */
-export const useDesignRemoteLoader = (
-    isHydrated: boolean,
-    optionsRef: MutableRefObject<SarakUIOptions>,
-    isBackendLoaded: boolean,
-    setIsBackendLoaded: (v: boolean) => void,
-    setDesign: SetDesign,
-    getSeedConfig: () => SarakDesignState
-) => {
-    // `getSeedConfig` NÃO é referencialmente estável (depende de `allThemes`, que
-    // `customThemes` inline recria a cada render — SarakUIProvider.tsx:44-46). Por
-    // ref, como `optionsRef` ao lado, para o efeito abaixo não reexecutar (e
-    // rechamar `onLoad`) a cada render enquanto `isBackendLoaded` ainda é `false`.
+export const useDesignRemoteLoader = (props: RemoteLoaderProps): void => {
+    const {
+        isHydrated,
+        optionsRef,
+        isBackendLoaded,
+        setIsBackendLoaded,
+        setDesign,
+        getSeedConfig,
+        activeThemeId,
+        setResolvedThemeId,
+        storageKey,
+    } = props;
+
+    // `getSeedConfig` depende da coleção de temas e pode mudar a cada render.
+    // A ref dá ao efeito o valor mais recente sem fazê-lo rodar de novo e chamar
+    // `onLoad` repetidamente enquanto a primeira leitura ainda está pendente.
     const getSeedConfigRef = useRef(getSeedConfig);
+    const activeThemeIdRef = useRef(activeThemeId);
     getSeedConfigRef.current = getSeedConfig;
+    activeThemeIdRef.current = activeThemeId;
 
     useEffect(() => {
         if (!isHydrated || isBackendLoaded) return;
 
-        const opt = optionsRef.current;
-        const strategy = resolveEffectiveStrategy(opt?.persistence);
-        const onLoad = opt?.persistence?.onLoad;
+        const options = optionsRef.current;
+        const strategy = resolveEffectiveStrategy(options.persistence);
+        const onLoad = options.persistence?.onLoad;
 
         if (strategy === 'local' || !onLoad) {
             setIsBackendLoaded(true);
@@ -42,22 +73,26 @@ export const useDesignRemoteLoader = (
         }
 
         let cancelled = false;
-        const loadRemote = async () => {
+        const loadRemote = async (): Promise<void> => {
             try {
-                const custom = await onLoad();
-                if (!cancelled && custom) {
-                    setDesign(strategy === 'remote'
-                        ? () => validateDesign({ ...getSeedConfigRef.current(), ...custom })
-                        : (prev) => validateDesign({ ...prev, ...custom }));
-                }
-            } catch (e) {
-                console.error("[Sarak:Design] onLoad error:", e);
+                const loadedTheme = resolveLoadedTheme(await onLoad());
+                if (cancelled || loadedTheme === null) return;
+
+                const controlledThemeId = activeThemeIdRef.current;
+                const restoredThemeId = controlledThemeId ?? loadedTheme.activeThemeId;
+                if (restoredThemeId !== undefined) setResolvedThemeId(restoredThemeId);
+
+                setDesign(strategy === 'remote'
+                    ? () => validateDesign({ ...getSeedConfigRef.current(), ...loadedTheme.design })
+                    : (previous) => validateDesign({ ...previous, ...loadedTheme.design }));
+            } catch (error) {
+                console.error('[Sarak:Design] onLoad error:', error);
             } finally {
                 if (!cancelled) setIsBackendLoaded(true);
             }
         };
 
-        loadRemote();
+        void loadRemote();
         return () => { cancelled = true; };
-    }, [isHydrated, isBackendLoaded, optionsRef, setDesign, setIsBackendLoaded]);
+    }, [isHydrated, isBackendLoaded, optionsRef, setDesign, setIsBackendLoaded, setResolvedThemeId, storageKey]);
 };

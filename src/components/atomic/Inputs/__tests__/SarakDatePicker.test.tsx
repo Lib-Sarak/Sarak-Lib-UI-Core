@@ -4,14 +4,14 @@ import { render, screen, fireEvent, within } from '@testing-library/react';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 import { SarakDatePicker } from '../SarakDatePicker';
 
-const renderDP = (props: Partial<React.ComponentProps<typeof SarakDatePicker>> = {}) =>
+const renderDP = (props: Partial<React.ComponentProps<typeof SarakDatePicker>> = {}): ReturnType<typeof render> =>
     render(
         <SarakUIProvider>
             <SarakDatePicker label="Data" {...props} />
         </SarakUIProvider>,
     );
 
-const openCalendar = () => fireEvent.click(screen.getByRole('button', { name: /Data|Selecione/i }));
+const openCalendar = (): void => { fireEvent.click(screen.getByRole('button', { name: /Data|Selecione/i })); };
 
 describe('SarakDatePicker', () => {
     it('deve exibir o valor formatado conforme displayFormat (i18n via JSON)', () => {
@@ -49,6 +49,14 @@ describe('SarakDatePicker', () => {
     });
 });
 
+describe('SarakDatePicker — rótulo acessível', () => {
+    it('liga o rótulo visível ao controle que abre o calendário', () => {
+        renderDP({ label: 'Data limite' });
+        const trigger = screen.getByRole('button', { name: 'Data limite' });
+        expect(trigger).toHaveAttribute('aria-labelledby', screen.getByText('Data limite').id);
+    });
+});
+
 // os textos da própria lib seguem o idioma que vale.
 describe('SarakDatePicker — idioma que vale', () => {
     it('sem valor, o placeholder sai em português por padrão', () => {
@@ -76,5 +84,21 @@ describe('SarakDatePicker — idioma que vale', () => {
             </SarakUIProvider>,
         );
         expect(screen.getByText('Meu placeholder')).toBeInTheDocument();
+    });
+});
+
+describe('Erro de campo pelo SarakFieldError', () => {
+    it('com `error`, há um role="alert" com o texto e o controle o referencia', () => {
+        renderDP({ error: "Campo obrigatório" });
+        const alert = screen.getByRole('alert');
+        expect(alert).toHaveTextContent('Campo obrigatório');
+        expect(alert.querySelector('svg')).not.toBeNull();
+        expect(alert.id).toMatch(/-error$/);
+        expect(screen.getByRole('button')).toHaveAttribute('aria-describedby', alert.id);
+    });
+
+    it('sem `error`, nada é renderizado', () => {
+        renderDP();
+        expect(screen.queryByRole('alert')).toBeNull();
     });
 });

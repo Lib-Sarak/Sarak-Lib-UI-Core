@@ -1,8 +1,9 @@
 [
   {
     "tokenId": "navigationStyle",
+    "visualImpact": "forma",
     "name": "Estrutura de Navegação",
-    "description": "Altera o esqueleto principal da aplicação, movendo os menus primários para a lateral (Sidebar), para o topo (Topbar) ou como uma doca flutuante.",
+    "description": "Altera o esqueleto principal da aplicação, movendo os menus primários para a lateral (Sidebar) ou para o topo (Topbar).",
     "type": "select",
     "importance": 100,
     "categories": [
@@ -29,12 +30,47 @@
     ],
     "allowedValues": [
       "sidebar",
-      "topbar",
-      "dock"
+      "topbar"
     ],
     "relatedTokens": [
       "sidebarWidth",
       "topbarHeight",
+      "isNavHidden"
+    ]
+  },
+  {
+    "tokenId": "mobileNavigationStyle",
+    "visualImpact": "forma",
+    "name": "Navegação no Celular",
+    "description": "Escolhe onde a navegação fica no celular: barra fixa na base, gaveta atrás do hambúrguer, ou automático (barra na base com até 5 itens).",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "layout",
+      "navegacao",
+      "mobile"
+    ],
+    "tags": [
+      "navegacao",
+      "mobile",
+      "bottom-bar",
+      "drawer"
+    ],
+    "databaseColumn": "navigation_style",
+    "schemaOrigin": "global.ts",
+    "digitalTwins": [
+      "SarakAppChrome",
+      "SarakAppChromeMobile"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "auto",
+      "bottom",
+      "drawer"
+    ],
+    "relatedTokens": [
+      "navigationStyle",
+      "touchTargetMin",
       "isNavHidden"
     ]
   }

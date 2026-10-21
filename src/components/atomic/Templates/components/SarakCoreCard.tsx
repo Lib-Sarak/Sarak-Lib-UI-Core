@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink } from 'lucide-react';
+
 import { SarakIcon } from '../../Icon/SarakIcon';
 import { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
 import { SarakTitleCard } from '../../Cards/SarakTitleCard';
@@ -8,6 +8,8 @@ import { SarakActionCard } from '../../Cards/SarakActionCard';
 import { SarakSearchCard } from '../../Cards/SarakSearchCard';
 import { SarakButton, SarakIconButton } from '../../Buttons';
 import { useStructuralStyles } from '../../hooks/useStructuralStyles';
+import { useSpotlightPointer } from '../../Cards/hooks/useSpotlightPointer';
+import { usePauseBeamOffscreen } from '../../Cards/hooks/usePauseBeamOffscreen';
 
 /** Um par rótulo/valor genérico do painel de detalhes (Spec 42 §2.2 — dirigido por `mapping.details`). */
 interface SarakCoreCardDetail {
@@ -27,10 +29,10 @@ const renderChips = (values: string[], label?: string) => {
     return (
         <div className="flex flex-wrap" style={{ gap: 'var(--sarak-layout-gap-sm,8px)' }}>
             {!!label && (
-                <span className="text-3xs font-black text-white/20 uppercase w-full" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>{label}</span>
+                <span className="text-3xs font-black text-theme-tint-strong uppercase w-full" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>{label}</span>
             )}
             {values.map((value: string) => (
-                <div key={value} className="flex items-center bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)] text-2xs font-black uppercase" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px)*0.25)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5)', borderRadius: 'var(--sarak-card-radius,12px)' }}>
+                <div key={value} className="flex items-center bg-[var(--sarak-primary-color-bg,rgba(25,227,240,0.15))] text-[var(--sarak-primary-color,#19e3f0)] border border-[var(--border-color,rgba(255,255,255,0.09))] text-2xs font-black uppercase" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px)*0.25)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5)', borderRadius: 'var(--sarak-card-radius,10px)' }}>
                     <SarakIcon name="Zap" size={10} /> {value}
                 </div>
             ))}
@@ -41,6 +43,8 @@ const renderChips = (values: string[], label?: string) => {
 export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, mapping, variant }: { item: TItem; mapping?: Record<string, string>; variant?: 'classic' | 'title' | 'action' | 'search' }) => {
     const { design } = useSarakUI();
     const { getFlexStyles, getGridStyles } = useStructuralStyles();
+    const spotlight = useSpotlightPointer(design);
+    usePauseBeamOffscreen(spotlight.ref, design.borderBeamEnabled === true);
     const [isExpanded, setIsExpanded] = useState(false);
 
     if (variant === 'title') {
@@ -88,40 +92,39 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
 
     return (
         <motion.div
+            ref={spotlight.ref}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             // plan-41: `@container` plantado aqui — o painel de detalhes abaixo usa
             // `getGridStyles` (classe `@min-[…]`, container query), que precisa de um
             // ancestral com `container-type` para casar.
-            className={`@container ${rootFlex.className} sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all h-fit relative overflow-hidden`}
+            className={`@container ${rootFlex.className} sarak-card group transition-all h-fit relative overflow-hidden`}
             style={{ 
                 ...rootFlex.style,
                 transitionDuration: 'var(--duration-normal, 0.3s)',
                 padding: 'var(--sarak-card-padding-md)'
             }}
             data-sx-card-texture-type={(design.cardTextureType as string) || 'none'}
-            data-spotlight={Number(design.cardSpotlightOpacity) > 0 ? '1' : '0'}
+            data-spotlight={spotlight.dataSpotlight}
             data-border-beam={design.borderBeamEnabled ? '1' : '0'}
-            data-geometric={Number(design.cardGeometricCut) > 0 ? '1' : '0'}
         >
             {/* Atmosphere Layers (Sovereignty v8.5) */}
-            <div className="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-[var(--duration-slow,0.6s)]" />
             <div className="border-beam-effect" />
 
-            
             <div className="p-theme relative z-10" style={{ padding: 'var(--sarak-layout-gap-lg,24px)' }}>
 
                 <div className="flex justify-between items-start" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) / 1.5)' }}>
                     <div className={getFlexStyles('column', 'flex-start', 'stretch', '0').className} style={getFlexStyles('column', 'flex-start', 'stretch', '0').style}>
-                        <span className="text-2xs font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*0.25)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
+                        <span className="text-2xs font-black text-[var(--sarak-primary-color,#19e3f0)] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*0.25)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
                             {String(getVal(item, mapping?.subtitle) ?? '')}
                         </span>
-                        <h4 className="text-xl font-black text-[var(--color-theme-title,#ffffff)] tracking-tight group-hover:text-[var(--sarak-primary-color,#3b82f6)] transition-colors">
+                        <h4 className="text-xl font-black text-[var(--color-theme-title,#f2f6fb)] tracking-tight group-hover:text-[var(--sarak-primary-color,#19e3f0)] transition-colors">
                             {String(getVal(item, mapping?.title) || '')}
                         </h4>
                     </div>
-                    <div className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 2)', borderRadius: 'var(--sarak-card-radius,12px)' }}>
-                        <SarakIcon name={mapping?.icon || 'Box'} size={20} className="text-[var(--text-muted,#94a3b8)]" />
+                    <div className="bg-[var(--color-theme-card,#101622)] border-[var(--border-color,rgba(255,255,255,0.09))]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 2)', borderRadius: 'var(--sarak-card-radius,10px)' }}>
+                        <SarakIcon name={mapping?.icon || 'Box'} size={20} className="text-[var(--text-muted,rgba(242,246,251,0.55))]" />
                     </div>
                 </div>
 
@@ -131,7 +134,7 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
                 </div>
 
                 {details.length > 0 && (
-                    <div className={`${getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-md,16px)').className} border-t border-[var(--border-color,#334155)]`} style={{ ...getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-md,16px)').style, marginBottom: 'var(--sarak-layout-gap-md,16px)', paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
+                    <div className={`${getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-md,16px)').className} border-t border-[var(--border-color,rgba(255,255,255,0.09))]`} style={{ ...getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-md,16px)').style, marginBottom: 'var(--sarak-layout-gap-md,16px)', paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
                         {details.map((detail, index) => {
                             const isLastOdd = details.length % 2 === 1 && index === details.length - 1;
                             return (
@@ -140,8 +143,8 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
                                     className={getFlexStyles('column', 'flex-start', 'stretch', '0').className}
                                     style={{ ...getFlexStyles('column', 'flex-start', 'stretch', '0').style, gridColumn: isLastOdd ? 'span 2 / span 2' : undefined }}
                                 >
-                                    <span className="text-3xs font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>{detail.label}</span>
-                                    <span className="text-sm font-mono text-[var(--text-muted,#94a3b8)] font-bold">
+                                    <span className="text-3xs font-black text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-50 uppercase tracking-widest" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>{detail.label}</span>
+                                    <span className="text-sm font-mono text-[var(--text-muted,rgba(242,246,251,0.55))] font-bold">
                                         {String(detail.value)}
                                     </span>
                                 </div>
@@ -164,7 +167,7 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
                         </SarakButton>
                     )}
                     <SarakIconButton 
-                        icon={<ExternalLink size={18} />}
+                        icon={<SarakIcon name="ExternalLink" size={18} />}
                         variant="primary"
                         className="shadow-lg"
                     />
@@ -180,11 +183,11 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
                         >
                             <div className={getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sarak-layout-gap-md,16px) / 1.5)').className} style={{ ...getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sarak-layout-gap-md,16px) / 1.5)').style, paddingTop: 'var(--sarak-layout-gap-md,16px)' }}>
                                 {!!description && (
-                                    <div className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] rounded-[var(--sarak-card-radius,12px)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
+                                    <div className="bg-[var(--color-theme-card,#101622)] border-[var(--border-color,rgba(255,255,255,0.09))] rounded-[var(--sarak-card-radius,10px)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
                                         {!!descriptionLabel && (
-                                            <span className="text-3xs font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase block" style={{ marginBottom: 'var(--sarak-layout-gap-sm,8px)' }}>{descriptionLabel}</span>
+                                            <span className="text-3xs font-black text-[var(--sarak-primary-color,#19e3f0)] uppercase block" style={{ marginBottom: 'var(--sarak-layout-gap-sm,8px)' }}>{descriptionLabel}</span>
                                         )}
-                                        <p className="text-xs text-[var(--text-muted,#94a3b8)] opacity-70 leading-relaxed font-medium">{String(description)}</p>
+                                        <p className="text-xs text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-70 leading-relaxed font-medium">{String(description)}</p>
                                     </div>
                                 )}
                             </div>

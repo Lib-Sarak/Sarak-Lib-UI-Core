@@ -4,7 +4,7 @@ titulo: "Superfície pública — o barril, os gates e as fronteiras de bundle"
 dominio: "Arquitetura / Contrato público / Empacotamento"
 status: "🟢 Vigente"
 tags: ["arquitetura", "barril", "contrato-publico", "catalogo", "bundle", "lazy", "taxonomia"]
-relacionados: ["[[00-mapa-do-modulo]]", "[[00-regras-e-invariantes]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-contrato-de-tokens-e-paridade]]", "[[05-build-e-distribuicao]]"]
+relacionados: ["[[00-mapa-do-modulo]]", "[[00-regras-e-invariantes]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[04-contrato-de-tokens-e-paridade]]", "[[05-build-e-distribuicao]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]", "[[019-arrastar-e-soltar-do-kanban]]", "[[020-gantt-casca-propria]]"]
 ---
 
 # 1. Propósito
@@ -24,11 +24,11 @@ Aqui está a regra de **exposição**. As regras de estilo e de hardcode moram n
 
 O barril é uma lista categorizada por comentários de seção, misturando `export *` de categoria inteira com exports nomeados individuais onde é preciso controle fino. **Quantos nomes ele exporta, e quantos componentes o gate registra, não se afirma aqui** — são cifras derivadas, e o lugar delas é a fonte que as produz: `npm run barrel:check` para os componentes, `dist/index.d.ts` e `docs/component-catalog.json` para os nomes. Cifra em prosa acerta por um dia e mente pelo resto ([[15-divida-conhecida]], achado 32).
 
-## 2.1 Duas particularidades do barril que você precisa conhecer
+## 2.1 Uma particularidade do barril que você precisa conhecer
 
 **Um `export *` que exclui um nome.** A categoria `Layouts/` **não** é exportada com `export *`; ela usa exports nomeados um a um (`src/index.ts:58-72`). O motivo está no comentário: existe um `SarakTabs` duplicado, e um `export *` puxaria o de `Layouts/`, colidindo com o de `UX/` — que é o público. Ver a dívida na §7.
 
-**O barril tem efeito colateral de import** (`src/index.ts:119-125`): ao importar a lib, ela executa `registerLocalComponent('mx-customization', CustomizationPanel)` e `registerLocalComponent('personalization', CustomizationPanel)`. São ids legados do Discovery, registrados só por o módulo ter sido importado. Ver §7.
+**O barril não tem efeito colateral de import.** Não há registro de módulos: importar a lib não executa nada além de injetar o CSS ([[01-forma-do-produto-e-modos-de-consumo]] §5).
 
 # 3. Como a superfície é DERIVADA
 
@@ -56,8 +56,8 @@ componente fora dessas raízes é invisível para os gates, mesmo que seja expor
 Isso corta nos dois sentidos, e os dois já aconteceram:
 
 - **Componente que devia ser público e não era.** Os quatro widgets do cromo — busca, alternância de tema,
-  widget de usuário e seletor de idioma — moravam em `src/core/Shell/Components/`. Eram alcançáveis só de
-  dentro do `SarakShell`, e o consumidor do modo ui-kit não tinha como montá-los nos slots do cromo.
+  widget de usuário e seletor de idioma — moravam numa pasta de `core/` fora das raízes varridas (o antigo host, removido pelo [[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]). Eram alcançáveis só de
+  dentro dele, e o consumidor não tinha como montá-los nos slots do cromo.
   Hoje vivem em `src/components/atomic/Navigation/`, com as interfaces de props exportadas, e chegam ao
   barril pelo `export *` da categoria — nenhuma linha nomeada foi preciso acrescentar em `src/index.ts`.
 - **Regra violada sem ninguém ver.** Ao entrarem na raiz varrida, os mesmos quatro expuseram hardcode
@@ -121,7 +121,7 @@ A convenção é **por espécie do nome**, e cada espécie tem uma forma só:
 | Componente, tipo, interface (PascalCase) | começa com `Sarak` | `SarakExpandableCard`, `SarakFlexDirection` |
 | Constante (SCREAMING_SNAKE) | começa com `SARAK_` | `SARAK_ICON_NAMES`, `SARAK_THEME_PRESET_IDS` |
 | Hook | começa com `use` | `useSarakDevice` — já conforme por construção |
-| Demais funções (camelCase) | **contém** `Sarak` | `sarakGetThemePreset`, `getSarakModule` |
+| Demais funções (camelCase) | **contém** `Sarak` | `sarakLoadThemePreset`, `sarakResolveResponsiveValue` |
 
 O tipo de props acompanha o componente (`SarakFooProps`), que é o par que o `barrel:check` já cobra.
 
@@ -159,24 +159,21 @@ formato do bundler exige mudar a análise junto.
 
 - **O gate** (`collectPublicComponentNames()`) varre as peças **visuais**: `components/atomic/**` +
   `components/engines/**` + `components/Layout/**`.
-- **O kit** amplia com as peças de **montagem** — as **6** que o barril exporta, têm `<Nome>Props` e **não**
+- **O kit** amplia com as peças de **montagem** — as **3** que o barril exporta, têm `<Nome>Props` e **não**
   moram nas pastas varridas pelo gate (`collectKitSources.mjs`, `collectExtraPublicApi()`).
 
-**A diferença é sempre 6**, e é essa a invariante. *(Medido em 2026-08-11: gate **77**, kit **83**. Os
+**A diferença é sempre 3**, e é essa a invariante. *(Medido em 2026-10-05: gate **96**, kit **99**. Os
 números vivem em `npm run barrel:check` e em `sarak-ui/catalog.json` — se divergirem daqui, eles vencem.)*
 
-Os 6, com onde moram:
+Os 3, com onde moram:
 
 | Nome | Mora em |
 | --- | --- |
 | `SarakUIProvider` | `src/core/Provider/` |
-| `SarakShell` | `src/core/Shell/` |
-| `DynamicRenderer` | `src/core/Discovery/` |
-| `SarakComponent` | `src/core/Discovery/registry.ts` |
-| `DeviceProvider` | `src/core/Provider/DeviceProvider.tsx` |
-| `DesignScope` | `src/core/Design/components/` |
+| `SarakDeviceProvider` | `src/core/Provider/DeviceProvider.tsx` |
+| `SarakDesignScope` | `src/core/Design/components/` |
 
-**Nenhum dos 6 está faltando no barril** — todos já são exportados; é justamente por isso que o coletor do kit consegue achá-los. A diferença é de **qual script os enumera como "componente"**: o gate mede paridade das peças visuais; o kit do consumidor amplia para as peças de **montagem** (Provider, Shell, Discovery), que o importador também precisa saber que existem.
+**Nenhum dos 3 está faltando no barril** — todos já são exportados; é justamente por isso que o coletor do kit consegue achá-los. A diferença é de **qual script os enumera como "componente"**: o gate mede paridade das peças visuais; o kit do consumidor amplia para as peças de **montagem** (Provider, escopo de design, provedor de dispositivo), que o importador também precisa saber que existem. *(O `SarakShell` e o Discovery saíram da lista com o modo host — [[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]].)*
 
 > A lista era de **7** antes do P26, e o sétimo era `SarakChartEngine`: ele precisava ser reincorporado por este caminho justamente porque `engines/` estava fora do escopo do gate. Com `engines/` dentro (§3), os três engines entram pela porta da frente e a lista de extras encolheu — a divergência de contagem passou a medir só o que ela sempre quis medir, as peças de montagem em `core/`.
 
@@ -188,8 +185,8 @@ Os 6, com onde moram:
 | --- | --- |
 | `Atoms` | Primitivas de base — os menores blocos reutilizáveis, incluindo tipografia |
 | `Buttons` | Botões e botão-ícone |
-| `Cards` | Cartões de conteúdo, ação, busca e título |
-| `DataDisplay` | Densidade de dados — grid virtualizado, tabela, kanban, árvore, sparkline |
+| `Cards` | Cartões de conteúdo, ação, busca e título. Os tokens de direção e alinhamento de cartão valem para os cartões de domínio (lidos por `useCardLayoutStyles(design)`); o cartão composto (`SarakCard` e peças) **não** os lê — as peças dele são explícitas, e o layout é uma classe fixa (`compositeCardLayoutClassName`) |
+| `DataDisplay` | Densidade de dados — grid virtualizado, tabela, kanban e os blocos de detalhe do cartão (§6.10), calendário mensal e Gantt (§6.11), árvore, sparkline |
 | `Feedback` | Comunicação de estado — toast, alerta, carregamento, estado vazio |
 | `Icon` | O sistema de ícones (`SarakIcon`, `IconMap`) |
 | `Inputs` | Entrada de dados, do básico ao denso (pickers, multiselect, rich text, uploader) |
@@ -245,22 +242,95 @@ registradas ali: classe própria que nascer depois e **não** for registrada nã
 
 ## 6.2 Contrato de nomes de ícone
 
-`IconMap` (`src/components/atomic/Icon/IconMap.ts:26-31`) é construído a partir de `ICON_NAMES` — **100 nomes** curados, cobrindo três famílias de ícone. Nome fora do mapa emite `console.warn` (`SarakIcon.tsx:25-29`, chamado em `:38`), com deduplicação por `Set` para não poluir o console a cada render.
+**Todo ícone da lib passa por uma porta só, o `SarakIcon`** (`src/components/atomic/Icon/SarakIcon.tsx`).
+Nenhum componente importa uma família de ícones direto (R39). O ícone chega de três jeitos:
 
-O contrato é **fechado**: passar um nome que não está no mapa não quebra a tela — não desenha ícone. Confira o catálogo.
+- **Nome curado** — um dos `SARAK_ICON_NAMES`. O `IconMap` resolve cada nome nas três famílias (Lucide,
+  Phosphor, Tabler). A lista é fonte viva: leia-a no catálogo, não aqui.
+- **Nome registrado pelo consumidor** — `sarakRegisterIcons({ Nome: Componente })` acrescenta nomes e devolve a
+  função que desfaz o registro. Nome curado não pode ser substituído, e o mesmo nome não é registrado duas
+  vezes (os dois casos lançam erro).
+- **Elemento** — `icon={<MeuIcone />}`: passa direto, com o tamanho, a cor e a espessura do contexto.
 
-## 6.3 Templates de dado: `data` vence `endpoint`
+O `SarakIcon` aceita `size`, `color`, `className`, `style`, `onClick` e `strokeWidth` (que vence o token só
+naquele ícone); os tipos
+públicos são `SarakIconProps`, `SarakIconPresentationProps` e `SarakRegisteredIconProps` (o que um ícone
+registrado recebe).
 
-`SarakTable`, `SarakCardGrid` e `SarakStats` (`src/components/atomic/Templates/`) aceitam o dado de duas
-formas, e as duas props são opcionais:
+**O tema vale para todo ícone desenhado pela porta:** `iconFamily` escolhe a família dos nomes curados;
+`iconWeight` e `iconStrokeWidth` chegam ao traço (o Phosphor recebe o peso nativo; Lucide e Tabler, uma
+espessura derivada). Sem Provider, valem os padrões (Lucide, peso regular).
 
-- **com `data`**, renderizam o dado recebido e **não fazem nenhuma chamada de rede**, nem no mount nem
-  para revalidar;
-- **sem `data`**, buscam por `endpoint`.
+**Nome desconhecido não quebra a tela:** desenha `AlertCircle` no lugar e emite um `console.warn` único por nome.
 
-`SarakTable` e `SarakCardGrid` recebem `data` como lista de itens; `SarakStats`, como um objeto de métricas.
-Sem nenhuma das duas props, `SarakTable` e `SarakCardGrid` não buscam e não ficam presos em carregamento.
-A decisão mora nos hooks de dado de cada um (`useSarakTableData`, `useCardGridState`, `useSarakStatsData`).
+**Ícone de marca não é nome curado.** `SarakSocialButton` recebe o logotipo por `icon` (obrigatório), e o item de
+navegação (`SarakNavItem.icon`, `SarakMenuItem.icon`) aceita nome ou elemento.
+
+**Fora da porta, de propósito:** o painel de autoria (`src/features/DesignEngine/`) mantém os próprios ícones.
+Ele é a ferramenta com que o tema é feito, e não repinta o próprio cromo com a família que está sendo editada.
+
+## 6.3 Templates de dado: o dado vem do host
+
+**Nenhum template da lib faz rede.** Não há cliente HTTP em `src/`, nem prop `endpoint`.
+`SarakTable`, `SarakCardGrid`, `SarakStats`, `SarakChart`, `SarakForm` e `SarakManagementGrid`
+(`src/components/atomic/Templates/`) recebem o dado de um de dois jeitos, ambos opcionais:
+
+- **`data`** — o dado já carregado. O template o renderiza e **não chama `load`**;
+- **`load`** — uma função do host que devolve uma `Promise` com o dado. O template mostra carregamento enquanto
+  ela não resolve, e o estado de erro se ela rejeita.
+
+Com dado já carregado, uma falha de recarregamento **não apaga a tela** (`SarakTable`, `SarakCardGrid`,
+`SarakChart`, `SarakStats`): o dado fica, com o erro e "Tentar de novo" acima dele. O template mostra o horário da
+última leitura — no modo `load`, o da última leitura bem-sucedida; no modo `data`, o que o host passar em
+`updatedAt` (`Date`, `string` ou `number`) — e o marca como desatualizado depois de uma falha. A retenção mora num
+hook só (`Templates/hooks/useHostData.ts`).
+
+Sem nenhuma das duas props, nenhum template busca nem fica preso em carregamento. **Exceção:** o `SarakForm` em
+`mode: 'create'` não chama `load` — o formulário nasce dos valores iniciais (o padrão é `'edit'`, que carrega).
+
+`SarakForm` entrega os valores por `onSubmit`, sem campo de envio quando o host não o passa. `SarakChat` envia
+por `onSend` (a função do host recebe a mensagem e um `onToken` para resposta em fluxo) e lista modelos por
+`loadModels`, opcional: sem ela, a lista fica vazia. As ações de `SarakManagementGrid` e de `SarakTable` também
+são callbacks do host, e **sem callback não há controle**: nenhum botão sem ação.
+
+**O que o template não supõe sobre o dado:** nenhuma chave de produto (`isActive`, `status === 'active'`),
+nenhum rótulo de domínio para booleano, nenhuma abreviação de número (`0` renderiza `0`, `1500` renderiza `1500`).
+O candlestick desenha o OHLC (`open`, `high`, `low`, `close`) e o boxplot os cinco valores que o host entrega;
+sem dado, não desenham.
+
+A decisão de "data ou load" mora nos hooks de dado de cada template (`useSarakTableData`, `useCardGridState`,
+`useSarakStatsData`, `useChartData`, `useFormData`, `useManagementGrid`).
+
+### 6.3.1 Exibir dado: tabela, grade, paginação, valor e métrica
+
+O que um sistema precisa para mostrar dado, sem refazer à mão:
+
+- **`SarakTable`** continua `<table>` semântica. Cada coluna é `{ key, label, render?, align? }`: `render(row)` desenha
+  a célula, e `align` alinha. `onRowClick` torna a linha acionável. Os três estados — carregando, vazio (com
+  mensagem) e erro (com `onRetry`) — têm texto traduzido; `loading` e `error` passados pelo host **vencem** o
+  estado que vem do `load`. `showSearch` (padrão: visível) e `showRefresh` (padrão: só com `load`) ligam a busca e
+  o botão de atualizar. No celular, a mesma tabela reflui em cartões, e
+  `render`, `align` e `onRowClick` valem neles também.
+- **`SarakDataTable`** (a grade virtualizada) aceita `rowHeight` fixo, por função da linha ou `'auto'`, os mesmos três
+  estados, `onRowClick` e `align`. Ele e o `SarakDataGrid` são carregados sob demanda e **exigem um `<Suspense>`** de
+  quem os usa (ao contrário dos motores, que o embutem); a implementação não é nome público.
+- **`SarakPagination`** recebe `pageSize`, `pageSizeOptions`, `totalItems` e `onPageSizeChange`, e mostra o resumo
+  "X–Y de N" traduzido.
+- **Formatadores públicos**: `sarakFormatNumber`, `sarakFormatCurrency`, `sarakFormatPercent` e `sarakFormatDate`
+  (`src/shared/format/`). Recebem o locale por parâmetro, e sem ele usam o do runtime; não há locale nem moeda
+  fixos no código.
+- **`SarakValue`** compõe valor, formatador e cor por sinal (`signColor`, padrão ligado): positivo pelo token
+  `statusSuccessColor`, negativo pelo `statusErrorColor`, neutro pelo `textColorMuted`, sempre por variável CSS.
+  Formata no idioma da preferência da lib, com override por `locale`; `size` é `sm`, `md` ou `lg`. Números em dígitos
+  tabulares (`tabular-nums`): o valor não "pula" ao atualizar.
+- **`SarakStats`**, por métrica: `icon`, `delta` (com sinal e cor, pelo `SarakValue`), `format`, `label` e `hint`;
+  números em dígitos tabulares.
+- **`SarakBadge`** de status (`success`, `warning`, `danger`, `info`) lê a cor do token de status do tema e desenha,
+  por padrão, uma forma por status — ● sucesso, ▲ aviso, ◆ crítico, ■ informação — oculta do leitor de tela
+  (`showStatusShape={false}` desliga); o rótulo é o conteúdo. Na variante sólida (`soft={false}`) o texto é escuro,
+  medido ≥ 4,5:1 contra as cores de status dos temas embarcados.
+
+Os nomes e tipos exatos são fonte viva: leia-os em `dist/index.d.ts` e no catálogo.
 
 ## 6.4 O contrato de valor dos átomos de escolha
 
@@ -276,6 +346,171 @@ A decisão mora nos hooks de dado de cada um (`useSarakTableData`, `useCardGridS
 e sem `checked` fica em `false` e não muda ao clique. A divergência é dentro da mesma família de átomos de
 escolha, e é exatamente o tipo de coisa que o consumidor descobre do jeito difícil — por isso está escrita
 aqui, e não só no JSDoc de cada um.
+
+## 6.5 O contrato do Provider para quem persiste tema
+
+Três pontos da superfície carregam contrato de **tipo**, e mudá-los é mudança de nível `MAJOR`
+([[03-versionamento-e-release]] §3). O comportamento de cada um mora em [[09-temas-e-presets]] §4.4.2 e §4.6; o
+formato do dado persistido, em `docs/persistencia-de-tema.md`.
+
+- **`options.persistence.onLoad`** devolve o design, ou `{ design, activeThemeId }`, ou `null`/`undefined` para
+  *nada gravado*. Quem devolve só o design continua compilando e funcionando. O id carregado **não** vence a
+  prop controlada `activeThemeId`.
+- **Apagar tema** é `options.theme.onDelete` (a porta opcional do consumidor) e `useSarakUI().deleteTheme(id)`
+  (o gesto) — [[017-porta-de-apagar-tema-simetrica-a-de-escrever]]. `SarakUIContextType` **exige** `deleteTheme`:
+  quem monta o contexto à mão precisa fornecê-lo.
+- **`customThemes` e `allThemes` são `SarakThemeEntry[]`**, e não mais `unknown[]`: o consumidor não precisa de
+  cast, e quem passava um valor fora do formato deixa de compilar.
+
+Os nomes e tipos exatos são fonte viva — leia-os em `dist/index.d.ts`, não aqui.
+
+## 6.6 O selo de build exportado
+
+`SARAK_BUILD_INFO` é uma **constante** (espécie `SARAK_`, §4.3) com a tríade do build que o código executa:
+`libVersion`, `baseCommitShort` e `builtAt`. É gerada a cada `npm run build` e não deve ser comparada com
+literal dentro da lib. O mesmo valor está no atributo `data-sarak-build-info` da página, e a origem dele está em
+[[05-build-e-distribuicao]] §6. Ela não responde *"estou atualizado?"*: isso é do `sarak-ui check`
+([[13-instalacao-e-atualizacao]] §10).
+
+## 6.7 Diálogo e feedback
+
+As peças que um sistema precisa para perguntar, avisar e mostrar andamento — todas renderizam sem Provider (R34)
+e tiram tamanho e cor de token:
+
+- **Confirmação imperativa.** `useOverlay().confirm({ title, message, confirmLabel?, cancelLabel?, tone? })` devolve
+  `Promise<boolean>`: `true` só no botão de confirmar; cancelar, Esc, fechar, abrir outro overlay por cima ou
+  desmontar o `SarakOverlayProvider` resolvem `false`. O foco fica preso no diálogo e volta a quem o abriu.
+  `tone: 'danger'` troca o botão de confirmar pela variante de perigo; os rótulos padrão vêm do catálogo de i18n.
+  Fora do Provider, `useOverlay()` é um controlador inerte e `confirm` resolve `false`.
+- **`SarakModal` com tamanhos.** `size` é `sm`, `md`, `lg` (o padrão), `xl` ou `full`; a largura máxima vem dos tokens
+  `modalWidthSm`…`modalWidthFull` (padrões 384, 448, 512, 768 e 1280 px).
+- **`SarakEmptyState` com conteúdo.** `title`, `description`, `action` (um nó, normalmente um `SarakButton`) e `icon`;
+  sem eles, continua a composição decorativa escolhida por `type`.
+- **`SarakProgress`.** `value`/`max`, `label` (nome acessível; padrão traduzido), `indeterminate` e `thresholds`
+  (`{ value, variant }[]`: vale o maior limiar que o valor atingiu; sem limiar, a cor é a de informação). É um
+  `role="progressbar"` com `aria-valuenow` omitido quando indeterminado; altura e raio pelos tokens
+  `progressBarHeight` e `progressBarRadius`, cor pelos tokens de status.
+- **Toast com título e ação.** `useToast().notify({ message, variant?, duration?, title?, action? })`: com `action`
+  (`{ label, onClick }`) a duração é de **pelo menos cinco segundos**; `duration` zero ou negativa desliga o
+  sumiço automático.
+
+Os nomes e tipos exatos são fonte viva: leia-os em `dist/index.d.ts` e no catálogo.
+
+## 6.8 O motor de gráficos
+
+`SarakChartEngine` desenha com **ECharts** (Apache-2.0) e é carregado sob demanda (§7.1). O que ele promete:
+
+- **O tema manda.** As cores, a fonte, a borda, a grade e o tooltip saem do design resolvido — inclusive os sete tokens
+  de gráfico ([[09-temas-e-presets]]). A cor de cada série segue a **paleta categórica derivada das cores de
+  marca** (`SubEngines/categoricalPalette.ts`): oito cores, as quatro primeiras a partir de `chartColorPalette`,
+  `secondaryColor`, `accentColor` e `tertiaryColor`, nesta ordem, e as quatro seguintes como variações delas.
+  Cada cor é ajustada ao critério computável da skill `dataviz` (luminosidade OKLCH na faixa do modo, croma
+  acima do piso, contraste contra a superfície, distância entre vizinhas inclusive sob protanopia e
+  deuteranopia); cor de marca que já cumpre passa intacta. **Cor de status nunca entra na paleta**: ela é de
+  estado e só aparece quando a série a pede. Uma série pode pedir uma cor pelo **nome** de um token de marca
+  (`CHART_BRAND_TOKENS`) ou de status (`statusSuccessColor`, `statusWarningColor`, `statusErrorColor`,
+  `statusInfoColor`), nunca por valor.
+- **`type` é opcional**: sem ele vale o `chartType` do tema; a prop explícita vence. `config.title`,
+  `showAnimation`, `showGradients` e `thickness` (padrão: `chartThickness` do tema) mudam o desenho.
+- **Várias séries.** `series` (`{ key, label?, type?: 'bar' | 'line' | 'area', stack?, axis?: 'left' | 'right', dashed?,
+  color? }[]`), `stacked`, `orientation` (`'vertical' | 'horizontal'`), `legend` (padrão: escondida com uma série,
+  no topo com duas ou mais) e `onPointClick({ seriesKey, index, datum })`. `axis: 'right'` cria o segundo eixo
+  de valor (no topo, na horizontal); `dashed` desenha a linha de referência. Sem `series`, o desenho de uma série
+  segue o de sempre. Formatos não cartesianos ignoram `series`, `stacked` e `orientation`.
+- **Formatos**: `line`, `area`, `bar`, `pie`, `radar`, `gauge`, `scatter`, `heatmap`, `funnel`, `treemap`,
+  `candlestick`, `sunburst`, `histogram`, `boxplot`, `waterfall` (`{ name, value, total? }`: cada item é variação
+  sobre o acumulado, e `total: true` fecha o acumulado), `sankey` (`{ source, target, value }`: os nós saem das
+  ligações; ligação que fecharia ciclo é descartada) e `calendar` (`{ date, value }`: um ano inteiro, ou o
+  intervalo dos dados; dia sem dado fica vazio, não zero).
+- **Sem dado, sem exceção**: dado vazio ou sem o campo da série mostra o `SarakDataEmpty`, com texto traduzido.
+  O gráfico tem `role="img"` e `aria-label` (prop `ariaLabel`, padrão traduzido), e o módulo `aria` do ECharts
+  ligado.
+- **`engine: 'recharts'` é alternativa limitada**: desenha só barra e linha de uma série, e avisa uma vez, em
+  desenvolvimento, cada prop que não honra.
+
+**Decisão:** nenhuma biblioteca nova. O Grafana foi descartado (o servidor é AGPL-3.0 e traz design system
+próprio); o `uPlot` só se justificaria com séries de centenas de milhares de pontos.
+
+## 6.9 Campos: rótulo, erro e ícones
+
+**O erro de campo tem uma forma só.** Todo átomo de campo com a prop `error` (`SarakInput`, `SarakSelect`,
+`SarakTextarea`, `SarakDatePicker`, `SarakMultiSelect`, `SarakRangeSlider`, `SarakRichText`, `SarakTimePicker`,
+`SarakUploader`) a desenha pelo **`SarakFieldError`**: ícone e texto, `role="alert"`, com o id que o controle
+referencia em `aria-describedby`; o controle sai com `aria-invalid`. Um formulário que misture átomos e
+`SarakFieldError` solto mostra um erro só de aparência. A prop `error` é `string`.
+
+- **Rótulo:** os átomos de campo têm `label`, e o controle que recebe o foco tem esse nome acessível: por
+  `<label htmlFor>` quando há elemento rotulável, por `aria-labelledby` quando não há (editor rico, gatilho próprio
+  do seletor de data e do multisseleção, área do uploader, grupo do intervalo e do horário). O `SarakSelect` sem `label` tem
+  o mesmo DOM de sempre.
+- **Ícones do `SarakInput`:** `leftIcon` e `rightIcon` aparecem **juntos**, cada um no seu lado, e o da direita é
+  clicável (é o que permite "mostrar senha"); `icon` prevalece sobre os dois.
+- **Texto do átomo pelo idioma da lib:** os rótulos acessíveis padrão (como os do intervalo e do grupo de horário)
+  saem do catálogo de i18n ([[10-seguranca-e-acessibilidade]] §3.6).
+
+## 6.10 Quadro kanban e detalhe do cartão
+
+`SarakKanban` (`DataDisplay/SarakKanban/`) é carregado sob demanda (§7.1) e arrasta com `@dnd-kit/core` e
+`@dnd-kit/sortable`, peers **opcionais** ([[019-arrastar-e-soltar-do-kanban]]): quem renderiza um quadro as instala.
+
+- **Reordenar de verdade:** o cartão cai no **índice onde se soltou**, dentro da coluna ou em outra.
+  `onCardMove` recebe `cardId`, `fromColumn`, `toColumn`, `fromIndex`, `toIndex` e os vizinhos finais
+  `beforeCardId`/`afterCardId` (`null` nas pontas) — o bastante para o host calcular a ordem sem reler o quadro.
+  Soltar no mesmo lugar não emite evento. A lógica pura (`sarakMoveCard`) é exportada e fica fora da fronteira lazy.
+- **Toque e teclado:** o toque ativa por pressão longa (250 ms, tolerância de 5 px), sem impedir a rolagem da página;
+  o teclado levanta e solta com Espaço, move pelas setas e cancela com Esc; os anúncios para leitor de tela saem do
+  catálogo de i18n; a borda rola sozinha durante o arrasto. **A medição em aparelho e em navegador real está
+  pendente** (ADR-019).
+- **Cartão padrão** (`SarakKanbanCard`, todos opcionais): `code`, `title`, `description`, `assignee`, `priority`
+  (`low`, `medium`, `high`, `urgent` — a média não aparece), `dueDate` (atrasado pela cor de erro do tema) e
+  `subtasks`. `renderCard` vence o padrão.
+- **Sem evento, sem controle:** `onCardClick`, `onCardAdd` (criação rápida no rodapé da coluna), `onColumnAdd`,
+  `onColumnRename` e `onColumnDelete` (menu da coluna) só desenham o controle correspondente quando passados.
+- **Layout:** container query, mobile-first; no celular o quadro rola na horizontal com uma coluna por vez.
+
+**Blocos para o detalhe do cartão**, compostos pelo host (por exemplo, num `SarakDrawer` aberto pelo
+`onCardClick`):
+
+| Bloco | Contrato |
+|---|---|
+| `SarakChecklist` | `items { id, label, done }[]`, `onToggle(id, done)`, `onAdd?`, `onRemove?`, `showProgress?` (progresso pelo `SarakProgress`) |
+| `SarakCommentThread` | `comments { id, author { name, avatarUrl? }, body, createdAt }[]`, `onSubmit(text)`, `onDelete?`; horário relativo no idioma da lib; Ctrl/Cmd+Enter envia |
+| `SarakActivityFeed` | `entries { id, actor?, text, at }[]`, em linha do tempo |
+| `SarakAssigneePicker` (`Inputs/`) | `people { id, name, avatarUrl? }[]`, `value`, `onChange(id \| null)`, `clearable?` |
+
+Todos renderizam sem Provider (R34) e têm estado vazio. Datas aceitam `string`, `number` ou `Date`
+(`SarakTimestamp`); data inválida não vira texto quebrado — o horário some.
+
+## 6.11 Calendário mensal e Gantt
+
+Duas visões de projeto em `DataDisplay/`, sem dependência de terceiro. As duas leem a data `AAAA-MM-DD` como dia
+**local** (não UTC), descartam o que tem início ilegível, desenham mês e dias pelo `Intl` no idioma da lib, tiram cor
+do `tone` — `primary`, `success`, `warning`, `danger`, `info` ou `muted`, pelas cores do design; tom desconhecido cai
+em `primary` — e renderizam sem Provider (R34).
+
+**`SarakCalendar`** — calendário mensal de eventos.
+- `events { id, title, start, end?, tone?, meta? }[]`: um evento de vários dias aparece em cada dia que cobre, com o
+  primeiro e o último marcados; `meta` volta intacto em `onEventClick`.
+- Mês controlado (`month` + `onMonthChange`) ou não (`defaultMonth`, que também avisa `onMonthChange`); anterior, hoje e
+  próximo no cabeçalho; `weekStartsOn` muda a primeira coluna; `maxEventsPerDay` resume o excesso em "+N", que chama
+  `onDayClick`; `renderEvent` substitui o chip.
+- Teclado: `role="grid"` com foco itinerante — setas (±1 dia, ±1 semana), PageUp/PageDown (±1 mês); `Enter` no dia chama
+  `onDayClick` e, no evento, `onEventClick`. Cada dia tem `aria-label` com a data por extenso e a contagem.
+- **Contêiner estreito** (container query: abaixo de 768 px de largura disponível): o evento vira um ponto colorido, e
+  o toque em cima dele chama `onDayClick`; nada rola na horizontal. O título do evento sai em caixa normal.
+
+**`SarakGantt`** — cronograma em casca própria ([[020-gantt-casca-propria]]).
+- `tasks { id, title, start, end, progress?, dependsOn?, tone?, group? }[]`, `scale` (`day` | `week` | `month`, padrão
+  `week`), `rangeStart`/`rangeEnd` (padrão: o intervalo das tarefas com margem), `onTaskClick`.
+- À esquerda a lista de tarefas (título e grupo), presa ao rolar; à direita a linha do tempo, com o cabeçalho de datas
+  preso, o marcador de hoje (nunca abaixo de 2 px, mesmo num tema que zera a borda) e o fim de semana esmaecido na
+  escala de dia. A rolagem vertical é uma só para as duas.
+- A barra: posição e largura pela escala (dias de calendário), progresso em faixa na base, título legível sobre ela
+  em tema claro e escuro; foco e `Enter` chamam `onTaskClick`. `dependsOn` desenha uma seta término → início;
+  dependência para tarefa inexistente é ignorada com aviso em desenvolvimento, e ciclo não trava.
+- **Altura:** com o host de altura definida, o Gantt ocupa essa altura e rola por dentro; sem ela, cresce até um teto.
+- **Limites declarados:** até 500 tarefas sem virtualização; sem arrastar nem redimensionar barra (a prop `onTaskChange`
+  **não existe** — o nome fica guardado para quando houver), sem grade de horas, sem recorrência, sem fuso, sem caminho crítico, auto-agendamento ou exportação.
 
 
 # 7. Fronteiras de bundle — a parte MEDIDA
@@ -301,10 +536,28 @@ O chunk de **boot** de um consumidor caiu de **3203,6 KB para 1533,6 KB (−52,1
 | `SarakFlowEngine` | `src/components/engines/flows/index.tsx:17` |
 | `SarakPDFViewer` | `src/components/atomic/Media/SarakPDFViewer/index.ts:12` |
 | `SarakMarkdownRenderer` | `src/components/atomic/Media/SarakMarkdownRenderer/index.ts:13` |
-| `SarakDataTable` | `src/components/atomic/DataDisplay/SarakDataTable/index.ts:11` |
-| `SarakDataGrid` | `src/components/atomic/DataDisplay/SarakDataGrid/index.ts:14` |
+| `SarakDataTable` | `src/components/atomic/DataDisplay/SarakDataTable/index.ts` |
+| `SarakDataGrid` | `src/components/atomic/DataDisplay/SarakDataGrid/index.ts` |
+| `SarakKanban` | `src/components/atomic/DataDisplay/SarakKanban/SarakKanban.tsx` |
 
-`SarakKanban` **não** é lazy, e isso é deliberado — o comentário em `DataDisplay/SarakKanban/index.ts:3` registra que ele é leve (arrastar-e-soltar HTML5 nativo, zero dependência).
+**Uma fronteira só vale se a implementação não for nome do barril.** Exportar o `Impl` como valor, ao lado do
+`lazy`, faz o esbuild levá-lo ao chunk carregado na abertura — e o chunk "lazy" vira um reexport de poucos bytes.
+Medido no `dist/`: nenhum chunk importado estaticamente por `dist/index.js` contém `@tanstack/react-virtual`; a
+implementação das duas grades mora nos chunks `SarakDataTableImpl-*.js`/`SarakDataGridImpl-*.js`. O teste
+`DataDisplay/__tests__/SarakDataLazyBoundary.test.ts` trava as duas condições na fonte.
+
+**Os temas embarcados** são a fronteira lazy de dados: `themes/loaders.ts` tem um `import()` por tema, e o fecho
+estático do entry só contém o tema padrão (`themes/boot.ts`). `themes/all.ts` (a lista inteira) fica **fora do
+barril**, só para gates e testes. Travadas por `theme-boot:check` (fonte e `dist/`) e `boot:measure`
+([[09-temas-e-presets]] §4.3.2). A API pública: `SARAK_DEFAULT_THEME_ID`, `SARAK_THEME_CATALOG` (+ tipos
+`SarakThemeCatalogEntry`/`SarakThemeSwatch`), `sarakLoadThemePreset`, `sarakPreloadThemes`,
+`sarakLoadAllThemePresets`, `sarakLoadReferenceThemes`, a prop `loadingFallback` e, no contexto, `themeCatalog` e
+`loadTheme`. `SARAK_GLOBAL_THEMES` e `sarakGetThemePreset` saíram do barril.
+
+`SarakKanban` arrasta com `@dnd-kit` (peer **opcional**, como `echarts`): o `dist/index.js` não referencia a
+biblioteca, e só o chunk `SarakKanbanImpl-*.js` a importa. O `Suspense` é interno e direto, sem o
+`LazyEngineWrapper` — o wrapper exige Provider, e o quadro renderiza sem ele (R34). A lógica pura
+(`sarakMoveCard`) fica fora da fronteira e é exportada.
 
 # 8. Dívidas nomeadas — as duas ondas de limpeza
 
@@ -361,6 +614,8 @@ Esta seção era, até 2026-07-29, a maior dívida desta lista: **três das quat
 | `SarakChatEngine` | ✅ `core/Discovery/components/ContractRenderer.tsx:67` | ❌ | **EXPOSTO** (barril próprio, lazy) |
 | `SarakFlowEngine` | ✅ `ContractRenderer.tsx:89` | ❌ | **EXPOSTO** (barril próprio, lazy) |
 | `SarakVisualEngine` | ❌ nenhum | ❌ | **REMOVIDO** |
+
+> O `ContractRenderer` citado acima saiu com o modo host ([[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]); hoje nenhum engine tem uso interno na lib.
 
 **O achado que explicava a confusão:** existia um `src/components/engines/index.ts` que declarava os quatro atrás de `React.lazy` e **não era importado por ninguém** — o `ContractRenderer` importava direto dos arquivos e o `src/index.ts` importava de `engines/charts`. Código morto que produzia leitura errada da arquitetura: quem o lia concluía que os quatro engines eram alcançáveis. Foi apagado.
 

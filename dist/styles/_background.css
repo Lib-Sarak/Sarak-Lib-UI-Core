@@ -1,0 +1,88 @@
+/* =========================================
+   FUNDO DA PÁGINA — gradiente e tom do ambiente
+   =========================================
+   Leitores de `bgGradientMode`/`bgGradientAngle` e de `systemTone`. O motor emite o
+   atributo `data-sx-<token>` e a variável `--sarak-<token>` no `html` e no `body` (App)
+   ou no contêiner da ilha (Embarcado); quem PINTA é o `body` (ou o escopo do Design).
+
+   Importado em `components.sarak-elements` (ver `sarak-base.css`): regra de atributo solto
+   não mora na camada final, onde venceria toda classe utilitária do consumidor.
+
+   Ordem das camadas de fundo, de cima para baixo:
+     1. tom (`--sarak-bg-tone-*`): grade de HUD e brilho de horizonte;
+     2. gradiente (`--sarak-bg-gradient-*`): a cor do tema, em 3 modos;
+     3. `background-color` do `body` (`_base.css`), que continua sendo o piso opaco.
+   A textura (`data-sx-texture`) e a mídia de fundo são pseudoelementos e ficam ACIMA
+   desta pintura. Sem tom e sem gradiente cada camada vale `none` e nada muda.
+
+   Cada camada declara imagem, tamanho e repetição JUNTOS: as três listas são achatadas
+   na mesma ordem em `background-*`, então têm de ter o mesmo número de camadas.
+
+   As paradas do gradiente saem das cores que o tema já tem — fundo, camada, primária e
+   destaque —, sem token de cor novo. */
+
+:is(body, .sarak-design-scope) {
+    --sarak-bg-gradient-image: none;
+    --sarak-bg-gradient-size: 100% 100%;
+    --sarak-bg-gradient-repeat: no-repeat;
+    --sarak-bg-tone-image: none;
+    --sarak-bg-tone-size: 100% 100%;
+    --sarak-bg-tone-repeat: no-repeat;
+
+    background-image: var(--sarak-bg-tone-image), var(--sarak-bg-gradient-image);
+    background-size: var(--sarak-bg-tone-size), var(--sarak-bg-gradient-size);
+    background-repeat: var(--sarak-bg-tone-repeat), var(--sarak-bg-gradient-repeat);
+    background-attachment: fixed;
+}
+
+/* Linear: do fundo até a camada tingida pela primária, no ângulo do token. */
+[data-sx-bg-gradient-mode="linear"] {
+    --sarak-bg-gradient-image: linear-gradient(
+        var(--sarak-bg-gradient-angle, 135deg),
+        var(--sarak-bg-body, var(--bg-body, #06080d)) 0%,
+        color-mix(in srgb, var(--sarak-bg-layer-1, var(--sarak-bg-body, #06080d)) 78%, var(--sarak-primary-color, #19e3f0)) 100%
+    );
+}
+
+/* Radial: um foco de luz no topo, da camada tingida até o fundo. */
+[data-sx-bg-gradient-mode="radial"] {
+    --sarak-bg-gradient-image: radial-gradient(
+        120% 90% at 50% 0%,
+        color-mix(in srgb, var(--sarak-bg-layer-1, var(--sarak-bg-body, #06080d)) 72%, var(--sarak-primary-color, #19e3f0)) 0%,
+        var(--sarak-bg-body, var(--bg-body, #06080d)) 70%
+    );
+}
+
+/* Mesh: quatro manchas em baixa opacidade — primária, destaque, camada 2, camada 1. A terceira
+   é a camada 2 do fundo (`colorBgLayer2`); o padrão do token é a própria primária. */
+[data-sx-bg-gradient-mode="mesh"] {
+    --sarak-bg-gradient-image:
+        radial-gradient(at 12% 8%, color-mix(in srgb, var(--sarak-primary-color, #19e3f0) 30%, transparent) 0, transparent 55%),
+        radial-gradient(at 88% 14%, color-mix(in srgb, var(--sarak-accent-color, #ff4fd8) 24%, transparent) 0, transparent 52%),
+        radial-gradient(at 82% 92%, color-mix(in srgb, var(--sarak-bg-layer-2, var(--sarak-primary-color, #19e3f0)) 20%, transparent) 0, transparent 56%),
+        radial-gradient(at 8% 90%, color-mix(in srgb, var(--sarak-bg-layer-1, var(--sarak-bg-body, #06080d)) 80%, transparent) 0, transparent 60%);
+    --sarak-bg-gradient-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+    --sarak-bg-gradient-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+}
+
+/* Tom cibernético: grade de HUD e brilho de horizonte na cor de textura do tema. */
+[data-sx-system-tone="cyber"] {
+    --sarak-bg-tone-image:
+        radial-gradient(circle at 50% 110%, color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 14%, transparent) 0%, transparent 52%),
+        linear-gradient(color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 10%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 10%, transparent) 1px, transparent 1px);
+    --sarak-bg-tone-size: 100% 100%, 20px 20px, 20px 20px;
+    --sarak-bg-tone-repeat: no-repeat, repeat, repeat;
+    --accent-glow: 0 0 15px color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 50%, transparent);
+}
+
+/* Tom tático: o mesmo HUD em monocromo — grade fina e horizonte na cor do texto atenuado,
+   sem usar a cor da marca. Acompanha o modo claro/escuro porque lê o texto do tema. */
+[data-sx-system-tone="tactical"] {
+    --sarak-bg-tone-image:
+        radial-gradient(circle at 50% 110%, color-mix(in srgb, var(--text-muted, rgba(242, 246, 251, 0.55)) 10%, transparent) 0%, transparent 50%),
+        linear-gradient(color-mix(in srgb, var(--text-muted, rgba(242, 246, 251, 0.55)) 16%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, var(--text-muted, rgba(242, 246, 251, 0.55)) 16%, transparent) 1px, transparent 1px);
+    --sarak-bg-tone-size: 100% 100%, 24px 24px, 24px 24px;
+    --sarak-bg-tone-repeat: no-repeat, repeat, repeat;
+}

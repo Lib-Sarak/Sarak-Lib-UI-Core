@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Design Engine / Temas"
 status: "🟢 Vigente"
 prioridade: "Máxima"
 tags: ["spec", "temas", "presets", "design-engine", "tokens", "validacao"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[06-painel-de-customizacao-e-preview]]", "[[10-seguranca-e-acessibilidade]]", "[[003-remocao-backend-proprio]]", "[[016-preferencias-do-usuario-separadas-do-tema]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[06-painel-de-customizacao-e-preview]]", "[[10-seguranca-e-acessibilidade]]", "[[003-remocao-backend-proprio]]", "[[011-tema-salvo-por-uma-porta-de-escrita]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]"]
 ---
 
 # 1. Propósito e a frase que resume tudo
@@ -59,7 +59,7 @@ claro → escuro` devolve faixa de faixa, não o original. Com contraparte são 
 > permissivo, gate estrito, exceção visível e contável.
 
 **Os dois temas de referência têm contraparte autorada** — `minimalist-airy` e `sarak-sovereign`, o par
-de `SARAK_REFERENCE_THEMES`. Não é detalhe: é o que torna segura a regra da §4.1. Se a base que todo mundo
+que `sarakLoadReferenceThemes()` devolve (§4.1). Não é detalhe: é o que torna segura a regra da §4.1. Se a base que todo mundo
 clona não tivesse contraparte, todo tema derivado dela herdaria o fallback que degrada, e a lib estaria
 recomendando exatamente o caminho que falha.
 
@@ -86,9 +86,11 @@ Quatro observações que importam mais que o formato:
    cópia estática de fonte viva já nasce desatualizada (é literalmente o defeito que
    `generate_themes.ts` foi reescrito para eliminar, §6.3).
 
-3. **`ThemePresetId` é uma união fechada** (`index.ts:19-40`), espelho de `GLOBAL_THEMES`. Adicionar um
-   tema shippado = acrescentar o id ali **e** importá-lo na lista. Um tema do *consumidor* não precisa
-   disso: ele entra por `customThemes` como dado, sem tocar no tipo da lib.
+3. **`SarakThemePresetId` é uma união fechada** (`SARAK_THEME_PRESET_IDS`, `themes/index.ts`), espelho do
+   catálogo embarcado. Adicionar um tema shippado = o id ali, o arquivo `<id>.ts`, a linha em `all.ts` (a lista
+   estática, só de ferramenta) e o `import()` em `loaders.ts` (como ele chega), depois `npm run themes:catalog`.
+   **Nunca importe o tema em `index.ts` nem no barril** — ele voltaria ao boot de todo consumidor (§4.3.2). Um
+   tema do *consumidor* não precisa disso: ele entra por `customThemes` como dado, sem tocar no tipo da lib.
 
 4. **O mesmo formato serve para os dois lados.** O que o painel exporta
    (`buildThemeExportPayload`, `src/features/DesignEngine/Main/utils/exportTheme.ts:40-46`) é
@@ -116,21 +118,18 @@ não existe "modo tema" e "modo preset". Existe um `Record` maior e um menor.
 
 ## 4.1 Criar — derivando de uma referência, nunca do zero
 
-A lib fornece um **par de temas COMPLETOS** para servir de ponto de partida:
+A lib fornece um **par de temas COMPLETOS** para servir de ponto de partida — `minimalist-airy` (claro) e
+`sarak-sovereign` (escuro) —, em duas formas (`src/core/Design/presets/themes/reference.ts`):
 
-```ts
-export const SARAK_REFERENCE_THEMES: ThemePreset[] = [
-    getThemePreset('minimalist-airy'),   // claro,  topbar,  Inter
-    getThemePreset('sarak-sovereign'),   // escuro, sidebar, Outfit
-].filter((theme): theme is ThemePreset => Boolean(theme));
-```
+- **`sarakLoadReferenceThemes()`** (assíncrona) devolve **o par**, carregando o claro sob demanda (§4.3.2). É a
+  forma de quem precisa dos dois modos.
+- **`SARAK_REFERENCE_THEMES`** (síncrona) traz **só o que está no boot: o escuro** (`sarak-sovereign`). ⚠️ Desde o tema
+  sob demanda ela não contém o claro: `SARAK_REFERENCE_THEMES.find((t) => t.mode === 'light')` devolve `undefined`, sem
+  erro de tipo.
 
-Fonte: `src/core/Design/presets/themes/reference.ts:25-28`. `getThemePreset(id)` (`:17-18`) busca
-qualquer tema do catálogo pelo id.
-
-**O par difere em modo (claro/escuro), navegação (topbar/sidebar) E fonte DE PROPÓSITO**
-(`reference.ts:10-12`): alternar entre os dois tem de mudar visivelmente cor **e** fonte **e** cromo **e**
-raio. Um par que diferisse só na cor não provaria nada.
+**O par difere em modo (claro/escuro), fonte, cor e raio DE PROPÓSITO:** alternar entre os dois tem de mudar
+visivelmente a tela inteira. Um par que diferisse só na cor não provaria nada. (A navegação não entra: é token funcional,
+igual em todo tema, §5.3.)
 
 > **A regra derivada, que é o item mais importante desta seção:**
 > **parta de um tema de referência completo e customize poucos valores. NÃO monte um tema do zero.**
@@ -183,6 +182,10 @@ CSS Variable. Três comportamentos:
 | Chave é token, valor fora do contrato | **descartada** + `console.warn` "valor fora do contrato" (`:196-199`) |
 | Chave desconhecida (nem token, nem `ALLOWED_EXTRA_KEYS`) | **descartada** + `console.warn` "chave desconhecida" (`:213`) |
 
+**Ícone é token como os outros.** O tema declara `iconFamily` (`lucide`, `phosphor`, `tabler`), `iconWeight` e
+`iconStrokeWidth`, e os três valem para todo ícone que a lib desenha ([[03-superficie-publica]] §6.2). Não há
+mais pacote de ícone por tema: `emojiSet` deixou de ser chave aceita e cai na linha *chave desconhecida* acima.
+
 O detalhe do porquê de cada rejeição (padrões de cor, breakout de CSS) é matéria de segurança e mora em
 [[10-seguranca-e-acessibilidade]] §2.1. Para esta spec basta a garantia: **um tema inválido degrada
 campo a campo, nunca derruba a aplicação e nunca injeta o que não entendeu.**
@@ -206,23 +209,27 @@ motivo legítimo para um tema parcial.
 
 > **Um id de tema que não existe mais não quebra nada — e não passa em silêncio.** Venha ele de
 > `activeThemeId`, de `initialTheme` ou da persistência do próprio consumidor, a lib **nunca fica sem tema e
-> nunca lança**: cai no tema de referência do **modo pedido** — o de `config.mode` quando há um explícito,
+> nunca lança**: cai no **tema padrão** (`SARAK_DEFAULT_THEME_ID`, `sarak-sovereign`) no **modo pedido**, pela contraparte autorada — o de `config.mode` quando há um explícito,
 > senão o modo do design no ar, senão escuro (o default do schema) — e emite **um** `console.warn` nomeando
-> o id que não encontrou. `getThemePreset` (`presets/themes/reference.ts:18`) devolve `undefined` para id
-> desconhecido; o fallback é decisão do Provider. Quais ids existem hoje é fonte viva: `THEME_PRESET_IDS`
-> e `GLOBAL_THEMES`.
+> o id que não encontrou. Quais ids existem hoje é fonte viva: `SARAK_THEME_PRESET_IDS` e o catálogo
+> `SARAK_THEME_CATALOG`; `sarakLoadThemePreset(id)` **rejeita** com id desconhecido, nunca devolve `undefined`
+> mudo. O fallback é decisão do Provider.
 
 Duas portas, **contratos de estabilidade diferentes**:
 
 | Prop | Semântica | Exige do consumidor |
 | --- | --- | --- |
-| `activeThemeId` (`types.ts:232`) | **controlado** — a lib segue este valor | que `customThemes` seja **referencialmente estável**; um array recriado a cada render realimenta o ciclo |
-| `initialTheme` (`types.ts:240`) | **semente** — "só quero começar neste tema" | nada; é o caminho seguro para o caso comum |
+| `activeThemeId` (`providerProps.ts`) | **controlado** — a lib segue este valor | que `customThemes` seja **referencialmente estável**; um array recriado a cada render realimenta o ciclo |
+| `initialTheme` (`providerProps.ts`) | **semente** — "só quero começar neste tema" | nada; é o caminho seguro para o caso comum |
 
 O comentário de `types.ts:236-240` diz isso explicitamente: `initialTheme` existe para **não expor o
 consumidor ao contrato de estabilidade de referência** que `activeThemeId` exige. Quem só quer escolher o
 tema inicial usa `initialTheme`; quem quer um seletor de tema controlado pelo próprio estado usa
 `activeThemeId` **e** memoiza `customThemes`.
+
+**A persistência do consumidor entra na ordem.** O tema resolvido no boot vem da prop **controlada**
+`activeThemeId`; sem ela, do **id que `onLoad` devolve** junto do design (§4.4.2); sem esse, do `initialTheme`.
+A prop controlada vence **sempre** o id carregado.
 
 > 🔴 **`resolvedThemeId` — leia ESTE, nunca `activeThemeId` cru** *(plan-27, 2026-08-11)*. As duas props
 > acima são **entrada**; nenhuma delas diz qual tema está **efetivamente no ar**. O contexto passou a expor
@@ -280,9 +287,51 @@ trocava o rótulo.
 > **recarrega** o tema (decisão do dono): os 55 tokens de modo são sobrescritos, inclusive customizações
 > manuais — e o painel avisa **no momento da troca**.
 
+### 4.3.2 Tema sob demanda — o boot leva só o tema padrão, e a UX não muda
+
+O boot do consumidor leva **só o `sarak-sovereign`** (`SARAK_DEFAULT_THEME_ID`, `themes/boot.ts`). Os outros
+embarcados são um `import()` cada (`themes/loaders.ts`), carregados por `sarakLoadThemePreset(id)`,
+`sarakPreloadThemes(ids)` ou `sarakLoadAllThemePresets()` para um cache síncrono (`themes/registry.ts`). **Listar**
+não carrega: `SARAK_THEME_CATALOG` traz `id`, `name`, `description`, `mode`, `hasContraparte` e a amostra de cor
+`swatch`/`swatchOpposite` (`primaryColor`, `colorBgBody`, `textColorMaster` de cada modo), **gerado** dos temas
+por `npm run themes:catalog` (`themes:catalog:check` no build). `useSarakUI().allThemes` traz só os temas com
+`design` em memória; `themeCatalog` lista tudo que é escolhível (embarcado, custom, salvo) e `loadTheme(id)` carrega.
+A razão do desenho e as alternativas: [[022-tema-sob-demanda]].
+
+| Situação | O que o Provider faz |
+| --- | --- |
+| Sem pedido, ou o tema padrão | Pinta no primeiro quadro, sem espera |
+| `design` salvo (e o tema não é controlado) | Pinta direto do salvo; o id do tema carrega depois, sem tocar o `design` |
+| Consumidor escolhe outro tema (painel, `activeThemeId` em execução) | **O tema atual continua na tela até o novo chegar** — nunca tela vazia, nunca fallback |
+| Tema embarcado forçado por código (`initialTheme`/`activeThemeId`/`options.theme.defaultTheme`) que não está em memória e sem `design` salvo | A **porta de espera**: segura a aplicação e mostra `loadingFallback` (nada, por padrão) por um `import()`; depois, a aplicação já no tema certo. `await sarakPreloadThemes([...])` antes do render elimina a espera |
+| Id inexistente | Decidido sem rede: aviso nomeando o id e o tema padrão no modo pedido. `options.theme.defaultTheme` inexistente também avisa |
+| Falha do `import()` | Libera a porta e registra o erro nomeando o tema |
+
+A porta fecha **uma vez**: depois do primeiro quadro, uma troca por código nunca desmonta a aplicação. No servidor o
+`import()` não é esperado — pré-carregue antes de `renderToString`, senão a página renderiza o `loadingFallback`.
+
+`sarakDeriveThemeFromReference` aceita `'sarak-sovereign'` (síncrono) ou um preset já carregado; `SARAK_REFERENCE_THEMES`
+é só a referência escura, e o par claro vem de `sarakLoadReferenceThemes()`.
+
+**Travas** (R18 no cabeçalho de cada uma): `theme-boot:check` — nenhum tema além do padrão, nem `themes/all.ts`, no
+fecho estático do entry em `src/` e no `dist/` (no `build`); `boot:measure` (`scripts/measure-consumer-boot.mjs`) — o
+boot no bundler do consumidor cabe em *o boot só com o tema padrão e sem catálogo, medido na mesma execução, + o
+catálogo + 3 KB* gzip, e cada tema embarcado pesa **até 3 KB gzip** (no `gates:full`). O teto relativo tem folga: um
+tema isolado que volte ao boot acende a trava estrutural, não a medida.
+
+### 4.3.3 A troca de tema compõe, nunca herda
+
+`composeThemeDesign` (`themes/compose.ts`) é a função **única** que compõe o `design` ao aplicar um tema, chamada
+pelo Provider (`useDesignSync`) e pela prévia do painel (`useDesignDraft.handleThemePreview`), nesta ordem:
+**padrão de todo token do schema → identidade e modo do usuário** (`THEME_PRESERVED_KEYS`: `systemName`, `logoUrl`,
+`logoDarkUrl`, idiomas, `mode`) **→ `config` do host → o tema resolvido para o modo**. O tema vence o que declara; o
+`config` do `SarakUIProvider` vale no resto; o token que o tema novo não declara e o host não fixou volta ao padrão —
+o valor do tema anterior nunca fica. O `config` chega ao efeito por ref (`configRef`) e à prévia por
+`getHostConfig()`: nunca é dependência do efeito (§3.1 de [[02-design-engine]]).
+
 ## 4.4 Persistir — `localStorage`, e a sincronização entre abas
 
-Persistência é **local por construção** (`options.persistence`, `types.ts:153-166`):
+Persistência é **local por construção** (`options.persistence`, em `src/core/Provider/types.ts`):
 `storageKey` nomeia a chave, `onSave`/`onLoad` são as portas "traga sua persistência" (para o backend
 **do consumidor**, se ele quiser — a lib nunca faz fetch para servidor próprio), e
 **`crossTabSync` (default `true`)** escuta o evento `storage` e reaplica o design — **validado** — quando
@@ -290,7 +339,7 @@ outra aba/app da mesma origem grava a mesma chave.
 
 `crossTabSync` é o que faz o modo ui-kit + central funcionar com **apps separados por deploy**: N
 Providers independentes, mesma origem, mesma `storageKey` → trocar o tema numa aba repinta as outras.
-Ver [[005-modelo-modulos-plugin-e-apps-separados]].
+Ver [[005-modelo-modulos-plugin-e-apps-separados]] e [[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]].
 
 ### 4.4.1 `strategy` e `tenantId` — quem vence quem
 
@@ -311,20 +360,30 @@ atrasa os `children` até o carregamento remoto terminar — trocando flash por 
 **`tenantId` compõe a chave efetiva** — `` `${storageKey}::tenant:${tenantId}` `` — para que apps
 multi-tenant na mesma origem não vazem tema entre inquilinos. A composição tem **fonte única**
 (`resolveStorageKey`): todo ponto de leitura, de escrita e o filtro de `crossTabSync` consomem essa função,
-nunca compõem a chave por conta própria.
+nunca compõem a chave por conta própria. **Trocar `tenantId` recarrega:** a lib descarta o estado do inquilino
+anterior e chama `onLoad` de novo para o novo, **sem remontar o Provider**.
 
 > ⚠️ **Consequência que governa o design de token, e não é óbvia: em `'hybrid'`, chave ausente na fonte
 > remota NÃO apaga a chave presente no cache local.** Para tirar um valor de circulação de fato, ele sai
 > das **duas** fontes. É a mesma assimetria que faz valor persistido vencer default —
 > ver [[07-responsividade-e-multidispositivo]] §6.1, regra 4.
 
-### 4.4.2 O que a porta de escrita entrega
+### 4.4.2 O que a porta entrega — e recebe
 
 `onSave` recebe **duas** coisas: o conjunto de tokens **e o `id` do tema ativo**. O id viaja como
 **segundo parâmetro**, não dentro do payload — o payload é o dicionário de tokens e nada mais, e misturar
-identidade com valor obrigaria todo consumidor a filtrá-la antes de gravar. Sem isso, quem implementa
-`onSave` consegue guardar *quais tokens* estão aplicados, mas não *de qual tema eles vieram* — e não
-consegue restaurar a seleção no boot seguinte.
+identidade com valor obrigaria todo consumidor a filtrá-la antes de gravar.
+
+**`onLoad` devolve o par de volta.** Ele pode devolver só o design (o formato mais simples, que continua
+aceito) **ou** `{ design, activeThemeId }`; com o id presente, é o tema resolvido no boot (§4.3).
+`null` ou `undefined` significa *nada gravado ainda* e não aplica nem grava coisa alguma. Sem o id de volta, o
+consumidor guardaria *quais tokens* estão aplicados, mas não conseguiria restaurar *de qual tema eles vieram*.
+
+**A lib não grava sem mudança.** O boot e a hidratação — a local e a do `onLoad` — não chamam `onSave`, não
+escrevem no `localStorage` e não chamam `onThemeChange`. Só gravam a edição do usuário (com o atraso de 1,5 s) e
+a aplicação explícita; e o mesmo par design + id não é gravado duas vezes seguidas. Os dois caminhos que aplicam tema
+— o `Aplicar (N)` do painel e o desfazer da última aplicação — anunciam o id **antes** de gravar (escolher um
+tema na galeria ou na aba de modelos só altera o rascunho, [[06-painel-de-customizacao-e-preview]] §4), de modo que a primeira chamada de `onSave` leva o par certo.
 
 **O formato do dado persistido não se descreve em prosa aqui**: a lib publica o artefato de referência
 (formato, schema em dois dialetos e exemplo de ligação) — ver [[13-instalacao-e-atualizacao]]. Persistir é
@@ -343,6 +402,54 @@ Daí a regra que governa qualquer mudança de token: **trocar o default não con
 quem cai nele por omissão.** Um valor que produz resultado quebrado ou é **consertado**, ou **sai do
 schema**. Deixá-lo de pé e desviar o default é o conserto que passa em todos os gates e continua quebrado
 na tela de quem já o tinha salvo.
+
+**Os sete tokens de gráfico têm consumidor.** `chartColorPalette` (a cor da 1.ª série), `chartGridOpacity`,
+`chartShowGrid`, `chartTooltipBg`, `chartType` (o formato quando o gráfico não diz qual), `chartThickness` e
+`chartSmoothing` são lidos pelo motor de gráficos ([[03-superficie-publica]] §6.8): mudar um deles no tema muda o
+gráfico desenhado. A paleta das séries é derivada das quatro cores de marca do tema (`chartColorPalette`,
+secundária, destaque e terciária) e nunca usa cor de status ([[03-superficie-publica]] §6.8).
+
+### 4.4.4 O que o tema declara — fontes, e os tokens que saíram
+
+**Fonte é um valor da lista.** `bodyFont`, `headingFont`, `monoFont` e `identityFontFamily` recebem o `value`
+exato de `THEME_FONTS` (`src/core/Design/schema/typography.ts`), no formato `"'Nome', categoria-genérica"`. A
+mesma lista alimenta o seletor do painel, o manifesto das fontes embarcadas e (com `options.fonts: 'google'`) a URL do
+Google; o carregador embarcado reconhece **só o valor exato** — outra grafia passa na validação (é pilha segura), mas
+nenhum arquivo é carregado e a tela mostra a genérica. Uma família nova nasce de uma entrada de `THEME_FONTS` com o
+`value` terminando numa genérica válida (`sans-serif`, `serif`, `monospace`, `cursive`) e do pacote `@fontsource*` que a
+embarca; os `value` antigos nunca mudam (tema salvo guarda a string). O tema escolhe **pesos que a família tem**: das
+variáveis entra só o eixo `wght`, das estáticas só os pesos com arquivo, e o navegador sintetiza o resto. A fonte
+própria do host entra por `options.fonts.custom` (o catálogo da lib é o ponto de partida, não o teto), e a família
+registrada vale em qualquer token de fonte; o tema exportado que a usa traz `requiresFonts` para o outro host
+registrá-la. `identityFontFamily` aceita ainda o padrão, que herda a fonte de títulos do tema. Como o pacote leva as
+fontes: [[05-build-e-distribuicao]] §2.2.
+
+**Token que saiu do schema é descartado com aviso**, e o valor salvo cai no padrão (`removedTokenKeys.ts`, a
+régua viva). Um tema não declara mais o que se fundiu num token que desenha nem o que não era de tema — a
+lista de [[02-design-engine]] §10 é o que cada token desenha hoje. Saíram, por família: os três controles de
+ruído viraram `bgNoiseDensity`; a família de movimento `anim*`/`easeMain`/`easeOut` virou `motion*`; os
+tokens de peça interna do painel (pré-visualização de preset, largura do telefone, tecla, perspectiva e órbita
+do motor visual) viraram constante do painel; duplicatas (`colorPalette`, `borderRadiusSm/Md/Lg`,
+`contrastCurve`, `scrollbarWidth`, `scrollbarThumbColor`, `formLayoutDirection`, `layerElevationFactor`,
+`matrixSearchBg`, `layerBackdropBlur`, `layerBackdropOpacity`) se fundiram no token que desenha;
+`cardContentAlignment` (redundante com `cardTextAlign`), `tableActionPosition` (a tabela não tem coluna de ações) e
+`cardImagePosition` (a opção padrão não tinha leitor) e `contentAlignment` (`maxContentWidth` já limita e centraliza a
+região de conteúdo) saíram porque nada os desenhava; e
+`aiPanelBg`, `identityRedirectUrl`, `industrialRegistry` e `inputSuccessColor` saíram sem
+substituto. `layout` saiu do schema (as opções nunca tiveram regra) e segue como chave aceita do payload, que o painel usa. Opções que saíram: `systemTone` `dark`/`light` (fica `none` · `cyber` · `tactical`) e os materiais
+`metallic`/`brushed`/`acrylic`/`matte`. Saíram também `securityShieldGlow`, `securityPulseSpeed`,
+`trackingSubtle`, `typeScaleDisplay` (sem componente que os use) e `cardHoverLift` (duplicata de `cardHoverTranslate`).
+A nota de cada mudança, com o destino do valor salvo, está em `docs/migracoes.md` (`## 8.0.0`).
+
+**Os efeitos de cartão são alavancas do tema.** Spotlight que segue o cursor (`cardSpotlightOpacity`), traço
+luminoso na borda (`borderBeamEnabled`, `cardSearchBorderBeamActive`), zoom da imagem (`imageCardHoverZoom`) e escala do
+clique (`cardActionClickScale`) desenham de verdade e respeitam movimento reduzido; o que cada um faz está em
+[[02-design-engine]] §10.4.
+
+**O schema oferece as intenções que um tema declara**, sem sentinela: *sem animação* é `motionDuration*` em 0;
+*pílula* é o máximo do raio do token (que já excede metade da altura do controle); `identityTracking` é em px. A
+faixa de cada token tem uma fonte só (`src/core/Design/utils/tokenBounds.ts`: `constraints` manda), usada pelo
+painel e pela validação.
 
 ## 4.5 Exportar — o substituto do "salvar no banco"
 
@@ -372,8 +479,10 @@ A divisão de responsabilidade é assimétrica de propósito:
 
 **Não existe porta de leitura, e isso é decisão, não lacuna:** a leitura já é a prop `customThemes` — o
 importador devolve os temas salvos por ali, no boot. Uma segunda porta criaria duas fontes para o mesmo
-dado. **Também não existe porta de apagar**: remover tema é operação do importador sobre o próprio
-armazenamento, e a lib não a intermedia.
+dado. **Apagar tem porta**, simétrica à de escrever ([[017-porta-de-apagar-tema-simetrica-a-de-escrever]]):
+`useSarakUI().deleteTheme(id)` tira o tema da coleção **da sessão** e chama `options.theme.onDelete(id)`, quando
+configurada. O armazenamento continua do importador — `onDelete` é o ponto em que ele remove o tema da própria
+fonte, e a lib não toca nela. Id desconhecido não faz nada.
 
 **Degradação quando a porta não está configurada:** a ação de salvar não aparece. Não há erro, não há botão
 morto — o consumidor que não implementou `onSave` simplesmente continua com o ciclo de exportar (§4.5).
@@ -403,6 +512,12 @@ navegação recolhida **fixa na barra**; fonte, navegação e idioma **não ofer
 padrão de fábrica**, nunca *oferecida* — um design aplicado por substituição, sem essas chaves, não abre nada
 que o administrador não abriu. Preferência não oferecida é ignorada, mesmo que o usuário a tenha salvo antes.
 
+**O host escolhe o modo inicial.** `options.preferences.defaultColorMode` (`light`, `dark` ou `system`) vale
+enquanto o usuário não escolheu um modo — `system` acompanha o sistema operacional em tempo real. A escolha do
+usuário vence; o padrão do host nunca é gravado, e é ignorado se o tema não oferece a preferência de modo.
+**Preferência só é gravada quando o usuário escolhe** (`updatePreferences`): a hidratação, a carga do `onLoad` e a
+sincronização entre abas não gravam nem chamam `onSave`.
+
 **A troca de modo mexe só nas chaves que carregam modo** — as que a contraparte declara (§2.1):
 1. pedir o modo em que o design já está **não muda nada**;
 2. mudando de modo, essas chaves vêm da contraparte no modo oposto ao nativo, e do próprio tema no nativo —
@@ -428,10 +543,11 @@ aplicação: `useSarakPreferences()`.
 
 A contagem de temas, presets e chaves do gabarito **não é fixada aqui** — é a lição do achado **32**
 ([[15-divida-conhecida]] §6): total em prosa envelhece a cada tema novo. A fonte viva é `npm run audit`
-(roda `auditor_presets`, que imprime temas globais (`GLOBAL_THEMES`), presets de componente, o total de
+(roda `auditor_presets`, que imprime os temas globais (`SARAK_ALL_THEMES`), presets de componente, o total de
 itens auditados e o gabarito vivo de `getScaffold()`).
 
-Arquivos: `src/core/Design/presets/themes/` (temas + `index.ts` + `reference.ts` + `color-engine.ts`)
+Arquivos: `src/core/Design/presets/themes/` (temas + `index.ts` + `boot.ts` + `loaders.ts` + `registry.ts` + `all.ts`
++ `catalog.generated.ts` + `compose.ts` + `reference.ts` + `color-engine.ts`)
 e `src/core/Design/presets/components/` (5 arquivos: `atmosphere`, `buttons`, `cards`, `inputs`,
 `typography`).
 
@@ -456,21 +572,22 @@ do próprio consumidor.
 
 ## 5.2 A diversidade do catálogo é MEDIDA, não afirmada
 
-**A referência não muda com o catálogo.** `SARAK_REFERENCE_THEMES` segue sendo `minimalist-airy` +
-`sarak-sovereign` *(decisão do dono)*: é dali que o consumidor clona (§4.1), e trocá-la mudaria a base de
+**A referência não muda com o catálogo.** O par de referência segue sendo `minimalist-airy` + `sarak-sovereign`
+*(decisão do dono)*: é dali que o consumidor clona (§4.1), e trocá-la mudaria a base de
 quem já integrou. O catálogo ao redor dela pode crescer, encolher ou ser reautorado — e já foi as três
 coisas.
 
 **O que a medição existe para impedir.** O catálogo já morou inteiro num canto só — escuro, primária neon,
 família ciano/magenta — e isso aconteceu **sem** nunca ter havido gerador de paleta. Homogeneização não
 precisa de fórmula; basta ninguém medir. **Quantos temas existem, e como se distribuem, não se escreve
-aqui:** é `THEME_PRESET_IDS`/`GLOBAL_THEMES` e a saída do script, que são a fonte viva (achado **32** —
+aqui:** é `SARAK_THEME_PRESET_IDS`/`SARAK_ALL_THEMES` e a saída do script, que são a fonte viva (achado **32** —
 cifra em prosa envelhece).
 
-**Agora se mede:** `gates/scripts/audit/verify_diversity.ts` (+ `npm run themes:diversity`) emite modo,
-`navigationStyle`, família de matiz, H/S da primária, luminosidade do fundo, raio, borda, blur e densidade de
-todo `GLOBAL_THEMES`, e avalia 9 critérios de distância. **Diversidade deixou de ser afirmação e virou saída
-de script.**
+**Agora se mede:** `gates/scripts/audit/verify_diversity.ts` (+ `npm run themes:diversity`) emite modo, família de
+matiz, H/S da primária, luminosidade do fundo, raio, borda, blur e densidade de todo `SARAK_ALL_THEMES`, e avalia os
+critérios de distância (o modo `--new <ids>` mede um grupo de temas novos contra os existentes). Só eixo **estético**
+entra na medição: a navegação é token funcional e nenhum tema a declara (§5.3). **Diversidade deixou de ser afirmação e
+virou saída de script.**
 
 > 🔴 **A armadilha que o próprio instrumento trouxe, e que vale como aviso permanente.** Ele nasceu com os
 > buckets estruturais calibrados em intervalos que o dado **nunca alcança** — raio `0..120` quando o real é
@@ -479,13 +596,42 @@ de script.**
 > agora são **derivados dos temas existentes**, e um teste exige que cinco temas idênticos **reprovem**.
 
 > **A lista de temas e a lista de presets NÃO são transcritas aqui de propósito** (Regra 4 da campanha).
-> Elas se leem no código (`GLOBAL_THEMES`) e no catálogo gerado. Um tema novo entra amanhã e este
+> Elas se leem no código (`SARAK_ALL_THEMES`) e no catálogo gerado. Um tema novo entra amanhã e este
 > documento continuaria dizendo "18" — que é exatamente como uma spec vira mentira.
+
+**A cobertura do conjunto é teste** (`src/core/Design/presets/themes/__tests__/themeSetCoverage.test.ts`, com
+mutação): os temas embarcados usam juntos pelo menos 15 texturas de cartão, 10 fontes de título, as 3 famílias de ícone
+com pelo menos 4 pesos e os 4 modos de gradiente, e nenhum par repete a combinação textura de cartão + estilo de botão
++ fonte de título. Um tema que empobrece o conjunto reprova aqui, mesmo passando na diversidade.
 
 Nem todos os presets são escritos à mão: parte é **derivada** de listas de opções — `TEXTURE_PRESETS` e
 `CARD_TEXTURE_PRESETS` saem de `TEXTURE_OPTIONS`, `BUTTON_STYLE_PRESETS` de `BUTTON_STYLE_OPTIONS`,
 `TYPOGRAPHY_PRESETS` de `THEME_FONTS` (`presets/components/*.ts`, todos por `.map()`). Derivar em vez de
 duplicar é o que mantém preset e enum do schema em sincronia sem gate extra.
+
+## 5.3 O tema embarcado declara todo token estético, e nenhum funcional
+
+O schema separa os tokens em **estéticos** e **funcionais** (`kind` e `modeDependent` de cada token,
+[[04-contrato-de-tokens-e-paridade]] §2.3; o critério em [[02-design-engine]] §10.15). Todo tema embarcado:
+
+- declara **todos os estéticos** no `design` (o modo principal) e, na `contraparte`, **todos os estéticos que carregam
+  modo** — geometria, tipografia e movimento ficam com o modo principal, e é isso que preserva a identidade entre os
+  dois modos;
+- **não declara funcional** nenhum (navegação, alvo de toque, larguras e posições do cromo, camadas, breakpoints,
+  movimento reduzido): eles valem o padrão do sistema, igual em todo tema. Um tema que quer "sem movimento" usa os
+  tokens estéticos de movimento (durações e entradas mínimas), não `reducedMotion`;
+- escolhe `texture` e `cardTextureType` que sirvam aos **dois** modos, porque os dois não carregam modo.
+
+**A trava é o `theme-completeness:check`** (`gates/scripts/contrato/check-theme-completeness.ts`): reprova estético
+faltando, estético com modo faltando na `contraparte` e funcional declarado. A exceção por tema
+(`gates/allowlists/themeCompletenessPending.json`) está **vazia**, e um tema completo que continue nela também reprova.
+**O peso de cada tema** (o módulo sozinho, minificado, gzip) tem teto de **4,5 KB**, medido por `npm run boot:measure`
+(`PER_THEME_CEILING_BYTES`, `scripts/measure-consumer-boot.mjs`); o boot leva só o tema padrão (§4.3.2).
+
+O que cada tema embarcado demonstra da lib (o arquétipo, os tokens que carregam a personalidade) está no guia do kit,
+na tabela de arquétipos da §3.9 ("Importe por identidade visual") de `sarak-ui/GUIA-FRONTEND.md`, e não se
+transcreve aqui (§5.2). O roteiro de
+conferência visual de cada tema, nos dois modos, em desktop e celular, é `docs/roteiro-de-validacao-dos-temas.md`.
 
 # 6. Anti-drift — as travas
 
@@ -503,7 +649,7 @@ o número que importa é o de órfãs, não o total auditado. Roda dentro de `ru
 ## 6.2 `tokenContractParity.test.ts` — valor fora do próprio contrato
 
 `src/core/Provider/utils/__tests__/tokenContractParity.test.ts` audita **todo valor shippado pela lib**
-(defaults do `MASTER_DESIGN_MAP` + todos os temas e presets de `GLOBAL_THEMES`) com `auditTokenContract`
+(defaults do `MASTER_DESIGN_MAP` + todos os temas e presets de `SARAK_ALL_THEMES`) com `auditTokenContract`
 (`validation.ts:170-182`) — a função **pura** que reusa `coerceTokenValue`, o mesmo predicado do runtime.
 Por isso a auditoria **nunca diverge do comportamento real**.
 
@@ -520,7 +666,7 @@ Por isso a auditoria **nunca diverge do comportamento real**.
 ## 6.3 `shippedThemesConsoleClean.test.ts` — a propagação de fato
 
 `src/core/Provider/utils/__tests__/shippedThemesConsoleClean.test.ts` carrega cada tema shippado
-(`it.each(GLOBAL_THEMES...)`) pelo caminho do boot real (`{...defaults, ...tema}` por `validateDesign`) e afirma **zero** aviso
+(`it.each(SARAK_ALL_THEMES...)`) pelo caminho do boot real (`{...defaults, ...tema}` por `validateDesign`) e afirma **zero** aviso
 "fora do contrato". É a prova de que a correção chegou ao caminho que o consumidor executa — não só ao
 predicado testado em isolamento.
 
@@ -536,24 +682,54 @@ As quatro acima perguntam *"o tema tem as chaves certas, com valores dentro do c
 passar nas quatro e ainda entregar **texto ilegível** — foi exatamente o que aconteceu: `auditor_presets`
 verde com **12 dos 18** reprovando AA, e ninguém sabia.
 
-`verify_contrast.ts` mede **36 pares texto/fundo reais**, a **4,5:1 em todos** (a WCAG só permite 3:1 para
+`verify_contrast.ts` mede **os pares texto/fundo que os componentes desenham** (a contagem sai na execução; ver §6.7), a **4,5:1 em todos** (a WCAG só permite 3:1 para
 texto grande, ≥24px; onde o `textColorMuted` renderiza são 9–14px). Cor com alfa é **composta** sobre a
-cadeia de fundo, não pulada. **Duas passadas**: o modo nativo do tema e a contraparte gerada. Baseline: **0
-e 0**.
+cadeia de fundo, não pulada, e **toda cadeia termina numa base opaca**, `colorBgBody`: barra, botão,
+superfície ou item ativo translúcidos são medidos sobre o corpo. **Duas passadas**: o modo nativo do tema e a
+contraparte. Baseline: **0 e 0**, e nenhum par-tema pulado.
 
-> ⚠️ **`pulado` não é `aprovado`.** 25 pares-tema não são medidos — fundo em `hsl()`, `var()`, gradiente, ou
-> cadeia que não resolve opaca. O gate **declara** em vez de chutar uma cor. É por isso que a **R31** segue
-> **⚠️** mesmo com todos os temas shippados verdes: conformidade verde não é cobertura plena.
+> ⚠️ **`pulado` não é `aprovado`.** Um par só é pulado quando o valor não se resolve (`hsl()`, `var()`,
+> gradiente) ou quando o tema declara o **próprio** `colorBgBody` translúcido: o gate **declara** em vez de
+> chutar uma cor. A **R31** segue **⚠️** mesmo com todos os temas shippados verdes porque o par de texto de
+> status continua fora da lista: conformidade verde não é cobertura plena.
 
 **O que ele não cobre, por desenho:** o tema do **consumidor**. A R31 promete AA nos temas shippados; dado
 de terceiro é do terceiro — e desde a decisão **D** (§4.3.1) esse dado chega à tela como foi escrito.
+
+## 6.6 Valor de tema fora do contrato numérico é acusado
+
+`validateDesign` corta em runtime o número fora da faixa (o consumidor não quebra). Para o que a **lib embarca**, o
+corte silencioso escondia a intenção do autor: `auditTokenContract` acusa o valor fora de `min`/`max` (inclusive em
+cada ponto responsivo) e fora da grade do `step` (`isOffTokenGrid`, `tokenBounds.ts`), o `tokenContractParity.test.ts` falha, e o `panel-contract:check` confere temas e presets
+([[00-regras-e-invariantes]] R44).
+
+## 6.7 O contraste mede o que o componente desenha
+
+`verify_contrast.ts` mede os pares que os componentes de fato pintam, nos 14 temas × 2 modos: inclusive a cor
+primária, as de status e a de erro de campo **como texto** sobre o corpo e o cartão (botão contorno e fantasma,
+link, badge suave, mensagem de erro), a tinta de hover sobre a superfície e o par real do botão primário
+(`btnPrimaryText` sobre `btnPrimaryBg`). Consequência para quem desenha tema: **a primária é também cor de texto** e
+passa 4,5:1 sobre o corpo nos dois modos. O texto sobre cor sólida (badge sólido, botão de perigo e sucesso, bolha
+do chat) não é declarado pelo tema: o motor o escolhe por contraste ([[02-design-engine]] §10.10). O texto de
+aviso e de erro sobre a própria tinta, e o do hover dos botões fantasma e contorno, é a mistura da cor com o texto de
+maior contraste (a do badge suave) — legível em qualquer tema, sem mexer na marca. A contraparte declara toda cor
+que reprovaria no modo oposto; a contagem de pares sai na execução.
+
+## 6.8 O catálogo diz o que o schema diz
+
+Cada entrada de `src/core/Design/catalog/partitions/*.json` tem o **tipo** e os **valores permitidos** do token no
+schema (opções lidas como a validação as lê: `constraints.options ?? options`), sem entrada duplicada. A paridade
+confere presença, tipo e valores (`gates/scripts/audit/catalog-drift.ts`, passo de `verify_parity.ts` que o
+`auditor_paridade` e o `audit:baseline` rodam); um `select` sem opção no catálogo é achado.
 
 # 7. Como criar um tema que passa em tudo, sem um único warn
 
 O critério de aceite desta spec, como procedimento:
 
 1. **Parta de uma referência completa** — derive com `deriveThemeFromReference` (§4.1.1), que devolve
-   `design` e `contraparte`; ou exporte um tema do painel, que já sai completo por §4.5. **Não** comece de
+   `design` e `contraparte`; ou exporte um tema do painel, que já sai completo por §4.5; ou gere o esqueleto com
+   `.agents/skills/ui-criar-tema/scripts/generate_theme_template.ts`, que emite só os estéticos e a `contraparte` com
+   os que carregam modo. **Não** comece de
    `{}`, e **não** espalhe `...ref.design`: a contraparte fica para trás.
 2. **Troque só os valores que você quer mudar.** Mantenha as chaves; um tema completo com 3 cores
    trocadas é um tema válido.
@@ -565,12 +741,15 @@ O critério de aceite desta spec, como procedimento:
 5. **Confira a completude:** `findMissingThemeAxes(seuTema)` tem de devolver `[]`. Se devolver `chrome`,
    trocar de tema não vai mudar a topbar — e alguém vai reportar isso como bug da lib.
 6. **Se o tema for shippado pela lib** (não é o caso do consumidor), acrescente o id em
-   `THEME_PRESET_IDS` e importe em `GLOBAL_THEMES`; então rode `auditor_presets` (0 órfãs) e a suíte
+   `SARAK_THEME_PRESET_IDS`, crie `<id>.ts`, liste-o em `themes/all.ts` e em `themes/loaders.ts`, e rode
+   `npm run themes:catalog` (§4.3.2); então rode `auditor_presets` (0 órfãs) e a suíte
    (§6.2/§6.3 varrem o tema novo automaticamente — nenhum teste precisa ser escrito para ele). Tema
    shippado também exige: `contraparte` autorada (§2.1, **sem isenção possível**), fundo de hover do item de
    navegação preenchido nas duas orientações **e perceptivelmente distinto do repouso — medido, não
    declarado** ([[05-cromo-e-slots]] §2.4), `enabledLanguages` com os **seis** idiomas que a lib oferece,
-   nenhuma mídia de terceiro (§5.1) e as posições de preferência no padrão de fábrica (§4.7). A skill `ui-criar-tema` conduz esse caminho.
+   nenhuma mídia de terceiro (§5.1), as posições de preferência no padrão de fábrica (§4.7), todo estético declarado
+   e nenhum funcional, dentro do teto de peso, sem empobrecer a cobertura do conjunto (§5.2, §5.3). A skill
+   `ui-criar-tema` conduz esse caminho.
 
 Os passos 3-5 são exatamente o que os três gates da §6 cobram. Seguir o procedimento e passar nos gates
 são a mesma coisa dita de dois jeitos.
@@ -616,6 +795,7 @@ Os testes que cobrem esta spec **já existem** — ela documenta o que eles cobr
 | Nenhuma atmosfera shippada depende de servidor de terceiro | `src/core/Design/presets/components/__tests__/atmosphere.test.ts` |
 | Eixos faltantes detectados | `src/core/Design/utils/__tests__/themeAxes.test.ts` |
 | Export completo (não subconjunto) | `src/features/DesignEngine/Main/utils/__tests__/exportTheme.test.ts` |
+| Cada um dos sete tokens de gráfico muda a opção entregue ao ECharts | `src/components/engines/charts/SubEngines/__tests__/useEChartsTheme.test.ts` · `src/components/engines/charts/__tests__/SarakChartEngine.test.tsx` |
 
 **Nada a implementar.** Um tema novo é coberto automaticamente pelas duas suítes de contrato — é o que
 significa "anti-drift por construção".

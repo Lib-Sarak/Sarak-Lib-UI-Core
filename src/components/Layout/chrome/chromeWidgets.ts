@@ -1,9 +1,10 @@
 /**
  * Widgets do cromo que nascem MONTADOS por padrão no `SarakAppChrome` — busca (com
- * atalho Ctrl/Cmd+K), alternância de tema, widget de usuário e colapso da navegação.
+ * atalho Ctrl/Cmd+K), alternância de tema, usuário, notificações e preferências de
+ * tamanho da fonte, orientação da navegação, idioma e colapso.
  * Omitir um campo mantém o widget ligado; só `false` explícito desliga aquele, isolado
- * dos demais. Idioma, redimensionamento por arraste e auto-hide continuam fora do
- * default — não têm campo aqui de propósito.
+ * dos demais. Redimensionamento por arraste e auto-hide continuam fora do default —
+ * não têm campo aqui de propósito.
  */
 export interface SarakChromeWidgets {
     /** Busca (slot `search`) — trigger + atalho Ctrl/Cmd+K. Default: ligado. */
@@ -12,6 +13,14 @@ export interface SarakChromeWidgets {
     themeToggle?: boolean;
     /** Identidade do usuário + logout. Default: ligado. */
     user?: boolean;
+    /** Widget de notificações. Default: ligado. */
+    notifications?: boolean;
+    /** Preferência de tamanho da fonte. Default: ligado. */
+    fontSize?: boolean;
+    /** Preferência de orientação da navegação. Default: ligado. */
+    navigationStyle?: boolean;
+    /** Preferência de idioma. Default: ligado. */
+    language?: boolean;
     /** Colapso da navegação (sidebar ícone-only / topbar reduzida) no desktop. Default: ligado. */
     collapse?: boolean;
 }

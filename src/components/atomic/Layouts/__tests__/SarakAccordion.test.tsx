@@ -48,4 +48,25 @@ describe('SarakAccordion', () => {
         // At least we verify it rendered without crashing and is open.
         expect(screen.getByText('Accordion Title')).toBeInTheDocument();
     });
+
+    it('borderRadius 0 do tema vale no acordeão (cantos retos), em vez de voltar ao raio do cartão', () => {
+        render(
+            <SarakUIProvider config={{ borderRadius: 0 }}>
+                <SarakAccordion title="Reto">c</SarakAccordion>
+            </SarakUIProvider>
+        );
+        const root = screen.getByText('Reto').closest('div.border') as HTMLElement;
+        expect(root).not.toBeNull();
+        expect(root.style.borderRadius).toBe('0px');
+    });
+
+    it('borderRadius responsivo { mob, tab, desk } vale no acordeão: a camada do dispositivo, não um objeto descartado', () => {
+        render(
+            <SarakUIProvider config={{ borderRadius: { mob: 3, tab: 7, desk: 11 } }}>
+                <SarakAccordion title="Responsivo">c</SarakAccordion>
+            </SarakUIProvider>
+        );
+        const root = screen.getByText('Responsivo').closest('div.border') as HTMLElement;
+        expect(['3px', '7px', '11px']).toContain(root.style.borderRadius);
+    });
 });

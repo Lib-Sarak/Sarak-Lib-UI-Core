@@ -1,34 +1,34 @@
 [
   {
-    "tokenId": "formLayoutDirection",
-    "name": "Direção do Formulário",
-    "description": "Controla a posição da label em relação ao campo (empilhado ou em linha).",
-    "type": "select",
-    "importance": 85,
-    "categories": ["layout", "inputs", "forms"],
-    "tags": ["form", "input", "layout"],
-    "databaseColumn": "components_base",
-    "schemaOrigin": "inputs.ts",
-    "digitalTwins": ["SarakInput"],
-    "cssVariables": [],
-    "allowedValues": ["stack", "inline"],
-    "relatedTokens": []
-  },
-  {
     "tokenId": "inputIconPosition",
     "name": "Posição do Ícone no Input",
     "description": "De qual lado o ícone é renderizado dentro do campo de texto.",
     "type": "select",
     "importance": 80,
-    "categories": ["layout", "inputs", "forms"],
-    "tags": ["input", "icon", "layout"],
+    "categories": [
+      "layout",
+      "inputs",
+      "forms"
+    ],
+    "tags": [
+      "input",
+      "icon",
+      "layout"
+    ],
     "databaseColumn": "components_base",
     "schemaOrigin": "inputs.ts",
-    "digitalTwins": ["SarakInput"],
+    "digitalTwins": [
+      "SarakInput"
+    ],
     "cssVariables": [],
-    "allowedValues": ["left", "right"],
+    "allowedValues": [
+      "left",
+      "right"
+    ],
     "relatedTokens": [],
-    "consumerHook": ["useStructuralStyles.getInputIconStyles"]
+    "consumerHook": [
+      "useStructuralStyles.getInputIconStyles"
+    ]
   },
   {
     "tokenId": "modalActionAlignment",
@@ -36,15 +36,32 @@
     "description": "Como os botões do footer se comportam e alinham dentro da janela do modal.",
     "type": "select",
     "importance": 80,
-    "categories": ["layout", "overlays", "modals"],
-    "tags": ["modal", "action", "layout"],
+    "categories": [
+      "layout",
+      "overlays",
+      "modals"
+    ],
+    "tags": [
+      "modal",
+      "action",
+      "layout"
+    ],
     "databaseColumn": "components_base",
     "schemaOrigin": "overlays.ts",
-    "digitalTwins": ["SarakModal"],
+    "digitalTwins": [
+      "SarakModal"
+    ],
     "cssVariables": [],
-    "allowedValues": ["left", "center", "right", "stretch"],
+    "allowedValues": [
+      "left",
+      "center",
+      "right",
+      "stretch"
+    ],
     "relatedTokens": [],
-    "consumerHook": ["useModalLayoutStyles"]
+    "consumerHook": [
+      "useModalLayoutStyles"
+    ]
   },
   {
     "tokenId": "modalHeaderStyle",
@@ -52,15 +69,31 @@
     "description": "Define a estrutura do título e do botão de fechar.",
     "type": "select",
     "importance": 80,
-    "categories": ["layout", "overlays", "modals"],
-    "tags": ["modal", "header", "layout"],
+    "categories": [
+      "layout",
+      "overlays",
+      "modals"
+    ],
+    "tags": [
+      "modal",
+      "header",
+      "layout"
+    ],
     "databaseColumn": "components_base",
     "schemaOrigin": "overlays.ts",
-    "digitalTwins": ["SarakModal"],
+    "digitalTwins": [
+      "SarakModal"
+    ],
     "cssVariables": [],
-    "allowedValues": ["inline", "stacked", "floating"],
+    "allowedValues": [
+      "inline",
+      "stacked",
+      "floating"
+    ],
     "relatedTokens": [],
-    "consumerHook": ["useModalLayoutStyles"]
+    "consumerHook": [
+      "useModalLayoutStyles"
+    ]
   },
   {
     "tokenId": "buttonIconPosition",
@@ -68,15 +101,30 @@
     "description": "De qual lado o ícone aparece em relação ao texto do botão.",
     "type": "select",
     "importance": 80,
-    "categories": ["layout", "botoes", "components_base"],
-    "tags": ["button", "icon", "layout"],
+    "categories": [
+      "layout",
+      "botoes",
+      "components_base"
+    ],
+    "tags": [
+      "button",
+      "icon",
+      "layout"
+    ],
     "databaseColumn": "components_base",
     "schemaOrigin": "buttons.ts",
-    "digitalTwins": ["SarakButton"],
+    "digitalTwins": [
+      "SarakButton"
+    ],
     "cssVariables": [],
-    "allowedValues": ["left", "right"],
+    "allowedValues": [
+      "left",
+      "right"
+    ],
     "relatedTokens": [],
-    "consumerHook": ["useButtonLayoutStyles"]
+    "consumerHook": [
+      "useButtonLayoutStyles"
+    ]
   },
   {
     "tokenId": "buttonWidthStrategy",
@@ -84,13 +132,26 @@
     "description": "Se os botões devem se ajustar ao texto ou ocupar 100% do container disponível.",
     "type": "select",
     "importance": 80,
-    "categories": ["layout", "botoes", "components_base"],
-    "tags": ["button", "width", "layout"],
+    "categories": [
+      "layout",
+      "botoes",
+      "components_base"
+    ],
+    "tags": [
+      "button",
+      "width",
+      "layout"
+    ],
     "databaseColumn": "components_base",
     "schemaOrigin": "buttons.ts",
-    "digitalTwins": ["SarakButton"],
+    "digitalTwins": [
+      "SarakButton"
+    ],
     "cssVariables": [],
-    "allowedValues": ["auto", "full"],
+    "allowedValues": [
+      "auto",
+      "full"
+    ],
     "relatedTokens": []
   },
   {
@@ -99,31 +160,33 @@
     "description": "Quão espaçadas são as informações na tabela (compacta, confortável, espaçosa).",
     "type": "select",
     "importance": 85,
-    "categories": ["layout", "tabelas", "components_base"],
-    "tags": ["table", "density", "layout"],
+    "categories": [
+      "layout",
+      "tabelas",
+      "components_base"
+    ],
+    "tags": [
+      "table",
+      "density",
+      "layout"
+    ],
     "databaseColumn": "components_base",
     "schemaOrigin": "tables.ts",
-    "digitalTwins": ["SarakTable"],
+    "digitalTwins": [
+      "SarakTable"
+    ],
     "cssVariables": [],
-    "allowedValues": ["compact", "comfortable", "spacious"],
-    "relatedTokens": ["tableCellPadding"],
-    "consumerHook": ["useTableLayoutStyles"]
-  },
-  {
-    "tokenId": "tableActionPosition",
-    "name": "Posição de Ação da Tabela",
-    "description": "Onde as opções de ação (editar, deletar) ficam localizadas na linha.",
-    "type": "select",
-    "importance": 80,
-    "categories": ["layout", "tabelas", "components_base"],
-    "tags": ["table", "action", "layout"],
-    "databaseColumn": "components_base",
-    "schemaOrigin": "tables.ts",
-    "digitalTwins": ["SarakTable"],
-    "cssVariables": [],
-    "allowedValues": ["left", "right"],
-    "relatedTokens": [],
-    "consumerHook": ["useTableLayoutStyles"]
+    "allowedValues": [
+      "compact",
+      "comfortable",
+      "spacious"
+    ],
+    "relatedTokens": [
+      "tableCellPadding"
+    ],
+    "consumerHook": [
+      "useTableLayoutStyles"
+    ]
   },
   {
     "tokenId": "modalOverlayColor",
@@ -159,7 +222,7 @@
     "tokenId": "modalOverlayBlur",
     "name": "Blur do Overlay (Modal)",
     "description": "Desfoque de fundo aplicado à tela ao abrir um modal (Glassmorphism).",
-    "type": "number",
+    "type": "slider",
     "importance": 65,
     "categories": [
       "efeitos",
@@ -192,7 +255,7 @@
     "tokenId": "modalBorderRadius",
     "name": "Arredondamento do Modal",
     "description": "Raio da borda principal da janela modal flutuante.",
-    "type": "number",
+    "type": "slider",
     "importance": 80,
     "categories": [
       "bordas",
@@ -217,6 +280,164 @@
     },
     "relatedTokens": [
       "modalOverlayBlur"
+    ]
+  },
+  {
+    "tokenId": "modalWidthSm",
+    "name": "Largura do Modal: Pequena",
+    "description": "Largura máxima do modal pequeno, em pixels.",
+    "type": "slider",
+    "importance": 70,
+    "categories": [
+      "overlays",
+      "geometria"
+    ],
+    "tags": [
+      "modal",
+      "width",
+      "small"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "overlays.ts",
+    "digitalTwins": [
+      "SarakModal"
+    ],
+    "cssVariables": [
+      "--sarak-modal-width-sm"
+    ],
+    "allowedValues": {
+      "min": 320,
+      "max": 640
+    },
+    "relatedTokens": [
+      "modalWidthMd"
+    ]
+  },
+  {
+    "tokenId": "modalWidthMd",
+    "name": "Largura do Modal: Média",
+    "description": "Largura máxima do modal médio, em pixels.",
+    "type": "slider",
+    "importance": 70,
+    "categories": [
+      "overlays",
+      "geometria"
+    ],
+    "tags": [
+      "modal",
+      "width",
+      "medium"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "overlays.ts",
+    "digitalTwins": [
+      "SarakModal"
+    ],
+    "cssVariables": [
+      "--sarak-modal-width-md"
+    ],
+    "allowedValues": {
+      "min": 384,
+      "max": 768
+    },
+    "relatedTokens": [
+      "modalWidthSm",
+      "modalWidthLg"
+    ]
+  },
+  {
+    "tokenId": "modalWidthLg",
+    "name": "Largura do Modal: Grande",
+    "description": "Largura máxima do modal grande, em pixels.",
+    "type": "slider",
+    "importance": 75,
+    "categories": [
+      "overlays",
+      "geometria"
+    ],
+    "tags": [
+      "modal",
+      "width",
+      "large"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "overlays.ts",
+    "digitalTwins": [
+      "SarakModal"
+    ],
+    "cssVariables": [
+      "--sarak-modal-width-lg"
+    ],
+    "allowedValues": {
+      "min": 448,
+      "max": 896
+    },
+    "relatedTokens": [
+      "modalWidthMd",
+      "modalWidthXl"
+    ]
+  },
+  {
+    "tokenId": "modalWidthXl",
+    "name": "Largura do Modal: Extra Grande",
+    "description": "Largura máxima do modal extra grande, em pixels.",
+    "type": "slider",
+    "importance": 75,
+    "categories": [
+      "overlays",
+      "geometria"
+    ],
+    "tags": [
+      "modal",
+      "width",
+      "extra-large"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "overlays.ts",
+    "digitalTwins": [
+      "SarakModal"
+    ],
+    "cssVariables": [
+      "--sarak-modal-width-xl"
+    ],
+    "allowedValues": {
+      "min": 512,
+      "max": 1280
+    },
+    "relatedTokens": [
+      "modalWidthLg",
+      "modalWidthFull"
+    ]
+  },
+  {
+    "tokenId": "modalWidthFull",
+    "name": "Largura do Modal: Ampla",
+    "description": "Largura máxima do modal amplo, em pixels.",
+    "type": "slider",
+    "importance": 80,
+    "categories": [
+      "overlays",
+      "geometria"
+    ],
+    "tags": [
+      "modal",
+      "width",
+      "full"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "overlays.ts",
+    "digitalTwins": [
+      "SarakModal"
+    ],
+    "cssVariables": [
+      "--sarak-modal-width-full"
+    ],
+    "allowedValues": {
+      "min": 640,
+      "max": 1920
+    },
+    "relatedTokens": [
+      "modalWidthXl"
     ]
   },
   {
@@ -251,7 +472,7 @@
     "tokenId": "tooltipRadius",
     "name": "Raio do Tooltip",
     "description": "Arredondamento das caixas de dica flutuantes (Tooltips).",
-    "type": "number",
+    "type": "slider",
     "importance": 50,
     "categories": [
       "bordas",
@@ -395,7 +616,7 @@
     "tokenId": "tableCellPadding",
     "name": "Densidade Celular da Tabela",
     "description": "Espaçamento interno das células da tabela (controla a densidade visual).",
-    "type": "number",
+    "type": "slider",
     "importance": 80,
     "categories": [
       "layout",
@@ -453,9 +674,10 @@
   },
   {
     "tokenId": "btnBorderRadius",
+    "visualImpact": "forma",
     "name": "Arredondamento do Botão (Master)",
     "description": "Controle master para arredondamento de todos os cantos dos botões base.",
-    "type": "number",
+    "type": "slider",
     "importance": 90,
     "categories": [
       "bordas",
@@ -491,7 +713,7 @@
     "tokenId": "btnRadiusTL",
     "name": "Canto do Botão: Superior Esquerdo",
     "description": "Controle individual de raio para cantos assimétricos (Superior Esquerdo).",
-    "type": "number",
+    "type": "slider",
     "importance": 50,
     "categories": [
       "bordas",
@@ -523,7 +745,7 @@
     "tokenId": "btnRadiusTR",
     "name": "Canto do Botão: Superior Direito",
     "description": "Controle individual de raio para cantos assimétricos (Superior Direito).",
-    "type": "number",
+    "type": "slider",
     "importance": 50,
     "categories": [
       "bordas",
@@ -555,7 +777,7 @@
     "tokenId": "btnRadiusBL",
     "name": "Canto do Botão: Inferior Esquerdo",
     "description": "Controle individual de raio para cantos assimétricos (Inferior Esquerdo).",
-    "type": "number",
+    "type": "slider",
     "importance": 50,
     "categories": [
       "bordas",
@@ -587,7 +809,7 @@
     "tokenId": "btnRadiusBR",
     "name": "Canto do Botão: Inferior Direito",
     "description": "Controle individual de raio para cantos assimétricos (Inferior Direito).",
-    "type": "number",
+    "type": "slider",
     "importance": 50,
     "categories": [
       "bordas",
@@ -619,7 +841,7 @@
     "tokenId": "btnHoverScale",
     "name": "Escala no Hover do Botão",
     "description": "Qual o nível de dilatação/expansão que o botão tem ao passar o mouse.",
-    "type": "number",
+    "type": "slider",
     "importance": 80,
     "categories": [
       "interacao",
@@ -652,7 +874,7 @@
     "tokenId": "btnActiveScale",
     "name": "Escala no Clique do Botão",
     "description": "O quanto o botão encolhe (efeito tátil) quando recebe o evento de 'mousedown/active'.",
-    "type": "number",
+    "type": "slider",
     "importance": 80,
     "categories": [
       "interacao",
@@ -801,8 +1023,9 @@
   },
   {
     "tokenId": "btnStyleType",
+    "visualImpact": "forma",
     "name": "Estilo Base do Botão",
-    "description": "Definição arquitetural visual (Matte, Neon, Frosted/Glass, Borderline) aplicada aos botões.",
+    "description": "Linguagem visual do botão: Matte, Neon, Frosted (vidro), Borderline, Cyberpunk (wireframe) e Neumorphism (relevo suave).",
     "type": "select",
     "importance": 80,
     "categories": [
@@ -827,7 +1050,9 @@
       "matte",
       "neon",
       "frosted",
-      "borderline"
+      "borderline",
+      "cyberpunk",
+      "neumorphism"
     ],
     "relatedTokens": [
       "btnNeonGlowColor",
@@ -868,7 +1093,7 @@
     "tokenId": "btnNeonPulseSpeed",
     "name": "Velocidade de Pulso do Botão Neon",
     "description": "Se animado, a rapidez com que a aura de brilho pisca ou respira (em segundos).",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "efeitos",
@@ -889,7 +1114,7 @@
       "--sarak-btn-neon-pulse-speed"
     ],
     "allowedValues": {
-      "min": 0.5,
+      "min": 0,
       "max": 4,
       "step": 0.1
     },
@@ -901,7 +1126,7 @@
     "tokenId": "btnBackdropBlur",
     "name": "Desfoque de Vidro (Botões Frosted)",
     "description": "Quando o botão usa estilo 'frosted', quantidade de desfoque aplicado sobre o que está atrás.",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "efeitos",
@@ -933,7 +1158,7 @@
     "tokenId": "inputBorderRadius",
     "name": "Arredondamento do Input",
     "description": "Raio da borda de campos de entrada de texto e textareas.",
-    "type": "number",
+    "type": "slider",
     "importance": 75,
     "categories": [
       "bordas",
@@ -1203,7 +1428,7 @@
     "tokenId": "switchBackdropBlur",
     "name": "Desfoque do Alternador (Vidro)",
     "description": "Se o estilo for 'glass', determina o blur do fundo do track do Switch.",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "efeitos",
@@ -1262,6 +1487,12 @@
   },
   {
     "tokenId": "tableZebraStriping",
+    "name": "Listras Alternadas (Zebra)",
+    "tags": [
+      "table",
+      "color",
+      "layout"
+    ],
     "label": "Listras Alternadas (Zebra)",
     "type": "boolean",
     "importance": 55,
@@ -1272,6 +1503,12 @@
   },
   {
     "tokenId": "tableBorderRadius",
+    "name": "Arredondamento da Tabela",
+    "tags": [
+      "table",
+      "border",
+      "radius"
+    ],
     "label": "Arredondamento da Tabela",
     "type": "slider",
     "importance": 70,
@@ -1283,10 +1520,21 @@
     "defaultValue": 8,
     "cssVars": [
       "--sarak-table-border-radius"
-    ]
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    }
   },
   {
     "tokenId": "inputPadding",
+    "name": "Espaçamento Interno (Y)",
+    "tags": [
+      "input",
+      "form",
+      "padding",
+      "layout"
+    ],
     "label": "Espaçamento Interno (Y)",
     "type": "slider",
     "importance": 80,
@@ -1298,10 +1546,21 @@
     "defaultValue": 12,
     "cssVars": [
       "--sarak-input-padding"
-    ]
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 32
+    }
   },
   {
     "tokenId": "inputBorderType",
+    "name": "Estilo da Borda",
+    "tags": [
+      "input",
+      "form",
+      "border",
+      "style"
+    ],
     "label": "Estilo da Borda",
     "type": "select",
     "importance": 70,
@@ -1326,10 +1585,23 @@
     "defaultValue": "solid",
     "cssVars": [
       "--sarak-input-border-type"
+    ],
+    "allowedValues": [
+      "solid",
+      "dashed",
+      "none",
+      "underline"
     ]
   },
   {
     "tokenId": "inputBackdropBlur",
+    "name": "Desfoque de Fundo (Blur)",
+    "tags": [
+      "input",
+      "form",
+      "backdrop",
+      "blur"
+    ],
     "label": "Desfoque de Fundo (Blur)",
     "type": "slider",
     "importance": 60,
@@ -1341,10 +1613,20 @@
     "defaultValue": 0,
     "cssVars": [
       "--sarak-input-backdrop-blur"
-    ]
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 50
+    }
   },
   {
     "tokenId": "inputShadow",
+    "name": "Sombra do Campo (CSS ou \"neumorphism\")",
+    "tags": [
+      "input",
+      "form",
+      "style"
+    ],
     "label": "Sombra / Neumorphism",
     "type": "text",
     "importance": 55,
@@ -1355,6 +1637,13 @@
   },
   {
     "tokenId": "inputIconColor",
+    "name": "Cor dos Ícones",
+    "tags": [
+      "input",
+      "form",
+      "icon",
+      "color"
+    ],
     "label": "Cor dos Ícones",
     "type": "color",
     "importance": 70,
@@ -1365,6 +1654,12 @@
   },
   {
     "tokenId": "inputErrorColor",
+    "name": "Cor de Erro",
+    "tags": [
+      "input",
+      "form",
+      "color"
+    ],
     "label": "Cor de Erro",
     "type": "color",
     "importance": 85,
@@ -1374,165 +1669,373 @@
     ]
   },
   {
-    "tokenId": "inputSuccessColor",
-    "label": "Cor de Sucesso",
-    "type": "color",
-    "importance": 80,
-    "defaultValue": "#52c41a",
-    "cssVars": [
-      "--sarak-input-success-color"
-    ]
-  },
-  {
     "tokenId": "iconButtonGlowBlurSm",
+    "name": "Glow do Icon Button: Desfoque Pequeno",
+    "tags": [
+      "button",
+      "icon",
+      "glow",
+      "blur",
+      "small"
+    ],
     "label": "Glow do Icon Button: Desfoque Pequeno",
-    "type": "number",
+    "type": "slider",
     "importance": 35,
     "defaultValue": 5,
-    "cssVars": ["--sarak-icon-button-glow-blur-sm"]
+    "cssVars": [
+      "--sarak-icon-button-glow-blur-sm"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 30
+    }
   },
   {
     "tokenId": "iconButtonGlowBlurMd",
+    "name": "Glow do Icon Button: Desfoque Médio",
+    "tags": [
+      "button",
+      "icon",
+      "glow",
+      "blur",
+      "medium"
+    ],
     "label": "Glow do Icon Button: Desfoque Médio",
-    "type": "number",
+    "type": "slider",
     "importance": 40,
     "defaultValue": 8,
-    "cssVars": ["--sarak-icon-button-glow-blur-md"]
+    "cssVars": [
+      "--sarak-icon-button-glow-blur-md"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 30
+    }
   },
   {
     "tokenId": "iconButtonGlowBlurLg",
+    "name": "Glow do Icon Button: Desfoque Grande",
+    "tags": [
+      "button",
+      "icon",
+      "glow",
+      "blur",
+      "large"
+    ],
     "label": "Glow do Icon Button: Desfoque Grande",
-    "type": "number",
+    "type": "slider",
     "importance": 45,
     "defaultValue": 12,
-    "cssVars": ["--sarak-icon-button-glow-blur-lg"]
+    "cssVars": [
+      "--sarak-icon-button-glow-blur-lg"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    }
   },
   {
     "tokenId": "iconButtonFrostedShadowOffsetY",
+    "name": "Sombra Frosted do Icon Button: Offset Y",
+    "tags": [
+      "button",
+      "icon",
+      "glass",
+      "layout"
+    ],
     "label": "Sombra Frosted do Icon Button: Offset Y",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
     "defaultValue": 4,
-    "cssVars": ["--sarak-icon-button-frosted-shadow-offset-y"]
+    "cssVars": [
+      "--sarak-icon-button-frosted-shadow-offset-y"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 20
+    }
   },
   {
     "tokenId": "iconButtonFrostedShadowBlur",
+    "name": "Sombra Frosted do Icon Button: Desfoque",
+    "tags": [
+      "button",
+      "icon",
+      "glass",
+      "blur"
+    ],
     "label": "Sombra Frosted do Icon Button: Desfoque",
-    "type": "number",
+    "type": "slider",
     "importance": 35,
     "defaultValue": 16,
-    "cssVars": ["--sarak-icon-button-frosted-shadow-blur"]
-  },
-  {
-    "tokenId": "themeDropdownMaxHeight",
-    "label": "Altura Máxima do Dropdown de Temas",
-    "type": "number",
-    "importance": 30,
-    "defaultValue": 400,
-    "cssVars": ["--sarak-theme-dropdown-max-height"]
+    "cssVars": [
+      "--sarak-icon-button-frosted-shadow-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    }
   },
   {
     "tokenId": "actionGlowShadowOffsetY",
+    "name": "Sombra de Ação: Offset Y",
+    "tags": [
+      "action",
+      "button",
+      "glow",
+      "layout"
+    ],
     "label": "Sombra de Ação: Offset Y",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
     "defaultValue": 10,
-    "cssVars": ["--sarak-action-glow-shadow-offset-y"]
+    "cssVars": [
+      "--sarak-action-glow-shadow-offset-y"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    }
   },
   {
     "tokenId": "actionGlowShadowBlur",
+    "name": "Sombra de Ação: Desfoque",
+    "tags": [
+      "action",
+      "button",
+      "glow",
+      "blur"
+    ],
     "label": "Sombra de Ação: Desfoque",
-    "type": "number",
+    "type": "slider",
     "importance": 35,
     "defaultValue": 20,
-    "cssVars": ["--sarak-action-glow-shadow-blur"]
+    "cssVars": [
+      "--sarak-action-glow-shadow-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 60
+    }
   },
   {
     "tokenId": "actionGlowShadowSpread",
+    "name": "Sombra de Ação: Espalhamento",
+    "tags": [
+      "action",
+      "button",
+      "glow"
+    ],
     "label": "Sombra de Ação: Espalhamento",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
     "defaultValue": 10,
-    "cssVars": ["--sarak-action-glow-shadow-spread"]
+    "cssVars": [
+      "--sarak-action-glow-shadow-spread"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    }
   },
   {
     "tokenId": "kanbanHeaderPaddingY",
+    "name": "Kanban: Padding Vertical do Cabeçalho da Coluna",
+    "tags": [
+      "table",
+      "header",
+      "padding",
+      "layout"
+    ],
     "label": "Kanban: Padding Vertical do Cabeçalho da Coluna",
-    "type": "number",
+    "type": "slider",
     "importance": 35,
     "defaultValue": 4,
-    "cssVars": ["--sarak-kanban-header-padding-y"]
+    "cssVars": [
+      "--sarak-kanban-header-padding-y"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 16
+    }
   },
   {
     "tokenId": "kanbanHeaderTracking",
+    "name": "Kanban: Tracking do Cabeçalho da Coluna",
+    "tags": [
+      "table",
+      "header",
+      "text"
+    ],
     "label": "Kanban: Tracking do Cabeçalho da Coluna",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
     "defaultValue": 0.04,
-    "cssVars": ["--sarak-kanban-header-tracking"]
+    "cssVars": [
+      "--sarak-kanban-header-tracking"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    }
   },
   {
     "tokenId": "kanbanCardRadius",
+    "name": "Kanban: Arredondamento do Card",
+    "tags": [
+      "table",
+      "radius",
+      "layout"
+    ],
     "label": "Kanban: Arredondamento do Card",
-    "type": "number",
+    "type": "slider",
     "importance": 45,
     "defaultValue": 8,
-    "cssVars": ["--sarak-kanban-card-radius"]
+    "cssVars": [
+      "--sarak-kanban-card-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 24
+    }
   },
   {
     "tokenId": "toastMinWidth",
+    "name": "Toast: Largura Mínima",
+    "tags": [
+      "overlay",
+      "width"
+    ],
     "label": "Toast: Largura Mínima",
-    "type": "number",
+    "type": "slider",
     "importance": 45,
     "defaultValue": 15,
-    "cssVars": ["--sarak-toast-min-width"]
+    "cssVars": [
+      "--sarak-toast-min-width"
+    ],
+    "allowedValues": {
+      "min": 8,
+      "max": 30
+    }
   },
   {
     "tokenId": "toastMaxWidth",
+    "name": "Toast: Largura Máxima",
+    "tags": [
+      "overlay",
+      "width"
+    ],
     "label": "Toast: Largura Máxima",
-    "type": "number",
+    "type": "slider",
     "importance": 45,
     "defaultValue": 22.5,
-    "cssVars": ["--sarak-toast-max-width"]
+    "cssVars": [
+      "--sarak-toast-max-width"
+    ],
+    "allowedValues": {
+      "min": 8,
+      "max": 40,
+      "step": 0.5
+    }
   },
   {
     "tokenId": "toastAccentWidth",
+    "name": "Toast: Largura da Borda de Destaque",
+    "tags": [
+      "overlay",
+      "width",
+      "border",
+      "color"
+    ],
     "label": "Toast: Largura da Borda de Destaque",
-    "type": "number",
+    "type": "slider",
     "importance": 35,
     "defaultValue": 4,
-    "cssVars": ["--sarak-toast-accent-width"]
+    "cssVars": [
+      "--sarak-toast-accent-width"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 12
+    }
   },
   {
     "tokenId": "contextMenuMinWidth",
+    "name": "Context Menu: Largura Mínima",
+    "tags": [
+      "overlay",
+      "width",
+      "layout"
+    ],
     "label": "Context Menu: Largura Mínima",
-    "type": "number",
+    "type": "slider",
     "importance": 35,
     "defaultValue": 10,
-    "cssVars": ["--sarak-context-menu-min-width"]
+    "cssVars": [
+      "--sarak-context-menu-min-width"
+    ],
+    "allowedValues": {
+      "min": 4,
+      "max": 20
+    }
   },
   {
     "tokenId": "multiSelectInputMinWidth",
+    "name": "Multi-Select: Largura Mínima do Input Interno",
+    "tags": [
+      "input",
+      "form",
+      "width"
+    ],
     "label": "Multi-Select: Largura Mínima do Input Interno",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
     "defaultValue": 6,
-    "cssVars": ["--sarak-multi-select-input-min-width"]
+    "cssVars": [
+      "--sarak-multi-select-input-min-width"
+    ],
+    "allowedValues": {
+      "min": 2,
+      "max": 16
+    }
   },
   {
     "tokenId": "searchBackdropBlur",
+    "name": "Search Palette: Desfoque do Backdrop",
+    "tags": [
+      "input",
+      "overlay",
+      "backdrop",
+      "blur"
+    ],
     "label": "Search Palette: Desfoque do Backdrop",
-    "type": "number",
+    "type": "slider",
     "importance": 55,
     "defaultValue": 8,
-    "cssVars": ["--sarak-search-backdrop-blur"]
+    "cssVars": [
+      "--sarak-search-backdrop-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 30
+    }
   },
   {
     "tokenId": "rangeActiveColor",
+    "name": "Range Slider: Cor Ativa",
+    "tags": [
+      "input",
+      "form",
+      "active",
+      "color"
+    ],
     "label": "Range Slider: Cor Ativa",
     "type": "color",
     "importance": 75,
     "defaultValue": "var(--theme-primary)",
-    "cssVars": ["--sarak-range-active-bg"]
+    "cssVars": [
+      "--sarak-range-active-bg"
+    ]
   }
 ]

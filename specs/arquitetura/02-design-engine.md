@@ -4,7 +4,7 @@ titulo: "Design Engine — como um objeto design vira tela"
 dominio: "Core / Design Engine / Provider"
 status: "🟢 Vigente"
 tags: ["arquitetura", "design-engine", "provider", "css-variables", "drafting", "escopo", "persistencia"]
-relacionados: ["[[04-contrato-de-tokens-e-paridade]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[00-mapa-do-modulo]]", "[[05-build-e-distribuicao]]"]
+relacionados: ["[[04-contrato-de-tokens-e-paridade]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[00-mapa-do-modulo]]", "[[05-build-e-distribuicao]]", "[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[09-temas-e-presets]]", "[[03-superficie-publica]]"]
 ---
 
 # 1. Propósito
@@ -49,16 +49,16 @@ A ordem real em `src/core/Provider/SarakUIProvider.tsx` — e a ordem importa, p
 | Onde | Etapa |
 | --- | --- |
 | `:11` | **`injectSarakStyles(SARAK_CSS)`** — no topo do módulo, **fora** do componente (§9) |
-| `:102` | `resolveSarakUIMode(options)` → `mode` |
-| `:103` | Estado do `scopeElement` (o container da ilha, no modo embarcado) |
-| `:107` | `useRegistryManager` → módulos registrados e flag de hidratação |
-| `:110-112` | `allThemes = [...GLOBAL_THEMES, ...customThemes]` |
-| `:115-123` | **`useDesignManager`** → `design`, `setDesign`, `applyConfig`, `applyFullConfig`, `persistDesign` |
-| `:126` | `useBrandingManager` → identidade (opt-in, ver [[006-zero-marca-soberania-host]]) |
-| `:129` | `useSarakDrafting(design, applyConfig, applyFullConfig)` → o rascunho (§5) |
-| `:136` | `useSarakUIEffects` → efeitos globais de documento (título, fontes) |
-| `:140` | `useSarakStylesheetGuard(mode, scopeElement)` → a guarda de stylesheet (§9) |
-| `:143-174` | O `useMemo` que monta o contexto público |
+| `:99` | `resolveSarakUIMode(options)` → `mode` |
+| `:100` | Estado do `scopeElement` (o container da ilha, no modo embarcado) |
+| `:106` | `useThemeCollection` → `allThemes` (os temas com `design` em memória: o padrão do boot, os embarcados já carregados, `customThemes` e os salvos), `themeCatalog`, `loadTheme`, `saveTheme`, `deleteTheme` |
+| `:109` | **`useDesignManager`** → `design`, `setDesign`, `applyConfig`, `applyFullConfig`, `persistDesign`, o id resolvido |
+| `:120` | `useBrandingManager` → identidade (opt-in, ver [[006-zero-marca-soberania-host]]) |
+| `:128` | `useSarakDrafting(design, applyConfig, applyFullConfig)` → o rascunho (§5) |
+| `:132` | `overlayPreferences` → o design efetivo: rascunho (se houver) com as preferências do usuário por cima, entre elas o modo de cor |
+| `:142` | `useSarakUIEffects` → efeitos globais de documento (título, fontes) |
+| `:145` | `useSarakStylesheetGuard(mode, scopeElement)` → a guarda de stylesheet (§9) |
+| `:148` | O `useMemo` que monta o contexto público |
 
 A árvore renderizada (`:180-221`): `DeviceProvider` → `UIContext.Provider` → `SarakScopeRoot`, e dentro dela — **nesta ordem**:
 
@@ -94,6 +94,24 @@ A correção de raiz é um **guard por ref** em `useDesignSync`: `lastAppliedThe
 `useDesignManager:71-83` lê o `localStorage` **dentro do inicializador do `useState`**, não num efeito. Sem janela (SSR) devolve a semente; com janela, faz o parse e passa por `validateDesign` antes de virar estado.
 
 Isso importa porque hidratar por efeito produziria **flash**: um render com o tema default antes de o tema real chegar. Aqui o primeiro paint já sai com o tema certo.
+
+## 3.3 O tema sob demanda — a semente e a porta de espera
+
+A hidratação continua síncrona com os temas fora do boot, porque o cache (`themes/registry.ts`) é lido no
+inicializador do estado e só o tema padrão nasce nele. Três peças:
+
+- **`SarakUIProvider`** é uma casca: `useThemeReadiness` decide se o núcleo pode montar. Só espera quando um tema
+  **embarcado** é forçado por código (`activeThemeId`/`initialTheme`/`options.theme.defaultTheme`) e não está em
+  memória nem há `design` salvo que pinte sozinho (o tema controlado espera mesmo com salvo — é a verdade). A porta
+  fecha uma vez; falha de `import()` a libera com erro no console. Renderiza `loadingFallback` enquanto espera.
+- **`useThemeSeed`** (extraído de `useDesignManager`) resolve o id da semente e os tokens: `activeThemeId` →
+  `initialTheme` → `options.theme.defaultTheme` → `SARAK_DEFAULT_THEME_ID`. Id inexistente avisa e semeia o tema
+  padrão **no modo pedido** (contraparte autorada). Id embarcado fora de memória é conhecido: semeia o id sem design.
+- **`useDesignSync`** aplica o tema por `composeThemeDesign` ([[09-temas-e-presets]] §4.3.3). Um embarcado ainda não
+  carregado **espera sem trocar a tela**; o efeito reroda quando `allThemes` ganha o tema (a referência de
+  `allThemes` é estável por versão do cache — §3.1).
+
+Motivo e alternativas: [[022-tema-sob-demanda]].
 
 # 4. A geração das CSS Variables
 
@@ -206,8 +224,11 @@ base (preflight do Tailwind)  →  components.sarak-elements  →  utilities  �
 **Num elemento com classe utilitária, a classe decide; sem classe, vale o padrão da lib.** Os padrões que
 miram **elemento ou atributo solto** moram em `_elements.css`, na subcamada `components.sarak-elements`: raio,
 hover, estado ativo e foco de `<button>`; raio de campo; família, cor, tamanho e peso de título; família de
-texto; e a ponte do token `borderStyle`. As classes que a lib aplica por nome ficam na camada final: `rounded-btn`,
-`bg-theme-card`, `border-theme`, `[data-surface]` e as texturas. Vale igual nos dois artefatos, `dist/sarak.css` e
+texto; os padrões do **`body`** (cor, família, tamanho, peso, entrelinha, margens, transição e `overflow-x`, num
+lugar só); e a ponte do token `borderStyle`. Do `body`, só o `background-color` fica em `_base.css`, com
+`!important`, na camada final. As classes que a lib aplica por nome ficam na camada final: `rounded-btn`,
+`border-theme`, `[data-surface]` e as texturas; o cartão (`.sarak-card`, `.card`) tem o padrão na subcamada que cede
+(`_card-defaults.css`, `_card-materials.css`). Vale igual nos dois artefatos, `dist/sarak.css` e
 `dist/sarak-scoped.css`: o escopado herda a ordem do mesmo `sarak-base.css`.
 
 **Quatro regras que a ordem impõe:**
@@ -218,19 +239,255 @@ texto; e a ponte do token `borderStyle`. As classes que a lib aplica por nome fi
 - **Regra que mira elemento nunca vai para `sarak-lib`.** Ali ela venceria toda classe de todo elemento, da lib
   e do consumidor.
 - **`!important` fica na camada final.** Para declarações importantes a ordem das camadas se inverte: um
-  `!important` na subcamada venceria até a utilitária `!important`; na camada final, ela ainda o vence. É o
-  caso do `transform` do botão pressionado.
+  `!important` na subcamada venceria até a utilitária `!important`; na camada final, ela ainda o vence.
 - **O token que a classe utilitária também escreve é entregue pela variável que ela lê.** As utilitárias de
   borda (`border`, `border-2`, `border-t`…) escrevem `border-style` por `var(--tw-border-style)`, e por isso a
-  ponte do `borderStyle` alimenta essa variável. O raio do botão chega por `.rounded-btn`, que compõe os quatro
+  ponte do `borderStyle` alimenta essa variável. A ponte é o **único** seletor da lib por substring de classe
+  (`[class*="border"]`, em `_elements.css`) — aceito porque só entrega `border-style` a quem já escolheu ter
+  borda, e mora na subcamada que cede à classe. O raio do botão chega por `.rounded-btn`, que compõe os quatro
   cantos (`btnRadiusTL/TR/BR/BL`) com o raio mestre como reserva de cada um.
 
-**O que ainda não cede à classe:**
-- **o `body`** (tamanho, peso e entrelinha), porque a entrelinha literal de `_base.css` só perde para o token por
-  ordem de arquivo dentro da camada final;
-- **o `transform` do botão pressionado**, que é `!important`.
+**O que ainda não cede à classe:** o **`background-color` do `body`**, `!important` na camada final por desenho. O
+`transform` do botão pressionado é padrão de elemento (`_elements.css`): `active:scale-*`, o `style` e o `whileTap`
+o vencem.
+
+**A lib alcança cartão por âncora explícita, nunca por substring de nome de classe.** A superfície e a textura de
+cartão sob o tema chegam por duas âncoras: `.sarak-card` (o cartão completo — superfície, padding, borda, sombra,
+recorte, material e moldura, na subcamada que cede) e `.card` (só superfície e textura, sem padding nem borda
+próprios — é a âncora para o contêiner do consumidor). `bg-theme-card` é só a utilitária de **cor** de
+`--color-theme-card`; nenhuma regra do motor a mira.
+Nenhum seletor da lib casa `[class*="card"]`: uma utilitária com `card` no nome — da lib ou do consumidor, como
+`bg-[var(--color-theme-card,…)]` — computa o fundo que a própria classe escreve. Contêiner que é cartão de fato
+recebe a âncora `card`; controle (campo, botão, menu) não recebe.
+
+**Custom property nunca referencia a si mesma.** As reservas de hover, ativo e foco (`--theme-*-hover`,
+`-active`, `-focus`) e a do raio caem numa cor ou num valor que existe **sem** o Design Engine montado; com ele, o
+valor que ele injeta no `body` vence a regra. Ciclo é inválido no CSS e anularia a reserva em silêncio.
 
 **A prova é de navegador, não de `jsdom`:** `npm run cromo-css-real:check` (job de CI) mede, em Chromium real
 contra o `dist/`, que a classe vence o padrão em raio, hover, família e estilo de borda, e que o padrão continua
 sem classe. Os casos "continua sem classe" usam um valor que importa: cantos diferentes do mestre, e o token de
-borda fora do default.
+borda fora do default. O mesmo comando roda `browser-tests/css-que-so-o-navegador-mede.spec.ts`: utilitária com
+`card` no nome sob textura, hover sem Provider, `body` que cede à classe de entrelinha, valores de estilo inline
+dos átomos (frosted, foco, `neumorphism`, switch, intervalo, acordeão) e a seta do `SarakSelect` numa célula que
+estica — cada caso com a contraprova de que o padrão sem classe não muda.
+
+# 10. O arsenal visual — o que cada token desenha
+
+**Todo token do schema muda a tela, e a mudança tem leitor.** O painel oferece o controle, o motor emite a
+variável e o atributo (§4), e um CSS ou componente da lib os lê. O gate `token-reader:check` cobra isso para o
+schema inteiro, sem exceção declarada ([[00-regras-e-invariantes]] R40). Os tokens abaixo são os que exigem
+contrato além de "a variável chega à propriedade".
+
+## 10.1 Fundo e atmosfera
+
+- **Gradiente** (`bgGradientMode`: `none` · `linear` (padrão) · `radial` · `mesh`) — `src/styles/_background.css`,
+  camada `components.sarak-elements`, pinta o `body` (ou o escopo). `linear` vai do fundo à camada 1 tingida pela
+  primária, no ângulo de `bgGradientAngle`; `radial` acende um foco no topo; `mesh` são quatro manchas — primária,
+  destaque, `colorBgLayer2` e camada 1. Ordem: tom › gradiente › cor do `body`.
+- **Tom do sistema** (`systemTone`: `none` (padrão) · `cyber` · `tactical`) — camada de tom em `_background.css`.
+- **Ruído**: um controle só, `bgNoiseDensity` (`--sarak-noise-density`), lido por `NoiseOverlay` e
+  `.texture-noise`. `bgNoiseAnimation` anima o grão (padrão 0, estático); para sob `prefers-reduced-motion` e no
+  modo de desempenho que corta animação.
+- **Vinheta**: `vignetteSoftness` governa a parada transparente do degradê; o padrão reproduz o desenho base.
+- **Texturas**: toda textura pinta com a **cor de textura** do tema (`textureColor`, que gera variantes, então
+  `--theme-texture-color-rgb` existe). Textura feita de SVG embutido é máscara com `background-color` da cor de
+  textura — `var()` dentro de data URI não resolve. O anel de foco (`--theme-primary-focus`) é da primária.
+  `texture` e `cardTextureType` não carregam modo: a mesma textura vale no claro e no escuro.
+- **A atmosfera de página aparece atrás do conteúdo.** No modo App, a raiz do cromo e a região de conteúdo não pintam
+  fundo opaco sobre o corpo: `texture` e `systemTone` ficam visíveis atrás do conteúdo, e o cartão mantém a própria
+  superfície.
+- **Textura de página animada não mexe no documento.** As que se movem (`nebula`, `stars`) animam `background-position`
+  ou opacidade, nunca `transform`: o `scrollWidth` do documento fica constante.
+- **Arte de fundo** (`globalBackgroundImageUrl`): camada própria do Provider (`SarakBackgroundRenderer`), atrás de todo
+  o conteúdo, preenchendo a camada com recorte (`cover`).
+
+## 10.2 Superfície, moldura e sombra
+
+- **Material** (`surfaceMaterial`: `frosted` (padrão) · `sleek` · `industrial` · `organic`) — `_card-materials.css`,
+  sobre o `.sarak-card`, na subcamada que cede à classe. O desfoque do `frosted` parte de `cardBackdropBlur` e soma a intensidade do material; o
+  desfoque do cartão tem um nome só, `--sarak-card-backdrop-blur`.
+- **Moldura** (`borderType`: `solid` (padrão) · `cyber` · `double` · `glow` · `none`) — `data-sx-border-type`;
+  `cyber` e `glow` nascem da cor de textura; `none` apaga o contorno sem mexer na caixa. `borderStyle` vale no
+  cartão. A moldura do cartão mora em `_card-materials.css` (cede à classe); a do `.border-theme`, classe
+  `!important` por desenho, fica em `_surfaces.css`, só o contorno.
+- **Sombra**: geometria por `cardShadowOffsetX/Y`, `cardShadowBlur`, `cardShadowExpansion` (padrão
+  `0 20px 50px -12px`); cor por `shadowColorMode` (`neutral` · `colored` · `ambient`); **direção** por
+  `shadowOrientation` (`bottom` (padrão) · `center` · `top` · `bottom-right` · `dynamic`), que só fixa o vetor
+  `--sarak-shadow-dir-x/y` consumido pela sombra do cartão e pela sombra em camadas. `dynamic` segue a luz, o
+  oposto do ponteiro: o `DesignInjector` escreve `--sarak-light-x/y` no `html` só com a opção ativa; sem ponteiro,
+  vale `bottom`.
+- **Sombra em camadas** `--sarak-dynamic-shadow` (contato + projeção, `_theme.css`), espelhada em
+  `--dynamic-shadow` (lida pela paleta de busca, pela busca do cromo e por `.shadow-theme`). `layeredShadows`
+  multiplica a opacidade das duas camadas (0 apaga, 1 é o desenho base).
+
+## 10.3 Cor
+
+`colorDepth` e `colorVariation` dão forma às variantes de interação (`computeColorVariants`): `hover` clareia e
+`active` escurece pelo fator `1 ± 0,1 × depth`, e o matiz abre `(variation − 1) × 8°` entre os dois. Em 1/1 a
+saída é a de sempre. Nas variantes da primária, o resultado é `--theme-primary-hover`/`--theme-primary-active`, lidos
+pelo hover e pelo pressionado globais de `button` (`_elements.css`).
+
+## 10.4 Cartão
+
+- **Hover só em cartão interativo.** Interativo é o cartão cuja superfície inteira responde ao ponteiro e traz
+  `data-sx-card-interactive="true"`: `SarakTitleCard`, `SarakImageCard` e o `SarakCard` com a prop `interactive`.
+  `cardHoverStyle` (`lift` (padrão) · `glow-only` · `expand`) e `cardHoverTranslate` movem só esse; cartão
+  contêiner (painel de chat, matriz, `SarakCard` sem a prop) não se move em nenhum valor. `cardHoverGlowIncrease`
+  soma ao brilho base no hover. Movimento reduzido e modo de desempenho cortam o movimento.
+- Cabeçalho e rodapé (`cardHeader*`, `cardFooter*`), botão de ação (`cardActionBtn*`) e busca do cartão
+  (`cardSearch*`) leem os próprios tokens; a classe do consumidor ainda vence ([[03-superficie-publica]] §6.1.1).
+- **Spotlight (`cardSpotlightOpacity`).** Um gradiente radial da cor primária do tema, com a opacidade do token (0 =
+  nada), que **segue o cursor** nos quatro cartões (`SarakActionCard`, `SarakSearchCard`, `SarakTitleCard`,
+  `SarakCoreCard`). O hook compartilhado `useSpotlightPointer` grava `--sarak-spot-x`/`--sarak-spot-y` na raiz do
+  cartão, um quadro por vez, e só registra listener com opacidade > 0, ponteiro fino e movimento não reduzido; em
+  toque, sem movimento ou ao sair o gradiente fica no centro (`_cards.css` declara `50%`).
+- **Traço luminoso (`borderBeamEnabled`, `cardSearchBorderBeamActive`).** Um anel de gradiente cônico que gira com
+  `--beam-angle`, mascarado para ocupar só a borda, na cor primária e com o raio do cartão. `borderBeamEnabled` o liga
+  em qualquer cartão; no `SarakSearchCard` ele também acende com o campo em foco (`cardSearchBorderBeamActive`).
+  Desligado, nenhuma animação roda. `usePauseBeamOffscreen` pausa o giro fora da tela; com movimento reduzido a
+  camada é escondida, não deixada parada.
+- **Zoom da imagem (`imageCardHoverZoom`)** vale ao passar o ponteiro sobre o `SarakImageCard` inteiro (o hover é
+  das variantes da raiz, não da camada da imagem); 1 = sem zoom. **Escala do clique (`cardActionClickScale`)** é o
+  `scale` do botão de ação pressionado, em CSS (`.sarak-card-action-btn:active`). Movimento reduzido, do token ou do
+  sistema, zera os dois.
+
+## 10.5 Movimento
+
+Uma família só: `motion*` (`motionDurationInstant/Fast/Normal/Slow`, `motionEaseMain/In/Out`,
+`motionStaggerDelay`), com unidade no valor emitido (`--duration-*` repassam o valor; multiplicar por `1s`
+invalida a declaração). `motionDurationInstant` é o aperto do botão (`:active`); `motionEaseIn` é a saída de
+sobreposição (modal, scrim, busca); `motionStaggerDelay` é a cascata de entrada das linhas da tabela e das séries
+do gráfico (`useMotionTokens.ts`). O modal e a paleta de busca têm saída de fato (o `AnimatePresence` fica fora da
+condição de abertura): a opacidade sai pela curva de `motionEaseIn`, na duração de `motionDurationFast`, e a moldura
+não recebe ponteiro enquanto sai.
+
+## 10.6 Componentes que leem tokens próprios
+
+Campo (`inputPadding`), tooltip (`tooltipRadius`, `tooltipBg`, `tooltipTextColor`, `tooltipBorderColor`), modal
+(`colorBgModal`, `modalOverlayBlur`, `modalOverlayColor`), toast (`zIndexToast`), tabela (`tableZebraStriping`,
+`tableBorderRadius`, este pelos quatro cantos como variável do contêiner), botão (`btnGhostHoverBg`,
+`btnNeonPulseSpeed`), badge de status (`statusGlowBlur`), nome da marca no cromo (`identityPadding`,
+`identityFontFamily` — padrão: a fonte de títulos do tema —, `identityFontWeight`, `identityTracking`), indicador
+de "pensando" dos dois chats (`aiGlowColor`), suavização de fonte (`textSmoothing`), alinhamento e hover da marca
+(`identityAlignment`, `identityHoverEffect`, em `.sarak-chrome-brand`), especularidade e rugosidade do vidro
+(`glassSpecularity`, `glassRoughness`, em `.sarak-glass`), camada da barra lateral (`zIndexSidebar`), raio do selo
+(`badgeRadius`) e peso e caixa dos títulos e do corpo (`h1Weight`, `h2Weight`, `bodyWeight`, `headingTransform`,
+lidos direto em `_elements.css`). O estilo de botão `neumorphism` tem desenho próprio (relevo em repouso, sombra
+interna sob o ponteiro). O modo eco é a classe `.sarak-eco-mode`, que o consumidor aplica; nenhum token a escreve.
+
+Também leem o próprio token: o espaçamento dos sub-itens da matriz (`matrixGap`, `--sarak-matrix-gap`); a largura da
+barra lateral recolhida (`sidebarCollapsedWidth`, sem o piso da largura aberta); o raio do acordeão (`borderRadius`,
+inclusive `0` e a forma responsiva); o trilho ativo e o polegar da faixa (`rangeActiveColor`,
+`--sarak-range-active-bg`); o raio do item de navegação ativo e em hover, na lateral, no topo e no recolhido
+(`navItemRadius`, `--sarak-nav-item-radius`); a sombra de destaque do botão da categoria selecionada do catálogo
+(`actionGlowShadow*`, só com `btnStyleType` `matte`). `switchLabelPosition` vale só no `SarakSwitch`. Com
+`searchPositionTopbar: center`, a busca ocupa o vão entre a navegação e o grupo final. No estilo `cyberpunk` (fundo
+transparente), o texto do `SarakButton` e o ícone do `SarakIconButton` das variantes sólidas pintam na cor da própria
+variante, de uma tabela só (`CYBERPUNK_TEXT_COLORS`, `useAtomicStyles.ts`).
+
+**A barra de topo cede espaço numa ordem fixa:** primeiro a busca, depois o rótulo dos widgets indisponíveis, por fim a
+lista de navegação passa a rolar. O item de navegação nunca encolhe abaixo do próprio texto, e o grupo final fica dentro
+da barra.
+
+## 10.7 Regras de CSS que o build impõe
+
+- **`backdrop-filter` vai sozinho.** O lightningcss, ao receber `backdrop-filter` e `-webkit-backdrop-filter`
+  juntos, publica só a forma com prefixo — que o Chromium não computa. A lib declara só a forma sem prefixo; o
+  build gera as duas. `browser-tests/` cobra que nenhuma regra do `dist/sarak.css` traga só a prefixada.
+- **Leitor por tabela é declarado.** Quando o valor chega ao leitor por mapa em JS ou direto à propriedade, o
+  arquivo do leitor traz `@sarak-token-reader <id> tabela|direto` em comentário, e cada opção tem teste que cita o
+  id e o valor ([[01-gates-e-baseline]] §2.2).
+
+## 10.8 Cascata — o motor dá o padrão, o componente decide
+
+O motor não impõe com `!important`, em seletor amplo, propriedade visual que o componente controla por token ou
+classe. O padrão do cartão e do contêiner mora em `src/styles/_card-defaults.css`, na camada
+`components.sarak-elements`, **sem `!important`**: superfície (fundo e cor da borda com `cardSurfaceOpacity` e
+`cardBorderOpacity`), raio dos quatro cantos, traço e largura da borda, desfoque, transição, hover de borda, e o
+reset transparente de `main`/`section`/`article`. A classe utilitária e o `style` do componente — da lib ou do
+consumidor — vencem. Os cartões da lib não repetem classe de fundo nem de cor de borda: a superfície vem do tema,
+de um lugar só. Material e moldura do cartão também cedem (`_card-materials.css`, depois de `_card-defaults.css`). Ficam com
+`!important`, por desenho: o modo eco (`_performance.css`), o movimento reduzido (`_motion.css`) e a moldura da
+classe `.border-theme`. O injetor do modo claro (`SovereignThemeInjector`) não usa `!important` e não repinta o que
+está sob `[data-sarak-own-palette]` (fundo próprio, como o do `SarakLightbox`). A trava é o
+`css-important:check` ([[00-regras-e-invariantes]] R41).
+
+## 10.9 Uma variável, um dono
+
+Cada variável CSS tem um token dono. A exceção é declarada: o canto de raio (`cardRadiusTL/TR/BL/BR`,
+`btnRadiusTL/TR/BL/BR`) tem `exceptionOf` apontando o mestre, e o motor não o escreve quando ele está ausente ou
+igual ao padrão do schema — aí o mestre, que lista os cantos em `cssVars`, chega a eles. Nomes que eram de duas
+semânticas são de uma só: `--radius-theme` (raio do sistema), `--theme-gap` (gap do layout),
+`--theme-border-width` (borda do sistema), `--theme-surface` (superfície, igual a `--surface-color`) e
+`--sarak-bg-base` (`bgBaseColor`). Todo nome lido existe (emitido ou declarado em CSS da lib), e toda reserva
+`var(--x, F)` é o padrão do token (o ponto `mob` em token responsivo; palavra-chave é aceita): sem Provider, a lib
+desenha o tema padrão. As curvas Bezier são `--sarak-bezier-standard/-decelerate/-accelerate/-sharp`. A trava é o
+`variable-contract:check` (R42).
+
+## 10.10 Cor que segue o tema e texto sobre cor sólida
+
+Componente não fixa branco nem preto onde o tema decide a cor: as tintas `--color-theme-tint`, `-tint-hover` e
+`-tint-strong` são `color-mix` da cor de texto do tema (5%, 10%, 20%) e valem nos dois modos (`bg-theme-tint`,
+`border-theme-tint`…). O texto sobre cor sólida é **escolhido pelo motor**, não declarado: `pickOnColor`
+(`src/core/Provider/utils/on-color.ts`) fica, entre `#020617` e `#ffffff`, com o de maior razão WCAG sobre a cor
+(a translúcida é composta sobre o corpo antes), e o motor emite `--theme-on-primary`, `--sarak-on-surface` e uma
+`--sarak-on-*` por cor sólida (secundária, destaque, status, bolha do usuário, véu, apagada, item ativo da navegação —
+`--sarak-on-nav-active`, o texto do botão selecionado dos seletores do cromo). O badge suave pinta
+o texto como mistura da cor com o texto de maior contraste. A trava é o `fixed-translucent:check` (R43); o
+contraste dos pares desenhados é do `auditor_contraste` (R31).
+
+## 10.11 O componente lê o token que o nomeia
+
+O botão primário desenha `btnPrimaryBg`/`btnPrimaryText`; o secundário, `btnSecondaryBg` em todo estilo;
+`cardShadow` declarada substitui a sombra composta do cartão (o atributo `data-sx-*` também sai para token
+`text`); `cardSurfaceOpacity` age só na superfície; tabela, sobreposições, switch, modal, chat e formulário de
+entrada leem os próprios tokens; durações de classe e de `framer-motion` leem `motionDuration*`
+(`useMotionTokens`, que zera sob movimento reduzido). A pré-visualização do painel **não conta como leitor**: um
+token que tem componente na lib é lido pelo componente ([[00-regras-e-invariantes]] R40).
+
+## 10.12 Escrita sem disputa de canal
+
+O motor escreve cada variável **num canal só**: escalar vai inline (`html`/`body`, ou o contêiner da ilha); responsivo
+vai ao `<style>` do escopo. A exceção declarada (canto de raio diferente do padrão) é a dona da variável dela, no
+canal do formato dela, e o mestre não a escreve; os outros cantos seguem o mestre. O mesmo vale nos modos App e
+Embarcado. Ao trocar de tema, `syncInjectedWrites` (`src/core/Provider/utils/injectedWrites.ts`) remove a variável e
+o atributo que o injetor escreveu antes e o tema novo não escreve (valor vazio conta como não escrever: o tema que
+declara `globalBackgroundImageUrl: ''` apaga a arte do anterior) — o que o host gravou por fora não é tocado. A
+duração e a curva padrão das transições do Tailwind (`--default-transition-duration`,
+`--default-transition-timing-function`) vêm de `motionDurationFast` e `motionEaseMain`. Ao desmontar, o injetor
+limpa tudo o que escreveu (`releaseInjectedWrites`: variáveis, atributos, curvas, rastro do ponteiro, fonte ancorada,
+classe de modo, folha responsiva). A trava é o `channel-dispute:check`.
+
+## 10.13 Os nomes do `@theme` valem no escopo do rascunho
+
+`_theme.css` declara os nomes do tema do Tailwind com `@theme inline` (as utilitárias resolvem no elemento) e repete o
+mesmo corpo em `:root, .sarak-design-scope` (os nomes como variável): dentro de um `DesignScope`, `rounded-btn`,
+`bg-theme-primary`, `--duration-*`, `--z-index-*` mostram o rascunho, não o tema aplicado. A igualdade dos dois corpos
+é teste (`themeNamesScope.test.ts`). `--color-theme-title` tem um dono só: o `titleColor` (no modo claro, com o
+`titleColor` ainda no padrão, segue o texto principal). As classes de raio da lib (`rounded-btn`, `rounded-input`,
+`rounded-sarak`) ficam na camada final, porque o Tailwind gera utilitária homônima a partir do `@theme` sem os quatro
+cantos; o conflito no mesmo elemento passa pelo `mergeSarakClasses`, que as reconhece no grupo `rounded`. A
+`.transition-sarak` mora na camada que cede, sem `!important`. O contêiner de página que deixa o fundo de mídia
+aparecer é marcado (`sarak-page-surface`), nunca adivinhado por classe de cor.
+
+## 10.14 A escada de camadas
+
+Cada camada lê o token dela, sem empate: a barra lateral (`zIndexSidebar`); a atmosfera decorativa (ruído e
+vinheta) em `zIndexSidebar` + 50 — cobre conteúdo e cromo, fica abaixo de toda sobreposição; menus e busca em
+`zIndexSidebar` + 100/+200; o modal (`zIndexModal`), com o cartão expandido um degrau abaixo e a ajuda, o lightbox e o
+spotlight acima dele; o tooltip (`zIndexTooltip`); a notificação (`zIndexToast`, um passo acima do tooltip). As
+sobreposições usam a sombra do tema (`--dynamic-shadow`), sem token próprio.
+
+## 10.15 Estético × funcional, e o padrão de cada token
+
+Todo token declara no schema se é **estético** (cor, elevação, textura, tipografia, geometria visual, densidade visual,
+movimento: a identidade de um tema) ou **funcional** (camadas, alvo de toque, larguras e posições do cromo, breakpoints,
+comportamento: deve ser igual em todo tema, por segurança, acessibilidade ou consistência). O campo é `kind`, com
+`modeDependent`, `usage` e `interactsWith` ([[04-contrato-de-tokens-e-paridade]] §2.3). O funcional vale o padrão do
+sistema e o tema não o declara; o padrão de cada funcional é decisão de sistema.
+
+**O padrão de todo token estético é o valor do tema padrão (`sarak-sovereign`) no modo principal**, com uma exceção
+declarada: `identityFontFamily`, cujo padrão herda a fonte de títulos do tema. Assim o primeiro quadro, o componente sem
+Provider e o tema parcial do consumidor já desenham o tema padrão, e as reservas `var(--x, F)` acompanham (§10.9).
+**Nenhum gate cobra essa igualdade**: mudar o `sarak-sovereign` sem mudar o padrão, ou o contrário, passa sem aviso.

@@ -58,6 +58,7 @@ export const SarakDesignScope: React.FC<SarakDesignScopeProps & Record<string, u
                     imageUrl={design?.globalBackgroundImageUrl}
                     opacity={design?.globalBackgroundOpacity}
                     blur={design?.globalBackgroundBlur}
+                    backgroundPosition={design?.globalBackgroundPosition as 'absolute' | 'fixed' | undefined}
                     mode={design?.mode as 'light' | 'dark' | undefined}
                 />
                 {children}

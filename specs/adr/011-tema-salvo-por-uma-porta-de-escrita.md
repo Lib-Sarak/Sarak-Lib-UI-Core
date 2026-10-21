@@ -1,11 +1,11 @@
 ---
 tipo: "adr"
 titulo: "Tema salvo em runtime por UMA porta de escrita — a leitura já é `customThemes`"
-status: "🟢 Aceito"
+status: "🔴 Substituído"
 tags: ["adr", "persistencia", "temas", "design-engine", "painel", "contrato"]
 relacionados: ["[[010-temas-salvos-pelo-usuario]]", "[[003-remocao-backend-proprio]]", "[[009-persistencia-tenant-aware]]", "[[09-temas-e-presets]]"]
 substitui: "[[010-temas-salvos-pelo-usuario]]"
-substituido_por: ""
+substituido_por: "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]"
 ---
 
 # 1. Contexto e Problema

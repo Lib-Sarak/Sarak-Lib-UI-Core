@@ -1,13 +1,15 @@
+import { SarakIcon } from "../Icon/SarakIcon";
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalScope';
-import { Maximize2, Minimize2, X } from 'lucide-react';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 import { useExpandableCard } from './hooks/useExpandableCard';
 import { useResponsiveStyles } from '../hooks/useResponsiveStyles';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
+import { useMotionTokens } from '../hooks/useMotionTokens';
 
 export interface SarakExpandableCardProps {
     /** Título obrigatório do cabeçalho nas visualizações compacta e expandida; sem valor, o título fica vazio. */
@@ -35,6 +37,7 @@ export const SarakExpandableCard: React.FC<SarakExpandableCardProps> = ({
     contentClassName = "",
     baseHeight = 300
 }) => {
+    const { durations } = useMotionTokens();
     const globalUI = useSarakUI();
     const design = globalUI.design;
     const layout = useCardLayoutStyles(design);
@@ -45,12 +48,12 @@ export const SarakExpandableCard: React.FC<SarakExpandableCardProps> = ({
 
     // Dynamic height based on global font scale factor, ensuring it scales up
     const dynamicStyle = {
-        minHeight: isExpanded ? '100%' : `calc(${baseHeight}px * var(--font-size-factor, 1))`
+        minHeight: isExpanded ? '100%' : `${baseHeight}px`
     };
 
     return (
         <>
-            <div className={`${layout.containerClass} sarak-card bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]-border rounded-sarak shadow-lg relative group transition-sarak ${isExpanded ? 'opacity-0 pointer-events-none' : ''} ${className}`}>
+            <div className={`${layout.containerClass} sarak-card border rounded-sarak relative group transition-sarak ${isExpanded ? 'opacity-0 pointer-events-none' : ''} ${className}`}>
                 <div className={layout.contentClass}>
                 <div className={layout.headerClass}>
                     <h3 className="text-xs font-black text-theme-main uppercase tracking-widest flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
@@ -66,7 +69,7 @@ export const SarakExpandableCard: React.FC<SarakExpandableCardProps> = ({
                             className="text-theme-muted hover:text-theme-primary hover:bg-theme-primary/10 rounded-lg"
                             style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' }}
                             title="Expandir Tela Cheia"
-                            icon={<Maximize2 className="w-4 h-4" />}
+                            icon={<SarakIcon name="Maximize2" className="w-4 h-4" />}
                         />
                     </div>
                 </div>
@@ -82,15 +85,15 @@ export const SarakExpandableCard: React.FC<SarakExpandableCardProps> = ({
                     {isExpanded && (
                         <motion.div
                             initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-                            animate={{ opacity: 1, backdropFilter: 'blur(var(--sarak-glass-blur, 12px))' }}
+                            animate={{ opacity: 1, backdropFilter: 'blur(var(--sarak-glass-blur, 14px))' }}
                             exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-                            transition={{ duration: 0.3 }}
+                            transition={{ duration: durations.normal }}
                             // `@container` plantado aqui, não na raiz do card — o
                             // conteúdo com `@min-[…]` (`bodyPadding`/`headerMargin`) vive
                             // dentro do `createPortal` (renderiza em `document.body`, fora
                             // da subárvore da raiz do card). Sem ancestral com
                             // `container-type` DENTRO do portal, a classe nunca casava.
-                            className="@container fixed inset-0 z-[99999] bg-theme-body flex"
+                            className="@container fixed inset-0 z-[calc(var(--sarak-z-modal,2000)_-_100)] bg-theme-body flex"
                             style={{ flexDirection: 'column' }}
                         >
                             <motion.div
@@ -115,15 +118,15 @@ export const SarakExpandableCard: React.FC<SarakExpandableCardProps> = ({
                                             onClick={() => setIsExpanded(false)}
                                             variant="secondary"
                                             size="lg"
-                                            className="bg-[var(--color-theme-card,#1e293b)] hover:bg-theme-primary/20 text-theme-primary border border-[var(--border-color,#334155)]-border rounded-sarak shadow-lg shrink-0"
+                                            className="bg-[var(--color-theme-card,#101622)] hover:bg-theme-primary/20 text-theme-primary border border-[var(--border-color,rgba(255,255,255,0.09))] rounded-sarak shadow-lg shrink-0"
                                             style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', marginLeft: 'var(--sarak-layout-gap-sm, 8px)' }}
                                             title="Fechar"
-                                            icon={<X className="w-5 h-5 sm:w-6 sm:h-6" />}
+                                            icon={<SarakIcon name="X" className="w-5 h-5 sm:w-6 sm:h-6" />}
                                         />
                                     </div>
                                 </div>
                                 <div
-                                    className={`sarak-card flex-1 w-full relative flex min-h-0 bg-[var(--color-theme-card,#1e293b)] rounded-sarak border border-[var(--border-color,#334155)]-border shadow-lg ${contentClassName} p-[var(--sarak-card-padding-md,24px)]`}
+                                    className={`sarak-card flex-1 w-full relative flex min-h-0 rounded-sarak border ${contentClassName} p-[var(--sarak-card-padding-md,24px)]`}
                                     style={{ flexDirection: 'column' }}
                                 >
                                     {children}

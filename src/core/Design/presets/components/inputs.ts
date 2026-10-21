@@ -7,7 +7,7 @@ export const INPUT_PRESETS: ComponentPreset[] = [
         description: 'Radius máximo, sem borda, sombra suave flutuando sobre o fundo.',
         design: {
             inputBorderType: 'none',
-            inputBorderRadius: 999,
+            inputBorderRadius: 120,
             inputBg: 'var(--theme-card)',
             inputShadow: '0 8px 20px rgba(0,0,0,0.25)',
         }
@@ -132,8 +132,8 @@ export const INPUT_PRESETS: ComponentPreset[] = [
         design: {
             inputBorderType: 'solid',
             inputBorderRadius: 8,
-            inputBorderColor: 'var(--sarak-input-error-color, #ff4d4f)',
-            inputFocusBorderColor: 'var(--sarak-input-error-color, #ff4d4f)',
+            inputBorderColor: 'var(--sarak-input-error-color, #ff6b6b)',
+            inputFocusBorderColor: 'var(--sarak-input-error-color, #ff6b6b)',
         }
     }
 ];

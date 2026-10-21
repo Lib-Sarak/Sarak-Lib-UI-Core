@@ -14,6 +14,8 @@ import {
     APPENDIX_MARKER,
     CATALOG,
     GUIDE,
+    MIGRATIONS,
+    MIGRATIONS_SOURCE,
     SKILL_DIR,
     SKILL_SOURCE,
     STAMP_MARKER,
@@ -44,14 +46,23 @@ const skillMirror = (outputs) => {
     }
 };
 
-export const buildKitOutputs = () => {
-    const catalog = buildKitCatalog();
+export const buildKitOutputs = (catalogSurface = buildKitCatalog()) => {
+    const hashInput = `${JSON.stringify(catalogSurface, null, 2)}\n`;
+    const kitHash = kitHashOf(hashInput);
+    const catalog = {
+        ...catalogSurface,
+        kitStamp: {
+            libVersion: catalogSurface.lib.version,
+            kitSchemaVersion: catalogSurface.schemaVersion,
+            kitHash,
+        },
+    };
     const catalogJson = `${JSON.stringify(catalog, null, 2)}\n`;
-    const kitHash = kitHashOf(catalogJson);
 
     const outputs = new Map();
     outputs.set(CATALOG, catalogJson);
     outputs.set(VERSION, renderVersionFile({ catalog, kitHash }));
+    outputs.set(MIGRATIONS, readOrFail(MIGRATIONS_SOURCE, 'docs/migracoes.md'));
     outputs.set(
         GUIDE,
         injectBlock({

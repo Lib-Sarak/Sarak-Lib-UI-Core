@@ -3,10 +3,10 @@
 exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
 <DocumentFragment>
   <div
-    class="flex flex-col h-full animate-in fade-in slide-in-from-right-4 duration-500 overflow-y-auto custom-scrollbar-sidebar"
+    class="flex flex-col h-full animate-in fade-in slide-in-from-right-4 duration-[var(--sarak-motion-dur-slow,0.6s)] overflow-y-auto custom-scrollbar-sidebar"
   >
     <div
-      class="p-6 border-b border-white/5 last:border-0"
+      class="p-6 border-b border-theme-text/5 last:border-0"
     >
       <div
         class="flex items-center gap-3 mb-6"
@@ -32,7 +32,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
           </svg>
         </div>
         <h3
-          class="text-xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] italic text-white/90"
+          class="text-xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] italic text-theme-text/90"
         >
           Chat Engine
         </h3>
@@ -44,14 +44,14 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
           class="space-y-2"
         >
           <label
-            class="text-2xs font-black uppercase tracking-widest text-white/30 ml-1 flex items-center gap-2"
+            class="text-2xs font-black uppercase tracking-widest text-theme-text/30 ml-1 flex items-center gap-2"
           >
             Estilo de Bolha
             <div
               class="relative inline-flex items-center"
             >
               <button
-                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#1e293b)] cursor-help"
+                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#101622)] cursor-help"
               >
                 <svg
                   class="lucide lucide-help-circle"
@@ -84,17 +84,17 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
             class="grid grid-cols-3 gap-2"
           >
             <button
-              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-[var(--theme-primary)] border-transparent text-white shadow-lg"
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-[var(--theme-primary)] border-transparent text-theme-on-primary shadow-lg"
             >
               Glass
             </button>
             <button
-              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-white/5 border-white/10 text-white/40 hover:text-white/60"
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-theme-text/5 border-theme-text/10 text-theme-text/40 hover:text-theme-text/60"
             >
               Solid
             </button>
             <button
-              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-white/5 border-white/10 text-white/40 hover:text-white/60"
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-theme-text/5 border-theme-text/10 text-theme-text/40 hover:text-theme-text/60"
             >
               Minimal
             </button>
@@ -107,7 +107,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
             class="space-y-3"
           >
             <div
-              class="flex justify-between items-center text-2xs font-black uppercase text-white/30 mb-2"
+              class="flex justify-between items-center text-2xs font-black uppercase text-theme-text/30 mb-2"
             >
               <span>
                 Velocidade de Digitação
@@ -118,10 +118,10 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
               style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.25);"
             >
               <div
-                class="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--text-muted,#94a3b8)]"
+                class="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--text-muted,rgba(242,246,251,0.55))]"
               >
                 <span
-                  style="color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6));"
+                  style="color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#19e3f0));"
                 >
                   0.05s
                 </span>
@@ -132,7 +132,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
                 max="0.5"
                 min="0"
                 step="0.01"
-                style="background-color: rgba(255, 255, 255, 0.1); accent-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6));"
+                style="background-color: color-mix(in srgb, var(--text-main, #f2f6fb) 10%, transparent); accent-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#19e3f0));"
                 type="range"
                 value="0.05"
               />
@@ -142,7 +142,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
       </div>
     </div>
     <div
-      class="p-6 border-b border-white/5 last:border-0"
+      class="p-6 border-b border-theme-text/5 last:border-0"
     >
       <div
         class="flex items-center gap-3 mb-6"
@@ -192,7 +192,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
           </svg>
         </div>
         <h3
-          class="text-xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] italic text-white/90"
+          class="text-xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] italic text-theme-text/90"
         >
           Flow Engine
         </h3>
@@ -204,14 +204,14 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
           class="space-y-2"
         >
           <label
-            class="text-2xs font-black uppercase tracking-widest text-white/30 ml-1 flex items-center gap-2"
+            class="text-2xs font-black uppercase tracking-widest text-theme-text/30 ml-1 flex items-center gap-2"
           >
             Estilo do Grid
             <div
               class="relative inline-flex items-center"
             >
               <button
-                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#1e293b)] cursor-help"
+                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#101622)] cursor-help"
               >
                 <svg
                   class="lucide lucide-help-circle"
@@ -244,12 +244,12 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
             class="grid grid-cols-2 gap-2"
           >
             <button
-              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-[var(--theme-primary)] border-transparent text-white shadow-lg"
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-[var(--theme-primary)] border-transparent text-theme-on-primary shadow-lg"
             >
               Dots (Standard)
             </button>
             <button
-              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-white/5 border-white/10 text-white/40 hover:text-white/60"
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-theme-text/5 border-theme-text/10 text-theme-text/40 hover:text-theme-text/60"
             >
               Lines (Technical)
             </button>
@@ -259,7 +259,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
           class="space-y-3"
         >
           <div
-            class="flex justify-between items-center text-2xs font-black uppercase text-white/30 mb-2"
+            class="flex justify-between items-center text-2xs font-black uppercase text-theme-text/30 mb-2"
           >
             <span>
               Raio das Nodes
@@ -270,10 +270,10 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
             style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.25);"
           >
             <div
-              class="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--text-muted,#94a3b8)]"
+              class="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--text-muted,rgba(242,246,251,0.55))]"
             >
               <span
-                style="color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6));"
+                style="color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#19e3f0));"
               >
                 12px
               </span>
@@ -284,7 +284,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
               max="40"
               min="0"
               step="1"
-              style="background-color: rgba(255, 255, 255, 0.1); accent-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6));"
+              style="background-color: color-mix(in srgb, var(--text-main, #f2f6fb) 10%, transparent); accent-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#19e3f0));"
               type="range"
               value="12"
             />
@@ -293,7 +293,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
       </div>
     </div>
     <div
-      class="p-6 border-b border-white/5 last:border-0"
+      class="p-6 border-b border-theme-text/5 last:border-0"
     >
       <div
         class="flex items-center gap-3 mb-6"
@@ -334,7 +334,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
           </svg>
         </div>
         <h3
-          class="text-xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] italic text-white/90"
+          class="text-xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] italic text-theme-text/90"
         >
           Chart Engine
         </h3>
@@ -346,14 +346,14 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
           class="space-y-2"
         >
           <label
-            class="text-2xs font-black uppercase tracking-widest text-white/30 ml-1 flex items-center gap-2"
+            class="text-2xs font-black uppercase tracking-widest text-theme-text/30 ml-1 flex items-center gap-2"
           >
             Tipo de Visualização
             <div
               class="relative inline-flex items-center"
             >
               <button
-                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#1e293b)] cursor-help"
+                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#101622)] cursor-help"
               >
                 <svg
                   class="lucide lucide-help-circle"
@@ -386,57 +386,57 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
             class="grid grid-cols-2 gap-2"
           >
             <button
-              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-[var(--theme-primary)] border-transparent text-white shadow-lg"
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-[var(--theme-primary)] border-transparent text-theme-on-primary shadow-lg"
             >
               Lines
             </button>
             <button
-              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-white/5 border-white/10 text-white/40 hover:text-white/60"
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-theme-text/5 border-theme-text/10 text-theme-text/40 hover:text-theme-text/60"
             >
               Bars
             </button>
             <button
-              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-white/5 border-white/10 text-white/40 hover:text-white/60"
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-theme-text/5 border-theme-text/10 text-theme-text/40 hover:text-theme-text/60"
             >
               Pie/Donut
             </button>
             <button
-              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-white/5 border-white/10 text-white/40 hover:text-white/60"
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-theme-text/5 border-theme-text/10 text-theme-text/40 hover:text-theme-text/60"
             >
               Radar
             </button>
             <button
-              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-white/5 border-white/10 text-white/40 hover:text-white/60"
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-theme-text/5 border-theme-text/10 text-theme-text/40 hover:text-theme-text/60"
             >
               Scatter
             </button>
             <button
-              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-white/5 border-white/10 text-white/40 hover:text-white/60"
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-theme-text/5 border-theme-text/10 text-theme-text/40 hover:text-theme-text/60"
             >
               Heatmap
             </button>
             <button
-              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-white/5 border-white/10 text-white/40 hover:text-white/60"
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-theme-text/5 border-theme-text/10 text-theme-text/40 hover:text-theme-text/60"
             >
               Gauge
             </button>
           </div>
         </div>
         <div
-          class="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10 group"
+          class="flex items-center justify-between p-4 rounded-2xl bg-theme-text/5 border border-theme-text/10 group"
         >
           <div
             class="flex flex-col gap-0.5"
           >
             <span
-              class="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-white/50 flex items-center gap-1.5"
+              class="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-theme-text/50 flex items-center gap-1.5"
             >
               Mostrar Grid de Fundo
               <div
                 class="relative inline-flex items-center"
               >
                 <button
-                  class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#1e293b)] cursor-help"
+                  class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#101622)] cursor-help"
                 >
                   <svg
                     class="lucide lucide-help-circle"
@@ -466,7 +466,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
               </div>
             </span>
             <span
-              class="text-3xs text-white/20 uppercase tracking-tighter italic"
+              class="text-3xs text-theme-text/20 uppercase tracking-tighter italic"
             >
               Visibilidade das linhas de referência
             </span>
@@ -486,11 +486,11 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
                 type="checkbox"
               />
               <div
-                class="block w-10 h-6 rounded-full transition-all duration-300 ease-in-out"
-                style="background-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6)); backdrop-filter: blur(4px);"
+                class="block w-10 h-6 rounded-full transition-all duration-[var(--duration-normal,0.3s)] ease-in-out"
+                style="background-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#19e3f0));"
               />
               <div
-                class="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-300 ease-in-out shadow-sm"
+                class="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-[var(--duration-normal,0.3s)] ease-in-out shadow-sm"
                 style="background-color: var(--sarak-switch-thumb, #ffffff); transform: translateX(100%);"
               />
             </div>
@@ -528,7 +528,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
             />
           </svg>
           <p
-            class="text-2xs text-white/40 leading-relaxed uppercase font-medium"
+            class="text-2xs text-theme-text/40 leading-relaxed uppercase font-medium"
           >
             As cores e estilos são sincronizados dinamicamente com o Sarak Design Engine v7.5.
           </p>
@@ -539,10 +539,10 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
       class="p-8 mt-auto"
     >
       <div
-        class="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-center"
+        class="p-4 rounded-2xl bg-[var(--sarak-secondary-color,#7c5cff)]/10 border border-[var(--sarak-secondary-color,#7c5cff)]/20 text-center"
       >
         <span
-          class="text-3xs font-black uppercase tracking-[var(--sarak-tracking-wider,0.4em)] text-indigo-400/60"
+          class="text-3xs font-black uppercase tracking-[var(--sarak-tracking-wider,0.4em)] text-[var(--sarak-secondary-color,#7c5cff)]/60"
         >
           Sovereign Engine v7.0
         </span>

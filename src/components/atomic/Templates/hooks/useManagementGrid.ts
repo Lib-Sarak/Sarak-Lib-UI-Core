@@ -1,100 +1,107 @@
-import { useEffect, useReducer } from 'react';
-import api from '../../../../shared/services/api';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 
-type State<T> = {
-    data: T[];
-    loading: boolean;
-    activeModal: { type: string; group?: string } | null;
-};
+type ItemAction<T> = (item: T) => void | Promise<void>;
 
-type Action<T> =
-    | { type: 'FETCH_START' }
-    | { type: 'FETCH_SUCCESS'; payload: T[] }
-    | { type: 'FETCH_ERROR' }
-    | { type: 'SET_MODAL'; payload: { type: string; group?: string } | null };
-
-function reducer<T>(state: State<T>, action: Action<T>): State<T> {
-    switch (action.type) {
-        case 'FETCH_START':
-            return { ...state, loading: true };
-        case 'FETCH_SUCCESS':
-            return { ...state, loading: false, data: action.payload };
-        case 'FETCH_ERROR':
-            return { ...state, loading: false };
-        case 'SET_MODAL':
-            return { ...state, activeModal: action.payload };
-        default:
-            return state;
-    }
+interface UseManagementGridOptions<T extends Record<string, unknown>> {
+    data?: T[];
+    load?: () => Promise<T[]>;
+    groupBy: string;
+    ghostGroups: string[];
+    getVal: (item: T, path: string) => unknown;
+    onToggle?: ItemAction<T>;
+    onDelete?: ItemAction<T>;
 }
 
-export const useManagementGrid = <T extends Record<string, unknown>>(
-    endpoint: string, 
-    groupBy: string, 
-    ghostGroups: string[], 
-    getVal: (obj: T, path: string) => unknown
-) => {
-    const [state, dispatch] = useReducer<React.Reducer<State<T>, Action<T>>>(reducer, { 
-        data: [], 
-        loading: true, 
-        activeModal: null 
+type ManagementGridState<T> = {
+    data: T[];
+    loading: boolean;
+    error: string | null;
+};
+
+export const useManagementGrid = <T extends Record<string, unknown>>({
+    data,
+    load,
+    groupBy,
+    ghostGroups,
+    getVal,
+    onToggle,
+    onDelete,
+}: UseManagementGridOptions<T>) => {
+    const [state, setState] = useState<ManagementGridState<T>>({
+        data: data ?? [],
+        loading: data === undefined && Boolean(load),
+        error: null,
     });
+    const dataRef = useRef(data);
+    const loadRef = useRef(load);
+    const toggleRef = useRef(onToggle);
+    const deleteRef = useRef(onDelete);
+    const text = useLibraryText();
+    const textRef = useRef(text);
+    dataRef.current = data;
+    loadRef.current = load;
+    toggleRef.current = onToggle;
+    deleteRef.current = onDelete;
+    textRef.current = text;
+    const hasLoad = Boolean(load);
+    const hasProvidedData = data !== undefined;
 
-    const load = async () => {
-        dispatch({ type: 'FETCH_START' });
+    const loadData = useCallback(async () => {
+        if (dataRef.current !== undefined) return;
+        const loadFromHost = loadRef.current;
+        if (!loadFromHost) {
+            setState((current) => current.loading ? { ...current, loading: false } : current);
+            return;
+        }
+        setState((current) => ({ ...current, loading: true, error: null }));
         try {
-            const res = await api.get(endpoint);
-            dispatch({ type: 'FETCH_SUCCESS', payload: res.data || [] });
-        } catch (e: unknown) {
-            console.error("[SarakManagementGrid] Erro:", e);
-            dispatch({ type: 'FETCH_ERROR' });
+            const nextData = await loadFromHost();
+            setState((current) => ({ ...current, data: nextData, loading: false, error: null }));
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : textRef.current('genericLoadError');
+            setState((current) => ({ ...current, loading: false, error: message }));
         }
-    };
+    }, [hasLoad]);
 
-    useEffect(() => { load(); }, [endpoint]);
+    useEffect(() => {
+        if (hasProvidedData) {
+            setState((current) => current.loading || current.error
+                ? { ...current, loading: false, error: null }
+                : current);
+            return;
+        }
+        void loadData();
+    }, [hasProvidedData, loadData]);
 
-    const handleToggle = async (id: string) => {
+    const runItemAction = useCallback(async (item: T, action: ItemAction<T> | undefined) => {
+        if (!action) return;
         try {
-            await api.post(`${endpoint}/${id}/toggle`);
-            load();
-        } catch (e: unknown) {
-            console.error("Erro toggle:", e);
+            await action(item);
+            if (dataRef.current === undefined) await loadData();
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : textRef.current('genericLoadError');
+            setState((current) => ({ ...current, error: message }));
         }
-    };
+    }, [loadData]);
 
-    const handleDelete = async (id: string) => {
-        if (!window.confirm("Remover permanentemente?")) return;
-        try {
-            await api.delete(`${endpoint}/${id}`);
-            load();
-        } catch (e: unknown) {
-            console.error("Erro delete:", e);
-        }
-    };
-
-    const handleAction = (action: string, group?: string) => {
-        if (action.includes('modal') || action.includes('add')) {
-            dispatch({ type: 'SET_MODAL', payload: { type: action, group } });
-        }
-    };
-
-    const groups = state.data.reduce((acc, item: T) => {
-        const key = String(getVal(item, groupBy) || 'outros');
-        if (!acc[key]) acc[key] = [];
-        acc[key].push(item);
-        return acc;
-    }, {} as Record<string, T[]>);
-
-    ghostGroups.forEach(g => { if (!groups[g]) groups[g] = []; });
+    const sourceData = data ?? state.data;
+    const groups = sourceData.reduce<Record<string, T[]>>((result, item) => {
+        const name = String(getVal(item, groupBy) ?? '');
+        if (!name) return result;
+        result[name] = [...(result[name] ?? []), item];
+        return result;
+    }, {});
+    ghostGroups.forEach((groupName) => {
+        groups[groupName] ??= [];
+    });
 
     return {
         groups,
         loading: state.loading,
-        activeModal: state.activeModal,
-        setActiveModal: (modal: { type: string; group?: string } | null) => dispatch({ type: 'SET_MODAL', payload: modal }),
-        load,
-        handleToggle,
-        handleDelete,
-        handleAction
+        error: state.error,
+        load: loadData,
+        handleToggle: (item: T) => runItemAction(item, toggleRef.current),
+        handleDelete: (item: T) => runItemAction(item, deleteRef.current),
     };
 };

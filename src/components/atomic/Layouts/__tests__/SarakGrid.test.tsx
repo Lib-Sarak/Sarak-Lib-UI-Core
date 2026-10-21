@@ -84,8 +84,8 @@ describe('SarakGrid', () => {
     // mas o consumidor pode declará-la). Sob ela, o SarakGrid não emite mais a forma
     // QUEBRADA (12 trilhas sem span nenhum) — emite as classes de default de span por
     // breakpoint. Prova só que as classes de span estão na malha; NÃO prova quantos
-    // pixels o filho ocupa nem que o span do filho vence o do pai — isso é medição em
-    // Chromium real (Passo 3 do resumo da plan-49), jsdom não resolve cascata CSS.
+    // pixels o filho ocupa nem que o span do filho vence o do pai — isso é medido no
+    // teste de contrato do grid em browser-tests/grid-span-contract.spec.ts.
     it('sob col-12 (escolha explícita de tema), emite o default de span por breakpoint — não mais a forma sem span nenhum', () => {
         const { container } = render(
             <SarakGrid>
@@ -103,10 +103,9 @@ describe('SarakGrid', () => {
     });
 
     // plan-49: um filho que declara o PRÓPRIO span continua com a classe intacta no DOM
-    // — o SarakGrid não intercepta nem remove classe de filho. NÃO prova que essa classe
-    // vence o default do pai na cascata (jsdom não resolve especificidade CSS real) —
-    // essa prova é a medição em Chromium do Passo 3.
-    it('sob col-12, um filho com col-span-6 PRÓPRIO mantém a própria classe intacta (a vitória em cascata é provada em Chromium, não aqui)', () => {
+    // — o SarakGrid não intercepta nem remove classe de filho. A prioridade e a área
+    // ocupada são medidas em Chromium em browser-tests/grid-span-contract.spec.ts.
+    it('sob col-12, mantém no DOM o col-span-* declarado pelo filho', () => {
         const { container } = render(
             <SarakGrid>
                 <div className="col-span-6" data-testid="child-with-span">a</div>

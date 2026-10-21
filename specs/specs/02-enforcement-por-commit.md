@@ -30,6 +30,7 @@ Esta spec descreve o pipeline, as decisões de desenho com a justificativa de ca
 
 | Anel | Quando | Consequência | Custo medido |
 | --- | --- | --- | --- |
+| **Trava de autoria** (§2.0) | Todo commit e todo push, de qualquer branch, **antes de tudo** | **BLOQUEIA** sessão de agente sem autorização | ~0,06 s |
 | **0 — Segurança** | Todo commit, sem exceção | **BLOQUEIA** | < 1 s |
 | **1 — Contrato** | Commit que toca código/artefato | **BLOQUEIA** no vermelho | ~2,9 s |
 | **2 — Auditoria** | Commit que toca código/artefato | **BLOQUEIA só em REGRESSÃO** | ~7 s (+ ~11 s se tocar `.ts`/`.tsx`) |
@@ -40,6 +41,19 @@ Esta spec descreve o pipeline, as decisões de desenho com a justificativa de ca
 **Custo total de um commit de código:** ~10 s sem TypeScript, ~20 s com. Um commit de documentação custa **~0,6 s** (§3). **Custo de um push da `main` com código:** ~170 s; de qualquer outro push: instantâneo.
 
 > A tabela tem cinco linhas para quatro anéis porque o **Anel 3 foi partido em dois** em P27: a suíte virou hook, o `build`/`package:check` não — e não vai virar. O porquê está na §4.1.
+
+## 2.0 A trava de autoria — o primeiro passo dos dois hooks
+
+`check-agent-git-write.mjs` roda **antes de qualquer anel**: no `pre-commit`, antes do Anel 0; no `pre-push`,
+antes do anel de release e antes de o hook ler o stdin. Se o ambiente carrega um marcador de sessão de agente
+(`CLAUDECODE`, `AI_AGENT` ou `CLAUDE_CODE_SESSION_ID`) e **não** carrega `SARAK_GIT_ESCRITA_AUTORIZADA`, o
+commit ou o push é bloqueado, com a regra, o motivo e a forma de o dono autorizar. O terminal do dono não
+carrega marcador algum e passa direto.
+
+Diferente do anel de release, que só age para `refs/heads/main`, **a trava vale para todo push, de qualquer
+branch**: a pergunta que ela faz é *quem está escrevendo*, não *o que está sendo escrito*. A regra é a **R38**
+([[00-regras-e-invariantes]]), com o vão declarado nela; o contrato de quem decide é a
+[[17-contrato-de-operacao-git]] §2.0. Não roda na CI: o runner não tem sessão de agente.
 
 ## 2.1 Anel 0 — Segurança (inalterado)
 
@@ -60,10 +74,12 @@ Os gates que estão **verdes hoje e devem continuar verdes para sempre**:
 | `check-no-deep-import.mjs` | R27 — Zero deep import *(entrou em 2026-08-05, `plan-12`)* |
 | `check-gate-limits.mjs` | R18 — Todo gate declara o que não vê *(entrou em 2026-08-05, `plan-12`)* |
 | `generate-token-types.ts --check` | R4 · R29 — tipo gerado bate com o schema *(entrou em 2026-08-05, `plan-12`; roda logo no início, porque `guide`/`dev-kit` leem esse arquivo)* |
-| `check-container-query.mjs` | — *(`plan-40.2`)* — container query sem interpolação de template literal *(entrou em 2026-08-18, `plan-52`)* |
+| `check-container-query-literal.mjs` | — *(`plan-40.2`)* — container query sem interpolação de template literal *(entrou em 2026-08-18, `plan-52`)* |
 | `check-container-query-boundary.mjs` | — *(`plan-41`)* — todo `@min-[…]` tem ancestral `container-type` *(entrou em 2026-08-18, `plan-52`)* |
-| `check-persistence-doc.mjs` | R17 — paridade doc × código de persistência *(entrou em 2026-08-18, `plan-52`)* |
+| `check-persistence-doc-identifiers.mjs` | R17 — paridade doc × código de persistência *(entrou em 2026-08-18, `plan-52`)* |
 | `check-class-merge.mjs` | R35 — a classe do chamador vence a do átomo *(entrou em 2026-09-08)* |
+| `check-icon-port.mjs` | R39 — todo ícone da lib passa pela porta de ícones |
+| `check-chrome-token-parity.mjs` | — *([[05-cromo-e-slots]] §2.4)* — todo token de cromo tem consumidor no cromo |
 | `check-trail-citation.mjs --staged` | R36 — o código não cita o rastro de execução. Lê só as linhas **adicionadas** do staged; é o único gate do Anel 1 que não roda também na CI, pela mesma razão do Anel 0 (§9) *(entrou em 2026-09-13)* |
 
 **Verde é a única saída aceitável.** Não há baseline aqui porque não há dívida: qualquer vermelho é regressão introduzida agora.
@@ -383,7 +399,8 @@ CI mudou **para os anéis locais**, que é o assunto desta spec.
 > olha nada é pior que passo ausente. **O Anel 0 continua exclusivamente local**, e essa é a única parte deste
 > pipeline sem rede remota nenhuma.
 
-*(O Playwright não entrou na conta: foi removido da base em 2026-08-18 — [[01-gates-e-baseline]] §2.6.)*
+*(A medição em navegador, `cromo-css-real`, não entra nesta conta: roda só na CI, num job próprio —
+[[01-gates-e-baseline]] §2.6 e [[16-integracao-continua]] §4.2.1.)*
 
 # 10. Critérios de aceite
 

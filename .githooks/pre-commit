@@ -12,6 +12,13 @@
 if command -v python >/dev/null 2>&1; then PY=python; else PY=python3; fi
 
 # =============================================================================
+# TRAVA DE AUTORIA — primeiro passo, antes do Anel 0. Sessão de agente sem a
+# autorização declarada NAQUELE comando não escreve no Git
+# (specs/specs/17-contrato-de-operacao-git.md §2.0).
+# =============================================================================
+node gates/scripts/contrato/check-agent-git-write.mjs || exit 1
+
+# =============================================================================
 # ANEL 0 — Segurança e índice (custo desprezível, sempre roda)
 # =============================================================================
 echo "[Sarak] Anel 0 — verificando vazamento de segredos no staged..."
@@ -139,11 +146,15 @@ anel1 "limites declarados dos gates" "R18 — Todo gate declara o que NÃO vê" 
 # plan-52: os três abaixo já existiam em package.json, verdes, e não rodavam em
 # lugar nenhum (nem hook, nem gates:full, nem run_audit). Custam o mesmo que os
 # gates acima (~0,7-0,9s) — entram pelo mesmo molde `anel1()`.
-anel1 "container query sem interpolação"   "— (plan-39 · endurecido pela plan-44)" "npm run container-query:check" gates/scripts/contrato/check-container-query-literal.mjs
-anel1 "container query com boundary"       "— (plan-41)" "npm run container-query-boundary:check" gates/scripts/contrato/check-container-query-boundary.mjs
+anel1 "container query sem interpolação"   "— (07-responsividade-e-multidispositivo)" "npm run container-query:check" gates/scripts/contrato/check-container-query-literal.mjs
+anel1 "container query com boundary"       "— (07-responsividade-e-multidispositivo §6.1)" "npm run container-query-boundary:check" gates/scripts/contrato/check-container-query-boundary.mjs
 anel1 "paridade doc × código de persistência" "R17 — Não transcrever fonte viva" "npm run persistence-doc:check" gates/scripts/contrato/check-persistence-doc-identifiers.mjs
-anel1 "merge de classe no átomo"           "— (plan-57)" "npm run class-merge:check" gates/scripts/contrato/check-class-merge.mjs
-anel1 "paridade token de cromo × consumidor" "— (plan-66)" "npm run chrome-token-parity:check" gates/scripts/contrato/check-chrome-token-parity.mjs
+anel1 "merge de classe no átomo"           "R35 — A classe do chamador vence a do átomo" "npm run class-merge:check" gates/scripts/contrato/check-class-merge.mjs
+anel1 "porta única de ícones"             "R39 — Todo ícone da lib passa pela porta de ícones" "npm run icon-port:check" gates/scripts/contrato/check-icon-port.mjs
+anel1 "paridade token de cromo × consumidor" "— (05-cromo-e-slots §2.4)" "npm run chrome-token-parity:check" gates/scripts/contrato/check-chrome-token-parity.mjs
+anel1 "leitor de todo valor emitido pelo motor" "R40 — Todo valor que o motor emite tem leitor" "npm run token-reader:check" gates/scripts/contrato/check-token-reader.mjs
+anel1 "!important visual em seletor amplo do motor" "— (02-design-engine §9.1)" "npm run css-important:check" gates/scripts/contrato/check-css-important-visual.mjs
+anel1 "branco/preto fixo em componente"     "— (02-design-engine §10)" "npm run fixed-translucent:check" gates/scripts/contrato/check-fixed-translucent.mjs
 anel1 "citação do rastro de execução"       "R36 — O código não cita o rastro de execução" "npm run trail-citation:check" gates/scripts/contrato/check-trail-citation.mjs --staged
 # `build-info:check` NÃO entra aqui, mesmo motivo do `package:check` (spec 02
 # §4.1): exige `dist/` buildado. Mora só no `gates:full`.
@@ -160,6 +171,70 @@ if ! npx tsx scripts/generate-token-types.ts --check; then
   exit 1
 fi
 echo "[Sarak] Anel 1 (tipos de token) OK."
+
+# Contrato das variáveis de design (um dono por variável, todo nome lido existe, reserva = padrão do
+# token). Em TypeScript, pelo mesmo motivo do gate de tipos acima: lê o schema de verdade.
+if ! npx tsx gates/scripts/contrato/check-variable-contract.ts; then
+  echo ""
+  echo "⛔ COMMIT BLOQUEADO — Anel 1: contrato das variáveis de design"
+  echo "   Regra violada : — (02-design-engine §4 e §9.1)"
+  echo "   Veja o detalhe: npm run variable-contract:check"
+  exit 1
+fi
+echo "[Sarak] Anel 1 (contrato das variáveis) OK."
+
+# Injeção sem disputa de canal (a mesma variável não vai ao inline e ao <style> responsivo, e a troca de tema
+# não deixa variável inline órfã). Em TypeScript pelo mesmo motivo: roda o motor de verdade.
+if ! npx tsx gates/scripts/contrato/check-channel-dispute.ts; then
+  echo ""
+  echo "⛔ COMMIT BLOQUEADO — Anel 1: injeção sem disputa de canal"
+  echo "   Regra violada : — (02-design-engine §4 e §10.9)"
+  echo "   Veja o detalhe: npm run channel-dispute:check"
+  exit 1
+fi
+echo "[Sarak] Anel 1 (injeção sem disputa de canal) OK."
+
+# Documentação de token (kind, modeDependent e usage em todo token; exceção por token que esvazia a cada lote).
+if ! npx tsx gates/scripts/contrato/check-token-documentation.ts; then
+  echo ""
+  echo "⛔ COMMIT BLOQUEADO — Anel 1: documentação de token"
+  echo "   Regra violada : — (04-contrato-de-tokens-e-paridade)"
+  echo "   Veja o detalhe: npm run token-docs:check"
+  exit 1
+fi
+echo "[Sarak] Anel 1 (documentação de token) OK."
+
+# Completude dos temas embarcados (todo estético no principal, os de modo na contraparte, nenhum funcional; exceção por tema que esvazia a cada lote).
+if ! npx tsx gates/scripts/contrato/check-theme-completeness.ts; then
+  echo ""
+  echo "⛔ COMMIT BLOQUEADO — Anel 1: completude dos temas embarcados"
+  echo "   Regra violada : — (09-temas-e-presets §7)"
+  echo "   Veja o detalhe: npm run theme-completeness:check"
+  exit 1
+fi
+echo "[Sarak] Anel 1 (completude dos temas) OK."
+
+# Fontes embarcadas (toda família do painel tem arquivo, crédito e licença em dist/fonts; peso dentro do orçamento).
+# Lê o dist/fonts gerado pelo build (`npm run fonts:embed`); sem ele o gate acusa.
+if ! npx tsx gates/scripts/contrato/check-fonts.ts; then
+  echo ""
+  echo "⛔ COMMIT BLOQUEADO — Anel 1: fontes embarcadas"
+  echo "   Regra violada : — (05-build-e-distribuicao · plan de fontes embarcadas)"
+  echo "   Veja o detalhe: npm run fonts:check (gere dist/fonts com npm run build)"
+  exit 1
+fi
+echo "[Sarak] Anel 1 (fontes embarcadas) OK."
+
+# Contrato do painel (padrão na faixa e na grade, valor de tema dentro do contrato numérico, todo tipo do
+# schema com controle, opção que grava o value). Em TypeScript pelo mesmo motivo: lê o schema e os temas.
+if ! npx tsx gates/scripts/contrato/check-panel-contract.ts; then
+  echo ""
+  echo "⛔ COMMIT BLOQUEADO — Anel 1: contrato do painel"
+  echo "   Regra violada : — (06-painel-de-customizacao-e-preview · 09-temas-e-presets §4.4)"
+  echo "   Veja o detalhe: npm run panel-contract:check"
+  exit 1
+fi
+echo "[Sarak] Anel 1 (contrato do painel) OK."
 fi
 
 # =============================================================================

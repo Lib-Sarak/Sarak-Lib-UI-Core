@@ -84,17 +84,17 @@ export const SarakContextMenu: React.FC<SarakContextMenuProps> = ({
             ref={menuRef}
             role="menu"
             data-sarak-context-menu="true"
-            className={`fixed flex shadow-xl ${className}`}
+            className={`fixed flex shadow-[var(--dynamic-shadow)] ${className}`}
             style={{
                 flexDirection: 'column',
                 paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)',
                 top: coords.y,
                 left: coords.x,
                 minWidth: 'var(--sarak-context-menu-min-width, 10rem)',
-                borderRadius: 'var(--sarak-card-radius,12px)',
-                background: 'var(--color-theme-card,#1e293b)',
-                color: 'var(--sarak-text-main,#ffffff)',
-                border: 'var(--sarak-border-width, 1px) solid var(--border-color,#334155)',
+                borderRadius: 'var(--sarak-card-radius,10px)',
+                background: 'var(--color-theme-card,#101622)',
+                color: 'var(--sarak-text-main,#f2f6fb)',
+                border: 'var(--sarak-border-width, 1px) solid var(--border-color,rgba(255,255,255,0.09))',
                 zIndex: 'var(--z-index-tooltip, 9000)' as React.CSSProperties['zIndex'],
             }}
         >

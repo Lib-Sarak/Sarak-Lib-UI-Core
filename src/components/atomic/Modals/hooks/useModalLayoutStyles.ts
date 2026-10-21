@@ -9,7 +9,7 @@ export interface SarakModalLayoutContext {
 
 const headerStylesMap: Record<string, { h: string, c: string }> = {
     'stacked': { h: 'flex-col-reverse items-start gap-2', c: 'top-4 right-4 ' },
-    'floating': { h: 'justify-start items-center', c: '-top-10 -right-10 text-white ' },
+    'floating': { h: 'justify-start items-center', c: '-top-10 -right-10 text-[var(--sarak-on-overlay,#ffffff)] ' },
     'inline': { h: 'justify-between items-center', c: 'top-4 right-4 ' }
 };
 

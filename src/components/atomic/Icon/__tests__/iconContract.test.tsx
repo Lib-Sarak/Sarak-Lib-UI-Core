@@ -58,6 +58,7 @@ describe('Contrato de ícones (Spec 41 §2.2/§2.3)', () => {
             const { container } = renderComFamilia('tabler', 'Check');
             expect(container.querySelector('svg')?.getAttribute('viewBox')).toBe('0 0 24 24');
         });
+
     });
 
     describe('nome desconhecido degrada com aviso, sem quebrar (postura da Spec 17)', () => {

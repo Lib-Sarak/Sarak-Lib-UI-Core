@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, Shield, SlidersHorizontal } from 'lucide-react';
+import { useMotionTokens } from '../../../../components/atomic/hooks/useMotionTokens';
 import { CategoryLabel, Section, InputControl, MediaUploaderControl } from '../../components/DesignControls';
 import { TokenControl } from './TokenControl';
 import { PreferencesSchema } from '../../../../core/Design/schema/preferences';
@@ -14,7 +15,6 @@ interface ThemeGlobalSettingsProps {
     setActiveSectionId: (id: string | null) => void;
     isDirty: boolean;
     onReset: () => void;
-    onApply: () => void;
     globalComponent: ComponentSchema | undefined;
     catalogMap: Map<string, { name?: string; description?: string }>;
     draft: SarakDesignState;
@@ -30,7 +30,6 @@ export const ThemeGlobalSettings: React.FC<ThemeGlobalSettingsProps> = ({
     setActiveSectionId,
     isDirty,
     onReset,
-    onApply,
     globalComponent,
     catalogMap,
     draft,
@@ -38,17 +37,18 @@ export const ThemeGlobalSettings: React.FC<ThemeGlobalSettingsProps> = ({
     previewDevice,
     sarak
 }) => {
+    const { durations } = useMotionTokens();
     return (
         <div key="global-pillar" className="border-b border-[var(--theme-border)] last:border-0">
             <CategoryLabel
                 icon={Globe}
-                title="0. Configurações Globais (3)"
+                title="Configurações globais (3)"
                 index={0}
+                pillarId="global"
                 isOpen={activePillarId === 'global'}
                 onToggle={() => setActivePillarId(activePillarId === 'global' ? null : 'global')}
                 isDirty={isDirty}
                 onReset={onReset}
-                onApply={onApply}
             />
             <AnimatePresence>
                 {activePillarId === 'global' && (
@@ -56,7 +56,7 @@ export const ThemeGlobalSettings: React.FC<ThemeGlobalSettingsProps> = ({
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: 'easeInOut' }}
+                        transition={{ duration: durations.normal, ease: 'easeInOut' }}
                         className="overflow-hidden bg-[var(--theme-surface)]"
                     >
                         <div className="px-2 py-2 flex flex-col gap-1">
@@ -74,7 +74,7 @@ export const ThemeGlobalSettings: React.FC<ThemeGlobalSettingsProps> = ({
                                             const meta = catalogMap.get(token.id);
                                             const enhancedToken = { ...token, label: meta?.name || token.label, description: meta?.description || token.description };
                                             return (
-                                                <TokenControl key={enhancedToken.id} token={enhancedToken as SarakDesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
+                                                <TokenControl key={enhancedToken.id} token={enhancedToken as SarakDesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} draft={draft as Record<string, SarakTokenValue>} updateDraft={updateDraft} />
                                             );
                                         })}
                                     </div>
@@ -98,7 +98,7 @@ export const ThemeGlobalSettings: React.FC<ThemeGlobalSettingsProps> = ({
                                         const meta = catalogMap.get(token.id);
                                         const enhancedToken = { ...token, label: meta?.name || token.label, description: meta?.description || token.description };
                                         return (
-                                            <TokenControl key={enhancedToken.id} token={enhancedToken as SarakDesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
+                                            <TokenControl key={enhancedToken.id} token={enhancedToken as SarakDesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} draft={draft as Record<string, SarakTokenValue>} updateDraft={updateDraft} />
                                         );
                                     })}
                                 </div>

@@ -129,6 +129,24 @@ guardado, e ninguém lembra de recuperá-lo.)*
 > inventário do que conta como mutação, não a proibição. Contrato em
 > `specs/specs/17-contrato-de-operacao-git.md` §2.0 e `specs/adr/012-escrita-git-sob-autorizacao-do-dono.md`.
 >
+> 🔒 **A porta tem forma mecânica: a trava do `pre-commit` e do `pre-push`.** O ambiente de uma sessão de
+> agente carrega `CLAUDECODE`, `AI_AGENT` e `CLAUDE_CODE_SESSION_ID`; com qualquer um deles e **sem**
+> `SARAK_GIT_ESCRITA_AUTORIZADA`, o hook bloqueia o `git commit` e o `git push` **antes de qualquer outro
+> passo** (`gates/scripts/contrato/check-agent-git-write.mjs` — o cabeçalho dele declara o que ele não vê).
+> Quando o dono **solicitou e autorizou** aquele commit ou push, **escreva a variável na frente do comando,
+> nunca a exporte** — ela vale para aquele comando e para nenhum outro:
+>
+> ```powershell
+> # (b) mutação autorizada pelo dono, nesta conversa — PowerShell:
+> $env:SARAK_GIT_ESCRITA_AUTORIZADA='1'; git commit -m "<mensagem redigida>"; Remove-Item Env:SARAK_GIT_ESCRITA_AUTORIZADA
+> # bash (Git Bash):  SARAK_GIT_ESCRITA_AUTORIZADA=1 git commit -m "<mensagem redigida>"
+> ```
+>
+> Sem a autorização do dono, a variável **não se escreve** — a trava existe para o acidente virar ato
+> deliberado, e escrevê-la por conta própria é a violação que ela denuncia. Quando o dono digita o commit
+> no terminal dele, ou pela UI do VS Code, a trava não dispara: o terminal dele não carrega os marcadores.
+> A co-autoria continua proibida em qualquer caso.
+>
 > **Rode você mesmo todo comando de leitura.** Não devolva ao dono um bloco de `git log` para ele colar e
 > trazer de volta — isso não é segurança, é transferir a ele o trabalho que você faz melhor, e é a mesma
 > falha que a regra *"não terceirize ao dono o que um comando responde"* proíbe.

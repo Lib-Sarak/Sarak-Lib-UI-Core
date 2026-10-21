@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { SARAK_SCOPE_CLASS, SarakScopeContext } from '../scope';
+import { SARAK_BUILD_INFO_ATTRIBUTE } from '../buildSeal';
 import type { SarakUIMode } from '../types';
 
 interface SarakScopeRootProps {
@@ -38,7 +39,12 @@ export const SarakScopeRoot: React.FC<SarakScopeRootProps> = ({ mode, children, 
 
     return (
         <SarakScopeContext.Provider value={contextValue}>
-            <div className={SARAK_SCOPE_CLASS} data-sarak-scope-root="true" ref={onScopeElement}>
+            <div
+                className={SARAK_SCOPE_CLASS}
+                data-sarak-scope-root="true"
+                data-sarak-build-info={SARAK_BUILD_INFO_ATTRIBUTE}
+                ref={onScopeElement}
+            >
                 {children}
             </div>
         </SarakScopeContext.Provider>

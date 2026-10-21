@@ -1,59 +1,64 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 import { useManagementGrid } from '../useManagementGrid';
-import api from '../../../../../shared/services/api';
 
-vi.mock('../../../../../shared/services/api', () => ({
-    default: {
-        get: vi.fn(),
-        post: vi.fn(),
-        delete: vi.fn(),
-    }
-}));
+const getVal = (item: Record<string, unknown>, path: string): unknown => item[path];
 
-describe('useManagementGrid characterization', () => {
-    beforeEach(() => {
-        vi.clearAllMocks();
-    });
-
-    it('groups data correctly and adds ghost groups', async () => {
-        const mockData = [
+describe('useManagementGrid', () => {
+    it('groups host data and appends ghost groups', () => {
+        const data = [
             { id: '1', category: 'A' },
             { id: '2', category: 'A' },
             { id: '3', category: 'B' },
         ];
-        (api.get as unknown as { mockResolvedValueOnce: (val: unknown) => void }).mockResolvedValueOnce({ data: mockData });
-        
-        const getVal = (obj: Record<string, unknown>, path: string) => obj[path];
-        
-        const { result } = renderHook(() => 
-            useManagementGrid('/api/grid', 'category', ['C'], getVal)
-        );
-        
-        expect(result.current.loading).toBe(true);
-        
-        await act(async () => {
-            await new Promise(resolve => setTimeout(resolve, 0));
-        });
-        
-        expect(result.current.loading).toBe(false);
+        const { result } = renderHook(() => useManagementGrid({
+            data,
+            groupBy: 'category',
+            ghostGroups: ['C'],
+            getVal,
+        }));
+
         expect(result.current.groups).toEqual({
-            'A': [{ id: '1', category: 'A' }, { id: '2', category: 'A' }],
-            'B': [{ id: '3', category: 'B' }],
-            'C': [] // ghost group
+            A: [data[0], data[1]],
+            B: [data[2]],
+            C: [],
         });
     });
 
-    it('handleAction sets activeModal correctly', () => {
-        const getVal = (obj: Record<string, unknown>, path: string) => obj[path];
-        const { result } = renderHook(() => 
-            useManagementGrid('/api/grid', 'category', [], getVal)
-        );
-        
-        act(() => {
-            result.current.handleAction('add_item', 'A');
+    it('loads records through the host callback', async () => {
+        const load = vi.fn(async () => [{ id: '1', category: 'A' }]);
+        const { result } = renderHook(() => useManagementGrid({
+            load,
+            groupBy: 'category',
+            ghostGroups: [],
+            getVal,
+        }));
+
+        await waitFor(() => expect(result.current.groups.A).toHaveLength(1));
+        expect(load).toHaveBeenCalledOnce();
+    });
+
+    it('passes records to optional item callbacks', async () => {
+        const item = { id: '1', category: 'A' };
+        const data = [item];
+        const ghostGroups: string[] = [];
+        const onToggle = vi.fn();
+        const onDelete = vi.fn();
+        const { result } = renderHook(() => useManagementGrid({
+            data,
+            groupBy: 'category',
+            ghostGroups,
+            getVal,
+            onToggle,
+            onDelete,
+        }));
+
+        await act(async () => {
+            await result.current.handleToggle(item);
+            await result.current.handleDelete(item);
         });
-        
-        expect(result.current.activeModal).toEqual({ type: 'add_item', group: 'A' });
+
+        expect(onToggle).toHaveBeenCalledWith(item);
+        expect(onDelete).toHaveBeenCalledWith(item);
     });
 });

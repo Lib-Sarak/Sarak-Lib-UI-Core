@@ -17,7 +17,7 @@ describe('SarakCardGrid', () => {
     it('planta @container na raiz — ancestral do grid de cards e do cabeçalho responsivo', () => {
         const { container } = render(
             <SarakUIProvider config={{ mode: 'dark' }}>
-                <SarakCardGrid endpoint="/mock" label="Mock" />
+                <SarakCardGrid label="Mock" />
             </SarakUIProvider>
         );
 

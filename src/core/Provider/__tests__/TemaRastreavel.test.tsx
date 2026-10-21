@@ -16,6 +16,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect } from 'vitest';
 import SarakUIProvider from '../SarakUIProvider';
+import { sarakPreloadThemes } from '../../Design/presets/themes/registry';
 import { useSarakUI } from '../SarakUIProvider';
 import { SarakShellThemeToggle } from '../../../components/atomic/Navigation/SarakShellThemeToggle';
 
@@ -35,7 +36,9 @@ const Probe = () => {
 };
 
 describe('Tema rastreável — a contraparte é encontrada pela porta `initialTheme` (plan-27)', () => {
-    it('trocar de modo pelo ShellThemeToggle aplica a CONTRAPARTE AUTORADA de minimalist-airy, não a síntese', () => {
+    it('trocar de modo pelo ShellThemeToggle aplica a CONTRAPARTE AUTORADA de minimalist-airy, não a síntese', async () => {
+        // O tema forçado por `initialTheme` não está no boot: pré-carregado, o primeiro quadro já é a aplicação.
+        await sarakPreloadThemes(['minimalist-airy']);
         render(
             <SarakUIProvider initialTheme="minimalist-airy">
                 <SarakShellThemeToggle variant="mini" />

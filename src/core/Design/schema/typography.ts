@@ -11,27 +11,49 @@ export const THEME_FONTS = [
     { value: "'Sora', sans-serif", name: "Sora", category: "Sans-Serif" },
     { value: "'Syne', sans-serif", name: "Syne", category: "Sans-Serif" },
     { value: "'Archivo', sans-serif", name: "Archivo", category: "Sans-Serif" },
+    { value: "'Chakra Petch', sans-serif", name: "Chakra Petch", category: "Sans-Serif" },
+    { value: "'Nunito', sans-serif", name: "Nunito", category: "Sans-Serif" },
+    { value: "'DM Sans', sans-serif", name: "DM Sans", category: "Sans-Serif" },
+    { value: "'Manrope', sans-serif", name: "Manrope", category: "Sans-Serif" },
+    { value: "'Work Sans', sans-serif", name: "Work Sans", category: "Sans-Serif" },
+    { value: "'Open Sans', sans-serif", name: "Open Sans", category: "Sans-Serif" },
+    { value: "'Raleway', sans-serif", name: "Raleway", category: "Sans-Serif" },
+    { value: "'Source Sans 3', sans-serif", name: "Source Sans 3", category: "Sans-Serif" },
+    { value: "'Poppins', sans-serif", name: "Poppins", category: "Sans-Serif" },
+    { value: "'Lato', sans-serif", name: "Lato", category: "Sans-Serif" },
     { value: "system-ui, -apple-system, sans-serif", name: "System Default", category: "Sans-Serif" },
 
     // Display & Impact
     { value: "'Unbounded', display", name: "Unbounded", category: "Display" },
     { value: "'Bebas Neue', display", name: "Bebas Neue", category: "Display" },
+    { value: "'Orbitron', sans-serif", name: "Orbitron", category: "Display" },
+    { value: "'VT323', monospace", name: "VT323", category: "Display" },
+    { value: "'Oswald', sans-serif", name: "Oswald", category: "Display" },
 
     // Serifadas
     { value: "'Playfair Display', serif", name: "Playfair Display", category: "Serif" },
     { value: "'Fraunces', serif", name: "Fraunces", category: "Serif" },
+    { value: "'Source Serif 4', serif", name: "Source Serif 4", category: "Serif" },
+    { value: "'Roboto Slab', serif", name: "Roboto Slab", category: "Serif" },
+    { value: "'Lora', serif", name: "Lora", category: "Serif" },
+    { value: "'Merriweather', serif", name: "Merriweather", category: "Serif" },
+    { value: "'PT Serif', serif", name: "PT Serif", category: "Serif" },
 
     // Script & Handwriting
     { value: "'Dancing Script', cursive", name: "Dancing Script", category: "Handwriting" },
     { value: "'Pacifico', cursive", name: "Pacifico", category: "Handwriting" },
     { value: "'Satisfy', cursive", name: "Satisfy", category: "Handwriting" },
     { value: "'Caveat', cursive", name: "Caveat", category: "Handwriting" },
+    { value: "'Patrick Hand', cursive", name: "Patrick Hand", category: "Handwriting" },
 
     // Monospaced
-    { value: "'JetBrains Mono', monospace", name: "JetBrains Mono", category: "Monospace" }
+    { value: "'JetBrains Mono', monospace", name: "JetBrains Mono", category: "Monospace" },
+    { value: "'Fira Code', monospace", name: "Fira Code", category: "Monospace" },
+    { value: "'IBM Plex Mono', monospace", name: "IBM Plex Mono", category: "Monospace" },
+    { value: "'Space Mono', monospace", name: "Space Mono", category: "Monospace" }
 ];
 
-const FONT_OPTIONS = THEME_FONTS.map(font => ({
+export const FONT_OPTIONS = THEME_FONTS.map(font => ({
     id: font.value,
     label: `${font.name} [${font.category}]`
 }));
@@ -43,9 +65,12 @@ export const TypographySchema: ComponentSchema = {
         // --- FAMÍLIAS DE FONTES ---
         {
             id: 'headingFont',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Aplica a família escolhida aos cabeçalhos HTML h1–h6 e às variantes h1, h2 e h3 de SarakTypography; permite criar contraste com a fonte do corpo.",
             label: 'Fonte de Títulos',
             type: 'font',
-            description: 'Família tipográfica usada em títulos (H1/H2) — pode ser diferente da fonte do corpo para criar contraste hierárquico (ex. uma Display/Serif de impacto para títulos + Sans-Serif neutra para o corpo).',
+            description: 'Família tipográfica usada nos cabeçalhos HTML h1–h6 e nas variantes h1/h2/h3 de SarakTypography — pode diferir da fonte do corpo para criar contraste hierárquico (ex.: uma Display/Serif de impacto para cabeçalhos + Sans-Serif neutra para o corpo).',
             axis: 'texture',
             constraints: {
                 options: FONT_OPTIONS
@@ -55,6 +80,9 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'bodyFont',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Aplica a família tipográfica aos parágrafos, rótulos e demais textos corridos.",
             label: 'Fonte de Corpo',
             type: 'font',
             description: 'Família tipográfica usada no corpo de texto geral — deve priorizar legibilidade em blocos longos de texto acima de expressividade estética.',
@@ -67,6 +95,9 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'monoFont',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Aplica a família monoespaçada a valores tabulares e trechos de código.",
             label: 'Fonte Mono (Dados)',
             type: 'font',
             description: 'Família tipográfica monoespaçada usada para dados tabulares, código e valores numéricos — garante alinhamento vertical perfeito entre dígitos/caracteres.',
@@ -81,35 +112,47 @@ export const TypographySchema: ComponentSchema = {
         // --- CORES DE TEXTO ---
         {
             id: 'textColorMaster',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Colore o texto principal de parágrafos e rótulos; títulos usam titleColor.",
             label: 'Texto Principal',
             type: 'color',
-            description: 'Cor de texto padrão usada na maioria do conteúdo — deve ter o maior contraste possível contra o fundo, já que é a cor mais lida em toda a interface.',
+            description: 'Cor de texto padrão do conteúdo — parágrafos, rótulos e a maior parte do que se lê; deve ter o maior contraste possível contra o fundo. Os títulos e cabeçalhos usam `titleColor`.',
             axis: 'color',
-            defaultValue: '#ffffff',
+            defaultValue: '#f2f6fb',
             cssVars: ['--sarak-text-main', '--theme-title', '--theme-text-primary']
         },
         {
             id: 'textColorSecondary',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Colore textos secundários, como descrições e metadados, para reduzir a ênfase sem os ocultar.",
             label: 'Texto Secundário',
             type: 'color',
             description: 'Cor de texto de menor ênfase (ex. descrições, metadados) — contraste reduzido em relação a `textColorMaster` para criar hierarquia visual sem sacrificar legibilidade.',
             axis: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.7)',
+            defaultValue: 'rgba(242, 246, 251, 0.72)',
             cssVars: ['--sarak-text-sec']
         },
         {
             id: 'textColorMuted',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Colore dicas e placeholders; o contraste mais baixo da escala aparece em campos e textos auxiliares.",
             label: 'Texto Mudo / Hint',
             type: 'color',
             description: 'Cor de texto para dicas/placeholders/informação de menor importância — o nível mais baixo de contraste da escala de texto. Use com moderação para não comprometer acessibilidade (WCAG).',
             axis: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.4)',
+            defaultValue: 'rgba(242, 246, 251, 0.55)',
             cssVars: ['--sarak-text-muted', '--theme-muted', '--theme-text-muted']
         },
 
         // --- H1: O IMPACTO MASTER ---
         {
             id: 'h1Size',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Define o tamanho do título H1 em cada breakpoint; valores muito grandes podem quebrar linhas ou ocupar a tela.",
             label: 'Tamanho (H1)',
             type: 'slider',
             description: 'Tamanho da fonte do título de maior hierarquia (H1), em pixels, com valores independentes por breakpoint. É o elemento tipográfico mais impactante da tela — usado para o título principal de uma página/seção.',
@@ -123,6 +166,9 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'h1Weight',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Controla a espessura do título H1 e o peso visual do cabeçalho principal.",
             label: 'Peso (H1)',
             type: 'select',
             description: 'Peso (espessura) da fonte do H1. Black/Bold dão máximo impacto visual (comum em hero sections); Light/Regular produzem um clima mais editorial/discreto.',
@@ -137,11 +183,14 @@ export const TypographySchema: ComponentSchema = {
                     { id: '900', label: 'Black' }
                 ]
             },
-            defaultValue: '900',
+            defaultValue: '800',
             cssVars: ['--sarak-h1-weight']
         },
         {
             id: 'h1LineHeight',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Controla o espaço entre linhas do H1; valores baixos comprimem títulos quebrados.",
             label: 'Altura da Linha (H1)',
             type: 'slider',
             description: 'Altura de linha do H1 (multiplicador do tamanho da fonte). Valores próximos de 1 deixam o título mais compacto/denso (comum em títulos grandes de uma única linha); valores maiores dão mais respiro entre linhas quando o título quebra.',
@@ -152,6 +201,9 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'h1LetterSpacing',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Aproxima ou afasta os caracteres do H1; valores negativos compactam o título.",
             label: 'Espaçamento (H1)',
             type: 'slider',
             description: 'Espaçamento entre caracteres do H1, em pixels. Valores negativos (comum em títulos grandes/Black) aproximam as letras para um visual mais compacto/impactante; valores positivos as afastam.',
@@ -165,6 +217,9 @@ export const TypographySchema: ComponentSchema = {
         // --- H2: O TÍTULO DE SEÇÃO ---
         {
             id: 'h2Size',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Define o tamanho dos títulos de seção H2 em cada breakpoint.",
             label: 'Tamanho (H2)',
             type: 'slider',
             description: 'Tamanho da fonte de títulos de seção (H2), em pixels, com valores independentes por breakpoint — segundo nível da hierarquia tipográfica, abaixo do H1.',
@@ -178,6 +233,9 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'h2Weight',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Controla a espessura dos títulos H2 e sua hierarquia em relação ao H1.",
             label: 'Peso (H2)',
             type: 'select',
             description: 'Peso (espessura) da fonte do H2 — geralmente um passo abaixo do peso do H1 para reforçar a hierarquia entre os dois níveis de título.',
@@ -197,6 +255,9 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'h2LineHeight',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Controla o espaço entre linhas dos títulos H2 quando ocupam mais de uma linha.",
             label: 'Altura da Linha (H2)',
             type: 'slider',
             description: 'Altura de linha do H2 (multiplicador do tamanho da fonte) — controla o respiro vertical de títulos de seção que quebram em múltiplas linhas.',
@@ -207,6 +268,9 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'h3Size',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Define o tamanho dos subtítulos H3; eles reutilizam o peso configurado para H2.",
             label: 'Tamanho (H3)',
             type: 'slider',
             description: 'Tamanho da fonte de subtítulos (H3), em pixels — terceiro nível da hierarquia tipográfica, abaixo do H2. Reusa o peso de `h2Weight`.',
@@ -221,6 +285,9 @@ export const TypographySchema: ComponentSchema = {
 
         {
             id: 'bodyLineHeight',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Controla o espaço entre linhas dos parágrafos e afeta a leitura de blocos longos.",
             label: 'Altura da Linha (Corpo)',
             type: 'slider',
             description: 'Altura de linha do texto de corpo (multiplicador do tamanho da fonte) — o fator mais importante para legibilidade de blocos longos de texto. Valores muito baixos (<1.3) dificultam a leitura de parágrafos.',
@@ -231,6 +298,9 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'bodyWeight',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Controla a espessura do texto corrido sem mudar o tamanho da fonte.",
             label: 'Peso do Corpo',
             type: 'select',
             description: 'Peso (espessura) da fonte do texto de corpo — Regular é o padrão universal de legibilidade; Medium dá um pouco mais de presença sem comprometer a leitura de parágrafos longos.',
@@ -249,6 +319,9 @@ export const TypographySchema: ComponentSchema = {
         // --- TRANSFORMAÇÃO & ESTÉTICA ---
         {
             id: 'headingTransform',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Converte a caixa dos títulos em maiúscula, capitalizada ou preserva a digitação original.",
             label: 'Transformação de Títulos',
             type: 'select',
             description: 'Transformação de caixa aplicada aos títulos — UPPERCASE dá um clima mais técnico/institucional (comum em labels/eyebrows), Capitalize é mais editorial, Normal preserva a digitação original.',
@@ -265,6 +338,9 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'textSmoothing',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Alterna o antialiasing tipográfico aplicado à página; desligado, o navegador usa a suavização padrão.",
             label: 'Suavização (Smoothing)',
             type: 'boolean',
             description: 'Liga/desliga o antialiasing de fonte (`-webkit-font-smoothing`) — mantenha ativo na maioria dos casos; só desative para depurar problemas de renderização de fonte em telas específicas.',
@@ -273,6 +349,9 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'textGlowIntensity',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Adiciona brilho ao H1 na cor primária; zero remove o efeito.",
             label: 'Intensidade de Glow (H1)',
             type: 'slider',
             description: 'Intensidade de um brilho (text-shadow glow) aplicado ao H1 — 0 desativa o efeito; valores altos dão um clima neon/cyberpunk ao título principal. Use com moderação em temas mais sóbrios.',
@@ -285,7 +364,10 @@ export const TypographySchema: ComponentSchema = {
         // --- MICRO TYPE-SCALE (Spec 26: rótulos, badges, legendas) ---
         {
             id: 'typeScaleMicro',
-            label: 'Escala Micro (7px)',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Define a menor escala tipográfica, usada em rótulos densos; valores baixos podem prejudicar a leitura.",
+            label: 'Escala Micro',
             type: 'slider',
             description: 'Tamanho de fonte da escala tipográfica mais miúda do sistema (7px por padrão) — reservado para rótulos extremamente pequenos onde espaço é crítico (ex. tags densas). Use com cautela para não comprometer legibilidade/acessibilidade.',
             axis: 'density',
@@ -296,7 +378,10 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'typeScaleTiny',
-            label: 'Escala Tiny (8px)',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Define o tamanho de textos muito pequenos usados em badges e legendas.",
+            label: 'Escala Tiny',
             type: 'slider',
             description: 'Tamanho de fonte da escala "tiny" (8px por padrão) — usado em badges/legendas muito pequenas.',
             axis: 'density',
@@ -307,7 +392,10 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'typeScale3xs',
-            label: 'Escala 3XS (9px)',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Define o degrau 3XS usado em rótulos compactos de cartões e indicadores.",
+            label: 'Escala 3XS',
             type: 'slider',
             description: 'Tamanho de fonte da escala "3XS" (9px por padrão) — degrau intermediário entre `typeScaleTiny` e `typeScale2xs` na micro-escala de rótulos/badges.',
             axis: 'density',
@@ -318,7 +406,10 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'typeScale2xs',
-            label: 'Escala 2XS (10px)',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Define o tamanho de metadados e rótulos pequenos em componentes da biblioteca.",
+            label: 'Escala 2XS',
             type: 'slider',
             description: 'Tamanho de fonte da escala "2XS" (10px por padrão) — usado em rótulos pequenos e metadados secundários.',
             axis: 'density',
@@ -329,7 +420,10 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'typeScaleCaption',
-            label: 'Escala Caption (12px)',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Define o tamanho de legendas, notas e texto auxiliar.",
+            label: 'Escala Caption',
             type: 'slider',
             description: 'Tamanho de fonte da escala "caption" (12px por padrão) — usado em legendas de imagens, notas de rodapé e texto auxiliar.',
             axis: 'density',
@@ -340,7 +434,10 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'trackingTight',
-            label: 'Tracking Tight (0.2em)',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Controla o espaçamento de caracteres em rótulos pequenos e textos curtos em caixa alta.",
+            label: 'Tracking Tight',
             type: 'slider',
             description: 'Espaçamento entre caracteres (tracking) da escala "tight", em `em` — usado em textos maiúsculos pequenos onde é preciso alguma abertura sem exagerar (ex. labels de badge).',
             axis: 'density',
@@ -351,7 +448,10 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'trackingSnug',
-            label: 'Tracking Snug (0.25em)',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Controla o espaçamento de caracteres em textos curtos, um passo acima de trackingTight.",
+            label: 'Tracking Snug',
             type: 'slider',
             description: 'Espaçamento entre caracteres (tracking) da escala "snug", em `em` — um degrau acima de `trackingTight` na progressão de tracking usada em textos maiúsculos pequenos.',
             axis: 'density',
@@ -362,7 +462,10 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'trackingWide',
-            label: 'Tracking Wide (0.3em)',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Controla o espaçamento de textos curtos de categoria e de mensagens auxiliares.",
+            label: 'Tracking Wide',
             type: 'slider',
             description: 'Espaçamento entre caracteres (tracking) da escala "wide", em `em` — dá um clima mais editorial/label a textos maiúsculos curtos (ex. eyebrows, tags de categoria).',
             axis: 'density',
@@ -373,7 +476,10 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'trackingWider',
-            label: 'Tracking Wider (0.4em)',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Amplia o espaçamento de textos curtos que precisam de mais abertura que trackingWide.",
+            label: 'Tracking Wider',
             type: 'slider',
             description: 'Espaçamento entre caracteres (tracking) da escala "wider", em `em` — mais espaçado que `trackingWide`, para textos maiúsculos curtos que precisam de bastante destaque/respiro.',
             axis: 'density',
@@ -384,7 +490,10 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'trackingWidest',
-            label: 'Tracking Widest (0.5em)',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Aplica o espaçamento mais aberto da escala comum em rótulos de poucas palavras.",
+            label: 'Tracking Widest',
             type: 'slider',
             description: 'Espaçamento entre caracteres (tracking) da escala "widest", em `em` — o mais espaçado da progressão comum, usado só em textos muito curtos (1-2 palavras) por questão de legibilidade.',
             axis: 'density',
@@ -395,7 +504,10 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'trackingUltra',
-            label: 'Tracking Ultra (0.8em)',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Espaça fortemente o título do estado vazio; valores altos separam as letras.",
+            label: 'Tracking Ultra',
             type: 'slider',
             description: 'Espaçamento entre caracteres (tracking) extremo, em `em` — reservado para efeitos tipográficos muito específicos (ex. uma única palavra/sigla espaçada como elemento decorativo).',
             axis: 'density',
@@ -407,19 +519,11 @@ export const TypographySchema: ComponentSchema = {
 
         // --- EXTENSÃO DA MICRO TYPE-SCALE (Spec 28: features/DesignEngine) ---
         {
-            id: 'trackingSubtle',
-            label: 'Tracking Subtle (0.1em)',
-            type: 'slider',
-            description: 'Espaçamento entre caracteres (tracking) mais discreto da escala, em `em` — abertura sutil, quase imperceptível, para textos que precisam de só um leve refinamento.',
-            axis: 'density',
-            unit: 'em',
-            constraints: { min: 0, max: 1, step: 0.05 },
-            defaultValue: 0.1,
-            cssVars: ['--sarak-tracking-subtle']
-        },
-        {
             id: 'typeScaleXs',
-            label: 'Escala XS (11px)',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Define o tamanho XS usado por rótulos de eixo e valores pequenos dos gráficos.",
+            label: 'Escala XS',
             type: 'slider',
             description: 'Tamanho de fonte da escala "XS" (11px por padrão) — degrau entre `typeScaleCaption` e o tamanho base do corpo.',
             axis: 'density',
@@ -430,7 +534,10 @@ export const TypographySchema: ComponentSchema = {
         },
         {
             id: 'typeScaleXl',
-            label: 'Escala XL (20px)',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Define o tamanho XL para texto de destaque, como o campo de busca e títulos auxiliares.",
+            label: 'Escala XL',
             type: 'slider',
             description: 'Tamanho de fonte da escala "XL" (20px por padrão) — usado em texto de destaque que não chega a ser um título (ex. lead paragraph, subtítulo de card).',
             axis: 'density',
@@ -438,17 +545,6 @@ export const TypographySchema: ComponentSchema = {
             constraints: { min: 14, max: 28 },
             defaultValue: 20,
             cssVars: ['--sarak-type-scale-xl']
-        },
-        {
-            id: 'typeScaleDisplay',
-            label: 'Escala Display (10rem)',
-            type: 'slider',
-            description: 'Tamanho de fonte "display", em `rem` — o maior da escala tipográfica, reservado para números/palavras de impacto extremo (ex. um contador gigante, hero numérico).',
-            axis: 'density',
-            unit: 'rem',
-            constraints: { min: 4, max: 16, step: 0.5 },
-            defaultValue: 10,
-            cssVars: ['--sarak-type-scale-display']
         }
     ]
 };

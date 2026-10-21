@@ -29,7 +29,7 @@ export const PillarSelector: React.FC<PillarSelectorProps> = ({
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="flex items-center justify-between gap-1 p-1 bg-white/5 rounded-xl border border-white/5"
+                    className="flex items-center justify-between gap-1 p-1 bg-theme-text/5 rounded-xl border border-theme-text/5"
                 >
                     {SOVEREIGN_PILLARS.map((pillar: { id: string; label: string; icon: React.ElementType; schemas: string[] }) => {
                         const Icon = pillar.icon;
@@ -45,8 +45,8 @@ export const PillarSelector: React.FC<PillarSelectorProps> = ({
                                 }}
                                 className={`relative flex-1 flex flex-col items-center gap-1.5 py-2 rounded-lg transition-all ${
                                     isActive 
-                                        ? 'bg-[var(--theme-primary)] text-black shadow-lg' 
-                                        : 'hover:bg-white/5 text-white/30 hover:text-white/60'
+                                        ? 'bg-[var(--theme-primary)] text-theme-on-primary shadow-lg' 
+                                        : 'hover:bg-theme-text/5 text-theme-text/30 hover:text-theme-text/60'
                                 }`}
                                 title={pillar.label}
                             >
@@ -59,7 +59,7 @@ export const PillarSelector: React.FC<PillarSelectorProps> = ({
                                             e.stopPropagation();
                                             resetComponent(pillar.schemas);
                                         }}
-                                        className={`absolute top-1 right-1 p-0.5 rounded-full transition-all ${isActive ? 'bg-black text-[var(--theme-primary)] hover:scale-110' : 'bg-[var(--theme-primary)] text-black animate-pulse hover:animate-none hover:scale-110'}`}
+                                        className={`absolute top-1 right-1 p-0.5 rounded-full transition-all ${isActive ? 'bg-theme-body text-[var(--theme-primary)] hover:scale-110' : 'bg-[var(--theme-primary)] text-theme-body animate-pulse hover:animate-none hover:scale-110'}`}
                                         title="Resetar Pilar"
                                     >
                                         <RotateCcw size={8} strokeWidth={4} />

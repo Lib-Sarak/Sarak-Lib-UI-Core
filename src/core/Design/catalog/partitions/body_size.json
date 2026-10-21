@@ -1,8 +1,9 @@
 [
   {
     "tokenId": "bodySize",
+    "visualImpact": "fontes",
     "name": "Tamanho Global das Fontes (Body)",
-    "description": "A âncora root base do sistema de tipografia. Altera a escala de todos os textos de corpo ao mesmo tempo.",
+    "description": "Tamanho da fonte do corpo: o texto que herda dele muda; componentes com tamanho próprio (escala tipográfica em px) não escalam.",
     "type": "select",
     "importance": 90,
     "categories": [

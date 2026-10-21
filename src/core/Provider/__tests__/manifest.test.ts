@@ -16,10 +16,6 @@ describe('DESIGN_MANIFEST', () => {
         expect(SARAK_DESIGN_MANIFEST.mode.transform?.('other')).toBe('light');
     });
 
-    it('should transform colorPalette correctly', () => {
-        expect(SARAK_DESIGN_MANIFEST.colorPalette.transform?.('some-palette')).toBe('some-palette');
-    });
-
     it('should transform colors using computeColorVariants', () => {
         // `buttonColor`/`buttonHoverColor`/`cardHoverColor`/`cardActiveColor`/
         // `buttonActiveColor` saíram desta lista (plan-21, 2026-08-10): eram
@@ -58,16 +54,12 @@ describe('DESIGN_MANIFEST', () => {
     // `DESIGN_MANIFEST`) foi removida; `hapticIntensity` não tinha nenhum
     // consumidor, nem de CSS nem de JS, em lugar nenhum do código.
     it('should transform floats correctly', () => {
-        expect(SARAK_DESIGN_MANIFEST.contrastCurve.transform?.('1.5')).toBe(1.5);
-        expect(SARAK_DESIGN_MANIFEST.contrastCurve.transform?.('invalid')).toBe(1.0);
         expect(SARAK_DESIGN_MANIFEST.cardSpotlightOpacity.transform?.('0.5')).toBe(0.5);
         expect(SARAK_DESIGN_MANIFEST.cardSpotlightOpacity.transform?.('invalid')).toBe(0);
         expect(SARAK_DESIGN_MANIFEST.sidebarMinWidth.transform?.('300')).toBe(300);
         expect(SARAK_DESIGN_MANIFEST.sidebarMinWidth.transform?.('invalid')).toBe(200);
         expect(SARAK_DESIGN_MANIFEST.sidebarMaxWidth.transform?.('500')).toBe(500);
         expect(SARAK_DESIGN_MANIFEST.sidebarMaxWidth.transform?.('invalid')).toBe(450);
-        expect(SARAK_DESIGN_MANIFEST.noiseIntensity.transform?.('50')).toBe(0.5);
-        expect(SARAK_DESIGN_MANIFEST.noiseIntensity.transform?.('invalid')).toBe(0);
     });
 
     // `headingLetterSpacing`, `chartPalette`, `useTabularNums`, `scaleRatio`

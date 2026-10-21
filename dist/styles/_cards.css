@@ -1,51 +1,9 @@
 /* 4. ATOMIC CARD ENGINE - INDUSTRIAL RENDERER (v12.5) */
-.sarak-card, .bg-theme-card {
-    position: relative;
-    isolation: isolate;
-    
-    /* Geometria de Alta Fidelidade (Assimetria & Raio) */
-    border-radius: var(--sarak-card-radius-tl, var(--sarak-card-radius, var(--radius-theme, 12px))) 
-                   var(--sarak-card-radius-tr, var(--sarak-card-radius, var(--radius-theme, 12px))) 
-                   var(--sarak-card-radius-br, var(--sarak-card-radius, var(--radius-theme, 12px))) 
-                   var(--sarak-card-radius-bl, var(--sarak-card-radius, var(--radius-theme, 12px)));
-    
-    /* Suporte a Bordas Independentes */
-    border-top: var(--sarak-card-border-top, var(--sarak-card-border-width, 1px)) solid var(--sarak-card-border-color, var(--theme-border));
-    border-bottom: var(--sarak-card-border-bottom, var(--sarak-card-border-width, 1px)) solid var(--sarak-card-border-color, var(--theme-border));
-    border-left: var(--sarak-card-border-left, var(--sarak-card-border-width, 1px)) solid var(--sarak-card-border-color, var(--theme-border));
-    border-right: var(--sarak-card-border-right, var(--sarak-card-border-width, 1px)) solid var(--sarak-card-border-color, var(--theme-border));
-    
-    padding: var(--sarak-card-padding-md, var(--theme-card-padding, 24px));
-    
-    /* Fundo Base (Sovereign Glass) */
-    background-color: var(--sarak-card-bg, var(--theme-card)) !important;
-    opacity: var(--sarak-card-surface-opacity, 1);
-    
-    /* Sombras Reativas & Inner Glow */
-    box-shadow: 
-        0 20px 50px -12px rgba(0, 0, 0, calc(var(--sarak-card-shadow-spread, 20) * 0.01)),
-        inset 0 0 var(--sarak-card-inner-glow-width, 0px) var(--sarak-card-inner-glow-color, transparent);
-    
-    /* Transição Fluida */
-    transition: transform 0.4s var(--sarak-ease-main), box-shadow 0.4s ease, border-color 0.2s ease, background-color 0.3s ease;
-    
-    /* Motor de Filtros */
-    backdrop-filter: blur(var(--sarak-card-backdrop-blur, var(--sarak-card-blur, 0px)));
-    -webkit-backdrop-filter: blur(var(--sarak-card-backdrop-blur, var(--sarak-card-blur, 0px)));
-
-    /* CORTE GEOMÉTRICO (OCTÓGONO DINÂMICO) */
-    clip-path: polygon(
-        var(--sarak-card-geometric-cut, 0px) 0%, 
-        calc(100% - var(--sarak-card-geometric-cut, 0px)) 0%, 
-        100% var(--sarak-card-geometric-cut, 0px), 
-        100% calc(100% - var(--sarak-card-geometric-cut, 0px)), 
-        calc(100% - var(--sarak-card-geometric-cut, 0px)) 100%, 
-        var(--sarak-card-geometric-cut, 0px) 100%, 
-        0% calc(100% - var(--sarak-card-geometric-cut, 0px)), 
-        0% var(--sarak-card-geometric-cut, 0px)
-    );
-}
-
+/* A caixa do cartão (posicionamento, preenchimento, sombra e recorte), o raio, a largura da borda, o
+   desfoque, a transição e a SUPERFÍCIE (cor do fundo e da borda, com as opacidades do tema) moram em
+   `_card-defaults.css` (subcamada que cede à classe e ao `style` do componente), e o material, a moldura
+   e a sombra sob o ponteiro em `_card-materials.css`. Aqui fica o que o componente não escolhe por
+   classe: o brilho (`::before`) e o movimento. */
 
 /* 4.3 GLOW SYSTEM */
 .sarak-card::before {
@@ -59,12 +17,148 @@
         color-mix(in srgb, var(--sarak-card-glow-color, var(--theme-primary)), transparent 80%), 
         transparent 70%
     );
-    opacity: var(--sarak-card-glow-intensity, 0);
-    transition: opacity 0.5s ease;
+    opacity: var(--sarak-card-glow-intensity, 0.25);
+    transition: opacity var(--duration-slow, 0.6s) ease;
 }
 
 /* INTERACTIVE STATES */
-.sarak-card:hover {
-    border-color: rgba(var(--theme-primary-rgb), 0.4);
-    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6);
+/* A borda de hover (padrão do cartão) mora em `_card-defaults.css`, onde `hover:border-*` a vence; a sombra
+   sob o ponteiro (e a declarada, `cardShadow`) mora em `_card-materials.css`. */
+
+/* CARTÃO INTERATIVO: o hover (brilho e movimento) vale só para o cartão cuja superfície inteira
+   responde ao ponteiro — o que traz `data-sx-card-interactive="true"` (`SarakTitleCard`,
+   `SarakImageCard` e o `SarakCard` com a prop `interactive`). Cartão contêiner (painel de chat,
+   matriz, formulário) não anuncia clique, então não se move nem brilha, em nenhum valor de
+   `cardHoverStyle`.
+
+   Brilho no hover: soma `cardHoverGlowIncrease` à intensidade base (`cardGlowIntensity`).
+   O padrão do aumento é 0, então sem tema o hover não ganha brilho — como antes. */
+.sarak-card[data-sx-card-interactive="true"]:hover::before {
+    opacity: min(1, calc(var(--sarak-card-glow-intensity, 0.25) + var(--sarak-card-hover-glow, 0.2)));
+}
+
+/* ESTILO DE HOVER (`cardHoverStyle`): o atributo `data-sx-card-hover-style` vem do motor.
+   `lift` sobe `cardHoverTranslate` px (negativo = sobe); `expand` cresce um pouco;
+   `glow-only` não move o cartão e acende o brilho: a camada de brilho vai a opacidade plena e o
+   cartão ganha um halo na cor primária (o halo é a sombra, em `_card-materials.css`). */
+[data-sx-card-hover-style="lift"] .sarak-card[data-sx-card-interactive="true"]:hover {
+    transform: translateY(var(--sarak-card-hover-y, -2px));
+}
+[data-sx-card-hover-style="expand"] .sarak-card[data-sx-card-interactive="true"]:hover {
+    transform: scale(1.02);
+}
+[data-sx-card-hover-style="glow-only"] .sarak-card[data-sx-card-interactive="true"]:hover {
+    transform: none;
+}
+[data-sx-card-hover-style="glow-only"] .sarak-card[data-sx-card-interactive="true"]:hover::before {
+    opacity: 1;
+}
+
+/* Movimento reduzido e modo de desempenho: o cartão não se move no hover. */
+@media (prefers-reduced-motion: reduce) {
+    [data-sx-card-hover-style] .sarak-card[data-sx-card-interactive="true"]:hover {
+        transform: none !important;
+    }
+}
+.sarak-eco-mode .sarak-card:hover {
+    transform: none !important;
+}
+
+/* PEÇAS DE COMPOSIÇÃO do SarakCard: as classes do cabeçalho e do rodapé vêm do componente
+   (utilitárias arbitrárias, que o `className` do consumidor ainda sobrescreve). */
+
+/* BOTÃO DE AÇÃO do SarakActionCard. Fundo/texto só no estilo preenchido: no `borderline`
+   o fundo transparente é a identidade do estilo. Os padrões reproduzem o primário do botão
+   (cor primária do tema, texto `--text-muted`, altura `py-4`, raio do botão). */
+.sarak-card-action-btn {
+    padding-block: var(--sarak-card-action-btn-padding, 16px);
+    border-radius: var(--sarak-card-action-btn-radius, var(--radius-btn));
+}
+.sarak-card-action-btn--filled {
+    background-color: var(--sarak-card-action-btn-bg, var(--sarak-primary-color, #19e3f0));
+    color: var(--sarak-card-action-btn-text, var(--text-muted, rgba(242, 246, 251, 0.55)));
+}
+.sarak-card-action-btn--filled:hover {
+    background-color: var(--sarak-card-action-btn-hover-bg, var(--sarak-card-action-btn-bg, var(--sarak-primary-color, #19e3f0)));
+}
+
+/* CAMPO do SarakSearchCard: placeholder, fundo e texto focados valem só dentro do cartão
+   de busca — os campos fora dele seguem os tokens de campo. `!important` porque o próprio
+   `SarakInput` escreve fundo, texto e placeholder por classe utilitária (`bg-[var(--sarak-input-bg…)]`),
+   que vem de uma camada depois desta e venceria o token do cartão (medido em navegador). */
+.sarak-search-card input::placeholder {
+    color: var(--sarak-card-search-placeholder, var(--sarak-input-placeholder-color, color-mix(in srgb, var(--sarak-input-text-color, var(--text-muted, rgba(242, 246, 251, 0.55))) 30%, transparent))) !important;
+}
+.sarak-search-card input:focus {
+    background-color: var(--sarak-card-search-bg-focus, var(--sarak-input-bg, var(--color-theme-card, #101622))) !important;
+    color: var(--sarak-card-search-text-focus, var(--sarak-input-text-color, var(--text-muted, rgba(242, 246, 251, 0.55)))) !important;
+}
+
+/* APERTO do botão de ação (`cardActionClickScale`): no clique ou toque o botão encolhe até a escala do token.
+   `transform: none` tira o aperto de elemento (`btnActiveScale`) e `scale` vence o `active:scale-*` do átomo, para a
+   escala do cartão ser a única em jogo — sem somar as três. */
+.sarak-card-action-btn:active {
+    transform: none;
+    scale: var(--sarak-card-action-click-scale, 0.96);
+}
+
+/* SPOTLIGHT do cartão (`cardSpotlightOpacity`): um gradiente radial da cor primária do tema, na opacidade do token,
+   centrado onde o ponteiro está (`--sarak-spot-x`/`--sarak-spot-y`: o centro em `_card-defaults.css`, e o cartão as
+   sobrescreve no `style` enquanto o ponteiro fino se move).
+   A camada já nasce invisível e acende no hover do cartão. Token 0 = `data-spotlight="0"` = nada desenhado. */
+.sarak-card[data-spotlight="1"] > .spotlight-effect {
+    background-image: radial-gradient(
+        circle at var(--sarak-spot-x) var(--sarak-spot-y),
+        color-mix(in srgb, var(--sarak-primary-color, var(--theme-primary)) calc(var(--spotlight-opacity, 0.1) * 100%), transparent),
+        transparent 70%
+    );
+}
+
+/* TRAÇO LUMINOSO do cartão (`borderBeamEnabled`; no `SarakSearchCard` também `cardSearchBorderBeamActive`, só com o
+   campo em foco): um anel de gradiente cônico na cor primária que gira com `--beam-angle` (`@property` e
+   `@keyframes beam-rotate` em `_animations.css`). O anel é a própria camada com `padding` da largura da borda, e a
+   máscara (conteúdo × caixa inteira, `exclude`) deixa só a borda à mostra. O raio é `inherit`: acompanha o do cartão,
+   canto a canto, inclusive o que uma classe do consumidor troca. A raiz acende por `data-border-beam="1"`; fora disso
+   a camada é `display: none` e não há animação rodando. */
+.sarak-card > .border-beam-effect {
+    display: none;
+}
+.sarak-card[data-border-beam="1"] > .border-beam-effect {
+    --beam-width: var(--sarak-card-border-width, 1px);
+    --beam-color: var(--sarak-primary-color, var(--theme-primary));
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: inherit;
+    padding: var(--beam-width);
+    background: conic-gradient(from var(--beam-angle), transparent 0%, transparent 70%, var(--beam-color) 100%);
+    -webkit-mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
+    mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: beam-rotate calc(var(--duration-slow, 0.6s) * 5) linear infinite;
+}
+/* Cartão fora da tela (`usePauseBeamOffscreen`): o giro pausa e o custo de estilo some, sem apagar o anel. */
+.sarak-card[data-border-beam-paused="1"] > .border-beam-effect {
+    animation-play-state: paused;
+}
+
+/* Movimento reduzido (token e preferência do sistema): sem aperto, sem spotlight e sem traço. */
+:root[data-sx-reduced-motion="true"] .sarak-card-action-btn:active {
+    scale: 1;
+}
+:root[data-sx-reduced-motion="true"] .sarak-card > .spotlight-effect,
+:root[data-sx-reduced-motion="true"] .sarak-card > .border-beam-effect {
+    display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+    .sarak-card-action-btn:active {
+        scale: 1;
+    }
+    .sarak-card > .spotlight-effect,
+    .sarak-card[data-border-beam] > .border-beam-effect {
+        display: none;
+    }
 }

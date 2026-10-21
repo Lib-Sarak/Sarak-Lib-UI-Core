@@ -1,5 +1,6 @@
 import React from 'react';
-import { Search, Check } from 'lucide-react';
+
+import { SarakIcon } from "../../Icon/SarakIcon";
 import { ModelRoute } from './types';
 import { SarakInput } from '../../Inputs';
 import { SarakButton } from '../../Buttons';
@@ -27,7 +28,7 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({
 
   return (
     <div
-      className="absolute bottom-full left-0 w-80 bg-[var(--sarak-card-bg)] border border-[var(--sarak-card-border-color)] rounded-sarak shadow-2xl backdrop-blur-2xl overflow-hidden z-50"
+      className="absolute bottom-full left-0 w-80 bg-[var(--sarak-card-bg)] border border-[var(--sarak-card-border-color)] rounded-sarak shadow-[var(--dynamic-shadow)] backdrop-blur-2xl overflow-hidden z-50"
       style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}
     >
       <div style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>
@@ -37,7 +38,7 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({
             placeholder="Pesquisar modelos..."
             value={modelSearch}
             onChange={(e) => setModelSearch(e.target.value)}
-            leftIcon={<Search size={14} />}
+            leftIcon={<SarakIcon name="Search" size={14} />}
             fullWidth
           />
         </div>
@@ -56,7 +57,7 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({
                 <span className="text-xs font-bold truncate w-full">{m.display_name}</span>
                 <span className="text-2xs opacity-60 uppercase tracking-tighter">{m.provider}</span>
               </div>
-              {selectedRoute?.model === m.model && <Check size={14} />}
+              {selectedRoute?.model === m.model && <SarakIcon name="Check" size={14} />}
             </SarakButton>
           ))}
         </div>

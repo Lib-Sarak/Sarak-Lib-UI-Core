@@ -2,9 +2,10 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { MASTER_DESIGN_MAP, sarakGetAllDesignTokens } from '../../../core/Design/master-map';
 import { useDesignDraftSync } from './useDesignDraftSync';
 import { useLastAppliedSnapshot } from './useLastAppliedSnapshot';
-import { SarakUIContextType, SarakDesignState, SarakThemeEntry } from '../../../core/Provider/types';
+import { SarakUIContextType, SarakDesignState } from '../../../core/Provider/types';
 import { SarakTokenValue } from '../../../core/Design/types';
 import { resolveThemeForMode, syncThemeWithMode } from '../../../core/Design/presets/themes/color-engine';
+import { composeThemeDesign } from '../../../core/Design/presets/themes/compose';
 
 /**
  * Deep Comparison Utility (v12.0)
@@ -53,17 +54,14 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
         if (!resolved.mode) resolved.mode = base.mode || 'dark';
         return resolved as unknown as SarakDesignState;
     }, [draftState, sarak.systemDesign]);
-
     const [toast, setToast] = useState<{ type: 'success' | 'warning', message: string } | null>(null);
     const showToast = useCallback((type: 'success' | 'warning', message: string) => {
         setToast({ type, message });
         setTimeout(() => setToast(null), 3000);
     }, []);
     const { canUndoLastApply, captureBeforeApply, undoLastApply: undoLastApplyRaw } = useLastAppliedSnapshot(sarak, showToast);
-    // `setDraftState` local, nunca `sarak.setDraftDesign` direto — mesmo caminho
-    // de `resetToken`/`resetComponent`, sem eco na ponte bidirecional (a chamada
-    // direta a `sarak.setDraftDesign` compete com o sync de `useDesignDraftSync`
-    // e o rascunho antigo volta a vencer).
+    // `setDraftState` local, nunca `sarak.setDraftDesign` direto: sem eco na ponte
+    // bidirecional (`useDesignDraftSync`), senão o rascunho antigo volta a vencer.
     const undoLastApply = useCallback(() => { undoLastApplyRaw(); setDraftState(null); }, [undoLastApplyRaw]);
 
     // 3. Mapeamento Dinâmico de Tokens por Componente (Schema ID)
@@ -106,6 +104,19 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
         return allKeys.some(key => !areValuesEqual((draftState as Record<string, SarakTokenValue>)[key], (sarak.systemDesign as Record<string, SarakTokenValue>)?.[key]));
     }, [draftState, sarak.systemDesign]);
 
+    const dirtyTokenCount = useMemo(() => {
+        if (!draftState) return 0;
+        const draftRecord = draftState as Record<string, SarakTokenValue>;
+        const systemDesign = sarak.systemDesign as Record<string, SarakTokenValue> | undefined;
+        return sarakGetAllDesignTokens().filter((token) => {
+            const systemValue = systemDesign?.[token.id] === undefined
+                ? token.defaultValue
+                : systemDesign[token.id];
+            const draftValue = draftRecord[token.id] === undefined ? systemValue : draftRecord[token.id];
+            return !areValuesEqual(draftValue, systemValue);
+        }).length;
+    }, [draftState, sarak.systemDesign]);
+
     // 6. Ponte de Live Preview, Sincronização e Limpeza
     useDesignDraftSync(draftState, setDraftState, sarak, isSyncingRef);
 
@@ -113,19 +124,13 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
      * Atualiza o rascunho
      */
     const updateDraft = useCallback((key: string, value: SarakTokenValue) => {
-        // plan-27 PASSO 3: este `if` já existia, mas só trocava o RÓTULO do
-        // modo — idêntico ao caminho genérico. Antes da Decisão D
-        // (plan-24-1 §2.8), quem convertia de fato era `useDesignVariables` a
-        // cada render; esse "lá embaixo" acabou. Agora passa pelo MESMO
-        // resolvedor que `ShellThemeToggle` usa: achado o tema por
-        // `resolvedThemeId`, RECARREGA-o inteiro no modo pedido (contraparte
-        // autorada, ou o fallback sintetizado para os 18 legados) — as duas
-        // portas produzem design idêntico (§3.3). Sem tema rastreável, cai no
-        // fallback sobre o design corrente, como sempre.
+        // Passa pelo MESMO resolvedor que `ShellThemeToggle` usa: achado o tema por
+        // `resolvedThemeId`, RECARREGA-o inteiro no modo pedido (contraparte autorada, ou o
+        // fallback sintetizado) — as duas portas produzem design idêntico. Sem tema
+        // rastreável, cai no fallback sobre o design corrente.
         if (key === 'mode') {
             const targetMode = value as 'light' | 'dark';
-            const allThemes = sarak.allThemes as SarakThemeEntry[] | undefined;
-            const activeTheme = allThemes?.find((t) => t.id === sarak.resolvedThemeId);
+            const activeTheme = sarak.allThemes.find((theme) => theme.id === sarak.resolvedThemeId);
             const isReload = Boolean(activeTheme?.design) && draft.mode !== targetMode;
 
             setDraftState((prev: SarakDesignState | null) => {
@@ -183,64 +188,59 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
         } as SarakDesignState));
     }, [draft, sarak.systemDesign]);
 
+    const discardDraft = useCallback(() => {
+        setDraftState(null);
+        setPendingThemeId(undefined);
+    }, []);
+
     /**
      * Preview de um preset genérico (qualquer subcategoria) — payload { design }.
      * `themeId`: escolha de TEMA completo; acompanha o rascunho até `handleApplyToSystem`.
      */
     const handleThemePreview = (presetDesign: Partial<SarakDesignState>, presetKeyId?: string, themeId?: string) => {
         if (presetDesign && typeof presetDesign === 'object') {
-            setDraftState((prev: SarakDesignState | null) => ({
-                ...(prev || draft),
-                ...presetDesign,
-                ...(presetKeyId ? { [`${presetKeyId}PresetId`]: presetKeyId } : {})
-            } as SarakDesignState));
+            // TEMA completo (`themeId`): `composeThemeDesign`, a mesma função do Provider — não herda
+            // token do tema anterior. Preset parcial (cards, botões…): só sobrepõe o que declara.
+            setDraftState((prev: SarakDesignState | null) => {
+                const base = prev || draft;
+                const next = themeId ? composeThemeDesign(presetDesign, base, sarak.getHostConfig?.()) : { ...base, ...presetDesign };
+                return {
+                    ...next,
+                    ...(presetKeyId ? { [`${presetKeyId}PresetId`]: presetKeyId } : {})
+                } as SarakDesignState;
+            });
         }
         if (themeId) setPendingThemeId(themeId);
     };
 
-    // APLICAÇÃO REAL AO SISTEMA (Commit Total)
+    // APLICAÇÃO REAL AO SISTEMA
     const handleApplyToSystem = () => {
         if (sarak.applyFullConfigRaw && isDirty) {
             captureBeforeApply(); // foto do sistema ANTES de aplicar (useLastAppliedSnapshot.ts)
             sarak.applyFullConfigRaw(draft);
-            if (sarak.persistDesign) {
-                sarak.persistDesign(draft);
-            }
             // Só agora o tema escolhido no catálogo é anunciado como o tema no ar —
             // é o que `useResolvedThemeId.ts` promete ("só quem aplica anuncia").
             if (pendingThemeId) {
                 sarak.setResolvedThemeId?.(pendingThemeId);
                 setPendingThemeId(undefined);
             }
+            sarak.persistDesign?.(draft);
             showToast('success', 'Design aplicado ao sistema com sucesso.');
-        }
-    };
-
-    // APLICAÇÃO GRANULAR (Commit por Componente)
-    const handleApplyComponent = (schemaId: string) => {
-        if (sarak.applyConfigRaw && isComponentDirty(schemaId)) {
-            const componentKeys = getTokensByComponent(schemaId);
-            const patch: Partial<SarakDesignState> = {};
-            const patchRecord = patch as Record<string, SarakTokenValue>;
-            const draftRecord = draft as Record<string, SarakTokenValue>;
-            componentKeys.forEach(key => {
-                patchRecord[key] = draftRecord[key];
-            });
-            sarak.applyConfigRaw(patch);
-            showToast('success', `Módulo ${schemaId.toUpperCase()} aplicado.`);
         }
     };
 
     return {
         draft,
         isDirty,
+        dirtyTokenCount,
         isComponentDirty,
         updateDraft,
         resetComponent,
         resetToken,
+        discardDraft,
         handleThemePreview,
+        setDraftThemeId: setPendingThemeId,
         handleApplyToSystem,
-        handleApplyComponent,
         canUndoLastApply,
         undoLastApply,
         toast,

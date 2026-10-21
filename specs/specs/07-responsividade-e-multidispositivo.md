@@ -56,7 +56,7 @@ tema:
 | --- | --- | --- |
 | **Media-query dos tokens responsivos** | ✅ **sim** — lê `design.breakpointTablet`/`Desktop` e só cai na constante se ausente | `src/core/Design/hooks/useDesignVariables.ts:58-59` |
 | **Detecção JS de dispositivo** (`useSarakDevice`) | ✅ **sim, desde a `plan-08` (F5, 2026-08-04)** — `SarakUIProvider` memoiza os breakpoints do tema ativo e os desce ao `DeviceProvider` via `DeviceBreakpointsContext`; sem o tema atravessar a fronteira de bundle, o pior caso é o comportamento anterior (nunca pior) | `src/core/Provider/SarakUIProvider.tsx:180-190`, `DeviceProvider.tsx:41-52,78-92` |
-| **Classes estruturais de container query** (`@min-[768px]:`, `@min-[1024px]:`) | ❌ **não** — a constante é **interpolada em build-time** na string da classe. **Limite de ferramenta, não dívida** — Tailwind resolve a classe em build-time e não aceita `var()` na condição | `useStructuralStyles.ts:40,42,86-87,229`; `useStructuralStyles.presets.ts:13-15,21`; `ShellContent.tsx:40,57`; `TopbarNav.tsx:146`; `useShellLayoutStyles.ts:32` |
+| **Classes estruturais de container query** (`@min-[768px]:`, `@min-[1024px]:`) | ❌ **não** — a constante é **interpolada em build-time** na string da classe. **Limite de ferramenta, não dívida** — Tailwind resolve a classe em build-time e não aceita `var()` na condição | `useStructuralStyles.ts:40,42,86-87,229`; `useStructuralStyles.presets.ts:13-15,21`; as classes de container query do cromo, dos quadros e das visões de projeto (`chrome/`, `kanbanLayout.ts`, `calendarLayout.ts`, `ganttLayout.ts`) |
 | **Piso de célula do grid `auto-fit`** (`layoutGridMinCell`) | ✅ **sim** — mas só porque o valor sai por `style` inline (`gridTemplateColumns`), e **não** por classe. É o terceiro caso desta mesma família: onde o caminho é classe Tailwind, o token não alcança; onde é `style`, alcança | `useStructuralStyles.ts` (`getGridStyles`); `useStructuralStyles.presets.ts` (`resolveAutoFitTemplateColumns`) |
 
 **Consequência prática, hoje:** mover `breakpointTablet` no tema já muda **onde o valor responsivo de um
@@ -139,8 +139,8 @@ Cada linha foi **conferida no código**, e cada uma tem teste identificado.
 
 | Componente | Comportamento por dispositivo | Onde | Teste |
 | --- | --- | --- | --- |
-| **`SarakAppChrome`** | **celular:** barra + hambúrguer + drawer acessível (`aria-expanded`, foco preso, ESC, scroll travado) · **tablet:** topbar compacta · **desktop:** sidebar OU topbar por `navigationStyle` | `SarakAppChrome.tsx:167-168`; mobile em `SarakAppChromeMobile.tsx` | `SarakAppChrome.viewport.test.tsx`, `SarakAppChromeMobile.test.tsx` |
-| **Slots do cromo** | migram, nunca desaparecem (sidebar→drawer, topbar→compacta, faixas full-width em todos) | `chrome/ChromeFrame.tsx:20-24` | `chrome/__tests__/` |
+| **`SarakAppChrome`** | **celular:** barra + hambúrguer + drawer acessível (`aria-expanded`, foco preso, ESC, scroll travado); a navegação vai para uma barra na base com até 5 itens e para o drawer acima disso (token `mobileNavigationStyle`, [[021-navegacao-na-base-do-celular]]) · **tablet:** topbar compacta · **desktop:** sidebar OU topbar por `navigationStyle`. O **modo** do cromo segue a janela; a **vista dividida**, dentro da região de conteúdo, segue a largura disponível dela (camada 3, §6.1): lado a lado a partir de 1024 px, empilhada abaixo ([[05-cromo-e-slots]] §2.2) | `SarakAppChrome.tsx` (a escolha do modo pelo dispositivo); mobile em `SarakAppChromeMobile.tsx` | `SarakAppChrome.viewport.test.tsx`, `SarakAppChromeMobile.test.tsx` |
+| **Slots do cromo** | migram, nunca desaparecem (sidebar→drawer, topbar→compacta, faixas full-width em todos) | `chrome/ChromeFrame.tsx` | `chrome/__tests__/` |
 | **`SarakGrid`** | `templateColumns` **string** vira **`1fr` no celular**; `ResponsiveValue` é resolvido no device | `SarakGrid.tsx:44-53` | `SarakGrid.test.tsx`, `SarakLayoutsResponsive.test.tsx` |
 | **`SarakGrid` SEM `templateColumns`** — o caminho zero-config, e o mais usado | delega à estratégia do Design Engine (`layoutGridTemplate`). O default `auto-fit` dá células cuja largura mínima é o token **`layoutGridMinCell`** (default **280px**, faixa 160–480), e o número de colunas é resolvido pelo **próprio CSS Grid** em runtime — sem depender de container query. O piso chega ao CSS por `style.gridTemplateColumns`, **não** pela classe: valor arbitrário de classe Tailwind é resolvido em build-time e não aceita `var()` (§2.1). `col-12` dá **12 trilhas**, e o filho que não declara span recebe um default por breakpoint (§6.1) | `useStructuralStyles.presets.ts` (`GRID_LAYOUT_STRATEGIES`); `useStructuralStyles.ts:23,41` | `useStructuralStyles.test.ts`, `useStructuralStyles.presets.test.ts`, `SarakGrid.test.tsx` |
 | **`SarakFlex`** | `wrap` **liga por default** — itens quebram em linhas em vez de transbordar; `direction` aceita `ResponsiveValue` | `SarakFlex.tsx:16-21,46-48,58` | `SarakFlex.test.tsx`, `SarakLayoutsResponsive.test.tsx` |
@@ -148,6 +148,8 @@ Cada linha foi **conferida no código**, e cada uma tem teste identificado.
 | **`SarakDataTable`** | **celular:** colapsa para `SarakDataCards`; **opt-out explícito** `responsive={false}` | `SarakDataTableImpl.tsx:41-42,71,74,77` | `SarakDataTableImpl.test.tsx`, `SarakDataCards.test.tsx` |
 | **`SarakTable`** | **celular:** colapsa para `SarakTableCards`; **opt-out explícito** `responsive={false}` *(desde 2026-08-04)* | `SarakTable.tsx:32-37,44,46,116` | `SarakTable.responsive.test.tsx`, `SarakTableCards.test.tsx` |
 | **`SarakHidden`** | remove da árvore nos dispositivos listados | `SarakHidden.tsx:17-24` | `SarakHidden.test.tsx` |
+| **Todo acionável da lib** (botão, botão-ícone, item de menu e de aba, opção, seletor, barra do Gantt) | **ponteiro de dedo** (`pointer: coarse`): área tocável de pelo menos o token `touchTargetMin` (44 px por padrão), pelo `min-height`/`min-width` do elemento — na subcamada que cede à classe e ao estilo inline; a linha e a barra do Gantt usam `max(medida, --sarak-touch-target-active)`. **Mouse:** o tamanho de antes | `src/styles/_touch.css`, `SarakGantt/ganttLayout.ts` | `browser-tests/toque-no-celular.spec.ts`, `styles/__tests__/toqueEMovimento.test.ts` |
+| **Todo campo da lib** (`input`, `select`, `textarea`) | **ponteiro de dedo:** fonte de pelo menos 16 px (`max(16px, 1em)`) — o navegador do iPhone não dá zoom ao focar; o `SarakTimePicker`, que declara a fonte por classe, tem a variante própria | `src/styles/_touch.css`, `Inputs/SarakTimePicker.tsx` | `browser-tests/toque-no-celular.spec.ts` |
 
 ✅ **A assimetria fechou em 2026-08-04 (`plan-08`, F6).** `SarakTable` ganhou `responsive?: boolean` com
 default `true`, espelhando `SarakDataTableImpl` — mesma prop, mesmo default, mesmo efeito. Mudança aditiva
@@ -183,7 +185,7 @@ Vale saber, para não procurar no lugar errado:
 3. **Container query estrutural** (`@min-[Npx]:` nas classes) — layout interno de componente, reagindo ao
    **container**, não à janela. Constantes em build-time.
 
-A camada 3 é a razão de `@container` aparecer na raiz do Shell (`SarakShell.tsx:94`): componentes internos
+A camada 3 é a razão de cada componente plantar o próprio `@container` (e de o escopo do preview o ter): componentes internos
 reagem à largura **disponível**, não à do viewport — é o que faz um card se comportar igual dentro de uma
 sidebar estreita e de uma página larga.
 
@@ -198,7 +200,7 @@ elemento fica no valor base para sempre. E o elemento **nunca é container de si
 no mesmo elemento da classe `@min-[…]` não faz a query dele casar. O container vai num **ancestral**.
 
 Por isso todo componente que consome `getGridStyles`/`getResponsiveStackStyles`/`getHeaderStyles`/
-`getResponsiveSpacingStyles` planta o seu próprio `@container`, em vez de depender de haver um `SarakShell`
+`getResponsiveSpacingStyles` planta o seu próprio `@container`, em vez de depender de haver um cromo
 acima. Cobrado por `container-query-boundary:check`. Caso especial: componente que renderiza em
 `createPortal` planta o container na raiz **do portal**, não na raiz do componente — o portal escapa da
 subárvore no DOM real.

@@ -61,9 +61,6 @@ const ALLOWLIST = new Set([
     // Kitchen Sink — vitrine interna de todos os componentes/temas, usada só pelo
     // painel de customização do Design Engine dentro da própria lib.
     'features/DesignEngine/Canvas/KitchenSinkPreview.tsx',
-    // Abas do CustomizationPanel (interno) — citam "Sarak OS" como texto de exemplo
-    // dentro da ferramenta de autoria, não no produto do consumidor.
-    'features/DesignEngine/Panels/LanguageTab.tsx',
     'features/DesignEngine/Panels/LayoutTab.tsx',
 ]);
 

@@ -6,12 +6,22 @@ import type { SarakUIOptions, SarakDesignState } from '../../types';
 const renderLoader = (options: SarakUIOptions, setDesign = vi.fn(), getSeedConfig = vi.fn()) => {
     const optionsRef = { current: options };
     const setIsBackendLoaded = vi.fn();
+    const setResolvedThemeId = vi.fn();
     const utils = renderHook(
         ({ isBackendLoaded }: { isBackendLoaded: boolean }) =>
-            useDesignRemoteLoader(true, optionsRef, isBackendLoaded, setIsBackendLoaded, setDesign, getSeedConfig),
+            useDesignRemoteLoader({
+                isHydrated: true,
+                optionsRef,
+                isBackendLoaded,
+                setIsBackendLoaded,
+                setDesign,
+                getSeedConfig,
+                setResolvedThemeId,
+                storageKey: 'test-key',
+            }),
         { initialProps: { isBackendLoaded: false } },
     );
-    return { ...utils, setDesign, setIsBackendLoaded, getSeedConfig };
+    return { ...utils, setDesign, setIsBackendLoaded, getSeedConfig, setResolvedThemeId };
 };
 
 describe('useDesignRemoteLoader — strategy (ADR-009 / plan-34)', () => {
@@ -89,18 +99,77 @@ describe('useDesignRemoteLoader — strategy (ADR-009 / plan-34)', () => {
         expect(setDesign).not.toHaveBeenCalled();
     });
 
+    it('restaura o design e o id do tema quando onLoad devolve o par', async () => {
+        const onLoad = vi.fn().mockResolvedValue({
+            design: { primaryColor: '#123456' },
+            activeThemeId: 'tema-salvo',
+        });
+        const { setDesign, setResolvedThemeId, setIsBackendLoaded } = renderLoader({ persistence: { onLoad } });
+
+        await waitFor(() => expect(setIsBackendLoaded).toHaveBeenCalledWith(true));
+        expect(setResolvedThemeId).toHaveBeenCalledWith('tema-salvo');
+        expect(setDesign).toHaveBeenCalledTimes(1);
+        const updater = setDesign.mock.calls[0][0] as (previous: SarakDesignState) => SarakDesignState;
+        expect(updater({ mode: 'dark' }).primaryColor).toBe('#123456');
+    });
+
+    it('activeThemeId controlado vence o id devolvido por onLoad', async () => {
+        const onLoad = vi.fn().mockResolvedValue({
+            design: { primaryColor: '#654321' },
+            activeThemeId: 'tema-salvo',
+        });
+        const optionsRef = { current: { persistence: { onLoad } } as SarakUIOptions };
+        const setDesign = vi.fn();
+        const setResolvedThemeId = vi.fn();
+        const setIsBackendLoaded = vi.fn();
+
+        renderHook(() => useDesignRemoteLoader({
+            isHydrated: true,
+            optionsRef,
+            isBackendLoaded: false,
+            setIsBackendLoaded,
+            setDesign,
+            getSeedConfig: () => ({} as SarakDesignState),
+            activeThemeId: 'tema-controlado',
+            setResolvedThemeId,
+            storageKey: 'test-key',
+        }));
+
+        await waitFor(() => expect(setIsBackendLoaded).toHaveBeenCalledWith(true));
+        expect(setResolvedThemeId).toHaveBeenCalledWith('tema-controlado');
+    });
+
+    it('onLoad sem dado salvo não aplica nem grava um design', async () => {
+        const onLoad = vi.fn().mockResolvedValue(null);
+        const { setDesign, setIsBackendLoaded, setResolvedThemeId } = renderLoader({ persistence: { onLoad } });
+
+        await waitFor(() => expect(setIsBackendLoaded).toHaveBeenCalledWith(true));
+        expect(setDesign).not.toHaveBeenCalled();
+        expect(setResolvedThemeId).not.toHaveBeenCalled();
+    });
+
     it("`getSeedConfig` instável entre renders (customThemes inline — SarakUIProvider.tsx:44-46) NÃO chama onLoad mais de uma vez (achado de revisão, 2026-08-12)", async () => {
         const onLoad = vi.fn().mockResolvedValue({ primaryColor: '#123456' });
         const optionsRef = { current: { persistence: { onLoad } } as SarakUIOptions };
         const setDesign = vi.fn();
         const setIsBackendLoaded = vi.fn();
+        const setResolvedThemeId = vi.fn();
         // Uma nova função a cada render — o mesmo footgun de `allThemes` recriado
         // por `customThemes` inline, que produz um `getSeedConfig` novo por render.
         const newSeedConfig = () => (() => ({ mode: 'light' } as unknown as SarakDesignState));
 
         const { rerender } = renderHook(
             ({ getSeedConfig }: { getSeedConfig: () => SarakDesignState }) =>
-                useDesignRemoteLoader(true, optionsRef, false, setIsBackendLoaded, setDesign, getSeedConfig),
+                useDesignRemoteLoader({
+                    isHydrated: true,
+                    optionsRef,
+                    isBackendLoaded: false,
+                    setIsBackendLoaded,
+                    setDesign,
+                    getSeedConfig,
+                    setResolvedThemeId,
+                    storageKey: 'test-key',
+                }),
             { initialProps: { getSeedConfig: newSeedConfig() } },
         );
 

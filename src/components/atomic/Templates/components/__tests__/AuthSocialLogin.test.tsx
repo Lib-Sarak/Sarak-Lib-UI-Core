@@ -17,7 +17,7 @@ describe('AuthSocialLogin', () => {
     it('planta @container na raiz — ancestral do grid de provedores', () => {
         const { container } = render(
             <SarakUIProvider config={{ mode: 'dark' }}>
-                <AuthSocialLogin socialConfig={{ enabled: true, display: 'full', providers: [{ id: 'google', variant: 'glass' }] }} />
+                <AuthSocialLogin socialConfig={{ enabled: true, display: 'full', providers: [{ id: 'google', icon: <svg />, variant: 'glass' }] }} />
             </SarakUIProvider>
         );
 

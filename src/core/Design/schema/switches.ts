@@ -10,16 +10,22 @@ export const SwitchesSchema: ComponentSchema = {
     tokens: [
         {
             id: 'switchTrackActiveBg',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Pinta o trilho do alternador quando ele está ligado.",
             label: 'Cor: Switch Ativo',
             type: 'color',
             description: 'Cor de fundo do trilho do switch quando ligado (estado "true"). Deve ser facilmente distinguível do estado desligado — costuma usar a cor primária do sistema. Gera variantes automáticas.',
             axis: 'color',
-            defaultValue: '#00f2ff',
+            defaultValue: '#19e3f0',
             generateVariants: true,
             cssVars: ['--sarak-switch-active-bg']
         },
         {
             id: 'switchThumbBg',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Pinta o botão deslizante do alternador.",
             label: 'Cor: Switch Botão',
             type: 'color',
             description: 'Cor do botão circular (thumb) que desliza dentro do switch — precisa manter contraste alto contra o trilho em ambos os estados (ligado/desligado).',
@@ -29,16 +35,22 @@ export const SwitchesSchema: ComponentSchema = {
         },
         {
             id: 'checkboxActiveColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Pinta o preenchimento e a marca dos checkboxes selecionados.",
             label: 'Cor do Check Selecionado',
             type: 'color',
             description: 'Cor de preenchimento/marca de um checkbox quando selecionado — normalmente espelha a cor primária do sistema para consistência com outros controles ativos (switch, radio). Gera variantes automáticas.',
             axis: 'color',
-            defaultValue: '#00f2ff',
+            defaultValue: '#19e3f0',
             generateVariants: true,
             cssVars: ['--sarak-checkbox-active']
         },
         {
             id: 'switchStyleType',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Escolhe a forma e o acabamento do alternador: tátil, assimétrico, pulsante ou vidro.",
             label: 'Estilo do Alternador (Switch)',
             type: 'select',
             description: 'Linguagem visual do switch: Tactile Slider (deslizante clássico, o mais neutro), Asymmetric Toggle (formato assimétrico, mais orgânico), Pulsing Dot (ponto que pulsa quando ativo, chama atenção) ou Micro Glass Tab (vidro translúcido, minimalista). Escolha antes de ajustar `switchPulseColor`, que só faz efeito em \'pulsing\'.',
@@ -56,6 +68,10 @@ export const SwitchesSchema: ComponentSchema = {
         },
         {
             id: 'switchBackdropBlur',
+            kind: 'aesthetic',
+            modeDependent: false,
+            usage: "Desfoca o fundo do trilho translúcido no estilo glass.",
+            interactsWith: ['switchStyleType'],
             label: 'Desfoque do Alternador (Vidro)',
             type: 'slider',
             description: 'Intensidade do desfoque de fundo do switch — só relevante quando `switchStyleType` é \'glass\' (Micro Glass Tab), onde o trilho é translúcido.',
@@ -67,11 +83,15 @@ export const SwitchesSchema: ComponentSchema = {
         },
         {
             id: 'switchPulseColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Define a cor do anel que pulsa no alternador ligado no estilo pulsing.",
+            interactsWith: ['switchStyleType'],
             label: 'Cor do Pulso (Pulsing Dot)',
             type: 'color',
             description: 'Cor do pulso de destaque ao redor do switch — só tem efeito visível quando `switchStyleType` é \'pulsing\'. Normalmente a mesma cor de `switchTrackActiveBg` em tom translúcido.',
             axis: 'color',
-            defaultValue: '#00f2ff',
+            defaultValue: '#19e3f0',
             cssVars: ['--sarak-switch-pulse-color']
         }
     ]

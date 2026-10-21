@@ -17,6 +17,7 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import SarakUIProvider from '../SarakUIProvider';
 import { SARAK_SCOPE_CLASS } from '../scope';
+import { SARAK_BUILD_INFO } from '../buildInfo';
 import { useToast } from '../../../components/atomic/Feedback/SarakToast';
 
 const DESIGN = { systemName: 'Sistema Sarak', mode: 'light' as const, primaryColor: '#ff0000' };
@@ -56,6 +57,21 @@ describe('Modo Embarcado — o Provider não toca em nada fora da ilha', () => {
         expect(root).toContainElement(screen.getByTestId('conteudo'));
     });
 
+    it('expõe o selo de build dentro da ilha e não no host', () => {
+        renderEmbedded();
+        const seal = document.querySelector<HTMLElement>('[data-sarak-build-info]');
+
+        expect(seal).not.toBeNull();
+        expect(scopeRoot()).toContainElement(seal);
+        expect(document.body).not.toHaveAttribute('data-sarak-build-info');
+        expect(document.documentElement).not.toHaveAttribute('data-sarak-build-info');
+        expect(JSON.parse(seal?.getAttribute('data-sarak-build-info') ?? 'null')).toEqual({
+            libVersion: SARAK_BUILD_INFO.libVersion,
+            baseCommitShort: SARAK_BUILD_INFO.baseCommitShort,
+            builtAt: SARAK_BUILD_INFO.builtAt,
+        });
+    });
+
     it('vazamento #2: NÃO sobrescreve o `document.title` do host', () => {
         renderEmbedded();
         expect(document.title).toBe(HOST_TITLE);
@@ -85,11 +101,14 @@ describe('Modo Embarcado — o Provider não toca em nada fora da ilha', () => {
     });
 
     it('vazamento #5: não injeta as fontes globais no `<head>` sem opt-in', () => {
+        document.querySelectorAll('style[data-sarak-font]').forEach((el) => el.remove());
         renderEmbedded();
         expect(document.getElementById('sarak-core-fonts')).toBeNull();
+        expect(document.querySelector('style[data-sarak-font]')).toBeNull();
     });
 
     it('vazamento #5: injeta as fontes quando o consumidor pede explicitamente', () => {
+        document.querySelectorAll('style[data-sarak-font]').forEach((el) => el.remove());
         render(
             <SarakUIProvider
                 config={DESIGN}
@@ -98,7 +117,7 @@ describe('Modo Embarcado — o Provider não toca em nada fora da ilha', () => {
                 <div>ilha</div>
             </SarakUIProvider>,
         );
-        expect(document.getElementById('sarak-core-fonts')).not.toBeNull();
+        expect(document.querySelector('style[data-sarak-font]')).not.toBeNull();
     });
 
     it('não deixa o `<style>` de vars responsivas no `<head>` do host', () => {
@@ -172,6 +191,20 @@ describe('Modo App (default) — comportamento inalterado', () => {
         renderApp();
         expect(scopeRoot()).toBeNull();
         expect(document.querySelector(`[data-sarak-portal-scope="true"]`)).toBeNull();
+    });
+
+    it('expõe o selo de build em um elemento da biblioteca', () => {
+        renderApp();
+        const seal = document.querySelector<HTMLElement>('[data-sarak-build-info]');
+
+        expect(seal).not.toBeNull();
+        expect(seal).toHaveAttribute('id', 'sarak-ui-core-styles');
+        expect(document.querySelectorAll('[data-sarak-build-info]')).toHaveLength(1);
+        expect(JSON.parse(seal?.getAttribute('data-sarak-build-info') ?? 'null')).toEqual({
+            libVersion: SARAK_BUILD_INFO.libVersion,
+            baseCommitShort: SARAK_BUILD_INFO.baseCommitShort,
+            builtAt: SARAK_BUILD_INFO.builtAt,
+        });
     });
 
     it('continua dono da página: título, vars no `:root` e classe de modo no `body`', () => {

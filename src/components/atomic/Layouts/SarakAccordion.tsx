@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useSarakDevice } from '../../../core/Provider/DeviceProvider';
+import { sarakResolveResponsiveValue } from '../../../core/Design/resolveResponsiveValue';
+import type { SarakResponsiveValue } from '../../../core/Design/types';
 import { SarakButton } from '../Buttons/SarakButton';
 
 export interface SarakAccordionProps {
@@ -24,15 +27,20 @@ export const SarakAccordion: React.FC<SarakAccordionProps> = ({
     className = ''
 }) => {
     const { design } = useSarakUI();
+    const device = useSarakDevice();
     const [isOpen, setIsOpen] = useState(defaultOpen);
     const [height, setHeight] = useState<number | 'auto'>(defaultOpen ? 'auto' : 0);
     const contentRef = useRef<HTMLDivElement>(null);
 
-    const animNormal = design?.animNormal;
-    const animDuration = typeof animNormal === 'number' ? `${animNormal}ms` : '300ms';
-    const animEasing = (design?.easeMain as string) || 'ease-in-out';
-    const borderRadius = (design?.borderRadius as string | number) || 'var(--sarak-card-radius,12px)';
-    const borderColor = 'var(--border-color,#334155))';
+    const motionNormal = design?.motionDurationNormal;
+    const animDurationMs = typeof motionNormal === 'number' ? Math.round(motionNormal * 1000) : 300;
+    const animDuration = `${animDurationMs}ms`;
+    const animEasing = (design?.motionEaseMain as string) || 'ease-in-out';
+    // `??`: o raio 0 é um valor do tema (cantos retos), não ausência — `||` o trocaria pelo raio do cartão.
+    // O token é responsivo (`{ mob, tab, desk }` ou escalar): resolve a camada do dispositivo, como `SarakFlex`/`SarakGrid`.
+    const tokenRadius = sarakResolveResponsiveValue(design?.borderRadius as string | number | SarakResponsiveValue<number> | undefined, device);
+    const borderRadius = tokenRadius ?? 'var(--sarak-card-radius,10px)';
+    const borderColor = 'var(--border-color,rgba(255,255,255,0.09))';
 
     const toggleOpen = () => {
         setIsOpen(!isOpen);
@@ -46,7 +54,7 @@ export const SarakAccordion: React.FC<SarakAccordionProps> = ({
             
             const timer = setTimeout(() => {
                 setHeight('auto');
-            }, parseInt(animDuration) || 300);
+            }, animDurationMs);
             return () => clearTimeout(timer);
         } else {
             setHeight(contentRef.current.scrollHeight);
@@ -55,7 +63,7 @@ export const SarakAccordion: React.FC<SarakAccordionProps> = ({
                 setHeight(0);
             });
         }
-    }, [isOpen, animDuration]);
+    }, [isOpen, animDurationMs]);
 
     return (
         <div
@@ -70,7 +78,7 @@ export const SarakAccordion: React.FC<SarakAccordionProps> = ({
                 type="button"
                 variant="ghost"
                 fullWidth
-                className="justify-between text-left normal-case font-normal tracking-normal hover:bg-white/5"
+                className="justify-between text-left normal-case font-normal tracking-normal hover:bg-theme-tint"
                 style={{ padding: 'var(--sarak-layout-gap-md, 16px)' }}
                 onClick={toggleOpen}
             >

@@ -15,7 +15,7 @@ it('SarakFieldError renderiza mensagem anunciada com a tipografia e a cor de Sar
     const error = screen.getByRole('alert');
 
     expect(error).toHaveTextContent('E-mail inválido');
-    expect(error).toHaveClass('text-sm', 'text-[var(--sarak-input-error-color,#ff4d4f)]');
+    expect(error).toHaveClass('text-sm', 'text-[var(--sarak-input-error-color,#ff6b6b)]');
     const icon = error.querySelector('[aria-hidden="true"] svg');
 
     expect(icon).toHaveAttribute('width', 'var(--sarak-body-size, 14px)');

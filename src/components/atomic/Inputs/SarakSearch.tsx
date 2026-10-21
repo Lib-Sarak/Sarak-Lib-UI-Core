@@ -1,13 +1,15 @@
+import { SarakIcon } from "../Icon/SarakIcon";
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Command, X, ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence, useIsPresent } from 'framer-motion';
+
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
-import { sarakGetRegisteredModules } from '../../../core/Discovery/registry';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakInput } from './SarakInput';
+import { useMotionTokens } from '../hooks/useMotionTokens';
 
-/** Um resultado do palette — o subconjunto de `DiscoveredModule` que a busca lista. */
+/** Um resultado fornecido pelo aplicativo ao palette. */
 export interface SarakSearchItem {
+    /** Com `onSelect`, identifica o destino do item (a rota); na busca embutida, também vira o `href` do resultado. */
     id: string;
     label: string;
     category?: string;
@@ -16,17 +18,22 @@ export interface SarakSearchItem {
 export interface SarakSearchProps {
     isOpen: boolean;
     onClose: () => void;
-    /**
-     * Itens a listar no lugar do registro do Discovery. Quem não tem módulo registrado
-     * (o cromo apresentacional, `SarakAppChrome`) alimenta o palette com a própria
-     * navegação. Omitida, a busca segue pelo registro (`sarakGetRegisteredModules`) — o
-     * comportamento de sempre, inclusive no `SarakShell`.
-     */
-    items?: SarakSearchItem[];
+    /** Itens da busca, fornecidos pela navegação do aplicativo. */
+    items: SarakSearchItem[];
     /** Seleciona um item, por clique ou teclado (`Enter`/`Espaço`). Sem esta prop, os
      * resultados não são acionáveis — o comportamento de sempre. */
     onSelect?: (id: string) => void;
 }
+
+/** Moldura da paleta; na saída (`motionEaseIn`) ela ainda está na página e não pode segurar o ponteiro. */
+const SearchFrame = ({ children }: { children: React.ReactNode }): React.ReactElement => {
+    const isPresent = useIsPresent();
+    return (
+        <div className={`fixed inset-0 z-[calc(var(--sarak-z-sidebar,500)_+_200)] flex items-start justify-center pt-[10vh]${isPresent ? '' : ' pointer-events-none'}`} style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)' }}>
+            {children}
+        </div>
+    );
+};
 
 /**
  * SarakSearch (v6.0 Command Palette)
@@ -37,9 +44,8 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
     // R34 — átomo renderiza sem Provider: `useSarakUIOptional` nunca lança.
     const { design } = useSarakUIOptional() || {};
     const t = useLibraryText();
+    const { easeIn, durations } = useMotionTokens();
     const { searchStyle, systemName } = design || {};
-    const sourceItems: SarakSearchItem[] = items ?? sarakGetRegisteredModules();
-
     const [query, setQuery] = useState('');
 
     // Sem ref: o SarakInput (React.FC simples, não forwardRef) não tem como repassar
@@ -56,7 +62,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
         }
     }, [isOpen, onClose]);
 
-    const filteredItems = sourceItems.filter(m =>
+    const filteredItems = items.filter(m =>
         m.label.toLowerCase().includes(query.toLowerCase()) ||
         m.id.toLowerCase().includes(query.toLowerCase())
     );
@@ -66,18 +72,18 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
         onClose();
     };
 
-    if (!isOpen) return null;
-
+    // O `AnimatePresence` fica fora do `isOpen`: só assim a paleta permanece até a saída (`exit`) terminar.
     return (
         <AnimatePresence>
-            <div className="fixed inset-0 z-[600] flex items-start justify-center pt-[10vh]" style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)' }}>
+            {isOpen && (
+            <SearchFrame key="search">
                 {/* Backdrop */}
                 <motion.div 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
+                    exit={{ opacity: 0, transition: { ease: easeIn, duration: durations.fast } }}
                     onClick={onClose}
-                    className={`absolute inset-0 bg-[var(--color-theme-card,#1e293b)]/${searchStyle === 'minimal' ? '20' : '60'} backdrop-blur-[var(--sarak-search-backdrop-blur,8px)]`}
+                    className={`absolute inset-0 bg-[var(--color-theme-card,#101622)]/${searchStyle === 'minimal' ? '20' : '60'} backdrop-blur-[var(--sarak-search-backdrop-blur,8px)]`}
                 />
 
                 {/* Palette Container — o "dropdown de busca" a que `searchDropdownGap`/
@@ -88,8 +94,8 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: -20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: -20 }}
-                    className="relative w-full bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] rounded-[var(--radius-theme)] shadow-[var(--dynamic-shadow)] overflow-hidden"
+                    exit={{ opacity: 0, scale: 0.95, y: -20, transition: { ease: easeIn, duration: durations.fast } }}
+                    className="relative w-full bg-[var(--color-theme-card,#101622)] border border-[var(--border-color,rgba(255,255,255,0.09))] rounded-[var(--radius-theme)] shadow-[var(--dynamic-shadow)] overflow-hidden"
                     style={{
                         maxWidth: 'var(--sarak-search-dropdown-width, 400px)',
                         marginTop: `calc(${searchStyle === 'minimal' ? '5vh' : '10vh'} + var(--sarak-search-dropdown-gap, 0.5rem))`,
@@ -97,11 +103,13 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
                 >
                     {/* Input Area */}
                     <div
-                        className="flex items-center border-b border-[var(--border-color,#334155)] bg-[var(--color-theme-title,#ffffff)]/[0.02]"
+                        className="flex items-center border-b border-[var(--border-color,rgba(255,255,255,0.09))] bg-[var(--color-theme-title,#f2f6fb)]/[0.02]"
                         style={{ gap: 'var(--sarak-layout-gap-md,16px)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 1.25) var(--sarak-layout-gap-lg, 24px)' }}
                     >
-                        <Search className="w-5 h-5 text-[var(--text-muted,#94a3b8)]" />
+                        <SarakIcon name="Search" className="w-5 h-5 text-[var(--text-muted,rgba(242,246,251,0.55))]" />
                         <SarakInput
+                            type="search"
+                            enterKeyHint="search"
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder={t('searchPlaceholder')}
@@ -116,10 +124,10 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
                             style={{ background: 'transparent', fontSize: 'var(--sarak-type-scale-xl, 20px)' }}
                         />
                         <div
-                            className="flex items-center rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--sarak-primary-color,#3b82f6)]/10 border border-[var(--sarak-primary-color,#3b82f6)]/20 text-2xs text-[var(--sarak-primary-color,#3b82f6)] font-bold uppercase tracking-widest"
+                            className="flex items-center rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--sarak-primary-color,#19e3f0)]/10 border border-[var(--sarak-primary-color,#19e3f0)]/20 text-2xs text-[var(--sarak-primary-color,#19e3f0)] font-bold uppercase tracking-widest"
                             style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.25) var(--sarak-layout-gap-sm, 8px)' }}
                         >
-                            <span style={{ fontSize: 'var(--sarak-type-scale-caption, 12px)' }}><Command size={10} /></span>
+                            <span style={{ fontSize: 'var(--sarak-type-scale-caption, 12px)' }}><SarakIcon name="Command" size={10} /></span>
                             <span>K</span>
                         </div>
                     </div>
@@ -128,7 +136,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
                     <div className="max-h-[60vh] overflow-y-auto custom-scrollbar" style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}>
                         {filteredItems.length > 0 ? (
                             <div style={{ paddingTop: 'var(--sarak-layout-gap-sm, 8px)', paddingBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                                <h4 className="text-2xs font-black uppercase text-[var(--text-muted,#94a3b8)]" style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)', marginBottom: 'var(--sarak-layout-gap-sm, 8px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>{t('searchAvailableToolsHeading')}</h4>
+                                <h4 className="text-2xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))]" style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)', marginBottom: 'var(--sarak-layout-gap-sm, 8px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>{t('searchAvailableToolsHeading')}</h4>
                                 {filteredItems.map(item => {
                                     // Acionável só quando há `onSelect` — sem callback, o resultado
                                     // fica exatamente como sempre foi (nenhum manipulador).
@@ -138,53 +146,53 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items
                                             key={item.id}
                                             type={onSelect ? 'button' : undefined}
                                             onClick={onSelect ? () => selectItem(item.id) : undefined}
-                                            className="group h-14 flex items-center justify-between rounded-[calc(var(--radius-theme)*0.8)] hover:bg-[var(--sarak-primary-color,#3b82f6)]/5 transition-all cursor-pointer w-full text-left"
+                                            className="group h-14 flex items-center justify-between rounded-[calc(var(--radius-theme)*0.8)] hover:bg-[var(--sarak-primary-color,#19e3f0)]/5 transition-all cursor-pointer w-full text-left"
                                             style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)' }}
                                         >
                                             <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
-                                                <div className="w-9 h-9 rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--color-theme-card,#1e293b)] flex items-center justify-center text-[var(--text-muted,#94a3b8)] group-hover:text-[var(--sarak-primary-color,#3b82f6)] group-hover:bg-[var(--sarak-primary-color,#3b82f6)]/10 transition-all border border-[var(--border-color,#334155)]">
-                                                    <Command size={16} />
+                                                <div className="w-9 h-9 rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--color-theme-card,#101622)] flex items-center justify-center text-[var(--text-muted,rgba(242,246,251,0.55))] group-hover:text-[var(--sarak-primary-color,#19e3f0)] group-hover:bg-[var(--sarak-primary-color,#19e3f0)]/10 transition-all border border-[var(--border-color,rgba(255,255,255,0.09))]">
+                                                    <SarakIcon name="Command" size={16} />
                                                 </div>
                                                 <div className="flex" style={{ flexDirection: 'column' }}>
-                                                    <span className="text-sm font-bold text-[var(--color-theme-title,#ffffff)]/80 group-hover:text-[var(--sarak-primary-color,#3b82f6)]">{item.label}</span>
-                                                    <span className="text-2xs text-[var(--text-muted,#94a3b8)] uppercase tracking-widest">{item.category || t('genericModuleLabel')}</span>
+                                                    <span className="text-sm font-bold text-[var(--color-theme-title,#f2f6fb)]/80 group-hover:text-[var(--sarak-primary-color,#19e3f0)]">{item.label}</span>
+                                                    <span className="text-2xs text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase tracking-widest">{item.category || t('genericModuleLabel')}</span>
                                                 </div>
                                             </div>
-                                            <ArrowRight className="w-4 h-4 text-[var(--text-muted,#94a3b8)] opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
+                                            <SarakIcon name="ArrowRight" className="w-4 h-4 text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
                                         </Row>
                                     );
                                 })}
                             </div>
                         ) : (
                             <div className="flex items-center justify-center text-center opacity-20" style={{ flexDirection: 'column', paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>
-                                <Search className="w-12 h-12 text-[var(--color-theme-title,#ffffff)]" style={{ marginBottom: 'var(--sarak-layout-gap-md,16px)' }} />
-                                <span className="text-sm font-black uppercase tracking-widest text-[var(--color-theme-title,#ffffff)]">{t('searchNoResultsFor', { query })}</span>
+                                <SarakIcon name="Search" className="w-12 h-12 text-[var(--color-theme-title,#f2f6fb)]" style={{ marginBottom: 'var(--sarak-layout-gap-md,16px)' }} />
+                                <span className="text-sm font-black uppercase tracking-widest text-[var(--color-theme-title,#f2f6fb)]">{t('searchNoResultsFor', { query })}</span>
                             </div>
                         )}
                     </div>
 
                     {/* Footer Area */}
                     <div
-                        className="bg-[var(--color-theme-card,#1e293b)]/40 border-t border-[var(--border-color,#334155)] flex items-center justify-between"
+                        className="bg-[var(--color-theme-card,#101622)]/40 border-t border-[var(--border-color,rgba(255,255,255,0.09))] flex items-center justify-between"
                         style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.75) var(--sarak-layout-gap-lg, 24px)' }}
                     >
                         <div className="flex" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
-                            <div className="flex items-center text-2xs font-bold text-[var(--text-muted,#94a3b8)] uppercase tracking-widest" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>
-                                <span className="rounded bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.125) calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>ESC</span>
+                            <div className="flex items-center text-2xs font-bold text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase tracking-widest" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>
+                                <span className="rounded bg-[var(--color-theme-card,#101622)] border border-[var(--border-color,rgba(255,255,255,0.09))]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.125) calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>ESC</span>
                                 <span>{t('searchCloseHint')}</span>
                             </div>
-                            <div className="flex items-center text-2xs font-bold text-[var(--text-muted,#94a3b8)] uppercase tracking-widest" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>
-                                <span className="rounded bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.125) calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>↑↓</span>
+                            <div className="flex items-center text-2xs font-bold text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase tracking-widest" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>
+                                <span className="rounded bg-[var(--color-theme-card,#101622)] border border-[var(--border-color,rgba(255,255,255,0.09))]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.125) calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>↑↓</span>
                                 <span>{t('searchNavigateHint')}</span>
                             </div>
                         </div>
-                        <span className="text-2xs font-black uppercase tracking-widest text-[var(--text-muted,#94a3b8)] italic">{systemName ? t('searchEngineBrandedLabel', { systemName }) : t('searchEngineLabel')}</span>
+                        <span className="text-2xs font-black uppercase tracking-widest text-[var(--text-muted,rgba(242,246,251,0.55))] italic">{systemName ? t('searchEngineBrandedLabel', { systemName }) : t('searchEngineLabel')}</span>
                     </div>
                 </motion.div>
-            </div>
+            </SearchFrame>
+            )}
         </AnimatePresence>
     );
 };
 
 export default SarakSearch;
-

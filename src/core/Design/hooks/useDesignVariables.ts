@@ -4,12 +4,16 @@ import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../breakpoints';
 import { computeColorVariants, parseToRgba, rgbToHsl } from '../../../core/Provider/utils/color-engine';
 import { isSafeMediaString } from '../../../core/Provider/utils/cssSafety';
 import type { SarakTokenValue } from '../types';
+import { collectDeclaredExceptionVars, emitColorChannels, emitOnColors, isUndeclaredException, resolveTitleColor } from './designVariableHelpers';
 
 /**
  * Helper para converter camelCase para kebab-case (ex: cardBorderRadius -> card-border-radius)
  */
 const toKebabCase = (str: string) =>
     str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+
+const asFiniteNumber = (value: unknown): number | undefined =>
+    typeof value === 'number' && Number.isFinite(value) ? value : undefined;
 
 /**
  * Segunda barreira contra breakout de CSS/HTML (a primeira é `validateDesign`,
@@ -60,6 +64,11 @@ export const useDesignVariables = (
         
         const isDark = targetMode === 'dark';
         const anchorColor = isDark ? '#000000' : '#ffffff';
+        // `colorDepth`/`colorVariation` moldam o hover/active de toda cor com variantes.
+        const variantShape = {
+            depth: asFiniteNumber(design.colorDepth),
+            variation: asFiniteNumber(design.colorVariation),
+        };
 
         // Breakpoints como dado (Spec 16, Regra 1): lê os tokens do tema (se o
         // tema os declarar) com fallback à fonte única; `@media` não aceita
@@ -67,12 +76,19 @@ export const useDesignVariables = (
         const bpTablet = typeof design.breakpointTablet === 'number' ? design.breakpointTablet : BREAKPOINT_TABLET;
         const bpDesktop = typeof design.breakpointDesktop === 'number' ? design.breakpointDesktop : BREAKPOINT_DESKTOP;
 
+        // Variáveis de exceção declarada (canto de raio): só a exceção as escreve — um canal por variável.
+        const exceptionVars = collectDeclaredExceptionVars(tokens, design, (id) => `--sarak-${toKebabCase(id)}`);
+
         // 1. PROCESSAMENTO ATÔMICO (Do Token para a Variável)
         tokens.forEach(token => {
             const value = design[token.id] ?? token.defaultValue;
+            // Exceção de um token mestre (canto de raio): só escreve quando o tema a declara. No padrão,
+            // o mestre — que já escreve as variáveis do canto — é quem chega a ele.
+            if (token.exceptionOf && isUndeclaredException(design[token.id], token.defaultValue)) return;
             const kebabId = toKebabCase(token.id);
             const autoVar = `--sarak-${kebabId}`;
-            
+            const writesVar = (name: string): boolean => token.exceptionOf !== undefined || !exceptionVars.has(name);
+
             const isResponsiveValue = value && typeof value === 'object' && 'mob' in value;
 
             let finalValue = '';
@@ -94,17 +110,14 @@ export const useDesignVariables = (
                 responsiveCssDesk += `  ${autoVar}: ${deskVal};\n`;
 
                 if (token.cssVars && token.cssVars.length > 0) {
-                    token.cssVars.forEach(v => {
-                        responsiveCssRoot += `  ${v}: ${mobVal};\n`;
+                    token.cssVars.filter(writesVar).forEach(v => {
+                        responsiveCssRoot +=`  ${v}: ${mobVal};\n`;
                         responsiveCssTab += `  ${v}: ${tabVal};\n`;
                         responsiveCssDesk += `  ${v}: ${deskVal};\n`;
                     });
                 }
-                // CRÍTICO: Não injetamos o valor 'deskVal' no objeto JS `variables`.
-                // Se injetarmos, o DesignScope aplicará como estilo inline, o que tem
-                // especificidade maior que as nossas media queries e classes (.sarak-device-*),
-                // quebrando totalmente a responsividade e travando no modo desktop.
-                // A responsabilidade de prover as variáveis fica 100% com o responsiveCSS injetado na tag <style>.
+                // CRÍTICO: o valor responsivo NÃO entra em `variables` (inline vence as media queries e as
+                // classes .sarak-device-*, e travaria o modo desktop): o `<style>` do responsiveCSS é o canal dele.
 
             } else {
                 // COMPORTAMENTO ORIGINAL (Valores Primitivos / Cores)
@@ -120,13 +133,13 @@ export const useDesignVariables = (
 
                 // Injeção de Variáveis Extras definidas no Schema
                 if (token.cssVars && token.cssVars.length > 0) {
-                    token.cssVars.forEach(v => {
+                    token.cssVars.filter(writesVar).forEach(v => {
                         variables[v] = finalValue;
 
                         // Gerador de Variantes Cromáticas (RGB, Hover, Active, Light)
                         if (token.generateVariants && token.type === 'color' && value && value !== 'transparent') {
                             try {
-                                const variants = computeColorVariants(String(value), anchorColor);
+                                const variants = computeColorVariants(String(value), anchorColor, variantShape);
                                 variables[`${v}-rgb`] = variants.rgb;
                                 variables[`${v}-bg`] = variants.bg;
                                 variables[`${v}-border`] = variants.border;
@@ -157,12 +170,12 @@ export const useDesignVariables = (
                 }
             }
 
-            // Injeção de Atributos de Estado (data-sx-*)
-            if (token.type === 'select' || token.type === 'boolean' || token.type === 'font') {
+            // Injeção de Atributos de Estado (data-sx-*). O `text` entra para o CSS distinguir "declarado" de
+            // `none` (a sombra do cartão): a variável, sozinha, não diz se o tema escreveu algo.
+            if (token.type === 'select' || token.type === 'boolean' || token.type === 'font' || token.type === 'text') {
                 attributes[`data-sx-${kebabId}`] = isResponsiveValue ? String(value.desk) : String(value);
             }
         });
-
         // 2. CÁLCULOS DERIVADOS (Geometria Dinâmica)
         const aliasPairs: Array<[string, string | undefined]> = [
             ['--text-main', variables['--sarak-text-main'] || variables['--theme-text-primary']],
@@ -184,12 +197,14 @@ export const useDesignVariables = (
             }
         });
 
+        emitColorChannels(variables, anchorColor, variantShape);
+
         const primaryColor = variables['--theme-primary'] || variables['--primary-color'] || '#3b82f6';
         const { r, g, b } = parseToRgba(primaryColor);
         const [, , primaryLightness] = rgbToHsl(r, g, b);
-
-        variables['--color-theme-title'] = variables['--text-main'] || (isDark ? '#ffffff' : '#0f172a');
-        variables['--theme-on-primary'] = primaryLightness > 55 ? '#020617' : '#ffffff';
+        emitOnColors(variables, anchorColor); // texto de maior contraste sobre cada cor sólida
+        variables['--color-theme-title'] = resolveTitleColor(variables, isDark, tokens.find((token) => token.id === 'titleColor')?.defaultValue);
+        variables['--theme-on-primary'] ??= primaryLightness > 55 ? '#020617' : '#ffffff';
         variables['--sarak-vignette-color'] = isDark
             ? `rgba(0, 0, 0, ${design.vignetteOpacity ?? 0.3})`
             : 'rgba(0, 0, 0, 0)';

@@ -24,19 +24,19 @@ export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: 
                     <SarakIcon name="List" className="text-[var(--theme-primary)]" size={28} />
                     Componentes de Formulário
                 </h2>
-                <p className="text-sm text-[var(--theme-text-sec)] mt-1 font-medium">Demonstração de diferentes topologias de entrada de dados.</p>
+                <p className="text-sm text-[var(--text-secondary)] mt-1 font-medium">Demonstração de diferentes topologias de entrada de dados.</p>
             </div>
 
             <div className="flex flex-col @xl:flex-row gap-6 w-full">
                 
                 {/* Coluna Principal: Formulário de Aba Inteira (Full Form) */}
-                <div className="flex-[2] sarak-card rounded-2xl border border-[var(--theme-border)] shadow-xl bg-[var(--theme-card)] backdrop-blur-md p-8 flex flex-col gap-6" style={{ borderRadius: 'calc(var(--sarak-radius) * 1.5)' }}>
+                <div className="flex-[2] sarak-card rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-card)] p-8 flex flex-col gap-6" style={{ borderRadius: 'calc(var(--sarak-card-radius) * 1.5)' }}>
                     <div className="flex items-center justify-between border-b border-[var(--theme-border)] pb-4">
                         <h3 className="text-lg font-bold text-[var(--theme-title)] flex items-center gap-2">
                             <SarakIcon name="Shield" size={20} className="text-[var(--theme-primary)]" />
                             Registro Completo (Full Form)
                         </h3>
-                        <div className="text-xs font-bold text-[var(--theme-text-sec)] bg-[var(--theme-body)] px-3 py-1 rounded-full border border-[var(--theme-border)]">Step 1 de 3</div>
+                        <div className="text-xs font-bold text-[var(--text-secondary)] bg-[var(--theme-body)] px-3 py-1 rounded-full border border-[var(--theme-border)]">Step 1 de 3</div>
                     </div>
 
                     <div className="grid grid-cols-1 @md:grid-cols-2 gap-6">
@@ -61,13 +61,13 @@ export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: 
                         </div>
                         {/* Input 3 (Success) */}
                         <div className="flex flex-col gap-2">
-                            <label className="text-xs font-bold text-emerald-500 uppercase tracking-widest flex items-center gap-1.5">
+                            <label className="text-xs font-bold text-[var(--sarak-status-success-color,#10b981)] uppercase tracking-widest flex items-center gap-1.5">
                                 <SarakIcon name="Mail" size={14} /> Email Oficial <SarakIcon name="CheckCircle2" size={12} />
                             </label>
                             <SarakInput 
                                 type="email" 
                                 defaultValue="contato@sarak.io"
-                                className="!bg-emerald-500/5 !border-emerald-500/50 !text-emerald-500 focus:!border-emerald-500"
+                                className="!bg-[var(--sarak-status-success-color,#10b981)]/5 !border-[var(--sarak-status-success-color,#10b981)]/50 !text-[var(--sarak-status-success-color,#10b981)] focus:!border-[var(--sarak-status-success-color,#10b981)]"
                             />
                         </div>
                         {/* Input 4 (Select) */}
@@ -110,43 +110,43 @@ export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: 
                 <div className="flex-1 flex flex-col gap-6">
                     
                     {/* Caixa de Pergunta (Survey Style) */}
-                    <div className="sarak-card rounded-2xl border border-[var(--theme-border)] shadow-xl bg-[var(--theme-card)] backdrop-blur-md p-6 flex flex-col gap-4" style={{ borderRadius: 'var(--sarak-radius)' }}>
+                    <div className="sarak-card rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-card)] p-6 flex flex-col gap-4" style={{ borderRadius: 'var(--sarak-card-radius)' }}>
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-[var(--theme-primary)]/10 text-[var(--theme-primary)] flex items-center justify-center">
                                 <SarakIcon name="MessageSquare" size={20} />
                             </div>
                             <h3 className="text-md font-bold text-[var(--theme-title)]">Avaliação de Risco</h3>
                         </div>
-                        <p className="text-sm text-[var(--theme-text-sec)]">Qual o impacto estimado se o sistema ficar indisponível?</p>
+                        <p className="text-sm text-[var(--text-secondary)]">Qual o impacto estimado se o sistema ficar indisponível?</p>
                         
                         <div className="flex flex-col gap-2 mt-2">
                             {['Baixo (Rotineiro)', 'Médio (Atrasos)', 'Alto (Crítico)'].map((opt, i) => (
                                 <label key={i} className="flex items-center gap-3 p-3 rounded-lg border border-[var(--theme-border)] hover:border-[var(--theme-primary)] bg-[var(--theme-body)] cursor-pointer transition-all group">
                                     <input type="radio" name="risk" className="hidden" />
-                                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${i === 2 ? 'border-rose-500' : 'border-[var(--theme-text-sec)] group-hover:border-[var(--theme-primary)]'}`}>
-                                        {i === 2 && <div className="w-2 h-2 bg-rose-500 rounded-full" />}
+                                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${i === 2 ? 'border-[var(--sarak-status-error-color,#ef4444)]' : 'border-[var(--text-secondary)] group-hover:border-[var(--theme-primary)]'}`}>
+                                        {i === 2 && <div className="w-2 h-2 bg-[var(--sarak-status-error-color,#ef4444)] rounded-full" />}
                                     </div>
-                                    <span className={`text-sm font-medium ${i === 2 ? 'text-[var(--theme-title)]' : 'text-[var(--theme-text-sec)]'}`}>{opt}</span>
+                                    <span className={`text-sm font-medium ${i === 2 ? 'text-[var(--theme-title)]' : 'text-[var(--text-secondary)]'}`}>{opt}</span>
                                 </label>
                             ))}
                         </div>
                     </div>
 
                     {/* Formulário Dinâmico Adicionável (Dynamic Fields) */}
-                    <div className="sarak-card rounded-2xl border border-[var(--theme-border)] shadow-xl bg-[var(--theme-card)] backdrop-blur-md p-6 flex flex-col gap-4" style={{ borderRadius: 'var(--sarak-radius)' }}>
+                    <div className="sarak-card rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-card)] p-6 flex flex-col gap-4" style={{ borderRadius: 'var(--sarak-card-radius)' }}>
                         <h3 className="text-md font-bold text-[var(--theme-title)] border-b border-[var(--theme-border)] pb-3">Datas e Marcos</h3>
                         
                         <div className="flex flex-col gap-3">
                             <div className="flex items-center gap-2">
                                 <div className="flex-1">
-                                    <SarakInput type="text" defaultValue="12/05/2026" leftIcon={<SarakIcon name="Calendar" size={14} className="text-[var(--theme-text-sec)]" />} fullWidth />
+                                    <SarakInput type="text" defaultValue="12/05/2026" leftIcon={<SarakIcon name="Calendar" size={14} className="text-[var(--text-secondary)]" />} fullWidth />
                                 </div>
                                 <SarakIconButton variant="danger" size="sm" icon={<SarakIcon name="Trash2" size={14} />} />
                             </div>
                             
                             <div className="flex items-center gap-2">
                                 <div className="flex-1">
-                                    <SarakInput type="text" placeholder="Adicionar data..." leftIcon={<SarakIcon name="Calendar" size={14} className="text-[var(--theme-text-sec)]" />} fullWidth />
+                                    <SarakInput type="text" placeholder="Adicionar data..." leftIcon={<SarakIcon name="Calendar" size={14} className="text-[var(--text-secondary)]" />} fullWidth />
                                 </div>
                                 <SarakIconButton variant="primary" size="sm" icon={<SarakIcon name="Plus" size={14} />} />
                             </div>

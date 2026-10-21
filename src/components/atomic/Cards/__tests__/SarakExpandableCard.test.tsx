@@ -32,4 +32,20 @@ describe('ExpandableCard', () => {
         // (o nosso, z-[99999]) precisa ser distinguido pela classe que plantamos.
         expect(document.body.querySelector('[class*="@container"]')).not.toBeNull();
     });
+
+    it('usa a variável arbitrária de borda no botão de fechar expandido', () => {
+        render(
+            <SarakUIProvider config={{ mode: 'dark' }}>
+                <SarakExpandableCard title="Card de teste">
+                    <div>conteúdo</div>
+                </SarakExpandableCard>
+            </SarakUIProvider>
+        );
+
+        fireEvent.click(screen.getByTitle('Expandir Tela Cheia'));
+        const closeButton = screen.getByTitle('Fechar');
+
+        expect(closeButton.className).toContain('border-[var(--border-color,rgba(255,255,255,0.09))]');
+        expect(closeButton.className).not.toContain(')]-border');
+    });
 });

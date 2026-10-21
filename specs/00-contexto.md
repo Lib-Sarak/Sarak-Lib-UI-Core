@@ -37,8 +37,9 @@ central resolve o dicionário inteiro de tokens em tempo de execução, e os com
 de terem estilo fixo.
 
 **Quem consome:** outros repositórios React (hoje o ERP Earendel), por dependência **git com tag**, nunca por
-registry npm. O consumo é feito de dois modos ortogonais — como **host do Shell** (a lib desenha o cromo) ou
-como **kit de componentes** com o Provider (o host desenha o seu).
+registry npm. O consumo é feito como **kit de componentes** com o Provider: o consumidor é dono do layout e
+das rotas, e a lib entrega o look e o cromo apresentacional (`SarakAppChrome`). A lib **não é host** — não
+registra módulos nem resolve rotas ([[adr/018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]).
 
 **O que ela NÃO é:** não é aplicação, não tem servidor, não persiste nada por conta própria e **não impõe
 marca** — a identidade visível é sempre do host ([[adr/006-zero-marca-soberania-host]]).
@@ -64,7 +65,7 @@ reescritas aqui.
 
 **Específicas deste repositório** — as regras vivem em [`specs/00-regras-e-invariantes.md`](specs/00-regras-e-invariantes.md),
 em **duas categorias** (verificáveis e de conduta), cada uma com o estado da verificação: ✅ · ⚠️ · ⏳ · 🔴.
-Quantas são se conta com `grep -c "^## R"` naquele arquivo — **não presuma o número**. As cinco que um agente
+Quantas são se conta com `grep -c "^## R"` naquele arquivo — **não presuma o número**. As sete que um agente
 viola sem perceber:
 
 - **O código é a fonte da verdade.** Onde um documento desta pasta contradiz o código, **o código vence**.
@@ -76,6 +77,14 @@ viola sem perceber:
 - **Paridade 1:1:1 dos tokens.** Schema ↔ `theme_table_mapping` ↔ partições do catálogo têm de bater — o que
   vale é a **convergência**, e o número vive em `npm run audit` → `auditor_paridade` e em
   `sarak-dev/state.json` → `design.tokens`. Detalhe em [`arquitetura/04-contrato-de-tokens-e-paridade.md`](arquitetura/04-contrato-de-tokens-e-paridade.md).
+- **Token sem leitor não entra** *(R40)*. Todo token que o painel oferece muda a tela: criar, renomear ou mudar
+  opção de token exige o leitor no componente (ou a regra CSS por opção) e o teste, no mesmo commit;
+  `npm run token-reader:check` cobra, com a exceção vazia. O que cada token desenha está em
+  [`arquitetura/02-design-engine.md`](arquitetura/02-design-engine.md) §10.
+- **O motor dá o padrão; o componente decide** *(R41-R43)*. Nada de `!important` em seletor amplo, de variável
+  com dois donos, de reserva diferente do padrão do token, nem de branco/preto fixo em componente: a cor vem do tema.
+  `css-important`, `variable-contract` e `fixed-translucent` cobram no Anel 1
+  ([`arquitetura/02-design-engine.md`](arquitetura/02-design-engine.md) §10.8-10.11).
 - **Zero marca.** Nenhum nome, logo ou cor da Sarak vaza para a UI do host ([[adr/006-zero-marca-soberania-host]]),
   cobrado por `npm run zero-brand:check`.
 - **O baseline do `run_audit` NÃO é zero — compare com ele, nunca com zero.** A fonte viva é
@@ -109,11 +118,11 @@ testes `vitest` — **sem E2E de jornada e sem regressão visual por pixel**, ma
 
 | Bloco | Responsabilidade | Detalhe em |
 |---|---|---|
-| `src/core/Design/` | O Design Engine: 28 schemas → `MASTER_DESIGN_MAP` → o dicionário de tokens | [`arquitetura/02`](arquitetura/02-design-engine.md) |
+| `src/core/Design/` | O Design Engine: um schema por grupo → `MASTER_DESIGN_MAP` → o dicionário de tokens (cada token estético ou funcional) | [`arquitetura/02`](arquitetura/02-design-engine.md) |
 | `src/core/Provider/` | `SarakUIProvider`, validação da fronteira, tipos gerados | [`arquitetura/04`](arquitetura/04-contrato-de-tokens-e-paridade.md) |
-| `src/core/Shell/` · `Discovery/` | Cromo, rotas e os módulos-plugin | [`specs/04`](specs/04-shell-e-discovery.md) · [`specs/05`](specs/05-cromo-e-slots.md) |
+| `src/components/Layout/` | O cromo único (`SarakAppChrome`), os slots e os widgets da barra | [`specs/05`](specs/05-cromo-e-slots.md) |
 | `src/core/Security/` | Sanitização e limites anti-DoS | [`specs/10`](specs/10-seguranca-e-acessibilidade.md) |
-| `src/components/` | `atomic/` (átomos) · `engines/` (motores lazy) · `Layout/` | [`arquitetura/03`](arquitetura/03-superficie-publica.md) |
+| `src/components/` | `atomic/` (átomos) · `engines/` (motores lazy) | [`arquitetura/03`](arquitetura/03-superficie-publica.md) |
 | `src/features/DesignEngine/` | Painel de customização e preview | [`specs/06`](specs/06-painel-de-customizacao-e-preview.md) |
 
 **Fronteiras de dependência:** só **duas** regras são cobradas (`components/` não importa `features/`;
@@ -130,7 +139,7 @@ testes `vitest` — **sem E2E de jornada e sem regressão visual por pixel**, ma
 | Todos os gates de release | `npm run gates:full` |
 | Barril público ↔ componentes | `npm run barrel:check` |
 | Catálogo · kit do consumidor · kit do mantenedor | `npm run catalog:check` · `guide:check` · `dev-kit:check` |
-| Build (roda 4 gates antes) | `npm run build` |
+| Build (encadeia gates antes e depois de compilar — a ordem é o script `build`) | `npm run build` |
 | Emitir release (gates + tag + push) | `npm version <major\|minor\|patch>` — ⚠️ **só o usuário roda** (§7) |
 
 ## 3.1 Release e tag — o que bloqueia o push
@@ -156,8 +165,8 @@ agente descobre do jeito difícil se não estiverem escritos:
   > regenerar os **três** kits que carimbam a `version` — consumidor, `dist/` e `sarak-dev/` — no mesmo commit
   > da tag. Antes disso, toda tag saía com o kit do mantenedor um release atrás e a release seguinte nascia
   > bloqueada por ela. Detalhe em [`specs/03-versionamento-e-release.md`](specs/03-versionamento-e-release.md) §6.
-- **Ele publica sozinho:** `preversion` roda `gates:full`, `version` regenera `dist/` + `sarak-ui/` **no mesmo
-  commit** (é o que o anel cobra) e `postversion` faz `git push --follow-tags`. Por isso a §7 o reserva ao usuário.
+- **Ele publica sozinho:** `preversion` roda `gates:full`, `version` regenera `dist/`, `sarak-ui/`, `sarak-dev/` e os
+  dois `buildInfo.ts` **no mesmo commit** (é o que o anel cobra) e `postversion` faz `git push --follow-tags`. Por isso a §7 o reserva ao usuário.
 - **Todo MAJOR precisa da nota de migração ANCORADA — e isso virou gate** *(2026-08-19)*. O gancho `version`
   abre com `migration-anchor:check`: sem uma entrada em `docs/migracoes.md` cujo título cite `X.0.0` por
   extenso, o `npm version major` **para antes de criar a tag**. Um segundo gate, `minor-no-removal:check`,
@@ -223,9 +232,10 @@ Detalhe completo do release em [`specs/03-versionamento-e-release.md`](specs/03-
 | Criar tema, ou preset parcial | `specs/09-temas-e-presets` | skill local `ui-criar-tema` · `ui-criar-preset` |
 | Auditar a base / validar um PR | `specs/01-gates-e-baseline` | skill local `ui-auditoria-modulo` |
 | Instalar a lib num consumidor | `specs/12` + `specs/13` | skill local `ui-integra-consumidor` |
-| **Atualizar** a lib num consumidor (≠ instalar) | `specs/13-instalacao-e-atualizacao` — as duas camadas de cache entre o `dist/` e o navegador | skill local `ui-integra-consumidor` |
-| Mexer no Shell, rotas ou módulos-plugin | `specs/04-shell-e-discovery` | [[00-knowledge]] |
-| Mexer no cromo ou nos slots | `specs/05-cromo-e-slots` | [[00-knowledge]] |
+| **Atualizar** a lib num consumidor (≠ instalar) | `specs/13-instalacao-e-atualizacao` — as três camadas de cache entre o `dist/` e o navegador, e o selo que diz qual build a página executa | skill local `ui-integra-consumidor` |
+| Mexer no cromo, nos slots, nos widgets da barra ou na navegação | `specs/05-cromo-e-slots` | [[00-knowledge]] |
+| Mexer no painel de customização ou no preview | `specs/06-painel-de-customizacao-e-preview` + `specs/09-temas-e-presets` | [[00-knowledge]] |
+| Texto que a lib mostra, idioma, chave de tradução | `specs/10-seguranca-e-acessibilidade` §3.6 | [[00-knowledge]] |
 | Alterar a superfície pública (barril) | `arquitetura/03` + `specs/00-regras-e-invariantes` | [[00-knowledge]] |
 | **Operar Git**: commit, PR, merge na `main`, emitir release | `specs/17-contrato-de-operacao-git` (quem faz o quê) + `specs/03` + `specs/16` + `adr/008` | skill local **`git-ci-cd`** — ela **instrui, nunca executa** |
 | Mudar gate, hook ou pipeline | `specs/02-enforcement-por-commit` + `specs/01` + `specs/16-integracao-continua` | [[00-knowledge]] |
@@ -241,7 +251,7 @@ A tabela acima roteia **por tarefa**. Quem ainda não tem tarefa, e só precisa 
 |---|---|---|
 | 0 | [`sarak-dev/START-HERE.md`](../sarak-dev/START-HERE.md) | O índice operacional e o **carimbo de estado** — números recontados a cada geração, nunca escritos à mão |
 | 1 | [`specs/00-regras-e-invariantes.md`](specs/00-regras-e-invariantes.md) | **O contrato único.** As regras em duas categorias, cada uma com o gate que a cobra — ou a admissão de que **nenhum** cobre |
-| 2 | [`arquitetura/01-forma-do-produto-e-modos-de-consumo.md`](arquitetura/01-forma-do-produto-e-modos-de-consumo.md) | O que a lib **é** hoje, e os dois modos de consumo |
+| 2 | [`arquitetura/01-forma-do-produto-e-modos-de-consumo.md`](arquitetura/01-forma-do-produto-e-modos-de-consumo.md) | O que a lib **é** hoje, e o modo de consumo |
 | 3 | [`arquitetura/00-mapa-do-modulo.md`](arquitetura/00-mapa-do-modulo.md) | Onde cada coisa mora e o que pode importar o quê |
 | 4 | [`sarak-dev/GUIA-MANUTENCAO.md`](../sarak-dev/GUIA-MANUTENCAO.md) | O roteador de fluxos: o passo a passo do que você vai mexer e **qual spec é dona** daquilo |
 | 5 | [`specs/01-gates-e-baseline.md`](specs/01-gates-e-baseline.md) | **Antes de rodar qualquer gate.** O baseline do `run_audit` **não é zero** — compare com `gates/baselines/audit-baseline.json`, nunca com zero (§2) |
@@ -302,7 +312,8 @@ achado que não é a tarefa de agora  →  [[00-backlog]]  (uma linha, sem fila,
   **revisor** — inclusive em plan que só escreve documento *(decisão do dono, 2026-09-02: "agente revisor
   apenas escreve specs e plan, agente executor faz as alterações e o revisor aprova")*. Isto **substitui** o
   desvio anterior, que mandava o revisor executar plan de `specs/`; o que restringe o executor agora está na
-  [[00-prompt-executor]] §7.3, e é mais estreito: ele nunca cria nem edita spec **por iniciativa própria**,
+  proibição *"NUNCA crie nem edite spec por iniciativa própria"* da lista de [[00-prompt-executor]] §7, e é
+  mais estreito: ele nunca cria nem edita spec **por iniciativa própria**,
   mas edita o arquivo que a §3.1 da plan declara dentro do escopo.
 - **O usuário nomeia as specs no prompt.** Via de regra, é ele quem diz ao agente quais specs ler. O ritual de
   entrada dos dois prompts continua obrigatório — a menção do usuário reforça, não substitui.
@@ -345,7 +356,8 @@ Antes de escolher **como** fazer algo, leia **[[00-knowledge]]** — é o rotead
   do dono, e o padrão é o agente **instruir** — ele entrega o comando pronto e quem digita é o dono. A **única**
   porta é o dono **solicitar e autorizar** naquela conversa, e ela vale para aquele ato, não para os seguintes
   ([`specs/17`](specs/17-contrato-de-operacao-git.md) §2.0 · [`adr/012`](adr/012-escrita-git-sob-autorizacao-do-dono.md)).
-  **Ler é livre e esperado** — `status`, `log`, `diff`, `fetch`, os `*:check`. As seis proibições absolutas,
+  O hook de commit e o de push barram a sessão de agente que não declare a autorização no próprio comando
+  ([[00-regras-e-invariantes]] R38). **Ler é livre e esperado** — `status`, `log`, `diff`, `fetch`, os `*:check`. As seis proibições absolutas,
   que autorização nenhuma dissolve, estão na §3 daquela spec.
 - **Não rode `npm version` por conta própria.** Ele cria tag e faz `push` no `postversion`: é publicação, e
   publicação é decisão do usuário. O que fazer quando o push é bloqueado está na §3.1.
@@ -379,14 +391,17 @@ Antes de escolher **como** fazer algo, leia **[[00-knowledge]]** — é o rotead
 - **O ERP Earendel é o único consumidor** e está em desenvolvimento simultâneo, consumindo por **caminho
   local** (`file:`) — decisão do dono enquanto os dois repositórios são ajustados juntos; a migração para
   `github:…#semver:` vem depois. É um workspace pnpm com 13 projetos e lockfile canônico.
-- 🔴 **Entre o `dist/` da lib e a tela do consumidor existem DUAS camadas de cache, e as duas falham em
+- 🔴 **Entre o `dist/` da lib e a tela do consumidor existem TRÊS camadas de cache, e as três falham em
   silêncio.** É a armadilha mais cara desta base — já custou três rodadas de investigação **na lib**, que
   estava certa nas três. (1) `file:` no pnpm é **cópia no store, não link**: todo rebuild exige
   `pnpm install --force --filter <pacote>`. (2) O **pré-bundle do bundler** (Vite: `node_modules/.vite/`)
   re-otimiza por lockfile + versão + config, **nunca por conteúdo** — com dependência local nenhum dos três
-  muda, e o dev server segue servindo o build anterior. **Medir a lib por um consumidor não reinstalado, ou
-  com o cache do bundler quente, é medir o passado.** O `sarak-ui check` avisa da segunda camada com rótulo
-  próprio; o procedimento na ordem certa — inclusive **provar a deleção** — está em
+  muda, e o dev server segue servindo o build anterior. (3) O **cache HTTP do navegador** guarda esse
+  pré-bundle como `immutable`, sob uma chave `?v=` que também não vê o conteúdo. **Medir a lib por um
+  consumidor não reinstalado, ou com um cache quente, é medir o passado.** O `sarak-ui check` avisa da segunda
+  camada com rótulo próprio. Quem diz em que camada se está é o
+  **selo de build** (`data-sarak-build-info` na página) comparado com o `BUILD_INFO.json` instalado; o
+  procedimento na ordem certa — inclusive **provar a deleção** — está em
   [`specs/13-instalacao-e-atualizacao.md`](specs/13-instalacao-e-atualizacao.md) §9.1.
 - ⚠️ **Valor persistido vence default, por desenho.** Um consumidor que salvou tema não recebe mudança de
   `defaultValue` de token nenhum — e o painel de Design oferece cada valor do schema como opção clicável.

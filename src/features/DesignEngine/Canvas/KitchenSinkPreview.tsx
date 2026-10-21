@@ -8,17 +8,18 @@ import {
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakInput, SarakSelect, SarakSlider, SarakSwitch } from '../../../components/atomic/Inputs';
 import { SarakButton, SarakIconButton } from '../../../components/atomic/Buttons';
+import { useMotionTokens } from '../../../components/atomic/hooks/useMotionTokens';
 
 export const KitchenSinkPreview: React.FC = () => {
-    const sarak = useSarakUI();
-    const { design } = sarak;
+    const { design } = useSarakUI();
+    const { staggerDelay } = useMotionTokens();
 
     return (
         <div className="p-8 space-y-12 mx-auto">
             {/* Header Section */}
-            <header className="flex items-center justify-between p-6 bg-theme-card rounded-theme border-theme shadow-theme backdrop-blur-md">
+            <header className="flex items-center justify-between p-6 sarak-card rounded-theme border-theme shadow-theme">
                 <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-[var(--theme-primary)] flex items-center justify-center text-white shadow-lg shadow-[var(--theme-primary)]/30">
+                    <div className="w-10 h-10 rounded-full bg-[var(--theme-primary)] flex items-center justify-center text-theme-on-primary shadow-lg shadow-[var(--theme-primary)]/30">
                         <Layout size={20} />
                     </div>
                     <div>
@@ -33,10 +34,10 @@ export const KitchenSinkPreview: React.FC = () => {
                             leftIcon={<Search size={14} />}
                         />
                     </div>
-                    <button className="p-2 bg-white/5 rounded-theme text-[var(--theme-muted)] hover:text-[var(--theme-title)] transition-colors border-theme">
+                    <button className="p-2 bg-theme-text/5 rounded-theme text-[var(--theme-muted)] hover:text-[var(--theme-title)] transition-colors border-theme">
                         <Bell size={18} />
                     </button>
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[var(--theme-primary)] to-indigo-500 border-2 border-theme shadow-theme" />
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[var(--theme-primary)] to-[var(--sarak-secondary-color,#7c5cff)] border-2 border-theme shadow-theme" />
                 </div>
             </header>
 
@@ -48,7 +49,7 @@ export const KitchenSinkPreview: React.FC = () => {
                         <h2 className="text-sm font-black uppercase tracking-widest text-[var(--theme-title)]">Inputs & Controles</h2>
                     </div>
                     
-                    <div className="bg-theme-card rounded-theme border-theme p-6 space-y-4 shadow-theme">
+                    <div className="sarak-card rounded-theme border-theme p-6 space-y-4 shadow-theme">
                         <div className="space-y-2">
                             <label className="text-2xs font-bold uppercase text-[var(--theme-muted)]">Campo de Texto</label>
                             <SarakInput 
@@ -66,7 +67,7 @@ export const KitchenSinkPreview: React.FC = () => {
                             </div>
                             <div className="w-24 space-y-2">
                                 <label className="text-2xs font-bold uppercase text-[var(--theme-muted)]">Toggle</label>
-                                <div className="h-[var(--sarak-control-height-toggle,46px)] flex items-center justify-center bg-black/20 border border-theme rounded-theme">
+                                <div className="h-[var(--sarak-control-height-toggle,46px)] flex items-center justify-center bg-theme-body/20 border border-theme rounded-theme">
                                     <SarakSwitch checked={true} onChange={() => {}} />
                                 </div>
                             </div>
@@ -80,13 +81,13 @@ export const KitchenSinkPreview: React.FC = () => {
                 </motion.section>
 
                 {/* Buttons & Actions */}
-                <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="space-y-6">
+                <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: staggerDelay * 2 }} className="space-y-6">
                     <div className="flex items-center gap-2 mb-4">
                         <Plus size={16} className="text-[var(--theme-primary)]" />
                         <h2 className="text-sm font-black uppercase tracking-widest text-[var(--theme-title)]">Botões & Ações</h2>
                     </div>
                     
-                    <div className="bg-theme-card rounded-theme border-theme p-6 grid grid-cols-2 gap-4 shadow-theme">
+                    <div className="sarak-card rounded-theme border-theme p-6 grid grid-cols-2 gap-4 shadow-theme">
                         <SarakButton variant="primary" fullWidth>
                             Ação Primária
                         </SarakButton>
@@ -108,16 +109,16 @@ export const KitchenSinkPreview: React.FC = () => {
                 </motion.section>
 
                 {/* Data Displays */}
-                <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="space-y-6 col-span-1 md:col-span-2">
+                <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: staggerDelay * 4 }} className="space-y-6 col-span-1 md:col-span-2">
                     <div className="flex items-center gap-2 mb-4">
                         <BarChart2 size={16} className="text-[var(--theme-primary)]" />
                         <h2 className="text-sm font-black uppercase tracking-widest text-[var(--theme-title)]">Tabelas & Listas</h2>
                     </div>
                     
-                    <div className="bg-theme-card rounded-theme border-theme overflow-hidden shadow-theme">
+                    <div className="sarak-card rounded-theme border-theme overflow-hidden shadow-theme">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="border-b border-theme bg-white/5">
+                                <tr className="border-b border-theme bg-theme-text/5">
                                     <th className="px-6 py-4 text-2xs font-black uppercase tracking-widest text-[var(--theme-muted)]">Módulo</th>
                                     <th className="px-6 py-4 text-2xs font-black uppercase tracking-widest text-[var(--theme-muted)]">Status</th>
                                     <th className="px-6 py-4 text-2xs font-black uppercase tracking-widest text-[var(--theme-muted)]">Uso</th>
@@ -126,10 +127,10 @@ export const KitchenSinkPreview: React.FC = () => {
                             </thead>
                             <tbody className="divide-y divide-theme">
                                 {[1, 2, 3].map((i) => (
-                                    <tr key={i} className="hover:bg-white/[0.02] transition-colors">
+                                    <tr key={i} className="hover:bg-theme-text/[0.02] transition-colors">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-theme bg-white/5 flex items-center justify-center text-[var(--theme-primary)] border-theme">
+                                                <div className="w-8 h-8 rounded-theme bg-theme-text/5 flex items-center justify-center text-[var(--theme-primary)] border-theme">
                                                     <Layout size={14} />
                                                 </div>
                                                 <div>
@@ -147,7 +148,7 @@ export const KitchenSinkPreview: React.FC = () => {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <div className="w-full max-w-[var(--sarak-progress-bar-max-width,100px)] h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                            <div className="w-full max-w-[var(--sarak-progress-bar-max-width,100px)] h-1.5 bg-theme-text/5 rounded-full overflow-hidden">
                                                 <div className="h-full bg-[var(--theme-primary)] rounded-full" style={{ width: `${30 * i}%` }} />
                                             </div>
                                         </td>
@@ -162,14 +163,14 @@ export const KitchenSinkPreview: React.FC = () => {
                 </motion.section>
 
                 {/* Modals & Toasts Mockup */}
-                <motion.section initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }} className="space-y-6">
+                <motion.section initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: staggerDelay * 6 }} className="space-y-6">
                     <div className="flex items-center gap-2 mb-4">
                         <MessageSquare size={16} className="text-[var(--theme-primary)]" />
                         <h2 className="text-sm font-black uppercase tracking-widest text-[var(--theme-title)]">Modais & Feedback</h2>
                     </div>
                     
                     <div className="space-y-4">
-                        <div className="p-4 bg-theme-card border-theme rounded-theme shadow-theme flex items-center gap-4 relative overflow-hidden group">
+                        <div className="p-4 sarak-card border-theme rounded-theme shadow-theme flex items-center gap-4 relative overflow-hidden group">
                             <div className="spotlight-effect" />
 
                             <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--theme-primary)]" />
@@ -182,7 +183,7 @@ export const KitchenSinkPreview: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="bg-theme-card rounded-theme border-theme p-6 shadow-theme space-y-6 relative overflow-hidden group">
+                        <div className="sarak-card rounded-theme border-theme p-6 shadow-theme space-y-6 relative overflow-hidden group">
                             <div className="spotlight-effect" />
 
                             <div className="flex items-center justify-between">
@@ -205,14 +206,14 @@ export const KitchenSinkPreview: React.FC = () => {
                 </motion.section>
 
                 {/* Cards & Lists */}
-                <motion.section initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }} className="space-y-6">
+                <motion.section initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: staggerDelay * 6 }} className="space-y-6">
                     <div className="flex items-center gap-2 mb-4">
                         <Layout size={16} className="text-[var(--theme-primary)]" />
                         <h2 className="text-sm font-black uppercase tracking-widest text-[var(--theme-title)]">Superfícies de Dados</h2>
                     </div>
                     
                     <div className="grid grid-cols-1 gap-4">
-                        <div className="bg-theme-card rounded-theme border-theme p-6 group hover:translate-y-[calc(var(--sarak-card-hover-lift,4px)*-1)] transition-all relative overflow-hidden shadow-theme">
+                        <div className="sarak-card rounded-theme border-theme p-6 group hover:translate-y-[var(--sarak-card-hover-y,-2px)] transition-all relative overflow-hidden shadow-theme">
                             <div className="spotlight-effect" />
                             {/* Spotlight effect placeholder */}
 
@@ -231,7 +232,7 @@ export const KitchenSinkPreview: React.FC = () => {
                             <div className="flex items-center justify-between pt-4 border-t border-theme relative">
                                 <div className="flex -space-x-2">
                                     {[1, 2, 3].map(i => (
-                                        <div key={i} className="w-6 h-6 rounded-full border-2 border-theme bg-white/10" />
+                                        <div key={i} className="w-6 h-6 rounded-full border-2 border-theme bg-theme-text/10" />
                                     ))}
                                 </div>
                                 <SarakButton variant="ghost" size="sm" rightIcon={<ChevronRight size={10} />}>

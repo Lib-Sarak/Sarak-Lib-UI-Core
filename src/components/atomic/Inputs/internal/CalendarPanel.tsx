@@ -29,8 +29,8 @@ export interface CalendarPanelProps {
     onSelectDay: (date: Date) => void;
 }
 
-const DAY_PRIMARY = 'var(--sarak-primary-color,#3b82f6)';
-const DAY_MUTED = 'var(--text-muted,#94a3b8)';
+const DAY_PRIMARY = 'var(--sarak-primary-color,#19e3f0)';
+const DAY_MUTED = 'var(--text-muted,rgba(242,246,251,0.55))';
 
 /** Cor/fundo da célula de dia por estado — via `style` (não `className`), porque o
  * preset `xs` do `SarakButton` já define cor de texto própria (variant ghost) e a
@@ -111,7 +111,7 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
         <div className="w-64">
             <div className="flex items-center justify-between" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>
                 <NavButton label="Mês anterior" onClick={() => setViewMonth(addMonths(viewMonth, -1))} dir="prev" />
-                <span className="text-sm font-bold capitalize text-[var(--text-muted,#94a3b8)]">
+                <span className="text-sm font-bold capitalize text-[var(--text-muted,rgba(242,246,251,0.55))]">
                     {format(viewMonth, 'MMMM yyyy', { locale })}
                 </span>
                 <NavButton label="Próximo mês" onClick={() => setViewMonth(addMonths(viewMonth, 1))} dir="next" />
@@ -119,7 +119,7 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
 
             <div className="grid" style={{ gridTemplateColumns: WEEK_GRID_COLUMNS, marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
                 {weekdays.map((day, i) => (
-                    <span key={i} className="text-center text-2xs font-black uppercase text-[var(--text-muted,#94a3b8)]/50">
+                    <span key={i} className="text-center text-2xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))]/50">
                         {day}
                     </span>
                 ))}
@@ -148,7 +148,7 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
                             // `style` sempre vence, então é o único jeito confiável de a célula
                             // selecionada/fora-do-mês continuar legível.
                             style={dayCellStyle(cell.outside, selected, between)}
-                            className={`h-8 tabular-nums ${!selected ? 'hover:bg-[var(--sarak-primary-color,#3b82f6)]/10' : ''}`}
+                            className={`h-8 tabular-nums ${!selected ? 'hover:bg-[var(--sarak-primary-color,#19e3f0)]/10' : ''}`}
                         >
                             {cell.date.getDate()}
                         </SarakButton>

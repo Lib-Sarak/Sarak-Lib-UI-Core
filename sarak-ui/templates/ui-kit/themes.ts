@@ -9,7 +9,7 @@
  * mudam — o sintoma é "troquei o tema e a fonte continuou igual". Parta de um tema
  * COMPLETO e sobrescreva poucos valores.
  */
-import { SARAK_REFERENCE_THEMES, type SarakThemePreset } from '@sarak/lib-ui-core';
+import { SARAK_BOOT_THEMES, type SarakThemePreset } from '@sarak/lib-ui-core';
 
 /**
  * As chaves de `design` válidas estão em `sarak-ui/catalog.json` → `designTokens.ids`
@@ -23,18 +23,18 @@ const MARCA = {
 } as const;
 
 /**
- * O par de referência já é completo em todos os eixos e difere de propósito em modo
- * (claro/escuro), cromo (topbar/sidebar) e fonte — trocar entre os dois prova que a
- * central alcança a aplicação inteira.
+ * `SARAK_BOOT_THEMES` contém o preset escuro síncrono. Para alternar entre claro e
+ * escuro, carregue o par com `await sarakLoadReferenceThemes()` antes de passar
+ * `customThemes` ao Provider e aplique a mesma marca a cada preset.
  */
-export const TEMAS: SarakThemePreset[] = SARAK_REFERENCE_THEMES.map((tema) => ({
+export const TEMAS: SarakThemePreset[] = SARAK_BOOT_THEMES.map((tema) => ({
     ...tema,
     design: { ...tema.design, ...MARCA },
 }));
 
 /**
  * Quer partir de outro ponto? `catalog.json` → `themes.presetIds` lista os temas
- * embutidos; `sarakGetThemePreset(id)` devolve o preset completo de qualquer um deles.
+ * embutidos; `await sarakLoadThemePreset(id)` devolve o preset completo de qualquer um deles.
  *
  * Quer ajustar visualmente? Abra o `SarakCustomizationPanel`, mexa nos controles e use
  * "Exportar JSON": o arquivo baixado nasce COMPLETO, pronto para colar aqui. Não

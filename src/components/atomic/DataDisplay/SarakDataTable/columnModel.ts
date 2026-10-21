@@ -7,6 +7,8 @@
 
 import React from 'react';
 
+export type SarakColumnAlignment = 'left' | 'center' | 'right';
+
 export interface SarakColumn<T> {
     /** Identidade estável da coluna (chave de largura/ordem/reorder). */
     id: string;
@@ -20,6 +22,8 @@ export interface SarakColumn<T> {
     pinned?: 'left' | 'right';
     /** Exibe controle de ordenação para esta coluna. */
     sortable?: boolean;
+    /** Alinhamento horizontal do cabeçalho e das células. */
+    align?: SarakColumnAlignment;
     /** Render da célula; ausente = `String(row[id])`. */
     render?: (row: T, rowIndex: number) => React.ReactNode;
 }
@@ -90,7 +94,7 @@ export const pinnedStyle = <T,>(
     column: SarakColumn<T>,
     offsets: SarakPinnedOffsets,
     background: string,
-    selectionWidth = 0,
+    selectionWidth: number = 0,
 ): React.CSSProperties => {
     if (column.pinned === 'left') {
         return { position: 'sticky', left: offsets.left[column.id] + selectionWidth, zIndex: 2, background };

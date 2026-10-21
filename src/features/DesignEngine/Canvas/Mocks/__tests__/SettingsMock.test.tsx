@@ -5,7 +5,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { MockSettings } from '../SettingsMock';
 
 vi.mock('../../../../../core/Provider/SarakUIProvider', () => ({
-    useSarakUI: vi.fn(() => ({ mode: 'dark', branding: {} }))
+    useSarakUI: vi.fn(() => ({ mode: 'dark', branding: {} })),
+    useSarakUIOptional: vi.fn(() => undefined),
 }));
 
 vi.mock('framer-motion', async () => {
@@ -31,7 +32,8 @@ describe('MockSettings', () => {
         
         expect(screen.getByText('Engine Visualization')).toBeInTheDocument();
         expect(screen.getByText('Flow Architecture')).toBeInTheDocument();
-        expect(screen.getByText('Security Orchestrator')).toBeInTheDocument();
+        // O bloco do escudo saiu: nenhum token produzia o efeito que ele ilustrava.
+        expect(screen.queryByText('Security Orchestrator')).toBeNull();
         expect(screen.getByText('Two-Factor Authentication')).toBeInTheDocument();
     });
 });

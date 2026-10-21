@@ -1,6 +1,6 @@
 ---
 name: ui-integra-consumidor
-description: Instala e acopla a base Sarak (@sarak/lib-ui-core) num sistema consumidor React — npm install, peerDependencies, SarakUIProvider, cromo/Shell, temas e o kit de uso `sarak-ui/`. Use quando o usuário pedir para baixar/instalar/importar a biblioteca Sarak UI (ex.: "baixe a biblioteca Sarak-UI <link>, ela será responsável pelo design e pelo tema do sistema"), iniciar a infraestrutura do front-end com a Lib, ou plugar a base num projeto novo. NÃO acione proativamente.
+description: Instala e acopla a base Sarak (@sarak/lib-ui-core) num sistema consumidor React — npm install, peerDependencies, SarakUIProvider, cromo por-app, temas e o kit de uso `sarak-ui/`. Use quando o usuário pedir para baixar/instalar/importar a biblioteca Sarak UI (ex.: "baixe a biblioteca Sarak-UI <link>, ela será responsável pelo design e pelo tema do sistema"), iniciar a infraestrutura do front-end com a Lib, ou plugar a base num projeto novo. NÃO acione proativamente.
 ---
 
 # Skill: Integrar Consumidor (Infraestrutura)
@@ -45,47 +45,35 @@ do cromo, todos **gerados do código-fonte** da versão instalada.
 O kit também traz **`GUIA-FRONTEND.md`** — o documento único de autoria (4 topologias + todos os
 casos). **Ele é a autoridade sobre COMO escrever as telas**; esta skill cuida da INFRAESTRUTURA.
 
-## Modelo de consumo: dois formatos, o mesmo núcleo
+## Modelo de consumo: um cromo por aplicação
 
-O núcleo é sempre o mesmo: **`SarakUIProvider` + tokens públicos `var(--sarak-*)` + Design Engine
-central**. O que varia é quem manda na navegação:
-
-**(a) Base como KIT** — você mantém o seu roteador e a sua estrutura; a lib entra como componentes +
-cromo apresentacional + central de tema. Serve às 4 topologias (monolito, monorepo, monolito modular,
-microsserviço):
+Cada aplicação controla suas próprias rotas e telas. A base fornece o `SarakUIProvider`, o
+`SarakAppChrome` apresentacional e os tokens públicos `var(--sarak-*)`; `navItems` descreve a
+navegação e `onNavigate` entrega a rota ao roteador do consumidor. O mesmo modelo serve para
+monólito, monorepo, monólito modular e microsserviços:
 
 ```tsx
-import { SarakUIProvider, SarakAppChrome, SarakCustomizationPanel } from '@sarak/lib-ui-core';
+import { SarakAppChrome, SarakUIProvider, type SarakNavItem } from '@sarak/lib-ui-core';
+
+const NAV: SarakNavItem[] = [
+  { id: 'inicio', label: 'Início', href: '/' },
+  { id: 'clientes', label: 'Clientes', href: '/clientes' },
+];
 
 <SarakUIProvider customThemes={TEMAS} initialTheme={TEMAS[0].id}>
-  <SarakAppChrome brand={{ name: 'Meu Sistema' }} navItems={NAV} onNavigate={navegar}>
+  <SarakAppChrome
+    brand={{ name: 'Meu Sistema' }}
+    navItems={NAV}
+    onNavigate={navegar}
+  >
     <MinhaRota />
   </SarakAppChrome>
 </SarakUIProvider>
 ```
 
-**(b) Base como HOST (módulos-plugin)** — a base assume navegação e roteamento a partir dos módulos
-registrados. Só faz sentido quando o sistema é **um** app hospedando vários módulos:
-
-```tsx
-import { SarakUIProvider, SarakShell, registerSarakModule, sarakRegisterLocalComponent } from '@sarak/lib-ui-core';
-import { MeuModuloDeNegocio } from './modulos/MeuModulo';
-
-sarakRegisterLocalComponent('meu-modulo', MeuModuloDeNegocio);
-registerSarakModule({ id: 'meu-modulo', label: 'Meu Módulo', icon: 'Box' });
-
-<SarakUIProvider>
-  <SarakShell />
-</SarakUIProvider>
-```
-
-- `registerSarakModule({ id, label, icon, category?, priority? })` registra o módulo — a base gera
-  navegação e roteamento sozinha. `sarakRegisterLocalComponent(id, Component)` liga o React ao `id`
-  (alternativa: `component` direto no objeto de registro). Use um guard `safeRegister` contra
-  `undefined` — é o que o `init` já gera.
-- A biblioteca não converte manifestos JSON em telas; os módulos são componentes React. Nunca oriente o consumidor a "programar em JSON".
-- O importador **pode criar o que precisar** — módulo, componente, tela. A única regra é a de tokens,
-  logo abaixo.
+O consumidor mantém a estrutura de rotas e implementa a função `navegar` com o roteador da
+aplicação. O `sarak-ui init` deixa um exemplo em `src/App.tsx` com atualização da URL e tratamento
+do evento `popstate`.
 
 **Contrato de tokens público (o que torna o código DO IMPORTADOR temável):** um componente próprio só
 responde à troca de tema se estilizar por `var(--sarak-*)` — ex.: `background: var(--sarak-card-bg)`,
@@ -101,7 +89,9 @@ igual" (eixos omitidos não mudam). A derivação é **uma chamada**, não uma c
 ```tsx
 import { sarakDeriveThemeFromReference } from '@sarak/lib-ui-core';
 
-const MEU_TEMA = sarakDeriveThemeFromReference('minimalist-airy', {
+// 'sarak-sovereign' (o tema padrão) é síncrono. Outro embarcado entra como preset já carregado:
+// `sarakDeriveThemeFromReference(await sarakLoadThemePreset('minimalist-airy'), {...})`.
+const MEU_TEMA = sarakDeriveThemeFromReference('sarak-sovereign', {
   id: 'minha-marca', name: 'Minha Marca',
   design: { primaryColor: '#2563eb', accentColor: '#2563eb' },
 });
@@ -118,6 +108,35 @@ mas uma customização de cor de modo não chega ao modo oposto. Três controles
 
 A seleção do tema persiste em `localStorage` sozinha. Para sincronizar no backend **do
 consumidor** (opcional): `options.persistence.onSave`/`onLoad` ou `onThemeChange`.
+
+Para fechar o ciclo no backend, guarde o design aplicado e o id do tema juntos. `onSave` recebe
+`(design, activeThemeId)`; `onLoad` pode devolver `{ design, activeThemeId }`. O formato antigo,
+que devolve apenas o design, continua aceito. `null`/`undefined` em `onLoad` significa que ainda
+nada foi salvo. O boot e a hidratação não chamam `onSave`; ao trocar `tenantId`, a biblioteca
+carrega o estado daquele tenant sem remontar o Provider. `activeThemeId` passado como prop
+controlada continua prevalecendo.
+
+```tsx
+<SarakUIProvider
+  customThemes={temasSalvos}
+  options={{
+    persistence: {
+      onSave: async (design, activeThemeId) =>
+        salvarEstado({ design, activeThemeId }),
+      onLoad: async () => buscarEstado(), // { design, activeThemeId? } | null
+    },
+    theme: {
+      onDelete: async (id) => excluirTema(id),
+    },
+  }}
+>
+  <App />
+</SarakUIProvider>
+```
+
+`customThemes` recebe a coleção nomeada carregada pelo consumidor. Para excluir um tema em
+runtime, chame `useSarakUI().deleteTheme(id)`; a lib o remove da sessão e chama `options.theme.onDelete`
+para o consumidor removê-lo também da fonte persistente.
 
 **Tema × preferência — duas camadas.** O **tema** é do administrador e vale para o sistema inteiro; o painel
 (`/design`) o edita — **proteja essa rota**: a lib não autentica ninguém. A **preferência** é de cada usuário
@@ -141,10 +160,52 @@ no `catalog.json` → `designTokens.ids`.
 que baixa o tema **completo** — cole num arquivo do repositório e adicione a `customThemes`. Não
 existe "salvar tema no banco": a central não tem servidor, e salvar **é** exportar.
 
+## Fontes — a lib já carrega; não recrie o carregador
+
+A lib **leva as próprias fontes** (`dist/fonts/`, woff2 `latin`, com o `THIRD-PARTY-FONTS` das licenças) e o
+Provider carrega **só as famílias que o tema no ar usa** (título, corpo, mono e a fonte do logo), uma vez por família,
+com `font-display: swap`. **Não** instale `@fontsource`, **não** cole o `<link>` do Google no **index.html** e **não**
+escreva `@font-face` à mão para as famílias do catálogo: a lib carregaria de novo, e a fonte deixaria de seguir a troca
+de tema. A lista de famílias, por categoria, é o seletor de fonte do painel; o `value` exato de cada uma é o que o
+tema grava.
+
+A origem é `options.fonts`:
+
+| Valor | Quando usar |
+|---|---|
+| omitido (`'bundled'`) | o padrão: os arquivos do pacote, sem rede de terceiros. Vite (dev e `build`) os encontra sozinho |
+| `{ baseUrl: '/fontes/' }` | o bundler não acha os arquivos (esbuild puro, CJS no navegador) ou você serve a pasta de uma CDN própria: copie `node_modules/@sarak/lib-ui-core/dist/fonts/` para lá e aponte o `baseUrl` |
+| `'google'` | só se o host **quer** o Google Fonts (o comportamento até a 7.x) |
+| `'none'` | o host carrega todas as fontes sozinho; a lib não injeta nada, nem as do `custom` |
+
+**Fonte da marca do cliente → `options.fonts.custom`**, não `baseUrl`. `baseUrl` muda de onde vêm **as fontes da
+lib**; `custom` acrescenta uma família que a lib **não tem**, servida pelo host (a lib não copia o arquivo):
+
+```tsx
+<SarakUIProvider options={{ fonts: { custom: [
+  { family: 'Marca Sans', category: 'Sans-Serif', fallback: 'sans-serif', files: [
+    { url: '/fontes/marca-400.woff2', weight: 400 },
+    { url: '/fontes/marca-700.woff2', weight: 700 },
+  ] },
+] } }}>
+```
+
+Ela aparece no seletor do painel, vale em qualquer token de fonte e o tema grava `'Marca Sans', sans-serif`. O
+registro é validado: nome só com letras, dígitos, espaço, hífen e sublinhado; `url` só `https:`, caminho do host ou
+`data:font/…;base64,…`; o que falha é recusado com aviso no console. **Registrar não muda o que o tema aceita** — uma
+pilha de fontes segura (`'Georgia, serif'`) vale sem registro; registrar serve para carregar e listar. Tema exportado
+que usa fonte do host traz `requiresFonts`: quem o importa em outro sistema registra a mesma família.
+
+**Privacidade e política de segurança de conteúdo:** com `'bundled'` o navegador do usuário não fala com terceiros para
+desenhar texto (o IP não vai ao Google — LGPD) e a tipografia funciona offline. A diretiva é `font-src 'self'` (mais a
+origem do `baseUrl`, se for outra, e `data:` se algum `custom` usar `data:`); os domínios do Google só com `'google'`.
+**Fonte que não carregou nunca é silenciosa:** o console mostra `[Sarak:UI] A fonte "<família>" não carregou (origem
+tentada: …)` com a dica do `baseUrl`, e a página segue com a genérica da pilha.
+
 ## Quando usar
 - Quando o usuário informar que está num repositório que consumirá a `Sarak-Lib-UI-Core` e precisa
-  acoplar a base (Provider + Design Engine, com ou sem Shell).
-- Quando for necessário plugar autenticação/roteamento do host ou registrar os primeiros módulos.
+  acoplar o Provider, Design Engine e cromo da aplicação.
+- Quando for necessário integrar autenticação ou conectar as rotas do consumidor à navegação do cromo.
 - APENAS a pedido explícito de instalação/integração. NÃO acione proativamente.
 
 ## Golden Path (leia antes de tudo)
@@ -160,7 +221,7 @@ existe "salvar tema no banco": a central não tem servidor, e salvar **é** expo
   2026-07-26). Confira `packageManager` no `package.json` e o lockfile presente antes de rodar
   qualquer coisa; se houver mais de um lockfile, um deles é resíduo. O `init` e o `check` detectam
   isso sozinhos e geram os comandos do gerenciador certo.
-- **Starter padrão:** front **Vite puro** (Provider + Shell + módulo de exemplo), **sem backend
+- **Starter padrão:** front **Vite puro** (Provider + `SarakAppChrome` + telas e rotas de exemplo), **sem backend
   nenhum** — o tema persiste em `localStorage`. O backend de negócio (se existir) é inteiramente do
   consumidor, em processo separado; a lib **nunca chama rede sozinha**.
 - O `init` é **idempotente**: não sobrescreve arquivo existente sem `--force`; reporta o que pulou.
@@ -174,7 +235,7 @@ existe "salvar tema no banco": a central não tem servidor, e salvar **é** expo
      - **Modo Embarcado:** suportado, mas o `init` **não** monta a ilha dentro de um host existente —
        ele só garante os artefatos comuns. A montagem é manual (Etapa 4). Registre a escolha.
      - **Se Embarcado, pergunte também:** *"A adoção começa por quais rotas/regiões?"* — a migração é
-       incremental (1 módulo → mais módulos → Shell completo → opcionalmente Modo App).
+       incremental (1 tela → mais telas → integração progressiva das rotas → opcionalmente Modo App).
    - **SEGUNDA PERGUNTA — Topologia:** *"O projeto é um app único (monolito), vários apps num
      repositório (monorepo), apps compostos num deploy único (monolito modular) ou serviços com
      deploys independentes (microsserviço)?"* A resposta não muda o `init`, mas **decide onde moram
@@ -207,7 +268,7 @@ existe "salvar tema no banco": a central não tem servidor, e salvar **é** expo
      - **TODAS as peerDependencies gravadas** no `package.json` (nunca confie no auto-install do
        npm 7+, que instala em `node_modules` mas não registra — irreproduzível em `npm ci`).
      - `typescript` travado em `^5`; `vite.config.ts`, `tsconfig.json`, `index.html`, `src/main.tsx`
-       e `src/modules/ExampleModule.tsx`.
+       e `src/App.tsx` com `SarakAppChrome`, navegação de exemplo e roteamento local.
      - os scripts `sarak:update` / `sarak:check`.
      - **o kit `sarak-ui/` copiado para a raiz do projeto.**
    - **Ação:** `npm install` (o `init` só escreve `package.json`; quem baixa é o npm).
@@ -226,13 +287,14 @@ existe "salvar tema no banco": a central não tem servidor, e salvar **é** expo
      injeção automática de CSS roda na IMPORTAÇÃO do módulo, antes de qualquer Provider montar; com a
      marcação ela nem acontece. Sem ela o Provider ainda remove o CSS global ao montar (e avisa em
      dev), mas pode haver um flash do host re-estilizado.
-   - **Provider + módulos:** monte a ilha no ponto certo do front existente, com
-     `options={{ mode: 'embedded' }}`. O Provider renderiza um `<div class="sarak-scope">` que ancora
-     o CSS e recebe os tokens.
-   - **Múltiplas ilhas:** N módulos sob **1** Provider embarcado. **N Providers na mesma página está
+   - **Provider + cromo:** monte a ilha no ponto certo do front existente, com
+     `options={{ mode: 'embedded' }}` e o `SarakAppChrome` em torno das telas. O Provider renderiza
+     um `<div class="sarak-scope">` que ancora o CSS e recebe os tokens.
+   - **Múltiplas ilhas:** N áreas de interface sob **1** Provider embarcado. **N Providers na mesma página está
      FORA do suporte** — disputariam a mesma classe de escopo e o mesmo stylesheet.
-   - **O que muda vs. Modo App (esperado, não é bug):** título/favicon continuam do host; as fontes do
-     Google não são injetadas (opt-in: `embedded: { injectGlobalFonts: true }`); overlays de página
+   - **O que muda vs. Modo App (esperado, não é bug):** título/favicon continuam do host; a lib não
+     carrega fonte nenhuma, de origem nenhuma — fonte é recurso do documento, e a ilha não o impõe
+     (opt-in: `embedded: { injectGlobalFonts: true }`, que passa a seguir `options.fonts`); overlays de página
      inteira (ruído, mídia de fundo global) não são renderizados — cobririam a página do host. Nesse
      modo, para arte/animação use os **slots do cromo**.
    - **Verificação antes de declarar pronto:** (1) o front existente está visualmente IDÊNTICO;
@@ -245,8 +307,8 @@ existe "salvar tema no banco": a central não tem servidor, e salvar **é** expo
    - Execute os **3 movimentos** do `sarak-ui/START-HERE.md`: guia → `specs/sarak-ui-guia-frontend.md`;
      skill → `.claude/skills/ui-integra-consumidor/` **e** `.agents/skills/ui-integra-consumidor/`;
      kit → raiz. São **cópias**, não recortes.
-   - Informe que a integração arquitetural terminou e que **o próximo passo é escrever os módulos de
-     negócio como React comum**, seguindo o `GUIA-FRONTEND.md` (§0 primeiro: a árvore de decisão e a
+   - Informe que a integração arquitetural terminou e que **o próximo passo é escrever as telas da
+     aplicação como componentes React**, seguindo o `GUIA-FRONTEND.md` (§0 primeiro: a árvore de decisão e a
      regra de fallback universal) e consultando o `catalog.json` para tudo que for lista.
 
 ## Como atualizar a biblioteca
@@ -294,79 +356,81 @@ pode** conter o commit que o publica — o `dist/` é commitado DEPOIS de gerado
 próprio hash é auto-referência impossível. Por isso o campo se chama `baseCommit` (sempre um passo
 atrás). Use `BUILD_INFO` só para `builtAt`/`libVersion`; para "estou atualizado?", `sarak:check`.
 
-**Ao atualizar, leia `docs/migracoes.md` ANTES de investigar quebra de tipo** — mudanças de contrato
-público ficam lá com antes/depois.
+**Qual build o navegador está executando:** no DevTools, leia o atributo
+`data-sarak-build-info` de um elemento da lib. Ele contém JSON com `libVersion`, `baseCommitShort` e
+`builtAt`. Compare esses três campos com `node_modules/@sarak/lib-ui-core/dist/BUILD_INFO.json`.
+Se forem iguais, o navegador executa o build instalado; se diferirem, o pré-bundle do bundler ainda
+serve um build anterior. Siga o procedimento abaixo para invalidá-lo.
+
+**Ao atualizar, leia as migrações ANTES de investigar quebra de tipo** — mudanças de contrato público
+ficam com antes/depois em `sarak-ui/docs/migracoes.md` se você copiou o kit, ou em
+`node_modules/@sarak/lib-ui-core/sarak-ui/docs/migracoes.md` no modo apontar.
 
 **Desenvolvimento local (`file:`/`npm link`) — não incorporado ao `init`:** trocar a dependência por
 `"@sarak/lib-ui-core": "file:../Sarak-Lib-UI-Core"` propaga mudanças sem reinstalar, na TEORIA.
 **Trade-off:** NÃO reproduz o pacote publicado (aponta para o `dist/` local, sem passar pela allowlist
 de `files`) — nunca use este modo para validar uma instalação real ou testar atualização.
 
-### ⚠️ Rebuildou a lib e a tela não mudou — DUAS camadas de cache, nenhuma delas avisa
+### ⚠️ Rebuildou a lib e a tela não mudou — três camadas de cache
 
-Achado real (2026-08-14/15, três rodadas de investigação perdidas na LIB, que estava certa nas três):
-o pacote foi corrigido, os gates passaram, o artefato foi conferido — e a tela do consumidor **não
-mudou**. A causa não estava na lib; estava em duas camadas de cache **entre** o `dist/` e o navegador.
-Cobrir só uma repete o incidente.
+Há três caches entre o `dist/` reconstruído e a tela. Em consumo por `file:`, resolva cada um na
+ordem abaixo; o selo `data-sarak-build-info` mostra o build que a página realmente executa.
 
-**1. O gerenciador de pacotes copia, não linka.** Com `pnpm`, `file:` é **cópia** para o store —
-rebuildar a lib não move um byte da cópia instalada sozinho.
+**1. Store do gerenciador.** Com `pnpm`, `file:` é cópia para o store: rebuildar a lib não atualiza
+a cópia instalada. Rode o comando a partir do pacote importador (o `package.json` que declara a lib):
 ```bash
-pnpm install --force --filter <pacote-do-consumidor>   # OBRIGATÓRIO — sem --force o pnpm considera
-                                                          # o lockfile satisfeito e não recopia
+pnpm install --force --filter <pacote-importador>
 ```
-`npm`/`yarn` num projeto simples costumam **linkar** (symlink direto para a fonte) — aí este passo nem
-é necessário. `sarak-ui check` diz `live`/`fresh`/`stale`, e é exatamente essa pergunta que ele responde.
+`npm` e `yarn` podem manter um link vivo para a fonte. Use `sarak-ui check` para saber se a
+dependência instalada está `live`, `fresh` ou `stale`.
 
-**2. O cache de pré-bundle do bundler** (Vite: `node_modules/.vite/`) **decide por lockfile + versão +
-config, nunca por conteúdo.** Com dependência local a `version` fica parada, o caminho `file:` é o
-mesmo e a config não muda — **a chave do cache nunca se move**, mesmo com o passo 1 já feito. O dev
-server continua servindo o build ANTERIOR, em silêncio: sem erro, sem aviso. Hard-refresh e guia
-anônima **não mudam nada** — o cache é do SERVIDOR de dev, não do navegador (testado).
+**2. Pré-bundle do bundler.** O Vite guarda dependências em `node_modules/.vite/deps/` e calcula
+`?v=` a partir do lockfile, da configuração e dos caminhos das dependências — não do conteúdo. Um
+rebuild de uma dependência local mantém esses valores; o pré-bundle pode continuar antigo.
 
-**O procedimento, NA ORDEM CERTA** (a ordem errada já produziu tela BRANCA com
-`504 Outdated Optimize Dep`, achado real):
-```bash
-# 1. DERRUBE o dev server PRIMEIRO. No Windows, um processo com os arquivos abertos IMPEDE a
-#    deleção — e esse erro pode ser ENGOLIDO por um -ErrorAction tolerante demais.
-#    (Ctrl+C no terminal do "npm run dev", ou mate o processo pela porta.)
+**3. Cache HTTP do navegador.** O Vite serve o pré-bundle com `cache-control: max-age=31536000, immutable`.
+Se o `?v=` não mudar, uma aba normal pode reutilizar o arquivo antigo por um ano. Uma
+aba anônima começa sem esse cache e recebe a resposta atual; compare as duas depois de atualizar.
 
-# 2. Apague o cache do bundler:
-rm -rf node_modules/.vite                          # bash/mac/linux
-Remove-Item -Recurse -Force node_modules/.vite      # PowerShell
+**Confira o selo em uma instância da lib e compare com o arquivo instalado:**
+`node_modules/@sarak/lib-ui-core/dist/BUILD_INFO.json`. Se `data-sarak-build-info` divergir do
+arquivo, a página ainda executa um pré-bundle ou uma resposta HTTP antiga. `sarak-ui check`
+compara a instalação local; `BUILD_INFO.json` descreve o pacote instalado; o atributo mostra o
+runtime da página.
 
-# 3. PROVE que apagou — não confie no código de saída do passo 2 ("pasta não existe" e
-#    "arquivo em uso" são erros DIFERENTES; um -ErrorAction genérico confunde os dois):
-Test-Path node_modules/.vite      # PowerShell — TEM de responder False antes de seguir
-[ ! -d node_modules/.vite ] && echo apagado   # bash
+O aviso `[sarak:check:cache]`, quando aparece, aponta referência antiga no pré-bundle Vite padrão.
+Sua ausência não prova que o navegador descartou uma resposta HTTP `immutable`; confira o selo e compare
+com uma aba anônima.
 
-# 4. Só ENTÃO suba o dev server de novo.
-npm run dev
-```
-Pular o passo 3 faz o passo 4 rodar sobre uma premissa que pode ser falsa — e o sintoma (tela
-idêntica, ou branca) não aponta para a causa.
+**Procedimento para `file:`, na ordem** (a ordem errada já produziu tela branca com
+`504 Outdated Optimize Dep`):
 
-**`sarak-ui check` (e `--notify`) avisam sobre isto**, com um rótulo **separado**
-(`[sarak:check:cache]`, nunca misturado com o veredito do pacote): a partir da raiz do workspace (o
-diretório do lockfile, achado subindo a árvore de onde o comando roda), ele desce e varre TODO
-`node_modules/.vite/deps/` alcançável — não só o do diretório onde o comando roda — atrás de
-referência a um chunk content-hashed da lib que não existe mais no `dist/` instalado. É o que faz o
-aviso funcionar mesmo quando quem DECLARA a lib (onde o `predev` roda o `check`) e quem RODA o Vite
-(o app que de fato sobe o dev server) são pacotes **irmãos** no monorepo, não um dentro do outro —
-topologia comum e a que motivou esta seção. **Cobertura declarada, não prometida:** só Vite, só a
-pasta `.vite` (sem `cacheDir` customizado no `vite.config`); a busca desce a partir da raiz do
-workspace, nunca sobe — sem lockfile em lugar nenhum, cai no diretório onde o comando roda. Bundler
-diferente, ou cache num lugar não padrão: o aviso fica em silêncio — siga o procedimento manual acima
-de qualquer forma. **Silêncio nunca é "confirmado em dia"** — é só "nada de errado encontrado por
-este sinal".
+1. Pare o servidor de desenvolvimento que executa o bundler.
+2. Rode `sarak-ui check` no pacote que declara a lib. Se estiver `stale` e usar `pnpm`, rode
+   `pnpm install --force --filter <pacote-importador>` para atualizar o store.
+3. Apague `node_modules/.vite` no projeto que executa o Vite:
+   ```bash
+   rm -rf node_modules/.vite
+   ```
+   No PowerShell: `Remove-Item -Recurse -Force node_modules/.vite`.
+4. Prove que a pasta sumiu: `Test-Path node_modules/.vite` deve responder `False` no PowerShell;
+   em bash, `[ ! -d node_modules/.vite ]` deve retornar sucesso. Diferencie pasta ausente de arquivo
+   em uso.
+5. Suba o servidor Vite e leia `data-sarak-build-info` no DOM. Compare seu JSON com o
+   `BUILD_INFO.json` instalado. Se a aba anônima mostrar o build novo e a normal não, limpe o cache
+   HTTP da aba normal ou desabilite-o nas ferramentas do navegador.
 
-**Nenhum dos três mecanismos abaixo responde pelo outro — cada um responde uma pergunta diferente:**
+Pular a prova da deleção pode manter a tela idêntica. Silêncio de `sarak-ui check` sobre cache não
+confirma que todas as camadas estão atualizadas; o sinal automático cobre Vite com `.vite` padrão.
+
+**Cada sinal responde a uma pergunta:**
 
 | Pergunta | Quem responde |
 |---|---|
-| "O pacote em disco está atualizado?" | `sarak-ui check` |
-| "Qual artefato está instalado?" | `dist/BUILD_INFO.json` (`builtAt`/`libVersion` — nunca "estou atualizado?", ver acima) |
-| "O bundler já notou a mudança?" | o procedimento acima — `sarak-ui check` ajuda (só Vite, cache padrão), não garante |
+| "A dependência local foi instalada?" | `sarak-ui check` |
+| "Qual artefato está instalado?" | `dist/BUILD_INFO.json` |
+| "Qual build a página executa?" | o atributo `data-sarak-build-info` |
+| "A aba normal reteve uma resposta HTTP?" | compare com uma aba anônima após refazer o pré-bundle |
 
 **Tamanho do bundle — o que resolve e o que NÃO resolve (medido):** quando o `dist/` do consumidor
 parecer grande, **não** mexa em `manualChunks` — ele não reduz um byte, só decide em qual arquivo
@@ -379,11 +443,57 @@ cada byte cai, e uma regra ampla demais **funde de volta** os chunks lazy que a 
 - **`export * from '@sarak/lib-ui-core'` no seu barril NÃO custa nada.** Medido byte a byte: saída
   idêntica a reexportar só o que se usa. A "porta única" de um monorepo é de graça.
 
+## O que a lib já faz — não recrie
+
+Antes de entregar ao importador uma tela com componente escrito à mão, confira a necessidade neste mapa (a versão
+completa, com a razão de cada linha, é o `GUIA-FRONTEND.md` §6). Reconstruir o que a lib já faz tira a peça do tema,
+do modo claro/escuro e do celular, e some na próxima atualização.
+
+| Necessidade | Já existe | O que ensinar |
+| --- | --- | --- |
+| cartão de conteúdo | `SarakCard` (`.Header` · `.Body` · `.Footer`); contêiner próprio: classe `sarak-card` | raio, borda, sombra, textura e vidro vêm dos tokens `card*`; `div` com estilo próprio fica fora do tema |
+| cartão de título, ação, busca, imagem | `SarakTitleCard` · `SarakActionCard` · `SarakSearchCard` · `SarakImageCard` | cada um lê a própria família de token |
+| grade, catálogo, gestão agrupada | `SarakCardGrid` · `SarakCatalogGrid` · `SarakManagementGrid` | busca, filtros e os três estados de tela já vêm prontos |
+| tabela | `SarakTable` (simples, vira cartões no celular) · `SarakDataTable` (virtualizada) | `tableDensity` só na primeira, `tableCellPadding` só na segunda |
+| diálogo, gaveta, aviso, dica, menu de contexto | `SarakModal` · `SarakDrawer` · `useToast` · `SarakTooltip` · `SarakContextMenu` | foco, Escape, véu e camadas já resolvidos |
+| carregar as fontes do tema | o Provider, com `options.fonts` (seção "Fontes" acima) | só a família em uso é baixada, sem rede de terceiros; fonte própria entra por `options.fonts.custom` |
+| tipografia e cores da interface | `SarakTypography` · tokens `text*` e `color*` | família, escala, peso, espaçamento, halo e cores vêm do tema |
+| ação principal ou botão de ícone | `SarakButton` · `SarakIconButton` | variantes, geometria e efeitos seguem os tokens de botão |
+| campo, seleção ou alternância | `SarakInput` · `SarakSelect` · `SarakSwitch` | foco, fundo, borda, ícone, espaçamento e estilos do alternador acompanham o tema |
+| gráfico de dados | `SarakChartEngine` | paleta, grade, dicas e acabamento das séries vêm dos tokens; `type` escolhe a forma adequada aos dados |
+| conversa com mensagens e anexos | `SarakChatEngine` | bolhas, campo de envio, animação e larguras têm tokens |
+| estado ou progresso | `SarakBadge` e componentes de progresso | variantes semânticas e cores de estado estão prontas para reutilizar |
+| fundo (gradiente, textura, grão, vinheta, imagem) | tokens `bgGradient*`, `texture*`, `bgNoise*`, `vignette*`, `globalBackground*` | camadas atrás do conteúdo que seguem o modo; textura `none` apaga vinheta e filtros |
+| vidro, material e sombra | `SarakCard`, classes `.sarak-glass` e `.shadow-theme` | `glass*`, `surfaceMaterial` e `shadow*` trocam com o tema; CSS escrito à mão não |
+| rolagem, movimento, camadas | CSS da lib · `motion*`, `animEnabled`, `reducedMotion` · `zIndex*` | um ritmo e uma escada de camadas para tudo; `transition` e `z-index` fixos ficam fora |
+| estado vazio, esqueleto, fluxo, matriz | `SarakEmptyState` · `SarakSkeleton` · `SarakFlowEngine` · `SarakExpandableMatrix` | geometria e desfoque têm tokens (`emptyState*`, `skeleton*`, `flow*`, `matrix*`) |
+| navegação, cromo, slots e marca | `SarakAppChrome` (com `SarakShellNav` e os widgets) | lateral ou topo, barra do celular, recolher, cores, sombra, marca e posição de cada widget vêm de `sidebar*`, `topbar*`, `nav*`, `identity*`, `chrome*Position` |
+| escolhas do usuário (modo, fonte, orientação, idioma) | widgets do cromo e `useSarakPreferences` | o tema decide se cada uma fica fixa, no menu ⚙ ou não é oferecida (`preference*Position`); a preferência vence o tema |
+| idioma da lib | `language` no Provider e nos widgets de preferências | os textos internos acompanham a língua configurada; não replique mensagens |
+| persistência local e no servidor | `localStorage` no Provider · `options.persistence.onSave`/`onLoad` | a aplicação controla a gravação remota e conserva o payload recebido |
+| modo embarcado | `options={{ mode: 'embedded' }}` | o estilo da lib fica escopado à raiz do Provider |
+| painel e exportação | `SarakCustomizationPanel` · Exportar → Exportar JSON | a central edita ao vivo; a aplicação salva ou envia o JSON exportado |
+| derivar tema para identidade do cliente | `sarakDeriveThemeFromReference` | parte de um preset completo, sobrescreve tokens de marca e mantém a contraparte |
+
+**Armadilhas medidas (cartões):** a textura do cartão muda de cor no modo oposto porque a cor vem da `contraparte`;
+a opacidade padrão da textura é quase invisível; vidro exige `cardSurfaceOpacity` abaixo de 1; os tokens de direção
+e alinhamento não alcançam o `SarakCard` composto. Os efeitos de cartão (spotlight, traço luminoso, zoom da capa,
+aperto do botão de ação) desenham e o que cada um faz está em `GUIA-FRONTEND.md` §6.4.
+
+**Armadilhas medidas (fundo, movimento, camadas):** `textureOpacity`, `vignette*`, `bgNoiseAnimation`, `globalSaturation`
+e `globalContrast` dependem de `texture` diferente de `none`; `bgGradientAngle` só gira o Linear; `shadowIntensity` muda
+a opacidade do elemento `.shadow-theme`; `motionEaseIn` governa a saída do modal e da paleta de busca, e `matrixGap` o espaço entre os sub-itens da matriz (`GUIA-FRONTEND.md` §6.7).
+
+**Armadilhas medidas (cromo e preferências):** a paleta só inverte pela preferência de modo do usuário (`mode` no tema
+declara o nativo); a preferência vence o tema em `navigationStyle` e `bodySize`; `sidebar*` só valem com navegação
+lateral e `topbar*` com a do topo; `searchPositionTopbar: center` centra a busca no espaço livre entre a navegação e o fim da barra
+(`GUIA-FRONTEND.md` §6.8).
+
 ## Regras (SRP - Responsabilidade Única)
 - **NÃO escreva arquivo de infraestrutura à mão** (`vite.config.ts`, deps/scripts do `package.json`) —
   é o que o `init` existe para eliminar. A única saída manual permitida é a Etapa 4 (ilha embarcada).
 - **NÃO ensine a montar telas nesta skill.** Autoria de tela é o `GUIA-FRONTEND.md` do kit. Aqui é
-  infraestrutura, registro e atualização.
+  infraestrutura, integração de rotas e atualização.
 - **NÃO responda "o que a lib tem" de memória.** Sempre `catalog.json`.
 - **A identidade da página é do CONSUMIDOR.** `<title>`, favicon e marca vivem no projeto dele e a lib
   não os sobrescreve por padrão. Se ele quiser que a lib gerencie, é opt-in
@@ -395,10 +505,9 @@ cada byte cai, e uma regra ampla demais **funde de volta** os chunks lazy que a 
 
 ## Referências
 **Artefatos do pacote (`node_modules/@sarak/lib-ui-core/`):**
-- `sarak-ui/` — **o kit de uso**: START-HERE, `GUIA-FRONTEND.md`, `catalog.json`, `templates/`, `VERSION`.
+- `sarak-ui/` — **o kit de uso**: START-HERE, `GUIA-FRONTEND.md`, `catalog.json`, `docs/migracoes.md`, `templates/`, `VERSION`.
 - `bin/sarak-ui.mjs` (`npx sarak-ui init`) — o scaffolder oficial; Node puro, idempotente.
 - `docs/component-catalog.md` / `.json` — catálogo gerado, com o TIPO completo de cada prop.
-- `docs/migracoes.md` — breaking changes do contrato público, com antes/depois.
 - `docs/identidade-do-host.md` — título da aba, favicon e marca são sempre do importador.
 - `docs/extensibilidade-de-layout.md` — os 2 níveis de imagem/animação: fundo global por tema e slots do cromo.
 - `docs/temas-cromo-e-multidispositivo.md` — temas completos, cromo e contrato de responsividade.

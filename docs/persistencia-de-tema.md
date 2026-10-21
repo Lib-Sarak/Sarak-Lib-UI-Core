@@ -40,8 +40,25 @@ onSave?: (design: SarakThemePayload, activeThemeId?: string) => Promise<void> | 
   apontar tanto para um tema embarcado da lib (`'minimalist-airy'`, por exemplo) quanto para um
   tema salvo pelo importador — a lib não distingue as duas origens neste campo.
 
-`onLoad` é o inverso — devolve o `design` a aplicar no boot. **Não recebe nenhum argumento**: a lib
-nunca pede identidade de usuário, porque não tem esse conceito (§4).
+`onLoad` é o inverso. Continua aceitando o formato antigo, que devolve apenas o `design`, ou pode
+devolver o par:
+
+```ts
+onLoad?: () => Promise<SarakThemePayload | { design: SarakThemePayload; activeThemeId?: string } | null | undefined>
+  | SarakThemePayload
+  | { design: SarakThemePayload; activeThemeId?: string }
+  | null
+  | undefined
+```
+
+Quando `activeThemeId` vier no objeto, o Provider restaura essa identidade junto com o `design`.
+`activeThemeId` controlado na prop do Provider continua vencendo. `null`/`undefined` significa que
+nenhum estado foi salvo. `onLoad` não recebe argumento: a lib nunca pede identidade de usuário,
+porque não tem esse conceito (§4). Ao trocar `tenantId`, a lib chama `onLoad` de novo sem exigir
+remontagem do Provider.
+
+O boot e a hidratação não chamam `onSave`. Depois que a carga termina, alterações reais do design
+continuam sendo gravadas pelo debounce; uma aplicação explícita também grava imediatamente.
 
 ### 1.2 Os temas criados — `options.theme.onSave`
 
@@ -60,9 +77,10 @@ interface SarakThemeEntry {
 }
 ```
 
-**Não existe porta de leitura nem de apagar.** A leitura já é a prop `customThemes` — você devolve
-a lista de temas guardados nela no próximo boot, e eles entram na sessão junto dos embarcados.
-Apagar é decisão sua, na sua fonte; a lib nunca chama nada para remover.
+Não existe porta separada de leitura: a prop `customThemes` recebe a lista de temas guardados no
+próximo boot, e eles entram na sessão junto dos embarcados. Para apagar, `useSarakUI().deleteTheme(id)`
+remove o tema da coleção da sessão e chama `options.theme.onDelete(id)` quando essa porta opcional
+estiver configurada. O consumidor continua responsável por removê-lo da própria fonte persistente.
 
 Quem dispara `theme.onSave` é o contexto do Provider, pelo método `sarak.saveTheme(theme)` — é o
 que o botão "Salvar" do painel chama por baixo. Se você construir uma UI própria para criar temas
@@ -88,12 +106,13 @@ o conteúdo. O seu banco só precisa guardar e devolver os bytes que recebeu.
 
 ## 3. Os temas da lib são imutáveis
 
-Os temas embarcados (hoje 23 — o número exato é derivado, veja `npm run audit` → `auditor_presets`)
-são **código**: vêm dentro do pacote, iguais para todo consumidor, e nunca mudam por ação de um
-usuário final. **A sua tabela nunca guarda os originais.**
+Os temas embarcados são **código**: vêm dentro do pacote, iguais para todo consumidor, e nunca mudam
+por ação de um usuário final. `SARAK_THEME_CATALOG` identifica o catálogo; use
+`sarakLoadAllThemePresets()` quando precisar carregar os presets completos. **A sua tabela nunca
+guarda os originais.**
 
 "Alterar" um tema da lib, na prática, significa **criar um tema novo, derivado**, com um `id` livre
-diferente — o painel parte de `SARAK_REFERENCE_THEMES` (ou de qualquer tema embarcado) e o usuário
+diferente — o painel parte de `SARAK_BOOT_THEMES` ou de qualquer tema embarcado e o usuário
 ajusta valores; ao salvar, o que chega em `theme.onSave` já é essa cópia derivada, com identidade
 própria. Não existe operação "editar tema embarcado" — o resultado sempre nasce como um `SarakThemeEntry`
 novo, do seu lado.
@@ -117,7 +136,7 @@ import { SarakUIProvider } from '@sarak/lib-ui-core';
 
 function App({ temasSalvos, estadoAplicado }: {
   temasSalvos: SarakThemeEntry[];          // devolvidos do SEU backend, ver §1.2
-  estadoAplicado: SarakThemePayload | undefined; // devolvido do SEU backend, ver §1.1
+  estadoAplicado: { design: SarakThemePayload; activeThemeId?: string } | undefined; // ver §1.1
 }) {
   return (
     <SarakUIProvider
@@ -141,15 +160,25 @@ function App({ temasSalvos, estadoAplicado }: {
           },
           onLoad: async () => {
             const res = await fetch('/api/tema/estado');
-            return (await res.json()).design;
+            return (await res.json()).estadoAplicado;
           },
         },
         theme: {
-          onSave: async (theme) => {
-            await fetch('/api/tema/definicoes', {
-              method: 'PUT',
-              body: JSON.stringify(theme), // §1.2 — o SarakThemeEntry inteiro, byte a byte
-            });
+          onSave: async (theme, operation) => {
+            const response = await fetch(
+              operation === 'replace'
+                ? `/api/tema/definicoes/${encodeURIComponent(theme.id)}`
+                : '/api/tema/definicoes',
+              {
+                method: operation === 'replace' ? 'PUT' : 'POST',
+                body: JSON.stringify(theme), // §1.2 — o SarakThemeEntry inteiro, byte a byte
+              },
+            );
+            if (!response.ok) throw new Error(`Falha ao salvar tema: HTTP ${response.status}`);
+          },
+          onDelete: async (id) => {
+            const response = await fetch(`/api/tema/definicoes/${encodeURIComponent(id)}`, { method: 'DELETE' });
+            if (!response.ok) throw new Error(`Falha ao apagar tema: HTTP ${response.status}`);
           },
         },
       }}
@@ -159,6 +188,11 @@ function App({ temasSalvos, estadoAplicado }: {
   );
 }
 ```
+
+**Contrato de falha das portas.** Uma porta de gravação precisa rejeitar sua Promise quando a
+operação falha. `fetch` não rejeita por respostas HTTP 4xx/5xx: confira `response.ok` e lance um
+erro, como no exemplo. Resolver a Promise depois de uma resposta de falha comunica sucesso à
+biblioteca; não capture nem engula esse erro.
 
 ## 6. O primeiro paint
 

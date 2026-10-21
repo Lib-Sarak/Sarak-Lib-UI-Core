@@ -293,17 +293,17 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 ### B.1 Design — as fontes que a paridade cruza
 
-`MASTER_DESIGN_MAP` v13.0.0 · **29 arquivos de schema** (lista completa em `state.json` → `design.schemaFiles.files`).
+`MASTER_DESIGN_MAP` v13.0.0 · **30 arquivos de schema** (lista completa em `state.json` → `design.schemaFiles.files`).
 
 | Fonte | Medida | Valor |
 | --- | --- | --- |
 | `catalog/theme_table_mapping.json` | colunas | 13 |
-| `catalog/theme_table_mapping.json` | entradas brutas | 427 |
-| `catalog/theme_table_mapping.json` | **ids únicos** | **427** |
+| `catalog/theme_table_mapping.json` | entradas brutas | 400 |
+| `catalog/theme_table_mapping.json` | **ids únicos** | **400** |
 | `catalog/partitions/` | arquivos | 13 |
-| `catalog/partitions/` | tokens | 427 |
-| `SarakDesignTokens` (tipo público) | ids | 427 |
-| `SarakDesignTokens` (tipo público) | responsivos | 40 |
+| `catalog/partitions/` | tokens | 400 |
+| `SarakDesignTokens` (tipo público) | ids | 400 |
+| `SarakDesignTokens` (tipo público) | responsivos | 37 |
 
 > Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §2 do guia).
 
@@ -313,9 +313,9 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Categorias de engine (3)** — `charts` · `chat` · `flows`
 
-**Componentes públicos: 96** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
+**Componentes públicos: 102** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
-### B.3 Gates registrados (28)
+### B.3 Gates registrados (42)
 
 | Comando | O que roda |
 | --- | --- |
@@ -323,6 +323,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run barrel:check` | `node gates/scripts/contrato/check-barrel-parity.mjs --check` |
 | `npm run build-info:check` | `node scripts/generate-build-info.mjs --check` |
 | `npm run catalog:check` | `node scripts/generate-component-catalog.mjs --check` |
+| `npm run channel-dispute:check` | `npx tsx gates/scripts/contrato/check-channel-dispute.ts` |
 | `npm run chrome-token-parity:check` | `node gates/scripts/contrato/check-chrome-token-parity.mjs` |
 | `npm run class-merge:check` | `node gates/scripts/contrato/check-class-merge.mjs` |
 | `npm run composicao-atomica:check` | `node gates/scripts/audit/auditor_composicaoatomica.mjs` |
@@ -330,29 +331,42 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run container-query:check` | `node gates/scripts/contrato/check-container-query-literal.mjs` |
 | `npm run coverage:check` | `vitest run --coverage && node gates/scripts/release/check-coverage-floor.mjs` |
 | `npm run cromo-css-real:check` | `npm run build && playwright test --config=browser-tests/playwright.config.ts` |
+| `npm run css-important:check` | `node gates/scripts/contrato/check-css-important-visual.mjs` |
 | `npm run deep-import:check` | `node gates/scripts/contrato/check-no-deep-import.mjs` |
 | `npm run dev-kit:check` | `node scripts/generate-dev-kit.mjs --check` |
+| `npm run fixed-translucent:check` | `node gates/scripts/contrato/check-fixed-translucent.mjs` |
+| `npm run fonts:check` | `npx tsx gates/scripts/contrato/check-fonts.ts` |
+| `npm run fonts:manifest:check` | `npx tsx scripts/generate-font-manifest.ts --check` |
 | `npm run gate-limits:check` | `node gates/scripts/contrato/check-gate-limits.mjs` |
-| `npm run gates:full` | `npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check && node gates/scripts/release/check-audit-baseline.mjs --with-tsc && npm run themes:diversity` |
+| `npm run gates:full` | `npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check && node gates/scripts/release/check-audit-baseline.mjs --with-tsc && npm run themes:diversity && npm run boot:measure` |
 | `npm run guide:check` | `node scripts/generate-consumer-kit.mjs --check` |
+| `npm run icon-port:check` | `node gates/scripts/contrato/check-icon-port.mjs` |
+| `npm run kit-names:check` | `node gates/scripts/contrato/check-kit-names.mjs` |
 | `npm run migration-anchor:check` | `node gates/scripts/contrato/check-migration-anchor.mjs` |
 | `npm run minor-no-removal:check` | `node gates/scripts/contrato/check-minor-no-removal.mjs` |
 | `npm run package:check` | `node gates/scripts/contrato/check-package-contents.mjs` |
+| `npm run panel-contract:check` | `npx tsx gates/scripts/contrato/check-panel-contract.ts` |
 | `npm run persistence-doc:check` | `node gates/scripts/contrato/check-persistence-doc-identifiers.mjs` |
 | `npm run plan-index:check` | `node gates/scripts/contrato/check-plan-index-sync.mjs && node scripts/generate-plan-index.mjs --check` |
 | `npm run prefix:check` | `node gates/scripts/contrato/check-public-prefix.mjs` |
 | `npm run public-types:check` | `node gates/scripts/contrato/check-public-types-parity.mjs --check` |
 | `npm run release:check` | `node gates/scripts/release/check-release-tag.mjs` |
 | `npm run section-pointers:check` | `node gates/scripts/contrato/check-section-pointers.mjs` |
+| `npm run theme-boot:check` | `node gates/scripts/contrato/check-theme-boot-closure.mjs` |
+| `npm run theme-completeness:check` | `npx tsx gates/scripts/contrato/check-theme-completeness.ts` |
+| `npm run themes:catalog:check` | `npx tsx scripts/generate-theme-catalog.ts --check` |
+| `npm run token-docs:check` | `npx tsx gates/scripts/contrato/check-token-documentation.ts` |
+| `npm run token-reader:check` | `node gates/scripts/contrato/check-token-reader.mjs` |
 | `npm run token-types:check` | `npx tsx scripts/generate-token-types.ts --check` |
 | `npm run trail-citation:check` | `node gates/scripts/contrato/check-trail-citation.mjs` |
+| `npm run variable-contract:check` | `npx tsx gates/scripts/contrato/check-variable-contract.ts` |
 | `npm run zero-brand:check` | `node gates/scripts/contrato/check-zero-brand.mjs --check` |
 
 **Auditores agregados por `run_audit.mjs` (12):** `auditor_hardcoded.mjs` · `auditor_ghostvars.mjs` · `auditor_typescript.mjs` · `auditor_coverage.mjs` · `auditor_arquitetura.mjs` · `auditor_cleancode.mjs` · `auditor_paridade.mjs` · `auditor_presets.mjs` · `auditor_authcoupling.mjs` · `auditor_sectionpointers.mjs` · `auditor_composicaoatomica.mjs` · `auditor_contraste.mjs`
 
 > A suíte (`npx vitest run`) **não é um script do `package.json`** e por isso não aparece na tabela acima — ela é invocada direto. Ver o guia, §6.
 
-### B.4 Baseline dos auditores (medido em 2026-08-11)
+### B.4 Baseline dos auditores (medido em 2026-10-12)
 
 > Cada número é o MÁXIMO tolerado. Maior que isto = regressão = commit bloqueado.
 
@@ -360,7 +374,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | --- | --- | --- |
 | `auditor_hardcoded.mjs` | valor | **0** |
 | `auditor_hardcoded.mjs` | estruturalLiquido | **0** |
-| `auditor_ghostvars.mjs` | consumos | **1** |
+| `auditor_ghostvars.mjs` | consumos | **0** |
 | `auditor_typescript.mjs` | violacoes | **0** |
 | `auditor_coverage.mjs` | orfaos | **0** |
 | `auditor_arquitetura.mjs` | violacoes | **0** |
@@ -372,6 +386,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `auditor_composicaoatomica.mjs` | violacoes | **2** |
 | `auditor_contraste.mjs` | reprovados | **0** |
 | `auditor_contraste.mjs` | reprovadosModoOposto | **0** |
+| `auditor_contraste.mjs` | contraparteFaltando | **0** |
 
 `npx tsc --noEmit`: **0 erros** tolerados — não é gate hoje.
 
@@ -379,10 +394,10 @@ Fonte: `gates/baselines/audit-baseline.json`. **Não edite à mão** — o núme
 
 ### B.5 A base de specs
 
-**ADR (16)** — decisões imutáveis: `001-tres-arquiteturas.md` · `002-remocao-motor-manifesto.md` · `003-remocao-backend-proprio.md` · `004-remocao-design-agent.md` · `005-modelo-modulos-plugin-e-apps-separados.md` · `006-zero-marca-soberania-host.md` · `007-distribuicao-por-git.md` · `008-releases-com-tag-e-semver-em-git.md` · `009-persistencia-tenant-aware.md` · `010-temas-salvos-pelo-usuario.md` · `011-tema-salvo-por-uma-porta-de-escrita.md` · `012-escrita-git-sob-autorizacao-do-dono.md` · `013-item-de-navegacao-como-atomo-proprio.md` · `014-cromo-do-modo-ui-kit-com-widgets-por-padrao.md` · `015-metrica-do-item-de-navegacao-horizontal.md` · `016-preferencias-do-usuario-separadas-do-tema.md`
+**ADR (23)** — decisões imutáveis: `001-tres-arquiteturas.md` · `002-remocao-motor-manifesto.md` · `003-remocao-backend-proprio.md` · `004-remocao-design-agent.md` · `005-modelo-modulos-plugin-e-apps-separados.md` · `006-zero-marca-soberania-host.md` · `007-distribuicao-por-git.md` · `008-releases-com-tag-e-semver-em-git.md` · `009-persistencia-tenant-aware.md` · `010-temas-salvos-pelo-usuario.md` · `011-tema-salvo-por-uma-porta-de-escrita.md` · `012-escrita-git-sob-autorizacao-do-dono.md` · `013-item-de-navegacao-como-atomo-proprio.md` · `014-cromo-do-modo-ui-kit-com-widgets-por-padrao.md` · `015-metrica-do-item-de-navegacao-horizontal.md` · `016-preferencias-do-usuario-separadas-do-tema.md` · `017-porta-de-apagar-tema-simetrica-a-de-escrever.md` · `018-um-cromo-so-e-o-consumidor-e-dono-das-rotas.md` · `019-arrastar-e-soltar-do-kanban.md` · `020-gantt-casca-propria.md` · `021-navegacao-na-base-do-celular.md` · `022-tema-sob-demanda.md` · `023-fontes-embarcadas-carregadas-sob-demanda.md`
 
 **Arquitetura (6)** — visão macro viva: `00-mapa-do-modulo.md` · `01-forma-do-produto-e-modos-de-consumo.md` · `02-design-engine.md` · `03-superficie-publica.md` · `04-contrato-de-tokens-e-paridade.md` · `05-build-e-distribuicao.md`
 
-**Specs (18)** — feature e regra: `00-regras-e-invariantes.md` · `01-gates-e-baseline.md` · `02-enforcement-por-commit.md` · `03-versionamento-e-release.md` · `04-shell-e-discovery.md` · `05-cromo-e-slots.md` · `06-painel-de-customizacao-e-preview.md` · `07-responsividade-e-multidispositivo.md` · `08-identidade-do-host-e-zero-marca.md` · `09-temas-e-presets.md` · `10-seguranca-e-acessibilidade.md` · `11-testes-e-cobertura.md` · `12-kit-do-consumidor.md` · `13-instalacao-e-atualizacao.md` · `14-artefatos-do-mantenedor.md` · `15-divida-conhecida.md` · `16-integracao-continua.md` · `17-contrato-de-operacao-git.md`
+**Specs (17)** — feature e regra: `00-regras-e-invariantes.md` · `01-gates-e-baseline.md` · `02-enforcement-por-commit.md` · `03-versionamento-e-release.md` · `05-cromo-e-slots.md` · `06-painel-de-customizacao-e-preview.md` · `07-responsividade-e-multidispositivo.md` · `08-identidade-do-host-e-zero-marca.md` · `09-temas-e-presets.md` · `10-seguranca-e-acessibilidade.md` · `11-testes-e-cobertura.md` · `12-kit-do-consumidor.md` · `13-instalacao-e-atualizacao.md` · `14-artefatos-do-mantenedor.md` · `15-divida-conhecida.md` · `16-integracao-continua.md` · `17-contrato-de-operacao-git.md`
 
 <!-- SARAK-DEV:APENDICE-GERADO:FIM -->

@@ -1,7 +1,18 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import { ThemeSidebarContent } from '../ThemeSidebarContent';
+import { CardSchema } from '../../../../../core/Design/schema/cards';
+import { ColorsSchema } from '../../../../../core/Design/schema/colors';
+import { SystemSchema } from '../../../../../core/Design/schema/system';
+import { TypographySchema } from '../../../../../core/Design/schema/typography';
+
+const getSchemaDefaultValue = (cssVariableName: string): unknown => {
+    const schemas = [CardSchema, ColorsSchema, SystemSchema, TypographySchema];
+    return schemas.flatMap(({ tokens }) => tokens)
+        .find((token) => token.cssVars?.includes(cssVariableName))?.defaultValue;
+};
 
 vi.mock('../../MasterControlPanel', () => ({
     MasterControlPanel: (props: { draft: unknown; updateDraft: unknown; resetToken: unknown }) => (
@@ -38,16 +49,19 @@ const baseProps = () => ({
     isComponentDirty: vi.fn(() => false),
     resetComponent: vi.fn(),
     resetToken: vi.fn(),
-    handleApplyComponent: vi.fn(),
     handleApplyToSystem: vi.fn(),
     toast: null,
     globalComponent: { tokens: [] },
     sarak: { branding: {}, updateBranding: vi.fn() },
     pillars: [],
     groupedStructure: {},
-    isEssentialMode: false,
-    dynamicEssentialTokens: new Set<string>(),
-    setActivePreviewApp: vi.fn()
+    editMode: 'essential',
+    visualImpactTokens: [],
+    isTokenVisible: () => true,
+    selectPillar: vi.fn(),
+    isGalleryOpen: false,
+    setIsGalleryOpen: vi.fn(),
+    onApplyFullTheme: vi.fn(),
 });
 
 describe('ThemeSidebarContent', () => {
@@ -55,6 +69,72 @@ describe('ThemeSidebarContent', () => {
         const FinalProps = baseProps() as unknown as React.ComponentProps<typeof ThemeSidebarContent>;
         const { container } = render(<ThemeSidebarContent {...FinalProps} />);
         expect(container).toMatchSnapshot();
+    });
+
+    it('começa por um tema e abre e fecha a galeria pelo mesmo controle', () => {
+        const props = baseProps();
+        const setIsGalleryOpen = vi.fn();
+        const initialProps = { ...props, setIsGalleryOpen } as unknown as React.ComponentProps<typeof ThemeSidebarContent>;
+        const { rerender } = render(<ThemeSidebarContent {...initialProps} />);
+
+        expect(screen.getByRole('heading', { name: 'Começar de um tema' })).toBeInTheDocument();
+        fireEvent.click(screen.getByRole('button', { name: 'Abrir galeria' }));
+        expect(setIsGalleryOpen).toHaveBeenCalledWith(true);
+
+        rerender(<ThemeSidebarContent {...initialProps} isGalleryOpen={true} />);
+        fireEvent.click(screen.getByRole('button', { name: 'Fechar galeria' }));
+        expect(setIsGalleryOpen).toHaveBeenCalledWith(false);
+    });
+
+    it('dimensiona o bloco pelos tokens e confere os valores padrão no schema', () => {
+        const props = baseProps() as unknown as React.ComponentProps<typeof ThemeSidebarContent>;
+        render(<ThemeSidebarContent {...props} />);
+
+        const block = screen.getByRole('heading', { name: 'Começar de um tema' }).closest('section') as HTMLElement;
+        const subtitle = screen.getByText('Escolha um estilo e ajuste os detalhes abaixo.');
+
+        expect(block.className).toContain('--sarak-layout-gap-sm');
+        expect(getSchemaDefaultValue('--sarak-layout-gap-sm')).toEqual({ mob: 8, tab: 10, desk: 12 });
+        expect(block.className).toContain('--sarak-card-radius');
+        expect(getSchemaDefaultValue('--sarak-card-radius')).toEqual({ mob: 10, tab: 14, desk: 14 });
+        expect(block.className).toContain('--theme-card');
+        expect(getSchemaDefaultValue('--theme-card')).toBe('#101622');
+        expect(block.className).toContain('--theme-border');
+        expect(getSchemaDefaultValue('--theme-border')).toBe('rgba(255, 255, 255, 0.09)');
+        expect(subtitle.className).toContain('--sarak-type-scale-caption');
+        expect(getSchemaDefaultValue('--sarak-type-scale-caption')).toBe(12);
+        expect(getSchemaDefaultValue('--theme-title')).toBe('#f2f6fb');
+        expect(getSchemaDefaultValue('--theme-muted')).toBe('rgba(242, 246, 251, 0.55)');
+    });
+
+    it('no modo Impacto mostra os cinco blocos abertos e só os controles marcados, sem pilares', () => {
+        const impactProps = {
+            ...baseProps(),
+            editMode: 'impact',
+            visualImpactTokens: [
+                { token: { id: 'headingFont', label: 'Fonte de títulos', type: 'text' }, group: 'fontes' },
+                { token: { id: 'primaryColor', label: 'Cor primária', type: 'text' }, group: 'cores' },
+                { token: { id: 'texture', label: 'Textura', type: 'text' }, group: 'fundo' },
+                { token: { id: 'cardVariant', label: 'Tipo de card', type: 'text' }, group: 'cards' },
+                { token: { id: 'btnStyleType', label: 'Estilo do botão', type: 'text' }, group: 'forma' }
+            ],
+            pillars: [{ id: 'typography', title: 'Pilar não exibido', icon: () => <div />, index: 1 }],
+            groupedStructure: { typography: { Fontes: [{ id: 'headingFont', label: 'Fonte de títulos' }] } }
+        } as unknown as React.ComponentProps<typeof ThemeSidebarContent>;
+        const { container } = render(<ThemeSidebarContent {...impactProps} />);
+
+        expect(screen.getByRole('heading', { name: 'Fontes' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Cores' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Fundo e textura' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Cards' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Forma e estrutura' })).toBeInTheDocument();
+        expect(container.querySelectorAll('[data-visual-impact-token]')).toHaveLength(5);
+        expect(container.querySelector('[data-visual-impact-token=headingFont]')).toBeInTheDocument();
+        expect(container.querySelector('[data-visual-impact-token=primaryColor]')).toBeInTheDocument();
+        expect(container.querySelector('[data-visual-impact-token=texture]')).toBeInTheDocument();
+        expect(container.querySelector('[data-visual-impact-token=cardVariant]')).toBeInTheDocument();
+        expect(container.querySelector('[data-visual-impact-token=btnStyleType]')).toBeInTheDocument();
+        expect(screen.queryByText('Pilar não exibido')).toBeNull();
     });
 
     it('plan-36: no modo catalog, passa draft/updateDraft/resetToken (a MESMA instância de useDesignDraft de ThemeCustomizationTab) para MasterControlPanel — sem instância paralela', () => {
@@ -105,5 +185,40 @@ describe('ThemeSidebarContent', () => {
         expect(captured?.resetComponent).toBe(resetComponent);
         expect(captured?.resetToken).toBe(resetToken);
         expect(captured?.toast).toBe(toast);
+    });
+    describe('busca por sentido', () => {
+        const token = (id: string, label: string) => ({ id, label, type: 'text', defaultValue: '' });
+        const searchProps = (filteredResults: unknown[]) => ({
+            ...baseProps(),
+            searchQuery: 'fonte',
+            filteredResults,
+            pillars: [{ id: 'typography', title: '2. Tipografia e Escala', index: 2 }],
+            groupedStructure: { typography: { Fontes: [token('headingFont', 'Fonte de Títulos')] } },
+        }) as unknown as React.ComponentProps<typeof ThemeSidebarContent>;
+
+        it('mostra a contagem no título e os resultados na ordem recebida (relevância)', () => {
+            const results = [token('zeta', 'Zeta Texto'), token('alfa', 'Alfa Texto')];
+            render(<ThemeSidebarContent {...searchProps(results)} />);
+
+            expect(screen.getByText('Resultados da busca (2)')).toBeInTheDocument();
+            const labels = screen.getAllByText(/Texto$/).map((node) => node.textContent);
+            expect(labels).toEqual(['Zeta Texto', 'Alfa Texto']);
+        });
+
+        it('mostra `Pilar › Seção` do token que mora num grupo e nada para o que não mora', () => {
+            const results = [token('headingFont', 'Fonte de Títulos'), token('semGrupo', 'Sem Grupo')];
+            render(<ThemeSidebarContent {...searchProps(results)} />);
+
+            const paths = screen.getAllByTestId('search-result-path');
+            expect(paths).toHaveLength(1);
+            expect(paths[0]).toHaveTextContent('Tipografia e Escala › Fontes');
+        });
+
+        it('busca sem resultado mostra o estado vazio com a consulta', () => {
+            render(<ThemeSidebarContent {...searchProps([])} />);
+
+            expect([screen.getByText('Resultados da busca (0)').className, screen.getByRole('status').className].every((className) => className.includes('--sarak-type-scale-caption') && className.includes('12px'))).toBe(true);
+            expect(screen.getByRole('status')).toHaveTextContent('Nenhum controle encontrado para “fonte”.');
+        });
     });
 });

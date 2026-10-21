@@ -27,6 +27,8 @@ componente para isso** — preenche-se o tema (Configuração, não Expansão).
 ```tsx
 import { SarakUIProvider, sarakDeriveThemeFromReference } from '@sarak/lib-ui-core';
 
+// 'sarak-sovereign' (o tema padrão) é síncrono; outro tema embarcado entra como preset já carregado
+// (`await sarakLoadThemePreset('<id>')`).
 const MEU_TEMA = sarakDeriveThemeFromReference('sarak-sovereign', {
   id: 'meu-tema', name: 'Meu Tema',
   design: {
@@ -44,7 +46,7 @@ const MEU_TEMA = sarakDeriveThemeFromReference('sarak-sovereign', {
 ```
 
 - **Animação sem arquivo:** `texture` (catálogo grande — `aurora`, `stars`, `waves`, `nebula`, …),
-  `bgNoiseAnimation`, `bgNoiseDensity`, `noiseIntensity` — tudo procedural, custo zero de asset.
+  `bgNoiseAnimation`, `bgNoiseDensity` — tudo procedural, custo zero de asset.
 - **Vídeo:** a URL é tratada como vídeo quando termina em `.webm`/`.mp4` (ou contém `video`) —
   renderiza `<video autoplay loop muted playsinline>`.
 - O fundo global é **fixo, atrás de tudo e sem captura de toque**; ele se auto-protege de
@@ -52,8 +54,8 @@ const MEU_TEMA = sarakDeriveThemeFromReference('sarak-sovereign', {
 - **Modo Embarcado** (`mode: 'embedded'`): overlays de página inteira ficam desligados por
   desenho — a lib não é dona da página do host. Nesse modo, use os **slots** (nível b).
 - Tokens relacionados (schema vivo, `sarakGetAllDesignTokens()`): `globalBackgroundImageUrl`,
-  `globalBackgroundOpacity`, `globalBackgroundBlur`, `globalBackgroundBlendMode`, `texture`,
-  `textureOpacity`, `atmosphereNoiseOpacity`, `bgNoiseAnimation`, `bgGradientMode`.
+  `globalBackgroundOpacity`, `globalBackgroundBlur`, `texture`,
+  `textureOpacity`, `bgNoiseDensity`, `bgNoiseAnimation`, `bgGradientMode`.
 
 ---
 

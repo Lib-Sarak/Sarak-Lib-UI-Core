@@ -1,10 +1,8 @@
-/* 2.5 INDUSTRIAL PERFORMANCE ENGINE (Eco-Mode v8.5) */
-.sarak-eco-mode *,
-[data-performance="eco"] *,
-[data-perf-mode="eco"] * {
+/* 2.5 INDUSTRIAL PERFORMANCE ENGINE (Eco-Mode v8.5). O interruptor é a classe `sarak-eco-mode` num
+   ancestral (o `html`, o `body` ou a raiz da ilha): nada na lib a liga, quem decide é o consumidor. */
+.sarak-eco-mode * {
     transition-duration: 0.1s !important;
     backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
     box-shadow: none !important;
     text-shadow: none !important;
     animation-play-state: paused !important;
@@ -13,15 +11,23 @@
 }
 
 .sarak-eco-mode .SarakAtmosphereLayer,
-[data-performance="eco"] .SarakAtmosphereLayer,
-[data-perf-mode="eco"] .SarakAtmosphereLayer,
-[data-perf-mode="eco"] .SarakNoiseLayer {
+.sarak-eco-mode .SarakNoiseLayer {
     display: none !important;
 }
 
-/* Specific Card Eco Mode */
-[data-perf-mode="eco"] .bg-theme-card {
+/* Specific Card Eco Mode — o cartão inteiro, com o desfoque e a transição apagados. O `*` de cima já vence
+   o material (que não é `!important`); este seletor nomeia o cartão para o modo eco valer também sobre o
+   desfoque que o próprio cartão declara. */
+.sarak-eco-mode .sarak-card {
     backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
     transition-duration: 0.1s !important;
+}
+.sarak-eco-mode :is(.sarak-card, .card) {
+    backdrop-filter: none !important;
+}
+
+/* O grão animado (`bgNoiseAnimation`) é um pseudoelemento: o seletor `*` acima não o alcança. */
+.sarak-eco-mode [data-sx-texture="noise"]::before,
+.sarak-eco-mode[data-sx-texture="noise"]::before {
+    animation: none;
 }

@@ -8,14 +8,9 @@ vi.mock('../../../../core/Provider/SarakUIProvider', () => ({
     useSarakUI: vi.fn(() => ({
         systemId: 'TEST-SYSTEM',
         isHydrated: true,
-        registeredModules: [],
         options: { persistence: { storageKey: 'sarak-ui-design-do-host' } },
         applyConfig: vi.fn()
     }))
-}));
-
-vi.mock('../../../../core/Discovery/registry', () => ({
-    sarakGetRegisteredModules: vi.fn(() => [])
 }));
 
 describe('AdvancedTab', () => {

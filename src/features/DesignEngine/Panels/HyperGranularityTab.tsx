@@ -15,6 +15,7 @@ import { CategoryLabel } from '../components/DesignControls';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSovereignSearch } from './hooks/useSovereignSearch';
 import { PillarSelector } from './components/PillarSelector';
+import { useMotionTokens } from '../../../components/atomic/hooks/useMotionTokens';
 
 /**
  * MAPEAR ÍCONES AOS COMPONENTES DO SCHEMA
@@ -48,40 +49,40 @@ export interface HyperGranularityTabProps {
  *
  * Agora 100% dinâmico e organizado por Pilares de Soberania.
  *
- * `draft`/`updateDraft`/`handleApplyToSystem`/`resetComponent`/`resetToken`/`toast` chegam
- * por prop (plan-37, correção) — ANTES este componente instanciava a própria
+ * `draft`/`updateDraft`/`resetComponent`/`resetToken`/`toast` chegam por prop — ANTES este componente instanciava a própria
  * `useDesignDraft(sarak)`, em paralelo à de `ThemeCustomizationTab`: duas fontes de
  * rascunho vivas ao mesmo tempo assim que o Command Center ficou alcançável. Segue o
  * mesmo padrão que `MasterControlPanel` já usa (plan-36) — fonte única de rascunho.
  */
 export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
-    draft, updateDraft, handleApplyToSystem, resetComponent, resetToken, toast
+    draft, updateDraft, resetComponent, resetToken, toast
 }) => {
     const sarak = useSarakUI();
+    const { durations } = useMotionTokens();
     const draftRecord = draft as Record<string, SarakTokenValue>;
     
-    const [activePillar, setActivePillar] = useState<string>('core');
+    const [activePillar, setActivePillar] = useState<string>('brand');
     const [activeSection, setActiveSection] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
 
     const { pillarsWithDrafts, filteredComponents } = useSovereignSearch(draft, searchQuery, activePillar);
 
     return (
-        <div className="flex flex-col h-full animate-in fade-in slide-in-from-right-4 duration-500 overflow-hidden bg-[var(--color-theme-card,#1e293b)]">
+        <div className="flex flex-col h-full animate-in fade-in slide-in-from-right-4 duration-[var(--sarak-motion-dur-slow,0.6s)] overflow-hidden bg-[var(--color-theme-card,#101622)]">
             
             {/* HEADER: SEARCH & PILLARS */}
-            <div className="pt-6 px-6 pb-2 border-b border-white/5 bg-black/40 backdrop-blur-md z-10 space-y-4">
+            <div className="pt-6 px-6 pb-2 border-b border-theme-text/5 bg-theme-body/40 backdrop-blur-md z-10 space-y-4">
                 <div className="relative group">
-                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[var(--theme-primary)] transition-colors" />
+                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-theme-text/20 group-focus-within:text-[var(--theme-primary)] transition-colors" />
                     <input 
                         type="text"
                         placeholder="Busca universal em 200+ tokens..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-[var(--sarak-type-scale2xs,10px)] font-bold focus:border-[var(--theme-primary)]/50 focus:outline-none transition-all text-white placeholder:text-white/20"
+                        className="w-full bg-theme-text/5 border border-theme-text/10 rounded-xl py-2 pl-10 pr-4 text-[var(--sarak-type-scale2xs,10px)] font-bold focus:border-[var(--theme-primary)]/50 focus:outline-none transition-all text-theme-text placeholder:text-theme-text/20"
                     />
                     {searchQuery && (
-                        <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white">
+                        <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-theme-text/20 hover:text-theme-text">
                             <X size={12} />
                         </button>
                     )}
@@ -113,7 +114,7 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
                         }, {} as Record<string, SarakDesignToken[]>);
 
                         return (
-                            <div key={component.id} className="border-b border-white/5 last:border-0">
+                            <div key={component.id} className="border-b border-theme-text/5 last:border-0">
                                 <CategoryLabel 
                                     icon={Icon} 
                                     title={component.label} 
@@ -128,15 +129,15 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
                                             initial={{ height: 0, opacity: 0 }} 
                                             animate={{ height: 'auto', opacity: 1 }} 
                                             exit={{ height: 0, opacity: 0 }} 
-                                            transition={{ duration: 0.3, ease: "circOut" }} 
-                                            className="overflow-hidden bg-white/[0.02]"
+                                            transition={{ duration: durations.normal, ease: "circOut" }} 
+                                            className="overflow-hidden bg-theme-text/[0.02]"
                                         >
                                             <div className="p-6 pt-2 space-y-8">
                                                 {Object.entries(groupedTokens).map(([cat, tokens]) => (
                                                     <div key={cat} className="space-y-4">
                                                         <div className="flex items-center gap-2 mb-2">
                                                             <div className="w-1 h-3 bg-[var(--theme-primary)]/40 rounded-full" />
-                                                            <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-white/30">{cat}</span>
+                                                            <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-theme-text/30">{cat}</span>
                                                         </div>
                                                         <div className="space-y-4">
                                                             {tokens.map(token => {
@@ -152,7 +153,7 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
                                                                         {isTokenDirty && (
                                                                             <button 
                                                                                 onClick={() => resetToken(token.id)}
-                                                                                className="absolute -top-1 -right-1 p-1 bg-orange-500/20 text-orange-500 rounded-lg opacity-0 group-hover/token:opacity-100 transition-all hover:bg-orange-500 hover:text-black shadow-lg z-10"
+                                                                                className="absolute -top-1 -right-1 p-1 bg-[var(--sarak-status-warning-color,#f59e0b)]/20 text-[var(--sarak-status-warning-color,#f59e0b)] rounded-lg opacity-0 group-hover/token:opacity-100 transition-all hover:bg-[var(--sarak-status-warning-color,#f59e0b)] hover:text-[var(--sarak-on-warning,#020617)] shadow-lg z-10"
                                                                                 title="Reverter Token"
                                                                             >
                                                                                 <RotateCcw size={10} strokeWidth={3} />
@@ -173,36 +174,13 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
                     })
                 ) : (
                     <div className="flex flex-col items-center justify-center p-20 text-center">
-                        <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
-                            <Search size={24} className="text-white/10" />
+                        <div className="w-16 h-16 rounded-full bg-theme-text/5 flex items-center justify-center mb-4">
+                            <Search size={24} className="text-theme-text/10" />
                         </div>
-                        <h3 className="text-xs font-black uppercase text-white/40 tracking-widest">Nenhum token encontrado</h3>
-                        <p className="text-[var(--sarak-type-scale2xs,10px)] text-white/20 mt-1 uppercase italic">Aumente a abrangência da busca</p>
+                        <h3 className="text-xs font-black uppercase text-theme-text/40 tracking-widest">Nenhum token encontrado</h3>
+                        <p className="text-[var(--sarak-type-scale2xs,10px)] text-theme-text/20 mt-1 uppercase italic">Aumente a abrangência da busca</p>
                     </div>
                 )}
-            </div>
-
-            {/* ACTION FOOTER */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-[var(--color-theme-card,#1e293b)] via-[var(--color-theme-card,#1e293b)]/95 to-transparent border-t border-white/5">
-                <button 
-                    onClick={handleApplyToSystem}
-                    disabled={Object.keys(draft).length === 0}
-                    className={`w-full font-black uppercase py-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 group ${
-                        Object.keys(draft).length > 0 
-                            ? 'bg-[var(--theme-primary)] text-black shadow-[0_0_30px_rgba(var(--theme-primary-rgb),0.2)] hover:bg-[var(--theme-primary)]/90' 
-                            : 'bg-white/5 text-white/20 cursor-not-allowed border border-white/5'
-                    }`}
-                >
-                    <Check size={16} className={Object.keys(draft).length > 0 ? 'group-hover:scale-110 transition-transform' : ''} />
-                    <span className="text-xs tracking-[var(--sarak-tracking-tight,0.2em)]">Aplicar Soberania</span>
-                </button>
-                
-                <div className="mt-4 flex items-center justify-center gap-2">
-                    <div className={`w-1.5 h-1.5 rounded-full ${Object.keys(draft).length > 0 ? 'bg-orange-500 animate-pulse' : 'bg-green-500'}`} />
-                    <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest text-white/20">
-                        {Object.keys(draft).length > 0 ? 'Sessão com Alterações Pendentes' : 'Sarak Sovereign UI v12.0'}
-                    </span>
-                </div>
             </div>
 
             {/* TOAST NOTIFICATION */}
@@ -216,10 +194,10 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
                     >
                         <div className={`p-4 rounded-xl border backdrop-blur-xl flex items-center gap-3 shadow-2xl ${
                             toast.type === 'success' 
-                                ? 'bg-green-500/10 border-green-500/20 text-green-400' 
-                                : 'bg-orange-500/10 border-orange-500/20 text-orange-400'
+                                ? 'bg-[var(--sarak-status-success-color,#10b981)]/10 border-[var(--sarak-status-success-color,#10b981)]/20 text-[var(--sarak-status-success-color,#10b981)]' 
+                                : 'bg-[var(--sarak-status-warning-color,#f59e0b)]/10 border-[var(--sarak-status-warning-color,#f59e0b)]/20 text-[var(--sarak-status-warning-color,#f59e0b)]'
                         }`}>
-                            <div className={`p-1.5 rounded-lg ${toast.type === 'success' ? 'bg-green-500/20' : 'bg-orange-500/20'}`}>
+                            <div className={`p-1.5 rounded-lg ${toast.type === 'success' ? 'bg-[var(--sarak-status-success-color,#10b981)]/20' : 'bg-[var(--sarak-status-warning-color,#f59e0b)]/20'}`}>
                                 {toast.type === 'success' ? <Check size={14} /> : <Filter size={14} />}
                             </div>
                             <span className="text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider">{toast.message}</span>
@@ -232,4 +210,3 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
 };
 
 export default HyperGranularityTab;
-

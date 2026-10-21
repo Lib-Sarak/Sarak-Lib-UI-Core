@@ -10,15 +10,14 @@ export const DEFAULT_STORAGE_KEY = 'sarak-ui-design-v9.0';
 export const LANGUAGE_STORAGE_KEY = 'sarak_lang';
 
 export const BEZIER_CURVES = {
-    standard: 'cubic-bezier(0.4, 0, 0.2, 1)',
-    decelerate: 'cubic-bezier(0.0, 0, 0.2, 1)',
-    accelerate: 'cubic-bezier(0.4, 0, 1, 1)',
-    sharp: 'cubic-bezier(0.4, 0, 0.6, 1)'
+    '--sarak-bezier-standard': 'cubic-bezier(0.4, 0, 0.2, 1)',
+    '--sarak-bezier-decelerate': 'cubic-bezier(0.0, 0, 0.2, 1)',
+    '--sarak-bezier-accelerate': 'cubic-bezier(0.4, 0, 1, 1)',
+    '--sarak-bezier-sharp': 'cubic-bezier(0.4, 0, 0.6, 1)'
 };
 
 export const DEFAULT_INDUSTRIAL_SEED = {
     mode: 'dark',
-    colorPalette: 'industrial-night',
     primaryColor: '#00f2ff', // Neon Sarak
     layout: 'sidebar',
     navigationStyle: 'sidebar',

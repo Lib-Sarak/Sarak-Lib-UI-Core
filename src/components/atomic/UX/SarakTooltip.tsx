@@ -6,14 +6,18 @@
  * partir do retângulo do gatilho. Inclui edge detection — se a posição preferida sair
  * da viewport, é espelhada (flip) e/ou deslocada para dentro.
  *
+ * Abre por mouse (com atraso), por foco e por toque: no toque o gatilho alterna o balão na hora
+ * e um toque fora o fecha — sem isso, um gatilho que não recebe foco nunca o abriria.
+ *
  * Zero Hardcode nas cores (tokens `--theme-*`).
  */
 
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalScope';
 import { motion, AnimatePresence } from 'framer-motion';
-import { twMerge } from 'tailwind-merge';
+import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
+import { useMotionTokens } from '../hooks/useMotionTokens';
 
 export type SarakTooltipPosition = 'top' | 'bottom' | 'left' | 'right';
 
@@ -34,6 +38,12 @@ interface Coords {
 }
 
 const GAP = 8;
+
+/**
+ * Janela, após um toque, em que os eventos de mouse EMULADOS pelo navegador (mouseenter/mouseleave) são
+ * ignorados: sem ela, o segundo toque fecharia o balão e o mouseenter emulado o reabriria logo depois.
+ */
+const EMULATED_MOUSE_WINDOW_MS = 800;
 
 /** Calcula a coordenada (fixed) com flip/clamp para manter o tooltip na viewport. */
 const computeCoords = (
@@ -94,11 +104,13 @@ export const SarakTooltip: React.FC<SarakTooltipProps> = ({
     className,
     disabled = false,
 }) => {
+    const { durations } = useMotionTokens();
     const [isVisible, setIsVisible] = useState(false);
     const [coords, setCoords] = useState<Coords | null>(null);
     const triggerRef = useRef<HTMLDivElement | null>(null);
     const tipRef = useRef<HTMLDivElement | null>(null);
     const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const lastTouchAtRef = useRef(Number.NEGATIVE_INFINITY);
 
     const show = useCallback(() => {
         if (disabled) return;
@@ -111,6 +123,34 @@ export const SarakTooltip: React.FC<SarakTooltipProps> = ({
         setIsVisible(false);
         setCoords(null);
     }, []);
+
+    const isEmulatedMouse = useCallback(
+        () => Date.now() - lastTouchAtRef.current < EMULATED_MOUSE_WINDOW_MS,
+        [],
+    );
+
+    const handlePointerDown = useCallback((event: React.PointerEvent) => {
+        if (event.pointerType === 'mouse' || disabled) return;
+        lastTouchAtRef.current = Date.now();
+        if (isVisible) {
+            hide();
+            return;
+        }
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        setIsVisible(true);
+    }, [disabled, isVisible, hide]);
+
+    // Aberto por toque, fecha ao tocar fora do gatilho (o balão em si não recebe ponteiro).
+    useEffect(() => {
+        if (!isVisible) return undefined;
+        const closeOnOutsidePointer = (event: PointerEvent) => {
+            if (event.pointerType === 'mouse') return;
+            if (triggerRef.current?.contains(event.target as Node)) return;
+            hide();
+        };
+        document.addEventListener('pointerdown', closeOnOutsidePointer);
+        return () => document.removeEventListener('pointerdown', closeOnOutsidePointer);
+    }, [isVisible, hide]);
 
     useLayoutEffect(() => {
         return () => {
@@ -144,13 +184,13 @@ export const SarakTooltip: React.FC<SarakTooltipProps> = ({
                           initial={initial}
                           animate={{ opacity: 1, y: 0, x: 0 }}
                           exit={initial}
-                          transition={{ duration: 0.15 }}
+                          transition={{ duration: durations.fast }}
                           role="tooltip"
                           data-sarak-tooltip="true"
-                          className={twMerge(
-                              'fixed z-[var(--z-index-tooltip, 9000)] text-xs font-bold whitespace-nowrap',
-                              'bg-[var(--theme-surface)] text-[var(--color-theme-title,#ffffff)]',
-                              'border border-[var(--theme-border)] shadow-lg rounded-md pointer-events-none',
+                          className={mergeSarakClasses(
+                              'fixed z-[var(--sarak-z-tooltip,9000)] text-xs font-bold whitespace-nowrap',
+                              'bg-[var(--sarak-tooltip-bg,var(--theme-surface))] text-[var(--sarak-tooltip-text,var(--color-theme-title,#f2f6fb))]',
+                              'border border-[var(--sarak-tooltip-border,var(--theme-border))] shadow-[var(--dynamic-shadow)] rounded-[var(--sarak-tooltip-radius,6px)] pointer-events-none',
                               className,
                           )}
                           style={{
@@ -174,8 +214,9 @@ export const SarakTooltip: React.FC<SarakTooltipProps> = ({
         <div
             ref={triggerRef}
             className="relative inline-flex"
-            onMouseEnter={show}
-            onMouseLeave={hide}
+            onPointerDown={handlePointerDown}
+            onMouseEnter={() => { if (!isEmulatedMouse()) show(); }}
+            onMouseLeave={() => { if (!isEmulatedMouse()) hide(); }}
             onFocus={show}
             onBlur={hide}
         >

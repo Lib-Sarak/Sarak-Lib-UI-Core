@@ -1,7 +1,6 @@
 /**
  * Sarak Matrix UI Types (v5.5 - Sovereign)
  */
-import React from 'react';
 
 export interface ISarakAuthEngine {
     login: (identification: string, password?: string) => Promise<{ success: boolean; error?: string; token?: string; user?: Record<string, unknown> }>;
@@ -28,20 +27,3 @@ export interface ISarakEngines {
     theme?: ISarakThemeEngine;
 }
 
-export interface SarakModule {
-    id: string;
-    label: string;
-    icon?: string;
-    category?: string;
-    priority?: number;
-    badge?: string;
-    isTool?: boolean;
-    description?: string;
-    subItems?: Array<{ 
-        id: string; 
-        label: string; 
-        icon?: string;
-        component?: React.ReactNode | React.ComponentType;
-    }>;
-    component?: React.ReactNode | React.ComponentType;
-}

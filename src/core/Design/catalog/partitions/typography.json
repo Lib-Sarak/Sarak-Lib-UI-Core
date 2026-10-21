@@ -1,6 +1,7 @@
 [
   {
     "tokenId": "headingFont",
+    "visualImpact": "fontes",
     "name": "Fonte de Títulos",
     "description": "Família tipográfica principal usada em Headers (H1, H2, etc).",
     "type": "font",
@@ -24,7 +25,50 @@
       "--font-heading",
       "--sarak-font-h"
     ],
-    "allowedValues": null,
+    "allowedValues": [
+      "'Inter', sans-serif",
+      "'Outfit', sans-serif",
+      "'Roboto', sans-serif",
+      "'Montserrat', sans-serif",
+      "'Space Grotesk', sans-serif",
+      "'Plus Jakarta Sans', sans-serif",
+      "'Lexend', sans-serif",
+      "'Sora', sans-serif",
+      "'Syne', sans-serif",
+      "'Archivo', sans-serif",
+      "'Chakra Petch', sans-serif",
+      "'Nunito', sans-serif",
+      "'DM Sans', sans-serif",
+      "'Manrope', sans-serif",
+      "'Work Sans', sans-serif",
+      "'Open Sans', sans-serif",
+      "'Raleway', sans-serif",
+      "'Source Sans 3', sans-serif",
+      "'Poppins', sans-serif",
+      "'Lato', sans-serif",
+      "system-ui, -apple-system, sans-serif",
+      "'Unbounded', display",
+      "'Bebas Neue', display",
+      "'Orbitron', sans-serif",
+      "'VT323', monospace",
+      "'Oswald', sans-serif",
+      "'Playfair Display', serif",
+      "'Fraunces', serif",
+      "'Source Serif 4', serif",
+      "'Roboto Slab', serif",
+      "'Lora', serif",
+      "'Merriweather', serif",
+      "'PT Serif', serif",
+      "'Dancing Script', cursive",
+      "'Pacifico', cursive",
+      "'Satisfy', cursive",
+      "'Caveat', cursive",
+      "'Patrick Hand', cursive",
+      "'JetBrains Mono', monospace",
+      "'Fira Code', monospace",
+      "'IBM Plex Mono', monospace",
+      "'Space Mono', monospace"
+    ],
     "relatedTokens": [
       "bodyFont",
       "h1Size"
@@ -32,6 +76,7 @@
   },
   {
     "tokenId": "bodyFont",
+    "visualImpact": "fontes",
     "name": "Fonte de Corpo",
     "description": "Família tipográfica usada em textos normais, parágrafos e ui components.",
     "type": "font",
@@ -55,7 +100,50 @@
       "--font-main",
       "--sarak-font-b"
     ],
-    "allowedValues": null,
+    "allowedValues": [
+      "'Inter', sans-serif",
+      "'Outfit', sans-serif",
+      "'Roboto', sans-serif",
+      "'Montserrat', sans-serif",
+      "'Space Grotesk', sans-serif",
+      "'Plus Jakarta Sans', sans-serif",
+      "'Lexend', sans-serif",
+      "'Sora', sans-serif",
+      "'Syne', sans-serif",
+      "'Archivo', sans-serif",
+      "'Chakra Petch', sans-serif",
+      "'Nunito', sans-serif",
+      "'DM Sans', sans-serif",
+      "'Manrope', sans-serif",
+      "'Work Sans', sans-serif",
+      "'Open Sans', sans-serif",
+      "'Raleway', sans-serif",
+      "'Source Sans 3', sans-serif",
+      "'Poppins', sans-serif",
+      "'Lato', sans-serif",
+      "system-ui, -apple-system, sans-serif",
+      "'Unbounded', display",
+      "'Bebas Neue', display",
+      "'Orbitron', sans-serif",
+      "'VT323', monospace",
+      "'Oswald', sans-serif",
+      "'Playfair Display', serif",
+      "'Fraunces', serif",
+      "'Source Serif 4', serif",
+      "'Roboto Slab', serif",
+      "'Lora', serif",
+      "'Merriweather', serif",
+      "'PT Serif', serif",
+      "'Dancing Script', cursive",
+      "'Pacifico', cursive",
+      "'Satisfy', cursive",
+      "'Caveat', cursive",
+      "'Patrick Hand', cursive",
+      "'JetBrains Mono', monospace",
+      "'Fira Code', monospace",
+      "'IBM Plex Mono', monospace",
+      "'Space Mono', monospace"
+    ],
     "relatedTokens": [
       "headingFont",
       "bodyWeight"
@@ -87,15 +175,59 @@
       "--font-mono",
       "--sarak-font-m"
     ],
-    "allowedValues": null,
+    "allowedValues": [
+      "'Inter', sans-serif",
+      "'Outfit', sans-serif",
+      "'Roboto', sans-serif",
+      "'Montserrat', sans-serif",
+      "'Space Grotesk', sans-serif",
+      "'Plus Jakarta Sans', sans-serif",
+      "'Lexend', sans-serif",
+      "'Sora', sans-serif",
+      "'Syne', sans-serif",
+      "'Archivo', sans-serif",
+      "'Chakra Petch', sans-serif",
+      "'Nunito', sans-serif",
+      "'DM Sans', sans-serif",
+      "'Manrope', sans-serif",
+      "'Work Sans', sans-serif",
+      "'Open Sans', sans-serif",
+      "'Raleway', sans-serif",
+      "'Source Sans 3', sans-serif",
+      "'Poppins', sans-serif",
+      "'Lato', sans-serif",
+      "system-ui, -apple-system, sans-serif",
+      "'Unbounded', display",
+      "'Bebas Neue', display",
+      "'Orbitron', sans-serif",
+      "'VT323', monospace",
+      "'Oswald', sans-serif",
+      "'Playfair Display', serif",
+      "'Fraunces', serif",
+      "'Source Serif 4', serif",
+      "'Roboto Slab', serif",
+      "'Lora', serif",
+      "'Merriweather', serif",
+      "'PT Serif', serif",
+      "'Dancing Script', cursive",
+      "'Pacifico', cursive",
+      "'Satisfy', cursive",
+      "'Caveat', cursive",
+      "'Patrick Hand', cursive",
+      "'JetBrains Mono', monospace",
+      "'Fira Code', monospace",
+      "'IBM Plex Mono', monospace",
+      "'Space Mono', monospace"
+    ],
     "relatedTokens": [
       "bodyFont"
     ]
   },
   {
     "tokenId": "textColorMaster",
+    "visualImpact": "cores",
     "name": "Texto Principal",
-    "description": "Cor de alto contraste usada em títulos e parágrafos focais.",
+    "description": "Cor de alto contraste do texto corrente (parágrafos e rótulos). Os títulos usam `titleColor`.",
     "type": "color",
     "importance": 95,
     "categories": [
@@ -187,9 +319,10 @@
   },
   {
     "tokenId": "h1Size",
+    "visualImpact": "fontes",
     "name": "Tamanho (H1)",
     "description": "O tamanho da fonte principal do nível mais alto de hierarquia (H1).",
-    "type": "number",
+    "type": "slider",
     "importance": 95,
     "categories": [
       "geometria",
@@ -211,8 +344,7 @@
     ],
     "allowedValues": {
       "min": 20,
-      "max": 120,
-      "step": 1
+      "max": 120
     },
     "relatedTokens": [
       "h1Weight",
@@ -248,6 +380,7 @@
       "400",
       "600",
       "700",
+      "800",
       "900"
     ],
     "relatedTokens": [
@@ -258,7 +391,7 @@
     "tokenId": "h1LineHeight",
     "name": "Altura da Linha (H1)",
     "description": "Espaçamento vertical entre as linhas de um título longo H1.",
-    "type": "number",
+    "type": "slider",
     "importance": 85,
     "categories": [
       "geometria",
@@ -291,7 +424,7 @@
     "tokenId": "h1LetterSpacing",
     "name": "Espaçamento (H1)",
     "description": "Distância horizontal entre as letras do H1 (tracking).",
-    "type": "number",
+    "type": "slider",
     "importance": 80,
     "categories": [
       "geometria",
@@ -324,7 +457,7 @@
     "tokenId": "h2Size",
     "name": "Tamanho (H2)",
     "description": "O tamanho da fonte do segundo nível de hierarquia (H2).",
-    "type": "number",
+    "type": "slider",
     "importance": 90,
     "categories": [
       "geometria",
@@ -346,8 +479,7 @@
     ],
     "allowedValues": {
       "min": 18,
-      "max": 80,
-      "step": 1
+      "max": 80
     },
     "relatedTokens": [
       "h2Weight",
@@ -382,7 +514,9 @@
       "300",
       "400",
       "600",
-      "700"
+      "700",
+      "800",
+      "900"
     ],
     "relatedTokens": [
       "h2Size"
@@ -392,7 +526,7 @@
     "tokenId": "h2LineHeight",
     "name": "Altura da Linha (H2)",
     "description": "Espaçamento vertical das linhas do H2.",
-    "type": "number",
+    "type": "slider",
     "importance": 80,
     "categories": [
       "geometria",
@@ -425,7 +559,7 @@
     "tokenId": "h3Size",
     "name": "Tamanho (H3)",
     "description": "Tamanho da fonte de subtítulos (H3), terceiro nível da hierarquia tipográfica.",
-    "type": "number",
+    "type": "slider",
     "importance": 70,
     "categories": [
       "geometria",
@@ -447,8 +581,7 @@
     ],
     "allowedValues": {
       "min": 14,
-      "max": 48,
-      "step": 1
+      "max": 48
     },
     "relatedTokens": [
       "h2Size"
@@ -458,7 +591,7 @@
     "tokenId": "bodyLineHeight",
     "name": "Altura da Linha (Corpo)",
     "description": "Espaçamento vertical que garante a legibilidade ótima do texto em parágrafos normais.",
-    "type": "number",
+    "type": "slider",
     "importance": 90,
     "categories": [
       "geometria",
@@ -580,17 +713,13 @@
     "cssVariables": [
       "--sarak-text-smoothing"
     ],
-    "allowedValues": [
-      true,
-      false
-    ],
     "relatedTokens": []
   },
   {
     "tokenId": "textGlowIntensity",
     "name": "Intensidade de Glow (H1)",
     "description": "Aplica um drop-shadow colorido nos textos H1 imitando iluminação de neon ou emissão.",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "efeitos",
@@ -622,227 +751,416 @@
   },
   {
     "tokenId": "typeScaleMicro",
-    "name": "Escala Micro (7px)",
+    "name": "Escala Micro",
     "description": "Tamanho de fonte para rótulos micro (badges de rascunho, glifos de status).",
-    "type": "number",
+    "type": "slider",
     "importance": 40,
-    "categories": ["geometria", "tipografia", "typography"],
-    "tags": ["size", "micro", "label"],
+    "categories": [
+      "geometria",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "size",
+      "micro",
+      "label"
+    ],
     "databaseColumn": "typography",
     "schemaOrigin": "typography.ts",
-    "digitalTwins": ["DesignInjector"],
-    "cssVariables": ["--sarak-type-scale-micro"],
-    "allowedValues": { "min": 6, "max": 10, "step": 1 },
-    "relatedTokens": ["typeScaleTiny"]
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-type-scale-micro"
+    ],
+    "allowedValues": {
+      "min": 6,
+      "max": 10
+    },
+    "relatedTokens": [
+      "typeScaleTiny"
+    ]
   },
   {
     "tokenId": "typeScaleTiny",
-    "name": "Escala Tiny (8px)",
+    "name": "Escala Tiny",
     "description": "Tamanho de fonte para legendas e subtítulos diminutos.",
-    "type": "number",
+    "type": "slider",
     "importance": 40,
-    "categories": ["geometria", "tipografia", "typography"],
-    "tags": ["size", "tiny", "label"],
+    "categories": [
+      "geometria",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "size",
+      "tiny",
+      "label"
+    ],
     "databaseColumn": "typography",
     "schemaOrigin": "typography.ts",
-    "digitalTwins": ["DesignInjector"],
-    "cssVariables": ["--sarak-type-scale-tiny"],
-    "allowedValues": { "min": 6, "max": 12, "step": 1 },
-    "relatedTokens": ["typeScaleMicro", "typeScale3xs"]
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-type-scale-tiny"
+    ],
+    "allowedValues": {
+      "min": 6,
+      "max": 12
+    },
+    "relatedTokens": [
+      "typeScaleMicro",
+      "typeScale3xs"
+    ]
   },
   {
     "tokenId": "typeScale3xs",
-    "name": "Escala 3XS (9px)",
+    "name": "Escala 3XS",
     "description": "Tamanho de fonte para rótulos e subtítulos pequenos de cards.",
-    "type": "number",
+    "type": "slider",
     "importance": 40,
-    "categories": ["geometria", "tipografia", "typography"],
-    "tags": ["size", "3xs", "label"],
+    "categories": [
+      "geometria",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "size",
+      "3xs",
+      "label"
+    ],
     "databaseColumn": "typography",
     "schemaOrigin": "typography.ts",
-    "digitalTwins": ["DesignInjector"],
-    "cssVariables": ["--sarak-type-scale3xs"],
-    "allowedValues": { "min": 6, "max": 12, "step": 1 },
-    "relatedTokens": ["typeScaleTiny", "typeScale2xs"]
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-type-scale3xs"
+    ],
+    "allowedValues": {
+      "min": 6,
+      "max": 12
+    },
+    "relatedTokens": [
+      "typeScaleTiny",
+      "typeScale2xs"
+    ]
   },
   {
     "tokenId": "typeScale2xs",
-    "name": "Escala 2XS (10px)",
+    "name": "Escala 2XS",
     "description": "Tamanho de fonte para badges, chips e itens de listagem compactos.",
-    "type": "number",
+    "type": "slider",
     "importance": 40,
-    "categories": ["geometria", "tipografia", "typography"],
-    "tags": ["size", "2xs", "badge"],
+    "categories": [
+      "geometria",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "size",
+      "2xs",
+      "badge"
+    ],
     "databaseColumn": "typography",
     "schemaOrigin": "typography.ts",
-    "digitalTwins": ["DesignInjector"],
-    "cssVariables": ["--sarak-type-scale2xs"],
-    "allowedValues": { "min": 8, "max": 14, "step": 1 },
-    "relatedTokens": ["typeScale3xs", "typeScaleCaption"]
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-type-scale2xs"
+    ],
+    "allowedValues": {
+      "min": 8,
+      "max": 14
+    },
+    "relatedTokens": [
+      "typeScale3xs",
+      "typeScaleCaption"
+    ]
   },
   {
     "tokenId": "typeScaleCaption",
-    "name": "Escala Caption (12px)",
+    "name": "Escala Caption",
     "description": "Tamanho de fonte para legendas e textos de apoio.",
-    "type": "number",
+    "type": "slider",
     "importance": 40,
-    "categories": ["geometria", "tipografia", "typography"],
-    "tags": ["size", "caption"],
+    "categories": [
+      "geometria",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "size",
+      "caption"
+    ],
     "databaseColumn": "typography",
     "schemaOrigin": "typography.ts",
-    "digitalTwins": ["DesignInjector"],
-    "cssVariables": ["--sarak-type-scale-caption"],
-    "allowedValues": { "min": 10, "max": 16, "step": 1 },
-    "relatedTokens": ["typeScale2xs"]
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-type-scale-caption"
+    ],
+    "allowedValues": {
+      "min": 10,
+      "max": 16
+    },
+    "relatedTokens": [
+      "typeScale2xs"
+    ]
   },
   {
     "tokenId": "trackingTight",
-    "name": "Tracking Tight (0.2em)",
+    "name": "Tracking Tight",
     "description": "Espaçamento entre letras para rótulos uppercase compactos.",
-    "type": "number",
+    "type": "slider",
     "importance": 35,
-    "categories": ["tipografia", "typography"],
-    "tags": ["tracking", "letter-spacing"],
+    "categories": [
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "tracking",
+      "letter-spacing"
+    ],
     "databaseColumn": "typography",
     "schemaOrigin": "typography.ts",
-    "digitalTwins": ["DesignInjector"],
-    "cssVariables": ["--sarak-tracking-tight"],
-    "allowedValues": { "min": 0, "max": 1, "step": 0.05 },
-    "relatedTokens": ["trackingSnug"]
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-tracking-tight"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "trackingSnug"
+    ]
   },
   {
     "tokenId": "trackingSnug",
-    "name": "Tracking Snug (0.25em)",
+    "name": "Tracking Snug",
     "description": "Espaçamento entre letras para rótulos uppercase, um passo acima do tight.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["tipografia", "typography"],
-    "tags": ["tracking", "letter-spacing"],
+    "categories": [
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "tracking",
+      "letter-spacing"
+    ],
     "databaseColumn": "typography",
     "schemaOrigin": "typography.ts",
-    "digitalTwins": ["DesignInjector"],
-    "cssVariables": ["--sarak-tracking-snug"],
-    "allowedValues": { "min": 0, "max": 1, "step": 0.05 },
-    "relatedTokens": ["trackingTight", "trackingWide"]
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-tracking-snug"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "trackingTight",
+      "trackingWide"
+    ]
   },
   {
     "tokenId": "trackingWide",
-    "name": "Tracking Wide (0.3em)",
+    "name": "Tracking Wide",
     "description": "Espaçamento entre letras para rótulos e badges uppercase.",
-    "type": "number",
+    "type": "slider",
     "importance": 35,
-    "categories": ["tipografia", "typography"],
-    "tags": ["tracking", "letter-spacing"],
+    "categories": [
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "tracking",
+      "letter-spacing"
+    ],
     "databaseColumn": "typography",
     "schemaOrigin": "typography.ts",
-    "digitalTwins": ["DesignInjector"],
-    "cssVariables": ["--sarak-tracking-wide"],
-    "allowedValues": { "min": 0, "max": 1, "step": 0.05 },
-    "relatedTokens": ["trackingSnug", "trackingWider"]
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-tracking-wide"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "trackingSnug",
+      "trackingWider"
+    ]
   },
   {
     "tokenId": "trackingWider",
-    "name": "Tracking Wider (0.4em)",
+    "name": "Tracking Wider",
     "description": "Espaçamento entre letras para rótulos uppercase mais espaçados.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["tipografia", "typography"],
-    "tags": ["tracking", "letter-spacing"],
+    "categories": [
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "tracking",
+      "letter-spacing"
+    ],
     "databaseColumn": "typography",
     "schemaOrigin": "typography.ts",
-    "digitalTwins": ["DesignInjector"],
-    "cssVariables": ["--sarak-tracking-wider"],
-    "allowedValues": { "min": 0, "max": 1, "step": 0.05 },
-    "relatedTokens": ["trackingWide", "trackingWidest"]
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-tracking-wider"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "trackingWide",
+      "trackingWidest"
+    ]
   },
   {
     "tokenId": "trackingWidest",
-    "name": "Tracking Widest (0.5em)",
+    "name": "Tracking Widest",
     "description": "Espaçamento entre letras para títulos e badges de destaque.",
-    "type": "number",
+    "type": "slider",
     "importance": 30,
-    "categories": ["tipografia", "typography"],
-    "tags": ["tracking", "letter-spacing"],
+    "categories": [
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "tracking",
+      "letter-spacing"
+    ],
     "databaseColumn": "typography",
     "schemaOrigin": "typography.ts",
-    "digitalTwins": ["DesignInjector"],
-    "cssVariables": ["--sarak-tracking-widest"],
-    "allowedValues": { "min": 0, "max": 1, "step": 0.05 },
-    "relatedTokens": ["trackingWider", "trackingUltra"]
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-tracking-widest"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "trackingWider",
+      "trackingUltra"
+    ]
   },
   {
     "tokenId": "trackingUltra",
-    "name": "Tracking Ultra (0.8em)",
+    "name": "Tracking Ultra",
     "description": "Espaçamento entre letras máximo, para efeitos de destaque extremo.",
-    "type": "number",
+    "type": "slider",
     "importance": 25,
-    "categories": ["tipografia", "typography"],
-    "tags": ["tracking", "letter-spacing"],
+    "categories": [
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "tracking",
+      "letter-spacing"
+    ],
     "databaseColumn": "typography",
     "schemaOrigin": "typography.ts",
-    "digitalTwins": ["DesignInjector"],
-    "cssVariables": ["--sarak-tracking-ultra"],
-    "allowedValues": { "min": 0, "max": 1, "step": 0.05 },
-    "relatedTokens": ["trackingWidest"]
-  },
-  {
-    "tokenId": "trackingSubtle",
-    "name": "Tracking Subtle (0.1em)",
-    "description": "Espaçamento entre letras sutil, para rótulos discretos de preview.",
-    "type": "number",
-    "importance": 25,
-    "categories": ["tipografia", "typography"],
-    "tags": ["tracking", "letter-spacing"],
-    "databaseColumn": "typography",
-    "schemaOrigin": "typography.ts",
-    "digitalTwins": ["DesignInjector"],
-    "cssVariables": ["--sarak-tracking-subtle"],
-    "allowedValues": { "min": 0, "max": 1, "step": 0.05 },
-    "relatedTokens": ["trackingTight"]
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-tracking-ultra"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "trackingWidest"
+    ]
   },
   {
     "tokenId": "typeScaleXs",
-    "name": "Escala XS (11px)",
+    "name": "Escala XS",
     "description": "Tamanho de fonte para rótulos ligeiramente maiores que o 2XS.",
-    "type": "number",
+    "type": "slider",
     "importance": 40,
-    "categories": ["geometria", "tipografia", "typography"],
-    "tags": ["size", "xs", "label"],
+    "categories": [
+      "geometria",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "size",
+      "xs",
+      "label"
+    ],
     "databaseColumn": "typography",
     "schemaOrigin": "typography.ts",
-    "digitalTwins": ["DesignInjector"],
-    "cssVariables": ["--sarak-type-scale-xs"],
-    "allowedValues": { "min": 8, "max": 14, "step": 1 },
-    "relatedTokens": ["typeScale2xs", "typeScaleCaption"]
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-type-scale-xs"
+    ],
+    "allowedValues": {
+      "min": 8,
+      "max": 14
+    },
+    "relatedTokens": [
+      "typeScale2xs",
+      "typeScaleCaption"
+    ]
   },
   {
     "tokenId": "typeScaleXl",
-    "name": "Escala XL (20px)",
+    "name": "Escala XL",
     "description": "Tamanho de fonte para glifos/placeholders de destaque em previews.",
-    "type": "number",
+    "type": "slider",
     "importance": 35,
-    "categories": ["geometria", "tipografia", "typography"],
-    "tags": ["size", "xl"],
+    "categories": [
+      "geometria",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "size",
+      "xl"
+    ],
     "databaseColumn": "typography",
     "schemaOrigin": "typography.ts",
-    "digitalTwins": ["DesignInjector"],
-    "cssVariables": ["--sarak-type-scale-xl"],
-    "allowedValues": { "min": 14, "max": 28, "step": 1 },
-    "relatedTokens": []
-  },
-  {
-    "tokenId": "typeScaleDisplay",
-    "name": "Escala Display (10rem)",
-    "description": "Tamanho de fonte para watermarks/títulos gigantes de showcase.",
-    "type": "number",
-    "importance": 25,
-    "categories": ["geometria", "tipografia", "typography"],
-    "tags": ["size", "display", "watermark"],
-    "databaseColumn": "typography",
-    "schemaOrigin": "typography.ts",
-    "digitalTwins": ["DesignInjector"],
-    "cssVariables": ["--sarak-type-scale-display"],
-    "allowedValues": { "min": 4, "max": 16, "step": 0.5 },
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-type-scale-xl"
+    ],
+    "allowedValues": {
+      "min": 14,
+      "max": 28
+    },
     "relatedTokens": []
   }
 ]

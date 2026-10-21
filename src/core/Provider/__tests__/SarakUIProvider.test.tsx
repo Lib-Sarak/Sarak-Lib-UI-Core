@@ -4,13 +4,8 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SarakUIProvider, useSarakUI, useSarakUIOptional } from '../SarakUIProvider';
 import { useDesignManager } from '../hooks/useDesignManager';
-import type { SarakThemeEntry } from '../types';
 
 // Mock dependências do SarakUIProvider
-vi.mock('../hooks/useRegistryManager', () => ({
-    useRegistryManager: vi.fn(() => ({ registeredModules: [], isHydrated: true }))
-}));
-
 vi.mock('../hooks/useDesignManager', () => ({
     useDesignManager: vi.fn()
 }));
@@ -125,9 +120,22 @@ describe('SarakUIProvider', () => {
         expect(screen.queryByTestId('hidden-child')).not.toBeInTheDocument();
     });
 
-    it('injeta as fontes no head do document ao montar', () => {
+    it('padrão `bundled`: injeta o `@font-face` das famílias do design, sem Google Fonts nem `preconnect`', () => {
+        document.querySelectorAll('link[rel="preconnect"], #sarak-core-fonts, style[data-sarak-font]').forEach((el) => el.remove());
         render(
             <SarakUIProvider>
+                <div />
+            </SarakUIProvider>
+        );
+
+        expect(document.querySelectorAll('style[data-sarak-font]').length).toBeGreaterThan(0);
+        expect(document.getElementById('sarak-core-fonts')).toBeNull();
+        expect(document.querySelectorAll('link[rel="preconnect"]')).toHaveLength(0);
+    });
+
+    it("`options.fonts: 'google'` injeta as fontes do Google no head do document ao montar", () => {
+        render(
+            <SarakUIProvider options={{ fonts: 'google' }}>
                 <div />
             </SarakUIProvider>
         );
@@ -223,10 +231,10 @@ describe('SarakUIProvider', () => {
         warn.mockRestore();
     });
 
-    describe('saveTheme — ADR-011 (uma porta de escrita, sem porta de leitura/apagar)', () => {
+    describe('temas de sessão — ADR-011 e persistência de tema', () => {
         const ThemeSaveConsumer = () => {
             const ui = useSarakUI();
-            const themeIds = (ui.allThemes as SarakThemeEntry[]).map((t) => t.id).join(',');
+            const themeIds = ui.allThemes.map((t) => t.id).join(',');
             return (
                 <div>
                     <span data-testid="theme-ids">{themeIds}</span>
@@ -293,7 +301,7 @@ describe('SarakUIProvider', () => {
                 id: 'meu-tema',
                 name: 'Meu Tema',
                 design: expect.objectContaining({ primaryColor: '#123456' })
-            }));
+            }), 'create');
         });
 
         it('onSave que rejeita NÃO remove o tema da sessão nem derruba o Provider — o erro propaga para quem chamou', async () => {
@@ -302,7 +310,7 @@ describe('SarakUIProvider', () => {
 
             const RejectingConsumer = () => {
                 const ui = useSarakUI();
-                const themeIds = (ui.allThemes as SarakThemeEntry[]).map((t) => t.id).join(',');
+                const themeIds = ui.allThemes.map((t) => t.id).join(',');
                 return (
                     <div>
                         <span data-testid="theme-ids">{themeIds}</span>
@@ -352,7 +360,7 @@ describe('SarakUIProvider', () => {
 
             const HostileThemeConsumer = () => {
                 const ui = useSarakUI();
-                const saved = (ui.allThemes as SarakThemeEntry[]).find((t) => t.id === 'tema-hostil');
+                const saved = ui.allThemes.find((t) => t.id === 'tema-hostil');
                 const savedDesign = saved?.design as Record<string, unknown> | undefined;
                 return (
                     <div>
@@ -382,6 +390,74 @@ describe('SarakUIProvider', () => {
             expect(screen.getByTestId('chave-invalida-presente')).toHaveTextContent('false');
             expect(warn).toHaveBeenCalled();
             warn.mockRestore();
+        });
+
+        it('deleteTheme chama options.theme.onDelete e remove o tema customizado da sessão', async () => {
+            const onDelete = vi.fn().mockResolvedValue(undefined);
+            const theme = { id: 'tema-do-consumidor', name: 'Tema do consumidor', design: {} };
+
+            const DeleteThemeConsumer = () => {
+                const ui = useSarakUI();
+                const containsTheme = ui.allThemes.some((entry) => entry.id === theme.id);
+                return (
+                    <div>
+                        <span data-testid="tema-presente">{String(containsTheme)}</span>
+                        <button data-testid="btn-delete-theme" onClick={() => { void ui.deleteTheme(theme.id); }}>
+                            Apagar
+                        </button>
+                    </div>
+                );
+            };
+
+            render(
+                <SarakUIProvider customThemes={[theme]} options={{ theme: { onDelete } }}>
+                    <DeleteThemeConsumer />
+                </SarakUIProvider>,
+            );
+
+            expect(screen.getByTestId('tema-presente')).toHaveTextContent('true');
+            await act(async () => {
+                fireEvent.click(screen.getByTestId('btn-delete-theme'));
+            });
+
+            expect(onDelete).toHaveBeenCalledWith(theme.id);
+            expect(screen.getByTestId('tema-presente')).toHaveTextContent('false');
+        });
+
+        it('apagar o tema ativo restaura o tema padrão no modo atual e persiste o id de fallback', async () => {
+            const customTheme = { id: 'tema-ativo-do-consumidor', name: 'Tema ativo', design: { mode: 'light' } };
+            const setResolvedThemeId = vi.fn();
+            const applyFullConfig = vi.fn();
+            const persistDesign = vi.fn().mockResolvedValue(undefined);
+            const onDelete = vi.fn().mockResolvedValue(undefined);
+            vi.mocked(useDesignManager).mockReturnValue({
+                design: { mode: 'light', primaryColor: '#abcdef' },
+                setDesign: vi.fn(),
+                applyConfig: vi.fn(),
+                applyFullConfig,
+                persistDesign,
+                isBackendLoaded: true,
+                resolvedThemeId: customTheme.id,
+                setResolvedThemeId,
+            } as any);
+
+            const ActiveThemeConsumer = () => {
+                const ui = useSarakUI();
+                return <button data-testid="delete-active-theme" onClick={() => { void ui.deleteTheme(customTheme.id); }}>Apagar</button>;
+            };
+
+            render(
+                <SarakUIProvider customThemes={[customTheme]} options={{ theme: { onDelete } }}>
+                    <ActiveThemeConsumer />
+                </SarakUIProvider>,
+            );
+
+            await act(async () => fireEvent.click(screen.getByTestId('delete-active-theme')));
+
+            expect(onDelete).toHaveBeenCalledWith(customTheme.id);
+            expect(setResolvedThemeId).toHaveBeenCalledWith('sarak-sovereign');
+            expect(applyFullConfig).toHaveBeenCalledWith(expect.objectContaining({ mode: 'light' }));
+            expect(persistDesign).toHaveBeenCalledWith(expect.objectContaining({ mode: 'light' }));
         });
     });
 

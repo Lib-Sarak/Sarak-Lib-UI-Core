@@ -1,58 +1,189 @@
 import React from 'react';
-import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { SarakIconMap, type SarakIconFamily } from './IconMap';
-import { SARAK_ICONE_DESCONHECIDO, type SarakIconName } from './iconNames';
+import { SARAK_ICON_NAMES, SARAK_ICONE_DESCONHECIDO, type SarakIconName } from './iconNames';
 
-export interface SarakIconProps {
-    /** Nome obrigatório do catálogo de ícones; se omitido ou desconhecido, gera um aviso e mostra o ícone de fallback. */
-    name: SarakIconName | string;
-    /** Define a dimensão SVG; sem a prop, usa 24 px. */
+export interface SarakIconPresentationProps {
     size?: number | string;
-    /** Acrescenta classes ao SVG; omitida, nenhuma classe adicional é aplicada. */
     className?: string;
-    /** Define a cor do traço ou preenchimento; omitida, o ícone herda a cor corrente. */
     color?: string;
-    /** Acrescenta estilos CSS inline ao SVG; omitida, só os estilos da família de ícone são usados. */
     style?: React.CSSProperties;
-    /** Encaminha o clique ao SVG; omitida, não há callback, e a prop não dá semântica de botão nem suporte de teclado. */
+    strokeWidth?: number;
     onClick?: () => void;
 }
 
-/** Espessura de traço por peso, para as famílias que a expõem como número. */
-const TRACO_LUCIDE: Record<string, number> = { thin: 1, light: 1.5, regular: 2, bold: 2.5, fill: 3, duotone: 2 };
-const TRACO_TABLER: Record<string, number> = { thin: 1, light: 1.25, regular: 1.5, bold: 2, fill: 2.5, duotone: 1.5 };
+export type SarakIconProps = SarakIconPresentationProps & (
+    | { name: React.ReactNode; icon?: never }
+    | { icon: React.ReactNode; name?: never }
+);
 
-/** Nomes já avisados, para não poluir o console a cada render (postura da Spec 17). */
-const jaAvisados = new Set<string>();
+export interface SarakRegisteredIconProps extends SarakIconPresentationProps {
+    weight?: string;
+    strokeWidth?: number;
+}
 
-function avisarNomeDesconhecido(name: string): void {
-    if (jaAvisados.has(name)) return;
-    jaAvisados.add(name);
+interface ResolvedIconPresentation {
+    size: number | string;
+    className: string;
+    color?: string;
+    style?: React.CSSProperties;
+    onClick?: () => void;
+}
+
+const registeredIcons = new Map<string, React.ElementType>();
+
+/** Adds consumer icons by name and returns a function that removes this registration. */
+export function sarakRegisterIcons(
+    icons: Record<string, React.ElementType>,
+): () => void {
+    if (!icons || typeof icons !== 'object' || Array.isArray(icons)) {
+        throw new TypeError('Registered icons must be provided as a name-to-component object.');
+    }
+    const entries = Object.entries(icons);
+    for (const [name, component] of entries) {
+        if (!name.trim()) throw new TypeError('Registered icon names must not be empty.');
+        if (SARAK_ICON_NAMES.includes(name as SarakIconName)) {
+            throw new Error(`The built-in icon name "${name}" cannot be replaced.`);
+        }
+        if (registeredIcons.has(name)) {
+            throw new Error(`An icon named "${name}" is already registered.`);
+        }
+        if (typeof component !== 'function' && (typeof component !== 'object' || component === null)) {
+            throw new TypeError(`The icon registered as "${name}" must be a React component.`);
+        }
+    }
+
+    entries.forEach(([name, component]) => registeredIcons.set(name, component));
+    return () => {
+        entries.forEach(([name, component]) => {
+            if (registeredIcons.get(name) === component) registeredIcons.delete(name);
+        });
+    };
+}
+
+const ICON_STROKE_LIGHT = 1.5;
+const ICON_STROKE_BOLD = 2.5;
+const ICON_STROKE_FILL = 3;
+const TABLER_STROKE_LIGHT = 1.25;
+const TABLER_STROKE_REGULAR = 1.5;
+const TABLER_STROKE_BOLD = 2.5;
+
+const strokeByWeight: Record<string, number> = {
+    thin: 1,
+    light: ICON_STROKE_LIGHT,
+    regular: 2,
+    bold: ICON_STROKE_BOLD,
+    fill: ICON_STROKE_FILL,
+    duotone: 2,
+};
+
+const tablerStrokeByWeight: Record<string, number> = {
+    thin: 1,
+    light: TABLER_STROKE_LIGHT,
+    regular: TABLER_STROKE_REGULAR,
+    bold: 2,
+    fill: TABLER_STROKE_BOLD,
+    duotone: TABLER_STROKE_REGULAR,
+};
+
+const warnedNames = new Set<string>();
+
+function warnUnknownName(name: string): void {
+    if (warnedNames.has(name)) return;
+    warnedNames.add(name);
     console.warn(
         `[Sarak:Icon] ícone "${name}" fora do contrato — renderizando "${SARAK_ICONE_DESCONHECIDO}" no lugar. ` +
-        'Os nomes válidos estão na seção "Ícones" de docs/component-catalog.md. ' +
-        'Precisa de um nome novo? Acrescente-o em src/components/atomic/Icon/iconNames.ts (as três famílias são cobradas pelo compilador).'
+        'Use sarakRegisterIcons para registrar um componente do consumidor.',
     );
 }
 
-export const SarakIcon: React.FC<SarakIconProps> = ({ name, size = 24, className = '', color, style, onClick }) => {
-    const { design } = useSarakUI();
-    const family = (design?.iconFamily || 'lucide') as SarakIconFamily;
-    const weight = design?.iconWeight || 'regular';
+function resolveStrokeWidth(
+    family: SarakIconFamily,
+    weight: string,
+    tokenWidth: unknown,
+    explicitWidth?: number,
+): number {
+    const baseWidth = getWeightStrokeWidth(family, weight);
+    const parsedTokenWidth = Number(tokenWidth);
+    const scale = Number.isFinite(parsedTokenWidth) && parsedTokenWidth > 0 ? parsedTokenWidth / 2 : 1;
+    const themedWidth = baseWidth * scale;
+    return explicitWidth !== undefined ? themedWidth * (explicitWidth / baseWidth) : themedWidth;
+}
 
+function getWeightStrokeWidth(family: SarakIconFamily, weight: string): number {
+    return (family === 'tabler' ? tablerStrokeByWeight : strokeByWeight)[weight] ?? 2;
+}
+
+function renderDirectElement(
+    element: React.ReactElement,
+    presentation: ResolvedIconPresentation,
+    strokeWidth: number,
+): React.ReactElement {
+    const currentProps = element.props as React.SVGProps<SVGSVGElement> & { size?: number | string };
+    const mergedProps = {
+        ...currentProps,
+        size: presentation.size,
+        width: presentation.size,
+        height: presentation.size,
+        className: [currentProps.className, presentation.className].filter(Boolean).join(' '),
+        color: presentation.color ?? currentProps.color,
+        strokeWidth,
+        style: { ...currentProps.style, ...presentation.style },
+        onClick: presentation.onClick ?? currentProps.onClick,
+    };
+    return React.cloneElement(element as React.ReactElement<Record<string, unknown>>, mergedProps);
+}
+
+function resolveBuiltInIcon(name: string, family: SarakIconFamily): React.ElementType {
     const triple = SarakIconMap[name as SarakIconName];
-    if (!triple) avisarNomeDesconhecido(String(name));
+    if (!triple) warnUnknownName(name);
+    return (triple ?? SarakIconMap[SARAK_ICONE_DESCONHECIDO])[family]
+        ?? SarakIconMap[SARAK_ICONE_DESCONHECIDO].lucide;
+}
 
-    // Degradação visível, nunca tela quebrada: nome fora do contrato vira o ícone de aviso.
-    const ResolvedIcon = (triple ?? SarakIconMap[SARAK_ICONE_DESCONHECIDO])[family] ?? SarakIconMap[SARAK_ICONE_DESCONHECIDO].lucide;
+interface FamilyIconRenderOptions {
+    IconComponent: React.ElementType;
+    family: SarakIconFamily;
+    presentation: ResolvedIconPresentation;
+    weight: string;
+    strokeWidth: number;
+}
 
-    if (family === 'phosphor') {
-        return <ResolvedIcon size={size} className={className} weight={weight} color={color} style={style} onClick={onClick} />;
+function renderFamilyIcon({ IconComponent, family, presentation, weight, strokeWidth }: FamilyIconRenderOptions): React.ReactElement {
+    if (family === 'phosphor') return <IconComponent {...presentation} weight={weight} />;
+    if (family === 'tabler') return <IconComponent {...presentation} stroke={strokeWidth} />;
+    return <IconComponent {...presentation} strokeWidth={strokeWidth} />;
+}
+
+export const SarakIcon = (props: SarakIconProps): React.ReactElement => {
+    const design = useSarakUIOptional()?.design;
+    const family = (design?.iconFamily || 'lucide') as SarakIconFamily;
+    const weight = String(design?.iconWeight || 'regular');
+    const presentation: ResolvedIconPresentation = {
+        size: props.size ?? 24,
+        className: props.className ?? '',
+        color: props.color,
+        style: props.style,
+        onClick: props.onClick,
+    };
+    const strokeWidth = resolveStrokeWidth(family, weight, design?.iconStrokeWidth, props.strokeWidth);
+    const source = 'icon' in props ? props.icon : props.name;
+
+    if (React.isValidElement(source)) {
+        return renderDirectElement(source, presentation, strokeWidth);
+    }
+    if (typeof source !== 'string') return <>{source}</>;
+
+    const RegisteredIcon = registeredIcons.get(source);
+    if (RegisteredIcon) {
+        return <RegisteredIcon {...presentation} weight={weight} strokeWidth={strokeWidth} />;
     }
 
-    if (family === 'tabler') {
-        return <ResolvedIcon size={size} className={className} stroke={TRACO_TABLER[weight] || 1.5} color={color} style={style} onClick={onClick} />;
-    }
-
-    return <ResolvedIcon size={size} className={className} strokeWidth={TRACO_LUCIDE[weight] || 2} color={color} style={style} onClick={onClick} />;
+    return renderFamilyIcon({
+        IconComponent: resolveBuiltInIcon(source, family),
+        family,
+        presentation,
+        weight,
+        strokeWidth,
+    });
 };

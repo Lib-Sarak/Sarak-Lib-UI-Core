@@ -1,5 +1,7 @@
 import React, { useId, useMemo } from 'react';
 import { SarakFormGroup } from '../Layouts/SarakFormGroup';
+import { SarakFieldError } from '../Feedback/SarakFieldError';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 export interface SarakTimePickerProps {
     label?: string;
@@ -16,11 +18,12 @@ export interface SarakTimePickerProps {
 }
 
 const pad = (n: number): string => String(n).padStart(2, '0');
-const range = (count: number, step = 1): number[] =>
+const range = (count: number, step: number = 1): number[] =>
     Array.from({ length: Math.ceil(count / step) }, (_, i) => i * step);
 
 const SELECT =
-    'rounded-input py-2 px-2 text-sm tabular-nums bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] border border-[var(--sarak-input-border-color,var(--border-color,#334155))] text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] outline-none focus:border-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#3b82f6))]';
+    // sarak-allow-hardcode: piso absoluto de 16px do campo com ponteiro de dedo — abaixo disso o Safari do iPhone dá zoom ao focar.
+    'rounded-input py-2 px-2 text-sm [@media(pointer:coarse)]:text-[length:max(16px,1em)] tabular-nums bg-[var(--sarak-input-bg,var(--color-theme-card,#101622))] border border-[var(--sarak-input-border-color,var(--border-color,rgba(255,255,255,0.09)))] text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))] outline-none focus:border-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#19e3f0))]';
 
 /**
  * Componente Atômico: SarakTimePicker (Spec 11, Regra 1 — par temporal)
@@ -40,8 +43,10 @@ export const SarakTimePicker: React.FC<SarakTimePickerProps> = ({
     className = '',
     style,
     onChange,
-}) => {
+}: SarakTimePickerProps): React.ReactElement => {
+    const t = useLibraryText();
     const reactId = useId();
+    const labelId = `${reactId}-label`;
     const errorId = `${reactId}-error`;
     const [hour, minute] = useMemo(() => {
         const [h, m] = value.split(':');
@@ -61,11 +66,11 @@ export const SarakTimePicker: React.FC<SarakTimePickerProps> = ({
 
     return (
         <SarakFormGroup className={`${disabledClass} ${className}`.trim()} style={style}>
-            {label && <span className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">{label}</span>}
+            {label && <span id={labelId} className="text-sm font-medium text-[var(--text-muted,rgba(242,246,251,0.55))]">{label}</span>}
 
-            <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }} role="group" aria-label={label ?? 'Horário'}>
+            <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }} role="group" aria-labelledby={label ? labelId : undefined} aria-label={!label ? t('timeGroupAriaLabel') : undefined}>
                 <select
-                    aria-label="Hora"
+                    aria-label={t('timeHourAriaLabel')}
                     aria-invalid={error ? true : undefined}
                     aria-describedby={error ? errorId : undefined}
                     disabled={disabled}
@@ -79,10 +84,10 @@ export const SarakTimePicker: React.FC<SarakTimePickerProps> = ({
                     ))}
                 </select>
 
-                <span className="font-bold text-[var(--text-muted,#94a3b8)]">:</span>
+                <span className="font-bold text-[var(--text-muted,rgba(242,246,251,0.55))]">:</span>
 
                 <select
-                    aria-label="Minuto"
+                    aria-label={t('timeMinuteAriaLabel')}
                     disabled={disabled}
                     value={minute}
                     onChange={(e) => emit(hour, e.target.value)}
@@ -95,9 +100,7 @@ export const SarakTimePicker: React.FC<SarakTimePickerProps> = ({
                 </select>
             </div>
 
-            {error && (
-                <p id={errorId} className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>{error}</p>
-            )}
+            <SarakFieldError message={error} fieldId={reactId} />
         </SarakFormGroup>
     );
 };

@@ -27,10 +27,10 @@ const stateOf = (index: number, current: number): StepState =>
     index < current ? 'done' : index === current ? 'current' : 'todo';
 
 const markerClass: Record<StepState, string> = {
-    done: 'bg-[var(--sarak-primary-color,#3b82f6)] text-[var(--color-theme-card,#1e293b)] border-[var(--sarak-primary-color,#3b82f6)]',
+    done: 'bg-[var(--sarak-primary-color,#19e3f0)] text-[var(--color-theme-card,#101622)] border-[var(--sarak-primary-color,#19e3f0)]',
     current:
-        'bg-[var(--color-theme-card,#1e293b)] text-[var(--sarak-primary-color,#3b82f6)] border-[var(--sarak-primary-color,#3b82f6)] font-bold',
-    todo: 'bg-[var(--color-theme-card,#1e293b)] text-[var(--text-muted,#94a3b8)] border-[var(--border-color,#334155)]',
+        'bg-[var(--color-theme-card,#101622)] text-[var(--sarak-primary-color,#19e3f0)] border-[var(--sarak-primary-color,#19e3f0)] font-bold',
+    todo: 'bg-[var(--color-theme-card,#101622)] text-[var(--text-muted,rgba(242,246,251,0.55))] border-[var(--border-color,rgba(255,255,255,0.09))]',
 };
 
 /**
@@ -72,7 +72,7 @@ export const SarakStepper: React.FC<SarakStepperProps> = ({
                                 <span
                                     className={`${
                                         isVertical ? 'w-px h-6' : 'h-px w-10'
-                                    } ${state === 'done' ? 'bg-[var(--sarak-primary-color,#3b82f6)]' : 'bg-[var(--border-color,#334155)]'}`}
+                                    } ${state === 'done' ? 'bg-[var(--sarak-primary-color,#19e3f0)]' : 'bg-[var(--border-color,rgba(255,255,255,0.09))]'}`}
                                     style={isVertical
                                         ? { marginBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }
                                         : { marginInline: 'var(--sarak-layout-gap-sm, 8px)' }}
@@ -83,8 +83,8 @@ export const SarakStepper: React.FC<SarakStepperProps> = ({
                         <span
                             className={`text-xs ${isVertical ? '' : 'max-w-24 truncate text-center'} ${
                                 state === 'todo'
-                                    ? 'text-[var(--text-muted,#94a3b8)]'
-                                    : 'text-[var(--sarak-text-main,#ffffff)]'
+                                    ? 'text-[var(--text-muted,rgba(242,246,251,0.55))]'
+                                    : 'text-[var(--sarak-text-main,#f2f6fb)]'
                             }`}
                             style={isVertical ? undefined : { marginTop: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }}
                             title={step.label}

@@ -3,8 +3,16 @@ import { motion } from 'framer-motion';
 import { SarakIcon } from '../Icon/SarakIcon';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
+import { useSpotlightPointer } from './hooks/useSpotlightPointer';
+import { usePauseBeamOffscreen } from './hooks/usePauseBeamOffscreen';
+import { resolveCardHoverMotion } from './cardHoverMotion';
 
 import { SarakThemePayload } from '../../../core/Provider/types';
+
+/** Pesos que `cardTitleFontWeight` oferece: o valor do tema vale por instância (prop `design`); fora da lista, vale a variável global. */
+const TITLE_FONT_WEIGHTS = ['300', '400', '500', '600', '700', '900'];
+const resolveTitleFontWeight = (value: unknown): string =>
+    TITLE_FONT_WEIGHTS.find((weight) => weight === String(value)) ?? 'var(--sarak-card-title-font-weight, 900)';
 
 export interface SarakTitleCardProps<TItem extends Record<string, unknown>> {
     /** Registro obrigatório usado para obter título, subtítulo, contexto, capacidades e ícone pelos caminhos de `mapping`. */
@@ -23,6 +31,8 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
     const globalUI = useSarakUI();
     const design = localDesign || globalUI.design;
     const layout = useCardLayoutStyles(design);
+    const spotlight = useSpotlightPointer(design);
+    usePauseBeamOffscreen(spotlight.ref, design.borderBeamEnabled === true);
 
     const getVal = (obj: Record<string, unknown>, path: string | undefined): unknown => {
         if (!path) return undefined;
@@ -47,27 +57,28 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
 
     return (
         <motion.div 
+            ref={spotlight.ref}
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            whileHover={{ y: -4, scale: 1.01 }}
-            className={`${layout.containerClass} sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all relative overflow-hidden ${className}`}
+            whileHover={resolveCardHoverMotion(design)}
+            className={`${layout.containerClass} sarak-card group transition-all relative overflow-hidden ${className}`}
             style={{ 
                 transitionDuration: 'var(--duration-normal, 0.3s)',
                 padding: 'var(--sarak-card-padding-md, 24px)'
             }}
+            data-sx-card-interactive="true"
             data-sx-card-texture-type={String(design.cardTextureType ?? 'none')}
-            data-spotlight={Number(design.cardSpotlightOpacity) > 0 ? '1' : '0'}
+            data-spotlight={spotlight.dataSpotlight}
             data-border-beam={design.borderBeamEnabled ? '1' : '0'}
-            data-geometric={Number(design.cardGeometricCut) > 0 ? '1' : '0'}
         >
             {/* Ambient Spotlight */}
-            <div className="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-[var(--duration-slow,0.6s)]" />
             <div className="border-beam-effect" />
 
             {/* DRAFT BADGE (v6.3) */}
             {globalUI?.isDrafting && (
                 <div
-                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-black/60 border border-[var(--sarak-primary-color,#3b82f6)]/20 font-black uppercase text-[var(--sarak-primary-color,#3b82f6)] shadow-[0_0_10px_rgba(0,242,255,0.05)]"
+                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-[var(--color-theme-card,#101622)] border border-[var(--sarak-primary-color,#19e3f0)]/20 font-black uppercase text-[var(--sarak-primary-color,#19e3f0)] shadow-[0_0_10px_var(--sarak-card-glow-color,rgba(25,227,240,0.18))]"
                     style={{
                         gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)',
                         paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
@@ -76,7 +87,7 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
                         letterSpacing: 'var(--sarak-tracking-tight, 0.2em)'
                     }}
                 >
-                    <span className="w-1 h-1 rounded-full bg-[var(--sarak-primary-color,#3b82f6)] animate-pulse" />
+                    <span className="w-1 h-1 rounded-full bg-[var(--sarak-primary-color,#19e3f0)] animate-pulse" />
                     {label || "Card de Título"}
                 </div>
             )}
@@ -85,16 +96,16 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
                 {/* Header Layout */}
                 <div className={layout.headerClass}>
                     <div className="flex flex-1 min-w-0" style={{ flexDirection: 'column', paddingRight: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                        <span className="font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale3xs, 9px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
+                        <span className="font-black text-[var(--sarak-primary-color,#19e3f0)] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale3xs, 9px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
                             {String(subtitle)}
                         </span>
                         <h4 
-                            className="text-[var(--color-theme-title,#ffffff)] tracking-tight group-hover:text-[var(--sarak-primary-color,#3b82f6)] transition-colors truncate"
+                            className="text-[var(--color-theme-title,#f2f6fb)] tracking-tight group-hover:text-[var(--sarak-primary-color,#19e3f0)] transition-colors truncate"
                             style={{ 
                                 fontSize: 'var(--sarak-card-title-font-size, 20px)',
-                                fontWeight: 'var(--sarak-card-title-font-weight, 900)' as React.CSSProperties['fontWeight'],
+                                fontWeight: resolveTitleFontWeight(design.cardTitleFontWeight) as React.CSSProperties['fontWeight'],
                                 letterSpacing: 'var(--sarak-card-title-letter-spacing, 0px)',
-                                color: 'var(--sarak-card-title-color, var(--theme-title, #ffffff))'
+                                color: 'var(--sarak-card-title-color, var(--theme-title, #f2f6fb))'
                             }}
                         >
                             {String(title ?? '')}
@@ -103,20 +114,20 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
 
                     {/* Glowing Icon Container */}
                     <div
-                        className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] flex items-center justify-center relative shrink-0 transition-all group-hover:border-[var(--sarak-primary-color,#3b82f6)]"
+                        className="bg-[var(--color-theme-card,#101622)] border-[var(--border-color,rgba(255,255,255,0.09))] flex items-center justify-center relative shrink-0 transition-all group-hover:border-[var(--sarak-primary-color,#19e3f0)]"
                         style={{
                             padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)',
-                            borderRadius: 'var(--sarak-card-radius,12px)',
-                            boxShadow: '0 0 var(--sarak-card-title-icon-glow-blur, 15px) var(--sarak-card-title-icon-glow, rgba(0, 242, 255, 0.2))'
+                            borderRadius: 'var(--sarak-card-radius,10px)',
+                            boxShadow: '0 0 var(--sarak-card-title-icon-glow-blur, 15px) var(--sarak-card-title-icon-glow, rgba(25,227,240,0.22))'
                         }}
                     >
                         {mapping?.icon ? (
                             <SarakIcon
                                 name={mapping.icon}
                                 size={18}
-                                className="text-[var(--sarak-primary-color,#3b82f6)] group-hover:scale-110 transition-transform"
+                                className="text-[var(--sarak-primary-color,#19e3f0)] group-hover:scale-110 transition-transform"
                             />
-                        ) : <SarakIcon name="Box" size={18} className="text-[var(--text-muted,#94a3b8)]" />}
+                        ) : <SarakIcon name="Box" size={18} className="text-[var(--text-muted,rgba(242,246,251,0.55))]" />}
                     </div>
                 </div>
 
@@ -124,9 +135,9 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
                 <div className={layout.footerClass}>
                     <div className="flex w-full" style={{ flexDirection: 'column', gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)' }}>
                         {!!context && (
-                        <div className="flex items-center justify-between text-3xs font-black uppercase text-white/40 tracking-wider">
+                        <div className="flex items-center justify-between text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))] tracking-wider">
                             <span>Contexto</span>
-                            <span className="text-2xs font-mono text-[var(--text-muted,#94a3b8)]">
+                            <span className="text-2xs font-mono text-[var(--text-muted,rgba(242,246,251,0.55))]">
                                 {Number(context) >= 1000 ? `${(Number(context) / 1000)}k` : String(context)} tokens
                             </span>
                         </div>
@@ -134,18 +145,18 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
 
                     {(inputCaps as string[]).length > 0 && (
                         <div
-                            className="flex flex-wrap border-t border-[var(--border-color,#334155)]/30"
+                            className="flex flex-wrap border-t border-[var(--border-color,rgba(255,255,255,0.09))]/30"
                             style={{ gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)', paddingTop: 'var(--sarak-layout-gap-sm, 8px)' }}
                         >
                             {(inputCaps as string[]).slice(0, 3).map((cap: string) => (
                                 <div
                                     key={cap}
-                                    className="flex items-center bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)] text-3xs font-black uppercase"
+                                    className="flex items-center bg-[var(--sarak-primary-color-bg,rgba(25,227,240,0.15))] text-[var(--sarak-primary-color,#19e3f0)] border border-[var(--border-color,rgba(255,255,255,0.09))] text-3xs font-black uppercase"
                                     style={{
                                         gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)',
                                         paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
                                         paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.125)',
-                                        borderRadius: 'var(--sarak-border-width, 4px)'
+                                        borderRadius: 'var(--sarak-border-width, 1px)'
                                     }}
                                 >
                                     {getCapIcon(cap)}

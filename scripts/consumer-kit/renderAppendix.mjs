@@ -99,6 +99,41 @@ const renderTokens = (catalog) => [
     '',
 ];
 
+const KIND_LABEL = { aesthetic: 'estético', functional: 'funcional' };
+
+const escapeCell = (text) => String(text).replace(/\|/g, '\\|').replace(/\s*\n\s*/g, ' ');
+
+/**
+ * O mapa dos tokens, por pilar (grupo do schema): só o que o schema já documentou (`kind`, `modeDependent`,
+ * `usage`). Token ainda sem documentação não aparece aqui — o gate `token-docs:check` mantém a lista do que falta.
+ */
+const renderTokenMap = (designTokens) => {
+    const documented = designTokens.ids.filter((token) => token.usage);
+    const lines = [
+        '### A.4b Mapa dos tokens por pilar (gerado do schema)',
+        '',
+        `**${documented.length}** de ${designTokens.count} tokens já trazem o que mudam na tela. ` +
+            '**Estético** = o tema o projeta; **funcional** = igual em todo tema (camadas, alvo de toque, larguras do cromo, ' +
+            'comportamento) e o tema embarcado não o declara. **Modo** = o valor muda no modo claro/escuro, então entra na ' +
+            '`contraparte` do tema. Opções e faixas ficam em `catalog.json` → `designTokens.ids`.',
+        '',
+    ];
+    for (const [group, label] of Object.entries(designTokens.groups)) {
+        const rows = documented.filter((token) => token.group === group);
+        if (rows.length === 0) continue;
+        lines.push(`#### ${label} (\`${group}\`)`, '', '| Token | Natureza | Modo | O que muda | Depende de |', '| --- | --- | --- | --- | --- |');
+        for (const token of rows) {
+            const needs = (token.interactsWith ?? []).map((id) => `\`${id}\``).join(' · ') || '—';
+            const modeCell = token.modeDependent ? 'sim' : 'não';
+            lines.push(
+                `| \`${token.id}\` | ${KIND_LABEL[token.kind] ?? '—'} | ${modeCell} | ${escapeCell(token.usage)} | ${needs} |`,
+            );
+        }
+        lines.push('');
+    }
+    return lines;
+};
+
 const renderIcons = (iconNames) => [
     `### A.5 Ícones (${iconNames.length} nomes válidos)`,
     '',
@@ -132,6 +167,7 @@ export const renderAppendix = (catalog) =>
         ...renderResponsive(catalog.responsive),
         ...renderChromeSlots(catalog.chromeSlots),
         ...renderTokens(catalog),
+        ...renderTokenMap(catalog.designTokens),
         ...renderIcons(catalog.tokens.iconNames),
         ...renderDocs(catalog.shippedDocs),
     ].join('\n');

@@ -29,27 +29,27 @@ const TypographyPresetPreview = ({ preset, index, onApply }: { preset: Component
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             onClick={onApply}
-            className="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
+            className="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         >
             <div 
-                className="h-48 w-full relative p-8 flex flex-col bg-[var(--color-theme-bg, #0a0a0c)] text-white overflow-hidden" 
+                className="h-48 w-full relative p-8 flex flex-col bg-[var(--color-theme-bg,#06080d)] text-theme-text overflow-hidden" 
                 style={{ fontFamily: preset.design.fontFamily }}
             >
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.05)_0%,transparent_50%)] pointer-events-none" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_50%)] pointer-events-none" />
                 
                 <div className="flex justify-between items-end mb-4 relative z-10">
-                    <span className="text-6xl leading-none font-bold group-hover:scale-110 origin-bottom-left transition-transform duration-500">Aa</span>
-                    <span className="text-sm text-white/40 tracking-widest uppercase">{preset.name}</span>
+                    <span className="text-6xl leading-none font-bold group-hover:scale-110 origin-bottom-left transition-transform duration-[var(--sarak-motion-dur-slow,0.6s)]">Aa</span>
+                    <span className="text-sm text-theme-text/40 tracking-widest uppercase">{preset.name}</span>
                 </div>
                 
                 <div className="flex flex-col gap-2 relative z-10">
-                    <p className="text-base font-medium text-white/90">The quick brown fox jumps over the lazy dog</p>
-                    <p className="text-sm text-white/50">0123456789 & @ # % * ! ?</p>
+                    <p className="text-base font-medium text-theme-text/90">The quick brown fox jumps over the lazy dog</p>
+                    <p className="text-sm text-theme-text/50">0123456789 & @ # % * ! ?</p>
                 </div>
                 
-                <div className="absolute bottom-4 right-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-4 right-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-[var(--sarak-motion-dur-normal,0.3s)]">
                     <span className="font-light">Light</span>
-                    <span className="font-normal text-white/50">•</span>
+                    <span className="font-normal text-theme-text/50">•</span>
                     <span className="font-bold">Bold</span>
                 </div>
             </div>

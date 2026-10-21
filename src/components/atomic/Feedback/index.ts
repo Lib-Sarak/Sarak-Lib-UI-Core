@@ -1,4 +1,5 @@
 export * from './SarakEmptyState';
+export * from './SarakProgress';
 export * from './SarakBadge';
 export * from './SarakSkeleton';
 export * from './SarakSpinner';

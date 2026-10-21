@@ -1,39 +1,15 @@
-/**
- * SarakDataCards — degradação mobile do SarakDataTable (Spec 40.2 — L2)
- *
- * Princípio: **componente denso da lib é mobile-usável por padrão.** Uma tabela
- * colunar é ilegível num viewport de celular (colunas atropelam, a página transborda
- * na horizontal). Em vez de empurrar CSS para o consumidor (gambiarra), a própria lib
- * colapsa cada LINHA num CARD empilhado — rótulo (cabeçalho da coluna) + valor —, com
- * scroll só VERTICAL, contido no container: zero sobreposição, zero overflow da página.
- *
- * Reusa o mesmo `SarakColumn<T>` da tabela (mesmo `render`/`header`), então o consumidor
- * não redefine nada — o mesmo `SarakDataTable` vira tabela no desktop e cards no celular.
- *
- * Mantém a virtualização (`@tanstack/react-virtual`) com MEDIÇÃO DINÂMICA de altura
- * (`measureElement`) porque cards têm altura variável — assim uma lista longa continua
- * performática no celular sem risco de sobreposição por estimativa errada. Zero Hardcode:
- * cores/superfícies/raio/espaçamento vêm de tokens `--sarak-*`.
- */
-
-import React, { useRef } from 'react';
+import type React from 'react';
+import { useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { SarakCheckbox } from '../../Inputs/SarakCheckbox';
-import { SarakTableSortButton } from './SarakTableSortButton';
 import type { SarakColumn, SarakTableSort } from './columnModel';
+import { SarakDataCardsView } from './SarakDataCardsView';
 
 export interface SarakDataCardsProps<T> {
-    /** Mesmas colunas da tabela — reaproveitadas como pares rótulo/valor. */
     columns: Array<SarakColumn<T>>;
-    /** Linhas de dados. */
     rows: T[];
-    /** Altura da janela de scroll (default: 100% do contêiner pai). */
     height?: number | string;
-    /** Altura estimada inicial de cada card em px (recalculada por medição). */
     estimatedCardHeight?: number;
-    /** Cards extra montados fora da viewport (default: 6). */
     overscan?: number;
-    /** Chave estável da linha (default: índice). */
     getRowKey?: (row: T, index: number) => React.Key;
     rowKeys?: React.Key[];
     rowIndexes?: number[];
@@ -45,141 +21,12 @@ export interface SarakDataCardsProps<T> {
     partiallySelected?: boolean;
     onToggleRow?: (key: React.Key, checked: boolean) => void;
     onToggleAll?: (checked: boolean) => void;
+    onRowClick?: (row: T) => void;
     className?: string;
 }
 
-/** Valor exibido de uma célula (reusa o `render` da coluna ou o valor cru). */
-const cellValue = <T,>(column: SarakColumn<T>, row: T, index: number): React.ReactNode =>
-    column.render ? column.render(row, index) : String((row as Record<string, unknown>)[column.id] ?? '');
-
-/**
- * Lista de cards empilhados — 1 card por linha, 1 par rótulo/valor por coluna.
- * Scroll estritamente vertical: `overflow-y: auto` + `overflow-x: hidden` no container.
- */
-function SarakDataCards<T>({
-    columns,
-    rows,
-    height = '100%',
-    estimatedCardHeight,
-    overscan = 6,
-    getRowKey,
-    rowKeys,
-    rowIndexes,
-    sort = null,
-    onSort,
-    selectable = false,
-    selectedKeys = new Set<React.Key>(),
-    allVisibleSelected = false,
-    partiallySelected = false,
-    onToggleRow,
-    onToggleAll,
-    className,
-}: SarakDataCardsProps<T>) {
+export default function SarakDataCards<T>(props: SarakDataCardsProps<T>): React.ReactElement {
     const scrollRef = useRef<HTMLDivElement>(null);
-
-    const virtualizer = useVirtualizer({
-        count: rows.length,
-        getScrollElement: () => scrollRef.current,
-        // Estimativa só inicial: `measureElement` corrige com a altura real de cada card.
-        estimateSize: () => estimatedCardHeight ?? columns.length * 28 + 40,
-        overscan,
-    });
-
-    return (
-        <div
-            ref={scrollRef}
-            data-sarak-datacards="true"
-            className={className}
-            // `maxWidth: 100%` + `overflowX: hidden` garantem que a PÁGINA nunca transborda.
-            style={{ height, maxWidth: '100%', overflowY: 'auto', overflowX: 'hidden', position: 'relative' }}
-        >
-            {selectable && (
-                <div role="group" aria-label="Seleção das linhas visíveis">
-                    <SarakCheckbox
-                        aria-label="Selecionar todas as linhas visíveis"
-                        checked={allVisibleSelected}
-                        indeterminate={partiallySelected}
-                        disabled={rows.length === 0}
-                        onChange={(event) => onToggleAll?.(event.currentTarget.checked)}
-                    />
-                </div>
-            )}
-            {columns.some((column) => column.sortable) && (
-                <div role="group" aria-label="Ordenação por coluna" style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                    {columns.filter((column) => column.sortable).map((column) => (
-                        <SarakTableSortButton
-                            key={column.id}
-                            columnId={column.id}
-                            label={column.header}
-                            sort={sort}
-                            onSort={(columnId) => onSort?.(columnId)}
-                        />
-                    ))}
-                </div>
-            )}
-            <div style={{ height: virtualizer.getTotalSize(), position: 'relative', width: '100%' }}>
-                <div role="list">
-                {virtualizer.getVirtualItems().map((virtualRow) => {
-                    const row = rows[virtualRow.index];
-                    const rowKey = rowKeys?.[virtualRow.index]
-                        ?? (getRowKey ? getRowKey(row, rowIndexes?.[virtualRow.index] ?? virtualRow.index) : virtualRow.key);
-                    const rowIndex = rowIndexes?.[virtualRow.index] ?? virtualRow.index;
-                    return (
-                        <div
-                            key={rowKey}
-                            role="listitem"
-                            data-index={virtualRow.index}
-                            ref={virtualizer.measureElement}
-                            style={{
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                width: '100%',
-                                transform: `translateY(${virtualRow.start}px)`,
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)',
-                                padding: 'var(--sarak-card-padding-md, var(--sarak-layout-gap-md, 16px))',
-                                marginBottom: 'var(--sarak-layout-gap-sm, 8px)',
-                                background: 'var(--sarak-card-bg, var(--color-theme-card, #1e293b))',
-                                border: 'var(--sarak-border-width, 1px) solid var(--sarak-card-border-color, var(--border-color, #334155))',
-                                borderRadius: 'var(--sarak-card-radius, 12px)',
-                                color: 'var(--sarak-text-main, #ffffff)',
-                                boxSizing: 'border-box',
-                            }}
-                        >
-                            {selectable && (
-                                <SarakCheckbox
-                                    aria-label={`Selecionar linha ${String(rowKey)}`}
-                                    checked={selectedKeys.has(rowKey)}
-                                    onChange={(event) => onToggleRow?.(rowKey, event.currentTarget.checked)}
-                                />
-                            )}
-                            {columns.map((column) => (
-                                <div
-                                    key={column.id}
-                                    data-column-id={column.id}
-                                    className="min-w-0"
-                                    // Estrutura inline (flex/gap por token) — o auditor trata
-                                    // flex-direction/spacing em classe como hardcode estrutural.
-                                    style={{ display: 'flex', flexDirection: 'column', gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.25)' }}
-                                >
-                                    {/* Tipografia via classes (Zero Hardcode inline, igual ao SarakShellNav). */}
-                                    <span className="text-2xs font-semibold uppercase tracking-wider text-[var(--text-muted,#94a3b8)]">
-                                        {column.header}
-                                    </span>
-                                    <span className="text-sm break-words min-w-0">
-                                        {cellValue(column, row, rowIndex)}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    );
-                })}
-                </div>
-            </div>
-        </div>
-    );
+    const virtualizer = useVirtualizer({ count: props.rows.length, getScrollElement: () => scrollRef.current, estimateSize: () => props.estimatedCardHeight ?? props.columns.length * 28 + 40, overscan: props.overscan ?? 6 });
+    return <SarakDataCardsView props={props} scrollRef={scrollRef} totalSize={virtualizer.getTotalSize()} virtualRows={virtualizer.getVirtualItems()} measureElement={virtualizer.measureElement} />;
 }
-
-export default SarakDataCards;

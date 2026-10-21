@@ -5,8 +5,8 @@
  * que a CLASSE certa está na string; este arquivo prova que o valor COMPUTADO — depois
  * de `dist/sarak.css` cascatear de verdade — é o que a classe promete.
  *
- * Conjunto NOMEADO de elementos medidos, todos alcançados por âncora de contrato
- * (`getByRole` com o nome acessível — nunca seletor de estrutura interna):
+ * Conjunto NOMEADO de elementos medidos, alcançados por âncora de contrato (`getByRole`);
+ * a medição de tabGap desce ao contêiner flex dentro da navegação, onde o gap computa:
  *   1. O item de navegação "Início" (`SarakMenuItem`, dentro de `SarakShellNav`, dentro
  *      de `SarakAppChrome`) — o elemento no centro da regressão que motivou este teste
  *      (ADR-013: item de menu herdando geometria de botão de ação).
@@ -39,11 +39,13 @@
  *    stack de fallback do sistema; `font-weight` computado é o que importa aqui, não
  *    o glifo renderizado.
  * 3. Cobre os tokens DEFAULT (`SarakUIProvider` sem `config`) mais `?bg=1` (mídia
- *    global, item 7) e quatro recortes NOMEADOS de `?tema=`: `respiro-responsivo`,
- *    `respiro-compacto`, `botao-cantos` (raio mestre 0, cantos 9999) e
- *    `borda-tracejada` (`borderStyle: dashed`). NÃO mede tema que sobrescreva token
- *    de CROMO (`--sarak-topbar-*`, `--sarak-sidebar-*`, hover/ativo do item de
- *    navegação) e NÃO varre temas — o conjunto é deliberadamente pequeno e nomeado.
+ *    global, item 7) e quatorze recortes NOMEADOS de `?tema=`: `respiro-responsivo`,
+ *    `respiro-compacto`, `botao-cantos`, `borda-tracejada` e os tokens de cromo
+ *    `topbarColor` (cor), `tabGap` (gap), `tabSectionMargin` (margem) e
+ *    `isNavHidden` (estrutura), `maxContentWidth` (limitada/fluida), `layoutDensity`
+ *    (compacta/confortável/espaçosa) e `isSplitViewEnabled` (vista dividida, mantendo
+ *    a viewport fixa enquanto varia a largura do host). NÃO varre temas nem mede os demais
+ *    tokens de cromo — o conjunto continua deliberadamente pequeno e nomeado.
  * 4. NÃO substitui a suíte `jsdom`: não prova estrutura de DOM, não prova
  *    comportamento de evento além do necessário para revelar o drawer, não roda em
  *    `npx vitest run` (arquivo `.spec.ts`, fora do `include` do Vitest — ver
@@ -84,6 +86,10 @@ const BREAKPOINTS = {
     desktop: { width: 1280, height: 900 }, // >= 1024
 } as const;
 
+const WIDE_VIEWPORT = { width: 1920, height: 900 } as const;
+// getBoundingClientRect can expose fractional edge rounding; more than 1 CSS px is real overlap.
+const MAX_SUBPIXEL_ROUNDING_PX = 1;
+
 const NAV_ITEM_NAME = 'Início';
 const REFERENCE_BUTTON_NAME = 'Referência';
 const DRAWER_TOGGLE_NAME = 'Abrir menu de navegação';
@@ -114,17 +120,38 @@ interface ComputedMetric {
     borderRadius: string;
 }
 
-interface ContentPadding {
+interface PaddingSides {
     top: string;
     right: string;
     bottom: string;
     left: string;
+}
+
+interface ContentPadding extends PaddingSides {
     token: string;
+    reference: PaddingSides;
+}
+
+interface ContentBox {
+    width: number;
+    containerWidth: number;
+    centerX: number;
+    maxWidth: string;
+    configuredMaxWidth: string;
+    viewportWidth: number;
+}
+
+interface ChromeTokenMeasurement {
+    variant: string;
+    property: string;
+    tokenExpression: string;
+    target: (page: Page) => Locator;
+    viewport?: { width: number; height: number };
 }
 
 /** Lê as cinco propriedades computadas que distinguem métrica de LISTA/PÍLULA de métrica de AÇÃO. */
-async function readComputedMetric(page: Page, accessibleName: string): Promise<ComputedMetric> {
-    return page.getByRole('button', { name: accessibleName }).first().evaluate((el) => {
+async function readComputedMetric(page: Page, accessibleName: string, role: 'button' | 'link' = 'button'): Promise<ComputedMetric> {
+    return page.getByRole(role, { name: accessibleName }).first().evaluate((el) => {
         const computed = getComputedStyle(el);
         return {
             textTransform: computed.textTransform,
@@ -166,13 +193,95 @@ async function readComputed(target: Locator, property: string): Promise<string> 
 async function readContentPadding(page: Page): Promise<ContentPadding> {
     return page.locator(CONTENT_SELECTOR).evaluate((el) => {
         const computed = getComputedStyle(el);
+        const parent = el.parentElement;
+        if (!parent) throw new Error('A região de conteúdo precisa ter um contêiner.');
+        const probe = document.createElement('i');
+        probe.style.padding = 'var(--sarak-layout-padding, 16px)';
+        parent.appendChild(probe);
+        try {
+            const reference = getComputedStyle(probe);
+            return {
+                top: computed.paddingTop,
+                right: computed.paddingRight,
+                bottom: computed.paddingBottom,
+                left: computed.paddingLeft,
+                token: computed.getPropertyValue('--sarak-layout-padding'),
+                reference: {
+                    top: reference.paddingTop,
+                    right: reference.paddingRight,
+                    bottom: reference.paddingBottom,
+                    left: reference.paddingLeft,
+                },
+            };
+        } finally {
+            probe.remove();
+        }
+    });
+}
+
+async function readContentBox(page: Page): Promise<ContentBox> {
+    return page.locator(CONTENT_SELECTOR).evaluate((element) => {
+        const container = element.parentElement;
+        if (!container) throw new Error('A região de conteúdo precisa ter um contêiner.');
+        const rectangle = element.getBoundingClientRect();
+        const containerRectangle = container.getBoundingClientRect();
+        const computed = getComputedStyle(element);
         return {
-            top: computed.paddingTop,
-            right: computed.paddingRight,
-            bottom: computed.paddingBottom,
-            left: computed.paddingLeft,
-            token: computed.getPropertyValue('--sarak-layout-padding'),
+            width: rectangle.width,
+            containerWidth: containerRectangle.width,
+            centerX: rectangle.left + rectangle.width / 2,
+            maxWidth: computed.maxWidth,
+            configuredMaxWidth: computed.getPropertyValue('--sarak-max-content-width').trim(),
+            viewportWidth: window.innerWidth,
         };
+    });
+}
+
+async function expectChromeTokenOverrideToReachComputedStyle({
+    variant,
+    property,
+    tokenExpression,
+    target,
+    viewport = BREAKPOINTS.tablet,
+}: ChromeTokenMeasurement): Promise<void> {
+    const [defaultPage, themedPage] = await Promise.all([
+        openHarness(viewport),
+        openHarness(viewport, variant),
+    ]);
+
+    try {
+        const defaultValue = await readComputed(target(defaultPage), property);
+        const themedElement = target(themedPage);
+        const themedTokenValue = await resolveReference(themedElement, property, { inlineValue: tokenExpression });
+
+        expect(themedTokenValue, `${variant} precisa alterar ${property} em relação ao tema default`).not.toBe(defaultValue);
+        expect(await readComputed(themedElement, property), `${variant} precisa chegar ao estilo computado`).toBe(themedTokenValue);
+    } finally {
+        await Promise.all([defaultPage.close(), themedPage.close()]);
+    }
+}
+
+async function readComputedTokenValue(target: Locator, tokenName: string): Promise<string> {
+    return target.evaluate((element, name) => getComputedStyle(element).getPropertyValue(name).trim(), tokenName);
+}
+
+async function readVisibleNavigationItemLabels(page: Page): Promise<string[]> {
+    return page.getByRole('navigation').first().locator('a, button, [role="link"], [role="button"]').evaluateAll((items) => {
+        const navigation = items[0]?.closest('nav, [role="navigation"]');
+        if (!navigation) return [];
+
+        const navigationBox = navigation.getBoundingClientRect();
+        return items
+            .filter((item) => {
+                const box = item.getBoundingClientRect();
+                const intersectsNavigation = box.width > 0 && box.height > 0
+                    && box.right > navigationBox.left && box.left < navigationBox.right
+                    && box.bottom > navigationBox.top && box.top < navigationBox.bottom;
+                const intersectsViewport = box.right > 0 && box.left < window.innerWidth
+                    && box.bottom > 0 && box.top < window.innerHeight;
+                return intersectsNavigation && intersectsViewport;
+            })
+            .map((item) => (item as HTMLElement).innerText.trim());
     });
 }
 
@@ -181,6 +290,30 @@ async function readBox(target: Locator): Promise<{ height: number; top: number }
         const { height, top } = el.getBoundingClientRect();
         return { height, top };
     });
+}
+
+async function readPanelBounds(target: Locator): Promise<{ left: number; right: number; top: number; bottom: number }> {
+    return target.evaluate((element) => {
+        const { left, right, top, bottom } = element.getBoundingClientRect();
+        return { left, right, top, bottom };
+    });
+}
+
+function expectPanelArrangement(
+    name: string,
+    shouldSplit: boolean,
+    primaryBounds: Awaited<ReturnType<typeof readPanelBounds>>,
+    secondaryBounds: Awaited<ReturnType<typeof readPanelBounds>>,
+): void {
+    if (shouldSplit) {
+        const horizontalOverlap = Math.max(0, primaryBounds.right - secondaryBounds.left);
+        expect(horizontalOverlap, `${name}: tolerância máxima de arredondamento subpixel`).toBeLessThanOrEqual(MAX_SUBPIXEL_ROUNDING_PX);
+        expect(primaryBounds.top).toBeCloseTo(secondaryBounds.top);
+        return;
+    }
+
+    const verticalOverlap = Math.max(0, primaryBounds.bottom - secondaryBounds.top);
+    expect(verticalOverlap, `${name}: tolerância máxima de arredondamento subpixel`).toBeLessThanOrEqual(MAX_SUBPIXEL_ROUNDING_PX);
 }
 
 /** Lê o `background-color` COMPUTADO da raiz do cromo (`.sarak-chrome-root`). */
@@ -204,9 +337,19 @@ test.afterAll(async () => {
 });
 
 /** `tema` escolhe um recorte de tokens nomeado da fixture (`TOKEN_VARIANTS`); omitido, vale o default. */
-async function openHarness(viewport: { width: number; height: number }, tema?: string): Promise<Page> {
+async function openHarness(
+    viewport: { width: number; height: number },
+    tema?: string,
+    chrome?: 'topbar',
+    host?: 'narrow' | 'wide',
+): Promise<Page> {
     const page = await browser.newPage({ viewport });
-    await page.goto(tema ? `${harnessUrl}?tema=${tema}` : harnessUrl);
+    const searchParams = new URLSearchParams();
+    if (tema) searchParams.set('tema', tema);
+    if (chrome) searchParams.set('chrome', chrome);
+    if (host) searchParams.set('host', host);
+    const query = searchParams.toString();
+    await page.goto(query ? `${harnessUrl}?${query}` : harnessUrl);
     const drawerToggle = page.getByRole('button', { name: DRAWER_TOGGLE_NAME });
     if (await drawerToggle.count() > 0) {
         await drawerToggle.click();
@@ -244,6 +387,193 @@ test('layoutPadding produz respiro nos quatro lados nos cromos e acompanha o tem
     }
 });
 
+test('tablet (900px): topbarColor chega ao fundo computado da barra', async () => {
+    await expectChromeTokenOverrideToReachComputedStyle({
+        variant: 'cromo-cor',
+        property: 'background-color',
+        tokenExpression: 'var(--sarak-topbar-bg)',
+        target: (page) => page.getByRole('banner'),
+    });
+});
+
+test('tablet (900px): tabGap chega ao gap computado dos itens da navegação', async () => {
+    await expectChromeTokenOverrideToReachComputedStyle({
+        variant: 'cromo-gap',
+        property: 'gap',
+        tokenExpression: 'var(--sarak-tab-gap)',
+        // A âncora pública é a navegação; o filho flex contém a lista de abas e consome o gap.
+        target: (page) => page.getByRole('navigation').first().locator('div').first(),
+        viewport: BREAKPOINTS.tablet,
+    });
+});
+
+test('tablet (900px): tabSectionMargin chega à margem computada da barra', async () => {
+    await expectChromeTokenOverrideToReachComputedStyle({
+        variant: 'cromo-margem',
+        property: 'margin-top',
+        tokenExpression: 'var(--sarak-tab-section-margin)',
+        target: (page) => page.getByRole('banner'),
+    });
+});
+
+test('tablet (900px): isNavHidden seleciona a geometria computada da topbar compacta', async () => {
+    const [defaultPage, compactPage] = await Promise.all([
+        openHarness(BREAKPOINTS.tablet),
+        openHarness(BREAKPOINTS.tablet, 'cromo-estrutura'),
+    ]);
+
+    try {
+        const defaultHeader = defaultPage.getByRole('banner');
+        const compactHeader = compactPage.getByRole('banner');
+        const defaultHeight = await readComputed(defaultHeader, 'height');
+        const collapsedHeight = await readComputedTokenValue(compactHeader, '--sarak-topbar-collapsed-height');
+
+        expect(collapsedHeight).not.toBe(defaultHeight);
+        expect(await readComputed(compactHeader, 'height')).toBe(collapsedHeight);
+    } finally {
+        await Promise.all([defaultPage.close(), compactPage.close()]);
+    }
+});
+
+test('tablet (900px): nenhum item visível fica sem rótulo entre itens rotulados em 20 tentativas', async () => {
+    for (let attempt = 1; attempt <= 20; attempt += 1) {
+        const page = await openHarness(BREAKPOINTS.tablet);
+        try {
+            const visibleLabels = await readVisibleNavigationItemLabels(page);
+            const labeledItems = visibleLabels.filter(Boolean).length;
+            const navigationItemCount = await page.getByRole('navigation').first().locator('a, button, [role="link"], [role="button"]').count();
+            const unlabeledBetweenLabeled = visibleLabels.some((label, index) => (
+                !label
+                && visibleLabels.slice(0, index).some(Boolean)
+                && visibleLabels.slice(index + 1).some(Boolean)
+            ));
+
+            expect(navigationItemCount, `tentativa ${attempt}: o cenário precisa conter itens suficientes para disputar espaço`).toBeGreaterThan(30);
+            expect(labeledItems, `tentativa ${attempt}: o cenário precisa mostrar ao menos um rótulo`).toBeGreaterThan(0);
+            expect(unlabeledBetweenLabeled, `tentativa ${attempt}: item visível sem rótulo`).toBe(false);
+        } finally {
+            await page.close();
+        }
+    }
+});
+
+test('maxContentWidth limita e centraliza o conteúdo num viewport mais largo que o token', async () => {
+    const page = await openHarness(WIDE_VIEWPORT, 'cromo-largura-limitada', 'topbar');
+
+    try {
+        const content = await readContentBox(page);
+
+        expect(content.maxWidth).toBe(content.configuredMaxWidth);
+        expect(content.width).toBeCloseTo(Number.parseFloat(content.configuredMaxWidth));
+        expect(content.width).toBeLessThan(content.viewportWidth);
+        expect(content.centerX).toBeCloseTo(content.viewportWidth / 2);
+    } finally {
+        await page.close();
+    }
+});
+
+test('maxContentWidth 100% ocupa toda a largura disponível', async () => {
+    const page = await openHarness(WIDE_VIEWPORT, 'cromo-largura-fluida', 'topbar');
+
+    try {
+        const content = await readContentBox(page);
+
+        expect(content.maxWidth).toBe(content.configuredMaxWidth);
+        expect(content.width).toBeCloseTo(content.containerWidth);
+        expect(content.width).toBeCloseTo(content.viewportWidth);
+    } finally {
+        await page.close();
+    }
+});
+
+test('layoutDensity ordena o respiro sem tirar layoutPadding dos quatro lados', async () => {
+    const themes = ['cromo-densidade-compacta', 'cromo-densidade-confortavel', 'cromo-densidade-espacosa'];
+    const pages = await Promise.all(themes.map((theme) => openHarness(BREAKPOINTS.desktop, theme)));
+
+    try {
+        const paddings = await Promise.all(pages.map(readContentPadding));
+        for (const padding of paddings) {
+            expect([padding.top, padding.right, padding.bottom, padding.left]).toEqual(Array(4).fill(padding.top));
+        }
+
+        const verticalSpacing = paddings.map(({ top }) => Number.parseFloat(top));
+        expect(verticalSpacing[0]).toBeLessThan(verticalSpacing[1]);
+        expect(verticalSpacing[1]).toBeLessThan(verticalSpacing[2]);
+        expect(paddings[1].top).toBe(paddings[1].token);
+    } finally {
+        await Promise.all(pages.map((page) => page.close()));
+    }
+});
+
+test('layoutDensity confortável preserva o padding computado nos três breakpoints', async () => {
+    const breakpoints = Object.entries(BREAKPOINTS);
+    const pages = await Promise.all(breakpoints.map(([, viewport]) => (
+        openHarness(viewport, 'cromo-densidade-confortavel')
+    )));
+    const fluidPage = await openHarness(WIDE_VIEWPORT, 'cromo-largura-fluida', 'topbar');
+
+    try {
+        const paddings = await Promise.all(pages.map(readContentPadding));
+        for (const [index, padding] of paddings.entries()) {
+            expect(
+                [padding.top, padding.right, padding.bottom, padding.left],
+                `layoutDensity confortável no breakpoint ${breakpoints[index][0]}`,
+            ).toEqual([
+                padding.reference.top,
+                padding.reference.right,
+                padding.reference.bottom,
+                padding.reference.left,
+            ]);
+        }
+
+        const fluidContent = await readContentBox(fluidPage);
+        expect(fluidContent.width).toBeCloseTo(fluidContent.containerWidth);
+    } finally {
+        await Promise.all([...pages.map((page) => page.close()), fluidPage.close()]);
+    }
+});
+
+test('isSplitViewEnabled responde à largura da região com sidebar aberta e empilha no celular', async () => {
+    const cases = [
+        { name: 'região estreita com sidebar', viewport: WIDE_VIEWPORT, host: 'narrow', shouldSplit: false },
+        { name: 'região larga com sidebar', viewport: WIDE_VIEWPORT, host: 'wide', shouldSplit: true },
+        { name: 'celular', viewport: BREAKPOINTS.mobile, host: undefined, shouldSplit: false },
+    ] as const;
+    const regionWidths = { narrow: 0, wide: 0 };
+
+    for (const { name, viewport, host, shouldSplit } of cases) {
+        const page = await openHarness(viewport, 'cromo-vista-dividida', undefined, host);
+
+        try {
+            const primary = page.locator('[data-sarak-split-panel="primary"]');
+            const secondary = page.locator('[data-sarak-slot="secondaryContent"]');
+            const content = page.locator(CONTENT_SELECTOR);
+            const contentWidth = await content.evaluate((element) => element.getBoundingClientRect().width);
+            const [primaryBounds, secondaryBounds] = await Promise.all([
+                readPanelBounds(primary),
+                readPanelBounds(secondary),
+            ]);
+
+            if (host) {
+                expect(await page.locator('aside').isVisible()).toBe(true);
+                regionWidths[host] = contentWidth;
+            }
+
+            expectPanelArrangement(name, shouldSplit, primaryBounds, secondaryBounds);
+
+            expect(await content.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(true);
+            expect(await page.evaluate(() => {
+                const documentRoot = document.scrollingElement;
+                return Boolean(documentRoot && documentRoot.scrollHeight <= documentRoot.clientHeight);
+            }), `${name}: a rolagem deve permanecer na região de conteúdo`).toBe(true);
+        } finally {
+            await page.close();
+        }
+    }
+
+    expect(regionWidths.narrow).toBeLessThan(regionWidths.wide);
+});
+
 test('sidebar ocupa a viewport, enquanto apenas o painel de conteúdo rola', async () => {
     const page = await openHarness(BREAKPOINTS.desktop);
     const sidebar = page.locator('aside');
@@ -267,7 +597,7 @@ test('sidebar extensa rola por dentro até o último item', async () => {
     const page = await openHarness(BREAKPOINTS.desktop);
     const sidebar = page.locator('aside');
     const navigation = sidebar.locator('nav');
-    const lastItem = page.getByRole('button', { name: 'Seção 30' });
+    const lastItem = page.getByRole('link', { name: 'Seção 30' });
 
     await navigation.evaluate((el) => { el.scrollTop = el.scrollHeight; });
     const [navigationBox, lastItemBox] = await Promise.all([readBox(navigation), readBox(lastItem)]);
@@ -314,7 +644,7 @@ test('mobile preserva a altura de viewport e a rolagem no painel de conteúdo', 
 
 test('mobile (<768): item de navegação usa métrica de LISTA, não de botão de ação', async () => {
     const page = await openHarness(BREAKPOINTS.mobile);
-    const item = await readComputedMetric(page, NAV_ITEM_NAME);
+    const item = await readComputedMetric(page, NAV_ITEM_NAME, 'link');
     const reference = await readComputedMetric(page, REFERENCE_BUTTON_NAME);
 
     expect(item.textTransform, 'item de navegação não pode ficar em caixa alta no modo lista').toBe('none');
@@ -328,7 +658,7 @@ test('mobile (<768): item de navegação usa métrica de LISTA, não de botão d
 
 test('tablet (768-1023): item de navegação usa métrica de PÍLULA em caixa normal, e nunca font-black de botão', async () => {
     const page = await openHarness(BREAKPOINTS.tablet);
-    const item = await readComputedMetric(page, NAV_ITEM_NAME);
+    const item = await readComputedMetric(page, NAV_ITEM_NAME, 'link');
     const reference = await readComputedMetric(page, REFERENCE_BUTTON_NAME);
 
     expect(item.textTransform, 'aba compacta da topbar usa caixa normal — pílula com corpo legível, nunca a caixa alta de rótulo de seção').toBe('none');
@@ -337,15 +667,16 @@ test('tablet (768-1023): item de navegação usa métrica de PÍLULA em caixa no
     await page.close();
 });
 
-test('tablet (768-1023): o raio do item de navegação é o da PÍLULA, distinto do botão de ação', async () => {
-    // `05-cromo-e-slots.md` §2.1.1: o ramo horizontal é pílula (`rounded-full`). O padrão
-    // de raio de `<button>` da lib mora numa camada que cede à classe utilitária — é isso
-    // que deixa a pílula chegar à tela.
+test('tablet (768-1023): o raio do item de navegação vem do token `navItemRadius` (12 px), distinto do botão de ação', async () => {
+    // O ramo horizontal lê `navItemRadius` (`rounded-[var(--sarak-nav-item-radius,12px)]`), e não mais
+    // `rounded-full`: com o padrão 12 o item NÃO é cápsula. O padrão de raio de `<button>` da lib mora
+    // numa camada que cede à classe utilitária — é isso que deixa o raio do item chegar à tela, e o
+    // valor do token é medido em `raio-do-item-de-menu.spec.ts`.
     const page = await openHarness(BREAKPOINTS.tablet);
-    const item = await readComputedMetric(page, NAV_ITEM_NAME);
+    const item = await readComputedMetric(page, NAV_ITEM_NAME, 'link');
     const reference = await readComputedMetric(page, REFERENCE_BUTTON_NAME);
 
-    expect(item.borderRadius, 'o raio do item de navegação (pílula) tem de ser diferente do raio do botão de ação').not.toBe(reference.borderRadius);
+    expect(item.borderRadius, 'o raio do item de navegação (token navItemRadius) tem de ser diferente do raio do botão de ação').not.toBe(reference.borderRadius);
 
     await page.close();
 });
@@ -463,11 +794,15 @@ test('NÃO MUDA NADA: elemento com border, sob o token borderStyle dashed, compu
     await page.close();
 });
 
-test('SEM mídia global: a raiz do cromo continua emitindo o fundo de token de hoje', async () => {
+test('SEM mídia global, em Modo App: a raiz do cromo é transparente e o `body` pinta o fundo de token por baixo', async () => {
     const page = await openHarness(BREAKPOINTS.desktop);
     const backgroundColor = await readRootBackgroundColor(page);
 
-    expect(backgroundColor, 'sem globalBackgroundImageUrl, a raiz continua pintando o token de fundo — não pode virar transparente').not.toBe('rgba(0, 0, 0, 0)');
+    expect(backgroundColor, 'em Modo App a raiz não cobre a atmosfera da página (gradiente, tom e textura do `body`)').toBe('rgba(0, 0, 0, 0)');
+    // As variáveis do tema chegam depois da hidratação: o `body` pinta o fundo de token assim que elas existem.
+    await expect
+        .poll(() => page.evaluate(() => getComputedStyle(document.body).backgroundColor), { message: 'o fundo de token continua pintado — pelo `body`, não pela raiz do cromo' })
+        .not.toBe('rgba(0, 0, 0, 0)');
 
     await page.close();
 });
@@ -484,7 +819,7 @@ test('COM mídia global: a raiz do cromo deixa de pintar fundo opaco (SarakBackg
 
 test('desktop (>=1024): item de navegação usa métrica de LISTA, não de botão de ação', async () => {
     const page = await openHarness(BREAKPOINTS.desktop);
-    const item = await readComputedMetric(page, NAV_ITEM_NAME);
+    const item = await readComputedMetric(page, NAV_ITEM_NAME, 'link');
     const reference = await readComputedMetric(page, REFERENCE_BUTTON_NAME);
 
     expect(item.textTransform, 'item de navegação não pode ficar em caixa alta no modo lista').toBe('none');

@@ -4,8 +4,6 @@ import { PresetsCatalog } from './components/PresetsCatalog';
 import { LiveDraftPreviewFrame } from './components/LiveDraftPreviewFrame';
 
 import { SarakDesignScope } from '../../../core/Design/components/DesignScope';
-import { useResizable } from '../hooks/useResizable';
-import { useMockModules } from './hooks/useMockModules';
 import { usePreviewApps } from './hooks/usePreviewApps';
 import { useInspector } from './hooks/useInspector';
 import { useDeviceStyles } from './hooks/useDeviceStyles';
@@ -20,9 +18,8 @@ interface PreviewCanvasProps {
     previewDevice: 'desktop' | 'tablet' | 'smartphone';
     previewLayoutId: string;
     activePreviewApp: string;
-    setActivePreviewApp: (app: string) => void;
+    selectPreviewApp: (appId: string) => void;
     previewAnimationStyle: string;
-    previewEmojiSet: string;
     config: SarakUIOptions;
     previewPrimaryColor: string;
     mode: string;
@@ -31,19 +28,18 @@ interface PreviewCanvasProps {
     onUpdateDraft: (key: string, value: SarakTokenValue) => void;
     isDualView?: boolean;
     isPreviewStacked?: boolean;
-    customThemes?: Record<string, Partial<SarakDesignState>>[];
     sarak: SarakUIContextType;
     onInspectComponent?: (schemaId: string) => void;
     onApplyFullTheme?: (design: Partial<SarakDesignState>, themeId?: string) => void;
+    onCloseGallery?: () => void;
 }
 
 export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     previewDevice,
     previewLayoutId,
     activePreviewApp,
-    setActivePreviewApp,
+    selectPreviewApp,
     previewAnimationStyle,
-    previewEmojiSet,
     config,
     previewPrimaryColor,
     mode,
@@ -52,10 +48,10 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     onUpdateDraft,
     isDualView,
     isPreviewStacked,
-    customThemes,
     sarak,
     onInspectComponent,
-    onApplyFullTheme
+    onApplyFullTheme,
+    onCloseGallery,
 }) => {
     const handleApplyPreset = useApplyPreset(onUpdateDraft, onApplyFullTheme);
 
@@ -77,71 +73,29 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
     const { isInspecting, setIsInspecting } = useInspector(onInspectComponent);
 
-    const handleSidebarResize = React.useCallback((newWidth: number) => {
-        onUpdateDraft('sidebarWidth', Math.round(newWidth));
-    }, [onUpdateDraft]);
-
-    const handleTopbarResize = React.useCallback((newHeight: number) => {
-        onUpdateDraft('topbarHeight', Math.round(newHeight));
-    }, [onUpdateDraft]);
-
-    const { startResizing: startResizingSidebar, isResizing: isResizingSidebar } = useResizable({
-        initialSize: (tokens.sidebarWidth as number) || 240,
-        minSize: 150,
-        maxSize: 500,
-        direction: 'horizontal',
-        onResize: handleSidebarResize
-    });
-
-    const { startResizing: startResizingTopbar, isResizing: isResizingTopbar } = useResizable({
-        initialSize: (tokens.topbarHeight as number) || 64,
-        minSize: 40,
-        maxSize: 200,
-        direction: 'vertical',
-        onResize: handleTopbarResize
-    });
-
     const previewContextValue = usePreviewContextValue(parentContext, tokens, onUpdateDraft);
 
-    const apps = usePreviewApps(tokens, config, previewAnimationStyle);
-    const { mockDiscoveredModules, mockGroupedModules } = useMockModules();
-    const [previewNavVisible, setPreviewNavVisible] = React.useState(true);
-    const [previewMobileNavOpen, setPreviewMobileNavOpen] = React.useState(false);
+    const apps = usePreviewApps(tokens, config, previewAnimationStyle, selectPreviewApp);
 
-    const renderSystemContent = (useSystemDesign = false) => {
-        const activeDesign = useSystemDesign ? (sarak?.design || {}) : tokens;
-        const navStyle = activeDesign.navigationStyle || 'sidebar';
+    const renderSystemContent = () => {
         return (
             <PreviewSystemRenderer 
-                useSystemDesign={useSystemDesign}
                 sarak={sarak}
                 tokens={tokens}
                 isDualView={isDualView}
                 previewDevice={previewDevice}
-                previewNavVisible={previewNavVisible}
-                setPreviewNavVisible={setPreviewNavVisible}
-                previewMobileNavOpen={previewMobileNavOpen}
-                setPreviewMobileNavOpen={setPreviewMobileNavOpen}
-                isSidebar={navStyle === 'sidebar'}
-                isDock={navStyle === 'dock'}
-                isTopbar={navStyle === 'topbar'}
-                parentContext={parentContext}
                 activePreviewApp={activePreviewApp}
-                setActivePreviewApp={setActivePreviewApp}
-                onUpdateDraft={onUpdateDraft}
-                mockGroupedModules={mockGroupedModules}
-                mockDiscoveredModules={mockDiscoveredModules}
-                startResizingSidebar={startResizingSidebar}
-                startResizingTopbar={startResizingTopbar}
+                selectPreviewApp={selectPreviewApp}
                 apps={apps}
             />
         );
     };
 
-    const { targetWidth, getDeviceFrameStyles, getDeviceHeightClass } = useDeviceStyles(previewDevice, isPreviewStacked);
+    const isGalleryStacked = isDualView && isPreviewStacked;
+    const { targetWidth, getDeviceFrameStyles } = useDeviceStyles(previewDevice);
 
     return (
-        <SarakDesignScope design={outerScopeDesign} className="w-full h-full flex flex-col relative overflow-auto bg-[var(--color-theme-bg, #0a0a0c)] p-0 custom-scrollbar">
+        <SarakDesignScope design={outerScopeDesign} className="w-full h-full flex flex-col relative overflow-auto bg-[var(--color-theme-bg,#06080d)] p-0 custom-scrollbar">
             <UIContext.Provider value={previewContextValue as SarakUIContextType}>
                 {/* `@container`: fronteira de medida do dual-view abaixo — o par lado a lado
                     (Gêmeo Digital + catálogo) passa a reagir ao espaço REAL deste painel, não
@@ -150,48 +104,42 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                 <div className="@container flex-1 w-full h-full flex flex-col gap-6 p-6 overflow-visible">
 
                     {/* Linha Superior: Previews Actuais (Restaurando flex-1 e min-h-0 para comportamento original) */}
-                    <div className={`flex-1 w-full min-h-0 flex gap-6 items-stretch overflow-visible ${isPreviewStacked ? 'flex-col items-center' : `flex-col ${PREVIEW_DUAL_VIEW_ROW} justify-center`}`}>
+                    <div className={`flex-1 w-full min-h-0 flex gap-6 items-stretch overflow-visible ${isGalleryStacked ? 'flex-col items-center' : `flex-col ${PREVIEW_DUAL_VIEW_ROW} justify-center`}`}>
                         {isDualView ? (
                         <>
-                            {/* Live Draft Preview (Gêmeo Digital / Preset 1) */}
+                            {/* Live Draft Preview */}
                             <LiveDraftPreviewFrame
                                 previewDevice={previewDevice}
-                                isPreviewStacked={isPreviewStacked}
+                                isPreviewStacked={isGalleryStacked}
                                 targetWidth={targetWidth}
-                                getDeviceHeightClass={getDeviceHeightClass}
                                 getDeviceFrameStyles={getDeviceFrameStyles}
                                 isInspecting={isInspecting}
                                 setIsInspecting={setIsInspecting}
                             >
-                                {renderSystemContent(false)}
+                                {renderSystemContent()}
                             </LiveDraftPreviewFrame>
 
 
                             {/* Catalog Preview (Engine Controls) */}
-                            <div className={`relative flex-auto shrink-0 rounded-[var(--sarak-device-frame-radius,2rem)] border border-theme-border shadow-theme overflow-hidden bg-theme-card transition-colors duration-500 flex flex-col min-h-[var(--sarak-engine-min-h-sm,300px)] min-w-[var(--sarak-device-desktop-min-width,250px)] resize ${isPreviewStacked ? 'w-full h-[45vh]' : 'w-1/2 h-full'}`}>
+                            <div className={`relative rounded-[var(--sarak-device-frame-radius,2rem)] border border-theme-border shadow-theme overflow-hidden sarak-card transition-colors duration-[var(--sarak-motion-dur-slow,0.6s)] flex flex-col min-w-[var(--sarak-device-desktop-min-width,250px)] resize ${isGalleryStacked ? 'w-full flex-1 min-h-0' : 'w-1/2 h-full min-h-[var(--sarak-engine-min-h-sm,300px)] shrink-0'}`}>
                                 <PresetsCatalog
                                     onApplyPreset={handleApplyPreset}
                                     onApplyFullTheme={onApplyFullTheme}
                                     currentMode={mode}
                                     sarak={sarak}
+                                    onClose={() => onCloseGallery?.()}
                                 />
                             </div>
                         </>
                     ) : (
                         <div
-                            className="relative h-full rounded-2xl border border-[var(--theme-border)] shadow-theme overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 mx-auto max-w-full"
+                            className="relative h-full rounded-2xl border border-[var(--theme-border)] shadow-theme overflow-hidden bg-[var(--theme-surface)] transition-all duration-[var(--sarak-motion-dur-slow,0.6s)] mx-auto max-w-full"
                             style={{ width: targetWidth } as React.CSSProperties}
                         >
                             {renderSystemContent()}
                         </div>
                     )}
 
-                    {isResizingSidebar && (
-                        <div className="fixed inset-0 z-[9999] cursor-col-resize pointer-events-auto" />
-                    )}
-                    {isResizingTopbar && (
-                        <div className="fixed inset-0 z-[9999] cursor-row-resize pointer-events-auto" />
-                    )}
                     </div>
                 </div>
             </UIContext.Provider>
@@ -206,15 +154,15 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                     background: transparent;
                 }
                 .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: var(--sarak-scroll-thumb-color, rgba(255,255,255,0.2));
+                    background: var(--sarak-scroll-thumb-color, #ffffff);
                     border-radius: var(--sarak-scroll-radius, 10px);
                     border: var(--sarak-scroll-padding, 2px) solid transparent;
                     background-clip: padding-box;
                 }
                 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background: var(--theme-primary, #00f2ff);
+                    background: var(--theme-primary, #19e3f0);
                     background-clip: padding-box;
-                    opacity: var(--sarak-scroll-thumb-hover-opacity, 0.8);
+                    opacity: var(--sarak-scroll-thumb-hover-opacity, 0.5);
                 }
             `}} />
         </SarakDesignScope>

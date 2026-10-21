@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest';
-import { slugifyThemeId, buildThemeExportPayload } from '../exportTheme';
+import { slugifyThemeId, buildThemeExportPayload, listHostFontFamilies } from '../exportTheme';
 import type { SarakDesignState } from '../../../../../core/Provider/types';
 
 describe('slugifyThemeId', () => {
@@ -33,5 +33,21 @@ describe('buildThemeExportPayload (Spec 44 §2.4 — exportar, não persistir em
         const design = {} as SarakDesignState;
         const payload = buildThemeExportPayload(design, '   ');
         expect(payload.name).toBe('Meu Novo Tema');
+    });
+});
+
+describe('buildThemeExportPayload — tema com fonte do host', () => {
+    it('lista em `requiresFonts`, fora do `design`, as famílias que não são da lib', () => {
+        const design = { headingFont: "'Casa Display', sans-serif", identityFontFamily: "'Casa Logo', serif", bodyFont: "'Inter', sans-serif" } as unknown as SarakDesignState;
+        const payload = buildThemeExportPayload(design, 'Tema da Casa');
+        expect([...(payload.requiresFonts ?? [])].sort()).toEqual(['Casa Display', 'Casa Logo']);
+        expect(payload.design).toMatchObject({ headingFont: "'Casa Display', sans-serif" });
+        expect(listHostFontFamilies(design).sort()).toEqual(['Casa Display', 'Casa Logo']);
+    });
+
+    it('só com fontes da lib (e a herança da identidade), não há `requiresFonts`: o formato segue { id, name, design }', () => {
+        const payload = buildThemeExportPayload({ headingFont: "'Lora', serif" } as unknown as SarakDesignState, 'Só da Lib');
+        expect(payload).not.toHaveProperty('requiresFonts');
+        expect(Object.keys(payload)).toEqual(['id', 'name', 'design']);
     });
 });

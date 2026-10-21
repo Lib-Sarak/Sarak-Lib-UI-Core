@@ -1,41 +1,9 @@
 [
   {
-    "tokenId": "colorPalette",
-    "name": "Paleta Ativa (Preset)",
-    "description": "Define qual esquema global de cores está em uso (ex: default, neon, matrix).",
-    "type": "select",
-    "importance": 95,
-    "categories": [
-      "colors-and-atmosphere",
-      "temas",
-      "cores"
-    ],
-    "tags": [
-      "palette",
-      "preset",
-      "global"
-    ],
-    "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "colors.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [],
-    "allowedValues": [
-      "default",
-      "neon",
-      "matrix",
-      "slate",
-      "sunset"
-    ],
-    "relatedTokens": [
-      "primaryColor"
-    ]
-  },
-  {
     "tokenId": "primaryColor",
+    "visualImpact": "cores",
     "name": "Cor Primária (Base)",
-    "description": "Cor de destaque principal do sistema, usada em botões primários e ações ativas.",
+    "description": "Cor de destaque principal do sistema: links, foco e estados ativos. O fundo do botão primário é `btnPrimaryBg`.",
     "type": "color",
     "importance": 100,
     "categories": [
@@ -61,12 +29,12 @@
     ],
     "allowedValues": null,
     "relatedTokens": [
-      "secondaryColor",
-      "colorPalette"
+      "secondaryColor"
     ]
   },
   {
     "tokenId": "secondaryColor",
+    "visualImpact": "cores",
     "name": "Cor Secundária",
     "description": "Segunda cor de destaque para suporte ou variações de UI.",
     "type": "color",
@@ -133,7 +101,7 @@
   {
     "tokenId": "accentColor",
     "name": "Cor de Acento (Accent)",
-    "description": "Cor vibrante para chamar atenção em micro-elementos, badges ou notificações.",
+    "description": "Cor de acento: terceira cor das séries dos gráficos e uma das manchas da malha de fundo.",
     "type": "color",
     "importance": 85,
     "categories": [
@@ -275,8 +243,9 @@
       "--sarak-color-depth"
     ],
     "allowedValues": {
-      "min": 1,
-      "max": 5
+      "min": 0,
+      "max": 5,
+      "step": 1
     },
     "relatedTokens": [
       "colorVariation"
@@ -308,7 +277,8 @@
     ],
     "allowedValues": {
       "min": 1,
-      "max": 5
+      "max": 5,
+      "step": 1
     },
     "relatedTokens": [
       "colorDepth"
@@ -331,7 +301,7 @@
       "global"
     ],
     "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "colors.ts",
+    "schemaOrigin": "atmosphere.ts",
     "digitalTwins": [
       "DesignInjector"
     ],
@@ -364,7 +334,7 @@
       "surface"
     ],
     "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "colors.ts",
+    "schemaOrigin": "atmosphere.ts",
     "digitalTwins": [
       "DesignInjector"
     ],
@@ -394,7 +364,7 @@
       "surface"
     ],
     "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "colors.ts",
+    "schemaOrigin": "atmosphere.ts",
     "digitalTwins": [
       "DesignInjector"
     ],
@@ -439,6 +409,7 @@
   },
   {
     "tokenId": "cardBackgroundColor",
+    "visualImpact": "cards",
     "name": "Background dos Cards",
     "description": "Cor de preenchimento padrão para cartões (Cards) do sistema.",
     "type": "color",
@@ -503,100 +474,8 @@
     ]
   },
   {
-    "tokenId": "colorBgBody",
-    "name": "Background Geral (Body) - Duplicado",
-    "description": "Cor base que preenche todo o fundo do site/app e do document body.",
-    "type": "color",
-    "importance": 95,
-    "categories": [
-      "cores",
-      "colors-and-atmosphere",
-      "background"
-    ],
-    "tags": [
-      "bg",
-      "body",
-      "global"
-    ],
-    "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "colors.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-bg-body",
-      "--theme-bg",
-      "--theme-body",
-      "--bg-body",
-      "--sarak-bg-base"
-    ],
-    "allowedValues": null,
-    "relatedTokens": [
-      "colorBgLayer1"
-    ]
-  },
-  {
-    "tokenId": "colorBgLayer1",
-    "name": "Background Layer 1 - Duplicado",
-    "description": "Cor de fundo primária para elementos de nível 1 (painéis, sidebars).",
-    "type": "color",
-    "importance": 90,
-    "categories": [
-      "cores",
-      "colors-and-atmosphere",
-      "background"
-    ],
-    "tags": [
-      "layer",
-      "bg",
-      "surface"
-    ],
-    "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "colors.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-bg-layer-1",
-      "--theme-surface-1"
-    ],
-    "allowedValues": null,
-    "relatedTokens": [
-      "colorBgLayer2"
-    ]
-  },
-  {
-    "tokenId": "colorBgLayer2",
-    "name": "Background Layer 2 - Duplicado",
-    "description": "Cor de fundo para elementos de nível 2 (sobreposições leves, painéis de destaque).",
-    "type": "color",
-    "importance": 85,
-    "categories": [
-      "cores",
-      "colors-and-atmosphere",
-      "background"
-    ],
-    "tags": [
-      "layer",
-      "bg",
-      "surface"
-    ],
-    "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "colors.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-bg-layer-2",
-      "--theme-surface-2"
-    ],
-    "allowedValues": null,
-    "relatedTokens": [
-      "colorBgLayer1"
-    ]
-  },
-  {
     "tokenId": "bgBaseColor",
+    "visualImpact": "fundo",
     "name": "Cor de Fundo Base",
     "description": "Cor de base mais profunda usada abaixo de qualquer textura ou padrão.",
     "type": "color",
@@ -648,21 +527,21 @@
     "cssVariables": [
       "--sarak-bg-gradient-mode"
     ],
+    "relatedTokens": [
+      "bgGradientAngle"
+    ],
     "allowedValues": [
       "none",
       "linear",
       "radial",
       "mesh"
-    ],
-    "relatedTokens": [
-      "bgGradientAngle"
     ]
   },
   {
     "tokenId": "bgGradientAngle",
     "name": "Direção do Gradiente",
     "description": "Se o fundo for linear, define o grau em que as cores mudam.",
-    "type": "number",
+    "type": "slider",
     "importance": 70,
     "categories": [
       "geometria",
@@ -693,6 +572,7 @@
   },
   {
     "tokenId": "surfaceMaterial",
+    "visualImpact": "fundo",
     "name": "Material da Superfície",
     "description": "Estilo ótico predominante para superfícies flutuantes (vidro fosco, polido, orgânico).",
     "type": "select",
@@ -716,21 +596,21 @@
       "--sarak-surface",
       "--surface-material"
     ],
+    "relatedTokens": [
+      "surfaceIntensity"
+    ],
     "allowedValues": [
       "frosted",
       "sleek",
       "industrial",
       "organic"
-    ],
-    "relatedTokens": [
-      "surfaceIntensity"
     ]
   },
   {
     "tokenId": "surfaceIntensity",
     "name": "Intensidade do Efeito de Superfície",
     "description": "O quanto do material simulado deve ser aplicado na renderização dos painéis.",
-    "type": "number",
+    "type": "slider",
     "importance": 80,
     "categories": [
       "efeitos",
@@ -762,6 +642,7 @@
   },
   {
     "tokenId": "borderType",
+    "visualImpact": "cards",
     "name": "Estilo da Moldura (Border)",
     "description": "Estilo visual de fronteiras do sistema (sólido, segmentado cyber, duplo, neon).",
     "type": "select",
@@ -785,21 +666,22 @@
       "--sarak-border-type",
       "--border-type"
     ],
+    "relatedTokens": [
+      "surfaceMaterial"
+    ],
     "allowedValues": [
       "solid",
       "cyber",
       "double",
       "glow",
       "none"
-    ],
-    "relatedTokens": [
-      "surfaceMaterial"
     ]
   },
   {
     "tokenId": "systemTone",
+    "visualImpact": "fundo",
     "name": "Tom do Ambiente",
-    "description": "Orientação do clima (dark profundo, claro cromado, cibernético verde).",
+    "description": "Personalidade gráfica do fundo: neutro, cibernético (grade de HUD e brilho de horizonte) ou militar tático (HUD monocromo).",
     "type": "select",
     "importance": 95,
     "categories": [
@@ -820,18 +702,16 @@
     "cssVariables": [
       "--sarak-system-tone"
     ],
+    "relatedTokens": [],
     "allowedValues": [
-      "dark",
-      "light",
+      "none",
       "cyber",
       "tactical"
-    ],
-    "relatedTokens": [
-      "colorPalette"
     ]
   },
   {
     "tokenId": "texture",
+    "visualImpact": "fundo",
     "name": "Textura Global",
     "description": "Estampa padrão para o fundo do sistema (grid, carbon, noise, hexagon).",
     "type": "select",
@@ -855,22 +735,58 @@
       "--sarak-texture",
       "--bg-texture"
     ],
+    "relatedTokens": [
+      "textureOpacity"
+    ],
     "allowedValues": [
       "none",
       "grid",
+      "dots",
+      "noise",
+      "grain",
+      "mesh",
+      "waves",
+      "squares",
+      "stripes",
+      "topo",
+      "diamond",
+      "prestige",
       "carbon",
+      "brushed",
+      "frosted",
+      "circuit",
+      "paper",
+      "scanlines",
+      "hexagon",
+      "silk",
+      "blueprint",
+      "aurora",
+      "stars",
       "honeycomb",
-      "dots"
-    ],
-    "relatedTokens": [
-      "textureOpacity"
+      "isometric",
+      "radar",
+      "crosshatch",
+      "micro-dots",
+      "pinstripes",
+      "constellation",
+      "circuit-pro",
+      "carbon-tech",
+      "topo-deep",
+      "prism-mesh",
+      "cyber-binary",
+      "blueprint-pro",
+      "wave-pulse",
+      "wood",
+      "stucco",
+      "fluid",
+      "nebula"
     ]
   },
   {
     "tokenId": "textureOpacity",
     "name": "Opacidade da Textura",
     "description": "Nível de transparência e visibilidade do pattern de textura.",
-    "type": "number",
+    "type": "slider",
     "importance": 70,
     "categories": [
       "texturas",
@@ -894,83 +810,17 @@
     "allowedValues": {
       "min": 0,
       "max": 1,
-      "step": 0.05
+      "step": 0.01
     },
     "relatedTokens": [
       "texture"
     ]
   },
   {
-    "tokenId": "atmosphereNoiseOpacity",
-    "name": "Opacidade do Noise Atmosférico",
-    "description": "Visibilidade do ruído visual (granulação) aplicado sobre toda a tela.",
-    "type": "number",
-    "importance": 60,
-    "categories": [
-      "efeitos",
-      "colors-and-atmosphere",
-      "ruído"
-    ],
-    "tags": [
-      "noise",
-      "film-grain",
-      "atmosphere"
-    ],
-    "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "atmosphere.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-noise-opacity"
-    ],
-    "allowedValues": {
-      "min": 0,
-      "max": 1,
-      "step": 0.05
-    },
-    "relatedTokens": [
-      "noiseIntensity"
-    ]
-  },
-  {
-    "tokenId": "noiseIntensity",
-    "name": "Intensidade do Noise",
-    "description": "Nível de contraste e força da granulação da tela.",
-    "type": "number",
-    "importance": 55,
-    "categories": [
-      "efeitos",
-      "colors-and-atmosphere",
-      "ruído"
-    ],
-    "tags": [
-      "noise",
-      "intensity",
-      "grain"
-    ],
-    "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "atmosphere.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-noise-intensity"
-    ],
-    "allowedValues": {
-      "min": 0,
-      "max": 1,
-      "step": 0.05
-    },
-    "relatedTokens": [
-      "atmosphereNoiseOpacity"
-    ]
-  },
-  {
     "tokenId": "bgNoiseDensity",
-    "name": "Densidade do Noise de Fundo",
-    "description": "Quão agrupados são os pixels gerados pelo efeito de grain no background.",
-    "type": "number",
+    "name": "Intensidade do Ruído (Grão)",
+    "description": "Intensidade do grão de filme sobre toda a tela e do padrão de ruído de fundo. É o único controle de ruído do fundo; 0 desliga.",
+    "type": "slider",
     "importance": 50,
     "categories": [
       "efeitos",
@@ -988,22 +838,22 @@
       "DesignInjector"
     ],
     "cssVariables": [
-      "--sarak-bg-noise-density"
+      "--sarak-noise-density"
     ],
     "allowedValues": {
-      "min": 1,
-      "max": 100,
-      "step": 1
+      "min": 0,
+      "max": 1,
+      "step": 0.01
     },
     "relatedTokens": [
-      "noiseIntensity"
+      "bgNoiseAnimation"
     ]
   },
   {
     "tokenId": "bgNoiseAnimation",
     "name": "Animação do Noise",
     "description": "Se a textura de ruído é estática ou possui animação (estática do tipo TV antiga).",
-    "type": "boolean",
+    "type": "slider",
     "importance": 50,
     "categories": [
       "animações",
@@ -1021,19 +871,20 @@
       "DesignInjector"
     ],
     "cssVariables": [],
-    "allowedValues": [
-      true,
-      false
-    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 10,
+      "step": 0.1
+    },
     "relatedTokens": [
-      "noiseIntensity"
+      "bgNoiseDensity"
     ]
   },
   {
     "tokenId": "glassBlur",
     "name": "Desfoque de Vidro (Glass Blur)",
     "description": "Intensidade do backdrop-filter de blur nos materiais glassmorphism.",
-    "type": "string",
+    "type": "slider",
     "importance": 85,
     "categories": [
       "efeitos",
@@ -1054,7 +905,11 @@
       "--sarak-glass-blur",
       "--glass-blur"
     ],
-    "allowedValues": null,
+    "allowedValues": {
+      "min": 0,
+      "max": 200,
+      "step": 1
+    },
     "relatedTokens": [
       "glassOpacity"
     ]
@@ -1063,7 +918,7 @@
     "tokenId": "glassOpacity",
     "name": "Opacidade do Vidro",
     "description": "Transparência do painel nos estilos frosted e glassmorphism.",
-    "type": "number",
+    "type": "slider",
     "importance": 85,
     "categories": [
       "efeitos",
@@ -1097,7 +952,7 @@
     "tokenId": "glassSpecularity",
     "name": "Especularidade do Vidro",
     "description": "Nível de brilho reflexivo artificial em superfícies de vidro.",
-    "type": "number",
+    "type": "slider",
     "importance": 65,
     "categories": [
       "efeitos",
@@ -1130,7 +985,7 @@
     "tokenId": "glassRoughness",
     "name": "Rugosidade do Vidro",
     "description": "Nível de difusão de luz (fosco vs polido).",
-    "type": "number",
+    "type": "slider",
     "importance": 65,
     "categories": [
       "efeitos",
@@ -1153,7 +1008,7 @@
     "allowedValues": {
       "min": 0,
       "max": 1,
-      "step": 0.05
+      "step": 0.01
     },
     "relatedTokens": [
       "surfaceMaterial"
@@ -1163,7 +1018,7 @@
     "tokenId": "glassSaturation",
     "name": "Saturação Atrás do Vidro",
     "description": "Modificador de saturação (backdrop-filter) para o fundo que passa pelo vidro.",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "efeitos",
@@ -1184,8 +1039,8 @@
       "--sarak-glass-saturation"
     ],
     "allowedValues": {
-      "min": 0,
-      "max": 2,
+      "min": 0.5,
+      "max": 3,
       "step": 0.1
     },
     "relatedTokens": [
@@ -1196,7 +1051,7 @@
     "tokenId": "glassEdgeWidth",
     "name": "Espessura da Borda do Vidro",
     "description": "Espessura da borda fina que demarca o contorno de uma superfície de vidro (glassmorphism).",
-    "type": "number",
+    "type": "slider",
     "importance": 35,
     "categories": [
       "efeitos",
@@ -1218,8 +1073,7 @@
     ],
     "allowedValues": {
       "min": 0,
-      "max": 8,
-      "step": 1
+      "max": 8
     },
     "relatedTokens": [
       "glassEdgeColor"
@@ -1256,9 +1110,10 @@
   },
   {
     "tokenId": "shadowIntensity",
+    "visualImpact": "cards",
     "name": "Intensidade da Sombra",
-    "description": "Nível de escuridão/opacidade das sombras (drop-shadows) projetadas por painéis.",
-    "type": "number",
+    "description": "Opacidade do elemento com a classe `.shadow-theme`; as sombras do cartão vêm de `cardShadow*`.",
+    "type": "slider",
     "importance": 85,
     "categories": [
       "efeitos",
@@ -1280,8 +1135,8 @@
     ],
     "allowedValues": {
       "min": 0,
-      "max": 1,
-      "step": 0.05
+      "max": 2,
+      "step": 0.1
     },
     "relatedTokens": [
       "layeredShadows"
@@ -1291,7 +1146,7 @@
     "tokenId": "layeredShadows",
     "name": "Sombras em Múltiplas Camadas",
     "description": "Se ativado, utiliza sombras suaves formadas por múltiplos offsets, dando maior realismo.",
-    "type": "boolean",
+    "type": "slider",
     "importance": 70,
     "categories": [
       "efeitos",
@@ -1309,10 +1164,11 @@
       "DesignInjector"
     ],
     "cssVariables": [],
-    "allowedValues": [
-      true,
-      false
-    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 2,
+      "step": 0.1
+    },
     "relatedTokens": [
       "shadowIntensity"
     ]
@@ -1341,20 +1197,21 @@
     "cssVariables": [
       "--sarak-shadow-orientation"
     ],
-    "allowedValues": [
-      "bottom-right",
-      "bottom",
-      "top-left",
-      "center"
-    ],
     "relatedTokens": [
       "shadowIntensity"
+    ],
+    "allowedValues": [
+      "bottom",
+      "center",
+      "top",
+      "dynamic",
+      "bottom-right"
     ]
   },
   {
     "tokenId": "shadowColorMode",
     "name": "Modo de Cor da Sombra",
-    "description": "A sombra é puro preto neutro ou sofre tonalização baseada na cor de fundo (tinted).",
+    "description": "Cor da sombra: preto neutro, tingida pela cor primária (colored) ou derivada da cor de fundo (ambient).",
     "type": "select",
     "importance": 65,
     "categories": [
@@ -1373,21 +1230,22 @@
       "DesignInjector"
     ],
     "cssVariables": [
-      "--sarak-shadow-color-mode"
-    ],
-    "allowedValues": [
-      "neutral",
-      "tinted"
+      "--shadow-color-mode"
     ],
     "relatedTokens": [
       "shadowIntensity"
+    ],
+    "allowedValues": [
+      "neutral",
+      "colored",
+      "ambient"
     ]
   },
   {
     "tokenId": "shadowAmbientAlpha",
     "name": "Alpha da Sombra Ambiente",
     "description": "Transparência do halo próximo ao objeto (sombra de contato).",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "efeitos",
@@ -1410,7 +1268,7 @@
     "allowedValues": {
       "min": 0,
       "max": 1,
-      "step": 0.05
+      "step": 0.01
     },
     "relatedTokens": [
       "shadowProjectionAlpha"
@@ -1420,7 +1278,7 @@
     "tokenId": "shadowProjectionBlur",
     "name": "Desfoque da Sombra Projetada",
     "description": "Tamanho do blur na sombra distante (projeção baseada em elevação).",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "efeitos",
@@ -1442,8 +1300,7 @@
     ],
     "allowedValues": {
       "min": 0,
-      "max": 100,
-      "step": 1
+      "max": 200
     },
     "relatedTokens": [
       "shadowProjectionAlpha"
@@ -1453,7 +1310,7 @@
     "tokenId": "shadowProjectionAlpha",
     "name": "Alpha da Sombra Projetada",
     "description": "Transparência da sombra principal à distância do objeto.",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "efeitos",
@@ -1476,81 +1333,17 @@
     "allowedValues": {
       "min": 0,
       "max": 1,
-      "step": 0.05
+      "step": 0.01
     },
     "relatedTokens": [
       "shadowAmbientAlpha"
     ]
   },
   {
-    "tokenId": "securityShieldGlow",
-    "name": "Brilho de Segurança (Shield Glow)",
-    "description": "Efeito especial de brilho pulsante usado em telas críticas ou restritas.",
-    "type": "boolean",
-    "importance": 50,
-    "categories": [
-      "efeitos",
-      "segurança",
-      "colors-and-atmosphere"
-    ],
-    "tags": [
-      "glow",
-      "security",
-      "pulse"
-    ],
-    "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "atmosphere.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [],
-    "allowedValues": [
-      true,
-      false
-    ],
-    "relatedTokens": [
-      "securityPulseSpeed"
-    ]
-  },
-  {
-    "tokenId": "securityPulseSpeed",
-    "name": "Velocidade do Pulso (Security)",
-    "description": "Ritmo da animação do glow de segurança se estiver ativado.",
-    "type": "select",
-    "importance": 40,
-    "categories": [
-      "animações",
-      "segurança",
-      "colors-and-atmosphere"
-    ],
-    "tags": [
-      "glow",
-      "speed",
-      "pulse"
-    ],
-    "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "atmosphere.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-pulse-speed"
-    ],
-    "allowedValues": [
-      "slow",
-      "normal",
-      "fast",
-      "alert"
-    ],
-    "relatedTokens": [
-      "securityShieldGlow"
-    ]
-  },
-  {
     "tokenId": "vignetteOpacity",
     "name": "Opacidade da Vignette",
     "description": "Escurecimento nas bordas da tela para focar a visão no centro.",
-    "type": "number",
+    "type": "slider",
     "importance": 65,
     "categories": [
       "efeitos",
@@ -1583,7 +1376,7 @@
     "tokenId": "vignetteSoftness",
     "name": "Suavidade da Vignette",
     "description": "Gradiente do escurecimento, do centro para as bordas.",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "efeitos",
@@ -1605,8 +1398,7 @@
     ],
     "allowedValues": {
       "min": 0,
-      "max": 100,
-      "step": 1
+      "max": 60
     },
     "relatedTokens": [
       "vignetteOpacity"
@@ -1616,7 +1408,7 @@
     "tokenId": "globalSaturation",
     "name": "Saturação Global",
     "description": "Modificador pós-processado que altera toda a vivacidade de cores da interface.",
-    "type": "number",
+    "type": "slider",
     "importance": 85,
     "categories": [
       "cores",
@@ -1649,7 +1441,7 @@
     "tokenId": "globalContrast",
     "name": "Contraste Global",
     "description": "Aumenta ou reduz o intervalo tonal (claros mais claros, escuros mais escuros).",
-    "type": "number",
+    "type": "slider",
     "importance": 85,
     "categories": [
       "cores",
@@ -1670,45 +1462,12 @@
       "--sarak-global-contrast"
     ],
     "allowedValues": {
-      "min": 0,
-      "max": 2,
-      "step": 0.1
+      "min": 0.5,
+      "max": 3,
+      "step": 0.05
     },
     "relatedTokens": [
       "globalSaturation"
-    ]
-  },
-  {
-    "tokenId": "contrastCurve",
-    "name": "Curva de Contraste",
-    "description": "Maneira que os tons médios são processados (linear, dramático s-curve, suave).",
-    "type": "select",
-    "importance": 75,
-    "categories": [
-      "cores",
-      "ajuste",
-      "colors-and-atmosphere"
-    ],
-    "tags": [
-      "contrast",
-      "curve",
-      "post-process"
-    ],
-    "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "atmosphere.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-contrast-curve"
-    ],
-    "allowedValues": [
-      "linear",
-      "s-curve",
-      "flat"
-    ],
-    "relatedTokens": [
-      "globalContrast"
     ]
   },
   {
@@ -1835,7 +1594,7 @@
     "tokenId": "badgeRadius",
     "name": "Raio das Badges",
     "description": "Arredondamento das bordas das badges de notificação e status.",
-    "type": "number",
+    "type": "slider",
     "importance": 60,
     "categories": [
       "bordas",
@@ -1858,8 +1617,7 @@
     ],
     "allowedValues": {
       "min": 0,
-      "max": 20,
-      "step": 1
+      "max": 100
     },
     "relatedTokens": []
   },
@@ -1867,7 +1625,7 @@
     "tokenId": "statusGlowBlur",
     "name": "Desfoque do Glow de Status",
     "description": "Raio de desfoque do glow exibido atrás do indicador de status ativo (ex.: bolinha de conexão do ManagementGroupCard).",
-    "type": "number",
+    "type": "slider",
     "importance": 40,
     "categories": [
       "efeitos",
@@ -1889,16 +1647,77 @@
     ],
     "allowedValues": {
       "min": 0,
-      "max": 24,
-      "step": 1
+      "max": 24
     },
     "relatedTokens": []
+  },
+  {
+    "tokenId": "progressBarHeight",
+    "name": "Altura da Barra de Progresso",
+    "description": "Altura das barras de progresso, em pixels.",
+    "type": "slider",
+    "importance": 55,
+    "categories": [
+      "geometria",
+      "status",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "progress",
+      "height"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "status.ts",
+    "digitalTwins": [
+      "SarakProgress"
+    ],
+    "cssVariables": [
+      "--sarak-progress-bar-height"
+    ],
+    "allowedValues": {
+      "min": 2,
+      "max": 32
+    },
+    "relatedTokens": [
+      "progressBarRadius"
+    ]
+  },
+  {
+    "tokenId": "progressBarRadius",
+    "name": "Arredondamento da Barra de Progresso",
+    "description": "Raio dos cantos da barra de progresso, em pixels.",
+    "type": "slider",
+    "importance": 50,
+    "categories": [
+      "geometria",
+      "status",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "progress",
+      "radius"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "status.ts",
+    "digitalTwins": [
+      "SarakProgress"
+    ],
+    "cssVariables": [
+      "--sarak-progress-bar-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 32
+    },
+    "relatedTokens": [
+      "progressBarHeight"
+    ]
   },
   {
     "tokenId": "globalBackgroundImageUrl",
     "name": "URL da Imagem de Fundo",
     "description": "Caminho da imagem de fundo global (pode ser arquivo ou base64).",
-    "type": "string",
+    "type": "image",
     "importance": 85,
     "categories": [
       "media",
@@ -1927,7 +1746,7 @@
     "tokenId": "globalBackgroundBlur",
     "name": "Desfoque da Imagem Global",
     "description": "Intensidade do blur aplicado à imagem de fundo.",
-    "type": "number",
+    "type": "slider",
     "importance": 65,
     "categories": [
       "efeitos",
@@ -1949,8 +1768,7 @@
     ],
     "allowedValues": {
       "min": 0,
-      "max": 100,
-      "step": 1
+      "max": 100
     },
     "relatedTokens": [
       "globalBackgroundImageUrl"
@@ -1960,7 +1778,7 @@
     "tokenId": "globalBackgroundOpacity",
     "name": "Opacidade da Imagem Global",
     "description": "Nível de transparência da imagem de fundo principal.",
-    "type": "number",
+    "type": "slider",
     "importance": 75,
     "categories": [
       "efeitos",
@@ -1985,6 +1803,38 @@
       "max": 1,
       "step": 0.05
     },
+    "relatedTokens": [
+      "globalBackgroundImageUrl"
+    ]
+  },
+  {
+    "tokenId": "globalBackgroundPosition",
+    "name": "Posição da Imagem Global",
+    "description": "Define se a arte de fundo global rola com o conteúdo ou fica fixa na janela.",
+    "type": "select",
+    "importance": 55,
+    "categories": [
+      "media",
+      "background",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "background",
+      "position",
+      "art-direction"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "media.ts",
+    "digitalTwins": [
+      "SarakBackgroundRenderer"
+    ],
+    "cssVariables": [
+      "--sarak-global-background-position"
+    ],
+    "allowedValues": [
+      "absolute",
+      "fixed"
+    ],
     "relatedTokens": [
       "globalBackgroundImageUrl"
     ]

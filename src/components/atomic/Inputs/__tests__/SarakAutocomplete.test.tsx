@@ -1,7 +1,8 @@
 import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import type { RenderResult } from '@testing-library/react';
-import { afterEach, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 import {
     SarakAutocomplete,
@@ -55,6 +56,19 @@ it('filtra a lista local e seleciona a opção ativa pelo teclado', () => {
         expect(onOptionSelect).toHaveBeenCalledWith(OPTIONS[1]);
         expect(input).toHaveValue('Financeiro');
         expect(input).toHaveAttribute('aria-expanded', 'false');
+});
+
+it('traduz o placeholder padrão quando o idioma da biblioteca muda', () => {
+        const { unmount } = renderAutocomplete();
+        expect(screen.getByRole('combobox', { name: 'Setor' })).toHaveAttribute('placeholder', 'Buscar...');
+        unmount();
+
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakAutocomplete label="Department" options={OPTIONS} />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByRole('combobox', { name: 'Department' })).toHaveAttribute('placeholder', 'Search...');
 });
 
 it('navega para cima e para baixo, fecha com Escape e deixa Tab seguir', () => {
@@ -133,4 +147,51 @@ it('descarta a resposta antiga quando ela chega depois da busca mais nova', asyn
 
         expect(screen.getByRole('option', { name: 'Resultado novo' })).toBeInTheDocument();
         expect(screen.queryByRole('option', { name: 'Resultado antigo' })).not.toBeInTheDocument();
+});
+
+it('o campo é type="search" com a tecla "Buscar", e o consumidor ainda pode trocar o type', () => {
+    const { unmount } = renderAutocomplete();
+    const input = screen.getByRole('combobox', { name: 'Setor' });
+    expect(input).toHaveAttribute('type', 'search');
+    expect(input).toHaveAttribute('enterkeyhint', 'search');
+    unmount();
+
+    renderAutocomplete({ type: 'text', enterKeyHint: 'go' });
+    const custom = screen.getByRole('combobox', { name: 'Setor' });
+    expect(custom).toHaveAttribute('type', 'text');
+    expect(custom).toHaveAttribute('enterkeyhint', 'go');
+});
+
+describe('disabled', () => {
+    it('impede a edição do texto', async () => {
+        const user = userEvent.setup();
+        renderAutocomplete({ disabled: true });
+        const input = screen.getByRole('combobox', { name: 'Setor' });
+
+        await user.type(input, 'Fin');
+
+        expect(input).toBeDisabled();
+        expect(input).toHaveValue('');
+    });
+
+    it('não abre a lista de opções', async () => {
+        const user = userEvent.setup();
+        renderAutocomplete({ disabled: true });
+        const input = screen.getByRole('combobox', { name: 'Setor' });
+
+        await user.click(input);
+        await user.keyboard('{ArrowDown}');
+
+        expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
+    });
+
+    it('não recebe foco ao clicar', async () => {
+        const user = userEvent.setup();
+        renderAutocomplete({ disabled: true });
+        const input = screen.getByRole('combobox', { name: 'Setor' });
+
+        await user.click(input);
+
+        expect(input).not.toHaveFocus();
+    });
 });

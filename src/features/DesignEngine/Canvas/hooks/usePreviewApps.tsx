@@ -7,8 +7,14 @@ import { MockDashboard } from '../Mocks/DashboardMock';
 import { SarakUIOptions } from '../../../../core/Provider/types';
 import { SarakDesignState } from '../../../../core/Provider/types';
 import { KitchenSinkPreview } from '../KitchenSinkPreview';
+import { MoreScreensMock } from '../Mocks/MoreScreensMock';
 
-export const usePreviewApps = (tokens: Partial<SarakDesignState>, config: SarakUIOptions, previewAnimationStyle: string) => {
+export const usePreviewApps = (
+    tokens: Partial<SarakDesignState>,
+    config: SarakUIOptions,
+    previewAnimationStyle: string,
+    selectPreviewApp: (appId: string) => void,
+) => {
     return useMemo(() => {
         const dummyAnimation = { initial: {}, animate: {}, exit: {} };
         return {
@@ -25,7 +31,8 @@ export const usePreviewApps = (tokens: Partial<SarakDesignState>, config: SarakU
             'caixas-texto': <MockText tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
             graficos: <MockCharts tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
             documentos: <MockDocuments tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
-            'kitchen-sink': <KitchenSinkPreview />
+            'kitchen-sink': <KitchenSinkPreview />,
+            'more-screens': <MoreScreensMock selectPreviewApp={selectPreviewApp} />,
         };
-    }, [tokens, config, previewAnimationStyle]);
+    }, [tokens, config, previewAnimationStyle, selectPreviewApp]);
 };

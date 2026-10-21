@@ -2,134 +2,124 @@ import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useThemePersistenceHandlers } from '../useThemePersistenceHandlers';
 import * as exportTheme from '../../utils/exportTheme';
-import type { SarakDesignState } from '../../../../../core/Provider/types';
+import type { SarakDesignState, SarakThemeEntry } from '../../../../../core/Provider/types';
 
-describe('useThemePersistenceHandlers (Spec 44 — sem backend próprio; ADR-011 — saveTheme)', () => {
+describe('useThemePersistenceHandlers (persistência e exportação de temas)', () => {
     const draft = { mode: 'dark', primaryColor: '#00f2ff' } as unknown as SarakDesignState;
+    const counterpart = { mode: 'light', colorBgBody: '#ffffff' } as Partial<SarakDesignState>;
 
-    beforeEach(() => {
-        vi.restoreAllMocks();
+    const createProps = (overrides: Record<string, unknown> = {}) => ({
+        draft,
+        sourceTheme: { id: 'tema-importado', name: 'Tema Importado', design: { mode: 'dark' } } as SarakThemeEntry,
+        counterpart,
+        existingThemeIds: new Set(['blue-brand', 'blue-brand-2']),
+        setCurrentThemeName: vi.fn(),
+        setIsSaveModalOpen: vi.fn(),
+        setIsSaving: vi.fn(),
+        showToast: vi.fn(),
+        handleApplyToSystem: vi.fn(),
+        saveTheme: vi.fn().mockResolvedValue(undefined),
+        setResolvedThemeId: vi.fn(),
+        applyFullConfigRaw: vi.fn(),
+        persistDesign: vi.fn().mockResolvedValue(undefined),
+        onThemeSaved: vi.fn(),
+        ...overrides,
     });
 
-    it('handleExportTheme baixa o JSON e nunca faz uma chamada de rede', () => {
+    beforeEach(() => vi.restoreAllMocks());
+
+    it('exporta o design completo com contraparte e não faz chamada de rede', () => {
         const downloadSpy = vi.spyOn(exportTheme, 'downloadThemeJson').mockImplementation(() => {});
         const fetchSpy = vi.spyOn(globalThis, 'fetch');
-        const setCurrentThemeName = vi.fn();
-        const setIsSaveModalOpen = vi.fn();
-        const setIsSaving = vi.fn();
-        const showToast = vi.fn();
-        const handleApplyToSystem = vi.fn();
-        const saveTheme = vi.fn().mockResolvedValue(undefined);
+        const props = createProps();
+        const { result } = renderHook(() => useThemePersistenceHandlers(props as never));
 
-        const { result } = renderHook(() => useThemePersistenceHandlers({
-            draft,
-            setCurrentThemeName,
-            setIsSaveModalOpen,
-            setIsSaving,
-            showToast,
-            handleApplyToSystem,
-            saveTheme
-        }));
-
-        act(() => {
-            result.current.handleExportTheme('Meu Tema Corporativo');
-        });
+        act(() => result.current.handleExportTheme('Tema de Marca'));
 
         expect(downloadSpy).toHaveBeenCalledWith(expect.objectContaining({
-            id: 'meu-tema-corporativo',
-            name: 'Meu Tema Corporativo',
-            // Export completo (Spec 40.1 L6): preserva o rascunho sobre todos os defaults.
-            design: expect.objectContaining({ mode: 'dark', primaryColor: '#00f2ff' })
+            id: 'tema-de-marca',
+            name: 'Tema de Marca',
+            design: expect.objectContaining({ mode: 'dark', primaryColor: '#00f2ff' }),
+            contraparte: counterpart,
         }));
-        expect(setCurrentThemeName).toHaveBeenCalledWith('Meu Tema Corporativo');
-        expect(setIsSaveModalOpen).toHaveBeenCalledWith(false);
-        expect(showToast).toHaveBeenCalledWith('success', expect.stringContaining('exportado'));
+        expect(props.setIsSaveModalOpen).toHaveBeenCalledWith(false);
         expect(fetchSpy).not.toHaveBeenCalled();
-        expect(saveTheme).not.toHaveBeenCalled();
+        expect(props.saveTheme).not.toHaveBeenCalled();
     });
 
-    it('handleApplyGlobalChanges só comita o rascunho no sistema — sem rede', () => {
-        const fetchSpy = vi.spyOn(globalThis, 'fetch');
-        const handleApplyToSystem = vi.fn();
-        const showToast = vi.fn();
+    it('cria tema com id livre, entrega a operação e ativa/persiste o design salvo', async () => {
+        const props = createProps();
+        const { result } = renderHook(() => useThemePersistenceHandlers(props as never));
 
-        const { result } = renderHook(() => useThemePersistenceHandlers({
+        await act(async () => result.current.handleSaveTheme('Blue Brand', 'create'));
+
+        expect(props.saveTheme).toHaveBeenCalledWith(expect.objectContaining({
+            id: 'blue-brand-3',
+            name: 'Blue Brand',
+            design: expect.objectContaining({ mode: 'dark', primaryColor: '#00f2ff' }),
+            contraparte: counterpart,
+        }), 'create');
+        expect(props.setResolvedThemeId).toHaveBeenCalledWith('blue-brand-3');
+        expect(props.applyFullConfigRaw).toHaveBeenCalledWith(expect.objectContaining({ primaryColor: '#00f2ff' }));
+        expect(props.persistDesign).toHaveBeenCalledWith(expect.objectContaining({ primaryColor: '#00f2ff' }));
+        expect(props.onThemeSaved).toHaveBeenCalledWith(expect.objectContaining({ id: 'blue-brand-3' }));
+        expect(props.setIsSaveModalOpen).toHaveBeenCalledWith(false);
+    });
+
+    it('substitui o id do tema importado quando a operação é replace', async () => {
+        const props = createProps({ sourceTheme: { id: 'erp-noite', name: 'ERP Noite', design: {} } });
+        const { result } = renderHook(() => useThemePersistenceHandlers(props as never));
+
+        await act(async () => result.current.handleSaveTheme('ERP Noite Ajustado', 'replace'));
+
+        expect(props.saveTheme).toHaveBeenCalledWith(expect.objectContaining({
+            id: 'erp-noite',
+            name: 'ERP Noite Ajustado',
+        }), 'replace');
+        expect(props.setResolvedThemeId).toHaveBeenCalledWith('erp-noite');
+    });
+
+    it('sintetiza a contraparte no modo oposto quando o tema de origem não a declara', () => {
+        const opposite = exportTheme.getThemeCounterpartForMode(
+            { id: 'tema-legado', design: { mode: 'dark', primaryColor: '#123456' } },
+            'dark',
             draft,
-            setCurrentThemeName: vi.fn(),
-            setIsSaveModalOpen: vi.fn(),
-            setIsSaving: vi.fn(),
-            showToast,
-            handleApplyToSystem,
-            saveTheme: vi.fn().mockResolvedValue(undefined)
-        }));
+        );
 
-        act(() => {
-            result.current.handleApplyGlobalChanges();
-        });
-
-        expect(handleApplyToSystem).toHaveBeenCalledTimes(1);
-        expect(showToast).toHaveBeenCalledWith('success', expect.any(String));
-        expect(fetchSpy).not.toHaveBeenCalled();
+        expect(opposite?.mode).toBe('light');
+        expect(opposite).toHaveProperty('colorBgBody');
     });
 
-    it('handleSaveTheme entrega o payload COMPLETO a sarak.saveTheme (ADR-011) e nunca faz chamada de rede', async () => {
-        const fetchSpy = vi.spyOn(globalThis, 'fetch');
-        const setCurrentThemeName = vi.fn();
-        const setIsSaveModalOpen = vi.fn();
-        const setIsSaving = vi.fn();
-        const showToast = vi.fn();
-        const saveTheme = vi.fn().mockResolvedValue(undefined);
+    it('exige nome distinto para criar outra entrada baseada no tema atual', async () => {
+        const props = createProps();
+        const { result } = renderHook(() => useThemePersistenceHandlers(props as never));
 
-        const { result } = renderHook(() => useThemePersistenceHandlers({
-            draft,
-            setCurrentThemeName,
-            setIsSaveModalOpen,
-            setIsSaving,
-            showToast,
-            handleApplyToSystem: vi.fn(),
-            saveTheme
-        }));
+        await act(async () => result.current.handleSaveTheme('Tema Importado', 'create'));
 
-        await act(async () => {
-            await result.current.handleSaveTheme('Meu Tema Salvo');
-        });
-
-        expect(saveTheme).toHaveBeenCalledWith(expect.objectContaining({
-            id: 'meu-tema-salvo',
-            name: 'Meu Tema Salvo',
-            design: expect.objectContaining({ mode: 'dark', primaryColor: '#00f2ff' })
-        }));
-        expect(setCurrentThemeName).toHaveBeenCalledWith('Meu Tema Salvo');
-        expect(setIsSaveModalOpen).toHaveBeenCalledWith(false);
-        expect(showToast).toHaveBeenCalledWith('success', expect.stringContaining('salvo'));
-        expect(fetchSpy).not.toHaveBeenCalled();
+        expect(props.saveTheme).not.toHaveBeenCalled();
+        expect(props.showToast).toHaveBeenCalledWith('warning', expect.stringContaining('nome diferente'));
     });
 
-    it('handleSaveTheme: quando saveTheme rejeita, avisa por toast e MANTÉM o modal ciente do estado (não propaga exceção)', async () => {
-        const setIsSaving = vi.fn();
-        const showToast = vi.fn();
-        const setIsSaveModalOpen = vi.fn();
-        const saveTheme = vi.fn().mockRejectedValue(new Error('backend do consumidor fora do ar'));
+    it('aplicar mudanças delega ao rascunho e confirma pelo toast', () => {
+        const props = createProps();
+        const { result } = renderHook(() => useThemePersistenceHandlers(props as never));
+
+        act(() => result.current.handleApplyGlobalChanges());
+
+        expect(props.handleApplyToSystem).toHaveBeenCalledTimes(1);
+        expect(props.showToast).toHaveBeenCalledWith('success', expect.any(String));
+    });
+
+    it('avisa quando o importador rejeita o save e mantém o modal aberto', async () => {
+        const props = createProps({ saveTheme: vi.fn().mockRejectedValue(new Error('backend offline')) });
         const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const { result } = renderHook(() => useThemePersistenceHandlers(props as never));
 
-        const { result } = renderHook(() => useThemePersistenceHandlers({
-            draft,
-            setCurrentThemeName: vi.fn(),
-            setIsSaveModalOpen,
-            setIsSaving,
-            showToast,
-            handleApplyToSystem: vi.fn(),
-            saveTheme
-        }));
+        await act(async () => result.current.handleSaveTheme('Tema Novo', 'create'));
 
-        await act(async () => {
-            await result.current.handleSaveTheme('Meu Tema Salvo');
-        });
-
-        expect(showToast).toHaveBeenCalledWith('warning', expect.stringContaining('continua disponível'));
-        // O modal NÃO fecha numa falha — o usuário precisa ver o aviso.
-        expect(setIsSaveModalOpen).not.toHaveBeenCalledWith(false);
-        expect(setIsSaving).toHaveBeenLastCalledWith(false);
+        expect(props.showToast).toHaveBeenCalledWith('warning', expect.stringContaining('continua disponível'));
+        expect(props.setIsSaveModalOpen).not.toHaveBeenCalledWith(false);
+        expect(props.setIsSaving).toHaveBeenLastCalledWith(false);
         errorSpy.mockRestore();
     });
 });

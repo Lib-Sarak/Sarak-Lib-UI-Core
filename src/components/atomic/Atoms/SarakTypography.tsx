@@ -38,7 +38,7 @@ const variantStyle: Record<SarakTypographyVariant, React.CSSProperties> = {
     h1: {
         fontFamily: 'var(--font-heading, var(--sarak-font-h, "Outfit", sans-serif))',
         fontSize: 'var(--sarak-h1-size, 48px)',
-        fontWeight: 'var(--sarak-h1-weight, 900)',
+        fontWeight: 'var(--sarak-h1-weight, 800)',
         lineHeight: 'var(--sarak-h1-lh, 1.1)',
         letterSpacing: 'var(--sarak-h1-ls, -1px)',
     },
@@ -51,8 +51,8 @@ const variantStyle: Record<SarakTypographyVariant, React.CSSProperties> = {
     h3: {
         fontFamily: 'var(--font-heading, var(--sarak-font-h, "Outfit", sans-serif))',
         fontSize: 'var(--sarak-type-scale-xl, 20px)',
-        fontWeight: 'var(--sarak-h2-weight, 600)',
-        lineHeight: 'var(--sarak-h2-lh, 1.3)',
+        fontWeight: 'var(--sarak-h2-weight, 700)',
+        lineHeight: 'var(--sarak-h2-lh, 1.2)',
     },
     body: {
         fontFamily: 'var(--font-main, var(--sarak-font-b, "Inter", sans-serif))',
@@ -64,7 +64,7 @@ const variantStyle: Record<SarakTypographyVariant, React.CSSProperties> = {
         fontFamily: 'var(--font-main, var(--sarak-font-b, "Inter", sans-serif))',
         fontSize: 'var(--sarak-type-scale-caption, 12px)',
         fontWeight: 'var(--sarak-body-weight, var(--sarak-b-weight, 400))',
-        lineHeight: 'var(--sarak-body-lh, var(--sarak-line-height, 1.4))',
+        lineHeight: 'var(--sarak-body-lh, var(--sarak-line-height, 1.6))',
     },
     mono: {
         fontFamily: 'var(--font-mono, var(--sarak-font-m, "JetBrains Mono", monospace))',
@@ -75,9 +75,9 @@ const variantStyle: Record<SarakTypographyVariant, React.CSSProperties> = {
 };
 
 const colorVar: Record<SarakTypographyColor, string> = {
-    main: 'var(--sarak-text-main, var(--theme-title, #ffffff))',
-    secondary: 'var(--sarak-text-sec, rgba(255, 255, 255, 0.7))',
-    muted: 'var(--sarak-text-muted, var(--theme-muted, rgba(255, 255, 255, 0.4)))',
+    main: 'var(--sarak-text-main, var(--theme-title, #f2f6fb))',
+    secondary: 'var(--sarak-text-sec, rgba(242,246,251,0.72))',
+    muted: 'var(--sarak-text-muted, var(--theme-muted, rgba(242,246,251,0.55)))',
 };
 
 /**

@@ -3,7 +3,7 @@ tipo: "adr"
 titulo: "O item de navegação horizontal usa caixa normal e corpo legível, não tipografia de etiqueta"
 status: "🟢 Aceito"
 tags: ["adr", "atomos", "cromo", "navegacao", "tipografia", "major"]
-relacionados: ["[[05-cromo-e-slots]]", "[[04-shell-e-discovery]]", "[[00-regras-e-invariantes]]"]
+relacionados: ["[[05-cromo-e-slots]]", "[[00-regras-e-invariantes]]"]
 substitui: "[[013-item-de-navegacao-como-atomo-proprio]]"
 substituido_por: ""
 alternativas_consideradas:

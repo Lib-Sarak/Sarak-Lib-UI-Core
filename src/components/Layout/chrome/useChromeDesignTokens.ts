@@ -1,20 +1,30 @@
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
+import { resolveMobileNavigationStyle, type ChromeMobileNavigationStyle } from './mobileNavigation';
 
 export type ChromeSidebarPosition = 'left' | 'right' | 'floating';
 export type ChromeNavbarLayout = 'sticky' | 'inline' | 'hidden';
-export type ChromeContentAlignment = 'stretch' | 'center';
-export type ChromeSearchPositionSidebar = 'top' | 'bottom' | 'hidden';
+export type ChromeLayoutDensity = 'compact' | 'comfortable' | 'spacious';
+export type ChromeSearchPositionSidebar = 'top' | 'bottom';
 export type ChromeSearchPositionTopbar = 'left' | 'center' | 'right' | 'hidden';
 
 export interface ChromeDesignTokens {
     sidebarPosition: ChromeSidebarPosition;
     navbarLayout: ChromeNavbarLayout;
-    contentAlignment: ChromeContentAlignment;
+    layoutDensity: ChromeLayoutDensity;
+    maxContentWidth: string;
+    isSplitViewEnabled: boolean;
     isNavHidden: boolean;
     isAutoHideEnabled: boolean;
     searchPositionSidebar: ChromeSearchPositionSidebar;
     searchPositionTopbar: ChromeSearchPositionTopbar;
+    mobileNavigationStyle: ChromeMobileNavigationStyle;
 }
+
+const resolveSidebarSearchPosition = (value: unknown): ChromeSearchPositionSidebar =>
+    value === 'bottom' ? 'bottom' : 'top';
+
+const resolveLayoutDensity = (value: unknown): ChromeLayoutDensity =>
+    value === 'compact' || value === 'spacious' ? value : 'comfortable';
 
 /**
  * Leitura tolerante (Spec 18) dos tokens de cromo que `SarakAppChrome` passou a
@@ -28,10 +38,13 @@ export const useChromeDesignTokens = (): ChromeDesignTokens => {
     return {
         sidebarPosition: (design?.sidebarPosition as ChromeSidebarPosition) || 'left',
         navbarLayout: (design?.navbarLayout as ChromeNavbarLayout) || 'sticky',
-        contentAlignment: (design?.contentAlignment as ChromeContentAlignment) || 'stretch',
+        layoutDensity: resolveLayoutDensity(design?.layoutDensity),
+        maxContentWidth: (design?.maxContentWidth as string) || '1440px',
+        isSplitViewEnabled: design?.isSplitViewEnabled ?? false,
         isNavHidden: design?.isNavHidden ?? false,
         isAutoHideEnabled: design?.isAutoHideEnabled ?? false,
-        searchPositionSidebar: (design?.searchPositionSidebar as ChromeSearchPositionSidebar) || 'top',
+        searchPositionSidebar: resolveSidebarSearchPosition(design?.searchPositionSidebar),
         searchPositionTopbar: (design?.searchPositionTopbar as ChromeSearchPositionTopbar) || 'left',
+        mobileNavigationStyle: resolveMobileNavigationStyle(design?.mobileNavigationStyle),
     };
 };

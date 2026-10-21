@@ -1,5 +1,4 @@
 import React from 'react';
-import { SarakIcon } from '../Icon/SarakIcon';
 import { SarakMenuItem } from './SarakMenuItem';
 import { useNavigationStyle } from '../../../core/Provider/useNavigationStyle';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
@@ -12,14 +11,20 @@ import { useLibraryText } from '../../../core/i18n/useLibraryText';
  * passa `activeRoute` (a rota atual, do roteador dele) e reage em `onNavigate`.
  */
 
-/** Item de navegação do shell — espelho declarativo do `SarakModule` do Discovery. */
+/** Item de navegação declarativo usado pelo cromo do aplicativo. */
 export interface SarakShellNavItem {
     /** Rótulo exibido no menu. */
     label: string;
     /** Rota destino (comparada com `activeRoute` para o destaque). */
     route: string;
-    /** Nome do ícone (resolvido pelo `SarakIcon`/IconMap). */
-    icon?: string;
+    /** Nome registrado ou elemento do ícone fornecido pelo consumidor. */
+    icon?: string | React.ReactNode;
+    /** Impede navegação e foco sem remover o item do menu. */
+    disabled?: boolean;
+    /** Informação visual que também integra o nome acessível. */
+    badge?: string | number;
+    /** Contexto nativo da âncora. */
+    target?: string;
     /** Agrupamento visual (itens sem categoria ficam no grupo raiz). */
     category?: string;
 }
@@ -38,7 +43,7 @@ export interface SarakShellNavProps {
     /**
      * Orientação do menu (Spec 18). `'auto'` (default) segue o Design Engine:
      * `design.navigationStyle === 'topbar'` → horizontal; qualquer outro → vertical.
-     * `'dock'`/`'glass'` do shell legado ficam fora desta spec (tratados como vertical).
+     * Qualquer valor desconhecido é tratado como vertical.
      */
     orientation?: 'vertical' | 'horizontal' | 'auto';
     /** Colapsado (`isNavHidden`): só ícone, rótulo e categoria somem. */
@@ -66,18 +71,22 @@ const NavEntry: React.FC<{
     isActive: boolean;
     horizontal: boolean;
     collapsed: boolean;
-    onSelect: (route: string) => void;
+    onSelect?: (route: string) => void;
 }> = ({ item, isActive, horizontal, collapsed, onSelect }) => (
     // Composição atômica (R10 — Spec 18/lote 10): `SarakMenuItem` já nasce com métrica
     // de lista, não de botão de ação — nenhuma neutralização por `style` é necessária.
     // `className="relative"` ancora o marcador do item ativo (abaixo), equivalente ao
     // do `SidebarNav` do Shell (`navActiveMarkerColor`/`navActiveMarkerGlow`, Spec 05 §2.4).
     <SarakMenuItem
-        onClick={() => onSelect(item.route)}
+        href={item.route}
+        target={item.target}
+        disabled={item.disabled}
+        badge={item.badge}
+        onNavigate={onSelect}
         active={isActive}
         collapsed={collapsed}
         orientation={horizontal ? 'horizontal' : 'vertical'}
-        icon={item.icon ? <SarakIcon name={item.icon} size={18} /> : undefined}
+        icon={item.icon}
         label={item.label}
         className="relative"
     >
@@ -88,8 +97,8 @@ const NavEntry: React.FC<{
                     ? 'absolute left-1/2 -translate-x-1/2 bottom-0 h-0.5 w-4 rounded-full'
                     : 'absolute left-0 w-1 h-4 rounded-full'}
                 style={{
-                    background: 'var(--sarak-nav-marker-color, #00f2ff)',
-                    boxShadow: '0 0 calc(var(--sarak-nav-marker-glow, 10) * 1px) var(--sarak-nav-marker-color, #00f2ff)', // sarak-allow-hardcode: 1px converte slider unitless
+                    background: 'var(--sarak-nav-marker-color, #19e3f0)',
+                    boxShadow: '0 0 calc(var(--sarak-nav-marker-glow, 8) * 1px) var(--sarak-nav-marker-color, #19e3f0)', // sarak-allow-hardcode: 1px converte slider unitless
                 }}
             />
         )}
@@ -109,16 +118,18 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
 }) => {
     const navigationStyle = useNavigationStyle();
     const t = useLibraryText();
-    // `auto` segue o Design Engine: só `topbar` vira horizontal (dock/glass = vertical).
+    // `auto` segue o Design Engine: só `topbar` vira horizontal.
     const resolved = orientation === 'auto'
         ? (navigationStyle === 'topbar' ? 'horizontal' : 'vertical')
         : orientation;
     const horizontal = resolved === 'horizontal';
 
-    const select = (route: string): void => {
-        onNavigate?.(route);
-        onChange?.(route);
-    };
+    const select = onNavigate || onChange
+        ? (route: string): void => {
+            onNavigate?.(route);
+            onChange?.(route);
+        }
+        : undefined;
 
     const groups = groupByCategory(items ?? []);
 
@@ -150,7 +161,13 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                         />
                     ) : null}
                     {brand.name ? (
-                        <span className="font-bold tracking-tight text-[var(--sarak-text-main,#ffffff)] truncate">
+                        <span
+                            className="text-[var(--sarak-text-main,#f2f6fb)] truncate"
+                            style={{
+                                fontWeight: 'var(--sarak-identity-weight, 800)',
+                                letterSpacing: 'var(--sarak-identity-tracking, 0px)',
+                            }}
+                        >
                             {brand.name}
                         </span>
                     ) : null}
@@ -164,7 +181,7 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                         <span
                             aria-hidden="true"
                             className="self-stretch shrink-0"
-                            style={{ width: 'var(--sarak-border-width, thin)', background: 'var(--sarak-card-border-color, rgba(255,255,255,0.1))' }}
+                            style={{ width: 'var(--sarak-border-width, 1px)', background: 'var(--sarak-card-border-color, rgba(255,255,255,0.09))' }}
                         />
                     ) : null}
                     <div
@@ -183,7 +200,7 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                     >
                         {category && !horizontal && !collapsed ? (
                             <div
-                                className="text-2xs font-bold uppercase tracking-widest text-[var(--text-muted,#94a3b8)] opacity-70 select-none"
+                                className="text-2xs font-bold uppercase tracking-widest text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-70 select-none"
                                 style={{ paddingInline: 'var(--sarak-layout-gap-sm, 8px)', marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}
                             >
                                 {category}

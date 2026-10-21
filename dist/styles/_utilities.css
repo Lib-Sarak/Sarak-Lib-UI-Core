@@ -13,41 +13,19 @@
     opacity: calc(0.3 + (var(--shadow-intensity, 0.5) * 0.7));
 }
 .divide-theme > * + * { border-color: var(--theme-border) !important; }
+/* @sarak-token-reader borderStyle direto — as opções de borderStyle são valores CSS de border-style e vão direto para a propriedade. */
 .border-t-theme { border-top: var(--theme-border-width, 1px) var(--border-style, solid) var(--theme-border) !important; }
 .border-b-theme { border-bottom: var(--theme-border-width, 1px) var(--border-style, solid) var(--theme-border) !important; }
 
-/* 1.1 TRANSITION UTILITIES (v8.5) */
-.transition-sarak {
-    transition: all var(--sarak-anim-normal, 0.4s) var(--sarak-ease-main, cubic-bezier(0.4, 0, 0.2, 1)) !important;
-}
+/* `.transition-sarak` mora em `_elements.css` (`components.sarak-elements`): cede ao `transition`/`duration-*` da classe. */
 
 /* Layout Utilities */
-.p-theme { padding: var(--theme-pad, 1.5rem); }
+.p-theme { padding: var(--theme-pad, 16px); }
 .gap-theme { gap: var(--theme-gap, 20px); }
 
-/* Os padrões de ELEMENTO de botão e campo (raio, transição, hover, ativo, foco) moram em
-   `_elements.css`, numa camada que cede à classe utilitária. Aqui fica só o que é
-   `!important`: entre camadas a ordem se inverte para importantes, e nesta camada, a
-   última, uma utilitária `!important` ainda vence. */
-.bg-theme-card:active {
-    background-color: var(--theme-primary-active);
-    transform: translateY(0) scale(var(--sarak-btn-active-scale, 0.98)) !important;
-    transition: transform 0.1s var(--sarak-ease-out, cubic-bezier(0.4, 0, 0.2, 1));
-}
-
-button:active:not(.p-0) {
-    transform: translateY(0) scale(var(--sarak-btn-active-scale, 0.98)) !important;
-}
-
-/* Geometric Modifier */
-body.is-geometric .bg-theme-card,
-body.is-geometric .sarak-shell-sidebar,
-body.is-geometric .sarak-shell-header,
-.preview-container[data-geometric="1"] .bg-theme-card,
-[data-geometric="1"] .bg-theme-card,
-.bg-theme-card[data-geometric="1"] {
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%) !important;
-}
+/* O estado ativo do botão (`transform`) é padrão de ELEMENTO e mora em `_elements.css`, onde `active:*`
+   e o `whileTap` do componente o vencem. O recorte geométrico do cartão é o do token `cardGeometricCut`
+   (`--sarak-card-clip-path`, em `_card-defaults.css`). */
 
 /* SarakRangeSlider (Spec 11) — dois ranges sobrepostos: o input ignora o ponteiro
    (pointer-events:none na classe via Tailwind), mas o THUMB volta a captá-lo para
@@ -75,5 +53,5 @@ body.is-geometric .sarak-shell-header,
 /* Scrollbars customizadas (refatoração Data-Driven) */
 .custom-scrollbar-sidebar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar-sidebar::-webkit-scrollbar-track { background: transparent; }
-.custom-scrollbar-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
+.custom-scrollbar-sidebar::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--text-main, #f2f6fb) 5%, transparent); border-radius: 10px; }
 .custom-scrollbar-sidebar::-webkit-scrollbar-thumb:hover { background: var(--theme-primary); }

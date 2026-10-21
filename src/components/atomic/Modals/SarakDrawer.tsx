@@ -5,6 +5,7 @@ import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { useFocusTrap } from './hooks/useFocusTrap';
 import { SarakScrim } from '../Layouts/SarakScrim';
+import { useMotionTokens } from '../hooks/useMotionTokens';
 
 export interface SarakDrawerProps {
     /**
@@ -53,15 +54,18 @@ export const SarakDrawer: React.FC<SarakDrawerProps> = ({
     // R34 — átomo renderiza sem Provider: `useSarakUIOptional` nunca lança.
     const { design } = useSarakUIOptional() || {};
     const t = useLibraryText();
+    const { durations } = useMotionTokens();
     const [shouldRender, setShouldRender] = useState(isOpen);
     // Modelo de foco transversal (Spec 41, Regra 1): trap + ESC + restauração ao fechar.
     const { containerRef, handleTrap } = useFocusTrap(isOpen, onClose);
 
-    const animSlow = design?.animSlow;
-    const animDuration = typeof animSlow === 'number' ? `${animSlow}ms` : '400ms';
-    const animEasing = (design?.easeMain as string) || 'ease-in-out';
+    const motionSlow = design?.motionDurationSlow;
+    const animDurationMs = typeof motionSlow === 'number' ? Math.round(motionSlow * 1000) : 400;
+    const scrimDurationMs = Math.round(durations.fast * 1000);
+    const animDuration = `${animDurationMs}ms`;
+    const animEasing = (design?.motionEaseMain as string) || 'ease-in-out';
     const zIndex = (design?.zIndexModal as number) || 1000;
-    const overlayBg = design?.modalOverlayColor || 'var(--sarak-modal-overlay-color,rgba(0,0,0,0.5))';
+    const overlayBg = design?.modalOverlayColor || 'var(--sarak-modal-overlay-color,rgba(2,4,8,0.6))';
 
     useEffect(() => {
         if (isOpen) {
@@ -71,13 +75,13 @@ export const SarakDrawer: React.FC<SarakDrawerProps> = ({
             document.body.style.overflow = '';
             const timer = setTimeout(() => {
                 setShouldRender(false);
-            }, parseInt(String(animDuration)) || 400);
+            }, animDurationMs);
             return () => clearTimeout(timer);
         }
         return () => {
             document.body.style.overflow = '';
         };
-    }, [isOpen, animDuration]);
+    }, [isOpen, animDurationMs]);
 
     if (!shouldRender) return null;
 
@@ -100,9 +104,9 @@ export const SarakDrawer: React.FC<SarakDrawerProps> = ({
             transitionProperty: 'transform',
             transitionDuration: String(animDuration),
             transitionTimingFunction: String(animEasing),
-            backgroundColor: String(design?.bgBaseColor || 'var(--color-theme-card,#1e293b)'),
+            backgroundColor: String(design?.bgBaseColor || 'var(--color-theme-card,#101622)'),
             // sidebarShadow é o token de elevação composta disponível no sistema (não há modalShadow dedicado)
-            boxShadow: String(design?.sidebarShadow || '0 var(--sarak-layout-gap-sm, 10px) var(--sarak-layout-gap-lg, 25px) rgba(0,0,0,0.5)'),
+            boxShadow: String(design?.sidebarShadow || '0 var(--sarak-layout-gap-sm, 10px) var(--sarak-layout-gap-lg, 24px) color-mix(in srgb, var(--sarak-card-shadow-color, #000000) 50%, transparent)'),
             zIndex: (parseInt(String(zIndex)) || 1000) + 1,
         };
 
@@ -134,7 +138,7 @@ export const SarakDrawer: React.FC<SarakDrawerProps> = ({
             <SarakScrim
                 animate
                 visible={isOpen}
-                durationMs={typeof animSlow === 'number' ? animSlow : 400}
+                durationMs={scrimDurationMs}
                 onClose={onClose}
                 ariaLabel={t('drawerCloseAriaLabel')}
                 testId="sarak-drawer-overlay"

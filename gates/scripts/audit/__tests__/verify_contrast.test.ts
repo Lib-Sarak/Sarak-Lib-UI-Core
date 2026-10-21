@@ -7,11 +7,15 @@ import {
   contrastRatio,
   resolveChain,
   auditTheme,
+  evaluatePair,
+  type ContrastPair,
   auditThemeOppositeMode,
   auditContraparteRequired,
   CONTRAPARTE_EXEMPTION_LIST,
 } from '../verify_contrast.ts';
-import { SARAK_GLOBAL_THEMES, type SarakThemePreset } from '../../../../src/core/Design/presets/themes/index.ts';
+import { sarakGetDefaultDesignState } from '../../../../src/core/Design/master-map.ts';
+import { SARAK_ALL_THEMES } from '../../../../src/core/Design/presets/themes/all.ts';
+import type { SarakThemePreset } from '../../../../src/core/Design/presets/themes/index.ts';
 
 // Teste do PRÓPRIO GATE (R31, plan-24). Trava a MECÂNICA de cálculo — não o
 // número de temas reprovados, que é baseline e muda a cada tema consertado
@@ -122,8 +126,29 @@ describe('resolveChain', () => {
 });
 
 describe('PAIRS — o contrato da lista de pares reais (R31, veredito §11 da plan-24)', () => {
-  it('tem exatamente 36 pares', () => {
-    expect(PAIRS.length).toBe(36);
+  it('tem exatamente 76 pares (36 originais + 32 que os componentes desenham + 8 do grupo D)', () => {
+    expect(PAIRS.length).toBe(76);
+  });
+
+  describe('ícone do campo (inputIconColor × fundo do campo)', () => {
+    const pair = PAIRS.find((p) => p.fg === 'inputIconColor');
+
+    it('o par existe, com o fundo do campo sobre o corpo', () => {
+      expect(pair?.bgChain).toEqual(['inputBg', 'colorBgBody']);
+    });
+
+    it('PLANTADO: branco a 50% sobre fundo claro (o padrão antigo no tema claro) REPROVA', () => {
+      const result = evaluatePair(pair!, { inputIconColor: 'rgba(255, 255, 255, 0.5)', inputBg: '#ffffff', colorBgBody: '#ffffff' });
+      expect(!result.pulado && result.pass).toBe(false);
+    });
+
+    it('o padrão novo — var(--text-muted), resolvido para textColorMuted — passa no claro e no escuro', () => {
+      const icon = 'var(--text-muted, #94a3b8)';
+      const light = evaluatePair(pair!, { inputIconColor: icon, textColorMuted: '#475569', inputBg: '#ffffff', colorBgBody: '#ffffff' });
+      const dark = evaluatePair(pair!, { inputIconColor: icon, textColorMuted: '#94a3b8', inputBg: '#0f172a', colorBgBody: '#050505' });
+      expect(!light.pulado && light.pass).toBe(true);
+      expect(!dark.pulado && dark.pass).toBe(true);
+    });
   });
 
   it('todo par exige 4,5:1 — nenhum relaxamento para "texto grande"', () => {
@@ -135,12 +160,120 @@ describe('PAIRS — o contrato da lista de pares reais (R31, veredito §11 da pl
   });
 });
 
+// O verificador mede os pares que os COMPONENTES desenham: a tinta a 10%
+// (`token@0.1`), o texto que o motor escolhe sobre a cor sólida (`on:`) e o badge suave (`mix:`).
+describe('pares que os componentes desenham', () => {
+  const base = { ...sarakGetDefaultDesignState(), mode: 'light', colorBgBody: '#ffffff', cardBackgroundColor: '#ffffff' } as Record<string, unknown>;
+  const pairOf = (fg: string, first: string): ContrastPair => {
+    const found = PAIRS.find((p) => p.fg === fg && p.bgChain[0] === first);
+    if (!found) throw new Error(`par ausente: ${fg} / ${first}`);
+    return found;
+  };
+
+  it('um elo `token@0.1` é a cor do token com o alfa multiplicado por 0,1', () => {
+    const design = { ...base, primaryColor: '#000000' };
+
+    const result = resolveChain(['primaryColor@0.1', 'colorBgBody'], design);
+
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.rgb[0]).toBeCloseTo(229.5, 1); // 10% preto sobre branco
+  });
+
+  it('`on:` mede o texto ESCOLHIDO sobre a cor sólida — passa sobre qualquer cor opaca', () => {
+    for (const color of ['#ffff00', '#00ff00', '#ff0000', '#808080', '#7f7fff', '#0b1020']) {
+      const design = { ...base, primaryColor: color };
+      const result = evaluatePair(pairOf('on:primaryColor', 'primaryColor'), design);
+
+      expect(result.pulado, color).toBe(false);
+      if (!result.pulado) expect(result.ratio, color).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it('`on:` sobre cor que não é literal é DECLARADO como pulado, não chutado', () => {
+    const result = evaluatePair(pairOf('on:primaryColor', 'primaryColor'), { ...base, primaryColor: 'hsl(10, 50%, 50%)' });
+
+    expect(result.pulado).toBe(true);
+  });
+
+  it('MUTAÇÃO: sobre um fundo de meio-tom o badge suave (`mix:`) reprova', () => {
+    const design = { ...base, colorBgBody: '#808080', cardBackgroundColor: '#808080', statusWarningColor: '#808080' };
+
+    const result = evaluatePair(pairOf('mix:statusWarningColor', 'statusWarningColor@0.1'), design);
+
+    expect(result.pulado).toBe(false);
+    if (!result.pulado) {
+      expect(result.pass).toBe(false);
+      expect(result.ratio).toBeLessThan(4.5);
+    }
+  });
+
+  it('CONTRAPROVA: sobre o fundo claro o mesmo badge passa', () => {
+    const design = { ...base, statusWarningColor: '#fde047' };
+
+    const result = evaluatePair(pairOf('mix:statusWarningColor', 'statusWarningColor@0.1'), design);
+
+    expect(result.pulado).toBe(false);
+    if (!result.pulado) expect(result.pass).toBe(true);
+  });
+
+  describe('grupo D — os pares que o levantamento anterior não alcançou', () => {
+    it('PLANTADO: a primária CLARA no hover fantasma/contorno reprova crua, e a mistura do hover passa', () => {
+      const design = { ...base, primaryColor: '#22d3ee', btnGhostHoverBg: 'rgba(15, 23, 42, 0.05)' };
+      const raw = resolveChain(['btnGhostHoverBg', 'cardBackgroundColor', 'colorBgBody'], design);
+      const mixed = evaluatePair(pairOf('mix:primaryColor', 'btnGhostHoverBg'), design);
+
+      expect(raw.ok).toBe(true);
+      if (raw.ok) expect(contrastRatio([34, 211, 238], raw.rgb)).toBeLessThan(4.5);
+      expect(mixed.pulado).toBe(false);
+      if (!mixed.pulado) expect(mixed.pass).toBe(true);
+    });
+
+    it('MUTAÇÃO: o texto do botão cyberpunk (a cor do status) sobre o corpo reprova quando o status é claro demais', () => {
+      const weak = evaluatePair(PAIRS.find((p) => p.fg === 'statusErrorColor' && p.bgChain.length === 1)!, { ...base, statusErrorColor: '#fca5a5' });
+      const strong = evaluatePair(PAIRS.find((p) => p.fg === 'statusErrorColor' && p.bgChain.length === 1)!, { ...base, statusErrorColor: '#b91c1c' });
+
+      expect(weak.pulado || weak.pass).toBe(false);
+      expect(!strong.pulado && strong.pass).toBe(true);
+    });
+
+    it('MUTAÇÃO: o texto mudo sobre o cabeçalho da tabela reprova com o cabeçalho escuro demais para ele', () => {
+      const pair = pairOf('textColorMuted', 'tableHeaderBg');
+      const weak = evaluatePair(pair, { ...base, textColorMuted: '#9ca3af', tableHeaderBg: '#e5e7eb' });
+
+      expect(weak.pulado || weak.pass).toBe(false);
+    });
+
+    it('o botão de sair mede a tinta do erro a 15% sobre a barra lateral e sobre o topo', () => {
+      const side = pairOf('mix:statusErrorColor', 'statusErrorColor@0.15');
+
+      expect(PAIRS.filter((p) => p.fg === side.fg && p.bgChain[0] === 'statusErrorColor@0.15')).toHaveLength(2);
+      expect(evaluatePair(side, base).pulado).toBe(false);
+    });
+  });
+
+  it('MUTAÇÃO: a mensagem de erro de campo (`inputErrorColor`) fraca sobre o corpo reprova', () => {
+    const weak = evaluatePair(pairOf('inputErrorColor', 'colorBgBody'), { ...base, inputErrorColor: '#ff8f91' });
+    const strong = evaluatePair(pairOf('inputErrorColor', 'colorBgBody'), { ...base, inputErrorColor: '#c70002' });
+
+    expect(weak.pulado || weak.pass).toBe(false);
+    expect(!strong.pulado && strong.pass).toBe(true);
+  });
+
+  it('MUTAÇÃO: o primário translúcido de um tema embarcado reintroduzido abaixo de 4,5:1 faz o tema reprovar', () => {
+    const theme = { ...SARAK_ALL_THEMES[0], design: { ...(SARAK_ALL_THEMES[0].design as Record<string, unknown>), inputErrorColor: '#ffb3b3', colorBgBody: '#ffffff', mode: 'light' } } as SarakThemePreset;
+
+    const report = auditTheme(theme);
+
+    expect(report.falhas.some((f) => f.pair.fg === 'inputErrorColor')).toBe(true);
+  });
+});
+
 // Segunda passada (plan-24-1, Passo 7) — mede o MODO OPOSTO ao nativo do
 // tema. Não trava o número de temas reprovados (isso é baseline), só que a
 // função RODA e devolve o mesmo formato de relatório que `auditTheme`.
 describe('auditThemeOppositeMode — segunda passada (plan-24-1 · plan-26)', () => {
   it('roda para todos os temas shippados sem lançar, com o mesmo formato de auditTheme', () => {
-    for (const theme of SARAK_GLOBAL_THEMES) {
+    for (const theme of SARAK_ALL_THEMES) {
       const nativo = auditTheme(theme);
       const oposto = auditThemeOppositeMode(theme);
       expect(oposto.id).toBe(nativo.id);
@@ -150,7 +283,7 @@ describe('auditThemeOppositeMode — segunda passada (plan-24-1 · plan-26)', ()
   });
 
   it('todos os temas de referência passam AA nos dois modos (Decisão C · plan-24-1 · contraparte autorada · plan-26)', () => {
-    for (const theme of SARAK_GLOBAL_THEMES) {
+    for (const theme of SARAK_ALL_THEMES) {
       const oposto = auditThemeOppositeMode(theme);
       expect(oposto.falhas, `tema "${theme.id}" reprova no modo oposto: ${JSON.stringify(oposto.falhas.map((f) => f.pair))}`).toEqual([]);
     }
@@ -181,15 +314,77 @@ describe('auditContraparteRequired', () => {
   });
 
   it('sobre GLOBAL_THEMES hoje: um isento por tema legado sem contraparte, e nenhum faltando', () => {
-    const audit = auditContraparteRequired(SARAK_GLOBAL_THEMES);
-    const comContraparte = SARAK_GLOBAL_THEMES.filter((t) => Boolean(t.contraparte)).length;
-    expect(audit.isentos.length).toBe(SARAK_GLOBAL_THEMES.length - comContraparte);
+    const audit = auditContraparteRequired(SARAK_ALL_THEMES);
+    const comContraparte = SARAK_ALL_THEMES.filter((t) => Boolean(t.contraparte)).length;
+    expect(audit.isentos.length).toBe(SARAK_ALL_THEMES.length - comContraparte);
     expect(audit.faltando).toEqual([]);
   });
 
   it('acusa um tema fora da isenção sem contraparte', () => {
     const semContraparte = { id: 'tema-novo-sem-contraparte', name: 'x', description: 'x', design: { mode: 'dark' } } as unknown as SarakThemePreset;
-    const audit = auditContraparteRequired([...SARAK_GLOBAL_THEMES, semContraparte]);
+    const audit = auditContraparteRequired([...SARAK_ALL_THEMES, semContraparte]);
     expect(audit.faltando).toEqual(['tema-novo-sem-contraparte']);
   });
+});
+
+// Vão de cobertura (R31): sete pares tinham cadeia de fundo que não terminava numa base
+// opaca; com barra, botão ou superfície translúcidos o par era declarado pulado. Toda
+// cadeia agora termina em `colorBgBody`.
+describe('PAIRS — nenhuma cadeia termina em fundo que pode ser translúcido', () => {
+  const translucentSidebar = {
+    ...sarakGetDefaultDesignState(),
+    colorBgBody: '#101010',
+    sidebarColor: 'rgba(255, 255, 255, 0.5)',
+    textColorMaster: '#ffffff',
+  } as Record<string, unknown>;
+
+  it('PLANTADO: a cadeia antiga de um elo só ficava PULADA com sidebarColor translúcido', () => {
+    const cadeiaAntiga: ContrastPair = { fg: 'textColorMaster', bgChain: ['sidebarColor'], min: 4.5 };
+    expect(evaluatePair(cadeiaAntiga, translucentSidebar).pulado).toBe(true);
+  });
+
+  it('o par real textColorMaster / sidebarColor compõe sobre colorBgBody e é MEDIDO, não pulado', () => {
+    const par = PAIRS.find((p) => p.fg === 'textColorMaster' && p.bgChain[0] === 'sidebarColor') as ContrastPair;
+    expect(par.bgChain).toEqual(['sidebarColor', 'colorBgBody']);
+    const result = evaluatePair(par, translucentSidebar);
+    expect(result.pulado).toBe(false);
+  });
+
+  it('nenhum par é pulado em nenhum tema do catálogo, nos dois modos', () => {
+    const pulados = SARAK_ALL_THEMES.flatMap((theme) =>
+      [auditTheme(theme), auditThemeOppositeMode(theme)].flatMap((r) => r.pulados.map((p) => `${r.id}: ${p.pair.fg} / ${p.pair.bgChain[0]}`)),
+    );
+    expect(pulados).toEqual([]);
+  });
+
+  it('kinetic-flow, no modo oposto, passa os dois pares do item de navegação ativo', () => {
+    const theme = SARAK_ALL_THEMES.find((t) => t.id === 'kinetic-flow') as SarakThemePreset;
+    const nav = auditThemeOppositeMode(theme).resultados.filter((r) => r.pair.fg === 'navItemActiveColor');
+    expect(nav).toHaveLength(2);
+    nav.forEach((r) => expect(!r.pulado && r.pass).toBe(true));
+  });
+});
+
+describe('var(--tema) que espelha outro token de cor do próprio tema', () => {
+    const base = {
+        ...sarakGetDefaultDesignState(),
+        colorBgBody: '#000000',
+        surfaceColor: '#101010',
+        titleColor: '#ffffff',
+        tooltipBg: 'var(--theme-surface)',
+        tooltipTextColor: 'var(--color-theme-title, #ffffff)',
+    } as Record<string, unknown>;
+
+    it('o padrão de tooltipBg/tooltipTextColor resolve pelo surfaceColor e pelo titleColor — o par é medido', () => {
+        const par = PAIRS.find((p) => p.fg === 'tooltipTextColor') as ContrastPair;
+        const result = evaluatePair(par, base);
+        expect(result.pulado).toBe(false);
+        expect(result.pulado === false && result.ratio).toBeGreaterThan(10);
+    });
+
+    it('var() de variável desconhecida segue pulada, sem chutar cor', () => {
+        const par = PAIRS.find((p) => p.fg === 'tooltipTextColor') as ContrastPair;
+        const result = evaluatePair(par, { ...base, tooltipTextColor: 'var(--minha-cor)' });
+        expect(result.pulado).toBe(true);
+    });
 });

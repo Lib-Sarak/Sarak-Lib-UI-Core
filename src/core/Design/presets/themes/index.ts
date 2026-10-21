@@ -13,9 +13,13 @@
 import type { SarakDesignState } from '../../../Provider/types';
 
 /**
- * União conhecida dos ids de preset (fonte única; espelha `GLOBAL_THEMES`).
- * Adicionar um tema = adicionar seu id aqui e importá-lo abaixo. Consumida pela
- * diretiva `theme` (Spec 42) como o ramo "preset nomeado".
+ * União conhecida dos ids de preset (fonte única do catálogo embarcado).
+ * Adicionar um tema = adicionar seu id aqui, o arquivo do tema, a linha em
+ * `loaders.ts` e em `all.ts`. Consumida pela diretiva `theme` (Spec 42) como o
+ * ramo "preset nomeado".
+ *
+ * Este módulo NÃO importa tema nenhum: ele está no fecho estático do barril, e
+ * só o tema padrão pode estar lá (`boot.ts`).
  */
 export const SARAK_THEME_PRESET_IDS = [
     'sarak-sovereign',
@@ -32,6 +36,11 @@ export const SARAK_THEME_PRESET_IDS = [
     'golden-hour',
     'aurora-veil',
     'blueprint-protocol',
+    'editorial-ink',
+    'organic-clay',
+    'high-contrast',
+    'corporate-ledger',
+    'playful-pastel',
 ] as const;
 
 export type SarakThemePresetId = (typeof SARAK_THEME_PRESET_IDS)[number];
@@ -52,34 +61,31 @@ export interface SarakThemePreset {
     contraparte?: Partial<SarakDesignState>;
 }
 
-import { sarakSovereignTheme } from './sarak-sovereign';
-import { cyberpunkneonTheme } from './cyberpunk-neon';
-import { industrialTerminalTheme } from './industrial-terminal';
-import { neobrutalismTheme } from './neo-brutalism';
-import { synthwaveRetroTheme } from './synthwave-retro';
-import { nebulaSpaceTheme } from './nebula-space';
-import { kineticFlowTheme } from './kinetic-flow';
-import { cyberRetroWaveTheme } from './cyber-retro-wave';
-import { minimalistAiry } from './minimalist-airy';
-import { dataTerminal } from './data-terminal';
-import { neumorphicMobile } from './neumorphic-mobile';
-import { goldenHourTheme } from './golden-hour';
-import { auroraVeilTheme } from './aurora-veil';
-import { blueprintProtocolTheme } from './blueprint-protocol';
+/** O tema padrão do sistema — o único embarcado que vive no boot (`boot.ts`). */
+export const SARAK_DEFAULT_THEME_ID = 'sarak-sovereign' as const satisfies SarakThemePresetId;
 
-export const SARAK_GLOBAL_THEMES: SarakThemePreset[] = [
-    sarakSovereignTheme,
-    cyberpunkneonTheme,
-    industrialTerminalTheme,
-    neobrutalismTheme,
-    synthwaveRetroTheme,
-    nebulaSpaceTheme,
-    kineticFlowTheme,
-    cyberRetroWaveTheme,
-    minimalistAiry,
-    dataTerminal,
-    neumorphicMobile,
-    goldenHourTheme,
-    auroraVeilTheme,
-    blueprintProtocolTheme,
-];
+/** Amostra de cor de um tema num modo — o bastante para o seletor desenhar a pílula sem carregar o tema. */
+export interface SarakThemeSwatch {
+    primaryColor: string;
+    colorBgBody: string;
+    textColorMaster: string;
+}
+
+/**
+ * Entrada do catálogo LEVE: lista o tema (nome, modo, amostra de cor) sem o
+ * `design`. Os embarcados saem de `catalog.generated.ts`, gerado a partir dos
+ * próprios temas (`npm run themes:catalog`) — nunca escrito à mão.
+ */
+export interface SarakThemeCatalogEntry {
+    id: string;
+    name: string;
+    description: string;
+    /** Modo nativo do tema. */
+    mode: 'light' | 'dark';
+    /** `true` quando o tema traz a contraparte AUTORADA para o modo oposto. */
+    hasContraparte: boolean;
+    /** Cores do tema no modo nativo. */
+    swatch: SarakThemeSwatch;
+    /** Cores do tema no modo oposto (contraparte autorada ou o fallback sintetizado). */
+    swatchOpposite: SarakThemeSwatch;
+}

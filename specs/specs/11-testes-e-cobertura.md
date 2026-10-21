@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Qualidade / Testes"
 status: "🟢 Vigente"
 prioridade: "Alta"
 tags: ["spec", "testes", "cobertura", "vitest", "gates", "divida-tecnica"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-enforcement-por-commit]]", "[[04-shell-e-discovery]]", "[[10-seguranca-e-acessibilidade]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-enforcement-por-commit]]", "[[10-seguranca-e-acessibilidade]]"]
 ---
 
 # 1. Propósito e os números MEDIDOS
@@ -368,15 +368,35 @@ em `jsdom`, como a local ([[16-integracao-continua]] §5).
 
 ## 7.3 A medição de CSS renderizado — o que ela prova, e o que não
 
-`browser-tests/cromo-css-real.spec.ts`, rodando por `npm run cromo-css-real:check` — que **builda antes**,
-sempre, porque o harness lê `dist/`. **Quantos casos são, o arquivo diz**
-(`grep -c "^test(" browser-tests/cromo-css-real.spec.ts`); o que eles cobrem cabe em cinco famílias:
+Os arquivos `browser-tests/*.spec.ts`, rodando juntos por `npm run cromo-css-real:check` — que **builda antes**,
+sempre, porque o harness lê `dist/` (quais são: `ls browser-tests/*.spec.ts`): o cromo e o padrão de elemento
+(`cromo-css-real.spec.ts`), o CSS dos átomos e da atmosfera que o `jsdom` não resolve
+(`css-que-so-o-navegador-mede.spec.ts`) e as visões de projeto — calendário e Gantt, em contêiner largo e estreito,
+em tema claro e escuro (`calendario*.spec.ts`, `gantt*.spec.ts`). **Quantos
+casos são, os arquivos dizem** (`grep -cE "^\s*test\(" browser-tests/*.spec.ts` — com o recuo, porque os casos dentro de `test.describe` são
+indentados). O harness escolhe a cena pela URL
+(`?cena=`), e sem ela monta o cromo de sempre. O que os casos cobrem cabe nestas famílias:
 
 - a **métrica do item de navegação** nas três faixas de [[07-responsividade-e-multidispositivo]] §2;
 - o **contrato de altura e rolagem** do cromo ([[05-cromo-e-slots]] §5.1);
 - o **respiro do conteúdo** por token, nos quatro lados ([[05-cromo-e-slots]] §2.4);
 - a **classe utilitária vencendo o padrão de elemento** — e o padrão valendo quando não há classe;
-- o **fundo da raiz** do cromo, com e sem mídia global.
+- o **fundo da raiz** do cromo, com e sem mídia global;
+- **tema que sobrescreve token de cromo**, por recorte nomeado de cada família (cor, gap, margem, estrutura),
+  mais largura máxima, densidade e a vista dividida medida pela largura do host com a janela fixa;
+- a **cascata sob textura**: utilitária com `card` no nome mantém o próprio fundo, e o cartão de verdade recebe a
+  superfície ([[02-design-engine]] §9.1);
+- **render sem Provider**: o hover do botão difere do repouso sem o Design Engine montado;
+- o **`body` cedendo à classe** de entrelinha;
+- **valores de estilo inline dos átomos**, por recorte de tema que ativa o ramo (`frosted`, foco, `neumorphism`,
+  switch, intervalo, acordeão) — a propriedade computada é a pretendida, e não o valor inicial do navegador;
+- a **seta do `SarakSelect`** dentro da caixa do campo numa célula de grade que estica;
+- a **busca de token do painel** recebe a digitação inteira em 20 aberturas seguidas (regressão de um relato que não
+  se reproduziu);
+- as **visões de projeto**: o calendário em contêiner largo e estreito (ponto no estreito, sem rolagem horizontal, título
+  em caixa normal, tom desconhecido com fundo) e o Gantt (rolagem só na linha do tempo, rolagem vertical única, cabeçalho
+  e lista presos, largura da barra por dia, altura do host respeitada, contraste do título ≥ 4,5:1 e marcador de hoje
+  visível em tema claro e escuro).
 
 **Como ela mede, e por que assim:** as asserções são **relacionais**, não tabelas de pixel. Um `SarakButton`
 de referência é renderizado **na mesma página**, e o item de navegação é comparado contra ele — o item tem de
@@ -387,11 +407,12 @@ elementos são alcançados por **âncora de contrato** (`getByRole` + nome acess
 interna.
 
 **O que ela NÃO vê**, declarado no cabeçalho do próprio arquivo (R18 — a lista completa é a de lá): pixel ·
-fonte carregada · tema que sobrescreva **token de cromo** (ela cobre o default e recortes **nomeados** de
-`config`, nunca uma varredura de temas) · estrutura de DOM (isso é da suíte `jsdom`, e ela não substitui) ·
+fonte carregada · **varredura de temas** (ela cobre o default e recortes **nomeados** de `config`, um por família de
+token, nunca todos os temas) · estrutura de DOM (isso é da suíte `jsdom`, e ela não substitui) ·
 `src/` quando o `dist/` está velho · qualquer navegador que não seja Chromium headless · `input`, `select` e
-`textarea` no padrão de elemento · o que **não cede à classe por desenho** (o `body` e o
-`transform !important` do botão ativo).
+`textarea` no padrão de elemento · o que **não cede à classe por desenho** (o `background-color !important` do
+`body` e o `transform !important` do botão ativo) · a **latência** do chunk sob demanda (o harness é um pacote só,
+então o caso do painel mede remontagem, não rede).
 
 ⚠️ **O quinto limite é o que morde na prática:** o harness carrega o artefato **publicado**. `dist/`
 desatualizado faz a medição medir o **passado**, e ela reprova por motivo errado. É por isso que
@@ -479,7 +500,7 @@ Todos do jsdom, e nenhum indica problema:
 
 - `Could not parse CSS stylesheet` — o jsdom não entende o CSS moderno da lib;
 - `HTMLCanvasElement's getContext()` — a luminância híbrida usa canvas;
-- `Not implemented: navigation` — `useSarakRouter` mexe no `history`.
+- `Not implemented: navigation` — o jsdom não implementa a navegação (clique em âncora, `history`).
 
 # 10. Critérios de aceite
 

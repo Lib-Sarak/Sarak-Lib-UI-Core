@@ -1,127 +1,136 @@
-import { useEffect, useReducer, useRef } from 'react';
-import api from '../../../../shared/services/api';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 
-type State<T> = {
+type FormStatus = { type: 'success' | 'error'; message: string } | null;
+type FormSubmit<T> = (data: T) => void | Promise<void>;
+
+interface UseFormDataOptions<T> {
+    data?: T;
+    initialData: T;
+    mode: 'create' | 'edit';
+    mapping?: Record<string, string>;
+    load?: () => Promise<T>;
+    onSubmit?: FormSubmit<T>;
+    onSuccess?: () => void | Promise<void>;
+}
+
+interface FormState<T> {
     formData: T;
     loading: boolean;
     saving: boolean;
-    status: { type: 'success' | 'error', message: string } | null;
-};
-
-type Action<T> = 
-    | { type: 'SET_FORM_DATA'; payload: T }
-    | { type: 'UPDATE_FIELD'; key: string; value: unknown }
-    | { type: 'FETCH_START' }
-    | { type: 'FETCH_SUCCESS'; payload: T }
-    | { type: 'FETCH_ERROR' }
-    | { type: 'SAVE_START' }
-    | { type: 'SAVE_SUCCESS'; payload: string }
-    | { type: 'SAVE_ERROR'; payload: string }
-    | { type: 'CLEAR_STATUS' };
-
-function reducer<T extends Record<string, unknown>>(state: State<T>, action: Action<T>): State<T> {
-    switch (action.type) {
-        case 'SET_FORM_DATA':
-            return { ...state, formData: action.payload };
-        case 'UPDATE_FIELD':
-            return { ...state, formData: { ...state.formData, [action.key]: action.value } };
-        case 'FETCH_START':
-            return { ...state, loading: true };
-        case 'FETCH_SUCCESS':
-            return { ...state, loading: false, formData: action.payload };
-        case 'FETCH_ERROR':
-            return { ...state, loading: false };
-        case 'SAVE_START':
-            return { ...state, saving: true, status: null };
-        case 'SAVE_SUCCESS':
-            return { ...state, saving: false, status: { type: 'success', message: action.payload } };
-        case 'SAVE_ERROR':
-            return { ...state, saving: false, status: { type: 'error', message: action.payload } };
-        case 'CLEAR_STATUS':
-            return { ...state, status: null };
-        default:
-            return state;
-    }
+    status: FormStatus;
 }
 
-export type FormDataActionConfig = { endpoint: string; method: string };
-
-export const useFormData = <T extends Record<string, unknown>>(
-    endpoint: string, 
-    mode: string, 
-    initialData: T, 
-    mapping?: Record<string, string>, 
-    actions?: FormDataActionConfig[], 
-    onSuccess?: () => void
-) => {
-    const [state, dispatch] = useReducer<React.Reducer<State<T>, Action<T>>>(reducer, {
-        formData: initialData,
-        loading: mode === 'edit',
-        saving: false,
-        status: null
+function addMappedFields<T extends Record<string, unknown>>(
+    data: T,
+    mapping?: Record<string, string>,
+): T {
+    if (!mapping) return data;
+    const nextData: Record<string, unknown> = { ...data };
+    Object.keys(mapping).forEach((key) => {
+        if (nextData[key] === undefined) nextData[key] = '';
     });
+    return nextData as T;
+}
 
-    // `initialData`/`mapping` são valores INICIAIS: lidos via ref, FORA das deps do
-    // efeito. Com eles nas deps, um literal inline (`initialData={{}}`) re-criado a
-    // cada render disparava o efeito de novo → refetch infinito em modo edit
-    // (loop de render + chamadas à API sem fim — era o vazamento que derrubava a
-    // suíte inteira por OOM e martelaria a API do consumidor em produção).
-    const initialDataRef = useRef(initialData);
+export const useFormData = <T extends Record<string, unknown>>({
+    data,
+    initialData,
+    mode,
+    mapping,
+    load,
+    onSubmit,
+    onSuccess,
+}: UseFormDataOptions<T>) => {
+    const [state, setState] = useState<FormState<T>>(() => ({
+        formData: addMappedFields(data ?? initialData, mapping),
+        loading: data === undefined && mode === 'edit' && Boolean(load),
+        saving: false,
+        status: null,
+    }));
+    const loadRef = useRef(load);
     const mappingRef = useRef(mapping);
+    const initialDataRef = useRef(data ?? initialData);
+    const submitRef = useRef(onSubmit);
+    const successRef = useRef(onSuccess);
+    const text = useLibraryText();
+    const textRef = useRef(text);
+    loadRef.current = load;
+    mappingRef.current = mapping;
+    initialDataRef.current = data ?? initialData;
+    submitRef.current = onSubmit;
+    successRef.current = onSuccess;
+    textRef.current = text;
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                dispatch({ type: 'FETCH_START' });
-                const response = await api.get(endpoint);
-                dispatch({ type: 'FETCH_SUCCESS', payload: response.data as T });
-            } catch (err: unknown) {
-                console.error('[SarakForm] Erro ao carregar dados:', err);
-                dispatch({ type: 'FETCH_ERROR' });
-            }
+        if (data !== undefined) {
+            setState((current) => ({
+                ...current,
+                formData: addMappedFields(data, mappingRef.current),
+                loading: false,
+                status: null,
+            }));
+            return;
+        }
+        if (mode === 'create') {
+            setState((current) => ({
+                ...current,
+                formData: addMappedFields(initialDataRef.current, mappingRef.current),
+                loading: false,
+            }));
+            return;
+        }
+        const loadFromHost = loadRef.current;
+        if (!loadFromHost) {
+            setState((current) => ({ ...current, loading: false }));
+            return;
+        }
+        let active = true;
+        setState((current) => ({ ...current, loading: true, status: null }));
+        void loadFromHost()
+            .then((loadedData) => {
+                if (!active) return;
+                setState((current) => ({
+                    ...current,
+                    formData: addMappedFields(loadedData, mappingRef.current),
+                    loading: false,
+                }));
+            })
+            .catch((error: unknown) => {
+                if (!active) return;
+                const message = error instanceof Error ? error.message : textRef.current('genericLoadError');
+                setState((current) => ({ ...current, status: { type: 'error', message }, loading: false }));
+            });
+        return () => {
+            active = false;
         };
+    }, [data, mode, Boolean(load)]);
 
-        if (mode === 'edit') {
-            fetchData();
-        } else {
-            // Em modo create, garantir que campos definidos no mapping existam no formData
-            const mapKeys = mappingRef.current;
-            if (mapKeys) {
-                const base: T = { ...initialDataRef.current };
-                Object.keys(mapKeys).forEach(k => { if (base[k] === undefined) (base as Record<string, unknown>)[k] = ''; });
-                dispatch({ type: 'SET_FORM_DATA', payload: base });
-            }
-        }
-    }, [endpoint, mode]);
+    const handleChange = useCallback((key: string, value: unknown) => {
+        setState((current) => ({
+            ...current,
+            formData: { ...current.formData, [key]: value },
+        }));
+    }, []);
 
-    const handleChange = (key: string, value: unknown) => {
-        dispatch({ type: 'UPDATE_FIELD', key, value });
-    };
-
-    const handleSave = async () => {
-        const defaultMethod = mode === 'create' ? 'POST' : 'PATCH';
-        const action = actions?.[0] || { endpoint: endpoint, method: defaultMethod };
+    const handleSave = useCallback(async () => {
+        const submit = submitRef.current;
+        if (!submit) return;
+        setState((current) => ({ ...current, saving: true, status: null }));
         try {
-            dispatch({ type: 'SAVE_START' });
-            
-            const method = action.method.toLowerCase() as 'post' | 'patch' | 'put';
-            await api[method](action.endpoint, state.formData);
-            
-            dispatch({ type: 'SAVE_SUCCESS', payload: 'Configurações sincronizadas com sucesso.' });
-            if (onSuccess) onSuccess();
-            setTimeout(() => dispatch({ type: 'CLEAR_STATUS' }), 3000);
-        } catch (err: unknown) {
-            const errorMessage = err instanceof Error ? err.message : 'Falha ao salvar.';
-            dispatch({ type: 'SAVE_ERROR', payload: errorMessage });
+            await submit(state.formData);
+            await successRef.current?.();
+            setState((current) => ({
+                ...current,
+                status: { type: 'success', message: textRef.current('formSaveSuccess') },
+            }));
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : textRef.current('genericLoadError');
+            setState((current) => ({ ...current, status: { type: 'error', message } }));
+        } finally {
+            setState((current) => ({ ...current, saving: false }));
         }
-    };
+    }, [state.formData]);
 
-    return { 
-        formData: state.formData, 
-        loading: state.loading, 
-        saving: state.saving, 
-        status: state.status, 
-        handleChange, 
-        handleSave 
-    };
+    return { ...state, handleChange, handleSave };
 };

@@ -1,12 +1,13 @@
 import React from 'react';
 import { type SarakShellNavItem } from '../atomic/Navigation/SarakShellNav';
 import { useNavigationStyle } from '../../core/Provider/useNavigationStyle';
-import { useHasGlobalBackgroundMedia } from '../../core/Provider/useHasGlobalBackgroundMedia';
+import { useChromeRootBackground } from './chrome/useChromeRootBackground';
 import { useSarakDevice } from '../../core/Provider/DeviceProvider';
-import type { SarakShellUser } from '../../core/Shell/Components/types';
+import type { SarakShellUser } from '../atomic/Navigation/SarakShellUserWidget';
 import { SarakAppChromeMobile } from './SarakAppChromeMobile';
 import { ChromeSidebarBody } from './chrome/ChromeSidebarBody';
 import { ChromeTopbarBody } from './chrome/ChromeTopbarBody';
+import type { SarakChromeNotification } from './chrome/ChromeNotificationsWidget';
 import type { SarakNavItem } from './chrome/navItem';
 import type { SarakChromeWidgets } from './chrome/chromeWidgets';
 
@@ -14,21 +15,13 @@ import type { SarakChromeWidgets } from './chrome/chromeWidgets';
 export type { SarakNavItem } from './chrome/navItem';
 /** Opt-out dos widgets do cromo que nascem montados por padrão. */
 export type { SarakChromeWidgets } from './chrome/chromeWidgets';
+export type { SarakChromeNotification } from './chrome/ChromeNotificationsWidget';
 
 /**
- * SarakAppChrome — cromo apresentacional temável (topbar/sidebar) SEM host/registro.
+ * SarakAppChrome — cromo temável do aplicativo (topbar/sidebar) com navegação por dados.
  *
- * A lacuna real do Teste Real (Spec 40.1 — L2): os tokens de cromo da Spec 18
- * (`--sarak-topbar-*`, `--sarak-sidebar-*`) ficavam SEM consumidor porque o único
- * consumidor era o `SarakShell`, que é um HOST de módulos-plugin (renderiza o
- * `activeModule` do Discovery, não `children`). Um consumidor de apps-separados (como
- * o ERP) não usa o modelo Shell/registro — então nada pintava a topbar/sidebar.
- *
- * `SarakAppChrome` fecha isso: é um cromo 100% PRESENTACIONAL — topbar/sidebar + área
- * de conteúdo (`children`) —, temável por tokens do Design Engine, que CADA app
- * renderiza sozinho. Sem `registerSarakModule`, sem Discovery, sem acoplar módulos.
- * A navegação é DADO (`navItems`/`nav`) e a seleção sai por callback (`onNavigate`) —
- * o host decide o que fazer (redirect de página inteira, router local, etc.).
+ * Cada aplicativo monta seu cromo com `children`, `navItems` e `onNavigate`; o
+ * aplicativo controla suas telas e escolhe como atualizar a rota.
  *
  * Multidispositivo por padrão (Spec 40.3 — L1), zero-config via `useSarakDevice`: em
  * **desktop** é o cromo configurado (sidebar/topbar); em **tablet** vira topbar compacta
@@ -48,6 +41,8 @@ export type { SarakChromeWidgets } from './chrome/chromeWidgets';
 export interface SarakAppChromeProps {
     /** Conteúdo do app (a tela do próprio módulo). */
     children: React.ReactNode;
+    /** Slot `secondaryContent`: segundo painel, exibido quando `isSplitViewEnabled` está ligado. */
+    secondaryContent?: React.ReactNode;
     /** Identidade exibida no cromo (topo da sidebar / início da topbar). */
     brand?: { name?: string; logoUrl?: string };
     /**
@@ -94,8 +89,9 @@ export interface SarakAppChromeProps {
      * Slot `search`: conteúdo de busca do consumidor (tipicamente um
      * `SarakShellSearchWidget`), posicionado por `design.searchPositionTopbar`
      * (`left`/`center`/`right`) na topbar e `design.searchPositionSidebar`
-     * (`top`/`bottom`) na sidebar/drawer. `'hidden'` some a região mesmo com
-     * conteúdo — é o token, não a ausência de `search`, quem decide sumir.
+     * (`top`/`bottom`) na sidebar/drawer. A composição do widget controla se a
+     * busca default é oferecida; a região personalizada continua controlada pelo
+     * conteúdo desta prop.
      */
     search?: React.ReactNode;
     /** Slot `sidebarHeader`: topo da sidebar (abaixo da marca). No celular migra para o drawer. */
@@ -112,14 +108,18 @@ export interface SarakAppChromeProps {
      * COMPLEMENTA o fundo/atmosfera global por tema (Design Engine), não o substitui.
      */
     decoration?: React.ReactNode;
-    /** Identidade exibida no widget de usuário default (busca/tema/usuário/colapso — abaixo). */
+    /** Identidade exibida no widget de usuário default. */
     user?: SarakShellUser;
     /** Encerra a sessão a partir do widget de usuário default. */
     logout?: () => void;
+    /** Notificações fornecidas pelo aplicativo para o widget da barra. */
+    notifications?: SarakChromeNotification[];
+    /** Trata a seleção de uma notificação pelo usuário. */
+    onNotificationSelect?: (notification: SarakChromeNotification) => void;
     /**
      * O cromo nasce com busca (atalho Ctrl/Cmd+K incluso), alternância de tema, widget
-     * de usuário e colapso da navegação MONTADOS — sem escrever nada. Omitir esta prop
-     * mantém os quatro ligados; `false` num campo desliga só aquele, isolado dos demais.
+     * de usuário, notificações e colapso da navegação MONTADOS — sem escrever nada.
+     * Omitir esta prop mantém os widgets ligados; `false` num campo desliga só aquele.
      * Um slot preenchido pelo consumidor (`search`) sempre vence o default correspondente.
      */
     widgets?: SarakChromeWidgets;
@@ -133,6 +133,7 @@ export interface SarakAppChromeProps {
  */
 export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     children,
+    secondaryContent,
     brand,
     navItems,
     nav = [],
@@ -151,6 +152,8 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     decoration,
     user,
     logout,
+    notifications,
+    onNotificationSelect,
     widgets,
     className = '',
     style,
@@ -173,7 +176,7 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     // teclado + agrupamento por categoria. A rota ativa vem do item marcado `active`;
     // sem `navItems`, cai no `nav`/`activeRoute`.
     const effectiveNav: SarakShellNavItem[] = navItems
-        ? navItems.map((item) => ({ label: item.label, route: item.href, icon: item.icon, category: item.category }))
+        ? navItems.map(({ label, href, icon, category, disabled, badge, target }) => ({ label, route: href, icon, category, disabled, badge, target }))
         : nav;
     const effectiveActiveRoute = navItems
         ? navItems.find((item) => item.active)?.href ?? activeRoute
@@ -193,7 +196,7 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     const rootStyle: React.CSSProperties = {
         height: '100dvh',
         overflow: 'hidden',
-        background: useHasGlobalBackgroundMedia() ? 'transparent' : 'var(--bg-body, var(--theme-body, transparent))',
+        background: useChromeRootBackground(),
         ...style,
     };
 
@@ -215,7 +218,10 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
                 decoration={decoration}
                 user={user}
                 logout={logout}
+                notifications={notifications}
+                onNotificationSelect={onNotificationSelect}
                 widgets={widgets}
+                secondaryContent={secondaryContent}
                 className={className}
                 rootStyle={rootStyle}
             >
@@ -229,7 +235,9 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     // 250 linhas (R9) depois de ganhar o consumo dos tokens de cromo que faltavam.
     const shared = {
         brand, logo, nav: effectiveNav, activeRoute: effectiveActiveRoute, onNavigate,
-        topbarStart, endSlot, search, banner, footer, decoration, user, logout, widgets, className, rootStyle,
+        topbarStart, endSlot, search, banner, footer, decoration, user, logout, notifications,
+        onNotificationSelect, widgets, className, rootStyle,
+        secondaryContent,
     };
 
     if (mode === 'topbar') {

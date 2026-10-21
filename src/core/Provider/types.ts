@@ -1,5 +1,10 @@
 import type { DesignTokenId, SarakDesignTokens } from './generated/design-token-ids';
 import type { SarakPreferencesOptions, SarakUserPreferences } from './preferencesTypes';
+import type { SarakThemeCatalogEntry } from '../Design/presets/themes';
+import type { SarakFontsOption } from './providerProps';
+import type { SarakThemeEntry, SarakThemeSaveOperation } from './themeTypes';
+
+export type { SarakThemeEntry, SarakThemeSaveOperation } from './themeTypes';
 
 /**
  * Contrato do Theme Payload com DOMÍNIO DE CHAVES FECHADO: somente design tokens
@@ -30,16 +35,6 @@ interface SarakRuntimeExtras {
 /** Estado de design REAL em runtime: o payload público + os extras de runtime. */
 export type SarakDesignState = SarakThemePayload & SarakRuntimeExtras;
 
-/** Entrada da lista unificada de temas (GLOBAL_THEMES + custom_themes do banco). */
-export interface SarakThemeEntry {
-    id: string;
-    /** Rótulo exibido nas listas de tema. Os embarcados já o têm via `ThemePreset`;
-     *  um tema salvo em runtime (ADR-011) precisa dele para não cair no fallback. */
-    name?: string;
-    design?: Record<string, unknown>;
-    contraparte?: Partial<SarakDesignState>; // Bloco p/ o modo OPOSTO ao nativo (plan-26) — opcional no tipo (R33)
-}
-
 /** Assinatura do setter do design-state (valor ou updater functional). */
 export type SetDesign = (updater: SarakDesignState | ((prev: SarakDesignState) => SarakDesignState)) => void;
 
@@ -55,7 +50,6 @@ interface SarakThemePayloadExtras {
     mode?: string;
     layout?: string;
     animationStyle?: string;
-    emojiSet?: string;
     primaryColor?: string;
     secondaryColor?: string;
     flowGridStyle?: string;
@@ -64,11 +58,10 @@ interface SarakThemePayloadExtras {
     chatAnimationSpeed?: number;
     chartType?: string;
     chartShowGrid?: boolean;
-    cardHoverStyle?: 'lift' | 'expand' | 'glow' | 'glow-only' | 'none';
+    cardHoverStyle?: 'lift' | 'glow-only' | 'expand';
     cardTextureType?: string;
     cardGeometricCut?: number;
     cardVariant?: 'classic' | 'title' | 'action' | 'search';
-    
     // Components (Images/Icons)
     imageOverlay?: boolean;
     imageCardHoverZoom?: number;
@@ -85,7 +78,6 @@ interface SarakThemePayloadExtras {
     globalBackgroundImageUrl?: string;
     globalBackgroundOpacity?: number;
     globalBackgroundBlur?: number;
-    moduleBlacklist?: string;
     searchVariant?: "search" | "classic" | "title" | "action";
     columnGap?: string | number;
     iconSize?: string;
@@ -131,25 +123,21 @@ export type SarakUIMode = 'app' | 'embedded';
 
 export interface SarakUIOptions {
     token?: string;
+    /** Ajustes do sequestro de tema legado executado pelo `SovereignThemeInjector`. */
+    manifest?: Record<string, unknown>;
     /** Modo de consumo (Spec 24). Default `'app'` — zero breaking change. */
     mode?: SarakUIMode;
     /** Ajustes válidos apenas em `mode: 'embedded'`. */
     embedded?: {
         /**
-         * Opt-in explícito para injetar as fontes do Google no `<head>` do host.
+         * Opt-in explícito para injetar as fontes (da origem de `fonts`) no `<head>` do host.
          * Default `false`: no Modo Embarcado a ilha herda as fontes do host, e a lib
          * não escreve `<link>`/`@import` global sem permissão.
          */
         injectGlobalFonts?: boolean;
     };
-    endpoints?: {
-        discoveryPath?: string;
-        discovery?: string[];
-    };
-    manifest?: {
-        brand?: { name?: string; logoUrl?: string };
-        [key: string]: unknown;
-    };
+    /** Origem das fontes do tema; padrão `'bundled'` (ver `SarakFontsOption`). */
+    fonts?: SarakFontsOption;
     persistence?: {
         /** Estratégia de persistência (ADR-009 §2.2). Default `'hybrid'` = localStorage + onSave/onLoad; `'local'` ignora as duas portas; `'remote'` para de gravar localStorage e SUBSTITUI pelo que `onLoad` resolver, degradando para `'local'` com aviso único sem porta configurada. */
         strategy?: 'local' | 'remote' | 'hybrid';
@@ -164,7 +152,8 @@ export interface SarakUIOptions {
          *  produz. Quem já implementa `onSave(design)` continua funcionando: em
          *  JavaScript, argumento extra não declarado é ignorado. */
         onSave?: (design: SarakThemePayload, activeThemeId?: string) => Promise<void> | void;
-        onLoad?: () => Promise<SarakThemePayload> | SarakThemePayload;
+        onLoad?: () => Promise<SarakThemePayload | { design: SarakThemePayload; activeThemeId?: string } | null | undefined>
+            | SarakThemePayload | { design: SarakThemePayload; activeThemeId?: string } | null | undefined;
         /** Segura os filhos até `onLoad` resolver — troca flash por tela vazia (ver "o primeiro paint" em `docs/persistencia-de-tema.md`). Default `false`. */
         strictBackendSync?: boolean;
         /** Sincroniza o tema entre abas/apps que compartilham a `storageKey`. Escuta `storage` e reaplica o design (validado) quando outra aba grava a mesma chave. Default `true`. */
@@ -172,18 +161,20 @@ export interface SarakUIOptions {
     };
     theme?: {
         defaultTheme?: string;
-        defaultModuleId?: string;
         extraTokens?: Record<string, unknown>;
         /**
          * Porta ÚNICA de escrita para "salvar tema em runtime" (ADR-011, substitui as
          * três portas do ADR-010): chamada por `sarak.saveTheme` DEPOIS de o tema já
          * validado (`validateDesign`) entrar na sessão (`allThemes`). Recebe o
-         * `ThemeEntry` completo (`{ id, name, design }`); GUARDAR — arquivo, tabela,
+         * `ThemeEntry` completo (`{ id, name, design, contraparte? }`); GUARDAR — arquivo, tabela,
          * `localStorage`, o que for — e DEVOLVER no próximo boot via `customThemes` é
-         * inteiramente do consumidor. Não existe porta de leitura nem de apagar: a
-         * leitura já é a prop `customThemes`, e apagar é decisão de quem guarda.
+        * inteiramente do consumidor. O segundo argumento opcional informa `'create'`
+        * ou `'replace'`; callbacks antigos que recebem só o tema continuam válidos.
+        * A leitura já é a prop `customThemes`; a porta
+         * opcional `onDelete` permite remover da fonte persistente.
          */
-        onSave?: (theme: SarakThemeEntry) => Promise<void> | void;
+        onSave?: (theme: SarakThemeEntry, operation?: SarakThemeSaveOperation) => Promise<void> | void;
+        /** Remove o tema salvo pelo consumidor, quando configurada. */ onDelete?: (id: string) => Promise<void> | void;
     };
     preferences?: SarakPreferencesOptions; // Porta opcional de preferências do usuário
     /**
@@ -209,7 +200,6 @@ export interface SarakBrandingState {
 export interface SarakUIContextType {
     preferences: SarakUserPreferences; // Preferências do usuário — camada separada do tema
     updatePreferences: (partial: Partial<SarakUserPreferences>) => void;
-    discoveryEndpoints: string[];
     design: SarakThemePayload;
     systemDesign?: SarakThemePayload; // Design persistido do sistema (sem rascunho/branding)
     activeDesign: SarakThemePayload;
@@ -224,15 +214,17 @@ export interface SarakUIContextType {
     applyFullConfig: (config: SarakThemePayload) => void;
     applyConfigRaw: (partial: Partial<SarakThemePayload>) => void; // Canal direto para o sistema (ignora rascunho)
     applyFullConfigRaw: (config: SarakThemePayload) => void; // Canal direto para o sistema (ignora rascunho)
-    registeredModules: unknown[];
-    layouts: unknown[];
     isHydrated: boolean;
     options: SarakUIOptions;
-    allThemes: unknown[]; // Array unificado (Scripts + DB) para a interface
-    /** Salva um tema em runtime (ADR-011): valida, funde no estado de SESSÃO
-     *  (substituindo entrada de mesmo `id`) e entrega a `options.theme.onSave`,
+    allThemes: SarakThemeEntry[]; // Temas com `design` EM MEMÓRIA (padrão, embarcados já carregados, custom, salvos)
+    themeCatalog: SarakThemeCatalogEntry[]; // Catálogo leve: todo tema escolhível (nome, modo, amostra de cor)
+    loadTheme: (id: string) => Promise<SarakThemeEntry | undefined>; // Carrega o `design` de um tema pelo id
+    getHostConfig?: () => SarakThemePayload; // O `config` do host (prop do Provider) — a prévia do painel compõe com ele
+    /** Salva um tema em runtime: valida, funde no estado de SESSÃO e entrega
+     *  a operação `create`/`replace` a `options.theme.onSave`,
      *  se configurado — sem a porta, não sobrevive a um reload. */
-    saveTheme: (theme: SarakThemeEntry) => Promise<void>;
+    saveTheme: (theme: SarakThemeEntry, operation?: SarakThemeSaveOperation) => Promise<void>;
+    deleteTheme: (id: string) => Promise<void>;
     activeThemeId?: string; // Espelho CRU do prop do Provider — só setado no modo CONTROLADO (09-temas-e-presets §4.3)
     resolvedThemeId?: string; // O tema EFETIVAMENTE no ar (plan-27) — usar este p/ achar a contraparte, nunca activeThemeId cru
     setResolvedThemeId?: (id: string | undefined) => void; // Quem aplica um preset novo anuncia o id aqui (plan-27)
@@ -245,3 +237,5 @@ export interface SarakUIContextType {
 // `SarakUIProviderProps` mora em `./providerProps.ts` — só para manter este
 // arquivo abaixo do limite de linhas do auditor de Clean Code (250).
 export type { SarakUIProviderProps } from './providerProps';
+export type { SarakFontSource, SarakFontsOptions, SarakFontsOption } from './providerProps';
+export type { SarakCustomFont, SarakCustomFontFile, SarakFontFallback } from './providerProps';

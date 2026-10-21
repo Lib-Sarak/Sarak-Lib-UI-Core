@@ -71,3 +71,48 @@ describe('SarakButton', () => {
         expect(classes).not.toContain('min-w-fit');
     });
 });
+
+describe('SarakButton — leitores de btnGhostHoverBg, btnNeonPulseSpeed e btnStyleType cyberpunk', () => {
+    const montar = (config: Record<string, unknown>, variant: 'primary' | 'ghost' = 'primary') => {
+        render(
+            <SarakUIProvider config={config}>
+                <SarakButton variant={variant}>Salvar</SarakButton>
+            </SarakUIProvider>,
+        );
+        return screen.getByRole('button', { name: 'Salvar' });
+    };
+
+    it('o hover do ghost lê --sarak-btn-ghost-hover, com o branco translúcido de sempre como reserva', () => {
+        const button = montar({}, 'ghost');
+        expect(button.className).toContain('hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))]');
+        expect(button.className).not.toContain('hover:bg-white/5');
+    });
+
+    it('neon com velocidade > 0 liga o pulso; com 0 (padrão) o brilho fica parado', () => {
+        expect(montar({ btnStyleType: 'neon', btnNeonPulseSpeed: 2 }).className).toContain('sarak-btn-neon-pulse');
+    });
+
+    it('neon com velocidade 0 não leva a classe de pulso', () => {
+        expect(montar({ btnStyleType: 'neon', btnNeonPulseSpeed: 0 }).className).not.toContain('sarak-btn-neon-pulse');
+    });
+
+    it('o pulso só vale no estilo neon', () => {
+        expect(montar({ btnStyleType: 'matte', btnNeonPulseSpeed: 2 }).className).not.toContain('sarak-btn-neon-pulse');
+    });
+
+    it('cyberpunk é wireframe: sem preenchimento, contorno na cor do brilho e cantos retos', () => {
+        const button = montar({ btnStyleType: 'cyberpunk', btnNeonGlowColor: 'rgb(1, 2, 3)' });
+        expect(button.style.backgroundColor).toBe('transparent');
+        expect(button.style.border).toContain('var(--sarak-btn-neon-glow-color');
+        expect(button.style.border).not.toContain('rgb(1, 2, 3)');
+        expect(button.style.borderRadius).toBe('0px');
+    });
+});
+
+describe('SarakButton — o aperto dura motionDurationInstant', () => {
+    it('a classe `transition-all` (150 ms) cede, só durante :active, à duração instantânea do tema', () => {
+        const { container } = render(<SarakButton>Salvar</SarakButton>);
+        expect(container.querySelector('button')?.className)
+            .toContain('active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)]');
+    });
+});

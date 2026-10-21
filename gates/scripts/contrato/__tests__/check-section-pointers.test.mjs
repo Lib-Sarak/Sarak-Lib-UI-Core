@@ -17,6 +17,30 @@ function montarFixture(nomeArquivo, conteudo) {
 }
 
 describe('checkSectionPointers — autorreferência', () => {
+  it('acusa ponteiro morto na skill e exclui somente arquivos chamados migracoes.md', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'sarak-section-pointers-kit-'));
+    const nestedDocs = path.join(root, 'sarak-ui', 'docs');
+    const nestedSkill = path.join(root, 'sarak-ui', 'skill');
+    try {
+      fs.mkdirSync(nestedDocs, { recursive: true });
+      fs.mkdirSync(nestedSkill, { recursive: true });
+      fs.writeFileSync(
+        path.join(nestedDocs, 'migracoes.md'),
+        ['# 1. Histórico', '', 'Consulte §9.9.'].join('\n'),
+      );
+      fs.writeFileSync(
+        path.join(nestedSkill, 'SKILL.md'),
+        ['# 1. Skill', '', 'Consulte §9.9.'].join('\n'),
+      );
+
+      const { mortos } = checkSectionPointers({ root });
+
+      expect(mortos).toEqual([{ arquivo: 'sarak-ui/skill/SKILL.md', linha: 3, secao: '9.9' }]);
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+
   it('acusa §N.M morto quando a subseção não existe nem como heading nem como item numerado', () => {
     const { root, files } = montarFixture(
       'doc.md',

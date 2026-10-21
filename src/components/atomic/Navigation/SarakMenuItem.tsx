@@ -1,11 +1,13 @@
-import React, { ButtonHTMLAttributes } from 'react';
+import React from 'react';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
+import { sarakIsSafeLinkHref, shouldHandleSameTabNavigation } from './linkNavigation';
+import { SarakIcon } from '../Icon/SarakIcon';
 
 export type SarakMenuItemOrientation = 'vertical' | 'horizontal';
 
-export interface SarakMenuItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'title'> {
-    /** Ícone à esquerda do rótulo — resolvido pelo chamador (`SarakIcon`/`IconRenderer`). */
-    icon?: React.ReactNode;
+export interface SarakMenuItemProps extends Omit<React.HTMLAttributes<HTMLElement>, 'title' | 'onClick' | 'type'> {
+    /** Nome registrado ou elemento renderizado à esquerda do rótulo. */
+    icon?: string | React.ReactNode;
     /** Rótulo do item; trunca em vez de transbordar (orientação vertical). */
     label: React.ReactNode;
     /** Item corresponde à rota/seção corrente. */
@@ -16,6 +18,17 @@ export interface SarakMenuItemProps extends Omit<ButtonHTMLAttributes<HTMLButton
     orientation?: SarakMenuItemOrientation;
     /** Tooltip nativo; cai para o texto do rótulo quando `label` é string. */
     title?: string;
+    /** Destino opcional; quando informado, o item é renderizado como link. */
+    href?: string;
+    /** Chamado apenas para clique primário simples em link destinado à aba atual. */
+    onNavigate?: (href: string) => void;
+    /** Indica uma quantidade ou estado adicional; também integra o nome acessível. */
+    badge?: string | number;
+    /** Contexto de navegação nativo do link. */
+    target?: string;
+    type?: React.ButtonHTMLAttributes<HTMLButtonElement>['type'];
+    disabled?: boolean;
+    onClick?: React.MouseEventHandler<HTMLElement>;
     className?: string;
 }
 
@@ -28,28 +41,38 @@ export interface SarakMenuItemProps extends Omit<ButtonHTMLAttributes<HTMLButton
  * largura cheia NA ORIGEM (nunca emite `min-w-fit`), então o rótulo trunca em vez de
  * transbordar; `className` do chamador vence os defaults por `mergeSarakClasses` (R35).
  *
- * @sarak-encapsula button — a razão de existir deste componente é encapsular o
- *   `<button>` nativo, para teclado e leitor de tela funcionarem por construção.
+ * @sarak-encapsula button — encapsula a ação sem destino com o elemento nativo;
+ *   links usam âncoras para preservar a navegação do navegador.
  */
 export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
     icon,
     label,
+    href,
+    onNavigate,
+    badge,
+    target,
     active = false,
     collapsed = false,
     orientation = 'vertical',
     className = '',
     disabled,
     title,
+    type = 'button',
+    tabIndex,
+    onClick,
     children,
     ...props
 }) => {
     const isVertical = orientation === 'vertical';
 
+    // Raio do item (fundo do ativo e do hover): UM token para as três formas — lateral, topo e
+    // recolhido —, `navItemRadius` (`--sarak-nav-item-radius`). O literal depois da vírgula é o
+    // padrão do token, para fora do Provider.
     const base = isVertical
-        ? 'flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-xl text-sm font-normal normal-case tracking-normal transition-colors'
-        : 'inline-flex items-center justify-center gap-2 shrink-0 min-w-0 px-4 py-1.5 rounded-full text-sm font-bold normal-case tracking-normal transition-colors';
+        ? 'flex items-center gap-3 w-full min-w-0 px-3 py-2.5 rounded-[var(--sarak-nav-item-radius,12px)] text-sm font-normal normal-case tracking-normal transition-colors'
+        : 'inline-flex items-center justify-center gap-2 shrink-0 min-w-0 px-4 py-1.5 rounded-[var(--sarak-nav-item-radius,12px)] text-sm font-bold normal-case tracking-normal transition-colors';
 
-    const collapsedClass = collapsed ? (isVertical ? 'justify-center' : 'w-8 h-8 p-0 rounded-lg') : '';
+    const collapsedClass = collapsed ? (isVertical ? 'justify-center' : 'w-8 h-8 p-0') : '';
 
     // Cor de ativo/hover do CROMO — cada ramo lê o token do seu PRÓPRIO papel: o fundo
     // do ativo vem de `sidebarActiveColor`/`topbarActiveColor` (fundo, cada orientação
@@ -64,29 +87,86 @@ export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
     // Engine hidratar ou fora de um `SarakUIProvider` (SSR, Storybook, teste isolado):
     // com o Provider montado, o Design Engine sempre declara cada token — quem garante
     // o sinal visível na tela real é o DEFAULT DO SCHEMA de `navItemActiveColor`
-    // (`#00f2ff`, sempre emitido), não o literal do JSX.
+    // (`#19e3f0`, sempre emitido), não o literal do JSX.
     const tone = active
         ? isVertical
-            ? 'font-bold bg-[var(--sarak-sidebar-active-color,rgba(59,130,246,0.15))] text-[var(--sarak-nav-active-color,#3b82f6)]'
-            : 'font-bold bg-[var(--sarak-topbar-active-color,rgba(59,130,246,0.15))] text-[var(--sarak-nav-active-color,#3b82f6)]'
+            ? 'font-bold bg-[var(--sarak-sidebar-active-color,transparent)] text-[var(--sarak-nav-active-color,#19e3f0)]'
+            : 'font-bold bg-[var(--sarak-topbar-active-color,transparent)] text-[var(--sarak-nav-active-color,#19e3f0)]'
         : isVertical
-            ? 'text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-sidebar-hover-color,rgba(255,255,255,0.04))]'
-            : 'text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-topbar-hover-color,rgba(255,255,255,0.04))]';
+            ? 'text-[var(--text-muted,rgba(242,246,251,0.55))] hover:text-[var(--sarak-text-main,#f2f6fb)] hover:bg-[var(--sarak-sidebar-hover-color,transparent)]'
+            : 'text-[var(--text-muted,rgba(242,246,251,0.55))] hover:text-[var(--sarak-text-main,#f2f6fb)] hover:bg-[var(--sarak-topbar-hover-color,transparent)]';
 
-    const disabledClass = disabled ? 'opacity-30 grayscale cursor-not-allowed pointer-events-none' : 'cursor-pointer';
+    const disabledClass = disabled
+        ? 'text-[var(--text-muted,rgba(242,246,251,0.55))] cursor-not-allowed pointer-events-none'
+        : 'cursor-pointer';
+    const hasHref = href !== undefined;
+    const isSafeHref = typeof href === 'string' && sarakIsSafeLinkHref(href);
+    const isNavigable = isSafeHref && !disabled;
+    const accessibleTitle = title ?? (typeof label === 'string' ? label : undefined);
+    const renderedIcon = typeof icon === 'string' ? <SarakIcon name={icon} size={18} /> : icon;
+    const accessibleLabel = typeof label === 'string' || typeof label === 'number'
+        ? `${label}${badge !== undefined ? ` ${badge}` : ''}`
+        : props['aria-label'];
+    const content = (
+        <>
+            {renderedIcon ? <span aria-hidden="true" className="shrink-0 inline-flex items-center justify-center">{renderedIcon}</span> : null}
+            {collapsed ? null : <span className={isVertical ? 'flex-1 min-w-0 truncate text-left' : 'truncate'}>{label}</span>}
+            {badge !== undefined && (
+                <span
+                    className="inline-flex shrink-0 items-center justify-center rounded-full border border-[var(--border-color,rgba(255,255,255,0.09))] bg-[var(--theme-card,transparent)] text-[var(--text-muted,rgba(242,246,251,0.55))]"
+                    style={{ paddingInline: 'var(--sarak-layout-gap-sm, 8px)' }}
+                >
+                    {badge}
+                </span>
+            )}
+            {children}
+        </>
+    );
+
+    const handleAnchorClick = (event: React.MouseEvent<HTMLElement>): void => {
+        if (disabled || !isSafeHref) return;
+        onClick?.(event);
+        if (!onNavigate || !href || !shouldHandleSameTabNavigation(event, target)) return;
+        event.preventDefault();
+        onNavigate(href);
+    };
+
+    const itemClassName = mergeSarakClasses(base, collapsedClass, tone, disabledClass, className);
+    if (hasHref) {
+        return (
+            <a
+                {...props}
+                href={isNavigable ? href : undefined}
+                target={target}
+                rel={target !== undefined && target !== '_self' && isNavigable ? 'noopener noreferrer' : undefined}
+                role={isNavigable ? undefined : 'link'}
+                aria-disabled={isNavigable ? undefined : true}
+                aria-current={active ? 'page' : undefined}
+                aria-label={collapsed || badge !== undefined ? accessibleLabel : undefined}
+                tabIndex={isNavigable ? tabIndex : -1}
+                title={accessibleTitle}
+                className={itemClassName}
+                onClick={handleAnchorClick}
+            >
+                {content}
+            </a>
+        );
+    }
 
     return (
         <button
-            type="button"
-            disabled={disabled}
-            title={title ?? (typeof label === 'string' ? label : undefined)}
-            aria-current={active ? 'page' : undefined}
-            className={mergeSarakClasses(base, collapsedClass, tone, disabledClass, className)}
             {...props}
+            type={type}
+            disabled={disabled}
+            aria-disabled={disabled ? true : undefined}
+            aria-current={active ? 'page' : undefined}
+            aria-label={collapsed || badge !== undefined ? accessibleLabel : undefined}
+            tabIndex={disabled ? -1 : tabIndex}
+            title={accessibleTitle}
+            className={itemClassName}
+            onClick={onClick}
         >
-            {icon ? <span className="shrink-0 inline-flex items-center justify-center">{icon}</span> : null}
-            {!collapsed && <span className={isVertical ? 'flex-1 min-w-0 truncate text-left' : 'truncate'}>{label}</span>}
-            {children}
+            {content}
         </button>
     );
 };

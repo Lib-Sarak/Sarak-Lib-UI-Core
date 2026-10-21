@@ -76,6 +76,17 @@ describe('MasterControlPanel', () => {
         expect(screen.queryByText('Primary Font')).not.toBeInTheDocument();
     });
 
+    it('a busca é por sentido: `fonte` acha o token rotulado em inglês e mantém o filtro de categoria por cima', () => {
+        renderPanel();
+
+        fireEvent.change(screen.getByPlaceholderText('BUSCAR...'), { target: { value: 'fonte' } });
+        expect(screen.getByText('Primary Font')).toBeInTheDocument();
+        expect(screen.queryByText('Base Padding')).not.toBeInTheDocument();
+
+        fireEvent.click(screen.getByText('Surfaces'));
+        expect(screen.queryByText('Primary Font')).not.toBeInTheDocument();
+    });
+
     it('filtra tokens pelas categorias de pilar', () => {
         renderPanel();
 

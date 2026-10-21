@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent, within, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { SarakModal } from '../SarakModal';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
@@ -100,5 +100,25 @@ describe('SarakModal — idioma que vale', () => {
         );
         expect(screen.getByText('Finish')).toBeInTheDocument();
         expect(screen.getByLabelText('Close modal')).toBeInTheDocument();
+    });
+});
+
+describe('SarakModal — a saída anima antes de o diálogo sair da página (motionEaseIn)', () => {
+    it('fechar não remove o diálogo no mesmo quadro: ele sai ao fim da saída, e sem segurar o ponteiro', async () => {
+        const ui = (isOpen: boolean) => (
+            <SarakUIProvider>
+                <SarakModal isOpen={isOpen} onClose={() => undefined} title="Sai animado">
+                    <span>corpo</span>
+                </SarakModal>
+            </SarakUIProvider>
+        );
+        const { rerender, container } = render(ui(true));
+        expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+        rerender(ui(false));
+        expect(screen.getByRole('dialog')).toBeInTheDocument();
+        expect(container.ownerDocument.querySelector('.fixed.inset-0')?.className).toContain('pointer-events-none');
+
+        await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
     });
 });

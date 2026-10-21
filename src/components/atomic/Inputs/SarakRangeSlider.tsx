@@ -1,5 +1,7 @@
 import React, { HTMLAttributes, useId, useMemo, useState } from 'react';
 import { SarakFormGroup } from '../Layouts/SarakFormGroup';
+import { SarakFieldError } from '../Feedback/SarakFieldError';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 /** Par ordenado [início, fim] de um intervalo contínuo. */
 export type SarakRangeValue = [number, number];
@@ -22,8 +24,8 @@ export interface SarakRangeSliderProps
     onChange?: (value: SarakRangeValue) => void;
 }
 
-const ACTIVE = 'var(--color-theme-primary, #00f2ff)))';
-const TRACK = 'var(--color-theme-border, rgba(255,255,255,0.1)))';
+const ACTIVE = 'var(--sarak-range-active-bg, var(--color-theme-primary, #19e3f0))';
+const TRACK = 'var(--color-theme-border, rgba(255,255,255,0.09))';
 
 const clamp = (n: number, lo: number, hi: number): number => Math.min(Math.max(n, lo), hi);
 const percent = (n: number, min: number, max: number): number =>
@@ -53,8 +55,10 @@ export const SarakRangeSlider: React.FC<SarakRangeSliderProps> = ({
     className = '',
     style,
     ...props
-}) => {
+}: SarakRangeSliderProps): React.ReactElement => {
+    const t = useLibraryText();
     const reactId = useId();
+    const labelId = `${reactId}-label`;
     const errorId = `${reactId}-error`;
     const [internal, setInternal] = useState<SarakRangeValue>(defaultValue ?? [min, max]);
     const current = value ?? internal;
@@ -77,9 +81,15 @@ export const SarakRangeSlider: React.FC<SarakRangeSliderProps> = ({
     const disabledClass = disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : '';
 
     return (
-        <SarakFormGroup className={`${disabledClass} ${className}`.trim()} style={style} {...props}>
+        <SarakFormGroup
+            {...props}
+            className={`${disabledClass} ${className}`.trim()}
+            style={style}
+            role="group"
+            aria-labelledby={label ? labelId : undefined}
+        >
             {label && (
-                <span className="text-2xs font-black uppercase tracking-widest text-[var(--text-muted,#94a3b8)]">
+                <span id={labelId} className="text-2xs font-black uppercase tracking-widest text-[var(--text-muted,rgba(242,246,251,0.55))]">
                     {label}
                 </span>
             )}
@@ -103,7 +113,7 @@ export const SarakRangeSlider: React.FC<SarakRangeSliderProps> = ({
                 )}
 
                 <RangeThumb
-                    ariaLabel={`${label ?? 'range'} mínimo`}
+                    ariaLabel={t('rangeMinAriaLabel', { label: label ?? t('rangeDefaultLabel') })}
                     min={min}
                     max={max}
                     step={step}
@@ -114,7 +124,7 @@ export const SarakRangeSlider: React.FC<SarakRangeSliderProps> = ({
                     onInput={handleLow}
                 />
                 <RangeThumb
-                    ariaLabel={`${label ?? 'range'} máximo`}
+                    ariaLabel={t('rangeMaxAriaLabel', { label: label ?? t('rangeDefaultLabel') })}
                     min={min}
                     max={max}
                     step={step}
@@ -126,11 +136,7 @@ export const SarakRangeSlider: React.FC<SarakRangeSliderProps> = ({
                 />
             </div>
 
-            {error && (
-                <p id={errorId} className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
-                    {error}
-                </p>
-            )}
+            <SarakFieldError message={error} fieldId={reactId} />
         </SarakFormGroup>
     );
 };
@@ -158,7 +164,7 @@ const RangeThumb: React.FC<ThumbProps> = ({
     invalid,
     describedBy,
     onInput,
-}) => (
+}: ThumbProps): React.ReactElement => (
     <input
         type="range"
         aria-label={ariaLabel}
@@ -175,7 +181,7 @@ const RangeThumb: React.FC<ThumbProps> = ({
     />
 );
 
-const Tooltip: React.FC<{ pct: number; value: number }> = ({ pct, value }) => (
+const Tooltip: React.FC<{ pct: number; value: number }> = ({ pct, value }: { pct: number; value: number }): React.ReactElement => (
     <span
         className="absolute -top-4 -translate-x-1/2 text-2xs font-black tabular-nums"
         style={{ left: `${pct}%`, color: ACTIVE }}

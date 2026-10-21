@@ -55,7 +55,7 @@ export function buildViteConfig({ answers }) {
     return `import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// Gerado por \`npx @sarak/lib-ui-core init\` (starter padrão — módulos-plugin, Spec 45).
+// Gerado por \`npx @sarak/lib-ui-core init\` (starter com SarakAppChrome e rotas do consumidor).
 
 ${NOTA_PISO_DE_BUNDLE}
 

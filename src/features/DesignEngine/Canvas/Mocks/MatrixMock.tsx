@@ -51,11 +51,11 @@ export const MockMatrix: React.FC<MatrixMockProps> = ({ tokens, animationVariant
             className="w-full h-full flex flex-col gap-6"
         >
             <div className="flex flex-col gap-1">
-                <h2 className="text-2xl font-black text-white uppercase tracking-widest">Advanced Matrix</h2>
-                <p className="text-sm text-white/40 uppercase tracking-tighter">Real-time Data-Driven Control Preview</p>
+                <h2 className="text-2xl font-black text-theme-text uppercase tracking-widest">Advanced Matrix</h2>
+                <p className="text-sm text-theme-text/40 uppercase tracking-tighter">Real-time Data-Driven Control Preview</p>
             </div>
 
-            <div className="flex-1 overflow-hidden rounded-[var(--sarak-matrix-radius)] border border-white/5 bg-black/20 backdrop-blur-md">
+            <div className="flex-1 overflow-hidden rounded-[var(--sarak-matrix-radius)] border border-theme-text/5 bg-theme-body/20 backdrop-blur-md">
                 <SarakExpandableMatrix
                     data={roles}
                     subItems={permissions}
@@ -67,8 +67,8 @@ export const MockMatrix: React.FC<MatrixMockProps> = ({ tokens, animationVariant
                                 {role.icon}
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-sm font-bold text-white uppercase tracking-widest">{role.title}</span>
-                                <span className="text-xs text-white/40 uppercase tracking-tighter">{role.description}</span>
+                                <span className="text-sm font-bold text-theme-text uppercase tracking-widest">{role.title}</span>
+                                <span className="text-xs text-theme-text/40 uppercase tracking-tighter">{role.description}</span>
                             </div>
                         </div>
                     )}

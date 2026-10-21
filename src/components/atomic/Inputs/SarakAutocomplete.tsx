@@ -7,6 +7,7 @@ import {
     type AutocompleteControllerState,
 } from './internal/useAutocompleteController';
 import { AutocompletePopup } from './internal/AutocompletePopup';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 export interface SarakAutocompleteOption {
     value: string;
@@ -48,7 +49,7 @@ export interface SarakAutocompleteProps extends Omit<SarakInputProps, 'defaultVa
      */
     onChange?: React.ChangeEventHandler<HTMLInputElement>;
     /**
-     * Texto de dica do campo. Omitido, usa "Buscar...".
+     * Texto de dica do campo. Omitido, usa o padrão traduzido da biblioteca.
      */
     placeholder?: string;
     /**
@@ -84,15 +85,18 @@ interface AutocompleteFieldProps {
 
 const AutocompleteField = (props: AutocompleteFieldProps): React.ReactElement => {
     const { inputProps, state } = props;
-    const { placeholder = 'Buscar...', ...nativeProps } = inputProps;
+    const t = useLibraryText();
+    const { placeholder, ...nativeProps } = inputProps;
     const isActiveOptionValid = state.activeIndex >= 0 && state.activeIndex < state.suggestions.length;
     const activeOptionId = isActiveOptionValid
         ? `${state.listboxId}-option-${state.activeIndex}`
         : undefined;
     return (
         <SarakInput
+            type="search"
+            enterKeyHint="search"
             {...nativeProps}
-            placeholder={placeholder}
+            placeholder={placeholder ?? t('fieldSearchPlaceholder')}
             value={state.query}
             onChange={state.handleInputChange}
             onFocus={state.handleFocus}
@@ -128,5 +132,5 @@ export const SarakAutocomplete = (props: SarakAutocompleteProps): React.ReactEle
         options, searchOptions, debounceMs, value, defaultValue, onChange,
         onOptionSelect, onFocus, onBlur, onKeyDown, disabled,
     });
-    return <AutocompleteDisplay inputProps={inputProps} state={state} />;
+    return <AutocompleteDisplay inputProps={{ ...inputProps, disabled }} state={state} />;
 };

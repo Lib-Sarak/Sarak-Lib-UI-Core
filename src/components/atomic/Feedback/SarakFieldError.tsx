@@ -26,7 +26,7 @@ export function SarakFieldError({ message, fieldId }: SarakFieldErrorProps): Rea
         <p
             id={fieldId ? `${fieldId}-error` : undefined}
             role="alert"
-            className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]"
+            className="text-sm text-[var(--sarak-input-error-color,#ff6b6b)]"
             style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}
         >
             <span aria-hidden="true">

@@ -17,6 +17,19 @@ import { SRC, buildPropsIndex, collectStringArrayConst, parse, walkSourceFiles }
 import { collectExportedNames, namesFromFileExports } from '../publicComponents.mjs';
 
 const TOKEN_IDS_FILE = 'core/Provider/generated/design-token-ids.ts';
+const TOKEN_DOCS_FILE = 'core/Provider/generated/design-token-docs.json';
+
+/**
+ * A documentação por token (`group`, `label`, `kind`, `modeDependent`, `usage`, `interactsWith`), gravada
+ * no schema e levada ao JSON gerado por `generate-token-types.ts`. Token sem campo documentado sai só com
+ * `group` e `label`.
+ */
+const readTokenDocsFile = () => JSON.parse(fs.readFileSync(path.join(SRC, TOKEN_DOCS_FILE), 'utf-8'));
+
+const readTokenDocs = () => new Map(readTokenDocsFile().tokens.map(({ id, ...rest }) => [id, rest]));
+
+/** Rótulo de cada pilar (grupo do schema), na ordem do dicionário. */
+export const collectTokenGroups = () => readTokenDocsFile().groups;
 
 /**
  * Schema vivo dos tokens de TEMA (as chaves válidas de `design` num `SarakThemePreset`).
@@ -25,16 +38,19 @@ const TOKEN_IDS_FILE = 'core/Provider/generated/design-token-ids.ts';
  */
 export const collectDesignTokens = () => {
     const source = parse(TOKEN_IDS_FILE);
+    const docs = readTokenDocs();
     const tokens = [];
     const visit = (node) => {
         if (ts.isInterfaceDeclaration(node) && node.name.text === 'SarakDesignTokens') {
             for (const member of node.members) {
                 if (!ts.isPropertySignature(member) || !member.name || !member.type) continue;
                 const type = member.type.getText(source).replace(/\s+/g, ' ').trim();
+                const id = member.name.getText(source);
                 tokens.push({
-                    id: member.name.getText(source),
+                    id,
                     type,
                     responsive: type.includes('SarakResponsiveValue'),
+                    ...docs.get(id),
                 });
             }
         }
@@ -48,24 +64,31 @@ export const collectDesignTokens = () => {
 export const collectThemePresetIds = () =>
     collectStringArrayConst('core/Design/presets/themes/index.ts', 'SARAK_THEME_PRESET_IDS');
 
-/** O par recomendado (`SARAK_REFERENCE_THEMES`) — lido das chamadas `sarakGetThemePreset('id')`. */
-export const collectReferenceThemeIds = () => {
-    const source = parse('core/Design/presets/themes/reference.ts');
-    const ids = [];
+/** O valor string de `const <name> = '<id>'` (com anotação de tipo e/ou `as const`) em `file`. */
+const collectStringConst = (file, name) => {
+    const source = parse(file);
+    let value = null;
     const visit = (node) => {
-        if (
-            ts.isCallExpression(node) &&
-            node.expression.getText(source) === 'sarakGetThemePreset' &&
-            node.arguments.length === 1 &&
-            ts.isStringLiteral(node.arguments[0])
-        ) {
-            ids.push(node.arguments[0].text);
+        if (ts.isVariableDeclaration(node) && node.name.getText(source) === name && node.initializer) {
+            let init = node.initializer;
+            while (ts.isAsExpression(init) || ts.isSatisfiesExpression(init)) init = init.expression;
+            if (ts.isStringLiteral(init)) value = init.text;
         }
         ts.forEachChild(node, visit);
     };
     visit(source);
-    return ids;
+    return value;
 };
+
+/**
+ * O par recomendado (claro + escuro): o claro é `LIGHT_REFERENCE_ID` (fora do boot,
+ * carregado por `sarakLoadReferenceThemes`) e o escuro é o tema padrão
+ * (`SARAK_DEFAULT_THEME_ID`, que `SARAK_BOOT_THEMES` expõe síncrono).
+ */
+export const collectReferenceThemeIds = () => [
+    collectStringConst('core/Design/presets/themes/reference.ts', 'LIGHT_REFERENCE_ID'),
+    collectStringConst('core/Design/presets/themes/index.ts', 'SARAK_DEFAULT_THEME_ID'),
+].filter(Boolean);
 
 /** Limiares canônicos de dispositivo — fonte única `core/Design/breakpoints.ts`. */
 export const collectBreakpoints = () => {
@@ -176,8 +199,8 @@ export const collectBarrelExports = () =>
 
 /**
  * O resto da API React pública que o catálogo de componentes NÃO cobre: ele varre só
- * `components/atomic/` e `components/Layout/`, então `SarakUIProvider`, `SarakShell` e
- * companhia (que moram em `core/`) ficavam de fora. Para o kit isso seria um buraco —
+ * `components/atomic/` e `components/Layout/`, então `SarakUIProvider` e
+ * outros componentes de montagem que moram em `core/` ficavam de fora. Para o kit isso seria um buraco —
  * são justamente as peças de montagem. Derivado, não listado à mão: todo nome do barril
  * que tenha uma interface `<Nome>Props` no código-fonte.
  */

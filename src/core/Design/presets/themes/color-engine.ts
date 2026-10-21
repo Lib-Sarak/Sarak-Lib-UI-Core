@@ -47,7 +47,6 @@ const EXPLICIT_PRIMARY_TOKENS = new Set([
     'cardActionBtnHoverBg',
     'cardGlowColor',
     'btnNeonGlowColor',
-    'securityShieldGlow',
     'aiGlowColor'
 ]);
 
@@ -93,8 +92,6 @@ const EXPLICIT_BG_TOKENS = new Set([
     'btnGhostHoverBg',
     'chatUserBg',
     'matrixItemBg',
-    'matrixSearchBg',
-    'aiPanelBg',
     'scrollThumbColor',
     'chartGridOpacity'
 ]);
@@ -284,10 +281,9 @@ export const syncThemeWithMode = (draftTokens: Record<string, SarakTokenValue>, 
         result.shadowIntensity = Math.min(Number(result.shadowIntensity) || 0, 0.25);
         result.shadowAmbientAlpha = Math.min(Number(result.shadowAmbientAlpha) || 0, 0.08);
         result.shadowProjectionAlpha = Math.min(Number(result.shadowProjectionAlpha) || 0, 0.1);
-        result.layerBackdropOpacity = Math.min(Number(result.layerBackdropOpacity) || 0, 0.02);
         // Texturas e Ruídos são preservados no claro (apenas a cor inverte via motor)
         // result.cardTextureOpacity e result.textureOpacity não são mais forçados a 0.05/0.03
-        result.noiseIntensity = 0.01;
+        result.bgNoiseDensity = 0.01;
     } else {
         result.colorBgModal = 'rgba(15, 15, 15, 0.8)';
         result.cardInnerGlowColor = 'rgba(255, 255, 255, 0.05)';

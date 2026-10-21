@@ -4,6 +4,7 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TokenControl } from '../TokenControl';
 import type { SarakDesignToken } from '../../../../../core/Design/types';
+import { TypographySchema } from '../../../../../core/Design/schema/typography';
 
 vi.mock('../../../components/DesignControls', () => {
     type MockControlProps = { value?: string | number | boolean; onChange: (v: unknown) => void; label?: string };
@@ -104,6 +105,35 @@ describe('TokenControl', () => {
         expect(screen.getByTestId('input-input')).toHaveValue('#000');
     });
 
+    it.each([
+        ['desktop', 'Desktop', 'Desktop'],
+        ['tablet', 'Só no Tablet', 'Tablet'],
+        ['smartphone', 'Só no Mobile', 'Mobile']
+    ])('token responsivo mostra o selo certo no dispositivo %s', (device, badge, name) => {
+        const token = { type: 'text', label: 'Resp', isResponsive: true } as unknown as SarakDesignToken;
+        render(<TokenControl token={token} value={{ desk: 'a', tab: 'b', mob: 'c' }} onChange={mockOnChange} previewDevice={device} />);
+
+        const selo = screen.getByTestId('token-device-badge');
+        expect(selo).toHaveTextContent(badge);
+        expect(selo).toHaveAttribute('title', `Este valor vale só para ${name}. Troque o dispositivo na barra do preview para editar os outros.`);
+    });
+
+    it('token não responsivo não mostra selo', () => {
+        const token = { type: 'text', label: 'Fixo', isResponsive: false } as unknown as SarakDesignToken;
+        render(<TokenControl token={token} value="x" onChange={mockOnChange} previewDevice="tablet" />);
+
+        expect(screen.queryByTestId('token-device-badge')).toBeNull();
+    });
+
+    it('usa um degrau de tipografia com padrão de pelo menos 12 px no selo', () => {
+        const token = { type: 'text', label: 'Resp', isResponsive: true } as unknown as SarakDesignToken;
+        render(<TokenControl token={token} value={{ desk: 'a', tab: 'b', mob: 'c' }} onChange={mockOnChange} />);
+
+        const caption = TypographySchema.tokens.find(({ id }) => id === 'typeScaleCaption');
+        expect(Number(caption?.defaultValue)).toBeGreaterThanOrEqual(12);
+        expect(screen.getByTestId('token-device-badge').className).toContain('--sarak-type-scale-caption');
+    });
+
     it('cria estrutura responsiva caso o valor ainda não seja objeto (migração)', () => {
         const tokenResponsive = { type: 'number', label: 'Number Resp', isResponsive: true } as unknown as SarakDesignToken;
         const flatValue = 16; 
@@ -112,12 +142,12 @@ describe('TokenControl', () => {
             <TokenControl token={tokenResponsive} value={flatValue} onChange={mockOnChange} previewDevice="tablet" />
         );
         
-        // Eleve o displayValue que ainda é flat
-        expect(screen.getByTestId('input-input')).toHaveValue('16');
+        // `number` desenha o mesmo slider com faixa e passo do `slider` (nunca um campo solto que grava `NaN`).
+        expect(screen.getByTestId('slider-input')).toHaveValue(16);
 
         // Se mudar no tablet, deve converter para objeto { mob: 16, tab: X, desk: 16 }
-        fireEvent.change(screen.getByTestId('input-input'), { target: { value: '18' } });
-        
-        expect(mockOnChange).toHaveBeenCalledWith({ mob: 16, tab: '18', desk: 16 });
+        fireEvent.change(screen.getByTestId('slider-input'), { target: { value: '18' } });
+
+        expect(mockOnChange).toHaveBeenCalledWith({ mob: 16, tab: 18, desk: 16 });
     });
 });

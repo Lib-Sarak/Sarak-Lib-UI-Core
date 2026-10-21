@@ -11,10 +11,10 @@ relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-d
 # 1. O que é, e por que vive em `features/`
 
 O **painel de customização** é a ferramenta de autoria de temas da própria biblioteca: a UI onde um humano
-mexe em tokens e vê o resultado ao vivo. A peça pública é o **`CustomizationPanel`**
-(`src/features/DesignEngine/Library/CustomizationPanel/index.tsx`, exportado **lazy** no barril em
-`src/index.ts:50-52` desde 2026-08-05, `plan-09`), reexportando um `React.FC` com `Suspense` interno — o
-tipo público não mudou. Por dentro, o trabalho de fato é `CustomizationPanelImpl.tsx` orquestrando
+mexe em tokens e vê o resultado ao vivo. A peça pública é o **`SarakCustomizationPanel`**
+(`src/features/DesignEngine/Library/CustomizationPanel/index.tsx`, exportado **lazy** no barril `src/index.ts`
+com esse nome — não há export sem prefixo), reexportando um `React.FC` com `Suspense` interno. O consumidor monta
+`<SarakCustomizationPanel />`. Por dentro, o trabalho de fato é `CustomizationPanelImpl.tsx` orquestrando
 `ThemeCustomizationTab`, `MasterControlPanel` e `PreviewCanvas`.
 
 **`features/DesignEngine/` é a ÚNICA feature de `src/features/`** — e o motivo é a regra de alocação de
@@ -63,22 +63,99 @@ cola que faz a folksonomia funcionar e é o único ponto que precisa de manuten�
 inventa um rótulo novo de categoria. Categoria não reconhecida cai em `'Geral'` (`:18`) — degrada, não
 quebra.
 
-## 2.1 Essencial × Avançado — os dois modos, e o dado que os separa
+## 2.1 Impacto × Essencial × Completo — os três modos, e o dado que os separa
 
-O painel expõe **dois modos nomeados**, e a separação não é uma lista curada à mão: sai do mesmo campo que
-a folksonomia já usa.
+O painel expõe **três modos nomeados**, escolhidos por um seletor no cabeçalho (grupo de rádio "Modo de
+edição": setas movem a seleção). O padrão é **Essencial**, e o modo não persiste. Nenhum modo é lista curada
+num arquivo de configuração: o dado que os separa mora **na entrada do token no catálogo**
+(`src/core/Design/catalog/partitions/`), não no schema.
 
 | Modo | O que mostra | Como é derivado |
 | --- | --- | --- |
-| **Essencial** | os tokens de maior impacto visual | `importance >= 80` no schema do token |
-| **Avançado** | o dicionário inteiro | sem filtro |
+| **Impacto** | poucos controles que, sozinhos, mudam o visual inteiro, numa **lista plana** de cinco blocos abertos — Fontes, Cores, Fundo e textura, Cards, Forma e estrutura —, sem acordeão de pilar | o token declara `visualImpact` com o grupo (`fontes`, `cores`, `fundo`, `cards` ou `forma`). Cada um marcado tem efeito visível provado (um consumidor que lê o valor e muda o que se vê). Bloco sem token não aparece |
+| **Essencial** | os tokens de maior importância | `importance >= 80` |
+| **Completo** | o dicionário inteiro | sem filtro |
 
-O corte por `importance` é o que mantém o Essencial **honesto ao crescer**: token novo de alto impacto
-entra sozinho, sem ninguém lembrar de atualizar uma lista. E é o que impede o modo de virar uma seleção
-arbitrária que envelhece — o mesmo princípio da §2.
+**Por que o Impacto tem campo próprio:** `importance` **não** mede impacto visual — tokens como z-index e
+breakpoint estão acima de `texture` nele. Um corte mais alto em `importance` não daria o modo.
 
-**O Command Center tem entrada própria**, separada dos dois modos: é acesso direto por busca, não uma
-terceira curadoria.
+O corte por campo é o que mantém os modos **honestos ao crescer**: token novo entra sozinho, declarando o campo
+onde nasce, sem ninguém lembrar de atualizar uma lista — o mesmo princípio da §2.
+
+O modo filtra os **pilares** e a lista plana; o bloco global e o da barra de preferências aparecem em todos os
+modos, e a **busca ignora o modo** (§2.2).
+
+**O Command Center tem entrada própria**, separada dos três modos: é acesso direto por busca, não outra
+curadoria. Ele é a entrada **"Busca por pilar"** do menu **Avançado** (§2.3).
+
+### 2.1.1 A seção "Composição da Barra"
+
+No pilar de **navegação** mora a seção *Composição da Barra*: os **oito** tokens que dizem onde cada widget do cromo aparece — `pinned`, `menu` ou `off` — para modo claro/escuro, tamanho da fonte, navegação topo/lateral, navegação recolhida, idioma, busca, usuário e notificações ([[05-cromo-e-slots]] §2.2.2). Ela nasce da folksonomia como as demais: os oito tokens carregam a categoria `chrome-composition` no catálogo, e o painel a mostra como seção própria do pilar.
+
+- **Aparece no modo padrão.** Os oito têm `importance: 80` no catálogo, então entram no **Essencial**; a seção não exige abrir o modo Completo.
+- **É do sistema, não do tema.** Escolher um tema no painel **não** altera essa seção: nenhum tema distribuído declara token de composição.
+
+## 2.2 A busca de token — por sentido, não por substring
+
+As três telas que buscam token — a aba de tema, a planilha do `MasterControlPanel` e o Command Center —
+chamam **uma função só**, `searchTokens` (`src/features/DesignEngine/utils/token-search.ts`). Ela não muda
+rótulo nenhum: decide o que aparece e em que ordem.
+
+**O que ela indexa:** o `label` do schema **e** o `name` do catálogo (a tela mostra um, o schema guarda o outro,
+e eles diferem em muitos tokens), o id quebrado em `camelCase`, `tags`, `categories`, `description` e o rótulo do
+componente de origem. Um token sem entrada no catálogo cai no `label` do schema.
+
+**Como casa:** acento e caixa são normalizados, e palavras de ligação (`de`, `do`, `da`, `com`…) são ignoradas.
+**Todo** termo precisa casar, de um destes jeitos:
+- palavra inteira;
+- **conceito** — o termo pertence a um grupo de `config/token-search-concepts.json` (`fonte`, `escrita`,
+  `texto`, `letra`, `tipografia`, `font`… são um grupo), e qualquer membro do grupo está no índice;
+- **prefixo, só no último termo** (busca enquanto digita: `cor do tex` alcança `texto`), com 2 ou mais caracteres.
+
+**A ordem:** palavra inteira no nome > conceito no nome > palavra ou conceito em tag, categoria, descrição, id
+ou componente > só prefixo (que vale mais no nome que fora dele). Um conceito no nome sobe ao nível de palavra
+inteira quando o token tem três ou mais membros do grupo, e cada membro presente soma um bônus pequeno de
+densidade. Os dois ajustes põem as fontes no topo de `texto` e `escrita` sem inverter "nome antes de tag".
+Empate segue a ordem do schema.
+
+**Na aba de tema:** o título mostra a contagem, busca sem resultado tem estado vazio, e cada resultado mostra
+onde o controle mora no modo Completo (`Pilar › Seção`; token fora de grupo não ganha caminho).
+
+**Limite:** o vocabulário do catálogo é misto (português e inglês) e ralo, e o dicionário de conceitos é a única
+manutenção manual da busca. O teste reprova grupo com menos de dois termos ou que não case ao menos dois tokens.
+
+## 2.3 O caminho do painel — escolher, ajustar, aplicar
+
+O painel conta um caminho de três passos, e a tela segue essa ordem:
+
+1. **Escolher um tema.** O primeiro bloco da área de controles é **"Começar de um tema"**, com o botão
+   **"Abrir galeria"** / **"Fechar galeria"**. A **Galeria de estilos** (`PresetsCatalog`) abre **sob demanda**
+   — o padrão é fechada, e então o preview do rascunho ocupa a área inteira. As abas da galeria são **Temas ·
+   Cards · Tipografia · Atmosfera · Botões · Campos**, e ela tem botão de fechar no próprio cabeçalho. A aba
+   **Temas** lista o **catálogo leve** (`themeCatalog`) na hora e carrega o `design` dos embarcados ao abrir
+   (`useCatalogThemes`); o cartão de um tema que ainda não chegou (`PresetCardPending`) escolhido carrega o tema e
+   só então aplica — o tema atual permanece até lá. Escolher um tema na prévia compõe por `composeThemeDesign`
+   ([[09-temas-e-presets]] §4.3.3): o que o tema não declara volta ao padrão (ou ao `config` do host), e o "Aplicar"
+   grava esse estado.
+2. **Ajustar o que pesa**, nos três modos da §2.1.
+3. **Aplicar**, na **barra de ações** (`Main/components/ThemeActionBar.tsx`):
+
+| Ação | O que faz |
+| --- | --- |
+| **`Aplicar (N)`** | grava o rascunho no sistema; N é o número de tokens do rascunho que diferem do sistema, e o botão fica desabilitado com N = 0. É a **única** porta de gravação (§4) |
+| **Descartar** | volta o rascunho ao sistema. Existe também **por pilar**, no cabeçalho de cada pilar ("Descartar alterações deste pilar") |
+| **Exportar** | secundário: baixa o JSON (§5); o rótulo não muda depois de exportar |
+| **Desfazer última aplicação** | só aparece quando há uma aplicação a desfazer (§4.2) |
+
+Não há aplicar por pilar nem por componente: aplicar é sempre o rascunho inteiro. O painel montado
+pelo `SarakCustomizationPanel` se intitula **"Personalizar o tema"**; dentro dele, o cabeçalho da barra lateral
+diz **"Design"**. Sem selos.
+
+**O menu "Avançado"** (`Main/components/ThemeAdvancedMenu.tsx`) é o único botão do cabeçalho além do seletor de
+modo. Ele reúne as telas de quem já conhece o motor — **Tabela de tokens** (a planilha do `MasterControlPanel`),
+**Busca por pilar** (o Command Center) e **Temas e JSON** (`TemplatesTab`) — e **"Voltar ao modo normal"**. A tela
+dos pilares é o padrão e não tem botão. Teclado: Enter/Espaço abre e foca a primeira entrada; setas (com volta
+circular), Home e End navegam; Esc fecha e devolve o foco ao botão; clicar fora fecha.
 
 # 3. Controles polimórficos
 
@@ -88,16 +165,35 @@ token:
 
 | `token.type` | Controle | Onde |
 | --- | --- | --- |
-| `color` | `ColorControl` | `components/controls/ColorControl.tsx` |
-| `slider` / `number` | slider com `min`/`max`/`step` do próprio token | `components/controls/BasicControls.tsx` |
-| `select` | select populado por `constraints.options` | idem |
+| `color` | `ColorControl` — o seletor edita o canal opaco e **preserva o alfa**, há controle de opacidade, e o campo de texto aceita `var()`/`color-mix()`; só grava o que `isValidColor` aceita | `components/controls/ColorControl.tsx` |
+| `slider` / `number` | slider com a faixa de `tokenBounds` e o sufixo da `unit` declarada (sem unidade, o número vem cru); token responsivo edita `mob`/`tab`/`desk` e grava sempre o objeto inteiro (`ResponsiveSliderControl`) | `components/controls/BasicControls.tsx` |
+| `select` / `font` | select populado por `constraints.options`; grava o `value` da opção (o `id` e o `value` coincidem) | idem |
+| `text` / `string` | campo de texto (sombra, curva) | idem |
 | `boolean` | switch | idem |
 | `image` / `file` | `MediaUploaderControl` | `components/controls/MediaUploaderControl.tsx` |
 | estruturais de layout | `LayoutControls` | `components/controls/LayoutControls.tsx` |
 
-Mais `HelpTooltip`, que exibe a `description` do token — a mesma string que documenta o token no catálogo.
+Mais `HelpTooltip`, que exibe a `description` do token — a mesma string que documenta o token no catálogo —
+**em todo ramo de controle dos dois despachantes** (o `descricaoEmTodoRamo.test.tsx` cobra). O campo numérico livre
+só grava número finito, dentro de `[min, max]`; o seletor de cor resolve `var()`/`color-mix()` pelo navegador para
+mostrar a amostra e o alfa, sem gravar nada até o usuário mexer; mexer só no alfa de um valor `var()`/`color-mix()`
+grava `color-mix(in srgb, <valor> N%, transparent)`, sem perder o vínculo com a variável.
 **A descrição escrita no schema é a ajuda que o autor de tema lê.** Isso é o que torna as descrições dos
 tokens uma obrigação de produto, não um comentário.
+
+**Mestre e exceção.** Ao lado do raio mestre e de cada canto, `ExceptionRelation` mostra a relação (quantos cantos
+têm valor próprio; "segue o mestre"; "valor próprio") e devolve o canto, ou todos, ao mestre.
+
+**Todo tipo tem controle**, nos dois despachantes; o `panel-contract:check` cobra ([[00-regras-e-invariantes]] R44).
+O painel e os mocks seguem o modo do tema que mostram: nenhum branco ou preto fixo em `src/features/` (R43).
+
+**Selo de dispositivo.** Todo controle de token com `isResponsive` mostra, acima do controle, para qual
+dispositivo o valor editado vale — **"Só no Mobile"**, **"Só no Tablet"** ou **"Desktop"**, conforme o dispositivo
+da barra do preview (§6.2) —, com o `title` "Este valor vale só para <dispositivo>. Troque o dispositivo na barra
+do preview para editar os outros." Token não responsivo não mostra selo.
+
+**Rótulos legíveis.** Rótulo de controle fica em caixa normal, sem espaçamento largo, e nunca abaixo de 12 px — o
+tamanho vem de `--sarak-type-scale-caption` (padrão 12 no schema).
 
 # 4. Draft × persistido
 
@@ -109,18 +205,21 @@ tokens uma obrigação de produto, não um comentário.
 
 Duas decisões de projeto do rascunho, ambas com o motivo no código:
 
-- **O rascunho começa `null`** (`useDesignDraft.ts:25-27`) — "para seguir o sistema sem criar uma cópia
-  dessincronizada no mount". Sem rascunho, `draft` **resolve para o design do sistema** (`:31-35`). Não
+- **O rascunho começa `null`** (`useDesignDraft.ts`, o estado `draftState`) — "para seguir o sistema sem criar
+  uma cópia dessincronizada no mount". Sem rascunho, `draft` **resolve para o design do sistema** (o `useMemo`
+  de `draft`, logo abaixo). Não
   existe estado intermediário nascendo defasado.
 - **Comparação profunda antes de marcar mudança** (`areValuesEqual`, `:11-17`) — evita marcar rascunho
   sujo por diferença de identidade de objeto em valor estruturalmente igual (o caso dos valores
   responsivos `{desk,tab,mob}`).
 
 **A gravação é explícita, e não tem exceção.** Um token ou um tema inteiro: **toda escolha no painel é
-rascunho**. `handleApplyFullTheme` (`Main/ThemeCustomizationTab.tsx:92-106`) alimenta **só** o rascunho; o
-design da aplicação e o armazenamento mudam por uma porta única — a confirmação explícita do usuário, em
-`handleApplyToSystem` (`hooks/useDesignDraft.ts:196-204`), que é o mesmo caminho de qualquer outro token e
-só age com o rascunho sujo (`isDirty`, `:95-99`).
+rascunho**. `handleApplyFullTheme` (`Main/ThemeCustomizationTab.tsx`) alimenta **só** o rascunho, e é o caminho
+de **toda** porta que escolhe tema — a Galeria de estilos e a tela **Temas e JSON** (`TemplatesTab`), que não
+chama `applyFullConfig`, `persistDesign` nem `setResolvedThemeId`. O design da aplicação e o armazenamento mudam
+por uma porta única — o **`Aplicar (N)`** da barra de ações (§2.3), em `handleApplyToSystem`
+(`hooks/useDesignDraft.ts`), que é o mesmo caminho de qualquer outro token e só age com o rascunho sujo
+(`isDirty`).
 
 **O tema escolhido acompanha o rascunho.** Pré-visualizar um tema do catálogo guarda o id dele junto do
 rascunho (`pendingThemeId`, `useDesignDraft.ts`); o tema só é **anunciado** como o tema no ar
@@ -168,20 +267,19 @@ estruturais — não são otimização pontual:
 
 ## 4.2 Desfazer a última aplicação
 
-Depois de "Aplicar Alterações Globais", o painel oferece **"Desfazer última aplicação"**
-(`ThemeSidebarHeader.tsx`), servido por `useLastAppliedSnapshot.ts`:
+Depois de um **`Aplicar`**, a barra de ações oferece **"Desfazer última aplicação"**
+(`Main/components/ThemeActionBar.tsx`), servido por `useLastAppliedSnapshot.ts`:
 
 - **O que é guardado:** imediatamente antes de cada "Aplicar", o design do sistema **e** o tema anunciado
   (`resolvedThemeId`) daquele instante.
 - **O que o desfazer faz:** devolve o design ao sistema (`applyFullConfigRaw`), anuncia de volta o tema
-  guardado, e grava pelo `persistDesign` num efeito, **depois** do render que atualiza o tema anunciado.
-  Por isso toda gravação que ele dispara, inclusive a porta `persistence.onSave`, recebe o par restaurado:
+  guardado e grava pelo `persistDesign` logo em seguida, na mesma chamada: `setResolvedThemeId` atualiza na
+  hora a referência que `persistDesign` lê (`useLastAppliedSnapshot.ts`, JSDoc do topo). Por isso toda gravação que ele dispara, inclusive a porta `persistence.onSave`, recebe o par restaurado:
   o design e o tema de antes. Ele também limpa o rascunho do painel, senão o rascunho com o valor desfeito
   continuaria por cima da tela real (§4).
 - **Um nível só:** usado, o controle some; uma nova aplicação substitui o que está guardado; recarregar a
   página descarta (estado local, nunca persistido). Não há histórico nem refazer.
-- **Alcance:** só "Aplicar Alterações Globais". A aplicação granular por componente
-  (`handleApplyComponent`) não entra no desfazer.
+- **Alcance:** toda aplicação, porque só existe uma — o `Aplicar` do rascunho inteiro (§2.3).
 
 # 5. Exportar JSON — o substituto do "salvar no banco"
 
@@ -245,10 +343,19 @@ Duas metades, e as duas são necessárias:
 
 | Metade | O que faz | Onde |
 | --- | --- | --- |
-| **Dispositivo lógico** | `DeviceProvider overrideDevice={previewDevice}` — faz `useSarakDevice()` dentro do preview devolver o dispositivo simulado, então o reflow real acontece (cromo colapsa, tabela vira cards) | `Canvas/components/PreviewSystemRenderer.tsx:69,198` |
-| **Moldura física** | largura-alvo + moldura de aparelho: `desktop: 100%`, `tablet: 768px`, `smartphone: 375px`, com bordas/raio simulando o device | `Canvas/hooks/useDeviceStyles.ts:2-23` |
+| **Dispositivo lógico** | `SarakDeviceProvider overrideDevice={previewDevice}` — faz `useSarakDevice()` dentro do preview devolver o dispositivo simulado, então o reflow real acontece (cromo colapsa, tabela vira cards) | `Canvas/components/PreviewSystemRenderer.tsx` |
+| **Moldura física** | largura-alvo + moldura de aparelho: `desktop: 100%`, `tablet: 768px`, `smartphone: 375px`, com bordas/raio simulando o device | `Canvas/hooks/useDeviceStyles.ts` |
 
 **Limite declarado:** o preview prova o **reflow**, não a **detecção** ([[07-responsividade-e-multidispositivo]] §7).
+
+**A barra do preview** (`Canvas/components/PreviewToolbar.tsx`) é onde moram o **dispositivo** (Desktop, Tablet,
+Mobile) e o interruptor **"Empilhar previews"** — o cabeçalho da barra lateral não tem nenhum dos dois. Trocar o
+dispositivo troca o preview e o valor responsivo que se edita (§3, selo de dispositivo).
+
+**Galeria e empilhado.** Com a Galeria de estilos aberta (§2.3), ela é um segundo quadro ao lado do preview do
+rascunho; com "Empilhar previews" ligado, fica **abaixo**, e cada um ocupa **metade da altura do contêiner**
+(flex com `min-h-0`), nunca uma unidade de janela (`vh`) — consequência direta da §6.2.1. Com a galeria fechada, o
+interruptor fica inativo (`aria-disabled`), com `title` dizendo que é preciso abrir a galeria.
 
 ### 6.2.1 O painel se adapta ao CONTAINER, não à janela
 
@@ -266,11 +373,16 @@ As quatro regras de operação dessa camada (container em ancestral, classe lite
 forma candidato, e default que não conserta opção) valem aqui integralmente — ver
 [[07-responsividade-e-multidispositivo]] §6.1.
 
+### 6.2.2 O preview desenha o cromo real
+
+`PreviewSystemRenderer` monta o **`SarakAppChrome`** — o mesmo que o consumidor monta — com a navegação de exemplo derivada das telas do preview, e a seleção de um item troca a tela ativa (`onNavigate`). Isso vale nas três geometrias de dispositivo. O administrador configura, no painel, **a barra que o usuário final vai ver**: topbar/sidebar, os oito widgets e o estado desabilitado do que depende do consumidor.
+
 ## 6.3 Mocks modulares
 
 `Canvas/Mocks/` — telas falsas que exercitam os componentes reais: `DashboardMock`, `TableMock`,
 `ChartsMock`, `ChatMock`, `MockForms`, `MockDocuments`, `AuthMock`, `LogsMock`, `MatrixMock`,
-`SettingsMock`, `TextMock`, `TypographyMock`, `ComponentsMock`.
+`SettingsMock`, `TextMock`, `TypographyMock`, `ComponentsMock` e `MoreScreensMock` (a grade de "Mais telas",
+§6.6). Os rótulos humanos das telas moram em `Canvas/previewScreens.ts`.
 
 `DashboardMock` é montado de **sub-peças** (`Mocks/Dashboard/`: `DashboardHeader`,
 `DashboardMetricsGrid`, `DashboardSidePanel`, `DashboardShared`) — e isso não é higiene de arquivo: é o que
@@ -280,7 +392,8 @@ bloco monolítico que só testaria o token de superfície.
 ## 6.4 Catálogos visuais
 
 `Canvas/components/`: `AtmosphereCatalog`, `CardsCatalog`, `PresetsCatalog`, `TypographyCatalog`,
-`ButtonsCatalog`, `InputsCatalog`, mais `ButtonPresetPreview`, `InputPresetPreview` e `PresetCard`.
+`ButtonsCatalog`, `InputsCatalog`, mais `ButtonPresetPreview`, `InputPresetPreview` e `PresetCard`. O
+`PresetsCatalog` é a **Galeria de estilos** (§2.3): cada aba dele é um destes catálogos.
 
 > **Correção de estado:** a spec antiga de presets *(`06-presets-engine.md`, **removida** na reescrita
 > da base — histórico no git)* declarava `status: "🔴 A Implementar"` justamente estes componentes.
@@ -298,6 +411,32 @@ simulado deixa de pintar fundo opaco (`PreviewSystemRenderer.tsx`). Provado em j
 (`PreviewSystemRenderer.test.tsx`) e em navegador real (`browser-tests/cromo-css-real.spec.ts`, caso
 *"COM mídia global"*).
 
+## 6.6 Pilar e tela — dois gestos, sem laço
+
+Abrir um pilar na barra lateral leva o preview à **tela canônica** dele, e escolher uma tela no menu do preview
+leva ao pilar dela. São **dois gestos explícitos** em `Main/hooks/usePreviewUIState.ts` — `selectPillar` e
+`selectPreviewApp` —, e cada um muda o outro lado **uma vez** e para: nenhum efeito reage ao outro.
+
+| Pilar | Tela canônica |
+| --- | --- |
+| `brand` | `auth` |
+| `typography` | `typography` |
+| `surfaces` | `dashboard` |
+| `interaction` | `caixas-texto` |
+| `navigation` | `dashboard` |
+| `systems` | `settings` |
+| `advanced` | `matrix` |
+
+- Abrir um pilar cuja tela atual já pertence a ele **não troca a tela**.
+- `navigation` → `dashboard` **não** devolve o pilar a `surfaces`, embora `dashboard` seja tela de `surfaces`: o
+  pilar continua o clicado.
+- O estado inicial é um **par coerente** (`surfaces` + `dashboard`).
+
+**O menu do preview** mostra **seis telas** com rótulo humano — **Painel · Formulário · Tabela · Texto · Gráficos ·
+Tipografia** — e um sétimo item, **"Mais telas"**, que abre a grade do `MoreScreensMock` com as restantes
+(Componentes, Entrar, Chat, Registros, Configurações, Documentos, Matriz, Todos os componentes). Com uma delas
+ativa, o item ativo do menu é "Mais telas". Não há submenu no cromo.
+
 # 7. Dogfooding
 
 O painel obedece à regra de composição atômica: usa `SarakButton`, `SarakInput` e os demais átomos, não
@@ -308,13 +447,12 @@ mais usa a lib (nós). O painel é o consumidor mais intenso da biblioteca.
 # 8. A allowlist do zero-marca — por que ela é legítima
 
 `gates/scripts/contrato/check-zero-brand.mjs` proíbe os literais de marca da lib como **texto renderizado** em `src/`, com
-**allowlist comentada** de três arquivos (`:37-46`):
+**allowlist** na constante `ALLOWLIST` do próprio gate (a fonte) — hoje dois arquivos:
 
-| Arquivo | Motivo escrito no gate |
+| Arquivo | Motivo |
 | --- | --- |
 | `features/DesignEngine/Canvas/KitchenSinkPreview.tsx` | vitrine interna de componentes/temas, usada só pelo painel |
-| `features/DesignEngine/Panels/LanguageTab.tsx` | cita a marca como **texto de exemplo** dentro da ferramenta de autoria |
-| `features/DesignEngine/Panels/LayoutTab.tsx` | idem |
+| `features/DesignEngine/Panels/LayoutTab.tsx` | cita a marca como **texto de exemplo** dentro da ferramenta de autoria |
 
 **Por que é legítimo:** estes são **painéis internos** — a ferramenta com que a lib autora temas. O
 consumidor **não embute** o Kitchen Sink no produto dele. A regra zero-marca existe para que a lib não
@@ -326,8 +464,7 @@ lado**, e o motivo tem de ser "isto não é consumidor-facing" — nunca "estava
 ([[01-gates-e-baseline]] §6, regra 1). Adicionar arquivo aqui é assumir publicamente que ele nunca chega
 ao produto do consumidor.
 
-⚠️ **Mas há uma tensão real:** o `CustomizationPanel` **é exportado no barril público** (`src/index.ts:50`)
-e **registrado no Discovery por efeito colateral de import** (`:119-125`, ver [[04-shell-e-discovery]] §7.1).
+⚠️ **Mas há uma tensão real:** o `CustomizationPanel` **é exportado no barril público** (`src/index.ts:50`).
 Ou seja, um consumidor **pode** exibi-lo — e nesse caso os painéis da allowlist chegam à tela dele. A
 allowlist é justificada pela **intenção** de uso, não por uma barreira técnica. Registrado como nuance, não
 como violação: os três arquivos são abas internas, e nenhum consumidor real exibe o Kitchen Sink hoje.
@@ -349,15 +486,16 @@ incompatível. O alvo (`useThemePersistenceHandlers`) aceitava `'error' | 'succe
 com efeito colateral** para registrá-lo no Discovery — o painel inteiro, a peça mais pesada da biblioteca, no
 caminho crítico de todo consumidor.
 
-**Conserto:** o bloco de efeito colateral foi apagado (saíram junto os dois ids legados do Discovery,
-`mx-customization`/`personalization` — ver [[04-shell-e-discovery]] §7.1), e `src/index.ts:50-52` passou a
+**Conserto:** o bloco de efeito colateral foi apagado (saíram junto os dois ids legados do registro de módulos,
+`mx-customization`/`personalization`), e `src/index.ts:50-52` passou a
 exportar o índice lazy (`Library/CustomizationPanel/index.tsx`, `React.lazy` + `Suspense` interno, no padrão
 do `SarakChartEngine`). **O Design Engine inteiro saiu do caminho crítico:** chunk de boot medido em
 **674.011 → 167.684 bytes (−75,1%)**. O tipo público não mudou (`React.FC`, não `LazyExoticComponent`) —
 consequência de seguir o padrão existente em vez da previsão original desta spec.
 
-**Consequência para o consumidor:** quem dependia do registro automático de `mx-customization` como módulo
-do Discovery precisa registrá-lo explicitamente agora — está em `docs/migracoes.md`.
+**Consequência para o consumidor:** quem dependia do registro automático de `mx-customization` precisava montar o
+painel direto (`<CustomizationPanel />`); o registro de módulos deixou de existir de vez com o cromo único
+([[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]) — está em `docs/migracoes.md`.
 
 ## 9.3 ✅ FECHADO em 2026-08-04 (`plan-08`, F2) — as 6 abas mortas saíram, não voltaram
 
@@ -367,8 +505,9 @@ as outras cinco eram inalcançáveis e pesavam no bundle sem entregar nada.
 
 **Decisão do dono (2026-08-04): remover os imports mortos**, não restaurar a navegação. `CustomizationPanel`
 (hoje `CustomizationPanelImpl.tsx`) caiu de 49 para 35 linhas — saíram os 6 imports de aba, os ícones que só
-serviam a elas, o `useState` não usado e o `type TabId` órfão. **Os 6 componentes de aba não foram apagados**
-— continuam em `Panels/`, com os próprios testes, caso uma navegação futura queira reativá-los. A ordem
+serviam a elas, o `useState` não usado e o `type TabId` órfão. Dos 6 componentes de aba, **quatro continuam em
+`Panels/`** (`AdvancedTab`, `EngineCustomizationTab`, `HyperGranularityTab`, `LayoutTab`), com os próprios
+testes; `LanguageTab` e `ShortcutsTab` foram apagados depois. A ordem
 obrigatória foi respeitada: esta remoção só aconteceu **depois** de a §9.5 fechar (F1 antes de F2, porque
 restaurar navegação antes do conserto do `localStorage.clear()` ativaria a perda de dados).
 
@@ -409,7 +548,7 @@ hoje é decisão do consumidor (ele exporta o componente e monta onde quiser, ou
 - [x] O caminho export → `customThemes` está descrito ponta a ponta (§5).
 - [x] A folksonomia está explicada com as 3 fontes, o algoritmo e `arquivo:linha`.
 - [x] Os controles polimórficos aparecem mapeados por `token.type`, não por nome de token.
-- [x] Draft × persistido inclui a exceção deliberada (tema completo comita).
+- [x] Draft × persistido: a gravação é explícita e não tem exceção (§4).
 - [x] O preview está descrito com o **limite** declarado (override lógico, não container query).
 - [x] A allowlist do zero-marca tem a justificativa **e** a tensão registrada.
 - [x] O erro de `tsc` está documentado e **não corrigido**.
@@ -422,6 +561,8 @@ hoje é decisão do consumidor (ele exporta o componente e monta onde quiser, ou
 | Verificação | Onde | Situação |
 | --- | --- | --- |
 | Folksonomia: sanitização de categoria e montagem de grupos | `src/features/DesignEngine/utils/__tests__/dynamic-categories.test.ts` | ✅ suíte |
+| Busca de token: sentido, ordem, prefixo só no último termo, grupos de conceito vivos | `src/features/DesignEngine/utils/__tests__/token-search.test.ts` | ✅ suíte |
+| Os três modos: padrão Essencial, seletor por setas, `visualImpact` válido e entre 20 e 30 ids, lista plana do Impacto | `Main/hooks/__tests__/usePreviewUIState.test.ts` · `useThemeCustomizationData.test.ts` · `Main/components/__tests__/ThemeSidebarHeader.test.tsx` · `ThemeImpactList.test.tsx` | ✅ suíte |
 | Rascunho: inicialização nula, resolução para o sistema, comparação profunda | `src/features/DesignEngine/hooks/__tests__/useDesignDraft.test.tsx` | ✅ suíte |
 | Export completo (não subconjunto) e slug estável | `Main/utils/__tests__/exportTheme.test.ts` | ✅ suíte |
 | Escopo do preview não vaza variável para o host | `src/core/Design/components/__tests__/DesignScope.test.tsx` | ✅ suíte |
@@ -429,7 +570,11 @@ hoje é decisão do consumidor (ele exporta o componente e monta onde quiser, ou
 | Fronteira lazy (`Suspense`, tipo público preservado) | `Library/CustomizationPanel/__tests__/CustomizationPanelImpl.test.tsx` | ✅ suíte *(2026-08-05, `plan-09`)* |
 | Reset apaga só as chaves da lib | `src/core/Provider/utils/__tests__/storage.test.ts` · `Panels/__tests__/AdvancedTab.test.tsx` | ✅ suíte *(2026-08-04, `plan-08`)* |
 | Preview (canvas, mocks, kitchen sink) | `Canvas/__tests__/PreviewCanvas.test.tsx`, `MockApps.test.tsx`, `KitchenSinkPreview.test.tsx` | ✅ suíte |
-| Boot e injeção ao vivo do painel | `src/features/DesignEngine/__e2e__/Boot.spec.tsx`, `RealtimeInjection.spec.tsx` | ❌ **Playwright, manual** |
-
-> **O backlog anterior** ("provar que as abas são alcançáveis") **saiu de pauta**: a §9.3 fechou removendo
-> os imports mortos, não restaurando navegação — não há mais aba para provar alcançável.
+| Barra de ações: `Aplicar (N)` com 0/1/3 alterações, Descartar, Exportar sem "Exportado", Desfazer só com aplicação | `Main/components/__tests__/ThemeActionBar.test.tsx` | ✅ suíte |
+| Galeria sob demanda (fechada = só o preview) e empilhado sem `vh`; "Empilhar previews" inativo sem galeria | `Canvas/__tests__/PreviewCanvas.test.tsx` · `Canvas/components/__tests__/LiveDraftPreviewFrame.test.tsx` · `PreviewToolbar.test.tsx` | ✅ suíte |
+| Escolher tema na tela Temas e JSON só altera o rascunho (falha se voltar `applyFullConfig`, `persistDesign` ou `setResolvedThemeId`) | `Main/__tests__/TemplatesTab.test.tsx` | ✅ suíte |
+| Pilar ↔ tela: tela canônica por pilar, `navigation` sem voltar a `surfaces`, par inicial coerente | `Main/hooks/__tests__/usePreviewUIState.test.ts` | ✅ suíte |
+| Seis telas com rótulo humano e "Mais telas" ativo para as secundárias | `Canvas/components/__tests__/PreviewSystemRenderer.test.tsx` · `Canvas/Mocks/__tests__/MoreScreensMock.test.tsx` | ✅ suíte |
+| Menu Avançado: três entradas e a volta, teclado (setas com direção, Home, End, Esc devolve o foco) | `Main/components/__tests__/ThemeAdvancedMenu.test.tsx` · `ThemeSidebarHeader.test.tsx` | ✅ suíte |
+| Selo de dispositivo nos três dispositivos; nenhum em token fixo; piso de 12 px pelo schema | `Main/components/__tests__/TokenControl.test.tsx` | ✅ suíte |
+| O painel em navegador real (empilhado com metade da altura, selo, menu) | — | ❌ **não medido** — não há caso em `browser-tests/` para o painel |

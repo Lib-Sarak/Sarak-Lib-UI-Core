@@ -1,0 +1,46 @@
+/* =========================================
+   MOVIMENTO REDUZIDO — token `reducedMotion` e `prefers-reduced-motion`
+   =========================================
+   Fica na camada final (`sarak-lib`) porque a regra é `!important`: precisa vencer a classe
+   utilitária de duração e o `transition` posto em estilo inline pelos átomos, e uma
+   declaração importante só cede a outra importante de camada anterior.
+
+   Duas portas ligam o mesmo mínimo:
+   - o token `reducedMotion`, que o Design Engine entrega como `data-sx-reduced-motion`
+     no documento (ou no contêiner da ilha, no modo embarcado) — `:root` é a âncora porque
+     a variante escopada o troca pela ilha, e um descendente `[data-…] *` nunca casaria;
+   - a preferência do sistema operacional, `prefers-reduced-motion: reduce`.
+
+   Duração de 0,01 ms em vez de `none`: o `transitionend` e o `animationend` continuam
+   disparando, e quem espera por eles não trava. O `framer-motion` não passa por aqui — ele
+   anima por JavaScript e é governado pelo `MotionConfig` do `SarakUIProvider`. */
+
+:root[data-sx-reduced-motion="true"],
+:root[data-sx-reduced-motion="true"]::before,
+:root[data-sx-reduced-motion="true"]::after,
+:root[data-sx-reduced-motion="true"] *,
+:root[data-sx-reduced-motion="true"] *::before,
+:root[data-sx-reduced-motion="true"] *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root,
+    :root::before,
+    :root::after,
+    :root *,
+    :root *::before,
+    :root *::after {
+        animation-duration: 0.01ms !important;
+        animation-delay: 0ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        transition-delay: 0ms !important;
+        scroll-behavior: auto !important;
+    }
+}

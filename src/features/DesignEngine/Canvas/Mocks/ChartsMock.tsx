@@ -11,10 +11,10 @@ interface ChartsMockProps {
 
 export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariants, animationStyle }) => {
     // Cores e configurações reativas extraídas dos tokens
-    const primaryColor = 'var(--sarak-chart-primary, #00f2ff)';
+    const primaryColor = 'var(--sarak-chart-primary, #19e3f0)';
     const strokeThickness = 'var(--sarak-chart-thickness, 2px)';
-    const gridOpacity = 'var(--sarak-chart-grid-opacity, 0.05)';
-    const tooltipBg = 'var(--sarak-chart-tooltip-bg, rgba(15, 23, 42, 0.9))';
+    const gridOpacity = 'var(--sarak-chart-grid-opacity, 0.06)';
+    const tooltipBg = 'var(--sarak-chart-tooltip-bg, rgba(11,15,23,0.92))';
 
     return (
         <motion.div
@@ -28,9 +28,9 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                 <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
                         <SarakIcon name="BarChart3" className="text-[var(--theme-primary)]" size={20} />
-                        <h2 className="text-2xl font-black text-white uppercase tracking-widest text-left">Advanced Analytics & Charts</h2>
+                        <h2 className="text-2xl font-black text-theme-text uppercase tracking-widest text-left">Advanced Analytics & Charts</h2>
                     </div>
-                    <p className="text-sm text-white/40 uppercase tracking-tighter text-left">Galeria de Múltiplos Espécimes de Gráficos Reativos ao Motor Sarak</p>
+                    <p className="text-sm text-theme-text/40 uppercase tracking-tighter text-left">Galeria de Múltiplos Espécimes de Gráficos Reativos ao Motor Sarak</p>
                 </div>
             </div>
 
@@ -38,19 +38,19 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
             <div className="grid grid-cols-1 @md:grid-cols-2 @lg:grid-cols-3 gap-6 auto-rows-auto">
                 
                 {/* 1. LINE CHART (SVG) */}
-                <div className="bg-black/40 border border-white/5 p-6 rounded-2xl flex flex-col gap-4">
+                <div className="bg-theme-body/40 border border-theme-text/5 p-6 rounded-2xl flex flex-col gap-4">
                     <div className="flex justify-between items-center">
-                        <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                        <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted,rgba(242,246,251,0.55))] flex items-center gap-2">
                             <SarakIcon name="LineChart" size={14} className="text-[var(--theme-primary)]" /> Gráfico de Linha (Line)
                         </span>
-                        <SarakIcon name="TrendingUp" size={12} className="text-emerald-400" />
+                        <SarakIcon name="TrendingUp" size={12} className="text-[var(--sarak-status-success-color,#10b981)]" />
                     </div>
                     
                     <div className="h-48 w-full relative flex items-end">
                         {/* Grid de Fundo */}
                         <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-50">
                             {[1, 2, 3, 4].map(i => (
-                                <div key={i} className="w-full h-[1px] bg-white" style={{ opacity: gridOpacity }} />
+                                <div key={i} className="w-full h-[1px] bg-theme-text" style={{ opacity: gridOpacity }} />
                             ))}
                         </div>
                         
@@ -61,16 +61,16 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                                 fill="none" 
                                 stroke={primaryColor} 
                                 strokeWidth={strokeThickness}
-                                className="transition-all duration-500"
+                                className="transition-all duration-[var(--sarak-motion-dur-slow,0.6s)]"
                             />
                             {/* Pontos de Interação */}
-                            <circle cx="100" cy="70" r="4" fill="white" stroke={primaryColor} strokeWidth="2" className="cursor-pointer hover:scale-150 transition-transform" />
-                            <circle cx="200" cy="20" r="4" fill="white" stroke={primaryColor} strokeWidth="2" className="cursor-pointer hover:scale-150 transition-transform" />
+                            <circle cx="100" cy="70" r="4" fill="var(--color-theme-title,#f2f6fb)" stroke={primaryColor} strokeWidth="2" className="cursor-pointer hover:scale-150 transition-transform" />
+                            <circle cx="200" cy="20" r="4" fill="var(--color-theme-title,#f2f6fb)" stroke={primaryColor} strokeWidth="2" className="cursor-pointer hover:scale-150 transition-transform" />
                         </svg>
 
                         {/* Tooltip Simulado */}
                         <div 
-                            className="absolute top-4 right-4 px-2 py-1 rounded text-[8px] font-mono border border-white/10 z-20 text-white/90 animate-pulse"
+                            className="absolute top-4 right-4 px-2 py-1 rounded text-[8px] font-mono border border-theme-text/10 z-20 text-theme-text/90 animate-pulse"
                             style={{ backgroundColor: tooltipBg }}
                         >
                             Valor: 85.4%
@@ -79,19 +79,19 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                 </div>
 
                 {/* 2. AREA CHART (SVG) */}
-                <div className="bg-black/40 border border-white/5 p-6 rounded-2xl flex flex-col gap-4">
+                <div className="bg-theme-body/40 border border-theme-text/5 p-6 rounded-2xl flex flex-col gap-4">
                     <div className="flex justify-between items-center">
-                        <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                        <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted,rgba(242,246,251,0.55))] flex items-center gap-2">
                             <SarakIcon name="LineChart" size={14} className="text-[var(--theme-primary)]" /> Gráfico de Área (Area)
                         </span>
-                        <SarakIcon name="Info" size={12} className="text-slate-500" />
+                        <SarakIcon name="Info" size={12} className="text-[var(--text-muted,rgba(242,246,251,0.55))]" />
                     </div>
                     
                     <div className="h-48 w-full relative flex items-end">
                         {/* Grid de Fundo */}
                         <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-50">
                             {[1, 2, 3, 4].map(i => (
-                                <div key={i} className="w-full h-[1px] bg-white" style={{ opacity: gridOpacity }} />
+                                <div key={i} className="w-full h-[1px] bg-theme-text" style={{ opacity: gridOpacity }} />
                             ))}
                         </div>
                         
@@ -106,40 +106,40 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                             <path 
                                 d="M 0 100 Q 60 40 120 80 T 240 10 T 300 120 L 300 120 L 0 120 Z" 
                                 fill="url(#areaGrad)"
-                                className="transition-all duration-500"
+                                className="transition-all duration-[var(--sarak-motion-dur-slow,0.6s)]"
                             />
                             <path 
                                 d="M 0 100 Q 60 40 120 80 T 240 10 T 300 120" 
                                 fill="none" 
                                 stroke={primaryColor} 
                                 strokeWidth={strokeThickness}
-                                className="transition-all duration-500"
+                                className="transition-all duration-[var(--sarak-motion-dur-slow,0.6s)]"
                             />
                         </svg>
                     </div>
                 </div>
 
                 {/* 3. BAR CHART (SVG/DIVS) */}
-                <div className="bg-black/40 border border-white/5 p-6 rounded-2xl flex flex-col gap-4">
+                <div className="bg-theme-body/40 border border-theme-text/5 p-6 rounded-2xl flex flex-col gap-4">
                     <div className="flex justify-between items-center">
-                        <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                        <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted,rgba(242,246,251,0.55))] flex items-center gap-2">
                             <SarakIcon name="BarChart3" size={14} className="text-[var(--theme-primary)]" /> Gráfico de Barras (Bar)
                         </span>
-                        <SarakIcon name="HelpCircle" size={12} className="text-slate-500" />
+                        <SarakIcon name="HelpCircle" size={12} className="text-[var(--text-muted,rgba(242,246,251,0.55))]" />
                     </div>
                     
                     <div className="h-48 w-full relative flex items-end gap-3 justify-between">
                         {/* Grid de Fundo */}
                         <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-50">
                             {[1, 2, 3, 4].map(i => (
-                                <div key={i} className="w-full h-[1px] bg-white" style={{ opacity: gridOpacity }} />
+                                <div key={i} className="w-full h-[1px] bg-theme-text" style={{ opacity: gridOpacity }} />
                             ))}
                         </div>
                         
                         {[40, 80, 55, 95, 70, 30, 85].map((val, idx) => (
                             <div key={idx} className="flex-1 flex flex-col justify-end h-full z-10 group relative">
                                 <div 
-                                    className="w-full rounded-t transition-all duration-500 group-hover:brightness-125"
+                                    className="w-full rounded-t transition-all duration-[var(--sarak-motion-dur-slow,0.6s)] group-hover:brightness-125"
                                     style={{ 
                                         height: `${val}%`, 
                                         backgroundColor: primaryColor,
@@ -147,7 +147,7 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                                     }}
                                 />
                                 <div 
-                                    className="absolute -top-6 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded text-[8px] font-mono text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 border border-white/10"
+                                    className="absolute -top-6 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded text-[8px] font-mono text-theme-text opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 border border-theme-text/10"
                                     style={{ backgroundColor: tooltipBg }}
                                 >
                                     {val}k
@@ -158,9 +158,9 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                 </div>
 
                 {/* 4. PIE CHART */}
-                <div className="bg-black/40 border border-white/5 p-6 rounded-2xl flex flex-col gap-4">
+                <div className="bg-theme-body/40 border border-theme-text/5 p-6 rounded-2xl flex flex-col gap-4">
                     <div className="flex justify-between items-center">
-                        <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                        <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted,rgba(242,246,251,0.55))] flex items-center gap-2">
                             <SarakIcon name="PieChart" size={14} className="text-[var(--theme-primary)]" /> Gráfico de Pizza (Donut)
                         </span>
                     </div>
@@ -168,7 +168,7 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                     <div className="h-48 w-full relative flex items-center justify-center">
                         <svg className="w-32 h-32 transform -rotate-90 overflow-visible" viewBox="0 0 36 36">
                             {/* Círculo base cinza */}
-                            <circle cx="18" cy="18" r="15.915" fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="4" />
+                            <circle cx="18" cy="18" r="15.915" fill="none" stroke="color-mix(in srgb, var(--color-theme-text) 3%, transparent)" strokeWidth="4" />
                             {/* Segmento reativo */}
                             <circle 
                                 cx="18" 
@@ -179,7 +179,7 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                                 strokeWidth="4" 
                                 strokeDasharray="65 35" 
                                 strokeDashoffset="0"
-                                className="transition-all duration-500"
+                                className="transition-all duration-[var(--sarak-motion-dur-slow,0.6s)]"
                                 strokeLinecap="round"
                             />
                             {/* Outro segmento decorativo */}
@@ -188,7 +188,7 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                                 cy="18" 
                                 r="15.915" 
                                 fill="none" 
-                                stroke="rgba(255,255,255,0.15)" 
+                                stroke="color-mix(in srgb, var(--color-theme-text) 15%, transparent)" 
                                 strokeWidth="4" 
                                 strokeDasharray="30 70" 
                                 strokeDashoffset="-65"
@@ -196,16 +196,16 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                             />
                         </svg>
                         <div className="absolute flex flex-col items-center">
-                            <span className="text-xl font-mono font-black text-white">65%</span>
-                            <span className="text-[8px] text-slate-500 uppercase tracking-widest font-bold">Node Core</span>
+                            <span className="text-xl font-mono font-black text-theme-text">65%</span>
+                            <span className="text-[8px] text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase tracking-widest font-bold">Node Core</span>
                         </div>
                     </div>
                 </div>
 
                 {/* 5. SCATTER PLOT */}
-                <div className="bg-black/40 border border-white/5 p-6 rounded-2xl flex flex-col gap-4">
+                <div className="bg-theme-body/40 border border-theme-text/5 p-6 rounded-2xl flex flex-col gap-4">
                     <div className="flex justify-between items-center">
-                        <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                        <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted,rgba(242,246,251,0.55))] flex items-center gap-2">
                             <SarakIcon name="ScatterChart" size={14} className="text-[var(--theme-primary)]" /> Gráfico de Dispersão (Scatter)
                         </span>
                     </div>
@@ -214,7 +214,7 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                         {/* Grid de Fundo */}
                         <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-50">
                             {[1, 2, 3, 4].map(i => (
-                                <div key={i} className="w-full h-[1px] bg-white" style={{ opacity: gridOpacity }} />
+                                <div key={i} className="w-full h-[1px] bg-theme-text" style={{ opacity: gridOpacity }} />
                             ))}
                         </div>
                         
@@ -231,7 +231,7 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                             ].map((pt, idx) => (
                                 <div 
                                     key={idx}
-                                    className={`${pt.size} rounded-full absolute -translate-x-1/2 translate-y-1/2 hover:scale-150 transition-transform cursor-pointer border border-white/20`}
+                                    className={`${pt.size} rounded-full absolute -translate-x-1/2 translate-y-1/2 hover:scale-150 transition-transform cursor-pointer border border-theme-text/20`}
                                     style={{ 
                                         left: pt.x, 
                                         bottom: pt.y, 
@@ -245,9 +245,9 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                 </div>
 
                 {/* 6. RADAR CHART */}
-                <div className="bg-black/40 border border-white/5 p-6 rounded-2xl flex flex-col gap-4">
+                <div className="bg-theme-body/40 border border-theme-text/5 p-6 rounded-2xl flex flex-col gap-4">
                     <div className="flex justify-between items-center">
-                        <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                        <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted,rgba(242,246,251,0.55))] flex items-center gap-2">
                             <SarakIcon name="TrendingUp" size={14} className="text-[var(--theme-primary)]" /> Teia de Performance (Radar)
                         </span>
                     </div>
@@ -255,9 +255,9 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                     <div className="h-48 w-full relative flex items-center justify-center">
                         <svg className="w-32 h-32 overflow-visible" viewBox="0 0 100 100">
                             {/* Grid poligonal (Pentágonos) */}
-                            <polygon points="50,10 90,40 75,90 25,90 10,40" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-                            <polygon points="50,25 80,48 68,80 32,80 20,48" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-                            <polygon points="50,40 70,55 62,70 38,70 30,55" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+                            <polygon points="50,10 90,40 75,90 25,90 10,40" fill="none" stroke="color-mix(in srgb, var(--color-theme-text) 5%, transparent)" strokeWidth="1" />
+                            <polygon points="50,25 80,48 68,80 32,80 20,48" fill="none" stroke="color-mix(in srgb, var(--color-theme-text) 5%, transparent)" strokeWidth="1" />
+                            <polygon points="50,40 70,55 62,70 38,70 30,55" fill="none" stroke="color-mix(in srgb, var(--color-theme-text) 5%, transparent)" strokeWidth="1" />
                             {/* Dados do Radar reativo */}
                             <polygon 
                                 points="50,20 85,42 70,75 45,88 28,52" 
@@ -265,7 +265,7 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                                 fillOpacity="0.25" 
                                 stroke={primaryColor} 
                                 strokeWidth="2" 
-                                className="transition-all duration-500"
+                                className="transition-all duration-[var(--sarak-motion-dur-slow,0.6s)]"
                             />
                         </svg>
                     </div>

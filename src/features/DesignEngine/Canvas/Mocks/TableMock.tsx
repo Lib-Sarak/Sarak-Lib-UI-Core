@@ -28,7 +28,7 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
             
             <div className="flex flex-col @xl:flex-row gap-6">
                 {/* Tabela Interativa (Atual Administrativa) */}
-                <div className="flex-[2] sarak-card rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-card)] shadow-xl overflow-hidden flex flex-col">
+                <div className="flex-[2] sarak-card rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-card)] overflow-hidden flex flex-col">
                     <div className="p-4 border-b border-[var(--theme-border)] flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <SarakIcon name="Activity" className="text-[var(--theme-primary)]" size={16} />
@@ -39,14 +39,14 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                                 type="text" 
                                 placeholder="Buscar..." 
                                 fullWidth
-                                leftIcon={<SarakIcon name="Search" className="text-[var(--theme-text-sec)]" size={12} />} 
+                                leftIcon={<SarakIcon name="Search" className="text-[var(--text-secondary)]" size={12} />} 
                             />
                         </div>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-xs border-collapse">
                             <thead>
-                                <tr className="border-b border-[var(--sarak-table-border)] text-[var(--theme-text-sec)]" style={{ backgroundColor: 'var(--sarak-table-header-bg)', fontFamily: 'var(--font-tab, var(--font-heading))' }}>
+                                <tr className="border-b border-[var(--sarak-table-border)] text-[var(--text-secondary)]" style={{ backgroundColor: 'var(--sarak-table-header-bg)', fontFamily: 'var(--font-heading)' }}>
                                     {['CÓDIGO', 'MÓDULO', 'VERSÃO', 'STATUS', 'CARGA'].map(h => (
                                         <th key={h} className="font-bold uppercase tracking-wider px-4 py-3 border-r border-[var(--sarak-table-border)] last:border-r-0">
                                             {h}
@@ -56,17 +56,17 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                             </thead>
                             <tbody className="divide-y divide-[var(--sarak-table-border)]">
                                 {interactiveRows.map((row, i) => (
-                                    <tr key={i} className="hover:bg-white/5 transition-colors group">
+                                    <tr key={i} className="hover:bg-theme-text/5 transition-colors group">
                                         <td className="px-4 py-3 font-bold text-[var(--theme-title)] border-r border-[var(--sarak-table-border)]">{row.id}</td>
                                         <td className="px-4 py-3 font-medium text-[var(--theme-title)] border-r border-[var(--sarak-table-border)]">{row.name}</td>
-                                        <td className="px-4 py-3 text-[var(--theme-text-sec)] border-r border-[var(--sarak-table-border)]">{row.version}</td>
+                                        <td className="px-4 py-3 text-[var(--text-secondary)] border-r border-[var(--sarak-table-border)]">{row.version}</td>
                                         <td className="px-4 py-3 border-r border-[var(--sarak-table-border)]">
                                             <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold border flex w-max items-center gap-1.5 ${
-                                                row.status === 'Online' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' :
-                                                row.status === 'Warning' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' :
-                                                'bg-slate-500/10 text-slate-400 border-slate-500/20'
+                                                row.status === 'Online' ? 'bg-[var(--sarak-status-success-color,#10b981)]/10 text-[var(--sarak-status-success-color,#10b981)] border-[var(--sarak-status-success-color,#10b981)]/20' :
+                                                row.status === 'Warning' ? 'bg-[var(--sarak-status-warning-color,#f59e0b)]/10 text-[var(--sarak-status-warning-color,#f59e0b)] border-[var(--sarak-status-warning-color,#f59e0b)]/20' :
+                                                'bg-[var(--text-muted,rgba(242,246,251,0.55))]/10 text-[var(--text-muted,rgba(242,246,251,0.55))] border-[var(--border-color,rgba(255,255,255,0.09))]/20'
                                             }`}>
-                                                <div className={`w-1.5 h-1.5 rounded-full ${row.status === 'Online' ? 'bg-emerald-500 animate-pulse' : row.status === 'Warning' ? 'bg-amber-500' : 'bg-slate-500'}`} />
+                                                <div className={`w-1.5 h-1.5 rounded-full ${row.status === 'Online' ? 'bg-[var(--sarak-status-success-color,#10b981)] animate-pulse' : row.status === 'Warning' ? 'bg-[var(--sarak-status-warning-color,#f59e0b)]' : 'bg-[var(--text-muted,rgba(242,246,251,0.55))]'}`} />
                                                 {row.status}
                                             </span>
                                         </td>
@@ -86,7 +86,7 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                 </div>
 
                 {/* Mini Tabela em Card */}
-                <div className="flex-1 sarak-card rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-card)] shadow-xl p-5 flex flex-col gap-4">
+                <div className="flex-1 sarak-card rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-card)] p-5 flex flex-col gap-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 text-[var(--theme-title)]">
                             <SarakIcon name="Users" size={16} className="text-[var(--theme-primary)]" />
@@ -104,7 +104,7 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                                     <div className="w-8 h-8 rounded-full bg-[var(--theme-primary)]/20 flex items-center justify-center font-bold text-xs text-[var(--theme-primary)]">U{i}</div>
                                     <div className="flex flex-col">
                                         <span className="text-xs font-bold text-[var(--theme-title)] truncate max-w-[120px]">User_Alpha_{i}9</span>
-                                        <span className="text-[10px] text-[var(--theme-text-sec)]">admin@sarak.io</span>
+                                        <span className="text-[10px] text-[var(--text-secondary)]">admin@sarak.io</span>
                                     </div>
                                 </div>
                                 <div className="text-xs font-mono font-bold text-[var(--theme-title)]">{Math.floor(Math.random() * 1000)} pts</div>
@@ -115,10 +115,10 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
             </div>
 
             {/* Tabela Densa (Excel) */}
-            <div className="w-full sarak-card rounded-2xl border border-[var(--sarak-table-border)] bg-[var(--theme-body)] shadow-xl overflow-hidden flex flex-col">
+            <div className="w-full sarak-card rounded-2xl border border-[var(--sarak-table-border)] bg-[var(--theme-body)] overflow-hidden flex flex-col">
                 <div className="p-3 border-b border-[var(--sarak-table-border)] flex items-center justify-between bg-[var(--sarak-table-header-bg)]">
                     <div className="flex items-center gap-2">
-                        <SarakIcon name="FileSpreadsheet" className="text-emerald-500" size={14} />
+                        <SarakIcon name="FileSpreadsheet" className="text-[var(--sarak-status-success-color,#10b981)]" size={14} />
                         <h3 className="font-bold text-xs text-[var(--theme-title)] font-mono uppercase">Financial_Ledger_Q2.xlsx</h3>
                     </div>
                     <div className="flex items-center gap-2">
@@ -131,7 +131,7 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                     {/* Aqui forçamos a tabela a não ter padding vertical (densidade extrema) e usar monoespaço */}
                     <table className="w-full text-left text-[10px] font-mono border-collapse">
                         <thead>
-                            <tr className="border-b border-[var(--sarak-table-border)] text-[var(--theme-text-sec)] bg-[var(--sarak-table-header-bg)]">
+                            <tr className="border-b border-[var(--sarak-table-border)] text-[var(--text-secondary)] bg-[var(--sarak-table-header-bg)]">
                                 {['Transaction ID', 'Date', 'Description', 'Amount', 'Status'].map(h => (
                                     <th key={h} className="font-bold uppercase px-3 py-1.5 border-r border-[var(--sarak-table-border)] last:border-r-0">
                                         <div className="flex items-center gap-1">{h} <SarakIcon name="ArrowUpDown" size={8} className="opacity-50" /></div>
@@ -143,12 +143,12 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                             {excelRows.map((row, i) => (
                                 <tr key={i} className="hover:bg-[var(--sarak-table-row-hover)] transition-colors">
                                     <td className="px-3 py-1 font-bold text-[var(--theme-title)] border-r border-[var(--sarak-table-border)] opacity-80">{row.id}</td>
-                                    <td className="px-3 py-1 text-[var(--theme-text-sec)] border-r border-[var(--sarak-table-border)]">{row.date}</td>
+                                    <td className="px-3 py-1 text-[var(--text-secondary)] border-r border-[var(--sarak-table-border)]">{row.date}</td>
                                     <td className="px-3 py-1 text-[var(--theme-title)] border-r border-[var(--sarak-table-border)] truncate max-w-[200px]">{row.desc}</td>
-                                    <td className={`px-3 py-1 border-r border-[var(--sarak-table-border)] font-bold text-right ${row.amount.includes('+') ? 'text-emerald-500' : 'text-[var(--theme-title)]'}`}>
+                                    <td className={`px-3 py-1 border-r border-[var(--sarak-table-border)] font-bold text-right ${row.amount.includes('+') ? 'text-[var(--sarak-status-success-color,#10b981)]' : 'text-[var(--theme-title)]'}`}>
                                         {row.amount}
                                     </td>
-                                    <td className="px-3 py-1 border-r border-[var(--sarak-table-border)] last:border-r-0 text-[var(--theme-text-sec)] italic">
+                                    <td className="px-3 py-1 border-r border-[var(--sarak-table-border)] last:border-r-0 text-[var(--text-secondary)] italic">
                                         {row.status}
                                     </td>
                                 </tr>
@@ -156,7 +156,7 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                         </tbody>
                     </table>
                 </div>
-                <div className="p-2 border-t border-[var(--sarak-table-border)] bg-[var(--sarak-table-header-bg)] text-[9px] font-mono text-[var(--theme-text-sec)] flex justify-between">
+                <div className="p-2 border-t border-[var(--sarak-table-border)] bg-[var(--sarak-table-header-bg)] text-[9px] font-mono text-[var(--text-secondary)] flex justify-between">
                     <span>6 ROWS LOADED</span>
                     <span>SUM: +$11,940.00</span>
                 </div>

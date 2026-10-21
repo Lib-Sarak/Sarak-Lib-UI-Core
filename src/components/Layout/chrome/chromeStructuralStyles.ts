@@ -1,15 +1,10 @@
-import type { ChromeContentAlignment, ChromeNavbarLayout, ChromeSidebarPosition } from './useChromeDesignTokens';
+import type { CSSProperties } from 'react';
+import type { ChromeLayoutDensity, ChromeNavbarLayout, ChromeSidebarPosition } from './useChromeDesignTokens';
 
 /**
- * Tradução de tokens ESTRUTURAIS de cromo (`sidebarPosition`, `navbarLayout`,
- * `contentAlignment`) em classes, para o cromo do modo ui-kit.
- *
- * Comportamento de REFERÊNCIA: `src/core/Shell/hooks/useShellLayoutStyles.ts`
- * (não importado — `src/core/Shell/` não é tocado por esta plan, §3.2). Os
- * mapas abaixo são o equivalente para a estrutura do `SarakAppChrome`, que
- * difere da do Shell (aqui a direção do flex vale só para a linha
- * sidebar+conteúdo, não para a casca inteira — banner/footer do `ChromeFrame`
- * continuam empilhados em coluna nos dois sentidos).
+ * Converte os tokens estruturais de cromo em classes para `SarakAppChrome`.
+ * A direção do flex governa a linha sidebar e conteúdo; banner e footer
+ * continuam empilhados em coluna pelo `ChromeFrame`.
  */
 
 const BODY_DIRECTION_CLASS: Record<ChromeSidebarPosition, string> = {
@@ -26,7 +21,7 @@ const BODY_DIRECTION_CLASS: Record<ChromeSidebarPosition, string> = {
 const ASIDE_POSITION_CLASS: Record<ChromeSidebarPosition, string> = {
     left: 'border-r',
     right: 'border-l',
-    floating: 'border rounded-[var(--sarak-card-radius,12px)] m-3',
+    floating: 'border rounded-[var(--sarak-card-radius,10px)] m-3',
 };
 
 const NAVBAR_LAYOUT_CLASS: Record<ChromeNavbarLayout, string> = {
@@ -35,12 +30,15 @@ const NAVBAR_LAYOUT_CLASS: Record<ChromeNavbarLayout, string> = {
     hidden: 'hidden',
 };
 
-// `@min-[…]:` literais de propósito (07-responsividade-e-multidispositivo.md
-// §6.1 regra 2) — o scanner do Tailwind lê o arquivo como texto.
-const CONTENT_ALIGNMENT_CLASS: Record<ChromeContentAlignment, string> = {
-    stretch: '',
-    center: 'max-w-7xl mx-auto w-full px-4 @min-[640px]:px-6 @min-[1024px]:px-8',
+const CONTENT_DENSITY_SCALE: Record<ChromeLayoutDensity, string> = {
+    compact: '0.75',
+    comfortable: '1',
+    spacious: '1.25',
 };
+
+const CONTENT_PADDING_CSS_VALUE = 'var(--sarak-layout-padding, 16px)';
+
+export const CHROME_SPLIT_CONTENT_LAYOUT_CLASS = 'grid min-h-full min-w-0 grid-cols-1 @min-[1024px]:grid-cols-2';
 
 export const resolveChromeBodyDirectionClass = (position: ChromeSidebarPosition): string =>
     BODY_DIRECTION_CLASS[position] ?? BODY_DIRECTION_CLASS.left;
@@ -51,5 +49,16 @@ export const resolveChromeAsidePositionClass = (position: ChromeSidebarPosition)
 export const resolveChromeNavbarLayoutClass = (layout: ChromeNavbarLayout): string =>
     NAVBAR_LAYOUT_CLASS[layout] ?? NAVBAR_LAYOUT_CLASS.sticky;
 
-export const resolveChromeContentAlignmentClass = (alignment: ChromeContentAlignment): string =>
-    CONTENT_ALIGNMENT_CLASS[alignment] ?? CONTENT_ALIGNMENT_CLASS.stretch;
+// @sarak-token-reader maxContentWidth direto
+// As opções de `maxContentWidth` já são larguras CSS: vão direto para `max-width`.
+export const resolveChromeContentStyle = (
+    layoutDensity: ChromeLayoutDensity,
+    maxContentWidth: string,
+): CSSProperties => ({
+    width: '100%',
+    maxWidth: maxContentWidth,
+    marginInline: 'auto',
+    padding: layoutDensity === 'comfortable'
+        ? CONTENT_PADDING_CSS_VALUE
+        : `calc(${CONTENT_PADDING_CSS_VALUE} * ${CONTENT_DENSITY_SCALE[layoutDensity]})`,
+});

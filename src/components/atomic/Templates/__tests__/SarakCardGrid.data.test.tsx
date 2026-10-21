@@ -1,44 +1,71 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { SarakCardGrid } from '../SarakCardGrid';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
-import api from '../../../../shared/services/api';
+import * as cardGridData from '../hooks/useCardGridState';
 
-vi.mock('../../../../shared/services/api', () => ({
-    default: { get: vi.fn() }
-}));
+const MAPPING = { title: 'name' };
 
-const MAPPING = { title: 'nome' };
+afterEach(() => vi.restoreAllMocks());
 
-// Aceita dado pronto, no mesmo contrato de `SarakStats`/`SarakTable`, e
-// `endpoint` passa a opcional.
-describe('SarakCardGrid — aceita dado pronto', () => {
-    beforeEach(() => {
-        vi.clearAllMocks();
-    });
-
-    it('com `data`, renderiza o dado direto e NÃO chama a rede', () => {
+describe('SarakCardGrid host-provided data', () => {
+    it('renders provided data without invoking load', () => {
+        const load = vi.fn(async () => [{ name: 'Loaded' }]);
         render(
             <SarakUIProvider config={{ mode: 'dark' }}>
-                <SarakCardGrid data={[{ nome: 'Ana' }]} mapping={MAPPING} />
-            </SarakUIProvider>
+                <SarakCardGrid data={[{ name: 'Ana' }]} load={load} mapping={MAPPING} />
+            </SarakUIProvider>,
         );
 
         expect(screen.getByText('Ana')).toBeInTheDocument();
-        expect(api.get).not.toHaveBeenCalled();
+        expect(load).not.toHaveBeenCalled();
     });
 
-    it('sem `data`, continua buscando por `endpoint` — comportamento de hoje', async () => {
-        (api.get as unknown as { mockResolvedValueOnce: (val: unknown) => void }).mockResolvedValueOnce({ data: { items: [{ nome: 'Bia' }] } });
+});
 
+describe('SarakCardGrid host loader', () => {
+    it('renders records returned by the host loader', async () => {
+        const load = vi.fn(async () => [{ name: 'Bia' }]);
         render(
             <SarakUIProvider config={{ mode: 'dark' }}>
-                <SarakCardGrid endpoint="/mock" mapping={MAPPING} />
-            </SarakUIProvider>
+                <SarakCardGrid load={load} mapping={MAPPING} />
+            </SarakUIProvider>,
         );
 
         expect(await screen.findByText('Bia')).toBeInTheDocument();
-        expect(api.get).toHaveBeenCalledWith('/mock');
+        expect(load).toHaveBeenCalledOnce();
+    });
+
+    it('shows host load failures', async () => {
+        render(
+            <SarakUIProvider config={{ mode: 'dark' }}>
+                <SarakCardGrid load={async () => { throw new Error('Unavailable'); }} mapping={MAPPING} />
+            </SarakUIProvider>,
+        );
+
+        expect(await screen.findByText('Unavailable')).toBeInTheDocument();
+    });
+
+});
+
+describe('SarakCardGrid stale data', () => {
+    it('keeps previously loaded cards visible with a stale notice and retry action', () => {
+        const loadData = vi.fn();
+        vi.spyOn(cardGridData, 'useCardGridState').mockReturnValue({
+            data: [{ name: 'Cached' }], loading: false, error: 'Unavailable', updatedAt: new Date('2026-10-10T22:12:00.000Z'),
+            search: '', activeFilters: {}, setSearch: vi.fn(), setActiveFilters: vi.fn(), loadData,
+        } as ReturnType<typeof cardGridData.useCardGridState>);
+        render(
+            <SarakUIProvider config={{ mode: 'dark' }}>
+                <SarakCardGrid mapping={MAPPING} />
+            </SarakUIProvider>,
+        );
+
+        expect(screen.getByText('Cached')).toBeInTheDocument();
+        expect(screen.getByText('Unavailable')).toBeInTheDocument();
+        expect(screen.getByText('Desatualizado')).toBeInTheDocument();
+        fireEvent.click(screen.getByRole('button', { name: 'Tentar novamente' }));
+        expect(loadData).toHaveBeenCalledOnce();
     });
 });

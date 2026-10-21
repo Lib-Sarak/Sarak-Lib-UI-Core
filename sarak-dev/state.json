@@ -7,7 +7,7 @@
   },
   "design": {
     "schemaFiles": {
-      "count": 29,
+      "count": 30,
       "files": [
         "advanced.ts",
         "animations.ts",
@@ -23,6 +23,7 @@
         "data.ts",
         "engineering.ts",
         "global.ts",
+        "icons.ts",
         "inputs.ts",
         "layers.ts",
         "media.ts",
@@ -45,17 +46,17 @@
       "nota": "Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §2 do guia).",
       "mapeamento": {
         "colunas": 13,
-        "entradasBrutas": 427,
-        "idsUnicos": 427
+        "entradasBrutas": 400,
+        "idsUnicos": 400
       },
       "particoes": {
         "arquivos": 13,
-        "tokens": 427
+        "tokens": 400
       },
       "tipoPublico": {
         "interface": "SarakDesignTokens",
-        "ids": 427,
-        "responsivos": 40
+        "ids": 400,
+        "responsivos": 37
       }
     }
   },
@@ -82,22 +83,25 @@
       "flows"
     ],
     "publicos": {
-      "count": 96,
+      "count": 102,
       "nomes": [
         "SARAK_DEFAULT_COLUMN_WIDTH",
         "SARAK_MIN_COLUMN_WIDTH",
         "SarakAccordion",
         "SarakActionCard",
+        "SarakActivityFeed",
         "SarakAlert",
         "SarakAnalyticalPage",
         "SarakAppChrome",
         "SarakAppChromeMobile",
+        "SarakAssigneePicker",
         "SarakAuthScreen",
         "SarakAutocomplete",
         "SarakAvatar",
         "SarakBadge",
         "SarakBreadcrumbs",
         "SarakButton",
+        "SarakCalendar",
         "SarakCard",
         "SarakCardBody",
         "SarakCardFooter",
@@ -109,13 +113,13 @@
         "SarakChat",
         "SarakChatEngine",
         "SarakCheckbox",
+        "SarakChecklist",
+        "SarakCommentThread",
         "SarakContextMenu",
         "SarakCurrencyInput",
         "SarakDataEmpty",
         "SarakDataGrid",
-        "SarakDataGridImpl",
         "SarakDataTable",
-        "SarakDataTableImpl",
         "SarakDatePicker",
         "SarakDivider",
         "SarakDrawer",
@@ -128,6 +132,7 @@
         "SarakFlowEngine",
         "SarakForm",
         "SarakFormGroup",
+        "SarakGantt",
         "SarakGrid",
         "SarakHelpButton",
         "SarakHidden",
@@ -148,6 +153,7 @@
         "SarakPDFViewer",
         "SarakPageTransition",
         "SarakPagination",
+        "SarakProgress",
         "SarakRadio",
         "SarakRangeSlider",
         "SarakRichText",
@@ -179,7 +185,8 @@
         "SarakTooltip",
         "SarakTreeView",
         "SarakTypography",
-        "SarakUploader"
+        "SarakUploader",
+        "SarakValue"
       ]
     }
   },
@@ -199,6 +206,10 @@
     {
       "nome": "npm run catalog:check",
       "comando": "node scripts/generate-component-catalog.mjs --check"
+    },
+    {
+      "nome": "npm run channel-dispute:check",
+      "comando": "npx tsx gates/scripts/contrato/check-channel-dispute.ts"
     },
     {
       "nome": "npm run chrome-token-parity:check",
@@ -229,6 +240,10 @@
       "comando": "npm run build && playwright test --config=browser-tests/playwright.config.ts"
     },
     {
+      "nome": "npm run css-important:check",
+      "comando": "node gates/scripts/contrato/check-css-important-visual.mjs"
+    },
+    {
       "nome": "npm run deep-import:check",
       "comando": "node gates/scripts/contrato/check-no-deep-import.mjs"
     },
@@ -237,16 +252,36 @@
       "comando": "node scripts/generate-dev-kit.mjs --check"
     },
     {
+      "nome": "npm run fixed-translucent:check",
+      "comando": "node gates/scripts/contrato/check-fixed-translucent.mjs"
+    },
+    {
+      "nome": "npm run fonts:check",
+      "comando": "npx tsx gates/scripts/contrato/check-fonts.ts"
+    },
+    {
+      "nome": "npm run fonts:manifest:check",
+      "comando": "npx tsx scripts/generate-font-manifest.ts --check"
+    },
+    {
       "nome": "npm run gate-limits:check",
       "comando": "node gates/scripts/contrato/check-gate-limits.mjs"
     },
     {
       "nome": "npm run gates:full",
-      "comando": "npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check && node gates/scripts/release/check-audit-baseline.mjs --with-tsc && npm run themes:diversity"
+      "comando": "npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check && node gates/scripts/release/check-audit-baseline.mjs --with-tsc && npm run themes:diversity && npm run boot:measure"
     },
     {
       "nome": "npm run guide:check",
       "comando": "node scripts/generate-consumer-kit.mjs --check"
+    },
+    {
+      "nome": "npm run icon-port:check",
+      "comando": "node gates/scripts/contrato/check-icon-port.mjs"
+    },
+    {
+      "nome": "npm run kit-names:check",
+      "comando": "node gates/scripts/contrato/check-kit-names.mjs"
     },
     {
       "nome": "npm run migration-anchor:check",
@@ -259,6 +294,10 @@
     {
       "nome": "npm run package:check",
       "comando": "node gates/scripts/contrato/check-package-contents.mjs"
+    },
+    {
+      "nome": "npm run panel-contract:check",
+      "comando": "npx tsx gates/scripts/contrato/check-panel-contract.ts"
     },
     {
       "nome": "npm run persistence-doc:check",
@@ -285,12 +324,36 @@
       "comando": "node gates/scripts/contrato/check-section-pointers.mjs"
     },
     {
+      "nome": "npm run theme-boot:check",
+      "comando": "node gates/scripts/contrato/check-theme-boot-closure.mjs"
+    },
+    {
+      "nome": "npm run theme-completeness:check",
+      "comando": "npx tsx gates/scripts/contrato/check-theme-completeness.ts"
+    },
+    {
+      "nome": "npm run themes:catalog:check",
+      "comando": "npx tsx scripts/generate-theme-catalog.ts --check"
+    },
+    {
+      "nome": "npm run token-docs:check",
+      "comando": "npx tsx gates/scripts/contrato/check-token-documentation.ts"
+    },
+    {
+      "nome": "npm run token-reader:check",
+      "comando": "node gates/scripts/contrato/check-token-reader.mjs"
+    },
+    {
       "nome": "npm run token-types:check",
       "comando": "npx tsx scripts/generate-token-types.ts --check"
     },
     {
       "nome": "npm run trail-citation:check",
       "comando": "node gates/scripts/contrato/check-trail-citation.mjs"
+    },
+    {
+      "nome": "npm run variable-contract:check",
+      "comando": "npx tsx gates/scripts/contrato/check-variable-contract.ts"
     },
     {
       "nome": "npm run zero-brand:check",
@@ -314,14 +377,14 @@
   "baseline": {
     "_doc": "Baseline do Anel 2 (specs/specs/02-enforcement-por-commit.md). NÃO editar à mão: rode `npm run audit:baseline -- --write` DEPOIS de consertar a dívida, e commite junto do conserto.",
     "_leitura": "Cada número é o MÁXIMO tolerado. Maior que isto = regressão = commit bloqueado.",
-    "medidoEm": "2026-08-11",
+    "medidoEm": "2026-10-12",
     "metricas": {
       "auditor_hardcoded.mjs": {
         "valor": 0,
         "estruturalLiquido": 0
       },
       "auditor_ghostvars.mjs": {
-        "consumos": 1
+        "consumos": 0
       },
       "auditor_typescript.mjs": {
         "violacoes": 0
@@ -352,7 +415,8 @@
       },
       "auditor_contraste.mjs": {
         "reprovados": 0,
-        "reprovadosModoOposto": 0
+        "reprovadosModoOposto": 0,
+        "contraparteFaltando": 0
       }
     },
     "tsc": {
@@ -378,7 +442,14 @@
       "013-item-de-navegacao-como-atomo-proprio.md",
       "014-cromo-do-modo-ui-kit-com-widgets-por-padrao.md",
       "015-metrica-do-item-de-navegacao-horizontal.md",
-      "016-preferencias-do-usuario-separadas-do-tema.md"
+      "016-preferencias-do-usuario-separadas-do-tema.md",
+      "017-porta-de-apagar-tema-simetrica-a-de-escrever.md",
+      "018-um-cromo-so-e-o-consumidor-e-dono-das-rotas.md",
+      "019-arrastar-e-soltar-do-kanban.md",
+      "020-gantt-casca-propria.md",
+      "021-navegacao-na-base-do-celular.md",
+      "022-tema-sob-demanda.md",
+      "023-fontes-embarcadas-carregadas-sob-demanda.md"
     ],
     "arquitetura": [
       "00-mapa-do-modulo.md",
@@ -393,7 +464,6 @@
       "01-gates-e-baseline.md",
       "02-enforcement-por-commit.md",
       "03-versionamento-e-release.md",
-      "04-shell-e-discovery.md",
       "05-cromo-e-slots.md",
       "06-painel-de-customizacao-e-preview.md",
       "07-responsividade-e-multidispositivo.md",
@@ -415,6 +485,7 @@
     "identidade-do-host.md",
     "migracoes.md",
     "persistencia-de-tema.md",
+    "roteiro-de-validacao-dos-temas.md",
     "temas-cromo-e-multidispositivo.md"
   ]
 }

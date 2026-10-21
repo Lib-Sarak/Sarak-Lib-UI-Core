@@ -11,7 +11,7 @@ export const HelpTooltip: React.FC<{ label: string, description?: string }> = ({
                 onMouseEnter={() => setIsOpen(true)}
                 onMouseLeave={() => setIsOpen(false)}
                 onClick={() => setIsOpen(!isOpen)}
-                className="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#1e293b)] cursor-help"
+                className="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#101622)] cursor-help"
             >
                 <HelpCircle size={10} />
             </button>
@@ -21,12 +21,12 @@ export const HelpTooltip: React.FC<{ label: string, description?: string }> = ({
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute left-1/2 -translate-x-1/2 bottom-full mb-3 w-72 p-5 rounded-2xl bg-[var(--theme-surface)] border border-[var(--theme-border)] shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-[9999] pointer-events-none"
+                        className="absolute left-1/2 -translate-x-1/2 bottom-full mb-3 w-72 p-5 rounded-2xl bg-[var(--theme-surface)] border border-[var(--theme-border)] shadow-[0_20px_50px_color-mix(in_srgb,var(--color-theme-body)_50%,transparent)] z-[9999] pointer-events-none"
                     >
                         <div className="flex flex-col gap-2 relative z-10">
                             <div className="flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-[var(--theme-primary)] shadow-[0_0_8px_var(--theme-primary)]" />
-                                <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase text-[var(--color-theme-title,#ffffff)] tracking-[var(--sarak-tracking-tight,0.2em)]">{label}</span>
+                                <span className="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal text-[var(--color-theme-title,#f2f6fb)]">{label}</span>
                             </div>
                             <div className="h-[length:var(--sarak-border-width,1px)] w-full bg-[var(--theme-border)]" />
                             <p className="text-[var(--sarak-type-scale2xs,10px)] text-[var(--theme-muted)] leading-relaxed uppercase font-medium">

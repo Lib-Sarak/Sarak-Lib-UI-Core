@@ -7,9 +7,14 @@ import type { SarakTokenValue } from '../Design/types';
 
 /**
  * SOVEREIGN DESIGN MANIFEST (v10.1)
- * 
- * O Manifesto é a única fonte de verdade para como os tokens de design
- * são mapeados para variáveis CSS, Atributos de DOM e Classes.
+ *
+ * Lista de chaves aceitas fora do schema (`ALLOWED_EXTRA_KEYS`) e o export público das
+ * variáveis/transformações. NÃO é o emissor: quem escreve variável (`--sarak-<kebab>` e as
+ * `cssVars` do schema) e atributo (`data-sx-<kebab>`) de TODO token é `useDesignVariables.ts`,
+ * a partir do schema. O `vars` daqui nunca alimentou CSS real, e `attr` só aparece onde é o
+ * próprio `data-sx-<kebab>` que o motor emite — por isso o `token-reader:check` lê o schema
+ * inteiro e usa este arquivo só para o `classPrefix`. Entrada vazia (`{}`) só mantém a chave
+ * aceita no payload (`ALLOWED_EXTRA_KEYS`).
  */
 export const SARAK_DESIGN_MANIFEST: Record<string, {
     vars?: string[],
@@ -18,13 +23,7 @@ export const SARAK_DESIGN_MANIFEST: Record<string, {
     attr?: string,
     classPrefix?: string
 }> = {
-    layout: { vars: ['--sarak-layout', '--layout-theme'], classPrefix: 'layout-' },
     mode: { vars: ['--sarak-mode', '--mode-theme'], transform: (v: SarakTokenValue) => v === 'dark' ? 'dark' : 'light' },
-    colorPalette: {
-        vars: ['--sarak-palette'],
-        attr: 'data-palette',
-        transform: (v: SarakTokenValue) => String(v)
-    },
     primaryColor: {
         vars: ['--primary-color', '--theme-primary', '--sarak-primary-color'],
         transform: (v: SarakTokenValue) => computeColorVariants(String(v), '#3b82f6')
@@ -37,8 +36,8 @@ export const SARAK_DESIGN_MANIFEST: Record<string, {
         vars: ['--tertiary-color', '--theme-tertiary', '--sarak-tertiary-color'],
         transform: (v: SarakTokenValue) => computeColorVariants(String(v), '#10b981')
     },
-    colorDepth: { vars: ['--sarak-color-depth'], attr: 'data-color-depth', transform: (v: SarakTokenValue) => parseInt(String(v)) || 1 },
-    colorVariation: { vars: ['--sarak-color-variation'], attr: 'data-color-variation', transform: (v: SarakTokenValue) => parseInt(String(v)) || 1 },
+    colorDepth: { vars: ['--sarak-color-depth'], transform: (v: SarakTokenValue) => parseInt(String(v)) || 1 },
+    colorVariation: { vars: ['--sarak-color-variation'], transform: (v: SarakTokenValue) => parseInt(String(v)) || 1 },
     accentColor: {
         vars: ['--theme-accent', '--sarak-accent-color'],
         transform: (v: SarakTokenValue) => computeColorVariants(String(v), '#f43f5e')
@@ -84,7 +83,7 @@ export const SARAK_DESIGN_MANIFEST: Record<string, {
         transform: (v: SarakTokenValue) => computeColorVariants(String(v), '#ffffff')
     },
     layoutDensity: { vars: ['--sarak-layout-density', '--density-theme'], classPrefix: 'density-' },
-    texture: { vars: ['--sarak-texture', '--texture-theme'], classPrefix: 'texture-', attr: 'data-texture' },
+    texture: { vars: ['--sarak-texture', '--texture-theme'], classPrefix: 'texture-' },
     navigationStyle: { vars: ['--sarak-navigation-style', '--sarak-nav-style', '--nav-style'], classPrefix: 'nav-' },
     sidebarWidth: { vars: ['--sidebar-width', '--sarak-sidebar-width'], unit: 'px' },
     headingFont: { vars: ['--font-heading', '--sarak-heading-font'] },
@@ -92,9 +91,6 @@ export const SARAK_DESIGN_MANIFEST: Record<string, {
     fontLineHeight: { vars: ['--line-height', '--sarak-line-height'] },
 
     borderRadius: { vars: ['--radius-theme', '--sarak-border-radius', '--border-radius'], unit: 'px' },
-    borderRadiusSm: { vars: ['--sarak-border-radius-sm'], unit: 'px' },
-    borderRadiusMd: { vars: ['--sarak-border-radius-md'], unit: 'px' },
-    borderRadiusLg: { vars: ['--sarak-border-radius-lg'], unit: 'px' },
 
     borderWidth: { vars: ['--theme-border-width', '--border-width', '--sarak-border-width'], unit: 'px' },
     borderStyle: { vars: ['--border-style', '--sarak-border-style'] },
@@ -107,7 +103,6 @@ export const SARAK_DESIGN_MANIFEST: Record<string, {
     glassOpacity: { vars: ['--glass-opacity', '--sarak-glass-opacity', '--sarak-bg-opacity'] },
     glassBlur: { vars: ['--glass-blur', '--sarak-glass-blur'], unit: 'px' },
     glassSaturation: { vars: ['--sarak-glass-saturation', '--theme-glass-saturation'], unit: '%' },
-    contrastCurve: { vars: ['--contrast-curve', '--sarak-contrast-curve'], transform: (v: SarakTokenValue) => parseFloat(String(v)) || 1.0 },
     shadowIntensity: { vars: ['--shadow-intensity', '--sarak-shadow-intensity'] },
     
     cardPaddingMd: { vars: ['--sarak-card-padding-md'], unit: 'px' },
@@ -123,54 +118,50 @@ export const SARAK_DESIGN_MANIFEST: Record<string, {
     // é do dono (R11 — Expansão ou redirecionamento deliberado), não do executor. Os 3 sites
     // continuam consumindo o fallback local (não tocados); `ghostvars` continua acusando os
     // 3 consumos até essa decisão.
-    surfaceMaterial: { attr: 'data-surface', vars: ['--sarak-surface', '--surface-material'] },
+    surfaceMaterial: { vars: ['--sarak-surface', '--surface-material'] },
+    bgGradientMode: { vars: ['--sarak-bg-gradient-mode'], attr: 'data-sx-bg-gradient-mode' },
+    bgGradientAngle: { vars: ['--sarak-bg-gradient-angle'] },
     surfaceIntensity: { vars: ['--surface-intensity', '--sarak-surface-intensity'] },
-    borderType: { attr: 'data-border', vars: ['--sarak-border-type', '--border-type'] },
-    systemTone: { vars: ['--sarak-system-tone'], attr: 'data-tone' },
-    isAutoHideEnabled: { attr: 'data-auto-hide' },
-    shadowOrientation: { vars: ['--shadow-orientation'], attr: 'data-shadow-orientation' },
-    shadowColorMode: { vars: ['--shadow-color-mode'], attr: 'data-shadow-color-mode' },
-    systemName: { attr: 'data-system-name' },
-    logoUrl: { attr: 'data-logo-url' },
-    logoDarkUrl: { attr: 'data-logo-dark' },
-    logoPosition: { attr: 'data-logo-position' },
+    borderType: { vars: ['--sarak-border-type', '--border-type'] },
+    systemTone: { vars: ['--sarak-system-tone'] },
+    shadowOrientation: { vars: ['--shadow-orientation'] },
+    shadowColorMode: { vars: ['--shadow-color-mode'] },
     // `interfaceElasticity` (`--sarak-elasticity`) foi REMOVIDA aqui (plan-21, 2026-08-10):
     // nenhum token de schema corresponde ao conceito de "elasticidade" — busca no schema
     // inteiro não achou nada. Continua consumida (fallback numérico `0.2`, sem cadeia de
     // var) em `src/styles/_base.css:58-59` (curva/escala elástica) — SEM alvo para
     // redirecionar. Criar o token é Expansão (R11), decisão do dono; não tocado aqui.
-    isSplitViewEnabled: { attr: 'data-split-view' },
-    chartStyle: { attr: 'data-chart-style' },
+    chartStyle: {},
     cardSpotlightOpacity: {
         vars: ['--spotlight-opacity'],
         transform: (v: SarakTokenValue) => parseFloat(String(v)) || 0
     },
     cardBorderRadius: { vars: ['--card-radius', '--sarak-card-radius'], unit: 'px' },
+    cardShadowSpread: { vars: ['--sarak-card-shadow-spread'] },
+    cardShadowOffsetX: { vars: ['--sarak-card-shadow-offset-x'], unit: 'px' },
+    cardShadowOffsetY: { vars: ['--sarak-card-shadow-offset-y'], unit: 'px' },
+    cardShadowBlur: { vars: ['--sarak-card-shadow-blur'], unit: 'px' },
+    cardShadowExpansion: { vars: ['--sarak-card-shadow-expansion'], unit: 'px' },
+    switchStyleType: { vars: ['--sarak-switch-style-type'], attr: 'data-sx-switch-style-type' },
 
-    borderBeamEnabled: { attr: 'data-border-beam' },
-    secondaryModuleId: { attr: 'data-sec-module' },
-    hoverLiftEnabled: { attr: 'data-hover-lift' },
-    spotlightEnabled: { attr: 'data-spotlight' },
-    magneticPullEnabled: { attr: 'data-magnetic' },
-    performanceMode: { attr: 'data-perf-mode' },
+    hoverLiftEnabled: {},
+    spotlightEnabled: {},
+    magneticPullEnabled: {},
+    performanceMode: {},
 
     fontScale: {
         vars: ['--sarak-font-scale', '--sarak-font-size', '--font-size-factor', '--theme-font-size-base'],
-        attr: 'data-font-scale',
         transform: (v: SarakTokenValue) => transformFontScale(String(v)) as unknown as string
     },
     layeredShadows: {
         vars: ['--sarak-layered-shadows'],
         transform: (v: SarakTokenValue) => String(transformLayeredShadows(String(v)))
     },
-    chatBubbleStyle: { attr: 'data-chat-bubble', vars: ['--sarak-chat-bubble'] },
+    chatBubbleStyle: { vars: ['--sarak-chat-bubble'] },
     chatAnimationSpeed: { vars: ['--sarak-chat-anim-speed'] },
-    flowGridStyle: { attr: 'data-flow-grid', vars: ['--sarak-flow-grid'] },
+    flowGridStyle: { vars: ['--sarak-flow-grid'] },
     flowNodeRadius: { vars: ['--sarak-flow-radius'], unit: 'px' },
-    chartShowGrid: { attr: 'data-chart-grid' },
-    chartType: { attr: 'data-chart-type' },
     chartThickness: { vars: ['--sarak-chart-thickness'], unit: 'px' },
-    chartSmoothing: { attr: 'data-chart-smoothing' },
 
     // Hyper-Granular Interaction Tokens
     sidebarHoverColor: { vars: ['--sarak-sidebar-hover-color'], transform: (v: SarakTokenValue) => computeColorVariants(String(v), 'transparent') as unknown as string },
@@ -182,22 +173,13 @@ export const SARAK_DESIGN_MANIFEST: Record<string, {
     sidebarNoiseOpacity: { vars: ['--sarak-sidebar-noise-opacity'] },
     topbarNoiseOpacity: { vars: ['--sarak-topbar-noise-opacity'] },
 
-    atmosphereNoiseOpacity: { vars: ['--sarak-noise-opacity', '--theme-noise-opacity'] },
-
     iconStrokeWidth: { vars: ['--sarak-icon-stroke', '--theme-icon-stroke'], unit: 'px' },
     maxContentWidth: { vars: ['--sarak-max-width', '--theme-max-width'] },
-    scrollbarStyle: { vars: ['--sarak-scrollbar-width'], unit: 'px', attr: 'data-scrollbar-style' },
     topbarHeight: { vars: ['--topbar-height', '--sarak-topbar-height', '--theme-topbar-height'], unit: 'px' },
-    isNavHidden: { vars: ['--is-nav-hidden'], attr: 'data-nav-hidden' },
+    isNavHidden: { vars: ['--is-nav-hidden'] },
     sidebarMinWidth: { vars: ['--sidebar-min-width'], transform: (v: SarakTokenValue) => parseFloat(String(v)) || 200 },
     sidebarMaxWidth: { vars: ['--sidebar-max-width'], transform: (v: SarakTokenValue) => parseFloat(String(v)) || 450 },
 
-    // Novas Integrações v11.0 (Security & Atmosphere)
-    securityShieldGlow: { vars: ['--sarak-security-glow'], unit: 'px' },
-    securityPulseSpeed: { vars: ['--sarak-security-pulse'], unit: 's' },
-    noiseIntensity: { vars: ['--sarak-noise-opacity', '--theme-noise-opacity'], transform: (v: SarakTokenValue) => (parseFloat(String(v)) || 0) / 100 },
-    
-    // Configurações de Sistema
-    moduleBlacklist: { attr: 'data-module-blacklist' },
-    industrialRegistry: { attr: 'data-industrial-registry' }
+    // Novas Integrações v11.0 (Atmosphere)
+    bgNoiseDensity: { vars: ['--sarak-noise-density'] }
 };

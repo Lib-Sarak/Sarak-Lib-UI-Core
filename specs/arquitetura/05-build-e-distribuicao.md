@@ -13,30 +13,52 @@ Como o artefato é **produzido** e o que ele **contém**. Este documento cobre o
 
 # 2. O pipeline `npm run build`, na ordem exata
 
-Dez etapas, e **a ordem não é arbitrária** — cada uma depende do que a anterior produziu ou validou:
+**A lista exata e a ordem são as do script `build` do `package.json`** — é a fonte, e cresce a cada gate
+novo. Esta tabela agrupa as etapas por **fase**, que é o que não muda: cada fase depende do que a anterior
+produziu ou validou.
 
-| # | Etapa | O que faz | Por que aqui |
+| Fase | Etapas | O que faz | Por que aqui |
 | --- | --- | --- | --- |
-| 1 | `catalog:check` | Regenera `docs/component-catalog.{json,md}` por AST e compara com o commitado; divergência = `exit 1` | Primeiro porque é a fonte que a etapa 4 reusa |
-| 2 | `barrel:check` | Confere que todo componente consumidor-facing e seu `<Nome>Props` estão em `src/index.ts` | Antes de compilar: empacotar um barril incompleto é custo desperdiçado |
-| 3 | `zero-brand:check` | Varre `src/` por AST buscando literais de marca da lib fora da allowlist | Antes do bundle, para marca não vazar para o código publicado |
-| 4 | `guide:check` | Regenera o kit `sarak-ui/` e compara; arquivo defasado = `exit 1` | Depois da 1: reusa o mesmo pipeline de AST já validado |
-| 5 | `build:js` | `tsup src/index.ts` — ESM + CJS + DTS, com `--shims --clean --minify` | Só depois de os 4 gates passarem |
-| 6 | `build:css` | Tailwind CLI sobre `src/styles/sarak-base.css` → `dist/sarak.css` (minificado) | — |
-| 7 | `build:css:scoped` | lightningcss reescreve os seletores → `dist/sarak-scoped.css` | **Lê `dist/sarak.css`**; aborta com `exit 1` se ele não existir |
-| 8 | `copy-base-css.mjs` | Copia `src/styles/` **inteiro** para `dist/styles/` | Preserva a cadeia de `@import` dos parciais, para o export `./sarak-base.css` resolver dentro de `dist/` sem expor `src/` |
-| 9 | `inject-css.mjs` | Substitui o placeholder pelo CSS real em **todo** `.js`/`.cjs` de `dist/` | Precisa dos bundles (5) **e** do CSS (6) |
-| 10 | `generate-build-info.mjs` | Grava `dist/BUILD_INFO.json` | Última de propósito: carimba o `dist/` já finalizado |
+| 1 · Gates de fonte | `token-types:check`, `catalog:check`, `barrel:check`, `zero-brand:check`, `guide:check`, `deep-import:check` | Leem `src/`, o schema, o kit e o `package.json`; regenerar e comparar, divergência = `exit 1` | Antes de compilar: empacotar um barril incompleto ou um kit defasado é custo desperdiçado |
+| 2 · `build:js` | `generate-build-info.mjs --prepare` → `tsup src/index.ts` (ESM + CJS + DTS, `--shims --clean --minify`) | O `--prepare` calcula a **tríade de build** (`libVersion`, `baseCommitShort`, `builtAt`) e a grava em `src/core/Provider/buildInfo.ts` e `src/buildInfo.ts`; o tsup empacota esses arquivos junto com o resto (§6) | A tríade tem de existir **antes** do empacotamento, ou o bundle não a carrega |
+| 3 · Gates do artefato | `public-types:check`, `prefix:check`, `icon-port:check`, `kit-names:check` | Leem `dist/index.d.ts` — o `icon-port:check` lê `src/`, mas ocupa este ponto da cadeia | Só têm o que ler depois da fase 2 |
+| 4 · CSS | `build:css` → `build:css:scoped` → `copy-base-css.mjs` | Tailwind CLI → `dist/sarak.css`; lightningcss reescreve seletores → `dist/sarak-scoped.css` (**lê `dist/sarak.css`** e aborta se ele não existir); `src/styles/` inteiro → `dist/styles/`, para o export `./sarak-base.css` resolver dentro de `dist/` | — |
+| 5 · `inject-css.mjs` | — | Substitui o placeholder pelo CSS real em **todo** `.js`/`.cjs` de `dist/` | Precisa dos bundles (2) **e** do CSS (4) |
+| 6 · `generate-build-info.mjs` | — | Grava `dist/BUILD_INFO.json` **lendo** o `buildInfo.ts` da fase 2 — não recalcula a tríade | Última de propósito: carimba o `dist/` já finalizado, com os mesmos valores do bundle |
 
-> **Os 4 gates rodam ANTES de compilar, e isso é intencional.** Um build vermelho por documentação defasada não é inconveniência — é o desenho. Significa que **é impossível publicar uma versão cujo catálogo ou kit não bata com a API**.
+> **Os gates de fonte rodam ANTES de compilar, e isso é intencional.** Um build vermelho por documentação defasada não é inconveniência — é o desenho. Significa que **é impossível publicar uma versão cujo catálogo ou kit não bata com a API**.
 
 `package:check` **não** está no `build` — ele roda em `prepublishOnly`, junto com o build completo, e exige `dist/` já construído.
 
 ## 2.1 A armadilha MEDIDA do tsup
 
-A flag `--external` do `build:js` lista **17 libs**, e todas as 17 são `peerDependencies`. Duas peers (`axios` e `tailwindcss`) **não** estão na flag. E as 3 `dependencies` reais — `@phosphor-icons/react`, `@tabler/icons-react`, `dompurify` — **também não estão**, porque não precisam:
+A flag `--external` do `build:js` lista **17 libs**, e todas as 17 são `peerDependencies`. Três peers **não**
+estão na flag: `tailwindcss` (só o build CSS da lib a usa) e as duas do `@dnd-kit`, que só o chunk lazy do quadro
+importa — e que, sem a flag, o tsup externaliza por serem peers ([[019-arrastar-e-soltar-do-kanban]]). E as 3 `dependencies` reais — `@phosphor-icons/react`, `@tabler/icons-react`, `dompurify` — **também não estão**, porque não precisam:
 
 > ⚠️ **O tsup externaliza `dependencies` sozinho, independentemente da flag.** Um harness de medição que só espelha a lista `--external` **MENTE** sobre o que está no bundle. Foi exatamente essa suposição que produziu uma hipótese refutada sobre o peso do bundle ([[03-superficie-publica]] §7). **Meça o `dist/`, não a flag.**
+
+## 2.2 As fontes embarcadas — `dist/fonts/`
+
+O pacote leva as fontes que o catálogo de tipografia oferece ([[09-temas-e-presets]]) para que o Provider as carregue sem
+rede de terceiros ([[023-fontes-embarcadas-carregadas-sob-demanda]]). Quatro peças, na ordem do `build`:
+
+- **`fonts:manifest`** gera `src/core/Provider/generated/font-manifest.ts` a partir da lista única (`THEME_FONTS`): uma
+  entrada por família, com **um `new URL('./fonts/<arquivo>', import.meta.url)` literal por arquivo** — o único formato
+  que o Vite reescreve em dev e no `build` do importador. `fonts:manifest:check` roda na fase 1 (gerado em dia).
+- **`fonts:embed`** (`scripts/embed-fonts.ts`) roda **depois** do `build:js` — o `tsup --clean` apagaria a pasta antes —
+  e escreve `dist/fonts/`: woff2 do subconjunto `latin`, só o eixo `wght` das variáveis e só os pesos com arquivo das
+  estáticas, mais `manifest.json` e `THIRD-PARTY-FONTS` (licença e crédito de cada família, gerados dos pacotes
+  `@fontsource*`, que são `devDependencies` — o consumidor não instala nenhum). Todas as licenças são redistribuíveis
+  (SIL OFL 1.1 e Apache 2.0).
+- **`fonts:check`** confere arquivo por arquivo contra o manifesto, a licença e o orçamento (3 MB no total, 150 KB por
+  família); roda no `build`, no Anel 1 e na CI, e tem teste com mutação. Medido em 2026-10-16: 41 famílias, 60 arquivos,
+  1.690.020 B.
+- **`dist/` é publicado inteiro** (`files`), então `dist/fonts/` viaja sem ajuste no `package.json`.
+
+> ⚠️ **Por que não vai no CSS.** O CSS da lib é injetado como string dentro do JS (`inject-css.mjs`), e um `url(...)`
+> relativo nele resolveria contra a página, não contra o `dist/`. Base64 entraria no boot de todo consumidor. Por isso o
+> carregamento é em runtime, por família, no Provider (`fontLoader.ts`, `options.fonts`).
 
 # 3. O contrato do pacote
 
@@ -70,14 +92,19 @@ A flag `--external` do `build:js` lista **17 libs**, e todas as 17 são `peerDep
 
 O tarball tem hoje **77 arquivos** (779,6 KB comprimido / 3,8 MB descompactado).
 
-# 4. Dependências: 3 contra 19
+# 4. Dependências: 3 contra 20
 
 | Tipo | Quais | Por quê |
 | --- | --- | --- |
 | **`dependencies`** (3) | `@phosphor-icons/react`, `@tabler/icons-react`, `dompurify` | São **implementação interna** que o consumidor não escolhe: as duas famílias de ícone que o `IconMap` curado resolve, e o sanitizador que é o canal único de conteúdo rico. Se fossem peers, o consumidor teria de instalá-las sem nunca importá-las. |
-| **`peerDependencies`** (19) | React, React DOM, `tailwindcss`, `framer-motion`, `lucide-react`, `recharts`, `echarts`(+`-for-react`), `reactflow`, `react-grid-layout`, `react-markdown`, `react-syntax-highlighter`, `react-dropzone`, `pdfjs-dist`, `clsx`, `tailwind-merge`, `date-fns`, `@tanstack/react-virtual`, `axios` | São **do aplicativo**, não da lib. Duplicar React ou Tailwind quebra; e as libs pesadas só fazem sentido se o consumidor as controlar (versão, configuração, e a decisão de nem instalá-las se não usar o componente que as exige). |
+| **`peerDependencies`** (20) | React, React DOM, `tailwindcss`, `framer-motion`, `lucide-react`, `recharts`, `echarts`(+`-for-react`), `reactflow`, `react-grid-layout`, `react-markdown`, `react-syntax-highlighter`, `react-dropzone`, `pdfjs-dist`, `clsx`, `tailwind-merge`, `date-fns`, `@tanstack/react-virtual`, `@dnd-kit/core`, `@dnd-kit/sortable` | São **do aplicativo**, não da lib. Duplicar React ou Tailwind quebra; e as libs pesadas só fazem sentido se o consumidor as controlar (versão, configuração, e a decisão de nem instalá-las se não usar o componente que as exige). |
 
 A divisão segue uma pergunta: *o consumidor pode ter uma opinião sobre esta versão?* Se sim, é peer.
+
+**Peer obrigatória × opcional.** Peer que o barril ou código eager importa é **obrigatória**; peer que só um
+motor carregado sob demanda importa — ou que nenhum código alcançável importa em runtime — é **opcional**,
+declarada em `peerDependenciesMeta`. O consumidor que não usa o motor não a instala. A lista de cada lado está
+em [[13-instalacao-e-atualizacao]] §2.3. O `package.json` declara também `engines.node`.
 
 # 5. CSS zero-config — é contrato, não conveniência
 
@@ -111,6 +138,23 @@ A classe tem de casar com `SARAK_SCOPE_CLASS` do runtime ([[01-forma-do-produto-
 > ⚠️ **`baseCommit` é SEMPRE um commit atrás, e isso é estrutural.** O `dist/` — incluindo o próprio `BUILD_INFO.json` — é commitado **depois** de gerado, e o hash de um commit depende do seu conteúdo: gravar dentro dele o próprio hash é auto-referência circular. O SHA lido no build é sempre o commit **anterior** ao que publica. O campo se chamava `commit` e produziu um **falso negativo real** num consumidor recém-atualizado.
 >
 > **Para saber se está atualizado, use `sarak-ui check` ou o `resolved` do lockfile. NUNCA o `BUILD_INFO`.**
+
+**O selo de build — a mesma tríade, dentro do bundle.** `libVersion`, `baseCommitShort` e `builtAt` têm
+**fonte única** por build: o `generate-build-info.mjs --prepare` os calcula uma vez, antes do tsup, e os grava
+em dois arquivos gerados e rastreados — `src/core/Provider/buildInfo.ts` (a tríade mais `baseCommit` e `note`,
+para uso interno) e `src/buildInfo.ts` (só a tríade, exportada pelo barril como `SARAK_BUILD_INFO`). O último
+passo do build lê o primeiro deles para gravar o `BUILD_INFO.json`, de modo que bundle e arquivo em disco
+carregam os mesmos valores. Na página, a tríade aparece no atributo `data-sarak-build-info` de um elemento
+**da lib**: no modo de aplicação, o `<style id="sarak-ui-core-styles">` que a lib injeta; no embarcado, a raiz
+`.sarak-scope` — nunca um elemento do host, e nunca como texto renderizado (R12). O selo é **lido**, nunca
+comparado com um literal dentro da lib: comparação com valor de build vira constante no empacotador.
+
+**O `build-info:check` confere as duas metades:** o `BUILD_INFO.json` contra os dois `buildInfo.ts` e contra
+`dist/index.js` e `dist/index.cjs`. O limite está no cabeçalho do script (R18): nos bundles a conferência é por
+substring, e o chunk ESM que escreve o atributo tem nome com hash e não é lido.
+
+As três perguntas e quem responde cada uma — *estou atualizado?*, *o que está instalado?*, *o que a página
+executa?* — estão em [[13-instalacao-e-atualizacao]] §10.
 
 # 7. O CLI `bin/sarak-ui.mjs`
 

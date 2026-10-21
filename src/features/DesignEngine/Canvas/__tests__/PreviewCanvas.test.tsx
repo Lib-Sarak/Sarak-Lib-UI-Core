@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { PreviewCanvas } from '../PreviewCanvas';
 
@@ -12,7 +12,8 @@ vi.mock('framer-motion', () => ({
         aside: ({ children, ...props }: React.PropsWithChildren<unknown>) => <aside {...props}>{children}</aside>,
         button: ({ children, ...props }: React.PropsWithChildren<unknown>) => <button {...props}>{children}</button>
     },
-    AnimatePresence: ({ children }: React.PropsWithChildren<unknown>) => <>{children}</>
+    AnimatePresence: ({ children }: React.PropsWithChildren<unknown>) => <>{children}</>,
+    MotionConfig: ({ children }: React.PropsWithChildren<unknown>) => <>{children}</>
 }));
 
 vi.mock('../Mocks/DashboardMock', () => ({
@@ -27,16 +28,15 @@ import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 import { SarakUIContextType } from '../../../../core/Provider/types';
 
 describe('PreviewCanvas - Refatoração Data-Driven', () => {
-    it('deve usar propriedades de estilo reais (width/height) em vez de custom properties fantasma', () => {
+    it('deve usar propriedades de estilo reais (width/height) em vez de custom properties fantasma', async () => {
         const { container } = render(
             <SarakUIProvider>
                 <PreviewCanvas
                 previewDevice="desktop"
                 previewLayoutId="test"
                 activePreviewApp="dashboard"
-                setActivePreviewApp={() => {}}
+                selectPreviewApp={() => {}}
                 previewAnimationStyle="none"
-                previewEmojiSet="apple"
                 config={{}}
                 previewPrimaryColor="#000"
                 mode="light"
@@ -59,6 +59,9 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
             expect(style).not.toContain('--device-width');
         }
 
+        // Os temas embarcados chegam sob demanda: o snapshot é do estado em que a galeria já os tem.
+        // Prazo folgado: a prévia carrega o tema sob demanda e, com a suíte inteira rodando em paralelo, passa dos 1000 ms padrão do `waitFor`.
+        await waitFor(() => expect(container.querySelector('[aria-busy="true"]')).toBeNull(), { timeout: 10000 });
         expect(container).toMatchSnapshot();
     }, 30000); // 15000 não bastava sob `vitest --coverage` (instrumentação V8 + contenção de workers, plan-12/R8.1)
 
@@ -69,9 +72,8 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
                     previewDevice="desktop"
                     previewLayoutId="test"
                     activePreviewApp="dashboard"
-                    setActivePreviewApp={() => {}}
+                    selectPreviewApp={() => {}}
                     previewAnimationStyle="none"
-                    previewEmojiSet="apple"
                     config={{}}
                     previewPrimaryColor="#000"
                     mode="light"
@@ -94,6 +96,76 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
         expect(dualViewRow).toBeTruthy();
         expect((dualViewRow as HTMLElement).className).not.toMatch(/\bxl:flex-row\b/);
         expect((dualViewRow as HTMLElement).className).toMatch(/@min-\[1280px\]:flex-row/);
+    }, 30000);
+
+    it('mantém só o preview quando a galeria fecha e a reabre pelo estado controlado', () => {
+        const onCloseGallery = vi.fn();
+        const renderCanvas = (isDualView: boolean) => (
+            <SarakUIProvider>
+                <PreviewCanvas
+                    previewDevice="desktop"
+                    previewLayoutId="test"
+                    activePreviewApp="dashboard"
+                    selectPreviewApp={() => {}}
+                    previewAnimationStyle="none"
+                    config={{}}
+                    previewPrimaryColor="#000"
+                    mode="light"
+                    draftTokens={{}}
+                    onUpdateDraft={() => {}}
+                    sarak={{} as unknown as SarakUIContextType}
+                    isDualView={isDualView}
+                    isPreviewStacked={false}
+                    onCloseGallery={onCloseGallery}
+                />
+            </SarakUIProvider>
+        );
+        const { container, rerender } = render(renderCanvas(false));
+
+        expect(container.querySelector('#presets-catalog')).toBeNull();
+        expect(container.querySelectorAll('.sarak-device-desktop')).toHaveLength(1);
+
+        rerender(renderCanvas(true));
+        expect(container.querySelector('#presets-catalog')).not.toBeNull();
+        fireEvent.click(screen.getByRole('button', { name: 'Fechar galeria' }));
+        expect(onCloseGallery).toHaveBeenCalledTimes(1);
+    }, 30000);
+
+    it('divide o espaço do contêiner entre preview e galeria ao empilhar, sem unidade de janela', () => {
+        const { container } = render(
+            <SarakUIProvider>
+                <PreviewCanvas
+                    previewDevice="desktop"
+                    previewLayoutId="test"
+                    activePreviewApp="dashboard"
+                    selectPreviewApp={() => {}}
+                    previewAnimationStyle="none"
+                    config={{}}
+                    previewPrimaryColor="#000"
+                    mode="light"
+                    draftTokens={{}}
+                    onUpdateDraft={() => {}}
+                    sarak={{} as unknown as SarakUIContextType}
+                    isDualView
+                    isPreviewStacked
+                />
+            </SarakUIProvider>,
+        );
+        const previewFrame = container.querySelector('.group') as HTMLElement;
+        const catalog = container.querySelector('#presets-catalog') as HTMLElement;
+        const catalogFrame = catalog.parentElement as HTMLElement;
+        const viewportHeightUnit = ['v', 'h'].join('');
+
+        expect(previewFrame.className).toMatch(/\bflex-1\b/);
+        expect(previewFrame.className).toMatch(/\bmin-h-0\b/);
+        expect(catalogFrame.className).toMatch(/\bflex-1\b/);
+        expect(catalogFrame.className).toMatch(/\bmin-h-0\b/);
+        expect(`${previewFrame.className} ${previewFrame.getAttribute('style')}`).not.toContain(`${viewportHeightUnit}]`);
+        expect(`${previewFrame.className} ${previewFrame.getAttribute('style')}`).not.toContain(`45${viewportHeightUnit}`);
+        expect(`${catalogFrame.className} ${catalogFrame.getAttribute('style')}`).not.toContain(`${viewportHeightUnit}]`);
+        expect(`${catalogFrame.className} ${catalogFrame.getAttribute('style')}`).not.toContain(`45${viewportHeightUnit}`);
+        expect(previewFrame.style.height).toBe('');
+        expect(previewFrame.style.maxHeight).toBe('');
     }, 30000);
 });
 

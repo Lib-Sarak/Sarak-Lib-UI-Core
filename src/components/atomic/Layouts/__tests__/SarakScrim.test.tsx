@@ -33,7 +33,7 @@ describe('SarakScrim', () => {
     it('o fundo padrão usa o token que a engine realmente emite (--sarak-modal-overlay)', () => {
         const { getByRole } = render(<SarakScrim onClose={() => {}} ariaLabel="Fechar menu" />);
         const scrim = getByRole('button', { name: 'Fechar menu' });
-        expect(scrim.getAttribute('style')).toContain('var(--sarak-modal-overlay, rgba(0,0,0,0.5))');
+        expect(scrim.getAttribute('style')).toContain('var(--sarak-modal-overlay, rgba(2,4,8,0.6))');
     });
 
     describe('animate (opcional — plan-23)', () => {

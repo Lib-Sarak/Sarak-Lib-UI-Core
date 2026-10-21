@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
+import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 import { SarakRichText, sarakSanitizeRichText } from '../SarakRichText';
 
 describe('Spec 11 (Onda 10) — SarakRichText: saída blindada', () => {
@@ -31,5 +32,47 @@ describe('Spec 11 (Onda 10) — SarakRichText: saída blindada', () => {
         const editor = screen.getByRole('textbox');
         expect(editor.innerHTML).toContain('<b>inicial</b>');
         expect(editor.innerHTML).not.toMatch(/script/i);
+    });
+});
+
+describe('SarakRichText — rótulo e textos traduzidos', () => {
+    it('nomeia o editor pelo rótulo visível e traduz os comandos pelo idioma', () => {
+        const prompt = vi.spyOn(window, 'prompt').mockReturnValue(null);
+        const { unmount } = render(
+            <SarakUIProvider>
+                <SarakRichText label="Descrição" />
+            </SarakUIProvider>,
+        );
+        const editor = screen.getByRole('textbox', { name: 'Descrição' });
+        expect(editor).toHaveAttribute('aria-labelledby', screen.getByText('Descrição').id);
+        expect(screen.getByRole('toolbar', { name: 'Formatação' })).toBeInTheDocument();
+        unmount();
+
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakRichText label="Description" />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByRole('toolbar', { name: 'Formatting' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Bold' })).toBeInTheDocument();
+        fireEvent.click(screen.getByRole('button', { name: 'Insert link' }));
+        expect(prompt).toHaveBeenCalledWith('Link URL:');
+        prompt.mockRestore();
+    });
+});
+
+describe('Erro de campo pelo SarakFieldError', () => {
+    it('com `error`, há um role="alert" com o texto e o controle o referencia', () => {
+        render(<SarakRichText error="Campo obrigatório" />);
+        const alert = screen.getByRole('alert');
+        expect(alert).toHaveTextContent('Campo obrigatório');
+        expect(alert.querySelector('svg')).not.toBeNull();
+        expect(alert.id).toMatch(/-error$/);
+        expect(screen.getByRole('textbox')).toHaveAttribute('aria-describedby', alert.id);
+    });
+
+    it('sem `error`, nada é renderizado', () => {
+        render(<SarakRichText />);
+        expect(screen.queryByRole('alert')).toBeNull();
     });
 });

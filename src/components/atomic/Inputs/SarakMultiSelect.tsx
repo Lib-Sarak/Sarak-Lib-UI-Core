@@ -1,6 +1,8 @@
 import React, { useId, useMemo, useRef, useState } from 'react';
 import { SarakFormGroup } from '../Layouts/SarakFormGroup';
+import { SarakFieldError } from '../Feedback/SarakFieldError';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 export interface SarakMultiSelectOption {
     value: string;
@@ -24,7 +26,7 @@ export interface SarakMultiSelectProps {
 }
 
 const FIELD =
-    'flex flex-wrap items-center gap-1 w-full rounded-input py-2 px-3 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] border border-[var(--sarak-input-border-color,var(--border-color,#334155))] focus-within:border-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#3b82f6))] transition-colors';
+    'flex flex-wrap items-center gap-1 w-full rounded-input py-2 px-3 bg-[var(--sarak-input-bg,var(--color-theme-card,#101622))] border border-[var(--sarak-input-border-color,var(--border-color,rgba(255,255,255,0.09)))] focus-within:border-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#19e3f0))] transition-colors';
 
 /**
  * Componente Atômico: SarakMultiSelect (Spec 11, Regra 2)
@@ -37,16 +39,19 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
     options,
     value,
     defaultValue,
-    placeholder = 'Buscar...',
+    placeholder,
     disabled,
     error,
     className = '',
     style,
     onChange,
-}) => {
+}: SarakMultiSelectProps): React.ReactElement => {
+    const t = useLibraryText();
     const reactId = useId();
+    const labelId = `${reactId}-label`;
     const listId = `${reactId}-list`;
     const errorId = `${reactId}-error`;
+    const effectivePlaceholder = placeholder ?? t('fieldSearchPlaceholder');
     const inputRef = useRef<HTMLInputElement | null>(null);
     const [query, setQuery] = useState('');
     const [open, setOpen] = useState(false);
@@ -92,7 +97,7 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
     return (
         <SarakFormGroup className={`${disabledClass} ${className}`.trim()} style={style}>
             {label && (
-                <span className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">{label}</span>
+                <span id={labelId} className="text-sm font-medium text-[var(--text-muted,rgba(242,246,251,0.55))]">{label}</span>
             )}
 
             <div className="relative w-full">
@@ -112,20 +117,22 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
                         dependência real). */}
                     <input
                         ref={inputRef}
-                        type="text"
+                        type="search"
+                        enterKeyHint="search"
                         role="combobox"
+                        aria-labelledby={label ? labelId : undefined}
                         aria-expanded={open}
                         aria-controls={listId}
                         aria-invalid={error ? true : undefined}
                         aria-describedby={error ? errorId : undefined}
                         disabled={disabled}
-                        placeholder={selected.length === 0 ? placeholder : ''}
+                        placeholder={selected.length === 0 ? effectivePlaceholder : ''}
                         value={query}
                         onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
                         onFocus={() => setOpen(true)}
                         onBlur={() => setTimeout(() => setOpen(false), 120)}
                         onKeyDown={handleKeyDown}
-                        className="flex-1 min-w-[var(--sarak-multi-select-input-min-width,6rem)] bg-transparent outline-none text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]"
+                        className="flex-1 min-w-[var(--sarak-multi-select-input-min-width,6rem)] bg-transparent outline-none text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))]"
                     />
                 </div>
 
@@ -133,7 +140,7 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
                     <ul
                         id={listId}
                         role="listbox"
-                        className="absolute z-20 w-full max-h-56 overflow-auto rounded-input bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] shadow-lg"
+                        className="absolute z-20 w-full max-h-56 overflow-auto rounded-input bg-[var(--color-theme-card,#101622)] border border-[var(--border-color,rgba(255,255,255,0.09))] shadow-[var(--dynamic-shadow)]"
                         style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}
                     >
                         {filtered.map((opt) => (
@@ -143,7 +150,7 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
                                 aria-selected={false}
                                 // onMouseDown (não onClick) para selecionar antes do blur do input.
                                 onMouseDown={(e) => { e.preventDefault(); add(opt.value); }}
-                                className="cursor-pointer text-sm text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-primary-color,#3b82f6)]/10"
+                                className="cursor-pointer text-sm text-[var(--text-muted,rgba(242,246,251,0.55))] hover:bg-[var(--sarak-primary-color,#19e3f0)]/10"
                                 style={{ padding: 'var(--sarak-layout-gap-sm, 8px) calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}
                             >
                                 {opt.label}
@@ -153,11 +160,7 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
                 )}
             </div>
 
-            {error && (
-                <p id={errorId} className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
-                    {error}
-                </p>
-            )}
+            <SarakFieldError message={error} fieldId={reactId} />
         </SarakFormGroup>
     );
 };
@@ -168,32 +171,36 @@ interface ChipProps {
     onRemove: () => void;
 }
 
-const Chip: React.FC<ChipProps> = ({ label, disabled, onRemove }) => (
-    <span
-        className="inline-flex items-center rounded-full text-xs font-medium bg-[var(--sarak-primary-color,#3b82f6)]/15 text-[var(--sarak-primary-color,#3b82f6)]"
-        style={{
-            gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)',
-            paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.125)',
-            paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.125)',
-            paddingLeft: 'var(--sarak-layout-gap-sm, 8px)',
-            paddingRight: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)'
-        }}
-    >
-        {label}
-        <SarakIconButton
-            variant="ghost"
-            size="xs"
-            aria-label={`Remover ${label}`}
-            disabled={disabled}
-            onMouseDown={(e) => { e.preventDefault(); onRemove(); }}
-            // O preset "xs" do átomo (24px) é maior que os 16px originais do botão de
-            // remover cru — cresce o alvo de toque do chip. Aceito: forçar um tamanho
-            // sem token válido (`1rem`) seria hardcode duro (R7), pior que o delta visual.
-            icon={
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            }
-        />
-    </span>
-);
+const Chip: React.FC<ChipProps> = ({ label, disabled, onRemove }: ChipProps): React.ReactElement => {
+    const t = useLibraryText();
+
+    return (
+        <span
+            className="inline-flex items-center rounded-full text-xs font-medium bg-[var(--sarak-primary-color,#19e3f0)]/15 text-[var(--sarak-primary-color,#19e3f0)]"
+            style={{
+                gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)',
+                paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.125)',
+                paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.125)',
+                paddingLeft: 'var(--sarak-layout-gap-sm, 8px)',
+                paddingRight: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)'
+            }}
+        >
+            {label}
+            <SarakIconButton
+                variant="ghost"
+                size="xs"
+                aria-label={t('multiSelectRemoveAriaLabel', { label })}
+                disabled={disabled}
+                onMouseDown={(e) => { e.preventDefault(); onRemove(); }}
+                // O preset "xs" do átomo (24px) é maior que os 16px originais do botão de
+                // remover cru — cresce o alvo de toque do chip. Aceito: forçar um tamanho
+                // sem token válido (`1rem`) seria hardcode duro (R7), pior que o delta visual.
+                icon={
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                }
+            />
+        </span>
+    );
+};
