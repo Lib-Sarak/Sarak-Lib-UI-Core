@@ -1,6 +1,6 @@
 {
     "name": "@sarak/lib-ui-core",
-    "version": "7.0.0",
+    "version": "8.0.0-rc.1",
     "description": "Sarak Design System and UI Engine [Pre-compiled]",
     "type": "module",
     "style": "./dist/sarak.css",
