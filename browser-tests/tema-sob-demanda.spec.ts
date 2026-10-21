@@ -42,6 +42,13 @@ test.afterAll(async () => {
 
 interface Frame { appPresent: boolean; color: string; fallback: boolean }
 
+interface ThemeImportGateWindow extends Window {
+    __SARAK_TEST_THEME_IMPORT_GATE__?: (themeId: string, loadTheme: () => Promise<unknown>) => Promise<unknown>;
+    __sarakTestThemeImportHeld__?: boolean;
+    __releaseSarakTestThemeImport__?: () => void;
+    __frames?: Frame[];
+}
+
 const primaryOf = (id: string): string => String(SARAK_ALL_THEMES.find((theme) => theme.id === id)?.design.primaryColor);
 
 /** A cor `#rrggbb` na forma que o navegador computa (`rgb(r, g, b)`). */
@@ -62,8 +69,39 @@ async function openScene(query: string, init?: () => void): Promise<Page> {
     return page;
 }
 
-const frames = (page: Page): Promise<Frame[]> => page.evaluate(() => (window as unknown as { __frames: Frame[] }).__frames);
+const holdNeoBrutalismImport = (): void => {
+    const testWindow = window as ThemeImportGateWindow;
+    const released = new Promise<void>((resolve) => {
+        testWindow.__releaseSarakTestThemeImport__ = () => resolve();
+    });
+
+    testWindow.__SARAK_TEST_THEME_IMPORT_GATE__ = (themeId, loadTheme) => {
+        if (themeId !== 'neo-brutalism') return loadTheme();
+        testWindow.__sarakTestThemeImportHeld__ = true;
+        return released.then(loadTheme);
+    };
+};
+
+const frames = (page: Page): Promise<Frame[]> => page.evaluate(() => (window as ThemeImportGateWindow).__frames ?? []);
 const settle = (page: Page): Promise<void> => page.waitForTimeout(600);
+
+async function waitForFallbackBeforeApplication(page: Page): Promise<void> {
+    await page.waitForFunction(() => {
+        const testWindow = window as ThemeImportGateWindow;
+        return testWindow.__sarakTestThemeImportHeld__ === true
+            && testWindow.__frames?.some((frame) => frame.fallback && !frame.appPresent) === true;
+    }, undefined, { timeout: 5000 });
+}
+
+async function releaseThemeImportAndWaitForApplication(page: Page): Promise<void> {
+    await page.evaluate(() => (window as ThemeImportGateWindow).__releaseSarakTestThemeImport__?.());
+    await page.locator('[data-probe="cor-do-tema"]').waitFor({ timeout: 5000 });
+    await page.waitForFunction(() =>
+        (window as ThemeImportGateWindow).__frames?.some((frame) => frame.appPresent && !frame.fallback) === true,
+        undefined,
+        { timeout: 5000 },
+    );
+}
 
 test.describe('tema embarcado pedido por código, fora do boot', () => {
     test('nenhum quadro mostra outro tema: o primeiro com a aplicação já é o tema pedido', async () => {
@@ -84,10 +122,10 @@ test.describe('tema embarcado pedido por código, fora do boot', () => {
     });
 
     test('o fallback fica na tela até o tema chegar, e a aplicação nunca aparece junto dele', async () => {
-        const page = await openScene('pedido=neo-brutalism');
+        const page = await openScene('pedido=neo-brutalism', holdNeoBrutalismImport);
         try {
-            await page.locator('[data-probe="cor-do-tema"]').waitFor();
-            await settle(page);
+            await waitForFallbackBeforeApplication(page);
+            await releaseThemeImportAndWaitForApplication(page);
             const all = await frames(page);
             expect(all.some((frame) => frame.fallback && !frame.appPresent), 'houve um quadro só com o fallback').toBe(true);
             expect(all.some((frame) => frame.fallback && frame.appPresent), 'fallback e aplicação juntos').toBe(false);

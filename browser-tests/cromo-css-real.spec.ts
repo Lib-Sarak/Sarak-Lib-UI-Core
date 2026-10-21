@@ -87,6 +87,8 @@ const BREAKPOINTS = {
 } as const;
 
 const WIDE_VIEWPORT = { width: 1920, height: 900 } as const;
+// getBoundingClientRect can expose fractional edge rounding; more than 1 CSS px is real overlap.
+const MAX_SUBPIXEL_ROUNDING_PX = 1;
 
 const NAV_ITEM_NAME = 'Início';
 const REFERENCE_BUTTON_NAME = 'Referência';
@@ -295,6 +297,23 @@ async function readPanelBounds(target: Locator): Promise<{ left: number; right: 
         const { left, right, top, bottom } = element.getBoundingClientRect();
         return { left, right, top, bottom };
     });
+}
+
+function expectPanelArrangement(
+    name: string,
+    shouldSplit: boolean,
+    primaryBounds: Awaited<ReturnType<typeof readPanelBounds>>,
+    secondaryBounds: Awaited<ReturnType<typeof readPanelBounds>>,
+): void {
+    if (shouldSplit) {
+        const horizontalOverlap = Math.max(0, primaryBounds.right - secondaryBounds.left);
+        expect(horizontalOverlap, `${name}: tolerância máxima de arredondamento subpixel`).toBeLessThanOrEqual(MAX_SUBPIXEL_ROUNDING_PX);
+        expect(primaryBounds.top).toBeCloseTo(secondaryBounds.top);
+        return;
+    }
+
+    const verticalOverlap = Math.max(0, primaryBounds.bottom - secondaryBounds.top);
+    expect(verticalOverlap, `${name}: tolerância máxima de arredondamento subpixel`).toBeLessThanOrEqual(MAX_SUBPIXEL_ROUNDING_PX);
 }
 
 /** Lê o `background-color` COMPUTADO da raiz do cromo (`.sarak-chrome-root`). */
@@ -540,12 +559,7 @@ test('isSplitViewEnabled responde à largura da região com sidebar aberta e emp
                 regionWidths[host] = contentWidth;
             }
 
-            if (shouldSplit) {
-                expect(primaryBounds.right).toBeLessThanOrEqual(secondaryBounds.left);
-                expect(primaryBounds.top).toBeCloseTo(secondaryBounds.top);
-            } else {
-                expect(primaryBounds.bottom).toBeLessThanOrEqual(secondaryBounds.top);
-            }
+            expectPanelArrangement(name, shouldSplit, primaryBounds, secondaryBounds);
 
             expect(await content.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(true);
             expect(await page.evaluate(() => {

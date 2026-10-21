@@ -217,7 +217,7 @@ describe('ThemeSidebarContent', () => {
         it('busca sem resultado mostra o estado vazio com a consulta', () => {
             render(<ThemeSidebarContent {...searchProps([])} />);
 
-            expect(screen.getByText('Resultados da busca (0)')).toBeInTheDocument();
+            expect([screen.getByText('Resultados da busca (0)').className, screen.getByRole('status').className].every((className) => className.includes('--sarak-type-scale-caption') && className.includes('12px'))).toBe(true);
             expect(screen.getByRole('status')).toHaveTextContent('Nenhum controle encontrado para “fonte”.');
         });
     });

@@ -1487,6 +1487,12 @@
   },
   {
     "tokenId": "tableZebraStriping",
+    "name": "Listras Alternadas (Zebra)",
+    "tags": [
+      "table",
+      "color",
+      "layout"
+    ],
     "label": "Listras Alternadas (Zebra)",
     "type": "boolean",
     "importance": 55,
@@ -1497,6 +1503,12 @@
   },
   {
     "tokenId": "tableBorderRadius",
+    "name": "Arredondamento da Tabela",
+    "tags": [
+      "table",
+      "border",
+      "radius"
+    ],
     "label": "Arredondamento da Tabela",
     "type": "slider",
     "importance": 70,
@@ -1516,6 +1528,13 @@
   },
   {
     "tokenId": "inputPadding",
+    "name": "Espaçamento Interno (Y)",
+    "tags": [
+      "input",
+      "form",
+      "padding",
+      "layout"
+    ],
     "label": "Espaçamento Interno (Y)",
     "type": "slider",
     "importance": 80,
@@ -1535,6 +1554,13 @@
   },
   {
     "tokenId": "inputBorderType",
+    "name": "Estilo da Borda",
+    "tags": [
+      "input",
+      "form",
+      "border",
+      "style"
+    ],
     "label": "Estilo da Borda",
     "type": "select",
     "importance": 70,
@@ -1569,6 +1595,13 @@
   },
   {
     "tokenId": "inputBackdropBlur",
+    "name": "Desfoque de Fundo (Blur)",
+    "tags": [
+      "input",
+      "form",
+      "backdrop",
+      "blur"
+    ],
     "label": "Desfoque de Fundo (Blur)",
     "type": "slider",
     "importance": 60,
@@ -1588,6 +1621,12 @@
   },
   {
     "tokenId": "inputShadow",
+    "name": "Sombra do Campo (CSS ou \"neumorphism\")",
+    "tags": [
+      "input",
+      "form",
+      "style"
+    ],
     "label": "Sombra / Neumorphism",
     "type": "text",
     "importance": 55,
@@ -1598,6 +1637,13 @@
   },
   {
     "tokenId": "inputIconColor",
+    "name": "Cor dos Ícones",
+    "tags": [
+      "input",
+      "form",
+      "icon",
+      "color"
+    ],
     "label": "Cor dos Ícones",
     "type": "color",
     "importance": 70,
@@ -1608,6 +1654,12 @@
   },
   {
     "tokenId": "inputErrorColor",
+    "name": "Cor de Erro",
+    "tags": [
+      "input",
+      "form",
+      "color"
+    ],
     "label": "Cor de Erro",
     "type": "color",
     "importance": 85,
@@ -1618,6 +1670,14 @@
   },
   {
     "tokenId": "iconButtonGlowBlurSm",
+    "name": "Glow do Icon Button: Desfoque Pequeno",
+    "tags": [
+      "button",
+      "icon",
+      "glow",
+      "blur",
+      "small"
+    ],
     "label": "Glow do Icon Button: Desfoque Pequeno",
     "type": "slider",
     "importance": 35,
@@ -1632,6 +1692,14 @@
   },
   {
     "tokenId": "iconButtonGlowBlurMd",
+    "name": "Glow do Icon Button: Desfoque Médio",
+    "tags": [
+      "button",
+      "icon",
+      "glow",
+      "blur",
+      "medium"
+    ],
     "label": "Glow do Icon Button: Desfoque Médio",
     "type": "slider",
     "importance": 40,
@@ -1646,6 +1714,14 @@
   },
   {
     "tokenId": "iconButtonGlowBlurLg",
+    "name": "Glow do Icon Button: Desfoque Grande",
+    "tags": [
+      "button",
+      "icon",
+      "glow",
+      "blur",
+      "large"
+    ],
     "label": "Glow do Icon Button: Desfoque Grande",
     "type": "slider",
     "importance": 45,
@@ -1660,6 +1736,13 @@
   },
   {
     "tokenId": "iconButtonFrostedShadowOffsetY",
+    "name": "Sombra Frosted do Icon Button: Offset Y",
+    "tags": [
+      "button",
+      "icon",
+      "glass",
+      "layout"
+    ],
     "label": "Sombra Frosted do Icon Button: Offset Y",
     "type": "slider",
     "importance": 30,
@@ -1674,6 +1757,13 @@
   },
   {
     "tokenId": "iconButtonFrostedShadowBlur",
+    "name": "Sombra Frosted do Icon Button: Desfoque",
+    "tags": [
+      "button",
+      "icon",
+      "glass",
+      "blur"
+    ],
     "label": "Sombra Frosted do Icon Button: Desfoque",
     "type": "slider",
     "importance": 35,
@@ -1688,6 +1778,13 @@
   },
   {
     "tokenId": "actionGlowShadowOffsetY",
+    "name": "Sombra de Ação: Offset Y",
+    "tags": [
+      "action",
+      "button",
+      "glow",
+      "layout"
+    ],
     "label": "Sombra de Ação: Offset Y",
     "type": "slider",
     "importance": 30,
@@ -1702,6 +1799,13 @@
   },
   {
     "tokenId": "actionGlowShadowBlur",
+    "name": "Sombra de Ação: Desfoque",
+    "tags": [
+      "action",
+      "button",
+      "glow",
+      "blur"
+    ],
     "label": "Sombra de Ação: Desfoque",
     "type": "slider",
     "importance": 35,
@@ -1716,6 +1820,12 @@
   },
   {
     "tokenId": "actionGlowShadowSpread",
+    "name": "Sombra de Ação: Espalhamento",
+    "tags": [
+      "action",
+      "button",
+      "glow"
+    ],
     "label": "Sombra de Ação: Espalhamento",
     "type": "slider",
     "importance": 30,
@@ -1730,6 +1840,13 @@
   },
   {
     "tokenId": "kanbanHeaderPaddingY",
+    "name": "Kanban: Padding Vertical do Cabeçalho da Coluna",
+    "tags": [
+      "table",
+      "header",
+      "padding",
+      "layout"
+    ],
     "label": "Kanban: Padding Vertical do Cabeçalho da Coluna",
     "type": "slider",
     "importance": 35,
@@ -1744,6 +1861,12 @@
   },
   {
     "tokenId": "kanbanHeaderTracking",
+    "name": "Kanban: Tracking do Cabeçalho da Coluna",
+    "tags": [
+      "table",
+      "header",
+      "text"
+    ],
     "label": "Kanban: Tracking do Cabeçalho da Coluna",
     "type": "slider",
     "importance": 30,
@@ -1759,6 +1882,12 @@
   },
   {
     "tokenId": "kanbanCardRadius",
+    "name": "Kanban: Arredondamento do Card",
+    "tags": [
+      "table",
+      "radius",
+      "layout"
+    ],
     "label": "Kanban: Arredondamento do Card",
     "type": "slider",
     "importance": 45,
@@ -1773,6 +1902,11 @@
   },
   {
     "tokenId": "toastMinWidth",
+    "name": "Toast: Largura Mínima",
+    "tags": [
+      "overlay",
+      "width"
+    ],
     "label": "Toast: Largura Mínima",
     "type": "slider",
     "importance": 45,
@@ -1787,6 +1921,11 @@
   },
   {
     "tokenId": "toastMaxWidth",
+    "name": "Toast: Largura Máxima",
+    "tags": [
+      "overlay",
+      "width"
+    ],
     "label": "Toast: Largura Máxima",
     "type": "slider",
     "importance": 45,
@@ -1802,6 +1941,13 @@
   },
   {
     "tokenId": "toastAccentWidth",
+    "name": "Toast: Largura da Borda de Destaque",
+    "tags": [
+      "overlay",
+      "width",
+      "border",
+      "color"
+    ],
     "label": "Toast: Largura da Borda de Destaque",
     "type": "slider",
     "importance": 35,
@@ -1816,6 +1962,12 @@
   },
   {
     "tokenId": "contextMenuMinWidth",
+    "name": "Context Menu: Largura Mínima",
+    "tags": [
+      "overlay",
+      "width",
+      "layout"
+    ],
     "label": "Context Menu: Largura Mínima",
     "type": "slider",
     "importance": 35,
@@ -1830,6 +1982,12 @@
   },
   {
     "tokenId": "multiSelectInputMinWidth",
+    "name": "Multi-Select: Largura Mínima do Input Interno",
+    "tags": [
+      "input",
+      "form",
+      "width"
+    ],
     "label": "Multi-Select: Largura Mínima do Input Interno",
     "type": "slider",
     "importance": 30,
@@ -1844,6 +2002,13 @@
   },
   {
     "tokenId": "searchBackdropBlur",
+    "name": "Search Palette: Desfoque do Backdrop",
+    "tags": [
+      "input",
+      "overlay",
+      "backdrop",
+      "blur"
+    ],
     "label": "Search Palette: Desfoque do Backdrop",
     "type": "slider",
     "importance": 55,
@@ -1858,6 +2023,13 @@
   },
   {
     "tokenId": "rangeActiveColor",
+    "name": "Range Slider: Cor Ativa",
+    "tags": [
+      "input",
+      "form",
+      "active",
+      "color"
+    ],
     "label": "Range Slider: Cor Ativa",
     "type": "color",
     "importance": 75,

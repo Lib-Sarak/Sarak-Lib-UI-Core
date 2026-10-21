@@ -25,6 +25,18 @@ const DIST_CSS = path.join(ROOT, 'dist', 'sarak.css');
 const DIST_SCOPED_CSS = path.join(ROOT, 'dist', 'sarak-scoped.css');
 const ENTRY = path.join(HERE, 'fixtures', 'harness-entry.tsx');
 const require = createRequire(path.join(ROOT, 'package.json'));
+const THEME_CHUNK_IMPORT_PATTERN = /("neo-brutalism":\(\)=>)import\((["'])(\.\/neo-brutalism-[^"']+\.js)\2\)\.then\(([^)]*)\)/;
+
+function gateNeoBrutalismThemeImport(source) {
+    return source.replace(THEME_CHUNK_IMPORT_PATTERN, (matchedImport) => {
+        const captures = THEME_CHUNK_IMPORT_PATTERN.exec(matchedImport);
+        if (!captures) return matchedImport;
+
+        const [, loaderPrefix, quote, themeChunk, selectTheme] = captures;
+        const importExpression = `import(${quote}${themeChunk}${quote}).then(${selectTheme})`;
+        return `${loaderPrefix}globalThis.__SARAK_TEST_THEME_IMPORT_GATE__ ? globalThis.__SARAK_TEST_THEME_IMPORT_GATE__('neo-brutalism', () => ${importExpression}) : ${importExpression}`;
+    });
+}
 
 function resolveLocalFile(specifier, resolveDir) {
     const basePath = path.resolve(resolveDir, specifier);
@@ -76,7 +88,7 @@ const workspaceResolver = {
             const loader = extension === '.tsx' ? 'tsx' : extension === '.ts' ? 'ts' : extension === '.json' ? 'json' : extension === '.css' ? 'css' : 'js';
 
             return {
-                contents: fs.readFileSync(args.path, 'utf8'),
+                contents: gateNeoBrutalismThemeImport(fs.readFileSync(args.path, 'utf8')),
                 loader,
                 resolveDir: path.dirname(args.path),
             };

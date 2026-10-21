@@ -1,56 +1,75 @@
 import { useMemo } from 'react';
-import { SarakDesignState } from '../../../../core/Provider/types';
+import { Shield, Type, Layout, MousePointer2, Activity, Cpu, Sparkles } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import type { SarakDesignState } from '../../../../core/Provider/types';
 import { MASTER_DESIGN_MAP } from '../../../../core/Design/master-map';
 import { TokenCatalog } from '../../../../core/Design/catalog';
 import { searchTokens, matchesText, buildCatalogMap } from '../../utils/token-search';
-import { Fingerprint, Type, Layout, Waves, MousePointer2, Cpu } from 'lucide-react';
+import { sanitizeCategory } from '../../utils/dynamic-categories';
+import DesignPillars from '../../config/design-pillars.json';
 
-export const SOVEREIGN_PILLARS = [
-    { id: 'core', label: 'Fundação (DNA)', icon: Fingerprint, schemas: ['identity'] },
-    { id: 'typo', label: 'Semântica Texto', icon: Type, schemas: ['typography'] },
-    { id: 'body', label: 'Arquitetura UI', icon: Layout, schemas: ['shell', 'cards'] },
-    { id: 'vibe', label: 'Atmosfera (Vibe)', icon: Waves, schemas: ['atmosphere', 'animations'] },
-    { id: 'action', label: 'Fluxo & Input', icon: MousePointer2, schemas: ['controls'] },
-    { id: 'system', label: 'Core Engine', icon: Cpu, schemas: ['specialized', 'data', 'system'] },
-];
+const PILLAR_ICONS: Record<string, LucideIcon> = {
+    Shield, Type, Layout, MousePointer2, Activity, Cpu, Sparkles,
+};
+
+const catalogByTokenId = new Map(TokenCatalog.map((entry) => [entry.tokenId, entry]));
 const searchCatalog = buildCatalogMap(TokenCatalog);
 
+const getTokenCategories = (tokenId: string): string[] => {
+    const catalogEntry = catalogByTokenId.get(tokenId);
+    if (!catalogEntry || !Array.isArray(catalogEntry.categories)) return ['Especializado'];
+    const categories = catalogEntry.categories;
+    return [...new Set(categories.map(sanitizeCategory))];
+};
+
+const tokenBelongsToPillar = (tokenId: string, categories: string[]): boolean =>
+    getTokenCategories(tokenId).some((category) => categories.includes(category));
+
+const getComponentSchemaIds = (categories: string[]): string[] =>
+    MASTER_DESIGN_MAP.components
+        .filter((component) => component.id !== 'global'
+            && component.tokens.some((token) => tokenBelongsToPillar(token.id, categories)))
+        .map((component) => component.id);
+
+export const SOVEREIGN_PILLARS = DesignPillars.map((pillar) => ({
+    ...pillar,
+    label: pillar.title,
+    icon: PILLAR_ICONS[pillar.icon] ?? Layout,
+    schemas: getComponentSchemaIds(pillar.categories),
+}));
+
 export const useSovereignSearch = (draft: Partial<SarakDesignState>, searchQuery: string, activePillar: string) => {
-    // IDENTIFICA QUAIS PILARES POSSUEM DRAFTS ATIVOS
     const pillarsWithDrafts = useMemo(() => {
-        const changedKeys = Object.keys(draft);
-        return SOVEREIGN_PILLARS.filter(pillar => {
-            const pillarTokens = MASTER_DESIGN_MAP.components
-                .filter(c => pillar.schemas.includes(c.id))
-                .flatMap(c => c.tokens.map(t => t.id));
-            return changedKeys.some(key => pillarTokens.includes(key));
-        }).map(p => p.id);
+        const changedTokenIds = new Set(Object.keys(draft));
+        return SOVEREIGN_PILLARS
+            .filter((pillar) => MASTER_DESIGN_MAP.components
+                .filter((component) => pillar.schemas.includes(component.id))
+                .some((component) => component.tokens.some((token) =>
+                    changedTokenIds.has(token.id) && tokenBelongsToPillar(token.id, pillar.categories))))
+            .map((pillar) => pillar.id);
     }, [draft]);
 
-    // FILTRAGEM INTELIGENTE (BUSCA OU PILAR)
     const filteredComponents = useMemo(() => {
-        const query = searchQuery;
+        if (searchQuery) {
+            return MASTER_DESIGN_MAP.components.map((component) => {
+                const searchable = component.tokens.map((token) => ({ ...token, componentLabel: component.label }));
+                const tokens = searchTokens(searchQuery, searchable, searchCatalog);
 
-        // Se houver busca, ignora os pilares e mostra tudo que der match
-        if (query) {
-            return MASTER_DESIGN_MAP.components.map(comp => {
-                const searchable = comp.tokens.map(token => ({ ...token, componentLabel: comp.label }));
-                const tokens = searchTokens(query, searchable, searchCatalog);
-
-                if (tokens.length > 0 || matchesText(query, comp.label)) {
-                    return { ...comp, tokens: tokens.length > 0 ? tokens : comp.tokens };
+                if (tokens.length > 0 || matchesText(searchQuery, component.label)) {
+                    return { ...component, tokens: tokens.length > 0 ? tokens : component.tokens };
                 }
                 return null;
             }).filter(Boolean) as typeof MASTER_DESIGN_MAP.components;
         }
 
-        // Se não houver busca, filtra pelo pilar ativo
-        const currentPillar = SOVEREIGN_PILLARS.find(p => p.id === activePillar);
+        const currentPillar = SOVEREIGN_PILLARS.find((pillar) => pillar.id === activePillar);
         if (!currentPillar) return [];
 
-        return MASTER_DESIGN_MAP.components.filter(comp => 
-            currentPillar.schemas.includes(comp.id)
-        );
+        return MASTER_DESIGN_MAP.components.flatMap((component) => {
+            if (component.id === 'global' || !currentPillar.schemas.includes(component.id)) return [];
+            const tokens = component.tokens.filter((token) => tokenBelongsToPillar(token.id, currentPillar.categories));
+            return tokens.length ? [{ ...component, tokens }] : [];
+        });
     }, [searchQuery, activePillar]);
 
     return { pillarsWithDrafts, filteredComponents, SOVEREIGN_PILLARS };

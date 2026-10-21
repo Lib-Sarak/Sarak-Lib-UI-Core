@@ -61,7 +61,7 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
     const { durations } = useMotionTokens();
     const draftRecord = draft as Record<string, SarakTokenValue>;
     
-    const [activePillar, setActivePillar] = useState<string>('core');
+    const [activePillar, setActivePillar] = useState<string>('brand');
     const [activeSection, setActiveSection] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
 

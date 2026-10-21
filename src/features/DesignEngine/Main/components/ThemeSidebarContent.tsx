@@ -79,9 +79,9 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
             <AnimatePresence mode="wait">
                 {searchQuery ? (
                     <motion.div key="search" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-[var(--sarak-layout-gap-sm,12px)] space-y-[var(--sarak-layout-gap-sm,12px)]">
-                        <div className="text-[var(--sarak-type-scale-tiny,8px)] font-black text-[var(--theme-muted)] uppercase tracking-widest mb-4">Resultados da busca ({filteredResults?.length ?? 0})</div>
+                        <div className="text-[var(--sarak-type-scale-caption,12px)] font-black text-[var(--theme-muted)] uppercase tracking-widest mb-4">Resultados da busca ({filteredResults?.length ?? 0})</div>
                         {!filteredResults?.length && (
-                            <div role="status" className="text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)]">Nenhum controle encontrado para &ldquo;{searchQuery}&rdquo;.</div>
+                            <div role="status" className="text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-muted)]">Nenhum controle encontrado para &ldquo;{searchQuery}&rdquo;.</div>
                         )}
                         {filteredResults?.map(token => {
                             const meta = catalogMap.get(token.id);

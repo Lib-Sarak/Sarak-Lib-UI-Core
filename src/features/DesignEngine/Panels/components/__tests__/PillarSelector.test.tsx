@@ -7,10 +7,10 @@ describe('PillarSelector', () => {
     it('matches baseline snapshot', () => {
         const props = {
             searchQuery: '',
-            activePillar: 'core',
+            activePillar: 'brand',
             setActivePillar: vi.fn(),
             setActiveSection: vi.fn(),
-            pillarsWithDrafts: ['core'],
+            pillarsWithDrafts: ['brand'],
             resetComponent: vi.fn(),
             filteredComponentsLength: 5
         };

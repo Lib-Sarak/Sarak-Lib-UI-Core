@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Corrigir antes da 8.0.0 tudo o que o backlog sabe que afeta o importador e o usuario final"
 objetivo: "Fazer a 8.0.0 sair sem defeito conhecido que o importador ou o usuario final sinta: campos, props e mensagens que mentem, instalacao e PDF que exigem contorno, tokens que deixam quebrar o foco e as camadas, modal e arte de fundo fora do tema do cliente, painel com texto ilegivel e busca incompleta, e o teste que pode deixar o PR vermelho"
 dominio: "Componentes / Instalação / Tema do cliente / Painel"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "importador", "8.0.0", "componentes", "tokens", "painel", "backlog"]
 relacionados: ["[[03-superficie-publica]]", "[[13-instalacao-e-atualizacao]]", "[[02-design-engine]]", "[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[10-seguranca-e-acessibilidade]]"]
@@ -95,6 +95,17 @@ defeito do npm/cli #8805 omite entradas que o `npm ci` da CI exige).
   (`--sarak-type-scale-tiny`), abaixo do piso de 12 px.
 - **30** `gates/scripts/contrato/__tests__/check-container-query-literal.test.mjs` — o caso "repositório real" com timeout
   explícito, como os outros testes que varrem o repositório.
+- **Os testes de navegador intermitentes** (promovidos pelo dono em 2026-10-20: a CI roda a bateria inteira, e um caso que falha
+  por acaso deixa o PR vermelho sem defeito real):
+  - **15** `browser-tests/cromo-css-real.spec.ts`, caso "isSplitViewEnabled responde à largura da região…": a comparação estrita
+    de borda falhou 1 vez em 6 (o `bottom` do primeiro painel 2 px abaixo do `top` do segundo, 2813,02 × 2811,02), sensível a
+    arredondamento de subpixel;
+  - **36** `browser-tests/tema-sob-demanda.spec.ts:86` ("o fallback fica na tela até o tema chegar…": exige ao menos um quadro só
+    com o fallback, que não existe quando o tema chega rápido — falhou 3 de 4 vezes isolado em 2026-10-20) e
+    `browser-tests/gantt-altura-e-contraste.spec.ts` ("o harness liga mesmo o tema claro", falhou sob a bateria completa);
+  - **42** `browser-tests/arsenal-lote5.spec.ts:123` (a curva `motionEaseIn` na saída do modal, amostrada quadro a quadro com
+    `requestAnimationFrame`, meta de 250 ms; falha sob carga de CPU).
+  E as fixtures que esses casos usam em `browser-tests/fixtures/`, se a medição determinística pedir.
 
 **Em todo lote:** os testes de cada correção, os casos de navegador que a mudança pedir (no harness existente), a nota em
 `docs/migracoes.md` (`## 8.0.0`) para o que muda para o importador, e os gerados (`npm run token-types`, `npm run guide`,
@@ -163,6 +174,18 @@ tipos gerados (`npm run token-types`), leitor no `SarakBackgroundRenderer`, test
 4.3. **28** os textos da busca do painel no piso de 12 px.
 4.4. **30** timeout explícito no caso "repositório real" de `check-container-query-literal.test.mjs`, no valor que os outros
 testes que varrem o repositório usam.
+4.5. **15, 36, 42** cada caso intermitente passa a medir de forma **determinística**, provando a mesma coisa que prova hoje — nunca
+afrouxando a afirmação para ela passar:
+- antes de mudar, **medir a taxa de falha** de cada um contra o `dist/` (`npm run build`, depois o caso isolado 10 vezes; cole a
+  contagem);
+- **36** controlar o tempo do carregamento do tema na própria cena (por exemplo, segurar o `import()` do tema até o caso liberar),
+  para que o quadro só com o fallback exista por construção; o caso do Gantt, achar por que o tema claro às vezes não liga sob
+  carga e esperar pelo estado, não por tempo;
+- **42** pausar a animação de saída pela Web Animations API e ler a opacidade em pontos fixos da curva, em vez de amostrar quadros;
+- **15** comparar as bordas com tolerância de subpixel declarada (no máximo 1 px de arredondamento, com o motivo no caso), sem
+  aceitar sobreposição real;
+- depois, cada caso **10 de 10** isolado e a bateria do navegador inteira **duas vezes seguidas** sem falha (cole as saídas). Um
+  caso que não ficar determinístico sem afrouxar a prova é relatado, não contornado.
 
 # 6. Critérios de aceite
 
@@ -171,6 +194,7 @@ testes que varrem o repositório usam.
 - [ ] Faixas novas dos tokens funcionais, com o valor salvo fora da faixa ajustado e avisado.
 - [ ] Modal no tema pelos tokens do cartão; arte de fundo fixável pelo token novo, declarado nos 19 temas.
 - [ ] Notas MAJOR em `docs/migracoes.md` para as props removidas, o `workerSrc`, as faixas e o token novo.
+- [ ] Os casos intermitentes (15, 36, 42) determinísticos: 10 de 10 isolados e a bateria inteira duas vezes seguidas sem falha.
 - [ ] Suíte completa verde; `tsc` 0; baseline sem regressão; Anel 1; bateria do navegador; `npm ci` e `gates:full` verdes na CI.
 
 # 7. Como verificar (uso do revisor)
@@ -181,7 +205,8 @@ testes que varrem o repositório usam.
 - Lote 2: `npm ci` e `gates:full` no Linux (ou na CI, depois do push do dono); o diff do lock; o `SarakPDFViewer` sem `workerSrc`.
 - Lote 3: `verify --tier=quick` e `--tier=themes`; `build` e os casos de navegador do foco, do fundo na hidratação, do modal e da
   arte de fundo; a completude dos 19 temas.
-- Lote 4: `verify --tier=quick` e o vitest de `src/features/DesignEngine`.
+- Lote 4: `verify --tier=quick` e o vitest de `src/features/DesignEngine`; os casos 15, 36 e 42 isolados, 10 vezes cada, contra
+  um `dist/` novo, e a bateria inteira do navegador.
 - Fechamento: `verify --tier=full` e a bateria inteira do navegador.
 - `git diff --stat` → só a §3.1 do lote.
 
@@ -558,3 +583,138 @@ O relato desta correção deixou o `status` em 🟡 em vez de 🟠 ao entregar; 
 **Lote 3 fechado (itens 39, 40, 45, 46).** Segue o lote 4.
 
 **Status: 🟡 Em execução (lote 4).**
+
+## Resumo da execução — 2026-10-20
+
+**Resultado:** Concluído — lote 4, pronto para revisão.
+
+**Estado do worktree ao iniciar**
+
+```text
+ M specs/00-backlog.md
+ M specs/plan/plan-120-o-que-o-importador-sente-antes-da-8-0-0.md
+ M src/core/Design/components/SarakBackgroundRenderer.tsx
+ M src/styles/_base.css
+?? .claude/settings.local.json
+```
+
+**O que foi feito**
+
+- **7:** preenchi `name` com o `label` do schema e `tags` com termos do vocabulário existente nas 48 entradas anteriores do catálogo; não acrescentei tags aos schemas TypeScript. A busca do Command Center agora encontra os 26 nomes.
+- **8:** o Command Center deriva ids, títulos, categorias e pilares de `design-pillars.json`, filtra tokens pelas categorias do catálogo e usa o primeiro pilar configurado como estado inicial.
+- **28:** o cabeçalho de resultados e o estado vazio da busca usam a escala `caption` com piso de 12 px.
+- **30:** o teste já tinha `REPO_SCAN_TIMEOUT_MS = 30_000` explícito nos casos que varrem o repositório; não precisei alterar esse arquivo.
+- **15:** o caso de split view calcula sobreposição entre bordas e tolera no máximo 1 CSS px para arredondamento subpixel.
+- **36:** o Gantt espera o tema claro pelo estado de cor computada; o teste do fallback segura o import real do tema até observar o quadro sem aplicação e então libera a carga.
+- **42:** o teste pausa a animação de saída pela Web Animations API e mede a opacidade em 125, 250 e 375 ms.
+
+### Rastreamento dos 26 nomes e tags
+
+`HEAD` tinha 48 entradas com tags e 50 termos únicos no vocabulário delas. Todos os tags abaixo pertencem a esse vocabulário; a busca foi verificada para cada nome contra o `label` do schema.
+
+| Token | `name` (label do schema) | `tags` e origem de cada tag |
+|---|---|---|
+| `tableZebraStriping` | `Listras Alternadas (Zebra)` | `table` ← grupo `tables.ts`; `color` e `layout` ← aspecto de listras alternadas no id/label, com termos já existentes. |
+| `tableBorderRadius` | `Arredondamento da Tabela` | `table` ← grupo `tables.ts`; `border` ← id; `radius` ← label “Arredondamento”. |
+| `inputPadding` | `Espaçamento Interno (Y)` | `input` e `form` ← grupo `inputs.ts`; `padding` e `layout` ← id `inputPadding` e label “Espaçamento Interno”. |
+| `inputBorderType` | `Estilo da Borda` | `input` e `form` ← grupo `inputs.ts`; `border` e `style` ← id/label “Borda” e “Estilo”. |
+| `inputBackdropBlur` | `Desfoque de Fundo (Blur)` | `input` e `form` ← grupo `inputs.ts`; `backdrop` e `blur` ← id/label. |
+| `inputShadow` | `Sombra do Campo (CSS ou "neumorphism")` | `input` e `form` ← grupo `inputs.ts`; `style` ← o label descreve CSS/neumorphism. |
+| `inputIconColor` | `Cor dos Ícones` | `input` e `form` ← grupo `inputs.ts`; `icon` e `color` ← label. |
+| `inputErrorColor` | `Cor de Erro` | `input` e `form` ← grupo `inputs.ts`; `color` ← label. |
+| `iconButtonGlowBlurSm` | `Glow do Icon Button: Desfoque Pequeno` | `button` ← grupo `buttons.ts`; `icon`, `glow`, `blur` e `small` ← id/label. |
+| `iconButtonGlowBlurMd` | `Glow do Icon Button: Desfoque Médio` | `button` ← grupo `buttons.ts`; `icon`, `glow`, `blur` e `medium` ← id/label. |
+| `iconButtonGlowBlurLg` | `Glow do Icon Button: Desfoque Grande` | `button` ← grupo `buttons.ts`; `icon`, `glow`, `blur` e `large` ← id/label. |
+| `iconButtonFrostedShadowOffsetY` | `Sombra Frosted do Icon Button: Offset Y` | `button` ← grupo `buttons.ts`; `icon` e `layout` ← id/label; `glass` ← “Frosted”, termo já usado no catálogo. |
+| `iconButtonFrostedShadowBlur` | `Sombra Frosted do Icon Button: Desfoque` | `button` ← grupo `buttons.ts`; `icon` e `blur` ← id/label; `glass` ← “Frosted”, termo já usado no catálogo. |
+| `actionGlowShadowOffsetY` | `Sombra de Ação: Offset Y` | `button` ← grupo `buttons.ts`; `action` e `glow` ← id/label; `layout` ← “Offset Y”. |
+| `actionGlowShadowBlur` | `Sombra de Ação: Desfoque` | `button` ← grupo `buttons.ts`; `action`, `glow` e `blur` ← id/label. |
+| `actionGlowShadowSpread` | `Sombra de Ação: Espalhamento` | `button` ← grupo `buttons.ts`; `action` e `glow` ← id/label; não há tag `spread` no vocabulário existente. |
+| `kanbanHeaderPaddingY` | `Kanban: Padding Vertical do Cabeçalho da Coluna` | `table` ← grupo `tables.ts`; `header`, `padding` e `layout` ← id/label. |
+| `kanbanHeaderTracking` | `Kanban: Tracking do Cabeçalho da Coluna` | `table` ← grupo `tables.ts`; `header` e `text` ← id/label. |
+| `kanbanCardRadius` | `Kanban: Arredondamento do Card` | `table` ← grupo `tables.ts`; `radius` e `layout` ← id/label e geometria do card no Kanban. |
+| `toastMinWidth` | `Toast: Largura Mínima` | `overlay` ← grupo `overlays.ts`; `width` ← id/label. |
+| `toastMaxWidth` | `Toast: Largura Máxima` | `overlay` ← grupo `overlays.ts`; `width` ← id/label. |
+| `toastAccentWidth` | `Toast: Largura da Borda de Destaque` | `overlay` ← grupo `overlays.ts`; `width` ← id; `border` e `color` ← label “Borda de Destaque”. |
+| `contextMenuMinWidth` | `Context Menu: Largura Mínima` | `overlay` ← grupo `overlays.ts`; `width` ← id; `layout` ← geometria indicada por “Context Menu”. |
+| `multiSelectInputMinWidth` | `Multi-Select: Largura Mínima do Input Interno` | `input` e `form` ← grupo `inputs.ts`; `width` ← id/label. |
+| `searchBackdropBlur` | `Search Palette: Desfoque do Backdrop` | `input` ← grupo `inputs.ts`; `overlay` ← “Search Palette”; `backdrop` e `blur` ← id/label. |
+| `rangeActiveColor` | `Range Slider: Cor Ativa` | `input` e `form` ← grupo `inputs.ts`; `active` e `color` ← id/label. |
+
+**Arquivos alterados**
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/catalog/partitions/components_base.json` | alterado | Rótulos do schema e tags existentes nas 26 entradas. |
+| `src/features/DesignEngine/Panels/hooks/useSovereignSearch.ts` | alterado | Pilares e categorias passam a vir da configuração compartilhada e do catálogo. |
+| `src/features/DesignEngine/Panels/HyperGranularityTab.tsx` | alterado | Estado inicial usa o id `brand` presente na configuração. |
+| `src/features/DesignEngine/Panels/hooks/__tests__/useSovereignSearch.test.ts` | alterado | Paridade dos pilares, indicador de rascunho e busca dos 26 nomes. |
+| `src/features/DesignEngine/Panels/components/__tests__/PillarSelector.test.tsx` | alterado | Snapshot usa o pilar configurado. |
+| `src/features/DesignEngine/Panels/components/__tests__/__snapshots__/PillarSelector.test.tsx.snap` | alterado | Snapshot atualizado para o pilar configurado. |
+| `src/features/DesignEngine/Main/components/ThemeSidebarContent.tsx` | alterado | Escala tipográfica mínima de 12 px na busca. |
+| `src/features/DesignEngine/Main/components/__tests__/ThemeSidebarContent.test.tsx` | alterado | Teste confirma a escala mínima nos dois textos. |
+| `browser-tests/arsenal-lote5.spec.ts` | alterado | Opacidade amostrada em tempos fixos com Web Animations API. |
+| `browser-tests/cromo-css-real.spec.ts` | alterado | Sobreposição de split view tolera até 1 CSS px. |
+| `browser-tests/gantt-altura-e-contraste.spec.ts` | alterado | Espera o estado computado de tema claro com timeout nomeado. |
+| `browser-tests/tema-sob-demanda.spec.ts` | alterado | Controla e libera o import do tema na própria cena. |
+| `browser-tests/build-harness.mjs` | alterado | Expõe um gate de teste para o import lazy do tema no harness. |
+| `specs/plan/plan-120-o-que-o-importador-sente-antes-da-8-0-0.md` | alterado | Status e este resumo append-only do lote 4. |
+
+**Verificações executadas**
+
+- `npm.cmd run catalog:check` → passou.
+- `npm.cmd run build` → passou; gerou tipos, bundle e CSS, e os artefatos gerados foram restaurados ao conteúdo anterior do worktree.
+- `npx.cmd vitest run src/features/DesignEngine/Panels/hooks/__tests__/useSovereignSearch.test.ts src/features/DesignEngine/Panels/components/__tests__/PillarSelector.test.tsx src/features/DesignEngine/Main/components/__tests__/ThemeSidebarContent.test.tsx` → 3 arquivos, 19/19 testes aprovados.
+- `npx.cmd vitest run gates/scripts/contrato/__tests__/check-container-query-literal.test.mjs` → 1 arquivo, 15/15 testes aprovados; o timeout de 30 s já existia em `HEAD`.
+- Validador AST `padrao-typescript` nos 11 arquivos TS/JS alterados → exit code 0; comparação com `HEAD`: zero novos achados.
+- `npm.cmd run verify -- --tier=quick` → passou após as alterações finais; `tsc`, baseline, Anel 1 e demais checks rápidos verdes; Anel 0 simulado: 637 linhas, 0 achados.
+- Baseline isolado antes das mudanças, 10 repetições por caso (50 execuções): item 15 passou 10/10; item 36, Gantt passou 10/10 e o fallback falhou 5/10; item 42, modal passou 10/10 e paleta de busca passou 9/10.
+- `npx.cmd playwright test --config=browser-tests/playwright.config.ts --grep 'isSplitViewEnabled|fallback fica na tela|harness liga mesmo o tema claro|motionEaseIn muda a opacidade' --repeat-each=10` → 50/50 aprovados (10/10 para cada um dos cinco casos selecionados).
+- `npx.cmd playwright test --config=browser-tests/playwright.config.ts` → duas execuções consecutivas, cada uma com 423/423 aprovados (20,5 min e 20,1 min).
+- `git diff --check` → sem erros de whitespace.
+
+Uma tentativa focal dentro do sandbox não iniciou os testes porque o executável local do Chromium não estava visível. A mesma repetição foi executada com acesso ao binário local e passou 50/50; as duas baterias completas também passaram com esse acesso.
+
+**Critérios de aceite deste lote**
+
+- [x] 4.1 — os 26 nomes são os labels do schema; cada um é encontrado pela busca; todos os tags vêm do vocabulário anterior de 50 termos.
+- [x] 4.2 — as duas telas usam os mesmos ids e títulos definidos em `design-pillars.json`.
+- [x] 4.3 — título e estado vazio da busca usam a escala caption com piso de 12 px.
+- [x] 4.4 — o caso de repositório real conserva timeout explícito de 30 s; o arquivo de teste passa 15/15.
+- [x] 4.5 — os casos foram tornados determinísticos; cinco casos isolados passaram 10/10 cada e a bateria inteira passou duas vezes em sequência.
+
+**Decisões e suposições**
+
+- Apliquei a regra confirmada pelo usuário para o item 7: `name` igual ao `label` do schema; `tags` restritos ao vocabulário existente e derivados do grupo do schema ou de fatos do id/label. Não acrescentei tags ao schema TypeScript.
+- Item 30 já estava satisfeito em `HEAD`; preservei o teste sem alterações.
+
+**Achados fora do escopo (não corrigidos)**
+
+- Nenhum identificado nesta execução.
+
+**Pendências / riscos**
+
+- Nenhuma pendência nos itens do lote 4. `npm ci` e `gates:full` na CI permanecem no fechamento geral da plan, fora do recorte executado nesta rodada.
+
+## Veredito — 2026-10-20 — lote 4 e fechamento da plan — 🟢 Aprovado; plan concluída
+
+**Lote 4, conferido no diff:** 7 — as 26 entradas de `components_base.json` com `name` = o `label` do schema e `tags` só do
+vocabulário que o catálogo já usava (a tabela da origem de cada tag está no relato), achadas pela busca; 8 — o Command Center deriva
+pilares e categorias de `design-pillars.json` (`useSovereignSearch.ts`, `HyperGranularityTab.tsx`); 28 — título e estado vazio da
+busca no piso de 12 px; 30 — o teste já tinha timeout explícito de 30 s no `HEAD` (o item do backlog estava defasado); 15, 36, 42 — o
+split view compara com tolerância de subpixel declarada (≤ 1 px), o tema sob demanda segura o `import()` na cena até observar o quadro
+só com o fallback, o Gantt espera o estado de cor computada, e a saída do modal pausa pela Web Animations API e lê a opacidade em
+pontos fixos. O executor mediu antes (o fallback falhava 5 de 10) e depois (50 de 50; a bateria inteira duas vezes, 423/423).
+
+**Fora da plan, descartado:** `src/core/Design/components/SarakBackgroundRenderer.tsx` e `src/styles/_base.css` apareceram modificados
+no worktree entre o commit do lote 3 e o início do lote 4, sem plan nem prompt (a regra nova do `_base.css` apagava a textura de página
+quando havia arte de fundo); o dono não os alterou e os descartou (`git restore`). A verificação de fechamento abaixo rodou sem eles.
+
+**Fechamento, medido por mim sobre o worktree limpo:** `npm run verify -- --tier=full` **verde** (`tsc`, **suíte completa**, baseline
+com `tsc`, Anel 1, R36, Anel 0); `npm run build` verde; **bateria inteira do navegador: 423/423** (17,9 min), com os casos do véu da
+gaveta (lote 1), do tema do cliente (lote 3) e os antes intermitentes.
+
+**A plan está concluída:** os 17 itens do backlog que afetavam o importador, mais os três intermitentes (15, 36, 42), corrigidos antes da
+8.0.0. A síntese (destino na §8) espera a autorização do dono.
+
+**Status: 🟢 Aprovada.**

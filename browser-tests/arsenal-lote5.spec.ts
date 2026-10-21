@@ -9,9 +9,9 @@
  * -------------------------------------------------------------------------
  * LIMITES DECLARADOS (R18) — o que esta medição NÃO vê
  * -------------------------------------------------------------------------
- * 1. A saída é amostrada por `requestAnimationFrame` em torno de 250 ms de uma saída de 500 ms: lê o `opacity`
- *    computado, não o pixel. A curva é distinguida por dois pontos (a de fábrica e uma que parte rápido), não
- *    reconstruída.
+ * 1. A presença do painel durante a saída é amostrada por `requestAnimationFrame`; a curva de opacidade é medida
+ *    com Web Animations API em três instantes fixos. Lê `opacity` computado, não o pixel, e distingue as duas curvas
+ *    preparadas (a de fábrica e uma que parte rápido), sem reconstruí-las.
  * 2. O aviso de `ref` só existe no React de desenvolvimento; o harness empacota o React sem minificar, então
  *    ele aparece. Num React de produção este caso passaria sem provar nada.
  * 3. Só Chromium headless. Lê o `dist/` — sem `npm run build` recente, mede o build anterior.
@@ -23,6 +23,7 @@ import { test, expect, chromium, type Browser, type Page } from '@playwright/tes
 const DESKTOP = { width: 1280, height: 900 } as const;
 /** Instante, em ms depois do clique, em que a saída de 500 ms está no meio. */
 const SAMPLE_AT_MS = 250;
+const EXIT_CURVE_SAMPLE_TIMES_MS = [125, 250, 375] as const;
 const OBSERVE_MS = 900;
 
 const harnessUrl = process.env.SARAK_CROMO_HARNESS_URL;
@@ -96,13 +97,73 @@ const SEARCH_PANEL = `() => document.querySelector('input[type="search"]')?.clos
 const nearest = (samples: ExitSample[], at: number): ExitSample =>
     samples.reduce((best, sample) => (Math.abs(sample.t - at) < Math.abs(best.t - at) ? sample : best));
 
-/** A opacidade em `at` ms, interpolada entre os dois quadros que o cercam (o painel ausente conta como 0). */
-const opacityAt = (samples: ExitSample[], at: number): number => {
-    const after = samples.find((sample) => sample.t >= at);
-    const before = [...samples].reverse().find((sample) => sample.t <= at);
-    if (!before || !after) return 0;
-    if (after.t === before.t) return before.opacity;
-    return before.opacity + ((after.opacity - before.opacity) * (at - before.t)) / (after.t - before.t);
+interface ExitCurveSample { time: number; opacity: number }
+
+async function waitForFullyVisiblePanel(page: Page, panelFinder: string): Promise<void> {
+    await page.waitForFunction((finder) => {
+        const panel = (new Function(`return (${finder})();`) as () => HTMLElement | null)();
+        return panel !== null && getComputedStyle(panel).opacity === '1';
+    }, panelFinder, { timeout: 5000 });
+}
+
+async function closePanelByProbe(page: Page, closeProbe: string): Promise<void> {
+    await page.evaluate((probe) => {
+        const closeControl = document.querySelector(`[data-probe="${probe}"]`);
+        if (!(closeControl instanceof HTMLElement)) throw new Error(`Controle de fechamento ausente: ${probe}`);
+        closeControl.click();
+    }, closeProbe);
+}
+
+async function waitForPanelOpacityAnimation(page: Page, panelFinder: string): Promise<void> {
+    await page.waitForFunction((finder) => {
+        const panel = (new Function(`return (${finder})();`) as () => HTMLElement | null)();
+        if (!panel) return false;
+        return document.getAnimations().some((animation) => {
+            const effect = animation.effect;
+            return effect instanceof KeyframeEffect
+                && effect.target === panel
+                && animation.playState === 'running'
+                && effect.getKeyframes().some((keyframe) => keyframe.opacity !== undefined);
+        });
+    }, panelFinder, { timeout: 5000 });
+}
+
+async function samplePanelOpacityAtFixedTimes(page: Page, panelFinder: string): Promise<ExitCurveSample[]> {
+    return page.evaluate(({ finder, sampleTimes }) => {
+        const panel = (new Function(`return (${finder})();`) as () => HTMLElement | null)();
+        if (!panel) throw new Error('O painel saiu antes de medir a curva de saída.');
+        const animation = document.getAnimations().find((candidate) => {
+            const effect = candidate.effect;
+            return effect instanceof KeyframeEffect
+                && effect.target === panel
+                && candidate.playState === 'running'
+                && effect.getKeyframes().some((keyframe) => keyframe.opacity !== undefined);
+        });
+        if (!animation) throw new Error('A API Web Animations não encontrou a animação de opacidade do painel.');
+
+        animation.pause();
+        return sampleTimes.map((time) => {
+            animation.currentTime = time;
+            return { time, opacity: Number(getComputedStyle(panel).opacity) };
+        });
+    }, { finder: panelFinder, sampleTimes: [...EXIT_CURVE_SAMPLE_TIMES_MS] });
+}
+
+async function recordExitCurveAtFixedTimes(
+    page: Page,
+    closeProbe: string,
+    panelFinder: string,
+): Promise<ExitCurveSample[]> {
+    await waitForFullyVisiblePanel(page, panelFinder);
+    await closePanelByProbe(page, closeProbe);
+    await waitForPanelOpacityAnimation(page, panelFinder);
+    return samplePanelOpacityAtFixedTimes(page, panelFinder);
+}
+
+const fixedOpacityAt = (samples: ExitCurveSample[], time: number): number => {
+    const sample = samples.find((candidate) => candidate.time === time);
+    if (!sample) throw new Error(`Não há amostra fixa para ${time} ms.`);
+    return sample.opacity;
 };
 
 const OVERLAYS = [
@@ -121,13 +182,15 @@ for (const overlay of OVERLAYS) {
     });
 
     test(`P14: ${overlay.name} — motionEaseIn muda a opacidade no meio da saída (de fábrica × curva que parte rápido)`, async () => {
-        const slow = await withScene({ scene: 'saida-sobreposicao', target: overlay.target, theme: 'saida-curva-lenta' }, (page) => recordExit(page, overlay.close, overlay.panel));
-        const fast = await withScene({ scene: 'saida-sobreposicao', target: overlay.target, theme: 'saida-curva-rapida' }, (page) => recordExit(page, overlay.close, overlay.panel));
-        const slowMid = opacityAt(slow, SAMPLE_AT_MS);
-        const fastMid = opacityAt(fast, SAMPLE_AT_MS);
+        const slow = await withScene({ scene: 'saida-sobreposicao', target: overlay.target, theme: 'saida-curva-lenta' }, (page) => recordExitCurveAtFixedTimes(page, overlay.close, overlay.panel));
+        const fast = await withScene({ scene: 'saida-sobreposicao', target: overlay.target, theme: 'saida-curva-rapida' }, (page) => recordExitCurveAtFixedTimes(page, overlay.close, overlay.panel));
+        const slowMid = fixedOpacityAt(slow, SAMPLE_AT_MS);
+        const fastMid = fixedOpacityAt(fast, SAMPLE_AT_MS);
         expect(slowMid).toBeGreaterThan(0.5);
         expect(fastMid).toBeLessThan(0.3);
         expect(slowMid - fastMid).toBeGreaterThan(0.3);
+        expect(slow.map((sample) => sample.time)).toEqual(EXIT_CURVE_SAMPLE_TIMES_MS);
+        expect(fast.map((sample) => sample.time)).toEqual(EXIT_CURVE_SAMPLE_TIMES_MS);
     });
 
     test(`P14: ${overlay.name} — na saída o painel não segura o ponteiro; sob movimento reduzido sai de uma vez`, async () => {

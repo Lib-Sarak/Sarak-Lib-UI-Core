@@ -29,6 +29,7 @@ import { test, expect, chromium, type Browser, type Page } from '@playwright/tes
 
 const DESKTOP = { width: 1280, height: 900 } as const;
 const SUBPIXEL = 1;
+const ASYNC_THEME_TIMEOUT_MS = 5000;
 /** WCAG 2.x, nível AA, texto de tamanho normal. */
 const AA_NORMAL_TEXT = 4.5;
 
@@ -159,6 +160,11 @@ for (const theme of [{ name: 'escuro (padrão)', params: {} }, { name: 'claro (m
 test('o harness liga mesmo o tema claro (pré-condição do caso de contraste)', async () => {
     const page = await openScene({ cena: 'gantt', 'tema-ativo': 'minimalist-airy' });
     try {
+        // O scroll do Gantt monta antes do import lazy do tema; esperar a cor clara evita ler o tema padrão sob carga.
+        await page.waitForFunction(() => {
+            const channels = (getComputedStyle(document.body).backgroundColor.match(/\d+(\.\d+)?/g) ?? []).map(Number);
+            return channels.length >= 3 && (channels[0] + channels[1] + channels[2]) / 3 > 200;
+        }, undefined, { timeout: ASYNC_THEME_TIMEOUT_MS });
         const bodyIsLight = await page.evaluate(() => {
             const [r, g, b] = (getComputedStyle(document.body).backgroundColor.match(/\d+(\.\d+)?/g) ?? []).map(Number);
             return (r + g + b) / 3 > 200;
