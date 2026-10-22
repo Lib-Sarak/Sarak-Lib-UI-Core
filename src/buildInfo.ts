@@ -1,5 +1,5 @@
 export const SARAK_BUILD_INFO = {
     "libVersion": "8.0.0-rc.1",
-    "baseCommitShort": "f1765b3",
-    "builtAt": "2026-10-21T19:56:02.064Z"
+    "baseCommitShort": "80262ba",
+    "builtAt": "2026-10-22T03:39:56.903Z"
 } as const;

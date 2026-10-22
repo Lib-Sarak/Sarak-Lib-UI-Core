@@ -113,10 +113,10 @@ instalar e registra um aviso no console.
 | --- | --- |
 | `@dnd-kit/core` e `@dnd-kit/sortable` | `SarakKanban` |
 | `@tanstack/react-virtual` | `SarakDataGrid` e `SarakDataTable` (incluindo o modo de cartões) |
-| `echarts` e `echarts-for-react` | `SarakChartEngine` com motor `echarts` (padrão) |
+| `echarts >=6.1.0` e `echarts-for-react >=3.0.4` | `SarakChartEngine` com motor `echarts` (padrão) |
 | `recharts` | `SarakChartEngine` com motor `recharts` |
-| `pdfjs-dist` | `SarakPDFViewer` |
-| `react-markdown` e `react-syntax-highlighter` | `SarakChatEngine` e `SarakMarkdownRenderer` |
+| `pdfjs-dist >=6.2.108` | `SarakPDFViewer` |
+| `react-markdown` e `react-syntax-highlighter >=16.1.2` | `SarakChatEngine` e `SarakMarkdownRenderer` |
 | `reactflow` | `SarakFlowEngine` |
 
 ## 1.2 O acoplamento mínimo

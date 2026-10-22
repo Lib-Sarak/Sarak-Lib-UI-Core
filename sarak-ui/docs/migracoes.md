@@ -15,6 +15,19 @@ produto precisam. Se um componente for renderizado sem o pacote correspondente, 
 mensagem com o nome do pacote e registra um aviso no console. O guia relaciona cada pacote ao
 componente que o utiliza.
 
+### Pisos mínimos de peers e dependência na 8.0.0
+
+**Classificação: MAJOR.** Para receber as correções de segurança, atualize os pacotes opcionais
+usados pela aplicação para `echarts >=6.1.0`, `echarts-for-react >=3.0.4`, `pdfjs-dist >=6.2.108`
+e `react-syntax-highlighter >=16.1.2`. A dependência `dompurify` da biblioteca passa a exigir
+`>=3.4.16` e é instalada junto com ela.
+
+`echarts-for-react` 3.0.4 é o primeiro piso com suporte declarado a ECharts 6. A migração para
+ECharts 6 altera o tema padrão, as posições e dimensões iniciais de alguns componentes, o ajuste
+automático de rótulos e a herança de estilos rich text; o motor Sarak usa opções e cores explícitas
+e não precisou de mudanças de API. Consulte o [guia de atualização do ECharts 6](https://github.com/apache/echarts-handbook/blob/master/contents/en/basics/release-note/v6-upgrade-guide.md)
+se a aplicação depender do tema ou dos padrões anteriores.
+
 ### De/para completo dos nomes do barril entre v7.0.0 e v8.0.0
 
 **Classificação: MAJOR (sai na 8.0.0).** A comparação das declarações públicas de v7.0.0 com a superfície v8 identificou 26 exports removidos e uma renomeação: `SARAK_REFERENCE_THEMES` passou a `SARAK_BOOT_THEMES` (o par completo é carregado por `sarakLoadReferenceThemes()`). Esta tabela reúne todos os 27 nomes alterados ou removidos; quando não há substituto direto, a responsabilidade passa para a aplicação.

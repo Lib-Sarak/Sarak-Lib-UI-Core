@@ -68,6 +68,10 @@ nem tag ([[03-versionamento-e-release]]).
   `src/core/Provider/utils/injectedWrites.ts`, `src/core/Provider/components/DesignInjector.tsx` e os outros injetores que limpam
   o documento ao desmontar; os testes deles; um caso em `browser-tests/`; `docs/persistencia-de-tema.md`, `docs/migracoes.md` e os
   gerados.
+- **Lote 6:** `package.json` (faixas de `dependencies`, `peerDependencies` e `devDependencies` dos pacotes do I26),
+  `package-lock.json`, o que o echarts 6 e o `react-syntax-highlighter` 16 exigirem em `src/components/engines/charts/`,
+  `src/components/atomic/Media/SarakMarkdownRenderer/` e `src/components/engines/chat/`, o `SarakPDFViewer` se a versão nova do
+  `pdfjs-dist` pedir, os testes deles, `docs/migracoes.md`, `sarak-ui/GUIA-FRONTEND.md` e os gerados.
 - **Lote 2:** `src/core/Design/presets/themes/reference.ts` e os pontos do barril que exportam a referência, o teste do
   `col-span-*` junto aos de `src/components/atomic/Layouts/`,
   `src/components/atomic/Layouts/SarakFlex.tsx`, `docs/migracoes.md` (seções `## 8.0.0` e `## 7.0.0`),
@@ -207,6 +211,28 @@ que ninguém sobrescreveu); com outra instância montada, o documento fica com o
 a troca faz) e a remontagem por `key` como alternativa suportada; nota na `## 8.0.0` de `docs/migracoes.md`.
 5.5. `npm run guide` e `npm run dev-kit` por último.
 
+**Lote 6 — dependências sem vulnerabilidade conhecida** (linha **I26** da §5.1; sai na `v8.0.0-rc.2`). Decisão do dono
+(2026-10-21): nada com aviso conhecido chega ao importador na 8.0.0. Lock gerado com npm ≥ 11.10.1 (o do Windows já serve), sem
+editar à mão.
+6.1. **O ponto de partida:** cole a saída de `npm audit` antes de mudar (os 15 avisos).
+6.2. **O que chega ao importador:**
+- `dompurify` (`dependencies`): a faixa passa a começar na versão sem aviso; a sanitização (`src/core/Security/`) e os testes dela
+  verdes;
+- `pdfjs-dist` (peer opcional): o piso passa à versão sem aviso, no major atual; o `SarakPDFViewer` provado nela (testes e o caso de
+  navegador que houver), com o `workerSrc` da versão nova;
+- `echarts` (peer opcional): piso `>=6.1.0`, e `echarts-for-react` no piso que suporte o echarts 6 (justifique); o motor de gráficos
+  (`src/components/engines/charts/`) provado nos formatos que ele oferece — os testes de cada formato e os casos de navegador de
+  gráfico verdes; o que o echarts 6 mudou de API e exigiu ajuste vai no relato;
+- `react-syntax-highlighter` (peer opcional): piso `>=16.1.2`; o realce no `SarakMarkdownRenderer` e no `SarakChatEngine` provado.
+6.3. **As ferramentas da lib** (transitivas e `devDependencies`): atualizar só o necessário para tirar os avisos, **sem major**
+(`npm audit fix`, sem `--force`), e conferir que nenhuma versão de dependência da lib que vai ao importador mudou sem estar no 6.2.
+6.4. **O ponto de chegada:** `npm audit` sem aviso (cole a saída); se sobrar algum sem correção publicada, ele fica nomeado no
+relato com o motivo e o caminho até o pacote.
+6.5. O consumidor de `scripts/test-optional-peer-consumer.mjs` continua verde nos três cenários, agora com as versões novas; nota
+MAJOR na `## 8.0.0` de `docs/migracoes.md` com os pisos novos de cada peer; a tabela de peers do guia (`sarak-ui/GUIA-FRONTEND.md`)
+com as versões mínimas.
+6.6. `npm run guide` e `npm run dev-kit` por último.
+
 **§5.1 — Registro vivo dos achados da lib** (mantido pelo revisor; vem do lote 0 e das sessões dos importadores):
 
 | # | Achado (`arquivo:linha` e medição) | Origem | Decisão | Lote | Estado |
@@ -240,7 +266,7 @@ a troca faz) e a remontagem por `key` como alternativa suportada; nota na `## 8.
 | I23 | com `styleNonce`, a folha global ainda é inserida **no import, sem nonce** — a CSP estrita a bloqueia e registra uma violação a cada carregamento (console e `report-uri`) — antes de o Provider trocá-la pela tag com nonce (`src/core/Provider/injectStyles.ts`); no import a lib não sabe do nonce | revisor (lote 3) | corrigir — no import, ler o nonce de `<meta property="csp-nonce" nonce="…">` (a convenção do Vite) e, presente, injetar já com ele; o `styleNonce` do Provider continua valendo; o caso de navegador escuta `securitypolicyviolation` e exige **zero** | 4 | fechada |
 | I24 | **trocar de tenant sem remontar não lê o tema do tenant novo:** o `onLoad` roda uma vez por instância (`src/core/Provider/hooks/useDesignRemoteLoader.ts:63-75`: sem `onLoad` antes do login, a instância já se marca carregada e não chama mais); a troca de `persistence.tenantId` só troca a chave do `localStorage` (`src/core/Provider/utils/resolveStorageKey.ts`). O tema da organização nunca é lido, e a primeira mudança no painel não chega ao `onSave` | login (bloqueia a migração) | corrigir — a troca de `tenantId` (inclusive de ausente para definido) e o `onLoad` que passa a existir disparam o `onLoad` do tenant novo; aplica o que vier (ou o padrão); passa a gravar no `onSave` desse tenant; gravação pendente do anterior nunca vai ao novo | 5 | fechada |
 | I25 | **remontar o Provider por `key` apaga o tema da instância nova:** ao desmontar, a instância que sai limpa o `<html>`/`<body>` (`releaseInjectedWrites`, `src/core/Provider/components/DesignInjector.tsx:185`) **depois** de a nova já ter aplicado o tema — medido pelo importador: `<html>` sem `data-sx-*` nem variáveis, `<body>` sem `dark` nem fundo | login (bloqueia a migração) | corrigir — a limpeza ao desmontar é por instância: só remove o que aquela instância escreveu e que nenhuma outra escreveu depois | 5 | fechada |
-| I26 | peers com versões vulneráveis no piso da faixa: `echarts` (`>=5.5.0`; `npm audit` acusa abaixo de 6.1.0, moderada, e a correção é o major 6) e dependências do `react-syntax-highlighter` (`>=15.5.0`; alta) | login | **a decidir pelo dono:** subir o piso das duas peers para versões sem aviso, com o motor de gráficos e o realce provados nelas (MAJOR) | 6 | aberta |
+| I26 | **dependências com vulnerabilidade conhecida** (`npm audit`, 2026-10-21: 15 avisos — 1 baixo, 8 moderados, 6 altos). **Chegam ao importador:** `pdfjs-dist` (peer opcional; alta — execução de JavaScript ao abrir PDF malicioso; correção dentro do major), `dompurify` (`dependencies`, vai junto com a lib; moderada; dentro do major), `echarts` (peer opcional, `>=5.5.0`; moderada, XSS; correção só no major 6, `6.1.0`), `react-syntax-highlighter` (peer opcional, `>=15.5.0`; moderada via `prismjs`/`refractor`; correção só na `16.1.2`). **Só ferramentas da lib:** `vite`, `vitest`, `@vitest/coverage-v8`, `@vitest/mocker`, `esbuild`, `postcss`, `nanoid`, `undici`, `source-map-js` (transitivas ou `devDependencies`; correção sem major) | login · revisor | **dono, 2026-10-21: corrigir antes da `rc.2`** — pisos das peers e da dependência nas versões sem aviso (subir piso de peer é MAJOR e só cabe antes da 8.0.0), o motor de gráficos e o realce provados nelas; as ferramentas atualizadas sem major | 6 | fechada |
 | C6 | seletor de organização (tenant) no cromo: os sistemas multi-tenant mantêm o próprio | login | **proposta do revisor: depois da 8.0.0** (função aditiva; o slot já serve), ao `00-backlog` no lote final | final | aberta |
 | C7 | histórico de versões: entradas de `docs/migracoes.md` sem versão no título e tokens removidos/renomeados sem forma de dado | login | **proposta do revisor:** lote final — toda entrada com a versão, e o `catalog.json` do kit com a lista de tokens removidos e o destino de cada um | final | aberta |
 | C5 | span do grid de 12 colunas sem contrato público (`15-divida-conhecida` achado 42) | lote 0 (30) | **dono, 2026-10-19:** declarar `col-span-*` como contrato suportado, com teste que trava o comportamento; `SarakGridItem` ao backlog | 2 | fechada |
@@ -1132,3 +1158,213 @@ correção volta ao registro da §5.1.
 **Lote 5 fechado (I24, I25).** Aberto: I26 (peers vulneráveis), à decisão do dono.
 
 **Status: 🟡 Em execução.**
+
+## Resumo da execução — 2026-10-21
+
+**Resultado:** Concluído com pendências
+
+**Estado do worktree ao iniciar**
+```text
+ M docs/migracoes.md
+ M package-lock.json
+ M package.json
+ M sarak-ui/GUIA-FRONTEND.md
+ M specs/plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md
+ M src/components/atomic/Media/SarakMarkdownRenderer/__tests__/SarakMarkdownRendererImpl.test.tsx
+ M src/components/engines/chat/__tests__/SarakChatEngine.test.tsx
+?? .claude/settings.local.json
+```
+
+**O que foi feito**
+- Ajustei o bloco de código do `SarakMarkdownRenderer` para renderizar um único `<pre>` semântico; o highlighter já fornece os spans coloridos esperados pelo teste.
+- Regenerei a cópia de migrações do kit do consumidor a partir de `docs/migracoes.md`; a tabela de pisos no guia já estava atualizada na fotografia inicial.
+- Executei `npm run dev-kit` por último, conforme o passo 6.6; o kit do mantenedor já estava no conteúdo gerado.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/Media/SarakMarkdownRenderer/SarakMarkdownRendererImpl.tsx` | alterado | `PreTag` passou de `div` para `pre`, com comentário alinhado à estrutura semântica. |
+| `sarak-ui/docs/migracoes.md` | gerado | Cópia sincronizada com a nota MAJOR e os pisos já presentes em `docs/migracoes.md`. |
+| esta plan | alterado | Resumo acrescentado e status encaminhado à revisão. |
+
+Os arquivos `package.json`, `package-lock.json`, `docs/migracoes.md`, `sarak-ui/GUIA-FRONTEND.md` e os dois testes que já estavam modificados na fotografia inicial foram preservados sem edição nesta execução. `.claude/settings.local.json` também foi preservado.
+
+**Verificações executadas**
+- `npm.cmd audit --json` → 1 vulnerabilidade baixa em `esbuild` 0.27.7 (`GHSA-g7r4-m6w7-qqqr`, faixa `>=0.27.3 <0.28.1`); total 1, exit code 1.
+- `npm.cmd audit fix --dry-run --json` → propôs `esbuild` e `@esbuild/win32-x64` 0.27.2, sem major; nenhuma correção foi aplicada ao lockfile.
+- `npx.cmd vitest run src/core/Security/__tests__/sanitizeHtml.test.ts src/components/engines/charts src/components/atomic/Media/SarakMarkdownRenderer/__tests__/SarakMarkdownRendererImpl.test.tsx src/components/engines/chat/__tests__/SarakChatEngine.test.tsx src/components/atomic/Media/SarakPDFViewer --maxWorkers=1` → 13 arquivos e 137 testes passaram.
+- `npm.cmd run test:optional-peers` → os três cenários passaram.
+- `npm.cmd run guide` e `npm.cmd run guide:check` → kit gerado; 7 arquivos em dia.
+- `npm.cmd run dev-kit` e `npm.cmd run dev-kit:check` → kit gerado; 3 arquivos em dia, 0 ponteiros mortos.
+- `npm.cmd run verify -- --tier=quick` → nível quick verde: TypeScript, baseline, gates e Anel 0 simulado com 658 linhas e 0 achados.
+
+**Critérios de aceite**
+- [x] 6.1 — auditoria da fotografia registrada; ela já continha as atualizações de dependências e mostrou 1 aviso baixo. I26 registra os 15 avisos do ponto de partida anterior.
+- [x] 6.2 — os pisos declarados estavam presentes em `package.json`; testes de segurança, gráficos, PDF, Markdown e Chat passaram. Não havia testes de navegador desses componentes em `browser-tests/`.
+- [ ] 6.3 — a atualização real do lockfile não foi aplicada; o `npm audit fix --dry-run` mostrou a correção segura sem major.
+- [ ] 6.4 — a auditoria final ainda aponta 1 aviso baixo em `esbuild`; a correção publicada é 0.27.2.
+- [x] 6.5 — os três cenários de peers opcionais passaram; a nota MAJOR e os pisos estavam presentes nas documentações alteradas antes da fotografia.
+- [x] 6.6 — `guide` e `dev-kit` foram executados nessa ordem, com `dev-kit` por último; as verificações finais passaram.
+
+**Decisões e suposições**
+- O npm disponível é 11.6.1, abaixo do mínimo 11.10.1 exigido para gerar o lockfile. O `package.json` declara `esbuild` 0.27.2, mas o lockfile pré-alterado não registra essa dependência na raiz e resolve 0.27.7.
+- Não alterei o lockfile porque ele já estava modificado na fotografia inicial; o executor §7.12 proíbe editar arquivos herdados de outra tarefa. A linha I26 permanece aberta para revisão.
+- Não criei nem commitei arquivos temporários.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum.
+
+**Pendências / riscos**
+- Regenerar `package-lock.json` com npm ≥11.10.1, mantendo as atualizações pré-existentes, e repetir `npm audit` até não haver avisos. O lockfile precisa estar disponível para edição sem sobrescrever trabalho de outra tarefa.
+
+## Complemento — verificação do índice — 2026-10-21
+
+- `npm.cmd run plan-index:check` → falhou porque `specs/00-indice.md` ainda registra esta plan como `🟡 Em execução`, enquanto o frontmatter está `🟠 Em revisão`. O índice não foi alterado: está fora do lote solicitado e é mantido pelo revisor.
+
+## Veredito — 2026-10-21 — lote 6 — 🔴 Reprovado (3 achados)
+
+**O que está no diff (conferido):** `package.json` com os pisos — `dompurify` `^3.4.16`; peers `echarts` `>=6.1.0`,
+`echarts-for-react` `>=3.0.4`, `pdfjs-dist` `>=6.2.108`, `react-syntax-highlighter` `>=16.1.2`; as `devDependencies` acompanhando;
+`SarakMarkdownRendererImpl.tsx` com o bloco de código num `<pre>` semântico (o `react-syntax-highlighter` 16); nota em
+`docs/migracoes.md` e o guia. O relato diz que os pisos, o lock, a documentação e os testes **já estavam no worktree** quando ele
+começou e que só tocou no markdown.
+
+**Achado 1 — o lock foi gerado com o npm defeituoso e quebraria a CI de novo.** Medido por mim contra o `HEAD`: o
+`package-lock.json` **perdeu 24 entradas** que o `npm ci` do Linux exige — `node_modules/@emnapi/core`, `@emnapi/runtime`,
+`@emnapi/wasi-threads`, `@napi-rs/wasm-runtime`, `@rolldown/binding-wasm32-wasi` e as aninhadas, `@tybys/wasm-util`… — e o `libc` das
+**10** entradas que o tinham. É o defeito do npm 11.6.1 (npm/cli #8805) que derrubou a CI em 2026-10-07; o relato confirma o npm 11.6.1
+no ambiente. **Correção:** regenerar o lock com **npm ≥ 11.10.1** (confira `npm -v` e cole), partindo do lock do `HEAD` e do
+`package.json` deste lote, sem editar à mão; provar que **nenhuma** entrada de `@emnapi/*`, `@napi-rs/*` e `@rolldown/binding-*` sumiu,
+que o `libc` das 10 continua, e listar o que entrou, saiu e mudou de versão (só o que os pisos novos e as ferramentas pedem).
+
+**Achado 2 — o `npm audit` final não está limpo, e o `esbuild` entrou como dependência direta sem pedido.** O passo 6.4 pede o audit
+sem aviso, ou o resíduo nomeado com o motivo; o relato deixa um aviso baixo no `esbuild` e o `package.json` ganhou `"esbuild":
+"0.27.2"` em `devDependencies`, fixado à mão, que o lote não pedia. **Correção:** resolver o aviso pela árvore (quem traz o `esbuild`
+— `tsup`, `vite` — na versão corrigida, sem major) ou, se não houver correção publicada no caminho, tirar a dependência direta e
+nomear o resíduo no relato com o caminho até o pacote; colar o `npm audit` final.
+
+**Achado 3 — o relato não cobre o lote.** Ele trata só do markdown e declara o resto como pré-existente, sem dizer de onde veio. O lote
+é o diff inteiro, e é o diff que vale: o relato precisa trazer, para **cada** item do 6.2, a evidência (o que o echarts 6 mudou na API e o
+que exigiu do motor de gráficos, os testes de cada formato e o caso de navegador de gráfico; o `pdfjs-dist` novo no `SarakPDFViewer`; o
+`dompurify` na sanitização), o `npm audit` de antes (6.1) e de depois (6.4), e o consumidor dos peers opcionais nos três cenários.
+
+**Status: 🔵 Em correção** (os três achados). Na aprovação, o revisor roda `verify --tier=full`, o `build` e a bateria inteira do
+navegador.
+
+## Relato consolidado da correção — lote 6 — 2026-10-22
+
+Este relato consolida o diff completo do lote 6 e substitui, para a revisão dos achados 2 e 3, o resumo parcial de 2026-10-21.
+
+### Dependências e auditoria
+
+- O proprietário regenerou `package-lock.json` com npm 11.21.1. Conforme a conferência informada pelo proprietário e revisor, não
+  faltam entradas obrigatórias de dependências ou peers; `@emnapi/*` está aninhado em `@tailwindcss/oxide-wasm32-wasi`, e `libc`
+  aparece em 25 entradas. **Não editei o lock nesta continuação.** `npm ci` terminou com sucesso (`added 449 packages, and audited
+  450 packages in 2m`; `found 0 vulnerabilities`). O SHA-256 antes/depois permaneceu
+  `2EF21E262C50684065A8BAB31920CE679B1443BCB1696A746662F7CEEBF9CF9F`.
+- **Auditoria registrada no veredito de 2026-10-21 (antes desta correção):** `npm audit --json` reportou 1 vulnerabilidade baixa,
+  `esbuild@0.27.7`, `GHSA-g7r4-m6w7-qqqr`, faixa afetada `>=0.27.3 <0.28.1`, total 1 e exit code 1. O registro do veredito informa
+  que `npm audit fix --dry-run --json` propôs `esbuild` e `@esbuild/win32-x64` 0.27.2 sem major. A fotografia inicial de I26, anterior
+  às atualizações deste lote, registrava 15 avisos (1 baixo, 8 moderados e 6 altos); ela é distinta da auditoria imediatamente anterior
+  acima.
+- **Auditoria depois, somente leitura:** `npm audit --json` respondeu com exit code 0 e a saída completa foi:
+
+  ```json
+  {
+    "auditReportVersion": 2,
+    "vulnerabilities": {},
+    "metadata": {
+      "vulnerabilities": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0,
+        "total": 0
+      },
+      "dependencies": {
+        "prod": 10,
+        "dev": 602,
+        "optional": 176,
+        "peer": 0,
+        "peerOptional": 0,
+        "total": 612
+      }
+    }
+  }
+  ```
+
+- `esbuild` permanece em `devDependencies` como `0.27.2` por motivo direto e verificável: `browser-tests/build-harness.mjs:14` e
+  `scripts/measure-consumer-boot.mjs:32` importam `build` de `esbuild` para executar ferramentas mantidas pelo próprio repositório.
+  Declarar a dependência direta fixa o pacote usado por esses scripts sem depender da árvore transitiva de `tsup` ou `vite`. O audit
+  final não aponta vulnerabilidade residual. Não executei `npm audit fix`: nesta continuação foi solicitado o audit somente de leitura,
+  o lock é do proprietário e a auditoria final já respondeu sem avisos.
+
+### Evidência dos itens de 6.2
+
+- **ECharts 6 e motor de gráficos:** os pisos declarados são `echarts >=6.1.0` e `echarts-for-react >=3.0.4`; o segundo é o primeiro
+  piso do wrapper com suporte declarado ao ECharts 6. O guia oficial de migração descreve mudanças de padrões visuais — tema,
+  posições e dimensões iniciais, prevenção de sobreposição de rótulos e herança de estilos rich text — e o changelog 6.1 registra
+  mudanças de API: `axisLabel.formatter` recebe o índice para `customValues`, o segundo argumento de `tooltip.valueFormatter` passa
+  a ser `rawDataIndex`, e `axis.startValue` deixa de implicar `axis.min`. Consulte o
+  [guia oficial de atualização do ECharts 6](https://github.com/apache/echarts-handbook/blob/master/contents/en/basics/release-note/v6-upgrade-guide.md)
+  e o [changelog oficial do ECharts](https://echarts.apache.org/en/changelog.html).
+- A inspeção do motor (`useEChartsTheme.ts` e `axisOptions.ts`) confirmou que ele fornece explicitamente paleta, cores de tooltip e
+  eixos, margens e `containLabel`. Não usa `axisLabel.formatter`, `tooltip.valueFormatter` nem `axis.startValue`; portanto as mudanças
+  de API citadas não exigiram migração no motor. Os testes da área `src/components/engines/charts/`, incluindo os testes de formatos,
+  passaram dentro da suíte focada: 13 arquivos, 137 testes no total. Os sete casos Playwright P12 (`area`, `bar`, `pie`, `scatter`,
+  `gauge`, `radar` e `heatmap`) passaram. A evidência do navegador também levou a corrigir a asserção do teste: o heatmap do ECharts
+  6 monta três canvases em camadas; o contrato do caso é exigir ao menos um canvas visível, não exatamente um. A especificação agora
+  verifica contagem maior que zero e dimensões do primeiro canvas.
+- **PDF.js:** o piso do peer opcional passou a `pdfjs-dist >=6.2.108`; a instalação usada resolveu `6.4.299`. O
+  `SarakPDFViewer`/`usePdfDocument` configura `PdfJs.GlobalWorkerOptions.workerSrc` com a URL fornecida pelo consumidor e carrega o
+  documento por `getDocument`; o worker é um módulo `.mjs` (por exemplo, `pdf.worker.min.mjs?url` no Vite). Os testes de
+  `SarakPDFViewer` passaram na mesma suíte de 13 arquivos/137 testes; não foi necessária alteração de API no viewer.
+- **DOMPurify e sanitização:** `dompurify` passou de `^3.4.11` para `^3.4.16` em `dependencies` e resolveu `3.4.17`. O canal
+  central `src/core/Security/sanitizeHtml.ts` aplica o perfil HTML seguro de DOMPurify e, sem DOM ou sem suporte, usa o fallback
+  fail-closed que remove tags. `sanitizeHtml.test.ts` passou na suíte focada.
+- **Highlighter, Markdown e Chat:** o peer opcional `react-syntax-highlighter` passou a `>=16.1.2` e a devDependency a `^16.1.2`.
+  O `SarakMarkdownRenderer` usa `PreTag="pre"` e o teste verifica que os spans coloridos do realce estão dentro do bloco semântico;
+  o teste de `SarakChatEngine` cobre uma resposta com bloco JavaScript realçado. Ambos passaram na suíte focada.
+- `npm run build` passou, incluindo os gates do pacote, ESM/CJS/DTS/CSS e o consumidor de peers opcionais nos três cenários:
+  build sem peers opcionais; mutação de named import que falha com diagnóstico `MISSING_EXPORT`; build com todos os peers opcionais.
+
+### Inventário do diff coberto
+
+| Arquivos/área | Conteúdo do diff do lote 6 |
+|---|---|
+| `package.json` | `dompurify`; pisos opcionais de ECharts, wrapper, PDF.js e syntax highlighter; versões das devDependencies usadas pelos testes/build; `esbuild` direto justificado acima. |
+| `package-lock.json` | Lock regenerado pelo proprietário com npm 11.21.1 e conferido pelo revisor; apenas leitura nesta continuação, validado pelo `npm ci` e pelo hash idêntico antes/depois. |
+| `src/components/atomic/Media/SarakMarkdownRenderer/SarakMarkdownRendererImpl.tsx` e testes de Markdown/Chat | `PreTag` semântico e provas de realce em Markdown e Chat. |
+| `browser-tests/arsenal-lote4.spec.ts` | Asserção do canvas de gráfico adequada ao renderer em camadas do heatmap; os sete formatos passaram. |
+| `docs/migracoes.md`, `sarak-ui/docs/migracoes.md`, `sarak-ui/GUIA-FRONTEND.md` | Nota MAJOR, pisos dos peers, orientação sobre ECharts 6 e tabela de acoplamento do consumidor; cópia gerada sincronizada. |
+| `dist/*`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | Artefatos e metadados regenerados pelo build final (incluindo novos hashes de chunks e remoção dos hashes anteriores). |
+| esta plan | Este relato consolidado e o histórico/veredito do lote 6. |
+
+`specs/00-indice.md` já estava modificado pelo revisor e `.claude/settings.local.json` já estava não rastreado na fotografia inicial;
+ambos foram preservados sem edição nesta continuação. Nenhum commit foi criado. O `npm audit fix` continua fora desta execução; o
+audit somente de leitura final está limpo. Os testes focados e o build foram executados com sucesso; a verificação integral
+`verify --tier=full` e a bateria completa do navegador permanecem para a revisão indicada no veredito.
+
+## Veredito — 2026-10-22 — correção 1 (lote 6) — 🟢 Aprovado; lote 6 fechado
+
+**Achado 1 (lock):** fechado. O lock foi regenerado pelo dono com npm 11.21.1. Conferi que nenhuma dependência ou peer obrigatória
+ficou sem resolução, que `@emnapi/*` está aninhado em `@tailwindcss/oxide-wasm32-wasi` e que o `libc` aparece em 25 entradas (eram 10).
+O `npm ci` do executor passou com o hash do lock igual antes e depois.
+**Achado 2 (audit e `esbuild`):** fechado. O `npm audit` final está limpo (0 de 612). O `esbuild` `0.27.2` direto em `devDependencies`
+fica aceito: dois scripts do repositório o importam pelo nome (`browser-tests/build-harness.mjs:14` e
+`scripts/measure-consumer-boot.mjs:32`), e ele não chega ao importador.
+**Achado 3 (relato):** fechado. O relato consolidado traz a evidência de cada item do 6.2, o audit de antes e de depois e o
+inventário do diff. O ajuste do caso de navegador do heatmap fica aceito: agora ele exige pelo menos um canvas com dimensões, porque o
+echarts 6 desenha em camadas.
+
+**Medido por mim no worktree final:** `npm run verify -- --tier=full` saiu com 0. `npm run build` saiu com 0, com o consumidor de
+peers opcionais passando nos três cenários: sem peers, a mutação com `MISSING_EXPORT` e com todas as peers. A bateria inteira do
+navegador passou com **426/426**. Uma primeira rodada deu 50 falhas, todas `browserType.launch: Executable doesn't exist`: o `npm ci`
+apagou o Chromium de `node_modules/.cache/ms-playwright`. Reinstalei o navegador, rodei de novo e as 426 passaram. Foi ambiente, não
+código.
+
+**Lote 6 fechado (I26).** Os lotes 0–6 estão aprovados e entram na `v8.0.0-rc.2`. O lote final espera os importadores (ERP,
+login-completo, login-provedores) migrarem para a `rc.2` e devolverem o que medirem.
+
+**Status: 🟡 Em execução** (lote final pendente).

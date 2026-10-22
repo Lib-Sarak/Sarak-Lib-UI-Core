@@ -34,6 +34,7 @@ describe('SarakMarkdownRendererImpl (Spec 15, Regra 1)', () => {
         const root = container.querySelector('.sarak-markdown');
         expect(root?.getAttribute('data-mode')).toMatch(/^(dark|light)$/);
         expect(root?.textContent).toContain('const x = 1');
+        expect(container.querySelector('pre span[style*="color"]')).not.toBeNull();
     });
 
     it('imagem usa max-width 100% (não deforma o layout — Critério E2E)', () => {
