@@ -1,13 +1,21 @@
 import { SarakIcon } from "../../atomic/Icon/SarakIcon";
 import React, { useState, useRef, useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import * as ReactMarkdownModule from 'react-markdown';
+import * as SyntaxHighlighterModule from 'react-syntax-highlighter';
+import * as SyntaxHighlighterStyles from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakInput } from '../../../components/atomic/Inputs/SarakInput';
 import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
+import { SarakOptionalPeerFallback } from '../../atomic/Feedback/SarakOptionalPeerFallback';
+
+const ReactMarkdown = ReactMarkdownModule.default;
+const SyntaxHighlighter = SyntaxHighlighterModule.Prism;
+const atomDark = SyntaxHighlighterStyles.atomDark;
+const OPTIONAL_PEERS = ['react-markdown', 'react-syntax-highlighter'] as const;
+
+const hasChatMarkdownPeers = (): boolean => Boolean(ReactMarkdown && SyntaxHighlighter && atomDark);
 
 export interface SarakMessage {
     id: string;
@@ -31,7 +39,7 @@ export interface SarakChatEngineProps {
  * Sarak Chat Engine v7.0
  * Universal, contract-driven chat interface with Markdown & Code highlights.
  */
-const SarakChatEngine: React.FC<SarakChatEngineProps> = ({ 
+const SarakChatContent: React.FC<SarakChatEngineProps> = ({
     messages, 
     onSendMessage, 
     isLoading,
@@ -218,6 +226,13 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
             </div>
         </div>
     );
+};
+
+const SarakChatEngine: React.FC<SarakChatEngineProps> = (props) => {
+    if (!hasChatMarkdownPeers()) {
+        return <SarakOptionalPeerFallback component="SarakChatEngine" packages={OPTIONAL_PEERS} />;
+    }
+    return <SarakChatContent {...props} />;
 };
 
 export default SarakChatEngine;

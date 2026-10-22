@@ -62,6 +62,7 @@ const TestConsumer = () => {
 describe('SarakUIProvider', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        document.getElementById('sarak-ui-core-styles')?.remove();
         
         // Setup default mock for useDesignManager
         vi.mocked(useDesignManager).mockReturnValue({
@@ -148,16 +149,18 @@ describe('SarakUIProvider', () => {
         expect(links.length).toBeGreaterThan(0);
     });
 
-    it('injeta o stylesheet da Sarak no head ao carregar o módulo (Spec 08 §2 — Instalação Zero-Config)', () => {
-        // A injeção roda no top-level do módulo (import de `SarakUIProvider`), não
-        // dentro de um efeito de render — trava a regressão de o consumidor precisar
-        // importar `dist/sarak.css` manualmente (o bundle publicado substitui o
-        // placeholder pelo CSS real via scripts/inject-css.mjs; em teste/dev o
-        // placeholder mesmo é injetado, provando que o mecanismo dispara).
+    it('injeta o stylesheet da Sarak na montagem do Provider e aplica o nonce CSP', () => {
+        render(
+            <SarakUIProvider options={{ styleNonce: 'provider-nonce' }}>
+                <div />
+            </SarakUIProvider>,
+        );
+
         const styleTag = document.getElementById('sarak-ui-core-styles');
         expect(styleTag).toBeInTheDocument();
         expect(styleTag?.tagName).toBe('STYLE');
         expect(styleTag?.textContent).toBeTruthy();
+        expect(styleTag).toHaveAttribute('nonce', 'provider-nonce');
     });
 
     it('altera o estado de rascunho com setIsDrafting e lockDrafting', () => {

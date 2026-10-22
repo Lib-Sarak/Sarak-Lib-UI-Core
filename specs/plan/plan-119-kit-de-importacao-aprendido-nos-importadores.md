@@ -54,6 +54,24 @@ nem tag ([[03-versionamento-e-release]]).
   `src/features/DesignEngine/Main/utils/exportTheme.ts` (a `contraparte` no payload), `Main/components/ThemeActionBar.tsx`,
   `Panels/AdvancedTab.tsx` só se o gesto "novo tema" morar ali, `docs/persistencia-de-tema.md` (o exemplo copiável das
   portas de tema).
+- **Lote 3:** `src/components/atomic/Templates/SarakAuthScreen.tsx` e `components/AuthForm.tsx`; os pontos que criam `<style>`
+  (`src/core/Provider/SarakUIProvider.tsx`, `src/core/Provider/hooks/useSarakBuildSeal.ts` e os injetores de
+  `src/core/Design/components/` e `src/core/Provider/`), o tipo das opções do Provider; o *setup* de teste (I21) num caminho de
+  export próprio; `docs/persistencia-de-tema.md`, `docs/migracoes.md`, `sarak-ui/GUIA-FRONTEND.md` (autoria), um caso em
+  `browser-tests/` e os gerados.
+- **Lote 4:** os componentes sob demanda que importam peer opcional (`SarakKanban`, `SarakDataGrid`, `SarakDataTable`,
+  `SarakChartEngine`, `SarakPDFViewer`, `SarakChatEngine`, `SarakMarkdownRenderer`, `SarakFlowEngine` — os arquivos `*Impl` e os
+  módulos que eles importam), o i18n das mensagens, o teste do consumidor mínimo, `docs/migracoes.md`, `sarak-ui/GUIA-FRONTEND.md` e
+  os gerados.
+- **Lote 5:** `src/core/Provider/hooks/useDesignRemoteLoader.ts`, `src/core/Provider/hooks/useDesignManager.ts`, o caminho de
+  gravação do design aplicado (o hook que chama `persistence.onSave`), `src/core/Provider/utils/resolveStorageKey.ts`,
+  `src/core/Provider/utils/injectedWrites.ts`, `src/core/Provider/components/DesignInjector.tsx` e os outros injetores que limpam
+  o documento ao desmontar; os testes deles; um caso em `browser-tests/`; `docs/persistencia-de-tema.md`, `docs/migracoes.md` e os
+  gerados.
+- **Lote 6:** `package.json` (faixas de `dependencies`, `peerDependencies` e `devDependencies` dos pacotes do I26),
+  `package-lock.json`, o que o echarts 6 e o `react-syntax-highlighter` 16 exigirem em `src/components/engines/charts/`,
+  `src/components/atomic/Media/SarakMarkdownRenderer/` e `src/components/engines/chat/`, o `SarakPDFViewer` se a versão nova do
+  `pdfjs-dist` pedir, os testes deles, `docs/migracoes.md`, `sarak-ui/GUIA-FRONTEND.md` e os gerados.
 - **Lote 2:** `src/core/Design/presets/themes/reference.ts` e os pontos do barril que exportam a referência, o teste do
   `col-span-*` junto aos de `src/components/atomic/Layouts/`,
   `src/components/atomic/Layouts/SarakFlex.tsx`, `docs/migracoes.md` (seções `## 8.0.0` e `## 7.0.0`),
@@ -80,7 +98,7 @@ nem tag ([[03-versionamento-e-release]]).
 | **Skill** | `ui-integra-consumidor` · `ui-criar-tema` · `padrao-escrita` + `padrao-typescript` · `test-unitario` | kit, tema, escrita, testes |
 | Código | `src/features/DesignEngine/Main/` · `src/core/Provider/providerProps.ts` · `bin/` · `scripts/consumer-kit/` | o painel, as portas, a CLI e o gerador do kit |
 | Doc | `docs/migracoes.md` · `docs/roteiro-de-validacao-dos-temas.md` · `docs/persistencia-de-tema.md` · `sarak-ui/GUIA-FRONTEND.md` | o que o importador lê hoje |
-| Anexo | `specs/plan/anexos/plan-119-licoes-das-importacoes.md` · `specs/plan/anexos/plan-119-relatorio-erp.md` | as lições (lote 0) e o relatório do ERP, com `arquivo:linha` de cada achado |
+| Anexo | `specs/plan/anexos/plan-119-licoes-das-importacoes.md` · `specs/plan/anexos/plan-119-relatorio-erp.md` · `specs/plan/anexos/plan-119-relatorio-login.md` | as lições (lote 0) e o relatório do ERP, com `arquivo:linha` de cada achado |
 
 # 5. Instruções de execução
 
@@ -140,6 +158,81 @@ com a classe ocupa o span; sem ela, o padrão por breakpoint) e o texto no guia 
 [[15-divida-conhecida]] o achado 42 passa a ter destino (a síntese fecha).
 2.7. `npm run guide` e `npm run dev-kit` por último.
 
+**Lote 3 — o que o login mostrou** (linhas **I14 a I21** da §5.1; sai na `v8.0.0-rc.2`).
+3.1. **I14** o `SarakAuthScreen` aceita mostrar só os provedores (sem o formulário de credenciais), para o login que só redireciona
+ao provedor; o padrão continua o de hoje; teste de componente dos dois modos.
+3.2. **I15** uma opção de nonce que a lib aplica em **todo** `<style>` que ela cria em tempo de execução (o do CSS da lib, o do
+tema, os do escopo e da ilha embarcada, o do selo de build), documentada com a diretiva de CSP que o importador escreve; teste que
+prova o atributo em cada `<style>` e caso de navegador com uma CSP sem `'unsafe-inline'` em `style-src`, a tela desenhada.
+3.3. **I16** `docs/persistencia-de-tema.md` §1.2 com a assinatura `onSave(theme, operation)`; os gestos do painel numa entrada da
+`## 8.0.0` de `docs/migracoes.md`.
+3.4. **I17** retirar `role`, `density` e `importance` do `SarakAuthScreen` e de onde mais o trio for inerte (medir antes: o
+`SarakTable` os lê), com a linha no "de/para".
+3.5. **I18, I19, I20** o exemplo do guia, o renomeado nomeado na tabela, o caminho de override atual.
+3.6. **I21** (se o dono não vetar) o *setup* de teste exportado, com teste e a linha no guia.
+3.7. `npm run guide` e `npm run dev-kit` por último.
+
+**Lote 4 — o peer opcional que quebra o build** (linha **I22** da §5.1; sai na `v8.0.0-rc.2`). Decisão do dono (2026-10-21): os peers
+continuam opcionais (`package.json`, `peerDependenciesMeta`), e o build de quem não os instala tem de passar.
+4.1. **A prova primeiro:** um consumidor mínimo de verdade (React + Vite 8, o mesmo bundler do login-completo) num diretório fora do
+repositório, que instala a lib pelo pacote (`npm pack` do `dist/` atual) **sem nenhum peer opcional** e importa o barril; rodar
+`vite build` e colar a falha de hoje (os `[MISSING_EXPORT]`). Esse consumidor vira um teste automatizado (em `browser-tests/` ou
+`scripts/`, à escolha justificada) que roda depois do `build`, com o caso que falha provado por mutação.
+4.2. Em cada pedaço sob demanda da tabela da I22, o peer opcional é importado de um jeito que o bundler do importador aceite quando
+ele falta (por exemplo, por namespace, sem import nomeado que o bundler precise resolver), e o componente checa a presença do
+pacote antes de usá-lo: sem ele, mostra o estado de erro do próprio componente (texto do i18n, nos seis idiomas) dizendo qual
+pacote instalar, e um aviso único no console. Com o pacote instalado, nada muda.
+4.3. O consumidor do 4.1 compila verde **sem** os peers opcionais e **com** todos eles; teste de componente de cada um dos
+componentes afetados sem o pacote (a mensagem) e com ele (o render normal); a bateria do navegador continua verde.
+4.4. Nota em `docs/migracoes.md` (`## 8.0.0`): o que o importador ganha (não precisa instalar o que não usa) e a mensagem que vê se
+usar o componente sem o pacote; a lista dos peers opcionais e de qual componente cada um destrava no guia (`sarak-ui/GUIA-FRONTEND.md`).
+4.5. **I23** no import, o injetor lê o nonce de `<meta property="csp-nonce" nonce="…">` quando existe e injeta a folha já com ele;
+sem a `<meta>` e sem `styleNonce`, nada muda (zero-config); o guia, na seção do nonce, mostra a `<meta>` e a diretiva de CSP;
+`browser-tests/nonce-csp.spec.ts` passa a escutar `securitypolicyviolation` e exigir **zero** violações, com a `<meta>` e com o
+`styleNonce` do Provider.
+4.6. `npm run guide` e `npm run dev-kit` por último.
+
+**Lote 5 — trocar de organização (tenant)** (linhas **I24 e I25** da §5.1; bloqueia a migração do login; sai na `v8.0.0-rc.2`).
+5.1. **Primeiro os testes que reprovam hoje** (cole a falha antes da correção):
+- **(I24)** um `SarakUIProvider` montado **sem** `tenantId` e sem `onLoad` (a tela pública) recebe nas opções `tenantId` + `onLoad` +
+  `onSave` (o login): o `onLoad` é chamado **uma vez** com o tenant novo, o tema que ele devolve é aplicado, e a mudança seguinte do
+  usuário chega ao `onSave`; trocar de novo de `tenantId` dispara um `onLoad` novo e aplica o tema dele; uma gravação pendente
+  (com atraso) do tenant anterior **não** chega ao `onSave` do novo; `onLoad` que devolve nada aplica o padrão.
+- **(I25)** duas instâncias do Provider em sequência por `key` (a primeira com um tema, a segunda com outro): depois da troca, o
+  `<html>` tem os `data-sx-*` e as variáveis do tema da **segunda**, e o `<body>` a classe de modo e o fundo dela — em teste de
+  componente e num caso de navegador contra o `dist/`.
+5.2. **I24** a carga remota passa a ser por tenant: a troca de `persistence.tenantId` (inclusive de ausente para definido), ou o
+`onLoad` que passa a existir, reabre a carga — chama o `onLoad`, aplica o resultado pela regra da `strategy` (`09` §4.4.1), e só
+então o Provider volta a gravar (sem gravar o estado do tenant anterior no novo); o boot e a hidratação continuam sem gravar (`09`
+§4.4.2). Uma resposta de `onLoad` que chega depois de outra troca de tenant é descartada.
+5.3. **I25** a limpeza ao desmontar é por instância: cada injetor só remove a escrita que ainda é dele (o valor que ele escreveu e
+que ninguém sobrescreveu); com outra instância montada, o documento fica com o tema dela.
+5.4. Documentar em `docs/persistencia-de-tema.md` o caminho de multi-tenant (um Provider só; trocar `tenantId` e as portas; o que
+a troca faz) e a remontagem por `key` como alternativa suportada; nota na `## 8.0.0` de `docs/migracoes.md`.
+5.5. `npm run guide` e `npm run dev-kit` por último.
+
+**Lote 6 — dependências sem vulnerabilidade conhecida** (linha **I26** da §5.1; sai na `v8.0.0-rc.2`). Decisão do dono
+(2026-10-21): nada com aviso conhecido chega ao importador na 8.0.0. Lock gerado com npm ≥ 11.10.1 (o do Windows já serve), sem
+editar à mão.
+6.1. **O ponto de partida:** cole a saída de `npm audit` antes de mudar (os 15 avisos).
+6.2. **O que chega ao importador:**
+- `dompurify` (`dependencies`): a faixa passa a começar na versão sem aviso; a sanitização (`src/core/Security/`) e os testes dela
+  verdes;
+- `pdfjs-dist` (peer opcional): o piso passa à versão sem aviso, no major atual; o `SarakPDFViewer` provado nela (testes e o caso de
+  navegador que houver), com o `workerSrc` da versão nova;
+- `echarts` (peer opcional): piso `>=6.1.0`, e `echarts-for-react` no piso que suporte o echarts 6 (justifique); o motor de gráficos
+  (`src/components/engines/charts/`) provado nos formatos que ele oferece — os testes de cada formato e os casos de navegador de
+  gráfico verdes; o que o echarts 6 mudou de API e exigiu ajuste vai no relato;
+- `react-syntax-highlighter` (peer opcional): piso `>=16.1.2`; o realce no `SarakMarkdownRenderer` e no `SarakChatEngine` provado.
+6.3. **As ferramentas da lib** (transitivas e `devDependencies`): atualizar só o necessário para tirar os avisos, **sem major**
+(`npm audit fix`, sem `--force`), e conferir que nenhuma versão de dependência da lib que vai ao importador mudou sem estar no 6.2.
+6.4. **O ponto de chegada:** `npm audit` sem aviso (cole a saída); se sobrar algum sem correção publicada, ele fica nomeado no
+relato com o motivo e o caminho até o pacote.
+6.5. O consumidor de `scripts/test-optional-peer-consumer.mjs` continua verde nos três cenários, agora com as versões novas; nota
+MAJOR na `## 8.0.0` de `docs/migracoes.md` com os pisos novos de cada peer; a tabela de peers do guia (`sarak-ui/GUIA-FRONTEND.md`)
+com as versões mínimas.
+6.6. `npm run guide` e `npm run dev-kit` por último.
+
 **§5.1 — Registro vivo dos achados da lib** (mantido pelo revisor; vem do lote 0 e das sessões dos importadores):
 
 | # | Achado (`arquivo:linha` e medição) | Origem | Decisão | Lote | Estado |
@@ -161,6 +254,21 @@ com a classe ocupa o span; sem ela, o padrão por breakpoint) e o texto no guia 
 | C2 | `sarak-ui migrate <major>`: aplicar a tabela de renomes de um MAJOR nos imports do consumidor | ERP | **dono, 2026-10-19: não fazer**; no lugar, tabela "de/para" completa dos renomes na nota da 8.0.0 | 2 | fechada |
 | C3 | `sarak-ui check` em modo `file:` avisar quando o major instalado muda (hoje cala por desenho, `13` §5.1) e comparar a cópia `sarak-ui/` do consumidor com a instalada | ERP | **dono, 2026-10-19: não fazer**; o guia ensina que `file:` é só para iterar localmente e produção instala pela tag | final | aberta |
 | C4 | verificação por máquina para o consumidor (as três regras de gate que o ERP escreveu: `ui-kit`, `ui-ponto-unico`, `ui-token`) | ERP | **dono, 2026-10-19: fazer, opcional para o importador** — plugin de ESLint no pacote, regras ligadas uma a uma, numa plan própria (com ADR) **depois da 8.0.0 e da atualização dos importadores**; o lote final desta plan entrega a lista de regras candidatas que as auditorias provaram comuns, e a linha vai ao `00-backlog` | final | aberta |
+| I14 | `SarakAuthScreen` sempre desenha o formulário de e-mail e senha (`src/components/atomic/Templates/SarakAuthScreen.tsx`, `components/AuthForm.tsx`): não há login só por provedor externo | login | corrigir — opção para a tela mostrar só os provedores (sem o formulário de credenciais), com teste | 3 | fechada |
+| I15 | a lib injeta `<style>` em tempo de execução sem *nonce* (`SarakUIProvider.tsx`, `hooks/useSarakBuildSeal.ts`, os injetores de `src/core/Design/components/` e `src/core/Provider/`): o importador é obrigado a `style-src 'unsafe-inline'` | login | corrigir — opção de nonce aplicada a **todo** `<style>` que a lib cria, com teste que prova o atributo em cada um | 3 | fechada |
+| I16 | a porta `theme.onSave` está documentada de três jeitos: `docs/persistencia-de-tema.md:68` (um argumento) × o exemplo da §5 (`(theme, operation)`); as ações do painel (salvar, salvar como novo, duplicar, novo tema, apagar) só aparecem numa entrada antiga de `docs/migracoes.md`, fora da `## 8.0.0` | login | corrigir — assinatura `onSave(theme, operation)` na §1.2, os gestos numa entrada da `## 8.0.0` (a `09` §4.6 é da síntese) | 3 | fechada |
+| I17 | props inertes que sobraram: `role`, `density`, `importance` em `SarakAuthScreen.tsx:73-75` (e onde mais o mesmo trio não for lido, medido) | login | remover onde inerte (MAJOR), nota no "de/para" | 3 | fechada |
+| I18 | o guia (`sarak-ui/GUIA-FRONTEND.md` §1.2, `:111-113`) passa `SARAK_BOOT_THEMES` em `customThemes`, e a coleção ignora id de tema embarcado ali | login | corrigir o exemplo (tema do importador em `customThemes`; o embarcado já está no catálogo) | 3 | fechada |
+| I19 | a tabela "de/para" (`docs/migracoes.md:15`) diz "uma renomeação" sem dizer qual | login | nomear o renomeado no texto | 3 | fechada |
+| I20 | uma nota antiga de `docs/migracoes.md` (`:1559`) ensina override por `getLocalComponent(...)`, que saiu na 8.0.0 | login | apontar o caminho atual (a `05` §2.2.2) | 3 | fechada |
+| I21 | testar em jsdom exige contornos em todo importador: o CSS injetado com `@layer` não parseia e o Design Engine exige `matchMedia` (o ERP e os dois logins repetem o mesmo polyfill) | login | **proposta do revisor, sob veto do dono:** exportar um *setup* de teste opcional (o polyfill e o filtro do aviso de CSS), com teste e uma linha no guia | 3 | fechada |
+| I22 | **peer "opcional" quebra o build de quem não o instala:** todo pedaço sob demanda do `dist/` importa pelo nome o peer opcional que usa (`SarakKanbanImpl` → `@dnd-kit/*`; `SarakDataGridImpl`/`SarakDataTableImpl` → `@tanstack/react-virtual`; `SarakChartEngine` → `echarts`, `echarts-for-react`, `recharts`; `SarakPDFViewerImpl` → `pdfjs-dist`; `SarakChatEngine`/`SarakMarkdownRendererImpl` → `react-markdown`, `react-syntax-highlighter`; `SarakFlowEngine` → `reactflow`), e o Vite 8 (rolldown) troca o peer ausente por um módulo vazio: 36 `[MISSING_EXPORT]` no `vite build` do login-completo, que não usa Kanban | login | **dono, 2026-10-21: opção (b)** — o peer continua opcional; o pedaço sob demanda o importa de forma que o build do importador passe sem ele, e o componente sem o pacote mostra uma mensagem clara na tela (nunca build quebrado nem tela em branco); prova por build real de um consumidor | 4 | fechada |
+| I23 | com `styleNonce`, a folha global ainda é inserida **no import, sem nonce** — a CSP estrita a bloqueia e registra uma violação a cada carregamento (console e `report-uri`) — antes de o Provider trocá-la pela tag com nonce (`src/core/Provider/injectStyles.ts`); no import a lib não sabe do nonce | revisor (lote 3) | corrigir — no import, ler o nonce de `<meta property="csp-nonce" nonce="…">` (a convenção do Vite) e, presente, injetar já com ele; o `styleNonce` do Provider continua valendo; o caso de navegador escuta `securitypolicyviolation` e exige **zero** | 4 | fechada |
+| I24 | **trocar de tenant sem remontar não lê o tema do tenant novo:** o `onLoad` roda uma vez por instância (`src/core/Provider/hooks/useDesignRemoteLoader.ts:63-75`: sem `onLoad` antes do login, a instância já se marca carregada e não chama mais); a troca de `persistence.tenantId` só troca a chave do `localStorage` (`src/core/Provider/utils/resolveStorageKey.ts`). O tema da organização nunca é lido, e a primeira mudança no painel não chega ao `onSave` | login (bloqueia a migração) | corrigir — a troca de `tenantId` (inclusive de ausente para definido) e o `onLoad` que passa a existir disparam o `onLoad` do tenant novo; aplica o que vier (ou o padrão); passa a gravar no `onSave` desse tenant; gravação pendente do anterior nunca vai ao novo | 5 | fechada |
+| I25 | **remontar o Provider por `key` apaga o tema da instância nova:** ao desmontar, a instância que sai limpa o `<html>`/`<body>` (`releaseInjectedWrites`, `src/core/Provider/components/DesignInjector.tsx:185`) **depois** de a nova já ter aplicado o tema — medido pelo importador: `<html>` sem `data-sx-*` nem variáveis, `<body>` sem `dark` nem fundo | login (bloqueia a migração) | corrigir — a limpeza ao desmontar é por instância: só remove o que aquela instância escreveu e que nenhuma outra escreveu depois | 5 | fechada |
+| I26 | **dependências com vulnerabilidade conhecida** (`npm audit`, 2026-10-21: 15 avisos — 1 baixo, 8 moderados, 6 altos). **Chegam ao importador:** `pdfjs-dist` (peer opcional; alta — execução de JavaScript ao abrir PDF malicioso; correção dentro do major), `dompurify` (`dependencies`, vai junto com a lib; moderada; dentro do major), `echarts` (peer opcional, `>=5.5.0`; moderada, XSS; correção só no major 6, `6.1.0`), `react-syntax-highlighter` (peer opcional, `>=15.5.0`; moderada via `prismjs`/`refractor`; correção só na `16.1.2`). **Só ferramentas da lib:** `vite`, `vitest`, `@vitest/coverage-v8`, `@vitest/mocker`, `esbuild`, `postcss`, `nanoid`, `undici`, `source-map-js` (transitivas ou `devDependencies`; correção sem major) | login · revisor | **dono, 2026-10-21: corrigir antes da `rc.2`** — pisos das peers e da dependência nas versões sem aviso (subir piso de peer é MAJOR e só cabe antes da 8.0.0), o motor de gráficos e o realce provados nelas; as ferramentas atualizadas sem major | 6 | fechada |
+| C6 | seletor de organização (tenant) no cromo: os sistemas multi-tenant mantêm o próprio | login | **proposta do revisor: depois da 8.0.0** (função aditiva; o slot já serve), ao `00-backlog` no lote final | final | aberta |
+| C7 | histórico de versões: entradas de `docs/migracoes.md` sem versão no título e tokens removidos/renomeados sem forma de dado | login | **proposta do revisor:** lote final — toda entrada com a versão, e o `catalog.json` do kit com a lista de tokens removidos e o destino de cada um | final | aberta |
 | C5 | span do grid de 12 colunas sem contrato público (`15-divida-conhecida` achado 42) | lote 0 (30) | **dono, 2026-10-19:** declarar `col-span-*` como contrato suportado, com teste que trava o comportamento; `SarakGridItem` ao backlog | 2 | fechada |
 
 **Lote final — o kit de importação consolidado.**
@@ -502,3 +610,872 @@ instrução 2.6 desta plan foi ambígua sobre quem escreve; o texto diz a verdad
 `v8.0.0-rc.1`; achados novos dos importadores entram como linhas novas da §5.1.
 
 **Status: 🟡 Em execução** (o registro segue vivo; o lote final espera as auditorias).
+
+## Nota do revisor — 2026-10-20 — relatório dos logins integrado
+
+O relatório dos repositórios do login (login-completo e login-provedores) está em `specs/plan/anexos/plan-119-relatorio-login.md`.
+Conferi no código o que virou linha: nenhuma ocorrência de `nonce` em `src/` (I15); `SarakAuthScreen` e `AuthForm` sem modo só de
+provedores (I14); `docs/persistencia-de-tema.md:68` com `onSave(theme)` de um argumento (I16); `role`/`density`/`importance` em
+`SarakAuthScreen.tsx:73-75` (I17 — no `SarakTable` o par `role`/`density` **é** lido pelo cabeçalho, não é inerte); o exemplo do
+guia (`:111-113`, I18). Viraram **I14 a I21** (lote 3, `rc.2`) e **C6, C7** (propostas do revisor). **Divergências corrigidas na
+mesma ação:** a `09` §4.7 dizia que fonte, navegação e idioma nascem "não oferecida", e o schema
+(`src/core/Design/schema/preferences.ts`) dá `pinned` a todas — a `09` passou a dizer o que o código faz. A spec 13, que ainda
+lista `@tanstack/react-virtual` como obrigatório, é corrigida na síntese da `plan-120` (destino dela). As lições sem achado da lib
+(o lock alternando `ssh`/`https`, testar componente da lib por papel e texto, o kit que nunca foi consultado) vão ao lote final.
+
+**Status: 🟡 Em execução** (lote 3 a despachar).
+
+## Resumo da execução — 2026-10-21
+
+**Resultado:** Concluído com pendências fora do lote.
+
+**Estado do worktree ao iniciar**
+```text
+warning: unable to access 'C:\Users\Igor/.config/git/ignore': Permission denied
+warning: unable to access 'C:\Users\Igor/.config/git/ignore': Permission denied
+ M specs/plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md
+ M specs/specs/09-temas-e-presets.md
+?? .claude/settings.local.json
+?? specs/plan/anexos/plan-119-relatorio-login.md
+```
+
+**O que foi feito**
+- I14: `SarakAuthScreen.showCredentials` permite tela só com provedores; o default mantém o formulário e o teste cobre os dois modos (`SarakAuthScreen.tsx:74`, `SarakAuthScreen.test.tsx`).
+- I15: `options.styleNonce` chega às tags `<style>` do Provider, tema, escopos, fontes e componentes do Design Engine; a folha global é inserida no ciclo de montagem antes do primeiro paint. O teste Playwright verifica todas as tags presentes sob `style-src` com nonce (`types.ts:127`, `useSarakBuildSeal.ts`, `nonce-csp.spec.ts`).
+- I16: a assinatura e os gestos de persistência estão documentados (`docs/persistencia-de-tema.md:68`, `docs/migracoes.md:1175`).
+- I17: removi as props inertes `role`, `density` e `importance` de `SarakAuthScreen`, `SarakChat`, `SarakChart`, `SarakManagementGrid`, `SarakCardGrid` e `SarakCatalogGrid`; `SarakTable` mantém `role` e `density`, lidos pelo cabeçalho e pelas células. O de/para registra a remoção.
+- I18–I20: o exemplo do guia usa um tema embarcado pelo catálogo; o texto nomeia `SARAK_REFERENCE_THEMES` → `SARAK_BOOT_THEMES`; a nota antiga aponta para `window.__SARAK_OVERRIDES__['shell-language-selector']`.
+- I21: publiquei `@sarak/lib-ui-core/testing` com os helpers opcionais de `matchMedia` e filtro do aviso CSS, testes e instruções no guia. O gate R27 permite somente esse subpath adicional.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/Templates/SarakAuthScreen.tsx`, `components/AuthForm.tsx`, `components/AuthSocialLogin.tsx` e testes correspondentes | alterado | modo só de provedores, ocultação de campos, divisor e texto de credenciais |
+| `src/components/atomic/Templates/SarakChat.tsx`, `SarakChart.tsx`, `SarakManagementGrid.tsx`, `SarakCardGrid.tsx`, `SarakCatalogGridProps.ts` | alterado | remoção do trio de props inertes medido |
+| `src/core/Provider/types.ts`, `SarakUIProvider.tsx`, `injectStyles.ts`, `hooks/useSarakBuildSeal.ts`, `hooks/useSarakStylesheetGuard.ts`, `hooks/useSarakFonts.ts`, `fontLoader.ts` | alterado | nonce do Provider nos injetores globais e de fontes; injeção global no mount |
+| `src/core/Provider/components/SarakStyle.tsx`, `utils/applyStyleNonce.ts`, `components/DesignInjector.tsx`, `components/SovereignThemeInjector.tsx`, `src/core/Design/components/DesignScope.tsx`, `src/features/DesignEngine/Main/MasterControlPanel.tsx`, `Canvas/PreviewCanvas.tsx`, `src/components/engines/flows/SarakFlowEngine.tsx` | criado/alterado | wrapper compartilhado e aplicação do nonce nos demais estilos runtime |
+| `src/testing.ts`, `src/__tests__/testing.test.ts`, `src/core/Provider/components/__tests__/SarakStyle.test.tsx` e testes dos injetores | criado/alterado | helpers e cobertura do setup e dos estilos |
+| `package.json`, `gates/scripts/contrato/check-no-deep-import.mjs`, teste do gate | alterado | build e export `./testing`; allowlist exata do subpath público |
+| `browser-tests/fixtures/nonce-csp-entry.tsx`, `browser-tests/nonce-csp.spec.ts` | criado | harness Chromium com CSP e verificação dos nonces |
+| `docs/persistencia-de-tema.md`, `docs/migracoes.md`, `sarak-ui/GUIA-FRONTEND.md`, `scripts/inject-css.mjs` | alterado | contratos, migração, exemplos do consumidor e comentário do postbuild |
+| `docs/component-catalog.json`, `docs/component-catalog.md`, `sarak-ui/catalog.json`, `sarak-ui/START-HERE.md`, `sarak-ui/VERSION`, `sarak-ui/docs/migracoes.md` | gerado | sincronização dos kits e catálogos públicos |
+| `dist/*`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | gerado | build ESM/CJS, tipos, CSS, fontes, subpath `testing` e selos |
+| esta plan | alterado | resumo append-only e status para revisão |
+
+**Verificações executadas**
+- `npx.cmd vitest run --maxWorkers=1 ...` — 10 arquivos, 88 testes passaram; reexecução de `SarakAuthScreen.test.tsx` — 9/9; `SarakStyle.test.tsx` — 2/2; teste do gate R27 — 4/4.
+- `npm.cmd run build` — passou: catálogos, gate R27, tipos, ESM/CJS, CSS, fontes e gates de pacote.
+- `npx.cmd playwright test --config=browser-tests/playwright.config.ts browser-tests/nonce-csp.spec.ts` — 1/1 passou contra o `dist/` final.
+- `npm.cmd run catalog`, `npm.cmd run guide` e `npm.cmd run dev-kit` — gerados; o `dev-kit` foi o último gerador.
+- `npm.cmd run verify -- --tier=quick` — passou: TypeScript, baseline, gates rápidos e Anel 0 simulado (602 linhas, 0 achados).
+- `git diff --check -- . ':(exclude)dist/**'` — sem erros nos arquivos de fonte e documentação.
+
+**Critérios de aceite**
+- [x] I14 — modo só de provedores, formulário padrão preservado e teste.
+- [x] I15 — nonce nos `<style>` runtime e tela renderizada sob CSP sem `'unsafe-inline'` em `style-src`.
+- [x] I16 — assinatura `onSave(theme, operation)` e gestos documentados em `## 8.0.0`.
+- [x] I17 — props removidas onde inertes, tabela preservada onde lida e de/para atualizado.
+- [x] I18–I20 — exemplo, renomeação e override corrigidos.
+- [x] I21 — setup opcional publicado no subpath, testado e documentado.
+
+**Decisões e suposições**
+- Usei `styleNonce` como nome da opção; o lote exige o nonce mas não fixa o identificador.
+- A condição “se o dono não vetar” do I21 não foi vetada pelo despacho desta execução.
+- Permiti `./testing` como exceção exata do gate R27 porque o próprio lote exige esse caminho público; caminhos internos abaixo dele continuam bloqueados.
+
+**Achados fora do escopo (não corrigidos)**
+- `specs/specs/13-instalacao-e-atualizacao.md` ainda descreve a injeção global como efeito do import; a edição da spec fixa está fora do lote, então os guias do consumidor documentam a montagem do Provider.
+- `src/components/atomic/Inputs/SarakMultiSelect.tsx:118` e `SarakUploader.tsx:118` — a auditoria de composição atômica apontou `<input>` nativo; não pertencem ao lote 3.
+
+**Pendências / riscos**
+- A plan segue em revisão. O build gerou artefatos minificados em `dist/`; por isso a checagem de whitespace foi aplicada fora desse diretório gerado.
+
+**Status: 🟠 Em revisão (lote 3).**
+
+## Veredito — 2026-10-21 — lote 3 — 🔴 Reprovado (1 achado)
+
+**O que está certo (conferido no diff):** I14 — `SarakAuthScreen.showCredentials` (padrão: o formulário de hoje) permite a tela só
+com provedores, com teste dos dois modos; I15 — `options.styleNonce` chega a todo `<style>` que a lib cria em tempo de execução
+(o CSS da lib, tema, escopo, ilha, fontes, selo de build e os do painel), por um componente comum (`SarakStyle.tsx`,
+`applyStyleNonce.ts`), com caso de navegador sob CSP sem `'unsafe-inline'` (`nonce-csp.spec.ts`); I16 — a assinatura
+`onSave(theme, operation)` e os gestos na `## 8.0.0`; I17 — o trio inerte saiu de `SarakAuthScreen`, `SarakChat`, `SarakChart`,
+`SarakManagementGrid`, `SarakCardGrid` e `SarakCatalogGrid` e ficou no `SarakTable`, que o lê; I18–I20; I21 —
+`@sarak/lib-ui-core/testing` (o polyfill de `matchMedia` e o filtro do aviso de CSS), com a exceção exata no gate R27.
+**Medido por mim:** `npm run verify -- --tier=full` **verde** (`tsc`, suíte completa, baseline com `tsc`, Anel 1, R36, Anel 0);
+`npm run build` verde; **bateria inteira do navegador 424/424**.
+
+**Achado 1 — o lote mudou QUANDO o CSS da lib entra, e isso muda o contrato de instalação.** Para aplicar o nonce,
+`scripts/inject-css.mjs` e `src/core/Provider/injectStyles.ts` deixaram de injetar o stylesheet **no import do pacote** e passaram a
+injetá-lo **na montagem do Provider**. O lote pedia nonce em todo `<style>` (3.2), não essa mudança. Consequência: componente da lib
+usado sem Provider (ou antes de ele montar) fica sem as classes da lib, e a instalação zero-config que o guia e a spec 13 descrevem
+("importou, funciona") deixa de valer para todo importador — inclusive para quem não usa CSP estrita. A bateria não pega porque as
+cenas montam um Provider. **Decisão do revisor (2026-10-21; o dono pediu a escolha mais alinhada à lib): o padrão volta a ser o de
+antes, e o nonce é opcional.** **Correção:**
+- **sem `styleNonce`:** o stylesheet entra no import do pacote, exatamente como antes deste lote (o comentário do postbuild e o de
+  `injectStyles.ts` voltam a dizer isso);
+- **com `styleNonce`:** a injeção acontece na montagem do Provider, já com o nonce (o que o lote fez), e o guia diz isso na seção do
+  nonce, com a diretiva de CSP;
+- **prova dos dois caminhos:** teste de unidade da injeção com e sem nonce, e um caso de navegador em que um componente da lib é
+  renderizado **sem nenhum Provider na página** e recebe o CSS da lib (classe utilitária da lib com estilo computado), além do caso
+  do nonce que já existe;
+- rodar `npm run build`, o caso novo e `nonce-csp.spec.ts` contra o `dist/` reconstruído, e `npm run verify -- --tier=quick`.
+
+**Status: 🔵 Em correção** (só o achado 1). O lote 4 (I22, peer opcional) é despachado depois deste fechar.
+
+## Correção do achado 1 — 2026-10-21
+
+**Resultado:** correção implementada; o bloco de veredito do revisor acima foi mantido intacto.
+
+- Sem `styleNonce`, o entry público `src/index.ts` carrega `injectStylesOnImport.ts`, que insere o CSS global no import do pacote. A dica de modo embarcado continua impedindo a folha global quando o host a declara antes do import.
+- Com `styleNonce`, a montagem do Provider substitui a folha inicial por uma nova tag `<style>` com o nonce aplicado antes de anexá-la ao documento.
+- Atualizei os comentários do injetor e do postbuild e expliquei os dois caminhos na documentação do consumidor e na migração 8.0.0.
+- O teste unitário cobre a folha sem nonce e a substituição por uma tag com nonce. O novo caso de navegador renderiza `SarakButton` sem Provider e sem `<link>` de CSS, e verifica o estilo computado de `py-4`; o caso CSP existente continua verificando as tags com nonce.
+
+**Verificações:** `npm run build` passou; Vitest direcionado passou (2 arquivos, 26 testes); os dois casos Playwright passaram (2/2) usando o Chrome instalado, pois o Chromium empacotado do Playwright não está presente; `npm run verify -- --tier=quick` passou.
+
+**Status: 🟠 Em revisão (correção do achado 1).** O veredito original permanece para a nova revisão.
+
+## Veredito — 2026-10-21 — correção 1 (lote 3) — 🟢 Aprovado; lote 3 fechado
+
+**Achado fechado:** sem `styleNonce`, o stylesheet volta a entrar no import do pacote, como antes; com `styleNonce`, o Provider troca
+a folha por uma tag que já leva o nonce (`src/core/Provider/injectStyles.ts`). **Medido por mim:** `npm run verify -- --tier=quick`
+verde; `npm run build` verde; contra o `dist/` reconstruído, `browser-tests/no-provider-css.spec.ts` (novo: um componente da lib sem
+Provider e sem CSS externo recebe o CSS da lib, com estilo computado) 1/1 e `nonce-csp.spec.ts` 1/1. O resto do lote já tinha
+passado em `verify --tier=full` e na bateria inteira (424/424).
+
+**Registrado como I23 (lote 4), não como achado desta correção:** com `styleNonce`, a folha do import ainda é inserida sem nonce
+e a CSP estrita a bloqueia com uma violação por carregamento, antes de o Provider trocá-la. É lacuna da decisão do revisor (no
+import a lib não sabe do nonce), não da execução; o caso do nonce não escuta `securitypolicyviolation` e por isso não a via.
+
+**Lote 3 fechado (I14 a I21).** Segue o lote 4 (I22 e I23).
+
+**Status: 🟠 Em revisão (lote 4).**
+
+## Resumo da execução — 2026-10-21
+
+**Resultado:** Concluído com pendências fora do lote.
+
+**Estado do worktree ao iniciar**
+```text
+?? .claude/settings.local.json
+```
+
+**O que foi feito**
+- I22: os importadores opcionais dos componentes lazy agora usam verificações de disponibilidade e mostram um fallback acessível, localizado e com instrução para instalar o peer ausente; o aviso de console ocorre uma vez por montagem.
+- I22: adicionei um consumidor Vite 8 automatizado que empacota o `dist/` via `npm pack`, compila sem peers e com todos eles e prova por mutação que um import nomeado ausente gera `MISSING_EXPORT`.
+- I23: o injetor do CSS lê `meta[property="csp-nonce"]` durante o import e aplica o nonce desde a primeira tag; o teste de navegador exige zero eventos `securitypolicyviolation`.
+- Registrei o mapa de peers por componente no guia e a orientação de migração 8.0.0; mantive intactas as linhas I22 e I23 da tabela §5.1, que é mantida pelo revisor.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/Feedback/SarakOptionalPeerFallback.tsx`, `src/components/atomic/Feedback/__tests__/SarakOptionalPeerFallback.test.tsx`, `src/core/i18n/catalogEntries.part6.ts` | criado/alterado | fallback de peer ausente, teste dos componentes e textos nos seis idiomas |
+| `src/components/atomic/DataDisplay/SarakKanban/SarakKanbanImpl.tsx`, `src/components/atomic/DataDisplay/SarakKanban/useKanbanDrag.ts`, `src/components/atomic/DataDisplay/SarakDataGrid/SarakDataGridImpl.tsx`, `src/components/atomic/DataDisplay/SarakDataTable/SarakDataCards.tsx`, `src/components/atomic/DataDisplay/SarakDataTable/SarakDataTableImpl.tsx`, `src/components/atomic/DataDisplay/SarakDataTable/useSarakDataTableViewModel.ts` | alterado | disponibilidade de `@dnd-kit/*` e `@tanstack/react-virtual` antes do uso |
+| `src/components/engines/charts/SarakChartEngine.tsx`, `src/components/engines/charts/SubEngines/RechartsChart.tsx`, `src/components/engines/charts/SubEngines/chartPeerAvailability.ts`, `src/components/engines/chat/SarakChatEngine.tsx`, `src/components/engines/flows/SarakFlowEngine.tsx`, `src/components/engines/flows/__tests__/SarakFlowEngine.test.tsx` | criado/alterado | verificações dos peers ECharts/Recharts, Markdown e Flow; teste do Flow com peer instalado |
+| `src/components/atomic/Media/SarakMarkdownRenderer/SarakMarkdownRendererImpl.tsx`, `src/components/atomic/Media/SarakPDFViewer/SarakPDFViewerImpl.tsx`, `src/components/atomic/Media/SarakPDFViewer/usePdfDocument.ts` | alterado | fallback para `react-markdown`, `react-syntax-highlighter` e `pdfjs-dist` |
+| `scripts/test-optional-peer-consumer.mjs`, `package.json` | criado/alterado | três cenários de build Vite 8 ligados ao build do pacote |
+| `src/core/Provider/injectStylesOnImport.ts`, `src/core/Provider/__tests__/injectStyles.test.ts`, `browser-tests/nonce-csp.spec.ts`, `src/types/external.d.ts` | alterado | leitura do nonce da meta, cobertura unitária, CSP sem violações e declaração do CSS do Flow |
+| `docs/migracoes.md`, `sarak-ui/GUIA-FRONTEND.md`, `sarak-ui/docs/migracoes.md`, `scripts/inject-css.mjs` | alterado/gerado | mapa dos peers e instruções CSP; comentário do processo de injeção atualizado |
+| `dist/*`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | gerado | artefatos ESM/CJS, declarações, chunks e selos atualizados pelo build |
+| esta plan | alterado | resumo append-only e status para revisão |
+
+**Verificações executadas**
+- `npm.cmd run build` → passou após as alterações; inclui o gate automatizado do consumidor. Os três cenários passaram: pacote real sem peers opcionais, mutação com diagnóstico `MISSING_EXPORT` e pacote com todos os peers.
+- `npx.cmd vitest run --maxWorkers=2` para fallback, Kanban, Chart, Flow e formatos de Chart → 5 arquivos, 58 testes passaram. Os testes direcionados de DataGrid, DataTable, PDF, Markdown, Chat e injetor também passaram no recorte executado.
+- `npm.cmd run verify -- --tier=quick` → passou: TypeScript, baseline, gates rápidos e simulação do Anel 0 (653 linhas, 0 achados).
+- `node gates/scripts/audit/auditor_cleancode.mjs` → passou, nenhum achado de Clean Code.
+- `npx.cmd playwright test --config=browser-tests/playwright.config.ts browser-tests/nonce-csp.spec.ts` → 1/1 passou com o Chrome instalado; a asserção observou nonce nas tags e zero violações CSP.
+- Bateria Playwright → a rodada ampla cobriu 425 casos: 413 passaram; 9 falharam ao iniciar o navegador e 3 não iniciaram pelo caminho do executável. Reexecução dos 12 casos afetados com Chrome local e preloader temporário passou 12/12; todos os 425 casos foram cobertos entre as rodadas.
+- `npm.cmd run guide` → passou; gerou 105 componentes, 400 tokens e 117 ícones (kitHash `58c72c387116`).
+- `npm.cmd run dev-kit` → passou por último entre os geradores; gerou 102 componentes públicos, 400 tokens e 42 gates (devKitHash `9a590f7cfc1f`).
+- `git diff --check -- . ':(exclude)dist/**'` → sem erros de whitespace nos arquivos de fonte e documentação.
+
+**Critérios de aceite**
+- [x] 4.1 — consumidor empacotado compilou sem peers; a mutação reproduziu `MISSING_EXPORT`.
+- [x] 4.2 — componentes afetados mostram mensagem localizada e aviso único sem o peer; teste com dependências instaladas preserva renderização normal.
+- [x] 4.3 — builds sem peers e com todos os peers passaram; testes de componentes e bateria do navegador foram executados, com os 12 casos de inicialização repetidos passando.
+- [x] 4.4 — migração 8.0.0 e guia listam o benefício, a mensagem e o peer exigido por componente.
+- [x] 4.5 — meta de nonce é lida antes da injeção do CSS; o caso CSP com nonce verifica zero violações e o Provider continua aceitando `styleNonce`.
+- [x] 4.6 — `guide` e `dev-kit` foram os geradores finais, com `dev-kit` executado por último.
+
+**Decisões e suposições**
+- Coloquei a prova do consumidor em `scripts/test-optional-peer-consumer.mjs` e a anexei ao `build`, para testar o pacote que o importador consome.
+- Uma instalação temporária via registry retornou `EACCES`; o teste usa o tarball produzido por `npm pack`, extraído no consumidor isolado, e dependências do workspace ligadas localmente, sem baixar peers opcionais.
+- Extraí a verificação dos peers de Chart para `chartPeerAvailability.ts` para manter o motor abaixo dos limites do gate de Clean Code.
+- O Chromium empacotado pelo Playwright não está instalado neste ambiente. A bateria foi executada com o Chrome local; um preloader Node temporário corrigiu a precedência de `executablePath` nos 12 casos afetados e foi removido ao final.
+
+**Achados fora do escopo (não corrigidos)**
+- `specs/specs/13-instalacao-e-atualizacao.md` ainda descreve `@tanstack/react-virtual` como obrigatório; a plan direciona essa correção para a síntese da plan-120.
+- `src/components/atomic/Inputs/SarakMultiSelect.tsx:118` e `SarakUploader.tsx:118` — auditoria apontou composição com `<input>` nativo; não pertencem ao lote 4.
+
+**Pendências / riscos**
+- Não restou pendência de implementação do lote 4. A rodada inicial do navegador teve falhas de inicialização do executável; os 12 casos afetados passaram na repetição e o motivo operacional está registrado acima.
+
+## Veredito — 2026-10-21 — lote 4 — 🔴 Reprovado (2 achados)
+
+**O que está certo (conferido no diff):** I22 — os pedaços sob demanda importam o peer opcional por namespace (`import * as`) e
+checam a presença antes de usar (`useKanbanDrag.ts`, `chartPeerAvailability.ts`, `SarakFlowEngine.tsx`, `usePdfDocument.ts` e os
+demais da tabela), com `SarakOptionalPeerFallback` (mensagem nos seis idiomas, aviso único) quando falta; o consumidor Vite 8 em
+`scripts/test-optional-peer-consumer.mjs`, ligado ao `build`, com os três cenários (sem peers, mutação com `MISSING_EXPORT`, com todos);
+I23 — o nonce lido de `<meta property="csp-nonce">` no import (`injectStylesOnImport.ts`) e `nonce-csp.spec.ts` exigindo zero
+`securitypolicyviolation`; o mapa de peers por componente no guia e a nota da `## 8.0.0`. **Medido por mim:** bateria inteira do
+navegador **425/425**.
+
+**Achado 1 — a suíte completa quebra.** `npm run verify -- --tier=full` reprova em `npx vitest run`:
+`src/components/atomic/__tests__/componenteQueLeOToken.test.tsx:225` espera no código-fonte do `SarakFlowEngine` o mapa
+`dots: BackgroundVariant.Dots`, que mudou de forma com o import por namespace. O relato rodou só arquivos selecionados.
+**Correção:** o teste continua provando a mesma coisa (cada valor de `flowGridStyle` vai à variante certa do fundo do fluxo) na forma
+nova do código — sem afrouxar —, e a suíte completa (`npx vitest run`, sem filtro) verde, com a saída colada.
+
+**Achado 2 — o `build` passou a depender de qual `tar` está no PATH.** `scripts/test-optional-peer-consumer.mjs:96` roda
+`tar -xzf C:\…\pacote.tgz -C C:\…`: no GNU tar (o do Git Bash), `C:` é lido como máquina remota e a extração falha (`failed (2)`,
+medido por mim com `npm run build`); no `tar` do Windows passa. Como o consumidor roda dentro do `build`, e o `build` dentro do
+`npm version`, o lançamento ficaria dependente do terminal. **Correção:** extrair sem depender da sintaxe de caminho de um `tar`
+específico (por exemplo, rodando o `tar` com `cwd` no diretório de destino e caminhos relativos, ou extraindo pelo Node), e provar o
+`npm run build` verde **no Git Bash e no PowerShell**, colando as duas saídas.
+
+**Para o commit (registro):** a pasta `.sarak/` (`core-c51533b.json`) apareceu no worktree, não é deste lote e não está no
+`.gitignore`; não entra no commit.
+
+## Correção dos achados — 2026-10-21 — lote 4
+
+**Resultado:** Concluído.
+
+**Estado do worktree ao iniciar**
+```text
+ M browser-tests/nonce-csp.spec.ts
+ M dist/BUILD_INFO.json
+ D dist/CustomizationPanelImpl-2RGDW4RQ.js
+ D dist/SarakChartEngine-24CZFUCF.js
+ D dist/SarakChatEngine-LI73BXRX.js
+ D dist/SarakDataGridImpl-ZVWL5VJ6.js
+ D dist/SarakDataTableImpl-RHO4YN6A.js
+ D dist/SarakFlowEngine-CRJYSHOW.js
+ D dist/SarakKanbanImpl-HBOV73YA.js
+ D dist/SarakMarkdownRendererImpl-S7CLEQDQ.js
+ D dist/SarakPDFViewerImpl-Z4FQTQGU.js
+ D dist/chunk-2TQT525X.js
+ D dist/chunk-34N2AYKZ.js
+ D dist/chunk-4DTLLH2D.js
+ D dist/chunk-5I7DJ3SX.js
+ D dist/chunk-BA2LKZDB.js
+ D dist/chunk-HJV3E2RJ.js
+ D dist/chunk-KYYBCXI5.js
+ D dist/chunk-X26DGG5D.js
+ M dist/index.cjs
+ M dist/index.d.cts
+ M dist/index.d.ts
+ M dist/index.js
+ M docs/migracoes.md
+ M package.json
+ M sarak-ui/GUIA-FRONTEND.md
+ M sarak-ui/docs/migracoes.md
+ M scripts/inject-css.mjs
+ M specs/00-indice.md
+ M specs/plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md
+ M src/buildInfo.ts
+ M src/components/atomic/DataDisplay/SarakDataGrid/SarakDataGridImpl.tsx
+ M src/components/atomic/DataDisplay/SarakDataTable/SarakDataCards.tsx
+ M src/components/atomic/DataDisplay/SarakDataTable/SarakDataTableImpl.tsx
+ M src/components/atomic/DataDisplay/SarakDataTable/useSarakDataTableViewModel.ts
+ M src/components/atomic/DataDisplay/SarakKanban/SarakKanbanImpl.tsx
+ M src/components/atomic/DataDisplay/SarakKanban/useKanbanDrag.ts
+ M src/components/atomic/Media/SarakMarkdownRenderer/SarakMarkdownRendererImpl.tsx
+ M src/components/atomic/Media/SarakPDFViewer/SarakPDFViewerImpl.tsx
+ M src/components/atomic/Media/SarakPDFViewer/usePdfDocument.ts
+ M src/components/engines/charts/SarakChartEngine.tsx
+ M src/components/engines/charts/SubEngines/RechartsChart.tsx
+ M src/components/engines/chat/SarakChatEngine.tsx
+ M src/components/engines/flows/SarakFlowEngine.tsx
+ M src/components/engines/flows/__tests__/SarakFlowEngine.test.tsx
+ M src/core/Provider/__tests__/injectStyles.test.ts
+ M src/core/Provider/buildInfo.ts
+ M src/core/Provider/injectStylesOnImport.ts
+ M src/core/i18n/catalogEntries.part6.ts
+ M src/types/external.d.ts
+?? .claude/settings.local.json
+?? dist/CustomizationPanelImpl-LDS54GC5.js
+?? dist/SarakChartEngine-M75BEFNX.js
+?? dist/SarakChatEngine-YV2QLO7X.js
+?? dist/SarakDataGridImpl-X5MZWUDH.js
+?? dist/SarakDataTableImpl-JOXVXYJG.js
+?? dist/SarakFlowEngine-72FVABYQ.js
+?? dist/SarakKanbanImpl-O4GTQ63A.js
+?? dist/SarakMarkdownRendererImpl-WAEJPTQR.js
+?? dist/SarakPDFViewerImpl-UQZOZUF7.js
+?? dist/chunk-3YOUL7X3.js
+?? dist/chunk-DFOKY5YP.js
+?? dist/chunk-DWGO2NAI.js
+?? dist/chunk-G5MNH5CF.js
+?? dist/chunk-Q4YHZ44T.js
+?? dist/chunk-RB4D3P4L.js
+?? dist/chunk-RNUNWQ63.js
+?? dist/chunk-SECQZSLB.js
+?? dist/chunk-ZKP6SZZ3.js
+?? scripts/test-optional-peer-consumer.mjs
+?? src/components/atomic/Feedback/SarakOptionalPeerFallback.tsx
+?? src/components/atomic/Feedback/__tests__/SarakOptionalPeerFallback.test.tsx
+?? src/components/engines/charts/SubEngines/chartPeerAvailability.ts
+```
+
+**O que foi corrigido**
+- Achado 1: atualizei o teste de contrato do `SarakFlowEngine` para verificar que `flowGridStyle` seleciona o mapa `GRID_VARIANTS` e que `dots` e `lines` apontam às variantes homônimas usadas pelo componente. A asserção não depende mais da forma do enum em `reactflow`.
+- Achado 2: a extração do tarball agora roda com `cwd` no diretório do pacote e recebe um caminho relativo com separadores `/`; o argumento não começa com letra de unidade do Windows, então GNU tar e tar do Windows aceitam a mesma chamada.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/__tests__/componenteQueLeOToken.test.tsx` | alterado | teste continua cobrindo as duas opções e o lookup de `flowGridStyle` na implementação atual |
+| `scripts/test-optional-peer-consumer.mjs` | alterado | extração usa cwd de destino e caminho relativo compatível com GNU tar e tar do Windows |
+| `dist/*`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | gerado | artefatos renovados pelos dois builds completos |
+| esta plan | alterado | registro desta correção e status encaminhado à revisão |
+
+**Verificações executadas**
+- `npx.cmd vitest run src/components/atomic/__tests__/componenteQueLeOToken.test.tsx --maxWorkers=1` → 1 arquivo, 19 testes passaram.
+- `npx.cmd vitest run` → suíte completa sem filtro: 516 arquivos, 3.750 testes passaram.
+- PowerShell, `npm.cmd run build` (execução repetida com acesso ampliado após o sandbox bloquear a leitura de `C:\Users\Igor`) → passou; incluindo consumidor sem peers, mutação com `MISSING_EXPORT` e consumidor com todos os peers.
+- Git Bash, `bash.exe -lc 'npm run build'` → passou; os mesmos três cenários do consumidor passaram.
+- `git diff --check -- . ':(exclude)dist/**'` → sem erros de whitespace; Git reportou apenas o aviso de normalização CRLF de `src/types/external.d.ts` já existente no worktree.
+- O teste do consumidor removeu seus diretórios temporários no `finally`; `test-results/.last-run.json` já existia antes desta correção e foi preservado.
+
+**Critérios de aceite**
+- [x] Achado 1 — o teste mantém a verificação do mapeamento para as variantes corretas; a suíte completa passou sem filtro (516/516 arquivos, 3.750/3.750 testes).
+- [x] Achado 2 — extração sem argumento absoluto com letra de unidade; `npm run build` passou com GNU tar no Git Bash e com o tar do Windows no PowerShell, incluindo os três cenários do consumidor.
+
+**Decisões e suposições**
+- Normalizei o caminho relativo com `path.posix.sep` depois de calculá-lo com `path.relative`; `cwd` é o diretório de destino da extração. Isso mantém a sintaxe POSIX para GNU tar mesmo no Windows.
+- O sandbox bloqueou a enumeração de `C:\Users\Igor` durante esbuild nas primeiras tentativas. Os builds solicitados passaram com acesso ampliado; não alterei configuração de build para contornar o limite do ambiente.
+- O comando Git Bash foi executado por `C:\Program Files\Git\bin\bash.exe -lc` a partir do PowerShell, pois o launcher de shell direto do executor retornou `E_ACCESSDENIED`.
+
+**Achados fora do escopo (não corrigidos)**
+- O reviewer registrou `.sarak/core-c51533b.json` como arquivo de outra tarefa; não o alterei.
+- `specs/00-indice.md` já estava modificado na fotografia inicial e foi preservado.
+
+**Pendências / riscos**
+- Nenhuma pendência dos dois achados. Nenhum commit foi criado.
+
+**Saídas capturadas dos gates exigidos pelo veredito**
+
+Vitest completo (`npx.cmd vitest run`, sem filtro):
+```text
+Test Files  516 passed (516)
+     Tests  3750 passed (3750)
+  Start at  15:16:37
+ Duration  1174.79s (transform 27.32s, setup 130.58s, import 2827.51s, tests 550.27s, environment 1005.78s)
+```
+
+PowerShell (`npm.cmd run build`):
+```text
+ESM ⚡️ Build success in 897ms
+CJS ⚡️ Build success in 898ms
+DTS ⚡️ Build success in 14017ms
+[optional-peer-consumer] pass: Vite 8 build without optional peers.
+[optional-peer-consumer] pass: named-import mutation fails with the missing-export diagnostic.
+[optional-peer-consumer] pass: Vite 8 build with all optional peers.
+exit code: 0
+```
+
+Git Bash (`npm run build`):
+```text
+CJS ⚡️ Build success in 316ms
+ESM ⚡️ Build success in 322ms
+DTS ⚡️ Build success in 14887ms
+[optional-peer-consumer] pass: Vite 8 build without optional peers.
+[optional-peer-consumer] pass: named-import mutation fails with the missing-export diagnostic.
+[optional-peer-consumer] pass: Vite 8 build with all optional peers.
+exit code: 0
+```
+
+**Status: 🟠 Em revisão (correção do lote 4).**
+
+## Veredito — 2026-10-21 — correção 1 (lote 4) — 🟢 Aprovado; lote 4 fechado
+
+**Achado 1 fechado:** `componenteQueLeOToken.test.tsx` passou a provar o mapeamento de `flowGridStyle` pelo mapa `GRID_VARIANTS` na
+forma nova do `SarakFlowEngine` (as duas opções, cada uma na variante homônima), sem afrouxar; o relato colou a suíte completa sem
+filtro: **516 arquivos, 3.750 testes**. **Achado 2 fechado:** `scripts/test-optional-peer-consumer.mjs:97` roda o `tar` com `cwd` no
+destino e caminho relativo com `/`, sem letra de unidade no argumento. **Medido por mim:** `npm run build` **no Git Bash** (onde
+falhava) verde, com os três cenários do consumidor (sem peers, mutação com `MISSING_EXPORT`, com todos); o teste corrigido 19/19;
+`npm run verify -- --tier=quick` verde. O executor provou o `build` também no PowerShell. A bateria inteira do navegador já tinha
+dado 425/425 neste lote.
+
+**Lote 4 fechado (I22, I23).** Com os lotes 0 a 4, a lib tem tudo o que o ERP e os dois logins mostraram; segue a `v8.0.0-rc.2`.
+O lote final (consolidação do kit) vem depois que os importadores migrarem.
+
+**Para o commit:** tudo, **menos** `.sarak/` (não é desta plan e não está no `.gitignore`).
+
+**Status: 🟡 Em execução** (o registro segue vivo até o lote final).
+
+## Resumo da execução — 2026-10-21
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar**
+```text
+ M specs/plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md
+?? .claude/settings.local.json
+```
+
+**O que foi feito**
+- `src/core/Provider/hooks/useDesignRemoteLoader.ts` e `useDesignManager.ts` — detectam `onLoad` que passa a existir depois da montagem, reiniciam a hidratação e ignoram respostas assíncronas obsoletas; a persistência continua associada ao tenant atual.
+- `src/core/Provider/components/DesignInjector.tsx`, `src/core/Provider/utils/injectedWrites.ts`, novo `injectedOwnership.ts` e `useBodyThemeTransition.ts` — cada instância registra a propriedade que escreveu e só restaura/remova escritas ainda sob sua propriedade, preservando o Provider substituto em montagem keyed.
+- Testes de hooks, Provider, utilitários e navegador — cobrem carregamento tardio, troca de tenant, debounce e `onSave`, fallback nulo, respostas obsoletas e substituição keyed com estilos/atributos globais.
+- `docs/persistencia-de-tema.md` e `docs/migracoes.md` — documentam o fluxo de troca de tenant no mesmo Provider e a alternativa de remount com `key`; `npm run guide` atualizou `sarak-ui/docs/migracoes.md`.
+- `npm run build` e `npm run dev-kit` — regeneraram o pacote distribuído, metadados de build e kit de desenvolvimento.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Provider/hooks/useDesignRemoteLoader.ts`, `useDesignManager.ts` | alterado | carregamento remoto tardio e hidratação do tenant ativo |
+| `src/core/Provider/hooks/useBodyThemeTransition.ts`, `src/core/Provider/utils/injectedWrites.ts`, novo `src/core/Provider/utils/injectedOwnership.ts`, `src/core/Provider/components/DesignInjector.tsx` | alterado/criado | propriedade por instância para escritas globais e limpeza segura |
+| `src/core/Provider/__tests__/TenantPersistence.test.tsx`, testes de hooks, utilitários e `DesignInjector` | alterado/criado | regressões de troca de tenant e substituição keyed |
+| `browser-tests/fixtures/tenant-provider-replacement-entry.tsx`, `browser-tests/tenant-provider-replacement.spec.ts` | criado | cenário Playwright de substituição keyed do Provider |
+| `docs/persistencia-de-tema.md`, `docs/migracoes.md`, `sarak-ui/docs/migracoes.md` | alterado | documentação manual e cópia gerada |
+| `dist/*`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | gerado | build final do pacote |
+| esta plan | alterado | registro da execução do lote 5; tabela da §5.1 preservada |
+
+**Verificações executadas**
+- `npx.cmd vitest run` nos seis arquivos focados de Provider/hooks/utilitários/componentes → 6 arquivos, 56 testes passaram.
+- Playwright `browser-tests/tenant-provider-replacement.spec.ts` contra o `dist` final → 1 teste passou usando Chrome local (`SARAK_CHROMIUM_EXECUTABLE_PATH`).
+- `npx.cmd tsc --noEmit` → passou.
+- `npm.cmd run audit:baseline -- --with-tsc` → passou; sem regressões contra o baseline de 2026-10-12.
+- `npm.cmd run verify -- --tier=quick` → passou, incluindo TypeScript, gates de contrato, documentação gerada e Anel 0 (855 linhas simuladas, 0 achados).
+- `npm run build` → ESM, CJS, DTS, CSS e optional peers passaram; a execução precisou de acesso ampliado após o sandbox bloquear a resolução de diretórios acima do workspace.
+- `npm run guide` e, por último entre os geradores, `npm run dev-kit` → passaram; dev-kit: 102 componentes públicos, 400 tokens, 42 gates.
+- `git diff --check -- . ':(exclude)dist/**'` → sem erros de whitespace nos arquivos autorados.
+
+**Critérios de aceite**
+- [x] I24 — callback `onLoad` tardio, identidade e troca de tenant são cobertos; gravações pendentes não atravessam tenants e o `onSave` do tenant ativo recebe a edição seguinte.
+- [x] I25 — substituição keyed não apaga escritas globais do Provider novo; limpeza verifica propriedade e valor atuais.
+- [x] Passos 5.1–5.5 — implementação, regressões, documentação, build, `guide` e `dev-kit` concluídos na ordem prevista; nenhum commit criado.
+
+**Decisões e suposições**
+- A troca de `tenantId` permanece no mesmo Provider e os callbacks são resolvidos pelas opções atuais; `key={tenantId}` segue documentado como opção para resetar todo o estado local.
+- A posse das escritas globais é controlada por instância e por propriedade; uma limpeza antiga não restaura por cima de uma escrita mais nova.
+- O Chromium empacotado pelo Playwright não estava instalado; a mesma especificação foi executada com o Chrome local configurado por variável de ambiente.
+
+**Achados fora do escopo (não corrigidos)**
+- `src/components/atomic/Inputs/SarakMultiSelect.tsx` e `SarakUploader.tsx` — a auditoria completa apontou violações R10 preexistentes; não pertencem ao lote 5 e não foram alteradas.
+- `.claude/settings.local.json` — já estava não rastreado na fotografia inicial e foi preservado.
+
+**Pendências / riscos**
+- O lote final de consolidação do kit continua pendente, aguardando a migração dos importadores conforme a plan.
+- Nenhum commit foi criado; alterações estão no worktree para revisão.
+
+**Status: 🟠 Em revisão (lote 5).**
+
+## Veredito — 2026-10-21 — lote 5 — 🔴 Reprovado (1 achado)
+
+**O que está certo (conferido no diff):** I24 — `useDesignRemoteLoader.ts` e `useDesignManager.ts` reabrem a carga quando o `onLoad`
+passa a existir ou o tenant muda, descartam resposta atrasada e o debounce do tenant anterior; I25 — a posse de cada escrita no
+documento é por instância (`injectedOwnership.ts`, `injectedWrites.ts`, `DesignInjector.tsx`, `useBodyThemeTransition.ts`), e a limpeza
+antiga não apaga o que a instância nova escreveu; a documentação em `docs/persistencia-de-tema.md` e na `## 8.0.0`. **Medido por
+mim:** `npm run verify -- --tier=full` **verde** (`tsc`, suíte completa, baseline com `tsc`, Anel 1, R36, Anel 0); `npm run build`
+verde; **bateria inteira do navegador 426/426** (com `tenant-provider-replacement.spec.ts`).
+
+**Mutação (feita por mim, numa cópia do `HEAD` fora do repositório, com os testes novos):** caem **3** — os dois de limpeza por
+instância (I25: `injectedWrites.test.ts`, `DesignInjector.test.tsx`) e "carrega ao receber onLoad depois do mount, mesmo quando a
+chave do tenant não muda" (I24, `useDesignManager.test.ts`). Esses provam a correção.
+
+**Achado 1 — o cenário do importador não está provado.** O teste de integração `src/core/Provider/__tests__/TenantPersistence.test.tsx`
+("entra no tenant depois do mount…") **passa no código de antes da correção**, e o mesmo vale para o caso "descarta o debounce
+anterior" de `useDesignManager.test.ts`: eles não reproduzem o defeito que o login mediu (o `onLoad` do tenant nunca chamado, a
+gravação nunca saindo). O passo 5.1 pedia os testes que reprovam hoje, **com a falha colada** antes da correção — o relato não a traz.
+O teste usa `strategy: 'remote'` e `storageKey` próprio; o importador monta o Provider com a configuração dele (a tela pública sem
+`tenantId`, sem `onLoad`/`onSave`; depois do login, os três; `strategy` padrão). **Correção:** um teste com a **configuração exata
+do importador** (a do relatório em `specs/plan/anexos/plan-119-relatorio-login.md` e a do pedido do login: um Provider na raiz,
+sem tenant e sem portas → tenant + `onLoad` + `onSave` → edição → troca de tenant), que **falhe no código do `HEAD`** (provado numa
+cópia fora do repositório, com a saída colada) e passe agora; o mesmo para a gravação pendente do tenant anterior (editar em A,
+trocar para B antes do debounce: o `onSave` de B não recebe o estado de A). Se a correção atual não cobrir a configuração exata,
+ajustá-la. Rodar a suíte da área e `verify --tier=quick`.
+
+**Status: 🔵 Em correção** (só o achado 1). O relato deixou o `status` do frontmatter em 🟡 ao entregar; o certo é 🟠.
+
+## Resumo da execução (correção 1 do lote 5) — 2026-10-21
+
+**Resultado:** Concluído com divergência técnica registrada para decisão do revisor.
+
+**Achado 1 — prova do fluxo do importador**
+- Acrescentei a `TenantPersistence.test.tsx` dois casos de integração com um Provider raiz estável: começa sem `persistence`; após o login recebe `tenantId`, `onLoad` e `onSave`, sem fixar `strategy` nem `storageKey` (defaults públicos); valida o tema carregado e o salvamento da edição. O segundo caso troca A por B antes do debounce, exige que B não receba o design de A e que a edição posterior de B chegue ao `onSave` de B.
+- Rodei esses mesmos dois casos numa cópia temporária arquivada de `HEAD`, fora do repositório, com o arquivo de teste atual sobreposto. **Ambos passaram em `HEAD`**; logo, o fluxo simultâneo “sem tenant/portas → tenant + portas” não reproduz o achado no baseline e não pode satisfazer o requisito do veredito de falhar em `HEAD`.
+- Para isolar o ramo que a implementação do lote 5 alterou, rodei na mesma cópia o teste de callback tardio com a chave estável. Esse caso falhou em `HEAD` com `onLoad` chamado zero vezes. A falha comprova o ramo “`onLoad` aparece sem mudança de tenant”, diferente da troca simultânea de tenant e callback do importador.
+- Não alterei a implementação: a evidência não autoriza fabricar uma falha nem mudar o contrato para fazer o fluxo exato falhar. Mantive os dois testes como cobertura explícita do ciclo do importador e registro a divergência para o revisor decidir.
+
+**Saídas relevantes**
+
+Fluxo exato, cópia de `HEAD`:
+```text
+✓ a configuração padrão do Provider carrega o tenant ao receber as portas após o mount 2587ms
+✓ a configuração padrão cancela a gravação pendente de A ao trocar para B 4070ms
+Test Files  1 passed (1)
+     Tests  2 passed | 1 skipped (3)
+Duration  20.31s
+BASELINE_TEST_EXIT=0
+```
+
+Callback tardio com a mesma chave, cópia de `HEAD`:
+```text
+× carrega ao receber onLoad depois do mount, mesmo quando a chave do tenant não muda 1046ms
+AssertionError: expected "vi.fn()" to be called 1 times, but got 0 times
+  at src/core/Provider/hooks/__tests__/useDesignManager.test.ts:278:44
+Test Files  1 failed (1)
+     Tests  1 failed | 19 skipped (20)
+LATE_ONLOAD_HEAD_TEST_EXIT=1
+```
+
+**Verificações executadas**
+- `npx.cmd vitest run src/core/Provider/__tests__/TenantPersistence.test.tsx --maxWorkers=1 -t 'a configuração padrão'` → 2 testes passaram no worktree; os mesmos 2 passaram em `HEAD`.
+- `npx.cmd vitest run src/core/Provider --maxWorkers=1` → 65 arquivos, 564 testes passaram.
+- `npm.cmd run verify -- --tier=quick` → passou; TypeScript, baseline, gates rápidos, `guide:check`, `dev-kit:check` e Anel 0 (1.023 linhas, 0 achados).
+
+**Arquivos desta correção**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Provider/__tests__/TenantPersistence.test.tsx` | alterado | cenários integrados do importador com defaults e debounce entre tenants |
+| esta plan | alterado | evidências do achado 1 e divergência técnica; status encaminhado à revisão |
+
+**Limite da conclusão**
+- A exigência “o fluxo exato do importador falha em `HEAD`” não se confirmou. A cobertura do ramo tardio sem mudança de chave falha em `HEAD`, mas usa uma condição diferente. O revisor decide se aceita separar esses dois contratos ou se o importador tem alguma configuração adicional ausente no anexo disponível nesta plan.
+- O worktree já continha alterações de lotes anteriores, `specs/00-indice.md` modificado e `.claude/settings.local.json` não rastreado; foram preservados. A cópia temporária de `HEAD` foi removida. Nenhum commit foi criado.
+
+**Status: 🟠 Em revisão (correção do achado 1 do lote 5).**
+
+## Veredito — 2026-10-21 — correção 1 (lote 5) — 🟢 Aprovado; lote 5 fechado
+
+**O que a correção mediu (e eu conferi):** dois casos novos em `TenantPersistence.test.tsx` com a configuração padrão do importador
+(Provider raiz sem `persistence`; depois, `tenantId` + `onLoad` + `onSave` juntos, sem `strategy` nem `storageKey`; e a gravação
+pendente de A ao trocar para B) **passam também no código do `HEAD`**: quando o tenant e as portas chegam no mesmo render, o tenant
+muda a chave e a lib antiga já recarregava. O que **falha no `HEAD`** e esta plan corrige é o `onLoad` que chega **sem a chave mudar**
+(colado no relato: `onLoad` chamado 0 vezes) e a limpeza que apaga a instância nova na remontagem por `key` (mutação minha, no
+veredito anterior: 3 casos caem). **Medido por mim:** `TenantPersistence.test.tsx` e `useDesignManager.test.ts` — 2 arquivos,
+23/23; o resto do lote já tinha passado em `verify --tier=full` e na bateria inteira (426/426), e a correção só mexeu no teste.
+
+**Decisão do revisor sobre a divergência:** aceita. A causa provável no importador é a **ordem** em que as opções chegam (as portas
+num render e o tenant noutro, ou uma `storageKey` fixa) — exatamente o ramo que falhava e foi corrigido —, e a remontagem por `key`
+também passou a funcionar. **A prova final é do importador, na `v8.0.0-rc.2`:** o login mede os dois caminhos (troca de tenant no
+mesmo Provider e remontagem por `key`); se algum ainda falhar, devolve **a sequência exata de opções** que o Provider recebe, e a
+correção volta ao registro da §5.1.
+
+**Lote 5 fechado (I24, I25).** Aberto: I26 (peers vulneráveis), à decisão do dono.
+
+**Status: 🟡 Em execução.**
+
+## Resumo da execução — 2026-10-21
+
+**Resultado:** Concluído com pendências
+
+**Estado do worktree ao iniciar**
+```text
+ M docs/migracoes.md
+ M package-lock.json
+ M package.json
+ M sarak-ui/GUIA-FRONTEND.md
+ M specs/plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md
+ M src/components/atomic/Media/SarakMarkdownRenderer/__tests__/SarakMarkdownRendererImpl.test.tsx
+ M src/components/engines/chat/__tests__/SarakChatEngine.test.tsx
+?? .claude/settings.local.json
+```
+
+**O que foi feito**
+- Ajustei o bloco de código do `SarakMarkdownRenderer` para renderizar um único `<pre>` semântico; o highlighter já fornece os spans coloridos esperados pelo teste.
+- Regenerei a cópia de migrações do kit do consumidor a partir de `docs/migracoes.md`; a tabela de pisos no guia já estava atualizada na fotografia inicial.
+- Executei `npm run dev-kit` por último, conforme o passo 6.6; o kit do mantenedor já estava no conteúdo gerado.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/Media/SarakMarkdownRenderer/SarakMarkdownRendererImpl.tsx` | alterado | `PreTag` passou de `div` para `pre`, com comentário alinhado à estrutura semântica. |
+| `sarak-ui/docs/migracoes.md` | gerado | Cópia sincronizada com a nota MAJOR e os pisos já presentes em `docs/migracoes.md`. |
+| esta plan | alterado | Resumo acrescentado e status encaminhado à revisão. |
+
+Os arquivos `package.json`, `package-lock.json`, `docs/migracoes.md`, `sarak-ui/GUIA-FRONTEND.md` e os dois testes que já estavam modificados na fotografia inicial foram preservados sem edição nesta execução. `.claude/settings.local.json` também foi preservado.
+
+**Verificações executadas**
+- `npm.cmd audit --json` → 1 vulnerabilidade baixa em `esbuild` 0.27.7 (`GHSA-g7r4-m6w7-qqqr`, faixa `>=0.27.3 <0.28.1`); total 1, exit code 1.
+- `npm.cmd audit fix --dry-run --json` → propôs `esbuild` e `@esbuild/win32-x64` 0.27.2, sem major; nenhuma correção foi aplicada ao lockfile.
+- `npx.cmd vitest run src/core/Security/__tests__/sanitizeHtml.test.ts src/components/engines/charts src/components/atomic/Media/SarakMarkdownRenderer/__tests__/SarakMarkdownRendererImpl.test.tsx src/components/engines/chat/__tests__/SarakChatEngine.test.tsx src/components/atomic/Media/SarakPDFViewer --maxWorkers=1` → 13 arquivos e 137 testes passaram.
+- `npm.cmd run test:optional-peers` → os três cenários passaram.
+- `npm.cmd run guide` e `npm.cmd run guide:check` → kit gerado; 7 arquivos em dia.
+- `npm.cmd run dev-kit` e `npm.cmd run dev-kit:check` → kit gerado; 3 arquivos em dia, 0 ponteiros mortos.
+- `npm.cmd run verify -- --tier=quick` → nível quick verde: TypeScript, baseline, gates e Anel 0 simulado com 658 linhas e 0 achados.
+
+**Critérios de aceite**
+- [x] 6.1 — auditoria da fotografia registrada; ela já continha as atualizações de dependências e mostrou 1 aviso baixo. I26 registra os 15 avisos do ponto de partida anterior.
+- [x] 6.2 — os pisos declarados estavam presentes em `package.json`; testes de segurança, gráficos, PDF, Markdown e Chat passaram. Não havia testes de navegador desses componentes em `browser-tests/`.
+- [ ] 6.3 — a atualização real do lockfile não foi aplicada; o `npm audit fix --dry-run` mostrou a correção segura sem major.
+- [ ] 6.4 — a auditoria final ainda aponta 1 aviso baixo em `esbuild`; a correção publicada é 0.27.2.
+- [x] 6.5 — os três cenários de peers opcionais passaram; a nota MAJOR e os pisos estavam presentes nas documentações alteradas antes da fotografia.
+- [x] 6.6 — `guide` e `dev-kit` foram executados nessa ordem, com `dev-kit` por último; as verificações finais passaram.
+
+**Decisões e suposições**
+- O npm disponível é 11.6.1, abaixo do mínimo 11.10.1 exigido para gerar o lockfile. O `package.json` declara `esbuild` 0.27.2, mas o lockfile pré-alterado não registra essa dependência na raiz e resolve 0.27.7.
+- Não alterei o lockfile porque ele já estava modificado na fotografia inicial; o executor §7.12 proíbe editar arquivos herdados de outra tarefa. A linha I26 permanece aberta para revisão.
+- Não criei nem commitei arquivos temporários.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum.
+
+**Pendências / riscos**
+- Regenerar `package-lock.json` com npm ≥11.10.1, mantendo as atualizações pré-existentes, e repetir `npm audit` até não haver avisos. O lockfile precisa estar disponível para edição sem sobrescrever trabalho de outra tarefa.
+
+## Complemento — verificação do índice — 2026-10-21
+
+- `npm.cmd run plan-index:check` → falhou porque `specs/00-indice.md` ainda registra esta plan como `🟡 Em execução`, enquanto o frontmatter está `🟠 Em revisão`. O índice não foi alterado: está fora do lote solicitado e é mantido pelo revisor.
+
+## Veredito — 2026-10-21 — lote 6 — 🔴 Reprovado (3 achados)
+
+**O que está no diff (conferido):** `package.json` com os pisos — `dompurify` `^3.4.16`; peers `echarts` `>=6.1.0`,
+`echarts-for-react` `>=3.0.4`, `pdfjs-dist` `>=6.2.108`, `react-syntax-highlighter` `>=16.1.2`; as `devDependencies` acompanhando;
+`SarakMarkdownRendererImpl.tsx` com o bloco de código num `<pre>` semântico (o `react-syntax-highlighter` 16); nota em
+`docs/migracoes.md` e o guia. O relato diz que os pisos, o lock, a documentação e os testes **já estavam no worktree** quando ele
+começou e que só tocou no markdown.
+
+**Achado 1 — o lock foi gerado com o npm defeituoso e quebraria a CI de novo.** Medido por mim contra o `HEAD`: o
+`package-lock.json` **perdeu 24 entradas** que o `npm ci` do Linux exige — `node_modules/@emnapi/core`, `@emnapi/runtime`,
+`@emnapi/wasi-threads`, `@napi-rs/wasm-runtime`, `@rolldown/binding-wasm32-wasi` e as aninhadas, `@tybys/wasm-util`… — e o `libc` das
+**10** entradas que o tinham. É o defeito do npm 11.6.1 (npm/cli #8805) que derrubou a CI em 2026-10-07; o relato confirma o npm 11.6.1
+no ambiente. **Correção:** regenerar o lock com **npm ≥ 11.10.1** (confira `npm -v` e cole), partindo do lock do `HEAD` e do
+`package.json` deste lote, sem editar à mão; provar que **nenhuma** entrada de `@emnapi/*`, `@napi-rs/*` e `@rolldown/binding-*` sumiu,
+que o `libc` das 10 continua, e listar o que entrou, saiu e mudou de versão (só o que os pisos novos e as ferramentas pedem).
+
+**Achado 2 — o `npm audit` final não está limpo, e o `esbuild` entrou como dependência direta sem pedido.** O passo 6.4 pede o audit
+sem aviso, ou o resíduo nomeado com o motivo; o relato deixa um aviso baixo no `esbuild` e o `package.json` ganhou `"esbuild":
+"0.27.2"` em `devDependencies`, fixado à mão, que o lote não pedia. **Correção:** resolver o aviso pela árvore (quem traz o `esbuild`
+— `tsup`, `vite` — na versão corrigida, sem major) ou, se não houver correção publicada no caminho, tirar a dependência direta e
+nomear o resíduo no relato com o caminho até o pacote; colar o `npm audit` final.
+
+**Achado 3 — o relato não cobre o lote.** Ele trata só do markdown e declara o resto como pré-existente, sem dizer de onde veio. O lote
+é o diff inteiro, e é o diff que vale: o relato precisa trazer, para **cada** item do 6.2, a evidência (o que o echarts 6 mudou na API e o
+que exigiu do motor de gráficos, os testes de cada formato e o caso de navegador de gráfico; o `pdfjs-dist` novo no `SarakPDFViewer`; o
+`dompurify` na sanitização), o `npm audit` de antes (6.1) e de depois (6.4), e o consumidor dos peers opcionais nos três cenários.
+
+**Status: 🔵 Em correção** (os três achados). Na aprovação, o revisor roda `verify --tier=full`, o `build` e a bateria inteira do
+navegador.
+
+## Relato consolidado da correção — lote 6 — 2026-10-22
+
+Este relato consolida o diff completo do lote 6 e substitui, para a revisão dos achados 2 e 3, o resumo parcial de 2026-10-21.
+
+### Dependências e auditoria
+
+- O proprietário regenerou `package-lock.json` com npm 11.21.1. Conforme a conferência informada pelo proprietário e revisor, não
+  faltam entradas obrigatórias de dependências ou peers; `@emnapi/*` está aninhado em `@tailwindcss/oxide-wasm32-wasi`, e `libc`
+  aparece em 25 entradas. **Não editei o lock nesta continuação.** `npm ci` terminou com sucesso (`added 449 packages, and audited
+  450 packages in 2m`; `found 0 vulnerabilities`). O SHA-256 antes/depois permaneceu
+  `2EF21E262C50684065A8BAB31920CE679B1443BCB1696A746662F7CEEBF9CF9F`.
+- **Auditoria registrada no veredito de 2026-10-21 (antes desta correção):** `npm audit --json` reportou 1 vulnerabilidade baixa,
+  `esbuild@0.27.7`, `GHSA-g7r4-m6w7-qqqr`, faixa afetada `>=0.27.3 <0.28.1`, total 1 e exit code 1. O registro do veredito informa
+  que `npm audit fix --dry-run --json` propôs `esbuild` e `@esbuild/win32-x64` 0.27.2 sem major. A fotografia inicial de I26, anterior
+  às atualizações deste lote, registrava 15 avisos (1 baixo, 8 moderados e 6 altos); ela é distinta da auditoria imediatamente anterior
+  acima.
+- **Auditoria depois, somente leitura:** `npm audit --json` respondeu com exit code 0 e a saída completa foi:
+
+  ```json
+  {
+    "auditReportVersion": 2,
+    "vulnerabilities": {},
+    "metadata": {
+      "vulnerabilities": {
+        "info": 0,
+        "low": 0,
+        "moderate": 0,
+        "high": 0,
+        "critical": 0,
+        "total": 0
+      },
+      "dependencies": {
+        "prod": 10,
+        "dev": 602,
+        "optional": 176,
+        "peer": 0,
+        "peerOptional": 0,
+        "total": 612
+      }
+    }
+  }
+  ```
+
+- `esbuild` permanece em `devDependencies` como `0.27.2` por motivo direto e verificável: `browser-tests/build-harness.mjs:14` e
+  `scripts/measure-consumer-boot.mjs:32` importam `build` de `esbuild` para executar ferramentas mantidas pelo próprio repositório.
+  Declarar a dependência direta fixa o pacote usado por esses scripts sem depender da árvore transitiva de `tsup` ou `vite`. O audit
+  final não aponta vulnerabilidade residual. Não executei `npm audit fix`: nesta continuação foi solicitado o audit somente de leitura,
+  o lock é do proprietário e a auditoria final já respondeu sem avisos.
+
+### Evidência dos itens de 6.2
+
+- **ECharts 6 e motor de gráficos:** os pisos declarados são `echarts >=6.1.0` e `echarts-for-react >=3.0.4`; o segundo é o primeiro
+  piso do wrapper com suporte declarado ao ECharts 6. O guia oficial de migração descreve mudanças de padrões visuais — tema,
+  posições e dimensões iniciais, prevenção de sobreposição de rótulos e herança de estilos rich text — e o changelog 6.1 registra
+  mudanças de API: `axisLabel.formatter` recebe o índice para `customValues`, o segundo argumento de `tooltip.valueFormatter` passa
+  a ser `rawDataIndex`, e `axis.startValue` deixa de implicar `axis.min`. Consulte o
+  [guia oficial de atualização do ECharts 6](https://github.com/apache/echarts-handbook/blob/master/contents/en/basics/release-note/v6-upgrade-guide.md)
+  e o [changelog oficial do ECharts](https://echarts.apache.org/en/changelog.html).
+- A inspeção do motor (`useEChartsTheme.ts` e `axisOptions.ts`) confirmou que ele fornece explicitamente paleta, cores de tooltip e
+  eixos, margens e `containLabel`. Não usa `axisLabel.formatter`, `tooltip.valueFormatter` nem `axis.startValue`; portanto as mudanças
+  de API citadas não exigiram migração no motor. Os testes da área `src/components/engines/charts/`, incluindo os testes de formatos,
+  passaram dentro da suíte focada: 13 arquivos, 137 testes no total. Os sete casos Playwright P12 (`area`, `bar`, `pie`, `scatter`,
+  `gauge`, `radar` e `heatmap`) passaram. A evidência do navegador também levou a corrigir a asserção do teste: o heatmap do ECharts
+  6 monta três canvases em camadas; o contrato do caso é exigir ao menos um canvas visível, não exatamente um. A especificação agora
+  verifica contagem maior que zero e dimensões do primeiro canvas.
+- **PDF.js:** o piso do peer opcional passou a `pdfjs-dist >=6.2.108`; a instalação usada resolveu `6.4.299`. O
+  `SarakPDFViewer`/`usePdfDocument` configura `PdfJs.GlobalWorkerOptions.workerSrc` com a URL fornecida pelo consumidor e carrega o
+  documento por `getDocument`; o worker é um módulo `.mjs` (por exemplo, `pdf.worker.min.mjs?url` no Vite). Os testes de
+  `SarakPDFViewer` passaram na mesma suíte de 13 arquivos/137 testes; não foi necessária alteração de API no viewer.
+- **DOMPurify e sanitização:** `dompurify` passou de `^3.4.11` para `^3.4.16` em `dependencies` e resolveu `3.4.17`. O canal
+  central `src/core/Security/sanitizeHtml.ts` aplica o perfil HTML seguro de DOMPurify e, sem DOM ou sem suporte, usa o fallback
+  fail-closed que remove tags. `sanitizeHtml.test.ts` passou na suíte focada.
+- **Highlighter, Markdown e Chat:** o peer opcional `react-syntax-highlighter` passou a `>=16.1.2` e a devDependency a `^16.1.2`.
+  O `SarakMarkdownRenderer` usa `PreTag="pre"` e o teste verifica que os spans coloridos do realce estão dentro do bloco semântico;
+  o teste de `SarakChatEngine` cobre uma resposta com bloco JavaScript realçado. Ambos passaram na suíte focada.
+- `npm run build` passou, incluindo os gates do pacote, ESM/CJS/DTS/CSS e o consumidor de peers opcionais nos três cenários:
+  build sem peers opcionais; mutação de named import que falha com diagnóstico `MISSING_EXPORT`; build com todos os peers opcionais.
+
+### Inventário do diff coberto
+
+| Arquivos/área | Conteúdo do diff do lote 6 |
+|---|---|
+| `package.json` | `dompurify`; pisos opcionais de ECharts, wrapper, PDF.js e syntax highlighter; versões das devDependencies usadas pelos testes/build; `esbuild` direto justificado acima. |
+| `package-lock.json` | Lock regenerado pelo proprietário com npm 11.21.1 e conferido pelo revisor; apenas leitura nesta continuação, validado pelo `npm ci` e pelo hash idêntico antes/depois. |
+| `src/components/atomic/Media/SarakMarkdownRenderer/SarakMarkdownRendererImpl.tsx` e testes de Markdown/Chat | `PreTag` semântico e provas de realce em Markdown e Chat. |
+| `browser-tests/arsenal-lote4.spec.ts` | Asserção do canvas de gráfico adequada ao renderer em camadas do heatmap; os sete formatos passaram. |
+| `docs/migracoes.md`, `sarak-ui/docs/migracoes.md`, `sarak-ui/GUIA-FRONTEND.md` | Nota MAJOR, pisos dos peers, orientação sobre ECharts 6 e tabela de acoplamento do consumidor; cópia gerada sincronizada. |
+| `dist/*`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | Artefatos e metadados regenerados pelo build final (incluindo novos hashes de chunks e remoção dos hashes anteriores). |
+| esta plan | Este relato consolidado e o histórico/veredito do lote 6. |
+
+`specs/00-indice.md` já estava modificado pelo revisor e `.claude/settings.local.json` já estava não rastreado na fotografia inicial;
+ambos foram preservados sem edição nesta continuação. Nenhum commit foi criado. O `npm audit fix` continua fora desta execução; o
+audit somente de leitura final está limpo. Os testes focados e o build foram executados com sucesso; a verificação integral
+`verify --tier=full` e a bateria completa do navegador permanecem para a revisão indicada no veredito.
+
+## Veredito — 2026-10-22 — correção 1 (lote 6) — 🟢 Aprovado; lote 6 fechado
+
+**Achado 1 (lock):** fechado. O lock foi regenerado pelo dono com npm 11.21.1. Conferi que nenhuma dependência ou peer obrigatória
+ficou sem resolução, que `@emnapi/*` está aninhado em `@tailwindcss/oxide-wasm32-wasi` e que o `libc` aparece em 25 entradas (eram 10).
+O `npm ci` do executor passou com o hash do lock igual antes e depois.
+**Achado 2 (audit e `esbuild`):** fechado. O `npm audit` final está limpo (0 de 612). O `esbuild` `0.27.2` direto em `devDependencies`
+fica aceito: dois scripts do repositório o importam pelo nome (`browser-tests/build-harness.mjs:14` e
+`scripts/measure-consumer-boot.mjs:32`), e ele não chega ao importador.
+**Achado 3 (relato):** fechado. O relato consolidado traz a evidência de cada item do 6.2, o audit de antes e de depois e o
+inventário do diff. O ajuste do caso de navegador do heatmap fica aceito: agora ele exige pelo menos um canvas com dimensões, porque o
+echarts 6 desenha em camadas.
+
+**Medido por mim no worktree final:** `npm run verify -- --tier=full` saiu com 0. `npm run build` saiu com 0, com o consumidor de
+peers opcionais passando nos três cenários: sem peers, a mutação com `MISSING_EXPORT` e com todas as peers. A bateria inteira do
+navegador passou com **426/426**. Uma primeira rodada deu 50 falhas, todas `browserType.launch: Executable doesn't exist`: o `npm ci`
+apagou o Chromium de `node_modules/.cache/ms-playwright`. Reinstalei o navegador, rodei de novo e as 426 passaram. Foi ambiente, não
+código.
+
+**Lote 6 fechado (I26).** Os lotes 0–6 estão aprovados e entram na `v8.0.0-rc.2`. O lote final espera os importadores (ERP,
+login-completo, login-provedores) migrarem para a `rc.2` e devolverem o que medirem.
+
+**Status: 🟡 Em execução** (lote final pendente).
+
+## Veredito — 2026-10-22 — CI da `develop` (commit `7ea69603`) — 🔴 Reprovado (1 achado do lote 5)
+
+**Achado 1 — dois testes do lote 5 dependem do relógio real e estouram o limite de 5 s na CI.** O job `gates` caiu com 2 falhas de
+3761 testes, ambas `Test timed out in 5000ms`, em `src/core/Provider/__tests__/TenantPersistence.test.tsx`: no caso "entra no tenant
+depois do mount…" (`:62`) e no caso "a configuração padrão cancela a gravação pendente de A ao trocar para B" (`:139`). **Medido por
+mim na máquina local:** os dois passam, mas com 4333 ms e 4834 ms, a menos de 0,2 s do limite. A causa está no teste, não na lib:
+cada caso espera em tempo real o atraso de 1500 ms da gravação automática (`src/core/Provider/hooks/useDesignManager.ts:151`), mais
+uma pausa fixa de 1600 ms e mais `waitFor` de até 3000 ms, dentro do limite padrão de 5 s. Numa máquina mais lenta, estoura. Meu
+veredito de aprovação do lote 5 não pegou isso: eu conferi o resultado, não o tempo de cada caso.
+**Correção:** os três casos do arquivo passam a controlar o relógio com timers falsos do Vitest. Eles avançam o atraso da gravação e
+a pausa de forma explícita, sem esperar em tempo real, e provam o mesmo comportamento: o `onLoad` de cada tenant, o tema aplicado,
+nenhuma gravação de A em B e a edição seguinte chegando ao `onSave` do tenant ativo. Aumentar o limite de tempo não serve como
+correção. **Prova pedida:** cada caso abaixo de 1 s (cole a saída `--reporter=verbose`). **Mutação pedida:** com a linha
+`:151` sem cancelar o timer anterior ao trocar de tenant (numa cópia), o caso `:139` cai. Depois, `npm run verify -- --tier=full`.
+Só o arquivo de teste muda.
+
+**Status: 🔵 Em correção.** A `rc.2` espera a CI verde.
+
+## Resumo da execução (correção do achado da CI) — 2026-10-22
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar**
+```text
+ M specs/00-indice.md
+ M specs/plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md
+?? .claude/settings.local.json
+```
+
+**O que foi feito**
+- Os três casos de `TenantPersistence.test.tsx` agora usam timers falsos do Vitest. O atraso de 1500 ms da gravação e a pausa de 1600 ms da troca avançam explicitamente dentro de `act`; `afterEach` restaura os timers reais.
+- `waitFor` foi removido deste arquivo porque, junto dos timers falsos, prendia as esperas assíncronas até o timeout do teste. As cargas remotas são drenadas por `act`, e os delays de persistência são avançados sem espera real.
+- Os três casos continuam verificando chamadas de `onLoad`, temas carregados, cancelamento da gravação de A ao trocar para B e a próxima edição chegando ao `onSave` do tenant ativo.
+- Na mutação temporária, removi somente `return () => clearTimeout(timer)` da cópia de `useDesignManager.ts`. O caso de cancelamento falhou como esperado: `onSaveTenantB` foi chamado uma vez antes da edição de B. A cópia foi descartada e `node_modules` do repositório permaneceu intacto.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Provider/__tests__/TenantPersistence.test.tsx` | alterado | Timers falsos, avanço virtual explícito e flush das cargas remotas nos três casos. |
+| esta plan | alterado | Resumo desta correção e status encaminhado à revisão. |
+
+**Verificações executadas**
+- `npx vitest run src/core/Provider/__tests__/TenantPersistence.test.tsx --reporter=verbose` → 3 passaram; cada caso abaixo de 1 s. Saída da execução aprovada:
+
+  ```text
+   RUN  v4.1.12 C:/Users/Igor/Desktop/Sarak/X - Trabalho/Code/Biblioteca/Sarak-Lib-UI-Core
+
+  (process:50532): GLib-GIO-WARNING **: 01:49:05.969: Failed to open application manifest `C:\Windows\SystemApps\Microsoft.WindowsAppRuntime.vNext.CBS_1.8_8000.800.1936.100_x64__8wekyb3d8bbwe\AppxManifest.xml` for package #34 (`Microsoft.WindowsAppRuntime.CBS.1.8_8000.800.1936.100_x64__8wekyb3d8bbwe`): error code 0x2
+  Could not parse CSS stylesheet
+  stderr | src/core/Provider/__tests__/TenantPersistence.test.tsx > SarakUIProvider — persistência ao trocar tenant > entra no tenant depois do mount, aplica as cargas seguintes e só grava edições do tenant ativo
+  [Sarak] CSS não detectado. O import do pacote deveria ter carregado o stylesheet — se isso falhou (ex.: bundler fazendo tree-shaking do side-effect), importe manualmente "@sarak/lib-ui-core/dist/sarak.css" no entry point da aplicação.
+  [Sarak:Design] persistence.strategy: 'remote' sem onSave/onLoad configurado — degradando para 'local' (localStorage) para não perder o tema.
+
+  stderr | src/core/Provider/__tests__/TenantPersistence.test.tsx > SarakUIProvider — persistência ao trocar tenant > a configuração padrão do Provider carrega o tenant ao receber as portas após o mount
+  [Sarak] CSS não detectado. O import do pacote deveria ter carregado o stylesheet — se isso falhou (ex.: bundler fazendo tree-shaking do side-effect), importe manualmente "@sarak/lib-ui-core/dist/sarak.css" no entry point da aplicação.
+
+   ✓ src/core/Provider/__tests__/TenantPersistence.test.tsx > SarakUIProvider — persistência ao trocar tenant > entra no tenant depois do mount, aplica as cargas seguintes e só grava edições do tenant ativo 967ms
+  stderr | src/core/Provider/__tests__/TenantPersistence.test.tsx > SarakUIProvider — persistência ao trocar tenant > a configuração padrão cancela a gravação pendente de A ao trocar para B
+  [Sarak] CSS não detectado. O import do pacote deveria ter carregado o stylesheet — se isso falhou (ex.: bundler fazendo tree-shaking do side-effect), importe manualmente "@sarak/lib-ui-core/dist/sarak.css" no entry point da aplicação.
+
+   ✓ src/core/Provider/__tests__/TenantPersistence.test.tsx > SarakUIProvider — persistência ao trocar tenant > a configuração padrão do Provider carrega o tenant ao receber as portas após o mount 576ms
+   ✓ src/core/Provider/__tests__/TenantPersistence.test.tsx > SarakUIProvider — persistência ao trocar tenant > a configuração padrão cancela a gravação pendente de A ao trocar para B 627ms
+
+   Test Files  1 passed (1)
+        Tests  3 passed (3)
+     Start at  01:49:03
+     Duration  14.26s (transform 1.04s, setup 244ms, import 9.23s, tests 2.17s, environment 2.29s)
+  ```
+- Mutação fora do repositório → o caso `a configuração padrão cancela a gravação pendente de A ao trocar para B` falhou em 775 ms na asserção de que `onSaveTenantB` não deveria ter sido chamado; a cópia temporária foi removida (`TEMP_COPY_REMOVED=True`) e `node_modules` foi preservado.
+- `npm run verify -- --tier=full` → a primeira rodada teve um timeout de 5 s em `gates/scripts/contrato/__tests__/check-class-merge.test.mjs:172` após 1539 s. O arquivo passou isolado (15/15 em 1,20 s). Na segunda rodada, suíte completa em 1447 s, TSC, baseline, os 24 gates do Anel 1, `check-trail-citation`, `guide:check`, `dev-kit:check` e Anel 0 simulado (64 linhas, 0 achados) passaram; resumo final: `[OK] nível "full" verde.`
+- `node .../padrao-typescript/scripts/validate.mjs src/core/Provider/__tests__/TenantPersistence.test.tsx` → exit code 0; o validador também listou apontamentos heurísticos de assinatura/tamanho nas funções de teste existentes no arquivo.
+- `git diff --check` → exit code 0.
+
+**Critérios de aceite**
+- [x] Três casos com timers falsos e restauração dos timers reais em `afterEach`; nenhum limite de tempo foi aumentado.
+- [x] Saída verbose anexada; durações medidas de 967 ms, 576 ms e 627 ms.
+- [x] A mutação da limpeza do timer fez o caso de cancelamento falhar na cópia descartável.
+- [x] `npm run verify -- --tier=full` terminou verde na segunda execução; a falha temporal isolada da primeira execução também foi registrada.
+- [x] Nenhum commit criado.
+
+**Decisões e suposições**
+- A espera por `onLoad` é drenada dentro de `act`, e os tempos de negócio avançam por `vi.advanceTimersByTime`; isso evita que `waitFor` dependa do relógio real ou dos próprios timers falsos.
+- Não alterei a lib, `vitest.config.ts`, nem outros arquivos de código.
+
+**Achados fora do escopo (não corrigidos)**
+- `gates/scripts/contrato/__tests__/check-class-merge.test.mjs:172` excedeu 5 s uma vez dentro da primeira suíte completa, passou isolado e na suíte completa seguinte; não alterado.
+
+**Pendências / riscos**
+- O tier full passou antes da transição final do status desta plan de `🔵 Em correção` para `🟠 Em revisão`. `specs/00-indice.md` já estava modificado no início e foi preservado; a linha do índice continua sob revisão do revisor.
+
+## Veredito — 2026-10-22 — correção do achado da CI — 🟢 Aprovado
+
+**O que mudou (conferido no diff):** o executor só alterou `TenantPersistence.test.tsx`. O arquivo passou a usar timers falsos e a
+restaurar os reais no `afterEach`. O atraso de 1500 ms da gravação e a pausa de 1600 ms agora avançam de forma explícita, e a carga
+remota é drenada por `act`. Nenhum `waitFor` ficou preso a relógio real, nenhum limite de tempo foi aumentado e a lib não mudou. Os
+três casos provam o mesmo de antes. No caso do cancelamento, a edição de A fica pendente e a troca para B acontece sem passar tempo:
+se o timer não fosse cancelado, ele dispararia ao avançar 1600 ms. A mutação do executor mostra exatamente isso, com o `onSave` de B
+chamado antes da edição.
+**Medido por mim:** o arquivo rodou duas vezes e passou 3/3 nas duas. Os casos levaram entre 1,3 e 2,4 s, com a máquina carregada
+(CPU a 77% e 465 processos `node` de outras sessões). O executor mediu 0,6 a 1,0 s. O tempo que sobrou é de renderização, não de
+espera, e não depende mais do relógio. O `tsc --noEmit` deu 0 erros. A suíte completa (`verify --tier=full`) verde fica aceita pelo
+relato, porque o diff muda só este teste.
+**Observação, não é achado:** na primeira suíte completa do executor, `gates/scripts/contrato/__tests__/check-class-merge.test.mjs:172`
+estourou 5 s uma vez. O caso varre a base real, passou isolado e passou na rodada seguinte. Também não falhou na CI. Se cair na CI, ele
+volta como achado.
+
+**Correção fechada.** O dono commita, faz o push para a `develop` e espera a CI verde. Depois vem o PR develop → main, a tag
+`v8.0.0-rc.2`, e a plan segue para o lote final, que depende dos importadores.
+
+**Status: 🟡 Em execução** (lote final pendente).

@@ -12,9 +12,17 @@ import { SarakIcon } from "../../Icon/SarakIcon";
  */
 
 import React, { useEffect, useRef, useState } from 'react';
+import * as PdfJs from 'pdfjs-dist';
 
 import { usePdfDocument, type SarakPdfSource } from './usePdfDocument';
 import { SarakIconButton } from '../../Buttons/SarakIconButton';
+import { SarakOptionalPeerFallback } from '../../Feedback/SarakOptionalPeerFallback';
+
+const OPTIONAL_PEER = 'pdfjs-dist';
+
+const hasPdfJsPeer = (): boolean => Boolean(
+    typeof PdfJs.getDocument === 'function' && PdfJs.GlobalWorkerOptions,
+);
 
 export interface SarakPDFViewerProps {
     /** Origem do documento: URL, bytes ou ArrayBuffer. */
@@ -38,7 +46,7 @@ const ZOOM_STEP = 0.2;
 const ZOOM_MIN = 0.4;
 const ZOOM_MAX = 4;
 
-const SarakPDFViewerImpl: React.FC<SarakPDFViewerProps> = ({
+const SarakPDFViewerContent: React.FC<SarakPDFViewerProps> = ({
     src,
     initialPage = 1,
     zoom = 1.2,
@@ -153,6 +161,13 @@ const SarakPDFViewerImpl: React.FC<SarakPDFViewerProps> = ({
             </div>
         </div>
     );
+};
+
+const SarakPDFViewerImpl: React.FC<SarakPDFViewerProps> = (props) => {
+    if (!hasPdfJsPeer()) {
+        return <SarakOptionalPeerFallback component="SarakPDFViewer" packages={[OPTIONAL_PEER]} />;
+    }
+    return <SarakPDFViewerContent {...props} />;
 };
 
 export default SarakPDFViewerImpl;

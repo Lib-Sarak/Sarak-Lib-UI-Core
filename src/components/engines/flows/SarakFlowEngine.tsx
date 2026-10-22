@@ -1,13 +1,26 @@
 import React from 'react';
-import ReactFlow, {
-    Background, Controls, MiniMap,
-    BackgroundVariant, Panel
-} from 'reactflow';
-import 'reactflow/dist/style.css';
+import * as ReactFlowModule from 'reactflow';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { SarakStyle } from '../../../core/Provider/components/SarakStyle';
+import { SarakOptionalPeerFallback } from '../../atomic/Feedback/SarakOptionalPeerFallback';
+
+const ReactFlow = ReactFlowModule.default;
+const { Background, Controls, MiniMap, Panel } = ReactFlowModule;
+const OPTIONAL_PEER = 'reactflow';
+
+const hasReactFlowPeer = (): boolean => Boolean(
+    ReactFlow && Background && Controls && MiniMap && Panel && ReactFlowModule.BackgroundVariant,
+);
+
+if (hasReactFlowPeer()) {
+    void import('reactflow/dist/style.css').catch((error: unknown) => {
+        console.error('[SarakFlowEngine] Could not load the React Flow stylesheet.', error);
+    });
+}
 
 // Deriva os contratos diretamente do componente ReactFlow (fonte única).
 type ReactFlowProps = React.ComponentProps<typeof ReactFlow>;
+type FlowBackgroundVariant = React.ComponentProps<typeof Background>['variant'];
 
 export interface SarakFlowEngineProps {
     /** Nós fornecidos ao React Flow; obrigatório, sem lista padrão. Use `[]` para iniciar sem nós. */
@@ -19,9 +32,9 @@ export interface SarakFlowEngineProps {
 }
 
 /** Padrão do grid de fundo por `flowGridStyle`; valor desconhecido cai em pontos (o padrão do token). */
-const GRID_VARIANTS: Record<string, (typeof BackgroundVariant)[keyof typeof BackgroundVariant]> = {
-    dots: BackgroundVariant.Dots,
-    lines: BackgroundVariant.Lines,
+const GRID_VARIANTS: Record<string, FlowBackgroundVariant> = {
+    dots: 'dots' as FlowBackgroundVariant,
+    lines: 'lines' as FlowBackgroundVariant,
 };
 
 /** Véu da cor de texto do tema (grade, máscara): aparece sobre a superfície nos dois modos. */
@@ -31,7 +44,7 @@ const TEXT_TINT_5 = 'color-mix(in srgb, var(--text-main, #f2f6fb) 5%, transparen
  * Sarak Flow Engine v7.0
  * Interactive node-based logic engine powered by ReactFlow.
  */
-const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConnect }) => {
+const SarakFlowContent: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConnect }) => {
     const { design } = useSarakUI();
     const { primaryColor, flowGridStyle, flowNodeRadius } = design || {};
 
@@ -45,7 +58,7 @@ const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConne
                 className="sarak-flow-instance"
             >
                 <Background 
-                    variant={GRID_VARIANTS[String(flowGridStyle)] ?? BackgroundVariant.Dots} 
+                    variant={GRID_VARIANTS[String(flowGridStyle)] ?? ('dots' as FlowBackgroundVariant)}
                     gap={24} 
                     size={1} 
                     color={TEXT_TINT_5}
@@ -61,7 +74,7 @@ const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConne
                 </Panel>
             </ReactFlow>
 
-            <style>{`
+            <SarakStyle>{`
                 .react-flow__node {
                     border-radius: var(--sarak-flow-node-radius, ${flowNodeRadius || 12}px);
                     background: color-mix(in srgb, var(--sarak-card-bg, var(--theme-card, #101622)) 80%, transparent);
@@ -81,9 +94,16 @@ const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConne
                     stroke: color-mix(in srgb, var(--text-main, #f2f6fb) 20%, transparent);
                     stroke-width: 2;
                 }
-            `}</style>
+            `}</SarakStyle>
         </div>
     );
+};
+
+const SarakFlowEngine: React.FC<SarakFlowEngineProps> = (props) => {
+    if (!hasReactFlowPeer()) {
+        return <SarakOptionalPeerFallback component="SarakFlowEngine" packages={[OPTIONAL_PEER]} />;
+    }
+    return <SarakFlowContent {...props} />;
 };
 
 export default SarakFlowEngine;

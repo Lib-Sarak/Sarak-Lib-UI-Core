@@ -72,6 +72,23 @@ describe('SarakAuthScreen host configuration', () => {
         expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ intent: 'social', provider: 'company-sso' }));
     });
 
+    it('can render configured providers without credential fields', () => {
+        renderWithProvider(
+            <SarakAuthScreen
+                showCredentials={false}
+                allowRegistration
+                socialConfig={{ enabled: true, display: 'full', providers: [{ id: 'company-sso', icon: <svg />, variant: 'glass' }] }}
+            />,
+        );
+
+        expect(screen.getByRole('button', { name: 'Continuar com company-sso' })).toBeInTheDocument();
+        expect(screen.queryByText('Informe suas credenciais para continuar.')).not.toBeInTheDocument();
+        expect(screen.queryByPlaceholderText('nome@exemplo.com')).not.toBeInTheDocument();
+        expect(screen.queryByPlaceholderText('••••••••')).not.toBeInTheDocument();
+        expect(screen.queryByText('Ou continue com')).not.toBeInTheDocument();
+        expect(screen.queryByText('Criar conta')).not.toBeInTheDocument();
+    });
+
     it('shows forgot-password action only when the host provides a handler', () => {
         const onForgot = vi.fn();
         const onChange = vi.fn<(event: SarakAuthScreenEvent) => void>();

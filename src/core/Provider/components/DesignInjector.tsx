@@ -3,7 +3,15 @@ import { BEZIER_CURVES } from '../constants';
 import { useDesignVariables } from '../../Design/hooks/useDesignVariables';
 import { SARAK_SCOPE_CLASS } from '../scope';
 import { SarakDesignState, SarakUIMode } from '../types';
-import { releaseInjectedWrites, syncInjectedWrites } from '../utils/injectedWrites';
+import {
+    releaseInjectedWrites,
+    syncInjectedWrites,
+    writeInjectedAttribute,
+    writeInjectedClass,
+    writeInjectedStyleElement,
+    writeInjectedStyleProperty,
+} from '../utils/injectedWrites';
+import { SarakStyle, useSarakStyleNonce } from './SarakStyle';
 
 /** A família que a injeção ancora no `body` (ou na ilha): a limpeza só a tira se ainda for esta. */
 const INJECTED_FONT_MAIN = 'var(--font-main, var(--sarak-font-b, "Inter", sans-serif))';
@@ -57,7 +65,9 @@ interface DesignInjectorProps {
  * única no `useSarakUIEffects`.
  */
 export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode = 'app', scopeElement = null }) => {
+    const styleNonce = useSarakStyleNonce();
     const isEmbedded = mode === 'embedded';
+    const ownerRef = React.useRef<object>({});
 
     // No Modo Embarcado o CSS responsivo é gerado mirando a ilha, não o `:root`.
     const { variables, attributes, responsiveCSS } = useDesignVariables(
@@ -66,7 +76,7 @@ export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode 
     );
     const prevDesignRef = React.useRef<string | null>(null);
     // O que a injeção tocou, para a limpeza ao desmontar (o host não fica com o tema depois de o Provider sair).
-    const injectedRef = React.useRef<{ targets: HTMLElement[]; fontScope: HTMLElement | null; classTarget: HTMLElement; modeClass: string } | null>(null);
+    const injectedRef = React.useRef<{ targets: HTMLElement[]; fontScope: HTMLElement | null; classTarget: HTMLElement } | null>(null);
 
     // Mouse Tracking: no Modo App é uma coordenada global; no Embarcado fica no container.
     useEffect(() => {
@@ -78,13 +88,13 @@ export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode 
                 if (!target) return;
                 const x = (e.clientX / window.innerWidth) * 100;
                 const y = (e.clientY / window.innerHeight) * 100;
-                target.style.setProperty('--mouse-x', `${x}%`);
-                target.style.setProperty('--mouse-y', `${y}%`);
+                writeInjectedStyleProperty(target, '--mouse-x', `${x}%`, ownerRef.current);
+                writeInjectedStyleProperty(target, '--mouse-y', `${y}%`, ownerRef.current);
                 // `shadowOrientation: dynamic`: a luz é o oposto do ponteiro (-1 a 1). Só é
                 // escrita quando a opção está ativa — a variável herda por toda a árvore.
                 if (target.getAttribute('data-sx-shadow-orientation') === 'dynamic') {
-                    target.style.setProperty('--sarak-light-x', String((50 - x) / 50));
-                    target.style.setProperty('--sarak-light-y', String((50 - y) / 50));
+                    writeInjectedStyleProperty(target, '--sarak-light-x', String((50 - x) / 50), ownerRef.current);
+                    writeInjectedStyleProperty(target, '--sarak-light-y', String((50 - y) / 50), ownerRef.current);
                 }
             });
         };
@@ -118,11 +128,13 @@ export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode 
         // 1. Variáveis do Mapa Mestre e 2. Atributos de Estado. Só grava o que mudou (economiza reflow) e tira
         // o que o tema anterior escreveu e este não escreve: a variável inline que ficasse venceria o
         // `<style>` responsivo e o valor do tema novo.
-        targets.forEach((el) => syncInjectedWrites(el, variables, attributes));
+        targets.forEach((el) => syncInjectedWrites(el, variables, attributes, ownerRef.current));
 
         // 3. Curvas de Animação (Bezier)
         if (!prevDesignRef.current) {
-            Object.entries(BEZIER_CURVES).forEach(([k, v]) => primary.style.setProperty(k, v));
+            Object.entries(BEZIER_CURVES).forEach(([name, value]) =>
+                writeInjectedStyleProperty(primary, name, value, ownerRef.current),
+            );
         }
 
         // 3.5 FONTE DO TEMA APLICA SOZINHA (Spec 40.1 — L5). As vars `--font-main`/
@@ -136,55 +148,39 @@ export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode 
         // repinta ao vivo quando o tema muda (custom properties resolvem no computed-value).
         const fontScope = isEmbedded ? scopeElement : document.body;
         if (fontScope) {
-            if (fontScope.style.fontFamily !== INJECTED_FONT_MAIN) fontScope.style.fontFamily = INJECTED_FONT_MAIN;
+            writeInjectedStyleProperty(fontScope, 'font-family', INJECTED_FONT_MAIN, ownerRef.current);
         }
 
         // 4. Classes de Modo (Dark/Light) — no `body` (App) ou no container (Embarcado)
         const modeClass = s.mode || 'dark';
         const classTarget = isEmbedded && scopeElement ? scopeElement : document.body;
-        if (!classTarget.classList.contains(modeClass)) {
-            classTarget.classList.remove('light', 'dark');
-            classTarget.classList.add(modeClass);
-        }
+        writeInjectedClass(classTarget, 'light', false, ownerRef.current);
+        writeInjectedClass(classTarget, 'dark', false, ownerRef.current);
+        writeInjectedClass(classTarget, modeClass, true, ownerRef.current);
 
         // 5. Atributo da Mídia de Fundo
-        if (s.globalBackgroundImageUrl) {
-            classTarget.setAttribute('data-sarak-has-media', 'true');
-        } else {
-            classTarget.removeAttribute('data-sarak-has-media');
-        }
+        writeInjectedAttribute(classTarget, 'data-sarak-has-media', s.globalBackgroundImageUrl ? 'true' : null, ownerRef.current);
 
         // 6. CSS Responsivo (Media Queries Dinâmicas) — no Modo Embarcado o `<style>` é
         // renderizado pelo próprio componente (abaixo), sem tag global no `<head>`.
         if (responsiveCSS && !isEmbedded) {
-            let styleTag = document.getElementById('sarak-responsive-vars') as HTMLStyleElement;
-            if (!styleTag) {
-                styleTag = document.createElement('style');
-                styleTag.id = 'sarak-responsive-vars';
-                document.head.appendChild(styleTag);
-            }
-            if (styleTag.innerHTML !== responsiveCSS) {
-                styleTag.innerHTML = responsiveCSS;
-            }
+            writeInjectedStyleElement(document.head, 'sarak-responsive-vars', responsiveCSS, styleNonce, ownerRef.current);
         }
 
-        injectedRef.current = { targets, fontScope, classTarget, modeClass };
+        injectedRef.current = { targets, fontScope, classTarget };
         prevDesignRef.current = currentDesignKey;
-    }, [s, variables, attributes, responsiveCSS, isEmbedded, scopeElement]);
+    }, [s, variables, attributes, responsiveCSS, isEmbedded, scopeElement, styleNonce]);
 
-    // Ao desmontar, devolve ao host o que a injeção escreveu: variáveis e atributos (o registro do injetor), as curvas, o
-    // rastro do ponteiro, a fonte ancorada, a classe de modo, o atributo de mídia e a tag do CSS responsivo.
+    // Ao desmontar, cada instância devolve apenas as escritas que ainda lhe pertencem.
     useEffect(() => () => {
         const written = injectedRef.current;
-        if (!written) return;
-        written.targets.forEach(releaseInjectedWrites);
-        const [primary] = written.targets;
-        [...Object.keys(BEZIER_CURVES), '--mouse-x', '--mouse-y', '--sarak-light-x', '--sarak-light-y']
-            .forEach((name) => primary?.style.removeProperty(name));
-        if (written.fontScope?.style.fontFamily === INJECTED_FONT_MAIN) written.fontScope.style.removeProperty('font-family');
-        written.classTarget.classList.remove(written.modeClass);
-        written.classTarget.removeAttribute('data-sarak-has-media');
-        document.getElementById('sarak-responsive-vars')?.remove();
+        const targets = written?.targets ?? [document.documentElement, document.body];
+        const hosts = new Set<HTMLElement>([
+            ...targets,
+            ...(written?.fontScope ? [written.fontScope] : []),
+            document.head,
+        ]);
+        hosts.forEach((host) => releaseInjectedWrites(host, ownerRef.current));
         injectedRef.current = null;
         prevDesignRef.current = null;
     }, []);
@@ -194,7 +190,7 @@ export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode 
     // `.sarak-scope`, então não alcançam nenhum elemento do host.
     if (isEmbedded) {
         const scopeCss = `${buildScopeVariablesCss(variables, SARAK_SCOPE_CLASS)}${responsiveCSS || ''}`;
-        return scopeCss ? <style dangerouslySetInnerHTML={{ __html: scopeCss }} /> : null;
+        return scopeCss ? <SarakStyle dangerouslySetInnerHTML={{ __html: scopeCss }} /> : null;
     }
 
     return null;

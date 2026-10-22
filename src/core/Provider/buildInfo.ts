@@ -1,7 +1,7 @@
 export const SARAK_BUILD_INFO = {
-    "baseCommit": "1ae58d650b466490ef80cdad55c4ef4e8f1bab4b",
-    "baseCommitShort": "1ae58d6",
-    "builtAt": "2026-10-21T01:39:49.903Z",
+    "baseCommit": "80262ba3e96eae59637b3b977d110a1e72221802",
+    "baseCommitShort": "80262ba",
+    "builtAt": "2026-10-22T03:39:56.903Z",
     "libVersion": "8.0.0-rc.1",
     "note": "baseCommit é o commit SOBRE o qual este build foi gerado — não o commit que o publica (o dist/ é commitado depois de gerado, e o hash de um commit não pode conter o próprio hash). Para saber se o consumidor está atualizado, use o \"resolved\" do package-lock.json ou rode \"npm run sarak:check\"."
 } as const;

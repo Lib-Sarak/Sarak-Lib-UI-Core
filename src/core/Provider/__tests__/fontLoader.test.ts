@@ -105,6 +105,12 @@ describe("`'bundled'` (padrão) — o `@font-face` gerado", () => {
 });
 
 describe('(f) falha nunca é silenciosa', () => {
+    it('aplica o nonce à folha de fonte criada pelo carregador', () => {
+        loadBundledFonts({ families: ['Orbitron'], styleNonce: 'font-face-nonce' });
+
+        expect(document.querySelector(`style[${FONT_FACE_ATTRIBUTE}="Orbitron"]`)).toHaveAttribute('nonce', 'font-face-nonce');
+    });
+
     it('carga recusada: avisa nomeando a família, a origem tentada e `baseUrl` — uma vez', async () => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
         load.mockImplementation(() => Promise.reject(new Error('NetworkError')));
@@ -148,8 +154,9 @@ describe('as outras origens e o Modo Embarcado', () => {
     });
 
     it("(d) `'google'` mantém o `@import` e o `preconnect` de antes, sem `@font-face` embarcado", () => {
-        renderFonts(THEME_A, { fonts: { source: 'google' } });
+        renderFonts(THEME_A, { fonts: { source: 'google' }, styleNonce: 'google-fonts-nonce' });
         expect(document.getElementById('sarak-core-fonts')?.textContent).toMatch(/^@import url\('https:\/\/fonts\.googleapis\.com\/css2\?/);
+        expect(document.getElementById('sarak-core-fonts')).toHaveAttribute('nonce', 'google-fonts-nonce');
         const preconnects = Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="preconnect"]')).map((link) => link.href);
         expect(preconnects).toEqual(['https://fonts.googleapis.com/', 'https://fonts.gstatic.com/']);
         expect(injected()).toEqual([]);

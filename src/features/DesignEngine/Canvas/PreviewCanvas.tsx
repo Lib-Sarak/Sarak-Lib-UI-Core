@@ -13,6 +13,7 @@ import { PREVIEW_DUAL_VIEW_ROW } from './panelResponsive.presets';
 import { SarakUIOptions, SarakUIContextType } from '../../../core/Provider/types';
 import { SarakDesignState } from '../../../core/Provider/types';
 import { SarakTokenValue } from '../../../core/Design/types';
+import { SarakStyle } from '../../../core/Provider/components/SarakStyle';
 
 interface PreviewCanvasProps {
     previewDevice: 'desktop' | 'tablet' | 'smartphone';
@@ -144,7 +145,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                 </div>
             </UIContext.Provider>
 
-            <style dangerouslySetInnerHTML={{
+            <SarakStyle dangerouslySetInnerHTML={{
                 __html: `
                 .custom-scrollbar::-webkit-scrollbar {
                     width: var(--sarak-scroll-width, 6px);

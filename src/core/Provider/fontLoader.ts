@@ -1,4 +1,5 @@
 import { BUNDLED_FONTS, BUNDLED_FONT_UNICODE_RANGES } from './generated/font-manifest';
+import { applyStyleNonce } from './utils/applyStyleNonce';
 
 /**
  * Carregador das fontes embarcadas: injeta o `@font-face` de cada família pedida, uma vez por família (um `<style>`
@@ -35,6 +36,7 @@ export interface FontLoadRequest {
     manifest?: Record<string, LoadableFontFamily>;
     /** O que o aviso de falha sugere; o padrão fala da pasta `fonts/` do pacote. */
     hint?: string;
+    styleNonce?: string;
 }
 
 /** String CSS entre aspas, com `\`, `"` e quebras de linha neutralizados. */
@@ -78,9 +80,10 @@ async function confirmLoaded(family: string, entry: LoadableFontFamily, origin: 
 const isInjected = (family: string): boolean =>
     Array.from(document.head.querySelectorAll(`style[${FONT_FACE_ATTRIBUTE}]`)).some((el) => el.getAttribute(FONT_FACE_ATTRIBUTE) === family);
 
-function injectFamily(family: string, entry: LoadableFontFamily, { baseUrl, hint }: FontLoadRequest): void {
+function injectFamily(family: string, entry: LoadableFontFamily, { baseUrl, hint, styleNonce }: FontLoadRequest): void {
     const style = document.createElement('style');
     style.setAttribute(FONT_FACE_ATTRIBUTE, family);
+    applyStyleNonce(style, styleNonce);
     document.head.appendChild(style);
     let urls: string[];
     try {

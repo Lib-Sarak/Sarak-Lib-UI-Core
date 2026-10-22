@@ -61,9 +61,6 @@ export interface SarakCardGridProps<TData extends Record<string, unknown> = Reco
         collapse_label?: string;
     };
     filters?: SarakFilterConfig[]; // v6.4
-    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-    density?: 'compact' | 'standard' | 'spacious';
-    importance?: 'hero' | 'base' | 'subtle';
     variant?: 'classic' | 'title' | 'action' | 'search'; // v7.0
 }
 

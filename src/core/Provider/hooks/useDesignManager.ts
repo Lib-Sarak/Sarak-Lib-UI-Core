@@ -48,6 +48,13 @@ export const useDesignManager = (props: {
     onThemeChangeRef.current = onThemeChange;
 
     const [isBackendLoaded, setIsBackendLoaded] = useState(false);
+    const onLoadBecameAvailable = useCallback(() => {
+        hasHydratedRef.current = false;
+        userChangedDesignRef.current = false;
+        lastPersistedSignatureRef.current = null;
+        hasPersistenceBaselineRef.current = false;
+        setIsBackendLoaded(false);
+    }, []);
 
     // O id do tema que a SEMENTE resolveu e os tokens semeados — `useThemeSeed.ts`.
     const { resolveSeedThemeId, getSeedConfig } = useThemeSeed({
@@ -76,7 +83,6 @@ export const useDesignManager = (props: {
         () => resolveStorageKey(options?.persistence),
         [options?.persistence?.storageKey, options?.persistence?.tenantId],
     );
-
     const [design, setDesign] = useState<SarakDesignState>(() => {
         if (typeof window === 'undefined') return getSeedConfig();
 
@@ -157,6 +163,7 @@ export const useDesignManager = (props: {
         activeThemeId,
         setResolvedThemeId,
         storageKey,
+        onLoadBecameAvailable,
     });
 
     // Sincronização entre abas/apps (lacuna pré-Teste Real): default ligado, opt-out

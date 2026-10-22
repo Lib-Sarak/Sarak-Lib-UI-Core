@@ -10,9 +10,27 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 **Classificação: MAJOR.** O `SarakShell`, a descoberta e o registro global de módulos foram removidos.
 Cada aplicação monta `SarakAppChrome`, fornece seus `navItems` e controla as próprias rotas.
 
+Os peers opcionais continuam opcionais: instale somente os que os componentes usados pelo seu
+produto precisam. Se um componente for renderizado sem o pacote correspondente, ele mostra uma
+mensagem com o nome do pacote e registra um aviso no console. O guia relaciona cada pacote ao
+componente que o utiliza.
+
+### Pisos mínimos de peers e dependência na 8.0.0
+
+**Classificação: MAJOR.** Para receber as correções de segurança, atualize os pacotes opcionais
+usados pela aplicação para `echarts >=6.1.0`, `echarts-for-react >=3.0.4`, `pdfjs-dist >=6.2.108`
+e `react-syntax-highlighter >=16.1.2`. A dependência `dompurify` da biblioteca passa a exigir
+`>=3.4.16` e é instalada junto com ela.
+
+`echarts-for-react` 3.0.4 é o primeiro piso com suporte declarado a ECharts 6. A migração para
+ECharts 6 altera o tema padrão, as posições e dimensões iniciais de alguns componentes, o ajuste
+automático de rótulos e a herança de estilos rich text; o motor Sarak usa opções e cores explícitas
+e não precisou de mudanças de API. Consulte o [guia de atualização do ECharts 6](https://github.com/apache/echarts-handbook/blob/master/contents/en/basics/release-note/v6-upgrade-guide.md)
+se a aplicação depender do tema ou dos padrões anteriores.
+
 ### De/para completo dos nomes do barril entre v7.0.0 e v8.0.0
 
-**Classificação: MAJOR (sai na 8.0.0).** A comparação das declarações públicas de v7.0.0 com a superfície v8 identificou 26 exports removidos e uma renomeação. Esta tabela reúne todos os 27 nomes alterados ou removidos; quando não há substituto direto, a responsabilidade passa para a aplicação.
+**Classificação: MAJOR (sai na 8.0.0).** A comparação das declarações públicas de v7.0.0 com a superfície v8 identificou 26 exports removidos e uma renomeação: `SARAK_REFERENCE_THEMES` passou a `SARAK_BOOT_THEMES` (o par completo é carregado por `sarakLoadReferenceThemes()`). Esta tabela reúne todos os 27 nomes alterados ou removidos; quando não há substituto direto, a responsabilidade passa para a aplicação.
 
 | Nome em v7.0.0 | Use na v8.0.0 |
 |---|---|
@@ -998,13 +1016,38 @@ O Provider também aceita `null` ou `undefined` de `onLoad` para indicar que ain
 |---|---|---|
 | Leitura do estado aplicado | `onLoad` devolvia só o design | Pode devolver `{ design, activeThemeId }`; o id salvo é restaurado junto |
 | Gravação no boot | A hidratação podia disparar uma gravação sem mudança | Boot e hidratação não gravam; alterações reais e aplicações explícitas continuam gravando |
-| Troca de tenant | O consumidor precisava remontar o Provider | Alterar `tenantId` chama `onLoad` novamente sem remontagem |
+| Troca de tenant | O consumidor precisava remontar o Provider | Alterar `tenantId` troca a partição local e chama `onLoad` para o tenant novo sem remontagem; `strategy` define a precedência |
 | Remover tema customizado | O consumidor removia a entrada apenas na própria lista | `useSarakUI().deleteTheme(id)` remove da coleção da sessão e chama opcionalmente `options.theme.onDelete(id)` |
 | Tipos de `customThemes` e `allThemes` | `unknown[]` | `SarakThemeEntry[]`; cada entrada tem `id` e pode declarar `name`, `design` e `contraparte` |
 | `SarakUIContextType` | Não expunha `deleteTheme` | Exige `deleteTheme(id)` no valor do contexto; contextos montados manualmente devem fornecer a operação |
 
 O id carregado não vence `activeThemeId` quando essa prop é controlada. O consumidor continua dono
 do armazenamento: `onDelete` é o ponto em que pode remover o tema da própria fonte persistente.
+
+Para trocar de tenant, mantenha um único Provider e atualize `tenantId`; os callbacks fecham sobre
+o valor atual e a leitura remota anterior não pode aplicar seu resultado depois da troca:
+
+```tsx
+function App({ tenantId }: { tenantId: string }) {
+  return (
+    <SarakUIProvider
+      options={{
+        persistence: {
+          tenantId,
+          onLoad: () => carregarTema(tenantId),
+          onSave: (design, activeThemeId) => salvarTema(tenantId, design, activeThemeId),
+        },
+      }}
+    >
+      <Aplicacao />
+    </SarakUIProvider>
+  );
+}
+```
+
+Se a troca também tiver de descartar o estado React dos filhos, adicione `key={tenantId}` ao
+Provider para desmontar e montar a árvore inteira. A chave não substitui `tenantId`: mantenha os
+dois para reiniciar a árvore e separar a chave de persistência por tenant.
 
 
 ### As implementações de SarakDataTable e SarakDataGrid deixam de ser públicas
@@ -1171,6 +1214,32 @@ O restante é correção visual sem configuração adicional: o contorno do `Sar
 O painel do `SarakModal` passa a usar a borda e a sombra do cartão: `cardBorderWidth` (incluindo larguras por lado), `borderStyle`, `cardBorderColor`/`cardBorderOpacity` e `cardShadow`/`cardShadow*`. Remova as classes ou estilos próprios que substituíam essas propriedades se quiser que o modal siga o tema.
 
 O novo token estético `globalBackgroundPosition` aceita `absolute` (rola com o conteúdo) e `fixed` (preso à janela), com default `absolute`, igual ao `sarak-sovereign`. Os 19 temas declaram o token; `synthwave-retro` usa `fixed` porque o horizonte e a grade da arte devem permanecer ancorados na janela. Temas salvos que não conhecem o token passam a rolar com o conteúdo.
+
+### Persistência de temas e Content Security Policy
+
+`options.theme.onSave(theme, operation)` recebe o tema validado e, como segundo argumento opcional,
+`'create'` ou `'replace'`. O painel usa `'replace'` ao **Salvar** sobre um tema do importador em edição;
+**Salvar como novo**, **Duplicar** e **Novo tema** criam uma entrada e usam `'create'`. **Apagar** chama
+`options.theme.onDelete(id)` e só aparece para temas do importador, após confirmação. Sem `onSave`, as
+ações de criação e gravação não aparecem; sem `onDelete`, apagar remove o tema apenas da sessão.
+
+Para uma Content Security Policy que restringe elementos `<style>`, passe o nonce da resposta em
+`options.styleNonce`. A biblioteca o aplica às folhas de estilo que cria, inclusive o CSS global,
+tema, escopos e fontes. Um exemplo de diretiva é `style-src 'self' 'nonce-<valor-da-resposta>'`;
+não é necessário incluir `'unsafe-inline'` em `style-src`. Para que a folha global já receba nonce
+durante o import, declare também `<meta property="csp-nonce" nonce="<valor-da-resposta>">` no HTML,
+antes do script que importa o pacote. O `styleNonce` do Provider continua valendo para as folhas
+criadas depois da montagem. Sem a meta e sem `styleNonce`, o CSS global mantém o comportamento de
+zero configuração; no modo embarcado, importe `@sarak/lib-ui-core/sarak-scoped.css`.
+
+### De/para das props inertes removidas
+
+| Antes | Depois |
+|---|---|
+| `SarakAuthScreen`, `SarakChat`, `SarakChart`, `SarakManagementGrid`, `SarakCardGrid`, `SarakCatalogGrid`: `role`, `density`, `importance` | Removidas: não alteravam esses componentes. Apague-as dos objetos de props. |
+
+`SarakTable` mantém `role` e `density`: o cabeçalho e as células leem esses valores. `importance`
+já não fazia parte das props públicas da tabela.
 
 ## 7.0.0 — Os nomes públicos passam a identificar a biblioteca
 
@@ -1556,9 +1625,10 @@ habilita (`design.enabledLanguages`) e grava a escolha como **preferência** do 
   usuário, sincroniza entre abas e chega à porta opcional `options.preferences.onSave` — a mesma porta e o
   mesmo `useSarakPreferences().updatePreferences()` do plan-73, generalizados para a quinta preferência
   (`language`). **Só para GRAVAR** — para LER o idioma que vale, ver abaixo: não é o mesmo canal.
-- **O caminho de substituição pelo host** (`getLocalComponent('shell-language-selector')` /
-  `window.__SARAK_OVERRIDES__`) **continua funcionando, sem mudança** — inclusive sem depender da regra de
-  montagem acima, porque quem decide o que aparece ali passa a ser o host.
+- **O getter antigo `getLocalComponent('shell-language-selector')` foi removido na 8.0.0.** Para
+  substituir o seletor de idioma, use `window.__SARAK_OVERRIDES__['shell-language-selector']`, como
+  documentado em `specs/specs/05-cromo-e-slots.md` §2.2.2. O override continua independente da regra
+  de montagem acima porque quem decide o que aparece ali passa a ser o host.
 
 **O que a lib continua NÃO fazendo.** Ela entrega a **escolha**, não o **texto traduzido**: não há motor de
 tradução nesta biblioteca, e os textos da própria lib não são afetados por esta mudança. Traduzir as telas

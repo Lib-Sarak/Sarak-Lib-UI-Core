@@ -1,6 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { releaseInjectedWrites, writeInjectedAttribute } from '../utils/injectedWrites';
 
 export const useBodyThemeTransition = (isEmbedded: boolean): void => {
+    const ownerRef = useRef<object>({});
+
     useEffect(() => {
         if (
             isEmbedded || typeof document === 'undefined' || typeof window === 'undefined'
@@ -8,19 +11,18 @@ export const useBodyThemeTransition = (isEmbedded: boolean): void => {
         ) return;
 
         const body = document.body;
-        const previousReadyValue = body.getAttribute('data-sarak-theme-ready');
         let firstFrame = 0;
         let secondFrame = 0;
         firstFrame = window.requestAnimationFrame(() => {
-            secondFrame = window.requestAnimationFrame(() => body.setAttribute('data-sarak-theme-ready', 'true'));
+            secondFrame = window.requestAnimationFrame(() =>
+                writeInjectedAttribute(body, 'data-sarak-theme-ready', 'true', ownerRef.current),
+            );
         });
 
         return () => {
             window.cancelAnimationFrame(firstFrame);
             window.cancelAnimationFrame(secondFrame);
-            if (body.getAttribute('data-sarak-theme-ready') !== 'true') return;
-            if (previousReadyValue === null) body.removeAttribute('data-sarak-theme-ready');
-            else body.setAttribute('data-sarak-theme-ready', previousReadyValue);
+            releaseInjectedWrites(body, ownerRef.current);
         };
     }, [isEmbedded]);
 };

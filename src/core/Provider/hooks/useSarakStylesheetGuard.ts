@@ -11,13 +11,12 @@ const CSS_LOADED_VAR = '--sarak-ui-core-css-loaded';
 /**
  * Guarda do stylesheet (Spec 08 §2 + Spec 24).
  *
- * **Modo App:** confere que a injeção automática de CSS aconteceu; se o bundler tiver
- * feito tree-shaking do side-effect, avisa em dev com a correção exata.
+ * **Modo App:** confere que a injeção de CSS no import do pacote aconteceu; se o bundler tiver
+ * removido o código injetor, avisa em dev com a correção exata.
  *
  * **Modo Embarcado:** faz o oposto — garante que o CSS GLOBAL não fique no `<head>`.
- * A injeção automática roda na importação do módulo, antes de o Provider saber o modo,
- * então aqui ela é DESFEITA (em layout effect, antes do primeiro paint da ilha) e o
- * consumidor é orientado a importar a variante escopada.
+ * A folha global não é injetada no modo embarcado. A guarda também remove uma folha
+ * preexistente antes do primeiro paint da ilha.
  */
 export const useSarakStylesheetGuard = (mode: SarakUIMode, scopeElement: HTMLElement | null): void => {
     // Remoção do CSS global: layout effect para acontecer antes do paint da ilha.
@@ -28,8 +27,7 @@ export const useSarakStylesheetGuard = (mode: SarakUIMode, scopeElement: HTMLEle
             console.warn(
                 '[Sarak] mode: "embedded" — o stylesheet GLOBAL da lib foi removido do <head> ' +
                 'para não re-estilizar a página do host. Para evitar qualquer flash, marque o ' +
-                `documento com <html ${SARAK_MODE_ATTRIBUTE}="embedded"> (a injeção automática ` +
-                'nem chega a rodar).',
+                `documento com <html ${SARAK_MODE_ATTRIBUTE}="embedded"> para evitar a injeção global.`,
             );
         }
     }, [mode]);
@@ -56,8 +54,8 @@ export const useSarakStylesheetGuard = (mode: SarakUIMode, scopeElement: HTMLEle
         const loaded = getComputedStyle(document.documentElement).getPropertyValue(CSS_LOADED_VAR).trim();
         if (!loaded) {
             console.error(
-                '[Sarak] CSS não detectado. A injeção automática deveria ter carregado o ' +
-                'stylesheet ao importar "@sarak/lib-ui-core" — se isso falhou (ex.: bundler ' +
+                '[Sarak] CSS não detectado. O import do pacote deveria ter carregado o ' +
+                'stylesheet — se isso falhou (ex.: bundler ' +
                 'fazendo tree-shaking do side-effect), importe manualmente ' +
                 '"@sarak/lib-ui-core/dist/sarak.css" no entry point da aplicação.',
             );

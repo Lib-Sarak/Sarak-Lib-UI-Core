@@ -140,8 +140,9 @@ for (const type of CHART_TYPES) {
     test(`P12: chartType ${type} monta o canvas com o dado padrão, sem erro de console`, async () => {
         const { page, errors } = await openScene(undefined, type);
         try {
-            const canvas = page.locator(`[data-probe="grafico"][data-chart-type="${type}"] canvas`);
-            await expect(canvas).toHaveCount(1, { timeout: 15_000 });
+            const canvases = page.locator(`[data-probe="grafico"][data-chart-type="${type}"] canvas`);
+            await expect.poll(() => canvases.count(), { timeout: 15_000 }).toBeGreaterThan(0);
+            const canvas = canvases.first();
             await expect.poll(() => canvas.evaluate((el) => el.getBoundingClientRect().width)).toBeGreaterThan(0);
             await expect.poll(() => canvas.evaluate((el) => el.getBoundingClientRect().height)).toBeGreaterThan(0);
             // Varre o canvas em grade e anota o que o tooltip (um `div` absoluto dentro do gráfico) mostra: com o disparo

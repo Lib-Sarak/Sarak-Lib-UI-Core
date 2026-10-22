@@ -60,13 +60,60 @@ remontagem do Provider.
 O boot e a hidratação não chamam `onSave`. Depois que a carga termina, alterações reais do design
 continuam sendo gravadas pelo debounce; uma aplicação explícita também grava imediatamente.
 
+#### Troca de tenant no Provider montado
+
+Passe o `tenantId` atual e callbacks que fechem sobre ele. A troca de tenant muda a chave local e
+carrega o novo estado sem remontar o Provider. A resposta de uma leitura anterior é descartada e
+um debounce pendente do tenant anterior é cancelado antes de aceitar novas edições.
+
+```tsx
+function App({ tenantId }: { tenantId: string }) {
+  return (
+    <SarakUIProvider
+      options={{
+        persistence: {
+          strategy: 'hybrid',
+          storageKey: 'tema-aplicado',
+          tenantId,
+          onLoad: () => buscarTemaDoBackend(tenantId),
+          onSave: (design, activeThemeId) => salvarTemaNoBackend(tenantId, design, activeThemeId),
+        },
+      }}
+    >
+      <Aplicacao />
+    </SarakUIProvider>
+  );
+}
+```
+
+`onLoad` não recebe o tenant como argumento; a função fecha sobre o `tenantId` da renderização
+atual. Se o consumidor só conseguir fornecer `onLoad` depois que a autenticação resolver, a nova
+porta também inicia a carga. Em `'hybrid'`, o cache local do novo tenant é aplicado primeiro e o
+remoto é fundido por cima; em `'remote'`, o remoto substitui a semente. `null`/`undefined` mantém
+o fallback disponível para o tenant e não grava durante a hidratação. Use `strictBackendSync` para
+segurar os filhos enquanto a leitura remota termina.
+
+Se a troca também precisar zerar o estado React dos filhos, use uma chave no Provider:
+
+```tsx
+<SarakUIProvider key={tenantId} options={{ persistence: { tenantId, onLoad, onSave } }}>
+  <Aplicacao />
+</SarakUIProvider>
+```
+
+Essa alternativa desmonta e monta o Provider e seus filhos; mantenha `tenantId` para isolar o cache.
+
 ### 1.2 Os temas criados — `options.theme.onSave`
 
 Quando o usuário clica **"Salvar"** no painel para nomear e guardar um tema novo (ADR-011):
 
 ```ts
-onSave?: (theme: SarakThemeEntry) => Promise<void> | void
+onSave?: (theme: SarakThemeEntry, operation?: 'create' | 'replace') => Promise<void> | void
 ```
+
+O segundo argumento identifica a operação: `'create'` para **Salvar como novo** e **Duplicar**;
+`'replace'` para **Salvar** sobre o tema do importador em edição. O argumento é opcional para
+manter compatibilidade com callbacks antigos que recebem somente o tema.
 
 ```ts
 interface SarakThemeEntry {

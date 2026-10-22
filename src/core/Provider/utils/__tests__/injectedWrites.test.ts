@@ -101,4 +101,17 @@ describe('syncInjectedWrites', () => {
         releaseInjectedWrites(host);
         expect(host.style.getPropertyValue('--do-host')).toBe('x');
     });
+
+    it('a limpeza de uma instância antiga preserva os valores que outra instância escreveu depois', () => {
+        const host = makeHost();
+        const ownerA = {};
+        const ownerB = {};
+
+        syncInjectedWrites(host, { '--shared': 'tenant-a', '--a-only': 'kept-until-replaced' }, { 'data-sx-tenant': 'a' }, ownerA);
+        syncInjectedWrites(host, { '--shared': 'tenant-b' }, { 'data-sx-tenant': 'b' }, ownerB);
+        releaseInjectedWrites(host, ownerA);
+
+        expect(host.style.getPropertyValue('--shared')).toBe('tenant-b');
+        expect(host.getAttribute('data-sx-tenant')).toBe('b');
+    });
 });

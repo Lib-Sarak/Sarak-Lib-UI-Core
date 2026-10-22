@@ -1,7 +1,6 @@
 import * as React$1 from 'react';
 import React__default, { ReactNode, ButtonHTMLAttributes, ReactElement, InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes, HTMLAttributes, Key, LazyExoticComponent } from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
-import ReactFlow from 'reactflow';
 
 /**
  * Sarak Industrial Design Schema (v11.0)
@@ -787,6 +786,8 @@ interface SarakThemePayloadExtras {
 type SarakUIMode = 'app' | 'embedded';
 interface SarakUIOptions {
     token?: string;
+    /** Nonce CSP aplicado a todas as tags `<style>` criadas pela biblioteca. */
+    styleNonce?: string;
     /** Ajustes do sequestro de tema legado executado pelo `SovereignThemeInjector`. */
     manifest?: Record<string, unknown>;
     /** Modo de consumo (Spec 24). Default `'app'` — zero breaking change. */
@@ -956,8 +957,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "8.0.0-rc.1";
-    readonly baseCommitShort: "1ae58d6";
-    readonly builtAt: "2026-10-21T01:39:49.903Z";
+    readonly baseCommitShort: "80262ba";
+    readonly builtAt: "2026-10-22T03:39:56.903Z";
 };
 
 interface SarakDesignScopeProps {
@@ -2832,9 +2833,6 @@ interface SarakCardGridProps<TData extends Record<string, unknown> = Record<stri
         collapse_label?: string;
     };
     filters?: SarakFilterConfig[];
-    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-    density?: 'compact' | 'standard' | 'spacious';
-    importance?: 'hero' | 'base' | 'subtle';
     variant?: 'classic' | 'title' | 'action' | 'search';
 }
 /**
@@ -2886,9 +2884,6 @@ interface SarakChartProps<TData extends Record<string, unknown> = Record<string,
         value?: string;
         date?: string;
     };
-    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-    density?: 'compact' | 'standard' | 'spacious';
-    importance?: 'hero' | 'base' | 'subtle';
 }
 declare const SarakChart: <TData extends Record<string, unknown> = Record<string, unknown>>({ data, load, updatedAt, onRetry, label, mapping, }: SarakChartProps<TData>) => ReactElement;
 
@@ -2946,9 +2941,6 @@ interface SarakManagementGridProps<TItem extends Record<string, unknown>> {
     onToggle?: (item: TItem) => void | Promise<void>;
     onDelete?: (item: TItem) => void | Promise<void>;
     onCreate?: (data: Record<string, unknown>, group?: string) => void | Promise<void>;
-    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-    density?: 'compact' | 'standard' | 'spacious';
-    importance?: 'hero' | 'base' | 'subtle';
 }
 declare const SarakManagementGrid: <TItem extends Record<string, unknown> = Record<string, unknown>>({ data, load, groupBy, ghostGroups, mapping, label, description, headerActions, groupActions, formMapping, onAction, onToggle, onDelete, onCreate, }: SarakManagementGridProps<TItem>) => react_jsx_runtime.JSX.Element;
 
@@ -2977,12 +2969,6 @@ interface SarakChatProps {
     loadModels?: SarakChatModelLoader;
     /** Nome exibido no cabeçalho; omitido, usa `AI Chat`. */
     label?: string;
-    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
-    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
-    density?: 'compact' | 'standard' | 'spacious';
-    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
-    importance?: 'hero' | 'base' | 'subtle';
 }
 declare const SarakChat: React__default.FC<SarakChatProps>;
 
@@ -3045,9 +3031,8 @@ interface SarakAuthScreenProps {
     errorVariant?: 'error' | 'warning';
     /** Canal declarativo único — ver `SarakAuthScreenEvent`. Dispara em toda interação de negócio. */
     onChange?: (event: SarakAuthScreenEvent) => void;
-    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-    density?: 'compact' | 'standard' | 'spacious';
-    importance?: 'hero' | 'base' | 'subtle';
+    /** Renderiza apenas os provedores sociais configurados, sem os campos de credenciais. Default `true`. */
+    showCredentials?: boolean;
 }
 /**
  * SarakAuthScreen is a host-configured template with no built-in network behavior.
@@ -3086,12 +3071,6 @@ interface SarakCatalogGridProps {
     renderCard?: (item: SarakCatalogItem) => React$1.ReactNode;
     /** Mensagem exibida quando a lista filtrada fica vazia; omitida, usa `Nenhum item encontrado.`. Não aparece durante o carregamento. */
     emptyMessage?: string;
-    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
-    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
-    density?: 'compact' | 'standard' | 'spacious';
-    /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
-    importance?: 'hero' | 'base' | 'subtle';
 }
 
 /**
@@ -3759,6 +3738,13 @@ interface SarakCardMove {
     afterCardId: string | null;
 }
 
+/**
+ * SarakKanban — quadro de colunas que arrasta entre e DENTRO das colunas, por mouse, toque e
+ * teclado. A biblioteca de arrastar vive atrás de `useKanbanDrag`; aqui só se monta o
+ * quadro. O modelo local move o cartão no ato da soltura (sem esperar o consumidor) e o
+ * `onCardMove` leva índices e vizinhos finais. Medidas, superfícies e bordas saem de tokens.
+ */
+
 interface SarakKanbanProps<C extends SarakKanbanCard = SarakKanbanCard> {
     /** Colunas e seus cards (a ordem do array é a ordem visual). */
     columns: Array<SarakKanbanColumn<C>>;
@@ -4141,6 +4127,7 @@ interface SarakChatEngineProps {
 
 declare const SarakChatEngine: React__default.FC<SarakChatEngineProps>;
 
+declare const ReactFlow: any;
 type ReactFlowProps = React__default.ComponentProps<typeof ReactFlow>;
 interface SarakFlowEngineProps {
     /** Nós fornecidos ao React Flow; obrigatório, sem lista padrão. Use `[]` para iniciar sem nós. */

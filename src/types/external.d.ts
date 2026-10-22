@@ -1,6 +1,7 @@
 declare module 'recharts';
 declare module 'echarts-for-react';
 declare module 'reactflow';
+declare module 'reactflow/dist/style.css';
 declare module 'react-grid-layout';
 declare module 'react-syntax-highlighter';
 declare module 'react-dropzone';

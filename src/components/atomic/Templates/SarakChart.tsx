@@ -24,9 +24,6 @@ export interface SarakChartProps<TData extends Record<string, unknown> = Record<
     label?: string;
     /** Chaves dos campos de valor e rótulo; os defaults são value e date. */
     mapping?: { value?: string; date?: string };
-    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-    density?: 'compact' | 'standard' | 'spacious';
-    importance?: 'hero' | 'base' | 'subtle';
 }
 
 function numericValue(item: Record<string, unknown>, key: string): number {

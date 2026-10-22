@@ -43,4 +43,30 @@ describe('useBodyThemeTransition', () => {
         expect(requestFrame).not.toHaveBeenCalled();
         expect(document.body.hasAttribute('data-sarak-theme-ready')).toBe(false);
     });
+
+    it('a limpeza do Provider anterior preserva a marca que o Provider novo escreveu', () => {
+        const frames: FrameRequestCallback[] = [];
+        vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
+            frames.push(callback);
+            return frames.length;
+        });
+        vi.stubGlobal('cancelAnimationFrame', vi.fn());
+
+        const first = renderHook(() => useBodyThemeTransition(false));
+        const second = renderHook(() => useBodyThemeTransition(false));
+
+        act(() => {
+            frames.shift()?.(0);
+            frames.shift()?.(0);
+            frames.shift()?.(16);
+            frames.shift()?.(16);
+        });
+        expect(document.body.getAttribute('data-sarak-theme-ready')).toBe('true');
+
+        first.unmount();
+        expect(document.body.getAttribute('data-sarak-theme-ready')).toBe('true');
+
+        second.unmount();
+        expect(document.body.hasAttribute('data-sarak-theme-ready')).toBe(false);
+    });
 });

@@ -1,6 +1,5 @@
 // R27 — o consumidor nunca precisa de deep import. A superfície da lib é o
-// barril (`src/index.ts`) mais o campo `exports` do `package.json`. Nenhum
-// subcaminho fora da raiz e do CSS é uma porta declarada.
+// barril (`src/index.ts`), os subpaths CSS e o setup de testes documentado.
 //
 // -------------------------------------------------------------------------
 // LIMITES DECLARADOS (R18) — o que este gate NÃO vê
@@ -17,7 +16,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const ALLOWED_EXACT = new Set(['.']);
+const ALLOWED_EXACT = new Set(['.', './testing']);
 const ALLOWED_CSS_SUFFIX = /\.css$/;
 
 export function checkExports(exportsField) {
@@ -29,7 +28,7 @@ export function checkExports(exportsField) {
   for (const key of Object.keys(exportsField)) {
     if (ALLOWED_EXACT.has(key)) continue;
     if (ALLOWED_CSS_SUFFIX.test(key)) continue;
-    problemas.push(`"exports"."${key}" não é a raiz nem um subcaminho de CSS — é uma porta de deep import não declarada no contrato (R27).`);
+    problemas.push(`"exports"."${key}" não é a raiz, o subpath de testes nem um subcaminho de CSS — é uma porta de deep import não declarada no contrato (R27).`);
   }
 
   return problemas;
@@ -41,7 +40,7 @@ function main() {
   const problemas = checkExports(pkg.exports);
 
   if (problemas.length === 0) {
-    console.log('[OK] "exports" só expõe a raiz e subcaminhos de CSS — nenhuma porta de deep import.');
+    console.log('[OK] "exports" expõe a raiz, o setup de testes e subcaminhos de CSS — nenhuma porta interna de deep import.');
     process.exit(0);
   }
   console.log('[ERROR] "exports" expõe caminho(s) fora do contrato:');

@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-    ResponsiveContainer, LineChart, Line, XAxis, YAxis,
-    Tooltip as RechartsTooltip, BarChart, Bar,
-} from 'recharts';
+import * as Recharts from 'recharts';
 import type { EChartsTheme } from './useEChartsTheme';
 import type { SarakChartDataItem, SarakChartType } from './builders/types';
 
@@ -18,6 +15,8 @@ interface RechartsChartProps {
     theme: EChartsTheme;
     ariaLabel: string;
 }
+
+const { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip: RechartsTooltip, BarChart, Bar } = Recharts;
 
 function buildRechartsContent({ type, data, config, theme }: RechartsChartProps): React.ReactElement {
     if (type === 'bar') {

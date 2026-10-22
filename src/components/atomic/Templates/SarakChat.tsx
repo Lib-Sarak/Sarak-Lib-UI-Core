@@ -21,12 +21,6 @@ export interface SarakChatProps {
   loadModels?: SarakChatModelLoader;
   /** Nome exibido no cabeçalho; omitido, usa `AI Chat`. */
   label?: string;
-  /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
-  role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-  /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
-  density?: 'compact' | 'standard' | 'spacious';
-  /** Sem efeito nesta implementação; omitir ou alterar o valor não muda a renderização atual. */
-  importance?: 'hero' | 'base' | 'subtle';
 }
 
 export const SarakChat: React.FC<SarakChatProps> = ({ 

@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DesignInjector } from '../DesignInjector';
+import { SarakStyleNonceContext } from '../SarakStyle';
 import * as useDesignVariablesHook from '../../../Design/hooks/useDesignVariables';
 
 // Mock do hook
@@ -71,6 +72,22 @@ describe('DesignInjector', () => {
         const styleTag = document.getElementById('sarak-responsive-vars');
         expect(styleTag).not.toBeNull();
         expect(styleTag?.innerHTML).toBe(mockResponsive);
+    });
+
+    it('aplica o nonce CSP à folha de variáveis responsivas', () => {
+        (useDesignVariablesHook.useDesignVariables as any).mockReturnValue({
+            variables: {},
+            attributes: {},
+            responsiveCSS: '@media (max-width: 768px) { :root { --test-var: 5px; } }',
+        });
+
+        render(
+            <SarakStyleNonceContext.Provider value="responsive-nonce">
+                <DesignInjector design={{ mode: 'dark' }} isDrafting={false} />
+            </SarakStyleNonceContext.Provider>,
+        );
+
+        expect(document.getElementById('sarak-responsive-vars')).toHaveAttribute('nonce', 'responsive-nonce');
     });
 
     it('remove data-sarak-has-media se não houver background image e aplica modo fallback', () => {
@@ -206,6 +223,32 @@ describe('DesignInjector', () => {
 
             expect(island.style.getPropertyValue('--sarak-card-radius-tl')).toBe('');
             island.remove();
+        });
+
+        it('um Provider keyed novo mantém no documento os valores que escreveu após a limpeza passiva do anterior', () => {
+            (useDesignVariablesHook.useDesignVariables as any).mockImplementation((design: Record<string, string>) => ({
+                variables: { '--tenant-color': design.primaryColor },
+                attributes: { 'data-sx-tenant': design.systemName },
+                responsiveCSS: `.tenant { color: ${design.primaryColor}; }`,
+            }));
+
+            const mountInjector = (key: string, systemName: string, primaryColor: string) => (
+                <DesignInjector
+                    key={key}
+                    design={{ mode: 'dark', systemName, primaryColor, globalBackgroundImageUrl: `${systemName}.png` }}
+                    isDrafting={false}
+                />
+            );
+            const view = render(mountInjector('tenant-a', 'tenant-a', '#111111'));
+            expect(document.documentElement.style.getPropertyValue('--tenant-color')).toBe('#111111');
+
+            view.rerender(mountInjector('tenant-b', 'tenant-b', '#222222'));
+
+            expect(document.documentElement.style.getPropertyValue('--tenant-color')).toBe('#222222');
+            expect(document.documentElement.getAttribute('data-sx-tenant')).toBe('tenant-b');
+            expect(document.body.classList.contains('dark')).toBe(true);
+            expect(document.body.getAttribute('data-sarak-has-media')).toBe('true');
+            expect(document.getElementById('sarak-responsive-vars')?.textContent).toContain('#222222');
         });
     });
 
