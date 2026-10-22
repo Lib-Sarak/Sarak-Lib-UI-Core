@@ -1,9 +1,9 @@
 # Carimbo do kit sarak-ui/ — GERADO por `npm run guide` (não edite).
 # Compare com o VERSION do kit dentro de node_modules/@sarak/lib-ui-core/sarak-ui/
 # para saber se as cópias movidas para specs/ e .claude/skills/ estão velhas.
-libVersion=8.0.0-rc.1
+libVersion=8.0.0-rc.2
 kitSchemaVersion=1
-kitHash=58c72c387116
+kitHash=cd429b968e8e
 components=105
 designTokens=400
 iconNames=117

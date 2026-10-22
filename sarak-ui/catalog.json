@@ -3,7 +3,7 @@
   "schemaVersion": 1,
   "lib": {
     "name": "@sarak/lib-ui-core",
-    "version": "8.0.0-rc.1",
+    "version": "8.0.0-rc.2",
     "entry": "@sarak/lib-ui-core",
     "css": {
       "app": "injetado automaticamente pelo import do pacote (Modo App)",
@@ -10644,8 +10644,8 @@
     }
   ],
   "kitStamp": {
-    "libVersion": "8.0.0-rc.1",
+    "libVersion": "8.0.0-rc.2",
     "kitSchemaVersion": 1,
-    "kitHash": "58c72c387116"
+    "kitHash": "cd429b968e8e"
   }
 }
