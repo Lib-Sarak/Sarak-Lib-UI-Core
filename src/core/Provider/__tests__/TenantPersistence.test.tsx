@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { SarakUIProvider, useSarakUI } from '../SarakUIProvider';
@@ -7,6 +7,9 @@ import { DEFAULT_STORAGE_KEY } from '../constants';
 import type { SarakThemePayload, SarakUIOptions } from '../types';
 
 type TenantPersistence = NonNullable<SarakUIOptions['persistence']>;
+
+const PERSISTENCE_DEBOUNCE_MS = 1500;
+const TENANT_SWITCH_SETTLE_MS = 1600;
 
 const TenantDesignProbe = () => {
     const ui = useSarakUI();
@@ -42,8 +45,17 @@ const renderDefaultStrategyProvider = (persistence?: TenantPersistence) => (
     </SarakUIProvider>
 );
 
+const advanceFakeTimers = (durationMs: number): void => {
+    act(() => vi.advanceTimersByTime(durationMs));
+};
+
+const flushRemoteLoad = async () => {
+    await act(async () => {});
+};
+
 describe('SarakUIProvider — persistência ao trocar tenant', () => {
     beforeEach(() => {
+        vi.useFakeTimers();
         localStorage.removeItem(DEFAULT_STORAGE_KEY);
         localStorage.removeItem('provider-tenant-persistence');
         ['tenant-a', 'tenant-b', 'tenant-c'].forEach((tenantId) =>
@@ -52,6 +64,7 @@ describe('SarakUIProvider — persistência ao trocar tenant', () => {
     });
 
     afterEach(() => {
+        vi.useRealTimers();
         localStorage.removeItem(DEFAULT_STORAGE_KEY);
         localStorage.removeItem('provider-tenant-persistence');
         ['tenant-a', 'tenant-b', 'tenant-c'].forEach((tenantId) =>
@@ -75,8 +88,9 @@ describe('SarakUIProvider — persistência ao trocar tenant', () => {
             onLoad: onLoadTenantA,
             onSave: onSaveTenantA,
         }));
-        await waitFor(() => expect(onLoadTenantA).toHaveBeenCalledTimes(1));
-        await waitFor(() => expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#111111'));
+        await flushRemoteLoad();
+        expect(onLoadTenantA).toHaveBeenCalledTimes(1);
+        expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#111111');
 
         fireEvent.click(screen.getByRole('button', { name: 'Editar tema' }));
         rerender(renderProvider({
@@ -86,15 +100,17 @@ describe('SarakUIProvider — persistência ao trocar tenant', () => {
             onLoad: onLoadTenantB,
             onSave: onSaveTenantB,
         }));
-        await waitFor(() => expect(onLoadTenantB).toHaveBeenCalledTimes(1));
-        await waitFor(() => expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#222222'));
+        await flushRemoteLoad();
+        expect(onLoadTenantB).toHaveBeenCalledTimes(1);
+        expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#222222');
 
-        await act(async () => new Promise((resolve) => setTimeout(resolve, 1600)));
+        advanceFakeTimers(TENANT_SWITCH_SETTLE_MS);
         expect(onSaveTenantA).not.toHaveBeenCalled();
         expect(onSaveTenantB).not.toHaveBeenCalled();
 
         fireEvent.click(screen.getByRole('button', { name: 'Editar tema' }));
-        await waitFor(() => expect(onSaveTenantB).toHaveBeenCalledTimes(1), { timeout: 3000 });
+        advanceFakeTimers(PERSISTENCE_DEBOUNCE_MS);
+        expect(onSaveTenantB).toHaveBeenCalledTimes(1);
         expect(onSaveTenantB).toHaveBeenCalledWith(expect.objectContaining({ primaryColor: '#45ab67' }), expect.any(String));
 
         rerender(renderProvider({
@@ -104,8 +120,9 @@ describe('SarakUIProvider — persistência ao trocar tenant', () => {
             onLoad: onLoadTenantC,
             onSave: onSaveTenantC,
         }));
-        await waitFor(() => expect(onLoadTenantC).toHaveBeenCalledTimes(1));
-        await waitFor(() => expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#123456'));
+        await flushRemoteLoad();
+        expect(onLoadTenantC).toHaveBeenCalledTimes(1);
+        expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#123456');
     });
 
     it('a configuração padrão do Provider carrega o tenant ao receber as portas após o mount', async () => {
@@ -121,10 +138,12 @@ describe('SarakUIProvider — persistência ao trocar tenant', () => {
             onSave: onSaveTenantA,
         }));
 
-        await waitFor(() => expect(onLoadTenantA).toHaveBeenCalledTimes(1));
-        await waitFor(() => expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#111111'));
+        await flushRemoteLoad();
+        expect(onLoadTenantA).toHaveBeenCalledTimes(1);
+        expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#111111');
         fireEvent.click(screen.getByRole('button', { name: 'Editar tema' }));
-        await waitFor(() => expect(onSaveTenantA).toHaveBeenCalledTimes(1), { timeout: 3000 });
+        advanceFakeTimers(PERSISTENCE_DEBOUNCE_MS);
+        expect(onSaveTenantA).toHaveBeenCalledTimes(1);
 
         rerender(renderDefaultStrategyProvider({
             tenantId: 'tenant-b',
@@ -132,8 +151,9 @@ describe('SarakUIProvider — persistência ao trocar tenant', () => {
             onSave: onSaveTenantB,
         }));
 
-        await waitFor(() => expect(onLoadTenantB).toHaveBeenCalledTimes(1));
-        await waitFor(() => expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#222222'));
+        await flushRemoteLoad();
+        expect(onLoadTenantB).toHaveBeenCalledTimes(1);
+        expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#222222');
     });
 
     it('a configuração padrão cancela a gravação pendente de A ao trocar para B', async () => {
@@ -149,10 +169,11 @@ describe('SarakUIProvider — persistência ao trocar tenant', () => {
             onSave: onSaveTenantA,
         }));
 
-        await waitFor(() => expect(onLoadTenantA).toHaveBeenCalledTimes(1));
-        await waitFor(() => expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#111111'));
+        await flushRemoteLoad();
+        expect(onLoadTenantA).toHaveBeenCalledTimes(1);
+        expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#111111');
         fireEvent.click(screen.getByRole('button', { name: 'Editar tema' }));
-        await waitFor(() => expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#45ab67'));
+        expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#45ab67');
 
         rerender(renderDefaultStrategyProvider({
             tenantId: 'tenant-b',
@@ -160,15 +181,17 @@ describe('SarakUIProvider — persistência ao trocar tenant', () => {
             onSave: onSaveTenantB,
         }));
 
-        await waitFor(() => expect(onLoadTenantB).toHaveBeenCalledTimes(1));
-        await waitFor(() => expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#222222'));
-        await act(async () => new Promise((resolve) => setTimeout(resolve, 1600)));
+        await flushRemoteLoad();
+        expect(onLoadTenantB).toHaveBeenCalledTimes(1);
+        expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#222222');
+        advanceFakeTimers(TENANT_SWITCH_SETTLE_MS);
 
         expect(onSaveTenantA).not.toHaveBeenCalled();
         expect(onSaveTenantB).not.toHaveBeenCalled();
 
         fireEvent.click(screen.getByRole('button', { name: 'Editar tema' }));
-        await waitFor(() => expect(onSaveTenantB).toHaveBeenCalledTimes(1), { timeout: 3000 });
+        advanceFakeTimers(PERSISTENCE_DEBOUNCE_MS);
+        expect(onSaveTenantB).toHaveBeenCalledTimes(1);
         expect(onSaveTenantB).toHaveBeenCalledWith(expect.objectContaining({ primaryColor: '#45ab67' }), expect.any(String));
         expect(onSaveTenantA).not.toHaveBeenCalled();
     });

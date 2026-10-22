@@ -1368,3 +1368,114 @@ código.
 login-completo, login-provedores) migrarem para a `rc.2` e devolverem o que medirem.
 
 **Status: 🟡 Em execução** (lote final pendente).
+
+## Veredito — 2026-10-22 — CI da `develop` (commit `7ea69603`) — 🔴 Reprovado (1 achado do lote 5)
+
+**Achado 1 — dois testes do lote 5 dependem do relógio real e estouram o limite de 5 s na CI.** O job `gates` caiu com 2 falhas de
+3761 testes, ambas `Test timed out in 5000ms`, em `src/core/Provider/__tests__/TenantPersistence.test.tsx`: no caso "entra no tenant
+depois do mount…" (`:62`) e no caso "a configuração padrão cancela a gravação pendente de A ao trocar para B" (`:139`). **Medido por
+mim na máquina local:** os dois passam, mas com 4333 ms e 4834 ms, a menos de 0,2 s do limite. A causa está no teste, não na lib:
+cada caso espera em tempo real o atraso de 1500 ms da gravação automática (`src/core/Provider/hooks/useDesignManager.ts:151`), mais
+uma pausa fixa de 1600 ms e mais `waitFor` de até 3000 ms, dentro do limite padrão de 5 s. Numa máquina mais lenta, estoura. Meu
+veredito de aprovação do lote 5 não pegou isso: eu conferi o resultado, não o tempo de cada caso.
+**Correção:** os três casos do arquivo passam a controlar o relógio com timers falsos do Vitest. Eles avançam o atraso da gravação e
+a pausa de forma explícita, sem esperar em tempo real, e provam o mesmo comportamento: o `onLoad` de cada tenant, o tema aplicado,
+nenhuma gravação de A em B e a edição seguinte chegando ao `onSave` do tenant ativo. Aumentar o limite de tempo não serve como
+correção. **Prova pedida:** cada caso abaixo de 1 s (cole a saída `--reporter=verbose`). **Mutação pedida:** com a linha
+`:151` sem cancelar o timer anterior ao trocar de tenant (numa cópia), o caso `:139` cai. Depois, `npm run verify -- --tier=full`.
+Só o arquivo de teste muda.
+
+**Status: 🔵 Em correção.** A `rc.2` espera a CI verde.
+
+## Resumo da execução (correção do achado da CI) — 2026-10-22
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar**
+```text
+ M specs/00-indice.md
+ M specs/plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md
+?? .claude/settings.local.json
+```
+
+**O que foi feito**
+- Os três casos de `TenantPersistence.test.tsx` agora usam timers falsos do Vitest. O atraso de 1500 ms da gravação e a pausa de 1600 ms da troca avançam explicitamente dentro de `act`; `afterEach` restaura os timers reais.
+- `waitFor` foi removido deste arquivo porque, junto dos timers falsos, prendia as esperas assíncronas até o timeout do teste. As cargas remotas são drenadas por `act`, e os delays de persistência são avançados sem espera real.
+- Os três casos continuam verificando chamadas de `onLoad`, temas carregados, cancelamento da gravação de A ao trocar para B e a próxima edição chegando ao `onSave` do tenant ativo.
+- Na mutação temporária, removi somente `return () => clearTimeout(timer)` da cópia de `useDesignManager.ts`. O caso de cancelamento falhou como esperado: `onSaveTenantB` foi chamado uma vez antes da edição de B. A cópia foi descartada e `node_modules` do repositório permaneceu intacto.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Provider/__tests__/TenantPersistence.test.tsx` | alterado | Timers falsos, avanço virtual explícito e flush das cargas remotas nos três casos. |
+| esta plan | alterado | Resumo desta correção e status encaminhado à revisão. |
+
+**Verificações executadas**
+- `npx vitest run src/core/Provider/__tests__/TenantPersistence.test.tsx --reporter=verbose` → 3 passaram; cada caso abaixo de 1 s. Saída da execução aprovada:
+
+  ```text
+   RUN  v4.1.12 C:/Users/Igor/Desktop/Sarak/X - Trabalho/Code/Biblioteca/Sarak-Lib-UI-Core
+
+  (process:50532): GLib-GIO-WARNING **: 01:49:05.969: Failed to open application manifest `C:\Windows\SystemApps\Microsoft.WindowsAppRuntime.vNext.CBS_1.8_8000.800.1936.100_x64__8wekyb3d8bbwe\AppxManifest.xml` for package #34 (`Microsoft.WindowsAppRuntime.CBS.1.8_8000.800.1936.100_x64__8wekyb3d8bbwe`): error code 0x2
+  Could not parse CSS stylesheet
+  stderr | src/core/Provider/__tests__/TenantPersistence.test.tsx > SarakUIProvider — persistência ao trocar tenant > entra no tenant depois do mount, aplica as cargas seguintes e só grava edições do tenant ativo
+  [Sarak] CSS não detectado. O import do pacote deveria ter carregado o stylesheet — se isso falhou (ex.: bundler fazendo tree-shaking do side-effect), importe manualmente "@sarak/lib-ui-core/dist/sarak.css" no entry point da aplicação.
+  [Sarak:Design] persistence.strategy: 'remote' sem onSave/onLoad configurado — degradando para 'local' (localStorage) para não perder o tema.
+
+  stderr | src/core/Provider/__tests__/TenantPersistence.test.tsx > SarakUIProvider — persistência ao trocar tenant > a configuração padrão do Provider carrega o tenant ao receber as portas após o mount
+  [Sarak] CSS não detectado. O import do pacote deveria ter carregado o stylesheet — se isso falhou (ex.: bundler fazendo tree-shaking do side-effect), importe manualmente "@sarak/lib-ui-core/dist/sarak.css" no entry point da aplicação.
+
+   ✓ src/core/Provider/__tests__/TenantPersistence.test.tsx > SarakUIProvider — persistência ao trocar tenant > entra no tenant depois do mount, aplica as cargas seguintes e só grava edições do tenant ativo 967ms
+  stderr | src/core/Provider/__tests__/TenantPersistence.test.tsx > SarakUIProvider — persistência ao trocar tenant > a configuração padrão cancela a gravação pendente de A ao trocar para B
+  [Sarak] CSS não detectado. O import do pacote deveria ter carregado o stylesheet — se isso falhou (ex.: bundler fazendo tree-shaking do side-effect), importe manualmente "@sarak/lib-ui-core/dist/sarak.css" no entry point da aplicação.
+
+   ✓ src/core/Provider/__tests__/TenantPersistence.test.tsx > SarakUIProvider — persistência ao trocar tenant > a configuração padrão do Provider carrega o tenant ao receber as portas após o mount 576ms
+   ✓ src/core/Provider/__tests__/TenantPersistence.test.tsx > SarakUIProvider — persistência ao trocar tenant > a configuração padrão cancela a gravação pendente de A ao trocar para B 627ms
+
+   Test Files  1 passed (1)
+        Tests  3 passed (3)
+     Start at  01:49:03
+     Duration  14.26s (transform 1.04s, setup 244ms, import 9.23s, tests 2.17s, environment 2.29s)
+  ```
+- Mutação fora do repositório → o caso `a configuração padrão cancela a gravação pendente de A ao trocar para B` falhou em 775 ms na asserção de que `onSaveTenantB` não deveria ter sido chamado; a cópia temporária foi removida (`TEMP_COPY_REMOVED=True`) e `node_modules` foi preservado.
+- `npm run verify -- --tier=full` → a primeira rodada teve um timeout de 5 s em `gates/scripts/contrato/__tests__/check-class-merge.test.mjs:172` após 1539 s. O arquivo passou isolado (15/15 em 1,20 s). Na segunda rodada, suíte completa em 1447 s, TSC, baseline, os 24 gates do Anel 1, `check-trail-citation`, `guide:check`, `dev-kit:check` e Anel 0 simulado (64 linhas, 0 achados) passaram; resumo final: `[OK] nível "full" verde.`
+- `node .../padrao-typescript/scripts/validate.mjs src/core/Provider/__tests__/TenantPersistence.test.tsx` → exit code 0; o validador também listou apontamentos heurísticos de assinatura/tamanho nas funções de teste existentes no arquivo.
+- `git diff --check` → exit code 0.
+
+**Critérios de aceite**
+- [x] Três casos com timers falsos e restauração dos timers reais em `afterEach`; nenhum limite de tempo foi aumentado.
+- [x] Saída verbose anexada; durações medidas de 967 ms, 576 ms e 627 ms.
+- [x] A mutação da limpeza do timer fez o caso de cancelamento falhar na cópia descartável.
+- [x] `npm run verify -- --tier=full` terminou verde na segunda execução; a falha temporal isolada da primeira execução também foi registrada.
+- [x] Nenhum commit criado.
+
+**Decisões e suposições**
+- A espera por `onLoad` é drenada dentro de `act`, e os tempos de negócio avançam por `vi.advanceTimersByTime`; isso evita que `waitFor` dependa do relógio real ou dos próprios timers falsos.
+- Não alterei a lib, `vitest.config.ts`, nem outros arquivos de código.
+
+**Achados fora do escopo (não corrigidos)**
+- `gates/scripts/contrato/__tests__/check-class-merge.test.mjs:172` excedeu 5 s uma vez dentro da primeira suíte completa, passou isolado e na suíte completa seguinte; não alterado.
+
+**Pendências / riscos**
+- O tier full passou antes da transição final do status desta plan de `🔵 Em correção` para `🟠 Em revisão`. `specs/00-indice.md` já estava modificado no início e foi preservado; a linha do índice continua sob revisão do revisor.
+
+## Veredito — 2026-10-22 — correção do achado da CI — 🟢 Aprovado
+
+**O que mudou (conferido no diff):** o executor só alterou `TenantPersistence.test.tsx`. O arquivo passou a usar timers falsos e a
+restaurar os reais no `afterEach`. O atraso de 1500 ms da gravação e a pausa de 1600 ms agora avançam de forma explícita, e a carga
+remota é drenada por `act`. Nenhum `waitFor` ficou preso a relógio real, nenhum limite de tempo foi aumentado e a lib não mudou. Os
+três casos provam o mesmo de antes. No caso do cancelamento, a edição de A fica pendente e a troca para B acontece sem passar tempo:
+se o timer não fosse cancelado, ele dispararia ao avançar 1600 ms. A mutação do executor mostra exatamente isso, com o `onSave` de B
+chamado antes da edição.
+**Medido por mim:** o arquivo rodou duas vezes e passou 3/3 nas duas. Os casos levaram entre 1,3 e 2,4 s, com a máquina carregada
+(CPU a 77% e 465 processos `node` de outras sessões). O executor mediu 0,6 a 1,0 s. O tempo que sobrou é de renderização, não de
+espera, e não depende mais do relógio. O `tsc --noEmit` deu 0 erros. A suíte completa (`verify --tier=full`) verde fica aceita pelo
+relato, porque o diff muda só este teste.
+**Observação, não é achado:** na primeira suíte completa do executor, `gates/scripts/contrato/__tests__/check-class-merge.test.mjs:172`
+estourou 5 s uma vez. O caso varre a base real, passou isolado e passou na rodada seguinte. Também não falhou na CI. Se cair na CI, ele
+volta como achado.
+
+**Correção fechada.** O dono commita, faz o push para a `develop` e espera a CI verde. Depois vem o PR develop → main, a tag
+`v8.0.0-rc.2`, e a plan segue para o lote final, que depende dos importadores.
+
+**Status: 🟡 Em execução** (lote final pendente).
