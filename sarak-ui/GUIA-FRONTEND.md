@@ -119,6 +119,25 @@ instalar e registra um aviso no console.
 | `react-markdown` e `react-syntax-highlighter >=16.1.2` | `SarakChatEngine` e `SarakMarkdownRenderer` |
 | `reactflow` | `SarakFlowEngine` |
 
+No build de um consumidor Vite 8.3.5 sem essas peers, o Rollup pode emitir avisos
+`IMPORT_IS_UNDEFINED` para os membros abaixo. Eles aparecem porque o acesso estático aponta para
+exports que não existem enquanto a peer opcional está ausente. O aviso é inofensivo: antes de
+renderizar a implementação que usa esses membros, cada componente verifica a disponibilidade da
+peer e mostra o fallback se ela faltar.
+
+| Peer ausente | Membros citados pelo aviso | Fallback |
+| --- | --- | --- |
+| `@tanstack/react-virtual` | `useVirtualizer` | `SarakDataGrid` e `SarakDataTable` |
+| `echarts` | `graphic`, `format`; `echarts/core`: `use`; `echarts/components`: `AriaComponent`, `LegendComponent` | `SarakChartEngine` no motor ECharts |
+| `recharts` | `ResponsiveContainer`, `BarChart`, `LineChart`, `Line`, `XAxis`, `YAxis`, `Tooltip`, `Bar` | `SarakChartEngine` no motor Recharts |
+| `react-syntax-highlighter` | `Prism`; `react-syntax-highlighter/dist/esm/styles/prism`: `oneDark`, `oneLight`, `atomDark` | `SarakChatEngine` e `SarakMarkdownRenderer` |
+| `reactflow` | `BackgroundVariant` | `SarakFlowEngine` |
+
+Ao compilar um consumidor client com Vite 8, o bundler pode avisar que não preserva a diretiva
+`"use client"` encontrada em módulos do `framer-motion`. É um aviso esperado do pacote instalado, não
+indica peer opcional ausente e não bloqueia os builds com ou sem peers; este kit não usa fronteiras de
+React Server Components.
+
 ## 1.2 O acoplamento mínimo
 
 Todo consumo, em qualquer topologia, tem a mesma raiz: **um `SarakUIProvider` envolvendo a árvore**.
@@ -189,8 +208,10 @@ export default defineConfig({
 });
 ```
 
-O setup instala `matchMedia` somente quando o ambiente ainda não o fornece; o filtro suprime apenas
-o aviso do jsdom ao analisar CSS com sintaxe que ele não implementa.
+`installSarakTestEnvironment()` instala `matchMedia` somente quando o ambiente ainda não o fornece e
+filtra `Could not parse CSS stylesheet` diretamente na VirtualConsole do jsdom. Esse aviso sai pelo
+canal de erro do jsdom e não passa por `onConsoleLog` do Vitest. `filterSarakTestConsoleLog` continua
+disponível para mensagens que o Vitest encaminha por esse callback.
 
 ---
 

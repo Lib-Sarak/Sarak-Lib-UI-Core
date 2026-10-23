@@ -4,6 +4,7 @@ import { filterSarakTestConsoleLog, installSarakTestEnvironment } from '../testi
 const originalMatchMedia = window.matchMedia;
 
 afterEach(() => {
+    vi.restoreAllMocks();
     if (originalMatchMedia) {
         Object.defineProperty(window, 'matchMedia', { configurable: true, writable: true, value: originalMatchMedia });
     } else {
@@ -35,5 +36,17 @@ describe('Sarak test setup helpers', () => {
     it('filters only the jsdom stylesheet parser warning', () => {
         expect(filterSarakTestConsoleLog('Error: Could not parse CSS stylesheet')).toBe(false);
         expect(filterSarakTestConsoleLog('Error: network request failed')).toBeUndefined();
+    });
+
+    it('filters jsdom stylesheet parser warnings through the test environment setup', () => {
+        const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+        const stylesheet = document.createElement('style');
+        stylesheet.textContent = '__SARAK_CSS_PLACEHOLDER__';
+
+        installSarakTestEnvironment();
+        document.head.appendChild(stylesheet);
+
+        expect(consoleError).not.toHaveBeenCalled();
+        stylesheet.remove();
     });
 });

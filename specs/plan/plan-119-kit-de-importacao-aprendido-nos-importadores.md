@@ -68,6 +68,10 @@ nem tag ([[03-versionamento-e-release]]).
   `src/core/Provider/utils/injectedWrites.ts`, `src/core/Provider/components/DesignInjector.tsx` e os outros injetores que limpam
   o documento ao desmontar; os testes deles; um caso em `browser-tests/`; `docs/persistencia-de-tema.md`, `docs/migracoes.md` e os
   gerados.
+- **Lote 7:** `docs/persistencia-de-tema.md`, um teste de componente do caminho do I27 e um caso em `browser-tests/`;
+  `package.json` (só a faixa de `dompurify`) e `package-lock.json`; `src/testing.ts` e o teste dele; o consumidor de
+  `scripts/test-optional-peer-consumer.mjs` (ou um script irmão para o caso do Vitest); se o I31 tiver correção, os pontos de
+  import das peers opcionais; `sarak-ui/GUIA-FRONTEND.md`, `docs/migracoes.md` e os gerados.
 - **Lote 6:** `package.json` (faixas de `dependencies`, `peerDependencies` e `devDependencies` dos pacotes do I26),
   `package-lock.json`, o que o echarts 6 e o `react-syntax-highlighter` 16 exigirem em `src/components/engines/charts/`,
   `src/components/atomic/Media/SarakMarkdownRenderer/` e `src/components/engines/chat/`, o `SarakPDFViewer` se a versão nova do
@@ -233,6 +237,29 @@ MAJOR na `## 8.0.0` de `docs/migracoes.md` com os pisos novos de cada peer; a ta
 com as versões mínimas.
 6.6. `npm run guide` e `npm run dev-kit` por último.
 
+**Lote 7 — o que o login mediu na `rc.2`** (linhas **I27, I28, I29 e I31** da §5.1; sai na `v8.0.0-rc.3`).
+7.1. **(I27)** Primeiro a prova do caminho do login, em teste de componente e num caso de navegador contra o `dist/`: Provider
+montado sem `tenantId` e sem portas (`persistence: { storageKey, crossTabSync: true }`, sem `strategy`) → passa a receber
+`tenantId` + `onLoad` + `onSave` e `theme: { onSave }` → o `onLoad` devolve o tema do tenant → no painel, escolher um tema na
+galeria → `Aplicar (N)` → o `onSave` do tenant é chamado **uma vez** e o `localStorage` da chave do tenant é escrito. Antes do
+"Aplicar", nada é gravado. Com um `onSave` que rejeita, diga quantas vezes ele é chamado e por quê (o login viu dois `PUT` num
+só "Aplicar" quando o backend recusava). Se o teste reprovar, é defeito da lib: cole a falha e corrija antes de seguir. Depois, `docs/persistencia-de-tema.md`
+§1.1 passa a dizer a verdade (a galeria e o ajuste de token são rascunho e **já aparecem na tela de quem edita**, sem gravar; `Aplicar (N)` é a única porta que grava o estado
+aplicado; o que chega ao `onSave`), sem contradizer a `06`.
+7.2. **(I28)** `dompurify` com mínimo `^3.4.17` e o lock nele, gerado com npm ≥ 11.10.1 (cole `npm -v`; nenhuma entrada de
+`@emnapi/*`, `@napi-rs/*` e `@rolldown/binding-*` pode sumir); os testes de `src/core/Security/` verdes; `npm audit` sem aviso
+(cole); uma linha na nota de pisos da `## 8.0.0` de `docs/migracoes.md`.
+7.3. **(I29)** Primeiro o teste que reprova hoje: um projeto Vitest consumidor (no molde de `scripts/test-optional-peer-consumer.mjs`,
+ou um caso dentro dele) com jsdom, a lib importada e o setup do guia; o aviso `Could not parse CSS stylesheet` aparece na saída.
+Depois, o setup de `@sarak/lib-ui-core/testing` passa a calar o aviso de fato (o caminho que o jsdom usa), e o guia
+(`sarak-ui/GUIA-FRONTEND.md`, a seção do subpath `testing`) ensina esse caminho. O teste da função isolada não basta como prova.
+7.4. **(I31)** Medir o `vite build` do consumidor sem as peers opcionais e colar os avisos. Se dá para tirá-los sem voltar a
+quebrar o build sem a peer (os três cenários do consumidor verdes), tirar; se não, uma linha no guia, junto da tabela de peers,
+diz que o aviso é esperado e por quê.
+7.5. **(I32)** `docs/persistencia-de-tema.md` diz o formato do payload que chega ao `onSave`, como na linha I32, com um exemplo
+real de token de um tema embarcado.
+7.6. `npm run guide` e `npm run dev-kit` por último.
+
 **§5.1 — Registro vivo dos achados da lib** (mantido pelo revisor; vem do lote 0 e das sessões dos importadores):
 
 | # | Achado (`arquivo:linha` e medição) | Origem | Decisão | Lote | Estado |
@@ -267,6 +294,12 @@ com as versões mínimas.
 | I24 | **trocar de tenant sem remontar não lê o tema do tenant novo:** o `onLoad` roda uma vez por instância (`src/core/Provider/hooks/useDesignRemoteLoader.ts:63-75`: sem `onLoad` antes do login, a instância já se marca carregada e não chama mais); a troca de `persistence.tenantId` só troca a chave do `localStorage` (`src/core/Provider/utils/resolveStorageKey.ts`). O tema da organização nunca é lido, e a primeira mudança no painel não chega ao `onSave` | login (bloqueia a migração) | corrigir — a troca de `tenantId` (inclusive de ausente para definido) e o `onLoad` que passa a existir disparam o `onLoad` do tenant novo; aplica o que vier (ou o padrão); passa a gravar no `onSave` desse tenant; gravação pendente do anterior nunca vai ao novo | 5 | fechada |
 | I25 | **remontar o Provider por `key` apaga o tema da instância nova:** ao desmontar, a instância que sai limpa o `<html>`/`<body>` (`releaseInjectedWrites`, `src/core/Provider/components/DesignInjector.tsx:185`) **depois** de a nova já ter aplicado o tema — medido pelo importador: `<html>` sem `data-sx-*` nem variáveis, `<body>` sem `dark` nem fundo | login (bloqueia a migração) | corrigir — a limpeza ao desmontar é por instância: só remove o que aquela instância escreveu e que nenhuma outra escreveu depois | 5 | fechada |
 | I26 | **dependências com vulnerabilidade conhecida** (`npm audit`, 2026-10-21: 15 avisos — 1 baixo, 8 moderados, 6 altos). **Chegam ao importador:** `pdfjs-dist` (peer opcional; alta — execução de JavaScript ao abrir PDF malicioso; correção dentro do major), `dompurify` (`dependencies`, vai junto com a lib; moderada; dentro do major), `echarts` (peer opcional, `>=5.5.0`; moderada, XSS; correção só no major 6, `6.1.0`), `react-syntax-highlighter` (peer opcional, `>=15.5.0`; moderada via `prismjs`/`refractor`; correção só na `16.1.2`). **Só ferramentas da lib:** `vite`, `vitest`, `@vitest/coverage-v8`, `@vitest/mocker`, `esbuild`, `postcss`, `nanoid`, `undici`, `source-map-js` (transitivas ou `devDependencies`; correção sem major) | login · revisor | **dono, 2026-10-21: corrigir antes da `rc.2`** — pisos das peers e da dependência nas versões sem aviso (subir piso de peer é MAJOR e só cabe antes da 8.0.0), o motor de gráficos e o realce provados nelas; as ferramentas atualizadas sem major | 6 | fechada |
+| I27 | **a documentação diz que o ajuste no painel já grava, e o painel só grava no "Aplicar":** `docs/persistencia-de-tema.md` §1.1 afirma que "o estado aplicado muda a cada ajuste", mas pela `06` §2 e §5 (`:145`, `:202`) a escolha na galeria e o ajuste de token são **rascunho**: aparecem na tela de quem edita e não gravam nada até `Aplicar (N)`. O login mediu a galeria sem clicar em "Aplicar" e leu como defeito de persistência depois da troca de tenant (relato de 2026-10-22) | login | corrigir a documentação (o rascunho, o "Aplicar" como única porta de gravação, o que chega ao `onSave`) e provar o caminho que o login usa: Provider sem tenant → `tenantId` + `onLoad` + `onSave` → galeria → `Aplicar` → `onSave` do tenant chamado | 7 | fechada |
+| I28 | **`dompurify` 3.4.16 tem aviso crítico novo** (GHSA-cg2g-xh64-v4q7, GHSA-mrv2-3pqr-j5jr, GHSA-c6gr-qvv4-5v3f; medido pelo login em 2026-10-22, depois da `rc.2`); a faixa `^3.4.16` admite a versão vulnerável e a 3.4.17 corrige | login | corrigir — mínimo `^3.4.17` em `dependencies` e o lock nela; a sanitização provada | 7 | fechada |
+| I29 | **`filterSarakTestConsoleLog` não filtra o aviso que promete:** `Could not parse CSS stylesheet` continua aparecendo (9 vezes no login; também na suíte desta lib). O jsdom escreve direto no stderr, sem passar pelo `onConsoleLog` do Vitest. O teste de `src/__tests__/testing.test.ts:36` prova o retorno da função, não o efeito | login | corrigir — o setup de `@sarak/lib-ui-core/testing` cala o aviso de fato, provado num projeto Vitest consumidor (o aviso ausente na saída), e o guia ensina o caminho que funciona | 7 | fechada |
+| I32 | **a documentação não diz o formato dos valores que chegam ao `onSave`:** os temas embarcados da 8.0.0 usam `var(--x, <reserva>)` e `color-mix()` (inclusive aninhados) em tokens de cor; o login validava cor como valor simples no backend e recusou com 400 os dois `PUT` do "Aplicar" | login | corrigir a documentação — `docs/persistencia-de-tema.md` diz que o payload é opaco para o importador, que valores de cor podem ser `var()`/`color-mix()` aninhados, e que o backend guarda sem validar o formato do token (ou valida só a forma do JSON) | 7 | fechada |
+| I30 | `./package.json` fora do `exports`: o importador lê a versão pelo caminho resolvido para conferir o selo (`data-sarak-build-info`) | login | **proposta do revisor: depois da 8.0.0** (entrada aditiva no `exports`), ao `00-backlog` no lote final | final | aberta |
+| I31 | o `vite build` do importador sem as peers opcionais passa, mas com avisos de export ausente nos pedaços sob demanda | login | medir — se dá para tirar o aviso sem voltar a quebrar o build sem a peer, tirar; se não, o guia diz que o aviso é esperado e por quê | 7 | fechada |
 | C6 | seletor de organização (tenant) no cromo: os sistemas multi-tenant mantêm o próprio | login | **proposta do revisor: depois da 8.0.0** (função aditiva; o slot já serve), ao `00-backlog` no lote final | final | aberta |
 | C7 | histórico de versões: entradas de `docs/migracoes.md` sem versão no título e tokens removidos/renomeados sem forma de dado | login | **proposta do revisor:** lote final — toda entrada com a versão, e o `catalog.json` do kit com a lista de tokens removidos e o destino de cada um | final | aberta |
 | C5 | span do grid de 12 colunas sem contrato público (`15-divida-conhecida` achado 42) | lote 0 (30) | **dono, 2026-10-19:** declarar `col-span-*` como contrato suportado, com teste que trava o comportamento; `SarakGridItem` ao backlog | 2 | fechada |
@@ -1007,7 +1040,7 @@ O lote final (consolidação do kit) vem depois que os importadores migrarem.
 
 ## Resumo da execução — 2026-10-21
 
-**Resultado:** Concluído
+**Resultado:** Concluído com pendências
 
 **Estado do worktree ao iniciar**
 ```text
@@ -1477,5 +1510,488 @@ volta como achado.
 
 **Correção fechada.** O dono commita, faz o push para a `develop` e espera a CI verde. Depois vem o PR develop → main, a tag
 `v8.0.0-rc.2`, e a plan segue para o lote final, que depende dos importadores.
+
+**Status: 🟡 Em execução** (lote final pendente).
+
+## Registro — 2026-10-22 — relato do login-completo na `rc.2`
+
+O login instalou a `v8.0.0-rc.2` sem contorno nenhum (Provider único sem `key`, nonce pela meta, setup de teste da lib, peers que
+só serviam ao build removidas). **Funcionou:** o tema do tenant é aplicado depois do login, a CSP fica sem `'unsafe-inline'` (6 de
+6 `<style>` com nonce, nenhuma violação), o build passa sem as peers opcionais e os testes passam sem polyfill próprio.
+**Leitura do revisor sobre os ❌:**
+- "A edição não é gravada depois da troca de tenant": o login escolheu um tema na galeria e não clicou em `Aplicar (N)`. Pela
+  `06` (`:145`, `:202`), isso é rascunho: aparece na tela de quem edita e não grava. O comportamento confere com a spec, e o
+  defeito está na documentação, que diz o contrário (I27). O lote 7 prova o caminho completo do login com o "Aplicar", para não
+  sobrar dúvida; o login mede de novo clicando em "Aplicar".
+- `dompurify`: aviso crítico publicado depois da `rc.2` (I28).
+- O filtro de teste: defeito real do lote 3 (I29).
+Também entraram no registro o I30 (`./package.json` no `exports`, depois da 8.0.0) e o I31 (avisos do build sem peer). O lock
+alternando `ssh`/`https` já está no lote final.
+
+**Status: 🟡 Em execução** (lote 7 aberto).
+
+## Resumo da execução — 2026-10-22
+
+**Resultado:** Concluído com pendências
+
+**Estado do worktree ao iniciar**
+```text
+ M specs/plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md
+?? .claude/settings.local.json
+```
+
+**O que foi feito**
+- O teste de componente cobre o Provider inicialmente sem tenant/portas, a chegada de `tenantId` + `onLoad` + `onSave`, a carga do tema, a seleção na galeria e `Aplicar (N)`. Antes de aplicar, verifica que não há gravação; depois, confirma `localStorage` e `onSave` do tenant. `src/features/DesignEngine/Main/__tests__/LoginThemeApplication.test.tsx:83`.
+- O caso de navegador exercita o mesmo fluxo usando o `dist/` existente e confirma a ausência de gravação antes de aplicar. `browser-tests/login-theme-application.spec.ts:22`.
+- `docs/persistencia-de-tema.md:26` §1.1 agora descreve galeria e ajustes como rascunho e `Aplicar (N)` como a ação que persiste o design aplicado.
+- O `verify` rápido encontrou inicialmente uma regressão de arquitetura porque o teste estava em `src/core/Provider`; movi-o para `src/features/DesignEngine/Main/__tests__/` e a auditoria final passou.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `docs/persistencia-de-tema.md` | alterado | §1.1 descreve o rascunho, o botão Aplicar e a persistência do design aplicado. |
+| `src/features/DesignEngine/Main/__tests__/LoginThemeApplication.test.tsx` | criado | Prova de componente do caminho completo do tenant até `onSave`. |
+| `browser-tests/fixtures/login-theme-application-entry.tsx` | criado | Entrada do harness de navegador contra o `dist/`. |
+| `browser-tests/login-theme-application.spec.ts` | criado | Caso de navegador para rascunho, aplicação e persistência. |
+| esta plan | alterado | Este resumo e o status de encaminhamento à revisão. |
+
+**Verificações executadas**
+- `npx.cmd vitest run src/features/DesignEngine/Main/__tests__/LoginThemeApplication.test.tsx` → 1 teste passou.
+- `$env:SARAK_CHROMIUM_EXECUTABLE_PATH='C:\Program Files\Google\Chrome\Application\chrome.exe'; npx.cmd playwright test browser-tests/login-theme-application.spec.ts --config=browser-tests/playwright.config.ts` → 1 teste passou contra o `dist/`.
+- `npm.cmd run verify -- --tier=quick` → `[OK] nível "quick" verde`; TSC, baseline, barrels, gates, `guide:check` e `dev-kit:check` passaram.
+- Os três arquivos TypeScript novos/alterados foram aceitos por `padrao-typescript/scripts/validate.mjs` com `findings: []`.
+- `git diff --check` → exit code 0.
+- `npm.cmd -v` → `11.6.1`, abaixo do mínimo `11.10.1` exigido em 7.2.
+
+**Critérios de aceite**
+- [x] 7.1 — fluxo provado em componente e navegador, sem gravação antes de `Aplicar (N)`; documentação §1.1 atualizada.
+- [ ] 7.2 — motivo: npm `11.6.1` é inferior ao mínimo `11.10.1`; interrompi antes de editar `package.json` ou `package-lock.json`, conforme a condição da plan.
+- [ ] 7.3 a 7.5 e verificações finais — motivo: dependem da retomada após o bloqueio de versão do npm; não executadas.
+
+**Decisões e suposições**
+- O teste usa um tema disponível no boot para manter a seleção determinística e confirmar o caminho de aplicação.
+- A tentativa inicial de componente pela casca pública não encontrou o botão da galeria em jsdom (`Unable to find button Abrir galeria`), pois a camada lazy de CSS não foi carregada. O teste de componente cobre o `ThemeCustomizationTab` real; o navegador cobre o fluxo público contra o `dist/`.
+- O primeiro `audit:baseline` apontou `auditor_arquitetura.mjs.violacoes: 0 -> 1` quando o teste estava sob `src/core/Provider`. A mudança para `src/features/DesignEngine/Main/__tests__/` removeu a violação; a repetição completa do tier quick passou.
+- O Playwright não encontrou seu Chromium empacotado na primeira tentativa; o caso passou usando o Chrome instalado indicado por `SARAK_CHROMIUM_EXECUTABLE_PATH`.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum novo achado fora do escopo foi registrado.
+
+**Pendências / riscos**
+- Retomar em 7.2 com npm `>=11.10.1`; gerar o lock sem remover as entradas protegidas e concluir I28.
+- I29, I31 e 7.5 permanecem por executar. `npm run verify -- --tier=full`, `npm run build` nos três cenários de consumidor e os demais casos solicitados não foram executados por causa da condição de parada em 7.2.
+- Nenhum commit foi criado. `.claude/settings.local.json` já estava não rastreado na fotografia inicial e foi preservado.
+
+
+## Registro — 2026-10-22 — o login mediu de novo com o "Aplicar": ✅
+
+Na `rc.2`, sem contorno, com a troca de tenant de ausente para definido: galeria → "Cyberpunk Neon" → `Aplicar (180)`. O
+`localStorage` foi escrito em `sarak:design::tenant:<id>` e o `onSave` foi chamado. O `<html>` e o `<body>` ficaram com o tema. **O
+❌ anterior não era defeito de persistência**: o I27 fica só com a documentação e com a prova do caminho. O login viu **dois** `PUT`
+num só "Aplicar", e os dois foram recusados pela validação do próprio login, que ele já corrigiu. O 7.1 passou a exigir uma chamada
+por "Aplicar" e a explicar quantas acontecem quando o `onSave` rejeita.
+
+**Status: 🟡 Em execução** (lote 7 aberto).
+
+## Encaminhamento — 2026-10-22 — lote 7 parado no 7.2 (sem veredito)
+
+O executor parou corretamente no 7.2, porque o npm dele é o 11.6.1. O lote ainda não está pronto para revisão: o veredito sai com o
+lote inteiro. **O dono gera a faixa e o lock** do `dompurify` com o npm 11.21.1, como no lote 6. Depois, o executor retoma:
+- o 7.1, com o que entrou nele depois da execução: **uma** chamada do `onSave` por "Aplicar", e quantas acontecem com um `onSave` que
+  rejeita, e por quê; a §1.1 dizendo que o rascunho já aparece na tela de quem edita;
+- o restante do 7.2 (os testes de `src/core/Security/`, o `npm audit` e a nota na `## 8.0.0`), o 7.3, o 7.4, o 7.5 e as
+  verificações finais.
+
+**Status: 🟡 Em execução.**
+
+## Registro — 2026-10-22 — lote 7 concluído: ✅
+
+**Status: 🟢 pronto para revisão.** Os lotes 7.1 a 7.6 e as verificações finais foram executados. Nenhum commit foi criado.
+
+### 7.1 — aplicação depois do login e rejeição de `onSave`
+
+O teste integrado do componente observa uma chamada de `onSave` no clique de `Aplicar`. Com um `onSave` que rejeita, a medição continuou em **uma chamada** após 1,8 s, sem nova ação do usuário; o critério de parada não foi acionado.
+
+Em `src/core/Provider/hooks/useDesignManager.ts`, a chamada é aguardada dentro de um único `try`; a rejeição segue para o `catch`, que registra o erro e não contém nova tentativa:
+
+```ts
+if (strategy !== 'local' && opt?.persistence?.onSave) {
+    await opt.persistence.onSave(config, activeThemeIdAtSave);
+}
+// ...
+} catch (error) {
+    console.error('[Sarak:Design] Save error:', error);
+}
+```
+
+O caminho medido pelo botão `Aplicar` chama a persistência uma vez. A rejeição não dispara retry no `catch`, e o efeito com debounce não gerou outra chamada durante a janela medida. A §1.1 de `docs/persistencia-de-tema.md` explicita que a prévia do rascunho aparece imediatamente na tela de quem edita, sem gravar, e que `Aplicar (N)` confirma e persiste.
+
+### 7.2 — segurança e piso do `dompurify`
+
+- `npm ci` concluiu com npm 11.10.1; foram instalados 449 pacotes e auditados 450. O Chromium do Playwright foi instalado em `node_modules/.cache/ms-playwright`.
+- `vitest run src/core/Security/ --reporter=verbose` → 1 arquivo, **4 testes passaram**.
+- `npm audit` → saída completa:
+
+```text
+found 0 vulnerabilities
+```
+
+- A nota de pisos da `## 8.0.0` em `docs/migracoes.md` registra `dompurify >=3.4.17`.
+- `package.json` e `package-lock.json` não foram editados neste lote. Os hashes SHA-256 ao final são idênticos aos da fotografia inicial: `package.json` `9116715C6704CC4DC04CE387D7AA4AC927B47DB9608098D42C14DCA27A586319` e `package-lock.json` `3CE5CDB69D44A5DDD51F2871892D6A49FCEEE77B03D55B4F2F433B6ECC507786`.
+
+### 7.3 a 7.6 — consumidor, payload e kits
+
+- 7.3: a reprodução inicial no consumidor Vitest/jsdom mostrou `Could not parse CSS stylesheet`. O setup exportado em `@sarak/lib-ui-core/testing` agora filtra essa mensagem diretamente na VirtualConsole real do jsdom; a configuração isolada com `onConsoleLog` não cobria esse canal. O teste integrado do setup passou (4/4), e o cenário consumidor confirma a ausência do aviso usando o guia.
+- 7.4: o build do consumidor Vite 8 passou sem peers opcionais e com todos os peers. Cada build reportou 18 avisos `[MODULE_LEVEL_DIRECTIVE]` pela diretiva `"use client"` em `framer-motion`, e **zero** avisos de URL de fonte não resolvida. O cenário de mutação falhou como esperado com diagnóstico de import nomeado ausente. O guia agora explica o aviso Vite esperado junto à tabela de peers.
+- 7.5: `docs/persistencia-de-tema.md` documenta a assinatura e o payload de `onSave` (`design: SarakThemePayload` e `activeThemeId?: string`), trata o payload como opaco e inclui token de cor embarcado com `var()`/`color-mix()` aninhados. O backend pode armazenar o JSON recebido ou validar apenas sua forma.
+- 7.6: `npm run guide` e, por último no lote, `npm run dev-kit` concluíram. `guide:check` e `dev-kit:check` também passaram no tier full e no build.
+
+### Verificações finais
+
+- `npm run verify -- --tier=full` → **verde**: `tsc`, suíte Vitest completa (1328 s), auditoria de baseline com TSC (45 s), Anel 1 e kits passaram; Anel 0 simulado: 594 linhas, 0 achados.
+- `npm run build` → **verde**, incluindo geração JS/DTS, fontes, CSS e os três cenários de consumidor descritos acima.
+- `playwright test --config=browser-tests/playwright.config.ts` com o Chromium de `node_modules/.cache/ms-playwright` → **427 passaram** (20,1 min), sem falhas. Inclui `browser-tests/login-theme-application.spec.ts`.
+- `padrao-typescript/scripts/validate.mjs` nos seis arquivos TS/JS afetados → `findings: []` em todos.
+- `git diff --check` → exit code 0. O arquivo temporário `test-results/.last-run.json` foi removido; o script de consumidor removeu sua pasta temporária em `finally`.
+
+**Arquivos do lote:** `src/testing.ts`, `src/__tests__/testing.test.ts`, `scripts/test-optional-peer-consumer.mjs`, `src/features/DesignEngine/Main/__tests__/LoginThemeApplication.test.tsx`, `browser-tests/fixtures/login-theme-application-entry.tsx`, `browser-tests/login-theme-application.spec.ts`, `docs/migracoes.md`, `docs/persistencia-de-tema.md`, `sarak-ui/GUIA-FRONTEND.md`, `sarak-ui/docs/migracoes.md`, saídas de `dist/`, arquivos gerados de build e esta plan. As alterações pré-existentes em `package.json` e `package-lock.json` foram preservadas sem mudança de hash. `.claude/settings.local.json` também foi preservado. Nenhum commit foi criado.
+
+**Critérios de aceite:** [x] 7.1 — [x] 7.2 — [x] 7.3 — [x] 7.4 — [x] 7.5 — [x] 7.6 — [x] verificação full — [x] build — [x] bateria completa de navegador.
+
+## Veredito — 2026-10-22 — lote 7 — 🔴 Reprovado (1 achado)
+
+**Conferido no diff:**
+- **7.1:** o teste de componente e o caso de navegador provam o caminho do login até o "Aplicar". A medição com `onSave` que
+  rejeita deu uma chamada, porque o `catch` não tenta de novo. A §1.1 diz a verdade: o rascunho aparece na tela, só `Aplicar (N)`
+  grava, e `options.theme.onSave` é outra porta.
+- **7.2:** a faixa `^3.4.17` e a nota na `## 8.0.0`; o `npm audit` está limpo.
+- **7.3:** o filtro age na `VirtualConsole` do jsdom, que é o canal real do aviso. O consumidor Vitest prova que o aviso some com o
+  setup do guia. O filtro depende de `_virtualConsole`, uma propriedade interna do jsdom: fica aceito, porque, se ela sumir numa
+  versão futura, o aviso volta a aparecer e nada quebra.
+- **7.5:** o formato do payload, com um exemplo real de `cyberpunk-neon`.
+
+**Achado 1 — o I31 mediu outro aviso.** O login relatou **avisos de export ausente** nos pedaços sob demanda, no build sem as peers
+opcionais. O 7.4 contou só dois tipos de aviso (`MODULE_LEVEL_DIRECTIVE` e URL de asset não resolvida), e o consumidor tirou o
+`--logLevel error` mas imprime apenas esses dois filtros. Um aviso de export ausente, se existir, não aparece em lugar nenhum. O guia
+passou a dizer que o aviso esperado é o do `"use client"` do `framer-motion`, e isso pode não ser o que o importador vê.
+**Correção:** no cenário sem peers, listar **todos** os avisos do build, agrupados por código, com a contagem e um exemplo de cada,
+e colar a lista. Procurar em especial os de export ausente ou de membro indefinido de namespace, vindos dos pedaços que importam peer
+por namespace (`import * as … from "@tanstack/react-virtual"`, `@dnd-kit/*`, `echarts`, `pdfjs-dist` e afins). Se eles aparecem,
+vale o 7.4 original: tirar, se der sem voltar a quebrar o build sem a peer (os três cenários verdes), ou o guia nomear esse aviso, o
+porquê e que ele é inofensivo. Se não aparecem no consumidor, dizer o que difere do login: a versão do Vite e o gerenciador. O texto
+exato do aviso do login pode ser pedido ao dono. O consumidor passa a imprimir todos os avisos, não só os dois filtrados.
+
+**Status: 🔵 Em revisão** (achado 1 corrigido). Na aprovação, o revisor confere o build e o consumidor.
+
+## Resumo da execução (correção 1) — 2026-10-22
+
+### Fotografia inicial do worktree
+
+`git status --short` antes desta correção:
+
+```text
+ M dist/BUILD_INFO.json
+ D dist/CustomizationPanelImpl-UAIRXF3T.js
+ D dist/SarakChartEngine-AN3TB3TP.js
+ D dist/SarakChatEngine-SCZFSMN6.js
+ D dist/SarakDataGridImpl-MOBMFPMA.js
+ D dist/SarakDataTableImpl-HCJLJ5HT.js
+ D dist/SarakFlowEngine-5QO42PNZ.js
+ D dist/SarakKanbanImpl-AQMXQY4D.js
+ D dist/SarakMarkdownRendererImpl-K5MGRO65.js
+ D dist/SarakPDFViewerImpl-NXZV7UGR.js
+ D dist/chunk-2Z4AIOZI.js
+ D dist/chunk-736X7R7Y.js
+ D dist/chunk-7RPRNL32.js
+ D dist/chunk-BPWFS73Q.js
+ D dist/chunk-BVEFVMG7.js
+ D dist/chunk-O4PTARUD.js
+ D dist/chunk-PB3A3BNB.js
+ D dist/chunk-X2ZPSNNQ.js
+ D dist/chunk-XQJR5PAJ.js
+ M dist/index.cjs
+ M dist/index.d.cts
+ M dist/index.d.ts
+ M dist/index.js
+ M dist/testing.cjs
+ M dist/testing.js
+ M docs/migracoes.md
+ M docs/persistencia-de-tema.md
+ M package-lock.json
+ M package.json
+ M sarak-ui/GUIA-FRONTEND.md
+ M sarak-ui/docs/migracoes.md
+ M scripts/test-optional-peer-consumer.mjs
+ M specs/00-indice.md
+ M specs/plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md
+ M src/__tests__/testing.test.ts
+ M src/buildInfo.ts
+ M src/core/Provider/buildInfo.ts
+?? .claude/settings.local.json
+?? browser-tests/fixtures/login-theme-application-entry.tsx
+?? browser-tests/login-theme-application.spec.ts
+?? dist/CustomizationPanelImpl-FFM45PL.js
+?? dist/SarakChartEngine-LGP6ELWE.js
+?? dist/SarakChatEngine-SQI3I25Q.js
+?? dist/SarakDataGridImpl-G7R3O7FQ.js
+?? dist/SarakDataTableImpl-RNCCBEND.js
+?? dist/SarakFlowEngine-YU3CSKV5.js
+?? dist/SarakKanbanImpl-D45SV4S7.js
+?? dist/SarakMarkdownRendererImpl-YRXACXVY.js
+?? dist/SarakPDFViewerImpl-5KS45PLR.js
+?? dist/chunk-2NNELNP7.js
+?? dist/chunk-BYHQI5HD.js
+?? dist/chunk-CVHGIEAN.js
+?? dist/chunk-DDXCSCQ4.js
+?? dist/chunk-GM23LJA4.js
+?? dist/chunk-JH5UOXIS.js
+?? dist/chunk-OVSZTHL4.js
+?? dist/chunk-WH7SN2EO.js
+?? dist/chunk-YQNJN273.js
+?? src/features/DesignEngine/Main/__tests__/LoginThemeApplication.test.tsx
+```
+
+### Achado 1 — avisos do build sem peers
+
+- `scripts/test-optional-peer-consumer.mjs` agora coleta avisos do build sem filtrar tipos específicos, agrupa por código, conta ocorrências e mostra um exemplo. O aviso Rollup/Vite sem código é agrupado como `SEM_CODIGO`; para `IMPORT_IS_UNDEFINED`, o relatório também enumera os diagnósticos distintos.
+- A primeira medição encontrou 43 avisos: 24 `[IMPORT_IS_UNDEFINED]` para `useVirtualizer` de `@tanstack/react-virtual`, 18 `[MODULE_LEVEL_DIRECTIVE]` de `framer-motion` e um aviso sem código sobre chunk acima de 500 kB.
+- A investigação também encontrou exports ausentes de `Prism`, `oneDark`, `format`, `graphic`, `use`, `ResponsiveContainer`, `BarChart`, `LineChart`, `AriaComponent`, `LegendComponent` e `BackgroundVariant`, associados a `react-syntax-highlighter`, `echarts`, `echarts/core`, `echarts/components`, `recharts` e `reactflow`.
+- Os acessos opcionais desses membros passaram a usar consultas dinâmicas com `Reflect.get`. Um helper central para `@tanstack/react-virtual` preserva o fallback de `SarakDataGrid` e `SarakDataTable` quando a peer não está instalada. O build sem peers continua verde e não emite aviso de export ausente; não foi necessário alterar o guia para declarar um aviso inofensivo.
+- O consumidor usa Vite 8.3.5. Como os avisos de export ausente foram reproduzidos e removidos no próprio consumidor, não foi necessário comparar a configuração do login.
+
+Lista completa agrupada do cenário sem peers no build final:
+
+```text
+19 warning(s) across 2 code(s).
+[MODULE_LEVEL_DIRECTIVE] 18: [MODULE_LEVEL_DIRECTIVE] The semantics of the module level directive "use client" in "../../../../../Desktop/Sarak/X - Trabalho/Code/Biblioteca/Sarak-Lib-UI-Core/node_modules/framer-motion/dist/es/index.mjs" may not be preserved when bundling.
+[SEM_CODIGO] 1: (!) Some chunks are larger than 500 kB after minification. Consider:
+```
+
+O build com todas as peers também passou com os mesmos dois grupos: 18 `[MODULE_LEVEL_DIRECTIVE]` de `framer-motion` e um aviso sem código de chunk grande; nenhum `[IMPORT_IS_UNDEFINED]` foi emitido.
+
+### Verificações finais
+
+- `npm run build` — **verde**. Os três cenários do consumidor passaram: sem peers opcionais, Vitest/jsdom e com todas as peers. A mutação com import nomeado ausente foi rejeitada como esperado.
+- `npm run verify -- --tier=quick` — **verde**: `tsc`, baseline, Anel 1, kits e Anel 0 passaram; 773 linhas simuladas, zero achados.
+- O relatório AST do helper e do script atualizado retornou `findings: []`.
+- `package.json` e `package-lock.json` não foram editados nesta correção; as alterações preexistentes da faixa `^3.4.17` foram preservadas. Nenhum commit foi criado.
+
+## Veredito — 2026-10-22 — correção 1 (lote 7) — 🔴 Reprovado (1 achado novo)
+
+**Achado 1 do veredito anterior:** fechado quanto à medição. O consumidor lista todos os avisos agrupados por código e reproduziu o
+que o login viu: 24 `IMPORT_IS_UNDEFINED` de `useVirtualizer`, além de exports ausentes de `react-syntax-highlighter`, `echarts`,
+`recharts` e `reactflow`.
+
+**Achado 2 — o conserto tira o aviso, mas engorda o bundle de quem instala as peers.** O executor trocou o acesso estático
+(`Modulo.membro`) por `Reflect.get(Modulo, 'membro')` em 13 arquivos de `src/`. O bundler deixa de saber qual membro é usado e
+passa a guardar o namespace inteiro. **Medido por mim:** um consumidor Vite 8 com **todas** as peers instaladas e a mesma entrada do
+consumidor de `scripts/test-optional-peer-consumer.mjs` (os oito componentes sob demanda), construído com o `dist/` do `HEAD`
+(`git archive`) e com o `dist/` do worktree:
+
+| `dist/` | JS total do importador | arquivos | maior diferença |
+|---|---|---|---|
+| `HEAD` | 5020 KiB | 35 | — |
+| worktree | **6115 KiB (+1095 KiB, +22%)** | **334** | `prism` 713 → 1192 KiB, mais ~300 chunks de linguagem (`abap`, `abnf`, `actionscript`…) |
+
+A causa principal é `Reflect.get(SyntaxHighlighterModule, 'Prism')` e os estilos, em `SarakMarkdownRendererImpl.tsx` e
+`SarakChatEngine.tsx`: o namespace inteiro do `react-syntax-highlighter` (todas as linguagens e todos os estilos) entra no build do
+importador. O motor de gráficos quase não mudou (1616 → 1618 KiB). Isso piora o que o importador sente, para tirar um aviso
+inofensivo. A regra do 7.4 era tirar o aviso **só se der sem custo**; com custo, o guia nomeia o aviso.
+**Correção:** voltar ao acesso estático onde o `Reflect.get` engorda o bundle, e medir arquivo por arquivo (o `@tanstack/react-virtual`
+e o `echarts`/`recharts` podem ficar, se a medição mostrar custo zero). O que voltar ao acesso estático mantém o aviso, e o guia
+(junto da tabela de peers) nomeia o `IMPORT_IS_UNDEFINED` no build sem a peer, explica por que aparece e diz que é inofensivo,
+porque o componente mostra o fallback. **Prova pedida:** o consumidor passa a imprimir, no cenário com todas as peers, o JS total e
+o número de arquivos; o relato traz a mesma tabela acima (com o `dist/` do `HEAD` e o do worktree), e o worktree fica no máximo 1%
+acima do `HEAD`. Depois, `npm run build` e `npm run verify -- --tier=full`.
+
+**Status: 🔵 Em revisão** (achado 2).
+
+## Resumo da execução (correção 2) — 2026-10-22
+
+**Resultado:** Concluído com pendências
+
+**Estado do worktree ao iniciar**
+
+```text
+ M dist/BUILD_INFO.json
+ D dist/CustomizationPanelImpl-UAIRXF3T.js
+ D dist/SarakChartEngine-AN3TB3TP.js
+ D dist/SarakChatEngine-SCZFSMN6.js
+ D dist/SarakDataGridImpl-MOBMFPMA.js
+ D dist/SarakDataTableImpl-HCJLJ5HT.js
+ D dist/SarakFlowEngine-5QO42PNZ.js
+ D dist/SarakKanbanImpl-AQMXQY4D.js
+ D dist/SarakMarkdownRendererImpl-K5MGRO65.js
+ D dist/SarakPDFViewerImpl-NXZV7UGR.js
+ D dist/chunk-2Z4AIOZI.js
+ D dist/chunk-736X7R7Y.js
+ D dist/chunk-7RPRNL32.js
+ D dist/chunk-BPWFS73Q.js
+ D dist/chunk-BVEFVMG7.js
+ D dist/chunk-O4PTARUD.js
+ D dist/chunk-PB3A3BNB.js
+ D dist/chunk-X2ZPSNNQ.js
+ D dist/chunk-XQJR5PAJ.js
+ M dist/index.cjs
+ M dist/index.d.cts
+ M dist/index.d.ts
+ M dist/index.js
+ M dist/testing.cjs
+ M dist/testing.js
+ M docs/migracoes.md
+ M docs/persistencia-de-tema.md
+ M package-lock.json
+ M package.json
+ M sarak-ui/GUIA-FRONTEND.md
+ M sarak-ui/docs/migracoes.md
+ M scripts/test-optional-peer-consumer.mjs
+ M specs/00-indice.md
+ M specs/plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md
+ M src/__tests__/testing.test.ts
+ M src/buildInfo.ts
+ M src/components/atomic/DataDisplay/SarakDataGrid/SarakDataGridImpl.tsx
+ M src/components/atomic/DataDisplay/SarakDataTable/SarakDataCards.tsx
+ M src/components/atomic/DataDisplay/SarakDataTable/SarakDataTableImpl.tsx
+ M src/components/atomic/DataDisplay/SarakDataTable/useSarakDataTableViewModel.ts
+ M src/components/atomic/Media/SarakMarkdownRenderer/SarakMarkdownRendererImpl.tsx
+ M src/components/engines/charts/SubEngines/RechartsChart.tsx
+ M src/components/engines/charts/SubEngines/builders/advancedCharts.ts
+ M src/components/engines/charts/SubEngines/builders/basicCharts.ts
+ M src/components/engines/charts/SubEngines/builders/statisticalCharts.ts
+ M src/components/engines/charts/SubEngines/builders/waterfallCharts.ts
+ M src/components/engines/charts/SubEngines/chartPeerAvailability.ts
+ M src/components/engines/chat/SarakChatEngine.tsx
+ M src/components/engines/flows/SarakFlowEngine.tsx
+ M src/core/Provider/buildInfo.ts
+ M src/testing.ts
+?? .claude/settings.local.json
+?? browser-tests/fixtures/login-theme-application-entry.tsx
+?? browser-tests/login-theme-application.spec.ts
+?? dist/CustomizationPanelImpl-SGP4OZO6.js
+?? dist/SarakChartEngine-QCU3MYAD.js
+?? dist/SarakChatEngine-TBFVMZBH.js
+?? dist/SarakDataGridImpl-UH7TK5U5.js
+?? dist/SarakDataTableImpl-SOZTFXMR.js
+?? dist/SarakFlowEngine-FADA3CER.js
+?? dist/SarakKanbanImpl-BOC7AD3A.js
+?? dist/SarakMarkdownRendererImpl-KQHG55G4.js
+?? dist/SarakPDFViewerImpl-QJEVMZ3T.js
+?? dist/chunk-4QZFH5TU.js
+?? dist/chunk-FY2SBRPC.js
+?? dist/chunk-JROKUO2Z.js
+?? dist/chunk-LWLIXJ3U.js
+?? dist/chunk-LYWLFTZC.js
+?? dist/chunk-OFDI3Q45.js
+?? dist/chunk-RT35M7HS.js
+?? dist/chunk-RXCAJVLA.js
+?? dist/chunk-TVSHL4EM.js
+?? dist/chunk-ZKWSEM6K.js
+?? src/components/atomic/DataDisplay/optional-tanstack-virtualizer.ts
+?? src/features/DesignEngine/Main/__tests__/LoginThemeApplication.test.tsx
+```
+
+**O que foi feito**
+
+- Restaurado o acesso estático a `Prism` e estilos do `react-syntax-highlighter` em `SarakMarkdownRendererImpl.tsx` e `SarakChatEngine.tsx`; o consumidor voltou a emitir um único chunk `prism` com 729.615 bytes, em vez dos cerca de 300 chunks de linguagem descritos no veredito.
+- Restaurado o acesso estático para `@tanstack/react-virtual`, ECharts, Recharts e ReactFlow. Nenhum desses namespaces ficou com `Reflect.get`; os fallbacks existentes continuam verificando a disponibilidade da peer antes de renderizar a implementação.
+- O script do consumidor passou a aceitar uma pasta de pacote alternativa e um modo `SARAK_OPTIONAL_PEER_SCENARIO=all` para medir o cenário completo isoladamente. No cenário normal imprime cada arquivo JS emitido, o total de bytes e a quantidade de arquivos.
+- Acrescentada ao guia, junto à tabela de peers, a explicação do aviso `IMPORT_IS_UNDEFINED`, com os membros observados e os componentes que mostram fallback.
+
+**Comparação do consumidor com todas as peers**
+
+O mesmo entry de Vite 8.3.5 que importa os oito componentes sob demanda foi empacotado a partir de `git archive HEAD dist package.json` extraído fora do repositório e a partir do `dist/` do worktree.
+
+| `dist/` | JS total do importador | arquivos | maior diferença |
+|---|---:|---:|---|
+| `HEAD` | 5.140.275 bytes (5.019,80 KiB) | 35 | — |
+| worktree | 5.012.547 bytes (4.895,07 KiB) | 35 | −127.728 bytes (−2,48%); o chunk `SarakChartEngine` caiu 127.969 bytes |
+
+Medição dos chunks de saída correspondentes aos módulos alterados:
+
+| Módulo/peer | Chunk do consumidor | `HEAD` (bytes) | worktree (bytes) | diferença |
+|---|---|---:|---:|---:|
+| `react-syntax-highlighter` | `prism` | 729.615 | 729.615 | 0 |
+| Markdown | `SarakMarkdownRendererImpl` | 27.548 | 27.548 | 0 |
+| Chat | `SarakChatEngine` | 8.297 | 8.297 | 0 |
+| `@tanstack/react-virtual` | `SarakDataGridImpl` | 959 | 981 | +22 |
+| `@tanstack/react-virtual` | `SarakDataTableImpl` | 12.822 | 12.827 | +5 |
+| ECharts e Recharts | `SarakChartEngine` (chunk compartilhado) | 1.655.155 | 1.527.186 | −127.969 |
+| `reactflow` | `SarakFlowEngine` | 146.818 | 146.824 | +6 |
+
+O chunk de gráficos agrega ECharts e Recharts, então a medição do consumidor não separa a contribuição individual dos dois dentro dele. Os acessos em ambas as integrações foram mantidos estáticos. O total do worktree ficou 2,48% abaixo do `HEAD`, dentro do limite de até 1% acima.
+
+**Avisos observados**
+
+No consumidor sem peers, o build passou com **44 avisos em 3 códigos**: 25 `IMPORT_IS_UNDEFINED`, 18 `MODULE_LEVEL_DIRECTIVE` de `framer-motion` e um aviso sem código de chunk acima de 500 kB. Os 25 avisos de import correspondem a estes 19 membros distintos:
+
+- `@tanstack/react-virtual`: `useVirtualizer`.
+- `react-syntax-highlighter`: `Prism`; `react-syntax-highlighter/dist/esm/styles/prism`: `oneDark`, `oneLight`, `atomDark`.
+- `echarts`: `graphic`, `format`; `echarts/core`: `use`; `echarts/components`: `AriaComponent`, `LegendComponent`.
+- `recharts`: `ResponsiveContainer`, `BarChart`, `LineChart`, `Line`, `XAxis`, `YAxis`, `Tooltip`, `Bar`.
+- `reactflow`: `BackgroundVariant`.
+
+O guia explica que o Rollup emite `IMPORT_IS_UNDEFINED` porque os exports não existem enquanto a peer está ausente e que o aviso é inofensivo: os componentes verificam a peer e exibem o fallback. Com todas as peers, o build passou com 19 avisos em dois códigos: os mesmos 18 avisos `MODULE_LEVEL_DIRECTIVE` e o aviso sem código de chunk grande; não houve `IMPORT_IS_UNDEFINED`.
+
+**Arquivos alterados**
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `scripts/test-optional-peer-consumer.mjs` | alterado | Origem de pacote comparável, modo all-peers e métricas por arquivo, total e quantidade JS. |
+| `src/components/atomic/DataDisplay/optional-tanstack-virtualizer.ts` | alterado | Acesso estático a `useVirtualizer`. |
+| `src/components/atomic/Media/SarakMarkdownRenderer/SarakMarkdownRendererImpl.tsx` | restaurado | Acesso estático a `Prism`, `oneDark` e `oneLight`; o arquivo voltou a coincidir com o `HEAD`. |
+| `src/components/engines/chat/SarakChatEngine.tsx` | restaurado | Acesso estático a `Prism` e `atomDark`; o arquivo voltou a coincidir com o `HEAD`. |
+| `src/components/engines/charts/SubEngines/chartPeerAvailability.ts` | alterado | Acesso estático aos exports de ECharts e Recharts usados na disponibilidade. |
+| `src/components/engines/charts/SubEngines/RechartsChart.tsx` | alterado | Acesso estático aos componentes Recharts. |
+| `src/components/engines/charts/SubEngines/builders/{basicCharts,advancedCharts,statisticalCharts,waterfallCharts}.ts` | alterados | Acesso estático a `graphic` e `format` de ECharts. |
+| `src/components/engines/flows/SarakFlowEngine.tsx` | alterado | Acesso estático a `BackgroundVariant`. |
+| `sarak-ui/GUIA-FRONTEND.md` | alterado | Documentação dos avisos `IMPORT_IS_UNDEFINED` e dos fallbacks correspondentes. |
+| `dist/*` | regenerado | Artefatos refeitos pelo `npm run build`; o diretório já estava modificado no snapshot inicial. |
+| `specs/plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md` | alterado | Este relato append-only e status encaminhado para revisão. |
+
+**Verificações executadas**
+
+- `npm run build` → **verde**. Passaram os três cenários: sem peers (44 avisos agrupados), Vitest/jsdom, mutação de import nomeado ausente rejeitada e com todas as peers (5.012.547 bytes, 35 arquivos JS).
+- Comparação com `HEAD` extraído por `git archive HEAD dist package.json` fora do repositório → cenário com todas as peers **verde**, 5.140.275 bytes, 35 arquivos JS.
+- `npm run verify -- --tier=full` → **verde**: `tsc` passou; Vitest passou em 1.433 s; auditoria baseline passou; gates do Anel 1 e guia/dev-kit passaram; Anel 0 simulou 946 linhas com zero achados.
+- Validador AST TypeScript/JavaScript → zero achados no script do consumidor, helper TanStack e arquivos de charts alterados. Encontrou achados existentes em funções não modificadas de Markdown (3), Chat (8) e Flow (4); não foram ampliados porque ficam fora do achado 2.
+- `git diff --check` nos arquivos-fonte, guia e plan → **verde**. A verificação sem filtro também aponta espaço em branco à direita em `dist/index.cjs:1`, artefato minificado já modificado no snapshot inicial e regenerado pelo build; não alterei manualmente o artefato nem o processo de geração.
+- Nenhum commit criado. `package.json` e `package-lock.json` não foram editados nesta correção; as alterações que já estavam no snapshot inicial foram preservadas.
+
+**Critérios de aceite**
+
+- [x] Acesso estático para os namespaces opcionais medidos, sem `Reflect.get` remanescente nesses acessos.
+- [x] Consumidor imprime bytes totais, quantidade e tamanho de cada arquivo JS no cenário com todas as peers.
+- [x] Comparação pelo mesmo consumidor e entrada: worktree −2,48% vs `HEAD`, abaixo do limite de +1%.
+- [x] Guia nomeia os avisos `IMPORT_IS_UNDEFINED` observados e explica sua causa e o fallback.
+- [x] `npm run build` e `npm run verify -- --tier=full` passaram.
+- [x] Sem commit.
+
+**Decisões e suposições**
+
+- A primeira execução do fluxo completo usando o `dist/` arquivado do `HEAD` parou na asserção independente de Vitest/jsdom: aquele pacote imprimiu `Could not parse CSS stylesheet`, enquanto o consumidor espera que o setup suprima o aviso. Para a comparação pedida, rodei o mesmo entry e build com todas as peers em modo isolado; esse cenário passou. O build de trabalho completo, incluindo Vitest/jsdom, passou.
+- Como nenhuma integração dos peers citados conservou `Reflect.get`, não houve caso restante que dependesse de comprovar custo zero para manter esse acesso dinâmico.
+
+**Achados fora do escopo (não corrigidos)**
+
+- O validador AST apontou funções longas, anotações de tipo ausentes e, em Flow, `console.error` e números mágicos em linhas anteriores e não relacionadas às alterações de acesso estático. Os achados ficaram restritos a `SarakMarkdownRendererImpl.tsx` (3), `SarakChatEngine.tsx` (8) e `SarakFlowEngine.tsx` (4); permanecem para revisão separada.
+
+**Pendências / riscos**
+
+- Os builds sem peers continuam emitindo os 25 avisos `IMPORT_IS_UNDEFINED` documentados no guia; são não bloqueantes porque os componentes exibem fallback. Os avisos de `framer-motion` e chunk grande continuam presentes com ou sem peers.
+
+## Veredito — 2026-10-23 — correção 2 (lote 7) — 🟢 Aprovado; lote 7 fechado
+
+**Achado 2:** fechado. Não sobrou nenhum `Reflect.get` em `src/`: o acesso às peers voltou a ser estático.
+**Medido por mim**, com o mesmo consumidor do veredito anterior (Vite 8, todas as peers, os oito componentes): o `HEAD` dá
+5020 KiB em 35 arquivos, e o worktree **4895 KiB em 35 arquivos**. A queda está no motor de gráficos (1616 → 1491 KiB) e é
+legítima: o `HEAD` lia `echarts/components` como `Record<string, unknown>` por índice, o que retinha o namespace inteiro, e o
+acesso estático deixa o bundler cortar o que não é usado. A bateria inteira do navegador contra o `dist/` passou com **427/427**, o
+que inclui os casos de gráfico e o novo `login-theme-application.spec.ts`. O guia nomeia o `IMPORT_IS_UNDEFINED` do build sem a
+peer, diz por que é inofensivo e explica o fallback. A observação do relato sobre o cenário Vitest com o `dist/` do `HEAD` confere: o
+`HEAD` ainda não tinha o filtro. O `build` e o `verify --tier=full` verdes ficam aceitos pelo relato, porque a medição do bundle e a
+bateria rodaram sobre esse mesmo `dist/`.
+
+**Lote 7 fechado (I27, I28, I29, I31, I32).** Os lotes 0–7 estão aprovados e entram na `v8.0.0-rc.3`. Fica aberto o lote final, que
+depende dos importadores.
 
 **Status: 🟡 Em execução** (lote final pendente).

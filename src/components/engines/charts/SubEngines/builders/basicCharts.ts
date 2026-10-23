@@ -1,6 +1,8 @@
 import * as echarts from 'echarts';
 import type { SarakChartDataItem, ChartBuilderConfig, ChartTheme, ChartOptionFragment } from './types';
 
+const ECHARTS_GRAPHIC = echarts.graphic;
+
 const DEFAULT_LINE_SMOOTHNESS = 0.4;
 const AREA_GRADIENT_MIDPOINT = 0.5;
 const AREA_FILL_OPACITY = 0.2;
@@ -22,7 +24,7 @@ function getNextPaletteColor(theme: ChartTheme, color: string): string {
 
 function createBarColor(theme: ChartTheme, showGradients: boolean, seriesColor: string): unknown {
     if (!showGradients) return seriesColor;
-    return new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+    return new ECHARTS_GRAPHIC.LinearGradient(0, 0, 0, 1, [
         { offset: 0, color: seriesColor },
         { offset: 1, color: getNextPaletteColor(theme, seriesColor) },
     ]);
@@ -35,7 +37,7 @@ function createAreaStyle(
 ): Record<string, unknown> | undefined {
     if (!showGradients) return { color: seriesColor, opacity: AREA_FILL_OPACITY };
     return {
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+        color: new ECHARTS_GRAPHIC.LinearGradient(0, 0, 0, 1, [
             { offset: 0, color: seriesColor },
             { offset: AREA_GRADIENT_MIDPOINT, color: seriesColor },
             { offset: 1, color: getNextPaletteColor(theme, seriesColor) },

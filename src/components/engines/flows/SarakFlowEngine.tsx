@@ -6,10 +6,11 @@ import { SarakOptionalPeerFallback } from '../../atomic/Feedback/SarakOptionalPe
 
 const ReactFlow = ReactFlowModule.default;
 const { Background, Controls, MiniMap, Panel } = ReactFlowModule;
+const ReactFlowBackgroundVariant = ReactFlowModule.BackgroundVariant;
 const OPTIONAL_PEER = 'reactflow';
 
 const hasReactFlowPeer = (): boolean => Boolean(
-    ReactFlow && Background && Controls && MiniMap && Panel && ReactFlowModule.BackgroundVariant,
+    ReactFlow && Background && Controls && MiniMap && Panel && ReactFlowBackgroundVariant,
 );
 
 if (hasReactFlowPeer()) {

@@ -25,20 +25,35 @@ os tipos.
 
 ### 1.1 O estado aplicado — `options.persistence.onSave`/`onLoad`
 
-O **design corrente**, completo, exatamente como o motor de tokens o resolveu. Chamado a cada
-commit do design persistido (debounced), com dois argumentos:
+O **design aplicado**, completo, exatamente como o motor de tokens o resolveu. No painel, escolher
+um tema na galeria ou ajustar tokens muda apenas o rascunho; a prévia aparece imediatamente na tela
+de quem está editando, sem gravar. `Aplicar (N)` é a ação que
+confirma esse rascunho no Provider e persiste o estado aplicado; com a estratégia padrão (`hybrid`),
+isso também grava a chave de `localStorage` do tenant. A porta recebe dois argumentos:
 
 ```ts
 onSave?: (design: SarakThemePayload, activeThemeId?: string) => Promise<void> | void
 ```
 
-- `design` — o payload completo. **Pode não corresponder a nenhum tema salvo.** O usuário ajusta
-  tokens individuais no painel sem clicar em "Salvar tema" — o estado aplicado muda a cada ajuste,
-  o tema salvo (se algum) não.
-- `activeThemeId` — o id do tema que estava efetivamente no ar no instante do save (plan-42).
+- `design` — o payload completo. **Pode não corresponder a nenhum tema salvo.** A galeria e os
+  ajustes de token ficam no rascunho até `Aplicar (N)`; antes disso, não chamam esta porta nem gravam
+  o estado aplicado. Ao aplicar, o Provider persiste o design inteiro do rascunho.
+- `activeThemeId` — o id do tema que estava efetivamente no ar no instante do save.
   **Opcional de verdade:** vem `undefined` sempre que não há nenhum tema resolvido ainda. Pode
   apontar tanto para um tema embarcado da lib (`'minimalist-airy'`, por exemplo) quanto para um
   tema salvo pelo importador — a lib não distingue as duas origens neste campo.
+
+Trate os valores de `design` como opacos. Tokens de cor podem conter `var()` e `color-mix()` aninhados,
+e não precisam ser cores literais. O backend pode guardar o JSON como veio ou validar apenas sua forma;
+não rejeite esses valores por esperar um formato simples de cor. Por exemplo, o tema embarcado
+`cyberpunk-neon` envia este token dentro de `design`:
+
+```json
+{
+  "mode": "dark",
+  "cardSearchPlaceholderColor": "var(--sarak-input-placeholder-color, color-mix(in srgb, var(--sarak-input-text-color, var(--text-muted, rgba(242, 246, 251, 0.55))) 30%, transparent))"
+}
+```
 
 `onLoad` é o inverso. Continua aceitando o formato antigo, que devolve apenas o `design`, ou pode
 devolver o par:
@@ -57,8 +72,10 @@ nenhum estado foi salvo. `onLoad` não recebe argumento: a lib nunca pede identi
 porque não tem esse conceito (§4). Ao trocar `tenantId`, a lib chama `onLoad` de novo sem exigir
 remontagem do Provider.
 
-O boot e a hidratação não chamam `onSave`. Depois que a carga termina, alterações reais do design
-continuam sendo gravadas pelo debounce; uma aplicação explícita também grava imediatamente.
+O boot e a hidratação não chamam `onSave`. Depois da carga, alterações aplicadas diretamente ao
+Provider continuam sendo gravadas pelo debounce. No painel, `Aplicar (N)` confirma o rascunho e
+grava imediatamente pelo `onSave` do estado aplicado; não chama `options.theme.onSave`, que é a
+porta separada para salvar um tema nomeado (§1.2).
 
 #### Troca de tenant no Provider montado
 

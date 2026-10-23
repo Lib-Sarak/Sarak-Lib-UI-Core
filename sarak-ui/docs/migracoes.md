@@ -20,7 +20,7 @@ componente que o utiliza.
 **Classificação: MAJOR.** Para receber as correções de segurança, atualize os pacotes opcionais
 usados pela aplicação para `echarts >=6.1.0`, `echarts-for-react >=3.0.4`, `pdfjs-dist >=6.2.108`
 e `react-syntax-highlighter >=16.1.2`. A dependência `dompurify` da biblioteca passa a exigir
-`>=3.4.16` e é instalada junto com ela.
+`>=3.4.17` e é instalada junto com ela.
 
 `echarts-for-react` 3.0.4 é o primeiro piso com suporte declarado a ECharts 6. A migração para
 ECharts 6 altera o tema padrão, as posições e dimensões iniciais de alguns componentes, o ajuste

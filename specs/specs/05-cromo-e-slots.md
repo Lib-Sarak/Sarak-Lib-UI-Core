@@ -229,7 +229,6 @@ O cromo lê esses tokens por um hook único e os traduz em classe estrutural:
 | --- | --- |
 | `sidebarPosition` | lado da sidebar — `left`, `right` (inverte a direção do corpo) ou `floating` (destacada, com raio e sombra) |
 | `navbarLayout` | `sticky`, `inline` ou `hidden` para a barra superior |
-| `contentAlignment` | `stretch` ou `center` — largura máxima centralizada para o conteúdo |
 | `isNavHidden` | colapsa a navegação: sidebar estreita só com ícone, topbar com altura reduzida |
 | `isAutoHideEnabled` | a nav só existe no ar sob o ponteiro; uma faixa sensível na borda a traz de volta |
 | `searchPositionTopbar` | `left`, `center`, `right` ou `hidden` para o slot `search` na topbar |

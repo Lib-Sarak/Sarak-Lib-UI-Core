@@ -2,6 +2,8 @@ import * as echarts from 'echarts';
 import { resolveChartColorToken } from './types';
 import type { ChartBuilderConfig, ChartOptionFragment, ChartTheme, SarakChartDataItem } from './types';
 
+const ECHARTS_FORMAT = echarts.format;
+
 const WATERFALL_STACK = 'waterfall';
 const WATERFALL_BAR_WIDTH = '40%';
 const TRANSPARENT_FILL = 'transparent';
@@ -62,7 +64,7 @@ function formatWaterfallTooltip(params: unknown): string {
     const point = isRecord(params) ? params : {};
     const data = isRecord(point.data) ? point.data : {};
     const delta = isFiniteNumber(data.delta) ? data.delta : 0;
-    return `${echarts.format.encodeHTML(String(point.name ?? ''))}: ${delta > 0 ? '+' : ''}${delta}`;
+    return `${ECHARTS_FORMAT.encodeHTML(String(point.name ?? ''))}: ${delta > 0 ? '+' : ''}${delta}`;
 }
 
 function createBarSeries(theme: ChartTheme, data: unknown[], color?: string): Record<string, unknown> {

@@ -1,0 +1,1 @@
+import*as e from"@tanstack/react-virtual";var r=()=>{let t=e.useVirtualizer;return typeof t=="function"?t:void 0},n=()=>{let t=r();if(!t)throw new Error("The @tanstack/react-virtual peer is required after the optional-peer fallback check.");return t};export{r as a,n as b};
