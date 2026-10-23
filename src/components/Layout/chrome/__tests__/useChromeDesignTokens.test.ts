@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { useChromeDesignTokens } from '../useChromeDesignTokens';
 import { UIContext } from '../../../../core/Provider/SarakUIProvider';
 import type { SarakUIContextType } from '../../../../core/Provider/types';
+import { FLUID_MAX_CONTENT_WIDTH, FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../../../core/Design/schema/system';
 
 const wrapperWithDesign = (design: Record<string, unknown>) => {
     const context = { design } as unknown as SarakUIContextType;
@@ -18,7 +19,7 @@ describe('useChromeDesignTokens', () => {
             sidebarPosition: 'left',
             navbarLayout: 'sticky',
             layoutDensity: 'comfortable',
-            maxContentWidth: '1440px',
+            maxContentWidth: FLUID_MAX_CONTENT_WIDTH,
             isSplitViewEnabled: false,
             isNavHidden: false,
             isAutoHideEnabled: false,
@@ -32,7 +33,7 @@ describe('useChromeDesignTokens', () => {
         const { result } = renderHook(() => useChromeDesignTokens(), { wrapper: wrapperWithDesign({}) });
         expect(result.current.sidebarPosition).toBe('left');
         expect(result.current.layoutDensity).toBe('comfortable');
-        expect(result.current.maxContentWidth).toBe('1440px');
+        expect(result.current.maxContentWidth).toBe(FLUID_MAX_CONTENT_WIDTH);
         expect(result.current.isSplitViewEnabled).toBe(false);
         expect(result.current.isNavHidden).toBe(false);
     });
@@ -64,6 +65,14 @@ describe('useChromeDesignTokens', () => {
             searchPositionTopbar: 'right',
             mobileNavigationStyle: 'bottom',
         });
+    });
+
+    it('traduz a opção semântica fluida para o valor CSS do cromo', () => {
+        const { result } = renderHook(() => useChromeDesignTokens(), {
+            wrapper: wrapperWithDesign({ maxContentWidth: FLUID_MAX_CONTENT_WIDTH_OPTION }),
+        });
+
+        expect(result.current.maxContentWidth).toBe(FLUID_MAX_CONTENT_WIDTH);
     });
 
     it('mobileNavigationStyle fora da lista (inclusive o `dock` que saiu do schema) degrada para auto', () => {

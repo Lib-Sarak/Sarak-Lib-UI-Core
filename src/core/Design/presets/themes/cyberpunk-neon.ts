@@ -1,4 +1,5 @@
 import type { SarakThemePreset } from './index';
+import { FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../schema/system';
 
 // Cyberpunk Neon: o néon puro do conjunto. Verde ácido (H144 S100, o único neon S100 que sobra) sobre preto esverdeado,
 // quina cortada (`cardGeometricCut` + raio 0 em tudo), botão wireframe `cyberpunk`, mono maiúsculo com brilho no H1 e
@@ -22,7 +23,7 @@ export const cyberpunkneonTheme: SarakThemePreset = {
         identityHoverEffect: 'glow',
         // --- Configurações de Layout ---
         layoutDensity: 'comfortable',
-        maxContentWidth: '1440px',
+        maxContentWidth: FLUID_MAX_CONTENT_WIDTH_OPTION,
         layoutPadding: { mob: 16, tab: 24, desk: 32 },
         borderRadius: { mob: 0, tab: 0, desk: 0 },
         borderWidth: 1,

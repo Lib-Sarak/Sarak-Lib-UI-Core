@@ -16,7 +16,8 @@ vi.mock('framer-motion', async () => {
 describe('PresetsCatalog', () => {
     const createProps = (onClose = vi.fn()) => ({
         onApplyPreset: vi.fn(),
-        currentMode: 'dark',
+        currentMode: 'dark' as const,
+        draftMode: 'dark' as const,
         onClose,
     });
 
@@ -28,6 +29,16 @@ describe('PresetsCatalog', () => {
         // Prazo folgado: o catálogo carrega os temas sob demanda e, com a suíte inteira rodando em paralelo, passa dos 1000 ms padrão do `waitFor`.
         await waitFor(() => expect(container.querySelector('[aria-busy="true"]')).toBeNull(), { timeout: 10000 });
         expect(container).toMatchSnapshot();
+    });
+
+    it('aplica o tema pelo modo bruto do rascunho quando a preferência só clareia a galeria', async () => {
+        const onApplyFullTheme = vi.fn();
+        render(<PresetsCatalog {...createProps()} currentMode="light" draftMode="dark" onApplyFullTheme={onApplyFullTheme} />);
+
+        const themeCard = await screen.findByRole('button', { name: /Sarak Sovereign/i }, { timeout: 10000 });
+        fireEvent.click(themeCard);
+
+        expect(onApplyFullTheme).toHaveBeenCalledWith(expect.objectContaining({ mode: 'dark' }), 'sarak-sovereign');
     });
 
     it('troca para o catálogo de Tipografia ao clicar na própria aba', () => {

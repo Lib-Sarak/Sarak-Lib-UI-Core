@@ -1,4 +1,5 @@
 import type { SarakThemePreset } from './index';
+import { FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../schema/system';
 
 export const organicClayTheme: SarakThemePreset = {
   "id": "organic-clay",
@@ -14,7 +15,7 @@ export const organicClayTheme: SarakThemePreset = {
     "identityTracking": 0,
     "identityHoverEffect": "opacity",
     "layoutDensity": "comfortable",
-    "maxContentWidth": "1200px",
+    "maxContentWidth": FLUID_MAX_CONTENT_WIDTH_OPTION,
     "layoutPadding": {
       "mob": 16,
       "tab": 22,

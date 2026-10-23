@@ -8,6 +8,10 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ENTRY = path.join(HERE, 'fixtures', 'login-theme-application-entry.tsx');
 const STORAGE_KEY = 'login-theme-application';
 const TENANT_STORAGE_KEY = `${STORAGE_KEY}::tenant:tenant-acme`;
+const EXPECTED_TENANT_CACHE = {
+    design: { mode: 'dark', primaryColor: '#123456', colorBgBody: '#123456' },
+    activeThemeId: 'sarak-sovereign',
+};
 
 declare global {
     interface Window {
@@ -42,7 +46,8 @@ test('Provider sem tenant aplica e persiste o tema escolhido depois do login', a
 
     await expect(page.locator('[data-probe="tenant-primary-color"]')).toHaveText('#123456');
     expect(await readStoredTheme(page, STORAGE_KEY)).toBeNull();
-    expect(await readStoredTheme(page, TENANT_STORAGE_KEY)).toBeNull();
+    await expect.poll(() => readStoredThemePair(page, TENANT_STORAGE_KEY)).toMatchObject(EXPECTED_TENANT_CACHE);
+    expect(await page.evaluate(() => window.__tenantThemeSave)).toBeUndefined();
 
     await page.getByRole('button', { name: 'Abrir galeria' }).click();
     await expect(page.getByRole('heading', { name: 'Galeria de estilos' })).toBeVisible();
@@ -52,14 +57,15 @@ test('Provider sem tenant aplica e persiste o tema escolhido depois do login', a
     await expect(applyButton).toBeEnabled();
     await expect(page.locator('[data-probe="tenant-draft-background"]')).toHaveText('#06080d');
     await expect(page.locator('[data-probe="tenant-system-background"]')).toHaveText('#123456');
-    expect(await readStoredTheme(page, TENANT_STORAGE_KEY)).toBeNull();
+    expect(await readStoredThemePair(page, TENANT_STORAGE_KEY)).toMatchObject(EXPECTED_TENANT_CACHE);
 
     await applyButton.click();
     await expect.poll(() => page.evaluate(() => Boolean(window.__tenantThemeSave))).toBe(true);
-    const persistedTheme = await readStoredTheme(page, TENANT_STORAGE_KEY);
-    expect(persistedTheme).not.toBeNull();
-    expect((persistedTheme as { primaryColor: string }).primaryColor).not.toBe('#123456');
     expect(await page.evaluate(() => window.__tenantThemeSave?.activeThemeId)).toBe('sarak-sovereign');
+    const persistedTheme = await readStoredThemePair(page, TENANT_STORAGE_KEY);
+    expect(persistedTheme.design).not.toBeNull();
+    expect((persistedTheme.design as { primaryColor: string }).primaryColor).not.toBe('#123456');
+    expect(persistedTheme.activeThemeId).toBe('sarak-sovereign');
     await expect(page.locator('[data-probe="tenant-system-background"]')).toHaveText('#06080d');
     expect(await page.evaluate(() => window.__namedThemeSaveCalled)).toBeUndefined();
     expect(pageErrors).toEqual([]);
@@ -71,3 +77,14 @@ const readStoredTheme = async (page: import('@playwright/test').Page, key: strin
         const value = localStorage.getItem(storageKey);
         return value === null ? null : JSON.parse(value);
     }, key);
+
+const readStoredThemePair = async (
+    page: import('@playwright/test').Page,
+    key: string,
+): Promise<{ design: unknown; activeThemeId: string | null }> => page.evaluate((storageKey) => {
+    const value = localStorage.getItem(storageKey);
+    return {
+        design: value === null ? null : JSON.parse(value),
+        activeThemeId: localStorage.getItem(`${storageKey}::active-theme-id`),
+    };
+}, key);

@@ -1,4 +1,5 @@
 import type { SarakThemePreset } from './index';
+import { FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../schema/system';
 
 export const dataTerminal: SarakThemePreset = {
     id: "data-terminal",
@@ -14,7 +15,7 @@ export const dataTerminal: SarakThemePreset = {
         "identityTracking": 0,
         "identityHoverEffect": "opacity",
         "layoutDensity": "compact",
-        "maxContentWidth": "1440px",
+        "maxContentWidth": FLUID_MAX_CONTENT_WIDTH_OPTION,
         "layoutPadding": 20,
         "borderRadius": 6,
         "borderWidth": 1,

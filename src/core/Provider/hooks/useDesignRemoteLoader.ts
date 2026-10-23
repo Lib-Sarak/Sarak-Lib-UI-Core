@@ -1,6 +1,7 @@
 import { useEffect, useRef, MutableRefObject } from 'react';
 import { validateDesign } from '../utils/validation';
 import { resolveEffectiveStrategy } from '../utils/persistenceStrategy';
+import { writeCachedActiveThemeId } from '../utils/resolveStorageKey';
 import { SarakUIOptions, SarakDesignState, SarakThemePayload, SetDesign } from '../types';
 
 interface LoadedTheme {
@@ -19,6 +20,8 @@ interface RemoteLoaderProps {
     setResolvedThemeId: (id: string | undefined) => void;
     storageKey: string;
     onLoadBecameAvailable?: () => void;
+    design: SarakDesignState;
+    resolvedThemeId?: string;
 }
 
 const isLoadedTheme = (
@@ -52,6 +55,8 @@ export const useDesignRemoteLoader = (props: RemoteLoaderProps): void => {
         setResolvedThemeId,
         storageKey,
         onLoadBecameAvailable,
+        design,
+        resolvedThemeId,
     } = props;
 
     // `getSeedConfig` depende da coleção de temas e pode mudar a cada render.
@@ -62,6 +67,7 @@ export const useDesignRemoteLoader = (props: RemoteLoaderProps): void => {
     const isRemoteLoadAvailable = Boolean(optionsRef.current.persistence?.onLoad)
         && optionsRef.current.persistence?.strategy !== 'local';
     const previousRemoteLoadAvailableRef = useRef(isRemoteLoadAvailable);
+    const shouldRefreshHybridCacheRef = useRef(false);
     getSeedConfigRef.current = getSeedConfig;
     activeThemeIdRef.current = activeThemeId;
 
@@ -93,6 +99,8 @@ export const useDesignRemoteLoader = (props: RemoteLoaderProps): void => {
                 const restoredThemeId = controlledThemeId ?? loadedTheme.activeThemeId;
                 if (restoredThemeId !== undefined) setResolvedThemeId(restoredThemeId);
 
+                if (strategy === 'hybrid') shouldRefreshHybridCacheRef.current = true;
+
                 setDesign(strategy === 'remote'
                     ? () => validateDesign({ ...getSeedConfigRef.current(), ...loadedTheme.design })
                     : (previous) => validateDesign({ ...previous, ...loadedTheme.design }));
@@ -116,4 +124,15 @@ export const useDesignRemoteLoader = (props: RemoteLoaderProps): void => {
         setResolvedThemeId,
         storageKey,
     ]);
+
+    useEffect(() => {
+        if (!isHydrated || !isBackendLoaded || !shouldRefreshHybridCacheRef.current) return;
+        shouldRefreshHybridCacheRef.current = false;
+        try {
+            localStorage.setItem(storageKey, JSON.stringify(design));
+            writeCachedActiveThemeId(storageKey, resolvedThemeId);
+        } catch (error) {
+            console.error('[Sarak:Design] localStorage remote hydration error:', error);
+        }
+    }, [design, isBackendLoaded, isHydrated, resolvedThemeId, storageKey]);
 };

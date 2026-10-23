@@ -22,7 +22,8 @@ interface PresetsCatalogProps {
     /** `themeId`: qual tema do catálogo gerou este payload — o rascunho o acompanha,
      * e só é anunciado ao sistema (`resolvedThemeId`) quando o rascunho é aplicado. */
     onApplyFullTheme?: (design: Partial<SarakDesignState>, themeId?: string) => void;
-    currentMode: string;
+    currentMode: 'light' | 'dark';
+    draftMode: 'light' | 'dark';
     /** Contexto do Provider — lê `themeCatalog` (lista leve) e `allThemes` (temas com `design` em memória). */
     sarak?: SarakUIContextType;
     onClose: () => void;
@@ -43,6 +44,7 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
     onApplyPreset,
     onApplyFullTheme,
     currentMode,
+    draftMode,
     sarak,
     onClose,
 }) => {
@@ -61,7 +63,7 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
         if (!theme) return;
         const resolved = resolveThemeForMode(
             { design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte },
-            currentMode as 'light' | 'dark',
+            draftMode,
         );
         const payload = upgradeThemePayload(resolved);
         if (onApplyFullTheme) {

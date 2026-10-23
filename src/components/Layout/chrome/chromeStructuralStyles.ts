@@ -50,7 +50,7 @@ export const resolveChromeNavbarLayoutClass = (layout: ChromeNavbarLayout): stri
     NAVBAR_LAYOUT_CLASS[layout] ?? NAVBAR_LAYOUT_CLASS.sticky;
 
 // @sarak-token-reader maxContentWidth direto
-// As opções de `maxContentWidth` já são larguras CSS: vão direto para `max-width`.
+// O leitor converte a opção semântica em CSS antes de chegar a `max-width`.
 export const resolveChromeContentStyle = (
     layoutDensity: ChromeLayoutDensity,
     maxContentWidth: string,

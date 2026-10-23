@@ -1,4 +1,5 @@
 import type { SarakThemePreset } from './index';
+import { FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../schema/system';
 
 // Neo Brutalism: o brutalismo da web é CLARO. Papel creme, borda preta de 3px, cor chapada sem gradiente, sombra dura deslocada
 // (6px, sem desfoque), raio 4, Archivo 900 maiúsculo sobre Space Grotesk, ícone Lucide bold. Amarelo é o preenchimento da marca
@@ -23,7 +24,7 @@ export const neobrutalismTheme: SarakThemePreset = {
         identityHoverEffect: 'scale',
         // --- Configurações de Layout ---
         layoutDensity: 'comfortable',
-        maxContentWidth: '1440px',
+        maxContentWidth: FLUID_MAX_CONTENT_WIDTH_OPTION,
         layoutPadding: { mob: 16, tab: 24, desk: 32 },
         borderRadius: { mob: 4, tab: 4, desk: 4 },
         borderWidth: 3,

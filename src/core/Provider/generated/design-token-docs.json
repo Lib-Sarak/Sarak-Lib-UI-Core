@@ -2230,7 +2230,7 @@
    "label": "Largura Máxima do Conteúdo",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Largura máxima da região de conteúdo do cromo, centralizada na tela; 100% ocupa a largura inteira."
+   "usage": "Centraliza a região de conteúdo do cromo. No modo fluido, as margens externas crescem com o contêiner, entre layoutPadding e 128px por lado; o respiro interno é escalado por layoutDensity."
   },
   {
    "id": "mobileNavigationStyle",

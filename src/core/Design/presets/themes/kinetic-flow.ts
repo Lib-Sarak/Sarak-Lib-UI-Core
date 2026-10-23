@@ -1,4 +1,5 @@
 import type { SarakThemePreset } from './index';
+import { FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../schema/system';
 
 export const kineticFlowTheme: SarakThemePreset = {
     id: "kinetic-flow",
@@ -15,7 +16,7 @@ export const kineticFlowTheme: SarakThemePreset = {
             "identityTracking": 0,
             "identityHoverEffect": "opacity",
             "layoutDensity": "compact",
-            "maxContentWidth": "1200px",
+            "maxContentWidth": FLUID_MAX_CONTENT_WIDTH_OPTION,
             "layoutPadding": {
                 "mob": 16,
                 "tab": 24,

@@ -3,6 +3,8 @@ import { SARAK_DEFAULT_THEME_ID } from '../../Design/presets/themes';
 import { getLoadedThemePreset, isSarakThemePresetId } from '../../Design/presets/themes/registry';
 import { resolveThemeForMode } from '../../Design/presets/themes/color-engine';
 import { sarakGetDefaultDesignState } from '../../Design/master-map';
+import { readCachedActiveThemeId, resolveStorageKey } from '../utils/resolveStorageKey';
+import { resolveEffectiveStrategy } from '../utils/persistenceStrategy';
 import type { SarakTokenValue } from '../../Design/types';
 import type { SarakDesignState, SarakThemeEntry, SarakThemePayload, SarakUIOptions } from '../types';
 
@@ -40,8 +42,19 @@ export const useThemeSeed = (props: ThemeSeedProps) => {
         Boolean(id) && !allThemes?.some((theme) => theme.id === id) && !isSarakThemePresetId(id as string),
     [allThemes]);
 
+    const readCachedThemeId = useCallback((): string | undefined => {
+        if (typeof window === 'undefined') return undefined;
+        if (optionsRef.current.persistence?.preferConfigOverCache === true) return undefined;
+        if (resolveEffectiveStrategy(optionsRef.current.persistence) === 'remote') return undefined;
+        return readCachedActiveThemeId(resolveStorageKey(optionsRef.current.persistence));
+    }, [optionsRef]);
+
     const resolveSeedThemeId = useCallback((): string | undefined => {
-        const seedThemeId = activeThemeId || initialTheme;
+        const explicitThemeId = activeThemeId;
+        const cachedThemeId = readCachedThemeId();
+        if (!explicitThemeId && cachedThemeId) return cachedThemeId;
+
+        const seedThemeId = explicitThemeId || initialTheme;
         if (seedThemeId) {
             if (!isUnknownRequestedTheme(seedThemeId)) return seedThemeId;
             const requestedMode: 'light' | 'dark' = (configRef.current?.mode as 'light' | 'dark') || 'dark';
@@ -56,7 +69,7 @@ export const useThemeSeed = (props: ThemeSeedProps) => {
             console.warn(`[SarakUIProvider] options.theme.defaultTheme "${defaultThemeId}" não existe — usando o tema padrão "${SARAK_DEFAULT_THEME_ID}".`);
         }
         return SARAK_DEFAULT_THEME_ID;
-    }, [activeThemeId, initialTheme, isUnknownRequestedTheme, configRef, optionsRef]);
+    }, [activeThemeId, initialTheme, isUnknownRequestedTheme, configRef, optionsRef, readCachedThemeId]);
 
     const getSeedConfig = useCallback((): SarakDesignState => {
         const masterDefaults = sarakGetDefaultDesignState();

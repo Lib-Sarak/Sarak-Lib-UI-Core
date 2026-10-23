@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { SARAK_ALL_THEMES } from '../all';
 import type { SarakThemePreset } from '../index';
+import { FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../../schema/system';
 
 interface ThemeSetCoverage {
     cardTextures: number;
@@ -52,6 +53,11 @@ function hasRequiredCoverage(coverage: ThemeSetCoverage): boolean {
 }
 
 describe('cobertura do conjunto de temas embarcados', () => {
+    it('declara a opção fluida de largura em todos os temas', () => {
+        expect(SARAK_ALL_THEMES.length).toBe(19);
+        expect(SARAK_ALL_THEMES.every((theme) => theme.design.maxContentWidth === FLUID_MAX_CONTENT_WIDTH_OPTION)).toBe(true);
+    });
+
     it('mantém diversidade estética no conjunto inteiro', () => {
         const coverage = measureThemeSet(SARAK_ALL_THEMES);
 

@@ -1,4 +1,5 @@
 import type { SarakThemePreset } from './index';
+import { FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../schema/system';
 
 export const auroraVeilTheme: SarakThemePreset = {
     id: "aurora-veil",
@@ -14,7 +15,7 @@ export const auroraVeilTheme: SarakThemePreset = {
         "identityTracking": 0,
         "identityHoverEffect": "opacity",
         "layoutDensity": "comfortable",
-        "maxContentWidth": "1440px",
+        "maxContentWidth": FLUID_MAX_CONTENT_WIDTH_OPTION,
         "layoutPadding": 32,
         "borderRadius": 18,
         "borderWidth": 0,

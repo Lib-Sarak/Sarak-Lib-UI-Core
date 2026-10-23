@@ -1,4 +1,5 @@
 import type { SarakThemePreset } from './index';
+import { FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../schema/system';
 
 // Sovereign: sala de comando. Vidro escuro sobre uma constelação, ciano contido (H184 S88, fora do S100 dos neons do
 // conjunto), Phosphor preenchido como linguagem de produto. É o tema que carrega sem ninguém escolher, e o valor de
@@ -25,7 +26,7 @@ export const sarakSovereignTheme: SarakThemePreset = {
 
         // --- Configurações de Layout ---
         layoutDensity: 'comfortable',
-        maxContentWidth: '1440px',
+        maxContentWidth: FLUID_MAX_CONTENT_WIDTH_OPTION,
         layoutPadding: { mob: 16, tab: 24, desk: 32 },
         borderRadius: { mob: 8, tab: 10, desk: 12 },
         borderWidth: 1,

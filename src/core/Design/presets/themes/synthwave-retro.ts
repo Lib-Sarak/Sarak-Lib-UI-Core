@@ -1,4 +1,5 @@
 import type { SarakThemePreset } from './index';
+import { FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../schema/system';
 
 // Synthwave Retro: noite de 1986. Rosa e laranja sobre roxo profundo, Syne maiúsculo com brilho rosa, botão `neon` em pílula com
 // pulso lento, cartão de seda translúcido, gráfico de área e movimento suave (350 ms, deslizar lateral). O fundo é arte própria
@@ -23,7 +24,7 @@ export const synthwaveRetroTheme: SarakThemePreset = {
         identityHoverEffect: 'glow',
         // --- Configurações de Layout ---
         layoutDensity: 'comfortable',
-        maxContentWidth: '1200px',
+        maxContentWidth: FLUID_MAX_CONTENT_WIDTH_OPTION,
         layoutPadding: { mob: 16, tab: 24, desk: 32 },
         borderRadius: { mob: 12, tab: 14, desk: 16 },
         borderWidth: 1,

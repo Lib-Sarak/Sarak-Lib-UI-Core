@@ -15,7 +15,8 @@ export const useDesignSync = (
     hasHydratedRef: MutableRefObject<boolean>,
     setDesign: SetDesign,
     // O `config` do host por REF: estável entre renders, nunca dependência do efeito (spec 02 §3.1).
-    configRef?: MutableRefObject<SarakThemePayload | undefined>
+    configRef?: MutableRefObject<SarakThemePayload | undefined>,
+    preferConfigOverCache = false,
 ) => {
     // Guarda o último `activeThemeId` efetivamente aplicado. Sem isso, qualquer
     // render que produza uma nova referência de `allThemes` (ex.: consumidor que
@@ -86,6 +87,11 @@ export const useDesignSync = (
         // `activeThemeId` foi limpo — permite reaplicar se ele voltar a ser setado.
         lastAppliedThemeIdRef.current = undefined;
 
+        if (preferConfigOverCache) {
+            hasHydratedRef.current = true;
+            return;
+        }
+
         // Se não temos tema ativo, e ainda não hidratamos, tentamos ler do cache local
         if (!hasHydratedRef.current) {
             try {
@@ -99,5 +105,5 @@ export const useDesignSync = (
             }
             hasHydratedRef.current = true;
         }
-    }, [isHydrated, storageKey, activeThemeId, allThemes, setDesign, hasHydratedRef]);
+    }, [isHydrated, storageKey, activeThemeId, allThemes, setDesign, hasHydratedRef, preferConfigOverCache]);
 };

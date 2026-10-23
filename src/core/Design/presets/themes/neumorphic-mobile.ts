@@ -1,4 +1,5 @@
 import type { SarakThemePreset } from './index';
+import { FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../schema/system';
 
 export const neumorphicMobile: SarakThemePreset = {
     id: "neumorphic-mobile",
@@ -14,7 +15,7 @@ export const neumorphicMobile: SarakThemePreset = {
         "identityTracking": 0,
         "identityHoverEffect": "opacity",
         "layoutDensity": "comfortable",
-        "maxContentWidth": "1440px",
+            "maxContentWidth": FLUID_MAX_CONTENT_WIDTH_OPTION,
         "layoutPadding": 24,
         "borderRadius": 20,
         "borderWidth": 0,

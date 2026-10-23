@@ -72,10 +72,21 @@ nenhum estado foi salvo. `onLoad` não recebe argumento: a lib nunca pede identi
 porque não tem esse conceito (§4). Ao trocar `tenantId`, a lib chama `onLoad` de novo sem exigir
 remontagem do Provider.
 
+No cache local da estratégia `hybrid`, o design continua no formato JSON bruto da chave efetiva
+(`storageKey`, já particionada por `tenantId`) e o id fica na chave companheira
+`${storageKey}::active-theme-id`. Assim, o cache restaura o par sem alterar o formato de design
+que o sync entre abas já lê. O id do cache é usado enquanto `onLoad` está pendente; um id devolvido
+por `onLoad` substitui o cache e atualiza as duas entradas locais sem chamar `onSave`. Se a resposta
+não trouxer id, o id em cache é mantido. A prop controlada continua acima das duas fontes.
+
 O boot e a hidratação não chamam `onSave`. Depois da carga, alterações aplicadas diretamente ao
 Provider continuam sendo gravadas pelo debounce. No painel, `Aplicar (N)` confirma o rascunho e
 grava imediatamente pelo `onSave` do estado aplicado; não chama `options.theme.onSave`, que é a
 porta separada para salvar um tema nomeado (§1.2).
+
+Se `onSave` rejeitar, a alteração permanece aplicada na tela e a biblioteca mostra um aviso
+traduzido. A tentativa não é marcada como gravada; não há repetição automática, e a próxima mudança
+aplicada tenta salvar de novo.
 
 #### Troca de tenant no Provider montado
 
@@ -217,10 +228,11 @@ function App({ temasSalvos, estadoAplicado }: {
           // o contrário (ADR-009 §2.2).
           strategy: 'hybrid',
           onSave: async (design, activeThemeId) => {
-            await fetch('/api/tema/estado', {
+            const response = await fetch('/api/tema/estado', {
               method: 'PUT',
               body: JSON.stringify({ design, activeThemeId }), // §1.1 — guarde os dois, byte a byte
             });
+            if (!response.ok) throw new Error(`Falha ao salvar tema: HTTP ${response.status}`);
           },
           onLoad: async () => {
             const res = await fetch('/api/tema/estado');
@@ -256,7 +268,8 @@ function App({ temasSalvos, estadoAplicado }: {
 **Contrato de falha das portas.** Uma porta de gravação precisa rejeitar sua Promise quando a
 operação falha. `fetch` não rejeita por respostas HTTP 4xx/5xx: confira `response.ok` e lance um
 erro, como no exemplo. Resolver a Promise depois de uma resposta de falha comunica sucesso à
-biblioteca; não capture nem engula esse erro.
+biblioteca; não capture nem engula esse erro. A rejeição de `persistence.onSave` deixa o tema em tela,
+mostra o aviso localizado e permite nova tentativa quando outra mudança for aplicada.
 
 ## 6. O primeiro paint
 
@@ -274,27 +287,27 @@ Três saídas, cada uma com o trade explícito:
 
 | Saída | O que ganha | O que custa |
 |---|---|---|
-| Injetar o design no HTML servido e passar em `config` | **Zero flash, zero espera** — o tema certo já está no primeiro paint | Exige que o **seu servidor** conheça o tema antes de responder a página. É o conserto de verdade, não uma correção de sintoma |
+| Injetar o design no HTML servido, pintar o fundo no HTML e passar em `config` | **Zero flash, zero espera** — o fundo aparece antes do JavaScript e o Provider começa com o mesmo design | Exige que o **seu servidor** conheça o tema antes de responder e renderize o fundo usando `design.colorBgBody` |
 | `options.persistence.strictBackendSync: true` | Zero flash — nunca pinta o tema errado | Troca o flash por **tela vazia** enquanto `onLoad` corre (`SarakUIProvider.tsx:189-190`) |
 | Aceitar o flash | Zero esforço | Uma troca de tema visível, **uma vez por navegador** |
 
-### A precedência — `config` × `localStorage` × semente
+### A precedência — `config` × `onLoad` × cache × semente
 
 Medida em `useDesignManager.ts:68` (a semente) e `:93-104` (a leitura inicial):
 
 ```
-getSeedConfig()  =  { ...masterDefaults, ...temaDoCatálogo, ...config }   // config.ts:68
+getSeedConfig()  =  { ...masterDefaults, ...temaDoCatálogo, ...config }
 
-localStorage tem valor?  →  { ...getSeedConfig(), ...JSON.parse(localStorage) }   // :100 — o CACHE vence
-localStorage vazio?      →  getSeedConfig()                                       // :103 — CONFIG vence
+prop `activeThemeId` controlada? → esse id vence
+`onLoad` devolveu um id?          → usa o id remoto e atualiza o cache em `hybrid`
+cache local tem id?               → usa o id do cache até a resposta remota
+nenhuma fonte acima?              → usa o id da semente
 ```
 
-**Num navegador novo (sem cache), `config` manda no primeiro paint** — é a saída da primeira linha
-da tabela acima. Com cache presente, o `localStorage` vence o `config` injetado, e isso **está
-certo**: o cache costuma carregar o valor mais recente, e `onLoad` (quando configurado) corrige
-por cima se não for. Mas quem injeta `config` esperando que ele **sempre** vença — inclusive depois
-que o usuário já visitou o site antes — vê um comportamento que parece aleatório se não souber
-desta ordem.
+O padrão mantém a compatibilidade: com cache local, o cache vence `config`; sem cache, `config`
+vence a semente. Quando o host injeta o design de boot como fonte da verdade, defina
+`persistence.preferConfigOverCache: true`: o `config` pinta já no primeiro render e o cache antigo
+não o substitui. Um `onLoad` posterior ainda vence esse design e, em `hybrid`, atualiza o cache.
 
 ## 7. Modelagem de referência
 

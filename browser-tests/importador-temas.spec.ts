@@ -2,6 +2,7 @@ import { test, expect, chromium, type Page } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { sarakCreateThemeBootCss } from '../src/core/Provider/utils/createThemeBootCss';
 import { buildHarness } from './build-harness.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -149,4 +150,56 @@ test('apagar rejeitado mantém o tema na coleção e mostra o aviso', async () =
         await expect(page.getByTestId('provider-theme-ids')).toContainText('erp-noite');
         await expect(page.getByTestId('feedback-message')).toHaveText('Não foi possível apagar o tema. Ele continua disponível na coleção.');
     });
+});
+
+test('restaura id e tema do servidor sem clarão, e mostra falha da porta de gravação', async () => {
+    const fixturePath = path.join(HERE, 'fixtures', 'tema-que-volta-entry.tsx');
+    const { outDir, htmlPath } = await buildHarness(fixturePath);
+    const criticalCss = sarakCreateThemeBootCss({ mode: 'dark', primaryColor: '#123456', colorBgBody: '#123456' });
+    const pageHtml = fs.readFileSync(htmlPath, 'utf8').replace(
+        '</head>',
+        `<style>${criticalCss}</style></head>`,
+    );
+    fs.writeFileSync(htmlPath, pageHtml, 'utf8');
+    const browser = await chromium.launch({ executablePath: process.env.SARAK_PLAYWRIGHT_CHROMIUM_PATH || undefined });
+
+    try {
+        const firstPaintPage = await browser.newPage({ javaScriptEnabled: false });
+        await firstPaintPage.setContent(pageHtml);
+        expect(await firstPaintPage.locator('html').evaluate((element) => getComputedStyle(element).backgroundColor)).toBe('rgb(18, 52, 86)');
+        expect(await firstPaintPage.locator('body').evaluate((element) => getComputedStyle(element).backgroundColor)).toBe('rgb(18, 52, 86)');
+        expect(await firstPaintPage.locator('html').evaluate((element) => getComputedStyle(element).colorScheme)).toBe('dark');
+        await firstPaintPage.close();
+
+        const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+        await page.clock.install();
+        await page.addInitScript(() => {
+            localStorage.setItem('browser-theme-restore::tenant:org-a', JSON.stringify({ primaryColor: '#8a1111', colorBgBody: '#8a1111' }));
+            localStorage.setItem('browser-theme-restore::tenant:org-a::active-theme-id', 'old-theme');
+        });
+        await page.goto(pathToFileURL(htmlPath).href);
+        await expect(page.getByTestId('restored-primary-color')).toHaveText('#123456');
+        await expect(page.getByTestId('restored-active-theme-id')).toHaveText('config-theme');
+        await page.getByRole('button', { name: 'Salvar tema' }).click();
+        await expect(page.getByLabel('Nome do tema')).toHaveValue('Tema do config');
+        await page.getByRole('button', { name: 'Cancelar' }).click();
+
+        await page.evaluate(() => window.__resolveRestoredTheme?.());
+        await expect(page.getByTestId('restored-primary-color')).toHaveText('#265f87');
+        await expect(page.getByTestId('restored-active-theme-id')).toHaveText('server-theme');
+        await expect(page.getByRole('button', { name: 'Salvar tema' })).toBeVisible();
+        await page.getByRole('button', { name: 'Salvar tema' }).click();
+        await expect(page.getByLabel('Nome do tema')).toHaveValue('Tema do servidor');
+        await page.getByRole('button', { name: 'Cancelar' }).click();
+        expect(await page.evaluate(() => localStorage.getItem('browser-theme-restore::tenant:org-a::active-theme-id'))).toBe('server-theme');
+        expect(await page.evaluate(() => JSON.parse(localStorage.getItem('browser-theme-restore::tenant:org-a') ?? 'null').primaryColor)).toBe('#265f87');
+
+        await page.getByTestId('change-applied-design').click();
+        await page.clock.fastForward(1500);
+        await expect(page.getByRole('alert')).toContainText('Não foi possível salvar o tema.');
+        await page.close();
+    } finally {
+        await browser.close();
+        fs.rmSync(outDir, { recursive: true, force: true });
+    }
 });

@@ -18,6 +18,8 @@ const renderLoader = (options: SarakUIOptions, setDesign = vi.fn(), getSeedConfi
                 getSeedConfig,
                 setResolvedThemeId,
                 storageKey: 'test-key',
+                design: {} as SarakDesignState,
+                resolvedThemeId: undefined,
             }),
         { initialProps: { isBackendLoaded: false } },
     );
@@ -133,6 +135,8 @@ describe('useDesignRemoteLoader — strategy (ADR-009 / plan-34)', () => {
             activeThemeId: 'tema-controlado',
             setResolvedThemeId,
             storageKey: 'test-key',
+            design: {} as SarakDesignState,
+            resolvedThemeId: undefined,
         }));
 
         await waitFor(() => expect(setIsBackendLoaded).toHaveBeenCalledWith(true));
@@ -169,6 +173,8 @@ describe('useDesignRemoteLoader — strategy (ADR-009 / plan-34)', () => {
                     getSeedConfig,
                     setResolvedThemeId,
                     storageKey: 'test-key',
+                    design: {} as SarakDesignState,
+                    resolvedThemeId: undefined,
                 }),
             { initialProps: { getSeedConfig: newSeedConfig() } },
         );

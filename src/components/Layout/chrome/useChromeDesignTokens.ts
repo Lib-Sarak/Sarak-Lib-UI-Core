@@ -1,4 +1,5 @@
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
+import { resolveMaxContentWidth } from '../../../core/Design/schema/system';
 import { resolveMobileNavigationStyle, type ChromeMobileNavigationStyle } from './mobileNavigation';
 
 export type ChromeSidebarPosition = 'left' | 'right' | 'floating';
@@ -39,7 +40,7 @@ export const useChromeDesignTokens = (): ChromeDesignTokens => {
         sidebarPosition: (design?.sidebarPosition as ChromeSidebarPosition) || 'left',
         navbarLayout: (design?.navbarLayout as ChromeNavbarLayout) || 'sticky',
         layoutDensity: resolveLayoutDensity(design?.layoutDensity),
-        maxContentWidth: (design?.maxContentWidth as string) || '1440px',
+        maxContentWidth: resolveMaxContentWidth(design?.maxContentWidth),
         isSplitViewEnabled: design?.isSplitViewEnabled ?? false,
         isNavHidden: design?.isNavHidden ?? false,
         isAutoHideEnabled: design?.isAutoHideEnabled ?? false,

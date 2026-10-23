@@ -10,6 +10,10 @@ vi.mock('../utils/color-engine', () => ({
 }));
 
 describe('DESIGN_MANIFEST', () => {
+    it('não publica aliases de largura sem leitor', () => {
+        expect(SARAK_DESIGN_MANIFEST.maxContentWidth).toBeUndefined();
+    });
+
     it('should transform mode correctly', () => {
         expect(SARAK_DESIGN_MANIFEST.mode.transform?.('dark')).toBe('dark');
         expect(SARAK_DESIGN_MANIFEST.mode.transform?.('light')).toBe('light');

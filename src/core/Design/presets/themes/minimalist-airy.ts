@@ -1,4 +1,5 @@
 import type { SarakThemePreset } from './index';
+import { FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../schema/system';
 
 export const minimalistAiry: SarakThemePreset = {
     id: "minimalist-airy",
@@ -15,7 +16,7 @@ export const minimalistAiry: SarakThemePreset = {
             "identityTracking": 0,
             "identityHoverEffect": "opacity",
             "layoutDensity": "spacious",
-            "maxContentWidth": "1440px",
+            "maxContentWidth": FLUID_MAX_CONTENT_WIDTH_OPTION,
             "layoutPadding": {
                 "mob": 16,
                 "tab": 24,

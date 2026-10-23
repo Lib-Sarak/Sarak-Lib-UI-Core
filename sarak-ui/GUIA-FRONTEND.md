@@ -664,6 +664,56 @@ Esse é o envelope completo; os campos de `design` são tokens estéticos declar
   tabela. **O tema padrão pinta antes do persistido, num navegador sem cache?** É o mesmo documento,
   seção "O primeiro paint" — as três saídas (injetar `config` no HTML servido, `strictBackendSync`,
   ou aceitar) e a precedência real entre `config`/`localStorage`/semente.
+
+#### Tema aplicado por organização
+
+Depois do login, use o identificador da organização como `persistence.tenantId` e feche as portas do
+importador sobre essa mesma organização. Assim, o tema aplicado é compartilhado pelo escopo da
+organização e a chave local também fica separada por ela:
+
+```tsx
+<SarakUIProvider
+  config={temaDeBoot.design}
+  customThemes={temasImportados}
+  options={{
+    persistence: {
+      strategy: 'hybrid',
+      tenantId: organizacao.id,
+      preferConfigOverCache: true,
+      onLoad: () => buscarTemaAplicado(organizacao.id),
+      onSave: (design, activeThemeId) =>
+        salvarTemaAplicado(organizacao.id, { design, activeThemeId }),
+    },
+  }}
+>
+  <Aplicacao />
+</SarakUIProvider>
+```
+
+Ao trocar a organização, atualize `tenantId` e as portas; o Provider carrega o estado novo sem
+remontar e cancela a gravação pendente da organização anterior. Não passe `activeThemeId` controlado
+se o usuário puder escolher outro tema. O cache restaura o par design/id até `onLoad` responder; uma
+resposta com id substitui o cache sem chamar `onSave`.
+
+Quando o servidor injeta `temaDeBoot` como fonte da verdade, `preferConfigOverCache: true` faz o
+`config` vencer o cache local no primeiro render. Para o primeiro quadro antes do JavaScript, o
+servidor precisa inserir o CSS crítico no HTML inicial, antes dos scripts do app. Use a função
+pública `sarakCreateThemeBootCss`: ela recebe o design, valida a cor de fundo e devolve as regras
+para `html`, `body` e `color-scheme`.
+
+```tsx
+import { sarakCreateThemeBootCss } from '@sarak/lib-ui-core';
+
+const cssDoPrimeiroQuadro = sarakCreateThemeBootCss(temaDeBoot.design);
+const html = `<!doctype html>
+<html>
+  <head><style>${cssDoPrimeiroQuadro}</style></head>
+  <body><div id="root"></div><!-- scripts do app depois do CSS crítico --></body>
+</html>`;
+```
+
+Envie esse HTML como resposta inicial do servidor e use o mesmo `temaDeBoot.design` em `config`;
+assim, a página já tem o fundo antes do JavaScript e o Provider começa com a mesma aparência.
 - **Validação por construção:** todo tema (de arquivo, de `localStorage` ou exportado) é validado no
   load contra o schema de tokens: chave desconhecida ou valor de tipo errado vira `console.warn` e é
   **descartado**, nunca CSS cru. Se um ajuste seu "não pegou", o console diz por quê.
@@ -1023,7 +1073,7 @@ Medido em navegador (lote 4):
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v8.0.0-rc.2; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **382** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **383** nomes (componentes, tipos, hooks e helpers).
 
 ### A.1 Componentes públicos (105)
 
@@ -1226,7 +1276,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `layoutGapMd` | estético | não | Escala média de espaçamento, a mais usada: entre os grupos do cromo e nos blocos de conteúdo padrão, por breakpoint. | — |
 | `layoutGapSm` | estético | não | Escala pequena de espaçamento: o respiro dos botões e dos campos do cromo e dos agrupamentos densos, por breakpoint. | — |
 | `layoutPadding` | estético | não | Respiro entre a região de conteúdo do cromo e as bordas, em pixels, com um valor por breakpoint; a densidade multiplica este valor. | — |
-| `maxContentWidth` | estético | não | Largura máxima da região de conteúdo do cromo, centralizada na tela; 100% ocupa a largura inteira. | — |
+| `maxContentWidth` | estético | não | Centraliza a região de conteúdo do cromo. No modo fluido, as margens externas crescem com o contêiner, entre layoutPadding e 128px por lado; o respiro interno é escalado por layoutDensity. | — |
 
 #### Container de Nav (`navigation`)
 

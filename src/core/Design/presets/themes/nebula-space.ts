@@ -1,4 +1,5 @@
 import type { SarakThemePreset } from './index';
+import { FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../schema/system';
 
 // Nebula Space: espaço profundo. Violeta e gelo sobre azul-noite, nebulosa de fundo com malha de gradiente, estrelas no cartão,
 // vidro espesso (blur 20), ícone Phosphor thin, Sora sobre Inter, botão frosted em pílula, raios grandes (24), densidade espaçosa
@@ -23,7 +24,7 @@ export const nebulaSpaceTheme: SarakThemePreset = {
         identityHoverEffect: 'opacity',
         // --- Configurações de Layout ---
         layoutDensity: 'spacious',
-        maxContentWidth: '1200px',
+        maxContentWidth: FLUID_MAX_CONTENT_WIDTH_OPTION,
         layoutPadding: { mob: 20, tab: 32, desk: 40 },
         borderRadius: { mob: 16, tab: 20, desk: 24 },
         borderWidth: 1,

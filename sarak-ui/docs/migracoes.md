@@ -15,6 +15,16 @@ produto precisam. Se um componente for renderizado sem o pacote correspondente, 
 mensagem com o nome do pacote e registra um aviso no console. O guia relaciona cada pacote ao
 componente que o utiliza.
 
+### Largura padrão do conteúdo
+
+`maxContentWidth` passa a acompanhar a largura do próprio contêiner: as margens externas crescem
+proporcionalmente, respeitam `layoutPadding` como piso e param em 128 px por lado. O respiro interno
+continua seguindo `layoutDensity`. Os temas embarcados adotam esse padrão fluido; aplicações que
+precisam de um teto fixo podem selecionar `1000px`, `1200px`, `1440px` ou `1600px`. O valor `100%`
+continua ocupando toda a largura disponível. Para gravações novas, a opção fluida é persistida como
+`fluid` e convertida em CSS pela biblioteca; não grave a expressão CSS no tema. Uma configuração
+explícita já salva continua valendo.
+
 ### Pisos mínimos de peers e dependência na 8.0.0
 
 **Classificação: MAJOR.** Para receber as correções de segurança, atualize os pacotes opcionais
@@ -1048,6 +1058,21 @@ function App({ tenantId }: { tenantId: string }) {
 Se a troca também tiver de descartar o estado React dos filhos, adicione `key={tenantId}` ao
 Provider para desmontar e montar a árvore inteira. A chave não substitui `tenantId`: mantenha os
 dois para reiniciar a árvore e separar a chave de persistência por tenant.
+
+### O cache híbrido restaura o id ativo e a falha de gravação fica visível
+
+O cache local da estratégia `hybrid` restaura o par design/id: o design segue no formato bruto da
+chave de persistência e `activeThemeId` fica em uma chave companheira tenant-aware. `onLoad` pode
+atualizar esse cache sem chamar `onSave`; o cache vence `config` por padrão, como antes. Hosts que
+injetam o design de boot como fonte da verdade podem definir `preferConfigOverCache: true`, fazendo
+`config` vencer o cache no primeiro render. Para evitar o quadro branco antes do JavaScript, o host
+também pinta o fundo no HTML inicial com `design.colorBgBody`.
+
+`persistence.onSave` deve rejeitar sua Promise quando a gravação falhar (incluindo resposta HTTP
+4xx/5xx, que `fetch` não rejeita sozinho). A biblioteca mantém a alteração na tela e mostra um aviso
+localizado; não considera a tentativa bem-sucedida nem repete automaticamente. Uma mudança aplicada
+posterior tenta gravar novamente. `Aplicar (N)` continua sendo a ação que persiste o rascunho pelo
+`persistence.onSave`; `options.theme.onSave` continua reservado aos temas nomeados.
 
 
 ### As implementações de SarakDataTable e SarakDataGrid deixam de ser públicas

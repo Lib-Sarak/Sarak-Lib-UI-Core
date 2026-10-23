@@ -23,7 +23,8 @@ interface PreviewCanvasProps {
     previewAnimationStyle: string;
     config: SarakUIOptions;
     previewPrimaryColor: string;
-    mode: string;
+    mode: 'light' | 'dark';
+    draftMode: 'light' | 'dark';
     draftTokens: Partial<SarakDesignState>;
     activeSectionId?: string | null;
     onUpdateDraft: (key: string, value: SarakTokenValue) => void;
@@ -44,6 +45,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     config,
     previewPrimaryColor,
     mode,
+    draftMode,
     draftTokens,
     activeSectionId,
     onUpdateDraft,
@@ -127,6 +129,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                     onApplyPreset={handleApplyPreset}
                                     onApplyFullTheme={onApplyFullTheme}
                                     currentMode={mode}
+                                    draftMode={draftMode}
                                     sarak={sarak}
                                     onClose={() => onCloseGallery?.()}
                                 />

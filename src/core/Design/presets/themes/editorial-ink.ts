@@ -1,4 +1,5 @@
 import type { SarakThemePreset } from './index';
+import { FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../schema/system';
 
 export const editorialInkTheme: SarakThemePreset = {
   "id": "editorial-ink",
@@ -14,7 +15,7 @@ export const editorialInkTheme: SarakThemePreset = {
     "identityTracking": 0,
     "identityHoverEffect": "opacity",
     "layoutDensity": "spacious",
-    "maxContentWidth": "1000px",
+    "maxContentWidth": FLUID_MAX_CONTENT_WIDTH_OPTION,
     "layoutPadding": {
       "mob": 18,
       "tab": 28,

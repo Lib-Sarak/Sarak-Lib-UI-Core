@@ -40,6 +40,7 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
                 config={{}}
                 previewPrimaryColor="#000"
                 mode="light"
+                draftMode="dark"
                 draftTokens={{ sidebarWidth: 250 }}
                 onUpdateDraft={() => {}}
                 sarak={{} as unknown as SarakUIContextType}
@@ -77,6 +78,7 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
                     config={{}}
                     previewPrimaryColor="#000"
                     mode="light"
+                    draftMode="dark"
                     draftTokens={{ sidebarWidth: 250 }}
                     onUpdateDraft={() => {}}
                     sarak={{} as unknown as SarakUIContextType}
@@ -111,6 +113,7 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
                     config={{}}
                     previewPrimaryColor="#000"
                     mode="light"
+                    draftMode="dark"
                     draftTokens={{}}
                     onUpdateDraft={() => {}}
                     sarak={{} as unknown as SarakUIContextType}
@@ -143,6 +146,7 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
                     config={{}}
                     previewPrimaryColor="#000"
                     mode="light"
+                    draftMode="dark"
                     draftTokens={{}}
                     onUpdateDraft={() => {}}
                     sarak={{} as unknown as SarakUIContextType}

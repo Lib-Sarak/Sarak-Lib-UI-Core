@@ -66,6 +66,8 @@ CREATE UNIQUE INDEX sarak_theme_definitions_tenant_theme_uk
 --    (docs/persistencia-de-tema.md §1.1). Entregue via
 --    `options.persistence.onSave(design, activeThemeId)` / lido por `onLoad`
 --    como { design: state_design, activeThemeId: active_theme_id }.
+--    No cache local `hybrid`, `design` permanece no formato JSON bruto da chave
+--    efetiva e o id usa a chave companheira `<storageKey>::active-theme-id`.
 -- =============================================================================
 CREATE TABLE sarak_applied_theme_state (
     tenant_id           TEXT,

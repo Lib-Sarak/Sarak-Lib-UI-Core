@@ -6,10 +6,30 @@ import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../../breakpoints';
 import { sarakGetDefaultDesignState } from '../../master-map';
 import { sarakSovereignTheme } from '../../presets/themes/sarak-sovereign';
 import { MEDIA_PREDICATE_TABLE } from '../../../Provider/utils/__tests__/mediaPredicateTable';
+import { FLUID_MAX_CONTENT_WIDTH, FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../schema/system';
 
 describe('useDesignVariables', () => {
     it('should export the hook correctly', () => {
         expect(HookModule).toBeDefined();
+    });
+});
+
+describe('useDesignVariables — maxContentWidth fluido', () => {
+    it('traduz o valor semântico para CSS e preserva a opção no atributo de estado', () => {
+        const { result } = renderHook(() => useDesignVariables({
+            ...sarakGetDefaultDesignState(),
+            maxContentWidth: FLUID_MAX_CONTENT_WIDTH_OPTION,
+        }));
+
+        expect(result.current.variables['--sarak-max-content-width']).toBe(FLUID_MAX_CONTENT_WIDTH);
+        expect(result.current.attributes['data-sx-max-content-width']).toBe(FLUID_MAX_CONTENT_WIDTH_OPTION);
+    });
+
+    it('mantém o teto explícito em pixels na variável e no atributo', () => {
+        const { result } = renderHook(() => useDesignVariables({ maxContentWidth: '1200px' }));
+
+        expect(result.current.variables['--sarak-max-content-width']).toBe('1200px');
+        expect(result.current.attributes['data-sx-max-content-width']).toBe('1200px');
     });
 });
 

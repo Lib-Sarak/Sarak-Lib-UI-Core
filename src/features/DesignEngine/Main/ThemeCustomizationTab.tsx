@@ -31,7 +31,7 @@ export const ThemeCustomizationTab: React.FC = () => {
         isSaving, setIsSaving
     } = useThemeEngineState();
     const {
-        draft, updateDraft, handleApplyToSystem, isComponentDirty, resetComponent, resetToken,
+        draft, previewDraft, updateDraft, handleApplyToSystem, isComponentDirty, resetComponent, resetToken,
         isDirty, dirtyTokenCount, discardDraft, toast, showToast, handleThemePreview,
         setDraftThemeId,
         canUndoLastApply, undoLastApply
@@ -131,15 +131,16 @@ export const ThemeCustomizationTab: React.FC = () => {
                 <PreviewCanvas
                     previewDevice={previewDevice}
                     activePreviewApp={activePreviewApp}
-                    config={draft as unknown as SarakUIOptions}
-                    mode={draft.mode || sarak.mode || 'dark'}
+                    config={previewDraft as unknown as SarakUIOptions}
+                    mode={previewDraft.mode === 'light' ? 'light' : 'dark'}
+                    draftMode={draft.mode === 'light' ? 'light' : 'dark'}
                     onUpdateDraft={updateDraft}
                     sarak={sarak}
-                    previewLayoutId={draft.layout || sarak.layout || 'glass'}
+                    previewLayoutId={previewDraft.layout || sarak.layout || 'glass'}
                     selectPreviewApp={selectPreviewApp}
-                    previewAnimationStyle={draft.animationStyle || sarak.animationStyle || 'standard'}
-                    previewPrimaryColor={draft.primaryColor || sarak.primaryColor || 'var(--color-theme-primary, #19e3f0)'}
-                    draftTokens={draft}
+                    previewAnimationStyle={previewDraft.animationStyle || sarak.animationStyle || 'standard'}
+                    previewPrimaryColor={previewDraft.primaryColor || sarak.primaryColor || 'var(--color-theme-primary, #19e3f0)'}
+                    draftTokens={previewDraft}
                     activeSectionId={activeSectionId}
                     isDualView={viewMode === 'preview' && isGalleryOpen}
                     isPreviewStacked={isPreviewStacked}

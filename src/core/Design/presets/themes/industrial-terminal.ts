@@ -1,4 +1,5 @@
 import type { SarakThemePreset } from './index';
+import { FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../schema/system';
 
 // Industrial Terminal: CRT âmbar de chão de fábrica. Estêncil em Bebas Neue maiúsculo sobre mono, zero raio, borda de 2px,
 // cartão de chapa com listra de perigo e quina cortada, botão só contorno, sem sombra nem vidro, gráfico de barras e
@@ -24,7 +25,7 @@ export const industrialTerminalTheme: SarakThemePreset = {
         identityHoverEffect: 'none',
         // --- Configurações de Layout ---
         layoutDensity: 'compact',
-        maxContentWidth: '1600px',
+        maxContentWidth: FLUID_MAX_CONTENT_WIDTH_OPTION,
         layoutPadding: { mob: 12, tab: 16, desk: 20 },
         borderRadius: { mob: 0, tab: 0, desk: 0 },
         borderWidth: 2,

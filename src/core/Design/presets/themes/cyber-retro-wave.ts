@@ -1,4 +1,5 @@
 import type { SarakThemePreset } from './index';
+import { FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../schema/system';
 
 export const cyberRetroWaveTheme: SarakThemePreset = {
     id: "cyber-retro-wave",
@@ -15,7 +16,7 @@ export const cyberRetroWaveTheme: SarakThemePreset = {
             "identityTracking": 0,
             "identityHoverEffect": "opacity",
             "layoutDensity": "comfortable",
-            "maxContentWidth": "1440px",
+            "maxContentWidth": FLUID_MAX_CONTENT_WIDTH_OPTION,
             "layoutPadding": {
                 "mob": 16,
                 "tab": 24,

@@ -1,4 +1,5 @@
 import type { SarakThemePreset } from './index';
+import { FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../schema/system';
 
 export const goldenHourTheme: SarakThemePreset = {
     id: "golden-hour",
@@ -14,7 +15,7 @@ export const goldenHourTheme: SarakThemePreset = {
         "identityTracking": 1,
         "identityHoverEffect": "opacity",
         "layoutDensity": "spacious",
-        "maxContentWidth": "1440px",
+            "maxContentWidth": FLUID_MAX_CONTENT_WIDTH_OPTION,
         "layoutPadding": 40,
         "borderRadius": 12,
         "borderWidth": 1,

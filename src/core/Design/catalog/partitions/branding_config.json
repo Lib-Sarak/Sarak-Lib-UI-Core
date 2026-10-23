@@ -269,7 +269,7 @@
   {
     "tokenId": "maxContentWidth",
     "name": "Largura Máxima do Conteúdo",
-    "description": "Trava a largura central da aplicação (Container). Útil para telas ultrawide. 100% o torna fluido.",
+    "description": "Define a largura máxima da região. O modo fluido calcula margens laterais proporcionais ao contêiner, respeita layoutPadding como piso e limita cada margem externa a 128px; o respiro interno continua seguindo layoutDensity.",
     "type": "select",
     "importance": 70,
     "categories": [
@@ -289,6 +289,7 @@
     "cssVariables": [],
     "relatedTokens": [],
     "allowedValues": [
+      "fluid",
       "1000px",
       "1200px",
       "1440px",

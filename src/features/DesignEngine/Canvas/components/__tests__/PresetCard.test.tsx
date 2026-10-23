@@ -26,6 +26,21 @@ describe('PresetCard', () => {
         expect(container).toMatchSnapshot();
     });
 
+    it('a miniatura de tema usa a contraparte no modo efetivo', () => {
+        const theme = {
+            id: 'tema-claro',
+            name: 'Tema Claro',
+            design: { mode: 'dark', surfaceColor: '#101622' },
+            contraparte: { surfaceColor: '#ffffff' },
+        };
+        const { container } = render(
+            <PresetCard theme={theme as unknown as SarakThemePreset} currentMode="light" onApply={() => {}} index={0} />,
+        );
+        const previewSurface = container.querySelector('.h-48') as HTMLElement;
+
+        expect(previewSurface.style.backgroundColor).toBe('rgb(255, 255, 255)');
+    });
+
     it('cardShadowSpread é a OPACIDADE da sombra em % (o sentido do schema), não um desfoque em px', () => {
         const theme = { id: 't', name: 'T', design: { primaryColor: '#ff0000', mode: 'dark', cardShadowSpread: 40 } };
         const { container } = render(

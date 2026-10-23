@@ -9,10 +9,10 @@ import { SarakDesignState } from '../../../../core/Provider/types';
 
 interface CardsCatalogProps {
     onApplyPreset: (presetDesign: Partial<SarakDesignState>, isPartial?: boolean) => void;
-    currentMode: string;
+    currentMode: 'light' | 'dark';
 }
 
-export const CardsCatalog: React.FC<CardsCatalogProps> = ({ onApplyPreset }) => {
+export const CardsCatalog: React.FC<CardsCatalogProps> = ({ onApplyPreset, currentMode }) => {
     const [activeTab, setActiveTab] = useState<'curated' | 'textures'>('curated');
     const presets = activeTab === 'curated' ? CARD_PRESETS : CARD_TEXTURE_PRESETS;
 
@@ -39,14 +39,14 @@ export const CardsCatalog: React.FC<CardsCatalogProps> = ({ onApplyPreset }) => 
                 `@container` de `PresetsCatalog.tsx` — nunca à largura da janela. */}
             <div className={`grid ${CATALOG_GRID_2COL} gap-6`}>
                 {presets.map((preset, i) => (
-                    <CardPresetPreview key={preset.id} preset={preset} index={i} onApply={() => onApplyPreset(preset.design, true)} />
+                    <CardPresetPreview key={preset.id} preset={preset} index={i} currentMode={currentMode} onApply={() => onApplyPreset(preset.design, true)} />
                 ))}
             </div>
         </div>
     );
 };
 
-const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset, index: number, onApply: () => void }) => {
+const CardPresetPreview = ({ preset, index, currentMode, onApply }: { preset: ComponentPreset, index: number, currentMode: 'light' | 'dark', onApply: () => void }) => {
     return (
         <motion.button
             initial={{ opacity: 0, y: 10 }}
@@ -67,7 +67,7 @@ const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset
                     Escopar a variável que a regra já lê é o que acompanha o tema do preset.
                 */}
                 <SarakDesignScope
-                    design={{ mode: 'dark', ...preset.design } as SarakDesignState}
+                    design={{ ...preset.design, mode: currentMode } as SarakDesignState}
                     className="sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
                     style={{ width: '100%', height: 'var(--sarak-preset-mini-card-height,128px)', maxWidth: 'var(--sarak-preset-mini-card-max-width,280px)' }}
                 >

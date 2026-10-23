@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { resolveChromeContentStyle } from '../chromeStructuralStyles';
+import { FLUID_MAX_CONTENT_WIDTH } from '../../../../core/Design/schema/system';
 
 describe('resolveChromeContentStyle', () => {
     it('mantém o padding legado quando a densidade é confortável', () => {
@@ -21,8 +22,9 @@ describe('resolveChromeContentStyle', () => {
     });
 });
 
-describe('resolveChromeContentStyle — as cinco opções de `maxContentWidth` chegam a `max-width`', () => {
+describe('resolveChromeContentStyle — as opções de `maxContentWidth` chegam a `max-width`', () => {
     it.each([
+        [FLUID_MAX_CONTENT_WIDTH],
         ['1000px'],
         ['1200px'],
         ['1440px'],

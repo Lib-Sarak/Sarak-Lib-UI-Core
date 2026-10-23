@@ -155,7 +155,34 @@ describe('useDesignDraft', () => {
     // plan-27 PASSO 3 — o token `mode` deixa de só trocar o rótulo (o `if` era
     // idêntico ao caminho genérico) e passa pelo MESMO resolvedor que
     // `ShellThemeToggle` usa.
-    describe('updateDraft("mode", ...) — passa pelo resolvedor (plan-27)', () => {
+    describe('modo do rascunho e modo efetivo da prévia', () => {
+        it('sobrepõe a preferência à prévia com o tema pendente sem alterar o rascunho bruto', () => {
+            const pendingTheme = {
+                id: 'tema-do-rascunho',
+                design: { mode: 'dark', colorBgBody: '#101010', preferenceModePosition: 'pinned' },
+                contraparte: { colorBgBody: '#f0f0f0' },
+            };
+            const sarak = {
+                draftDesign: { mode: 'dark', colorBgBody: '#101010', preferenceModePosition: 'pinned' },
+                systemDesign: { mode: 'dark', colorBgBody: '#101010', preferenceModePosition: 'pinned' },
+                design: { mode: 'light' },
+                preferences: { colorMode: 'light' },
+                allThemes: [pendingTheme],
+                isDrafting: true,
+                setIsDrafting: vi.fn(),
+                lockDrafting: vi.fn(),
+            } as unknown as SarakUIContextType;
+
+            const { result } = renderHook(() => useDesignDraft(sarak));
+
+            act(() => result.current.setDraftThemeId('tema-do-rascunho'));
+
+            expect(result.current.draft.mode).toBe('dark');
+            expect(result.current.draft.colorBgBody).toBe('#101010');
+            expect(result.current.previewDraft.mode).toBe('light');
+            expect(result.current.previewDraft.colorBgBody).toBe('#f0f0f0');
+        });
+
         it('sem tema rastreável, cai no fallback sintetizado sobre o design CORRENTE (não faz só {...current, mode})', () => {
             const sarak = {
                 draftDesign: null,
@@ -208,11 +235,39 @@ describe('useDesignDraft', () => {
             expect(result.current.draft['primaryColor']).toBe('#ff00aa');
         });
 
-        // PASSO 5 — o aviso tem de aparecer NO MOMENTO da troca (decisão do
-        // dono, §2.5): recarregar o tema substitui qualquer customização.
-        it('avisa (toast warning) quando a troca de modo RECARREGA um tema rastreável', () => {
+        it('usa o tema pendente do rascunho e preserva edições que não carregam modo', () => {
+            const pendingTheme = {
+                id: 'tema-pendente',
+                design: { mode: 'dark', colorBgBody: '#101010', textColorMaster: '#ffffff' },
+                contraparte: { colorBgBody: '#eeeeee', textColorMaster: '#111111' },
+            };
             const sarak = {
-                draftDesign: null,
+                draftDesign: { mode: 'dark', colorBgBody: '#101010', textColorMaster: '#ffffff', primaryColor: '#custom', layout: 'solid' },
+                systemDesign: { mode: 'dark', colorBgBody: '#050505', textColorMaster: '#ffffff' },
+                isDrafting: true,
+                setIsDrafting: vi.fn(),
+                lockDrafting: vi.fn(),
+                allThemes: [
+                    { id: 'tema-aplicado', design: { mode: 'dark', colorBgBody: '#050505' }, contraparte: { colorBgBody: '#f5f0e8' } },
+                    pendingTheme,
+                ],
+                resolvedThemeId: 'tema-aplicado',
+            } as unknown as SarakUIContextType;
+
+            const { result } = renderHook(() => useDesignDraft(sarak));
+            act(() => result.current.setDraftThemeId('tema-pendente'));
+            act(() => result.current.updateDraft('mode', 'light'));
+
+            expect(result.current.draft.colorBgBody).toBe('#eeeeee');
+            expect(result.current.draft.textColorMaster).toBe('#111111');
+            expect(result.current.draft.primaryColor).toBe('#custom');
+            expect(result.current.draft.layout).toBe('solid');
+            expect(result.current.toast).toBeNull();
+        });
+
+        it('avisa somente quando uma customização de token de modo é substituída', () => {
+            const sarak = {
+                draftDesign: { mode: 'dark', colorBgBody: '#custom' },
                 systemDesign: { mode: 'dark', colorBgBody: '#050505' },
                 isDrafting: true,
                 setIsDrafting: vi.fn(),
@@ -229,7 +284,7 @@ describe('useDesignDraft', () => {
             });
 
             expect(result.current.toast?.type).toBe('warning');
-            expect(result.current.toast?.message).toMatch(/recarregado/i);
+            expect(result.current.toast?.message).toMatch(/substituiu uma customização/i);
         });
 
         it('NÃO avisa quando não há tema rastreável (fallback sobre o design corrente, nada é descartado)', () => {
