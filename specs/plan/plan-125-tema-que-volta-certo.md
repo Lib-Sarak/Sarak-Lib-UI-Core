@@ -7,7 +7,7 @@ status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "persistencia", "tema", "provider", "importador", "rc"]
 relacionados: ["[[09-temas-e-presets]]", "[[03-superficie-publica]]", "[[12-kit-do-consumidor]]", "[[009-persistencia-tenant-aware]]", "[[011-tema-salvo-por-uma-porta-de-escrita]]"]
-depende_de: "plan-119-kit-de-importacao-aprendido-nos-importadores"
+depende_de: "—"
 retida_por: ""
 destino_sintese: "specs/09-temas-e-presets.md + arquitetura/03-superficie-publica.md + specs/12-kit-do-consumidor.md"
 ---
@@ -40,8 +40,9 @@ Pergunta do dono (2026-10-22): onde e como os temas modificados são salvos e re
   injetado não chega ao Provider; o aplicado é global.
 - **Decisão do dono (2026-10-23):** o login ainda está sendo feito no ERP; depois dele, o tema aplicado é **por organização**. A lib já
   isola por `tenantId` ([[009-persistencia-tenant-aware]]); o kit precisa ensinar a ligar organização → `tenantId` → porta.
-- **Depende da `plan-119`**, que mexe nas mesmas portas de tema (`useThemeCollection.ts`, `docs/persistencia-de-tema.md`) e está em
-  correção.
+- **A `plan-119` mexia nas mesmas portas de tema** (`useThemeCollection.ts`, `docs/persistencia-de-tema.md`). O lote 7 dela fechou
+  em 2026-10-23 e o que falta (o lote final, que depende dos importadores) só corre **depois** desta plan. Por isso esta plan não
+  espera mais por ela (revisor, 2026-10-23).
 
 # 3. Escopo
 
