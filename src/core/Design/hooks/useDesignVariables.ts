@@ -203,7 +203,7 @@ export const useDesignVariables = (
         const { r, g, b } = parseToRgba(primaryColor);
         const [, , primaryLightness] = rgbToHsl(r, g, b);
         emitOnColors(variables, anchorColor); // texto de maior contraste sobre cada cor sólida
-        variables['--color-theme-title'] = resolveTitleColor(variables, isDark, tokens.find((token) => token.id === 'titleColor')?.defaultValue);
+        variables['--theme-title'] = variables['--color-theme-title'] = resolveTitleColor(variables, isDark, tokens.find((token) => token.id === 'titleColor')?.defaultValue);
         variables['--theme-on-primary'] ??= primaryLightness > 55 ? '#020617' : '#ffffff';
         variables['--sarak-vignette-color'] = isDark
             ? `rgba(0, 0, 0, ${design.vignetteOpacity ?? 0.3})`

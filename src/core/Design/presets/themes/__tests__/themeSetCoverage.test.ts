@@ -70,6 +70,41 @@ describe('cobertura do conjunto de temas embarcados', () => {
         expect(hasRequiredCoverage(coverage)).toBe(true);
     });
 
+    it('declara cores hierárquicas acessíveis no tema e em cada contraparte', () => {
+        const roles = ['titleColor', 'subtitleColor', 'emphasisColor', 'cardTitleColor'] as const;
+
+        SARAK_ALL_THEMES.forEach((theme) => {
+            [theme.design, theme.contraparte].forEach((design, index) => {
+                expect(design, `${theme.id} modo ${index}`).toBeDefined();
+                roles.forEach((role) => {
+                    expect(typeof design?.[role], `${theme.id}.${role} modo ${index}`).toBe('string');
+                    expect(design?.[role], `${theme.id}.${role} não pode repetir textColorMaster no modo ${index}`)
+                        .not.toBe(design?.textColorMaster);
+                });
+            });
+        });
+    });
+
+    it('mantém o tamanho do título de cartão abaixo do h2 da página em cada breakpoint', () => {
+        const breakpoints = ['mob', 'tab', 'desk'] as const;
+        const sizeAt = (value: unknown, breakpoint: typeof breakpoints[number]): number | undefined => {
+            if (typeof value === 'number') return value;
+            if (typeof value !== 'object' || value === null) return undefined;
+            const size = (value as Record<string, unknown>)[breakpoint];
+            return typeof size === 'number' ? size : undefined;
+        };
+
+        SARAK_ALL_THEMES.forEach((theme) => {
+            breakpoints.forEach((breakpoint) => {
+                const cardTitleSize = sizeAt(theme.design.cardTitleFontSize, breakpoint);
+                const pageTitleSize = sizeAt(theme.design.h2Size, breakpoint);
+                expect(cardTitleSize, `${theme.id}.cardTitleFontSize.${breakpoint}`).toBeDefined();
+                expect(pageTitleSize, `${theme.id}.h2Size.${breakpoint}`).toBeDefined();
+                expect(cardTitleSize).toBeLessThan(pageTitleSize!);
+            });
+        });
+    });
+
     it('a mutação de um tema para repetir a combinação de outro é detectada', () => {
         const [firstTheme, secondTheme] = SARAK_ALL_THEMES;
         const mutatedTheme: SarakThemePreset = {

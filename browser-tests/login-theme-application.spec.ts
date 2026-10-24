@@ -53,7 +53,8 @@ test('Provider sem tenant aplica e persiste o tema escolhido depois do login', a
     await expect(page.getByRole('heading', { name: 'Galeria de estilos' })).toBeVisible();
     await page.getByRole('button', { name: /Sarak Sovereign/ }).click();
 
-    const applyButton = page.getByRole('button', { name: /^Aplicar \(\d+\)$/ });
+    const applyButton = page.getByRole('button', { name: 'Aplicar' });
+    await expect(page.getByText(/\d+ altera(?:ção|ções)/)).toBeVisible();
     await expect(applyButton).toBeEnabled();
     await expect(page.locator('[data-probe="tenant-draft-background"]')).toHaveText('#06080d');
     await expect(page.locator('[data-probe="tenant-system-background"]')).toHaveText('#123456');

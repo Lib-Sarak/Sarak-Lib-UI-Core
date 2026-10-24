@@ -316,7 +316,7 @@ A porta fecha **uma vez**: depois do primeiro quadro, uma troca por código nunc
 **Travas** (R18 no cabeçalho de cada uma): `theme-boot:check` — nenhum tema além do padrão, nem `themes/all.ts`, no
 fecho estático do entry em `src/` e no `dist/` (no `build`); `boot:measure` (`scripts/measure-consumer-boot.mjs`) — o
 boot no bundler do consumidor cabe em *o boot só com o tema padrão e sem catálogo, medido na mesma execução, + o
-catálogo + 3 KB* gzip, e cada tema embarcado pesa **até 3 KB gzip** (no `gates:full`). O teto relativo tem folga: um
+catálogo + 3 KB* gzip, e cada tema embarcado respeita o teto de peso por tema da §5.3 (no `gates:full`). O teto relativo tem folga: um
 tema isolado que volte ao boot acende a trava estrutural, não a medida.
 
 ### 4.3.3 A troca de tema compõe, nunca herda

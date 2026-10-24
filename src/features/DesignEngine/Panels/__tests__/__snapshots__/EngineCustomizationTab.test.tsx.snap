@@ -429,7 +429,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
             class="flex flex-col gap-0.5"
           >
             <span
-              class="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-theme-text/50 flex items-center gap-1.5"
+              class="text-[var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest text-theme-text/50 flex items-center gap-1.5"
             >
               Mostrar Grid de Fundo
               <div

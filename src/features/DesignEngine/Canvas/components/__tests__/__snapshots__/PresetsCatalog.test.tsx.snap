@@ -7,99 +7,65 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
     id="presets-catalog"
   >
     <div
-      class="px-8 py-5 border-b border-theme-border flex items-center justify-between bg-theme-sidebar backdrop-blur-md sticky top-0 z-10 flex-wrap gap-4"
+      class="px-4 py-3 border-b border-theme-border flex flex-col gap-3 bg-theme-sidebar backdrop-blur-md sticky top-0 z-10"
     >
       <div
-        class="flex items-center gap-4"
+        class="flex min-w-0 items-center justify-between gap-3"
       >
         <div
-          class="p-2.5 bg-theme-primary/10 rounded-xl border border-theme-primary/20 shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.2)]"
+          class="flex min-w-0 items-center gap-3"
         >
-          <svg
-            class="text-theme-primary"
-            fill="none"
-            height="18"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-            width="18"
-            xmlns="http://www.w3.org/2000/svg"
+          <div
+            class="shrink-0 rounded-xl border border-theme-primary/20 bg-theme-primary/10 p-2.5 shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.2)]"
           >
-            <path
-              d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
-            />
-            <path
-              d="M5 3v4"
-            />
-            <path
-              d="M19 17v4"
-            />
-            <path
-              d="M3 5h4"
-            />
-            <path
-              d="M17 19h4"
-            />
-          </svg>
-        </div>
-        <div
-          class="flex flex-col"
-        >
-          <h2
-            class="text-xs font-black uppercase text-theme-text tracking-[var(--sarak-tracking-wide,0.3em)]"
+            <svg
+              class="text-theme-primary"
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="18"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
+              />
+              <path
+                d="M5 3v4"
+              />
+              <path
+                d="M19 17v4"
+              />
+              <path
+                d="M3 5h4"
+              />
+              <path
+                d="M17 19h4"
+              />
+            </svg>
+          </div>
+          <div
+            class="flex min-w-0 flex-col"
           >
-            Galeria de estilos
-          </h2>
-          <span
-            class="text-[var(--sarak-type-scale3xs,9px)] font-bold text-theme-primary uppercase tracking-widest mt-0.5"
-          >
-            Categoria: 
-            Temas
-          </span>
-        </div>
-      </div>
-      <div
-        class="flex flex-wrap items-center gap-2"
-      >
-        <div
-          class="flex flex-wrap items-center gap-2 p-1 bg-theme-body/20 rounded-xl border border-theme-border"
-        >
-          <button
-            class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all bg-theme-primary text-theme-text shadow-lg"
-          >
-            Temas
-          </button>
-          <button
-            class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all text-theme-muted hover:text-theme-text hover:bg-theme-text/5"
-          >
-            Cards
-          </button>
-          <button
-            class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all text-theme-muted hover:text-theme-text hover:bg-theme-text/5"
-          >
-            Tipografia
-          </button>
-          <button
-            class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all text-theme-muted hover:text-theme-text hover:bg-theme-text/5"
-          >
-            Atmosfera
-          </button>
-          <button
-            class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all text-theme-muted hover:text-theme-text hover:bg-theme-text/5"
-          >
-            Botões
-          </button>
-          <button
-            class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all text-theme-muted hover:text-theme-text hover:bg-theme-text/5"
-          >
-            Campos
-          </button>
+            <h2
+              class="text-xs font-black uppercase text-theme-text tracking-[var(--sarak-tracking-wide,0.3em)]"
+            >
+              Galeria de estilos
+            </h2>
+            <span
+              class="text-[var(--sarak-type-scale3xs,11px)] font-bold text-theme-primary uppercase tracking-widest mt-0.5"
+            >
+              Categoria: 
+              Temas
+            </span>
+          </div>
         </div>
         <button
           aria-label="Fechar galeria"
-          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-transparent text-[var(--sarak-primary-color,#19e3f0)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]"
+          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-1.5 px-3 text-xs bg-transparent text-[var(--sarak-primary-color,#19e3f0)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98] shrink-0 whitespace-nowrap"
           title="Fechar galeria"
           type="button"
         >
@@ -123,16 +89,56 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
             />
           </svg>
           <span>
-            Fechar galeria
+            Fechar
           </span>
         </button>
+      </div>
+      <div
+        aria-label="Categorias da galeria"
+        class="w-full min-w-0 overflow-x-auto"
+        role="group"
+      >
+        <div
+          class="flex w-max min-w-full flex-nowrap items-center gap-2 rounded-xl border border-theme-border bg-theme-body/20 p-1"
+        >
+          <button
+            class="shrink-0 whitespace-nowrap rounded-lg px-3 py-2 text-[var(--sarak-type-scale-caption,12px)] font-black uppercase tracking-normal transition-all bg-theme-primary text-theme-text shadow-lg"
+          >
+            Temas
+          </button>
+          <button
+            class="shrink-0 whitespace-nowrap rounded-lg px-3 py-2 text-[var(--sarak-type-scale-caption,12px)] font-black uppercase tracking-normal transition-all text-theme-muted hover:text-theme-text hover:bg-theme-text/5"
+          >
+            Cards
+          </button>
+          <button
+            class="shrink-0 whitespace-nowrap rounded-lg px-3 py-2 text-[var(--sarak-type-scale-caption,12px)] font-black uppercase tracking-normal transition-all text-theme-muted hover:text-theme-text hover:bg-theme-text/5"
+          >
+            Tipografia
+          </button>
+          <button
+            class="shrink-0 whitespace-nowrap rounded-lg px-3 py-2 text-[var(--sarak-type-scale-caption,12px)] font-black uppercase tracking-normal transition-all text-theme-muted hover:text-theme-text hover:bg-theme-text/5"
+          >
+            Atmosfera
+          </button>
+          <button
+            class="shrink-0 whitespace-nowrap rounded-lg px-3 py-2 text-[var(--sarak-type-scale-caption,12px)] font-black uppercase tracking-normal transition-all text-theme-muted hover:text-theme-text hover:bg-theme-text/5"
+          >
+            Botões
+          </button>
+          <button
+            class="shrink-0 whitespace-nowrap rounded-lg px-3 py-2 text-[var(--sarak-type-scale-caption,12px)] font-black uppercase tracking-normal transition-all text-theme-muted hover:text-theme-text hover:bg-theme-text/5"
+          >
+            Campos
+          </button>
+        </div>
       </div>
     </div>
     <div
       class="@container flex-1 overflow-y-auto custom-scrollbar p-6 bg-[radial-gradient(ellipse_at_top_right,rgba(var(--theme-primary-rgb),0.03)_0%,transparent_50%)]"
     >
       <div
-        class="grid grid-cols-1 @min-[768px]:grid-cols-2 gap-4"
+        class="grid grid-cols-1 @min-[240px]:grid-cols-2 gap-4"
       >
         <button
           animate="[object Object]"
@@ -323,18 +329,18 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
             </div>
           </div>
           <div
-            class="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
+            class="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
           >
             <h3
-              class="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors"
+              class="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors"
             >
               Sarak Sovereign
             </h3>
             <div
-              class="flex items-center gap-2"
+              class="shrink-0 flex items-center gap-2"
             >
               <div
-                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
+                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
               >
                 <svg
                   class="lucide lucide-layout"
@@ -373,7 +379,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -587,18 +593,18 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
             </div>
           </div>
           <div
-            class="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
+            class="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
           >
             <h3
-              class="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors"
+              class="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors"
             >
               Cyberpunk Neon
             </h3>
             <div
-              class="flex items-center gap-2"
+              class="shrink-0 flex items-center gap-2"
             >
               <div
-                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
+                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
               >
                 <svg
                   class="lucide lucide-layout"
@@ -637,7 +643,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -851,18 +857,18 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
             </div>
           </div>
           <div
-            class="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
+            class="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
           >
             <h3
-              class="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors"
+              class="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors"
             >
               Industrial Terminal
             </h3>
             <div
-              class="flex items-center gap-2"
+              class="shrink-0 flex items-center gap-2"
             >
               <div
-                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
+                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
               >
                 <svg
                   class="lucide lucide-layout"
@@ -901,7 +907,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -1115,18 +1121,18 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
             </div>
           </div>
           <div
-            class="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
+            class="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
           >
             <h3
-              class="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors"
+              class="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors"
             >
               Neo Brutalism
             </h3>
             <div
-              class="flex items-center gap-2"
+              class="shrink-0 flex items-center gap-2"
             >
               <div
-                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
+                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
               >
                 <svg
                   class="lucide lucide-layout"
@@ -1165,7 +1171,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -1379,18 +1385,18 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
             </div>
           </div>
           <div
-            class="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
+            class="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
           >
             <h3
-              class="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors"
+              class="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors"
             >
               Synthwave Retro
             </h3>
             <div
-              class="flex items-center gap-2"
+              class="shrink-0 flex items-center gap-2"
             >
               <div
-                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
+                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
               >
                 <svg
                   class="lucide lucide-layout"
@@ -1429,7 +1435,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -1643,18 +1649,18 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
             </div>
           </div>
           <div
-            class="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
+            class="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
           >
             <h3
-              class="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors"
+              class="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors"
             >
               Nebula Space
             </h3>
             <div
-              class="flex items-center gap-2"
+              class="shrink-0 flex items-center gap-2"
             >
               <div
-                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
+                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
               >
                 <svg
                   class="lucide lucide-layout"
@@ -1693,7 +1699,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -1907,18 +1913,18 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
             </div>
           </div>
           <div
-            class="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
+            class="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
           >
             <h3
-              class="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors"
+              class="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors"
             >
               Kinetic Flow
             </h3>
             <div
-              class="flex items-center gap-2"
+              class="shrink-0 flex items-center gap-2"
             >
               <div
-                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
+                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
               >
                 <svg
                   class="lucide lucide-layout"
@@ -1957,7 +1963,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -2171,18 +2177,18 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
             </div>
           </div>
           <div
-            class="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
+            class="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
           >
             <h3
-              class="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors"
+              class="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors"
             >
               Cyber Retro Wave
             </h3>
             <div
-              class="flex items-center gap-2"
+              class="shrink-0 flex items-center gap-2"
             >
               <div
-                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
+                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
               >
                 <svg
                   class="lucide lucide-layout"
@@ -2221,7 +2227,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -2415,18 +2421,18 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
             </div>
           </div>
           <div
-            class="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
+            class="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
           >
             <h3
-              class="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors"
+              class="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors"
             >
               Minimalist Airy
             </h3>
             <div
-              class="flex items-center gap-2"
+              class="shrink-0 flex items-center gap-2"
             >
               <div
-                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
+                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
               >
                 <svg
                   class="lucide lucide-layout"
@@ -2465,7 +2471,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -2679,18 +2685,18 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
             </div>
           </div>
           <div
-            class="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
+            class="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
           >
             <h3
-              class="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors"
+              class="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors"
             >
               Data Terminal
             </h3>
             <div
-              class="flex items-center gap-2"
+              class="shrink-0 flex items-center gap-2"
             >
               <div
-                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
+                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
               >
                 <svg
                   class="lucide lucide-layout"
@@ -2729,7 +2735,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -2923,18 +2929,18 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
             </div>
           </div>
           <div
-            class="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
+            class="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
           >
             <h3
-              class="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors"
+              class="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors"
             >
               Neumorphic Mobile
             </h3>
             <div
-              class="flex items-center gap-2"
+              class="shrink-0 flex items-center gap-2"
             >
               <div
-                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
+                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
               >
                 <svg
                   class="lucide lucide-layout"
@@ -2973,7 +2979,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -3187,18 +3193,18 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
             </div>
           </div>
           <div
-            class="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
+            class="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
           >
             <h3
-              class="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors"
+              class="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors"
             >
               Golden Hour
             </h3>
             <div
-              class="flex items-center gap-2"
+              class="shrink-0 flex items-center gap-2"
             >
               <div
-                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
+                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
               >
                 <svg
                   class="lucide lucide-layout"
@@ -3237,7 +3243,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -3451,18 +3457,18 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
             </div>
           </div>
           <div
-            class="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
+            class="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
           >
             <h3
-              class="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors"
+              class="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors"
             >
               Aurora Veil
             </h3>
             <div
-              class="flex items-center gap-2"
+              class="shrink-0 flex items-center gap-2"
             >
               <div
-                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
+                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
               >
                 <svg
                   class="lucide lucide-layout"
@@ -3501,7 +3507,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -3715,18 +3721,18 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
             </div>
           </div>
           <div
-            class="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
+            class="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
           >
             <h3
-              class="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors"
+              class="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors"
             >
               Blueprint Protocol
             </h3>
             <div
-              class="flex items-center gap-2"
+              class="shrink-0 flex items-center gap-2"
             >
               <div
-                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
+                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
               >
                 <svg
                   class="lucide lucide-layout"
@@ -3765,7 +3771,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -3959,18 +3965,18 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
             </div>
           </div>
           <div
-            class="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
+            class="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
           >
             <h3
-              class="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors"
+              class="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors"
             >
               Editorial Ink
             </h3>
             <div
-              class="flex items-center gap-2"
+              class="shrink-0 flex items-center gap-2"
             >
               <div
-                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
+                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
               >
                 <svg
                   class="lucide lucide-layout"
@@ -4009,7 +4015,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -4223,18 +4229,18 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
             </div>
           </div>
           <div
-            class="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
+            class="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
           >
             <h3
-              class="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors"
+              class="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors"
             >
               Organic Clay
             </h3>
             <div
-              class="flex items-center gap-2"
+              class="shrink-0 flex items-center gap-2"
             >
               <div
-                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
+                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
               >
                 <svg
                   class="lucide lucide-layout"
@@ -4273,7 +4279,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -4467,18 +4473,18 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
             </div>
           </div>
           <div
-            class="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
+            class="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
           >
             <h3
-              class="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors"
+              class="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors"
             >
               High Contrast
             </h3>
             <div
-              class="flex items-center gap-2"
+              class="shrink-0 flex items-center gap-2"
             >
               <div
-                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
+                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
               >
                 <svg
                   class="lucide lucide-layout"
@@ -4517,7 +4523,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -4711,18 +4717,18 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
             </div>
           </div>
           <div
-            class="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
+            class="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
           >
             <h3
-              class="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors"
+              class="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors"
             >
               Corporate Ledger
             </h3>
             <div
-              class="flex items-center gap-2"
+              class="shrink-0 flex items-center gap-2"
             >
               <div
-                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
+                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
               >
                 <svg
                   class="lucide lucide-layout"
@@ -4761,7 +4767,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"
@@ -4975,18 +4981,18 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
             </div>
           </div>
           <div
-            class="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
+            class="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0"
           >
             <h3
-              class="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors"
+              class="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors"
             >
               Playful Pastel
             </h3>
             <div
-              class="flex items-center gap-2"
+              class="shrink-0 flex items-center gap-2"
             >
               <div
-                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
+                class="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1"
               >
                 <svg
                   class="lucide lucide-layout"
@@ -5025,7 +5031,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 sidebar
               </div>
               <div
-                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+                class="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
               >
                 <svg
                   class="lucide lucide-arrow-right"

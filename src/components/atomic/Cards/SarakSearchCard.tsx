@@ -97,7 +97,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                         gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)',
                         paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
                         paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.125)',
-                        fontSize: 'var(--sarak-type-scale-micro, 7px)',
+                        fontSize: 'var(--sarak-type-scale-micro, 11px)',
                         letterSpacing: 'var(--sarak-tracking-tight, 0.2em)'
                     }}
                 >
@@ -110,7 +110,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                 {/* Section Header */}
                 <div className={layout.headerClass}>
                     <div className="flex" style={{ flexDirection: 'column' }}>
-                        <span className="font-black text-[var(--sarak-primary-color,#19e3f0)] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale3xs, 9px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
+                        <span className="font-black text-[var(--sarak-subtitle-color,var(--theme-subtitle,#f2f6fb))] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale3xs, 11px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
                         Painel de Filtros
                     </span>
                     <h4 className="text-sm font-black text-[var(--color-theme-title,#f2f6fb)] tracking-tight">
@@ -137,7 +137,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                         className="flex border-t border-[var(--border-color,rgba(255,255,255,0.09))]/20 w-full"
                         style={{ flexDirection: 'column', gap: 'var(--sarak-layout-gap-sm, 8px)', paddingTop: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
-                        <span className="font-black text-theme-tint-strong uppercase tracking-widest" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale-tiny, 8px)' }}>Filtro de Abilities</span>
+                        <span className="font-black text-theme-tint-strong uppercase tracking-widest" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale-tiny, 11px)' }}>Filtro de Abilities</span>
 
                     {/* Vision Switch */}
                     <div

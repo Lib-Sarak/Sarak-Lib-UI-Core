@@ -15,6 +15,22 @@ produto precisam. Se um componente for renderizado sem o pacote correspondente, 
 mensagem com o nome do pacote e registra um aviso no console. O guia relaciona cada pacote ao
 componente que o utiliza.
 
+### Hierarquia de cor tipográfica
+
+**Classificação: MAJOR.** `--theme-title` passa a ser emitida por `titleColor`, separada da cor do
+texto corrido (`textColorMaster`). Antes, a mesma variável podia acompanhar o texto principal. Os
+leitores de títulos passam a usar `titleColor`; parágrafos e rótulos usam `--sarak-text-main` ou
+`--theme-text-primary`. Em `SarakTypography`, `h1`, `h2` e `h3` passam a escolher `title` por padrão;
+`color="main"` preserva explicitamente a cor do texto corrido.
+
+Temas podem declarar `subtitleColor` e `emphasisColor` para subtítulos e ênfases. As escalas
+`typeScaleMicro`, `typeScaleTiny`, `typeScale3xs` e `typeScale2xs` passam a ter piso de 11px; valores
+menores salvos em temas precisam ser elevados para esse piso.
+
+Se a aplicação usa `--theme-title` para texto corrido, troque essa referência por
+`--theme-text-primary` ou `--sarak-text-main`. Revise também os títulos customizados e os quatro
+valores de escala em temas próprios.
+
 ### Largura padrão do conteúdo
 
 `maxContentWidth` passa a acompanhar a largura do próprio contêiner: as margens externas crescem
@@ -1279,6 +1295,14 @@ zero configuração; no modo embarcado, importe `@sarak/lib-ui-core/sarak-scoped
 
 `SarakTable` mantém `role` e `density`: o cabeçalho e as células leem esses valores. `importance`
 já não fazia parte das props públicas da tabela.
+
+### A prévia e os selects nativos seguem o modo efetivo do tema (plan-122)
+
+**Sem mudança de API.** A preferência de modo do usuário também vale para a prévia e a galeria do painel, sem ser gravada no rascunho. Os `<select>` da biblioteca herdam o `color-scheme` do escopo claro ou escuro; as opções usam fundo opaco de `--theme-surface` e texto de `--text-main`. No modo claro, as listas nativas deixam de exibir texto claro sobre fundo branco.
+
+A galeria de temas se adapta à largura do quadro, permite várias colunas e mantém os nomes quebráveis na escala caption (fallback de 12 px). As abas ficam em uma linha com rolagem horizontal. Os rótulos da barra de ações podem quebrar linha; **Aplicar** apresenta a contagem de alterações em texto auxiliar acessível. Os títulos do acordeão usam a cor de título do tema e os botões inativos continuam legíveis.
+
+**O que fazer:** não é necessária migração de código. Se o consumidor adicionou CSS para corrigir as cores das opções nativas, pode remover essa compensação; as cores agora seguem os tokens do tema. Mantenha overrides que expressem uma escolha visual deliberada.
 
 ## 7.0.0 — Os nomes públicos passam a identificar a biblioteca
 

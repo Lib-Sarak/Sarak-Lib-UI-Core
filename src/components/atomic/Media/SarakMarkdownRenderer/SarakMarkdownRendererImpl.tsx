@@ -51,10 +51,10 @@ const SarakMarkdownRendererContent: React.FC<SarakMarkdownRendererProps> = ({ co
     const cellPad = { paddingInline: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', paddingBlock: 'var(--sarak-layout-gap-sm, 8px)' };
 
     const components: MarkdownComponents = {
-        h1: ({ node: _n, ...p }: MdProps<'h1'>) => <h1 className="text-2xl font-bold text-[var(--sarak-text-main,#f2f6fb)]" style={mb3} {...p} />,
-        h2: ({ node: _n, ...p }: MdProps<'h2'>) => <h2 className="text-xl font-bold text-[var(--sarak-text-main,#f2f6fb)]" style={mb2} {...p} />,
-        h3: ({ node: _n, ...p }: MdProps<'h3'>) => <h3 className="text-lg font-semibold text-[var(--sarak-text-main,#f2f6fb)]" style={mb2} {...p} />,
-        p: ({ node: _n, ...p }: MdProps<'p'>) => <p className="leading-relaxed text-[var(--text-muted,rgba(242,246,251,0.55))]" style={mb3} {...p} />,
+        h1: ({ node: _n, ...p }: MdProps<'h1'>) => <h1 className="text-2xl font-bold text-[var(--theme-title,var(--sarak-title-color,#f2f6fb))]" style={mb3} {...p} />,
+        h2: ({ node: _n, ...p }: MdProps<'h2'>) => <h2 className="text-xl font-bold text-[var(--theme-title,var(--sarak-title-color,#f2f6fb))]" style={mb2} {...p} />,
+        h3: ({ node: _n, ...p }: MdProps<'h3'>) => <h3 className="text-lg font-semibold text-[var(--theme-title,var(--sarak-title-color,#f2f6fb))]" style={mb2} {...p} />,
+        p: ({ node: _n, ...p }: MdProps<'p'>) => <p className="leading-relaxed text-[var(--sarak-text-main,var(--theme-text-primary,#f2f6fb))]" style={mb3} {...p} />,
         a: ({ node: _n, ...p }: MdProps<'a'>) => <a className="text-[var(--sarak-primary-color,#19e3f0)] underline" {...p} />,
         ul: ({ node: _n, ...p }: MdProps<'ul'>) => <ul className="list-disc text-[var(--text-muted,rgba(242,246,251,0.55))]" style={{ ...mb3, paddingLeft: 'var(--sarak-layout-gap-lg, 24px)' }} {...p} />,
         ol: ({ node: _n, ...p }: MdProps<'ol'>) => <ol className="list-decimal text-[var(--text-muted,rgba(242,246,251,0.55))]" style={{ ...mb3, paddingLeft: 'var(--sarak-layout-gap-lg, 24px)' }} {...p} />,

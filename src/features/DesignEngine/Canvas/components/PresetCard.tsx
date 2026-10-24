@@ -180,16 +180,16 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Sara
             </div>
 
             {/* Content Area - Minimalista */}
-            <div className="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0">
-                <h3 className="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors">
+            <div className="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0">
+                <h3 className="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors">
                     {theme.name}
                 </h3>
 
-                <div className="flex items-center gap-2">
-                    <div className="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1">
+                <div className="shrink-0 flex items-center gap-2">
+                    <div className="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1">
                         <Layout size={8} /> {String(design.navigationStyle || 'sidebar')}
                     </div>
-                    <div className="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]">
+                    <div className="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]">
                         <ArrowRight size={12} />
                     </div>
                 </div>

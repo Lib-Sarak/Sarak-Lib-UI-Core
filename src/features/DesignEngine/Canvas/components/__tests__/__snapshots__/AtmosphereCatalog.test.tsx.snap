@@ -12,7 +12,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
         class="flex items-center gap-2 p-1 bg-theme-body/20 rounded-xl border border-theme-border"
       >
         <button
-          class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 bg-theme-primary text-theme-text shadow-lg"
+          class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 bg-theme-primary text-theme-text shadow-lg"
         >
           <svg
             class="lucide lucide-video"
@@ -41,7 +41,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
           Atmosferas
         </button>
         <button
-          class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 text-theme-muted hover:text-theme-text hover:bg-theme-text/5"
+          class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 text-theme-muted hover:text-theme-text hover:bg-theme-text/5"
         >
           <svg
             class="lucide lucide-grid3x3"
@@ -82,7 +82,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
         class="flex items-center gap-3 px-4 py-2 bg-theme-body/20 rounded-xl border border-theme-border"
       >
         <span
-          class="text-[var(--sarak-type-scale2xs,10px)] font-black text-theme-text uppercase tracking-widest"
+          class="text-[var(--sarak-type-scale2xs,11px)] font-black text-theme-text uppercase tracking-widest"
         >
           Opacidade
         </span>
@@ -149,7 +149,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               class="flex items-center gap-3 mb-2"
             >
               <span
-                class="px-2 py-1 rounded bg-[var(--text-muted,rgba(242,246,251,0.55))]/20 border border-[var(--border-color,rgba(255,255,255,0.09))]/50 text-[var(--text-muted,rgba(242,246,251,0.55))] text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
+                class="px-2 py-1 rounded bg-[var(--text-muted,rgba(242,246,251,0.55))]/20 border border-[var(--border-color,rgba(255,255,255,0.09))]/50 text-[var(--text-muted,rgba(242,246,251,0.55))] text-[var(--sarak-type-scale2xs,11px)] font-bold uppercase tracking-wider backdrop-blur-md"
               >
                 Solid Void
               </span>
@@ -228,7 +228,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               class="flex items-center gap-3 mb-2"
             >
               <span
-                class="px-2 py-1 rounded bg-[var(--sarak-status-success-color,#10b981)]/20 border border-[var(--sarak-status-success-color,#10b981)]/50 text-[var(--sarak-status-success-color,#10b981)] text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
+                class="px-2 py-1 rounded bg-[var(--sarak-status-success-color,#10b981)]/20 border border-[var(--sarak-status-success-color,#10b981)]/50 text-[var(--sarak-status-success-color,#10b981)] text-[var(--sarak-type-scale2xs,11px)] font-bold uppercase tracking-wider backdrop-blur-md"
               >
                 CSS Atmosphere
               </span>
@@ -307,7 +307,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               class="flex items-center gap-3 mb-2"
             >
               <span
-                class="px-2 py-1 rounded bg-[var(--sarak-status-success-color,#10b981)]/20 border border-[var(--sarak-status-success-color,#10b981)]/50 text-[var(--sarak-status-success-color,#10b981)] text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
+                class="px-2 py-1 rounded bg-[var(--sarak-status-success-color,#10b981)]/20 border border-[var(--sarak-status-success-color,#10b981)]/50 text-[var(--sarak-status-success-color,#10b981)] text-[var(--sarak-type-scale2xs,11px)] font-bold uppercase tracking-wider backdrop-blur-md"
               >
                 CSS Atmosphere
               </span>
@@ -386,7 +386,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               class="flex items-center gap-3 mb-2"
             >
               <span
-                class="px-2 py-1 rounded bg-[var(--sarak-status-success-color,#10b981)]/20 border border-[var(--sarak-status-success-color,#10b981)]/50 text-[var(--sarak-status-success-color,#10b981)] text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
+                class="px-2 py-1 rounded bg-[var(--sarak-status-success-color,#10b981)]/20 border border-[var(--sarak-status-success-color,#10b981)]/50 text-[var(--sarak-status-success-color,#10b981)] text-[var(--sarak-type-scale2xs,11px)] font-bold uppercase tracking-wider backdrop-blur-md"
               >
                 CSS Atmosphere
               </span>
@@ -465,7 +465,7 @@ exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`
               class="flex items-center gap-3 mb-2"
             >
               <span
-                class="px-2 py-1 rounded bg-[var(--sarak-status-success-color,#10b981)]/20 border border-[var(--sarak-status-success-color,#10b981)]/50 text-[var(--sarak-status-success-color,#10b981)] text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
+                class="px-2 py-1 rounded bg-[var(--sarak-status-success-color,#10b981)]/20 border border-[var(--sarak-status-success-color,#10b981)]/50 text-[var(--sarak-status-success-color,#10b981)] text-[var(--sarak-type-scale2xs,11px)] font-bold uppercase tracking-wider backdrop-blur-md"
               >
                 CSS Atmosphere
               </span>

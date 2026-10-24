@@ -13,6 +13,7 @@ describe('KanbanColumn', () => {
     it('mostra o título, a contagem e os cartões na ordem', () => {
         mount(<KanbanColumn column={column} />);
         expect(screen.getByRole('region', { name: 'A fazer' })).toBeInTheDocument();
+        expect(screen.getByText('A fazer').parentElement).toHaveStyle({ color: 'var(--theme-title, var(--sarak-title-color, inherit))' });
         expect(screen.getByText('2')).toBeInTheDocument();
         expect(Array.from(document.querySelectorAll('[data-card-id]')).map((el) => el.getAttribute('data-card-id'))).toEqual(['a', 'b']);
     });

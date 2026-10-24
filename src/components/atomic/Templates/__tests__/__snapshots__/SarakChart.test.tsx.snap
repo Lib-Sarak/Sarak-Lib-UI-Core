@@ -48,14 +48,14 @@ exports[`SarakChart > matches snapshot to ensure no layout regressions during ty
           style="transition-duration: var(--duration-normal, 0.3s); height: 0px;"
         >
           <div
-            class="absolute -top-10 left-1/2 -translate-x-1/2 bg-[var(--color-theme-title,#f2f6fb)] text-[var(--color-theme-card,#101622)] text-2xs font-black rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30"
+            class="absolute -top-10 left-1/2 -translate-x-1/2 bg-[var(--sarak-emphasis-color,var(--theme-emphasis,var(--theme-primary,#19e3f0)))] text-[var(--color-theme-card,#101622)] text-2xs font-black rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30"
           >
             50
           </div>
         </div>
         <div
           class="font-bold text-theme-muted uppercase rotate-45 origin-left hidden lg:block"
-          style="margin-top: calc(var(--sarak-layout-gap-md,16px) * 0.75); font-size: var(--sarak-type-scale-micro, 7px);"
+          style="margin-top: calc(var(--sarak-layout-gap-md,16px) * 0.75); font-size: var(--sarak-type-scale-micro, 11px);"
         >
           2023-01-01
         </div>
@@ -69,14 +69,14 @@ exports[`SarakChart > matches snapshot to ensure no layout regressions during ty
           style="transition-duration: var(--duration-normal, 0.3s); height: 0px;"
         >
           <div
-            class="absolute -top-10 left-1/2 -translate-x-1/2 bg-[var(--color-theme-title,#f2f6fb)] text-[var(--color-theme-card,#101622)] text-2xs font-black rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30"
+            class="absolute -top-10 left-1/2 -translate-x-1/2 bg-[var(--sarak-emphasis-color,var(--theme-emphasis,var(--theme-primary,#19e3f0)))] text-[var(--color-theme-card,#101622)] text-2xs font-black rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30"
           >
             80
           </div>
         </div>
         <div
           class="font-bold text-theme-muted uppercase rotate-45 origin-left hidden lg:block"
-          style="margin-top: calc(var(--sarak-layout-gap-md,16px) * 0.75); font-size: var(--sarak-type-scale-micro, 7px);"
+          style="margin-top: calc(var(--sarak-layout-gap-md,16px) * 0.75); font-size: var(--sarak-type-scale-micro, 11px);"
         >
           2023-01-02
         </div>

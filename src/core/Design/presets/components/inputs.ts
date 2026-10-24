@@ -67,7 +67,7 @@ export const INPUT_PRESETS: ComponentPreset[] = [
             inputBorderType: 'solid',
             inputBorderRadius: 0,
             inputBg: 'var(--theme-body)',
-            inputBorderColor: 'var(--theme-title)',
+            inputBorderColor: 'var(--sarak-emphasis-color, var(--theme-emphasis, var(--theme-primary)))',
         }
     },
     {

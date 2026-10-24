@@ -15,4 +15,11 @@ describe('uma variável tem um dono só', () => {
     it('o alias --sarak-card-blur não é mais emitido por nenhum token', () => {
         expect(ownersOf('--sarak-card-blur')).toEqual([]);
     });
+
+    it('mantém uma única propriedade para cada papel de cor tipográfica', () => {
+        expect(ownersOf('--sarak-text-main')).toEqual(['textColorMaster']);
+        expect(ownersOf('--theme-title')).toEqual(['titleColor']);
+        expect(ownersOf('--sarak-subtitle-color')).toEqual(['subtitleColor']);
+        expect(ownersOf('--sarak-emphasis-color')).toEqual(['emphasisColor']);
+    });
 });

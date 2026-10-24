@@ -61,7 +61,7 @@ export const ColorControl: React.FC<ColorControlProps> = ({ label, description, 
                     onChange={(e) => setText(e.target.value)}
                     onBlur={commitText}
                     onKeyDown={(e) => { if (e.key === 'Enter') commitText(); }}
-                    className={`w-full bg-transparent text-[var(--sarak-type-scale3xs,9px)] font-mono text-[var(--theme-muted)] outline-none border-b ${invalid ? 'border-[var(--sarak-status-error-color,#ef4444)]' : 'border-transparent focus:border-[var(--theme-border)]'}`}
+                className={`w-full bg-transparent text-[var(--sarak-type-scale3xs,11px)] font-mono text-[var(--theme-muted)] outline-none border-b ${invalid ? 'border-[var(--sarak-status-error-color,#ef4444)]' : 'border-transparent focus:border-[var(--theme-border)]'}`}
                 />
                 {parts && (
                     <input

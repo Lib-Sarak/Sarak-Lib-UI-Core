@@ -165,6 +165,12 @@ export const PAIRS: ContrastPair[] = [
     // todo título dentro de card ou modal é este par.
     { fg: 'titleColor', bgChain: ['cardBackgroundColor', 'colorBgBody'], min: 4.5 },
     { fg: 'titleColor', bgChain: ['colorBgModal', 'colorBgBody'], min: 4.5 },
+    { fg: 'subtitleColor', bgChain: ['colorBgBody'], min: 4.5 },
+    { fg: 'subtitleColor', bgChain: ['surfaceColor', 'colorBgBody'], min: 4.5 },
+    { fg: 'subtitleColor', bgChain: ['cardBackgroundColor', 'colorBgBody'], min: 4.5 },
+    { fg: 'emphasisColor', bgChain: ['colorBgBody'], min: 4.5 },
+    { fg: 'emphasisColor', bgChain: ['surfaceColor', 'colorBgBody'], min: 4.5 },
+    { fg: 'emphasisColor', bgChain: ['cardBackgroundColor', 'colorBgBody'], min: 4.5 },
 
     // Grupo B — texto de componente específico, par declarado na própria
     // `description` do schema (ou óbvio pelo agrupamento do componente).

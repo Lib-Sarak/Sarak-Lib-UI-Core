@@ -17,6 +17,15 @@ describe('SarakTabs — teclado e ARIA (caracterização Lote 9, R10)', () => {
         expect(screen.getAllByRole('tab')).toHaveLength(3);
     });
 
+    it('usa cor de texto para aba ativa e hover em vez da cor de título', () => {
+        render(<SarakTabs tabs={TABS} activeTab="a" onChange={vi.fn()} variant="enclosed" />);
+        const activeTab = screen.getByRole('tab', { name: 'Aba A' });
+        const inactiveTab = screen.getByRole('tab', { name: 'Aba C' });
+        expect(activeTab.className).toContain('--theme-text-primary');
+        expect(inactiveTab.className).toContain('hover:text-[var(--theme-text-primary');
+        expect(activeTab.className).not.toContain('--theme-title');
+    });
+
     it('a aba ativa tem aria-selected=true e tabIndex=0; as demais aria-selected=false e tabIndex=-1', () => {
         render(<SarakTabs tabs={TABS} activeTab="a" onChange={vi.fn()} />);
         const tabA = screen.getByRole('tab', { name: 'Aba A' });

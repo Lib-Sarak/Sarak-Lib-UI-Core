@@ -115,7 +115,8 @@ const testSuccessfulTenantThemeApplication = (): void => {
         await selectBootLoadedTheme();
         expect(screen.getByTestId('tenant-system-background')).toHaveTextContent('#123456');
         const applyButton = getApplyButton();
-        expect(applyButton).toHaveTextContent(/^Aplicar \(\d+\)$/);
+        expect(applyButton).toHaveTextContent(/^Aplicar$/);
+        expect(screen.getByText(/\d+ altera(?:ção|ções)/)).toBeInTheDocument();
         expect(applyButton).toBeEnabled();
         expect(onSave).not.toHaveBeenCalled();
         expect(onSaveTheme).not.toHaveBeenCalled();

@@ -42,6 +42,9 @@ describe('SarakShellSearchResults', () => {
         expect(option.tagName).toBe('A');
         expect(option).toHaveAttribute('href', '/propostas');
         expect(option).toHaveAttribute('aria-selected', 'true');
+        expect(screen.getByText('Propostas').className).toContain('text-[var(--theme-title)]/80');
+        expect(screen.getByText('Comercial').className).toContain('--sarak-subtitle-color,var(--theme-subtitle');
+        expect(screen.getByRole('heading', { level: 4 }).className).toContain('--theme-title');
         expect(screen.getByRole('listbox')).toHaveAttribute('id', state.listboxId);
     });
 

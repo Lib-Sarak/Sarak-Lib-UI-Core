@@ -38,6 +38,9 @@ describe('SarakSearchDialog', () => {
         const option = screen.getByRole('option', { name: /Pedidos Comercial/ });
         expect(option.tagName).toBe('A');
         expect(option).toHaveAttribute('href', '/pedidos');
+        expect(screen.getByText('Pedidos').className).toContain('--color-theme-title');
+        expect(screen.getByText('Comercial').className).toContain('--sarak-subtitle-color');
+        expect(screen.getByRole('heading', { level: 4 }).className).toContain('--theme-title');
 
         const backdrop = container.querySelector('.absolute.inset-0');
         expect(backdrop).not.toBeNull();

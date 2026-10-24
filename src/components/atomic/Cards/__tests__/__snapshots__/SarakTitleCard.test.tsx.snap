@@ -41,14 +41,14 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
           style="flex-direction: column; padding-right: var(--sarak-layout-gap-sm, 8px);"
         >
           <span
-            class="font-black text-[var(--sarak-primary-color,#19e3f0)] uppercase"
-            style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 9px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
+            class="font-black text-[var(--sarak-subtitle-color,var(--theme-subtitle,#f2f6fb))] uppercase"
+            style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 11px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
           >
             123
           </span>
           <h4
-            class="text-[var(--color-theme-title,#f2f6fb)] tracking-tight group-hover:text-[var(--sarak-primary-color,#19e3f0)] transition-colors truncate"
-            style="font-size: var(--sarak-card-title-font-size, 20px); font-weight: 900; letter-spacing: var(--sarak-card-title-letter-spacing, 0px); color: var(--sarak-card-title-color, var(--theme-title, #f2f6fb));"
+            class="text-[var(--sarak-card-title-color,var(--theme-title,#f2f6fb))] tracking-tight group-hover:text-[var(--sarak-primary-color,#19e3f0)] transition-colors truncate"
+            style="font-size: var(--sarak-card-title-font-size, 20px); font-weight: 900; letter-spacing: var(--sarak-card-title-letter-spacing, 0px);"
           >
             Test Item
           </h4>

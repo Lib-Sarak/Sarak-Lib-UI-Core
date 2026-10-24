@@ -83,7 +83,7 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
                         gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)',
                         paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
                         paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.125)',
-                        fontSize: 'var(--sarak-type-scale-micro, 7px)',
+                        fontSize: 'var(--sarak-type-scale-micro, 11px)',
                         letterSpacing: 'var(--sarak-tracking-tight, 0.2em)'
                     }}
                 >
@@ -96,16 +96,15 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
                 {/* Header Layout */}
                 <div className={layout.headerClass}>
                     <div className="flex flex-1 min-w-0" style={{ flexDirection: 'column', paddingRight: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                        <span className="font-black text-[var(--sarak-primary-color,#19e3f0)] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale3xs, 9px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
+                        <span className="font-black text-[var(--sarak-subtitle-color,var(--theme-subtitle,#f2f6fb))] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale3xs, 11px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
                             {String(subtitle)}
                         </span>
                         <h4 
-                            className="text-[var(--color-theme-title,#f2f6fb)] tracking-tight group-hover:text-[var(--sarak-primary-color,#19e3f0)] transition-colors truncate"
+                            className="text-[var(--sarak-card-title-color,var(--theme-title,#f2f6fb))] tracking-tight group-hover:text-[var(--sarak-primary-color,#19e3f0)] transition-colors truncate"
                             style={{ 
                                 fontSize: 'var(--sarak-card-title-font-size, 20px)',
                                 fontWeight: resolveTitleFontWeight(design.cardTitleFontWeight) as React.CSSProperties['fontWeight'],
-                                letterSpacing: 'var(--sarak-card-title-letter-spacing, 0px)',
-                                color: 'var(--sarak-card-title-color, var(--theme-title, #f2f6fb))'
+                                letterSpacing: 'var(--sarak-card-title-letter-spacing, 0px)'
                             }}
                         >
                             {String(title ?? '')}

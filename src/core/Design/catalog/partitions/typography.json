@@ -247,7 +247,6 @@
     ],
     "cssVariables": [
       "--sarak-text-main",
-      "--theme-title",
       "--theme-text-primary"
     ],
     "allowedValues": null,
@@ -774,8 +773,8 @@
       "--sarak-type-scale-micro"
     ],
     "allowedValues": {
-      "min": 6,
-      "max": 10
+      "min": 11,
+      "max": 14
     },
     "relatedTokens": [
       "typeScaleTiny"
@@ -806,8 +805,8 @@
       "--sarak-type-scale-tiny"
     ],
     "allowedValues": {
-      "min": 6,
-      "max": 12
+      "min": 11,
+      "max": 14
     },
     "relatedTokens": [
       "typeScaleMicro",
@@ -839,8 +838,8 @@
       "--sarak-type-scale3xs"
     ],
     "allowedValues": {
-      "min": 6,
-      "max": 12
+      "min": 11,
+      "max": 14
     },
     "relatedTokens": [
       "typeScaleTiny",
@@ -872,7 +871,7 @@
       "--sarak-type-scale2xs"
     ],
     "allowedValues": {
-      "min": 8,
+      "min": 11,
       "max": 14
     },
     "relatedTokens": [

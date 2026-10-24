@@ -66,7 +66,7 @@ const SearchInputArea = ({ searchModifier, state }: Pick<SearchPanelProps, 'sear
 
     return (
         <div
-            className="flex items-center border-b border-[var(--border-color,rgba(255,255,255,0.09))] bg-[var(--color-theme-title,#f2f6fb)]/[0.02]"
+            className="flex items-center border-b border-[var(--border-color,rgba(255,255,255,0.09))] bg-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]/[0.02]"
             style={{ gap: 'var(--sarak-layout-gap-md,16px)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 1.25) var(--sarak-layout-gap-lg, 24px)' }}
         >
             <SarakIcon name="Search" className="w-5 h-5 text-[var(--text-muted,rgba(242,246,251,0.55))]" />
@@ -111,7 +111,7 @@ const SearchOption = ({
 }: SearchOptionProps): React.ReactElement => {
     const subtitle = getSarakSearchItemSubtitle(item);
     const activeClass = isActive ? 'bg-[var(--sarak-primary-color,#19e3f0)]/10' : 'hover:bg-[var(--sarak-primary-color,#19e3f0)]/5';
-    const className = 'group h-14 flex items-center justify-between rounded-[calc(var(--radius-theme)*0.8)] transition-all w-full !text-[var(--color-theme-title,#f2f6fb)] no-underline hover:no-underline ' + activeClass;
+    const className = 'group h-14 flex items-center justify-between rounded-[calc(var(--radius-theme)*0.8)] transition-all w-full !text-[var(--theme-title,var(--sarak-title-color,#f2f6fb))] no-underline hover:no-underline ' + activeClass;
 
     return (
         <SarakLink
@@ -131,7 +131,7 @@ const SearchOption = ({
                 {item.icon && <span aria-hidden="true" className="flex h-9 w-9 shrink-0 items-center justify-center">{item.icon}</span>}
                 <SarakFlex direction="column" wrap={false} className="min-w-0">
                     <span className="truncate text-sm font-bold text-[var(--color-theme-title,#f2f6fb)]/80 group-hover:text-[var(--sarak-primary-color,#19e3f0)]">{item.label}</span>
-                    {subtitle && <span className="truncate text-2xs text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase tracking-widest">{subtitle}</span>}
+                    {subtitle && <span className="truncate text-2xs text-[var(--sarak-subtitle-color,var(--theme-subtitle,#f2f6fb))] uppercase tracking-widest">{subtitle}</span>}
                 </SarakFlex>
             </div>
             <SarakIcon name="ArrowRight" className="w-4 h-4 shrink-0 text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
@@ -146,7 +146,7 @@ const SearchResults = ({ state, onClose, onSelect }: SearchPaletteProps): React.
         <div className="max-h-[60vh] overflow-y-auto custom-scrollbar" style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}>
             {state.filteredItems.length > 0 && (
                 <div style={{ paddingTop: 'var(--sarak-layout-gap-sm, 8px)', paddingBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                    <h4 className="text-2xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))]" style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)', marginBottom: 'var(--sarak-layout-gap-sm, 8px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>{t('searchAvailableToolsHeading')}</h4>
+                    <h4 className="text-2xs font-black uppercase text-[var(--theme-title,var(--sarak-title-color,#f2f6fb))]" style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)', marginBottom: 'var(--sarak-layout-gap-sm, 8px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>{t('searchAvailableToolsHeading')}</h4>
                 </div>
             )}
             <div id={state.listboxId} role="listbox">
@@ -172,8 +172,8 @@ const SearchEmptyState = ({ query }: { query: string }): React.ReactElement => {
 
     return (
         <div className="flex items-center justify-center text-center opacity-20" style={{ flexDirection: 'column', paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>
-            <SarakIcon name="Search" className="w-12 h-12 text-[var(--color-theme-title,#f2f6fb)]" style={{ marginBottom: 'var(--sarak-layout-gap-md,16px)' }} />
-            <span role="status" className="text-sm font-black uppercase tracking-widest text-[var(--color-theme-title,#f2f6fb)]">{t('searchNoResultsFor', { query })}</span>
+            <SarakIcon name="Search" className="w-12 h-12 text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]" style={{ marginBottom: 'var(--sarak-layout-gap-md,16px)' }} />
+            <span role="status" className="text-sm font-black uppercase tracking-widest text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]">{t('searchNoResultsFor', { query })}</span>
         </div>
     );
 };

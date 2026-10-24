@@ -23,6 +23,23 @@ describe('SarakTypography', () => {
         expect(screen.getByText('code').tagName).toBe('CODE');
     });
 
+    it('usa title em headings por padrão e main em texto corrido', () => {
+        const { rerender } = render(<SarakTypography variant="h2" data-testid="typography">Título</SarakTypography>);
+        expect(screen.getByTestId('typography').style.color).toContain('--theme-title');
+
+        rerender(<SarakTypography variant="body" data-testid="typography">Corpo</SarakTypography>);
+        expect(screen.getByTestId('typography').style.color).toContain('--sarak-text-main');
+    });
+
+    it.each([
+        ['title', '--theme-title'],
+        ['subtitle', '--sarak-subtitle-color'],
+        ['emphasis', '--sarak-emphasis-color'],
+    ] as const)('aceita o papel de cor %s', (color, cssVariable) => {
+        render(<SarakTypography color={color} data-testid="role-color">Texto</SarakTypography>);
+        expect(screen.getByTestId('role-color').style.color).toContain(cssVariable);
+    });
+
     it('`as` sobrepõe a tag default do variant', () => {
         render(
             <SarakTypography variant="h1" as="span">

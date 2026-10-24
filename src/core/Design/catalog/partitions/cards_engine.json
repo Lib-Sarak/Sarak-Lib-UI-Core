@@ -1293,10 +1293,12 @@
     "digitalTwins": [
       "SarakCard"
     ],
-    "cssVariables": [],
+    "cssVariables": [
+      "--sarak-card-title-font-size"
+    ],
     "allowedValues": {
-      "min": 10,
-      "max": 40
+      "min": 11,
+      "max": 28
     },
     "relatedTokens": [
       "cardTitleColor",

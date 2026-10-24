@@ -40,8 +40,8 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
           style="flex-direction: column;"
         >
           <span
-            class="font-black text-[var(--sarak-primary-color,#19e3f0)] uppercase"
-            style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 9px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
+            class="font-black text-[var(--sarak-subtitle-color,var(--theme-subtitle,#f2f6fb))] uppercase"
+            style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 11px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
           >
             123
           </span>

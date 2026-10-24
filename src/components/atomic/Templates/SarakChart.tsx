@@ -58,11 +58,11 @@ function ChartBars<TData extends Record<string, unknown>>({ records, valueKey, d
                         className="w-full bg-gradient-to-t from-[var(--sarak-shadow-glow,rgba(25,227,240,0.18))] to-[var(--sarak-primary-color,#19e3f0)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"
                         style={{ transitionDuration: 'var(--duration-normal, 0.3s)' }}
                     >
-                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[var(--color-theme-title,#f2f6fb)] text-[var(--color-theme-card,#101622)] text-2xs font-black rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30">
+                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[var(--sarak-emphasis-color,var(--theme-emphasis,var(--theme-primary,#19e3f0)))] text-[var(--color-theme-card,#101622)] text-2xs font-black rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30">
                             {value.toLocaleString()}
                         </div>
                     </motion.div>
-                    <div className="font-bold text-theme-muted uppercase rotate-45 origin-left hidden lg:block" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)', fontSize: 'var(--sarak-type-scale-micro, 7px)' }}>
+                    <div className="font-bold text-theme-muted uppercase rotate-45 origin-left hidden lg:block" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)', fontSize: 'var(--sarak-type-scale-micro, 11px)' }}>
                         {String(item[dateKey] ?? '')}
                     </div>
                 </div>

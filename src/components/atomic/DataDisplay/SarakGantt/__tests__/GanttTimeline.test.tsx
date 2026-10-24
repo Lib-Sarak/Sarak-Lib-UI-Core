@@ -54,6 +54,11 @@ describe('GanttTimeline', () => {
         expect(bar('b')).toHaveAccessibleName(`Protótipo, de ${full(new Date(2026, 9, 6))} a ${full(new Date(2026, 9, 8))}`);
     });
 
+    it('usa a cor de título nos rótulos das barras', () => {
+        renderTimeline();
+        expect(bar('a').style.color).toBe('var(--theme-title, var(--sarak-title-color, inherit))');
+    });
+
     it('barra recortada no início do intervalo: o progresso termina no mesmo dia da barra inteira', () => {
         renderTimeline({ range: { start: new Date(2026, 9, 3), end: new Date(2026, 9, 14) } });
         expect(bar('a')).toHaveStyle({ left: '0px', width: '64px' });

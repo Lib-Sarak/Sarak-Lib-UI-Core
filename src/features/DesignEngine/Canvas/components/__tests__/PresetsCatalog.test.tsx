@@ -55,6 +55,17 @@ describe('PresetsCatalog', () => {
         });
     }, 15000); // 5000 (default) não bastava sob `vitest --coverage` (instrumentação V8 + contenção de workers, mesma causa do PreviewCanvas.test.tsx, plan-12/R8.1)
 
+    it('mantém as categorias em uma linha e permite rolagem horizontal', () => {
+        render(<PresetsCatalog {...createProps()} />);
+
+        const categoryTabs = screen.getByRole('group', { name: 'Categorias da galeria' });
+        const tabList = categoryTabs.firstElementChild as HTMLElement;
+
+        expect(categoryTabs).toHaveClass('overflow-x-auto');
+        expect(tabList).toHaveClass('flex-nowrap');
+        expect(screen.getByRole('button', { name: 'Temas' })).toHaveClass('whitespace-nowrap');
+    });
+
     it('o botão do cabeçalho fecha a galeria', () => {
         const onClose = vi.fn();
         render(<PresetsCatalog {...createProps(onClose)} />);
@@ -73,7 +84,7 @@ describe('PresetsCatalog', () => {
 
         const globalsGrid = container.querySelector('.grid') as HTMLElement;
         expect(globalsGrid.className).not.toMatch(/\bmd:grid-cols-2\b/);
-        expect(globalsGrid.className).toMatch(/@min-\[768px\]:grid-cols-2/);
+        expect(globalsGrid.className).toMatch(/@min-\[240px\]:grid-cols-2/);
         // A grade global mora DENTRO da fronteira de container — é dela que ela mede.
         expect(containerBoundary?.contains(globalsGrid)).toBe(true);
     });

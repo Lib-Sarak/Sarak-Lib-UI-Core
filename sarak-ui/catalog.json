@@ -4626,7 +4626,7 @@
           "name": "color",
           "type": "SarakTypographyColor",
           "optional": true,
-          "doc": "Cor de texto (`textColorMaster`/`textColorSecondary`/`textColorMuted`). Default: `main`."
+          "doc": "Papel de cor do texto. Títulos usam `title` por padrão; os demais usam `main`."
         },
         {
           "name": "as",
@@ -5402,6 +5402,7 @@
       "--sarak-dot-grid-dot-offset",
       "--sarak-dot-grid-dot-size",
       "--sarak-dot-grid-tile-size",
+      "--sarak-emphasis-color",
       "--sarak-empty-state-caption-max-width",
       "--sarak-empty-state-orb-blur",
       "--sarak-empty-state-orb-inner",
@@ -5725,6 +5726,7 @@
       "--sarak-status-warning-color-hover",
       "--sarak-status-warning-color-light",
       "--sarak-status-warning-color-rgb",
+      "--sarak-subtitle-color",
       "--sarak-surface",
       "--sarak-surface-color",
       "--sarak-surface-intensity",
@@ -5975,7 +5977,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 401,
+    "count": 403,
     "groups": {
       "global": "0. Configurações Globais",
       "branding": "Identidade Visual",
@@ -7146,7 +7148,7 @@
         "label": "Tamanho da Fonte do Título",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Tamanho da fonte do título do `SarakTitleCard`, e com ele a altura do cartão, por dispositivo."
+        "usage": "Tamanho da fonte do título do `SarakTitleCard` e dos cabeçalhos compostos por `SarakCard.Header`, por dispositivo."
       },
       {
         "id": "cardTitleFontWeight",
@@ -7642,6 +7644,22 @@
         "kind": "aesthetic",
         "modeDependent": false,
         "usage": "Lado da célula que se repete na grade de pontos do estado vazio geométrico e do `AuthHero`; define o espaçamento entre pontos."
+      },
+      {
+        "id": "emphasisColor",
+        "type": "string",
+        "responsive": false,
+        "group": "colors",
+        "label": "Cor de Ênfase",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Dá ênfase a texto usando um tom acessível da cor de acento do tema; preserve o matiz e contraste de pelo menos 4,5:1.",
+        "interactsWith": [
+          "accentColor",
+          "colorBgBody",
+          "surfaceColor",
+          "cardBackgroundColor"
+        ]
       },
       {
         "id": "emptyStateCaptionMaxWidth",
@@ -9812,6 +9830,23 @@
         "usage": "Pinta avisos e estados que pedem atenção sem indicar falha."
       },
       {
+        "id": "subtitleColor",
+        "type": "string",
+        "responsive": false,
+        "group": "colors",
+        "label": "Cor do Subtítulo",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Colore subtítulos entre o texto principal e os títulos; preserve essa hierarquia e contraste de pelo menos 4,5:1.",
+        "interactsWith": [
+          "textColorMaster",
+          "titleColor",
+          "colorBgBody",
+          "surfaceColor",
+          "cardBackgroundColor"
+        ]
+      },
+      {
         "id": "surfaceColor",
         "type": "string",
         "responsive": false,
@@ -10031,7 +10066,7 @@
         "label": "Texto Principal",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Colore o texto principal de parágrafos e rótulos; títulos usam titleColor."
+        "usage": "Colore o texto principal de parágrafos e rótulos; títulos, subtítulos e ênfases usam titleColor, subtitleColor e emphasisColor."
       },
       {
         "id": "textColorMuted",
@@ -10195,7 +10230,7 @@
         "label": "Texto do Tooltip",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Cor do texto da caixa do `SarakTooltip`; precisa de contraste com `tooltipBg`.",
+        "usage": "Cor do texto corrido da caixa do `SarakTooltip`; precisa de contraste com `tooltipBg`.",
         "interactsWith": [
           "tooltipBg"
         ]
@@ -10382,7 +10417,7 @@
         "label": "Escala 2XS",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Define o tamanho de metadados e rótulos pequenos em componentes da biblioteca."
+        "usage": "Define o tamanho de metadados e rótulos compactos; mantenha no mínimo 11px."
       },
       {
         "id": "typeScale3xs",
@@ -10392,7 +10427,7 @@
         "label": "Escala 3XS",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Define o degrau 3XS usado em rótulos compactos de cartões e indicadores."
+        "usage": "Define o degrau 3XS usado em rótulos compactos de cartões e indicadores; mantenha no mínimo 11px."
       },
       {
         "id": "typeScaleCaption",
@@ -10412,7 +10447,7 @@
         "label": "Escala Micro",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Define a menor escala tipográfica, usada em rótulos densos; valores baixos podem prejudicar a leitura."
+        "usage": "Define a menor escala tipográfica legível, usada em rótulos densos; mantenha no mínimo 11px."
       },
       {
         "id": "typeScaleTiny",
@@ -10422,7 +10457,7 @@
         "label": "Escala Tiny",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Define o tamanho de textos muito pequenos usados em badges e legendas."
+        "usage": "Define o tamanho mínimo de textos usados em badges e legendas; mantenha no mínimo 11px."
       },
       {
         "id": "typeScaleXl",
@@ -10659,6 +10694,6 @@
   "kitStamp": {
     "libVersion": "8.0.0-rc.2",
     "kitSchemaVersion": 1,
-    "kitHash": "cdc0d415ca0b"
+    "kitHash": "047a1867e33e"
   }
 }

@@ -30,6 +30,20 @@ describe('SarakCatalogGrid', () => {
         expect(emptyState.className).not.toContain(')-border');
     });
 
+    it('separa a cor do título e do subtítulo do catálogo da cor do texto principal', () => {
+        render(
+            <SarakCatalogGrid
+                items={[{ id: 'item-1', display_name: 'Item de teste', organization: 'Organização' }]}
+                title="Catálogo"
+                subtitle="Descrição do catálogo"
+            />,
+        );
+
+        expect(screen.getByRole('heading', { level: 1 }).className).toContain('text-theme-title');
+        expect(screen.getByText('Descrição do catálogo').className).toContain('--sarak-subtitle-color');
+        expect(screen.getByRole('heading', { level: 3 }).className).toContain('text-theme-title');
+    });
+
     it('usa a cor primária translúcida na borda do indicador de carregamento', () => {
         const { container } = render(<SarakCatalogGrid items={[]} title="Catálogo" loading />);
         const spinner = container.querySelector('.animate-spin') as HTMLElement;

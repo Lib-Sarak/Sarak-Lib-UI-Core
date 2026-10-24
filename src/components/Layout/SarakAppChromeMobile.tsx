@@ -168,7 +168,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                     aria-expanded={open}
                     aria-controls={DRAWER_ID}
                     aria-label={open ? t('mobileMenuCloseAriaLabel') : t('mobileMenuOpenAriaLabel')}
-                    className="shrink-0 rounded-[var(--sarak-card-radius,10px)] cursor-pointer text-[var(--sarak-text-main,var(--color-theme-title,inherit))] hover:bg-[var(--sarak-card-bg,#101622)]"
+                    className="shrink-0 rounded-[var(--sarak-card-radius,10px)] cursor-pointer text-[var(--sarak-text-main,var(--theme-text-primary,inherit))] hover:bg-[var(--sarak-card-bg,#101622)]"
                     style={{ width: 'var(--sarak-topbar-height, 56px)', height: 'var(--sarak-topbar-height, 56px)' }}
                     icon={<SarakIcon name={open ? 'X' : 'Menu'} size={22} />}
                 />
@@ -223,7 +223,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                 secondaryContent={secondaryContent}
                 isSplitViewEnabled={isSplitViewEnabled}
                 className={`relative flex-1 min-w-0 min-h-0 overflow-auto`}
-                style={{ color: 'var(--text-main, var(--color-theme-title, inherit))', ...resolveChromeContentStyle(layoutDensity, maxContentWidth) }}
+                style={{ color: 'var(--text-main, var(--theme-text-primary, inherit))', ...resolveChromeContentStyle(layoutDensity, maxContentWidth) }}
             >
                 {children}
             </ChromeContentRegion>

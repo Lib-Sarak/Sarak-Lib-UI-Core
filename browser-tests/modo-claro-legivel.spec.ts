@@ -25,6 +25,9 @@ import { test, expect, chromium, type Browser, type Locator, type Page } from '@
 const DESKTOP = { width: 1280, height: 900 } as const;
 const DARK_TEXT = 'rgb(2, 6, 23)';
 const LIGHT_TEXT = 'rgb(255, 255, 255)';
+const LARGE_TITLE_MINIMUM_FONT_SIZE_PX = 24;
+const LARGE_TITLE_MINIMUM_CONTRAST_RATIO = 3;
+const BODY_TEXT_MINIMUM_CONTRAST_RATIO = 4.5;
 
 const harnessUrl = process.env.SARAK_CROMO_HARNESS_URL;
 if (!harnessUrl) {
@@ -106,6 +109,22 @@ test.describe('texto sobre cor sólida: escolhido pelo contraste da cor do tema'
                 expect(ratio, `${tema}: badge sólido primário`).toBeGreaterThanOrEqual(4.5);
             });
         }
+    });
+});
+
+test.describe('hierarquia de texto: título, subtítulo e destaque legíveis no modo claro', () => {
+    test('cada papel mantém contraste suficiente sobre o corpo branco', async () => {
+        await withScene('legivel-claro', async (page) => {
+            const background = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+            const title = probe(page, 'hierarquia-titulo').locator('h1');
+            const subtitle = probe(page, 'hierarquia-subtitulo').locator('p');
+            const emphasis = probe(page, 'hierarquia-destaque').locator('p');
+
+            expect(Number.parseFloat(await readComputed(title, 'font-size'))).toBeGreaterThanOrEqual(LARGE_TITLE_MINIMUM_FONT_SIZE_PX);
+            expect(contrast(await readComputed(title, 'color'), background)).toBeGreaterThanOrEqual(LARGE_TITLE_MINIMUM_CONTRAST_RATIO);
+            expect(contrast(await readComputed(subtitle, 'color'), background)).toBeGreaterThanOrEqual(BODY_TEXT_MINIMUM_CONTRAST_RATIO);
+            expect(contrast(await readComputed(emphasis, 'color'), background)).toBeGreaterThanOrEqual(BODY_TEXT_MINIMUM_CONTRAST_RATIO);
+        });
     });
 });
 

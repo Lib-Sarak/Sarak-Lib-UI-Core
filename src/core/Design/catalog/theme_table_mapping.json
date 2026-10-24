@@ -40,6 +40,8 @@
     "surfaceColor",
     "textureColor",
     "titleColor",
+    "subtitleColor",
+    "emphasisColor",
     "colorDepth",
     "colorVariation",
     "colorBgBody",

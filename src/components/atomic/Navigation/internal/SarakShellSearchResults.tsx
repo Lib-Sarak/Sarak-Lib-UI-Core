@@ -37,8 +37,8 @@ const SearchEmptyState = ({ query }: { query: string }): React.ReactElement => {
 
     return (
         <div className="flex items-center justify-center text-center opacity-40" style={{ paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 2.5)', flexDirection: 'column' }}>
-            <SarakIcon name="Search" className="w-8 h-8 text-[var(--theme-title)]" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }} />
-            <span role="status" className="text-xs font-black uppercase tracking-widest text-[var(--theme-title)]">{t('searchNoResultsFor', { query })}</span>
+            <SarakIcon name="Search" className="w-8 h-8 text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }} />
+            <span role="status" className="text-xs font-black uppercase tracking-widest text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]">{t('searchNoResultsFor', { query })}</span>
         </div>
     );
 };
@@ -67,7 +67,7 @@ const SearchResultOption = ({ item, index, state, onSelect }: SearchOptionProps)
                 {item.icon && <span aria-hidden="true" className="flex h-8 w-8 shrink-0 items-center justify-center">{item.icon}</span>}
                 <SarakFlex direction="column" wrap={false} className="min-w-0">
                     <span className="truncate text-xs font-bold text-[var(--theme-title)]/80 group-hover:text-[var(--theme-primary)]">{item.label}</span>
-                    {subtitle && <span className="truncate text-3xs text-[var(--theme-muted)] uppercase tracking-widest">{subtitle}</span>}
+                    {subtitle && <span className="truncate text-3xs text-[var(--sarak-subtitle-color,var(--theme-subtitle,#f2f6fb))] uppercase tracking-widest">{subtitle}</span>}
                 </SarakFlex>
             </div>
             <SarakIcon name="ArrowRight" className="w-3 h-3 shrink-0 text-[var(--theme-muted)] opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
@@ -83,7 +83,7 @@ export const SarakShellSearchResults = ({ state, onSelect }: SearchResultsProps)
             <div className="max-h-[60vh] overflow-y-auto custom-scrollbar" style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}>
                 {state.filteredItems.length > 0 && (
                     <div style={{ paddingBlock: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                        <h4 className="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] text-[var(--theme-muted)]" style={{ paddingInline: 'var(--sarak-layout-gap-md, 16px)', marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>
+                        <h4 className="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] text-[var(--theme-title,var(--sarak-title-color,#f2f6fb))]" style={{ paddingInline: 'var(--sarak-layout-gap-md, 16px)', marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>
                             {t('shellSearchResultsHeading')}
                         </h4>
                     </div>

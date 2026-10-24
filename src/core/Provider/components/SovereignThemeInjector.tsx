@@ -73,7 +73,7 @@ export const SovereignThemeInjector: React.FC<SovereignThemeInjectorProps> = ({ 
             return [
                 '/* Sarak Sovereign Bridge - Light Mode Hijack */',
                 '/* Textos Ofensivos (Brancos e Cinzas Claros que somem no modo Claro) */',
-                rule('light', LIGHT_HIJACKED_TEXT, 'color: var(--color-theme-title,#f2f6fb);'),
+                rule('light', LIGHT_HIJACKED_TEXT, 'color: var(--theme-text-primary,var(--sarak-text-main,#f2f6fb));'),
                 rule('light', LIGHT_HIJACKED_MUTED_TEXT, 'color: var(--theme-muted);'),
                 '/* Fundos Ofensivos (Cartões e Camadas) */',
                 rule('light', LIGHT_HIJACKED_SURFACES, 'background-color: var(--theme-card);'),
@@ -81,7 +81,7 @@ export const SovereignThemeInjector: React.FC<SovereignThemeInjectorProps> = ({ 
                 '/* Bordas Ofensivas */',
                 rule('light', LIGHT_HIJACKED_BORDERS, 'border-color: var(--theme-border);'),
                 '/* Hovers Ocultos */',
-                rule('light', ['hover\\:text-white'], 'color: var(--theme-title);', ':hover'),
+                rule('light', ['hover\\:text-white'], 'color: var(--theme-text-primary,var(--sarak-text-main,#f2f6fb));', ':hover'),
                 rule('light', ['hover\\:border-white\\/30'], 'border-color: var(--theme-border);', ':hover'),
             ].join('\n');
         }

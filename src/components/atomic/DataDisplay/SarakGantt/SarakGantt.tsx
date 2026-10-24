@@ -71,7 +71,7 @@ function GanttTaskList({ rows, formats }: { rows: GanttRow[]; formats: GanttForm
                         data-gantt-list-row={row.task.id}
                         style={{ height: GANTT_ROW_SIZE, paddingInline: GAP_SM, borderBottom: HAIRLINE, boxSizing: 'border-box', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
                     >
-                        <span style={{ ...ellipsis, display: 'block', fontSize: CAPTION, color: 'var(--sarak-text-main, var(--color-theme-title, inherit))' }}>{row.task.title}</span>
+                        <span style={{ ...ellipsis, display: 'block', fontSize: CAPTION, color: 'var(--theme-title, var(--sarak-title-color, inherit))' }}>{row.task.title}</span>
                         {row.task.group && <span className={GANTT_GROUP_CLASS} style={{ fontSize: CAPTION, color: MUTED }}>{row.task.group}</span>}
                         <span className="sr-only">
                             {text('ganttTaskRange', { start: formats.full.format(row.start), end: formats.full.format(row.end) })}

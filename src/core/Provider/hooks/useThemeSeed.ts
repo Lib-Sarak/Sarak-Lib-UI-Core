@@ -16,6 +16,26 @@ interface ThemeSeedProps {
     configRef: MutableRefObject<SarakThemePayload>;
 }
 
+const TEXT_COLOR_ROLE_KEYS = ['titleColor', 'subtitleColor', 'emphasisColor'] as const;
+
+const resolveLightModeTextColors = (
+    themeEntry: SarakThemeEntry | undefined,
+    mode: 'light' | 'dark',
+): Record<string, SarakTokenValue> => {
+    if (mode !== 'light' || !themeEntry?.design || themeEntry.design.mode === 'light') return {};
+
+    const lightModeDesign = resolveThemeForMode(
+        { design: themeEntry.design as Record<string, SarakTokenValue>, contraparte: themeEntry.contraparte },
+        mode,
+    );
+
+    return Object.fromEntries(
+        TEXT_COLOR_ROLE_KEYS
+            .filter((key) => typeof lightModeDesign[key] === 'string')
+            .map((key) => [key, lightModeDesign[key]]),
+    );
+};
+
 /**
  * A SEMENTE do design (Sovereign Map v11.0), extraída de `useDesignManager` para
  * manter aquele arquivo abaixo do teto de linhas (R9).
@@ -86,11 +106,12 @@ export const useThemeSeed = (props: ThemeSeedProps) => {
                 requestedMode,
             );
         }
+        const lightModeTextColors = resolveLightModeTextColors(themeEntry, requestedMode);
 
         // Mescla de defaults conhecidos + payload dinâmico do banco no estado
         // canônico: cast pontual tipado (o índice dinâmico de `themeDesignTokens`
         // não se atribui sozinho a `SarakDesignState`).
-        return { ...masterDefaults, ...themeDesignTokens, ...configRef.current } as SarakDesignState;
+        return { ...masterDefaults, ...themeDesignTokens, ...lightModeTextColors, ...configRef.current } as SarakDesignState;
     }, [resolveSeedThemeId, allThemes, activeThemeId, initialTheme, isUnknownRequestedTheme, configRef]);
 
     return { resolveSeedThemeId, getSeedConfig };

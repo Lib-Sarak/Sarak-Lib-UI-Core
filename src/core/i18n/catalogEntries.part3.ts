@@ -4,6 +4,12 @@ type LibraryTextEntry = Record<SarakLibraryLanguage, string>;
 
 /** Companion de `catalog.ts` — ver o cabeçalho de `catalogEntries.part1.ts`. */
 export const CATALOG_PART_3 = {
+    themePendingChangeCount: {
+        pt: `1 alteração`, en: `1 change`, es: `1 cambio`, fr: `1 modification`, de: `1 Änderung`, it: `1 modifica`,
+    },
+    themePendingChangesCount: {
+        pt: `{count} alterações`, en: `{count} changes`, es: `{count} cambios`, fr: `{count} modifications`, de: `{count} Änderungen`, it: `{count} modifiche`,
+    },
     themeSaveDialogTitle: {
         pt: `Salvar tema`, en: `Save theme`, es: `Guardar tema`, fr: `Enregistrer le thème`, de: `Theme speichern`, it: `Salva tema`,
     },

@@ -9,7 +9,7 @@
 //      + 3 KB de folga. O teto acompanha o resto da lib: nenhum número congelado.
 //   2. ESTRUTURAL — nenhum módulo de tema ≠ padrão (nem `all.ts`) entre os inputs
 //      dos pedaços do fecho estático, lidos do `metafile` do bundler do consumidor.
-//   3. POR TEMA — cada tema, empacotado sozinho e gzipado, ≤ 4,5 KB.
+//   3. POR TEMA — cada tema, empacotado sozinho e gzipado, ≤ 15 KB.
 //
 // -------------------------------------------------------------------------
 // LIMITES DECLARADOS (R18) — o que este script NÃO vê
@@ -18,9 +18,9 @@
 //    e o delta de tema nele é coberto pela trava estrutural do `dist`
 //    (`check-theme-boot-closure.mjs --dist`). Com `--dist` este script só IMPRIME o
 //    boot do artefato, para o revisor comparar — não o julga.
-// 2. O teto relativo tem 3 KB de folga (decisão do dono): UM tema que volte ao boot
-//    (~1–2 KB gzip) cabe nela. É por isso que a regra 2 existe — a estrutural
-//    acende com um tema só, e o teto relativo acende com vários.
+// 2. O teto relativo tem 3 KB de folga (decisão do dono): com temas de ~6 KB gzip,
+//    UM tema que volte ao boot passa dessa folga. A trava estrutural continua sendo
+//    a que acende primeiro.
 // 3. Um bundler que não seja o esbuild (Vite/Rollup, webpack) pode dividir de outro
 //    jeito; os números absolutos mudam, a ESTRUTURA (quem está no fecho) não.
 // 4. Não executa o app: mede o que é carregado, não o que o navegador pinta.
@@ -35,7 +35,9 @@ import { fileURLToPath } from 'url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const THEMES_DIR = 'src/core/Design/presets/themes';
 export const SLACK_BYTES = 3 * 1024;
-export const PER_THEME_CEILING_BYTES = 4.5 * 1024;
+// Decisão do dono: 15 KB aceita tema sob demanda, quase nunca trocado e sem custo no uso;
+// conteúdo pesado fica em arquivo próprio. Nova alta exige medição e decisão; acima, enxugue.
+export const PER_THEME_CEILING_BYTES = 15 * 1024;
 
 const gzipSize = (content) => zlib.gzipSync(content, { level: 9 }).length;
 const toPosix = (file) => file.split(path.sep).join('/');

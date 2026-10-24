@@ -131,7 +131,7 @@ function GanttBar({ row, range, scale, formats, onTaskClick }: { row: GanttRow; 
                 // Trilha opaca (o tom misturado à cor de fundo do tema): o título fica sobre ela, nunca sobre o
                 // preenchimento, e o contraste com o texto principal não depende da cor do tom.
                 background: `color-mix(in srgb, ${tone} 22%, var(--color-theme-body, Canvas))`,
-                color: 'var(--sarak-text-main, var(--color-theme-title, inherit))',
+                color: 'var(--theme-title, var(--sarak-title-color, inherit))',
                 fontSize: CAPTION,
             }}
             onClick={() => onTaskClick?.(task)}

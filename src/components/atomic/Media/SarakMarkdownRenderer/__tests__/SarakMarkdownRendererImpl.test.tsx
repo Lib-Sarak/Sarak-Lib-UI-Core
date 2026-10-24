@@ -15,8 +15,11 @@ const renderMd = (content: string) =>
 describe('SarakMarkdownRendererImpl (Spec 15, Regra 1)', () => {
     it('traduz Markdown em elementos estilizados (título vira heading semântico)', () => {
         renderMd('# Olá\n\nUm parágrafo.');
-        expect(screen.getByText('Olá').tagName).toBe('H1');
-        expect(screen.getByText('Um parágrafo.')).toBeInTheDocument();
+        const heading = screen.getByText('Olá');
+        const paragraph = screen.getByText('Um parágrafo.');
+        expect(heading.tagName).toBe('H1');
+        expect(heading.className).toContain('--theme-title');
+        expect(paragraph.className).toContain('--sarak-text-main');
     });
 
     it('neutraliza URL `javascript:` num link (Spec 40)', () => {

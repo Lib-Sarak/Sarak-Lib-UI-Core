@@ -90,7 +90,7 @@ const SarakPDFViewerContent: React.FC<SarakPDFViewerProps> = ({
         }
     };
 
-    const controlBtn = 'text-[var(--color-theme-title,#f2f6fb)] hover:bg-[var(--text-muted,rgba(242,246,251,0.55))]/10 transition-colors';
+    const controlBtn = 'text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))] hover:bg-[var(--text-muted,rgba(242,246,251,0.55))]/10 transition-colors';
     // Neutraliza o `rounded-btn`/`w-N h-N` que `SarakIconButton` aplica por padrão — `style`
     // sempre vence a classe do átomo (R10 — lote 10), preservando `w-8 h-8 rounded-md`.
     // Zero hardcode (R2): deriva de `--sarak-layout-gap-md`/`--sarak-btn-border-radius`, tokens reais.

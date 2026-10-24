@@ -21,14 +21,14 @@ export const CardsCatalog: React.FC<CardsCatalogProps> = ({ onApplyPreset, curre
             <div className="flex items-center gap-2 p-1 bg-theme-body/20 rounded-xl border border-theme-border w-fit">
                 <button
                     onClick={() => setActiveTab('curated')}
-                    className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'curated' ? 'bg-theme-primary text-theme-text shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
+                    className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'curated' ? 'bg-theme-primary text-theme-text shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
                 >
                     <Sparkles size={12} />
                     Curados
                 </button>
                 <button
                     onClick={() => setActiveTab('textures')}
-                    className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'textures' ? 'bg-theme-primary text-theme-text shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
+                    className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'textures' ? 'bg-theme-primary text-theme-text shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
                 >
                     <Grid size={12} />
                     Texturas

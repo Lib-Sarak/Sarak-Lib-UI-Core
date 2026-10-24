@@ -317,7 +317,8 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
 
         render(<ThemeCustomizationTab />);
 
-        const applyBtn = screen.getByRole('button', { name: 'Aplicar (1)' });
+        const applyBtn = screen.getByRole('button', { name: 'Aplicar' });
+        expect(screen.getByText('1 alteração')).toBeInTheDocument();
         fireEvent.click(applyBtn);
 
         expect(mockHandleApplyToSystem).toHaveBeenCalledTimes(1);

@@ -47,6 +47,30 @@ describe('useDesignVariables — padding explícito por eixo', () => {
     });
 });
 
+describe('useDesignVariables — dono e resolução da cor de título', () => {
+    it('emite o título declarado e mantém a resolução do fallback claro ligada ao texto principal', () => {
+        const { result } = renderHook(() => useDesignVariables({
+            mode: 'light',
+            textColorMaster: '#152033',
+            titleColor: '#f2f6fb',
+        }));
+
+        expect(result.current.variables['--theme-title']).toBe('#152033');
+        expect(result.current.variables['--color-theme-title']).toBe('#152033');
+    });
+
+    it('emite os novos papéis de cor através das variáveis pertencentes ao schema', () => {
+        const { result } = renderHook(() => useDesignVariables({
+            mode: 'dark',
+            subtitleColor: '#e5eef7',
+            emphasisColor: '#ff4fd8',
+        }));
+
+        expect(result.current.variables['--sarak-subtitle-color']).toBe('#e5eef7');
+        expect(result.current.variables['--sarak-emphasis-color']).toBe('#ff4fd8');
+    });
+});
+
 /**
  * plan-08 F5 (achado 11) — este é o ÚNICO dos caminhos de responsividade que já lia o
  * token. O teste fixa esse comportamento para que o alinhamento com o detector JS

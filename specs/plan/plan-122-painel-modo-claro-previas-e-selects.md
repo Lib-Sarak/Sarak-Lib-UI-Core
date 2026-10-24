@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fazer a previa do painel mostrar o modo escolhido, caber lado a lado ou empilhada em tamanho grande, e todo select ser legivel"
 objetivo: "Fazer o painel de design mostrar na previa e na galeria o modo claro ou escuro que o usuario escolheu, exibir previa e galeria lado a lado ou empilhadas em tamanho quase de tela cheia com rolagem propria, e toda lista de select da lib legivel em qualquer tema"
 dominio: "Painel de customização / Prévia / Campos"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "painel", "preview", "modo-claro", "select", "contraste", "rc"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[09-temas-e-presets]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[10-seguranca-e-acessibilidade]]", "[[07-responsividade-e-multidispositivo]]"]
@@ -333,6 +333,40 @@ títulos das seções do acordeão ("Configurações globais", "Marca e cores"�
 - A verificação rápida permanece pendente nos dois gates externos e no índice desatualizado após a mudança de status; `npm run build` e navegador aguardam as verificações do revisor.
 - Nenhum arquivo de `src/components/Layout/`, `src/components/atomic/Navigation/`, `src/components/atomic/Inputs/`, hooks de componentes, schema de inputs ou tokens gerados foi editado por esta correção. Nenhum snapshot de `PreviewCanvas` ou `PresetCard` foi regravado por esta correção.
 
+## Resumo da execução — 2026-10-24 — lote 3
+
+**Resultado:** Implementado com uma pendência externa de tipos  
+**Status:** 🟠 Em revisão
+
+**Passos e evidências**
+- **3.1 — Select e option seguem o modo efetivo:** `src/styles/_elements.css:79-88` define `color-scheme` para os escopos claro/escuro; o select herda o esquema e as opções usam superfície e texto do tema.
+- **3.2 — Contraste das opções:** `browser-tests/plan-122-preview-mode.spec.ts:122-147` verifica o modo calculado e contraste ≥ 4,5:1 em dois temas escuros e dois claros; resultado: passou.
+- **3.3 — Acabamento do painel:** `ThemeSidebarContent.tsx:103` usa a escala de título; `ThemeActionBar.tsx:42-73` quebra rótulos e anuncia a contagem em texto auxiliar; `catalogEntries.part3.ts:7-11` traduz singular/plural; `PresetsCatalog.tsx:105-111` mantém as abas numa linha com rolagem. Os testes focados de `ThemeSidebarContent`, `ThemeActionBar` e `PresetsCatalog` passaram.
+- **3.4 — Galeria, acordeão e ações inativas:** `panelResponsive.presets.ts:20-23` calcula o limiar de 240 px para dois cartões de 112 px com vão de 16 px; `PresetCard.tsx:183-188` permite quebra do nome com escala caption; `LayoutControls.tsx:35,85` usa a cor de título do tema e a barra preserva legibilidade dos estados inativos. Os testes de `panelResponsive.presets`, `PresetsCatalog`, `PresetCard` e `LayoutControls` passaram.
+- **3.5 — Nota de migração:** registrada na subseção plan-122 de `docs/migracoes.md`, dentro de `## 8.0.0`; não há mudança de API.
+
+**Verificações executadas**
+- Vitest focado nos seis arquivos do painel → **38/38 testes passaram**.
+- `npx playwright test --config=browser-tests/playwright.config.ts browser-tests/plan-122-preview-mode.spec.ts` → **3/3 casos passaram**, incluindo modo/layout e contraste dos selects.
+- `npm run build:css` → CSS regenerado; as regras de esquema, superfície e texto estão em `dist/sarak.css`. `npm run build` não foi executado por instrução.
+- `npx tsc --noEmit` → **19 erros externos** de `subtitleColor` ausente em `SarakDesignState`, nos arquivos de tema da plan-123 em andamento. Nenhum desses arquivos foi alterado.
+
+## Correção do achado — 2026-10-24 — lote 3
+
+**Resultado:** Achado corrigido; testes focados passaram  
+**Status:** 🟠 Em revisão
+
+**Testes ajustados e evidências**
+- `Main/__tests__/ThemeCustomizationTab.test.tsx` — o caso “aplica as alterações globais…” localiza o botão pelo rótulo `Aplicar`, verifica separadamente o texto auxiliar `1 alteração` e prova que a aplicação chama o callback sem abrir modal ou fazer chamada de rede; passou.
+- `Main/__tests__/LoginThemeApplication.test.tsx` — o caso de aplicação após login exige o rótulo exato `Aplicar`, confere o contador auxiliar e que o botão está habilitado após a mudança; prova a aplicação e persistência do tema do tenant; passou.
+- `browser-tests/login-theme-application.spec.ts` — o caso de navegador exige o rótulo `Aplicar`, verifica o contador auxiliar e o botão habilitado antes de aplicar; prova a persistência do tema após o login; passou.
+- `ThemeActionBar.test.tsx`, incluído na verificação focada, mantém a prova de que zero alterações desabilita o botão e que o contador auxiliar corresponde a uma ou mais alterações.
+
+**Saídas dos testes**
+- Vitest focado nos três arquivos unitários → **3 arquivos e 20/20 testes passaram**.
+- Playwright em `browser-tests/login-theme-application.spec.ts` → **1/1 caso passou**.
+- `npm run build` não foi executado, conforme instrução.
+
 # 10. Veredito
 
 ## Veredito — 2026-10-23 — lote 1 — 🟢 Aprovado; lote 1 fechado
@@ -384,3 +418,31 @@ arquivos do painel (`PreviewCanvas`, `PresetCard`) são da `plan-121` (classes d
 **Bateria do worktree inteiro, rodada pelo revisor:** `npm run verify -- --tier=full` → "nível full verde"; `npm run
 cromo-css-real:check` → `build` completo e **435/435**, inclusive os dois casos de `plan-122-preview-mode.spec.ts` (modo claro na
 prévia e layout lado a lado/empilhado). O lote 3 (select legível e acabamento do painel) segue.
+
+## Veredito — 2026-10-24 — lote 3 — 🔴 Reprovado (1 achado)
+
+Verificado no worktree inteiro (com os lotes 1 e 2 da `plan-123`): `npm run verify -- --tier=full` → `tsc` 0, baseline sem regressão;
+vermelhos: vitest e `variable-contract:check` (este, da `plan-123`). `npm run cromo-css-real:check` → 434/437. A regra única de
+`select`/`option` (`_elements.css`: `color-scheme` pelo modo do escopo, `option` com `--theme-surface`/`--text-main`, superfície opaca
+nos 19 temas e contrapartes) e o acabamento estão no diff. Não está:
+
+1. O botão "Aplicar (N)" mudou de rótulo (passo 3.3: o contador virou texto auxiliar) e três testes que dependem do rótulo antigo não
+   foram atualizados: `Main/__tests__/ThemeCustomizationTab.test.tsx` › "aplica as alterações globais…" (procura `Aplicar (1)`),
+   `Main/__tests__/LoginThemeApplication.test.tsx:118` (`/^Aplicar \(\d+\)$/`) e `browser-tests/login-theme-application.spec.ts:40`
+   (mesmo padrão; o caso falha no navegador). Critério violado: §6 "testes que travavam … atualizados; suíte completa verde". Atualizar
+   os três para o rótulo novo **mantendo** a prova do contador (o texto auxiliar com N alterações e o botão habilitado só com mudança).
+   Os snapshots `PreviewCanvas` e `ThemePillarsList` misturam mudanças deste lote e da `plan-123`: **não regrave**, são da correção
+   da `plan-123`, que corre depois desta.
+
+## Veredito — 2026-10-24 — correção 1 (lote 3) — 🟢 Aprovado; plan concluída
+
+O achado do lote 3 está corrigido: `ThemeCustomizationTab.test.tsx`, `LoginThemeApplication.test.tsx` e
+`browser-tests/login-theme-application.spec.ts` acham o botão pelo rótulo "Aplicar" e verificam o contador em separado, com o estado
+desabilitado sem alteração ainda coberto.
+
+**Bateria do worktree inteiro (com a `plan-123` e a `plan-127`), rodada pelo revisor:** `npm run verify -- --tier=full` → `tsc` 0,
+baseline com `tsc` sem regressão, os 30 gates e o Anel 0 verdes; vitest com **uma** falha, o snapshot `PreviewCanvas.test.tsx:67`, cujo
+diff é só a reserva de 11 px da `plan-123` (não deste lote); `npm run cromo-css-real:check` → `build` completo e **438/438** casos de
+navegador, inclusive `plan-122-preview-mode.spec.ts` e `login-theme-application.spec.ts`. Critérios da §6 atendidos nos três lotes:
+prévia e galeria no modo da preferência, lado a lado ou empilhadas com rolagem própria, select legível em todo tema e o acabamento do
+painel.

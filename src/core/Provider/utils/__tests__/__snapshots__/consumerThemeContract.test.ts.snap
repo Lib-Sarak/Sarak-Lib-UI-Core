@@ -26,7 +26,6 @@ exports[`Corpus congelado — payload de consumidor → CSS Variable (R6, achado
   "--theme-body": "#101010",
   "--theme-primary": "#ff6600",
   "--theme-text-primary": "#eeeeee",
-  "--theme-title": "#eeeeee",
 }
 `;
 

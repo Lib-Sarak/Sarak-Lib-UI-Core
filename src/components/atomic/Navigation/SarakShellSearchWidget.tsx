@@ -91,7 +91,7 @@ const useCloseSearchOnOutsideClick = (
 const SearchShortcutBadge = ({ searchModifier, className = '' }: { searchModifier: string; className?: string }): React.ReactElement => (
     <kbd
         data-testid="sarak-shell-search-shortcut"
-        className={className + ' flex shrink-0 items-center rounded bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)] font-black transition-opacity pointer-events-none'}
+        className={className + ' flex shrink-0 items-center rounded bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] text-[var(--sarak-type-scale-tiny,11px)] text-[var(--theme-muted)] font-black transition-opacity pointer-events-none'}
         style={{
             gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)',
             paddingInline: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.75)',

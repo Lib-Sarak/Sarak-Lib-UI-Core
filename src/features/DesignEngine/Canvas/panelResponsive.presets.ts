@@ -5,9 +5,10 @@
  * coleta `.tsx` (`specs/arquitetura/00-mapa-do-modulo.md` §5.1: é onde a lógica de
  * breakpoint deve morar quando cresce, mesmo idioma de `useStructuralStyles.presets.ts`).
  *
- * A grade do catálogo conserva os limiares antigos (`md:` = 768 = `BREAKPOINT_TABLET`,
- * `lg:` = 1024 = `BREAKPOINT_DESKTOP`). O dual-view calcula seu limiar a partir da largura
- * mínima legível de cada quadro e do espaçamento. Ambos medem o container, nunca a janela.
+ * As grades dos subcatálogos usam os limiares antigos (`md:` = 768 = `BREAKPOINT_TABLET`,
+ * `lg:` = 1024 = `BREAKPOINT_DESKTOP`). A grade de temas começa quando cabem dois cartões
+ * de 112 px com o vão de 16 px. O dual-view calcula seu limiar a partir da largura mínima
+ * de cada quadro e do espaçamento. Todos medem o container, nunca a janela.
  *
  * As classes são escritas LITERAL de propósito: o scanner do Tailwind v4 lê o
  * arquivo como TEXTO — uma classe montada por interpolação de template literal nunca vira
@@ -16,6 +17,10 @@
  */
 export const CATALOG_GRID_2COL = 'grid-cols-1 @min-[768px]:grid-cols-2';
 export const CATALOG_GRID_3COL = 'grid-cols-1 @min-[768px]:grid-cols-2 @min-[1024px]:grid-cols-3';
+export const THEME_GALLERY_CARD_MIN_WIDTH = 112;
+export const THEME_GALLERY_GRID_GAP = 16;
+export const THEME_GALLERY_GRID_MIN_WIDTH = THEME_GALLERY_CARD_MIN_WIDTH * 2 + THEME_GALLERY_GRID_GAP;
+export const THEME_GALLERY_GRID_2COL = 'grid-cols-1 @min-[240px]:grid-cols-2';
 
 export const PREVIEW_MIN_FRAME_WIDTH = 250;
 export const PREVIEW_LAYOUT_GAP = 24;

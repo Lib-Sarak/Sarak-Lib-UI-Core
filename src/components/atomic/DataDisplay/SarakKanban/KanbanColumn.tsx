@@ -104,7 +104,7 @@ export function KanbanColumn<C extends SarakKanbanCard>({ column, ...handlers }:
                     fontSize: 'var(--sarak-type-scale-caption, 12px)',
                     textTransform: 'uppercase',
                     letterSpacing: 'var(--sarak-kanban-header-tracking, 0.04em)',
-                    color: 'var(--sarak-text-main, var(--color-theme-title, inherit))',
+                    color: 'var(--theme-title, var(--sarak-title-color, inherit))',
                 }}
             >
                 <span>{column.title}</span>

@@ -95,7 +95,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
                 </div>
 
                 <div style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*2)' }}>
-                    <h3 className="text-3xl font-black text-theme-text tracking-tight" style={{ marginBottom: 'var(--sarak-layout-gap-sm,8px)' }}>
+                    <h3 className="text-3xl font-black text-theme-title tracking-tight" style={{ marginBottom: 'var(--sarak-layout-gap-sm,8px)' }}>
                         {authText(mfaStep ? 'authTitleMfa' : isRegistering ? 'authTitleRegister' : 'authTitleLogin')}
                     </h3>
                     {showCredentials && (

@@ -107,7 +107,7 @@ export const cyberpunkneonTheme: SarakThemePreset = {
         catalogItemRadius: 0,
         // --- Card de Título ---
         cardTitleFontSize: { mob: 16, tab: 18, desk: 20 },
-        cardTitleColor: '#eafff1',
+        cardTitleColor: '#e9fba3',
 // 900: a opção 800 não existe neste token
         cardTitleFontWeight: '900',
         cardTitleLetterSpacing: 0.5,
@@ -136,7 +136,7 @@ export const cyberpunkneonTheme: SarakThemePreset = {
         modalBorderRadius: { mob: 0, tab: 0, desk: 0 },
         tooltipBg: 'var(--theme-surface)',
         tooltipRadius: 0,
-        tooltipTextColor: 'var(--color-theme-title, #f2f6fb)',
+        tooltipTextColor: '#d6ffe0',
         // contorno translúcido; no padrão do sistema era derivado da borda do tema
         tooltipBorderColor: 'var(--theme-border)',
         toastAccentWidth: 4,
@@ -172,10 +172,10 @@ export const cyberpunkneonTheme: SarakThemePreset = {
         textSmoothing: true,
 // brilho verde no H1 só no escuro; a contraparte zera (sombra de texto clara some sobre papel)
         textGlowIntensity: 0.35,
-        typeScaleMicro: 7,
-        typeScaleTiny: 8,
-        typeScale3xs: 9,
-        typeScale2xs: 10,
+        typeScaleMicro: 11,
+        typeScaleTiny: 11,
+        typeScale3xs: 11,
+        typeScale2xs: 11,
         typeScaleCaption: 12,
         trackingTight: 0.2,
         trackingSnug: 0.25,
@@ -246,7 +246,9 @@ export const cyberpunkneonTheme: SarakThemePreset = {
         accentColor: '#f9f871',
         surfaceColor: '#07110a',
         textureColor: '#00ff6a',
-        titleColor: '#eafff1',
+        titleColor: '#e9fba3',
+        subtitleColor: '#e3fcb5',
+        emphasisColor: '#f9f871',
         colorDepth: 1,
         colorVariation: 1,
 // concreto: o contraste não atravessa cadeia de var()
@@ -409,7 +411,7 @@ export const cyberpunkneonTheme: SarakThemePreset = {
         cardSpotlightOpacity: 0.1,
         cardShadow: 'none',
         imageCardOverlayOpacity: 0.6,
-        cardTitleColor: '#06210f',
+        cardTitleColor: '#464907',
         cardTitleIconGlow: 'rgba(0, 122, 51, 0.3)',
         // derivado da primária de propósito
         cardActionBtnPrimaryBg: 'var(--sarak-primary-color, #19e3f0)',
@@ -421,7 +423,7 @@ export const cyberpunkneonTheme: SarakThemePreset = {
         cardSearchTextFocusColor: '#06210f',
         modalOverlayColor: 'rgba(6, 33, 15, 0.4)',
         tooltipBg: 'var(--theme-surface)',
-        tooltipTextColor: 'var(--color-theme-title, #f2f6fb)',
+        tooltipTextColor: '#06210f',
         // contorno translúcido; no padrão do sistema era derivado da borda do tema
         tooltipBorderColor: 'var(--theme-border)',
         tableHeaderBg: 'rgba(0, 122, 51, 0.07)',
@@ -456,7 +458,9 @@ export const cyberpunkneonTheme: SarakThemePreset = {
         accentColor: '#7a6a00',
         surfaceColor: '#ffffff',
         textureColor: '#007a33',
-        titleColor: '#06210f',
+        titleColor: '#464907',
+        subtitleColor: '#333d09',
+        emphasisColor: '#7a6a00',
         colorBgModal: '#ffffff',
         cardBackgroundColor: '#ffffff',
         cardBorderColor: '#6f9a7e',

@@ -94,7 +94,7 @@ export const SarakBadge: React.FC<SarakBadgeProps> = ({
     ...props
 }: SarakBadgeProps): React.ReactElement => {
     const statusShape = showStatusShape ? STATUS_SHAPES[variant] : undefined;
-    const sizeStyle: React.CSSProperties = size === 'sm' ? { fontSize: 'var(--sarak-type-scale2xs, 10px)' } : {};
+    const sizeStyle: React.CSSProperties = size === 'sm' ? { fontSize: 'var(--sarak-type-scale2xs, 11px)' } : {};
     return (
         <span
             className={mergeSarakClasses(

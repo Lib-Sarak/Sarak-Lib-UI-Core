@@ -21,7 +21,7 @@ exports[`ThemePillarsList > matches snapshot 1`] = `
           >
             <div />
             <span
-              class="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--color-theme-title,#f2f6fb)]"
+              class="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--color-theme-title,CanvasText)]"
             >
               Cores (1)
             </span>
@@ -86,7 +86,7 @@ exports[`ThemePillarsList > matches snapshot 1`] = `
                 </svg>
               </div>
               <span
-                class="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#f2f6fb)]"
+                class="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--color-theme-title,CanvasText)]"
               >
                 Geral (1)
               </span>

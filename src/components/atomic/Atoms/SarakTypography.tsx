@@ -1,12 +1,12 @@
 import React from 'react';
 
 export type SarakTypographyVariant = 'h1' | 'h2' | 'h3' | 'body' | 'caption' | 'mono';
-export type SarakTypographyColor = 'main' | 'secondary' | 'muted';
+export type SarakTypographyColor = 'main' | 'secondary' | 'muted' | 'title' | 'subtitle' | 'emphasis';
 
 export interface SarakTypographyProps extends React.HTMLAttributes<HTMLElement> {
     /** Escala tipográfica (Spec typography — tokens `h1Size`/`h2Size`/etc). Default: `body`. */
     variant?: SarakTypographyVariant;
-    /** Cor de texto (`textColorMaster`/`textColorSecondary`/`textColorMuted`). Default: `main`. */
+    /** Papel de cor do texto. Títulos usam `title` por padrão; os demais usam `main`. */
     color?: SarakTypographyColor;
     /** Tag HTML a renderizar; sobrepõe o default semântico do `variant`. */
     as?: React.ElementType;
@@ -75,9 +75,12 @@ const variantStyle: Record<SarakTypographyVariant, React.CSSProperties> = {
 };
 
 const colorVar: Record<SarakTypographyColor, string> = {
-    main: 'var(--sarak-text-main, var(--theme-title, #f2f6fb))',
+    main: 'var(--sarak-text-main, var(--theme-text-primary, #f2f6fb))',
     secondary: 'var(--sarak-text-sec, rgba(242,246,251,0.72))',
     muted: 'var(--sarak-text-muted, var(--theme-muted, rgba(242,246,251,0.55)))',
+    title: 'var(--theme-title, var(--sarak-title-color, #f2f6fb))',
+    subtitle: 'var(--sarak-subtitle-color, var(--theme-subtitle, #f2f6fb))',
+    emphasis: 'var(--sarak-emphasis-color, var(--theme-emphasis, #19e3f0))',
 };
 
 /**
@@ -88,7 +91,7 @@ const colorVar: Record<SarakTypographyColor, string> = {
  */
 export const SarakTypography: React.FC<SarakTypographyProps> = ({
     variant = 'body',
-    color = 'main',
+    color,
     as,
     transform,
     className = '',
@@ -99,10 +102,11 @@ export const SarakTypography: React.FC<SarakTypographyProps> = ({
 }) => {
     const Tag = as ?? DEFAULT_TAG[variant];
     const isHeading = variant === 'h1' || variant === 'h2' || variant === 'h3';
+    const resolvedColor = color ?? (isHeading ? 'title' : 'main');
 
     const computedStyle: React.CSSProperties = {
         margin: 0,
-        color: colorVar[color],
+        color: colorVar[resolvedColor],
         textTransform: transform ?? (isHeading ? 'var(--sarak-h-transform, none)' as React.CSSProperties['textTransform'] : undefined),
         ...variantStyle[variant],
         ...style,

@@ -221,6 +221,7 @@ interface SarakDesignTokens {
     dotGridDotOffset: number;
     dotGridDotSize: number;
     dotGridTileSize: number;
+    emphasisColor: string;
     emptyStateCaptionMaxWidth: number;
     emptyStateOrbBlur: number;
     emptyStateOrbInner: number;
@@ -418,6 +419,7 @@ interface SarakDesignTokens {
     statusInfoColor: string;
     statusSuccessColor: string;
     statusWarningColor: string;
+    subtitleColor: string;
     surfaceColor: string;
     surfaceIntensity: number;
     surfaceMaterial: string;
@@ -963,8 +965,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "8.0.0-rc.2";
-    readonly baseCommitShort: "f7e9218";
-    readonly builtAt: "2026-10-24T01:04:33.032Z";
+    readonly baseCommitShort: "e90ecab";
+    readonly builtAt: "2026-10-24T15:08:20.393Z";
 };
 
 interface SarakDesignScopeProps {
@@ -1617,11 +1619,11 @@ declare const sarakWarnOnIncompleteTheme: (design: SarakDesignState | Record<str
 declare const SarakCustomizationPanel: React__default.FC;
 
 type SarakTypographyVariant = 'h1' | 'h2' | 'h3' | 'body' | 'caption' | 'mono';
-type SarakTypographyColor = 'main' | 'secondary' | 'muted';
+type SarakTypographyColor = 'main' | 'secondary' | 'muted' | 'title' | 'subtitle' | 'emphasis';
 interface SarakTypographyProps extends React__default.HTMLAttributes<HTMLElement> {
     /** Escala tipográfica (Spec typography — tokens `h1Size`/`h2Size`/etc). Default: `body`. */
     variant?: SarakTypographyVariant;
-    /** Cor de texto (`textColorMaster`/`textColorSecondary`/`textColorMuted`). Default: `main`. */
+    /** Papel de cor do texto. Títulos usam `title` por padrão; os demais usam `main`. */
     color?: SarakTypographyColor;
     /** Tag HTML a renderizar; sobrepõe o default semântico do `variant`. */
     as?: React__default.ElementType;

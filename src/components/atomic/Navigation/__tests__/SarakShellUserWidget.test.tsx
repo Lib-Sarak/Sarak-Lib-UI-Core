@@ -18,8 +18,12 @@ describe('SarakShellUserWidget — identidade genérica', () => {
     it.each(['vertical', 'horizontal'] as const)('exibe nome e papel em %s', (variant) => {
         renderWidget({ name: 'Ana Lima', role: 'Finance Manager' }, variant);
 
-        expect(screen.getByText('Ana Lima')).toBeInTheDocument();
-        expect(screen.getByText('Finance Manager')).toBeInTheDocument();
+        const name = screen.getByText('Ana Lima');
+        const role = screen.getByText('Finance Manager');
+        expect(name).toBeInTheDocument();
+        expect(name.className).toContain('theme-title');
+        expect(role).toBeInTheDocument();
+        expect(role.className).toContain('--sarak-subtitle-color');
         expect(screen.queryByText(/Master|Admin|\d+/)).not.toBeInTheDocument();
     });
 

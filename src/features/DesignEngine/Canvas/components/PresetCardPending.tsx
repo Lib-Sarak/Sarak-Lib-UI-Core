@@ -28,7 +28,7 @@ export const PresetCardPending: React.FC<PresetCardPendingProps> = ({ entry, cur
             </div>
             <div className="p-4 flex flex-col gap-1">
                 <span className="text-xs font-black uppercase tracking-widest text-theme-text">{entry.name}</span>
-                <span className="text-[var(--sarak-type-scale3xs,9px)] text-theme-muted line-clamp-2">{entry.description}</span>
+                <span className="text-[var(--sarak-type-scale3xs,11px)] text-theme-muted line-clamp-2">{entry.description}</span>
             </div>
         </button>
     );

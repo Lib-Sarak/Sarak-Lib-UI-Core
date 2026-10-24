@@ -81,7 +81,7 @@ const SocialButtonIcon = ({ icon, hideLabel, variant }: SocialButtonIconProps): 
 );
 
 const SocialButtonLabel = ({ label }: { label: string }): React.ReactElement => (
-    <span className="font-black uppercase transition-all" style={{ fontSize: 'var(--sarak-type-scale2xs, 10px)', letterSpacing: 'var(--sarak-tracking-snug, 0.25em)' }}>
+    <span className="font-black uppercase transition-all" style={{ fontSize: 'var(--sarak-type-scale2xs, 11px)', letterSpacing: 'var(--sarak-tracking-snug, 0.25em)' }}>
         {label}
     </span>
 );

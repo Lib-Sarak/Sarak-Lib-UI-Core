@@ -302,7 +302,7 @@ export const CardSchema: ComponentSchema = {
             usage: 'Pinta o fundo do cabeçalho de `SarakCard.Header`; transparente funde o cabeçalho ao corpo do cartão.',
             description: 'Cor de fundo da seção de cabeçalho do card — transparente por padrão, deixando o cabeçalho se misturar ao corpo; um tom sutilmente diferente separa visualmente o título das demais informações. Vale para a peça `SarakCard.Header`.',
             axis: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.03)',
+            defaultValue: 'transparent',
             cssVars: ['--sarak-card-header-bg']
         },
         {
@@ -315,7 +315,7 @@ export const CardSchema: ComponentSchema = {
             interactsWith: ['cardBorderWidth'],
             description: 'Cor da linha divisória na base do cabeçalho do card, separando-o do corpo — transparente por padrão (sem linha). Vale para a peça `SarakCard.Header`.',
             axis: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.06)',
+            defaultValue: 'transparent',
             cssVars: ['--sarak-card-header-border']
         },
         {

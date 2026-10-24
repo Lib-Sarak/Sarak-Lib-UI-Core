@@ -9,6 +9,9 @@ import { SarakSearchCard } from '../SarakSearchCard';
 import { SarakTitleCard } from '../SarakTitleCard';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 import { CardTitleSchema } from '../../../../core/Design/schema/card-title';
+import { CardSchema } from '../../../../core/Design/schema/cards';
+import { CARD_PRESETS } from '../../../../core/Design/presets/components/cards';
+import { INPUT_PRESETS } from '../../../../core/Design/presets/components/inputs';
 import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
 import { renderHook } from '@testing-library/react';
 
@@ -27,6 +30,26 @@ describe('cabeçalho e rodapé do cartão', () => {
         expect(header?.className).toContain('var(--sarak-card-header-bg,transparent)');
         expect(header?.className).toContain('var(--sarak-card-header-border,transparent)');
         expect(header?.className).toContain('var(--sarak-card-header-padding,12px)');
+        expect(header?.className).toContain('[&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))]');
+    });
+
+    it('o fundo e a linha do cabeçalho ficam transparentes quando o tema não declara os tokens', () => {
+        const headerBg = CardSchema.tokens.find((token) => token.id === 'cardHeaderBg');
+        const headerBorder = CardSchema.tokens.find((token) => token.id === 'cardHeaderBorder');
+        expect(headerBg?.defaultValue).toBe('transparent');
+        expect(headerBorder?.defaultValue).toBe('transparent');
+    });
+
+    it('mantém o degrau de título de cartão entre 11 e 28 px, abaixo do h2 padrão', () => {
+        const token = CardTitleSchema.tokens.find((item) => item.id === 'cardTitleFontSize');
+        expect(token?.constraints).toMatchObject({ min: 11, max: 28 });
+    });
+
+    it('reduz títulos descendentes ao degrau tipográfico de título de cartão', () => {
+        render(<SarakCardHeader><h2 className="text-2xl">Título</h2></SarakCardHeader>);
+        expect(screen.getByRole('heading', { level: 2 }).className).toBe('text-2xl');
+        expect(screen.getByRole('heading', { level: 2 }).parentElement?.className)
+            .toContain('[&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))]');
     });
 
     it('o rodapé lê fundo e linha divisória dos tokens', () => {
@@ -41,6 +64,17 @@ describe('cabeçalho e rodapé do cartão', () => {
         const header = screen.getByText('Título').closest('header');
         expect(header).toHaveClass('bg-red-500');
         expect(header?.className).not.toContain('--sarak-card-header-bg');
+    });
+});
+
+describe('presets de destaque sem semântica de título', () => {
+    it('usa emphasisColor nos contornos e sombras dos presets de alto contraste', () => {
+        const cardPreset = CARD_PRESETS.find((preset) => preset.id === 'card-industrial-brutalist');
+        const inputPreset = INPUT_PRESETS.find((preset) => preset.id === 'input-high-contrast');
+
+        expect(cardPreset?.design.cardBorderColor).toContain('--sarak-emphasis-color');
+        expect(cardPreset?.design.cardShadow).toContain('--sarak-emphasis-color');
+        expect(inputPreset?.design.inputBorderColor).toContain('--sarak-emphasis-color');
     });
 });
 

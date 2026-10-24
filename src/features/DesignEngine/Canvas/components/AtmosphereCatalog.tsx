@@ -21,14 +21,14 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
                 <div className="flex items-center gap-2 p-1 bg-theme-body/20 rounded-xl border border-theme-border">
                     <button
                         onClick={() => setActiveTab('media')}
-                        className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'media' ? 'bg-theme-primary text-theme-text shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
+                        className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'media' ? 'bg-theme-primary text-theme-text shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
                     >
                         <Video size={12} />
                         Atmosferas
                     </button>
                     <button
                         onClick={() => setActiveTab('textures')}
-                        className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'textures' ? 'bg-theme-primary text-theme-text shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
+                        className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'textures' ? 'bg-theme-primary text-theme-text shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
                     >
                         <Grid size={12} />
                         Texturas
@@ -36,7 +36,7 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
                 </div>
 
                 <div className="flex items-center gap-3 px-4 py-2 bg-theme-body/20 rounded-xl border border-theme-border">
-                    <span className="text-[var(--sarak-type-scale2xs,10px)] font-black text-theme-text uppercase tracking-widest">Opacidade</span>
+                    <span className="text-[var(--sarak-type-scale2xs,11px)] font-black text-theme-text uppercase tracking-widest">Opacidade</span>
                     <input
                         key={activeTab}
                         type="range"
@@ -107,10 +107,10 @@ const AtmospherePresetPreview = ({ preset, index, onApply, currentMode }: { pres
 
                 <div className="absolute bottom-0 left-0 w-full p-6 z-20">
                     <div className="flex items-center gap-3 mb-2">
-                        {isVideo && <span className="px-2 py-1 rounded bg-[var(--sarak-status-info-color,#3b82f6)]/20 border border-[var(--sarak-status-info-color,#3b82f6)]/50 text-[var(--sarak-status-info-color,#3b82f6)] text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md">Live Media</span>}
-                        {isImage && <span className="px-2 py-1 rounded bg-[var(--sarak-secondary-color,#7c5cff)]/20 border border-[var(--sarak-secondary-color,#7c5cff)]/50 text-[var(--sarak-secondary-color,#7c5cff)] text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md">Static Image</span>}
-                        {hasGeneratedAtmosphere && <span className="px-2 py-1 rounded bg-[var(--sarak-status-success-color,#10b981)]/20 border border-[var(--sarak-status-success-color,#10b981)]/50 text-[var(--sarak-status-success-color,#10b981)] text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md">CSS Atmosphere</span>}
-                        {!isVideo && !isImage && !hasGeneratedAtmosphere && <span className="px-2 py-1 rounded bg-[var(--text-muted,rgba(242,246,251,0.55))]/20 border border-[var(--border-color,rgba(255,255,255,0.09))]/50 text-[var(--text-muted,rgba(242,246,251,0.55))] text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md">Solid Void</span>}
+                        {isVideo && <span className="px-2 py-1 rounded bg-[var(--sarak-status-info-color,#3b82f6)]/20 border border-[var(--sarak-status-info-color,#3b82f6)]/50 text-[var(--sarak-status-info-color,#3b82f6)] text-[var(--sarak-type-scale2xs,11px)] font-bold uppercase tracking-wider backdrop-blur-md">Live Media</span>}
+                        {isImage && <span className="px-2 py-1 rounded bg-[var(--sarak-secondary-color,#7c5cff)]/20 border border-[var(--sarak-secondary-color,#7c5cff)]/50 text-[var(--sarak-secondary-color,#7c5cff)] text-[var(--sarak-type-scale2xs,11px)] font-bold uppercase tracking-wider backdrop-blur-md">Static Image</span>}
+                        {hasGeneratedAtmosphere && <span className="px-2 py-1 rounded bg-[var(--sarak-status-success-color,#10b981)]/20 border border-[var(--sarak-status-success-color,#10b981)]/50 text-[var(--sarak-status-success-color,#10b981)] text-[var(--sarak-type-scale2xs,11px)] font-bold uppercase tracking-wider backdrop-blur-md">CSS Atmosphere</span>}
+                        {!isVideo && !isImage && !hasGeneratedAtmosphere && <span className="px-2 py-1 rounded bg-[var(--text-muted,rgba(242,246,251,0.55))]/20 border border-[var(--border-color,rgba(255,255,255,0.09))]/50 text-[var(--text-muted,rgba(242,246,251,0.55))] text-[var(--sarak-type-scale2xs,11px)] font-bold uppercase tracking-wider backdrop-blur-md">Solid Void</span>}
                     </div>
                     <h3 className="text-xl font-black text-theme-text uppercase tracking-wider drop-shadow-lg">{preset.name}</h3>
                     <p className="text-sm text-theme-text/70 mt-1 max-w-lg drop-shadow-md">{preset.description}</p>

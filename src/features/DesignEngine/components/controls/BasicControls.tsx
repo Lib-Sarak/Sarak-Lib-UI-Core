@@ -35,7 +35,7 @@ export const SliderControl: React.FC<SliderControlProps> = ({ label, description
                     {label}
                     <HelpTooltip label={label} description={description} />
                 </span>
-                <span className="text-[var(--sarak-type-scale2xs,10px)] font-mono text-[var(--theme-primary)]">{localValue}{suffix || unit}</span>
+                    <span className="text-[var(--sarak-type-scale2xs,11px)] font-mono text-[var(--theme-primary)]">{localValue}{suffix || unit}</span>
             </div>
             <SarakSlider
                 min={min}

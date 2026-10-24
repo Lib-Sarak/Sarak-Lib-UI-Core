@@ -126,8 +126,8 @@ describe('resolveChain', () => {
 });
 
 describe('PAIRS — o contrato da lista de pares reais (R31, veredito §11 da plan-24)', () => {
-  it('tem exatamente 76 pares (36 originais + 32 que os componentes desenham + 8 do grupo D)', () => {
-    expect(PAIRS.length).toBe(76);
+  it('tem exatamente 82 pares (36 originais + 32 que os componentes desenham + 8 do grupo D + 6 de subtítulo/ênfase)', () => {
+    expect(PAIRS.length).toBe(82);
   });
 
   describe('ícone do campo (inputIconColor × fundo do campo)', () => {

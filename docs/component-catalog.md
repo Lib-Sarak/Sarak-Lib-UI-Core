@@ -1388,7 +1388,7 @@ Props (`SarakTypographyProps` — `src/components/atomic/Atoms/SarakTypography.t
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `variant` | `SarakTypographyVariant` | não | Escala tipográfica (Spec typography — tokens `h1Size`/`h2Size`/etc). Default: `body`. |
-| `color` | `SarakTypographyColor` | não | Cor de texto (`textColorMaster`/`textColorSecondary`/`textColorMuted`). Default: `main`. |
+| `color` | `SarakTypographyColor` | não | Papel de cor do texto. Títulos usam `title` por padrão; os demais usam `main`. |
 | `as` | `React.ElementType` | não | Tag HTML a renderizar; sobrepõe o default semântico do `variant`. |
 | `transform` | `'none' \| 'uppercase' \| 'capitalize'` | não | Sobrepõe `--sarak-h-transform` só para esta instância. |
 | `content` | `string` | não | Texto via prop, para quando a origem é uma string e não nós filhos (ex.: dado vindo de uma API). Tem prioridade sobre `children` quando ambos são passados. |

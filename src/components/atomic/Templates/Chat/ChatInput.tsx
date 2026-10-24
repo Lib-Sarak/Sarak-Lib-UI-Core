@@ -55,7 +55,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             {attachments.map((att, i) => (
               <div key={i} className="flex items-center bg-[var(--sarak-primary-color-bg,rgba(25,227,240,0.15))] border border-[var(--border-color,rgba(255,255,255,0.09))] rounded-[var(--sarak-chat-radius,12px)] relative group/att" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', padding: 'var(--sarak-layout-gap-sm, 8px) calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>
                 <SarakIcon name="File" size={14} className="text-[var(--sarak-primary-color,#19e3f0)]" />
-                <span className="text-xs font-medium text-[var(--color-theme-title,#f2f6fb)] max-w-[var(--sarak-chat-attachment-name-max-width,150px)] truncate">{att.name}</span>
+                <span className="text-xs font-medium text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))] max-w-[var(--sarak-chat-attachment-name-max-width,150px)] truncate">{att.name}</span>
                 <SarakIconButton
                   onClick={() => removeAttachment(i)}
                   icon={<SarakIcon name="X" size={12} />}
@@ -83,7 +83,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
                <SarakIcon name="Cpu" size={18} className="text-[var(--sarak-primary-color,#19e3f0)]" />
                <div className="flex" style={modelLabelStack.style}>
                   <span className="text-2xs text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase font-bold tracking-tight leading-none" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>Modelo Manual Ativo</span>
-                  <span className="text-xs font-semibold text-[var(--color-theme-title,#f2f6fb)]">{selectedRoute?.display_name || "Selecionar..."}</span>
+                  <span className="text-xs font-semibold text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]">{selectedRoute?.display_name || "Selecionar..."}</span>
                </div>
                <SarakIcon name="ChevronDown" size={14} className={`text-[var(--text-muted,rgba(242,246,251,0.55))] transition-transform ${showModelPicker ? 'rotate-180' : ''}`} />
             </SarakButton>

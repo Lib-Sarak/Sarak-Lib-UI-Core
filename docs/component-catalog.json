@@ -4178,7 +4178,7 @@
           "name": "color",
           "type": "SarakTypographyColor",
           "optional": true,
-          "doc": "Cor de texto (`textColorMaster`/`textColorSecondary`/`textColorMuted`). Default: `main`."
+          "doc": "Papel de cor do texto. Títulos usam `title` por padrão; os demais usam `main`."
         },
         {
           "name": "as",
