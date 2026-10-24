@@ -11,7 +11,7 @@ createRoot(rootElement).render(
         initialTheme="sarak-sovereign"
         options={{ fonts: 'none', preferences: { defaultColorMode: 'light' } }}
     >
-        <div style={{ width: '1600px', height: '900px' }}>
+        <div data-testid="plan-122-panel-host" style={{ width: '1600px', height: '900px' }}>
             <CustomizationPanel />
         </div>
     </SarakUIProvider>,

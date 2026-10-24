@@ -223,6 +223,7 @@
     "tableZebraStriping",
     "tableBorderRadius",
     "inputPadding",
+    "inputPaddingHorizontal",
     "inputBorderType",
     "inputBackdropBlur",
     "inputShadow",

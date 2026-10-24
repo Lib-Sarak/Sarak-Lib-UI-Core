@@ -1,195 +1,86 @@
-import { SarakIcon } from "../Icon/SarakIcon";
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence, useIsPresent } from 'framer-motion';
-
+import React, { useEffect, useId, useState, type Dispatch, type SetStateAction } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
-import { useLibraryText } from '../../../core/i18n/useLibraryText';
-import { SarakInput } from './SarakInput';
-import { useMotionTokens } from '../hooks/useMotionTokens';
+import { SarakSearchDialog } from './internal/SarakSearchDialog';
+import { useSearchKeyboardNavigation } from './internal/useSearchKeyboardNavigation';
 
-/** Um resultado fornecido pelo aplicativo ao palette. */
 export interface SarakSearchItem {
-    /** Com `onSelect`, identifica o destino do item (a rota); na busca embutida, também vira o `href` do resultado. */
     id: string;
     label: string;
     category?: string;
+    icon?: React.ReactNode;
 }
 
 export interface SarakSearchProps {
     isOpen: boolean;
     onClose: () => void;
-    /** Itens da busca, fornecidos pela navegação do aplicativo. */
     items: SarakSearchItem[];
-    /** Seleciona um item, por clique ou teclado (`Enter`/`Espaço`). Sem esta prop, os
-     * resultados não são acionáveis — o comportamento de sempre. */
     onSelect?: (id: string) => void;
 }
 
-/** Moldura da paleta; na saída (`motionEaseIn`) ela ainda está na página e não pode segurar o ponteiro. */
-const SearchFrame = ({ children }: { children: React.ReactNode }): React.ReactElement => {
-    const isPresent = useIsPresent();
-    return (
-        <div className={`fixed inset-0 z-[calc(var(--sarak-z-sidebar,500)_+_200)] flex items-start justify-center pt-[10vh]${isPresent ? '' : ' pointer-events-none'}`} style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)' }}>
-            {children}
-        </div>
-    );
-};
+export interface SearchPaletteState {
+    query: string;
+    setQuery: Dispatch<SetStateAction<string>>;
+    filteredItems: SarakSearchItem[];
+    listboxId: string;
+    getOptionId: (index: number) => string;
+    activeIndex: number;
+    setActiveIndex: Dispatch<SetStateAction<number>>;
+    handleKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+    selectItem: (id: string) => void;
+}
 
-/**
- * SarakSearch (v6.0 Command Palette)
- *
- * Global search component integrated into the Sarak ecosystem.
- */
-export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose, items, onSelect }) => {
-    // R34 — átomo renderiza sem Provider: `useSarakUIOptional` nunca lança.
-    const { design } = useSarakUIOptional() || {};
-    const t = useLibraryText();
-    const { easeIn, durations } = useMotionTokens();
-    const { searchStyle, systemName } = design || {};
+const getPalettePanelStyle = (searchStyle?: string): React.CSSProperties => ({
+    maxWidth: 'var(--sarak-search-dropdown-width, 400px)',
+    marginTop: 'calc(' + (searchStyle === 'minimal' ? '5vh' : '10vh') + ' + var(--sarak-search-dropdown-gap, 0.5rem))',
+});
+
+const useSearchPalette = ({ isOpen, onClose, items, onSelect }: SarakSearchProps): SearchPaletteState => {
     const [query, setQuery] = useState('');
-
-    // Sem ref: o SarakInput (React.FC simples, não forwardRef) não tem como repassar
-    // um DOM node. Como `if (!isOpen) return null` desmonta o <input> quando fechado,
-    // ele é recriado do zero a cada abertura — `autoFocus` nativo faz o mesmo que o
-    // `inputRef.current?.focus()` imperativo fazia, sem precisar de ref.
-    useEffect(() => {
-        if (isOpen) {
-            const handleEsc = (e: KeyboardEvent) => {
-                if (e.key === 'Escape') onClose();
-            };
-            window.addEventListener('keydown', handleEsc);
-            return () => window.removeEventListener('keydown', handleEsc);
-        }
-    }, [isOpen, onClose]);
-
-    const filteredItems = items.filter(m =>
-        m.label.toLowerCase().includes(query.toLowerCase()) ||
-        m.id.toLowerCase().includes(query.toLowerCase())
+    const listboxId = 'sarak-search-results-' + useId();
+    const getOptionId = (index: number): string => listboxId + '-option-' + index;
+    const filteredItems = items.filter((item) =>
+        item.label.toLowerCase().includes(query.toLowerCase()) ||
+        item.id.toLowerCase().includes(query.toLowerCase())
     );
-
-    const selectItem = (id: string) => {
+    const selectActiveOption = (index: number): void => {
+        document.getElementById(getOptionId(index))?.click();
+    };
+    const keyboardNavigation = useSearchKeyboardNavigation({
+        query,
+        resultCount: filteredItems.length,
+        onSelectActive: selectActiveOption,
+    });
+    const selectItem = (id: string): void => {
         onSelect?.(id);
         onClose();
     };
 
-    // O `AnimatePresence` fica fora do `isOpen`: só assim a paleta permanece até a saída (`exit`) terminar.
+    useEffect(() => {
+        if (!isOpen) return;
+        const handleEsc = (event: KeyboardEvent): void => {
+            if (event.key === 'Escape') onClose();
+        };
+        window.addEventListener('keydown', handleEsc);
+        return () => window.removeEventListener('keydown', handleEsc);
+    }, [isOpen, onClose]);
+
+    return { query, setQuery, filteredItems, listboxId, getOptionId, ...keyboardNavigation, selectItem };
+};
+
+export const SarakSearch = (props: SarakSearchProps): React.ReactElement => {
+    const design = useSarakUIOptional()?.design;
+    const state = useSearchPalette(props);
+
     return (
         <AnimatePresence>
-            {isOpen && (
-            <SearchFrame key="search">
-                {/* Backdrop */}
-                <motion.div 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0, transition: { ease: easeIn, duration: durations.fast } }}
-                    onClick={onClose}
-                    className={`absolute inset-0 bg-[var(--color-theme-card,#101622)]/${searchStyle === 'minimal' ? '20' : '60'} backdrop-blur-[var(--sarak-search-backdrop-blur,8px)]`}
+            {props.isOpen && (
+                <SarakSearchDialog
+                    onClose={props.onClose}
+                    onSelect={props.onSelect}
+                    state={state}
+                    panelStyle={getPalettePanelStyle(design?.searchStyle)}
                 />
-
-                {/* Palette Container — o "dropdown de busca" a que `searchDropdownGap`/
-                    `searchDropdownWidth` (Spec 05 §2.4) se referem: aqui não há um
-                    input inline com painel abaixo (é um command palette em overlay),
-                    então o equivalente é a distância do topo e a largura do próprio
-                    painel. */}
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95, y: -20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: -20, transition: { ease: easeIn, duration: durations.fast } }}
-                    className="relative w-full bg-[var(--color-theme-card,#101622)] border border-[var(--border-color,rgba(255,255,255,0.09))] rounded-[var(--radius-theme)] shadow-[var(--dynamic-shadow)] overflow-hidden"
-                    style={{
-                        maxWidth: 'var(--sarak-search-dropdown-width, 400px)',
-                        marginTop: `calc(${searchStyle === 'minimal' ? '5vh' : '10vh'} + var(--sarak-search-dropdown-gap, 0.5rem))`,
-                    }}
-                >
-                    {/* Input Area */}
-                    <div
-                        className="flex items-center border-b border-[var(--border-color,rgba(255,255,255,0.09))] bg-[var(--color-theme-title,#f2f6fb)]/[0.02]"
-                        style={{ gap: 'var(--sarak-layout-gap-md,16px)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 1.25) var(--sarak-layout-gap-lg, 24px)' }}
-                    >
-                        <SarakIcon name="Search" className="w-5 h-5 text-[var(--text-muted,rgba(242,246,251,0.55))]" />
-                        <SarakInput
-                            type="search"
-                            enterKeyHint="search"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            placeholder={t('searchPlaceholder')}
-                            autoFocus
-                            className="flex-1"
-                            // `className` do SarakInput cai no wrapper (SarakFormGroup), não no
-                            // <input> real — cor/fundo/tamanho de fonte do campo em si só chegam
-                            // via `style`, que o átomo repassa direto. `border` do átomo é sempre
-                            // reafirmado por `getInputStyles` (não dá pra zerar por completo);
-                            // o campo ganha uma borda visível que a busca não tinha antes — ver
-                            // achado no resumo da plan-22.
-                            style={{ background: 'transparent', fontSize: 'var(--sarak-type-scale-xl, 20px)' }}
-                        />
-                        <div
-                            className="flex items-center rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--sarak-primary-color,#19e3f0)]/10 border border-[var(--sarak-primary-color,#19e3f0)]/20 text-2xs text-[var(--sarak-primary-color,#19e3f0)] font-bold uppercase tracking-widest"
-                            style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.25) var(--sarak-layout-gap-sm, 8px)' }}
-                        >
-                            <span style={{ fontSize: 'var(--sarak-type-scale-caption, 12px)' }}><SarakIcon name="Command" size={10} /></span>
-                            <span>K</span>
-                        </div>
-                    </div>
-
-                    {/* Results Area */}
-                    <div className="max-h-[60vh] overflow-y-auto custom-scrollbar" style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                        {filteredItems.length > 0 ? (
-                            <div style={{ paddingTop: 'var(--sarak-layout-gap-sm, 8px)', paddingBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                                <h4 className="text-2xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))]" style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)', marginBottom: 'var(--sarak-layout-gap-sm, 8px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>{t('searchAvailableToolsHeading')}</h4>
-                                {filteredItems.map(item => {
-                                    // Acionável só quando há `onSelect` — sem callback, o resultado
-                                    // fica exatamente como sempre foi (nenhum manipulador).
-                                    const Row: React.ElementType = onSelect ? 'button' : 'div';
-                                    return (
-                                        <Row
-                                            key={item.id}
-                                            type={onSelect ? 'button' : undefined}
-                                            onClick={onSelect ? () => selectItem(item.id) : undefined}
-                                            className="group h-14 flex items-center justify-between rounded-[calc(var(--radius-theme)*0.8)] hover:bg-[var(--sarak-primary-color,#19e3f0)]/5 transition-all cursor-pointer w-full text-left"
-                                            style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)' }}
-                                        >
-                                            <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
-                                                <div className="w-9 h-9 rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--color-theme-card,#101622)] flex items-center justify-center text-[var(--text-muted,rgba(242,246,251,0.55))] group-hover:text-[var(--sarak-primary-color,#19e3f0)] group-hover:bg-[var(--sarak-primary-color,#19e3f0)]/10 transition-all border border-[var(--border-color,rgba(255,255,255,0.09))]">
-                                                    <SarakIcon name="Command" size={16} />
-                                                </div>
-                                                <div className="flex" style={{ flexDirection: 'column' }}>
-                                                    <span className="text-sm font-bold text-[var(--color-theme-title,#f2f6fb)]/80 group-hover:text-[var(--sarak-primary-color,#19e3f0)]">{item.label}</span>
-                                                    <span className="text-2xs text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase tracking-widest">{item.category || t('genericModuleLabel')}</span>
-                                                </div>
-                                            </div>
-                                            <SarakIcon name="ArrowRight" className="w-4 h-4 text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
-                                        </Row>
-                                    );
-                                })}
-                            </div>
-                        ) : (
-                            <div className="flex items-center justify-center text-center opacity-20" style={{ flexDirection: 'column', paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>
-                                <SarakIcon name="Search" className="w-12 h-12 text-[var(--color-theme-title,#f2f6fb)]" style={{ marginBottom: 'var(--sarak-layout-gap-md,16px)' }} />
-                                <span className="text-sm font-black uppercase tracking-widest text-[var(--color-theme-title,#f2f6fb)]">{t('searchNoResultsFor', { query })}</span>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Footer Area */}
-                    <div
-                        className="bg-[var(--color-theme-card,#101622)]/40 border-t border-[var(--border-color,rgba(255,255,255,0.09))] flex items-center justify-between"
-                        style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.75) var(--sarak-layout-gap-lg, 24px)' }}
-                    >
-                        <div className="flex" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
-                            <div className="flex items-center text-2xs font-bold text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase tracking-widest" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>
-                                <span className="rounded bg-[var(--color-theme-card,#101622)] border border-[var(--border-color,rgba(255,255,255,0.09))]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.125) calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>ESC</span>
-                                <span>{t('searchCloseHint')}</span>
-                            </div>
-                            <div className="flex items-center text-2xs font-bold text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase tracking-widest" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>
-                                <span className="rounded bg-[var(--color-theme-card,#101622)] border border-[var(--border-color,rgba(255,255,255,0.09))]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.125) calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>↑↓</span>
-                                <span>{t('searchNavigateHint')}</span>
-                            </div>
-                        </div>
-                        <span className="text-2xs font-black uppercase tracking-widest text-[var(--text-muted,rgba(242,246,251,0.55))] italic">{systemName ? t('searchEngineBrandedLabel', { systemName }) : t('searchEngineLabel')}</span>
-                    </div>
-                </motion.div>
-            </SearchFrame>
             )}
         </AnimatePresence>
     );

@@ -2797,37 +2797,37 @@
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": "Rótulo visual ligado ao campo pelo `id` (gerado quando não é informado). Sem ele, não há rótulo visível; forneça outro nome acessível se necessário."
+          "doc": ""
         },
         {
           "name": "icon",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": "Ícone do campo; sua posição vem do layout do tema e ele não recebe clique. Quando definido, prevalece sobre `leftIcon` e `rightIcon`; sem os três, não há ícone."
+          "doc": ""
         },
         {
           "name": "leftIcon",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": "Ícone do lado esquerdo, usado somente quando `icon` não é fornecido. Junto com `rightIcon`, os dois aparecem, cada um no seu lado. Sozinho, segue a posição do layout do tema."
+          "doc": ""
         },
         {
           "name": "rightIcon",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": "Ícone do lado direito, usado somente quando `icon` não é fornecido. Aceita clique (por exemplo, o botão de mostrar a senha). Junto com `leftIcon`, fica à direita; sozinho, segue a posição do layout do tema."
+          "doc": ""
         },
         {
           "name": "error",
           "type": "string",
           "optional": true,
-          "doc": "Mensagem abaixo do campo, ligada por `aria-describedby`, que também marca `aria-invalid`. Sem a prop, não há mensagem nem estado inválido."
+          "doc": ""
         },
         {
           "name": "fullWidth",
           "type": "boolean",
           "optional": true,
-          "doc": "Faz o grupo do campo ocupar toda a largura disponível. Omitida ou `false`, a largura fica a cargo do layout pai."
+          "doc": ""
         }
       ]
     },
@@ -3738,13 +3738,13 @@
           "name": "items",
           "type": "SarakSearchItem[]",
           "optional": false,
-          "doc": "Itens da busca, fornecidos pela navegação do aplicativo."
+          "doc": ""
         },
         {
           "name": "onSelect",
           "type": "(id: string) => void",
           "optional": true,
-          "doc": "Seleciona um item, por clique ou teclado (`Enter`/`Espaço`). Sem esta prop, os resultados não são acionáveis — o comportamento de sempre."
+          "doc": ""
         }
       ]
     },
@@ -3895,25 +3895,25 @@
           "name": "variant",
           "type": "'bar' | 'icon'",
           "optional": true,
-          "doc": "Escolhe a barra de busca ou o gatilho de menu; omitida, usa `bar`, que fica oculto abaixo do breakpoint `md`."
+          "doc": ""
         },
         {
           "name": "items",
           "type": "SarakSearchItem[]",
           "optional": true,
-          "doc": "Resultados fornecidos pelo aplicativo."
+          "doc": ""
         },
         {
           "name": "onClick",
           "type": "() => void",
           "optional": false,
-          "doc": "Callback do gatilho `icon`; obrigatório."
+          "doc": ""
         },
         {
           "name": "onSelect",
           "type": "(item: SarakSearchItem) => void",
           "optional": true,
-          "doc": "Seleciona um resultado da variante `bar`."
+          "doc": ""
         }
       ]
     },
@@ -5506,6 +5506,8 @@
       "--sarak-input-icon-color",
       "--sarak-input-icon-position",
       "--sarak-input-padding",
+      "--sarak-input-padding-horizontal",
+      "--sarak-input-padding-vertical",
       "--sarak-input-shadow",
       "--sarak-input-text-color",
       "--sarak-is-auto-hide-enabled",
@@ -5973,7 +5975,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 400,
+    "count": 401,
     "groups": {
       "global": "0. Configurações Globais",
       "branding": "Identidade Visual",
@@ -8445,10 +8447,20 @@
         "type": "number",
         "responsive": false,
         "group": "inputs",
-        "label": "Espaçamento Interno (Y)",
+        "label": "Espaçamento Interno Vertical (Y)",
         "kind": "functional",
         "modeDependent": false,
-        "usage": "Controla o espaço vertical interno dos campos e, com isso, sua altura e área de toque."
+        "usage": "Controla o espaço interno vertical dos campos e, com isso, sua altura e área de toque."
+      },
+      {
+        "id": "inputPaddingHorizontal",
+        "type": "number",
+        "responsive": false,
+        "group": "inputs",
+        "label": "Espaçamento Interno Horizontal (X)",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Controla o espaço interno horizontal padrão do SarakInput, afastando o texto das bordas laterais."
       },
       {
         "id": "inputShadow",
@@ -10647,6 +10659,6 @@
   "kitStamp": {
     "libVersion": "8.0.0-rc.2",
     "kitSchemaVersion": 1,
-    "kitHash": "886bb661eaf4"
+    "kitHash": "cdc0d415ca0b"
   }
 }

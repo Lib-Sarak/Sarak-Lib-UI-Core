@@ -28,6 +28,38 @@ describe('SarakInput', () => {
         // — presente aqui prova que o valor REAL do tema atravessou, não o default.
         expect(input.style.borderBottom).toContain('2px solid');
     });
+
+    it('compõe handlers externos e mostra o anel de foco, inclusive com borda none', () => {
+        const onFocus = vi.fn();
+        const onBlur = vi.fn();
+        render(
+            <SarakUIProvider config={{ inputBorderType: 'none' }}>
+                <SarakInput placeholder="busca" onFocus={onFocus} onBlur={onBlur} />
+            </SarakUIProvider>,
+        );
+        const input = screen.getByPlaceholderText('busca');
+
+        fireEvent.focus(input);
+        expect(onFocus).toHaveBeenCalledTimes(1);
+        expect(input.style.boxShadow).toContain('var(--sarak-focus-width, 2px)');
+
+        fireEvent.blur(input);
+        expect(onBlur).toHaveBeenCalledTimes(1);
+        expect(input.style.boxShadow).toBe('');
+    });
+
+    it('mantém a borda inferior do tema underline e acrescenta o anel de foco', () => {
+        render(
+            <SarakUIProvider config={{ inputBorderType: 'underline' }}>
+                <SarakInput placeholder="sublinhado" />
+            </SarakUIProvider>,
+        );
+        const input = screen.getByPlaceholderText('sublinhado');
+
+        fireEvent.focus(input);
+        expect(input.style.borderBottom).toContain('2px solid');
+        expect(input.style.boxShadow).toContain('var(--sarak-focus-width, 2px)');
+    });
 });
 
 describe('Erro de campo pelo SarakFieldError', () => {
@@ -43,6 +75,26 @@ describe('Erro de campo pelo SarakFieldError', () => {
     it('sem `error`, nada é renderizado', () => {
         render(<SarakInput />);
         expect(screen.queryByRole('alert')).toBeNull();
+    });
+
+    it('combina as descrições do chamador e do erro', () => {
+        render(
+            <>
+                <span id="email-hint">Use o endereço corporativo.</span>
+                <span id="email-policy">O endereço não será compartilhado.</span>
+                <SarakInput
+                    id="email"
+                    aria-describedby="email-hint email-policy"
+                    error="E-mail inválido"
+                />
+            </>,
+        );
+
+        const alert = screen.getByRole('alert');
+        expect(screen.getByRole('textbox')).toHaveAttribute(
+            'aria-describedby',
+            `email-hint email-policy ${alert.id}`,
+        );
     });
 });
 

@@ -111,6 +111,7 @@ export const INPUT_PRESETS: ComponentPreset[] = [
         design: {
             inputBorderType: 'solid',
             inputPadding: 6,
+            inputPaddingHorizontal: 6,
             inputBorderRadius: 4,
         }
     },
@@ -121,6 +122,7 @@ export const INPUT_PRESETS: ComponentPreset[] = [
         design: {
             inputBorderType: 'solid',
             inputPadding: 20,
+            inputPaddingHorizontal: 20,
             inputBorderRadius: 16,
             inputBg: 'rgba(255,255,255,0.03)',
         }

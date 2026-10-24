@@ -799,12 +799,12 @@ Props (`SarakInputProps` — `src/components/atomic/Inputs/SarakInput.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `label` | `string` | não | Rótulo visual ligado ao campo pelo `id` (gerado quando não é informado). Sem ele, não há rótulo visível; forneça outro nome acessível se necessário. |
-| `icon` | `React.ReactNode` | não | Ícone do campo; sua posição vem do layout do tema e ele não recebe clique. Quando definido, prevalece sobre `leftIcon` e `rightIcon`; sem os três, não há ícone. |
-| `leftIcon` | `React.ReactNode` | não | Ícone do lado esquerdo, usado somente quando `icon` não é fornecido. Junto com `rightIcon`, os dois aparecem, cada um no seu lado. Sozinho, segue a posição do layout do tema. |
-| `rightIcon` | `React.ReactNode` | não | Ícone do lado direito, usado somente quando `icon` não é fornecido. Aceita clique (por exemplo, o botão de mostrar a senha). Junto com `leftIcon`, fica à direita; sozinho, segue a posição do layout do tema. |
-| `error` | `string` | não | Mensagem abaixo do campo, ligada por `aria-describedby`, que também marca `aria-invalid`. Sem a prop, não há mensagem nem estado inválido. |
-| `fullWidth` | `boolean` | não | Faz o grupo do campo ocupar toda a largura disponível. Omitida ou `false`, a largura fica a cargo do layout pai. |
+| `label` | `string` | não |  |
+| `icon` | `React.ReactNode` | não |  |
+| `leftIcon` | `React.ReactNode` | não |  |
+| `rightIcon` | `React.ReactNode` | não |  |
+| `error` | `string` | não |  |
+| `fullWidth` | `boolean` | não |  |
 
 Estende: `InputHTMLAttributes<HTMLInputElement>`
 
@@ -1078,8 +1078,8 @@ Props (`SarakSearchProps` — `src/components/atomic/Inputs/SarakSearch.tsx`):
 | --- | --- | --- | --- |
 | `isOpen` | `boolean` | sim |  |
 | `onClose` | `() => void` | sim |  |
-| `items` | `SarakSearchItem[]` | sim | Itens da busca, fornecidos pela navegação do aplicativo. |
-| `onSelect` | `(id: string) => void` | não | Seleciona um item, por clique ou teclado (`Enter`/`Espaço`). Sem esta prop, os resultados não são acionáveis — o comportamento de sempre. |
+| `items` | `SarakSearchItem[]` | sim |  |
+| `onSelect` | `(id: string) => void` | não |  |
 
 ### SarakSearchCard
 
@@ -1136,10 +1136,10 @@ Props (`SarakShellSearchWidgetProps` — `src/components/atomic/Navigation/Sarak
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `variant` | `'bar' \| 'icon'` | não | Escolhe a barra de busca ou o gatilho de menu; omitida, usa `bar`, que fica oculto abaixo do breakpoint `md`. |
-| `items` | `SarakSearchItem[]` | não | Resultados fornecidos pelo aplicativo. |
-| `onClick` | `() => void` | sim | Callback do gatilho `icon`; obrigatório. |
-| `onSelect` | `(item: SarakSearchItem) => void` | não | Seleciona um resultado da variante `bar`. |
+| `variant` | `'bar' \| 'icon'` | não |  |
+| `items` | `SarakSearchItem[]` | não |  |
+| `onClick` | `() => void` | sim |  |
+| `onSelect` | `(item: SarakSearchItem) => void` | não |  |
 
 ### SarakShellThemeToggle
 

@@ -585,7 +585,10 @@ describe('SarakAppChrome — widgets por padrão (busca, tema, usuário, colapso
         renderAtDevice('desktop', <SarakAppChrome nav={NAV} onNavigate={onNavigate}><div>x</div></SarakAppChrome>);
         fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
         expect(screen.getAllByText('Projetos').length).toBeGreaterThan(0);
-        fireEvent.click(screen.getByRole('button', { name: /Projetos/ }));
+        const result = screen.getByRole('option', { name: /Projetos/ });
+        expect(result.tagName).toBe('A');
+        expect(result).toHaveAttribute('href', '/projetos');
+        fireEvent.click(result);
         expect(onNavigate).toHaveBeenCalledWith('/projetos');
     });
 

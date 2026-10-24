@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fazer o conteudo acompanhar a tela e a busca do cromo funcionar"
 objetivo: "Fazer a regiao de conteudo do cromo acompanhar a largura da tela com margens que crescem com ela, sem coluna espremida nem elemento cortado, e a busca do cromo mostrar o texto inteiro e navegar ao clicar no resultado mesmo sem onNavigate"
 dominio: "Cromo / Layout / Busca"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "cromo", "layout", "largura", "busca", "rc"]
 relacionados: ["[[05-cromo-e-slots]]", "[[07-responsividade-e-multidispositivo]]", "[[02-design-engine]]", "[[09-temas-e-presets]]", "[[03-superficie-publica]]"]
@@ -126,13 +126,14 @@ e para 2.3 (clicar o resultado sem `onNavigate` muda a URL). Nota em `docs/migra
 - [x] Padrão fluido: a região cresce com a tela, margens laterais proporcionais e simétricas, nenhum `vw`, nada cortado (caso de navegador nas três larguras).
 - [x] Os 19 temas declaram o padrão fluido; os tetos em px seguem funcionando como opção.
 - [x] Nenhuma variável de largura sem leitor.
-- [ ] Selo do atalho nunca sobre o texto; some com foco, com texto e em barra estreita.
-- [ ] Borda de foco do `SarakInput` volta com `onFocus` do chamador.
-- [ ] Resultado da busca e da paleta navega sem `onNavigate`; com ele, chama o callback.
-- [ ] Par explícito de padding do campo publicado; a variável antiga documentada como só vertical e depreciada.
-- [ ] Paleta: campo na largura útil, selo completo, primeiro item ativo, ícone por item, `dialog` + `combobox`/`listbox` acessíveis.
-- [ ] Anel de foco visível nos campos da busca e da paleta.
-- [ ] Notas em `docs/migracoes.md`; `theme-completeness:check`, `token-reader:check`, `token-docs:check` e paridade verdes.
+- [x] Selo do atalho nunca sobre o texto; some com foco, com texto e em barra estreita.
+- [x] Borda de foco do `SarakInput` volta com `onFocus` do chamador.
+- [x] Resultado da busca e da paleta navega sem `onNavigate`; com ele, chama o callback.
+- [x] Par explícito de padding do campo publicado; a variável antiga documentada como só vertical e depreciada.
+- [x] Paleta: campo na largura útil, selo completo, primeiro item ativo, ícone por item, `dialog` + `combobox`/`listbox` acessíveis.
+- [x] Anel de foco visível nos campos da busca e da paleta.
+- [x] Nota em `docs/migracoes.md`; `theme-completeness:check`, `token-docs:check` e paridade verdes.
+- [ ] `token-reader:check` verde — pendente: declarações e emissão de `devicePhoneHeight`/`deviceTabletHeight` na área do painel (plan-122, fora do escopo deste lote).
 
 # 7. Como verificar (uso do revisor)
 
@@ -164,7 +165,91 @@ e para 2.3 (clicar o resultado sem `onNavigate` muda a URL). Nota em `docs/migra
 - A partição e o JSON gerado de documentação foram atualizados. `docs/migracoes.md` registra o novo padrão na seção 8.0.0. Nenhuma entrada de i18n foi necessária: o rótulo é declarado no schema, sem chave de tradução existente para esse token.
 - Testes: 6 suítes de Vitest, 74 testes passaram após corrigir uma expectativa do caso legado de `1440px` e repetir a suíte afetada (9/9). O caso de navegador no harness passou em 1280, 1920 e 2560px (1/1), com margens simétricas crescentes e sem overflow horizontal.
 - `npm run verify -- --tier=quick` terminou com 4 checks falhos fora do escopo: tipos em `PreviewCanvas.designScopeStability.test.tsx` e `PresetsCatalog.test.tsx`; erro de tipo em `DesignEngine/hooks/useDesignDraft.ts`; `catalog:check` reportou `docs/component-catalog.{json,md}` defasados; `guide:check` reportou cinco arquivos de `sarak-ui` defasados. Esses arquivos não foram alterados. Os checks `token-types`, `token-docs`, `theme-completeness`, `themes:catalog`, `chrome-token-parity` e `token-reader` passaram.
-- `npm run token-types` não conseguiu gravar por `EPERM`; o JSON gerado foi atualizado pela entrada do schema e `token-types:check`/`token-docs:check` passaram. `git status --short` não funcionou neste ambiente (`fatal: this operation must be run in a work tree`); na conferência inicial, os hashes dos arquivos rastreados do escopo coincidiam com índice e HEAD. Nenhum build ou commit foi feito. Lote 2 permanece pendente.
+- `npm run token-types` não conseguiu gravar por `EPERM`; o JSON gerado foi atualizado pela entrada do schema e `token-types:check`/`token-docs:check` passaram. `git status --short` não funcionou neste ambiente (`fatal: this operation must be run in a work tree`); na conferência inicial, os hashes dos arquivos rastreados do escopo coincidiam com índice e HEAD. Nenhum build ou commit foi feito. Naquela execução, o lote 2 ainda não havia começado; sua execução está registrada abaixo.
+
+### Lote 2 — busca e campo (execução concluída; aguardando revisão)
+
+**O que foi feito**
+- A busca da barra agora esconde o selo quando há pouco espaço, quando o campo recebe foco ou quando há texto. Em barra de 240 px o selo não invade o placeholder; em 320 px os dois cabem. A composição mantém as dimensões dentro do contêiner.
+- `SarakInput` compõe os callbacks de foco/saída recebidos com o estado interno, usa padding vertical e horizontal separados e mantém `--sarak-input-padding` como alias vertical depreciado. A migração e o JSDoc documentam os dois eixos.
+- Os resultados da barra e da paleta são links com a rota do item; o callback de seleção é preservado quando fornecido e teclado (setas/Enter) alcança a mesma rota. A paleta inicia com o primeiro item ativo, exibe o atalho do sistema, ícones do item, subtítulos informativos e a semântica `dialog`/`combobox`/`listbox`.
+- Os estilos de átomos foram repartidos em módulos menores; o `SarakInput` passou pelo helper de composição de classes. O rodapé da paleta foi extraído para reduzir o tamanho do diálogo.
+- O catálogo e o kit público `sarak-ui/` foram regenerados somente ao final: catálogo com 102 componentes; kit com 105 componentes, 401 tokens e 117 ícones.
+
+**Verificações executadas**
+- Vitest direcionado: 10 arquivos, 63 testes passaram.
+- Playwright `busca-e-campo.spec.ts`: 4 casos passaram (barra a 240/320 px, link nativo da busca e Enter na paleta).
+- `npx tsc --noEmit`, `npm run audit:baseline -- --with-tsc`, `npm run class-merge:check`, `npm run token-types:check`, `npm run token-docs:check`, `npm run theme-completeness:check`, `npm run chrome-token-parity:check`, `npm run catalog:check` e `npm run guide:check` passaram.
+- `npm run build:js`, `npm run build:css` e `npm run build:css:scoped` passaram. `src/core/Provider/buildInfo.ts` foi restaurado ao conteúdo anterior após o build.
+- `npm run verify -- --tier=quick` teve 3 falhas restantes: `token-reader:check` para `devicePhoneHeight`/`deviceTabletHeight` (área da plan-122); `check-trail-citation` porque `git diff` retornou `fatal: this operation must be run in a work tree`; e `dev-kit:check` por defasagem em `sarak-dev/state.json`, `sarak-dev/GUIA-MANUTENCAO.md` e `sarak-dev/START-HERE.md`.
+- `npm run audit` reportou R10 em `SarakMultiSelect.tsx` e `SarakUploader.tsx`, ambos fora do escopo da plan-121. O gate final de Clean Code e o validador TypeScript dos arquivos alterados passaram; o validador apontou apenas heurísticas de baixa confiança para o valor de escala `0.95` da animação.
+
+**Fora de escopo preservado**
+- Nenhum arquivo de `src/features/DesignEngine/`, `SarakSelect`, `SarakTimePicker`, `cardGridParts`, `SarakFilterSelect` ou `src/styles/_elements.css` foi alterado.
+- `sarak-dev/` não foi regenerado; somente o catálogo e o kit `sarak-ui/` pedidos foram gerados.
+- A limitação do Git impede conferir `git status`/diff neste ambiente. Nenhum commit foi feito.
+
+## Resumo da correção — 2026-10-24 — lote 2
+
+**Resultado:** Concluído com pendências
+
+**Estado do worktree ao iniciar**
+`git status --short` → `fatal: this operation must be run in a work tree`; a fotografia inicial não ficou disponível.
+
+**O que foi feito**
+- `src/components/atomic/Inputs/SarakInput.tsx:48,152` compõe os ids de `aria-describedby` do chamador e da mensagem de erro, preservando múltiplos ids e removendo duplicatas.
+- `src/components/atomic/Inputs/__tests__/SarakInput.test.tsx:80` cobre a composição dos dois ids; `src/components/atomic/Feedback/__tests__/SarakFieldError.test.tsx:33` mantém a prova de `aria-describedby` externo sem a prop `error`.
+- `src/components/Layout/__tests__/SarakAppChrome.test.tsx:588` consulta o resultado da paleta como `option`, confere que é âncora com `href="/projetos"` e mantém a asserção de `onNavigate('/projetos')`.
+- Regravei os snapshots de `PreviewCanvas`, `PresetCard`, `SarakActionCard`, `SarakSearchCard` e `SarakCoreCard`. `SarakSearchCard` ganhou as classes de padding vertical/horizontal. `PresetCard` ganhou `--sarak-input-padding-vertical` e `--sarak-input-padding-horizontal`. `SarakActionCard` e `SarakCoreCard` só mudaram a ordem serializada das declarações inline de `style`. O snapshot de `PreviewCanvas` também passou a refletir alterações simultâneas da `plan-122` no quadro/viewport, layout, rótulo do snapshot e CSS injetado; não alterei o código da `plan-122`.
+- `npm run dev-kit` regenerou `sarak-dev/` com 102 componentes, 401 tokens e 42 gates.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/Inputs/SarakInput.tsx` | alterado | Composição dos ids de `aria-describedby`. |
+| `src/components/atomic/Inputs/__tests__/SarakInput.test.tsx` | alterado | Cobertura com descrições do chamador e erro. |
+| `src/components/atomic/Feedback/__tests__/SarakFieldError.test.tsx` | alterado | Identifica explicitamente a cobertura sem `error`. |
+| `src/components/Layout/__tests__/SarakAppChrome.test.tsx` | alterado | Teste da opção/link da paleta e callback. |
+| `src/features/DesignEngine/Canvas/__tests__/__snapshots__/PreviewCanvas.test.tsx.snap` | alterado | Atualiza a busca/campo; também reflete a saída atual da `LiveDraftPreviewFrame` paralela. |
+| `src/features/DesignEngine/Canvas/components/__tests__/__snapshots__/PresetCard.test.tsx.snap` | alterado | Atualiza as variáveis de padding do campo. |
+| `src/components/atomic/Cards/__tests__/__snapshots__/SarakActionCard.test.tsx.snap` | alterado | Atualiza a ordem serializada das declarações inline de `style`. |
+| `src/components/atomic/Cards/__tests__/__snapshots__/SarakSearchCard.test.tsx.snap` | alterado | Atualiza classes de padding vertical e horizontal. |
+| `src/components/atomic/Templates/components/__tests__/__snapshots__/SarakCoreCard.test.tsx.snap` | alterado | Atualiza a ordem serializada das declarações inline de `style`. |
+| `sarak-dev/state.json`, `sarak-dev/GUIA-MANUTENCAO.md`, `sarak-dev/START-HERE.md` | gerados | Kit do mantenedor atualizado. |
+| `specs/plan/plan-121-largura-fluida-e-busca-do-cromo.md` | alterado | Registra esta correção e muda o status para revisão. |
+
+**Verificações executadas**
+- `npx vitest run --configLoader runner --maxWorkers=1` nos três testes de componente e nos cinco testes com snapshot → 8 arquivos, 103 testes passaram. A primeira tentativa sem elevação parou antes dos testes por `EPERM` ao renomear temporários do Vitest; a repetição executou e passou.
+- `npm run dev-kit` → kit regenerado; `[dev-kit] ... 102 componentes públicos, 401 tokens, 42 gates`.
+- `npm run dev-kit:check` → `[dev-kit:check] kit em dia (3 arquivos, 0 ponteiros mortos).`
+- `npm run verify -- --tier=quick` → TypeScript, baseline, 27 gates, `dev-kit:check` e Anel 0 simulado passaram; `check-trail-citation` falhou porque `git diff` retornou `fatal: this operation must be run in a work tree`.
+- `git status --short` e `git diff --stat` → mesma falha de worktree; não foi possível validar o diff completo.
+- `npm run build` não foi executado.
+
+**Critérios de aceite**
+- [x] O `aria-describedby` do chamador permanece sem `error` e é composto ao id da mensagem quando há `error` — testes direcionados passaram.
+- [x] O teste da paleta verifica a opção/link e mantém a prova de chamada de `onNavigate` — `SarakAppChrome.test.tsx` passou.
+- [x] Os cinco snapshots do achado foram atualizados e suas suítes passaram; as mudanças de `PreviewCanvas` e a serialização de `style` estão descritas acima.
+- [x] `npm run dev-kit` e `dev-kit:check` passaram.
+- [ ] `verify --tier=quick` totalmente verde — pendente apenas `check-trail-citation`, bloqueado pela falha de Git descrita acima.
+
+**Decisões e suposições**
+- A ordem final de `aria-describedby` é a lista do chamador seguida pelo id gerado do erro; ids repetidos são emitidos uma vez.
+- Mantive o snapshot atual de `PreviewCanvas`, cuja saída também captura a `LiveDraftPreviewFrame` presente no worktree compartilhado; nenhum arquivo-fonte da `plan-122` foi editado.
+
+**Achados fora do escopo (não corrigidos)**
+- `gates/scripts/contrato/check-trail-citation.mjs` — o gate R36 não consegue inspecionar o diff porque `git diff` afirma que o diretório não é um worktree.
+- `specs/00-indice.md` continua com `plan-121` em 🔵 Em correção; a plan foi movida para 🟠 Em revisão conforme o protocolo do executor, e a sincronização do índice é responsabilidade do revisor.
+
+**Pendências / riscos**
+- A comparação integral de `git status`/`git diff` permanece indisponível neste ambiente.
+- `PreviewCanvas` contém também mudanças de saída da `plan-122` no snapshot compartilhado, explicitadas neste resumo para revisão; `LiveDraftPreviewFrame.tsx` e os tokens `devicePhoneHeight`/`deviceTabletHeight` não foram tocados.
+- `plan-index:check` passou no `verify` antes da transição do status; após a mudança acima, o índice deve ser sincronizado pelo revisor.
+- Nenhum commit foi feito.
+
+### Esclarecimento da contagem do `verify -- --tier=quick`
+
+O nível teve 27 gates ao todo: 26 passaram, incluindo `dev-kit:check`, e um falhou (`check-trail-citation`, R36). TypeScript, baseline e Anel 0 simulado também passaram.
 
 ---
 
@@ -274,3 +359,41 @@ está lá; a forma do valor e os artefatos não.
 
 Rodado pelo revisor: `npm run verify -- --tier=full` (gates verdes salvo os da `plan-125`), `npm run cromo-css-real:check` → 429/430
 (a falha é `login-theme-application.spec.ts`, da `plan-125`), `largura-fluida.spec.ts` verde nas três larguras. O lote 2 segue.
+
+
+## Veredito — 2026-10-24 — lote 2 — 🔴 Reprovado (3 achados)
+
+Verificado no worktree inteiro (com o lote 2 da `plan-122`): `npm run verify -- --tier=full` → `tsc` 0, baseline com `tsc` sem
+regressão e 27 gates verdes; vermelhos: vitest, `token-reader:check` (da `plan-122`), `dev-kit:check` e `plan-index:check` (status da
+`plan-122`). `npm run cromo-css-real:check` → `build` completo e **435/435** casos de navegador, inclusive `busca-e-campo.spec.ts`.
+Vitest de `src/features` + `src/components` (JSON): 2.060 testes, **7 falhas, todas efeito deste lote**. O comportamento pedido (selo
+que some, foco composto, resultados como links, paleta acessível, par de padding) está lá; não está:
+
+1. `src/components/atomic/Inputs/SarakInput.tsx:146` — `aria-describedby={error ? viewModel.errorId : undefined}` vem **depois** do
+   `{...nativeProps}` e apaga o `aria-describedby` que o chamador passa quando não há `error`. Regressão de acessibilidade: o campo
+   perde a ligação com a mensagem de erro externa — `SarakFieldError.test.tsx` › "associa a mensagem ao campo pelo id usado em
+   aria-describedby" recebe `null`. Critério violado: §3.1 do lote (compor o que o chamador passa, sem perder nada — o mesmo defeito do
+   passo 2.2, agora em outro atributo) e [[10-seguranca-e-acessibilidade]]. Compor: os ids do chamador e o do erro, juntos; teste com
+   e sem `error`.
+2. Testes que o lote quebrou e não atualizou: `SarakAppChrome.test.tsx` › "o palette alimentado pela busca lista a própria navegação e
+   seleciona por onNavigate" (procura o resultado como `button`; agora é opção/link) e os snapshots de `PreviewCanvas.test.tsx`,
+   `PresetCard.test.tsx`, `SarakActionCard.test.tsx`, `SarakSearchCard.test.tsx` e `SarakCoreCard.test.tsx` (divergem só pelas classes do
+   `SarakInput`/busca e pelas variáveis de padding). Critério violado: §6 "suíte completa verde". Atualizar o caso do cromo para o papel
+   novo **mantendo** a prova de que a seleção chama `onNavigate`, e regravar os cinco snapshots conferindo que o diff de cada um é só
+   isso (diga no resumo se algum mudou por outro motivo).
+3. `sarak-dev/state.json`, `sarak-dev/GUIA-MANUTENCAO.md`, `sarak-dev/START-HERE.md` — `dev-kit:check` acusa defasagem: o kit do
+   mantenedor não conhece o token novo `inputPaddingHorizontal` (401 tokens). Rodar `npm run dev-kit` ao fim e colar o check.
+
+## Veredito — 2026-10-24 — correção 1 (lote 2) — 🟢 Aprovado; plan concluída
+
+1. **`aria-describedby`** — `SarakInput.tsx` compõe os ids do chamador com o do erro (`composeDescribedBy`, sem repetição);
+   `SarakInput.test.tsx` cobre os dois juntos e `SarakFieldError.test.tsx` volta a passar com o id externo sem `error`.
+2. **Testes** — o caso da paleta em `SarakAppChrome.test.tsx` procura a `option`, confere a âncora `href="/projetos"` e mantém
+   `onNavigate('/projetos')`; os cinco snapshots regravados, com o diff de cada um descrito no resumo (padding do campo, ordem do `style`
+   serializado e, no `PreviewCanvas`, a moldura do lote 2 da `plan-122`).
+3. **Kit do mantenedor** — `npm run dev-kit`; `dev-kit:check` em dia.
+
+**Bateria do worktree inteiro, rodada pelo revisor:** `npm run verify -- --tier=full` → "nível full verde" (`tsc` 0, `npx vitest run`
+completo verde, baseline com `tsc` sem regressão, todos os gates, Anel 0 com 0 achados); `npm run cromo-css-real:check` → `build`
+completo e **435/435** casos de navegador, inclusive `busca-e-campo.spec.ts` e `largura-fluida.spec.ts`. Os critérios da §6 estão
+atendidos nos dois lotes.

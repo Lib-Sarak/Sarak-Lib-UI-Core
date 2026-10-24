@@ -294,6 +294,7 @@ interface SarakDesignTokens {
     inputIconColor: string;
     inputIconPosition: string;
     inputPadding: number;
+    inputPaddingHorizontal: number;
     inputShadow: string;
     inputTextColor: string;
     isAutoHideEnabled: boolean;
@@ -962,8 +963,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "8.0.0-rc.2";
-    readonly baseCommitShort: "5094abe";
-    readonly builtAt: "2026-10-23T20:37:20.729Z";
+    readonly baseCommitShort: "f7e9218";
+    readonly builtAt: "2026-10-24T01:04:33.032Z";
 };
 
 interface SarakDesignScopeProps {
@@ -1197,28 +1198,19 @@ interface SarakChromeNotification {
     description?: string;
 }
 
-/** Um resultado fornecido pelo aplicativo ao palette. */
 interface SarakSearchItem {
-    /** Com `onSelect`, identifica o destino do item (a rota); na busca embutida, também vira o `href` do resultado. */
     id: string;
     label: string;
     category?: string;
+    icon?: React__default.ReactNode;
 }
 interface SarakSearchProps {
     isOpen: boolean;
     onClose: () => void;
-    /** Itens da busca, fornecidos pela navegação do aplicativo. */
     items: SarakSearchItem[];
-    /** Seleciona um item, por clique ou teclado (`Enter`/`Espaço`). Sem esta prop, os
-     * resultados não são acionáveis — o comportamento de sempre. */
     onSelect?: (id: string) => void;
 }
-/**
- * SarakSearch (v6.0 Command Palette)
- *
- * Global search component integrated into the Sarak ecosystem.
- */
-declare const SarakSearch: React__default.FC<SarakSearchProps>;
+declare const SarakSearch: (props: SarakSearchProps) => React__default.ReactElement;
 
 /**
  * Item de navegação estruturado do `SarakAppChrome` (Spec 40.2 — L1).
@@ -2154,20 +2146,12 @@ interface SarakMenuItemProps extends Omit<React__default.HTMLAttributes<HTMLElem
 declare const SarakMenuItem: React__default.FC<SarakMenuItemProps>;
 
 interface SarakShellSearchWidgetProps {
-    /** Escolhe a barra de busca ou o gatilho de menu; omitida, usa `bar`, que fica oculto abaixo do breakpoint `md`. */
     variant?: 'bar' | 'icon';
-    /** Resultados fornecidos pelo aplicativo. */
     items?: SarakSearchItem[];
-    /** Callback do gatilho `icon`; obrigatório. */
     onClick: () => void;
-    /** Seleciona um resultado da variante `bar`. */
     onSelect?: (item: SarakSearchItem) => void;
 }
-/**
- * ShellSearchWidget — Adaptive Search Trigger (v8.5)
- * Standardizes search entry points for Topbar and Sidebar.
- */
-declare const SarakShellSearchWidget: React__default.FC<SarakShellSearchWidgetProps>;
+declare const SarakShellSearchWidget: (props: SarakShellSearchWidgetProps) => React__default.ReactElement;
 
 interface SarakShellThemeToggleProps {
     /** Define o formato horizontal, vertical ou compacto; omitida, usa `horizontal`. O clique grava a preferência do usuário. */
@@ -2189,48 +2173,17 @@ interface SarakShellLanguageSelectorProps {
 declare const SarakShellLanguageSelector: React__default.FC<SarakShellLanguageSelectorProps>;
 
 interface SarakInputProps extends InputHTMLAttributes<HTMLInputElement> {
-    /**
-     * Rótulo visual ligado ao campo pelo `id` (gerado quando não é informado).
-     * Sem ele, não há rótulo visível; forneça outro nome acessível se necessário.
-     */
     label?: string;
-    /**
-     * Ícone do campo; sua posição vem do layout do tema e ele não recebe clique.
-     * Quando definido, prevalece sobre `leftIcon` e `rightIcon`; sem os três,
-     * não há ícone.
-     */
     icon?: React__default.ReactNode;
-    /**
-     * Ícone do lado esquerdo, usado somente quando `icon` não é fornecido. Junto
-     * com `rightIcon`, os dois aparecem, cada um no seu lado. Sozinho, segue a
-     * posição do layout do tema.
-     */
     leftIcon?: React__default.ReactNode;
-    /**
-     * Ícone do lado direito, usado somente quando `icon` não é fornecido. Aceita
-     * clique (por exemplo, o botão de mostrar a senha). Junto com `leftIcon`, fica
-     * à direita; sozinho, segue a posição do layout do tema.
-     */
     rightIcon?: React__default.ReactNode;
-    /**
-     * Mensagem abaixo do campo, ligada por `aria-describedby`, que também marca
-     * `aria-invalid`. Sem a prop, não há mensagem nem estado inválido.
-     */
     error?: string;
-    /**
-     * Faz o grupo do campo ocupar toda a largura disponível. Omitida ou `false`,
-     * a largura fica a cargo do layout pai.
-     */
     fullWidth?: boolean;
 }
 /**
- * Componente Atômico: SarakInput
- * Segue a regra da "Composição Atômica Obrigatória" da Sarak-Lib-UI-Core.
- *
- * @sarak-encapsula input — a razão de existir deste componente é encapsular o
- *   `<input>` nativo, para teclado e leitor de tela funcionarem por construção.
+ * @sarak-encapsula input — o átomo encapsula o campo nativo para teclado, leitor de tela e estilo.
  */
-declare const SarakInput: React__default.FC<SarakInputProps>;
+declare const SarakInput: (props: SarakInputProps) => React__default.ReactElement;
 
 interface SarakMaskedInputProps extends Omit<SarakInputProps, 'defaultValue' | 'label' | 'onChange' | 'type' | 'value'> {
     /**

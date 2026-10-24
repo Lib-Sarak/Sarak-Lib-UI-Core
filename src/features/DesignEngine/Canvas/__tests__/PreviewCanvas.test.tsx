@@ -25,9 +25,12 @@ vi.mock('../KitchenSinkPreview', () => ({
 }));
 
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
-import { SarakUIContextType } from '../../../../core/Provider/types';
+import type { SarakUIContextType } from '../../../../core/Provider/types';
 
-describe('PreviewCanvas - Refatoração Data-Driven', () => {
+const TEST_SIDEBAR_WIDTH = 250;
+const THEME_LOAD_TIMEOUT_MS = 10_000;
+
+describe('PreviewCanvas', () => {
     it('deve usar propriedades de estilo reais (width/height) em vez de custom properties fantasma', async () => {
         const { container } = render(
             <SarakUIProvider>
@@ -41,7 +44,7 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
                 previewPrimaryColor="#000"
                 mode="light"
                 draftMode="dark"
-                draftTokens={{ sidebarWidth: 250 }}
+                draftTokens={{ sidebarWidth: TEST_SIDEBAR_WIDTH }}
                 onUpdateDraft={() => {}}
                 sarak={{} as unknown as SarakUIContextType}
                 isDualView={true}
@@ -52,21 +55,21 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
 
         // A div externa do Preview deve setar width/height como propriedades reais do style,
         // não mais via custom property fantasma (--device-width) que a engine nunca emitia.
-        const deviceWrapper = container.querySelector('[class*="min-h-[var(--sarak-engine-min-h-sm,300px)]"]');
-        expect(deviceWrapper).not.toBeNull();
-        if (deviceWrapper) {
-            const style = deviceWrapper.getAttribute('style') || '';
-            expect(style).toContain('width');
-            expect(style).not.toContain('--device-width');
-        }
+        const deviceWrapper = container.querySelector('[data-testid="device-viewport"]');
+        expect(deviceWrapper?.getAttribute('style') || '').toContain('width');
+        expect(deviceWrapper?.getAttribute('style') || '').not.toContain('--device-width');
 
         // Os temas embarcados chegam sob demanda: o snapshot é do estado em que a galeria já os tem.
         // Prazo folgado: a prévia carrega o tema sob demanda e, com a suíte inteira rodando em paralelo, passa dos 1000 ms padrão do `waitFor`.
-        await waitFor(() => expect(container.querySelector('[aria-busy="true"]')).toBeNull(), { timeout: 10000 });
+        await waitFor(() => expect(container.querySelector('[aria-busy="true"]')).toBeNull(), {
+            timeout: THEME_LOAD_TIMEOUT_MS,
+        });
         expect(container).toMatchSnapshot();
-    }, 30000); // 15000 não bastava sob `vitest --coverage` (instrumentação V8 + contenção de workers, plan-12/R8.1)
+    }, 30000); // A montagem do Provider e do catálogo lazy pode exceder o timeout padrão sob coverage.
+});
 
-    it('o dual-view reage ao CONTAINER (@min-[1280px]:flex-row), não mais à viewport (`xl:`) — plan-35, fecha 06-painel-de-customizacao-e-preview.md §6.2', () => {
+describe('PreviewCanvas responsive layout', () => {
+    it('o dual-view só usa linha quando os dois quadros cabem no container', () => {
         const { container } = render(
             <SarakUIProvider>
                 <PreviewCanvas
@@ -79,7 +82,7 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
                     previewPrimaryColor="#000"
                     mode="light"
                     draftMode="dark"
-                    draftTokens={{ sidebarWidth: 250 }}
+                    draftTokens={{ sidebarWidth: TEST_SIDEBAR_WIDTH }}
                     onUpdateDraft={() => {}}
                     sarak={{} as unknown as SarakUIContextType}
                     isDualView={true}
@@ -97,12 +100,14 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
         const dualViewRow = allDivs.find((el) => el.className.includes('items-stretch'));
         expect(dualViewRow).toBeTruthy();
         expect((dualViewRow as HTMLElement).className).not.toMatch(/\bxl:flex-row\b/);
-        expect((dualViewRow as HTMLElement).className).toMatch(/@min-\[1280px\]:flex-row/);
+        expect((dualViewRow as HTMLElement).className).toMatch(/@min-\[524px\]:flex-row/);
     }, 30000);
+});
 
+describe('PreviewCanvas gallery state', () => {
     it('mantém só o preview quando a galeria fecha e a reabre pelo estado controlado', () => {
         const onCloseGallery = vi.fn();
-        const renderCanvas = (isDualView: boolean) => (
+        const renderCanvas = (isDualView: boolean): React.ReactElement => (
             <SarakUIProvider>
                 <PreviewCanvas
                     previewDevice="desktop"
@@ -133,8 +138,10 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
         fireEvent.click(screen.getByRole('button', { name: 'Fechar galeria' }));
         expect(onCloseGallery).toHaveBeenCalledTimes(1);
     }, 30000);
+});
 
-    it('divide o espaço do contêiner entre preview e galeria ao empilhar, sem unidade de janela', () => {
+describe('PreviewCanvas stacked layout', () => {
+    it('mantém cada quadro quase na altura da área e com rolagem própria ao empilhar', () => {
         const { container } = render(
             <SarakUIProvider>
                 <PreviewCanvas
@@ -155,25 +162,23 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
                 />
             </SarakUIProvider>,
         );
-        const previewFrame = container.querySelector('.group') as HTMLElement;
-        const catalog = container.querySelector('#presets-catalog') as HTMLElement;
-        const catalogFrame = catalog.parentElement as HTMLElement;
-        const viewportHeightUnit = ['v', 'h'].join('');
+        const previewFrame = container.querySelector('[data-testid="live-preview-frame"]') as HTMLElement;
+        const catalogFrame = container.querySelector('[data-testid="catalog-preview-frame"]') as HTMLElement;
+        const previewLayout = container.querySelector('[data-testid="preview-layout"]') as HTMLElement;
 
-        expect(previewFrame.className).toMatch(/\bflex-1\b/);
-        expect(previewFrame.className).toMatch(/\bmin-h-0\b/);
-        expect(catalogFrame.className).toMatch(/\bflex-1\b/);
-        expect(catalogFrame.className).toMatch(/\bmin-h-0\b/);
-        expect(`${previewFrame.className} ${previewFrame.getAttribute('style')}`).not.toContain(`${viewportHeightUnit}]`);
-        expect(`${previewFrame.className} ${previewFrame.getAttribute('style')}`).not.toContain(`45${viewportHeightUnit}`);
-        expect(`${catalogFrame.className} ${catalogFrame.getAttribute('style')}`).not.toContain(`${viewportHeightUnit}]`);
-        expect(`${catalogFrame.className} ${catalogFrame.getAttribute('style')}`).not.toContain(`45${viewportHeightUnit}`);
-        expect(previewFrame.style.height).toBe('');
-        expect(previewFrame.style.maxHeight).toBe('');
+        expect(previewLayout.className).toContain('overflow-y-auto');
+        expect(previewFrame.className).toContain('overflow-y-auto');
+        expect(catalogFrame.className).toContain('overflow-y-auto');
+        expect(previewFrame.style.height).toBe('calc(100% - 1.5rem)');
+        expect(catalogFrame.style.height).toBe('calc(100% - 1.5rem)');
+        expect(previewFrame.className).not.toMatch(/\bresize\b/);
+        expect(catalogFrame.className).not.toMatch(/\bresize\b/);
+        expect(`${previewFrame.className} ${previewFrame.getAttribute('style')}`).not.toContain('vh');
+        expect(`${catalogFrame.className} ${catalogFrame.getAttribute('style')}`).not.toContain('vh');
     }, 30000);
 });
 
-// A MEDIÇÃO de estabilidade do `design` do DesignScope externo (plan-36) mora em
+// A medição de estabilidade do `design` do DesignScope externo mora em
 // `PreviewCanvas.designScopeStability.test.tsx` — isolada da árvore real do
 // `SarakUIProvider`, que contamina qualquer contagem de `computeColorVariants` com
 // chamadas do `DesignInjector` de nível superior do Provider (não relacionadas a

@@ -84,7 +84,7 @@ const PreviewDeviceSurface = (props: PreviewDeviceSurfaceProps): React.ReactElem
         <SarakDeviceProvider overrideDevice={previewDevice}>
             <SarakDesignScope
                 design={activeDesign}
-                className={`@container sarak-device-${previewDevice} w-full h-full flex flex-col overflow-hidden relative isolate ${activeDesign.texture && activeDesign.texture !== 'none' ? 'texture-active' : ''}`}
+                className={`@container sarak-device-${previewDevice} w-full h-full flex flex-col overflow-y-auto overflow-x-hidden overscroll-contain relative isolate ${activeDesign.texture && activeDesign.texture !== 'none' ? 'texture-active' : ''}`}
                 data-sx-texture={activeDesign.texture}
             >
                 <div
@@ -93,7 +93,7 @@ const PreviewDeviceSurface = (props: PreviewDeviceSurfaceProps): React.ReactElem
                     style={{ backgroundColor: activeDesign.globalBackgroundImageUrl ? 'transparent' : 'var(--sarak-bg-base)' }}
                 />
                 <div
-                    className="absolute inset-0 origin-top-left overflow-hidden z-10"
+                    className="absolute inset-0 origin-top-left overflow-y-auto overflow-x-hidden z-10"
                     style={{ width: `${(100 / scale).toFixed(2)}%`, height: `${(100 / scale).toFixed(2)}%`, transform: `scale(${scale})` }}
                 >
                     <SarakAppChrome

@@ -2008,10 +2008,18 @@
   {
    "id": "inputPadding",
    "group": "inputs",
-   "label": "Espaçamento Interno (Y)",
+   "label": "Espaçamento Interno Vertical (Y)",
    "kind": "functional",
    "modeDependent": false,
-   "usage": "Controla o espaço vertical interno dos campos e, com isso, sua altura e área de toque."
+   "usage": "Controla o espaço interno vertical dos campos e, com isso, sua altura e área de toque."
+  },
+  {
+   "id": "inputPaddingHorizontal",
+   "group": "inputs",
+   "label": "Espaçamento Interno Horizontal (X)",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Controla o espaço interno horizontal padrão do SarakInput, afastando o texto das bordas laterais."
   },
   {
    "id": "inputShadow",

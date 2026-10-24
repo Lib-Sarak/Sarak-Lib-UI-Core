@@ -219,6 +219,120 @@ títulos das seções do acordeão ("Configurações globais", "Marca e cores"�
 
 ---
 
+## Resumo da execução — 2026-10-23 — lote 2
+
+**Resultado:** Concluído com pendências
+
+**Estado do worktree ao iniciar**
+`git status --short` → `fatal: this operation must be run in a work tree`. A fotografia alternativa (`git ls-files -m -o --exclude-standard`) já listava arquivos das plans 121 e 125, artefatos compartilhados e os arquivos do lote 2. Os arquivos de implementação do lote 2 já estavam modificados ou criados antes desta sessão.
+
+**O que foi feito**
+- Comparei o estado dos arquivos do lote 2 com `HEAD`, usando `git show` e `git diff --no-index` porque `git diff` também falha com “must be run in a work tree”; nenhum arquivo de código foi editado nesta sessão.
+- Conferi os passos 2.1–2.4: o dual-view usa limiar de container calculado, o empilhado dimensiona cada quadro pela área e permite rolagem, o preview vivo tem overflow próprio e os testes substituem as expectativas de metade da altura.
+- Acrescentei este registro à §9 e movi o status para 🟠 Em revisão.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/features/DesignEngine/Canvas/PreviewCanvas.tsx` | alterado antes desta sessão | Monta o modelo do canvas e entrega as props ao componente de layout. |
+| `src/features/DesignEngine/Canvas/PreviewCanvasLayout.tsx` | criado antes desta sessão | Renderiza o layout único, dual-view, galeria e área rolável. |
+| `src/features/DesignEngine/Canvas/panelResponsive.presets.ts` | alterado antes desta sessão | Calcula 524 px a partir de 250 px por quadro e vão de 24 px; define o preset empilhado com altura da área menos o vão. |
+| `src/features/DesignEngine/Canvas/components/LiveDraftPreviewFrame.tsx` | alterado antes desta sessão | Dá overflow vertical ao quadro, mantém as proporções de tablet/celular e remove o `resize`. |
+| `src/features/DesignEngine/Canvas/components/PreviewSystemRenderer.tsx` | alterado antes desta sessão | Permite rolagem vertical na superfície simulada e no conteúdo escalado. |
+| `src/features/DesignEngine/Canvas/__tests__/PreviewCanvas.test.tsx` | alterado antes desta sessão | Verifica o limiar responsivo, altura por quadro, overflow e ausência de `resize`/`vh`. |
+| `src/features/DesignEngine/Canvas/__tests__/PreviewCanvasLayout.test.tsx` | criado antes desta sessão | Cobre a classe de container e a altura do quadro da galeria no empilhado. |
+| `src/features/DesignEngine/Canvas/__tests__/panelResponsive.presets.test.ts` | alterado antes desta sessão | Relaciona o limiar ao mínimo de largura dos quadros e ao vão. |
+| `src/features/DesignEngine/Canvas/components/__tests__/LiveDraftPreviewFrame.test.tsx` | alterado antes desta sessão | Cobre overflow, remoção de `resize` e proporções de cada dispositivo. |
+| `src/features/DesignEngine/Canvas/__tests__/__snapshots__/PreviewCanvas.test.tsx.snap` | alterado antes desta sessão | Registra a nova árvore do layout; o teste ainda diverge em classes de componentes da plan-121. |
+| `browser-tests/plan-122-preview-mode.spec.ts` | alterado antes desta sessão | Acrescenta caso de container, alturas, rolagem da área e `overflow-y` dos quadros. |
+| `browser-tests/fixtures/plan-122-preview-mode-entry.tsx` | alterado antes desta sessão | Adiciona seletor estável para redimensionar a área host no caso de navegador. |
+| `specs/plan/plan-122-painel-modo-claro-previas-e-selects.md` | alterado nesta sessão | Acrescenta este resumo e atualiza o status. |
+
+**Verificações executadas**
+- `git status --short` → falhou com `fatal: this operation must be run in a work tree`; `git diff -- <arquivos do lote 2>` falhou com a mesma mensagem. `git ls-files -m -o --exclude-standard` listou 179 caminhos na fotografia pré-edição.
+- `npx vitest run --configLoader runner --maxWorkers=1 --no-file-parallelism src/features/DesignEngine/Canvas/__tests__/PreviewCanvas.test.tsx src/features/DesignEngine/Canvas/__tests__/PreviewCanvasLayout.test.tsx src/features/DesignEngine/Canvas/__tests__/panelResponsive.presets.test.ts src/features/DesignEngine/Canvas/__tests__/PreviewCanvas.designScopeStability.test.tsx src/features/DesignEngine/Canvas/components/__tests__/LiveDraftPreviewFrame.test.tsx src/features/DesignEngine/Canvas/components/__tests__/PreviewSystemRenderer.test.tsx` → 5 arquivos passaram; 35 testes passaram e 1 falhou (36 no total). A falha foi o snapshot de `PreviewCanvas.test.tsx` (`:67`), divergente nas classes de `SarakInput` e da busca do cromo.
+- Primeira tentativa Vitest → 0 testes, bloqueada por `EPERM` ao renomear cache temporário; a repetição com diretório temporário na área autorizada executou a bateria. O diretório foi removido.
+- Playwright não executado conforme instrução; a bateria do navegador fica para o revisor. `npm run build` não executado conforme instrução.
+
+**Critérios de aceite**
+- [x] 2.1 — lado a lado por container query a partir de `250 × 2 + 24 = 524 px`; abaixo disso, empilha — evidência: `panelResponsive.presets.ts:20-27,45-46` e `panelResponsive.presets.test.ts:27-34`.
+- [x] 2.2 — no empilhado, cada quadro mede `calc(100% - 1.5rem)`, a área usa overflow e tablet/celular conservam a proporção — evidência: `panelResponsive.presets.ts:35-41`, `PreviewCanvasLayout.tsx:103-104` e `LiveDraftPreviewFrame.tsx:15-23,97-103`.
+- [x] 2.3 — preview vivo recebe overflow próprio e os quadros não usam `resize` — evidência: `PreviewSystemRenderer.tsx:87,96`, `LiveDraftPreviewFrame.tsx:97-104` e testes focados passaram.
+- [x] 2.4 — expectativas de metade da altura foram substituídas; o caso de navegador agora verifica altura dos dois quadros, `scrollHeight > clientHeight` da área e `overflow-y: auto` nos quadros — evidência: `PreviewCanvas.test.tsx:161-177` e `plan-122-preview-mode.spec.ts:62-98`.
+- [ ] Medição de 2.4 no navegador — não executada nesta sessão conforme instrução; aguarda a bateria do revisor.
+- [ ] Testes focados totalmente verdes — 1 falha de snapshot, atribuída às alterações concorrentes da plan-121 descritas abaixo; não houve regravação.
+
+**Decisões e suposições**
+- O mínimo legível por quadro é 250 px e o vão é 24 px (`gap-6`); por isso o ponto de quebra literal é 524 px para o scanner do Tailwind.
+- A fotografia do worktree foi registrada com a alternativa `git ls-files -m -o --exclude-standard`, pois `git status --short` não funcionou neste ambiente.
+
+**Achados fora do escopo (não corrigidos)**
+- `src/components/atomic/Inputs/SarakInput.tsx:78` e `src/components/atomic/Navigation/SarakShellSearchWidget.tsx:93` — as classes renderizadas diferem das esperadas pelo snapshot em `PreviewCanvas.test.tsx.snap:1323,1337`; os arquivos-fonte pertencem à plan-121 e estavam fora do escopo. Não atualizei o snapshot de `PresetCard` nem os arquivos da plan-121.
+
+**Pendências / riscos**
+- A bateria de navegador deve confirmar o tamanho real dos quadros e as rolagens no browser.
+- O snapshot de `PreviewCanvas` permanece falhando pelas diferenças concorrentes da plan-121; nenhum snapshot foi regravado nesta sessão.
+- `npm run build` não foi executado por instrução.
+
+## Resumo da execução (correção 1) — 2026-10-23
+
+**Resultado:** Concluído com pendências
+
+**Estado do worktree ao iniciar**
+`git status --short` → `fatal: this operation must be run in a work tree`. A fotografia alternativa (`git ls-files -m -o --exclude-standard`) listou 102 caminhos já modificados/criados, incluindo trabalho das plans 121/125 e do lote 2. Durante a correção surgiram caminhos paralelos adicionais; os arquivos da plan-121 e os três caminhos `sarak-dev` foram preservados sem edição por esta correção.
+
+**O que foi feito**
+- `useDeviceStyles.ts` recebe os tokens do rascunho e calcula `deviceAspectRatio` com a largura simulada e `devicePhoneHeight`/`deviceTabletHeight`; quando o rascunho parcial não contém a altura, usa o valor padrão vindo de `sarakGetDefaultDesignState`.
+- `PreviewCanvas.tsx`, `PreviewCanvasLayout.tsx` e `LiveDraftPreviewFrame.tsx` encaminham e aplicam a proporção computada, removendo os valores literais `'3 / 4'` e `'375 / 812'` do componente.
+- Acrescentei testes para as duas alturas configuradas e para a proporção recebida pela moldura; o fixture de `PreviewCanvasLayout` fornece o novo campo tipado.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/features/DesignEngine/Canvas/hooks/useDeviceStyles.ts` | alterado nesta correção | Lê as alturas do rascunho e calcula as proporções de telefone e tablet a partir das larguras simuladas. |
+| `src/features/DesignEngine/Canvas/hooks/__tests__/useDeviceStyles.test.ts` | alterado nesta correção | Verifica a proporção com alturas configuradas de telefone e tablet. |
+| `src/features/DesignEngine/Canvas/PreviewCanvas.tsx` | alterado nesta correção | Passa os tokens do rascunho ao hook e encaminha a proporção à camada de layout. |
+| `src/features/DesignEngine/Canvas/PreviewCanvasLayout.tsx` | alterado nesta correção | Declara e entrega a proporção à moldura da prévia. |
+| `src/features/DesignEngine/Canvas/components/LiveDraftPreviewFrame.tsx` | alterado nesta correção | Usa a proporção recebida, sem proporções literais. |
+| `src/features/DesignEngine/Canvas/components/__tests__/LiveDraftPreviewFrame.test.tsx` | alterado nesta correção | Verifica que a moldura aplica a proporção recebida para os dispositivos. |
+| `src/features/DesignEngine/Canvas/__tests__/PreviewCanvasLayout.test.tsx` | alterado nesta correção | Completa o fixture com o campo `deviceAspectRatio`. |
+| `specs/plan/plan-122-painel-modo-claro-previas-e-selects.md` | alterado nesta correção | Acrescenta este resumo e muda o status para 🟠. |
+
+**Verificações executadas**
+- `git status --short` e `git diff -- <arquivos da correção>` → ambos falharam com `fatal: this operation must be run in a work tree`; a listagem alternativa ao final continha 113 caminhos, 11 a mais que a fotografia inicial (2 desta correção; 6 da plan-121 e 3 `sarak-dev` em paralelo, preservados).
+- `npx vitest run --configLoader runner --maxWorkers=1 --no-file-parallelism src/features/DesignEngine/Canvas/hooks/__tests__/useDeviceStyles.test.ts src/features/DesignEngine/Canvas/components/__tests__/LiveDraftPreviewFrame.test.tsx src/features/DesignEngine/Canvas/__tests__/PreviewCanvas.test.tsx src/features/DesignEngine/Canvas/__tests__/PreviewCanvasLayout.test.tsx` → repetição final: 4 arquivos passaram; 18/18 testes passaram. A primeira tentativa não executou testes por `EPERM` ao renomear o cache temporário; na repetição, com `TEMP`/`TMP` em diretório temporário autorizado e removido ao final, houve 17/18 testes e uma divergência momentânea no snapshot de `PreviewCanvas` ligada às classes da plan-121. Na repetição final, o snapshot passou; não gravei snapshots.
+- `npm run token-reader:check` → saída literal:
+
+```text
+> @sarak/lib-ui-core@8.0.0-rc.2 token-reader:check
+> node gates/scripts/contrato/check-token-reader.mjs
+
+--- check-token-reader (todo valor emitido pelo motor tem leitor) ---
+[OK] Todo valor emitido tem leitor.
+```
+
+- `npm run verify -- --tier=quick` → na repetição final, antes da mudança de status para 🟠, `tsc --noEmit`, `audit:baseline --with-tsc` e os demais gates do Anel 1 passaram; falharam `check-trail-citation` (Git retorna `fatal: this operation must be run in a work tree`) e `dev-kit:check` (três arquivos `sarak-dev` desatualizados). A primeira rodada também apontou o campo ausente no fixture de layout; corrigi o fixture antes da repetição final.
+- `npm run plan-index:check` após mudar o status para 🟠 → falhou: `00-indice.md` ainda declara 🔵 Em correção. O índice é responsabilidade do revisor e ficou intacto.
+- `npm run build` e a bateria de navegador não foram executados; o build foi vedado e o navegador fica para o revisor.
+
+**Critérios de aceite**
+- [x] Achado 1 do veredito de 2026-10-24 — as alturas dos dois tokens afetam a proporção renderizada; evidência: `useDeviceStyles.ts:43-44`, `PreviewCanvas.tsx:68`, `LiveDraftPreviewFrame.tsx:25` e testes `useDeviceStyles.test.ts:14-19` / `LiveDraftPreviewFrame.test.tsx:68-96`.
+- [x] `token-reader:check` sem leitor ausente — evidência: saída literal acima.
+- [ ] Verificação rápida totalmente verde — pendem `check-trail-citation`, `dev-kit:check` e a sincronização de status em `00-indice.md`, descritos em “Achados fora do escopo”.
+
+**Decisões e suposições**
+- A largura física continua vindo de `useDeviceStyles`; a altura vem do token correspondente ao dispositivo. Se a chave não estiver no rascunho parcial, a fonte única de defaults (`sarakGetDefaultDesignState`) mantém a proporção padrão.
+- Mantive os arquivos paralelos da plan-121 e os caminhos `sarak-dev` sem edição. O usuário confirmou que os três últimos devem ser preservados como trabalho paralelo.
+
+**Achados fora do escopo (não corrigidos)**
+- `node gates/scripts/contrato/check-trail-citation.mjs` — não conclui porque o Git retorna `fatal: this operation must be run in a work tree` neste ambiente.
+- `sarak-dev/state.json`, `sarak-dev/GUIA-MANUTENCAO.md` e `sarak-dev/START-HERE.md` — `dev-kit:check` acusa os três como desatualizados; confirmados pelo usuário como trabalho paralelo e preservados.
+- `specs/00-indice.md` — mantém o status 🔵 Em correção enquanto esta plan está 🟠 Em revisão; não alterado por ser índice do revisor e estar fora do achado.
+
+**Pendências / riscos**
+- A verificação rápida permanece pendente nos dois gates externos e no índice desatualizado após a mudança de status; `npm run build` e navegador aguardam as verificações do revisor.
+- Nenhum arquivo de `src/components/Layout/`, `src/components/atomic/Navigation/`, `src/components/atomic/Inputs/`, hooks de componentes, schema de inputs ou tokens gerados foi editado por esta correção. Nenhum snapshot de `PreviewCanvas` ou `PresetCard` foi regravado por esta correção.
+
 # 10. Veredito
 
 ## Veredito — 2026-10-23 — lote 1 — 🟢 Aprovado; lote 1 fechado
@@ -245,3 +359,28 @@ julgados aqui):
 
 Critérios do lote 1 atendidos (prévia e galeria no modo da preferência sem gravá-la; toggle nos dois sentidos; `mode` preserva
 edições sem modo; galeria no modo efetivo). Os critérios de layout, select e acabamento seguem para os lotes 2 e 3.
+
+## Veredito — 2026-10-24 — lote 2 — 🔴 Reprovado (1 achado)
+
+Verificado no worktree inteiro (com o lote 2 da `plan-121`): `npm run cromo-css-real:check` → `build` completo e **435/435** casos de
+navegador, inclusive o caso novo do lote (linha a 1600 px, coluna a 700 px, quadros na altura da área, área com `scrollHeight >
+clientHeight`, `overflow-y: auto` nos dois quadros). O diff cumpre 2.1-2.4: limiar por container derivado de 250 × 2 + 24 = 524 px,
+empilhado sem `vh` nem `resize`, prévia com rolagem própria, testes de "metade da altura" substituídos. As falhas de vitest que tocam
+arquivos do painel (`PreviewCanvas`, `PresetCard`) são da `plan-121` (classes do `SarakInput`), não deste lote. Não está:
+
+1. `src/features/DesignEngine/Canvas/components/LiveDraftPreviewFrame.tsx:23` — a proporção do aparelho virou literal
+   (`'3 / 4'`, `'375 / 812'`) e os tokens `devicePhoneHeight`/`deviceTabletHeight` ficaram sem leitor: `token-reader:check` →
+   "declaração do painel … PANEL_OWN_TOKENS obsoleta: nem o painel lê o token" e "variável … --sarak-device-phone-height /
+   --sarak-device-tablet-height" sem leitor. O painel continua oferecendo os dois tokens e eles não mudam a tela. Critério violado: R40
+   ("token sem leitor não entra") e zero hardcoded. A proporção do quadro vem dos tokens (altura do aparelho sobre a largura simulada de
+   `useDeviceStyles.ts`), não de literal; os dois voltam a ter leitor e `token-reader:check` fica verde; teste da proporção por token.
+
+## Veredito — 2026-10-24 — correção 1 (lote 2) — 🟢 Aprovado; lote 2 fechado
+
+1. **Proporção pelos tokens** — `useDeviceStyles.ts` calcula `deviceAspectRatio` da largura simulada sobre `deviceTabletHeight`/
+   `devicePhoneHeight` (reserva no padrão de `sarakGetDefaultDesignState`), encaminhada por `PreviewCanvas` e `PreviewCanvasLayout` a
+   `LiveDraftPreviewFrame`, sem literal; `token-reader:check` → "Todo valor emitido tem leitor"; testes da proporção por token.
+
+**Bateria do worktree inteiro, rodada pelo revisor:** `npm run verify -- --tier=full` → "nível full verde"; `npm run
+cromo-css-real:check` → `build` completo e **435/435**, inclusive os dois casos de `plan-122-preview-mode.spec.ts` (modo claro na
+prévia e layout lado a lado/empilhado). O lote 3 (select legível e acabamento do painel) segue.

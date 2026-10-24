@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Dar a titulo, subtitulo e destaque cor propria em cada tema"
 objetivo: "Fazer titulos, subtitulos e textos de destaque aparecerem com cor propria, distinta do texto corrido, em todos os componentes que os desenham e em cada um dos 19 temas, com contraste medido"
 dominio: "Design Engine / Tipografia / Temas"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "tokens", "tipografia", "cor", "temas", "contraste", "rc"]
 relacionados: ["[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[09-temas-e-presets]]", "[[03-superficie-publica]]", "[[10-seguranca-e-acessibilidade]]"]

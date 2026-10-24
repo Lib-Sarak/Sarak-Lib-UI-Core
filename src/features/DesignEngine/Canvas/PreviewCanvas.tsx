@@ -1,19 +1,14 @@
 import React from 'react';
-import { UIContext, useSarakUI } from '../../../core/Provider/SarakUIProvider';
-import { PresetsCatalog } from './components/PresetsCatalog';
-import { LiveDraftPreviewFrame } from './components/LiveDraftPreviewFrame';
-
-import { SarakDesignScope } from '../../../core/Design/components/DesignScope';
+import { PreviewCanvasLayout, type PreviewCanvasLayoutProps } from './PreviewCanvasLayout';
+import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { usePreviewApps } from './hooks/usePreviewApps';
 import { useInspector } from './hooks/useInspector';
 import { useDeviceStyles } from './hooks/useDeviceStyles';
 import { usePreviewContextValue, useApplyPreset } from './hooks/useDesignOperations';
 import { PreviewSystemRenderer } from './components/PreviewSystemRenderer';
-import { PREVIEW_DUAL_VIEW_ROW } from './panelResponsive.presets';
-import { SarakUIOptions, SarakUIContextType } from '../../../core/Provider/types';
-import { SarakDesignState } from '../../../core/Provider/types';
-import { SarakTokenValue } from '../../../core/Design/types';
-import { SarakStyle } from '../../../core/Provider/components/SarakStyle';
+import { getPreviewLayoutPreset } from './panelResponsive.presets';
+import type { SarakDesignState, SarakUIContextType, SarakUIOptions } from '../../../core/Provider/types';
+import type { SarakTokenValue } from '../../../core/Design/types';
 
 interface PreviewCanvasProps {
     previewDevice: 'desktop' | 'tablet' | 'smartphone';
@@ -36,139 +31,87 @@ interface PreviewCanvasProps {
     onCloseGallery?: () => void;
 }
 
-export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
-    previewDevice,
-    previewLayoutId,
-    activePreviewApp,
-    selectPreviewApp,
-    previewAnimationStyle,
-    config,
-    previewPrimaryColor,
-    mode,
-    draftMode,
-    draftTokens,
-    activeSectionId,
-    onUpdateDraft,
-    isDualView,
-    isPreviewStacked,
-    sarak,
-    onInspectComponent,
-    onApplyFullTheme,
-    onCloseGallery,
-}) => {
-    const handleApplyPreset = useApplyPreset(onUpdateDraft, onApplyFullTheme);
+interface PreviewCanvasModelState {
+    design: Partial<SarakDesignState>;
+    contextValue: SarakUIContextType;
+    tokens: Partial<SarakDesignState>;
+    apps: Record<string, React.ReactNode>;
+    deviceStyles: ReturnType<typeof useDeviceStyles>;
+    isInspecting: boolean;
+    setIsInspecting: (value: boolean) => void;
+    isGalleryStacked: boolean;
+    layoutPreset: ReturnType<typeof getPreviewLayoutPreset>;
+    onApplyPreset: ReturnType<typeof useApplyPreset>;
+}
 
+const createPreviewCanvasLayoutProps = (
+    props: PreviewCanvasProps,
+    state: PreviewCanvasModelState,
+): PreviewCanvasLayoutProps => {
+    const previewContent = (
+        <PreviewSystemRenderer
+            sarak={props.sarak}
+            tokens={state.tokens}
+            isDualView={props.isDualView}
+            previewDevice={props.previewDevice}
+            activePreviewApp={props.activePreviewApp}
+            selectPreviewApp={props.selectPreviewApp}
+            apps={state.apps}
+        />
+    );
+
+    return {
+        design: state.design,
+        contextValue: state.contextValue,
+        previewDevice: props.previewDevice,
+        targetWidth: state.deviceStyles.targetWidth,
+        deviceAspectRatio: state.deviceStyles.deviceAspectRatio,
+        getDeviceFrameStyles: state.deviceStyles.getDeviceFrameStyles,
+        isDualView: props.isDualView,
+        isGalleryStacked: state.isGalleryStacked,
+        isInspecting: state.isInspecting,
+        setIsInspecting: state.setIsInspecting,
+        mode: props.mode,
+        draftMode: props.draftMode,
+        sarak: props.sarak,
+        onApplyPreset: state.onApplyPreset,
+        onApplyFullTheme: props.onApplyFullTheme,
+        onCloseGallery: props.onCloseGallery,
+        previewContent,
+        layoutPreset: state.layoutPreset,
+    };
+};
+
+const usePreviewCanvasModel = (props: PreviewCanvasProps): PreviewCanvasLayoutProps => {
     const parentContext = useSarakUI();
-    const tokens = React.useMemo(() => ({ ...draftTokens }), [draftTokens]);
-
-    // plan-36: `useDesignVariables` (dentro do `DesignScope` abaixo) já memoiza a própria
-    // saída por referência do `design` recebido — mas um literal `{ ...tokens, x }`
-    // escrito direto no JSX é um objeto NOVO a cada render, então essa memoização nunca
-    // acertava cache: o dicionário inteiro de tokens (incl. `computeColorVariants` por
-    // cor com `generateVariants`) era recomputado em QUALQUER re-render deste
-    // componente — toggle de nav, arrasto de resize, troca de app mock — não só quando
-    // o rascunho mudava de verdade. Estabilizar a referência aqui é o que faz a
-    // memoização já existente no motor (fora do escopo desta plan) valer a pena.
-    const outerScopeDesign = React.useMemo(
+    const tokens = React.useMemo(() => ({ ...props.draftTokens }), [props.draftTokens]);
+    const design = React.useMemo(
         () => ({ ...tokens, globalBackgroundImageUrl: undefined }),
         [tokens],
     );
+    const { isInspecting, setIsInspecting } = useInspector(props.onInspectComponent);
+    const contextValue = usePreviewContextValue(parentContext, tokens, props.onUpdateDraft) as SarakUIContextType;
+    const apps = usePreviewApps(tokens, props.config, props.previewAnimationStyle, props.selectPreviewApp);
+    const deviceStyles = useDeviceStyles(props.previewDevice, tokens);
+    const isGalleryStacked = Boolean(props.isDualView && props.isPreviewStacked);
+    const layoutPreset = getPreviewLayoutPreset(isGalleryStacked);
+    const onApplyPreset = useApplyPreset(props.onUpdateDraft, props.onApplyFullTheme);
 
-    const { isInspecting, setIsInspecting } = useInspector(onInspectComponent);
+    return createPreviewCanvasLayoutProps(props, {
+        design,
+        contextValue,
+        tokens,
+        apps,
+        deviceStyles,
+        isInspecting,
+        setIsInspecting,
+        isGalleryStacked,
+        layoutPreset,
+        onApplyPreset,
+    });
+};
 
-    const previewContextValue = usePreviewContextValue(parentContext, tokens, onUpdateDraft);
-
-    const apps = usePreviewApps(tokens, config, previewAnimationStyle, selectPreviewApp);
-
-    const renderSystemContent = () => {
-        return (
-            <PreviewSystemRenderer 
-                sarak={sarak}
-                tokens={tokens}
-                isDualView={isDualView}
-                previewDevice={previewDevice}
-                activePreviewApp={activePreviewApp}
-                selectPreviewApp={selectPreviewApp}
-                apps={apps}
-            />
-        );
-    };
-
-    const isGalleryStacked = isDualView && isPreviewStacked;
-    const { targetWidth, getDeviceFrameStyles } = useDeviceStyles(previewDevice);
-
-    return (
-        <SarakDesignScope design={outerScopeDesign} className="w-full h-full flex flex-col relative overflow-auto bg-[var(--color-theme-bg,#06080d)] p-0 custom-scrollbar">
-            <UIContext.Provider value={previewContextValue as SarakUIContextType}>
-                {/* `@container`: fronteira de medida do dual-view abaixo — o par lado a lado
-                    (Gêmeo Digital + catálogo) passa a reagir ao espaço REAL deste painel, não
-                    à largura da janela (plan-35, fecha 06-painel-de-customizacao-e-preview.md
-                    §6.2). */}
-                <div className="@container flex-1 w-full h-full flex flex-col gap-6 p-6 overflow-visible">
-
-                    {/* Linha Superior: Previews Actuais (Restaurando flex-1 e min-h-0 para comportamento original) */}
-                    <div className={`flex-1 w-full min-h-0 flex gap-6 items-stretch overflow-visible ${isGalleryStacked ? 'flex-col items-center' : `flex-col ${PREVIEW_DUAL_VIEW_ROW} justify-center`}`}>
-                        {isDualView ? (
-                        <>
-                            {/* Live Draft Preview */}
-                            <LiveDraftPreviewFrame
-                                previewDevice={previewDevice}
-                                isPreviewStacked={isGalleryStacked}
-                                targetWidth={targetWidth}
-                                getDeviceFrameStyles={getDeviceFrameStyles}
-                                isInspecting={isInspecting}
-                                setIsInspecting={setIsInspecting}
-                            >
-                                {renderSystemContent()}
-                            </LiveDraftPreviewFrame>
-
-
-                            {/* Catalog Preview (Engine Controls) */}
-                            <div className={`relative rounded-[var(--sarak-device-frame-radius,2rem)] border border-theme-border shadow-theme overflow-hidden sarak-card transition-colors duration-[var(--sarak-motion-dur-slow,0.6s)] flex flex-col min-w-[var(--sarak-device-desktop-min-width,250px)] resize ${isGalleryStacked ? 'w-full flex-1 min-h-0' : 'w-1/2 h-full min-h-[var(--sarak-engine-min-h-sm,300px)] shrink-0'}`}>
-                                <PresetsCatalog
-                                    onApplyPreset={handleApplyPreset}
-                                    onApplyFullTheme={onApplyFullTheme}
-                                    currentMode={mode}
-                                    draftMode={draftMode}
-                                    sarak={sarak}
-                                    onClose={() => onCloseGallery?.()}
-                                />
-                            </div>
-                        </>
-                    ) : (
-                        <div
-                            className="relative h-full rounded-2xl border border-[var(--theme-border)] shadow-theme overflow-hidden bg-[var(--theme-surface)] transition-all duration-[var(--sarak-motion-dur-slow,0.6s)] mx-auto max-w-full"
-                            style={{ width: targetWidth } as React.CSSProperties}
-                        >
-                            {renderSystemContent()}
-                        </div>
-                    )}
-
-                    </div>
-                </div>
-            </UIContext.Provider>
-
-            <SarakStyle dangerouslySetInnerHTML={{
-                __html: `
-                .custom-scrollbar::-webkit-scrollbar {
-                    width: var(--sarak-scroll-width, 6px);
-                    height: var(--sarak-scroll-width, 6px);
-                }
-                .custom-scrollbar::-webkit-scrollbar-track {
-                    background: transparent;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: var(--sarak-scroll-thumb-color, #ffffff);
-                    border-radius: var(--sarak-scroll-radius, 10px);
-                    border: var(--sarak-scroll-padding, 2px) solid transparent;
-                    background-clip: padding-box;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background: var(--theme-primary, #19e3f0);
-                    background-clip: padding-box;
-                    opacity: var(--sarak-scroll-thumb-hover-opacity, 0.5);
-                }
-            `}} />
-        </SarakDesignScope>
-    );
+export const PreviewCanvas = (props: PreviewCanvasProps): React.ReactElement => {
+    const model = usePreviewCanvasModel(props);
+    return <PreviewCanvasLayout {...model} />;
 };

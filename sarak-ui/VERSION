@@ -3,7 +3,7 @@
 # para saber se as cópias movidas para specs/ e .claude/skills/ estão velhas.
 libVersion=8.0.0-rc.2
 kitSchemaVersion=1
-kitHash=886bb661eaf4
+kitHash=cdc0d415ca0b
 components=105
-designTokens=400
+designTokens=401
 iconNames=117

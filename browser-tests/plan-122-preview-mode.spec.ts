@@ -58,3 +58,43 @@ test('a prévia e os cartões acompanham a preferência clara e o toggle alterna
 
     await page.close();
 });
+
+test('o dual-view usa o espaço do container e o empilhado rola os dois quadros', async () => {
+    const page = await browser.newPage();
+    await page.goto(harnessUrl);
+    await page.getByRole('button', { name: 'Abrir galeria' }).click();
+
+    const panelHost = page.getByTestId('plan-122-panel-host');
+    const previewLayout = page.getByTestId('preview-layout');
+    const getLayoutDirection = (): Promise<string> =>
+        previewLayout.evaluate((layout) => getComputedStyle(layout).flexDirection);
+
+    await expect.poll(getLayoutDirection).toBe('row');
+    await panelHost.evaluate((element) => {
+        (element as HTMLElement).style.width = '700px';
+    });
+    await expect.poll(getLayoutDirection).toBe('column');
+
+    await panelHost.evaluate((element) => {
+        (element as HTMLElement).style.width = '1600px';
+    });
+    await expect.poll(getLayoutDirection).toBe('row');
+    await page.getByRole('switch', { name: 'Empilhar previews' }).check({ force: true });
+
+    const liveFrame = page.getByTestId('live-preview-frame');
+    const catalogFrame = page.getByTestId('catalog-preview-frame');
+    await expect.poll(async () => previewLayout.evaluate((layout) => layout.scrollHeight > layout.clientHeight)).toBe(true);
+    await expect.poll(async () => {
+        const layoutHeight = await previewLayout.evaluate((layout) => layout.clientHeight);
+        const gap = await previewLayout.evaluate((layout) => Number.parseFloat(getComputedStyle(layout).rowGap));
+        const frameHeights = await Promise.all([
+            liveFrame.evaluate((frame) => frame.getBoundingClientRect().height),
+            catalogFrame.evaluate((frame) => frame.getBoundingClientRect().height),
+        ]);
+        return frameHeights.every((height) => Math.abs(height - (layoutHeight - gap)) <= 2);
+    }).toBe(true);
+
+    expect(await liveFrame.evaluate((frame) => getComputedStyle(frame).overflowY)).toBe('auto');
+    expect(await catalogFrame.evaluate((frame) => getComputedStyle(frame).overflowY)).toBe('auto');
+    await page.close();
+});

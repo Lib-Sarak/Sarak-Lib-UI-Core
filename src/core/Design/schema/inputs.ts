@@ -45,15 +45,29 @@ export const InputsSchema: ComponentSchema = {
             id: 'inputPadding',
             kind: 'functional',
             modeDependent: false,
-            usage: "Controla o espaço vertical interno dos campos e, com isso, sua altura e área de toque.",
-            label: 'Espaçamento Interno (Y)',
+            usage: "Controla o espaço interno vertical dos campos e, com isso, sua altura e área de toque.",
+            label: 'Espaçamento Interno Vertical (Y)',
             type: 'slider',
-            description: 'Espaçamento vertical interno do campo de entrada, em pixels — controla a altura/"respiro" do input. Valores maiores aumentam a área de toque; valores menores deixam o campo mais compacto.',
+            description: 'Espaçamento interno vertical do campo de entrada, em pixels. Controla a altura e o respiro vertical do input. A variável --sarak-input-padding-vertical é a forma explícita; --sarak-input-padding permanece como alias legado deste eixo.',
             axis: 'geometry',
             unit: 'px',
             constraints: { min: 0, max: 32 },
             defaultValue: 16,
-            cssVars: ['--sarak-input-padding']
+            cssVars: ['--sarak-input-padding-vertical', '--sarak-input-padding']
+        },
+        {
+            id: 'inputPaddingHorizontal',
+            kind: 'functional',
+            modeDependent: false,
+            usage: "Controla o espaço interno horizontal padrão do SarakInput, afastando o texto das bordas laterais.",
+            label: 'Espaçamento Interno Horizontal (X)',
+            type: 'slider',
+            description: 'Espaçamento interno horizontal padrão do SarakInput, em pixels. A variável --sarak-input-padding-horizontal governa os lados esquerdo e direito, exceto o espaço adicional reservado para ícones.',
+            axis: 'geometry',
+            unit: 'px',
+            constraints: { min: 0, max: 32 },
+            defaultValue: 16,
+            cssVars: ['--sarak-input-padding-horizontal']
         },
         {
             id: 'inputBorderType',

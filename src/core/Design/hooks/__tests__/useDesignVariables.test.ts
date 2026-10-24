@@ -33,6 +33,20 @@ describe('useDesignVariables — maxContentWidth fluido', () => {
     });
 });
 
+describe('useDesignVariables — padding explícito por eixo', () => {
+    it('emite variáveis verticais e horizontais e mantém o alias legado vertical', () => {
+        const { result } = renderHook(() => useDesignVariables({
+            ...sarakGetDefaultDesignState(),
+            inputPadding: 9,
+            inputPaddingHorizontal: 13,
+        }));
+
+        expect(result.current.variables['--sarak-input-padding-vertical']).toBe('9px');
+        expect(result.current.variables['--sarak-input-padding']).toBe('9px');
+        expect(result.current.variables['--sarak-input-padding-horizontal']).toBe('13px');
+    });
+});
+
 /**
  * plan-08 F5 (achado 11) — este é o ÚNICO dos caminhos de responsividade que já lia o
  * token. O teste fixa esse comportamento para que o alinhamento com o detector JS

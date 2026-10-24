@@ -25,6 +25,20 @@ continua ocupando toda a largura disponível. Para gravações novas, a opção 
 `fluid` e convertida em CSS pela biblioteca; não grave a expressão CSS no tema. Uma configuração
 explícita já salva continua valendo.
 
+### Padding dos campos por eixo
+
+`--sarak-input-padding-vertical` controla o respiro vertical e a altura do `SarakInput`;
+`--sarak-input-padding-horizontal` controla os lados esquerdo e direito quando não há ícones.
+`--sarak-input-padding` permanece como alias vertical, mas está depreciada. Um campo próprio que
+precisa dos dois eixos deve usar as variáveis separadamente, com seus fallbacks:
+
+```css
+padding: var(--sarak-input-padding-vertical, 8px) var(--sarak-input-padding-horizontal, 12px);
+```
+
+O padrão anterior `padding: var(--sarak-input-padding, 8px 12px)` recebia o valor vertical da
+biblioteca como fallback de uma única dimensão e deixava o texto sem respiro lateral.
+
 ### Pisos mínimos de peers e dependência na 8.0.0
 
 **Classificação: MAJOR.** Para receber as correções de segurança, atualize os pacotes opcionais

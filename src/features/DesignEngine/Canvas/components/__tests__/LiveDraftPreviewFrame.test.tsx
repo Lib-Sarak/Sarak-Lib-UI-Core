@@ -7,12 +7,13 @@ import { LiveDraftPreviewFrame } from '../LiveDraftPreviewFrame';
 const defaultProps = {
     previewDevice: 'desktop' as const,
     targetWidth: '100%',
+    deviceAspectRatio: undefined,
     getDeviceFrameStyles: () => 'rounded-2xl',
     isInspecting: false,
     setIsInspecting: vi.fn(),
 };
 
-describe('LiveDraftPreviewFrame', () => {
+describe('LiveDraftPreviewFrame rendering', () => {
     it('renderiza o conteúdo filho (o gêmeo digital renderizado)', () => {
         render(
             <LiveDraftPreviewFrame {...defaultProps}>
@@ -37,7 +38,9 @@ describe('LiveDraftPreviewFrame', () => {
         );
         expect(screen.getByTitle('Modo de Inspeção (Selecionar elemento)')).toBeInTheDocument();
     });
+});
 
+describe('LiveDraftPreviewFrame inspection actions', () => {
     it('clicar no botão de inspeção chama setIsInspecting invertendo o estado atual', () => {
         const setIsInspecting = vi.fn();
         render(
@@ -58,26 +61,40 @@ describe('LiveDraftPreviewFrame', () => {
         );
         expect(screen.getByText('Clique em um componente para inspecionar')).toBeInTheDocument();
     });
+});
 
+describe('LiveDraftPreviewFrame stacked layout', () => {
     it.each(['desktop', 'tablet', 'smartphone'] as const)(
-        'usa o espaço flexível do contêiner ao empilhar em %s',
+        'mantém a moldura rolável e a proporção do aparelho ao empilhar em %s',
         (previewDevice) => {
+            const deviceAspectRatio = previewDevice === 'tablet'
+                ? '768 / 1100'
+                : previewDevice === 'smartphone'
+                    ? '375 / 900'
+                    : undefined;
             const { container } = render(
                 <LiveDraftPreviewFrame
                     {...defaultProps}
                     previewDevice={previewDevice}
                     isPreviewStacked
+                    deviceAspectRatio={deviceAspectRatio}
                 >
                     <div />
                 </LiveDraftPreviewFrame>,
             );
 
-            const frame = container.firstElementChild as HTMLElement;
-            expect(frame.className).toMatch(/\bflex-1\b/);
-            expect(frame.className).toMatch(/\bmin-h-0\b/);
+            const frame = container.querySelector('[data-testid="live-preview-frame"]') as HTMLElement;
+            const deviceViewport = container.querySelector('[data-testid="device-viewport"]') as HTMLElement;
+            expect(frame.className).toContain('overflow-y-auto');
+            expect(frame.className).not.toMatch(/\bresize\b/);
             expect(frame.className).not.toMatch(/vh\]/);
-            expect(frame.style.height).toBe('');
+            expect(frame.style.height).toBe('calc(100% - 1.5rem)');
             expect(frame.style.maxHeight).toBe('');
+            if (previewDevice === 'desktop') {
+                expect(deviceViewport.style.height).toBe('100%');
+            } else {
+                expect(deviceViewport.style.aspectRatio).toBe(deviceAspectRatio);
+            }
         },
     );
 });

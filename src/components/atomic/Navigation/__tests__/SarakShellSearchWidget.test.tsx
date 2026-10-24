@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { act, render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import { SarakShellSearchWidget } from '../SarakShellSearchWidget';
@@ -29,7 +29,7 @@ describe('ShellSearchWidget', () => {
         expect(screen.getByText('Dashboard App')).toBeInTheDocument();
     });
 
-    it('selecionar resultado clicável chama onSelect com o item e fecha a lista', () => {
+    it('com callback, seleciona o resultado e cancela a navegação do link', () => {
         const onSelect = vi.fn();
         customRender(
             <SarakShellSearchWidget
@@ -40,11 +40,62 @@ describe('ShellSearchWidget', () => {
             />,
         );
         fireEvent.change(screen.getByPlaceholderText('Busca inteligente…'), { target: { value: 'Projetos' } });
-        const result = screen.getByRole('link', { name: /Projetos/ });
+        const result = screen.getByRole('option', { name: /Projetos/ });
+        const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true, button: 0 });
+        act(() => result.dispatchEvent(clickEvent));
 
-        fireEvent.click(result);
+        expect(clickEvent.defaultPrevented).toBe(true);
         expect(onSelect).toHaveBeenCalledWith({ id: '/projetos', label: 'Projetos', category: 'Gestão' });
-        expect(screen.queryByRole('link', { name: /Projetos/ })).not.toBeInTheDocument();
+        expect(screen.queryByRole('option', { name: /Projetos/ })).not.toBeInTheDocument();
+    });
+
+    it('sem callback, mantém um href real sem cancelar a navegação', () => {
+        customRender(
+            <SarakShellSearchWidget
+                variant="bar"
+                onClick={vi.fn()}
+                items={[{ id: '#/projetos', label: 'Projetos' }]}
+            />,
+        );
+        fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Projetos' } });
+        const result = screen.getByRole('option', { name: /Projetos/ });
+        expect(result).toHaveAttribute('href', '#/projetos');
+        const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true, button: 0 });
+        act(() => result.dispatchEvent(clickEvent));
+        expect(clickEvent.defaultPrevented).toBe(false);
+        expect(screen.queryByRole('option', { name: /Projetos/ })).not.toBeInTheDocument();
+    });
+
+    it('o combobox expõe a lista e o resultado ativo; setas + Enter usam o callback', () => {
+        const onSelect = vi.fn();
+        customRender(
+            <SarakShellSearchWidget
+                variant="bar"
+                onClick={vi.fn()}
+                onSelect={onSelect}
+                items={[{ id: '/a', label: 'Alpha' }, { id: '/b', label: 'Beta' }]}
+            />,
+        );
+        const input = screen.getByRole('combobox');
+        fireEvent.change(input, { target: { value: 'a' } });
+        expect(input).toHaveAttribute('aria-controls', screen.getByRole('listbox').id);
+        expect(input).toHaveAttribute('aria-activedescendant', screen.getByRole('option', { name: /Alpha/ }).id);
+        fireEvent.keyDown(input, { key: 'ArrowDown' });
+        fireEvent.keyDown(input, { key: 'Enter' });
+        expect(onSelect).toHaveBeenCalledWith({ id: '/b', label: 'Beta' });
+    });
+
+    it('mostra o atalho só enquanto o campo está vazio e sem foco', () => {
+        customRender(<SarakShellSearchWidget variant="bar" onClick={vi.fn()} />);
+        const input = screen.getByRole('combobox');
+        expect(screen.getByTestId('sarak-shell-search-shortcut')).toBeInTheDocument();
+        expect(screen.getByTestId('sarak-shell-search-shortcut')).toHaveTextContent('Ctrl+K');
+        fireEvent.focus(input);
+        expect(screen.queryByTestId('sarak-shell-search-shortcut')).not.toBeInTheDocument();
+        expect(input.style.boxShadow).toContain('var(--sarak-focus-width, 2px)');
+        fireEvent.blur(input);
+        fireEvent.change(input, { target: { value: 'busca' } });
+        expect(screen.queryByTestId('sarak-shell-search-shortcut')).not.toBeInTheDocument();
     });
 });
 
