@@ -3,11 +3,11 @@ tipo: "plan"
 titulo: "Entregar as pecas que compoem uma pagina para o importador nao montar a estrutura a mao"
 objetivo: "Fazer o importador montar uma tela de lista e uma tela de detalhe so com pecas da lib, cabecalho de pagina, barra de filtros, controle segmentado, secao, linha de recurso e par rotulo-valor, com o ritmo, a hierarquia e os estados vindos do tema, e o kit ensinando os dois moldes"
 dominio: "Componentes / Composição de página / Kit do consumidor"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "componentes", "composicao", "pagina", "kit", "rc"]
 relacionados: ["[[03-superficie-publica]]", "[[02-design-engine]]", "[[12-kit-do-consumidor]]", "[[07-responsividade-e-multidispositivo]]", "[[10-seguranca-e-acessibilidade]]"]
-depende_de: "plan-123-hierarquia-de-cor-no-texto"
+depende_de: "—"
 retida_por: ""
 destino_sintese: "arquitetura/03-superficie-publica.md + specs/12-kit-do-consumidor.md + arquitetura/02-design-engine.md"
 ---
@@ -39,7 +39,8 @@ a estrutura da página é feita à mão:
   entre o átomo e o template: o cabeçalho de página, a barra de filtros, o segmentado, a seção, a linha de recurso e o par rótulo-valor.
   É essa lacuna que faz cada tela ter o próprio ritmo.
 - Decisão do dono (2026-10-23): tudo que deixar a lib "mais mastigada" para o importador vale; a plan foi aprovada.
-- Depende da `plan-123`: as peças usam os papéis de cor (título, subtítulo, destaque) e o degrau de título de cartão que ela cria.
+- As peças usam os papéis de cor (título, subtítulo, destaque), o piso de 11 px e o degrau de título de cartão que a `plan-123` criou
+  (aprovada e sintetizada em 2026-10-24): hoje em [[02-design-engine]] §10.3.
 
 # 3. Escopo
 
@@ -79,7 +80,7 @@ a estrutura da página é feita à mão:
 | Spec fixa | `specs/10-seguranca-e-acessibilidade.md` | alvo de toque, foco, papéis ARIA, textos pelo i18n |
 | Spec fixa | `specs/12-kit-do-consumidor.md` (§2, §2.2, §3) | o kit não se escreve à mão onde muda; reuso, não reimplementação |
 | Spec fixa | `specs/00-regras-e-invariantes.md` (R40-R44) | leitor, cascata, variável com um dono, cor do tema |
-| Plan | `specs/plan/plan-123-hierarquia-de-cor-no-texto.md` | os papéis de cor e o degrau de título que as peças usam |
+| Spec fixa | `arquitetura/02-design-engine.md` (§10.3) | os papéis de cor de texto, o piso de 11 px e o degrau de título de cartão que as peças usam |
 | Contexto | `00-contexto.md` · `00-knowledge.md` | sempre |
 | **Skill** | `padrao-escrita` + `padrao-typescript` · `test-unitario` · `ui-novo-componente` (componente novo no barril, catálogo e paridade) · `ui-integra-consumidor` (o kit) · `ui-criar-tema` (só se nascer token estético) | escrita, testes, componente, kit, tema |
 | Código | `src/components/atomic/Layouts/`, `src/components/atomic/Cards/`, `src/components/atomic/Navigation/` (`SarakTabs`, `SarakBreadcrumbs`), `src/components/atomic/Feedback/` (`SarakEmptyState`, `SarakSkeleton`), `src/components/atomic/Templates/SarakFilterSelect.tsx`, `src/components/atomic/Templates/SarakTableCards.tsx` | o que reutilizar antes de criar |
@@ -100,7 +101,7 @@ linha de recurso com um único destino focável e ações secundárias alcançá
 
 **Lote 2 — moldes e kit.**
 2.1. Duas cenas em `browser-tests/` — lista e detalhe — escritas só com peças do barril, sem estilo próprio. Medir, em três temas e a
-390, 1280 e 2560 px: espaçamentos entre blocos iguais aos tokens; nenhum texto que se lê abaixo do piso da `plan-123`; nenhum
+390, 1280 e 2560 px: espaçamentos entre blocos iguais aos tokens; nenhum texto que se lê abaixo do piso de 11 px ([[02-design-engine]] §10.3); nenhum
 transbordamento horizontal; alvo de toque das ações ≥ 24 px.
 2.2. O kit ganha os dois moldes (o código das cenas como exemplo copiável, gerado ou verificado pelo `guide:check`, nunca transcrito à
 mão) e a árvore de decisão aponta "cabeçalho de página / filtros / lista de registros / detalhe" para as peças.

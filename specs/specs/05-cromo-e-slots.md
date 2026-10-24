@@ -103,6 +103,14 @@ Item com `href` é uma **âncora** (`<a href>`); item sem `href` continua `<butt
 - **Sem `onNavigate`** (nem `onChange` no `SarakShellNav`), a âncora é um link comum e o navegador a segue.
 - **A busca embutida também navega**: o resultado é um link que chama o mesmo `onNavigate` e fecha a lista; o palette (`SarakSearch`) seleciona por clique e por `Enter`/`Espaço`. Item `disabled` não é pesquisável.
 
+### 2.1.3 A busca do cromo e a paleta
+
+O resultado da busca da barra e o da paleta Ctrl+K são **links de verdade** para a rota do item (o id do item é a rota), como o item de
+navegação (§2.1.2): sem `onNavigate`, o navegador segue o link; com ele, o callback é chamado e a navegação padrão é cancelada. Setas e
+Enter levam ao mesmo destino. O selo do atalho some com o campo focado, com texto e quando a barra é estreita demais para ele e o
+placeholder caberem juntos; mostra a tecla do sistema (Ctrl/⌘). A paleta é `role="dialog"` com `aria-modal`, o campo é `combobox`
+ligado a uma `listbox` com `aria-activedescendant`, o primeiro resultado vem ativo e o ícone de cada resultado é o do item de navegação.
+
 ## 2.2 Os slots
 
 | Slot | Região | Ausente = |
@@ -235,7 +243,7 @@ O cromo lê esses tokens por um hook único e os traduz em classe estrutural:
 | `searchPositionSidebar` | `top` ou `bottom` para o slot `search` na sidebar/drawer |
 | `chromeSearchPosition` · `chromeUserPosition` · `chromeNotificationsPosition` · `preferenceModePosition` · `preferenceFontSizePosition` · `preferenceNavigationStylePosition` · `preferenceNavCollapsePosition` · `preferenceLanguagePosition` | a **composição** de cada widget: `pinned`, `menu` ou `off` (§2.2.2) |
 | `tabGap` · `tabSectionMargin` | espaçamento entre itens e margem da seção de nav |
-| `maxContentWidth` | largura máxima da região de conteúdo, centralizada; `100%` ocupa tudo. O respiro de `layoutPadding` continua nos quatro lados |
+| `maxContentWidth` | largura máxima da região de conteúdo, centralizada. O padrão é `fluid`: a região acompanha o contêiner e cada margem lateral cresce com ele, de `layoutPadding` até 128 px (`calc(100% − 2 × clamp(layoutPadding, 5%, 128px))`); o valor gravado é a palavra `fluid` e só `resolveMaxContentWidth` (`schema/system.ts`) o traduz para CSS, no leitor do cromo e na emissão de `--sarak-max-content-width`. Os tetos `1000px`…`1600px` e `100%` continuam como opção. O respiro de `layoutPadding` continua nos quatro lados |
 | `layoutDensity` | escala o respiro da região de conteúdo: `compact` < `comfortable` < `spacious`. `comfortable` é a identidade: o respiro é exatamente o de `--sarak-layout-padding` |
 | `isSplitViewEnabled` | liga a vista dividida, que só aparece com o slot `secondaryContent` preenchido (§2.2) |
 | `sidebarActiveColor` · `topbarActiveColor` | **fundo** do item ativo, cada orientação o seu. Default `transparent`, deliberado: o fundo real é o da barra (`sidebarColor`/`topbarColor`) |

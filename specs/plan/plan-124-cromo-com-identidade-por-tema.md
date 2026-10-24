@@ -3,11 +3,11 @@ tipo: "plan"
 titulo: "Dar a barra lateral e a barra de topo identidade propria em cada tema"
 objetivo: "Fazer a barra lateral e a barra de topo de cada um dos 19 temas terem identidade propria, com texto, borda, profundidade, fundo, item ativo, densidade e icones vindos de tokens declarados pelo tema, e os controles de preferencia sem poluir o rodape da barra"
 dominio: "Cromo / Design Engine / Temas"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "cromo", "sidebar", "topbar", "tokens", "temas", "rc"]
 relacionados: ["[[05-cromo-e-slots]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[09-temas-e-presets]]", "[[013-item-de-navegacao-como-atomo-proprio]]", "[[015-metrica-do-item-de-navegacao-horizontal]]"]
-depende_de: "plan-123-hierarquia-de-cor-no-texto"
+depende_de: "—"
 retida_por: ""
 destino_sintese: "specs/05-cromo-e-slots.md + arquitetura/02-design-engine.md + specs/09-temas-e-presets.md"
 ---
@@ -39,7 +39,8 @@ Pedido do dono (2026-10-22): a barra ficou pouco personalizável; melhorar a bar
 - **Rodapé da barra (prints):** "P M G" (tamanho da fonte) e "Lateral/Topo" ficam fixos para todo usuário porque o padrão de fábrica da
   composição é "fixa na barra" para os oito widgets ([[05-cromo-e-slots]] §2.2.2). Parecem ferramenta de desenvolvedor.
 - **Ruído visual (prints, tema Blueprint):** borda tracejada em quase tudo (barra, busca, cartões, campos).
-- Depende da `plan-123`: o texto da barra usa os papéis de cor de texto que ela cria.
+- O texto da barra usa os papéis de cor de texto que a `plan-123` criou (aprovada e sintetizada em 2026-10-24): hoje em
+  [[02-design-engine]] §10.3 e [[09-temas-e-presets]] §5.3.
 
 # 3. Escopo
 

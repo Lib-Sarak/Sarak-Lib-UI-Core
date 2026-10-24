@@ -328,6 +328,20 @@ contrato além de "a variável chega à propriedade".
 saída é a de sempre. Nas variantes da primária, o resultado é `--theme-primary-hover`/`--theme-primary-active`, lidos
 pelo hover e pelo pressionado globais de `button` (`_elements.css`).
 
+**Papéis de cor de texto.** O texto corrido é `textColorMaster` (`--sarak-text-main`, `--theme-text-primary`); o título é `titleColor`,
+**dono único** de `--color-theme-title`/`--theme-title`/`--text-title`; `subtitleColor` e `emphasisColor` colorem subtítulo e destaque.
+`SarakTypography` dá aos títulos (h1-h3) a cor de título por padrão e aceita `color` = `title` · `subtitle` · `emphasis`; cartões,
+Markdown, catálogo, calendário, Kanban e Gantt leem o papel do texto que desenham. No modo claro, `resolveTitleColor` faz o título no
+padrão seguir o texto principal, e um `config` claro sem os papéis recebe os do par claro do tema de base (`useThemeSeed`).
+
+**Piso de legibilidade.** As escalas pequenas (`typeScaleMicro`, `typeScaleTiny`, `typeScale3xs`, `typeScale2xs`) têm padrão e mínimo
+de **11 px**; o painel mantém o piso de 12 px. O título de cartão tem degrau próprio (`cardTitleFontSize`), e o cabeçalho de cartão usa
+o menor entre ele e o h2 da página.
+
+**Lista nativa de escolha.** Uma regra única em `_elements.css` faz `color-scheme` seguir o modo do escopo (`.dark`/`.light`) e pinta
+`select option` com `--theme-surface` e `--text-main` — a lista aberta do navegador fica legível em todo tema (a superfície dos temas é
+opaca).
+
 ## 10.4 Cartão
 
 - **Hover só em cartão interativo.** Interativo é o cartão cuja superfície inteira responde ao ponteiro e traz
@@ -409,7 +423,8 @@ reset transparente de `main`/`section`/`article`. A classe utilitária e o `styl
 consumidor — vencem. Os cartões da lib não repetem classe de fundo nem de cor de borda: a superfície vem do tema,
 de um lugar só. Material e moldura do cartão também cedem (`_card-materials.css`, depois de `_card-defaults.css`). Ficam com
 `!important`, por desenho: o modo eco (`_performance.css`), o movimento reduzido (`_motion.css`) e a moldura da
-classe `.border-theme`. O injetor do modo claro (`SovereignThemeInjector`) não usa `!important` e não repinta o que
+classe `.border-theme`. O injetor do modo claro (`SovereignThemeInjector`) não usa `!important`, repinta o `text-white` do hospedeiro com o
+texto do corpo (texto genérico do host não é título) e não repinta o que
 está sob `[data-sarak-own-palette]` (fundo próprio, como o do `SarakLightbox`). A trava é o
 `css-important:check` ([[00-regras-e-invariantes]] R41).
 

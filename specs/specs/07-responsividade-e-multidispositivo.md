@@ -189,6 +189,9 @@ A camada 3 é a razão de cada componente plantar o próprio `@container` (e de 
 reagem à largura **disponível**, não à do viewport — é o que faz um card se comportar igual dentro de uma
 sidebar estreita e de uma página larga.
 
+**A região de conteúdo do cromo mede a si mesma, não a janela:** a largura fluida padrão (`maxContentWidth: fluid`,
+[[05-cromo-e-slots]] §2.4) calcula as margens em porcentagem do contêiner, nunca em `vw`.
+
 ## 6.1 As quatro regras de operação da camada 3
 
 A camada 3 tem quatro modos de falhar **em silêncio** — nos quatro, a classe está no DOM, todo gate passa

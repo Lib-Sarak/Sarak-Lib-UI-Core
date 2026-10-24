@@ -356,6 +356,9 @@ formato do dado persistido, em `docs/persistencia-de-tema.md`.
 - **`options.persistence.onLoad`** devolve o design, ou `{ design, activeThemeId }`, ou `null`/`undefined` para
   *nada gravado*. Quem devolve só o design continua compilando e funcionando. O id carregado **não** vence a
   prop controlada `activeThemeId`.
+- **`options.persistence.onSave` pode rejeitar:** a lib mantém a alteração, avisa só no Provider que falhou e tenta de novo na próxima
+  mudança. **`options.persistence.preferConfigOverCache`** (padrão `false`) faz o `config` do host vencer o cache no primeiro quadro.
+  **`sarakCreateThemeBootCss(design)`** devolve o CSS do primeiro quadro para o host escrever no HTML ([[09-temas-e-presets]] §4.4.2).
 - **Apagar tema** é `options.theme.onDelete` (a porta opcional do consumidor) e `useSarakUI().deleteTheme(id)`
   (o gesto) — [[017-porta-de-apagar-tema-simetrica-a-de-escrever]]. `SarakUIContextType` **exige** `deleteTheme`:
   quem monta o contexto à mão precisa fornecê-lo.
@@ -445,6 +448,11 @@ referencia em `aria-describedby`; o controle sai com `aria-invalid`. Um formulá
   o mesmo DOM de sempre.
 - **Ícones do `SarakInput`:** `leftIcon` e `rightIcon` aparecem **juntos**, cada um no seu lado, e o da direita é
   clicável (é o que permite "mostrar senha"); `icon` prevalece sobre os dois.
+- **Foco e descrição compostos:** o `SarakInput` compõe o `onFocus`/`onBlur` do chamador com o próprio estado de foco e junta os ids
+  de `aria-describedby` do chamador ao do erro, sem repetição.
+- **Padding nos dois eixos:** `inputPadding` é o vertical (`--sarak-input-padding-vertical`) e `inputPaddingHorizontal` o horizontal
+  (`--sarak-input-padding-horizontal`); `--sarak-input-padding` sobrevive só como sinônimo depreciado do **vertical** — quem escreve um
+  campo próprio não o usa como atalho de padding.
 - **Texto do átomo pelo idioma da lib:** os rótulos acessíveis padrão (como os do intervalo e do grupo de horário)
   saem do catálogo de i18n ([[10-seguranca-e-acessibilidade]] §3.6).
 

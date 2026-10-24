@@ -379,10 +379,10 @@ aceito) **ou** `{ design, activeThemeId }`; com o id presente, é o tema resolvi
 `null` ou `undefined` significa *nada gravado ainda* e não aplica nem grava coisa alguma. Sem o id de volta, o
 consumidor guardaria *quais tokens* estão aplicados, mas não conseguiria restaurar *de qual tema eles vieram*.
 
-**A lib não grava sem mudança.** O boot e a hidratação — a local e a do `onLoad` — não chamam `onSave`, não
-escrevem no `localStorage` e não chamam `onThemeChange`. Só gravam a edição do usuário (com o atraso de 1,5 s) e
+**A lib não grava sem mudança.** O boot e a hidratação — a local e a do `onLoad` — não chamam `onSave` e não chamam
+`onThemeChange`; a única escrita da hidratação é a do cache local em `'hybrid'`, descrita abaixo. Só gravam a edição do usuário (com o atraso de 1,5 s) e
 a aplicação explícita; e o mesmo par design + id não é gravado duas vezes seguidas. Os dois caminhos que aplicam tema
-— o `Aplicar (N)` do painel e o desfazer da última aplicação — anunciam o id **antes** de gravar (escolher um
+— o `Aplicar` do painel e o desfazer da última aplicação — anunciam o id **antes** de gravar (escolher um
 tema na galeria ou na aba de modelos só altera o rascunho, [[06-painel-de-customizacao-e-preview]] §4), de modo que a primeira chamada de `onSave` leva o par certo.
 
 **O formato do dado persistido não se descreve em prosa aqui**: a lib publica o artefato de referência
@@ -392,6 +392,19 @@ tema na galeria ou na aba de modelos só altera o rascunho, [[06-painel-de-custo
 **Invariante do dado:** *tema da lib é imutável.* Alterar um tema embarcado não existe como operação — o
 que existe é **criar um derivado**, que passa a viver no importador. É o que mantém o catálogo shippado
 igual em todos os consumidores e o que torna a atualização da lib segura.
+
+**O cache local guarda o par.** Em `'hybrid'`, o design fica na chave efetiva (formato de sempre) e o id do tema ativo na chave
+companheira `<chave efetiva>::active-theme-id`; no boot, o id do cache vale até o `onLoad` responder (precedência da §4.3: prop
+controlada > `onLoad` > cache > semente). O resultado do `onLoad` que difere do cache é **escrito de volta no cache** — sem `onSave`,
+porque hidratação não é edição —, e assim outro dispositivo que trocou o tema não faz a próxima recarga pintar o tema velho.
+
+**O host declara quando o boot injetado vence o cache:** `options.persistence.preferConfigOverCache: true` faz o `config` do host
+pintar o primeiro quadro **e** ignora o id do cache (o par fica coerente: o id vem da mesma fonte que o design). Padrão `false`: o
+cache continua vencendo, como antes. Para o primeiro quadro **antes do JavaScript**, o host escreve no HTML o CSS de
+`sarakCreateThemeBootCss(design)` (fundo de `html`/`body` e `color-scheme`, com a cor validada pela mesma régua do tema).
+
+**A porta pode falhar.** `onSave` que rejeita a promessa mantém a alteração na tela, mostra o aviso localizado **só no Provider que
+falhou**, não registra o par como gravado e é tentado de novo na próxima mudança (não em laço).
 
 ### 4.4.3 Valor oferecido no schema é contrato com o usuário final
 
@@ -488,6 +501,10 @@ fonte, e a lib não toca nela. Id desconhecido não faz nada.
 morto — o consumidor que não implementou `onSave` simplesmente continua com o ciclo de exportar (§4.5).
 
 ## 4.7 Preferência do usuário — sobreposta ao tema, nunca gravada nele
+
+> A prévia e a galeria do painel também recebem a preferência de modo por cima do rascunho, com a contraparte do tema **do
+> rascunho** (o escolhido na galeria; sem ele, o resolvido) — e o rascunho salvo continua sem preferência
+> ([[06-painel-de-customizacao-e-preview]] §6).
 
 O tema é do administrador e do sistema inteiro; a **preferência** é de cada usuário
 ([[016-preferencias-do-usuario-separadas-do-tema]]). Os componentes recebem o **design efetivo** — o tema
@@ -625,8 +642,19 @@ O schema separa os tokens em **estéticos** e **funcionais** (`kind` e `modeDepe
 **A trava é o `theme-completeness:check`** (`gates/scripts/contrato/check-theme-completeness.ts`): reprova estético
 faltando, estético com modo faltando na `contraparte` e funcional declarado. A exceção por tema
 (`gates/allowlists/themeCompletenessPending.json`) está **vazia**, e um tema completo que continue nela também reprova.
-**O peso de cada tema** (o módulo sozinho, minificado, gzip) tem teto de **4,5 KB**, medido por `npm run boot:measure`
-(`PER_THEME_CEILING_BYTES`, `scripts/measure-consumer-boot.mjs`); o boot leva só o tema padrão (§4.3.2).
+**O peso de cada tema** (o módulo sozinho, minificado, gzip) tem teto de **15 KB**, medido por `npm run boot:measure`
+(`PER_THEME_CEILING_BYTES`, `scripts/measure-consumer-boot.mjs`); o boot leva só o tema padrão (§4.3.2). O número é decisão do dono
+(2026-10-24): o peso só conta no carregamento sob demanda, nunca no uso, e o tema é aplicado uma vez e quase não é trocado; até ~12 KB
+nenhuma troca é sentida em rede alguma, e o custo aceito acima disso é a galeria do painel mais lenta em rede ruim. Conteúdo pesado
+(imagem, SVG de textura, fonte) **nunca** entra no módulo do tema — vai como arquivo próprio, sob demanda. Se o teto voltar a apertar,
+enxugar sem perda visual (guardar só o que difere do padrão e recompor ao carregar) vem antes de subir.
+
+**Papéis de cor de texto.** Todo tema embarcado declara, nos dois modos, `titleColor`, `subtitleColor`, `emphasisColor` e
+`cardTitleColor` distintos do texto corrido (`textColorMaster`): o título se separa por matiz ou luminosidade, o subtítulo fica entre
+os dois e o destaque usa o acento do tema; o `auditor_contraste` mede os três contra o fundo e a superfície do cartão. Um `config` do
+host em modo claro que **não** declara esses papéis recebe os do par claro do tema de base, nunca os do escuro.
+
+**Largura.** Os temas embarcados declaram `maxContentWidth: fluid` ([[05-cromo-e-slots]] §2.4).
 
 O que cada tema embarcado demonstra da lib (o arquétipo, os tokens que carregam a personalidade) está no guia do kit,
 na tabela de arquétipos da §3.9 ("Importe por identidade visual") de `sarak-ui/GUIA-FRONTEND.md`, e não se

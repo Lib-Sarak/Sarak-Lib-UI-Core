@@ -32,6 +32,11 @@ não pode ficar dessincronizado da versão instalada: **dentro dela**.
 | `VERSION` | **100% gerado**; formato textual mantido para o CLI atual | Gerador |
 | `docs/migracoes.md` | Cópia gerada do histórico de mudanças do contrato | Gerador |
 
+O que o kit ensina sobre **o tema que volta** (`GUIA-FRONTEND.md`, a seção de persistência, e `docs/persistencia-de-tema.md`): o tema é
+**por organização** — organização logada → `tenantId` → portas do importador indexadas pela organização, e a troca de organização
+recarrega sem remontar ([[009-persistencia-tenant-aware]]); o host que injeta o tema no HTML usa `preferConfigOverCache` e escreve o CSS
+de `sarakCreateThemeBootCss`; e a porta `onSave` rejeita quando o servidor recusa, para o usuário ver a falha.
+
 O que o kit ensina sobre **fontes** (prosa à mão: `GUIA-FRONTEND.md` §3.14 e a seção "Fontes" da skill) é o contrato
 de [[023-fontes-embarcadas-carregadas-sob-demanda]]: a lib já carrega as fontes e **o importador não recria o
 carregador** (nada de `@fontsource`, `<link>` do Google ou `@font-face` à mão para o catálogo); as origens de
