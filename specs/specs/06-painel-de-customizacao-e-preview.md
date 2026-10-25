@@ -36,7 +36,7 @@ Três fontes se cruzam e a UI só **itera** o resultado:
 
 | Fonte | O que injeta | Onde |
 | --- | --- | --- |
-| **Pilares** | as 7 abas de nível 1 | `src/features/DesignEngine/config/design-pillars.json` |
+| **Pilares** | as 7 abas de nível 1 — a **mesma** taxonomia para o painel e para o Command Center (as duas telas leem este arquivo) | `src/features/DesignEngine/config/design-pillars.json` |
 | **Catálogo** | a **semântica** — as `categories` de cada token | partições de `src/core/Design/catalog/` |
 | **Schema** | o **dado** — tokens, tipos, constraints, defaults | `MASTER_DESIGN_MAP` |
 

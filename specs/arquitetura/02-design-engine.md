@@ -281,6 +281,10 @@ contrato além de "a variável chega à propriedade".
 
 ## 10.1 Fundo e atmosfera
 
+**A arte de fundo global** rola com o conteúdo (`globalBackgroundPosition: absolute`, o padrão) ou fica fixa na janela (`fixed`); todo
+tema embarcado declara a escolha. O fundo do `body` **não faz transição na primeira pintura** — a transição vale para a troca de tema, e o
+primeiro quadro depois da hidratação já tem a cor do tema.
+
 - **Gradiente** (`bgGradientMode`: `none` · `linear` (padrão) · `radial` · `mesh`) — `src/styles/_background.css`,
   camada `components.sarak-elements`, pinta o `body` (ou o escopo). `linear` vai do fundo à camada 1 tingida pela
   primária, no ângulo de `bgGradientAngle`; `radial` acende um foco no topo; `mesh` são quatro manchas — primária,
@@ -503,6 +507,11 @@ cantos; o conflito no mesmo elemento passa pelo `mergeSarakClasses`, que as reco
 aparecer é marcado (`sarak-page-surface`), nunca adivinhado por classe de cor.
 
 ## 10.14 A escada de camadas
+
+**As faixas não se cruzam por construção:** `zIndexSidebar` vai de 10 a 790 e `zIndexModal` de 1000 a 5000 — a lateral fica sempre
+abaixo do modal. Valor salvo fora da faixa é ajustado pela validação, com aviso. Dois outros tokens funcionais têm piso pelo mesmo motivo
+(o usuário final não consegue quebrar a acessibilidade pelo painel): `topbarCollapsedHeight` ≥ 44 (o alvo de toque) e
+`focusRingWidth` ≥ 1 (o foco nunca some).
 
 Cada camada lê o token dela, sem empate: a barra lateral (`zIndexSidebar`); a atmosfera decorativa (ruído e
 vinheta) em `zIndexSidebar` + 50 — cobre conteúdo e cromo, fica abaixo de toda sobreposição; menus e busca em

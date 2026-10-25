@@ -43,22 +43,25 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
 | 1 | [plan-119-kit-de-importacao-aprendido-nos-importadores](plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md) | Fazer o importador usar a lib por inteiro sem reescrever o que ela entrega, com o kit de importação ensinado pelas licoes medidas nos importadores reais e com a gestao de temas do importador completa: salvar o aplicado como novo, editar, duplicar e criar, persistidos no importador | — | 🟡 Em execução | specs/12-kit-do-consumidor.md + specs/13-instalacao-e-atualizacao.md + specs/09-temas-e-presets.md + specs/15-divida-conhecida.md |
-| 2 | [plan-120-o-que-o-importador-sente-antes-da-8-0-0](plan/plan-120-o-que-o-importador-sente-antes-da-8-0-0.md) | Fazer a 8.0.0 sair sem defeito conhecido que o importador ou o usuario final sinta: campos, props e mensagens que mentem, instalacao e PDF que exigem contorno, tokens que deixam quebrar o foco e as camadas, modal e arte de fundo fora do tema do cliente, painel com texto ilegivel e busca incompleta, e o teste que pode deixar o PR vermelho | — | 🟢 Aprovada | arquitetura/03-superficie-publica.md + specs/13-instalacao-e-atualizacao.md + arquitetura/02-design-engine.md + specs/09-temas-e-presets.md + specs/06-painel-de-customizacao-e-preview.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
-> 🚦 **Fila de 2026-10-23 — validação da `8.0.0-rc.2` no ERP (dono, 2026-10-22).** As `plan-121` a `plan-125` corrigem o que o dono
-> sentiu na rc.2; a **rc.3 sai depois das cinco** (decisão do dono). A `plan-121` (cromo/busca) e a `plan-122` (painel) são disjuntas e
-> podem correr em paralelo; a `plan-123` antes da `plan-124` (a barra usa os papéis de cor de texto) — as duas mexem nos 19 temas, então
-> nunca em paralelo entre si nem com o lote 1 da `plan-121` (que também declara valor nos temas); a `plan-125` não espera mais a `plan-119`, cujo lote 7 fechou em 2026-10-23: o lote final da `plan-119` corre depois dela, e ela pode rodar em paralelo com a `plan-121` e a `plan-122`, cujos arquivos são disjuntos dos dela; a
-> `plan-126` (peças de composição de página, nascida da auditoria no navegador de 2026-10-23) espera a `plan-123`. O que
-> é do ERP (gap nas listas de `purchases`/`orders`, `onNavigate` nos módulos, `response.ok` no `saveAppliedTheme`, `activeThemeId`
-> injetado, tema por organização depois do login) vai para a sessão de revisor do ERP.
+> 🏁 **Campanha da `8.0.0-rc.3` encerrada no código (2026-10-24).** As `plan-120` a `plan-127` foram aprovadas e sintetizadas; a
+> emissão da `rc.3` (`gates:full` e `npm version`) é do dono. Fica aberta só a `plan-119`, de propósito: ela recebe as lições e os
+> defeitos que aparecerem durante a adequação dos importadores (o ERP depois da `rc.3`) — não é trabalho pendente desta campanha.
 
 > **Ordem de execução (decisão do revisor, 2026-10-10):** a `plan-104` fechou (sintetizada em 2026-10-10); a ordem segue no despacho de 2026-10-10 abaixo. As três tocam `docs/migracoes.md`, cada uma na
 > sua subseção da próxima versão; fora isso, são disjuntas (`DataDisplay/` · `Provider/` + `Layout/chrome/` · `Inputs/` + i18n). Paralelo
 > só com a disjunção declarada pelo revisor ao despachar.
 >
 > 🚦 **Fila de 2026-10-14 — a `plan-116` (tema sob demanda) fechou; a `plan-110` é a próxima.** **Versão (decisão do dono, 2026-10-14):** as plans da fila registram a mudança na subseção `## 8.0.0` de `docs/migracoes.md`; a versão MAJOR é aplicada uma vez, ao final de todas as modificações, no merge para a `main` — nenhuma plan mexe na versão nem cria tag. O `npm run build` e o `cromo-css-real:check` são do revisor; o executor escreve os casos de `browser-tests/`.
+
+> ⚪ **A `plan-120` foi SINTETIZADA e REMOVIDA em 2026-10-24** (revisada por outra sessão; síntese assumida por esta, a pedido do dono). Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **120** | [[03-superficie-publica]] §6.7 (modal com borda e sombra do cartão, `disabled` do autocomplete, `workerSrc` obrigatório no `SarakPDFViewer`, props sem efeito retiradas) · [[13-instalacao-e-atualizacao]] §2.3 (`@tanstack/react-virtual` opcional; 8 peers obrigatórias — a spec ainda dizia 9, corrigido) · [[02-design-engine]] §10.1 (`globalBackgroundPosition`; fundo sem transição na entrada) e §10.14 (faixas de `zIndexSidebar`/`zIndexModal`, pisos de `topbarCollapsedHeight` e `focusRingWidth`) · [[09-temas-e-presets]] §5.3 (a arte de fundo declarada por todo tema) · [[06-painel-de-customizacao-e-preview]] §2 (uma taxonomia de pilares para as duas telas). |
+>
+> **Ficou de fora:** o lock regenerado no Linux, os casos intermitentes tornados determinísticos e as medições por lote (histórico do Git); `00-contexto` revisado: nada a mudar.
 
 > ⚪ **As `plan-124` e `plan-126` foram SINTETIZADAS e REMOVIDAS em 2026-10-24.** Destino demonstrado:
 >

@@ -7,6 +7,14 @@ import { useChromeDefaultWidgets } from '../useChromeDefaultWidgets';
 const wrapper = ({ children }: { children: React.ReactNode }): React.ReactElement =>
     React.createElement(SarakUIProvider, null, children);
 
+const pinnedCollapseWrapper = ({ children }: { children: React.ReactNode }): React.ReactElement => React.createElement(
+    SarakUIProvider,
+    {
+        config: { preferenceNavCollapsePosition: 'pinned' },
+        children,
+    },
+);
+
 const menuWrapper = ({ children }: { children: React.ReactNode }): React.ReactElement => React.createElement(
     SarakUIProvider,
     {
@@ -43,10 +51,18 @@ describe('defaults do cromo', () => {
         expect(result.current.showSearch).toBe(true);
         expect(result.current.showThemeToggle).toBe(true);
         expect(result.current.showUser).toBe(true);
-        expect(result.current.showCollapse).toBe(true);
-        expect(result.current.widgetPlacement.pinned).toEqual(expect.arrayContaining([
-            'fontSize', 'navigationStyle', 'language',
+        expect(result.current.showCollapse).toBe(false);
+        expect(result.current.widgetPlacement.menu).toEqual(expect.arrayContaining([
+            'fontSize', 'navigationStyle', 'navCollapsed',
         ]));
+        expect(result.current.widgetPlacement.pinned).toEqual(expect.arrayContaining([
+            'colorMode', 'language', 'search', 'user', 'notifications',
+        ]));
+    });
+
+    it('com recolher pinned, oferece o controle para a barra', () => {
+        const { result } = renderHook(() => useChromeDefaultWidgets(), { wrapper: pinnedCollapseWrapper });
+        expect(result.current.showCollapse).toBe(true);
     });
 });
 
@@ -95,7 +111,7 @@ describe('opt-out dos widgets padrão', () => {
         expect(result.current.showThemeToggle).toBe(false);
         expect(result.current.showSearch).toBe(true);
         expect(result.current.showUser).toBe(true);
-        expect(result.current.showCollapse).toBe(true);
+        expect(result.current.showCollapse).toBe(false);
     });
 
     it('sem `hasUser`, oferece o widget para renderizar o estado desabilitado', () => {

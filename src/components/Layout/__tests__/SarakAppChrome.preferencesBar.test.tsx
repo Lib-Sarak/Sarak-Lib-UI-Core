@@ -5,7 +5,7 @@ import { describe, it, expect, afterEach } from 'vitest';
 import { SarakAppChrome } from '../SarakAppChrome';
 import SarakUIProvider from '../../../core/Provider/SarakUIProvider';
 import { SarakDeviceProvider, type SarakDeviceType } from '../../../core/Provider/DeviceProvider';
-import { PREFERENCE_POSITION_TOKEN_IDS } from '../../../core/Provider/preferencesTypes';
+import { CHROME_WIDGET_POSITION_TOKEN_IDS, PREFERENCE_POSITION_TOKEN_IDS } from '../../../core/Provider/preferencesTypes';
 
 const NAV = [{ label: 'Propostas', route: '/propostas' }];
 
@@ -19,21 +19,29 @@ const renderAtDevice = (device: SarakDeviceType, config: Record<string, unknown>
     );
 
 const chrome = () => <SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>;
+const ALL_POSITIONS_PINNED = Object.fromEntries(
+    Object.values(CHROME_WIDGET_POSITION_TOKEN_IDS).map((tokenId) => [tokenId, 'pinned']),
+);
 
 describe('SarakAppChrome — barra configurável pelo administrador', () => {
-    it('padrão de fábrica: as preferências ficam fixas sem criar o menu de preferências', () => {
-        renderAtDevice('desktop', {}, chrome());
+    it('todas as posições `pinned`: a barra não cria o menu de preferências', () => {
+        renderAtDevice('desktop', ALL_POSITIONS_PINNED, chrome());
         expect(screen.queryByLabelText('Preferências')).toBeNull();
         expect(screen.getByRole('group', { name: 'Estilo de navegação' })).toBeInTheDocument();
         expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
     });
 
-    it('padrão de fábrica, sidebar recolhida: o menu recebe preferências que não cabem como ícone', () => {
+    it('padrão de fábrica: fonte, navegação e recolher ficam no menu de preferências', () => {
         renderAtDevice('desktop', {}, chrome());
-        fireEvent.click(screen.getByLabelText('Recolher navegação'));
         const trigger = screen.getByLabelText('Preferências');
         fireEvent.click(trigger);
-        expect(within(screen.getByRole('menu')).getByText('Tamanho da fonte')).toBeInTheDocument();
+        const menu = screen.getByRole('menu');
+        expect(within(menu).getByText('Tamanho da fonte')).toBeInTheDocument();
+        expect(within(menu).getByRole('group', { name: 'Estilo de navegação' })).toBeInTheDocument();
+        const collapseControl = within(menu).getByText('Recolher navegação');
+        expect(collapseControl).toBeInTheDocument();
+        fireEvent.click(collapseControl);
+        expect(within(menu).getByText('Expandir navegação')).toBeInTheDocument();
     });
 
     it("uma preferência em 'menu' (fontSize) faz o ⚙ nascer, com as fixadas TAMBÉM dentro dele", () => {
@@ -63,23 +71,31 @@ describe('SarakAppChrome — barra configurável pelo administrador', () => {
             </SarakUIProvider>,
         );
         expect(screen.queryByText(/Mode$/)).toBeNull();
-        expect(screen.queryByLabelText('Preferências')).toBeNull();
+        fireEvent.click(screen.getByLabelText('Preferências'));
+        const menu = screen.getByRole('menu');
+        expect(within(menu).getByText('Tamanho da fonte')).toBeInTheDocument();
+        expect(within(menu).queryByText(/Mode$/)).toBeNull();
     });
 
-    it('no MODO SIDEBAR (colapsado), o controle com rótulo some da coluna estreita — mas não do alcance do usuário', () => {
+    it('no MODO SIDEBAR recolhido, o controle com rótulo fica acessível pelo menu', () => {
         renderAtDevice('desktop', { [PREFERENCE_POSITION_TOKEN_IDS.navigationStyle]: 'pinned' }, chrome());
-        fireEvent.click(screen.getByLabelText('Recolher navegação'));
-        expect(screen.queryByRole('group', { name: 'Estilo de navegação' })).toBeNull();
+        fireEvent.click(screen.getByLabelText('Preferências'));
+        const menu = screen.getByRole('menu');
+        fireEvent.click(within(menu).getByText('Recolher navegação'));
+        expect(screen.getAllByRole('group', { name: 'Estilo de navegação' })).toHaveLength(1);
+        expect(within(menu).getByRole('group', { name: 'Estilo de navegação' })).toBeInTheDocument();
     });
 
-    it('SIDEBAR colapsada: o ⚙ nasce e recebe o que não cabe como ícone (fonte/navegação/idioma), mesmo sem nenhuma posição `menu`', () => {
-        renderAtDevice('desktop', { [PREFERENCE_POSITION_TOKEN_IDS.navigationStyle]: 'pinned' }, chrome());
+    it('SIDEBAR colapsada: o ⚙ recebe os controles `pinned` sem ícone próprio', () => {
+        renderAtDevice('desktop', ALL_POSITIONS_PINNED, chrome());
         fireEvent.click(screen.getByLabelText('Recolher navegação'));
 
         const trigger = screen.getByLabelText('Preferências');
         expect(trigger).toBeInTheDocument();
         fireEvent.click(trigger);
-        expect(within(screen.getByRole('menu')).getByRole('group', { name: 'Estilo de navegação' })).toBeInTheDocument();
+        const menu = screen.getByRole('menu');
+        expect(within(menu).getByText('Tamanho da fonte')).toBeInTheDocument();
+        expect(within(menu).getByRole('group', { name: 'Estilo de navegação' })).toBeInTheDocument();
     });
 });
 

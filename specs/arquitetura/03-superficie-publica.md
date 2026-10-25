@@ -410,6 +410,13 @@ e tiram tamanho e cor de token:
 
 Os nomes e tipos exatos são fonte viva: leia-os em `dist/index.d.ts` e no catálogo.
 
+- **Modal no tema.** O `SarakModal` desenha a borda (largura, estilo, cor) e a sombra dos tokens do cartão do tema.
+- **Autocomplete desabilitado.** `SarakAutocomplete` com `disabled` entrega o atributo ao campo: não edita, não abre a lista, não
+  recebe foco por clique.
+- **PDF.** `SarakPDFViewer` exige `workerSrc` (o worker do `pdfjs-dist` da instalação do consumidor); sem ele, mostra a própria
+  mensagem de erro e avisa uma vez no console nomeando a prop. O guia traz a linha de Vite e de Webpack 5.
+- **Props sem efeito saíram:** `role`, `density` e `importance` deixaram os tipos dos componentes que não os liam.
+
 ## 6.8 O motor de gráficos
 
 `SarakChartEngine` desenha com **ECharts** (Apache-2.0) e é carregado sob demanda (§7.1). O que ele promete:

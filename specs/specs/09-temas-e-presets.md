@@ -662,6 +662,8 @@ enxugar sem perda visual (guardar só o que difere do padrão e recompor ao carr
 os dois e o destaque usa o acento do tema; o `auditor_contraste` mede os três contra o fundo e a superfície do cartão. Um `config` do
 host em modo claro que **não** declara esses papéis recebe os do par claro do tema de base, nunca os do escuro.
 
+**Arte de fundo.** Todo tema embarcado declara `globalBackgroundPosition` (rola com o conteúdo ou fixa na janela; [[02-design-engine]] §10.1).
+
 **Largura.** Os temas embarcados declaram `maxContentWidth: fluid` ([[05-cromo-e-slots]] §2.4).
 
 **A barra.** Todo tema declara os tokens de identidade das duas barras ([[05-cromo-e-slots]] §2.4) — e a contraparte, os que carregam

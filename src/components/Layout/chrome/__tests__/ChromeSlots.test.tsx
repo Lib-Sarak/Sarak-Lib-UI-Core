@@ -131,7 +131,7 @@ describe('ChromeBrand — tokens de identidade', () => {
     it('as áreas de marca lateral e superior leem fundos e cores próprios', () => {
         const sidebar = render(<ChromeBrand brand={{ name: 'ERP' }} />).container;
         expect((sidebar.firstElementChild as HTMLElement).style.background).toBe('var(--sarak-sidebar-brand-bg, transparent)');
-        expect((screen.getByText('ERP') as HTMLElement).style.color).toBe('var(--sarak-sidebar-brand-color, #f2f6fb)');
+        expect((screen.getByText('ERP') as HTMLElement).style.color).toBe('var(--sarak-sidebar-brand-color, var(--sarak-on-sidebar, #f2f6fb))');
 
         const topbar = render(<ChromeBrand brand={{ name: 'ERP' }} horizontal />).container;
         expect((topbar.firstElementChild as HTMLElement).style.background).toBe('var(--sarak-topbar-brand-bg, transparent)');
