@@ -9,8 +9,7 @@
  * -------------------------------------------------------------------------
  * LIMITES DECLARADOS (R18) — o que esta medição NÃO vê
  * -------------------------------------------------------------------------
- * 1. Só os botões selecionados dos dois seletores da barra de topo do harness, no modo nativo do tema; o seletor dentro do menu
- *    de preferências (mesmos componentes) não é aberto aqui.
+ * 1. Só os botões selecionados dos dois seletores dentro do menu de preferências do harness, no modo nativo do tema.
  * 2. Os temas embarcados (quatro com item ativo diferente da primária ou não) e duas cores sintéticas, uma escura e uma clara,
  *    que reproduzem o caso: item ativo escuro com primária clara, e o inverso.
  * 3. Cor do item ativo que não é literal (`var()`, `color-mix`) não recebe `--sarak-on-nav-active`: vale a reserva do
@@ -18,7 +17,7 @@
  * 4. Só Chromium headless, contra o artefato que o `globalSetup` montou.
  * -------------------------------------------------------------------------
  */
-import { test, expect, chromium, type Browser, type Page } from '@playwright/test';
+import { test, expect, chromium, type Browser, type Locator, type Page } from '@playwright/test';
 
 const harnessUrl = process.env.SARAK_CROMO_HARNESS_URL;
 if (!harnessUrl) {
@@ -26,6 +25,7 @@ if (!harnessUrl) {
 }
 
 const MIN_CONTRAST = 4.5;
+const CHROMIUM_EXECUTABLE_PATH = process.env.SARAK_PLAN124_CHROMIUM_PATH;
 
 /** A query do harness que monta o caso: um tema embarcado inteiro ou uma cor sintética do item ativo. */
 const CASES: Array<{ name: string; query: string }> = [
@@ -40,7 +40,7 @@ const CASES: Array<{ name: string; query: string }> = [
 let browser: Browser;
 
 test.beforeAll(async () => {
-    browser = await chromium.launch();
+    browser = await chromium.launch(CHROMIUM_EXECUTABLE_PATH ? { executablePath: CHROMIUM_EXECUTABLE_PATH } : undefined);
 });
 
 test.afterAll(async () => {
@@ -55,8 +55,8 @@ interface PressedMeasure {
     ratio: number;
 }
 
-/** Os botões selecionados dos grupos de seletor da barra: cor do texto, fundo e a razão de contraste computada na página. */
-const measurePressed = (page: Page): Promise<PressedMeasure[]> => page.evaluate(() => {
+/** Os botões selecionados dos grupos de preferência: cor do texto, fundo e a razão de contraste computada no menu. */
+const measurePressed = (menu: Locator): Promise<PressedMeasure[]> => menu.evaluate((menuElement) => {
     const channels = (value: string): number[] => (value.match(/[\d.]+/g) ?? []).map(Number);
     const luminance = ([r, g, b]: number[]): number => {
         const linear = (channel: number): number => {
@@ -65,7 +65,7 @@ const measurePressed = (page: Page): Promise<PressedMeasure[]> => page.evaluate(
         };
         return 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b);
     };
-    return [...document.querySelectorAll('header [role="group"] button[aria-pressed="true"]')].map((button) => {
+    return [...menuElement.querySelectorAll('[role="group"] button[aria-pressed="true"]')].map((button) => {
         const style = getComputedStyle(button);
         const [light, dark] = [luminance(channels(style.color)), luminance(channels(style.backgroundColor))].sort((a, b) => b - a);
         return {
@@ -84,9 +84,12 @@ for (const { name, query } of CASES) {
         try {
             await page.goto(`${harnessUrl}?chrome=topbar&${query}`);
             await page.getByRole('link', { name: 'Início' }).waitFor({ state: 'visible' });
+            await page.getByRole('button', { name: 'Preferências', exact: true }).click();
+            const preferencesMenu = page.getByRole('menu', { name: 'Preferências', exact: true });
+            await expect(preferencesMenu).toBeVisible();
             // As transições de hidratação do tema terminam antes de a cor computada valer.
             await page.waitForTimeout(1500);
-            const pressed = await measurePressed(page);
+            const pressed = await measurePressed(preferencesMenu);
             expect(pressed.length, 'os dois seletores têm um botão selecionado').toBe(2);
             for (const item of pressed) {
                 expect(item.ratio, `${item.group} "${item.label}": texto ${item.color} sobre ${item.background}`).toBeGreaterThanOrEqual(MIN_CONTRAST);

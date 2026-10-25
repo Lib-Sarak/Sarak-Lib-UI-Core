@@ -2,6 +2,9 @@ import React from 'react';
 import { SarakMenuItem } from '../../atomic/Navigation/SarakMenuItem';
 import type { SarakShellNavItem } from '../../atomic/Navigation/SarakShellNav';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
+import { useNavigationAppearance } from '../../../core/Provider/useNavigationAppearance';
+import { resolveChromeBackground, resolveChromeSurfaceBorderStyle } from './chromeStructuralStyles';
+import { chromeNoiseLayerStyle } from './noiseTexture';
 
 /**
  * ChromeBottomNav — a navegação do celular numa barra na base, na zona do polegar.
@@ -23,20 +26,34 @@ export interface ChromeBottomNavProps {
 
 export const ChromeBottomNav: React.FC<ChromeBottomNavProps> = ({ items, activeRoute, onNavigate }) => {
     const t = useLibraryText();
+    const { topbarBorderSide, topbarBorderStyle, topbarBackgroundStyle, topbarItemDensity } = useNavigationAppearance();
     return (
         <nav
             aria-label={t('shellNavAriaLabel')}
             data-sarak-bottom-nav=""
-            className="flex items-stretch shrink-0 w-full min-w-0 overflow-x-auto border-t"
+            className="relative flex items-stretch shrink-0 w-full min-w-0 overflow-x-auto"
             style={{
-                background: 'var(--sarak-topbar-bg, var(--theme-sidebar-bg, transparent))',
-                borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.09)))',
+                background: resolveChromeBackground(topbarBackgroundStyle, '--sarak-topbar-bg', 'var(--theme-topbar-bg, var(--theme-sidebar-bg, transparent))'),
+                ...resolveChromeSurfaceBorderStyle({
+                    side: topbarBorderSide,
+                    style: topbarBorderStyle,
+                    widthVariable: '--sarak-topbar-border-width',
+                    colorVariable: '--sarak-topbar-border-color',
+                    surface: 'bottom-nav',
+                }),
                 gap: 'var(--sarak-layout-gap-sm, 8px)',
                 paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
                 paddingTop: 'var(--sarak-layout-gap-sm, 8px)',
                 paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + var(--sarak-layout-gap-sm, 8px))',
             }}
         >
+            {topbarBackgroundStyle === 'texture' && (
+                <div
+                    aria-hidden="true"
+                    className="absolute inset-0 pointer-events-none mix-blend-overlay"
+                    style={chromeNoiseLayerStyle('--sarak-topbar-noise-opacity', true)}
+                />
+            )}
             {items.map((item) => {
                 const active = item.route === activeRoute;
                 return (
@@ -51,20 +68,13 @@ export const ChromeBottomNav: React.FC<ChromeBottomNavProps> = ({ items, activeR
                         orientation="horizontal"
                         icon={item.icon}
                         label={item.label}
-                        className="relative flex-1 flex-col gap-1 px-1 py-1 rounded-lg text-xs font-medium"
+                        className={`relative z-10 flex-1 flex-col text-xs font-medium ${topbarItemDensity === 'compact' ? 'gap-0.5 px-1 py-0.5' : topbarItemDensity === 'spacious' ? 'gap-2 px-2 py-2' : 'gap-1 px-1 py-1'}`}
+                        markerPosition="top"
                         style={{
                             minHeight: 'var(--sarak-touch-target-active, 0px)',
                             minWidth: 'var(--sarak-touch-target-active, 0px)',
                         }}
-                    >
-                        {active && (
-                            <span
-                                aria-hidden="true"
-                                className="absolute left-1/2 -translate-x-1/2 top-0 h-0.5 w-4 rounded-full"
-                                style={{ background: 'var(--sarak-nav-marker-color, #19e3f0)' }}
-                            />
-                        )}
-                    </SarakMenuItem>
+                    />
                 );
             })}
         </nav>

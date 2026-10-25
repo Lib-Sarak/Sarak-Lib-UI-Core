@@ -2,10 +2,9 @@
  * Empacota um entry point de harness (`fixtures/harness-entry.tsx` por padrão) num
  * único bundle IIFE autocontido, para um teste de browser (`cromo-css-real.spec.ts`)
  * ou a vitrine de temas (`generate-showcase.mts`) carregarem por `file://`, sem
- * servidor e sem import map — o especificador `@sarak/lib-ui-core` resolve para o
- * `dist/index.js` já BUILDADO (o artefato que o consumidor de verdade instala; este
- * script nunca gera nem edita `dist/`, só o LÊ — se ele não existir, falha cedo com uma
- * mensagem acionável em vez de medir um harness vazio).
+ * servidor e sem import map — o especificador `@sarak/lib-ui-core` resolve por padrão
+ * para `dist/index.js`; uma medição explícita pode apontar para `src/index.ts`. Este
+ * script nunca gera nem edita `dist/`, só lê o entry selecionado e a folha CSS.
  *
  * A saída vai para um diretório TEMPORÁRIO (`fs.mkdtempSync`), nunca para dentro do
  * repositório — não há artefato de build deste harness para `.gitignore` nem para
@@ -21,6 +20,7 @@ import { fileURLToPath } from 'node:url';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '..');
 const DIST_INDEX = path.join(ROOT, 'dist', 'index.js');
+const SOURCE_INDEX = path.join(ROOT, 'src', 'index.ts');
 const DIST_CSS = path.join(ROOT, 'dist', 'sarak.css');
 const DIST_SCOPED_CSS = path.join(ROOT, 'dist', 'sarak-scoped.css');
 const ENTRY = path.join(HERE, 'fixtures', 'harness-entry.tsx');
@@ -49,64 +49,66 @@ function resolveLocalFile(specifier, resolveDir) {
     return candidates.find((candidate) => fs.existsSync(candidate) && fs.statSync(candidate).isFile());
 }
 
-const workspaceResolver = {
-    name: 'workspace-file-resolution',
-    setup(buildApi) {
-        buildApi.onResolve({ filter: /.*/ }, (args) => {
-            let resolvedPath;
+function resolveWorkspaceImport(args, libraryEntry) {
+    if (args.path.endsWith('.css')) return { path: args.path, namespace: 'empty-css' };
+    if (['node:path', 'path', 'node:process', 'process', 'node:url', 'url'].includes(args.path)) {
+        return { path: args.path, namespace: 'browser-node-builtin' };
+    }
+    if (args.path === '@emotion/is-prop-valid') return { path: args.path, namespace: 'empty-optional-dependency' };
 
-            if (args.path.endsWith('.css')) {
-                return { path: args.path, namespace: 'empty-css' };
-            }
+    let resolvedPath;
+    if (args.path === '@sarak/lib-ui-core') resolvedPath = libraryEntry;
+    else if (args.path.startsWith('.')) resolvedPath = resolveLocalFile(args.path, args.resolveDir || ROOT);
+    else {
+        try {
+            const importerRequire = args.importer ? createRequire(args.importer) : require;
+            resolvedPath = importerRequire.resolve(args.path, { paths: [args.resolveDir || ROOT, ROOT] });
+        } catch {
+            return undefined;
+        }
+    }
 
-            if (['node:path', 'path', 'node:process', 'process', 'node:url', 'url'].includes(args.path)) {
-                return { path: args.path, namespace: 'browser-node-builtin' };
-            }
+    return resolvedPath ? { path: resolvedPath, namespace: 'workspace-file' } : undefined;
+}
 
-            if (args.path === '@emotion/is-prop-valid') {
-                return { path: args.path, namespace: 'empty-optional-dependency' };
-            }
+function loadWorkspaceFile(filePath) {
+    const extension = path.extname(filePath).toLowerCase();
+    const loaders = { '.tsx': 'tsx', '.ts': 'ts', '.json': 'json', '.css': 'css' };
+    return {
+        contents: gateNeoBrutalismThemeImport(fs.readFileSync(filePath, 'utf8')),
+        loader: loaders[extension] || 'js',
+        resolveDir: path.dirname(filePath),
+    };
+}
 
-            if (args.path === '@sarak/lib-ui-core') {
-                resolvedPath = DIST_INDEX;
-            } else if (args.path.startsWith('.')) {
-                resolvedPath = resolveLocalFile(args.path, args.resolveDir || ROOT);
-            } else {
-                try {
-                    const importerRequire = args.importer ? createRequire(args.importer) : require;
-                    resolvedPath = importerRequire.resolve(args.path, { paths: [args.resolveDir || ROOT, ROOT] });
-                } catch {
-                    return undefined;
-                }
-            }
+function createWorkspaceResolver(libraryEntry) {
+    return {
+        name: 'workspace-file-resolution',
+        setup(buildApi) {
+            buildApi.onResolve({ filter: /.*/ }, (args) => resolveWorkspaceImport(args, libraryEntry));
+            buildApi.onLoad({ filter: /.*/, namespace: 'workspace-file' }, (args) => loadWorkspaceFile(args.path));
+            buildApi.onLoad({ filter: /.*/, namespace: 'empty-css' }, () => ({ contents: '', loader: 'css' }));
+            buildApi.onLoad({ filter: /.*/, namespace: 'browser-node-builtin' }, (args) => loadBrowserBuiltin(args.path));
+            buildApi.onLoad({ filter: /.*/, namespace: 'empty-optional-dependency' }, () => ({ contents: 'export default undefined;', loader: 'js' }));
+        },
+    };
+}
 
-            return resolvedPath ? { path: resolvedPath, namespace: 'workspace-file' } : undefined;
-        });
+function loadBrowserBuiltin(modulePath) {
+    if (modulePath === 'node:url' || modulePath === 'url') {
+        return { contents: 'export const fileURLToPath = (value) => value?.href ?? String(value); export default { fileURLToPath };', loader: 'js' };
+    }
+    return { contents: 'export default {};', loader: 'js' };
+}
 
-        buildApi.onLoad({ filter: /.*/, namespace: 'workspace-file' }, (args) => {
-            const extension = path.extname(args.path).toLowerCase();
-            const loader = extension === '.tsx' ? 'tsx' : extension === '.ts' ? 'ts' : extension === '.json' ? 'json' : extension === '.css' ? 'css' : 'js';
-
-            return {
-                contents: gateNeoBrutalismThemeImport(fs.readFileSync(args.path, 'utf8')),
-                loader,
-                resolveDir: path.dirname(args.path),
-            };
-        });
-
-        buildApi.onLoad({ filter: /.*/, namespace: 'empty-css' }, () => ({ contents: '', loader: 'css' }));
-
-        buildApi.onLoad({ filter: /.*/, namespace: 'browser-node-builtin' }, (args) => {
-            if (args.path === 'node:url' || args.path === 'url') {
-                return { contents: 'export const fileURLToPath = (value) => value?.href ?? String(value); export default { fileURLToPath };', loader: 'js' };
-            }
-
-            return { contents: 'export default {};', loader: 'js' };
-        });
-
-        buildApi.onLoad({ filter: /.*/, namespace: 'empty-optional-dependency' }, () => ({ contents: 'export default undefined;', loader: 'js' }));
-    },
-};
+function writeHarnessFiles(outDir) {
+    fs.copyFileSync(DIST_CSS, path.join(outDir, 'sarak.css'));
+    // A folha do Modo Embarcado precisa estar ao lado do documento quando a consulta a seleciona.
+    if (fs.existsSync(DIST_SCOPED_CSS)) fs.copyFileSync(DIST_SCOPED_CSS, path.join(outDir, 'sarak-scoped.css'));
+    const htmlPath = path.join(outDir, 'index.html');
+    fs.writeFileSync(htmlPath, HTML_TEMPLATE, 'utf8');
+    return htmlPath;
+}
 
 const HTML_TEMPLATE = `<!doctype html>
 <html lang="pt-BR">
@@ -125,13 +127,15 @@ const HTML_TEMPLATE = `<!doctype html>
 /**
  * Builda o harness e devolve o caminho do `index.html` gerado, pronto para
  * `file://`. `entryPath` escolhe o entry point (default: `harness-entry.tsx`, o do
- * `cromo-css-real.spec.ts`); a vitrine de temas passa `showcase-entry.tsx`.
+ * `cromo-css-real.spec.ts`); a vitrine de temas passa `showcase-entry.tsx`. A opção
+ * `useSourceLibrary` direciona o alias para o barrel do código-fonte.
  */
-export async function buildHarness(entryPath = ENTRY) {
-    for (const required of [DIST_INDEX, DIST_CSS]) {
+export async function buildHarness(entryPath = ENTRY, { useSourceLibrary = false } = {}) {
+    const libraryEntry = useSourceLibrary ? SOURCE_INDEX : DIST_INDEX;
+    for (const required of [libraryEntry, DIST_CSS]) {
         if (!fs.existsSync(required)) {
             throw new Error(
-                `build-harness: ${path.relative(ROOT, required)} não existe — rode \`npm run build\` antes de medir o cromo.`,
+                `build-harness: ${path.relative(ROOT, required)} não existe — arquivo necessário para medir o harness.`,
             );
         }
     }
@@ -152,16 +156,11 @@ export async function buildHarness(entryPath = ENTRY) {
             format: 'iife',
             platform: 'browser',
             jsx: 'automatic',
-            plugins: [workspaceResolver],
+            plugins: [createWorkspaceResolver(libraryEntry)],
             logLevel: 'silent',
         });
 
-        fs.copyFileSync(DIST_CSS, path.join(outDir, 'sarak.css'));
-        // A folha do Modo Embarcado (`?css=escopado` no harness): a medição do escopo precisa dela, não da global.
-        if (fs.existsSync(DIST_SCOPED_CSS)) fs.copyFileSync(DIST_SCOPED_CSS, path.join(outDir, 'sarak-scoped.css'));
-        const htmlPath = path.join(outDir, 'index.html');
-        fs.writeFileSync(htmlPath, HTML_TEMPLATE, 'utf8');
-
+        const htmlPath = writeHarnessFiles(outDir);
         return { outDir, htmlPath };
     } catch (error) {
         fs.rmSync(outDir, { recursive: true, force: true });

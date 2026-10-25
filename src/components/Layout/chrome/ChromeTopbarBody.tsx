@@ -13,7 +13,7 @@ import { ChromeBrand, ChromeSearchSlot, ChromeTopbarSlot } from './ChromeSlots';
 import { ChromeCollapseToggle } from './ChromeCollapseToggle';
 import { ChromeUserThemeGroup, ChromeUserWidget } from './ChromeUserThemeGroup';
 import { ChromeNotificationsWidget, type SarakChromeNotification } from './ChromeNotificationsWidget';
-import { resolveChromeContentStyle, resolveChromeNavbarLayoutClass } from './chromeStructuralStyles';
+import { resolveChromeBackground, resolveChromeContentStyle, resolveChromeNavbarLayoutClass, resolveChromeSurfaceBorderStyle } from './chromeStructuralStyles';
 import { useChromeAutoHide } from './useChromeAutoHide';
 import { useChromeDesignTokens } from './useChromeDesignTokens';
 import { useChromeDefaultWidgets } from './useChromeDefaultWidgets';
@@ -54,7 +54,10 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
     brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot, secondaryContent,
     search, banner, footer, decoration, user, logout, notifications, onNotificationSelect, widgets, className, rootStyle, children,
 }) => {
-    const { navbarLayout, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled, searchPositionTopbar } = useChromeDesignTokens();
+    const {
+        navbarLayout, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled,
+        searchPositionTopbar, topbarBorderSide, topbarBorderStyle, topbarBackgroundStyle,
+    } = useChromeDesignTokens();
     const { isVisible, sensorProps, surfaceProps } = useChromeAutoHide(isAutoHideEnabled);
     const w = useChromeDefaultWidgets(widgets, {
         hasCustomSearch: Boolean(search),
@@ -101,16 +104,26 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
             {isVisible && (
                 <header
                     {...surfaceProps}
-                    className={`relative flex items-center gap-4 px-4 shrink-0 border-b transition-[height] duration-[var(--duration-normal,0.3s)] ${resolveChromeNavbarLayoutClass(navbarLayout)}`}
+                    className={`relative flex items-center shrink-0 transition-[height] duration-[var(--duration-normal,0.3s)] ${resolveChromeNavbarLayoutClass(navbarLayout)}`}
                     style={{
                         height: isNavHidden ? 'var(--sarak-topbar-collapsed-height, 48px)' : 'var(--sarak-topbar-height, 64px)',
                         margin: 'var(--sarak-tab-section-margin, 8px)',
-                        background: 'var(--sarak-topbar-bg, var(--theme-sidebar-bg, transparent))',
-                        borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.09)))',
+                        paddingInline: 'var(--sarak-layout-gap-md, 16px)',
+                        gap: 'var(--sarak-layout-gap-md, 16px)',
+                        background: resolveChromeBackground(topbarBackgroundStyle, '--sarak-topbar-bg', 'var(--theme-topbar-bg, var(--theme-sidebar-bg, transparent))'),
+                        ...resolveChromeSurfaceBorderStyle({
+                            side: topbarBorderSide,
+                            style: topbarBorderStyle,
+                            widthVariable: '--sarak-topbar-border-width',
+                            colorVariable: '--sarak-topbar-border-color',
+                            surface: 'topbar',
+                        }),
+                        backdropFilter: 'blur(var(--sarak-topbar-blur, 0px))',
+                        boxShadow: 'var(--sarak-topbar-shadow, none)',
                     }}
                 >
                     {/* `topbarNoiseOpacity` (Spec 05 §2.4). */}
-                    <div aria-hidden="true" className="absolute inset-0 pointer-events-none mix-blend-overlay" style={chromeNoiseLayerStyle('--sarak-topbar-noise-opacity')} />
+                    <div aria-hidden="true" className="absolute inset-0 z-0 pointer-events-none mix-blend-overlay" style={chromeNoiseLayerStyle('--sarak-topbar-noise-opacity', topbarBackgroundStyle === 'texture')} />
                     {w.showCollapse && (
                         <ChromeCollapseToggle orientation="topbar" collapsed={isNavHidden} onToggle={w.toggleNavHidden} />
                     )}
@@ -137,7 +150,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
                         espaço livre entre si (regra de auto-margin do flexbox) e abririam um
                         vão indesejado entre a busca e o `topbarEnd` quando não há nav. */}
                     {showEndGroup && (
-                        <div className="ml-auto flex items-center gap-2 min-w-0 shrink-0">
+                        <div className="relative z-10 ml-auto flex items-center gap-2 min-w-0 shrink-0">
                             {searchPositionTopbar === 'right' && (
                                 <ChromeSearchSlot position={searchPositionTopbar}>{effectiveSearch}</ChromeSearchSlot>
                             )}

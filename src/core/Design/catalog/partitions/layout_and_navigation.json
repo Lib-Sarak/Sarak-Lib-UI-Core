@@ -1527,5 +1527,949 @@
     "relatedTokens": [
       "zIndexModal"
     ]
+  },
+  {
+    "tokenId": "sidebarItemTextColor",
+    "name": "Texto do Item (Sidebar)",
+    "description": "Cor do rótulo dos itens inativos na navegação lateral.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "color"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-sidebar-item-text-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "sidebarColor"
+    ]
+  },
+  {
+    "tokenId": "sidebarItemHoverTextColor",
+    "name": "Texto do Item em Hover (Sidebar)",
+    "description": "Cor do rótulo dos itens da navegação lateral sob o ponteiro.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "color"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-sidebar-item-hover-text-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "sidebarColor",
+      "sidebarItemTextColor"
+    ]
+  },
+  {
+    "tokenId": "sidebarCategoryColor",
+    "name": "Rótulo de Categoria (Sidebar)",
+    "description": "Cor dos títulos que agrupam itens da navegação lateral.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "color"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-sidebar-category-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "sidebarColor"
+    ]
+  },
+  {
+    "tokenId": "sidebarBrandColor",
+    "name": "Nome da Marca (Sidebar)",
+    "description": "Cor do nome da marca quando exibido na navegação lateral.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "color"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-sidebar-brand-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "sidebarColor",
+      "identityFontFamily"
+    ]
+  },
+  {
+    "tokenId": "sidebarBorderColor",
+    "name": "Borda (Sidebar)",
+    "description": "Cor da borda externa da navegação lateral.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "color"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-sidebar-border-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "sidebarColor"
+    ]
+  },
+  {
+    "tokenId": "sidebarBorderWidth",
+    "name": "Espessura da Borda (Sidebar)",
+    "description": "Espessura, em pixels, da borda externa da navegação lateral; 0 remove a borda.",
+    "type": "slider",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "geometry"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-sidebar-border-width"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 8
+    },
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "sidebarBorderStyle",
+    "name": "Estilo da Borda (Sidebar)",
+    "description": "Traço da borda externa da navegação lateral.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "geometry"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "ChromeSidebarBody"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "solid",
+      "dashed",
+      "dotted",
+      "double",
+      "none"
+    ],
+    "relatedTokens": [],
+    "consumerHook": [
+      "useNavigationAppearance"
+    ]
+  },
+  {
+    "tokenId": "sidebarBorderSide",
+    "name": "Lados da Borda (Sidebar)",
+    "description": "Lados em que a moldura da navegação lateral aparece; borda externa acompanha o lado da barra.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "geometry"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "ChromeSidebarBody"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "edge",
+      "top",
+      "right",
+      "bottom",
+      "left",
+      "all",
+      "none"
+    ],
+    "relatedTokens": [],
+    "consumerHook": [
+      "useNavigationAppearance"
+    ]
+  },
+  {
+    "tokenId": "sidebarBrandBackground",
+    "name": "Fundo da Marca (Sidebar)",
+    "description": "Fundo da região da marca na navegação lateral.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "color"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-sidebar-brand-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "sidebarColor"
+    ]
+  },
+  {
+    "tokenId": "sidebarFooterBackground",
+    "name": "Fundo do Rodapé (Sidebar)",
+    "description": "Fundo da região de rodapé da navegação lateral.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "color"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-sidebar-footer-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "sidebarColor"
+    ]
+  },
+  {
+    "tokenId": "sidebarBackgroundStyle",
+    "name": "Tratamento do Fundo (Sidebar)",
+    "description": "Fundo sólido, gradiente CSS ou textura local sem dependência de rede.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "geometry"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "ChromeSidebarBody"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "solid",
+      "gradient",
+      "texture"
+    ],
+    "relatedTokens": [
+      "sidebarColor",
+      "sidebarNoiseOpacity"
+    ],
+    "consumerHook": [
+      "useNavigationAppearance"
+    ]
+  },
+  {
+    "tokenId": "sidebarActiveItemStyle",
+    "name": "Estilo do Item Ativo (Sidebar)",
+    "description": "Forma visual do item atual na navegação lateral.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "geometry"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "SarakMenuItem",
+      "SarakShellNav"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "bar",
+      "pill",
+      "underline",
+      "filled",
+      "outline"
+    ],
+    "relatedTokens": [
+      "sidebarActiveColor",
+      "navItemActiveColor",
+      "navActiveMarkerColor"
+    ],
+    "consumerHook": [
+      "useNavigationAppearance"
+    ]
+  },
+  {
+    "tokenId": "sidebarItemDensity",
+    "name": "Densidade dos Itens (Sidebar)",
+    "description": "Espaçamento vertical dos itens da navegação lateral.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "geometry"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "SarakMenuItem"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "compact",
+      "comfortable",
+      "spacious"
+    ],
+    "relatedTokens": [],
+    "consumerHook": [
+      "useNavigationAppearance"
+    ]
+  },
+  {
+    "tokenId": "sidebarIconSize",
+    "name": "Tamanho do Ícone (Sidebar)",
+    "description": "Tamanho, em pixels, dos ícones da navegação lateral.",
+    "type": "slider",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "geometry"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-sidebar-icon-size"
+    ],
+    "allowedValues": {
+      "min": 12,
+      "max": 32
+    },
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "sidebarIconColor",
+    "name": "Cor do Ícone (Sidebar)",
+    "description": "Cor dos ícones dos itens da navegação lateral.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "color"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-sidebar-icon-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "sidebarColor"
+    ]
+  },
+  {
+    "tokenId": "topbarItemTextColor",
+    "name": "Texto do Item (Topbar)",
+    "description": "Cor do rótulo dos itens inativos na navegação superior.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "color"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-item-text-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "topbarColor"
+    ]
+  },
+  {
+    "tokenId": "topbarItemHoverTextColor",
+    "name": "Texto do Item em Hover (Topbar)",
+    "description": "Cor do rótulo dos itens da navegação superior sob o ponteiro.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "color"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-item-hover-text-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "topbarColor",
+      "topbarItemTextColor"
+    ]
+  },
+  {
+    "tokenId": "topbarBrandColor",
+    "name": "Nome da Marca (Topbar)",
+    "description": "Cor do nome da marca quando exibido na navegação superior.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "color"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-brand-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "topbarColor",
+      "identityFontFamily"
+    ]
+  },
+  {
+    "tokenId": "topbarBrandBackground",
+    "name": "Fundo da Marca (Topbar)",
+    "description": "Fundo da região da marca na navegação superior.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "color"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-brand-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "topbarColor"
+    ]
+  },
+  {
+    "tokenId": "topbarBorderColor",
+    "name": "Borda (Topbar)",
+    "description": "Cor da borda externa da navegação superior.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "color"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-border-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "topbarColor"
+    ]
+  },
+  {
+    "tokenId": "topbarBorderWidth",
+    "name": "Espessura da Borda (Topbar)",
+    "description": "Espessura, em pixels, da borda externa da navegação superior; 0 remove a borda.",
+    "type": "slider",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "geometry"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-border-width"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 8
+    },
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "topbarBorderStyle",
+    "name": "Estilo da Borda (Topbar)",
+    "description": "Traço da borda externa da navegação superior.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "geometry"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "ChromeTopbarBody",
+      "ChromeBottomNav"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "solid",
+      "dashed",
+      "dotted",
+      "double",
+      "none"
+    ],
+    "relatedTokens": [],
+    "consumerHook": [
+      "useNavigationAppearance"
+    ]
+  },
+  {
+    "tokenId": "topbarBorderSide",
+    "name": "Lados da Borda (Topbar)",
+    "description": "Lados em que a moldura da navegação superior aparece.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "geometry"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "ChromeTopbarBody",
+      "ChromeBottomNav"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "edge",
+      "top",
+      "right",
+      "bottom",
+      "left",
+      "all",
+      "none"
+    ],
+    "relatedTokens": [],
+    "consumerHook": [
+      "useNavigationAppearance"
+    ]
+  },
+  {
+    "tokenId": "topbarGroupSeparatorColor",
+    "name": "Separador de Grupos (Topbar)",
+    "description": "Cor da linha que separa grupos de navegação na barra superior.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "color"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-group-separator-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "topbarColor"
+    ]
+  },
+  {
+    "tokenId": "topbarBackgroundStyle",
+    "name": "Tratamento do Fundo (Topbar)",
+    "description": "Fundo sólido, gradiente CSS ou textura local sem dependência de rede.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "geometry"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "ChromeTopbarBody",
+      "ChromeBottomNav"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "solid",
+      "gradient",
+      "texture"
+    ],
+    "relatedTokens": [
+      "topbarColor",
+      "topbarNoiseOpacity"
+    ],
+    "consumerHook": [
+      "useNavigationAppearance"
+    ]
+  },
+  {
+    "tokenId": "topbarActiveItemStyle",
+    "name": "Estilo do Item Ativo (Topbar)",
+    "description": "Forma visual do item atual na navegação superior.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "geometry"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "SarakMenuItem",
+      "SarakShellNav",
+      "ChromeBottomNav"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "bar",
+      "pill",
+      "underline",
+      "filled",
+      "outline"
+    ],
+    "relatedTokens": [
+      "topbarActiveColor",
+      "navItemActiveColor",
+      "navActiveMarkerColor"
+    ],
+    "consumerHook": [
+      "useNavigationAppearance"
+    ]
+  },
+  {
+    "tokenId": "topbarItemDensity",
+    "name": "Densidade dos Itens (Topbar)",
+    "description": "Espaçamento dos itens da navegação superior.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "geometry"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "SarakMenuItem",
+      "ChromeBottomNav"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "compact",
+      "comfortable",
+      "spacious"
+    ],
+    "relatedTokens": [],
+    "consumerHook": [
+      "useNavigationAppearance"
+    ]
+  },
+  {
+    "tokenId": "topbarIconSize",
+    "name": "Tamanho do Ícone (Topbar)",
+    "description": "Tamanho, em pixels, dos ícones da navegação superior.",
+    "type": "slider",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "geometry"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-icon-size"
+    ],
+    "allowedValues": {
+      "min": 12,
+      "max": 32
+    },
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "topbarIconColor",
+    "name": "Cor do Ícone (Topbar)",
+    "description": "Cor dos ícones dos itens da navegação superior.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "color"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-icon-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "topbarColor"
+    ]
+  },
+  {
+    "tokenId": "topbarBlur",
+    "name": "Backdrop Blur (Topbar)",
+    "description": "Intensidade do desfoque de fundo da barra superior, em pixels.",
+    "type": "slider",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "elevation"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 50
+    },
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "topbarShadow",
+    "name": "Sombra da Topbar",
+    "description": "Definição CSS completa de box-shadow para a barra superior.",
+    "type": "text",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "elevation"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-shadow"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "navigationStyle"
+    ]
   }
 ]

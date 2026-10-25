@@ -17,9 +17,8 @@ import { sarakGetDefaultDesignState } from '../../../../src/core/Design/master-m
 import { SARAK_ALL_THEMES } from '../../../../src/core/Design/presets/themes/all.ts';
 import type { SarakThemePreset } from '../../../../src/core/Design/presets/themes/index.ts';
 
-// Teste do PRÓPRIO GATE (R31, plan-24). Trava a MECÂNICA de cálculo — não o
-// número de temas reprovados, que é baseline e muda a cada tema consertado
-// na plan-24-1.
+// Teste do próprio gate (R31). Trava a mecânica de cálculo — não o número
+// de temas reprovados, que é baseline e muda a cada correção.
 
 describe('parseColor', () => {
   it('resolve #rrggbb', () => {
@@ -125,9 +124,9 @@ describe('resolveChain', () => {
   });
 });
 
-describe('PAIRS — o contrato da lista de pares reais (R31, veredito §11 da plan-24)', () => {
-  it('tem exatamente 82 pares (36 originais + 32 que os componentes desenham + 8 do grupo D + 6 de subtítulo/ênfase)', () => {
-    expect(PAIRS.length).toBe(82);
+describe('PAIRS — o contrato da lista de pares reais', () => {
+  it('mede os 89 pares de texto e fundo cobertos', () => {
+    expect(PAIRS.length).toBe(89);
   });
 
   describe('ícone do campo (inputIconColor × fundo do campo)', () => {
@@ -157,6 +156,25 @@ describe('PAIRS — o contrato da lista de pares reais (R31, veredito §11 da pl
 
   it('todo par declara ao menos um elo de fundo', () => {
     expect(PAIRS.every((p) => Array.isArray(p.bgChain) && p.bgChain.length > 0)).toBe(true);
+  });
+
+});
+
+describe('cobertura de contraste do cromo', () => {
+  it('cobre rótulos, estados de hover e marcas das duas barras', () => {
+    const requiredPairs = [
+      ['sidebarItemTextColor', 'sidebarColor'],
+      ['sidebarItemHoverTextColor', 'sidebarHoverColor'],
+      ['sidebarCategoryColor', 'sidebarColor'],
+      ['sidebarBrandColor', 'sidebarBrandBackground'],
+      ['topbarItemTextColor', 'topbarColor'],
+      ['topbarItemHoverTextColor', 'topbarHoverColor'],
+      ['topbarBrandColor', 'topbarBrandBackground'],
+    ];
+
+    for (const [foreground, background] of requiredPairs) {
+      expect(PAIRS.some((pair) => pair.fg === foreground && pair.bgChain[0] === background)).toBe(true);
+    }
   });
 });
 
@@ -268,10 +286,10 @@ describe('pares que os componentes desenham', () => {
   });
 });
 
-// Segunda passada (plan-24-1, Passo 7) — mede o MODO OPOSTO ao nativo do
+// Segunda passada — mede o MODO OPOSTO ao nativo do
 // tema. Não trava o número de temas reprovados (isso é baseline), só que a
 // função RODA e devolve o mesmo formato de relatório que `auditTheme`.
-describe('auditThemeOppositeMode — segunda passada (plan-24-1 · plan-26)', () => {
+describe('auditThemeOppositeMode — segunda passada', () => {
   it('roda para todos os temas shippados sem lançar, com o mesmo formato de auditTheme', () => {
     for (const theme of SARAK_ALL_THEMES) {
       const nativo = auditTheme(theme);
@@ -282,14 +300,14 @@ describe('auditThemeOppositeMode — segunda passada (plan-24-1 · plan-26)', ()
     }
   });
 
-  it('todos os temas de referência passam AA nos dois modos (Decisão C · plan-24-1 · contraparte autorada · plan-26)', () => {
+  it('todos os temas de referência passam AA nos dois modos com contraparte autorada', () => {
     for (const theme of SARAK_ALL_THEMES) {
       const oposto = auditThemeOppositeMode(theme);
       expect(oposto.falhas, `tema "${theme.id}" reprova no modo oposto: ${JSON.stringify(oposto.falhas.map((f) => f.pair))}`).toEqual([]);
     }
   });
 
-  it('mede a contraparte AUTORADA quando existe — não o sintetizado (plan-26)', () => {
+  it('mede a contraparte AUTORADA quando existe — não o sintetizado', () => {
     // Tema sintético: fundo nativo escuro, contraparte com um fundo claro
     // ESCOLHIDO (não o que `syncThemeWithMode` geraria) — se a 2ª passada
     // medisse o sintetizado, este valor exato nunca apareceria no resultado.
@@ -307,7 +325,7 @@ describe('auditThemeOppositeMode — segunda passada (plan-24-1 · plan-26)', ()
   });
 });
 
-// A EXIGÊNCIA de contraparte (plan-26 §2.4/§3.1 item 6) — o gate, não o tipo.
+// A exigência de contraparte pertence ao gate, não ao tipo.
 describe('auditContraparteRequired', () => {
   it('a lista de isenção está vazia — todo tema do catálogo shippado tem contraparte autorada', () => {
     expect(CONTRAPARTE_EXEMPTION_LIST.length).toBe(0);

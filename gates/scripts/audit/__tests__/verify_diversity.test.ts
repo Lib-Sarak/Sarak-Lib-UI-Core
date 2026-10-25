@@ -7,6 +7,7 @@ import {
     measureTheme,
     aggregate,
     evaluateDistanceCriteria,
+    evaluateChromeDiversity,
     type ThemeDiversityRow,
 } from '../verify_diversity.ts';
 import { SARAK_ALL_THEMES } from '../../../../src/core/Design/presets/themes/all.ts';
@@ -101,6 +102,32 @@ describe('measureTheme', () => {
             design: { cardBorderRadius: { mob: 8, tab: 12, desk: 20 } },
         } as unknown as SarakThemePreset;
         expect(measureTheme(tema).cardBorderRadius).toBe(20);
+    });
+});
+
+describe('evaluateChromeDiversity', () => {
+    it('confere variedade dos itens ativos e fundos nas duas barras do catálogo', () => {
+        const report = evaluateChromeDiversity(SARAK_ALL_THEMES);
+
+        expect(report.ok).toBe(true);
+        expect(report.sidebarActiveStyles.length).toBeGreaterThanOrEqual(3);
+        expect(report.topbarActiveStyles.length).toBeGreaterThanOrEqual(3);
+        expect(report.sidebarBackgroundStyles.length).toBeGreaterThanOrEqual(3);
+        expect(report.topbarBackgroundStyles.length).toBeGreaterThanOrEqual(3);
+    });
+
+    it('reprova um catálogo sem variedade visual suficiente', () => {
+        const repeatedTheme = (id: string): SarakThemePreset => ({
+            id,
+            design: {
+                sidebarActiveItemStyle: 'bar',
+                topbarActiveItemStyle: 'bar',
+                sidebarBackgroundStyle: 'solid',
+                topbarBackgroundStyle: 'solid',
+            },
+        }) as unknown as SarakThemePreset;
+
+        expect(evaluateChromeDiversity([repeatedTheme('first'), repeatedTheme('second')]).ok).toBe(false);
     });
 });
 

@@ -164,6 +164,98 @@ function ownKeysText(src, open) {
 /** `id` de TOKEN é o de um objeto que declara `type:`; o `id` de uma opção de `select` (ou de um grupo) não. */
 const isTokenId = (src, idIndex) => /\btype:\s*['"]/.test(ownKeysText(src, enclosingOpenBrace(src, idIndex)));
 
+const CHROME_COLOR_CSS_VARIABLE_ARGUMENT = 5;
+const CHROME_SLIDER_CSS_VARIABLE_ARGUMENT = 7;
+const TOKEN_FACTORY_ARGUMENTS = {
+  createChromeColorToken: { cssVariable: CHROME_COLOR_CSS_VARIABLE_ARGUMENT },
+  createChromeSliderToken: { cssVariable: CHROME_SLIDER_CSS_VARIABLE_ARGUMENT },
+};
+
+function advanceQuotedArgument(character, state) {
+  if (state.escaped) {
+    state.escaped = false;
+    return;
+  }
+  if (character === '\\') {
+    state.escaped = true;
+    return;
+  }
+  if (character === state.quote) state.quote = null;
+}
+
+function advanceArgumentParser(character, state) {
+  if (state.quote) {
+    advanceQuotedArgument(character, state);
+    return null;
+  }
+  if (character === "'" || character === '"' || character === '`') {
+    state.quote = character;
+    return null;
+  }
+  if (character === '(' || character === '[' || character === '{') {
+    state.depth += 1;
+    return null;
+  }
+  if (character === ')' && state.depth === 0) return 'close';
+  if (character === ')' || character === ']' || character === '}') {
+    state.depth -= 1;
+    return null;
+  }
+  return character === ',' && state.depth === 0 ? 'comma' : null;
+}
+
+function splitCallArguments(src, openIndex) {
+  const argumentsList = [];
+  let argumentStart = openIndex + 1;
+  const state = { depth: 0, quote: null, escaped: false };
+
+  for (let index = argumentStart; index < src.length; index += 1) {
+    const delimiter = advanceArgumentParser(src[index], state);
+    if (delimiter === 'close') {
+      const lastArgument = src.slice(argumentStart, index).trim();
+      if (lastArgument) argumentsList.push(lastArgument);
+      return argumentsList;
+    }
+    if (delimiter === 'comma') {
+      argumentsList.push(src.slice(argumentStart, index).trim());
+      argumentStart = index + 1;
+    }
+  }
+
+  return [];
+}
+
+function stringLiteralValue(expression) {
+  const match = expression.match(/^(['"])(.*?)\1$/s);
+  return match ? match[2] : null;
+}
+
+function factoryEmitsCssVariable(src, factoryName) {
+  const declarationPattern = new RegExp(
+    `const\\s+${factoryName}\\s*=\\s*\\([\\s\\S]*?\\)\\s*(?::[^=]+)?=>\\s*\\(\\{([\\s\\S]*?)\\}\\);`,
+  );
+  const declaration = src.match(declarationPattern);
+  return /\bcssVars:\s*\[\s*cssVariable\s*\]/.test(declaration?.[1] ?? '');
+}
+
+function registerFactoryTokens(src) {
+  for (const [factoryName, argumentPositions] of Object.entries(TOKEN_FACTORY_ARGUMENTS)) {
+    if (!factoryEmitsCssVariable(src, factoryName)) continue;
+    const factoryPattern = new RegExp(`\\b${factoryName}\\s*\\(`, 'g');
+    for (const match of src.matchAll(factoryPattern)) {
+      const openIndex = match.index + match[0].lastIndexOf('(');
+      const args = splitCallArguments(src, openIndex);
+      const id = stringLiteralValue(args[0] ?? '');
+      const cssVariable = stringLiteralValue(args[argumentPositions.cssVariable] ?? '');
+      if (!id || !/^--sarak-[a-z0-9-]+$/.test(cssVariable ?? '')) continue;
+
+      schemaIds.add(id);
+      registry.add(`--sarak-${kebab(id)}`);
+      registry.add(cssVariable);
+    }
+  }
+}
+
 for (const file of walk(SCHEMA_DIR, ['.ts'])) {
   const src = fs.readFileSync(file, 'utf8');
   // auto-var: --sarak-<kebab(id)> — só para id de TOKEN (ver `isTokenId`)
@@ -176,6 +268,7 @@ for (const file of walk(SCHEMA_DIR, ['.ts'])) {
   for (const block of src.matchAll(/cssVars:\s*\[([^\]]*)\]/g)) {
     for (const v of block[1].matchAll(/['"](--[a-z0-9-]+)['"]/g)) registry.add(v[1]);
   }
+  registerFactoryTokens(src);
 }
 
 // Variáveis definidas em CSS (src/styles): lado esquerdo `--x:`

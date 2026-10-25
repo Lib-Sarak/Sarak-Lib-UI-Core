@@ -10,6 +10,16 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 **Classificação: MAJOR.** O `SarakShell`, a descoberta e o registro global de módulos foram removidos.
 Cada aplicação monta `SarakAppChrome`, fornece seus `navItems` e controla as próprias rotas.
 
+### Composição de páginas
+
+Para compor telas com peças da biblioteca, importe `SarakPageHeader`, `SarakFilterBar`,
+`SarakSegmentedControl`, `SarakSection`, `SarakResourceRow` e `SarakDescriptionList` pelo barril
+`@sarak/lib-ui-core`. Migre os cabeçalhos, filtros agrupados, seletores de visualização, blocos de
+conteúdo, linhas clicáveis e pares de rótulo-valor feitos à mão para essas peças. Busca, filtros,
+dados, rotas e ações continuam sob controle do consumidor. Os moldes copiáveis `tela-lista.tsx` e
+`tela-detalhe.tsx` ficam em `sarak-ui/templates/` e são descritos na seção de templates do
+`GUIA-FRONTEND.md`.
+
 Os peers opcionais continuam opcionais: instale somente os que os componentes usados pelo seu
 produto precisam. Se um componente for renderizado sem o pacote correspondente, ele mostra uma
 mensagem com o nome do pacote e registra um aviso no console. O guia relaciona cada pacote ao
@@ -181,6 +191,10 @@ Também mudam, e o consumidor percebe:
 Design). **Um teste seu que abria o drawer para clicar num item de navegação no celular** passa a achá-lo na barra
 da base (`nav[data-sarak-bottom-nav]`, links com o mesmo nome) sem abrir o drawer, quando o cromo tem até 5 itens.
 Quem tinha `navigationStyle: 'dock'` em tema salvo não precisa fazer nada; o aviso some ao regravar o tema.
+
+### Plan 124 — controles de composição ficam no menu Preferências
+
+O padrão de fábrica passa a colocar tamanho da fonte, orientação da navegação e recolhimento da barra dentro do menu **Preferências**. Modo claro/escuro, busca, usuário, notificações e idioma continuam fixos na barra. Uma posição válida já salva pelo sistema continua prevalecendo sobre o padrão; a mudança vale para configurações sem valor explícito.
 
 ### No celular, todo acionável tem área tocável de 44 px, o campo não dá zoom, o movimento reduzido vale e a busca abre o teclado de busca
 

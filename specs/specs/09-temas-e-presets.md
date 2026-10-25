@@ -602,9 +602,11 @@ cifra em prosa envelhece).
 
 **Agora se mede:** `gates/scripts/audit/verify_diversity.ts` (+ `npm run themes:diversity`) emite modo, família de
 matiz, H/S da primária, luminosidade do fundo, raio, borda, blur e densidade de todo `SARAK_ALL_THEMES`, e avalia os
-critérios de distância (o modo `--new <ids>` mede um grupo de temas novos contra os existentes). Só eixo **estético**
-entra na medição: a navegação é token funcional e nenhum tema a declara (§5.3). **Diversidade deixou de ser afirmação e
-virou saída de script.**
+critérios de distância (o modo `--new <ids>` mede um grupo de temas novos contra os existentes). A mesma execução
+confere os estilos de item ativo e os tratamentos de fundo da sidebar e da topbar: cada orientação precisa ter pelo
+menos três estilos ativos e três tratamentos de fundo no catálogo. A geometria e o comportamento da navegação seguem
+funcionais e uniformes; texto, moldura, fundo, forma do ativo, densidade e ícones da barra são eixos estéticos (§5.3).
+**Diversidade deixou de ser afirmação e virou saída de script.**
 
 > 🔴 **A armadilha que o próprio instrumento trouxe, e que vale como aviso permanente.** Ele nasceu com os
 > buckets estruturais calibrados em intervalos que o dado **nunca alcança** — raio `0..120` quando o real é
@@ -638,6 +640,12 @@ O schema separa os tokens em **estéticos** e **funcionais** (`kind` e `modeDepe
   movimento reduzido): eles valem o padrão do sistema, igual em todo tema. Um tema que quer "sem movimento" usa os
   tokens estéticos de movimento (durações e entradas mínimas), não `reducedMotion`;
 - escolhe `texture` e `cardTextureType` que sirvam aos **dois** modos, porque os dois não carregam modo.
+
+**Identidade do cromo.** Cada tema declara também o conjunto estético das duas barras: texto dos itens, hover, categoria
+e marca; moldura; tratamento do fundo; forma do item ativo; densidade; ícones; e, na topbar, separador, blur e sombra.
+Os 16 valores cromáticos e de sombra que carregam modo aparecem na `contraparte`; geometria e escolhas de estilo ficam
+no `design` principal. `sarak-sovereign` mantém os padrões do schema. O auditor de contraste verifica os textos inativos,
+hover, categoria e marca sobre a barra correspondente nos dois modos; o item ativo também continua coberto.
 
 **A trava é o `theme-completeness:check`** (`gates/scripts/contrato/check-theme-completeness.ts`): reprova estético
 faltando, estético com modo faltando na `contraparte` e funcional declarado. A exceção por tema

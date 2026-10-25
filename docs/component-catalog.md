@@ -41,6 +41,8 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakForm` | `mode` | `create` · `edit` |
 | `SarakIconButton` | `variant` | `primary` · `secondary` · `ghost` · `danger` |
 | `SarakIconButton` | `size` | `xs` · `sm` · `md` · `lg` |
+| `SarakMenuItem` | `markerPosition` | `edge` · `top` |
+| `SarakSection` | `variant` | `plain` · `card` |
 | `SarakShellLanguageSelector` | `variant` | `horizontal` · `vertical` |
 | `SarakShellNav` | `orientation` | `vertical` · `horizontal` · `auto` |
 | `SarakShellSearchWidget` | `variant` | `bar` · `icon` |
@@ -66,7 +68,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `ListOrdered` · `Grid` · `Layout` · `LayoutDashboard` · `LayoutGrid` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `ZoomIn` · `ZoomOut` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `ShieldCheck` · `Eye` · `EyeOff` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Bold` · `Italic` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Binary` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `Link2` · `ExternalLink` · `Command` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Settings2` · `Zap` · `Sparkles` · `Compass` · `Sun` · `Moon` · `XCircle` · `ToggleLeft` · `ToggleRight`
 
-## Componentes públicos (102)
+## Componentes públicos (108)
 
 ### SARAK_DEFAULT_COLUMN_WIDTH
 
@@ -581,6 +583,16 @@ Props (`SarakDatePickerProps` — `src/components/atomic/Inputs/SarakDatePicker.
 | `style` | `React.CSSProperties` | não |  |
 | `onChange` | `(value: SarakDatePickerValue) => void` | não | Emite a nova data/intervalo em ISO (Spec 32: `onChange(value)`). |
 
+### SarakDescriptionList
+
+Props (`SarakDescriptionListProps` — `src/components/atomic/Templates/SarakDescriptionList.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `items` | `SarakDescriptionListItem[]` | sim |  |
+
+Estende: `Omit<React.HTMLAttributes<HTMLDListElement>, 'children'>`
+
 ### SarakDivider
 
 Props (`SarakDividerProps` — `src/components/atomic/Layouts/SarakDivider.tsx`):
@@ -653,6 +665,19 @@ Props (`SarakFieldErrorProps` — `src/components/atomic/Feedback/SarakFieldErro
 | --- | --- | --- | --- |
 | `message` | `string` | não | Mensagem do erro. Omitida, vazia ou composta só por espaços, não renderiza elemento nem reserva espaço; espaços nas bordas não são removidos do texto exibido. |
 | `fieldId` | `string` | sim | `id` do controle descrito; a mensagem recebe o id `${fieldId}-error`. É obrigatório em TypeScript; se omitido ao contornar a tipagem, a mensagem continua visível e anunciada, mas não pode ser associada ao campo. No controle, use esse id da mensagem em `aria-describedby`. |
+
+### SarakFilterBar
+
+Props (`SarakFilterBarProps` — `src/components/atomic/Templates/SarakFilterBar.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `ariaLabel` | `string` | sim |  |
+| `children` | `React.ReactNode` | sim |  |
+| `actions` | `React.ReactNode` | não |  |
+| `clearFilters` | `{ label: string; onClick: () => void; }` | não |  |
+
+Estende: `React.HTMLAttributes<HTMLDivElement>`
 
 ### SarakFilterSelect
 
@@ -917,6 +942,7 @@ Props (`SarakMenuItemProps` — `src/components/atomic/Navigation/SarakMenuItem.
 | `disabled` | `boolean` | não |  |
 | `onClick` | `React.MouseEventHandler<HTMLElement>` | não |  |
 | `className` | `string` | não |  |
+| `markerPosition` | `'edge' \| 'top'` | não | A barra inferior do celular ancora o indicador no topo do item. |
 
 Estende: `Omit<React.HTMLAttributes<HTMLElement>, 'title' | 'onClick' | 'type'>`
 
@@ -971,6 +997,23 @@ Props (`SarakPDFViewerProps` — `src/components/atomic/Media/SarakPDFViewer/Sar
 | `workerSrc` | `string` | sim | URL do worker da versão de `pdfjs-dist` instalada pelo consumidor. Vite: `import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';` Webpack 5: `new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString()`. |
 | `onDownload` | `(src: SarakPdfSource) => void` | não | Disparado ao clicar em Download (recebe a `src` quando string). |
 | `className` | `string` | não |  |
+
+### SarakPageHeader
+
+Props (`SarakPageHeaderProps` — `src/components/atomic/Templates/SarakPageHeader.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `title` | `React.ReactNode` | sim |  |
+| `subtitle` | `React.ReactNode` | não |  |
+| `breadcrumbs` | `SarakBreadcrumbItem[]` | não |  |
+| `onBreadcrumbNavigate` | `(href: string) => void` | não |  |
+| `primaryActions` | `React.ReactNode` | não |  |
+| `secondaryActions` | `React.ReactNode` | não |  |
+| `loading` | `boolean` | não |  |
+| `loadingLabel` | `string` | não |  |
+
+Estende: `Omit<React.HTMLAttributes<HTMLElement>, 'title'>`
 
 ### SarakPageTransition
 
@@ -1040,6 +1083,22 @@ Props (`SarakRangeSliderProps` — `src/components/atomic/Inputs/SarakRangeSlide
 
 Estende: `Omit<HTMLAttributes<HTMLDivElement>, 'onChange' | 'defaultValue'>`
 
+### SarakResourceRow
+
+Props (`SarakResourceRowProps` — `src/components/atomic/Templates/SarakResourceRow.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `title` | `React.ReactNode` | sim |  |
+| `description` | `React.ReactNode` | não |  |
+| `badges` | `React.ReactNode[]` | não |  |
+| `metadata` | `SarakDescriptionListItem[]` | não |  |
+| `actions` | `SarakResourceRowAction[]` | não |  |
+| `href` | `string` | não |  |
+| `onNavigate` | `(href: string) => void` | não |  |
+
+Estende: `Omit<React.HTMLAttributes<HTMLElement>, 'title'>`
+
 ### SarakRichText
 
 Props (`SarakRichTextProps` — `src/components/atomic/Inputs/SarakRichText.tsx`):
@@ -1094,6 +1153,39 @@ Props (`SarakSearchCardProps` — `src/components/atomic/Cards/SarakSearchCard.t
 | `onToggleCapability` | `(cap: string, active: boolean) => void` | não | Recebe a capacidade (`vision`, `web` ou `chat`) e seu novo estado; sem callback, os alternadores mudam apenas o estado local. |
 | `design` | `SarakThemePayload` | não | Substitui o tema do provider para este cartão; omitida, usa o tema global. |
 | `label` | `string` | não | Texto do selo de rascunho; sem a prop, usa `Card de Interação`, e o selo só aparece durante a composição de rascunho. |
+
+### SarakSection
+
+Props (`SarakSectionProps` — `src/components/atomic/Templates/SarakSection.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `title` | `React.ReactNode` | sim |  |
+| `description` | `React.ReactNode` | não |  |
+| `actions` | `React.ReactNode` | não |  |
+| `children` | `React.ReactNode` | não |  |
+| `headingLevel` | `2 \| 3 \| 4 \| 5 \| 6` | não |  |
+| `variant` | `'plain' \| 'card'` | não |  |
+| `loading` | `boolean` | não |  |
+| `loadingLabel` | `string` | não |  |
+| `emptyState` | `{ title?: React.ReactNode; description?: React.ReactNode; action?: React.ReactNode; }` | não |  |
+| `error` | `{ title: string; message: string; retryLabel?: string; onRetry?: () => void; }` | não |  |
+
+Estende: `Omit<React.HTMLAttributes<HTMLElement>, 'title'>`
+
+### SarakSegmentedControl
+
+Props (`SarakSegmentedControlProps` — `src/components/atomic/Templates/SarakSegmentedControl.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `options` | `SarakSegmentedOption[]` | sim |  |
+| `ariaLabel` | `string` | sim |  |
+| `value` | `string` | não |  |
+| `defaultValue` | `string` | não |  |
+| `onValueChange` | `(value: string) => void` | não |  |
+
+Estende: `Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'>`
 
 ### SarakSelect
 

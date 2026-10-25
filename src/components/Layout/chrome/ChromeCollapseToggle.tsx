@@ -23,7 +23,7 @@ export const ChromeCollapseToggle: React.FC<ChromeCollapseToggleProps> = ({ orie
             variant="ghost"
             size="sm"
             data-sarak-widget="collapse"
-            className="shrink-0"
+            className="relative z-10 shrink-0"
             aria-label={collapsed ? t('chromeCollapseExpand') : t('chromeCollapseCollapse')}
             icon={<SarakIcon name={orientation === 'topbar' ? 'Menu' : 'ChevronLeft'} size={16} />}
         />

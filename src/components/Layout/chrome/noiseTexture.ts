@@ -10,8 +10,8 @@ const NOISE_TEXTURE_URL =
     "data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E";
 
 /** Estilo do overlay: opacidade pelo token (`opacityCssVar`), textura fixa. */
-export const chromeNoiseLayerStyle = (opacityCssVar: string): CSSProperties => ({
-    opacity: `var(${opacityCssVar}, 0)`,
+export const chromeNoiseLayerStyle = (opacityCssVar: string, enableTexture = false): CSSProperties => ({
+    opacity: enableTexture ? `max(var(${opacityCssVar}, 0), 0.12)` : `var(${opacityCssVar}, 0)`,
     backgroundImage: `url("${NOISE_TEXTURE_URL}")`,
     backgroundSize: '200px 200px',
     backgroundRepeat: 'repeat',

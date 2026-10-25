@@ -1754,6 +1754,19 @@
         }
       ]
     },
+    "SarakDescriptionList": {
+      "propsInterface": "SarakDescriptionListProps",
+      "source": "src/components/atomic/Templates/SarakDescriptionList.tsx",
+      "extends": "Omit<React.HTMLAttributes<HTMLDListElement>, 'children'>",
+      "props": [
+        {
+          "name": "items",
+          "type": "SarakDescriptionListItem[]",
+          "optional": false,
+          "doc": ""
+        }
+      ]
+    },
     "SarakDivider": {
       "propsInterface": "SarakDividerProps",
       "source": "src/components/atomic/Layouts/SarakDivider.tsx",
@@ -1962,6 +1975,37 @@
           "type": "string",
           "optional": false,
           "doc": "`id` do controle descrito; a mensagem recebe o id `${fieldId}-error`. É obrigatório em TypeScript; se omitido ao contornar a tipagem, a mensagem continua visível e anunciada, mas não pode ser associada ao campo. No controle, use esse id da mensagem em `aria-describedby`."
+        }
+      ]
+    },
+    "SarakFilterBar": {
+      "propsInterface": "SarakFilterBarProps",
+      "source": "src/components/atomic/Templates/SarakFilterBar.tsx",
+      "extends": "React.HTMLAttributes<HTMLDivElement>",
+      "props": [
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "actions",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "clearFilters",
+          "type": "{ label: string; onClick: () => void; }",
+          "optional": true,
+          "doc": ""
         }
       ]
     },
@@ -2767,6 +2811,12 @@
           "type": "string",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "markerPosition",
+          "type": "'edge' | 'top'",
+          "optional": true,
+          "doc": "A barra inferior do celular ancora o indicador no topo do item."
         }
       ]
     },
@@ -2950,6 +3000,61 @@
         },
         {
           "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakPageHeader": {
+      "propsInterface": "SarakPageHeaderProps",
+      "source": "src/components/atomic/Templates/SarakPageHeader.tsx",
+      "extends": "Omit<React.HTMLAttributes<HTMLElement>, 'title'>",
+      "props": [
+        {
+          "name": "title",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "subtitle",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "SarakBreadcrumbItem[]",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onBreadcrumbNavigate",
+          "type": "(href: string) => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "primaryActions",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "secondaryActions",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "loadingLabel",
           "type": "string",
           "optional": true,
           "doc": ""
@@ -3162,6 +3267,55 @@
         }
       ]
     },
+    "SarakResourceRow": {
+      "propsInterface": "SarakResourceRowProps",
+      "source": "src/components/atomic/Templates/SarakResourceRow.tsx",
+      "extends": "Omit<React.HTMLAttributes<HTMLElement>, 'title'>",
+      "props": [
+        {
+          "name": "title",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "description",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "badges",
+          "type": "React.ReactNode[]",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "metadata",
+          "type": "SarakDescriptionListItem[]",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "actions",
+          "type": "SarakResourceRowAction[]",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "href",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onNavigate",
+          "type": "(href: string) => void",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakRichText": {
       "propsInterface": "SarakRichTextProps",
       "source": "src/components/atomic/Inputs/SarakRichText.tsx",
@@ -3345,6 +3499,110 @@
           "type": "string",
           "optional": true,
           "doc": "Texto do selo de rascunho; sem a prop, usa `Card de Interação`, e o selo só aparece durante a composição de rascunho."
+        }
+      ]
+    },
+    "SarakSection": {
+      "propsInterface": "SarakSectionProps",
+      "source": "src/components/atomic/Templates/SarakSection.tsx",
+      "extends": "Omit<React.HTMLAttributes<HTMLElement>, 'title'>",
+      "props": [
+        {
+          "name": "title",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "description",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "actions",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "headingLevel",
+          "type": "2 | 3 | 4 | 5 | 6",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "variant",
+          "type": "'plain' | 'card'",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "loadingLabel",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "emptyState",
+          "type": "{ title?: React.ReactNode; description?: React.ReactNode; action?: React.ReactNode; }",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "error",
+          "type": "{ title: string; message: string; retryLabel?: string; onRetry?: () => void; }",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakSegmentedControl": {
+      "propsInterface": "SarakSegmentedControlProps",
+      "source": "src/components/atomic/Templates/SarakSegmentedControl.tsx",
+      "extends": "Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'>",
+      "props": [
+        {
+          "name": "options",
+          "type": "SarakSegmentedOption[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: string) => void",
+          "optional": true,
+          "doc": ""
         }
       ]
     },
@@ -4521,6 +4779,22 @@
           "sm",
           "md",
           "lg"
+        ]
+      },
+      {
+        "component": "SarakMenuItem",
+        "prop": "markerPosition",
+        "values": [
+          "edge",
+          "top"
+        ]
+      },
+      {
+        "component": "SarakSection",
+        "prop": "variant",
+        "values": [
+          "plain",
+          "card"
         ]
       },
       {

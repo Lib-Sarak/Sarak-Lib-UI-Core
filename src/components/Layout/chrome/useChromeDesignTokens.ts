@@ -1,6 +1,7 @@
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { resolveMaxContentWidth } from '../../../core/Design/schema/system';
 import { resolveMobileNavigationStyle, type ChromeMobileNavigationStyle } from './mobileNavigation';
+import { useNavigationAppearance, type NavigationAppearance } from '../../../core/Provider/useNavigationAppearance';
 
 export type ChromeSidebarPosition = 'left' | 'right' | 'floating';
 export type ChromeNavbarLayout = 'sticky' | 'inline' | 'hidden';
@@ -8,7 +9,7 @@ export type ChromeLayoutDensity = 'compact' | 'comfortable' | 'spacious';
 export type ChromeSearchPositionSidebar = 'top' | 'bottom';
 export type ChromeSearchPositionTopbar = 'left' | 'center' | 'right' | 'hidden';
 
-export interface ChromeDesignTokens {
+export interface ChromeDesignTokens extends NavigationAppearance {
     sidebarPosition: ChromeSidebarPosition;
     navbarLayout: ChromeNavbarLayout;
     layoutDensity: ChromeLayoutDensity;
@@ -36,7 +37,9 @@ const resolveLayoutDensity = (value: unknown): ChromeLayoutDensity =>
  */
 export const useChromeDesignTokens = (): ChromeDesignTokens => {
     const design = useSarakUIOptional()?.design;
+    const navigationAppearance = useNavigationAppearance();
     return {
+        ...navigationAppearance,
         sidebarPosition: (design?.sidebarPosition as ChromeSidebarPosition) || 'left',
         navbarLayout: (design?.navbarLayout as ChromeNavbarLayout) || 'sticky',
         layoutDensity: resolveLayoutDensity(design?.layoutDensity),

@@ -8,6 +8,7 @@ import { resolveThemeForMode } from '../../../../core/Design/presets/themes/colo
 import type { SarakTokenValue } from '../../../../core/Design/types';
 import { sarakGetDefaultDesignState } from '../../../../core/Design/master-map';
 import { parseToRgba } from '../../../../core/Provider/utils/color-engine';
+import { DesignOverrideContext } from '../../../../core/Provider/context';
 
 const RAIO_DO_ITEM = 'rounded-[var(--sarak-nav-item-radius,12px)]';
 
@@ -173,10 +174,11 @@ describe('SarakMenuItem — navegação com clique do meio', () => {
 });
 
 describe('SarakMenuItem — cor de ativo/hover do cromo por orientação', () => {
-    it('vertical ATIVO consome --sarak-sidebar-active-color (sidebar/drawer)', () => {
+    it('vertical ATIVO consome o fundo lateral por estilo e a cor ativa como texto', () => {
         render(<SarakMenuItem label="Módulo" orientation="vertical" active />);
-        const classes = screen.getByRole('button', { name: 'Módulo' }).className;
-        expect(classes).toContain('var(--sarak-sidebar-active-color');
+        const item = screen.getByRole('button', { name: 'Módulo' });
+        expect(item.style.backgroundColor).toBe('var(--sarak-sidebar-active-color, transparent)');
+        expect(item.style.color).toBe('var(--sarak-nav-active-color, #19e3f0)');
     });
 
     it('vertical INATIVO consome --sarak-sidebar-hover-color no hover', () => {
@@ -185,11 +187,11 @@ describe('SarakMenuItem — cor de ativo/hover do cromo por orientação', () =>
         expect(classes).toContain('hover:bg-[var(--sarak-sidebar-hover-color');
     });
 
-    it('horizontal ATIVO consome --sarak-topbar-active-color (topbar)', () => {
+    it('horizontal ATIVO consome o fundo da topbar por estilo', () => {
         render(<SarakMenuItem label="Aba" orientation="horizontal" active />);
-        const classes = screen.getByRole('button', { name: 'Aba' }).className;
-        expect(classes).toContain('var(--sarak-topbar-active-color');
-        expect(classes).not.toContain('var(--sarak-sidebar-active-color');
+        const item = screen.getByRole('button', { name: 'Aba' });
+        expect(item.style.backgroundColor).toBe('var(--sarak-topbar-active-color, transparent)');
+        expect(item.style.color).toBe('var(--sarak-nav-active-color, #19e3f0)');
     });
 
     it('horizontal INATIVO NÃO usa a cor de hover da sidebar', () => {
@@ -204,12 +206,54 @@ describe('SarakMenuItem — cor de ativo/hover do cromo por orientação', () =>
         expect(classes).toContain('hover:bg-[var(--sarak-topbar-hover-color');
     });
 
-    it('vertical e horizontal ATIVO consomem --sarak-nav-active-color para texto/ícone (token que significa o efeito)', () => {
-        render(<SarakMenuItem label="Módulo" orientation="vertical" active />);
-        expect(screen.getByRole('button', { name: 'Módulo' }).className).toContain('var(--sarak-nav-active-color');
+    it('vertical e horizontal INATIVO leem cores próprias de texto e hover', () => {
+        render(<SarakMenuItem label="Módulo" orientation="vertical" />);
+        const vertical = screen.getByRole('button', { name: 'Módulo' });
+        expect(vertical.className).toContain('--sarak-sidebar-item-text-color');
+        expect(vertical.className).toContain('--sarak-sidebar-item-hover-text-color');
 
-        render(<SarakMenuItem label="Aba" orientation="horizontal" active />);
-        expect(screen.getByRole('button', { name: 'Aba' }).className).toContain('var(--sarak-nav-active-color');
+        render(<SarakMenuItem label="Aba" orientation="horizontal" />);
+        const horizontal = screen.getByRole('button', { name: 'Aba' });
+        expect(horizontal.className).toContain('--sarak-topbar-item-text-color');
+        expect(horizontal.className).toContain('--sarak-topbar-item-hover-text-color');
+    });
+});
+
+describe('SarakMenuItem — tratamento ativo, densidade e ícones por barra', () => {
+    it.each([
+        ['bar', true, 'var(--sarak-sidebar-active-color, transparent)'],
+        ['pill', false, 'var(--sarak-sidebar-active-color, transparent)'],
+        ['underline', true, 'transparent'],
+        ['filled', false, 'var(--sarak-nav-active-color, #19e3f0)'],
+        ['outline', false, 'transparent'],
+    ] as const)('estilo ativo %s segue o marcador e o fundo do estilo', (style, markerVisible, background) => {
+        render(
+            <DesignOverrideContext.Provider value={{ sidebarActiveItemStyle: style } as never}>
+                <SarakMenuItem label="Módulo" orientation="vertical" active />
+            </DesignOverrideContext.Provider>,
+        );
+        const item = screen.getByRole('button', { name: 'Módulo' });
+        if (markerVisible) expect(item.querySelector('[aria-hidden="true"]')).not.toBeNull();
+        else expect(item.querySelector('[aria-hidden="true"]')).toBeNull();
+        if (background !== undefined) expect(item.style.backgroundColor).toBe(background);
+        if (style === 'filled') expect(item.style.color).toBe('var(--sarak-on-nav-active, #020617)');
+        if (style === 'outline') expect(item.style.border).toBe('var(--sarak-border-width, 1px) solid var(--sarak-nav-active-color, #19e3f0)');
+    });
+
+    it('densidade compacta troca o respiro sem perder o piso de toque e os ícones leem tamanho/cor', () => {
+        render(
+            <DesignOverrideContext.Provider value={{ sidebarItemDensity: 'compact' } as never}>
+                <SarakMenuItem label="Módulo" orientation="vertical" icon={<svg data-testid="icon" />} />
+            </DesignOverrideContext.Provider>,
+        );
+        const item = screen.getByRole('button', { name: 'Módulo' });
+        const icon = screen.getByTestId('icon').parentElement as HTMLElement;
+        expect(item.className).toContain('px-2');
+        expect(item.className).toContain('py-1.5');
+        expect(item.style.minHeight).toBe('var(--sarak-touch-target-active, 0px)');
+        expect(item.style.minWidth).toBe('var(--sarak-touch-target-active, 0px)');
+        expect(icon.style.width).toBe('var(--sarak-sidebar-icon-size, 18px)');
+        expect(icon.style.color).toBe('var(--sarak-sidebar-icon-color, currentColor)');
     });
 });
 

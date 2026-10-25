@@ -2944,12 +2944,108 @@
    ]
   },
   {
+   "id": "sidebarActiveItemStyle",
+   "group": "navigation",
+   "label": "Estilo do Item Ativo (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Tratamento visual do item ativo na barra lateral.",
+   "interactsWith": [
+    "sidebarActiveColor",
+    "navItemActiveColor",
+    "navActiveMarkerColor"
+   ]
+  },
+  {
+   "id": "sidebarBackgroundStyle",
+   "group": "navigation",
+   "label": "Tratamento do Fundo (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Tratamento de fundo da barra lateral.",
+   "interactsWith": [
+    "sidebarColor",
+    "sidebarNoiseOpacity"
+   ]
+  },
+  {
    "id": "sidebarBlur",
    "group": "navigation",
    "label": "Backdrop Blur (Sidebar)",
    "kind": "aesthetic",
    "modeDependent": false,
    "usage": "Desfoque do que passa atrás da navegação lateral, útil com cor translúcida.",
+   "interactsWith": [
+    "sidebarColor"
+   ]
+  },
+  {
+   "id": "sidebarBorderColor",
+   "group": "navigation",
+   "label": "Borda (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor da moldura da barra lateral.",
+   "interactsWith": [
+    "sidebarColor"
+   ]
+  },
+  {
+   "id": "sidebarBorderSide",
+   "group": "navigation",
+   "label": "Lados da Borda (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Lados da moldura da barra lateral; a opção externa acompanha sua posição e a barra flutuante usa todos os lados.",
+   "interactsWith": []
+  },
+  {
+   "id": "sidebarBorderStyle",
+   "group": "navigation",
+   "label": "Estilo da Borda (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Estilo de linha da moldura da barra lateral.",
+   "interactsWith": []
+  },
+  {
+   "id": "sidebarBorderWidth",
+   "group": "navigation",
+   "label": "Espessura da Borda (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Largura em pixels da moldura da barra lateral."
+  },
+  {
+   "id": "sidebarBrandBackground",
+   "group": "navigation",
+   "label": "Fundo da Marca (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor de fundo da área da marca na barra lateral.",
+   "interactsWith": [
+    "sidebarColor"
+   ]
+  },
+  {
+   "id": "sidebarBrandColor",
+   "group": "navigation",
+   "label": "Nome da Marca (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do nome da marca na barra lateral.",
+   "interactsWith": [
+    "sidebarColor",
+    "identityFontFamily"
+   ]
+  },
+  {
+   "id": "sidebarCategoryColor",
+   "group": "navigation",
+   "label": "Rótulo de Categoria (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do rótulo de categoria na barra lateral; deve contrastar com o fundo da barra.",
    "interactsWith": [
     "sidebarColor"
    ]
@@ -2977,6 +3073,17 @@
    ]
   },
   {
+   "id": "sidebarFooterBackground",
+   "group": "navigation",
+   "label": "Fundo do Rodapé (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor de fundo do rodapé da barra lateral.",
+   "interactsWith": [
+    "sidebarColor"
+   ]
+  },
+  {
    "id": "sidebarHoverColor",
    "group": "navigation",
    "label": "Hover da Sidebar",
@@ -2985,6 +3092,57 @@
    "usage": "Fundo do item da navegação lateral sob o ponteiro; o padrão é um branco translúcido.",
    "interactsWith": [
     "navigationStyle"
+   ]
+  },
+  {
+   "id": "sidebarIconColor",
+   "group": "navigation",
+   "label": "Cor do Ícone (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor dos ícones na barra lateral.",
+   "interactsWith": [
+    "sidebarColor"
+   ]
+  },
+  {
+   "id": "sidebarIconSize",
+   "group": "navigation",
+   "label": "Tamanho do Ícone (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Tamanho dos ícones da barra lateral."
+  },
+  {
+   "id": "sidebarItemDensity",
+   "group": "navigation",
+   "label": "Densidade dos Itens (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Densidade das linhas de navegação lateral; o alvo de toque mínimo continua sendo aplicado.",
+   "interactsWith": []
+  },
+  {
+   "id": "sidebarItemHoverTextColor",
+   "group": "navigation",
+   "label": "Texto do Item em Hover (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do texto de item sob o ponteiro na barra lateral.",
+   "interactsWith": [
+    "sidebarColor",
+    "sidebarItemTextColor"
+   ]
+  },
+  {
+   "id": "sidebarItemTextColor",
+   "group": "navigation",
+   "label": "Texto do Item (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do texto de item inativo na barra lateral; deve permanecer legível sobre o fundo da barra.",
+   "interactsWith": [
+    "sidebarColor"
    ]
   },
   {
@@ -3482,6 +3640,99 @@
    ]
   },
   {
+   "id": "topbarActiveItemStyle",
+   "group": "navigation",
+   "label": "Estilo do Item Ativo (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Tratamento visual do item ativo na barra superior.",
+   "interactsWith": [
+    "topbarActiveColor",
+    "navItemActiveColor",
+    "navActiveMarkerColor"
+   ]
+  },
+  {
+   "id": "topbarBackgroundStyle",
+   "group": "navigation",
+   "label": "Tratamento do Fundo (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Tratamento de fundo da barra superior.",
+   "interactsWith": [
+    "topbarColor",
+    "topbarNoiseOpacity"
+   ]
+  },
+  {
+   "id": "topbarBlur",
+   "group": "navigation",
+   "label": "Backdrop Blur (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desfoque do conteúdo que passa atrás da barra superior; funciona melhor com fundo translúcido."
+  },
+  {
+   "id": "topbarBorderColor",
+   "group": "navigation",
+   "label": "Borda (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor da moldura da barra superior.",
+   "interactsWith": [
+    "topbarColor"
+   ]
+  },
+  {
+   "id": "topbarBorderSide",
+   "group": "navigation",
+   "label": "Lados da Borda (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Lados da moldura da barra superior; a opção externa fica junto ao conteúdo e se adapta à barra na base do celular.",
+   "interactsWith": []
+  },
+  {
+   "id": "topbarBorderStyle",
+   "group": "navigation",
+   "label": "Estilo da Borda (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Estilo de linha da moldura da barra superior.",
+   "interactsWith": []
+  },
+  {
+   "id": "topbarBorderWidth",
+   "group": "navigation",
+   "label": "Espessura da Borda (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Largura em pixels da moldura da barra superior."
+  },
+  {
+   "id": "topbarBrandBackground",
+   "group": "navigation",
+   "label": "Fundo da Marca (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor de fundo da área da marca na barra superior.",
+   "interactsWith": [
+    "topbarColor"
+   ]
+  },
+  {
+   "id": "topbarBrandColor",
+   "group": "navigation",
+   "label": "Nome da Marca (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do nome da marca na barra superior.",
+   "interactsWith": [
+    "topbarColor",
+    "identityFontFamily"
+   ]
+  },
+  {
    "id": "topbarCollapsedHeight",
    "group": "navigation",
    "label": "Altura da Topbar (Recolhida)",
@@ -3501,6 +3752,17 @@
    "usage": "Pinta o fundo da barra do topo; a cor entra na paleta derivada do cromo.",
    "interactsWith": [
     "navigationStyle"
+   ]
+  },
+  {
+   "id": "topbarGroupSeparatorColor",
+   "group": "navigation",
+   "label": "Separador de Grupos (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do separador entre grupos de navegação horizontal.",
+   "interactsWith": [
+    "topbarColor"
    ]
   },
   {
@@ -3526,6 +3788,57 @@
    ]
   },
   {
+   "id": "topbarIconColor",
+   "group": "navigation",
+   "label": "Cor do Ícone (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor dos ícones na barra superior.",
+   "interactsWith": [
+    "topbarColor"
+   ]
+  },
+  {
+   "id": "topbarIconSize",
+   "group": "navigation",
+   "label": "Tamanho do Ícone (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Tamanho dos ícones da barra superior."
+  },
+  {
+   "id": "topbarItemDensity",
+   "group": "navigation",
+   "label": "Densidade dos Itens (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Densidade das abas na barra superior; o alvo de toque mínimo continua sendo aplicado.",
+   "interactsWith": []
+  },
+  {
+   "id": "topbarItemHoverTextColor",
+   "group": "navigation",
+   "label": "Texto do Item em Hover (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do texto de item sob o ponteiro na barra superior.",
+   "interactsWith": [
+    "topbarColor",
+    "topbarItemTextColor"
+   ]
+  },
+  {
+   "id": "topbarItemTextColor",
+   "group": "navigation",
+   "label": "Texto do Item (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do texto de item inativo na barra superior; deve permanecer legível sobre o fundo da barra.",
+   "interactsWith": [
+    "topbarColor"
+   ]
+  },
+  {
    "id": "topbarLabelMaxWidth",
    "group": "navigation",
    "label": "Largura Máxima do Rótulo (Topbar)",
@@ -3543,6 +3856,17 @@
    "kind": "aesthetic",
    "modeDependent": true,
    "usage": "Opacidade da textura de grão sobre a barra do topo; 0 desliga.",
+   "interactsWith": [
+    "navigationStyle"
+   ]
+  },
+  {
+   "id": "topbarShadow",
+   "group": "navigation",
+   "label": "Sombra da Topbar",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Sombra CSS completa projetada pela barra superior.",
    "interactsWith": [
     "navigationStyle"
    ]

@@ -19,6 +19,11 @@
 
 /* `.transition-sarak` mora em `_elements.css` (`components.sarak-elements`): cede ao `transition`/`duration-*` da classe. */
 
+.sarak-nav-marker-glow {
+    /* The schema emits a unitless number; multiplication casts it to a CSS length. */
+    box-shadow: 0 0 calc(var(--sarak-nav-marker-glow, 8) * 1px) var(--sarak-nav-marker-color, #19e3f0);
+}
+
 /* Layout Utilities */
 .p-theme { padding: var(--theme-pad, 16px); }
 .gap-theme { gap: var(--theme-gap, 20px); }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, expect, it } from 'vitest';
 import { ChromeSidebarBody } from '../ChromeSidebarBody';
@@ -23,18 +23,22 @@ describe('ChromeSidebarBody (tokens de cromo no modo sidebar)', () => {
         expect(content.style.padding).toBe('var(--sarak-layout-padding, 16px)');
     });
 
-    it('sidebarPosition="right": a sidebar migra para o fim da linha (flex-row-reverse) e ganha border-l', () => {
+    it('sidebarPosition="right": a sidebar migra para o fim da linha e a borda externa acompanha a posição', () => {
         const { container } = renderBody({ sidebarPosition: 'right' });
         const row = container.querySelector('aside')!.parentElement!;
         expect(row.className).toContain('flex-row-reverse');
-        expect(container.querySelector('aside')!.className).toContain('border-l');
+        const style = container.querySelector('aside')!.getAttribute('style') ?? '';
+        expect(style).toContain('border-left-width: var(--sarak-sidebar-border-width, 1px)');
+        expect(style).toContain('border-right-width: 0px');
     });
 
-    it('sidebarPosition="left" (default): flex-row e border-r — comportamento de hoje', () => {
+    it('sidebarPosition="left" (default): flex-row e borda externa à direita — comportamento de hoje', () => {
         const { container } = renderBody({});
         const row = container.querySelector('aside')!.parentElement!;
         expect(row.className).toContain('flex-row');
-        expect(container.querySelector('aside')!.className).toContain('border-r');
+        const style = container.querySelector('aside')!.getAttribute('style') ?? '';
+        expect(style).toContain('border-right-width: var(--sarak-sidebar-border-width, 1px)');
+        expect(style).toContain('border-left-width: 0px');
     });
 
     it('isNavHidden: a sidebar usa a largura RECOLHIDA em vez da largura cheia', () => {
@@ -92,6 +96,35 @@ describe('ChromeSidebarBody — tokens novos ligados (Spec 05 §2.4)', () => {
         expect(style).toContain('var(--sidebar-max-width, 450px)');
     });
 
+    it('a borda lateral lê cor, largura, estilo e lados do schema', () => {
+        const { container } = renderBody({
+            sidebarBorderColor: '#334455',
+            sidebarBorderWidth: 3,
+            sidebarBorderStyle: 'dashed',
+            sidebarBorderSide: 'bottom',
+        });
+        const style = container.querySelector('aside')!.getAttribute('style') ?? '';
+        expect(style).toContain('--sarak-sidebar-border-color');
+        expect(style).toContain('border-bottom-width: var(--sarak-sidebar-border-width, 1px)');
+        expect(style).toContain('border-style: dashed');
+        expect(style).toContain('border-top-width: 0px');
+    });
+
+    it('estilo sem borda remove todos os lados sem classe estrutural fixa', () => {
+        const { container } = renderBody({ sidebarBorderStyle: 'none' });
+        const aside = container.querySelector('aside')!;
+        const style = aside.getAttribute('style') ?? '';
+        expect(aside.className).not.toMatch(/border-(r|l|t|b|rounded)/);
+        expect(style).toContain('border-style: none');
+    });
+
+    it('fundo gradient e textura local chegam à sidebar pelo token de estilo', () => {
+        const gradient = renderBody({ sidebarBackgroundStyle: 'gradient' }).container.querySelector('aside')!;
+        expect(gradient.getAttribute('style')).toContain('linear-gradient(135deg');
+        const textured = renderBody({ sidebarBackgroundStyle: 'texture' }).container;
+        expect((textured.querySelector('.mix-blend-overlay') as HTMLElement).style.opacity).toBe('max(var(--sarak-sidebar-noise-opacity, 0), 0.12)');
+    });
+
     it('sidebar recolhida: o piso da largura aberta (sidebarMinWidth) não vale — a largura é a do token recolhido', () => {
         const { container } = renderBody({ isNavHidden: true });
         const aside = container.querySelector('aside') as HTMLElement;
@@ -108,9 +141,9 @@ describe('ChromeSidebarBody — tokens novos ligados (Spec 05 §2.4)', () => {
                 </ChromeSidebarBody>
             </SarakUIProvider>,
         );
-        const marker = container.querySelector('[aria-hidden="true"][style*="nav-marker-color"]') as HTMLElement | null;
+        const marker = container.querySelector('[aria-hidden="true"].sarak-nav-marker-glow') as HTMLElement | null;
         expect(marker).not.toBeNull();
-        expect(marker!.getAttribute('style')).toContain('var(--sarak-nav-marker-glow, 8)');
+        expect(marker!.style.background).toBe('var(--sarak-nav-marker-color, #19e3f0)');
     });
 });
 
@@ -138,12 +171,21 @@ describe('ChromeSidebarBody — slot de busca (searchPositionSidebar)', () => {
     });
 });
 
-describe('ChromeSidebarBody — widgets default (busca/tema/usuário/colapso)', () => {
-    it('sem `widgets`, os quatro defaults montam', () => {
+describe('ChromeSidebarBody — widgets default (busca/tema/usuário/preferências)', () => {
+    it('sem `widgets`, os controles de fábrica continuam oferecidos', () => {
         const { container } = renderBody({});
         expect(container.querySelector('[data-sarak-slot="search"]')).not.toBeNull();
-        expect(container.querySelector('[data-sarak-widget="collapse"]')).not.toBeNull();
+        expect(container.querySelector('[data-sarak-widget="collapse"]')).toBeNull();
+        expect(container.querySelector('[data-sarak-widget="preferences-menu"]')).not.toBeNull();
         expect(container.querySelector('[data-sarak-widget="user-theme"]')).not.toBeNull();
+    });
+
+    it('tamanho da fonte, orientação e recolhimento ficam no menu de preferências por padrão', () => {
+        renderBody({});
+        fireEvent.click(screen.getByRole('button', { name: 'Preferências' }));
+        expect(screen.getByText('Tamanho da fonte')).toBeInTheDocument();
+        expect(screen.getByText('Navegação')).toBeInTheDocument();
+        expect(screen.getByText('Recolher navegação')).toBeInTheDocument();
     });
 
     it('`widgets` desliga cada default isoladamente', () => {

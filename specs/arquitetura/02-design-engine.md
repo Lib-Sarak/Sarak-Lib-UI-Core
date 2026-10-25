@@ -400,6 +400,17 @@ inclusive `0` e a forma responsiva); o trilho ativo e o polegar da faixa (`range
 transparente), o texto do `SarakButton` e o ícone do `SarakIconButton` das variantes sólidas pintam na cor da própria
 variante, de uma tabela só (`CYBERPUNK_TEXT_COLORS`, `useAtomicStyles.ts`).
 
+Os dois cromos também têm tokens estéticos próprios por orientação. `sidebarItemTextColor`,
+`sidebarItemHoverTextColor`, `sidebarCategoryColor` e `sidebarBrandColor` controlam os textos da lateral; os três
+papéis equivalentes da topbar são `topbarItemTextColor`, `topbarItemHoverTextColor` e `topbarBrandColor`.
+`sidebarBorderColor`, `sidebarBorderWidth`, `sidebarBorderStyle` e `sidebarBorderSide` desenham a moldura lateral;
+`topbarBorderColor`, `topbarBorderWidth`, `topbarBorderStyle` e `topbarBorderSide` fazem o mesmo no topo.
+`sidebarBackgroundStyle` e `topbarBackgroundStyle` selecionam fundo sólido, gradiente ou textura local; os tokens
+`sidebarActiveItemStyle` e `topbarActiveItemStyle` selecionam a forma do item atual. Densidade e ícones também são
+independentes por barra. A marca e o rodapé da sidebar, a marca e o separador de grupos da topbar recebem fundos e
+cores próprios. `topbarBlur` e `topbarShadow` completam a profundidade da barra superior. O leitor mantém a geometria
+responsiva e o alvo de toque do item de navegação.
+
 **A barra de topo cede espaço numa ordem fixa:** primeiro a busca, depois o rótulo dos widgets indisponíveis, por fim a
 lista de navegação passa a rolar. O item de navegação nunca encolhe abaixo do próprio texto, e o grupo final fica dentro
 da barra.

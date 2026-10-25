@@ -252,6 +252,18 @@ O cromo lê esses tokens por um hook único e os traduz em classe estrutural:
 | `navActiveMarkerColor` · `navActiveMarkerGlow` | cor e brilho do marcador do item ativo (o marcador é desenhado pelo `SarakShellNav`) |
 | `sidebarNoiseOpacity` · `topbarNoiseOpacity` | camada de ruído sobre cada barra (`chrome/noiseTexture.ts`) |
 | `sidebarBlur` · `sidebarShadow` | desfoque de fundo e sombra da sidebar; a sombra do modo `floating` também vem do token |
+| `topbarBlur` · `topbarShadow` | desfoque do conteúdo atrás da topbar e sombra projetada pela barra superior |
+| `sidebarItemTextColor` · `sidebarItemHoverTextColor` · `sidebarCategoryColor` · `sidebarBrandColor` | texto inativo, texto sob o ponteiro, rótulo de categoria e marca da sidebar |
+| `topbarItemTextColor` · `topbarItemHoverTextColor` · `topbarBrandColor` | texto inativo, texto sob o ponteiro e marca da topbar |
+| `sidebarBorderColor` · `sidebarBorderWidth` · `sidebarBorderStyle` · `sidebarBorderSide` | cor, espessura, traço e lados da moldura da sidebar; `edge` acompanha o lado externo |
+| `topbarBorderColor` · `topbarBorderWidth` · `topbarBorderStyle` · `topbarBorderSide` | cor, espessura, traço e lados da moldura da topbar; `edge` fica junto ao conteúdo |
+| `sidebarBrandBackground` · `sidebarFooterBackground` | fundos da marca e do rodapé da sidebar |
+| `topbarBrandBackground` | fundo da região da marca na topbar |
+| `sidebarBackgroundStyle` · `topbarBackgroundStyle` | tratamento sólido, gradiente ou textura local, sem dependência de rede |
+| `sidebarActiveItemStyle` · `topbarActiveItemStyle` | forma do item atual: `bar`, `pill`, `underline`, `filled` ou `outline` |
+| `sidebarItemDensity` · `topbarItemDensity` | espaçamento compacto, confortável ou espaçoso, mantendo o alvo de toque mínimo |
+| `sidebarIconSize` · `sidebarIconColor` · `topbarIconSize` · `topbarIconColor` | tamanho e cor dos ícones por orientação |
+| `topbarGroupSeparatorColor` | separador entre grupos na barra superior |
 | `sidebarMinWidth` · `sidebarMaxWidth` · `sidebarLabelMaxWidth` · `topbarLabelMaxWidth` | limites de largura da sidebar e do rótulo da marca, por orientação |
 | `shellBrandLogoSize` · `brandLogoSizeCollapsed` | altura do logo com a navegação expandida e recolhida |
 | `topbarTitleColor` | cor do nome do sistema na topbar |

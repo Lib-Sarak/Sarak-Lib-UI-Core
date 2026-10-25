@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { PREFERENCE_IDS, PREFERENCE_POSITION_TOKEN_IDS, PreferencesSchema, isPreferenceOffered } from '../preferences';
+import { CHROME_WIDGET_POSITION_TOKEN_IDS, PREFERENCE_IDS, PREFERENCE_POSITION_TOKEN_IDS, PreferencesSchema, getChromeWidgetPosition, getPreferencePosition, isPreferenceOffered } from '../preferences';
+import { NavigationSchema } from '../navigation';
 
 describe('preferences (schema)', () => {
     it('declara exatamente as cinco preferências do contrato (§2.1)', () => {
@@ -20,11 +21,18 @@ describe('preferences (schema)', () => {
         });
     });
 
-    it('padrão de fábrica: todas as preferências ficam fixas na barra', () => {
+    it('padrão de fábrica: controles essenciais ficam fixos e layout/tipografia ficam no menu', () => {
         const byId = Object.fromEntries(PreferencesSchema.tokens.map((t) => [t.id, t.defaultValue]));
-        Object.values(PREFERENCE_POSITION_TOKEN_IDS).forEach((tokenId) => {
-            expect(byId[tokenId]).toBe('pinned');
-        });
+        expect(byId[PREFERENCE_POSITION_TOKEN_IDS.colorMode]).toBe('pinned');
+        expect(byId[PREFERENCE_POSITION_TOKEN_IDS.fontSize]).toBe('menu');
+        expect(byId[PREFERENCE_POSITION_TOKEN_IDS.navigationStyle]).toBe('menu');
+        expect(byId[PREFERENCE_POSITION_TOKEN_IDS.navCollapsed]).toBe('menu');
+        expect(byId[PREFERENCE_POSITION_TOKEN_IDS.language]).toBe('pinned');
+
+        const chromeDefaults = Object.fromEntries(NavigationSchema.tokens.map((token) => [token.id, token.defaultValue]));
+        expect(chromeDefaults[CHROME_WIDGET_POSITION_TOKEN_IDS.search]).toBe('pinned');
+        expect(chromeDefaults[CHROME_WIDGET_POSITION_TOKEN_IDS.user]).toBe('pinned');
+        expect(chromeDefaults[CHROME_WIDGET_POSITION_TOKEN_IDS.notifications]).toBe('pinned');
     });
 
     describe('isPreferenceOffered', () => {
@@ -32,9 +40,11 @@ describe('preferences (schema)', () => {
             // `colorMode` tem padrão de fábrica 'pinned' — ausência conta como oferecida.
             expect(isPreferenceOffered(undefined, 'colorMode')).toBe(true);
             expect(isPreferenceOffered({}, 'colorMode')).toBe(true);
-            // Todos os controles têm o padrão de fábrica `pinned`.
+            // Tamanho de fonte aparece no menu por padrão e segue oferecido.
             expect(isPreferenceOffered(undefined, 'fontSize')).toBe(true);
             expect(isPreferenceOffered({}, 'fontSize')).toBe(true);
+            expect(getPreferencePosition(undefined, 'fontSize')).toBe('menu');
+            expect(getPreferencePosition({}, 'navigationStyle')).toBe('menu');
         });
 
         it('só o valor "off" tira a preferência de circulação', () => {
@@ -51,5 +61,11 @@ describe('preferences (schema)', () => {
             expect(isPreferenceOffered(design, 'colorMode')).toBe(false);
             expect(isPreferenceOffered(design, 'fontSize')).toBe(true);
         });
+    });
+
+    it('preserva a posição que o sistema já salvou no design', () => {
+        expect(getPreferencePosition({ preferenceFontSizePosition: 'pinned' }, 'fontSize')).toBe('pinned');
+        expect(getPreferencePosition({ preferenceNavigationStylePosition: 'off' }, 'navigationStyle')).toBe('off');
+        expect(getChromeWidgetPosition({ chromeSearchPosition: 'menu' }, 'search')).toBe('menu');
     });
 });
