@@ -196,7 +196,9 @@ Cada um dos **oito** widgets — modo claro/escuro, tamanho da fonte, navegaçã
 | **no menu** | um item dentro do ⚙ *Preferências* |
 | **fixa na barra** | um controle direto na barra — e também dentro do ⚙, quando ele existe |
 
-**O padrão de fábrica é "fixa na barra" para os oito.** A composição é do **sistema** (o design configurado), **nunca do tema**: nenhum tema distribuído declara token de composição, e por isso escolher um tema no painel **não desfaz** a composição do sistema.
+**O padrão de fábrica:** modo claro/escuro, busca, usuário, notificações e idioma **fixos na barra**; tamanho da fonte, navegação
+topo/lateral e navegação recolhida **no menu** ⚙ Preferências (o rodapé da barra mostra só o que o usuário usa sempre). Valor que o
+sistema já salvou continua valendo. A composição é do **sistema** (o design configurado), **nunca do tema**: nenhum tema distribuído declara token de composição, e por isso escolher um tema no painel **não desfaz** a composição do sistema.
 
 **Regras que fecham o comportamento:**
 - **O ⚙ só nasce quando pelo menos um widget está *no menu*.** Uma barra só com fixados não o faz aparecer — não há botão que abre painel vazio.
@@ -243,6 +245,7 @@ O cromo lê esses tokens por um hook único e os traduz em classe estrutural:
 | `searchPositionSidebar` | `top` ou `bottom` para o slot `search` na sidebar/drawer |
 | `chromeSearchPosition` · `chromeUserPosition` · `chromeNotificationsPosition` · `preferenceModePosition` · `preferenceFontSizePosition` · `preferenceNavigationStylePosition` · `preferenceNavCollapsePosition` · `preferenceLanguagePosition` | a **composição** de cada widget: `pinned`, `menu` ou `off` (§2.2.2) |
 | `tabGap` · `tabSectionMargin` | espaçamento entre itens e margem da seção de nav |
+| `sidebar*`/`topbar*` de identidade (por barra): `…ItemTextColor` · `…ItemHoverTextColor` · `…CategoryColor` · `…BrandColor` · `…BorderColor`/`…BorderWidth`/`…BorderStyle`/`…BorderSide` · `…BrandBackground` · `…FooterBackground` · `…BackgroundStyle` · `…ActiveItemStyle` · `…ItemDensity` · `…IconSize`/`…IconColor` · separador de grupo · sombra e blur também no topo | texto, moldura, fundo, item ativo, densidade e ícones de cada barra. Os valores de enumeração estão no schema (`schema/navigation.ts`: estilo do item ativo `bar`/`pill`/`underline`/`filled`/`outline`; borda `solid`…`none` e lados; fundo `solid`/`gradient`/`texture`; densidade `compact`/`comfortable`/`spacious`, respeitando `touchTargetMin`). Declarados pelas fábricas `createChromeColorToken`/`createChromeSliderToken`/`createChromeSelectToken`, cada um nas três fontes. **A densidade e o estilo do item não mudam a métrica do item** fixada pelo [[015-metrica-do-item-de-navegacao-horizontal]] |
 | `maxContentWidth` | largura máxima da região de conteúdo, centralizada. O padrão é `fluid`: a região acompanha o contêiner e cada margem lateral cresce com ele, de `layoutPadding` até 128 px (`calc(100% − 2 × clamp(layoutPadding, 5%, 128px))`); o valor gravado é a palavra `fluid` e só `resolveMaxContentWidth` (`schema/system.ts`) o traduz para CSS, no leitor do cromo e na emissão de `--sarak-max-content-width`. Os tetos `1000px`…`1600px` e `100%` continuam como opção. O respiro de `layoutPadding` continua nos quatro lados |
 | `layoutDensity` | escala o respiro da região de conteúdo: `compact` < `comfortable` < `spacious`. `comfortable` é a identidade: o respiro é exatamente o de `--sarak-layout-padding` |
 | `isSplitViewEnabled` | liga a vista dividida, que só aparece com o slot `secondaryContent` preenchido (§2.2) |

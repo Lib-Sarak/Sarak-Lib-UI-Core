@@ -37,6 +37,12 @@ O que o kit ensina sobre **o tema que volta** (`GUIA-FRONTEND.md`, a seção de 
 recarrega sem remontar ([[009-persistencia-tenant-aware]]); o host que injeta o tema no HTML usa `preferConfigOverCache` e escreve o CSS
 de `sarakCreateThemeBootCss`; e a porta `onSave` rejeita quando o servidor recusa, para o usuário ver a falha.
 
+O kit traz **dois moldes de página**, `templates/tela-lista.tsx` e `templates/tela-detalhe.tsx`, escritos só com as peças de
+composição de página ([[03-superficie-publica]] §6.2.1). Eles **não são escritos à mão**: o gerador do kit os copia de
+`browser-tests/tela-lista.scene.tsx` e `tela-detalhe.scene.tsx` (`scripts/consumer-kit/buildKitOutputs.mjs`), as mesmas cenas que o
+navegador mede em três temas e três larguras (espaço entre blocos igual ao token, texto ≥ 11 px, sem transbordamento, alvos no piso);
+o `guide:check` reprova se o molde divergir da cena.
+
 O que o kit ensina sobre **fontes** (prosa à mão: `GUIA-FRONTEND.md` §3.14 e a seção "Fontes" da skill) é o contrato
 de [[023-fontes-embarcadas-carregadas-sob-demanda]]: a lib já carrega as fontes e **o importador não recria o
 carregador** (nada de `@fontsource`, `<link>` do Google ou `@font-face` à mão para o catálogo); as origens de

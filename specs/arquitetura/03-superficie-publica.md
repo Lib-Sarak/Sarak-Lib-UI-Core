@@ -269,6 +269,17 @@ navegação (`SarakNavItem.icon`, `SarakMenuItem.icon`) aceita nome ou elemento.
 **Fora da porta, de propósito:** o painel de autoria (`src/features/DesignEngine/`) mantém os próprios ícones.
 Ele é a ferramenta com que o tema é feito, e não repinta o próprio cromo com a família que está sendo editada.
 
+## 6.2.1 Composição de página — a página se escreve com peças
+
+Entre o átomo e o template de dado há uma camada de composição de página, em `Templates/`, toda feita de átomos existentes e com
+ritmo e tipografia vindos dos tokens: **`SarakPageHeader`** (h1 único, subtítulo, trilha `SarakBreadcrumbs`, ações e esqueleto),
+**`SarakFilterBar`** (busca, seletores, segmentado e ações com o espaçamento do tema e "limpar filtros" opcional),
+**`SarakSegmentedControl`** (escolha única, `radiogroup` com setas e Home/End, contrato de valor da §6.4),
+**`SarakSection`** (título com nível configurável, ações, variante em cartão, e os estados vazio, carregando e erro de uma lista),
+**`SarakResourceRow`** (título, selos, pares rótulo-valor, um destino único focável e ações separadas; alvo de toque `touchTargetMin`)
+e **`SarakDescriptionList`** (`<dl>` sobre `SarakGrid`). Uma tela de lista e uma de detalhe se escrevem só com essas peças, sem
+`<header>`/`<section>`/`<form>` com estilo próprio; os moldes estão no kit ([[12-kit-do-consumidor]] §1.1).
+
 ## 6.3 Templates de dado: o dado vem do host
 
 **Nenhum template da lib faz rede.** Não há cliente HTTP em `src/`, nem prop `endpoint`.

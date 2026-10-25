@@ -524,8 +524,8 @@ não entra no tema que ele salva.
 
 **O tema decide o que é oferecido**, por token de tema — um por preferência, com três posições: **não
 oferecida**, **no menu**, **fixa na barra**. É token, e não campo à parte, porque é o administrador quem o
-escolhe em runtime, no painel: persiste pelo mesmo caminho do resto do tema. Padrão de fábrica: **todas fixas na
-barra** (`pinned` — modo, fonte, navegação, navegação recolhida e idioma; `src/core/Design/schema/preferences.ts`), a
+escolhe em runtime, no painel: persiste pelo mesmo caminho do resto do tema. Padrão de fábrica: modo e idioma **fixos na
+barra** (`pinned`), tamanho da fonte, navegação e navegação recolhida **no menu** (`menu`; `src/core/Design/schema/preferences.ts`), a
 mesma composição da barra de [[05-cromo-e-slots]] §2.2.2. **Chave ausente vale o padrão de fábrica** — um design
 aplicado por substituição, sem essas chaves, mostra a barra como a fábrica a monta. Preferência não oferecida é ignorada, mesmo que o usuário a tenha salvo antes.
 
@@ -663,6 +663,11 @@ os dois e o destaque usa o acento do tema; o `auditor_contraste` mede os três c
 host em modo claro que **não** declara esses papéis recebe os do par claro do tema de base, nunca os do escuro.
 
 **Largura.** Os temas embarcados declaram `maxContentWidth: fluid` ([[05-cromo-e-slots]] §2.4).
+
+**A barra.** Todo tema declara os tokens de identidade das duas barras ([[05-cromo-e-slots]] §2.4) — e a contraparte, os que carregam
+modo —, com uma direção própria (lateral distinta do topo onde faz sentido); a contraparte clara conserva a assinatura do tema
+(textura, matiz, forma do item ativo). O contraste de item inativo, ativo, hover e categoria é medido pelo `auditor_contraste` nos dois
+modos, e a diversidade do conjunto (§5.2) cobre os eixos da barra: estilos de item ativo e tratamentos de fundo distintos entre os 19.
 
 O que cada tema embarcado demonstra da lib (o arquétipo, os tokens que carregam a personalidade) está no guia do kit,
 na tabela de arquétipos da §3.9 ("Importe por identidade visual") de `sarak-ui/GUIA-FRONTEND.md`, e não se

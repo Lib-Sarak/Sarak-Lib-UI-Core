@@ -44,8 +44,6 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 |---|---|---|---|---|---|
 | 1 | [plan-119-kit-de-importacao-aprendido-nos-importadores](plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md) | Fazer o importador usar a lib por inteiro sem reescrever o que ela entrega, com o kit de importação ensinado pelas licoes medidas nos importadores reais e com a gestao de temas do importador completa: salvar o aplicado como novo, editar, duplicar e criar, persistidos no importador | — | 🟡 Em execução | specs/12-kit-do-consumidor.md + specs/13-instalacao-e-atualizacao.md + specs/09-temas-e-presets.md + specs/15-divida-conhecida.md |
 | 2 | [plan-120-o-que-o-importador-sente-antes-da-8-0-0](plan/plan-120-o-que-o-importador-sente-antes-da-8-0-0.md) | Fazer a 8.0.0 sair sem defeito conhecido que o importador ou o usuario final sinta: campos, props e mensagens que mentem, instalacao e PDF que exigem contorno, tokens que deixam quebrar o foco e as camadas, modal e arte de fundo fora do tema do cliente, painel com texto ilegivel e busca incompleta, e o teste que pode deixar o PR vermelho | — | 🟢 Aprovada | arquitetura/03-superficie-publica.md + specs/13-instalacao-e-atualizacao.md + arquitetura/02-design-engine.md + specs/09-temas-e-presets.md + specs/06-painel-de-customizacao-e-preview.md |
-| 3 | [plan-124-cromo-com-identidade-por-tema](plan/plan-124-cromo-com-identidade-por-tema.md) | Fazer a barra lateral e a barra de topo de cada um dos 19 temas terem identidade propria, com texto, borda, profundidade, fundo, item ativo, densidade e icones vindos de tokens declarados pelo tema, e os controles de preferencia sem poluir o rodape da barra | — | 🟢 Aprovada | specs/05-cromo-e-slots.md + arquitetura/02-design-engine.md + specs/09-temas-e-presets.md |
-| 4 | [plan-126-pecas-de-composicao-de-pagina](plan/plan-126-pecas-de-composicao-de-pagina.md) | Fazer o importador montar uma tela de lista e uma tela de detalhe so com pecas da lib, cabecalho de pagina, barra de filtros, controle segmentado, secao, linha de recurso e par rotulo-valor, com o ritmo, a hierarquia e os estados vindos do tema, e o kit ensinando os dois moldes | — | 🟢 Aprovada | arquitetura/03-superficie-publica.md + specs/12-kit-do-consumidor.md + arquitetura/02-design-engine.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🚦 **Fila de 2026-10-23 — validação da `8.0.0-rc.2` no ERP (dono, 2026-10-22).** As `plan-121` a `plan-125` corrigem o que o dono
@@ -61,6 +59,15 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > só com a disjunção declarada pelo revisor ao despachar.
 >
 > 🚦 **Fila de 2026-10-14 — a `plan-116` (tema sob demanda) fechou; a `plan-110` é a próxima.** **Versão (decisão do dono, 2026-10-14):** as plans da fila registram a mudança na subseção `## 8.0.0` de `docs/migracoes.md`; a versão MAJOR é aplicada uma vez, ao final de todas as modificações, no merge para a `main` — nenhuma plan mexe na versão nem cria tag. O `npm run build` e o `cromo-css-real:check` são do revisor; o executor escreve os casos de `browser-tests/`.
+
+> ⚪ **As `plan-124` e `plan-126` foram SINTETIZADAS e REMOVIDAS em 2026-10-24.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **124** | [[05-cromo-e-slots]] §2.4 (os tokens de identidade das duas barras, as fábricas e a métrica do item que não muda) e §2.2.2 (o padrão de fábrica novo: fonte, navegação e navegação recolhida no ⚙) · [[09-temas-e-presets]] §4.7 (o mesmo padrão nas preferências) e §5.3 (todo tema declara a barra; contraste e diversidade dos eixos da barra) · [[02-design-engine]] §10.6 (o que a barra lê; as fábricas e o `auditor_ghostvars`; o brilho do marcador sem unidade). |
+> | **126** | [[03-superficie-publica]] **§6.2.1 (nova)** — a camada de composição de página e as seis peças · [[12-kit-do-consumidor]] §1.1 (os moldes de lista e detalhe copiados das cenas do navegador e travados pelo `guide:check`). |
+>
+> **Ficou de fora:** a direção visual de cada tema e as medições por rodada (histórico do Git); os nomes de teste com rastro de plan viraram o item 58 do [[00-backlog]]. `00-contexto` revisado: nada a mudar.
 
 > ⚪ **As `plan-121`, `plan-122`, `plan-123`, `plan-125` e `plan-127` foram SINTETIZADAS e REMOVIDAS em 2026-10-24.** Destino demonstrado:
 >

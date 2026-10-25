@@ -378,6 +378,11 @@ não recebe ponteiro enquanto sai.
 
 ## 10.6 Componentes que leem tokens próprios
 
+**A barra lê os próprios tokens de identidade** ([[05-cromo-e-slots]] §2.4): o texto do item, da categoria e da marca, a borda (cor,
+largura, estilo e lados), o fundo da barra, da marca e do rodapé, o estilo do item ativo, a densidade e os ícones. Os tokens nascem
+das fábricas `createChrome{Color,Slider,Select}Token` (`schema/navigation.ts`), que declaram a variável CSS como argumento — o
+`auditor_ghostvars` lê esse argumento. O brilho do marcador (`--sarak-nav-marker-glow`) sai **sem unidade** e o leitor multiplica por `1px`.
+
 Campo (`inputPadding`), tooltip (`tooltipRadius`, `tooltipBg`, `tooltipTextColor`, `tooltipBorderColor`), modal
 (`colorBgModal`, `modalOverlayBlur`, `modalOverlayColor`), toast (`zIndexToast`), tabela (`tableZebraStriping`,
 `tableBorderRadius`, este pelos quatro cantos como variável do contêiner), botão (`btnGhostHoverBg`,
