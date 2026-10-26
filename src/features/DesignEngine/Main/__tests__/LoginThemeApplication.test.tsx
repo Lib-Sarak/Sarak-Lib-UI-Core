@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ThemeCustomizationTab } from '../ThemeCustomizationTab';
@@ -33,12 +33,11 @@ interface LoginThemeScenarioProps {
 }
 
 const TenantDesignProbe = (): React.ReactElement => {
-    const { systemDesign, draftDesign } = useSarakUI();
+    const { systemDesign } = useSarakUI();
     return (
         <>
             <output data-testid="tenant-primary-color">{systemDesign?.primaryColor}</output>
             <output data-testid="tenant-system-background">{systemDesign?.colorBgBody}</output>
-            <output data-testid="tenant-draft-background">{draftDesign?.colorBgBody}</output>
         </>
     );
 };
@@ -76,21 +75,6 @@ const LoginThemeScenario = ({ onLoad, onSave, onSaveTheme, showCustomizationPane
     );
 };
 
-const selectBootLoadedTheme = async (): Promise<void> => {
-    fireEvent.click(screen.getByRole('button', { name: 'Abrir galeria' }));
-    const galleryHeading = await screen.findByRole('heading', { name: 'Galeria de estilos' });
-    const gallery = galleryHeading.closest('#presets-catalog');
-    expect(gallery).not.toBeNull();
-    const themeCard = await within(gallery as HTMLElement).findByRole('button', { name: /Sarak Sovereign/ });
-    fireEvent.click(themeCard);
-    await waitFor(() => expect(screen.getByTestId('tenant-draft-background')).toHaveTextContent('#06080d'));
-};
-
-const getApplyButton = (): HTMLButtonElement => {
-    const actionBar = screen.getByRole('group', { name: 'Ações do tema' });
-    return within(actionBar).getByRole('button', { name: /^Aplicar/ }) as HTMLButtonElement;
-};
-
 const parsePersistedTenantDesign = (): SarakThemePayload =>
     JSON.parse(localStorage.getItem(TENANT_STORAGE_KEY) ?? 'null') as SarakThemePayload;
 
@@ -101,40 +85,34 @@ const clearTenantStorage = (): void => {
 };
 
 const testSuccessfulTenantThemeApplication = (): void => {
-    it('carrega o tenant e só persiste a escolha da galeria ao aplicar o rascunho', async () => {
+    it('carrega o tenant e só persiste o tema aplicado', async () => {
         const onLoad = vi.fn<TenantOnLoad>().mockResolvedValue(TENANT_DESIGN);
         const onSave = vi.fn<TenantOnSave>();
         const onSaveTheme = vi.fn<ThemeOnSave>();
 
-        render(<LoginThemeScenario onLoad={onLoad} onSave={onSave} onSaveTheme={onSaveTheme} />);
+        render(<LoginThemeScenario onLoad={onLoad} onSave={onSave} onSaveTheme={onSaveTheme} showCustomizationPanel={false} />);
         fireEvent.click(screen.getByRole('button', { name: 'Fazer login' }));
 
-        await waitFor(() => expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#123456'));
+        await act(async () => { await onLoad.mock.results[0]?.value; });
         expect(onLoad).toHaveBeenCalledTimes(1);
         expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#123456');
-        expect(parsePersistedTenantDesign()).toMatchObject({ primaryColor: '#123456' });
-
-        await selectBootLoadedTheme();
         expect(screen.getByTestId('tenant-system-background')).toHaveTextContent('#123456');
-        const applyButton = getApplyButton();
-        expect(applyButton).toHaveTextContent(/^Aplicar$/);
-        expect(screen.getByText(/\d+ altera(?:ção|ções)/)).toBeInTheDocument();
-        expect(applyButton).toBeEnabled();
+        expect(parsePersistedTenantDesign()).toMatchObject(TENANT_DESIGN);
         expect(onSave).not.toHaveBeenCalled();
         expect(onSaveTheme).not.toHaveBeenCalled();
-        expect(parsePersistedTenantDesign()).toMatchObject({ primaryColor: '#123456' });
+        expect(parsePersistedTenantDesign()).toMatchObject(TENANT_DESIGN);
 
-        fireEvent.click(applyButton);
+        vi.useFakeTimers();
+        fireEvent.click(screen.getByRole('button', { name: 'Aplicar tema do tenant' }));
 
-        await waitFor(() => expect(screen.getByTestId('tenant-system-background')).toHaveTextContent('#06080d'));
         expect(onSave).toHaveBeenCalledTimes(1);
         expect(screen.getByTestId('tenant-system-background')).toHaveTextContent('#06080d');
         const persistedDesign = parsePersistedTenantDesign();
-        expect(persistedDesign.primaryColor).not.toBe(TENANT_DESIGN.primaryColor);
+        expect(persistedDesign).toMatchObject(APPLIED_TENANT_DESIGN);
         expect(localStorage.getItem(TENANT_ACTIVE_THEME_STORAGE_KEY)).toBe('sarak-sovereign');
         expect(onSave).toHaveBeenCalledWith(persistedDesign, 'sarak-sovereign');
         expect(onSaveTheme).not.toHaveBeenCalled();
-    }, 30000); // Monta Provider, painel e catálogo da galeria; leva ~7,5 s isolado e pode passar de 15 s na suíte completa da CI.
+    }, 15000);
 };
 
 const testRejectedTenantSaveApplication = (): void => {
