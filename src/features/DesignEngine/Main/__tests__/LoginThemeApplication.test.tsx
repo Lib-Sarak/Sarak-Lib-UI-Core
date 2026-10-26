@@ -134,7 +134,7 @@ const testSuccessfulTenantThemeApplication = (): void => {
         expect(localStorage.getItem(TENANT_ACTIVE_THEME_STORAGE_KEY)).toBe('sarak-sovereign');
         expect(onSave).toHaveBeenCalledWith(persistedDesign, 'sarak-sovereign');
         expect(onSaveTheme).not.toHaveBeenCalled();
-    }, 15000);
+    }, 30000); // Monta Provider, painel e catálogo da galeria; leva ~7,5 s isolado e pode passar de 15 s na suíte completa da CI.
 };
 
 const testRejectedTenantSaveApplication = (): void => {
