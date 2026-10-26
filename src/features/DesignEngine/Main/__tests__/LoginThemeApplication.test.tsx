@@ -81,7 +81,8 @@ const selectBootLoadedTheme = async (): Promise<void> => {
     const galleryHeading = await screen.findByRole('heading', { name: 'Galeria de estilos' });
     const gallery = galleryHeading.closest('#presets-catalog');
     expect(gallery).not.toBeNull();
-    fireEvent.click(within(gallery as HTMLElement).getByRole('button', { name: /Sarak Sovereign/ }));
+    const themeCard = await within(gallery as HTMLElement).findByRole('button', { name: /Sarak Sovereign/ });
+    fireEvent.click(themeCard);
     await waitFor(() => expect(screen.getByTestId('tenant-draft-background')).toHaveTextContent('#06080d'));
 };
 
@@ -108,7 +109,8 @@ const testSuccessfulTenantThemeApplication = (): void => {
         render(<LoginThemeScenario onLoad={onLoad} onSave={onSave} onSaveTheme={onSaveTheme} />);
         fireEvent.click(screen.getByRole('button', { name: 'Fazer login' }));
 
-        await waitFor(() => expect(onLoad).toHaveBeenCalledTimes(1));
+        await waitFor(() => expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#123456'));
+        expect(onLoad).toHaveBeenCalledTimes(1);
         expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#123456');
         expect(parsePersistedTenantDesign()).toMatchObject({ primaryColor: '#123456' });
 
@@ -124,7 +126,8 @@ const testSuccessfulTenantThemeApplication = (): void => {
 
         fireEvent.click(applyButton);
 
-        await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+        await waitFor(() => expect(screen.getByTestId('tenant-system-background')).toHaveTextContent('#06080d'));
+        expect(onSave).toHaveBeenCalledTimes(1);
         expect(screen.getByTestId('tenant-system-background')).toHaveTextContent('#06080d');
         const persistedDesign = parsePersistedTenantDesign();
         expect(persistedDesign.primaryColor).not.toBe(TENANT_DESIGN.primaryColor);
