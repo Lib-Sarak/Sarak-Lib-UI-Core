@@ -16,7 +16,8 @@ vi.mock('framer-motion', async () => {
 describe('PresetsCatalog', () => {
     const createProps = (onClose = vi.fn()) => ({
         onApplyPreset: vi.fn(),
-        currentMode: 'dark',
+        currentMode: 'dark' as const,
+        draftMode: 'dark' as const,
         onClose,
     });
 
@@ -28,6 +29,16 @@ describe('PresetsCatalog', () => {
         // Prazo folgado: o catálogo carrega os temas sob demanda e, com a suíte inteira rodando em paralelo, passa dos 1000 ms padrão do `waitFor`.
         await waitFor(() => expect(container.querySelector('[aria-busy="true"]')).toBeNull(), { timeout: 10000 });
         expect(container).toMatchSnapshot();
+    });
+
+    it('aplica o tema pelo modo bruto do rascunho quando a preferência só clareia a galeria', async () => {
+        const onApplyFullTheme = vi.fn();
+        render(<PresetsCatalog {...createProps()} currentMode="light" draftMode="dark" onApplyFullTheme={onApplyFullTheme} />);
+
+        const themeCard = await screen.findByRole('button', { name: /Sarak Sovereign/i }, { timeout: 10000 });
+        fireEvent.click(themeCard);
+
+        expect(onApplyFullTheme).toHaveBeenCalledWith(expect.objectContaining({ mode: 'dark' }), 'sarak-sovereign');
     });
 
     it('troca para o catálogo de Tipografia ao clicar na própria aba', () => {
@@ -43,6 +54,17 @@ describe('PresetsCatalog', () => {
             expect(screen.getByRole('button', { name: label })).toBeInTheDocument();
         });
     }, 15000); // 5000 (default) não bastava sob `vitest --coverage` (instrumentação V8 + contenção de workers, mesma causa do PreviewCanvas.test.tsx, plan-12/R8.1)
+
+    it('mantém as categorias em uma linha e permite rolagem horizontal', () => {
+        render(<PresetsCatalog {...createProps()} />);
+
+        const categoryTabs = screen.getByRole('group', { name: 'Categorias da galeria' });
+        const tabList = categoryTabs.firstElementChild as HTMLElement;
+
+        expect(categoryTabs).toHaveClass('overflow-x-auto');
+        expect(tabList).toHaveClass('flex-nowrap');
+        expect(screen.getByRole('button', { name: 'Temas' })).toHaveClass('whitespace-nowrap');
+    });
 
     it('o botão do cabeçalho fecha a galeria', () => {
         const onClose = vi.fn();
@@ -62,7 +84,7 @@ describe('PresetsCatalog', () => {
 
         const globalsGrid = container.querySelector('.grid') as HTMLElement;
         expect(globalsGrid.className).not.toMatch(/\bmd:grid-cols-2\b/);
-        expect(globalsGrid.className).toMatch(/@min-\[768px\]:grid-cols-2/);
+        expect(globalsGrid.className).toMatch(/@min-\[240px\]:grid-cols-2/);
         // A grade global mora DENTRO da fronteira de container — é dela que ela mede.
         expect(containerBoundary?.contains(globalsGrid)).toBe(true);
     });

@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, screen } from '@testing-library/react';
 import { SarakSearchCard } from '../SarakSearchCard';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 
@@ -14,6 +14,17 @@ vi.mock('../hooks/useCardLayoutStyles', () => ({
 }));
 
 describe('SarakSearchCard (Characterization)', () => {
+    it('usa cores separadas para subtítulo e título do cartão', () => {
+        render(
+            <SarakUIProvider config={{ mode: 'dark' }}>
+                <SarakSearchCard item={{ id: '123' }} mapping={{}} />
+            </SarakUIProvider>,
+        );
+
+        expect(screen.getByText('Painel de Filtros').className).toContain('--sarak-subtitle-color');
+        expect(screen.getByRole('heading', { level: 4 }).className).toContain('--color-theme-title');
+    });
+
     it('matches snapshot before any removal', () => {
         const item = {
             id: '123'

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, expect, it } from 'vitest';
 import { ChromeTopbarBody } from '../ChromeTopbarBody';
@@ -122,12 +122,21 @@ describe('ChromeTopbarBody — slot de busca (searchPositionTopbar)', () => {
 });
 
 describe('ChromeTopbarBody — widgets default', () => {
-    it('sem `widgets`, os widgets de fábrica ficam oferecidos', () => {
+    it('sem `widgets`, os widgets de fábrica ficam oferecidos e o menu de preferências é montado', () => {
         const { container } = renderBody({});
         expect(container.querySelector('[data-sarak-slot="search"]')).not.toBeNull();
-        expect(container.querySelector('[data-sarak-widget="collapse"]')).not.toBeNull();
+        expect(container.querySelector('[data-sarak-widget="collapse"]')).toBeNull();
+        expect(container.querySelector('[data-sarak-widget="preferences-menu"]')).not.toBeNull();
         expect(container.querySelector('[data-sarak-widget="user-theme"]')).not.toBeNull();
         expect(container.querySelector('[aria-label="Notificações indisponíveis"]')).toHaveAttribute('aria-disabled', 'true');
+    });
+
+    it('tamanho da fonte, orientação e recolhimento ficam no menu de preferências por padrão', () => {
+        renderBody({});
+        fireEvent.click(screen.getByRole('button', { name: 'Preferências' }));
+        expect(screen.getByText('Tamanho da fonte')).toBeInTheDocument();
+        expect(screen.getByText('Navegação')).toBeInTheDocument();
+        expect(screen.getByText('Recolher navegação')).toBeInTheDocument();
     });
 
     it('`widgets` desliga cada default isoladamente', () => {
@@ -149,8 +158,34 @@ describe('ChromeTopbarBody — topbarNoiseOpacity (Spec 05 §2.4)', () => {
 
     it('a marcação do item ativo (navActiveMarkerColor/Glow) também existe na topbar (horizontal)', () => {
         const { container } = renderBody({}, { activeRoute: '/propostas' });
-        const marker = container.querySelector('[aria-hidden="true"][style*="nav-marker-color"]') as HTMLElement | null;
+        const marker = container.querySelector('[aria-hidden="true"].sarak-nav-marker-glow') as HTMLElement | null;
         expect(marker).not.toBeNull();
-        expect(marker!.getAttribute('style')).toContain('var(--sarak-nav-marker-glow, 8)');
+        expect(marker!.style.background).toBe('var(--sarak-nav-marker-color, #19e3f0)');
+    });
+
+    it('borda, blur e sombra da topbar chegam ao leitor e nenhum lado fica fixo em classe', () => {
+        const { container } = renderBody({
+            topbarBorderColor: '#334455',
+            topbarBorderWidth: 2,
+            topbarBorderStyle: 'dotted',
+            topbarBorderSide: 'top',
+            topbarBlur: 6,
+            topbarShadow: '0 4px 16px rgba(0,0,0,0.25)',
+        });
+        const header = container.querySelector('header')!;
+        const style = header.getAttribute('style') ?? '';
+        expect(header.className).not.toContain('border-b');
+        expect(style).toContain('border-top-width: var(--sarak-topbar-border-width, 1px)');
+        expect(style).toContain('border-bottom-width: 0px');
+        expect(style).toContain('border-style: dotted');
+        expect(style).toContain('var(--sarak-topbar-blur, 0px)');
+        expect(style).toContain('var(--sarak-topbar-shadow, none)');
+    });
+
+    it('o fundo gradiente ou a textura offline seguem o estilo declarado', () => {
+        const gradient = renderBody({ topbarBackgroundStyle: 'gradient' }).container.querySelector('header')!;
+        expect(gradient.getAttribute('style')).toContain('linear-gradient(135deg');
+        const textured = renderBody({ topbarBackgroundStyle: 'texture' }).container;
+        expect((textured.querySelector('.mix-blend-overlay') as HTMLElement).style.opacity).toBe('max(var(--sarak-topbar-noise-opacity, 0), 0.12)');
     });
 });

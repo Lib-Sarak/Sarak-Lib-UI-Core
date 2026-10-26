@@ -75,6 +75,19 @@ input, select, textarea {
     transition: all var(--duration-fast, 0.2s) var(--sarak-motion-ease-main, cubic-bezier(0.16, 1, 0.3, 1));
 }
 
+/* Controles nativos seguem o modo efetivo mais próximo, inclusive em ilhas embarcadas. */
+:where(.dark) { color-scheme: dark; }
+:where(.light) { color-scheme: light; }
+
+select {
+    color-scheme: inherit;
+}
+
+select option {
+    background-color: var(--theme-surface, Canvas);
+    color: var(--text-main, CanvasText);
+}
+
 button:hover:not(.p-0) {
     background-color: var(--theme-primary-hover);
     transform: translateY(-1px) scale(var(--sarak-btn-hover-scale, 1.02));

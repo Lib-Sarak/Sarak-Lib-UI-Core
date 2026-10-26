@@ -1,6 +1,16 @@
 import { ComponentSchema } from '../types';
 import { ICON_TOKENS } from './icons';
 
+const MAX_CONTENT_WIDTH_FLUID_GUTTER_MAX = 128;
+const FLUID_CONTENT_GUTTER = `clamp(var(--sarak-layout-padding, 16px), 5%, ${MAX_CONTENT_WIDTH_FLUID_GUTTER_MAX}px)`;
+export const FLUID_MAX_CONTENT_WIDTH_OPTION = 'fluid';
+export const FLUID_MAX_CONTENT_WIDTH = `calc(100% - ${FLUID_CONTENT_GUTTER} - ${FLUID_CONTENT_GUTTER})`;
+
+export const resolveMaxContentWidth = (value: unknown): string => {
+    if (value === FLUID_MAX_CONTENT_WIDTH_OPTION) return FLUID_MAX_CONTENT_WIDTH;
+    return typeof value === 'string' ? value : FLUID_MAX_CONTENT_WIDTH;
+};
+
 /**
  * SCHEMA: CONFIGURAÇÕES GLOBAIS
  * Controla o comportamento base do sistema, scrollbars e layout.
@@ -29,13 +39,14 @@ export const SystemSchema: ComponentSchema = {
             id: 'maxContentWidth',
             kind: 'aesthetic',
             modeDependent: false,
-            usage: "Largura máxima da região de conteúdo do cromo, centralizada na tela; 100% ocupa a largura inteira.",
+            usage: 'Centraliza a região de conteúdo do cromo. No modo fluido, as margens externas crescem com o contêiner, entre layoutPadding e 128px por lado; o respiro interno é escalado por layoutDensity.',
             label: 'Largura Máxima do Conteúdo',
             type: 'select',
-            description: 'Define a largura máxima da região de conteúdo do cromo e a centraliza; 100% ocupa a largura disponível.',
+            description: 'Define a largura máxima da região de conteúdo e a centraliza. O modo fluido cresce com o contêiner, usa layoutPadding como piso e limita cada margem externa a 128px; o respiro interno continua seguindo layoutDensity.',
             axis: 'geometry',
-            defaultValue: '1440px',
+            defaultValue: FLUID_MAX_CONTENT_WIDTH_OPTION,
             options: [
+                { value: FLUID_MAX_CONTENT_WIDTH_OPTION, label: 'Fluido (margem proporcional até 128px)' },
                 { value: '1000px', label: 'Muito Estreito (1000px, Editorial)' },
                 { value: '1200px', label: 'Estreito (1200px)' },
                 { value: '1440px', label: 'Padrão (1440px)' },

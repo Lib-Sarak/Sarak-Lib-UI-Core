@@ -88,8 +88,8 @@ export const CARD_PRESETS: ComponentPreset[] = [
         design: {
             cardBorderRadius: 4,
             cardBorderWidth: 3,
-            cardBorderColor: 'var(--theme-title)',
-            cardShadow: '4px 4px 0px var(--theme-title)',
+            cardBorderColor: 'var(--sarak-emphasis-color, var(--theme-emphasis, var(--theme-primary)))',
+            cardShadow: '4px 4px 0px var(--sarak-emphasis-color, var(--theme-emphasis, var(--theme-primary)))',
             cardBackdropBlur: 0,
             cardTextureType: 'none',
         }

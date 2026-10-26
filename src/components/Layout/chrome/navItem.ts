@@ -1,5 +1,6 @@
-import type React from 'react';
+import React from 'react';
 import type { SarakSearchItem } from '../../atomic/Inputs/SarakSearch';
+import { SarakIcon } from '../../atomic/Icon/SarakIcon';
 
 /**
  * Item de navegação estruturado do `SarakAppChrome` (Spec 40.2 — L1).
@@ -42,7 +43,13 @@ export const getSarakSearchItems = (items: readonly {
     route: string;
     label: string;
     category?: string;
+    icon?: string | React.ReactNode;
     disabled?: boolean;
 }[]): SarakSearchItem[] => items
     .filter((item) => !item.disabled)
-    .map(({ route, label, category }) => ({ id: route, label, category }));
+    .map(({ route, label, category, icon }) => ({
+        id: route,
+        label,
+        category,
+        icon: typeof icon === 'string' ? React.createElement(SarakIcon, { name: icon, size: 14 }) : icon,
+    }));

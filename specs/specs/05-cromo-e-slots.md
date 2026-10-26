@@ -103,6 +103,14 @@ Item com `href` é uma **âncora** (`<a href>`); item sem `href` continua `<butt
 - **Sem `onNavigate`** (nem `onChange` no `SarakShellNav`), a âncora é um link comum e o navegador a segue.
 - **A busca embutida também navega**: o resultado é um link que chama o mesmo `onNavigate` e fecha a lista; o palette (`SarakSearch`) seleciona por clique e por `Enter`/`Espaço`. Item `disabled` não é pesquisável.
 
+### 2.1.3 A busca do cromo e a paleta
+
+O resultado da busca da barra e o da paleta Ctrl+K são **links de verdade** para a rota do item (o id do item é a rota), como o item de
+navegação (§2.1.2): sem `onNavigate`, o navegador segue o link; com ele, o callback é chamado e a navegação padrão é cancelada. Setas e
+Enter levam ao mesmo destino. O selo do atalho some com o campo focado, com texto e quando a barra é estreita demais para ele e o
+placeholder caberem juntos; mostra a tecla do sistema (Ctrl/⌘). A paleta é `role="dialog"` com `aria-modal`, o campo é `combobox`
+ligado a uma `listbox` com `aria-activedescendant`, o primeiro resultado vem ativo e o ícone de cada resultado é o do item de navegação.
+
 ## 2.2 Os slots
 
 | Slot | Região | Ausente = |
@@ -188,7 +196,9 @@ Cada um dos **oito** widgets — modo claro/escuro, tamanho da fonte, navegaçã
 | **no menu** | um item dentro do ⚙ *Preferências* |
 | **fixa na barra** | um controle direto na barra — e também dentro do ⚙, quando ele existe |
 
-**O padrão de fábrica é "fixa na barra" para os oito.** A composição é do **sistema** (o design configurado), **nunca do tema**: nenhum tema distribuído declara token de composição, e por isso escolher um tema no painel **não desfaz** a composição do sistema.
+**O padrão de fábrica:** modo claro/escuro, busca, usuário, notificações e idioma **fixos na barra**; tamanho da fonte, navegação
+topo/lateral e navegação recolhida **no menu** ⚙ Preferências (o rodapé da barra mostra só o que o usuário usa sempre). Valor que o
+sistema já salvou continua valendo. A composição é do **sistema** (o design configurado), **nunca do tema**: nenhum tema distribuído declara token de composição, e por isso escolher um tema no painel **não desfaz** a composição do sistema.
 
 **Regras que fecham o comportamento:**
 - **O ⚙ só nasce quando pelo menos um widget está *no menu*.** Uma barra só com fixados não o faz aparecer — não há botão que abre painel vazio.
@@ -229,14 +239,14 @@ O cromo lê esses tokens por um hook único e os traduz em classe estrutural:
 | --- | --- |
 | `sidebarPosition` | lado da sidebar — `left`, `right` (inverte a direção do corpo) ou `floating` (destacada, com raio e sombra) |
 | `navbarLayout` | `sticky`, `inline` ou `hidden` para a barra superior |
-| `contentAlignment` | `stretch` ou `center` — largura máxima centralizada para o conteúdo |
 | `isNavHidden` | colapsa a navegação: sidebar estreita só com ícone, topbar com altura reduzida |
 | `isAutoHideEnabled` | a nav só existe no ar sob o ponteiro; uma faixa sensível na borda a traz de volta |
 | `searchPositionTopbar` | `left`, `center`, `right` ou `hidden` para o slot `search` na topbar |
 | `searchPositionSidebar` | `top` ou `bottom` para o slot `search` na sidebar/drawer |
 | `chromeSearchPosition` · `chromeUserPosition` · `chromeNotificationsPosition` · `preferenceModePosition` · `preferenceFontSizePosition` · `preferenceNavigationStylePosition` · `preferenceNavCollapsePosition` · `preferenceLanguagePosition` | a **composição** de cada widget: `pinned`, `menu` ou `off` (§2.2.2) |
 | `tabGap` · `tabSectionMargin` | espaçamento entre itens e margem da seção de nav |
-| `maxContentWidth` | largura máxima da região de conteúdo, centralizada; `100%` ocupa tudo. O respiro de `layoutPadding` continua nos quatro lados |
+| `sidebar*`/`topbar*` de identidade (por barra): `…ItemTextColor` · `…ItemHoverTextColor` · `…CategoryColor` · `…BrandColor` · `…BorderColor`/`…BorderWidth`/`…BorderStyle`/`…BorderSide` · `…BrandBackground` · `…FooterBackground` · `…BackgroundStyle` · `…ActiveItemStyle` · `…ItemDensity` · `…IconSize`/`…IconColor` · separador de grupo · sombra e blur também no topo | texto, moldura, fundo, item ativo, densidade e ícones de cada barra. Os valores de enumeração estão no schema (`schema/navigation.ts`: estilo do item ativo `bar`/`pill`/`underline`/`filled`/`outline`; borda `solid`…`none` e lados; fundo `solid`/`gradient`/`texture`; densidade `compact`/`comfortable`/`spacious`, respeitando `touchTargetMin`). Declarados pelas fábricas `createChromeColorToken`/`createChromeSliderToken`/`createChromeSelectToken`, cada um nas três fontes. **A densidade e o estilo do item não mudam a métrica do item** fixada pelo [[015-metrica-do-item-de-navegacao-horizontal]] |
+| `maxContentWidth` | largura máxima da região de conteúdo, centralizada. O padrão é `fluid`: a região acompanha o contêiner e cada margem lateral cresce com ele, de `layoutPadding` até 128 px (`calc(100% − 2 × clamp(layoutPadding, 5%, 128px))`); o valor gravado é a palavra `fluid` e só `resolveMaxContentWidth` (`schema/system.ts`) o traduz para CSS, no leitor do cromo e na emissão de `--sarak-max-content-width`. Os tetos `1000px`…`1600px` e `100%` continuam como opção. O respiro de `layoutPadding` continua nos quatro lados |
 | `layoutDensity` | escala o respiro da região de conteúdo: `compact` < `comfortable` < `spacious`. `comfortable` é a identidade: o respiro é exatamente o de `--sarak-layout-padding` |
 | `isSplitViewEnabled` | liga a vista dividida, que só aparece com o slot `secondaryContent` preenchido (§2.2) |
 | `sidebarActiveColor` · `topbarActiveColor` | **fundo** do item ativo, cada orientação o seu. Default `transparent`, deliberado: o fundo real é o da barra (`sidebarColor`/`topbarColor`) |
@@ -245,6 +255,18 @@ O cromo lê esses tokens por um hook único e os traduz em classe estrutural:
 | `navActiveMarkerColor` · `navActiveMarkerGlow` | cor e brilho do marcador do item ativo (o marcador é desenhado pelo `SarakShellNav`) |
 | `sidebarNoiseOpacity` · `topbarNoiseOpacity` | camada de ruído sobre cada barra (`chrome/noiseTexture.ts`) |
 | `sidebarBlur` · `sidebarShadow` | desfoque de fundo e sombra da sidebar; a sombra do modo `floating` também vem do token |
+| `topbarBlur` · `topbarShadow` | desfoque do conteúdo atrás da topbar e sombra projetada pela barra superior |
+| `sidebarItemTextColor` · `sidebarItemHoverTextColor` · `sidebarCategoryColor` · `sidebarBrandColor` | texto inativo, texto sob o ponteiro, rótulo de categoria e marca da sidebar |
+| `topbarItemTextColor` · `topbarItemHoverTextColor` · `topbarBrandColor` | texto inativo, texto sob o ponteiro e marca da topbar |
+| `sidebarBorderColor` · `sidebarBorderWidth` · `sidebarBorderStyle` · `sidebarBorderSide` | cor, espessura, traço e lados da moldura da sidebar; `edge` acompanha o lado externo |
+| `topbarBorderColor` · `topbarBorderWidth` · `topbarBorderStyle` · `topbarBorderSide` | cor, espessura, traço e lados da moldura da topbar; `edge` fica junto ao conteúdo |
+| `sidebarBrandBackground` · `sidebarFooterBackground` | fundos da marca e do rodapé da sidebar |
+| `topbarBrandBackground` | fundo da região da marca na topbar |
+| `sidebarBackgroundStyle` · `topbarBackgroundStyle` | tratamento sólido, gradiente ou textura local, sem dependência de rede |
+| `sidebarActiveItemStyle` · `topbarActiveItemStyle` | forma do item atual: `bar`, `pill`, `underline`, `filled` ou `outline` |
+| `sidebarItemDensity` · `topbarItemDensity` | espaçamento compacto, confortável ou espaçoso, mantendo o alvo de toque mínimo |
+| `sidebarIconSize` · `sidebarIconColor` · `topbarIconSize` · `topbarIconColor` | tamanho e cor dos ícones por orientação |
+| `topbarGroupSeparatorColor` | separador entre grupos na barra superior |
 | `sidebarMinWidth` · `sidebarMaxWidth` · `sidebarLabelMaxWidth` · `topbarLabelMaxWidth` | limites de largura da sidebar e do rótulo da marca, por orientação |
 | `shellBrandLogoSize` · `brandLogoSizeCollapsed` | altura do logo com a navegação expandida e recolhida |
 | `topbarTitleColor` | cor do nome do sistema na topbar |

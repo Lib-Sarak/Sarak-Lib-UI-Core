@@ -1,10 +1,19 @@
-export const useDeviceStyles = (previewDevice: string) => {
+import { sarakGetDefaultDesignState } from '../../../../core/Design/master-map';
+import type { SarakDesignState } from '../../../../core/Provider/types';
+
+const DEFAULT_DESIGN_STATE = sarakGetDefaultDesignState() as Partial<SarakDesignState>;
+
+export const useDeviceStyles = (
+    previewDevice: string,
+    tokens: Partial<SarakDesignState> = DEFAULT_DESIGN_STATE,
+) => {
     const deviceWidths = {
         desktop: '100%',
         tablet: '768px',
         smartphone: '375px'
     };
     const targetWidth = deviceWidths[previewDevice as keyof typeof deviceWidths] || '100%';
+    const deviceAspectRatio = getDeviceAspectRatio(previewDevice, targetWidth, tokens);
 
     const getDeviceFrameStyles = () => {
         if (previewDevice === 'smartphone') {
@@ -18,6 +27,23 @@ export const useDeviceStyles = (previewDevice: string) => {
 
     return {
         targetWidth,
+        deviceAspectRatio,
         getDeviceFrameStyles,
     };
+};
+
+const getDeviceAspectRatio = (
+    previewDevice: string,
+    targetWidth: string,
+    tokens: Partial<SarakDesignState>,
+): string | undefined => {
+    if (previewDevice === 'desktop') return undefined;
+
+    const height = previewDevice === 'tablet'
+        ? tokens.deviceTabletHeight ?? DEFAULT_DESIGN_STATE.deviceTabletHeight
+        : tokens.devicePhoneHeight ?? DEFAULT_DESIGN_STATE.devicePhoneHeight;
+    const width = Number.parseFloat(targetWidth);
+
+    if (typeof height !== 'number' || height <= 0 || !Number.isFinite(width)) return undefined;
+    return `${width} / ${height}`;
 };

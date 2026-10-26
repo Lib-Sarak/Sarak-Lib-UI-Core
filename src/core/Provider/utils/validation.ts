@@ -3,10 +3,13 @@ import { PAYLOAD_EXTRA_KEYS } from '../payloadExtraKeys';
 import { sarakGetAllDesignTokens } from '../../Design/master-map';
 import { SARAK_DESIGN_MANIFEST } from '../manifest';
 import { isSafeCssString, isSafeMediaString } from './cssSafety';
+import { isValidColor } from './colorValidation';
 import { REMOVED_TOKEN_KEYS, warnRemovedTokenKeyOnce } from './removedTokenKeys';
 import { clampToTokenBounds, isOffTokenGrid, isOutsideTokenBounds } from '../../Design/utils/tokenBounds';
 import type { SarakDesignToken } from '../../Design/types';
 import { warnForFunctionalRangeClamp } from './validationFunctionalRangeWarnings';
+
+export { isValidColor } from './colorValidation';
 
 /**
  * Sarak Design Validation (v12.0 — Spec 44 §2.3)
@@ -35,19 +38,6 @@ const ALLOWED_EXTRA_KEYS = new Set<string>([
     ...(PAYLOAD_EXTRA_KEYS as readonly string[]),
     ...Object.keys(SARAK_DESIGN_MANIFEST)
 ]);
-
-/** Cores aceitas: hex, rgb()/rgba(), hsl()/hsla(), `var(--x, fallback)`, `color-mix(in <espaço>, …)` e as
- * palavras-chave seguras — e, em QUALQUER ramo (inclusive a reserva do `var()`), nada que busque recurso:
- * `RESOURCE_IN_COLOR` recusa função de imagem ou de recurso (`url`, `image`, `image-set`, `cross-fade`,
- * `element`, `paint`, `src`, com ou sem prefixo de fabricante, em qualquer caixa) e a barra invertida, que
- * escreveria o nome da função por escape (`u\72l(`). Tema é dado hostil: um valor de cor não faz o
- * navegador buscar nada. */
-const COLOR_PATTERN = /^(#[0-9a-fA-F]{3,8}|rgba?\([0-9.,%\s]+\)|hsla?\([0-9.,%\sa-z]+\)|var\(--[a-zA-Z0-9-]+(\s*,\s*[^;<>{}]*)?\)|color-mix\(\s*in\s+[a-z0-9-]+(\s+[a-z]+(\s+hue)?)?\s*,[a-zA-Z0-9\s%,.#()-]*\)|transparent|currentColor|inherit|none)$/;
-const RESOURCE_IN_COLOR = /[\\]|(?:^|[^\w-])(?:-[a-z]+-)?(?:url|image|image-set|cross-fade|element|paint|src)\s*\(/i;
-
-/** Mesmo predicado que a validação do tema aplica à cor — o painel o usa para só gravar o que o tema aceitaria. */
-export const isValidColor = (value: unknown): boolean =>
-    typeof value === 'string' && isSafeCssString(value) && !RESOURCE_IN_COLOR.test(value) && COLOR_PATTERN.test(value.trim());
 
 const isFiniteNumber = (value: unknown): value is number =>
     typeof value === 'number' && Number.isFinite(value);

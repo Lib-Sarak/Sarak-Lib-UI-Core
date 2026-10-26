@@ -137,7 +137,7 @@ export const EngineCustomizationTab: React.FC = () => {
 
                 <div className="flex items-center justify-between p-4 rounded-2xl bg-theme-text/5 border border-theme-text/10 group">
                     <div className="flex flex-col gap-0.5">
-                        <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-theme-text/50 flex items-center gap-1.5">
+                                <span className="text-[var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest text-theme-text/50 flex items-center gap-1.5">
                             Mostrar Grid de Fundo
                             <HelpTooltip label="Mostrar Grid de Fundo" description="Ativa ou desativa a visualização das linhas de referência nos gráficos (Chart Engine)." />
                         </span>

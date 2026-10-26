@@ -13,7 +13,7 @@ import { ChromeBrand, ChromeSearchSlot, ChromeSidebarSlot, ChromeTopbarSlot } fr
 import { ChromeCollapseToggle } from './ChromeCollapseToggle';
 import { ChromeUserThemeGroup, ChromeUserWidget } from './ChromeUserThemeGroup';
 import { ChromeNotificationsWidget, type SarakChromeNotification } from './ChromeNotificationsWidget';
-import { resolveChromeAsidePositionClass, resolveChromeBodyDirectionClass, resolveChromeContentStyle } from './chromeStructuralStyles';
+import { resolveChromeAsidePositionClass, resolveChromeBodyDirectionClass, resolveChromeBackground, resolveChromeContentStyle, resolveChromeSurfaceBorderStyle } from './chromeStructuralStyles';
 import { useChromeAutoHide } from './useChromeAutoHide';
 import { useChromeDesignTokens } from './useChromeDesignTokens';
 import { useChromeDefaultWidgets } from './useChromeDefaultWidgets';
@@ -57,7 +57,10 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
     brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot, sidebarHeader, sidebarFooter, secondaryContent,
     search, banner, footer, decoration, user, logout, notifications, onNotificationSelect, widgets, className, rootStyle, children,
 }) => {
-    const { sidebarPosition, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled, searchPositionSidebar } = useChromeDesignTokens();
+    const {
+        sidebarPosition, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled,
+        searchPositionSidebar, sidebarBorderSide, sidebarBorderStyle, sidebarBackgroundStyle,
+    } = useChromeDesignTokens();
     const { isVisible, sensorProps, surfaceProps } = useChromeAutoHide(isAutoHideEnabled);
     const w = useChromeDefaultWidgets(widgets, {
         hasCustomSearch: Boolean(search),
@@ -113,15 +116,22 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                             maxWidth: 'var(--sidebar-max-width, 450px)',
                             margin: 'var(--sarak-tab-section-margin, 8px)',
                             height: 'calc(100% - (var(--sarak-tab-section-margin, 8px) * 2))',
-                            background: 'var(--sarak-sidebar-bg, var(--theme-sidebar-bg, transparent))',
-                            borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.09)))',
+                            background: resolveChromeBackground(sidebarBackgroundStyle, '--sarak-sidebar-bg', 'var(--theme-sidebar-bg, transparent)'),
+                            ...resolveChromeSurfaceBorderStyle({
+                                side: sidebarBorderSide,
+                                style: sidebarBorderStyle,
+                                widthVariable: '--sarak-sidebar-border-width',
+                                colorVariable: '--sarak-sidebar-border-color',
+                                surface: 'sidebar',
+                                sidebarPosition,
+                            }),
                             // `sidebarBlur`/`sidebarShadow` (Spec 05 §2.4) — sombra no lugar do shadow-2xl.
                             backdropFilter: 'blur(var(--sarak-sidebar-blur, 10px))',
                             boxShadow: 'var(--sarak-sidebar-shadow, 10px 0 30px rgba(0,0,0,0.5))', // sarak-allow-hardcode: fallback = defaultValue do token
                         }}
                     >
                         {/* `sidebarNoiseOpacity` (Spec 05 §2.4). */}
-                        <div aria-hidden="true" className="absolute inset-0 pointer-events-none mix-blend-overlay" style={chromeNoiseLayerStyle('--sarak-sidebar-noise-opacity')} />
+                        <div aria-hidden="true" className="absolute inset-0 z-0 pointer-events-none mix-blend-overlay" style={chromeNoiseLayerStyle('--sarak-sidebar-noise-opacity', sidebarBackgroundStyle === 'texture')} />
                         <div className="flex items-center justify-between px-1">
                             <ChromeBrand brand={brand} logo={logo} compact={isNavHidden} />
                             {w.showCollapse && (
@@ -175,7 +185,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                     secondaryContent={secondaryContent}
                     isSplitViewEnabled={isSplitViewEnabled}
                     className={`relative flex-1 min-w-0 min-h-0 overflow-auto`}
-                    style={{ color: 'var(--text-main, var(--color-theme-title, inherit))', ...resolveChromeContentStyle(layoutDensity, maxContentWidth) }}
+                    style={{ color: 'var(--text-main, var(--theme-text-primary, inherit))', ...resolveChromeContentStyle(layoutDensity, maxContentWidth) }}
                 >
                     {children}
                 </ChromeContentRegion>

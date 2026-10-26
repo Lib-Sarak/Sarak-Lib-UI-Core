@@ -10,17 +10,67 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 **Classificação: MAJOR.** O `SarakShell`, a descoberta e o registro global de módulos foram removidos.
 Cada aplicação monta `SarakAppChrome`, fornece seus `navItems` e controla as próprias rotas.
 
+### Composição de páginas
+
+Para compor telas com peças da biblioteca, importe `SarakPageHeader`, `SarakFilterBar`,
+`SarakSegmentedControl`, `SarakSection`, `SarakResourceRow` e `SarakDescriptionList` pelo barril
+`@sarak/lib-ui-core`. Migre os cabeçalhos, filtros agrupados, seletores de visualização, blocos de
+conteúdo, linhas clicáveis e pares de rótulo-valor feitos à mão para essas peças. Busca, filtros,
+dados, rotas e ações continuam sob controle do consumidor. Os moldes copiáveis `tela-lista.tsx` e
+`tela-detalhe.tsx` ficam em `sarak-ui/templates/` e são descritos na seção de templates do
+`GUIA-FRONTEND.md`.
+
 Os peers opcionais continuam opcionais: instale somente os que os componentes usados pelo seu
 produto precisam. Se um componente for renderizado sem o pacote correspondente, ele mostra uma
 mensagem com o nome do pacote e registra um aviso no console. O guia relaciona cada pacote ao
 componente que o utiliza.
+
+### Hierarquia de cor tipográfica
+
+**Classificação: MAJOR.** `--theme-title` passa a ser emitida por `titleColor`, separada da cor do
+texto corrido (`textColorMaster`). Antes, a mesma variável podia acompanhar o texto principal. Os
+leitores de títulos passam a usar `titleColor`; parágrafos e rótulos usam `--sarak-text-main` ou
+`--theme-text-primary`. Em `SarakTypography`, `h1`, `h2` e `h3` passam a escolher `title` por padrão;
+`color="main"` preserva explicitamente a cor do texto corrido.
+
+Temas podem declarar `subtitleColor` e `emphasisColor` para subtítulos e ênfases. As escalas
+`typeScaleMicro`, `typeScaleTiny`, `typeScale3xs` e `typeScale2xs` passam a ter piso de 11px; valores
+menores salvos em temas precisam ser elevados para esse piso.
+
+Se a aplicação usa `--theme-title` para texto corrido, troque essa referência por
+`--theme-text-primary` ou `--sarak-text-main`. Revise também os títulos customizados e os quatro
+valores de escala em temas próprios.
+
+### Largura padrão do conteúdo
+
+`maxContentWidth` passa a acompanhar a largura do próprio contêiner: as margens externas crescem
+proporcionalmente, respeitam `layoutPadding` como piso e param em 128 px por lado. O respiro interno
+continua seguindo `layoutDensity`. Os temas embarcados adotam esse padrão fluido; aplicações que
+precisam de um teto fixo podem selecionar `1000px`, `1200px`, `1440px` ou `1600px`. O valor `100%`
+continua ocupando toda a largura disponível. Para gravações novas, a opção fluida é persistida como
+`fluid` e convertida em CSS pela biblioteca; não grave a expressão CSS no tema. Uma configuração
+explícita já salva continua valendo.
+
+### Padding dos campos por eixo
+
+`--sarak-input-padding-vertical` controla o respiro vertical e a altura do `SarakInput`;
+`--sarak-input-padding-horizontal` controla os lados esquerdo e direito quando não há ícones.
+`--sarak-input-padding` permanece como alias vertical, mas está depreciada. Um campo próprio que
+precisa dos dois eixos deve usar as variáveis separadamente, com seus fallbacks:
+
+```css
+padding: var(--sarak-input-padding-vertical, 8px) var(--sarak-input-padding-horizontal, 12px);
+```
+
+O padrão anterior `padding: var(--sarak-input-padding, 8px 12px)` recebia o valor vertical da
+biblioteca como fallback de uma única dimensão e deixava o texto sem respiro lateral.
 
 ### Pisos mínimos de peers e dependência na 8.0.0
 
 **Classificação: MAJOR.** Para receber as correções de segurança, atualize os pacotes opcionais
 usados pela aplicação para `echarts >=6.1.0`, `echarts-for-react >=3.0.4`, `pdfjs-dist >=6.2.108`
 e `react-syntax-highlighter >=16.1.2`. A dependência `dompurify` da biblioteca passa a exigir
-`>=3.4.16` e é instalada junto com ela.
+`>=3.4.17` e é instalada junto com ela.
 
 `echarts-for-react` 3.0.4 é o primeiro piso com suporte declarado a ECharts 6. A migração para
 ECharts 6 altera o tema padrão, as posições e dimensões iniciais de alguns componentes, o ajuste
@@ -141,6 +191,10 @@ Também mudam, e o consumidor percebe:
 Design). **Um teste seu que abria o drawer para clicar num item de navegação no celular** passa a achá-lo na barra
 da base (`nav[data-sarak-bottom-nav]`, links com o mesmo nome) sem abrir o drawer, quando o cromo tem até 5 itens.
 Quem tinha `navigationStyle: 'dock'` em tema salvo não precisa fazer nada; o aviso some ao regravar o tema.
+
+### Plan 124 — controles de composição ficam no menu Preferências
+
+O padrão de fábrica passa a colocar tamanho da fonte, orientação da navegação e recolhimento da barra dentro do menu **Preferências**. Modo claro/escuro, busca, usuário, notificações e idioma continuam fixos na barra. Uma posição válida já salva pelo sistema continua prevalecendo sobre o padrão; a mudança vale para configurações sem valor explícito.
 
 ### No celular, todo acionável tem área tocável de 44 px, o campo não dá zoom, o movimento reduzido vale e a busca abre o teclado de busca
 
@@ -1049,6 +1103,21 @@ Se a troca também tiver de descartar o estado React dos filhos, adicione `key={
 Provider para desmontar e montar a árvore inteira. A chave não substitui `tenantId`: mantenha os
 dois para reiniciar a árvore e separar a chave de persistência por tenant.
 
+### O cache híbrido restaura o id ativo e a falha de gravação fica visível
+
+O cache local da estratégia `hybrid` restaura o par design/id: o design segue no formato bruto da
+chave de persistência e `activeThemeId` fica em uma chave companheira tenant-aware. `onLoad` pode
+atualizar esse cache sem chamar `onSave`; o cache vence `config` por padrão, como antes. Hosts que
+injetam o design de boot como fonte da verdade podem definir `preferConfigOverCache: true`, fazendo
+`config` vencer o cache no primeiro render. Para evitar o quadro branco antes do JavaScript, o host
+também pinta o fundo no HTML inicial com `design.colorBgBody`.
+
+`persistence.onSave` deve rejeitar sua Promise quando a gravação falhar (incluindo resposta HTTP
+4xx/5xx, que `fetch` não rejeita sozinho). A biblioteca mantém a alteração na tela e mostra um aviso
+localizado; não considera a tentativa bem-sucedida nem repete automaticamente. Uma mudança aplicada
+posterior tenta gravar novamente. `Aplicar (N)` continua sendo a ação que persiste o rascunho pelo
+`persistence.onSave`; `options.theme.onSave` continua reservado aos temas nomeados.
+
 
 ### As implementações de SarakDataTable e SarakDataGrid deixam de ser públicas
 
@@ -1240,6 +1309,14 @@ zero configuração; no modo embarcado, importe `@sarak/lib-ui-core/sarak-scoped
 
 `SarakTable` mantém `role` e `density`: o cabeçalho e as células leem esses valores. `importance`
 já não fazia parte das props públicas da tabela.
+
+### A prévia e os selects nativos seguem o modo efetivo do tema (plan-122)
+
+**Sem mudança de API.** A preferência de modo do usuário também vale para a prévia e a galeria do painel, sem ser gravada no rascunho. Os `<select>` da biblioteca herdam o `color-scheme` do escopo claro ou escuro; as opções usam fundo opaco de `--theme-surface` e texto de `--text-main`. No modo claro, as listas nativas deixam de exibir texto claro sobre fundo branco.
+
+A galeria de temas se adapta à largura do quadro, permite várias colunas e mantém os nomes quebráveis na escala caption (fallback de 12 px). As abas ficam em uma linha com rolagem horizontal. Os rótulos da barra de ações podem quebrar linha; **Aplicar** apresenta a contagem de alterações em texto auxiliar acessível. Os títulos do acordeão usam a cor de título do tema e os botões inativos continuam legíveis.
+
+**O que fazer:** não é necessária migração de código. Se o consumidor adicionou CSS para corrigir as cores das opções nativas, pode remover essa compensação; as cores agora seguem os tokens do tema. Mantenha overrides que expressem uma escolha visual deliberada.
 
 ## 7.0.0 — Os nomes públicos passam a identificar a biblioteca
 

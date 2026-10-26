@@ -79,7 +79,7 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
                         placeholder="Busca universal em 200+ tokens..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-theme-text/5 border border-theme-text/10 rounded-xl py-2 pl-10 pr-4 text-[var(--sarak-type-scale2xs,10px)] font-bold focus:border-[var(--theme-primary)]/50 focus:outline-none transition-all text-theme-text placeholder:text-theme-text/20"
+                    className="w-full bg-theme-text/5 border border-theme-text/10 rounded-xl py-2 pl-10 pr-4 text-[var(--sarak-type-scale2xs,11px)] font-bold focus:border-[var(--theme-primary)]/50 focus:outline-none transition-all text-theme-text placeholder:text-theme-text/20"
                     />
                     {searchQuery && (
                         <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-theme-text/20 hover:text-theme-text">
@@ -137,7 +137,7 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
                                                     <div key={cat} className="space-y-4">
                                                         <div className="flex items-center gap-2 mb-2">
                                                             <div className="w-1 h-3 bg-[var(--theme-primary)]/40 rounded-full" />
-                                                            <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-theme-text/30">{cat}</span>
+                            <span className="text-[var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest text-theme-text/30">{cat}</span>
                                                         </div>
                                                         <div className="space-y-4">
                                                             {tokens.map(token => {
@@ -178,7 +178,7 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
                             <Search size={24} className="text-theme-text/10" />
                         </div>
                         <h3 className="text-xs font-black uppercase text-theme-text/40 tracking-widest">Nenhum token encontrado</h3>
-                        <p className="text-[var(--sarak-type-scale2xs,10px)] text-theme-text/20 mt-1 uppercase italic">Aumente a abrangência da busca</p>
+                        <p className="text-[var(--sarak-type-scale2xs,11px)] text-theme-text/20 mt-1 uppercase italic">Aumente a abrangência da busca</p>
                     </div>
                 )}
             </div>
@@ -200,7 +200,7 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
                             <div className={`p-1.5 rounded-lg ${toast.type === 'success' ? 'bg-[var(--sarak-status-success-color,#10b981)]/20' : 'bg-[var(--sarak-status-warning-color,#f59e0b)]/20'}`}>
                                 {toast.type === 'success' ? <Check size={14} /> : <Filter size={14} />}
                             </div>
-                            <span className="text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider">{toast.message}</span>
+                    <span className="text-[var(--sarak-type-scale2xs,11px)] font-bold uppercase tracking-wider">{toast.message}</span>
                         </div>
                     </motion.div>
                 )}

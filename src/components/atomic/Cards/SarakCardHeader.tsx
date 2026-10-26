@@ -17,6 +17,12 @@ const HEADER_TOKEN_CLASSES = [
     'bg-[var(--sarak-card-header-bg,transparent)]',
     'py-[var(--sarak-card-header-padding,12px)]',
     'shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)]',
+    '[&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))]',
+    '[&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))]',
+    '[&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))]',
+    '[&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))]',
+    '[&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))]',
+    '[&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))]',
 ].join(' ');
 
 /** Peça de cabeçalho para compor um cartão Sarak. */

@@ -146,6 +146,8 @@ export interface SarakUIOptions {
         storageKey?: string;
         /** Escopa a chave por tenant (ADR-009 §2.1): vira `${storageKey}::tenant:${tenantId}`. Opaco, não validado. */
         tenantId?: string;
+        /** Quando true, o config fornecido pelo host vence o cache local no primeiro quadro. Default false preserva cache-wins. */
+        preferConfigOverCache?: boolean;
         /** `activeThemeId` (2º parâmetro, ADITIVO — plan-42): o id do tema EFETIVAMENTE
          *  no ar (`resolvedThemeId`) no instante deste save. Vem preenchido sempre que a
          *  sessão resolveu um tema (seed ou aplicado em runtime); vem `undefined` só

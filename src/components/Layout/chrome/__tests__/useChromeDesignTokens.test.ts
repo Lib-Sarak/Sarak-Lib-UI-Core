@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { useChromeDesignTokens } from '../useChromeDesignTokens';
 import { UIContext } from '../../../../core/Provider/SarakUIProvider';
 import type { SarakUIContextType } from '../../../../core/Provider/types';
+import { FLUID_MAX_CONTENT_WIDTH, FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../../../core/Design/schema/system';
 
 const wrapperWithDesign = (design: Record<string, unknown>) => {
     const context = { design } as unknown as SarakUIContextType;
@@ -15,10 +16,20 @@ describe('useChromeDesignTokens', () => {
     it('fora do Provider, degrada para os defaults do schema — nunca lança', () => {
         const { result } = renderHook(() => useChromeDesignTokens());
         expect(result.current).toEqual({
+            sidebarBorderStyle: 'solid',
+            sidebarBorderSide: 'edge',
+            sidebarBackgroundStyle: 'solid',
+            sidebarActiveItemStyle: 'bar',
+            sidebarItemDensity: 'comfortable',
+            topbarBorderStyle: 'solid',
+            topbarBorderSide: 'edge',
+            topbarBackgroundStyle: 'solid',
+            topbarActiveItemStyle: 'bar',
+            topbarItemDensity: 'comfortable',
             sidebarPosition: 'left',
             navbarLayout: 'sticky',
             layoutDensity: 'comfortable',
-            maxContentWidth: '1440px',
+            maxContentWidth: FLUID_MAX_CONTENT_WIDTH,
             isSplitViewEnabled: false,
             isNavHidden: false,
             isAutoHideEnabled: false,
@@ -32,7 +43,7 @@ describe('useChromeDesignTokens', () => {
         const { result } = renderHook(() => useChromeDesignTokens(), { wrapper: wrapperWithDesign({}) });
         expect(result.current.sidebarPosition).toBe('left');
         expect(result.current.layoutDensity).toBe('comfortable');
-        expect(result.current.maxContentWidth).toBe('1440px');
+        expect(result.current.maxContentWidth).toBe(FLUID_MAX_CONTENT_WIDTH);
         expect(result.current.isSplitViewEnabled).toBe(false);
         expect(result.current.isNavHidden).toBe(false);
     });
@@ -50,9 +61,29 @@ describe('useChromeDesignTokens', () => {
                 searchPositionSidebar: 'bottom',
                 searchPositionTopbar: 'right',
                 mobileNavigationStyle: 'bottom',
+                sidebarBorderStyle: 'dotted',
+                sidebarBorderSide: 'bottom',
+                sidebarBackgroundStyle: 'gradient',
+                sidebarActiveItemStyle: 'underline',
+                sidebarItemDensity: 'compact',
+                topbarBorderStyle: 'dashed',
+                topbarBorderSide: 'top',
+                topbarBackgroundStyle: 'texture',
+                topbarActiveItemStyle: 'filled',
+                topbarItemDensity: 'spacious',
             }),
         });
         expect(result.current).toEqual({
+            sidebarBorderStyle: 'dotted',
+            sidebarBorderSide: 'bottom',
+            sidebarBackgroundStyle: 'gradient',
+            sidebarActiveItemStyle: 'underline',
+            sidebarItemDensity: 'compact',
+            topbarBorderStyle: 'dashed',
+            topbarBorderSide: 'top',
+            topbarBackgroundStyle: 'texture',
+            topbarActiveItemStyle: 'filled',
+            topbarItemDensity: 'spacious',
             sidebarPosition: 'right',
             navbarLayout: 'hidden',
             layoutDensity: 'spacious',
@@ -64,6 +95,14 @@ describe('useChromeDesignTokens', () => {
             searchPositionTopbar: 'right',
             mobileNavigationStyle: 'bottom',
         });
+    });
+
+    it('traduz a opção semântica fluida para o valor CSS do cromo', () => {
+        const { result } = renderHook(() => useChromeDesignTokens(), {
+            wrapper: wrapperWithDesign({ maxContentWidth: FLUID_MAX_CONTENT_WIDTH_OPTION }),
+        });
+
+        expect(result.current.maxContentWidth).toBe(FLUID_MAX_CONTENT_WIDTH);
     });
 
     it('mobileNavigationStyle fora da lista (inclusive o `dock` que saiu do schema) degrada para auto', () => {

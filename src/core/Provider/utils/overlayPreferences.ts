@@ -59,7 +59,7 @@ const pickKeys = (source: Record<string, unknown> | undefined, keys: string[]): 
  * administrador incluídas) permanece intocado. Sem contraparte, cai no
  * fallback sintetizado sobre o design atual, como antes.
  */
-const applyColorMode = (
+export const applyColorMode = (
     result: SarakDesignState,
     targetMode: 'light' | 'dark',
     theme: SarakThemeEntry | undefined,
@@ -104,7 +104,7 @@ export const overlayPreferences = (
     systemColorScheme: 'light' | 'dark',
 ): SarakDesignState => {
     let result = design;
-    const offered = (id: Parameters<typeof isPreferenceOffered>[1]) =>
+    const offered = (id: Parameters<typeof isPreferenceOffered>[1]): boolean =>
         isPreferenceOffered(design as unknown as Record<string, unknown>, id);
 
     const targetMode = offered('colorMode') ? resolveColorModeTarget(preferences.colorMode, systemColorScheme) : undefined;

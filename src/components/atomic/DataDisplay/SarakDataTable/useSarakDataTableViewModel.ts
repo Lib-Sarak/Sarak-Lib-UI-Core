@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
-import * as TanstackReactVirtual from '@tanstack/react-virtual';
+import { requireTanstackUseVirtualizer } from '../optional-tanstack-virtualizer';
 import { sarakComputeOffsets, sarakReorder, sarakWidthOf, SARAK_MIN_COLUMN_WIDTH, SELECTION_COLUMN_WIDTH } from './columnModel';
 import type { SarakColumn, SarakPinnedOffsets } from './columnModel';
 import type { SarakDataTableProps } from './SarakDataTableImpl';
@@ -85,7 +85,7 @@ const estimateRowHeight = <T,>(rowHeight: SarakDataTableProps<T>['rowHeight'], h
 const useRowState = <T,>(props: SarakDataTableProps<T>): SarakDataTableRowState<T> => {
     const scrollRef = useRef<HTMLDivElement>(null);
     const interactions = useTableInteractions({ rows: props.rows, getRowKey: props.getRowKey, sort: props.sort, onSortChange: props.onSortChange, selectedKeys: props.selectedKeys, onSelectionChange: props.onSelectionChange, getSortValue: (row, columnId) => (row as Record<string, unknown>)[columnId] });
-    const virtualizer = TanstackReactVirtual.useVirtualizer({
+    const virtualizer = requireTanstackUseVirtualizer()({
         count: interactions.entries.length,
         getScrollElement: () => scrollRef.current,
         estimateSize: (index) => estimateRowHeight(props.rowHeight ?? 44, props.headerHeight ?? 44, interactions.entries[index]?.row),

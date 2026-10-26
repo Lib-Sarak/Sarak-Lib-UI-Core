@@ -58,6 +58,15 @@ describe('CalendarDayCell', () => {
         expect(onDayClick).not.toHaveBeenCalled();
     });
 
+    it('usa a cor de texto no número do dia e a cor de título no chip do evento', () => {
+        renderCell({ events: [entry('a')] });
+        const dayNumber = document.querySelector<HTMLElement>('[role="gridcell"] > span[aria-hidden="true"]');
+        const eventChip = screen.getByRole('button', { name: 'Evento a' });
+
+        expect(dayNumber?.style.color).toBe('var(--sarak-text-main, var(--theme-text-primary, inherit))');
+        expect(eventChip.style.color).toBe('var(--theme-title, var(--sarak-title-color, inherit))');
+    });
+
     it('o clique na célula chama onDayClick com a data', () => {
         const onDayClick = vi.fn();
         renderCell({ onDayClick });

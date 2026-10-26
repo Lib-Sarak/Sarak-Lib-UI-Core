@@ -3,11 +3,11 @@ import { splitChromeWidgetsByPlacement, splitPreferencesByPlacement } from '../c
 import { CHROME_WIDGET_POSITION_TOKEN_IDS, PREFERENCE_POSITION_TOKEN_IDS } from '../../preferencesTypes';
 
 describe('splitPreferencesByPlacement', () => {
-    it('padrão de fábrica (chave ausente): as cinco preferências ficam fixas na barra', () => {
+    it('padrão de fábrica (chave ausente): modo e idioma ficam fixos; fonte, navegação e recolher vão ao menu', () => {
         const result = splitPreferencesByPlacement(undefined);
-        expect(result.pinned.sort()).toEqual(['colorMode', 'fontSize', 'language', 'navigationStyle', 'navCollapsed'].sort());
+        expect(result.pinned.sort()).toEqual(['colorMode', 'language'].sort());
         expect(result.offered.sort()).toEqual(['colorMode', 'fontSize', 'language', 'navigationStyle', 'navCollapsed'].sort());
-        expect(result.menu).toEqual([]);
+        expect(result.menu.sort()).toEqual(['colorMode', 'fontSize', 'language', 'navigationStyle', 'navCollapsed'].sort());
     });
 
     it('todas em off: nada oferecido, nada fixado, ⚙ vazio', () => {
@@ -30,11 +30,17 @@ describe('splitPreferencesByPlacement', () => {
         expect(result.pinned).not.toContain('fontSize');
     });
 
-    it("só posições 'pinned' (nenhuma 'menu'): offered não vazio, mas menu (⚙) fica vazio", () => {
-        const design = { [PREFERENCE_POSITION_TOKEN_IDS.language]: 'pinned' };
+    it("todas as posições 'pinned': offered não vazio, mas menu (⚙) fica vazio", () => {
+        const design = {
+            [PREFERENCE_POSITION_TOKEN_IDS.colorMode]: 'pinned',
+            [PREFERENCE_POSITION_TOKEN_IDS.fontSize]: 'pinned',
+            [PREFERENCE_POSITION_TOKEN_IDS.navigationStyle]: 'pinned',
+            [PREFERENCE_POSITION_TOKEN_IDS.navCollapsed]: 'pinned',
+            [PREFERENCE_POSITION_TOKEN_IDS.language]: 'pinned',
+        };
         const result = splitPreferencesByPlacement(design);
-        expect(result.pinned).toContain('language');
-        expect(result.offered).toContain('language');
+        expect(result.pinned.sort()).toEqual(['colorMode', 'fontSize', 'language', 'navigationStyle', 'navCollapsed'].sort());
+        expect(result.offered.sort()).toEqual(['colorMode', 'fontSize', 'language', 'navigationStyle', 'navCollapsed'].sort());
         expect(result.menu).toEqual([]);
     });
 

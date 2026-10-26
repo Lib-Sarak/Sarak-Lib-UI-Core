@@ -89,7 +89,7 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
                             const path = locateToken(token.id, groupedStructure, pillars);
                             return (
                                 <div key={enhancedToken.id} className="space-y-1">
-                                    {path && <div data-testid="search-result-path" className="text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)]">{path}</div>}
+                                    {path && <div data-testid="search-result-path" className="text-[var(--sarak-type-scale-tiny,11px)] text-[var(--theme-muted)]">{path}</div>}
                                     <TokenControl token={enhancedToken as SarakDesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} draft={draft as Record<string, SarakTokenValue>} updateDraft={updateDraft} />
                                 </div>
                             );
@@ -100,7 +100,7 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
 
                         <section className="mx-[var(--sarak-layout-gap-sm,12px)] mb-[var(--sarak-layout-gap-sm,12px)] flex flex-col gap-[var(--sarak-layout-gap-sm,12px)] rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border,rgba(255,255,255,0.09))] bg-[var(--theme-card,#101622)] p-[var(--sarak-layout-gap-sm,12px)]">
                             <div>
-                                <h2 className="text-[var(--sarak-type-scale-caption,12px)] font-semibold text-[var(--theme-title,#f2f6fb)]">Começar de um tema</h2>
+                                <h2 className="text-[var(--sarak-type-scale-xl,20px)] font-semibold text-[var(--theme-title,#f2f6fb)]">Começar de um tema</h2>
                                 <p className="mt-1 text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-muted,rgba(242,246,251,0.55))]">
                                     Escolha um estilo e ajuste os detalhes abaixo.
                                 </p>

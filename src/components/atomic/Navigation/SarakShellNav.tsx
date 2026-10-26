@@ -90,18 +90,6 @@ const NavEntry: React.FC<{
         label={item.label}
         className="relative"
     >
-        {isActive && (
-            <span
-                aria-hidden="true"
-                className={horizontal
-                    ? 'absolute left-1/2 -translate-x-1/2 bottom-0 h-0.5 w-4 rounded-full'
-                    : 'absolute left-0 w-1 h-4 rounded-full'}
-                style={{
-                    background: 'var(--sarak-nav-marker-color, #19e3f0)',
-                    boxShadow: '0 0 calc(var(--sarak-nav-marker-glow, 8) * 1px) var(--sarak-nav-marker-color, #19e3f0)', // sarak-allow-hardcode: 1px converte slider unitless
-                }}
-            />
-        )}
     </SarakMenuItem>
 );
 
@@ -136,7 +124,7 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
     return (
         <nav
             aria-label={t('shellNavAriaLabel')}
-            className={`flex ${horizontal ? 'items-center overflow-x-auto shrink-0' : 'h-full min-h-0 overflow-y-auto'} ${className}`}
+            className={`relative z-10 flex ${horizontal ? 'items-center overflow-x-auto shrink-0' : 'h-full min-h-0 overflow-y-auto'} ${className}`}
             style={{
                 flexDirection: horizontal ? 'row' : 'column',
                 gap: 'var(--sarak-layout-gap-sm, 8px)',
@@ -148,6 +136,9 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                     className="flex items-center shrink-0"
                     style={{
                         gap: 'var(--sarak-layout-gap-sm, 8px)',
+                        background: horizontal
+                            ? 'var(--sarak-topbar-brand-bg, transparent)'
+                            : 'var(--sarak-sidebar-brand-bg, transparent)',
                         marginBottom: horizontal ? undefined : 'var(--sarak-layout-gap-md, 16px)',
                         marginInlineEnd: horizontal ? 'var(--sarak-layout-gap-md, 16px)' : undefined,
                     }}
@@ -162,8 +153,12 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                     ) : null}
                     {brand.name ? (
                         <span
-                            className="text-[var(--sarak-text-main,#f2f6fb)] truncate"
+                            className="truncate"
                             style={{
+                                color: horizontal
+                                    ? 'var(--sarak-topbar-brand-color, var(--sarak-topbar-title-color, #f2f6fb))'
+                                    : 'var(--sarak-sidebar-brand-color, var(--sarak-on-sidebar, #f2f6fb))',
+                                fontFamily: 'var(--sarak-identity-font, var(--font-heading, var(--font-main, inherit)))',
                                 fontWeight: 'var(--sarak-identity-weight, 800)',
                                 letterSpacing: 'var(--sarak-identity-tracking, 0px)',
                             }}
@@ -181,7 +176,7 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                         <span
                             aria-hidden="true"
                             className="self-stretch shrink-0"
-                            style={{ width: 'var(--sarak-border-width, 1px)', background: 'var(--sarak-card-border-color, rgba(255,255,255,0.09))' }}
+                            style={{ width: 'var(--sarak-border-width, 1px)', background: 'var(--sarak-topbar-group-separator-color, var(--sarak-card-border-color, rgba(255,255,255,0.09)))' }}
                         />
                     ) : null}
                     <div
@@ -200,8 +195,8 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                     >
                         {category && !horizontal && !collapsed ? (
                             <div
-                                className="text-2xs font-bold uppercase tracking-widest text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-70 select-none"
-                                style={{ paddingInline: 'var(--sarak-layout-gap-sm, 8px)', marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}
+                                className="text-2xs font-bold uppercase tracking-widest select-none"
+                                style={{ color: 'var(--sarak-sidebar-category-color, var(--sarak-on-sidebar, rgba(242,246,251,0.385)))', paddingInline: 'var(--sarak-layout-gap-sm, 8px)', marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}
                             >
                                 {category}
                             </div>

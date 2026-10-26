@@ -84,6 +84,14 @@ export const CATALOG_PART_4 = {
         pt: 'Fechar notificação', en: 'Dismiss notification', es: 'Cerrar notificación',
         fr: 'Fermer la notification', de: 'Benachrichtigung schließen', it: 'Chiudi notifica',
     },
+    themePersistenceSaveFailed: {
+        pt: 'Não foi possível salvar o tema. A alteração continua aplicada nesta tela.',
+        en: 'The theme could not be saved. The change remains applied on this screen.',
+        es: 'No se pudo guardar el tema. El cambio sigue aplicado en esta pantalla.',
+        fr: 'Le thème n’a pas pu être enregistré. La modification reste appliquée à l’écran.',
+        de: 'Das Design konnte nicht gespeichert werden. Die Änderung bleibt auf diesem Bildschirm aktiv.',
+        it: 'Impossibile salvare il tema. La modifica resta applicata in questa schermata.',
+    },
     dialogConfirm: {
         pt: 'Confirmar', en: 'Confirm', es: 'Confirmar',
         fr: 'Confirmer', de: 'Bestätigen', it: 'Conferma',

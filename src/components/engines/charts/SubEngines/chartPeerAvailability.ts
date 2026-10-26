@@ -5,20 +5,24 @@ import * as Recharts from 'recharts';
 
 export const ReactECharts = ReactEChartsModule.default;
 
-const ECHARTS_USE_EXTENSION = (EChartsCore as unknown as { use?: unknown }).use;
-const ECHARTS_COMPONENT_EXPORTS = EChartsComponents as unknown as Record<string, unknown>;
+const ECHARTS_USE_EXTENSION: unknown = EChartsCore.use;
+const ECHARTS_ARIA_COMPONENT: unknown = EChartsComponents.AriaComponent;
+const ECHARTS_LEGEND_COMPONENT: unknown = EChartsComponents.LegendComponent;
+const RECHARTS_RESPONSIVE_CONTAINER: unknown = Recharts.ResponsiveContainer;
+const RECHARTS_BAR_CHART: unknown = Recharts.BarChart;
+const RECHARTS_LINE_CHART: unknown = Recharts.LineChart;
 
 export const hasEChartsPeers = (): boolean => Boolean(
     ReactECharts
     && typeof ECHARTS_USE_EXTENSION === 'function'
-    && ECHARTS_COMPONENT_EXPORTS.AriaComponent
-    && ECHARTS_COMPONENT_EXPORTS.LegendComponent,
+    && ECHARTS_ARIA_COMPONENT
+    && ECHARTS_LEGEND_COMPONENT,
 );
 
 export const hasRechartsPeer = (): boolean => Boolean(
-    Recharts.ResponsiveContainer && Recharts.BarChart && Recharts.LineChart,
+    RECHARTS_RESPONSIVE_CONTAINER && RECHARTS_BAR_CHART && RECHARTS_LINE_CHART,
 );
 
 if (hasEChartsPeers()) {
-    EChartsCore.use([EChartsComponents.AriaComponent, EChartsComponents.LegendComponent]);
+    (ECHARTS_USE_EXTENSION as (components: unknown[]) => void)([ECHARTS_ARIA_COMPONENT, ECHARTS_LEGEND_COMPONENT]);
 }

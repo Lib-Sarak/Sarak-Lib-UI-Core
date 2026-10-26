@@ -54,7 +54,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                     <div className="w-16 h-16 border-4 border-theme-primary/10 border-t-theme-primary rounded-full animate-spin"></div>
                     <SarakIcon name="Database" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-theme-primary/40" size={24} />
                 </div>
-                <p className="text-theme-muted font-black uppercase animate-pulse" style={{ fontSize: 'var(--sarak-type-scale2xs, 10px)', letterSpacing: 'var(--sarak-tracking-wider, 0.4em)' }}>
+                <p className="text-theme-muted font-black uppercase animate-pulse" style={{ fontSize: 'var(--sarak-type-scale2xs, 11px)', letterSpacing: 'var(--sarak-tracking-wider, 0.4em)' }}>
                     Carregando Catálogo...
                 </p>
             </div>
@@ -76,13 +76,13 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                     <div>
                         <div className="flex items-center text-theme-primary" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>
                             <SarakIcon name="Binary" size={14} />
-                            <span className="font-black uppercase tracking-widest" style={{ fontSize: 'var(--sarak-type-scale2xs, 10px)' }}>Sarak Catalog Engine</span>
+                            <span className="font-black uppercase tracking-widest" style={{ fontSize: 'var(--sarak-type-scale2xs, 11px)' }}>Sarak Catalog Engine</span>
                         </div>
-                        <h1 className="text-4xl font-black text-theme-text tracking-tighter">
+                        <h1 className="text-4xl font-black text-theme-title tracking-tighter">
                             {title}
                         </h1>
                         {subtitle && (
-                            <p className="text-theme-muted text-sm max-w-2xl" style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}>
+                            <p className="text-[var(--sarak-subtitle-color,var(--theme-subtitle,#f2f6fb))] text-sm max-w-2xl" style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}>
                                 {subtitle}
                             </p>
                         )}
@@ -116,7 +116,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                         </div>
 
                         <div className="flex items-center justify-between border-t border-[var(--border-color,rgba(255,255,255,0.09))]" style={{ paddingTop: 'var(--sarak-layout-gap-md,16px)' }}>
-                            <div className="text-theme-muted font-bold uppercase tracking-widest" style={{ fontSize: 'var(--sarak-type-scale2xs, 10px)' }}>
+                            <div className="text-theme-muted font-bold uppercase tracking-widest" style={{ fontSize: 'var(--sarak-type-scale2xs, 11px)' }}>
                                 {filteredItems.length} Itens encontrados
                             </div>
                             {(search || selectedCategory !== 'all') && (
@@ -148,7 +148,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                                         className="card border rounded-[var(--sarak-catalog-item-radius,2rem)] hover:border-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_30%,transparent)] transition-all"
                                         style={{ padding: 'var(--sarak-layout-gap-lg, 24px)' }}
                                     >
-                                        <h3 className="text-lg font-bold text-theme-text">{item.display_name}</h3>
+                                        <h3 className="text-lg font-bold text-theme-title">{item.display_name}</h3>
                                         <p className="text-sm text-theme-muted" style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}>{item.organization}</p>
                                     </motion.div>
                                 )}

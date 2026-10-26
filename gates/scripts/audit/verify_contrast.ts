@@ -33,9 +33,7 @@
 //    `PreviewCanvas`, que não existe hoje para contraste. Pares fora desta
 //    lista (indicador de estado, borda, elemento decorativo — não são
 //    texto; o ícone do campo, `inputIconColor`, é a exceção e entra) estão fora do ESCOPO da R31 por definição ("pares texto/fundo"),
-//    não "não determinados"; ver o veredito do revisor em §11 de
-//    `specs/plan/plan-24-aplicacao-de-temas.md` para a lista completa dos
-//    excluídos e o motivo de cada um.
+//    não "não determinados".
 // 3a. [lote 4] Dois tipos novos de elo/texto. (i) Um elo da cadeia `token@0.1` é a
 //    cor do token com o alfa MULTIPLICADO por 0,1 — a tinta que o componente
 //    compõe com `color-mix(<cor> 10%, transparent)`. (ii) Um texto `on:<token>`
@@ -54,14 +52,14 @@
 //    com par novo precisa entrar em `PAIRS` — é por isso que o texto fixo
 //    (`text-white`/`text-black`) em componente é barrado à parte por
 //    `fixed-translucent:check`.
-// 4. Limiar único: 4,5:1 (texto normal) para TODOS os pares — decisão do
-//    dono (`plan-24` §2.5 resposta 2): não relaxar `textColorMuted` para
+// 4. Limiar único: 4,5:1 (texto normal) para TODOS os pares. Não relaxar
+//    `textColorMuted` para
 //    3:1, porque ele renderiza em 9–14px, abaixo do piso de "texto grande"
 //    que a WCAG exige para o limiar mais frouxo.
 // 5. `statusErrorColor`/`statusSuccessColor` SÃO cor de texto de verdade (`color:` explícito em `SarakForm.tsx`,
 //    `SarakTable.tsx`, `ManagementGroupCard.tsx`, `SarakPDFViewerImpl.tsx`) e entram em `PAIRS` sobre o cartão e
 //    o corpo (grupo C e D). A tinta do status (`-bg`) é a variante que o motor emite com `generateVariants`.
-// 6. [RESOLVIDO na plan-24-1, Decisão D] Até a `plan-24-1`, `useDesignVariables`
+// 6. [RESOLVIDO] Antes da correção, `useDesignVariables`
 //    chamava `syncThemeWithMode` SEM CONDIÇÃO, e o token escrito podia
 //    divergir do emitido (medido então: 178/648 veredictos divergentes). A
 //    Decisão D fez `syncThemeWithMode` só agir quando o modo pedido DIFERE
@@ -69,11 +67,11 @@
 //    `ShellThemeToggle.tsx` é o único lugar que ainda a invoca, de propósito,
 //    ao trocar de modo). No modo nativo, cru = emitido, e esta 1ª passada
 //    mede exatamente o que a tela mostra.
-// 7. [Decisão C + 2ª passada, plan-24-1] Este verificador roda DUAS vezes:
+// 7. [Decisão C + 2ª passada] Este verificador roda DUAS vezes:
 //    `auditTheme` mede o modo NATIVO (o que a Decisão D garante que é
 //    fielmente o que a tela mostra sem troca de modo); `auditThemeOppositeMode`
 //    mede a CONTRAPARTE gerada por `syncThemeWithMode` no modo oposto —
-//    território que, antes da `plan-24-1`, não tinha medição nenhuma. A
+//    território que antes não tinha medição nenhuma. A
 //    Decisão C (`color-engine.ts`, `ON_PRIMARY_TEXT_PAIRS`) faz o texto que
 //    senta sobre uma primária (`btnPrimaryText`, `cardActionBtnText`,
 //    `navItemActiveColor`) calcular a luminosidade contra o fundo JÁ
@@ -83,13 +81,13 @@
 //    de `PAIRS[].bgChain` (o motor não tem acesso a ela em runtime), então
 //    um card aninhado em múltiplas camadas translúcidas pode divergir
 //    ligeiramente do que a 1ª passada mediria para o mesmo par no nativo.
-// 8. [plan-26] `auditThemeOppositeMode` passa a chamar `resolveThemeForMode`
+// 8. [Contraparte] `auditThemeOppositeMode` passa a chamar `resolveThemeForMode`
 //    em vez de `syncThemeWithMode` direto: quando o tema declara
 //    `contraparte`, é ELA que é medida (o bloco autorado, não o sintetizado)
 //    — a 2ª passada deixou de medir só o que a lib deriva e passa a medir o
 //    que alguém escreveu. `syncThemeWithMode` só entra para os temas SEM
 //    contraparte (a lista de isenção em `CONTRAPARTE_EXEMPTION_LIST`).
-// 9. [plan-26] `auditContraparteRequired` só vê `GLOBAL_THEMES` — tema do
+// 9. `auditContraparteRequired` só vê `GLOBAL_THEMES` — tema do
 //    CONSUMIDOR (fora do catálogo shippado) nunca é cobrado a ter
 //    `contraparte`; é dado de terceiro, mesma fronteira da R31 (§ acima).
 // 10. [grupo D] Entram o hover do botão fantasma e do contorno (a primária MISTURADA ao texto de maior
@@ -127,7 +125,7 @@ export interface ContrastPair {
      * `token@0.1` é a cor do token com o alfa multiplicado por 0,1 (tinta).
      */
     bgChain: string[];
-    /** Razão mínima exigida (sempre 4.5 nesta plan — ver LIMITES DECLARADOS item 4). */
+    /** Razão mínima exigida (sempre 4.5 neste gate). */
     min: number;
 }
 
@@ -165,6 +163,12 @@ export const PAIRS: ContrastPair[] = [
     // todo título dentro de card ou modal é este par.
     { fg: 'titleColor', bgChain: ['cardBackgroundColor', 'colorBgBody'], min: 4.5 },
     { fg: 'titleColor', bgChain: ['colorBgModal', 'colorBgBody'], min: 4.5 },
+    { fg: 'subtitleColor', bgChain: ['colorBgBody'], min: 4.5 },
+    { fg: 'subtitleColor', bgChain: ['surfaceColor', 'colorBgBody'], min: 4.5 },
+    { fg: 'subtitleColor', bgChain: ['cardBackgroundColor', 'colorBgBody'], min: 4.5 },
+    { fg: 'emphasisColor', bgChain: ['colorBgBody'], min: 4.5 },
+    { fg: 'emphasisColor', bgChain: ['surfaceColor', 'colorBgBody'], min: 4.5 },
+    { fg: 'emphasisColor', bgChain: ['cardBackgroundColor', 'colorBgBody'], min: 4.5 },
 
     // Grupo B — texto de componente específico, par declarado na própria
     // `description` do schema (ou óbvio pelo agrupamento do componente).
@@ -177,6 +181,13 @@ export const PAIRS: ContrastPair[] = [
     // O ícone do campo (lupa, olho de senha): o padrão do token é `var(--text-muted)`, resolvido para `textColorMuted`.
     { fg: 'inputIconColor', bgChain: ['inputBg', 'colorBgBody'], min: 4.5 },
     { fg: 'topbarTitleColor', bgChain: ['topbarColor', 'colorBgBody'], min: 4.5 },
+    { fg: 'sidebarItemTextColor', bgChain: ['sidebarColor', 'colorBgBody'], min: 4.5 },
+    { fg: 'sidebarItemHoverTextColor', bgChain: ['sidebarHoverColor', 'sidebarColor', 'colorBgBody'], min: 4.5 },
+    { fg: 'sidebarCategoryColor', bgChain: ['sidebarColor', 'colorBgBody'], min: 4.5 },
+    { fg: 'sidebarBrandColor', bgChain: ['sidebarBrandBackground', 'sidebarColor', 'colorBgBody'], min: 4.5 },
+    { fg: 'topbarItemTextColor', bgChain: ['topbarColor', 'colorBgBody'], min: 4.5 },
+    { fg: 'topbarItemHoverTextColor', bgChain: ['topbarHoverColor', 'topbarColor', 'colorBgBody'], min: 4.5 },
+    { fg: 'topbarBrandColor', bgChain: ['topbarBrandBackground', 'topbarColor', 'colorBgBody'], min: 4.5 },
     { fg: 'tooltipTextColor', bgChain: ['tooltipBg', 'colorBgBody'], min: 4.5 },
     { fg: 'navItemActiveColor', bgChain: ['sidebarActiveColor', 'sidebarColor', 'colorBgBody'], min: 4.5 },
     { fg: 'navItemActiveColor', bgChain: ['topbarActiveColor', 'topbarColor', 'colorBgBody'], min: 4.5 },
@@ -276,7 +287,7 @@ export function parseColor(raw: unknown): Rgba | null {
     return null;
 }
 
-/** `efetiva = alfa × cor + (1 − alfa) × fundo` — canal a canal (plan-24 §3.4). */
+/** `efetiva = alfa × cor + (1 − alfa) × fundo` — canal a canal. */
 export function compositeOverOpaque(top: Rgba, bottomRgb: [number, number, number]): [number, number, number] {
     const mix = (channel: 'r' | 'g' | 'b', i: number) => top.a * top[channel] + (1 - top.a) * bottomRgb[i];
     return [mix('r', 0), mix('g', 1), mix('b', 2)];
@@ -403,13 +414,12 @@ export function auditTheme(theme: SarakThemePreset): ThemeReport {
 }
 
 /**
- * SEGUNDA PASSADA (plan-24-1 §3.1 item 8) — mede também o MODO OPOSTO ao
- * nativo do tema. Antes da Decisão D, o modo nativo já emitia diferente do
- * escrito (§11.2 do veredito da plan-24); depois de D, a troca de modo virou
+ * SEGUNDA PASSADA — mede também o MODO OPOSTO ao nativo do tema. Antes da
+ * Decisão D, o modo nativo já emitia diferente do escrito; depois de D, a troca virou
  * território sem medição nenhuma. Reusa o MESMO `PAIRS`/`evaluatePair` da 1ª
  * passada; não muda a medição nativa, só acrescenta esta.
  *
- * plan-26: passa a medir a contraparte AUTORADA quando o tema a declara —
+ * A contraparte AUTORADA é medida quando o tema a declara —
  * via `resolveThemeForMode`, a mesma função que o motor usa em runtime — em
  * vez de sempre sintetizar com `syncThemeWithMode`. Só cai no sintetizado
  * para os temas SEM `contraparte` (os 18 legados, fallback deliberado).
@@ -443,9 +453,9 @@ export interface ContraparteAudit {
 }
 
 /**
- * O GATE que EXIGE `contraparte` (plan-26 §2.4/§3.1 item 6). Todo tema fora
+ * O GATE que EXIGE `contraparte`. Todo tema fora
  * da lista de isenção acima e sem `contraparte` é uma violação — a mesma
- * regressão que esta plan conserta reapareceria em silêncio no primeiro tema
+ * regressão que esta validação evita reapareceria em silêncio no primeiro tema
  * novo que alguém esquecesse de autorar.
  */
 export function auditContraparteRequired(themes: SarakThemePreset[]): ContraparteAudit {
@@ -486,8 +496,8 @@ function printPass(reports: ThemeReport[], label: string): { temasComFalha: numb
 }
 
 function printContraparteAudit(audit: ContraparteAudit, total: number): boolean {
-    console.log('\n--- Exigência de CONTRAPARTE (plan-26) ---');
-    console.log(`${audit.isentos.length} tema(s) isento(s) (legados, plan-25): ${audit.isentos.join(', ')}`);
+    console.log('\n--- Exigência de CONTRAPARTE ---');
+    console.log(`${audit.isentos.length} tema(s) isento(s) (legados): ${audit.isentos.join(', ')}`);
     const autorados = total - audit.isentos.length - audit.faltando.length;
     console.log(`${autorados} tema(s) com contraparte autorada.`);
     // A contagem sai SEMPRE (sucesso ou falha) — `check-audit-baseline.mjs`

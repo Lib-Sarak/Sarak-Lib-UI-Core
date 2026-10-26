@@ -33,7 +33,8 @@ export interface CalendarDayCellProps {
 const GAP_XS = 'calc(var(--sarak-layout-gap-sm, 8px) * 0.25)';
 const RADIUS = 'var(--sarak-card-radius, 10px)';
 const MUTED = 'var(--sarak-text-muted, var(--theme-muted, currentColor))';
-const MAIN = 'var(--sarak-text-main, var(--color-theme-title, inherit))';
+const MAIN = 'var(--sarak-text-main, var(--theme-text-primary, inherit))';
+const TITLE = 'var(--theme-title, var(--sarak-title-color, inherit))';
 const CAPTION = 'var(--sarak-type-scale-caption, 12px)';
 
 const cellStyle = (outside: boolean): React.CSSProperties => ({
@@ -66,7 +67,7 @@ const chipStyle: React.CSSProperties = {
     justifyContent: 'flex-start',
     background: 'transparent',
     border: 'none',
-    color: MAIN,
+    color: TITLE,
     fontSize: CAPTION,
     overflow: 'hidden',
 };

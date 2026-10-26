@@ -11,7 +11,7 @@
  * `onSave`) e passa COM ela (a preferência fica separada, nunca gravada nela).
  */
 import React from 'react';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, act, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import SarakUIProvider from '../SarakUIProvider';
@@ -64,7 +64,10 @@ describe('Preferências não vazam para a porta de persistência do tema', () =>
         });
         onSave.mockClear();
 
-        fireEvent.click(screen.getByLabelText('Recolher navegação'));
+        fireEvent.click(screen.getByLabelText('Preferências'));
+        const menu = screen.getByRole('menu');
+        fireEvent.click(within(menu).getByText('Recolher navegação'));
+        expect(within(menu).getByText('Expandir navegação')).toBeInTheDocument();
         act(() => {
             vi.advanceTimersByTime(1600);
         });

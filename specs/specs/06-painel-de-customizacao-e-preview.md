@@ -36,7 +36,7 @@ Três fontes se cruzam e a UI só **itera** o resultado:
 
 | Fonte | O que injeta | Onde |
 | --- | --- | --- |
-| **Pilares** | as 7 abas de nível 1 | `src/features/DesignEngine/config/design-pillars.json` |
+| **Pilares** | as 7 abas de nível 1 — a **mesma** taxonomia para o painel e para o Command Center (as duas telas leem este arquivo) | `src/features/DesignEngine/config/design-pillars.json` |
 | **Catálogo** | a **semântica** — as `categories` de cada token | partições de `src/core/Design/catalog/` |
 | **Schema** | o **dado** — tokens, tipos, constraints, defaults | `MASTER_DESIGN_MAP` |
 
@@ -142,7 +142,7 @@ O painel conta um caminho de três passos, e a tela segue essa ordem:
 
 | Ação | O que faz |
 | --- | --- |
-| **`Aplicar (N)`** | grava o rascunho no sistema; N é o número de tokens do rascunho que diferem do sistema, e o botão fica desabilitado com N = 0. É a **única** porta de gravação (§4) |
+| **`Aplicar`** | grava o rascunho no sistema. Ao lado, um texto auxiliar diz quantas alterações o rascunho tem em relação ao sistema ("N alterações"); o botão fica desabilitado sem alteração. É a **única** porta de gravação (§4) |
 | **Descartar** | volta o rascunho ao sistema. Existe também **por pilar**, no cabeçalho de cada pilar ("Descartar alterações deste pilar") |
 | **Exportar** | secundário: baixa o JSON (§5); o rótulo não muda depois de exportar |
 | **Desfazer última aplicação** | só aparece quando há uma aplicação a desfazer (§4.2) |
@@ -217,7 +217,7 @@ Duas decisões de projeto do rascunho, ambas com o motivo no código:
 rascunho**. `handleApplyFullTheme` (`Main/ThemeCustomizationTab.tsx`) alimenta **só** o rascunho, e é o caminho
 de **toda** porta que escolhe tema — a Galeria de estilos e a tela **Temas e JSON** (`TemplatesTab`), que não
 chama `applyFullConfig`, `persistDesign` nem `setResolvedThemeId`. O design da aplicação e o armazenamento mudam
-por uma porta única — o **`Aplicar (N)`** da barra de ações (§2.3), em `handleApplyToSystem`
+por uma porta única — o **`Aplicar`** da barra de ações (§2.3), em `handleApplyToSystem`
 (`hooks/useDesignDraft.ts`), que é o mesmo caminho de qualquer outro token e só age com o rascunho sujo
 (`isDirty`).
 
@@ -325,6 +325,11 @@ botão morto nem erro; o painel degrada para o ciclo de exportar. Contrato compl
 
 `src/features/DesignEngine/Canvas/`.
 
+**A prévia mostra o modo que o usuário vê.** A prévia e os cartões da galeria recebem o rascunho com a preferência de modo aplicada
+por cima ([[09-temas-e-presets]] §4.7), pela contraparte do tema do rascunho (o escolhido na galeria; sem ele, o resolvido); o que
+se salva continua sendo o rascunho sem preferência. O botão de modo dentro da prévia lê o modo efetivo e alterna nos dois sentidos.
+Trocar o token `mode` do rascunho parte do tema do rascunho e só avisa quando uma customização da contraparte é de fato descartada.
+
 ## 6.1 `DesignScope` — a barreira de CSS
 
 `PreviewCanvas` renderiza o rascunho dentro de `DesignScope`
@@ -352,9 +357,12 @@ Duas metades, e as duas são necessárias:
 Mobile) e o interruptor **"Empilhar previews"** — o cabeçalho da barra lateral não tem nenhum dos dois. Trocar o
 dispositivo troca o preview e o valor responsivo que se edita (§3, selo de dispositivo).
 
-**Galeria e empilhado.** Com a Galeria de estilos aberta (§2.3), ela é um segundo quadro ao lado do preview do
-rascunho; com "Empilhar previews" ligado, fica **abaixo**, e cada um ocupa **metade da altura do contêiner**
-(flex com `min-h-0`), nunca uma unidade de janela (`vh`) — consequência direta da §6.2.1. Com a galeria fechada, o
+**Galeria e empilhado.** Com a Galeria de estilos aberta (§2.3), ela é um segundo quadro **ao lado** do preview do
+rascunho sempre que os dois cabem com a largura mínima legível de cada quadro: o limiar é por container query, derivado de
+`2 × PREVIEW_MIN_FRAME_WIDTH (250 px) + vão (24 px) = 524 px` (`Canvas/panelResponsive.presets.ts`); abaixo dele, empilham sozinhos.
+Com "Empilhar previews" ligado, ficam um **abaixo** do outro e **cada quadro tem a altura da área de prévia**: a área rola, e cada
+quadro rola o próprio conteúdo. Nunca uma unidade de janela (`vh`) nem `resize` — consequência direta da §6.2.1. Tablet e celular
+mantêm a proporção do aparelho, calculada da largura simulada sobre `deviceTabletHeight`/`devicePhoneHeight`. Com a galeria fechada, o
 interruptor fica inativo (`aria-disabled`), com `title` dizendo que é preciso abrir a galeria.
 
 ### 6.2.1 O painel se adapta ao CONTAINER, não à janela
@@ -570,7 +578,7 @@ hoje é decisão do consumidor (ele exporta o componente e monta onde quiser, ou
 | Fronteira lazy (`Suspense`, tipo público preservado) | `Library/CustomizationPanel/__tests__/CustomizationPanelImpl.test.tsx` | ✅ suíte *(2026-08-05, `plan-09`)* |
 | Reset apaga só as chaves da lib | `src/core/Provider/utils/__tests__/storage.test.ts` · `Panels/__tests__/AdvancedTab.test.tsx` | ✅ suíte *(2026-08-04, `plan-08`)* |
 | Preview (canvas, mocks, kitchen sink) | `Canvas/__tests__/PreviewCanvas.test.tsx`, `MockApps.test.tsx`, `KitchenSinkPreview.test.tsx` | ✅ suíte |
-| Barra de ações: `Aplicar (N)` com 0/1/3 alterações, Descartar, Exportar sem "Exportado", Desfazer só com aplicação | `Main/components/__tests__/ThemeActionBar.test.tsx` | ✅ suíte |
+| Barra de ações: `Aplicar` e o contador com 0/1/3 alterações, Descartar, Exportar sem "Exportado", Desfazer só com aplicação | `Main/components/__tests__/ThemeActionBar.test.tsx` | ✅ suíte |
 | Galeria sob demanda (fechada = só o preview) e empilhado sem `vh`; "Empilhar previews" inativo sem galeria | `Canvas/__tests__/PreviewCanvas.test.tsx` · `Canvas/components/__tests__/LiveDraftPreviewFrame.test.tsx` · `PreviewToolbar.test.tsx` | ✅ suíte |
 | Escolher tema na tela Temas e JSON só altera o rascunho (falha se voltar `applyFullConfig`, `persistDesign` ou `setResolvedThemeId`) | `Main/__tests__/TemplatesTab.test.tsx` | ✅ suíte |
 | Pilar ↔ tela: tela canônica por pilar, `navigation` sem voltar a `surfaces`, par inicial coerente | `Main/hooks/__tests__/usePreviewUIState.test.ts` | ✅ suíte |

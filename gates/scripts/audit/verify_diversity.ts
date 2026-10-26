@@ -12,12 +12,11 @@
 //    dividindo em terços o intervalo REAL observado nos `existentes` (não o
 //    `constraints.min..max` do schema, que é 0-120/0-20/0-100 — bem mais
 //    largo que qualquer tema jamais usa; com ele, os dados reais nunca
-//    escapavam da faixa "baixo", achado do revisor na `plan-25` §11.3/§11.5).
+//    escapavam da faixa "baixo").
 //    A faixa vem sempre dos `existentes` (nunca dos `novos`, que são o que
 //    está sendo julgado — autorreferência inflaria dispersão artificialmente
 //    para qualquer conjunto não-idêntico). Não é um valor "certo", é só o
-//    vocabulário para medir dispersão entre os 5 temas novos (critério 8 da
-//    §3.3 da `plan-25`).
+//    vocabulário para medir dispersão entre temas novos.
 // 4. Critério 6 (distância de matiz) só compara temas com a MESMA família E
 //    o MESMO modo — é a fronteira literal da §3.3. Comparar tudo contra tudo
 //    acusaria falso positivo (um azul escuro perto de um azul claro não é o
@@ -130,7 +129,7 @@ export interface DiversityAggregate {
     fundoMedio: number;
 }
 
-/** As "quatro linhas" da §2.2 do plan-25 — a mesma medição, em código. */
+/** Agrega as quatro medidas centrais de diversidade do catálogo. */
 export function aggregate(rows: ThemeDiversityRow[]): DiversityAggregate {
     return {
         total: rows.length,
@@ -147,6 +146,35 @@ export interface CriterioResultado {
     descricao: string;
     ok: boolean;
     detalhe: string;
+}
+
+export interface ChromeDiversityReport {
+    ok: boolean;
+    sidebarActiveStyles: string[];
+    topbarActiveStyles: string[];
+    sidebarBackgroundStyles: string[];
+    topbarBackgroundStyles: string[];
+}
+
+export function evaluateChromeDiversity(themes: SarakThemePreset[]): ChromeDiversityReport {
+    const values = (key: string): string[] => [...new Set(themes
+        .map((theme) => String((theme.design as Record<string, unknown>)[key] ?? ''))
+        .filter(Boolean))].sort();
+    const sidebarActiveStyles = values('sidebarActiveItemStyle');
+    const topbarActiveStyles = values('topbarActiveItemStyle');
+    const sidebarBackgroundStyles = values('sidebarBackgroundStyle');
+    const topbarBackgroundStyles = values('topbarBackgroundStyle');
+
+    return {
+        ok: sidebarActiveStyles.length >= 3
+            && topbarActiveStyles.length >= 3
+            && sidebarBackgroundStyles.length >= 3
+            && topbarBackgroundStyles.length >= 3,
+        sidebarActiveStyles,
+        topbarActiveStyles,
+        sidebarBackgroundStyles,
+        topbarBackgroundStyles,
+    };
 }
 
 /**
@@ -270,11 +298,22 @@ function printAggregate(a: DiversityAggregate, label: string): void {
 }
 
 function printCriteria(resultados: CriterioResultado[]): void {
-    console.log('\n--- Critérios de distância (§3.3, plan-25) ---');
+    console.log('\n--- Critérios de distância ---');
     for (const r of resultados) {
         console.log(`[${r.ok ? 'OK' : 'FALHA'}] #${r.criterio} — ${r.descricao}`);
         console.log(`    ${r.detalhe}`);
     }
+}
+
+function printChromeDiversity(report: ChromeDiversityReport): void {
+    const lines = [
+        '--- Diversidade do cromo ---',
+        `[${report.sidebarActiveStyles.length >= 3 ? 'OK' : 'FALHA'}] itens ativos na lateral (${report.sidebarActiveStyles.length}): ${report.sidebarActiveStyles.join(', ') || '—'}`,
+        `[${report.topbarActiveStyles.length >= 3 ? 'OK' : 'FALHA'}] itens ativos no topo (${report.topbarActiveStyles.length}): ${report.topbarActiveStyles.join(', ') || '—'}`,
+        `[${report.sidebarBackgroundStyles.length >= 3 ? 'OK' : 'FALHA'}] fundos da lateral (${report.sidebarBackgroundStyles.length}): ${report.sidebarBackgroundStyles.join(', ') || '—'}`,
+        `[${report.topbarBackgroundStyles.length >= 3 ? 'OK' : 'FALHA'}] fundos do topo (${report.topbarBackgroundStyles.length}): ${report.topbarBackgroundStyles.join(', ') || '—'}`,
+    ];
+    process.stdout.write(`\n${lines.join('\n')}\n`);
 }
 
 function parseArgs(argv: string[]): { newIds: string[] | null } {
@@ -285,11 +324,18 @@ function parseArgs(argv: string[]): { newIds: string[] | null } {
 }
 
 function main(): void {
-    console.log('--- Medidor de Diversidade de Temas (plan-25) ---');
+    console.log('--- Medidor de Diversidade de Temas ---');
     const { newIds } = parseArgs(process.argv.slice(2));
     const rows = SARAK_ALL_THEMES.map(measureTheme);
+    const chromeDiversity = evaluateChromeDiversity(SARAK_ALL_THEMES);
     printTable(rows);
     printAggregate(aggregate(rows), 'TODOS OS TEMAS');
+    printChromeDiversity(chromeDiversity);
+
+    if (!chromeDiversity.ok) {
+        process.stderr.write('\n❌ A diversidade do cromo exige pelo menos três estilos ativos e três tratamentos de fundo em cada orientação.\n');
+        process.exit(1);
+    }
 
     if (!newIds) return;
 

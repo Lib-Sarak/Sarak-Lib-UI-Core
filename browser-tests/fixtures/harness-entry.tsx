@@ -57,6 +57,7 @@ import {
     SarakTextarea,
     SarakTimePicker,
     SarakTitleCard,
+    SarakTypography,
 } from '@sarak/lib-ui-core';
 import { SarakDrawer as SarakDrawerSource } from '../../src/components/atomic/Modals/SarakDrawer';
 import { SarakUIProvider as SarakUIProviderSource } from '../../src/core/Provider/SarakUIProvider';
@@ -926,6 +927,9 @@ const LegibleScene: React.FC = () => (
         <div data-probe="badge-suave-sucesso"><SarakBadge variant="success">Sucesso</SarakBadge></div>
         <div data-probe="botao-perigo"><SarakButton variant="danger">Excluir</SarakButton></div>
         <div data-probe="abas"><SarakTabs variant="pills" tabs={LEGIBLE_TABS} activeTab="a" onChange={NOOP} /></div>
+        <div data-probe="hierarquia-titulo"><SarakTypography variant="h1">Título</SarakTypography></div>
+        <div data-probe="hierarquia-subtitulo"><SarakTypography variant="body" color="subtitle">Subtítulo</SarakTypography></div>
+        <div data-probe="hierarquia-destaque"><SarakTypography variant="body" color="emphasis">Destaque</SarakTypography></div>
     </div>
 );
 

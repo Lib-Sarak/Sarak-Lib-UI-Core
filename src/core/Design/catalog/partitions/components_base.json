@@ -1528,14 +1528,14 @@
   },
   {
     "tokenId": "inputPadding",
-    "name": "Espaçamento Interno (Y)",
+    "name": "Espaçamento Interno Vertical (Y)",
     "tags": [
       "input",
       "form",
       "padding",
       "layout"
     ],
-    "label": "Espaçamento Interno (Y)",
+    "label": "Espaçamento Interno Vertical (Y)",
     "type": "slider",
     "importance": 80,
     "unit": "px",
@@ -1543,9 +1543,36 @@
       "min": 0,
       "max": 32
     },
-    "defaultValue": 12,
+    "defaultValue": 16,
     "cssVars": [
+      "--sarak-input-padding-vertical",
       "--sarak-input-padding"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 32
+    }
+  },
+  {
+    "tokenId": "inputPaddingHorizontal",
+    "name": "Espaçamento Interno Horizontal (X)",
+    "tags": [
+      "input",
+      "form",
+      "padding",
+      "layout"
+    ],
+    "label": "Espaçamento Interno Horizontal (X)",
+    "type": "slider",
+    "importance": 80,
+    "unit": "px",
+    "constraints": {
+      "min": 0,
+      "max": 32
+    },
+    "defaultValue": 16,
+    "cssVars": [
+      "--sarak-input-padding-horizontal"
     ],
     "allowedValues": {
       "min": 0,

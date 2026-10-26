@@ -12,12 +12,12 @@
  */
 
 import React, { useRef } from 'react';
-import * as TanstackReactVirtual from '@tanstack/react-virtual';
+import { getOptionalTanstackUseVirtualizer, requireTanstackUseVirtualizer } from '../optional-tanstack-virtualizer';
 import { SarakOptionalPeerFallback } from '../../Feedback/SarakOptionalPeerFallback';
 
 const OPTIONAL_PEER = '@tanstack/react-virtual';
 
-const hasDataGridVirtualizer = (): boolean => typeof TanstackReactVirtual.useVirtualizer === 'function';
+const hasDataGridVirtualizer = (): boolean => typeof getOptionalTanstackUseVirtualizer() === 'function';
 
 export interface SarakDataGridProps {
     /** Quantidade total de linhas (a fonte real vive fora; aqui só virtualizamos). */
@@ -48,7 +48,7 @@ const SarakDataGridContent: React.FC<SarakDataGridProps> = ({
 }) => {
     const parentRef = useRef<HTMLDivElement>(null);
 
-    const virtualizer = TanstackReactVirtual.useVirtualizer({
+    const virtualizer = requireTanstackUseVirtualizer()({
         count,
         getScrollElement: () => parentRef.current,
         estimateSize: () => estimateSize,

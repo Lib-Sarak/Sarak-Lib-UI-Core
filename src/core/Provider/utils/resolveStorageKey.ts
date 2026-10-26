@@ -13,3 +13,23 @@ export const resolveStorageKey = (persistence?: SarakUIOptions['persistence']): 
     const tenantId = persistence?.tenantId;
     return tenantId ? `${base}::tenant:${tenantId}` : base;
 };
+
+/** Chave companheira da identidade do tema aplicado, sem alterar o payload legado de design. */
+export const resolveActiveThemeStorageKey = (storageKey: string): string => `${storageKey}::active-theme-id`;
+
+export const readCachedActiveThemeId = (storageKey: string): string | undefined => {
+    if (typeof window === 'undefined') return undefined;
+    try {
+        return window.localStorage.getItem(resolveActiveThemeStorageKey(storageKey)) || undefined;
+    } catch (error) {
+        console.error('[Sarak:Design] localStorage theme id load error:', error);
+        return undefined;
+    }
+};
+
+export const writeCachedActiveThemeId = (storageKey: string, activeThemeId?: string): void => {
+    if (typeof window === 'undefined') return;
+    const themeIdKey = resolveActiveThemeStorageKey(storageKey);
+    if (activeThemeId) window.localStorage.setItem(themeIdKey, activeThemeId);
+    else window.localStorage.removeItem(themeIdKey);
+};

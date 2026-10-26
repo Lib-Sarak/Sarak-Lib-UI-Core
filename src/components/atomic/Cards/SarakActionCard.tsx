@@ -87,7 +87,7 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                         gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)',
                         paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
                         paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.125)',
-                        fontSize: 'var(--sarak-type-scale-micro, 7px)',
+                        fontSize: 'var(--sarak-type-scale-micro, 11px)',
                         letterSpacing: 'var(--sarak-tracking-tight, 0.2em)'
                     }}
                 >
@@ -100,7 +100,7 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                 {/* Header Info */}
                 <div className={layout.headerClass}>
                     <div className="flex flex-1 min-w-0" style={{ flexDirection: 'column' }}>
-                        <span className="font-black text-[var(--sarak-primary-color,#19e3f0)] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale3xs, 9px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
+                        <span className="font-black text-[var(--sarak-subtitle-color,var(--theme-subtitle,#f2f6fb))] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale3xs, 11px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
                             {String(subtitle)}
                         </span>
                         <h4 className="text-lg font-black text-[var(--color-theme-title,#f2f6fb)] tracking-tight group-hover:text-[var(--sarak-primary-color,#19e3f0)] transition-colors truncate">
@@ -176,7 +176,7 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                                                         gridColumn: isLastOdd ? 'span 2 / span 2' : undefined,
                                                     }}
                                                 >
-                                                    <span className="font-black text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-50 uppercase tracking-widest" style={{ fontSize: 'var(--sarak-type-scale-tiny, 8px)' }}>{detail.label}</span>
+                                                    <span className="font-black text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-50 uppercase tracking-widest" style={{ fontSize: 'var(--sarak-type-scale-tiny, 11px)' }}>{detail.label}</span>
                                                     <span className="text-2xs font-mono text-[var(--text-muted,rgba(242,246,251,0.55))] font-bold truncate">
                                                         {String(detail.value)}
                                                     </span>

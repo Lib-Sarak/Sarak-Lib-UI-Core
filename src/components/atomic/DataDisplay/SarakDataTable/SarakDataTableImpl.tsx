@@ -1,5 +1,5 @@
 import type React from 'react';
-import * as TanstackReactVirtual from '@tanstack/react-virtual';
+import { getOptionalTanstackUseVirtualizer } from '../optional-tanstack-virtualizer';
 import { useSarakDevice } from '../../../../core/Provider/DeviceProvider';
 import { SarakOptionalPeerFallback } from '../../Feedback/SarakOptionalPeerFallback';
 import type { SarakColumn, SarakTableSort } from './columnModel';
@@ -52,7 +52,7 @@ function SarakDataTableContent<T>(props: SarakDataTableProps<T>): React.ReactEle
 }
 
 function SarakDataTableImpl<T>(props: SarakDataTableProps<T>): React.ReactElement {
-    if (typeof TanstackReactVirtual.useVirtualizer !== 'function') {
+    if (!getOptionalTanstackUseVirtualizer()) {
         return <SarakOptionalPeerFallback component="SarakDataTable" packages={[OPTIONAL_PEER]} />;
     }
     return <SarakDataTableContent {...props} />;

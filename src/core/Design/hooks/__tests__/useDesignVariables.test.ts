@@ -6,10 +6,68 @@ import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../../breakpoints';
 import { sarakGetDefaultDesignState } from '../../master-map';
 import { sarakSovereignTheme } from '../../presets/themes/sarak-sovereign';
 import { MEDIA_PREDICATE_TABLE } from '../../../Provider/utils/__tests__/mediaPredicateTable';
+import { FLUID_MAX_CONTENT_WIDTH, FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../schema/system';
 
 describe('useDesignVariables', () => {
     it('should export the hook correctly', () => {
         expect(HookModule).toBeDefined();
+    });
+});
+
+describe('useDesignVariables — maxContentWidth fluido', () => {
+    it('traduz o valor semântico para CSS e preserva a opção no atributo de estado', () => {
+        const { result } = renderHook(() => useDesignVariables({
+            ...sarakGetDefaultDesignState(),
+            maxContentWidth: FLUID_MAX_CONTENT_WIDTH_OPTION,
+        }));
+
+        expect(result.current.variables['--sarak-max-content-width']).toBe(FLUID_MAX_CONTENT_WIDTH);
+        expect(result.current.attributes['data-sx-max-content-width']).toBe(FLUID_MAX_CONTENT_WIDTH_OPTION);
+    });
+
+    it('mantém o teto explícito em pixels na variável e no atributo', () => {
+        const { result } = renderHook(() => useDesignVariables({ maxContentWidth: '1200px' }));
+
+        expect(result.current.variables['--sarak-max-content-width']).toBe('1200px');
+        expect(result.current.attributes['data-sx-max-content-width']).toBe('1200px');
+    });
+});
+
+describe('useDesignVariables — padding explícito por eixo', () => {
+    it('emite variáveis verticais e horizontais e mantém o alias legado vertical', () => {
+        const { result } = renderHook(() => useDesignVariables({
+            ...sarakGetDefaultDesignState(),
+            inputPadding: 9,
+            inputPaddingHorizontal: 13,
+        }));
+
+        expect(result.current.variables['--sarak-input-padding-vertical']).toBe('9px');
+        expect(result.current.variables['--sarak-input-padding']).toBe('9px');
+        expect(result.current.variables['--sarak-input-padding-horizontal']).toBe('13px');
+    });
+});
+
+describe('useDesignVariables — dono e resolução da cor de título', () => {
+    it('emite o título declarado e mantém a resolução do fallback claro ligada ao texto principal', () => {
+        const { result } = renderHook(() => useDesignVariables({
+            mode: 'light',
+            textColorMaster: '#152033',
+            titleColor: '#f2f6fb',
+        }));
+
+        expect(result.current.variables['--theme-title']).toBe('#152033');
+        expect(result.current.variables['--color-theme-title']).toBe('#152033');
+    });
+
+    it('emite os novos papéis de cor através das variáveis pertencentes ao schema', () => {
+        const { result } = renderHook(() => useDesignVariables({
+            mode: 'dark',
+            subtitleColor: '#e5eef7',
+            emphasisColor: '#ff4fd8',
+        }));
+
+        expect(result.current.variables['--sarak-subtitle-color']).toBe('#e5eef7');
+        expect(result.current.variables['--sarak-emphasis-color']).toBe('#ff4fd8');
     });
 });
 

@@ -91,7 +91,7 @@ export const SarakShellUserWidget: React.FC<SarakShellUserWidgetProps> = ({
                         {displayName}
                     </span>
                     {user?.role && (
-                        <span className="text-[var(--sarak-type-scale-micro,7px)] text-[var(--theme-primary)] font-bold tracking-[var(--sarak-tracking-tight,0.2em)]">
+                        <span className="text-[var(--sarak-type-scale-micro,11px)] text-[var(--sarak-subtitle-color,var(--theme-subtitle,#f2f6fb))] font-bold tracking-[var(--sarak-tracking-tight,0.2em)]">
                             {user.role}
                         </span>
                     )}
@@ -140,7 +140,7 @@ export const SarakShellUserWidget: React.FC<SarakShellUserWidgetProps> = ({
                             {user?.role && (
                                 <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.75)' }}>
                                     <SarakIcon name="Shield" size={8} className="text-[var(--theme-primary)]" />
-                                    <span className="text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)] font-black">
+                                    <span className="text-[var(--sarak-type-scale-tiny,11px)] text-[var(--sarak-subtitle-color,var(--theme-subtitle,#f2f6fb))] font-black">
                                         {user.role}
                                     </span>
                                 </div>

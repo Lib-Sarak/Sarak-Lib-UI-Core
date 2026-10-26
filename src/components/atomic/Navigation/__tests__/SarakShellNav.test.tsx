@@ -98,6 +98,28 @@ describe('SarakShellNav — navegação de shell guiada por dados (Spec 33)', ()
         const grupo = container.querySelector('nav > div:last-child') as HTMLElement;
         expect(grupo.getAttribute('style')).toContain('var(--sarak-tab-gap');
     });
+
+    it.each(['vertical', 'horizontal'] as const)('%s: o nome da marca respeita identityFontFamily e a cor própria da barra', (orientation) => {
+        const { container } = render(
+            <SarakShellNav items={ITEMS} brand={{ name: 'Earendel' }} orientation={orientation} />,
+        );
+        const brand = screen.getByText('Earendel') as HTMLElement;
+        expect(brand.style.fontFamily).toContain('var(--sarak-identity-font');
+        expect(brand.style.color).toContain(orientation === 'vertical' ? '--sarak-sidebar-brand-color' : '--sarak-topbar-brand-color');
+        expect((container.querySelector('nav > div:first-child') as HTMLElement).style.background).toContain(
+            orientation === 'vertical' ? '--sarak-sidebar-brand-bg' : '--sarak-topbar-brand-bg',
+        );
+    });
+
+    it('categoria e separador de grupos usam as cores da barra que os desenha', () => {
+        const { container } = render(<SarakShellNav items={ITEMS} orientation="horizontal" />);
+        const separator = container.querySelector('nav > span[aria-hidden="true"]') as HTMLElement;
+        expect(separator.style.background).toContain('--sarak-topbar-group-separator-color');
+
+        const { container: verticalContainer } = render(<SarakShellNav items={ITEMS} orientation="vertical" />);
+        const category = verticalContainer.querySelector('nav [class*="uppercase"]') as HTMLElement;
+        expect(category.style.color).toContain('--sarak-sidebar-category-color');
+    });
 });
 
 // os textos da própria lib seguem o idioma que vale.

@@ -98,7 +98,7 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
                             className={`rounded-lg text-2xs tracking-wider ${
                                 currentLang.id === lang.id
                                     ? 'bg-[var(--theme-primary)] text-[var(--theme-on-primary)]'
-                                    : 'text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)]'
+                                    : 'text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]'
                             }`}
                         >
                             {currentLang.id === lang.id && <SarakIcon name="Check" size={10} />}
@@ -119,7 +119,7 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
                 >
                     <div className="flex items-center w-full" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                         <span className="text-2xs">{currentLang.flag}</span>
-                        <span className="text-3xs font-black uppercase tracking-widest text-[var(--theme-title)]/60 group-hover:text-[var(--theme-title)]">
+                        <span className="text-3xs font-black uppercase tracking-widest text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]/60 group-hover:text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]">
                             {currentLang.id}
                         </span>
                         <SarakIcon name="ChevronDown" size={10} className={`text-[var(--theme-muted)] transition-transform ${isOpen ? 'rotate-180' : ''}`} />

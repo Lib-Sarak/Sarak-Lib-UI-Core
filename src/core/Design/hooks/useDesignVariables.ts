@@ -1,16 +1,13 @@
 import { useMemo } from 'react';
 import { sarakGetAllDesignTokens } from '../master-map';
 import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../breakpoints';
+import { resolveMaxContentWidth } from '../schema/system';
 import { computeColorVariants, parseToRgba, rgbToHsl } from '../../../core/Provider/utils/color-engine';
 import { isSafeMediaString } from '../../../core/Provider/utils/cssSafety';
 import type { SarakTokenValue } from '../types';
 import { collectDeclaredExceptionVars, emitColorChannels, emitOnColors, isUndeclaredException, resolveTitleColor } from './designVariableHelpers';
 
-/**
- * Helper para converter camelCase para kebab-case (ex: cardBorderRadius -> card-border-radius)
- */
-const toKebabCase = (str: string) =>
-    str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+const toKebabCase = (str: string) => str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
 
 const asFiniteNumber = (value: unknown): number | undefined =>
     typeof value === 'number' && Number.isFinite(value) ? value : undefined;
@@ -31,6 +28,9 @@ const isCssSafeValue = (value: string): boolean => !/[<>{};]/.test(value);
  * fonte única, para que as duas nunca reconheçam formas diferentes. */
 const isSafeTokenValue = (tokenType: string | undefined, value: string): boolean =>
     tokenType === 'image' || tokenType === 'file' ? isSafeMediaString(value) : isCssSafeValue(value);
+
+const resolveTokenCssValue = (tokenId: string, value: unknown): string =>
+    tokenId === 'maxContentWidth' ? resolveMaxContentWidth(value) : String(value);
 
 /**
  * Hook Universal de Tradução de Design (v12.9 - Reactive Sync)
@@ -121,13 +121,13 @@ export const useDesignVariables = (
 
             } else {
                 // COMPORTAMENTO ORIGINAL (Valores Primitivos / Cores)
-                finalValue = String(value);
+                finalValue = resolveTokenCssValue(token.id, value);
                 if (token.unit && typeof value === 'number') {
                     finalValue = `${value}${token.unit}`;
                 }
                 if (!isSafeTokenValue(token.type, finalValue)) {
                     console.warn(`[Sarak:Design] Valor inseguro para "${token.id}" — descartado.`, value);
-                    finalValue = String(token.defaultValue ?? '');
+                    finalValue = resolveTokenCssValue(token.id, token.defaultValue ?? '');
                 }
                 variables[autoVar] = finalValue;
 
@@ -203,7 +203,7 @@ export const useDesignVariables = (
         const { r, g, b } = parseToRgba(primaryColor);
         const [, , primaryLightness] = rgbToHsl(r, g, b);
         emitOnColors(variables, anchorColor); // texto de maior contraste sobre cada cor sólida
-        variables['--color-theme-title'] = resolveTitleColor(variables, isDark, tokens.find((token) => token.id === 'titleColor')?.defaultValue);
+        variables['--theme-title'] = variables['--color-theme-title'] = resolveTitleColor(variables, isDark, tokens.find((token) => token.id === 'titleColor')?.defaultValue);
         variables['--theme-on-primary'] ??= primaryLightness > 55 ? '#020617' : '#ffffff';
         variables['--sarak-vignette-color'] = isDark
             ? `rgba(0, 0, 0, ${design.vignetteOpacity ?? 0.3})`

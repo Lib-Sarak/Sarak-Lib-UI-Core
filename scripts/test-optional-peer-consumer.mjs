@@ -1,16 +1,19 @@
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, mkdirSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, symlinkSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const PACKAGE_SOURCE = path.resolve(process.env.SARAK_OPTIONAL_PEER_PACKAGE_SOURCE ?? ROOT);
+const ALL_PEERS_ONLY = process.env.SARAK_OPTIONAL_PEER_SCENARIO === 'all';
 const ROOT_MODULES = path.join(ROOT, 'node_modules');
 const TEMP_ROOT = mkdtempSync(path.join(os.tmpdir(), 'sarak-optional-peer-consumer-'));
 const CONSUMER_DIR = path.join(TEMP_ROOT, 'consumer');
 const PACKAGE_DIR = path.join(CONSUMER_DIR, 'node_modules', '@sarak', 'lib-ui-core');
 const PACK_DIR = path.join(TEMP_ROOT, 'pack');
 const CACHE_DIR = path.join(TEMP_ROOT, 'npm-cache');
+const VITEST_ENTRY = path.join(ROOT_MODULES, 'vitest', 'vitest.mjs');
 const OPTIONAL_PEERS = new Set([
     '@dnd-kit/core',
     '@dnd-kit/sortable',
@@ -49,6 +52,7 @@ function runNpm(args) {
     const npmCli = process.env.npm_execpath;
     if (!npmCli) throw new Error('npm_execpath is unavailable; run this consumer check through npm.');
     return runChecked(process.execPath, [npmCli, ...args], {
+        cwd: PACKAGE_SOURCE,
         env: { ...process.env, npm_config_cache: CACHE_DIR, npm_config_ignore_scripts: 'true' },
     });
 }
@@ -59,36 +63,150 @@ function createJunction(targetPath, sourcePath) {
     LINKED_MODULE_PATHS.push(targetPath);
 }
 
+function linkScopedDependencies(scopeEntry, consumerModules, includeOptionalPeers) {
+    const source = path.join(ROOT_MODULES, scopeEntry.name);
+    const scopeTarget = path.join(consumerModules, scopeEntry.name);
+    mkdirSync(scopeTarget, { recursive: true });
+
+    for (const scopedPackage of readdirSync(source, { withFileTypes: true })) {
+        if (!scopedPackage.isDirectory()) continue;
+        const packageName = `${scopeEntry.name}/${scopedPackage.name}`;
+        if (!includeOptionalPeers && OPTIONAL_PEERS.has(packageName)) continue;
+        createJunction(path.join(scopeTarget, scopedPackage.name), path.join(source, scopedPackage.name));
+    }
+}
+
 function linkWorkspaceDependencies({ includeOptionalPeers }) {
     const consumerModules = path.join(CONSUMER_DIR, 'node_modules');
     const entries = readdirSync(ROOT_MODULES, { withFileTypes: true });
 
     for (const entry of entries) {
-        if (entry.name === '.bin' || entry.name === '.cache' || entry.name === '.vite') continue;
-        const source = path.join(ROOT_MODULES, entry.name);
-        if (!entry.isDirectory()) continue;
-
+        if (entry.name === '.bin' || entry.name === '.cache' || entry.name === '.vite' || !entry.isDirectory()) continue;
         if (entry.name.startsWith('@')) {
-            const scopeTarget = path.join(consumerModules, entry.name);
-            mkdirSync(scopeTarget, { recursive: true });
-            for (const scopedPackage of readdirSync(source, { withFileTypes: true })) {
-                if (!scopedPackage.isDirectory()) continue;
-                const packageName = `${entry.name}/${scopedPackage.name}`;
-                if (!includeOptionalPeers && OPTIONAL_PEERS.has(packageName)) continue;
-                createJunction(path.join(scopeTarget, scopedPackage.name), path.join(source, scopedPackage.name));
-            }
+            linkScopedDependencies(entry, consumerModules, includeOptionalPeers);
             continue;
         }
-
         if (!includeOptionalPeers && OPTIONAL_PEERS.has(entry.name)) continue;
-        createJunction(path.join(consumerModules, entry.name), source);
+        createJunction(path.join(consumerModules, entry.name), path.join(ROOT_MODULES, entry.name));
     }
+}
+
+function writeReport(message) {
+    process.stdout.write(`${message}\n`);
 }
 
 function buildConsumer() {
     const viteEntry = path.join(ROOT_MODULES, 'vite', 'bin', 'vite.js');
     const configPath = path.join(CONSUMER_DIR, 'vite.config.mjs');
-    return run(process.execPath, [viteEntry, 'build', '--config', configPath, '--logLevel', 'error'], { cwd: CONSUMER_DIR });
+    return run(process.execPath, [viteEntry, 'build', '--config', configPath], { cwd: CONSUMER_DIR });
+}
+
+function collectJavaScriptBuildMetrics(directoryPath, metrics = { files: 0, bytes: 0, assets: [] }) {
+    for (const entry of readdirSync(directoryPath, { withFileTypes: true })) {
+        const entryPath = path.join(directoryPath, entry.name);
+        if (entry.isDirectory()) {
+            collectJavaScriptBuildMetrics(entryPath, metrics);
+        } else if (entry.isFile() && entry.name.endsWith('.js')) {
+            const bytes = statSync(entryPath).size;
+            metrics.files += 1;
+            metrics.bytes += bytes;
+            metrics.assets.push({ file: path.relative(directoryPath, entryPath).split(path.sep).join('/'), bytes });
+        }
+    }
+    return metrics;
+}
+
+function collectBuildWarnings(output) {
+    const warningsByCode = new Map();
+    const warningCodePattern = /\[([A-Z][A-Z0-9_]*)\]\s*(.*)/;
+    const warningHeaderPattern = /^(?:\(!\)|warning\b|warn(?:ing)?\s*:|\[[^\]]+\]\s*warning\b)/i;
+
+    for (const rawLine of output.split(/\r?\n/)) {
+        const line = rawLine.replace(/\u001b\[[0-9;]*m/g, '').trim();
+        if (!line) continue;
+
+        const codeMatch = line.match(warningCodePattern);
+        const warningCode = codeMatch && !['WARN', 'WARNING'].includes(codeMatch[1])
+            ? codeMatch[1]
+            : warningHeaderPattern.test(line)
+                ? 'SEM_CODIGO'
+                : undefined;
+        if (!warningCode) continue;
+
+        const warningGroup = warningsByCode.get(warningCode) ?? { count: 0, example: line, details: new Set() };
+        warningGroup.count += 1;
+        if (warningCode === 'IMPORT_IS_UNDEFINED') warningGroup.details.add(line);
+        warningsByCode.set(warningCode, warningGroup);
+    }
+
+    return warningsByCode;
+}
+
+function printUndefinedImportDetails(warningGroup) {
+    for (const warning of warningGroup.details) {
+        if (warning !== warningGroup.example) writeReport(`    ${warning}`);
+    }
+}
+
+function printBuildWarnings(scenario, output) {
+    const warningGroups = collectBuildWarnings(output);
+    const totalWarnings = [...warningGroups.values()].reduce((total, group) => total + group.count, 0);
+    writeReport(`[optional-peer-consumer] ${scenario}: ${totalWarnings} warning(s) across ${warningGroups.size} code(s).`);
+
+    for (const [code, group] of [...warningGroups].sort(([left], [right]) => left.localeCompare(right))) {
+        writeReport(`  [${code}] ${group.count}: ${group.example}`);
+        if (code === 'IMPORT_IS_UNDEFINED') printUndefinedImportDetails(group);
+    }
+}
+
+function writeTestingConsumerFiles() {
+    writeFileSync(path.join(CONSUMER_DIR, 'vitest.setup.js'), `
+import { installSarakTestEnvironment } from '@sarak/lib-ui-core/testing';
+installSarakTestEnvironment();
+`);
+    writeFileSync(path.join(CONSUMER_DIR, 'vitest.config.mjs'), `
+import { defineConfig } from 'vitest/config';
+import { filterSarakTestConsoleLog } from '@sarak/lib-ui-core/testing';
+export default defineConfig({
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./vitest.setup.js'],
+    include: ['src/**/*.test.js'],
+    onConsoleLog: filterSarakTestConsoleLog,
+  },
+});
+`);
+    writeFileSync(path.join(CONSUMER_DIR, 'src', 'consumer.test.js'), `
+import { expect, it } from 'vitest';
+import React from 'react';
+import { render } from '@testing-library/react';
+import { SarakUIProvider } from '@sarak/lib-ui-core';
+it('parses the library stylesheet inside a jsdom consumer', () => {
+  const result = render(React.createElement(SarakUIProvider, { options: { fonts: 'none' } }, 'Consumer ready'));
+  expect(result.getByText('Consumer ready')).toBeDefined();
+  const stylesheet = document.getElementById('sarak-ui-core-styles');
+  expect(stylesheet).not.toBeNull();
+  void (stylesheet).sheet?.cssRules.length;
+  const developmentStylesheet = document.createElement('style');
+  developmentStylesheet.textContent = '__SARAK_CSS_PLACEHOLDER__';
+  document.head.appendChild(developmentStylesheet);
+  expect(developmentStylesheet.sheet).not.toBeNull();
+});
+`);
+}
+
+function runTestingConsumer() {
+    return run(process.execPath, [VITEST_ENTRY, 'run', '--config', path.join(CONSUMER_DIR, 'vitest.config.mjs')], {
+        cwd: CONSUMER_DIR,
+    });
+}
+
+function assertTestingConsumerOutput(output, shouldContainWarning) {
+    const containsWarning = output.includes('Could not parse CSS stylesheet');
+    if (containsWarning !== shouldContainWarning) {
+        const expected = shouldContainWarning ? 'contain' : 'omit';
+        throw new Error(`Vitest consumer output should ${expected} the jsdom stylesheet warning.\n${output}`);
+    }
 }
 
 function extractPackedPackage(tarballPath) {
@@ -157,30 +275,50 @@ export default {
     if (!tarballName) throw new Error(`npm pack completed without a tarball.\n${npmOutput}`);
     extractPackedPackage(path.join(PACK_DIR, tarballName));
 
-    linkWorkspaceDependencies({ includeOptionalPeers: false });
-    assertNoOptionalPeersAreLinked();
-    const peerFreeBuild = buildConsumer();
-    if (peerFreeBuild.status !== 0) {
-        throw new Error(`Vite 8 consumer build failed without optional peers.\n${peerFreeBuild.output}`);
-    }
-    console.log('[optional-peer-consumer] pass: Vite 8 build without optional peers.');
+    if (!ALL_PEERS_ONLY) {
+        linkWorkspaceDependencies({ includeOptionalPeers: false });
+        assertNoOptionalPeersAreLinked();
+        const peerFreeBuild = buildConsumer();
+        if (peerFreeBuild.status !== 0) {
+            throw new Error(`Vite 8 consumer build failed without optional peers.\n${peerFreeBuild.output}`);
+        }
+        printBuildWarnings('without optional peers', peerFreeBuild.output);
+        writeReport('[optional-peer-consumer] pass: Vite 8 build without optional peers.');
 
-    const mutationPath = findVirtualizerChunk();
-    const originalChunk = readFileSync(mutationPath, 'utf8');
-    writeFileSync(mutationPath, `import { useVirtualizer as __sarakMutation } from '@tanstack/react-virtual'; void __sarakMutation;\n${originalChunk}`);
-    const mutationBuild = buildConsumer();
-    if (mutationBuild.status === 0 || !/MISSING_EXPORT|useVirtualizer/.test(mutationBuild.output)) {
-        throw new Error(`The named-import mutation was not rejected as expected.\n${mutationBuild.output}`);
+        writeTestingConsumerFiles();
+        const testingConsumer = runTestingConsumer();
+        if (testingConsumer.status !== 0) {
+            throw new Error(`Vitest jsdom consumer failed.\n${testingConsumer.output}`);
+        }
+        assertTestingConsumerOutput(testingConsumer.output, false);
+        writeReport('[optional-peer-consumer] pass: Vitest jsdom consumer suppresses the stylesheet warning through setup.');
+
+        const mutationPath = findVirtualizerChunk();
+        const originalChunk = readFileSync(mutationPath, 'utf8');
+        writeFileSync(mutationPath, `import { useVirtualizer as __sarakMutation } from '@tanstack/react-virtual'; void __sarakMutation;\n${originalChunk}`);
+        const mutationBuild = buildConsumer();
+        if (mutationBuild.status === 0 || !/MISSING_EXPORT|useVirtualizer/.test(mutationBuild.output)) {
+            throw new Error(`The named-import mutation was not rejected as expected.\n${mutationBuild.output}`);
+        }
+        writeFileSync(mutationPath, originalChunk);
+        writeReport('[optional-peer-consumer] pass: named-import mutation fails with the missing-export diagnostic.');
     }
-    writeFileSync(mutationPath, originalChunk);
-    console.log('[optional-peer-consumer] pass: named-import mutation fails with the missing-export diagnostic.');
 
     linkWorkspaceDependencies({ includeOptionalPeers: true });
     const fullPeerBuild = buildConsumer();
     if (fullPeerBuild.status !== 0) {
         throw new Error(`Vite 8 consumer build failed with all optional peers.\n${fullPeerBuild.output}`);
     }
-    console.log('[optional-peer-consumer] pass: Vite 8 build with all optional peers.');
+    printBuildWarnings('with all optional peers', fullPeerBuild.output);
+    const fullPeerMetrics = collectJavaScriptBuildMetrics(path.join(CONSUMER_DIR, 'build'));
+    for (const asset of fullPeerMetrics.assets.sort((left, right) => left.file.localeCompare(right.file))) {
+        writeReport(`  [JS] ${asset.file}: ${asset.bytes} bytes`);
+    }
+    writeReport(
+        `[optional-peer-consumer] with all optional peers: ${fullPeerMetrics.bytes} JavaScript bytes `
+        + `across ${fullPeerMetrics.files} JS files (${(fullPeerMetrics.bytes / 1024).toFixed(2)} KiB).`,
+    );
+    writeReport('[optional-peer-consumer] pass: Vite 8 build with all optional peers.');
 } finally {
     for (const modulePath of [...LINKED_MODULE_PATHS].reverse()) {
         rmSync(modulePath, { recursive: true, force: true });

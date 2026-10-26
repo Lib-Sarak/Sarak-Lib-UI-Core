@@ -69,7 +69,7 @@ export const MasterControlPanel: React.FC<MasterControlPanelProps> = ({ draft, u
             {/* Header de Gestão - Compacto para Sidebar */}
             <div className="p-4 border-b border-theme-text/5 bg-theme-body/40">
                 <div className="flex items-center justify-between mb-4">
-                    <div className="text-[var(--sarak-type-scale2xs,10px)] font-black tracking-widest uppercase text-theme-text/30">
+                    <div className="text-[var(--sarak-type-scale2xs,11px)] font-black tracking-widest uppercase text-theme-text/30">
                         Catálogo de <span className="text-[var(--theme-primary)]">Tokens</span>
                     </div>
                 </div>
@@ -87,7 +87,7 @@ export const MasterControlPanel: React.FC<MasterControlPanelProps> = ({ draft, u
                     <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
                         <button 
                             onClick={() => setActiveCategory(null)}
-                            className={`px-3 py-2 rounded-lg text-[var(--sarak-type-scale-tiny,8px)] font-black uppercase tracking-widest transition-all whitespace-nowrap border ${!activeCategory ? 'bg-theme-text/10 border-theme-text/10 text-theme-text' : 'bg-transparent border-theme-text/5 text-theme-text/20 hover:bg-theme-text/5'}`}
+                            className={`px-3 py-2 rounded-lg text-[var(--sarak-type-scale-tiny,11px)] font-black uppercase tracking-widest transition-all whitespace-nowrap border ${!activeCategory ? 'bg-theme-text/10 border-theme-text/10 text-theme-text' : 'bg-transparent border-theme-text/5 text-theme-text/20 hover:bg-theme-text/5'}`}
                         >
                             Todos
                         </button>
@@ -95,7 +95,7 @@ export const MasterControlPanel: React.FC<MasterControlPanelProps> = ({ draft, u
                             <button 
                                 key={cat.id}
                                 onClick={() => setActiveCategory(cat.id)}
-                                className={`px-3 py-2 rounded-lg text-[var(--sarak-type-scale-tiny,8px)] font-black uppercase tracking-widest transition-all whitespace-nowrap border ${activeCategory === cat.id ? 'bg-theme-text/10 border-theme-text/10 text-theme-text' : 'bg-transparent border-theme-text/5 text-theme-text/20 hover:bg-theme-text/5'}`}
+                                className={`px-3 py-2 rounded-lg text-[var(--sarak-type-scale-tiny,11px)] font-black uppercase tracking-widest transition-all whitespace-nowrap border ${activeCategory === cat.id ? 'bg-theme-text/10 border-theme-text/10 text-theme-text' : 'bg-transparent border-theme-text/5 text-theme-text/20 hover:bg-theme-text/5'}`}
                             >
                                 {cat.label}
                             </button>
@@ -115,9 +115,9 @@ export const MasterControlPanel: React.FC<MasterControlPanelProps> = ({ draft, u
                     <table className="w-full text-left border-collapse table-fixed">
                         <thead>
                             <tr className="bg-theme-text/5 border-b border-theme-text/5">
-                                <th className="px-3 py-3 text-[var(--sarak-type-scale-tiny,8px)] font-black uppercase tracking-widest text-theme-text/20 w-[45%]">Token</th>
-                                <th className="px-3 py-3 text-[var(--sarak-type-scale-tiny,8px)] font-black uppercase tracking-widest text-theme-text/20 w-[40%]">Valor</th>
-                                <th className="px-3 py-3 text-[var(--sarak-type-scale-tiny,8px)] font-black uppercase tracking-widest text-theme-text/20 w-[15%] text-right"></th>
+                                <th className="px-3 py-3 text-[var(--sarak-type-scale-tiny,11px)] font-black uppercase tracking-widest text-theme-text/20 w-[45%]">Token</th>
+                                <th className="px-3 py-3 text-[var(--sarak-type-scale-tiny,11px)] font-black uppercase tracking-widest text-theme-text/20 w-[40%]">Valor</th>
+                                <th className="px-3 py-3 text-[var(--sarak-type-scale-tiny,11px)] font-black uppercase tracking-widest text-theme-text/20 w-[15%] text-right"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -125,8 +125,8 @@ export const MasterControlPanel: React.FC<MasterControlPanelProps> = ({ draft, u
                                 <tr key={token.id} className={`border-b border-theme-text/5 hover:bg-theme-text/[0.02] transition-colors ${idx % 2 === 0 ? 'bg-theme-body/10' : 'bg-transparent'}`}>
                                     <td className="px-3 py-3 overflow-hidden">
                                         <div className="flex flex-col gap-0.5">
-                                            <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-tight truncate">{token.label}</span>
-                                            <code className="text-[var(--sarak-type-scale-micro,7px)] text-theme-text/10 font-mono tracking-tighter truncate">{token.id}</code>
+                                            <span className="text-[var(--sarak-type-scale3xs,11px)] font-black uppercase tracking-tight truncate">{token.label}</span>
+                                            <code className="text-[var(--sarak-type-scale-micro,11px)] text-theme-text/10 font-mono tracking-tighter truncate">{token.id}</code>
                                         </div>
                                     </td>
                                     <td className="px-3 py-3">
@@ -142,7 +142,7 @@ export const MasterControlPanel: React.FC<MasterControlPanelProps> = ({ draft, u
                                                         type="text" 
                                                         value={String(draftRecord[token.id] || token.defaultValue)} 
                                                         onChange={(e) => updateDraft(token.id, e.target.value)}
-                                                        className="bg-transparent border-none text-[var(--sarak-type-scale-tiny,8px)] font-mono text-theme-text/40 focus:outline-none w-full"
+                                                        className="bg-transparent border-none text-[var(--sarak-type-scale-tiny,11px)] font-mono text-theme-text/40 focus:outline-none w-full"
                                                     />
                                                 </div>
                                             )}
@@ -157,7 +157,7 @@ export const MasterControlPanel: React.FC<MasterControlPanelProps> = ({ draft, u
                                                         onChange={(e) => updateDraft(token.id, Number(e.target.value))}
                                                         className="flex-1 accent-[var(--theme-primary)] h-1 bg-theme-text/10 rounded-lg appearance-none cursor-pointer"
                                                     />
-                                                    <span className="text-[var(--sarak-type-scale-tiny,8px)] font-black text-theme-text/20 w-6 text-right">
+                                                    <span className="text-[var(--sarak-type-scale-tiny,11px)] font-black text-theme-text/20 w-6 text-right">
                                                         {String(draftRecord[token.id] ?? token.defaultValue)}
                                                     </span>
                                                 </div>
@@ -166,7 +166,7 @@ export const MasterControlPanel: React.FC<MasterControlPanelProps> = ({ draft, u
                                                 <select 
                                                     value={String(draftRecord[token.id] ?? token.defaultValue)}
                                                     onChange={(e) => updateDraft(token.id, e.target.value)}
-                                                    className="bg-theme-text/5 border border-theme-text/10 rounded-md py-1 px-2 text-[var(--sarak-type-scale-tiny,8px)] font-black uppercase tracking-widest focus:outline-none w-full"
+                                                    className="bg-theme-text/5 border border-theme-text/10 rounded-md py-1 px-2 text-[var(--sarak-type-scale-tiny,11px)] font-black uppercase tracking-widest focus:outline-none w-full"
                                                 >
                                                     {(token.constraints?.options || token.options || []).map((opt: { id?: string; value?: string; label?: string; name?: string } | string) => {
                                                         const optId = typeof opt === 'object' ? (opt.id !== undefined ? opt.id : (opt.value !== undefined ? opt.value : '')) : opt;
@@ -182,7 +182,7 @@ export const MasterControlPanel: React.FC<MasterControlPanelProps> = ({ draft, u
                                                     type="text" 
                                                     value={String(draftRecord[token.id] ?? token.defaultValue)}
                                                     onChange={(e) => updateDraft(token.id, e.target.value)}
-                                                    className="bg-theme-text/5 border border-theme-text/10 rounded-md py-1 px-2 text-[var(--sarak-type-scale-tiny,8px)] font-bold focus:outline-none w-full"
+                                                    className="bg-theme-text/5 border border-theme-text/10 rounded-md py-1 px-2 text-[var(--sarak-type-scale-tiny,11px)] font-bold focus:outline-none w-full"
                                                 />
                                             )}
                                             {token.type === 'boolean' && (

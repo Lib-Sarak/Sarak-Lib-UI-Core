@@ -19,7 +19,7 @@
   --color-theme-border: var(--sarak-card-border-color, var(--theme-border, rgba(255, 255, 255, 0.09)));
   --color-theme-text: var(--text-main, #f2f6fb);
   --color-theme-on-primary: var(--theme-on-primary, #020617);
-  --color-theme-title: var(--sarak-title-color, #f2f6fb);
+  --color-theme-title: var(--theme-title, var(--sarak-title-color, #f2f6fb));
   --color-theme-muted: var(--theme-muted, rgba(242, 246, 251, 0.55));
   /* Véus de realce derivados da cor de texto do tema: nos dois modos aparecem sobre a superfície
      (branco translúcido no escuro, escuro translúcido no claro). `bg-theme-tint*`, `border-theme-tint*`. */
@@ -68,8 +68,8 @@
 
   /* Spec 26a: text-2xs/text-3xs eram no-ops (sem font-size real) — reaproveita
      os tokens de type-scale criados na spec 26 (paridade 1:1:1:1:1). */
-  --text-3xs: var(--sarak-type-scale3xs, 9px);
-  --text-2xs: var(--sarak-type-scale2xs, 10px);
+  --text-3xs: var(--sarak-type-scale3xs, 11px);
+  --text-2xs: var(--sarak-type-scale2xs, 11px);
   
   /* --- 7. SCROLLBARS --- */
   --scroll-w: var(--sarak-scroll-width, 6px);
@@ -114,7 +114,7 @@
   --color-theme-border: var(--sarak-card-border-color, var(--theme-border, rgba(255, 255, 255, 0.09)));
   --color-theme-text: var(--text-main, #f2f6fb);
   --color-theme-on-primary: var(--theme-on-primary, #020617);
-  --color-theme-title: var(--sarak-title-color, #f2f6fb);
+  --color-theme-title: var(--theme-title, var(--sarak-title-color, #f2f6fb));
   --color-theme-muted: var(--theme-muted, rgba(242, 246, 251, 0.55));
   /* Véus de realce derivados da cor de texto do tema: nos dois modos aparecem sobre a superfície
      (branco translúcido no escuro, escuro translúcido no claro). `bg-theme-tint*`, `border-theme-tint*`. */
@@ -163,8 +163,8 @@
 
   /* Spec 26a: text-2xs/text-3xs eram no-ops (sem font-size real) — reaproveita
      os tokens de type-scale criados na spec 26 (paridade 1:1:1:1:1). */
-  --text-3xs: var(--sarak-type-scale3xs, 9px);
-  --text-2xs: var(--sarak-type-scale2xs, 10px);
+  --text-3xs: var(--sarak-type-scale3xs, 11px);
+  --text-2xs: var(--sarak-type-scale2xs, 11px);
   
   /* --- 7. SCROLLBARS --- */
   --scroll-w: var(--sarak-scroll-width, 6px);

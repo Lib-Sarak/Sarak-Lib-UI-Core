@@ -97,7 +97,33 @@ export const ColorsSchema: ComponentSchema = {
             description: 'Cor padrão de títulos e cabeçalhos de texto em todo o sistema — deve manter contraste alto contra `colorBgBody`/`surfaceColor`.',
             axis: 'color',
             defaultValue: '#f2f6fb',
-            cssVars: ['--theme-title-color', '--sarak-title-color']
+            cssVars: ['--theme-title-color', '--sarak-title-color', '--theme-title']
+        },
+        {
+            id: 'subtitleColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Colore subtítulos entre o texto principal e os títulos; preserve essa hierarquia e contraste de pelo menos 4,5:1.",
+            interactsWith: ['textColorMaster', 'titleColor', 'colorBgBody', 'surfaceColor', 'cardBackgroundColor'],
+            label: 'Cor do Subtítulo',
+            type: 'color',
+            description: 'Cor de subtítulos e descrições que precisam de destaque intermediário entre o texto principal (`textColorMaster`) e os títulos (`titleColor`). Deve manter contraste mínimo de 4,5:1 sobre corpo e cartão.',
+            axis: 'color',
+            defaultValue: '#f2f6fb',
+            cssVars: ['--sarak-subtitle-color', '--theme-subtitle']
+        },
+        {
+            id: 'emphasisColor',
+            kind: 'aesthetic',
+            modeDependent: true,
+            usage: "Dá ênfase a texto usando um tom acessível da cor de acento do tema; preserve o matiz e contraste de pelo menos 4,5:1.",
+            interactsWith: ['accentColor', 'colorBgBody', 'surfaceColor', 'cardBackgroundColor'],
+            label: 'Cor de Ênfase',
+            type: 'color',
+            description: 'Cor de acento para palavras e trechos destacados. Deriva da identidade cromática do tema e mantém contraste mínimo de 4,5:1 sobre corpo e cartão.',
+            axis: 'color',
+            defaultValue: '#19e3f0',
+            cssVars: ['--sarak-emphasis-color', '--theme-emphasis']
         },
         {
             id: 'colorDepth',

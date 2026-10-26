@@ -115,18 +115,18 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
                                 isDisabled && "opacity-50 cursor-not-allowed",
                                 // Variants
                                 variant === 'underlined' && [
-                                    "hover:text-[var(--color-theme-title,#f2f6fb)]",
+                                    "hover:text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]",
                                     isActive ? "text-[var(--theme-primary)]" : "text-[var(--theme-muted)]"
                                 ],
                                 variant === 'pills' && [
                                     "z-10",
-                                    isActive ? "text-[var(--theme-on-primary,#020617)]" : "text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#f2f6fb)]"
+                                    isActive ? "text-[var(--theme-on-primary,#020617)]" : "text-[var(--theme-muted)] hover:text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]"
                                 ],
                                 variant === 'enclosed' && [
                                     "border-t border-x border-transparent",
                                     isActive
-                                        ? "bg-[var(--theme-surface)] border-[var(--theme-border)] text-[var(--color-theme-title,#f2f6fb)] z-10"
-                                        : "bg-theme-tint text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#f2f6fb)] hover:bg-theme-tint-hover"
+                                        ? "bg-[var(--theme-surface)] border-[var(--theme-border)] text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))] z-10"
+                                        : "bg-theme-tint text-[var(--theme-muted)] hover:text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))] hover:bg-theme-tint-hover"
                                 ]
                             )}
                             leftIcon={

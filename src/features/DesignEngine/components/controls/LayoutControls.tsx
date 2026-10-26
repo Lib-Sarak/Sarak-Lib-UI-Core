@@ -32,7 +32,7 @@ export const CategoryLabel: React.FC<{
         <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
                 <Icon size={12} className={`transition-all ${isOpen ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'}`} />
-                <span className={`text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all ${isOpen ? 'text-[var(--color-theme-title,#f2f6fb)]' : 'text-[var(--theme-muted)]'}`}>{title}</span>
+                <span className="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--color-theme-title,CanvasText)]">{title}</span>
             </div>
         </div>
         <div className="flex items-center gap-3">
@@ -82,7 +82,7 @@ export const Section: React.FC<{ id: string, icon: React.ElementType, title: str
         <button onClick={() => onToggle(activeSection === id ? null : id)} className="w-full py-4 flex items-center justify-between hover:bg-[var(--theme-surface)] transition-all px-6 group">
             <div className="flex items-center gap-3">
                 <div className={`p-1.5 rounded-lg transition-all ${activeSection === id ? 'bg-[var(--theme-primary)] text-theme-on-primary' : 'bg-[var(--color-theme-card,#101622)] text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#f2f6fb)]'}`}><Icon size={14} /></div>
-                <span className={`text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all ${activeSection === id ? 'text-[var(--color-theme-title,#f2f6fb)]' : 'text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#f2f6fb)]'}`}>{title}</span>
+                <span className="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--color-theme-title,CanvasText)]">{title}</span>
             </div>
             <ChevronDown size={14} className={`transition-transform duration-[var(--sarak-motion-dur-normal,0.3s)] ${activeSection === id ? 'rotate-180 text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'}`} />
         </button>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { SarakAppChrome } from '../SarakAppChrome';
@@ -226,10 +226,10 @@ describe('SarakAppChrome (Spec 40.2 — L3, TODOS os tokens de cromo repintam, n
         const { container: top } = render(<SarakAppChrome navigationStyle="topbar" brand={{ name: 'ERP' }}><div>x</div></SarakAppChrome>);
         const sideHtml = side.innerHTML;
         const topHtml = top.innerHTML;
-        // Sidebar consome largura+fundo; topbar consome altura+fundo; ambos o título.
+        // Sidebar consome largura+fundo+marca; topbar consome altura+fundo+título.
         expect(sideHtml).toContain('--sarak-sidebar-width');
         expect(sideHtml).toContain('--sarak-sidebar-bg');
-        expect(sideHtml).toContain('--sarak-topbar-title-color');
+        expect(sideHtml).toContain('--sarak-sidebar-brand-color');
         expect(topHtml).toContain('--sarak-topbar-height');
         expect(topHtml).toContain('--sarak-topbar-bg');
         expect(topHtml).toContain('--sarak-topbar-title-color');
@@ -246,6 +246,10 @@ const renderAtDevice = (device: SarakDeviceType, ui: React.ReactElement, design:
     );
 
 const toggleOf = (c: HTMLElement) => c.querySelector('[aria-controls="sarak-chrome-drawer"]') as HTMLElement | null;
+const openPreferencesMenu = (): HTMLElement => {
+    fireEvent.click(screen.getByLabelText('Preferências'));
+    return screen.getByRole('menu');
+};
 
 describe('SarakAppChrome (Spec 40.3 — L1, multidispositivo por padrão / cromo reflui)', () => {
     it('CELULAR: colapsa a nav atrás de um toggle (hambúrguer) — a nav não vem aberta', () => {
@@ -479,9 +483,12 @@ describe('SarakAppChrome — widgets por padrão (busca, tema, usuário, colapso
             <SarakAppChrome brand={{ name: 'ERP' }} nav={NAV} user={HOST_USER} logout={freshLogout()}><div>x</div></SarakAppChrome>,
         );
         expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
-        expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
         expect(screen.getByText(/^Modo /)).toBeInTheDocument();
         expect(screen.getByTitle('Sair')).toBeInTheDocument();
+        const menu = openPreferencesMenu();
+        expect(within(menu).getByText('Tamanho da fonte')).toBeInTheDocument();
+        expect(within(menu).getByRole('group', { name: 'Estilo de navegação' })).toBeInTheDocument();
+        expect(within(menu).getByText('Recolher navegação')).toBeInTheDocument();
     });
 
     it('DEFAULT: omitir `widgets`, com `user`/`logout`, monta os quatro no modo topbar', () => {
@@ -489,18 +496,22 @@ describe('SarakAppChrome — widgets por padrão (busca, tema, usuário, colapso
             <SarakAppChrome navigationStyle="topbar" nav={NAV} user={HOST_USER} logout={freshLogout()}><div>x</div></SarakAppChrome>,
         );
         expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
-        expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
         expect(screen.getByTitle(/Mudar para modo/)).toBeInTheDocument();
         expect(screen.getByTitle('Sair')).toBeInTheDocument();
+        const menu = openPreferencesMenu();
+        expect(within(menu).getByText('Tamanho da fonte')).toBeInTheDocument();
+        expect(within(menu).getByRole('group', { name: 'Estilo de navegação' })).toBeInTheDocument();
+        expect(within(menu).getByText('Recolher navegação')).toBeInTheDocument();
     });
 
     it('DEFAULT sem `user`: busca/tema/colapso montam, o widget de usuário NÃO', () => {
         renderAtDevice('desktop', <SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>);
         expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
-        expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
         expect(screen.getByText(/^Modo /)).toBeInTheDocument();
         expect(screen.queryByTitle('Sair')).toBeNull();
         expect(screen.queryByText('User')).toBeNull();
+        const menu = openPreferencesMenu();
+        expect(within(menu).getByText('Recolher navegação')).toBeInTheDocument();
     });
 
     it('opt-out isolado: search=false remove só a busca', () => {
@@ -508,9 +519,10 @@ describe('SarakAppChrome — widgets por padrão (busca, tema, usuário, colapso
             <SarakAppChrome nav={NAV} user={HOST_USER} logout={freshLogout()} widgets={{ search: false }}><div>x</div></SarakAppChrome>,
         );
         expect(screen.queryByPlaceholderText('Busca inteligente…')).toBeNull();
-        expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
         expect(screen.getByText(/^Modo /)).toBeInTheDocument();
         expect(screen.getByTitle('Sair')).toBeInTheDocument();
+        const menu = openPreferencesMenu();
+        expect(within(menu).getByText('Recolher navegação')).toBeInTheDocument();
     });
 
     it('opt-out isolado: search=false TAMBÉM desarma o atalho — não fica engolindo Ctrl/Cmd+K à toa', () => {
@@ -525,8 +537,9 @@ describe('SarakAppChrome — widgets por padrão (busca, tema, usuário, colapso
         );
         expect(screen.queryByText(/^Modo /)).toBeNull();
         expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
-        expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
         expect(screen.getByTitle('Sair')).toBeInTheDocument();
+        const menu = openPreferencesMenu();
+        expect(within(menu).getByText('Recolher navegação')).toBeInTheDocument();
     });
 
     it('opt-out isolado: user=false remove o widget de usuário mesmo com `user` dado', () => {
@@ -536,7 +549,8 @@ describe('SarakAppChrome — widgets por padrão (busca, tema, usuário, colapso
         expect(screen.queryByTitle('Sair')).toBeNull();
         expect(screen.getByPlaceholderText('Busca inteligente…')).toBeInTheDocument();
         expect(screen.getByText(/^Modo /)).toBeInTheDocument();
-        expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
+        const menu = openPreferencesMenu();
+        expect(within(menu).getByText('Recolher navegação')).toBeInTheDocument();
     });
 
     it('opt-out isolado: collapse=false remove só o toggle de colapso', () => {
@@ -551,8 +565,9 @@ describe('SarakAppChrome — widgets por padrão (busca, tema, usuário, colapso
 
     it('o colapso alterna design.isNavHidden ao clicar (sidebar encolhe)', () => {
         const { container } = renderAtDevice('desktop', <SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>);
-        fireEvent.click(screen.getByLabelText('Recolher navegação'));
-        expect(screen.getByLabelText('Expandir navegação')).toBeInTheDocument();
+        const menu = openPreferencesMenu();
+        fireEvent.click(within(menu).getByText('Recolher navegação'));
+        expect(within(menu).getByText('Expandir navegação')).toBeInTheDocument();
         const style = container.querySelector('aside')!.getAttribute('style') ?? '';
         expect(style).toContain('var(--sarak-sidebar-collapsed-width');
     });
@@ -585,7 +600,10 @@ describe('SarakAppChrome — widgets por padrão (busca, tema, usuário, colapso
         renderAtDevice('desktop', <SarakAppChrome nav={NAV} onNavigate={onNavigate}><div>x</div></SarakAppChrome>);
         fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
         expect(screen.getAllByText('Projetos').length).toBeGreaterThan(0);
-        fireEvent.click(screen.getByRole('button', { name: /Projetos/ }));
+        const result = screen.getByRole('option', { name: /Projetos/ });
+        expect(result.tagName).toBe('A');
+        expect(result).toHaveAttribute('href', '/projetos');
+        fireEvent.click(result);
         expect(onNavigate).toHaveBeenCalledWith('/projetos');
     });
 

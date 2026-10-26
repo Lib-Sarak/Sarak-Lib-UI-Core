@@ -95,7 +95,7 @@ describe('useAtomicStyles', () => {
 
         it('`neumorphism` aplica o relevo interno da lib; sem foco é interno, com foco leva o anel por cima', () => {
             expect(String(getInputStyles({ inputShadow: 'neumorphism' } as never, false).boxShadow)).toContain('inset 2px 2px 5px');
-            expect(String(getInputStyles({ inputShadow: 'neumorphism' } as never, true).boxShadow)).toContain('0 0 0 2px');
+            expect(String(getInputStyles({ inputShadow: 'neumorphism' } as never, true).boxShadow)).toContain('var(--sarak-focus-width, 2px)');
         });
 
         it('`none` não escreve sombra; texto CSS é gravado como box-shadow quando o campo não está focado', () => {

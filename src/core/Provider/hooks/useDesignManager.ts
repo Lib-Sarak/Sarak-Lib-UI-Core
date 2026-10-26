@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { validateDesign } from '../utils/validation';
-import { resolveStorageKey } from '../utils/resolveStorageKey';
+import { resolveStorageKey, writeCachedActiveThemeId } from '../utils/resolveStorageKey';
 import { resolveEffectiveStrategy } from '../utils/persistenceStrategy';
 import { useThemeSeed } from './useThemeSeed';
 import { useDesignSync } from './useDesignSync';
 import { useDesignRemoteLoader } from './useDesignRemoteLoader';
 import { useDesignStorageSync } from './useDesignStorageSync';
 import { useResolvedThemeId } from './useResolvedThemeId';
+import { usePersistenceSaveFailure } from './usePersistenceSaveFailure';
 import { SarakThemePayload, SarakUIOptions, SarakDesignState, SarakThemeEntry } from '../types';
 
 // O mesmo design associado a outro tema representa outro estado persistido.
@@ -38,8 +39,14 @@ export const useDesignManager = (props: {
     const onThemeChangeRef = useRef(onThemeChange);
     // A gravação automática só acompanha edições explícitas, não hidratação ou sync.
     const userChangedDesignRef = useRef(false);
+    const {
+        failureCount: persistenceSaveFailureCount,
+        recordFailure: recordPersistenceSaveFailure,
+    } = usePersistenceSaveFailure();
     // Guarda o par já persistido para evitar repetir a mesma gravação automática.
     const lastPersistedSignatureRef = useRef<string | null>(null);
+    // Evita tentativas simultâneas do mesmo par (Aplicar + debounce) sem marcar falhas como sucesso.
+    const lastAttemptedSignatureRef = useRef<string | null>(null);
     // O baseline separa a leitura inicial de uma alteração feita depois do boot.
     const hasPersistenceBaselineRef = useRef(false);
 
@@ -52,6 +59,7 @@ export const useDesignManager = (props: {
         hasHydratedRef.current = false;
         userChangedDesignRef.current = false;
         lastPersistedSignatureRef.current = null;
+        lastAttemptedSignatureRef.current = null;
         hasPersistenceBaselineRef.current = false;
         setIsBackendLoaded(false);
     }, []);
@@ -85,10 +93,12 @@ export const useDesignManager = (props: {
     );
     const [design, setDesign] = useState<SarakDesignState>(() => {
         if (typeof window === 'undefined') return getSeedConfig();
+        const strategy = resolveEffectiveStrategy(optionsRef.current.persistence);
+        if (strategy === 'remote') return validateDesign(getSeedConfig());
 
         try {
             const saved = localStorage.getItem(storageKey);
-            if (saved) {
+            if (saved && optionsRef.current.persistence?.preferConfigOverCache !== true) {
                 const parsed = JSON.parse(saved);
                 return validateDesign({ ...getSeedConfig(), ...parsed });
             }
@@ -101,13 +111,17 @@ export const useDesignManager = (props: {
     const persistDesign = useCallback(async (config: SarakDesignState) => {
         if (!isHydrated) return;
         const activeThemeIdAtSave = resolvedThemeIdRef.current;
-        const signature = createPersistenceSignature(config, activeThemeIdAtSave);
-        if (lastPersistedSignatureRef.current === signature) return;
+        const signature = createPersistenceSignature(validateDesign(config), activeThemeIdAtSave);
+        if (lastPersistedSignatureRef.current === signature || lastAttemptedSignatureRef.current === signature) return;
+        lastAttemptedSignatureRef.current = signature;
 
         const opt = optionsRef.current;
         const strategy = resolveEffectiveStrategy(opt?.persistence);
         try {
-            if (strategy !== 'remote') localStorage.setItem(storageKey, JSON.stringify(config));
+            if (strategy !== 'remote') {
+                localStorage.setItem(storageKey, JSON.stringify(config));
+                writeCachedActiveThemeId(storageKey, activeThemeIdAtSave);
+            }
             if (strategy !== 'local' && opt?.persistence?.onSave) {
                 await opt.persistence.onSave(config, activeThemeIdAtSave);
             }
@@ -116,8 +130,9 @@ export const useDesignManager = (props: {
             hasPersistenceBaselineRef.current = true;
         } catch (error) {
             console.error('[Sarak:Design] Save error:', error);
+            recordPersistenceSaveFailure();
         }
-    }, [isHydrated, storageKey]);
+    }, [isHydrated, storageKey, recordPersistenceSaveFailure]);
 
     const previousStorageKeyRef = useRef(storageKey);
     useEffect(() => {
@@ -129,9 +144,11 @@ export const useDesignManager = (props: {
             hasHydratedRef.current = false;
             userChangedDesignRef.current = false;
             lastPersistedSignatureRef.current = null;
+            lastAttemptedSignatureRef.current = null;
             hasPersistenceBaselineRef.current = false;
             setIsBackendLoaded(false);
             setDesign(validateDesign(getSeedConfig()));
+            setResolvedThemeId(resolveSeedThemeId());
             return;
         }
 
@@ -150,9 +167,18 @@ export const useDesignManager = (props: {
 
         const timer = setTimeout(() => persistDesign(design), 1500);
         return () => clearTimeout(timer);
-    }, [design, getSeedConfig, isBackendLoaded, isHydrated, persistDesign, resolvedThemeId, storageKey]);
+    }, [design, getSeedConfig, isBackendLoaded, isHydrated, persistDesign, resolvedThemeId, storageKey, setResolvedThemeId]);
 
-    useDesignSync(isHydrated, activeThemeId, allThemes, storageKey, hasHydratedRef, setDesign, configRef);
+    useDesignSync(
+        isHydrated,
+        activeThemeId,
+        allThemes,
+        storageKey,
+        hasHydratedRef,
+        setDesign,
+        configRef,
+        options?.persistence?.preferConfigOverCache === true,
+    );
     useDesignRemoteLoader({
         isHydrated,
         optionsRef,
@@ -164,6 +190,8 @@ export const useDesignManager = (props: {
         setResolvedThemeId,
         storageKey,
         onLoadBecameAvailable,
+        design,
+        resolvedThemeId,
     });
 
     // Sincronização entre abas/apps (lacuna pré-Teste Real): default ligado, opt-out
@@ -173,6 +201,7 @@ export const useDesignManager = (props: {
 
     const safeSetDesign = useCallback((next: SarakDesignState | ((prev: SarakDesignState) => SarakDesignState)) => {
         userChangedDesignRef.current = true;
+        lastAttemptedSignatureRef.current = null;
         setDesign((prev) => {
             const updated = typeof next === 'function' ? next(prev) : next;
             return validateDesign(updated);
@@ -194,6 +223,7 @@ export const useDesignManager = (props: {
         applyFullConfig,
         persistDesign,
         isBackendLoaded,
+        persistenceSaveFailureCount,
         resolvedThemeId,
         setResolvedThemeId,
     };

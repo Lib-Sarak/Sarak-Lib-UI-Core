@@ -131,6 +131,9 @@
     "SarakDatePickerProps",
     "SarakDatePickerValue",
     "SarakDerivedThemePreset",
+    "SarakDescriptionList",
+    "SarakDescriptionListItem",
+    "SarakDescriptionListProps",
     "SarakDesignScope",
     "SarakDesignScopeProps",
     "SarakDesignState",
@@ -154,6 +157,8 @@
     "SarakFieldError",
     "SarakFieldErrorProps",
     "SarakFileRejection",
+    "SarakFilterBar",
+    "SarakFilterBarProps",
     "SarakFilterConfig",
     "SarakFilterSelect",
     "SarakFilterSelectProps",
@@ -237,6 +242,8 @@
     "SarakOverlayRequest",
     "SarakPDFViewer",
     "SarakPDFViewerProps",
+    "SarakPageHeader",
+    "SarakPageHeaderProps",
     "SarakPageTransition",
     "SarakPageTransitionProps",
     "SarakPagination",
@@ -259,6 +266,9 @@
     "SarakRangeValue",
     "SarakReferenceThemeId",
     "SarakRegisteredIconProps",
+    "SarakResourceRow",
+    "SarakResourceRowAction",
+    "SarakResourceRowProps",
     "SarakResponsiveDevice",
     "SarakResponsiveValue",
     "SarakRichText",
@@ -270,6 +280,11 @@
     "SarakSearchCardProps",
     "SarakSearchItem",
     "SarakSearchProps",
+    "SarakSection",
+    "SarakSectionProps",
+    "SarakSegmentedControl",
+    "SarakSegmentedControlProps",
+    "SarakSegmentedOption",
     "SarakSelect",
     "SarakSelectProps",
     "SarakShellLanguageSelector",
@@ -364,6 +379,7 @@
     "SarakWeekStart",
     "sarakBuildPaginationRange",
     "sarakComputeOffsets",
+    "sarakCreateThemeBootCss",
     "sarakDeriveThemeFromReference",
     "sarakDeviceForWidth",
     "sarakFindMissingThemeAxes",
@@ -2147,6 +2163,19 @@
         }
       ]
     },
+    "SarakDescriptionList": {
+      "propsInterface": "SarakDescriptionListProps",
+      "source": "src/components/atomic/Templates/SarakDescriptionList.tsx",
+      "extends": "Omit<React.HTMLAttributes<HTMLDListElement>, 'children'>",
+      "props": [
+        {
+          "name": "items",
+          "type": "SarakDescriptionListItem[]",
+          "optional": false,
+          "doc": ""
+        }
+      ]
+    },
     "SarakDesignScope": {
       "propsInterface": "SarakDesignScopeProps",
       "source": "src/core/Design/components/DesignScope.tsx",
@@ -2409,6 +2438,37 @@
           "type": "string",
           "optional": false,
           "doc": "`id` do controle descrito; a mensagem recebe o id `${fieldId}-error`. É obrigatório em TypeScript; se omitido ao contornar a tipagem, a mensagem continua visível e anunciada, mas não pode ser associada ao campo. No controle, use esse id da mensagem em `aria-describedby`."
+        }
+      ]
+    },
+    "SarakFilterBar": {
+      "propsInterface": "SarakFilterBarProps",
+      "source": "src/components/atomic/Templates/SarakFilterBar.tsx",
+      "extends": "React.HTMLAttributes<HTMLDivElement>",
+      "props": [
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "actions",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "clearFilters",
+          "type": "{ label: string; onClick: () => void; }",
+          "optional": true,
+          "doc": ""
         }
       ]
     },
@@ -2796,37 +2856,37 @@
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": "Rótulo visual ligado ao campo pelo `id` (gerado quando não é informado). Sem ele, não há rótulo visível; forneça outro nome acessível se necessário."
+          "doc": ""
         },
         {
           "name": "icon",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": "Ícone do campo; sua posição vem do layout do tema e ele não recebe clique. Quando definido, prevalece sobre `leftIcon` e `rightIcon`; sem os três, não há ícone."
+          "doc": ""
         },
         {
           "name": "leftIcon",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": "Ícone do lado esquerdo, usado somente quando `icon` não é fornecido. Junto com `rightIcon`, os dois aparecem, cada um no seu lado. Sozinho, segue a posição do layout do tema."
+          "doc": ""
         },
         {
           "name": "rightIcon",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": "Ícone do lado direito, usado somente quando `icon` não é fornecido. Aceita clique (por exemplo, o botão de mostrar a senha). Junto com `leftIcon`, fica à direita; sozinho, segue a posição do layout do tema."
+          "doc": ""
         },
         {
           "name": "error",
           "type": "string",
           "optional": true,
-          "doc": "Mensagem abaixo do campo, ligada por `aria-describedby`, que também marca `aria-invalid`. Sem a prop, não há mensagem nem estado inválido."
+          "doc": ""
         },
         {
           "name": "fullWidth",
           "type": "boolean",
           "optional": true,
-          "doc": "Faz o grupo do campo ocupar toda a largura disponível. Omitida ou `false`, a largura fica a cargo do layout pai."
+          "doc": ""
         }
       ]
     },
@@ -3214,6 +3274,12 @@
           "type": "string",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "markerPosition",
+          "type": "'edge' | 'top'",
+          "optional": true,
+          "doc": "A barra inferior do celular ancora o indicador no topo do item."
         }
       ]
     },
@@ -3397,6 +3463,61 @@
         },
         {
           "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakPageHeader": {
+      "propsInterface": "SarakPageHeaderProps",
+      "source": "src/components/atomic/Templates/SarakPageHeader.tsx",
+      "extends": "Omit<React.HTMLAttributes<HTMLElement>, 'title'>",
+      "props": [
+        {
+          "name": "title",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "subtitle",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "breadcrumbs",
+          "type": "SarakBreadcrumbItem[]",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onBreadcrumbNavigate",
+          "type": "(href: string) => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "primaryActions",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "secondaryActions",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "loadingLabel",
           "type": "string",
           "optional": true,
           "doc": ""
@@ -3609,6 +3730,55 @@
         }
       ]
     },
+    "SarakResourceRow": {
+      "propsInterface": "SarakResourceRowProps",
+      "source": "src/components/atomic/Templates/SarakResourceRow.tsx",
+      "extends": "Omit<React.HTMLAttributes<HTMLElement>, 'title'>",
+      "props": [
+        {
+          "name": "title",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "description",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "badges",
+          "type": "React.ReactNode[]",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "metadata",
+          "type": "SarakDescriptionListItem[]",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "actions",
+          "type": "SarakResourceRowAction[]",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "href",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onNavigate",
+          "type": "(href: string) => void",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakRichText": {
       "propsInterface": "SarakRichTextProps",
       "source": "src/components/atomic/Inputs/SarakRichText.tsx",
@@ -3737,13 +3907,13 @@
           "name": "items",
           "type": "SarakSearchItem[]",
           "optional": false,
-          "doc": "Itens da busca, fornecidos pela navegação do aplicativo."
+          "doc": ""
         },
         {
           "name": "onSelect",
           "type": "(id: string) => void",
           "optional": true,
-          "doc": "Seleciona um item, por clique ou teclado (`Enter`/`Espaço`). Sem esta prop, os resultados não são acionáveis — o comportamento de sempre."
+          "doc": ""
         }
       ]
     },
@@ -3792,6 +3962,110 @@
           "type": "string",
           "optional": true,
           "doc": "Texto do selo de rascunho; sem a prop, usa `Card de Interação`, e o selo só aparece durante a composição de rascunho."
+        }
+      ]
+    },
+    "SarakSection": {
+      "propsInterface": "SarakSectionProps",
+      "source": "src/components/atomic/Templates/SarakSection.tsx",
+      "extends": "Omit<React.HTMLAttributes<HTMLElement>, 'title'>",
+      "props": [
+        {
+          "name": "title",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "description",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "actions",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "headingLevel",
+          "type": "2 | 3 | 4 | 5 | 6",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "variant",
+          "type": "'plain' | 'card'",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "loadingLabel",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "emptyState",
+          "type": "{ title?: React.ReactNode; description?: React.ReactNode; action?: React.ReactNode; }",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "error",
+          "type": "{ title: string; message: string; retryLabel?: string; onRetry?: () => void; }",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakSegmentedControl": {
+      "propsInterface": "SarakSegmentedControlProps",
+      "source": "src/components/atomic/Templates/SarakSegmentedControl.tsx",
+      "extends": "Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'>",
+      "props": [
+        {
+          "name": "options",
+          "type": "SarakSegmentedOption[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: string) => void",
+          "optional": true,
+          "doc": ""
         }
       ]
     },
@@ -3894,25 +4168,25 @@
           "name": "variant",
           "type": "'bar' | 'icon'",
           "optional": true,
-          "doc": "Escolhe a barra de busca ou o gatilho de menu; omitida, usa `bar`, que fica oculto abaixo do breakpoint `md`."
+          "doc": ""
         },
         {
           "name": "items",
           "type": "SarakSearchItem[]",
           "optional": true,
-          "doc": "Resultados fornecidos pelo aplicativo."
+          "doc": ""
         },
         {
           "name": "onClick",
           "type": "() => void",
           "optional": false,
-          "doc": "Callback do gatilho `icon`; obrigatório."
+          "doc": ""
         },
         {
           "name": "onSelect",
           "type": "(item: SarakSearchItem) => void",
           "optional": true,
-          "doc": "Seleciona um resultado da variante `bar`."
+          "doc": ""
         }
       ]
     },
@@ -4625,7 +4899,7 @@
           "name": "color",
           "type": "SarakTypographyColor",
           "optional": true,
-          "doc": "Cor de texto (`textColorMaster`/`textColorSecondary`/`textColorMuted`). Default: `main`."
+          "doc": "Papel de cor do texto. Títulos usam `title` por padrão; os demais usam `main`."
         },
         {
           "name": "as",
@@ -5043,6 +5317,22 @@
         ]
       },
       {
+        "component": "SarakMenuItem",
+        "prop": "markerPosition",
+        "values": [
+          "edge",
+          "top"
+        ]
+      },
+      {
+        "component": "SarakSection",
+        "prop": "variant",
+        "values": [
+          "plain",
+          "card"
+        ]
+      },
+      {
         "component": "SarakShellLanguageSelector",
         "prop": "variant",
         "values": [
@@ -5401,6 +5691,7 @@
       "--sarak-dot-grid-dot-offset",
       "--sarak-dot-grid-dot-size",
       "--sarak-dot-grid-tile-size",
+      "--sarak-emphasis-color",
       "--sarak-empty-state-caption-max-width",
       "--sarak-empty-state-orb-blur",
       "--sarak-empty-state-orb-inner",
@@ -5505,6 +5796,8 @@
       "--sarak-input-icon-color",
       "--sarak-input-icon-position",
       "--sarak-input-padding",
+      "--sarak-input-padding-horizontal",
+      "--sarak-input-padding-vertical",
       "--sarak-input-shadow",
       "--sarak-input-text-color",
       "--sarak-is-auto-hide-enabled",
@@ -5580,8 +5873,10 @@
       "--sarak-on-nav-active",
       "--sarak-on-overlay",
       "--sarak-on-secondary",
+      "--sarak-on-sidebar",
       "--sarak-on-success",
       "--sarak-on-surface",
+      "--sarak-on-topbar",
       "--sarak-on-warning",
       "--sarak-page-transition-type",
       "--sarak-preference-font-size-position",
@@ -5656,12 +5951,29 @@
       "--sarak-shadow-projection-blur",
       "--sarak-shell-brand-logo-size",
       "--sarak-sidebar-active-color",
+      "--sarak-sidebar-active-item-style",
+      "--sarak-sidebar-background-style",
       "--sarak-sidebar-bg",
       "--sarak-sidebar-bg-rgb",
       "--sarak-sidebar-blur",
+      "--sarak-sidebar-border-color",
+      "--sarak-sidebar-border-side",
+      "--sarak-sidebar-border-style",
+      "--sarak-sidebar-border-width",
+      "--sarak-sidebar-brand-background",
+      "--sarak-sidebar-brand-bg",
+      "--sarak-sidebar-brand-color",
+      "--sarak-sidebar-category-color",
       "--sarak-sidebar-collapsed-width",
       "--sarak-sidebar-color",
+      "--sarak-sidebar-footer-background",
+      "--sarak-sidebar-footer-bg",
       "--sarak-sidebar-hover-color",
+      "--sarak-sidebar-icon-color",
+      "--sarak-sidebar-icon-size",
+      "--sarak-sidebar-item-density",
+      "--sarak-sidebar-item-hover-text-color",
+      "--sarak-sidebar-item-text-color",
       "--sarak-sidebar-label-max-width",
       "--sarak-sidebar-max-width",
       "--sarak-sidebar-min-width",
@@ -5722,6 +6034,7 @@
       "--sarak-status-warning-color-hover",
       "--sarak-status-warning-color-light",
       "--sarak-status-warning-color-rgb",
+      "--sarak-subtitle-color",
       "--sarak-surface",
       "--sarak-surface-color",
       "--sarak-surface-intensity",
@@ -5813,13 +6126,30 @@
       "--sarak-tooltip-text",
       "--sarak-tooltip-text-color",
       "--sarak-topbar-active-color",
+      "--sarak-topbar-active-item-style",
+      "--sarak-topbar-background-style",
       "--sarak-topbar-bg",
+      "--sarak-topbar-blur",
+      "--sarak-topbar-border-color",
+      "--sarak-topbar-border-side",
+      "--sarak-topbar-border-style",
+      "--sarak-topbar-border-width",
+      "--sarak-topbar-brand-background",
+      "--sarak-topbar-brand-bg",
+      "--sarak-topbar-brand-color",
       "--sarak-topbar-collapsed-height",
       "--sarak-topbar-color",
+      "--sarak-topbar-group-separator-color",
       "--sarak-topbar-height",
       "--sarak-topbar-hover-color",
+      "--sarak-topbar-icon-color",
+      "--sarak-topbar-icon-size",
+      "--sarak-topbar-item-density",
+      "--sarak-topbar-item-hover-text-color",
+      "--sarak-topbar-item-text-color",
       "--sarak-topbar-label-max-width",
       "--sarak-topbar-noise-opacity",
+      "--sarak-topbar-shadow",
       "--sarak-topbar-title-color",
       "--sarak-touch-target-min",
       "--sarak-tracking-snug",
@@ -5972,7 +6302,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 400,
+    "count": 434,
     "groups": {
       "global": "0. Configurações Globais",
       "branding": "Identidade Visual",
@@ -7143,7 +7473,7 @@
         "label": "Tamanho da Fonte do Título",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Tamanho da fonte do título do `SarakTitleCard`, e com ele a altura do cartão, por dispositivo."
+        "usage": "Tamanho da fonte do título do `SarakTitleCard` e dos cabeçalhos compostos por `SarakCard.Header`, por dispositivo."
       },
       {
         "id": "cardTitleFontWeight",
@@ -7639,6 +7969,22 @@
         "kind": "aesthetic",
         "modeDependent": false,
         "usage": "Lado da célula que se repete na grade de pontos do estado vazio geométrico e do `AuthHero`; define o espaçamento entre pontos."
+      },
+      {
+        "id": "emphasisColor",
+        "type": "string",
+        "responsive": false,
+        "group": "colors",
+        "label": "Cor de Ênfase",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Dá ênfase a texto usando um tom acessível da cor de acento do tema; preserve o matiz e contraste de pelo menos 4,5:1.",
+        "interactsWith": [
+          "accentColor",
+          "colorBgBody",
+          "surfaceColor",
+          "cardBackgroundColor"
+        ]
       },
       {
         "id": "emptyStateCaptionMaxWidth",
@@ -8444,10 +8790,20 @@
         "type": "number",
         "responsive": false,
         "group": "inputs",
-        "label": "Espaçamento Interno (Y)",
+        "label": "Espaçamento Interno Vertical (Y)",
         "kind": "functional",
         "modeDependent": false,
-        "usage": "Controla o espaço vertical interno dos campos e, com isso, sua altura e área de toque."
+        "usage": "Controla o espaço interno vertical dos campos e, com isso, sua altura e área de toque."
+      },
+      {
+        "id": "inputPaddingHorizontal",
+        "type": "number",
+        "responsive": false,
+        "group": "inputs",
+        "label": "Espaçamento Interno Horizontal (X)",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Controla o espaço interno horizontal padrão do SarakInput, afastando o texto das bordas laterais."
       },
       {
         "id": "inputShadow",
@@ -8718,7 +9074,7 @@
         "label": "Largura Máxima do Conteúdo",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Largura máxima da região de conteúdo do cromo, centralizada na tela; 100% ocupa a largura inteira."
+        "usage": "Centraliza a região de conteúdo do cromo. No modo fluido, as margens externas crescem com o contêiner, entre layoutPadding e 128px por lado; o respiro interno é escalado por layoutDensity."
       },
       {
         "id": "mobileNavigationStyle",
@@ -9564,6 +9920,35 @@
         ]
       },
       {
+        "id": "sidebarActiveItemStyle",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Estilo do Item Ativo (Sidebar)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Tratamento visual do item ativo na barra lateral.",
+        "interactsWith": [
+          "sidebarActiveColor",
+          "navItemActiveColor",
+          "navActiveMarkerColor"
+        ]
+      },
+      {
+        "id": "sidebarBackgroundStyle",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Tratamento do Fundo (Sidebar)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Tratamento de fundo da barra lateral.",
+        "interactsWith": [
+          "sidebarColor",
+          "sidebarNoiseOpacity"
+        ]
+      },
+      {
         "id": "sidebarBlur",
         "type": "number",
         "responsive": false,
@@ -9572,6 +9957,91 @@
         "kind": "aesthetic",
         "modeDependent": false,
         "usage": "Desfoque do que passa atrás da navegação lateral, útil com cor translúcida.",
+        "interactsWith": [
+          "sidebarColor"
+        ]
+      },
+      {
+        "id": "sidebarBorderColor",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Borda (Sidebar)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor da moldura da barra lateral.",
+        "interactsWith": [
+          "sidebarColor"
+        ]
+      },
+      {
+        "id": "sidebarBorderSide",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Lados da Borda (Sidebar)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Lados da moldura da barra lateral; a opção externa acompanha sua posição e a barra flutuante usa todos os lados.",
+        "interactsWith": []
+      },
+      {
+        "id": "sidebarBorderStyle",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Estilo da Borda (Sidebar)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Estilo de linha da moldura da barra lateral.",
+        "interactsWith": []
+      },
+      {
+        "id": "sidebarBorderWidth",
+        "type": "number",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Espessura da Borda (Sidebar)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Largura em pixels da moldura da barra lateral."
+      },
+      {
+        "id": "sidebarBrandBackground",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Fundo da Marca (Sidebar)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor de fundo da área da marca na barra lateral.",
+        "interactsWith": [
+          "sidebarColor"
+        ]
+      },
+      {
+        "id": "sidebarBrandColor",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Nome da Marca (Sidebar)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do nome da marca na barra lateral.",
+        "interactsWith": [
+          "sidebarColor",
+          "identityFontFamily"
+        ]
+      },
+      {
+        "id": "sidebarCategoryColor",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Rótulo de Categoria (Sidebar)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do rótulo de categoria na barra lateral; deve contrastar com o fundo da barra.",
         "interactsWith": [
           "sidebarColor"
         ]
@@ -9603,6 +10073,19 @@
         ]
       },
       {
+        "id": "sidebarFooterBackground",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Fundo do Rodapé (Sidebar)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor de fundo do rodapé da barra lateral.",
+        "interactsWith": [
+          "sidebarColor"
+        ]
+      },
+      {
         "id": "sidebarHoverColor",
         "type": "string",
         "responsive": false,
@@ -9613,6 +10096,67 @@
         "usage": "Fundo do item da navegação lateral sob o ponteiro; o padrão é um branco translúcido.",
         "interactsWith": [
           "navigationStyle"
+        ]
+      },
+      {
+        "id": "sidebarIconColor",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Cor do Ícone (Sidebar)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor dos ícones na barra lateral.",
+        "interactsWith": [
+          "sidebarColor"
+        ]
+      },
+      {
+        "id": "sidebarIconSize",
+        "type": "number",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Tamanho do Ícone (Sidebar)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Tamanho dos ícones da barra lateral."
+      },
+      {
+        "id": "sidebarItemDensity",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Densidade dos Itens (Sidebar)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Densidade das linhas de navegação lateral; o alvo de toque mínimo continua sendo aplicado.",
+        "interactsWith": []
+      },
+      {
+        "id": "sidebarItemHoverTextColor",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Texto do Item em Hover (Sidebar)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do texto de item sob o ponteiro na barra lateral.",
+        "interactsWith": [
+          "sidebarColor",
+          "sidebarItemTextColor"
+        ]
+      },
+      {
+        "id": "sidebarItemTextColor",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Texto do Item (Sidebar)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do texto de item inativo na barra lateral; deve permanecer legível sobre o fundo da barra.",
+        "interactsWith": [
+          "sidebarColor"
         ]
       },
       {
@@ -9797,6 +10341,23 @@
         "kind": "aesthetic",
         "modeDependent": true,
         "usage": "Pinta avisos e estados que pedem atenção sem indicar falha."
+      },
+      {
+        "id": "subtitleColor",
+        "type": "string",
+        "responsive": false,
+        "group": "colors",
+        "label": "Cor do Subtítulo",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Colore subtítulos entre o texto principal e os títulos; preserve essa hierarquia e contraste de pelo menos 4,5:1.",
+        "interactsWith": [
+          "textColorMaster",
+          "titleColor",
+          "colorBgBody",
+          "surfaceColor",
+          "cardBackgroundColor"
+        ]
       },
       {
         "id": "surfaceColor",
@@ -10018,7 +10579,7 @@
         "label": "Texto Principal",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Colore o texto principal de parágrafos e rótulos; títulos usam titleColor."
+        "usage": "Colore o texto principal de parágrafos e rótulos; títulos, subtítulos e ênfases usam titleColor, subtitleColor e emphasisColor."
       },
       {
         "id": "textColorMuted",
@@ -10182,7 +10743,7 @@
         "label": "Texto do Tooltip",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Cor do texto da caixa do `SarakTooltip`; precisa de contraste com `tooltipBg`.",
+        "usage": "Cor do texto corrido da caixa do `SarakTooltip`; precisa de contraste com `tooltipBg`.",
         "interactsWith": [
           "tooltipBg"
         ]
@@ -10198,6 +10759,117 @@
         "usage": "Fundo do item ativo da barra do topo; o padrão é transparente.",
         "interactsWith": [
           "navigationStyle"
+        ]
+      },
+      {
+        "id": "topbarActiveItemStyle",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Estilo do Item Ativo (Topbar)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Tratamento visual do item ativo na barra superior.",
+        "interactsWith": [
+          "topbarActiveColor",
+          "navItemActiveColor",
+          "navActiveMarkerColor"
+        ]
+      },
+      {
+        "id": "topbarBackgroundStyle",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Tratamento do Fundo (Topbar)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Tratamento de fundo da barra superior.",
+        "interactsWith": [
+          "topbarColor",
+          "topbarNoiseOpacity"
+        ]
+      },
+      {
+        "id": "topbarBlur",
+        "type": "number",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Backdrop Blur (Topbar)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Desfoque do conteúdo que passa atrás da barra superior; funciona melhor com fundo translúcido."
+      },
+      {
+        "id": "topbarBorderColor",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Borda (Topbar)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor da moldura da barra superior.",
+        "interactsWith": [
+          "topbarColor"
+        ]
+      },
+      {
+        "id": "topbarBorderSide",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Lados da Borda (Topbar)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Lados da moldura da barra superior; a opção externa fica junto ao conteúdo e se adapta à barra na base do celular.",
+        "interactsWith": []
+      },
+      {
+        "id": "topbarBorderStyle",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Estilo da Borda (Topbar)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Estilo de linha da moldura da barra superior.",
+        "interactsWith": []
+      },
+      {
+        "id": "topbarBorderWidth",
+        "type": "number",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Espessura da Borda (Topbar)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Largura em pixels da moldura da barra superior."
+      },
+      {
+        "id": "topbarBrandBackground",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Fundo da Marca (Topbar)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor de fundo da área da marca na barra superior.",
+        "interactsWith": [
+          "topbarColor"
+        ]
+      },
+      {
+        "id": "topbarBrandColor",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Nome da Marca (Topbar)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do nome da marca na barra superior.",
+        "interactsWith": [
+          "topbarColor",
+          "identityFontFamily"
         ]
       },
       {
@@ -10227,6 +10899,19 @@
         ]
       },
       {
+        "id": "topbarGroupSeparatorColor",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Separador de Grupos (Topbar)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do separador entre grupos de navegação horizontal.",
+        "interactsWith": [
+          "topbarColor"
+        ]
+      },
+      {
         "id": "topbarHeight",
         "type": "number | SarakResponsiveValue<number>",
         "responsive": true,
@@ -10253,6 +10938,67 @@
         ]
       },
       {
+        "id": "topbarIconColor",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Cor do Ícone (Topbar)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor dos ícones na barra superior.",
+        "interactsWith": [
+          "topbarColor"
+        ]
+      },
+      {
+        "id": "topbarIconSize",
+        "type": "number",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Tamanho do Ícone (Topbar)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Tamanho dos ícones da barra superior."
+      },
+      {
+        "id": "topbarItemDensity",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Densidade dos Itens (Topbar)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Densidade das abas na barra superior; o alvo de toque mínimo continua sendo aplicado.",
+        "interactsWith": []
+      },
+      {
+        "id": "topbarItemHoverTextColor",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Texto do Item em Hover (Topbar)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do texto de item sob o ponteiro na barra superior.",
+        "interactsWith": [
+          "topbarColor",
+          "topbarItemTextColor"
+        ]
+      },
+      {
+        "id": "topbarItemTextColor",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Texto do Item (Topbar)",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Cor do texto de item inativo na barra superior; deve permanecer legível sobre o fundo da barra.",
+        "interactsWith": [
+          "topbarColor"
+        ]
+      },
+      {
         "id": "topbarLabelMaxWidth",
         "type": "number",
         "responsive": false,
@@ -10274,6 +11020,19 @@
         "kind": "aesthetic",
         "modeDependent": true,
         "usage": "Opacidade da textura de grão sobre a barra do topo; 0 desliga.",
+        "interactsWith": [
+          "navigationStyle"
+        ]
+      },
+      {
+        "id": "topbarShadow",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Sombra da Topbar",
+        "kind": "aesthetic",
+        "modeDependent": true,
+        "usage": "Sombra CSS completa projetada pela barra superior.",
         "interactsWith": [
           "navigationStyle"
         ]
@@ -10369,7 +11128,7 @@
         "label": "Escala 2XS",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Define o tamanho de metadados e rótulos pequenos em componentes da biblioteca."
+        "usage": "Define o tamanho de metadados e rótulos compactos; mantenha no mínimo 11px."
       },
       {
         "id": "typeScale3xs",
@@ -10379,7 +11138,7 @@
         "label": "Escala 3XS",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Define o degrau 3XS usado em rótulos compactos de cartões e indicadores."
+        "usage": "Define o degrau 3XS usado em rótulos compactos de cartões e indicadores; mantenha no mínimo 11px."
       },
       {
         "id": "typeScaleCaption",
@@ -10399,7 +11158,7 @@
         "label": "Escala Micro",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Define a menor escala tipográfica, usada em rótulos densos; valores baixos podem prejudicar a leitura."
+        "usage": "Define a menor escala tipográfica legível, usada em rótulos densos; mantenha no mínimo 11px."
       },
       {
         "id": "typeScaleTiny",
@@ -10409,7 +11168,7 @@
         "label": "Escala Tiny",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Define o tamanho de textos muito pequenos usados em badges e legendas."
+        "usage": "Define o tamanho mínimo de textos usados em badges e legendas; mantenha no mínimo 11px."
       },
       {
         "id": "typeScaleXl",
@@ -10646,6 +11405,6 @@
   "kitStamp": {
     "libVersion": "8.0.0-rc.2",
     "kitSchemaVersion": 1,
-    "kitHash": "cd429b968e8e"
+    "kitHash": "676209e78aac"
   }
 }

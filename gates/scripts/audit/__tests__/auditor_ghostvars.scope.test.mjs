@@ -19,6 +19,17 @@ const GATE = path.resolve(
 // O registro precisa de PELO MENOS um schema válido para o auditor rodar sem
 // erro (ele varre src/core/Design/schema/*.ts mesmo vazio de tokens).
 const SCHEMA_STUB = "export const X = { id: 'stubToken', type: 'color' };\n";
+const CHROME_FACTORY_SCHEMA_STUB = `
+  const createChromeColorToken = (id, label, description, usage, defaultValue, cssVariable) => ({
+    id, type: 'color', cssVars: [cssVariable],
+  });
+  const createChromeSliderToken = (id, label, description, usage, min, max, defaultValue, cssVariable) => ({
+    id, type: 'slider', cssVars: [cssVariable],
+  });
+  createChromeColorToken('sidebarBrandColor', 'Marca', 'Descrição', 'Uso', '#f99ae8', '--sarak-sidebar-brand-color');
+  createChromeSliderToken('sidebarIconSize', 'Ícone', 'Descrição', 'Uso', 12, 32, 18, '--sarak-sidebar-icon-size');
+`;
+const CHROME_FACTORY_CONSUMERS = "const styles = 'color: var(--sarak-sidebar-brand-color); width: var(--sarak-sidebar-icon-size)';";
 
 describe('auditor_ghostvars — escopo ampliado a src/styles/ e src/core/', () => {
   it('acusa fantasma consumido em src/styles/*.css (vão 2)', () => {
@@ -54,12 +65,37 @@ describe('auditor_ghostvars — escopo ampliado a src/styles/ e src/core/', () =
     });
     expect(status).toBe(0);
   });
+});
 
+describe('auditor_ghostvars — fontes do registro', () => {
   it('libera uma var real emitida pelo schema e consumida em src/core/', () => {
     const { status } = runGateAgainstFixture(GATE, {
       'src/core/Design/schema/stub.ts': "export const X = { id: 'meuToken', type: 'color' };",
       'src/core/Fixture3.ts': "const s = 'var(--sarak-meu-token, 1px)';",
     });
     expect(status).toBe(0);
+  });
+
+  it('registra as variáveis emitidas pelas fábricas de tokens cromáticos', () => {
+    const { status, stdout } = runGateAgainstFixture(GATE, {
+      'src/core/Design/schema/navigation.ts': CHROME_FACTORY_SCHEMA_STUB,
+      'src/components/Fixture.tsx': CHROME_FACTORY_CONSUMERS,
+    });
+    expect(status).toBe(0);
+    expect(stdout).toContain('[OK] Nenhuma variável-fantasma consumida.');
+  });
+
+  it('não registra argumentos de uma fábrica que não emite cssVars', () => {
+    const { status, stdout } = runGateAgainstFixture(GATE, {
+      'src/core/Design/schema/navigation.ts': `
+        const createChromeColorToken = (id, label, description, usage, defaultValue, cssVariable) => ({
+          id, type: 'color', defaultValue,
+        });
+        createChromeColorToken('sidebarBrandColor', 'Marca', 'Descrição', 'Uso', '#f99ae8', '--sarak-sidebar-brand-color');
+      `,
+      'src/components/Fixture.tsx': "const styles = 'color: var(--sarak-sidebar-brand-color)';",
+    });
+    expect(status).toBe(1);
+    expect(stdout).toContain('--sarak-sidebar-brand-color');
   });
 });

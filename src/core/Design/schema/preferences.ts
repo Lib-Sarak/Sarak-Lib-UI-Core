@@ -74,7 +74,8 @@ const buildPositionToken = (
 });
 
 /**
- * Padrão de fábrica: todos os widgets e preferências ficam fixos na barra.
+ * Padrão de fábrica: controles essenciais ficam fixos; escolhas de layout e
+ * tipografia ficam agrupadas no menu de preferências.
  */
 export const PreferencesSchema: ComponentSchema = {
     id: 'preferences',
@@ -90,19 +91,19 @@ export const PreferencesSchema: ComponentSchema = {
             PREFERENCE_POSITION_TOKEN_IDS.fontSize,
             'Preferência: Tamanho da Fonte',
             'Onde a escolha de tamanho de fonte (P/M/G) do usuário final aparece — não oferecida, no menu ⚙, ou fixa na barra.',
-            'pinned',
+            'menu',
         ),
         buildPositionToken(
             PREFERENCE_POSITION_TOKEN_IDS.navigationStyle,
             'Preferência: Navegação Topo/Lateral',
             'Onde a escolha de orientação da navegação (topo/lateral) do usuário final aparece — não oferecida, no menu ⚙, ou fixa na barra.',
-            'pinned',
+            'menu',
         ),
         buildPositionToken(
             PREFERENCE_POSITION_TOKEN_IDS.navCollapsed,
             'Preferência: Navegação Recolhida',
             'Onde o controle de recolher a navegação do usuário final aparece — não oferecida, no menu ⚙, ou fixa na barra.',
-            'pinned',
+            'menu',
         ),
         buildPositionToken(
             PREFERENCE_POSITION_TOKEN_IDS.language,

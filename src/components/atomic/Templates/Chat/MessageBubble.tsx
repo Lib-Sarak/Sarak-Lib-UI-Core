@@ -71,7 +71,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
         </div>
 
         <div 
-          className={`shadow-[var(--dynamic-shadow)] border text-[var(--color-theme-title,#f2f6fb)] transition-all`}
+          className={`shadow-[var(--dynamic-shadow)] border text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))] transition-all`}
           style={bubbleStyle}
         >
           <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>

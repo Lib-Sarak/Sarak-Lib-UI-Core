@@ -117,7 +117,7 @@ const ModalHeader = ({
         <div className={clsx('border-b border-[var(--theme-border)] bg-theme-tint', headerClass)} style={{ paddingInline: 'var(--sarak-layout-gap-lg, 24px)', paddingBlock: 'var(--sarak-layout-gap-md, 16px)' }}>
             {title && <h2 id={titleId} className="text-lg font-bold text-[var(--color-theme-title,#f2f6fb)]">{title}</h2>}
             {!hideCloseButton && (
-                <SarakIconButton onClick={onClose} variant="ghost" size="sm" className={clsx('text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#f2f6fb)] hover:bg-theme-tint-hover', closeButtonClass)} style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' }} aria-label={text('modalCloseAriaLabel')} icon={<SarakIcon name="X" size={18} />} />
+            <SarakIconButton onClick={onClose} variant="ghost" size="sm" className={clsx('text-[var(--theme-muted)] hover:text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))] hover:bg-theme-tint-hover', closeButtonClass)} style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' }} aria-label={text('modalCloseAriaLabel')} icon={<SarakIcon name="X" size={18} />} />
             )}
         </div>
     );

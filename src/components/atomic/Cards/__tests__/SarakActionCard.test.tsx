@@ -52,6 +52,17 @@ describe('SarakActionCard (Spec 40 §2.5 — card genérico, sem domínio embuti
         expect(screen.getByText('Executar')).toBeInTheDocument();
     });
 
+    it('separa a cor de subtítulo da cor do título do cartão', () => {
+        render(
+            <SarakUIProvider config={{ mode: 'dark' }}>
+                <SarakActionCard item={item} mapping={mapping} />
+            </SarakUIProvider>,
+        );
+
+        expect(screen.getByText('123').className).toContain('--sarak-subtitle-color');
+        expect(screen.getByRole('heading', { level: 4 }).className).toContain('--color-theme-title');
+    });
+
     it('actionLabel customizado substitui o texto do botão', () => {
         render(
             <SarakUIProvider config={{ mode: 'dark' }}>

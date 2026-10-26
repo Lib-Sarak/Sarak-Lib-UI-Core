@@ -8,6 +8,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { ROOT } from '../catalogAst.mjs';
 import { buildKitCatalog } from './buildKitCatalog.mjs';
 import { renderAppendix } from './renderAppendix.mjs';
 import {
@@ -20,6 +21,7 @@ import {
     SKILL_SOURCE,
     STAMP_MARKER,
     START_HERE,
+    TEMPLATES_DIR,
     VERSION,
     injectBlock,
     kitHashOf,
@@ -43,6 +45,17 @@ const readOrFail = (file, what) => {
 const skillMirror = (outputs) => {
     for (const relative of listFilesRecursive(SKILL_SOURCE)) {
         outputs.set(path.join(SKILL_DIR, relative), fs.readFileSync(path.join(SKILL_SOURCE, relative), 'utf-8'));
+    }
+};
+
+const copyablePageTemplates = [
+    { source: path.join(ROOT, 'browser-tests', 'tela-lista.scene.tsx'), destination: path.join(TEMPLATES_DIR, 'tela-lista.tsx') },
+    { source: path.join(ROOT, 'browser-tests', 'tela-detalhe.scene.tsx'), destination: path.join(TEMPLATES_DIR, 'tela-detalhe.tsx') },
+];
+
+const addCopyablePageTemplates = (outputs) => {
+    for (const template of copyablePageTemplates) {
+        outputs.set(template.destination, readOrFail(template.source, path.relative(ROOT, template.source)));
     }
 };
 
@@ -81,6 +94,7 @@ export const buildKitOutputs = (catalogSurface = buildKitCatalog()) => {
             file: 'sarak-ui/START-HERE.md',
         }),
     );
+    addCopyablePageTemplates(outputs);
     skillMirror(outputs);
 
     return { catalog, kitHash, outputs };

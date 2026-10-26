@@ -16,7 +16,14 @@ interface RechartsChartProps {
     ariaLabel: string;
 }
 
-const { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip: RechartsTooltip, BarChart, Bar } = Recharts;
+const ResponsiveContainer = Recharts.ResponsiveContainer;
+const LineChart = Recharts.LineChart;
+const Line = Recharts.Line;
+const XAxis = Recharts.XAxis;
+const YAxis = Recharts.YAxis;
+const RechartsTooltip = Recharts.Tooltip;
+const BarChart = Recharts.BarChart;
+const Bar = Recharts.Bar;
 
 function buildRechartsContent({ type, data, config, theme }: RechartsChartProps): React.ReactElement {
     if (type === 'bar') {

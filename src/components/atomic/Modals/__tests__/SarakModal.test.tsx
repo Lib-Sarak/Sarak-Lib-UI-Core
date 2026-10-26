@@ -5,6 +5,13 @@ import { SarakModal, type SarakModalSize } from '../SarakModal';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 
 describe('SarakModal', () => {
+    it('mantém título no papel de título e usa texto principal no hover de fechar', () => {
+        render(<SarakUIProvider><SarakModal isOpen onClose={() => undefined} title="Detalhes">Conteúdo</SarakModal></SarakUIProvider>);
+
+        expect(screen.getByRole('heading', { name: 'Detalhes' }).className).toContain('--color-theme-title');
+        expect(screen.getByRole('button', { name: /fechar/i }).className).toContain('--theme-text-primary');
+    });
+
     it('mantém a largura padrão equivalente aos 32rem anteriores', () => {
         render(<SarakUIProvider><SarakModal isOpen onClose={() => undefined} title="Detalhes">Conteúdo</SarakModal></SarakUIProvider>);
 

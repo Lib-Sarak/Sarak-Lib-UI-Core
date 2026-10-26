@@ -69,7 +69,7 @@ export const InputPresetPreview: React.FC<InputPresetPreviewProps> = ({ preset, 
 
             <div className="absolute bottom-0 left-0 w-full p-4 bg-theme-body/40 backdrop-blur-md border-t border-theme-text/5 z-20 text-left">
                 <h3 className="text-xs font-black text-theme-text uppercase tracking-wider">{preset.name}</h3>
-                <p className="text-[var(--sarak-type-scale3xs,9px)] text-theme-text/50 mt-1 uppercase tracking-widest leading-relaxed">{preset.description}</p>
+                <p className="text-[var(--sarak-type-scale3xs,11px)] text-theme-text/50 mt-1 uppercase tracking-widest leading-relaxed">{preset.description}</p>
             </div>
         </motion.button>
     );

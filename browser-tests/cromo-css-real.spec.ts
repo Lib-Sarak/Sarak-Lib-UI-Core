@@ -95,6 +95,7 @@ const REFERENCE_BUTTON_NAME = 'Referência';
 const DRAWER_TOGGLE_NAME = 'Abrir menu de navegação';
 const CHROME_ROOT_SELECTOR = '.sarak-chrome-root';
 const CONTENT_SELECTOR = '[data-sarak-content]';
+const CHROMIUM_EXECUTABLE_PATH = process.env.SARAK_PLAN124_CHROMIUM_PATH;
 
 /** Elementos de prova da fixture (`ElementDefaultProbes`), por nome acessível ou texto. */
 const PROBE = {
@@ -151,7 +152,7 @@ interface ChromeTokenMeasurement {
 
 /** Lê as cinco propriedades computadas que distinguem métrica de LISTA/PÍLULA de métrica de AÇÃO. */
 async function readComputedMetric(page: Page, accessibleName: string, role: 'button' | 'link' = 'button'): Promise<ComputedMetric> {
-    return page.getByRole(role, { name: accessibleName }).first().evaluate((el) => {
+    return page.getByRole(role, { name: accessibleName, exact: true }).first().evaluate((el) => {
         const computed = getComputedStyle(el);
         return {
             textTransform: computed.textTransform,
@@ -329,7 +330,7 @@ if (!harnessUrl) {
 let browser: Browser;
 
 test.beforeAll(async () => {
-    browser = await chromium.launch();
+    browser = await chromium.launch(CHROMIUM_EXECUTABLE_PATH ? { executablePath: CHROMIUM_EXECUTABLE_PATH } : undefined);
 });
 
 test.afterAll(async () => {
@@ -685,7 +686,7 @@ test('NÃO MUDA NADA: o SarakButton de referência continua computando os CANTOS
     // Tema com mestre 0 e cantos 9999: só um tema com canto diferente do mestre prova que
     // os cantos chegam ao botão — com os dois iguais, o caso não distinguiria nada.
     const page = await openHarness(BREAKPOINTS.desktop, 'botao-cantos');
-    const reference = page.getByRole('button', { name: REFERENCE_BUTTON_NAME });
+    const reference = page.getByRole('button', { name: REFERENCE_BUTTON_NAME, exact: true });
     const cornerRadius = await resolveReference(reference, 'border-radius', { inlineValue: 'var(--sarak-btn-radius-tl)' });
     const masterRadius = await resolveReference(reference, 'border-radius', { inlineValue: 'var(--sarak-btn-border-radius)' });
     expect(cornerRadius, 'o canto precisa diferir do mestre, ou o caso não distingue nada').not.toBe(masterRadius);
@@ -699,7 +700,7 @@ test('<button> com rounded-full computa o raio da CLASSE, não o padrão de bot�
     const page = await openHarness(BREAKPOINTS.desktop);
     const probe = page.getByRole('button', { name: PROBE.radiusByClass });
     const classRadius = await resolveReference(probe, 'border-radius', { className: 'rounded-full' });
-    const reference = await readComputed(page.getByRole('button', { name: REFERENCE_BUTTON_NAME }), 'border-radius');
+    const reference = await readComputed(page.getByRole('button', { name: REFERENCE_BUTTON_NAME, exact: true }), 'border-radius');
 
     expect(classRadius, 'a régua da classe precisa diferir do raio de botão, ou o caso não distingue nada').not.toBe(reference);
     expect(await readComputed(probe, 'border-radius'), 'rounded-full vence o padrão de raio de <button>').toBe(classRadius);

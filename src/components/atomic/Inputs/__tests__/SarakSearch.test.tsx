@@ -1,7 +1,6 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 import { SarakSearch } from '../SarakSearch';
 
@@ -26,6 +25,8 @@ describe('SarakSearch', () => {
         renderSearch();
         const input = screen.getByPlaceholderText('Buscar ferramenta, registro ou configuração…');
         await waitFor(() => expect(document.activeElement).toBe(input));
+        expect(input.style.boxShadow).toContain('var(--sarak-focus-width, 2px)');
+        expect(screen.getByTestId('sarak-search-shortcut')).toHaveTextContent('Ctrl+K');
     });
 
     it('atualiza o valor digitado', () => {
@@ -74,41 +75,61 @@ describe('SarakSearch — itens do aplicativo (`items`/`onSelect`)', () => {
         expect(screen.queryByText('Projetos')).not.toBeInTheDocument();
     });
 
-    it('com `onSelect`, o resultado é um <button> real — clique seleciona e fecha', () => {
+    it('com `onSelect`, o resultado é link e intercepta a navegação para selecionar e fechar', () => {
         const onSelect = vi.fn();
         const onClose = vi.fn();
         renderSearch({ items, onSelect, onClose });
-        const resultado = screen.getByText('Propostas').closest('button');
-        expect(resultado).not.toBeNull();
-        // <button> nativo: focável e acionável por Enter/Espaço por construção do
-        // browser — não há handler de teclado manual a testar aqui.
-        fireEvent.click(resultado!);
+        const result = screen.getByRole('option', { name: /Propostas/ });
+        expect(result.tagName).toBe('A');
+        expect(result).toHaveAttribute('href', '/propostas');
+        const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true, button: 0 });
+        result.dispatchEvent(clickEvent);
+
+        expect(clickEvent.defaultPrevented).toBe(true);
         expect(onSelect).toHaveBeenCalledWith('/propostas');
         expect(onClose).toHaveBeenCalled();
     });
 
-    it.each(['Enter', ' '])('com `onSelect`, teclado %s seleciona resultado e fecha', async (key) => {
+    it('com `onSelect`, setas e Enter selecionam o item ativo e fecham', () => {
         const onSelect = vi.fn();
         const onClose = vi.fn();
-        const user = userEvent.setup();
         renderSearch({ items, onSelect, onClose });
-        const result = screen.getByRole('button', { name: /Propostas/ });
-        result.focus();
+        const input = screen.getByRole('combobox');
+        const firstResult = screen.getByRole('option', { name: /Propostas/ });
+        expect(input).toHaveAttribute('aria-controls', screen.getByRole('listbox').id);
+        expect(input).toHaveAttribute('aria-activedescendant', firstResult.id);
+        expect(firstResult).toHaveAttribute('aria-selected', 'true');
 
-        await user.keyboard(key === ' ' ? ' ' : `{${key}}`);
-        expect(onSelect).toHaveBeenCalledWith('/propostas');
+        fireEvent.keyDown(input, { key: 'ArrowDown' });
+        fireEvent.keyDown(input, { key: 'Enter' });
+        expect(onSelect).toHaveBeenCalledWith('/projetos');
         expect(onClose).toHaveBeenCalled();
     });
 
-    it('sem `onSelect`, o resultado NÃO é acionável — mesmo comportamento de sempre', () => {
-        renderSearch({ items });
-        const resultado = screen.getByText('Propostas').closest('button, div');
-        expect(resultado?.tagName).toBe('DIV');
+    it('sem `onSelect`, o resultado é link navegável e não cancela a rota', () => {
+        const onClose = vi.fn();
+        renderSearch({ items: [{ id: '#/propostas', label: 'Propostas' }], onClose });
+        const result = screen.getByRole('option', { name: /Propostas/ });
+        expect(result.tagName).toBe('A');
+        expect(result).toHaveAttribute('href', '#/propostas');
+        const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true, button: 0 });
+        result.dispatchEvent(clickEvent);
+
+        expect(clickEvent.defaultPrevented).toBe(false);
+        expect(onClose).toHaveBeenCalled();
     });
 
     it('com uma lista vazia, mostra o estado sem resultados', () => {
         renderSearch();
+        expect(screen.getByRole('combobox')).toHaveAttribute('aria-controls', screen.getByRole('listbox').id);
         expect(screen.getByText(/Nenhum resultado para/i)).toBeInTheDocument();
+    });
+
+    it('usa ícone e categoria do item, sem rótulo genérico de módulo', () => {
+        renderSearch({ items: [{ ...items[0], icon: <span data-testid="item-icon" />, category: 'Comercial' }] });
+        expect(screen.getByTestId('item-icon')).toBeInTheDocument();
+        expect(screen.getByText('Comercial')).toBeInTheDocument();
+        expect(screen.queryByText('MÓDULO')).not.toBeInTheDocument();
     });
 });
 

@@ -269,6 +269,17 @@ navegação (`SarakNavItem.icon`, `SarakMenuItem.icon`) aceita nome ou elemento.
 **Fora da porta, de propósito:** o painel de autoria (`src/features/DesignEngine/`) mantém os próprios ícones.
 Ele é a ferramenta com que o tema é feito, e não repinta o próprio cromo com a família que está sendo editada.
 
+## 6.2.1 Composição de página — a página se escreve com peças
+
+Entre o átomo e o template de dado há uma camada de composição de página, em `Templates/`, toda feita de átomos existentes e com
+ritmo e tipografia vindos dos tokens: **`SarakPageHeader`** (h1 único, subtítulo, trilha `SarakBreadcrumbs`, ações e esqueleto),
+**`SarakFilterBar`** (busca, seletores, segmentado e ações com o espaçamento do tema e "limpar filtros" opcional),
+**`SarakSegmentedControl`** (escolha única, `radiogroup` com setas e Home/End, contrato de valor da §6.4),
+**`SarakSection`** (título com nível configurável, ações, variante em cartão, e os estados vazio, carregando e erro de uma lista),
+**`SarakResourceRow`** (título, selos, pares rótulo-valor, um destino único focável e ações separadas; alvo de toque `touchTargetMin`)
+e **`SarakDescriptionList`** (`<dl>` sobre `SarakGrid`). Uma tela de lista e uma de detalhe se escrevem só com essas peças, sem
+`<header>`/`<section>`/`<form>` com estilo próprio; os moldes estão no kit ([[12-kit-do-consumidor]] §1.1).
+
 ## 6.3 Templates de dado: o dado vem do host
 
 **Nenhum template da lib faz rede.** Não há cliente HTTP em `src/`, nem prop `endpoint`.
@@ -356,6 +367,9 @@ formato do dado persistido, em `docs/persistencia-de-tema.md`.
 - **`options.persistence.onLoad`** devolve o design, ou `{ design, activeThemeId }`, ou `null`/`undefined` para
   *nada gravado*. Quem devolve só o design continua compilando e funcionando. O id carregado **não** vence a
   prop controlada `activeThemeId`.
+- **`options.persistence.onSave` pode rejeitar:** a lib mantém a alteração, avisa só no Provider que falhou e tenta de novo na próxima
+  mudança. **`options.persistence.preferConfigOverCache`** (padrão `false`) faz o `config` do host vencer o cache no primeiro quadro.
+  **`sarakCreateThemeBootCss(design)`** devolve o CSS do primeiro quadro para o host escrever no HTML ([[09-temas-e-presets]] §4.4.2).
 - **Apagar tema** é `options.theme.onDelete` (a porta opcional do consumidor) e `useSarakUI().deleteTheme(id)`
   (o gesto) — [[017-porta-de-apagar-tema-simetrica-a-de-escrever]]. `SarakUIContextType` **exige** `deleteTheme`:
   quem monta o contexto à mão precisa fornecê-lo.
@@ -395,6 +409,13 @@ e tiram tamanho e cor de token:
   sumiço automático.
 
 Os nomes e tipos exatos são fonte viva: leia-os em `dist/index.d.ts` e no catálogo.
+
+- **Modal no tema.** O `SarakModal` desenha a borda (largura, estilo, cor) e a sombra dos tokens do cartão do tema.
+- **Autocomplete desabilitado.** `SarakAutocomplete` com `disabled` entrega o atributo ao campo: não edita, não abre a lista, não
+  recebe foco por clique.
+- **PDF.** `SarakPDFViewer` exige `workerSrc` (o worker do `pdfjs-dist` da instalação do consumidor); sem ele, mostra a própria
+  mensagem de erro e avisa uma vez no console nomeando a prop. O guia traz a linha de Vite e de Webpack 5.
+- **Props sem efeito saíram:** `role`, `density` e `importance` deixaram os tipos dos componentes que não os liam.
 
 ## 6.8 O motor de gráficos
 
@@ -445,6 +466,11 @@ referencia em `aria-describedby`; o controle sai com `aria-invalid`. Um formulá
   o mesmo DOM de sempre.
 - **Ícones do `SarakInput`:** `leftIcon` e `rightIcon` aparecem **juntos**, cada um no seu lado, e o da direita é
   clicável (é o que permite "mostrar senha"); `icon` prevalece sobre os dois.
+- **Foco e descrição compostos:** o `SarakInput` compõe o `onFocus`/`onBlur` do chamador com o próprio estado de foco e junta os ids
+  de `aria-describedby` do chamador ao do erro, sem repetição.
+- **Padding nos dois eixos:** `inputPadding` é o vertical (`--sarak-input-padding-vertical`) e `inputPaddingHorizontal` o horizontal
+  (`--sarak-input-padding-horizontal`); `--sarak-input-padding` sobrevive só como sinônimo depreciado do **vertical** — quem escreve um
+  campo próprio não o usa como atalho de padding.
 - **Texto do átomo pelo idioma da lib:** os rótulos acessíveis padrão (como os do intervalo e do grupo de horário)
   saem do catálogo de i18n ([[10-seguranca-e-acessibilidade]] §3.6).
 

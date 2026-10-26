@@ -21,6 +21,7 @@ export const VERSION = path.join(KIT_DIR, 'VERSION');
 export const MIGRATIONS = path.join(KIT_DIR, 'docs', 'migracoes.md');
 export const MIGRATIONS_SOURCE = path.join(ROOT, 'docs', 'migracoes.md');
 export const SKILL_DIR = path.join(KIT_DIR, 'skill');
+export const TEMPLATES_DIR = path.join(KIT_DIR, 'templates');
 export const SKILL_SOURCE = path.join(ROOT, '.agents', 'skills', 'ui-integra-consumidor');
 
 export const APPENDIX_MARKER = 'SARAK-KIT:APENDICE-GERADO';

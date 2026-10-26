@@ -5,6 +5,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { SarakAppChrome } from '../SarakAppChrome';
 import SarakUIProvider from '../../../core/Provider/SarakUIProvider';
 import { SarakDeviceProvider, type SarakDeviceType } from '../../../core/Provider/DeviceProvider';
+import { FLUID_MAX_CONTENT_WIDTH } from '../../../core/Design/schema/system';
 
 // Os tokens de cromo do painel passam a ter efeito no SarakAppChrome.
 // Os testes por token, isolados, moram em `chrome/__tests__/ChromeSidebarBody` e
@@ -97,6 +98,17 @@ describe('SarakAppChrome — largura e densidade da região de conteúdo', () =>
         const content = container.querySelector('[data-sarak-content]') as HTMLElement;
 
         expect(content).toHaveStyle({ width: '100%', maxWidth: '100%', marginInline: 'auto' });
+    });
+
+    it('usa o modo fluido do schema como padrão da região', () => {
+        const { container } = renderAtDevice(
+            'desktop',
+            <SarakAppChrome nav={[]}><div>conteúdo</div></SarakAppChrome>,
+            {},
+        );
+        const content = container.querySelector('[data-sarak-content]') as HTMLElement;
+
+        expect(content.style.maxWidth).toBe(FLUID_MAX_CONTENT_WIDTH);
     });
 });
 

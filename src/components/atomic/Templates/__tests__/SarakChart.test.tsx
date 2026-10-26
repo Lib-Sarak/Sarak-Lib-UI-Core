@@ -50,6 +50,13 @@ describe('SarakChart', () => {
         expect(asFragment()).toMatchSnapshot();
     });
 
+    it('usa a cor de destaque no fundo da dica de dados do gráfico', () => {
+        const { container } = render(<SarakChart data={[SAMPLE_CHART_POINT]} label="Test Chart" />);
+        const tooltip = container.querySelector('[class*="group-hover/item:opacity-100"]');
+        expect(tooltip?.className).toContain('--sarak-emphasis-color');
+        expect(tooltip?.className).not.toContain('--color-theme-title');
+    });
+
     it('keeps the last points visible with a stale notice and retry action', () => {
         const loadData = vi.fn();
         vi.mocked(useChartData).mockReturnValue({

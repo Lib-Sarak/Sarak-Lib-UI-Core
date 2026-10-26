@@ -108,7 +108,7 @@ function CalendarHeader({ title, onPrevious, onToday, onNext }: CalendarHeaderPr
                 aria-live="polite"
                 style={{
                     fontWeight: 'var(--sarak-body-weight, 400)',
-                    color: 'var(--sarak-text-main, var(--color-theme-title, inherit))',
+                    color: 'var(--theme-title, var(--sarak-title-color, inherit))',
                 }}
             >
                 {title}

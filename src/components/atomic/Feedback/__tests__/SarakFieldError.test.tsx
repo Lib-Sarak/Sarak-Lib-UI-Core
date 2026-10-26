@@ -30,7 +30,7 @@ it('SarakFieldError não renderiza nem reserva espaço quando não há mensagem'
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 });
 
-it('SarakFieldError associa a mensagem ao campo pelo id usado em aria-describedby', () => {
+it('SarakInput preserva aria-describedby do chamador sem `error`', () => {
     render(
         <SarakUIProvider>
             <>

@@ -25,20 +25,35 @@ os tipos.
 
 ### 1.1 O estado aplicado — `options.persistence.onSave`/`onLoad`
 
-O **design corrente**, completo, exatamente como o motor de tokens o resolveu. Chamado a cada
-commit do design persistido (debounced), com dois argumentos:
+O **design aplicado**, completo, exatamente como o motor de tokens o resolveu. No painel, escolher
+um tema na galeria ou ajustar tokens muda apenas o rascunho; a prévia aparece imediatamente na tela
+de quem está editando, sem gravar. `Aplicar (N)` é a ação que
+confirma esse rascunho no Provider e persiste o estado aplicado; com a estratégia padrão (`hybrid`),
+isso também grava a chave de `localStorage` do tenant. A porta recebe dois argumentos:
 
 ```ts
 onSave?: (design: SarakThemePayload, activeThemeId?: string) => Promise<void> | void
 ```
 
-- `design` — o payload completo. **Pode não corresponder a nenhum tema salvo.** O usuário ajusta
-  tokens individuais no painel sem clicar em "Salvar tema" — o estado aplicado muda a cada ajuste,
-  o tema salvo (se algum) não.
-- `activeThemeId` — o id do tema que estava efetivamente no ar no instante do save (plan-42).
+- `design` — o payload completo. **Pode não corresponder a nenhum tema salvo.** A galeria e os
+  ajustes de token ficam no rascunho até `Aplicar (N)`; antes disso, não chamam esta porta nem gravam
+  o estado aplicado. Ao aplicar, o Provider persiste o design inteiro do rascunho.
+- `activeThemeId` — o id do tema que estava efetivamente no ar no instante do save.
   **Opcional de verdade:** vem `undefined` sempre que não há nenhum tema resolvido ainda. Pode
   apontar tanto para um tema embarcado da lib (`'minimalist-airy'`, por exemplo) quanto para um
   tema salvo pelo importador — a lib não distingue as duas origens neste campo.
+
+Trate os valores de `design` como opacos. Tokens de cor podem conter `var()` e `color-mix()` aninhados,
+e não precisam ser cores literais. O backend pode guardar o JSON como veio ou validar apenas sua forma;
+não rejeite esses valores por esperar um formato simples de cor. Por exemplo, o tema embarcado
+`cyberpunk-neon` envia este token dentro de `design`:
+
+```json
+{
+  "mode": "dark",
+  "cardSearchPlaceholderColor": "var(--sarak-input-placeholder-color, color-mix(in srgb, var(--sarak-input-text-color, var(--text-muted, rgba(242, 246, 251, 0.55))) 30%, transparent))"
+}
+```
 
 `onLoad` é o inverso. Continua aceitando o formato antigo, que devolve apenas o `design`, ou pode
 devolver o par:
@@ -57,8 +72,21 @@ nenhum estado foi salvo. `onLoad` não recebe argumento: a lib nunca pede identi
 porque não tem esse conceito (§4). Ao trocar `tenantId`, a lib chama `onLoad` de novo sem exigir
 remontagem do Provider.
 
-O boot e a hidratação não chamam `onSave`. Depois que a carga termina, alterações reais do design
-continuam sendo gravadas pelo debounce; uma aplicação explícita também grava imediatamente.
+No cache local da estratégia `hybrid`, o design continua no formato JSON bruto da chave efetiva
+(`storageKey`, já particionada por `tenantId`) e o id fica na chave companheira
+`${storageKey}::active-theme-id`. Assim, o cache restaura o par sem alterar o formato de design
+que o sync entre abas já lê. O id do cache é usado enquanto `onLoad` está pendente; um id devolvido
+por `onLoad` substitui o cache e atualiza as duas entradas locais sem chamar `onSave`. Se a resposta
+não trouxer id, o id em cache é mantido. A prop controlada continua acima das duas fontes.
+
+O boot e a hidratação não chamam `onSave`. Depois da carga, alterações aplicadas diretamente ao
+Provider continuam sendo gravadas pelo debounce. No painel, `Aplicar (N)` confirma o rascunho e
+grava imediatamente pelo `onSave` do estado aplicado; não chama `options.theme.onSave`, que é a
+porta separada para salvar um tema nomeado (§1.2).
+
+Se `onSave` rejeitar, a alteração permanece aplicada na tela e a biblioteca mostra um aviso
+traduzido. A tentativa não é marcada como gravada; não há repetição automática, e a próxima mudança
+aplicada tenta salvar de novo.
 
 #### Troca de tenant no Provider montado
 
@@ -200,10 +228,11 @@ function App({ temasSalvos, estadoAplicado }: {
           // o contrário (ADR-009 §2.2).
           strategy: 'hybrid',
           onSave: async (design, activeThemeId) => {
-            await fetch('/api/tema/estado', {
+            const response = await fetch('/api/tema/estado', {
               method: 'PUT',
               body: JSON.stringify({ design, activeThemeId }), // §1.1 — guarde os dois, byte a byte
             });
+            if (!response.ok) throw new Error(`Falha ao salvar tema: HTTP ${response.status}`);
           },
           onLoad: async () => {
             const res = await fetch('/api/tema/estado');
@@ -239,7 +268,8 @@ function App({ temasSalvos, estadoAplicado }: {
 **Contrato de falha das portas.** Uma porta de gravação precisa rejeitar sua Promise quando a
 operação falha. `fetch` não rejeita por respostas HTTP 4xx/5xx: confira `response.ok` e lance um
 erro, como no exemplo. Resolver a Promise depois de uma resposta de falha comunica sucesso à
-biblioteca; não capture nem engula esse erro.
+biblioteca; não capture nem engula esse erro. A rejeição de `persistence.onSave` deixa o tema em tela,
+mostra o aviso localizado e permite nova tentativa quando outra mudança for aplicada.
 
 ## 6. O primeiro paint
 
@@ -257,27 +287,27 @@ Três saídas, cada uma com o trade explícito:
 
 | Saída | O que ganha | O que custa |
 |---|---|---|
-| Injetar o design no HTML servido e passar em `config` | **Zero flash, zero espera** — o tema certo já está no primeiro paint | Exige que o **seu servidor** conheça o tema antes de responder a página. É o conserto de verdade, não uma correção de sintoma |
+| Injetar o design no HTML servido, pintar o fundo no HTML e passar em `config` | **Zero flash, zero espera** — o fundo aparece antes do JavaScript e o Provider começa com o mesmo design | Exige que o **seu servidor** conheça o tema antes de responder e renderize o fundo usando `design.colorBgBody` |
 | `options.persistence.strictBackendSync: true` | Zero flash — nunca pinta o tema errado | Troca o flash por **tela vazia** enquanto `onLoad` corre (`SarakUIProvider.tsx:189-190`) |
 | Aceitar o flash | Zero esforço | Uma troca de tema visível, **uma vez por navegador** |
 
-### A precedência — `config` × `localStorage` × semente
+### A precedência — `config` × `onLoad` × cache × semente
 
 Medida em `useDesignManager.ts:68` (a semente) e `:93-104` (a leitura inicial):
 
 ```
-getSeedConfig()  =  { ...masterDefaults, ...temaDoCatálogo, ...config }   // config.ts:68
+getSeedConfig()  =  { ...masterDefaults, ...temaDoCatálogo, ...config }
 
-localStorage tem valor?  →  { ...getSeedConfig(), ...JSON.parse(localStorage) }   // :100 — o CACHE vence
-localStorage vazio?      →  getSeedConfig()                                       // :103 — CONFIG vence
+prop `activeThemeId` controlada? → esse id vence
+`onLoad` devolveu um id?          → usa o id remoto e atualiza o cache em `hybrid`
+cache local tem id?               → usa o id do cache até a resposta remota
+nenhuma fonte acima?              → usa o id da semente
 ```
 
-**Num navegador novo (sem cache), `config` manda no primeiro paint** — é a saída da primeira linha
-da tabela acima. Com cache presente, o `localStorage` vence o `config` injetado, e isso **está
-certo**: o cache costuma carregar o valor mais recente, e `onLoad` (quando configurado) corrige
-por cima se não for. Mas quem injeta `config` esperando que ele **sempre** vença — inclusive depois
-que o usuário já visitou o site antes — vê um comportamento que parece aleatório se não souber
-desta ordem.
+O padrão mantém a compatibilidade: com cache local, o cache vence `config`; sem cache, `config`
+vence a semente. Quando o host injeta o design de boot como fonte da verdade, defina
+`persistence.preferConfigOverCache: true`: o `config` pinta já no primeiro render e o cache antigo
+não o substitui. Um `onLoad` posterior ainda vence esse design e, em `hybrid`, atualiza o cache.
 
 ## 7. Modelagem de referência
 

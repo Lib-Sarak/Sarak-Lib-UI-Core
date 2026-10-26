@@ -231,11 +231,11 @@ export const OverlaysSchema: ComponentSchema = {
             type: 'color',
             kind: 'aesthetic',
             modeDependent: true,
-            usage: 'Cor do texto da caixa do `SarakTooltip`; precisa de contraste com `tooltipBg`.',
+            usage: 'Cor do texto corrido da caixa do `SarakTooltip`; precisa de contraste com `tooltipBg`.',
             interactsWith: ['tooltipBg'],
-            description: 'Cor do texto exibido dentro da caixa de tooltip — deve manter contraste alto contra `tooltipBg`.',
+            description: 'Cor do conteúdo exibido dentro da caixa de tooltip — deve manter contraste alto contra `tooltipBg`.',
             axis: 'color',
-            defaultValue: 'var(--color-theme-title, #f2f6fb)',
+            defaultValue: 'var(--theme-text-primary, var(--sarak-text-main, #f2f6fb))',
             cssVars: ['--sarak-tooltip-text']
         },
         {

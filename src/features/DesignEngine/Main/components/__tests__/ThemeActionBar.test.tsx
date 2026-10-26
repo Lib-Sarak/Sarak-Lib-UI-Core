@@ -22,13 +22,30 @@ const createProps = (overrides: Partial<React.ComponentProps<typeof ThemeActionB
 
 describe('ThemeActionBar', () => {
     it.each([
-        [0, 'Aplicar', true],
-        [1, 'Aplicar (1)', false],
-        [3, 'Aplicar (3)', false]
-    ])('mostra a contagem de tokens alterados (%i)', (dirtyTokenCount, label, isDisabled) => {
+        [0, null, true],
+        [1, '1 alteração', false],
+        [3, '3 alterações', false]
+    ])('mostra o contador de alterações como texto auxiliar (%i)', (dirtyTokenCount, pendingCount, isDisabled) => {
         render(<ThemeActionBar {...createProps({ dirtyTokenCount })} />);
 
-        expect(screen.getByRole('button', { name: label })).toHaveProperty('disabled', isDisabled);
+        const applyButton = screen.getByRole('button', { name: 'Aplicar' });
+        expect(applyButton).toHaveProperty('disabled', isDisabled);
+        expect(applyButton).toHaveClass('disabled:opacity-80');
+
+        if (pendingCount) {
+            expect(screen.getByRole('status')).toHaveTextContent(pendingCount);
+            expect(applyButton).toHaveAttribute('aria-describedby', 'theme-pending-changes-count');
+        } else {
+            expect(screen.queryByRole('status')).toBeNull();
+            expect(applyButton).not.toHaveAttribute('aria-describedby');
+        }
+    });
+
+    it('permite que os rótulos quebrem dentro da largura da barra', () => {
+        render(<ThemeActionBar {...createProps({ canSaveToRuntime: true })} />);
+
+        expect(screen.getByRole('button', { name: 'Exportar JSON' })).toHaveClass('min-w-0', 'whitespace-normal', 'break-words');
+        expect(screen.getByRole('button', { name: 'Salvar tema' })).toHaveClass('min-w-0', 'whitespace-normal', 'break-words');
     });
 
     it('descarta o rascunho pelo callback global', async () => {

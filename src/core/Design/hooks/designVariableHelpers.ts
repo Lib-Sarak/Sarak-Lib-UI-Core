@@ -78,6 +78,8 @@ const ON_COLOR_SOURCES: Record<string, string> = {
     '--sarak-on-muted': '--sarak-text-muted',
     // O botão selecionado dos seletores da barra (`ShellFontSizeControl`, `ShellNavigationStyleControl`) usa a cor do item ativo como FUNDO.
     '--sarak-on-nav-active': '--sarak-nav-active-color',
+    '--sarak-on-sidebar': '--sarak-sidebar-bg',
+    '--sarak-on-topbar': '--sarak-topbar-bg',
 };
 
 /**

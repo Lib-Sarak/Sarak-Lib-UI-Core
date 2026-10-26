@@ -101,6 +101,7 @@ describe('ThemeSidebarContent', () => {
         expect(getSchemaDefaultValue('--theme-card')).toBe('#101622');
         expect(block.className).toContain('--theme-border');
         expect(getSchemaDefaultValue('--theme-border')).toBe('rgba(255, 255, 255, 0.09)');
+        expect(screen.getByRole('heading', { name: 'Começar de um tema' }).className).toContain('--sarak-type-scale-xl');
         expect(subtitle.className).toContain('--sarak-type-scale-caption');
         expect(getSchemaDefaultValue('--sarak-type-scale-caption')).toBe(12);
         expect(getSchemaDefaultValue('--theme-title')).toBe('#f2f6fb');

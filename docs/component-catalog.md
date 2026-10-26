@@ -41,6 +41,8 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakForm` | `mode` | `create` · `edit` |
 | `SarakIconButton` | `variant` | `primary` · `secondary` · `ghost` · `danger` |
 | `SarakIconButton` | `size` | `xs` · `sm` · `md` · `lg` |
+| `SarakMenuItem` | `markerPosition` | `edge` · `top` |
+| `SarakSection` | `variant` | `plain` · `card` |
 | `SarakShellLanguageSelector` | `variant` | `horizontal` · `vertical` |
 | `SarakShellNav` | `orientation` | `vertical` · `horizontal` · `auto` |
 | `SarakShellSearchWidget` | `variant` | `bar` · `icon` |
@@ -56,7 +58,7 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 
 Vars REAIS emitidas pelo Design Engine. Use SEMPRE com fallback — `var(--sarak-x, valor)`. Nomes fora desta lista NÃO existem e não pintam nada.
 
-`--sarak-accent-color` · `--sarak-bg-gradient-angle` · `--sarak-bg-gradient-mode` · `--sarak-bg-opacity` · `--sarak-body-font` · `--sarak-border-radius` · `--sarak-border-style` · `--sarak-border-type` · `--sarak-border-width` · `--sarak-card-bg` · `--sarak-card-border` · `--sarak-card-padding-md` · `--sarak-card-radius` · `--sarak-card-shadow-blur` · `--sarak-card-shadow-expansion` · `--sarak-card-shadow-offset-x` · `--sarak-card-shadow-offset-y` · `--sarak-card-shadow-spread` · `--sarak-chart-thickness` · `--sarak-chat-anim-speed` · `--sarak-chat-bubble` · `--sarak-color-depth` · `--sarak-color-variation` · `--sarak-error-color` · `--sarak-flow-grid` · `--sarak-flow-radius` · `--sarak-font-scale` · `--sarak-font-size` · `--sarak-glass-blur` · `--sarak-glass-opacity` · `--sarak-glass-saturation` · `--sarak-heading-font` · `--sarak-icon-stroke` · `--sarak-layered-shadows` · `--sarak-layout-density` · `--sarak-layout-gap` · `--sarak-layout-gap-lg` · `--sarak-layout-gap-md` · `--sarak-layout-gap-sm` · `--sarak-line-height` · `--sarak-max-width` · `--sarak-mode` · `--sarak-nav-style` · `--sarak-navigation-style` · `--sarak-noise-density` · `--sarak-primary-color` · `--sarak-secondary-color` · `--sarak-shadow-intensity` · `--sarak-sidebar-active-color` · `--sarak-sidebar-bg` · `--sarak-sidebar-hover-color` · `--sarak-sidebar-noise-opacity` · `--sarak-sidebar-width` · `--sarak-success-color` · `--sarak-surface` · `--sarak-surface-color` · `--sarak-surface-intensity` · `--sarak-switch-style-type` · `--sarak-system-tone` · `--sarak-tab-gap` · `--sarak-tab-section-margin` · `--sarak-tertiary-color` · `--sarak-texture` · `--sarak-texture-color` · `--sarak-texture-opacity` · `--sarak-title-color` · `--sarak-topbar-active-color` · `--sarak-topbar-bg` · `--sarak-topbar-height` · `--sarak-topbar-hover-color` · `--sarak-topbar-noise-opacity` · `--sarak-warning-color`
+`--sarak-accent-color` · `--sarak-bg-gradient-angle` · `--sarak-bg-gradient-mode` · `--sarak-bg-opacity` · `--sarak-body-font` · `--sarak-border-radius` · `--sarak-border-style` · `--sarak-border-type` · `--sarak-border-width` · `--sarak-card-bg` · `--sarak-card-border` · `--sarak-card-padding-md` · `--sarak-card-radius` · `--sarak-card-shadow-blur` · `--sarak-card-shadow-expansion` · `--sarak-card-shadow-offset-x` · `--sarak-card-shadow-offset-y` · `--sarak-card-shadow-spread` · `--sarak-chart-thickness` · `--sarak-chat-anim-speed` · `--sarak-chat-bubble` · `--sarak-color-depth` · `--sarak-color-variation` · `--sarak-error-color` · `--sarak-flow-grid` · `--sarak-flow-radius` · `--sarak-font-scale` · `--sarak-font-size` · `--sarak-glass-blur` · `--sarak-glass-opacity` · `--sarak-glass-saturation` · `--sarak-heading-font` · `--sarak-icon-stroke` · `--sarak-layered-shadows` · `--sarak-layout-density` · `--sarak-layout-gap` · `--sarak-layout-gap-lg` · `--sarak-layout-gap-md` · `--sarak-layout-gap-sm` · `--sarak-line-height` · `--sarak-mode` · `--sarak-nav-style` · `--sarak-navigation-style` · `--sarak-noise-density` · `--sarak-primary-color` · `--sarak-secondary-color` · `--sarak-shadow-intensity` · `--sarak-sidebar-active-color` · `--sarak-sidebar-bg` · `--sarak-sidebar-hover-color` · `--sarak-sidebar-noise-opacity` · `--sarak-sidebar-width` · `--sarak-success-color` · `--sarak-surface` · `--sarak-surface-color` · `--sarak-surface-intensity` · `--sarak-switch-style-type` · `--sarak-system-tone` · `--sarak-tab-gap` · `--sarak-tab-section-margin` · `--sarak-tertiary-color` · `--sarak-texture` · `--sarak-texture-color` · `--sarak-texture-opacity` · `--sarak-title-color` · `--sarak-topbar-active-color` · `--sarak-topbar-bg` · `--sarak-topbar-height` · `--sarak-topbar-hover-color` · `--sarak-topbar-noise-opacity` · `--sarak-warning-color`
 
 ### Ícones (117 nomes válidos)
 
@@ -66,7 +68,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `ListOrdered` · `Grid` · `Layout` · `LayoutDashboard` · `LayoutGrid` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `ZoomIn` · `ZoomOut` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `ShieldCheck` · `Eye` · `EyeOff` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Bold` · `Italic` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Binary` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `Link2` · `ExternalLink` · `Command` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Settings2` · `Zap` · `Sparkles` · `Compass` · `Sun` · `Moon` · `XCircle` · `ToggleLeft` · `ToggleRight`
 
-## Componentes públicos (102)
+## Componentes públicos (108)
 
 ### SARAK_DEFAULT_COLUMN_WIDTH
 
@@ -581,6 +583,16 @@ Props (`SarakDatePickerProps` — `src/components/atomic/Inputs/SarakDatePicker.
 | `style` | `React.CSSProperties` | não |  |
 | `onChange` | `(value: SarakDatePickerValue) => void` | não | Emite a nova data/intervalo em ISO (Spec 32: `onChange(value)`). |
 
+### SarakDescriptionList
+
+Props (`SarakDescriptionListProps` — `src/components/atomic/Templates/SarakDescriptionList.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `items` | `SarakDescriptionListItem[]` | sim |  |
+
+Estende: `Omit<React.HTMLAttributes<HTMLDListElement>, 'children'>`
+
 ### SarakDivider
 
 Props (`SarakDividerProps` — `src/components/atomic/Layouts/SarakDivider.tsx`):
@@ -653,6 +665,19 @@ Props (`SarakFieldErrorProps` — `src/components/atomic/Feedback/SarakFieldErro
 | --- | --- | --- | --- |
 | `message` | `string` | não | Mensagem do erro. Omitida, vazia ou composta só por espaços, não renderiza elemento nem reserva espaço; espaços nas bordas não são removidos do texto exibido. |
 | `fieldId` | `string` | sim | `id` do controle descrito; a mensagem recebe o id `${fieldId}-error`. É obrigatório em TypeScript; se omitido ao contornar a tipagem, a mensagem continua visível e anunciada, mas não pode ser associada ao campo. No controle, use esse id da mensagem em `aria-describedby`. |
+
+### SarakFilterBar
+
+Props (`SarakFilterBarProps` — `src/components/atomic/Templates/SarakFilterBar.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `ariaLabel` | `string` | sim |  |
+| `children` | `React.ReactNode` | sim |  |
+| `actions` | `React.ReactNode` | não |  |
+| `clearFilters` | `{ label: string; onClick: () => void; }` | não |  |
+
+Estende: `React.HTMLAttributes<HTMLDivElement>`
 
 ### SarakFilterSelect
 
@@ -799,12 +824,12 @@ Props (`SarakInputProps` — `src/components/atomic/Inputs/SarakInput.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `label` | `string` | não | Rótulo visual ligado ao campo pelo `id` (gerado quando não é informado). Sem ele, não há rótulo visível; forneça outro nome acessível se necessário. |
-| `icon` | `React.ReactNode` | não | Ícone do campo; sua posição vem do layout do tema e ele não recebe clique. Quando definido, prevalece sobre `leftIcon` e `rightIcon`; sem os três, não há ícone. |
-| `leftIcon` | `React.ReactNode` | não | Ícone do lado esquerdo, usado somente quando `icon` não é fornecido. Junto com `rightIcon`, os dois aparecem, cada um no seu lado. Sozinho, segue a posição do layout do tema. |
-| `rightIcon` | `React.ReactNode` | não | Ícone do lado direito, usado somente quando `icon` não é fornecido. Aceita clique (por exemplo, o botão de mostrar a senha). Junto com `leftIcon`, fica à direita; sozinho, segue a posição do layout do tema. |
-| `error` | `string` | não | Mensagem abaixo do campo, ligada por `aria-describedby`, que também marca `aria-invalid`. Sem a prop, não há mensagem nem estado inválido. |
-| `fullWidth` | `boolean` | não | Faz o grupo do campo ocupar toda a largura disponível. Omitida ou `false`, a largura fica a cargo do layout pai. |
+| `label` | `string` | não |  |
+| `icon` | `React.ReactNode` | não |  |
+| `leftIcon` | `React.ReactNode` | não |  |
+| `rightIcon` | `React.ReactNode` | não |  |
+| `error` | `string` | não |  |
+| `fullWidth` | `boolean` | não |  |
 
 Estende: `InputHTMLAttributes<HTMLInputElement>`
 
@@ -917,6 +942,7 @@ Props (`SarakMenuItemProps` — `src/components/atomic/Navigation/SarakMenuItem.
 | `disabled` | `boolean` | não |  |
 | `onClick` | `React.MouseEventHandler<HTMLElement>` | não |  |
 | `className` | `string` | não |  |
+| `markerPosition` | `'edge' \| 'top'` | não | A barra inferior do celular ancora o indicador no topo do item. |
 
 Estende: `Omit<React.HTMLAttributes<HTMLElement>, 'title' | 'onClick' | 'type'>`
 
@@ -971,6 +997,23 @@ Props (`SarakPDFViewerProps` — `src/components/atomic/Media/SarakPDFViewer/Sar
 | `workerSrc` | `string` | sim | URL do worker da versão de `pdfjs-dist` instalada pelo consumidor. Vite: `import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';` Webpack 5: `new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).toString()`. |
 | `onDownload` | `(src: SarakPdfSource) => void` | não | Disparado ao clicar em Download (recebe a `src` quando string). |
 | `className` | `string` | não |  |
+
+### SarakPageHeader
+
+Props (`SarakPageHeaderProps` — `src/components/atomic/Templates/SarakPageHeader.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `title` | `React.ReactNode` | sim |  |
+| `subtitle` | `React.ReactNode` | não |  |
+| `breadcrumbs` | `SarakBreadcrumbItem[]` | não |  |
+| `onBreadcrumbNavigate` | `(href: string) => void` | não |  |
+| `primaryActions` | `React.ReactNode` | não |  |
+| `secondaryActions` | `React.ReactNode` | não |  |
+| `loading` | `boolean` | não |  |
+| `loadingLabel` | `string` | não |  |
+
+Estende: `Omit<React.HTMLAttributes<HTMLElement>, 'title'>`
 
 ### SarakPageTransition
 
@@ -1040,6 +1083,22 @@ Props (`SarakRangeSliderProps` — `src/components/atomic/Inputs/SarakRangeSlide
 
 Estende: `Omit<HTMLAttributes<HTMLDivElement>, 'onChange' | 'defaultValue'>`
 
+### SarakResourceRow
+
+Props (`SarakResourceRowProps` — `src/components/atomic/Templates/SarakResourceRow.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `title` | `React.ReactNode` | sim |  |
+| `description` | `React.ReactNode` | não |  |
+| `badges` | `React.ReactNode[]` | não |  |
+| `metadata` | `SarakDescriptionListItem[]` | não |  |
+| `actions` | `SarakResourceRowAction[]` | não |  |
+| `href` | `string` | não |  |
+| `onNavigate` | `(href: string) => void` | não |  |
+
+Estende: `Omit<React.HTMLAttributes<HTMLElement>, 'title'>`
+
 ### SarakRichText
 
 Props (`SarakRichTextProps` — `src/components/atomic/Inputs/SarakRichText.tsx`):
@@ -1078,8 +1137,8 @@ Props (`SarakSearchProps` — `src/components/atomic/Inputs/SarakSearch.tsx`):
 | --- | --- | --- | --- |
 | `isOpen` | `boolean` | sim |  |
 | `onClose` | `() => void` | sim |  |
-| `items` | `SarakSearchItem[]` | sim | Itens da busca, fornecidos pela navegação do aplicativo. |
-| `onSelect` | `(id: string) => void` | não | Seleciona um item, por clique ou teclado (`Enter`/`Espaço`). Sem esta prop, os resultados não são acionáveis — o comportamento de sempre. |
+| `items` | `SarakSearchItem[]` | sim |  |
+| `onSelect` | `(id: string) => void` | não |  |
 
 ### SarakSearchCard
 
@@ -1094,6 +1153,39 @@ Props (`SarakSearchCardProps` — `src/components/atomic/Cards/SarakSearchCard.t
 | `onToggleCapability` | `(cap: string, active: boolean) => void` | não | Recebe a capacidade (`vision`, `web` ou `chat`) e seu novo estado; sem callback, os alternadores mudam apenas o estado local. |
 | `design` | `SarakThemePayload` | não | Substitui o tema do provider para este cartão; omitida, usa o tema global. |
 | `label` | `string` | não | Texto do selo de rascunho; sem a prop, usa `Card de Interação`, e o selo só aparece durante a composição de rascunho. |
+
+### SarakSection
+
+Props (`SarakSectionProps` — `src/components/atomic/Templates/SarakSection.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `title` | `React.ReactNode` | sim |  |
+| `description` | `React.ReactNode` | não |  |
+| `actions` | `React.ReactNode` | não |  |
+| `children` | `React.ReactNode` | não |  |
+| `headingLevel` | `2 \| 3 \| 4 \| 5 \| 6` | não |  |
+| `variant` | `'plain' \| 'card'` | não |  |
+| `loading` | `boolean` | não |  |
+| `loadingLabel` | `string` | não |  |
+| `emptyState` | `{ title?: React.ReactNode; description?: React.ReactNode; action?: React.ReactNode; }` | não |  |
+| `error` | `{ title: string; message: string; retryLabel?: string; onRetry?: () => void; }` | não |  |
+
+Estende: `Omit<React.HTMLAttributes<HTMLElement>, 'title'>`
+
+### SarakSegmentedControl
+
+Props (`SarakSegmentedControlProps` — `src/components/atomic/Templates/SarakSegmentedControl.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `options` | `SarakSegmentedOption[]` | sim |  |
+| `ariaLabel` | `string` | sim |  |
+| `value` | `string` | não |  |
+| `defaultValue` | `string` | não |  |
+| `onValueChange` | `(value: string) => void` | não |  |
+
+Estende: `Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'>`
 
 ### SarakSelect
 
@@ -1136,10 +1228,10 @@ Props (`SarakShellSearchWidgetProps` — `src/components/atomic/Navigation/Sarak
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `variant` | `'bar' \| 'icon'` | não | Escolhe a barra de busca ou o gatilho de menu; omitida, usa `bar`, que fica oculto abaixo do breakpoint `md`. |
-| `items` | `SarakSearchItem[]` | não | Resultados fornecidos pelo aplicativo. |
-| `onClick` | `() => void` | sim | Callback do gatilho `icon`; obrigatório. |
-| `onSelect` | `(item: SarakSearchItem) => void` | não | Seleciona um resultado da variante `bar`. |
+| `variant` | `'bar' \| 'icon'` | não |  |
+| `items` | `SarakSearchItem[]` | não |  |
+| `onClick` | `() => void` | sim |  |
+| `onSelect` | `(item: SarakSearchItem) => void` | não |  |
 
 ### SarakShellThemeToggle
 
@@ -1388,7 +1480,7 @@ Props (`SarakTypographyProps` — `src/components/atomic/Atoms/SarakTypography.t
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `variant` | `SarakTypographyVariant` | não | Escala tipográfica (Spec typography — tokens `h1Size`/`h2Size`/etc). Default: `body`. |
-| `color` | `SarakTypographyColor` | não | Cor de texto (`textColorMaster`/`textColorSecondary`/`textColorMuted`). Default: `main`. |
+| `color` | `SarakTypographyColor` | não | Papel de cor do texto. Títulos usam `title` por padrão; os demais usam `main`. |
 | `as` | `React.ElementType` | não | Tag HTML a renderizar; sobrepõe o default semântico do `variant`. |
 | `transform` | `'none' \| 'uppercase' \| 'capitalize'` | não | Sobrepõe `--sarak-h-transform` só para esta instância. |
 | `content` | `string` | não | Texto via prop, para quando a origem é uma string e não nós filhos (ex.: dado vindo de uma API). Tem prioridade sobre `children` quando ambos são passados. |

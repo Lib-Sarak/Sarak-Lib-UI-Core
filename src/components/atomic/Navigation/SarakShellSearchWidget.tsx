@@ -1,174 +1,165 @@
-import { SarakIcon } from "../Icon/SarakIcon";
-import React, { useState, useRef, useEffect } from 'react';
-
+import React, {
+    useEffect,
+    useId,
+    useRef,
+    useState,
+    type Dispatch,
+    type RefObject,
+    type SetStateAction,
+} from 'react';
+import { SarakIcon } from '../Icon/SarakIcon';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakInput } from '../Inputs/SarakInput';
 import type { SarakSearchItem } from '../Inputs/SarakSearch';
 import { SarakMenuItem } from './SarakMenuItem';
-import { SarakLink } from './SarakLink';
+import { getSearchModifierLabel } from '../Inputs/internal/searchPresentation';
+import { useSearchKeyboardNavigation } from '../Inputs/internal/useSearchKeyboardNavigation';
+import {
+    SarakShellSearchResults,
+    type SearchBarState,
+    type ShellSearchResultsState,
+} from './internal/SarakShellSearchResults';
 
 export interface SarakShellSearchWidgetProps {
-    /** Escolhe a barra de busca ou o gatilho de menu; omitida, usa `bar`, que fica oculto abaixo do breakpoint `md`. */
     variant?: 'bar' | 'icon';
-    /** Resultados fornecidos pelo aplicativo. */
     items?: SarakSearchItem[];
-    /** Callback do gatilho `icon`; obrigatório. */
     onClick: () => void;
-    /** Seleciona um resultado da variante `bar`. */
     onSelect?: (item: SarakSearchItem) => void;
 }
 
-/**
- * ShellSearchWidget — Adaptive Search Trigger (v8.5)
- * Standardizes search entry points for Topbar and Sidebar.
- */
-export const SarakShellSearchWidget: React.FC<SarakShellSearchWidgetProps> = ({
-    variant = 'bar', onClick, onSelect, items = []
-}) => {
-    const t = useLibraryText();
-    const [query, setQuery] = useState('');
-    const [isOpen, setIsOpen] = useState(false);
-    const containerRef = useRef<HTMLDivElement>(null);
+interface ShellSearchState extends ShellSearchResultsState {
+    containerRef: RefObject<HTMLDivElement>;
+    canShowResults: boolean;
+    handleKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+}
 
+const useShellSearchState = (
+    items: SarakSearchItem[],
+    onSelect?: (item: SarakSearchItem) => void
+): ShellSearchState => {
+    const [searchState, setSearchState] = useState<SearchBarState>({ query: '', isOpen: false, isInputFocused: false });
+    const containerRef = useRef<HTMLDivElement>(null);
+    useCloseSearchOnOutsideClick(containerRef, setSearchState);
+    const listboxId = 'sarak-shell-search-results-' + useId();
+    const getOptionId = (index: number): string => listboxId + '-option-' + index;
+    const filteredItems = items.filter((item) =>
+        item.label.toLowerCase().includes(searchState.query.toLowerCase()) ||
+        item.id.toLowerCase().includes(searchState.query.toLowerCase())
+    );
+    const canShowResults = searchState.isOpen && searchState.query.length > 0;
+    const selectActiveOption = (index: number): void => {
+        document.getElementById(getOptionId(index))?.click();
+    };
+    const keyboardNavigation = useSearchKeyboardNavigation({
+        query: searchState.query,
+        resultCount: canShowResults ? filteredItems.length : 0,
+        onSelectActive: selectActiveOption,
+    });
+    const selectResult = (item: SarakSearchItem): void => {
+        setSearchState({ query: '', isOpen: false, isInputFocused: false });
+        onSelect?.(item);
+    };
+
+    return {
+        ...searchState,
+        containerRef,
+        listboxId,
+        getOptionId,
+        filteredItems,
+        canShowResults,
+        ...keyboardNavigation,
+        setSearchState,
+        selectResult,
+    };
+};
+
+const useCloseSearchOnOutsideClick = (
+    containerRef: RefObject<HTMLDivElement>,
+    setSearchState: Dispatch<SetStateAction<SearchBarState>>
+): void => {
     useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
+        const handleClickOutside = (event: MouseEvent): void => {
             if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-                setIsOpen(false);
+                setSearchState((current) => ({ ...current, isOpen: false }));
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+    }, [containerRef, setSearchState]);
+};
 
-    const filteredModules = items.filter(m =>
-        m.label.toLowerCase().includes(query.toLowerCase()) ||
-        m.id.toLowerCase().includes(query.toLowerCase())
-    );
+const SearchShortcutBadge = ({ searchModifier, className = '' }: { searchModifier: string; className?: string }): React.ReactElement => (
+    <kbd
+        data-testid="sarak-shell-search-shortcut"
+        className={className + ' flex shrink-0 items-center rounded bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] text-[var(--sarak-type-scale-tiny,11px)] text-[var(--theme-muted)] font-black transition-opacity pointer-events-none'}
+        style={{
+            gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)',
+            paddingInline: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.75)',
+            paddingBlock: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.25)',
+        }}
+    >
+        <span>{searchModifier}</span>
+        <span aria-hidden="true">+</span>
+        <span>K</span>
+    </kbd>
+);
 
-    const selectResult = (item: SarakSearchItem): void => {
-        setIsOpen(false);
-        setQuery('');
-        onSelect?.(item);
-    };
+const SearchIconTrigger = ({ onClick }: { onClick: () => void }): React.ReactElement => {
+    const t = useLibraryText();
+    const searchModifier = getSearchModifierLabel(typeof navigator === 'undefined' ? '' : navigator.userAgent);
 
-    if (variant === 'icon') {
-        return (
-            <SarakMenuItem
-                onClick={onClick}
-                className="group font-tab"
-                title={t('shellSearchWidgetTitle')}
-                icon={<SarakIcon name="Search" size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />}
-                label={t('genericSearchLabel')}
-            >
-                <div
-                    className="ml-auto flex items-center rounded bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)] font-black opacity-0 group-hover:opacity-100 transition-opacity"
-                    style={{
-                        gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)',
-                        paddingInline: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.75)',
-                        paddingBlock: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.25)',
-                    }}
-                >
-                    <span>CTRL</span>
-                    <span>K</span>
-                </div>
-            </SarakMenuItem>
-        );
-    }
-
-    // Bar / Topbar Variant
     return (
-        <div className="hidden md:flex items-center w-64 min-w-0 max-w-full group relative" ref={containerRef}>
-            <SarakInput
-                type="search"
-                enterKeyHint="search"
-                value={query}
-                placeholder={t('shellSearchWidgetPlaceholder')}
-                onChange={(e) => {
-                    setQuery(e.target.value);
-                    setIsOpen(true);
-                }}
-                onFocus={() => setIsOpen(true)}
-                leftIcon={<SarakIcon name="Search" size={14} className="text-[var(--theme-muted)] group-focus-within:text-[var(--theme-primary)] transition-colors" />}
-                rightIcon={
-                    <div
-                        className="flex items-center rounded bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)] font-black transition-opacity pointer-events-none"
-                        style={{
-                            gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)',
-                            paddingInline: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.75)',
-                            paddingBlock: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.25)',
-                        }}
-                    >
-                        <span>CTRL</span>
-                        <span>K</span>
-                    </div>
-                }
-                fullWidth
-            />
+        <SarakMenuItem
+            onClick={onClick}
+            className="group font-tab"
+            title={t('shellSearchWidgetTitle')}
+            icon={<SarakIcon name="Search" size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />}
+            label={t('genericSearchLabel')}
+        >
+            <SearchShortcutBadge searchModifier={searchModifier} className="ml-auto opacity-0 group-hover:opacity-100" />
+        </SarakMenuItem>
+    );
+};
 
-            {/* Dropdown de Resultados */}
-            {isOpen && query.length > 0 && (
-                <div className="absolute top-[calc(100%+var(--sarak-search-dropdown-gap,0.5rem))] left-0 w-[var(--sarak-search-dropdown-width,400px)] bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-[var(--radius-theme)] shadow-[var(--dynamic-shadow)] overflow-hidden z-[calc(var(--sarak-z-sidebar,500)_+_100)]">
-                    <div className="max-h-[60vh] overflow-y-auto custom-scrollbar" style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                        {filteredModules.length > 0 ? (
-                            <div style={{ paddingBlock: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                                <h4
-                                    className="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] text-[var(--theme-muted)]"
-                                    style={{ paddingInline: 'var(--sarak-layout-gap-md, 16px)', marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}
-                                >
-                                    {t('shellSearchResultsHeading')}
-                                </h4>
-                                {filteredModules.map((mod) => {
-                                    const resultContent = (
-                                        <>
-                                        <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 1.5)' }}>
-                                            <div className="w-8 h-8 rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--theme-card)] flex items-center justify-center text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)] group-hover:bg-[var(--theme-primary)]/10 transition-all border border-[var(--theme-border)]">
-                                                <SarakIcon name="Command" size={14} />
-                                            </div>
-                                            <div className="flex" style={{ flexDirection: 'column' }}>
-                                                <span className="text-xs font-bold text-[var(--theme-title)]/80 group-hover:text-[var(--theme-primary)]">{mod.label}</span>
-                                                <span className="text-3xs text-[var(--theme-muted)] uppercase tracking-widest">{mod.category || t('genericModuleLabel')}</span>
-                                            </div>
-                                        </div>
-                                        <SarakIcon name="ArrowRight" className="w-3 h-3 text-[var(--theme-muted)] opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
-                                        </>
-                                    );
-                                    const resultClassName = 'group h-12 flex items-center justify-between rounded-[calc(var(--radius-theme)*0.8)] hover:bg-[var(--theme-primary)]/5 transition-all';
+const SearchBar = ({ items, onSelect }: { items: SarakSearchItem[]; onSelect?: (item: SarakSearchItem) => void }): React.ReactElement => {
+    const t = useLibraryText();
+    const state = useShellSearchState(items, onSelect);
+    const searchModifier = getSearchModifierLabel(typeof navigator === 'undefined' ? '' : navigator.userAgent);
 
-                                    return onSelect ? (
-                                        <SarakLink
-                                            key={mod.id}
-                                            href={mod.id}
-                                            onNavigate={() => selectResult(mod)}
-                                            className={`${resultClassName} w-full cursor-pointer !text-[var(--theme-title)] no-underline hover:no-underline`}
-                                            style={{ paddingInline: 'var(--sarak-layout-gap-md, 16px)' }}
-                                        >
-                                            {resultContent}
-                                        </SarakLink>
-                                    ) : (
-                                        <div
-                                            key={mod.id}
-                                            className={resultClassName}
-                                            style={{ paddingInline: 'var(--sarak-layout-gap-md, 16px)' }}
-                                        >
-                                            {resultContent}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        ) : (
-                            <div
-                                className="flex items-center justify-center text-center opacity-40"
-                                style={{ paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 2.5)', flexDirection: 'column' }}
-                            >
-                                <SarakIcon name="Search" className="w-8 h-8 text-[var(--theme-title)]" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }} />
-                                <span className="text-xs font-black uppercase tracking-widest text-[var(--theme-title)]">{t('searchNoResultsFor', { query })}</span>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            )}
+    return (
+        <div className="hidden md:flex items-center w-80 min-w-0 max-w-full group relative @container" ref={state.containerRef}>
+            <div className="flex w-full min-w-0 items-center" style={{ gap: 'var(--sarak-layout-gap-md, 16px)' }}>
+                <SarakInput
+                    type="search"
+                    enterKeyHint="search"
+                    role="combobox"
+                    aria-autocomplete="list"
+                    aria-controls={state.canShowResults ? state.listboxId : undefined}
+                    aria-expanded={state.canShowResults}
+                    aria-activedescendant={state.canShowResults && state.filteredItems.length > 0 ? state.getOptionId(state.activeIndex) : undefined}
+                    value={state.query}
+                    placeholder={t('shellSearchWidgetPlaceholder')}
+                    onChange={(event) => state.setSearchState((current) => ({ ...current, query: event.target.value, isOpen: true }))}
+                    onFocus={() => state.setSearchState((current) => ({ ...current, isInputFocused: true, isOpen: true }))}
+                    onBlur={() => state.setSearchState((current) => ({ ...current, isInputFocused: false }))}
+                    onKeyDown={state.handleKeyDown}
+                    leftIcon={<SarakIcon name="Search" size={14} className="text-[var(--theme-muted)] group-focus-within:text-[var(--theme-primary)] transition-colors" />}
+                    fullWidth
+                    className="min-w-0 flex-1"
+                />
+                {!state.isInputFocused && state.query.length === 0 && (
+                    <SearchShortcutBadge searchModifier={searchModifier} className="@max-xs:hidden" />
+                )}
+            </div>
+            {state.canShowResults && <SarakShellSearchResults state={state} onSelect={onSelect} />}
         </div>
     );
+};
+
+export const SarakShellSearchWidget = (props: SarakShellSearchWidgetProps): React.ReactElement => {
+    const variant = props.variant ?? 'bar';
+    if (variant === 'icon') return <SearchIconTrigger onClick={props.onClick} />;
+    return <SearchBar items={props.items ?? []} onSelect={props.onSelect} />;
 };
 
 export default SarakShellSearchWidget;

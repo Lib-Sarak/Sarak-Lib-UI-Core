@@ -36,13 +36,29 @@ vi.mock('../../Canvas/PreviewCanvas', () => ({
         isDualView,
         onCloseGallery,
         customThemes,
+        config,
+        mode,
+        draftMode,
+        draftTokens,
     }: {
         onApplyFullTheme?: (d: Record<string, unknown>) => void;
         isDualView?: boolean;
         onCloseGallery?: () => void;
         customThemes?: unknown;
+        config?: { mode?: string };
+        mode?: string;
+        draftMode?: string;
+        draftTokens?: { mode?: string };
     }) => (
-        <div data-testid="preview-canvas" data-gallery-open={String(Boolean(isDualView))} data-has-custom-themes-prop={String(customThemes !== undefined)}>
+        <div
+            data-testid="preview-canvas"
+            data-gallery-open={String(Boolean(isDualView))}
+            data-has-custom-themes-prop={String(customThemes !== undefined)}
+            data-preview-mode={mode}
+            data-preview-config-mode={config?.mode}
+            data-preview-token-mode={draftTokens?.mode}
+            data-raw-draft-mode={draftMode}
+        >
             <button data-testid="apply-full-theme" onClick={() => onApplyFullTheme?.({ mode: 'dark', primaryColor: '#38bdf8', systemName: 'ERP Noturno' })}>
                 Apply Full
             </button>
@@ -150,6 +166,7 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
 
         vi.mocked(useDesignDraft).mockReturnValue({
             draft: { mode: 'light' },
+            previewDraft: { mode: 'dark' },
             updateDraft: vi.fn(),
             handleApplyToSystem: mockHandleApplyToSystem,
             isComponentDirty: vi.fn(() => false),
@@ -170,6 +187,10 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
         expect(screen.getByTestId('preview-canvas')).toBeInTheDocument();
         expect(screen.getByTestId('preview-canvas')).toHaveAttribute('data-gallery-open', 'false');
         expect(screen.getByTestId('preview-canvas')).toHaveAttribute('data-has-custom-themes-prop', 'false');
+        expect(screen.getByTestId('preview-canvas')).toHaveAttribute('data-preview-mode', 'dark');
+        expect(screen.getByTestId('preview-canvas')).toHaveAttribute('data-preview-config-mode', 'dark');
+        expect(screen.getByTestId('preview-canvas')).toHaveAttribute('data-preview-token-mode', 'dark');
+        expect(screen.getByTestId('preview-canvas')).toHaveAttribute('data-raw-draft-mode', 'light');
         expect(fetchSpy).not.toHaveBeenCalled();
     });
 
@@ -246,6 +267,7 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
         const mockPreview = vi.fn();
         vi.mocked(useDesignDraft).mockReturnValue({
             draft: { mode: 'light' },
+            previewDraft: { mode: 'dark' },
             updateDraft: vi.fn(),
             handleApplyToSystem: mockHandleApplyToSystem,
             isComponentDirty: vi.fn(() => false),
@@ -280,6 +302,7 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
 
         vi.mocked(useDesignDraft).mockReturnValue({
             draft: { mode: 'light' },
+            previewDraft: { mode: 'dark' },
             updateDraft: vi.fn(),
             handleApplyToSystem: mockHandleApplyToSystem,
             isComponentDirty: vi.fn(() => false),
@@ -294,7 +317,8 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
 
         render(<ThemeCustomizationTab />);
 
-        const applyBtn = screen.getByRole('button', { name: 'Aplicar (1)' });
+        const applyBtn = screen.getByRole('button', { name: 'Aplicar' });
+        expect(screen.getByText('1 alteração')).toBeInTheDocument();
         fireEvent.click(applyBtn);
 
         expect(mockHandleApplyToSystem).toHaveBeenCalledTimes(1);

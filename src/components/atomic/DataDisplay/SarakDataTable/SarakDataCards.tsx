@@ -1,6 +1,6 @@
 import type React from 'react';
 import { useRef } from 'react';
-import * as TanstackReactVirtual from '@tanstack/react-virtual';
+import { requireTanstackUseVirtualizer } from '../optional-tanstack-virtualizer';
 import type { SarakColumn, SarakTableSort } from './columnModel';
 import { SarakDataCardsView } from './SarakDataCardsView';
 
@@ -27,6 +27,6 @@ export interface SarakDataCardsProps<T> {
 
 export default function SarakDataCards<T>(props: SarakDataCardsProps<T>): React.ReactElement {
     const scrollRef = useRef<HTMLDivElement>(null);
-    const virtualizer = TanstackReactVirtual.useVirtualizer({ count: props.rows.length, getScrollElement: () => scrollRef.current, estimateSize: () => props.estimatedCardHeight ?? props.columns.length * 28 + 40, overscan: props.overscan ?? 6 });
+    const virtualizer = requireTanstackUseVirtualizer()({ count: props.rows.length, getScrollElement: () => scrollRef.current, estimateSize: () => props.estimatedCardHeight ?? props.columns.length * 28 + 40, overscan: props.overscan ?? 6 });
     return <SarakDataCardsView props={props} scrollRef={scrollRef} totalSize={virtualizer.getTotalSize()} virtualRows={virtualizer.getVirtualItems()} measureElement={virtualizer.measureElement} />;
 }

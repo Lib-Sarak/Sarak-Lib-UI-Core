@@ -943,7 +943,7 @@
    "label": "Tamanho da Fonte do Título",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Tamanho da fonte do título do `SarakTitleCard`, e com ele a altura do cartão, por dispositivo."
+   "usage": "Tamanho da fonte do título do `SarakTitleCard` e dos cabeçalhos compostos por `SarakCard.Header`, por dispositivo."
   },
   {
    "id": "cardTitleFontWeight",
@@ -1349,6 +1349,20 @@
    "kind": "aesthetic",
    "modeDependent": false,
    "usage": "Lado da célula que se repete na grade de pontos do estado vazio geométrico e do `AuthHero`; define o espaçamento entre pontos."
+  },
+  {
+   "id": "emphasisColor",
+   "group": "colors",
+   "label": "Cor de Ênfase",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Dá ênfase a texto usando um tom acessível da cor de acento do tema; preserve o matiz e contraste de pelo menos 4,5:1.",
+   "interactsWith": [
+    "accentColor",
+    "colorBgBody",
+    "surfaceColor",
+    "cardBackgroundColor"
+   ]
   },
   {
    "id": "emptyStateCaptionMaxWidth",
@@ -2008,10 +2022,18 @@
   {
    "id": "inputPadding",
    "group": "inputs",
-   "label": "Espaçamento Interno (Y)",
+   "label": "Espaçamento Interno Vertical (Y)",
    "kind": "functional",
    "modeDependent": false,
-   "usage": "Controla o espaço vertical interno dos campos e, com isso, sua altura e área de toque."
+   "usage": "Controla o espaço interno vertical dos campos e, com isso, sua altura e área de toque."
+  },
+  {
+   "id": "inputPaddingHorizontal",
+   "group": "inputs",
+   "label": "Espaçamento Interno Horizontal (X)",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Controla o espaço interno horizontal padrão do SarakInput, afastando o texto das bordas laterais."
   },
   {
    "id": "inputShadow",
@@ -2230,7 +2252,7 @@
    "label": "Largura Máxima do Conteúdo",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Largura máxima da região de conteúdo do cromo, centralizada na tela; 100% ocupa a largura inteira."
+   "usage": "Centraliza a região de conteúdo do cromo. No modo fluido, as margens externas crescem com o contêiner, entre layoutPadding e 128px por lado; o respiro interno é escalado por layoutDensity."
   },
   {
    "id": "mobileNavigationStyle",
@@ -2922,12 +2944,108 @@
    ]
   },
   {
+   "id": "sidebarActiveItemStyle",
+   "group": "navigation",
+   "label": "Estilo do Item Ativo (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Tratamento visual do item ativo na barra lateral.",
+   "interactsWith": [
+    "sidebarActiveColor",
+    "navItemActiveColor",
+    "navActiveMarkerColor"
+   ]
+  },
+  {
+   "id": "sidebarBackgroundStyle",
+   "group": "navigation",
+   "label": "Tratamento do Fundo (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Tratamento de fundo da barra lateral.",
+   "interactsWith": [
+    "sidebarColor",
+    "sidebarNoiseOpacity"
+   ]
+  },
+  {
    "id": "sidebarBlur",
    "group": "navigation",
    "label": "Backdrop Blur (Sidebar)",
    "kind": "aesthetic",
    "modeDependent": false,
    "usage": "Desfoque do que passa atrás da navegação lateral, útil com cor translúcida.",
+   "interactsWith": [
+    "sidebarColor"
+   ]
+  },
+  {
+   "id": "sidebarBorderColor",
+   "group": "navigation",
+   "label": "Borda (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor da moldura da barra lateral.",
+   "interactsWith": [
+    "sidebarColor"
+   ]
+  },
+  {
+   "id": "sidebarBorderSide",
+   "group": "navigation",
+   "label": "Lados da Borda (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Lados da moldura da barra lateral; a opção externa acompanha sua posição e a barra flutuante usa todos os lados.",
+   "interactsWith": []
+  },
+  {
+   "id": "sidebarBorderStyle",
+   "group": "navigation",
+   "label": "Estilo da Borda (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Estilo de linha da moldura da barra lateral.",
+   "interactsWith": []
+  },
+  {
+   "id": "sidebarBorderWidth",
+   "group": "navigation",
+   "label": "Espessura da Borda (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Largura em pixels da moldura da barra lateral."
+  },
+  {
+   "id": "sidebarBrandBackground",
+   "group": "navigation",
+   "label": "Fundo da Marca (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor de fundo da área da marca na barra lateral.",
+   "interactsWith": [
+    "sidebarColor"
+   ]
+  },
+  {
+   "id": "sidebarBrandColor",
+   "group": "navigation",
+   "label": "Nome da Marca (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do nome da marca na barra lateral.",
+   "interactsWith": [
+    "sidebarColor",
+    "identityFontFamily"
+   ]
+  },
+  {
+   "id": "sidebarCategoryColor",
+   "group": "navigation",
+   "label": "Rótulo de Categoria (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do rótulo de categoria na barra lateral; deve contrastar com o fundo da barra.",
    "interactsWith": [
     "sidebarColor"
    ]
@@ -2955,6 +3073,17 @@
    ]
   },
   {
+   "id": "sidebarFooterBackground",
+   "group": "navigation",
+   "label": "Fundo do Rodapé (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor de fundo do rodapé da barra lateral.",
+   "interactsWith": [
+    "sidebarColor"
+   ]
+  },
+  {
    "id": "sidebarHoverColor",
    "group": "navigation",
    "label": "Hover da Sidebar",
@@ -2963,6 +3092,57 @@
    "usage": "Fundo do item da navegação lateral sob o ponteiro; o padrão é um branco translúcido.",
    "interactsWith": [
     "navigationStyle"
+   ]
+  },
+  {
+   "id": "sidebarIconColor",
+   "group": "navigation",
+   "label": "Cor do Ícone (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor dos ícones na barra lateral.",
+   "interactsWith": [
+    "sidebarColor"
+   ]
+  },
+  {
+   "id": "sidebarIconSize",
+   "group": "navigation",
+   "label": "Tamanho do Ícone (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Tamanho dos ícones da barra lateral."
+  },
+  {
+   "id": "sidebarItemDensity",
+   "group": "navigation",
+   "label": "Densidade dos Itens (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Densidade das linhas de navegação lateral; o alvo de toque mínimo continua sendo aplicado.",
+   "interactsWith": []
+  },
+  {
+   "id": "sidebarItemHoverTextColor",
+   "group": "navigation",
+   "label": "Texto do Item em Hover (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do texto de item sob o ponteiro na barra lateral.",
+   "interactsWith": [
+    "sidebarColor",
+    "sidebarItemTextColor"
+   ]
+  },
+  {
+   "id": "sidebarItemTextColor",
+   "group": "navigation",
+   "label": "Texto do Item (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do texto de item inativo na barra lateral; deve permanecer legível sobre o fundo da barra.",
+   "interactsWith": [
+    "sidebarColor"
    ]
   },
   {
@@ -3115,6 +3295,21 @@
    "kind": "aesthetic",
    "modeDependent": true,
    "usage": "Pinta avisos e estados que pedem atenção sem indicar falha."
+  },
+  {
+   "id": "subtitleColor",
+   "group": "colors",
+   "label": "Cor do Subtítulo",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Colore subtítulos entre o texto principal e os títulos; preserve essa hierarquia e contraste de pelo menos 4,5:1.",
+   "interactsWith": [
+    "textColorMaster",
+    "titleColor",
+    "colorBgBody",
+    "surfaceColor",
+    "cardBackgroundColor"
+   ]
   },
   {
    "id": "surfaceColor",
@@ -3294,7 +3489,7 @@
    "label": "Texto Principal",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Colore o texto principal de parágrafos e rótulos; títulos usam titleColor."
+   "usage": "Colore o texto principal de parágrafos e rótulos; títulos, subtítulos e ênfases usam titleColor, subtitleColor e emphasisColor."
   },
   {
    "id": "textColorMuted",
@@ -3428,7 +3623,7 @@
    "label": "Texto do Tooltip",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Cor do texto da caixa do `SarakTooltip`; precisa de contraste com `tooltipBg`.",
+   "usage": "Cor do texto corrido da caixa do `SarakTooltip`; precisa de contraste com `tooltipBg`.",
    "interactsWith": [
     "tooltipBg"
    ]
@@ -3442,6 +3637,99 @@
    "usage": "Fundo do item ativo da barra do topo; o padrão é transparente.",
    "interactsWith": [
     "navigationStyle"
+   ]
+  },
+  {
+   "id": "topbarActiveItemStyle",
+   "group": "navigation",
+   "label": "Estilo do Item Ativo (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Tratamento visual do item ativo na barra superior.",
+   "interactsWith": [
+    "topbarActiveColor",
+    "navItemActiveColor",
+    "navActiveMarkerColor"
+   ]
+  },
+  {
+   "id": "topbarBackgroundStyle",
+   "group": "navigation",
+   "label": "Tratamento do Fundo (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Tratamento de fundo da barra superior.",
+   "interactsWith": [
+    "topbarColor",
+    "topbarNoiseOpacity"
+   ]
+  },
+  {
+   "id": "topbarBlur",
+   "group": "navigation",
+   "label": "Backdrop Blur (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Desfoque do conteúdo que passa atrás da barra superior; funciona melhor com fundo translúcido."
+  },
+  {
+   "id": "topbarBorderColor",
+   "group": "navigation",
+   "label": "Borda (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor da moldura da barra superior.",
+   "interactsWith": [
+    "topbarColor"
+   ]
+  },
+  {
+   "id": "topbarBorderSide",
+   "group": "navigation",
+   "label": "Lados da Borda (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Lados da moldura da barra superior; a opção externa fica junto ao conteúdo e se adapta à barra na base do celular.",
+   "interactsWith": []
+  },
+  {
+   "id": "topbarBorderStyle",
+   "group": "navigation",
+   "label": "Estilo da Borda (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Estilo de linha da moldura da barra superior.",
+   "interactsWith": []
+  },
+  {
+   "id": "topbarBorderWidth",
+   "group": "navigation",
+   "label": "Espessura da Borda (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Largura em pixels da moldura da barra superior."
+  },
+  {
+   "id": "topbarBrandBackground",
+   "group": "navigation",
+   "label": "Fundo da Marca (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor de fundo da área da marca na barra superior.",
+   "interactsWith": [
+    "topbarColor"
+   ]
+  },
+  {
+   "id": "topbarBrandColor",
+   "group": "navigation",
+   "label": "Nome da Marca (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do nome da marca na barra superior.",
+   "interactsWith": [
+    "topbarColor",
+    "identityFontFamily"
    ]
   },
   {
@@ -3467,6 +3755,17 @@
    ]
   },
   {
+   "id": "topbarGroupSeparatorColor",
+   "group": "navigation",
+   "label": "Separador de Grupos (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do separador entre grupos de navegação horizontal.",
+   "interactsWith": [
+    "topbarColor"
+   ]
+  },
+  {
    "id": "topbarHeight",
    "group": "navigation",
    "label": "Altura da Topbar",
@@ -3489,6 +3788,57 @@
    ]
   },
   {
+   "id": "topbarIconColor",
+   "group": "navigation",
+   "label": "Cor do Ícone (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor dos ícones na barra superior.",
+   "interactsWith": [
+    "topbarColor"
+   ]
+  },
+  {
+   "id": "topbarIconSize",
+   "group": "navigation",
+   "label": "Tamanho do Ícone (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Tamanho dos ícones da barra superior."
+  },
+  {
+   "id": "topbarItemDensity",
+   "group": "navigation",
+   "label": "Densidade dos Itens (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Densidade das abas na barra superior; o alvo de toque mínimo continua sendo aplicado.",
+   "interactsWith": []
+  },
+  {
+   "id": "topbarItemHoverTextColor",
+   "group": "navigation",
+   "label": "Texto do Item em Hover (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do texto de item sob o ponteiro na barra superior.",
+   "interactsWith": [
+    "topbarColor",
+    "topbarItemTextColor"
+   ]
+  },
+  {
+   "id": "topbarItemTextColor",
+   "group": "navigation",
+   "label": "Texto do Item (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Cor do texto de item inativo na barra superior; deve permanecer legível sobre o fundo da barra.",
+   "interactsWith": [
+    "topbarColor"
+   ]
+  },
+  {
    "id": "topbarLabelMaxWidth",
    "group": "navigation",
    "label": "Largura Máxima do Rótulo (Topbar)",
@@ -3506,6 +3856,17 @@
    "kind": "aesthetic",
    "modeDependent": true,
    "usage": "Opacidade da textura de grão sobre a barra do topo; 0 desliga.",
+   "interactsWith": [
+    "navigationStyle"
+   ]
+  },
+  {
+   "id": "topbarShadow",
+   "group": "navigation",
+   "label": "Sombra da Topbar",
+   "kind": "aesthetic",
+   "modeDependent": true,
+   "usage": "Sombra CSS completa projetada pela barra superior.",
    "interactsWith": [
     "navigationStyle"
    ]
@@ -3583,7 +3944,7 @@
    "label": "Escala 2XS",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Define o tamanho de metadados e rótulos pequenos em componentes da biblioteca."
+   "usage": "Define o tamanho de metadados e rótulos compactos; mantenha no mínimo 11px."
   },
   {
    "id": "typeScale3xs",
@@ -3591,7 +3952,7 @@
    "label": "Escala 3XS",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Define o degrau 3XS usado em rótulos compactos de cartões e indicadores."
+   "usage": "Define o degrau 3XS usado em rótulos compactos de cartões e indicadores; mantenha no mínimo 11px."
   },
   {
    "id": "typeScaleCaption",
@@ -3607,7 +3968,7 @@
    "label": "Escala Micro",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Define a menor escala tipográfica, usada em rótulos densos; valores baixos podem prejudicar a leitura."
+   "usage": "Define a menor escala tipográfica legível, usada em rótulos densos; mantenha no mínimo 11px."
   },
   {
    "id": "typeScaleTiny",
@@ -3615,7 +3976,7 @@
    "label": "Escala Tiny",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Define o tamanho de textos muito pequenos usados em badges e legendas."
+   "usage": "Define o tamanho mínimo de textos usados em badges e legendas; mantenha no mínimo 11px."
   },
   {
    "id": "typeScaleXl",

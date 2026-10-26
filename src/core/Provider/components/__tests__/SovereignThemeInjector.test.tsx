@@ -22,6 +22,8 @@ describe('SovereignThemeInjector', () => {
         expect(styleEl).not.toBeNull();
         expect(styleEl?.innerHTML).toContain('Sarak Sovereign Bridge - Light Mode Hijack');
         expect(styleEl?.innerHTML).toContain('body.light .text-white');
+        expect(styleEl?.innerHTML).toContain('var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))');
+        expect(styleEl?.innerHTML).not.toContain('var(--color-theme-title');
         expect(styleEl).toHaveAttribute('nonce', 'bridge-nonce');
     });
 

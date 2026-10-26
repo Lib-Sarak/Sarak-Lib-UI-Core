@@ -112,12 +112,12 @@ for (const mode of MODES) {
             });
         });
 
-        test('CONTRAPROVA: o texto do hospedeiro com text-white é repintado para o título do tema', async () => {
+        test('CONTRAPROVA: o texto do hospedeiro com text-white é repintado para o texto principal do tema', async () => {
             await withScene(LIGHT_THEME, mode, async (page) => {
                 const host = page.locator('[data-probe="hospedeiro"]');
                 const expected = await host.evaluate((el) => {
                     const probe = document.createElement('i');
-                    probe.style.color = 'var(--color-theme-title, #ffffff)';
+                    probe.style.color = 'var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))';
                     el.parentElement?.appendChild(probe);
                     const value = getComputedStyle(probe).color;
                     probe.remove();
@@ -125,7 +125,7 @@ for (const mode of MODES) {
                 });
                 expect(await computed(host, 'color')).toBe(expected);
                 const [red, green, blue] = await toRgba(page, expected);
-                expect(Math.max(red, green, blue), `o título do tema claro (${expected}) não é branco`).toBeLessThan(128);
+                expect(Math.max(red, green, blue), `o texto principal do tema claro (${expected}) não é branco`).toBeLessThan(128);
             });
         });
 

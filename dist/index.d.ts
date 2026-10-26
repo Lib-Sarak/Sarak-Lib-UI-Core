@@ -221,6 +221,7 @@ interface SarakDesignTokens {
     dotGridDotOffset: number;
     dotGridDotSize: number;
     dotGridTileSize: number;
+    emphasisColor: string;
     emptyStateCaptionMaxWidth: number;
     emptyStateOrbBlur: number;
     emptyStateOrbInner: number;
@@ -294,6 +295,7 @@ interface SarakDesignTokens {
     inputIconColor: string;
     inputIconPosition: string;
     inputPadding: number;
+    inputPaddingHorizontal: number;
     inputShadow: string;
     inputTextColor: string;
     isAutoHideEnabled: boolean;
@@ -397,10 +399,25 @@ interface SarakDesignTokens {
     shadowProjectionBlur: number;
     shellBrandLogoSize: number;
     sidebarActiveColor: string;
+    sidebarActiveItemStyle: string;
+    sidebarBackgroundStyle: string;
     sidebarBlur: number;
+    sidebarBorderColor: string;
+    sidebarBorderSide: string;
+    sidebarBorderStyle: string;
+    sidebarBorderWidth: number;
+    sidebarBrandBackground: string;
+    sidebarBrandColor: string;
+    sidebarCategoryColor: string;
     sidebarCollapsedWidth: number;
     sidebarColor: string;
+    sidebarFooterBackground: string;
     sidebarHoverColor: string;
+    sidebarIconColor: string;
+    sidebarIconSize: number;
+    sidebarItemDensity: string;
+    sidebarItemHoverTextColor: string;
+    sidebarItemTextColor: string;
     sidebarLabelMaxWidth: number;
     sidebarMaxWidth: number | SarakResponsiveValue<number>;
     sidebarMinWidth: number | SarakResponsiveValue<number>;
@@ -417,6 +434,7 @@ interface SarakDesignTokens {
     statusInfoColor: string;
     statusSuccessColor: string;
     statusWarningColor: string;
+    subtitleColor: string;
     surfaceColor: string;
     surfaceIntensity: number;
     surfaceMaterial: string;
@@ -454,12 +472,28 @@ interface SarakDesignTokens {
     tooltipRadius: number;
     tooltipTextColor: string;
     topbarActiveColor: string;
+    topbarActiveItemStyle: string;
+    topbarBackgroundStyle: string;
+    topbarBlur: number;
+    topbarBorderColor: string;
+    topbarBorderSide: string;
+    topbarBorderStyle: string;
+    topbarBorderWidth: number;
+    topbarBrandBackground: string;
+    topbarBrandColor: string;
     topbarCollapsedHeight: number;
     topbarColor: string;
+    topbarGroupSeparatorColor: string;
     topbarHeight: number | SarakResponsiveValue<number>;
     topbarHoverColor: string;
+    topbarIconColor: string;
+    topbarIconSize: number;
+    topbarItemDensity: string;
+    topbarItemHoverTextColor: string;
+    topbarItemTextColor: string;
     topbarLabelMaxWidth: number;
     topbarNoiseOpacity: number;
+    topbarShadow: string;
     topbarTitleColor: string;
     touchTargetMin: number;
     trackingSnug: number;
@@ -809,6 +843,8 @@ interface SarakUIOptions {
         storageKey?: string;
         /** Escopa a chave por tenant (ADR-009 §2.1): vira `${storageKey}::tenant:${tenantId}`. Opaco, não validado. */
         tenantId?: string;
+        /** Quando true, o config fornecido pelo host vence o cache local no primeiro quadro. Default false preserva cache-wins. */
+        preferConfigOverCache?: boolean;
         /** `activeThemeId` (2º parâmetro, ADITIVO — plan-42): o id do tema EFETIVAMENTE
          *  no ar (`resolvedThemeId`) no instante deste save. Vem preenchido sempre que a
          *  sessão resolveu um tema (seed ou aplicado em runtime); vem `undefined` só
@@ -926,6 +962,9 @@ declare const useSarakUI: () => SarakUIContextType & SarakThemePayload;
 
 declare const SarakUIProvider: React__default.FC<SarakUIProviderProps>;
 
+/** Gera CSS validado para pintar o tema no HTML inicial, antes do JavaScript. */
+declare const sarakCreateThemeBootCss: (design: SarakThemePayload) => string;
+
 interface SarakPreferencesHook {
     preferences: SarakUserPreferences;
     updatePreferences: (partial: Partial<SarakUserPreferences>) => void;
@@ -957,8 +996,8 @@ declare const SARAK_MODE_ATTRIBUTE = "data-sarak-ui-mode";
 
 declare const SARAK_BUILD_INFO: {
     readonly libVersion: "8.0.0-rc.2";
-    readonly baseCommitShort: "c4a8c20";
-    readonly builtAt: "2026-10-22T07:50:07.123Z";
+    readonly baseCommitShort: "f7091e4";
+    readonly builtAt: "2026-10-25T00:29:51.231Z";
 };
 
 interface SarakDesignScopeProps {
@@ -1192,28 +1231,19 @@ interface SarakChromeNotification {
     description?: string;
 }
 
-/** Um resultado fornecido pelo aplicativo ao palette. */
 interface SarakSearchItem {
-    /** Com `onSelect`, identifica o destino do item (a rota); na busca embutida, também vira o `href` do resultado. */
     id: string;
     label: string;
     category?: string;
+    icon?: React__default.ReactNode;
 }
 interface SarakSearchProps {
     isOpen: boolean;
     onClose: () => void;
-    /** Itens da busca, fornecidos pela navegação do aplicativo. */
     items: SarakSearchItem[];
-    /** Seleciona um item, por clique ou teclado (`Enter`/`Espaço`). Sem esta prop, os
-     * resultados não são acionáveis — o comportamento de sempre. */
     onSelect?: (id: string) => void;
 }
-/**
- * SarakSearch (v6.0 Command Palette)
- *
- * Global search component integrated into the Sarak ecosystem.
- */
-declare const SarakSearch: React__default.FC<SarakSearchProps>;
+declare const SarakSearch: (props: SarakSearchProps) => React__default.ReactElement;
 
 /**
  * Item de navegação estruturado do `SarakAppChrome` (Spec 40.2 — L1).
@@ -1464,12 +1494,9 @@ interface SarakIconTriple {
 }
 declare const SarakIconMap: Record<SarakIconName, SarakIconTriple>;
 
-/**
- * useDesignDraft (v12.1 - Data-Driven)
- * Orquestrador de rascunhos com isolamento de sandbox.
- */
 declare const useDesignDraft: (sarak: SarakUIContextType) => {
     draft: SarakDesignState;
+    previewDraft: SarakDesignState;
     isDirty: boolean;
     dirtyTokenCount: number;
     isComponentDirty: (schemaId: string) => boolean;
@@ -1623,11 +1650,11 @@ declare const sarakWarnOnIncompleteTheme: (design: SarakDesignState | Record<str
 declare const SarakCustomizationPanel: React__default.FC;
 
 type SarakTypographyVariant = 'h1' | 'h2' | 'h3' | 'body' | 'caption' | 'mono';
-type SarakTypographyColor = 'main' | 'secondary' | 'muted';
+type SarakTypographyColor = 'main' | 'secondary' | 'muted' | 'title' | 'subtitle' | 'emphasis';
 interface SarakTypographyProps extends React__default.HTMLAttributes<HTMLElement> {
     /** Escala tipográfica (Spec typography — tokens `h1Size`/`h2Size`/etc). Default: `body`. */
     variant?: SarakTypographyVariant;
-    /** Cor de texto (`textColorMaster`/`textColorSecondary`/`textColorMuted`). Default: `main`. */
+    /** Papel de cor do texto. Títulos usam `title` por padrão; os demais usam `main`. */
     color?: SarakTypographyColor;
     /** Tag HTML a renderizar; sobrepõe o default semântico do `variant`. */
     as?: React__default.ElementType;
@@ -2136,6 +2163,8 @@ interface SarakMenuItemProps extends Omit<React__default.HTMLAttributes<HTMLElem
     disabled?: boolean;
     onClick?: React__default.MouseEventHandler<HTMLElement>;
     className?: string;
+    /** A barra inferior do celular ancora o indicador no topo do item. */
+    markerPosition?: 'edge' | 'top';
 }
 /**
  * Componente Atômico: SarakMenuItem
@@ -2152,20 +2181,12 @@ interface SarakMenuItemProps extends Omit<React__default.HTMLAttributes<HTMLElem
 declare const SarakMenuItem: React__default.FC<SarakMenuItemProps>;
 
 interface SarakShellSearchWidgetProps {
-    /** Escolhe a barra de busca ou o gatilho de menu; omitida, usa `bar`, que fica oculto abaixo do breakpoint `md`. */
     variant?: 'bar' | 'icon';
-    /** Resultados fornecidos pelo aplicativo. */
     items?: SarakSearchItem[];
-    /** Callback do gatilho `icon`; obrigatório. */
     onClick: () => void;
-    /** Seleciona um resultado da variante `bar`. */
     onSelect?: (item: SarakSearchItem) => void;
 }
-/**
- * ShellSearchWidget — Adaptive Search Trigger (v8.5)
- * Standardizes search entry points for Topbar and Sidebar.
- */
-declare const SarakShellSearchWidget: React__default.FC<SarakShellSearchWidgetProps>;
+declare const SarakShellSearchWidget: (props: SarakShellSearchWidgetProps) => React__default.ReactElement;
 
 interface SarakShellThemeToggleProps {
     /** Define o formato horizontal, vertical ou compacto; omitida, usa `horizontal`. O clique grava a preferência do usuário. */
@@ -2187,48 +2208,17 @@ interface SarakShellLanguageSelectorProps {
 declare const SarakShellLanguageSelector: React__default.FC<SarakShellLanguageSelectorProps>;
 
 interface SarakInputProps extends InputHTMLAttributes<HTMLInputElement> {
-    /**
-     * Rótulo visual ligado ao campo pelo `id` (gerado quando não é informado).
-     * Sem ele, não há rótulo visível; forneça outro nome acessível se necessário.
-     */
     label?: string;
-    /**
-     * Ícone do campo; sua posição vem do layout do tema e ele não recebe clique.
-     * Quando definido, prevalece sobre `leftIcon` e `rightIcon`; sem os três,
-     * não há ícone.
-     */
     icon?: React__default.ReactNode;
-    /**
-     * Ícone do lado esquerdo, usado somente quando `icon` não é fornecido. Junto
-     * com `rightIcon`, os dois aparecem, cada um no seu lado. Sozinho, segue a
-     * posição do layout do tema.
-     */
     leftIcon?: React__default.ReactNode;
-    /**
-     * Ícone do lado direito, usado somente quando `icon` não é fornecido. Aceita
-     * clique (por exemplo, o botão de mostrar a senha). Junto com `leftIcon`, fica
-     * à direita; sozinho, segue a posição do layout do tema.
-     */
     rightIcon?: React__default.ReactNode;
-    /**
-     * Mensagem abaixo do campo, ligada por `aria-describedby`, que também marca
-     * `aria-invalid`. Sem a prop, não há mensagem nem estado inválido.
-     */
     error?: string;
-    /**
-     * Faz o grupo do campo ocupar toda a largura disponível. Omitida ou `false`,
-     * a largura fica a cargo do layout pai.
-     */
     fullWidth?: boolean;
 }
 /**
- * Componente Atômico: SarakInput
- * Segue a regra da "Composição Atômica Obrigatória" da Sarak-Lib-UI-Core.
- *
- * @sarak-encapsula input — a razão de existir deste componente é encapsular o
- *   `<input>` nativo, para teclado e leitor de tela funcionarem por construção.
+ * @sarak-encapsula input — o átomo encapsula o campo nativo para teclado, leitor de tela e estilo.
  */
-declare const SarakInput: React__default.FC<SarakInputProps>;
+declare const SarakInput: (props: SarakInputProps) => React__default.ReactElement;
 
 interface SarakMaskedInputProps extends Omit<SarakInputProps, 'defaultValue' | 'label' | 'onChange' | 'type' | 'value'> {
     /**
@@ -3167,6 +3157,91 @@ interface SarakPageTransitionProps {
     locationKey: string;
 }
 declare const SarakPageTransition: React__default.FC<SarakPageTransitionProps>;
+
+interface SarakPageHeaderProps extends Omit<React__default.HTMLAttributes<HTMLElement>, 'title'> {
+    title: React__default.ReactNode;
+    subtitle?: React__default.ReactNode;
+    breadcrumbs?: SarakBreadcrumbItem[];
+    onBreadcrumbNavigate?: (href: string) => void;
+    primaryActions?: React__default.ReactNode;
+    secondaryActions?: React__default.ReactNode;
+    loading?: boolean;
+    loadingLabel?: string;
+}
+declare const SarakPageHeader: ({ title, subtitle, breadcrumbs, onBreadcrumbNavigate, primaryActions, secondaryActions, loading, loadingLabel, className, style, ...props }: SarakPageHeaderProps) => React__default.ReactElement;
+
+interface SarakFilterBarProps extends React__default.HTMLAttributes<HTMLDivElement> {
+    ariaLabel: string;
+    children: React__default.ReactNode;
+    actions?: React__default.ReactNode;
+    clearFilters?: {
+        label: string;
+        onClick: () => void;
+    };
+}
+declare const SarakFilterBar: ({ ariaLabel, children, actions, clearFilters, className, style, ...props }: SarakFilterBarProps) => React__default.ReactElement;
+
+interface SarakSegmentedOption {
+    value: string;
+    label: React__default.ReactNode;
+    disabled?: boolean;
+}
+interface SarakSegmentedControlProps extends Omit<React__default.HTMLAttributes<HTMLDivElement>, 'onChange'> {
+    options: SarakSegmentedOption[];
+    ariaLabel: string;
+    value?: string;
+    defaultValue?: string;
+    onValueChange?: (value: string) => void;
+}
+declare const SarakSegmentedControl: ({ options, ariaLabel, value, defaultValue, onValueChange, className, style, ...props }: SarakSegmentedControlProps) => React__default.ReactElement;
+
+interface SarakSectionProps extends Omit<React__default.HTMLAttributes<HTMLElement>, 'title'> {
+    title: React__default.ReactNode;
+    description?: React__default.ReactNode;
+    actions?: React__default.ReactNode;
+    children?: React__default.ReactNode;
+    headingLevel?: 2 | 3 | 4 | 5 | 6;
+    variant?: 'plain' | 'card';
+    loading?: boolean;
+    loadingLabel?: string;
+    emptyState?: {
+        title?: React__default.ReactNode;
+        description?: React__default.ReactNode;
+        action?: React__default.ReactNode;
+    };
+    error?: {
+        title: string;
+        message: string;
+        retryLabel?: string;
+        onRetry?: () => void;
+    };
+}
+declare const SarakSection: ({ title, description, actions, children, headingLevel, variant, loading, loadingLabel, emptyState, error, className, style, ...props }: SarakSectionProps) => React__default.ReactElement;
+
+interface SarakDescriptionListItem {
+    label: React__default.ReactNode;
+    value: React__default.ReactNode;
+}
+interface SarakDescriptionListProps extends Omit<React__default.HTMLAttributes<HTMLDListElement>, 'children'> {
+    items: SarakDescriptionListItem[];
+}
+declare const SarakDescriptionList: ({ items, className, style, ...props }: SarakDescriptionListProps) => React__default.ReactElement;
+
+interface SarakResourceRowAction {
+    label: string;
+    onClick: () => void;
+    variant?: 'primary' | 'secondary' | 'ghost';
+}
+interface SarakResourceRowProps extends Omit<React__default.HTMLAttributes<HTMLElement>, 'title'> {
+    title: React__default.ReactNode;
+    description?: React__default.ReactNode;
+    badges?: React__default.ReactNode[];
+    metadata?: SarakDescriptionListItem[];
+    actions?: SarakResourceRowAction[];
+    href?: string;
+    onNavigate?: (href: string) => void;
+}
+declare const SarakResourceRow: ({ title, description, badges, metadata, actions, href, onNavigate, className, style, ...props }: SarakResourceRowProps) => React__default.ReactElement;
 
 type SarakModalSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
 interface SarakModalProps {
@@ -4151,4 +4226,4 @@ interface SarakFlowEngineProps {
 
 declare const SarakFlowEngine: React__default.FC<SarakFlowEngineProps>;
 
-export { SARAK_BOOT_THEMES, SARAK_BUILD_INFO, SARAK_DEFAULT_COLUMN_WIDTH, SARAK_DEFAULT_DEVICE_BREAKPOINTS, SARAK_DEFAULT_THEME_ID, SARAK_DESIGN_MANIFEST, SARAK_ICONE_DESCONHECIDO, SARAK_ICON_NAMES, SARAK_MIN_COLUMN_WIDTH, SARAK_MODE_ATTRIBUTE, SARAK_SCOPE_CLASS, SARAK_THEME_AXES, SARAK_THEME_CATALOG, SARAK_THEME_PRESET_IDS, type SarakAccept, SarakAccordion, type SarakAccordionProps, SarakActionCard, type SarakActionCardProps, type SarakActivityActor, type SarakActivityEntry, SarakActivityFeed, type SarakActivityFeedProps, SarakAlert, type SarakAlertProps, type SarakAlertVariant, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAppChrome, type SarakAppChromeProps, type SarakAssigneePerson, SarakAssigneePicker, type SarakAssigneePickerProps, SarakAuthScreen, type SarakAuthScreenEvent, type SarakAuthScreenLabelKey, type SarakAuthScreenProps, SarakAutocomplete, type SarakAutocompleteOption, type SarakAutocompleteProps, SarakAvatar, type SarakAvatarProps, type SarakAvatarSize, SarakBadge, type SarakBadgeProps, type SarakBadgeSize, type SarakBadgeVariant, type SarakBrandingState, type SarakBreadcrumbItem, SarakBreadcrumbs, type SarakBreadcrumbsProps, SarakButton, type SarakButtonProps, SarakCalendar, type SarakCalendarDate, type SarakCalendarEvent, type SarakCalendarProps, type SarakCalendarTone, SarakCard, SarakCardBody, type SarakCardBodyProps, SarakCardFooter, type SarakCardFooterProps, SarakCardGrid, type SarakCardGridProps, SarakCardHeader, type SarakCardHeaderProps, type SarakCardMove, type SarakCardProps, SarakCatalogGrid, type SarakCatalogGridProps, type SarakCatalogItem, SarakChart, type SarakChartDataItem, SarakChartEngine, type SarakChartEngineProps, type SarakChartProps, SarakChat, SarakChatEngine, type SarakChatEngineProps, type SarakChatModelLoader, type SarakChatModelRoute, type SarakChatOnSend, type SarakChatProps, type SarakChatSendRequest, SarakCheckbox, type SarakCheckboxProps, SarakChecklist, type SarakChecklistItem, type SarakChecklistProps, type SarakChromeNotification, type SarakChromeWidgets, type SarakColorModePreference, type SarakColumn, type SarakColumnAlignment, type SarakComment, type SarakCommentAuthor, SarakCommentThread, type SarakCommentThreadProps, type SarakConfirmOptions, SarakContextMenu, type SarakContextMenuPosition, type SarakContextMenuProps, SarakCurrencyInput, type SarakCurrencyInputProps, type SarakCustomFont, type SarakCustomFontFile, SarakCustomizationPanel, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, type SarakDataGridProps, SarakDataTable, type SarakDataTableProps, type SarakDataTableRowHeight, type SarakDateLocale, SarakDatePicker, type SarakDatePickerProps, type SarakDatePickerValue, type SarakDerivedThemePreset, SarakDesignScope, type SarakDesignScopeProps, type SarakDesignState, type SarakDesignToken, type SarakDesignTokens, type SarakDeviceBreakpoints, SarakDeviceProvider, type SarakDeviceProviderProps, type SarakDeviceType, SarakDivider, type SarakDividerOrientation, type SarakDividerProps, SarakDrawer, type SarakDrawerProps, SarakEmptyState, type SarakEmptyStateProps, SarakExpandableCard, type SarakExpandableCardProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFieldError, type SarakFieldErrorProps, type SarakFileRejection, type SarakFilterConfig, SarakFilterSelect, type SarakFilterSelectProps, SarakFlex, type SarakFlexDirection, type SarakFlexProps, SarakFlowEngine, type SarakFlowEngineProps, type SarakFontFallback, type SarakFontSizePreference, type SarakFontSource, type SarakFontsOption, type SarakFontsOptions, SarakForm, SarakFormGroup, type SarakFormGroupProps, type SarakFormProps, SarakGantt, type SarakGanttProps, type SarakGanttScale, type SarakGanttTask, type SarakGanttTone, SarakGrid, type SarakGridProps, SarakHelpButton, SarakHidden, type SarakHiddenProps, SarakIcon, SarakIconButton, type SarakIconButtonProps, type SarakIconFamily, SarakIconMap, type SarakIconName, type SarakIconPresentationProps, type SarakIconProps, type SarakIconTriple, SarakImageCard, type SarakImageCardProps, SarakInput, type SarakInputProps, SarakKanban, type SarakKanbanAssignee, type SarakKanbanCard, type SarakKanbanColumn, type SarakKanbanPriority, type SarakKanbanProps, type SarakKanbanSubtasks, type SarakLayoutGap, SarakLightbox, type SarakLightboxImage, type SarakLightboxProps, SarakLink, type SarakLinkProps, type SarakManagementAction, SarakManagementGrid, type SarakManagementGridProps, SarakMarkdownRenderer, type SarakMarkdownRendererProps, SarakMaskedInput, type SarakMaskedInputProps, type SarakMatrixManifest, type SarakMatrixNodeConfig, type SarakMatrixParentData, type SarakMatrixTreeNode, SarakMenuItem, type SarakMenuItemOrientation, type SarakMenuItemProps, type SarakMessage, SarakModal, type SarakModalLayoutContext, type SarakModalProps, type SarakModalSize, SarakMultiSelect, type SarakMultiSelectOption, type SarakMultiSelectProps, type SarakNavItem, type SarakNavigationItem, type SarakNavigationStylePreference, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, SarakPDFViewer, type SarakPDFViewerProps, SarakPageTransition, type SarakPageTransitionProps, SarakPagination, type SarakPaginationProps, type SarakPaginationToken, type SarakPdfSource, type SarakPinnedOffsets, type SarakPreferenceId, type SarakPreferencePosition, type SarakPreferencesHook, type SarakPreferencesOptions, SarakProgress, type SarakProgressProps, type SarakProgressThreshold, type SarakProgressVariant, SarakRadio, type SarakRadioProps, SarakRangeSlider, type SarakRangeSliderProps, type SarakRangeValue, type SarakReferenceThemeId, type SarakRegisteredIconProps, type SarakResponsiveDevice, type SarakResponsiveValue, SarakRichText, type SarakRichTextProps, SarakScrim, type SarakScrimProps, SarakSearch, SarakSearchCard, type SarakSearchCardProps, type SarakSearchItem, type SarakSearchProps, SarakSelect, type SarakSelectProps, SarakShellLanguageSelector, type SarakShellLanguageSelectorProps, SarakShellNav, type SarakShellNavItem, type SarakShellNavProps, SarakShellSearchWidget, type SarakShellSearchWidgetProps, SarakShellThemeToggle, type SarakShellThemeToggleProps, type SarakShellUser, SarakShellUserWidget, type SarakShellUserWidgetProps, SarakSkeleton, type SarakSkeletonProps, type SarakSkeletonShape, SarakSlider, type SarakSliderProps, SarakSocialButton, type SarakSocialButtonProps, type SarakSocialConfig, type SarakSocialProviderConfig, type SarakSocialProviderId, SarakSparkline, type SarakSparklineProps, type SarakSparklineVariant, SarakSpinner, type SarakSpinnerProps, SarakSplitPane, type SarakSplitPaneProps, SarakSpotlight, type SarakSpotlightProps, SarakStats, type SarakStatsMetricConfig, type SarakStatsProps, type SarakStepConfig, SarakStepper, type SarakStepperOrientation, type SarakStepperProps, SarakSwitch, type SarakSwitchProps, type SarakTabItem, SarakTable, type SarakTableColumn, type SarakTableProps, type SarakTableSort, SarakTabs, type SarakTabsProps, SarakTextarea, type SarakTextareaProps, type SarakThemeCatalogEntry, type SarakThemeEntry, type SarakThemePayload, type SarakThemePreset, type SarakThemePresetId, type SarakThemeReferenceOverrides, type SarakThemeSaveOperation, type SarakThemeSwatch, SarakTimePicker, type SarakTimePickerProps, type SarakTimestamp, SarakTitleCard, type SarakTitleCardProps, type SarakToastAction, type SarakToastController, type SarakToastOptions, SarakToastProvider, type SarakToastVariant, type SarakTokenValue, type SarakTokenValueType, SarakTooltip, type SarakTooltipPosition, type SarakTooltipProps, SarakTreeView, type SarakTreeViewProps, SarakTypography, type SarakTypographyColor, type SarakTypographyProps, type SarakTypographyVariant, type SarakUIContextType, type SarakUIMode, type SarakUIOptions, SarakUIProvider, type SarakUIProviderProps, SarakUploader, type SarakUploaderProps, type SarakUserPreferences, SarakValue, type SarakValueFormat, type SarakValueProps, type SarakWeekStart, sarakBuildPaginationRange, sarakComputeOffsets, sarakDeriveThemeFromReference, sarakDeviceForWidth, sarakFindMissingThemeAxes, sarakFormatCurrency, sarakFormatDate, sarakFormatNumber, sarakFormatPercent, sarakGetAllDesignTokens, sarakGetDefaultDesignState, sarakIsResponsiveValue, sarakIsSafeLinkHref, sarakLoadAllThemePresets, sarakLoadReferenceThemes, sarakLoadThemePreset, sarakMoveCard, sarakPreloadThemes, sarakRegisterIcons, sarakReorder, sarakResolveResponsiveValue, sarakSanitizeRichText, sarakWarnOnIncompleteTheme, sarakWidthOf, useDesignDraft, useModalLayoutStyles, useOverlay, useSarakDevice, useSarakPreferences, useSarakUI, useToast };
+export { SARAK_BOOT_THEMES, SARAK_BUILD_INFO, SARAK_DEFAULT_COLUMN_WIDTH, SARAK_DEFAULT_DEVICE_BREAKPOINTS, SARAK_DEFAULT_THEME_ID, SARAK_DESIGN_MANIFEST, SARAK_ICONE_DESCONHECIDO, SARAK_ICON_NAMES, SARAK_MIN_COLUMN_WIDTH, SARAK_MODE_ATTRIBUTE, SARAK_SCOPE_CLASS, SARAK_THEME_AXES, SARAK_THEME_CATALOG, SARAK_THEME_PRESET_IDS, type SarakAccept, SarakAccordion, type SarakAccordionProps, SarakActionCard, type SarakActionCardProps, type SarakActivityActor, type SarakActivityEntry, SarakActivityFeed, type SarakActivityFeedProps, SarakAlert, type SarakAlertProps, type SarakAlertVariant, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAppChrome, type SarakAppChromeProps, type SarakAssigneePerson, SarakAssigneePicker, type SarakAssigneePickerProps, SarakAuthScreen, type SarakAuthScreenEvent, type SarakAuthScreenLabelKey, type SarakAuthScreenProps, SarakAutocomplete, type SarakAutocompleteOption, type SarakAutocompleteProps, SarakAvatar, type SarakAvatarProps, type SarakAvatarSize, SarakBadge, type SarakBadgeProps, type SarakBadgeSize, type SarakBadgeVariant, type SarakBrandingState, type SarakBreadcrumbItem, SarakBreadcrumbs, type SarakBreadcrumbsProps, SarakButton, type SarakButtonProps, SarakCalendar, type SarakCalendarDate, type SarakCalendarEvent, type SarakCalendarProps, type SarakCalendarTone, SarakCard, SarakCardBody, type SarakCardBodyProps, SarakCardFooter, type SarakCardFooterProps, SarakCardGrid, type SarakCardGridProps, SarakCardHeader, type SarakCardHeaderProps, type SarakCardMove, type SarakCardProps, SarakCatalogGrid, type SarakCatalogGridProps, type SarakCatalogItem, SarakChart, type SarakChartDataItem, SarakChartEngine, type SarakChartEngineProps, type SarakChartProps, SarakChat, SarakChatEngine, type SarakChatEngineProps, type SarakChatModelLoader, type SarakChatModelRoute, type SarakChatOnSend, type SarakChatProps, type SarakChatSendRequest, SarakCheckbox, type SarakCheckboxProps, SarakChecklist, type SarakChecklistItem, type SarakChecklistProps, type SarakChromeNotification, type SarakChromeWidgets, type SarakColorModePreference, type SarakColumn, type SarakColumnAlignment, type SarakComment, type SarakCommentAuthor, SarakCommentThread, type SarakCommentThreadProps, type SarakConfirmOptions, SarakContextMenu, type SarakContextMenuPosition, type SarakContextMenuProps, SarakCurrencyInput, type SarakCurrencyInputProps, type SarakCustomFont, type SarakCustomFontFile, SarakCustomizationPanel, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, type SarakDataGridProps, SarakDataTable, type SarakDataTableProps, type SarakDataTableRowHeight, type SarakDateLocale, SarakDatePicker, type SarakDatePickerProps, type SarakDatePickerValue, type SarakDerivedThemePreset, SarakDescriptionList, type SarakDescriptionListItem, type SarakDescriptionListProps, SarakDesignScope, type SarakDesignScopeProps, type SarakDesignState, type SarakDesignToken, type SarakDesignTokens, type SarakDeviceBreakpoints, SarakDeviceProvider, type SarakDeviceProviderProps, type SarakDeviceType, SarakDivider, type SarakDividerOrientation, type SarakDividerProps, SarakDrawer, type SarakDrawerProps, SarakEmptyState, type SarakEmptyStateProps, SarakExpandableCard, type SarakExpandableCardProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFieldError, type SarakFieldErrorProps, type SarakFileRejection, SarakFilterBar, type SarakFilterBarProps, type SarakFilterConfig, SarakFilterSelect, type SarakFilterSelectProps, SarakFlex, type SarakFlexDirection, type SarakFlexProps, SarakFlowEngine, type SarakFlowEngineProps, type SarakFontFallback, type SarakFontSizePreference, type SarakFontSource, type SarakFontsOption, type SarakFontsOptions, SarakForm, SarakFormGroup, type SarakFormGroupProps, type SarakFormProps, SarakGantt, type SarakGanttProps, type SarakGanttScale, type SarakGanttTask, type SarakGanttTone, SarakGrid, type SarakGridProps, SarakHelpButton, SarakHidden, type SarakHiddenProps, SarakIcon, SarakIconButton, type SarakIconButtonProps, type SarakIconFamily, SarakIconMap, type SarakIconName, type SarakIconPresentationProps, type SarakIconProps, type SarakIconTriple, SarakImageCard, type SarakImageCardProps, SarakInput, type SarakInputProps, SarakKanban, type SarakKanbanAssignee, type SarakKanbanCard, type SarakKanbanColumn, type SarakKanbanPriority, type SarakKanbanProps, type SarakKanbanSubtasks, type SarakLayoutGap, SarakLightbox, type SarakLightboxImage, type SarakLightboxProps, SarakLink, type SarakLinkProps, type SarakManagementAction, SarakManagementGrid, type SarakManagementGridProps, SarakMarkdownRenderer, type SarakMarkdownRendererProps, SarakMaskedInput, type SarakMaskedInputProps, type SarakMatrixManifest, type SarakMatrixNodeConfig, type SarakMatrixParentData, type SarakMatrixTreeNode, SarakMenuItem, type SarakMenuItemOrientation, type SarakMenuItemProps, type SarakMessage, SarakModal, type SarakModalLayoutContext, type SarakModalProps, type SarakModalSize, SarakMultiSelect, type SarakMultiSelectOption, type SarakMultiSelectProps, type SarakNavItem, type SarakNavigationItem, type SarakNavigationStylePreference, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, SarakPDFViewer, type SarakPDFViewerProps, SarakPageHeader, type SarakPageHeaderProps, SarakPageTransition, type SarakPageTransitionProps, SarakPagination, type SarakPaginationProps, type SarakPaginationToken, type SarakPdfSource, type SarakPinnedOffsets, type SarakPreferenceId, type SarakPreferencePosition, type SarakPreferencesHook, type SarakPreferencesOptions, SarakProgress, type SarakProgressProps, type SarakProgressThreshold, type SarakProgressVariant, SarakRadio, type SarakRadioProps, SarakRangeSlider, type SarakRangeSliderProps, type SarakRangeValue, type SarakReferenceThemeId, type SarakRegisteredIconProps, SarakResourceRow, type SarakResourceRowAction, type SarakResourceRowProps, type SarakResponsiveDevice, type SarakResponsiveValue, SarakRichText, type SarakRichTextProps, SarakScrim, type SarakScrimProps, SarakSearch, SarakSearchCard, type SarakSearchCardProps, type SarakSearchItem, type SarakSearchProps, SarakSection, type SarakSectionProps, SarakSegmentedControl, type SarakSegmentedControlProps, type SarakSegmentedOption, SarakSelect, type SarakSelectProps, SarakShellLanguageSelector, type SarakShellLanguageSelectorProps, SarakShellNav, type SarakShellNavItem, type SarakShellNavProps, SarakShellSearchWidget, type SarakShellSearchWidgetProps, SarakShellThemeToggle, type SarakShellThemeToggleProps, type SarakShellUser, SarakShellUserWidget, type SarakShellUserWidgetProps, SarakSkeleton, type SarakSkeletonProps, type SarakSkeletonShape, SarakSlider, type SarakSliderProps, SarakSocialButton, type SarakSocialButtonProps, type SarakSocialConfig, type SarakSocialProviderConfig, type SarakSocialProviderId, SarakSparkline, type SarakSparklineProps, type SarakSparklineVariant, SarakSpinner, type SarakSpinnerProps, SarakSplitPane, type SarakSplitPaneProps, SarakSpotlight, type SarakSpotlightProps, SarakStats, type SarakStatsMetricConfig, type SarakStatsProps, type SarakStepConfig, SarakStepper, type SarakStepperOrientation, type SarakStepperProps, SarakSwitch, type SarakSwitchProps, type SarakTabItem, SarakTable, type SarakTableColumn, type SarakTableProps, type SarakTableSort, SarakTabs, type SarakTabsProps, SarakTextarea, type SarakTextareaProps, type SarakThemeCatalogEntry, type SarakThemeEntry, type SarakThemePayload, type SarakThemePreset, type SarakThemePresetId, type SarakThemeReferenceOverrides, type SarakThemeSaveOperation, type SarakThemeSwatch, SarakTimePicker, type SarakTimePickerProps, type SarakTimestamp, SarakTitleCard, type SarakTitleCardProps, type SarakToastAction, type SarakToastController, type SarakToastOptions, SarakToastProvider, type SarakToastVariant, type SarakTokenValue, type SarakTokenValueType, SarakTooltip, type SarakTooltipPosition, type SarakTooltipProps, SarakTreeView, type SarakTreeViewProps, SarakTypography, type SarakTypographyColor, type SarakTypographyProps, type SarakTypographyVariant, type SarakUIContextType, type SarakUIMode, type SarakUIOptions, SarakUIProvider, type SarakUIProviderProps, SarakUploader, type SarakUploaderProps, type SarakUserPreferences, SarakValue, type SarakValueFormat, type SarakValueProps, type SarakWeekStart, sarakBuildPaginationRange, sarakComputeOffsets, sarakCreateThemeBootCss, sarakDeriveThemeFromReference, sarakDeviceForWidth, sarakFindMissingThemeAxes, sarakFormatCurrency, sarakFormatDate, sarakFormatNumber, sarakFormatPercent, sarakGetAllDesignTokens, sarakGetDefaultDesignState, sarakIsResponsiveValue, sarakIsSafeLinkHref, sarakLoadAllThemePresets, sarakLoadReferenceThemes, sarakLoadThemePreset, sarakMoveCard, sarakPreloadThemes, sarakRegisterIcons, sarakReorder, sarakResolveResponsiveValue, sarakSanitizeRichText, sarakWarnOnIncompleteTheme, sarakWidthOf, useDesignDraft, useModalLayoutStyles, useOverlay, useSarakDevice, useSarakPreferences, useSarakUI, useToast };

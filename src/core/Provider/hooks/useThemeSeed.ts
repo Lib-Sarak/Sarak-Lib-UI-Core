@@ -3,6 +3,8 @@ import { SARAK_DEFAULT_THEME_ID } from '../../Design/presets/themes';
 import { getLoadedThemePreset, isSarakThemePresetId } from '../../Design/presets/themes/registry';
 import { resolveThemeForMode } from '../../Design/presets/themes/color-engine';
 import { sarakGetDefaultDesignState } from '../../Design/master-map';
+import { readCachedActiveThemeId, resolveStorageKey } from '../utils/resolveStorageKey';
+import { resolveEffectiveStrategy } from '../utils/persistenceStrategy';
 import type { SarakTokenValue } from '../../Design/types';
 import type { SarakDesignState, SarakThemeEntry, SarakThemePayload, SarakUIOptions } from '../types';
 
@@ -13,6 +15,26 @@ interface ThemeSeedProps {
     optionsRef: MutableRefObject<SarakUIOptions>;
     configRef: MutableRefObject<SarakThemePayload>;
 }
+
+const TEXT_COLOR_ROLE_KEYS = ['titleColor', 'subtitleColor', 'emphasisColor'] as const;
+
+const resolveLightModeTextColors = (
+    themeEntry: SarakThemeEntry | undefined,
+    mode: 'light' | 'dark',
+): Record<string, SarakTokenValue> => {
+    if (mode !== 'light' || !themeEntry?.design || themeEntry.design.mode === 'light') return {};
+
+    const lightModeDesign = resolveThemeForMode(
+        { design: themeEntry.design as Record<string, SarakTokenValue>, contraparte: themeEntry.contraparte },
+        mode,
+    );
+
+    return Object.fromEntries(
+        TEXT_COLOR_ROLE_KEYS
+            .filter((key) => typeof lightModeDesign[key] === 'string')
+            .map((key) => [key, lightModeDesign[key]]),
+    );
+};
 
 /**
  * A SEMENTE do design (Sovereign Map v11.0), extraída de `useDesignManager` para
@@ -40,8 +62,19 @@ export const useThemeSeed = (props: ThemeSeedProps) => {
         Boolean(id) && !allThemes?.some((theme) => theme.id === id) && !isSarakThemePresetId(id as string),
     [allThemes]);
 
+    const readCachedThemeId = useCallback((): string | undefined => {
+        if (typeof window === 'undefined') return undefined;
+        if (optionsRef.current.persistence?.preferConfigOverCache === true) return undefined;
+        if (resolveEffectiveStrategy(optionsRef.current.persistence) === 'remote') return undefined;
+        return readCachedActiveThemeId(resolveStorageKey(optionsRef.current.persistence));
+    }, [optionsRef]);
+
     const resolveSeedThemeId = useCallback((): string | undefined => {
-        const seedThemeId = activeThemeId || initialTheme;
+        const explicitThemeId = activeThemeId;
+        const cachedThemeId = readCachedThemeId();
+        if (!explicitThemeId && cachedThemeId) return cachedThemeId;
+
+        const seedThemeId = explicitThemeId || initialTheme;
         if (seedThemeId) {
             if (!isUnknownRequestedTheme(seedThemeId)) return seedThemeId;
             const requestedMode: 'light' | 'dark' = (configRef.current?.mode as 'light' | 'dark') || 'dark';
@@ -56,7 +89,7 @@ export const useThemeSeed = (props: ThemeSeedProps) => {
             console.warn(`[SarakUIProvider] options.theme.defaultTheme "${defaultThemeId}" não existe — usando o tema padrão "${SARAK_DEFAULT_THEME_ID}".`);
         }
         return SARAK_DEFAULT_THEME_ID;
-    }, [activeThemeId, initialTheme, isUnknownRequestedTheme, configRef, optionsRef]);
+    }, [activeThemeId, initialTheme, isUnknownRequestedTheme, configRef, optionsRef, readCachedThemeId]);
 
     const getSeedConfig = useCallback((): SarakDesignState => {
         const masterDefaults = sarakGetDefaultDesignState();
@@ -73,11 +106,12 @@ export const useThemeSeed = (props: ThemeSeedProps) => {
                 requestedMode,
             );
         }
+        const lightModeTextColors = resolveLightModeTextColors(themeEntry, requestedMode);
 
         // Mescla de defaults conhecidos + payload dinâmico do banco no estado
         // canônico: cast pontual tipado (o índice dinâmico de `themeDesignTokens`
         // não se atribui sozinho a `SarakDesignState`).
-        return { ...masterDefaults, ...themeDesignTokens, ...configRef.current } as SarakDesignState;
+        return { ...masterDefaults, ...themeDesignTokens, ...lightModeTextColors, ...configRef.current } as SarakDesignState;
     }, [resolveSeedThemeId, allThemes, activeThemeId, initialTheme, isUnknownRequestedTheme, configRef]);
 
     return { resolveSeedThemeId, getSeedConfig };

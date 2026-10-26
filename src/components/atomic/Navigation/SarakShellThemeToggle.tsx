@@ -35,7 +35,7 @@ export const SarakShellThemeToggle: React.FC<SarakShellThemeToggleProps> = ({ va
                 onClick={toggleTheme}
                 variant="ghost"
                 size="md"
-                className="w-full rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)]"
+                className="w-full rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]"
                 title={isDarkMode ? t('themeToggleTitleToLight') : t('themeToggleTitleToDark')}
                 icon={isDarkMode ? <SarakIcon name="Sun" size={18} /> : <SarakIcon name="Moon" size={18} />}
             />
@@ -63,7 +63,7 @@ export const SarakShellThemeToggle: React.FC<SarakShellThemeToggleProps> = ({ va
             onClick={toggleTheme}
             variant="ghost"
             size="xs"
-            className="relative text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10"
+            className="relative text-[var(--theme-muted)] hover:text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))] hover:bg-[var(--theme-muted)]/10"
             title={isDarkMode ? t('themeToggleTitleToLight') : t('themeToggleTitleToDark')}
             icon={isDarkMode ? <SarakIcon name="Sun" size={16} /> : <SarakIcon name="Moon" size={16} />}
         />

@@ -35,11 +35,11 @@ const SarakHelpButton = ({ text }: { text: string }) => {
                                 onClick={() => setIsOpen(false)}
                                 icon={<SarakIcon name="X" size={20} />}
                                 variant="ghost"
-                                className="text-[var(--text-muted,rgba(242,246,251,0.55))] hover:text-[var(--color-theme-title,#f2f6fb)]"
+                                className="text-[var(--text-muted,rgba(242,246,251,0.55))] hover:text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]"
                             />
                         </div>
                         <div style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
-                            <p className="text-sm text-[var(--color-theme-title,#f2f6fb)] leading-relaxed font-medium">
+                            <p className="text-sm text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))] leading-relaxed font-medium">
                                 {text}
                             </p>
                         </div>

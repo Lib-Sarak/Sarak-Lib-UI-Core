@@ -10,7 +10,7 @@ describe('PresetCard', () => {
         expect(ComponentModule).toBeDefined();
     });
 
-    it('should render and match snapshot', () => {
+    it('renders the selected theme preview', () => {
         const dummyTheme = {
             id: 'test',
             name: 'Test Theme',
@@ -23,7 +23,34 @@ describe('PresetCard', () => {
         const { container } = render(
             <PresetCard theme={dummyTheme as unknown as SarakThemePreset} currentMode="dark" onApply={() => {}} index={0} />
         );
-        expect(container).toMatchSnapshot();
+        expect(container.querySelector('button')).toBeInTheDocument();
+        expect(container.querySelector('h3')).toHaveTextContent('Test Theme');
+        expect(container.querySelector('.h-48')).toBeInTheDocument();
+    });
+
+    it('a miniatura de tema usa a contraparte no modo efetivo', () => {
+        const theme = {
+            id: 'tema-claro',
+            name: 'Tema Claro',
+            design: { mode: 'dark', surfaceColor: '#101622' },
+            contraparte: { surfaceColor: '#ffffff' },
+        };
+        const { container } = render(
+            <PresetCard theme={theme as unknown as SarakThemePreset} currentMode="light" onApply={() => {}} index={0} />,
+        );
+        const previewSurface = container.querySelector('.h-48') as HTMLElement;
+
+        expect(previewSurface.style.backgroundColor).toBe('rgb(255, 255, 255)');
+    });
+
+    it('mantém o nome legível e permite que ele quebre em cartões estreitos', () => {
+        const theme = { id: 'tema-longo', name: 'Tema com nome comprido', design: { mode: 'dark' } };
+        const { container } = render(
+            <PresetCard theme={theme as unknown as SarakThemePreset} currentMode="dark" onApply={() => {}} index={0} />,
+        );
+        const themeName = container.querySelector('h3');
+
+        expect(themeName).toHaveClass('min-w-0', 'break-words', 'text-[var(--sarak-type-scale-caption,12px)]');
     });
 
     it('cardShadowSpread é a OPACIDADE da sombra em % (o sentido do schema), não um desfoque em px', () => {

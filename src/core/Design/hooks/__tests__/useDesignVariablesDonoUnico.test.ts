@@ -195,6 +195,13 @@ describe('texto sobre cor sólida: o motor escolhe o de maior contraste', () => 
         expect(on({ navItemActiveColor: 'var(--theme-primary)' })['--sarak-on-nav-active']).toBeUndefined();
     });
 
+    it('a cor de texto da barra lateral e do topo é escolhida sobre o próprio fundo de cada barra', () => {
+        const variables = on({ sidebarColor: '#111111', topbarColor: '#ffd400' });
+        expect(variables['--sarak-on-sidebar']).toBe('#ffffff');
+        expect(variables['--sarak-on-topbar']).toBe('#020617');
+        expect(on({ sidebarColor: 'var(--theme-surface)' })['--sarak-on-sidebar']).toBeUndefined();
+    });
+
     it('a bolha do usuário translúcida compõe sobre o corpo antes de escolher', () => {
         const dark = on({ mode: 'dark', colorBgBody: '#050505', chatUserBg: 'rgba(255, 255, 255, 0.05)' });
         const light = on({ mode: 'light', colorBgBody: '#ffffff', chatUserBg: 'rgba(0, 0, 0, 0.05)' });

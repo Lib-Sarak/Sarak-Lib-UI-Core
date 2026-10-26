@@ -211,10 +211,75 @@
     ],
     "cssVariables": [
       "--theme-title-color",
-      "--sarak-title-color"
+      "--sarak-title-color",
+      "--theme-title"
     ],
     "allowedValues": null,
     "relatedTokens": [
+      "primaryColor"
+    ]
+  },
+  {
+    "tokenId": "subtitleColor",
+    "visualImpact": "cores",
+    "name": "Cor do Subtítulo",
+    "description": "Cor de subtítulos e descrições com destaque intermediário entre o texto principal e os títulos.",
+    "type": "color",
+    "importance": 75,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "tipografia"
+    ],
+    "tags": [
+      "subtitle",
+      "text",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-subtitle-color",
+      "--theme-subtitle"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "textColorMaster",
+      "titleColor"
+    ]
+  },
+  {
+    "tokenId": "emphasisColor",
+    "visualImpact": "cores",
+    "name": "Cor de Ênfase",
+    "description": "Cor de acento usada em palavras e trechos destacados com contraste acessível.",
+    "type": "color",
+    "importance": 75,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "tipografia"
+    ],
+    "tags": [
+      "emphasis",
+      "text",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-emphasis-color",
+      "--theme-emphasis"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "accentColor",
       "primaryColor"
     ]
   },

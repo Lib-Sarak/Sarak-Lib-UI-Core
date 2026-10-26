@@ -316,7 +316,7 @@ A porta fecha **uma vez**: depois do primeiro quadro, uma troca por código nunc
 **Travas** (R18 no cabeçalho de cada uma): `theme-boot:check` — nenhum tema além do padrão, nem `themes/all.ts`, no
 fecho estático do entry em `src/` e no `dist/` (no `build`); `boot:measure` (`scripts/measure-consumer-boot.mjs`) — o
 boot no bundler do consumidor cabe em *o boot só com o tema padrão e sem catálogo, medido na mesma execução, + o
-catálogo + 3 KB* gzip, e cada tema embarcado pesa **até 3 KB gzip** (no `gates:full`). O teto relativo tem folga: um
+catálogo + 3 KB* gzip, e cada tema embarcado respeita o teto de peso por tema da §5.3 (no `gates:full`). O teto relativo tem folga: um
 tema isolado que volte ao boot acende a trava estrutural, não a medida.
 
 ### 4.3.3 A troca de tema compõe, nunca herda
@@ -379,10 +379,10 @@ aceito) **ou** `{ design, activeThemeId }`; com o id presente, é o tema resolvi
 `null` ou `undefined` significa *nada gravado ainda* e não aplica nem grava coisa alguma. Sem o id de volta, o
 consumidor guardaria *quais tokens* estão aplicados, mas não conseguiria restaurar *de qual tema eles vieram*.
 
-**A lib não grava sem mudança.** O boot e a hidratação — a local e a do `onLoad` — não chamam `onSave`, não
-escrevem no `localStorage` e não chamam `onThemeChange`. Só gravam a edição do usuário (com o atraso de 1,5 s) e
+**A lib não grava sem mudança.** O boot e a hidratação — a local e a do `onLoad` — não chamam `onSave` e não chamam
+`onThemeChange`; a única escrita da hidratação é a do cache local em `'hybrid'`, descrita abaixo. Só gravam a edição do usuário (com o atraso de 1,5 s) e
 a aplicação explícita; e o mesmo par design + id não é gravado duas vezes seguidas. Os dois caminhos que aplicam tema
-— o `Aplicar (N)` do painel e o desfazer da última aplicação — anunciam o id **antes** de gravar (escolher um
+— o `Aplicar` do painel e o desfazer da última aplicação — anunciam o id **antes** de gravar (escolher um
 tema na galeria ou na aba de modelos só altera o rascunho, [[06-painel-de-customizacao-e-preview]] §4), de modo que a primeira chamada de `onSave` leva o par certo.
 
 **O formato do dado persistido não se descreve em prosa aqui**: a lib publica o artefato de referência
@@ -392,6 +392,19 @@ tema na galeria ou na aba de modelos só altera o rascunho, [[06-painel-de-custo
 **Invariante do dado:** *tema da lib é imutável.* Alterar um tema embarcado não existe como operação — o
 que existe é **criar um derivado**, que passa a viver no importador. É o que mantém o catálogo shippado
 igual em todos os consumidores e o que torna a atualização da lib segura.
+
+**O cache local guarda o par.** Em `'hybrid'`, o design fica na chave efetiva (formato de sempre) e o id do tema ativo na chave
+companheira `<chave efetiva>::active-theme-id`; no boot, o id do cache vale até o `onLoad` responder (precedência da §4.3: prop
+controlada > `onLoad` > cache > semente). O resultado do `onLoad` que difere do cache é **escrito de volta no cache** — sem `onSave`,
+porque hidratação não é edição —, e assim outro dispositivo que trocou o tema não faz a próxima recarga pintar o tema velho.
+
+**O host declara quando o boot injetado vence o cache:** `options.persistence.preferConfigOverCache: true` faz o `config` do host
+pintar o primeiro quadro **e** ignora o id do cache (o par fica coerente: o id vem da mesma fonte que o design). Padrão `false`: o
+cache continua vencendo, como antes. Para o primeiro quadro **antes do JavaScript**, o host escreve no HTML o CSS de
+`sarakCreateThemeBootCss(design)` (fundo de `html`/`body` e `color-scheme`, com a cor validada pela mesma régua do tema).
+
+**A porta pode falhar.** `onSave` que rejeita a promessa mantém a alteração na tela, mostra o aviso localizado **só no Provider que
+falhou**, não registra o par como gravado e é tentado de novo na próxima mudança (não em laço).
 
 ### 4.4.3 Valor oferecido no schema é contrato com o usuário final
 
@@ -489,6 +502,10 @@ morto — o consumidor que não implementou `onSave` simplesmente continua com o
 
 ## 4.7 Preferência do usuário — sobreposta ao tema, nunca gravada nele
 
+> A prévia e a galeria do painel também recebem a preferência de modo por cima do rascunho, com a contraparte do tema **do
+> rascunho** (o escolhido na galeria; sem ele, o resolvido) — e o rascunho salvo continua sem preferência
+> ([[06-painel-de-customizacao-e-preview]] §6).
+
 O tema é do administrador e do sistema inteiro; a **preferência** é de cada usuário
 ([[016-preferencias-do-usuario-separadas-do-tema]]). Os componentes recebem o **design efetivo** — o tema
 com as preferências oferecidas aplicadas por cima —, e **só o tema é persistido como tema**. O painel edita
@@ -507,8 +524,8 @@ não entra no tema que ele salva.
 
 **O tema decide o que é oferecido**, por token de tema — um por preferência, com três posições: **não
 oferecida**, **no menu**, **fixa na barra**. É token, e não campo à parte, porque é o administrador quem o
-escolhe em runtime, no painel: persiste pelo mesmo caminho do resto do tema. Padrão de fábrica: **todas fixas na
-barra** (`pinned` — modo, fonte, navegação, navegação recolhida e idioma; `src/core/Design/schema/preferences.ts`), a
+escolhe em runtime, no painel: persiste pelo mesmo caminho do resto do tema. Padrão de fábrica: modo e idioma **fixos na
+barra** (`pinned`), tamanho da fonte, navegação e navegação recolhida **no menu** (`menu`; `src/core/Design/schema/preferences.ts`), a
 mesma composição da barra de [[05-cromo-e-slots]] §2.2.2. **Chave ausente vale o padrão de fábrica** — um design
 aplicado por substituição, sem essas chaves, mostra a barra como a fábrica a monta. Preferência não oferecida é ignorada, mesmo que o usuário a tenha salvo antes.
 
@@ -585,9 +602,11 @@ cifra em prosa envelhece).
 
 **Agora se mede:** `gates/scripts/audit/verify_diversity.ts` (+ `npm run themes:diversity`) emite modo, família de
 matiz, H/S da primária, luminosidade do fundo, raio, borda, blur e densidade de todo `SARAK_ALL_THEMES`, e avalia os
-critérios de distância (o modo `--new <ids>` mede um grupo de temas novos contra os existentes). Só eixo **estético**
-entra na medição: a navegação é token funcional e nenhum tema a declara (§5.3). **Diversidade deixou de ser afirmação e
-virou saída de script.**
+critérios de distância (o modo `--new <ids>` mede um grupo de temas novos contra os existentes). A mesma execução
+confere os estilos de item ativo e os tratamentos de fundo da sidebar e da topbar: cada orientação precisa ter pelo
+menos três estilos ativos e três tratamentos de fundo no catálogo. A geometria e o comportamento da navegação seguem
+funcionais e uniformes; texto, moldura, fundo, forma do ativo, densidade e ícones da barra são eixos estéticos (§5.3).
+**Diversidade deixou de ser afirmação e virou saída de script.**
 
 > 🔴 **A armadilha que o próprio instrumento trouxe, e que vale como aviso permanente.** Ele nasceu com os
 > buckets estruturais calibrados em intervalos que o dado **nunca alcança** — raio `0..120` quando o real é
@@ -622,11 +641,35 @@ O schema separa os tokens em **estéticos** e **funcionais** (`kind` e `modeDepe
   tokens estéticos de movimento (durações e entradas mínimas), não `reducedMotion`;
 - escolhe `texture` e `cardTextureType` que sirvam aos **dois** modos, porque os dois não carregam modo.
 
+**Identidade do cromo.** Cada tema declara também o conjunto estético das duas barras: texto dos itens, hover, categoria
+e marca; moldura; tratamento do fundo; forma do item ativo; densidade; ícones; e, na topbar, separador, blur e sombra.
+Os 16 valores cromáticos e de sombra que carregam modo aparecem na `contraparte`; geometria e escolhas de estilo ficam
+no `design` principal. `sarak-sovereign` mantém os padrões do schema. O auditor de contraste verifica os textos inativos,
+hover, categoria e marca sobre a barra correspondente nos dois modos; o item ativo também continua coberto.
+
 **A trava é o `theme-completeness:check`** (`gates/scripts/contrato/check-theme-completeness.ts`): reprova estético
 faltando, estético com modo faltando na `contraparte` e funcional declarado. A exceção por tema
 (`gates/allowlists/themeCompletenessPending.json`) está **vazia**, e um tema completo que continue nela também reprova.
-**O peso de cada tema** (o módulo sozinho, minificado, gzip) tem teto de **4,5 KB**, medido por `npm run boot:measure`
-(`PER_THEME_CEILING_BYTES`, `scripts/measure-consumer-boot.mjs`); o boot leva só o tema padrão (§4.3.2).
+**O peso de cada tema** (o módulo sozinho, minificado, gzip) tem teto de **15 KB**, medido por `npm run boot:measure`
+(`PER_THEME_CEILING_BYTES`, `scripts/measure-consumer-boot.mjs`); o boot leva só o tema padrão (§4.3.2). O número é decisão do dono
+(2026-10-24): o peso só conta no carregamento sob demanda, nunca no uso, e o tema é aplicado uma vez e quase não é trocado; até ~12 KB
+nenhuma troca é sentida em rede alguma, e o custo aceito acima disso é a galeria do painel mais lenta em rede ruim. Conteúdo pesado
+(imagem, SVG de textura, fonte) **nunca** entra no módulo do tema — vai como arquivo próprio, sob demanda. Se o teto voltar a apertar,
+enxugar sem perda visual (guardar só o que difere do padrão e recompor ao carregar) vem antes de subir.
+
+**Papéis de cor de texto.** Todo tema embarcado declara, nos dois modos, `titleColor`, `subtitleColor`, `emphasisColor` e
+`cardTitleColor` distintos do texto corrido (`textColorMaster`): o título se separa por matiz ou luminosidade, o subtítulo fica entre
+os dois e o destaque usa o acento do tema; o `auditor_contraste` mede os três contra o fundo e a superfície do cartão. Um `config` do
+host em modo claro que **não** declara esses papéis recebe os do par claro do tema de base, nunca os do escuro.
+
+**Arte de fundo.** Todo tema embarcado declara `globalBackgroundPosition` (rola com o conteúdo ou fixa na janela; [[02-design-engine]] §10.1).
+
+**Largura.** Os temas embarcados declaram `maxContentWidth: fluid` ([[05-cromo-e-slots]] §2.4).
+
+**A barra.** Todo tema declara os tokens de identidade das duas barras ([[05-cromo-e-slots]] §2.4) — e a contraparte, os que carregam
+modo —, com uma direção própria (lateral distinta do topo onde faz sentido); a contraparte clara conserva a assinatura do tema
+(textura, matiz, forma do item ativo). O contraste de item inativo, ativo, hover e categoria é medido pelo `auditor_contraste` nos dois
+modos, e a diversidade do conjunto (§5.2) cobre os eixos da barra: estilos de item ativo e tratamentos de fundo distintos entre os 19.
 
 O que cada tema embarcado demonstra da lib (o arquétipo, os tokens que carregam a personalidade) está no guia do kit,
 na tabela de arquétipos da §3.9 ("Importe por identidade visual") de `sarak-ui/GUIA-FRONTEND.md`, e não se

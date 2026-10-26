@@ -1,6 +1,8 @@
 import * as echarts from 'echarts';
 import type { SarakChartDataItem, ChartBuilderConfig, ChartTheme, ChartOptionFragment } from './types';
 
+const ECHARTS_GRAPHIC = echarts.graphic;
+
 const DEFAULT_GAUGE_VALUE = 0;
 const DEFAULT_GAUGE_MAXIMUM = 100;
 const HEATMAP_MAXIMUM = 1000;
@@ -31,7 +33,7 @@ export const buildRadarConfig = (
             name: 'Métrica',
             symbol: 'none',
             areaStyle: {
-                color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                color: new ECHARTS_GRAPHIC.RadialGradient(0.5, 0.5, 1, [
                     { offset: 0, color: theme.primaryColor },
                     { offset: 1, color: theme.secondaryColor },
                 ]),
@@ -47,7 +49,7 @@ function createGaugeProgress(theme: ChartTheme): Record<string, unknown> {
         show: true,
         width: GAUGE_TRACK_WIDTH,
         itemStyle: {
-            color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+            color: new ECHARTS_GRAPHIC.LinearGradient(0, 0, 1, 0, [
                 { offset: 0, color: theme.primaryColor },
                 { offset: 1, color: theme.secondaryColor },
             ]),

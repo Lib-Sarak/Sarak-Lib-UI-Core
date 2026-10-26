@@ -75,4 +75,39 @@ describe('useThemeSeed — a semente do design', () => {
         const { getSeedConfig } = seedOf({ config: { primaryColor: '#abcdef' } });
         expect(getSeedConfig().primaryColor).toBe('#abcdef');
     });
+
+    it('usa as cores autoradas dos papéis de texto no modo claro e preserva as substituições do host', () => {
+        const { getSeedConfig } = seedOf({
+            config: { mode: 'light', titleColor: '#123456' },
+        });
+        const seed = getSeedConfig();
+
+        expect(seed.titleColor).toBe('#123456');
+        expect(seed.subtitleColor).toBe(sovereign.contraparte?.subtitleColor);
+        expect(seed.emphasisColor).toBe(sovereign.contraparte?.emphasisColor);
+    });
+
+    it('ignora o id do cache quando o host declara que o config vence', () => {
+        const storageKey = 'theme-seed-config-wins';
+        const configTheme: SarakThemeEntry = {
+            id: 'config-theme',
+            design: { mode: 'dark', primaryColor: '#123456' },
+        };
+        const activeThemeKey = `${storageKey}::active-theme-id`;
+        localStorage.setItem(activeThemeKey, 'cached-theme');
+
+        try {
+            const { resolveSeedThemeId, getSeedConfig } = seedOf({
+                allThemes: [sovereign, configTheme],
+                initialTheme: configTheme.id,
+                config: { primaryColor: '#123456' },
+                options: { persistence: { storageKey, preferConfigOverCache: true } },
+            });
+
+            expect(resolveSeedThemeId()).toBe('config-theme');
+            expect(getSeedConfig().primaryColor).toBe('#123456');
+        } finally {
+            localStorage.removeItem(activeThemeKey);
+        }
+    });
 });

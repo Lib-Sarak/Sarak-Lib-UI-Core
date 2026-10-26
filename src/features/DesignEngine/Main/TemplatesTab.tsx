@@ -52,7 +52,7 @@ export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) 
                 <div className="text-xs font-black tracking-widest uppercase mb-1">
                     Templates & <span className="text-[var(--theme-primary)]">Manifest</span>
                 </div>
-                <p className="text-[var(--sarak-type-scale-tiny,8px)] text-theme-text/30 font-medium uppercase tracking-[var(--sarak-tracking-tight,0.2em)]">
+                <p className="text-[var(--sarak-type-scale-tiny,11px)] text-theme-text/30 font-medium uppercase tracking-[var(--sarak-tracking-tight,0.2em)]">
                     Integração Host
                 </p>
             </div>
@@ -65,14 +65,14 @@ export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) 
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
                                     <FileJson size={12} className="text-[var(--theme-primary)]" />
-                                    <div className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-tight">{entry.name || entry.id}</div>
+                        <div className="text-[var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-tight">{entry.name || entry.id}</div>
                                 </div>
-                                <p className="text-[var(--sarak-type-scale3xs,9px)] text-theme-text/30">{entry.description || 'Tema customizado.'}</p>
+                        <p className="text-[var(--sarak-type-scale3xs,11px)] text-theme-text/30">{entry.description || 'Tema customizado.'}</p>
                             </div>
                             <div className="flex gap-2">
                                 <button 
                                     onClick={() => handleSelect(entry, theme)}
-                                    className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest transition-all flex-1 ${
+                            className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[var(--sarak-type-scale3xs,11px)] font-black uppercase tracking-widest transition-all flex-1 ${
                                         selectedId === entry.id
                                         ? 'bg-[var(--sarak-status-success-color,#10b981)] text-[var(--sarak-on-success,#020617)]' 
                                         : 'bg-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/80 text-theme-on-primary'
@@ -83,7 +83,7 @@ export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) 
                                 </button>
                                 <button 
                                     onClick={() => handleCopy(entry, theme)}
-                                    className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest transition-all ${
+                            className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[var(--sarak-type-scale3xs,11px)] font-black uppercase tracking-widest transition-all ${
                                         copiedId === entry.id 
                                         ? 'bg-[var(--sarak-status-success-color,#10b981)]/20 text-[var(--sarak-status-success-color,#10b981)] border-[var(--sarak-status-success-color,#10b981)]/50' 
                                         : 'bg-theme-text/5 hover:bg-theme-text/10 text-theme-text/40 hover:text-theme-text border border-theme-text/5'
@@ -95,7 +95,7 @@ export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) 
                         </div>
 
                         <div className="relative">
-                            <pre className="bg-theme-body/40 rounded-xl p-4 text-[var(--sarak-type-scale-tiny,8px)] font-mono text-theme-text/20 overflow-x-auto border border-theme-text/5 max-h-[var(--sarak-layout-preview-max-h,120px)] custom-scrollbar">
+                            <pre className="bg-theme-body/40 rounded-xl p-4 text-[var(--sarak-type-scale-tiny,11px)] font-mono text-theme-text/20 overflow-x-auto border border-theme-text/5 max-h-[var(--sarak-layout-preview-max-h,120px)] custom-scrollbar">
                                 {theme ? JSON.stringify(theme.design, null, 2) : 'Carregando…'}
                             </pre>
                         </div>
@@ -106,14 +106,14 @@ export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) 
             {/* External Links */}
             <div className="mt-8 pt-8 border-t border-theme-text/5 flex flex-col gap-4">
                 <div className="flex items-center gap-4">
-                    <a href="#" className="flex items-center gap-2 text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest text-theme-text/20 hover:text-[var(--theme-primary)] transition-all">
+                <a href="#" className="flex items-center gap-2 text-[var(--sarak-type-scale3xs,11px)] font-black uppercase tracking-widest text-theme-text/20 hover:text-[var(--theme-primary)] transition-all">
                         <Code size={10} /> Docs
                     </a>
-                    <a href="#" className="flex items-center gap-2 text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest text-theme-text/20 hover:text-[var(--theme-primary)] transition-all">
+                <a href="#" className="flex items-center gap-2 text-[var(--sarak-type-scale3xs,11px)] font-black uppercase tracking-widest text-theme-text/20 hover:text-[var(--theme-primary)] transition-all">
                         <ExternalLink size={10} /> GitHub
                     </a>
                 </div>
-                <span className="text-[var(--sarak-type-scale-tiny,8px)] font-black uppercase tracking-[var(--sarak-tracking-wide,0.3em)] text-theme-text/10">Sarak v13.0</span>
+                <span className="text-[var(--sarak-type-scale-tiny,11px)] font-black uppercase tracking-[var(--sarak-tracking-wide,0.3em)] text-theme-text/10">Sarak v13.0</span>
             </div>
         </div>
     );

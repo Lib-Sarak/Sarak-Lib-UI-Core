@@ -174,7 +174,6 @@ export const SARAK_DESIGN_MANIFEST: Record<string, {
     topbarNoiseOpacity: { vars: ['--sarak-topbar-noise-opacity'] },
 
     iconStrokeWidth: { vars: ['--sarak-icon-stroke', '--theme-icon-stroke'], unit: 'px' },
-    maxContentWidth: { vars: ['--sarak-max-width', '--theme-max-width'] },
     topbarHeight: { vars: ['--topbar-height', '--sarak-topbar-height', '--theme-topbar-height'], unit: 'px' },
     isNavHidden: { vars: ['--is-nav-hidden'] },
     sidebarMinWidth: { vars: ['--sidebar-min-width'], transform: (v: SarakTokenValue) => parseFloat(String(v)) || 200 },

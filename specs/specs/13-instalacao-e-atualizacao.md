@@ -62,10 +62,11 @@ depois**, e sempre em cima de outra pessoa.
 | | Quantidade | Quem instala |
 | --- | --- | --- |
 | `dependencies` | **3** — `@phosphor-icons/react`, `@tabler/icons-react`, `dompurify` | a lib traz junto |
-| `peerDependencies` | 9 obrigatórias, e as demais opcionais (`peerDependenciesMeta`) — a contagem viva é `node -p "Object.keys(require('./package.json').peerDependencies).length"` | o consumidor instala as obrigatórias; motores opcionais só são necessários quando usados |
+| `peerDependencies` | 8 obrigatórias, e as demais opcionais (`peerDependenciesMeta`) — a contagem viva é `node -p "Object.keys(require('./package.json').peerDependencies).length"` | o consumidor instala as obrigatórias; motores opcionais só são necessários quando usados |
 
-As obrigatórias são `@tanstack/react-virtual`, `clsx`, `date-fns`, `framer-motion`,
-`lucide-react`, `react`, `react-dom`, `react-dropzone` e `tailwind-merge`. São importadas pelo
+As obrigatórias são `clsx`, `date-fns`, `framer-motion`, `lucide-react`, `react`, `react-dom`,
+`react-dropzone` e `tailwind-merge`. `@tanstack/react-virtual` é **opcional**: só a virtualização das tabelas a usa, e sem ela a
+tabela renderiza todas as linhas. São importadas pelo
 barril ou por código eager. As opcionais são `@dnd-kit/core` e `@dnd-kit/sortable` (o arrastar do
 `SarakKanban`, [[019-arrastar-e-soltar-do-kanban]]), `echarts`, `echarts-for-react`, `pdfjs-dist`,
 `react-markdown`, `react-syntax-highlighter`, `reactflow` e `recharts`, usadas por peças lazy;

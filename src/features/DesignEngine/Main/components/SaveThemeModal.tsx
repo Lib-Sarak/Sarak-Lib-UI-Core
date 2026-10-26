@@ -155,7 +155,7 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
                         )}
 
                         <div className="flex flex-col gap-1.5">
-                            <label htmlFor="save-theme-name" className="text-[var(--sarak-type-scale2xs,10px)] font-bold text-[var(--color-theme-title,#f2f6fb)] uppercase tracking-widest">
+        <label htmlFor="save-theme-name" className="text-[var(--sarak-type-scale2xs,11px)] font-bold text-[var(--color-theme-title,#f2f6fb)] uppercase tracking-widest">
                                 {text('themeNameLabel')}
                             </label>
                             <SarakInput

@@ -20,6 +20,12 @@ describe('CardsCatalog', () => {
         expect(container).toMatchSnapshot();
     });
 
+    it('miniaturas dos cards acompanham o modo efetivo do catálogo', () => {
+        const { container } = render(<CardsCatalog onApplyPreset={vi.fn()} currentMode="light" />);
+
+        expect(container.querySelector('.sarak-design-scope')?.classList.contains('light')).toBe(true);
+    });
+
     it('troca para a camada automática de Texturas ao clicar na sub-aba', () => {
         render(<CardsCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
         fireEvent.click(screen.getByRole('button', { name: /Texturas/i }));

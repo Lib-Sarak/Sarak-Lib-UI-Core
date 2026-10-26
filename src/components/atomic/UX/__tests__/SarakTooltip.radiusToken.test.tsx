@@ -19,17 +19,17 @@ describe('tooltipRadius — o raio da caixa do tooltip lê --sarak-tooltip-radiu
         fireEvent.focus(screen.getByRole('button', { name: 'alvo' }));
         const classes = (await screen.findByRole('tooltip')).className;
         expect(classes).toContain('bg-[var(--sarak-tooltip-bg,var(--theme-surface))]');
-        expect(classes).toContain('text-[var(--sarak-tooltip-text,var(--color-theme-title,#f2f6fb))]');
+        expect(classes).toContain('text-[var(--sarak-tooltip-text,var(--theme-text-primary,var(--sarak-text-main,#f2f6fb)))]');
         expect(classes).toContain('border-[var(--sarak-tooltip-border,var(--theme-border))]');
     });
 
-    it('os padrões das três cores reproduzem o que a caixa desenhava (superfície, título, borda do tema)', () => {
+    it('os padrões das três cores reproduzem o que a caixa desenhava (superfície, texto, borda do tema)', () => {
         const defaults = Object.fromEntries(
             sarakGetAllDesignTokens().filter((item) => /^tooltip(Bg|TextColor|BorderColor)$/.test(item.id)).map((item) => [item.id, item.defaultValue]),
         );
         expect(defaults).toEqual({
             tooltipBg: 'var(--theme-surface)',
-            tooltipTextColor: 'var(--color-theme-title, #f2f6fb)',
+            tooltipTextColor: 'var(--theme-text-primary, var(--sarak-text-main, #f2f6fb))',
             tooltipBorderColor: 'var(--theme-border)',
         });
     });

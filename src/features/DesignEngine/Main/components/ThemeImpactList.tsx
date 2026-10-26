@@ -83,7 +83,7 @@ const ImpactGroup: React.FC<{
 
     return (
         <section aria-labelledby={`theme-impact-${group.id}`} data-visual-impact-group={group.id}>
-            <h3 id={`theme-impact-${group.id}`} className="mb-3 text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-[var(--theme-muted)]">
+                        <h3 id={`theme-impact-${group.id}`} className="mb-3 text-[var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest text-[var(--theme-muted)]">
                 {group.title}
             </h3>
             <div className="flex flex-col gap-4">

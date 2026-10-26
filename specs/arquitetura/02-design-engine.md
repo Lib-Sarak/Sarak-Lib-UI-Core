@@ -281,6 +281,10 @@ contrato além de "a variável chega à propriedade".
 
 ## 10.1 Fundo e atmosfera
 
+**A arte de fundo global** rola com o conteúdo (`globalBackgroundPosition: absolute`, o padrão) ou fica fixa na janela (`fixed`); todo
+tema embarcado declara a escolha. O fundo do `body` **não faz transição na primeira pintura** — a transição vale para a troca de tema, e o
+primeiro quadro depois da hidratação já tem a cor do tema.
+
 - **Gradiente** (`bgGradientMode`: `none` · `linear` (padrão) · `radial` · `mesh`) — `src/styles/_background.css`,
   camada `components.sarak-elements`, pinta o `body` (ou o escopo). `linear` vai do fundo à camada 1 tingida pela
   primária, no ângulo de `bgGradientAngle`; `radial` acende um foco no topo; `mesh` são quatro manchas — primária,
@@ -328,6 +332,20 @@ contrato além de "a variável chega à propriedade".
 saída é a de sempre. Nas variantes da primária, o resultado é `--theme-primary-hover`/`--theme-primary-active`, lidos
 pelo hover e pelo pressionado globais de `button` (`_elements.css`).
 
+**Papéis de cor de texto.** O texto corrido é `textColorMaster` (`--sarak-text-main`, `--theme-text-primary`); o título é `titleColor`,
+**dono único** de `--color-theme-title`/`--theme-title`/`--text-title`; `subtitleColor` e `emphasisColor` colorem subtítulo e destaque.
+`SarakTypography` dá aos títulos (h1-h3) a cor de título por padrão e aceita `color` = `title` · `subtitle` · `emphasis`; cartões,
+Markdown, catálogo, calendário, Kanban e Gantt leem o papel do texto que desenham. No modo claro, `resolveTitleColor` faz o título no
+padrão seguir o texto principal, e um `config` claro sem os papéis recebe os do par claro do tema de base (`useThemeSeed`).
+
+**Piso de legibilidade.** As escalas pequenas (`typeScaleMicro`, `typeScaleTiny`, `typeScale3xs`, `typeScale2xs`) têm padrão e mínimo
+de **11 px**; o painel mantém o piso de 12 px. O título de cartão tem degrau próprio (`cardTitleFontSize`), e o cabeçalho de cartão usa
+o menor entre ele e o h2 da página.
+
+**Lista nativa de escolha.** Uma regra única em `_elements.css` faz `color-scheme` seguir o modo do escopo (`.dark`/`.light`) e pinta
+`select option` com `--theme-surface` e `--text-main` — a lista aberta do navegador fica legível em todo tema (a superfície dos temas é
+opaca).
+
 ## 10.4 Cartão
 
 - **Hover só em cartão interativo.** Interativo é o cartão cuja superfície inteira responde ao ponteiro e traz
@@ -364,6 +382,11 @@ não recebe ponteiro enquanto sai.
 
 ## 10.6 Componentes que leem tokens próprios
 
+**A barra lê os próprios tokens de identidade** ([[05-cromo-e-slots]] §2.4): o texto do item, da categoria e da marca, a borda (cor,
+largura, estilo e lados), o fundo da barra, da marca e do rodapé, o estilo do item ativo, a densidade e os ícones. Os tokens nascem
+das fábricas `createChrome{Color,Slider,Select}Token` (`schema/navigation.ts`), que declaram a variável CSS como argumento — o
+`auditor_ghostvars` lê esse argumento. O brilho do marcador (`--sarak-nav-marker-glow`) sai **sem unidade** e o leitor multiplica por `1px`.
+
 Campo (`inputPadding`), tooltip (`tooltipRadius`, `tooltipBg`, `tooltipTextColor`, `tooltipBorderColor`), modal
 (`colorBgModal`, `modalOverlayBlur`, `modalOverlayColor`), toast (`zIndexToast`), tabela (`tableZebraStriping`,
 `tableBorderRadius`, este pelos quatro cantos como variável do contêiner), botão (`btnGhostHoverBg`,
@@ -385,6 +408,17 @@ inclusive `0` e a forma responsiva); o trilho ativo e o polegar da faixa (`range
 `searchPositionTopbar: center`, a busca ocupa o vão entre a navegação e o grupo final. No estilo `cyberpunk` (fundo
 transparente), o texto do `SarakButton` e o ícone do `SarakIconButton` das variantes sólidas pintam na cor da própria
 variante, de uma tabela só (`CYBERPUNK_TEXT_COLORS`, `useAtomicStyles.ts`).
+
+Os dois cromos também têm tokens estéticos próprios por orientação. `sidebarItemTextColor`,
+`sidebarItemHoverTextColor`, `sidebarCategoryColor` e `sidebarBrandColor` controlam os textos da lateral; os três
+papéis equivalentes da topbar são `topbarItemTextColor`, `topbarItemHoverTextColor` e `topbarBrandColor`.
+`sidebarBorderColor`, `sidebarBorderWidth`, `sidebarBorderStyle` e `sidebarBorderSide` desenham a moldura lateral;
+`topbarBorderColor`, `topbarBorderWidth`, `topbarBorderStyle` e `topbarBorderSide` fazem o mesmo no topo.
+`sidebarBackgroundStyle` e `topbarBackgroundStyle` selecionam fundo sólido, gradiente ou textura local; os tokens
+`sidebarActiveItemStyle` e `topbarActiveItemStyle` selecionam a forma do item atual. Densidade e ícones também são
+independentes por barra. A marca e o rodapé da sidebar, a marca e o separador de grupos da topbar recebem fundos e
+cores próprios. `topbarBlur` e `topbarShadow` completam a profundidade da barra superior. O leitor mantém a geometria
+responsiva e o alvo de toque do item de navegação.
 
 **A barra de topo cede espaço numa ordem fixa:** primeiro a busca, depois o rótulo dos widgets indisponíveis, por fim a
 lista de navegação passa a rolar. O item de navegação nunca encolhe abaixo do próprio texto, e o grupo final fica dentro
@@ -409,7 +443,8 @@ reset transparente de `main`/`section`/`article`. A classe utilitária e o `styl
 consumidor — vencem. Os cartões da lib não repetem classe de fundo nem de cor de borda: a superfície vem do tema,
 de um lugar só. Material e moldura do cartão também cedem (`_card-materials.css`, depois de `_card-defaults.css`). Ficam com
 `!important`, por desenho: o modo eco (`_performance.css`), o movimento reduzido (`_motion.css`) e a moldura da
-classe `.border-theme`. O injetor do modo claro (`SovereignThemeInjector`) não usa `!important` e não repinta o que
+classe `.border-theme`. O injetor do modo claro (`SovereignThemeInjector`) não usa `!important`, repinta o `text-white` do hospedeiro com o
+texto do corpo (texto genérico do host não é título) e não repinta o que
 está sob `[data-sarak-own-palette]` (fundo próprio, como o do `SarakLightbox`). A trava é o
 `css-important:check` ([[00-regras-e-invariantes]] R41).
 
@@ -472,6 +507,11 @@ cantos; o conflito no mesmo elemento passa pelo `mergeSarakClasses`, que as reco
 aparecer é marcado (`sarak-page-surface`), nunca adivinhado por classe de cor.
 
 ## 10.14 A escada de camadas
+
+**As faixas não se cruzam por construção:** `zIndexSidebar` vai de 10 a 790 e `zIndexModal` de 1000 a 5000 — a lateral fica sempre
+abaixo do modal. Valor salvo fora da faixa é ajustado pela validação, com aviso. Dois outros tokens funcionais têm piso pelo mesmo motivo
+(o usuário final não consegue quebrar a acessibilidade pelo painel): `topbarCollapsedHeight` ≥ 44 (o alvo de toque) e
+`focusRingWidth` ≥ 1 (o foco nunca some).
 
 Cada camada lê o token dela, sem empate: a barra lateral (`zIndexSidebar`); a atmosfera decorativa (ruído e
 vinheta) em `zIndexSidebar` + 50 — cobre conteúdo e cromo, fica abaixo de toda sobreposição; menus e busca em

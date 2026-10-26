@@ -14,7 +14,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
       >
         <div>
           <h2
-            class="text-[var(--sarak-type-scale-caption,12px)] font-semibold text-[var(--theme-title,#f2f6fb)]"
+            class="text-[var(--sarak-type-scale-xl,20px)] font-semibold text-[var(--theme-title,#f2f6fb)]"
           >
             Começar de um tema
           </h2>
@@ -79,7 +79,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                   />
                 </svg>
                 <span
-                  class="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--color-theme-title,#f2f6fb)]"
+                  class="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--color-theme-title,CanvasText)]"
                 >
                   Configurações globais (3)
                 </span>
@@ -155,7 +155,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                     </svg>
                   </div>
                   <span
-                    class="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--color-theme-title,#f2f6fb)]"
+                    class="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--color-theme-title,CanvasText)]"
                   >
                     Preferências Globais (0)
                   </span>
@@ -271,7 +271,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                     </svg>
                   </div>
                   <span
-                    class="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#f2f6fb)]"
+                    class="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--color-theme-title,CanvasText)]"
                   >
                     Barra de Preferências do Usuário (5)
                   </span>
@@ -324,7 +324,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                     </svg>
                   </div>
                   <span
-                    class="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#f2f6fb)]"
+                    class="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-all text-[var(--color-theme-title,CanvasText)]"
                   >
                     Identidade da Empresa (4)
                   </span>

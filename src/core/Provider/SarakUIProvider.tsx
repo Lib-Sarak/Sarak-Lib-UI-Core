@@ -22,7 +22,8 @@ import { useThemeReadiness } from './hooks/useThemeReadiness';
 import { SovereignThemeInjector } from './components/SovereignThemeInjector';
 import { SarakBackgroundRenderer } from '../Design/components/SarakBackgroundRenderer';
 import { SarakDeviceProvider, SARAK_DEFAULT_DEVICE_BREAKPOINTS, SarakDeviceBreakpoints } from './DeviceProvider';
-import { SarakToastProvider } from '../../components/atomic/Feedback/SarakToast';
+import { SarakToastProvider, useToast } from '../../components/atomic/Feedback/SarakToast';
+import { useLibraryText } from '../i18n/useLibraryText';
 import { SarakOverlayProvider } from '../../components/atomic/Modals/SarakOverlayProvider';
 import { useThemeDeletionHandler } from './hooks/useThemeDeletionHandler';
 import { useBodyThemeTransition } from './hooks/useBodyThemeTransition';
@@ -39,6 +40,22 @@ export { useSarakUI, useSarakUIOptional } from './hooks/useSarakUI';
 // uma referência NOVA a cada render — metade do loop de render infinito da Spec 43 §5.1
 // (a correção definitiva é o guard em `useDesignSync`; isto é só o default seguro).
 const EMPTY_CUSTOM_THEMES: SarakThemeEntry[] = [];
+
+const PersistenceSaveFailureToast: React.FC<{ failureCount: number }> = ({ failureCount }) => {
+    const toast = useToast();
+    const text = useLibraryText();
+    const textRef = useRef(text);
+    const previousFailureCountRef = useRef(failureCount);
+    textRef.current = text;
+
+    useEffect(() => {
+        if (previousFailureCountRef.current === failureCount) return;
+        previousFailureCountRef.current = failureCount;
+        toast.notify({ message: textRef.current('themePersistenceSaveFailed'), variant: 'warning' });
+    }, [failureCount, toast]);
+
+    return null;
+};
 
 // Orquestra o design, a hidratação e a injeção de estilos; só monta depois da porta de espera do tema.
 const SarakUIProviderCore: React.FC<SarakUIProviderProps> = ({
@@ -68,7 +85,7 @@ const SarakUIProviderCore: React.FC<SarakUIProviderProps> = ({
     const getHostConfig = useCallback(() => hostConfigRef.current, []);
 
     // 2. Gerenciamento do Estado de Design e Persistência
-    const { design, setDesign, applyConfig, applyFullConfig, persistDesign, isBackendLoaded, resolvedThemeId, setResolvedThemeId } = useDesignManager({
+    const { design, setDesign, applyConfig, applyFullConfig, persistDesign, isBackendLoaded, persistenceSaveFailureCount, resolvedThemeId, setResolvedThemeId } = useDesignManager({
         initialConfig: initialPropsConfig,
         options,
         isHydrated,
@@ -194,6 +211,7 @@ const SarakUIProviderCore: React.FC<SarakUIProviderProps> = ({
                     {shouldRenderChildren ? (
                         <MotionConfig reducedMotion={effectiveDesign?.reducedMotion === true ? 'always' : 'user'}>
                             <SarakToastProvider>
+                                <PersistenceSaveFailureToast failureCount={persistenceSaveFailureCount} />
                                 <SarakOverlayProvider>{children}</SarakOverlayProvider>
                             </SarakToastProvider>
                         </MotionConfig>

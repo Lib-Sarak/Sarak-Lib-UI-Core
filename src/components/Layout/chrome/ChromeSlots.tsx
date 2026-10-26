@@ -26,7 +26,15 @@ export const ChromeBrand: React.FC<{
     return (
         // O invólucro leva o respiro do token `identityPadding` (padrão 0, soma-se ao respiro
         // base do bloco); o bloco interno mantém a anatomia de sempre.
-        <div className="min-w-0" style={{ padding: 'var(--sarak-identity-padding, 16px)' }}>
+        <div
+            className="relative z-10 min-w-0"
+            style={{
+                padding: 'var(--sarak-identity-padding, 16px)',
+                background: horizontal
+                    ? 'var(--sarak-topbar-brand-bg, transparent)'
+                    : 'var(--sarak-sidebar-brand-bg, transparent)',
+            }}
+        >
             <div className={`sarak-chrome-brand flex items-center gap-2 min-w-0 ${horizontal ? '' : 'px-2 py-3'} ${compact ? 'justify-center' : ''}`}>
                 {logo
                     ? <span data-sarak-slot="logo" className="flex items-center shrink-0 min-w-0">{logo}</span>
@@ -49,7 +57,9 @@ export const ChromeBrand: React.FC<{
                             fontFamily: 'var(--sarak-identity-font, var(--font-heading, var(--font-main, inherit)))',
                             fontWeight: 'var(--sarak-identity-weight, 800)',
                             letterSpacing: 'var(--sarak-identity-tracking, 0px)',
-                            color: 'var(--sarak-topbar-title-color, var(--color-theme-title, inherit))',
+                            color: horizontal
+                                ? 'var(--sarak-topbar-brand-color, var(--sarak-topbar-title-color, var(--color-theme-title, inherit)))'
+                                : 'var(--sarak-sidebar-brand-color, var(--sarak-on-sidebar, #f2f6fb))',
                             // `sidebarLabelMaxWidth`/`topbarLabelMaxWidth` (Spec 05 §2.4) — trunca
                             // por orientação, mesmo par de tokens que o Shell já consome.
                             maxWidth: horizontal ? 'var(--sarak-topbar-label-max-width, 150px)' : 'var(--sarak-sidebar-label-max-width, 120px)',
@@ -111,8 +121,11 @@ export const ChromeSidebarSlot: React.FC<{ region: 'header' | 'footer'; children
     return (
         <div
             data-sarak-slot={region === 'header' ? 'sidebarHeader' : 'sidebarFooter'}
-            className="min-w-0 shrink-0"
-            style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}
+            className="relative z-10 min-w-0 shrink-0"
+            style={{
+                padding: 'var(--sarak-layout-gap-sm, 8px)',
+                background: region === 'footer' ? 'var(--sarak-sidebar-footer-bg, transparent)' : undefined,
+            }}
         >
             {children}
         </div>
@@ -129,7 +142,7 @@ export const ChromeTopbarSlot: React.FC<{ region: 'start' | 'end'; children?: Re
     return (
         <div
             data-sarak-slot={region === 'start' ? 'topbarStart' : 'topbarEnd'}
-            className={`flex items-center gap-2 min-w-0 ${region === 'end' ? 'shrink-0' : ''} ${className}`}
+            className={`relative z-10 flex items-center gap-2 min-w-0 ${region === 'end' ? 'shrink-0' : ''} ${className}`}
         >
             {children}
         </div>
@@ -151,7 +164,7 @@ export const ChromeSearchSlot: React.FC<{
 }> = ({ position, className = '', children }) => {
     if (!children || position === 'hidden') return null;
     return (
-        <div data-sarak-slot="search" className={`min-w-0 ${className}`}>
+        <div data-sarak-slot="search" className={`relative z-10 min-w-0 ${className}`}>
             {children}
         </div>
     );

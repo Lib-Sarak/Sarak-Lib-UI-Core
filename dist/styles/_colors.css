@@ -11,11 +11,11 @@
   --bg-card-rgb: var(--sarak-card-bg-rgb, 16, 22, 34);
 
   --text-main: var(--sarak-text-main, #f2f6fb);
-  --text-title: var(--sarak-title-color, #f2f6fb);
+  --text-title: var(--theme-title, var(--sarak-title-color, #f2f6fb));
   --text-muted: var(--sarak-text-muted, rgba(242, 246, 251, 0.55));
   
   --border-color: var(--sarak-card-border-color, rgba(255, 255, 255, 0.09));
   --bg-tooltip: var(--sarak-tooltip-bg, var(--theme-surface));
-  --text-tooltip: var(--sarak-tooltip-text, var(--color-theme-title, #f2f6fb));
+  --text-tooltip: var(--sarak-tooltip-text, var(--theme-text-primary, var(--sarak-text-main, #f2f6fb)));
   --border-tooltip: var(--sarak-tooltip-border, var(--theme-border));
 }

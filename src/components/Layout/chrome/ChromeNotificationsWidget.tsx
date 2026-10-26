@@ -41,7 +41,7 @@ const ChromeNotificationsButton: React.FC<ChromeNotificationsButtonProps> = ({
         icon={(
             <span className="relative inline-flex">
                 <SarakIcon name="Bell" size={16} />
-                <span aria-hidden="true" className="absolute -right-2 -top-1 text-[var(--sarak-type-scale-tiny,8px)]">
+                <span aria-hidden="true" className="absolute -right-2 -top-1 text-[var(--sarak-type-scale-tiny,11px)]">
                     {notificationCount}
                 </span>
             </span>

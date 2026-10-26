@@ -122,7 +122,7 @@ function renderControl(token: SarakDesignToken, value: SarakTokenValue, onChange
         default:
             return (
                 <div className="p-2 border border-dashed border-[var(--theme-border)] rounded opacity-50">
-                    <span className="text-[var(--sarak-type-scale2xs,10px)] text-[var(--theme-muted)] uppercase">Tipo não suportado: {token.type}</span>
+                <span className="text-[var(--sarak-type-scale2xs,11px)] text-[var(--theme-muted)] uppercase">Tipo não suportado: {token.type}</span>
                 </div>
             );
     }

@@ -1,6 +1,8 @@
 import * as echarts from 'echarts';
 import type { SarakChartDataItem, ChartBuilderConfig, ChartTheme, ChartOptionFragment } from './types';
 
+const ECHARTS_GRAPHIC = echarts.graphic;
+
 const SCATTER_POINT_OPACITY = 0.7;
 const BOXPLOT_FILL_OPACITY = 0.2;
 const HISTOGRAM_BAR_OPACITY = 0.6;
@@ -33,7 +35,7 @@ export const buildScatterSeries = (
         type: 'scatter',
         symbolSize: (value: number[]) => Math.sqrt(value[1]) * 1.5,
         itemStyle: {
-            color: new echarts.graphic.RadialGradient(0.4, 0.3, 1, [
+            color: new ECHARTS_GRAPHIC.RadialGradient(0.4, 0.3, 1, [
                 { offset: 0, color: theme.primaryColor },
                 { offset: 1, color: theme.secondaryColor },
             ]),

@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "121"
+proximo_numero_plan: "128"
 ---
 
 # 0. O que é este arquivo
@@ -43,14 +43,46 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
 | 1 | [plan-119-kit-de-importacao-aprendido-nos-importadores](plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md) | Fazer o importador usar a lib por inteiro sem reescrever o que ela entrega, com o kit de importação ensinado pelas licoes medidas nos importadores reais e com a gestao de temas do importador completa: salvar o aplicado como novo, editar, duplicar e criar, persistidos no importador | — | 🟡 Em execução | specs/12-kit-do-consumidor.md + specs/13-instalacao-e-atualizacao.md + specs/09-temas-e-presets.md + specs/15-divida-conhecida.md |
-| 2 | [plan-120-o-que-o-importador-sente-antes-da-8-0-0](plan/plan-120-o-que-o-importador-sente-antes-da-8-0-0.md) | Fazer a 8.0.0 sair sem defeito conhecido que o importador ou o usuario final sinta: campos, props e mensagens que mentem, instalacao e PDF que exigem contorno, tokens que deixam quebrar o foco e as camadas, modal e arte de fundo fora do tema do cliente, painel com texto ilegivel e busca incompleta, e o teste que pode deixar o PR vermelho | — | 🟢 Aprovada | arquitetura/03-superficie-publica.md + specs/13-instalacao-e-atualizacao.md + arquitetura/02-design-engine.md + specs/09-temas-e-presets.md + specs/06-painel-de-customizacao-e-preview.md |
 <!-- SARAK-INDICE:FILA:FIM -->
+
+> 🏁 **Campanha da `8.0.0-rc.3` encerrada no código (2026-10-24).** As `plan-120` a `plan-127` foram aprovadas e sintetizadas; a
+> emissão da `rc.3` (`gates:full` e `npm version`) é do dono. Fica aberta só a `plan-119`, de propósito: ela recebe as lições e os
+> defeitos que aparecerem durante a adequação dos importadores (o ERP depois da `rc.3`) — não é trabalho pendente desta campanha.
 
 > **Ordem de execução (decisão do revisor, 2026-10-10):** a `plan-104` fechou (sintetizada em 2026-10-10); a ordem segue no despacho de 2026-10-10 abaixo. As três tocam `docs/migracoes.md`, cada uma na
 > sua subseção da próxima versão; fora isso, são disjuntas (`DataDisplay/` · `Provider/` + `Layout/chrome/` · `Inputs/` + i18n). Paralelo
 > só com a disjunção declarada pelo revisor ao despachar.
 >
 > 🚦 **Fila de 2026-10-14 — a `plan-116` (tema sob demanda) fechou; a `plan-110` é a próxima.** **Versão (decisão do dono, 2026-10-14):** as plans da fila registram a mudança na subseção `## 8.0.0` de `docs/migracoes.md`; a versão MAJOR é aplicada uma vez, ao final de todas as modificações, no merge para a `main` — nenhuma plan mexe na versão nem cria tag. O `npm run build` e o `cromo-css-real:check` são do revisor; o executor escreve os casos de `browser-tests/`.
+
+> ⚪ **A `plan-120` foi SINTETIZADA e REMOVIDA em 2026-10-24** (revisada por outra sessão; síntese assumida por esta, a pedido do dono). Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **120** | [[03-superficie-publica]] §6.7 (modal com borda e sombra do cartão, `disabled` do autocomplete, `workerSrc` obrigatório no `SarakPDFViewer`, props sem efeito retiradas) · [[13-instalacao-e-atualizacao]] §2.3 (`@tanstack/react-virtual` opcional; 8 peers obrigatórias — a spec ainda dizia 9, corrigido) · [[02-design-engine]] §10.1 (`globalBackgroundPosition`; fundo sem transição na entrada) e §10.14 (faixas de `zIndexSidebar`/`zIndexModal`, pisos de `topbarCollapsedHeight` e `focusRingWidth`) · [[09-temas-e-presets]] §5.3 (a arte de fundo declarada por todo tema) · [[06-painel-de-customizacao-e-preview]] §2 (uma taxonomia de pilares para as duas telas). |
+>
+> **Ficou de fora:** o lock regenerado no Linux, os casos intermitentes tornados determinísticos e as medições por lote (histórico do Git); `00-contexto` revisado: nada a mudar.
+
+> ⚪ **As `plan-124` e `plan-126` foram SINTETIZADAS e REMOVIDAS em 2026-10-24.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **124** | [[05-cromo-e-slots]] §2.4 (os tokens de identidade das duas barras, as fábricas e a métrica do item que não muda) e §2.2.2 (o padrão de fábrica novo: fonte, navegação e navegação recolhida no ⚙) · [[09-temas-e-presets]] §4.7 (o mesmo padrão nas preferências) e §5.3 (todo tema declara a barra; contraste e diversidade dos eixos da barra) · [[02-design-engine]] §10.6 (o que a barra lê; as fábricas e o `auditor_ghostvars`; o brilho do marcador sem unidade). |
+> | **126** | [[03-superficie-publica]] **§6.2.1 (nova)** — a camada de composição de página e as seis peças · [[12-kit-do-consumidor]] §1.1 (os moldes de lista e detalhe copiados das cenas do navegador e travados pelo `guide:check`). |
+>
+> **Ficou de fora:** a direção visual de cada tema e as medições por rodada (histórico do Git); os nomes de teste com rastro de plan viraram o item 58 do [[00-backlog]]. `00-contexto` revisado: nada a mudar.
+
+> ⚪ **As `plan-121`, `plan-122`, `plan-123`, `plan-125` e `plan-127` foram SINTETIZADAS e REMOVIDAS em 2026-10-24.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **121** | [[05-cromo-e-slots]] §2.4 (`maxContentWidth: fluid` e `resolveMaxContentWidth`) e **§2.1.3 (nova)** — a busca e a paleta como links de verdade, o selo do atalho, a paleta acessível · [[07-responsividade-e-multidispositivo]] §6 (a região mede a si mesma) · [[09-temas-e-presets]] §5.3 (os temas declaram `fluid`) · [[03-superficie-publica]] §6.9 (foco e `aria-describedby` compostos; padding do campo nos dois eixos). |
+> | **122** | [[06-painel-de-customizacao-e-preview]] §6 (a prévia mostra o modo que o usuário vê) e §6.2 (lado a lado por limiar de 524 px; empilhado com cada quadro na altura da área; proporção do aparelho pelos tokens), §2.3 (`Aplicar` e o contador) · [[09-temas-e-presets]] §4.7 · [[02-design-engine]] §10.3 (a lista nativa de escolha). |
+> | **123** | [[02-design-engine]] §10.3 (papéis de cor de texto, piso de 11 px, degrau de título de cartão) e §10.8 (a ponte do modo claro repinta `text-white` com o corpo) · [[09-temas-e-presets]] §5.3 (os quatro papéis em todo tema e o `config` claro sem papéis). |
+> | **125** | [[09-temas-e-presets]] §4.4.2 (o par no cache, o `onLoad` que atualiza o cache, `preferConfigOverCache`, `sarakCreateThemeBootCss`, a porta que pode falhar) · [[03-superficie-publica]] §6.5 · [[12-kit-do-consumidor]] §1.1 (o tema por organização). |
+> | **127** | [[09-temas-e-presets]] §5.3 (teto de 15 KB por tema, o porquê e a regra do conteúdo pesado); a §4.3.2 aponta para lá. |
+>
+> **Ficou de fora:** as medições por rodada, os vereditos e as baterias (histórico do Git); a decisão de 8 → 12 → 15 KB (está em [[09-temas-e-presets]] §5.3 só o número final e o motivo). A `plan-120` está aprovada, mas foi revisada por outra sessão: a síntese dela fica com essa sessão. `00-contexto` revisado: nada a mudar. As `plan-124` e `plan-126` deixaram de depender da `plan-123` (a verdade dela está nas specs fixas acima).
 
 > ⚪ **A `plan-118` foi SINTETIZADA e REMOVIDA em 2026-10-16** (com o anexo `plan-118-catalogo-de-fontes.md`). Destino demonstrado:
 >
