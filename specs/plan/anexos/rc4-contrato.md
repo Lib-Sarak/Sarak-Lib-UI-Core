@@ -4,7 +4,7 @@ titulo: "Contrato da 8.0.0-rc.4 (lote 1) — superfície pública prometida ao E
 dominio: "Superfície pública"
 status: "🟢 Aceito pelo dono (2026-10-27)"
 tags: ["rc.4", "contrato", "erp", "superficie-publica"]
-relacionados: ["[[00-indice]]", "[[arquitetura/03-superficie-publica]]", "[[plan-128-idioma-unico-e-feedback-rico]]", "[[plan-129-tabela-financeira]]", "[[plan-130-graficos-e-indicadores]]", "[[plan-131-layout-e-cromo]]", "[[plan-132-formulario]]", "[[plan-119-kit-de-importacao-aprendido-nos-importadores]]"]
+relacionados: ["[[00-indice]]", "[[arquitetura/03-superficie-publica]]", "[[10-seguranca-e-acessibilidade]]", "[[05-cromo-e-slots]]", "[[07-responsividade-e-multidispositivo]]", "[[09-temas-e-presets]]", "[[024-paleta-calculada-separada-do-tema]]", "[[plan-119-kit-de-importacao-aprendido-nos-importadores]]", "[[plan-133-motor-de-paletas]]", "[[plan-134-catalogo-de-paletas-e-temas]]", "[[plan-135-paletas-no-painel-e-no-kit]]"]
 ---
 
 # 0. Como ler

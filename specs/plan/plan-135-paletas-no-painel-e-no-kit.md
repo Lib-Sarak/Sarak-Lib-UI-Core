@@ -63,7 +63,11 @@ Ajuste granular de uma cor, depois de escolher a paleta, vira valor explícito n
 4. Ajuste granular continua pelos controles atuais; trocar de paleta com ajustes de cor manuais pergunta (manter ou descartar).
 5. Acessibilidade: galeria como `radiogroup` com setas; o seletor de tipo com rótulo; a prévia com nome acessível.
 6. Kit (guia e skill); subseção em `docs/migracoes.md`.
-7. `npm run verify -- --tier=quick` uma vez, resumo colado (contrato §9).
+7. **Prévia para o dono:** capturas PNG do painel numa página `C:\tmp\sarak-rc4-previa\135\index.html` (imagens na mesma pasta,
+   caminhos relativos, abre sem servidor), na ordem do fluxo: galeria por tipo (claro e escuro), "criar paleta" com a prévia ao vivo,
+   um ajuste granular por cima, a pergunta ao trocar de paleta com ajustes e a tela de amostra depois do "Aplicar". Legenda em cada
+   captura. Gerada pelo harness do caso de navegador; o comando que a regenera vai no resumo.
+8. `npm run verify -- --tier=quick` uma vez, resumo colado (contrato §9).
 
 # 6. Critérios de aceite
 
@@ -72,6 +76,7 @@ Ajuste granular de uma cor, depois de escolher a paleta, vira valor explícito n
 - [ ] Trocar de paleta com ajustes manuais pergunta, e as duas respostas fazem o que dizem — teste.
 - [ ] Galeria navegável por teclado, com papéis e nomes — teste por papel.
 - [ ] Caso de navegador escrito (roda no fechamento).
+- [ ] Prévia do painel gerada em `C:\tmp\sarak-rc4-previa\135\index.html`; a aprovação do dono é registrada pelo revisor no veredito.
 - [ ] Guia e skill ensinam o formato e a regra da sobrescrita justificada.
 - [ ] Resumo com a tabela item → teste.
 
@@ -81,6 +86,7 @@ Ajuste granular de uma cor, depois de escolher a paleta, vira valor explícito n
 
 - `npx vitest run src/features/DesignEngine` — uma vez (nenhuma outra plan da `rc.4` toca o painel).
 - Guia e skill lidos como quem cria o primeiro tema.
+- O revisor passa o caminho da prévia ao dono; o veredito só fecha com a aprovação dele.
 - Diff lido; `git diff --stat` só com a §3.1. O `quick` do executor é aceito pelo resumo colado.
 
 # 8. Destino da síntese

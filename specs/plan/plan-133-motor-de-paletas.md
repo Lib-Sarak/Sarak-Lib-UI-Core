@@ -7,9 +7,9 @@ status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "rc.4", "paletas", "cores", "design-engine"]
 relacionados: ["[[anexos/rc4-contrato]]", "[[09-temas-e-presets]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[plan-134-catalogo-de-paletas-e-temas]]", "[[plan-135-paletas-no-painel-e-no-kit]]"]
-depende_de: "plan-128-idioma-unico-e-feedback-rico"
-retida_por: ""
-destino_sintese: "adr/NNN-paleta-calculada-separada-do-tema.md + specs/09-temas-e-presets.md + arquitetura/02-design-engine.md"
+depende_de: "—"
+retida_por: "plan-134"
+destino_sintese: "sintetizada · retida por plan-134 (e plan-135)"
 ---
 
 # 1. Objetivo

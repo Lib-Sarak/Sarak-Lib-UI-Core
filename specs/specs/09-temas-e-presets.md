@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Design Engine / Temas"
 status: "🟢 Vigente"
 prioridade: "Máxima"
 tags: ["spec", "temas", "presets", "design-engine", "tokens", "validacao"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[06-painel-de-customizacao-e-preview]]", "[[10-seguranca-e-acessibilidade]]", "[[003-remocao-backend-proprio]]", "[[011-tema-salvo-por-uma-porta-de-escrita]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[06-painel-de-customizacao-e-preview]]", "[[10-seguranca-e-acessibilidade]]", "[[003-remocao-backend-proprio]]", "[[011-tema-salvo-por-uma-porta-de-escrita]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]", "[[024-paleta-calculada-separada-do-tema]]"]
 ---
 
 # 1. Propósito e a frase que resume tudo
@@ -329,6 +329,19 @@ pelo Provider (`useDesignSync`) e pela prévia do painel (`useDesignDraft.handle
 o valor do tema anterior nunca fica. O `config` chega ao efeito por ref (`configRef`) e à prévia por
 `getHostConfig()`: nunca é dependência do efeito (§3.1 de [[02-design-engine]]).
 
+### 4.3.4 A cor pode vir de uma paleta calculada ([[024-paleta-calculada-separada-do-tema]])
+
+Um `design` com `colorPalette` recebe os tokens de cor **calculados** pelo motor de `src/core/Design/palette/`, a partir de
+`{ tipo, base, sec?, acc? }` (o valor é o id de um preset de `palette/presets.ts` ou
+`custom:<tipo>:<#base>[,sec=<#hex>][,acc=<#hex>]`; a vírgula, e não `;`, é o que deixa o valor atravessar a barreira de
+CSS). A composição ganha um degrau: **padrão do schema → identidade e modo do usuário → paleta resolvida para o modo →
+`config` do host → tema**; a cor que o tema ou o host declaram vence a calculada. Na troca de modo
+(`overlayPreferences.ts`), a paleta é recalculada para o modo novo, e a sobrescrita do tema para aquele modo e o ajuste
+manual do usuário continuam por cima. Valor inválido é recusado com aviso e o tema compõe sem paleta; tema sem
+`colorPalette` compõe exatamente como antes. A correção de contraste do cálculo usa a mesma lista de pares que o
+`auditor_contraste` mede (`palette/contrast-pairs.ts`, importada pelo gate — §6.5). `sarakResolvePalette(valor, modo)` é
+público, para o host prever a paleta no próprio sistema.
+
 ## 4.4 Persistir — `localStorage`, e a sincronização entre abas
 
 Persistência é **local por construção** (`options.persistence`, em `src/core/Provider/types.ts`):
@@ -442,7 +455,7 @@ régua viva). Um tema não declara mais o que se fundiu num token que desenha ne
 lista de [[02-design-engine]] §10 é o que cada token desenha hoje. Saíram, por família: os três controles de
 ruído viraram `bgNoiseDensity`; a família de movimento `anim*`/`easeMain`/`easeOut` virou `motion*`; os
 tokens de peça interna do painel (pré-visualização de preset, largura do telefone, tecla, perspectiva e órbita
-do motor visual) viraram constante do painel; duplicatas (`colorPalette`, `borderRadiusSm/Md/Lg`,
+do motor visual) viraram constante do painel; duplicatas (`borderRadiusSm/Md/Lg`,
 `contrastCurve`, `scrollbarWidth`, `scrollbarThumbColor`, `formLayoutDirection`, `layerElevationFactor`,
 `matrixSearchBg`, `layerBackdropBlur`, `layerBackdropOpacity`) se fundiram no token que desenha;
 `cardContentAlignment` (redundante com `cardTextAlign`), `tableActionPosition` (a tabela não tem coluna de ações) e

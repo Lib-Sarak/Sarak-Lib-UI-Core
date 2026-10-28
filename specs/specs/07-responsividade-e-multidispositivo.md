@@ -130,6 +130,15 @@ schemas (`grep -c "isResponsive: true" src/core/Design/schema/*.ts`). Cada eixo 
 (`src/core/Provider/utils/validation.ts:88-97`): se **qualquer** eixo não for número finito, o valor
 inteiro é rejeitado — não há aceitação parcial.
 
+**Nas primitivas de layout:** o formato público é `SarakResponsiveValue<T>` = `{ mob, tab, desk }`
+(`src/core/Design/types.ts`), o mesmo dos tokens. `SarakGrid` aceita `templateColumns` e `columns` (número ou
+`{ mob, tab, desk }` → `repeat(N, minmax(0, 1fr))`; `columns` vence `templateColumns`; número fixo colapsa para
+1 no celular). **Ocupação de coluna é `SarakGridItem`** (`span`, `rowSpan`: número, `'full'` ou por
+dispositivo), resolvida pelo `useSarakDevice()` — que lê os breakpoints do tema, coisa que classe
+utilitária não faz (§2.1); o item lê as colunas do grid pai por contexto, e `span` maior que elas vira a
+linha toda. As classes `col-span-*` seguem suportadas. Quais props aceitam o formato, o catálogo diz
+(`catalog.json` → `responsive.responsiveProps`).
+
 **`SarakHidden`** (`src/components/Layout/SarakHidden.tsx`): `on={['smartphone']}` remove o conteúdo da
 árvore naquele dispositivo. Não é `display: none` — é **não renderizar**, poupando DOM e RAM.
 

@@ -457,7 +457,8 @@
       "020-gantt-casca-propria.md",
       "021-navegacao-na-base-do-celular.md",
       "022-tema-sob-demanda.md",
-      "023-fontes-embarcadas-carregadas-sob-demanda.md"
+      "023-fontes-embarcadas-carregadas-sob-demanda.md",
+      "024-paleta-calculada-separada-do-tema.md"
     ],
     "arquitetura": [
       "00-mapa-do-modulo.md",

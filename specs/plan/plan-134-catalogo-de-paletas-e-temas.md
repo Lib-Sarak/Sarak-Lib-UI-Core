@@ -56,16 +56,21 @@ a produzir sai dos dois blocos; o que fica é sobrescrita **justificada** (um co
 # 5. Instruções de execução
 
 1. Fotografe o worktree.
-2. Presets: de 12 a 15, com ao menos dois de cada tipo, e as entradas que os 19 temas pedem.
+2. Presets: de 12 a 15, com ao menos dois de cada tipo, e as entradas que os 19 temas pedem. **Nenhum id pode ser `default`,
+   `matrix`, `neon`, `slate` ou `sunset`:** são os valores do `colorPalette` antigo (removido antes da 8.0.0 e reintroduzido pela
+   `plan-133` com outro significado), que podem estar em temas salvos por importadores; um id igual aplicaria uma paleta que ninguém
+   escolheu. Um teste sobre o registro trava essa lista, e outro prova que um design salvo com um desses valores cai no
+   comportamento sem paleta.
 3. Temas: `colorPalette` + poda; cada cor mantida tem a linha de justificativa.
    Depois, remova a marca `optionalForTheme` de `colorPalette` (`src/core/Design/schema/colors.ts`) e, se nenhum outro token a usar, o
    mecanismo inteiro (`src/core/Design/types.ts`, `gates/scripts/contrato/helpers/theme-completeness-core.ts` e o cabeçalho de
    `check-theme-completeness.ts`): o tema embarcado volta a declarar todo token estético (`theme-completeness:check` verde com os 19).
-4. **Prévia antes/depois:** capturas dos 19 temas × 2 modos no `HEAD` e no worktree, com a mesma tela de amostra (título, subtítulo,
-   texto, cartão, botão, tabela, status), numa página HTML lado a lado em
-   `C:\tmp\sarak-rc4-paletas\index.html`, mais uma grade dos presets (cada um × 2 modos). **Pare aqui** e marque a plan
-   `🟠 Em revisão` com o caminho da prévia no resumo: o dono aprova ou devolve ajustes de entrada antes de seguir.
-5. Depois da aprovação: `npm run themes:catalog`, subseção em `docs/migracoes.md`, `npm run verify -- --tier=quick` uma vez, resumo colado.
+4. **Prévia para o dono** (a execução não para nela): capturas PNG dos 19 temas × 2 modos no `HEAD` e no worktree, com a mesma tela
+   de amostra (título, subtítulo, texto, cartão, botão, tabela, status), lado a lado, mais uma grade dos presets (cada um × 2 modos),
+   numa página `C:\tmp\sarak-rc4-previa\134\index.html` — imagens na mesma pasta, caminhos relativos, abre com dois cliques, sem
+   servidor. Cada captura com legenda: tema, modo, preset. O comando que regenera a página vai no resumo.
+5. `npm run themes:catalog`, subseção em `docs/migracoes.md`, `npm run verify -- --tier=quick` uma vez, resumo colado com o caminho da
+   prévia. O dono aprova a prévia **durante a revisão**, com o revisor; ajuste pedido volta como correção (entrada de preset).
 
 # 6. Critérios de aceite
 
@@ -74,7 +79,8 @@ a produzir sai dos dois blocos; o que fica é sobrescrita **justificada** (um co
   do diff (comentário não é testável).
 - [ ] `auditor_contraste` e as travas da [[09-temas-e-presets]] §6 sem regressão (no `audit:baseline` do `quick`).
 - [ ] Diversidade do catálogo (`themes:diversity`) não piora — número antes/depois no resumo.
-- [ ] Prévia aprovada pelo dono (registro no resumo, com a data).
+- [ ] Prévia gerada em `C:\tmp\sarak-rc4-previa\134\index.html`, cobrindo 19 temas × 2 modos (antes e depois) e os presets × 2 modos;
+  a aprovação do dono é registrada pelo revisor no veredito.
 
 # 7. Como verificar (uso do revisor)
 
@@ -82,7 +88,7 @@ a produzir sai dos dois blocos; o que fica é sobrescrita **justificada** (um co
 
 - `npx vitest run src/core/Design/presets src/core/Design/palette` — uma vez.
 - `npm run themes:diversity` — uma vez (número antes/depois).
-- A prévia é aberta pelo dono; o revisor confere só que ela cobre os 19 × 2 e os presets × 2.
+- O revisor confere que a prévia cobre os 19 × 2 e os presets × 2 e passa o caminho ao dono; o veredito só fecha com a aprovação dele.
 - Diff dos temas lido: só cor e `colorPalette` mudaram; cada cor mantida justificada.
 
 # 8. Destino da síntese
