@@ -37,6 +37,7 @@ import { fileURLToPath } from 'node:url';
 import { sarakGetAllDesignTokens, sarakGetDefaultDesignState } from '../../../src/core/Design/master-map';
 import { useDesignVariables } from '../../../src/core/Design/hooks/useDesignVariables';
 import { SARAK_ALL_THEMES } from '../../../src/core/Design/presets/themes/all';
+import { composeThemeForMode } from '../../../src/core/Design/presets/themes/compose';
 import { syncInjectedWrites, type InjectionHost } from '../../../src/core/Provider/utils/injectedWrites';
 
 type Design = Record<string, unknown>;
@@ -288,7 +289,11 @@ function main(): void {
         disputes.slice(0, 20).forEach((dispute) => console.log(`  - ${dispute.where} :: ${dispute.variable} (${dispute.kind}) ${dispute.detail}`));
     }
 
-    const themes = SARAK_ALL_THEMES.map((theme) => ({ id: theme.id, design: theme.design as Design }));
+    // O design composto no modo nativo: o que o Provider escreve no html/body inclui as cores que a paleta calcula.
+    const themes = SARAK_ALL_THEMES.map((theme) => ({
+        id: theme.id,
+        design: composeThemeForMode({ design: theme.design as Record<string, never>, contraparte: theme.contraparte }, theme.design.mode === 'light' ? 'light' : 'dark') as unknown as Design,
+    }));
     const orphans = findOrphanWrites(buildScenarios(defaults, themes));
     if (orphans.length > 0) {
         failed = true;
