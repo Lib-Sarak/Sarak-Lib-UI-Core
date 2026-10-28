@@ -16,7 +16,8 @@ const VIEWPORT_HEIGHT = 1000;
 const MINIMUM_FONT_SIZE_PX = 11;
 const MINIMUM_TARGET_SIZE_PX = 24;
 const MAXIMUM_MEASUREMENT_DELTA_PX = 1;
-const SCENE_SELECTOR = 'main[aria-label]';
+// A cena é um molde que entra no `<main>` do cromo, não um `<main>`: a raiz dela é o filho do escopo do tema.
+const SCENE_SELECTOR = '[data-theme] > :not(style)';
 
 let harnessDirectory = '';
 let harnessUrl = '';

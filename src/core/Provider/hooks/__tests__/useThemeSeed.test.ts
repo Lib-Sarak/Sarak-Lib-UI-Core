@@ -3,6 +3,9 @@ import { renderHook } from '@testing-library/react';
 import { useThemeSeed } from '../useThemeSeed';
 import { SARAK_ALL_THEMES } from '../../../Design/presets/themes/all';
 import { SARAK_DEFAULT_THEME_ID } from '../../../Design/presets/themes';
+import { evaluatePair } from '../../../../../gates/scripts/audit/verify_contrast';
+import { PAIRS } from '../../../Design/palette/contrast-pairs';
+import { sarakGetDefaultDesignState } from '../../../Design/master-map';
 import { composeThemeForMode } from '../../../Design/presets/themes/compose';
 import type { SarakThemeEntry, SarakThemePayload, SarakUIOptions } from '../../types';
 
@@ -112,5 +115,15 @@ describe('useThemeSeed — a semente do design', () => {
         } finally {
             localStorage.removeItem(activeThemeKey);
         }
+    });
+});
+
+describe('useThemeSeed — o texto da barra contra o fundo que o host declara', () => {
+    it('barra escura num tema claro: o item inativo da semente mantém 4,5', () => {
+        const seed = seedOf({ config: { mode: 'light', sidebarColor: '#111111' } }).getSeedConfig();
+        const pair = PAIRS.find((candidate) => candidate.fg === 'sidebarItemTextColor')!;
+
+        expect(seed.sidebarColor).toBe('#111111');
+        expect(evaluatePair(pair, { ...sarakGetDefaultDesignState(), ...seed } as never)).toMatchObject({ pulado: false, pass: true });
     });
 });

@@ -3,7 +3,10 @@ import { composeThemeDesign, THEME_PRESERVED_KEYS } from '../compose';
 import { sarakGetDefaultDesignState } from '../../../master-map';
 import { SARAK_ALL_THEMES } from '../all';
 import { resolveThemeForMode } from '../color-engine';
-import { sarakResolvePalette } from '../../../palette/resolve';
+import { resolvePalette, sarakResolvePalette } from '../../../palette/resolve';
+import { parsePaletteValue } from '../../../palette/parser';
+import { evaluatePair } from '../../../../../../gates/scripts/audit/verify_contrast';
+import { PAIRS } from '../../../palette/contrast-pairs';
 import type { SarakTokenValue } from '../../../types';
 
 describe('composeThemeDesign — a troca de tema nunca herda token do tema anterior', () => {
@@ -98,6 +101,64 @@ describe('composeThemeDesign — a troca de tema nunca herda token do tema anter
             const actual = composeThemeDesign(resolved);
             expect(actual).toEqual({ ...defaultsWithoutPalette, ...resolved });
             expect(actual).not.toHaveProperty('colorPalette');
+        });
+    });
+});
+
+describe('composeThemeDesign — o texto da paleta se corrige contra o fundo que o host declara', () => {
+    const sidebarTextPair = PAIRS.find((pair) => pair.fg === 'sidebarItemTextColor')!;
+    const contrastOf = (design: Record<string, unknown>) =>
+        evaluatePair(sidebarTextPair, { ...sarakGetDefaultDesignState(), ...design } as never);
+
+    it('barra escura declarada pelo host num tema claro: o item inativo mantém 4,5', () => {
+        const out = composeThemeDesign({ mode: 'light', colorPalette: 'oceano' }, {}, { sidebarColor: '#111111' });
+
+        expect(out.sidebarColor).toBe('#111111');
+        expect(contrastOf(out as unknown as Record<string, unknown>)).toMatchObject({ pulado: false, pass: true });
+    });
+
+    it('o mesmo vale para a barra que o próprio tema declara', () => {
+        const out = composeThemeDesign({ mode: 'light', colorPalette: 'oceano', sidebarColor: '#111111' });
+
+        expect(contrastOf(out as unknown as Record<string, unknown>)).toMatchObject({ pulado: false, pass: true });
+    });
+
+    it('texto declarado pelo host não é tocado, mesmo ilegível', () => {
+        const out = composeThemeDesign(
+            { mode: 'light', colorPalette: 'oceano' },
+            {},
+            { sidebarColor: '#111111', sidebarItemTextColor: '#222222' },
+        );
+
+        expect(out.sidebarItemTextColor).toBe('#222222');
+    });
+
+    it('sem fundo declarado, o texto é o que a paleta calcula', () => {
+        const palette = sarakResolvePalette('oceano', 'light');
+        const out = composeThemeDesign({ mode: 'light', colorPalette: 'oceano' });
+
+        expect(out.sidebarItemTextColor).toBe(palette.sidebarItemTextColor);
+    });
+
+    it('nenhum tema embarcado muda de saída: só o texto que reprova contra o fundo declarado é movido', () => {
+        const withPalette = SARAK_ALL_THEMES.filter((theme) => (theme.design as Record<string, unknown>).colorPalette);
+        expect(withPalette.length).toBeGreaterThan(0);
+
+        withPalette.forEach((theme) => {
+            (['light', 'dark'] as const).forEach((mode) => {
+                const resolved = resolveThemeForMode({
+                    design: theme.design as Record<string, SarakTokenValue>,
+                    ...(theme.contraparte ? { contraparte: theme.contraparte } : {}),
+                }, mode) as Record<string, unknown>;
+                const input = parsePaletteValue(resolved.colorPalette)!;
+                const alone = resolvePalette(input, mode);
+                const withDeclared = resolvePalette(input, mode, resolved);
+                const notDeclared = Object.keys(alone).filter((tokenId) => resolved[tokenId] === undefined);
+
+                notDeclared.forEach((tokenId) => {
+                    expect(withDeclared[tokenId], `${theme.id}/${mode}/${tokenId}`).toBe(alone[tokenId]);
+                });
+            });
         });
     });
 });

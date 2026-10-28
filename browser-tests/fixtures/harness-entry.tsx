@@ -1154,7 +1154,11 @@ const ThemeSwitchScene: React.FC = () => {
  */
 interface ThemeFrame { appPresent: boolean; color: string; fallback: boolean }
 interface BodyFrame { appPresent: boolean; backgroundColor: string; transitionProperty: string; ready: boolean }
-interface ThemeProbe { primaryOf: (id: string) => string; designOf: (index: number) => Record<string, unknown> }
+interface ThemeProbe {
+    primaryOf: (id: string) => string;
+    colorOf: (id: string, token: string, mode: 'light' | 'dark') => string;
+    designOf: (index: number) => Record<string, unknown>;
+}
 declare global { interface Window { __frames?: ThemeFrame[]; __bodyFrames?: BodyFrame[]; __sarakThemeProbe?: ThemeProbe } }
 
 /**
@@ -1165,6 +1169,10 @@ window.__sarakThemeProbe = {
     primaryOf: (id) => {
         const theme = SARAK_ALL_THEMES.find((candidate) => candidate.id === id)!;
         return String(composeThemeForMode(theme as never, (theme.design.mode as 'light' | 'dark') || 'dark').primaryColor);
+    },
+    colorOf: (id, token, mode) => {
+        const theme = SARAK_ALL_THEMES.find((candidate) => candidate.id === id)!;
+        return String((composeThemeForMode(theme as never, mode) as unknown as Record<string, unknown>)[token]);
     },
     designOf: (index) => ({ ...SARAK_ALL_THEMES[index].design }),
 };

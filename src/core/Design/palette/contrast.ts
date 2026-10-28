@@ -162,3 +162,34 @@ export const correctPaletteContrast = (
     scales: PaletteScales,
     mode: SarakPaletteMode,
 ): PaletteColors => correctTokenTones(colors, scales, mode, getTextTokenIds());
+
+const COLOR_LITERAL = /^(#[0-9a-f]{3,8}|rgba?\()/i;
+
+const pickDeclaredColors = (palette: PaletteColors, declared: Record<string, unknown>): PaletteColors =>
+    Object.fromEntries(Object.entries(declared).filter(([tokenId, value]) =>
+        tokenId in PALETTE_ROLE_MAP && typeof value === 'string' && COLOR_LITERAL.test(value) && value !== palette[tokenId],
+    )) as PaletteColors;
+
+/**
+ * Re-corrige o texto que a paleta calcula contra o fundo EFETIVO: o que o host ou o tema declara por cima
+ * dela. A paleta só enxerga os fundos que ela mesma gera; uma barra escura num tema claro deixaria o texto
+ * dela ilegível. O texto que o host ou o tema declarou também não é tocado.
+ */
+export const correctPaletteAgainstDeclared = (
+    palette: PaletteColors,
+    scales: PaletteScales,
+    mode: SarakPaletteMode,
+    declared: Record<string, unknown>,
+): PaletteColors => {
+    const overrides = pickDeclaredColors(palette, declared);
+    if (Object.keys(overrides).length === 0) return palette;
+    const effective = { ...palette, ...overrides };
+    const failing = getTextTokenIds().filter((tokenId) => !(tokenId in declared) && PAIRS.some((pair) => {
+        if (getAdjustableTokenId(pair.fg) !== tokenId) return false;
+        const ratio = getPairContrastRatio(pair, effective);
+        return ratio !== undefined && ratio < pair.min;
+    }));
+    if (failing.length === 0) return palette;
+    const corrected = correctTokenTones(effective, scales, mode, failing);
+    return { ...palette, ...Object.fromEntries(failing.map((tokenId) => [tokenId, corrected[tokenId]])) };
+};

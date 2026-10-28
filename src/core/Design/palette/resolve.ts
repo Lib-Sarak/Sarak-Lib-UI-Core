@@ -3,7 +3,7 @@ import { parsePaletteValue } from './parser';
 import { createPaletteScales } from './scale';
 import { createPaletteSeeds } from './seeds';
 import { PALETTE_ROLE_MAP } from './role-map';
-import { correctPaletteContrast } from './contrast';
+import { correctPaletteAgainstDeclared, correctPaletteContrast } from './contrast';
 import type { SarakPaletteInput, SarakPaletteMode, PaletteScales, RgbColor } from './types';
 
 const formatColor = (rgb: RgbColor, alpha?: number): string => {
@@ -21,10 +21,16 @@ export const createPaletteColorMap = (scales: PaletteScales, mode: SarakPaletteM
     return colors;
 };
 
-export const resolvePalette = (input: SarakPaletteInput, mode: SarakPaletteMode): Record<string, string> => {
+/** `declared`: o que o host e o tema fixam por cima da paleta — o texto dela se corrige contra esses fundos. */
+export const resolvePalette = (
+    input: SarakPaletteInput,
+    mode: SarakPaletteMode,
+    declared?: Record<string, unknown>,
+): Record<string, string> => {
     const seeds = createPaletteSeeds(input);
     const scales = createPaletteScales(seeds);
-    return correctPaletteContrast(createPaletteColorMap(scales, mode), scales, mode);
+    const colors = correctPaletteContrast(createPaletteColorMap(scales, mode), scales, mode);
+    return declared ? correctPaletteAgainstDeclared(colors, scales, mode, declared) : colors;
 };
 
 export const sarakResolvePalette = (value: string, mode: SarakPaletteMode): Record<string, string> => {
@@ -44,5 +50,5 @@ export const resolvePaletteForDesign = (
     mode: SarakPaletteMode,
 ): Record<string, string> => {
     const input = parsePaletteValue(getPaletteValue(themeDesign, hostConfig));
-    return input ? resolvePalette(input, mode) : {};
+    return input ? resolvePalette(input, mode, { ...hostConfig, ...themeDesign }) : {};
 };

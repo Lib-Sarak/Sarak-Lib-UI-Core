@@ -21,6 +21,15 @@ const OPTION_THEME_SCOPES = [
     { id: 'minimalist-airy', mode: 'light', design: composed(minimalistAiry as never, 'light') },
 ] as const;
 
+declare global { interface Window { __sovereignBody?: { light: string; dark: string; lightSurface: string } } }
+
+/** O fundo do corpo (e a superfície da miniatura, no claro) que o Sarak Sovereign pinta: o spec lê da página, não escreve a cor. */
+window.__sovereignBody = {
+    light: String(composed(sarakSovereignTheme as never, 'light').colorBgBody),
+    dark: String(composed(sarakSovereignTheme as never, 'dark').colorBgBody),
+    lightSurface: String(composed(sarakSovereignTheme as never, 'light').surfaceColor),
+};
+
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('plan-122-preview-mode-entry: #root ausente no harness.');
 

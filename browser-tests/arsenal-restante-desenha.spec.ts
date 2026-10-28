@@ -133,7 +133,13 @@ function channelsOf(color: string): [number, number, number] {
 }
 
 const TEXTURE_RGB = '31, 41, 55';
-const PRIMARY_RGB = '25, 227, 240';
+/** A primária que o tema padrão pinta no modo claro (o das cenas `tema-claro-*`), em canais `r, g, b`: o valor vem da página. */
+async function primaryRgbOf(page: Page): Promise<string> {
+    const hex = await page.evaluate(() => (window as unknown as { __sarakThemeProbe: { colorOf: (id: string, token: string, mode: 'light' | 'dark') => string } })
+        .__sarakThemeProbe.colorOf('sarak-sovereign', 'primaryColor', 'light'));
+    const channels = hex.match(/[0-9a-f]{2}/gi)!.slice(0, 3).map((pair) => parseInt(pair, 16));
+    return channels.join(', ');
+}
 
 // ── borderType ────────────────────────────────────────────────────────────────────────────────────
 
@@ -351,7 +357,7 @@ test('cor de textura: o canal --theme-texture-color-rgb é emitido e difere da p
         const primary = (await readComputed(page.locator('body'), '--theme-primary-rgb')).trim();
 
         expect(texture).toBe(TEXTURE_RGB);
-        expect(primary).toBe(PRIMARY_RGB);
+        expect(primary).toBe(await primaryRgbOf(page));
     });
 });
 
@@ -360,7 +366,7 @@ test('cor de textura (_atmosphere, gradiente): stripes pinta na cor de textura, 
         const image = await readComputed(page.locator('[data-probe="textura-stripes"] .sarak-card'), 'background-image', '::after');
 
         expect(image).toContain(`rgba(${TEXTURE_RGB}`);
-        expect(image).not.toContain(`rgba(${PRIMARY_RGB}`);
+        expect(image).not.toContain(`rgba(${await primaryRgbOf(page)}`);
     });
 });
 
@@ -399,7 +405,7 @@ test('cor de textura (_animations): o brilho animado usa a cor de textura no qua
         });
 
         expect(frame).toContain(`rgba(${TEXTURE_RGB}`);
-        expect(frame).not.toContain(`rgba(${PRIMARY_RGB}`);
+        expect(frame).not.toContain(`rgba(${await primaryRgbOf(page)}`);
     });
 });
 
@@ -414,7 +420,7 @@ test('cor de textura (_base): o anel de foco continua da primária, não vira a 
     await withScene('texturas-cor', 'tema-claro-textura-limpa', async (page) => {
         const focus = (await readComputed(page.locator('body'), '--theme-primary-focus')).replace(/\s+/g, ' ');
 
-        expect(focus).toContain(PRIMARY_RGB);
+        expect(focus).toContain(await primaryRgbOf(page));
         expect(focus).not.toContain(TEXTURE_RGB);
     });
 });

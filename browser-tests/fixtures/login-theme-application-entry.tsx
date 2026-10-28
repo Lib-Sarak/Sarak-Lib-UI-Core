@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { SarakCustomizationPanel, SarakUIProvider, useSarakUI } from '@sarak/lib-ui-core';
-import type { SarakThemePayload, SarakUIOptions } from '../../../src/core/Provider/types';
+import type { SarakThemePayload, SarakUIOptions } from '../../src/core/Provider/types';
+import { composeThemeForMode } from '../../src/core/Design/presets/themes/compose';
+import { sarakSovereignTheme } from '../../src/core/Design/presets/themes/sarak-sovereign';
 
 const STORAGE_KEY = 'login-theme-application';
 const TENANT_ID = 'tenant-acme';
@@ -15,8 +17,12 @@ declare global {
     interface Window {
         __tenantThemeSave?: { design: SarakThemePayload; activeThemeId?: string };
         __namedThemeSaveCalled?: boolean;
+        __sovereignBackground?: string;
     }
 }
+
+/** O fundo que o tema Sarak Sovereign pinta no modo escuro (paleta + sobrescrita do tema): o spec lê da página, não escreve a cor. */
+window.__sovereignBackground = String(composeThemeForMode(sarakSovereignTheme as never, 'dark').colorBgBody);
 
 const TenantDesignProbe = (): React.ReactElement => {
     const { systemDesign, draftDesign } = useSarakUI();
