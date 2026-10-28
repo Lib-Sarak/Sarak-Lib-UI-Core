@@ -68,3 +68,47 @@ describe('SarakAnalyticalPage', () => {
         expect(screen.getByLabelText('Open navigation menu')).toBeInTheDocument();
     });
 });
+
+describe('SarakAnalyticalPage — largura do painel e altura', () => {
+    const renderDesktop = (props: Partial<React.ComponentProps<typeof SarakAnalyticalPage>>) =>
+        render(
+            <SarakDeviceProvider overrideDevice="desktop">
+                <SarakAnalyticalPage mainContent={<div>Main</div>} sidePanel={<div data-testid="side">Side</div>} {...props} />
+            </SarakDeviceProvider>,
+        );
+
+    it('sidePanelWidth em número vira pixels e em texto vai como veio; omitida, mantém a classe da largura', () => {
+        const numeric = renderDesktop({ sidePanelWidth: 360 });
+        expect((numeric.getByTestId('side').parentElement as HTMLElement).style.width).toBe('360px');
+        numeric.unmount();
+
+        const text = renderDesktop({ sidePanelWidth: '30%' });
+        expect((text.getByTestId('side').parentElement as HTMLElement).style.width).toBe('30%');
+        text.unmount();
+
+        const omitted = renderDesktop({});
+        const panel = omitted.getByTestId('side').parentElement as HTMLElement;
+        expect(panel.style.width).toBe('');
+        expect(panel.className).toContain('w-80');
+    });
+
+    it('fillHeight troca h-full pela classe pública sarak-fill-height (min-height: 100%); omitida, a altura é a de sempre', () => {
+        const filled = renderDesktop({ fillHeight: true });
+        expect(filled.container.firstElementChild).toHaveClass('sarak-fill-height');
+        expect(filled.container.firstElementChild).not.toHaveClass('h-full');
+        filled.unmount();
+
+        const plain = renderDesktop({});
+        expect(plain.container.firstElementChild).toHaveClass('h-full');
+        expect(plain.container.firstElementChild).not.toHaveClass('sarak-fill-height');
+    });
+
+    it('não usa as variáveis legadas --border-color e --color-theme-card', () => {
+        const mobile = render(
+            <SarakDeviceProvider overrideDevice="smartphone">
+                <SarakAnalyticalPage navBar={<div>N</div>} sidePanel={<div>S</div>} mainContent={<div>M</div>} />
+            </SarakDeviceProvider>,
+        );
+        expect(mobile.container.innerHTML).not.toMatch(/--border-color|--color-theme-card/);
+    });
+});

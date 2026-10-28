@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Entregar o catálogo de paletas e fazer os 19 temas usarem paleta"
 objetivo: "Fazer a lib embarcar de 12 a 15 paletas prontas cobrindo os cinco tipos de harmonia e os 19 temas declararem uma paleta em vez de cores escritas à mão, com a hierarquia de título refeita pela regra comum e aprovada pelo dono numa prévia antes e depois"
 dominio: "Temas / Paletas"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "rc.4", "paletas", "temas"]
 relacionados: ["[[anexos/rc4-contrato]]", "[[plan-133-motor-de-paletas]]", "[[09-temas-e-presets]]"]
@@ -58,6 +58,9 @@ a produzir sai dos dois blocos; o que fica é sobrescrita **justificada** (um co
 1. Fotografe o worktree.
 2. Presets: de 12 a 15, com ao menos dois de cada tipo, e as entradas que os 19 temas pedem.
 3. Temas: `colorPalette` + poda; cada cor mantida tem a linha de justificativa.
+   Depois, remova a marca `optionalForTheme` de `colorPalette` (`src/core/Design/schema/colors.ts`) e, se nenhum outro token a usar, o
+   mecanismo inteiro (`src/core/Design/types.ts`, `gates/scripts/contrato/helpers/theme-completeness-core.ts` e o cabeçalho de
+   `check-theme-completeness.ts`): o tema embarcado volta a declarar todo token estético (`theme-completeness:check` verde com os 19).
 4. **Prévia antes/depois:** capturas dos 19 temas × 2 modos no `HEAD` e no worktree, com a mesma tela de amostra (título, subtítulo,
    texto, cartão, botão, tabela, status), numa página HTML lado a lado em
    `C:\tmp\sarak-rc4-paletas\index.html`, mais uma grade dos presets (cada um × 2 modos). **Pare aqui** e marque a plan

@@ -298,11 +298,11 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | Fonte | Medida | Valor |
 | --- | --- | --- |
 | `catalog/theme_table_mapping.json` | colunas | 13 |
-| `catalog/theme_table_mapping.json` | entradas brutas | 434 |
-| `catalog/theme_table_mapping.json` | **ids únicos** | **434** |
+| `catalog/theme_table_mapping.json` | entradas brutas | 435 |
+| `catalog/theme_table_mapping.json` | **ids únicos** | **435** |
 | `catalog/partitions/` | arquivos | 13 |
-| `catalog/partitions/` | tokens | 434 |
-| `SarakDesignTokens` (tipo público) | ids | 434 |
+| `catalog/partitions/` | tokens | 435 |
+| `SarakDesignTokens` (tipo público) | ids | 435 |
 | `SarakDesignTokens` (tipo público) | responsivos | 37 |
 
 > Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §2 do guia).
@@ -313,7 +313,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Categorias de engine (3)** — `charts` · `chat` · `flows`
 
-**Componentes públicos: 108** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
+**Componentes públicos: 110** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
 ### B.3 Gates registrados (42)
 

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { SarakIcon } from "../../Icon/SarakIcon";
 import { SarakButton } from '../../Buttons/SarakButton';
 import type { SarakTableSort } from './columnModel';
@@ -12,6 +13,7 @@ export interface SarakTableSortButtonProps {
 }
 
 export function SarakTableSortButton({ columnId, label, sort, onSort }: SarakTableSortButtonProps): React.ReactElement {
+    const text = useLibraryText();
     const activeSort = sort?.columnId === columnId ? sort.direction : null;
     const icon = activeSort === 'asc' ? <SarakIcon name="ArrowUp" size={12} /> : activeSort === 'desc' ? <SarakIcon name="ArrowDown" size={12} /> : <SarakIcon name="ArrowUpDown" size={12} />;
 
@@ -22,7 +24,7 @@ export function SarakTableSortButton({ columnId, label, sort, onSort }: SarakTab
             variant="ghost"
             size="xs"
             leftIcon={icon}
-            aria-label={`Ordenar por ${columnId}`}
+            aria-label={text('tableSortBy', { column: columnId })}
             onClick={() => onSort(columnId)}
         >
             {label}

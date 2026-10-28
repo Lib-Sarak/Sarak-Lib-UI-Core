@@ -46,16 +46,16 @@
       "nota": "Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §2 do guia).",
       "mapeamento": {
         "colunas": 13,
-        "entradasBrutas": 434,
-        "idsUnicos": 434
+        "entradasBrutas": 435,
+        "idsUnicos": 435
       },
       "particoes": {
         "arquivos": 13,
-        "tokens": 434
+        "tokens": 435
       },
       "tipoPublico": {
         "interface": "SarakDesignTokens",
-        "ids": 434,
+        "ids": 435,
         "responsivos": 37
       }
     }
@@ -83,7 +83,7 @@
       "flows"
     ],
     "publicos": {
-      "count": 108,
+      "count": 110,
       "nomes": [
         "SARAK_DEFAULT_COLUMN_WIDTH",
         "SARAK_MIN_COLUMN_WIDTH",
@@ -108,7 +108,6 @@
         "SarakCardGrid",
         "SarakCardHeader",
         "SarakCatalogGrid",
-        "SarakChart",
         "SarakChartEngine",
         "SarakChat",
         "SarakChatEngine",
@@ -134,8 +133,10 @@
         "SarakFlowEngine",
         "SarakForm",
         "SarakFormGroup",
+        "SarakFormSection",
         "SarakGantt",
         "SarakGrid",
+        "SarakGridItem",
         "SarakHelpButton",
         "SarakHidden",
         "SarakIcon",
@@ -182,6 +183,7 @@
         "SarakStats",
         "SarakStepper",
         "SarakSwitch",
+        "SarakTabPanel",
         "SarakTable",
         "SarakTabs",
         "SarakTextarea",

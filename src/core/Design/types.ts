@@ -67,6 +67,8 @@ export interface SarakDesignToken {
     kind?: 'aesthetic' | 'functional';
     /** `true` quando o valor muda com o modo claro/escuro, e por isso entra na `contraparte` do tema. */
     modeDependent?: boolean;
+    /** `true` quando um tema pode omitir este token estético sem herdar uma intenção visual. */
+    optionalForTheme?: boolean;
     /** O que o token muda na tela e onde, em uma ou duas frases, sem repetir o rótulo nem transcrever opções. */
     usage?: string;
     /** Ids de tokens sem os quais este não tem efeito visível (ex.: opacidade da textura × tipo de textura). */

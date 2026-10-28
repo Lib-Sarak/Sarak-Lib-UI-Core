@@ -60,6 +60,17 @@ export const ColorsSchema: ComponentSchema = {
             cssVars: ['--theme-accent', '--sarak-accent-color']
         },
         {
+            id: 'colorPalette',
+            kind: 'aesthetic',
+            modeDependent: false,
+            optionalForTheme: true,
+            usage: 'Seleciona a regra de cálculo das cores do tema nos dois modos; cores declaradas explicitamente continuam vencendo.',
+            label: 'Paleta de Cores',
+            type: 'string',
+            description: 'Identificador de um preset de paleta ou uma entrada customizada no formato `custom:<tipo>:<#base>[,sec=<#hex>][,acc=<#hex>]`. A paleta é expandida pelo motor antes das cores explícitas do host e do tema.',
+            defaultValue: '',
+        },
+        {
             id: 'surfaceColor',
             kind: 'aesthetic',
             modeDependent: true,

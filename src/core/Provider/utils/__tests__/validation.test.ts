@@ -307,3 +307,33 @@ describe('validateDesign — tabela única de mídia', () => {
         }
     );
 });
+
+describe('validateDesign — colorPalette', () => {
+    let warnSpy: ReturnType<typeof vi.spyOn>;
+
+    beforeEach(() => {
+        warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        warnSpy.mockRestore();
+    });
+
+    it.each(['oceano', 'custom:analogous:#2563eb,sec=#22c55e,acc=#db2777'])(
+        'aceita uma entrada de paleta válida: %s',
+        (value) => {
+            expect(validateDesign({ colorPalette: value }).colorPalette).toBe(value);
+            expect(warnSpy).not.toHaveBeenCalled();
+        },
+    );
+
+    it('descarta uma entrada inválida com aviso e deixa o tema sem paleta', () => {
+        const invalid = 'custom:analogous:#2563eb;sec=#22c55e;acc=#db2777';
+        const result = validateDesign({ colorPalette: invalid });
+        expect(result.colorPalette).toBeUndefined();
+        expect(warnSpy).toHaveBeenCalledWith(
+            expect.stringContaining('Token "colorPalette" com valor fora do contrato'),
+            invalid,
+        );
+    });
+});

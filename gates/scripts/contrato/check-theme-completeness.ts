@@ -1,4 +1,4 @@
-// Completude dos temas embarcados — todo tema declara TODO token estético no modo principal e, na `contraparte`,
+// Completude dos temas embarcados — todo tema declara todo token estético obrigatório no modo principal e, na `contraparte`,
 // todo estético que carrega modo; nenhum funcional, em lugar nenhum. É o que impede um tema de "herdar" a cara do
 // padrão por omissão: o token que ele não declara vale o padrão do schema, e o tema deixa de ser dele. Os
 // funcionais valem o padrão do sistema, iguais em todo tema (critério: funcional é o que deve ser igual em todo tema por segurança, acessibilidade ou consistência de comportamento).
@@ -21,7 +21,7 @@
 // 2. Confere PRESENÇA, não VERDADE: um estético declarado com o valor do padrão do schema conta como declarado, e
 //    um valor sem intenção de design passa. Quem julga a direção de arte é a ficha do tema e o revisor; quem julga
 //    legibilidade é `auditor_contraste`; quem julga o valor dentro do contrato é `tokenContractParity`.
-// 3. Só conta chave que é TOKEN do schema com `kind`. Chave de payload que não é token (`enabledLanguages`), chave
+// 3. Só conta chave que é TOKEN do schema com `kind`. Tokens estéticos marcados `optionalForTheme` não são exigidos. Chave de payload que não é token (`enabledLanguages`), chave
 //    órfã (`auditor_presets`) e token sem `kind` (`token-docs:check`) ficam fora — cada um tem o seu gate.
 // 4. A classificação vem do schema (`kind`, `modeDependent`) e NÃO é conferida aqui: um funcional marcado estético
 //    seria exigido de todo tema, e um estético marcado funcional seria proibido. O critério é o do `kind` no schema.

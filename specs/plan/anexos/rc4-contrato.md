@@ -65,13 +65,13 @@ interface SarakFormSectionProps {
 ## 1.3 `SarakTabPanel` — painel ligado à aba
 
 ```ts
-interface SarakTabPanelProps { tabId: string; idPrefix?: string; children: React.ReactNode; }
+interface SarakTabPanelProps { tabId: string; idPrefix: string; children: React.ReactNode; }
 ```
 ```tsx
 <SarakTabs idPrefix="contrato" tabs={abas} activeTab={aba} onChange={setAba} />
 <SarakTabPanel idPrefix="contrato" tabId={aba}>{conteudo}</SarakTabPanel>
 ```
-Gera `role="tabpanel"`, `id` e `aria-labelledby` que casam com o `aria-controls` da aba.
+Gera `role="tabpanel"`, `id` e `aria-labelledby` que casam com o `aria-controls` da aba. `idPrefix` é obrigatório nos dois lados para o par casar; sem `idPrefix` (ou `panelId`) a aba não emite `aria-controls`.
 
 ## 1.4 Exportação CSV
 
@@ -80,6 +80,7 @@ function sarakTableToCsv<T>(columns: SarakColumn<T>[] | SarakTableColumn<T>[], r
   separator?: ';' | ',';     // padrão: ';' quando o locale usa vírgula decimal (pt-BR), senão ','
   formatted?: boolean;       // padrão true: exporta o valor exibido (format); false: o valor bruto
   includeFooter?: boolean;   // padrão true quando há agregação
+  locale?: string;           // padrão: o locale do ambiente; a SarakTable passa o de useSarakLanguage
 }): string;                  // sempre com BOM UTF-8 — abre certo no Excel pt-BR
 function sarakDownloadCsv(filename: string, csv: string): void;
 ```
@@ -156,7 +157,7 @@ Token novo de tema, `colorPalette` (string):
 type SarakPaletteType = 'monochromatic' | 'analogous' | 'complementary' | 'split-complementary' | 'triadic';
 // valor de colorPalette:
 //   "<id-de-preset>"                                        ex.: "oceano"
-//   "custom:<tipo>:<#base>[;sec=<#hex>][;acc=<#hex>]"       ex.: "custom:analogous:#2563eb"
+//   "custom:<tipo>:<#base>[,sec=<#hex>][,acc=<#hex>]"       ex.: "custom:analogous:#2563eb"
 function sarakResolvePalette(value: string, mode: 'light' | 'dark'): Record<string, string>; // tokens de cor calculados
 ```
 
@@ -321,8 +322,8 @@ Sem mudança: `SarakValueFormat`, `SarakResponsiveValue`.
 - **Cadeia de altura do cromo (demanda 12):** o `SarakAppChrome` **já** ocupa `100dvh` sozinho na rc.3
   (`src/components/Layout/SarakAppChrome.tsx:197`, com a rolagem nos painéis internos). A rc.4 mede, em navegador, o sintoma da
   demanda (conteúdo rolando a janela sob a topbar sem `height: 100%` em `html/body/#root`) e corrige se ele se reproduzir; o guia
-  passa a dizer que a cadeia não é necessária. Novo: o `<main>` vira coluna flexível com `min-height: 0`, e o filho que deve
-  encher a altura usa `fillHeight` ou a classe pública `sarak-fill-height`.
+  passa a dizer que a cadeia não é necessária. O `<main>` **continua em bloco**, como na rc.3 (em coluna flexível, filho com `margin: 0 auto` encolhe ao conteúdo — medido); o filho que deve
+  encher a altura usa `fillHeight` ou a classe pública `sarak-fill-height` (`min-height: 100%` do `<main>`).
 - Nenhuma cor nova: tons de referência, faixa, excesso do progresso e seta de delta saem dos tokens de status
   que já existem.
 
@@ -405,6 +406,10 @@ Q1 e Q7 são as quebras de tipo. Como a 8.0.0 ainda não saiu, ficam dentro dela
 |---|---|
 | 2026-10-27 | Proposta inicial (lote 1) |
 | 2026-10-27 | Aceite do dono: valor por dispositivo informado como existente (§0); idioma redesenhado com `options.i18n` e `useSarakLanguage` no lugar de `useSarakLocale` (§1.8); Q4 reescrita (catálogo, não troca para português); `SarakChart` removido (Q7); coluna de plan no rastreio; protocolo da §9; §4 corrigido — o cromo já tinha `100dvh` na rc.3 |
+| 2026-10-28 | §1.9: o separador de `custom:` passa de `;` a `,` (a barreira de CSS recusa `;`) |
+| 2026-10-28 | §9: o revisor mede o `audit:baseline` a cada rodada (a 130 foi aprovada com dois arquivos acima de 250 linhas, atribuídos a outra plan no resumo) |
+| 2026-10-28 | §1.3: `SarakTabPanel.idPrefix` obrigatório e `aria-controls` só com `idPrefix`/`panelId`; §4: o `<main>` fica em bloco (o flexível encolhia conteúdo centralizado de 1000 para 33 px) |
+| 2026-10-28 | §1.4: `locale` em `sarakTableToCsv` (função pura não lê o hook); a árvore agrega só as raízes no rodapé; §9: `token-types` entra nos geradores do commit |
 | 2026-10-27 | Paletas de cor entram na rc.4 a pedido do dono: §1.9, Q8, plans 133–135 no rastreio |
 
 ---
@@ -418,7 +423,7 @@ Objetivo: **cada verificação roda uma vez por plan, e a bateria completa roda 
 |---|---|---|---|
 | Executor | durante | os testes dos arquivos que escreveu | — |
 | Executor | antes de entregar | `npm run verify -- --tier=quick` uma vez, e cola o resumo | suíte completa, build, navegador |
-| Revisor | veredito | `npx vitest run <pastas da §7 da plan>` uma vez + leitura do diff contra este contrato (nomes, tipos, padrões) | `verify` de novo (o `quick` do executor é aceito pelo relato colado); suíte completa; build |
+| Revisor | veredito | `npx vitest run <pastas da §7 da plan>` uma vez + leitura do diff contra este contrato (nomes, tipos, padrões) + **`node gates/scripts/release/check-audit-baseline.mjs` uma vez por rodada de vereditos** (no worktree compartilhado, a atribuição de falha do executor não é confiável, e o Anel 2 do commit bloqueia regressão) | `verify` de novo (o `quick` do executor é aceito pelo relato colado); suíte completa; build |
 | Revisor | fechamento (depois do lote 2) | `npm run verify -- --tier=full` + `npm run cromo-css-real:check` (inclui o build) — **uma vez para todas** | — |
 
 Regras que mantêm isso seguro:
@@ -430,7 +435,7 @@ Regras que mantêm isso seguro:
   não roda de novo.
 - **Arquivos gerados não se tocam nas plans** (`dist/`, `sarak-dev/`, `docs/component-catalog.*` e o que `npm run guide` copia
   para `sarak-ui/`, como `catalog.json`, `skill/` e `docs/`). O gancho de commit cobra `catalog:check`, `guide:check` e
-  `dev-kit:check`; por isso, **antes de cada commit**, o dono roda `npm run catalog; npm run guide; npm run dev-kit` (segundos, sem
+  `dev-kit:check`; por isso, **antes de cada commit**, o dono roda `npm run catalog; npm run guide; npm run dev-kit; npm run token-types` (segundos, sem
   build). O `dist/` só no fechamento. Com plans paralelas em voo, o commit sai **por rodada** — todas as aprovadas juntas, sem plan
   pela metade no worktree —, para o gerado não levar superfície de código que não está no commit. Os de **autoria** do kit
   (`sarak-ui/GUIA-FRONTEND.md`, `sarak-ui/templates/`) são da `plan-119`, lote 8.

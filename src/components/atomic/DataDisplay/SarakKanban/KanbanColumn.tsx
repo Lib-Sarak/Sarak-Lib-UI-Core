@@ -10,11 +10,14 @@ import { SarakIconButton } from '../../Buttons/SarakIconButton';
 import { SarakIcon } from '../../Icon/SarakIcon';
 import { SarakContextMenu } from '../../UX/SarakContextMenu';
 import type { SarakContextMenuPosition } from '../../UX/SarakContextMenu';
+import { SarakValue } from '../../Atoms/SarakValue';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
+import type { SarakValueFormat } from '../../../../shared/format';
 import { KanbanAddForm } from './KanbanAddForm';
 import { KanbanCard } from './KanbanCard';
 import { KANBAN_COLUMN_CLASS } from './kanbanLayout';
 import { KanbanSortableList, useKanbanColumnDrop } from './useKanbanDrag';
+import { sarakColumnTotal } from './kanbanModel';
 import type { SarakKanbanCard, SarakKanbanColumn } from './kanbanTypes';
 
 export interface KanbanColumnHandlers<C extends SarakKanbanCard> {
@@ -23,6 +26,23 @@ export interface KanbanColumnHandlers<C extends SarakKanbanCard> {
     onCardAdd?: (columnId: string, title: string) => void;
     onColumnRename?: (id: string, title: string) => void;
     onColumnDelete?: (id: string) => void;
+    valueFormat?: SarakValueFormat;
+    columnTotal?: boolean | ((column: SarakKanbanColumn<C>) => React.ReactNode);
+}
+
+function ColumnTotal<C extends SarakKanbanCard>({ column, columnTotal, valueFormat }: {
+    column: SarakKanbanColumn<C>;
+    columnTotal: KanbanColumnHandlers<C>['columnTotal'];
+    valueFormat?: SarakValueFormat;
+}) {
+    if (typeof columnTotal === 'function') return <span data-kanban-column-total="true">{columnTotal(column)}</span>;
+    const total = sarakColumnTotal(column.cards);
+    if (columnTotal === false || total === null) return null;
+    return (
+        <span data-kanban-column-total="true">
+            <SarakValue value={total} format={valueFormat} size="sm" signColor={false} />
+        </span>
+    );
 }
 
 function ColumnMenu({ column, onRename, onDelete }: {
@@ -109,6 +129,7 @@ export function KanbanColumn<C extends SarakKanbanCard>({ column, ...handlers }:
             >
                 <span>{column.title}</span>
                 <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--sarak-layout-gap-sm, 8px)', color: 'var(--sarak-text-muted, inherit)' }}>
+                    <ColumnTotal column={column} columnTotal={handlers.columnTotal} valueFormat={handlers.valueFormat} />
                     {column.cards.length}
                     {hasMenu && <ColumnMenu column={column} onRename={handlers.onColumnRename} onDelete={handlers.onColumnDelete} />}
                 </span>
@@ -122,7 +143,7 @@ export function KanbanColumn<C extends SarakKanbanCard>({ column, ...handlers }:
                         </span>
                     )}
                     {column.cards.map((card) => (
-                        <KanbanCard key={card.id} card={card} columnId={column.id} renderCard={handlers.renderCard} onCardClick={handlers.onCardClick} />
+                        <KanbanCard key={card.id} card={card} columnId={column.id} renderCard={handlers.renderCard} onCardClick={handlers.onCardClick} valueFormat={handlers.valueFormat} />
                     ))}
                 </div>
             </KanbanSortableList>

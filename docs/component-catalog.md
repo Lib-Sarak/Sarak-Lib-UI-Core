@@ -39,6 +39,7 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakFlex` | `justify` | `flex-start` · `flex-end` · `center` · `space-between` · `space-around` · `space-evenly` |
 | `SarakFlex` | `align` | `stretch` · `flex-start` · `flex-end` · `center` · `baseline` |
 | `SarakForm` | `mode` | `create` · `edit` |
+| `SarakGridItem` | `span` | `full` · `full` |
 | `SarakIconButton` | `variant` | `primary` · `secondary` · `ghost` · `danger` |
 | `SarakIconButton` | `size` | `xs` · `sm` · `md` · `lg` |
 | `SarakMenuItem` | `markerPosition` | `edge` · `top` |
@@ -50,7 +51,6 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakShellUserWidget` | `variant` | `horizontal` · `vertical` · `mini` |
 | `SarakSocialButton` | `variant` | `glass` · `solid` |
 | `SarakSpinner` | `size` | `sm` · `md` · `lg` |
-| `SarakTabs` | `variant` | `pills` · `underlined` · `enclosed` |
 | `SarakTypography` | `transform` | `none` · `uppercase` · `capitalize` |
 | `SarakValue` | `size` | `sm` · `md` · `lg` |
 
@@ -68,7 +68,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `ListOrdered` · `Grid` · `Layout` · `LayoutDashboard` · `LayoutGrid` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `ZoomIn` · `ZoomOut` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `ShieldCheck` · `Eye` · `EyeOff` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Bold` · `Italic` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Binary` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `Link2` · `ExternalLink` · `Command` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Settings2` · `Zap` · `Sparkles` · `Compass` · `Sun` · `Moon` · `XCircle` · `ToggleLeft` · `ToggleRight`
 
-## Componentes públicos (108)
+## Componentes públicos (110)
 
 ### SARAK_DEFAULT_COLUMN_WIDTH
 
@@ -136,6 +136,8 @@ Props (`SarakAnalyticalPageProps` — `src/components/Layout/SarakAnalyticalPage
 | `sidePanel` | `ReactNode` | não |  |
 | `sidePanelAsDrawerOnMobile` | `boolean` | não | Se true, o painel lateral abre como um modal/drawer por cima no mobile. Se false, fica empilhado. Default: true |
 | `centeredOnDesktop` | `boolean` | não | Se true, centraliza horizontalmente e verticalmente o mainContent no Desktop para preencher vazios. |
+| `sidePanelWidth` | `number \| string` | não | Largura do painel lateral em tablet e desktop: número em pixels ou comprimento CSS. Omitida, 16rem no tablet e 20rem no desktop. |
+| `fillHeight` | `boolean` | não | Se true, a página ocupa a altura que o cromo deixa (e a rolagem fica no conteúdo, não na janela). Omitida, mantém a altura de sempre. |
 
 ### SarakAppChrome
 
@@ -258,6 +260,10 @@ Props (`SarakAutocompleteProps` — `src/components/atomic/Inputs/SarakAutocompl
 | `onChange` | `React.ChangeEventHandler<HTMLInputElement>` | não | Recebe o evento nativo ao digitar. Omitida, não há notificação de digitação; selecionar uma opção é informado por `onOptionSelect`. |
 | `placeholder` | `string` | não | Texto de dica do campo. Omitido, usa o padrão traduzido da biblioteca. |
 | `onOptionSelect` | `(option: SarakAutocompleteOption) => void` | não | Recebe a opção escolhida por clique ou teclado. Omitida, a opção ainda preenche o texto do campo não controlado, sem emitir seleção externa. |
+| `selection` | `SarakAutocompleteOption \| null` | não | Opção selecionada em modo controlado; seu `value` é o identificador salvo pelo consumidor. |
+| `onSelectionChange` | `(option: SarakAutocompleteOption \| null) => void` | não | Informa a seleção nova ou `null` quando a busca deixa de representar a opção atual. |
+| `onCreate` | `(query: string) => void` | não | Cria um item com a busca atual quando nenhuma opção tem o mesmo rótulo. |
+| `createLabel` | `(query: string) => string` | não | Rótulo da ação de criação; omitido, usa o texto traduzido da biblioteca. |
 
 Estende: `Omit<SarakInputProps, 'defaultValue' | 'onChange' | 'value'>`
 
@@ -341,6 +347,7 @@ Props (`SarakCardProps` — `src/components/atomic/Cards/SarakCard.tsx`):
 | `children` | `ReactNode` | não | Conteúdo composto do cartão; se omitido, a moldura temática permanece vazia. |
 | `className` | `string` | não | Classes adicionais; se omitidas, o cartão mantém largura total e sua moldura temática. Classes utilitárias conflitantes substituem o padrão; a classe `sarak-card` é preservada para aplicar os tokens do tema. |
 | `interactive` | `boolean` | não | Marca o cartão inteiro como alvo do ponteiro: só ele sobe, cresce ou brilha no hover (`cardHoverStyle`). Omitida, o cartão é contêiner e não se move. |
+| `density` | `SarakCardDensity` | não | Espaçamento interno: `sm` e `lg` leem `--sarak-card-padding-sm|lg` (derivados do `md` do tema, sobrescrevíveis em CSS). Omitida, `md`, como sempre foi. |
 
 ### SarakCardBody
 
@@ -399,19 +406,6 @@ Props (`SarakCatalogGridProps` — `src/components/atomic/Templates/SarakCatalog
 | `renderCard` | `(item: SarakCatalogItem) => React.ReactNode` | não | Personaliza cada cartão já filtrado; omitida, o cartão padrão mostra `display_name` e `organization`. |
 | `emptyMessage` | `string` | não | Mensagem exibida quando a lista filtrada fica vazia; omitida, usa `Nenhum item encontrado.`. Não aparece durante o carregamento. |
 
-### SarakChart
-
-Props (`SarakChartProps` — `src/components/atomic/Templates/SarakChart.tsx`):
-
-| Prop | Tipo | Obrigatória | Descrição |
-| --- | --- | --- | --- |
-| `data` | `TData[]` | não | Dado já carregado pelo host; quando presente, tem prioridade sobre load. |
-| `load` | `() => Promise<TData[]>` | não | Carrega os pontos pelo mecanismo escolhido pelo host. |
-| `updatedAt` | `Date \| string \| number` | não | Horário do dado entregue diretamente pelo host. |
-| `onRetry` | `() => void` | não | Callback opcional para tentar novamente após uma falha. |
-| `label` | `string` | não | Rótulo opcional fornecido pelo host. |
-| `mapping` | `{ value?: string; date?: string }` | não | Chaves dos campos de valor e rótulo; os defaults são value e date. |
-
 ### SarakChartEngine
 
 Props (`SarakChartEngineProps` — `src/components/engines/charts/SarakChartEngine.tsx`):
@@ -421,12 +415,19 @@ Props (`SarakChartEngineProps` — `src/components/engines/charts/SarakChartEngi
 | `type` | `'line' \| 'area' \| 'bar' \| 'pie' \| 'radar' \| 'gauge' \| 'scatter' \| 'heatmap' \| 'funnel' \| 'treemap' \| 'candlestick' \| 'sunburst' \| 'histogram' \| 'boxplot' \| 'waterfall' \| 'sankey' \| 'calendar'` | não | Seleciona o formato; omitido, usa `chartType` do design resolvido. `waterfall` lê `{ name, value, total? }`, `sankey` lê `{ source, target, value }` e `calendar` lê `{ date, value }`. |
 | `data` | `SarakChartDataItem[]` | sim | Registros da série, com os campos configurados por `xAxisKey` e `dataKey`. |
 | `config` | `{ xAxisKey?: string; dataKey?: string; engine?: 'recharts' \| 'echarts'; title?: string; showGradients?: boolean; showAnimation?: boolean; thickness?: number; }` | não | Ajusta chaves de leitura, motor, título, gradiente, animação e espessura. |
-| `series` | `Array<{ key: string; label?: string; type?: 'bar' \| 'line' \| 'area'; stack?: string; axis?: 'left' \| 'right'; dashed?: boolean; color?: 'chartColorPalette' \| 'secondaryColor' \| 'accentColor' \| 'statusSuccessColor' \| 'statusWarningColor' \| 'statusErrorColor' \| 'statusInfoColor' \| 'tertiaryColor'; }>` | não | Séries cartesianas; pizza, radar, funil, `waterfall`, `sankey`, `calendar` e outros formatos ignoram esta prop. `color`, quando informado, é o nome de um token de cor do tema, nunca um valor hexadecimal. |
+| `series` | `Array<{ key: string; label?: string; type?: 'bar' \| 'line' \| 'area'; stack?: string; axis?: 'left' \| 'right'; dashed?: boolean; format?: SarakValueFormat; color?: 'chartColorPalette' \| 'secondaryColor' \| 'accentColor' \| 'statusSuccessColor' \| 'statusWarningColor' \| 'statusErrorColor' \| 'statusInfoColor' \| 'tertiaryColor'; }>` | não | Séries cartesianas; pizza, radar, funil, `waterfall`, `sankey`, `calendar` e outros formatos ignoram esta prop. `color`, quando informado, é o nome de um token de cor do tema, nunca um valor hexadecimal. |
 | `stacked` | `boolean` | não | Formatos não cartesianos, `waterfall` e `calendar` ignoram esta prop. |
 | `orientation` | `'vertical' \| 'horizontal'` | não | Formatos não cartesianos, `waterfall` e `calendar` ignoram esta prop. |
 | `legend` | `boolean \| 'top' \| 'bottom'` | não | Exibe a legenda no topo/rodapé ou define explicitamente sua visibilidade; `waterfall`, `sankey` e `calendar` ignoram esta prop. |
 | `onPointClick` | `(event: { seriesKey: string; index: number; datum: SarakChartDataItem }) => void` | não | Recebe a série, o índice e o registro original ao clicar em um ponto do ECharts. |
 | `ariaLabel` | `string` | não | Texto acessível do gráfico; omitido, usa o catálogo de i18n. |
+| `valueFormat` | `SarakValueFormat` | não | Formato de eixo de valor, dica e rótulos, no idioma da tela; omitido, mostra o número cru. Só no ECharts. |
+| `height` | `number \| string` | não | Altura do gráfico (número em px); omitida, ocupa 100% do pai. Só no ECharts. |
+| `referenceLines` | `SarakChartReferenceLine[]` | não | Linhas sobre valores do eixo de valor de `bar`, `line` e `area`; os tons vêm dos tokens de status. |
+| `referenceBands` | `SarakChartReferenceBand[]` | não | Faixas sombreadas entre dois valores do eixo de valor de `bar`, `line` e `area`. |
+| `zoom` | `SarakChartZoom` | não | Zoom do eixo de categoria; `true` equivale a `'slider'`. |
+| `pieLabel` | `SarakChartPieLabel` | não | Rótulo das fatias da pizza; omitido, mostra o da rc.3 (só ao passar o mouse). |
+| `gauge` | `SarakChartGauge` | não | Escala do medidor (`gauge`); omitida, vale 0 a 100. O `%` só aparece com `valueFormat` percentual ou sem `valueFormat`. |
 
 ### SarakChat
 
@@ -563,6 +564,19 @@ Props (`SarakDataTableProps` — `src/components/atomic/DataDisplay/SarakDataTab
 | `onRetry` | `() => void` | não |  |
 | `onRowClick` | `(row: T) => void` | não | Disparado ao ativar uma linha. |
 | `className` | `string` | não |  |
+| `groupBy` | `SarakTableGroupBy<T>` | não | Agrupa as linhas, com cabeçalho de grupo expansível e subtotal. |
+| `renderExpanded` | `(row: T) => React.ReactNode` | não | Conteúdo da linha expandida; com ele, cada linha ganha o botão de expandir. |
+| `expandedKeys` | `React.Key[]` | não | Chaves das linhas expandidas (controlado); omitido, a tabela gerencia. |
+| `onExpandedChange` | `(keys: React.Key[]) => void` | não |  |
+| `searchQuery` | `string` | não | Filtra as linhas pelo texto exibido (ou `searchValue`); omitido, sem filtro. A DataTable não tem campo de busca. |
+| `onSearchQueryChange` | `(query: string) => void` | não |  |
+| `totalCount` | `number` | não | Total no servidor; maior que as linhas visíveis, oferece "Selecionar todos os N". |
+| `selectAll` | `boolean` | não | Com `true`, `selectedKeys` passa a ser a lista de EXCEÇÕES. |
+| `onSelectAllChange` | `(all: boolean) => void` | não |  |
+| `getChildren` | `(row: T) => T[] \| undefined` | não | Filhos da linha: transforma a tabela em tree-table (plano de contas, DRE). |
+| `defaultExpandedDepth` | `number` | não | Profundidade aberta de início na árvore; padrão `0` (tudo recolhido). |
+| `reorderable` | `boolean` | não | Cabeçalhos arrastáveis para reordenar; padrão `true`. |
+| `skeletonRows` | `number` | não | Linhas do esqueleto com `loading` e sem linhas; padrão `8`. |
 
 ### SarakDatePicker
 
@@ -582,6 +596,12 @@ Props (`SarakDatePickerProps` — `src/components/atomic/Inputs/SarakDatePicker.
 | `className` | `string` | não |  |
 | `style` | `React.CSSProperties` | não |  |
 | `onChange` | `(value: SarakDatePickerValue) => void` | não | Emite a nova data/intervalo em ISO (Spec 32: `onChange(value)`). |
+| `min` | `string` | não |  |
+| `max` | `string` | não |  |
+| `isDateDisabled` | `(iso: string) => boolean` | não |  |
+| `presets` | `Array<SarakDatePresetId \| SarakDatePreset>` | não |  |
+| `allowTyping` | `boolean` | não |  |
+| `clearable` | `boolean` | não |  |
 
 ### SarakDescriptionList
 
@@ -687,7 +707,7 @@ Props (`SarakFilterSelectProps` — `src/components/atomic/Templates/SarakFilter
 | --- | --- | --- | --- |
 | `col` | `string` | sim | Identifica a coluna cujo valor será lido de `filters` e enviado ao callback; obrigatória. |
 | `placeholder` | `string` | não | Texto da opção inicial (valor vazio); omitido, sai do catálogo da lib no idioma escolhido (`Todos`, `All`…). |
-| `label` | `string` | não | Nome acessível do seletor; omitido, o seletor não ganha rótulo próprio. |
+| `label` | `string` | não | Nome acessível do seletor; omitido, a biblioteca usa um rótulo genérico oculto. |
 | `filters` | `Record<string, string>` | sim | Estado atual dos filtros; a opção selecionada vem de `filters[col]` e fica vazia quando a chave não existe. |
 | `onChange` | `(col: string, value: string) => void` | sim | Recebe a coluna e o novo valor a cada seleção; obrigatória para propagar mudanças ao consumidor. |
 | `options` | `string[] \| SarakFilterSelectOption[]` | sim | Valores disponíveis além da opção inicial: textos simples ou pares `{ label, value }`; obrigatória, mesmo vazia. |
@@ -744,6 +764,19 @@ Props (`SarakFormGroupProps` — `src/components/atomic/Layouts/SarakFormGroup.t
 
 Estende: `React.HTMLAttributes<HTMLDivElement>`
 
+### SarakFormSection
+
+Props (`SarakFormSectionProps` — `src/components/atomic/Templates/SarakFormSection.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `title` | `React.ReactNode` | sim |  |
+| `description` | `React.ReactNode` | não |  |
+| `columns` | `number \| SarakResponsiveValue<number>` | não |  |
+| `disabled` | `boolean` | não |  |
+| `children` | `React.ReactNode` | sim |  |
+| `className` | `string` | não |  |
+
 ### SarakGantt
 
 Props (`SarakGanttProps` — `src/components/atomic/DataDisplay/SarakGantt/SarakGantt.tsx`):
@@ -766,11 +799,25 @@ Props (`SarakGridProps` — `src/components/atomic/Layouts/SarakGrid.tsx`):
 | --- | --- | --- | --- |
 | `children` | `React.ReactNode` | sim |  |
 | `templateColumns` | `string \| SarakResponsiveValue<string>` | não | Colunas do grid. Aceita: - `string` fixo (ex.: `"1fr 1fr 1fr"`): mobile-first por padrão — **colapsa para 1 coluna no celular** (nunca estoura a página), reflui no valor cheio em tablet/desktop. - `SarakResponsiveValue<string>` (`{ mob, tab, desk }`): o consumidor controla por dispositivo. Sem `templateColumns`, usa a estratégia de grid do Design Engine (também 1 coluna no celular). |
+| `columns` | `number \| SarakResponsiveValue<number>` | não | Quantidade de colunas iguais: um número ou um valor por dispositivo (`{ mob, tab, desk }`). Vence `templateColumns` se os dois vierem. Omitida, o grid faz o que fazia. Um número fixo colapsa para 1 coluna no celular, como `templateColumns`; para ter mais, declare `mob`. |
 | `templateAreas` | `string` | não |  |
 | `gap` | `SarakLayoutGap` | não |  |
 | `as` | `React.ElementType` | não |  |
 
 Estende: `Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>`
+
+### SarakGridItem
+
+Props (`SarakGridItemProps` — `src/components/atomic/Layouts/SarakGridItem.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `span` | `number \| 'full' \| SarakResponsiveValue<number \| 'full'>` | não | Quantas trilhas o item ocupa: um número, `'full'` (a linha toda) ou um valor por dispositivo (`{ mob, tab, desk }`). Omitida, o item ocupa uma trilha, no fluxo normal. Um `span` maior que as colunas do grid vira `'full'` — no celular, onde o grid tem uma coluna, isso acontece sozinho. |
+| `rowSpan` | `number \| SarakResponsiveValue<number>` | não | Quantas linhas o item ocupa, por dispositivo ou fixo. Omitida, uma linha. |
+| `as` | `React.ElementType` | não | Elemento renderizado. Omitida, `div`. |
+| `children` | `React.ReactNode` | não |  |
+
+Estende: `React.HTMLAttributes<HTMLDivElement>`
 
 ### SarakHelpButton
 
@@ -826,6 +873,8 @@ Props (`SarakInputProps` — `src/components/atomic/Inputs/SarakInput.tsx`):
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `label` | `string` | não |  |
+| `prefixText` | `React.ReactNode` | não |  |
+| `suffixText` | `React.ReactNode` | não |  |
 | `icon` | `React.ReactNode` | não |  |
 | `leftIcon` | `React.ReactNode` | não |  |
 | `rightIcon` | `React.ReactNode` | não |  |
@@ -848,6 +897,8 @@ Props (`SarakKanbanProps` — `src/components/atomic/DataDisplay/SarakKanban/Sar
 | `onColumnAdd` | `(title: string) => void` | não | Nova coluna, ao fim do quadro. Omitido, o campo não aparece. |
 | `onColumnRename` | `(id: string, title: string) => void` | não | Renomear coluna pelo menu dela. Omitido, o item não aparece. |
 | `onColumnDelete` | `(id: string) => void` | não | Excluir coluna pelo menu dela. Omitido, o item não aparece. |
+| `valueFormat` | `SarakValueFormat` | não | Formato do `value` dos cartões e da soma das colunas; omitido, o número aparece cru. |
+| `columnTotal` | `boolean \| ((column: SarakKanbanColumn<C>) => React.ReactNode)` | não | Soma no cabeçalho da coluna: `true`/omitido mostra a soma dos `value` só se algum cartão tiver; `false` esconde; função devolve o conteúdo. |
 | `className` | `string` | não |  |
 
 ### SarakLightbox
@@ -914,12 +965,13 @@ Props (`SarakMaskedInputProps` — `src/components/atomic/Inputs/SarakMaskedInpu
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `mask` | `string` | sim | Padrão com `0` nas posições numéricas ou preset `cpf`, `cnpj` e `phone`. É obrigatório; `phone` alterna entre telefone fixo e celular pelo total de dígitos. Um padrão sem `0` deixa o campo somente com os dígitos, sem pontuação. |
+| `mask` | `string` | sim | Padrão com `0` nas posições numéricas ou preset `cpf`, `cnpj` e `phone`. É obrigatório; `phone` alterna entre telefone fixo e celular pelo total de dígitos, e `cnpj` aceita letras e números nas doze primeiras posições. |
 | `value` | `string` | não | Valor limpo controlado. Omitido, usa `defaultValue`; ao fornecê-lo, o pai deve atualizá-lo após `onChange`. |
 | `defaultValue` | `string` | não | Valor inicial sem pontuação. Omitido, o campo começa vazio; ignorado após a montagem ou quando `value` é informado. |
 | `label` | `string` | não | Rótulo visível encaminhado ao `SarakInput`. Omitido, não há rótulo; forneça um nome acessível. |
-| `onChange` | `(cleanValue: string) => void` | não | Emite somente os dígitos aceitos pelo padrão. Omitido, mudanças não são notificadas por callback. |
-| `inputMode` | `React.HTMLAttributes<HTMLInputElement>['inputMode']` | não | Teclado sugerido ao dispositivo. Omitido, solicita teclado numérico; isso não valida a entrada. |
+| `onChange` | `(cleanValue: string) => void` | não | Emite os caracteres aceitos pelo padrão. Omitido, mudanças não são notificadas por callback. |
+| `validate` | `boolean` | não | Confere CPF/CNPJ no blur e anuncia o dígito verificador inválido. Omitida, não valida. |
+| `inputMode` | `React.HTMLAttributes<HTMLInputElement>['inputMode']` | não | Teclado sugerido ao dispositivo. CNPJ usa texto por padrão; os demais usam numérico. |
 
 Estende: `Omit<SarakInputProps, 'defaultValue' | 'label' | 'onChange' | 'type' | 'value'>`
 
@@ -1053,6 +1105,9 @@ Props (`SarakProgressProps` — `src/components/atomic/Feedback/SarakProgress.ts
 | `label` | `string` | não | Rótulo acessível anunciado pela barra de progresso. |
 | `indeterminate` | `boolean` | não | Exibe animação indeterminada e omite o valor atual na árvore acessível. |
 | `className` | `string` | não | Classe adicional aplicada ao contêiner do componente. |
+| `allowOverflow` | `boolean` | não | Aceita `value` acima de `max`: enche a barra e marca o excesso com o tom de alerta (padrão: `false`). |
+| `showValue` | `boolean` | não | Mostra o valor ao lado da barra (padrão: `false`). |
+| `valueFormat` | `SarakValueFormat` | não | Formato do valor mostrado; `percent` é aplicado a `value / max`, os demais a `value` (padrão: percentual). |
 
 ### SarakRadio
 
@@ -1194,7 +1249,9 @@ Props (`SarakSelectProps` — `src/components/atomic/Inputs/SarakSelect.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `label` | `string` | não | Rótulo visual ligado ao campo pelo `id` (gerado quando não é informado). Sem ele, não há rótulo visível; forneça outro nome acessível se necessário. |
+| `label` | `string` | sim | Rótulo visual ligado ao campo pelo `id` (gerado quando não é informado). Sem ele, não há rótulo visível; forneça outro nome acessível se necessário. |
+| `hideLabel` | `boolean` | não | Mantém o rótulo acessível sem ocupar espaço visual. |
+| `options` | `Array<{ label: string; value: string; disabled?: boolean }>` | não | Opções declarativas; quando informado, substitui `children`. |
 | `error` | `string` | não | Mensagem exibida abaixo da lista, ligada ao `<select>` por `aria-describedby` (pelo `SarakFieldError`), que também marca `aria-invalid`. Sem a prop, não há mensagem nem estado inválido. |
 | `fullWidth` | `boolean` | não | Faz o contêiner e a lista ocuparem toda a largura disponível. Omitida ou `false`, a largura depende do layout pai. |
 
@@ -1300,6 +1357,7 @@ Props (`SarakSparklineProps` — `src/components/atomic/DataDisplay/SarakSparkli
 | `height` | `number` | não | Altura em px do desenho (default: 40). A largura preenche o contêiner. |
 | `strokeWidth` | `number` | não | Espessura do traço (line/area) em px (default: 2). |
 | `fillOpacity` | `number` | não | Opacidade do preenchimento da área (default: 0.15). |
+| `baseline` | `SarakSparklineBaseline` | não | `'auto'` (padrão) ajusta a escala ao mínimo e máximo; `'zero'` fixa o zero na escala e desenha a linha de base. |
 | `label` | `string` | não | Descrição acessível do gráfico (vira `<title>` + `aria-label`). |
 | `className` | `string` | não |  |
 | `style` | `React.CSSProperties` | não |  |
@@ -1376,6 +1434,16 @@ Props (`SarakSwitchProps` — `src/components/atomic/Inputs/SarakSwitch.tsx`):
 
 Estende: `Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>`
 
+### SarakTabPanel
+
+Props (`SarakTabPanelProps` — `src/components/atomic/UX/SarakTabPanel.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `tabId` | `string` | sim | `id` da aba (`SarakTabItem.id`) a que este painel pertence. |
+| `idPrefix` | `string` | sim | O mesmo `idPrefix` passado ao `SarakTabs`; é o que casa `aria-controls` e `aria-labelledby`. |
+| `children` | `React.ReactNode` | sim |  |
+
 ### SarakTable
 
 Props (`SarakTableProps` — `src/components/atomic/Templates/SarakTable.tsx`):
@@ -1398,8 +1466,10 @@ Props (`SarakTabsProps` — `src/components/atomic/UX/SarakTabs.tsx`):
 | --- | --- | --- | --- |
 | `tabs` | `SarakTabItem[]` | sim |  |
 | `activeTab` | `string` | sim |  |
-| `onChange` | `(tabId: string) => void` | sim |  |
-| `variant` | `'pills' \| 'underlined' \| 'enclosed'` | não | Estilo de exibição das abas |
+| `onChange` | `(tabId: string) => void` | não | Chamado ao escolher uma aba. Opcional: aba-rota pode usar só `onNavigate`. |
+| `onNavigate` | `(href: string, tab: SarakTabItem) => void` | não | Com `href` na aba, o clique simples não recarrega a página e chama isto. Omitido, o navegador segue o link. |
+| `idPrefix` | `string` | não | Prefixo dos `id` da aba e do painel (`SarakTabPanel idPrefix`). Omitido, gerado. |
+| `variant` | `SarakTabsVariant` | não | Estilo de exibição das abas |
 | `fullWidth` | `boolean` | não | Preencher a largura toda? |
 | `className` | `string` | não |  |
 | `listClassName` | `string` | não |  |

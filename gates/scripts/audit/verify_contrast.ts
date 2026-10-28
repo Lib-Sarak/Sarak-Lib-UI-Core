@@ -99,11 +99,17 @@
 //    em componente algum. O verificador não prova que o botão `cyberpunk` lê a cor do status — isso é do
 //    teste de `useAtomicStyles` e de `browser-tests/contraste-do-que-faltava.spec.ts`.
 // -------------------------------------------------------------------------
-import { sarakGetDefaultDesignState } from '../../../src/core/Design/master-map.ts';
-import { SARAK_ALL_THEMES } from '../../../src/core/Design/presets/themes/all.ts';
-import type { SarakThemePreset } from '../../../src/core/Design/presets/themes/index.ts';
-import { resolveThemeForMode } from '../../../src/core/Design/presets/themes/color-engine.ts';
-import { pickOnColor } from '../../../src/core/Provider/utils/on-color.ts';
+import { sarakGetDefaultDesignState } from '../../../src/core/Design/master-map';
+import { SARAK_ALL_THEMES } from '../../../src/core/Design/presets/themes/all';
+import type { SarakThemePreset } from '../../../src/core/Design/presets/themes/index';
+import { resolveThemeForMode } from '../../../src/core/Design/presets/themes/color-engine';
+import { pickOnColor } from '../../../src/core/Provider/utils/on-color';
+import { MIX_SOURCE_SHARE, PAIRS } from '../../../src/core/Design/palette/contrast-pairs';
+import type { ContrastPair } from '../../../src/core/Design/palette/contrast-pairs';
+import type { SarakTokenValue } from '../../../src/core/Design/types';
+
+export { MIX_SOURCE_SHARE, PAIRS };
+export type { ContrastPair };
 
 export interface Rgba {
     r: number;
@@ -111,147 +117,6 @@ export interface Rgba {
     b: number;
     a: number;
 }
-
-export interface ContrastPair {
-    /**
-     * tokenId da cor de TEXTO; `on:<tokenId>` (o texto que o motor escolhe sobre a cor sólida do token);
-     * ou `mix:<tokenId>` (a cor do token misturada ao texto de maior contraste sobre o corpo, como o badge suave a escreve).
-     */
-    fg: string;
-    /**
-     * Cadeia de tokenId do fundo, da camada mais PRÓXIMA do texto até a mais
-     * distante. Cada elo translúcido é composto sobre o próximo; o último
-     * elo precisa resolver opaco, ou o par é declarado como pulado. Um elo
-     * `token@0.1` é a cor do token com o alfa multiplicado por 0,1 (tinta).
-     */
-    bgChain: string[];
-    /** Razão mínima exigida (sempre 4.5 neste gate). */
-    min: number;
-}
-
-/** Os pares REAIS levantados para a R31 — ver o relatório da PARADA OBRIGATÓRIA. */
-export const PAIRS: ContrastPair[] = [
-    // Grupo A — texto estrutural/genérico, sobre as superfícies onde ele de fato renderiza.
-    { fg: 'textColorMaster', bgChain: ['colorBgBody'], min: 4.5 },
-    { fg: 'textColorMaster', bgChain: ['colorBgLayer1'], min: 4.5 },
-    { fg: 'textColorMaster', bgChain: ['colorBgLayer2'], min: 4.5 },
-    { fg: 'textColorMaster', bgChain: ['cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'textColorMaster', bgChain: ['colorBgModal', 'colorBgBody'], min: 4.5 },
-    { fg: 'textColorMaster', bgChain: ['sidebarColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'textColorMaster', bgChain: ['topbarColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'textColorSecondary', bgChain: ['colorBgBody'], min: 4.5 },
-    { fg: 'textColorSecondary', bgChain: ['cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'textColorSecondary', bgChain: ['colorBgModal', 'colorBgBody'], min: 4.5 },
-    // `--theme-muted`/secondary é a cor de texto dominante do Shell
-    // (ShellSearchWidget:45, ShellUserWidget:71, ShellThemeToggle:27) — renderiza
-    // sobre as 4 superfícies estruturais que faltavam (layers + chrome).
-    { fg: 'textColorSecondary', bgChain: ['colorBgLayer1', 'colorBgBody'], min: 4.5 },
-    { fg: 'textColorSecondary', bgChain: ['colorBgLayer2', 'colorBgBody'], min: 4.5 },
-    { fg: 'textColorSecondary', bgChain: ['sidebarColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'textColorSecondary', bgChain: ['topbarColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'textColorMuted', bgChain: ['colorBgBody'], min: 4.5 },
-    { fg: 'textColorMuted', bgChain: ['cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'textColorMuted', bgChain: ['colorBgModal', 'colorBgBody'], min: 4.5 },
-    { fg: 'textColorMuted', bgChain: ['colorBgLayer1', 'colorBgBody'], min: 4.5 },
-    { fg: 'textColorMuted', bgChain: ['colorBgLayer2', 'colorBgBody'], min: 4.5 },
-    { fg: 'textColorMuted', bgChain: ['sidebarColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'textColorMuted', bgChain: ['topbarColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'titleColor', bgChain: ['colorBgBody'], min: 4.5 },
-    { fg: 'titleColor', bgChain: ['surfaceColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'titleColor', bgChain: ['tableHeaderBg', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    // `_typography.css:2-4` pinta h1–h6 com `--text-title` → `--sarak-title-color`:
-    // todo título dentro de card ou modal é este par.
-    { fg: 'titleColor', bgChain: ['cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'titleColor', bgChain: ['colorBgModal', 'colorBgBody'], min: 4.5 },
-    { fg: 'subtitleColor', bgChain: ['colorBgBody'], min: 4.5 },
-    { fg: 'subtitleColor', bgChain: ['surfaceColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'subtitleColor', bgChain: ['cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'emphasisColor', bgChain: ['colorBgBody'], min: 4.5 },
-    { fg: 'emphasisColor', bgChain: ['surfaceColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'emphasisColor', bgChain: ['cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-
-    // Grupo B — texto de componente específico, par declarado na própria
-    // `description` do schema (ou óbvio pelo agrupamento do componente).
-    { fg: 'cardTitleColor', bgChain: ['cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'cardActionBtnText', bgChain: ['cardActionBtnPrimaryBg', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'cardActionBtnText', bgChain: ['cardActionBtnHoverBg', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'cardSearchTextFocusColor', bgChain: ['cardSearchBgFocus', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'btnPrimaryText', bgChain: ['btnPrimaryBg', 'colorBgBody'], min: 4.5 },
-    { fg: 'inputTextColor', bgChain: ['inputBg', 'colorBgBody'], min: 4.5 },
-    // O ícone do campo (lupa, olho de senha): o padrão do token é `var(--text-muted)`, resolvido para `textColorMuted`.
-    { fg: 'inputIconColor', bgChain: ['inputBg', 'colorBgBody'], min: 4.5 },
-    { fg: 'topbarTitleColor', bgChain: ['topbarColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'sidebarItemTextColor', bgChain: ['sidebarColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'sidebarItemHoverTextColor', bgChain: ['sidebarHoverColor', 'sidebarColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'sidebarCategoryColor', bgChain: ['sidebarColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'sidebarBrandColor', bgChain: ['sidebarBrandBackground', 'sidebarColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'topbarItemTextColor', bgChain: ['topbarColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'topbarItemHoverTextColor', bgChain: ['topbarHoverColor', 'topbarColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'topbarBrandColor', bgChain: ['topbarBrandBackground', 'topbarColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'tooltipTextColor', bgChain: ['tooltipBg', 'colorBgBody'], min: 4.5 },
-    { fg: 'navItemActiveColor', bgChain: ['sidebarActiveColor', 'sidebarColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'navItemActiveColor', bgChain: ['topbarActiveColor', 'topbarColor', 'colorBgBody'], min: 4.5 },
-
-    // Grupo C — pares que os COMPONENTES desenham (fonte: `src/components/**`).
-    // Texto sobre cor sólida, escolhido pelo motor por contraste (`--sarak-on-*`): badge sólido,
-    // botão de perigo e de sucesso, aba em pílula, bolha do usuário do chat.
-    { fg: 'on:primaryColor', bgChain: ['primaryColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'on:secondaryColor', bgChain: ['secondaryColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'on:statusSuccessColor', bgChain: ['statusSuccessColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'on:statusErrorColor', bgChain: ['statusErrorColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'on:statusWarningColor', bgChain: ['statusWarningColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'on:statusInfoColor', bgChain: ['statusInfoColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'on:chatUserBg', bgChain: ['chatUserBg', 'colorBgBody'], min: 4.5 },
-    // Badge suave: a cor do status/da marca, misturada à cor de texto do tema (`mix:`), sobre a PRÓPRIA tinta a 10%, sobre o cartão ou o corpo.
-    { fg: 'mix:primaryColor', bgChain: ['primaryColor@0.1', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'mix:primaryColor', bgChain: ['primaryColor@0.1', 'colorBgBody'], min: 4.5 },
-    { fg: 'mix:secondaryColor', bgChain: ['secondaryColor@0.1', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'mix:secondaryColor', bgChain: ['secondaryColor@0.1', 'colorBgBody'], min: 4.5 },
-    { fg: 'mix:statusSuccessColor', bgChain: ['statusSuccessColor@0.1', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'mix:statusSuccessColor', bgChain: ['statusSuccessColor@0.1', 'colorBgBody'], min: 4.5 },
-    { fg: 'mix:statusErrorColor', bgChain: ['statusErrorColor@0.1', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'mix:statusErrorColor', bgChain: ['statusErrorColor@0.1', 'colorBgBody'], min: 4.5 },
-    { fg: 'mix:statusWarningColor', bgChain: ['statusWarningColor@0.1', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'mix:statusWarningColor', bgChain: ['statusWarningColor@0.1', 'colorBgBody'], min: 4.5 },
-    { fg: 'mix:statusInfoColor', bgChain: ['statusInfoColor@0.1', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'mix:statusInfoColor', bgChain: ['statusInfoColor@0.1', 'colorBgBody'], min: 4.5 },
-    // Texto de status sem tinta (`SarakForm`, `SarakTable`, `ManagementGroupCard`, `SarakPDFViewer`).
-    { fg: 'statusErrorColor', bgChain: ['cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'statusSuccessColor', bgChain: ['cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    // Mensagem de erro de campo (`SarakFieldError`) sobre o corpo e o cartão.
-    { fg: 'inputErrorColor', bgChain: ['colorBgBody'], min: 4.5 },
-    { fg: 'inputErrorColor', bgChain: ['cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    // Variantes `ghost`/`outline`/`borderline` e links: a cor primária como texto sobre o corpo e o cartão.
-    { fg: 'primaryColor', bgChain: ['colorBgBody'], min: 4.5 },
-    { fg: 'primaryColor', bgChain: ['cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    // Botão secundário: o texto mudo sobre `btnSecondaryBg`.
-    { fg: 'textColorMuted', bgChain: ['btnSecondaryBg', 'colorBgBody'], min: 4.5 },
-    // Badge `muted` sólido: o texto escolhido sobre a cor muda.
-    { fg: 'on:textColorMuted', bgChain: ['textColorMuted', 'colorBgBody'], min: 4.5 },
-    // Hover: item de navegação (`SarakMenuItem`) e linha da tabela.
-    { fg: 'textColorMaster', bgChain: ['sidebarHoverColor', 'sidebarColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'textColorMaster', bgChain: ['topbarHoverColor', 'topbarColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'textColorMaster', bgChain: ['tableRowHoverBg', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    // Item da matriz expansível (`SarakExpandableMatrix`): o título sobre `matrixItemBg`.
-    { fg: 'titleColor', bgChain: ['matrixItemBg', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-
-    // Grupo D — os pares desenhados que o levantamento do grupo C não alcançou.
-    // Botão de sair do usuário (barra lateral e topo): a tinta do erro a 15% (a variante `-bg` do motor), com o texto misturado como o do badge suave.
-    { fg: 'mix:statusErrorColor', bgChain: ['statusErrorColor@0.15', 'sidebarColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'mix:statusErrorColor', bgChain: ['statusErrorColor@0.15', 'topbarColor', 'colorBgBody'], min: 4.5 },
-    // Hover do botão fantasma (btnGhostHoverBg) e do contorno (a primária a 10%): a primária misturada ao texto, sobre o cartão e o corpo.
-    { fg: 'mix:primaryColor', bgChain: ['btnGhostHoverBg', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'mix:primaryColor', bgChain: ['btnGhostHoverBg', 'colorBgBody'], min: 4.5 },
-    // Estilo cyberpunk do botão (fundo transparente): a cor da própria variante como texto sobre o corpo.
-    { fg: 'statusErrorColor', bgChain: ['colorBgBody'], min: 4.5 },
-    { fg: 'statusSuccessColor', bgChain: ['colorBgBody'], min: 4.5 },
-    // Cabeçalho da tabela: o texto mudo e o secundário sobre tableHeaderBg.
-    { fg: 'textColorMuted', bgChain: ['tableHeaderBg', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-    { fg: 'textColorSecondary', bgChain: ['tableHeaderBg', 'cardBackgroundColor', 'colorBgBody'], min: 4.5 },
-];
-
-/** A parte da cor do token no `color-mix` do badge suave (o resto é o texto de maior contraste sobre o corpo). */
-export const MIX_SOURCE_SHARE = 0.4;
 
 const HEX6_RE = /^#([0-9a-fA-F]{6})$/;
 const HEX3_RE = /^#([0-9a-fA-F]{3})$/;
@@ -289,7 +154,7 @@ export function parseColor(raw: unknown): Rgba | null {
 
 /** `efetiva = alfa × cor + (1 − alfa) × fundo` — canal a canal. */
 export function compositeOverOpaque(top: Rgba, bottomRgb: [number, number, number]): [number, number, number] {
-    const mix = (channel: 'r' | 'g' | 'b', i: number) => top.a * top[channel] + (1 - top.a) * bottomRgb[i];
+    const mix = (channel: 'r' | 'g' | 'b', i: number): number => top.a * top[channel] + (1 - top.a) * bottomRgb[i];
     return [mix('r', 0), mix('g', 1), mix('b', 2)];
 }
 
@@ -318,7 +183,7 @@ function designValue(design: Record<string, unknown>, tokenId: string): unknown 
 }
 
 /** Resolve uma cadeia de fundo (mais próximo → mais distante) para RGB opaco, ou declara por quê não deu. */
-export function resolveChain(chain: string[], design: Record<string, unknown>): ChainResolution {
+export function resolveChain(chain: readonly string[], design: Record<string, unknown>): ChainResolution {
     const colors = chain.map((link) => {
         const [tokenId, tint] = link.split('@');
         const parsed = parseColor(designValue(design, tokenId));
@@ -341,7 +206,7 @@ export function resolveChain(chain: string[], design: Record<string, unknown>): 
 }
 
 const relativeLuminance = (rgb: [number, number, number]): number => {
-    const channel = (c: number) => {
+    const channel = (c: number): number => {
         const cs = c / 255;
         return cs <= 0.03928 ? cs / 12.92 : Math.pow((cs + 0.055) / 1.055, 2.4);
     };
@@ -403,7 +268,7 @@ export interface ThemeReport {
 }
 
 export function auditTheme(theme: SarakThemePreset): ThemeReport {
-    const design = { ...sarakGetDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
+    const design = { ...sarakGetDefaultDesignState(), ...(theme.design as Record<string, unknown>) } as Record<string, SarakTokenValue>;
     const resultados = PAIRS.map((pair) => evaluatePair(pair, design));
     return {
         id: theme.id,
@@ -425,7 +290,7 @@ export function auditTheme(theme: SarakThemePreset): ThemeReport {
  * para os temas SEM `contraparte` (os 18 legados, fallback deliberado).
  */
 export function auditThemeOppositeMode(theme: SarakThemePreset): ThemeReport {
-    const design = { ...sarakGetDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
+    const design = { ...sarakGetDefaultDesignState(), ...(theme.design as Record<string, unknown>) } as Record<string, SarakTokenValue>;
     const nativeMode = (design.mode as 'light' | 'dark') || 'dark';
     const oppositeMode = nativeMode === 'dark' ? 'light' : 'dark';
     const shifted = resolveThemeForMode({ design, contraparte: theme.contraparte }, oppositeMode);
@@ -512,7 +377,7 @@ function printContraparteAudit(audit: ContraparteAudit, total: number): boolean 
     return true;
 }
 
-function main() {
+function main(): void {
     console.log('--- Verificador de Contraste WCAG AA nos temas de referência (R31) ---\n');
     console.log(`${PAIRS.length} pares reais cobertos, limiar 4,5:1 em todos.\n`);
 

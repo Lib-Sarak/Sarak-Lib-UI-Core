@@ -12,6 +12,7 @@
 import React, { useId } from 'react';
 
 export type SarakSparklineVariant = 'line' | 'area' | 'bar';
+export type SarakSparklineBaseline = 'auto' | 'zero';
 
 export interface SarakSparklineProps {
     /** Série de valores. Vazia ou com 1 ponto degrada para um traço plano/único. */
@@ -24,6 +25,8 @@ export interface SarakSparklineProps {
     strokeWidth?: number;
     /** Opacidade do preenchimento da área (default: 0.15). */
     fillOpacity?: number;
+    /** `'auto'` (padrão) ajusta a escala ao mínimo e máximo; `'zero'` fixa o zero na escala e desenha a linha de base. */
+    baseline?: SarakSparklineBaseline;
     /** Descrição acessível do gráfico (vira `<title>` + `aria-label`). */
     label?: string;
     className?: string;
@@ -35,18 +38,21 @@ const VIEW_W = 100;
 /** Cor da série: token de gráfico → primária global → fallback de segurança. */
 const SERIES_COLOR = 'var(--sarak-chart-primary, var(--sarak-primary-color,#19e3f0))';
 
-/** Normaliza cada valor para a coordenada Y (invertida) dentro da janela útil. */
-const toPoints = (data: number[], height: number, pad: number): Array<[number, number]> => {
-    const max = Math.max(...data);
-    const min = Math.min(...data);
-    const span = max - min || 1;
-    const usable = Math.max(height - pad * 2, 1);
+/** Escala vertical: `zero` inclui o zero no intervalo para que a linha de base exista. */
+const toScale = (data: number[], baseline: SarakSparklineBaseline): { min: number; span: number } => {
+    const max = baseline === 'zero' ? Math.max(0, ...data) : Math.max(...data);
+    const min = baseline === 'zero' ? Math.min(0, ...data) : Math.min(...data);
+    return { min, span: max - min || 1 };
+};
+
+/** Coordenada Y (invertida) de um valor dentro da janela útil. */
+const toY = (value: number, scale: { min: number; span: number }, height: number, pad: number): number =>
+    pad + (1 - (value - scale.min) / scale.span) * Math.max(height - pad * 2, 1);
+
+/** Normaliza cada valor para a coordenada Y dentro da janela útil. */
+const toPoints = (data: number[], scale: { min: number; span: number }, height: number, pad: number): Array<[number, number]> => {
     const step = data.length > 1 ? VIEW_W / (data.length - 1) : 0;
-    return data.map((value, index) => {
-        const x = data.length > 1 ? index * step : VIEW_W / 2;
-        const y = pad + (1 - (value - min) / span) * usable;
-        return [x, y];
-    });
+    return data.map((value, index) => [data.length > 1 ? index * step : VIEW_W / 2, toY(value, scale, height, pad)]);
 };
 
 const SarakSparkline: React.FC<SarakSparklineProps> = ({
@@ -55,6 +61,7 @@ const SarakSparkline: React.FC<SarakSparklineProps> = ({
     height = 40,
     strokeWidth = 2,
     fillOpacity = 0.15,
+    baseline = 'auto',
     label,
     className,
     style,
@@ -76,12 +83,11 @@ const SarakSparkline: React.FC<SarakSparklineProps> = ({
     }
 
     const pad = strokeWidth;
-    const points = toPoints(data, height, pad);
+    const scale = toScale(data, baseline);
+    const points = toPoints(data, scale, height, pad);
+    const zeroY = toY(0, scale, height, pad);
     const linePath = points.map(([x, y]) => `${x},${y}`).join(' ');
     const areaPath = `${pad === 0 ? 0 : ''}${points.map(([x, y]) => `${x},${y}`).join(' ')} ${VIEW_W},${height} 0,${height}`;
-    const max = Math.max(...data);
-    const min = Math.min(...data);
-    const span = max - min || 1;
 
     return (
         <svg
@@ -98,20 +104,35 @@ const SarakSparkline: React.FC<SarakSparklineProps> = ({
         >
             {label ? <title>{label}</title> : <title id={titleId}>Sparkline</title>}
 
+            {baseline === 'zero' && (
+                <line
+                    data-sarak-sparkline-baseline="true"
+                    x1={0}
+                    x2={VIEW_W}
+                    y1={zeroY}
+                    y2={zeroY}
+                    stroke="var(--sarak-text-muted, currentColor)"
+                    strokeOpacity={0.5}
+                    strokeDasharray="2 2"
+                    vectorEffect="non-scaling-stroke"
+                />
+            )}
+
             {variant === 'bar' &&
                 data.map((value, index) => {
                     const barW = (VIEW_W / data.length) * 0.7;
                     const gap = (VIEW_W / data.length) * 0.15;
                     const x = index * (VIEW_W / data.length) + gap;
-                    const usable = Math.max(height - pad * 2, 1);
-                    const barH = ((value - min) / span) * usable;
+                    const valueY = toY(value, scale, height, pad);
+                    const barTop = baseline === 'zero' ? Math.min(valueY, zeroY) : valueY;
+                    const barBottom = baseline === 'zero' ? Math.max(valueY, zeroY) : height - pad;
                     return (
                         <rect
                             key={index}
                             x={x}
-                            y={height - pad - barH}
+                            y={barTop}
                             width={barW}
-                            height={Math.max(barH, 0.5)}
+                            height={Math.max(barBottom - barTop, 0.5)}
                             fill={SERIES_COLOR}
                             fillOpacity={0.85}
                         />

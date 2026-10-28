@@ -1235,6 +1235,14 @@
    "usage": "Controla a distância tonal das variantes geradas para as cores, incluindo o hover e o pressionado globais dos botões."
   },
   {
+   "id": "colorPalette",
+   "group": "colors",
+   "label": "Paleta de Cores",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Seleciona a regra de cálculo das cores do tema nos dois modos; cores declaradas explicitamente continuam vencendo."
+  },
+  {
    "id": "colorVariation",
    "group": "colors",
    "label": "Variação da Cor",
@@ -2400,7 +2408,7 @@
    "label": "Duração Lenta (Cenário)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Duração das animações longas: os pseudoelementos de brilho dos cartões, a gaveta e as barras do gráfico (`SarakChart`)."
+   "usage": "Duração das animações longas: os pseudoelementos de brilho dos cartões, a gaveta e as barras de gráfico."
   },
   {
    "id": "motionEaseIn",
@@ -2435,7 +2443,7 @@
    "label": "Atraso de Cascata (Stagger)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Atraso entre a entrada de um item e a do seguinte: cada linha da `SarakTable` e cada barra do `SarakChart` espera índice × este valor. 0 entra tudo junto."
+   "usage": "Atraso entre a entrada de um item e a do seguinte: cada linha da `SarakTable` espera índice × este valor. 0 entra tudo junto."
   },
   {
    "id": "multiSelectInputMinWidth",

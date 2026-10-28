@@ -6,12 +6,13 @@ export const KIND_AESTHETIC = 'aesthetic';
 export const KIND_FUNCTIONAL = 'functional';
 
 /** O eixo da contraparte: declarado nela de propósito, embora não "carregue modo" (é o modo oposto em si). */
-export const MODE_AXIS_TOKEN = 'mode';
+export const MODE_AXIS_KEY = 'mode';
 
 export interface CompletenessTokenLike {
     id: string;
     kind?: string;
     modeDependent?: boolean;
+    optionalForTheme?: boolean;
 }
 
 export interface CompletenessThemeLike {
@@ -55,11 +56,11 @@ export function gapsOfTheme(theme: CompletenessThemeLike, tokens: CompletenessTo
     };
     const aesthetic = tokens.filter((token) => token.kind === KIND_AESTHETIC);
     const functionalIds = new Set(tokens.filter((token) => token.kind === KIND_FUNCTIONAL).map((token) => token.id));
-    const modeDependentIds = new Set(aesthetic.filter((token) => token.modeDependent === true).map((token) => token.id));
+    const modeDependentIds = new Set(aesthetic.filter((token) => token.modeDependent === true && !token.optionalForTheme).map((token) => token.id));
     const aestheticIds = new Set(aesthetic.map((token) => token.id));
 
     for (const token of aesthetic) {
-        if (!isDeclared(theme.design, token.id)) add('missing-aesthetic', token.id);
+        if (!token.optionalForTheme && !isDeclared(theme.design, token.id)) add('missing-aesthetic', token.id);
     }
     for (const id of Object.keys(theme.design)) {
         if (functionalIds.has(id)) add('declares-functional', id);
@@ -74,7 +75,7 @@ export function gapsOfTheme(theme: CompletenessThemeLike, tokens: CompletenessTo
     }
     for (const id of Object.keys(theme.contraparte)) {
         if (functionalIds.has(id)) add('contraparte-declares-functional', id);
-        else if (aestheticIds.has(id) && !modeDependentIds.has(id) && id !== MODE_AXIS_TOKEN) add('contraparte-declares-fixed-aesthetic', id);
+        else if (aestheticIds.has(id) && !modeDependentIds.has(id) && id !== MODE_AXIS_KEY) add('contraparte-declares-fixed-aesthetic', id);
     }
     return gaps;
 }

@@ -34,6 +34,7 @@
     "SarakActivityEntry",
     "SarakActivityFeed",
     "SarakActivityFeedProps",
+    "SarakAggregate",
     "SarakAlert",
     "SarakAlertProps",
     "SarakAlertVariant",
@@ -72,6 +73,7 @@
     "SarakCard",
     "SarakCardBody",
     "SarakCardBodyProps",
+    "SarakCardDensity",
     "SarakCardFooter",
     "SarakCardFooterProps",
     "SarakCardGrid",
@@ -83,11 +85,15 @@
     "SarakCatalogGrid",
     "SarakCatalogGridProps",
     "SarakCatalogItem",
-    "SarakChart",
     "SarakChartDataItem",
     "SarakChartEngine",
     "SarakChartEngineProps",
-    "SarakChartProps",
+    "SarakChartGauge",
+    "SarakChartPieLabel",
+    "SarakChartReferenceBand",
+    "SarakChartReferenceLine",
+    "SarakChartReferenceTone",
+    "SarakChartZoom",
     "SarakChat",
     "SarakChatEngine",
     "SarakChatEngineProps",
@@ -106,6 +112,8 @@
     "SarakColorModePreference",
     "SarakColumn",
     "SarakColumnAlignment",
+    "SarakColumnFooterContext",
+    "SarakColumnValueOptions",
     "SarakComment",
     "SarakCommentAuthor",
     "SarakCommentThread",
@@ -114,6 +122,7 @@
     "SarakContextMenu",
     "SarakContextMenuPosition",
     "SarakContextMenuProps",
+    "SarakCsvOptions",
     "SarakCurrencyInput",
     "SarakCurrencyInputProps",
     "SarakCustomFont",
@@ -130,6 +139,8 @@
     "SarakDatePicker",
     "SarakDatePickerProps",
     "SarakDatePickerValue",
+    "SarakDatePreset",
+    "SarakDatePresetId",
     "SarakDerivedThemePreset",
     "SarakDescriptionList",
     "SarakDescriptionListItem",
@@ -146,6 +157,7 @@
     "SarakDivider",
     "SarakDividerOrientation",
     "SarakDividerProps",
+    "SarakDocumentKind",
     "SarakDrawer",
     "SarakDrawerProps",
     "SarakEmptyState",
@@ -177,12 +189,16 @@
     "SarakFormGroup",
     "SarakFormGroupProps",
     "SarakFormProps",
+    "SarakFormSection",
+    "SarakFormSectionProps",
     "SarakGantt",
     "SarakGanttProps",
     "SarakGanttScale",
     "SarakGanttTask",
     "SarakGanttTone",
     "SarakGrid",
+    "SarakGridItem",
+    "SarakGridItemProps",
     "SarakGridProps",
     "SarakHelpButton",
     "SarakHidden",
@@ -253,6 +269,10 @@
     "SarakPagination",
     "SarakPaginationProps",
     "SarakPaginationToken",
+    "SarakPaletteInput",
+    "SarakPaletteMode",
+    "SarakPaletteSeeds",
+    "SarakPaletteType",
     "SarakPdfSource",
     "SarakPinnedOffsets",
     "SarakPreferenceId",
@@ -332,8 +352,11 @@
     "SarakSwitch",
     "SarakSwitchProps",
     "SarakTabItem",
+    "SarakTabPanel",
+    "SarakTabPanelProps",
     "SarakTable",
     "SarakTableColumn",
+    "SarakTableGroupBy",
     "SarakTableProps",
     "SarakTableSort",
     "SarakTabs",
@@ -381,20 +404,25 @@
     "SarakValueFormat",
     "SarakValueProps",
     "SarakWeekStart",
+    "sarakAggregate",
     "sarakBuildPaginationRange",
     "sarakComputeOffsets",
     "sarakCreateThemeBootCss",
     "sarakDeriveThemeFromReference",
     "sarakDeviceForWidth",
+    "sarakDownloadCsv",
     "sarakFindMissingThemeAxes",
     "sarakFormatCurrency",
     "sarakFormatDate",
+    "sarakFormatDocument",
     "sarakFormatNumber",
     "sarakFormatPercent",
     "sarakGetAllDesignTokens",
     "sarakGetDefaultDesignState",
     "sarakIsResponsiveValue",
     "sarakIsSafeLinkHref",
+    "sarakIsValidCnpj",
+    "sarakIsValidCpf",
     "sarakLoadAllThemePresets",
     "sarakLoadReferenceThemes",
     "sarakLoadThemePreset",
@@ -402,8 +430,10 @@
     "sarakPreloadThemes",
     "sarakRegisterIcons",
     "sarakReorder",
+    "sarakResolvePalette",
     "sarakResolveResponsiveValue",
     "sarakSanitizeRichText",
+    "sarakTableToCsv",
     "sarakWarnOnIncompleteTheme",
     "sarakWidthOf",
     "useDesignDraft",
@@ -599,6 +629,18 @@
           "type": "boolean",
           "optional": true,
           "doc": "Se true, centraliza horizontalmente e verticalmente o mainContent no Desktop para preencher vazios."
+        },
+        {
+          "name": "sidePanelWidth",
+          "type": "number | string",
+          "optional": true,
+          "doc": "Largura do painel lateral em tablet e desktop: número em pixels ou comprimento CSS. Omitida, 16rem no tablet e 20rem no desktop."
+        },
+        {
+          "name": "fillHeight",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Se true, a página ocupa a altura que o cromo deixa (e a rolagem fica no conteúdo, não na janela). Omitida, mantém a altura de sempre."
         }
       ]
     },
@@ -1152,6 +1194,30 @@
           "type": "(option: SarakAutocompleteOption) => void",
           "optional": true,
           "doc": "Recebe a opção escolhida por clique ou teclado. Omitida, a opção ainda preenche o texto do campo não controlado, sem emitir seleção externa."
+        },
+        {
+          "name": "selection",
+          "type": "SarakAutocompleteOption | null",
+          "optional": true,
+          "doc": "Opção selecionada em modo controlado; seu `value` é o identificador salvo pelo consumidor."
+        },
+        {
+          "name": "onSelectionChange",
+          "type": "(option: SarakAutocompleteOption | null) => void",
+          "optional": true,
+          "doc": "Informa a seleção nova ou `null` quando a busca deixa de representar a opção atual."
+        },
+        {
+          "name": "onCreate",
+          "type": "(query: string) => void",
+          "optional": true,
+          "doc": "Cria um item com a busca atual quando nenhuma opção tem o mesmo rótulo."
+        },
+        {
+          "name": "createLabel",
+          "type": "(query: string) => string",
+          "optional": true,
+          "doc": "Rótulo da ação de criação; omitido, usa o texto traduzido da biblioteca."
         }
       ]
     },
@@ -1389,6 +1455,12 @@
           "type": "boolean",
           "optional": true,
           "doc": "Marca o cartão inteiro como alvo do ponteiro: só ele sobe, cresce ou brilha no hover (`cardHoverStyle`). Omitida, o cartão é contêiner e não se move."
+        },
+        {
+          "name": "density",
+          "type": "SarakCardDensity",
+          "optional": true,
+          "doc": "Espaçamento interno: `sm` e `lg` leem `--sarak-card-padding-sm|lg` (derivados do `md` do tema, sobrescrevíveis em CSS). Omitida, `md`, como sempre foi."
         }
       ]
     },
@@ -1554,48 +1626,6 @@
         }
       ]
     },
-    "SarakChart": {
-      "propsInterface": "SarakChartProps",
-      "source": "src/components/atomic/Templates/SarakChart.tsx",
-      "props": [
-        {
-          "name": "data",
-          "type": "TData[]",
-          "optional": true,
-          "doc": "Dado já carregado pelo host; quando presente, tem prioridade sobre load."
-        },
-        {
-          "name": "load",
-          "type": "() => Promise<TData[]>",
-          "optional": true,
-          "doc": "Carrega os pontos pelo mecanismo escolhido pelo host."
-        },
-        {
-          "name": "updatedAt",
-          "type": "Date | string | number",
-          "optional": true,
-          "doc": "Horário do dado entregue diretamente pelo host."
-        },
-        {
-          "name": "onRetry",
-          "type": "() => void",
-          "optional": true,
-          "doc": "Callback opcional para tentar novamente após uma falha."
-        },
-        {
-          "name": "label",
-          "type": "string",
-          "optional": true,
-          "doc": "Rótulo opcional fornecido pelo host."
-        },
-        {
-          "name": "mapping",
-          "type": "{ value?: string; date?: string }",
-          "optional": true,
-          "doc": "Chaves dos campos de valor e rótulo; os defaults são value e date."
-        }
-      ]
-    },
     "SarakChartEngine": {
       "propsInterface": "SarakChartEngineProps",
       "source": "src/components/engines/charts/SarakChartEngine.tsx",
@@ -1620,7 +1650,7 @@
         },
         {
           "name": "series",
-          "type": "Array<{ key: string; label?: string; type?: 'bar' | 'line' | 'area'; stack?: string; axis?: 'left' | 'right'; dashed?: boolean; color?: 'chartColorPalette' | 'secondaryColor' | 'accentColor' | 'statusSuccessColor' | 'statusWarningColor' | 'statusErrorColor' | 'statusInfoColor' | 'tertiaryColor'; }>",
+          "type": "Array<{ key: string; label?: string; type?: 'bar' | 'line' | 'area'; stack?: string; axis?: 'left' | 'right'; dashed?: boolean; format?: SarakValueFormat; color?: 'chartColorPalette' | 'secondaryColor' | 'accentColor' | 'statusSuccessColor' | 'statusWarningColor' | 'statusErrorColor' | 'statusInfoColor' | 'tertiaryColor'; }>",
           "optional": true,
           "doc": "Séries cartesianas; pizza, radar, funil, `waterfall`, `sankey`, `calendar` e outros formatos ignoram esta prop. `color`, quando informado, é o nome de um token de cor do tema, nunca um valor hexadecimal."
         },
@@ -1653,6 +1683,48 @@
           "type": "string",
           "optional": true,
           "doc": "Texto acessível do gráfico; omitido, usa o catálogo de i18n."
+        },
+        {
+          "name": "valueFormat",
+          "type": "SarakValueFormat",
+          "optional": true,
+          "doc": "Formato de eixo de valor, dica e rótulos, no idioma da tela; omitido, mostra o número cru. Só no ECharts."
+        },
+        {
+          "name": "height",
+          "type": "number | string",
+          "optional": true,
+          "doc": "Altura do gráfico (número em px); omitida, ocupa 100% do pai. Só no ECharts."
+        },
+        {
+          "name": "referenceLines",
+          "type": "SarakChartReferenceLine[]",
+          "optional": true,
+          "doc": "Linhas sobre valores do eixo de valor de `bar`, `line` e `area`; os tons vêm dos tokens de status."
+        },
+        {
+          "name": "referenceBands",
+          "type": "SarakChartReferenceBand[]",
+          "optional": true,
+          "doc": "Faixas sombreadas entre dois valores do eixo de valor de `bar`, `line` e `area`."
+        },
+        {
+          "name": "zoom",
+          "type": "SarakChartZoom",
+          "optional": true,
+          "doc": "Zoom do eixo de categoria; `true` equivale a `'slider'`."
+        },
+        {
+          "name": "pieLabel",
+          "type": "SarakChartPieLabel",
+          "optional": true,
+          "doc": "Rótulo das fatias da pizza; omitido, mostra o da rc.3 (só ao passar o mouse)."
+        },
+        {
+          "name": "gauge",
+          "type": "SarakChartGauge",
+          "optional": true,
+          "doc": "Escala do medidor (`gauge`); omitida, vale 0 a 100. O `%` só aparece com `valueFormat` percentual ou sem `valueFormat`."
         }
       ]
     },
@@ -2087,6 +2159,84 @@
           "type": "string",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "groupBy",
+          "type": "SarakTableGroupBy<T>",
+          "optional": true,
+          "doc": "Agrupa as linhas, com cabeçalho de grupo expansível e subtotal."
+        },
+        {
+          "name": "renderExpanded",
+          "type": "(row: T) => React.ReactNode",
+          "optional": true,
+          "doc": "Conteúdo da linha expandida; com ele, cada linha ganha o botão de expandir."
+        },
+        {
+          "name": "expandedKeys",
+          "type": "React.Key[]",
+          "optional": true,
+          "doc": "Chaves das linhas expandidas (controlado); omitido, a tabela gerencia."
+        },
+        {
+          "name": "onExpandedChange",
+          "type": "(keys: React.Key[]) => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "searchQuery",
+          "type": "string",
+          "optional": true,
+          "doc": "Filtra as linhas pelo texto exibido (ou `searchValue`); omitido, sem filtro. A DataTable não tem campo de busca."
+        },
+        {
+          "name": "onSearchQueryChange",
+          "type": "(query: string) => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "totalCount",
+          "type": "number",
+          "optional": true,
+          "doc": "Total no servidor; maior que as linhas visíveis, oferece \"Selecionar todos os N\"."
+        },
+        {
+          "name": "selectAll",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Com `true`, `selectedKeys` passa a ser a lista de EXCEÇÕES."
+        },
+        {
+          "name": "onSelectAllChange",
+          "type": "(all: boolean) => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "getChildren",
+          "type": "(row: T) => T[] | undefined",
+          "optional": true,
+          "doc": "Filhos da linha: transforma a tabela em tree-table (plano de contas, DRE)."
+        },
+        {
+          "name": "defaultExpandedDepth",
+          "type": "number",
+          "optional": true,
+          "doc": "Profundidade aberta de início na árvore; padrão `0` (tudo recolhido)."
+        },
+        {
+          "name": "reorderable",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Cabeçalhos arrastáveis para reordenar; padrão `true`."
+        },
+        {
+          "name": "skeletonRows",
+          "type": "number",
+          "optional": true,
+          "doc": "Linhas do esqueleto com `loading` e sem linhas; padrão `8`."
         }
       ]
     },
@@ -2165,6 +2315,42 @@
           "type": "(value: SarakDatePickerValue) => void",
           "optional": true,
           "doc": "Emite a nova data/intervalo em ISO (Spec 32: `onChange(value)`)."
+        },
+        {
+          "name": "min",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "max",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "isDateDisabled",
+          "type": "(iso: string) => boolean",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "presets",
+          "type": "Array<SarakDatePresetId | SarakDatePreset>",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "allowTyping",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "clearable",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
         }
       ]
     },
@@ -2497,7 +2683,7 @@
           "name": "label",
           "type": "string",
           "optional": true,
-          "doc": "Nome acessível do seletor; omitido, o seletor não ganha rótulo próprio."
+          "doc": "Nome acessível do seletor; omitido, a biblioteca usa um rótulo genérico oculto."
         },
         {
           "name": "filters",
@@ -2665,6 +2851,48 @@
         }
       ]
     },
+    "SarakFormSection": {
+      "propsInterface": "SarakFormSectionProps",
+      "source": "src/components/atomic/Templates/SarakFormSection.tsx",
+      "props": [
+        {
+          "name": "title",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "description",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "columns",
+          "type": "number | SarakResponsiveValue<number>",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakGantt": {
       "propsInterface": "SarakGanttProps",
       "source": "src/components/atomic/DataDisplay/SarakGantt/SarakGantt.tsx",
@@ -2731,6 +2959,12 @@
           "doc": "Colunas do grid. Aceita: - `string` fixo (ex.: `\"1fr 1fr 1fr\"`): mobile-first por padrão — **colapsa para 1 coluna no celular** (nunca estoura a página), reflui no valor cheio em tablet/desktop. - `SarakResponsiveValue<string>` (`{ mob, tab, desk }`): o consumidor controla por dispositivo. Sem `templateColumns`, usa a estratégia de grid do Design Engine (também 1 coluna no celular)."
         },
         {
+          "name": "columns",
+          "type": "number | SarakResponsiveValue<number>",
+          "optional": true,
+          "doc": "Quantidade de colunas iguais: um número ou um valor por dispositivo (`{ mob, tab, desk }`). Vence `templateColumns` se os dois vierem. Omitida, o grid faz o que fazia. Um número fixo colapsa para 1 coluna no celular, como `templateColumns`; para ter mais, declare `mob`."
+        },
+        {
           "name": "templateAreas",
           "type": "string",
           "optional": true,
@@ -2745,6 +2979,37 @@
         {
           "name": "as",
           "type": "React.ElementType",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakGridItem": {
+      "propsInterface": "SarakGridItemProps",
+      "source": "src/components/atomic/Layouts/SarakGridItem.tsx",
+      "extends": "React.HTMLAttributes<HTMLDivElement>",
+      "props": [
+        {
+          "name": "span",
+          "type": "number | 'full' | SarakResponsiveValue<number | 'full'>",
+          "optional": true,
+          "doc": "Quantas trilhas o item ocupa: um número, `'full'` (a linha toda) ou um valor por dispositivo (`{ mob, tab, desk }`). Omitida, o item ocupa uma trilha, no fluxo normal. Um `span` maior que as colunas do grid vira `'full'` — no celular, onde o grid tem uma coluna, isso acontece sozinho."
+        },
+        {
+          "name": "rowSpan",
+          "type": "number | SarakResponsiveValue<number>",
+          "optional": true,
+          "doc": "Quantas linhas o item ocupa, por dispositivo ou fixo. Omitida, uma linha."
+        },
+        {
+          "name": "as",
+          "type": "React.ElementType",
+          "optional": true,
+          "doc": "Elemento renderizado. Omitida, `div`."
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
           "optional": true,
           "doc": ""
         }
@@ -2870,6 +3135,18 @@
           "doc": ""
         },
         {
+          "name": "prefixText",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "suffixText",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
           "name": "icon",
           "type": "React.ReactNode",
           "optional": true,
@@ -2952,6 +3229,18 @@
           "type": "(id: string) => void",
           "optional": true,
           "doc": "Excluir coluna pelo menu dela. Omitido, o item não aparece."
+        },
+        {
+          "name": "valueFormat",
+          "type": "SarakValueFormat",
+          "optional": true,
+          "doc": "Formato do `value` dos cartões e da soma das colunas; omitido, o número aparece cru."
+        },
+        {
+          "name": "columnTotal",
+          "type": "boolean | ((column: SarakKanbanColumn<C>) => React.ReactNode)",
+          "optional": true,
+          "doc": "Soma no cabeçalho da coluna: `true`/omitido mostra a soma dos `value` só se algum cartão tiver; `false` esconde; função devolve o conteúdo."
         },
         {
           "name": "className",
@@ -3163,7 +3452,7 @@
           "name": "mask",
           "type": "string",
           "optional": false,
-          "doc": "Padrão com `0` nas posições numéricas ou preset `cpf`, `cnpj` e `phone`. É obrigatório; `phone` alterna entre telefone fixo e celular pelo total de dígitos. Um padrão sem `0` deixa o campo somente com os dígitos, sem pontuação."
+          "doc": "Padrão com `0` nas posições numéricas ou preset `cpf`, `cnpj` e `phone`. É obrigatório; `phone` alterna entre telefone fixo e celular pelo total de dígitos, e `cnpj` aceita letras e números nas doze primeiras posições."
         },
         {
           "name": "value",
@@ -3187,13 +3476,19 @@
           "name": "onChange",
           "type": "(cleanValue: string) => void",
           "optional": true,
-          "doc": "Emite somente os dígitos aceitos pelo padrão. Omitido, mudanças não são notificadas por callback."
+          "doc": "Emite os caracteres aceitos pelo padrão. Omitido, mudanças não são notificadas por callback."
+        },
+        {
+          "name": "validate",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Confere CPF/CNPJ no blur e anuncia o dígito verificador inválido. Omitida, não valida."
         },
         {
           "name": "inputMode",
           "type": "React.HTMLAttributes<HTMLInputElement>['inputMode']",
           "optional": true,
-          "doc": "Teclado sugerido ao dispositivo. Omitido, solicita teclado numérico; isso não valida a entrada."
+          "doc": "Teclado sugerido ao dispositivo. CNPJ usa texto por padrão; os demais usam numérico."
         }
       ]
     },
@@ -3652,6 +3947,24 @@
           "type": "string",
           "optional": true,
           "doc": "Classe adicional aplicada ao contêiner do componente."
+        },
+        {
+          "name": "allowOverflow",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Aceita `value` acima de `max`: enche a barra e marca o excesso com o tom de alerta (padrão: `false`)."
+        },
+        {
+          "name": "showValue",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Mostra o valor ao lado da barra (padrão: `false`)."
+        },
+        {
+          "name": "valueFormat",
+          "type": "SarakValueFormat",
+          "optional": true,
+          "doc": "Formato do valor mostrado; `percent` é aplicado a `value / max`, os demais a `value` (padrão: percentual)."
         }
       ]
     },
@@ -4088,8 +4401,20 @@
         {
           "name": "label",
           "type": "string",
-          "optional": true,
+          "optional": false,
           "doc": "Rótulo visual ligado ao campo pelo `id` (gerado quando não é informado). Sem ele, não há rótulo visível; forneça outro nome acessível se necessário."
+        },
+        {
+          "name": "hideLabel",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Mantém o rótulo acessível sem ocupar espaço visual."
+        },
+        {
+          "name": "options",
+          "type": "Array<{ label: string; value: string; disabled?: boolean }>",
+          "optional": true,
+          "doc": "Opções declarativas; quando informado, substitui `children`."
         },
         {
           "name": "error",
@@ -4375,6 +4700,12 @@
           "doc": "Opacidade do preenchimento da área (default: 0.15)."
         },
         {
+          "name": "baseline",
+          "type": "SarakSparklineBaseline",
+          "optional": true,
+          "doc": "`'auto'` (padrão) ajusta a escala ao mínimo e máximo; `'zero'` fixa o zero na escala e desenha a linha de base."
+        },
+        {
           "name": "label",
           "type": "string",
           "optional": true,
@@ -4599,6 +4930,30 @@
         }
       ]
     },
+    "SarakTabPanel": {
+      "propsInterface": "SarakTabPanelProps",
+      "source": "src/components/atomic/UX/SarakTabPanel.tsx",
+      "props": [
+        {
+          "name": "tabId",
+          "type": "string",
+          "optional": false,
+          "doc": "`id` da aba (`SarakTabItem.id`) a que este painel pertence."
+        },
+        {
+          "name": "idPrefix",
+          "type": "string",
+          "optional": false,
+          "doc": "O mesmo `idPrefix` passado ao `SarakTabs`; é o que casa `aria-controls` e `aria-labelledby`."
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": ""
+        }
+      ]
+    },
     "SarakTable": {
       "propsInterface": "SarakTableProps",
       "source": "src/components/atomic/Templates/SarakTable.tsx",
@@ -4655,12 +5010,24 @@
         {
           "name": "onChange",
           "type": "(tabId: string) => void",
-          "optional": false,
-          "doc": ""
+          "optional": true,
+          "doc": "Chamado ao escolher uma aba. Opcional: aba-rota pode usar só `onNavigate`."
+        },
+        {
+          "name": "onNavigate",
+          "type": "(href: string, tab: SarakTabItem) => void",
+          "optional": true,
+          "doc": "Com `href` na aba, o clique simples não recarrega a página e chama isto. Omitido, o navegador segue o link."
+        },
+        {
+          "name": "idPrefix",
+          "type": "string",
+          "optional": true,
+          "doc": "Prefixo dos `id` da aba e do painel (`SarakTabPanel idPrefix`). Omitido, gerado."
         },
         {
           "name": "variant",
-          "type": "'pills' | 'underlined' | 'enclosed'",
+          "type": "SarakTabsVariant",
           "optional": true,
           "doc": "Estilo de exibição das abas"
         },
@@ -5308,6 +5675,14 @@
         ]
       },
       {
+        "component": "SarakGridItem",
+        "prop": "span",
+        "values": [
+          "full",
+          "full"
+        ]
+      },
+      {
         "component": "SarakIconButton",
         "prop": "variant",
         "values": [
@@ -5401,15 +5776,6 @@
           "sm",
           "md",
           "lg"
-        ]
-      },
-      {
-        "component": "SarakTabs",
-        "prop": "variant",
-        "values": [
-          "pills",
-          "underlined",
-          "enclosed"
         ]
       },
       {
@@ -5650,6 +6016,7 @@
       "--sarak-color-bg-layer2",
       "--sarak-color-bg-modal",
       "--sarak-color-depth",
+      "--sarak-color-palette",
       "--sarak-color-primary",
       "--sarak-color-primary-10",
       "--sarak-color-primary-20",
@@ -6313,7 +6680,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 434,
+    "count": 435,
     "groups": {
       "global": "0. Configurações Globais",
       "branding": "Identidade Visual",
@@ -7840,6 +8207,16 @@
         "usage": "Controla a distância tonal das variantes geradas para as cores, incluindo o hover e o pressionado globais dos botões."
       },
       {
+        "id": "colorPalette",
+        "type": "string",
+        "responsive": false,
+        "group": "colors",
+        "label": "Paleta de Cores",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Seleciona a regra de cálculo das cores do tema nos dois modos; cores declaradas explicitamente continuam vencendo."
+      },
+      {
         "id": "colorVariation",
         "type": "number",
         "responsive": false,
@@ -9267,7 +9644,7 @@
         "label": "Duração Lenta (Cenário)",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Duração das animações longas: os pseudoelementos de brilho dos cartões, a gaveta e as barras do gráfico (`SarakChart`)."
+        "usage": "Duração das animações longas: os pseudoelementos de brilho dos cartões, a gaveta e as barras de gráfico."
       },
       {
         "id": "motionEaseIn",
@@ -9310,7 +9687,7 @@
         "label": "Atraso de Cascata (Stagger)",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Atraso entre a entrada de um item e a do seguinte: cada linha da `SarakTable` e cada barra do `SarakChart` espera índice × este valor. 0 entra tudo junto."
+        "usage": "Atraso entre a entrada de um item e a do seguinte: cada linha da `SarakTable` espera índice × este valor. 0 entra tudo junto."
       },
       {
         "id": "multiSelectInputMinWidth",
@@ -11320,7 +11697,9 @@
       "SarakAppChrome",
       "SarakDataTable",
       "SarakFlex",
+      "SarakFormSection",
       "SarakGrid",
+      "SarakGridItem",
       "SarakHidden",
       "SarakSplitPane"
     ],
@@ -11331,9 +11710,29 @@
         "type": "SarakFlexDirection | SarakResponsiveValue<SarakFlexDirection>"
       },
       {
+        "component": "SarakFormSection",
+        "prop": "columns",
+        "type": "number | SarakResponsiveValue<number>"
+      },
+      {
         "component": "SarakGrid",
         "prop": "templateColumns",
         "type": "string | SarakResponsiveValue<string>"
+      },
+      {
+        "component": "SarakGrid",
+        "prop": "columns",
+        "type": "number | SarakResponsiveValue<number>"
+      },
+      {
+        "component": "SarakGridItem",
+        "prop": "span",
+        "type": "number | 'full' | SarakResponsiveValue<number | 'full'>"
+      },
+      {
+        "component": "SarakGridItem",
+        "prop": "rowSpan",
+        "type": "number | SarakResponsiveValue<number>"
       }
     ]
   },
@@ -11416,6 +11815,6 @@
   "kitStamp": {
     "libVersion": "8.0.0-rc.3",
     "kitSchemaVersion": 1,
-    "kitHash": "81e63c86e97c"
+    "kitHash": "bd8287585eb4"
   }
 }

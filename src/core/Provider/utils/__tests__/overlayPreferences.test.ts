@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { overlayPreferences, isLanguageEnabled } from '../overlayPreferences';
+import { sarakResolvePalette } from '../../../Design/palette/resolve';
 import { useDesignVariables } from '../../../Design/hooks/useDesignVariables';
 import type { SarakDesignState, SarakThemeEntry } from '../../types';
 
@@ -117,6 +118,42 @@ describe('overlayPreferences', () => {
             const design = { ...temaComContraparte.design, preferenceModePosition: 'off' } as unknown as SarakDesignState;
             const result = overlayPreferences(design, { colorMode: 'dark' }, temaComContraparte, 'light');
             expect(result.mode).toBe('light'); // permanece no nativo — a preferência não se aplicou
+        });
+    });
+
+    describe('colorMode — recalcula a paleta declarada', () => {
+        it('aplica a escala do modo pedido e mantém ajustes manuais', () => {
+            const darkPalette = sarakResolvePalette('oceano', 'dark');
+            const lightPalette = sarakResolvePalette('oceano', 'light');
+            const design = {
+                ...darkPalette,
+                colorPalette: 'oceano',
+                mode: 'dark',
+                cardBackgroundColor: '#123456',
+            } as unknown as SarakDesignState;
+            const result = overlayPreferences(design, { colorMode: 'light' }, undefined, 'light');
+
+            expect(result.colorBgBody).toBe(lightPalette.colorBgBody);
+            expect(result.cardBackgroundColor).toBe('#123456');
+            expect(result.primaryColor).not.toBe(darkPalette.primaryColor);
+        });
+
+        it('mantém sobre a paleta a cor explicitamente declarada pelo tema', () => {
+            const darkPalette = sarakResolvePalette('oceano', 'dark');
+            const theme: SarakThemeEntry = {
+                id: 'tema-de-paleta',
+                design: { mode: 'dark', colorPalette: 'oceano', primaryColor: '#ff00aa' },
+            };
+            const design = {
+                ...darkPalette,
+                colorPalette: 'oceano',
+                mode: 'dark',
+                primaryColor: '#ff00aa',
+            } as unknown as SarakDesignState;
+            const result = overlayPreferences(design, { colorMode: 'light' }, theme, 'light');
+
+            expect(result.primaryColor).toBe('#ff00aa');
+            expect(result.colorBgBody).toBe(sarakResolvePalette('oceano', 'light').colorBgBody);
         });
     });
 

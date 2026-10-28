@@ -9,6 +9,7 @@ import { CATALOG_CHARTS } from './catalogEntries.charts';
 import { CATALOG_LAYOUT } from './catalogEntries.layout';
 import { CATALOG_FORMS } from './catalogEntries.forms';
 import { CATALOG_FEEDBACK } from './catalogEntries.feedback';
+import { CATALOG_PALETTE } from './catalogEntries.palette';
 
 export type { SarakLibraryLanguage } from './catalog.types';
 import type { SarakLibraryLanguage } from './catalog.types';
@@ -41,6 +42,7 @@ export const LIBRARY_TEXT_CATALOG = {
     ...CATALOG_LAYOUT,
     ...CATALOG_FORMS,
     ...CATALOG_FEEDBACK,
+    ...CATALOG_PALETTE,
 } satisfies Record<string, LibraryTextEntry>;
 
 export type LibraryTextKey = keyof typeof LIBRARY_TEXT_CATALOG;

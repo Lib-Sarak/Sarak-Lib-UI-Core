@@ -1,7 +1,9 @@
 import type { Key, ReactNode } from 'react';
 import type { SarakTableSort } from '../DataDisplay/SarakDataTable/columnModel';
+import type { SarakColumnValueOptions } from '../DataDisplay/SarakDataTable/columnValue';
+import type { SarakTableGroupBy } from '../DataDisplay/SarakDataTable/tableDisplayRows';
 
-export interface SarakTableColumn<TData> {
+export interface SarakTableColumn<TData> extends SarakColumnValueOptions<TData> {
     key: string;
     label: string;
     render?: (row: TData) => ReactNode;
@@ -43,4 +45,21 @@ export interface SarakTableProps<TData extends Record<string, unknown> = Record<
     showSearch?: boolean;
     /** Exibe o botão de atualização quando `load` existe; omitido, segue a presença de `load`. */
     showRefresh?: boolean;
+    /** Agrupa as linhas, com cabeçalho de grupo expansível e subtotal. */
+    groupBy?: SarakTableGroupBy<TData>;
+    /** Conteúdo da linha expandida; com ele, cada linha ganha o botão de expandir. */
+    renderExpanded?: (row: TData) => ReactNode;
+    /** Chaves das linhas expandidas (controlado); omitido, a tabela gerencia. */
+    expandedKeys?: Key[];
+    onExpandedChange?: (keys: Key[]) => void;
+    /** Texto da busca (controlado); omitido, a tabela guarda o texto do campo. */
+    searchQuery?: string;
+    onSearchQueryChange?: (query: string) => void;
+    /** Total no servidor; maior que as linhas visíveis, oferece "Selecionar todos os N". */
+    totalCount?: number;
+    /** Com `true`, `selectedKeys` passa a ser a lista de EXCEÇÕES. */
+    selectAll?: boolean;
+    onSelectAllChange?: (all: boolean) => void;
+    /** Mostra o botão de exportar CSV na barra; `{ filename }` troca o nome do arquivo. */
+    exportable?: boolean | { filename?: string };
 }

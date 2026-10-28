@@ -7,6 +7,8 @@
 import React from 'react';
 import { SarakAvatar } from '../../Atoms/SarakAvatar';
 import { SarakBadge } from '../../Feedback/SarakBadge';
+import { SarakValue } from '../../Atoms/SarakValue';
+import type { SarakValueFormat } from '../../../../shared/format';
 import type { SarakBadgeVariant } from '../../Feedback/SarakBadge';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { useSarakLanguage } from '../../../../core/i18n/useSarakLanguage';
@@ -42,7 +44,7 @@ function useDueLabel(dueDate: string | undefined) {
     return { overdue, label: text(overdue ? 'kanbanDueOverdue' : 'kanbanDue', { date }) };
 }
 
-export function KanbanCardContent({ card }: { card: SarakKanbanCard }) {
+export function KanbanCardContent({ card, valueFormat }: { card: SarakKanbanCard; valueFormat?: SarakValueFormat }) {
     const text = useLibraryText();
     const due = useDueLabel(card.dueDate);
     const priority = card.priority && card.priority !== 'medium' ? PRIORITY_BADGE[card.priority] : null;
@@ -61,6 +63,7 @@ export function KanbanCardContent({ card }: { card: SarakKanbanCard }) {
                 {card.title ?? card.id}
             </div>
             {card.description && <div style={mutedText}>{card.description}</div>}
+            {typeof card.value === 'number' && <SarakValue value={card.value} format={valueFormat} size="sm" signColor={false} />}
             {(priority || due || subtasks || assignee) && (
                 <div style={{ ...row, justifyContent: 'space-between' }}>
                     <div style={row}>

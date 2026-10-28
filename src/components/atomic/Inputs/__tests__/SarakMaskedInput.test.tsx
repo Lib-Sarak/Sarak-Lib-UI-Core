@@ -45,3 +45,29 @@ it('SarakMaskedInput apaga no meio do campo e conserva a posição do cursor', a
     expect(input.selectionStart).toBe(5);
     expect(onChange).toHaveBeenLastCalledWith('12346');
 });
+
+it('usa teclado de texto para CNPJ e conserva o cursor após inserir letras', async () => {
+    const user = userEvent.setup();
+    render(<SarakMaskedInput aria-label="CNPJ" mask="cnpj" />);
+    const input = screen.getByRole('textbox', { name: 'CNPJ' }) as HTMLInputElement;
+
+    await user.type(input, '12abc34501de35');
+
+    expect(input).toHaveAttribute('inputmode', 'text');
+    expect(input).toHaveValue('12.ABC.345/01DE-35');
+    expect(input.selectionStart).toBe(input.value.length);
+});
+
+it('marca CPF inválido no blur e associa o erro ao campo', async () => {
+    const user = userEvent.setup();
+    render(<SarakMaskedInput label="CPF" mask="cpf" defaultValue="52998224724" validate />);
+    const input = screen.getByRole('textbox', { name: 'CPF' });
+
+    await user.click(input);
+    await user.tab();
+
+    const error = screen.getByRole('alert');
+    expect(error).toHaveTextContent(/CPF/i);
+    expect(input).toHaveAttribute('aria-invalid', 'true');
+    expect(input).toHaveAttribute('aria-describedby', error.id);
+});

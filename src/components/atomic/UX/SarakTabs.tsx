@@ -1,30 +1,42 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { clsx } from 'clsx';
+import React, { useId } from 'react';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import { SarakButton } from '../Buttons/SarakButton';
-
-/** `border-radius` por variante (equivalente ao `rounded-*` que cada uma usava). Zero
- *  hardcode (R2): `--sarak-btn-border-radius` é token real, mesmo default (8px = 0.5rem). */
-const TAB_RADIUS: Record<SarakTabsProps['variant'] & string, string> = {
-    underlined: '0px',
-    pills: 'var(--sarak-btn-border-radius, 8px)',
-    enclosed: 'var(--sarak-btn-border-radius, 8px) var(--sarak-btn-border-radius, 8px) 0 0',
-};
+import { SarakLink } from '../Navigation/SarakLink';
+import { sarakTabElementId, sarakTabPanelElementId } from './tabIds';
+import {
+    TabLeading,
+    TabTrailing,
+    tabItemClassName,
+    tabItemStyle,
+    tabsListClassName,
+    tabsListStyle,
+    type SarakTabsVariant,
+} from './tabsStyling';
 
 export interface SarakTabItem {
     id: string;
     label: React.ReactNode;
     icon?: React.ReactNode;
     disabled?: boolean;
+    /** Destino da aba-rota. Com `href` em alguma aba, a lista vira um `<nav>` de links com `aria-current="page"` (aba que troca de rota é navegação, não `role="tab"`). */
+    href?: string;
+    /** Contador lido junto do rótulo pelo leitor de tela. Omitido, a aba não mostra contador. */
+    count?: number;
+    /** `id` do painel que a aba controla. Omitido, `${idPrefix}-panel-${id}`. */
+    panelId?: string;
 }
 
 export interface SarakTabsProps {
     tabs: SarakTabItem[];
     activeTab: string;
-    onChange: (tabId: string) => void;
+    /** Chamado ao escolher uma aba. Opcional: aba-rota pode usar só `onNavigate`. */
+    onChange?: (tabId: string) => void;
+    /** Com `href` na aba, o clique simples não recarrega a página e chama isto. Omitido, o navegador segue o link. */
+    onNavigate?: (href: string, tab: SarakTabItem) => void;
+    /** Prefixo dos `id` da aba e do painel (`SarakTabPanel idPrefix`). Omitido, gerado. */
+    idPrefix?: string;
     /** Estilo de exibição das abas */
-    variant?: 'pills' | 'underlined' | 'enclosed';
+    variant?: SarakTabsVariant;
     /** Preencher a largura toda? */
     fullWidth?: boolean;
     className?: string;
@@ -35,11 +47,20 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
     tabs,
     activeTab,
     onChange,
+    onNavigate,
+    idPrefix,
     variant = 'underlined',
     fullWidth = false,
     className,
     listClassName,
 }) => {
+    const generatedPrefix = useId();
+    const prefix = idPrefix ?? generatedPrefix;
+    const isNavigation = tabs.some((tab) => tab.href !== undefined);
+    // Só aponta para um painel que o consumidor pode ter: com `panelId` ou com `idPrefix` (o par do `SarakTabPanel`).
+    const panelControlId = (tab: SarakTabItem): string | undefined =>
+        tab.panelId ?? (idPrefix === undefined ? undefined : sarakTabPanelElementId(idPrefix, tab.id));
+
     // Navegação por teclado (Spec 41, Regra 3 — WAI-ARIA tabs): setas movem para a aba
     // habilitada anterior/próxima; Home/End vão para a primeira/última. Pula desabilitadas.
     const moveTo = (start: number, step: number): void => {
@@ -48,7 +69,7 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
         for (let i = 0; i < total; i++) {
             idx = (idx + step + total) % total;
             if (tabs[idx] && !tabs[idx].disabled) {
-                onChange(tabs[idx].id);
+                onChange?.(tabs[idx].id);
                 return;
             }
         }
@@ -61,111 +82,87 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
         if (e.key === 'End') { e.preventDefault(); moveTo(tabs.length, -1); }
     };
 
+    // O contador entra DENTRO do nome acessível ("Propostas 3"); o espaço separa as palavras para o
+    // leitor de tela e some no layout flex.
+    const renderLabel = (tab: SarakTabItem): React.ReactNode => (
+        <>
+            {tab.label}
+            {tab.count !== undefined && (
+                <>
+                    {' '}
+                    <span className="text-xs opacity-80 tabular-nums">{tab.count}</span>
+                </>
+            )}
+        </>
+    );
+
+    const renderItem = (tab: SarakTabItem, index: number): React.ReactElement => {
+        const isActive = activeTab === tab.id;
+        const isDisabled = Boolean(tab.disabled);
+        const itemClassName = tabItemClassName(variant, isActive, isDisabled, fullWidth);
+        const leading = <TabLeading variant={variant} isActive={isActive} icon={tab.icon} />;
+        const trailing = <TabTrailing variant={variant} isActive={isActive} />;
+
+        if (isNavigation && tab.href !== undefined && !isDisabled) {
+            const href = tab.href;
+            return (
+                <SarakLink
+                    key={tab.id}
+                    href={href}
+                    aria-current={isActive ? 'page' : undefined}
+                    className={`${itemClassName} no-underline hover:no-underline`}
+                    style={tabItemStyle(variant)}
+                    onClick={() => onChange?.(tab.id)}
+                    onNavigate={onNavigate ? () => onNavigate(href, tab) : undefined}
+                >
+                    {leading}
+                    {renderLabel(tab)}
+                    {trailing}
+                </SarakLink>
+            );
+        }
+
+        // Composição atômica (R10): `SarakButton` tolera montar sem Provider. Os indicadores
+        // (`motion.div`, absolutos) viajam em `leftIcon`/`rightIcon`; o rótulo vai em `children`.
+        return (
+            <SarakButton
+                key={tab.id}
+                {...(isNavigation ? {} : {
+                    role: 'tab',
+                    id: sarakTabElementId(prefix, tab.id),
+                    'aria-selected': isActive,
+                    'aria-controls': panelControlId(tab),
+                    tabIndex: isActive ? 0 : -1,
+                    onKeyDown: (e: React.KeyboardEvent<HTMLButtonElement>) => handleKeyDown(e, index),
+                })}
+                aria-current={isNavigation && isActive ? 'page' : undefined}
+                aria-disabled={isDisabled}
+                disabled={isDisabled}
+                variant="ghost"
+                onClick={() => !isDisabled && onChange?.(tab.id)}
+                style={tabItemStyle(variant)}
+                className={itemClassName}
+                leftIcon={leading}
+                rightIcon={trailing}
+            >
+                {renderLabel(tab)}
+            </SarakButton>
+        );
+    };
+
+    const list = (
+        <div
+            className={tabsListClassName(variant, listClassName)}
+            style={tabsListStyle(variant)}
+            role={isNavigation ? undefined : 'tablist'}
+        >
+            {tabs.map(renderItem)}
+        </div>
+    );
+
     return (
         <div className={mergeSarakClasses("w-full flex", className)} style={{ flexDirection: 'column' }}>
-            <div
-                className={mergeSarakClasses(
-                    "flex items-center",
-                    variant === 'underlined' && "border-b border-[var(--theme-border)]",
-                    variant === 'pills' && "bg-theme-tint rounded-xl",
-                    listClassName
-                )}
-                style={
-                    variant === 'underlined' ? { gap: 'calc(var(--sarak-layout-gap-md, 16px) * 1.5)' }
-                    : variant === 'pills' ? { gap: 'var(--sarak-layout-gap-sm, 8px)', padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }
-                    : variant === 'enclosed' ? { gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }
-                    : undefined
-                }
-                role="tablist"
-            >
-                {tabs.map((tab, index) => {
-                    const isActive = activeTab === tab.id;
-                    const isDisabled = tab.disabled;
-
-                    // Composição atômica (R10 — Spec 18/lote 10): `SarakButton` tolera montar
-                    // sem Provider. `textTransform`/`fontWeight`/`letterSpacing`/`borderRadius`
-                    // vão por `style` (vence a classe do átomo) para neutralizar o `font-black
-                    // uppercase tracking-widest` e o `rounded-btn` que o átomo aplica por
-                    // padrão. Os dois indicadores (`motion.div`, absolutos) viajam em
-                    // `leftIcon`/`rightIcon` — mesma posição de irmão que tinham no `<button>`
-                    // original; o rótulo vai em `children`, único filho de texto do átomo.
-                    return (
-                        <SarakButton
-                            key={tab.id}
-                            role="tab"
-                            aria-selected={isActive}
-                            aria-disabled={isDisabled}
-                            disabled={isDisabled}
-                            tabIndex={isActive ? 0 : -1}
-                            variant="ghost"
-                            onKeyDown={(e) => handleKeyDown(e, index)}
-                            onClick={() => !isDisabled && onChange(tab.id)}
-                            style={{
-                                gap: 'var(--sarak-layout-gap-sm, 8px)',
-                                paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.625)',
-                                paddingInline: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)',
-                                borderRadius: TAB_RADIUS[variant],
-                                textTransform: 'none',
-                                fontWeight: 700,
-                                letterSpacing: 'normal',
-                            }}
-                            className={clsx(
-                                "relative text-sm transition-colors",
-                                fullWidth ? "flex-1" : "",
-                                isDisabled && "opacity-50 cursor-not-allowed",
-                                // Variants
-                                variant === 'underlined' && [
-                                    "hover:text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]",
-                                    isActive ? "text-[var(--theme-primary)]" : "text-[var(--theme-muted)]"
-                                ],
-                                variant === 'pills' && [
-                                    "z-10",
-                                    isActive ? "text-[var(--theme-on-primary,#020617)]" : "text-[var(--theme-muted)] hover:text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]"
-                                ],
-                                variant === 'enclosed' && [
-                                    "border-t border-x border-transparent",
-                                    isActive
-                                        ? "bg-[var(--theme-surface)] border-[var(--theme-border)] text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))] z-10"
-                                        : "bg-theme-tint text-[var(--theme-muted)] hover:text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))] hover:bg-theme-tint-hover"
-                                ]
-                            )}
-                            leftIcon={
-                                <>
-                                    {/* Active Indicator for Pills */}
-                                    {variant === 'pills' && isActive && (
-                                        <motion.div
-                                            layoutId="sarak-tabs-pill"
-                                            className="absolute inset-0 bg-[var(--theme-primary)] rounded-lg -z-10 shadow-md"
-                                            initial={false}
-                                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                                        />
-                                    )}
-                                    {tab.icon && (
-                                        <span className={clsx(
-                                            "transition-colors",
-                                            isActive && variant === 'underlined' && "text-[var(--theme-primary)]"
-                                        )}>
-                                            {tab.icon}
-                                        </span>
-                                    )}
-                                </>
-                            }
-                            rightIcon={
-                                variant === 'underlined' && isActive ? (
-                                    <motion.div
-                                        layoutId="sarak-tabs-underline"
-                                        className="absolute bottom-[length:calc(var(--sarak-border-width,1px)*-1)] left-0 right-0 h-[length:var(--sarak-border-width,1px)] bg-[var(--theme-primary)]"
-                                        initial={false}
-                                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                                    />
-                                ) : undefined
-                            }
-                        >
-                            {tab.label}
-                        </SarakButton>
-                    );
-                })}
-            </div>
+            {isNavigation ? <nav>{list}</nav> : list}
         </div>
     );
 };

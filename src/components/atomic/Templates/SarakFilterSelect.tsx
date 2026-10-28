@@ -12,7 +12,7 @@ export interface SarakFilterSelectProps {
     col: string;
     /** Texto da opção inicial (valor vazio); omitido, sai do catálogo da lib no idioma escolhido (`Todos`, `All`…). */
     placeholder?: string;
-    /** Nome acessível do seletor; omitido, o seletor não ganha rótulo próprio. */
+    /** Nome acessível do seletor; omitido, a biblioteca usa um rótulo genérico oculto. */
     label?: string;
     /** Estado atual dos filtros; a opção selecionada vem de `filters[col]` e fica vazia quando a chave não existe. */
     filters: Record<string, string>;
@@ -25,12 +25,13 @@ export interface SarakFilterSelectProps {
 const normalizeOption = (option: string | SarakFilterSelectOption): SarakFilterSelectOption =>
     typeof option === "string" ? { label: option, value: option } : option;
 
-const SarakFilterSelect: React.FC<SarakFilterSelectProps> = ({ col, placeholder, label, filters, onChange, options }) => {
+const SarakFilterSelect = ({ col, placeholder, label, filters, onChange, options }: SarakFilterSelectProps): React.ReactElement => {
     const text = useLibraryText();
     return (
         <SarakSelect
+            label={label ?? text('selectAriaLabel')}
+            hideLabel
             value={filters[col] || ''}
-            aria-label={label}
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onChange(col, e.target.value)}
             className="w-full text-2xs text-[var(--color-theme-title,#f2f6fb)] transition-all"
             style={{

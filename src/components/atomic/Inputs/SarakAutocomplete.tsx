@@ -12,6 +12,7 @@ import { useLibraryText } from '../../../core/i18n/useLibraryText';
 export interface SarakAutocompleteOption {
     value: string;
     label: string;
+    description?: string;
 }
 
 export interface SarakAutocompleteProps extends Omit<SarakInputProps, 'defaultValue' | 'onChange' | 'value'> {
@@ -57,6 +58,14 @@ export interface SarakAutocompleteProps extends Omit<SarakInputProps, 'defaultVa
      * preenche o texto do campo não controlado, sem emitir seleção externa.
      */
     onOptionSelect?: (option: SarakAutocompleteOption) => void;
+    /** Opção selecionada em modo controlado; seu `value` é o identificador salvo pelo consumidor. */
+    selection?: SarakAutocompleteOption | null;
+    /** Informa a seleção nova ou `null` quando a busca deixa de representar a opção atual. */
+    onSelectionChange?: (option: SarakAutocompleteOption | null) => void;
+    /** Cria um item com a busca atual quando nenhuma opção tem o mesmo rótulo. */
+    onCreate?: (query: string) => void;
+    /** Rótulo da ação de criação; omitido, usa o texto traduzido da biblioteca. */
+    createLabel?: (query: string) => string;
 }
 
 type AutocompleteInputProps = Omit<
@@ -68,6 +77,10 @@ type AutocompleteInputProps = Omit<
     | 'defaultValue'
     | 'onChange'
     | 'onOptionSelect'
+    | 'selection'
+    | 'onSelectionChange'
+    | 'onCreate'
+    | 'createLabel'
     | 'onFocus'
     | 'onBlur'
     | 'onKeyDown'
@@ -76,6 +89,8 @@ type AutocompleteInputProps = Omit<
 interface AutocompleteDisplayProps {
     inputProps: AutocompleteInputProps;
     state: AutocompleteControllerState<SarakAutocompleteOption>;
+    createLabel?: string;
+    onCreate?: (query: string) => void;
 }
 
 interface AutocompleteFieldProps {
@@ -113,11 +128,11 @@ const AutocompleteField = (props: AutocompleteFieldProps): React.ReactElement =>
 };
 
 const AutocompleteDisplay = (props: AutocompleteDisplayProps): React.ReactElement => {
-    const { inputProps, state } = props;
+    const { inputProps, state, createLabel, onCreate } = props;
     return (
         <div style={{ position: 'relative', width: '100%' }}>
             <AutocompleteField inputProps={inputProps} state={state} />
-            <AutocompletePopup state={state} />
+            <AutocompletePopup state={state} createLabel={createLabel} onCreate={onCreate} />
         </div>
     );
 };
@@ -126,11 +141,30 @@ export const SarakAutocomplete = (props: SarakAutocompleteProps): React.ReactEle
     const {
         options, searchOptions, debounceMs = DEFAULT_AUTOCOMPLETE_DEBOUNCE_MS,
         value, defaultValue = '', onChange, onOptionSelect,
+        selection, onSelectionChange, onCreate, createLabel,
         onFocus, onBlur, onKeyDown, disabled, ...inputProps
     } = props;
+    const text = useLibraryText();
+    const selectedValue = selection?.label;
+    const handleOptionSelect = (option: SarakAutocompleteOption): void => {
+        onSelectionChange?.(option);
+        onOptionSelect?.(option);
+    };
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        if (selection) onSelectionChange?.(null);
+        onChange?.(event);
+    };
     const state = useAutocompleteController({
-        options, searchOptions, debounceMs, value, defaultValue, onChange,
-        onOptionSelect, onFocus, onBlur, onKeyDown, disabled,
+        options, searchOptions, debounceMs, value: selectedValue ?? value, defaultValue, onChange: handleInputChange,
+        onOptionSelect: handleOptionSelect, onFocus, onBlur, onKeyDown, disabled,
     });
-    return <AutocompleteDisplay inputProps={{ ...inputProps, disabled }} state={state} />;
+    const resolvedCreateLabel = createLabel?.(state.query) ?? text('autocompleteCreateLabel', { query: state.query });
+    return (
+        <AutocompleteDisplay
+            inputProps={{ ...inputProps, disabled }}
+            state={state}
+            createLabel={resolvedCreateLabel}
+            onCreate={onCreate}
+        />
+    );
 };

@@ -92,6 +92,14 @@ export { SARAK_BOOT_THEMES, sarakLoadReferenceThemes, sarakDeriveThemeFromRefere
 export type { SarakThemeReferenceOverrides, SarakDerivedThemePreset, SarakReferenceThemeId } from './core/Design/presets/themes/reference';
 export type { SarakLayoutGap } from './core/Design/resolveToken';
 export { sarakGetDefaultDesignState, sarakGetAllDesignTokens } from './core/Design/master-map';
+// Calculador de paletas (OKLCH) para prever a paleta que `colorPalette` aplica ao design.
+export { sarakResolvePalette } from './core/Design/palette/resolve';
+export type {
+    SarakPaletteType,
+    PaletteMode as SarakPaletteMode,
+    PaletteInput as SarakPaletteInput,
+    PaletteSeeds as SarakPaletteSeeds,
+} from './core/Design/palette/types';
 export { SARAK_THEME_AXES, sarakFindMissingThemeAxes, sarakWarnOnIncompleteTheme } from './core/Design/utils/themeAxes';
 // Painel do Design Engine atrás de fronteira lazy (o índice declara o `React.lazy` e o
 // `Suspense` interno) — ele arrasta o Design Engine inteiro e não pode sair eager do barril.
@@ -116,6 +124,8 @@ export { SarakFlex } from './components/atomic/Layouts/SarakFlex';
 export type { SarakFlexProps, SarakFlexDirection } from './components/atomic/Layouts/SarakFlex';
 export { SarakGrid } from './components/atomic/Layouts/SarakGrid';
 export type { SarakGridProps } from './components/atomic/Layouts/SarakGrid';
+export { SarakGridItem } from './components/atomic/Layouts/SarakGridItem';
+export type { SarakGridItemProps } from './components/atomic/Layouts/SarakGridItem';
 export { SarakSplitPane } from './components/atomic/Layouts/SarakSplitPane';
 export type { SarakSplitPaneProps } from './components/atomic/Layouts/SarakSplitPane';
 export { SarakAccordion } from './components/atomic/Layouts/SarakAccordion';
@@ -134,6 +144,8 @@ export { SarakInput } from './components/atomic/Inputs/SarakInput';
 export type { SarakInputProps } from './components/atomic/Inputs/SarakInput';
 export { SarakMaskedInput } from './components/atomic/Inputs/SarakMaskedInput';
 export type { SarakMaskedInputProps } from './components/atomic/Inputs/SarakMaskedInput';
+export { sarakIsValidCpf, sarakIsValidCnpj, sarakFormatDocument } from './components/atomic/Inputs/internal/documents';
+export type { SarakDocumentKind } from './components/atomic/Inputs/internal/documents';
 export { SarakCurrencyInput } from './components/atomic/Inputs/SarakCurrencyInput';
 export type { SarakCurrencyInputProps } from './components/atomic/Inputs/SarakCurrencyInput';
 export { SarakSelect } from './components/atomic/Inputs/SarakSelect';
@@ -185,6 +197,12 @@ export * from './components/atomic/DataDisplay';
 export type { SarakColumnAlignment } from './components/atomic/DataDisplay/SarakDataTable/columnModel';
 export type { SarakDataTableRowHeight } from './components/atomic/DataDisplay/SarakDataTable/SarakDataTableImpl';
 export type { SarakPinnedOffsets } from './components/atomic/DataDisplay/SarakDataTable/columnModel';
+// Tabelas financeiras: o bloco de valor da coluna (formato, agregação, rodapé), o agrupamento e o CSV.
+export { sarakAggregate } from './components/atomic/DataDisplay/SarakDataTable/columnValue';
+export type { SarakAggregate, SarakColumnValueOptions, SarakColumnFooterContext } from './components/atomic/DataDisplay/SarakDataTable/columnValue';
+export type { SarakTableGroupBy } from './components/atomic/DataDisplay/SarakDataTable/tableDisplayRows';
+export { sarakTableToCsv, sarakDownloadCsv } from './components/atomic/DataDisplay/SarakDataTable/tableCsv';
+export type { SarakCsvOptions } from './components/atomic/DataDisplay/SarakDataTable/tableCsv';
 // Renderizadores de mídia (Spec 15): Markdown (lazy) + Lightbox + PDFViewer (lazy, Onda 10).
 export * from './components/atomic/Media';
 export type { SarakPdfSource } from './components/atomic/Media/SarakPDFViewer/usePdfDocument';
@@ -200,4 +218,7 @@ export { SarakFlowEngine, type SarakFlowEngineProps } from './components/engines
 // plan-45: apareciam na assinatura de SarakChartEngineProps/SarakChatEngineProps
 // (ambos já públicos) e não podiam ser importados pelo nome.
 export type { SarakChartDataItem } from './components/engines/charts/SubEngines/builders/types';
+export type {
+    SarakChartGauge, SarakChartPieLabel, SarakChartReferenceBand, SarakChartReferenceLine, SarakChartReferenceTone, SarakChartZoom,
+} from './components/engines/charts/SubEngines/builders/types';
 export type { SarakMessage } from './components/engines/chat/SarakChatEngine';

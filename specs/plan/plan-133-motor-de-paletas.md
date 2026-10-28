@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Separar a cor do tema: um motor que calcula a paleta inteira, nos dois modos, a partir de uma cor e de um tipo"
 objetivo: "Fazer as cores do tema saírem de uma paleta calculada a partir de uma cor-base e de um tipo de harmonia, com escalas OKLCH, um mapa de papéis comum por modo e correção de contraste que torna legível qualquer cor de entrada, mantendo o ajuste granular de token por cima"
 dominio: "Design Engine / Cores"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "rc.4", "paletas", "cores", "design-engine"]
 relacionados: ["[[anexos/rc4-contrato]]", "[[09-temas-e-presets]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[plan-134-catalogo-de-paletas-e-temas]]", "[[plan-135-paletas-no-painel-e-no-kit]]"]
@@ -43,7 +43,7 @@ mesma paleta neutra. Aqui, cada modo lê tons da escala **da própria paleta** �
    claro no escuro) até atingir. Determinístico: mesma entrada, mesma saída.
 
 **Formato do token** (contrato §1.9): `colorPalette` é string — `"<id-de-preset>"` ou
-`"custom:<tipo>:<#base>[;sec=<#hex>][;acc=<#hex>]"`. Ausente = rc.3 (o tema usa as cores que declara). Por isso nenhum tema salvo de
+`"custom:<tipo>:<#base>[,sec=<#hex>][,acc=<#hex>]"`. Ausente = rc.3 (o tema usa as cores que declara). Por isso nenhum tema salvo de
 importador muda: as cores dele são explícitas e vencem.
 
 **Disjunção com a `plan-131`** (paralela): esta plan **não** edita `src/core/Design/hooks/useDesignVariables.ts` nem
@@ -54,6 +54,7 @@ importador muda: as cores dele são explícitas e vencem.
 ## 3.1 Dentro
 - `src/core/Design/palette/` (novo) — conversão OKLCH ↔ sRGB, sementes por tipo, escalas, mapa de papéis, correção de contraste,
   `resolvePalette(entrada, modo) → tokens de cor`, parser e validador do valor de `colorPalette`, tipos públicos. Cada módulo com teste.
+- **Ampliação de escopo (revisor, 2026-10-28, a pedido do executor):** `PAIRS` e o que ele precisa (`MIX_SOURCE_SHARE`, o tipo do par) saem de `gates/scripts/audit/verify_contrast.ts` para `src/core/Design/palette/contrast-pairs.ts` — **dado puro**, sem import de Node —, e o gate passa a importá-lo de lá. A correção de contraste roda em tempo de execução (paleta criada pelo usuário), então a lista tem de estar no bundle; o gate segue medindo o mesmo. Prova: `gates/scripts/audit/__tests__/verify_contrast.test.ts` verde e o resultado do `auditor_contraste` igual ao do `HEAD` (números colados no resumo).
 - `src/core/Design/schema/colors.ts` — token `colorPalette`, com a paridade das três fontes (`catalog/theme_table_mapping.json` e
   partições do catálogo) e o leitor (R40: o leitor é a expansão da paleta).
 - `src/core/Design/presets/themes/compose.ts` e o ponto onde o modo escolhe `design` × `contraparte` — inserir a paleta resolvida para o
@@ -125,6 +126,113 @@ que declararem paleta (`plan-134`).
 
 # 9. Resumo da execução
 
+Implementação pronta para revisão. O token estético `colorPalette` é opcional nos temas (`optionalForTheme`): é uma entrada do
+cálculo, sem obrigar os 19 temas legados a declarar uma paleta; a plan-134 poderá declarar paletas nos temas.
+
+| Item | Teste (nome → arquivo) |
+|---|---|
+| Token estético opcional sem exigir declaração nos temas legados | `deixa tema omitir um token estético opcional e aceita sua declaração quando presente` → `gates/scripts/contrato/__tests__/check-theme-completeness.test.ts` |
+| Conversão OKLCH/sRGB e recorte de gama | `round-trips common sRGB colors through OKLCH`, `reduces chroma to fit sRGB while preserving lightness and hue` → `src/core/Design/palette/__tests__/color-space.test.ts` |
+| Sementes e escalas | `uses complementary, split-complementary, triadic, and monochromatic harmonies`, `keeps status hues fixed and gives neutrals near-zero chroma`, `builds all eleven shared tones for every palette seed` → `seeds.test.ts`, `scale.test.ts` |
+| Papéis e resolução determinística | `covers every color token in the live schema exactly once`, `is deterministic and returns every token covered by the role map` → `role-map.test.ts`, `resolve.test.ts` |
+| Contraste, extremos e correção efetiva | `passes every contrast pair for extreme colors, harmonies, and modes`, `corrects a failing mapped pair instead of only passing by its initial tones` → `src/core/Design/palette/__tests__/resolve.test.ts` |
+| Parser e registro inicial de preset | `parses custom palettes with optional secondary and accent seeds`, `keeps the initial test registry small and resolvable` → `parser.test.ts`, `presets.test.ts` |
+| Precedência e paridade rc.3 sem paleta | `expande a paleta antes do host e do tema, preservando cores explícitas`, `mantém chave por chave a composição rc.3 dos 19 temas sem colorPalette` → `src/core/Design/presets/themes/__tests__/compose.test.ts` |
+| Troca de modo e preservação de ajuste manual | `aplica a escala do modo pedido e mantém ajustes manuais`, `mantém sobre a paleta a cor explicitamente declarada pelo tema` → `src/core/Provider/utils/__tests__/overlayPreferences.test.ts` |
+| Recusa de entrada inválida | `descarta uma entrada inválida com aviso e deixa o tema sem paleta` → `src/core/Provider/utils/__tests__/validation.test.ts` |
+| Fonte única dos pares e contraste dos temas | `mede os 89 pares de texto e fundo cobertos`, `todos os temas de referência passam AA nos dois modos com contraparte autorada` → `gates/scripts/audit/__tests__/verify_contrast.test.ts` |
+| Catálogo em seis idiomas | `toda chave tem os seis idiomas oferecidos, cada um não-vazio` → `src/core/i18n/__tests__/catalog.test.ts` |
+
+**Execução:** a suíte focada inicial passou com 167 testes; após os ajustes de integração, passaram 88 testes; a regra de token opcional passou em 80 testes focados; e, após a refatoração final dos gates, passaram 130 testes focados. `theme-completeness:check` passou para 19/19 temas. `npx tsc --noEmit` passou na checagem final. A paridade do schema/catálogo validou 435 tokens nas três fontes. O `auditor_contraste` de `HEAD` e o atual produziram saída igual após normalização de quebras de linha: 89 pares; 0 falhas e 0 pares pulados no modo nativo e no oposto; 19/19 temas com contraparte autorada.
+
+`npm run verify -- --tier=quick` foi executado uma vez, conforme §9. Terminou com 8 verificações falhas: o typecheck apontou erros deste plano que foram corrigidos e um erro em `CalendarPanel.tsx`, fora do escopo, mas `npx tsc --noEmit` passou na checagem final; o baseline estrutural acusa alterações paralelas; a completude dos temas falhou antes da regra `optionalForTheme` e passou nas verificações focadas posteriores; `class-merge:check` e `plan-index:check` apontam arquivos de outras plans; `catalog:check`, `guide:check` e `dev-kit:check` falham por desenho nesta etapa, conforme o contrato. Não foi executada a suíte completa, build ou navegador.
+
+Limitação de integração a acompanhar na `plan-131`: uma entrada customizada válida contém `;`, caractere que o emissor genérico de CSS ainda reporta como valor inseguro; este plano não altera `useDesignVariables.ts` nem `designVariableHelpers.ts` (§3.2).
+
 ---
 
 # 10. Veredito
+
+## Veredito — 2026-10-28 — 🔴 Reprovado (1 achado)
+
+**Medido por mim**, pelo protocolo do contrato §9: `src/core/Design/palette`, `compose`, `src/core/Design/schema`,
+`overlayPreferences`, `validation`, `verify_contrast` e `check-theme-completeness`, uma vez — **254/254 verdes**. O `audit:baseline` da
+rodada não aponta nenhum arquivo desta plan. A extração de `PAIRS` cumpriu as duas condições da ampliação de escopo: dado puro em
+`palette/contrast-pairs.ts`, e o `auditor_contraste` idêntico ao do `HEAD` (89 pares, 0 falhas, 0 pulados nos dois modos, 19/19 com
+contraparte). O diff confere com o §2: sementes por tipo, escalas, um mapa de papéis que cobre cada token de cor do schema uma vez,
+correção de contraste provada por um caso que reprovaria sem ela, cor explícita vencendo a paleta, e os 19 temas sem `colorPalette`
+compondo chave a chave como na rc.3.
+
+**Aceito como temporário:** `optionalForTheme` em `colorPalette` (`schema/colors.ts:66`) e no gate de completude. Sem ele, o gate
+barraria o commit até a `plan-134` declarar a paleta nos temas. A `plan-134` remove a marca e o mecanismo, se ficar sem uso; o tema
+embarcado volta a declarar todo token estético ([[09-temas-e-presets]] §5.3).
+
+**Achado 1 — o formato `custom:` usa `;`, que a barreira de CSS recusa (o formato veio do contrato, escrito pelo revisor).** Medido no
+código: `useDesignVariables.ts:23` e `DesignInjector.tsx:22` descartam todo valor com `[<>{};]` antes de emitir CSS. A expansão
+funciona, porque acontece na composição, mas toda paleta com `sec=`/`acc=` passa pela barreira de segurança como valor suspeito, e
+qualquer leitor futuro do valor emitido o perderia. A exceção que a barreira já tem (mídia `;base64,`) não deve ganhar irmã por causa
+de um formato que pode simplesmente não usar `;`. **Correção (contrato §1.9 e §2 desta plan já corrigidos):** o separador passa a `,`
+— `custom:<tipo>:<#base>[,sec=<#hex>][,acc=<#hex>]`. Testes: o parser aceita o formato novo e recusa o antigo com `;`; um valor com
+`sec` e `acc` passa por `isCssSafeValue`.
+
+**Status: 🔵 Em correção.**
+
+## Resumo da execução (correção 1) — 2026-10-28
+
+**Resultado:** Concluído com pendências
+
+**Estado do worktree ao iniciar**
+`git status --short` retornou `fatal: this operation must be run in a work tree`. `git rev-parse --is-inside-work-tree` retornou `true`, mas não foi possível obter a fotografia nem conferir o diff com Git.
+
+**O que foi feito**
+- `parser.ts` e testes de parser/validação — o formato customizado passou de `;` para `,`; a sintaxe antiga é recusada.
+- `validation-css-safety.test.tsx` — cobre a emissão sem descarte de uma paleta com `sec` e `acc` pela barreira CSS.
+- `schema/colors.ts` e `docs/migracoes.md` — descrições atualizadas para o formato de vírgulas.
+- Esta plan — status encaminhado para revisão e este resumo acrescentado, preservando o veredito e o resumo anteriores.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/palette/parser.ts` | alterado | Parser aceita vírgulas entre as sementes opcionais. |
+| `src/core/Design/palette/__tests__/parser.test.ts` | alterado | Aceita vírgulas e cobre a recusa do separador legado. |
+| `src/core/Design/palette/__tests__/validation-css-safety.test.tsx` | criado | Prova a emissão CSS da paleta completa sem aviso de descarte. |
+| `src/core/Provider/utils/__tests__/validation.test.ts` | alterado | Validação aceita a forma nova e recusa a forma antiga com hex válidos. |
+| `src/core/Design/schema/colors.ts` | alterado | Descrição do token anuncia o formato novo. |
+| `docs/migracoes.md` | alterado | Exemplo de migração anuncia o formato novo. |
+| `specs/plan/plan-133-motor-de-paletas.md` | alterado | Status e resumo desta correção. |
+
+**Verificações executadas**
+- `npx vitest run src/core/Design/palette validation` → 11 arquivos e 103 testes passaram. A primeira tentativa foi bloqueada por `EPERM` ao criar o arquivo temporário do Vite; a repetição autorizada concluiu com sucesso.
+- `node gates/scripts/release/check-audit-baseline.mjs` → igual ao baseline de 2026-10-12; nenhuma regressão e nenhum arquivo desta plan reportado.
+- `git status --short` e `git diff --stat` → não disponíveis: Git retornou `fatal: this operation must be run in a work tree`.
+
+**Critérios de aceite**
+- [x] Parser aceita a forma com vírgulas e recusa a forma com ponto e vírgula — `parser.test.ts`.
+- [x] Valor com `sec` e `acc` passa pela barreira CSS — `validation-css-safety.test.tsx` preserva a variável emitida sem `warn`.
+- [x] Validação e documentação usam a forma nova — `validation.test.ts`, `schema/colors.ts` e `docs/migracoes.md`.
+- [x] Vitest direcionado e baseline passam — saídas acima.
+- [ ] Fotografia e diff do worktree — Git recusou as operações de status/diff; devem ser conferidos pelo revisor.
+
+**Decisões e suposições**
+- Mantive inalteradas as barreiras CSS genéricas; a vírgula no formato permite que a forma customizada seja emitida sem exceção de segurança.
+- Mantive referências históricas ao formato anterior no veredito e no resumo original, conforme a regra append-only.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum identificado nesta correção.
+
+**Pendências / riscos**
+- A limitação de Git impediu obter a fotografia inicial e confirmar o escopo do diff no worktree compartilhado.
+
+## Complemento da execução (correção 1) — 2026-10-28
+
+O validador AST TypeScript da skill `padrao-typescript` retornou zero findings em `parser.ts`, `parser.test.ts` e `validation-css-safety.test.tsx`. Em `validation.test.ts` e `schema/colors.ts`, retornou exit 0 e apontamentos em linhas não alteradas por esta correção (blocos de teste extensos e dados numéricos/URLs de teste); nenhuma infração foi apontada nas linhas modificadas. Esses achados ficaram fora do escopo do veredito.
+
+## Veredito — 2026-10-28 — correção 1 — 🟢 Aprovada
+
+**Achado 1 fechado.** `palette/parser.ts:8` aceita `custom:<tipo>:<#base>[,sec=…][,acc=…]` e recusa o `;`;
+`validation-css-safety.test.tsx` prova que uma paleta com `sec` e `acc` atravessa a barreira de CSS sem descarte nem aviso; descrição
+do token e nota de migração no formato novo. **Medido por mim:** `src/core/Design/palette` + `validation`, uma vez — **103/103
+verdes**; `check-audit-baseline.mjs` no worktree inteiro — **igual ao baseline**. A marca temporária `optionalForTheme` sai na
+`plan-134` (passo 3 dela).
+
+**Status: 🟢 Aprovada.** Síntese (ADR + [[09-temas-e-presets]] + [[02-design-engine]]) depois da `plan-134`, que fecha o desenho.

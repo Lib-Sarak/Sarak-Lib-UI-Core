@@ -20,6 +20,25 @@ dados, rotas e ações continuam sob controle do consumidor. Os moldes copiávei
 `tela-detalhe.tsx` ficam em `sarak-ui/templates/` e são descritos na seção de templates do
 `GUIA-FRONTEND.md`.
 
+Em `SarakResourceRow`, valores de `badges` que já sejam `SarakBadge` são exibidos como estão; valores
+simples continuam recebendo um `SarakBadge` da linha.
+
+### Formulários de cadastro: rótulo obrigatório e CNPJ alfanumérico
+
+**Duas mudanças de contrato da 8.0.0 (Q1 e Q5).** `SarakSelect.label` agora é obrigatório para
+que cada lista tenha um nome acessível. Em filtros compactos, mantenha o rótulo para leitores de
+tela com `hideLabel`:
+
+```tsx
+<SarakSelect label="País" options={paises} />
+<SarakSelect label="Status" hideLabel options={status} />
+```
+
+O preset `cnpj` de `SarakMaskedInput` aceita letras maiúsculas nas 12 primeiras posições e passa
+a sugerir teclado de texto em dispositivos móveis. Para campos que aceitam apenas CNPJ numérico,
+defina `inputMode="numeric"`. O novo preset `cep` aplica a máscara `00000-000`; `validate` confere
+os dígitos verificadores de CPF ou CNPJ no desfoque do campo.
+
 Os peers opcionais continuam opcionais: instale somente os que os componentes usados pelo seu
 produto precisam. Se um componente for renderizado sem o pacote correspondente, ele mostra uma
 mensagem com o nome do pacote e registra um aviso no console. O guia relaciona cada pacote ao
@@ -951,6 +970,20 @@ default do host não é persistido e ele é ignorado se o tema não oferecer a p
 `SarakAppChrome.widgets` também aceita `fontSize`, `navigationStyle` e `language`. Omitir cada chave mantém o
 widget ligado; `false` o remove da barra e do menu de preferências, mesmo quando o tema o oferece.
 
+### A paleta passa a ser calculada a partir de `colorPalette`
+
+**Classificação: MINOR (novo token opt-in; o padrão permanece sem paleta).** `colorPalette` aceita o preset de teste `oceano`
+ou uma entrada customizada no formato `custom:<tipo>:<#base>[,sec=<#hex>][,acc=<#hex>]`. Os tipos são `monochromatic`,
+`analogous`, `complementary`, `split-complementary` e `triadic`; quando `sec` e `acc` não são informados, o motor os deriva
+da harmonia escolhida.
+
+Ao declarar a entrada, o motor calcula escalas OKLCH e expande os tokens de cor para o modo ativo. A preferência de modo
+recalcula a paleta no modo pedido. Cores declaradas explicitamente no tema, na configuração do host ou pelo usuário continuam
+vencendo os valores calculados. Sem `colorPalette`, a composição permanece a da rc.3, token por token.
+
+Para prever os tokens antes de aplicá-los, o barril público oferece `sarakResolvePalette(value, mode)` e os tipos
+`SarakPaletteType`, `SarakPaletteMode`, `SarakPaletteInput` e `SarakPaletteSeeds`.
+
 ### Modelo público de usuário do cromo
 
 **Classificação: MAJOR.** `SarakShellUser` deixa de aceitar os campos de produto `username` e `level`; o nome
@@ -1342,6 +1375,110 @@ acessível. Só quebra teste que procure `(All)`.
 
 **Muda o tipo (Q6).** `SarakConfirmOptions.message` e `SarakAlertProps.message` viram `ReactNode` (`title` segue `string`).
 Só quebra quem **lê** `.message` como `string`.
+
+### Layout e cromo: ocupação de coluna, abas com rota, densidade de cartão e altura de página
+
+**Não quebra nada.** Todas as props abaixo são novas e opcionais; omitidas, o componente faz o que fazia.
+
+- **`SarakGridItem`** (novo): `span` (número, `'full'` ou `{ mob, tab, desk }`) e `rowSpan` no lugar de `col-span-*`. O
+  dispositivo vem dos breakpoints do tema. No celular, `span` maior que as colunas do grid vira a linha toda. As classes
+  `col-span-*` continuam valendo.
+- **`SarakGrid columns`**: `columns={{ mob: 1, tab: 6, desk: 12 }}` ou um número; vence `templateColumns` se os dois vierem.
+  Um número fixo colapsa para 1 coluna no celular, como `templateColumns` — declare `mob` para ter mais.
+- **`SarakTabs`**: `SarakTabItem.href` faz a lista virar um `<nav>` de links com `aria-current="page"` (aba que troca de rota
+  é navegação, não `role="tab"`); `onNavigate(href, tab)` impede a recarga no clique simples; `count` entra no nome acessível;
+  `panelId`/`idPrefix` ligam a aba ao painel (**sem** `idPrefix` nem `panelId`, a aba não emite `aria-controls`; `SarakTabPanel.idPrefix` é obrigatório); `onChange` passa a opcional. Sem `href`, as abas ganham `id` e `aria-controls`.
+- **`SarakTabPanel`** (novo): `<SarakTabPanel idPrefix="contrato" tabId={aba}>` gera `role="tabpanel"`, `id` e
+  `aria-labelledby` que casam com a aba do `SarakTabs` de mesmo `idPrefix`.
+- **`SarakCard density="sm" | "lg"`**: lê `--sarak-card-padding-sm|lg`, derivados do padding `md` do tema (2/3 e 4/3) e
+  sobrescrevíveis em CSS. Não são tokens do painel.
+- **`SarakAnalyticalPage`**: `sidePanelWidth` (número em px ou comprimento CSS) e `fillHeight` (ocupa a altura que o cromo deixa).
+  As variáveis legadas `--border-color` e `--color-theme-card` saíram; a borda e o fundo seguem `--sarak-card-border-color` e
+  `--sarak-card-bg`.
+- **Altura do cromo.** O `SarakAppChrome` já ocupa `100dvh` sozinho: o host **não** precisa de `height: 100%` em
+  `html/body/#root`. O `<main>` segue em bloco, como na rc.3 (filho com `margin: 0 auto` mantém a largura); o filho que
+  deve encher a altura usa `fillHeight` ou a classe `sarak-fill-height` (`min-height: 100%` do `<main>`).
+
+### Gráficos e indicadores: formato, referência e meta; `SarakChart` removido
+
+**Classificação: MAJOR (sai na 8.0.0).** Todas as props abaixo são opcionais e, omitidas, o componente faz o que fazia
+na rc.3. A quebra é a remoção do `SarakChart`.
+
+| Antes | Depois |
+|---|---|
+| `SarakChart` (barras de `{ value, date }`) no barril. Errava com valor negativo. | **Removido**, junto com `SarakChartProps`. Use `SarakChartEngine`. |
+
+**De/para do `SarakChart`:**
+
+```tsx
+// Antes
+<SarakChart data={vendas} mapping={{ value: 'total', date: 'mes' }} label="Vendas" />
+// Depois
+<SarakChartEngine type="bar" data={vendas} config={{ xAxisKey: 'mes', dataKey: 'total', title: 'Vendas' }} />
+```
+
+`load`, `updatedAt` e `onRetry` do `SarakChart` não existem no motor: carregue o dado no host e passe `data`.
+
+**Props novas do `SarakChartEngine`** (motor ECharts; com `engine: 'recharts'` entram no aviso de prop ignorada):
+
+- `valueFormat` (`SarakValueFormat`): eixo de valor, dica e rótulos no idioma da tela (`useSarakLanguage`). `series[].format`
+  vence o `valueFormat` na série e no eixo direito.
+- `height` (`number | string`): altura própria; omitida, 100% do pai.
+- `referenceLines` (`{ value, label?, axis?, tone?, dashed? }[]`) e `referenceBands` (`{ from, to, label?, tone? }[]`) em
+  `bar`, `line` e `area`; `tone` usa os tokens de status (`neutral` usa a cor do texto).
+- `zoom` (`boolean | 'inside' | 'slider'`; `true` = `'slider'`).
+- `pieLabel` (`'name' | 'value' | 'percent' | 'name-percent' | 'none'`).
+- `gauge` (`{ min?, max? }`): escala do medidor, 0–100 por padrão. O `%` só aparece com `valueFormat` percentual (calculado sobre
+  `min`–`max`) ou sem `valueFormat`.
+
+**`SarakStats`** (`SarakStatsMetricConfig`): `signColor`, `goodDirection` (`'down'` inverte a cor, a seta segue o sentido
+real), `deltaFormat`, `deltaLabel`, `target`/`targetLabel` (barra até a meta e "Meta: …" no `format` da métrica) e
+`sparkline`. Seta e cor do delta só aparecem quando `goodDirection`, `deltaFormat` ou `deltaLabel` é informado.
+
+**Indicadores pequenos:** `SarakSparkline baseline="zero"` fixa o zero e desenha a linha de base; `SarakProgress` ganha
+`allowOverflow` (aceita `value > max`, enche a barra e marca o excesso com o tom de aviso; `aria-valuenow` leva o valor real),
+`showValue` e `valueFormat` (`percent` sobre `value / max`; os demais sobre `value`).
+
+**`SarakKanban`:** `SarakKanbanCard.value`, `valueFormat` e `columnTotal`. Com algum cartão com `value`, a coluna mostra a soma
+no cabeçalho; `columnTotal={false}` esconde e uma função devolve o conteúdo.
+
+### Tabelas financeiras: formato e agregação por coluna, rodapé, agrupamento, expansão, árvore, CSV e "todos os N"
+
+**Uma quebra de comportamento (Q2) — `SarakDataTable` com `error` ou `loading` e linhas.** Antes (rc.3), `error` e `loading`
+**substituíam** a tabela inteira pelo aviso ou pelo texto. Agora, **com linhas**, a tabela fica: `error` vira um aviso
+(`role="alert"`) acima das linhas, e `loading` marca a tabela com `aria-busy` e mantém as linhas. **Sem linhas**, `error` continua
+sendo só o aviso e `loading` desenha um esqueleto (`skeletonRows`, padrão 8) no lugar do texto "Carregando". Quem dependia do sumiço
+das linhas passa `rows={[]}`.
+
+**Sem nenhuma prop nova, as duas tabelas se comportam como na rc.3.** O que entra:
+
+| Onde | Prop | O que faz |
+| --- | --- | --- |
+| Coluna (as duas tabelas) | `accessor`, `format` | lê o valor e o formata (`SarakValueFormat`); numérico com formato alinha à direita e usa `tabular-nums` |
+| Coluna | `sortable`, `sortValue` | `sortValue` ordena pelo valor bruto, não pelo texto ("R$ 200" vem antes de "R$ 1.000"). `sortable`: DataTable `false`, Table `true` (como na rc.3) |
+| Coluna | `searchValue` | texto buscável; o padrão é o texto exibido, com `format` |
+| Coluna | `aggregate`, `footer` | `'sum' \| 'avg' \| 'count' \| 'min' \| 'max'` ou função; a linha de rodapé (`<tfoot>` / `rowgroup`) só aparece se alguma coluna declara um |
+| Coluna | `rowHeader`, `colSpan` | `th scope="row"` (Table) / `role="rowheader"` (DataTable); `colSpan(row)` cobre as colunas seguintes, sem atravessar uma coluna congelada |
+| As duas | `groupBy` | `{ key, label?, subtotals?, defaultExpanded? }` — cabeçalho de grupo expansível e subtotal com as mesmas agregações do rodapé |
+| As duas | `renderExpanded`, `expandedKeys`, `onExpandedChange` | linha expansível; o botão tem `aria-expanded` |
+| As duas | `searchQuery`, `onSearchQueryChange` | busca controlada (na DataTable, `searchQuery` filtra as linhas; ela não tem campo de busca) |
+| As duas | `totalCount`, `selectAll`, `onSelectAllChange` | com a página inteira marcada e `totalCount` maior, aparece "Selecionar todos os N"; com `selectAll`, `selectedKeys` passa a ser a lista de **exceções** |
+| `SarakTable` | `exportable` | botão "Exportar CSV" na barra (`true` ou `{ filename }`) |
+| `SarakDataTable` | `getChildren`, `defaultExpandedDepth` | tree-table (plano de contas, DRE): a 1ª coluna indenta e ganha o botão de expandir |
+| `SarakDataTable` | `reorderable`, `skeletonRows` | `reorderable={false}` tira o arraste dos cabeçalhos (padrão `true`); `skeletonRows` conta as linhas do esqueleto |
+
+**Funções novas**, exportadas do barril: `sarakAggregate(rows, column)` (o mesmo cálculo do rodapé, para um card de total fora da
+tabela), `sarakTableToCsv(columns, rows, options?)` e `sarakDownloadCsv(filename, csv)`. O CSV começa com BOM UTF-8, usa `;` quando o
+locale tem vírgula decimal, exporta o valor formatado (`formatted: false` exporta o bruto) e inclui o rodapé (`includeFooter`).
+`options.locale` é um acréscimo ao contrato: sem ele, o separador e o formato seguem o locale do ambiente. Texto que o Excel leria
+como fórmula (começa com `=` ou `@`) sai com um apóstrofo na frente. Não há exportação para XLSX.
+
+**Tipos novos:** `SarakColumnValueOptions<T>` (o bloco que `SarakColumn<T>` e `SarakTableColumn<T>` compartilham), `SarakAggregate<T>`,
+`SarakColumnFooterContext<T>`, `SarakTableGroupBy<T>` e `SarakCsvOptions`.
+
+**Textos fixos que passaram para o catálogo de textos da lib** (seis idiomas): "Seleção", "Selecionar linha N", "Redimensionar coluna",
+"Ordenar por …" e os rótulos de seleção dos cartões. No idioma padrão (português) saem iguais; um teste que procurasse o texto em inglês
+num sistema em inglês passa a encontrar o texto em inglês.
 
 ## 7.0.0 — Os nomes públicos passam a identificar a biblioteca
 

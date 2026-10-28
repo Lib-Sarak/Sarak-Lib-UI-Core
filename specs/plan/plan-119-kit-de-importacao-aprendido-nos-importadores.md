@@ -306,14 +306,14 @@ real de token de um tema embarcado.
 | C6 | seletor de organização (tenant) no cromo: os sistemas multi-tenant mantêm o próprio | login | **proposta do revisor: depois da 8.0.0** (função aditiva; o slot já serve), ao `00-backlog` no lote final | final | aberta |
 | C7 | histórico de versões: entradas de `docs/migracoes.md` sem versão no título e tokens removidos/renomeados sem forma de dado | login | **proposta do revisor:** lote final — toda entrada com a versão, e o `catalog.json` do kit com a lista de tokens removidos e o destino de cada um | final | aberta |
 | C5 | span do grid de 12 colunas sem contrato público (`15-divida-conhecida` achado 42) | lote 0 (30) | **dono, 2026-10-19:** declarar `col-span-*` como contrato suportado, com teste que trava o comportamento; `SarakGridItem` ao backlog | 2 | fechada |
-| I33 | **o ERP não achou o valor por dispositivo que a lib tem** e pediu `{ mobile, tablet, desktop }`: `SarakResponsiveValue` = `{ mob, tab, desk }` está no barril e no catálogo, mas o guia o mostra uma vez só, na linha ~1208 de ~1240, como "refino opcional" de 2 props, e o único exemplo do kit é o `tela-exemplo.tsx:106`, ao lado de um `gap="md"` inválido | ERP (pedido da `rc.4`) | **dono, 2026-10-27:** corrigir a exposição — seção curta e visível no guia ("valor por dispositivo"), com o tipo, o formato e a lista das props que o aceitam (lida do catálogo, não transcrita), e um exemplo correto num molde | 8 | aberta |
-| I34 | `<main>` aninhado em `tela-lista.tsx` e `tela-detalhe.tsx`: o cromo já fornece o `<main>` (`ChromeContentRegion.tsx:31`) | ERP (Kit 1) | corrigir o molde | 8 | aberta |
-| I35 | selo dentro de selo no `SarakResourceRow` | ERP (Kit 2) | corrigir o componente — um selo só, com teste | 8 | aberta |
-| I36 | `gap="md"` inválido no `tela-exemplo.tsx:106` (o tipo aceita `spacing-md`, `SarakLayoutGap` em `src/core/Design/resolveToken.ts:29`) | ERP (Kit 3) | corrigir o molde | 8 | aberta |
-| I37 | `tela-exemplo` contraria a §6 do guia | ERP (Kit 4) | corrigir o molde para seguir a §6 (ou a §6, se ela estiver errada — dizer qual e por quê) | 8 | aberta |
-| I38 | `sarak-ui/templates/README.md` não lista os moldes novos | ERP (Kit 5) | listar todos os moldes da pasta | 8 | aberta |
-| I39 | `h1`/`h2` duplicados entre o cabeçalho da página e o cromo nos moldes; o cromo não emite heading (nenhum `<h1>`/`<h2>` em `src/components/Layout/`) — a duplicação está nos moldes | ERP (Kit 6) | corrigir os moldes: um `h1` por página, o do `SarakPageHeader` | 8 | aberta |
-| I40 | o guia não diz que o cromo tem altura própria (`100dvh`, `SarakAppChrome.tsx:197`) e o ERP mantém `height: 100%` em `html/body/#root` em oito entradas (demanda 12) | ERP (demanda 12) | uma linha no guia, **depois** da medição em navegador da `plan-131` (se reproduzir o defeito, o texto diz o conserto) | 8 | aberta |
+| I33 | **o ERP não achou o valor por dispositivo que a lib tem** e pediu `{ mobile, tablet, desktop }`: `SarakResponsiveValue` = `{ mob, tab, desk }` está no barril e no catálogo, mas o guia o mostra uma vez só, na linha ~1208 de ~1240, como "refino opcional" de 2 props, e o único exemplo do kit é o `tela-exemplo.tsx:106`, ao lado de um `gap="md"` inválido | ERP (pedido da `rc.4`) | **dono, 2026-10-27:** corrigir a exposição — seção curta e visível no guia ("valor por dispositivo"), com o tipo, o formato e a lista das props que o aceitam (lida do catálogo, não transcrita), e um exemplo correto num molde | 8 | fechada |
+| I34 | `<main>` aninhado em `tela-lista.tsx` e `tela-detalhe.tsx`: o cromo já fornece o `<main>` (`ChromeContentRegion.tsx:31`) | ERP (Kit 1) | corrigir o molde | 8 | fechada |
+| I35 | selo dentro de selo no `SarakResourceRow` | ERP (Kit 2) | corrigir o componente — um selo só, com teste | 8 | fechada |
+| I36 | `gap="md"` inválido no `tela-exemplo.tsx:106` (o tipo aceita `spacing-md`, `SarakLayoutGap` em `src/core/Design/resolveToken.ts:29`) | ERP (Kit 3) | corrigir o molde | 8 | fechada |
+| I37 | `tela-exemplo` contraria a §6 do guia | ERP (Kit 4) | corrigir o molde para seguir a §6 (ou a §6, se ela estiver errada — dizer qual e por quê) | 8 | fechada |
+| I38 | `sarak-ui/templates/README.md` não lista os moldes novos | ERP (Kit 5) | listar todos os moldes da pasta | 8 | fechada |
+| I39 | `h1`/`h2` duplicados entre o cabeçalho da página e o cromo nos moldes; o cromo não emite heading (nenhum `<h1>`/`<h2>` em `src/components/Layout/`) — a duplicação está nos moldes | ERP (Kit 6) | corrigir os moldes: um `h1` por página, o do `SarakPageHeader` | 8 | fechada |
+| I40 | o guia não diz que o cromo tem altura própria (`100dvh`, `SarakAppChrome.tsx:197`) e o ERP mantém `height: 100%` em `html/body/#root` em oito entradas (demanda 12) | ERP (demanda 12) | uma linha no guia, **depois** da medição em navegador da `plan-131` (se reproduzir o defeito, o texto diz o conserto) | 8 | fechada |
 
 **Lote 8 — o kit da `rc.4`** (linhas **I33 a I40** da §5.1; sai na `v8.0.0-rc.4`; segue o protocolo de verificação do
 [`anexos/rc4-contrato.md`](anexos/rc4-contrato.md) §9). Roda em paralelo com as `plan-129` a `plan-132`; a I40 espera a medição da `plan-131`.
@@ -2019,3 +2019,121 @@ bateria rodaram sobre esse mesmo `dist/`.
 depende dos importadores.
 
 **Status: 🟡 Em execução** (lote final pendente).
+
+## Resumo da execução — lote 8 (2026-10-27)
+
+**Resultado: I33–I39 implementadas, em revisão; I40 pendente.** A medição de navegador da demanda 12 ainda não foi relatada na
+plan-131, que continua `🟡 Em execução` com a §9 vazia.
+
+**Worktree antes da edição:** `git status --short` e `git diff HEAD` falharam com `fatal: this operation must be run in a work tree`,
+embora `git rev-parse --is-inside-work-tree` retornasse `true`. A fotografia read-only de `git ls-files` registrou 49 modificados,
+5 removidos e 40 não rastreados; os arquivos deste lote estavam limpos. Na conferência final, os contadores eram 102 modificados,
+5 removidos e 59 não rastreados, com trabalho paralelo das plans 129–132. Assim, não foi possível obter um `git status` confiável.
+
+| Arquivos | Alteração |
+|---|---|
+| `browser-tests/tela-lista.scene.tsx`, `browser-tests/tela-detalhe.scene.tsx` | Fontes dos moldes gerados sem `<main>` aninhado e com um `SarakPageHeader` por página. |
+| `sarak-ui/templates/tela-exemplo.tsx` | Uso de `SarakCard.Body`, `SarakPageHeader`, `SarakResponsiveValue<string>` com `{ mob, tab, desk }` e `gap="spacing-md"`; preservados os estados de carga, erro, vazio e sucesso. |
+| `sarak-ui/GUIA-FRONTEND.md`, `sarak-ui/templates/README.md` | Nova seção visível de valor por dispositivo com referência a `catalog.json` → `responsive.responsiveProps`; README agora lista os oito moldes. |
+| `src/components/atomic/Templates/SarakResourceRow.tsx` e `__tests__/SarakResourceRow.test.tsx` | `SarakBadge` recebido é mantido sem embrulho extra; adicionado teste localizado por papel `article`. |
+| `docs/migracoes.md` | Documentada a mudança visual dos badges, conforme escopo condicional de I35. |
+
+As fontes de lista e detalhe alimentam `sarak-ui/templates/tela-lista.tsx` e `tela-detalhe.tsx`. Conforme `rc4-contrato.md` §9, os
+gerados não foram editados. A conferência read-only de `buildKitOutputs()` confirmou para cada saída zero `<main>`, um
+`SarakPageHeader`, zero `<h1>` explícito e zero `gap="md"`; as cópias em disco aguardam `npm run guide` no fechamento da rc.4.
+A lista de props foi conferida em `catalog.json` para `SarakGrid`, `SarakFlex`, `SarakPageHeader`, `SarakCard`, `SarakFilterBar`,
+`SarakSegmentedControl`, `SarakSection`, `SarakDescriptionList` e `SarakResourceRow`. O validador AST obrigatório terminou sem
+achados nos cinco arquivos TS/TSX alterados.
+
+**Verificações e pendências:** a tentativa de Vitest não chegou aos casos: a primeira falhou ao escrever `node_modules/.vite-temp`
+(`EPERM`); a segunda parou na coleta porque `src/core/Design/palette/resolve.ts` importa `./contrast`, ausente em trabalho paralelo.
+O revisor deve repetir o teste conforme §8. `npm run verify -- --tier=quick` rodou uma vez e terminou com código 1, com 9 falhas:
+`tsc`, `audit:baseline --with-tsc` (import ausente e referências a `colorPalette`), `catalog:check`, `theme-completeness:check`
+(`colorPalette` ausente nos 19 temas), `variable-contract:check` (fallback de `SarakDataTableSkeleton`), `plan-index:check`
+(divergência da plan-130), `trail-citation` (Git não reconheceu o worktree), `guide:check` e `dev-kit:check` (saídas geradas
+desatualizadas). Os outros gates reportados passaram; Anel 0 simulou 3.810 linhas com zero achados. Falhas de outras frentes não foram
+corrigidas. Nenhum importador foi alterado e nenhum commit foi criado. **Status: 🟠 Em revisão; I40, teste e sincronização da rc.4
+pendentes.**
+
+## Veredito — 2026-10-28 — lote 8 — 🟢 I33–I39 aprovadas; I40 aberta
+
+**Medido por mim**, pelo protocolo do contrato da `rc.4` §9: `npx vitest run SarakResourceRow` — **2/2 verdes** (o executor não
+conseguiu rodar por `EPERM` e pela coleta quebrada por trabalho paralelo; o filtro por nome não passa por `palette/`). O `grep` do 8.1
+nas fontes: `browser-tests/tela-lista.scene.tsx`, `browser-tests/tela-detalhe.scene.tsx` e `sarak-ui/templates/tela-exemplo.tsx` com
+zero `<main`, zero `<h1`/`level={1}`, um `SarakPageHeader` cada e zero `gap="md"`; o `tela-exemplo` usa `{ mob, tab, desk }`.
+
+- **Escopo:** `tela-lista` e `tela-detalhe` saem de `browser-tests/*.scene.tsx` pelo gerador do kit; o 3.1 do lote apontava para a
+  cópia gerada. O executor editou a fonte certa — erro da instrução, não da execução.
+- **I35:** `renderResourceBadge` (`SarakResourceRow.tsx`) mantém o `SarakBadge` recebido e só embrulha valor simples; o teste novo
+  prova que não há `span` de selo dentro de outro. A extração em subcomponentes veio do teto de tamanho de função; o comportamento é
+  o mesmo. Nota em `docs/migracoes.md`.
+- **I33:** `GUIA-FRONTEND.md` §3.10 ganhou "Valor por dispositivo — `SarakResponsiveValue<T>`", apontando para
+  `catalog.json` → `responsive.responsiveProps` (sem transcrever a lista, R17). **I38:** README com os oito moldes.
+- **I40** segue aberta: espera a medição de navegador da `plan-131`. As falhas do `quick` relatadas são de outras plans em voo (tipos de
+  `palette/`, `colorPalette` nos temas, `SarakDataTableSkeleton`) ou de gerado — nenhuma em arquivo deste lote.
+
+**Status da plan: 🟡 Em execução** (I40 e o lote final pendentes). O lote 8 entra no commit da rodada (contrato §9).
+
+## Resumo da execução (item 8.5 — I40) — 2026-10-28
+
+**Resultado: Concluído.** A linha sobre a altura do cromo foi acrescentada ao guia após a medição da demanda 12 na plan-131.
+
+**Estado do worktree ao iniciar**
+
+`git status --short` → `fatal: this operation must be run in a work tree`. `git ls-files` como fotografia read-only: 115 arquivos
+modificados, 5 removidos e 79 não rastreados. O guia já continha as alterações deste mesmo lote; preservei o restante do worktree.
+
+**O que foi feito**
+
+- `sarak-ui/GUIA-FRONTEND.md` — informa que o `SarakAppChrome` ocupa a janela com `100dvh`, não depende de `height: 100%` em
+  `html/body/#root`, mantém a rolagem de páginas altas no `<main>` e orienta preencher a altura disponível com `fillHeight` de
+  `SarakAnalyticalPage` ou `sarak-fill-height` (`min-height: 100%`).
+
+**Arquivos alterados**
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `sarak-ui/GUIA-FRONTEND.md` | alterado | Nova orientação sobre altura própria do cromo e preenchimento da altura útil. |
+| `specs/plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md` | alterado | Status encaminhado para revisão e este resumo append-only. |
+
+**Verificações executadas**
+
+- Veredito da `plan-131` (2026-10-28): demanda 12 não reproduziu em navegador, a 1280×600, sem cadeia de altura no host; a rolagem
+  ficou no `<main>` e a topbar não se moveu. Na medição complementar a 1440×800, `fillHeight` mediu 640 px, igual à altura útil do
+  `<main>`; o filho centralizado manteve 1000 px.
+- Leitura da implementação: `SarakAppChrome.tsx:197` define `height: 100dvh`; `SarakAnalyticalPage.tsx:45` aplica
+  `sarak-fill-height`; `_utilities.css:66–68` define `min-height: 100%`.
+- Não rodei testes nem geradores: esta alteração é documental e o contrato §9 reserva `guide` para o fechamento. O `verify --tier=quick`
+  do lote 8 já foi executado uma vez e está relatado no resumo anterior.
+
+**Critérios de aceite**
+
+- [x] I40 medida antes da orientação — evidência: veredito aprovado da `plan-131`, demanda 12 não reproduz.
+- [x] Linha do guia distingue a altura própria do cromo do preenchimento do conteúdo — evidência: `sarak-ui/GUIA-FRONTEND.md`.
+
+**Decisões e suposições**
+
+- A orientação registra o comportamento medido sem propor correção ao cromo: a cadeia `height: 100%` no host não é necessária no
+  cenário medido; o consumidor que precisa preencher a área disponível usa a API existente.
+
+**Achados fora do escopo (não corrigidos)**
+
+- Nenhum novo achado nesta execução. As falhas do `verify --tier=quick`, inclusive as de saídas geradas e as de outras frentes,
+  permanecem descritas no resumo anterior.
+
+**Pendências / riscos**
+
+- A sincronização dos artefatos gerados permanece para o fechamento da rc.4, conforme o contrato §9. Nenhum teste foi necessário para
+  a mudança documental. Nenhum commit foi criado.
+
+## Veredito — 2026-10-28 — lote 8.5 (I40) — 🟢 Aprovado; lote 8 fechado
+
+**Conferido por mim:** `sarak-ui/GUIA-FRONTEND.md:169-171` diz que o `SarakAppChrome` ocupa a janela com `100dvh`, não depende de
+`height: 100%` em `html`/`body`/`#root`, rola páginas altas no `<main>`, e manda preencher a altura com `fillHeight` ou
+`sarak-fill-height` (`min-height: 100%`) — o que o código faz (`SarakAppChrome.tsx:197`, `_utilities.css`) e o que a `plan-131`
+mediu em navegador. Nenhum outro trecho do guia manda declarar a cadeia de altura (`grep` de `height: 100%`/`#root`). Mudança só de
+documento: sem teste a rodar.
+
+**Lote 8 fechado (I33–I40).** O ERP pode tirar a cadeia de altura dos oito `index.html` (demanda 12) depois de instalar a `rc.4`.
+
+**Status da plan: 🟡 Em execução** (lote final pendente, como antes).

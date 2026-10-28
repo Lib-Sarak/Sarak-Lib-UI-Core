@@ -73,7 +73,7 @@ export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: 
                         {/* Input 4 (Select) */}
                         <div className="flex flex-col gap-2">
                             <label className="text-xs font-bold text-[var(--theme-title)] uppercase tracking-widest opacity-80">Setor</label>
-                            <SarakSelect>
+                            <SarakSelect label="Setor" hideLabel>
                                 <option>Tecnologia da Informação</option>
                                 <option>Saúde</option>
                                 <option>Finanças</option>

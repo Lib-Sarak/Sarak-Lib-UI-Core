@@ -4,6 +4,9 @@ import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakDataEmpty } from '../Feedback/SarakDataEmpty';
 import { SarakValue } from '../Atoms/SarakValue';
+import { SarakProgress } from '../Feedback/SarakProgress';
+import SarakSparkline from '../DataDisplay/SarakSparkline';
+import { SarakStatsDelta } from './SarakStatsDelta';
 import { SarakDataErrorNotice } from './SarakDataErrorNotice';
 import { SarakDataFreshness } from './SarakDataFreshness';
 import type { SarakValueFormat } from '../../../shared/format';
@@ -18,6 +21,20 @@ export interface SarakStatsMetricConfig {
     format?: SarakValueFormat;
     label?: string;
     hint?: string;
+    /** Pinta o valor pelo sinal: verde positivo, vermelho negativo (padrão: `true`). */
+    signColor?: boolean;
+    /** Sentido bom da variação; `'down'` inverte a cor (despesa, atraso), a seta segue o sentido real (padrão: `'up'`). */
+    goodDirection?: 'up' | 'down';
+    /** Formato do delta; `{ type: 'percent' }` mostra a variação percentual (0,12 → 12%). */
+    deltaFormat?: SarakValueFormat;
+    /** Texto depois do delta, como "vs. mês anterior". */
+    deltaLabel?: string;
+    /** Meta numérica: mostra a barra de progresso até ela e "Meta: …" no `format` da métrica. */
+    target?: number;
+    /** Troca a palavra "Meta" do texto da meta. */
+    targetLabel?: string;
+    /** Série curta desenhada sob o valor. */
+    sparkline?: number[];
 }
 
 export interface SarakStatsProps<TData extends Record<string, unknown>> {
@@ -112,15 +129,43 @@ const SarakStatsMetric = ({ metricKey, value, label, config }: SarakStatsMetricP
                 animate={{ opacity: 1, y: 0 }}
                 style={{ fontWeight: 'var(--sarak-h1-weight,800)' }}
             >
-                <SarakValue value={displayValue} format={config?.format} size="md" />
+                <SarakValue value={displayValue} format={config?.format} size="md" signColor={config?.signColor ?? true} />
             </motion.div>
-            {config?.delta !== undefined && Number.isFinite(config.delta) && (
-                <div className="text-sm font-semibold" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) / 6)' }}>
-                    {config.delta > 0 && '+'}
-                    <SarakValue value={config.delta} format={{ type: 'number' }} size="sm" />
-                </div>
+            {config?.delta !== undefined && Number.isFinite(config.delta) && <SarakStatsMetricDelta config={config} delta={config.delta} />}
+            {config?.target !== undefined && <SarakStatsTarget value={displayValue} config={config} />}
+            {config?.sparkline && config.sparkline.length > 0 && (
+                <div style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) / 6)' }}><SarakSparkline data={config.sparkline} height={24} /></div>
             )}
             {config?.hint && <p className="text-xs text-theme-muted" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) / 6)' }}>{config.hint}</p>}
+        </div>
+    );
+};
+
+const usesRichDelta = (config: SarakStatsMetricConfig): boolean =>
+    config.goodDirection !== undefined || config.deltaFormat !== undefined || config.deltaLabel !== undefined;
+
+/** Sem nenhuma prop nova de delta, mantém o desenho da rc.3 (número com sinal, colorido pelo sinal). */
+const SarakStatsMetricDelta = ({ config, delta }: { config: SarakStatsMetricConfig; delta: number }): ReactElement => {
+    if (usesRichDelta(config)) {
+        return <SarakStatsDelta delta={delta} format={config.deltaFormat} label={config.deltaLabel} goodDirection={config.goodDirection} />;
+    }
+    return (
+        <div className="text-sm font-semibold" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) / 6)' }}>
+            {delta > 0 && '+'}
+            <SarakValue value={delta} format={{ type: 'number' }} size="sm" />
+        </div>
+    );
+};
+
+const SarakStatsTarget = ({ value, config }: { value: unknown; config: SarakStatsMetricConfig }): ReactElement | null => {
+    const text = useLibraryText();
+    if (typeof value !== 'number' || config.target === undefined || !(config.target > 0)) return null;
+    return (
+        <div style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) / 4)' }}>
+            <SarakProgress value={value} max={config.target} allowOverflow />
+            <p className="text-xs text-theme-muted" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) / 6)' }}>
+                {config.targetLabel ?? text('statsTargetLabel')}: <SarakValue value={config.target} format={config.format} size="sm" signColor={false} className="text-xs" />
+            </p>
         </div>
     );
 };

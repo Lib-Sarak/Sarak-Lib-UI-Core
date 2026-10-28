@@ -39,7 +39,7 @@ export interface ProjectListPageProps {
 
 export function ProjectListPage(props: ProjectListPageProps): ReactElement {
     return (
-        <SarakFlex as="main" direction="column" gap="spacing-lg" wrap={false} aria-label="Lista de projetos">
+        <SarakFlex direction="column" gap="spacing-lg" wrap={false}>
             <ProjectPageHeader onCreateProject={props.onCreateProject} />
             <ProjectFilterBar {...props} />
             <ProjectViewSelector value={props.view} onValueChange={props.onViewChange} />
@@ -51,7 +51,7 @@ export function ProjectListPage(props: ProjectListPageProps): ReactElement {
 function ProjectPageHeader({ onCreateProject }: Pick<ProjectListPageProps, 'onCreateProject'>): ReactElement {
     return (
         <SarakPageHeader
-            title="Projetos"
+            title="Resultados"
             subtitle="Acompanhe as iniciativas e as equipes responsáveis."
             primaryActions={<SarakButton type="button" onClick={onCreateProject}>Novo projeto</SarakButton>}
         />

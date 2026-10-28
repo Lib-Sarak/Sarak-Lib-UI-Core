@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Levar as paletas ao painel e ao kit: escolher, criar a partir de uma cor e ajustar por cima"
 objetivo: "Fazer o usuário escolher uma paleta pronta ou criar uma a partir de uma cor e de um tipo, com prévia nos dois modos, aplicar e salvar pelo fluxo atual, e continuar ajustando qualquer cor individualmente; e fazer o kit ensinar o tema como estrutura mais paleta"
 dominio: "Painel de customização / Kit do consumidor"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "rc.4", "paletas", "painel", "kit"]
 relacionados: ["[[anexos/rc4-contrato]]", "[[plan-133-motor-de-paletas]]", "[[06-painel-de-customizacao-e-preview]]", "[[12-kit-do-consumidor]]"]

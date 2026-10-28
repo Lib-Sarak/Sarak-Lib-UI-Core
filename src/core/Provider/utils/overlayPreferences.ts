@@ -1,4 +1,6 @@
 import { syncThemeWithMode } from '../../Design/presets/themes/color-engine';
+import { resolvePaletteForDesign } from '../../Design/palette/resolve';
+import { isValidPaletteValue } from '../../Design/palette/parser';
 import { isPreferenceOffered } from '../../Design/schema/preferences';
 import type { SarakTokenValue } from '../../Design/types';
 import type { SarakDesignState, SarakThemeEntry } from '../types';
@@ -38,6 +40,49 @@ const pickKeys = (source: Record<string, unknown> | undefined, keys: string[]): 
     return picked as Partial<SarakDesignState>;
 };
 
+const getPaletteThemeOverrides = (
+    theme: SarakThemeEntry | undefined,
+    targetMode: 'light' | 'dark',
+): Record<string, unknown> => {
+    const nativeMode = (theme?.design?.mode as 'light' | 'dark') || 'dark';
+    return targetMode === nativeMode
+        ? { ...theme?.design }
+        : { ...theme?.design, ...theme?.contraparte };
+};
+
+const applyCalculatedPaletteMode = (
+    design: SarakDesignState,
+    targetMode: 'light' | 'dark',
+    theme: SarakThemeEntry | undefined,
+): SarakDesignState => {
+    const currentMode = design.mode === 'light' ? 'light' : 'dark';
+    const designRecord = design as unknown as Record<string, unknown>;
+    const currentPalette = resolvePaletteForDesign(designRecord, undefined, currentMode);
+    const targetPalette = resolvePaletteForDesign(designRecord, undefined, targetMode);
+    const themeOverrides = getPaletteThemeOverrides(theme, targetMode);
+    const next = { ...design } as Record<string, unknown>;
+
+    Object.entries(targetPalette).forEach(([tokenId, color]) => {
+        const explicitThemeColor = themeOverrides[tokenId];
+        if (explicitThemeColor !== undefined) {
+            next[tokenId] = explicitThemeColor;
+            return;
+        }
+        if (designRecord[tokenId] === currentPalette[tokenId]) next[tokenId] = color;
+    });
+
+    const counterpart = theme?.contraparte;
+    if (counterpart) {
+        const nativeMode = (theme?.design?.mode as 'light' | 'dark') || 'dark';
+        const trackedKeys = Object.keys(counterpart);
+        const trackedValues = targetMode === nativeMode ? pickKeys(theme?.design, trackedKeys) : counterpart;
+        Object.assign(next, trackedValues);
+    }
+
+    next.mode = targetMode;
+    return next as unknown as SarakDesignState;
+};
+
 /**
  * Troca só os tokens que CARREGAM modo — os que a contraparte da entrada
  * declara — e SÓ quando o modo pedido é DIFERENTE do modo atual do design.
@@ -65,6 +110,8 @@ export const applyColorMode = (
     theme: SarakThemeEntry | undefined,
 ): SarakDesignState => {
     if (targetMode === (result.mode || 'dark')) return result;
+
+    if (isValidPaletteValue(result.colorPalette)) return applyCalculatedPaletteMode(result, targetMode, theme);
 
     const contraparte = theme?.contraparte;
     if (!contraparte) {

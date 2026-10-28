@@ -17,6 +17,17 @@ describe('formatMaskedValue', () => {
         expect(formatMaskedValue('11222333000181', 'cnpj').value).toBe('11.222.333/0001-81');
     });
 
+    it('normaliza CNPJ alfanumérico para maiúsculas e mantém DV numérico', () => {
+        expect(formatMaskedValue('12abc34501de35', 'cnpj')).toEqual({
+            value: '12.ABC.345/01DE-35',
+            cleanValue: '12ABC34501DE35',
+        });
+    });
+
+    it('aplica o preset de CEP', () => {
+        expect(formatMaskedValue('12345678', 'cep')).toEqual({ value: '12345-678', cleanValue: '12345678' });
+    });
+
     it('escolhe o formato telefônico brasileiro conforme a quantidade de dígitos', () => {
         expect(formatMaskedValue('1134567890', 'phone').value).toBe('(11) 3456-7890');
         expect(formatMaskedValue('11987654321', 'phone').value).toBe('(11) 98765-4321');
@@ -31,5 +42,9 @@ describe('formatMaskedValue', () => {
 describe('getMaskedCursorPosition', () => {
     it('mantém o cursor após o separador inserido pela máscara', () => {
         expect(getMaskedCursorPosition('123.4', 3)).toBe(4);
+    });
+
+    it('mantém o cursor após caracteres alfanuméricos do CNPJ', () => {
+        expect(getMaskedCursorPosition('12.ABC.345/01DE-35', 5, true)).toBe(7);
     });
 });

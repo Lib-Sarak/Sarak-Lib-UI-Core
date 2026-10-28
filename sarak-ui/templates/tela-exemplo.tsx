@@ -11,7 +11,22 @@
  *  - o que a lib não tem, você escreve — com tokens `var(--sarak-*)`.
  */
 import React from 'react';
-import { SarakButton, SarakSkeleton, SarakDataEmpty, SarakGrid } from '@sarak/lib-ui-core';
+import {
+    SarakButton,
+    SarakCard,
+    SarakDataEmpty,
+    SarakFlex,
+    SarakGrid,
+    SarakPageHeader,
+    SarakSkeleton,
+    type SarakResponsiveValue,
+} from '@sarak/lib-ui-core';
+
+const ITEM_GRID_COLUMNS: SarakResponsiveValue<string> = {
+    mob: '1fr',
+    tab: 'repeat(2, 1fr)',
+    desk: 'repeat(3, 1fr)',
+};
 
 interface Item {
     id: string;
@@ -48,65 +63,49 @@ function useItens(): [Estado, () => void] {
     return [estado, buscar];
 }
 
-/** Card próprio, temável: só tokens públicos — a central alcança este componente. */
-function CardItem({ item }: { item: Item }) {
+function CardItem({ item }: { item: Item }): React.ReactElement {
     return (
-        <article
-            style={{
-                background: 'var(--sarak-card-bg, transparent)',
-                border: 'var(--sarak-card-border, none)',
-                borderRadius: 'var(--sarak-card-radius, 8px)',
-                padding: 'var(--sarak-card-padding-md, 16px)',
-            }}
-        >
-            {/* A cor do texto comum é HERDADA do escopo pintado pelo Provider — não
-                force. Títulos têm token próprio. */}
-            <h3 style={{ color: 'var(--sarak-title-color, inherit)', fontFamily: 'var(--sarak-heading-font, inherit)' }}>
-                {item.nome}
-            </h3>
-        </article>
+        <SarakCard>
+            <SarakCard.Body>
+                <h3>{item.nome}</h3>
+            </SarakCard.Body>
+        </SarakCard>
     );
 }
 
-export function TelaExemplo() {
+export function TelaExemplo(): React.ReactElement {
     const [estado, recarregar] = useItens();
 
-    // 1/3 — CARREGANDO. Skeleton, nunca uma tela em branco.
-    if (estado.fase === 'carregando') {
-        return <SarakSkeleton rows={4} />;
-    }
-
-    // 2/3 — ERRO. Diga o que houve E ofereça a ação de repetir.
-    if (estado.fase === 'erro') {
-        return (
-            <div
-                role="alert"
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
-                    gap: 'var(--sarak-layout-gap-md, 16px)',
-                }}
-            >
-                <p>Não foi possível carregar os itens: {estado.mensagem}</p>
-                <SarakButton variant="secondary" onClick={recarregar}>
-                    Tentar de novo
-                </SarakButton>
-            </div>
-        );
-    }
-
-    // 3/3 — VAZIO. "Sem dados" NÃO é o mesmo que "carregando".
-    if (estado.itens.length === 0) {
-        return <SarakDataEmpty message="Nenhum item por aqui ainda." />;
-    }
-
-    // Caminho feliz. `SarakGrid` já colapsa para 1 coluna no celular — zero CSS seu.
     return (
-        <SarakGrid templateColumns={{ mob: '1fr', tab: 'repeat(2, 1fr)', desk: 'repeat(3, 1fr)' }} gap="md">
-            {estado.itens.map((item) => (
-                <CardItem key={item.id} item={item} />
-            ))}
-        </SarakGrid>
+        <SarakFlex direction="column" gap="spacing-lg" wrap={false}>
+            <SarakPageHeader title="Itens" subtitle="Itens carregados pelo módulo." />
+            {estado.fase === 'carregando' && <SarakSkeleton rows={4} />}
+            {estado.fase === 'erro' && (
+                <div
+                    role="alert"
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        gap: 'var(--sarak-layout-gap-md, 16px)',
+                    }}
+                >
+                    <p>Não foi possível carregar os itens: {estado.mensagem}</p>
+                    <SarakButton variant="secondary" onClick={recarregar}>
+                        Tentar de novo
+                    </SarakButton>
+                </div>
+            )}
+            {estado.fase === 'pronto' && estado.itens.length === 0 && (
+                <SarakDataEmpty message="Nenhum item por aqui ainda." />
+            )}
+            {estado.fase === 'pronto' && estado.itens.length > 0 && (
+                <SarakGrid templateColumns={ITEM_GRID_COLUMNS} gap="spacing-md">
+                    {estado.itens.map((item) => (
+                        <CardItem key={item.id} item={item} />
+                    ))}
+                </SarakGrid>
+            )}
+        </SarakFlex>
     );
 }

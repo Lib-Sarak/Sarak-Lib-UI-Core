@@ -28,7 +28,7 @@ export interface ProjectDetailPageProps {
 
 export function ProjectDetailPage({ project, onBack, onEdit, onNavigate }: ProjectDetailPageProps): ReactElement {
     return (
-        <SarakFlex as="main" direction="column" gap="spacing-lg" wrap={false} aria-label="Detalhe do projeto">
+        <SarakFlex direction="column" gap="spacing-lg" wrap={false}>
             <ProjectDetailHeader project={project} onBack={onBack} onEdit={onEdit} onNavigate={onNavigate} />
             <ProjectOverviewSection project={project} />
             <ProjectActivitySection activities={project.activities} />

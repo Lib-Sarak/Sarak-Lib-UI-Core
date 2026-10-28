@@ -2,22 +2,30 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { SarakDataEmpty } from '../../atomic/Feedback/SarakDataEmpty';
 import { SarakOptionalPeerFallback } from '../../atomic/Feedback/SarakOptionalPeerFallback';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
+import { useSarakLanguage } from '../../../core/i18n/useSarakLanguage';
+import type { SarakValueFormat } from '../../../shared/format';
 import { useEChartsTheme } from './SubEngines/useEChartsTheme';
 import type { EChartsTheme } from './SubEngines/useEChartsTheme';
 import { buildChartOption, buildPointClickEvents, hasRenderableSeriesData, isSeriesChartType } from './SubEngines/seriesModel';
 import { hasEChartsPeers, hasRechartsPeer, ReactECharts } from './SubEngines/chartPeerAvailability';
 import RechartsChart from './SubEngines/RechartsChart';
-import { hasCalendarData, hasSankeyData, hasWaterfallData } from './SubEngines/optionBuilders';
-import type { ChartOptionFragment, SarakChartDataItem, SarakChartType } from './SubEngines/builders/types';
+import { hasRenderableData, resolveChartType } from './SubEngines/chartDataModel';
+import type {
+    ChartOptionFragment, SarakChartDataItem, SarakChartGauge, SarakChartPieLabel, SarakChartReferenceBand,
+    SarakChartReferenceLine, SarakChartType, SarakChartZoom,
+} from './SubEngines/builders/types';
+
+export type {
+    SarakChartGauge, SarakChartPieLabel, SarakChartReferenceBand, SarakChartReferenceLine, SarakChartReferenceTone, SarakChartZoom,
+} from './SubEngines/builders/types';
 
 const OPTIONAL_ECHARTS_PEERS = ['echarts', 'echarts-for-react'] as const;
 const OPTIONAL_RECHARTS_PEER = ['recharts'] as const;
 
-const CHART_TYPES: readonly SarakChartType[] = [
-    'line', 'area', 'bar', 'pie', 'radar', 'gauge', 'scatter', 'heatmap',
-    'funnel', 'treemap', 'candlestick', 'sunburst', 'histogram', 'boxplot',
-];
-const ECHARTS_ONLY_PROPS = ['series', 'stacked', 'orientation', 'legend', 'onPointClick'] as const;
+const ECHARTS_ONLY_PROPS = [
+    'series', 'stacked', 'orientation', 'legend', 'onPointClick', 'valueFormat', 'height',
+    'referenceLines', 'referenceBands', 'zoom', 'pieLabel', 'gauge',
+] as const;
 const CHART_TYPES_WITH_SHORT_VALUE_KEY: readonly SarakChartType[] = ['funnel', 'treemap', 'histogram'];
 
 export interface SarakChartEngineProps {
@@ -51,6 +59,8 @@ export interface SarakChartEngineProps {
         stack?: string;
         axis?: 'left' | 'right';
         dashed?: boolean;
+        /** Formato do valor desta série; omitido, herda `valueFormat` (útil no eixo direito). */
+        format?: SarakValueFormat;
         color?: 'chartColorPalette' | 'secondaryColor' | 'accentColor' | 'statusSuccessColor'
             | 'statusWarningColor' | 'statusErrorColor' | 'statusInfoColor' | 'tertiaryColor';
     }>;
@@ -64,43 +74,20 @@ export interface SarakChartEngineProps {
     onPointClick?: (event: { seriesKey: string; index: number; datum: SarakChartDataItem }) => void;
     /** Texto acessível do gráfico; omitido, usa o catálogo de i18n. */
     ariaLabel?: string;
-}
-
-function isRecord(value: unknown): value is SarakChartDataItem {
-    return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
-
-function isFiniteNumber(value: unknown): value is number {
-    return typeof value === 'number' && Number.isFinite(value);
-}
-
-function hasCandlestickValues(item: SarakChartDataItem): boolean {
-    return [item.open, item.close, item.low, item.high].every(isFiniteNumber);
-}
-
-function hasBoxPlotValues(item: SarakChartDataItem, dataKey: string): boolean {
-    const values = item[dataKey] ?? item.boxplot;
-    if (Array.isArray(values)) return values.length === 5 && values.every(isFiniteNumber);
-    return [item.min, item.q1, item.median, item.q3, item.max].every(isFiniteNumber);
-}
-
-function hasRenderableData(data: unknown, type: SarakChartType, dataKey: string): data is SarakChartDataItem[] {
-    if (!Array.isArray(data) || data.length === 0) return false;
-    if (type === 'candlestick') return data.some((item) => isRecord(item) && hasCandlestickValues(item));
-    if (type === 'boxplot') return data.some((item) => isRecord(item) && hasBoxPlotValues(item, dataKey));
-    if (type === 'waterfall') return hasWaterfallData(data, dataKey);
-    if (type === 'sankey') return hasSankeyData(data, dataKey);
-    if (type === 'calendar') return hasCalendarData(data, dataKey);
-    if (type === 'sunburst') {
-        return data.some((item) => isRecord(item) && (item[dataKey] !== undefined || Array.isArray(item.children)));
-    }
-
-    return data.some((item) => isRecord(item) && item[dataKey] !== undefined && item[dataKey] !== null);
-}
-
-function resolveChartType(type: SarakChartType | undefined, designType: string): SarakChartType {
-    if (type) return type;
-    return CHART_TYPES.includes(designType as SarakChartType) ? designType as SarakChartType : 'line';
+    /** Formato de eixo de valor, dica e rótulos, no idioma da tela; omitido, mostra o número cru. Só no ECharts. */
+    valueFormat?: SarakValueFormat;
+    /** Altura do gráfico (número em px); omitida, ocupa 100% do pai. Só no ECharts. */
+    height?: number | string;
+    /** Linhas sobre valores do eixo de valor de `bar`, `line` e `area`; os tons vêm dos tokens de status. */
+    referenceLines?: SarakChartReferenceLine[];
+    /** Faixas sombreadas entre dois valores do eixo de valor de `bar`, `line` e `area`. */
+    referenceBands?: SarakChartReferenceBand[];
+    /** Zoom do eixo de categoria; `true` equivale a `'slider'`. */
+    zoom?: SarakChartZoom;
+    /** Rótulo das fatias da pizza; omitido, mostra o da rc.3 (só ao passar o mouse). */
+    pieLabel?: SarakChartPieLabel;
+    /** Escala do medidor (`gauge`); omitida, vale 0 a 100. O `%` só aparece com `valueFormat` percentual ou sem `valueFormat`. */
+    gauge?: SarakChartGauge;
 }
 
 function getUnsupportedRechartsProps(props: SarakChartEngineProps, type: SarakChartType): string[] {
@@ -135,6 +122,7 @@ interface ChartOptionRuntimeInput {
     theme: EChartsTheme;
     engine: 'echarts' | 'recharts';
     hasData: boolean;
+    locale: string;
 }
 
 function hasChartData(props: SarakChartEngineProps, type: SarakChartType, dataKey: string): boolean {
@@ -145,7 +133,7 @@ function hasChartData(props: SarakChartEngineProps, type: SarakChartType, dataKe
 }
 
 function useResolvedChartOption(input: ChartOptionRuntimeInput): ChartOptionFragment | null {
-    const { type, props, theme, engine, hasData } = input;
+    const { type, props, theme, engine, hasData, locale } = input;
     const option = useMemo(
         () => engine === 'echarts' && hasData ? buildChartOption({
             type,
@@ -156,8 +144,15 @@ function useResolvedChartOption(input: ChartOptionRuntimeInput): ChartOptionFrag
             stacked: props.stacked,
             orientation: props.orientation,
             legend: props.legend,
+            locale,
+            valueFormat: props.valueFormat,
+            referenceLines: props.referenceLines,
+            referenceBands: props.referenceBands,
+            zoom: props.zoom,
+            pieLabel: props.pieLabel,
+            gauge: props.gauge,
         }) : null,
-        [engine, type, props, theme, hasData],
+        [engine, type, props, theme, hasData, locale],
     );
     return option;
 }
@@ -178,11 +173,12 @@ function usePointClickEvents(
 function SarakChartContent(props: SarakChartEngineProps): React.ReactElement {
     const theme = useEChartsTheme();
     const text = useLibraryText();
+    const { locale } = useSarakLanguage();
     const type = resolveChartType(props.type, theme.chartType);
     const engine = props.config?.engine ?? 'echarts';
     const dataKey = props.config?.dataKey ?? (CHART_TYPES_WITH_SHORT_VALUE_KEY.includes(type) ? 'v' : 'value');
     const hasData = hasChartData(props, type, dataKey);
-    const option = useResolvedChartOption({ type, props, theme, engine, hasData });
+    const option = useResolvedChartOption({ type, props, theme, engine, hasData, locale });
     const onEvents = usePointClickEvents(props, type, dataKey);
 
     useRechartsCompatibilityWarning(engine, props, type);
@@ -202,7 +198,7 @@ function SarakChartContent(props: SarakChartEngineProps): React.ReactElement {
     }
 
     return (
-        <div className="w-full h-full p-6" role="img" aria-label={ariaLabel}>
+        <div className="w-full h-full p-6" role="img" aria-label={ariaLabel} style={props.height === undefined ? undefined : { height: props.height }}>
             <ReactECharts
                 option={option}
                 style={{ height: '100%', width: '100%' }}

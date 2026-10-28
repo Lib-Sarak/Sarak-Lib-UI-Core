@@ -60,7 +60,7 @@ export const KitchenSinkPreview: React.FC = () => {
                         <div className="flex items-center gap-4">
                             <div className="flex-1 space-y-2">
                                 <label className="text-2xs font-bold uppercase text-[var(--theme-muted)]">Select Dinâmico</label>
-                                <SarakSelect>
+                                <SarakSelect label="Select Dinâmico" hideLabel>
                                     <option>Opção Alpha</option>
                                     <option>Opção Beta</option>
                                 </SarakSelect>

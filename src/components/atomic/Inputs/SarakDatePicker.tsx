@@ -1,18 +1,10 @@
-import React, { useId, useMemo, useState } from 'react';
-import { format, isValid, parseISO } from 'date-fns';
-import { SarakFormGroup } from '../Layouts/SarakFormGroup';
-import { SarakFieldError } from '../Feedback/SarakFieldError';
-import { SarakButton } from '../Buttons/SarakButton';
-import { useFocusTrap } from '../Modals/hooks/useFocusTrap';
-import { useLibraryText } from '../../../core/i18n/useLibraryText';
-import { resolveDateFnsLocale } from '../../../core/i18n/dateFnsLocale';
-import { useSarakLanguage } from '../../../core/i18n/useSarakLanguage';
-import { CalendarPanel, type SarakWeekStart, type SarakDateLocale } from './internal/CalendarPanel';
+import React from 'react';
+import type { SarakWeekStart, SarakDateLocale } from './internal/CalendarPanel';
+import { DatePickerView } from './internal/DatePickerView';
+import { useDatePickerController } from './internal/useDatePickerController';
+import type { SarakDatePickerValue, SarakDatePreset, SarakDatePresetId } from './internal/datePresets';
 
-const ISO = 'yyyy-MM-dd';
-
-/** Valor: string ISO (single) ou par [início, fim] de ISOs (range). */
-export type SarakDatePickerValue = string | [string, string];
+export type { SarakDatePickerValue, SarakDatePreset, SarakDatePresetId } from './internal/datePresets';
 
 export interface SarakDatePickerProps {
     label?: string;
@@ -30,148 +22,19 @@ export interface SarakDatePickerProps {
     style?: React.CSSProperties;
     /** Emite a nova data/intervalo em ISO (Spec 32: `onChange(value)`). */
     onChange?: (value: SarakDatePickerValue) => void;
+    min?: string;
+    max?: string;
+    isDateDisabled?: (iso: string) => boolean;
+    presets?: Array<SarakDatePresetId | SarakDatePreset>;
+    allowTyping?: boolean;
+    clearable?: boolean;
 }
-
-const toDate = (iso?: string): Date | null => {
-    if (!iso) return null;
-    const parsed = parseISO(iso);
-    return isValid(parsed) ? parsed : null;
-};
-
-const readRange = (value: SarakDatePickerValue | undefined): [Date | null, Date | null] => {
-    if (Array.isArray(value)) return [toDate(value[0]), toDate(value[1])];
-    return [toDate(value), null];
-};
 
 /**
  * Componente Atômico: SarakDatePicker (Spec 11, Regra 1)
  * Calendário popover in-house sobre `date-fns`. Suporta seleção única e de intervalo
  * na mesma interface, formatos i18n configuráveis e navegação por teclado (setas).
  */
-export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
-    label,
-    mode = 'single',
-    value,
-    displayFormat = 'dd/MM/yyyy',
-    locale: localeProp,
-    weekStartsOn = 0,
-    placeholder,
-    disabled,
-    error,
-    className = '',
-    style,
-    onChange,
-}: SarakDatePickerProps): React.ReactElement => {
-    const reactId = useId();
-    const labelId = `${reactId}-label`;
-    const errorId = `${reactId}-error`;
-    const [open, setOpen] = useState(false);
-    const { containerRef, handleTrap } = useFocusTrap(open, () => setOpen(false));
-    const t = useLibraryText();
-    const { language } = useSarakLanguage();
-    const locale = localeProp ?? resolveDateFnsLocale(language);
-    const effectivePlaceholder = placeholder ?? t('datePickerPlaceholder');
-
-    const [start, end] = useMemo(() => readRange(value), [value]);
-
-    const display = useMemo(() => {
-        if (!start) return effectivePlaceholder;
-        const head = format(start, displayFormat, { locale });
-        if (mode === 'single' || !end) return head;
-        return `${head}${t('datePickerRangeSeparator')}${format(end, displayFormat, { locale })}`;
-    }, [start, end, mode, displayFormat, locale, effectivePlaceholder, t]);
-
-    const emit = (next: [Date | null, Date | null]): void => {
-        if (mode === 'single') {
-            if (next[0]) onChange?.(format(next[0], ISO));
-            setOpen(false);
-            return;
-        }
-        if (next[0] && next[1]) {
-            onChange?.([format(next[0], ISO), format(next[1], ISO)]);
-            setOpen(false);
-        }
-    };
-
-    const handleSelectDay = (date: Date): void => {
-        if (mode === 'single') {
-            emit([date, null]);
-            return;
-        }
-        // Range: 1º clique fixa o início; 2º fecha o intervalo (reordenando se preciso).
-        if (!start || (start && end)) {
-            onChange?.([format(date, ISO), '']);
-            return;
-        }
-        const ordered: [Date, Date] = date < start ? [date, start] : [start, date];
-        emit(ordered);
-    };
-
-    return (
-        <SarakFormGroup className={className} style={style}>
-            {label && <span id={labelId} className="text-sm font-medium text-[var(--text-muted,rgba(242,246,251,0.55))]">{label}</span>}
-
-            <div className="relative w-full">
-                <SarakButton
-                    type="button"
-                    disabled={disabled}
-                    aria-labelledby={label ? labelId : undefined}
-                    aria-label={!label ? t('datePickerAriaLabel') : undefined}
-                    aria-haspopup="dialog"
-                    aria-expanded={open}
-                    aria-invalid={error ? true : undefined}
-                    aria-describedby={error ? errorId : undefined}
-                    onClick={() => setOpen((prev) => !prev)}
-                    variant="secondary"
-                    fullWidth
-                    rightIcon={
-                        <svg className="w-4 h-4 text-[var(--text-muted,rgba(242,246,251,0.55))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                    }
-                    className="text-left"
-                    // O preset de SarakButton é pensado para rótulo de ação (maiúsculas,
-                    // tracking largo, peso preto) — aqui o conteúdo é um VALOR de campo
-                    // (a data), não um rótulo; neutraliza via `style` (vence a classe) em
-                    // vez de brigar com a cascata do Tailwind. justify-between mantém o
-                    // ícone fixo na borda direita, com o texto à esquerda.
-                    style={{
-                        justifyContent: 'space-between',
-                        backgroundColor: 'var(--sarak-input-bg,var(--color-theme-card,#101622))',
-                        borderColor: 'var(--sarak-input-border-color, var(--border-color,rgba(255,255,255,0.09)))',
-                        padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.75) var(--sarak-layout-gap-md,16px)',
-                        textTransform: 'none',
-                        letterSpacing: 'normal',
-                        fontWeight: 400,
-                    }}
-                >
-                    <span className={start ? 'text-[var(--text-muted,rgba(242,246,251,0.55))]' : 'text-[var(--text-muted,rgba(242,246,251,0.55))]/50'}>
-                        {display}
-                    </span>
-                </SarakButton>
-
-                {open && (
-                    <div
-                        ref={containerRef}
-                        role="dialog"
-                        aria-label={label ?? t('datePickerCalendarAriaLabel')}
-                        onKeyDown={handleTrap}
-                        className="absolute z-30 rounded-input bg-[var(--color-theme-card,#101622)] border border-[var(--border-color,rgba(255,255,255,0.09))] shadow-[var(--dynamic-shadow)]"
-                        style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}
-                    >
-                        <CalendarPanel
-                            mode={mode}
-                            start={start}
-                            end={end}
-                            locale={locale}
-                            weekStartsOn={weekStartsOn}
-                            onSelectDay={handleSelectDay}
-                        />
-                    </div>
-                )}
-            </div>
-
-            <SarakFieldError message={error} fieldId={reactId} />
-        </SarakFormGroup>
-    );
-};
+export const SarakDatePicker = (props: SarakDatePickerProps): React.ReactElement => (
+    <DatePickerView {...useDatePickerController(props)} />
+);

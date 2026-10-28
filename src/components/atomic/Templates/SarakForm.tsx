@@ -28,6 +28,7 @@ export interface SarakFormProps<TData extends Record<string, unknown>> {
     onSuccess?: () => void | Promise<void>;
 }
 
+/** Gera um formulário simples por `mapping`; fluxos CRUD devem compor `SarakFormSection` e os campos. */
 export const SarakForm = <TData extends Record<string, unknown> = Record<string, unknown>>({
     data,
     load,

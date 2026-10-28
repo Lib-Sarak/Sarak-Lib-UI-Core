@@ -10,7 +10,6 @@ export const REMOVED_TOKEN_KEYS = new Set<string>([
     'atmosphereNoiseOpacity',
     'noiseIntensity',
     // Fundidos no token que de fato desenha (ver docs/migracoes.md, `## 8.0.0`): o valor salvo cai no padrão.
-    'colorPalette',        // preset de primária/secundária/terciária — as três cores já são tokens
     'borderRadiusSm',      // escala sem leitor: o raio é `borderRadius` e os raios por componente
     'borderRadiusMd',
     'borderRadiusLg',
