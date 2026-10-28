@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "137"
+proximo_numero_plan: "138"
 ---
 
 # 0. O que é este arquivo
@@ -47,6 +47,7 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 | 3 | [plan-134-catalogo-de-paletas-e-temas](plan/plan-134-catalogo-de-paletas-e-temas.md) | Fazer a lib embarcar de 12 a 15 paletas prontas cobrindo os cinco tipos de harmonia e os 19 temas declararem uma paleta em vez de cores escritas à mão, com a hierarquia de título refeita pela regra comum e aprovada pelo dono numa prévia antes e depois | plan-133-motor-de-paletas | 🟠 Em revisão | specs/09-temas-e-presets.md |
 | 4 | [plan-135-paletas-no-painel-e-no-kit](plan/plan-135-paletas-no-painel-e-no-kit.md) | Fazer o usuário escolher uma paleta pronta ou criar uma a partir de uma cor e de um tipo, com prévia nos dois modos, aplicar e salvar pelo fluxo atual, e continuar ajustando qualquer cor individualmente; e fazer o kit ensinar o tema como estrutura mais paleta | plan-133-motor-de-paletas | 🟢 Aprovada | specs/06-painel-de-customizacao-e-preview.md |
 | 5 | [plan-136-cor-ancora-fundo-tingido-e-harmonia-visivel](plan/plan-136-cor-ancora-fundo-tingido-e-harmonia-visivel.md) | Fazer a troca entre claro e escuro mudar o tom e não a cor da marca, os fundos deixarem de ser preto e branco puros e as paletas de várias cores aparecerem na tela com a distribuição 60-30-10, com presets harmônicos e a criação a partir de uma cor aprovada pelo dono numa prévia | — | 🔴 A executar | specs/specs/09-temas-e-presets.md + specs/arquitetura/02-design-engine.md + specs/adr/024-paleta-calculada-separada-do-tema.md |
+| 6 | [plan-137-bateria-de-navegador-verde-na-rc4](plan/plan-137-bateria-de-navegador-verde-na-rc4.md) | Fazer o npm run cromo-css-real:check terminar sem falha antes da tag 8.0.0-rc.4, consertando na lib o contraste do texto sobre a barra que o host escurece e atualizando os testes de navegador que a campanha deixou para trás, sem afrouxar nenhuma afirmação | — | 🔴 A executar | specs/specs/09-temas-e-presets.md + specs/specs/11-testes-e-cobertura.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🚦 **Campanha da `8.0.0-rc.4` (2026-10-27).** Contrato aceito: [`anexos/rc4-contrato.md`](plan/anexos/rc4-contrato.md). Ordem: a `plan-128` vai **sozinha** (cria o hook de idioma e os arquivos de catálogo das outras); depois `plan-129` ‖ `plan-130` ‖ `plan-131` ‖ `plan-132` ‖ `plan-119` lote 8 ‖ `plan-133`, em paralelo (pastas disjuntas; arquivos compartilhados só por acréscimo); depois da 133, `plan-134` ‖ `plan-135`. A 134 e a 135 geram prévias em `C:\tmp\sarak-rc4-previa\` que o dono aprova durante a revisão. Verificação pelo protocolo do contrato §9: uma vez por plan e a bateria completa uma vez, no fechamento, depois do lote 2 do ERP. A versão (`npm version`) é do dono.

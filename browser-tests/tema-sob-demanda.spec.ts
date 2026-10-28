@@ -20,8 +20,6 @@
  * -------------------------------------------------------------------------
  */
 import { test, expect, chromium, type Browser, type Page } from '@playwright/test';
-import { SARAK_ALL_THEMES } from '../src/core/Design/presets/themes/all';
-import { composeThemeForMode } from '../src/core/Design/presets/themes/compose';
 
 const DESKTOP = { width: 1280, height: 900 } as const;
 const SAVED_KEY = 'sarak-ui-design-v9.0';
@@ -48,13 +46,12 @@ interface ThemeImportGateWindow extends Window {
     __sarakTestThemeImportHeld__?: boolean;
     __releaseSarakTestThemeImport__?: () => void;
     __frames?: Frame[];
+    __sarakThemeProbe?: { primaryOf: (id: string) => string; designOf: (index: number) => Record<string, unknown> };
 }
 
 /** A primária que o tema pinta no próprio modo: a paleta que ele declara, com a sobrescrita dele por cima. */
-const primaryOf = (id: string): string => {
-    const theme = SARAK_ALL_THEMES.find((candidate) => candidate.id === id)!;
-    return String(composeThemeForMode(theme as never, (theme.design.mode as 'light' | 'dark') || 'dark').primaryColor);
-};
+const primaryOf = (page: Page, id: string): Promise<string> =>
+    page.evaluate((themeId) => (window as ThemeImportGateWindow).__sarakThemeProbe!.primaryOf(themeId), id);
 
 /** A cor `#rrggbb` na forma que o navegador computa (`rgb(r, g, b)`). */
 const asComputed = (page: Page, color: string): Promise<string> =>
@@ -114,8 +111,8 @@ test.describe('tema embarcado pedido por código, fora do boot', () => {
         try {
             await page.locator('[data-probe="cor-do-tema"]').waitFor();
             await settle(page);
-            const expected = await asComputed(page, primaryOf('neo-brutalism'));
-            const standard = await asComputed(page, primaryOf('sarak-sovereign'));
+            const expected = await asComputed(page, await primaryOf(page, 'neo-brutalism'));
+            const standard = await asComputed(page, await primaryOf(page, 'sarak-sovereign'));
             expect(expected, 'a prova só vale com primárias distintas').not.toBe(standard);
 
             const withApp = (await frames(page)).filter((frame) => frame.appPresent);
@@ -149,8 +146,8 @@ test.describe('escolher outro tema em tempo de execução', () => {
         try {
             await page.locator('[data-probe="cor-do-tema"]').waitFor();
             await settle(page);
-            const before = await asComputed(page, primaryOf('sarak-sovereign'));
-            const after = await asComputed(page, primaryOf('cyberpunk-neon'));
+            const before = await asComputed(page, await primaryOf(page, 'sarak-sovereign'));
+            const after = await asComputed(page, await primaryOf(page, 'cyberpunk-neon'));
             expect(after, 'a prova só vale com primárias distintas').not.toBe(before);
 
             const mark = (await frames(page)).length;
@@ -170,7 +167,15 @@ test.describe('escolher outro tema em tempo de execução', () => {
 
 test.describe('tema salvo', () => {
     test('pinta direto do design guardado: o primeiro quadro já é a aplicação, sem fallback e sem o padrão', async () => {
-        const saved = JSON.stringify({ ...SARAK_ALL_THEMES[0].design, primaryColor: '#12ab34' });
+        const reader = await browser.newPage({ viewport: DESKTOP });
+        let firstDesign: Record<string, unknown>;
+        try {
+            await reader.goto(`${harnessUrl}?cena=tema-sob-demanda&pedido=sarak-sovereign`);
+            firstDesign = await reader.evaluate(() => (window as ThemeImportGateWindow).__sarakThemeProbe!.designOf(0));
+        } finally {
+            await reader.close();
+        }
+        const saved = JSON.stringify({ ...firstDesign, primaryColor: '#12ab34' });
         const withStorage = await browser.newPage({ viewport: DESKTOP });
         try {
             await withStorage.addInitScript(([key, value]) => window.localStorage.setItem(key, value), [SAVED_KEY, saved] as const);

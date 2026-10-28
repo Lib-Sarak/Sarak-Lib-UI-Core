@@ -61,6 +61,8 @@ import {
 } from '@sarak/lib-ui-core';
 import { SarakDrawer as SarakDrawerSource } from '../../src/components/atomic/Modals/SarakDrawer';
 import { SarakUIProvider as SarakUIProviderSource } from '../../src/core/Provider/SarakUIProvider';
+import { SARAK_ALL_THEMES } from '../../src/core/Design/presets/themes/all';
+import { composeThemeForMode } from '../../src/core/Design/presets/themes/compose';
 
 const NAV_ITEMS = [
     { id: 'inicio', label: 'Início', href: '/inicio' },
@@ -1152,7 +1154,20 @@ const ThemeSwitchScene: React.FC = () => {
  */
 interface ThemeFrame { appPresent: boolean; color: string; fallback: boolean }
 interface BodyFrame { appPresent: boolean; backgroundColor: string; transitionProperty: string; ready: boolean }
-declare global { interface Window { __frames?: ThemeFrame[]; __bodyFrames?: BodyFrame[] } }
+interface ThemeProbe { primaryOf: (id: string) => string; designOf: (index: number) => Record<string, unknown> }
+declare global { interface Window { __frames?: ThemeFrame[]; __bodyFrames?: BodyFrame[]; __sarakThemeProbe?: ThemeProbe } }
+
+/**
+ * Calcula DENTRO da página o que a spec compara: o Node do Playwright recusa o JSON que `master-map` importa, o
+ * bundle do harness não. `primaryOf` é a primária que o tema pinta no próprio modo (paleta + sobrescrita do tema).
+ */
+window.__sarakThemeProbe = {
+    primaryOf: (id) => {
+        const theme = SARAK_ALL_THEMES.find((candidate) => candidate.id === id)!;
+        return String(composeThemeForMode(theme as never, (theme.design.mode as 'light' | 'dark') || 'dark').primaryColor);
+    },
+    designOf: (index) => ({ ...SARAK_ALL_THEMES[index].design }),
+};
 
 function startFrameRecorder(): void {
     window.__frames = [];
