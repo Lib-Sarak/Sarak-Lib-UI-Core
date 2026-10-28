@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactElement } from 'react';
 import type { SarakValueFormat } from '../../../shared/format';
 import { sarakFormatCurrency, sarakFormatDate, sarakFormatNumber, sarakFormatPercent } from '../../../shared/format';
-import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
+import { useSarakLanguage } from '../../../core/i18n/useSarakLanguage';
 
 export interface SarakValueProps {
     value: number | Date | string | null | undefined;
@@ -39,8 +39,8 @@ const signColors: Record<'positive' | 'negative' | 'neutral', string> = {
 };
 
 export const SarakValue = ({ value, format, locale: localeOverride, signColor = true, size = 'md', className = '' }: SarakValueProps): ReactElement => {
-    const sarak = useSarakUIOptional();
-    const locale = localeOverride ?? sarak?.preferences.language;
+    const { locale: languageLocale } = useSarakLanguage();
+    const locale = localeOverride ?? languageLocale;
     const numericValue = typeof value === 'number' ? value : null;
     const sign = numericValue === null || !Number.isFinite(numericValue) || numericValue === 0
         ? 'neutral'

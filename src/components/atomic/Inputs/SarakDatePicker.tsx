@@ -5,6 +5,8 @@ import { SarakFieldError } from '../Feedback/SarakFieldError';
 import { SarakButton } from '../Buttons/SarakButton';
 import { useFocusTrap } from '../Modals/hooks/useFocusTrap';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
+import { resolveDateFnsLocale } from '../../../core/i18n/dateFnsLocale';
+import { useSarakLanguage } from '../../../core/i18n/useSarakLanguage';
 import { CalendarPanel, type SarakWeekStart, type SarakDateLocale } from './internal/CalendarPanel';
 
 const ISO = 'yyyy-MM-dd';
@@ -18,7 +20,7 @@ export interface SarakDatePickerProps {
     value?: SarakDatePickerValue;
     /** Formato de exibição (i18n via JSON), ex.: `dd/MM/yyyy`. */
     displayFormat?: string;
-    /** Locale do `date-fns` para nomes de mês/dia (i18n). */
+    /** Locale do `date-fns` para nomes de mês/dia; omitido, segue o idioma escolhido (`useSarakLanguage`). */
     locale?: SarakDateLocale;
     weekStartsOn?: SarakWeekStart;
     placeholder?: string;
@@ -51,7 +53,7 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
     mode = 'single',
     value,
     displayFormat = 'dd/MM/yyyy',
-    locale,
+    locale: localeProp,
     weekStartsOn = 0,
     placeholder,
     disabled,
@@ -66,6 +68,8 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
     const [open, setOpen] = useState(false);
     const { containerRef, handleTrap } = useFocusTrap(open, () => setOpen(false));
     const t = useLibraryText();
+    const { language } = useSarakLanguage();
+    const locale = localeProp ?? resolveDateFnsLocale(language);
     const effectivePlaceholder = placeholder ?? t('datePickerPlaceholder');
 
     const [start, end] = useMemo(() => readRange(value), [value]);

@@ -13,6 +13,9 @@ export { default as SarakUIProvider, useSarakUI } from './core/Provider/SarakUIP
 export { sarakCreateThemeBootCss } from './core/Provider/utils/createThemeBootCss';
 // Modo de consumo (Spec 24): `app` (default) vs `embedded` (ilha sobre front existente).
 export type { SarakUIMode } from './core/Provider/types';
+export type { SarakI18nOptions, SarakI18nLanguage } from './core/i18n/types';
+export { useSarakLanguage } from './core/i18n/useSarakLanguage';
+export type { SarakLanguageState } from './core/i18n/useSarakLanguage';
 // plan-45: os tipos que as assinaturas públicas usam (props, retorno de `useSarakUI`,
 // membros de contexto) e que nunca chegaram ao barril — o consumidor tinha de
 // derivá-los estruturalmente (`ComponentProps<typeof SarakUIProvider>` etc.).

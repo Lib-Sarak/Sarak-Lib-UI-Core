@@ -8,8 +8,8 @@ import React from 'react';
 import { SarakAvatar } from '../../Atoms/SarakAvatar';
 import { SarakBadge } from '../../Feedback/SarakBadge';
 import type { SarakBadgeVariant } from '../../Feedback/SarakBadge';
-import { useSarakUIOptional } from '../../../../core/Provider/SarakUIProvider';
-import { resolveLibraryLanguage, useLibraryText } from '../../../../core/i18n/useLibraryText';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
+import { useSarakLanguage } from '../../../../core/i18n/useSarakLanguage';
 import type { LibraryTextKey } from '../../../../core/i18n/catalog';
 import { sarakIsOverdue, sarakParseDueDate } from './kanbanModel';
 import type { SarakKanbanCard, SarakKanbanPriority } from './kanbanTypes';
@@ -34,10 +34,10 @@ const row: React.CSSProperties = {
 
 function useDueLabel(dueDate: string | undefined) {
     const text = useLibraryText();
-    const language = resolveLibraryLanguage(useSarakUIOptional()?.design?.language);
+    const { locale } = useSarakLanguage();
     const parsed = dueDate ? sarakParseDueDate(dueDate) : null;
     if (!dueDate || !parsed) return null;
-    const date = parsed.toLocaleDateString(language, { day: '2-digit', month: 'short' });
+    const date = parsed.toLocaleDateString(locale, { day: '2-digit', month: 'short' });
     const overdue = sarakIsOverdue(dueDate);
     return { overdue, label: text(overdue ? 'kanbanDueOverdue' : 'kanbanDue', { date }) };
 }

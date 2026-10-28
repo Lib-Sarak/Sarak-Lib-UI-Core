@@ -80,6 +80,9 @@ nem tag ([[03-versionamento-e-release]]).
   `col-span-*` junto aos de `src/components/atomic/Layouts/`,
   `src/components/atomic/Layouts/SarakFlex.tsx`, `docs/migracoes.md` (seções `## 8.0.0` e `## 7.0.0`),
   `docs/persistencia-de-tema.md`, `sarak-ui/GUIA-FRONTEND.md` (autoria) e os gerados.
+- **Lote 8:** `sarak-ui/templates/` (`tela-lista.tsx`, `tela-detalhe.tsx`, `tela-exemplo.tsx`, `README.md`),
+  `sarak-ui/GUIA-FRONTEND.md` (autoria), `src/components/atomic/Templates/SarakResourceRow.tsx` e o teste dele, `docs/migracoes.md`
+  (só se o `SarakResourceRow` mudar o que desenha). Os gerados ficam para o fechamento da `rc.4`.
 - **Lotes do registro (§5.1):** os arquivos que cada linha nomear, declarados pelo revisor ao abrir o lote.
 - **Lote final:** a skill `ui-integra-consumidor` (fonte do kit), `sarak-ui/GUIA-FRONTEND.md` (autoria), a CLI `bin/` só se uma
   lição pedir verificação nova no `sarak-ui check`, `docs/migracoes.md`, e os gerados (`guide`, `dev-kit`).
@@ -303,6 +306,27 @@ real de token de um tema embarcado.
 | C6 | seletor de organização (tenant) no cromo: os sistemas multi-tenant mantêm o próprio | login | **proposta do revisor: depois da 8.0.0** (função aditiva; o slot já serve), ao `00-backlog` no lote final | final | aberta |
 | C7 | histórico de versões: entradas de `docs/migracoes.md` sem versão no título e tokens removidos/renomeados sem forma de dado | login | **proposta do revisor:** lote final — toda entrada com a versão, e o `catalog.json` do kit com a lista de tokens removidos e o destino de cada um | final | aberta |
 | C5 | span do grid de 12 colunas sem contrato público (`15-divida-conhecida` achado 42) | lote 0 (30) | **dono, 2026-10-19:** declarar `col-span-*` como contrato suportado, com teste que trava o comportamento; `SarakGridItem` ao backlog | 2 | fechada |
+| I33 | **o ERP não achou o valor por dispositivo que a lib tem** e pediu `{ mobile, tablet, desktop }`: `SarakResponsiveValue` = `{ mob, tab, desk }` está no barril e no catálogo, mas o guia o mostra uma vez só, na linha ~1208 de ~1240, como "refino opcional" de 2 props, e o único exemplo do kit é o `tela-exemplo.tsx:106`, ao lado de um `gap="md"` inválido | ERP (pedido da `rc.4`) | **dono, 2026-10-27:** corrigir a exposição — seção curta e visível no guia ("valor por dispositivo"), com o tipo, o formato e a lista das props que o aceitam (lida do catálogo, não transcrita), e um exemplo correto num molde | 8 | aberta |
+| I34 | `<main>` aninhado em `tela-lista.tsx` e `tela-detalhe.tsx`: o cromo já fornece o `<main>` (`ChromeContentRegion.tsx:31`) | ERP (Kit 1) | corrigir o molde | 8 | aberta |
+| I35 | selo dentro de selo no `SarakResourceRow` | ERP (Kit 2) | corrigir o componente — um selo só, com teste | 8 | aberta |
+| I36 | `gap="md"` inválido no `tela-exemplo.tsx:106` (o tipo aceita `spacing-md`, `SarakLayoutGap` em `src/core/Design/resolveToken.ts:29`) | ERP (Kit 3) | corrigir o molde | 8 | aberta |
+| I37 | `tela-exemplo` contraria a §6 do guia | ERP (Kit 4) | corrigir o molde para seguir a §6 (ou a §6, se ela estiver errada — dizer qual e por quê) | 8 | aberta |
+| I38 | `sarak-ui/templates/README.md` não lista os moldes novos | ERP (Kit 5) | listar todos os moldes da pasta | 8 | aberta |
+| I39 | `h1`/`h2` duplicados entre o cabeçalho da página e o cromo nos moldes; o cromo não emite heading (nenhum `<h1>`/`<h2>` em `src/components/Layout/`) — a duplicação está nos moldes | ERP (Kit 6) | corrigir os moldes: um `h1` por página, o do `SarakPageHeader` | 8 | aberta |
+| I40 | o guia não diz que o cromo tem altura própria (`100dvh`, `SarakAppChrome.tsx:197`) e o ERP mantém `height: 100%` em `html/body/#root` em oito entradas (demanda 12) | ERP (demanda 12) | uma linha no guia, **depois** da medição em navegador da `plan-131` (se reproduzir o defeito, o texto diz o conserto) | 8 | aberta |
+
+**Lote 8 — o kit da `rc.4`** (linhas **I33 a I40** da §5.1; sai na `v8.0.0-rc.4`; segue o protocolo de verificação do
+[`anexos/rc4-contrato.md`](anexos/rc4-contrato.md) §9). Roda em paralelo com as `plan-129` a `plan-132`; a I40 espera a medição da `plan-131`.
+8.1. **(I34, I36, I37, I39)** Moldes corrigidos. Nenhum teste renderiza os moldes hoje (estão fora de `src/`) e não se cria um
+para isto: a prova é `grep` — nenhum `<main` em `sarak-ui/templates/*.tsx`, no máximo um `<h1`/`level={1}` por molde, nenhum
+`gap="md"` — colado no resumo, mais cada prop usada conferida contra o tipo dela.
+8.2. **(I35)** `SarakResourceRow` com um selo só, e teste por papel.
+8.3. **(I33)** Seção "valor por dispositivo" no guia; o exemplo correto no `tela-exemplo.tsx`. Os nomes do contrato da `rc.4`
+(`SarakGridItem span`, `SarakGrid columns`) entram na lista quando as plans deles estiverem aprovadas.
+8.4. **(I38)** README dos moldes completo.
+8.5. **(I40)** Depois da `plan-131`: a linha do guia sobre a altura do cromo.
+8.6. `npm run verify -- --tier=quick` uma vez, resumo colado. **Revisor:** `npx vitest run SarakResourceRow` uma vez + o `grep` do 8.1 +
+leitura do guia e dos moldes como um importador que começa do zero. `guide` e `dev-kit` rodam no fechamento da `rc.4`.
 
 **Lote final — o kit de importação consolidado.**
 F.1. Aplicar **uma vez**, sem repetir o que já está lá (R17), as lições do anexo e do registro: na skill `ui-integra-consumidor`, no

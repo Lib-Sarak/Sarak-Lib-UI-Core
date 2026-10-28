@@ -3,8 +3,7 @@
  * leitor de tela e dica, e o rótulo curto de cada marca do cabeçalho conforme a escala. Sem Provider, português.
  */
 import { useMemo } from 'react';
-import { useSarakUIOptional } from '../../../../core/Provider/SarakUIProvider';
-import { resolveLibraryLanguage } from '../../../../core/i18n/useLibraryText';
+import { useSarakLanguage } from '../../../../core/i18n/useSarakLanguage';
 import type { SarakGanttScale } from './ganttScale';
 
 export interface GanttFormats {
@@ -18,12 +17,12 @@ export interface GanttFormats {
     tickContext: (date: Date, scale: SarakGanttScale, isFirst: boolean) => string | null;
 }
 
-export const buildGanttFormats = (language: string): GanttFormats => {
-    const full = new Intl.DateTimeFormat(language, { dateStyle: 'medium' });
-    const day = new Intl.DateTimeFormat(language, { day: 'numeric' });
-    const dayMonth = new Intl.DateTimeFormat(language, { day: 'numeric', month: 'short' });
-    const month = new Intl.DateTimeFormat(language, { month: 'short', year: 'numeric' });
-    const monthOnly = new Intl.DateTimeFormat(language, { month: 'short' });
+export const buildGanttFormats = (locale: string): GanttFormats => {
+    const full = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' });
+    const day = new Intl.DateTimeFormat(locale, { day: 'numeric' });
+    const dayMonth = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short' });
+    const month = new Intl.DateTimeFormat(locale, { month: 'short', year: 'numeric' });
+    const monthOnly = new Intl.DateTimeFormat(locale, { month: 'short' });
     return {
         full,
         tick: (date, scale) => {
@@ -36,6 +35,6 @@ export const buildGanttFormats = (language: string): GanttFormats => {
 };
 
 export const useGanttFormats = (): GanttFormats => {
-    const language = resolveLibraryLanguage(useSarakUIOptional()?.design?.language);
-    return useMemo(() => buildGanttFormats(language), [language]);
+    const { locale } = useSarakLanguage();
+    return useMemo(() => buildGanttFormats(locale), [locale]);
 };

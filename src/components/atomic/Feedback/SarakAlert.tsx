@@ -59,8 +59,8 @@ export interface SarakAlertProps {
     variant?: SarakAlertVariant;
     /** Define o título visível e o nome acessível do aviso; é obrigatória e, se omitida em runtime, o aviso fica sem título. */
     title: string;
-    /** Define o texto simples do aviso; é obrigatório e, se omitido em runtime, nenhum texto será exibido. */
-    message: string;
+    /** Define o conteúdo do aviso: texto ou qualquer `ReactNode`; é obrigatório e, se omitido em runtime, nenhum conteúdo será exibido. */
+    message: React.ReactNode;
     /** Exibe uma ação com rótulo e callback; omitida, não há botão, e clicar nela não fecha o aviso automaticamente. */
     action?: {
         label: string;
@@ -127,7 +127,7 @@ export const SarakAlert = ({
             </span>
             <div className="flex-1" style={ALERT_CONTENT_STYLE}>
                 <strong id={titleId}>{title}</strong>
-                <p id={messageId} style={{ margin: 0 }}>{message}</p>
+                <div id={messageId}>{message}</div>
                 {renderAlertAction(action)}
             </div>
             {renderAlertCloseButton(onClose, text('alertClose'))}

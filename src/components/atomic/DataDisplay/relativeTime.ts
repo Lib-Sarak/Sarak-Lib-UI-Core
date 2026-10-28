@@ -1,10 +1,9 @@
 /**
- * Horário relativo ("há 3 horas") no idioma da lib, para o fio de comentários e o
+ * Horário relativo ("há 3 horas") no locale que vale na tela (`useSarakLanguage`), para o fio de comentários e o
  * histórico. Usa `Intl.RelativeTimeFormat`: nenhuma tradução fica no catálogo.
  */
 
-import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
-import { resolveLibraryLanguage } from '../../../core/i18n/useLibraryText';
+import { useSarakLanguage } from '../../../core/i18n/useSarakLanguage';
 
 const SECONDS_PER_UNIT: ReadonlyArray<readonly [Intl.RelativeTimeFormatUnit, number]> = [
     ['year', 31_536_000],
@@ -26,18 +25,18 @@ export const parseTimestamp = (value: SarakTimestamp): Date | null => {
  * Diferença até `now` na maior unidade que cabe; menos de um minuto é "agora".
  * Data inválida devolve texto vazio.
  */
-export const formatRelativeTime = (value: SarakTimestamp, language: string, now: Date = new Date()): string => {
+export const formatRelativeTime = (value: SarakTimestamp, locale: string, now: Date = new Date()): string => {
     const date = parseTimestamp(value);
     if (!date) return '';
     const diffSeconds = Math.round((date.getTime() - now.getTime()) / 1000);
-    const formatter = new Intl.RelativeTimeFormat(language, { numeric: 'auto' });
+    const formatter = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
     const match = SECONDS_PER_UNIT.find(([, seconds]) => Math.abs(diffSeconds) >= seconds);
     if (!match) return formatter.format(0, 'second');
     return formatter.format(Math.round(diffSeconds / match[1]), match[0]);
 };
 
-/** Formatador já preso ao idioma que vale (`design.language`, ou português sem Provider). */
+/** Formatador já preso ao locale que vale (`useSarakLanguage`; `pt-BR` sem Provider). */
 export function useRelativeTime(): (value: SarakTimestamp) => string {
-    const language = resolveLibraryLanguage(useSarakUIOptional()?.design?.language);
-    return (value) => formatRelativeTime(value, language);
+    const { locale } = useSarakLanguage();
+    return (value) => formatRelativeTime(value, locale);
 }

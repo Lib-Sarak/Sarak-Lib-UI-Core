@@ -17,8 +17,8 @@ import { buildMonthMatrix, type SarakWeekStart } from '../../Inputs/internal/cal
 import { SarakButton } from '../../Buttons/SarakButton';
 import { SarakIconButton } from '../../Buttons/SarakIconButton';
 import { SarakIcon } from '../../Icon/SarakIcon';
-import { useSarakUIOptional } from '../../../../core/Provider/SarakUIProvider';
-import { resolveLibraryLanguage, useLibraryText } from '../../../../core/i18n/useLibraryText';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
+import { useSarakLanguage } from '../../../../core/i18n/useSarakLanguage';
 import { calendarDayKey, distributeCalendarEvents, moveCalendarFocus, type SarakCalendarEvent } from './calendarEvents';
 import { CalendarDayCell } from './CalendarDayCell';
 
@@ -71,18 +71,18 @@ function useCalendarMonth(month: Date | undefined, defaultMonth: Date | undefine
     return [viewMonth, changeMonth] as const;
 }
 
-/** Formatadores no idioma da lib: mês e ano do título, dia da semana e data por extenso. */
+/** Formatadores no locale que vale na tela: mês e ano do título, dia da semana e data por extenso. */
 function useCalendarFormats() {
-    const language = resolveLibraryLanguage(useSarakUIOptional()?.design?.language);
+    const { locale } = useSarakLanguage();
     return useMemo(
         () => ({
-            language,
-            month: new Intl.DateTimeFormat(language, { month: 'long', year: 'numeric' }),
-            weekday: new Intl.DateTimeFormat(language, { weekday: 'short' }),
-            weekdayLong: new Intl.DateTimeFormat(language, { weekday: 'long' }),
-            day: new Intl.DateTimeFormat(language, { dateStyle: 'full' }),
+            language: locale,
+            month: new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }),
+            weekday: new Intl.DateTimeFormat(locale, { weekday: 'short' }),
+            weekdayLong: new Intl.DateTimeFormat(locale, { weekday: 'long' }),
+            day: new Intl.DateTimeFormat(locale, { dateStyle: 'full' }),
         }),
-        [language],
+        [locale],
     );
 }
 

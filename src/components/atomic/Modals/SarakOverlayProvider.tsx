@@ -8,7 +8,7 @@
  * API do componente para diálogos com resultado booleano.
  *
  * O overlay aceita `title` + `message`; `confirm()` também permite rótulos customizados
- * e tom destrutivo. Conteúdo rico continua reservado para refinamento posterior.
+ * e tom destrutivo. `message` aceita `ReactNode`.
  * A confirmação resolve `false` ao cancelar, fechar, substituir o overlay ou desmontar.
  */
 
@@ -21,15 +21,15 @@ import { SarakModal } from './SarakModal';
 export interface SarakOverlayRequest {
     kind: 'modal' | 'drawer';
     title?: string;
-    message?: string;
+    message?: React.ReactNode;
 }
 
 /** Opções visuais e textuais do diálogo de confirmação imperativo. */
 export interface SarakConfirmOptions {
     /** Título do diálogo. */
     title: string;
-    /** Mensagem que explica a ação a confirmar. */
-    message: string;
+    /** Mensagem que explica a ação a confirmar: texto ou qualquer `ReactNode`. */
+    message: React.ReactNode;
     /** Rótulo do botão de confirmação (padrão localizado: Confirmar). */
     confirmLabel?: string;
     /** Rótulo do botão de cancelamento (padrão localizado: Cancelar). */
@@ -125,12 +125,12 @@ const OverlayHost = ({ current, close, finishConfirmation }: {
                 <ModalConfirmationActions confirmation={current.confirmation} onFinish={finishConfirmation} />
             ) : undefined}
         >
-            <p>{current?.message}</p>
+            <div>{current?.message}</div>
         </SarakModal>
         <SarakDrawer isOpen={current?.kind === 'drawer'} onClose={close}>
             <div style={{ padding: 'var(--sarak-layout-gap-lg, 24px)' }}>
                 {current?.title && <h2 className="text-lg font-bold" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>{current.title}</h2>}
-                <p>{current?.message}</p>
+                <div>{current?.message}</div>
             </div>
         </SarakDrawer>
     </>

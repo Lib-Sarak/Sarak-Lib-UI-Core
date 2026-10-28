@@ -1077,7 +1077,7 @@ Medido em navegador (lote 4):
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v8.0.0-rc.3; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **398** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **403** nomes (componentes, tipos, hooks e helpers).
 
 ### A.1 Componentes públicos (111)
 
@@ -1182,7 +1182,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Templates | **SarakDescriptionList** | `items` |
 | Templates | **SarakExpandableMatrix** | `data` · `subItems` · `activeMapping` · `onToggle` · `renderItemHeader` · `manifest` |
 | Templates | **SarakFilterBar** | `ariaLabel` · `children` · `actions` · `clearFilters` |
-| Templates | **SarakFilterSelect** | `col` · `placeholder` · `filters` · `onChange` · `options` |
+| Templates | **SarakFilterSelect** | `col` · `placeholder` · `label` · `filters` · `onChange` · `options` |
 | Templates | **SarakForm** | `data` · `load` · `label` · `mapping` · `mode` · `initialData` · `onSubmit` · `onSuccess` |
 | Templates | **SarakImageCard** | `src` · `alt` · `title` · `subtitle` · `children` · `className` · `onClick` |
 | Templates | **SarakManagementGrid** | `data` · `load` · `groupBy` · `ghostGroups` · `mapping` · `label` · `description` · `headerActions` · `groupActions` · `formMapping` · `onAction` · `onToggle` · `onDelete` · `onCreate` |

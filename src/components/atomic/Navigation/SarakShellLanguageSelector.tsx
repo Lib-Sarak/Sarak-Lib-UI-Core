@@ -5,6 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { LANGUAGES } from '../../../core/i18n/languages';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { languageCode, primaryLanguage } from '../../../core/i18n/resolveLanguage';
+import { useSarakLanguage } from '../../../core/i18n/useSarakLanguage';
+import type { SarakI18nLanguage } from '../../../core/i18n/types';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakButton } from '../Buttons/SarakButton';
 import { SarakMenuItem } from './SarakMenuItem';
@@ -23,22 +26,32 @@ interface ResolvedLanguage {
 /** Idioma habilitado que não bate com o catálogo curado
  *  ainda conta para a regra de montagem — é o tema quem decide o conjunto,
  *  não o catálogo de rótulos/bandeiras conhecidos. */
-const resolveLanguage = (code: string): ResolvedLanguage => {
-    const known = LANGUAGES.find((lang) => lang.id === code);
-    return known ? { id: known.id, name: known.name, flag: known.flag } : { id: code, name: code, flag: '🌐' };
+const resolveLanguage = (entry: SarakI18nLanguage): ResolvedLanguage => {
+    const code = languageCode(entry);
+    const known = LANGUAGES.find((lang) => lang.id === primaryLanguage(code));
+    const name = typeof entry === 'object' ? entry.label : known?.name ?? code;
+    return { id: code, name, flag: known?.flag ?? '🌐' };
 };
 
+/** Idioma atual na lista: código exato, senão pela parte primária (`pt` ↔ `pt-BR`), senão o primeiro. */
+const findCurrent = (list: ResolvedLanguage[], code: string): ResolvedLanguage =>
+    list.find((lang) => lang.id === code)
+    ?? list.find((lang) => primaryLanguage(lang.id) === primaryLanguage(code))
+    ?? list[0];
+
 /**
- * ShellLanguageSelector — lista os idiomas que o TEMA habilita
- * (`design.enabledLanguages`) e grava a escolha como PREFERÊNCIA do usuário
- * (`updatePreferences({ language })`), nunca no tema (specs/09 §4.7). Um
+ * ShellLanguageSelector — lista os idiomas do SISTEMA (`options.i18n.languages`) ou, sem
+ * eles, os que o TEMA habilita (`design.enabledLanguages`). A escolha vai por `setLanguage`:
+ * avisa `onLanguageChange` e, sem idioma controlado, grava a PREFERÊNCIA do usuário, nunca o
+ * tema (specs/09 §4.7). Um
  * idioma só, ou nenhum, não monta — não há escolha possível
  * (ADR-014: "só monta quando tem com o que funcionar").
  */
 export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProps> = ({
     variant = 'horizontal'
 }) => {
-    const { design, updatePreferences } = useSarakUI();
+    const { design, options } = useSarakUI();
+    const { language, setLanguage } = useSarakLanguage();
     const t = useLibraryText();
     const [isOpen, setIsOpen] = useState(false);
 
@@ -56,18 +69,14 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
         );
     }
 
-    const enabledLanguages = (design?.enabledLanguages || []).map(resolveLanguage);
+    const enabledLanguages = (options?.i18n?.languages ?? design?.enabledLanguages ?? []).map(resolveLanguage);
     if (enabledLanguages.length <= 1) return null;
 
-    // `design` já é o EFETIVO (`overlayPreferences` sobrepõe a preferência por cima
-    // do tema) — é o único idioma que vale: a preferência, se o tema a oferece E a
-    // habilita; senão, o idioma do próprio tema. Ler a preferência crua aqui mostraria
-    // um idioma que o tema não habilita, ou ignoraria a preferência estar desligada.
-    const currentCode = design?.language || enabledLanguages[0].id;
-    const currentLang = enabledLanguages.find((lang) => lang.id === currentCode) || enabledLanguages[0];
+    // `language` é a resolução única (controlado > preferência > tema > pt): o seletor mostra o que vale na tela.
+    const currentLang = findCurrent(enabledLanguages, language);
 
     const selectLanguage = (code: string) => {
-        updatePreferences({ language: code });
+        setLanguage(code);
         setIsOpen(false);
     };
 

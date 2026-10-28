@@ -1318,6 +1318,31 @@ A galeria de temas se adapta à largura do quadro, permite várias colunas e man
 
 **O que fazer:** não é necessária migração de código. Se o consumidor adicionou CSS para corrigir as cores das opções nativas, pode remover essa compensação; as cores agora seguem os tokens do tema. Mantenha overrides que expressem uma escolha visual deliberada.
 
+### O idioma é do sistema: `options.i18n`, `useSarakLanguage`, formatação única e conteúdo rico no feedback (plan-128)
+
+**Novo (aditivo).** O sistema declara os idiomas, o atual e recebe a troca:
+
+```tsx
+<SarakUIProvider options={{ i18n: { languages: ['pt-BR', 'en-US'], language: i18n.language,
+  onLanguageChange: (code) => i18n.changeLanguage(code) } }}>
+```
+
+Textos da lib, formatação de número, moeda e data, nome de mês do `SarakDatePicker` e o seletor leem **uma resolução só**
+(`useSarakLanguage`): `i18n.language` (controlado) > preferência gravada > `design.language` > `pt`. Com `language`
+controlado, a troca no seletor chama `onLanguageChange` e não grava preferência. Os textos usam a parte primária (`pt-BR` →
+`pt`); idioma fora dos seis cai em português nos textos e é formatado no código pedido. A lib não traduz o texto do sistema.
+
+**Muda o comportamento (Q3).** A formatação sem `locale` explícito (`SarakValue`, `SarakCurrencyInput`) segue o idioma
+escolhido, não mais o do navegador; o `SarakDatePicker` sem `locale` passa do inglês para esse idioma. Para outro locale em um
+componente, passe `locale` nele.
+
+**Muda o comportamento (Q4).** A opção inicial do `SarakFilterSelect` deixa de ser o `(All)` fixo e sai do catálogo da lib
+(`Todos`, `All`, `Tous`…). `placeholder` passa a valer; `options` aceita `string[]` ou `{ label, value }[]`; `label` é o nome
+acessível. Só quebra teste que procure `(All)`.
+
+**Muda o tipo (Q6).** `SarakConfirmOptions.message` e `SarakAlertProps.message` viram `ReactNode` (`title` segue `string`).
+Só quebra quem **lê** `.message` como `string`.
+
 ## 7.0.0 — Os nomes públicos passam a identificar a biblioteca
 
 **Classificação: MAJOR** — nomes importados pelo barril público recebem o prefixo Sarak.

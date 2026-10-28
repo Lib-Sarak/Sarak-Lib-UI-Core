@@ -161,6 +161,7 @@
     "SarakFilterBarProps",
     "SarakFilterConfig",
     "SarakFilterSelect",
+    "SarakFilterSelectOption",
     "SarakFilterSelectProps",
     "SarakFlex",
     "SarakFlexDirection",
@@ -186,6 +187,8 @@
     "SarakHelpButton",
     "SarakHidden",
     "SarakHiddenProps",
+    "SarakI18nLanguage",
+    "SarakI18nOptions",
     "SarakIcon",
     "SarakIconButton",
     "SarakIconButtonProps",
@@ -206,6 +209,7 @@
     "SarakKanbanPriority",
     "SarakKanbanProps",
     "SarakKanbanSubtasks",
+    "SarakLanguageState",
     "SarakLayoutGap",
     "SarakLightbox",
     "SarakLightboxImage",
@@ -406,6 +410,7 @@
     "useModalLayoutStyles",
     "useOverlay",
     "useSarakDevice",
+    "useSarakLanguage",
     "useSarakPreferences",
     "useSarakUI",
     "useToast"
@@ -543,9 +548,9 @@
         },
         {
           "name": "message",
-          "type": "string",
+          "type": "React.ReactNode",
           "optional": false,
-          "doc": "Define o texto simples do aviso; é obrigatório e, se omitido em runtime, nenhum texto será exibido."
+          "doc": "Define o conteúdo do aviso: texto ou qualquer `ReactNode`; é obrigatório e, se omitido em runtime, nenhum conteúdo será exibido."
         },
         {
           "name": "action",
@@ -2117,7 +2122,7 @@
           "name": "locale",
           "type": "SarakDateLocale",
           "optional": true,
-          "doc": "Locale do `date-fns` para nomes de mês/dia (i18n)."
+          "doc": "Locale do `date-fns` para nomes de mês/dia; omitido, segue o idioma escolhido (`useSarakLanguage`)."
         },
         {
           "name": "weekStartsOn",
@@ -2486,7 +2491,13 @@
           "name": "placeholder",
           "type": "string",
           "optional": true,
-          "doc": "Não altera o texto do seletor nesta implementação; omitida ou preenchida, a opção inicial continua fixa como `(All)`."
+          "doc": "Texto da opção inicial (valor vazio); omitido, sai do catálogo da lib no idioma escolhido (`Todos`, `All`…)."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome acessível do seletor; omitido, o seletor não ganha rótulo próprio."
         },
         {
           "name": "filters",
@@ -2502,9 +2513,9 @@
         },
         {
           "name": "options",
-          "type": "string[]",
+          "type": "string[] | SarakFilterSelectOption[]",
           "optional": false,
-          "doc": "Valores disponíveis além da opção fixa `(All)`; obrigatória, mesmo quando a lista estiver vazia."
+          "doc": "Valores disponíveis além da opção inicial: textos simples ou pares `{ label, value }`; obrigatória, mesmo vazia."
         }
       ]
     },
@@ -11405,6 +11416,6 @@
   "kitStamp": {
     "libVersion": "8.0.0-rc.3",
     "kitSchemaVersion": 1,
-    "kitHash": "9185ee099b9d"
+    "kitHash": "81e63c86e97c"
   }
 }

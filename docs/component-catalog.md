@@ -121,7 +121,7 @@ Props (`SarakAlertProps` — `src/components/atomic/Feedback/SarakAlert.tsx`):
 | --- | --- | --- | --- |
 | `variant` | `SarakAlertVariant` | não | Define a intenção `info`, `success`, `warning` ou `error`; omitida, usa `info`. Só `error` recebe anúncio assertivo. |
 | `title` | `string` | sim | Define o título visível e o nome acessível do aviso; é obrigatória e, se omitida em runtime, o aviso fica sem título. |
-| `message` | `string` | sim | Define o texto simples do aviso; é obrigatório e, se omitido em runtime, nenhum texto será exibido. |
+| `message` | `React.ReactNode` | sim | Define o conteúdo do aviso: texto ou qualquer `ReactNode`; é obrigatório e, se omitido em runtime, nenhum conteúdo será exibido. |
 | `action` | `{ label: string; onClick: () => void; }` | não | Exibe uma ação com rótulo e callback; omitida, não há botão, e clicar nela não fecha o aviso automaticamente. |
 | `onClose` | `() => void` | não | Exibe o botão de fechar; omitida, não há botão, e o callback deve remover ou desmontar o aviso, pois ele não tem estado interno de fechamento. |
 
@@ -574,7 +574,7 @@ Props (`SarakDatePickerProps` — `src/components/atomic/Inputs/SarakDatePicker.
 | `mode` | `'single' \| 'range'` | não |  |
 | `value` | `SarakDatePickerValue` | não |  |
 | `displayFormat` | `string` | não | Formato de exibição (i18n via JSON), ex.: `dd/MM/yyyy`. |
-| `locale` | `SarakDateLocale` | não | Locale do `date-fns` para nomes de mês/dia (i18n). |
+| `locale` | `SarakDateLocale` | não | Locale do `date-fns` para nomes de mês/dia; omitido, segue o idioma escolhido (`useSarakLanguage`). |
 | `weekStartsOn` | `SarakWeekStart` | não |  |
 | `placeholder` | `string` | não |  |
 | `disabled` | `boolean` | não |  |
@@ -686,10 +686,11 @@ Props (`SarakFilterSelectProps` — `src/components/atomic/Templates/SarakFilter
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `col` | `string` | sim | Identifica a coluna cujo valor será lido de `filters` e enviado ao callback; obrigatória. |
-| `placeholder` | `string` | não | Não altera o texto do seletor nesta implementação; omitida ou preenchida, a opção inicial continua fixa como `(All)`. |
+| `placeholder` | `string` | não | Texto da opção inicial (valor vazio); omitido, sai do catálogo da lib no idioma escolhido (`Todos`, `All`…). |
+| `label` | `string` | não | Nome acessível do seletor; omitido, o seletor não ganha rótulo próprio. |
 | `filters` | `Record<string, string>` | sim | Estado atual dos filtros; a opção selecionada vem de `filters[col]` e fica vazia quando a chave não existe. |
 | `onChange` | `(col: string, value: string) => void` | sim | Recebe a coluna e o novo valor a cada seleção; obrigatória para propagar mudanças ao consumidor. |
-| `options` | `string[]` | sim | Valores disponíveis além da opção fixa `(All)`; obrigatória, mesmo quando a lista estiver vazia. |
+| `options` | `string[] \| SarakFilterSelectOption[]` | sim | Valores disponíveis além da opção inicial: textos simples ou pares `{ label, value }`; obrigatória, mesmo vazia. |
 
 ### SarakFlex
 
