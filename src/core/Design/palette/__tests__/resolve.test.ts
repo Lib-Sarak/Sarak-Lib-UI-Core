@@ -8,13 +8,13 @@ import { createPaletteScales } from '../scale';
 import { createPaletteSeeds } from '../seeds';
 import { PALETTE_ROLE_MAP } from '../role-map';
 import { createPaletteColorMap, resolvePalette, sarakResolvePalette } from '../resolve';
-import type { PaletteMode, SarakPaletteType } from '../types';
+import type { SarakPaletteMode, SarakPaletteType } from '../types';
 
 const EXTREME_PALETTE_BASES = ['#dfff00', '#00ffff', '#ff00ff', '#010203', '#fefefe', '#808080'];
 const PALETTE_TYPES: SarakPaletteType[] = [
     'monochromatic', 'analogous', 'complementary', 'split-complementary', 'triadic',
 ];
-const PALETTE_MODES: PaletteMode[] = ['light', 'dark'];
+const PALETTE_MODES: SarakPaletteMode[] = ['light', 'dark'];
 
 const getPairFailures = (colors: Record<string, string>): string[] => {
     const design = { ...sarakGetDefaultDesignState(), ...colors };

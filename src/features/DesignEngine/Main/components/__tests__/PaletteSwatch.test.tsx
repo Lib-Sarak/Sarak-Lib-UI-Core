@@ -4,9 +4,9 @@ import '@testing-library/jest-dom';
 import { describe, it, expect } from 'vitest';
 import { PaletteSwatch } from '../PaletteSwatch';
 import { resolvePalette } from '../../../../../core/Design/palette/resolve';
-import type { PaletteInput } from '../../../../../core/Design/palette/types';
+import type { SarakPaletteInput } from '../../../../../core/Design/palette/types';
 
-const INPUT: PaletteInput = { type: 'analogous', base: '#2563eb' };
+const INPUT: SarakPaletteInput = { type: 'analogous', base: '#2563eb' };
 
 describe('PaletteSwatch', () => {
     it('mostra os dois modos com o fundo calculado de cada um', () => {

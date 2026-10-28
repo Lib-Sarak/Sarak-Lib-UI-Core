@@ -4,7 +4,7 @@ import { resolvePalette } from '../../../../core/Design/palette/resolve';
 import { parseHexColor } from '../../../../core/Design/palette/color-space';
 import { SARAK_PALETTE_PRESETS, SARAK_PALETTE_PRESET_TEXT_KEYS } from '../../../../core/Design/palette/presets';
 import { LIBRARY_TEXT_CATALOG, type LibraryTextKey } from '../../../../core/i18n/catalog';
-import type { PaletteInput, PaletteMode, SarakPaletteType } from '../../../../core/Design/palette/types';
+import type { SarakPaletteInput, SarakPaletteMode, SarakPaletteType } from '../../../../core/Design/palette/types';
 
 /** Ordem em que os tipos aparecem na galeria e no seletor. */
 export const PALETTE_TYPES: readonly SarakPaletteType[] = [
@@ -26,7 +26,7 @@ export interface PaletteGalleryEntry {
     label: string;
     /** A chave do nome do preset no catálogo (seis idiomas); ausente quando o registro não a declara. */
     textKey?: LibraryTextKey;
-    input: PaletteInput;
+    input: SarakPaletteInput;
 }
 
 export interface PaletteGalleryGroup {
@@ -48,7 +48,7 @@ export const presetLabel = (id: string): string => {
 
 /** Agrupa o registro de presets por tipo, na ordem de `PALETTE_TYPES`; tipo sem preset não gera grupo. */
 export const groupPresetsByType = (
-    registry: Readonly<Record<string, PaletteInput>> = SARAK_PALETTE_PRESETS,
+    registry: Readonly<Record<string, SarakPaletteInput>> = SARAK_PALETTE_PRESETS,
 ): PaletteGalleryGroup[] => PALETTE_TYPES
     .map((type) => ({
         type,
@@ -59,7 +59,7 @@ export const groupPresetsByType = (
     .filter((group) => group.entries.length > 0);
 
 /** O valor de `colorPalette` de uma criação do usuário: `custom:<tipo>:<#base>[,sec=<#hex>][,acc=<#hex>]`. */
-export const buildCustomPaletteValue = (input: PaletteInput): string => {
+export const buildCustomPaletteValue = (input: SarakPaletteInput): string => {
     const seeds = [
         input.secondary ? `,sec=${input.secondary}` : '',
         input.accent ? `,acc=${input.accent}` : '',
@@ -68,14 +68,14 @@ export const buildCustomPaletteValue = (input: PaletteInput): string => {
 };
 
 /** `null` quando alguma cor informada não é um hex que o motor entende. */
-export const toValidPaletteInput = (input: PaletteInput): PaletteInput | null => {
+export const toValidPaletteInput = (input: SarakPaletteInput): SarakPaletteInput | null => {
     const colors = [input.base, input.secondary, input.accent].filter((color): color is string => color !== undefined);
     if (colors.some((color) => parseHexColor(color) === null)) return null;
     return parsePaletteValue(buildCustomPaletteValue(input)) ? input : null;
 };
 
 /** Os tokens de cor que a paleta calcula, no modo pedido; `{}` se o valor não for uma paleta. */
-export const resolveDraftPalette = (value: unknown, mode: PaletteMode): Record<string, string> => {
+export const resolveDraftPalette = (value: unknown, mode: SarakPaletteMode): Record<string, string> => {
     const input = parsePaletteValue(value);
     return input ? resolvePalette(input, mode) : {};
 };
@@ -94,7 +94,7 @@ export const findManualColorAdjustments = (
 /** O que a troca de paleta grava no rascunho: o valor de `colorPalette` e as cores calculadas, poupando as mantidas. */
 export const buildPaletteDraftPatch = (
     value: string,
-    mode: PaletteMode,
+    mode: SarakPaletteMode,
     keptTokenIds: readonly string[] = [],
 ): Record<string, string> => {
     const kept = new Set(keptTokenIds);

@@ -1,4 +1,4 @@
-import type { PaletteInput } from './types';
+import type { SarakPaletteInput } from './types';
 
 /**
  * O catálogo de paletas prontas. Um preset é só a ENTRADA do cálculo
@@ -10,7 +10,7 @@ import type { PaletteInput } from './types';
  * valores do `colorPalette` antigo (outro significado) e podem estar em tema salvo
  * por importador — um id igual aplicaria uma paleta que ninguém escolheu.
  */
-export const SARAK_PALETTE_PRESETS: Readonly<Record<string, PaletteInput>> = {
+export const SARAK_PALETTE_PRESETS: Readonly<Record<string, SarakPaletteInput>> = {
     oceano: { type: 'analogous', base: '#2563eb' },
     'ciano-violeta': { type: 'analogous', base: '#19e3f0', secondary: '#7c5cff', accent: '#ff4fd8' },
     'verde-neon': { type: 'complementary', base: '#00ff6a', secondary: '#ff2bd6', accent: '#f9f871' },

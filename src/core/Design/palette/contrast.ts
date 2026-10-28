@@ -4,7 +4,7 @@ import { rgbToHex } from './color-space';
 import { MIX_SOURCE_SHARE, PAIRS } from './contrast-pairs';
 import { PALETTE_LIGHTNESS_SCALE } from './scale';
 import { PALETTE_ROLE_MAP } from './role-map';
-import type { PaletteColorRole, PaletteMode, PaletteScales, RgbColor } from './types';
+import type { PaletteColorRole, SarakPaletteMode, PaletteScales, RgbColor } from './types';
 
 const MAX_CONTRAST_PASSES = 12;
 
@@ -17,7 +17,7 @@ type CandidateSearch = {
     pairs: readonly ContrastPair[];
     colors: PaletteColors;
     scales: PaletteScales;
-    mode: PaletteMode;
+    mode: SarakPaletteMode;
 };
 type ContrastCandidate = { tone: number; failedPairs: number; minimumRatio: number; distanceFromDefault: number };
 
@@ -136,7 +136,7 @@ const getTextTokenIds = (): string[] => [...new Set(PAIRS
 const correctTokenTones = (
     colors: PaletteColors,
     scales: PaletteScales,
-    mode: PaletteMode,
+    mode: SarakPaletteMode,
     tokenIds: readonly string[],
 ): PaletteColors => {
     const corrected = { ...colors };
@@ -160,5 +160,5 @@ const correctTokenTones = (
 export const correctPaletteContrast = (
     colors: PaletteColors,
     scales: PaletteScales,
-    mode: PaletteMode,
+    mode: SarakPaletteMode,
 ): PaletteColors => correctTokenTones(colors, scales, mode, getTextTokenIds());

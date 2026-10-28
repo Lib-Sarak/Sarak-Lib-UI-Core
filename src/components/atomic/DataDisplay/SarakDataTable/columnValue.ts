@@ -42,7 +42,7 @@ export interface SarakValueColumn<T> extends SarakColumnValueOptions<T> {
     id: string;
 }
 
-type SarakColumnLike<T> = SarakColumnValueOptions<T> & ({ id: string } | { key: string });
+export type SarakColumnLike<T> = SarakColumnValueOptions<T> & ({ id: string } | { key: string });
 
 export const columnIdOf = <T,>(column: SarakColumnLike<T>): string =>
     'id' in column ? column.id : column.key;

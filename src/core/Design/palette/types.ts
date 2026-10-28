@@ -5,7 +5,7 @@ export type SarakPaletteType =
     | 'split-complementary'
     | 'triadic';
 
-export type PaletteMode = 'light' | 'dark';
+export type SarakPaletteMode = 'light' | 'dark';
 
 export type PaletteScaleName =
     | 'primary'
@@ -17,7 +17,7 @@ export type PaletteScaleName =
     | 'warning'
     | 'info';
 
-export interface OklchColor {
+export interface SarakOklchColor {
     lightness: number;
     chroma: number;
     hue: number;
@@ -29,27 +29,27 @@ export interface RgbColor {
     blue: number;
 }
 
-export interface PaletteInput {
+export interface SarakPaletteInput {
     type: SarakPaletteType;
     base: string;
     secondary?: string;
     accent?: string;
 }
 
-export interface PaletteSeeds {
-    primary: OklchColor;
-    secondary: OklchColor;
-    accent: OklchColor;
-    neutral: OklchColor;
-    success: OklchColor;
-    error: OklchColor;
-    warning: OklchColor;
-    info: OklchColor;
+export interface SarakPaletteSeeds {
+    primary: SarakOklchColor;
+    secondary: SarakOklchColor;
+    accent: SarakOklchColor;
+    neutral: SarakOklchColor;
+    success: SarakOklchColor;
+    error: SarakOklchColor;
+    warning: SarakOklchColor;
+    info: SarakOklchColor;
 }
 
 export interface PaletteColorRole {
     scale: PaletteScaleName;
-    toneByMode: Record<PaletteMode, number>;
+    toneByMode: Record<SarakPaletteMode, number>;
     alpha?: number;
 }
 

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { toValidPaletteInput } from '../utils/paletteDraft';
-import type { PaletteInput, SarakPaletteType } from '../../../../core/Design/palette/types';
+import type { SarakPaletteInput, SarakPaletteType } from '../../../../core/Design/palette/types';
 
 const HEX_COLOR = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
 
@@ -15,7 +15,7 @@ interface CreatorSeeds {
 export const usePaletteCreatorState = (initialBase: string) => {
     const [seeds, setSeeds] = useState<CreatorSeeds>({ base: initialBase, type: 'analogous' });
     const input = useMemo(() => {
-        const candidate: PaletteInput = {
+        const candidate: SarakPaletteInput = {
             type: seeds.type,
             base: seeds.base,
             ...(seeds.secondary ? { secondary: seeds.secondary } : {}),

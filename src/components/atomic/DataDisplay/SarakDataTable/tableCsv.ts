@@ -31,11 +31,11 @@ export interface SarakCsvOptions {
     locale?: string;
 }
 
-type CsvColumn<T> = SarakColumn<T> | SarakTableColumn<T>;
+export type SarakCsvColumn<T> = SarakColumn<T> | SarakTableColumn<T>;
 
 const usesDecimalComma = (locale?: string): boolean => new Intl.NumberFormat(locale).format(1.1).includes(',');
 
-const headerOf = <T,>(column: CsvColumn<T>): string => {
+const headerOf = <T,>(column: SarakCsvColumn<T>): string => {
     if ('label' in column) return column.label;
     return typeof column.header === 'string' || typeof column.header === 'number' ? String(column.header) : column.id;
 };
@@ -63,7 +63,7 @@ const footerCell = <T,>(rows: T[], column: SarakValueColumn<T>, formatted: boole
 };
 
 /** Converte as linhas em CSV com BOM; o rodapé entra como última linha quando há agregação. */
-export function sarakTableToCsv<T>(columns: CsvColumn<T>[], rows: T[], options: SarakCsvOptions = {}): string {
+export function sarakTableToCsv<T>(columns: SarakCsvColumn<T>[], rows: T[], options: SarakCsvOptions = {}): string {
     const { formatted = true, locale } = options;
     const separator = options.separator ?? (usesDecimalComma(locale) ? ';' : ',');
     const valueColumns = columns.map((column) => toValueColumn<T>(column));

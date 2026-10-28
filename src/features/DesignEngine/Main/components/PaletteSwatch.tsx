@@ -1,15 +1,15 @@
 import React, { useMemo } from 'react';
 import { resolvePalette } from '../../../../core/Design/palette/resolve';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
-import type { PaletteInput, PaletteMode } from '../../../../core/Design/palette/types';
+import type { SarakPaletteInput, SarakPaletteMode } from '../../../../core/Design/palette/types';
 
 /** Papéis mostrados na amostra, do fundo ao acento — a mesma leitura que a tela faz da paleta. */
 const SWATCH_TOKENS = ['colorBgBody', 'titleColor', 'primaryColor', 'secondaryColor', 'accentColor'] as const;
 
-const MODES: readonly PaletteMode[] = ['light', 'dark'];
+const MODES: readonly SarakPaletteMode[] = ['light', 'dark'];
 
 interface PaletteSwatchProps {
-    input: PaletteInput;
+    input: SarakPaletteInput;
 }
 
 /** Amostra de uma paleta nos dois modos: faixas de cor sobre o fundo do próprio modo. */

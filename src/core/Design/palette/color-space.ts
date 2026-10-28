@@ -1,4 +1,4 @@
-import type { OklchColor, RgbColor } from './types';
+import type { SarakOklchColor, RgbColor } from './types';
 
 const RGB_MAX = 255;
 const GAMUT_ITERATIONS = 20;
@@ -28,7 +28,7 @@ const linearToSrgb = (channel: number): number => channel <= 0.0031308
     ? channel * 12.92
     : 1.055 * (channel ** (1 / 2.4)) - 0.055;
 
-export const rgbToOklch = (rgb: RgbColor): OklchColor => {
+export const rgbToOklch = (rgb: RgbColor): SarakOklchColor => {
     const red = srgbToLinear(rgb.red);
     const green = srgbToLinear(rgb.green);
     const blue = srgbToLinear(rgb.blue);
@@ -43,12 +43,12 @@ export const rgbToOklch = (rgb: RgbColor): OklchColor => {
     return { lightness, chroma, hue };
 };
 
-export const hexToOklch = (value: string): OklchColor | null => {
+export const hexToOklch = (value: string): SarakOklchColor | null => {
     const rgb = parseHexColor(value);
     return rgb ? rgbToOklch(rgb) : null;
 };
 
-export const oklchToRgb = ({ lightness, chroma, hue }: OklchColor): RgbColor => {
+export const oklchToRgb = ({ lightness, chroma, hue }: SarakOklchColor): RgbColor => {
     const radians = hue * Math.PI / 180;
     const axisA = chroma * Math.cos(radians);
     const axisB = chroma * Math.sin(radians);
@@ -65,7 +65,7 @@ export const oklchToRgb = ({ lightness, chroma, hue }: OklchColor): RgbColor => 
 const isInSrgbGamut = ({ red, green, blue }: RgbColor): boolean =>
     [red, green, blue].every((channel) => channel >= -GAMUT_TOLERANCE && channel <= RGB_MAX + GAMUT_TOLERANCE);
 
-export const oklchToRgbGamutMapped = (color: OklchColor): RgbColor => {
+export const oklchToRgbGamutMapped = (color: SarakOklchColor): RgbColor => {
     const original = oklchToRgb(color);
     if (isInSrgbGamut(original)) return original;
     let chromaFloor = 0;
@@ -88,7 +88,7 @@ const channelToHex = (channel: number): string => Math.round(Math.max(0, Math.mi
     .toString(16)
     .padStart(2, '0');
 
-export const oklchToHex = (color: OklchColor): string => {
+export const oklchToHex = (color: SarakOklchColor): string => {
     const rgb = oklchToRgbGamutMapped(color);
     return `#${channelToHex(rgb.red)}${channelToHex(rgb.green)}${channelToHex(rgb.blue)}`;
 };

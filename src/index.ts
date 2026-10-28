@@ -96,9 +96,10 @@ export { sarakGetDefaultDesignState, sarakGetAllDesignTokens } from './core/Desi
 export { sarakResolvePalette } from './core/Design/palette/resolve';
 export type {
     SarakPaletteType,
-    PaletteMode as SarakPaletteMode,
-    PaletteInput as SarakPaletteInput,
-    PaletteSeeds as SarakPaletteSeeds,
+    SarakPaletteMode,
+    SarakPaletteInput,
+    SarakPaletteSeeds,
+    SarakOklchColor,
 } from './core/Design/palette/types';
 export { SARAK_THEME_AXES, sarakFindMissingThemeAxes, sarakWarnOnIncompleteTheme } from './core/Design/utils/themeAxes';
 // Painel do Design Engine atrás de fronteira lazy (o índice declara o `React.lazy` e o
@@ -191,6 +192,7 @@ export type { SarakAlertProps, SarakAlertVariant } from './components/atomic/Fee
 export { SarakProgress } from './components/atomic/Feedback/SarakProgress';
 export type { SarakProgressProps, SarakProgressThreshold, SarakProgressVariant } from './components/atomic/Feedback/SarakProgress';
 export * from './components/atomic/UX';
+export type { SarakTabsVariant } from './components/atomic/UX/tabsStyling';
 // Densidade de dados (Spec 12 / Onda 9): DataGrid (windowing), DataTable (colunar
 // avançado), Sparkline (micro-gráfico) e TreeView. Resolvíveis via manifesto.
 export * from './components/atomic/DataDisplay';
@@ -199,10 +201,10 @@ export type { SarakDataTableRowHeight } from './components/atomic/DataDisplay/Sa
 export type { SarakPinnedOffsets } from './components/atomic/DataDisplay/SarakDataTable/columnModel';
 // Tabelas financeiras: o bloco de valor da coluna (formato, agregação, rodapé), o agrupamento e o CSV.
 export { sarakAggregate } from './components/atomic/DataDisplay/SarakDataTable/columnValue';
-export type { SarakAggregate, SarakColumnValueOptions, SarakColumnFooterContext } from './components/atomic/DataDisplay/SarakDataTable/columnValue';
+export type { SarakAggregate, SarakColumnLike, SarakColumnValueOptions, SarakColumnFooterContext } from './components/atomic/DataDisplay/SarakDataTable/columnValue';
 export type { SarakTableGroupBy } from './components/atomic/DataDisplay/SarakDataTable/tableDisplayRows';
 export { sarakTableToCsv, sarakDownloadCsv } from './components/atomic/DataDisplay/SarakDataTable/tableCsv';
-export type { SarakCsvOptions } from './components/atomic/DataDisplay/SarakDataTable/tableCsv';
+export type { SarakCsvOptions, SarakCsvColumn } from './components/atomic/DataDisplay/SarakDataTable/tableCsv';
 // Renderizadores de mídia (Spec 15): Markdown (lazy) + Lightbox + PDFViewer (lazy, Onda 10).
 export * from './components/atomic/Media';
 export type { SarakPdfSource } from './components/atomic/Media/SarakPDFViewer/usePdfDocument';

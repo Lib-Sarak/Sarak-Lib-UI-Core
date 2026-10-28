@@ -1,6 +1,6 @@
 import { parseHexColor } from './color-space';
 import { SARAK_PALETTE_PRESETS } from './presets';
-import type { PaletteInput, SarakPaletteType } from './types';
+import type { SarakPaletteInput, SarakPaletteType } from './types';
 
 const PALETTE_TYPE_PATTERN = 'monochromatic|analogous|complementary|split-complementary|triadic';
 const HEX_PATTERN = '#(?:[0-9a-f]{3}|[0-9a-f]{6})';
@@ -9,7 +9,7 @@ const CUSTOM_PALETTE_PATTERN = new RegExp(
     'i',
 );
 
-export const parsePaletteValue = (value: unknown): PaletteInput | null => {
+export const parsePaletteValue = (value: unknown): SarakPaletteInput | null => {
     if (typeof value !== 'string') return null;
     const preset = SARAK_PALETTE_PRESETS[value];
     if (preset) return { ...preset };

@@ -1,5 +1,5 @@
 import { hexToOklch } from './color-space';
-import type { OklchColor, PaletteInput, PaletteSeeds } from './types';
+import type { SarakOklchColor, SarakPaletteInput, SarakPaletteSeeds } from './types';
 
 const NEUTRAL_CHROMA = 0.008;
 const STATUS_CHROMA = 0.16;
@@ -11,13 +11,13 @@ const STATUS_HUES = {
     info: 245,
 } as const;
 
-const rotateHue = (color: OklchColor, degrees: number, chromaFactor: number = 1): OklchColor => ({
+const rotateHue = (color: SarakOklchColor, degrees: number, chromaFactor: number = 1): SarakOklchColor => ({
     ...color,
     hue: (color.hue + degrees + 360) % 360,
     chroma: color.chroma * chromaFactor,
 });
 
-const getGeneratedHues = (input: PaletteInput, base: OklchColor): [number, number] => {
+const getGeneratedHues = (input: SarakPaletteInput, base: SarakOklchColor): [number, number] => {
     switch (input.type) {
         case 'monochromatic':
             return [0, 0];
@@ -34,16 +34,16 @@ const getGeneratedHues = (input: PaletteInput, base: OklchColor): [number, numbe
     }
 };
 
-const parseOptionalSeed = (value: string | undefined, generated: OklchColor): OklchColor =>
+const parseOptionalSeed = (value: string | undefined, generated: SarakOklchColor): SarakOklchColor =>
     value ? hexToOklch(value) ?? generated : generated;
 
-const createStatusSeed = (hue: number, base: OklchColor): OklchColor => ({
+const createStatusSeed = (hue: number, base: SarakOklchColor): SarakOklchColor => ({
     lightness: base.lightness,
     chroma: STATUS_CHROMA,
     hue,
 });
 
-export const createPaletteSeeds = (input: PaletteInput): PaletteSeeds => {
+export const createPaletteSeeds = (input: SarakPaletteInput): SarakPaletteSeeds => {
     const base = hexToOklch(input.base);
     if (!base) throw new Error('A cor base da paleta deve ser um hexadecimal válido.');
     const [secondaryHue, accentHue] = getGeneratedHues(input, base);

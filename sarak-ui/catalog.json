@@ -113,6 +113,7 @@
     "SarakColumn",
     "SarakColumnAlignment",
     "SarakColumnFooterContext",
+    "SarakColumnLike",
     "SarakColumnValueOptions",
     "SarakComment",
     "SarakCommentAuthor",
@@ -122,6 +123,7 @@
     "SarakContextMenu",
     "SarakContextMenuPosition",
     "SarakContextMenuProps",
+    "SarakCsvColumn",
     "SarakCsvOptions",
     "SarakCurrencyInput",
     "SarakCurrencyInputProps",
@@ -257,6 +259,7 @@
     "SarakNavItem",
     "SarakNavigationItem",
     "SarakNavigationStylePreference",
+    "SarakOklchColor",
     "SarakOverlayController",
     "SarakOverlayProvider",
     "SarakOverlayRequest",
@@ -334,6 +337,7 @@
     "SarakSocialProviderConfig",
     "SarakSocialProviderId",
     "SarakSparkline",
+    "SarakSparklineBaseline",
     "SarakSparklineProps",
     "SarakSparklineVariant",
     "SarakSpinner",
@@ -361,6 +365,7 @@
     "SarakTableSort",
     "SarakTabs",
     "SarakTabsProps",
+    "SarakTabsVariant",
     "SarakTextarea",
     "SarakTextareaProps",
     "SarakThemeCatalogEntry",
@@ -11815,6 +11820,6 @@
   "kitStamp": {
     "libVersion": "8.0.0-rc.3",
     "kitSchemaVersion": 1,
-    "kitHash": "bd8287585eb4"
+    "kitHash": "ebc98723c048"
   }
 }

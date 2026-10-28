@@ -72,7 +72,7 @@ Também entra o plural do diálogo de troca ("Você ajustou 1 cor(es)"), achado 
 - Token novo. Onde uma superfície visível não tem token de cor (link, anel de foco, texto do cabeçalho de tabela, chip), **liste-a no
   resumo**: a criação de token é outra plan.
 - Contorno ou halo em texto (decisão do dono).
-- O painel além do texto do diálogo; o formato de `colorPalette` e o `PaletteInput` (não mudam).
+- O painel além do texto do diálogo; o formato de `colorPalette` e o `SarakPaletteInput` (não mudam).
 
 # 4. Referências obrigatórias
 

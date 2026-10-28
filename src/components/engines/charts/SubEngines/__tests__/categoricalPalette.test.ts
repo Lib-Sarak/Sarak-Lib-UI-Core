@@ -4,7 +4,7 @@ import { resolveThemeForMode } from '../../../../../core/Design/presets/themes/c
 import type { ModeResolvableTheme } from '../../../../../core/Design/presets/themes/color-engine';
 import { parseToRgba } from '../../../../../core/Provider/utils/color-engine';
 import { deriveCategoricalPalette, PALETTE_SIZE } from '../categoricalPalette';
-import type { PaletteMode } from '../categoricalPalette';
+import type { CategoricalPaletteMode } from '../categoricalPalette';
 import { contrastRatio, deltaE, hexToRgb, rgbToHex, rgbToOklch } from '../oklch';
 
 /**
@@ -12,7 +12,7 @@ import { contrastRatio, deltaE, hexToRgb, rgbToHex, rgbToOklch } from '../oklch'
  * (`validate_palette.js`): faixa de luminosidade por modo, piso de croma, separação
  * entre vizinhas sob visão normal e sob protanopia/deuteranopia, e contraste.
  */
-const BAND: Record<PaletteMode, readonly [number, number]> = { light: [0.43, 0.77], dark: [0.48, 0.67] };
+const BAND: Record<CategoricalPaletteMode, readonly [number, number]> = { light: [0.43, 0.77], dark: [0.48, 0.67] };
 const CHROMA_FLOOR = 0.10;
 const CVD_TARGET = 8;
 const NORMAL_FLOOR = 15;
@@ -27,7 +27,7 @@ function toHex(value: unknown): string {
     return rgbToHex([r / 255, g / 255, b / 255]);
 }
 
-function expectValid(palette: string[], mode: PaletteMode, surface: string, label: string): void {
+function expectValid(palette: string[], mode: CategoricalPaletteMode, surface: string, label: string): void {
     expect(palette, label).toHaveLength(PALETTE_SIZE);
     palette.forEach((hex, index) => {
         const { L, C } = rgbToOklch(hexToRgb(hex) ?? [0, 0, 0]);
@@ -100,7 +100,7 @@ describe('deriveCategoricalPalette', () => {
 });
 
 describe('temas embarcados', () => {
-    const modes: PaletteMode[] = ['dark', 'light'];
+    const modes: CategoricalPaletteMode[] = ['dark', 'light'];
 
     for (const theme of SARAK_ALL_THEMES) {
         for (const mode of modes) {

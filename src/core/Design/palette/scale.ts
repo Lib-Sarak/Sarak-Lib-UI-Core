@@ -1,5 +1,5 @@
 import { oklchToRgbGamutMapped } from './color-space';
-import type { OklchColor, PaletteScaleName, PaletteScales, PaletteSeeds, RgbColor } from './types';
+import type { SarakOklchColor, PaletteScaleName, PaletteScales, SarakPaletteSeeds, RgbColor } from './types';
 
 /** Régua compartilhada de luminosidade: mesma hierarquia para qualquer semente. */
 export const PALETTE_LIGHTNESS_SCALE = [
@@ -23,7 +23,7 @@ const SCALE_NAMES: PaletteScaleName[] = [
     'primary', 'secondary', 'accent', 'neutral', 'success', 'error', 'warning', 'info',
 ];
 
-const createScale = (seed: OklchColor): Record<number, RgbColor> => {
+const createScale = (seed: SarakOklchColor): Record<number, RgbColor> => {
     const scale: Record<number, RgbColor> = {};
     PALETTE_LIGHTNESS_SCALE.forEach(({ tone, lightness }, index) => {
         const chroma = seed.chroma * PALETTE_CHROMA_CURVE[index];
@@ -32,7 +32,7 @@ const createScale = (seed: OklchColor): Record<number, RgbColor> => {
     return scale;
 };
 
-export const createPaletteScales = (seeds: PaletteSeeds): PaletteScales => {
+export const createPaletteScales = (seeds: SarakPaletteSeeds): PaletteScales => {
     const scales = {} as PaletteScales;
     SCALE_NAMES.forEach((name) => {
         scales[name] = createScale(seeds[name]);

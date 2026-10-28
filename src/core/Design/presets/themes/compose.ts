@@ -1,7 +1,7 @@
 import { sarakGetDefaultDesignState } from '../../master-map';
 import { resolvePaletteForDesign } from '../../palette/resolve';
 import type { SarakDesignState } from '../../../Provider/types';
-import type { PaletteMode } from '../../palette/types';
+import type { SarakPaletteMode } from '../../palette/types';
 import { resolveThemeForMode, type ModeResolvableTheme } from './color-engine';
 
 /**
@@ -22,9 +22,9 @@ const getPaletteMode = (
     resolvedTheme: Record<string, unknown>,
     hostConfig: Record<string, unknown>,
     previous: Record<string, unknown>,
-): PaletteMode => {
+): SarakPaletteMode => {
     const modes = [resolvedTheme.mode, hostConfig.mode, previous.mode];
-    return modes.find((mode): mode is PaletteMode => mode === 'light' || mode === 'dark') ?? 'dark';
+    return modes.find((mode): mode is SarakPaletteMode => mode === 'light' || mode === 'dark') ?? 'dark';
 };
 
 /**
@@ -60,7 +60,7 @@ export const composeThemeDesign = (
  * ferramenta e catálogo leem no lugar de `theme.design`, que não carrega mais as
  * cores que a paleta calcula.
  */
-export const composeThemeForMode = (theme: ModeResolvableTheme, mode: PaletteMode): SarakDesignState =>
+export const composeThemeForMode = (theme: ModeResolvableTheme, mode: SarakPaletteMode): SarakDesignState =>
     composeThemeDesign(resolveThemeForMode(theme, mode) as Record<string, unknown>);
 
 /**
@@ -69,6 +69,6 @@ export const composeThemeForMode = (theme: ModeResolvableTheme, mode: PaletteMod
  * quando não compõem o `design` inteiro. A cor que o tema declara vence a paleta.
  */
 export const withThemePalette = <T extends Record<string, unknown>>(resolved: T): T => {
-    const mode: PaletteMode = resolved.mode === 'light' ? 'light' : 'dark';
+    const mode: SarakPaletteMode = resolved.mode === 'light' ? 'light' : 'dark';
     return { ...resolvePaletteForDesign(resolved, undefined, mode), ...resolved };
 };

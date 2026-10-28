@@ -16,12 +16,12 @@ import type { Oklch } from './oklch';
  * luminosidade e o croma primeiro, depois o matiz).
  */
 
-export type PaletteMode = 'light' | 'dark';
+export type CategoricalPaletteMode = 'light' | 'dark';
 
-export interface PaletteInput {
+export interface CategoricalPaletteInput {
     /** Cores de marca em hex, em ordem de série: primária, secundária, destaque, terciária. */
     brand: readonly string[];
-    mode: PaletteMode;
+    mode: CategoricalPaletteMode;
     /** Superfície sobre a qual o gráfico é pintado (hex); decide o contraste mínimo. */
     surface: string;
 }
@@ -29,7 +29,7 @@ export interface PaletteInput {
 export const PALETTE_SIZE = 8;
 const BRAND_SLOTS = 4;
 
-const LIGHTNESS_BAND: Record<PaletteMode, readonly [number, number]> = { light: [0.43, 0.77], dark: [0.48, 0.67] };
+const LIGHTNESS_BAND: Record<CategoricalPaletteMode, readonly [number, number]> = { light: [0.43, 0.77], dark: [0.48, 0.67] };
 const CHROMA_FLOOR = 0.10;
 const CHROMA_MARGIN = 0.012;
 /**
@@ -69,7 +69,7 @@ function colorAt(L: number, target: Oklch, h: number): string | null {
  * fecha, afasta a luminosidade da superfície em passos, dentro da faixa do modo;
  * `null` se nenhuma cor cabe.
  */
-function fit(target: Oklch, input: PaletteInput, minContrast: number): string | null {
+function fit(target: Oklch, input: CategoricalPaletteInput, minContrast: number): string | null {
     const [bandLo, bandHi] = LIGHTNESS_BAND[input.mode];
     const [lo, hi] = [bandLo + LIGHTNESS_MARGIN, bandHi - LIGHTNESS_MARGIN];
     const h = ((target.h % 360) + 360) % 360;
@@ -91,7 +91,7 @@ function distinctFromAll(hex: string, chosen: readonly string[]): boolean {
 }
 
 /** Alvos do slot em ordem de preferência: matiz da marca primeiro, depois afastando-se dele. */
-function* candidates(target: Oklch, input: PaletteInput, minContrast: number): Generator<string> {
+function* candidates(target: Oklch, input: CategoricalPaletteInput, minContrast: number): Generator<string> {
     for (const shift of HUE_SHIFTS) {
         for (const offset of LIGHTNESS_OFFSETS) {
             const hex = fit({ L: target.L + offset, C: target.C, h: target.h + shift }, input, minContrast);
@@ -102,7 +102,7 @@ function* candidates(target: Oklch, input: PaletteInput, minContrast: number): G
 
 interface Pick { hex: string; score: number; accepted: boolean }
 
-function search(target: Oklch, chosen: readonly string[], input: PaletteInput, minContrast: number): Pick | null {
+function search(target: Oklch, chosen: readonly string[], input: CategoricalPaletteInput, minContrast: number): Pick | null {
     const previous = chosen[chosen.length - 1];
     let best: Pick | null = null;
     for (const hex of candidates(target, input, minContrast)) {
@@ -115,7 +115,7 @@ function search(target: Oklch, chosen: readonly string[], input: PaletteInput, m
 }
 
 /** A primeira cor que cumpre tudo, no maior contraste possível; senão, a que chega mais perto. */
-function pickSlot(target: Oklch, chosen: readonly string[], input: PaletteInput): string {
+function pickSlot(target: Oklch, chosen: readonly string[], input: CategoricalPaletteInput): string {
     let fallback: Pick | null = null;
     for (const minContrast of CONTRAST_STEPS) {
         const pick = search(target, chosen, input, minContrast);
@@ -130,7 +130,7 @@ function brandTarget(hex: string, slot: number): Oklch {
     return rgbToOklch(rgb ?? [0, 0, 0]);
 }
 
-function variationTarget(base: string, mode: PaletteMode): Oklch {
+function variationTarget(base: string, mode: CategoricalPaletteMode): Oklch {
     const { L, C, h } = brandTarget(base, 0);
     const [lo, hi] = LIGHTNESS_BAND[mode];
     const towardLight = L < (lo + hi) / 2;
@@ -138,7 +138,7 @@ function variationTarget(base: string, mode: PaletteMode): Oklch {
 }
 
 /** As `PALETTE_SIZE` cores categóricas, na ordem das séries. */
-export function deriveCategoricalPalette(input: PaletteInput): string[] {
+export function deriveCategoricalPalette(input: CategoricalPaletteInput): string[] {
     const chosen: string[] = [];
     for (let slot = 0; slot < PALETTE_SIZE; slot++) {
         const target = slot < BRAND_SLOTS
