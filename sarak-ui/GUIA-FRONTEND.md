@@ -1059,7 +1059,7 @@ O que a medição em navegador mostrou, e que o schema sozinho não diz:
   de sombra (`shadowAmbientAlpha`, `shadowProjection*`, `layeredShadows`); a sombra dos cartões vem de `cardShadow*`.
   `shadowIntensity` muda a **opacidade do elemento** `.shadow-theme` (conteúdo incluso), não a força da sombra.
 - **Movimento.** As durações e a curva `motionEaseMain` chegam por CSS a quase toda transição; `motionStaggerDelay`
-  escalona as linhas da `SarakTable` e as barras do `SarakChart`; `reducedMotion` zera tudo, inclusive o que roda em
+  escalona a entrada das linhas da `SarakTable`; `reducedMotion` zera tudo, inclusive o que roda em
   JavaScript. `animEnabled` e `pageTransitionType` governam só a troca de página (`SarakPageTransition`).
   `motionEaseOut` alcança só o pulso do alternador pulsante e o aperto de um botão HTML sem classe.
 - **Camadas.** `zIndexSidebar` desloca menus e busca por passos fixos; um modal seu com `z-index` fixo pode ficar sob a
