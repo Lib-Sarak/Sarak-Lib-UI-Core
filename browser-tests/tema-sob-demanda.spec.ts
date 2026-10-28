@@ -21,6 +21,7 @@
  */
 import { test, expect, chromium, type Browser, type Page } from '@playwright/test';
 import { SARAK_ALL_THEMES } from '../src/core/Design/presets/themes/all';
+import { composeThemeForMode } from '../src/core/Design/presets/themes/compose';
 
 const DESKTOP = { width: 1280, height: 900 } as const;
 const SAVED_KEY = 'sarak-ui-design-v9.0';
@@ -49,7 +50,11 @@ interface ThemeImportGateWindow extends Window {
     __frames?: Frame[];
 }
 
-const primaryOf = (id: string): string => String(SARAK_ALL_THEMES.find((theme) => theme.id === id)?.design.primaryColor);
+/** A primária que o tema pinta no próprio modo: a paleta que ele declara, com a sobrescrita dele por cima. */
+const primaryOf = (id: string): string => {
+    const theme = SARAK_ALL_THEMES.find((candidate) => candidate.id === id)!;
+    return String(composeThemeForMode(theme as never, (theme.design.mode as 'light' | 'dark') || 'dark').primaryColor);
+};
 
 /** A cor `#rrggbb` na forma que o navegador computa (`rgb(r, g, b)`). */
 const asComputed = (page: Page, color: string): Promise<string> =>

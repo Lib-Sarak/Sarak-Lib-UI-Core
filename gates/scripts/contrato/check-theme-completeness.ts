@@ -21,7 +21,7 @@
 // 2. Confere PRESENÇA, não VERDADE: um estético declarado com o valor do padrão do schema conta como declarado, e
 //    um valor sem intenção de design passa. Quem julga a direção de arte é a ficha do tema e o revisor; quem julga
 //    legibilidade é `auditor_contraste`; quem julga o valor dentro do contrato é `tokenContractParity`.
-// 3. Só conta chave que é TOKEN do schema com `kind`. Tokens estéticos marcados `optionalForTheme` não são exigidos. Chave de payload que não é token (`enabledLanguages`), chave
+// 3. Só conta chave que é TOKEN do schema com `kind`. O tema que declara `colorPalette` não é cobrado pelos tokens de cor que o motor de paletas calcula (`PALETTE_ROLE_MAP`), nem na contraparte; a sobrescrita mantida no `design` também tem de estar na contraparte. Chave de payload que não é token (`enabledLanguages`), chave
 //    órfã (`auditor_presets`) e token sem `kind` (`token-docs:check`) ficam fora — cada um tem o seu gate.
 // 4. A classificação vem do schema (`kind`, `modeDependent`) e NÃO é conferida aqui: um funcional marcado estético
 //    seria exigido de todo tema, e um estético marcado funcional seria proibido. O critério é o do `kind` no schema.
@@ -37,6 +37,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { MASTER_DESIGN_MAP } from '../../../src/core/Design/master-map';
 import { SARAK_ALL_THEMES } from '../../../src/core/Design/presets/themes/all';
+import { PALETTE_ROLE_MAP } from '../../../src/core/Design/palette/role-map';
 import {
     buildCompletenessReport,
     type CompletenessGap,
@@ -60,7 +61,7 @@ export function buildReport(pending: Record<string, unknown> = readPending()): C
         design: theme.design,
         contraparte: theme.contraparte as Record<string, unknown> | undefined,
     }));
-    return buildCompletenessReport(themes, tokens, pending);
+    return buildCompletenessReport(themes, tokens, pending, new Set(Object.keys(PALETTE_ROLE_MAP)));
 }
 
 /** Uma linha por tema e motivo: a contagem e uma amostra dos ids, para o relatório não despejar centenas de linhas. */

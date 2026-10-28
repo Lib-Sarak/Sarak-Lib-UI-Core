@@ -724,6 +724,25 @@ assim, a página já tem o fundo antes do JavaScript e o Provider começa com a 
   load contra o schema de tokens: chave desconhecida ou valor de tipo errado vira `console.warn` e é
   **descartado**, nunca CSS cru. Se um ajuste seu "não pegou", o console diz por quê.
 
+### Cor vem da paleta
+
+Um tema é **estrutura + paleta**: o que o tema declara de forma, tipografia e movimento fica no `design`; a **cor** pode vir
+de um token só, `colorPalette`, que calcula todas as cores nos dois modos (claro e escuro) com contraste legível.
+
+```ts
+// "<id-de-preset>"                                      ex.: "oceano"
+// "custom:<tipo>:<#base>[,sec=<#hex>][,acc=<#hex>]"     ex.: "custom:analogous:#2563eb,sec=#16a34a"
+// tipos: monochromatic | analogous | complementary | split-complementary | triadic
+const design = { ...estruturaDoTema, colorPalette: 'custom:analogous:#2563eb' };
+```
+
+- **Vírgula entre as sementes**, nunca `;` (a barreira de CSS recusa); `sec` e `acc` são opcionais e, sem elas, o tipo as deriva.
+- **Cor explícita vence a paleta.** Declare uma cor à mão (no tema, no `config` do host ou no painel) **só com motivo** —
+  uma marca que a paleta não alcança, um contraste que o produto exige — e escreva o motivo ao lado. Sem motivo, apague a
+  cor e deixe a paleta calcular.
+- Para ver o resultado antes de aplicar: `sarakResolvePalette(valor, 'light' | 'dark')`. No painel, o usuário escolhe uma
+  pronta ou cria uma a partir de uma cor; o valor segue no tema salvo, pelo `onSave` que você já tem.
+
 ## 3.10 Multidispositivo → o contrato de responsividade
 
 **É zero-config.** Você **não escreve CSS nem media query** para as telas funcionarem em

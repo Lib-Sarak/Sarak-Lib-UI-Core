@@ -4,6 +4,8 @@ import { validateDesign } from '../validation';
 import { sarakGetDefaultDesignState } from '../../../Design/master-map';
 import { SARAK_ALL_THEMES } from '../../../Design/presets/themes/all';
 import { minimalistAiry } from '../../../Design/presets/themes/minimalist-airy';
+import { composeThemeForMode } from '../../../Design/presets/themes/compose';
+import { sarakResolvePalette } from '../../../Design/palette/resolve';
 
 /**
  * Spec 40.4 L4 — verificação de propagação: com o drift reconciliado (L2), o boot
@@ -79,21 +81,19 @@ describe('Caracterização — minimalist-airy reconciliado (Spec 40.4 L4)', () 
         expect(declaredKeys).toEqual([]);
     });
 
-    it('preserva os valores atuais de cor, tipografia e cromo do tema', () => {
+    it('preserva os valores atuais de tipografia e cromo do tema e tira a cor da paleta', () => {
         const merged = { ...sarakGetDefaultDesignState(), ...(minimalistAiry.design as Record<string, unknown>) };
         const result = validateDesign(merged);
+        const palette = sarakResolvePalette(String(minimalistAiry.design.colorPalette), 'light');
+        const composed = validateDesign(composeThemeForMode(minimalistAiry as never, 'light') as unknown as Record<string, unknown>);
         const currentThemeAppearance = {
             mode: 'light',
-            primaryColor: '#111827',
-            accentColor: '#2563eb',
-            colorBgBody: '#F9FAFB',
+            colorPalette: 'oceano',
             headingFont: "'Inter', sans-serif",
             bodyFont: "'Inter', sans-serif",
             monoFont: "'JetBrains Mono', monospace",
             h1Size: { mob: 32, tab: 40, desk: 48 },
             h1Weight: '800',
-            sidebarColor: '#ffffff',
-            topbarColor: '#ffffff',
             navItemRadius: 12,
             cardBorderRadius: { mob: 32, tab: 32, desk: 32 },
             cardRadiusTL: { mob: 32, tab: 32, desk: 32 },
@@ -104,5 +104,12 @@ describe('Caracterização — minimalist-airy reconciliado (Spec 40.4 L4)', () 
 
         expect(minimalistAiry.design).toEqual(expect.objectContaining(currentThemeAppearance));
         expect(result).toEqual(expect.objectContaining(currentThemeAppearance));
+        expect(composed).toEqual(expect.objectContaining({
+            primaryColor: palette.primaryColor,
+            accentColor: palette.accentColor,
+            colorBgBody: palette.colorBgBody,
+            sidebarColor: palette.sidebarColor,
+            topbarColor: palette.topbarColor,
+        }));
     });
 });

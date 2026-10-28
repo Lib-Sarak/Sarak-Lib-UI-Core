@@ -5,6 +5,8 @@ import { useDesignVariables } from '../useDesignVariables';
 import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../../breakpoints';
 import { sarakGetDefaultDesignState } from '../../master-map';
 import { sarakSovereignTheme } from '../../presets/themes/sarak-sovereign';
+import { composeThemeForMode } from '../../presets/themes/compose';
+import { sarakResolvePalette } from '../../palette/resolve';
 import { MEDIA_PREDICATE_TABLE } from '../../../Provider/utils/__tests__/mediaPredicateTable';
 import { FLUID_MAX_CONTENT_WIDTH, FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../schema/system';
 
@@ -101,18 +103,20 @@ describe('useDesignVariables — breakpoints como dado (F5)', () => {
  */
 describe('useDesignVariables — Decisão D: no modo nativo, emitido = escrito', () => {
     it('um tema no seu PRÓPRIO modo emite EXATAMENTE o valor que o autor escreveu', () => {
-        const merged = { ...sarakGetDefaultDesignState(), ...(sarakSovereignTheme.design as Record<string, unknown>) };
+        // o autor escreve o que NÃO vem da paleta (a sobrescrita); o resto sai dela, composto antes do hook
+        const merged = composeThemeForMode(sarakSovereignTheme as never, 'dark') as unknown as Record<string, unknown>;
         const { result } = renderHook(() => useDesignVariables(merged));
         const { variables } = result.current;
+        const palette = sarakResolvePalette(String(sarakSovereignTheme.design.colorPalette), 'dark');
 
         expect(merged.mode).toBe('dark');
-        expect(sarakSovereignTheme.design.btnPrimaryText).toBe('#04121a');
-        expect(variables['--sarak-btn-primary-text']).toBe('#04121a');
-        expect(variables['--sarak-btn-primary-bg']).toBe('#19e3f0');
+        expect(sarakSovereignTheme.design.btnPrimaryText).toBeUndefined();
+        expect(variables['--sarak-btn-primary-text']).toBe(palette.btnPrimaryText);
+        expect(variables['--sarak-btn-primary-bg']).toBe(palette.btnPrimaryBg);
     });
 
     it('não muda nenhum outro valor de cor do tema no modo nativo (nada de shift de luminância)', () => {
-        const merged = { ...sarakGetDefaultDesignState(), ...(sarakSovereignTheme.design as Record<string, unknown>) };
+        const merged = composeThemeForMode(sarakSovereignTheme as never, 'dark') as unknown as Record<string, unknown>;
         const { result } = renderHook(() => useDesignVariables(merged));
         const { variables } = result.current;
 

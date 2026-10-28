@@ -81,7 +81,7 @@
 //    de `PAIRS[].bgChain` (o motor não tem acesso a ela em runtime), então
 //    um card aninhado em múltiplas camadas translúcidas pode divergir
 //    ligeiramente do que a 1ª passada mediria para o mesmo par no nativo.
-// 8. [Contraparte] `auditThemeOppositeMode` passa a chamar `resolveThemeForMode`
+// 8. [Contraparte] `auditThemeOppositeMode` passa a chamar `composeThemeForMode` (que resolve o modo por `resolveThemeForMode` e expande a paleta)
 //    em vez de `syncThemeWithMode` direto: quando o tema declara
 //    `contraparte`, é ELA que é medida (o bloco autorado, não o sintetizado)
 //    — a 2ª passada deixou de medir só o que a lib deriva e passa a medir o
@@ -99,10 +99,9 @@
 //    em componente algum. O verificador não prova que o botão `cyberpunk` lê a cor do status — isso é do
 //    teste de `useAtomicStyles` e de `browser-tests/contraste-do-que-faltava.spec.ts`.
 // -------------------------------------------------------------------------
-import { sarakGetDefaultDesignState } from '../../../src/core/Design/master-map';
 import { SARAK_ALL_THEMES } from '../../../src/core/Design/presets/themes/all';
 import type { SarakThemePreset } from '../../../src/core/Design/presets/themes/index';
-import { resolveThemeForMode } from '../../../src/core/Design/presets/themes/color-engine';
+import { composeThemeForMode } from '../../../src/core/Design/presets/themes/compose';
 import { pickOnColor } from '../../../src/core/Provider/utils/on-color';
 import { MIX_SOURCE_SHARE, PAIRS } from '../../../src/core/Design/palette/contrast-pairs';
 import type { ContrastPair } from '../../../src/core/Design/palette/contrast-pairs';
@@ -268,7 +267,8 @@ export interface ThemeReport {
 }
 
 export function auditTheme(theme: SarakThemePreset): ThemeReport {
-    const design = { ...sarakGetDefaultDesignState(), ...(theme.design as Record<string, unknown>) } as Record<string, SarakTokenValue>;
+    const nativeMode = (theme.design.mode as 'light' | 'dark') || 'dark';
+    const design = composeThemeForMode({ design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte }, nativeMode) as unknown as Record<string, SarakTokenValue>;
     const resultados = PAIRS.map((pair) => evaluatePair(pair, design));
     return {
         id: theme.id,
@@ -285,15 +285,14 @@ export function auditTheme(theme: SarakThemePreset): ThemeReport {
  * passada; não muda a medição nativa, só acrescenta esta.
  *
  * A contraparte AUTORADA é medida quando o tema a declara —
- * via `resolveThemeForMode`, a mesma função que o motor usa em runtime — em
+ * via `composeThemeForMode` (`resolveThemeForMode` + a paleta), a mesma composição que o motor usa em runtime — em
  * vez de sempre sintetizar com `syncThemeWithMode`. Só cai no sintetizado
  * para os temas SEM `contraparte` (os 18 legados, fallback deliberado).
  */
 export function auditThemeOppositeMode(theme: SarakThemePreset): ThemeReport {
-    const design = { ...sarakGetDefaultDesignState(), ...(theme.design as Record<string, unknown>) } as Record<string, SarakTokenValue>;
-    const nativeMode = (design.mode as 'light' | 'dark') || 'dark';
+    const nativeMode = (theme.design.mode as 'light' | 'dark') || 'dark';
     const oppositeMode = nativeMode === 'dark' ? 'light' : 'dark';
-    const shifted = resolveThemeForMode({ design, contraparte: theme.contraparte }, oppositeMode);
+    const shifted = composeThemeForMode({ design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte }, oppositeMode) as unknown as Record<string, SarakTokenValue>;
     const resultados = PAIRS.map((pair) => evaluatePair(pair, shifted));
     return {
         id: theme.id,

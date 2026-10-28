@@ -984,6 +984,37 @@ vencendo os valores calculados. Sem `colorPalette`, a composição permanece a d
 Para prever os tokens antes de aplicá-los, o barril público oferece `sarakResolvePalette(value, mode)` e os tipos
 `SarakPaletteType`, `SarakPaletteMode`, `SarakPaletteInput` e `SarakPaletteSeeds`.
 
+### O painel de customização oferece paletas: escolher uma pronta, criar a partir de uma cor e ajustar por cima
+
+**Classificação: MINOR (recurso novo do painel; nenhuma API muda).** No modo de prévia, o painel ganha a seção **Paleta de
+cores**: uma galeria agrupada por tipo (cada amostra mostra o modo claro e o escuro) e **Criar paleta a partir de uma cor** —
+cor-base, tipo e, opcionalmente, cor secundária e acento, com a prévia ao vivo dos dois modos.
+
+- Escolher ou criar uma paleta é **rascunho**, como a galeria de temas: nada é gravado até o **Aplicar**. O valor sai no tema
+  salvo como `colorPalette` (`custom:<tipo>:<#base>[,sec=<#hex>][,acc=<#hex>]`, vírgula entre as sementes), pelas portas
+  `persistence.onSave` e `theme.onSave` que o host já tem; **nenhuma porta nova**.
+- O ajuste de uma cor pelos controles de sempre vence a paleta. Ao trocar de paleta com cores ajustadas à mão, o painel
+  pergunta: **Descartar ajustes** (a ação destrutiva, explícita) ou **Manter meus ajustes** (o ajuste continua sobre a nova paleta). Cancelar ou fechar o diálogo (Esc, clique fora) **mantém** os ajustes.
+- Para o importador, `colorPalette` é mais um valor do payload; os temas já salvos, com cores explícitas, não mudam.
+
+### Os 19 temas embarcados tiram a cor de uma paleta, e a lib passa a embarcar paletas prontas
+
+**Classificação: MAJOR, dentro da 8.0.0 (muda a cor dos temas embarcados; nenhum nome nem tipo muda).** Cada tema embarcado declara
+um `colorPalette` — um dos presets do catálogo de paletas prontas, que o `oceano` deixa de representar sozinho como preset de
+teste — e deixa de escrever à mão as cores que a paleta calcula. O que o tema ainda declara de cor é sobrescrita justificada
+(o fundo de argila do `organic-clay`, a borda preta do `neo-brutalism`, o fundo de hover do item de navegação). A hierarquia de
+título, subtítulo, texto e texto apagado passa a sair da regra comum da paleta, nos dois modos, com o contraste garantido.
+
+- **Quem usa um tema embarcado** vê as cores novas: o matiz de cada tema continua o dele (a entrada da paleta nasceu das cores que ele
+  tinha), mas os tons, o fundo e a hierarquia de texto são os da regra comum.
+- **Quem salvou um tema** (com cores explícitas) não vê mudança: a cor declarada vence a paleta.
+- **Quem lia a cor de um tema embarcado** (`theme.design.primaryColor`, `colorBgBody`…) não a encontra mais no `design` do tema:
+  leia a do modo com `sarakResolvePalette(theme.design.colorPalette, mode)`, e a sobrescrita justificada, quando houver, em
+  `theme.design`.
+- **Quem deriva de um tema de referência** com `sarakDeriveThemeFromReference` e troca só `primaryColor` mantém a paleta do tema
+  para o resto da tela. Para trocar a marca inteira, passe `colorPalette: 'custom:<tipo>:<#base>'` nas sobreposições.
+- `sarakFindMissingThemeAxes` conta um `colorPalette` válido como declaração das cores que a paleta calcula.
+
 ### Modelo público de usuário do cromo
 
 **Classificação: MAJOR.** `SarakShellUser` deixa de aceitar os campos de produto `username` e `level`; o nome

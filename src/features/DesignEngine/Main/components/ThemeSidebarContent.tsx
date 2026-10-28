@@ -4,6 +4,7 @@ import { ThemeGlobalSettings } from './ThemeGlobalSettings';
 import { ThemePillarsList } from './ThemePillarsList';
 import { ThemeImpactList } from './ThemeImpactList';
 import { TokenControl } from './TokenControl';
+import { PaletteSection } from './PaletteSection';
 import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
 import { locateToken } from '../../utils/token-search';
 import { MasterControlPanel } from '../MasterControlPanel';
@@ -116,6 +117,12 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
                                 {isGalleryOpen ? 'Fechar galeria' : 'Abrir galeria'}
                             </SarakButton>
                         </section>
+
+                        <PaletteSection
+                            draft={draft as unknown as Record<string, unknown>}
+                            appliedDesign={sarak.systemDesign as unknown as Record<string, unknown> | undefined}
+                            updateDraft={updateDraft}
+                        />
 
                         {/* PILAR 0: CONFIGURAÇÕES GLOBAIS */}
                         <ThemeGlobalSettings

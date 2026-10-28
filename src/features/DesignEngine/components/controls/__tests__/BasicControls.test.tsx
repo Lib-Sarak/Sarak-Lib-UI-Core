@@ -167,7 +167,8 @@ describe('rótulos dos controles', () => {
         );
 
         ['Rótulo do slider', 'Rótulo do campo', 'Rótulo da opção', 'Rótulo da lista'].forEach((label) => {
-            const labelElement = screen.getByText(label);
+            // O SelectControl também desenha um <label class="sr-only"> com o mesmo texto: o visível é o outro.
+            const labelElement = screen.getAllByText(label).find((element) => !element.classList.contains('sr-only'))!;
             expect(labelElement).toHaveClass('normal-case', 'tracking-normal');
             expect(labelElement.className).toContain('--sarak-type-scale-caption');
         });

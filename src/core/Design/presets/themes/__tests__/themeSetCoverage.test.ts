@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { SARAK_ALL_THEMES } from '../all';
+import { composeThemeForMode } from '../compose';
 import type { SarakThemePreset } from '../index';
 import { FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../../schema/system';
 
@@ -74,7 +75,8 @@ describe('cobertura do conjunto de temas embarcados', () => {
         const roles = ['titleColor', 'subtitleColor', 'emphasisColor', 'cardTitleColor'] as const;
 
         SARAK_ALL_THEMES.forEach((theme) => {
-            [theme.design, theme.contraparte].forEach((design, index) => {
+            // o design composto de cada modo: a hierarquia vem da paleta, que o tema não declara
+            (['light', 'dark'] as const).map((mode) => composeThemeForMode(theme as never, mode) as unknown as Record<string, unknown>).forEach((design, index) => {
                 expect(design, `${theme.id} modo ${index}`).toBeDefined();
                 roles.forEach((role) => {
                     expect(typeof design?.[role], `${theme.id}.${role} modo ${index}`).toBe('string');

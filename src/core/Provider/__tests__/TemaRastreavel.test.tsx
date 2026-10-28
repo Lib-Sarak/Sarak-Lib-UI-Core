@@ -17,6 +17,8 @@ import '@testing-library/jest-dom';
 import { describe, it, expect } from 'vitest';
 import SarakUIProvider from '../SarakUIProvider';
 import { sarakPreloadThemes } from '../../Design/presets/themes/registry';
+import { composeThemeForMode } from '../../Design/presets/themes/compose';
+import { minimalistAiry } from '../../Design/presets/themes/minimalist-airy';
 import { useSarakUI } from '../SarakUIProvider';
 import { SarakShellThemeToggle } from '../../../components/atomic/Navigation/SarakShellThemeToggle';
 
@@ -46,17 +48,15 @@ describe('Tema rastreável — a contraparte é encontrada pela porta `initialTh
             </SarakUIProvider>,
         );
 
-        // `minimalist-airy` é nativamente `light`, com `colorBgBody: '#F9FAFB'`.
+        // `minimalist-airy` é nativamente `light`; o fundo vem da paleta que ele declara.
         expect(screen.getByTestId('mode')).toHaveTextContent('light');
-        expect(screen.getByTestId('bg')).toHaveTextContent('#F9FAFB');
+        expect(screen.getByTestId('bg')).toHaveTextContent(String(composeThemeForMode(minimalistAiry as never, 'light').colorBgBody));
 
         fireEvent.click(screen.getByRole('button'));
 
-        // A contraparte AUTORADA declara `colorBgBody: '#0d1016'` para o modo
-        // escuro — um valor ESCOLHIDO, que `syncThemeWithMode` nunca produziria
-        // a partir de `#F9FAFB` (suas faixas fixas de `bg` mandam L≤15,
-        // preservando H/S de `#F9FAFB`, não este valor específico).
+        // No modo escuro o fundo vem da MESMA paleta, no tom do modo escuro — um valor
+        // calculado pelo motor, que `syncThemeWithMode` nunca produziria a partir do claro.
         expect(screen.getByTestId('mode')).toHaveTextContent('dark');
-        expect(screen.getByTestId('bg')).toHaveTextContent('#0d1016');
+        expect(screen.getByTestId('bg')).toHaveTextContent(String(composeThemeForMode(minimalistAiry as never, 'dark').colorBgBody));
     });
 });

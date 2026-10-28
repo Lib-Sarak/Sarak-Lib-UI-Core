@@ -63,7 +63,6 @@ export const ColorsSchema: ComponentSchema = {
             id: 'colorPalette',
             kind: 'aesthetic',
             modeDependent: false,
-            optionalForTheme: true,
             usage: 'Seleciona a regra de cálculo das cores do tema nos dois modos; cores declaradas explicitamente continuam vencendo.',
             label: 'Paleta de Cores',
             type: 'string',

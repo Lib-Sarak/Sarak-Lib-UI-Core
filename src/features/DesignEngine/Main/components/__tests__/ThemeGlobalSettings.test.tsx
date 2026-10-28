@@ -38,7 +38,7 @@ describe('ThemeGlobalSettings — seção "Barra de Preferências do Usuário"',
         renderSettings(baseProps());
         expect(screen.getByText(`Barra de Preferências do Usuário (${PreferencesSchema.tokens.length})`)).toBeInTheDocument();
         PreferencesSchema.tokens.forEach((token) => {
-            expect(screen.getByText(token.label)).toBeInTheDocument();
+            expect(screen.getByRole('combobox', { name: token.label })).toBeInTheDocument();
         });
         // As 3 posições aparecem como opção em cada select — pega o primeiro select.
         const selects = screen.getAllByRole('combobox');

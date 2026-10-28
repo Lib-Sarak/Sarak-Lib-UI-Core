@@ -87,7 +87,9 @@ describe('composeThemeDesign — a troca de tema nunca herda token do tema anter
         delete defaultsWithoutPalette.colorPalette;
         expect(SARAK_ALL_THEMES).toHaveLength(19);
 
-        SARAK_ALL_THEMES.forEach((theme) => {
+        SARAK_ALL_THEMES.forEach((embedded) => {
+            const { colorPalette: _palette, ...withoutPalette } = embedded.design as Record<string, SarakTokenValue>;
+            const theme = { ...embedded, design: withoutPalette };
             const mode = theme.design.mode === 'light' ? 'light' : 'dark';
             const resolved = resolveThemeForMode({
                 design: theme.design as Record<string, SarakTokenValue>,

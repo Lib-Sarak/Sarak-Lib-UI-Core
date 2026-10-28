@@ -4,7 +4,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { SarakMenuItem } from '../SarakMenuItem';
 import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
 import { SARAK_ALL_THEMES } from '../../../../core/Design/presets/themes/all';
-import { resolveThemeForMode } from '../../../../core/Design/presets/themes/color-engine';
+import { composeThemeForMode } from '../../../../core/Design/presets/themes/compose';
 import type { SarakTokenValue } from '../../../../core/Design/types';
 import { sarakGetDefaultDesignState } from '../../../../core/Design/master-map';
 import { parseToRgba } from '../../../../core/Provider/utils/color-engine';
@@ -382,7 +382,8 @@ describe('SarakMenuItem — realce do item ativo em TODO tema shippado (varredur
     it.each(SARAK_ALL_THEMES.map((theme) => [theme.id, theme] as const))(
         `tema "%s": o item ativo se distingue do inativo nas DUAS orientações (ΔE > ${JND_DELTA_E})`,
         (_id, theme) => {
-            const design = { ...sarakGetDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
+            // o design composto do modo nativo: a cor vem da paleta que o tema declara
+            const design = composeThemeForMode(theme as never, (theme.design.mode as 'light' | 'dark') || 'dark') as unknown as Record<string, unknown>;
             const { result } = renderHook(() => useDesignVariables(design));
             const { variables } = result.current;
 
@@ -468,11 +469,7 @@ describe('SarakMenuItem — realce do HOVER (fundo) em todo tema já reautorado,
             const oppositeMode: 'light' | 'dark' = nativeMode === 'dark' ? 'light' : 'dark';
 
             for (const modo of [nativeMode, oppositeMode]) {
-                const resolved = resolveThemeForMode(
-                    { design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte },
-                    modo,
-                );
-                const design = { ...sarakGetDefaultDesignState(), ...(resolved as Record<string, unknown>) };
+                const design = composeThemeForMode(theme as never, modo) as unknown as Record<string, unknown>;
                 const { result: hookResult } = renderHook(() => useDesignVariables(design));
                 const { variables } = hookResult.current;
 

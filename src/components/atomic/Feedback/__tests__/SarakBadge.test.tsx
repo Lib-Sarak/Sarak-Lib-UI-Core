@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect } from 'vitest';
 import { SARAK_ALL_THEMES } from '../../../../core/Design/presets/themes/all';
+import { composeThemeForMode } from '../../../../core/Design/presets/themes/compose';
 import * as ComponentModule from '../SarakBadge';
 import { SarakBadge } from '../SarakBadge';
 import { ON_COLOR_DARK, pickOnColor } from '../../../../core/Provider/utils/on-color';
@@ -119,16 +120,11 @@ describe('SarakBadge solid status contrast', () => {
 
     it('o texto que o motor escolhe passa de 4,5:1 sobre as cores de status dos temas, nos dois modos', () => {
         for (const theme of SARAK_ALL_THEMES) {
-            const palettes: Array<{ label: string; colors: object }> = [
-                { label: `${theme.id} (base)`, colors: theme.design },
-            ];
-
-            if (theme.contraparte) {
-                palettes.push({
-                    label: `${theme.id} (contraparte)`,
-                    colors: { ...theme.design, ...theme.contraparte },
-                });
-            }
+            // o design composto de cada modo: a cor de status vem da paleta, que o tema não declara
+            const palettes: Array<{ label: string; colors: object }> = (['light', 'dark'] as const).map((mode) => ({
+                label: `${theme.id} (${mode})`,
+                colors: composeThemeForMode(theme as never, mode),
+            }));
 
             for (const palette of palettes) {
                 for (const key of STATUS_THEME_COLOR_KEYS) {

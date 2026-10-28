@@ -18,4 +18,19 @@ describe('PALETTE_ROLE_MAP', () => {
             expect(toneByMode.dark).toBeGreaterThan(0);
         });
     });
+
+    it('o título e o título do card saem da primária (800 no claro, 200 no escuro), não do tom do texto', () => {
+        for (const key of ['titleColor', 'cardTitleColor']) {
+            expect(PALETTE_ROLE_MAP[key].scale, key).toBe('primary');
+            expect(PALETTE_ROLE_MAP[key].toneByMode, key).toEqual({ light: 800, dark: 200 });
+        }
+    });
+
+    it('mestre, secundário e apagado têm degraus distintos nos dois modos', () => {
+        for (const mode of ['light', 'dark'] as const) {
+            const tones = ['textColorMaster', 'textColorSecondary', 'textColorMuted'].map((key) => PALETTE_ROLE_MAP[key].toneByMode[mode]);
+            expect(new Set(tones).size, mode).toBe(3);
+        }
+        expect(PALETTE_ROLE_MAP.subtitleColor.toneByMode).toEqual(PALETTE_ROLE_MAP.textColorSecondary.toneByMode);
+    });
 });

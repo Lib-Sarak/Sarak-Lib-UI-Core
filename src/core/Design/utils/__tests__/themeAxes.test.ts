@@ -2,6 +2,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { SARAK_THEME_AXES, sarakFindMissingThemeAxes, sarakWarnOnIncompleteTheme } from '../themeAxes';
 import { SARAK_BOOT_THEMES, sarakLoadReferenceThemes } from '../../presets/themes/reference';
+import { composeThemeForMode } from '../../presets/themes/compose';
 import type { SarakDesignState } from '../../../Provider/types';
 
 describe('Cobertura de eixos de tema (Spec 40.1 — L6)', () => {
@@ -32,8 +33,15 @@ describe('Cobertura de eixos de tema (Spec 40.1 — L6)', () => {
         }
     });
 
+    it('um `colorPalette` válido cobre os eixos de cor e de cromo que a paleta calcula; um inválido não', () => {
+        expect(sarakFindMissingThemeAxes({ colorPalette: 'oceano' })).toEqual(['font', 'radius', 'spacing']);
+        expect(sarakFindMissingThemeAxes({ colorPalette: 'custom:analogous:#2563eb' })).toEqual(['font', 'radius', 'spacing']);
+        expect(sarakFindMissingThemeAxes({ colorPalette: 'nao-existe' })).toEqual(['color', 'font', 'chrome', 'radius', 'spacing']);
+    });
+
     it('o par de referência difere em modo, cromo e fonte (prova ampla do R5)', async () => {
-        const [light, dark] = (await sarakLoadReferenceThemes()).map((t) => t.design as Record<string, unknown>);
+        // o design composto de cada tema no seu modo: a cor do cromo vem da paleta
+        const [light, dark] = (await sarakLoadReferenceThemes()).map((t) => composeThemeForMode(t as never, t.design.mode as 'light' | 'dark') as unknown as Record<string, unknown>);
         expect(light.mode).not.toBe(dark.mode);
         expect(light.sidebarColor).not.toBe(dark.sidebarColor);
         expect(light.headingFont).not.toBe(dark.headingFont);

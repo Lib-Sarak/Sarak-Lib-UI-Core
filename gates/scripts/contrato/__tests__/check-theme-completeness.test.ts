@@ -7,6 +7,7 @@
 import { describe, expect, it } from 'vitest';
 import { MASTER_DESIGN_MAP } from '../../../../src/core/Design/master-map';
 import { SARAK_ALL_THEMES } from '../../../../src/core/Design/presets/themes/all';
+import { PALETTE_ROLE_MAP } from '../../../../src/core/Design/palette/role-map';
 import { buildReport, readPending } from '../check-theme-completeness';
 import {
     buildCompletenessReport,
@@ -19,23 +20,24 @@ const tokens: CompletenessTokenLike[] = [
     { id: 'mode', kind: 'aesthetic', modeDependent: false },
     { id: 'primaryColor', kind: 'aesthetic', modeDependent: true },
     { id: 'borderRadius', kind: 'aesthetic', modeDependent: false },
-    { id: 'colorPalette', kind: 'aesthetic', modeDependent: false, optionalForTheme: true },
+    { id: 'colorPalette', kind: 'aesthetic', modeDependent: false },
     { id: 'sidebarWidth', kind: 'functional', modeDependent: false },
     { id: 'semKind' },
 ];
 
 const complete: CompletenessThemeLike = {
     id: 'complete-theme',
-    design: { mode: 'dark', primaryColor: '#fff', borderRadius: 8 },
+    design: { mode: 'dark', primaryColor: '#fff', borderRadius: 8, colorPalette: '' },
     contraparte: { mode: 'light', primaryColor: '#000' },
 };
 
 const reasonsOf = (theme: CompletenessThemeLike): string[] => gapsOfTheme(theme, tokens).map((gap) => `${gap.reason}:${gap.tokenId}`);
 const realTokens = MASTER_DESIGN_MAP.components.flatMap((component) => component.tokens);
+const paletteTokenIds = new Set(Object.keys(PALETTE_ROLE_MAP));
 
 /** Tema sintético completo derivado do dicionário: todo estético obrigatório no principal e na contraparte. */
 const syntheticComplete = (): CompletenessThemeLike => {
-    const aesthetic = realTokens.filter((token) => token.kind === 'aesthetic' && !token.optionalForTheme);
+    const aesthetic = realTokens.filter((token) => token.kind === 'aesthetic');
     return {
         id: 'synthetic',
         design: Object.fromEntries(aesthetic.map((token) => [token.id, token.defaultValue])),
@@ -50,15 +52,45 @@ describe('theme-completeness:check — temas válidos e tokens opcionais', () =>
         expect(reasonsOf(withPayloadKeys)).toEqual([]);
     });
 
-    it('deixa tema omitir um token estético opcional e aceita sua declaração quando presente', () => {
-        expect(reasonsOf(complete)).toEqual([]);
-        expect(reasonsOf({ ...complete, design: { ...complete.design, colorPalette: 'oceano' } })).toEqual([]);
+    it('exige a declaração de `colorPalette`: o tema embarcado declara todo token estético', () => {
+        expect(reasonsOf({ ...complete, design: { mode: 'dark', primaryColor: '#fff', borderRadius: 8 } })).toEqual(['missing-aesthetic:colorPalette']);
+    });
+});
+
+describe('theme-completeness:check — o tema que declara paleta', () => {
+    const paletteTokens = new Set(['primaryColor']);
+    const withPalette: CompletenessThemeLike = {
+        id: 'palette-theme',
+        design: { mode: 'dark', borderRadius: 8, colorPalette: 'oceano' },
+        contraparte: { mode: 'light' },
+    };
+    const paletteReasons = (theme: CompletenessThemeLike): string[] =>
+        gapsOfTheme(theme, tokens, paletteTokens).map((gap) => `${gap.reason}:${gap.tokenId}`);
+
+    it('deixa passar o tema com paleta que não declara a cor que ela calcula, no design nem na contraparte', () => {
+        expect(paletteReasons(withPalette)).toEqual([]);
+    });
+
+    it('continua cobrando a cor do tema SEM paleta (e do tema com a paleta vazia)', () => {
+        const withoutPalette = { ...withPalette, design: { mode: 'dark', borderRadius: 8, colorPalette: '' } };
+        expect(paletteReasons(withoutPalette)).toEqual(['missing-aesthetic:primaryColor', 'missing-mode-aesthetic:primaryColor']);
+    });
+
+    it('cobra o que a paleta NÃO calcula: o estético fora do mapa segue obrigatório', () => {
+        expect(paletteReasons({ ...withPalette, design: { mode: 'dark', colorPalette: 'oceano' } })).toEqual(['missing-aesthetic:borderRadius']);
+    });
+
+    it('aceita a sobrescrita mantida nos dois blocos e acusa a que vaza para o outro modo', () => {
+        const kept = { ...withPalette, design: { ...withPalette.design, primaryColor: '#fff' }, contraparte: { mode: 'light', primaryColor: '#000' } };
+        expect(paletteReasons(kept)).toEqual([]);
+        const leaking = { ...kept, contraparte: { mode: 'light' } };
+        expect(paletteReasons(leaking)).toEqual(['palette-override-missing-in-contraparte:primaryColor']);
     });
 });
 
 describe('theme-completeness:check — lacunas obrigatórias', () => {
     it('pega o estético ausente no modo principal, inclusive o que vale `undefined`', () => {
-        expect(reasonsOf({ ...complete, design: { mode: 'dark', primaryColor: '#fff' } })).toEqual(['missing-aesthetic:borderRadius']);
+        expect(reasonsOf({ ...complete, design: { mode: 'dark', primaryColor: '#fff', colorPalette: '' } })).toEqual(['missing-aesthetic:borderRadius']);
         expect(reasonsOf({ ...complete, design: { ...complete.design, borderRadius: undefined } })).toEqual(['missing-aesthetic:borderRadius']);
     });
 
@@ -113,10 +145,10 @@ describe('theme-completeness:check — o dicionário e os temas reais', () => {
         for (const id of Object.keys(readPending())) expect(ids.has(id)).toBe(true);
     });
 
-    it('hoje todo tema embarcado está na lista de exceção (nenhum é completo ainda); tema que sair dela tem de estar completo', () => {
+    it('tema que está na lista de exceção tem lacuna; tema que não está tem de estar completo', () => {
         const pending = readPending();
         for (const theme of SARAK_ALL_THEMES) {
-            const gaps = gapsOfTheme({ id: theme.id, design: theme.design, contraparte: theme.contraparte }, realTokens);
+            const gaps = gapsOfTheme({ id: theme.id, design: theme.design, contraparte: theme.contraparte }, realTokens, paletteTokenIds);
             if (theme.id in pending) expect(gaps.length).toBeGreaterThan(0);
             else expect(gaps).toEqual([]);
         }

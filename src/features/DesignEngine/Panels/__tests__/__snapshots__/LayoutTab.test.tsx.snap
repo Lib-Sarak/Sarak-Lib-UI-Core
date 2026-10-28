@@ -455,45 +455,57 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                 Heading Font
               </label>
               <div
-                class="relative group w-fit"
+                class="flex flex-col w-full"
+                style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.25); width: fit-content;"
               >
-                <select
-                  class="block text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#101622))] rounded-input py-[var(--sarak-input-padding,16px)] pl-4 pr-10 appearance-none w-fit  "
-                  style="border: 1px solid var(--sarak-input-border-color, var(--border-color,rgba(255,255,255,0.09)));"
+                <label
+                  class="sr-only"
+                  for=":r0:"
                 >
-                  <option
-                    value=""
-                  >
-                    (Usar Padrão do Tema)
-                  </option>
-                  <option
-                    value="'Outfit', sans-serif"
-                  >
-                    Outfit
-                  </option>
-                  <option
-                    value="'Inter', sans-serif"
-                  >
-                    Inter
-                  </option>
-                </select>
+                  Heading Font
+                </label>
                 <div
-                  class="absolute inset-y-0 right-0 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,rgba(242,246,251,0.55)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#19e3f0))]"
-                  style="padding-right: var(--sarak-layout-gap-md,16px);"
+                  class="relative group w-fit"
                 >
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                  <select
+                    class="block text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))] font-medium outline-none transition-all bg-[var(--sarak-input-bg,var(--color-theme-card,#101622))] rounded-input py-[var(--sarak-input-padding,16px)] appearance-none pl-[var(--sarak-input-padding-horizontal,16px)] pr-[calc(var(--sarak-input-padding-horizontal,16px)+var(--sarak-layout-gap-md,16px)+var(--sarak-layout-gap-sm,8px))] w-fit"
+                    id=":r0:"
+                    style="border: 1px solid var(--sarak-input-border-color, var(--border-color,rgba(255,255,255,0.09)));"
                   >
-                    <path
-                      d="M19 9l-7 7-7-7"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                    />
-                  </svg>
+                    <option
+                      value=""
+                    >
+                      (Usar Padrão do Tema)
+                    </option>
+                    <option
+                      value="'Outfit', sans-serif"
+                    >
+                      Outfit
+                    </option>
+                    <option
+                      value="'Inter', sans-serif"
+                    >
+                      Inter
+                    </option>
+                  </select>
+                  <div
+                    class="absolute inset-y-0 right-0 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,rgba(242,246,251,0.55)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#19e3f0))]"
+                    style="padding-right: var(--sarak-layout-gap-md,16px);"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M19 9l-7 7-7-7"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      />
+                    </svg>
+                  </div>
                 </div>
               </div>
             </div>
@@ -506,45 +518,57 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                 Body Font
               </label>
               <div
-                class="relative group w-fit"
+                class="flex flex-col w-full"
+                style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.25); width: fit-content;"
               >
-                <select
-                  class="block text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#101622))] rounded-input py-[var(--sarak-input-padding,16px)] pl-4 pr-10 appearance-none w-fit  "
-                  style="border: 1px solid var(--sarak-input-border-color, var(--border-color,rgba(255,255,255,0.09)));"
+                <label
+                  class="sr-only"
+                  for=":r1:"
                 >
-                  <option
-                    value=""
-                  >
-                    (Usar Padrão do Tema)
-                  </option>
-                  <option
-                    value="'Outfit', sans-serif"
-                  >
-                    Outfit
-                  </option>
-                  <option
-                    value="'Inter', sans-serif"
-                  >
-                    Inter
-                  </option>
-                </select>
+                  Body Font
+                </label>
                 <div
-                  class="absolute inset-y-0 right-0 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,rgba(242,246,251,0.55)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#19e3f0))]"
-                  style="padding-right: var(--sarak-layout-gap-md,16px);"
+                  class="relative group w-fit"
                 >
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                  <select
+                    class="block text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))] font-medium outline-none transition-all bg-[var(--sarak-input-bg,var(--color-theme-card,#101622))] rounded-input py-[var(--sarak-input-padding,16px)] appearance-none pl-[var(--sarak-input-padding-horizontal,16px)] pr-[calc(var(--sarak-input-padding-horizontal,16px)+var(--sarak-layout-gap-md,16px)+var(--sarak-layout-gap-sm,8px))] w-fit"
+                    id=":r1:"
+                    style="border: 1px solid var(--sarak-input-border-color, var(--border-color,rgba(255,255,255,0.09)));"
                   >
-                    <path
-                      d="M19 9l-7 7-7-7"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                    />
-                  </svg>
+                    <option
+                      value=""
+                    >
+                      (Usar Padrão do Tema)
+                    </option>
+                    <option
+                      value="'Outfit', sans-serif"
+                    >
+                      Outfit
+                    </option>
+                    <option
+                      value="'Inter', sans-serif"
+                    >
+                      Inter
+                    </option>
+                  </select>
+                  <div
+                    class="absolute inset-y-0 right-0 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,rgba(242,246,251,0.55)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#19e3f0))]"
+                    style="padding-right: var(--sarak-layout-gap-md,16px);"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M19 9l-7 7-7-7"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      />
+                    </svg>
+                  </div>
                 </div>
               </div>
             </div>

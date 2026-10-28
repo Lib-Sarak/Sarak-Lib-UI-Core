@@ -75,7 +75,7 @@ describe('DesignControls', () => {
         const { container } = customRender(
             <SelectControl label="Fonte" value="Inter" options={['Inter', 'Roboto']} onChange={onChange} />
         );
-        expect(screen.getByText('Fonte')).toBeInTheDocument();
+        expect(screen.getByRole('combobox', { name: 'Fonte' })).toBeInTheDocument();
         
         const select = container.querySelector('select') as HTMLSelectElement;
         expect(select).toBeInTheDocument();

@@ -3,9 +3,12 @@ import { renderHook } from '@testing-library/react';
 import { useThemeSeed } from '../useThemeSeed';
 import { SARAK_ALL_THEMES } from '../../../Design/presets/themes/all';
 import { SARAK_DEFAULT_THEME_ID } from '../../../Design/presets/themes';
+import { composeThemeForMode } from '../../../Design/presets/themes/compose';
 import type { SarakThemeEntry, SarakThemePayload, SarakUIOptions } from '../../types';
 
 const sovereign = SARAK_ALL_THEMES.find((theme) => theme.id === SARAK_DEFAULT_THEME_ID)!;
+/** O que o tema padrão pinta num modo: a paleta que ele declara, com a sobrescrita dele por cima. */
+const sovereignIn = (mode: 'light' | 'dark') => composeThemeForMode(sovereign as never, mode) as unknown as Record<string, unknown>;
 
 const seedOf = (props: {
     allThemes?: SarakThemeEntry[];
@@ -29,7 +32,7 @@ describe('useThemeSeed — a semente do design', () => {
         const { resolveSeedThemeId, getSeedConfig } = seedOf({});
 
         expect(resolveSeedThemeId()).toBe(SARAK_DEFAULT_THEME_ID);
-        expect(getSeedConfig().primaryColor).toBe(sovereign.design.primaryColor);
+        expect(getSeedConfig().primaryColor).toBe(sovereignIn('dark').primaryColor);
         expect(warn).not.toHaveBeenCalled();
     });
 
@@ -58,7 +61,7 @@ describe('useThemeSeed — a semente do design', () => {
 
         expect(resolveSeedThemeId()).toBe(SARAK_DEFAULT_THEME_ID);
         expect(warn.mock.calls.some((call) => String(call[0]).includes('"classic"'))).toBe(true);
-        expect(getSeedConfig().primaryColor).toBe(sovereign.contraparte?.primaryColor);
+        expect(getSeedConfig().primaryColor).toBe(sovereignIn('light').primaryColor);
     });
 
     it('options.theme.defaultTheme inexistente avisa UMA vez por id e usa o padrão', () => {
@@ -76,15 +79,15 @@ describe('useThemeSeed — a semente do design', () => {
         expect(getSeedConfig().primaryColor).toBe('#abcdef');
     });
 
-    it('usa as cores autoradas dos papéis de texto no modo claro e preserva as substituições do host', () => {
+    it('usa as cores dos papéis de texto do modo claro (as da paleta) e preserva as substituições do host', () => {
         const { getSeedConfig } = seedOf({
             config: { mode: 'light', titleColor: '#123456' },
         });
         const seed = getSeedConfig();
 
         expect(seed.titleColor).toBe('#123456');
-        expect(seed.subtitleColor).toBe(sovereign.contraparte?.subtitleColor);
-        expect(seed.emphasisColor).toBe(sovereign.contraparte?.emphasisColor);
+        expect(seed.subtitleColor).toBe(sovereignIn('light').subtitleColor);
+        expect(seed.emphasisColor).toBe(sovereignIn('light').emphasisColor);
     });
 
     it('ignora o id do cache quando o host declara que o config vence', () => {

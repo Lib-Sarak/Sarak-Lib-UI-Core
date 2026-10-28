@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useDesignManager } from '../useDesignManager';
+import { sarakResolvePalette } from '../../../Design/palette/resolve';
 import type { SarakUIOptions, SarakThemePayload } from '../../types';
 
 const baseProps = (options: SarakUIOptions = {}) => ({
@@ -402,7 +403,7 @@ describe('useDesignManager — id de tema removido/inexistente semeia com a refe
         const { result } = renderHook(() => useDesignManager({ ...baseProps(), initialTheme: 'tema-removido-do-catalogo' }));
 
         expect(result.current.design.mode).toBe('dark');
-        expect(result.current.design.colorBgBody).toBe('#06080d');
+        expect(result.current.design.colorBgBody).toBe(sarakResolvePalette('ciano-violeta', 'dark').colorBgBody);
         expect(warnSpy).toHaveBeenCalled();
         expect(warnSpy.mock.calls.some((call: unknown[]) => String(call[0]).includes('tema-removido-do-catalogo'))).toBe(true);
     });
@@ -417,7 +418,7 @@ describe('useDesignManager — id de tema removido/inexistente semeia com a refe
         );
 
         expect(result.current.design.mode).toBe('light');
-        expect(result.current.design.colorBgBody).toBe('#f3f6fa');
+        expect(result.current.design.colorBgBody).toBe(sarakResolvePalette('ciano-violeta', 'light').colorBgBody);
     });
 
     it('activeThemeId (a "porta persistida" que o consumidor restaura) com o mesmo id removido tem o mesmo comportamento de fallback', () => {

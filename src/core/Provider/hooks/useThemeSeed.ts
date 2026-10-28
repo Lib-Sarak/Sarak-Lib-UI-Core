@@ -2,6 +2,7 @@ import { useCallback, useRef, type MutableRefObject } from 'react';
 import { SARAK_DEFAULT_THEME_ID } from '../../Design/presets/themes';
 import { getLoadedThemePreset, isSarakThemePresetId } from '../../Design/presets/themes/registry';
 import { resolveThemeForMode } from '../../Design/presets/themes/color-engine';
+import { resolvePaletteForDesign } from '../../Design/palette/resolve';
 import { sarakGetDefaultDesignState } from '../../Design/master-map';
 import { readCachedActiveThemeId, resolveStorageKey } from '../utils/resolveStorageKey';
 import { resolveEffectiveStrategy } from '../utils/persistenceStrategy';
@@ -107,11 +108,14 @@ export const useThemeSeed = (props: ThemeSeedProps) => {
             );
         }
         const lightModeTextColors = resolveLightModeTextColors(themeEntry, requestedMode);
+        // A paleta do tema (ou do host) no modo que a semente terá, por baixo do que o tema declara.
+        const seedMode = (configRef.current?.mode ?? themeDesignTokens.mode) === 'light' ? 'light' : 'dark';
+        const palette = resolvePaletteForDesign(themeDesignTokens, configRef.current as Record<string, unknown> | undefined, seedMode);
 
         // Mescla de defaults conhecidos + payload dinâmico do banco no estado
         // canônico: cast pontual tipado (o índice dinâmico de `themeDesignTokens`
         // não se atribui sozinho a `SarakDesignState`).
-        return { ...masterDefaults, ...themeDesignTokens, ...lightModeTextColors, ...configRef.current } as SarakDesignState;
+        return { ...masterDefaults, ...palette, ...themeDesignTokens, ...lightModeTextColors, ...configRef.current } as SarakDesignState;
     }, [resolveSeedThemeId, allThemes, activeThemeId, initialTheme, isUnknownRequestedTheme, configRef]);
 
     return { resolveSeedThemeId, getSeedConfig };

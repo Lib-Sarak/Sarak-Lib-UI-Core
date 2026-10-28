@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { SarakThemePreset } from '../../../../core/Design/presets/themes';
 import { resolveThemeForMode } from '../../../../core/Design/presets/themes/color-engine';
+import { withThemePalette } from '../../../../core/Design/presets/themes/compose';
 import type { SarakTokenValue } from '../../../../core/Design/types';
 import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
 import { sarakGetDefaultDesignState } from '../../../../core/Design/master-map';
@@ -34,10 +35,10 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Sara
     // plan-26: a miniatura reflete o que `onApply` REALMENTE aplicaria — a
     // contraparte AUTORADA quando existe, e só cai no `syncThemeWithMode`
     // sintetizado para os temas legados sem contraparte.
-    const design = resolveThemeForMode(
+    const design = withThemePalette(resolveThemeForMode(
         { design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte },
         currentMode as 'light' | 'dark',
-    );
+    ));
     const { variables } = useDesignVariables(design);
 
     const primary = String(design.primaryColor || 'var(--color-theme-primary, #19e3f0)');

@@ -2,6 +2,7 @@ import { sarakGetDefaultDesignState } from '../../master-map';
 import { resolvePaletteForDesign } from '../../palette/resolve';
 import type { SarakDesignState } from '../../../Provider/types';
 import type { PaletteMode } from '../../palette/types';
+import { resolveThemeForMode, type ModeResolvableTheme } from './color-engine';
 
 /**
  * Chaves do `design` que NÃO são do tema: identidade do sistema, idioma do host
@@ -51,4 +52,23 @@ export const composeThemeDesign = (
     const design = { ...sarakGetDefaultDesignState(), ...preserved, ...palette, ...host, ...resolvedTheme } as Record<string, unknown>;
     if (design.colorPalette === '') delete design.colorPalette;
     return design as unknown as SarakDesignState;
+};
+
+/**
+ * O `design` que um tema produz num modo, já com a paleta expandida: o tema resolvido
+ * para o modo (`design` ou `contraparte`) composto como o Provider o faz. É o que
+ * ferramenta e catálogo leem no lugar de `theme.design`, que não carrega mais as
+ * cores que a paleta calcula.
+ */
+export const composeThemeForMode = (theme: ModeResolvableTheme, mode: PaletteMode): SarakDesignState =>
+    composeThemeDesign(resolveThemeForMode(theme, mode) as Record<string, unknown>);
+
+/**
+ * O tema já resolvido para o modo, com a paleta expandida por baixo do que ele declara e
+ * SEM os padrões do schema: é o que a semente do Provider e a miniatura do painel leem
+ * quando não compõem o `design` inteiro. A cor que o tema declara vence a paleta.
+ */
+export const withThemePalette = <T extends Record<string, unknown>>(resolved: T): T => {
+    const mode: PaletteMode = resolved.mode === 'light' ? 'light' : 'dark';
+    return { ...resolvePaletteForDesign(resolved, undefined, mode), ...resolved };
 };

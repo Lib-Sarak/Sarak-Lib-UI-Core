@@ -35,6 +35,14 @@ O tipo do tema é `SarakThemePreset`; a fronteira de temas carregados sob demand
 poucos valores. Um consumidor real montou um tema só com COR e concluiu que "fonte e cromo não
 mudam" — os eixos de completude existem para pegar isso.
 
+### 2.1. Tema = estrutura + paleta
+A **cor** do tema sai de `colorPalette` (um id de preset, ou `custom:<tipo>:<#base>[,sec=<#hex>][,acc=<#hex>]` — vírgula
+entre as sementes, nunca `;`); o `design` carrega a **estrutura** (forma, tipografia, movimento, atmosfera). Declare a
+paleta primeiro e só **sobrescreva** uma cor quando a paleta não alcança o que o produto exige — uma marca fixa, um contraste
+específico. Toda cor explícita vence a paleta, então cada uma precisa de **justificativa escrita** ao lado (comentário curto
+dizendo o que a paleta não dá); cor sem motivo sai, e a paleta a calcula nos dois modos. `sarakResolvePalette(valor, modo)`
+mostra o que a paleta produz antes de decidir sobrescrever.
+
 ### 3. Preenchimento
 Preencha o `design` **só com ids que existem no dicionário**. Chave inventada é descartada por
 `validateDesign` com `console.warn` e nunca chega ao CSS: o tema *parece* completo e não é.
@@ -196,6 +204,7 @@ Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e
 
 ## Checklist
 - [ ] O tema partiu de uma referência completa, e os eixos vivos foram conferidos com `getScaffold()`?
+- [ ] A cor vem de `colorPalette` e cada cor sobrescrita à mão tem a justificativa escrita?
 - [ ] Todas as chaves do `design` existem no dicionário (zero chave inventada)?
 - [ ] Os tipos batem com o `token.type` (number × string, enum válido)?
 - [ ] Toda fonte é o `value` exato de `THEME_FONTS`, e os pesos escolhidos existem na família (manifesto)?
