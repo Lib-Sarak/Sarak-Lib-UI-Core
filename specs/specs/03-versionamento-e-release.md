@@ -180,6 +180,10 @@ nasceu (`plan-10`, 2026-08-19), **três dos seis majors não tinham o número no
 | `migration-anchor:check` | `npm version major` é barrado se `docs/migracoes.md` não tiver entrada cujo título cite a versão emitida por extenso | Confere só a **presença** da âncora, nunca o conteúdo — nota vazia ou errada passa igual. E só cobra **MAJOR** |
 | `minor-no-removal:check` | Minor/patch que **remove um nome do barril público** (`dist/index.d.ts`) contra a última tag é sempre barrado | Não vê quebra de **comportamento**, só de superfície |
 
+> **Prévia de major:** o caráter major do bump é decidido contra a última tag **estável** (sem `-`): `8.0.0-rc.N`
+> contra `v7.0.0` é major e `minor-no-removal:check` libera a remoção; prévia de não-major (`8.1.0-rc.1`, base
+> `v8.0.0`) continua cobrada.
+
 > **A assimetria é deliberada e é a parte importante.** O gate cobra a direção que **tem vítima**: quem está
 > preso numa faixa `^N` recebe a quebra sem ter escolhido. **Major sem remoção nunca é cobrado por gate
 > nenhum** — e não deveria ser: a **`4.0.0` é a prova viva** de que um major pode ser 100% legítimo sem remover
