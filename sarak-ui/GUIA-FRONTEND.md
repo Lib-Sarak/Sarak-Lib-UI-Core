@@ -1104,7 +1104,7 @@ Medido em navegador (lote 4):
 
 ## Apêndice A — Superfície viva desta versão (GERADO)
 
-> **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v8.0.0-rc.3; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
+> **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v8.0.0-rc.4; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
 Exportações do barril público: **438** nomes (componentes, tipos, hooks e helpers).
 
