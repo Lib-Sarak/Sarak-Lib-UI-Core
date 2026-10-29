@@ -298,11 +298,11 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | Fonte | Medida | Valor |
 | --- | --- | --- |
 | `catalog/theme_table_mapping.json` | colunas | 13 |
-| `catalog/theme_table_mapping.json` | entradas brutas | 434 |
-| `catalog/theme_table_mapping.json` | **ids únicos** | **434** |
+| `catalog/theme_table_mapping.json` | entradas brutas | 435 |
+| `catalog/theme_table_mapping.json` | **ids únicos** | **435** |
 | `catalog/partitions/` | arquivos | 13 |
-| `catalog/partitions/` | tokens | 434 |
-| `SarakDesignTokens` (tipo público) | ids | 434 |
+| `catalog/partitions/` | tokens | 435 |
+| `SarakDesignTokens` (tipo público) | ids | 435 |
 | `SarakDesignTokens` (tipo público) | responsivos | 37 |
 
 > Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §2 do guia).
@@ -313,7 +313,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Categorias de engine (3)** — `charts` · `chat` · `flows`
 
-**Componentes públicos: 108** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
+**Componentes públicos: 110** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
 ### B.3 Gates registrados (42)
 
@@ -394,7 +394,7 @@ Fonte: `gates/baselines/audit-baseline.json`. **Não edite à mão** — o núme
 
 ### B.5 A base de specs
 
-**ADR (23)** — decisões imutáveis: `001-tres-arquiteturas.md` · `002-remocao-motor-manifesto.md` · `003-remocao-backend-proprio.md` · `004-remocao-design-agent.md` · `005-modelo-modulos-plugin-e-apps-separados.md` · `006-zero-marca-soberania-host.md` · `007-distribuicao-por-git.md` · `008-releases-com-tag-e-semver-em-git.md` · `009-persistencia-tenant-aware.md` · `010-temas-salvos-pelo-usuario.md` · `011-tema-salvo-por-uma-porta-de-escrita.md` · `012-escrita-git-sob-autorizacao-do-dono.md` · `013-item-de-navegacao-como-atomo-proprio.md` · `014-cromo-do-modo-ui-kit-com-widgets-por-padrao.md` · `015-metrica-do-item-de-navegacao-horizontal.md` · `016-preferencias-do-usuario-separadas-do-tema.md` · `017-porta-de-apagar-tema-simetrica-a-de-escrever.md` · `018-um-cromo-so-e-o-consumidor-e-dono-das-rotas.md` · `019-arrastar-e-soltar-do-kanban.md` · `020-gantt-casca-propria.md` · `021-navegacao-na-base-do-celular.md` · `022-tema-sob-demanda.md` · `023-fontes-embarcadas-carregadas-sob-demanda.md`
+**ADR (24)** — decisões imutáveis: `001-tres-arquiteturas.md` · `002-remocao-motor-manifesto.md` · `003-remocao-backend-proprio.md` · `004-remocao-design-agent.md` · `005-modelo-modulos-plugin-e-apps-separados.md` · `006-zero-marca-soberania-host.md` · `007-distribuicao-por-git.md` · `008-releases-com-tag-e-semver-em-git.md` · `009-persistencia-tenant-aware.md` · `010-temas-salvos-pelo-usuario.md` · `011-tema-salvo-por-uma-porta-de-escrita.md` · `012-escrita-git-sob-autorizacao-do-dono.md` · `013-item-de-navegacao-como-atomo-proprio.md` · `014-cromo-do-modo-ui-kit-com-widgets-por-padrao.md` · `015-metrica-do-item-de-navegacao-horizontal.md` · `016-preferencias-do-usuario-separadas-do-tema.md` · `017-porta-de-apagar-tema-simetrica-a-de-escrever.md` · `018-um-cromo-so-e-o-consumidor-e-dono-das-rotas.md` · `019-arrastar-e-soltar-do-kanban.md` · `020-gantt-casca-propria.md` · `021-navegacao-na-base-do-celular.md` · `022-tema-sob-demanda.md` · `023-fontes-embarcadas-carregadas-sob-demanda.md` · `024-paleta-calculada-separada-do-tema.md`
 
 **Arquitetura (6)** — visão macro viva: `00-mapa-do-modulo.md` · `01-forma-do-produto-e-modos-de-consumo.md` · `02-design-engine.md` · `03-superficie-publica.md` · `04-contrato-de-tokens-e-paridade.md` · `05-build-e-distribuicao.md`
 

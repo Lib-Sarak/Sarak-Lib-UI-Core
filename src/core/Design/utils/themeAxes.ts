@@ -11,6 +11,8 @@
  * consumidor a não ficar silenciosamente incompleto.
  */
 import type { SarakDesignState } from '../../Provider/types';
+import { isValidPaletteValue } from '../palette/parser';
+import { PALETTE_ROLE_MAP } from '../palette/role-map';
 
 /** Eixo conceitual → tokens representativos (basta UM presente para o eixo contar). */
 export const SARAK_THEME_AXES: Readonly<Record<string, readonly string[]>> = {
@@ -24,11 +26,16 @@ export const SARAK_THEME_AXES: Readonly<Record<string, readonly string[]>> = {
 const hasValue = (design: Record<string, unknown>, key: string): boolean =>
     design[key] !== undefined && design[key] !== null && design[key] !== '';
 
-/** Eixos que o tema NÃO declara (nenhum token representativo presente). Vazio = completo. */
+/**
+ * Eixos que o tema NÃO declara (nenhum token representativo presente). Vazio = completo.
+ * Um `colorPalette` válido declara, por ele, todo token de cor que o motor de paletas calcula.
+ */
 export const sarakFindMissingThemeAxes = (design: SarakDesignState | Record<string, unknown>): string[] => {
     const record = (design ?? {}) as Record<string, unknown>;
+    const hasPalette = isValidPaletteValue(record.colorPalette);
+    const isCovered = (token: string): boolean => hasValue(record, token) || (hasPalette && token in PALETTE_ROLE_MAP);
     return Object.entries(SARAK_THEME_AXES)
-        .filter(([, tokens]) => !tokens.some((token) => hasValue(record, token)))
+        .filter(([, tokens]) => !tokens.some(isCovered))
         .map(([axis]) => axis);
 };
 

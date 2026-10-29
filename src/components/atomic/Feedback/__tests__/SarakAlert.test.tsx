@@ -75,3 +75,15 @@ it('traduz o nome acessível do controle de fechar pelo idioma ativo', () => {
 
     expect(screen.getByRole('button', { name: 'Close alert' })).toBeInTheDocument();
 });
+
+it('desenha um ReactNode na mensagem e mantém o title como nome acessível', () => {
+    renderSarakAlert({
+        variant: 'error',
+        title: 'Falha ao salvar',
+        message: <ul><li>Campo <strong>CNPJ</strong> inválido</li></ul>,
+    });
+
+    const alert = screen.getByRole('alert', { name: 'Falha ao salvar' });
+    expect(alert).toHaveTextContent('Campo CNPJ inválido');
+    expect(screen.getByRole('listitem')).toBeInTheDocument();
+});

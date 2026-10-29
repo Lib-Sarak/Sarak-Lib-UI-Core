@@ -367,24 +367,36 @@ fora do domínio descartado com aviso único.
 
 ## 3.6 Tradução
 
-**A lib entrega a escolha do idioma, não o texto traduzido.** Ela não tem motor de tradução. O que ela
-garante: um seletor que lista os idiomas habilitados no tema, grava a escolha como preferência do usuário,
-e um valor público com **o idioma que vale** — `useSarakUI().design.language`, reativo à troca e à
-sincronização entre abas ([[09-temas-e-presets]] §4.7).
+**A lib entrega a escolha do idioma, não o texto traduzido.** Ela não tem motor de tradução. **O idioma é do
+sistema:** o host declara os idiomas que tem em `options.i18n.languages` (BCP-47, com rótulo opcional), o atual em
+`options.i18n.language` e recebe a troca em `options.i18n.onLanguageChange` (`src/core/i18n/types.ts`). O seletor
+(`SarakShellLanguageSelector`) lista esses idiomas — sem eles, os que o tema habilita — e, com idioma controlado,
+só avisa; sem ele, grava a escolha como preferência do usuário ([[09-temas-e-presets]] §4.7).
+
+**Uma resolução só** (`src/core/i18n/resolveLanguage.ts`, exposta por `useSarakLanguage()`): idioma controlado >
+preferência gravada > `design.language` > `pt`; sem `options.i18n`, a fonte é `design.language`. O hook devolve
+`language` (o código do sistema), `locale` (BCP-47 para o `Intl`; `pt` sem região vira `pt-BR`), `languages` e
+`setLanguage` (o mesmo caminho do seletor).
 
 **Traduzir as telas da aplicação é do host**, com a biblioteca de i18n que ele escolher — a lib não sabe
 qual é, e não precisa saber:
 
 ```tsx
-const { design } = useSarakUI();
-useEffect(() => {
-    if (design.language) i18n.changeLanguage(design.language);
-}, [design.language]);
+<SarakUIProvider options={{ i18n: { languages: ['pt-BR', 'en-US'], language: i18n.language,
+    onLanguageChange: (code) => i18n.changeLanguage(code) } }}>
 ```
+
+**Número, moeda e data seguem o mesmo idioma.** Todo componente que formata sem `locale` explícito
+(`SarakValue`, `SarakCurrencyInput`, `SarakDatePicker`, `SarakChartEngine`, as tabelas, calendário, Gantt,
+Kanban, frescor do dado e tempo relativo) passa ao `Intl` o `locale` de `useSarakLanguage()`; a prop `locale`
+do componente vence. O `SarakDatePicker` usa o locale do `date-fns` dos seis idiomas da lib
+(`dateFnsLocale.ts`). Os `sarakFormat*` chamados direto pelo consumidor, fora de componente, usam o
+`locale` que recebem (sem ele, o do ambiente).
 
 **Os textos da própria lib seguem o idioma que vale.** Cromo, widgets, palette e rótulos padrão de átomo
 saem de um catálogo com os seis idiomas oferecidos (`src/core/i18n/`, lido por `useLibraryText`), e
-repintam na troca, sem recarga. Sem Provider, ou fora dos seis, saem em português. O painel de design é
+repintam na troca, sem recarga. O catálogo escolhe pela parte primária do código (`pt-BR` → `pt`). Sem
+Provider, ou fora dos seis, saem em português. O painel de design é
 ferramenta do administrador e não entra nessa promessa. Texto passado pelo consumidor por prop é dele, e a
 lib não o traduz. Um teste de paridade exige toda chave do catálogo preenchida nos seis idiomas.
 

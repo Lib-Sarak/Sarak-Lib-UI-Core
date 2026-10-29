@@ -60,3 +60,9 @@
 .custom-scrollbar-sidebar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar-sidebar::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--text-main, #f2f6fb) 5%, transparent); border-radius: 10px; }
 .custom-scrollbar-sidebar::-webkit-scrollbar-thumb:hover { background: var(--theme-primary); }
+
+/* O filho do `<main>` do cromo que enche a altura que o cromo deixa. O `<main>` segue em bloco (um filho
+   `margin: 0 auto` mantém a largura); a altura do `<main>` é definida, então a porcentagem resolve. */
+.sarak-fill-height {
+    min-height: 100%;
+}

@@ -129,6 +129,35 @@
     ]
   },
   {
+    "tokenId": "colorPalette",
+    "visualImpact": "cores",
+    "name": "Paleta de Cores",
+    "description": "Preset calculado ou sementes personalizadas para as cores do tema.",
+    "type": "string",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "branding"
+    ],
+    "tags": [
+      "palette",
+      "color",
+      "theme"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "primaryColor",
+      "colorBgBody"
+    ]
+  },
+  {
     "tokenId": "surfaceColor",
     "name": "Cor de Superfície",
     "description": "Tom para objetos elevados e content boxes em cima do background principal.",

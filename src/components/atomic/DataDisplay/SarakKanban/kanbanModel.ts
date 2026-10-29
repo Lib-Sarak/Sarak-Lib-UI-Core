@@ -144,6 +144,12 @@ const startOfLocalDay = (value: string): Date | null => {
 };
 
 /** Prazo vencido = dia do prazo anterior ao dia de hoje (o próprio dia ainda não está atrasado). */
+/** Soma o `value` dos cartões; `null` quando nenhum cartão tem valor, para o cabeçalho não mostrar zero inventado. */
+export const sarakColumnTotal = (cards: ReadonlyArray<SarakKanbanCard>): number | null => {
+    const values = cards.map((card) => card.value).filter((value): value is number => typeof value === 'number' && Number.isFinite(value));
+    return values.length === 0 ? null : values.reduce((sum, value) => sum + value, 0);
+};
+
 export const sarakIsOverdue = (dueDate: string, now: Date = new Date()): boolean => {
     const due = startOfLocalDay(dueDate);
     if (!due) return false;

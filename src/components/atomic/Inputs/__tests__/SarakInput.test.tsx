@@ -10,7 +10,9 @@ describe('SarakInput', () => {
         expect(ComponentModule).toBeDefined();
         // TODO: Injetar testes de montagem profunda caso o componente cresça em complexidade
     });
+});
 
+describe('SarakInput — estilos padrão e do provider', () => {
     it('renderiza sem SarakUIProvider, com o default de borda aplicado (solid)', () => {
         expect(() => render(<SarakInput placeholder="nome" />)).not.toThrow();
         const input = screen.getByPlaceholderText('nome');
@@ -28,7 +30,9 @@ describe('SarakInput', () => {
         // — presente aqui prova que o valor REAL do tema atravessou, não o default.
         expect(input.style.borderBottom).toContain('2px solid');
     });
+});
 
+describe('SarakInput — handlers e foco', () => {
     it('compõe handlers externos e mostra o anel de foco, inclusive com borda none', () => {
         const onFocus = vi.fn();
         const onBlur = vi.fn();
@@ -124,5 +128,18 @@ describe('SarakInput — ícones', () => {
         expect(screen.getByTestId('unico')).toBeInTheDocument();
         expect(screen.queryByTestId('esq')).toBeNull();
         expect(screen.queryByTestId('dir')).toBeNull();
+    });
+});
+
+describe('SarakInput — prefixo e sufixo', () => {
+    it('liga os adornos à descrição acessível e não os repassa como atributos nativos', () => {
+        render(<SarakInput id="amount" prefixText="R$" suffixText="BRL" />);
+
+        const input = screen.getByRole('textbox');
+        expect(input).toHaveAttribute('aria-describedby', 'amount-prefix amount-suffix');
+        expect(screen.getByText('R$')).toHaveAttribute('id', 'amount-prefix');
+        expect(screen.getByText('BRL')).toHaveAttribute('id', 'amount-suffix');
+        expect(input).not.toHaveAttribute('prefixtext');
+        expect(input).not.toHaveAttribute('suffixtext');
     });
 });

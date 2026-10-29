@@ -6,10 +6,11 @@
  */
 
 import React from 'react';
+import type { SarakColumnValueOptions } from './columnValue';
 
 export type SarakColumnAlignment = 'left' | 'center' | 'right';
 
-export interface SarakColumn<T> {
+export interface SarakColumn<T> extends SarakColumnValueOptions<T> {
     /** Identidade estável da coluna (chave de largura/ordem/reorder). */
     id: string;
     /** Conteúdo do cabeçalho. */
@@ -20,8 +21,6 @@ export interface SarakColumn<T> {
     minWidth?: number;
     /** Congelamento lateral; ausente = coluna rola normalmente. */
     pinned?: 'left' | 'right';
-    /** Exibe controle de ordenação para esta coluna. */
-    sortable?: boolean;
     /** Alinhamento horizontal do cabeçalho e das células. */
     align?: SarakColumnAlignment;
     /** Render da célula; ausente = `String(row[id])`. */

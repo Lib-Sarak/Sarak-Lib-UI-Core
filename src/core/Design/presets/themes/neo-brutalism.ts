@@ -4,7 +4,7 @@ import { FLUID_MAX_CONTENT_WIDTH_OPTION } from '../../schema/system';
 // Neo Brutalism: o brutalismo da web é CLARO. Papel creme, borda preta de 3px, cor chapada sem gradiente, sombra dura deslocada
 // (6px, sem desfoque), raio 4, Archivo 900 maiúsculo sobre Space Grotesk, ícone Lucide bold. Amarelo é o preenchimento da marca
 // (botão, item ativo, cabeçalho de tabela); como TEXTO a primária é o cobalto, porque o amarelo não passa 4,5:1 sobre o papel.
-// Declara todo token estético; os funcionais valem o padrão do sistema. A `contraparte` é o modo escuro (preto quente, borda e
+// Declara todo token estético, menos a cor que a paleta `colorPalette` calcula; os funcionais valem o padrão do sistema. A `contraparte` é o modo escuro (preto quente, borda e
 // sombra creme, amarelo vira texto); geometria, tipografia e movimento ficam.
 export const neobrutalismTheme: SarakThemePreset = {
     id: 'neo-brutalism',
@@ -13,6 +13,8 @@ export const neobrutalismTheme: SarakThemePreset = {
     design: {
         // --- 0. Configurações Globais ---
         mode: 'light',
+        // as cores saem da paleta; abaixo ficam só as sobrescritas justificadas
+        colorPalette: 'cobalto-vivo',
         bodySize: '16px',
 
         // --- Identidade Visual ---
@@ -38,51 +40,34 @@ export const neobrutalismTheme: SarakThemePreset = {
         iconStrokeWidth: 2.5,
 
         // --- Container de Nav ---
+        // papel creme quente do brutalismo; a neutra da paleta é cinza frio
         sidebarColor: '#ffffff',
-        sidebarHoverColor: 'rgba(17, 17, 17, 0.08)',
-        sidebarActiveColor: '#ffd400',
         sidebarNoiseOpacity: 0,
+        // papel creme quente do brutalismo; a neutra da paleta é cinza frio
         topbarColor: '#ffffff',
-        topbarHoverColor: 'rgba(17, 17, 17, 0.08)',
-        topbarActiveColor: '#ffd400',
         topbarNoiseOpacity: 0,
-        sidebarItemTextColor: 'rgba(17, 17, 17, 0.82)',
-        sidebarItemHoverTextColor: '#111111',
-        sidebarCategoryColor: 'rgba(17, 17, 17, 0.82)',
-        sidebarBrandColor: '#594308',
+        // borda preta chapada é a assinatura brutalista
         sidebarBorderColor: '#111111',
         sidebarBorderWidth: 3,
         sidebarBorderStyle: 'solid',
         sidebarBorderSide: 'all',
-        sidebarBrandBackground: 'transparent',
-        sidebarFooterBackground: 'transparent',
         sidebarBackgroundStyle: 'solid',
         sidebarActiveItemStyle: 'filled',
         sidebarItemDensity: 'spacious',
         sidebarIconSize: 20,
-        sidebarIconColor: '#111111',
-        topbarItemTextColor: 'rgba(17, 17, 17, 0.82)',
-        topbarItemHoverTextColor: '#111111',
-        topbarBrandColor: '#594308',
-        topbarBrandBackground: 'transparent',
+        // borda preta chapada é a assinatura brutalista
         topbarBorderColor: '#111111',
         topbarBorderWidth: 3,
         topbarBorderStyle: 'solid',
         topbarBorderSide: 'all',
-        topbarGroupSeparatorColor: '#111111',
         topbarBackgroundStyle: 'solid',
         topbarActiveItemStyle: 'pill',
         topbarItemDensity: 'spacious',
         topbarIconSize: 20,
-        topbarIconColor: '#111111',
         topbarBlur: 0,
         topbarShadow: '0 2px 16px rgba(15,23,42,0.08)',
-        topbarTitleColor: '#111111',
         tabGap: { mob: 4, tab: 6, desk: 8 },
         tabSectionMargin: { mob: 8, tab: 12, desk: 16 },
-        // dois papéis: texto do item ativo e FUNDO do botão selecionado dos seletores P/M/G e Lateral/Topo (texto da primária por cima). No claro o item ativo é amarelo chapado com tinta; no escuro o item ativo é um tom de amarelo e o texto é amarelo, para o seletor sair amarelo com texto escuro
-        navItemActiveColor: '#111111',
-        navActiveMarkerColor: '#111111',
         navActiveMarkerGlow: 0,
         navItemRadius: 4,
         sidebarBlur: 0,
@@ -102,21 +87,19 @@ export const neobrutalismTheme: SarakThemePreset = {
         cardBorderBottom: 3,
         cardBorderLeft: 3,
         cardBorderRight: 3,
-        cardInnerGlowColor: 'rgba(17, 17, 17, 0)',
         cardInnerGlowWidth: 0,
         cardTextureType: 'crosshatch',
         cardTextureOpacity: 0.05,
-        cardHeaderBg: 'rgba(255, 212, 0, 0.35)',
+        // borda preta chapada é a assinatura brutalista
         cardHeaderBorder: '#111111',
         cardHeaderPadding: { mob: 12, tab: 16, desk: 16 },
-        cardFooterBg: 'transparent',
+        // borda preta chapada é a assinatura brutalista
         cardFooterBorder: '#111111',
         cardShadowSpread: 100,
         cardShadowOffsetX: 6,
         cardShadowOffsetY: 6,
         cardShadowBlur: 0,
         cardShadowExpansion: 0,
-        cardGlowColor: 'rgba(17, 17, 17, 0)',
         cardGlowIntensity: 0,
         cardHoverTranslate: 0,
         cardHoverGlowIncrease: 0,
@@ -137,43 +120,29 @@ export const neobrutalismTheme: SarakThemePreset = {
         catalogItemRadius: 0.25,
         // --- Card de Título ---
         cardTitleFontSize: { mob: 16, tab: 18, desk: 20 },
-        cardTitleColor: '#594308',
         cardTitleFontWeight: '900',
         cardTitleLetterSpacing: 0,
-        cardTitleIconGlow: 'rgba(17, 17, 17, 0)',
         cardTitleIconGlowBlur: 0,
 
         // --- Card de Ação ---
-        cardActionBtnPrimaryBg: 'var(--sarak-primary-color, #19e3f0)',
-        cardActionBtnHoverBg: '#1a3fd0',
-        cardActionBtnText: '#ffffff',
         cardActionBtnBorderRadius: { mob: 4, tab: 4, desk: 4 },
         cardActionBtnPadding: 16,
         cardActionClickScale: 0.96,
         // --- Card de Busca ---
-        cardSearchBgFocus: 'rgba(255, 212, 0, 0.25)',
         cardSearchBorderBeamActive: true,
-        cardSearchPlaceholderColor: 'var(--sarak-input-placeholder-color, color-mix(in srgb, var(--sarak-input-text-color, var(--text-muted, rgba(242, 246, 251, 0.55))) 30%, transparent))',
-        cardSearchTextFocusColor: '#111111',
         // --- Sobreposições (Overlays) ---
         modalActionAlignment: 'right',
         modalHeaderStyle: 'inline',
-        modalOverlayColor: 'rgba(17, 17, 17, 0.6)',
         modalOverlayBlur: 0,
         modalBorderRadius: { mob: 4, tab: 4, desk: 4 },
-        tooltipBg: 'var(--theme-surface)',
         tooltipRadius: 4,
-        tooltipTextColor: '#111111',
-        tooltipBorderColor: 'var(--theme-border)',
         toastAccentWidth: 6,
         // --- Configuração de Tabelas ---
         tableDensity: 'comfortable',
-        // cabeçalho amarelo-claro chapado: o texto do cabeçalho usa a primária (cobalto), que sobre #ffd400 dá 4,4:1 e sobre #ffe680 dá 5,0:1
-        tableHeaderBg: '#ffe680',
-        tableRowHoverBg: 'rgba(255, 212, 0, 0.3)',
         tableZebraStriping: true,
         tableBorderRadius: { mob: 4, tab: 4, desk: 4 },
         tableCellPadding: { mob: 8, tab: 10, desk: 12 },
+        // borda preta chapada é a assinatura brutalista
         tableBorderColor: '#111111',
         kanbanHeaderPaddingY: 4,
         kanbanHeaderTracking: 0.04,
@@ -182,9 +151,6 @@ export const neobrutalismTheme: SarakThemePreset = {
         headingFont: "'Archivo', sans-serif",
         bodyFont: "'Space Grotesk', sans-serif",
         monoFont: "'JetBrains Mono', monospace",
-        textColorMaster: '#111111',
-        textColorSecondary: 'rgba(17, 17, 17, 0.82)',
-        textColorMuted: 'rgba(17, 17, 17, 0.7)',
         h1Size: { mob: 36, tab: 48, desk: 60 },
         h1Weight: '800',
         h1LineHeight: 1.05,
@@ -220,12 +186,7 @@ export const neobrutalismTheme: SarakThemePreset = {
         btnRadiusBR: { mob: 4, tab: 4, desk: 4 },
         btnHoverScale: 1,
         btnActiveScale: 0.96,
-        btnPrimaryBg: '#ffd400',
-        btnPrimaryText: '#111111',
-        btnSecondaryBg: '#ff9cc6',
-        btnGhostHoverBg: 'rgba(17, 17, 17, 0.08)',
         btnStyleType: 'matte',
-        btnNeonGlowColor: 'rgba(17, 17, 17, 0)',
         btnNeonPulseSpeed: 0,
         btnBackdropBlur: 0,
         iconButtonGlowBlurSm: 5,
@@ -240,46 +201,26 @@ export const neobrutalismTheme: SarakThemePreset = {
         // --- Campo de Entrada (Input) ---
         inputBorderRadius: { mob: 4, tab: 4, desk: 4 },
         inputBorderType: 'solid',
-        inputBg: '#ffffff',
         inputBackdropBlur: 0,
         inputShadow: 'none',
+        // borda preta chapada é a assinatura brutalista
         inputBorderColor: '#111111',
-        inputFocusBorderColor: '#2f5bff',
-        inputTextColor: '#111111',
-        inputIconColor: 'var(--text-muted, rgba(242, 246, 251, 0.55))',
-        inputErrorColor: '#c8102e',
         searchBackdropBlur: 0,
-        rangeActiveColor: 'var(--theme-primary)',
 
         // --- Alternadores (Toggles) ---
-        // cobalto: um trilho amarelo sobre papel dá 1,2:1 (3:1 não textual); o amarelo fica nos botões
-        switchTrackActiveBg: '#2f5bff',
-        switchThumbBg: '#ffffff',
-        checkboxActiveColor: '#2f5bff',
         switchStyleType: 'tactile',
         switchBackdropBlur: 0,
-        switchPulseColor: '#2f5bff',
         // --- Paletas e Gradientes ---
-        // cobalto: a primária também é cor de texto (links) e precisa de 4,5:1 sobre o papel; o amarelo da marca mora em btnPrimaryBg, sidebarActiveColor e no cabeçalho de tabela
-        primaryColor: '#2f5bff',
-        secondaryColor: '#cc2a73',
-        tertiaryColor: '#7a3cff',
-        accentColor: '#946c00',
+        // papel creme quente do brutalismo; a neutra da paleta é cinza frio
         surfaceColor: '#ffffff',
-        textureColor: '#111111',
-        titleColor: '#594308',
-        subtitleColor: '#43340a',
-        emphasisColor: '#916a00',
         colorDepth: 1,
         colorVariation: 1,
-        colorBgModal: '#ffffff',
+        // papel creme quente do brutalismo; a neutra da paleta é cinza frio
         cardBackgroundColor: '#ffffff',
+        // borda preta chapada é a assinatura brutalista
         cardBorderColor: '#111111',
         // --- Gráficos & Dados ---
-        // séries mais escuras que o amarelo/rosa da marca: amarelo sobre cartão branco dá 1,4:1 (3:1 não textual)
-        chartColorPalette: '#2f5bff',
         chartGridOpacity: 0.12,
-        chartTooltipBg: 'rgba(255, 255, 255, 0.94)',
         chartType: 'bar',
         chartShowGrid: true,
         chartThickness: 3,
@@ -288,9 +229,13 @@ export const neobrutalismTheme: SarakThemePreset = {
         pageTransitionType: 'slide-up',
         cardHoverStyle: 'expand',
         // --- Fundo e Atmosfera ---
+        // papel creme quente do brutalismo; a neutra da paleta é cinza frio
         colorBgBody: '#fff6dc',
+        // papel creme quente do brutalismo; a neutra da paleta é cinza frio
         colorBgLayer1: '#ffffff',
+        // papel creme quente do brutalismo; a neutra da paleta é cinza frio
         colorBgLayer2: '#ffecb8',
+        // papel creme quente do brutalismo; a neutra da paleta é cinza frio
         bgBaseColor: '#fff6dc',
         bgGradientMode: 'none',
         bgGradientAngle: 180,
@@ -309,7 +254,6 @@ export const neobrutalismTheme: SarakThemePreset = {
         glassRoughness: 0.05,
         glassSaturation: 1.2,
         glassEdgeWidth: 1,
-        glassEdgeColor: 'rgba(17, 17, 17, 0.2)',
         shadowIntensity: 0,
         layeredShadows: 0,
         shadowOrientation: 'bottom',
@@ -324,21 +268,15 @@ export const neobrutalismTheme: SarakThemePreset = {
 
         // --- Interface de Chat ---
         chatBubbleRadius: { mob: 4, tab: 4, desk: 4 },
-        chatUserBg: '#ffe680',
         chatBubbleStyle: 'solid',
         chatAnimationSpeed: 0.05,
 
         // --- Cores Semânticas ---
-        statusSuccessColor: '#0b7a4b',
-        statusErrorColor: '#c8102e',
-        statusWarningColor: '#8a5a00',
-        statusInfoColor: '#1558b8',
         badgeRadius: 4,
         statusGlowBlur: 0,
         progressBarHeight: 12,
         progressBarRadius: 0,
         // --- Ícones e Estética ---
-        aiGlowColor: 'var(--sarak-primary-color, #19e3f0)',
         flowNodeRadius: { mob: 4, tab: 4, desk: 4 },
         flowGridStyle: 'lines',
         dotGridDotOffset: 2,
@@ -369,7 +307,6 @@ export const neobrutalismTheme: SarakThemePreset = {
         scrollWidth: { mob: 8, tab: 10, desk: 12 },
         scrollRadius: { mob: 0, tab: 0, desk: 0 },
         scrollTrackOpacity: 0.1,
-        scrollThumbColor: '#111111',
         scrollThumbOpacity: 0.85,
         scrollThumbHoverOpacity: 1,
         scrollPadding: { mob: 0, tab: 2, desk: 2 },
@@ -377,8 +314,6 @@ export const neobrutalismTheme: SarakThemePreset = {
         // --- Componentes Avançados ---
         matrixGap: 12,
         matrixRadius: 4,
-        matrixItemBg: 'rgba(17, 17, 17, 0.03)',
-        matrixBorderColor: 'rgba(17, 17, 17, 0.2)',
         matrixBlur: 0,
         // --- Mídia e Background ---
         globalBackgroundPosition: 'absolute',
@@ -394,126 +329,64 @@ export const neobrutalismTheme: SarakThemePreset = {
     },
     contraparte: {
         mode: 'dark',
+        // papel creme quente do brutalismo; a neutra da paleta é cinza frio
         sidebarColor: '#1c1a17',
-        sidebarHoverColor: 'rgba(255, 212, 0, 0.08)',
-        sidebarActiveColor: 'rgba(255, 212, 0, 0.16)',
         sidebarNoiseOpacity: 0,
+        // papel creme quente do brutalismo; a neutra da paleta é cinza frio
         topbarColor: '#1c1a17',
-        topbarHoverColor: 'rgba(255, 212, 0, 0.08)',
-        topbarActiveColor: 'rgba(255, 212, 0, 0.16)',
         topbarNoiseOpacity: 0,
-        sidebarItemTextColor: 'rgba(255, 246, 220, 0.84)',
-        sidebarItemHoverTextColor: '#fff6dc',
-        sidebarCategoryColor: 'rgba(255, 246, 220, 0.84)',
-        sidebarBrandColor: '#bfc9ef',
+        // borda preta chapada é a assinatura brutalista
         sidebarBorderColor: '#f4ead2',
-        sidebarBrandBackground: 'transparent',
-        sidebarFooterBackground: 'transparent',
-        sidebarIconColor: '#ffd400',
-        topbarItemTextColor: 'rgba(255, 246, 220, 0.84)',
-        topbarItemHoverTextColor: '#fff6dc',
-        topbarBrandColor: '#bfc9ef',
-        topbarBrandBackground: 'transparent',
+        // borda preta chapada é a assinatura brutalista
         topbarBorderColor: '#f4ead2',
-        topbarGroupSeparatorColor: '#f4ead2',
-        topbarIconColor: '#ffd400',
         topbarShadow: '0 2px 18px rgba(255,212,0,0.14)',
-        topbarTitleColor: '#fff6dc',
-        navItemActiveColor: '#ffd400',
-        navActiveMarkerColor: '#ffd400',
         sidebarShadow: 'none',
         cardSurfaceOpacity: 1,
         cardBorderOpacity: 1,
-        cardInnerGlowColor: 'rgba(255, 212, 0, 0.08)',
         cardTextureOpacity: 0.06,
-        cardHeaderBg: 'rgba(255, 212, 0, 0.12)',
+        // borda preta chapada é a assinatura brutalista
         cardHeaderBorder: '#f4ead2',
-        cardFooterBg: 'transparent',
+        // borda preta chapada é a assinatura brutalista
         cardFooterBorder: '#f4ead2',
         cardShadowSpread: 100,
-        cardGlowColor: 'rgba(255, 212, 0, 0.22)',
         cardGlowIntensity: 0,
         cardHoverGlowIncrease: 0,
         cardSpotlightOpacity: 0,
         cardShadow: '6px 6px 0 0 #f4ead2',
         imageCardOverlayOpacity: 0.6,
-        cardTitleColor: '#bfc9ef',
-        cardTitleIconGlow: 'rgba(255, 212, 0, 0.3)',
-        cardActionBtnPrimaryBg: 'var(--sarak-primary-color, #19e3f0)',
-        cardActionBtnHoverBg: '#ffe14d',
-        cardActionBtnText: '#111111',
-        cardSearchBgFocus: 'rgba(255, 212, 0, 0.07)',
-        cardSearchPlaceholderColor: 'var(--sarak-input-placeholder-color, color-mix(in srgb, var(--sarak-input-text-color, var(--text-muted, rgba(242, 246, 251, 0.55))) 30%, transparent))',
-        cardSearchTextFocusColor: '#fff6dc',
-        modalOverlayColor: 'rgba(255, 246, 220, 0.4)',
-        tooltipBg: 'var(--theme-surface)',
-        tooltipTextColor: '#fff6dc',
-        tooltipBorderColor: 'var(--theme-border)',
-        tableHeaderBg: 'rgba(255, 212, 0, 0.18)',
-        tableRowHoverBg: 'rgba(255, 212, 0, 0.1)',
+        // borda preta chapada é a assinatura brutalista
         tableBorderColor: '#f4ead2',
-        textColorMaster: '#fff6dc',
-        textColorSecondary: 'rgba(255, 246, 220, 0.84)',
-        textColorMuted: 'rgba(255, 246, 220, 0.72)',
         textGlowIntensity: 0,
-        btnPrimaryBg: '#ffd400',
-        btnPrimaryText: '#111111',
-        btnSecondaryBg: 'rgba(255, 95, 162, 0.22)',
-        btnGhostHoverBg: 'rgba(255, 212, 0, 0.08)',
-        btnNeonGlowColor: 'rgba(255, 212, 0, 0.4)',
-        inputBg: '#1c1a17',
+        // borda preta chapada é a assinatura brutalista
         inputBorderColor: '#a89d86',
-        inputFocusBorderColor: '#8aa4ff',
-        inputTextColor: '#fff6dc',
-        inputIconColor: 'var(--text-muted, rgba(242, 246, 251, 0.55))',
-        inputErrorColor: '#ff6b6b',
-        rangeActiveColor: 'var(--theme-primary)',
-        switchTrackActiveBg: '#ffd400',
-        switchThumbBg: '#111111',
-        checkboxActiveColor: '#ffd400',
-        switchPulseColor: '#ffd400',
-        primaryColor: '#ffd400',
-        secondaryColor: '#ff5fa2',
-        tertiaryColor: '#a98bff',
-        accentColor: '#8aa4ff',
+        // papel creme quente do brutalismo; a neutra da paleta é cinza frio
         surfaceColor: '#1c1a17',
-        textureColor: '#f4ead2',
-        titleColor: '#bfc9ef',
-        subtitleColor: '#d2d6e9',
-        emphasisColor: '#8aa4ff',
-        colorBgModal: '#1c1a17',
+        // papel creme quente do brutalismo; a neutra da paleta é cinza frio
         cardBackgroundColor: '#1c1a17',
+        // borda preta chapada é a assinatura brutalista
         cardBorderColor: '#f4ead2',
-        chartColorPalette: '#ffd400',
         chartGridOpacity: 0.16,
-        chartTooltipBg: 'rgba(28, 26, 23, 0.96)',
+        // papel creme quente do brutalismo; a neutra da paleta é cinza frio
         colorBgBody: '#121110',
+        // papel creme quente do brutalismo; a neutra da paleta é cinza frio
         colorBgLayer1: '#1c1a17',
+        // papel creme quente do brutalismo; a neutra da paleta é cinza frio
         colorBgLayer2: '#24211c',
+        // papel creme quente do brutalismo; a neutra da paleta é cinza frio
         bgBaseColor: '#121110',
         surfaceIntensity: 0,
         textureOpacity: 0.12,
         bgNoiseDensity: 0,
         glassOpacity: 0,
         glassSpecularity: 0,
-        glassEdgeColor: 'rgba(255, 212, 0, 0.14)',
         shadowIntensity: 0,
         layeredShadows: 0,
         shadowAmbientAlpha: 0,
         shadowProjectionAlpha: 0,
         vignetteOpacity: 0,
-        chatUserBg: 'rgba(255, 212, 0, 0.18)',
-        statusSuccessColor: '#4cd694',
-        statusErrorColor: '#ff6b6b',
-        statusWarningColor: '#ffb020',
-        statusInfoColor: '#5aa7ff',
-        aiGlowColor: 'var(--sarak-primary-color, #19e3f0)',
         scrollTrackOpacity: 0.08,
-        scrollThumbColor: '#f4ead2',
         scrollThumbOpacity: 0.3,
         scrollThumbHoverOpacity: 0.6,
-        matrixItemBg: 'rgba(255, 212, 0, 0.03)',
-        matrixBorderColor: 'rgba(255, 212, 0, 0.18)',
         globalBackgroundImageUrl: '',
         globalBackgroundOpacity: 1,
     }

@@ -33,7 +33,6 @@ export const CLASS_MERGE_EXCLUSIONS = Object.freeze({
     'src/components/atomic/Inputs/SarakRangeSlider.tsx': AINDA_CONCATENA_CLASSNAME,
     'src/components/atomic/Inputs/SarakSlider.tsx': AINDA_CONCATENA_CLASSNAME,
     'src/components/atomic/Inputs/SarakSwitch.tsx': AINDA_CONCATENA_CLASSNAME,
-    'src/components/atomic/Inputs/SarakSelect.tsx': AINDA_CONCATENA_CLASSNAME,
     'src/components/atomic/Inputs/SarakTextarea.tsx': AINDA_CONCATENA_CLASSNAME,
     'src/components/atomic/Navigation/SarakShellNav.tsx': AINDA_CONCATENA_CLASSNAME,
     'src/components/atomic/Navigation/SarakLink.tsx': AINDA_CONCATENA_CLASSNAME,

@@ -139,10 +139,8 @@ const resolveSemanticRole = (tokenId: string, idLower: string, fallback: 'bg' | 
  * de `shiftColorMode` para `text` (escuro: L ≥ 85) e `primary` (escuro: L ≥
  * 45, aceita até 100) SE SOBREPÕEM: um botão primário é texto sentado sobre
  * uma primária, e a faixa fixa não garante separação entre as duas.
- * Estes são os pares onde isso acontece de fato (espelho do `PAIRS` de
- * `gates/scripts/audit/verify_contrast.ts` — não importado de lá porque
- * `gates/` é ferramenta de desenvolvimento e nunca deve entrar no bundle
- * publicado; mantenha os dois em sincronia se um par mudar).
+ * Este mapa pertence ao deslocamento legado de modo; a correção da paleta usa
+ * o contrato compartilhado em `palette/contrast-pairs.ts`.
  */
 const ON_PRIMARY_TEXT_PAIRS: Record<string, string[]> = {
     btnPrimaryText: ['btnPrimaryBg'],

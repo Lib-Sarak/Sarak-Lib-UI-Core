@@ -1,4 +1,4 @@
-import { test, expect, chromium, type Browser } from '@playwright/test';
+import { test, expect, chromium, type Browser, type Page } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -27,6 +27,21 @@ const contrastRatio = (foreground: string, background: string): number => {
     return (luminances[0] + 0.05) / (luminances[1] + 0.05);
 };
 
+/** `#rrggbb` na forma que o navegador computa (`rgb(r, g, b)`). */
+const asComputed = (page: Page, color: string): Promise<string> =>
+    page.evaluate((value) => {
+        const el = document.createElement('div');
+        el.style.backgroundColor = value;
+        document.body.appendChild(el);
+        const computed = getComputedStyle(el).backgroundColor;
+        el.remove();
+        return computed;
+    }, color);
+
+const sovereignBody = (page: Page, mode: 'light' | 'dark' | 'lightSurface'): Promise<string> =>
+    page.evaluate((key) => (window as unknown as { __sovereignBody: Record<string, string> }).__sovereignBody[key], mode)
+        .then((color) => asComputed(page, color));
+
 let browser: Browser;
 let harnessDirectory: string;
 let harnessUrl: string;
@@ -54,26 +69,29 @@ test('a prévia e os cartões acompanham a preferência clara e o toggle alterna
     const previewToggle = page.locator('.sarak-device-desktop').getByRole('button', { name: 'Modo Escuro' });
 
     await expect(previewToggle).toBeVisible();
+    const lightBody = await sovereignBody(page, 'light');
+    const darkBody = await sovereignBody(page, 'dark');
+    const lightSurface = await sovereignBody(page, 'lightSurface');
     await expect.poll(() => previewSurface.evaluate((surface) => getComputedStyle(surface).backgroundColor))
-        .toBe('rgb(243, 246, 250)');
+        .toBe(lightBody);
 
     await page.getByRole('button', { name: 'Abrir galeria' }).click();
     const themeCard = page.getByRole('button', { name: /Sarak Sovereign/i });
     await expect(themeCard).toBeVisible();
     const themeCardSurface = themeCard.locator(':scope > div').first();
     await expect.poll(() => themeCardSurface.evaluate((surface) => getComputedStyle(surface).backgroundColor))
-        .toBe('rgb(255, 255, 255)');
+        .toBe(lightSurface);
 
     await previewToggle.click();
     const darkModeToggle = page.locator('.sarak-device-desktop').getByRole('button', { name: 'Modo Claro' });
     await expect(darkModeToggle).toBeVisible();
     await expect.poll(() => previewSurface.evaluate((surface) => getComputedStyle(surface).backgroundColor))
-        .toBe('rgb(6, 8, 13)');
+        .toBe(darkBody);
 
     await darkModeToggle.click();
     await expect(page.locator('.sarak-device-desktop').getByRole('button', { name: 'Modo Escuro' })).toBeVisible();
     await expect.poll(() => previewSurface.evaluate((surface) => getComputedStyle(surface).backgroundColor))
-        .toBe('rgb(243, 246, 250)');
+        .toBe(lightBody);
     expect(pageErrors).toEqual([]);
 
     await page.close();

@@ -28,6 +28,8 @@ export interface SarakKanbanCard {
     /** Data ISO (`2026-10-31` ou com horário). Passada a data de hoje, o prazo aparece como atrasado. */
     dueDate?: string;
     subtasks?: SarakKanbanSubtasks;
+    /** Valor do cartão (ex.: o da oportunidade); aparece formatado no cartão e é somado no cabeçalho da coluna. */
+    value?: number;
 }
 
 export interface SarakKanbanColumn<C extends SarakKanbanCard = SarakKanbanCard> {

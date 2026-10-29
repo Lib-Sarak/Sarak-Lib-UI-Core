@@ -49,6 +49,103 @@ describe('SarakDatePicker', () => {
     });
 });
 
+describe('SarakDatePicker — limites e regras de dias', () => {
+    it('desabilita dias fora de min/max e os informados por isDateDisabled', () => {
+        const onChange = vi.fn();
+        renderDP({
+            value: '2026-01-15',
+            min: '2026-01-16',
+            max: '2026-01-20',
+            isDateDisabled: (iso) => iso === '2026-01-18',
+            onChange,
+        });
+        openCalendar();
+        const grid = screen.getByRole('grid');
+        const beforeMin = within(grid).getByRole('gridcell', { name: '15' });
+        const disabledByRule = within(grid).getByRole('gridcell', { name: '18' });
+        const afterMax = within(grid).getByRole('gridcell', { name: '21' });
+
+        expect(beforeMin).toBeDisabled();
+        expect(disabledByRule).toBeDisabled();
+        expect(afterMax).toBeDisabled();
+        fireEvent.click(disabledByRule);
+        expect(onChange).not.toHaveBeenCalled();
+    });
+});
+
+describe('SarakDatePicker — atalhos', () => {
+    it('aplica um atalho de intervalo no modo range', () => {
+        const onChange = vi.fn();
+        renderDP({
+            mode: 'range',
+            presets: [{ label: 'Semana inicial', value: ['2026-01-01', '2026-01-07'] }],
+            onChange,
+        });
+        openCalendar();
+        fireEvent.click(screen.getByRole('button', { name: 'Semana inicial' }));
+
+        expect(onChange).toHaveBeenCalledWith(['2026-01-01', '2026-01-07']);
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
+
+    it('reduz um atalho de intervalo para a data inicial no modo single', () => {
+        const onChange = vi.fn();
+        renderDP({
+            mode: 'single',
+            presets: [{ label: 'Semana inicial', value: ['2026-01-01', '2026-01-07'] }],
+            onChange,
+        });
+        openCalendar();
+        fireEvent.click(screen.getByRole('button', { name: 'Semana inicial' }));
+
+        expect(onChange).toHaveBeenCalledWith('2026-01-01');
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
+});
+
+describe('SarakDatePicker — digitação inválida', () => {
+    it('aceita digitação em displayFormat e associa erro quando a data sai do limite', () => {
+        const onChange = vi.fn();
+        renderDP({ allowTyping: true, min: '2026-01-16', onChange });
+        const input = screen.getByRole('textbox', { name: 'Data' });
+
+        fireEvent.change(input, { target: { value: '15/01/2026' } });
+        fireEvent.blur(input);
+
+        const alert = screen.getByRole('alert');
+        expect(onChange).not.toHaveBeenCalled();
+        expect(input).toHaveAttribute('aria-invalid', 'true');
+        expect(input).toHaveAttribute('aria-describedby', alert.id);
+        expect(alert).toHaveTextContent(/fora dos limites/i);
+    });
+});
+
+describe('SarakDatePicker — digitação válida e limpeza', () => {
+    it('emite data digitada válida e limpa valor único ou intervalo', () => {
+        const onChange = vi.fn();
+        const { rerender } = render(
+            <SarakUIProvider>
+                <SarakDatePicker label="Data" allowTyping clearable value="2026-01-15" onChange={onChange} />
+            </SarakUIProvider>,
+        );
+        const input = screen.getByRole('textbox', { name: 'Data' });
+        fireEvent.change(input, { target: { value: '20/01/2026' } });
+        fireEvent.blur(input);
+        expect(onChange).toHaveBeenCalledWith('2026-01-20');
+
+        fireEvent.click(screen.getByRole('button', { name: 'Limpar data' }));
+        expect(onChange).toHaveBeenLastCalledWith('');
+
+        rerender(
+            <SarakUIProvider>
+                <SarakDatePicker label="Período" mode="range" clearable value={['2026-01-01', '2026-01-07']} onChange={onChange} />
+            </SarakUIProvider>,
+        );
+        fireEvent.click(screen.getByRole('button', { name: 'Limpar data' }));
+        expect(onChange).toHaveBeenLastCalledWith(['', '']);
+    });
+});
+
 describe('SarakDatePicker — rótulo acessível', () => {
     it('liga o rótulo visível ao controle que abre o calendário', () => {
         renderDP({ label: 'Data limite' });

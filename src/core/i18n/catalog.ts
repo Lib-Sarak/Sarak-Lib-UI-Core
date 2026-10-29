@@ -4,6 +4,12 @@ import { CATALOG_PART_3 } from './catalogEntries.part3';
 import { CATALOG_PART_4 } from './catalogEntries.part4';
 import { CATALOG_PART_5 } from './catalogEntries.part5';
 import { CATALOG_PART_6 } from './catalogEntries.part6';
+import { CATALOG_TABLE } from './catalogEntries.table';
+import { CATALOG_CHARTS } from './catalogEntries.charts';
+import { CATALOG_LAYOUT } from './catalogEntries.layout';
+import { CATALOG_FORMS } from './catalogEntries.forms';
+import { CATALOG_FEEDBACK } from './catalogEntries.feedback';
+import { CATALOG_PALETTE } from './catalogEntries.palette';
 
 export type { SarakLibraryLanguage } from './catalog.types';
 import type { SarakLibraryLanguage } from './catalog.types';
@@ -31,6 +37,12 @@ export const LIBRARY_TEXT_CATALOG = {
     ...CATALOG_PART_4,
     ...CATALOG_PART_5,
     ...CATALOG_PART_6,
+    ...CATALOG_TABLE,
+    ...CATALOG_CHARTS,
+    ...CATALOG_LAYOUT,
+    ...CATALOG_FORMS,
+    ...CATALOG_FEEDBACK,
+    ...CATALOG_PALETTE,
 } satisfies Record<string, LibraryTextEntry>;
 
 export type LibraryTextKey = keyof typeof LIBRARY_TEXT_CATALOG;

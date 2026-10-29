@@ -4,7 +4,7 @@ titulo: "Design Engine — como um objeto design vira tela"
 dominio: "Core / Design Engine / Provider"
 status: "🟢 Vigente"
 tags: ["arquitetura", "design-engine", "provider", "css-variables", "drafting", "escopo", "persistencia"]
-relacionados: ["[[04-contrato-de-tokens-e-paridade]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[00-mapa-do-modulo]]", "[[05-build-e-distribuicao]]", "[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[09-temas-e-presets]]", "[[03-superficie-publica]]"]
+relacionados: ["[[04-contrato-de-tokens-e-paridade]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[00-mapa-do-modulo]]", "[[05-build-e-distribuicao]]", "[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[09-temas-e-presets]]", "[[03-superficie-publica]]", "[[024-paleta-calculada-separada-do-tema]]"]
 ---
 
 # 1. Propósito
@@ -337,6 +337,13 @@ pelo hover e pelo pressionado globais de `button` (`_elements.css`).
 `SarakTypography` dá aos títulos (h1-h3) a cor de título por padrão e aceita `color` = `title` · `subtitle` · `emphasis`; cartões,
 Markdown, catálogo, calendário, Kanban e Gantt leem o papel do texto que desenham. No modo claro, `resolveTitleColor` faz o título no
 padrão seguir o texto principal, e um `config` claro sem os papéis recebe os do par claro do tema de base (`useThemeSeed`).
+
+**Paleta calculada.** Com `colorPalette`, os tokens de cor deixam de vir escritos no tema e saem de `src/core/Design/palette/`
+(sementes por tipo → escalas OKLCH de 11 tons → `PALETTE_ROLE_MAP` por modo → `correctPaletteContrast`), expandidos na
+**composição** do `design` (`composeThemeDesign`, `overlayPreferences`), antes de qualquer emissão. A emissão de variáveis
+(`useDesignVariables.ts`) não sabe de paleta: recebe tokens de cor comuns, e a barreira de CSS (`[<>{};]`) vale para o valor
+de `colorPalette` como para qualquer outro — o formato foi escolhido para passar nela sem exceção. Regra de composição e
+formato do valor: [[09-temas-e-presets]] §4.3.4; a decisão: [[024-paleta-calculada-separada-do-tema]].
 
 **Piso de legibilidade.** As escalas pequenas (`typeScaleMicro`, `typeScaleTiny`, `typeScale3xs`, `typeScale2xs`) têm padrão e mínimo
 de **11 px**; o painel mantém o piso de 12 px. O título de cartão tem degrau próprio (`cardTitleFontSize`), e o cabeçalho de cartão usa

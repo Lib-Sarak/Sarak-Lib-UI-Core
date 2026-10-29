@@ -114,7 +114,7 @@ export const SARAK_DESIGN_MANIFEST: Record<string, {
     // REMOVIDA aqui (plan-21, 2026-08-10): nenhum token de schema corresponde ao conceito, e
     // há 4 candidatos plausíveis (motionDurationInstant/Fast/Normal/Slow) sem um único alvo
     // óbvio por consumidor — decisão de qual duração vale para cada um dos 3 sites que ainda
-    // consomem essas vars (SarakChart.tsx:75, SarakManagementGrid.tsx:95, _utilities.css:21)
+    // consomem essas vars (SarakManagementGrid.tsx:95, _utilities.css:21)
     // é do dono (R11 — Expansão ou redirecionamento deliberado), não do executor. Os 3 sites
     // continuam consumindo o fallback local (não tocados); `ghostvars` continua acusando os
     // 3 consumos até essa decisão.

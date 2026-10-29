@@ -483,7 +483,7 @@
   {
     "tokenId": "emptyStateOrbBlur",
     "name": "Empty State: Desfoque do Orb",
-    "description": "Raio de desfoque do orb de fundo animado do modo 'abstract' do SarakEmptyState (reaproveitado pelo SarakChart).",
+    "description": "Raio de desfoque do orb de fundo animado do modo 'abstract' do SarakEmptyState.",
     "type": "slider",
     "importance": 30,
     "categories": [
@@ -500,8 +500,7 @@
     "databaseColumn": "data_and_charts",
     "schemaOrigin": "specialized.ts",
     "digitalTwins": [
-      "SarakEmptyState",
-      "SarakChart"
+      "SarakEmptyState"
     ],
     "cssVariables": [
       "--sarak-empty-state-orb-blur"

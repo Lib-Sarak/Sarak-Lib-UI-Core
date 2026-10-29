@@ -1,6 +1,11 @@
 import * as builders from './optionBuilders';
-import { buildAxisOptions, buildTitleOption, buildTooltipOption } from './axisOptions';
+import { buildTitleOption, buildTooltipOption } from './axisOptions';
+import { buildCartesianAxes, buildLegend } from './cartesianLayout';
+import type { LegendSetting } from './cartesianLayout';
+import { applyChartEnhancements } from './chartEnhancements';
+import type { ChartEnhancementInput } from './chartEnhancements';
 import { resolveChartColorToken } from './builders/types';
+import type { SarakValueFormat } from '../../../../shared/format';
 import type {
     ChartBuilderConfig, ChartColorToken, ChartOptionFragment, ChartTheme, SarakChartDataItem, SarakChartType,
 } from './builders/types';
@@ -13,7 +18,6 @@ const DEFAULT_SERIES_INDEX = 0;
 type SeriesChartType = typeof SERIES_CHART_TYPES[number];
 type SeriesAxis = 'left' | 'right';
 type ChartOrientation = 'vertical' | 'horizontal';
-type LegendSetting = boolean | 'top' | 'bottom';
 
 export interface ChartSeriesDefinition {
     key: string;
@@ -23,6 +27,7 @@ export interface ChartSeriesDefinition {
     axis?: SeriesAxis;
     dashed?: boolean;
     color?: ChartColorToken;
+    format?: SarakValueFormat;
 }
 
 interface ChartSeriesOptions {
@@ -37,7 +42,9 @@ interface ChartOptionConfig extends ChartBuilderConfig {
     showAnimation?: boolean;
 }
 
-interface ChartOptionInput extends ChartSeriesOptions {
+type ChartExtrasInput = Omit<ChartEnhancementInput, 'type' | 'theme' | 'orientation' | 'seriesFormats' | 'seriesAxes'>;
+
+interface ChartOptionInput extends ChartSeriesOptions, ChartExtrasInput {
     type: SarakChartType;
     data: SarakChartDataItem[];
     config?: ChartOptionConfig;
@@ -163,43 +170,6 @@ function addDefaultStack(option: ChartOptionFragment, stacked: boolean): ChartOp
     };
 }
 
-function buildCartesianAxes(input: ChartOptionInput, categories: unknown[]): ChartOptionFragment {
-    const baseAxes = buildAxisOptions(input.type, categories, input.theme);
-    if (!isSeriesChartType(input.type)) return baseAxes;
-    const horizontal = input.orientation === 'horizontal';
-    const categoryAxis = isRecord(baseAxes.xAxis) ? baseAxes.xAxis : {};
-    const valueAxis = isRecord(baseAxes.yAxis) ? baseAxes.yAxis : {};
-    const xAxis: Record<string, unknown> = horizontal ? valueAxis : categoryAxis;
-    const yAxis: Record<string, unknown> = horizontal ? categoryAxis : valueAxis;
-    if (horizontal) yAxis.data = categories;
-    else xAxis.data = categories;
-
-    const axes: ChartOptionFragment = { xAxis, yAxis };
-    if (!input.series?.some((series) => series.axis === 'right')) return axes;
-    const valueAxisName = horizontal ? 'xAxis' : 'yAxis';
-    const firstValueAxis = horizontal ? xAxis : yAxis;
-    const splitLine = isRecord(firstValueAxis.splitLine) ? firstValueAxis.splitLine : {};
-    const secondValueAxis = {
-        ...firstValueAxis,
-        position: horizontal ? 'top' : 'right',
-        splitLine: { ...splitLine, show: false },
-    };
-    return { ...axes, [valueAxisName]: [firstValueAxis, secondValueAxis] };
-}
-
-function buildLegend(setting: LegendSetting | undefined, seriesCount: number, theme: ChartTheme): ChartOptionFragment {
-    const resolved = setting ?? (seriesCount > 1 ? 'top' : false);
-    if (!resolved) return { legend: { show: false } };
-    const position = resolved === 'bottom' ? { bottom: theme.axisLabelMargin } : { top: theme.axisLabelMargin };
-    return {
-        legend: {
-            show: true,
-            ...position,
-            textStyle: { color: theme.textColor, fontSize: theme.fontSize, fontFamily: theme.bodyFont },
-        },
-    };
-}
-
 export function buildChartOption(input: ChartOptionInput): ChartOptionFragment {
     const config: ChartBuilderConfig = {
         ...input.config,
@@ -218,15 +188,26 @@ export function buildChartOption(input: ChartOptionInput): ChartOptionFragment {
         ? definitions.length
         : Array.isArray(legacyOption?.series) ? legacyOption.series.length : 0;
 
-    return {
+    const option: ChartOptionFragment = {
         ...input.theme.baseOption,
-        ...buildCartesianAxes(input, categories),
+        ...buildCartesianAxes({
+            type: input.type,
+            theme: input.theme,
+            seriesChart: isSeriesChartType(input.type),
+            orientation: input.orientation,
+            hasRightAxis: Boolean(input.series?.some((series) => series.axis === 'right')),
+        }, categories),
         tooltip: buildTooltipOption(input.type, input.theme),
         ...buildTitleOption(input.config?.title, input.theme),
         ...seriesOption,
         ...buildLegend(SELF_CONTAINED_TYPES.includes(input.type) ? false : input.legend, seriesCount, input.theme),
         animation: input.config?.showAnimation ?? true,
     };
+    return applyChartEnhancements(option, {
+        ...input,
+        seriesFormats: configuredSeries ? definitions.map((definition) => definition.format) : undefined,
+        seriesAxes: configuredSeries ? definitions.map((definition) => definition.axis) : undefined,
+    });
 }
 
 function handlePointClick(input: PointClickInput, event: unknown): void {

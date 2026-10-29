@@ -1,3 +1,4 @@
+import type { SarakI18nOptions } from '../i18n/types';
 import type { DesignTokenId, SarakDesignTokens } from './generated/design-token-ids';
 import type { SarakPreferencesOptions, SarakUserPreferences } from './preferencesTypes';
 import type { SarakThemeCatalogEntry } from '../Design/presets/themes';
@@ -181,6 +182,7 @@ export interface SarakUIOptions {
         /** Remove o tema salvo pelo consumidor, quando configurada. */ onDelete?: (id: string) => Promise<void> | void;
     };
     preferences?: SarakPreferencesOptions; // Porta opcional de preferências do usuário
+    /** O idioma é do sistema: declara os idiomas, o atual e recebe a troca do seletor. */ i18n?: SarakI18nOptions;
     /**
      * Marca/branding do sistema (Spec 44 — sem backend próprio): `initial` semeia
      * o estado; `onChange` é a porta "traga sua persistência" (sync no backend DO

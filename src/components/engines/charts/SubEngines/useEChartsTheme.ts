@@ -4,11 +4,11 @@ import { parseToRgba } from '../../../../core/Provider/utils/color-engine';
 import { CHART_STATUS_TOKENS } from './builders/types';
 import type { ChartStatusToken } from './builders/types';
 import { deriveCategoricalPalette } from './categoricalPalette';
-import type { PaletteMode } from './categoricalPalette';
+import type { CategoricalPaletteMode } from './categoricalPalette';
 import { rgbToHex } from './oklch';
 
 const CHART_THEME_FALLBACK_COLOR = '#3b82f6';
-const SURFACE_FALLBACK: Record<PaletteMode, string> = { light: '#fcfcfb', dark: '#1a1a19' };
+const SURFACE_FALLBACK: Record<CategoricalPaletteMode, string> = { light: '#fcfcfb', dark: '#1a1a19' };
 const RGB_CHANNEL_MAX = 255;
 const DEFAULT_CHART_GRID_OPACITY = 0.05;
 const DEFAULT_CHART_THICKNESS = 2;
@@ -80,7 +80,7 @@ function toHex(value: unknown): string {
 }
 
 function resolvePalette(design: ResolvedDesign): string[] {
-    const mode: PaletteMode = design.mode === 'light' ? 'light' : 'dark';
+    const mode: CategoricalPaletteMode = design.mode === 'light' ? 'light' : 'dark';
     const surface = design.colorBgBody ? toHex(design.colorBgBody) : SURFACE_FALLBACK[mode];
     return deriveCategoricalPalette({
         brand: [design.chartColorPalette, design.secondaryColor, design.accentColor, design.tertiaryColor].map(toHex),

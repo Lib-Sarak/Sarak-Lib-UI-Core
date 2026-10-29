@@ -21,7 +21,7 @@ describe('inputPadding — eixos explícitos com compatibilidade vertical', () =
     });
 
     it('SarakSelect lê a variável do token no padding vertical', () => {
-        render(<SarakSelect aria-label="opção"><option value="a">A</option></SarakSelect>);
+        render(<SarakSelect label="Opção"><option value="a">A</option></SarakSelect>);
         expect(screen.getByRole('combobox').className).toContain(LEGACY_PADDING_READER);
     });
 

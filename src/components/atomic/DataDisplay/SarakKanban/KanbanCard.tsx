@@ -7,6 +7,7 @@
 import React from 'react';
 import { KanbanCardContent } from './KanbanCardContent';
 import { useKanbanCardDrag } from './useKanbanDrag';
+import type { SarakValueFormat } from '../../../../shared/format';
 import type { SarakKanbanCard } from './kanbanTypes';
 
 export interface KanbanCardProps<C extends SarakKanbanCard> {
@@ -14,6 +15,7 @@ export interface KanbanCardProps<C extends SarakKanbanCard> {
     columnId: string;
     renderCard?: (card: C, columnId: string) => React.ReactNode;
     onCardClick?: (card: C, columnId: string) => void;
+    valueFormat?: SarakValueFormat;
 }
 
 const shellStyle = (clickable: boolean, isDragging: boolean): React.CSSProperties => ({
@@ -30,15 +32,16 @@ export function KanbanCardShell<C extends SarakKanbanCard>({
     card,
     columnId,
     renderCard,
-}: Pick<KanbanCardProps<C>, 'card' | 'columnId' | 'renderCard'>) {
+    valueFormat,
+}: Pick<KanbanCardProps<C>, 'card' | 'columnId' | 'renderCard' | 'valueFormat'>) {
     return (
         <article data-kanban-overlay="true" style={{ ...shellStyle(false, false), cursor: 'grabbing' }}>
-            {renderCard ? renderCard(card, columnId) : <KanbanCardContent card={card} />}
+            {renderCard ? renderCard(card, columnId) : <KanbanCardContent card={card} valueFormat={valueFormat} />}
         </article>
     );
 }
 
-export function KanbanCard<C extends SarakKanbanCard>({ card, columnId, renderCard, onCardClick }: KanbanCardProps<C>) {
+export function KanbanCard<C extends SarakKanbanCard>({ card, columnId, renderCard, onCardClick, valueFormat }: KanbanCardProps<C>) {
     const drag = useKanbanCardDrag(card.id);
     const { onKeyDown: dragKeyDown, ...dragListeners } = drag.listeners ?? {};
 
@@ -58,7 +61,7 @@ export function KanbanCard<C extends SarakKanbanCard>({ card, columnId, renderCa
             onClick={onCardClick ? () => onCardClick(card, columnId) : undefined}
             style={{ ...shellStyle(Boolean(onCardClick), drag.isDragging), ...drag.style }}
         >
-            {renderCard ? renderCard(card, columnId) : <KanbanCardContent card={card} />}
+            {renderCard ? renderCard(card, columnId) : <KanbanCardContent card={card} valueFormat={valueFormat} />}
         </article>
     );
 }

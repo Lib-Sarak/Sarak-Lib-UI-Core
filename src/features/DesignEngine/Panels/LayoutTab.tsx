@@ -120,6 +120,8 @@ export const LayoutTab: React.FC = () => {
                             <div className="space-y-2">
                                 <label className="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] text-theme-text/30 ml-2">Heading Font</label>
                                 <SarakSelect 
+                                    label="Heading Font"
+                                    hideLabel
                                     value={headingFont} 
                                     onChange={(e) => setHeadingFont(e.target.value)}
                                 >
@@ -131,6 +133,8 @@ export const LayoutTab: React.FC = () => {
                             <div className="space-y-2">
                                 <label className="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] text-theme-text/30 ml-2">Body Font</label>
                                 <SarakSelect 
+                                    label="Body Font"
+                                    hideLabel
                                     value={bodyFont} 
                                     onChange={(e) => setBodyFont(e.target.value)}
                                 >

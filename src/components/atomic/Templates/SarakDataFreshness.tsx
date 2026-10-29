@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react';
-import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
-import { resolveLibraryLanguage, useLibraryText } from '../../../core/i18n/useLibraryText';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
+import { useSarakLanguage } from '../../../core/i18n/useSarakLanguage';
 import { parseDataTimestamp } from './hooks/dataTimestamp';
 
 interface SarakDataFreshnessProps {
@@ -10,11 +10,11 @@ interface SarakDataFreshnessProps {
 
 export const SarakDataFreshness = ({ updatedAt, stale = false }: SarakDataFreshnessProps): ReactElement | null => {
     const text = useLibraryText();
-    const language = resolveLibraryLanguage(useSarakUIOptional()?.design.language);
+    const { locale } = useSarakLanguage();
     const timestamp = parseDataTimestamp(updatedAt ?? undefined);
     if (!timestamp) return null;
 
-    const time = new Intl.DateTimeFormat(language, { hour: '2-digit', minute: '2-digit' }).format(timestamp);
+    const time = new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(timestamp);
     return (
         <p className="text-xs text-theme-muted">
             <time dateTime={timestamp.toISOString()}>{text('dataReadAt', { time })}</time>

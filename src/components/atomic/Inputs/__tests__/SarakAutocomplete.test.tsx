@@ -162,6 +162,59 @@ it('o campo é type="search" com a tecla "Buscar", e o consumidor ainda pode tro
     expect(custom).toHaveAttribute('enterkeyhint', 'go');
 });
 
+describe('SarakAutocomplete — descrição da opção', () => {
+    it('mostra a descrição secundária da opção na lista', () => {
+        renderAutocomplete({
+            options: [{ value: 'finance', label: 'Financeiro', description: 'CNPJ 04.252.011/0001-10' }],
+        });
+        const input = screen.getByRole('combobox', { name: 'Setor' });
+        fireEvent.focus(input);
+        fireEvent.change(input, { target: { value: 'fin' } });
+
+        const option = screen.getByRole('option', { name: /Financeiro/ });
+        expect(option).toHaveTextContent('CNPJ 04.252.011/0001-10');
+    });
+});
+
+describe('SarakAutocomplete — seleção controlada', () => {
+    it('mostra o rótulo da seleção e informa quando a busca deixa de representar o id', () => {
+        const onSelectionChange = vi.fn();
+        renderAutocomplete({ selection: OPTIONS[0], onSelectionChange });
+        const input = screen.getByRole('combobox', { name: 'Setor' });
+
+        expect(input).toHaveValue('Recursos Humanos');
+        fireEvent.change(input, { target: { value: 'Tecnologia' } });
+
+        expect(onSelectionChange).toHaveBeenCalledWith(null);
+    });
+
+    it('emite a opção escolhida com seu id e exibe o rótulo', () => {
+        const onSelectionChange = vi.fn();
+        renderAutocomplete({ selection: null, onSelectionChange });
+        const input = screen.getByRole('combobox', { name: 'Setor' });
+        fireEvent.focus(input);
+        fireEvent.change(input, { target: { value: 'fin' } });
+        fireEvent.click(screen.getByRole('option', { name: 'Financeiro' }));
+
+        expect(onSelectionChange).toHaveBeenCalledWith(OPTIONS[1]);
+        expect(input).toHaveValue('Financeiro');
+        expect(OPTIONS[1].value).toBe('finance');
+    });
+});
+
+describe('SarakAutocomplete — criação de opção', () => {
+    it('chama onCreate com a busca quando a opção não existe', () => {
+        const onCreate = vi.fn();
+        renderAutocomplete({ onCreate });
+        const input = screen.getByRole('combobox', { name: 'Setor' });
+        fireEvent.focus(input);
+        fireEvent.change(input, { target: { value: 'Contabilidade' } });
+        fireEvent.click(screen.getByRole('button', { name: /Criar/ }));
+
+        expect(onCreate).toHaveBeenCalledWith('Contabilidade');
+    });
+});
+
 describe('disabled', () => {
     it('impede a edição do texto', async () => {
         const user = userEvent.setup();

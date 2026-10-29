@@ -155,7 +155,9 @@ export const SelectControl: React.FC<SelectControlProps> = ({ label, description
             {label}
             <HelpTooltip label={label} description={description} />
         </span>
-        <SarakSelect 
+        <SarakSelect
+            label={label}
+            hideLabel
             value={value ?? ''} 
             onChange={(e) => onChange(e.target.value)}
             style={isFont ? { fontFamily: value || undefined } : {}}

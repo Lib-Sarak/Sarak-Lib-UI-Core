@@ -1,4 +1,5 @@
 export * from './SarakGrid';
+export * from './SarakGridItem';
 export * from './SarakFormGroup';
 export * from './SarakFlex';
 export * from './SarakSplitPane';

@@ -17,6 +17,7 @@ declare global {
     interface Window {
         __tenantThemeSave?: { design: Record<string, unknown>; activeThemeId?: string };
         __namedThemeSaveCalled?: boolean;
+        __sovereignBackground?: string;
     }
 }
 
@@ -56,7 +57,8 @@ test('Provider sem tenant aplica e persiste o tema escolhido depois do login', a
     const applyButton = page.getByRole('button', { name: 'Aplicar' });
     await expect(page.getByText(/\d+ altera(?:ção|ções)/)).toBeVisible();
     await expect(applyButton).toBeEnabled();
-    await expect(page.locator('[data-probe="tenant-draft-background"]')).toHaveText('#06080d');
+    const sovereignBackground = (await page.evaluate(() => window.__sovereignBackground))!;
+    await expect(page.locator('[data-probe="tenant-draft-background"]')).toHaveText(sovereignBackground);
     await expect(page.locator('[data-probe="tenant-system-background"]')).toHaveText('#123456');
     expect(await readStoredThemePair(page, TENANT_STORAGE_KEY)).toMatchObject(EXPECTED_TENANT_CACHE);
 
@@ -67,7 +69,7 @@ test('Provider sem tenant aplica e persiste o tema escolhido depois do login', a
     expect(persistedTheme.design).not.toBeNull();
     expect((persistedTheme.design as { primaryColor: string }).primaryColor).not.toBe('#123456');
     expect(persistedTheme.activeThemeId).toBe('sarak-sovereign');
-    await expect(page.locator('[data-probe="tenant-system-background"]')).toHaveText('#06080d');
+    await expect(page.locator('[data-probe="tenant-system-background"]')).toHaveText(sovereignBackground);
     expect(await page.evaluate(() => window.__namedThemeSaveCalled)).toBeUndefined();
     expect(pageErrors).toEqual([]);
     await page.close();

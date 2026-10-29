@@ -8,6 +8,7 @@ import { REMOVED_TOKEN_KEYS, warnRemovedTokenKeyOnce } from './removedTokenKeys'
 import { clampToTokenBounds, isOffTokenGrid, isOutsideTokenBounds } from '../../Design/utils/tokenBounds';
 import type { SarakDesignToken } from '../../Design/types';
 import { warnForFunctionalRangeClamp } from './validationFunctionalRangeWarnings';
+import { isValidPaletteValue } from '../../Design/palette/parser';
 
 export { isValidColor } from './colorValidation';
 
@@ -97,12 +98,14 @@ const coerceTokenValue = (token: SarakDesignToken, value: unknown): unknown => {
             if (!enumOptions) return value;
             return enumOptions.includes(value) ? value : undefined;
         }
+        case 'string':
+            if (token.id === 'colorPalette') return isValidPaletteValue(value) ? value : undefined;
+            return typeof value === 'string' && isSafeCssString(value) ? value : undefined;
         case 'color':
             return isValidColor(value) ? value : undefined;
         case 'image':
         case 'file':
             return typeof value === 'string' && isSafeMediaString(value) ? value : undefined;
-        case 'string':
         case 'text':
         case 'font':
         default:
@@ -169,71 +172,69 @@ export const auditTokenContract = (fonte: string, design: Record<string, unknown
     return drift;
 };
 
+const validateDesignEntry = (
+    key: string,
+    value: unknown,
+    tokenIndex: Map<string, SarakDesignToken>,
+    sanitizedDesign: Record<string, unknown>,
+): void => {
+    if (value === null || value === undefined || value === '') return;
+    if (REMOVED_TOKEN_KEYS.has(key)) {
+        warnRemovedTokenKeyOnce(key, value);
+        return;
+    }
+
+    const token = tokenIndex.get(key);
+    if (token) {
+        const coerced = coerceTokenValue(token, value);
+        if (coerced === undefined) {
+            console.warn(`[Sarak:Design] Token "${key}" com valor fora do contrato — descartado.`, value);
+            return;
+        }
+        warnForFunctionalRangeClamp(key, value, token, coerced);
+        sanitizedDesign[key] = coerced;
+        return;
+    }
+
+    if (ALLOWED_EXTRA_KEYS.has(key)) {
+        if (!isSafeExtraValue(value)) {
+            console.warn(`[Sarak:Design] Campo "${key}" com valor inseguro — descartado.`, value);
+            return;
+        }
+        sanitizedDesign[key] = value;
+        return;
+    }
+
+    console.warn(`[Sarak:Design] Chave "${key}" desconhecida no schema de tema — descartada.`, value);
+};
+
+/**
+ * Defaults for structural extras are applied after token validation. Real schema
+ * tokens keep their seeded values, including responsive values. `animationSpeed`
+ * remains an extra key without a guaranteed seed. The removed haptic keys are
+ * not reintroduced because they have no schema or consumer.
+ */
+const applyStructuralFallbacks = (design: Record<string, unknown>): void => {
+    if (typeof design.animationSpeed !== 'number') design.animationSpeed = 0.4;
+    if (design.borderRadius === undefined) design.borderRadius = 12;
+    if (!design.atmosphere) design.atmosphere = { texture: 'dots', noise: 0.05, opacity: 0.1, spotlight: true };
+    if (!design.specialized) design.specialized = { chatBubbleStyle: 'glass', flowGridStyle: 'dots', chartType: 'line' };
+};
+
+const finalizeDesignState = (design: Record<string, unknown>): SarakDesignState => {
+    applyStructuralFallbacks(design);
+    design.schema_version = '12.0';
+    return design as unknown as SarakDesignState;
+};
+
 export const validateDesign = (design: unknown): SarakDesignState => {
     if (!design) return {} as SarakDesignState;
     const input = design as Record<string, unknown>;
     const tokenIndex = getTokenIndex();
-    const s: Record<string, unknown> = {};
+    const sanitizedDesign: Record<string, unknown> = {};
 
-    Object.entries(input).forEach(([key, value]) => {
-        if (value === null || value === undefined || value === '') return;
-
-        if (REMOVED_TOKEN_KEYS.has(key)) {
-            warnRemovedTokenKeyOnce(key, value);
-            return;
-        }
-
-        const token = tokenIndex.get(key);
-        if (token) {
-            const coerced = coerceTokenValue(token, value);
-            if (coerced === undefined) {
-                console.warn(`[Sarak:Design] Token "${key}" com valor fora do contrato — descartado.`, value);
-                return;
-            }
-            warnForFunctionalRangeClamp(key, value, token, coerced);
-            s[key] = coerced;
-            return;
-        }
-
-        if (ALLOWED_EXTRA_KEYS.has(key)) {
-            if (!isSafeExtraValue(value)) {
-                console.warn(`[Sarak:Design] Campo "${key}" com valor inseguro — descartado.`, value);
-                return;
-            }
-            s[key] = value;
-            return;
-        }
-
-        console.warn(`[Sarak:Design] Chave "${key}" desconhecida no schema de tema — descartada.`, value);
-    });
-
-    // Fallbacks Estruturais (v9.0+ Resilience) — só para chaves que NÃO são
-    // tokens do catálogo (`navigationStyle`/`sidebarWidth`/`topbarHeight`/
-    // `fontScale`/`borderRadius`/`glassBlur`/`glassOpacity` já são
-    // tokens reais de `MASTER_DESIGN_MAP` — o default deles vem do
-    // `getDefaultDesignState()` no seed, ANTES desta função rodar; forçá-los aqui
-    // de novo sobrescreveria valores responsivos válidos — ex.: `sidebarWidth` é
-    // `{ desk, tab, mob }` — com um número escalar). `animationSpeed` está em
-    // `PAYLOAD_EXTRA_KEYS` (branding/estrutura — `manifest.ts` documenta por que
-    // não virou token de schema, R11), sem seed garantido — por isso segue com
-    // fallback explícito aqui.
-    //
-    // `hapticIntensity`/`scaleRatio` SAÍRAM (achado 40, fechado 2026-08-11): a
-    // justificativa antiga era "só existem no manifesto legado, DESIGN_MANIFEST"
-    // — mas a `plan-21` já tinha removido as duas de lá por serem entradas órfãs
-    // (R7 vão 2, ver `manifest.test.ts`). Sem token de schema E sem chave em
-    // `PAYLOAD_EXTRA_KEYS`, a `:213` as descartava a cada `validateDesign`, e
-    // este bloco as reinjetava na chamada seguinte — um `console.warn` por
-    // passada, para sempre, medido no console de um consumidor real (ERP). Zero
-    // consumidor de qualquer uma das duas em toda a `src/`, fora deste arquivo.
-    if (typeof s.animationSpeed !== 'number') s.animationSpeed = 0.4;
-    if (s.borderRadius === undefined) s.borderRadius = 12; // responsivo: só a AUSÊNCIA recebe o piso
-
-    if (!s.atmosphere) s.atmosphere = { texture: 'dots', noise: 0.05, opacity: 0.1, spotlight: true };
-    if (!s.specialized) s.specialized = { chatBubbleStyle: 'glass', flowGridStyle: 'dots', chartType: 'line' };
-
-    s.schema_version = "12.0"; // Upgrade to v12.0 (Schema-Validated Design Engine)
-
-    // Seam cast (Spec 65): o acumulador dinâmico vira o estado tipado na fronteira.
-    return s as unknown as SarakDesignState;
+    Object.entries(input).forEach(([key, value]) =>
+        validateDesignEntry(key, value, tokenIndex, sanitizedDesign),
+    );
+    return finalizeDesignState(sanitizedDesign);
 };

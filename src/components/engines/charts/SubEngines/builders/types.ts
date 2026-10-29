@@ -53,3 +53,34 @@ export interface ChartBuilderConfig {
 
 /** Fragmento de opção ECharts produzido por um builder (mesclado depois). */
 export type ChartOptionFragment = Record<string, unknown>;
+
+/** Tom de uma linha ou faixa de referência; só `neutral` fica fora dos tokens de status. */
+export type SarakChartReferenceTone = 'neutral' | 'success' | 'warning' | 'error';
+
+/** Linha horizontal (vertical, na orientação horizontal) traçada sobre um valor do eixo de valor. */
+export interface SarakChartReferenceLine {
+    value: number;
+    label?: string;
+    /** Eixo de valor ao qual `value` pertence; precisa de uma série em `axis: 'right'` para existir. */
+    axis?: 'left' | 'right';
+    tone?: SarakChartReferenceTone;
+    dashed?: boolean;
+}
+
+/** Faixa do eixo de valor entre `from` e `to`, sombreada no tom pedido. */
+export interface SarakChartReferenceBand {
+    from: number;
+    to: number;
+    label?: string;
+    tone?: SarakChartReferenceTone;
+}
+
+export type SarakChartZoom = boolean | 'inside' | 'slider';
+
+export type SarakChartPieLabel = 'name' | 'value' | 'percent' | 'name-percent' | 'none';
+
+/** Escala do medidor; omitidos, vale 0 a 100. */
+export interface SarakChartGauge {
+    min?: number;
+    max?: number;
+}

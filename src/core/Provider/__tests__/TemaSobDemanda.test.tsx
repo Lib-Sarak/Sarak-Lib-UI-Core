@@ -15,12 +15,12 @@ import { sarakPreloadThemes, getLoadedThemePreset } from '../../Design/presets/t
 import { SARAK_DEFAULT_THEME_ID } from '../../Design/presets/themes';
 import { SARAK_ALL_THEMES } from '../../Design/presets/themes/all';
 import { SARAK_THEME_LOADERS } from '../../Design/presets/themes/loaders';
-import { resolveThemeForMode } from '../../Design/presets/themes/color-engine';
+import { composeThemeForMode } from '../../Design/presets/themes/compose';
 import { DEFAULT_STORAGE_KEY } from '../constants';
 
 const themeOf = (id: string) => SARAK_ALL_THEMES.find((theme) => theme.id === id)!;
 const primaryOf = (id: string, mode: 'light' | 'dark' = (themeOf(id).design.mode as 'light' | 'dark') || 'dark') =>
-    String(resolveThemeForMode({ design: themeOf(id).design as never, contraparte: themeOf(id).contraparte }, mode).primaryColor);
+    String(composeThemeForMode({ design: themeOf(id).design as never, contraparte: themeOf(id).contraparte }, mode).primaryColor);
 
 /** Registra o `primaryColor` de CADA render — a prova de que nenhum quadro mostrou o tema errado. */
 const makeProbe = () => {
@@ -141,12 +141,11 @@ describe('id inexistente é decidido SEM rede, no primeiro quadro', () => {
 
     it('em modo claro cai na CONTRAPARTE clara do tema padrão — nunca num escuro com o rótulo trocado', () => {
         vi.spyOn(console, 'warn').mockImplementation(() => undefined);
-        const sovereign = themeOf(SARAK_DEFAULT_THEME_ID);
         const { Probe } = makeProbe();
 
         render(<SarakUIProvider initialTheme="classic" config={{ mode: 'light' }}><Probe /></SarakUIProvider>);
 
-        expect(screen.getByTestId('primary')).toHaveTextContent(String(sovereign.contraparte?.primaryColor));
+        expect(screen.getByTestId('primary')).toHaveTextContent(primaryOf(SARAK_DEFAULT_THEME_ID, 'light'));
     });
 
     it('options.theme.defaultTheme inexistente AVISA (não cai em silêncio) e usa o padrão', () => {

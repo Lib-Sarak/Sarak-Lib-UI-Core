@@ -8,6 +8,8 @@ import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 
 export interface SarakInputProps extends InputHTMLAttributes<HTMLInputElement> {
     label?: string;
+    prefixText?: React.ReactNode;
+    suffixText?: React.ReactNode;
     icon?: React.ReactNode;
     leftIcon?: React.ReactNode;
     rightIcon?: React.ReactNode;
@@ -34,6 +36,8 @@ interface SarakInputViewModel {
 interface SarakInputViewProps {
     label?: string;
     error?: string;
+    prefixText?: React.ReactNode;
+    suffixText?: React.ReactNode;
     disabled?: boolean;
     nativeProps: InputHTMLAttributes<HTMLInputElement>;
     onFocus?: React.FocusEventHandler<HTMLInputElement>;
@@ -45,11 +49,13 @@ const ICON_SIDE_CLASS = { left: 'absolute left-3 z-10', right: 'absolute right-3
 const ICON_INERT_CLASS = 'pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,rgba(242,246,251,0.55)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#19e3f0))]';
 const ICON_INTERACTIVE_CLASS = 'text-[var(--sarak-input-icon-color,var(--text-muted,rgba(242,246,251,0.55)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#19e3f0))]';
 
-const composeDescribedBy = (providedIds?: string, errorId?: string): string | undefined => {
+const composeDescribedBy = (providedIds?: string, ...additionalIds: Array<string | undefined>): string | undefined => {
     const descriptionIds = new Set(providedIds?.split(/\s+/).filter(Boolean) ?? []);
-    if (errorId) descriptionIds.add(errorId);
+    additionalIds.forEach((id) => { if (id) descriptionIds.add(id); });
     return [...descriptionIds].join(' ') || undefined;
 };
+
+const hasAdornment = (node: React.ReactNode): boolean => node !== undefined && node !== null && node !== false;
 
 const resolveIconSlots = (
     icon: React.ReactNode,
@@ -118,19 +124,32 @@ const getNativeInputProps = (props: SarakInputProps): InputHTMLAttributes<HTMLIn
     delete nativeProps.rightIcon;
     delete nativeProps.error;
     delete nativeProps.fullWidth;
+    delete nativeProps.prefixText;
+    delete nativeProps.suffixText;
     delete nativeProps.className;
     return nativeProps;
 };
 
-const SarakInputControl = ({
+interface SarakInputNativeFieldProps {
+    error?: string;
+    disabled?: boolean;
+    describedBy?: string;
+    nativeProps: InputHTMLAttributes<HTMLInputElement>;
+    onFocus?: React.FocusEventHandler<HTMLInputElement>;
+    onBlur?: React.FocusEventHandler<HTMLInputElement>;
+    viewModel: SarakInputViewModel;
+}
+
+const SarakInputNativeField = ({
     error,
     disabled,
+    describedBy,
     nativeProps,
     onFocus,
     onBlur,
     viewModel,
-}: SarakInputViewProps): React.ReactElement => (
-    <div className="relative w-full flex items-center">
+}: SarakInputNativeFieldProps): React.ReactElement => (
+    <div className="relative w-full flex-1 min-w-0">
         {viewModel.iconSlots.map((slot) => (
             <div
                 key={slot.side}
@@ -149,13 +168,52 @@ const SarakInputControl = ({
             disabled={disabled}
             style={viewModel.dynamicStyle}
             aria-invalid={error ? true : undefined}
-            aria-describedby={composeDescribedBy(nativeProps['aria-describedby'], error ? viewModel.errorId : undefined)}
+            aria-describedby={describedBy}
             onFocus={(event) => { viewModel.setIsFocused(true); onFocus?.(event); }}
             onBlur={(event) => { viewModel.setIsFocused(false); onBlur?.(event); }}
             id={viewModel.inputId}
         />
     </div>
 );
+
+const SarakInputControl = ({
+    error,
+    prefixText,
+    suffixText,
+    disabled,
+    nativeProps,
+    onFocus,
+    onBlur,
+    viewModel,
+}: SarakInputViewProps): React.ReactElement => {
+    const hasPrefix = hasAdornment(prefixText);
+    const hasSuffix = hasAdornment(suffixText);
+    const describedBy = composeDescribedBy(
+        nativeProps['aria-describedby'],
+        hasPrefix ? `${viewModel.inputId}-prefix` : undefined,
+        hasSuffix ? `${viewModel.inputId}-suffix` : undefined,
+        error ? viewModel.errorId : undefined,
+    );
+
+    return (
+        <div className={mergeSarakClasses(
+            'relative w-full flex items-center',
+            hasPrefix || hasSuffix ? 'gap-[var(--sarak-layout-gap-sm,8px)]' : '',
+        )}>
+            {hasPrefix && <span id={`${viewModel.inputId}-prefix`} className="shrink-0">{prefixText}</span>}
+            <SarakInputNativeField
+                error={error}
+                disabled={disabled}
+                describedBy={describedBy}
+                nativeProps={nativeProps}
+                onFocus={onFocus}
+                onBlur={onBlur}
+                viewModel={viewModel}
+            />
+            {hasSuffix && <span id={`${viewModel.inputId}-suffix`} className="shrink-0">{suffixText}</span>}
+        </div>
+    );
+};
 
 const SarakInputView = (props: SarakInputViewProps): React.ReactElement => (
     <SarakFormGroup className={props.viewModel.wrapperClassName}>
@@ -177,6 +235,8 @@ export const SarakInput = (props: SarakInputProps): React.ReactElement => {
         <SarakInputView
             label={props.label}
             error={props.error}
+            prefixText={props.prefixText}
+            suffixText={props.suffixText}
             disabled={props.disabled}
             nativeProps={getNativeInputProps(props)}
             onFocus={props.onFocus}

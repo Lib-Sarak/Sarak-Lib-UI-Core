@@ -3,6 +3,10 @@ import { SarakCheckbox } from '../Inputs/SarakCheckbox';
 import { SarakTableSortButton } from '../DataDisplay/SarakDataTable/SarakTableSortButton';
 import type { SarakTableSort } from '../DataDisplay/SarakDataTable/columnModel';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
+import { columnAlign, columnText, toValueColumn } from '../DataDisplay/SarakDataTable/columnValue';
+import { DetailCard, GroupCard, SubtotalCard, TotalsCard } from '../DataDisplay/SarakDataTable/SarakDataCardParts';
+import { SarakExpandToggle } from '../DataDisplay/SarakDataTable/SarakTableControls';
+import type { SarakDisplayRow } from '../DataDisplay/SarakDataTable/tableDisplayRows';
 import type { SarakTableColumn } from './SarakTableProps';
 
 export interface SarakTableSelectionCheckboxProps {
@@ -47,9 +51,23 @@ export interface SarakTableCardsProps<T extends Record<string, unknown>> {
     onToggleRow?: (key: React.Key, checked: boolean) => void;
     onToggleAll?: (checked: boolean) => void;
     onRowClick?: (row: T) => void;
+    /** Linhas visuais (grupo, subtotal, detalhe); ausente = um cartão por linha de `rows`. */
+    displayRows?: Array<SarakDisplayRow<T>>;
+    /** Linhas sobre as quais o rodapé agrega; ausente, sem cartão de totais. */
+    footerRows?: T[];
+    locale?: string;
+    renderExpanded?: (row: T) => React.ReactNode;
+    onToggleExpand?: (key: React.Key) => void;
+    onToggleGroup?: (groupId: string) => void;
 }
 
-const displayValue = (value: unknown): string => String(value ?? '');
+const dataRow = <T extends Record<string, unknown>>(row: T, index: number, key?: React.Key): SarakDisplayRow<T> => {
+    const rowId = row.id;
+    const resolved = key ?? (typeof rowId === 'string' || typeof rowId === 'number' ? rowId : index);
+    return { kind: 'data', id: `row:${String(resolved)}`, entry: { row, index, key: resolved }, depth: 0, expandable: false, expanded: false, hasChildren: false };
+};
+
+const skeletonRow = <T extends Record<string, unknown>>(index: number): SarakDisplayRow<T> => dataRow({ __skeleton: index } as unknown as T, index, index);
 
 const isInteractiveTarget = (target: EventTarget): boolean =>
     target instanceof Element && Boolean(target.closest('button,input,a,select,textarea,[role="button"],[role="checkbox"]'));
@@ -92,9 +110,20 @@ export function SarakTableCards<T extends Record<string, unknown>>({
     onToggleRow,
     onToggleAll,
     onRowClick,
+    displayRows,
+    footerRows,
+    locale,
+    renderExpanded,
+    onToggleExpand,
+    onToggleGroup,
 }: SarakTableCardsProps<T>) {
     const text = useLibraryText();
-    const items = loading ? Array.from({ length: 3 }, (_, index) => ({ __skeleton: index } as unknown as T)) : rows;
+    const columnList = columns.map((column) => typeof column === 'string' ? { key: column, label: columnLabels[column] } : column);
+    const valueColumns = columnList.map((column) => toValueColumn<T>(column));
+    const totalsColumns = valueColumns.map((column, index) => ({ column, header: columnList[index].label }));
+    const items: Array<SarakDisplayRow<T>> = loading
+        ? Array.from({ length: 3 }, (_, index) => skeletonRow<T>(index))
+        : displayRows ?? rows.map((row, index) => dataRow(row, index, rowKeys?.[index]));
     const canSelect = selectable && !loading;
 
     return (
@@ -124,38 +153,40 @@ export function SarakTableCards<T extends Record<string, unknown>>({
                 </div>
             )}
             <div role="list" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sarak-layout-gap-sm, 8px)', maxWidth: '100%' }}>
-                {items.map((row, index) => {
-                    const rowId = row.id;
-                    const rowKey = rowKeys?.[index]
-                        ?? (typeof rowId === 'string' || typeof rowId === 'number' ? rowId : index);
+                {items.map((display) => {
+                    if (display.kind === 'group') return <div key={display.id} role="listitem"><GroupCard display={display} onToggleGroup={onToggleGroup} /></div>;
+                    if (display.kind === 'subtotal') return <div key={display.id} role="listitem"><SubtotalCard columns={totalsColumns} display={display} locale={locale} /></div>;
+                    if (display.kind === 'detail') return <div key={display.id} role="listitem"><DetailCard display={display} renderExpanded={renderExpanded} /></div>;
+                    const { row, key: rowKey } = display.entry;
                     const handleRowClick = loading ? undefined : onRowClick;
                     return (
-                        <div key={rowKey} role="listitem" tabIndex={handleRowClick ? 0 : undefined} onClick={(event) => handleCardClick(event, row, handleRowClick)} onKeyDown={(event) => handleCardKeyDown(event, row, handleRowClick)} style={{ ...cardStyle, cursor: handleRowClick ? 'pointer' : undefined }}>
-                            {canSelect && (
-                                <SarakTableSelectionCheckbox
-                                    label={text('selectRow', { row: String(rowKey) })}
-                                    checked={selectedKeys.has(rowKey)}
-                                    onChange={(checked) => onToggleRow?.(rowKey, checked)}
-                                />
+                        <div key={display.id} role="listitem" tabIndex={handleRowClick ? 0 : undefined} onClick={(event) => handleCardClick(event, row, handleRowClick)} onKeyDown={(event) => handleCardKeyDown(event, row, handleRowClick)} style={{ ...cardStyle, cursor: handleRowClick ? 'pointer' : undefined }}>
+                            {(canSelect || display.expandable) && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
+                                    {canSelect && (
+                                        <SarakTableSelectionCheckbox
+                                            label={text('selectRow', { row: String(rowKey) })}
+                                            checked={selectedKeys.has(rowKey)}
+                                            onChange={(checked) => onToggleRow?.(rowKey, checked)}
+                                        />
+                                    )}
+                                    {display.expandable && <SarakExpandToggle expanded={display.expanded} label={text(display.expanded ? 'tableCollapseRow' : 'tableExpandRow')} onToggle={() => onToggleExpand?.(rowKey)} />}
+                                </div>
                             )}
-                            {columns.map((column) => {
-                                const columnId = typeof column === 'string' ? column : column.key;
-                                const label = typeof column === 'string' ? columnLabels[columnId] : column.label;
-                                const align = typeof column === 'string' ? 'left' : column.align ?? 'left';
-                                return (
-                                <div key={columnId} className="min-w-0" style={{ display: 'flex', flexDirection: 'column', gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.25)' }}>
+                            {columnList.map((column, index) => (
+                                <div key={column.key} className="min-w-0" style={{ display: 'flex', flexDirection: 'column', gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.25)' }}>
                                     <span className="text-2xs font-black uppercase tracking-widest text-theme-muted">
-                                        {label}
+                                        {column.label}
                                     </span>
-                                    <span className="text-sm break-words min-w-0 text-theme-text" style={{ textAlign: align }}>
-                                        {loading ? '' : typeof column === 'string' || !column.render ? displayValue(row[columnId]) : column.render(row)}
+                                    <span className="text-sm break-words min-w-0 text-theme-text" style={{ textAlign: columnAlign(valueColumns[index]) }}>
+                                        {loading ? '' : 'render' in column && column.render ? column.render(row) : columnText(row, valueColumns[index], locale)}
                                     </span>
                                 </div>
-                                );
-                            })}
+                            ))}
                         </div>
                     );
                 })}
+                {footerRows && !loading && <div role="listitem"><TotalsCard columns={totalsColumns} rows={footerRows} title={text('tableFooterLabel')} locale={locale} /></div>}
             </div>
         </div>
     );

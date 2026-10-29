@@ -65,4 +65,16 @@ describe('ChromeContentRegion', () => {
         expect(region?.firstElementChild).toBe(getByText('Painel principal'));
         expect(region?.querySelector('[data-sarak-split-panel]')).toBeNull();
     });
+
+    it('o main segue em bloco, como na rc.3: não vira coluna flexível (filho com margin auto não encolhe)', () => {
+        const { container } = render(
+            <ChromeContentRegion isSplitViewEnabled={false} className="flex-1" style={{}}>
+                <span>Painel principal</span>
+            </ChromeContentRegion>,
+        );
+        const region = container.querySelector('main');
+
+        expect(region).not.toHaveClass('flex');
+        expect(region).not.toHaveClass('flex-col');
+    });
 });

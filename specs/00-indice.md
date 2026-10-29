@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "128"
+proximo_numero_plan: "138"
 ---
 
 # 0. O que é este arquivo
@@ -43,7 +43,28 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
 | 1 | [plan-119-kit-de-importacao-aprendido-nos-importadores](plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md) | Fazer o importador usar a lib por inteiro sem reescrever o que ela entrega, com o kit de importação ensinado pelas licoes medidas nos importadores reais e com a gestao de temas do importador completa: salvar o aplicado como novo, editar, duplicar e criar, persistidos no importador | — | 🟡 Em execução | specs/12-kit-do-consumidor.md + specs/13-instalacao-e-atualizacao.md + specs/09-temas-e-presets.md + specs/15-divida-conhecida.md |
+| 2 | [plan-133-motor-de-paletas](plan/plan-133-motor-de-paletas.md) | Fazer as cores do tema saírem de uma paleta calculada a partir de uma cor-base e de um tipo de harmonia, com escalas OKLCH, um mapa de papéis comum por modo e correção de contraste que torna legível qualquer cor de entrada, mantendo o ajuste granular de token por cima | — | 🟢 Aprovada | sintetizada · retida por plan-134 (e plan-135) |
+| 3 | [plan-134-catalogo-de-paletas-e-temas](plan/plan-134-catalogo-de-paletas-e-temas.md) | Fazer a lib embarcar de 12 a 15 paletas prontas cobrindo os cinco tipos de harmonia e os 19 temas declararem uma paleta em vez de cores escritas à mão, com a hierarquia de título refeita pela regra comum e aprovada pelo dono numa prévia antes e depois | plan-133-motor-de-paletas | 🟠 Em revisão | specs/09-temas-e-presets.md |
+| 4 | [plan-135-paletas-no-painel-e-no-kit](plan/plan-135-paletas-no-painel-e-no-kit.md) | Fazer o usuário escolher uma paleta pronta ou criar uma a partir de uma cor e de um tipo, com prévia nos dois modos, aplicar e salvar pelo fluxo atual, e continuar ajustando qualquer cor individualmente; e fazer o kit ensinar o tema como estrutura mais paleta | plan-133-motor-de-paletas | 🟢 Aprovada | specs/06-painel-de-customizacao-e-preview.md |
+| 5 | [plan-136-cor-ancora-fundo-tingido-e-harmonia-visivel](plan/plan-136-cor-ancora-fundo-tingido-e-harmonia-visivel.md) | Fazer a troca entre claro e escuro mudar o tom e não a cor da marca, os fundos deixarem de ser preto e branco puros e as paletas de várias cores aparecerem na tela com a distribuição 60-30-10, com presets harmônicos e a criação a partir de uma cor aprovada pelo dono numa prévia | — | 🔴 A executar | specs/specs/09-temas-e-presets.md + specs/arquitetura/02-design-engine.md + specs/adr/024-paleta-calculada-separada-do-tema.md |
+| 6 | [plan-137-bateria-de-navegador-verde-na-rc4](plan/plan-137-bateria-de-navegador-verde-na-rc4.md) | Fazer o npm run cromo-css-real:check terminar sem falha antes da tag 8.0.0-rc.4, consertando na lib o contraste do texto sobre a barra que o host escurece e atualizando os testes de navegador que a campanha deixou para trás, sem afrouxar nenhuma afirmação | — | 🟢 Aprovada | specs/specs/09-temas-e-presets.md + specs/specs/11-testes-e-cobertura.md |
 <!-- SARAK-INDICE:FILA:FIM -->
+
+> 🚦 **Campanha da `8.0.0-rc.4` (2026-10-27).** Contrato aceito: [`anexos/rc4-contrato.md`](plan/anexos/rc4-contrato.md). Ordem: a `plan-128` vai **sozinha** (cria o hook de idioma e os arquivos de catálogo das outras); depois `plan-129` ‖ `plan-130` ‖ `plan-131` ‖ `plan-132` ‖ `plan-119` lote 8 ‖ `plan-133`, em paralelo (pastas disjuntas; arquivos compartilhados só por acréscimo); depois da 133, `plan-134` ‖ `plan-135`. A 134 e a 135 geram prévias em `C:\tmp\sarak-rc4-previa\` que o dono aprova durante a revisão. Verificação pelo protocolo do contrato §9: uma vez por plan e a bateria completa uma vez, no fechamento, depois do lote 2 do ERP. A versão (`npm version`) é do dono.
+
+> ⚪ **As `plan-128` a `plan-132` foram SINTETIZADAS e REMOVIDAS em 2026-10-28; a `plan-133` foi sintetizada e fica RETIDA pela
+> `plan-134`/`plan-135`, que apontam para o §2 dela.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | 128 — idioma único | [[10-seguranca-e-acessibilidade]] §3.6: `options.i18n`, resolução única e `useSarakLanguage`, formatação pelo `locale` |
+> | 129 — tabela · 130 — gráficos · 132 — formulário | destino `—`: a superfície nova está no catálogo gerado e na `## 8.0.0` de `docs/migracoes.md` |
+> | 131 — layout e cromo | [[05-cromo-e-slots]] §5.1 (sem cadeia de altura no host; `<main>` em bloco; `fillHeight`/`sarak-fill-height`) · [[07-responsividade-e-multidispositivo]] §4 (`SarakGrid.columns`, `SarakGridItem`) |
+> | 133 — motor de paletas | [[024-paleta-calculada-separada-do-tema]] (ADR novo) · [[09-temas-e-presets]] §4.3.4 · [[02-design-engine]] §10.3; `colorPalette` saiu da lista de tokens removidos da §4.4.4 |
+>
+> **Ficou de fora:** vereditos, medições e correções (histórico do Git); o texto de síntese da `plan-131` que previa o `<main>` flexível
+> (o veredito mediu e reverteu). `00-contexto` revisado: nada a mudar. A `plan-134` ganhou a trava dos ids antigos de `colorPalette`
+> (`default`, `matrix`, `neon`, `slate`, `sunset`), achada nesta síntese.
 
 > 🏁 **Campanha da `8.0.0-rc.3` encerrada no código (2026-10-24).** As `plan-120` a `plan-127` foram aprovadas e sintetizadas; a
 > emissão da `rc.3` (`gates:full` e `npm version`) é do dono. Fica aberta só a `plan-119`, de propósito: ela recebe as lições e os

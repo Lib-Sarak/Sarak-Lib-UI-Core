@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
+import { useSarakLanguage } from '../../../core/i18n/useSarakLanguage';
 import { SarakInput, type SarakInputProps } from './SarakInput';
 import { formatCurrencyEditValue, formatCurrencyValue, parseCurrencyValue } from './internal/currency';
 import { useInputCaret } from './internal/useInputCaret';
 
 const DEFAULT_CURRENCY = 'BRL';
-const DEFAULT_LOCALE = 'pt-BR';
 
 export interface SarakCurrencyInputProps
     extends Omit<SarakInputProps, 'defaultValue' | 'label' | 'onChange' | 'type' | 'value'> {
@@ -71,8 +70,8 @@ export const SarakCurrencyInput = ({
     inputMode = 'decimal',
     ...inputProps
 }: SarakCurrencyInputProps): React.ReactElement => {
-    const sarak = useSarakUIOptional();
-    const effectiveLocale = locale ?? sarak?.language ?? DEFAULT_LOCALE;
+    const { locale: languageLocale } = useSarakLanguage();
+    const effectiveLocale = locale ?? languageLocale;
     const [internalValue, setInternalValue] = useState<number | null>(defaultValue ?? null);
     const [editingValue, setEditingValue] = useState<string | null>(null);
     const effectiveValue = value === undefined ? internalValue : value;

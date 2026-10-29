@@ -179,6 +179,8 @@ test('NÃO MUDA NADA: body sem classe de entrelinha computa a entrelinha do toke
 const THEME_BORDER_EXPRESSION = 'var(--color-theme-border, rgba(255,255,255,0.1))';
 const THEME_CARD_EXPRESSION = 'var(--color-theme-card, rgba(255,255,255,0.1))';
 const THEME_PRIMARY_EXPRESSION = 'var(--color-theme-primary, #3b82f6)';
+/** O que o foco do campo lê: o token dedicado, com a primária só como reserva (`useAtomicStyles.ts`). */
+const INPUT_FOCUS_EXPRESSION = 'var(--sarak-input-focus-border-color, var(--sarak-primary-color, #19e3f0))';
 const FROSTED_SHADOW_EXPRESSION = 'var(--sarak-dynamic-shadow, 0 4px 12px rgba(0,0,0,0.1))';
 
 /**
@@ -225,7 +227,7 @@ test('item 4: botão frosted primário computa a sombra pretendida, e não a ini
 test('item 4: campo em foco computa uma sombra que carrega a cor primária', async () => {
     await withScene('atomos', undefined, async (page) => {
         const input = page.getByRole('textbox', { name: 'Campo de prova' });
-        const primary = await resolveExpression(input, 'color', THEME_PRIMARY_EXPRESSION);
+        const primary = await resolveExpression(input, 'color', INPUT_FOCUS_EXPRESSION);
 
         await input.focus();
         const shadow = await waitForShadow(input, /./);
@@ -244,7 +246,7 @@ test('item 4: campo neumorphism em repouso computa as duas sombras internas', as
 test('item 4: campo neumorphism em foco computa o anel primário e a sombra interna', async () => {
     await withScene('atomos', 'atomo-neumorphism', async (page) => {
         const input = page.getByRole('textbox', { name: 'Campo de prova' });
-        const primary = await resolveExpression(input, 'color', THEME_PRIMARY_EXPRESSION);
+        const primary = await resolveExpression(input, 'color', INPUT_FOCUS_EXPRESSION);
 
         await input.focus();
         const shadow = await waitForShadow(input, /inset/);
@@ -270,7 +272,8 @@ test('item 4: trilho do switch glass computa a cor de borda do tema', async () =
     });
 });
 
-const THEME_PRIMARY_RANGE_EXPRESSION = 'var(--color-theme-primary, #19e3f0)';
+/** O que a faixa lê: o token dedicado da faixa, com a primária só como reserva (`SarakRangeSlider.tsx`, constante ACTIVE). */
+const THEME_PRIMARY_RANGE_EXPRESSION = 'var(--sarak-range-active-bg, var(--color-theme-primary, #19e3f0))';
 
 test('item 4: trilho do SarakRangeSlider computa a cor de borda do tema', async () => {
     await withScene('atomos', undefined, async (page) => {

@@ -10,6 +10,8 @@ a lista do que existe está sempre no `../catalog.json` (regra nº 1).
 | `ui-kit/nav.ts` | `packages/ui-kit/src/nav.ts` | 2, 3, 4 |
 | `ui-kit/index.ts` | `packages/ui-kit/src/index.ts` | 2, 3, 4 |
 | `tela-exemplo.tsx` | `src/telas/MinhaTela.tsx` | todas |
+| `tela-lista.tsx` | `src/telas/ListaProjetos.tsx` | todas |
+| `tela-detalhe.tsx` | `src/telas/DetalheProjeto.tsx` | todas |
 | `componente-proprio.tsx` | `src/componentes/MeuPainel.tsx` | todas |
 
 **No monolito (topologia 1)** você não precisa do `ui-kit/`: ponha `themes.ts` e `nav.ts` direto

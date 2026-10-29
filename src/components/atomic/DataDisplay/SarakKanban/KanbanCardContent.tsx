@@ -7,9 +7,11 @@
 import React from 'react';
 import { SarakAvatar } from '../../Atoms/SarakAvatar';
 import { SarakBadge } from '../../Feedback/SarakBadge';
+import { SarakValue } from '../../Atoms/SarakValue';
+import type { SarakValueFormat } from '../../../../shared/format';
 import type { SarakBadgeVariant } from '../../Feedback/SarakBadge';
-import { useSarakUIOptional } from '../../../../core/Provider/SarakUIProvider';
-import { resolveLibraryLanguage, useLibraryText } from '../../../../core/i18n/useLibraryText';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
+import { useSarakLanguage } from '../../../../core/i18n/useSarakLanguage';
 import type { LibraryTextKey } from '../../../../core/i18n/catalog';
 import { sarakIsOverdue, sarakParseDueDate } from './kanbanModel';
 import type { SarakKanbanCard, SarakKanbanPriority } from './kanbanTypes';
@@ -34,15 +36,15 @@ const row: React.CSSProperties = {
 
 function useDueLabel(dueDate: string | undefined) {
     const text = useLibraryText();
-    const language = resolveLibraryLanguage(useSarakUIOptional()?.design?.language);
+    const { locale } = useSarakLanguage();
     const parsed = dueDate ? sarakParseDueDate(dueDate) : null;
     if (!dueDate || !parsed) return null;
-    const date = parsed.toLocaleDateString(language, { day: '2-digit', month: 'short' });
+    const date = parsed.toLocaleDateString(locale, { day: '2-digit', month: 'short' });
     const overdue = sarakIsOverdue(dueDate);
     return { overdue, label: text(overdue ? 'kanbanDueOverdue' : 'kanbanDue', { date }) };
 }
 
-export function KanbanCardContent({ card }: { card: SarakKanbanCard }) {
+export function KanbanCardContent({ card, valueFormat }: { card: SarakKanbanCard; valueFormat?: SarakValueFormat }) {
     const text = useLibraryText();
     const due = useDueLabel(card.dueDate);
     const priority = card.priority && card.priority !== 'medium' ? PRIORITY_BADGE[card.priority] : null;
@@ -61,6 +63,7 @@ export function KanbanCardContent({ card }: { card: SarakKanbanCard }) {
                 {card.title ?? card.id}
             </div>
             {card.description && <div style={mutedText}>{card.description}</div>}
+            {typeof card.value === 'number' && <SarakValue value={card.value} format={valueFormat} size="sm" signColor={false} />}
             {(priority || due || subtasks || assignee) && (
                 <div style={{ ...row, justifyContent: 'space-between' }}>
                     <div style={row}>

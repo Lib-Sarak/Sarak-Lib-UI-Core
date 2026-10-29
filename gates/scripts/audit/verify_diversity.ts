@@ -22,7 +22,7 @@
 //    acusaria falso positivo (um azul escuro perto de um azul claro não é o
 //    "mesmo espaço" que a regra protege).
 // -------------------------------------------------------------------------
-import { sarakGetDefaultDesignState } from '../../../src/core/Design/master-map.ts';
+import { composeThemeForMode } from '../../../src/core/Design/presets/themes/compose.ts';
 import { SARAK_ALL_THEMES } from '../../../src/core/Design/presets/themes/all.ts';
 import type { SarakThemePreset } from '../../../src/core/Design/presets/themes/index.ts';
 import { parseColor } from './verify_contrast.ts';
@@ -98,9 +98,10 @@ export interface ThemeDiversityRow {
     layoutDensity: string;
 }
 
-/** Mede UM tema já mesclado com os defaults — mesma convenção de `auditTheme` (verify_contrast.ts). */
+/** Mede UM tema já composto (defaults + paleta + o que o tema declara) — mesma convenção de `auditTheme` (verify_contrast.ts). */
 export function measureTheme(theme: SarakThemePreset): ThemeDiversityRow {
-    const design = { ...sarakGetDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
+    const nativeMode = (theme.design.mode as 'light' | 'dark') || 'dark';
+    const design = composeThemeForMode({ design: theme.design as never, contraparte: theme.contraparte }, nativeMode) as unknown as Record<string, unknown>;
     const primary = parseColor(design.primaryColor);
     const [h, s] = primary ? rgbToHsl(primary.r, primary.g, primary.b) : [null, null];
     const bg = parseColor(design.colorBgBody);

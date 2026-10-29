@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { SarakUIProvider } from '../../src/core/Provider/SarakUIProvider';
 import type { SarakDesignState } from '../../src/core/Provider/types';
 import { SarakDesignScope } from '../../src/core/Design/components/DesignScope';
+import { composeThemeForMode } from '../../src/core/Design/presets/themes/compose';
 import { sarakSovereignTheme } from '../../src/core/Design/presets/themes/sarak-sovereign';
 import { cyberpunkneonTheme } from '../../src/core/Design/presets/themes/cyberpunk-neon';
 import { neobrutalismTheme } from '../../src/core/Design/presets/themes/neo-brutalism';
@@ -10,12 +11,24 @@ import { minimalistAiry } from '../../src/core/Design/presets/themes/minimalist-
 import { SarakSelect } from '../../src/components/atomic/Inputs/SarakSelect';
 import { CustomizationPanel } from '../../src/features/DesignEngine/Library/CustomizationPanel/CustomizationPanelImpl';
 
+/** O design composto do tema no modo: a cor vem da paleta que ele declara. */
+const composed = (theme: Parameters<typeof composeThemeForMode>[0], mode: 'light' | 'dark') => composeThemeForMode(theme, mode);
+
 const OPTION_THEME_SCOPES = [
-    { id: 'sarak-sovereign', mode: 'dark', design: sarakSovereignTheme.design },
-    { id: 'cyberpunk-neon', mode: 'dark', design: cyberpunkneonTheme.design },
-    { id: 'neo-brutalism', mode: 'light', design: neobrutalismTheme.design },
-    { id: 'minimalist-airy', mode: 'light', design: minimalistAiry.design },
+    { id: 'sarak-sovereign', mode: 'dark', design: composed(sarakSovereignTheme as never, 'dark') },
+    { id: 'cyberpunk-neon', mode: 'dark', design: composed(cyberpunkneonTheme as never, 'dark') },
+    { id: 'neo-brutalism', mode: 'light', design: composed(neobrutalismTheme as never, 'light') },
+    { id: 'minimalist-airy', mode: 'light', design: composed(minimalistAiry as never, 'light') },
 ] as const;
+
+declare global { interface Window { __sovereignBody?: { light: string; dark: string; lightSurface: string } } }
+
+/** O fundo do corpo (e a superfície da miniatura, no claro) que o Sarak Sovereign pinta: o spec lê da página, não escreve a cor. */
+window.__sovereignBody = {
+    light: String(composed(sarakSovereignTheme as never, 'light').colorBgBody),
+    dark: String(composed(sarakSovereignTheme as never, 'dark').colorBgBody),
+    lightSurface: String(composed(sarakSovereignTheme as never, 'light').surfaceColor),
+};
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('plan-122-preview-mode-entry: #root ausente no harness.');

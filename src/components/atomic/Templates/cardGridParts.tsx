@@ -90,7 +90,7 @@ function CardGridSelectFilters<TData extends Record<string, unknown>>({ sideFilt
         {sideFilters.map((filter) => {
             const options = filter.options || (filter.dynamic ? getDynamicOptions(records, filter.field) : []);
             return <div key={filter.id} className="relative group min-w-[var(--sarak-catalog-filter-min-width,160px)]">
-                <SarakSelect value={activeFilters[filter.id] || 'all'} onChange={(event) => setActiveFilters((current) => ({ ...current, [filter.id]: event.target.value }))} className="w-full text-2xs font-black text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-60 uppercase tracking-widest cursor-pointer">
+                <SarakSelect label={filter.label} hideLabel value={activeFilters[filter.id] || 'all'} onChange={(event) => setActiveFilters((current) => ({ ...current, [filter.id]: event.target.value }))} className="w-full text-2xs font-black text-[var(--text-muted,rgba(242,246,251,0.55))] opacity-60 uppercase tracking-widest cursor-pointer">
                     <option value="all">{text('filterShowAll', { label: filter.label })}</option>
                     {options.map((option) => {
                         const value = typeof option === 'string' ? option : option.value;

@@ -75,7 +75,10 @@ describe('deriveThemeFromReference', () => {
         });
 
         expect(derivado.contraparte).toBeDefined();
-        expect(Object.keys(derivado.design).length).toBe(Object.keys(minimalistAiry.design).length);
+        // toda chave da referência segue no derivado; as três de marca entram (a paleta, não o tema, as produzia)
+        expect(Object.keys(derivado.design).sort()).toEqual(
+            [...new Set([...Object.keys(minimalistAiry.design), 'primaryColor', 'accentColor', 'btnPrimaryBg'])].sort(),
+        );
     });
 
     it('a sobreposição de cor de marca aparece nos DOIS modos — nativo e oposto', () => {
@@ -98,11 +101,11 @@ describe('deriveThemeFromReference', () => {
         const derivado = sarakDeriveThemeFromReference('sarak-sovereign', {
             id: 'consumidor-claro',
             name: 'Consumidor Claro',
-            design: { textColorMaster: '#123456' },
+            design: { sidebarNoiseOpacity: 0.37 },
         });
 
-        expect(derivado.design.textColorMaster).toBe('#123456');
-        expect(derivado.contraparte?.textColorMaster).toBe('#123456');
+        expect(derivado.design.sidebarNoiseOpacity).toBe(0.37);
+        expect(derivado.contraparte?.sidebarNoiseOpacity).toBe(0.37);
     });
 
     it('a troca de modo do tema derivado continua reversível (a mesma garantia da referência)', () => {

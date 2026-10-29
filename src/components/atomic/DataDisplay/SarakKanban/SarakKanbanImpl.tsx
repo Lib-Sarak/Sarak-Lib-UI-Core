@@ -13,6 +13,7 @@ import { KANBAN_BOARD_CLASS, KANBAN_COLUMN_CLASS } from './kanbanLayout';
 import { hasKanbanDragPeers, useKanbanDrag } from './useKanbanDrag';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { SarakOptionalPeerFallback } from '../../Feedback/SarakOptionalPeerFallback';
+import type { SarakValueFormat } from '../../../../shared/format';
 import type { SarakCardMove, SarakKanbanCard, SarakKanbanColumn } from './kanbanTypes';
 
 const OPTIONAL_PEERS = ['@dnd-kit/core', '@dnd-kit/sortable'] as const;
@@ -34,6 +35,10 @@ export interface SarakKanbanProps<C extends SarakKanbanCard = SarakKanbanCard> {
     onColumnRename?: (id: string, title: string) => void;
     /** Excluir coluna pelo menu dela. Omitido, o item não aparece. */
     onColumnDelete?: (id: string) => void;
+    /** Formato do `value` dos cartões e da soma das colunas; omitido, o número aparece cru. */
+    valueFormat?: SarakValueFormat;
+    /** Soma no cabeçalho da coluna: `true`/omitido mostra a soma dos `value` só se algum cartão tiver; `false` esconde; função devolve o conteúdo. */
+    columnTotal?: boolean | ((column: SarakKanbanColumn<C>) => React.ReactNode);
     className?: string;
 }
 
@@ -61,7 +66,7 @@ function SarakKanbanContent<C extends SarakKanbanCard>({
                         <KanbanColumn key={column.id} column={column} renderCard={renderCard} {...columnHandlers} />
                     ))}
                 </>,
-                activeCard && activeColumn ? <KanbanCardShell card={activeCard} columnId={activeColumn.id} renderCard={renderCard} /> : null,
+                activeCard && activeColumn ? <KanbanCardShell card={activeCard} columnId={activeColumn.id} renderCard={renderCard} valueFormat={columnHandlers.valueFormat} /> : null,
             )}
             {onColumnAdd && (
                 <div className={KANBAN_COLUMN_CLASS}>

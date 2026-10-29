@@ -24,6 +24,89 @@ export interface SarakResourceRowProps extends Omit<React.HTMLAttributes<HTMLEle
     onNavigate?: (href: string) => void;
 }
 
+interface SarakResourceRowContentProps {
+    title: React.ReactNode;
+    description?: React.ReactNode;
+    badges: React.ReactNode[];
+    metadata: SarakDescriptionListItem[];
+    actions: SarakResourceRowAction[];
+    titleId: string;
+}
+
+function renderResourceBadge(badge: React.ReactNode, index: number): React.ReactElement {
+    if (React.isValidElement(badge) && badge.type === SarakBadge) {
+        return React.cloneElement(badge, { key: index });
+    }
+    return <SarakBadge key={index}>{badge}</SarakBadge>;
+}
+
+function SarakResourceRowBadges({ badges }: { badges: React.ReactNode[] }): React.ReactElement | null {
+    if (badges.length === 0) return null;
+    return (
+        <div className="flex flex-wrap" style={{ gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)', marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}>
+            {badges.map(renderResourceBadge)}
+        </div>
+    );
+}
+
+function SarakResourceRowActions({ actions }: { actions: SarakResourceRowAction[] }): React.ReactElement | null {
+    if (actions.length === 0) return null;
+    return (
+        <div className="relative z-10 flex flex-wrap items-center" style={{ gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)' }}>
+            {actions.map((action) => (
+                <SarakButton key={action.label} type="button" variant={action.variant ?? 'ghost'} onClick={action.onClick} style={{ minHeight: 'var(--sarak-touch-target-min, 44px)' }}>
+                    {action.label}
+                </SarakButton>
+            ))}
+        </div>
+    );
+}
+
+function SarakResourceRowContent({
+    title,
+    description,
+    badges,
+    metadata,
+    actions,
+    titleId,
+}: SarakResourceRowContentProps): React.ReactElement {
+    return (
+        <SarakGrid
+            templateColumns="repeat(auto-fit, minmax(min(100%, max-content), 1fr))"
+            gap="spacing-md"
+            className="min-w-0 items-start"
+            style={{ padding: 'var(--sarak-layout-gap-md, 16px)' }}
+        >
+            <div className="pointer-events-none relative z-0 min-w-0">
+                <h3 id={titleId} style={{ margin: 0 }}>{title}</h3>
+                {description !== undefined && <p className="text-theme-muted" style={{ margin: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5) 0 0' }}>{description}</p>}
+                <SarakResourceRowBadges badges={badges} />
+            </div>
+            {metadata.length > 0 && <SarakDescriptionList items={metadata} className="relative z-0" />}
+            <SarakResourceRowActions actions={actions} />
+        </SarakGrid>
+    );
+}
+
+function SarakResourceRowDestination({
+    href,
+    onNavigate,
+    titleId,
+}: Pick<SarakResourceRowProps, 'href' | 'onNavigate'> & { titleId: string }): React.ReactElement | null {
+    if (!href) return null;
+    return (
+        <SarakLink
+            href={href}
+            onNavigate={onNavigate}
+            aria-labelledby={titleId}
+            className="rounded-sm"
+            style={{ position: 'absolute', inset: 0, zIndex: 1, display: 'block', minHeight: 'var(--sarak-touch-target-min, 44px)' }}
+        >
+            {null}
+        </SarakLink>
+    );
+}
+
 export const SarakResourceRow = ({
     title,
     description,
@@ -45,43 +128,15 @@ export const SarakResourceRow = ({
             style={{ containerType: 'inline-size', ...style }}
         >
             <SarakCard interactive={Boolean(href)} className="relative w-full">
-                {href && (
-                    <SarakLink
-                        href={href}
-                        onNavigate={onNavigate}
-                        aria-labelledby={titleId}
-                        className="rounded-sm"
-                        style={{ position: 'absolute', inset: 0, zIndex: 1, display: 'block', minHeight: 'var(--sarak-touch-target-min, 44px)' }}
-                    >
-                        {null}
-                    </SarakLink>
-                )}
-                <SarakGrid
-                    templateColumns="repeat(auto-fit, minmax(min(100%, max-content), 1fr))"
-                    gap="spacing-md"
-                    className="min-w-0 items-start"
-                    style={{ padding: 'var(--sarak-layout-gap-md, 16px)' }}
-                >
-                    <div className="pointer-events-none relative z-0 min-w-0">
-                        <h3 id={titleId} style={{ margin: 0 }}>{title}</h3>
-                        {description !== undefined && <p className="text-theme-muted" style={{ margin: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5) 0 0' }}>{description}</p>}
-                        {badges.length > 0 && (
-                            <div className="flex flex-wrap" style={{ gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)', marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                                {badges.map((badge, index) => <SarakBadge key={index}>{badge}</SarakBadge>)}
-                            </div>
-                        )}
-                    </div>
-                    {metadata.length > 0 && <SarakDescriptionList items={metadata} className="relative z-0" />}
-                    {actions.length > 0 && (
-                        <div className="relative z-10 flex flex-wrap items-center" style={{ gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)' }}>
-                            {actions.map((action) => (
-                                <SarakButton key={action.label} type="button" variant={action.variant ?? 'ghost'} onClick={action.onClick} style={{ minHeight: 'var(--sarak-touch-target-min, 44px)' }}>
-                                    {action.label}
-                                </SarakButton>
-                            ))}
-                        </div>
-                    )}
-                </SarakGrid>
+            <SarakResourceRowDestination href={href} onNavigate={onNavigate} titleId={titleId} />
+            <SarakResourceRowContent
+                title={title}
+                description={description}
+                badges={badges}
+                metadata={metadata}
+                actions={actions}
+                titleId={titleId}
+            />
             </SarakCard>
         </article>
     );

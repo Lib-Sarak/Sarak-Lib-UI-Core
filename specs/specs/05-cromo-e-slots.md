@@ -431,6 +431,16 @@ impede a barra de exceder a janela sem quebrar a paridade do token.
 `window.scrollTo`, âncoras e `scrollIntoView` sobre o documento mudam de alvo — e quem precisa do
 comportamento antigo passa outra altura por `style`. A nota está em `docs/migracoes.md` (7.0.0).
 
+**O host não declara cadeia de altura.** Com a altura própria da raiz, `html`, `body` e `#root` não
+precisam de `height: 100%`: numa página mais alta que a janela, sem essa cadeia, o documento não rola, a
+barra superior não se move e quem rola é o painel de conteúdo (`browser-tests/altura-do-cromo.spec.ts`).
+
+**O painel de conteúdo é bloco, e o filho que enche a altura pede isso.** O `<main>` (`ChromeContentRegion.tsx`)
+fica em `display: block` de propósito: em coluna flexível, o filho com `margin: 0 auto` e sem largura própria
+deixa de esticar e encolhe ao conteúdo, o que quebra o padrão de página centralizada (`max-w-* mx-auto`). Quem
+precisa ocupar a altura útil usa `fillHeight` no `SarakAnalyticalPage` ou a classe pública `sarak-fill-height`
+(`min-height: 100%` do `<main>`, `src/styles/_utilities.css`) — o mesmo caso de navegador mede as duas coisas.
+
 **Onde isso se mede:** em navegador real (`browser-tests/`, [[11-testes-e-cobertura]] §7), que é o único
 lugar onde altura e posição se verificam de verdade. Teste de componente prova a declaração; só o
 navegador prova a caixa.

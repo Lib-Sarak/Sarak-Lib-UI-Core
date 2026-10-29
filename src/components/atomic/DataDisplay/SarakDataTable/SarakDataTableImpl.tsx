@@ -3,6 +3,7 @@ import { getOptionalTanstackUseVirtualizer } from '../optional-tanstack-virtuali
 import { useSarakDevice } from '../../../../core/Provider/DeviceProvider';
 import { SarakOptionalPeerFallback } from '../../Feedback/SarakOptionalPeerFallback';
 import type { SarakColumn, SarakTableSort } from './columnModel';
+import type { SarakTableGroupBy } from './tableDisplayRows';
 import { useSarakDataTableViewModel } from './useSarakDataTableViewModel';
 import { SarakDataTableView } from './SarakDataTableView';
 
@@ -41,6 +42,29 @@ export interface SarakDataTableProps<T = Record<string, unknown>> {
     /** Disparado ao ativar uma linha. */
     onRowClick?: (row: T) => void;
     className?: string;
+    /** Agrupa as linhas, com cabeçalho de grupo expansível e subtotal. */
+    groupBy?: SarakTableGroupBy<T>;
+    /** Conteúdo da linha expandida; com ele, cada linha ganha o botão de expandir. */
+    renderExpanded?: (row: T) => React.ReactNode;
+    /** Chaves das linhas expandidas (controlado); omitido, a tabela gerencia. */
+    expandedKeys?: React.Key[];
+    onExpandedChange?: (keys: React.Key[]) => void;
+    /** Filtra as linhas pelo texto exibido (ou `searchValue`); omitido, sem filtro. A DataTable não tem campo de busca. */
+    searchQuery?: string;
+    onSearchQueryChange?: (query: string) => void;
+    /** Total no servidor; maior que as linhas visíveis, oferece "Selecionar todos os N". */
+    totalCount?: number;
+    /** Com `true`, `selectedKeys` passa a ser a lista de EXCEÇÕES. */
+    selectAll?: boolean;
+    onSelectAllChange?: (all: boolean) => void;
+    /** Filhos da linha: transforma a tabela em tree-table (plano de contas, DRE). */
+    getChildren?: (row: T) => T[] | undefined;
+    /** Profundidade aberta de início na árvore; padrão `0` (tudo recolhido). */
+    defaultExpandedDepth?: number;
+    /** Cabeçalhos arrastáveis para reordenar; padrão `true`. */
+    reorderable?: boolean;
+    /** Linhas do esqueleto com `loading` e sem linhas; padrão `8`. */
+    skeletonRows?: number;
 }
 
 const OPTIONAL_PEER = '@tanstack/react-virtual';

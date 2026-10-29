@@ -94,6 +94,23 @@
     --sarak-spot-y: 50%;
 }
 
+/* Densidade do `SarakCard` (`density="sm"|"lg"`). `-sm` e `-lg` NÃO são tokens do painel: são derivados
+   de `--sarak-card-padding-md` NO MESMO elemento que o motor escreve o `md` (a raiz, ou o escopo do modo
+   embarcado), então seguem o tema sozinhos. `:where()` zera a especificidade: qualquer regra do importador
+   (`:root { --sarak-card-padding-sm: 12px }`) vence. O `md` (padrão) não ganha atributo e não muda. */
+:where(:root, .sarak-design-scope) {
+    --sarak-card-padding-sm: calc(var(--sarak-card-padding-md, var(--theme-card-padding, 24px)) * 0.6667);
+    --sarak-card-padding-lg: calc(var(--sarak-card-padding-md, var(--theme-card-padding, 24px)) * 1.3333);
+}
+
+.sarak-card[data-sx-card-density="sm"] {
+    padding: var(--sarak-card-padding-sm);
+}
+
+.sarak-card[data-sx-card-density="lg"] {
+    padding: var(--sarak-card-padding-lg);
+}
+
 /* O modal usa só a borda e a sombra do cartão; não herda fundo, textura ou preenchimento. */
 .sarak-modal-panel {
     border-color: color-mix(in srgb, var(--sarak-card-border-color, var(--theme-border, rgba(255, 255, 255, 0.09))), transparent calc(100% * (1 - var(--sarak-card-border-opacity, 1))));

@@ -77,3 +77,14 @@ it('resolve false ao cancelar e ao fechar pelo controle do modal', async () => {
     fireEvent.click(screen.getByRole('button', { name: 'Fechar modal' }));
     await expect(confirmation).resolves.toBe(false);
 });
+
+it('confirm desenha um ReactNode na mensagem; title segue o nome do diálogo', () => {
+    function RichConfirm(): React.ReactElement {
+        const overlay = useOverlay();
+        return <button onClick={() => void overlay.confirm({ title: 'Excluir fatura?', message: <ul><li>3 parcelas</li></ul> })}>rica</button>;
+    }
+    render(<SarakUIProvider><SarakOverlayProvider><RichConfirm /></SarakOverlayProvider></SarakUIProvider>);
+    fireEvent.click(screen.getByText('rica'));
+    expect(screen.getByRole('dialog', { name: 'Excluir fatura?' })).toBeInTheDocument();
+    expect(screen.getByRole('listitem')).toHaveTextContent('3 parcelas');
+});

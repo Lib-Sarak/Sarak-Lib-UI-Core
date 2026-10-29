@@ -19,10 +19,10 @@
 //    transparent + a cadeia de composição de alfa). Par pulado pelo gate
 //    (fundo não-determinístico) é pulado aqui também, com o mesmo motivo.
 // -------------------------------------------------------------------------
-import { sarakGetDefaultDesignState } from '../../../../src/core/Design/master-map.ts';
 import { PAIRS, evaluatePair, resolveChain, contrastRatio, compositeOverOpaque } from '../../../../gates/scripts/audit/verify_contrast.ts';
 import { rgbToHsl, hslToRgb, rgbToHex, parseToRgba } from '../../../../src/core/Provider/utils/color-engine.ts';
 import { SARAK_ALL_THEMES } from '../../../../src/core/Design/presets/themes/all.ts';
+import { composeThemeForMode } from '../../../../src/core/Design/presets/themes/compose.ts';
 
 const MIN_RATIO = 4.5;
 const L_PRECISION = 0.25;
@@ -256,15 +256,16 @@ function printReport(themeId: string, relatorio: SolverReportEntry[]): void {
 }
 
 /**
- * O design que o gate mede para um tema embarcado: os padrões do dicionário sob o `design` do tema e, no modo
- * oposto, a `contraparte` por cima — o mesmo empilhamento de `resolveThemeForMode`. Sem isto a CLI media só o
- * modo nativo e o par que reprova na contraparte passava sem relatório.
+ * O design que o gate mede para um tema embarcado: o tema resolvido para o modo (nativo, ou o oposto pela
+ * `contraparte`) e composto como o Provider o faz — padrões do dicionário e paleta calculada por baixo do que o
+ * tema declara. Ler `theme.design` cru perde as cores que a paleta calcula.
  */
 export function loadMergedDesign(themeId: string, opposite = false): Record<string, unknown> {
     const theme = SARAK_ALL_THEMES.find((t) => t.id === themeId);
     if (!theme) throw new Error(`Tema "${themeId}" não encontrado em SARAK_ALL_THEMES (themes/all.ts).`);
-    const overlay = opposite ? (theme.contraparte ?? {}) : {};
-    return { ...sarakGetDefaultDesignState(), ...(theme.design as Record<string, unknown>), ...(overlay as Record<string, unknown>) };
+    const native = theme.design.mode === 'light' ? 'light' : 'dark';
+    const mode = opposite ? (native === 'light' ? 'dark' : 'light') : native;
+    return composeThemeForMode({ design: theme.design as Record<string, never>, contraparte: theme.contraparte }, mode) as unknown as Record<string, unknown>;
 }
 
 function main(): void {

@@ -1,4 +1,5 @@
 import React from 'react';
+import { SarakButton } from '../../Buttons/SarakButton';
 import type { AutocompleteOption } from './autocompleteTypes';
 import type { AutocompleteControllerState } from './useAutocompleteController';
 
@@ -26,6 +27,14 @@ interface AutocompleteSearchStatusProps {
 
 interface AutocompletePopupProps<TOption extends AutocompleteOption> {
     state: AutocompleteControllerState<TOption>;
+    createLabel?: string;
+    onCreate?: (query: string) => void;
+}
+
+interface AutocompleteCreateActionProps<TOption extends AutocompleteOption> {
+    state: AutocompleteControllerState<TOption>;
+    createLabel?: string;
+    onCreate?: (query: string) => void;
 }
 
 const DEFAULT_LOADING_TEXT = 'Carregando sugestões...';
@@ -50,7 +59,12 @@ const AutocompleteOptionRow = <TOption extends AutocompleteOption,>(
                 backgroundColor: isActive ? 'var(--sarak-primary-color, #19e3f0)' : 'transparent',
             }}
         >
-            {option.label}
+            <span>{option.label}</span>
+            {option.description && (
+                <span style={{ display: 'block', color: 'var(--text-muted,rgba(242,246,251,0.55))', fontSize: 'var(--sarak-type-scale-caption,12px)' }}>
+                    {option.description}
+                </span>
+            )}
         </li>
     );
 };
@@ -98,10 +112,30 @@ const AutocompleteSearchStatus = (props: AutocompleteSearchStatusProps): React.R
     );
 };
 
+const AutocompleteCreateAction = <TOption extends AutocompleteOption,>(
+    props: AutocompleteCreateActionProps<TOption>,
+): React.ReactElement | null => {
+    const query = props.state.query.trim();
+    const hasExactMatch = props.state.suggestions.some((option) => option.label.trim().toLowerCase() === query.toLowerCase());
+    if (!props.onCreate || !query || hasExactMatch) return null;
+    return (
+        <SarakButton
+            type="button"
+            variant="ghost"
+            size="sm"
+            fullWidth
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={() => props.onCreate?.(props.state.query)}
+        >
+            {props.createLabel}
+        </SarakButton>
+    );
+};
+
 export const AutocompletePopup = <TOption extends AutocompleteOption,>(
     props: AutocompletePopupProps<TOption>,
 ): React.ReactElement => {
-    const { state } = props;
+    const { state, createLabel, onCreate } = props;
     return (
         <div
             hidden={!state.shouldShowPanel}
@@ -129,6 +163,7 @@ export const AutocompletePopup = <TOption extends AutocompleteOption,>(
                 hasError={state.hasError}
                 shouldAnnounceEmpty={state.shouldAnnounceEmpty}
             />
+            <AutocompleteCreateAction state={state} createLabel={createLabel} onCreate={onCreate} />
         </div>
     );
 };
