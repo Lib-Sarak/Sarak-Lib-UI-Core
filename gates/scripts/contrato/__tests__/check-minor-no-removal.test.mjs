@@ -89,4 +89,48 @@ describe('checkNoRemovalOutsideMajor', () => {
         });
         expect(r).toEqual({ ok: true, skipped: false });
     });
+
+    describe('prévia de major (decidida contra a última tag ESTÁVEL)', () => {
+        const base = { previousDts: DTS_ANTES, currentDts: DTS_DEPOIS_SEM_INPUT };
+
+        it('libera rc de major que remove nome (8.0.0-rc.4 depois de v8.0.0-rc.3, estável v7.0.0)', () => {
+            const r = checkNoRemovalOutsideMajor({
+                ...base,
+                previousVersion: '8.0.0-rc.3',
+                stableVersion: '7.0.0',
+                currentVersion: '8.0.0-rc.4',
+            });
+            expect(r).toMatchObject({ ok: true, skipped: true });
+        });
+
+        it('libera o final de major depois de rc (8.0.0 depois de v8.0.0-rc.3, estável v7.0.0)', () => {
+            const r = checkNoRemovalOutsideMajor({
+                ...base,
+                previousVersion: '8.0.0-rc.3',
+                stableVersion: '7.0.0',
+                currentVersion: '8.0.0',
+            });
+            expect(r).toMatchObject({ ok: true, skipped: true });
+        });
+
+        it('bloqueia minor com remoção depois do major estável (8.1.0 contra v8.0.0)', () => {
+            const r = checkNoRemovalOutsideMajor({
+                ...base,
+                previousVersion: '8.0.0',
+                stableVersion: '8.0.0',
+                currentVersion: '8.1.0',
+            });
+            expect(r).toMatchObject({ ok: false, removed: ['SarakInput'] });
+        });
+
+        it('bloqueia rc de minor com remoção (8.1.0-rc.1 contra v8.0.0)', () => {
+            const r = checkNoRemovalOutsideMajor({
+                ...base,
+                previousVersion: '8.0.0',
+                stableVersion: '8.0.0',
+                currentVersion: '8.1.0-rc.1',
+            });
+            expect(r).toMatchObject({ ok: false, removed: ['SarakInput'] });
+        });
+    });
 });

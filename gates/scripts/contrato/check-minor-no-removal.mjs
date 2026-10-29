@@ -14,6 +14,13 @@
  *   ADR-008 §7). Só esta direção é DECIDÍVEL, e é a única que este gate
  *   cobra.
  *
+ * O CARÁTER MAJOR é decidido contra a última tag ESTÁVEL (sem `-`), não contra
+ * a última tag: uma prévia de major (`8.0.0-rc.N`) é major enquanto o major
+ * estável anterior for menor (`v7.0.0`) — senão a rc.4 enxergaria o major 8
+ * dos dois lados (`v8.0.0-rc.3`) e seria cobrada por uma remoção que a 8.0.0
+ * legitima. Prévia de não-major (`8.1.0-rc.1`, base `v8.0.0`) segue cobrada.
+ * A comparação dos NOMES continua contra a última tag.
+ *
  * Compara os NOMES exportados por `dist/index.d.ts` (o barril já resolvido
  * — `export *` incluso) e os nomes públicos da tupla `SARAK_ICON_NAMES` entre
  * a última tag `vX.Y.Z` e a árvore atual. Roda dentro do script `version`, depois do `preversion` (que já rodou
@@ -34,6 +41,9 @@
  *    dts-bundler do `tsup` — outro formato de saída de bundler não é
  *    reconhecido (`parseExportedNames` devolve conjunto vazio em silêncio).
  * 4. Repositório sem nenhuma tag `v*` não tem o que comparar — libera.
+ * 5. Sem tag estável nenhuma, o major é decidido contra a última tag (prévia).
+ * 6. Prévia de major libera TODA remoção entre rc's: a remoção indevida só é
+ *    cobrada (pela nota de migração) na 8.0.0, nunca pelo número da rc.
  * -------------------------------------------------------------------------
  */
 import { execFileSync } from 'node:child_process';
@@ -49,6 +59,12 @@ const git = (...args) => execFileSync('git', args, { encoding: 'utf8' }).trim();
 export const ultimaTag = () => {
     const saida = git('for-each-ref', '--sort=-v:refname', '--format=%(refname:short)', 'refs/tags/v*');
     return saida === '' ? null : saida.split('\n')[0].trim();
+};
+
+/** Maior tag estável `vX.Y.Z` (sem sufixo de prévia), por ordenação de versão. */
+export const ultimaTagEstavel = () => {
+    const saida = git('for-each-ref', '--sort=-v:refname', '--format=%(refname:short)', 'refs/tags/v*');
+    return saida.split('\n').map((t) => t.trim()).find((t) => t !== '' && !t.includes('-')) ?? null;
 };
 
 /**
@@ -88,12 +104,18 @@ const bumpEhMajor = (anterior, atual) => {
  *         | {ok:true, skipped:false}
  *         | {ok:false, removed:string[], previousVersion:string, currentVersion:string}}
  */
-export function checkNoRemovalOutsideMajor({ previousVersion, currentVersion, previousDts, currentDts }) {
-    if (bumpEhMajor(previousVersion, currentVersion)) {
+export function checkNoRemovalOutsideMajor({
+    previousVersion,
+    currentVersion,
+    previousDts,
+    currentDts,
+    stableVersion = previousVersion,
+}) {
+    if (bumpEhMajor(stableVersion, currentVersion)) {
         return {
             ok: true,
             skipped: true,
-            reason: `${previousVersion} → ${currentVersion} é MAJOR — remoção é legítima sem gate (a 4.0.0 é a prova de que major sem remoção também é legítimo).`,
+            reason: `${stableVersion} (estável) → ${currentVersion} é MAJOR — remoção é legítima sem gate (a 4.0.0 é a prova de que major sem remoção também é legítimo).`,
         };
     }
     const antes = new Set([...parseExportedNames(previousDts), ...parsePublicIconNames(previousDts)]);
@@ -118,6 +140,7 @@ function main() {
     const pkg = JSON.parse(fs.readFileSync(path.resolve('package.json'), 'utf8'));
     const previousVersion = tag.replace(/^v/, '');
     const currentVersion = pkg.version;
+    const stableVersion = (ultimaTagEstavel() ?? tag).replace(/^v/, '');
 
     let previousDts;
     try {
@@ -128,7 +151,13 @@ function main() {
     }
     const currentDts = fs.readFileSync(DIST_INDEX_DTS, 'utf8');
 
-    const result = checkNoRemovalOutsideMajor({ previousVersion, currentVersion, previousDts, currentDts });
+    const result = checkNoRemovalOutsideMajor({
+        previousVersion,
+        currentVersion,
+        previousDts,
+        currentDts,
+        stableVersion,
+    });
 
     if (result.skipped) {
         console.log(`[OK] ${result.reason}`);
