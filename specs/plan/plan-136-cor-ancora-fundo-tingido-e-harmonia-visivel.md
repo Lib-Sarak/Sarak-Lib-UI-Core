@@ -39,9 +39,16 @@ cor que o usuário escolheu nunca aparece na tela**. O contraste da base exata, 
 
 **O fundo não resolve o contraste.** Clarear o fundo escuro piora uma base escura: o grafite-rosa cai de 3,3 para 2,2 com o fundo em
 L 0,30. Uma base clara no modo claro precisaria de fundo cinza-médio, e o modo deixaria de ser claro. Decisão do dono (2026-10-28):
-**a cor-base é a âncora**. Ela vale igual nos dois modos onde passa no contraste. Onde não passa, desloca-se o **mínimo** em
-luminosidade, com o mesmo matiz e o mesmo croma. Os presets são recurados para quase todos ficarem sem deslocamento. Contorno ou halo
-no texto **não** entra.
+**a cor-base é a âncora**. Contorno ou halo no texto **não** entra.
+
+**Nenhuma cor serve de texto igual nos dois modos.** A 4,5:1, o texto precisa de L ≥ 0,58 sobre o fundo escuro (L 0,16) e de L ≤ 0,55
+sobre o fundo claro (L 0,97). A janela é vazia para qualquer matiz, e o tingido do passo 4 não a abre. Decisão do dono (2026-10-31):
+
+- **Preenchimento exato:** a base vale igual nos dois modos, porque o texto por cima dela é escolhido pelo contraste.
+- **Texto com deslocamento mínimo:** mesmo matiz e mesmo croma, com a menor mudança de luminosidade que passa. Numa base de L 0,50 a
+  0,62, ele fica em ΔL ≤ 0,04 por modo.
+- **Presets vivos seguem vivos:** ciano, verde neon, âmbar e amarelo mantêm a base clara, que é a identidade de seis temas, inclusive o
+  padrão. O botão segue exato, e o texto escurece mais no modo claro.
 
 **2. Os fundos são preto e branco.** `NEUTRAL_CHROMA = 0.008` (`seeds.ts:4`) vezes a curva de croma nas pontas (`scale.ts:20`, 0,24)
 dá cinza puro. Além disso, o corpo usa os tons extremos: L 0,98 no claro e 0,14 no escuro. Decisão do dono: **tingido sutil**, com o
@@ -58,8 +65,7 @@ Também entra o plural do diálogo de troca ("Você ajustou 1 cor(es)"), achado 
 # 3. Escopo
 
 ## 3.1 Dentro
-- `src/core/Design/palette/` — `role-map.ts`, `scale.ts`, `seeds.ts`, `contrast.ts`, `contrast-pairs.ts` (só o mínimo do título, item 5
-  do §5), `presets.ts` e os testes.
+- `src/core/Design/palette/` — `role-map.ts`, `scale.ts`, `seeds.ts`, `contrast.ts`, `presets.ts` e os testes.
 - `src/core/Design/presets/themes/<19 temas>.ts` — troca de preset e revisão das sobrescritas, quando a recuragem pedir. Cada
   sobrescrita mantida segue com a linha de motivo.
 - `src/core/Design/presets/themes/catalog.generated.ts` — regenerado por `npm run themes:catalog`.
@@ -87,19 +93,19 @@ Também entra o plural do diálogo de troca ("Você ajustou 1 cor(es)"), achado 
 # 5. Instruções de execução
 
 1. Fotografe o worktree. Antes de editar, gere o lado **antes** da prévia (passo 9) no `HEAD`.
-2. **Âncora.** Os papéis de marca usam a **cor-base exata** nos dois modos: `primaryColor`, `btnPrimaryBg`,
-   `navItemActiveColor`, `titleColor`, `cardTitleColor`. O texto sobre o botão (`btnPrimaryText`) escolhe entre o claro e o escuro da
-   neutra pelo maior contraste.
-3. **Deslocamento mínimo.** Quando a âncora não passa num par de `PAIRS`, a correção busca a **menor** mudança de luminosidade OKLCH
-   que passa, com o mesmo matiz e o mesmo croma (dentro do gamut), em vez de saltar de tom em tom da escala. Os demais papéis seguem a
+2. **Âncora.** Os **preenchimentos** de marca usam a **cor-base exata** nos dois modos: `btnPrimaryBg`, `rangeActiveColor`,
+   `switchTrackActiveBg`, `checkboxActiveColor`. O texto sobre o botão (`btnPrimaryText`) escolhe entre o claro e o escuro da neutra
+   pelo maior contraste. `primaryColor` tem pares de texto em `PAIRS`, então segue a regra do passo 3, junto com `navItemActiveColor`,
+   `titleColor` e `cardTitleColor`. Liste no resumo cada preenchimento que lê `primaryColor` e por isso não sai exato; nada de token novo.
+3. **Deslocamento mínimo.** Nos papéis de texto do passo 2, a correção busca a **menor** mudança de luminosidade OKLCH que passa nos pares
+   de `PAIRS`, com o mesmo matiz e o mesmo croma (dentro do gamut), em vez de saltar de tom em tom da escala. Os demais papéis seguem a
    correção atual. Teste: para uma base que passa, a cor de saída é igual à base; para uma que não passa, o deslocamento é o menor que
    satisfaz o par (busca com tolerância declarada).
 4. **Fundo tingido.** A neutra leva o matiz da base, com croma OKLCH entre **0,012 e 0,030** nos tons de fundo (a curva das pontas não
    pode zerar o tingido). O corpo fica com L entre **0,95 e 0,97** no claro e entre **0,16 e 0,19** no escuro. Corpo, camada 1 e
    camada 2/cartão diferem em pelo menos **0,03** de L. Teste sobre os presets.
-5. **Mínimo do título.** `titleColor` sobre fundo pode exigir **3:1** (texto grande pela WCAG) em vez de 4,5 **só se** o tamanho do
-   título for ≥ 24px (ou ≥ 18,66px em negrito) em todos os 19 temas, medido nos tokens de tipografia. Senão, fica 4,5 e o resumo diz
-   quantos presets deslocam por isso. `cardTitleColor` e todo texto corrido seguem em 4,5.
+5. **Mínimo do texto.** Todo texto segue em 4,5, inclusive o título: `titleColor` também pinta títulos pequenos (Markdown, tabela).
+   `PAIRS` não muda.
 6. **Distribuição 60-30-10** no mapa de papéis:
    - **Primária (60):** ações e títulos (passo 2), mais os controles que já são dela (`rangeActiveColor`, `switchTrackActiveBg`,
      `checkboxActiveColor`).
@@ -114,9 +120,12 @@ Também entra o plural do diálogo de troca ("Você ajustou 1 cor(es)"), achado 
 7. **Presets harmônicos.** O registro mantém de 12 a 15 presets: **≥ 3 monocromáticos** e **≥ 2 de cada tipo de várias cores**. Numa
    paleta de várias cores, a secundária e o acento **saem do ângulo do tipo**. Uma semente declarada à mão só é aceita a até **±15°**
    do ângulo, e com croma ≥ 60% do da base (para não virar cinza). Na monocromática, a semente fica a até ±10° do matiz da base. **Teste
-   sobre o registro.** A base de cada preset fica na faixa em que a âncora passa nos dois modos **sem** deslocamento: **≥ 12 presets
-   com deslocamento zero**, também com teste. Ids proibidos de antes seguem proibidos (`SARAK_LEGACY_PALETTE_IDS`). Preset que sai do
-   registro e era usado por tema troca no tema.
+   sobre o registro.** Sobre o deslocamento: **≥ 10 presets** têm base de L 0,50 a 0,62, com ΔL ≤ 0,04 por modo nos papéis de texto, e **até 5** presets vivos
+   ficam fora dessa faixa, cada um com o motivo no resumo. Os dois limites têm teste. Ids proibidos de antes seguem proibidos
+   (`SARAK_LEGACY_PALETTE_IDS`). **Nenhum id publicado na
+   `8.0.0-rc.4` sai do registro:** a recuragem muda a cor de um preset, nunca o id, porque um tema salvo por importador pode guardá-lo e
+   um id desconhecido compõe sem paleta. Teste com a lista dos 15 ids da rc.4. Preset novo só entra respeitando o teto de 15, então uma
+   entrada que não sirva é recurada no próprio id.
 8. **Temas.** Cada tema mantém a identidade: mesma família de matiz da base de hoje (`themes:diversity`, famílias 9 → 9). As sobrescritas
    de hover de `blueprint-protocol` e `neumorphic-mobile` e as famílias de superfície mantidas pela `plan-134` são revistas. A que o
    fundo tingido tornar desnecessária sai. A que fica segue com motivo, nos dois blocos.
@@ -130,18 +139,24 @@ Também entra o plural do diálogo de troca ("Você ajustou 1 cor(es)"), achado 
    - o fluxo do painel criando uma paleta a partir de uma dessas bases (harness de `browser-tests/plan-135-paletas-no-painel.spec.ts`).
 
    O comando que regenera a página vai no resumo.
-10. `npm run themes:catalog`, subseção em `docs/migracoes.md` e `npm run verify -- --tier=quick` uma vez. Cole o resumo com o caminho da
-    prévia.
+10. `npm run themes:catalog` e subseção em `docs/migracoes.md`.
+11. **Navegador.** Depois de `npm run build`, rode uma vez os specs que medem cor: `plan-123-color-hierarchy`, `plan-124-sidebar-contrast`,
+    `plan-122-preview-mode`, `plan-135-paletas-no-painel` e `painel-segue-o-modo`. Com eles verdes, rode `npm run cromo-css-real:check`
+    inteiro, uma vez, e cole a linha final (Playwright em segundo plano, se o terminal tiver limite de tempo). Valor esperado de cor vem da
+    página ([[11-testes-e-cobertura]] §7.3). Depois: `git restore -- dist src/buildInfo.ts src/core/Provider/buildInfo.ts`.
+12. `npm run verify -- --tier=quick` uma vez. Cole o resumo com o caminho da prévia.
 
 # 6. Critérios de aceite
 
-- [ ] Âncora: com os presets do registro, as cores dos papéis de marca são iguais nos dois modos quando a base passa — teste.
+- [ ] Âncora: os preenchimentos do passo 2 são iguais à base nos dois modos, em todos os presets — teste.
 - [ ] Deslocamento mínimo provado por teste (igual à base quando passa; menor ΔL quando não passa).
 - [ ] Fundo tingido dentro das faixas de croma e luminosidade do passo 4 — teste sobre os presets.
 - [ ] Distribuição 60-30-10 no mapa — teste por papel (escala de cada token da lista do passo 6).
-- [ ] Presets: contagem por tipo, ângulos e ≥ 12 sem deslocamento — teste sobre o registro.
+- [ ] Presets: contagem por tipo, ângulos, ≥ 10 com ΔL ≤ 0,04 e até 5 vivos — teste sobre o registro.
+- [ ] Os 15 ids da `8.0.0-rc.4` continuam válidos — teste com a lista.
 - [ ] `verify_contrast` com 0 reprovados e 19/19 com contraparte; `themes:diversity` sem piora (números antes e depois no resumo).
 - [ ] O diálogo escreve "1 cor" e "2 cores" (e o equivalente nos seis idiomas) — teste.
+- [ ] `npm run cromo-css-real:check` verde inteiro, com a linha final no resumo.
 - [ ] Prévia gerada com as quatro seções; a aprovação do dono é registrada pelo revisor no veredito.
 
 # 7. Como verificar (uso do revisor)
@@ -153,15 +168,16 @@ Também entra o plural do diálogo de troca ("Você ajustou 1 cor(es)"), achado 
 - `npx tsx gates/scripts/audit/verify_contrast.ts` e `npm run themes:diversity` — uma vez cada.
 - `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` — uma vez.
 - A prévia aberta pelo revisor; o caminho é passado ao dono; o veredito só fecha com a aprovação dele.
-- No fechamento da tag: `browser-tests/plan-123-color-hierarchy.spec.ts` e `browser-tests/plan-135-paletas-no-painel.spec.ts`.
+- A bateria de navegador **não** se repete no revisor: vale a linha final colada pelo executor, e o job `cromo-css-real` da CI a mede de
+  novo no push.
 
 # 8. Destino da síntese
 
-- `specs/specs/09-temas-e-presets.md` §4.3.4 — a paleta ancora a cor da marca nos dois modos; o fundo é tingido; a distribuição
+- `specs/specs/09-temas-e-presets.md` §4.3.4 — o preenchimento de marca é a base exata nos dois modos e o texto desloca o mínimo; o fundo é tingido; a distribuição
   60-30-10; o preset de várias cores deriva do ângulo do tipo. Os números saem do registro e do mapa, nunca transcritos.
-- `specs/arquitetura/02-design-engine.md` §10.3 — o deslocamento mínimo substitui o salto de tom na correção dos papéis de marca.
-- `specs/adr/024-paleta-calculada-separada-do-tema.md` — *Consequências*: a base é âncora, e contorno ou halo foi recusado, com o motivo
-  medido (o fundo não resolve o contraste).
+- `specs/arquitetura/02-design-engine.md` §10.3 — o deslocamento mínimo substitui o salto de tom na correção dos papéis de texto da marca.
+- `specs/adr/024-paleta-calculada-separada-do-tema.md` — *Consequências*: a base é âncora, nenhuma cor serve de texto igual nos dois modos, e
+  contorno ou halo foi recusado, com o motivo medido.
 
 ---
 
