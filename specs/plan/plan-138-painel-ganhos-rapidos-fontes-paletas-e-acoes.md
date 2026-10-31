@@ -7,7 +7,7 @@ status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "painel", "ux", "paletas", "fontes"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[plan-139-painel-previas-reais]]", "[[anexos/painel-design-prototipo]]"]
-depende_de: "plan-136-cor-ancora-fundo-tingido-e-harmonia-visivel"
+depende_de: "plan-142-desempenho-da-troca-de-tema"
 retida_por: ""
 destino_sintese: "specs/specs/06-painel-de-customizacao-e-preview.md"
 ---
@@ -20,7 +20,7 @@ ação principal.
 # 2. Contexto
 
 Primeira de quatro plans do redesenho do painel, aprovado pelo dono em 2026-10-31 sobre o protótipo
-`specs/plan/anexos/painel-design-prototipo.html` (abra no navegador: é a referência visual das quatro). Sequência: 138 → 139 → 140 → 141.
+`specs/plan/anexos/painel-design-prototipo.html` (abra no navegador: é a referência visual das quatro). Sequência: 142 (desempenho) → 138 → 139 → 140 → 141.
 Esta entrega o que dói hoje e não depende da coluna única.
 
 **Fontes: dois defeitos medidos.**

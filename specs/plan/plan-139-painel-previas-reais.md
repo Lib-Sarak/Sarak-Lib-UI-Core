@@ -27,6 +27,9 @@ mostram barras no lugar de conteúdo.
 **Regra desta plan:** a opção é desenhada com o componente real, com a opção aplicada por cima do rascunho, dentro de um `DesignScope`
 ([[06-painel-de-customizacao-e-preview]] §6.1). Nada de barra cinza.
 
+**Orçamento:** componentes reais pesam mais que barras cinza. O spec de orçamento de recálculo da `plan-142` segue verde sem subir o teto, e
+cada miniatura leva só as variáveis que usa. A espiada só funciona se compor um tema for quase instantâneo.
+
 **Prepare para a plan-140:** cada grupo de opções sai como componente que não sabe onde está. A 140 os muda da galeria para a coluna sem
 reescrevê-los.
 
