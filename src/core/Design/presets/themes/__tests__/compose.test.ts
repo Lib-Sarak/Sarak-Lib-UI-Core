@@ -140,7 +140,8 @@ describe('composeThemeDesign — o texto da paleta se corrige contra o fundo que
         expect(out.sidebarItemTextColor).toBe(palette.sidebarItemTextColor);
     });
 
-    it('nenhum tema embarcado muda de saída: só o texto que reprova contra o fundo declarado é movido', () => {
+    it('tema embarcado com fundo próprio: só texto é movido contra o fundo declarado, e todo par passa', () => {
+        const textTokens = new Set(PAIRS.map((pair) => pair.fg.replace(/^(mix:|on:)/, '')));
         const withPalette = SARAK_ALL_THEMES.filter((theme) => (theme.design as Record<string, unknown>).colorPalette);
         expect(withPalette.length).toBeGreaterThan(0);
 
@@ -153,10 +154,13 @@ describe('composeThemeDesign — o texto da paleta se corrige contra o fundo que
                 const input = parsePaletteValue(resolved.colorPalette)!;
                 const alone = resolvePalette(input, mode);
                 const withDeclared = resolvePalette(input, mode, resolved);
-                const notDeclared = Object.keys(alone).filter((tokenId) => resolved[tokenId] === undefined);
+                const moved = Object.keys(alone).filter((tokenId) => resolved[tokenId] === undefined && withDeclared[tokenId] !== alone[tokenId]);
 
-                notDeclared.forEach((tokenId) => {
-                    expect(withDeclared[tokenId], `${theme.id}/${mode}/${tokenId}`).toBe(alone[tokenId]);
+                moved.forEach((tokenId) => expect(textTokens.has(tokenId), `${theme.id}/${mode}/${tokenId} não é texto`).toBe(true));
+                const design = { ...sarakGetDefaultDesignState(), ...withDeclared, ...resolved } as never;
+                PAIRS.forEach((pair) => {
+                    const result = evaluatePair(pair, design);
+                    if (!result.pulado) expect(result.pass, `${theme.id}/${mode} ${pair.fg} → ${pair.bgChain.join(' → ')}`).toBe(true);
                 });
             });
         });

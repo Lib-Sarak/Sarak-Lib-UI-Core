@@ -101,13 +101,21 @@ export const CATALOG_PALETTE = {
         pt: 'Trocar de paleta?', en: 'Switch palette?', es: '¿Cambiar de paleta?',
         fr: 'Changer de palette ?', de: 'Palette wechseln?', it: 'Cambiare tavolozza?',
     },
-    paletteKeepMessage: {
-        pt: 'Você ajustou {count} cor(es) à mão. Manter esses ajustes sobre a nova paleta ou descartá-los?',
-        en: 'You adjusted {count} color(s) by hand. Keep those adjustments over the new palette or discard them?',
-        es: 'Ajustó {count} color(es) a mano. ¿Mantener esos ajustes sobre la nueva paleta o descartarlos?',
-        fr: 'Vous avez ajusté {count} couleur(s) à la main. Garder ces ajustements sur la nouvelle palette ou les abandonner ?',
-        de: 'Sie haben {count} Farbe(n) von Hand angepasst. Diese Anpassungen auf der neuen Palette behalten oder verwerfen?',
-        it: 'Hai modificato {count} colore/i a mano. Mantenere queste modifiche sulla nuova tavolozza o scartarle?',
+    paletteKeepMessageOne: {
+        pt: 'Você ajustou {count} cor à mão. Manter esse ajuste sobre a nova paleta ou descartá-lo?',
+        en: 'You adjusted {count} color by hand. Keep that adjustment over the new palette or discard it?',
+        es: 'Ajustó {count} color a mano. ¿Mantener ese ajuste sobre la nueva paleta o descartarlo?',
+        fr: "Vous avez ajusté {count} couleur à la main. Garder cet ajustement sur la nouvelle palette ou l'abandonner ?",
+        de: 'Sie haben {count} Farbe von Hand angepasst. Diese Anpassung auf der neuen Palette behalten oder verwerfen?',
+        it: 'Hai modificato {count} colore a mano. Mantenere questa modifica sulla nuova tavolozza o scartarla?',
+    },
+    paletteKeepMessageMany: {
+        pt: 'Você ajustou {count} cores à mão. Manter esses ajustes sobre a nova paleta ou descartá-los?',
+        en: 'You adjusted {count} colors by hand. Keep those adjustments over the new palette or discard them?',
+        es: 'Ajustó {count} colores a mano. ¿Mantener esos ajustes sobre la nueva paleta o descartarlos?',
+        fr: 'Vous avez ajusté {count} couleurs à la main. Garder ces ajustements sur la nouvelle palette ou les abandonner ?',
+        de: 'Sie haben {count} Farben von Hand angepasst. Diese Anpassungen auf der neuen Palette behalten oder verwerfen?',
+        it: 'Hai modificato {count} colori a mano. Mantenere queste modifiche sulla nuova tavolozza o scartarle?',
     },
     paletteKeepConfirm: {
         pt: 'Manter meus ajustes', en: 'Keep my adjustments', es: 'Mantener mis ajustes',

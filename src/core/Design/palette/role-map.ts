@@ -1,4 +1,7 @@
+import { PALETTE_BASE_TONE } from './scale';
 import type { PaletteColorRole, PaletteScaleName } from './types';
+
+const BASE = PALETTE_BASE_TONE;
 
 const colorRole = (scale: PaletteScaleName, light: number, dark: number, alpha: number = 1): PaletteColorRole => ({
     scale,
@@ -6,13 +9,24 @@ const colorRole = (scale: PaletteScaleName, light: number, dark: number, alpha: 
     ...(alpha < 1 ? { alpha } : {}),
 });
 
+/** Texto que anda o mínimo de luminosidade a partir da(s) origem(ns) dada(s), em vez de saltar de tom em tom. */
+const shiftRole = (scale: PaletteScaleName, ...origins: number[]): PaletteColorRole => ({
+    scale,
+    toneByMode: { light: origins[0], dark: origins[origins.length - 1] },
+    shiftFrom: origins,
+});
+
+/**
+ * A distribuição 60-30-10: a primária (60) pinta ações, títulos e controles; a secundária (30) os cabeçalhos, o
+ * subtítulo, a categoria e o gráfico; o acento (10) a ênfase, o marcador e o foco. `BASE` é a cor da semente, exata.
+ */
 export const PALETTE_ROLE_MAP: Readonly<Record<string, PaletteColorRole>> = {
     sidebarColor: colorRole('neutral', 100, 950),
     sidebarHoverColor: colorRole('primary', 200, 800, 0.6),
     sidebarActiveColor: colorRole('primary', 300, 700, 0.6),
     sidebarItemTextColor: colorRole('neutral', 800, 100),
     sidebarItemHoverTextColor: colorRole('neutral', 950, 50),
-    sidebarCategoryColor: colorRole('neutral', 700, 200),
+    sidebarCategoryColor: colorRole('secondary', 700, 200),
     sidebarBrandColor: colorRole('accent', 700, 300),
     sidebarBorderColor: colorRole('neutral', 200, 800, 0.64),
     sidebarBrandBackground: colorRole('accent', 100, 900),
@@ -29,15 +43,15 @@ export const PALETTE_ROLE_MAP: Readonly<Record<string, PaletteColorRole>> = {
     topbarGroupSeparatorColor: colorRole('neutral', 200, 800, 0.64),
     topbarIconColor: colorRole('primary', 600, 300),
     topbarTitleColor: colorRole('neutral', 950, 50),
-    navItemActiveColor: colorRole('primary', 700, 300),
-    navActiveMarkerColor: colorRole('primary', 600, 400),
+    navItemActiveColor: shiftRole('primary', BASE),
+    navActiveMarkerColor: colorRole('accent', 600, 400),
     cardInnerGlowColor: colorRole('primary', 300, 700, 0.07),
-    cardHeaderBg: colorRole('neutral', 100, 900),
-    cardHeaderBorder: colorRole('neutral', 200, 800, 0.64),
+    cardHeaderBg: colorRole('secondary', 100, 900),
+    cardHeaderBorder: colorRole('secondary', 200, 800, 0.64),
     cardFooterBg: colorRole('neutral', 100, 900),
     cardFooterBorder: colorRole('neutral', 200, 800, 0.64),
     cardGlowColor: colorRole('primary', 500, 500, 0.18),
-    cardTitleColor: colorRole('primary', 800, 200),
+    cardTitleColor: shiftRole('primary', BASE),
     cardTitleIconGlow: colorRole('accent', 400, 600, 0.22),
     cardActionBtnPrimaryBg: colorRole('primary', 700, 400),
     cardActionBtnHoverBg: colorRole('primary', 600, 300),
@@ -49,36 +63,36 @@ export const PALETTE_ROLE_MAP: Readonly<Record<string, PaletteColorRole>> = {
     tooltipBg: colorRole('neutral', 900, 100),
     tooltipTextColor: colorRole('neutral', 50, 950),
     tooltipBorderColor: colorRole('neutral', 700, 300),
-    tableHeaderBg: colorRole('neutral', 100, 900),
+    tableHeaderBg: colorRole('secondary', 100, 900),
     tableRowHoverBg: colorRole('neutral', 100, 800),
     tableBorderColor: colorRole('neutral', 200, 800, 0.72),
     textColorMaster: colorRole('neutral', 950, 50),
     textColorSecondary: colorRole('neutral', 800, 200),
     textColorMuted: colorRole('neutral', 500, 300),
-    btnPrimaryBg: colorRole('primary', 700, 300),
-    btnPrimaryText: colorRole('neutral', 50, 950),
-    btnSecondaryBg: colorRole('neutral', 100, 900),
+    btnPrimaryBg: colorRole('primary', BASE, BASE),
+    btnPrimaryText: shiftRole('neutral', 50, 950),
+    btnSecondaryBg: colorRole('secondary', 100, 900),
     btnGhostHoverBg: colorRole('neutral', 100, 900),
     btnNeonGlowColor: colorRole('primary', 500, 500, 0.4),
     inputBg: colorRole('neutral', 50, 950),
     inputBorderColor: colorRole('neutral', 500, 600, 0.8),
-    inputFocusBorderColor: colorRole('primary', 600, 400),
+    inputFocusBorderColor: colorRole('accent', 600, 400),
     inputTextColor: colorRole('neutral', 950, 50),
     inputIconColor: colorRole('neutral', 700, 200),
     inputErrorColor: colorRole('error', 700, 300),
-    rangeActiveColor: colorRole('primary', 600, 400),
-    switchTrackActiveBg: colorRole('primary', 600, 400),
+    rangeActiveColor: colorRole('primary', BASE, BASE),
+    switchTrackActiveBg: colorRole('primary', BASE, BASE),
     switchThumbBg: colorRole('neutral', 50, 50),
-    checkboxActiveColor: colorRole('primary', 600, 400),
+    checkboxActiveColor: colorRole('primary', BASE, BASE),
     switchPulseColor: colorRole('primary', 500, 500),
-    primaryColor: colorRole('primary', 700, 300),
+    primaryColor: shiftRole('primary', BASE),
     secondaryColor: colorRole('secondary', 700, 300),
     tertiaryColor: colorRole('accent', 700, 300),
     accentColor: colorRole('accent', 700, 300),
     surfaceColor: colorRole('neutral', 100, 900),
     textureColor: colorRole('neutral', 300, 700),
-    titleColor: colorRole('primary', 800, 200),
-    subtitleColor: colorRole('neutral', 800, 200),
+    titleColor: shiftRole('primary', BASE),
+    subtitleColor: colorRole('secondary', 800, 200),
     emphasisColor: colorRole('accent', 700, 300),
     colorBgModal: colorRole('neutral', 50, 950),
     cardBackgroundColor: colorRole('neutral', 50, 900),

@@ -51,12 +51,12 @@ Preset de card, para comparar: cerca de 500 ms (soma das tarefas longas).
 - `src/core/Provider/` e `src/core/Design/hooks/` — o sinal de troca de tema em curso, no caminho que escreve as variáveis.
 - `src/styles/` — a regra que desliga as transições durante a troca e os `transition: all` que forem trocados.
 - `src/components/atomic/` — `transition-all` que forem trocados, sem mudar o que anima.
-- `src/features/DesignEngine/Canvas/components/PresetCard.tsx`, `Main/components/PaletteSwatch.tsx` e os escopos do painel, com testes.
+- `src/features/DesignEngine/Canvas/components/PresetCard.tsx` e os escopos do painel, com testes.
 - `browser-tests/` — um spec novo de orçamento de recálculo, com fixture.
 - Snapshots alterados por estas mudanças.
 
 ## 3.2 Fora
-- Redesenho do painel (plans 138 a 141).
+- Redesenho do painel (plans 138 a 141). `PaletteSwatch` fica com a `plan-138`, que o reescreve em paralelo.
 - O cálculo de paleta e o formato dos temas (plan-136).
 - Remover transição de hover, foco, abertura de modal ou drawer: fora da troca, tudo anima como antes.
 - Trocar o mecanismo de variáveis CSS do Design Engine.
@@ -88,7 +88,7 @@ Preset de card, para comparar: cerca de 500 ms (soma das tarefas longas).
 4. **`transition: all`.** Troque pelas propriedades realmente animadas onde o efeito visual não mudar. Liste o que trocou.
 5. **Variáveis repetidas.** Isole o custo das 203 ocorrências, com a galeria aberta e fechada. Se confirmado, cada miniatura leva só as variáveis que
    usa, e cartão fora da tela não redesenha (`content-visibility` ou renderização sob demanda). Sem mudar a aparência dela.
-6. **Render.** `useMemo` em `PresetCard` e `PaletteSwatch`, chaveado pelo tema e pelo modo.
+6. **Render.** `useMemo` em `PresetCard`, chaveado pelo tema e pelo modo.
 7. **Orçamento no navegador.** Spec novo: trocar de tema com a galeria aberta fica abaixo de um teto de `RecalcStyleCount`, com o teto em constante
    nomeada (o valor medido + 20%), e com a CPU sem redução. **Não** afirme em milissegundos: tempo varia por máquina. Ao fim da troca, a transição
    computada de um botão volta ao valor do tema.

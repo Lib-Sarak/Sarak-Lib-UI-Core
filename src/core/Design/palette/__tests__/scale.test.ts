@@ -1,12 +1,12 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
-import { createPaletteScales, PALETTE_CHROMA_CURVE, PALETTE_LIGHTNESS_SCALE } from '../scale';
+import { createPaletteScales, PALETTE_BASE_TONE, PALETTE_CHROMA_CURVE, PALETTE_LIGHTNESS_SCALE } from '../scale';
 import { createPaletteSeeds } from '../seeds';
 
 describe('createPaletteScales', () => {
     it('builds all eleven shared tones for every palette seed', () => {
         const scales = createPaletteScales(createPaletteSeeds({ type: 'analogous', base: '#2563eb' }));
-        const expectedTones = PALETTE_LIGHTNESS_SCALE.map(({ tone }) => tone);
+        const expectedTones = [PALETTE_BASE_TONE, ...PALETTE_LIGHTNESS_SCALE.map(({ tone }) => tone)];
         Object.values(scales).forEach((scale) => expect(Object.keys(scale).map(Number)).toEqual(expectedTones));
     });
 

@@ -1,7 +1,8 @@
 import { hexToOklch } from './color-space';
 import type { SarakOklchColor, SarakPaletteInput, SarakPaletteSeeds } from './types';
 
-const NEUTRAL_CHROMA = 0.008;
+/** O tingido do fundo: croma OKLCH da neutra, entre o piso e o teto; uma base quase cinza tinge menos, para não virar cor. */
+const NEUTRAL_TINT = { min: 0.016, max: 0.026, share: 0.1, saturationGate: 0.03 } as const;
 const STATUS_CHROMA = 0.16;
 /** Matizes semânticos fixos; as escalas harmonizam apenas a luminosidade. */
 const STATUS_HUES = {
@@ -43,6 +44,11 @@ const createStatusSeed = (hue: number, base: SarakOklchColor): SarakOklchColor =
     hue,
 });
 
+const getNeutralTint = (base: SarakOklchColor): number => {
+    const tint = Math.min(NEUTRAL_TINT.max, Math.max(NEUTRAL_TINT.min, base.chroma * NEUTRAL_TINT.share));
+    return tint * Math.min(1, base.chroma / NEUTRAL_TINT.saturationGate);
+};
+
 export const createPaletteSeeds = (input: SarakPaletteInput): SarakPaletteSeeds => {
     const base = hexToOklch(input.base);
     if (!base) throw new Error('A cor base da paleta deve ser um hexadecimal válido.');
@@ -53,7 +59,7 @@ export const createPaletteSeeds = (input: SarakPaletteInput): SarakPaletteSeeds 
         primary: base,
         secondary,
         accent,
-        neutral: { lightness: base.lightness, chroma: NEUTRAL_CHROMA, hue: base.hue },
+        neutral: { lightness: base.lightness, chroma: getNeutralTint(base), hue: base.hue },
         success: createStatusSeed(STATUS_HUES.success, base),
         error: createStatusSeed(STATUS_HUES.error, base),
         warning: createStatusSeed(STATUS_HUES.warning, base),

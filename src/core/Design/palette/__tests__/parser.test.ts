@@ -4,7 +4,7 @@ import { isValidPaletteValue, parsePaletteValue } from '../parser';
 
 describe('palette value parser', () => {
     it('resolves the small built-in preset registry', () => {
-        expect(parsePaletteValue('oceano')).toEqual({ type: 'analogous', base: '#2563eb' });
+        expect(parsePaletteValue('oceano')).toEqual({ type: 'analogous', base: '#356fed' });
     });
 
     it('parses custom palettes with optional secondary and accent seeds', () => {

@@ -30,7 +30,7 @@ export const usePaletteSelection = ({ draft, appliedDesign, updateDraft }: UsePa
         const adjusted = findManualColorAdjustments(draft, reference);
         const discard = adjusted.length > 0 && await overlay.confirm({
             title: text('paletteKeepTitle'),
-            message: text('paletteKeepMessage', { count: adjusted.length }),
+            message: text(adjusted.length === 1 ? 'paletteKeepMessageOne' : 'paletteKeepMessageMany', { count: adjusted.length }),
             confirmLabel: text('paletteKeepDiscard'),
             cancelLabel: text('paletteKeepConfirm'),
             tone: 'danger',

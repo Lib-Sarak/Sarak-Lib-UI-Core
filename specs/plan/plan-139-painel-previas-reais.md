@@ -30,6 +30,8 @@ mostram barras no lugar de conteúdo.
 **Orçamento:** componentes reais pesam mais que barras cinza. O spec de orçamento de recálculo da `plan-142` segue verde sem subir o teto, e
 cada miniatura leva só as variáveis que usa. A espiada só funciona se compor um tema for quase instantâneo.
 
+**Só começa com a `plan-138` e a `plan-142` aprovadas.**
+
 **Prepare para a plan-140:** cada grupo de opções sai como componente que não sabe onde está. A 140 os muda da galeria para a coluna sem
 reescrevê-los.
 

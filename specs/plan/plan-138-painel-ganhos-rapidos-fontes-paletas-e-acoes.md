@@ -7,7 +7,7 @@ status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "painel", "ux", "paletas", "fontes"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[plan-139-painel-previas-reais]]", "[[anexos/painel-design-prototipo]]"]
-depende_de: "plan-142-desempenho-da-troca-de-tema"
+depende_de: "plan-136-cor-ancora-fundo-tingido-e-harmonia-visivel"
 retida_por: ""
 destino_sintese: "specs/specs/06-painel-de-customizacao-e-preview.md"
 ---
@@ -20,7 +20,7 @@ ação principal.
 # 2. Contexto
 
 Primeira de quatro plans do redesenho do painel, aprovado pelo dono em 2026-10-31 sobre o protótipo
-`specs/plan/anexos/painel-design-prototipo.html` (abra no navegador: é a referência visual das quatro). Sequência: 142 (desempenho) → 138 → 139 → 140 → 141.
+`specs/plan/anexos/painel-design-prototipo.html` (abra no navegador: é a referência visual das quatro). Sequência: 138 ‖ 142 → 139 → 140 → 141.
 Esta entrega o que dói hoje e não depende da coluna única.
 
 **Fontes: dois defeitos medidos.**
@@ -44,7 +44,7 @@ três pontos. O dono achou grande e grosseiro. O seletor de modo da prévia já 
 - `src/features/DesignEngine/Canvas/components/TypographyCatalog.tsx` e o teste — campo certo, carga das fontes, amostra em português.
 - `src/core/Design/presets/components/typography.ts` — o preset grava só `headingFont` e `bodyFont`.
 - `src/core/Provider/` — só o que for preciso para o painel pedir a carga de uma família pela origem configurada em `options.fonts`.
-- `src/features/DesignEngine/Main/components/PaletteGallery.tsx`, `PaletteSwatch.tsx`, `PaletteSection.tsx` e testes.
+- `src/features/DesignEngine/Main/components/PaletteGallery.tsx`, `PaletteSwatch.tsx` (com `useMemo` chaveado pela paleta), `PaletteSection.tsx` e testes.
 - `src/features/DesignEngine/Main/components/ThemeActionBar.tsx` e teste; um componente novo para o menu de mais ações, se necessário.
 - `src/core/i18n/` — textos novos, por acréscimo, nos seis idiomas.
 - Snapshots que estas mudanças alterarem, e `browser-tests/` que clicam nas ações movidas.

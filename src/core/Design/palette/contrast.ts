@@ -2,6 +2,7 @@ import { parseToRgba } from '../../Provider/utils/color-engine';
 import { pickOnColor } from '../../Provider/utils/on-color';
 import { rgbToHex } from './color-space';
 import { MIX_SOURCE_SHARE, PAIRS } from './contrast-pairs';
+import { findMinimalShift, SHIFT_CONTRAST_GUARD, type ShiftResult } from './contrast-shift';
 import { PALETTE_LIGHTNESS_SCALE } from './scale';
 import { PALETTE_ROLE_MAP } from './role-map';
 import type { PaletteColorRole, SarakPaletteMode, PaletteScales, RgbColor } from './types';
@@ -94,21 +95,24 @@ const formatPaletteColor = (rgb: RgbColor, alpha?: number): string => {
     return `rgba(${channels.join(', ')}, ${Number(alpha.toFixed(3))})`;
 };
 
+const scoreColor = (color: string, search: CandidateSearch, guard: number = 0): { failedPairs: number; minimumRatio: number } => {
+    const candidateColors = { ...search.colors, [search.tokenId]: color };
+    const ratios = search.pairs.map((pair) => getPairContrastRatio(pair, candidateColors));
+    const resolvedRatios = ratios.filter((ratio): ratio is number => ratio !== undefined);
+    return {
+        failedPairs: ratios.filter((ratio, index) => ratio === undefined || ratio < search.pairs[index].min + guard).length,
+        minimumRatio: resolvedRatios.length ? Math.min(...resolvedRatios) : 0,
+    };
+};
+
 const evaluateCandidate = (
     tone: number,
     search: CandidateSearch,
 ): ContrastCandidate => {
-    const { tokenId, role, pairs, colors, scales, mode } = search;
-    const candidateColors = {
-        ...colors,
-        [tokenId]: formatPaletteColor(scales[role.scale][tone], role.alpha),
-    };
-    const ratios = pairs.map((pair) => getPairContrastRatio(pair, candidateColors));
-    const resolvedRatios = ratios.filter((ratio): ratio is number => ratio !== undefined);
+    const { role, scales, mode } = search;
     return {
         tone,
-        failedPairs: ratios.filter((ratio, index) => ratio === undefined || ratio < pairs[index].min).length,
-        minimumRatio: resolvedRatios.length ? Math.min(...resolvedRatios) : 0,
+        ...scoreColor(formatPaletteColor(scales[role.scale][tone], role.alpha), search),
         distanceFromDefault: Math.abs(tone - role.toneByMode[mode]),
     };
 };
@@ -129,6 +133,24 @@ const chooseContrastTone = (
     return candidates[0].tone;
 };
 
+/** Texto da marca: parte da cor da escala e anda o mínimo de luminosidade que os pares pedem; vence a origem que anda menos. */
+const chooseShiftedColor = (search: CandidateSearch): string => {
+    const { role, scales } = search;
+    const results: ShiftResult[] = (role.shiftFrom ?? []).map((tone) => findMinimalShift(
+        scales[role.scale][tone],
+        (color) => scoreColor(formatPaletteColor(color, role.alpha), search, SHIFT_CONTRAST_GUARD),
+    ));
+    const best = results.reduce((left, right) => {
+        if (left.failedPairs !== right.failedPairs) return left.failedPairs < right.failedPairs ? left : right;
+        return right.shift < left.shift ? right : left;
+    });
+    return formatPaletteColor(best.color, role.alpha);
+};
+
+const chooseTokenColor = (search: CandidateSearch): string => search.role.shiftFrom
+    ? chooseShiftedColor(search)
+    : formatPaletteColor(search.scales[search.role.scale][chooseContrastTone(search)], search.role.alpha);
+
 const getTextTokenIds = (): string[] => [...new Set(PAIRS
     .map((pair) => getAdjustableTokenId(pair.fg))
     .filter((tokenId): tokenId is string => tokenId !== undefined && tokenId in PALETTE_ROLE_MAP))];
@@ -146,8 +168,7 @@ const correctTokenTones = (
             const pairs = PAIRS.filter((pair) => getAdjustableTokenId(pair.fg) === tokenId);
             const role = PALETTE_ROLE_MAP[tokenId];
             const search = { tokenId, pairs, role, colors: corrected, scales, mode };
-            const tone = chooseContrastTone(search);
-            const color = formatPaletteColor(scales[role.scale][tone], role.alpha);
+            const color = chooseTokenColor(search);
             if (corrected[tokenId] === color) return;
             corrected[tokenId] = color;
             changed = true;

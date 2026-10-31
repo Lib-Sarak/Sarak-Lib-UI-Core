@@ -60,6 +60,22 @@ Se a aplicação usa `--theme-title` para texto corrido, troque essa referência
 `--theme-text-primary` ou `--sarak-text-main`. Revise também os títulos customizados e os quatro
 valores de escala em temas próprios.
 
+### As cores dos temas embarcados mudam: a marca é a mesma nos dois modos, o fundo é tingido e a secundária e o acento aparecem
+
+**Classificação: MAJOR (cor).** O motor de paletas (`colorPalette`) muda o que calcula, e os 19 temas embarcados e os 15
+presets mudam de cor. Nenhum id de preset sai (um tema salvo com `colorPalette: 'oceano'` continua válido); o que muda é
+a cor que cada id calcula.
+
+| Antes | Agora |
+|---|---|
+| O botão, o controle ativo e o título usavam tons espelhados da escala (700 no claro, 300 no escuro): a cor escolhida nunca aparecia. | O preenchimento da marca (`btnPrimaryBg`, `rangeActiveColor`, `switchTrackActiveBg`, `checkboxActiveColor`) é a **cor-base exata** nos dois modos. O texto da marca (`primaryColor`, `titleColor`, `cardTitleColor`, `navItemActiveColor`) é a base com o **menor deslocamento de luminosidade** que passa em 4,5:1, no mesmo matiz e croma. |
+| O fundo era cinza puro (croma 0,008), do tom 50 ao 950. | O fundo leva o matiz da base, com croma OKLCH entre 0,012 e 0,030; o corpo tem luminosidade 0,95-0,97 no claro e 0,16-0,19 no escuro, e as camadas diferem em pelo menos 0,03. |
+| A secundária só pintava `secondaryColor` e o gráfico; o acento, a marca. | 60-30-10: a primária pinta ação, título e controle; a secundária o subtítulo, o botão secundário, o cabeçalho de cartão e de tabela, a categoria da lateral e o gráfico; o acento a ênfase, o marcador do item ativo, o anel de foco e o brilho do ícone do cartão. |
+| Os presets declaravam secundária e acento à mão, sem relação com o tipo. | A secundária e o acento saem do ângulo do tipo (a até 15°). Dez presets têm base média e o texto anda pouco; os outros cinco são vivos de propósito. |
+
+O diálogo de troca de paleta escreve "1 cor" e "2 cores" (antes "1 cor(es)"). Quem fixa um token de cor por cima da paleta
+não muda; quem conferia a cor calculada de um preset, ou um snapshot, atualiza o valor esperado.
+
 ### Largura padrão do conteúdo
 
 `maxContentWidth` passa a acompanhar a largura do próprio contêiner: as margens externas crescem
