@@ -342,6 +342,12 @@ manual do usuário continuam por cima. Valor inválido é recusado com aviso e o
 `auditor_contraste` mede (`palette/contrast-pairs.ts`, importada pelo gate — §6.5). `sarakResolvePalette(valor, modo)` é
 público, para o host prever a paleta no próprio sistema.
 
+**O texto se corrige contra o fundo efetivo.** Quando o host ou o tema declaram uma cor literal (`#…`, `rgb()`, `rgba()`) por cima
+da paleta, como uma barra escura num tema claro, o texto calculado que reprova contra esse fundo nos pares de `PAIRS` anda na escala
+até passar (`correctPaletteAgainstDeclared`). O texto que já passa mantém o tom, e o que o host ou o tema declararam não é tocado;
+por isso nenhum tema embarcado muda de saída nesta etapa. Fundo declarado com `var(...)` ou em outro formato fica fora, porque o
+motor de contraste não o lê.
+
 ## 4.4 Persistir — `localStorage`, e a sincronização entre abas
 
 Persistência é **local por construção** (`options.persistence`, em `src/core/Provider/types.ts`):
@@ -581,6 +587,12 @@ Arquivos: `src/core/Design/presets/themes/` (temas + `index.ts` + `boot.ts` + `l
 e `src/core/Design/presets/components/` (5 arquivos: `atmosphere`, `buttons`, `cards`, `inputs`,
 `typography`).
 
+**Os temas embarcados tiram a cor de uma paleta.** Todo tema embarcado declara `colorPalette` com um preset de
+`src/core/Design/palette/presets.ts`; o que ainda declara de cor é sobrescrita justificada, com uma linha de motivo ao lado, e a
+sobrescrita no `design` tem a sua na `contraparte` (`themePalettes.test.ts`). Quantos presets há por tipo sai do registro
+`SARAK_PALETTE_PRESETS`, nunca daqui. Um preset não pode usar os ids `default`, `matrix`, `neon`, `slate` nem `sunset`
+(`SARAK_LEGACY_PALETTE_IDS`): eram valores do `colorPalette` antigo e podem estar em tema salvo por importador.
+
 ## 5.1 Todo fundo que a lib entrega funciona offline
 
 Nenhuma atmosfera shippada busca recurso em servidor de terceiro. As de tela cheia — as que o painel
@@ -653,6 +665,10 @@ O schema separa os tokens em **estéticos** e **funcionais** (`kind` e `modeDepe
   movimento reduzido): eles valem o padrão do sistema, igual em todo tema. Um tema que quer "sem movimento" usa os
   tokens estéticos de movimento (durações e entradas mínimas), não `reducedMotion`;
 - escolhe `texture` e `cardTextureType` que sirvam aos **dois** modos, porque os dois não carregam modo.
+
+**Cor por paleta.** O `colorPalette` cumpre a declaração de cor: o `theme-completeness:check` não cobra do tema a cor que a paleta
+calcula. Onde esta seção diz que o tema declara uma cor, vale o design composto (`composeThemeForMode`), que é o que o
+`auditor_contraste` e o medidor de diversidade leem.
 
 **Identidade do cromo.** Cada tema declara também o conjunto estético das duas barras: texto dos itens, hover, categoria
 e marca; moldura; tratamento do fundo; forma do item ativo; densidade; ícones; e, na topbar, separador, blur e sombra.

@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Design Engine / Autoria"
 status: "🟢 Vigente"
 prioridade: "Alta"
 tags: ["spec", "design-engine", "painel", "preview", "gemeo-digital", "folksonomia"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-design-engine]]", "[[09-temas-e-presets]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[08-identidade-do-host-e-zero-marca]]", "[[10-seguranca-e-acessibilidade]]", "[[003-remocao-backend-proprio]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-design-engine]]", "[[09-temas-e-presets]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[08-identidade-do-host-e-zero-marca]]", "[[10-seguranca-e-acessibilidade]]", "[[003-remocao-backend-proprio]]", "[[024-paleta-calculada-separada-do-tema]]"]
 ---
 
 # 1. O que é, e por que vive em `features/`
@@ -156,6 +156,18 @@ modo. Ele reúne as telas de quem já conhece o motor — **Tabela de tokens** (
 **Busca por pilar** (o Command Center) e **Temas e JSON** (`TemplatesTab`) — e **"Voltar ao modo normal"**. A tela
 dos pilares é o padrão e não tem botão. Teclado: Enter/Espaço abre e foca a primeira entrada; setas (com volta
 circular), Home e End navegam; Esc fecha e devolve o foco ao botão; clicar fora fecha.
+
+## 2.4 Paletas no painel
+
+A seção de paletas (`Main/components/PaletteSection.tsx`, em `ThemeSidebarContent`) oferece as paletas prontas agrupadas por tipo,
+com amostra nos dois modos e nome pelo catálogo de textos, e a criação a partir de uma cor-base e de um tipo, com secundária e acento
+opcionais (`PaletteCreator`).
+
+- **Escolher é rascunho.** A escolha grava `colorPalette` e as cores calculadas para o modo do rascunho; o "Aplicar" grava pelo fluxo de
+  sempre. Não há porta nem entidade própria: a paleta vai no tema salvo, como o valor de `colorPalette` ([[09-temas-e-presets]] §4.3.4).
+- **O ajuste granular vence a paleta.** Mudar uma cor depois de escolher a paleta grava um valor explícito no `design`.
+- **Trocar de paleta com cor ajustada à mão pergunta.** Só o botão explícito de descartar perde os ajustes; cancelar ou fechar o diálogo
+  (Esc, clique fora) mantém o ajuste sobre a paleta nova (`usePaletteSelection`).
 
 # 3. Controles polimórficos
 

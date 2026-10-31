@@ -6,7 +6,7 @@ dominio: "Temas / Paletas"
 status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "paletas", "temas", "contraste"]
-relacionados: ["[[plan-133-motor-de-paletas]]", "[[plan-134-catalogo-de-paletas-e-temas]]", "[[plan-135-paletas-no-painel-e-no-kit]]", "[[09-temas-e-presets]]", "[[024-paleta-calculada-separada-do-tema]]"]
+relacionados: ["[[09-temas-e-presets]]", "[[024-paleta-calculada-separada-do-tema]]"]
 depende_de: "—"
 retida_por: ""
 destino_sintese: "specs/specs/09-temas-e-presets.md + specs/arquitetura/02-design-engine.md + specs/adr/024-paleta-calculada-separada-do-tema.md"
@@ -78,8 +78,8 @@ Também entra o plural do diálogo de troca ("Você ajustou 1 cor(es)"), achado 
 
 | Tipo | Referência | Por quê |
 |---|---|---|
-| Plan | `specs/plan/plan-133-motor-de-paletas.md` §2 | a regra que esta plan muda |
-| Plan | `specs/plan/plan-134-catalogo-de-paletas-e-temas.md` §9 e vereditos | o mapa tema → preset e as sobrescritas mantidas, com o motivo de cada uma |
+| ADR + spec | `specs/adr/024-paleta-calculada-separada-do-tema.md` · `specs/specs/09-temas-e-presets.md` §4.3.4 · `specs/arquitetura/02-design-engine.md` §10.3 | a regra que esta plan muda |
+| Código | `src/core/Design/presets/themes/*.ts` | o mapa tema → preset (`colorPalette`) e as sobrescritas mantidas, com o motivo de cada uma ao lado |
 | Spec fixa | `specs/specs/09-temas-e-presets.md` §4.3.4, §5, §6 | composição da paleta, diversidade, travas |
 | ADR | `specs/adr/024-paleta-calculada-separada-do-tema.md` | a decisão que esta plan refina |
 | **Skill** | `padrao-escrita` + `padrao-typescript` · `ui-criar-tema` · `ui-criar-preset` | sempre · temas e presets |
@@ -127,7 +127,7 @@ Também entra o plural do diálogo de troca ("Você ajustou 1 cor(es)"), achado 
    - os presets × 2 modos, agrupados por tipo;
    - **criação a partir de uma cor:** 6 bases (escura, média, clara, quase neutra, saturada, pastel) × 5 tipos × 2 modos, em grade, com
      o deslocamento de cada âncora anotado (0 ou ΔL);
-   - o fluxo do painel criando uma paleta a partir de uma dessas bases (harness da `plan-135`).
+   - o fluxo do painel criando uma paleta a partir de uma dessas bases (harness de `browser-tests/plan-135-paletas-no-painel.spec.ts`).
 
    O comando que regenera a página vai no resumo.
 10. `npm run themes:catalog`, subseção em `docs/migracoes.md` e `npm run verify -- --tier=quick` uma vez. Cole o resumo com o caminho da
@@ -153,7 +153,7 @@ Também entra o plural do diálogo de troca ("Você ajustou 1 cor(es)"), achado 
 - `npx tsx gates/scripts/audit/verify_contrast.ts` e `npm run themes:diversity` — uma vez cada.
 - `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` — uma vez.
 - A prévia aberta pelo revisor; o caminho é passado ao dono; o veredito só fecha com a aprovação dele.
-- No fechamento da tag: `browser-tests/plan-123-color-hierarchy.spec.ts` e o caso da `plan-135` no navegador.
+- No fechamento da tag: `browser-tests/plan-123-color-hierarchy.spec.ts` e `browser-tests/plan-135-paletas-no-painel.spec.ts`.
 
 # 8. Destino da síntese
 
