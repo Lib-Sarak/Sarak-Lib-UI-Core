@@ -6,7 +6,7 @@ dominio: "Painel de customização"
 status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "painel", "ux", "previa"]
-relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[plan-138-painel-ganhos-rapidos-fontes-paletas-e-acoes]]", "[[plan-140-painel-coluna-unica]]", "[[anexos/painel-design-prototipo]]"]
+relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[plan-140-painel-coluna-unica]]", "[[anexos/painel-design-prototipo]]"]
 depende_de: "plan-144-custo-restante-da-tela"
 retida_por: ""
 destino_sintese: "specs/specs/06-painel-de-customizacao-e-preview.md"

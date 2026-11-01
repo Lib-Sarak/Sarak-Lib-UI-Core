@@ -147,6 +147,9 @@ O painel conta um caminho de três passos, e a tela segue essa ordem:
 | **Exportar** | secundário: baixa o JSON (§5); o rótulo não muda depois de exportar |
 | **Desfazer última aplicação** | só aparece quando há uma aplicação a desfazer (§4.2) |
 
+Só `Aplicar` é ação primária. `Aplicar` e `Descartar` ficam visíveis; Salvar tema, Novo tema, Exportar JSON, Apagar tema e Desfazer última aplicação ficam no menu de mais ações
+(`Main/components/ThemeMoreActionsMenu.tsx`). O texto "N alterações" abre a lista de token, valor aplicado e valor do rascunho (`ThemePendingChanges.tsx`), e abrir a lista fecha o menu, e vice-versa.
+
 Não há aplicar por pilar nem por componente: aplicar é sempre o rascunho inteiro. O painel montado
 pelo `SarakCustomizationPanel` se intitula **"Personalizar o tema"**; dentro dele, o cabeçalho da barra lateral
 diz **"Design"**. Sem selos.
@@ -159,8 +162,7 @@ circular), Home e End navegam; Esc fecha e devolve o foco ao botão; clicar fora
 
 ## 2.4 Paletas no painel
 
-A seção de paletas (`Main/components/PaletteSection.tsx`, em `ThemeSidebarContent`) oferece as paletas prontas agrupadas por tipo,
-com amostra nos dois modos e nome pelo catálogo de textos, e a criação a partir de uma cor-base e de um tipo, com secundária e acento
+A seção de paletas (`Main/components/PaletteSection.tsx`, em `ThemeSidebarContent`) oferece as paletas prontas numa lista de uma linha por paleta, com faixa de cores e nome pelo catálogo de textos, filtros por tipo e a criação a partir de uma cor-base e de um tipo, com secundária e acento
 opcionais (`PaletteCreator`).
 
 - **Escolher é rascunho.** A escolha grava `colorPalette` e as cores calculadas para o modo do rascunho; o "Aplicar" grava pelo fluxo de
@@ -274,12 +276,16 @@ estruturais — não são otimização pontual:
 | **`getAllDesignTokens()` memoizado** | recomputar o dicionário **inteiro** de tokens a cada quadro do arraste |
 | **Debounce no commit do slider** | gravar/propagar em cada quadro, em vez de no valor final |
 
+**A troca de tema não tem transição.** Quando centenas de variáveis mudam de uma vez (`THEME_SWITCH_MIN_CHANGED_VARIABLES`), a marca `data-sarak-theme-switching` entra antes da escrita e sai depois da
+pintura, e `_motion.css` desliga as transições enquanto ela existe; hover, foco e abertura seguem animando. Sem isso, cada elemento recalcula estilo a cada quadro, e o recálculo chega a 68% do custo da troca. Ajuste de um token
+não aciona a marca. O número de recálculos tem teto em `browser-tests/troca-de-tema.spec.ts`.
+
 > ⚠️ **Aninhar `DesignScope` duplica o custo.** Dois `DesignScope` na mesma árvore recomputam e reinjetam
 > o CSS duas vezes por mudança. É o padrão a não repetir — um escopo por árvore de preview.
 
 ## 4.2 Desfazer a última aplicação
 
-Depois de um **`Aplicar`**, a barra de ações oferece **"Desfazer última aplicação"**
+Depois de um **`Aplicar`**, a barra de ações oferece **"Desfazer última aplicação"**, no menu de mais ações
 (`Main/components/ThemeActionBar.tsx`), servido por `useLastAppliedSnapshot.ts`:
 
 - **O que é guardado:** imediatamente antes de cada "Aplicar", o design do sistema **e** o tema anunciado
@@ -414,6 +420,9 @@ bloco monolítico que só testaria o token de superfície.
 `Canvas/components/`: `AtmosphereCatalog`, `CardsCatalog`, `PresetsCatalog`, `TypographyCatalog`,
 `ButtonsCatalog`, `InputsCatalog`, mais `ButtonPresetPreview`, `InputPresetPreview` e `PresetCard`. O
 `PresetsCatalog` é a **Galeria de estilos** (§2.3): cada aba dele é um destes catálogos.
+
+A amostra de fonte usa a fonte real (`headingFont` no título, `bodyFont` no corpo), carregada só quando o cartão entra na área visível e pela origem de `options.fonts` (`useRequestFont`); com `none`, mostra a
+fonte que houver. Escolher uma fonte grava só `headingFont` e `bodyFont`.
 
 > **Correção de estado:** a spec antiga de presets *(`06-presets-engine.md`, **removida** na reescrita
 > da base — histórico no git)* declarava `status: "🔴 A Implementar"` justamente estes componentes.

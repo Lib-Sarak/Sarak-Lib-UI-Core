@@ -90,7 +90,7 @@ sem impor identidade ([[08-identidade-do-host-e-zero-marca]]).
 1. Fotografe o worktree. Liste, no resumo, cada ação do painel de hoje e onde ela fica depois.
 2. **Teste de cobertura primeiro:** todo token que o modo Completo mostra hoje é alcançável numa decisão ou no Avançado. Ele tem de seguir verde
    até o fim.
-3. **Coluna.** Cabeçalho (título, Avançado, busca), lista de decisões, rodapé da plan-138. Ao abrir uma decisão, a tela troca na mesma coluna,
+3. **Coluna.** Cabeçalho (título, Avançado, busca), lista de decisões, rodapé da coluna (`ThemeActionBar`). Ao abrir uma decisão, a tela troca na mesma coluna,
    com voltar; Esc volta; o foco vai ao título ao entrar e à linha ao voltar. Cada linha mostra o valor atual e uma marca de alterada.
 4. **Níveis.** Nível 2 com os grupos da plan-139. Nível 3 recolhido, com a contagem real, primeiro `importance >= 80` e depois "Mostrar todos".
 5. **Fim dos modos.** Remova o seletor e `editMode`. A busca segue atravessando tudo e leva ao token, abrindo a decisão e o ajuste fino.

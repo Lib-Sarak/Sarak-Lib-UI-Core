@@ -342,10 +342,20 @@ manual do usuário continuam por cima. Valor inválido é recusado com aviso e o
 `auditor_contraste` mede (`palette/contrast-pairs.ts`, importada pelo gate — §6.5). `sarakResolvePalette(valor, modo)` é
 público, para o host prever a paleta no próprio sistema.
 
+**A cor da marca vale nos dois modos.** Nenhuma cor serve de texto igual nos dois modos: a 4,5:1, o texto precisa de L ≥ 0,58 sobre o fundo escuro e de L ≤ 0,55 sobre o
+claro. Por isso o **preenchimento** de marca (`btnPrimaryBg`, `rangeActiveColor`, `switchTrackActiveBg`, `checkboxActiveColor`) é a base exata nos dois modos, com o texto sobre
+ele escolhido pelo contraste, e o **texto** de marca (`primaryColor`, `titleColor`, `cardTitleColor`, `navItemActiveColor`) anda a menor distância de luminosidade que passa nos
+pares, com o mesmo matiz e o mesmo croma (`contrast-shift.ts`). Todo texto segue em 4,5.
+
+**O fundo tem cor.** A neutra leva o matiz da base, com régua própria de luminosidade; a faixa de croma e de L está em `scale.ts` e `seeds.ts`, com teste sobre os presets.
+
+**60-30-10.** O mapa de papéis (`role-map.ts`) distribui a primária (ações e títulos), a secundária (subtítulo, botão secundário, cabeçalhos, categoria do menu, gráfico) e o acento
+(ênfase, marcador, foco). Os status seguem semânticos.
+
 **O texto se corrige contra o fundo efetivo.** Quando o host ou o tema declaram uma cor literal (`#…`, `rgb()`, `rgba()`) por cima
 da paleta, como uma barra escura num tema claro, o texto calculado que reprova contra esse fundo nos pares de `PAIRS` anda na escala
-até passar (`correctPaletteAgainstDeclared`). O texto que já passa mantém o tom, e o que o host ou o tema declararam não é tocado;
-por isso nenhum tema embarcado muda de saída nesta etapa. Fundo declarado com `var(...)` ou em outro formato fica fora, porque o
+até passar (`correctPaletteAgainstDeclared`). O texto que já passa mantém o tom, e o que o host ou o tema declararam não é tocado:
+num tema embarcado com fundo próprio, só texto muda, e todo par continua passando. Fundo declarado com `var(...)` ou em outro formato fica fora, porque o
 motor de contraste não o lê.
 
 ## 4.4 Persistir — `localStorage`, e a sincronização entre abas
@@ -591,7 +601,8 @@ e `src/core/Design/presets/components/` (5 arquivos: `atmosphere`, `buttons`, `c
 `src/core/Design/palette/presets.ts`; o que ainda declara de cor é sobrescrita justificada, com uma linha de motivo ao lado, e a
 sobrescrita no `design` tem a sua na `contraparte` (`themePalettes.test.ts`). Quantos presets há por tipo sai do registro
 `SARAK_PALETTE_PRESETS`, nunca daqui. Um preset não pode usar os ids `default`, `matrix`, `neon`, `slate` nem `sunset`
-(`SARAK_LEGACY_PALETTE_IDS`): eram valores do `colorPalette` antigo e podem estar em tema salvo por importador.
+(`SARAK_LEGACY_PALETTE_IDS`): eram valores do `colorPalette` antigo e podem estar em tema salvo por importador. Um id publicado não sai do registro: a curadoria muda a cor, nunca
+o id, porque um id desconhecido compõe sem paleta.
 
 ## 5.1 Todo fundo que a lib entrega funciona offline
 

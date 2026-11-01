@@ -7,7 +7,7 @@ status: "🟠 Em revisão"
 prioridade: "Alta"
 tags: ["plan", "paletas", "cor", "curadoria"]
 relacionados: ["[[09-temas-e-presets]]", "[[02-design-engine]]", "[[024-paleta-calculada-separada-do-tema]]"]
-depende_de: "plan-136-cor-ancora-fundo-tingido-e-harmonia-visivel"
+depende_de: "—"
 retida_por: ""
 destino_sintese: "specs/specs/09-temas-e-presets.md"
 ---
@@ -284,7 +284,7 @@ provável de as cores não terem combinado, e por isso vem **antes** da escolha.
 
 | Faixa | Papéis | Regra |
 |---|---|---|
-| Texto | `subtitleColor`, `emphasisColor`, `sidebarCategoryColor`, `secondaryColor`, `accentColor`, `tertiaryColor` | a semente, com deslocamento mínimo (`shiftRole`, a busca da plan-136) |
+| Texto | `subtitleColor`, `emphasisColor`, `sidebarCategoryColor`, `secondaryColor`, `accentColor`, `tertiaryColor` | a semente, com deslocamento mínimo (`shiftRole`, a busca de `contrast-shift.ts`) |
 | Elemento pequeno | `chartColorPalette`, `navActiveMarkerColor` | a semente exata (`BASE`), nos dois modos |
 | Superfície grande | `cardHeaderBg`, `cardHeaderBorder`, `tableHeaderBg`, `btnSecondaryBg` | continua tingida |
 

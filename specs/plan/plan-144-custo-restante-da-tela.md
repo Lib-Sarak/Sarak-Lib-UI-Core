@@ -7,7 +7,7 @@ status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "desempenho", "tema", "painel"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[11-testes-e-cobertura]]", "[[plan-139-painel-previas-reais]]"]
-depende_de: "plan-142-desempenho-da-troca-de-tema"
+depende_de: "—"
 retida_por: ""
 destino_sintese: "specs/specs/06-painel-de-customizacao-e-preview.md"
 ---
@@ -20,6 +20,11 @@ Mover o mouse não custa nada, e a troca de tema chega à meta que a `plan-142` 
 
 A `plan-142` cortou de 70% a 89%. Medido pelo revisor em 2026-11-01 (galeria aberta, 2.057 elementos): tema ~1.000 ms na primeira troca, ~555 ms nas seguintes e 3.894 ms com CPU 4×. A meta segue em 300 ms e
 1,5 s. O dono aceitou o resultado e pediu esta continuação, antes da `plan-139`, cuja prévia ao passar o mouse exige composição quase instantânea.
+
+**Rotina de medição.** Monte o painel público (`SarakUIProvider` + `SarakCustomizationPanel`) em build de produção e, pelo Playwright com sessão CDP, leia `Performance.getMetrics` antes e depois do clique: `TaskDuration`,
+`ScriptDuration`, `RecalcStyleDuration`, `LayoutDuration`, `RecalcStyleCount`. CPU lenta: `Emulation.setCPUThrottlingRate` com `rate: 4`. Espere a tela assentar antes de ler o fim.
+
+**Já tentado e sem efeito:** duração de 0,01 ms em vez de `transition: none` piorou (a transição ainda é criada). Filtrar as variáveis das miniaturas ficou dentro do ruído.
 
 **O que sobra:**
 
@@ -45,14 +50,14 @@ A `plan-142` cortou de 70% a 89%. Medido pelo revisor em 2026-11-01 (galeria abe
 
 | Tipo | Referência | Por quê |
 |---|---|---|
-| Plan | `specs/plan/plan-142-desempenho-da-troca-de-tema.md` §2 e §10 | a rotina de medição e o que já foi tentado |
+| Spec fixa | `specs/specs/11-testes-e-cobertura.md` §7.3 | orçamento por contagem |
 | Spec fixa | `specs/specs/06-painel-de-customizacao-e-preview.md` §4.1 | custo do rascunho |
 | Teste | `browser-tests/troca-de-tema.spec.ts` | orçamento |
 | **Skill** | `padrao-escrita` + `padrao-typescript` · `ui-arquitetura-design` | sempre · CSS por token |
 
 # 5. Instruções de execução
 
-1. Fotografe o worktree. Meça o antes, com a rotina da plan-142, com **`dist/` exclusivo**.
+1. Fotografe o worktree. Meça o antes, com a rotina do §2, com **`dist/` exclusivo**.
 2. **Mouse.** Procure `--mouse-x`/`--mouse-y` também em `docs/`, no guia, no catálogo, nos temas e nos importadores conhecidos. Se ninguém lê, remova a escrita e o ouvinte. Se a variável for contrato público, ela só escreve quando alguém pediu,
    e não no `:root`. Decida com a evidência e declare no resumo. Spec de navegador: mover o mouse 20 vezes não gera recálculo de estilo em toda a árvore.
 3. **Marca.** Elimine o recálculo da retirada, com uma regra que não invalide `:root[...] *` ao sair ou uma forma de desligar transição que não exija mudar seletor de toda a árvore. Meça alternativas, sem deduzir.
@@ -66,8 +71,8 @@ A `plan-142` cortou de 70% a 89%. Medido pelo revisor em 2026-11-01 (galeria abe
 # 6. Critérios de aceite
 
 - [ ] Mover o mouse não recalcula a árvore inteira — navegador.
-- [ ] Tema em até 300 ms de CPU, e até 1,5 s com CPU 4×, medido como na plan-142. Se não der, diga o que falta, com número.
-- [ ] Sem transição durante a troca; depois dela, hover e foco animam — o spec da plan-142 segue verde.
+- [ ] Tema em até 300 ms de CPU, e até 1,5 s com CPU 4×, medido pela rotina do §2. Se não der, diga o que falta, com número.
+- [ ] Sem transição durante a troca; depois dela, hover e foco animam — `browser-tests/troca-de-tema.spec.ts` segue verde.
 - [ ] Tetos baixados no spec de orçamento.
 - [ ] `npm run cromo-css-real:check` verde inteiro.
 
@@ -77,7 +82,7 @@ A `plan-142` cortou de 70% a 89%. Medido pelo revisor em 2026-11-01 (galeria abe
 
 - `npx vitest run src/core/Provider src/core/Design src/features/DesignEngine` — uma vez.
 - `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` — uma vez.
-- Medição independente, com a rotina do §2 da plan-142.
+- Medição independente, com a rotina do §2.
 - O dono cronometra no ERP.
 
 # 8. Destino da síntese

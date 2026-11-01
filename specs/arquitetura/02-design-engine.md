@@ -339,7 +339,8 @@ Markdown, catálogo, calendário, Kanban e Gantt leem o papel do texto que desen
 padrão seguir o texto principal, e um `config` claro sem os papéis recebe os do par claro do tema de base (`useThemeSeed`).
 
 **Paleta calculada.** Com `colorPalette`, os tokens de cor deixam de vir escritos no tema e saem de `src/core/Design/palette/`
-(sementes por tipo → escalas OKLCH de 11 tons → `PALETTE_ROLE_MAP` por modo → `correctPaletteContrast`), expandidos na
+(sementes por tipo → escalas OKLCH de 11 tons → `PALETTE_ROLE_MAP` por modo → `correctPaletteContrast`, com a menor mudança de luminosidade nos papéis de texto da marca,
+em vez de saltar de tom em tom), expandidos na
 **composição** do `design` (`composeThemeDesign`, `overlayPreferences`), antes de qualquer emissão. A emissão de variáveis
 (`useDesignVariables.ts`) não sabe de paleta: recebe tokens de cor comuns, e a barreira de CSS (`[<>{};]`) vale para o valor
 de `colorPalette` como para qualquer outro — o formato foi escolhido para passar nela sem exceção. Regra de composição e
