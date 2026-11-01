@@ -71,7 +71,7 @@ test('escolher uma pronta, criar a partir de uma cor, ajustar um token e aplicar
 
     const gallery = page.getByRole('radiogroup', { name: 'Paletas prontas' });
     await expect(gallery).toBeVisible();
-    await capture(page, '1-galeria-por-tipo.png', 'Galeria de paletas agrupada por tipo; cada amostra mostra o modo claro e o escuro.');
+    await capture(page, '1-galeria-por-tipo.png', 'Galeria de paletas: uma linha por paleta, com filtro por tipo.');
 
     await page.locator('.sarak-device-desktop').getByRole('button', { name: 'Modo Claro' }).click();
     await capture(page, '2-galeria-modo-claro.png', 'A mesma galeria com o painel e a prévia no modo claro.');

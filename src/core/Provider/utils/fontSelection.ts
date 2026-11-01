@@ -27,6 +27,10 @@ const FAMILY_BY_VALUE = new Map(
     THEME_FONTS.flatMap((font) => listLoadableFamilies([font]).map((family) => [font.value, family] as const)),
 );
 
+/** Valor de fonte do tema → família a carregar; `undefined` para a fonte do sistema e para valor desconhecido. */
+export const resolveFontFamily = (value: string, fonts?: HostFontRegistry): string | undefined =>
+    FAMILY_BY_VALUE.get(value) ?? fonts?.values.get(value);
+
 let fontTokens: { id: string; defaultValue: unknown }[] | null = null;
 const getFontTokens = () => {
     fontTokens ??= sarakGetAllDesignTokens()
@@ -45,7 +49,7 @@ export function resolveUsedFontFamilies(design: SarakThemePayload, fonts?: HostF
     const families = new Set<string>();
     for (const { id, defaultValue } of getFontTokens()) {
         const value = values[id] ?? defaultValue;
-        const family = typeof value === 'string' ? FAMILY_BY_VALUE.get(value) ?? fonts?.values.get(value) : undefined;
+        const family = typeof value === 'string' ? resolveFontFamily(value, fonts) : undefined;
         if (family) families.add(family);
     }
     return [...families];

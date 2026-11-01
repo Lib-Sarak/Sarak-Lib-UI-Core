@@ -1,17 +1,21 @@
-import React from 'react';
-import { Check, RotateCcw } from 'lucide-react';
+import React, { useCallback, useState } from 'react';
+import { Check } from 'lucide-react';
 import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
+import type { SarakDirtyToken } from '../../hooks/useDesignDraft';
+import { ThemeMoreActionsMenu, type ThemeMenuAction } from './ThemeMoreActionsMenu';
+import { ThemePendingChanges } from './ThemePendingChanges';
 
 const ACTION_LABELS = {
     apply: 'Aplicar',
-    discard: 'Descartar',
-    undo: 'Desfazer última aplicação'
+    discard: 'Descartar'
 } as const;
 
 interface ThemeActionBarProps {
     isDirty: boolean;
     dirtyTokenCount: number;
+    /** O que o rascunho muda; o contador abre esta lista. */
+    dirtyTokens: SarakDirtyToken[];
     onApply: () => void;
     onDiscard: () => void;
     canSaveToRuntime: boolean;
@@ -24,9 +28,11 @@ interface ThemeActionBarProps {
     onUndoLastApply: () => void;
 }
 
+/** Uma ação primária (Aplicar), Descartar e o resto no menu; Apagar tema, por último e em tom de perigo. */
 export const ThemeActionBar: React.FC<ThemeActionBarProps> = ({
     isDirty,
     dirtyTokenCount,
+    dirtyTokens,
     onApply,
     onDiscard,
     canSaveToRuntime,
@@ -39,76 +45,40 @@ export const ThemeActionBar: React.FC<ThemeActionBarProps> = ({
     onUndoLastApply
 }) => {
     const text = useLibraryText();
-    const pendingChangesLabel = dirtyTokenCount > 0
-        ? text(dirtyTokenCount === 1 ? 'themePendingChangeCount' : 'themePendingChangesCount', { count: dirtyTokenCount })
-        : null;
+    const [openLayer, setOpenLayer] = useState<'changes' | 'menu' | null>(null);
+    const toggleChanges = useCallback(() => setOpenLayer((layer) => (layer === 'changes' ? null : 'changes')), []);
+    const setMenuOpen = useCallback((open: boolean) => setOpenLayer(open ? 'menu' : null), []);
+    const menuActions: ThemeMenuAction[] = [
+        ...(canSaveToRuntime ? [
+            { id: 'save', label: text('themeSaveDialogTitle'), onSelect: onSave },
+            { id: 'create', label: text('themeCreateAction'), onSelect: onCreateTheme },
+        ] : []),
+        { id: 'export', label: text('themeExportJsonAction'), onSelect: onExport },
+        ...(canUndoLastApply ? [{ id: 'undo', label: text('themeUndoLastApplyAction'), onSelect: onUndoLastApply }] : []),
+        ...(canDeleteTheme ? [{ id: 'delete', label: text('themeDeleteAction'), onSelect: onDeleteTheme, danger: true }] : []),
+    ];
 
     return (
         <div role="group" aria-label="Ações do tema" className="shrink-0 border-t border-[var(--theme-border)] bg-[var(--theme-surface)] p-3">
             <div className="flex flex-col gap-2">
-                <div className="flex flex-col gap-1">
+                <ThemePendingChanges tokens={dirtyTokens} isOpen={openLayer === 'changes'} onToggle={toggleChanges} />
+                <div className="flex items-center gap-2">
                     <SarakButton
                         onClick={onApply}
                         disabled={dirtyTokenCount === 0}
                         variant="primary"
-                        fullWidth
                         size="md"
                         leftIcon={<Check size={14} />}
-                        aria-describedby={pendingChangesLabel ? 'theme-pending-changes-count' : undefined}
-                        className="min-w-0 whitespace-normal break-words disabled:opacity-80"
+                        aria-describedby={dirtyTokenCount > 0 ? 'theme-pending-changes-count' : undefined}
+                        className="min-w-0 flex-1 whitespace-normal break-words disabled:opacity-80"
                     >
                         {ACTION_LABELS.apply}
                     </SarakButton>
-                    {pendingChangesLabel && (
-                        <span
-                            id="theme-pending-changes-count"
-                            role="status"
-                            className="text-center text-[var(--sarak-type-scale-caption,12px)] text-[var(--color-theme-title,CanvasText)]"
-                        >
-                            {pendingChangesLabel}
-                        </span>
-                    )}
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                    <SarakButton onClick={onDiscard} disabled={!isDirty} variant="secondary" size="sm" fullWidth className="min-w-0 whitespace-normal break-words disabled:opacity-80">
+                    <SarakButton onClick={onDiscard} disabled={!isDirty} variant="secondary" size="md" className="min-w-0 whitespace-normal break-words disabled:opacity-80">
                         {ACTION_LABELS.discard}
                     </SarakButton>
-                    {canSaveToRuntime ? (
-                        <SarakButton onClick={onSave} variant="primary" size="sm" fullWidth className="min-w-0 whitespace-normal break-words">
-                            {text('themeSaveDialogTitle')}
-                        </SarakButton>
-                    ) : (
-                        <SarakButton onClick={onExport} variant="ghost" size="sm" fullWidth className="min-w-0 whitespace-normal break-words">
-                            {text('themeExportJsonAction')}
-                        </SarakButton>
-                    )}
+                    <ThemeMoreActionsMenu actions={menuActions} isOpen={openLayer === 'menu'} onOpenChange={setMenuOpen} />
                 </div>
-                {canSaveToRuntime && (
-                    <div className="grid grid-cols-2 gap-2">
-                        <SarakButton onClick={onExport} variant="ghost" size="sm" fullWidth className="min-w-0 whitespace-normal break-words">
-                            {text('themeExportJsonAction')}
-                        </SarakButton>
-                        <SarakButton onClick={onCreateTheme} variant="secondary" size="sm" fullWidth className="min-w-0 whitespace-normal break-words">
-                            {text('themeCreateAction')}
-                        </SarakButton>
-                    </div>
-                )}
-                {canDeleteTheme && (
-                    <SarakButton onClick={onDeleteTheme} variant="ghost" size="sm" fullWidth className="min-w-0 whitespace-normal break-words">
-                        {text('themeDeleteAction')}
-                    </SarakButton>
-                )}
-                {canUndoLastApply && (
-                    <SarakButton
-                        onClick={onUndoLastApply}
-                        variant="ghost"
-                        size="xs"
-                        leftIcon={<RotateCcw size={12} />}
-                        className="w-full min-w-0 whitespace-normal break-words self-center"
-                    >
-                        {ACTION_LABELS.undo}
-                    </SarakButton>
-                )}
             </div>
         </div>
     );

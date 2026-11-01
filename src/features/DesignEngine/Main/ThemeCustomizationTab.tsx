@@ -32,7 +32,7 @@ export const ThemeCustomizationTab: React.FC = () => {
     } = useThemeEngineState();
     const {
         draft, previewDraft, updateDraft, handleApplyToSystem, isComponentDirty, resetComponent, resetToken,
-        isDirty, dirtyTokenCount, discardDraft, toast, showToast, handleThemePreview,
+        isDirty, dirtyTokenCount, dirtyTokens, discardDraft, toast, showToast, handleThemePreview,
         setDraftThemeId,
         canUndoLastApply, undoLastApply
     } = useDesignDraft(sarak);
@@ -107,6 +107,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                 <ThemeActionBar
                     isDirty={isDirty}
                     dirtyTokenCount={dirtyTokenCount}
+                    dirtyTokens={dirtyTokens}
                     onApply={themeActions.handleApplyGlobalChanges}
                     onDiscard={themeActions.handleDiscardChanges}
                     canSaveToRuntime={themeActions.canSaveToRuntime}

@@ -7,6 +7,15 @@ import { buildHarness } from './build-harness.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 
+/** Salvar, criar e apagar tema moram no menu "Mais ações" da barra do painel. */
+const chooseThemeAction = async (page: Page, name: string): Promise<void> => {
+    await page.getByRole('button', { name: 'Mais ações' }).click();
+    // Pelo teclado: nesta cena a barra fica no topo da página e o menu, que abre para cima, sai da área visível.
+    const item = page.getByRole('menuitem', { name });
+    await item.focus();
+    await item.press('Enter');
+};
+
 const withImporterHarness = async (run: (page: Page) => Promise<void>): Promise<void> => {
     const fixturePath = path.join(HERE, 'fixtures', 'importador-temas-entry.tsx');
     const { outDir, htmlPath } = await buildHarness(fixturePath);
@@ -16,7 +25,7 @@ const withImporterHarness = async (run: (page: Page) => Promise<void>): Promise<
         const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
         await page.emulateMedia({ reducedMotion: 'reduce' });
         await page.goto(pathToFileURL(htmlPath).href);
-        await expect(page.getByRole('button', { name: 'Salvar tema' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Mais ações' })).toBeVisible();
         await run(page);
     } finally {
         await browser.close();
@@ -28,7 +37,7 @@ test('salva o rascunho aplicado como tema novo e o Aplicar seguinte persiste o i
     await withImporterHarness(async (page) => {
         await page.getByTestId('activate-embedded').click();
         await page.getByTestId('edit-current-draft').click();
-        await page.getByRole('button', { name: 'Salvar tema' }).click();
+        await chooseThemeAction(page, 'Salvar tema');
         await page.getByRole('radio', { name: 'Salvar como novo', exact: true }).locator('xpath=ancestor::label').click();
         await page.getByLabel('Nome do tema').fill('ERP Noite Novo');
         await page.getByRole('button', { name: 'Salvar como novo' }).click();
@@ -48,7 +57,7 @@ test('salva o rascunho aplicado como tema novo e o Aplicar seguinte persiste o i
 test('substitui o tema do importador preservando o id na coleção retornada por customThemes', async () => {
     await withImporterHarness(async (page) => {
         await page.getByTestId('edit-current-draft').click();
-        await page.getByRole('button', { name: 'Salvar tema' }).click();
+        await chooseThemeAction(page, 'Salvar tema');
         await page.getByLabel('Nome do tema').fill('ERP Noite Revisto');
         await page.getByRole('button', { name: /^Salvar$/ }).click();
 
@@ -60,7 +69,7 @@ test('substitui o tema do importador preservando o id na coleção retornada por
 
 test('duplica um tema do importador com nome e id novos, mantendo o original', async () => {
     await withImporterHarness(async (page) => {
-        await page.getByRole('button', { name: 'Salvar tema' }).click();
+        await chooseThemeAction(page, 'Salvar tema');
         await page.getByText('Duplicar', { exact: true }).click();
         await page.getByRole('button', { name: 'Duplicar' }).click();
 
@@ -75,7 +84,7 @@ test('duplica um tema embarcado como criação com identidade nova', async () =>
     await withImporterHarness(async (page) => {
         const defaultThemeId = await page.getByTestId('default-theme-id').innerText();
         await page.getByTestId('activate-embedded').click();
-        await page.getByRole('button', { name: 'Salvar tema' }).click();
+        await chooseThemeAction(page, 'Salvar tema');
         await page.getByText('Duplicar', { exact: true }).click();
         await page.getByRole('button', { name: 'Duplicar' }).click();
 
@@ -90,7 +99,7 @@ test('duplica um tema embarcado como criação com identidade nova', async () =>
 
 test('cria tema a partir da referência completa para o modo atual', async () => {
     await withImporterHarness(async (page) => {
-        await page.getByRole('button', { name: 'Novo tema' }).click();
+        await chooseThemeAction(page, 'Novo tema');
         await expect(page.getByRole('dialog', { name: 'Salvar tema' })).toBeVisible();
         await page.getByLabel('Nome do tema').fill('Tema de Referência Novo');
         await page.getByRole('button', { name: 'Salvar como novo' }).click();
@@ -106,7 +115,7 @@ test('não oferece substituir tema embarcado e salva uma cópia com id livre', a
         const defaultThemeId = await page.getByTestId('default-theme-id').innerText();
         const defaultThemeName = await page.getByTestId('default-theme-name').innerText();
         await page.getByTestId('activate-embedded').click();
-        await page.getByRole('button', { name: 'Salvar tema' }).click();
+        await chooseThemeAction(page, 'Salvar tema');
         await expect(page.getByRole('radio', { name: 'Salvar', exact: true })).toHaveCount(0);
         await page.getByLabel('Nome do tema').fill(defaultThemeName);
         await page.getByRole('button', { name: 'Salvar como novo' }).click();
@@ -128,7 +137,7 @@ test('não oferece substituir tema embarcado e salva uma cópia com id livre', a
 test('apagar ativo usa confirmação da lib e ativa o tema padrão do modo', async () => {
     await withImporterHarness(async (page) => {
         const defaultThemeId = await page.getByTestId('default-theme-id').innerText();
-        await page.getByRole('button', { name: 'Apagar tema' }).click();
+        await chooseThemeAction(page, 'Apagar tema');
         await expect(page.getByRole('dialog', { name: 'Apagar tema?' })).toBeVisible();
         await expect(page.getByText('Apagar o tema “ERP Noite”?')).toBeVisible();
         await page.getByRole('button', { name: 'Confirmar' }).click();
@@ -142,7 +151,7 @@ test('apagar ativo usa confirmação da lib e ativa o tema padrão do modo', asy
 test('apagar rejeitado mantém o tema na coleção e mostra o aviso', async () => {
     await withImporterHarness(async (page) => {
         await page.getByTestId('reject-next-delete').click();
-        await page.getByRole('button', { name: 'Apagar tema' }).click();
+        await chooseThemeAction(page, 'Apagar tema');
         await page.getByRole('button', { name: 'Confirmar' }).click();
 
         await expect(page.getByTestId('last-theme-operation')).toHaveText('delete-rejected:erp-noite');
@@ -180,15 +189,15 @@ test('restaura id e tema do servidor sem clarão, e mostra falha da porta de gra
         await page.goto(pathToFileURL(htmlPath).href);
         await expect(page.getByTestId('restored-primary-color')).toHaveText('#123456');
         await expect(page.getByTestId('restored-active-theme-id')).toHaveText('config-theme');
-        await page.getByRole('button', { name: 'Salvar tema' }).click();
+        await chooseThemeAction(page, 'Salvar tema');
         await expect(page.getByLabel('Nome do tema')).toHaveValue('Tema do config');
         await page.getByRole('button', { name: 'Cancelar' }).click();
 
         await page.evaluate(() => window.__resolveRestoredTheme?.());
         await expect(page.getByTestId('restored-primary-color')).toHaveText('#265f87');
         await expect(page.getByTestId('restored-active-theme-id')).toHaveText('server-theme');
-        await expect(page.getByRole('button', { name: 'Salvar tema' })).toBeVisible();
-        await page.getByRole('button', { name: 'Salvar tema' }).click();
+        await expect(page.getByRole('button', { name: 'Mais ações' })).toBeVisible();
+        await chooseThemeAction(page, 'Salvar tema');
         await expect(page.getByLabel('Nome do tema')).toHaveValue('Tema do servidor');
         await page.getByRole('button', { name: 'Cancelar' }).click();
         expect(await page.evaluate(() => localStorage.getItem('browser-theme-restore::tenant:org-a::active-theme-id'))).toBe('server-theme');

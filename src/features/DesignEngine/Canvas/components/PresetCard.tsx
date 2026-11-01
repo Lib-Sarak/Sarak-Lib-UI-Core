@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { SarakThemePreset } from '../../../../core/Design/presets/themes';
 import { resolveThemeForMode } from '../../../../core/Design/presets/themes/color-engine';
@@ -35,10 +35,11 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Sara
     // plan-26: a miniatura reflete o que `onApply` REALMENTE aplicaria — a
     // contraparte AUTORADA quando existe, e só cai no `syncThemeWithMode`
     // sintetizado para os temas legados sem contraparte.
-    const design = withThemePalette(resolveThemeForMode(
+    // Resolver a paleta custa de 5 a 19 ms por tema: só refaz quando o tema ou o modo mudam, não a cada render do painel.
+    const design = useMemo(() => withThemePalette(resolveThemeForMode(
         { design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte },
         currentMode as 'light' | 'dark',
-    ));
+    )), [theme.design, theme.contraparte, currentMode]);
     const { variables } = useDesignVariables(design);
 
     const primary = String(design.primaryColor || 'var(--color-theme-primary, #19e3f0)');

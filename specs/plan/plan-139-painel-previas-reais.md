@@ -7,7 +7,7 @@ status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "painel", "ux", "previa"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[plan-138-painel-ganhos-rapidos-fontes-paletas-e-acoes]]", "[[plan-140-painel-coluna-unica]]", "[[anexos/painel-design-prototipo]]"]
-depende_de: "plan-138-painel-ganhos-rapidos-fontes-paletas-e-acoes"
+depende_de: "plan-144-custo-restante-da-tela"
 retida_por: ""
 destino_sintese: "specs/specs/06-painel-de-customizacao-e-preview.md"
 ---
@@ -27,10 +27,10 @@ mostram barras no lugar de conteúdo.
 **Regra desta plan:** a opção é desenhada com o componente real, com a opção aplicada por cima do rascunho, dentro de um `DesignScope`
 ([[06-painel-de-customizacao-e-preview]] §6.1). Nada de barra cinza.
 
-**Orçamento:** componentes reais pesam mais que barras cinza. O spec de orçamento de recálculo da `plan-142` segue verde sem subir o teto, e
+**Orçamento:** componentes reais pesam mais que barras cinza. O spec de orçamento de recálculo (`browser-tests/troca-de-tema.spec.ts`) segue verde sem subir o teto, e
 cada miniatura leva só as variáveis que usa. A espiada só funciona se compor um tema for quase instantâneo.
 
-**Só começa com a `plan-138` e a `plan-142` aprovadas.**
+**Só começa com a `plan-144` aprovada.**
 
 **Prepare para a plan-140:** cada grupo de opções sai como componente que não sabe onde está. A 140 os muda da galeria para a coluna sem
 reescrevê-los.

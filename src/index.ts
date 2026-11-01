@@ -78,6 +78,7 @@ export type { SarakAppChromeProps, SarakNavItem, SarakChromeWidgets, SarakChrome
 export * from './components/atomic/Icon/SarakIcon';
 export * from './components/atomic/Icon/IconMap';
 export { useDesignDraft } from './features/DesignEngine/hooks/useDesignDraft';
+export type { SarakDirtyToken } from './features/DesignEngine/hooks/useDesignDraft';
 export { SARAK_DESIGN_MANIFEST } from './core/Provider/manifest';
 // Temas COMPLETOS de referência (Spec 40.1 — L6): o consumidor parte destes e customiza
 // poucos valores, mantendo TODOS os eixos (cor+fonte+cromo+raio+espaçamento). Inclui os

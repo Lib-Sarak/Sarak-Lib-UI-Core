@@ -34,15 +34,16 @@ export const PaletteSection: React.FC<PaletteSectionProps> = ({ draft, appliedDe
                 <h2 className="text-[var(--sarak-type-scale-xl,20px)] font-semibold text-[var(--theme-title,#f2f6fb)]">{text('paletteSectionTitle')}</h2>
                 <p className="mt-1 text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-muted,rgba(242,246,251,0.55))]">{text('paletteSectionHint')}</p>
             </div>
-            <PaletteGallery
-                selectedId={typeof draft.colorPalette === 'string' ? draft.colorPalette : ''}
-                onSelect={(id) => { void selectPalette(id); }}
-            />
             {isCreating ? (
                 <PaletteCreator initialBase={initialBase} onConfirm={handleCreate} onClose={() => setIsCreating(false)} />
             ) : (
-                <SarakButton type="button" variant="secondary" size="sm" onClick={() => setIsCreating(true)}>{text('paletteCreateOpen')}</SarakButton>
+                <SarakButton type="button" variant="secondary" size="sm" fullWidth className="min-w-0 whitespace-normal break-words text-center font-semibold normal-case tracking-normal" onClick={() => setIsCreating(true)}>{text('paletteCreateOpen')}</SarakButton>
             )}
+            <PaletteGallery
+                selectedId={typeof draft.colorPalette === 'string' ? draft.colorPalette : ''}
+                onSelect={(id) => { void selectPalette(id); }}
+                mode={draft.mode === 'light' ? 'light' : 'dark'}
+            />
         </section>
     );
 };

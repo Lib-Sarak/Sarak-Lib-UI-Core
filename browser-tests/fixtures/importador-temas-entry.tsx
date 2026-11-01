@@ -109,6 +109,7 @@ const ThemeManagementScene: React.FC<ThemeManagementSceneProps> = (props) => {
                 <ThemeActionBar
                     isDirty={draftState.isDirty}
                     dirtyTokenCount={draftState.dirtyTokenCount}
+                    dirtyTokens={draftState.dirtyTokens}
                     onApply={actions.handleApplyGlobalChanges}
                     onDiscard={actions.handleDiscardChanges}
                     canSaveToRuntime={actions.canSaveToRuntime}

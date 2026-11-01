@@ -25,6 +25,18 @@ describe('PaletteSwatch', () => {
         expect(screen.getByTestId('palette-swatch-dark').querySelectorAll('.h-3')).toHaveLength(3);
     });
 
+    it('com o modo, vira uma faixa contínua só dele: sem texto e com o fundo e as três cores', () => {
+        const { container } = render(<PaletteSwatch input={INPUT} mode="light" />);
+        const strip = screen.getByTestId('palette-strip');
+        expect(strip.textContent).toBe('');
+        expect(strip.children).toHaveLength(4);
+        const colors = resolvePalette(INPUT, 'light');
+        expect(strip.children[0]).toHaveStyle({ background: colors.colorBgBody });
+        expect(strip.children[1]).toHaveStyle({ background: colors.primaryColor });
+        expect(screen.queryByTestId('palette-swatch-dark')).toBeNull();
+        expect(container.firstElementChild).toHaveAttribute('aria-hidden', 'true');
+    });
+
     it('é decorativa: fica fora da árvore de acessibilidade', () => {
         const { container } = render(<PaletteSwatch input={INPUT} />);
         expect(container.firstElementChild).toHaveAttribute('aria-hidden', 'true');

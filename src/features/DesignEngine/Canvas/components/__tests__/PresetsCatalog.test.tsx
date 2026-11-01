@@ -45,7 +45,7 @@ describe('PresetsCatalog', () => {
         render(<PresetsCatalog {...createProps()} />);
         fireEvent.click(screen.getByRole('button', { name: 'Tipografia' }));
         expect(screen.getByText('Categoria: Tipografia')).toBeInTheDocument();
-        expect(screen.getAllByText('The quick brown fox jumps over the lazy dog')[0]).toBeInTheDocument();
+        expect(screen.getAllByText('A atenção aos detalhes faz a diferença.')[0]).toBeInTheDocument();
     });
 
     it('expõe as seis abas com rótulos em português', () => {

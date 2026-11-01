@@ -50,1105 +50,672 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
             Escolha uma paleta pronta ou crie uma a partir de uma cor. Vale no rascunho até você aplicar.
           </p>
         </div>
-        <div
-          aria-label="Paletas prontas"
-          class="flex flex-col gap-[var(--sarak-layout-gap-sm,12px)]"
-          role="radiogroup"
-        >
-          <div
-            class="flex flex-col gap-1"
-            role="none"
-          >
-            <span
-              class="text-[var(--sarak-type-scale-caption,12px)] font-semibold uppercase tracking-wide text-[var(--theme-muted)]"
-              role="none"
-            >
-              Monocromática
-            </span>
-            <div
-              class="grid grid-cols-2 gap-1"
-              role="none"
-            >
-              <button
-                aria-checked="false"
-                aria-label="Terra e argila — Monocromática"
-                class="flex flex-col gap-1 rounded-[var(--sarak-card-radius,10px)] border p-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] border-[var(--theme-border)]"
-                role="radio"
-                tabindex="0"
-                type="button"
-              >
-                <span
-                  class="font-medium"
-                >
-                  Terra e argila
-                </span>
-                <span
-                  aria-hidden="true"
-                  class="flex w-full flex-col gap-1"
-                >
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-light"
-                    style="background: rgb(241, 246, 234);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(90, 113, 42);"
-                    >
-                      Claro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(97, 119, 49);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(68, 84, 36);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(69, 83, 42);"
-                    />
-                  </span>
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-dark"
-                    style="background: rgb(13, 16, 8);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(116, 139, 69);"
-                    >
-                      Escuro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(112, 135, 65);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(187, 203, 162);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(188, 202, 166);"
-                    />
-                  </span>
-                </span>
-              </button>
-              <button
-                aria-checked="false"
-                aria-label="Âmbar industrial — Monocromática"
-                class="flex flex-col gap-1 rounded-[var(--sarak-card-radius,10px)] border p-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] border-[var(--theme-border)]"
-                role="radio"
-                tabindex="-1"
-                type="button"
-              >
-                <span
-                  class="font-medium"
-                >
-                  Âmbar industrial
-                </span>
-                <span
-                  aria-hidden="true"
-                  class="flex w-full flex-col gap-1"
-                >
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-light"
-                    style="background: rgb(252, 241, 232);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(154, 89, 0);"
-                    >
-                      Claro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(163, 94, 0);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(113, 63, 0);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(113, 63, 0);"
-                    />
-                  </span>
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-dark"
-                    style="background: rgb(20, 13, 7);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(255, 154, 31);"
-                    >
-                      Escuro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(255, 154, 31);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(242, 182, 127);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(237, 184, 136);"
-                    />
-                  </span>
-                </span>
-              </button>
-              <button
-                aria-checked="false"
-                aria-label="Tinta e vinho — Monocromática"
-                class="flex flex-col gap-1 rounded-[var(--sarak-card-radius,10px)] border p-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] border-[var(--theme-border)]"
-                role="radio"
-                tabindex="-1"
-                type="button"
-              >
-                <span
-                  class="font-medium"
-                >
-                  Tinta e vinho
-                </span>
-                <span
-                  aria-hidden="true"
-                  class="flex w-full flex-col gap-1"
-                >
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-light"
-                    style="background: rgb(251, 242, 232);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(118, 102, 83);"
-                    >
-                      Claro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(125, 108, 90);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(86, 75, 62);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(85, 75, 64);"
-                    />
-                  </span>
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-dark"
-                    style="background: rgb(19, 13, 7);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(145, 128, 108);"
-                    >
-                      Escuro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(141, 124, 104);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(205, 194, 182);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(204, 194, 184);"
-                    />
-                  </span>
-                </span>
-              </button>
-            </div>
-          </div>
-          <div
-            class="flex flex-col gap-1"
-            role="none"
-          >
-            <span
-              class="text-[var(--sarak-type-scale-caption,12px)] font-semibold uppercase tracking-wide text-[var(--theme-muted)]"
-              role="none"
-            >
-              Análoga
-            </span>
-            <div
-              class="grid grid-cols-2 gap-1"
-              role="none"
-            >
-              <button
-                aria-checked="false"
-                aria-label="Oceano — Análoga"
-                class="flex flex-col gap-1 rounded-[var(--sarak-card-radius,10px)] border p-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] border-[var(--theme-border)]"
-                role="radio"
-                tabindex="-1"
-                type="button"
-              >
-                <span
-                  class="font-medium"
-                >
-                  Oceano
-                </span>
-                <span
-                  aria-hidden="true"
-                  class="flex w-full flex-col gap-1"
-                >
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-light"
-                    style="background: rgb(238, 244, 255);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(40, 96, 221);"
-                    >
-                      Claro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(46, 103, 229);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(0, 84, 116);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(82, 59, 140);"
-                    />
-                  </span>
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-dark"
-                    style="background: rgb(10, 14, 23);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(65, 125, 252);"
-                    >
-                      Escuro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(61, 120, 247);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(119, 208, 255);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(198, 184, 255);"
-                    />
-                  </span>
-                </span>
-              </button>
-              <button
-                aria-checked="false"
-                aria-label="Ciano e violeta — Análoga"
-                class="flex flex-col gap-1 rounded-[var(--sarak-card-radius,10px)] border p-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] border-[var(--theme-border)]"
-                role="radio"
-                tabindex="-1"
-                type="button"
-              >
-                <span
-                  class="font-medium"
-                >
-                  Ciano e violeta
-                </span>
-                <span
-                  aria-hidden="true"
-                  class="flex w-full flex-col gap-1"
-                >
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-light"
-                    style="background: rgb(232, 247, 248);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(0, 116, 123);"
-                    >
-                      Claro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(0, 124, 132);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(0, 91, 72);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(0, 84, 116);"
-                    />
-                  </span>
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-dark"
-                    style="background: rgb(6, 16, 17);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(25, 227, 240);"
-                    >
-                      Escuro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(25, 227, 240);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(139, 214, 190);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(148, 205, 235);"
-                    />
-                  </span>
-                </span>
-              </button>
-            </div>
-          </div>
-          <div
-            class="flex flex-col gap-1"
-            role="none"
-          >
-            <span
-              class="text-[var(--sarak-type-scale-caption,12px)] font-semibold uppercase tracking-wide text-[var(--theme-muted)]"
-              role="none"
-            >
-              Complementar
-            </span>
-            <div
-              class="grid grid-cols-2 gap-1"
-              role="none"
-            >
-              <button
-                aria-checked="false"
-                aria-label="Verde néon — Complementar"
-                class="flex flex-col gap-1 rounded-[var(--sarak-card-radius,10px)] border p-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] border-[var(--theme-border)]"
-                role="radio"
-                tabindex="-1"
-                type="button"
-              >
-                <span
-                  class="font-medium"
-                >
-                  Verde néon
-                </span>
-                <span
-                  aria-hidden="true"
-                  class="flex w-full flex-col gap-1"
-                >
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-light"
-                    style="background: rgb(233, 248, 234);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(0, 122, 47);"
-                    >
-                      Claro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(0, 129, 50);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(0, 91, 77);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(121, 30, 120);"
-                    />
-                  </span>
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-dark"
-                    style="background: rgb(7, 17, 8);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(0, 255, 106);"
-                    >
-                      Escuro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(0, 255, 106);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(21, 227, 196);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(242, 165, 239);"
-                    />
-                  </span>
-                </span>
-              </button>
-              <button
-                aria-checked="false"
-                aria-label="Cobalto vivo — Complementar"
-                class="flex flex-col gap-1 rounded-[var(--sarak-card-radius,10px)] border p-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] border-[var(--theme-border)]"
-                role="radio"
-                tabindex="-1"
-                type="button"
-              >
-                <span
-                  class="font-medium"
-                >
-                  Cobalto vivo
-                </span>
-                <span
-                  aria-hidden="true"
-                  class="flex w-full flex-col gap-1"
-                >
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-light"
-                    style="background: rgb(238, 244, 255);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(49, 91, 234);"
-                    >
-                      Claro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(54, 98, 242);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(88, 48, 153);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(98, 73, 0);"
-                    />
-                  </span>
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-dark"
-                    style="background: rgb(10, 14, 24);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(73, 119, 255);"
-                    >
-                      Escuro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(69, 116, 255);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(202, 183, 255);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(229, 191, 104);"
-                    />
-                  </span>
-                </span>
-              </button>
-              <button
-                aria-checked="false"
-                aria-label="Azul de projeto — Complementar"
-                class="flex flex-col gap-1 rounded-[var(--sarak-card-radius,10px)] border p-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] border-[var(--theme-border)]"
-                role="radio"
-                tabindex="-1"
-                type="button"
-              >
-                <span
-                  class="font-medium"
-                >
-                  Azul de projeto
-                </span>
-                <span
-                  aria-hidden="true"
-                  class="flex w-full flex-col gap-1"
-                >
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-light"
-                    style="background: rgb(236, 245, 254);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(58, 108, 159);"
-                    >
-                      Claro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(64, 115, 166);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(70, 72, 115);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(99, 71, 36);"
-                    />
-                  </span>
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-dark"
-                    style="background: rgb(9, 15, 21);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(111, 163, 217);"
-                    >
-                      Escuro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(111, 163, 217);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(188, 193, 233);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(218, 191, 161);"
-                    />
-                  </span>
-                </span>
-              </button>
-              <button
-                aria-checked="false"
-                aria-label="Amarelo contraste — Complementar"
-                class="flex flex-col gap-1 rounded-[var(--sarak-card-radius,10px)] border p-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] border-[var(--theme-border)]"
-                role="radio"
-                tabindex="-1"
-                type="button"
-              >
-                <span
-                  class="font-medium"
-                >
-                  Amarelo contraste
-                </span>
-                <span
-                  aria-hidden="true"
-                  class="flex w-full flex-col gap-1"
-                >
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-light"
-                    style="background: rgb(247, 244, 230);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(125, 103, 0);"
-                    >
-                      Claro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(133, 109, 0);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(65, 86, 0);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(59, 69, 140);"
-                    />
-                  </span>
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-dark"
-                    style="background: rgb(17, 14, 6);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(255, 212, 0);"
-                    >
-                      Escuro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(255, 212, 0);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(182, 208, 130);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(178, 192, 255);"
-                    />
-                  </span>
-                </span>
-              </button>
-            </div>
-          </div>
-          <div
-            class="flex flex-col gap-1"
-            role="none"
-          >
-            <span
-              class="text-[var(--sarak-type-scale-caption,12px)] font-semibold uppercase tracking-wide text-[var(--theme-muted)]"
-              role="none"
-            >
-              Complementar dividida
-            </span>
-            <div
-              class="grid grid-cols-2 gap-1"
-              role="none"
-            >
-              <button
-                aria-checked="false"
-                aria-label="Rosa synthwave — Complementar dividida"
-                class="flex flex-col gap-1 rounded-[var(--sarak-card-radius,10px)] border p-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] border-[var(--theme-border)]"
-                role="radio"
-                tabindex="-1"
-                type="button"
-              >
-                <span
-                  class="font-medium"
-                >
-                  Rosa synthwave
-                </span>
-                <span
-                  aria-hidden="true"
-                  class="flex w-full flex-col gap-1"
-                >
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-light"
-                    style="background: rgb(255, 238, 244);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(194, 37, 114);"
-                    >
-                      Claro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(201, 45, 120);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(0, 94, 30);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(0, 88, 97);"
-                    />
-                  </span>
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-dark"
-                    style="background: rgb(21, 11, 14);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(227, 72, 141);"
-                    >
-                      Escuro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(221, 66, 136);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(143, 217, 151);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(104, 215, 230);"
-                    />
-                  </span>
-                </span>
-              </button>
-              <button
-                aria-checked="false"
-                aria-label="Coral cinético — Complementar dividida"
-                class="flex flex-col gap-1 rounded-[var(--sarak-card-radius,10px)] border p-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] border-[var(--theme-border)]"
-                role="radio"
-                tabindex="-1"
-                type="button"
-              >
-                <span
-                  class="font-medium"
-                >
-                  Coral cinético
-                </span>
-                <span
-                  aria-hidden="true"
-                  class="flex w-full flex-col gap-1"
-                >
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-light"
-                    style="background: rgb(255, 239, 237);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(197, 45, 35);"
-                    >
-                      Claro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(205, 54, 42);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(0, 90, 78);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(0, 83, 123);"
-                    />
-                  </span>
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-dark"
-                    style="background: rgb(22, 11, 10);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(231, 79, 65);"
-                    >
-                      Escuro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(224, 73, 59);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(102, 220, 197);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(134, 205, 253);"
-                    />
-                  </span>
-                </span>
-              </button>
-            </div>
-          </div>
-          <div
-            class="flex flex-col gap-1"
-            role="none"
-          >
-            <span
-              class="text-[var(--sarak-type-scale-caption,12px)] font-semibold uppercase tracking-wide text-[var(--theme-muted)]"
-              role="none"
-            >
-              Triádica
-            </span>
-            <div
-              class="grid grid-cols-2 gap-1"
-              role="none"
-            >
-              <button
-                aria-checked="false"
-                aria-label="Grafite e rosa — Triádica"
-                class="flex flex-col gap-1 rounded-[var(--sarak-card-radius,10px)] border p-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] border-[var(--theme-border)]"
-                role="radio"
-                tabindex="-1"
-                type="button"
-              >
-                <span
-                  class="font-medium"
-                >
-                  Grafite e rosa
-                </span>
-                <span
-                  aria-hidden="true"
-                  class="flex w-full flex-col gap-1"
-                >
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-light"
-                    style="background: rgb(235, 245, 254);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(86, 107, 125);"
-                    >
-                      Claro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(93, 114, 132);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(123, 47, 70);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(68, 84, 30);"
-                    />
-                  </span>
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-dark"
-                    style="background: rgb(8, 15, 21);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(110, 132, 150);"
-                    >
-                      Escuro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(107, 130, 148);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(245, 173, 190);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(187, 204, 158);"
-                    />
-                  </span>
-                </span>
-              </button>
-              <button
-                aria-checked="false"
-                aria-label="Verde técnico — Triádica"
-                class="flex flex-col gap-1 rounded-[var(--sarak-card-radius,10px)] border p-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] border-[var(--theme-border)]"
-                role="radio"
-                tabindex="-1"
-                type="button"
-              >
-                <span
-                  class="font-medium"
-                >
-                  Verde técnico
-                </span>
-                <span
-                  aria-hidden="true"
-                  class="flex w-full flex-col gap-1"
-                >
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-light"
-                    style="background: rgb(235, 247, 239);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(3, 121, 73);"
-                    >
-                      Claro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(20, 128, 79);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(65, 71, 125);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(113, 61, 45);"
-                    />
-                  </span>
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-dark"
-                    style="background: rgb(9, 16, 12);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(48, 147, 96);"
-                    >
-                      Escuro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(44, 144, 93);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(184, 193, 243);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(233, 183, 168);"
-                    />
-                  </span>
-                </span>
-              </button>
-              <button
-                aria-checked="false"
-                aria-label="Ametista e petróleo — Triádica"
-                class="flex flex-col gap-1 rounded-[var(--sarak-card-radius,10px)] border p-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] border-[var(--theme-border)]"
-                role="radio"
-                tabindex="-1"
-                type="button"
-              >
-                <span
-                  class="font-medium"
-                >
-                  Ametista e petróleo
-                </span>
-                <span
-                  aria-hidden="true"
-                  class="flex w-full flex-col gap-1"
-                >
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-light"
-                    style="background: rgb(244, 241, 253);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(119, 87, 179);"
-                    >
-                      Claro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(124, 93, 185);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(117, 60, 0);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(0, 91, 76);"
-                    />
-                  </span>
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-dark"
-                    style="background: rgb(15, 13, 20);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(144, 113, 207);"
-                    >
-                      Escuro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(141, 110, 204);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(238, 183, 143);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(144, 212, 195);"
-                    />
-                  </span>
-                </span>
-              </button>
-              <button
-                aria-checked="false"
-                aria-label="Rosa pastel — Triádica"
-                class="flex flex-col gap-1 rounded-[var(--sarak-card-radius,10px)] border p-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] border-[var(--theme-border)]"
-                role="radio"
-                tabindex="-1"
-                type="button"
-              >
-                <span
-                  class="font-medium"
-                >
-                  Rosa pastel
-                </span>
-                <span
-                  aria-hidden="true"
-                  class="flex w-full flex-col gap-1"
-                >
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-light"
-                    style="background: rgb(255, 239, 240);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(188, 54, 78);"
-                    >
-                      Claro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(196, 62, 84);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(44, 91, 0);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(28, 77, 135);"
-                    />
-                  </span>
-                  <span
-                    class="flex items-center gap-1 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-1"
-                    data-testid="palette-swatch-dark"
-                    style="background: rgb(21, 11, 12);"
-                  >
-                    <span
-                      class="w-16 shrink-0 text-[var(--sarak-type-scale-tiny,11px)] font-semibold"
-                      style="color: rgb(221, 85, 104);"
-                    >
-                      Escuro
-                    </span>
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(215, 80, 99);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(168, 211, 145);"
-                    />
-                    <span
-                      class="h-3 flex-1 rounded-sm"
-                      style="background: rgb(158, 199, 253);"
-                    />
-                  </span>
-                </span>
-              </button>
-            </div>
-          </div>
-        </div>
         <button
-          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))] text-[var(--text-muted,rgba(242,246,251,0.55))] hover:bg-[var(--sarak-btn-primary-bg,#19e3f0)] hover:text-[var(--sarak-btn-primary-text,#04121a)] border border-[var(--sarak-primary-color,#19e3f0)]/20 active:scale-[0.98]"
+          class="flex justify-center items-center gap-2 w-full flex-row transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))] text-[var(--text-muted,rgba(242,246,251,0.55))] hover:bg-[var(--sarak-btn-primary-bg,#19e3f0)] hover:text-[var(--sarak-btn-primary-text,#04121a)] border border-[var(--sarak-primary-color,#19e3f0)]/20 active:scale-[0.98] min-w-0 whitespace-normal break-words text-center font-semibold normal-case tracking-normal"
           type="button"
         >
           <span>
             Criar paleta a partir de uma cor
           </span>
         </button>
+        <div
+          class="flex flex-col gap-[var(--sarak-layout-gap-sm,12px)]"
+        >
+          <div
+            aria-label="Filtrar paletas por tipo"
+            class="flex flex-wrap gap-1"
+            role="group"
+          >
+            <button
+              aria-pressed="true"
+              class="rounded-full border px-2 py-0.5 text-[var(--sarak-type-scale-caption,12px)] border-[var(--theme-primary)] bg-[var(--theme-primary)]/15 text-[var(--theme-title)]"
+              type="button"
+            >
+              Todas
+            </button>
+            <button
+              aria-pressed="false"
+              class="rounded-full border px-2 py-0.5 text-[var(--sarak-type-scale-caption,12px)] border-[var(--theme-border)] text-[var(--theme-muted)]"
+              type="button"
+            >
+              Monocromática
+            </button>
+            <button
+              aria-pressed="false"
+              class="rounded-full border px-2 py-0.5 text-[var(--sarak-type-scale-caption,12px)] border-[var(--theme-border)] text-[var(--theme-muted)]"
+              type="button"
+            >
+              Análoga
+            </button>
+            <button
+              aria-pressed="false"
+              class="rounded-full border px-2 py-0.5 text-[var(--sarak-type-scale-caption,12px)] border-[var(--theme-border)] text-[var(--theme-muted)]"
+              type="button"
+            >
+              Complementar
+            </button>
+            <button
+              aria-pressed="false"
+              class="rounded-full border px-2 py-0.5 text-[var(--sarak-type-scale-caption,12px)] border-[var(--theme-border)] text-[var(--theme-muted)]"
+              type="button"
+            >
+              Complementar dividida
+            </button>
+            <button
+              aria-pressed="false"
+              class="rounded-full border px-2 py-0.5 text-[var(--sarak-type-scale-caption,12px)] border-[var(--theme-border)] text-[var(--theme-muted)]"
+              type="button"
+            >
+              Triádica
+            </button>
+          </div>
+          <div
+            aria-label="Paletas prontas"
+            class="flex flex-col"
+            role="radiogroup"
+          >
+            <button
+              aria-checked="false"
+              aria-label="Terra e argila — Monocromática"
+              class="flex items-center gap-2 rounded-[var(--sarak-card-radius,10px)] px-1 py-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10 "
+              role="radio"
+              tabindex="0"
+              type="button"
+            >
+              <span
+                class="w-24 shrink-0"
+              >
+                <span
+                  aria-hidden="true"
+                  class="flex h-3 w-full overflow-hidden rounded-full"
+                  data-testid="palette-strip"
+                >
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(13, 16, 8);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(112, 135, 65);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(187, 203, 162);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(188, 202, 166);"
+                  />
+                </span>
+              </span>
+              <span
+                class="min-w-0 flex-1 truncate font-medium"
+              >
+                Terra e argila
+              </span>
+            </button>
+            <button
+              aria-checked="false"
+              aria-label="Âmbar industrial — Monocromática"
+              class="flex items-center gap-2 rounded-[var(--sarak-card-radius,10px)] px-1 py-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10 "
+              role="radio"
+              tabindex="-1"
+              type="button"
+            >
+              <span
+                class="w-24 shrink-0"
+              >
+                <span
+                  aria-hidden="true"
+                  class="flex h-3 w-full overflow-hidden rounded-full"
+                  data-testid="palette-strip"
+                >
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(20, 13, 7);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(255, 154, 31);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(242, 182, 127);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(237, 184, 136);"
+                  />
+                </span>
+              </span>
+              <span
+                class="min-w-0 flex-1 truncate font-medium"
+              >
+                Âmbar industrial
+              </span>
+            </button>
+            <button
+              aria-checked="false"
+              aria-label="Tinta e vinho — Monocromática"
+              class="flex items-center gap-2 rounded-[var(--sarak-card-radius,10px)] px-1 py-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10 "
+              role="radio"
+              tabindex="-1"
+              type="button"
+            >
+              <span
+                class="w-24 shrink-0"
+              >
+                <span
+                  aria-hidden="true"
+                  class="flex h-3 w-full overflow-hidden rounded-full"
+                  data-testid="palette-strip"
+                >
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(19, 13, 7);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(141, 124, 104);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(205, 194, 182);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(204, 194, 184);"
+                  />
+                </span>
+              </span>
+              <span
+                class="min-w-0 flex-1 truncate font-medium"
+              >
+                Tinta e vinho
+              </span>
+            </button>
+            <button
+              aria-checked="false"
+              aria-label="Oceano — Análoga"
+              class="flex items-center gap-2 rounded-[var(--sarak-card-radius,10px)] px-1 py-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10 "
+              role="radio"
+              tabindex="-1"
+              type="button"
+            >
+              <span
+                class="w-24 shrink-0"
+              >
+                <span
+                  aria-hidden="true"
+                  class="flex h-3 w-full overflow-hidden rounded-full"
+                  data-testid="palette-strip"
+                >
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(10, 14, 23);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(61, 120, 247);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(119, 208, 255);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(198, 184, 255);"
+                  />
+                </span>
+              </span>
+              <span
+                class="min-w-0 flex-1 truncate font-medium"
+              >
+                Oceano
+              </span>
+            </button>
+            <button
+              aria-checked="false"
+              aria-label="Ciano e violeta — Análoga"
+              class="flex items-center gap-2 rounded-[var(--sarak-card-radius,10px)] px-1 py-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10 "
+              role="radio"
+              tabindex="-1"
+              type="button"
+            >
+              <span
+                class="w-24 shrink-0"
+              >
+                <span
+                  aria-hidden="true"
+                  class="flex h-3 w-full overflow-hidden rounded-full"
+                  data-testid="palette-strip"
+                >
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(6, 16, 17);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(25, 227, 240);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(139, 214, 190);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(148, 205, 235);"
+                  />
+                </span>
+              </span>
+              <span
+                class="min-w-0 flex-1 truncate font-medium"
+              >
+                Ciano e violeta
+              </span>
+            </button>
+            <button
+              aria-checked="false"
+              aria-label="Verde néon — Complementar"
+              class="flex items-center gap-2 rounded-[var(--sarak-card-radius,10px)] px-1 py-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10 "
+              role="radio"
+              tabindex="-1"
+              type="button"
+            >
+              <span
+                class="w-24 shrink-0"
+              >
+                <span
+                  aria-hidden="true"
+                  class="flex h-3 w-full overflow-hidden rounded-full"
+                  data-testid="palette-strip"
+                >
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(7, 17, 8);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(0, 255, 106);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(21, 227, 196);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(242, 165, 239);"
+                  />
+                </span>
+              </span>
+              <span
+                class="min-w-0 flex-1 truncate font-medium"
+              >
+                Verde néon
+              </span>
+            </button>
+            <button
+              aria-checked="false"
+              aria-label="Cobalto vivo — Complementar"
+              class="flex items-center gap-2 rounded-[var(--sarak-card-radius,10px)] px-1 py-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10 "
+              role="radio"
+              tabindex="-1"
+              type="button"
+            >
+              <span
+                class="w-24 shrink-0"
+              >
+                <span
+                  aria-hidden="true"
+                  class="flex h-3 w-full overflow-hidden rounded-full"
+                  data-testid="palette-strip"
+                >
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(10, 14, 24);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(69, 116, 255);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(202, 183, 255);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(229, 191, 104);"
+                  />
+                </span>
+              </span>
+              <span
+                class="min-w-0 flex-1 truncate font-medium"
+              >
+                Cobalto vivo
+              </span>
+            </button>
+            <button
+              aria-checked="false"
+              aria-label="Azul de projeto — Complementar"
+              class="flex items-center gap-2 rounded-[var(--sarak-card-radius,10px)] px-1 py-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10 "
+              role="radio"
+              tabindex="-1"
+              type="button"
+            >
+              <span
+                class="w-24 shrink-0"
+              >
+                <span
+                  aria-hidden="true"
+                  class="flex h-3 w-full overflow-hidden rounded-full"
+                  data-testid="palette-strip"
+                >
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(9, 15, 21);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(111, 163, 217);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(188, 193, 233);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(218, 191, 161);"
+                  />
+                </span>
+              </span>
+              <span
+                class="min-w-0 flex-1 truncate font-medium"
+              >
+                Azul de projeto
+              </span>
+            </button>
+            <button
+              aria-checked="false"
+              aria-label="Amarelo contraste — Complementar"
+              class="flex items-center gap-2 rounded-[var(--sarak-card-radius,10px)] px-1 py-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10 "
+              role="radio"
+              tabindex="-1"
+              type="button"
+            >
+              <span
+                class="w-24 shrink-0"
+              >
+                <span
+                  aria-hidden="true"
+                  class="flex h-3 w-full overflow-hidden rounded-full"
+                  data-testid="palette-strip"
+                >
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(17, 14, 6);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(255, 212, 0);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(182, 208, 130);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(178, 192, 255);"
+                  />
+                </span>
+              </span>
+              <span
+                class="min-w-0 flex-1 truncate font-medium"
+              >
+                Amarelo contraste
+              </span>
+            </button>
+            <button
+              aria-checked="false"
+              aria-label="Rosa synthwave — Complementar dividida"
+              class="flex items-center gap-2 rounded-[var(--sarak-card-radius,10px)] px-1 py-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10 "
+              role="radio"
+              tabindex="-1"
+              type="button"
+            >
+              <span
+                class="w-24 shrink-0"
+              >
+                <span
+                  aria-hidden="true"
+                  class="flex h-3 w-full overflow-hidden rounded-full"
+                  data-testid="palette-strip"
+                >
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(21, 11, 14);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(221, 66, 136);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(143, 217, 151);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(104, 215, 230);"
+                  />
+                </span>
+              </span>
+              <span
+                class="min-w-0 flex-1 truncate font-medium"
+              >
+                Rosa synthwave
+              </span>
+            </button>
+            <button
+              aria-checked="false"
+              aria-label="Coral cinético — Complementar dividida"
+              class="flex items-center gap-2 rounded-[var(--sarak-card-radius,10px)] px-1 py-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10 "
+              role="radio"
+              tabindex="-1"
+              type="button"
+            >
+              <span
+                class="w-24 shrink-0"
+              >
+                <span
+                  aria-hidden="true"
+                  class="flex h-3 w-full overflow-hidden rounded-full"
+                  data-testid="palette-strip"
+                >
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(22, 11, 10);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(224, 73, 59);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(102, 220, 197);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(134, 205, 253);"
+                  />
+                </span>
+              </span>
+              <span
+                class="min-w-0 flex-1 truncate font-medium"
+              >
+                Coral cinético
+              </span>
+            </button>
+            <button
+              aria-checked="false"
+              aria-label="Grafite e rosa — Triádica"
+              class="flex items-center gap-2 rounded-[var(--sarak-card-radius,10px)] px-1 py-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10 "
+              role="radio"
+              tabindex="-1"
+              type="button"
+            >
+              <span
+                class="w-24 shrink-0"
+              >
+                <span
+                  aria-hidden="true"
+                  class="flex h-3 w-full overflow-hidden rounded-full"
+                  data-testid="palette-strip"
+                >
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(8, 15, 21);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(107, 130, 148);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(245, 173, 190);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(187, 204, 158);"
+                  />
+                </span>
+              </span>
+              <span
+                class="min-w-0 flex-1 truncate font-medium"
+              >
+                Grafite e rosa
+              </span>
+            </button>
+            <button
+              aria-checked="false"
+              aria-label="Verde técnico — Triádica"
+              class="flex items-center gap-2 rounded-[var(--sarak-card-radius,10px)] px-1 py-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10 "
+              role="radio"
+              tabindex="-1"
+              type="button"
+            >
+              <span
+                class="w-24 shrink-0"
+              >
+                <span
+                  aria-hidden="true"
+                  class="flex h-3 w-full overflow-hidden rounded-full"
+                  data-testid="palette-strip"
+                >
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(9, 16, 12);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(44, 144, 93);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(184, 193, 243);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(233, 183, 168);"
+                  />
+                </span>
+              </span>
+              <span
+                class="min-w-0 flex-1 truncate font-medium"
+              >
+                Verde técnico
+              </span>
+            </button>
+            <button
+              aria-checked="false"
+              aria-label="Ametista e petróleo — Triádica"
+              class="flex items-center gap-2 rounded-[var(--sarak-card-radius,10px)] px-1 py-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10 "
+              role="radio"
+              tabindex="-1"
+              type="button"
+            >
+              <span
+                class="w-24 shrink-0"
+              >
+                <span
+                  aria-hidden="true"
+                  class="flex h-3 w-full overflow-hidden rounded-full"
+                  data-testid="palette-strip"
+                >
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(15, 13, 20);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(141, 110, 204);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(238, 183, 143);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(144, 212, 195);"
+                  />
+                </span>
+              </span>
+              <span
+                class="min-w-0 flex-1 truncate font-medium"
+              >
+                Ametista e petróleo
+              </span>
+            </button>
+            <button
+              aria-checked="false"
+              aria-label="Rosa pastel — Triádica"
+              class="flex items-center gap-2 rounded-[var(--sarak-card-radius,10px)] px-1 py-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10 "
+              role="radio"
+              tabindex="-1"
+              type="button"
+            >
+              <span
+                class="w-24 shrink-0"
+              >
+                <span
+                  aria-hidden="true"
+                  class="flex h-3 w-full overflow-hidden rounded-full"
+                  data-testid="palette-strip"
+                >
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(21, 11, 12);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(215, 80, 99);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(168, 211, 145);"
+                  />
+                  <span
+                    class="h-full flex-1"
+                    style="background: rgb(158, 199, 253);"
+                  />
+                </span>
+              </span>
+              <span
+                class="min-w-0 flex-1 truncate font-medium"
+              >
+                Rosa pastel
+              </span>
+            </button>
+          </div>
+        </div>
       </section>
       <div
         class="border-b border-[var(--theme-border)] last:border-0"

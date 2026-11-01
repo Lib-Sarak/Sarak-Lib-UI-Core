@@ -11,6 +11,7 @@ import {
     writeInjectedStyleElement,
     writeInjectedStyleProperty,
 } from '../utils/injectedWrites';
+import { isThemeSwitch, markThemeSwitching, themeSwitchHosts } from '../utils/themeSwitchMark';
 import { SarakStyle, useSarakStyleNonce } from './SarakStyle';
 
 /** A família que a injeção ancora no `body` (ou na ilha): a limpeza só a tira se ainda for esta. */
@@ -75,6 +76,8 @@ export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode 
         isEmbedded ? `.${SARAK_SCOPE_CLASS}` : ':root',
     );
     const prevDesignRef = React.useRef<string | null>(null);
+    const prevVariablesRef = React.useRef<Record<string, string> | null>(null);
+    const endThemeSwitchRef = React.useRef<(() => void) | null>(null);
     // O que a injeção tocou, para a limpeza ao desmontar (o host não fica com o tema depois de o Provider sair).
     const injectedRef = React.useRef<{ targets: HTMLElement[]; fontScope: HTMLElement | null; classTarget: HTMLElement } | null>(null);
 
@@ -125,6 +128,14 @@ export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode 
         const targets: HTMLElement[] = isEmbedded && scopeElement ? [scopeElement] : [document.documentElement, document.body];
         const [primary] = targets;
 
+        // Troca de tema ou de modo: a marca entra ANTES das variáveis, na mesma tarefa, para o primeiro recálculo de
+        // estilo já ver a transição desligada. Ajuste de um token só não passa pelo corte.
+        if (isThemeSwitch(prevVariablesRef.current, variables)) {
+            endThemeSwitchRef.current?.();
+            endThemeSwitchRef.current = markThemeSwitching(themeSwitchHosts(targets, isEmbedded), ownerRef.current);
+        }
+        prevVariablesRef.current = variables;
+
         // 1. Variáveis do Mapa Mestre e 2. Atributos de Estado. Só grava o que mudou (economiza reflow) e tira
         // o que o tema anterior escreveu e este não escreve: a variável inline que ficasse venceria o
         // `<style>` responsivo e o valor do tema novo.
@@ -173,6 +184,8 @@ export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode 
 
     // Ao desmontar, cada instância devolve apenas as escritas que ainda lhe pertencem.
     useEffect(() => () => {
+        endThemeSwitchRef.current?.();
+        endThemeSwitchRef.current = null;
         const written = injectedRef.current;
         const targets = written?.targets ?? [document.documentElement, document.body];
         const hosts = new Set<HTMLElement>([
@@ -183,6 +196,7 @@ export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode 
         hosts.forEach((host) => releaseInjectedWrites(host, ownerRef.current));
         injectedRef.current = null;
         prevDesignRef.current = null;
+        prevVariablesRef.current = null;
     }, []);
 
     // O CSS do Modo Embarcado vive na árvore React: some junto com a ilha no unmount,

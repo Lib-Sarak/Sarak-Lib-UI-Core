@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fazer a troca de tema levar menos de meio segundo"
 objetivo: "Fazer a troca de tema e de modo terminar em até 300 ms numa máquina normal e em até 1,5 s com a CPU quatro vezes mais lenta, sem transição durante a troca e sem recálculo de estilo repetido, com um teste de navegador que impeça a lentidão de voltar"
 dominio: "Design Engine / Painel de customização"
-status: "🔴 A executar"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "desempenho", "tema", "painel"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[02-design-engine]]", "[[11-testes-e-cobertura]]", "[[plan-138-painel-ganhos-rapidos-fontes-paletas-e-acoes]]", "[[plan-139-painel-previas-reais]]"]
@@ -127,6 +127,96 @@ Preset de card, para comparar: cerca de 500 ms (soma das tarefas longas).
 
 # 9. Resumo da execução
 
+## Resumo da execução — 2026-11-01
+
+**Resultado:** Concluído com pendências
+
+**Estado do worktree ao iniciar**
+(limpo)
+
+**O que foi feito**
+- `src/core/Provider/utils/themeSwitchMark.ts` (novo) — contagem de variáveis mudadas, corte `THEME_SWITCH_MIN_CHANGED_VARIABLES = 200` (medido: tema 557, modo 506, token isolado no máximo 49), escrita e retirada da marca `data-sarak-theme-switching` dois quadros depois.
+- `src/core/Provider/components/DesignInjector.tsx` — marca a raiz (ilha + portais `.sarak-scope` no Embarcado) antes de escrever as variáveis, na mesma tarefa; cancela ao desmontar.
+- `src/core/Design/hooks/useThemeSwitchFlag.ts` (novo) e `src/core/Design/components/DesignScope.tsx` — o escopo da prévia do painel muda num commit anterior ao da raiz e leva a própria marca, no mesmo commit das variáveis.
+- `src/styles/_motion.css` — regra `transition: none !important` sob `:root[...]` e `.sarak-design-scope[...]`, na camada final (precedente do movimento reduzido; a variante escopada troca `:root` pela ilha). `css-important:check` verde.
+- `PresetCard.tsx` — `useMemo` do tema resolvido, chaveado por `theme.design`, `theme.contraparte` e modo.
+- `browser-tests/troca-de-tema.spec.ts` + `fixtures/troca-de-tema-entry.tsx` (novos) — orçamento e ordem, nos dois modos.
+- Testes de unidade novos: `themeSwitchMark.test.ts`, `DesignInjector.themeSwitch.test.tsx`, `useThemeSwitchFlag.test.tsx`, `PresetCard.memo.test.tsx`.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Provider/utils/themeSwitchMark.ts` | criado | helpers da marca |
+| `src/core/Provider/components/DesignInjector.tsx` | alterado | marca antes das variáveis |
+| `src/core/Design/hooks/useThemeSwitchFlag.ts` | criado | flag derivada no render |
+| `src/core/Design/components/DesignScope.tsx` | alterado | atributo da marca |
+| `src/styles/_motion.css` | alterado | regra de troca |
+| `src/features/DesignEngine/Canvas/components/PresetCard.tsx` | alterado | `useMemo` |
+| `browser-tests/troca-de-tema.spec.ts`, `browser-tests/fixtures/troca-de-tema-entry.tsx` | criados | orçamento no navegador |
+| 4 arquivos `__tests__` | criados | unidade |
+
+**Verificações executadas**
+- `npx vitest run` nos arquivos novos e nos vizinhos (DesignInjector, DesignScope, PresetCard) → verdes.
+- Medição (build de produção do harness a partir de `src/`, CSS gerado fora de `dist/`, galeria aberta, 2.055 elementos, Chromium; a máquina estava com outros executores, então os números oscilam cerca de ±30%). Tempo = `TaskDuration`:
+
+| Cenário | Antes | Depois |
+|---|---|---|
+| Tema, normal | 3.114 ms (estilo 1.857, 29 recálculos, 1.857 transições) | ~800 ms (estilo ~350, ~27 recálculos, 224 transições) |
+| Tema, CPU 4× | 19.738 ms (estilo 11.030) | ~4.900 a 5.600 ms (estilo ~1.800 a 2.250) |
+| Modo, normal | 3.533 ms | ~1.000 ms |
+| Modo, CPU 4× | 18.541 ms | ~5.800 a 7.800 ms |
+| Aplicar, normal | 1.572 ms | ~500 ms |
+| Aplicar, CPU 4× | 13.046 ms | ~4.200 a 7.000 ms |
+
+- Variante intermediária medida: duração de 0,01 ms em vez de `none` ficou pior (estilo 5.635 ms), porque a transição ainda é criada (4.899 `transitionrun`); por isso `transition: none`.
+- Perfil: sobram 4 recálculos de árvore inteira de ~130 ms cada (prévia, raiz, e a retirada da marca, que invalida `:root[...] *`).
+- `npx playwright test browser-tests/troca-de-tema.spec.ts` → 2 passed, 9 execuções seguidas; 221 a 227 transições e 25 a 29 recálculos; tetos `273` e `35` (maior medida + 20%).
+- Mutação: com `isThemeSwitch(...)` trocado por `false &&` no `DesignInjector`, o spec ficou vermelho nos dois modos (a marca da raiz nunca aparece); restaurado.
+- `npm run verify -- --tier=quick`: `tsc` OK; `audit:baseline` acusou `auditor_cleancode` 0→1 em `useThemeSwitchFlag.ts` (4 `useState/useEffect`), corrigido e `run_audit` limpo; `plan-index:check` (plan-143) e `guide:check` (kit `sarak-ui/`) falharam e não são desta plan.
+- `npm run cromo-css-real:check` inteiro: 431 passed, 6 failed, 16 did not run — dois spec meus passaram quando `dist/sarak.css` tinha a regra (na bateria o `dist/` estava com o CSS de outro build); os outros: `previa-138.spec.ts` (arquivo de outra plan sumiu no meio da execução), `login-theme-application` (fundo do Sovereign esperado `#061011`, recebido `#08090a`; plan-143 mexe em `role-map`/`scale`/`contrast`), 3 quedas do worker (código 3221226091/1073807364) em specs alheios.
+
+**Critérios de aceite**
+- [ ] Tema em até 300 ms de CPU (1,5 s com CPU 4×) — NÃO atendido: ~800 ms e ~5 s medidos. Motivo: restam recálculos de árvore inteira e o JS do painel.
+- [x] Sem transição durante a troca; hover anima depois — `troca-de-tema.spec.ts` (computado `none` na entrada da marca, valor do tema depois, `transitionrun` no hover).
+- [x] Vale no consumidor e no Embarcado — mesmo spec, folha escopada.
+- [x] Slider não aciona a marca — `DesignInjector.themeSwitch.test.tsx` (5 passos de 3 variáveis) e `themeSwitchMark.test.ts` (49 variáveis).
+- [x] Spec de orçamento verde e vermelho sem o conserto — mutação acima.
+- [x] `transicao-padrao-do-tema` verde sem alteração — passou na bateria completa.
+- [ ] `cromo-css-real:check` verde inteiro — NÃO: 6 falhas listadas, nenhuma confirmada como minha; `npm run build` inteiro falhou uma vez em `public-types:check` (`DirtyToken`, de outra plan, depois corrigido por ela).
+
+**Decisões e suposições**
+- Passo 4 (`transition: all`) não foi feito: com a marca ligada o ganho na troca é nulo e a plan manda trocar só onde o ganho aparece. Passo 5 (variáveis da miniatura): A/B com variáveis filtradas deu 320/297 ms contra 256/297 ms de estilo (soma dos recálculos, 2 rodadas), dentro do ruído, não confirmado e não aplicado.
+- Corte por contagem de variáveis (200), porque o injetor só vê o design resolvido, não de onde veio a mudança.
+- A raiz é marcada num commit ~300 ms depois da prévia; entre os dois o que está fora da prévia ainda pode animar (observei 14 transições).
+- A plan estava em `🔴` ao chegar; executei por pedido explícito do usuário.
+
+**Achados fora do escopo (não corrigidos)**
+- `DesignInjector.tsx` escreve `--mouse-x/--mouse-y` no `:root` a cada `mousemove`: cada movimento do ponteiro invalida a árvore inteira (cerca de 130 ms de recálculo medido) e entra em qualquer cronometragem de clique.
+- `git restore -- dist src/buildInfo.ts src/core/Provider/buildInfo.ts` (passo 9) foi negado pelo ambiente e não foi feito; `dist/` e os dois `buildInfo.ts` seguem modificados por builds.
+
+**Pendências / riscos**
+- Meta de 300 ms / 1,5 s não batida; proposta de continuação: eliminar o recálculo de retirada da marca e a escrita de `--mouse-x/y`, e reduzir o JS do painel.
+- Reexecutar `cromo-css-real:check` com `dist/` exclusivo e com as plans 138/143 assentadas.
+
 ---
 
 # 10. Veredito
+
+## Veredito — 2026-11-01 — técnica conferida, meta não atingida, decisão do dono
+
+Medido numa cópia limpa, `HEAD` + 138 + 142, sem a 143: `npm run build` verde, suíte completa 600 arquivos e 4.497 testes, bateria de navegador 453 de 453. As falhas da bateria relatadas no resumo vieram do `dist/` disputado, e não se repetem. Medição independente do revisor, com a rotina do §2, máquina livre, mesmo painel:
+
+| Cenário | rc.4 | Agora |
+|---|---|---|
+| Tema, primeira troca | 3.467 ms | ~1.000 ms |
+| Tema, troca seguinte | 2.290 ms | ~555 ms |
+| Tema, CPU 4× | 35.264 ms | 3.894 ms |
+| Aplicar | 819 ms | ~337 ms |
+| Aplicar, CPU 4× | 15.678 ms | 2.089 ms |
+
+Queda de 70% a 89%. A meta de 300 ms e 1,5 s **não** foi batida. Sobra: o recálculo ao retirar a marca, a escrita de `--mouse-x`/`--mouse-y` em `:root` a cada movimento do ponteiro e o JS do painel. O código entregue
+é correto e não piora nada. O dono decide entre aceitar e abrir uma continuação. O passo 4 não feito e o passo 5 sem efeito medido estão aceitos: a plan mandava fazer só onde o ganho aparecesse.
+
+## Veredito — 2026-11-01 — 🟢 Aprovado com a meta aberta
+
+O dono aceitou o resultado. O que falta para a meta de 300 ms e 1,5 s foi para a `plan-144`.

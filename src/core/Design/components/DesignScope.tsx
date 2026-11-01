@@ -1,5 +1,7 @@
 import React, { useId } from 'react';
 import { useDesignVariables } from '../hooks/useDesignVariables';
+import { useThemeSwitchFlag } from '../hooks/useThemeSwitchFlag';
+import { SARAK_THEME_SWITCHING_ATTRIBUTE } from '../../Provider/utils/themeSwitchMark';
 import { DesignOverrideContext } from '../../Provider/SarakUIProvider';
 import { SarakBackgroundRenderer } from './SarakBackgroundRenderer';
 import type { SarakDesignState } from '../../Provider/types';
@@ -33,6 +35,8 @@ export const SarakDesignScope: React.FC<SarakDesignScopeProps & Record<string, u
 
     const { variables, attributes, responsiveCSS } = useDesignVariables(design as unknown as Record<string, unknown>, `.${scopeClass}`);
 
+    const isSwitching = useThemeSwitchFlag(variables);
+
     // Higienização de propriedades
     const { isDesignScope, ...domSafeProps } = rest as Record<string, unknown>;
 
@@ -48,6 +52,7 @@ export const SarakDesignScope: React.FC<SarakDesignScopeProps & Record<string, u
                     position: 'relative'
                 }}
                 {...attributes}
+                {...(isSwitching ? { [SARAK_THEME_SWITCHING_ATTRIBUTE]: 'true' } : {})}
                 {...domSafeProps}
             >
                 {/* CSS Responsivo Dinâmico com Escopo Isolado */}
