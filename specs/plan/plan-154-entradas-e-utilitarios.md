@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Completar entradas e utilitários que os sistemas montam à mão"
 objetivo: "Fazer a lib oferecer seletor de cor, seletor de conjunto, tags, código de verificação, formulário gerado por campos, assistente, popover, copiar, QR, atalhos, permissão por condição, download com estados e gráfico avançado"
 dominio: "Componentes / Entradas e utilitários"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Média"
 tags: ["plan", "rc.5", "entradas"]
 relacionados: ["[[anexos/rc5-contrato]]", "[[10-seguranca-e-acessibilidade]]"]
@@ -78,7 +78,7 @@ Sem peça na lib, de uso previsível: tags, código de verificação, popover ge
 
 **Gate:** nenhum novo.
 
-- Filtro dos arquivos novos e `check-audit-baseline.mjs --with-tsc`.
+- Filtro dos arquivos novos, `npm run boot:measure` e `check-audit-baseline.mjs --with-tsc`. O boot tem 1,9 KB de folga: peça pesada fica atrás de `lazy`.
 
 # 8. Destino da síntese
 

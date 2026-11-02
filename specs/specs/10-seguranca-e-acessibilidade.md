@@ -328,6 +328,8 @@ função do host (`load`, `onSubmit`, `onSend`), que é quem chama a rede, com a
 ([[03-superficie-publica]] §6.3). Não há telemetria, não há phone-home, não há endpoint da lib (o backend
 próprio foi removido — [[003-remocao-backend-proprio]]).
 
+**O gate `network:check`** (`gates/scripts/contrato/check-no-network.mjs`) lê a AST de `src/` e reprova `fetch`, `XMLHttpRequest`, `WebSocket`, `EventSource`, `navigator.sendBeacon` e todo import de `axios`. Exceção mora na `ALLOWLIST` do gate, com o motivo, e a que fica sem ocorrência reprova. O cabeçalho do gate declara o que ele não vê: apelido, acesso por índice e o que o navegador busca sozinho, como `<img>` e `url()`. Ele roda na CI.
+
 ## 3.3 Roteamento
 
 **A lib reage à rota; o consumidor é dono da URL** ([[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]). O cromo entrega a seleção por callback

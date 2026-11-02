@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Adicionar painel arrastável, mapa, assinatura, tour, carrossel e exportação Excel"
 objetivo: "Fazer a lib oferecer painel de widgets arrastáveis, mapa, campo de assinatura, tour guiado, carrossel e exportação Excel, carregados sob demanda e sem peso no boot do consumidor"
 dominio: "Componentes / Recursos avançados"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "rc.5", "dashboard", "mapa", "assinatura"]
 relacionados: ["[[anexos/rc5-contrato]]", "[[10-seguranca-e-acessibilidade]]", "[[07-responsividade-e-multidispositivo]]"]
@@ -34,7 +34,7 @@ Decisão do dono em 2026-11-02: estes itens entram, mesmo sem uso nos sistemas v
 
 ## 3.2 Fora
 - Dependência obrigatória nova. Provedor de mapa embutido ou chave de API. Geocodificação.
-- Edição inline e visões salvas: `plan-152`.
+- Edição inline e visões salvas: já existem na `SarakDataTable`.
 
 # 4. Referências obrigatórias
 

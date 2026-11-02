@@ -3,11 +3,11 @@ tipo: "plan"
 titulo: "Entregar as telas que todo sistema repete: configurações, auditoria, versões, aprovação, execução e acesso"
 objetivo: "Fazer a lib oferecer prontas as peças que os sistemas reais reescrevem: página de configurações, visor de auditoria, comparação de versões, fila de aprovação, execução em curso, monitor ao vivo e matriz de permissões"
 dominio: "Componentes / Telas de sistema"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "rc.5", "templates"]
 relacionados: ["[[anexos/rc5-contrato]]", "[[10-seguranca-e-acessibilidade]]", "[[08-identidade-do-host-e-zero-marca]]"]
-depende_de: "plan-151-resiliencia-e-base-do-consumidor"
+depende_de: "—"
 retida_por: ""
 destino_sintese: "—"
 ---
@@ -82,7 +82,7 @@ Varredura de 11 sistemas ativos em 2026-11-02. Sistemas onde a lacuna aparece:
 
 **Gate:** nenhum novo.
 
-- Filtro de `Templates` e `check-audit-baseline.mjs --with-tsc`.
+- Filtro de `Templates`, `npm run boot:measure` e `check-audit-baseline.mjs --with-tsc`. O boot tem 1,9 KB de folga: peça pesada fica atrás de `lazy`.
 - A prévia aberta; o veredito fecha com a aprovação do dono.
 
 # 8. Destino da síntese
