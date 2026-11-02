@@ -1,6 +1,7 @@
 import React, { useId } from 'react';
 import { SarakAlert } from '../Feedback/SarakAlert';
 import { SarakEmptyState } from '../Feedback/SarakEmptyState';
+import { SarakErrorBoundary } from '../Feedback/SarakErrorBoundary';
 import { SarakSkeleton } from '../Feedback/SarakSkeleton';
 import { SarakCard } from '../Cards/SarakCard';
 import { SarakFlex } from '../Layouts/SarakFlex';
@@ -73,7 +74,7 @@ export const SarakSection = ({
                     action={error.onRetry && error.retryLabel ? { label: error.retryLabel, onClick: error.onRetry } : undefined}
                 />
             )}
-            {content}
+            <SarakErrorBoundary resetKeys={[loading]}>{content}</SarakErrorBoundary>
         </SarakFlex>
     );
 

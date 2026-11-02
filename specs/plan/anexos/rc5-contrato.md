@@ -47,7 +47,7 @@ relacionados: ["[[00-indice]]", "[[arquitetura/03-superficie-publica]]"]
 | Plan | Superfície nova |
 |---|---|
 | 151 | `SarakErrorBoundary`, `useSarakUnsavedChanges`, `SarakPagination.getPageHref`, `sarakErrorMessage`, `renderWithSarak` |
-| 152 | `bulkActions`, `editable` e `onCellEdit`, `views`, `columnState`, `density="report"`, `getCellTone`, `SarakDocumentFrame`, `sarakPrint` |
+| 152 | `bulkActions` (`onAction(ids, scope)`), `editable` e `onCellEdit`, `views`, `columnState`, `density="report"`, `getCellTone`, `SarakDocumentFrame`, `sarakPrint` |
 | 153 | `SarakSettingsPage`, `SarakAuditLog`, `SarakDiffView`, `SarakVersionList`, `SarakApprovalQueue`, `SarakRunProgress`, `SarakLiveStatus`, `SarakUsageMeter`, `SarakPermissionMatrix`, `SarakMemberList`, `SarakSessionList` |
 | 154 | `SarakColorInput`, `SarakSetPicker`, `SarakTagInput`, `SarakCodeInput`, `SarakFieldRenderer`, `SarakWizard`, `SarakPopover`, `SarakCopyButton`, `SarakQRCode`, `SarakFileAction`, `useSarakShortcut`, `SarakGate`, `extendOption` |
 | 155 | `SarakDashboardGrid`, `SarakMap`, `SarakSignaturePad`, `SarakTour`, `SarakCarousel`, `exportXlsx` |

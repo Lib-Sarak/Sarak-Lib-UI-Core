@@ -84,7 +84,7 @@
       "flows"
     ],
     "publicos": {
-      "count": 110,
+      "count": 112,
       "nomes": [
         "SARAK_DEFAULT_COLUMN_WIDTH",
         "SARAK_MIN_COLUMN_WIDTH",
@@ -123,8 +123,10 @@
         "SarakDatePicker",
         "SarakDescriptionList",
         "SarakDivider",
+        "SarakDocumentFrame",
         "SarakDrawer",
         "SarakEmptyState",
+        "SarakErrorBoundary",
         "SarakExpandableCard",
         "SarakExpandableMatrix",
         "SarakFieldError",
@@ -299,6 +301,10 @@
     {
       "nome": "npm run minor-no-removal:check",
       "comando": "node gates/scripts/contrato/check-minor-no-removal.mjs"
+    },
+    {
+      "nome": "npm run network:check",
+      "comando": "node gates/scripts/contrato/check-no-network.mjs"
     },
     {
       "nome": "npm run package:check",

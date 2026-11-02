@@ -4,7 +4,7 @@ import type { SarakColumn } from './columnModel';
 import { sarakWidthOf } from './columnModel';
 import { resolveRowCells } from './columnSpan';
 import { footerContent } from './columnValue';
-import { dataCellStyle, leadingWidthOf, SPECIAL_ROW_BORDER } from './dataTableCell';
+import { dataCellStyle, leadingWidthOf, rowPosition, SPECIAL_ROW_BORDER } from './dataTableCell';
 import type { SarakDataTableRowsProps, SarakDataTableVirtualRow } from './SarakDataTableRows';
 import { SarakExpandToggle } from './SarakTableControls';
 import type { SarakDisplayRow } from './tableDisplayRows';
@@ -20,8 +20,8 @@ interface SpecialRowProps<T, K extends SarakDisplayRow<T>['kind']> {
 const STRONG = 600;
 
 const rowFrame = <T,>(row: SarakDataTableVirtualRow<T>, props: SarakDataTableRowsProps<T>): CSSProperties => ({
-    position: 'absolute', top: props.headerHeight + row.start, left: 0, display: 'flex', width: props.containerWidth,
-    height: row.size, borderBottom: SPECIAL_ROW_BORDER,
+    ...rowPosition(props, props.headerHeight + row.start),
+    height: props.flow ? undefined : row.size, borderBottom: SPECIAL_ROW_BORDER,
 });
 
 /** Cabeçalho de grupo: uma célula de largura total com o botão de expandir e o rótulo. */
@@ -85,8 +85,8 @@ interface SarakDataTableFooterProps<T> {
 export function SarakDataTableFooter<T>({ rows, props, top, height }: SarakDataTableFooterProps<T>): ReactElement {
     const text = useLibraryText();
     return (
-        <div role="rowgroup" aria-label={text('tableFooterLabel')} style={{ position: 'absolute', top, left: 0, width: props.containerWidth, height }}>
-            <div role="row" style={{ display: 'flex', height, alignItems: 'center', background: props.cellBackground, borderBottom: SPECIAL_ROW_BORDER }}>
+        <div role="rowgroup" aria-label={text('tableFooterLabel')} style={props.flow ? undefined : { position: 'absolute', top, left: 0, width: props.containerWidth, height }}>
+            <div role="row" style={{ display: 'flex', height: props.flow ? undefined : height, alignItems: 'center', background: props.cellBackground, borderBottom: SPECIAL_ROW_BORDER }}>
                 <LeadingSpacer props={props} />
                 {footerCells({ rows, props })}
             </div>

@@ -42,6 +42,8 @@ const createModel = (): SarakDataTableViewModel<Row> => ({
     virtualTotalSize: people.length * ROW_HEIGHT,
     virtualizerMeasureElement: vi.fn(),
     isAutomaticRowHeight: false,
+    columns: { managed: false },
+    views: { enabled: false },
 } as unknown as SarakDataTableViewModel<Row>);
 
 const rowOf = (name: string): HTMLElement => screen.getByText(name).closest('[role="row"]') as HTMLElement;

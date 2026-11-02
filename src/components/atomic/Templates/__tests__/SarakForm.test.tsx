@@ -81,4 +81,71 @@ describe('SarakForm', () => {
 
         expect([roleProp, densityProp, importanceProp]).toHaveLength(3);
     });
+
+    describe('warnOnUnsaved', () => {
+        const fireBeforeUnload = (): Event => {
+            const event = new Event('beforeunload', { cancelable: true });
+            window.dispatchEvent(event);
+            return event;
+        };
+        const editName = (value: string): void => {
+            fireEvent.change(screen.getByRole('textbox'), { target: { value } });
+        };
+
+        it('omitido, alterar o formulário não muda nada', () => {
+            render(<SarakForm data={{ name: 'Ana' }} mapping={{ name: 'Nome' }} />);
+
+            editName('Bia');
+
+            expect(fireBeforeUnload().defaultPrevented).toBe(false);
+        });
+
+        it('sem alteração, não avisa', () => {
+            render(<SarakForm data={{ name: 'Ana' }} mapping={{ name: 'Nome' }} warnOnUnsaved />);
+
+            expect(fireBeforeUnload().defaultPrevented).toBe(false);
+        });
+
+        it('alterado, avisa; voltar ao valor original solta o aviso', () => {
+            render(<SarakForm data={{ age: 30 }} mapping={{ age: 'Idade' }} warnOnUnsaved />);
+
+            editName('31');
+            expect(fireBeforeUnload().defaultPrevented).toBe(true);
+
+            editName('30');
+            expect(fireBeforeUnload().defaultPrevented).toBe(false);
+        });
+
+        it('salvar com sucesso solta o aviso', async () => {
+            const onSubmit = vi.fn().mockResolvedValue(undefined);
+            render(<SarakForm initialData={{ name: 'Ana' }} mapping={{ name: 'Nome' }} mode="create" onSubmit={onSubmit} warnOnUnsaved />);
+            editName('Bia');
+
+            fireEvent.click(screen.getByRole('button'));
+            await screen.findByRole('status');
+
+            expect(onSubmit).toHaveBeenCalledWith({ name: 'Bia' });
+            expect(fireBeforeUnload().defaultPrevented).toBe(false);
+        });
+
+        it('envio que falha mantém o aviso', async () => {
+            const onSubmit = vi.fn().mockRejectedValue(new Error('recusado'));
+            render(<SarakForm initialData={{ name: 'Ana' }} mapping={{ name: 'Nome' }} mode="create" onSubmit={onSubmit} warnOnUnsaved />);
+            editName('Bia');
+
+            fireEvent.click(screen.getByRole('button'));
+            await screen.findByRole('alert');
+
+            expect(fireBeforeUnload().defaultPrevented).toBe(true);
+        });
+
+        it('dado novo do host vira a referência', () => {
+            const { rerender } = render(<SarakForm data={{ name: 'Ana' }} mapping={{ name: 'Nome' }} warnOnUnsaved />);
+            editName('Bia');
+
+            rerender(<SarakForm data={{ name: 'Bia' }} mapping={{ name: 'Nome' }} warnOnUnsaved />);
+
+            expect(fireBeforeUnload().defaultPrevented).toBe(false);
+        });
+    });
 });

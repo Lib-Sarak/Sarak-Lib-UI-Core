@@ -46,6 +46,16 @@ export interface TableInteractionsResult<T> {
     clearSelection?: () => void;
 }
 
+/** O que só a `SarakDataTable` usa: a barra de lote e as visões salvas. */
+export interface DataTableInteractionsResult<T> extends TableInteractionsResult<T> {
+    /** Quantos itens a seleção cobre; com `selectAll` e `totalCount`, conta os do servidor. */
+    selectedCount: number;
+    /** Com `selectAll`, as linhas desmarcadas; senão, vazio. */
+    exceptKeys: React.Key[];
+    /** Aplica uma ordenação inteira de uma vez (a visão salva). */
+    applySort: (sort: SarakTableSort | null) => void;
+}
+
 interface CreateEntriesOptions<T> {
     rows: T[];
     sort: SarakTableSort | null;
@@ -82,7 +92,7 @@ export function useTableInteractions<T>({
     totalCount,
     selectAll: controlledSelectAll,
     onSelectAllChange,
-}: UseTableInteractionsOptions<T>): TableInteractionsResult<T> {
+}: UseTableInteractionsOptions<T>): DataTableInteractionsResult<T> {
     const [internalSort, setInternalSort] = useState<SarakTableSort | null>(null);
     const [internalKeys, setInternalKeys] = useState<React.Key[]>([]);
     const [internalSelectAll, setInternalSelectAll] = useState(false);
@@ -108,11 +118,11 @@ export function useTableInteractions<T>({
         if (controlledSelectAll === undefined) setInternalSelectAll(all);
         onSelectAllChange?.(all);
     };
-    const changeSort = (columnId: string): void => {
-        const next = nextTableSort(sort ?? null, columnId);
+    const applySort = (next: SarakTableSort | null): void => {
         if (!isSortControlled) setInternalSort(next);
         onSortChange?.(next);
     };
+    const changeSort = (columnId: string): void => applySort(nextTableSort(sort ?? null, columnId));
     // Com selectAll, marcar a linha a TIRA das exceções e desmarcá-la a põe nelas.
     const toggleRow = (key: React.Key, checked: boolean): void => publishKeys(updateKeys(keys, key, selectAll ? !checked : checked));
     const clearSelection = (): void => {
@@ -134,6 +144,8 @@ export function useTableInteractions<T>({
         publishKeys([]);
     };
     const canSelectAllTotal = !selectAll && allVisibleSelected && totalCount !== undefined && totalCount > entries.length;
+    const selectedCount = selectAll && totalCount !== undefined ? Math.max(totalCount - keys.length, 0) : selectedKeys.size;
+    const exceptKeys = selectAll ? keys : [];
 
-    return { entries, sort: sort ?? null, selectedKeys, allVisibleSelected, partiallySelected, changeSort, toggleRow, toggleAll, selectAll, totalCount, canSelectAllTotal, selectAllTotal, clearSelection };
+    return { entries, sort: sort ?? null, selectedKeys, selectedCount, exceptKeys, allVisibleSelected, partiallySelected, changeSort, applySort, toggleRow, toggleAll, selectAll, totalCount, canSelectAllTotal, selectAllTotal, clearSelection };
 }

@@ -22,3 +22,7 @@ export type { SarakTimestamp } from './relativeTime';
 export * from './SarakCalendar';
 // Cronograma (Gantt).
 export * from './SarakGantt';
+// Documento na tela e no papel.
+export { SarakDocumentFrame } from './SarakDocumentFrame';
+export type { SarakDocumentFrameProps, SarakDocumentFormat } from './SarakDocumentFrame';
+export { sarakPrint } from './sarakPrint';

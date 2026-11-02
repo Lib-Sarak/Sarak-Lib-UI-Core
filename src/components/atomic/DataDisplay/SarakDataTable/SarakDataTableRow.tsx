@@ -4,8 +4,8 @@ import { SarakCheckbox } from '../../Inputs/SarakCheckbox';
 import type { SarakColumn } from './columnModel';
 import { sarakWidthOf, SELECTION_COLUMN_WIDTH } from './columnModel';
 import { resolveRowCells } from './columnSpan';
-import { columnText } from './columnValue';
-import { dataCellStyle, EXPANDER_WIDTH, SPECIAL_ROW_BORDER, TREE_INDENT } from './dataTableCell';
+import { dataCellStyle, EXPANDER_WIDTH, rowPosition, SPECIAL_ROW_BORDER, TREE_INDENT } from './dataTableCell';
+import { editableCellFrame, SarakCellContent } from './SarakCellContent';
 import type { SarakDataTableRowsProps, SarakDataTableVirtualRow } from './SarakDataTableRows';
 import { SarakExpandToggle } from './SarakTableControls';
 
@@ -41,15 +41,14 @@ const SarakDataTableCell = <T,>({ column, width, row, props }: SarakDataTableCel
     const text = useLibraryText();
     const display = row.display?.kind === 'data' ? row.display : null;
     const isTreeCell = Boolean(display) && props.treeColumnId === column.id;
-    const content = column.render ? column.render(row.entry.row, row.entry.index) : columnText(row.entry.row, column, props.locale);
     const toggle = isTreeCell && display?.expandable
         ? <SarakExpandToggle expanded={display.expanded} label={text(display.expanded ? 'tableCollapseRow' : 'tableExpandRow')} onToggle={() => props.onToggleExpand?.(row.entry.key)} />
         : null;
     return (
-        <div role={column.rowHeader ? 'rowheader' : 'cell'} data-column-id={column.id} style={dataCellStyle(column, width, props)}>
+        <div role={column.rowHeader ? 'rowheader' : 'cell'} data-column-id={column.id} style={{ ...dataCellStyle(column, width, props), ...editableCellFrame(column, row.entry.row, props.onCellEdit) }}>
             {isTreeCell && display && <span aria-hidden="true" data-tree-depth={display.depth} style={{ display: 'inline-block', width: `calc(${TREE_INDENT} * ${display.depth})`, flex: '0 0 auto' }} />}
             {isTreeCell && <span style={{ display: 'inline-flex', width: 'var(--sarak-layout-gap-md, 16px)', flex: '0 0 auto' }}>{toggle}</span>}
-            {content}
+            <SarakCellContent column={column} row={row.entry.row} rowIndex={row.entry.index} locale={props.locale} getCellTone={props.getCellTone} onCellEdit={props.onCellEdit} />
         </div>
     );
 };
@@ -71,8 +70,8 @@ export function SarakDataTableRow<T>({ row, props }: SarakDataTableRowProps<T>):
     const { entry, virtualIndex, virtualKey, start, size } = row;
     const selectionWidth = props.selectable ? SELECTION_COLUMN_WIDTH : 0;
     const style: CSSProperties = {
-        position: 'absolute', top: props.headerHeight + start, left: 0, display: 'flex', width: props.containerWidth,
-        height: props.automaticHeight ? undefined : size,
+        ...rowPosition(props, props.headerHeight + start),
+        height: props.automaticHeight || props.flow ? undefined : size,
         borderBottom: SPECIAL_ROW_BORDER,
         ...(props.zebra && virtualIndex % 2 === 1 ? { backgroundColor: ZEBRA_BACKGROUND } : null),
     };

@@ -219,6 +219,24 @@ filtra `Could not parse CSS stylesheet` diretamente na VirtualConsole do jsdom. 
 canal de erro do jsdom e não passa por `onConsoleLog` do Vitest. `filterSarakTestConsoleLog` continua
 disponível para mensagens que o Vitest encaminha por esse callback.
 
+Para os testes das telas, o mesmo subpath traz o render com Provider e o mock do kit. Os dois carregam a
+lib só quando chamados, então o subpath continua seguro no `vitest.config`, e pedem
+`@testing-library/react` instalado no projeto:
+
+```tsx
+import { createSarakKitMock, renderWithSarak } from '@sarak/lib-ui-core/testing';
+
+// A lib real, com dublês de SarakDataTable, SarakChartEngine e SarakPDFViewer, que não rodam no jsdom.
+vi.mock('@sarak/lib-ui-core', () => createSarakKitMock());
+
+it('mostra os pedidos', async () => {
+  const view = await renderWithSarak(<Pedidos />, { provider: { config: { language: 'pt' } } });
+  expect(view.getByText('Pedido 12')).toBeInTheDocument();
+});
+```
+
+`createSarakKitMock({ useOverlay: () => overlayDeTeste })` troca ou acrescenta qualquer nome.
+
 ---
 
 # §2 — As 4 topologias
@@ -525,6 +543,11 @@ seu código: seus hooks, seu cliente HTTP, seu roteador.
   banco de outro dono. Isso é o que mantém os módulos desacopláveis (§3.13).
 - Formulário: estado no seu componente (ou na sua lib de formulário preferida); os componentes de
   input da lib são controlados por props, como qualquer input React.
+- Alterações não salvas: `useSarakUnsavedChanges({ isDirty })` avisa ao fechar a aba e devolve
+  `confirmLeave()`. A lib não navega: ligue essa função no bloqueio do seu roteador, e `true` libera a
+  saída. Quem usa `SarakForm` tem `warnOnUnsaved`, que cobre o fechamento da aba.
+- Erro de API: `sarakErrorMessage(erro, text('...'))` tira um texto seguro de `Error`, string e das
+  respostas comuns. Fora do React ele não conhece o idioma: o segundo argumento é o texto na língua da tela.
 
 ## 3.8 Extrair TODAS as funcionalidades → o catálogo vivo
 
@@ -931,6 +954,11 @@ reconstruir custa mais** e **o que o tema já controla**. O que a lib faz de ver
 | uma tabela de dados | `SarakTable` (simples, com cartões no celular) ou `SarakDataTable` (virtualizada, colunas redimensionáveis) | ordenação, seleção, listra, hover e a troca por cartões no smartphone são do componente; veja a diferença de tokens abaixo |
 | um diálogo | `SarakModal` (tamanhos nomeados, passos, foco preso, Escape); para painel lateral, `SarakDrawer` | foco preso, Escape, véu e animação são resolvidos; um `div` fixo com `z-index` próprio entra na disputa de camadas |
 | aviso passageiro | `useToast().notify(...)` | empilhamento, tipo e largura vêm de `overlays` e do Provider |
+| conter erro de render no bloco | `SarakErrorBoundary` (`SarakSection` e `SarakAppChrome` já usam) | o aviso segue o tema e o idioma, tem "Tentar de novo" e limpa com `resetKeys`; passe `onError` para registrar |
+| aviso de alterações não salvas | `useSarakUnsavedChanges` · `SarakForm` com `warnOnUnsaved` | o aviso do navegador e a confirmação pelo overlay já estão ligados; você só liga `confirmLeave` no roteador |
+| paginação com link real | `SarakPagination` com `getPageHref` | Ctrl+clique e clique do meio funcionam, e o clique simples segue em `onChange`, sem recarregar a página |
+| mensagem de erro para o usuário | `sarakErrorMessage` | lê as respostas comuns de API e barra rastro de pilha, HTML e erro do motor JS |
+| testes com Provider e mock do kit | `renderWithSarak` · `createSarakKitMock` (`@sarak/lib-ui-core/testing`) | um mock por módulo envelhece a cada componente novo; os dublês daqui acompanham a lib |
 | dica ao passar o ponteiro / menu de contexto | `SarakTooltip` · `SarakContextMenu` | o menu de contexto se desloca para dentro da tela e fecha por clique fora e por Escape; o tooltip já lê fundo, texto, borda e raio do tema |
 | carregar as fontes do tema (e a da marca) | o Provider, com `options.fonts` e `options.fonts.custom` (§3.14) | só a família em uso é baixada, sem rede de terceiros, e a fonte segue a troca de tema; um `@font-face` seu fica fora disso |
 | tipografia e cores da interface | `SarakTypography` · tokens `text*` e `color*` | família, escala, peso, espaçamento, halo e cores vêm do tema; as cores têm valores para os dois modos |
@@ -1119,9 +1147,9 @@ Medido em navegador (lote 4):
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v8.0.0-rc.4; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **446** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **466** nomes (componentes, tipos, hooks e helpers).
 
-### A.1 Componentes públicos (113)
+### A.1 Componentes públicos (116)
 
 Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada prop, com descrição, estão em `catalog.json` → `components.<Nome>.props` (e em `docs/component-catalog.md`).
 
@@ -1149,7 +1177,8 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | DataDisplay | **SarakChecklist** | `items` · `onToggle` · `onAdd` · `onRemove` · `showProgress` · `label` · `className` |
 | DataDisplay | **SarakCommentThread** | `comments` · `onSubmit` · `onDelete` · `label` · `className` |
 | DataDisplay | **SarakDataGrid** | `count` · `renderRow` · `estimateSize` · `overscan` · `height` · `className` |
-| DataDisplay | **SarakDataTable** | `columns` · `rows` · `rowHeight` · `headerHeight` · `height` · `overscan` · `getRowKey` · `sort` · `onSortChange` · `selectable` · `selectedKeys` · `onSelectionChange` · `onColumnResize` · `onColumnReorder` · `responsive` · `loading` · `error` · `emptyMessage` · `onRetry` · `onRowClick` · `className` · `groupBy` · `renderExpanded` · `expandedKeys` · `onExpandedChange` · `searchQuery` · `onSearchQueryChange` · `totalCount` · `selectAll` · `onSelectAllChange` · `getChildren` · `defaultExpandedDepth` · `reorderable` · `skeletonRows` |
+| DataDisplay | **SarakDataTable** | `columns` · `rows` · `rowHeight` · `headerHeight` · `height` · `overscan` · `getRowKey` · `sort` · `onSortChange` · `selectable` · `selectedKeys` · `onSelectionChange` · `onColumnResize` · `onColumnReorder` · `responsive` · `loading` · `error` · `emptyMessage` · `onRetry` · `onRowClick` · `className` · `groupBy` · `renderExpanded` · `expandedKeys` · `onExpandedChange` · `searchQuery` · `onSearchQueryChange` · `totalCount` · `selectAll` · `onSelectAllChange` · `getChildren` · `defaultExpandedDepth` · `reorderable` · `skeletonRows` · `bulkActions` · `columnState` · `defaultColumnState` · `onColumnStateChange` · `views` · `activeView` · `onViewChange` · `onViewSave` · `density` |
+| DataDisplay | **SarakDocumentFrame** | `children` · `format` · `zoom` · `actions` · `label` · `className` |
 | DataDisplay | **SarakGantt** | `tasks` · `scale` · `onTaskClick` · `rangeStart` · `rangeEnd` · `label` · `className` |
 | DataDisplay | **SarakKanban** | `columns` · `onCardMove` · `renderCard` · `onCardClick` · `onCardAdd` · `onColumnAdd` · `onColumnRename` · `onColumnDelete` · `valueFormat` · `columnTotal` · `className` |
 | DataDisplay | **SarakSparkline** | `data` · `variant` · `height` · `strokeWidth` · `fillOpacity` · `baseline` · `label` · `className` · `style` |
@@ -1161,6 +1190,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Feedback | **SarakBadge** | `variant` · `size` · `pill` · `soft` · `showStatusShape` |
 | Feedback | **SarakDataEmpty** | `message` |
 | Feedback | **SarakEmptyState** | `type` · `title` · `description` · `action` · `icon` |
+| Feedback | **SarakErrorBoundary** | `children` · `fallback` · `onError` · `resetKeys` |
 | Feedback | **SarakFieldError** | `message` · `fieldId` |
 | Feedback | **SarakProgress** | `value` · `max` · `thresholds` · `label` · `indeterminate` · `className` · `allowOverflow` · `showValue` · `valueFormat` |
 | Feedback | **SarakSkeleton** | `shape` · `rows` · `rowHeight` · `size` · `width` |
@@ -1204,7 +1234,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Navigation | **SarakBreadcrumbs** | `items` · `separator` · `onNavigate` · `className` |
 | Navigation | **SarakLink** | `href` · `external` · `target` · `rel` · `onNavigate` · `onClick` · `children` |
 | Navigation | **SarakMenuItem** | `icon` · `label` · `active` · `collapsed` · `orientation` · `title` · `href` · `onNavigate` · `badge` · `target` · `type` · `disabled` · `onClick` · `className` · `markerPosition` |
-| Navigation | **SarakPagination** | `current` · `total` · `pageSize` · `pageSizeOptions` · `totalItems` · `onPageSizeChange` · `maxVisible` · `onChange` · `className` |
+| Navigation | **SarakPagination** | `current` · `total` · `pageSize` · `pageSizeOptions` · `totalItems` · `onPageSizeChange` · `maxVisible` · `onChange` · `getPageHref` · `className` |
 | Navigation | **SarakShellLanguageSelector** | `variant` |
 | Navigation | **SarakShellNav** | `items` · `activeRoute` · `brand` · `onNavigate` · `onChange` · `orientation` · `collapsed` · `className` |
 | Navigation | **SarakShellSearchWidget** | `variant` · `compact` · `items` · `onClick` · `onSelect` |
@@ -1225,7 +1255,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Templates | **SarakExpandableMatrix** | `data` · `subItems` · `activeMapping` · `onToggle` · `renderItemHeader` · `manifest` |
 | Templates | **SarakFilterBar** | `ariaLabel` · `children` · `actions` · `clearFilters` |
 | Templates | **SarakFilterSelect** | `col` · `placeholder` · `label` · `filters` · `onChange` · `options` |
-| Templates | **SarakForm** | `data` · `load` · `label` · `mapping` · `mode` · `initialData` · `onSubmit` · `onSuccess` |
+| Templates | **SarakForm** | `data` · `load` · `label` · `mapping` · `mode` · `initialData` · `onSubmit` · `onSuccess` · `warnOnUnsaved` |
 | Templates | **SarakFormSection** | `title` · `description` · `columns` · `disabled` · `children` · `className` |
 | Templates | **SarakImageCard** | `src` · `alt` · `title` · `subtitle` · `children` · `className` · `onClick` |
 | Templates | **SarakManagementGrid** | `data` · `load` · `groupBy` · `ghostGroups` · `mapping` · `label` · `description` · `headerActions` · `groupActions` · `formMapping` · `onAction` · `onToggle` · `onDelete` · `onCreate` |
@@ -1236,6 +1266,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Templates | **SarakSegmentedControl** | `options` · `ariaLabel` · `value` · `defaultValue` · `onValueChange` |
 | Templates | **SarakStats** | `data` · `load` · `updatedAt` · `onRetry` · `label` · `mapping` · `metrics` |
 | Templates | **SarakTable** | `onRetry` · `updatedAt` · `emptyMessage` · `loading` · `error` |
+| Templates | **SarakTableView** | `filteredData` · `interactions` · `columns` · `columnKeys` · `columnLabels` · `label` · `role` · `density` · `loading` · `error` · `hasData` · `updatedAt` · `collapseToCards` · `canRefresh` · `showSearch` · `selectable` · `search` · `onSearchChange` · `onRefresh` · `onRetry` · `onRowClick` · `emptyMessage` · `cellDensityClass` · `zebraStriping` · `containerClassName` · `containerStyle` · `displayRows` · `toggleRow` · `toggleGroup` · `renderExpanded` · `footerRows` · `valueColumns` · `locale` · `exportable` · `onExport` |
 | UX | **SarakContextMenu** | `isOpen` · `position` · `onClose` · `children` · `className` |
 | UX | **SarakTabPanel** | `tabId` · `idPrefix` · `children` |
 | UX | **SarakTabs** | `tabs` · `activeTab` · `onChange` · `onNavigate` · `idPrefix` · `variant` · `fullWidth` · `overflow` · `className` · `listClassName` |

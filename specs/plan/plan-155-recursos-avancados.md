@@ -30,7 +30,7 @@ Decisão do dono em 2026-11-02: estes itens entram, mesmo sem uso nos sistemas v
 ## 3.1 Dentro
 - Componentes novos em `src/components/atomic/`, com testes e lazy no barril.
 - `package.json`: peers opcionais.
-- `src/core/i18n/`, `docs/migracoes.md`, `browser-tests/`, `gates/allowlists/`.
+- `src/core/i18n/`, `docs/migracoes.md`, `browser-tests/`, e a `ALLOWLIST` de `gates/scripts/contrato/check-no-network.mjs`.
 
 ## 3.2 Fora
 - Dependência obrigatória nova. Provedor de mapa embutido ou chave de API. Geocodificação.

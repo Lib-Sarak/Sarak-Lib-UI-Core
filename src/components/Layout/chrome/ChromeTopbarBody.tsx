@@ -184,6 +184,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
             <ChromeContentRegion
                 secondaryContent={secondaryContent}
                 isSplitViewEnabled={isSplitViewEnabled}
+                activeRoute={activeRoute}
                 className={`relative flex-1 min-w-0 min-h-0 overflow-auto`}
                 style={{ color: 'var(--text-main, var(--theme-text-primary, inherit))', ...resolveChromeContentStyle(layoutDensity, maxContentWidth) }}
             >

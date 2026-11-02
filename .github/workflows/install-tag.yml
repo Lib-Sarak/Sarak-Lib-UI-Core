@@ -14,14 +14,14 @@ concurrency:
 
 jobs:
     install-semver:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-24.04
         strategy:
             fail-fast: false
             matrix:
                 manager: [npm, pnpm, yarn]
         steps:
             - name: Node 24
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v7
               with:
                   node-version: "24"
 

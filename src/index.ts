@@ -116,6 +116,13 @@ export {
     sarakFormatPercent,
 } from './shared/format';
 export type { SarakValueFormat } from './shared/format';
+export { sarakErrorMessage } from './shared/errors/sarakErrorMessage';
+export { useSarakUnsavedChanges } from './components/atomic/Templates/hooks/useSarakUnsavedChanges';
+export type {
+    SarakUnsavedChangesBlockSource,
+    SarakUnsavedChangesControl,
+    SarakUnsavedChangesOptions,
+} from './components/atomic/Templates/hooks/useSarakUnsavedChanges';
 export * from './components/atomic/Cards';
 // API React pública do modelo módulos-plugin (Spec 43 §3.1) — faltavam inteiras no
 // barrel público (só viviam no Registry do motor de manifesto, `nativeComponents.ts`).

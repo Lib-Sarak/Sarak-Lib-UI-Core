@@ -1,3 +1,6 @@
+export { createSarakKitMock, renderWithSarak } from './shared/testing/sarakTestKit';
+export type { SarakRenderOptions, SarakRenderProviderProps } from './shared/testing/sarakTestKit';
+
 interface JsdomError {
     message: string;
 }

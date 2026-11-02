@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { requireTanstackUseVirtualizer } from '../optional-tanstack-virtualizer';
 import { useSarakLanguage } from '../../../../core/i18n/useSarakLanguage';
-import { sarakComputeOffsets, sarakReorder, sarakWidthOf, SARAK_MIN_COLUMN_WIDTH, SELECTION_COLUMN_WIDTH } from './columnModel';
+import { sarakComputeOffsets, SELECTION_COLUMN_WIDTH } from './columnModel';
 import type { SarakColumn, SarakPinnedOffsets } from './columnModel';
 import { columnSearchText, columnSortValue, columnValue, toValueColumn } from './columnValue';
 import type { SarakValueColumn } from './columnValue';
@@ -9,27 +9,23 @@ import { EXPANDER_WIDTH } from './dataTableCell';
 import type { SarakDataTableProps } from './SarakDataTableImpl';
 import type { SarakDataTableVirtualRow } from './SarakDataTableRows';
 import type { SarakDisplayRow } from './tableDisplayRows';
+import { useDataTableColumns } from './useDataTableColumns';
+import type { DataTableColumns } from './useDataTableColumns';
+import { useIsPrinting } from './useIsPrinting';
 import { useTableDisplayRows } from './useTableDisplayRows';
 import { useTableInteractions } from './useTableInteractions';
-import type { TableInteractionsResult } from './useTableInteractions';
+import type { DataTableInteractionsResult } from './useTableInteractions';
+import { useTableViews } from './useTableViews';
+import type { TableViews } from './useTableViews';
 import type { SarakDeviceType } from '../../../../core/Provider/DeviceProvider';
 
 /** Largura da coluna do botão de expandir quando a tabela tem `renderExpanded` e não é árvore. */
 
 const DETAIL_ROW_ESTIMATE = 120;
 
-interface SarakDataTableColumnState<T> {
-    widths: Record<string, number>;
-    ordered: SarakColumn<T>[];
-    dragId: string | null;
-    setDragId: (columnId: string | null) => void;
-    onDrop: (columnId: string) => void;
-    onResizeStart: (event: React.PointerEvent, column: SarakColumn<T>) => void;
-}
-
 interface SarakDataTableRowState<T> {
     scrollRef: React.RefObject<HTMLDivElement>;
-    interactions: TableInteractionsResult<T>;
+    interactions: DataTableInteractionsResult<T>;
     virtualRows: SarakDataTableVirtualRow<T>[];
     displayRows: Array<SarakDisplayRow<T>>;
     toggleRow: (key: React.Key) => void;
@@ -51,7 +47,7 @@ export interface SarakDataTableViewModel<T> {
     onDrop: (columnId: string) => void;
     onResizeStart: (event: React.PointerEvent, column: SarakColumn<T>) => void;
     scrollRef: React.RefObject<HTMLDivElement>;
-    interactions: TableInteractionsResult<T>;
+    interactions: DataTableInteractionsResult<T>;
     virtualRows: SarakDataTableVirtualRow<T>[];
     displayRows: Array<SarakDisplayRow<T>>;
     toggleRow: (key: React.Key) => void;
@@ -64,38 +60,18 @@ export interface SarakDataTableViewModel<T> {
     virtualTotalSize: number;
     virtualizerMeasureElement: (element: Element | null) => void;
     isAutomaticRowHeight: boolean;
+    /** Colunas configuráveis: estado, painel e alça. */
+    columns: DataTableColumns<T>;
+    views: TableViews;
+    /** Densidade de relatório: sem cromo, com todas as linhas no fluxo. */
+    report: boolean;
+    /** A página está sendo impressa: tabela inteira, sem colunas de serviço. */
+    printing: boolean;
+    /** Linhas no fluxo do documento, em vez da janela virtual. */
+    flow: boolean;
+    /** Colunas dos cartões: as configuradas, ou as declaradas quando não há configuração. */
+    cardColumns: SarakColumn<T>[];
 }
-
-const useColumnState = <T,>(columns: SarakColumn<T>[], onColumnResize?: SarakDataTableProps<T>['onColumnResize'], onColumnReorder?: SarakDataTableProps<T>['onColumnReorder']): SarakDataTableColumnState<T> => {
-    const [widths, setWidths] = useState<Record<string, number>>({});
-    const [order, setOrder] = useState<string[]>(() => columns.map((column) => column.id));
-    const [dragId, setDragId] = useState<string | null>(null);
-    const byId = useMemo(() => new Map(columns.map((column) => [column.id, column])), [columns]);
-    const ordered = useMemo(() => order.map((id) => byId.get(id)).filter((column): column is SarakColumn<T> => Boolean(column)), [order, byId]);
-    const onResizeStart = (event: React.PointerEvent, column: SarakColumn<T>): void => {
-        event.preventDefault();
-        event.stopPropagation();
-        const startX = event.clientX;
-        const startWidth = sarakWidthOf(column, widths);
-        const minimum = column.minWidth ?? SARAK_MIN_COLUMN_WIDTH;
-        const move = (pointer: PointerEvent): void => setWidths((previous) => ({ ...previous, [column.id]: Math.max(minimum, startWidth + pointer.clientX - startX) }));
-        const finish = (pointer: PointerEvent): void => {
-            window.removeEventListener('pointermove', move);
-            window.removeEventListener('pointerup', finish);
-            onColumnResize?.(column.id, Math.max(minimum, startWidth + pointer.clientX - startX));
-        };
-        window.addEventListener('pointermove', move);
-        window.addEventListener('pointerup', finish);
-    };
-    const onDrop = (toId: string): void => {
-        if (dragId && dragId !== toId) {
-            setOrder((previous) => sarakReorder(previous, dragId, toId));
-            onColumnReorder?.(dragId, toId);
-        }
-        setDragId(null);
-    };
-    return { widths, ordered, dragId, setDragId, onDrop, onResizeStart };
-};
 
 const estimateRowHeight = <T,>(rowHeight: SarakDataTableProps<T>['rowHeight'], headerHeight: number, row: T | undefined): number => {
     const estimate = typeof rowHeight === 'function'
@@ -123,7 +99,7 @@ const entryOf = <T,>(display: SarakDisplayRow<T>): SarakDataTableVirtualRow<T>['
         ? { row: display.rows[0], index: -1, key: display.id }
         : display.entry;
 
-const useRowState = <T,>(props: SarakDataTableProps<T>, valueColumns: Array<SarakValueColumn<T>>, locale: string): SarakDataTableRowState<T> => {
+const useRowState = <T,>(props: SarakDataTableProps<T>, valueColumns: Array<SarakValueColumn<T>>, locale: string, flow: boolean): SarakDataTableRowState<T> => {
     const scrollRef = useRef<HTMLDivElement>(null);
     const rows = useMemo(() => filterBySearch(props.rows, valueColumns, props.searchQuery, locale), [props.rows, valueColumns, props.searchQuery, locale]);
     const byId = useMemo(() => new Map(valueColumns.map((column) => [column.id, column])), [valueColumns]);
@@ -137,35 +113,49 @@ const useRowState = <T,>(props: SarakDataTableProps<T>, valueColumns: Array<Sara
         getRowKey: props.getRowKey, defaultExpandedDepth: props.defaultExpandedDepth, expandedKeys: props.expandedKeys, onExpandedChange: props.onExpandedChange,
     });
     const virtualizer = requireTanstackUseVirtualizer()({
-        count: displayRows.length,
+        count: flow ? 0 : displayRows.length,
         getScrollElement: () => scrollRef.current,
         estimateSize: (index) => estimateDisplayHeight(props, displayRows[index]),
         overscan: props.overscan ?? 8,
     });
-    const virtualRows = virtualizer.getVirtualItems().flatMap((item) => {
-        const display = displayRows[item.index];
-        return display ? [{ entry: entryOf(display), display, virtualIndex: item.index, virtualKey: item.key, start: item.start, size: item.size }] : [];
-    });
+    const virtualRows = flow
+        ? displayRows.map((display, index) => ({ entry: entryOf(display), display, virtualIndex: index, virtualKey: display.id, start: 0, size: 0 }))
+        : virtualizer.getVirtualItems().flatMap((item) => {
+            const display = displayRows[item.index];
+            return display ? [{ entry: entryOf(display), display, virtualIndex: item.index, virtualKey: item.key, start: item.start, size: item.size }] : [];
+        });
     const footerRows = useMemo(() => interactions.entries.map(({ row }) => row), [interactions.entries]);
     return { scrollRef, interactions, virtualRows, displayRows, toggleRow, toggleGroup, footerRows, virtualTotalSize: virtualizer.getTotalSize(), measureElement: virtualizer.measureElement };
 };
 
 export const useSarakDataTableViewModel = <T,>(props: SarakDataTableProps<T>, device: SarakDeviceType): SarakDataTableViewModel<T> => {
     const { locale } = useSarakLanguage();
-    const columnState = useColumnState(props.columns, props.onColumnResize, props.onColumnReorder);
+    const printing = useIsPrinting();
+    const report = props.density === 'report';
+    const collapseToCards = (props.responsive ?? true) && device === 'smartphone' && !printing;
+    const flow = (report || printing) && !collapseToCards;
+    const columns = useDataTableColumns(props);
+    const [viewQuery, setViewQuery] = useState<string | undefined>();
+    const query = props.searchQuery ?? viewQuery;
     const valueColumns = useMemo(() => props.columns.map((column) => toValueColumn<T>(column)), [props.columns]);
-    const rowState = useRowState(props, valueColumns, locale);
-    const offsets = sarakComputeOffsets(columnState.ordered, columnState.widths);
-    const hasExpander = Boolean(props.renderExpanded) && !props.getChildren;
-    const leadingWidth = (props.selectable ? SELECTION_COLUMN_WIDTH : 0) + (hasExpander ? EXPANDER_WIDTH : 0);
+    const rowState = useRowState({ ...props, searchQuery: query }, valueColumns, locale, flow);
+    const views = useTableViews({
+        views: props.views, activeView: props.activeView, onViewChange: props.onViewChange, onViewSave: props.onViewSave, onSearchQueryChange: props.onSearchQueryChange,
+        query, setQuery: setViewQuery, columnState: columns.state, commitColumns: columns.commitState, resetColumns: columns.resetState,
+        sort: rowState.interactions.sort, applySort: rowState.interactions.applySort,
+    });
+    const offsets = sarakComputeOffsets(columns.ordered, columns.widths);
+    const hasExpander = Boolean(props.renderExpanded) && !props.getChildren && !printing;
+    const leadingWidth = (props.selectable && !printing ? SELECTION_COLUMN_WIDTH : 0) + (hasExpander ? EXPANDER_WIDTH : 0);
     return {
-        props, collapseToCards: (props.responsive ?? true) && device === 'smartphone', widths: columnState.widths,
-        ordered: columnState.ordered, offsets, containerWidth: offsets.total + leadingWidth,
-        dragId: columnState.dragId, setDragId: columnState.setDragId, onDrop: columnState.onDrop,
-        onResizeStart: columnState.onResizeStart, scrollRef: rowState.scrollRef, interactions: rowState.interactions,
+        props, collapseToCards, widths: columns.widths,
+        ordered: columns.ordered, offsets, containerWidth: offsets.total + leadingWidth,
+        dragId: columns.dragId, setDragId: columns.setDragId, onDrop: columns.onDrop,
+        onResizeStart: columns.onResizeStart, scrollRef: rowState.scrollRef, interactions: rowState.interactions,
         virtualRows: rowState.virtualRows, displayRows: rowState.displayRows, toggleRow: rowState.toggleRow, toggleGroup: rowState.toggleGroup,
         footerRows: rowState.footerRows, hasExpander, locale,
         virtualTotalSize: rowState.virtualTotalSize, virtualizerMeasureElement: rowState.measureElement,
         isAutomaticRowHeight: props.rowHeight === 'auto',
+        columns, views, report, printing, flow, cardColumns: columns.managed ? columns.ordered : props.columns,
     };
 };

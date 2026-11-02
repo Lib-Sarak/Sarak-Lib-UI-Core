@@ -4,6 +4,7 @@ export * from './SarakBadge';
 export * from './SarakSkeleton';
 export * from './SarakSpinner';
 export * from './SarakDataEmpty';
+export * from './SarakErrorBoundary';
 export * from './SarakToast';
 export * from './SarakFieldError';
 export * from './SarakAlert';

@@ -16,6 +16,8 @@ interface UseFormDataOptions<T> {
 
 interface FormState<T> {
     formData: T;
+    /** Último valor carregado ou salvo: é contra ele que o formulário sabe se foi alterado. */
+    baseline: T;
     loading: boolean;
     saving: boolean;
     status: FormStatus;
@@ -33,6 +35,11 @@ function addMappedFields<T extends Record<string, unknown>>(
     return nextData as T;
 }
 
+/** Compara como o campo exibe o valor: redigitar `5` num número carregado não conta como alteração. */
+function hasFormChanged<T extends Record<string, unknown>>(formData: T, baseline: T): boolean {
+    return Object.keys(formData).some((key) => String(formData[key] ?? '') !== String(baseline[key] ?? ''));
+}
+
 export const useFormData = <T extends Record<string, unknown>>({
     data,
     initialData,
@@ -42,12 +49,16 @@ export const useFormData = <T extends Record<string, unknown>>({
     onSubmit,
     onSuccess,
 }: UseFormDataOptions<T>) => {
-    const [state, setState] = useState<FormState<T>>(() => ({
-        formData: addMappedFields(data ?? initialData, mapping),
-        loading: data === undefined && mode === 'edit' && Boolean(load),
-        saving: false,
-        status: null,
-    }));
+    const [state, setState] = useState<FormState<T>>(() => {
+        const formData = addMappedFields(data ?? initialData, mapping);
+        return {
+            formData,
+            baseline: formData,
+            loading: data === undefined && mode === 'edit' && Boolean(load),
+            saving: false,
+            status: null,
+        };
+    });
     const loadRef = useRef(load);
     const mappingRef = useRef(mapping);
     const initialDataRef = useRef(data ?? initialData);
@@ -64,20 +75,13 @@ export const useFormData = <T extends Record<string, unknown>>({
 
     useEffect(() => {
         if (data !== undefined) {
-            setState((current) => ({
-                ...current,
-                formData: addMappedFields(data, mappingRef.current),
-                loading: false,
-                status: null,
-            }));
+            const formData = addMappedFields(data, mappingRef.current);
+            setState((current) => ({ ...current, formData, baseline: formData, loading: false, status: null }));
             return;
         }
         if (mode === 'create') {
-            setState((current) => ({
-                ...current,
-                formData: addMappedFields(initialDataRef.current, mappingRef.current),
-                loading: false,
-            }));
+            const formData = addMappedFields(initialDataRef.current, mappingRef.current);
+            setState((current) => ({ ...current, formData, baseline: formData, loading: false }));
             return;
         }
         const loadFromHost = loadRef.current;
@@ -90,11 +94,8 @@ export const useFormData = <T extends Record<string, unknown>>({
         void loadFromHost()
             .then((loadedData) => {
                 if (!active) return;
-                setState((current) => ({
-                    ...current,
-                    formData: addMappedFields(loadedData, mappingRef.current),
-                    loading: false,
-                }));
+                const formData = addMappedFields(loadedData, mappingRef.current);
+                setState((current) => ({ ...current, formData, baseline: formData, loading: false }));
             })
             .catch((error: unknown) => {
                 if (!active) return;
@@ -122,6 +123,7 @@ export const useFormData = <T extends Record<string, unknown>>({
             await successRef.current?.();
             setState((current) => ({
                 ...current,
+                baseline: state.formData,
                 status: { type: 'success', message: textRef.current('formSaveSuccess') },
             }));
         } catch (error: unknown) {
@@ -132,5 +134,5 @@ export const useFormData = <T extends Record<string, unknown>>({
         }
     }, [state.formData]);
 
-    return { ...state, handleChange, handleSave };
+    return { ...state, isDirty: hasFormChanged(state.formData, state.baseline), handleChange, handleSave };
 };

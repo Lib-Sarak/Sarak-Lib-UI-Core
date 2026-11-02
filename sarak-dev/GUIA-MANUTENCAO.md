@@ -313,9 +313,9 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Categorias de engine (3)** — `charts` · `chat` · `flows`
 
-**Componentes públicos: 110** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
+**Componentes públicos: 112** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
-### B.3 Gates registrados (42)
+### B.3 Gates registrados (43)
 
 | Comando | O que roda |
 | --- | --- |
@@ -344,6 +344,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run kit-names:check` | `node gates/scripts/contrato/check-kit-names.mjs` |
 | `npm run migration-anchor:check` | `node gates/scripts/contrato/check-migration-anchor.mjs` |
 | `npm run minor-no-removal:check` | `node gates/scripts/contrato/check-minor-no-removal.mjs` |
+| `npm run network:check` | `node gates/scripts/contrato/check-no-network.mjs` |
 | `npm run package:check` | `node gates/scripts/contrato/check-package-contents.mjs` |
 | `npm run panel-contract:check` | `npx tsx gates/scripts/contrato/check-panel-contract.ts` |
 | `npm run persistence-doc:check` | `node gates/scripts/contrato/check-persistence-doc-identifiers.mjs` |

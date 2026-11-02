@@ -5,6 +5,70 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 8.0.0 — erro fica no bloco, aviso de alterações não salvas e a base que você reescrevia
+
+**Classificação: MINOR (aditivo).** Nada foi removido do barril. Uma mudança de comportamento merece conferência:
+
+- **`SarakSection` e `SarakAppChrome` passam a conter erro de render.** Um erro dentro do conteúdo vira um aviso com "Tentar de
+  novo" naquele bloco, e o resto da tela segue. Se você tem um error boundary **em volta** deles, ele deixa de receber esses erros.
+  Para continuar registrando, coloque um `SarakErrorBoundary` com `onError` **dentro** do conteúdo:
+
+  ```tsx
+  // Antes: o seu boundary, fora do cromo, recebia o erro e trocava a tela inteira.
+  <MeuBoundary onError={registrar}><SarakAppChrome nav={nav}><Tela /></SarakAppChrome></MeuBoundary>
+
+  // Depois: o erro para no bloco, e o registro continua.
+  <SarakAppChrome nav={nav} activeRoute={rota}>
+    <SarakErrorBoundary onError={registrar}><Tela /></SarakErrorBoundary>
+  </SarakAppChrome>
+  ```
+
+  No cromo, o erro é limpo quando `activeRoute` (ou o item `active` de `navItems`) muda. Sem rota informada, só "Tentar de novo" o limpa.
+
+Novidades opcionais:
+
+- `SarakErrorBoundary` — `fallback`, `onError` e `resetKeys`.
+- `useSarakUnsavedChanges({ isDirty, onBlock? })` — avisa ao fechar a aba e devolve `confirmLeave()`, para ligar no bloqueio do seu
+  roteador. `SarakForm` ganha `warnOnUnsaved` (padrão `false`), que cobre o fechamento da aba.
+- `SarakPagination.getPageHref` — cada página vira link real; clique simples segue em `onChange`, Ctrl+clique abre em nova aba.
+- `sarakErrorMessage(error, fallback?)` — texto seguro de `Error`, string e resposta comum de API. Rastro de pilha, HTML e erro do
+  motor JS (`TypeError` etc.) nunca chegam ao usuário.
+- `@sarak/lib-ui-core/testing` — `renderWithSarak` (assíncrona) e `createSarakKitMock`. Pedem `@testing-library/react` no projeto,
+  agora peer opcional.
+
+---
+
+## 8.0.0 — a tabela para o trabalho diário, a moldura de documento e a impressão
+
+Tudo aqui é aditivo: sem as props novas, a `SarakDataTable` não muda. Quem persiste colunas e visões é o sistema, a partir do valor devolvido.
+
+**Ações em lote.** `bulkActions` mostra uma barra com a contagem e o botão de limpar quando há seleção, na tabela e nos cartões. `tone: 'danger'` pede confirmação antes de agir.
+
+⚠️ **`onAction(ids, scope)` tem dois argumentos.** Em "Selecionar todos os N", `ids` só traz as linhas visíveis. Nesse modo, leia `scope`: com `scope.all === true`, a ação vale para todos do servidor, menos `scope.exceptKeys`. Quem usar só `ids` age sobre menos itens do que a barra anuncia.
+
+```tsx
+<SarakDataTable
+    selectable
+    totalCount={total}
+    bulkActions={[{
+        label: 'Arquivar',
+        onAction: (ids, scope) => (scope.all ? archiveAll(scope.exceptKeys) : archive(ids)),
+    }]}
+/>
+```
+
+A confirmação usa o `SarakUIProvider`. Sem ele, a ação de perigo não roda.
+
+**Colunas.** `columnState`, `defaultColumnState` e `onColumnStateChange` guardam colunas escondidas, ordem e largura, e ligam o botão "Colunas" e a alça de largura por teclado.
+
+**Edição na célula.** `SarakColumn.editable`, `SarakColumn.validate` e `onCellEdit(row, column, value)`. O valor chega como o texto digitado, e a conversão é do sistema. Devolva uma promessa para mostrar o estado de salvando; rejeitada, a mensagem aparece na célula.
+
+**Visões salvas.** `views`, `activeView`, `onViewChange` e `onViewSave`. Uma visão guarda `filters`, `columnState` e `sort`. Das chaves de `filters`, a tabela só aplica `searchQuery`; as demais voltam ao sistema sem interpretação.
+
+**Relatório.** `density="report"` tira o cromo e a rolagem própria e põe todas as linhas na página. `getCellTone(row, column)` dá tom à célula, sempre com ícone e texto para leitor de tela.
+
+**Documento e impressão.** `SarakDocumentFrame` mostra a folha em `a4`, `letter` ou `phone` e cabe no contêiner. `sarakPrint(element?)` imprime a página ou só o elemento. Na impressão saem cromo e ações, a tabela sai inteira e o texto escurece em qualquer tema. Com uma moldura na página, sai só o documento.
+
 ## 8.0.0 — as barras ganham personalidade (grupos, marca, cor por papel, largura)
 
 **Classificação: MINOR (aditivo).** Nada foi removido do barril e o padrão de cada opção nova é o desenho de antes. Duas

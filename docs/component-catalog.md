@@ -33,6 +33,7 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakChartEngine` | `series` | `bar` · `line` · `area` · `left` · `right` · `chartColorPalette` · `secondaryColor` · `accentColor` · `statusSuccessColor` · `statusWarningColor` · `statusErrorColor` · `statusInfoColor` · `tertiaryColor` |
 | `SarakChartEngine` | `orientation` | `vertical` · `horizontal` |
 | `SarakChartEngine` | `legend` | `top` · `bottom` |
+| `SarakDataTable` | `density` | `standard` · `report` |
 | `SarakDatePicker` | `mode` | `single` · `range` |
 | `SarakDrawer` | `direction` | `left` · `right` · `top` · `bottom` |
 | `SarakEmptyState` | `type` | `minimal` · `abstract` · `geometric` |
@@ -69,7 +70,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `ListOrdered` · `Grid` · `Layout` · `LayoutDashboard` · `LayoutGrid` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `ZoomIn` · `ZoomOut` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `ShieldCheck` · `Eye` · `EyeOff` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Bold` · `Italic` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Binary` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `Link2` · `ExternalLink` · `Command` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Settings2` · `Zap` · `Sparkles` · `Compass` · `Sun` · `Moon` · `XCircle` · `ToggleLeft` · `ToggleRight`
 
-## Componentes públicos (110)
+## Componentes públicos (112)
 
 ### SARAK_DEFAULT_COLUMN_WIDTH
 
@@ -583,6 +584,17 @@ Props (`SarakDataTableProps` — `src/components/atomic/DataDisplay/SarakDataTab
 | `defaultExpandedDepth` | `number` | não | Profundidade aberta de início na árvore; padrão `0` (tudo recolhido). |
 | `reorderable` | `boolean` | não | Cabeçalhos arrastáveis para reordenar; padrão `true`. |
 | `skeletonRows` | `number` | não | Linhas do esqueleto com `loading` e sem linhas; padrão `8`. |
+| `bulkActions` | `SarakTableBulkAction[]` | não | Ações da barra que aparece com linhas selecionadas; `tone: 'danger'` pede confirmação. |
+| `columnState` | `SarakColumnState` | não | Colunas escondidas, ordem e largura (controlado). Com esta, `defaultColumnState` ou `onColumnStateChange`, há o botão "Colunas". |
+| `defaultColumnState` | `SarakColumnState` | não | Estado de colunas inicial, e o destino de "voltar ao padrão". |
+| `onColumnStateChange` | `(state: SarakColumnState) => void` | não | Recebe o estado de colunas atualizado; quem salva é o consumidor. |
+| `views` | `SarakTableView[]` | não | Visões salvas; a tabela só as aplica, e quem persiste é o consumidor. |
+| `activeView` | `string \| null` | não | Id da visão atual (controlado); `null` é o padrão; omitido, a tabela gerencia. |
+| `onViewChange` | `(viewId: string \| null, view: SarakTableView \| null) => void` | não |  |
+| `onViewSave` | `(view: SarakTableView) => void` | não | Recebe a visão de "salvar como": filtros, colunas e ordenação do momento. |
+| `density` | `'standard' \| 'report'` | não | `report`: relatório leve, sem cromo, com todas as linhas no fluxo da página e sem rolagem própria. |
+
+Estende: `SarakCellBehavior<T>`
 
 ### SarakDatePicker
 
@@ -631,6 +643,19 @@ Props (`SarakDividerProps` — `src/components/atomic/Layouts/SarakDivider.tsx`)
 
 Estende: `Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>`
 
+### SarakDocumentFrame
+
+Props (`SarakDocumentFrameProps` — `src/components/atomic/DataDisplay/SarakDocumentFrame.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | sim | O documento: é só ele que sai na impressão. |
+| `format` | `SarakDocumentFormat` | não | Tamanho da folha; padrão `a4`. |
+| `zoom` | `number \| 'fit'` | não | `fit` reduz a folha à largura do contêiner, sem ampliar; um número fixa a escala (`1` = 100%). Padrão `fit`. |
+| `actions` | `ReactNode` | não | Ações sobre a folha (formato, zoom, imprimir); não saem na impressão. |
+| `label` | `string` | não | Nome acessível da região do documento. |
+| `className` | `string` | não |  |
+
 ### SarakDrawer
 
 Props (`SarakDrawerProps` — `src/components/atomic/Modals/SarakDrawer.tsx`):
@@ -655,6 +680,17 @@ Props (`SarakEmptyStateProps` — `src/components/atomic/Feedback/SarakEmptyStat
 | `description` | `React.ReactNode` | não | Explicação complementar para o estado vazio. |
 | `action` | `React.ReactNode` | não | Ação composta pelo consumidor, normalmente um `SarakButton`. |
 | `icon` | `React.ReactNode` | não | Ícone ou ilustração composta pelo consumidor. |
+
+### SarakErrorBoundary
+
+Props (`SarakErrorBoundaryProps` — `src/components/atomic/Feedback/SarakErrorBoundary.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `children` | `React.ReactNode` | não |  |
+| `fallback` | `React.ReactNode \| ((context: SarakErrorBoundaryFallbackContext) => React.ReactNode)` | não | Substitui o aviso padrão: um nó fixo ou uma função que recebe o erro e `reset`. |
+| `onError` | `(error: unknown, info: React.ErrorInfo) => void` | não | Recebe o erro capturado, para o host registrar. |
+| `resetKeys` | `readonly unknown[]` | não | Quando um destes valores muda (a rota, por exemplo), o erro é limpo e o conteúdo remonta. |
 
 ### SarakExpandableCard
 
@@ -760,6 +796,7 @@ Props (`SarakFormProps` — `src/components/atomic/Templates/SarakForm.tsx`):
 | `initialData` | `TData` | não | Valor inicial usado no modo create ou até load concluir. |
 | `onSubmit` | `(data: TData) => void \| Promise<void>` | não | Envia os valores ao host; sem callback, o botão de envio não é exibido. |
 | `onSuccess` | `() => void \| Promise<void>` | não | Chamado após um envio bem-sucedido. |
+| `warnOnUnsaved` | `boolean` | não | Avisa ao fechar a aba com alteração não salva. Para a rota interna, use `useSarakUnsavedChanges`. |
 
 ### SarakFormGroup
 
@@ -1102,6 +1139,7 @@ Props (`SarakPaginationProps` — `src/components/atomic/Navigation/SarakPaginat
 | `onPageSizeChange` | `(pageSize: number) => void` | não | Disparado ao escolher outra quantidade de registros por página. |
 | `maxVisible` | `number` | não | Máximo de botões numéricos antes de compactar com reticências (default: 7). |
 | `onChange` | `(page: number) => void` | sim | Disparado ao escolher uma página válida (diferente da atual). |
+| `getPageHref` | `(page: number) => string` | não | Com ele, cada página é um link real: clique simples chama `onChange`, e Ctrl+clique, clique do meio e abrir em nova aba seguem o `href`, sem passar pelo `onChange`. |
 | `className` | `string` | não |  |
 
 ### SarakProgress

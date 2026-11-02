@@ -8,6 +8,7 @@ import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import { useFormData } from './hooks/useFormData';
+import { useSarakUnsavedChanges } from './hooks/useSarakUnsavedChanges';
 
 export interface SarakFormProps<TData extends Record<string, unknown>> {
     /** Dado já carregado pelo host; quando presente, tem prioridade sobre load. */
@@ -26,6 +27,8 @@ export interface SarakFormProps<TData extends Record<string, unknown>> {
     onSubmit?: (data: TData) => void | Promise<void>;
     /** Chamado após um envio bem-sucedido. */
     onSuccess?: () => void | Promise<void>;
+    /** Avisa ao fechar a aba com alteração não salva. Para a rota interna, use `useSarakUnsavedChanges`. */
+    warnOnUnsaved?: boolean;
 }
 
 /** Gera um formulário simples por `mapping`; fluxos CRUD devem compor `SarakFormSection` e os campos. */
@@ -38,9 +41,10 @@ export const SarakForm = <TData extends Record<string, unknown> = Record<string,
     initialData = {} as TData,
     onSubmit,
     onSuccess,
+    warnOnUnsaved = false,
 }: SarakFormProps<TData>) => {
     const text = useLibraryText();
-    const { formData, loading, saving, status, handleChange, handleSave } = useFormData<TData>({
+    const { formData, loading, saving, status, isDirty, handleChange, handleSave } = useFormData<TData>({
         data,
         initialData,
         mode,
@@ -49,6 +53,7 @@ export const SarakForm = <TData extends Record<string, unknown> = Record<string,
         onSubmit,
         onSuccess,
     });
+    useSarakUnsavedChanges({ isDirty: warnOnUnsaved && isDirty });
     const { getContainerStyles } = useStructuralStyles();
     const containerLayout = getContainerStyles();
 

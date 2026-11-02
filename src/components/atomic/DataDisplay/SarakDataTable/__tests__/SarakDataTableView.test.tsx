@@ -9,6 +9,8 @@ describe('SarakDataTableView', () => {
         const model = {
             props: { loading: true },
             interactions: { entries: [] },
+            columns: { managed: false },
+            views: { enabled: false },
         } as unknown as SarakDataTableViewModel<Record<string, unknown>>;
 
         render(<SarakUIProvider><SarakDataTableView model={model} /></SarakUIProvider>);

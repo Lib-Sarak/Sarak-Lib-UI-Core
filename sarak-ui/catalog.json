@@ -85,6 +85,8 @@
     "SarakCatalogGrid",
     "SarakCatalogGridProps",
     "SarakCatalogItem",
+    "SarakCellBehavior",
+    "SarakCellTone",
     "SarakChartAxis",
     "SarakChartColorToken",
     "SarakChartDataItem",
@@ -118,6 +120,7 @@
     "SarakColumnAlignment",
     "SarakColumnFooterContext",
     "SarakColumnLike",
+    "SarakColumnState",
     "SarakColumnValueOptions",
     "SarakComment",
     "SarakCommentAuthor",
@@ -164,11 +167,18 @@
     "SarakDivider",
     "SarakDividerOrientation",
     "SarakDividerProps",
+    "SarakDocumentFormat",
+    "SarakDocumentFrame",
+    "SarakDocumentFrameProps",
     "SarakDocumentKind",
     "SarakDrawer",
     "SarakDrawerProps",
     "SarakEmptyState",
     "SarakEmptyStateProps",
+    "SarakErrorBoundary",
+    "SarakErrorBoundaryFallbackContext",
+    "SarakErrorBoundaryProps",
+    "SarakErrorBoundaryState",
     "SarakExpandableCard",
     "SarakExpandableCardProps",
     "SarakExpandableMatrix",
@@ -366,10 +376,14 @@
     "SarakTabPanel",
     "SarakTabPanelProps",
     "SarakTable",
+    "SarakTableBulkAction",
+    "SarakTableBulkScope",
     "SarakTableColumn",
     "SarakTableGroupBy",
     "SarakTableProps",
     "SarakTableSort",
+    "SarakTableView",
+    "SarakTableViewFilters",
     "SarakTabs",
     "SarakTabsOverflow",
     "SarakTabsProps",
@@ -410,6 +424,9 @@
     "SarakUIOptions",
     "SarakUIProvider",
     "SarakUIProviderProps",
+    "SarakUnsavedChangesBlockSource",
+    "SarakUnsavedChangesControl",
+    "SarakUnsavedChangesOptions",
     "SarakUploader",
     "SarakUploaderProps",
     "SarakUserPreferences",
@@ -424,6 +441,7 @@
     "sarakDeriveThemeFromReference",
     "sarakDeviceForWidth",
     "sarakDownloadCsv",
+    "sarakErrorMessage",
     "sarakFindMissingThemeAxes",
     "sarakFormatCurrency",
     "sarakFormatDate",
@@ -441,6 +459,7 @@
     "sarakLoadThemePreset",
     "sarakMoveCard",
     "sarakPreloadThemes",
+    "sarakPrint",
     "sarakRegisterIcons",
     "sarakReorder",
     "sarakResolvePalette",
@@ -456,6 +475,7 @@
     "useSarakLanguage",
     "useSarakPreferences",
     "useSarakUI",
+    "useSarakUnsavedChanges",
     "useToast"
   ],
   "components": {
@@ -2076,6 +2096,7 @@
     "SarakDataTable": {
       "propsInterface": "SarakDataTableProps",
       "source": "src/components/atomic/DataDisplay/SarakDataTable/SarakDataTableImpl.tsx",
+      "extends": "SarakCellBehavior<T>",
       "props": [
         {
           "name": "columns",
@@ -2280,6 +2301,60 @@
           "type": "number",
           "optional": true,
           "doc": "Linhas do esqueleto com `loading` e sem linhas; padrão `8`."
+        },
+        {
+          "name": "bulkActions",
+          "type": "SarakTableBulkAction[]",
+          "optional": true,
+          "doc": "Ações da barra que aparece com linhas selecionadas; `tone: 'danger'` pede confirmação."
+        },
+        {
+          "name": "columnState",
+          "type": "SarakColumnState",
+          "optional": true,
+          "doc": "Colunas escondidas, ordem e largura (controlado). Com esta, `defaultColumnState` ou `onColumnStateChange`, há o botão \"Colunas\"."
+        },
+        {
+          "name": "defaultColumnState",
+          "type": "SarakColumnState",
+          "optional": true,
+          "doc": "Estado de colunas inicial, e o destino de \"voltar ao padrão\"."
+        },
+        {
+          "name": "onColumnStateChange",
+          "type": "(state: SarakColumnState) => void",
+          "optional": true,
+          "doc": "Recebe o estado de colunas atualizado; quem salva é o consumidor."
+        },
+        {
+          "name": "views",
+          "type": "SarakTableView[]",
+          "optional": true,
+          "doc": "Visões salvas; a tabela só as aplica, e quem persiste é o consumidor."
+        },
+        {
+          "name": "activeView",
+          "type": "string | null",
+          "optional": true,
+          "doc": "Id da visão atual (controlado); `null` é o padrão; omitido, a tabela gerencia."
+        },
+        {
+          "name": "onViewChange",
+          "type": "(viewId: string | null, view: SarakTableView | null) => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onViewSave",
+          "type": "(view: SarakTableView) => void",
+          "optional": true,
+          "doc": "Recebe a visão de \"salvar como\": filtros, colunas e ordenação do momento."
+        },
+        {
+          "name": "density",
+          "type": "'standard' | 'report'",
+          "optional": true,
+          "doc": "`report`: relatório leve, sem cromo, com todas as linhas no fluxo da página e sem rolagem própria."
         }
       ]
     },
@@ -2489,6 +2564,48 @@
         }
       ]
     },
+    "SarakDocumentFrame": {
+      "propsInterface": "SarakDocumentFrameProps",
+      "source": "src/components/atomic/DataDisplay/SarakDocumentFrame.tsx",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": false,
+          "doc": "O documento: é só ele que sai na impressão."
+        },
+        {
+          "name": "format",
+          "type": "SarakDocumentFormat",
+          "optional": true,
+          "doc": "Tamanho da folha; padrão `a4`."
+        },
+        {
+          "name": "zoom",
+          "type": "number | 'fit'",
+          "optional": true,
+          "doc": "`fit` reduz a folha à largura do contêiner, sem ampliar; um número fixa a escala (`1` = 100%). Padrão `fit`."
+        },
+        {
+          "name": "actions",
+          "type": "ReactNode",
+          "optional": true,
+          "doc": "Ações sobre a folha (formato, zoom, imprimir); não saem na impressão."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome acessível da região do documento."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakDrawer": {
       "propsInterface": "SarakDrawerProps",
       "source": "src/components/atomic/Modals/SarakDrawer.tsx",
@@ -2564,6 +2681,36 @@
           "type": "React.ReactNode",
           "optional": true,
           "doc": "Ícone ou ilustração composta pelo consumidor."
+        }
+      ]
+    },
+    "SarakErrorBoundary": {
+      "propsInterface": "SarakErrorBoundaryProps",
+      "source": "src/components/atomic/Feedback/SarakErrorBoundary.tsx",
+      "props": [
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "fallback",
+          "type": "React.ReactNode | ((context: SarakErrorBoundaryFallbackContext) => React.ReactNode)",
+          "optional": true,
+          "doc": "Substitui o aviso padrão: um nó fixo ou uma função que recebe o erro e `reset`."
+        },
+        {
+          "name": "onError",
+          "type": "(error: unknown, info: React.ErrorInfo) => void",
+          "optional": true,
+          "doc": "Recebe o erro capturado, para o host registrar."
+        },
+        {
+          "name": "resetKeys",
+          "type": "readonly unknown[]",
+          "optional": true,
+          "doc": "Quando um destes valores muda (a rota, por exemplo), o erro é limpo e o conteúdo remonta."
         }
       ]
     },
@@ -2884,6 +3031,12 @@
           "type": "() => void | Promise<void>",
           "optional": true,
           "doc": "Chamado após um envio bem-sucedido."
+        },
+        {
+          "name": "warnOnUnsaved",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Avisa ao fechar a aba com alteração não salva. Para a rota interna, use `useSarakUnsavedChanges`."
         }
       ]
     },
@@ -3972,6 +4125,12 @@
           "type": "(page: number) => void",
           "optional": false,
           "doc": "Disparado ao escolher uma página válida (diferente da atual)."
+        },
+        {
+          "name": "getPageHref",
+          "type": "(page: number) => string",
+          "optional": true,
+          "doc": "Com ele, cada página é um link real: clique simples chama `onChange`, e Ctrl+clique, clique do meio e abrir em nova aba seguem o `href`, sem passar pelo `onChange`."
         },
         {
           "name": "className",
@@ -5082,6 +5241,222 @@
         }
       ]
     },
+    "SarakTableView": {
+      "propsInterface": "SarakTableViewProps",
+      "source": "src/components/atomic/Templates/SarakTableViewParts.tsx",
+      "props": [
+        {
+          "name": "filteredData",
+          "type": "TData[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "interactions",
+          "type": "TableInteractionsResult<TData>",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "columns",
+          "type": "SarakTableColumn<TData>[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "columnKeys",
+          "type": "string[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "columnLabels",
+          "type": "Record<string, string>",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "role",
+          "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "density",
+          "type": "'compact' | 'standard' | 'spacious'",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "error",
+          "type": "string | null",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "hasData",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "updatedAt",
+          "type": "Date | null",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "collapseToCards",
+          "type": "boolean",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "canRefresh",
+          "type": "boolean",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "showSearch",
+          "type": "boolean",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "selectable",
+          "type": "boolean",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "search",
+          "type": "string",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "onSearchChange",
+          "type": "(value: string) => void",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "onRefresh",
+          "type": "() => void",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "onRetry",
+          "type": "() => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onRowClick",
+          "type": "(row: TData) => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "emptyMessage",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "cellDensityClass",
+          "type": "string",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "zebraStriping",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Alterna o fundo das linhas pares (`tableZebraStriping`); omitido, sem listras."
+        },
+        {
+          "name": "containerClassName",
+          "type": "string",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "containerStyle",
+          "type": "CSSProperties",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "displayRows",
+          "type": "Array<SarakDisplayRow<TData>>",
+          "optional": true,
+          "doc": "Linhas visuais (grupo, subtotal, detalhe); ausente = uma linha de dado por entrada."
+        },
+        {
+          "name": "toggleRow",
+          "type": "(key: Key) => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "toggleGroup",
+          "type": "(groupId: string) => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "renderExpanded",
+          "type": "(row: TData) => ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "footerRows",
+          "type": "TData[]",
+          "optional": true,
+          "doc": "Linhas sobre as quais o rodapé agrega; ausente = as linhas filtradas."
+        },
+        {
+          "name": "valueColumns",
+          "type": "Array<SarakValueColumn<TData>>",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "exportable",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Mostra o botão de exportar CSV na barra."
+        },
+        {
+          "name": "onExport",
+          "type": "() => void",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakTabs": {
       "propsInterface": "SarakTabsProps",
       "source": "src/components/atomic/UX/SarakTabs.tsx",
@@ -5711,6 +6086,14 @@
         "values": [
           "top",
           "bottom"
+        ]
+      },
+      {
+        "component": "SarakDataTable",
+        "prop": "density",
+        "values": [
+          "standard",
+          "report"
         ]
       },
       {
@@ -11816,6 +12199,6 @@
   "kitStamp": {
     "libVersion": "8.0.0-rc.4",
     "kitSchemaVersion": 1,
-    "kitHash": "138d4de78dde"
+    "kitHash": "74609fb93914"
   }
 }

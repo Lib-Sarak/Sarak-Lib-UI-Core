@@ -86,6 +86,8 @@ via normal.
 | 60 | `browser-tests/troca-de-tema.spec.ts` não protege a fusão dos commits da prévia e da raiz: com `useEffect` de volta em `useDesignDraftSync.ts`, ele passa. Falta um caso próprio, porque a contagem de `UpdateLayoutTree` dentro do spec difere da manual | revisão do custo restante da tela | 2026-11-01 | baixo |
 | 61 | Sem evidência de uso em 11 sistemas ativos (varredura de 2026-11-02): código de barras e visor de JSON. Reavaliar quando um sistema pedir | análise de lacunas da rc.5 | 2026-11-02 | baixo |
 | 62 | Busca do painel: frases vagas ainda abrem no específico. Medido: `quero bordas mais grossas` → `chartThickness`, `cor do título da página` → `textColorMaster`, `velocidade das animações` → `chatAnimationSpeed`, `deixar os cantos mais retos` → `tableBorderRadius`, `como deixo o site escuro` → `shadowColorMode`. Falta dar peso ao token geral no casamento parcial | revisão da busca por intenção | 2026-11-02 | médio |
+| 63 | `SarakAppChrome` e `SarakSection` contêm erro de render e não têm `onError` próprio: quem registrava erro com um boundary em volta do cromo precisa pôr um `SarakErrorBoundary` dentro do conteúdo (`docs/migracoes.md`). Uma prop no cromo seria contrato novo | achado da `plan-151` | 2026-11-02 | médio |
+| 64 | Impressão da `SarakDataTable`: quebra de página real e cabeçalho repetido por folha não foram medidos (a emulação de mídia não pagina); com `groupBy`, grupo recolhido sai recolhido | achado da `plan-152` | 2026-11-02 | baixo |
 
 ---
 
