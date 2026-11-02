@@ -13,7 +13,6 @@ import {
 export interface PreviewSystemRendererProps {
     sarak: SarakUIContextType;
     tokens: Partial<SarakDesignState>;
-    isDualView?: boolean;
     previewDevice: 'desktop' | 'tablet' | 'smartphone';
     activePreviewApp: string;
     selectPreviewApp: (appId: string) => void;
@@ -28,7 +27,6 @@ export const arePreviewPropsEqual = (
     previous.apps === next.apps &&
     previous.sarak === next.sarak &&
     previous.previewDevice === next.previewDevice &&
-    previous.isDualView === next.isDualView &&
     previous.activePreviewApp === next.activePreviewApp;
 
 function createNavigationItems(
@@ -113,13 +111,12 @@ const PreviewDeviceSurface = (props: PreviewDeviceSurfaceProps): React.ReactElem
 function PreviewSystemRendererImpl(props: PreviewSystemRendererProps): React.ReactElement {
     const {
         tokens,
-        isDualView,
         previewDevice,
         activePreviewApp,
         selectPreviewApp,
         apps,
     } = props;
-    const { containerRef, scale } = useContainerScale(isDualView ? 0.75 : 0.95);
+    const { containerRef, scale } = useContainerScale(0.95);
     const navigationItems = React.useMemo<SarakNavItem[]>(
         () => createNavigationItems(apps, activePreviewApp),
         [apps, activePreviewApp],

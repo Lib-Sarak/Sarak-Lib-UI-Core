@@ -2,7 +2,6 @@ import { renderHook } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { useThemeCustomizationData } from '../useThemeCustomizationData';
 import { TokenCatalog } from '../../../../../core/Design/catalog';
-import type { ThemeEditMode } from '../usePreviewUIState';
 
 const VISUAL_IMPACT_GROUPS = ['fontes', 'cores', 'fundo', 'cards', 'forma'];
 const getMarkedCatalogEntries = () => TokenCatalog.flatMap((entry) => {
@@ -15,31 +14,19 @@ describe('useThemeCustomizationData', () => {
         expect(useThemeCustomizationData).toBeDefined();
     });
 
-    it('mantém a visibilidade Essencial determinada por importance >= 80', () => {
-        const { result } = renderHook(() => useThemeCustomizationData(''));
-
-        expect(result.current.isTokenVisible('inputErrorColor')).toBe(true);
-        expect(result.current.isTokenVisible('multiSelectInputMinWidth')).toBe(false);
-    });
-
-    it('mantém a curadoria Essencial pré-existente de outras partições', () => {
-        const { result } = renderHook(() => useThemeCustomizationData(''));
-
-        expect(result.current.isTokenVisible('cardPaddingMd')).toBe(true);
-        expect(result.current.isTokenVisible('cardRadiusTL')).toBe(false);
-    });
-
     it('marca entre 20 e 30 ids únicos, em grupos válidos e presentes no schema', () => {
         const markedEntries = getMarkedCatalogEntries();
         const markedIds = new Set(markedEntries.map((entry) => entry.tokenId));
-        const { result } = renderHook(() => useThemeCustomizationData('', 'impact'));
-        const schemaIds = new Set(result.current.visualImpactTokens.map(({ token }) => token.id));
+        const { result } = renderHook(() => useThemeCustomizationData(''));
+        const { grouped, meta } = result.current.decisionContext;
+        const schemaIds = new Set(Object.values(grouped).flatMap((sections) => Object.values(sections).flat())
+            .map((token) => token.id).filter((id) => VISUAL_IMPACT_GROUPS.includes(meta.get(id)?.visualImpact ?? '')));
 
         expect(markedIds.size).toBeGreaterThanOrEqual(20);
         expect(markedIds.size).toBeLessThanOrEqual(30);
         markedEntries.forEach((entry) => expect(VISUAL_IMPACT_GROUPS).toContain(entry.visualImpact));
-        expect(schemaIds).toEqual(markedIds);
-        expect(result.current.visualImpactTokens).toHaveLength(markedIds.size);
+        schemaIds.forEach((id) => expect(markedIds.has(id)).toBe(true));
+        expect(schemaIds.size).toBeGreaterThanOrEqual(20);
     });
 
     it('preserva âncoras e exclui candidatos sem efeito independente provado', () => {
@@ -73,33 +60,6 @@ describe('useThemeCustomizationData', () => {
 
         expect(entries).toHaveLength(1);
         expect(entries.map((entry) => entry.visualImpact)).toEqual([group]);
-    });
-
-    it('aplica os três modos de visibilidade e mantém Completo abrangente', () => {
-        const { result, rerender } = renderHook(({ mode }) => useThemeCustomizationData('', mode), {
-            initialProps: { mode: 'essential' as ThemeEditMode }
-        });
-
-        expect(result.current.isTokenVisible('inputErrorColor')).toBe(true);
-        rerender({ mode: 'impact' });
-        expect(result.current.isTokenVisible('primaryColor')).toBe(true);
-        expect(result.current.isTokenVisible('multiSelectInputMinWidth')).toBe(false);
-        rerender({ mode: 'complete' });
-        expect(result.current.isTokenVisible('multiSelectInputMinWidth')).toBe(true);
-    });
-
-    it('publica os sete títulos de pilar sem prefixos numéricos', () => {
-        const { result } = renderHook(() => useThemeCustomizationData(''));
-
-        expect(result.current.pillars.map(({ id, title }) => [id, title])).toEqual([
-            ['brand', 'Marca e cores'],
-            ['typography', 'Fontes e texto'],
-            ['surfaces', 'Superfícies e cards'],
-            ['interaction', 'Botões, campos e animação'],
-            ['navigation', 'Navegação e layout'],
-            ['systems', 'Dados e gráficos'],
-            ['advanced', 'Avançado']
-        ]);
     });
 
     it('filteredResults é nulo sem busca e usa a busca por sentido quando há consulta', () => {

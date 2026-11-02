@@ -47,6 +47,38 @@ describe('PALETTE_ROLE_MAP', () => {
             const tones = ['textColorMaster', 'textColorSecondary', 'textColorMuted'].map((key) => PALETTE_ROLE_MAP[key].toneByMode[mode]);
             expect(new Set(tones).size, mode).toBe(3);
         }
-        expect(PALETTE_ROLE_MAP.subtitleColor.toneByMode).toEqual(PALETTE_ROLE_MAP.textColorSecondary.toneByMode);
+    });
+});
+
+describe('PALETTE_ROLE_MAP — a área define o tratamento da cor', () => {
+    const TEXT = {
+        secondary: ['subtitleColor', 'sidebarCategoryColor', 'secondaryColor'],
+        accent: ['emphasisColor', 'accentColor', 'tertiaryColor', 'inputFocusBorderColor'],
+    } as const;
+    const SMALL = { secondary: ['chartColorPalette'], accent: ['navActiveMarkerColor'] } as const;
+    const SURFACE = ['cardHeaderBg', 'cardHeaderBorder', 'tableHeaderBg', 'btnSecondaryBg'];
+
+    it.each(Object.entries(TEXT))('texto da %s: parte da semente e anda o mínimo (shiftFrom na base)', (scale, tokens) => {
+        tokens.forEach((token) => {
+            expect(PALETTE_ROLE_MAP[token].scale, token).toBe(scale);
+            expect(PALETTE_ROLE_MAP[token].shiftFrom, token).toEqual([PALETTE_BASE_TONE]);
+        });
+    });
+
+    it.each(Object.entries(SMALL))('elemento pequeno da %s: a semente exata nos dois modos', (scale, tokens) => {
+        tokens.forEach((token) => {
+            expect(PALETTE_ROLE_MAP[token].scale, token).toBe(scale);
+            expect(PALETTE_ROLE_MAP[token].toneByMode, token).toEqual({ light: PALETTE_BASE_TONE, dark: PALETTE_BASE_TONE });
+            expect(PALETTE_ROLE_MAP[token].shiftFrom, token).toBeUndefined();
+        });
+    });
+
+    it('superfície grande continua tingida: secundária, em tom da escala, sem deslocamento', () => {
+        SURFACE.forEach((token) => {
+            expect(PALETTE_ROLE_MAP[token].scale, token).toBe('secondary');
+            expect(PALETTE_ROLE_MAP[token].toneByMode.light, token).not.toBe(PALETTE_BASE_TONE);
+            expect(PALETTE_ROLE_MAP[token].toneByMode.dark, token).not.toBe(PALETTE_BASE_TONE);
+            expect(PALETTE_ROLE_MAP[token].shiftFrom, token).toBeUndefined();
+        });
     });
 });

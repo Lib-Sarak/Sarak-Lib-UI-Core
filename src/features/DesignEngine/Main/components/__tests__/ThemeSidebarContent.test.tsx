@@ -2,17 +2,19 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
+import SarakUIProvider from '../../../../../core/Provider/SarakUIProvider';
 import { ThemeSidebarContent } from '../ThemeSidebarContent';
-import { CardSchema } from '../../../../../core/Design/schema/cards';
-import { ColorsSchema } from '../../../../../core/Design/schema/colors';
-import { SystemSchema } from '../../../../../core/Design/schema/system';
-import { TypographySchema } from '../../../../../core/Design/schema/typography';
+import { buildDecisionContext } from '../../../utils/decisionContext';
+import { buildTokenIndex } from '../../../utils/decisions';
 
-const getSchemaDefaultValue = (cssVariableName: string): unknown => {
-    const schemas = [CardSchema, ColorsSchema, SystemSchema, TypographySchema];
-    return schemas.flatMap(({ tokens }) => tokens)
-        .find((token) => token.cssVars?.includes(cssVariableName))?.defaultValue;
-};
+vi.mock('framer-motion', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('framer-motion')>();
+    return {
+        ...actual,
+        motion: { ...actual.motion, div: ({ children, className }: React.PropsWithChildren<{ className?: string }>) => <div className={className}>{children}</div> },
+        AnimatePresence: ({ children }: React.PropsWithChildren<unknown>) => <>{children}</>,
+    };
+});
 
 vi.mock('../../MasterControlPanel', () => ({
     MasterControlPanel: (props: { draft: unknown; updateDraft: unknown; resetToken: unknown }) => (
@@ -34,113 +36,87 @@ vi.mock('../../../Panels/HyperGranularityTab', () => ({
     }
 }));
 
+const decisionContext = buildDecisionContext();
+const tokenIndex = buildTokenIndex(decisionContext);
+
 const baseProps = () => ({
     searchQuery: '',
     filteredResults: [],
-    catalogMap: new Map(),
-    draft: { mode: 'dark' },
-    updateDraft: vi.fn(),
-    previewDevice: 'desktop',
     viewMode: 'preview',
-    activePillarId: 'global',
-    setActivePillarId: vi.fn(),
-    activeSectionId: 'global-preferences',
-    setActiveSectionId: vi.fn(),
-    isComponentDirty: vi.fn(() => false),
+    panelView: { kind: 'home' },
+    options: {
+        sarak: { branding: {}, updateBranding: vi.fn() },
+        globalComponent: undefined,
+        catalogMap: new Map(),
+        draft: { mode: 'dark', headingFont: 'Outfit', bodyFont: 'Inter', colorPalette: 'ceu-aberto' },
+        updateDraft: vi.fn(),
+        previewDevice: 'desktop',
+        onApplyPreset: vi.fn(),
+        currentMode: 'dark',
+        draftMode: 'dark',
+    },
+    decisionContext,
+    tokenIndex,
+    themeName: 'Sarak Sovereign',
+    dirtyDecisions: new Set(),
+    onOpenDecision: vi.fn(),
+    onOpenBrand: vi.fn(),
+    setPendingBranding: vi.fn(),
+    onBrandGenerated: vi.fn(),
     resetComponent: vi.fn(),
     resetToken: vi.fn(),
     handleApplyToSystem: vi.fn(),
     toast: null,
-    globalComponent: { tokens: [] },
-    sarak: { branding: {}, updateBranding: vi.fn() },
-    pillars: [],
-    groupedStructure: {},
-    editMode: 'essential',
-    visualImpactTokens: [],
-    isTokenVisible: () => true,
-    selectPillar: vi.fn(),
-    isGalleryOpen: false,
-    setIsGalleryOpen: vi.fn(),
     onApplyFullTheme: vi.fn(),
 });
 
+const renderContent = (overrides: Record<string, unknown> = {}) => {
+    const props = { ...baseProps(), ...overrides } as unknown as React.ComponentProps<typeof ThemeSidebarContent>;
+    return render(<SarakUIProvider><ThemeSidebarContent {...props} /></SarakUIProvider>);
+};
+
 describe('ThemeSidebarContent', () => {
-    it('matches snapshot', () => {
-        const FinalProps = baseProps() as unknown as React.ComponentProps<typeof ThemeSidebarContent>;
-        const { container } = render(<ThemeSidebarContent {...FinalProps} />);
-        expect(container).toMatchSnapshot();
+    it('na lista, mostra "Usar minha marca" primeiro e as seis decisões, sem galeria nem modos', () => {
+        renderContent();
+
+        expect(screen.getByRole('button', { name: /Usar minha marca/ })).toBeInTheDocument();
+        const rows = screen.getAllByRole('listitem').map((row) => row.textContent);
+        expect(rows).toHaveLength(6);
+        ['Tema', 'Cores', 'Fontes', 'Forma', 'Componentes', 'Layout'].forEach((title, index) => expect(rows[index]).toContain(title));
+        expect(screen.queryByRole('button', { name: 'Abrir galeria' })).toBeNull();
+        expect(screen.queryByRole('radiogroup')).toBeNull();
     });
 
-    it('começa por um tema e abre e fecha a galeria pelo mesmo controle', () => {
-        const props = baseProps();
-        const setIsGalleryOpen = vi.fn();
-        const initialProps = { ...props, setIsGalleryOpen } as unknown as React.ComponentProps<typeof ThemeSidebarContent>;
-        const { rerender } = render(<ThemeSidebarContent {...initialProps} />);
+    it('cada linha mostra o valor que vale agora e uma linha alterada ganha a marca', () => {
+        renderContent({ dirtyDecisions: new Set(['fonts']) });
 
-        expect(screen.getByRole('heading', { name: 'Começar de um tema' })).toBeInTheDocument();
-        fireEvent.click(screen.getByRole('button', { name: 'Abrir galeria' }));
-        expect(setIsGalleryOpen).toHaveBeenCalledWith(true);
-
-        rerender(<ThemeSidebarContent {...initialProps} isGalleryOpen={true} />);
-        fireEvent.click(screen.getByRole('button', { name: 'Fechar galeria' }));
-        expect(setIsGalleryOpen).toHaveBeenCalledWith(false);
+        const fonts = screen.getByRole('button', { name: /Fontes/ });
+        expect(fonts).toHaveTextContent('Outfit + Inter');
+        expect(fonts.querySelector('[aria-label="Alterada"]')).not.toBeNull();
+        expect(screen.getByRole('button', { name: /^Tema/ })).toHaveTextContent('Sarak Sovereign');
+        expect(screen.getByRole('button', { name: /^Cores/ }).querySelector('[aria-label="Alterada"]')).toBeNull();
     });
 
-    it('dimensiona o bloco pelos tokens e confere os valores padrão no schema', () => {
-        const props = baseProps() as unknown as React.ComponentProps<typeof ThemeSidebarContent>;
-        render(<ThemeSidebarContent {...props} />);
+    it('clicar numa linha abre a decisão; clicar no atalho abre a marca', () => {
+        const onOpenDecision = vi.fn();
+        const onOpenBrand = vi.fn();
+        renderContent({ onOpenDecision, onOpenBrand });
 
-        const block = screen.getByRole('heading', { name: 'Começar de um tema' }).closest('section') as HTMLElement;
-        const subtitle = screen.getByText('Escolha um estilo e ajuste os detalhes abaixo.');
+        fireEvent.click(screen.getByRole('button', { name: /Cores/ }));
+        fireEvent.click(screen.getByRole('button', { name: /Usar minha marca/ }));
 
-        expect(block.className).toContain('--sarak-layout-gap-sm');
-        expect(getSchemaDefaultValue('--sarak-layout-gap-sm')).toEqual({ mob: 8, tab: 10, desk: 12 });
-        expect(block.className).toContain('--sarak-card-radius');
-        expect(getSchemaDefaultValue('--sarak-card-radius')).toEqual({ mob: 10, tab: 14, desk: 14 });
-        expect(block.className).toContain('--theme-card');
-        expect(getSchemaDefaultValue('--theme-card')).toBe('#101622');
-        expect(block.className).toContain('--theme-border');
-        expect(getSchemaDefaultValue('--theme-border')).toBe('rgba(255, 255, 255, 0.09)');
-        expect(screen.getByRole('heading', { name: 'Começar de um tema' }).className).toContain('--sarak-type-scale-xl');
-        expect(subtitle.className).toContain('--sarak-type-scale-caption');
-        expect(getSchemaDefaultValue('--sarak-type-scale-caption')).toBe(12);
-        expect(getSchemaDefaultValue('--theme-title')).toBe('#f2f6fb');
-        expect(getSchemaDefaultValue('--theme-muted')).toBe('rgba(242, 246, 251, 0.55)');
+        expect(onOpenDecision).toHaveBeenCalledWith('colors');
+        expect(onOpenBrand).toHaveBeenCalledTimes(1);
     });
 
-    it('no modo Impacto mostra os cinco blocos abertos e só os controles marcados, sem pilares', () => {
-        const impactProps = {
-            ...baseProps(),
-            editMode: 'impact',
-            visualImpactTokens: [
-                { token: { id: 'headingFont', label: 'Fonte de títulos', type: 'text' }, group: 'fontes' },
-                { token: { id: 'primaryColor', label: 'Cor primária', type: 'text' }, group: 'cores' },
-                { token: { id: 'texture', label: 'Textura', type: 'text' }, group: 'fundo' },
-                { token: { id: 'cardVariant', label: 'Tipo de card', type: 'text' }, group: 'cards' },
-                { token: { id: 'btnStyleType', label: 'Estilo do botão', type: 'text' }, group: 'forma' }
-            ],
-            pillars: [{ id: 'typography', title: 'Pilar não exibido', icon: () => <div />, index: 1 }],
-            groupedStructure: { typography: { Fontes: [{ id: 'headingFont', label: 'Fonte de títulos' }] } }
-        } as unknown as React.ComponentProps<typeof ThemeSidebarContent>;
-        const { container } = render(<ThemeSidebarContent {...impactProps} />);
+    it('ao voltar de uma decisão, o foco vai à linha dela', () => {
+        renderContent({ panelView: { kind: 'home', focusId: 'fonts' } });
 
-        expect(screen.getByRole('heading', { name: 'Fontes' })).toBeInTheDocument();
-        expect(screen.getByRole('heading', { name: 'Cores' })).toBeInTheDocument();
-        expect(screen.getByRole('heading', { name: 'Fundo e textura' })).toBeInTheDocument();
-        expect(screen.getByRole('heading', { name: 'Cards' })).toBeInTheDocument();
-        expect(screen.getByRole('heading', { name: 'Forma e estrutura' })).toBeInTheDocument();
-        expect(container.querySelectorAll('[data-visual-impact-token]')).toHaveLength(5);
-        expect(container.querySelector('[data-visual-impact-token=headingFont]')).toBeInTheDocument();
-        expect(container.querySelector('[data-visual-impact-token=primaryColor]')).toBeInTheDocument();
-        expect(container.querySelector('[data-visual-impact-token=texture]')).toBeInTheDocument();
-        expect(container.querySelector('[data-visual-impact-token=cardVariant]')).toBeInTheDocument();
-        expect(container.querySelector('[data-visual-impact-token=btnStyleType]')).toBeInTheDocument();
-        expect(screen.queryByText('Pilar não exibido')).toBeNull();
+        expect(screen.getByRole('button', { name: /Fontes/ })).toHaveFocus();
     });
 
-    it('plan-36: no modo catalog, passa draft/updateDraft/resetToken (a MESMA instância de useDesignDraft de ThemeCustomizationTab) para MasterControlPanel — sem instância paralela', () => {
-        const FinalProps = { ...baseProps(), viewMode: 'catalog' } as unknown as React.ComponentProps<typeof ThemeSidebarContent>;
-        render(<ThemeSidebarContent {...FinalProps} />);
+    it('no modo catalog, passa draft/updateDraft/resetToken (a MESMA instância de useDesignDraft de ThemeCustomizationTab) para MasterControlPanel — sem instância paralela', () => {
+        renderContent({ viewMode: 'catalog' });
 
         const panel = screen.getByTestId('master-control-panel');
         expect(panel).toHaveAttribute('data-has-draft', 'true');
@@ -148,35 +124,23 @@ describe('ThemeSidebarContent', () => {
         expect(panel).toHaveAttribute('data-has-reset-token', 'true');
     });
 
-    // plan-37: entrada própria do HyperGranularityTab (Command Center), separada do
-    // toggle Essencial/Avançado — viewMode='command-center' monta o painel de busca livre.
-    it('plan-37: no modo command-center, renderiza o HyperGranularityTab', () => {
-        const FinalProps = { ...baseProps(), viewMode: 'command-center' } as unknown as React.ComponentProps<typeof ThemeSidebarContent>;
-        render(<ThemeSidebarContent {...FinalProps} />);
+    it('no modo command-center, renderiza o HyperGranularityTab', () => {
+        renderContent({ viewMode: 'command-center' });
 
         expect(screen.getByTestId('hyper-granularity-tab')).toBeDefined();
     });
 
-    // plan-37 (correção, achado 2): o HyperGranularityTab instanciava a PRÓPRIA
-    // useDesignDraft — duas fontes de rascunho vivas ao mesmo tempo (a mesma configuração
-    // que a plan-36 removeu do MasterControlPanel). O conserto foi fazer o
-    // HyperGranularityTab receber draft/updateDraft/handleApplyToSystem/resetComponent/
-    // resetToken/toast por prop. Provar UMA fonte = provar que são as MESMAS referências
-    // que o painel usa em todo o resto (identidade, não só "existe").
-    it('plan-37 (correção): no modo command-center, passa a MESMA instância de draft/updateDraft/handleApplyToSystem/resetComponent/resetToken/toast do painel para HyperGranularityTab — sem instância paralela de useDesignDraft', () => {
+    // O HyperGranularityTab instanciava a PRÓPRIA useDesignDraft — duas fontes de rascunho vivas ao mesmo tempo.
+    // Provar UMA fonte = provar que são as MESMAS referências que o painel usa em todo o resto.
+    it('no modo command-center, passa a MESMA instância de draft/updateDraft/handleApplyToSystem/resetComponent/resetToken/toast do painel', () => {
         const draft = { mode: 'dark' };
         const updateDraft = vi.fn();
         const handleApplyToSystem = vi.fn();
         const resetComponent = vi.fn();
         const resetToken = vi.fn();
         const toast = { type: 'success' as const, message: 'Design aplicado.' };
-
-        const FinalProps = {
-            ...baseProps(),
-            viewMode: 'command-center',
-            draft, updateDraft, handleApplyToSystem, resetComponent, resetToken, toast
-        } as unknown as React.ComponentProps<typeof ThemeSidebarContent>;
-        render(<ThemeSidebarContent {...FinalProps} />);
+        const options = { ...baseProps().options, draft, updateDraft };
+        renderContent({ viewMode: 'command-center', options, handleApplyToSystem, resetComponent, resetToken, toast });
 
         const captured = hyperGranularityCapture.props;
         expect(captured).not.toBeNull();
@@ -187,39 +151,43 @@ describe('ThemeSidebarContent', () => {
         expect(captured?.resetToken).toBe(resetToken);
         expect(captured?.toast).toBe(toast);
     });
-    describe('busca por sentido', () => {
-        const token = (id: string, label: string) => ({ id, label, type: 'text', defaultValue: '' });
-        const searchProps = (filteredResults: unknown[]) => ({
-            ...baseProps(),
-            searchQuery: 'fonte',
-            filteredResults,
-            pillars: [{ id: 'typography', title: '2. Tipografia e Escala', index: 2 }],
-            groupedStructure: { typography: { Fontes: [token('headingFont', 'Fonte de Títulos')] } },
-        }) as unknown as React.ComponentProps<typeof ThemeSidebarContent>;
+});
 
-        it('mostra a contagem no título e os resultados na ordem recebida (relevância)', () => {
-            const results = [token('zeta', 'Zeta Texto'), token('alfa', 'Alfa Texto')];
-            render(<ThemeSidebarContent {...searchProps(results)} />);
+describe('busca por sentido', () => {
+    const token = (id: string, label: string) => ({ id, label, type: 'text', defaultValue: '' });
+    const search = (filteredResults: unknown[], extra: Record<string, unknown> = {}) =>
+        renderContent({ searchQuery: 'fonte', filteredResults, ...extra });
 
-            expect(screen.getByText('Resultados da busca (2)')).toBeInTheDocument();
-            const labels = screen.getAllByText(/Texto$/).map((node) => node.textContent);
-            expect(labels).toEqual(['Zeta Texto', 'Alfa Texto']);
-        });
+    it('mostra a contagem no título e os resultados na ordem recebida (relevância)', () => {
+        search([token('zeta', 'Zeta Texto'), token('alfa', 'Alfa Texto')]);
 
-        it('mostra `Pilar › Seção` do token que mora num grupo e nada para o que não mora', () => {
-            const results = [token('headingFont', 'Fonte de Títulos'), token('semGrupo', 'Sem Grupo')];
-            render(<ThemeSidebarContent {...searchProps(results)} />);
+        expect(screen.getByText('Resultados da busca (2)')).toBeInTheDocument();
+        expect(screen.getAllByText(/Texto$/).map((node) => node.textContent)).toEqual(['Zeta Texto', 'Alfa Texto']);
+    });
 
-            const paths = screen.getAllByTestId('search-result-path');
-            expect(paths).toHaveLength(1);
-            expect(paths[0]).toHaveTextContent('Tipografia e Escala › Fontes');
-        });
+    it('mostra `Decisão › Seção` do token que mora numa decisão e deixa o resto editável no próprio resultado', () => {
+        search([token('headingFont', 'Fonte de Títulos'), token('semGrupo', 'Sem Grupo')]);
 
-        it('busca sem resultado mostra o estado vazio com a consulta', () => {
-            render(<ThemeSidebarContent {...searchProps([])} />);
+        const paths = screen.getAllByTestId('search-result-path');
+        expect(paths).toHaveLength(1);
+        expect(paths[0].textContent).toMatch(/^Fontes/);
+        expect(screen.getByRole('button', { name: /Abrir Fonte de Títulos em Fontes/ })).toBeInTheDocument();
+        expect(document.querySelector('[data-token-row="semGrupo"]')).not.toBeNull();
+    });
 
-            expect([screen.getByText('Resultados da busca (0)').className, screen.getByRole('status').className].every((className) => className.includes('--sarak-type-scale-caption') && className.includes('12px'))).toBe(true);
-            expect(screen.getByRole('status')).toHaveTextContent('Nenhum controle encontrado para “fonte”.');
-        });
+    it('clicar no resultado abre a decisão certa com o token em foco', () => {
+        const onOpenDecision = vi.fn();
+        search([token('headingFont', 'Fonte de Títulos')], { onOpenDecision });
+
+        fireEvent.click(screen.getByRole('button', { name: /Abrir Fonte de Títulos/ }));
+
+        expect(onOpenDecision).toHaveBeenCalledWith('fonts', 'headingFont');
+    });
+
+    it('busca sem resultado mostra o estado vazio com a consulta', () => {
+        search([]);
+
+        expect([screen.getByText('Resultados da busca (0)').className, screen.getByRole('status').className].every((className) => className.includes('--sarak-type-scale-caption') && className.includes('12px'))).toBe(true);
+        expect(screen.getByRole('status')).toHaveTextContent('Nenhum controle encontrado para “fonte”.');
     });
 });

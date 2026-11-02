@@ -7,6 +7,8 @@ export type ChromeBorderSide = 'edge' | 'top' | 'right' | 'bottom' | 'left' | 'a
 export type ChromeBackgroundStyle = 'solid' | 'gradient' | 'texture';
 export type NavigationActiveItemStyle = 'bar' | 'pill' | 'underline' | 'filled' | 'outline';
 export type NavigationItemDensity = 'compact' | 'comfortable' | 'spacious';
+export type NavigationBarTone = 'neutral' | 'surface' | 'primary' | 'secondary' | 'inverse';
+export type SidebarLogoPlacement = 'top' | 'bottom';
 
 export interface NavigationAppearance {
     sidebarBorderStyle: ChromeBorderStyle;
@@ -14,6 +16,9 @@ export interface NavigationAppearance {
     sidebarBackgroundStyle: ChromeBackgroundStyle;
     sidebarActiveItemStyle: NavigationActiveItemStyle;
     sidebarItemDensity: NavigationItemDensity;
+    sidebarLogoPlacement: SidebarLogoPlacement;
+    sidebarTone: NavigationBarTone;
+    topbarTone: NavigationBarTone;
     topbarBorderStyle: ChromeBorderStyle;
     topbarBorderSide: ChromeBorderSide;
     topbarBackgroundStyle: ChromeBackgroundStyle;
@@ -29,6 +34,9 @@ const validValues: Record<keyof NavigationAppearance, readonly string[]> = {
     sidebarBackgroundStyle: enumValues(['solid', 'gradient', 'texture']),
     sidebarActiveItemStyle: enumValues(['bar', 'pill', 'underline', 'filled', 'outline']),
     sidebarItemDensity: enumValues(['compact', 'comfortable', 'spacious']),
+    sidebarLogoPlacement: enumValues(['top', 'bottom']),
+    sidebarTone: enumValues(['neutral', 'surface', 'primary', 'secondary', 'inverse']),
+    topbarTone: enumValues(['neutral', 'surface', 'primary', 'secondary', 'inverse']),
     topbarBorderStyle: enumValues(['solid', 'dashed', 'dotted', 'double', 'none']),
     topbarBorderSide: enumValues(['edge', 'top', 'right', 'bottom', 'left', 'all', 'none']),
     topbarBackgroundStyle: enumValues(['solid', 'gradient', 'texture']),
@@ -58,6 +66,9 @@ export const useNavigationAppearance = (): NavigationAppearance => {
         sidebarBackgroundStyle: resolveToken(design, 'sidebarBackgroundStyle'),
         sidebarActiveItemStyle: resolveToken(design, 'sidebarActiveItemStyle'),
         sidebarItemDensity: resolveToken(design, 'sidebarItemDensity'),
+        sidebarLogoPlacement: resolveToken(design, 'sidebarLogoPlacement'),
+        sidebarTone: resolveToken(design, 'sidebarTone'),
+        topbarTone: resolveToken(design, 'topbarTone'),
         topbarBorderStyle: resolveToken(design, 'topbarBorderStyle'),
         topbarBorderSide: resolveToken(design, 'topbarBorderSide'),
         topbarBackgroundStyle: resolveToken(design, 'topbarBackgroundStyle'),

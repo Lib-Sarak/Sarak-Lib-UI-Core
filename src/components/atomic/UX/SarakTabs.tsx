@@ -2,6 +2,8 @@ import React, { useId } from 'react';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import { SarakButton } from '../Buttons/SarakButton';
 import { SarakLink } from '../Navigation/SarakLink';
+import { SarakTabsMenu } from './SarakTabsMenu';
+import { useTabsOverflow, type SarakTabsOverflow } from './useTabsOverflow';
 import { sarakTabElementId, sarakTabPanelElementId } from './tabIds';
 import {
     TabLeading,
@@ -39,6 +41,8 @@ export interface SarakTabsProps {
     variant?: SarakTabsVariant;
     /** Preencher a largura toda? */
     fullWidth?: boolean;
+    /** Se as abas não cabem: `scroll` rola a faixa com sinal nas bordas, `wrap` quebra linha, `menu` leva as que não cabem a um menu. Omitido, `scroll`. */
+    overflow?: SarakTabsOverflow;
     className?: string;
     listClassName?: string;
 }
@@ -51,32 +55,53 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
     idPrefix,
     variant = 'underlined',
     fullWidth = false,
+    overflow = 'scroll',
     className,
     listClassName,
 }) => {
     const generatedPrefix = useId();
     const prefix = idPrefix ?? generatedPrefix;
+    const { listRef, wrapperRef, hiddenIndexes, moreAtStart, moreAtEnd, onScroll } = useTabsOverflow(overflow, tabs.length);
     const isNavigation = tabs.some((tab) => tab.href !== undefined);
     // Só aponta para um painel que o consumidor pode ter: com `panelId` ou com `idPrefix` (o par do `SarakTabPanel`).
     const panelControlId = (tab: SarakTabItem): string | undefined =>
         tab.panelId ?? (idPrefix === undefined ? undefined : sarakTabPanelElementId(idPrefix, tab.id));
 
     // Navegação por teclado (Spec 41, Regra 3 — WAI-ARIA tabs): setas movem para a aba
-    // habilitada anterior/próxima; Home/End vão para a primeira/última. Pula desabilitadas.
+    // habilitada anterior/próxima; Home/End vão para a primeira/última. Pula desabilitadas e,
+    // em `overflow="menu"`, as que foram para o menu: a seta além da última visível vai ao botão do menu.
+    const isReachable = (idx: number): boolean => Boolean(tabs[idx]) && !tabs[idx].disabled && !hiddenIndexes.has(idx);
+    const focusMenuTrigger = (): void => {
+        wrapperRef.current?.querySelector<HTMLElement>('[data-sarak-tabs-trigger]')?.focus();
+    };
     const moveTo = (start: number, step: number): void => {
         const total = tabs.length;
         let idx = start;
         for (let i = 0; i < total; i++) {
             idx = (idx + step + total) % total;
-            if (tabs[idx] && !tabs[idx].disabled) {
+            if (isReachable(idx)) {
                 onChange?.(tabs[idx].id);
+                document.getElementById(sarakTabElementId(prefix, tabs[idx].id))?.focus();
                 return;
             }
         }
     };
+    const hasReachableAfter = (index: number): boolean => tabs.some((_, idx) => idx > index && isReachable(idx));
+
+    const leaveMenuToLastTab = (): void => {
+        const last = tabs.map((_, idx) => idx).filter(isReachable).pop();
+        if (last === undefined) return;
+        document.getElementById(sarakTabElementId(prefix, tabs[last].id))?.focus();
+        onChange?.(tabs[last].id);
+    };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, index: number): void => {
-        if (e.key === 'ArrowRight') { e.preventDefault(); moveTo(index, 1); return; }
+        if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            if (hiddenIndexes.size > 0 && !hasReachableAfter(index)) { focusMenuTrigger(); return; }
+            moveTo(index, 1);
+            return;
+        }
         if (e.key === 'ArrowLeft') { e.preventDefault(); moveTo(index, -1); return; }
         if (e.key === 'Home') { e.preventDefault(); moveTo(-1, 1); return; }
         if (e.key === 'End') { e.preventDefault(); moveTo(tabs.length, -1); }
@@ -99,7 +124,9 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
     const renderItem = (tab: SarakTabItem, index: number): React.ReactElement => {
         const isActive = activeTab === tab.id;
         const isDisabled = Boolean(tab.disabled);
-        const itemClassName = tabItemClassName(variant, isActive, isDisabled, fullWidth);
+        const itemClassName = tabItemClassName(variant, isActive, isDisabled, fullWidth, overflow);
+        const isHidden = hiddenIndexes.has(index);
+        const hiddenProps = isHidden ? { 'aria-hidden': true, tabIndex: -1 } : {};
         const leading = <TabLeading variant={variant} isActive={isActive} icon={tab.icon} />;
         const trailing = <TabTrailing variant={variant} isActive={isActive} />;
 
@@ -110,7 +137,8 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
                     key={tab.id}
                     href={href}
                     aria-current={isActive ? 'page' : undefined}
-                    className={`${itemClassName} no-underline hover:no-underline`}
+                    className={`${itemClassName} no-underline hover:no-underline${isHidden ? ' invisible' : ''}`}
+                    {...hiddenProps}
                     style={tabItemStyle(variant)}
                     onClick={() => onChange?.(tab.id)}
                     onNavigate={onNavigate ? () => onNavigate(href, tab) : undefined}
@@ -132,7 +160,7 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
                     id: sarakTabElementId(prefix, tab.id),
                     'aria-selected': isActive,
                     'aria-controls': panelControlId(tab),
-                    tabIndex: isActive ? 0 : -1,
+                    tabIndex: isActive && !isHidden ? 0 : -1,
                     onKeyDown: (e: React.KeyboardEvent<HTMLButtonElement>) => handleKeyDown(e, index),
                 })}
                 aria-current={isNavigation && isActive ? 'page' : undefined}
@@ -141,7 +169,8 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
                 variant="ghost"
                 onClick={() => !isDisabled && onChange?.(tab.id)}
                 style={tabItemStyle(variant)}
-                className={itemClassName}
+                className={isHidden ? `${itemClassName} invisible` : itemClassName}
+                {...(isHidden ? { 'aria-hidden': true } : {})}
                 leftIcon={leading}
                 rightIcon={trailing}
             >
@@ -152,17 +181,31 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
 
     const list = (
         <div
-            className={tabsListClassName(variant, listClassName)}
-            style={tabsListStyle(variant)}
+            ref={listRef}
+            className={tabsListClassName(variant, listClassName, overflow)}
+            style={tabsListStyle(variant, overflow, { atStart: moreAtStart, atEnd: moreAtEnd })}
             role={isNavigation ? undefined : 'tablist'}
+            onScroll={onScroll}
         >
             {tabs.map(renderItem)}
         </div>
     );
+    const strip = overflow === 'menu' ? (
+        <div className="flex items-center">
+            {list}
+            <SarakTabsMenu
+                tabs={tabs.filter((_, index) => hiddenIndexes.has(index))}
+                activeTab={activeTab}
+                onSelect={(tab) => onChange?.(tab.id)}
+                onNavigate={onNavigate}
+                onLeaveStart={isNavigation ? undefined : leaveMenuToLastTab}
+            />
+        </div>
+    ) : list;
 
     return (
-        <div className={mergeSarakClasses("w-full flex", className)} style={{ flexDirection: 'column' }}>
-            {isNavigation ? <nav>{list}</nav> : list}
+        <div ref={wrapperRef} className={mergeSarakClasses("w-full min-w-0 max-w-full flex", className)} style={{ flexDirection: 'column' }}>
+            {isNavigation ? <nav>{strip}</nav> : strip}
         </div>
     );
 };

@@ -8,12 +8,12 @@ import { SARAK_PALETTE_PRESETS } from '../../../../../core/Design/palette/preset
 const REAL_PALETTES = Object.keys(SARAK_PALETTE_PRESETS).length;
 
 describe('PaletteGallery com o registro real', () => {
-    it('as paletas prontas cabem em até 15 linhas, uma por paleta, sem Claro e Escuro', () => {
+    it('as paletas prontas cabem em até 19 linhas, uma por paleta, sem Claro e Escuro', () => {
         render(<PaletteGallery selectedId="" onSelect={() => undefined} />);
         const rows = within(screen.getByRole('radiogroup', { name: 'Paletas prontas' })).getAllByRole('radio');
         expect(REAL_PALETTES).toBeGreaterThan(3);
         expect(rows).toHaveLength(REAL_PALETTES);
-        expect(rows.length).toBeLessThanOrEqual(15);
+        expect(rows.length).toBeLessThanOrEqual(19);
         rows.forEach((row) => expect(row.querySelectorAll('[data-testid="palette-strip"]')).toHaveLength(1));
         expect(screen.queryByText('Claro')).toBeNull();
         expect(screen.queryByText('Escuro')).toBeNull();

@@ -293,16 +293,16 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 ### B.1 Design — as fontes que a paridade cruza
 
-`MASTER_DESIGN_MAP` v13.0.0 · **30 arquivos de schema** (lista completa em `state.json` → `design.schemaFiles.files`).
+`MASTER_DESIGN_MAP` v13.0.0 · **31 arquivos de schema** (lista completa em `state.json` → `design.schemaFiles.files`).
 
 | Fonte | Medida | Valor |
 | --- | --- | --- |
 | `catalog/theme_table_mapping.json` | colunas | 13 |
-| `catalog/theme_table_mapping.json` | entradas brutas | 420 |
-| `catalog/theme_table_mapping.json` | **ids únicos** | **420** |
+| `catalog/theme_table_mapping.json` | entradas brutas | 424 |
+| `catalog/theme_table_mapping.json` | **ids únicos** | **424** |
 | `catalog/partitions/` | arquivos | 13 |
-| `catalog/partitions/` | tokens | 420 |
-| `SarakDesignTokens` (tipo público) | ids | 420 |
+| `catalog/partitions/` | tokens | 424 |
+| `SarakDesignTokens` (tipo público) | ids | 424 |
 | `SarakDesignTokens` (tipo público) | responsivos | 37 |
 
 > Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §2 do guia).

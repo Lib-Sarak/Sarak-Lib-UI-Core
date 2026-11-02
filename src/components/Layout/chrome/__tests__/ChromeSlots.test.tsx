@@ -129,13 +129,32 @@ describe('ChromeBrand — tokens de identidade', () => {
     });
 
     it('as áreas de marca lateral e superior leem fundos e cores próprios', () => {
-        const sidebar = render(<ChromeBrand brand={{ name: 'ERP' }} />).container;
+        const sidebar = render(<ChromeBrand brand={{ name: 'ERP', logoUrl: '/logo.png' }} />).container;
         expect((sidebar.firstElementChild as HTMLElement).style.background).toBe('var(--sarak-sidebar-brand-bg, transparent)');
         expect((screen.getByText('ERP') as HTMLElement).style.color).toBe('var(--sarak-sidebar-brand-color, var(--sarak-on-sidebar, #f2f6fb))');
 
-        const topbar = render(<ChromeBrand brand={{ name: 'ERP' }} horizontal />).container;
+        const topbar = render(<ChromeBrand brand={{ name: 'ERP', logoUrl: '/logo.png' }} horizontal />).container;
         expect((topbar.firstElementChild as HTMLElement).style.background).toBe('var(--sarak-topbar-brand-bg, transparent)');
         expect((screen.getAllByText('ERP')[1] as HTMLElement).style.color).toContain('--sarak-topbar-brand-color');
+    });
+
+    it('sem logo o bloco não pinta caixa colorida: só o nome, sem o fundo da marca', () => {
+        const { container } = render(<ChromeBrand brand={{ name: 'ERP' }} />);
+        const wrapper = container.firstElementChild as HTMLElement;
+        expect(screen.getByText('ERP')).toBeInTheDocument();
+        expect(wrapper.style.background).toBe('');
+        expect(wrapper.getAttribute('style')).not.toContain('brand-bg');
+    });
+
+    it('recolhido e sem logo, o bloco da marca não existe (nem o nome, nem a caixa vazia)', () => {
+        const { container } = render(<ChromeBrand brand={{ name: 'ERP' }} compact />);
+        expect(container.firstElementChild).toBeNull();
+    });
+
+    it('recolhido com logo, o símbolo fica e o nome some', () => {
+        const { container } = render(<ChromeBrand brand={{ name: 'ERP', logoUrl: '/logo.png' }} compact />);
+        expect(container.querySelector('img')).not.toBeNull();
+        expect(screen.queryByText('ERP')).toBeNull();
     });
 
     it('o rodapé lateral lê o fundo próprio', () => {

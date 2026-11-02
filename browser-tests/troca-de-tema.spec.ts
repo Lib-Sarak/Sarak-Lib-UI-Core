@@ -15,7 +15,7 @@
  * -------------------------------------------------------------------------
  * LIMITES DECLARADOS (R18) — o que esta medição NÃO vê
  * -------------------------------------------------------------------------
- * 1. Só Chromium headless, uma troca (Sarak Sovereign → Cyberpunk Neon) com a galeria de temas aberta; não mede
+ * 1. Só Chromium headless, uma troca (Sarak Sovereign → Cyberpunk Neon) com a decisão Tema aberta; não mede
  *    outro par de temas nem o ERP real.
  * 2. Não afirma tempo. A meta de 300 ms (1,5 s com CPU 4× mais lenta) é conferida na tabela do resumo da plan, por
  *    medição manual com `Performance.getMetrics`, e não é um teste: varia por máquina.
@@ -37,7 +37,7 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ENTRY = path.join(HERE, 'fixtures', 'troca-de-tema-entry.tsx');
 const THEME_CARD = /Cyberpunk Neon/;
 
-/** Medido em 2026-11-01 com a galeria aberta, 8 trocas nos dois modos: de 23 a 27 recálculos; teto = maior medida + 20%. */
+/** Medido em 2026-11-01 com a galeria aberta (hoje a decisão Tema, na coluna), 8 trocas nos dois modos: de 23 a 27 recálculos; teto = maior medida + 20%. */
 const RECALC_STYLE_COUNT_BUDGET = 32;
 /** Medido nas mesmas 8 trocas: de 139 a 145 transições (o resto da tela mudando de estado); teto = maior + 20%. Sem a marca: perto de 1.900. */
 const TRANSITION_RUNS_BUDGET = 174;
@@ -145,8 +145,8 @@ for (const mode of MODES) {
         test('mover o mouse não recalcula o estilo da tela inteira', async () => {
             const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
             await page.goto(`${harnessUrl}${mode.query}`);
-            await page.getByRole('button', { name: 'Abrir galeria' }).click();
-            await expect(page.getByRole('heading', { name: 'Galeria de estilos' })).toBeVisible();
+            await page.getByRole('button', { name: /^Tema/ }).click();
+            await expect(page.getByRole('heading', { level: 2, name: 'Tema' })).toBeVisible();
             const cdp = await page.context().newCDPSession(page);
             await cdp.send('Performance.enable');
             await settle(page, cdp);
@@ -169,8 +169,8 @@ for (const mode of MODES) {
             const pageErrors: string[] = [];
             page.on('pageerror', (error) => pageErrors.push(error.message));
             await page.goto(`${harnessUrl}${mode.query}`);
-            await page.getByRole('button', { name: 'Abrir galeria' }).click();
-            await expect(page.getByRole('heading', { name: 'Galeria de estilos' })).toBeVisible();
+            await page.getByRole('button', { name: /^Tema/ }).click();
+            await expect(page.getByRole('heading', { level: 2, name: 'Tema' })).toBeVisible();
 
             const cdp = await page.context().newCDPSession(page);
             await cdp.send('Performance.enable');

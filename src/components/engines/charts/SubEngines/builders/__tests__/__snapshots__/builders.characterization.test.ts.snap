@@ -37,7 +37,7 @@ exports[`chart builders — caracterização da saída > advancedCharts.buildFun
         "show": true,
       },
       "left": "10%",
-      "max": 1000,
+      "max": 30,
       "maxSize": "100%",
       "min": 0,
       "minSize": "0%",

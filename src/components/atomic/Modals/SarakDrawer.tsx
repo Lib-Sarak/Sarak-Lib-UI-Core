@@ -4,6 +4,7 @@ import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalS
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { useFocusTrap } from './hooks/useFocusTrap';
+import { OVERLAY_LAYER_STEP, useOverlayLayer } from './hooks/useOverlayLayer';
 import { SarakScrim } from '../Layouts/SarakScrim';
 import { useMotionTokens } from '../hooks/useMotionTokens';
 
@@ -57,30 +58,26 @@ export const SarakDrawer: React.FC<SarakDrawerProps> = ({
     const { durations } = useMotionTokens();
     const [shouldRender, setShouldRender] = useState(isOpen);
     // Modelo de foco transversal (Spec 41, Regra 1): trap + ESC + restauração ao fechar.
-    const { containerRef, handleTrap } = useFocusTrap(isOpen, onClose);
+    const layer = useOverlayLayer(isOpen);
+    const { containerRef, handleTrap } = useFocusTrap(isOpen, onClose, layer.isTop);
 
     const motionSlow = design?.motionDurationSlow;
     const animDurationMs = typeof motionSlow === 'number' ? Math.round(motionSlow * 1000) : 400;
     const scrimDurationMs = Math.round(durations.fast * 1000);
     const animDuration = `${animDurationMs}ms`;
     const animEasing = (design?.motionEaseMain as string) || 'ease-in-out';
-    const zIndex = (design?.zIndexModal as number) || 1000;
+    const zIndex = ((design?.zIndexModal as number) || 1000) + layer.depth * OVERLAY_LAYER_STEP;
     const overlayBg = design?.modalOverlayColor || 'var(--sarak-modal-overlay-color,rgba(2,4,8,0.6))';
 
     useEffect(() => {
         if (isOpen) {
             setShouldRender(true);
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = '';
-            const timer = setTimeout(() => {
-                setShouldRender(false);
-            }, animDurationMs);
-            return () => clearTimeout(timer);
+            return undefined;
         }
-        return () => {
-            document.body.style.overflow = '';
-        };
+        const timer = setTimeout(() => {
+            setShouldRender(false);
+        }, animDurationMs);
+        return () => clearTimeout(timer);
     }, [isOpen, animDurationMs]);
 
     if (!shouldRender) return null;

@@ -1,5 +1,9 @@
 import React from 'react';
-import { SarakMenuItem } from './SarakMenuItem';
+import { SarakTooltip } from '../UX/SarakTooltip';
+import { ShellNavEntry } from './internal/ShellNavEntry';
+import { ShellNavGroup } from './internal/ShellNavGroup';
+import { groupByCategory, isNavGroup } from './internal/shellNavTree';
+import { useShellNavExpansion } from './internal/useShellNavExpansion';
 import { useNavigationStyle } from '../../../core/Provider/useNavigationStyle';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
@@ -27,6 +31,13 @@ export interface SarakShellNavItem {
     target?: string;
     /** Agrupamento visual (itens sem categoria ficam no grupo raiz). */
     category?: string;
+    /**
+     * Filhos do item: o pai vira um grupo recolhível (botão com seta, `aria-expanded` e `aria-controls`) e a rota
+     * dele deixa de navegar. Um nível só de aninhamento — filhos de filhos são ignorados.
+     */
+    children?: SarakShellNavItem[];
+    /** Grupo aberto de saída; o grupo do item ativo abre sozinho, com ou sem isto. */
+    defaultExpanded?: boolean;
 }
 
 export interface SarakShellNavProps {
@@ -50,48 +61,6 @@ export interface SarakShellNavProps {
     collapsed?: boolean;
     className?: string;
 }
-
-/** Agrupa preservando a ordem de aparição das categorias ('' = grupo raiz). */
-const groupByCategory = (items: SarakShellNavItem[]): Map<string, SarakShellNavItem[]> => {
-    const groups = new Map<string, SarakShellNavItem[]>();
-    for (const item of items) {
-        const key = item.category ?? '';
-        const bucket = groups.get(key);
-        if (bucket) {
-            bucket.push(item);
-        } else {
-            groups.set(key, [item]);
-        }
-    }
-    return groups;
-};
-
-const NavEntry: React.FC<{
-    item: SarakShellNavItem;
-    isActive: boolean;
-    horizontal: boolean;
-    collapsed: boolean;
-    onSelect?: (route: string) => void;
-}> = ({ item, isActive, horizontal, collapsed, onSelect }) => (
-    // Composição atômica (R10 — Spec 18/lote 10): `SarakMenuItem` já nasce com métrica
-    // de lista, não de botão de ação — nenhuma neutralização por `style` é necessária.
-    // `className="relative"` ancora o marcador do item ativo (abaixo), equivalente ao
-    // do `SidebarNav` do Shell (`navActiveMarkerColor`/`navActiveMarkerGlow`, Spec 05 §2.4).
-    <SarakMenuItem
-        href={item.route}
-        target={item.target}
-        disabled={item.disabled}
-        badge={item.badge}
-        onNavigate={onSelect}
-        active={isActive}
-        collapsed={collapsed}
-        orientation={horizontal ? 'horizontal' : 'vertical'}
-        icon={item.icon}
-        label={item.label}
-        className="relative"
-    >
-    </SarakMenuItem>
-);
 
 /** Menu vertical de shell guiado por dados, com grupos e estado ativo (Spec 33). */
 export const SarakShellNav: React.FC<SarakShellNavProps> = ({
@@ -119,12 +88,39 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
         }
         : undefined;
 
-    const groups = groupByCategory(items ?? []);
+    const safeItems = items ?? [];
+    const groups = groupByCategory(safeItems);
+    const expansion = useShellNavExpansion(safeItems, activeRoute);
+
+    const renderItem = (item: SarakShellNavItem): React.ReactNode => {
+        if (isNavGroup(item)) {
+            return (
+                <ShellNavGroup
+                    key={item.route}
+                    item={item}
+                    activeRoute={activeRoute}
+                    horizontal={horizontal}
+                    collapsed={collapsed}
+                    expanded={expansion.isExpanded(item)}
+                    onToggle={expansion.toggle}
+                    onSelect={select}
+                />
+            );
+        }
+        // O item ancora o marcador do ativo (`navActiveMarkerColor`/`navActiveMarkerGlow`, Spec 05 §2.4) pelo `SarakMenuItem`.
+        const entry = (
+            <ShellNavEntry key={item.route} item={item} isActive={item.route === activeRoute} horizontal={horizontal} collapsed={collapsed} onSelect={select} />
+        );
+        // Recolhida só mostra o ícone: o nome aparece em dica ao passar o mouse e ao focar.
+        return collapsed && !horizontal
+            ? <SarakTooltip key={item.route} content={item.label} position="right" disabled={item.disabled}>{entry}</SarakTooltip>
+            : entry;
+    };
 
     return (
         <nav
             aria-label={t('shellNavAriaLabel')}
-            className={`relative z-10 flex ${horizontal ? 'items-center overflow-x-auto shrink-0' : 'h-full min-h-0 overflow-y-auto'} ${className}`}
+            className={`relative z-10 flex ${horizontal ? 'items-center overflow-x-auto shrink-0' : 'h-full min-h-0 overflow-y-auto overflow-x-hidden'} ${className}`}
             style={{
                 flexDirection: horizontal ? 'row' : 'column',
                 gap: 'var(--sarak-layout-gap-sm, 8px)',
@@ -201,16 +197,7 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                                 {category}
                             </div>
                         ) : null}
-                        {groupItems.map((item) => (
-                            <NavEntry
-                                key={item.route}
-                                item={item}
-                                isActive={item.route === activeRoute}
-                                horizontal={horizontal}
-                                collapsed={collapsed}
-                                onSelect={select}
-                            />
-                        ))}
+                        {groupItems.map(renderItem)}
                     </div>
                 </React.Fragment>
             ))}

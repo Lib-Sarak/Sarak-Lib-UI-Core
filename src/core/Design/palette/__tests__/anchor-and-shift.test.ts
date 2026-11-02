@@ -114,24 +114,29 @@ describe('fundo tingido', () => {
 describe('texto da marca nos presets de base média', () => {
     const BAND = { min: 0.5, max: 0.62 };
     const MAX_SHIFT = 0.04;
+    const MAX_TITLE_SHIFT = 0.06;
+    const MAX_NAV_SHIFT = 0.13;
+    /** Os vivos: base clara de propósito (o brilho é a identidade), então o texto deles anda mais. */
+    const VIVID = ['ciano-violeta', 'ciano-azul', 'verde-neon', 'azul-projeto', 'amarelo-contraste', 'ambar-industrial'];
     const inBand = Object.entries(SARAK_PALETTE_PRESETS).filter(([, preset]) => {
         const lightness = lightnessOf(preset.base);
         return lightness >= BAND.min && lightness <= BAND.max;
     });
 
-    it('ao menos dez presets têm base média e o texto da marca anda até 0,04 em cada modo', () => {
+    it('ao menos dez presets têm base média e o texto da marca anda até 0,04 (título 0,06, item ativo 0,13) em cada modo', () => {
         expect(inBand.length).toBeGreaterThanOrEqual(10);
         inBand.forEach(([id, preset]) => MODES.forEach((mode) => {
             const colors = resolvePalette(preset, mode);
-            ['primaryColor', 'cardTitleColor'].forEach((token) => {
-                const moved = Math.abs(lightnessOf(colors[token]) - lightnessOf(preset.base));
-                expect(moved, `${id} ${mode} ${token}`).toBeLessThanOrEqual(MAX_SHIFT);
-            });
+            const moved = (token: string): number => Math.abs(lightnessOf(colors[token]) - lightnessOf(preset.base));
+            ['primaryColor', 'cardTitleColor'].forEach((token) => expect(moved(token), `${id} ${mode} ${token}`).toBeLessThanOrEqual(MAX_SHIFT + 1e-9));
+            expect(moved('titleColor'), `${id} ${mode} titleColor`).toBeLessThanOrEqual(MAX_TITLE_SHIFT);
+            expect(moved('navItemActiveColor'), `${id} ${mode} navItemActiveColor`).toBeLessThanOrEqual(MAX_NAV_SHIFT);
         }));
     });
 
-    it('até cinco presets ficam fora da faixa (os vivos)', () => {
-        expect(Object.keys(SARAK_PALETTE_PRESETS).length - inBand.length).toBeLessThanOrEqual(5);
+    it('os presets fora da faixa são exatamente os vivos nomeados', () => {
+        const outside = Object.keys(SARAK_PALETTE_PRESETS).filter((id) => !inBand.some(([bandId]) => bandId === id));
+        expect([...outside].sort()).toEqual([...VIVID].sort());
     });
 
     it('todo papel deslocado conserva o matiz da base quando a base tem croma', () => {

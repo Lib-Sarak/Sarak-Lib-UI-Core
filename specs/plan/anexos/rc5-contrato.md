@@ -2,7 +2,7 @@
 tipo: "anexo"
 titulo: "Contrato da 8.0.0-rc.5 — superfície pública prometida ao ERP"
 dominio: "Superfície pública"
-status: "🟡 Proposto, aguarda o aceite do dono"
+status: "🟢 Aceito pelo dono (2026-11-02)"
 tags: ["rc.5", "contrato", "erp", "superficie-publica"]
 relacionados: ["[[00-indice]]", "[[arquitetura/03-superficie-publica]]", "[[plan-146-grade-camadas-e-selecao]]", "[[plan-147-graficos-rc5]]", "[[plan-148-lista-formulario-e-abas-rc5]]"]
 ---
@@ -32,6 +32,26 @@ relacionados: ["[[00-indice]]", "[[arquitetura/03-superficie-publica]]", "[[plan
 | 12 | `SarakOverlayProvider`, `SarakDrawer`, `SarakModal` | pilha de camadas, sem prop | a confirmação fica acima da camada aberta | **Sim, defeito** | 146 |
 | 13 | `SarakSegmentedControl` | sem prop | — | a conferir nos temas escuros | 146 |
 
+## 1.1 Acréscimo da biblioteca (não pedido pelo ERP)
+
+| Componente | Superfície | Padrão | Comportamento muda? | Plan |
+|---|---|---|---|---|
+| `SarakShellNavItem` | `children?: SarakShellNavItem[]`, `defaultExpanded?: boolean` | sem filhos | não | 149 |
+| Tokens | `sidebarLogoPlacement: 'top' 
+| Tokens | `sidebarResizable: boolean` | `false` | não | 149 |
+| `SarakShellSearchWidget` | sai o texto Ctrl+K; o atalho continua | — | **Sim:** texto some | 149 |\| 'bottom'` | `'top'` | não | 149 |
+| Tokens | `sidebarTone`, `topbarTone`: `'neutral' \| 'surface' \| 'primary' \| 'secondary' \| 'inverse'` | `'neutral'` | não | 149 |
+
+## 1.2 Lacunas de sistema (análise do dono, 11 sistemas ativos)
+
+| Plan | Superfície nova |
+|---|---|
+| 151 | `SarakErrorBoundary`, `useSarakUnsavedChanges`, `SarakPagination.getPageHref`, `sarakErrorMessage`, `renderWithSarak` |
+| 152 | `bulkActions`, `editable` e `onCellEdit`, `views`, `columnState`, `density="report"`, `getCellTone`, `SarakDocumentFrame`, `sarakPrint` |
+| 153 | `SarakSettingsPage`, `SarakAuditLog`, `SarakDiffView`, `SarakVersionList`, `SarakApprovalQueue`, `SarakRunProgress`, `SarakLiveStatus`, `SarakUsageMeter`, `SarakPermissionMatrix`, `SarakMemberList`, `SarakSessionList` |
+| 154 | `SarakColorInput`, `SarakSetPicker`, `SarakTagInput`, `SarakCodeInput`, `SarakFieldRenderer`, `SarakWizard`, `SarakPopover`, `SarakCopyButton`, `SarakQRCode`, `SarakFileAction`, `useSarakShortcut`, `SarakGate`, `extendOption` |
+| 155 | `SarakDashboardGrid`, `SarakMap`, `SarakSignaturePad`, `SarakTour`, `SarakCarousel`, `exportXlsx` |
+
 # 2. Conferido no código
 
 | Item | Resultado |
@@ -57,3 +77,4 @@ Vão na `## 8.0.0` de `docs/migracoes.md`: itens 1, 2, 6 e 12.
 | Data | Mudança |
 |---|---|
 | 2026-11-02 | Proposta inicial |
+| 2026-11-02 | O dono decidiu: todas as plans abertas entram na rc.5, inclusive 141, 145, 149 e 150 |

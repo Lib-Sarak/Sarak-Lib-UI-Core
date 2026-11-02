@@ -5,11 +5,13 @@ import {
     CATALOG_GRID_3COL,
     THEME_GALLERY_GRID_2COL,
     THEME_GALLERY_GRID_MIN_WIDTH,
-    PREVIEW_DUAL_VIEW_ITEM_ROW,
-    PREVIEW_DUAL_VIEW_MIN_WIDTH,
-    PREVIEW_DUAL_VIEW_ROW,
-    PREVIEW_LAYOUT_GAP,
-    PREVIEW_MIN_FRAME_WIDTH,
+    PANEL_SPLIT_COLUMN,
+    PANEL_SPLIT_HANDLE,
+    PANEL_SPLIT_MIN_WIDTH,
+    PANEL_SPLIT_PREVIEW,
+    PANEL_SPLIT_ROW,
+    PREVIEW_TOOLBAR_HINT,
+    getPreviewLayoutPreset,
 } from '../panelResponsive.presets';
 import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../../../../core/Design/breakpoints';
 
@@ -32,12 +34,18 @@ describe('panelResponsive.presets (plan-35 — container query, não viewport)',
         expect(CATALOG_GRID_3COL).not.toContain('lg:');
     });
 
-    it('o dual-view só entra em linha quando duas larguras legíveis e o espaçamento cabem', () => {
-        expect(PREVIEW_DUAL_VIEW_MIN_WIDTH).toBe(PREVIEW_MIN_FRAME_WIDTH * 2 + PREVIEW_LAYOUT_GAP);
-        expect(PREVIEW_DUAL_VIEW_ROW).toBe(`@min-[${PREVIEW_DUAL_VIEW_MIN_WIDTH}px]:flex-row`);
-        expect(PREVIEW_DUAL_VIEW_ITEM_ROW).toBe(
-            `@min-[${PREVIEW_DUAL_VIEW_MIN_WIDTH}px]:flex-1 @min-[${PREVIEW_DUAL_VIEW_MIN_WIDTH}px]:min-h-0`,
-        );
-        expect(PREVIEW_DUAL_VIEW_ROW).not.toContain('xl:');
+    it('o painel inteiro mede o contêiner: coluna e prévia lado a lado só a partir do limiar, nunca pela janela', () => {
+        const classes = [PANEL_SPLIT_ROW, PANEL_SPLIT_COLUMN, PANEL_SPLIT_HANDLE, PANEL_SPLIT_PREVIEW, PREVIEW_TOOLBAR_HINT];
+        const widths = classes.flatMap((value) => [...value.matchAll(/@min-\[(\d+)px\]/g)].map((match) => Number(match[1])));
+        expect(widths.length).toBeGreaterThan(0);
+        expect(new Set(widths.filter((width) => width <= PANEL_SPLIT_MIN_WIDTH))).toEqual(new Set([PANEL_SPLIT_MIN_WIDTH]));
+        expect(PANEL_SPLIT_ROW).toContain(`@min-[${PANEL_SPLIT_MIN_WIDTH}px]:flex-row`);
+        classes.forEach((value) => expect(value).not.toMatch(/(^|\s)(sm|md|lg|xl):/));
+    });
+
+    it('a prévia é um quadro só: sem linha dupla nem altura calculada da galeria', () => {
+        const preset = getPreviewLayoutPreset();
+        expect(preset.rowClassName).not.toContain('@min-');
+        expect(preset.frameStyle).toEqual({});
     });
 });

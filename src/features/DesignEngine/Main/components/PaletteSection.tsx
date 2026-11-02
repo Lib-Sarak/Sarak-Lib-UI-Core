@@ -31,8 +31,8 @@ export const PaletteSection: React.FC<PaletteSectionProps> = ({ draft, appliedDe
             className="mx-[var(--sarak-layout-gap-sm,12px)] mb-[var(--sarak-layout-gap-sm,12px)] flex flex-col gap-[var(--sarak-layout-gap-sm,12px)] rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border,rgba(255,255,255,0.09))] bg-[var(--theme-card,#101622)] p-[var(--sarak-layout-gap-sm,12px)]"
         >
             <div>
-                <h2 className="text-[var(--sarak-type-scale-xl,20px)] font-semibold text-[var(--theme-title,#f2f6fb)]">{text('paletteSectionTitle')}</h2>
-                <p className="mt-1 text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-muted,rgba(242,246,251,0.55))]">{text('paletteSectionHint')}</p>
+                <h2 className="text-sm font-semibold text-[var(--theme-title,#f2f6fb)]">{text('paletteSectionTitle')}</h2>
+                <p className="mt-1 text-[length:var(--sarak-type-scale-caption,12px)] text-[var(--theme-muted,rgba(242,246,251,0.55))]">{text('paletteSectionHint')}</p>
             </div>
             {isCreating ? (
                 <PaletteCreator initialBase={initialBase} onConfirm={handleCreate} onClose={() => setIsCreating(false)} />

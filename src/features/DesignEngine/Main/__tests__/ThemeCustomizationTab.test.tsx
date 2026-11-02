@@ -29,52 +29,41 @@ vi.mock('../../hooks/useResizable', () => ({
 }));
 
 // Mocks dos Sub-componentes. O PreviewCanvas expõe `onApplyFullTheme` por um botão
-// para cobrir o caminho do PresetsCatalog (aplicar tema completo pelo catálogo — L4).
+// para cobrir o caminho de aplicar tema completo pelo catálogo — L4.
 vi.mock('../../Canvas/PreviewCanvas', () => ({
     PreviewCanvas: ({
         onApplyFullTheme,
-        isDualView,
-        onCloseGallery,
-        customThemes,
         config,
-        mode,
-        draftMode,
         draftTokens,
+        onInspectComponent,
     }: {
         onApplyFullTheme?: (d: Record<string, unknown>) => void;
-        isDualView?: boolean;
-        onCloseGallery?: () => void;
-        customThemes?: unknown;
         config?: { mode?: string };
-        mode?: string;
-        draftMode?: string;
         draftTokens?: { mode?: string };
+        onInspectComponent?: (schemaId: string) => void;
     }) => (
         <div
             data-testid="preview-canvas"
-            data-gallery-open={String(Boolean(isDualView))}
-            data-has-custom-themes-prop={String(customThemes !== undefined)}
-            data-preview-mode={mode}
             data-preview-config-mode={config?.mode}
             data-preview-token-mode={draftTokens?.mode}
-            data-raw-draft-mode={draftMode}
         >
             <button data-testid="apply-full-theme" onClick={() => onApplyFullTheme?.({ mode: 'dark', primaryColor: '#38bdf8', systemName: 'ERP Noturno' })}>
                 Apply Full
             </button>
-            <button data-testid="close-gallery" onClick={onCloseGallery}>Fechar galeria</button>
+            <button data-testid="inspect-cards" onClick={() => onInspectComponent?.('cards')}>Inspect</button>
         </div>
     )
 }));
 
 vi.mock('../../Canvas/components/PreviewToolbar', () => ({
-    PreviewToolbar: ({ setPreviewDevice, setIsPreviewStacked }: {
+    PreviewToolbar: ({ setPreviewDevice, onModeChange, mode }: {
         setPreviewDevice: (device: 'desktop' | 'tablet' | 'smartphone') => void;
-        setIsPreviewStacked: (stacked: boolean) => void;
+        onModeChange: (mode: 'light' | 'dark') => void;
+        mode: string;
     }) => (
-        <div data-testid="preview-toolbar">
+        <div data-testid="preview-toolbar" data-mode={mode}>
             <button data-testid="preview-device-tablet" onClick={() => setPreviewDevice('tablet')}>Tablet</button>
-            <button data-testid="preview-stack" onClick={() => setIsPreviewStacked(true)}>Empilhar</button>
+            <button data-testid="preview-mode-light" onClick={() => onModeChange('light')}>Claro</button>
         </div>
     )
 }));
@@ -97,26 +86,6 @@ vi.mock('../components/SaveThemeModal', () => ({
     )
 }));
 
-vi.mock('../../../../core/Design/master-map', () => ({
-    sarakGetAllDesignTokens: vi.fn(() => []),
-    sarakGetDefaultDesignState: vi.fn(() => ({})),
-    MASTER_DESIGN_MAP: {
-        components: [
-            { id: 'cards', title: 'Cards', icon: () => <div data-testid="icon-cards" />, tokens: [] }
-        ]
-    }
-}));
-
-vi.mock('../../../../core/Design/catalog', () => ({
-    TokenCatalog: [
-        { id: 'cardBorderWidth', type: 'number', category: 'cards', subcategory: 'Base', defaultValue: 1 }
-    ]
-}));
-
-vi.mock('../../utils/dynamic-categories', () => ({
-    buildDynamicGroups: vi.fn(() => ({}))
-}));
-
 const mockApplyFullConfigRaw = vi.fn();
 const mockPersistDesign = vi.fn();
 
@@ -126,21 +95,14 @@ const baseThemeEngineState = {
     selectPreviewApp: vi.fn(),
     previewDevice: 'desktop',
     setPreviewDevice: vi.fn(),
-    activePillarId: null as string | null,
-    setActivePillarId: vi.fn(),
-    selectPillar: vi.fn(),
-    activeSectionId: null as string | null,
-    setActiveSectionId: vi.fn(),
+    panelView: { kind: 'home' } as { kind: string; id?: string },
+    openDecision: vi.fn(),
+    openBrand: vi.fn(),
+    goHome: vi.fn(),
     viewMode: 'preview',
     setViewMode: vi.fn(),
     searchQuery: '',
     setSearchQuery: vi.fn(),
-    editMode: 'essential' as const,
-    setEditMode: vi.fn(),
-    isPreviewStacked: false,
-    setIsPreviewStacked: vi.fn(),
-    isGalleryOpen: false,
-    setIsGalleryOpen: vi.fn(),
     currentThemeName: '',
     setCurrentThemeName: vi.fn(),
     isSaveModalOpen: false,
@@ -171,6 +133,7 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
             handleApplyToSystem: mockHandleApplyToSystem,
             isComponentDirty: vi.fn(() => false),
             resetComponent: vi.fn(),
+            resetToken: vi.fn(),
             isDirty: false,
             dirtyTokenCount: 0,
             dirtyTokens: [],
@@ -186,28 +149,43 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
 
         expect(screen.getByText('Design')).toBeInTheDocument();
         expect(screen.getByTestId('preview-canvas')).toBeInTheDocument();
-        expect(screen.getByTestId('preview-canvas')).toHaveAttribute('data-gallery-open', 'false');
-        expect(screen.getByTestId('preview-canvas')).toHaveAttribute('data-has-custom-themes-prop', 'false');
-        expect(screen.getByTestId('preview-canvas')).toHaveAttribute('data-preview-mode', 'dark');
         expect(screen.getByTestId('preview-canvas')).toHaveAttribute('data-preview-config-mode', 'dark');
         expect(screen.getByTestId('preview-canvas')).toHaveAttribute('data-preview-token-mode', 'dark');
-        expect(screen.getByTestId('preview-canvas')).toHaveAttribute('data-raw-draft-mode', 'light');
+        expect(screen.getByTestId('preview-toolbar')).toHaveAttribute('data-mode', 'dark');
         expect(fetchSpy).not.toHaveBeenCalled();
     });
 
-    it('abre a galeria no preview e o botão de fechar volta ao preview único', () => {
-        const setIsGalleryOpen = vi.fn();
-        vi.mocked(useThemeEngineState).mockReturnValue({
-            ...baseThemeEngineState,
-            isGalleryOpen: true,
-            setIsGalleryOpen,
-        } as any);
-
+    it('a prévia está sempre à vista: não há galeria nem interruptor para abri-la', () => {
         render(<ThemeCustomizationTab />);
 
-        expect(screen.getByTestId('preview-canvas')).toHaveAttribute('data-gallery-open', 'true');
-        fireEvent.click(screen.getByTestId('close-gallery'));
-        expect(setIsGalleryOpen).toHaveBeenCalledWith(false);
+        expect(screen.getByTestId('preview-canvas')).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Abrir galeria' })).toBeNull();
+        expect(screen.queryByRole('radiogroup', { name: 'Modo de edição' })).toBeNull();
+    });
+
+    it('o modo claro/escuro da barra da prévia grava no rascunho, nunca no sistema', () => {
+        const updateDraft = vi.fn();
+        vi.mocked(useDesignDraft).mockReturnValue({
+            draft: { mode: 'dark' }, previewDraft: { mode: 'dark' }, updateDraft, handleApplyToSystem: mockHandleApplyToSystem,
+            isComponentDirty: vi.fn(() => false), resetComponent: vi.fn(), resetToken: vi.fn(), isDirty: false, dirtyTokenCount: 0, dirtyTokens: [],
+            discardDraft: vi.fn(), toast: null, showToast: vi.fn(), handleThemePreview: vi.fn(),
+        } as any);
+        render(<ThemeCustomizationTab />);
+
+        fireEvent.click(screen.getByTestId('preview-mode-light'));
+
+        expect(updateDraft).toHaveBeenCalledWith('mode', 'light');
+        expect(mockApplyFullConfigRaw).not.toHaveBeenCalled();
+    });
+
+    it('o inspetor da prévia abre a decisão do que foi clicado', () => {
+        const openDecision = vi.fn();
+        vi.mocked(useThemeEngineState).mockReturnValue({ ...baseThemeEngineState, openDecision } as any);
+        render(<ThemeCustomizationTab />);
+
+        fireEvent.click(screen.getByTestId('inspect-cards'));
+
+        expect(openDecision).toHaveBeenCalledWith('shape');
     });
 
     it('a altura é relativa ao container-pai — nunca à viewport (plan-35, fecha 06-painel-de-customizacao-e-preview.md §6.2)', () => {
@@ -273,6 +251,7 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
             handleApplyToSystem: mockHandleApplyToSystem,
             isComponentDirty: vi.fn(() => false),
             resetComponent: vi.fn(),
+            resetToken: vi.fn(),
             isDirty: false,
             dirtyTokenCount: 0,
             dirtyTokens: [],
@@ -309,6 +288,7 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
             handleApplyToSystem: mockHandleApplyToSystem,
             isComponentDirty: vi.fn(() => false),
             resetComponent: vi.fn(),
+            resetToken: vi.fn(),
             isDirty: true,
             dirtyTokenCount: 1,
             dirtyTokens: [{ id: 'primaryColor', label: 'Cor primária', applied: '#000000', draft: '#ffffff' }],

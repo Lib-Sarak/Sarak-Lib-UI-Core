@@ -85,17 +85,40 @@ describe('ShellSearchWidget', () => {
         expect(onSelect).toHaveBeenCalledWith({ id: '/b', label: 'Beta' });
     });
 
-    it('mostra o atalho só enquanto o campo está vazio e sem foco', () => {
-        customRender(<SarakShellSearchWidget variant="bar" onClick={vi.fn()} />);
+    it('não escreve o atalho na tela e o declara em aria-keyshortcuts, nas duas variantes', () => {
+        const { unmount } = customRender(<SarakShellSearchWidget variant="bar" onClick={vi.fn()} />);
         const input = screen.getByRole('combobox');
-        expect(screen.getByTestId('sarak-shell-search-shortcut')).toBeInTheDocument();
-        expect(screen.getByTestId('sarak-shell-search-shortcut')).toHaveTextContent('Ctrl+K');
+        expect(screen.queryByTestId('sarak-shell-search-shortcut')).not.toBeInTheDocument();
+        expect(document.body.textContent).not.toMatch(/Ctrl|⌘/);
+        expect(document.querySelector('kbd')).toBeNull();
+        expect(input).toHaveAttribute('aria-keyshortcuts', 'Control+K');
         fireEvent.focus(input);
-        expect(screen.queryByTestId('sarak-shell-search-shortcut')).not.toBeInTheDocument();
+        expect(document.querySelector('kbd')).toBeNull();
         expect(input.style.boxShadow).toContain('var(--sarak-focus-width, 2px)');
-        fireEvent.blur(input);
-        fireEvent.change(input, { target: { value: 'busca' } });
-        expect(screen.queryByTestId('sarak-shell-search-shortcut')).not.toBeInTheDocument();
+        unmount();
+
+        customRender(<SarakShellSearchWidget variant="icon" onClick={vi.fn()} />);
+        expect(screen.getByRole('button', { name: /Buscar…/i })).toHaveAttribute('aria-keyshortcuts', 'Control+K');
+        expect(document.querySelector('kbd')).toBeNull();
+    });
+
+    it('no Mac o atalho declarado é Meta+K', () => {
+        const userAgent = vi.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)');
+        try {
+            customRender(<SarakShellSearchWidget variant="icon" onClick={vi.fn()} />);
+            expect(screen.getByRole('button', { name: /Buscar…/i })).toHaveAttribute('aria-keyshortcuts', 'Meta+K');
+        } finally {
+            userAgent.mockRestore();
+        }
+    });
+
+    it('a barra traz o gatilho em ícone para quando o contêiner não tem espaço, e ele abre a busca', () => {
+        const onClick = vi.fn();
+        customRender(<SarakShellSearchWidget variant="bar" onClick={onClick} />);
+        const trigger = screen.getByRole('button', { name: /Buscar…/i });
+        expect(trigger.parentElement!.className).toContain('@max-[10rem]:block');
+        fireEvent.click(trigger);
+        expect(onClick).toHaveBeenCalledTimes(1);
     });
 });
 
@@ -122,5 +145,18 @@ describe('ShellSearchWidget — teclado de busca no celular', () => {
         const input = screen.getByPlaceholderText('Busca inteligente…');
         expect(input).toHaveAttribute('type', 'search');
         expect(input).toHaveAttribute('enterkeyhint', 'search');
+    });
+});
+
+describe('ShellSearchWidget — compacto (lateral recolhida)', () => {
+    it('compact mostra só o ícone: o rótulo "Buscar…" sai da tela, e o nome acessível fica', () => {
+        render(<SarakUIProvider><SarakShellSearchWidget variant="icon" compact onClick={vi.fn()} /></SarakUIProvider>);
+        const trigger = screen.getByRole('button', { name: /Buscar…/i });
+        expect(trigger.textContent).toBe('');
+    });
+
+    it('sem compact (linha de menu) o rótulo segue à vista', () => {
+        render(<SarakUIProvider><SarakShellSearchWidget variant="icon" onClick={vi.fn()} /></SarakUIProvider>);
+        expect(screen.getByRole('button', { name: /Buscar…/i }).textContent).toContain('Buscar…');
     });
 });

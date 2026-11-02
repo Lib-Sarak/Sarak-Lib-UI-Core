@@ -235,6 +235,8 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
         discardDraft,
         handleThemePreview,
         setDraftThemeId: setPendingThemeId,
+        /** O tema escolhido no rascunho e ainda não aplicado; `undefined` quando o rascunho segue o tema do sistema. */
+        draftThemeId: pendingThemeId,
         handleApplyToSystem,
         canUndoLastApply,
         undoLastApply,

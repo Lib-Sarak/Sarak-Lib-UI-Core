@@ -16,6 +16,11 @@ export interface SarakSegmentedControlProps extends Omit<React.HTMLAttributes<HT
     onValueChange?: (value: string) => void;
 }
 
+// A opção marcada inverte a superfície: preenche com o texto de maior contraste sobre o corpo e escreve com a cor
+// do corpo. Cor de marca (variante `primary`) falha em tema de botão vazado ou de primária clara no modo claro, e o
+// estilo que o tema dá ao botão vem inline — só `!important` o vence.
+const SELECTED_CLASS = '!bg-[var(--sarak-on-surface,#ffffff)] !text-[var(--color-theme-body,#06080d)]';
+
 const getFirstEnabledValue = (options: SarakSegmentedOption[]): string =>
     options.find((option) => !option.disabled)?.value ?? '';
 
@@ -92,7 +97,7 @@ export const SarakSegmentedControl = ({
                     aria-disabled={option.disabled || undefined}
                     disabled={option.disabled}
                     tabIndex={!option.disabled && tabStopValue === option.value ? 0 : -1}
-                    className="min-w-0 flex-1"
+                    className={mergeSarakClasses('min-w-0 flex-1', selectedValue === option.value ? SELECTED_CLASS : undefined)}
                     style={{ minHeight: 'var(--sarak-touch-target-min, 44px)' }}
                     onClick={() => selectValue(option.value)}
                     onKeyDown={(event) => handleKeyDown(event, option.value)}

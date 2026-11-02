@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 
 export type ThemeViewMode = 'preview' | 'catalog' | 'templates' | 'command-center';
 
@@ -9,21 +10,28 @@ const ADVANCED_MENU_LABELS = {
     backToNormal: 'Voltar ao modo normal'
 } as const;
 
-const ADVANCED_ENTRIES: Array<{ mode: ThemeViewMode; label: string }> = [
+/** `tokens` não troca de tela do painel: abre o pilar Avançado na própria coluna. */
+type AdvancedEntryKind = ThemeViewMode | 'tokens';
+
+const ADVANCED_ENTRIES: Array<{ mode: AdvancedEntryKind; label: string }> = [
     { mode: 'catalog', label: 'Tabela de tokens' },
     { mode: 'command-center', label: 'Busca por pilar' },
     { mode: 'templates', label: 'Temas e JSON' },
+    { mode: 'tokens', label: '' },
     { mode: 'preview', label: ADVANCED_MENU_LABELS.backToNormal }
 ];
 
-const ITEM_CLASS = 'flex w-full items-center rounded-md px-3 py-2 text-left text-[var(--sarak-type-scale-caption,12px)] font-medium normal-case tracking-normal text-[var(--color-theme-title,#f2f6fb)] hover:bg-[var(--theme-primary)]/15 focus:bg-[var(--theme-primary)]/15 focus:outline-none';
+const ITEM_CLASS = 'flex w-full items-center rounded-md px-3 py-2 text-left text-[length:var(--sarak-type-scale-caption,12px)] font-medium normal-case tracking-normal text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/15 focus:bg-[var(--theme-primary)]/15 focus:outline-none';
 
 interface ThemeAdvancedMenuProps {
     viewMode: ThemeViewMode;
     setViewMode: (mode: ThemeViewMode) => void;
+    /** "Outros ajustes": os tokens do pilar Avançado, que a lista de decisões não traz. */
+    onOpenAdvancedTokens: () => void;
 }
 
-export const ThemeAdvancedMenu: React.FC<ThemeAdvancedMenuProps> = ({ viewMode, setViewMode }) => {
+export const ThemeAdvancedMenu: React.FC<ThemeAdvancedMenuProps> = ({ viewMode, setViewMode, onOpenAdvancedTokens }) => {
+    const text = useLibraryText();
     const [isOpen, setIsOpen] = useState(false);
     const rootRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<HTMLButtonElement>(null);
@@ -68,8 +76,9 @@ export const ThemeAdvancedMenu: React.FC<ThemeAdvancedMenuProps> = ({ viewMode, 
         action();
     };
 
-    const choose = (mode: ThemeViewMode) => {
-        setViewMode(mode);
+    const choose = (mode: AdvancedEntryKind) => {
+        if (mode === 'tokens') onOpenAdvancedTokens();
+        else setViewMode(mode);
         close();
     };
 
@@ -82,10 +91,10 @@ export const ThemeAdvancedMenu: React.FC<ThemeAdvancedMenuProps> = ({ viewMode, 
                 aria-expanded={isOpen}
                 onClick={() => setIsOpen((open) => !open)}
                 className={[
-                    'flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-colors focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]',
+                    'flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-[length:var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-colors focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]',
                     isAdvancedActive
-                        ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/15 text-[var(--color-theme-title,#f2f6fb)]'
-                        : 'border-[var(--theme-border)] text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#f2f6fb)]'
+                        ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/15 text-[var(--theme-title)]'
+                        : 'border-[var(--theme-border)] text-[var(--theme-muted)] hover:text-[var(--theme-title)]'
                 ].join(' ')}
             >
                 {ADVANCED_MENU_LABELS.trigger}
@@ -109,7 +118,7 @@ export const ThemeAdvancedMenu: React.FC<ThemeAdvancedMenuProps> = ({ viewMode, 
                             onKeyDown={(event) => handleItemKeyDown(event, index)}
                             className={ITEM_CLASS + (entry.mode === 'preview' ? ' mt-1 border-t border-[var(--theme-border)]' : '')}
                         >
-                            {entry.label}
+                            {entry.mode === 'tokens' ? text('decisionAdvanced') : entry.label}
                         </button>
                     ))}
                 </div>

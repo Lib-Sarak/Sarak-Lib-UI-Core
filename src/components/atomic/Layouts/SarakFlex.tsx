@@ -4,6 +4,7 @@ import { useSarakDevice } from '../../../core/Provider/DeviceProvider';
 import { sarakResolveResponsiveValue } from '../../../core/Design/resolveResponsiveValue';
 import type { SarakResponsiveValue } from '../../../core/Design/types';
 import type { SarakLayoutGap } from '../../../core/Design/resolveToken';
+import { resolveAxisGaps } from '../hooks/useStructuralStyles.gap';
 
 export type SarakFlexDirection = 'row' | 'column' | 'row-reverse' | 'column-reverse' | string;
 
@@ -14,6 +15,10 @@ export interface SarakFlexProps extends Omit<React.HTMLAttributes<HTMLDivElement
     justify?: 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly' | string;
     align?: 'stretch' | 'flex-start' | 'flex-end' | 'center' | 'baseline' | string;
     gap?: SarakLayoutGap;
+    /** Espaço entre linhas (quando `wrap` quebra); vence `gap` nesse eixo. */
+    rowGap?: SarakLayoutGap;
+    /** Espaço entre colunas; vence `gap` nesse eixo. */
+    columnGap?: SarakLayoutGap;
     /**
      * Quebra em múltiplas linhas quando não cabe (mobile-first). Default `true`: uma linha de
      * itens nunca estoura a página no celular — reflui para baixo. Passe `false` para forçar
@@ -39,6 +44,8 @@ export const SarakFlex: React.FC<SarakFlexProps> = ({
     justify,
     align,
     gap,
+    rowGap,
+    columnGap,
     wrap = true,
     as: Component = 'div',
     ...props
@@ -52,7 +59,7 @@ export const SarakFlex: React.FC<SarakFlexProps> = ({
     return (
         <Component
             className={`${flexStyles.className} ${className}`.trim()}
-            style={{ ...flexStyles.style, flexWrap: wrap ? 'wrap' : 'nowrap', ...style }}
+            style={{ ...flexStyles.style, ...resolveAxisGaps(rowGap, columnGap, 'SarakFlex'), flexWrap: wrap ? 'wrap' : 'nowrap', ...style }}
             {...props}
         >
             {children}

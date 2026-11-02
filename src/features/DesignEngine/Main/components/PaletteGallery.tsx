@@ -16,8 +16,8 @@ const ARROW_STEP: Record<string, number> = { ArrowRight: 1, ArrowDown: 1, ArrowL
 const ALL = 'all';
 type PaletteFilter = SarakPaletteType | typeof ALL;
 
-const FILTER_CLASS = 'rounded-full border px-2 py-0.5 text-[var(--sarak-type-scale-caption,12px)] ';
-const FILTER_ON = 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/15 text-[var(--theme-title)]';
+const FILTER_CLASS = 'rounded-full border px-2 py-0.5 text-[length:var(--sarak-type-scale-caption,12px)] ';
+const FILTER_ON = 'border-[var(--theme-primary)] bg-[var(--theme-surface)] font-semibold text-[var(--theme-title)]';
 const FILTER_OFF = 'border-[var(--theme-border)] text-[var(--theme-muted)]';
 
 /**
@@ -80,7 +80,7 @@ export const PaletteGallery: React.FC<PaletteGalleryProps> = ({ selectedId, onSe
                             tabIndex={index === focusableIndex ? 0 : -1}
                             onClick={() => onSelect(entry.id)}
                             onKeyDown={(event) => handleKeyDown(event, index)}
-                            className={'flex items-center gap-2 rounded-[var(--sarak-card-radius,10px)] px-1 py-1 text-left text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10 ' + (checked ? 'bg-[var(--theme-primary)]/10' : '')}
+                            className={'flex items-center gap-2 rounded-[var(--sarak-card-radius,10px)] px-1 py-1 text-left text-[length:var(--sarak-type-scale-caption,12px)] text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10 border ' + (checked ? 'border-[var(--theme-primary)]' : 'border-transparent')}
                         >
                             <span className="w-24 shrink-0"><PaletteSwatch input={entry.input} mode={mode} /></span>
                             <span className="min-w-0 flex-1 truncate font-medium">{name}</span>

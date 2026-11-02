@@ -46,13 +46,9 @@ const baseProps = (draftTokens: Record<string, unknown>) => ({
     previewAnimationStyle: 'none',
     config: {},
     previewPrimaryColor: '#000',
-    mode: 'light' as const,
-    draftMode: 'dark' as const,
     draftTokens,
     onUpdateDraft: () => {},
     sarak: {} as unknown as SarakUIContextType,
-    isDualView: true,
-    isPreviewStacked: false,
 });
 
 describe('PreviewCanvas — estabilidade do `design` do DesignScope externo (plan-36)', () => {

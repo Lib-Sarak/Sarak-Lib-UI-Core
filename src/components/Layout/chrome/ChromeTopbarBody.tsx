@@ -18,6 +18,7 @@ import { useChromeAutoHide } from './useChromeAutoHide';
 import { useChromeDesignTokens } from './useChromeDesignTokens';
 import { useChromeDefaultWidgets } from './useChromeDefaultWidgets';
 import { chromeNoiseLayerStyle } from './noiseTexture';
+import { resolveChromeToneStyle } from './chromeToneStyle';
 import type { SarakChromeWidgets } from './chromeWidgets';
 import { getSarakSearchItems } from './navItem';
 
@@ -56,7 +57,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
 }) => {
     const {
         navbarLayout, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled,
-        searchPositionTopbar, topbarBorderSide, topbarBorderStyle, topbarBackgroundStyle,
+        searchPositionTopbar, topbarBorderSide, topbarBorderStyle, topbarBackgroundStyle, topbarTone,
     } = useChromeDesignTokens();
     const { isVisible, sensorProps, surfaceProps } = useChromeAutoHide(isAutoHideEnabled);
     const w = useChromeDefaultWidgets(widgets, {
@@ -120,6 +121,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
                         }),
                         backdropFilter: 'blur(var(--sarak-topbar-blur, 0px))',
                         boxShadow: 'var(--sarak-topbar-shadow, none)',
+                        ...resolveChromeToneStyle(topbarTone, 'topbar'),
                     }}
                 >
                     {/* `topbarNoiseOpacity` (Spec 05 §2.4). */}

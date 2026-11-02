@@ -203,7 +203,11 @@
     "topbarIconSize",
     "topbarIconColor",
     "topbarBlur",
-    "topbarShadow"
+    "topbarShadow",
+    "sidebarLogoPlacement",
+    "sidebarTone",
+    "topbarTone",
+    "sidebarResizable"
   ],
   "components_base": [
     "inputIconPosition",

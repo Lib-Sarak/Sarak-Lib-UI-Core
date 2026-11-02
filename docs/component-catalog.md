@@ -42,6 +42,7 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakGridItem` | `span` | `full` · `full` |
 | `SarakIconButton` | `variant` | `primary` · `secondary` · `ghost` · `danger` |
 | `SarakIconButton` | `size` | `xs` · `sm` · `md` · `lg` |
+| `SarakInput` | `affixPlacement` | `outside` · `inside` |
 | `SarakMenuItem` | `markerPosition` | `edge` · `top` |
 | `SarakSection` | `variant` | `plain` · `card` |
 | `SarakShellLanguageSelector` | `variant` | `horizontal` · `vertical` |
@@ -428,6 +429,11 @@ Props (`SarakChartEngineProps` — `src/components/engines/charts/SarakChartEngi
 | `zoom` | `SarakChartZoom` | não | Zoom do eixo de categoria; `true` equivale a `'slider'`. |
 | `pieLabel` | `SarakChartPieLabel` | não | Rótulo das fatias da pizza; omitido, mostra o da rc.3 (só ao passar o mouse). |
 | `gauge` | `SarakChartGauge` | não | Escala do medidor (`gauge`); omitida, vale 0 a 100. O `%` só aparece com `valueFormat` percentual ou sem `valueFormat`. |
+| `pattern` | `boolean` | não | Hachurado sobre as cores, para quem não distingue cor; desligado por padrão. Só no ECharts. |
+| `getPointColor` | `SarakChartPointColor` | não | Cor de cada item, pelo nome de um token do tema; `undefined` cai na paleta. Vale em `bar` de uma série, `pie`, `funnel` e `treemap`. |
+| `showValues` | `boolean \| 'auto'` | não | Valor na ponta da barra, formatado por `valueFormat`; `'auto'` esconde o que não cabe. Só em `bar`. |
+| `funnel` | `SarakChartFunnel` | não | Escala do funil (`funnel`); omitida, vai de 0 ao maior valor. |
+| `axis` | `SarakChartAxis` | não | Marcas do eixo: teto de marcas e abreviação (`1,2 mi`). Omitido, as marcas seguem a largura. |
 
 ### SarakChat
 
@@ -723,6 +729,8 @@ Props (`SarakFlexProps` — `src/components/atomic/Layouts/SarakFlex.tsx`):
 | `justify` | `'flex-start' \| 'flex-end' \| 'center' \| 'space-between' \| 'space-around' \| 'space-evenly' \| string` | não |  |
 | `align` | `'stretch' \| 'flex-start' \| 'flex-end' \| 'center' \| 'baseline' \| string` | não |  |
 | `gap` | `SarakLayoutGap` | não |  |
+| `rowGap` | `SarakLayoutGap` | não | Espaço entre linhas (quando `wrap` quebra); vence `gap` nesse eixo. |
+| `columnGap` | `SarakLayoutGap` | não | Espaço entre colunas; vence `gap` nesse eixo. |
 | `wrap` | `boolean` | não | Quebra em múltiplas linhas quando não cabe (mobile-first). Default `true`: uma linha de itens nunca estoura a página no celular — reflui para baixo. Passe `false` para forçar linha única (nowrap) quando o layout exigir. |
 | `as` | `React.ElementType` | não |  |
 
@@ -802,6 +810,8 @@ Props (`SarakGridProps` — `src/components/atomic/Layouts/SarakGrid.tsx`):
 | `columns` | `number \| SarakResponsiveValue<number>` | não | Quantidade de colunas iguais: um número ou um valor por dispositivo (`{ mob, tab, desk }`). Vence `templateColumns` se os dois vierem. Omitida, o grid faz o que fazia. Um número fixo colapsa para 1 coluna no celular, como `templateColumns`; para ter mais, declare `mob`. |
 | `templateAreas` | `string` | não |  |
 | `gap` | `SarakLayoutGap` | não |  |
+| `rowGap` | `SarakLayoutGap` | não | Espaço entre linhas; vence `gap` nesse eixo. Sem ele, vale `gap`. |
+| `columnGap` | `SarakLayoutGap` | não | Espaço entre colunas; vence `gap` nesse eixo. Sem ele, vale `gap`. |
 | `as` | `React.ElementType` | não |  |
 
 Estende: `Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>`
@@ -875,6 +885,7 @@ Props (`SarakInputProps` — `src/components/atomic/Inputs/SarakInput.tsx`):
 | `label` | `string` | não |  |
 | `prefixText` | `React.ReactNode` | não |  |
 | `suffixText` | `React.ReactNode` | não |  |
+| `affixPlacement` | `'outside' \| 'inside'` | não | `inside` põe `prefixText`/`suffixText` dentro da borda do campo, sem mudar a largura dele. Omitido, `outside`: ao lado do campo. |
 | `icon` | `React.ReactNode` | não |  |
 | `leftIcon` | `React.ReactNode` | não |  |
 | `rightIcon` | `React.ReactNode` | não |  |
@@ -1152,6 +1163,8 @@ Props (`SarakResourceRowProps` — `src/components/atomic/Templates/SarakResourc
 | `actions` | `SarakResourceRowAction[]` | não |  |
 | `href` | `string` | não |  |
 | `onNavigate` | `(href: string) => void` | não |  |
+| `layout` | `SarakResourceRowLayout` | não | `inline` põe título, metadados e ações lado a lado e empilha sozinho em contêiner estreito. Omitido, empilha. |
+| `density` | `SarakResourceRowDensity` | não | `compact` reduz o respiro da linha. Omitido, `standard`. |
 
 Estende: `Omit<React.HTMLAttributes<HTMLElement>, 'title'>`
 
@@ -1287,6 +1300,7 @@ Props (`SarakShellSearchWidgetProps` — `src/components/atomic/Navigation/Sarak
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `variant` | `'bar' \| 'icon'` | não |  |
+| `compact` | `boolean` | não | Só o ícone, sem rótulo (lateral recolhida); nas linhas de menu o rótulo segue à vista. |
 | `items` | `SarakSearchItem[]` | não |  |
 | `onClick` | `() => void` | sim |  |
 | `onSelect` | `(item: SarakSearchItem) => void` | não |  |
@@ -1471,6 +1485,7 @@ Props (`SarakTabsProps` — `src/components/atomic/UX/SarakTabs.tsx`):
 | `idPrefix` | `string` | não | Prefixo dos `id` da aba e do painel (`SarakTabPanel idPrefix`). Omitido, gerado. |
 | `variant` | `SarakTabsVariant` | não | Estilo de exibição das abas |
 | `fullWidth` | `boolean` | não | Preencher a largura toda? |
+| `overflow` | `SarakTabsOverflow` | não | Se as abas não cabem: `scroll` rola a faixa com sinal nas bordas, `wrap` quebra linha, `menu` leva as que não cabem a um menu. Omitido, `scroll`. |
 | `className` | `string` | não |  |
 | `listClassName` | `string` | não |  |
 

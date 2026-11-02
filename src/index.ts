@@ -194,6 +194,7 @@ export { SarakProgress } from './components/atomic/Feedback/SarakProgress';
 export type { SarakProgressProps, SarakProgressThreshold, SarakProgressVariant } from './components/atomic/Feedback/SarakProgress';
 export * from './components/atomic/UX';
 export type { SarakTabsVariant } from './components/atomic/UX/tabsStyling';
+export type { SarakTabsOverflow } from './components/atomic/UX/useTabsOverflow';
 // Densidade de dados (Spec 12 / Onda 9): DataGrid (windowing), DataTable (colunar
 // avançado), Sparkline (micro-gráfico) e TreeView. Resolvíveis via manifesto.
 export * from './components/atomic/DataDisplay';
@@ -222,6 +223,6 @@ export { SarakFlowEngine, type SarakFlowEngineProps } from './components/engines
 // (ambos já públicos) e não podiam ser importados pelo nome.
 export type { SarakChartDataItem } from './components/engines/charts/SubEngines/builders/types';
 export type {
-    SarakChartGauge, SarakChartPieLabel, SarakChartReferenceBand, SarakChartReferenceLine, SarakChartReferenceTone, SarakChartZoom,
+    SarakChartAxis, SarakChartColorToken, SarakChartFunnel, SarakChartPointColor, SarakChartGauge, SarakChartPieLabel, SarakChartReferenceBand, SarakChartReferenceLine, SarakChartReferenceTone, SarakChartZoom,
 } from './components/engines/charts/SubEngines/builders/types';
 export type { SarakMessage } from './components/engines/chat/SarakChatEngine';

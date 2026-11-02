@@ -25,12 +25,24 @@ describe('useNavigationAppearance', () => {
             sidebarBackgroundStyle: 'solid',
             sidebarActiveItemStyle: 'bar',
             sidebarItemDensity: 'comfortable',
+            sidebarLogoPlacement: 'top',
+            sidebarTone: 'neutral',
+            topbarTone: 'neutral',
             topbarBorderStyle: 'solid',
             topbarBorderSide: 'edge',
             topbarBackgroundStyle: 'solid',
             topbarActiveItemStyle: 'bar',
             topbarItemDensity: 'comfortable',
         });
+    });
+
+    it('lê a posição da marca e o papel de cor de cada barra, e ignora valor fora do contrato', () => {
+        const { result } = renderHook(() => useNavigationAppearance(), {
+            wrapper: wrapperWithDesign({ sidebarLogoPlacement: 'bottom', sidebarTone: 'inverse', topbarTone: 'tinta' }),
+        });
+        expect(result.current.sidebarLogoPlacement).toBe('bottom');
+        expect(result.current.sidebarTone).toBe('inverse');
+        expect(result.current.topbarTone).toBe('neutral');
     });
 
     it('lê as opções estruturais de cada barra e ignora valores fora do contrato', () => {
@@ -54,6 +66,9 @@ describe('useNavigationAppearance', () => {
             sidebarBackgroundStyle: 'texture',
             sidebarActiveItemStyle: 'filled',
             sidebarItemDensity: 'compact',
+            sidebarLogoPlacement: 'top',
+            sidebarTone: 'neutral',
+            topbarTone: 'neutral',
             topbarBorderStyle: 'double',
             topbarBorderSide: 'left',
             topbarBackgroundStyle: 'gradient',

@@ -1281,6 +1281,36 @@
           "type": "SarakChartGauge",
           "optional": true,
           "doc": "Escala do medidor (`gauge`); omitida, vale 0 a 100. O `%` só aparece com `valueFormat` percentual ou sem `valueFormat`."
+        },
+        {
+          "name": "pattern",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Hachurado sobre as cores, para quem não distingue cor; desligado por padrão. Só no ECharts."
+        },
+        {
+          "name": "getPointColor",
+          "type": "SarakChartPointColor",
+          "optional": true,
+          "doc": "Cor de cada item, pelo nome de um token do tema; `undefined` cai na paleta. Vale em `bar` de uma série, `pie`, `funnel` e `treemap`."
+        },
+        {
+          "name": "showValues",
+          "type": "boolean | 'auto'",
+          "optional": true,
+          "doc": "Valor na ponta da barra, formatado por `valueFormat`; `'auto'` esconde o que não cabe. Só em `bar`."
+        },
+        {
+          "name": "funnel",
+          "type": "SarakChartFunnel",
+          "optional": true,
+          "doc": "Escala do funil (`funnel`); omitida, vai de 0 ao maior valor."
+        },
+        {
+          "name": "axis",
+          "type": "SarakChartAxis",
+          "optional": true,
+          "doc": "Marcas do eixo: teto de marcas e abreviação (`1,2 mi`). Omitido, as marcas seguem a largura."
         }
       ]
     },
@@ -2243,6 +2273,18 @@
           "doc": ""
         },
         {
+          "name": "rowGap",
+          "type": "SarakLayoutGap",
+          "optional": true,
+          "doc": "Espaço entre linhas (quando `wrap` quebra); vence `gap` nesse eixo."
+        },
+        {
+          "name": "columnGap",
+          "type": "SarakLayoutGap",
+          "optional": true,
+          "doc": "Espaço entre colunas; vence `gap` nesse eixo."
+        },
+        {
           "name": "wrap",
           "type": "boolean",
           "optional": true,
@@ -2479,6 +2521,18 @@
           "doc": ""
         },
         {
+          "name": "rowGap",
+          "type": "SarakLayoutGap",
+          "optional": true,
+          "doc": "Espaço entre linhas; vence `gap` nesse eixo. Sem ele, vale `gap`."
+        },
+        {
+          "name": "columnGap",
+          "type": "SarakLayoutGap",
+          "optional": true,
+          "doc": "Espaço entre colunas; vence `gap` nesse eixo. Sem ele, vale `gap`."
+        },
+        {
           "name": "as",
           "type": "React.ElementType",
           "optional": true,
@@ -2647,6 +2701,12 @@
           "type": "React.ReactNode",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "affixPlacement",
+          "type": "'outside' | 'inside'",
+          "optional": true,
+          "doc": "`inside` põe `prefixText`/`suffixText` dentro da borda do campo, sem mudar a largura dele. Omitido, `outside`: ao lado do campo."
         },
         {
           "name": "icon",
@@ -3602,6 +3662,18 @@
           "type": "(href: string) => void",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "layout",
+          "type": "SarakResourceRowLayout",
+          "optional": true,
+          "doc": "`inline` põe título, metadados e ações lado a lado e empilha sozinho em contêiner estreito. Omitido, empilha."
+        },
+        {
+          "name": "density",
+          "type": "SarakResourceRowDensity",
+          "optional": true,
+          "doc": "`compact` reduz o respiro da linha. Omitido, `standard`."
         }
       ]
     },
@@ -4007,6 +4079,12 @@
           "type": "'bar' | 'icon'",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "compact",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Só o ícone, sem rótulo (lateral recolhida); nas linhas de menu o rótulo segue à vista."
         },
         {
           "name": "items",
@@ -4538,6 +4616,12 @@
           "type": "boolean",
           "optional": true,
           "doc": "Preencher a largura toda?"
+        },
+        {
+          "name": "overflow",
+          "type": "SarakTabsOverflow",
+          "optional": true,
+          "doc": "Se as abas não cabem: `scroll` rola a faixa com sinal nas bordas, `wrap` quebra linha, `menu` leva as que não cabem a um menu. Omitido, `scroll`."
         },
         {
           "name": "className",
@@ -5130,6 +5214,14 @@
           "sm",
           "md",
           "lg"
+        ]
+      },
+      {
+        "component": "SarakInput",
+        "prop": "affixPlacement",
+        "values": [
+          "outside",
+          "inside"
         ]
       },
       {

@@ -423,6 +423,10 @@ bloco monolítico que só testaria o token de superfície.
 `ButtonsCatalog`, `InputsCatalog`, mais `ButtonPresetPreview`, `InputPresetPreview` e `PresetCard`. O
 `PresetsCatalog` é a **Galeria de estilos** (§2.3): cada aba dele é um destes catálogos.
 
+Cards, botões, campos e texturas são desenhados com o componente real, com a opção por cima do rascunho, dentro de um escopo próprio, e só quando entram na área visível (`OptionTile`, `SampleScope`, `LazyWhenVisible`). A miniatura de tema mantém o desenho próprio do `PresetCard`, escolha do dono. Atmosfera e textura de fundo ocupam a amostra inteira, sem cartão por cima.
+
+**Espiada.** Passar o mouse ou focar uma opção compõe o efeito na prévia grande, sem gravar nada: não passa pelo rascunho, não conta como alteração e reverte ao sair. Não existe em toque, onde o toque já escolhe (`usePeekPreview`, `peek.ts`).
+
 A amostra de fonte usa a fonte real (`headingFont` no título, `bodyFont` no corpo), carregada só quando o cartão entra na área visível e pela origem de `options.fonts` (`useRequestFont`); com `none`, mostra a
 fonte que houver. Escolher uma fonte grava só `headingFont` e `bodyFont`.
 

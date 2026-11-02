@@ -43,9 +43,20 @@ export const PALETTE_CHROMA_CURVE = [0.24, 0.38, 0.56, 0.72, 0.88, 1, 1, 0.9, 0.
 /** A neutra não reduz o croma nas pontas: é nelas que o fundo carrega o tingido da paleta. */
 const NEUTRAL_CHROMA_CURVE = PALETTE_CHROMA_CURVE.map(() => 1);
 
+/**
+ * A secundária pinta cabeçalhos, tabela e botão secundário nas pontas da escala; ali o croma é mais baixo que o da
+ * curva compartilhada, para o tingido de um matiz distante da base acompanhar o fundo em vez de competir com ele.
+ * Os tons do meio (borda, texto, gráfico) seguem a curva compartilhada.
+ */
+export const PALETTE_SECONDARY_CHROMA_CURVE = [0.14, 0.22, 0.56, 0.72, 0.88, 1, 1, 0.9, 0.76, 0.34, 0.2] as const;
+
 const SCALE_NAMES: PaletteScaleName[] = [
     'primary', 'secondary', 'accent', 'neutral', 'success', 'error', 'warning', 'info',
 ];
+
+const CHROMA_CURVE_BY_SCALE: Partial<Record<PaletteScaleName, readonly number[]>> = {
+    secondary: PALETTE_SECONDARY_CHROMA_CURVE,
+};
 
 type ScaleRuler = readonly { tone: number; lightness: number }[];
 
@@ -67,7 +78,7 @@ export const createPaletteScales = (seeds: SarakPaletteSeeds): PaletteScales => 
     SCALE_NAMES.forEach((name) => {
         scales[name] = name === 'neutral'
             ? createScale(seeds[name], PALETTE_NEUTRAL_LIGHTNESS_SCALE, NEUTRAL_CHROMA_CURVE)
-            : createScale(seeds[name], PALETTE_LIGHTNESS_SCALE, PALETTE_CHROMA_CURVE);
+            : createScale(seeds[name], PALETTE_LIGHTNESS_SCALE, CHROMA_CURVE_BY_SCALE[name] ?? PALETTE_CHROMA_CURVE);
     });
     return scales;
 };

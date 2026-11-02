@@ -11,6 +11,8 @@ import { CATALOG_FORMS } from './catalogEntries.forms';
 import { CATALOG_FEEDBACK } from './catalogEntries.feedback';
 import { CATALOG_PALETTE } from './catalogEntries.palette';
 import { CATALOG_PANEL } from './catalogEntries.panel';
+import { CATALOG_PANEL_COLUMN } from './catalogEntries.panelColumn';
+import { CATALOG_PANEL_SUMMARY } from './catalogEntries.panelSummary';
 
 export type { SarakLibraryLanguage } from './catalog.types';
 import type { SarakLibraryLanguage } from './catalog.types';
@@ -45,6 +47,8 @@ export const LIBRARY_TEXT_CATALOG = {
     ...CATALOG_FEEDBACK,
     ...CATALOG_PALETTE,
     ...CATALOG_PANEL,
+    ...CATALOG_PANEL_COLUMN,
+    ...CATALOG_PANEL_SUMMARY,
 } satisfies Record<string, LibraryTextEntry>;
 
 export type LibraryTextKey = keyof typeof LIBRARY_TEXT_CATALOG;

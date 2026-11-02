@@ -25,7 +25,11 @@ export const ChromeCollapseToggle: React.FC<ChromeCollapseToggleProps> = ({ orie
             data-sarak-widget="collapse"
             className="relative z-10 shrink-0"
             aria-label={collapsed ? t('chromeCollapseExpand') : t('chromeCollapseCollapse')}
-            icon={<SarakIcon name={orientation === 'topbar' ? 'Menu' : 'ChevronLeft'} size={16} />}
+            icon={<SarakIcon
+                name={orientation === 'topbar' ? 'Menu' : 'ChevronLeft'}
+                size={16}
+                style={orientation === 'sidebar' && collapsed ? { transform: 'rotate(180deg)' } : undefined}
+            />}
         />
     );
 };

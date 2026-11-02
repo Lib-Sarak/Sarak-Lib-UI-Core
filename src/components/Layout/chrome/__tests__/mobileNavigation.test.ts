@@ -46,3 +46,15 @@ describe('resolveMobileNavigationStyle — leitura tolerante do token', () => {
         expect(resolveMobileNavigationStyle(3)).toBe('auto');
     });
 });
+
+describe('resolveMobileNavigationMode — grupos recolhíveis', () => {
+    it('com grupo a gaveta assume, mesmo com poucos itens e mesmo forçada a barra da base', () => {
+        expect(resolveMobileNavigationMode('auto', 3, true)).toBe('drawer');
+        expect(resolveMobileNavigationMode('bottom', 3, true)).toBe('drawer');
+    });
+
+    it('sem grupo nada muda', () => {
+        expect(resolveMobileNavigationMode('auto', 3, false)).toBe('bottom');
+        expect(resolveMobileNavigationMode('bottom', 3)).toBe('bottom');
+    });
+});

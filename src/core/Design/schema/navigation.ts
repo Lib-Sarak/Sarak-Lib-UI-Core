@@ -1,4 +1,5 @@
 import { ComponentSchema } from '../types';
+import { BarPersonalitySchema } from './barPersonality';
 
 type NavigationToken = ComponentSchema['tokens'][number];
 
@@ -436,6 +437,7 @@ export const NavigationSchema: ComponentSchema = {
             '--sarak-sidebar-icon-color',
             ['sidebarColor'],
         ),
+        ...BarPersonalitySchema.tokens,
         // --- TOPBAR CONFIGURATIONS ---
         {
             id: 'navbarLayout',
@@ -909,9 +911,9 @@ export const NavigationSchema: ComponentSchema = {
             axis: 'geometry',
             constraints: {
                 options: [
-                    { id: 'pinned', value: 'pinned', label: 'Fixa na barra' },
+                    { id: 'pinned', value: 'pinned', label: 'Mostrar' },
                     { id: 'menu', value: 'menu', label: 'No menu' },
-                    { id: 'off', value: 'off', label: 'Não oferecida' }
+                    { id: 'off', value: 'off', label: 'Esconder' }
                 ]
             },
             defaultValue: 'pinned'
@@ -927,7 +929,7 @@ export const NavigationSchema: ComponentSchema = {
             axis: 'geometry',
             constraints: {
                 options: [
-                    { id: 'pinned', value: 'pinned', label: 'Fixa na barra' },
+                    { id: 'pinned', value: 'pinned', label: 'Mostrar' },
                     { id: 'menu', value: 'menu', label: 'No menu' },
                     { id: 'off', value: 'off', label: 'Não oferecido' }
                 ]
@@ -945,9 +947,9 @@ export const NavigationSchema: ComponentSchema = {
             axis: 'geometry',
             constraints: {
                 options: [
-                    { id: 'pinned', value: 'pinned', label: 'Fixa na barra' },
+                    { id: 'pinned', value: 'pinned', label: 'Mostrar' },
                     { id: 'menu', value: 'menu', label: 'No menu' },
-                    { id: 'off', value: 'off', label: 'Não oferecidas' }
+                    { id: 'off', value: 'off', label: 'Esconder' }
                 ]
             },
             defaultValue: 'pinned'

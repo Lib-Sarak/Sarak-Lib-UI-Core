@@ -85,3 +85,30 @@ describe('SarakTabs — teclado e ARIA (caracterização Lote 9, R10)', () => {
         expect(onChange).toHaveBeenCalledWith('c');
     });
 });
+
+describe('SarakTabs overflow', () => {
+    const listOf = (): HTMLElement => screen.getByRole('tablist');
+
+    it('padrão é scroll: rolagem própria na faixa e abas que não encolhem', () => {
+        render(<SarakTabs tabs={TABS} activeTab="a" />);
+        expect(listOf().className).toContain('overflow-x-auto');
+        expect(screen.getByRole('tab', { name: 'Aba A' }).className).toContain('shrink-0');
+    });
+
+    it('wrap quebra linha e deixa as abas encolherem', () => {
+        render(<SarakTabs tabs={TABS} activeTab="a" overflow="wrap" />);
+        expect(listOf().className).toContain('flex-wrap');
+        expect(screen.getByRole('tab', { name: 'Aba A' }).className).not.toContain('shrink-0');
+    });
+
+    it('menu sem abas escondidas não mostra o gatilho', () => {
+        render(<SarakTabs tabs={TABS} activeTab="a" overflow="menu" />);
+        expect(listOf().className).toContain('overflow-hidden');
+        expect(screen.queryByRole('button', { name: /mais abas|more tabs/i })).toBeNull();
+    });
+
+    it('cada aba tem alvo de toque mínimo', () => {
+        render(<SarakTabs tabs={TABS} activeTab="a" />);
+        expect(screen.getByRole('tab', { name: 'Aba A' }).style.minHeight).toBe('var(--sarak-touch-target-min, 44px)');
+    });
+});

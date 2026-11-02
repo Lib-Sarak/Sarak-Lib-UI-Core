@@ -99,3 +99,10 @@ it('SarakCurrencyInput usa pt-BR fora do Provider quando locale é omitida', () 
 
     expect(input).toHaveValue(new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(1234.5));
 });
+
+it('encaminha affixPlacement="inside" ao campo base', () => {
+    render(<SarakCurrencyInput aria-label="Valor" value={10} prefixText="R$" affixPlacement="inside" />);
+    const input = screen.getByRole('textbox', { name: 'Valor' });
+
+    expect(document.getElementById(`${input.id}-prefix`)?.style.position).toBe('absolute');
+});

@@ -60,7 +60,8 @@ describe('token-search', () => {
 
     it('prefixo só vale no último termo: `cor texto` não acha `corpo texto`', () => {
         const tokens = [synthetic('onlyPrefix', 'Corpo Texto')];
-        expect(searchTokens('cor texto', tokens, noCatalog)).toEqual([]);
+        // `corpo` não vira `cor`: o token só entra pelo casamento parcial, e some quando há quem case com os dois termos.
+        expect(searchTokens('cor texto', [...tokens, synthetic('full', 'Cor do Texto')], noCatalog).map((t) => t.id)).toEqual(['full']);
         expect(searchTokens('texto cor', tokens, noCatalog).map((t) => t.id)).toEqual(['onlyPrefix']);
     });
 

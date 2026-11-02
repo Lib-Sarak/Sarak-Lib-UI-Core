@@ -47,3 +47,32 @@ describe('ChromeMobileDrawer', () => {
         expect(onClose).toHaveBeenCalledOnce();
     });
 });
+
+describe('ChromeMobileDrawer — papel de cor da lateral', () => {
+    it('aplica ao painel as variáveis de texto do papel contrastante, e nada quando o papel é neutro', () => {
+        const Harness = ({ toneStyle }: { toneStyle?: React.CSSProperties }): React.ReactElement => {
+            const focusTrap = useFocusTrap(true, vi.fn());
+            return (
+                <ChromeMobileDrawer
+                    isOpen
+                    drawerId="tone-drawer"
+                    onClose={vi.fn()}
+                    closeLabel="Fechar navegação"
+                    onKeyDown={focusTrap.handleTrap}
+                    containerRef={focusTrap.containerRef}
+                    backgroundStyle="solid"
+                    borderSide="edge"
+                    borderStyle="solid"
+                    toneStyle={toneStyle}
+                >
+                    <nav aria-label="Navegação móvel">Destinos</nav>
+                </ChromeMobileDrawer>
+            );
+        };
+        const toned = render(<Harness toneStyle={{ '--text-muted': 'var(--sarak-sidebar-item-text-color)' } as React.CSSProperties} />);
+        expect((toned.container.querySelector('#tone-drawer') as HTMLElement).style.getPropertyValue('--text-muted')).toBe('var(--sarak-sidebar-item-text-color)');
+        toned.unmount();
+        const neutral = render(<Harness />);
+        expect((neutral.container.querySelector('#tone-drawer') as HTMLElement).style.getPropertyValue('--text-muted')).toBe('');
+    });
+});

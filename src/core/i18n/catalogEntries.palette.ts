@@ -170,8 +170,24 @@ export const CATALOG_PALETTE = {
         fr: 'Améthyste et pétrole', de: 'Amethyst und Petrol', it: 'Ametista e petrolio',
     },
     palettePresetRosaPastel: {
-        pt: 'Rosa pastel', en: 'Pastel rose', es: 'Rosa pastel',
-        fr: 'Rose pastel', de: 'Pastellrosa', it: 'Rosa pastello',
+        pt: 'Rosa profundo', en: 'Deep rose', es: 'Rosa profundo',
+        fr: 'Rose profond', de: 'Tiefes Rosé', it: 'Rosa profondo',
+    },
+    palettePresetCianoAzul: {
+        pt: 'Ciano e azul', en: 'Cyan and blue', es: 'Cian y azul',
+        fr: 'Cyan et bleu', de: 'Cyan und Blau', it: 'Ciano e blu',
+    },
+    palettePresetOlivaViva: {
+        pt: 'Oliva viva', en: 'Vivid olive', es: 'Oliva viva',
+        fr: 'Olive vif', de: 'Leuchtendes Oliv', it: 'Oliva vivo',
+    },
+    palettePresetOlivaDourada: {
+        pt: 'Oliva dourada', en: 'Golden olive', es: 'Oliva dorada',
+        fr: 'Olive doré', de: 'Goldoliv', it: 'Oliva dorato',
+    },
+    palettePresetTintaAzul: {
+        pt: 'Tinta azul', en: 'Blue ink', es: 'Tinta azul',
+        fr: 'Encre bleue', de: 'Blaue Tinte', it: 'Inchiostro blu',
     },
     palettePresetAzulProjeto: {
         pt: 'Azul de projeto', en: 'Blueprint blue', es: 'Azul de proyecto',

@@ -47,3 +47,28 @@ describe('validatePreferences (preferência como dado hostil)', () => {
         expect(warn).not.toHaveBeenCalled();
     });
 });
+
+describe('validatePreferences — sidebarWidth (largura da lateral)', () => {
+    afterEach(() => vi.restoreAllMocks());
+
+    it('aceita uma largura numérica dentro da faixa e a arredonda', () => {
+        expect(validatePreferences({ sidebarWidth: 312 })).toEqual({ sidebarWidth: 312 });
+        expect(validatePreferences({ sidebarWidth: 312.6 })).toEqual({ sidebarWidth: 313 });
+    });
+
+    it.each([['texto', '300'], ['NaN', Number.NaN], ['infinito', Infinity], ['abaixo do piso', 50], ['acima do teto', 5000], ['negativo', -10]])(
+        'descarta %s, com UM warn',
+        (_label, value) => {
+            const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+            expect(validatePreferences({ sidebarWidth: value })).toEqual({});
+            expect(warn).toHaveBeenCalledTimes(1);
+            expect(warn.mock.calls[0][0]).toContain('sidebarWidth');
+        },
+    );
+
+    it('a chave não é tratada como desconhecida: nenhum warn quando válida', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        validatePreferences({ sidebarWidth: 280, colorMode: 'dark' });
+        expect(warn).not.toHaveBeenCalled();
+    });
+});

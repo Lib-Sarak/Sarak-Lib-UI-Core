@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Regular as cores das paletas para que combinem de verdade"
 objetivo: "Fazer as cores de cada paleta pronta e das paletas criadas a partir de uma cor combinarem à vista do dono, regulando sementes, croma, luminosidade e intensidade dos fundos, sem mudar a regra de âncora nem a distribuição 60-30-10"
 dominio: "Design Engine / Paletas"
-status: "🟠 Em revisão"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "paletas", "cor", "curadoria"]
 relacionados: ["[[09-temas-e-presets]]", "[[02-design-engine]]", "[[024-paleta-calculada-separada-do-tema]]"]
@@ -270,6 +270,111 @@ Exceções declaradas: `verde-neon` (as três) e `rosa-synthwave` V3 — a base 
 
 ---
 
+## Resumo da execução (retomada, passos 7 a 12) — 2026-11-02
+
+**Resultado:** Concluído com pendências — registro gravado exatamente com a tabela do veredito; a verificação objetiva tem 2 falhas de navegador e 3 regressões de baseline que parecem ser de arquivos da plan-140 (evidência abaixo, sem controle em HEAD); a prévia final espera aprovação do dono.
+
+**Estado do worktree ao iniciar**
+Worktree compartilhado: cerca de 90 arquivos de outras tarefas (painel de customização da plan-140, i18n do painel, `browser-tests/`, `sarak-ui/`, `docs/migracoes.md`) já modificados, mais os arquivos desta plan das rodadas anteriores (`palette/role-map.ts`, `contrast.ts`, `scale.ts` e seus testes). Nenhum arquivo da plan-140 foi tocado por mim; a fotografia completa foi guardada em `C:\tmp\sarak-previa-143\status-before-7.txt`.
+
+**O que foi feito**
+- `src/core/Design/palette/presets.ts` — o catálogo vai de 15 para **19 paletas**, com as sementes declaradas exatamente como na tabela do veredito (base, secundária e acento por id). Ids novos: `ciano-azul`, `oliva-viva`, `oliva-dourada`, `tinta-azul`. `ciano-violeta` passa a tríade. Os 15 ids antigos seguem válidos. Mapa de chaves de texto com as 4 chaves novas.
+- `src/core/i18n/catalogEntries.palette.ts` — por acréscimo: 4 nomes novos e o nome de `rosa-pastel` (agora "Rosa profundo", a cor que ele tem), nos seis idiomas. Os demais nomes já diziam a cor que têm (`terra-argila` agora é terracota, `tinta-vinho` é vinho).
+- Testes: `presets.test.ts` (teto 19; tolerância de harmonia 45° nas paletas de várias cores e 10° na monocromática; piso de croma de 60% com exceções nomeadas e com motivo); `anchor-and-shift.test.ts` (trava do passo 8: `primaryColor` e `cardTitleColor` ≤ 0,04, `titleColor` ≤ 0,06, `navItemActiveColor` ≤ 0,13 nas bases médias; os presets fora da faixa são exatamente os seis vivos nomeados); `parser.test.ts` (o oceano agora traz as três sementes); `themePalettes.test.ts` (as 4 paletas novas são só da galeria, lista nomeada); `PaletteGallery.registry.test.tsx` (teto de linhas 15 → 19) e um snapshot de cor de `PresetsCatalog.test.tsx` (só `border-color` do círculo de carregamento mudou).
+- `npm run themes:catalog` — `catalog.generated.ts` regenerado (14 linhas de cor). Os 19 temas seguem nos mesmos ids de paleta; `ciano-violeta` devolve o violeta ao `sarak-sovereign` (visto na captura). Não removi nenhuma sobrescrita de tema: nenhum teste nem captura apontou sobrescrita que a regulagem tenha tornado desnecessária, e sem esse sinal eu apontaria uma por palpite.
+- Prévia final curta: `C:\tmp\sarak-previa-143\final.html` — 19 paletas × 2 modos e os 19 temas no modo nativo (57 capturas, sem erro de página).
+
+**Arquivos alterados** (desta retomada)
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/palette/presets.ts` | alterado | 19 paletas com sementes declaradas |
+| `src/core/i18n/catalogEntries.palette.ts` | alterado | 4 nomes novos, nome de rosa-pastel |
+| `src/core/Design/presets/themes/catalog.generated.ts` | gerado | `npm run themes:catalog` |
+| `src/core/Design/palette/__tests__/presets.test.ts`, `anchor-and-shift.test.ts`, `parser.test.ts` | alterado | limites do veredito e registro novo |
+| `src/core/Design/presets/themes/__tests__/themePalettes.test.ts` | alterado | paletas só da galeria nomeadas |
+| `src/features/DesignEngine/Main/components/__tests__/PaletteGallery.registry.test.tsx` | alterado | teto de linhas 19 |
+| `src/features/DesignEngine/Canvas/components/__tests__/__snapshots__/PresetsCatalog.test.tsx.snap` | alterado | cor do círculo de carregamento (só esse teste atualizado) |
+
+**Verificações executadas**
+- `npx vitest run src/core/Design/palette` → 12 arquivos, 189 testes passando. `src/core/Design/presets/themes` → 9 arquivos, 83 passando. `npx vitest run src/core/Design` → 40 arquivos, 454 passando e 1 falha (a de `themePalettes`, corrigida em seguida).
+- `npx vitest run src/features/DesignEngine` → 114 arquivos: 112 passam; as 2 falhas eram consequência do registro (teto de 15 linhas e um snapshot de cor) e foram corrigidas; reexecutei `PaletteGallery` e `PresetsCatalog`: 3 arquivos, 19 testes passando.
+- `npx tsx gates/scripts/audit/verify_contrast.ts` → 0 de 19 temas com par abaixo de AA, 0 reprovados, 19 temas com contraparte (nos dois modos).
+- `npm run themes:diversity` → sai com 0, sem falha nos gates de diversidade (modo escuro 8 de 19, ciano+magenta 4 de 19).
+- Navegador: `npm run build` parou em `guide:check` (o kit `sarak-ui/docs/migracoes.md` está defasado pela nota de migração da plan-140, arquivo dela). Para ter o `dist/` dos specs, rodei só os passos de compilação da cadeia (`build:js`, `fonts:embed`, `build:css`, `build:css:scoped`, `copy-base-css`, `inject-css`, `generate-build-info`), sem tocar no kit. Os pré-checks anteriores da cadeia (token-types, themes:catalog, catalog, barrel, zero-brand) passaram. Specs: `plan-123-color-hierarchy`, `plan-124-sidebar-contrast`, `plan-135-paletas-no-painel` e `painel-segue-o-modo` → 5 passaram; `plan-122-preview-mode` → 2 falharam (abaixo). Depois: `git restore -- dist src/buildInfo.ts src/core/Provider/buildInfo.ts`.
+- `npm run verify -- --tier=quick` → `tsc --noEmit` OK, os gates de forma OK, Anel 0 simulado 8249 linhas e 0 achados; **falha o `audit:baseline`** com 3 regressões (abaixo).
+
+**Critérios de aceite**
+- [x] Registro gravado exatamente com a tabela, 19 ids, os 15 antigos válidos — evidência: `presets.ts`, `presets.test.ts`.
+- [x] Limites de deslocamento do passo 8 em teste — evidência: `anchor-and-shift.test.ts`; medi cada preset: máximo `primaryColor`/`cardTitleColor` 0,040, `titleColor` 0,057, `navItemActiveColor` 0,128.
+- [x] Âncora igual à base e fundo tingido dentro das faixas — testes já existentes, sem afrouxar, passando com o registro novo.
+- [x] `verify_contrast` 0 reprovados, 19/19 com contraparte, `themes:diversity` sem piora.
+- [x] Nomes que dizem a cor que têm — evidência: nomes no catálogo (a conferir pelo dono em `final.html`).
+- [ ] Prévia final aprovada pelo dono — `C:\tmp\sarak-previa-143\final.html`.
+- [ ] Verificação objetiva toda verde — pendente: as 2 falhas de `plan-122-preview-mode` e as 3 regressões do baseline.
+
+**Decisões e suposições**
+- **Seis vivos, não cinco.** O passo 8 admite até 5 presets fora da faixa de base média (L 0,50–0,62). A tabela do dono traz seis: `ciano-violeta`, `ciano-azul` (os dois com a base `#19e3f0`, L 0,84), `verde-neon`, `azul-projeto`, `amarelo-contraste`, `ambar-industrial`. Mantive a escolha do dono e o teste afirma a lista exata dos seis, com o motivo (o brilho é a identidade, o texto anda mais); se o dono preferir cinco, `ciano-azul` é o candidato.
+- **Exceções de croma nomeadas** no teste de harmonia (o piso de 60% da base segue para todo o resto): `oceano` secundária (0,4 ponto abaixo, arredondamento do hexadecimal), `verde-neon` secundária e `rosa-synthwave` secundária (base viva no teto do gamut), `cobalto-vivo`, `coral-cinetico` e `ametista-petroleo` (acento pontual abaixo da base dominante) e a secundária neutra de propósito de `terra-argila`, `oliva-viva`, `oliva-dourada`, `ambar-industrial`, `tinta-vinho` e `tinta-azul`. Nenhuma semente passa de 43° do ângulo do tipo, então não houve exceção de matiz.
+- Não toquei em `docs/migracoes.md`: a plan-140 está editando esse arquivo, e a mudança de aparência dos presets cabe numa nota que o revisor decide onde registrar. Fica como pendência.
+- `ciano-violeta` virou tríade; `ciano-azul` mantém o tipo análoga com o `oceano`, então o teste "ao menos dois por tipo" passa.
+
+**Achados fora do escopo (não corrigidos)**
+- `browser-tests/plan-122-preview-mode.spec.ts` falha em 2 testes: (1) o cartão do tema `Sarak Sovereign` na galeria está escuro quando a preferência é clara (esperado `rgb(221, 236, 237)`, recebido `rgb(13, 24, 24)` — é o modo, não uma cor da paleta: se fosse a paleta, a cor seria clara e diferente); (2) a coluna do painel mede 320 px quando o teste espera mais de 400. Os dois lidam com o painel e o modo da prévia, área que a plan-140 está reescrevendo (`PresetsCatalog.tsx`, `PreviewCanvas*`, `ThemeCustomizationTab.tsx`). Não rodei o controle em `HEAD` limpo (§3.10), então a atribuição é por evidência indireta, não provada.
+- `audit:baseline` com regressão em 3 contagens, as três em arquivos da plan-140: variável-fantasma `--sarak-design-engine-sidebar-w` (0→1), `useBrandForm.ts` sem teste correspondente (órfão 0→1) e a violação de Clean Code no mesmo `useBrandForm.ts` (0→1). Nenhum deles está em arquivo meu.
+- `npm run build` está bloqueado em `guide:check` enquanto o kit `sarak-ui/docs/migracoes.md` não for regenerado (`npm run guide`) depois da nota de migração da plan-140.
+- Ficaram 18 arquivos novos não rastreados em `dist/` (chunks com hash do meu build parcial); o `git restore` do passo 11 não os remove e `git clean` é barrado pelo hook do repositório. É resíduo gerado, do dono apagar.
+
+**Pendências / riscos**
+- Aprovação do dono da prévia final `final.html`.
+- As 2 falhas do `plan-122-preview-mode` e as 3 regressões do baseline precisam fechar com a plan-140 antes de o veredito dar a verificação objetiva por concluída.
+- O `status` fica em `🟠 Em revisão`.
+
+---
+
+## Resumo da execução (conclusão: nota de migração, snapshots e plan-122) — 2026-11-02
+
+**Resultado:** Concluído — itens 1 e 2 do veredito "retomada — técnica conferida"; o item 3 (prévia) segue com o dono.
+
+**Estado do worktree ao iniciar**
+Mesmo da retomada anterior (fotografia em `C:\tmp\sarak-previa-143\status-copy-1.txt`): arquivos da plan-140 modificados, nenhum tocado por mim. Ao fim, a árvore real tem `dist/` e `buildInfo.ts` modificados por um build de outra tarefa, que não é meu (eu já havia restaurado o meu).
+
+**O que foi feito**
+- `docs/migracoes.md` — subseção nova "As paletas prontas sobem para 19, e a Secundária e o Acento chegam à tela", por acréscimo, inserida antes da subseção da plan-140 (nenhuma linha dela foi alterada). Classificação MINOR dentro da 8.0.0; diz que a cor dos temas embarcados muda, que as paletas sobem para 19 (4 ids novos, 15 antigos válidos) e que a Secundária e o Acento aparecem na tela.
+- Snapshots: numa cópia `git archive HEAD` (`C:\tmp\sarak-copia-143`, `node_modules` por junção), com só os arquivos desta plan sobrepostos (`palette/*`, `catalogEntries.palette.ts`, `catalog.generated.ts`, `themePalettes.test.ts`, `PaletteGallery.registry.test.tsx`). `npx vitest run src/features/DesignEngine src/core/Design` na cópia acusou exatamente 3 snapshots: `PreviewCanvas`, `PresetsCatalog` e `ThemeSidebarContent`. Regerei os três com `-u`.
+- Os snapshots regenerados e os diffs contra o HEAD estão em `C:\tmp\sarak-previa-143\snap-patches\` (`*.snap.novo` e `*.snap.diff`). **Não os copiei para a árvore real**: dois desses arquivos `.snap` estão alterados ou apagados pela plan-140 (`ThemeSidebarContent.test.tsx.snap` está apagado lá), e sobrescrevê-los seria mexer no que não é meu. O revisor decide como aplicar.
+- `plan-122-preview-mode` rodado na cópia (HEAD + os arquivos desta plan, `npm run build` na cópia): **3 de 3 passam**. As 2 falhas da árvore real, portanto, não vêm desta plan.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `docs/migracoes.md` | alterado | subseção das 19 paletas, por acréscimo |
+
+**Verificações executadas**
+- Na cópia: `vitest` em `src/features/DesignEngine` e `src/core/Design` → 151 arquivos, 148 passavam e 3 snapshots acusados; depois de `-u` nesses três, 21 testes passando.
+- **Linha final do diff de snapshots** (linhas novas / removidas): `PreviewCanvas` 128 / 128; `PresetsCatalog` 121 / 121; `ThemeSidebarContent` 202 / 42.
+- **Só cor?** `PreviewCanvas` e `PresetsCatalog`: sim — toda linha que mudou tem `rgb(...)`, `rgba(...)` ou `#hex`, e nenhuma outra. `ThemeSidebarContent`: **não é só cor**: além das cores, a galeria passa a listar as 4 paletas novas (`Oliva viva`, `Oliva dourada`, `Tinta azul`, `Ciano e azul`, cada uma com sua faixa) e os nomes mudam (`Ciano e violeta` de Análoga para Triádica; `Rosa pastel` vira `Rosa profundo`). Isso é consequência direta do registro de 19 paletas, não de outra mudança; os 42 removidos são as linhas dos nomes e das cores antigas.
+- `plan-122-preview-mode` na cópia → 3 passed.
+
+**Critérios de aceite**
+- [x] Nota de migração por acréscimo — evidência: `docs/migracoes.md`, subseção nova.
+- [x] Snapshots regenerados numa cópia `git archive HEAD`, diff conferido — evidência acima e `snap-patches/`.
+- [x] `plan-122` separado do que é da plan-140 — evidência: 3/3 na cópia.
+- [ ] Aplicar os três snapshots na árvore real — pendência: depende da plan-140, dona de dois desses `.snap`.
+- [ ] Prévia final aprovada — com o dono.
+
+**Decisões e suposições**
+- Não apliquei os snapshots na árvore real, pelo motivo acima.
+- A cópia foi montada só com os arquivos desta plan; o `generate-build-info` falhou na cópia por não haver `.git` (último passo do build, depois de `dist/` pronto), sem efeito nos testes.
+
+**Achados fora do escopo (não corrigidos)**
+- A árvore real foi reconstruída por outra tarefa durante esta execução (`dist/` e `buildInfo.ts` voltaram a aparecer modificados, com chunks novos não rastreados), o que é da plan-140.
+
+**Pendências / riscos**
+- Aplicar os `.snap` regenerados quando a plan-140 fechar os arquivos dela.
+- Prévia `C:\tmp\sarak-previa-143\final.html` aguardando o dono.
+
+---
+
 # 10. Veredito
 
 ## Veredito — 2026-10-31 — ponto de parada do passo 6: rodada 2
@@ -315,3 +420,51 @@ provável de as cores não terem combinado, e por isso vem **antes** da escolha.
 
 A regra das três faixas está certa e aparece na tela: as cores das sementes chegam a subtítulo, ênfase, gráfico e marcador. `paletas.html` mostra exata, ajustada e tingida por variante, com coerência. O `h2` sair na cor do título não é
 defeito: `SarakTypography` usa `subtitleColor` com `color="subtitle"`, e cartões e catálogo o leem. A amostra é que não usa essa prop. Falta: Adobe Color não consultado (declarado), e a escolha do dono.
+
+## Veredito — 2026-11-02 — escolha do dono: retomada nos passos 7 a 12
+
+O dono escolheu as variantes. Em três paletas ele marcou mais de uma, então **todas as escolhidas entram**: o catálogo sobe de 15 para **19 paletas**, com 4 ids novos. Os 15 ids publicados seguem válidos. O teto do teste `presets.test.ts` passa de 15 a 19.
+
+| Id | Variante | Nome | Tipo | Base | Secundária | Acento |
+|---|---|---|---|---|---|---|
+| `oceano` | V3 | Oceano | análoga | `#356fed` | `#0070a6` | `#7e6ef2` |
+| `ciano-violeta` | V1 | Ciano e violeta | tríade | `#19e3f0` | `#7e5acc` | `#c38400` |
+| **`ciano-azul`** (novo) | V3 | Ciano e azul | análoga | `#19e3f0` | `#518133` | `#0091c9` |
+| `verde-neon` | V1 | Verde neon | complementar | `#00ff6a` | `#007f7f` | `#d25bcb` |
+| `cobalto-vivo` | V1 | Cobalto vivo | complementar | `#3c6afa` | `#7a53c4` | `#b48630` |
+| `azul-projeto` | V1 | Azul projeto | complementar | `#6fa3d9` | `#8e6099` | `#b68852` |
+| `amarelo-contraste` | V3 | Amarelo contraste | complementar | `#ffd400` | `#3e8343` | `#9e6de7` |
+| `grafite-rosa` | V3 | Grafite e rosa | tríade | `#617b91` | `#ba4760` | `#8f914e` |
+| `terra-argila` | V3 | Terra e argila | monocromática | `#b25c32` | `#83685c` | `#c6753b` |
+| **`oliva-viva`** (novo) | V1 | Oliva viva | monocromática | `#67832a` | `#69735a` | `#679647` |
+| **`oliva-dourada`** (novo) | V2 | Oliva dourada | monocromática | `#7d7a15` | `#717156` | `#89953b` |
+| `ambar-industrial` | V1 | Âmbar industrial | monocromática | `#ff9a1f` | `#806a57` | `#bc7d19` |
+| `tinta-vinho` | V2 | Tinta e vinho | monocromática | `#b45476` | `#83656e` | `#c26578` |
+| **`tinta-azul`** (novo) | V3 | Tinta azul | monocromática | `#5279ac` | `#676f7a` | `#6e8cc3` |
+| `rosa-synthwave` | V1 | Rosa synthwave | dividida | `#d33880` | `#00837e` | `#4790d8` |
+| `coral-cinetico` | V2 | Coral cinético | dividida | `#d74033` | `#008265` | `#0099b3` |
+| `verde-tecnico` | V2 | Verde técnico | tríade | `#218856` | `#346fa9` | `#c67600` |
+| `ametista-petroleo` | V3 | Ametista e petróleo | tríade | `#8a62d4` | `#a97e2c` | `#007785` |
+| `rosa-pastel` | V3 | Rosa profundo | tríade | `#c8425e` | `#558113` | `#528ed9` |
+
+`ciano-violeta` vira tríade, e `ciano-azul` mantém duas análogas, o que resolve o teste de "ao menos dois por tipo". Os temas continuam nos ids de hoje; `ciano-violeta` devolve o violeta ao tema padrão.
+
+**Botão secundário:** tingido, a recomendação; o dono não pediu o contorno.
+
+**Retomada:** passos 7 a 12 do §5. Grave o registro exatamente com a tabela, com as sementes declaradas; a tolerância sobe a ±45°, e a semente que passar disso entra como exceção nomeada no teste, com o motivo. Nomes nos seis idiomas. Trava de deslocamento do passo 8. A prévia final é curta: as 19 paletas × 2 modos, mais os 19 temas no modo nativo.
+
+**Verificação objetiva:** `npx vitest run src/core/Design src/features/DesignEngine`, `verify_contrast`, `themes:diversity`, os specs de navegador do passo 11 e `npm run verify -- --tier=quick`. Sem suíte inteira e sem bateria inteira.
+
+## Veredito — 2026-11-02 — retomada — técnica conferida, aguarda o dono
+
+O registro confere com a tabela da escolha, linha a linha. Conferido pelo revisor: `src/core/Design/palette` e `presets/themes` com 272 de 272; `verify_contrast` sem reprovados, 19/19. Os **seis** presets vivos estão aceitos: a sexta vem da escolha do dono (`ciano-azul`). As exceções de croma estão aceitas, porque são escolha do dono e estão nomeadas no teste.
+A falha do `plan-122-preview-mode` e as 3 regressões do baseline são de arquivos da 140, em execução na mesma árvore: não pesam aqui.
+
+**Falta, antes do commit:**
+1. **Nota de migração:** subseção em `docs/migracoes.md`, por acréscimo: a cor dos temas embarcados muda, as paletas sobem para 19, e Secundária e Acento aparecem na tela.
+2. **Snapshots:** numa cópia `git archive HEAD` só com os arquivos desta plan, regenere os snapshots de cor do painel (`ThemeSidebarContent`, `PreviewCanvas`, `PresetsCatalog` e os que `npx vitest run src/features/DesignEngine` acusar), confirme que o diff é só cor, e cole a linha final. Em seguida, rode `plan-122-preview-mode` nessa cópia, para separar o que é da 140.
+3. **Prévia:** `C:\tmp\sarak-previa-143\final.html`, aguardando o dono.
+
+## Veredito — 2026-11-02 — 🟢 Aprovado
+
+O dono aprovou a prévia final. O commit sai junto com a `plan-140`, que regenera os snapshots do painel com estas cores.

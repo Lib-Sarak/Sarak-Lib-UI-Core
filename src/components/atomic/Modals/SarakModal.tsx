@@ -1,6 +1,8 @@
 import React, { useId } from 'react';
+import { createPortal } from 'react-dom';
 import { AnimatePresence, motion, useIsPresent } from 'framer-motion';
 import { clsx } from 'clsx';
+import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalScope';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakButton } from '../Buttons/SarakButton';
@@ -10,6 +12,7 @@ import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import { useMotionTokens } from '../hooks/useMotionTokens';
 import { useModalBehavior } from './hooks/useModalBehavior';
 import { useModalLayoutStyles } from './hooks/useModalLayoutStyles';
+import { OVERLAY_LAYER_STEP, useOverlayLayer } from './hooks/useOverlayLayer';
 
 export type SarakModalSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
 
@@ -158,16 +161,17 @@ const ModalFooter = ({ className, children }: { className: string; children: Rea
     </div>
 );
 
-const ModalFrame = ({ disableOverlayClick, onClose, children }: {
+const ModalFrame = ({ disableOverlayClick, onClose, depth, children }: {
     disableOverlayClick: boolean;
     onClose: () => void;
+    depth: number;
     children: React.ReactNode;
 }): React.ReactElement => {
     const { easeIn, durations } = useMotionTokens();
     // Na saída (`motionEaseIn`) o modal ainda está na página por um instante: não pode segurar o ponteiro.
     const isPresent = useIsPresent();
     return (
-        <div className={clsx('fixed inset-0 z-[var(--z-index-modal)] flex items-center justify-center', !isPresent && 'pointer-events-none')} style={{ padding: 'var(--sarak-layout-gap-md, 16px)' }}>
+        <div className={clsx('fixed inset-0 z-[var(--z-index-modal)] flex items-center justify-center', !isPresent && 'pointer-events-none')} style={{ padding: 'var(--sarak-layout-gap-md, 16px)', zIndex: depth > 0 ? `calc(var(--z-index-modal) + ${depth * OVERLAY_LAYER_STEP})` : undefined }}>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { ease: easeIn, duration: durations.fast } }} onClick={disableOverlayClick ? undefined : onClose} className="absolute inset-0 bg-[var(--sarak-modal-overlay-color,rgba(2,4,8,0.6))] backdrop-blur-[var(--sarak-modal-blur,8px)]" aria-hidden="true" />
             {children}
         </div>
@@ -178,7 +182,8 @@ export const SarakModal = (props: SarakModalProps): React.ReactElement | null =>
     const { isOpen, onClose, title, children, footer, steps, onComplete, disableOverlayClick = false, hideCloseButton = false, className, size = 'lg' } = props;
     const design = useSarakUIOptional()?.design;
     const layout = useModalLayoutStyles(design ?? {});
-    const behavior = useModalBehavior(isOpen, onClose);
+    const layer = useOverlayLayer(isOpen);
+    const behavior = useModalBehavior(isOpen, onClose, layer.isTop);
     const titleId = useId();
     const lastStep = steps?.length ? steps.length - 1 : 0;
 
@@ -195,10 +200,12 @@ export const SarakModal = (props: SarakModalProps): React.ReactElement | null =>
     const modalFooter = footerContent ? <ModalFooter className={layout.footerClass}>{footerContent}</ModalFooter> : null;
 
     // O `AnimatePresence` fica fora do `isOpen`: só assim o modal permanece até a saída (`exit`) terminar.
-    return (
+    // Portal no `body`, como a gaveta: dentro da ilha do Modo Embarcado (`z-index: 0`) ou de um painel com
+    // `transform`, o modal ficaria preso ao contexto de empilhamento do ancestral e não passaria da gaveta.
+    const modal = (
         <AnimatePresence>
             {isOpen && (
-                <ModalFrame key="modal" disableOverlayClick={disableOverlayClick} onClose={onClose}>
+                <ModalFrame key="modal" disableOverlayClick={disableOverlayClick} onClose={onClose} depth={layer.depth}>
                     <ModalPanel size={size} maxWidth={design ? MODAL_WIDTH_VARIABLES[size] : undefined} className={className} dialogRef={behavior.dialogRef} handleTrap={behavior.handleTrap} title={title} titleId={titleId} header={modalHeader} footer={modalFooter}>
                         {body}
                     </ModalPanel>
@@ -206,4 +213,6 @@ export const SarakModal = (props: SarakModalProps): React.ReactElement | null =>
             )}
         </AnimatePresence>
     );
+    if (typeof document === 'undefined') return modal;
+    return createPortal(<SarakPortalScope>{modal}</SarakPortalScope>, document.body);
 };

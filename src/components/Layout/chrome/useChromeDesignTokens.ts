@@ -1,7 +1,8 @@
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { resolveMaxContentWidth } from '../../../core/Design/schema/system';
 import { resolveMobileNavigationStyle, type ChromeMobileNavigationStyle } from './mobileNavigation';
-import { useNavigationAppearance, type NavigationAppearance } from '../../../core/Provider/useNavigationAppearance';
+import { useNavigationAppearance, type NavigationAppearance, type NavigationBarTone } from '../../../core/Provider/useNavigationAppearance';
+import { isValidPaletteValue } from '../../../core/Design/palette/parser';
 
 export type ChromeSidebarPosition = 'left' | 'right' | 'floating';
 export type ChromeNavbarLayout = 'sticky' | 'inline' | 'hidden';
@@ -20,10 +21,15 @@ export interface ChromeDesignTokens extends NavigationAppearance {
     searchPositionSidebar: ChromeSearchPositionSidebar;
     searchPositionTopbar: ChromeSearchPositionTopbar;
     mobileNavigationStyle: ChromeMobileNavigationStyle;
+    sidebarResizable: boolean;
 }
 
 const resolveSidebarSearchPosition = (value: unknown): ChromeSearchPositionSidebar =>
     value === 'bottom' ? 'bottom' : 'top';
+
+/** O papel de cor da barra é da paleta: tema sem paleta calculada segue com a barra de sempre. */
+const resolveEffectiveTone = (tone: NavigationBarTone, design: Record<string, unknown> | undefined): NavigationBarTone =>
+    isValidPaletteValue(design?.colorPalette) ? tone : 'neutral';
 
 const resolveLayoutDensity = (value: unknown): ChromeLayoutDensity =>
     value === 'compact' || value === 'spacious' ? value : 'comfortable';
@@ -40,6 +46,9 @@ export const useChromeDesignTokens = (): ChromeDesignTokens => {
     const navigationAppearance = useNavigationAppearance();
     return {
         ...navigationAppearance,
+        sidebarTone: resolveEffectiveTone(navigationAppearance.sidebarTone, design as Record<string, unknown> | undefined),
+        topbarTone: resolveEffectiveTone(navigationAppearance.topbarTone, design as Record<string, unknown> | undefined),
+        sidebarResizable: design?.sidebarResizable === true,
         sidebarPosition: (design?.sidebarPosition as ChromeSidebarPosition) || 'left',
         navbarLayout: (design?.navbarLayout as ChromeNavbarLayout) || 'sticky',
         layoutDensity: resolveLayoutDensity(design?.layoutDensity),

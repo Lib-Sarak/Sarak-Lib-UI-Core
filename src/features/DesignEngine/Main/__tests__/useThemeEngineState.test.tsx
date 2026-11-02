@@ -23,26 +23,19 @@ describe('useThemeEngineState (Spec 44 — sem backend próprio)', () => {
 
         expect(result.current.activePreviewApp).toBe('dashboard');
         expect(result.current.previewDevice).toBe('desktop');
-        expect(result.current.activePillarId).toBe('surfaces');
-        expect(result.current.isGalleryOpen).toBe(false);
+        expect(result.current.panelView).toEqual({ kind: 'home' });
         expect(result.current.viewMode).toBe('preview');
         expect(result.current.searchQuery).toBe('');
     });
 
-    it('selecionar uma tela atualiza o pilar correspondente', () => {
+    it('selecionar uma tela muda só a prévia; a coluna fica onde estava', () => {
         const { result } = renderHook(() => useThemeEngineState());
+        act(() => { result.current.openDecision('fonts'); });
 
-        act(() => {
-            result.current.selectPreviewApp('typography');
-        });
+        act(() => { result.current.selectPreviewApp('chat'); });
 
-        expect(result.current.activePillarId).toBe('typography');
-
-        act(() => {
-            result.current.selectPreviewApp('chat');
-        });
-
-        expect(result.current.activePillarId).toBe('advanced');
+        expect(result.current.activePreviewApp).toBe('chat');
+        expect(result.current.panelView).toMatchObject({ kind: 'decision', id: 'fonts' });
     });
 
     it('não expõe mais `uiBaseUrl`/`apiToken`/`fetchActiveTheme` (a persistência é local, sem backend)', () => {

@@ -116,4 +116,18 @@ describe('SarakGrid', () => {
         const child = container.querySelector('[data-testid="child-with-span"]') as HTMLElement;
         expect(child.className).toContain('col-span-6');
     });
+
+    it('só `gap`: o estilo emitido não tem `columnGap` nem `rowGap` — o shorthand vale nos dois eixos', () => {
+        const { getByTestId } = render(<SarakGrid data-testid="g" gap="spacing-md" templateColumns="1fr 1fr"><i /><i /></SarakGrid>);
+        const style = getByTestId('g').style;
+        expect(style.getPropertyValue('gap')).not.toBe('');
+        expect(style.getPropertyValue('column-gap')).toBe(style.getPropertyValue('row-gap'));
+    });
+
+    it('`rowGap` e `columnGap` entram no estilo do grid depois do `gap`', () => {
+        const { getByTestId } = render(<SarakGrid data-testid="g" gap="spacing-md" rowGap="spacing-xl" columnGap="4px"><i /><i /></SarakGrid>);
+        const style = getByTestId('g').style;
+        expect(style.getPropertyValue('row-gap')).toContain('--sarak-layout-gap-lg');
+        expect(style.getPropertyValue('column-gap')).toBe('4px');
+    });
 });

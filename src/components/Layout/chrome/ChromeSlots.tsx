@@ -22,15 +22,19 @@ export const ChromeBrand: React.FC<{
     /** Colapsado (`isNavHidden`): mantém o logo, esconde o nome. */
     compact?: boolean;
 }> = ({ brand, logo, horizontal, compact }) => {
-    if (!logo && !brand?.name && !brand?.logoUrl) return null;
+    const hasLogo = Boolean(logo || brand?.logoUrl);
+    if (!hasLogo && !brand?.name) return null;
+    // Recolhido o nome some: sem logo, não sobraria nada dentro do bloco — nem a caixa colorida.
+    if (!hasLogo && compact) return null;
     return (
         // O invólucro leva o respiro do token `identityPadding` (padrão 0, soma-se ao respiro
-        // base do bloco); o bloco interno mantém a anatomia de sempre.
+        // base do bloco); o bloco interno mantém a anatomia de sempre. O fundo da marca só pinta com logo: sem
+        // imagem, o bloco é só o nome (ou nada), nunca uma caixa colorida.
         <div
             className="relative z-10 min-w-0"
             style={{
                 padding: 'var(--sarak-identity-padding, 16px)',
-                background: horizontal
+                background: !hasLogo ? undefined : horizontal
                     ? 'var(--sarak-topbar-brand-bg, transparent)'
                     : 'var(--sarak-sidebar-brand-bg, transparent)',
             }}

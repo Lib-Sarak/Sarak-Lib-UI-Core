@@ -75,7 +75,7 @@ test('a prévia e os cartões acompanham a preferência clara e o toggle alterna
     await expect.poll(() => previewSurface.evaluate((surface) => getComputedStyle(surface).backgroundColor))
         .toBe(lightBody);
 
-    await page.getByRole('button', { name: 'Abrir galeria' }).click();
+    await page.getByRole('button', { name: /^Tema/ }).click();
     const themeCard = page.getByRole('button', { name: /Sarak Sovereign/i });
     await expect(themeCard).toBeVisible();
     const themeCardSurface = themeCard.locator(':scope > div').first();
@@ -97,43 +97,34 @@ test('a prévia e os cartões acompanham a preferência clara e o toggle alterna
     await page.close();
 });
 
-test('o dual-view usa o espaço do container e o empilhado rola os dois quadros', async () => {
-    const page = await browser.newPage();
+test('o painel mede o container: coluna e prévia lado a lado e, estreito, empilhados com a prévia ao alcance', async () => {
+    const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
     await page.goto(harnessUrl);
-    await page.getByRole('button', { name: 'Abrir galeria' }).click();
 
     const panelHost = page.getByTestId('plan-122-panel-host');
-    const previewLayout = page.getByTestId('preview-layout');
-    const getLayoutDirection = (): Promise<string> =>
-        previewLayout.evaluate((layout) => getComputedStyle(layout).flexDirection);
+    const column = page.locator('.sarak-panel-column');
+    const previewFrame = page.getByTestId('live-preview-frame');
+    const box = async (locator: typeof column) => (await locator.boundingBox()) ?? { x: 0, y: 0, width: 0, height: 0 };
 
-    await expect.poll(getLayoutDirection).toBe('row');
-    await panelHost.evaluate((element) => {
-        (element as HTMLElement).style.width = '700px';
-    });
-    await expect.poll(getLayoutDirection).toBe('column');
+    const wide = { column: await box(column), preview: await box(previewFrame) };
+    expect(wide.preview.x).toBeGreaterThanOrEqual(wide.column.x + wide.column.width - 1);
 
-    await panelHost.evaluate((element) => {
-        (element as HTMLElement).style.width = '1600px';
-    });
-    await expect.poll(getLayoutDirection).toBe('row');
-    await page.getByRole('switch', { name: 'Empilhar previews' }).check({ force: true });
+    await panelHost.evaluate((element) => { (element as HTMLElement).style.width = '500px'; });
+    await expect.poll(async () => (await box(previewFrame)).y > (await box(column)).y).toBe(true);
+    // A largura da coluna anima junto com a troca de disposição: espera assentar antes de medir.
+    await expect.poll(async () => (await box(column)).width).toBeGreaterThan(400);
+    const narrow = { column: await box(column), preview: await box(previewFrame) };
+    expect(narrow.preview.width).toBeGreaterThan(300);
 
-    const liveFrame = page.getByTestId('live-preview-frame');
-    const catalogFrame = page.getByTestId('catalog-preview-frame');
-    await expect.poll(async () => previewLayout.evaluate((layout) => layout.scrollHeight > layout.clientHeight)).toBe(true);
-    await expect.poll(async () => {
-        const layoutHeight = await previewLayout.evaluate((layout) => layout.clientHeight);
-        const gap = await previewLayout.evaluate((layout) => Number.parseFloat(getComputedStyle(layout).rowGap));
-        const frameHeights = await Promise.all([
-            liveFrame.evaluate((frame) => frame.getBoundingClientRect().height),
-            catalogFrame.evaluate((frame) => frame.getBoundingClientRect().height),
-        ]);
-        return frameHeights.every((height) => Math.abs(height - (layoutHeight - gap)) <= 2);
-    }).toBe(true);
+    // O painel rola e a prévia fica ao alcance: rolar até ela a põe dentro da área visível do host.
+    await previewFrame.scrollIntoViewIfNeeded();
+    const host = await box(panelHost as unknown as typeof column);
+    const reached = await box(previewFrame);
+    expect(reached.y).toBeGreaterThanOrEqual(host.y - 1);
+    expect(reached.y).toBeLessThan(host.y + host.height);
 
-    expect(await liveFrame.evaluate((frame) => getComputedStyle(frame).overflowY)).toBe('auto');
-    expect(await catalogFrame.evaluate((frame) => getComputedStyle(frame).overflowY)).toBe('auto');
+    await panelHost.evaluate((element) => { (element as HTMLElement).style.width = '1600px'; });
+    await expect.poll(async () => (await box(previewFrame)).x > (await box(column)).x + 200).toBe(true);
     await page.close();
 });
 

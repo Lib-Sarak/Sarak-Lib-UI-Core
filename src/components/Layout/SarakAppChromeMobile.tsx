@@ -15,6 +15,7 @@ import { ChromeUserThemeGroup } from './chrome/ChromeUserThemeGroup';
 import { ChromeBottomNav } from './chrome/ChromeBottomNav';
 import { ChromeMobileDrawer } from './chrome/ChromeMobileDrawer';
 import { chromeNoiseLayerStyle } from './chrome/noiseTexture';
+import { resolveChromeToneStyle } from './chrome/chromeToneStyle';
 import { resolveMobileNavigationMode } from './chrome/mobileNavigation';
 import { ChromeNotificationsWidget, type SarakChromeNotification } from './chrome/ChromeNotificationsWidget';
 import {
@@ -99,8 +100,9 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     const {
         layoutDensity, maxContentWidth, isSplitViewEnabled, searchPositionSidebar, mobileNavigationStyle,
         sidebarBorderSide, sidebarBorderStyle, sidebarBackgroundStyle, topbarBorderSide, topbarBorderStyle, topbarBackgroundStyle,
+        sidebarTone, topbarTone,
     } = useChromeDesignTokens();
-    const navOnBottom = resolveMobileNavigationMode(mobileNavigationStyle, nav.length) === 'bottom';
+    const navOnBottom = resolveMobileNavigationMode(mobileNavigationStyle, nav.length, nav.some((item) => Boolean(item.children?.length))) === 'bottom';
     const t = useLibraryText();
     const w = useChromeDefaultWidgets(widgets, {
         hasCustomSearch: Boolean(search),
@@ -158,6 +160,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                     }),
                     backdropFilter: 'blur(var(--sarak-topbar-blur, 0px))',
                     boxShadow: 'var(--sarak-topbar-shadow, none)',
+                    ...resolveChromeToneStyle(topbarTone, 'topbar'),
                 }}
             >
                 <SarakIconButton
@@ -187,6 +190,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                 backgroundStyle={sidebarBackgroundStyle}
                 borderSide={sidebarBorderSide}
                 borderStyle={sidebarBorderStyle}
+                toneStyle={resolveChromeToneStyle(sidebarTone, 'sidebar')}
             >
                 {brand && <div className="px-2 py-3">{brandNode}</div>}
                 {/* É onde a sidebar existe no celular — segue `searchPositionSidebar`. */}

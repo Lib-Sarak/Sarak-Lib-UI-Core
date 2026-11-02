@@ -27,10 +27,6 @@ vi.mock('../../../../core/Design/components/DesignScope', () => ({
 }));
 
 const rendererTokens: unknown[] = [];
-const catalogProps: Array<{ draft: unknown; onPeek: unknown }> = [];
-vi.mock('../components/PresetsCatalog', () => ({
-    PresetsCatalog: (props: { draft: unknown; onPeek: unknown }) => { catalogProps.push(props); return <div />; },
-}));
 vi.mock('../components/LiveDraftPreviewFrame', () => ({
     LiveDraftPreviewFrame: ({ children }: React.PropsWithChildren<unknown>) => <div>{children}</div>,
 }));
@@ -42,7 +38,6 @@ const draft = { primaryColor: '#111111', mode: 'light' };
 
 const renderCanvas = (extra: Record<string, unknown>) => {
     const onUpdateDraft = vi.fn();
-    const onPeek = vi.fn();
     render(
         <PreviewCanvas
             previewDevice="desktop"
@@ -52,30 +47,23 @@ const renderCanvas = (extra: Record<string, unknown>) => {
             previewAnimationStyle="none"
             config={{}}
             previewPrimaryColor="#000"
-            mode="light"
-            draftMode="light"
             draftTokens={draft}
             onUpdateDraft={onUpdateDraft}
             sarak={{} as unknown as SarakUIContextType}
-            isDualView
-            isPreviewStacked={false}
-            onPeek={onPeek}
             {...extra}
         />,
     );
-    return { onUpdateDraft, onPeek };
+    return { onUpdateDraft };
 };
 
 describe('PreviewCanvas — espiada', () => {
-    beforeEach(() => { outerDesigns.length = 0; rendererTokens.length = 0; catalogProps.length = 0; });
+    beforeEach(() => { outerDesigns.length = 0; rendererTokens.length = 0; });
 
-    it('a prévia grande recebe a opção por cima do rascunho; o escopo externo e a galeria seguem o rascunho', () => {
-        const { onUpdateDraft, onPeek } = renderCanvas({ peekTokens: { primaryColor: '#ff0000', radius: 4 } });
+    it('a prévia grande recebe a opção por cima do rascunho; o escopo externo segue o rascunho', () => {
+        const { onUpdateDraft } = renderCanvas({ peekTokens: { primaryColor: '#ff0000', radius: 4 } });
 
         expect(rendererTokens.at(-1)).toMatchObject({ primaryColor: '#ff0000', radius: 4, mode: 'light' });
         expect(outerDesigns.at(-1)).toMatchObject({ primaryColor: '#111111' });
-        expect(catalogProps.at(-1)!.draft).toMatchObject({ primaryColor: '#111111' });
-        expect(catalogProps.at(-1)!.onPeek).toBe(onPeek);
         expect(onUpdateDraft).not.toHaveBeenCalled();
     });
 

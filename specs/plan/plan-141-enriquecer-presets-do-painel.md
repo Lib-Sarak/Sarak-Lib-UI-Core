@@ -6,8 +6,8 @@ dominio: "Painel de customização / Presets"
 status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "painel", "presets"]
-relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[09-temas-e-presets]]", "[[plan-140-painel-coluna-unica]]", "[[plan-145-personalidades]]", "[[anexos/painel-design-prototipo]]"]
-depende_de: "plan-140-painel-coluna-unica"
+relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[09-temas-e-presets]]", "[[plan-145-personalidades]]", "[[anexos/painel-design-prototipo]]"]
+depende_de: "plan-150-busca-por-intencao"
 retida_por: ""
 destino_sintese: "specs/specs/09-temas-e-presets.md + specs/specs/06-painel-de-customizacao-e-preview.md"
 ---
@@ -68,8 +68,8 @@ Há dois problemas opostos: áreas sem opção alguma e 41 texturas sem organiza
 1. Fotografe o worktree. Liste no resumo cada grupo de hoje, com os tokens que escreve, e os pares quase iguais.
 2. **Mapa de cobertura primeiro:** um script mede quantos tokens estéticos sem cor algum preset escreve, por família. Rode antes e depois. Cada token que ficar de fora tem motivo: sem efeito visível isolado, ou só faz sentido no ajuste fino.
 3. **Layout.**
-   - Barra lateral (≥ 6): Limpa, Contornada, Sólida, Flutuante, Compacta… combinando `sidebarBorderStyle`, lado da borda, `sidebarActiveItemStyle` e densidade.
-   - Topbar (≥ 5): Transparente, Sólida, Com separador, Vidro…
+   - Barra lateral (≥ 8): Limpa, Contornada, Sólida, Flutuante, Compacta, Marca, Invertida… combinando `sidebarBorderStyle`, lado da borda, `sidebarActiveItemStyle`, densidade e `sidebarTone`. Um preset pode escrever o tom, que é um papel da paleta; cor literal segue proibida.
+   - Topbar (≥ 6): Transparente, Sólida, Com separador, Vidro, Marca… com `topbarTone`.
    - Largura do conteúdo: as 6 de `maxContentWidth`.
 4. **Forma.**
    - Cards: ≥ 18, explorando os 36 tokens de card sem preset.
@@ -86,8 +86,10 @@ Há dois problemas opostos: áreas sem opção alguma e 41 texturas sem organiza
    - **Movimento** ≥ 4: Instantâneo, Ágil, Sereno, Expressivo (`motionDuration*`, `motionEase*`, `motionStaggerDelay`), mais as 5 de `pageTransitionType`.
    - **Ícones** ≥ 6: combinações curadas das 3 famílias e 6 pesos, com contorno.
 6. **Fontes.** Pares ≥ 10, por personalidade, só com `THEME_FONTS`. Escala tipográfica ≥ 4: Compacta, Padrão, Editorial, Impacto, que mudam tamanho, peso e espaçamento dos títulos e do corpo juntos. As 42 fontes seguem, agrupadas por categoria.
-7. **Curadoria.** Cada grupo mostra de 6 a 8 opções e "Ver todas". Distinto: ao menos dois tokens com efeito visível diferem de todo preset do grupo. Grupo com poucos tokens rende menos opções: entregue o que for distinto e diga por quê. **Qualidade vale mais que número.**
-8. **Nomes.** Todo preset, novo e antigo, tem nome e descrição pelo catálogo, nos seis idiomas, sem jargão. O `id` não muda.
+7. **Modo da amostra.** A amostra de opção segue o modo que a prévia mostra, não só o do rascunho: hoje, com a prévia em Claro e um tema escuro, as amostras saem escuras (`SampleScope`).
+   **Curadoria.** Cada grupo mostra de 6 a 8 opções e "Ver todas". Distinto: ao menos dois tokens com efeito visível diferem de todo preset do grupo. Grupo com poucos tokens rende menos opções: entregue o que for distinto e diga por quê. **Qualidade vale mais que número.**
+8. **Busca.** Todo preset novo é achado pela busca, pelo nome e pelos sinônimos dele. Corrija também a linha de caminho dos resultados na área Layout, que mostra o id cru da pergunta ("Layout › how", "› where", "› brand"): ela passa a mostrar o título traduzido da pergunta (`ThemeSearchResults`, `searchGroups`). Veio do reagrupamento da `plan-149`.
+   **Nomes.** Todo preset, novo e antigo, tem nome e descrição pelo catálogo, nos seis idiomas, sem jargão. O `id` não muda.
 9. **Legível.** Todo preset aplicado sobre os 19 temas, nos dois modos, mantém os pares de `PAIRS` passando. Teste que varre.
 10. **Sem vazamento.** Preset escreve só tokens da sua área e nenhuma cor. Regra em teste por grupo.
 11. **Prévia para o dono:** `C:\tmp\sarak-previa-141\index.html`, com cada grupo nos dois modos, marcando o que é novo, e o mapa de cobertura antes e depois.
@@ -104,6 +106,7 @@ Há dois problemas opostos: áreas sem opção alguma e 41 texturas sem organiza
 - [ ] Nenhuma cor em preset de estrutura — teste.
 - [ ] Todo preset com nome nos seis idiomas — teste.
 - [ ] Nenhum token novo; nenhum `id` publicado mudou.
+- [ ] Resultado de busca sem id cru de pergunta, nos seis idiomas — teste.
 - [ ] Prévia gerada; a aprovação do dono é registrada pelo revisor no veredito.
 
 # 7. Como verificar (uso do revisor)

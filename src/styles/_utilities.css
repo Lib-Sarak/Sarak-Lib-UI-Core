@@ -55,6 +55,9 @@
     cursor: pointer;
 }
 
+/* A coluna do painel de customização: a largura inicial; o arrasto do usuário a sobrescreve em linha. */
+.sarak-panel-column { --sarak-design-engine-sidebar-w: 320px; }
+
 /* Scrollbars customizadas (refatoração Data-Driven) */
 .custom-scrollbar-sidebar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar-sidebar::-webkit-scrollbar-track { background: transparent; }

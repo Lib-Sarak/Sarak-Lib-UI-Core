@@ -27,3 +27,21 @@ export const resolveGap = (
     atom: string,
 ): GapValue =>
     override == null ? fallback : (resolveToken(override, { atom, prop: 'gap' }) ?? fallback);
+
+/**
+ * Espaço por eixo (`rowGap`/`columnGap`), que vence o `gap` no eixo dele. Devolve só as chaves
+ * pedidas: uma chave `undefined` depois de `gap` faz o React limpar a propriedade longa e zera o
+ * eixo em vez de deixá-lo herdar o `gap`.
+ */
+export const resolveAxisGaps = (
+    rowGap: SarakLayoutGap | undefined,
+    columnGap: SarakLayoutGap | undefined,
+    atom: string,
+): { rowGap?: GapValue; columnGap?: GapValue } => {
+    const axes: { rowGap?: GapValue; columnGap?: GapValue } = {};
+    const row = rowGap == null ? undefined : resolveToken(rowGap, { atom, prop: 'rowGap' });
+    const column = columnGap == null ? undefined : resolveToken(columnGap, { atom, prop: 'columnGap' });
+    if (row != null) axes.rowGap = row;
+    if (column != null) axes.columnGap = column;
+    return axes;
+};

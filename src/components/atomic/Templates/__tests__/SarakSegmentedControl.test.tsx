@@ -47,4 +47,14 @@ describe('SarakSegmentedControl', () => {
         expect(onValueChange).toHaveBeenCalledWith('active');
         expect(screen.getByRole('radio', { name: 'All' })).toHaveAttribute('aria-checked', 'true');
     });
+
+    it('só a opção marcada leva a superfície invertida, e ela acompanha a seleção', () => {
+        render(<SarakSegmentedControl ariaLabel="Visão" defaultValue="a" options={[{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }]} />);
+        const [first, second] = screen.getAllByRole('radio');
+        expect(first.className).toContain('!bg-[var(--sarak-on-surface');
+        expect(second.className).not.toContain('!bg-');
+        fireEvent.click(second);
+        expect(first.className).not.toContain('!bg-');
+        expect(second.className).toContain('!bg-[var(--sarak-on-surface');
+    });
 });

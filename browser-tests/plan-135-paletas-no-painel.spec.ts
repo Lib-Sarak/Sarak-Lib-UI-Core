@@ -68,6 +68,7 @@ test('escolher uma pronta, criar a partir de uma cor, ajustar um token e aplicar
     const pageErrors: string[] = [];
     page.on('pageerror', (error) => pageErrors.push(error.message));
     await page.goto(harnessUrl);
+    await page.getByRole('button', { name: /^Cores/ }).click();
 
     const gallery = page.getByRole('radiogroup', { name: 'Paletas prontas' });
     await expect(gallery).toBeVisible();
@@ -91,12 +92,17 @@ test('escolher uma pronta, criar a partir de uma cor, ajustar um token e aplicar
     await form.getByRole('button', { name: 'Usar esta paleta' }).click();
     await expect(page.getByTestId('saved-payload')).toHaveText('');
 
+    await page.getByRole('button', { name: 'Voltar para a lista de decisões' }).click();
     await page.getByPlaceholder('Buscar token...').fill('Cor da Sidebar');
+    // A busca passa de 20 resultados: a coluna pede a área primeiro, e este token mora em Cores.
+    await page.locator('[data-search-area="colors"]').click();
+    await page.getByRole('button', { name: /^Abrir Cor da Sidebar \(Fundo\)/ }).click();
     const sidebarField = page.getByLabel('Cor de Cor da Sidebar (Fundo)');
     await sidebarField.fill(ADJUSTED_SIDEBAR);
     await sidebarField.press('Enter');
     await capture(page, '4-ajuste-granular.png', 'Ajuste granular por cima da paleta: a cor da sidebar editada à mão.');
-    await page.getByPlaceholder('Buscar token...').fill('');
+    await page.getByRole('button', { name: 'Voltar para a lista de decisões' }).click();
+    await page.getByRole('button', { name: /^Cores/ }).click();
 
     await gallery.getByRole('radio').first().click();
     const dialog = page.getByRole('dialog');

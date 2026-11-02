@@ -143,3 +143,25 @@ describe('SarakInput — prefixo e sufixo', () => {
         expect(input).not.toHaveAttribute('suffixtext');
     });
 });
+
+describe('SarakInput affixPlacement', () => {
+    it('outside (padrão) mantém o afixo ao lado do campo', () => {
+        render(<SarakInput label="Valor" prefixText="R$" />);
+        const prefix = document.getElementById(`${screen.getByLabelText('Valor').id}-prefix`);
+        expect(prefix?.className).toContain('shrink-0');
+        expect(prefix?.style.position).toBe('');
+    });
+
+    it('inside põe prefixo e sufixo dentro do campo e mantém a descrição acessível', () => {
+        render(<SarakInput label="Valor" prefixText="R$" suffixText="/mês" affixPlacement="inside" />);
+        const input = screen.getByLabelText('Valor');
+        const prefix = document.getElementById(`${input.id}-prefix`);
+        const suffix = document.getElementById(`${input.id}-suffix`);
+        expect(prefix?.style.position).toBe('absolute');
+        expect(suffix?.style.position).toBe('absolute');
+        expect(prefix?.parentElement).toBe(input.parentElement);
+        expect(input.getAttribute('aria-describedby')).toContain(`${input.id}-prefix`);
+        expect(input.style.paddingLeft).toContain('var(--sarak-input-padding-horizontal');
+        expect(input).not.toHaveAttribute('affixPlacement');
+    });
+});

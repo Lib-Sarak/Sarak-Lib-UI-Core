@@ -41,16 +41,17 @@ test('a barra de 240 px esconde o atalho e mantém o campo dentro do contêiner'
     expect(bounds[1]!.x + bounds[1]!.width).toBeLessThanOrEqual(bounds[0]!.x + bounds[0]!.width);
 });
 
-test('a barra reserva espaço entre o campo e o atalho quando ambos cabem', async ({ page }) => {
+test('a barra não mostra o texto do atalho e o campo ocupa o espaço', async ({ page }) => {
     await openScene(page, 'bar', 320);
+    const host = page.getByTestId('search-bar-host');
     const input = page.getByRole('combobox');
-    const shortcut = page.getByTestId('sarak-shell-search-shortcut');
-    await expect(shortcut).toBeVisible();
+    await expect(page.getByTestId('sarak-shell-search-shortcut')).toBeHidden();
 
-    const bounds = await Promise.all([input.boundingBox(), shortcut.boundingBox()]);
+    const bounds = await Promise.all([host.boundingBox(), input.boundingBox()]);
     expect(bounds[0]).not.toBeNull();
     expect(bounds[1]).not.toBeNull();
-    expect(bounds[0]!.x + bounds[0]!.width).toBeLessThanOrEqual(bounds[1]!.x);
+    expect(bounds[1]!.x + bounds[1]!.width).toBeLessThanOrEqual(bounds[0]!.x + bounds[0]!.width);
+    expect(bounds[1]!.width).toBeGreaterThan(bounds[0]!.width * 0.7);
 });
 
 test('resultado da barra sem callback segue o href e atualiza a URL', async ({ page }) => {

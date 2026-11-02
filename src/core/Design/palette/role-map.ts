@@ -19,6 +19,10 @@ const shiftRole = (scale: PaletteScaleName, ...origins: number[]): PaletteColorR
 /**
  * A distribuição 60-30-10: a primária (60) pinta ações, títulos e controles; a secundária (30) os cabeçalhos, o
  * subtítulo, a categoria e o gráfico; o acento (10) a ênfase, o marcador e o foco. `BASE` é a cor da semente, exata.
+ *
+ * A área define o tratamento: o texto (título, subtítulo, ênfase, categoria) parte da semente e anda o mínimo que o
+ * contraste pede; o elemento pequeno (gráfico, marcador) é a semente exata; a superfície grande (cabeçalho de cartão e
+ * de tabela, botão secundário) continua tingida, nos tons claros e escuros da escala.
  */
 export const PALETTE_ROLE_MAP: Readonly<Record<string, PaletteColorRole>> = {
     sidebarColor: colorRole('neutral', 100, 950),
@@ -26,7 +30,7 @@ export const PALETTE_ROLE_MAP: Readonly<Record<string, PaletteColorRole>> = {
     sidebarActiveColor: colorRole('primary', 300, 700, 0.6),
     sidebarItemTextColor: colorRole('neutral', 800, 100),
     sidebarItemHoverTextColor: colorRole('neutral', 950, 50),
-    sidebarCategoryColor: colorRole('secondary', 700, 200),
+    sidebarCategoryColor: shiftRole('secondary', BASE),
     sidebarBrandColor: colorRole('accent', 700, 300),
     sidebarBorderColor: colorRole('neutral', 200, 800, 0.64),
     sidebarBrandBackground: colorRole('accent', 100, 900),
@@ -44,7 +48,7 @@ export const PALETTE_ROLE_MAP: Readonly<Record<string, PaletteColorRole>> = {
     topbarIconColor: colorRole('primary', 600, 300),
     topbarTitleColor: colorRole('neutral', 950, 50),
     navItemActiveColor: shiftRole('primary', BASE),
-    navActiveMarkerColor: colorRole('accent', 600, 400),
+    navActiveMarkerColor: colorRole('accent', BASE, BASE),
     cardInnerGlowColor: colorRole('primary', 300, 700, 0.07),
     cardHeaderBg: colorRole('secondary', 100, 900),
     cardHeaderBorder: colorRole('secondary', 200, 800, 0.64),
@@ -76,7 +80,7 @@ export const PALETTE_ROLE_MAP: Readonly<Record<string, PaletteColorRole>> = {
     btnNeonGlowColor: colorRole('primary', 500, 500, 0.4),
     inputBg: colorRole('neutral', 50, 950),
     inputBorderColor: colorRole('neutral', 500, 600, 0.8),
-    inputFocusBorderColor: colorRole('accent', 600, 400),
+    inputFocusBorderColor: shiftRole('accent', BASE),
     inputTextColor: colorRole('neutral', 950, 50),
     inputIconColor: colorRole('neutral', 700, 200),
     inputErrorColor: colorRole('error', 700, 300),
@@ -86,18 +90,18 @@ export const PALETTE_ROLE_MAP: Readonly<Record<string, PaletteColorRole>> = {
     checkboxActiveColor: colorRole('primary', BASE, BASE),
     switchPulseColor: colorRole('primary', 500, 500),
     primaryColor: shiftRole('primary', BASE),
-    secondaryColor: colorRole('secondary', 700, 300),
-    tertiaryColor: colorRole('accent', 700, 300),
-    accentColor: colorRole('accent', 700, 300),
+    secondaryColor: shiftRole('secondary', BASE),
+    tertiaryColor: shiftRole('accent', BASE),
+    accentColor: shiftRole('accent', BASE),
     surfaceColor: colorRole('neutral', 100, 900),
     textureColor: colorRole('neutral', 300, 700),
     titleColor: shiftRole('primary', BASE),
-    subtitleColor: colorRole('secondary', 800, 200),
-    emphasisColor: colorRole('accent', 700, 300),
+    subtitleColor: shiftRole('secondary', BASE),
+    emphasisColor: shiftRole('accent', BASE),
     colorBgModal: colorRole('neutral', 50, 950),
     cardBackgroundColor: colorRole('neutral', 50, 900),
     cardBorderColor: colorRole('neutral', 200, 800, 0.72),
-    chartColorPalette: colorRole('secondary', 600, 400),
+    chartColorPalette: colorRole('secondary', BASE, BASE),
     chartTooltipBg: colorRole('neutral', 900, 100, 0.96),
     colorBgBody: colorRole('neutral', 50, 950),
     colorBgLayer1: colorRole('neutral', 100, 900),

@@ -3045,6 +3045,18 @@
    ]
   },
   {
+   "id": "sidebarLogoPlacement",
+   "group": "navigation",
+   "label": "Posição da Marca (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Põe a marca no topo da lateral (padrão) ou na base, acima do rodapé; só vale na lateral. Recolhida, fica só o símbolo.",
+   "interactsWith": [
+    "sidebarPosition",
+    "shellBrandLogoSize"
+   ]
+  },
+  {
    "id": "sidebarMaxWidth",
    "group": "navigation",
    "label": "Largura Máxima da Sidebar",
@@ -3090,6 +3102,19 @@
    ]
   },
   {
+   "id": "sidebarResizable",
+   "group": "navigation",
+   "label": "Largura Ajustável (Sidebar)",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Liga uma alça na borda da lateral aberta: o usuário arrasta ou usa as setas, entre o piso e o teto de largura. O valor escolhido é preferência do usuário, nunca do tema.",
+   "interactsWith": [
+    "sidebarWidth",
+    "sidebarMinWidth",
+    "sidebarMaxWidth"
+   ]
+  },
+  {
    "id": "sidebarShadow",
    "group": "navigation",
    "label": "Sombra da Sidebar",
@@ -3098,6 +3123,18 @@
    "usage": "Sombra da navegação lateral, escrita como `box-shadow` completo; a cor da sombra precisa ser trocada na contraparte.",
    "interactsWith": [
     "navigationStyle"
+   ]
+  },
+  {
+   "id": "sidebarTone",
+   "group": "navigation",
+   "label": "Papel de Cor (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Papel de cor do fundo da barra lateral: a paleta calcula o fundo e os textos legíveis sobre ele, nos dois modos. Uma cor declarada em `sidebarColor` continua vencendo.",
+   "interactsWith": [
+    "sidebarColor",
+    "sidebarActiveItemStyle"
    ]
   },
   {
@@ -3768,6 +3805,18 @@
    "usage": "Cor do nome da marca na barra do topo.",
    "interactsWith": [
     "navigationStyle"
+   ]
+  },
+  {
+   "id": "topbarTone",
+   "group": "navigation",
+   "label": "Papel de Cor (Topbar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Papel de cor do fundo da barra do topo: a paleta calcula o fundo e os textos legíveis sobre ele, nos dois modos. Uma cor declarada em `topbarColor` continua vencendo.",
+   "interactsWith": [
+    "topbarColor",
+    "topbarActiveItemStyle"
    ]
   },
   {

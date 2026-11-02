@@ -39,6 +39,7 @@ for (const mode of ['escuro', 'claro'] as const) {
         const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
         await page.goto(harnessUrl);
         if (mode === 'claro') await page.locator('.sarak-device-desktop').getByRole('button', { name: 'Modo Claro' }).click();
+        await page.getByRole('button', { name: /^Cores/ }).click();
         const section = page.getByRole('region', { name: 'Paleta de cores' });
         const button = section.getByRole('button', { name: 'Criar paleta a partir de uma cor' });
         await button.scrollIntoViewIfNeeded();
@@ -62,6 +63,7 @@ for (const mode of ['escuro', 'claro'] as const) {
 test('a lista de alterações e o menu de mais ações não ficam abertos juntos', async () => {
     const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
     await page.goto(harnessUrl);
+    await page.getByRole('button', { name: /^Cores/ }).click();
     await page.getByRole('radiogroup', { name: 'Paletas prontas' }).getByRole('radio').nth(2).click();
 
     await page.getByRole('status').getByRole('button').click();

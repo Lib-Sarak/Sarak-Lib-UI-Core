@@ -7,6 +7,9 @@ const NAVIGATION_STYLE_VALUES = ['topbar', 'sidebar'] as const;
 /** Só a FORMA de um código de idioma (`pt`, `pt-BR`, `en-US`) — o domínio de
  *  idiomas HABILITADOS e o SIGNIFICADO funcional são do tema/host. */
 const LANGUAGE_PATTERN = /^[a-zA-Z]{2,3}(-[a-zA-Z0-9]{2,8})?$/;
+/** Preferências de valor (não de posição): têm domínio próprio e não são uma das cinco preferências oferecidas pelo tema. */
+const VALUE_PREFERENCE_KEYS = ['sidebarWidth'] as const;
+const SIDEBAR_WIDTH_RANGE = { min: 100, max: 1200 } as const;
 
 /**
  * Trata preferências como dado hostil — mesmo espírito de `validateDesign`
@@ -44,8 +47,16 @@ export const validatePreferences = (raw: unknown): SarakUserPreferences => {
         else discarded.push('language');
     }
 
+    if (input.sidebarWidth !== undefined) {
+        const width = input.sidebarWidth;
+        if (typeof width === 'number' && Number.isFinite(width) && width >= SIDEBAR_WIDTH_RANGE.min && width <= SIDEBAR_WIDTH_RANGE.max) {
+            result.sidebarWidth = Math.round(width);
+        } else discarded.push('sidebarWidth');
+    }
+
     Object.keys(input).forEach((key) => {
-        if (!(PREFERENCE_IDS as readonly string[]).includes(key)) discarded.push(key);
+        const known = (PREFERENCE_IDS as readonly string[]).includes(key) || (VALUE_PREFERENCE_KEYS as readonly string[]).includes(key);
+        if (!known) discarded.push(key);
     });
 
     if (discarded.length > 0) {

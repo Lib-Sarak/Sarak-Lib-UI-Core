@@ -1,17 +1,16 @@
 import { parseToRgba } from '../../Provider/utils/color-engine';
 import { pickOnColor } from '../../Provider/utils/on-color';
 import { rgbToHex } from './color-space';
-import { MIX_SOURCE_SHARE, PAIRS } from './contrast-pairs';
+import { MIX_SOURCE_SHARE, type ContrastPair } from './contrast-pairs';
 import { findMinimalShift, SHIFT_CONTRAST_GUARD, type ShiftResult } from './contrast-shift';
 import { PALETTE_LIGHTNESS_SCALE } from './scale';
-import { PALETTE_ROLE_MAP } from './role-map';
+import { DEFAULT_PALETTE_PLAN, type PalettePlan } from './tone-plan';
 import type { PaletteColorRole, SarakPaletteMode, PaletteScales, RgbColor } from './types';
 
 const MAX_CONTRAST_PASSES = 12;
 
 type RgbChannels = [number, number, number];
 type PaletteColors = Record<string, string>;
-type ContrastPair = (typeof PAIRS)[number];
 type CandidateSearch = {
     tokenId: string;
     role: PaletteColorRole;
@@ -62,7 +61,7 @@ const getOnColorChannels = (background: RgbChannels): RgbChannels => {
     return [onColor.r, onColor.g, onColor.b];
 };
 
-const getPairContrastRatio = (pair: (typeof PAIRS)[number], colors: PaletteColors): number | undefined => {
+const getPairContrastRatio = (pair: ContrastPair, colors: PaletteColors): number | undefined => {
     const background = resolveBackground(pair.bgChain, colors);
     if (!background) return undefined;
     if (pair.fg.startsWith('on:')) return contrastRatio(getOnColorChannels(background), background);
@@ -151,22 +150,23 @@ const chooseTokenColor = (search: CandidateSearch): string => search.role.shiftF
     ? chooseShiftedColor(search)
     : formatPaletteColor(search.scales[search.role.scale][chooseContrastTone(search)], search.role.alpha);
 
-const getTextTokenIds = (): string[] => [...new Set(PAIRS
+const getTextTokenIds = (plan: PalettePlan): string[] => [...new Set(plan.pairs
     .map((pair) => getAdjustableTokenId(pair.fg))
-    .filter((tokenId): tokenId is string => tokenId !== undefined && tokenId in PALETTE_ROLE_MAP))];
+    .filter((tokenId): tokenId is string => tokenId !== undefined && tokenId in plan.roles))];
 
 const correctTokenTones = (
     colors: PaletteColors,
     scales: PaletteScales,
     mode: SarakPaletteMode,
     tokenIds: readonly string[],
+    plan: PalettePlan,
 ): PaletteColors => {
     const corrected = { ...colors };
     for (let pass = 0; pass < MAX_CONTRAST_PASSES; pass += 1) {
         let changed = false;
         tokenIds.forEach((tokenId) => {
-            const pairs = PAIRS.filter((pair) => getAdjustableTokenId(pair.fg) === tokenId);
-            const role = PALETTE_ROLE_MAP[tokenId];
+            const pairs = plan.pairs.filter((pair) => getAdjustableTokenId(pair.fg) === tokenId);
+            const role = plan.roles[tokenId];
             const search = { tokenId, pairs, role, colors: corrected, scales, mode };
             const color = chooseTokenColor(search);
             if (corrected[tokenId] === color) return;
@@ -182,13 +182,14 @@ export const correctPaletteContrast = (
     colors: PaletteColors,
     scales: PaletteScales,
     mode: SarakPaletteMode,
-): PaletteColors => correctTokenTones(colors, scales, mode, getTextTokenIds());
+    plan: PalettePlan = DEFAULT_PALETTE_PLAN,
+): PaletteColors => correctTokenTones(colors, scales, mode, getTextTokenIds(plan), plan);
 
 const COLOR_LITERAL = /^(#[0-9a-f]{3,8}|rgba?\()/i;
 
-const pickDeclaredColors = (palette: PaletteColors, declared: Record<string, unknown>): PaletteColors =>
+const pickDeclaredColors = (palette: PaletteColors, declared: Record<string, unknown>, plan: PalettePlan): PaletteColors =>
     Object.fromEntries(Object.entries(declared).filter(([tokenId, value]) =>
-        tokenId in PALETTE_ROLE_MAP && typeof value === 'string' && COLOR_LITERAL.test(value) && value !== palette[tokenId],
+        tokenId in plan.roles && typeof value === 'string' && COLOR_LITERAL.test(value) && value !== palette[tokenId],
     )) as PaletteColors;
 
 /**
@@ -201,16 +202,17 @@ export const correctPaletteAgainstDeclared = (
     scales: PaletteScales,
     mode: SarakPaletteMode,
     declared: Record<string, unknown>,
+    plan: PalettePlan = DEFAULT_PALETTE_PLAN,
 ): PaletteColors => {
-    const overrides = pickDeclaredColors(palette, declared);
+    const overrides = pickDeclaredColors(palette, declared, plan);
     if (Object.keys(overrides).length === 0) return palette;
     const effective = { ...palette, ...overrides };
-    const failing = getTextTokenIds().filter((tokenId) => !(tokenId in declared) && PAIRS.some((pair) => {
+    const failing = getTextTokenIds(plan).filter((tokenId) => !(tokenId in declared) && plan.pairs.some((pair) => {
         if (getAdjustableTokenId(pair.fg) !== tokenId) return false;
         const ratio = getPairContrastRatio(pair, effective);
         return ratio !== undefined && ratio < pair.min;
     }));
     if (failing.length === 0) return palette;
-    const corrected = correctTokenTones(effective, scales, mode, failing);
+    const corrected = correctTokenTones(effective, scales, mode, failing, plan);
     return { ...palette, ...Object.fromEntries(failing.map((tokenId) => [tokenId, corrected[tokenId]])) };
 };
