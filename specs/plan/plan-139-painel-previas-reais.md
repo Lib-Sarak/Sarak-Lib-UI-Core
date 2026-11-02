@@ -3,11 +3,11 @@ tipo: "plan"
 titulo: "Desenhar toda opção do painel com o componente real e mostrar o efeito antes de escolher"
 objetivo: "Fazer cada opção da galeria do painel aparecer com o componente real e o rascunho atual, com miniaturas de tema legíveis nos dois modos e prévia do efeito na tela grande ao passar o mouse ou focar uma opção, sem gravar nada"
 dominio: "Painel de customização"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "painel", "ux", "previa"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[plan-140-painel-coluna-unica]]", "[[anexos/painel-design-prototipo]]"]
-depende_de: "plan-144-custo-restante-da-tela"
+depende_de: "—"
 retida_por: ""
 destino_sintese: "specs/specs/06-painel-de-customizacao-e-preview.md"
 ---
@@ -29,8 +29,6 @@ mostram barras no lugar de conteúdo.
 
 **Orçamento:** componentes reais pesam mais que barras cinza. O spec de orçamento de recálculo (`browser-tests/troca-de-tema.spec.ts`) segue verde sem subir o teto, e
 cada miniatura leva só as variáveis que usa. A espiada só funciona se compor um tema for quase instantâneo.
-
-**Só começa com a `plan-144` aprovada.**
 
 **Prepare para a plan-140:** cada grupo de opções sai como componente que não sabe onde está. A 140 os muda da galeria para a coluna sem
 reescrevê-los.

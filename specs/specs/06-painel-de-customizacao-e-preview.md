@@ -278,7 +278,9 @@ estruturais — não são otimização pontual:
 
 **A troca de tema não tem transição.** Quando centenas de variáveis mudam de uma vez (`THEME_SWITCH_MIN_CHANGED_VARIABLES`), a marca `data-sarak-theme-switching` entra antes da escrita e sai depois da
 pintura, e `_motion.css` desliga as transições enquanto ela existe; hover, foco e abertura seguem animando. Sem isso, cada elemento recalcula estilo a cada quadro, e o recálculo chega a 68% do custo da troca. Ajuste de um token
-não aciona a marca. O número de recálculos tem teto em `browser-tests/troca-de-tema.spec.ts`.
+não aciona a marca. A prévia e a raiz mudam no mesmo commit (`useDesignDraftSync`, em efeito de layout). O número de recálculos tem teto em `browser-tests/troca-de-tema.spec.ts`.
+
+**Mover o ponteiro não escreve variável.** A lib só escreve `--sarak-light-x`/`--sarak-light-y` com `shadowOrientation: dynamic`: uma variável no escopo invalida o estilo da árvore inteira, e quem não usa a luz não paga por ela.
 
 > ⚠️ **Aninhar `DesignScope` duplica o custo.** Dois `DesignScope` na mesma árvore recomputam e reinjetam
 > o CSS duas vezes por mudança. É o padrão a não repetir — um escopo por árvore de preview.
