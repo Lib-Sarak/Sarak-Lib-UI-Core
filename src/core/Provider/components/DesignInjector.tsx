@@ -81,30 +81,27 @@ export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode 
     // O que a injeção tocou, para a limpeza ao desmontar (o host não fica com o tema depois de o Provider sair).
     const injectedRef = React.useRef<{ targets: HTMLElement[]; fontScope: HTMLElement | null; classTarget: HTMLElement } | null>(null);
 
-    // Mouse Tracking: no Modo App é uma coordenada global; no Embarcado fica no container.
+    // Luz que segue o ponteiro (`shadowOrientation: dynamic`). Só escreve com a opção ativa: cada escrita numa
+    // variável do escopo invalida o estilo da árvore inteira (~130 ms numa tela cheia), e mover o mouse não pode
+    // custar isso a quem não usa a luz. No Modo App é global; no Embarcado fica no container.
     useEffect(() => {
         let rafId: number;
         const handleMouseMove = (e: MouseEvent) => {
+            const target = isEmbedded ? scopeElement : document.documentElement;
+            if (!target || target.getAttribute('data-sx-shadow-orientation') !== 'dynamic') return;
             if (rafId) cancelAnimationFrame(rafId);
             rafId = requestAnimationFrame(() => {
-                const target = isEmbedded ? scopeElement : document.documentElement;
-                if (!target) return;
                 const x = (e.clientX / window.innerWidth) * 100;
                 const y = (e.clientY / window.innerHeight) * 100;
-                writeInjectedStyleProperty(target, '--mouse-x', `${x}%`, ownerRef.current);
-                writeInjectedStyleProperty(target, '--mouse-y', `${y}%`, ownerRef.current);
-                // `shadowOrientation: dynamic`: a luz é o oposto do ponteiro (-1 a 1). Só é
-                // escrita quando a opção está ativa — a variável herda por toda a árvore.
-                if (target.getAttribute('data-sx-shadow-orientation') === 'dynamic') {
-                    writeInjectedStyleProperty(target, '--sarak-light-x', String((50 - x) / 50), ownerRef.current);
-                    writeInjectedStyleProperty(target, '--sarak-light-y', String((50 - y) / 50), ownerRef.current);
-                }
+                // A luz é o oposto do ponteiro (-1 a 1).
+                writeInjectedStyleProperty(target, '--sarak-light-x', String((50 - x) / 50), ownerRef.current);
+                writeInjectedStyleProperty(target, '--sarak-light-y', String((50 - y) / 50), ownerRef.current);
             });
         };
         window.addEventListener('mousemove', handleMouseMove, { passive: true });
         return () => {
             window.removeEventListener('mousemove', handleMouseMove);
-            // Um quadro pendente escreveria `--mouse-x` no host depois de o Provider sair.
+            // Um quadro pendente escreveria a luz no host depois de o Provider sair.
             if (rafId) cancelAnimationFrame(rafId);
         };
     }, [isEmbedded, scopeElement]);

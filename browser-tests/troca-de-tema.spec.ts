@@ -22,6 +22,8 @@
  * 3. Os tetos são o valor medido + 20%; uma máquina que renderize mais quadros durante a troca pode passar do teto
  *    de recálculos sem regressão. O teto de transições é o que separa a regressão (perto de 1.900) do normal.
  * 4. Não cobre o arrastar de um slider (a marca não entra); isso é teste de unidade do `DesignInjector`.
+ *    O caso do mouse conta os elementos que cada recálculo de estilo visitou (`UpdateLayoutTree.elementCount`, do
+ *    Tracing do CDP): mede o alcance do recálculo, não o tempo, e só vê o `mousemove` com a luz dinâmica desligada.
  * 5. Lê `src/` pelo esbuild do harness e o CSS de `dist/` — sem `npm run build` recente, mede a folha anterior.
  * -------------------------------------------------------------------------
  */
@@ -35,10 +37,16 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ENTRY = path.join(HERE, 'fixtures', 'troca-de-tema-entry.tsx');
 const THEME_CARD = /Cyberpunk Neon/;
 
-/** Medido em 2026-10-31 com a galeria aberta, 6 trocas nos dois modos: de 25 a 29 recálculos; teto = maior medida + 20%. */
-const RECALC_STYLE_COUNT_BUDGET = 35;
-/** Medido nas mesmas 6 trocas: de 221 a 227 transições (o resto da tela mudando de estado); teto = maior + 20%. Sem a marca: perto de 1.900. */
-const TRANSITION_RUNS_BUDGET = 273;
+/** Medido em 2026-11-01 com a galeria aberta, 8 trocas nos dois modos: de 23 a 27 recálculos; teto = maior medida + 20%. */
+const RECALC_STYLE_COUNT_BUDGET = 32;
+/** Medido nas mesmas 8 trocas: de 139 a 145 transições (o resto da tela mudando de estado); teto = maior + 20%. Sem a marca: perto de 1.900. */
+const TRANSITION_RUNS_BUDGET = 174;
+
+/** Medido: mover o mouse na galeria visita no máximo 470 de 2.055 elementos (23%, o hover de um cartão); a escrita de `--mouse-x/y` no `:root` visitava 2.124 (a tela inteira). O teto fica no meio. */
+const WHOLE_TREE_SHARE = 0.5;
+
+/** Medido em 2026-11-01: 2 recálculos visitam 50% ou mais da tela na troca (a troca e a retirada da marca). */
+const WHOLE_TREE_RECALC_BUDGET = 2;
 
 const MODES = [
     { name: 'app', query: '' },
@@ -78,6 +86,19 @@ declare global {
 const recalcStyleCount = async (cdp: CDPSession): Promise<number> => {
     const { metrics } = await cdp.send('Performance.getMetrics');
     return metrics.find((metric) => metric.name === 'RecalcStyleCount')?.value ?? 0;
+};
+
+/** Quantos elementos cada recálculo de estilo visitou enquanto `action` rodava, e o total de elementos da tela. */
+const styleRecalcSizes = async (page: Page, cdp: CDPSession, action: () => Promise<void>): Promise<{ sizes: number[]; total: number }> => {
+    const events: Array<{ name: string; args?: { elementCount?: number } }> = [];
+    cdp.on('Tracing.dataCollected', (chunk) => events.push(...(chunk.value as typeof events)));
+    const complete = new Promise<void>((resolve) => cdp.once('Tracing.tracingComplete', () => resolve()));
+    await cdp.send('Tracing.start', { categories: 'devtools.timeline', transferMode: 'ReportEvents' });
+    await action();
+    await cdp.send('Tracing.end');
+    await complete;
+    const sizes = events.filter((event) => event.name === 'UpdateLayoutTree').map((event) => event.args?.elementCount ?? 0);
+    return { sizes, total: await page.evaluate(() => document.querySelectorAll('*').length) };
 };
 
 /** Espera a tela assentar: nenhum recálculo novo por meio segundo. */
@@ -121,6 +142,28 @@ const probeTransition = (page: Page): Promise<{ property: string; duration: stri
 
 for (const mode of MODES) {
     test.describe(`modo ${mode.name}`, () => {
+        test('mover o mouse não recalcula o estilo da tela inteira', async () => {
+            const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
+            await page.goto(`${harnessUrl}${mode.query}`);
+            await page.getByRole('button', { name: 'Abrir galeria' }).click();
+            await expect(page.getByRole('heading', { name: 'Galeria de estilos' })).toBeVisible();
+            const cdp = await page.context().newCDPSession(page);
+            await cdp.send('Performance.enable');
+            await settle(page, cdp);
+
+            const { sizes, total } = await styleRecalcSizes(page, cdp, async () => {
+                for (let step = 0; step < 20; step += 1) {
+                    await page.mouse.move(200 + step * 40, 150 + step * 20);
+                    await page.waitForTimeout(30);
+                }
+                await page.waitForTimeout(300);
+            });
+            const widest = Math.max(0, ...sizes);
+            test.info().annotations.push({ type: 'medido', description: `maior recálculo: ${widest} de ${total} elementos` });
+            expect(widest, 'elementos visitados pelo maior recálculo ao mover o mouse').toBeLessThan(total * WHOLE_TREE_SHARE);
+            await page.close();
+        });
+
         test('escolher um tema desliga a transição durante a troca, devolve-a depois e fica no orçamento', async () => {
             const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
             const pageErrors: string[] = [];
@@ -141,10 +184,12 @@ for (const mode of MODES) {
             await page.evaluate(() => { window.__transitionRuns = 0; });
             const recalcsBefore = await recalcStyleCount(cdp);
 
-            await page.getByRole('button', { name: THEME_CARD }).click();
-            await expect.poll(() => page.evaluate(() => window.__switchRecords.map((record) => record.phase)), { timeout: 60_000 })
-                .toEqual(['on', 'off']);
-            await settle(page, cdp);
+            const { sizes, total } = await styleRecalcSizes(page, cdp, async () => {
+                await page.getByRole('button', { name: THEME_CARD }).click();
+                await expect.poll(() => page.evaluate(() => window.__switchRecords.map((record) => record.phase)), { timeout: 60_000 })
+                    .toEqual(['on', 'off']);
+                await settle(page, cdp);
+            });
 
             // 1. Na entrada da marca as variáveis novas já estavam escritas e a transição já estava desligada.
             const [during, after] = await page.evaluate(() => window.__switchRecords);
@@ -164,6 +209,10 @@ for (const mode of MODES) {
             test.info().annotations.push({ type: 'medido', description: `${transitionRuns} transições, ${recalcs} recálculos de estilo` });
             expect(transitionRuns, 'transições iniciadas na troca').toBeLessThanOrEqual(TRANSITION_RUNS_BUDGET);
             expect(recalcs, 'recálculos de estilo na troca').toBeLessThanOrEqual(RECALC_STYLE_COUNT_BUDGET);
+            // A troca e a retirada da marca são os dois recálculos da tela inteira esperados; um terceiro é regressão.
+            const wholeTree = sizes.filter((size) => size >= total * WHOLE_TREE_SHARE).length;
+            test.info().annotations.push({ type: 'medido', description: `${wholeTree} recálculos da tela inteira` });
+            expect(wholeTree, 'recálculos da tela inteira na troca').toBeLessThanOrEqual(WHOLE_TREE_RECALC_BUDGET);
 
             await page.evaluate(() => { window.__transitionRuns = 0; });
             await page.locator('[data-probe="botao-de-prova"]').hover();

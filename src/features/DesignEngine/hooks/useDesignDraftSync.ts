@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { SarakUIContextType, SarakDesignState } from '../../../core/Provider/types';
 
 export const useDesignDraftSync = (
@@ -18,7 +18,9 @@ export const useDesignDraftSync = (
     // conteúdo idêntico (`resetToken`/`resetComponent` sempre espalham um objeto novo,
     // mesmo sem mudança de valor) — errar para o lado de sincronizar demais nunca
     // reintroduz o loop, só o guard abaixo protege contra isso.
-    useEffect(() => {
+    // Layout effect: o rascunho do provedor (que alimenta a raiz) muda no MESMO quadro que o do painel (a prévia).
+    // Em `useEffect` eram dois commits e dois recálculos de estilo da tela inteira, ~300 ms um do outro.
+    useLayoutEffect(() => {
         if (!sarak.setDraftDesign) return;
 
         // Se estamos no meio de uma sincronização vinda do provedor, ignoramos para evitar ecos

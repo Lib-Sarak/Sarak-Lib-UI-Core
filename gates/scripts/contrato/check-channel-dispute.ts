@@ -26,7 +26,7 @@
 // 3. (ii) exercita `syncInjectedWrites` — a função que o `DesignInjector` chama por elemento — sobre um
 //    elemento de mentira, sem DOM: não prova que o componente a chama (isso é do teste do injetor e de
 //    `browser-tests/injecao-sem-disputa.spec.ts`), nem a ilha do Modo Embarcado (mesma função), nem
-//    `--mouse-x`/`--sarak-light-*`, que não são do mapa de tokens. Cobre as transições de `buildScenarios`
+//    `--sarak-light-*`, que não são do mapa de tokens. Cobre as transições de `buildScenarios`
 //    (duas sintéticas de formato e o anel dos temas entregues, de um para o seguinte), não toda combinação.
 // 4. Não vê estilo escrito por outro código (`DesignScope`, componente): só o injetor do documento.
 // -------------------------------------------------------------------------
