@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "145"
+proximo_numero_plan: "146"
 ---
 
 # 0. O que é este arquivo
@@ -43,15 +43,16 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
 | 1 | [plan-119-kit-de-importacao-aprendido-nos-importadores](plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md) | Fazer o importador usar a lib por inteiro sem reescrever o que ela entrega, com o kit de importação ensinado pelas licoes medidas nos importadores reais e com a gestao de temas do importador completa: salvar o aplicado como novo, editar, duplicar e criar, persistidos no importador | — | 🟡 Em execução | specs/12-kit-do-consumidor.md + specs/13-instalacao-e-atualizacao.md + specs/09-temas-e-presets.md + specs/15-divida-conhecida.md |
-| 2 | [plan-139-painel-previas-reais](plan/plan-139-painel-previas-reais.md) | Fazer cada opção da galeria do painel aparecer com o componente real e o rascunho atual, com miniaturas de tema legíveis nos dois modos e prévia do efeito na tela grande ao passar o mouse ou focar uma opção, sem gravar nada | — | 🟡 Em execução | specs/specs/06-painel-de-customizacao-e-preview.md |
+| 2 | [plan-139-painel-previas-reais](plan/plan-139-painel-previas-reais.md) | Fazer cada opção da galeria do painel aparecer com o componente real e o rascunho atual, com miniaturas de tema legíveis nos dois modos e prévia do efeito na tela grande ao passar o mouse ou focar uma opção, sem gravar nada | — | 🟢 Aprovada | specs/specs/06-painel-de-customizacao-e-preview.md |
 | 3 | [plan-140-painel-coluna-unica](plan/plan-140-painel-coluna-unica.md) | Fazer o painel ter uma coluna só com seis decisões, opções visuais e ajuste fino em níveis no lugar dos três modos e da galeria sobre a prévia, com um atalho que monta o tema a partir de nome, logo, cor e fonte, sem perder acesso a nenhum token | plan-139-painel-previas-reais | 🔴 A executar | specs/specs/06-painel-de-customizacao-e-preview.md + specs/specs/08-identidade-do-host-e-zero-marca.md |
-| 4 | [plan-141-enriquecer-presets-do-painel](plan/plan-141-enriquecer-presets-do-painel.md) | Fazer o painel oferecer mais presets distintos de cards, botões, campos, atmosfera e fontes, além de presets de cantos, densidade, sombra, ícones, movimento e navegação, todos com nome legível nos seis idiomas e sem token novo | plan-140-painel-coluna-unica | 🔴 A executar | specs/specs/09-temas-e-presets.md + specs/specs/06-painel-de-customizacao-e-preview.md |
+| 4 | [plan-141-enriquecer-presets-do-painel](plan/plan-141-enriquecer-presets-do-painel.md) | Fazer os presets do painel cobrirem a maior parte dos tokens estéticos sem cor, com opções distintas de barras, forma, componentes, fontes, movimento e ícones, de seis a oito opções visíveis por grupo, nome legível nos seis idiomas e nenhum token novo | plan-140-painel-coluna-unica | 🔴 A executar | specs/specs/09-temas-e-presets.md + specs/specs/06-painel-de-customizacao-e-preview.md |
 | 5 | [plan-143-regulagem-das-cores-das-paletas](plan/plan-143-regulagem-das-cores-das-paletas.md) | Fazer as cores de cada paleta pronta e das paletas criadas a partir de uma cor combinarem à vista do dono, regulando sementes, croma, luminosidade e intensidade dos fundos, sem mudar a regra de âncora nem a distribuição 60-30-10 | — | 🟠 Em revisão | specs/specs/09-temas-e-presets.md |
+| 6 | [plan-145-personalidades](plan/plan-145-personalidades.md) | Fazer o painel oferecer dez Personalidades que aplicam forma, fontes, densidade, barras, tabela, movimento e ícones de uma vez, mantendo a paleta escolhida, para que paleta e estrutura combinem livremente em dois cliques | plan-141-enriquecer-presets-do-painel | 🔴 A executar | specs/specs/09-temas-e-presets.md + specs/specs/06-painel-de-customizacao-e-preview.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🚦 **Campanha da `8.0.0-rc.4` (2026-10-27).** Contrato aceito: [`anexos/rc4-contrato.md`](plan/anexos/rc4-contrato.md). Ordem: a `plan-128` vai **sozinha** (cria o hook de idioma e os arquivos de catálogo das outras); depois `plan-129` ‖ `plan-130` ‖ `plan-131` ‖ `plan-132` ‖ `plan-119` lote 8 ‖ `plan-133`, em paralelo (pastas disjuntas; arquivos compartilhados só por acréscimo); depois da 133, `plan-134` ‖ `plan-135`. A 134 e a 135 geram prévias em `C:\tmp\sarak-rc4-previa\` que o dono aprova durante a revisão. Verificação pelo protocolo do contrato §9: uma vez por plan e a bateria completa uma vez, no fechamento, depois do lote 2 do ERP. A versão (`npm version`) é do dono.
 
-> 🚦 **Fila do painel (2026-11-01):** `plan-139` em execução. A `plan-143` retoma quando o dono escolher as paletas, e pode rodar em paralelo. `npm run build` e a bateria de navegador rodam **um executor por vez**. Depois: `plan-140` → `plan-141`.
+> 🚦 **Fila do painel (2026-11-01):** `plan-139` em execução. A `plan-143` retoma quando o dono escolher as paletas, e pode rodar em paralelo. `npm run build` e a bateria de navegador rodam **um executor por vez**. Depois: `plan-140` → `plan-141` → `plan-145`.
 
 > ⚪ **A `plan-144` foi SINTETIZADA e REMOVIDA em 2026-11-01**, aceita pelo dono com a meta de 300 ms aberta (hoje ~500 ms; a `plan-140` tira a galeria de cima da prévia). Destino: [[06-painel-de-customizacao-e-preview]] §4.1. **Ficou de fora:** as
 > medições (histórico do Git). O spec que não protege a fusão dos commits é o backlog #60. `00-contexto` revisado: nada a mudar.

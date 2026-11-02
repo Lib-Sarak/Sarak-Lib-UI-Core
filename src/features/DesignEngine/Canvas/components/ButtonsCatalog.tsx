@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { BUTTON_PRESETS, BUTTON_STYLE_PRESETS } from '../../../../core/Design/presets/components/buttons';
-import { ButtonPresetPreview } from './ButtonPresetPreview';
 import { CATALOG_GRID_3COL } from '../panelResponsive.presets';
 import { Sparkles, MousePointer2 } from 'lucide-react';
+import { ButtonPresetPreview } from './ButtonPresetPreview';
+import type { PeekHandler } from './peek';
 
 import { SarakDesignState } from '../../../../core/Provider/types';
 
 interface ButtonsCatalogProps {
     onApplyPreset: (presetDesign: Partial<SarakDesignState>, isPartial?: boolean) => void;
     currentMode: string;
+    draft?: Partial<SarakDesignState>;
+    onPeek?: PeekHandler;
 }
 
-export const ButtonsCatalog: React.FC<ButtonsCatalogProps> = ({ onApplyPreset, currentMode }) => {
+export const ButtonsCatalog: React.FC<ButtonsCatalogProps> = ({ onApplyPreset, currentMode, draft, onPeek }) => {
     const [activeTab, setActiveTab] = useState<'curated' | 'styles'>('curated');
     const presets = activeTab === 'curated' ? BUTTON_PRESETS : BUTTON_STYLE_PRESETS;
 
@@ -36,12 +39,13 @@ export const ButtonsCatalog: React.FC<ButtonsCatalogProps> = ({ onApplyPreset, c
 
             {/* Container query (plan-35): reage ao `@container` de `PresetsCatalog.tsx`. */}
             <div className={`grid ${CATALOG_GRID_3COL} gap-6`}>
-                {presets.map((preset, i) => (
+                {presets.map((preset) => (
                     <ButtonPresetPreview
                         key={preset.id}
                         preset={preset}
-                        index={i}
                         currentMode={currentMode}
+                        draft={draft}
+                        onPeek={onPeek}
                         onApply={() => onApplyPreset(preset.design, true)}
                     />
                 ))}

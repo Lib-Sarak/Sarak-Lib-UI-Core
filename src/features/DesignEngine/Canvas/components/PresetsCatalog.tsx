@@ -14,6 +14,7 @@ import { PresetCard } from './PresetCard';
 import { PresetCardPending } from './PresetCardPending';
 import { useCatalogThemes } from './useCatalogThemes';
 import { THEME_GALLERY_GRID_2COL } from '../panelResponsive.presets';
+import type { PeekHandler } from './peek';
 
 import { SarakDesignState, SarakUIContextType } from '../../../../core/Provider/types';
 
@@ -26,6 +27,10 @@ interface PresetsCatalogProps {
     draftMode: 'light' | 'dark';
     /** Contexto do Provider — lê `themeCatalog` (lista leve) e `allThemes` (temas com `design` em memória). */
     sarak?: SarakUIContextType;
+    /** O rascunho atual: as amostras mostram cada opção aplicada por cima dele. */
+    draft?: Partial<SarakDesignState>;
+    /** Recebe o que a prévia grande deve compor enquanto o mouse ou o foco está numa opção; não grava nada. */
+    onPeek?: PeekHandler;
     onClose: () => void;
 }
 
@@ -46,6 +51,8 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
     currentMode,
     draftMode,
     sarak,
+    draft,
+    onPeek,
     onClose,
 }) => {
     const [activeTab, setActiveTab] = useState<PresetTab>('globals');
@@ -59,13 +66,13 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
     // fallback sintetizado. Só PRÉ-VISUALIZA — o id viaja com o payload para o rascunho,
     // e só é anunciado como `resolvedThemeId` quando o usuário aplicar
     // (`handleApplyToSystem`; 06-painel-de-customizacao-e-preview.md §4).
+    const themePayload = (theme: SarakThemePreset) => upgradeThemePayload(resolveThemeForMode(
+        { design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte },
+        draftMode,
+    ));
     const applyTheme = (theme: SarakThemePreset | undefined) => {
         if (!theme) return;
-        const resolved = resolveThemeForMode(
-            { design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte },
-            draftMode,
-        );
-        const payload = upgradeThemePayload(resolved);
+        const payload = themePayload(theme);
         if (onApplyFullTheme) {
             onApplyFullTheme(payload, theme.id);
         } else {
@@ -131,6 +138,8 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
                                 theme={theme}
                                 currentMode={currentMode}
                                 onApply={() => applyTheme(theme)}
+                                peekTokens={() => themePayload(theme)}
+                                onPeek={onPeek}
                                 index={i}
                             />
                         ) : (
@@ -146,11 +155,11 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
                     </div>
                 )}
 
-                {activeTab === 'cards' && <CardsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />}
-                {activeTab === 'typography' && <TypographyCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />}
-                {activeTab === 'atmosphere' && <AtmosphereCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />}
-                {activeTab === 'buttons' && <ButtonsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />}
-                {activeTab === 'inputs' && <InputsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />}
+                {activeTab === 'cards' && <CardsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} draft={draft} onPeek={onPeek} />}
+                {activeTab === 'typography' && <TypographyCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} onPeek={onPeek} />}
+                {activeTab === 'atmosphere' && <AtmosphereCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} draft={draft} onPeek={onPeek} />}
+                {activeTab === 'buttons' && <ButtonsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} draft={draft} onPeek={onPeek} />}
+                {activeTab === 'inputs' && <InputsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} draft={draft} onPeek={onPeek} />}
             </div>
         </div>
     );

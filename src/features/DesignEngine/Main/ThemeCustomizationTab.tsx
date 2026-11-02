@@ -12,6 +12,7 @@ import { ThemeFeedbackToast } from './components/ThemeFeedbackToast';
 import { useThemeCustomizationData } from './hooks/useThemeCustomizationData';
 import { useThemeEngineState } from './hooks/useThemeEngineState';
 import { useThemeCustomizationActions } from './hooks/useThemeCustomizationActions';
+import { usePeekPreview } from './hooks/usePeekPreview';
 import { SaveThemeModal } from './components/SaveThemeModal';
 
 export const ThemeCustomizationTab: React.FC = () => {
@@ -36,6 +37,7 @@ export const ThemeCustomizationTab: React.FC = () => {
         setDraftThemeId,
         canUndoLastApply, undoLastApply
     } = useDesignDraft(sarak);
+    const { peekTokens, onPeek, isPeeking } = usePeekPreview();
     const themeActions = useThemeCustomizationActions({
         sarak, draft, handleApplyToSystem, handleThemePreview, discardDraft, setDraftThemeId,
         showToast, setCurrentThemeName, setIsSaveModalOpen, setIsSaving,
@@ -127,6 +129,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                     isPreviewStacked={isPreviewStacked}
                     setIsPreviewStacked={setIsPreviewStacked}
                     isGalleryOpen={viewMode === 'preview' && isGalleryOpen}
+                    isPeeking={isPeeking}
                 />
                 <div className="flex min-h-0 min-w-0 flex-1">
                 <PreviewCanvas
@@ -148,6 +151,8 @@ export const ThemeCustomizationTab: React.FC = () => {
                     onInspectComponent={handleInspectComponent}
                     onApplyFullTheme={themeActions.handleApplyFullTheme}
                     onCloseGallery={() => setIsGalleryOpen(false)}
+                    peekTokens={peekTokens}
+                    onPeek={onPeek}
                 />
                 </div>
                 <ThemeFeedbackToast toast={toast} />

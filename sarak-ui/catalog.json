@@ -6268,22 +6268,7 @@
       "--sarak-preference-mode-position",
       "--sarak-preference-nav-collapse-position",
       "--sarak-preference-navigation-style-position",
-      "--sarak-preset-card-hover-shadow-offset-y",
-      "--sarak-preset-card-shadow-blur",
-      "--sarak-preset-card-shadow-offset-y",
-      "--sarak-preset-card-shadow-spread",
-      "--sarak-preset-glow-shadow-blur",
-      "--sarak-preset-glow-shadow-blur-lg",
-      "--sarak-preset-grid-texture-size",
-      "--sarak-preset-matte-shadow-blur1",
-      "--sarak-preset-matte-shadow-blur2",
-      "--sarak-preset-matte-shadow-offset-y2",
-      "--sarak-preset-matte-shadow-spread1",
-      "--sarak-preset-matte-shadow-spread2",
-      "--sarak-preset-mini-card-height",
       "--sarak-preset-mini-card-max-width",
-      "--sarak-preset-preview-min-height",
-      "--sarak-preset-preview-padding-y",
       "--sarak-primary-color",
       "--sarak-primary-color-10",
       "--sarak-primary-color-20",
@@ -6686,7 +6671,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 435,
+    "count": 420,
     "groups": {
       "global": "0. Configurações Globais",
       "branding": "Identidade Visual",
@@ -9849,136 +9834,6 @@
         "usage": "Posição da escolha de orientação da navegação (lateral/topo): fixa, no menu de preferências ou não oferecida."
       },
       {
-        "id": "presetCardHoverShadowOffsetY",
-        "type": "number",
-        "responsive": false,
-        "group": "cards",
-        "label": "Preview de Preset: Sombra de Hover — Offset Y",
-        "kind": "functional",
-        "modeDependent": false,
-        "usage": "Deslocamento vertical da sombra do cartão de pré-visualização de preset ao passar o ponteiro, no painel de customização; não pinta nenhum componente do sistema."
-      },
-      {
-        "id": "presetCardShadowBlur",
-        "type": "number",
-        "responsive": false,
-        "group": "cards",
-        "label": "Preview de Preset: Sombra do Card — Desfoque",
-        "kind": "functional",
-        "modeDependent": false,
-        "usage": "Desfoque da sombra em repouso do cartão de preset no painel de customização; não pinta nenhum componente do sistema."
-      },
-      {
-        "id": "presetCardShadowOffsetY",
-        "type": "number",
-        "responsive": false,
-        "group": "cards",
-        "label": "Preview de Preset: Sombra do Card — Offset Y",
-        "kind": "functional",
-        "modeDependent": false,
-        "usage": "Deslocamento vertical da sombra em repouso do cartão de preset no painel de customização; não pinta nenhum componente do sistema."
-      },
-      {
-        "id": "presetCardShadowSpread",
-        "type": "number",
-        "responsive": false,
-        "group": "cards",
-        "label": "Preview de Preset: Sombra do Card — Espalhamento (negativo)",
-        "kind": "functional",
-        "modeDependent": false,
-        "usage": "Contração da sombra em repouso do cartão de preset no painel de customização; não pinta nenhum componente do sistema."
-      },
-      {
-        "id": "presetGlowShadowBlur",
-        "type": "number",
-        "responsive": false,
-        "group": "cards",
-        "label": "Preview de Preset: Glow Simples — Desfoque",
-        "kind": "functional",
-        "modeDependent": false,
-        "usage": "Desfoque do brilho simples dos botões de pré-visualização de preset, no painel de customização; não pinta nenhum componente do sistema."
-      },
-      {
-        "id": "presetGlowShadowBlurLg",
-        "type": "number",
-        "responsive": false,
-        "group": "cards",
-        "label": "Preview de Preset: Glow Simples — Desfoque Grande",
-        "kind": "functional",
-        "modeDependent": false,
-        "usage": "Desfoque do brilho grande dos botões de pré-visualização de preset, no painel de customização; não pinta nenhum componente do sistema."
-      },
-      {
-        "id": "presetGridTextureSize",
-        "type": "number",
-        "responsive": false,
-        "group": "cards",
-        "label": "Preview de Preset: Tamanho da Textura de Grade",
-        "kind": "functional",
-        "modeDependent": false,
-        "usage": "Tamanho da célula da grade decorativa no fundo do cartão de preset, no painel de customização; não pinta nenhum componente do sistema."
-      },
-      {
-        "id": "presetMatteShadowBlur1",
-        "type": "number",
-        "responsive": false,
-        "group": "cards",
-        "label": "Preview de Preset: Sombra Matte — Desfoque 1",
-        "kind": "functional",
-        "modeDependent": false,
-        "usage": "Desfoque da primeira camada da sombra fosca dos botões de pré-visualização, no painel de customização; não pinta nenhum componente do sistema."
-      },
-      {
-        "id": "presetMatteShadowBlur2",
-        "type": "number",
-        "responsive": false,
-        "group": "cards",
-        "label": "Preview de Preset: Sombra Matte — Desfoque 2",
-        "kind": "functional",
-        "modeDependent": false,
-        "usage": "Desfoque da segunda camada da sombra fosca dos botões de pré-visualização, no painel de customização; não pinta nenhum componente do sistema."
-      },
-      {
-        "id": "presetMatteShadowOffsetY2",
-        "type": "number",
-        "responsive": false,
-        "group": "cards",
-        "label": "Preview de Preset: Sombra Matte — Offset Y 2",
-        "kind": "functional",
-        "modeDependent": false,
-        "usage": "Deslocamento vertical da segunda camada da sombra fosca dos botões de pré-visualização, no painel de customização; não pinta nenhum componente do sistema."
-      },
-      {
-        "id": "presetMatteShadowSpread1",
-        "type": "number",
-        "responsive": false,
-        "group": "cards",
-        "label": "Preview de Preset: Sombra Matte — Espalhamento 1",
-        "kind": "functional",
-        "modeDependent": false,
-        "usage": "Contração da primeira camada da sombra fosca dos botões de pré-visualização, no painel de customização; não pinta nenhum componente do sistema."
-      },
-      {
-        "id": "presetMatteShadowSpread2",
-        "type": "number",
-        "responsive": false,
-        "group": "cards",
-        "label": "Preview de Preset: Sombra Matte — Espalhamento 2",
-        "kind": "functional",
-        "modeDependent": false,
-        "usage": "Contração da segunda camada da sombra fosca dos botões de pré-visualização, no painel de customização; não pinta nenhum componente do sistema."
-      },
-      {
-        "id": "presetMiniCardHeight",
-        "type": "number",
-        "responsive": false,
-        "group": "cards",
-        "label": "Preview de Preset: Altura do Mini-Card",
-        "kind": "functional",
-        "modeDependent": false,
-        "usage": "Altura do mini-cartão que representa um preset de cartão na lista do painel de customização; não pinta nenhum componente do sistema."
-      },
-      {
         "id": "presetMiniCardMaxWidth",
         "type": "number",
         "responsive": false,
@@ -9987,26 +9842,6 @@
         "kind": "functional",
         "modeDependent": false,
         "usage": "Largura máxima do mini-cartão que representa um preset de cartão na lista do painel de customização; não pinta nenhum componente do sistema."
-      },
-      {
-        "id": "presetPreviewMinHeight",
-        "type": "number",
-        "responsive": false,
-        "group": "cards",
-        "label": "Preview de Preset: Altura Mínima",
-        "kind": "functional",
-        "modeDependent": false,
-        "usage": "Altura mínima dos cartões de pré-visualização de botão e de campo, no painel de customização; evita salto de layout e não pinta nenhum componente do sistema."
-      },
-      {
-        "id": "presetPreviewPaddingY",
-        "type": "number",
-        "responsive": false,
-        "group": "cards",
-        "label": "Preview de Preset: Padding Vertical",
-        "kind": "functional",
-        "modeDependent": false,
-        "usage": "Respiro vertical dos cartões de pré-visualização de botão e de campo, no painel de customização; não pinta nenhum componente do sistema."
       },
       {
         "id": "primaryColor",
@@ -11821,6 +11656,6 @@
   "kitStamp": {
     "libVersion": "8.0.0-rc.4",
     "kitSchemaVersion": 1,
-    "kitHash": "67078b55a6cc"
+    "kitHash": "e633fcf71d54"
   }
 }

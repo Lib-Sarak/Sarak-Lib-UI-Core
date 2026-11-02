@@ -8,6 +8,7 @@ import { usePreviewContextValue, useApplyPreset } from './hooks/useDesignOperati
 import { PreviewSystemRenderer } from './components/PreviewSystemRenderer';
 import { getPreviewLayoutPreset } from './panelResponsive.presets';
 import type { SarakDesignState, SarakUIContextType, SarakUIOptions } from '../../../core/Provider/types';
+import type { PeekHandler } from './components/peek';
 import type { SarakTokenValue } from '../../../core/Design/types';
 
 interface PreviewCanvasProps {
@@ -29,10 +30,14 @@ interface PreviewCanvasProps {
     onInspectComponent?: (schemaId: string) => void;
     onApplyFullTheme?: (design: Partial<SarakDesignState>, themeId?: string) => void;
     onCloseGallery?: () => void;
+    /** O que a espiada compõe por cima do rascunho na prévia; `null` ou omitido = o rascunho puro. */
+    peekTokens?: Partial<SarakDesignState> | null;
+    onPeek?: PeekHandler;
 }
 
 interface PreviewCanvasModelState {
     design: Partial<SarakDesignState>;
+    previewTokens: Partial<SarakDesignState>;
     contextValue: SarakUIContextType;
     tokens: Partial<SarakDesignState>;
     apps: Record<string, React.ReactNode>;
@@ -51,7 +56,7 @@ const createPreviewCanvasLayoutProps = (
     const previewContent = (
         <PreviewSystemRenderer
             sarak={props.sarak}
-            tokens={state.tokens}
+            tokens={state.previewTokens}
             isDualView={props.isDualView}
             previewDevice={props.previewDevice}
             activePreviewApp={props.activePreviewApp}
@@ -77,6 +82,7 @@ const createPreviewCanvasLayoutProps = (
         onApplyPreset: state.onApplyPreset,
         onApplyFullTheme: props.onApplyFullTheme,
         onCloseGallery: props.onCloseGallery,
+        onPeek: props.onPeek,
         previewContent,
         layoutPreset: state.layoutPreset,
     };
@@ -90,8 +96,13 @@ const usePreviewCanvasModel = (props: PreviewCanvasProps): PreviewCanvasLayoutPr
         [tokens],
     );
     const { isInspecting, setIsInspecting } = useInspector(props.onInspectComponent);
+    // A espiada só vale para a prévia grande; a galeria e o contexto seguem o rascunho, senão tudo recolore ao passar o mouse.
+    const previewTokens = React.useMemo(
+        () => (props.peekTokens ? { ...tokens, ...props.peekTokens } : tokens),
+        [tokens, props.peekTokens],
+    );
     const contextValue = usePreviewContextValue(parentContext, tokens, props.onUpdateDraft) as SarakUIContextType;
-    const apps = usePreviewApps(tokens, props.config, props.previewAnimationStyle, props.selectPreviewApp);
+    const apps = usePreviewApps(previewTokens, props.config, props.previewAnimationStyle, props.selectPreviewApp);
     const deviceStyles = useDeviceStyles(props.previewDevice, tokens);
     const isGalleryStacked = Boolean(props.isDualView && props.isPreviewStacked);
     const layoutPreset = getPreviewLayoutPreset(isGalleryStacked);
@@ -99,6 +110,7 @@ const usePreviewCanvasModel = (props: PreviewCanvasProps): PreviewCanvasLayoutPr
 
     return createPreviewCanvasLayoutProps(props, {
         design,
+        previewTokens,
         contextValue,
         tokens,
         apps,

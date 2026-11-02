@@ -2,6 +2,9 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
+
+// Cada opção desenha componentes reais (botão em 4 estados, campo, cartão): a lista inteira em jsdom passa dos 5 s padrão sob carga.
+vi.setConfig({ testTimeout: 30000 });
 import { InputsCatalog } from '../InputsCatalog';
 
 vi.mock('framer-motion', async () => {

@@ -189,7 +189,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(13, 24, 24); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 14px; border-top-right-radius: 14px; border-bottom-right-radius: 14px; border-bottom-left-radius: 14px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
+                    style="background-color: rgb(13, 24, 24); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 14px; border-top-right-radius: 14px; border-bottom-right-radius: 14px; border-bottom-left-radius: 14px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -204,7 +204,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(13, 24, 24); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 14px; border-top-right-radius: 14px; border-bottom-right-radius: 14px; border-bottom-left-radius: 14px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
+                    style="background-color: rgb(13, 24, 24); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 14px; border-top-right-radius: 14px; border-bottom-right-radius: 14px; border-bottom-left-radius: 14px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -237,7 +237,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all"
-                    style="background-color: rgb(13, 24, 24); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 14px; border-top-right-radius: 14px; border-bottom-right-radius: 14px; border-bottom-left-radius: 14px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
+                    style="background-color: rgb(13, 24, 24); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 14px; border-top-right-radius: 14px; border-bottom-right-radius: 14px; border-bottom-left-radius: 14px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -254,7 +254,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all"
-                    style="background-color: rgb(13, 24, 24); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 14px; border-top-right-radius: 14px; border-bottom-right-radius: 14px; border-bottom-left-radius: 14px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
+                    style="background-color: rgb(13, 24, 24); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 14px; border-top-right-radius: 14px; border-bottom-right-radius: 14px; border-bottom-left-radius: 14px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -302,7 +302,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(13, 24, 24); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 14px; border-top-right-radius: 14px; border-bottom-right-radius: 14px; border-bottom-left-radius: 14px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
+                    style="background-color: rgb(13, 24, 24); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 14px; border-top-right-radius: 14px; border-bottom-right-radius: 14px; border-bottom-left-radius: 14px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -453,7 +453,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(13, 25, 15); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(21, 32, 22, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(0, 165, 66, 0.18) 20%, transparent);"
+                    style="background-color: rgb(13, 25, 15); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(21, 32, 22, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 165, 66, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -468,7 +468,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(13, 25, 15); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(21, 32, 22, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(0, 165, 66, 0.18) 20%, transparent);"
+                    style="background-color: rgb(13, 25, 15); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(21, 32, 22, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 165, 66, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -501,7 +501,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all"
-                    style="background-color: rgb(13, 25, 15); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(21, 32, 22, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(0, 165, 66, 0.18) 20%, transparent);"
+                    style="background-color: rgb(13, 25, 15); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(21, 32, 22, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 165, 66, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -518,7 +518,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all"
-                    style="background-color: rgb(13, 25, 15); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(21, 32, 22, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(0, 165, 66, 0.18) 20%, transparent);"
+                    style="background-color: rgb(13, 25, 15); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(21, 32, 22, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 165, 66, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -566,7 +566,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(13, 25, 15); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(21, 32, 22, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(0, 165, 66, 0.18) 20%, transparent);"
+                    style="background-color: rgb(13, 25, 15); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(21, 32, 22, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 165, 66, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -717,7 +717,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(27, 20, 13); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
+                    style="background-color: rgb(27, 20, 13); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -732,7 +732,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(27, 20, 13); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
+                    style="background-color: rgb(27, 20, 13); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -765,7 +765,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all"
-                    style="background-color: rgb(27, 20, 13); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
+                    style="background-color: rgb(27, 20, 13); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -782,7 +782,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all"
-                    style="background-color: rgb(27, 20, 13); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
+                    style="background-color: rgb(27, 20, 13); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -830,7 +830,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(27, 20, 13); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
+                    style="background-color: rgb(27, 20, 13); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -1245,7 +1245,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(42, 17, 69); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(37, 25, 29, 0.72); border-style: solid; border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(224, 69, 139, 0.18) 40%, transparent);"
+                    style="background-color: rgb(42, 17, 69); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(37, 25, 29, 0.72); border-style: solid; border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(224, 69, 139, 0.18) 40%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -1260,7 +1260,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(42, 17, 69); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(37, 25, 29, 0.72); border-style: solid; border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(224, 69, 139, 0.18) 40%, transparent);"
+                    style="background-color: rgb(42, 17, 69); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(37, 25, 29, 0.72); border-style: solid; border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(224, 69, 139, 0.18) 40%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -1293,7 +1293,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all"
-                    style="background-color: rgb(42, 17, 69); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(37, 25, 29, 0.72); border-style: solid; border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(224, 69, 139, 0.18) 40%, transparent);"
+                    style="background-color: rgb(42, 17, 69); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(37, 25, 29, 0.72); border-style: solid; border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(224, 69, 139, 0.18) 40%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -1310,7 +1310,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all"
-                    style="background-color: rgb(42, 17, 69); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(37, 25, 29, 0.72); border-style: solid; border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(224, 69, 139, 0.18) 40%, transparent);"
+                    style="background-color: rgb(42, 17, 69); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(37, 25, 29, 0.72); border-style: solid; border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(224, 69, 139, 0.18) 40%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -1358,7 +1358,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(42, 17, 69); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(37, 25, 29, 0.72); border-style: solid; border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(224, 69, 139, 0.18) 40%, transparent);"
+                    style="background-color: rgb(42, 17, 69); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(37, 25, 29, 0.72); border-style: solid; border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(224, 69, 139, 0.18) 40%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -1509,7 +1509,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(22, 20, 28); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(29, 27, 35, 0.72); border-style: solid; border-top-left-radius: 24px; border-top-right-radius: 24px; border-bottom-right-radius: 24px; border-bottom-left-radius: 24px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(147, 116, 211, 0.18) 30%, transparent);"
+                    style="background-color: rgb(22, 20, 28); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(29, 27, 35, 0.72); border-style: solid; border-top-left-radius: 24px; border-top-right-radius: 24px; border-bottom-right-radius: 24px; border-bottom-left-radius: 24px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(147, 116, 211, 0.18) 30%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -1524,7 +1524,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(22, 20, 28); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(29, 27, 35, 0.72); border-style: solid; border-top-left-radius: 24px; border-top-right-radius: 24px; border-bottom-right-radius: 24px; border-bottom-left-radius: 24px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(147, 116, 211, 0.18) 30%, transparent);"
+                    style="background-color: rgb(22, 20, 28); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(29, 27, 35, 0.72); border-style: solid; border-top-left-radius: 24px; border-top-right-radius: 24px; border-bottom-right-radius: 24px; border-bottom-left-radius: 24px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(147, 116, 211, 0.18) 30%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -1557,7 +1557,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all"
-                    style="background-color: rgb(22, 20, 28); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(29, 27, 35, 0.72); border-style: solid; border-top-left-radius: 24px; border-top-right-radius: 24px; border-bottom-right-radius: 24px; border-bottom-left-radius: 24px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(147, 116, 211, 0.18) 30%, transparent);"
+                    style="background-color: rgb(22, 20, 28); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(29, 27, 35, 0.72); border-style: solid; border-top-left-radius: 24px; border-top-right-radius: 24px; border-bottom-right-radius: 24px; border-bottom-left-radius: 24px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(147, 116, 211, 0.18) 30%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -1574,7 +1574,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all"
-                    style="background-color: rgb(22, 20, 28); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(29, 27, 35, 0.72); border-style: solid; border-top-left-radius: 24px; border-top-right-radius: 24px; border-bottom-right-radius: 24px; border-bottom-left-radius: 24px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(147, 116, 211, 0.18) 30%, transparent);"
+                    style="background-color: rgb(22, 20, 28); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(29, 27, 35, 0.72); border-style: solid; border-top-left-radius: 24px; border-top-right-radius: 24px; border-bottom-right-radius: 24px; border-bottom-left-radius: 24px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(147, 116, 211, 0.18) 30%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -1622,7 +1622,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(22, 20, 28); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(29, 27, 35, 0.72); border-style: solid; border-top-left-radius: 24px; border-top-right-radius: 24px; border-bottom-right-radius: 24px; border-bottom-left-radius: 24px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(147, 116, 211, 0.18) 30%, transparent);"
+                    style="background-color: rgb(22, 20, 28); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(29, 27, 35, 0.72); border-style: solid; border-top-left-radius: 24px; border-top-right-radius: 24px; border-bottom-right-radius: 24px; border-bottom-left-radius: 24px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(147, 116, 211, 0.18) 30%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -1773,7 +1773,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(29, 18, 16); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(37, 25, 24, 0.72); border-style: solid; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(229, 78, 63, 0.18) 20%, transparent);"
+                    style="background-color: rgb(29, 18, 16); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(37, 25, 24, 0.72); border-style: solid; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(229, 78, 63, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -1788,7 +1788,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(29, 18, 16); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(37, 25, 24, 0.72); border-style: solid; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(229, 78, 63, 0.18) 20%, transparent);"
+                    style="background-color: rgb(29, 18, 16); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(37, 25, 24, 0.72); border-style: solid; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(229, 78, 63, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -1821,7 +1821,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all"
-                    style="background-color: rgb(29, 18, 16); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(37, 25, 24, 0.72); border-style: solid; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(229, 78, 63, 0.18) 20%, transparent);"
+                    style="background-color: rgb(29, 18, 16); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(37, 25, 24, 0.72); border-style: solid; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(229, 78, 63, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -1838,7 +1838,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all"
-                    style="background-color: rgb(29, 18, 16); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(37, 25, 24, 0.72); border-style: solid; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(229, 78, 63, 0.18) 20%, transparent);"
+                    style="background-color: rgb(29, 18, 16); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(37, 25, 24, 0.72); border-style: solid; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(229, 78, 63, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -1886,7 +1886,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(29, 18, 16); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(37, 25, 24, 0.72); border-style: solid; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(229, 78, 63, 0.18) 20%, transparent);"
+                    style="background-color: rgb(29, 18, 16); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(37, 25, 24, 0.72); border-style: solid; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(229, 78, 63, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -2037,7 +2037,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(23, 27, 46); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
+                    style="background-color: rgb(23, 27, 46); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -2052,7 +2052,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(23, 27, 46); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
+                    style="background-color: rgb(23, 27, 46); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -2085,7 +2085,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all"
-                    style="background-color: rgb(23, 27, 46); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
+                    style="background-color: rgb(23, 27, 46); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -2102,7 +2102,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all"
-                    style="background-color: rgb(23, 27, 46); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
+                    style="background-color: rgb(23, 27, 46); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -2150,7 +2150,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(23, 27, 46); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
+                    style="background-color: rgb(23, 27, 46); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -2301,7 +2301,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(17, 21, 31); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(24, 29, 38, 0.72); border-style: solid; border-top-left-radius: 32px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; border-bottom-left-radius: 32px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(69, 129, 255, 0.18) 20%, transparent);"
+                    style="background-color: rgb(17, 21, 31); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(24, 29, 38, 0.72); border-style: solid; border-top-left-radius: 32px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; border-bottom-left-radius: 32px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(69, 129, 255, 0.18) 20%, transparent);"
                   >
                     <div
                       class="h-1.5 w-10 bg-theme-text/20 rounded-full relative z-10"
@@ -2312,7 +2312,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(17, 21, 31); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(24, 29, 38, 0.72); border-style: solid; border-top-left-radius: 32px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; border-bottom-left-radius: 32px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(69, 129, 255, 0.18) 20%, transparent);"
+                    style="background-color: rgb(17, 21, 31); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(24, 29, 38, 0.72); border-style: solid; border-top-left-radius: 32px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; border-bottom-left-radius: 32px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(69, 129, 255, 0.18) 20%, transparent);"
                   >
                     <div
                       class="h-1.5 w-12 bg-theme-text/20 rounded-full mb-1 relative z-10"
@@ -2341,7 +2341,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all"
-                    style="background-color: rgb(17, 21, 31); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(24, 29, 38, 0.72); border-style: solid; border-top-left-radius: 32px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; border-bottom-left-radius: 32px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(69, 129, 255, 0.18) 20%, transparent);"
+                    style="background-color: rgb(17, 21, 31); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(24, 29, 38, 0.72); border-style: solid; border-top-left-radius: 32px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; border-bottom-left-radius: 32px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(69, 129, 255, 0.18) 20%, transparent);"
                   >
                     <div
                       class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,1px)] border-t-transparent relative z-10"
@@ -2354,7 +2354,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all"
-                    style="background-color: rgb(17, 21, 31); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(24, 29, 38, 0.72); border-style: solid; border-top-left-radius: 32px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; border-bottom-left-radius: 32px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(69, 129, 255, 0.18) 20%, transparent);"
+                    style="background-color: rgb(17, 21, 31); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(24, 29, 38, 0.72); border-style: solid; border-top-left-radius: 32px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; border-bottom-left-radius: 32px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(69, 129, 255, 0.18) 20%, transparent);"
                   >
                     <div
                       class="h-1.5 w-16 bg-theme-text/20 rounded-full mb-auto relative z-10"
@@ -2398,7 +2398,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(17, 21, 31); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(24, 29, 38, 0.72); border-style: solid; border-top-left-radius: 32px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; border-bottom-left-radius: 32px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(69, 129, 255, 0.18) 20%, transparent);"
+                    style="background-color: rgb(17, 21, 31); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(24, 29, 38, 0.72); border-style: solid; border-top-left-radius: 32px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; border-bottom-left-radius: 32px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(69, 129, 255, 0.18) 20%, transparent);"
                   >
                     <div
                       class="h-1.5 w-12 bg-theme-text/20 rounded-full mb-1.5 relative z-10"
@@ -2545,11 +2545,11 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(15, 24, 18); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(23, 31, 26, 0.72); border-style: solid; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(61, 159, 107, 0.18) 12%, transparent);"
+                    style="background-color: rgb(15, 24, 18); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(23, 31, 26, 0.72); border-style: solid; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(61, 159, 107, 0.18) 12%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)), linear-gradient(to bottom, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)), linear-gradient(to bottom, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)); background-size: 8px 8px;"
                     />
                     <div
                       class="h-1.5 w-10 bg-theme-text/20 rounded-full relative z-10"
@@ -2560,11 +2560,11 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(15, 24, 18); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(23, 31, 26, 0.72); border-style: solid; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(61, 159, 107, 0.18) 12%, transparent);"
+                    style="background-color: rgb(15, 24, 18); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(23, 31, 26, 0.72); border-style: solid; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(61, 159, 107, 0.18) 12%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)), linear-gradient(to bottom, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)), linear-gradient(to bottom, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)); background-size: 8px 8px;"
                     />
                     <div
                       class="h-1.5 w-12 bg-theme-text/20 rounded-full mb-1 relative z-10"
@@ -2593,11 +2593,11 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all"
-                    style="background-color: rgb(15, 24, 18); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(23, 31, 26, 0.72); border-style: solid; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(61, 159, 107, 0.18) 12%, transparent);"
+                    style="background-color: rgb(15, 24, 18); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(23, 31, 26, 0.72); border-style: solid; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(61, 159, 107, 0.18) 12%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)), linear-gradient(to bottom, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)), linear-gradient(to bottom, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)); background-size: 8px 8px;"
                     />
                     <div
                       class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,1px)] border-t-transparent relative z-10"
@@ -2610,11 +2610,11 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all"
-                    style="background-color: rgb(15, 24, 18); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(23, 31, 26, 0.72); border-style: solid; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(61, 159, 107, 0.18) 12%, transparent);"
+                    style="background-color: rgb(15, 24, 18); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(23, 31, 26, 0.72); border-style: solid; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(61, 159, 107, 0.18) 12%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)), linear-gradient(to bottom, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)), linear-gradient(to bottom, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)); background-size: 8px 8px;"
                     />
                     <div
                       class="h-1.5 w-16 bg-theme-text/20 rounded-full mb-auto relative z-10"
@@ -2658,11 +2658,11 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(15, 24, 18); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(23, 31, 26, 0.72); border-style: solid; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(61, 159, 107, 0.18) 12%, transparent);"
+                    style="background-color: rgb(15, 24, 18); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(23, 31, 26, 0.72); border-style: solid; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(61, 159, 107, 0.18) 12%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
-                      style="background-image: linear-gradient(to right, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)), linear-gradient(to bottom, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
+                      style="background-image: linear-gradient(to right, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)), linear-gradient(to bottom, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)); background-size: 8px 8px;"
                     />
                     <div
                       class="h-1.5 w-12 bg-theme-text/20 rounded-full mb-1.5 relative z-10"
@@ -2809,7 +2809,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(42, 48, 57); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(22, 30, 36, 0.72); border-style: solid; border-top-left-radius: 32px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; border-bottom-left-radius: 32px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(118, 140, 159, 0.18) 12%, transparent);"
+                    style="background-color: rgb(42, 48, 57); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(22, 30, 36, 0.72); border-style: solid; border-top-left-radius: 32px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; border-bottom-left-radius: 32px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(118, 140, 159, 0.18) 12%, transparent);"
                   >
                     <div
                       class="h-1.5 w-10 bg-theme-text/20 rounded-full relative z-10"
@@ -2820,7 +2820,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(42, 48, 57); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(22, 30, 36, 0.72); border-style: solid; border-top-left-radius: 32px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; border-bottom-left-radius: 32px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(118, 140, 159, 0.18) 12%, transparent);"
+                    style="background-color: rgb(42, 48, 57); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(22, 30, 36, 0.72); border-style: solid; border-top-left-radius: 32px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; border-bottom-left-radius: 32px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(118, 140, 159, 0.18) 12%, transparent);"
                   >
                     <div
                       class="h-1.5 w-12 bg-theme-text/20 rounded-full mb-1 relative z-10"
@@ -2849,7 +2849,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all"
-                    style="background-color: rgb(42, 48, 57); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(22, 30, 36, 0.72); border-style: solid; border-top-left-radius: 32px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; border-bottom-left-radius: 32px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(118, 140, 159, 0.18) 12%, transparent);"
+                    style="background-color: rgb(42, 48, 57); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(22, 30, 36, 0.72); border-style: solid; border-top-left-radius: 32px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; border-bottom-left-radius: 32px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(118, 140, 159, 0.18) 12%, transparent);"
                   >
                     <div
                       class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,1px)] border-t-transparent relative z-10"
@@ -2862,7 +2862,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all"
-                    style="background-color: rgb(42, 48, 57); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(22, 30, 36, 0.72); border-style: solid; border-top-left-radius: 32px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; border-bottom-left-radius: 32px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(118, 140, 159, 0.18) 12%, transparent);"
+                    style="background-color: rgb(42, 48, 57); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(22, 30, 36, 0.72); border-style: solid; border-top-left-radius: 32px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; border-bottom-left-radius: 32px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(118, 140, 159, 0.18) 12%, transparent);"
                   >
                     <div
                       class="h-1.5 w-16 bg-theme-text/20 rounded-full mb-auto relative z-10"
@@ -2906,7 +2906,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(42, 48, 57); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(22, 30, 36, 0.72); border-style: solid; border-top-left-radius: 32px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; border-bottom-left-radius: 32px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(118, 140, 159, 0.18) 12%, transparent);"
+                    style="background-color: rgb(42, 48, 57); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-color: rgba(22, 30, 36, 0.72); border-style: solid; border-top-left-radius: 32px; border-top-right-radius: 32px; border-bottom-right-radius: 32px; border-bottom-left-radius: 32px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(118, 140, 159, 0.18) 12%, transparent);"
                   >
                     <div
                       class="h-1.5 w-12 bg-theme-text/20 rounded-full mb-1.5 relative z-10"
@@ -3053,7 +3053,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(27, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(196, 114, 0, 0.18) 12%, transparent);"
+                    style="background-color: rgb(27, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(196, 114, 0, 0.18) 12%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -3068,7 +3068,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(27, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(196, 114, 0, 0.18) 12%, transparent);"
+                    style="background-color: rgb(27, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(196, 114, 0, 0.18) 12%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -3101,7 +3101,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all"
-                    style="background-color: rgb(27, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(196, 114, 0, 0.18) 12%, transparent);"
+                    style="background-color: rgb(27, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(196, 114, 0, 0.18) 12%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -3118,7 +3118,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all"
-                    style="background-color: rgb(27, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(196, 114, 0, 0.18) 12%, transparent);"
+                    style="background-color: rgb(27, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(196, 114, 0, 0.18) 12%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -3166,7 +3166,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(27, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(196, 114, 0, 0.18) 12%, transparent);"
+                    style="background-color: rgb(27, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(196, 114, 0, 0.18) 12%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -3317,7 +3317,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(22, 20, 28); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(29, 27, 35, 0.72); border-style: solid; border-top-left-radius: 28px; border-top-right-radius: 28px; border-bottom-right-radius: 28px; border-bottom-left-radius: 28px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(147, 116, 211, 0.18) 12%, transparent);"
+                    style="background-color: rgb(22, 20, 28); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(29, 27, 35, 0.72); border-style: solid; border-top-left-radius: 28px; border-top-right-radius: 28px; border-bottom-right-radius: 28px; border-bottom-left-radius: 28px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(147, 116, 211, 0.18) 12%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -3332,7 +3332,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(22, 20, 28); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(29, 27, 35, 0.72); border-style: solid; border-top-left-radius: 28px; border-top-right-radius: 28px; border-bottom-right-radius: 28px; border-bottom-left-radius: 28px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(147, 116, 211, 0.18) 12%, transparent);"
+                    style="background-color: rgb(22, 20, 28); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(29, 27, 35, 0.72); border-style: solid; border-top-left-radius: 28px; border-top-right-radius: 28px; border-bottom-right-radius: 28px; border-bottom-left-radius: 28px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(147, 116, 211, 0.18) 12%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -3365,7 +3365,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all"
-                    style="background-color: rgb(22, 20, 28); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(29, 27, 35, 0.72); border-style: solid; border-top-left-radius: 28px; border-top-right-radius: 28px; border-bottom-right-radius: 28px; border-bottom-left-radius: 28px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(147, 116, 211, 0.18) 12%, transparent);"
+                    style="background-color: rgb(22, 20, 28); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(29, 27, 35, 0.72); border-style: solid; border-top-left-radius: 28px; border-top-right-radius: 28px; border-bottom-right-radius: 28px; border-bottom-left-radius: 28px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(147, 116, 211, 0.18) 12%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -3382,7 +3382,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all"
-                    style="background-color: rgb(22, 20, 28); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(29, 27, 35, 0.72); border-style: solid; border-top-left-radius: 28px; border-top-right-radius: 28px; border-bottom-right-radius: 28px; border-bottom-left-radius: 28px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(147, 116, 211, 0.18) 12%, transparent);"
+                    style="background-color: rgb(22, 20, 28); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(29, 27, 35, 0.72); border-style: solid; border-top-left-radius: 28px; border-top-right-radius: 28px; border-bottom-right-radius: 28px; border-bottom-left-radius: 28px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(147, 116, 211, 0.18) 12%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -3430,7 +3430,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(22, 20, 28); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(29, 27, 35, 0.72); border-style: solid; border-top-left-radius: 28px; border-top-right-radius: 28px; border-bottom-right-radius: 28px; border-bottom-left-radius: 28px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(147, 116, 211, 0.18) 12%, transparent);"
+                    style="background-color: rgb(22, 20, 28); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(29, 27, 35, 0.72); border-style: solid; border-top-left-radius: 28px; border-top-right-radius: 28px; border-bottom-right-radius: 28px; border-bottom-left-radius: 28px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(147, 116, 211, 0.18) 12%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -3581,7 +3581,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(36, 70, 111); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(23, 29, 36, 0.72); border-style: solid; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(90, 141, 194, 0.18) 20%, transparent);"
+                    style="background-color: rgb(36, 70, 111); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(23, 29, 36, 0.72); border-style: solid; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(90, 141, 194, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -3596,7 +3596,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(36, 70, 111); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(23, 29, 36, 0.72); border-style: solid; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(90, 141, 194, 0.18) 20%, transparent);"
+                    style="background-color: rgb(36, 70, 111); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(23, 29, 36, 0.72); border-style: solid; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(90, 141, 194, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -3629,7 +3629,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all"
-                    style="background-color: rgb(36, 70, 111); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(23, 29, 36, 0.72); border-style: solid; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(90, 141, 194, 0.18) 20%, transparent);"
+                    style="background-color: rgb(36, 70, 111); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(23, 29, 36, 0.72); border-style: solid; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(90, 141, 194, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -3646,7 +3646,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all"
-                    style="background-color: rgb(36, 70, 111); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(23, 29, 36, 0.72); border-style: solid; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(90, 141, 194, 0.18) 20%, transparent);"
+                    style="background-color: rgb(36, 70, 111); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(23, 29, 36, 0.72); border-style: solid; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(90, 141, 194, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -3694,7 +3694,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(36, 70, 111); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(23, 29, 36, 0.72); border-style: solid; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, rgba(90, 141, 194, 0.18) 20%, transparent);"
+                    style="background-color: rgb(36, 70, 111); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(23, 29, 36, 0.72); border-style: solid; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(90, 141, 194, 0.18) 20%, transparent);"
                   >
                     <div
                       class="absolute inset-0 pointer-events-none opacity-50"
@@ -3845,7 +3845,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(26, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
+                    style="background-color: rgb(26, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
                   >
                     <div
                       class="h-1.5 w-10 bg-theme-text/20 rounded-full relative z-10"
@@ -3856,7 +3856,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(26, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
+                    style="background-color: rgb(26, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
                   >
                     <div
                       class="h-1.5 w-12 bg-theme-text/20 rounded-full mb-1 relative z-10"
@@ -3885,7 +3885,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all"
-                    style="background-color: rgb(26, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
+                    style="background-color: rgb(26, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
                   >
                     <div
                       class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,1px)] border-t-transparent relative z-10"
@@ -3898,7 +3898,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all"
-                    style="background-color: rgb(26, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
+                    style="background-color: rgb(26, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
                   >
                     <div
                       class="h-1.5 w-16 bg-theme-text/20 rounded-full mb-auto relative z-10"
@@ -3942,7 +3942,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(26, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
+                    style="background-color: rgb(26, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
                   >
                     <div
                       class="h-1.5 w-12 bg-theme-text/20 rounded-full mb-1.5 relative z-10"
@@ -4353,7 +4353,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(0, 0, 0); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgb(255, 255, 255); border-style: solid; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
+                    style="background-color: rgb(0, 0, 0); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgb(255, 255, 255); border-style: solid; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
                   >
                     <div
                       class="h-1.5 w-10 bg-theme-text/20 rounded-full relative z-10"
@@ -4364,7 +4364,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(0, 0, 0); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgb(255, 255, 255); border-style: solid; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
+                    style="background-color: rgb(0, 0, 0); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgb(255, 255, 255); border-style: solid; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
                   >
                     <div
                       class="h-1.5 w-12 bg-theme-text/20 rounded-full mb-1 relative z-10"
@@ -4393,7 +4393,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all"
-                    style="background-color: rgb(0, 0, 0); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgb(255, 255, 255); border-style: solid; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
+                    style="background-color: rgb(0, 0, 0); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgb(255, 255, 255); border-style: solid; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
                   >
                     <div
                       class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,1px)] border-t-transparent relative z-10"
@@ -4406,7 +4406,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                 >
                   <div
                     class="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all"
-                    style="background-color: rgb(0, 0, 0); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgb(255, 255, 255); border-style: solid; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
+                    style="background-color: rgb(0, 0, 0); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgb(255, 255, 255); border-style: solid; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
                   >
                     <div
                       class="h-1.5 w-16 bg-theme-text/20 rounded-full mb-auto relative z-10"
@@ -4450,7 +4450,7 @@ exports[`PresetsCatalog > renderiza a aba Temas por padrão, independente de qua
                   </div>
                   <div
                     class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                    style="background-color: rgb(0, 0, 0); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgb(255, 255, 255); border-style: solid; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
+                    style="background-color: rgb(0, 0, 0); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgb(255, 255, 255); border-style: solid; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
                   >
                     <div
                       class="h-1.5 w-12 bg-theme-text/20 rounded-full mb-1.5 relative z-10"

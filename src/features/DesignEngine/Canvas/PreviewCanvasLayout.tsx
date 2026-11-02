@@ -6,6 +6,7 @@ import type { SarakDesignState, SarakUIContextType } from '../../../core/Provide
 import { PresetsCatalog } from './components/PresetsCatalog';
 import { LiveDraftPreviewFrame } from './components/LiveDraftPreviewFrame';
 import type { PreviewLayoutPreset } from './panelResponsive.presets';
+import type { PeekHandler } from './components/peek';
 
 type PreviewDevice = 'desktop' | 'tablet' | 'smartphone';
 type PresetHandler = React.ComponentProps<typeof PresetsCatalog>['onApplyPreset'];
@@ -27,6 +28,7 @@ export interface PreviewCanvasLayoutProps {
     onApplyPreset: PresetHandler;
     onApplyFullTheme?: (design: Partial<SarakDesignState>, themeId?: string) => void;
     onCloseGallery?: () => void;
+    onPeek?: PeekHandler;
     previewContent: React.ReactNode;
     layoutPreset: PreviewLayoutPreset;
 }
@@ -55,7 +57,8 @@ const PreviewCatalogFrame = (props: PreviewCanvasLayoutProps): React.ReactElemen
     <div
         data-testid="catalog-preview-frame"
         className={`relative rounded-[var(--sarak-device-frame-radius,2rem)] border border-theme-border shadow-theme overflow-y-auto overflow-x-hidden overscroll-contain sarak-card transition-colors duration-[var(--sarak-motion-dur-slow,0.6s)] flex flex-col ${props.layoutPreset.frameClassName}`}
-        style={props.layoutPreset.frameStyle}
+        // `.sarak-card` aplica a opacidade do cartão do rascunho (0,65 no tema padrão) e apagava a galeria inteira: as amostras são o conteúdo, não o cartão.
+        style={{ ...props.layoutPreset.frameStyle, opacity: 1 }}
     >
         <PresetsCatalog
             onApplyPreset={props.onApplyPreset}
@@ -63,6 +66,8 @@ const PreviewCatalogFrame = (props: PreviewCanvasLayoutProps): React.ReactElemen
             currentMode={props.mode}
             draftMode={props.draftMode}
             sarak={props.sarak}
+            draft={props.design}
+            onPeek={props.onPeek}
             onClose={() => props.onCloseGallery?.()}
         />
     </div>

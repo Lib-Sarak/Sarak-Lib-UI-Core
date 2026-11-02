@@ -76,6 +76,20 @@ a cor que cada id calcula.
 O diálogo de troca de paleta escreve "1 cor" e "2 cores" (antes "1 cor(es)"). Quem fixa um token de cor por cima da paleta
 não muda; quem conferia a cor calculada de um preset, ou um snapshot, atualiza o valor esperado.
 
+### Saem 15 tokens `preset*` da geometria interna do painel
+
+As miniaturas de opção do painel de customização passaram a ser desenhadas com os componentes reais, então
+os tokens que dimensionavam o desenho antigo deixaram de ter leitor e saíram do schema:
+`presetCardHoverShadowOffsetY`, `presetCardShadowBlur`, `presetCardShadowOffsetY`, `presetCardShadowSpread`,
+`presetGlowShadowBlur`, `presetGlowShadowBlurLg`, `presetGridTextureSize`, `presetMatteShadowBlur1`,
+`presetMatteShadowBlur2`, `presetMatteShadowOffsetY2`, `presetMatteShadowSpread1`, `presetMatteShadowSpread2`,
+`presetMiniCardHeight`, `presetPreviewMinHeight` e `presetPreviewPaddingY`.
+
+**Antes:** um tema ou payload podia declarar qualquer um deles (e as variáveis `--sarak-preset-*` correspondentes
+eram emitidas), sem efeito em nenhum componente do sistema.
+**Depois:** a chave é descartada com aviso por `validateDesign` e as variáveis deixam de ser emitidas. Nenhum
+tema embarcado os declarava. **Como migrar:** apague a chave do tema; não há substituto, porque nada a lia.
+
 ### Largura padrão do conteúdo
 
 `maxContentWidth` passa a acompanhar a largura do próprio contêiner: as margens externas crescem

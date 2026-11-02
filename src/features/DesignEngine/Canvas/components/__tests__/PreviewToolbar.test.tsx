@@ -13,6 +13,16 @@ const createProps = (overrides: Partial<React.ComponentProps<typeof PreviewToolb
     ...overrides
 });
 
+describe('PreviewToolbar — espiada', () => {
+    it('avisa que é só uma prévia enquanto espia, e some ao sair', () => {
+        const { rerender } = render(<PreviewToolbar {...createProps({ isPeeking: true })} />);
+        expect(screen.getByRole('status')).toHaveTextContent('Prévia: nada foi gravado');
+
+        rerender(<PreviewToolbar {...createProps({ isPeeking: false })} />);
+        expect(screen.queryByRole('status')).toBeNull();
+    });
+});
+
 describe('PreviewToolbar', () => {
     it('expõe os três dispositivos e encaminha a troca ao estado do preview', async () => {
         const user = userEvent.setup();

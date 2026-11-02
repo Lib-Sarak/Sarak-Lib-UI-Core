@@ -1,6 +1,7 @@
 import React from 'react';
 import { Monitor, Smartphone, Tablet } from 'lucide-react';
 import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 
 const DEVICE_OPTIONS = [
     { value: 'desktop', label: 'Desktop', icon: Monitor },
@@ -22,6 +23,8 @@ interface PreviewToolbarProps {
     isPreviewStacked: boolean;
     setIsPreviewStacked: (stacked: boolean) => void;
     isGalleryOpen: boolean;
+    /** Uma opção da galeria está sendo espiada: a prévia mostra o efeito sem gravar. */
+    isPeeking?: boolean;
 }
 
 export const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
@@ -30,7 +33,10 @@ export const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
     isPreviewStacked,
     setIsPreviewStacked,
     isGalleryOpen,
-}) => (
+    isPeeking = false,
+}) => {
+    const text = useLibraryText();
+    return (
     <div className="flex shrink-0 items-center justify-between gap-3 border-b border-[var(--theme-border)] bg-[var(--theme-surface)] p-3">
         <div role="group" aria-label={PREVIEW_TOOLBAR_LABELS.deviceGroup} className="flex min-w-0 flex-1 gap-1">
             {DEVICE_OPTIONS.map(({ value, label, icon: Icon }) => (
@@ -65,5 +71,9 @@ export const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
             </span>
             <span title={isGalleryOpen ? undefined : PREVIEW_TOOLBAR_LABELS.stackDisabledTitle}>{PREVIEW_TOOLBAR_LABELS.stack}</span>
         </label>
+        {isPeeking && (
+            <span role="status" className="shrink-0 text-[var(--sarak-type-scale-caption,12px)] font-bold text-theme-primary">{text('peekNotice')}</span>
+        )}
     </div>
-);
+    );
+};
