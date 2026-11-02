@@ -63,36 +63,29 @@ cola que faz a folksonomia funcionar e é o único ponto que precisa de manuten�
 inventa um rótulo novo de categoria. Categoria não reconhecida cai em `'Geral'` (`:18`) — degrada, não
 quebra.
 
-## 2.1 Impacto × Essencial × Completo — os três modos, e o dado que os separa
+## 2.1 Uma coluna, seis decisões e três níveis
 
-O painel expõe **três modos nomeados**, escolhidos por um seletor no cabeçalho (grupo de rádio "Modo de
-edição": setas movem a seleção). O padrão é **Essencial**, e o modo não persiste. Nenhum modo é lista curada
-num arquivo de configuração: o dado que os separa mora **na entrada do token no catálogo**
-(`src/core/Design/catalog/partitions/`), não no schema.
+O painel tem **uma coluna só**, sem seletor de modo. Ela lista **seis decisões**, declaradas em `config/design-decisions.json` e lidas por `utils/decisions.ts`: Tema, Cores, Fontes, Forma, Componentes e Layout. A primeira entrada é o atalho **"Usar minha marca"** (`BrandShortcut`). Cada linha mostra o valor atual e uma marca de alterada.
 
-| Modo | O que mostra | Como é derivado |
+| Nível | O que mostra | Como é derivado |
 | --- | --- | --- |
-| **Impacto** | poucos controles que, sozinhos, mudam o visual inteiro, numa **lista plana** de cinco blocos abertos — Fontes, Cores, Fundo e textura, Cards, Forma e estrutura —, sem acordeão de pilar | o token declara `visualImpact` com o grupo (`fontes`, `cores`, `fundo`, `cards` ou `forma`). Cada um marcado tem efeito visível provado (um consumidor que lê o valor e muda o que se vê). Bloco sem token não aparece |
-| **Essencial** | os tokens de maior importância | `importance >= 80` |
-| **Completo** | o dicionário inteiro | sem filtro |
+| **1. Decisões** | a lista da coluna | `COLUMN_DECISIONS` |
+| **2. Dentro da decisão** | opções visuais com amostra real, em grupos | a entrada da decisão no JSON. A decisão Layout se organiza por pergunta: Onde fica, Como é, O que aparece, Marca e Comportamento |
+| **3. Ajuste fino** | os tokens da decisão, recolhidos com a contagem real, primeiro os de `importance >= 80` e depois "Mostrar todos" | catálogo e `fineMatch` por pergunta, para os tokens sem preset cair sob a pergunta certa |
 
-**Por que o Impacto tem campo próprio:** `importance` **não** mede impacto visual — tokens como z-index e
-breakpoint estão acima de `texture` nele. Um corte mais alto em `importance` não daria o modo.
+Ao abrir uma decisão, a tela troca na mesma coluna, com voltar. Esc volta. O foco vai ao título ao entrar e à linha ao voltar.
 
-O corte por campo é o que mantém os modos **honestos ao crescer**: token novo entra sozinho, declarando o campo
-onde nasce, sem ninguém lembrar de atualizar uma lista — o mesmo princípio da §2.
+**Por que `visualImpact` existe:** `importance` **não** mede impacto visual: tokens como z-index e breakpoint estão acima de `texture` nele. O campo fica no catálogo e entra na ordem da busca (§2.2).
 
-O modo filtra os **pilares** e a lista plana; o bloco global e o da barra de preferências aparecem em todos os
-modos, e a **busca ignora o modo** (§2.2).
+**A coluna não perde token.** Um teste exige que todo token do dicionário siga alcançável numa decisão ou no **Avançado**, e a busca atravessa tudo (§2.2). Token novo entra sozinho, pelo campo que declara, sem ninguém atualizar lista. É o mesmo princípio da §2.
 
-**O Command Center tem entrada própria**, separada dos três modos: é acesso direto por busca, não outra
-curadoria. Ele é a entrada **"Busca por pilar"** do menu **Avançado** (§2.3).
+**O Command Center tem entrada própria:** é acesso direto por busca, e fica no menu **Avançado** como **"Busca por pilar"** (§2.3).
 
 ### 2.1.1 A seção "Composição da Barra"
 
-No pilar de **navegação** mora a seção *Composição da Barra*: os **oito** tokens que dizem onde cada widget do cromo aparece — `pinned`, `menu` ou `off` — para modo claro/escuro, tamanho da fonte, navegação topo/lateral, navegação recolhida, idioma, busca, usuário e notificações ([[05-cromo-e-slots]] §2.2.2). Ela nasce da folksonomia como as demais: os oito tokens carregam a categoria `chrome-composition` no catálogo, e o painel a mostra como seção própria do pilar.
+Na decisão **Layout**, sob a pergunta **O que aparece**, mora a seção *Composição da Barra*: os **oito** tokens que dizem onde cada widget do cromo aparece — `pinned`, `menu` ou `off` — para modo claro/escuro, tamanho da fonte, navegação topo/lateral, navegação recolhida, idioma, busca, usuário e notificações ([[05-cromo-e-slots]] §2.2.2). Ela nasce da folksonomia como as demais: os oito tokens carregam a categoria `chrome-composition` no catálogo, e o painel a mostra como seção própria do pilar.
 
-- **Aparece no modo padrão.** Os oito têm `importance: 80` no catálogo, então entram no **Essencial**; a seção não exige abrir o modo Completo.
+- **Aparece no nível 2.** Os oito não exigem abrir o ajuste fino, e os rótulos falam a língua do usuário: "Mostrar", "No menu" e "Esconder".
 - **É do sistema, não do tema.** Escolher um tema no painel **não** altera essa seção: nenhum tema distribuído declara token de composição.
 
 ## 2.2 A busca de token — por sentido, não por substring
@@ -116,10 +109,11 @@ componente de origem. Um token sem entrada no catálogo cai no `label` do schema
 ou componente > só prefixo (que vale mais no nome que fora dele). Um conceito no nome sobe ao nível de palavra
 inteira quando o token tem três ou mais membros do grupo, e cada membro presente soma um bônus pequeno de
 densidade. Os dois ajustes põem as fontes no topo de `texto` e `escrita` sem inverter "nome antes de tag".
-Empate segue a ordem do schema.
+Com o mesmo nível de casamento, ganha o token com `visualImpact`, depois o de `importance` maior, depois o geral antes do específico de um componente. Empate segue a ordem do schema.
 
-**Na aba de tema:** o título mostra a contagem, busca sem resultado tem estado vazio, e cada resultado mostra
-onde o controle mora no modo Completo (`Pilar › Seção`; token fora de grupo não ganha caminho).
+**Na coluna:** resultados vêm por decisão, com a contagem (`Layout (12)`), até 5 por grupo e "Ver todos" (`utils/searchGroups.ts`). **Mais de 20 resultados abrem primeiro as áreas**, não a lista. A busca acha também grupos de opções e presets, não só token, e levar a um token abre a decisão e o ajuste fino. Sem resultado, ela sugere o termo mais próximo, com tolerância a um erro de digitação, e as seis decisões.
+
+**Termos de ouro.** `token-search.golden.json` fixa as frases que uma pessoa usa e o token esperado entre os 3 primeiros. `token-search.validation.json` guarda frases à parte, para o dicionário não ser ajustado só ao que o teste conhece.
 
 **Limite:** o vocabulário do catálogo é misto (português e inglês) e ralo, e o dicionário de conceitos é a única
 manutenção manual da busca. O teste reprova grupo com menos de dois termos ou que não case ao menos dois tokens.
@@ -128,16 +122,8 @@ manutenção manual da busca. O teste reprova grupo com menos de dois termos ou 
 
 O painel conta um caminho de três passos, e a tela segue essa ordem:
 
-1. **Escolher um tema.** O primeiro bloco da área de controles é **"Começar de um tema"**, com o botão
-   **"Abrir galeria"** / **"Fechar galeria"**. A **Galeria de estilos** (`PresetsCatalog`) abre **sob demanda**
-   — o padrão é fechada, e então o preview do rascunho ocupa a área inteira. As abas da galeria são **Temas ·
-   Cards · Tipografia · Atmosfera · Botões · Campos**, e ela tem botão de fechar no próprio cabeçalho. A aba
-   **Temas** lista o **catálogo leve** (`themeCatalog`) na hora e carrega o `design` dos embarcados ao abrir
-   (`useCatalogThemes`); o cartão de um tema que ainda não chegou (`PresetCardPending`) escolhido carrega o tema e
-   só então aplica — o tema atual permanece até lá. Escolher um tema na prévia compõe por `composeThemeDesign`
-   ([[09-temas-e-presets]] §4.3.3): o que o tema não declara volta ao padrão (ou ao `config` do host), e o "Aplicar"
-   grava esse estado.
-2. **Ajustar o que pesa**, nos três modos da §2.1.
+1. **Escolher um tema**, na decisão Tema. A aba lista o **catálogo leve** (`themeCatalog`) na hora e carrega o `design` dos embarcados ao abrir (`useCatalogThemes`). O cartão de um tema que ainda não chegou (`PresetCardPending`), ao ser escolhido, carrega o tema e só então aplica; o tema atual permanece até lá. Escolher um tema na prévia compõe por `composeThemeDesign` ([[09-temas-e-presets]] §4.3.3): o que o tema não declara volta ao padrão (ou ao `config` do host), e o "Aplicar" grava esse estado. **A galeria não abre sobre a prévia**, que fica sempre visível; Claro/Escuro, dispositivo e tela ficam na barra dela.
+2. **Ajustar o que pesa**, nas decisões da §2.1.
 3. **Aplicar**, na **barra de ações** (`Main/components/ThemeActionBar.tsx`):
 
 | Ação | O que faz |
@@ -154,8 +140,7 @@ Não há aplicar por pilar nem por componente: aplicar é sempre o rascunho inte
 pelo `SarakCustomizationPanel` se intitula **"Personalizar o tema"**; dentro dele, o cabeçalho da barra lateral
 diz **"Design"**. Sem selos.
 
-**O menu "Avançado"** (`Main/components/ThemeAdvancedMenu.tsx`) é o único botão do cabeçalho além do seletor de
-modo. Ele reúne as telas de quem já conhece o motor — **Tabela de tokens** (a planilha do `MasterControlPanel`),
+**O menu "Avançado"** (`Main/components/ThemeAdvancedMenu.tsx`) é o único botão do cabeçalho além da busca. Ele reúne as telas de quem já conhece o motor — **Tabela de tokens** (a planilha do `MasterControlPanel`),
 **Busca por pilar** (o Command Center) e **Temas e JSON** (`TemplatesTab`) — e **"Voltar ao modo normal"**. A tela
 dos pilares é o padrão e não tem botão. Teclado: Enter/Espaço abre e foca a primeira entrada; setas (com volta
 circular), Home e End navegam; Esc fecha e devolve o foco ao botão; clicar fora fecha.
@@ -446,26 +431,12 @@ simulado deixa de pintar fundo opaco (`PreviewSystemRenderer.tsx`). Provado em j
 (`PreviewSystemRenderer.test.tsx`) e em navegador real (`browser-tests/cromo-css-real.spec.ts`, caso
 *"COM mídia global"*).
 
-## 6.6 Pilar e tela — dois gestos, sem laço
+## 6.6 Decisão e tela — dois gestos, sem laço
 
-Abrir um pilar na barra lateral leva o preview à **tela canônica** dele, e escolher uma tela no menu do preview
-leva ao pilar dela. São **dois gestos explícitos** em `Main/hooks/usePreviewUIState.ts` — `selectPillar` e
-`selectPreviewApp` —, e cada um muda o outro lado **uma vez** e para: nenhum efeito reage ao outro.
+Abrir uma decisão leva a prévia à **tela canônica** dela, e escolher uma tela no menu da prévia não muda a decisão aberta. Cada decisão declara `screen` e `screens` em `config/design-decisions.json`, e `Main/hooks/usePreviewUIState.ts` faz o resto: é um gesto só, e nenhum efeito reage ao outro lado.
 
-| Pilar | Tela canônica |
-| --- | --- |
-| `brand` | `auth` |
-| `typography` | `typography` |
-| `surfaces` | `dashboard` |
-| `interaction` | `caixas-texto` |
-| `navigation` | `dashboard` |
-| `systems` | `settings` |
-| `advanced` | `matrix` |
-
-- Abrir um pilar cuja tela atual já pertence a ele **não troca a tela**.
-- `navigation` → `dashboard` **não** devolve o pilar a `surfaces`, embora `dashboard` seja tela de `surfaces`: o
-  pilar continua o clicado.
-- O estado inicial é um **par coerente** (`surfaces` + `dashboard`).
+- Abrir uma decisão cuja tela atual já pertence a ela **não troca a tela**.
+- O estado inicial é a lista de decisões, com a tela `dashboard`.
 
 **O menu do preview** mostra **seis telas** com rótulo humano — **Painel · Formulário · Tabela · Texto · Gráficos ·
 Tipografia** — e um sétimo item, **"Mais telas"**, que abre a grade do `MoreScreensMock` com as restantes
@@ -597,7 +568,7 @@ hoje é decisão do consumidor (ele exporta o componente e monta onde quiser, ou
 | --- | --- | --- |
 | Folksonomia: sanitização de categoria e montagem de grupos | `src/features/DesignEngine/utils/__tests__/dynamic-categories.test.ts` | ✅ suíte |
 | Busca de token: sentido, ordem, prefixo só no último termo, grupos de conceito vivos | `src/features/DesignEngine/utils/__tests__/token-search.test.ts` | ✅ suíte |
-| Os três modos: padrão Essencial, seletor por setas, `visualImpact` válido e entre 20 e 30 ids, lista plana do Impacto | `Main/hooks/__tests__/usePreviewUIState.test.ts` · `useThemeCustomizationData.test.ts` · `Main/components/__tests__/ThemeSidebarHeader.test.tsx` · `ThemeImpactList.test.tsx` | ✅ suíte |
+| A coluna: decisões, níveis, cobertura de todo token e `visualImpact` válido | `Main/hooks/__tests__/usePreviewUIState.test.ts` · `useThemeCustomizationData.test.ts` · `Main/components/__tests__/ThemeSidebarHeader.test.tsx` · `ThemeImpactList.test.tsx` | ✅ suíte |
 | Rascunho: inicialização nula, resolução para o sistema, comparação profunda | `src/features/DesignEngine/hooks/__tests__/useDesignDraft.test.tsx` | ✅ suíte |
 | Export completo (não subconjunto) e slug estável | `Main/utils/__tests__/exportTheme.test.ts` | ✅ suíte |
 | Escopo do preview não vaza variável para o host | `src/core/Design/components/__tests__/DesignScope.test.tsx` | ✅ suíte |

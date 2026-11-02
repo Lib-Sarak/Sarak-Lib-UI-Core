@@ -215,6 +215,8 @@ Um detalhe de implementação que é regra de projeto: **`onClose` fica atrás d
 motivo escrito — se o efeito dependesse da identidade da função, consumidores que passam closure inline
 o re-executariam a cada render, reentrando o foco e **perdendo digitação**. É a classe de bug que volta.
 
+**Pilha única de camadas.** `useOverlayLayer` guarda a ordem de abertura de Modal e Drawer: a camada nova fica acima da última aberta, seja qual for o tipo, sem número fixo por tipo. Quem abre uma camada só segue no z-index de sempre. A confirmação sobre uma gaveta recebe o foco preso, e ele volta à gaveta ao fechar. A pilha mora no módulo, porque essas peças funcionam sem Provider.
+
 ### b) Teclado e ARIA
 
 Navegação por `Tab`/`Shift+Tab`/`Enter`/`Espaço`/`ESC` nos componentes interativos, e ARIA nos não-nativos.

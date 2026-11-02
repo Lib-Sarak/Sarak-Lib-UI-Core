@@ -136,7 +136,7 @@ inteiro é rejeitado — não há aceitação parcial.
 1 no celular). **Ocupação de coluna é `SarakGridItem`** (`span`, `rowSpan`: número, `'full'` ou por
 dispositivo), resolvida pelo `useSarakDevice()` — que lê os breakpoints do tema, coisa que classe
 utilitária não faz (§2.1); o item lê as colunas do grid pai por contexto, e `span` maior que elas vira a
-linha toda. As classes `col-span-*` seguem suportadas. Quais props aceitam o formato, o catálogo diz
+linha toda. As classes `col-span-*` seguem suportadas. **`rowGap` e `columnGap` vencem `gap` no eixo deles**, em `SarakGrid` e `SarakFlex`, e nenhum estilo leva chave `undefined` junto com a propriedade curta, que a apagaria. Quais props aceitam o formato, o catálogo diz
 (`catalog.json` → `responsive.responsiveProps`).
 
 **`SarakHidden`** (`src/components/Layout/SarakHidden.tsx`): `on={['smartphone']}` remove o conteúdo da

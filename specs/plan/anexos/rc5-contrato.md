@@ -4,7 +4,7 @@ titulo: "Contrato da 8.0.0-rc.5 — superfície pública prometida ao ERP"
 dominio: "Superfície pública"
 status: "🟢 Aceito pelo dono (2026-11-02)"
 tags: ["rc.5", "contrato", "erp", "superficie-publica"]
-relacionados: ["[[00-indice]]", "[[arquitetura/03-superficie-publica]]", "[[plan-146-grade-camadas-e-selecao]]", "[[plan-147-graficos-rc5]]", "[[plan-148-lista-formulario-e-abas-rc5]]"]
+relacionados: ["[[00-indice]]", "[[arquitetura/03-superficie-publica]]"]
 ---
 
 # 0. Como ler

@@ -347,6 +347,10 @@ claro. Por isso o **preenchimento** de marca (`btnPrimaryBg`, `rangeActiveColor`
 ele escolhido pelo contraste, e o **texto** de marca (`primaryColor`, `titleColor`, `cardTitleColor`, `navItemActiveColor`) anda a menor distância de luminosidade que passa nos
 pares, com o mesmo matiz e o mesmo croma (`contrast-shift.ts`). Todo texto segue em 4,5.
 
+**Três faixas.** Texto é a semente com o menor deslocamento que passa. Elemento pequeno é a base exata. Superfície grande é tingida. Por isso uma cor pode sair igual à semente num papel e andar em outro.
+
+**O papel da barra.** `sidebarTone` e `topbarTone` valem `neutral`, `surface`, `primary`, `secondary` ou `inverse`, com padrão `neutral`, que devolve o plano de sempre. `palette/tone-plan.ts` dá os papéis e os pares de `PAIRS` de cada tom, nos dois modos. O tom só vale com `colorPalette` válida, e uma cor declarada em `sidebarColor` ou `topbarColor` continua vencendo. Nos tons contrastantes, a barra refaz para os seus descendentes as variáveis de texto, ícone e borda (`chromeToneStyle.ts`), e assim os widgets acompanham o fundo sem token próprio ([[05-cromo-e-slots]] §2.1).
+
 **O fundo tem cor.** A neutra leva o matiz da base, com régua própria de luminosidade; a faixa de croma e de L está em `scale.ts` e `seeds.ts`, com teste sobre os presets.
 
 **60-30-10.** O mapa de papéis (`role-map.ts`) distribui a primária (ações e títulos), a secundária (subtítulo, botão secundário, cabeçalhos, categoria do menu, gráfico) e o acento
@@ -549,6 +553,7 @@ não entra no tema que ele salva.
 | tamanho da fonte | pequeno · médio · grande | `bodySize`, um degrau abaixo ou acima; médio é exatamente a base do tema |
 | navegação | topo · lateral | `navigationStyle` |
 | navegação recolhida | sim · não | `isNavHidden` |
+| largura da lateral | número, entre `sidebarMinWidth` e `sidebarMaxWidth` | `sidebarWidth`, só com `sidebarResizable` ligado no tema |
 | idioma | um dos habilitados no tema | `language` — só se o tema oferece **e** habilita o idioma escolhido (abaixo) |
 
 **O tema decide o que é oferecido**, por token de tema — um por preferência, com três posições: **não
@@ -603,6 +608,8 @@ sobrescrita no `design` tem a sua na `contraparte` (`themePalettes.test.ts`). Qu
 `SARAK_PALETTE_PRESETS`, nunca daqui. Um preset não pode usar os ids `default`, `matrix`, `neon`, `slate` nem `sunset`
 (`SARAK_LEGACY_PALETTE_IDS`): eram valores do `colorPalette` antigo e podem estar em tema salvo por importador. Um id publicado não sai do registro: a curadoria muda a cor, nunca
 o id, porque um id desconhecido compõe sem paleta.
+
+**A harmonia do preset é aprovada à vista.** A semente declarada pode sair do ângulo do tipo até o limite de `presets.test.ts`, que também guarda as exceções de croma com nome. O teste mira a beleza do preset, não a precisão do ângulo. Os números moram no teste e no registro, nunca aqui.
 
 ## 5.1 Todo fundo que a lib entrega funciona offline
 

@@ -7,7 +7,7 @@ status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "painel", "presets"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[09-temas-e-presets]]", "[[plan-145-personalidades]]", "[[anexos/painel-design-prototipo]]"]
-depende_de: "plan-150-busca-por-intencao"
+depende_de: "—"
 retida_por: ""
 destino_sintese: "specs/specs/09-temas-e-presets.md + specs/specs/06-painel-de-customizacao-e-preview.md"
 ---

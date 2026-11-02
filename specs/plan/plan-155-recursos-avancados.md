@@ -52,7 +52,7 @@ Decisão do dono em 2026-11-02: estes itens entram, mesmo sem uso nos sistemas v
 2. **`SarakDashboardGrid`:** widgets arrastáveis e redimensionáveis; `layout` + `onLayoutChange`, com a persistência no consumidor. Teclado para mover e redimensionar. Modo só leitura. Colapsa a uma coluna em contêiner estreito.
 3. **`SarakMap`:** `tileUrl`, `center`, `zoom`, `markers`, `onMarkerClick`, atribuição obrigatória, sem rede antes de receber `tileUrl`. Sem peer ou sem URL, mostra o fallback.
 4. **`SarakSignaturePad`:** canvas próprio, sem peer, com mouse, toque e caneta; limpar, desfazer; devolve PNG e traços. Tem alternativa acessível: digitar o nome.
-5. **`SarakTour`:** passos com alvo, destaque, próximo, voltar, pular; foco preso, Esc e posição por contêiner. Reaproveita `SarakSpotlight` e a pilha de camadas da `plan-146`. Quem lembra que o usuário já viu é o consumidor.
+5. **`SarakTour`:** passos com alvo, destaque, próximo, voltar, pular; foco preso, Esc e posição por contêiner. Reaproveita `SarakSpotlight` e a pilha de camadas (`useOverlayLayer`). Quem lembra que o usuário já viu é o consumidor.
 6. **`SarakCarousel`:** sem autoplay por padrão, setas, pontos, gesto, teclado, e respeita movimento reduzido.
 7. **Exportação Excel:** `exportXlsx` ao lado da CSV, com peer opcional carregado só no clique; respeita formato, moeda e colunas visíveis; bloqueia fórmula vinda de dado (célula iniciada com `=`, `+`, `-`, `@`).
 8. Spec de navegador por peça, nos dois modos e em contêiner estreito. `npm run boot:measure` de novo. `npm run verify -- --tier=quick` uma vez.
