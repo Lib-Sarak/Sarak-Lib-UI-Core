@@ -26,3 +26,5 @@ export * from './SarakGantt';
 export { SarakDocumentFrame } from './SarakDocumentFrame';
 export type { SarakDocumentFrameProps, SarakDocumentFormat } from './SarakDocumentFrame';
 export { sarakPrint } from './sarakPrint';
+// Painel de widgets arrastáveis (lazy; react-grid-layout opcional).
+export * from './SarakDashboardGrid';

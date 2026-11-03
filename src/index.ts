@@ -51,6 +51,8 @@ export type { SarakDesignScopeProps } from './core/Design/components/DesignScope
 export * from './components/atomic/Buttons/SarakButton';
 export * from './components/atomic/Buttons/SarakIconButton';
 export * from './components/atomic/Buttons/SarakSocialButton';
+export * from './components/atomic/Buttons/SarakCopyButton';
+export * from './components/atomic/Buttons/SarakFileAction';
 
 
 // Layout Components and Plug & Play UI
@@ -191,6 +193,14 @@ export type { SarakWeekStart } from './components/atomic/Inputs/internal/calenda
 export type { SarakAccept } from './components/atomic/Inputs/SarakUploader';
 // RichText WYSIWYG blindado (Spec 11 / Onda 10) — contentEditable + sanitizeHtml.
 export * from './components/atomic/Inputs/SarakRichText';
+// Entradas e utilitários que os sistemas montavam à mão: cor, conjunto, etiquetas, código e formulário por campos.
+export * from './components/atomic/Inputs/SarakColorInput';
+export * from './components/atomic/Inputs/SarakSetPicker';
+export * from './components/atomic/Inputs/SarakTagInput';
+export * from './components/atomic/Inputs/SarakCodeInput';
+export * from './components/atomic/Inputs/SarakFieldRenderer';
+// Campo de assinatura em canvas próprio (sem dependência).
+export * from './components/atomic/Inputs/SarakSignaturePad';
 export * from './components/atomic/Templates';
 export type { SarakSocialConfig, SarakSocialProviderConfig } from './components/atomic/Templates/components/AuthSocialLogin';
 export * from './components/atomic/Modals';
@@ -214,6 +224,9 @@ export type { SarakAggregate, SarakColumnLike, SarakColumnValueOptions, SarakCol
 export type { SarakTableGroupBy } from './components/atomic/DataDisplay/SarakDataTable/tableDisplayRows';
 export { sarakTableToCsv, sarakDownloadCsv } from './components/atomic/DataDisplay/SarakDataTable/tableCsv';
 export type { SarakCsvOptions, SarakCsvColumn } from './components/atomic/DataDisplay/SarakDataTable/tableCsv';
+// Exportação Excel ao lado da CSV: o escritor de planilha só é carregado no clique.
+export { sarakExportXlsx, sarakTableToXlsx, sarakDownloadXlsx } from './components/atomic/DataDisplay/SarakDataTable/tableXlsx';
+export type { SarakXlsxOptions } from './components/atomic/DataDisplay/SarakDataTable/tableXlsx';
 // Renderizadores de mídia (Spec 15): Markdown (lazy) + Lightbox + PDFViewer (lazy, Onda 10).
 export * from './components/atomic/Media';
 export type { SarakPdfSource } from './components/atomic/Media/SarakPDFViewer/usePdfDocument';

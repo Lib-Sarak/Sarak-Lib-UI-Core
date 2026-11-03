@@ -1147,9 +1147,9 @@ Medido em navegador (lote 4):
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v8.0.0-rc.4; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **466** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **561** nomes (componentes, tipos, hooks e helpers).
 
-### A.1 Componentes públicos (116)
+### A.1 Componentes públicos (143)
 
 Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada prop, com descrição, estão em `catalog.json` → `components.<Nome>.props` (e em `docs/component-catalog.md`).
 
@@ -1159,6 +1159,8 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Atoms | **SarakTypography** | `variant` · `color` · `as` · `transform` · `content` · `children` |
 | Atoms | **SarakValue** | `value` · `format` · `locale` · `signColor` · `size` · `className` |
 | Buttons | **SarakButton** | `variant` · `isLoading` · `leftIcon` · `rightIcon` · `fullWidth` · `size` |
+| Buttons | **SarakCopyButton** | `value` · `label` · `copiedLabel` · `onCopy` · `resetAfter` |
+| Buttons | **SarakFileAction** | `load` · `mode` · `filename` · `label` · `onDone` · `onError` |
 | Buttons | **SarakIconButton** | `variant` · `size` · `isLoading` · `icon` |
 | Buttons | **SarakSocialButton** | `provider` · `icon` · `variant` · `onClick` · `label` · `hideLabel` · `className` |
 | Cards | **SarakActionCard** | `item` · `mapping` · `className` · `onAction` · `design` · `label` · `actionLabel` |
@@ -1176,6 +1178,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | DataDisplay | **SarakCalendar** | `events` · `month` · `onMonthChange` · `defaultMonth` · `weekStartsOn` · `onEventClick` · `onDayClick` · `renderEvent` · `maxEventsPerDay` · `label` · `className` |
 | DataDisplay | **SarakChecklist** | `items` · `onToggle` · `onAdd` · `onRemove` · `showProgress` · `label` · `className` |
 | DataDisplay | **SarakCommentThread** | `comments` · `onSubmit` · `onDelete` · `label` · `className` |
+| DataDisplay | **SarakDashboardGrid** | `widgets` · `layout` · `onLayoutChange` · `columns` · `rowHeight` · `readOnly` · `narrowBelow` · `label` · `className` |
 | DataDisplay | **SarakDataGrid** | `count` · `renderRow` · `estimateSize` · `overscan` · `height` · `className` |
 | DataDisplay | **SarakDataTable** | `columns` · `rows` · `rowHeight` · `headerHeight` · `height` · `overscan` · `getRowKey` · `sort` · `onSortChange` · `selectable` · `selectedKeys` · `onSelectionChange` · `onColumnResize` · `onColumnReorder` · `responsive` · `loading` · `error` · `emptyMessage` · `onRetry` · `onRowClick` · `className` · `groupBy` · `renderExpanded` · `expandedKeys` · `onExpandedChange` · `searchQuery` · `onSearchQueryChange` · `totalCount` · `selectAll` · `onSelectAllChange` · `getChildren` · `defaultExpandedDepth` · `reorderable` · `skeletonRows` · `bulkActions` · `columnState` · `defaultColumnState` · `onColumnStateChange` · `views` · `activeView` · `onViewChange` · `onViewSave` · `density` |
 | DataDisplay | **SarakDocumentFrame** | `children` · `format` · `zoom` · `actions` · `label` · `className` |
@@ -1183,7 +1186,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | DataDisplay | **SarakKanban** | `columns` · `onCardMove` · `renderCard` · `onCardClick` · `onCardAdd` · `onColumnAdd` · `onColumnRename` · `onColumnDelete` · `valueFormat` · `columnTotal` · `className` |
 | DataDisplay | **SarakSparkline** | `data` · `variant` · `height` · `strokeWidth` · `fillOpacity` · `baseline` · `label` · `className` · `style` |
 | DataDisplay | **SarakTreeView** | `data` · `manifest` · `lazyLoadingIcon` · `onExpand` · `selectedIds` · `onSelect` · `className` |
-| engines | **SarakChartEngine** | `type` · `data` · `config` · `series` · `stacked` · `orientation` · `legend` · `onPointClick` · `ariaLabel` · `valueFormat` · `height` · `referenceLines` · `referenceBands` · `zoom` · `pieLabel` · `gauge` · `pattern` · `getPointColor` · `showValues` · `funnel` · `axis` |
+| engines | **SarakChartEngine** | `type` · `data` · `config` · `series` · `stacked` · `orientation` · `legend` · `onPointClick` · `ariaLabel` · `valueFormat` · `height` · `referenceLines` · `referenceBands` · `zoom` · `pieLabel` · `gauge` · `pattern` · `getPointColor` · `showValues` · `funnel` · `axis` · `extendOption` |
 | engines | **SarakChatEngine** | `messages` · `onSendMessage` · `isLoading` · `placeholder` |
 | engines | **SarakFlowEngine** | `nodes` · `edges` · `onConnect` |
 | Feedback | **SarakAlert** | `variant` · `title` · `message` · `action` · `onClose` |
@@ -1199,8 +1202,11 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Inputs | **SarakAssigneePicker** | `people` · `value` · `onChange` · `clearable` · `label` · `disabled` · `className` |
 | Inputs | **SarakAutocomplete** | `options` · `searchOptions` · `debounceMs` · `value` · `defaultValue` · `onChange` · `placeholder` · `onOptionSelect` · `selection` · `onSelectionChange` · `onCreate` · `createLabel` |
 | Inputs | **SarakCheckbox** | `label` · `description` · `indeterminate` |
+| Inputs | **SarakCodeInput** | `value` · `onChange` · `onComplete` · `length` · `charset` · `label` · `error` · `disabled` · `autoFocus` · `className` |
+| Inputs | **SarakColorInput** | `value` · `onChange` · `label` · `error` · `disabled` · `required` · `id` · `contrastAgainst` · `minContrast` · `className` |
 | Inputs | **SarakCurrencyInput** | `value` · `defaultValue` · `currency` · `locale` · `label` · `onChange` · `inputMode` |
 | Inputs | **SarakDatePicker** | `label` · `mode` · `value` · `displayFormat` · `locale` · `weekStartsOn` · `placeholder` · `disabled` · `error` · `className` · `style` · `onChange` · `min` · `max` · `isDateDisabled` · `presets` · `allowTyping` · `clearable` |
+| Inputs | **SarakFieldRenderer** | `fields` · `values` · `onChange` · `errors` · `disabled` · `className` |
 | Inputs | **SarakInput** | `label` · `prefixText` · `suffixText` · `affixPlacement` · `icon` · `leftIcon` · `rightIcon` · `error` · `fullWidth` |
 | Inputs | **SarakMaskedInput** | `mask` · `value` · `defaultValue` · `label` · `onChange` · `validate` · `inputMode` |
 | Inputs | **SarakMultiSelect** | `label` · `options` · `value` · `defaultValue` · `placeholder` · `disabled` · `error` · `className` · `style` · `onChange` |
@@ -1209,8 +1215,11 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Inputs | **SarakRichText** | `value` · `defaultValue` · `onChange` · `placeholder` · `label` · `disabled` · `error` · `className` |
 | Inputs | **SarakSearch** | `isOpen` · `onClose` · `items` · `onSelect` |
 | Inputs | **SarakSelect** | `label` · `hideLabel` · `options` · `error` · `fullWidth` |
+| Inputs | **SarakSetPicker** | `options` · `value` · `onChange` · `label` · `searchable` · `filters` · `className` |
+| Inputs | **SarakSignaturePad** | `onChange` · `width` · `height` · `label` · `disabled` · `className` |
 | Inputs | **SarakSlider** | `label` · `valueLabel` |
 | Inputs | **SarakSwitch** | `label` · `description` |
+| Inputs | **SarakTagInput** | `value` · `onChange` · `label` · `placeholder` · `separators` · `max` · `allowDuplicates` · `validate` · `error` · `disabled` · `required` · `className` |
 | Inputs | **SarakTextarea** | `label` · `error` · `fullWidth` |
 | Inputs | **SarakTimePicker** | `label` · `value` · `minuteStep` · `disabled` · `error` · `className` · `style` · `onChange` |
 | Inputs | **SarakUploader** | `label` · `accept` · `maxSize` · `multiple` · `disabled` · `hint` · `error` · `className` · `style` · `onChange` · `onReject` |
@@ -1226,9 +1235,12 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Layouts | **SarakGridItem** | `span` · `rowSpan` · `as` · `children` |
 | Layouts | **SarakScrim** | `onClose` · `ariaLabel` · `className` · `testId` · `style` · `animate` · `visible` · `durationMs` |
 | Layouts | **SarakSplitPane** | `leftPane` · `rightPane` · `minLeftWidth` · `maxLeftWidth` · `defaultLeftWidth` · `className` |
+| Media | **SarakCarousel** | `slides` · `index` · `defaultIndex` · `onIndexChange` · `autoPlay` · `intervalMs` · `loop` · `label` · `className` |
 | Media | **SarakLightbox** | `images` · `isOpen` · `initialIndex` · `onClose` · `onIndexChange` |
+| Media | **SarakMap** | `tileUrl` · `attribution` · `center` · `zoom` · `markers` · `onMarkerClick` · `onViewChange` · `height` · `label` · `className` |
 | Media | **SarakMarkdownRenderer** | `content` · `className` |
 | Media | **SarakPDFViewer** | `src` · `initialPage` · `zoom` · `workerSrc` · `onDownload` · `className` |
+| Media | **SarakQRCode** | `value` · `size` · `errorCorrection` · `foreground` · `background` · `ariaLabel` · `className` |
 | Modals | **SarakDrawer** | `isOpen` · `onClose` · `direction` · `children` · `size` · `className` |
 | Modals | **SarakModal** | `isOpen` · `onClose` · `title` · `children` · `footer` · `steps` · `onComplete` · `disableOverlayClick` · `hideCloseButton` · `className` · `size` |
 | Navigation | **SarakBreadcrumbs** | `items` · `separator` · `onNavigate` · `className` |
@@ -1242,35 +1254,50 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Navigation | **SarakShellUserWidget** | `user` · `logout` · `variant` |
 | Navigation | **SarakSpotlight** | `items` · `shortcut` · `open` · `onOpenChange` · `onSelect` · `placeholder` |
 | Navigation | **SarakStepper** | `steps` · `current` · `orientation` · `className` |
+| Navigation | **SarakWizard** | `steps` · `step` · `defaultStep` · `onStepChange` · `onFinish` · `onCancel` · `className` |
 | Outros | **SARAK_DEFAULT_COLUMN_WIDTH** | _ver arquivo do componente_ |
 | Outros | **SARAK_MIN_COLUMN_WIDTH** | _ver arquivo do componente_ |
 | Outros | **SarakHelpButton** | _ver arquivo do componente_ |
 | Outros | **SarakOverlayProvider** | _ver arquivo do componente_ |
 | Outros | **SarakToastProvider** | _ver arquivo do componente_ |
+| Templates | **SarakApprovalQueue** | `items` · `onApprove` · `onReject` · `selectedIds` · `onSelectedIdsChange` · `busy` · `className` |
+| Templates | **SarakAuditLog** | `entries` · `filters` · `onFiltersChange` · `actors` · `actions` · `page` · `pageSize` · `totalItems` · `onPageChange` · `loading` · `error` · `onRetry` · `className` |
 | Templates | **SarakAuthScreen** | `branding` · `allowRegistration` · `allowMfa` · `labels` · `isRegistering` · `setIsRegistering` · `mfaStep` · `setMfaStep` · `username` · `setUsername` · `password` · `setPassword` · `mfaCode` · `setMfaCode` · `showPassword` · `setShowPassword` · `error` · `isPending` · `onSubmit` · `onSocialLogin` · `socialConfig` · `onForgot` · `errorVariant` · `onChange` · `showCredentials` |
 | Templates | **SarakCardGrid** | `data` · `load` · `updatedAt` · `onRetry` · `label` · `mapping` · `filters` · `variant` |
 | Templates | **SarakCatalogGrid** | `items` · `loading` · `title` · `subtitle` · `categories` · `onSync` · `renderCard` · `emptyMessage` |
 | Templates | **SarakChat** | `onSend` · `loadModels` · `label` |
 | Templates | **SarakDescriptionList** | `items` |
+| Templates | **SarakDiffView** | `fields` · `before` · `after` · `showUnchanged` |
 | Templates | **SarakExpandableMatrix** | `data` · `subItems` · `activeMapping` · `onToggle` · `renderItemHeader` · `manifest` |
 | Templates | **SarakFilterBar** | `ariaLabel` · `children` · `actions` · `clearFilters` |
 | Templates | **SarakFilterSelect** | `col` · `placeholder` · `label` · `filters` · `onChange` · `options` |
 | Templates | **SarakForm** | `data` · `load` · `label` · `mapping` · `mode` · `initialData` · `onSubmit` · `onSuccess` · `warnOnUnsaved` |
 | Templates | **SarakFormSection** | `title` · `description` · `columns` · `disabled` · `children` · `className` |
 | Templates | **SarakImageCard** | `src` · `alt` · `title` · `subtitle` · `children` · `className` · `onClick` |
+| Templates | **SarakLiveStatus** | `status` · `label` · `lastDataAt` · `onRetry` · `className` |
 | Templates | **SarakManagementGrid** | `data` · `load` · `groupBy` · `ghostGroups` · `mapping` · `label` · `description` · `headerActions` · `groupActions` · `formMapping` · `onAction` · `onToggle` · `onDelete` · `onCreate` |
+| Templates | **SarakMemberList** | `members` · `invitations` · `onRemoveMember` · `onResendInvitation` · `onRevokeInvitation` · `renderMemberActions` · `className` |
 | Templates | **SarakPageHeader** | `title` · `subtitle` · `breadcrumbs` · `onBreadcrumbNavigate` · `primaryActions` · `secondaryActions` · `loading` · `loadingLabel` |
 | Templates | **SarakPageTransition** | `children` · `locationKey` |
+| Templates | **SarakPermissionMatrix** | `roles` · `groups` · `granted` · `inherited` · `onToggle` · `readOnly` · `label` · `className` |
 | Templates | **SarakResourceRow** | `title` · `description` · `badges` · `metadata` · `actions` · `href` · `onNavigate` · `layout` · `density` |
+| Templates | **SarakRunProgress** | `title` · `phases` · `progress` · `elapsedMs` · `onCancel` · `cancelling` · `lastError` · `className` |
 | Templates | **SarakSection** | `title` · `description` · `actions` · `children` · `headingLevel` · `variant` · `loading` · `loadingLabel` · `emptyState` · `error` |
 | Templates | **SarakSegmentedControl** | `options` · `ariaLabel` · `value` · `defaultValue` · `onValueChange` |
+| Templates | **SarakSessionList** | `sessions` · `onRevoke` · `onRevokeOthers` · `className` |
+| Templates | **SarakSettingsPage** | `title` · `description` · `sections` · `isDirty` · `saving` · `saveError` · `onSave` · `onDiscard` · `onUnsavedChangesControl` |
 | Templates | **SarakStats** | `data` · `load` · `updatedAt` · `onRetry` · `label` · `mapping` · `metrics` |
 | Templates | **SarakTable** | `onRetry` · `updatedAt` · `emptyMessage` · `loading` · `error` |
 | Templates | **SarakTableView** | `filteredData` · `interactions` · `columns` · `columnKeys` · `columnLabels` · `label` · `role` · `density` · `loading` · `error` · `hasData` · `updatedAt` · `collapseToCards` · `canRefresh` · `showSearch` · `selectable` · `search` · `onSearchChange` · `onRefresh` · `onRetry` · `onRowClick` · `emptyMessage` · `cellDensityClass` · `zebraStriping` · `containerClassName` · `containerStyle` · `displayRows` · `toggleRow` · `toggleGroup` · `renderExpanded` · `footerRows` · `valueColumns` · `locale` · `exportable` · `onExport` |
+| Templates | **SarakUsageMeter** | `label` · `used` · `limit` · `unit` · `warnAt` · `criticalAt` · `className` |
+| Templates | **SarakVersionList** | `versions` · `onRestore` · `openIds` · `onOpenIdsChange` |
 | UX | **SarakContextMenu** | `isOpen` · `position` · `onClose` · `children` · `className` |
+| UX | **SarakGate** | `allowed` · `fallback` · `children` |
+| UX | **SarakPopover** | `trigger` · `children` · `label` · `open` · `defaultOpen` · `onOpenChange` · `placement` · `showClose` · `className` |
 | UX | **SarakTabPanel** | `tabId` · `idPrefix` · `children` |
 | UX | **SarakTabs** | `tabs` · `activeTab` · `onChange` · `onNavigate` · `idPrefix` · `variant` · `fullWidth` · `overflow` · `className` · `listClassName` |
 | UX | **SarakTooltip** | `children` · `content` · `position` · `delay` · `className` · `disabled` |
+| UX | **SarakTour** | `steps` · `open` · `onClose` · `step` · `onStepChange` · `label` |
 
 ### A.2 Contrato de responsividade (gerado do uso real)
 

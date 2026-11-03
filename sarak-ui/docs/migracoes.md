@@ -5,6 +5,81 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 8.0.0 — entradas e utilitários que os sistemas montavam à mão
+
+**Classificação: MINOR (aditivo).** Nada foi removido nem mudou de comportamento: `dedupeKey` e `extendOption` são opcionais e, omitidos, tudo sai como antes.
+**Dependência nova, opcional:** `qrcode` (`>=1.5.0`, peer opcional) — só o `SarakQRCode` a usa, e ele carrega sob demanda. Sem o peer instalado, o componente mostra o
+aviso da lib no lugar do QR. Quem não usa QR não instala nada.
+
+- `SarakColorInput` — `value`, `onChange`, `label`, `error`, `required`, `contrastAgainst`/`minContrast` (alerta, não bloqueio). Só chega ao `onChange` a cor que a validação do tema aceita.
+- `SarakSetPicker` — `options`, `value`, `onChange`, `filters`, `searchable`. Quem guarda a escolha é você.
+- `SarakTagInput` — `value`, `onChange`, `separators`, `max`, `allowDuplicates`, `validate`, `required`.
+- `SarakCodeInput` — `value`, `onChange`, `onComplete`, `length` (6), `charset` (`numeric`).
+- `SarakFieldRenderer` — `fields` (`name`, `type`, `label`, `required`, `options`, `placeholder`), `values`, `onChange(name, value)`, `errors`. É só dado → tela: nada da lista é executado nem vira HTML; tipo desconhecido vira `text`.
+- `SarakWizard` — `steps` (`content`, `validate`), `step`/`defaultStep`, `onStepChange`, `onFinish`, `onCancel`. Só a etapa atual fica montada; `validate`/`onFinish` que rejeitam mostram a mensagem na etapa.
+- `SarakPopover` — `trigger`, `open`/`defaultOpen`/`onOpenChange`, `placement`, `showClose`. Entra na pilha de camadas dos modais e **trava a rolagem da página enquanto está aberto**.
+- `SarakGate` — `allowed`, `fallback`. Esconde interface; **não é controle de acesso**, quem protege o dado é o servidor.
+- `useSarakShortcut(keys, handler, options)`, `sarakShortcutFromEvent`, `sarakFormatShortcut` — o atalho pode mudar a qualquer momento (editável pelo usuário).
+- `SarakCopyButton` — `value`, `onCopy(copied)`; usa a área de transferência e, sem ela, a seleção de texto.
+- `SarakFileAction` — `load(): Promise<Blob>` (a lib não faz rede), `mode`, `filename`. `mode="open"` abre só PDF, imagem raster e texto puro; HTML, SVG e o resto são baixados, porque abertos
+  na origem do sistema seriam executados. `onDone` diz que o arquivo foi entregue ao navegador, não que foi aberto ou salvo.
+- `SarakQRCode` — `value`, `size`, `errorCorrection`, `foreground`/`background` (padrão preto sobre branco, que o leitor exige em qualquer tema). Sob `<Suspense>`.
+- `SarakToast` — `dedupeKey`: enquanto um toast com a mesma chave estiver na tela, `notify` o atualiza, reinicia a duração e devolve o mesmo id.
+- `SarakChartEngine` — `extendOption(option)`: recebe a opção final do ECharts e devolve a que será desenhada; roda por último. Só no ECharts.
+
+---
+
+## 8.0.0 — painel arrastável, mapa, assinatura, tour, carrossel e exportação Excel
+
+**Classificação: MINOR (aditivo).** Nada foi removido nem mudou de comportamento. Nenhuma dependência nova: o painel usa o
+`react-grid-layout`, que já era peer opcional; o mapa, a assinatura, o tour, o carrossel e o escritor de `.xlsx` são código da lib.
+Quem não usa uma peça não paga por ela: o painel e o mapa carregam sob demanda, e o escritor de planilha só é carregado no clique de exportar.
+
+- `SarakDashboardGrid` — `widgets`, `layout` e `onLayoutChange` (quem guarda a posição é você), `columns`, `readOnly`. Setas movem o
+  widget focado, Shift + setas o redimensionam; em contêiner estreito os widgets empilham numa coluna. Importe o CSS do
+  `react-grid-layout` (`react-grid-layout/css/styles.css`) se quiser a alça de redimensionar padrão dele.
+- `SarakMap` — `tileUrl`, `attribution`, `center`, `zoom`, `markers`, `onMarkerClick`. **A lib não embute provedor de mapa nem chave:**
+  você passa o molde da URL dos blocos (`https://…/{z}/{x}/{y}.png`) e a atribuição que o provedor exige. Sem `tileUrl` usável nenhuma
+  requisição sai. Os blocos são `<img>` pedidos pelo navegador, então o gate `network:check` não os enxerga; a CSP do seu sistema
+  precisa liberar `img-src` para o provedor escolhido.
+- `SarakSignaturePad` — devolve `{ png, strokes }`; o nome digitado é a alternativa acessível (devolve `typedName`). **A peça não tem
+  validade jurídica por si:** ela entrega imagem e traços, e quem registra data, autor, origem e prova é o seu sistema.
+- `SarakTour` — passos com `target` (seletor CSS), `onClose('done' | 'skip' | 'escape')`. Quem lembra que o usuário já viu o tour é você.
+- `SarakCarousel` — sem rotação automática por padrão; com `autoPlay` pausa sob o mouse e o foco e não gira com movimento reduzido.
+- `sarakExportXlsx(columns, rows, options)`, `sarakTableToXlsx` e `sarakDownloadXlsx` — ao lado da CSV, com as mesmas colunas, o texto
+  exibido (formato e moeda) e `columnState` para as colunas visíveis. Texto de dado que começa com `=`, `+`, `-`, `@`, tab ou CR sai com
+  `'` na frente, como na CSV.
+
+---
+
+## 8.0.0 — as telas que todo sistema repete: configurações, auditoria, versões, aprovação, execução e acesso
+
+**Classificação: MINOR (aditivo).** Nada foi removido nem mudou de comportamento. Nenhuma dependência nova. Todas as peças são
+apresentacionais: o dado entra por prop, o evento sai por callback, e **a lib não faz rede, não decide permissão nem guarda rascunho**.
+Os textos próprios (rótulos, estados, avisos) saem nos seis idiomas da lib; o que você passa por prop é seu. Estado nunca vai só na cor:
+cada um tem forma e palavra.
+
+- `SarakSettingsPage` — `sections` (`id`, `title`, `content`, `dirty`), `isDirty`, `onSave`, `onDiscard`, `saving`, `saveError`.
+  Índice de seções, barra salvar/descartar sempre à vista e aviso ao fechar a aba (`useSarakUnsavedChanges`). Para barrar a troca de rota,
+  receba o `confirmLeave` em `onUnsavedChangesControl` e ligue ao bloqueio do seu roteador.
+- `SarakAuditLog` — `entries` (`actor`, `action`, `target`, `at`, `detail`), `filters` + `onFiltersChange` (com `actors`/`actions`
+  para os seletores), `page`, `pageSize`, `totalItems`, `onPageChange`. Quem filtra e pagina é o servidor. Compõe `SarakDataTable`, que
+  carrega sob demanda e pede o peer opcional `@tanstack/react-virtual`, como a tabela de sempre.
+- `SarakDiffView` — `fields` (`label`, `before`, `after`) ou `before`/`after` em texto. Cada mudança leva `+`, `−` ou `~` e a palavra
+  Adicionado, Removido ou Alterado. `SarakVersionList` — `versions` (`label`, `author`, `at`, `summary`, `current`, `diff`) e `onRestore`;
+  a comparação com a anterior usa o `SarakDiffView`.
+- `SarakApprovalQueue` — `items` (`title`, `requester`, `at`, `diff`), `onApprove(ids)`, `onReject(ids, reason)`. Rejeitar exige o motivo;
+  há seleção e ação em lote.
+- `SarakRunProgress` — `phases` (`label`, `status`, `progress`), `progress`, `elapsedMs`, `onCancel`, `lastError`. `SarakLiveStatus` —
+  `status` (`connected`, `reconnecting`, `offline`), `lastDataAt`, `onRetry`; a lib só mostra o estado, a conexão é sua.
+  `SarakUsageMeter` — `label`, `used`, `limit`, `unit`, `warnAt`, `criticalAt`.
+- `SarakPermissionMatrix` — `roles`, `groups`, `granted`, `inherited`, `onToggle`, `readOnly`. Grade com uma célula na ordem de Tab; setas,
+  Home, End e PageUp/PageDown movem, Espaço ou Enter alterna. A permissão herdada nunca alterna aqui.
+- `SarakMemberList` — `members`, `invitations`, `onRemoveMember`, `onResendInvitation`, `onRevokeInvitation`. `SarakSessionList` —
+  `sessions` (`device`, `location`, `lastActiveAt`, `current`), `onRevoke`, `onRevokeOthers`; a sessão atual não se encerra daqui.
+
+---
+
 ## 8.0.0 — erro fica no bloco, aviso de alterações não salvas e a base que você reescrevia
 
 **Classificação: MINOR (aditivo).** Nada foi removido do barril. Uma mudança de comportamento merece conferência:

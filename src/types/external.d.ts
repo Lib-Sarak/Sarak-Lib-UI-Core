@@ -9,3 +9,4 @@ declare module 'react-markdown';
 declare module 'date-fns';
 declare module 'clsx';
 declare module 'tailwind-merge';
+declare module 'qrcode';

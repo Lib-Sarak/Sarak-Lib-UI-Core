@@ -10,3 +10,4 @@ export * from './SarakShellSearchWidget';
 export * from './SarakShellThemeToggle';
 export * from './SarakShellUserWidget';
 export * from './SarakShellLanguageSelector';
+export * from './SarakWizard';

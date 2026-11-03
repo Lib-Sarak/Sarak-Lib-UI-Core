@@ -21,6 +21,7 @@ const OPTIONAL_PEERS = new Set([
     'echarts',
     'echarts-for-react',
     'pdfjs-dist',
+    'qrcode',
     'react-markdown',
     'react-syntax-highlighter',
     'reactflow',

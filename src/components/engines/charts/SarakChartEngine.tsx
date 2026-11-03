@@ -25,7 +25,7 @@ const OPTIONAL_RECHARTS_PEER = ['recharts'] as const;
 
 const ECHARTS_ONLY_PROPS = [
     'series', 'stacked', 'orientation', 'legend', 'onPointClick', 'valueFormat', 'height',
-    'referenceLines', 'referenceBands', 'zoom', 'pieLabel', 'gauge', 'pattern', 'getPointColor', 'showValues', 'funnel', 'axis',
+    'referenceLines', 'referenceBands', 'zoom', 'pieLabel', 'gauge', 'pattern', 'getPointColor', 'showValues', 'funnel', 'axis', 'extendOption',
 ] as const;
 const CHART_TYPES_WITH_SHORT_VALUE_KEY: readonly SarakChartType[] = ['funnel', 'treemap', 'histogram'];
 
@@ -99,6 +99,8 @@ export interface SarakChartEngineProps {
     funnel?: SarakChartFunnel;
     /** Marcas do eixo: teto de marcas e abreviação (`1,2 mi`). Omitido, as marcas seguem a largura. */
     axis?: SarakChartAxis;
+    /** Recebe a opção final do ECharts, já montada pela lib, e devolve a que será desenhada; roda por último. Só no ECharts. */
+    extendOption?: (option: Record<string, unknown>) => Record<string, unknown>;
 }
 
 function getUnsupportedRechartsProps(props: SarakChartEngineProps, type: SarakChartType): string[] {
@@ -146,8 +148,10 @@ function hasChartData(props: SarakChartEngineProps, type: SarakChartType, dataKe
 
 function useResolvedChartOption(input: ChartOptionRuntimeInput): ChartOptionFragment | null {
     const { type, props, theme, engine, hasData, locale, width } = input;
-    const option = useMemo(
-        () => engine === 'echarts' && hasData ? buildChartOption({
+    const { extendOption } = props;
+    const option = useMemo(() => {
+        if (engine !== 'echarts' || !hasData) return null;
+        const built = buildChartOption({
             type,
             data: props.data,
             config: props.config,
@@ -169,9 +173,9 @@ function useResolvedChartOption(input: ChartOptionRuntimeInput): ChartOptionFrag
             funnel: props.funnel,
             axis: props.axis,
             width,
-        }) : null,
-        [engine, type, props, theme, hasData, locale, width],
-    );
+        });
+        return extendOption ? extendOption(built) : built;
+    }, [engine, type, props, theme, hasData, locale, width, extendOption]);
     return option;
 }
 

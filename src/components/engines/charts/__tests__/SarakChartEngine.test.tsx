@@ -206,3 +206,19 @@ describe('compatibilidade do Recharts', () => {
         expect(String(chartWarnings[0][0])).toContain('stacked');
     });
 });
+
+describe('extendOption', () => {
+    it('recebe a opção montada pela lib e o que devolve é o que o gráfico desenha', () => {
+        const extendOption = vi.fn((option: Record<string, unknown>) => ({ ...option, animation: false, extra: 'sim' }));
+        const option = readOption({ type: 'bar', extendOption });
+        expect(extendOption).toHaveBeenCalled();
+        expect(Object.keys(extendOption.mock.calls[0][0])).toContain('series');
+        expect(option.animation).toBe(false);
+        expect(option.extra).toBe('sim');
+        expect(option.series).toBeDefined();
+    });
+
+    it('sem extendOption a opção sai como a lib a montou', () => {
+        expect(readOption({ type: 'bar' }).extra).toBeUndefined();
+    });
+});

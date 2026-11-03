@@ -88,6 +88,9 @@ via normal.
 | 62 | Busca do painel: frases vagas ainda abrem no específico. Medido: `quero bordas mais grossas` → `chartThickness`, `cor do título da página` → `textColorMaster`, `velocidade das animações` → `chatAnimationSpeed`, `deixar os cantos mais retos` → `tableBorderRadius`, `como deixo o site escuro` → `shadowColorMode`. Falta dar peso ao token geral no casamento parcial | revisão da busca por intenção | 2026-11-02 | médio |
 | 63 | `SarakAppChrome` e `SarakSection` contêm erro de render e não têm `onError` próprio: quem registrava erro com um boundary em volta do cromo precisa pôr um `SarakErrorBoundary` dentro do conteúdo (`docs/migracoes.md`). Uma prop no cromo seria contrato novo | achado da `plan-151` | 2026-11-02 | médio |
 | 64 | Impressão da `SarakDataTable`: quebra de página real e cabeçalho repetido por folha não foram medidos (a emulação de mídia não pagina); com `groupBy`, grupo recolhido sai recolhido | achado da `plan-152` | 2026-11-02 | baixo |
+| 65 | Boot subiu de 388,1 para 394,7 KB gzip na rc.5. Medido: quase tudo vem dos quatro catálogos novos de texto (`catalogEntries.access`, `advanced`, `entries`, `system`, cerca de 9 KB gzip na fonte), carregados no boot mesmo sem a peça em uso. Separar o texto das peças opcionais por carga sob demanda devolve esse peso. O teto de `boot:measure` é relativo e não acusa esse crescimento | revisão das plans 153 a 155 | 2026-11-02 | médio |
+| 66 | `barrel:check` não enxerga componente em subpasta: `SarakCarousel` ficou fora do barril de `Media` e nada acusou. Só o spec de navegador achou | achado da `plan-155` | 2026-11-02 | médio |
+| 67 | Plural nos textos de lote: a prévia da `plan-153` mostra "Aprovar 1 selecionados" e "Rejeitar 1 selecionados". O catálogo de textos não tem forma singular para esses rótulos | prévia da `plan-153` | 2026-11-02 | baixo |
 
 ---
 

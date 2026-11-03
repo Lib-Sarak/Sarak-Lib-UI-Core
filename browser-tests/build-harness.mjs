@@ -49,12 +49,44 @@ function resolveLocalFile(specifier, resolveDir) {
     return candidates.find((candidate) => fs.existsSync(candidate) && fs.statSync(candidate).isFile());
 }
 
+/**
+ * Aplica o campo `browser` (forma de objeto) do `package.json` do pacote dono do arquivo, como um bundler de
+ * navegador faz: `{ "./lib/index.js": "./lib/browser.js" }` troca o arquivo e `{ "fs": false }` esvazia o módulo.
+ * Devolve `undefined` quando o pacote não declara troca para o alvo.
+ */
+function browserFieldTarget(importerOrFile, target) {
+    let directory = path.dirname(importerOrFile);
+    while (directory !== path.dirname(directory)) {
+        const manifest = path.join(directory, 'package.json');
+        if (fs.existsSync(manifest)) return readBrowserEntry(manifest, directory, target);
+        directory = path.dirname(directory);
+    }
+    return undefined;
+}
+
+function readBrowserEntry(manifest, packageDirectory, target) {
+    const browserField = JSON.parse(fs.readFileSync(manifest, 'utf8')).browser;
+    if (!browserField || typeof browserField !== 'object') return undefined;
+    const keys = path.isAbsolute(target)
+        ? (() => { const relative = `./${path.relative(packageDirectory, target).split(path.sep).join('/')}`; return [relative, relative.replace(/\.js$/, '')]; })()
+        : [target];
+    const key = keys.find((candidate) => candidate in browserField);
+    if (key === undefined) return undefined;
+    const replacement = browserField[key];
+    return replacement === false ? { empty: true } : { path: path.resolve(packageDirectory, replacement) };
+}
+
 function resolveWorkspaceImport(args, libraryEntry) {
     if (args.path.endsWith('.css')) return { path: args.path, namespace: 'empty-css' };
     if (['node:path', 'path', 'node:process', 'process', 'node:url', 'url'].includes(args.path)) {
         return { path: args.path, namespace: 'browser-node-builtin' };
     }
     if (args.path === '@emotion/is-prop-valid') return { path: args.path, namespace: 'empty-optional-dependency' };
+
+    if (args.importer && !args.path.startsWith('.') && !path.isAbsolute(args.path)) {
+        const swapped = browserFieldTarget(args.importer, args.path);
+        if (swapped?.empty) return { path: args.path, namespace: 'empty-optional-dependency' };
+    }
 
     let resolvedPath;
     if (args.path === '@sarak/lib-ui-core') resolvedPath = libraryEntry;
@@ -68,7 +100,10 @@ function resolveWorkspaceImport(args, libraryEntry) {
         }
     }
 
-    return resolvedPath ? { path: resolvedPath, namespace: 'workspace-file' } : undefined;
+    if (!resolvedPath) return undefined;
+    const swapped = browserFieldTarget(resolvedPath, resolvedPath);
+    if (swapped?.empty) return { path: resolvedPath, namespace: 'empty-optional-dependency' };
+    return { path: swapped?.path ?? resolvedPath, namespace: 'workspace-file' };
 }
 
 function loadWorkspaceFile(filePath) {
