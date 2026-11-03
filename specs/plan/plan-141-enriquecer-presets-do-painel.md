@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fazer os presets do painel mostrarem a capacidade e a granularidade da lib"
 objetivo: "Fazer os presets do painel cobrirem a maior parte dos tokens estéticos sem cor, com opções distintas de barras, forma, componentes, fontes, movimento e ícones, de seis a oito opções visíveis por grupo, nome legível nos seis idiomas e nenhum token novo"
 dominio: "Painel de customização / Presets"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "painel", "presets"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[09-temas-e-presets]]", "[[plan-145-personalidades]]", "[[anexos/painel-design-prototipo]]"]

@@ -330,6 +330,8 @@ próprio foi removido — [[003-remocao-backend-proprio]]).
 
 **O gate `network:check`** (`gates/scripts/contrato/check-no-network.mjs`) lê a AST de `src/` e reprova `fetch`, `XMLHttpRequest`, `WebSocket`, `EventSource`, `navigator.sendBeacon` e todo import de `axios`. Exceção mora na `ALLOWLIST` do gate, com o motivo, e a que fica sem ocorrência reprova. O cabeçalho do gate declara o que ele não vê: apelido, acesso por índice e o que o navegador busca sozinho, como `<img>` e `url()`. Ele roda na CI.
 
+**A exceção é o mapa, sempre por URL do consumidor.** `SarakMap` busca blocos de imagem por `<img>`, a partir do `tileUrl` que o consumidor passa, e não há provedor embutido nem chave. Sem `tileUrl` aceito (`https`, `http`, `//` ou caminho absoluto, com `{z}`, `{x}` e `{y}`), nenhuma requisição sai, e o componente mostra o aviso. Os blocos vão com `referrerPolicy="no-referrer"`, e a atribuição do provedor é obrigatória. Como o gate não vê `<img>`, essa exceção não entra na `ALLOWLIST`. Quem a governa é o `img-src` da CSP do consumidor (§3.4).
+
 ## 3.3 Roteamento
 
 **A lib reage à rota; o consumidor é dono da URL** ([[018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]). O cromo entrega a seleção por callback
