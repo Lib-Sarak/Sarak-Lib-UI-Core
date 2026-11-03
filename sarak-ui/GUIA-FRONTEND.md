@@ -766,6 +766,20 @@ const design = { ...estruturaDoTema, colorPalette: 'custom:analogous:#2563eb' };
 - Para ver o resultado antes de aplicar: `sarakResolvePalette(valor, 'light' | 'dark')`. No painel, o usuário escolhe uma
   pronta ou cria uma a partir de uma cor; o valor segue no tema salvo, pelo `onSave` que você já tem.
 
+### Estrutura vem da Personalidade
+
+A mesma separação vale para o lado da estrutura. No painel, a decisão **Tema** abre pelas **Personalidades**: dez atalhos que aplicam de uma
+vez a forma, as fontes, a densidade, as barras, a tabela, o movimento e os ícones, **sem tocar na cor**. Paleta e Personalidade combinam
+livremente (dez × as paletas prontas), e escolher é rascunho até o "Aplicar", como todo preset.
+
+- **A Personalidade não escreve cor.** O que muda nas barras é o **papel** (`sidebarTone`, `topbarTone`: `neutral`, `surface`, `primary`,
+  `secondary` ou `inverse`); quem calcula o fundo e o texto legível é a paleta. O papel só vale com `colorPalette` válida, e uma cor
+  declarada em `sidebarColor`/`topbarColor` continua vencendo.
+- **Ajuste manual pergunta.** Trocar de Personalidade com estrutura ajustada à mão abre uma pergunta; só "Descartar ajustes" a perde.
+- **"Usar minha marca"** tem um campo opcional de Personalidade: a marca dá a cor, a Personalidade dá a estrutura.
+- **Seu tema** continua sendo estrutura + paleta. Para que o tema nasça com o caráter de barra de uma Personalidade, copie os tokens de barra dela
+  (tons, item ativo e borda) e deixe a cor com a paleta.
+
 ## 3.10 Multidispositivo → o contrato de responsividade
 
 **É zero-config.** Você **não escreve CSS nem media query** para as telas funcionarem em

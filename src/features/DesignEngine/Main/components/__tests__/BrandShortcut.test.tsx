@@ -5,6 +5,7 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import SarakUIProvider from '../../../../../core/Provider/SarakUIProvider';
 import { BrandShortcut } from '../BrandShortcut';
+import { getPersonality } from '../../../../../core/Design/presets/components/personalities';
 import { TYPOGRAPHY_PRESETS } from '../../../../../core/Design/presets/components/typography';
 
 const FIRST_PAIR = TYPOGRAPHY_PRESETS[0];
@@ -56,5 +57,41 @@ describe('BrandShortcut', () => {
         expect(updateDraft).toHaveBeenCalledWith('bodyFont', expect.any(String));
         expect(setPendingBranding).toHaveBeenCalledWith({ companyName: 'Acme', logoBase64: null });
         expect(onPeek).toHaveBeenLastCalledWith(null);
+    });
+
+    it('a Personalidade é opcional: sem escolher, "Gerar meu tema" não toca na estrutura', async () => {
+        const user = userEvent.setup();
+        const { updateDraft } = renderBrand();
+        expect(screen.getByLabelText('Personalidade (opcional)')).toHaveValue('');
+
+        await user.click(screen.getByRole('button', { name: 'Gerar meu tema' }));
+
+        await waitFor(() => expect(updateDraft).toHaveBeenCalledWith('bodyFont', expect.any(String)));
+        expect(updateDraft).not.toHaveBeenCalledWith('sidebarTone', expect.anything());
+    });
+
+    it('com Personalidade, a prévia e o "Gerar meu tema" levam a estrutura dela, sem cor, e as fontes dela', async () => {
+        const user = userEvent.setup();
+        const { onPeek, updateDraft } = renderBrand();
+        fireEvent.change(screen.getByLabelText('Personalidade (opcional)'), { target: { value: 'personality-glass' } });
+        const glass = getPersonality('personality-glass')!;
+
+        await waitFor(() => expect(onPeek).toHaveBeenLastCalledWith(expect.objectContaining({ sidebarTone: 'surface', headingFont: glass.design.headingFont, colorPalette: expect.stringMatching(/^custom:analogous:#/) })));
+        await user.click(screen.getByRole('button', { name: 'Gerar meu tema' }));
+
+        await waitFor(() => expect(updateDraft).toHaveBeenCalledWith('headingFont', glass.design.headingFont));
+        expect(updateDraft).toHaveBeenCalledWith('navigationStyle', 'topbar');
+        expect(updateDraft).toHaveBeenCalledWith('colorPalette', expect.stringMatching(/^custom:analogous:#/));
+    });
+
+    it('o par de fontes escolhido à mão vence as fontes da Personalidade', async () => {
+        const user = userEvent.setup();
+        const { updateDraft } = renderBrand();
+        fireEvent.change(screen.getByLabelText('Personalidade (opcional)'), { target: { value: 'personality-glass' } });
+        const otherPair = TYPOGRAPHY_PRESETS.find((preset) => preset.design.headingFont !== FIRST_PAIR.design.headingFont)!;
+        fireEvent.change(screen.getByLabelText('Estilo das fontes'), { target: { value: otherPair.id } });
+        await user.click(screen.getByRole('button', { name: 'Gerar meu tema' }));
+
+        await waitFor(() => expect(updateDraft).toHaveBeenLastCalledWith('bodyFont', otherPair.design.bodyFont));
     });
 });

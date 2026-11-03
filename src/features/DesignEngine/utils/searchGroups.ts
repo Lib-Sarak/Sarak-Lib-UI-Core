@@ -1,6 +1,7 @@
 import type { SarakDesignToken } from '../../../core/Design/types';
 import type { DecisionId, TokenLocation } from './decisions';
 import { matchesText } from './token-search';
+import { PERSONALITIES } from '../../../core/Design/presets/components/personalities';
 import { PRESET_GROUPS } from '../../../core/Design/presets/components/registry';
 import type { ComponentPreset } from '../../../core/Design/presets/components/cards';
 
@@ -71,7 +72,11 @@ const MAX_PRESET_HITS = 8;
  */
 export const findPresetHits = (query: string, resolveName: (preset: ComponentPreset) => string, limit = MAX_PRESET_HITS): PresetHit[] => {
     const hits: PresetHit[] = [];
-    PRESET_GROUPS.forEach((group) => group.presets.forEach((preset) => {
+    const searchable = [
+        { id: 'personalities', decision: 'theme' as DecisionId, presets: PERSONALITIES as readonly ComponentPreset[] },
+        ...PRESET_GROUPS.map((group) => ({ id: group.id, decision: group.decision as DecisionId, presets: group.presets })),
+    ];
+    searchable.forEach((group) => group.presets.forEach((preset) => {
         const name = resolveName(preset);
         const matched = matchesText(query, name) || (preset.keywords ?? []).some((word) => matchesText(query, word));
         if (matched && !hits.some((hit) => hit.presetId === preset.id)) hits.push({ presetId: preset.id, groupId: group.id, decisionId: group.decision, name });

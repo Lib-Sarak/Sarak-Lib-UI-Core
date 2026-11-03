@@ -29,6 +29,7 @@ const useFitScale = (referenceWidth: number, enabled: boolean): [React.RefObject
         if (!enabled || !node) return undefined;
         const fit = (): void => setScale(node.clientWidth / referenceWidth);
         fit();
+        if (typeof ResizeObserver === 'undefined') return undefined;
         const observer = new ResizeObserver(fit);
         observer.observe(node);
         return () => observer.disconnect();

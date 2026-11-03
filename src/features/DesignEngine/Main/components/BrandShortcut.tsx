@@ -4,7 +4,10 @@ import { SarakInput } from '../../../../components/atomic/Inputs/SarakInput';
 import { SarakSelect } from '../../../../components/atomic/Inputs/SarakSelect';
 import { ColorControl, MediaUploaderControl } from '../../components/DesignControls';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
+import { PERSONALITIES, getPersonality } from '../../../../core/Design/presets/components/personalities';
+import { usePresetText } from '../../hooks/usePresetText';
 import { usePaletteSelection } from '../hooks/usePaletteSelection';
+import { barTonesOf, buildPaletteDraftPatch } from '../utils/paletteDraft';
 import { FONT_OPTIONS, HEX_COLOR, fontPresetOf, paletteValueOf, useBrandForm } from '../hooks/useBrandForm';
 import type { PeekHandler } from '../../Canvas/components/peek';
 import type { PendingBranding } from '../hooks/usePendingBranding';
@@ -26,15 +29,25 @@ interface BrandShortcutProps {
 /** "Usar minha marca": nome, logo, cor principal e par de fontes viram um tema no rascunho; nada é gravado até o "Aplicar". */
 export const BrandShortcut: React.FC<BrandShortcutProps> = ({ draft, appliedDesign, updateDraft, onPeek, setPendingBranding, onGenerated, initialName = '' }) => {
     const text = useLibraryText();
+    const presetText = usePresetText();
     const { form, change } = useBrandForm(draft, initialName, onPeek);
+    const personalityOptions = [{ value: '', label: presetText.ui('brandPersonalityNone') }, ...PERSONALITIES.map((personality) => ({ value: personality.id, label: presetText.preset(personality).name }))];
     const selectPalette = usePaletteSelection({ draft: draft as unknown as Record<string, unknown>, appliedDesign, updateDraft });
 
     const generate = async () => {
         const value = paletteValueOf(form.color);
         if (value) await selectPalette(value);
-        const fonts = fontPresetOf(form.fontId).design;
-        updateDraft('headingFont', fonts.headingFont as SarakTokenValue);
-        updateDraft('bodyFont', fonts.bodyFont as SarakTokenValue);
+        const personality = getPersonality(form.personalityId);
+        Object.entries(personality?.design ?? {}).forEach(([tokenId, tokenValue]) => updateDraft(tokenId, tokenValue as SarakTokenValue));
+        if (personality && value) {
+            // O papel das barras mudou com a Personalidade: as cores delas se calculam de novo com o papel novo.
+            Object.entries(buildPaletteDraftPatch(value, draft.mode === 'light' ? 'light' : 'dark', [], barTonesOf(personality.design))).forEach(([tokenId, tokenValue]) => updateDraft(tokenId, tokenValue));
+        }
+        if (!personality || form.fontTouched) {
+            const fonts = fontPresetOf(form.fontId).design;
+            updateDraft('headingFont', fonts.headingFont as SarakTokenValue);
+            updateDraft('bodyFont', fonts.bodyFont as SarakTokenValue);
+        }
         setPendingBranding({ companyName: form.name || undefined, logoBase64: form.logo });
         onPeek?.(null);
         onGenerated();
@@ -46,6 +59,7 @@ export const BrandShortcut: React.FC<BrandShortcutProps> = ({ draft, appliedDesi
             <MediaUploaderControl label={text('brandLogo')} value={form.logo} onChange={(logo) => change({ logo })} />
             <ColorControl label={text('brandColor')} value={form.color} onChange={(color) => { if (HEX_COLOR.test(color)) change({ color }); }} />
             <SarakSelect label={text('brandFontStyle')} fullWidth value={form.fontId} options={FONT_OPTIONS} onChange={(event) => change({ fontId: event.target.value })} />
+            <SarakSelect label={presetText.ui('brandPersonality')} fullWidth value={form.personalityId} options={personalityOptions} onChange={(event) => change({ personalityId: event.target.value })} />
             <SarakButton type="button" variant="primary" fullWidth onClick={() => { void generate(); }}>{text('brandGenerate')}</SarakButton>
             <p className="text-[length:var(--sarak-type-scale-caption,12px)] text-[var(--theme-muted)]">{text('brandNote')}</p>
         </div>

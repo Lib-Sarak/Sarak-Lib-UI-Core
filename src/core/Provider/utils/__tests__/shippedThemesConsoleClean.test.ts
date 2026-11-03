@@ -5,7 +5,7 @@ import { sarakGetDefaultDesignState } from '../../../Design/master-map';
 import { SARAK_ALL_THEMES } from '../../../Design/presets/themes/all';
 import { minimalistAiry } from '../../../Design/presets/themes/minimalist-airy';
 import { composeThemeForMode } from '../../../Design/presets/themes/compose';
-import { sarakResolvePalette } from '../../../Design/palette/resolve';
+import { resolvePaletteForDesign, sarakResolvePalette } from '../../../Design/palette/resolve';
 
 /**
  * Spec 40.4 L4 — verificação de propagação: com o drift reconciliado (L2), o boot
@@ -85,6 +85,8 @@ describe('Caracterização — minimalist-airy reconciliado (Spec 40.4 L4)', () 
         const merged = { ...sarakGetDefaultDesignState(), ...(minimalistAiry.design as Record<string, unknown>) };
         const result = validateDesign(merged);
         const palette = sarakResolvePalette(String(minimalistAiry.design.colorPalette), 'light');
+        // As barras seguem o papel de cor que o tema declara (`sidebarTone`/`topbarTone`): a paleta com o papel, não a neutra.
+        const barPalette = resolvePaletteForDesign(minimalistAiry.design as Record<string, unknown>, undefined, 'light');
         const composed = validateDesign(composeThemeForMode(minimalistAiry as never, 'light') as unknown as Record<string, unknown>);
         const currentThemeAppearance = {
             mode: 'light',
@@ -108,8 +110,8 @@ describe('Caracterização — minimalist-airy reconciliado (Spec 40.4 L4)', () 
             primaryColor: palette.primaryColor,
             accentColor: palette.accentColor,
             colorBgBody: palette.colorBgBody,
-            sidebarColor: palette.sidebarColor,
-            topbarColor: palette.topbarColor,
+            sidebarColor: barPalette.sidebarColor,
+            topbarColor: barPalette.topbarColor,
         }));
     });
 });

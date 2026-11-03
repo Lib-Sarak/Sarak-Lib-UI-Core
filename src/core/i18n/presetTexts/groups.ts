@@ -2,6 +2,7 @@
 type SixTuple = readonly [string, string, string, string, string, string];
 
 export const PRESET_GROUP_TITLES: Readonly<Record<string, SixTuple>> = {
+    personalities: ['Personalidades', 'Personalities', 'Personalidades', 'Personnalités', 'Persönlichkeiten', 'Personalità'],
     sidebar: ['Barra lateral', 'Sidebar', 'Barra lateral', 'Barre latérale', 'Seitenleiste', 'Barra laterale'],
     topbar: ['Barra de topo', 'Top bar', 'Barra superior', 'Barre du haut', 'Obere Leiste', 'Barra superiore'],
     contentWidth: ['Largura do conteúdo', 'Content width', 'Ancho del contenido', 'Largeur du contenu', 'Inhaltsbreite', 'Larghezza del contenuto'],
@@ -51,10 +52,45 @@ export const PRESET_FONT_CATEGORY_TITLES: Readonly<Record<string, SixTuple>> = {
     Handwriting: ['Manuscritas', 'Handwriting', 'Manuscritas', 'Manuscrites', 'Handschrift', 'Calligrafiche'],
 };
 
-export const PRESET_UI_TEXT: Readonly<Record<'seeAll' | 'seeFewer' | 'seeAllCount' | 'searchOptionsPresets' | 'newBadge', SixTuple>> = {
+type PresetUiTextKey = 'seeAll' | 'seeFewer' | 'seeAllCount' | 'searchOptionsPresets' | 'newBadge' | 'personalityHint' | 'personalityKeepTitle' | 'personalityKeepMessageOne'
+    | 'personalityKeepMessageMany' | 'personalityKeepDiscard' | 'personalityKeepConfirm' | 'brandPersonality' | 'brandPersonalityNone';
+
+export const PRESET_UI_TEXT: Readonly<Record<PresetUiTextKey, SixTuple>> = {
     seeAll: ['Ver todas', 'See all', 'Ver todas', 'Tout voir', 'Alle anzeigen', 'Vedi tutte'],
     seeFewer: ['Ver menos', 'See fewer', 'Ver menos', 'Voir moins', 'Weniger anzeigen', 'Vedi meno'],
     seeAllCount: ['Ver todas ({count})', 'See all ({count})', 'Ver todas ({count})', 'Tout voir ({count})', 'Alle anzeigen ({count})', 'Vedi tutte ({count})'],
     searchOptionsPresets: ['Opções', 'Options', 'Opciones', 'Options', 'Optionen', 'Opzioni'],
     newBadge: ['Novo', 'New', 'Nuevo', 'Nouveau', 'Neu', 'Nuovo'],
+    personalityHint: [
+        'Muda a forma, as fontes, a densidade, as barras, a tabela, o movimento e os ícones de uma vez. A cor fica a da paleta escolhida.',
+        'Changes the shape, fonts, density, bars, table, motion and icons at once. The color stays the chosen palette.',
+        'Cambia la forma, las fuentes, la densidad, las barras, la tabla, el movimiento y los iconos de una vez. El color sigue siendo el de la paleta elegida.',
+        'Change la forme, les polices, la densité, les barres, le tableau, le mouvement et les icônes en une fois. La couleur reste celle de la palette choisie.',
+        'Ändert Form, Schriften, Dichte, Leisten, Tabelle, Bewegung und Symbole auf einmal. Die Farbe bleibt die der gewählten Palette.',
+        'Cambia forma, font, densità, barre, tabella, movimento e icone in una volta. Il colore resta quello della palette scelta.',
+    ],
+    personalityKeepTitle: [
+        'Manter os ajustes de estrutura?', 'Keep your structure adjustments?', '¿Mantener los ajustes de estructura?',
+        'Conserver vos réglages de structure ?', 'Strukturanpassungen beibehalten?', 'Mantenere le modifiche alla struttura?',
+    ],
+    personalityKeepMessageOne: [
+        'Você ajustou 1 item de estrutura à mão. A nova personalidade pode mantê-lo ou trocá-lo pelo dela.',
+        'You adjusted 1 structure item by hand. The new personality can keep it or replace it with its own.',
+        'Ajustaste 1 elemento de estructura a mano. La nueva personalidad puede mantenerlo o reemplazarlo por el suyo.',
+        'Vous avez réglé 1 élément de structure à la main. La nouvelle personnalité peut le garder ou le remplacer par le sien.',
+        'Sie haben 1 Strukturelement von Hand angepasst. Die neue Persönlichkeit kann es behalten oder durch ihr eigenes ersetzen.',
+        'Hai modificato a mano 1 elemento della struttura. La nuova personalità può mantenerlo o sostituirlo con il suo.',
+    ],
+    personalityKeepMessageMany: [
+        'Você ajustou {count} itens de estrutura à mão. A nova personalidade pode mantê-los ou trocá-los pelos dela.',
+        'You adjusted {count} structure items by hand. The new personality can keep them or replace them with its own.',
+        'Ajustaste {count} elementos de estructura a mano. La nueva personalidad puede mantenerlos o reemplazarlos por los suyos.',
+        'Vous avez réglé {count} éléments de structure à la main. La nouvelle personnalité peut les garder ou les remplacer par les siens.',
+        'Sie haben {count} Strukturelemente von Hand angepasst. Die neue Persönlichkeit kann sie behalten oder durch ihre eigenen ersetzen.',
+        'Hai modificato a mano {count} elementi della struttura. La nuova personalità può mantenerli o sostituirli con i suoi.',
+    ],
+    personalityKeepDiscard: ['Descartar ajustes', 'Discard adjustments', 'Descartar ajustes', 'Abandonner les réglages', 'Anpassungen verwerfen', 'Scarta le modifiche'],
+    personalityKeepConfirm: ['Manter ajustes', 'Keep adjustments', 'Mantener ajustes', 'Garder les réglages', 'Anpassungen behalten', 'Mantieni le modifiche'],
+    brandPersonality: ['Personalidade (opcional)', 'Personality (optional)', 'Personalidad (opcional)', 'Personnalité (facultatif)', 'Persönlichkeit (optional)', 'Personalità (facoltativa)'],
+    brandPersonalityNone: ['Nenhuma: manter a estrutura atual', 'None: keep the current structure', 'Ninguna: mantener la estructura actual', 'Aucune : garder la structure actuelle', 'Keine: aktuelle Struktur beibehalten', 'Nessuna: mantieni la struttura attuale'],
 };

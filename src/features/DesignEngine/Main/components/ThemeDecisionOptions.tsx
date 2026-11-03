@@ -1,6 +1,8 @@
 import React from 'react';
 import { PresetsCatalog, type PresetGroup } from '../../Canvas/components/PresetsCatalog';
 import { PaletteSection } from './PaletteSection';
+import { PersonalityCatalog } from '../../Canvas/components/PersonalityCatalog';
+import { usePersonalitySelection } from '../hooks/usePersonalitySelection';
 import { ThemeGlobalSettings } from './ThemeGlobalSettings';
 import { usePresetText } from '../../hooks/usePresetText';
 import { getPresetGroup } from '../../../../core/Design/presets/components/registry';
@@ -25,6 +27,8 @@ export interface DecisionOptionsContext extends ColumnTokenProps {
     draftMode: 'light' | 'dark';
     /** Tokens que o nível 2 já mostra por pergunta: o bloco global não os repete. */
     omitTokenIds?: ReadonlySet<string>;
+    /** O tema escolhido na galeria e ainda não aplicado: a Personalidade não conta o que ele trouxe como ajuste manual. */
+    draftThemeId?: string;
 }
 
 const GROUP_TITLE: Partial<Record<OptionGroup, LibraryTextKey>> = {
@@ -42,7 +46,13 @@ const PRESET_GROUP: Partial<Record<OptionGroup, PresetGroup>> = {
 /** Todo grupo do registro de presets monta o catálogo dele, mesmo sem entrada na tabela acima. */
 const presetGroupOf = (group: OptionGroup): PresetGroup | undefined => PRESET_GROUP[group] ?? (getPresetGroup(group) ? group : undefined);
 
+const PersonalityBody: React.FC<{ context: DecisionOptionsContext }> = ({ context }) => {
+    const select = usePersonalitySelection({ draft: context.draft, sarak: context.sarak, draftThemeId: context.draftThemeId, onApplyPreset: context.onApplyPreset });
+    return <PersonalityCatalog draft={context.sampleDraft ?? context.draft} currentMode={context.currentMode} onSelect={(personality) => { void select(personality); }} onPeek={context.onPeek} />;
+};
+
 const GroupBody: React.FC<{ group: OptionGroup; context: DecisionOptionsContext }> = ({ group, context }) => {
+    if (group === 'personalities') return <PersonalityBody context={context} />;
     const presetGroup = presetGroupOf(group);
     if (presetGroup) {
         return (
@@ -88,7 +98,7 @@ export const ThemeDecisionOptions: React.FC<{ groups: readonly OptionGroup[]; co
         <>
             {groups.map((group) => {
                 const titleKey = GROUP_TITLE[group];
-                const title = titleKey ? text(titleKey) : (getPresetGroup(group) ? presetText.group(group) : undefined);
+                const title = titleKey ? text(titleKey) : (getPresetGroup(group) || group === 'personalities' ? presetText.group(group) : undefined);
                 return (
                     <section key={group} aria-label={title} data-option-group={group} className="flex flex-col gap-3">
                         {title && <h3 className="text-xs font-semibold text-[var(--theme-muted)]">{title}</h3>}

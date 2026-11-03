@@ -5,7 +5,7 @@ import { SARAK_ALL_THEMES } from '../all';
 import { resolveThemeForMode } from '../color-engine';
 import { resolvePalette, sarakResolvePalette } from '../../../palette/resolve';
 import { parsePaletteValue } from '../../../palette/parser';
-import { evaluatePair } from '../../../../../../gates/scripts/audit/verify_contrast';
+import { evaluatePair, pairsFor } from '../../../../../../gates/scripts/audit/verify_contrast';
 import { PAIRS } from '../../../palette/contrast-pairs';
 import type { SarakTokenValue } from '../../../types';
 
@@ -152,13 +152,14 @@ describe('composeThemeDesign — o texto da paleta se corrige contra o fundo que
                     ...(theme.contraparte ? { contraparte: theme.contraparte } : {}),
                 }, mode) as Record<string, unknown>;
                 const input = parsePaletteValue(resolved.colorPalette)!;
-                const alone = resolvePalette(input, mode);
+                // O tom das barras muda o fundo calculado e não é correção de texto: a referência já o leva.
+                const alone = resolvePalette(input, mode, { sidebarTone: resolved.sidebarTone, topbarTone: resolved.topbarTone });
                 const withDeclared = resolvePalette(input, mode, resolved);
                 const moved = Object.keys(alone).filter((tokenId) => resolved[tokenId] === undefined && withDeclared[tokenId] !== alone[tokenId]);
 
                 moved.forEach((tokenId) => expect(textTokens.has(tokenId), `${theme.id}/${mode}/${tokenId} não é texto`).toBe(true));
                 const design = { ...sarakGetDefaultDesignState(), ...withDeclared, ...resolved } as never;
-                PAIRS.forEach((pair) => {
+                pairsFor(design as unknown as Record<string, unknown>).forEach((pair) => {
                     const result = evaluatePair(pair, design);
                     if (!result.pulado) expect(result.pass, `${theme.id}/${mode} ${pair.fg} → ${pair.bgChain.join(' → ')}`).toBe(true);
                 });

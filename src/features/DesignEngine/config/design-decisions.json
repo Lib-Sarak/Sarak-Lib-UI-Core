@@ -4,6 +4,7 @@
         "textKey": "decisionTheme",
         "pillars": [],
         "groups": [
+            "personalities",
             "themes"
         ],
         "optionSections": [],

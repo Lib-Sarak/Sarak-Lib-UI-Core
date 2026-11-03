@@ -9,6 +9,7 @@ import { DECISIONS } from '../../../utils/decisions';
 vi.mock('../../../Canvas/components/PresetsCatalog', () => ({
     PresetsCatalog: ({ group }: { group: string }) => <div data-testid={`catalog-${group}`} />,
 }));
+vi.mock('../../../Canvas/components/PersonalityCatalog', () => ({ PersonalityCatalog: () => <div data-testid="catalog-personalities" /> }));
 vi.mock('../PaletteSection', () => ({ PaletteSection: () => <div data-testid="palette-section" /> }));
 vi.mock('../ThemeGlobalSettings', () => ({ ThemeGlobalSettings: () => <div data-testid="global-block" /> }));
 
@@ -24,7 +25,7 @@ const mounted = (id: string): string[] => {
 
 describe('ThemeDecisionOptions', () => {
     it.each([
-        ['theme', ['catalog-themes']],
+        ['theme', ['catalog-personalities', 'catalog-themes']],
         ['colors', ['palette-section']],
         ['fonts', ['catalog-fontPairs', 'catalog-typeScale', 'catalog-fonts']],
         ['shape', ['catalog-cards', 'catalog-corners', 'catalog-density', 'catalog-shadow', 'catalog-shadowDirection', 'catalog-border', 'catalog-material', 'catalog-glass', 'catalog-atmosphere', 'catalog-gradient']],

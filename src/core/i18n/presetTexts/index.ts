@@ -6,6 +6,7 @@ import { PRESET_TEXTS_SHAPE_B } from './shapeB';
 import { PRESET_TEXTS_COMPONENTS_A } from './componentsA';
 import { PRESET_TEXTS_COMPONENTS_B } from './componentsB';
 import { PRESET_TEXTS_FONTS } from './fonts';
+import { PRESET_TEXTS_PERSONALITIES } from './personalities';
 import { BUTTON_STYLE_DESCRIPTION, BUTTON_STYLE_NAMES, FONT_CATEGORY_DESCRIPTIONS, TEXTURE_DESCRIPTION_TEMPLATES, TEXTURE_NAMES } from './textures';
 import { PRESET_FAMILY_TITLES, PRESET_FONT_CATEGORY_TITLES, PRESET_GROUP_TITLES, PRESET_UI_TEXT } from './groups';
 import { PRESET_TEXT_LANGUAGES, type PresetTextTable } from './types';
@@ -15,7 +16,7 @@ import { PRESET_TEXT_LANGUAGES, type PresetTextTable } from './types';
  * painel importa este módulo, e o painel é um pedaço sob demanda. O português é o `name`/`description` do próprio preset.
  */
 export const PRESET_TEXT_TABLE: PresetTextTable = {
-    ...PRESET_TEXTS_LAYOUT, ...PRESET_TEXTS_SHAPE_A, ...PRESET_TEXTS_SHAPE_B, ...PRESET_TEXTS_COMPONENTS_A, ...PRESET_TEXTS_COMPONENTS_B, ...PRESET_TEXTS_FONTS,
+    ...PRESET_TEXTS_LAYOUT, ...PRESET_TEXTS_SHAPE_A, ...PRESET_TEXTS_SHAPE_B, ...PRESET_TEXTS_COMPONENTS_A, ...PRESET_TEXTS_COMPONENTS_B, ...PRESET_TEXTS_FONTS, ...PRESET_TEXTS_PERSONALITIES,
 };
 
 export interface PresetTextSource {

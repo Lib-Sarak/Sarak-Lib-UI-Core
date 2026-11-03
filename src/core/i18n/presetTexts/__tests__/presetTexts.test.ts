@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest';
 import { ALL_COMPONENT_PRESETS, PRESET_GROUPS } from '../../../Design/presets/components/registry';
+import { PERSONALITIES } from '../../../Design/presets/components/personalities';
 import { TEXTURE_FAMILIES } from '../../../Design/presets/components/textureFamilies';
 import { THEME_FONTS } from '../../../Design/schema/typography';
 import { LANGUAGES } from '../../languages';
@@ -31,7 +32,7 @@ describe('textos dos presets do painel — seis idiomas', () => {
     });
 
     it('a tabela não guarda texto de preset que não existe mais', () => {
-        const known = new Set(ALL_COMPONENT_PRESETS.map((preset) => preset.id));
+        const known = new Set([...ALL_COMPONENT_PRESETS, ...PERSONALITIES].map((preset) => preset.id));
         expect(Object.keys(PRESET_TEXT_TABLE).filter((id) => !known.has(id))).toEqual([]);
     });
 
@@ -54,6 +55,30 @@ describe('textos dos presets do painel — seis idiomas', () => {
             return names.filter((name, index) => names.indexOf(name) !== index).map((name) => `${language}:${group.id}:${name}`);
         }));
         expect(repeated).toEqual([]);
+    });
+});
+
+describe('textos das Personalidades — seis idiomas', () => {
+    it.each(LANGUAGE_IDS)('%s: toda Personalidade tem nome e descrição, e fora do português eles mudam', (language) => {
+        PERSONALITIES.forEach((personality) => {
+            const text = resolvePresetText(personality, language);
+            expect(text.name.trim(), personality.id).not.toBe('');
+            expect(text.description.trim(), personality.id).not.toBe('');
+            if (language !== 'pt') expect(text.description, personality.id).not.toBe(personality.description);
+            expect(text.name + text.description, personality.id).not.toMatch(JARGON);
+        });
+    });
+
+    it.each(LANGUAGE_IDS)('%s: os nomes das Personalidades não se repetem', (language) => {
+        const names = PERSONALITIES.map((personality) => resolvePresetText(personality, language).name);
+        expect(new Set(names).size).toBe(names.length);
+    });
+
+    it.each(LANGUAGE_IDS)('%s: o título do grupo e os textos da pergunta de descarte existem', (language) => {
+        expect(presetGroupTitle('personalities', language)).not.toBe('personalities');
+        expect(presetUiText('personalityKeepMessageMany', language, { count: 3 })).toContain('3');
+        (['personalityHint', 'personalityKeepTitle', 'personalityKeepMessageOne', 'personalityKeepDiscard', 'personalityKeepConfirm', 'brandPersonality', 'brandPersonalityNone'] as const)
+            .forEach((key) => expect(presetUiText(key, language), key).not.toBe(''));
     });
 });
 

@@ -24,11 +24,11 @@ interface PresetGroupCatalogProps {
 /** Os grupos de barra mostram a lateral ou o topo; o resto, o componente da opção. */
 const NAVIGATION_STYLE: Readonly<Record<string, string>> = { sidebar: 'sidebar', topbar: 'topbar' };
 /** Na amostra de uma barra só ficam a navegação e a marca: os widgets não são o que o preset desenha, e o que o tom contrastante faz com eles é da barra, não da opção. */
-const BAR_WIDGETS_OFF = { chromeSearchPosition: 'off', chromeUserPosition: 'off', chromeNotificationsPosition: 'off', preferenceModePosition: 'off', preferenceLanguagePosition: 'off', preferenceFontSizePosition: 'off', preferenceNavigationStylePosition: 'off', preferenceNavCollapsePosition: 'off' } as Partial<SarakDesignState>;
+export const BAR_WIDGETS_OFF = { chromeSearchPosition: 'off', chromeUserPosition: 'off', chromeNotificationsPosition: 'off', preferenceModePosition: 'off', preferenceLanguagePosition: 'off', preferenceFontSizePosition: 'off', preferenceNavigationStylePosition: 'off', preferenceNavCollapsePosition: 'off' } as Partial<SarakDesignState>;
 const WIDE_GROUPS: ReadonlySet<string> = new Set(['sidebar', 'topbar', 'fontPairs', 'typeScale', 'fonts', 'cards']);
 
 /** Pede a fonte do preset antes de desenhar: sem isto a amostra de um par mostra a fonte do rascunho. */
-const useFontsOf = (preset: ComponentPreset): void => {
+export const useFontsOf = (preset: ComponentPreset): void => {
     const requestFont = useRequestFont();
     const { headingFont, bodyFont } = preset.design;
     React.useEffect(() => {
@@ -40,7 +40,7 @@ const useFontsOf = (preset: ComponentPreset): void => {
  * As cores da barra que o papel (`sidebarTone`/`topbarTone`) calcula: o rascunho traz as cores já gravadas, e o papel só
  * aparece na amostra se a paleta for recalculada com ele. Só as chaves da barra entram, para o resto da amostra ficar como está.
  */
-const barToneColors = (draft: Partial<SarakDesignState> | undefined, overlay: Partial<SarakDesignState>, mode: 'light' | 'dark'): Partial<SarakDesignState> => {
+export const barToneColors = (draft: Partial<SarakDesignState> | undefined, overlay: Partial<SarakDesignState>, mode: 'light' | 'dark'): Partial<SarakDesignState> => {
     if (!draft) return {};
     const palette = resolvePaletteForDesign({ ...draft, ...overlay } as Record<string, unknown>, undefined, mode);
     return Object.fromEntries(Object.entries(palette).filter(([id]) => /^(sidebar|topbar)/.test(id))) as Partial<SarakDesignState>;

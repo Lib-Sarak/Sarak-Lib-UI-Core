@@ -1,5 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest';
+import { PERSONALITIES } from '../../../../core/Design/presets/components/personalities';
 import { ALL_COMPONENT_PRESETS } from '../../../../core/Design/presets/components/registry';
 import { resolvePresetText } from '../../../../core/i18n/presetTexts';
 import { LANGUAGES } from '../../../../core/i18n/languages';
@@ -29,6 +30,14 @@ describe('busca de preset — achado pelo nome e pelos sinônimos', () => {
         const hits = findPresetHits('compacta', (preset) => preset.name);
         expect(hits.length).toBeGreaterThan(0);
         expect(hits.length).toBeLessThanOrEqual(8);
-        expect(hits.every((hit) => ['fonts', 'shape', 'components', 'layout'].includes(hit.decisionId))).toBe(true);
+        expect(hits.every((hit) => ['theme', 'fonts', 'shape', 'components', 'layout'].includes(hit.decisionId))).toBe(true);
+    });
+
+    it.each(LANGUAGE_IDS)('%s: toda Personalidade é achada pelo nome e leva à decisão Tema', (language) => {
+        PERSONALITIES.forEach((personality) => {
+            const name = resolvePresetText(personality, language).name;
+            const hit = findPresetHits(name, (candidate) => resolvePresetText(candidate, language).name, EVERY).find((candidate) => candidate.presetId === personality.id);
+            expect(hit, `${language}:${personality.id}`).toMatchObject({ groupId: 'personalities', decisionId: 'theme' });
+        });
     });
 });

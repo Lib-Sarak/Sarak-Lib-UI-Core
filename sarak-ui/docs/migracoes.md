@@ -5,6 +5,23 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 8.0.0 — Personalidades no painel, e as barras dos temas embarcados com caráter próprio
+
+**Classificação: MINOR (aditivo).** Nenhum `id` de tema ou de preset mudou, nenhum token foi acrescentado ou removido e nenhuma cor mudou.
+
+- **Personalidades.** A decisão Tema do painel abre por dez Personalidades (Corporativo, Executivo, Técnico, Moderno, Suave, Editorial, Brutalista, Vidro,
+  ERP de alta densidade e Painel de operação): presets de **estrutura** que aplicam forma, fontes, densidade, barras, tabela, movimento e ícones, sem cor.
+  "Usar minha marca" ganhou o campo opcional de Personalidade.
+- **As barras dos 19 temas embarcados mudaram de aparência**, sem mudar o `id` nem a cor. Antes, todos declaravam `sidebarTone` e `topbarTone` como
+  `neutral`; agora cada um declara os tokens de barra da Personalidade mais próxima do seu caráter: os dois tons, o estilo do item ativo e a borda.
+  Quem importa um tema embarcado vê a lateral e a topbar com outro fundo (calculado da paleta do tema) e outro item ativo. O tema `sarak-sovereign`
+  (o padrão) não muda, e a posição da marca não muda em nenhum tema.
+- **O que não muda:** uma cor declarada em `sidebarColor`/`topbarColor` continua vencendo o tom, e o tom só vale com `colorPalette` válida; os temas que já
+  declaravam cor própria de barra (por exemplo, a barra escura de um tema claro) seguem com essa cor, e só o item ativo e a borda mudam neles.
+  Quem salvou um tema com as barras de antes mantém o que salvou: valor persistido vence o do tema.
+
+---
+
 ## 8.0.0 — nomes e descrições dos presets do painel em português
 
 **Classificação: MINOR (aditivo).** Nenhum `id` de preset mudou e nenhum token foi acrescentado, removido ou alterado: quem grava ou aplica um preset pelo `id` continua igual.

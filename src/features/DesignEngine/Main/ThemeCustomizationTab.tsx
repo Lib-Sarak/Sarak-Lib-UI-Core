@@ -144,7 +144,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                     options={{
                         sarak, globalComponent, catalogMap, draft, updateDraft, previewDevice,
                         onApplyPreset, onApplyFullTheme: themeActions.handleApplyFullTheme, onPeek, sampleDraft: previewDraft,
-                        currentMode: previewMode, draftMode,
+                        currentMode: previewMode, draftMode, draftThemeId,
                     }}
                     decisionContext={decisionContext}
                     tokenIndex={tokenIndex}
