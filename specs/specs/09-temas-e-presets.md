@@ -599,8 +599,7 @@ itens auditados e o gabarito vivo de `getScaffold()`).
 
 Arquivos: `src/core/Design/presets/themes/` (temas + `index.ts` + `boot.ts` + `loaders.ts` + `registry.ts` + `all.ts`
 + `catalog.generated.ts` + `compose.ts` + `reference.ts` + `color-engine.ts`)
-e `src/core/Design/presets/components/` (5 arquivos: `atmosphere`, `buttons`, `cards`, `inputs`,
-`typography`).
+e `src/core/Design/presets/components/`, cujo índice é o registro de grupos `registry.ts`. `ALL_COMPONENT_PRESETS` sai dele. Cada grupo declara a decisão do painel onde mora, o tipo de amostra, a área de tokens que pode escrever e as opções destacadas. Quantos grupos e presets há sai do registro, nunca daqui.
 
 **Os temas embarcados tiram a cor de uma paleta.** Todo tema embarcado declara `colorPalette` com um preset de
 `src/core/Design/palette/presets.ts`; o que ainda declara de cor é sobrescrita justificada, com uma linha de motivo ao lado, e a
@@ -610,6 +609,12 @@ sobrescrita no `design` tem a sua na `contraparte` (`themePalettes.test.ts`). Qu
 o id, porque um id desconhecido compõe sem paleta.
 
 **A harmonia do preset é aprovada à vista.** A semente declarada pode sair do ângulo do tipo até o limite de `presets.test.ts`, que também guarda as exceções de croma com nome. O teste mira a beleza do preset, não a precisão do ângulo. Os números moram no teste e no registro, nunca aqui.
+
+**Preset de estrutura não escreve cor.** Um preset de componente escreve só tokens da área que o grupo declara, e nenhuma cor: nem token `type: color`, nem literal de cor em valor de texto. `sidebarTone` e `topbarTone` são papel da paleta, não cor (§4.3.4). Os presets publicados que já escreviam cor ficam em `LEGACY_COLOR_PRESET_IDS`, uma lista que só encolhe. O `id` de um preset publicado nunca muda nem sai (`PUBLISHED_PRESET_IDS`). Todo preset, aplicado sobre os temas embarcados nos dois modos, mantém os pares de legibilidade da paleta. Os testes são `presetCatalog.test.ts` e `presetsReadable.test.ts`.
+
+**A cobertura é medida.** Os presets cobrem ao menos 60% dos tokens estéticos sem cor (`coverage.ts`, `npx tsx scripts/measure-preset-coverage.ts`). Todo token de fora tem motivo declarado em `COVERAGE_GAPS`: sem efeito visível isolado, só faz sentido no ajuste fino, ou fica para uma rodada seguinte. A lista só encolhe, e o teste confere os dois sentidos.
+
+**Nome e descrição do preset vêm do catálogo, nos seis idiomas, fora do boot.** O português é o `name` e a `description` do próprio preset. Os demais idiomas ficam em `src/core/i18n/presetTexts/`, lidos só pelo painel (`usePresetText`).
 
 ## 5.1 Todo fundo que a lib entrega funciona offline
 
@@ -851,7 +856,6 @@ Registrado para não ser redescoberto; **nenhum destes itens tem tarefa aberta n
 | # | Item | Origem | Situação |
 | --- | --- | --- | --- |
 | 1 | **Expansão do catálogo de atmosferas** — mais texturas além das embutidas | plano antigo de mídias de atmosfera *(removido; git)* | aberto. A parte de **hospedagem** saiu deste item: está decidida e é contrato (§5.1) — toda atmosfera shippada é gerada pela lib, nada vem de terceiro |
-| 2 | **Enriquecimento de presets visuais** — a granularidade de `cards.ts` estendida a `inputs`/`tables`/`navigation` | spec antiga de presets *(removida; git)* | **parcial**: `INPUT_PRESETS` existe, tabela/navegação não ganharam família de preset própria |
 
 > ⚠️ **Correção de estado registrada:** a spec antiga de presets carregava
 > `status: "🔴 A Implementar"` — e isso era **falso**. `ButtonPresetPreview.tsx`,

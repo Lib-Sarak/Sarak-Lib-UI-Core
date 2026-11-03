@@ -111,7 +111,7 @@ inteira quando o token tem três ou mais membros do grupo, e cada membro present
 densidade. Os dois ajustes põem as fontes no topo de `texto` e `escrita` sem inverter "nome antes de tag".
 Com o mesmo nível de casamento, ganha o token com `visualImpact`, depois o de `importance` maior, depois o geral antes do específico de um componente. Empate segue a ordem do schema.
 
-**Na coluna:** resultados vêm por decisão, com a contagem (`Layout (12)`), até 5 por grupo e "Ver todos" (`utils/searchGroups.ts`). **Mais de 20 resultados abrem primeiro as áreas**, não a lista. A busca acha também grupos de opções e presets, não só token, e levar a um token abre a decisão e o ajuste fino. Sem resultado, ela sugere o termo mais próximo, com tolerância a um erro de digitação, e as seis decisões.
+**Na coluna:** resultados vêm por decisão, com a contagem (`Layout (12)`), até 5 por grupo e "Ver todos" (`utils/searchGroups.ts`). **Mais de 20 resultados abrem primeiro as áreas**, não a lista. A busca acha também grupos de opções e presets, não só token, e levar a um token abre a decisão e o ajuste fino. Sem resultado, ela sugere o termo mais próximo, com tolerância a um erro de digitação, e as seis decisões. Um preset é achado pelo nome, no idioma em uso, e pelos sinônimos. A linha de caminho de um resultado mostra o título traduzido da pergunta, nunca o id dela.
 
 **Termos de ouro.** `token-search.golden.json` fixa as frases que uma pessoa usa e o token esperado entre os 3 primeiros. `token-search.validation.json` guarda frases à parte, para o dicionário não ser ajustado só ao que o teste conhece.
 
@@ -408,19 +408,14 @@ bloco monolítico que só testaria o token de superfície.
 `ButtonsCatalog`, `InputsCatalog`, mais `ButtonPresetPreview`, `InputPresetPreview` e `PresetCard`. O
 `PresetsCatalog` é a **Galeria de estilos** (§2.3): cada aba dele é um destes catálogos.
 
+**Cada decisão mostra os grupos do registro de presets** ([[09-temas-e-presets]] §5), listados por decisão em `config/design-decisions.json`. A tela dos grupos é `PresetGroupCatalog`, e cada amostra vem de `PresetSamples`. `CuratedGrid` mostra de 1 a 8 opções destacadas e "Ver todas (N)"; ao abrir, as opções aparecem por família ou por categoria. Uma opção só fica entre as destacadas se a amostra dela se distingue das outras do grupo, nos dois modos. O spec de navegador dos presets mede isso por diferença de pixels. A opção que a miniatura não distingue, porque a diferença só existe em animação ou tem contraste baixo, continua em "Ver todas". A amostra parte do rascunho como a prévia o mostra (`sampleDraft`), e por isso segue o modo da prévia.
+
 Cards, botões, campos e texturas são desenhados com o componente real, com a opção por cima do rascunho, dentro de um escopo próprio, e só quando entram na área visível (`OptionTile`, `SampleScope`, `LazyWhenVisible`). A miniatura de tema mantém o desenho próprio do `PresetCard`, escolha do dono. Atmosfera e textura de fundo ocupam a amostra inteira, sem cartão por cima.
 
 **Espiada.** Passar o mouse ou focar uma opção compõe o efeito na prévia grande, sem gravar nada: não passa pelo rascunho, não conta como alteração e reverte ao sair. Não existe em toque, onde o toque já escolhe (`usePeekPreview`, `peek.ts`).
 
 A amostra de fonte usa a fonte real (`headingFont` no título, `bodyFont` no corpo), carregada só quando o cartão entra na área visível e pela origem de `options.fonts` (`useRequestFont`); com `none`, mostra a
 fonte que houver. Escolher uma fonte grava só `headingFont` e `bodyFont`.
-
-> **Correção de estado:** a spec antiga de presets *(`06-presets-engine.md`, **removida** na reescrita
-> da base — histórico no git)* declarava `status: "🔴 A Implementar"` justamente estes componentes.
-> **Eles existem** — os três nomeados naquela spec (`ButtonPresetPreview`, `InputPresetPreview`,
-> `PresetsCatalog`) estão em `src/features/DesignEngine/Canvas/components/`. O que de fato ficou
-> pendente dela é só o enriquecimento de presets de tabela/navegação — registrado como backlog em
-> [[09-temas-e-presets]] §8.
 
 ## 6.5 A mídia global no preview
 

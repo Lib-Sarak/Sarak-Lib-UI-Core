@@ -45,7 +45,7 @@ fallback); sem `navItems`, usa `nav` + `activeRoute`.
 
 **Grupos.** `SarakShellNavItem` aceita `children` e `defaultExpanded`, com um nível só. O pai é botão, com `aria-expanded` e `aria-controls`. O grupo do item ativo abre sozinho, e mais de um pode ficar aberto. Na lateral e na gaveta do celular, ele abre na própria barra. Na lateral recolhida e na topbar, abre em balão (`ShellNavFlyout`), com setas, Esc e Tab. Item sem filhos mantém o mesmo DOM. Com grupo, o celular usa a gaveta.
 
-**Marca, tom e largura.** `sidebarLogoPlacement` põe a marca no topo ou na base da lateral; recolhida, fica só o símbolo; sem `logoUrl`, não há caixa colorida. `sidebarTone` e `topbarTone` dão o papel de cor ([[09-temas-e-presets]] §4.3.4). `sidebarResizable` liga a alça (`useSidebarResize`), por mouse e teclado, e o valor é preferência do usuário, nunca do tema (§4.7 da mesma spec).
+**Marca, tom e largura.** `sidebarLogoPlacement` põe a marca no topo ou na base da lateral; recolhida, fica só o símbolo; sem `logoUrl`, não há caixa colorida. `sidebarTone` e `topbarTone` dão o papel de cor ([[09-temas-e-presets]] §4.3.4). `sidebarResizable` liga a alça (`useSidebarResize`), por mouse e teclado, e o valor é preferência do usuário, nunca do tema (§4.7 da mesma spec). Com tom contrastante, o texto do item ativo preenchido usa o fundo da barra (`--sarak-on-nav-active`, `chromeToneStyle.ts`), o par que a paleta garante.
 
 **A barra não rola para o lado.** Só a lista de navegação rola, e na vertical. Topo e rodapé ficam fixos. Recolhida, as preferências viram um ícone só e a busca vira ícone.
 
