@@ -2,6 +2,8 @@ import React from 'react';
 import { PresetsCatalog, type PresetGroup } from '../../Canvas/components/PresetsCatalog';
 import { PaletteSection } from './PaletteSection';
 import { ThemeGlobalSettings } from './ThemeGlobalSettings';
+import { usePresetText } from '../../hooks/usePresetText';
+import { getPresetGroup } from '../../../../core/Design/presets/components/registry';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import type { LibraryTextKey } from '../../../../core/i18n/catalog';
 import type { PeekHandler } from '../../Canvas/components/peek';
@@ -17,6 +19,8 @@ export interface DecisionOptionsContext extends ColumnTokenProps {
     onApplyPreset: (presetDesign: Partial<SarakDesignState>, isPartial?: boolean) => void;
     onApplyFullTheme?: (design: Partial<SarakDesignState>, themeId?: string) => void;
     onPeek?: PeekHandler;
+    /** O rascunho como a prévia o mostra (com o modo do usuário aplicado): as amostras partem dele, para seguir o modo da prévia e não o do tema. */
+    sampleDraft?: Partial<SarakDesignState>;
     currentMode: 'light' | 'dark';
     draftMode: 'light' | 'dark';
     /** Tokens que o nível 2 já mostra por pergunta: o bloco global não os repete. */
@@ -25,7 +29,6 @@ export interface DecisionOptionsContext extends ColumnTokenProps {
 
 const GROUP_TITLE: Partial<Record<OptionGroup, LibraryTextKey>> = {
     themes: 'optionGroupThemes',
-    fonts: 'optionGroupFonts',
     cards: 'optionGroupCards',
     atmosphere: 'optionGroupAtmosphere',
     buttons: 'optionGroupButtons',
@@ -36,8 +39,11 @@ const PRESET_GROUP: Partial<Record<OptionGroup, PresetGroup>> = {
     themes: 'themes', fonts: 'fonts', cards: 'cards', atmosphere: 'atmosphere', buttons: 'buttons', inputs: 'inputs',
 };
 
+/** Todo grupo do registro de presets monta o catálogo dele, mesmo sem entrada na tabela acima. */
+const presetGroupOf = (group: OptionGroup): PresetGroup | undefined => PRESET_GROUP[group] ?? (getPresetGroup(group) ? group : undefined);
+
 const GroupBody: React.FC<{ group: OptionGroup; context: DecisionOptionsContext }> = ({ group, context }) => {
-    const presetGroup = PRESET_GROUP[group];
+    const presetGroup = presetGroupOf(group);
     if (presetGroup) {
         return (
             <PresetsCatalog
@@ -47,7 +53,7 @@ const GroupBody: React.FC<{ group: OptionGroup; context: DecisionOptionsContext 
                 currentMode={context.currentMode}
                 draftMode={context.draftMode}
                 sarak={context.sarak}
-                draft={context.draft}
+                draft={context.sampleDraft ?? context.draft}
                 onPeek={context.onPeek}
             />
         );
@@ -77,13 +83,15 @@ const GroupBody: React.FC<{ group: OptionGroup; context: DecisionOptionsContext 
 /** O nível 2, primeira metade: os grupos de opção visual da decisão, cada um com o componente real. */
 export const ThemeDecisionOptions: React.FC<{ groups: readonly OptionGroup[]; context: DecisionOptionsContext }> = ({ groups, context }) => {
     const text = useLibraryText();
+    const presetText = usePresetText();
     return (
         <>
             {groups.map((group) => {
                 const titleKey = GROUP_TITLE[group];
+                const title = titleKey ? text(titleKey) : (getPresetGroup(group) ? presetText.group(group) : undefined);
                 return (
-                    <section key={group} aria-label={titleKey ? text(titleKey) : undefined} data-option-group={group} className="flex flex-col gap-3">
-                        {titleKey && <h3 className="text-xs font-semibold text-[var(--theme-muted)]">{text(titleKey)}</h3>}
+                    <section key={group} aria-label={title} data-option-group={group} className="flex flex-col gap-3">
+                        {title && <h3 className="text-xs font-semibold text-[var(--theme-muted)]">{title}</h3>}
                         <GroupBody group={group} context={context} />
                     </section>
                 );

@@ -18,13 +18,13 @@ const HEAVY_RENDER_TIMEOUT_MS = 30000;
 describe('ButtonsCatalog', () => {
     it('renderiza a aba Curados por padrão', () => {
         render(<ButtonsCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
-        expect(screen.getAllByText('Industrial Matte')[0]).toBeInTheDocument();
+        expect(screen.getAllByText('Fosco industrial')[0]).toBeInTheDocument();
     });
 
     it('troca para a camada automática Por Estilo e cobre o gap do borderline', () => {
         render(<ButtonsCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
         fireEvent.click(screen.getByRole('button', { name: /Por Estilo/i }));
-        expect(screen.getAllByText('Minimalist Borderline')[0]).toBeInTheDocument();
+        expect(screen.getAllByText('Contorno')[0]).toBeInTheDocument();
     }, HEAVY_RENDER_TIMEOUT_MS);
 
     it('a grade reage a CONTAINER QUERY (@min-[768px]:/@min-[1024px]:), não mais a `md:`/`lg:` de viewport (plan-35)', () => {

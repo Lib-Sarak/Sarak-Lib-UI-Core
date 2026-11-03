@@ -3,7 +3,8 @@ import type { SarakDesignToken } from '../../../core/Design/types';
 import type { LibraryTextKey } from '../../../core/i18n/catalog';
 
 export type DecisionId = 'theme' | 'colors' | 'fonts' | 'shape' | 'components' | 'layout' | 'advanced';
-export type OptionGroup = 'themes' | 'palettes' | 'fonts' | 'cards' | 'atmosphere' | 'buttons' | 'inputs' | 'globalBlock';
+/** Um grupo de opções da decisão: os da tabela de `ThemeDecisionOptions` ou qualquer id do registro de presets. */
+export type OptionGroup = string;
 
 /** Uma pergunta que o nível 2 responde ("Onde fica?", "Como é?"): os tokens dela, na ordem em que aparecem. */
 export interface DecisionQuestionDef {

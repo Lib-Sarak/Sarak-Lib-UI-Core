@@ -13,6 +13,7 @@ describe('resolveChromeToneStyle', () => {
         expect(style['--text-muted']).toBe('var(--sarak-sidebar-item-text-color)');
         expect(style['--sarak-text-main']).toBe('var(--sarak-sidebar-item-hover-text-color)');
         expect(style['--sarak-nav-active-color']).toBe('var(--sarak-sidebar-item-hover-text-color)');
+        expect(style['--sarak-on-nav-active']).toBe('var(--sarak-sidebar-bg)');
         expect(style['--border-color']).toBe('var(--sarak-sidebar-border-color)');
     });
 

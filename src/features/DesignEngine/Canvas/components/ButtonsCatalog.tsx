@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { BUTTON_PRESETS, BUTTON_STYLE_PRESETS } from '../../../../core/Design/presets/components/buttons';
+import { getPresetGroup } from '../../../../core/Design/presets/components/registry';
+import { CuratedGrid } from './CuratedGrid';
 import { CATALOG_GRID_3COL } from '../panelResponsive.presets';
 import { Sparkles, MousePointer2 } from 'lucide-react';
 import { ButtonPresetPreview } from './ButtonPresetPreview';
@@ -16,7 +17,7 @@ interface ButtonsCatalogProps {
 
 export const ButtonsCatalog: React.FC<ButtonsCatalogProps> = ({ onApplyPreset, currentMode, draft, onPeek }) => {
     const [activeTab, setActiveTab] = useState<'curated' | 'styles'>('curated');
-    const presets = activeTab === 'curated' ? BUTTON_PRESETS : BUTTON_STYLE_PRESETS;
+    const group = getPresetGroup(activeTab === 'curated' ? 'buttons' : 'buttonStyles')!;
 
     return (
         <div className="flex flex-col gap-6">
@@ -38,8 +39,10 @@ export const ButtonsCatalog: React.FC<ButtonsCatalogProps> = ({ onApplyPreset, c
             </div>
 
             {/* Container query (plan-35): reage ao `@container` de `PresetsCatalog.tsx`. */}
-            <div className={`grid ${CATALOG_GRID_3COL} gap-6`}>
-                {presets.map((preset) => (
+            <CuratedGrid
+                group={group}
+                gridClassName={CATALOG_GRID_3COL}
+                renderTile={(preset) => (
                     <ButtonPresetPreview
                         key={preset.id}
                         preset={preset}
@@ -48,8 +51,8 @@ export const ButtonsCatalog: React.FC<ButtonsCatalogProps> = ({ onApplyPreset, c
                         onPeek={onPeek}
                         onApply={() => onApplyPreset(preset.design, true)}
                     />
-                ))}
-            </div>
+                )}
+            />
         </div>
     );
 };

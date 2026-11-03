@@ -1,6 +1,9 @@
 import React, { useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { TYPOGRAPHY_PRESETS } from '../../../../core/Design/presets/components/typography';
+import { getPresetGroup } from '../../../../core/Design/presets/components/registry';
+import { THEME_FONTS } from '../../../../core/Design/schema/typography';
+import { usePresetText } from '../../hooks/usePresetText';
+import { CuratedGrid } from './CuratedGrid';
 import { ComponentPreset } from '../../../../core/Design/presets/components/cards';
 import { CATALOG_GRID_2COL } from '../panelResponsive.presets';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
@@ -17,13 +20,20 @@ interface TypographyCatalogProps {
 }
 
 export const TypographyCatalog: React.FC<TypographyCatalogProps> = ({ onApplyPreset, onPeek }) => {
+    const text = usePresetText();
     return (
         // Container query (plan-35): reage ao `@container` de `PresetsCatalog.tsx`.
-        <div className={`grid ${CATALOG_GRID_2COL} gap-6`}>
-            {TYPOGRAPHY_PRESETS.map((preset, i) => (
-                <TypographyPresetPreview key={preset.id} preset={preset} index={i} onPeek={onPeek} onApply={() => onApplyPreset(preset.design, true)} />
-            ))}
-        </div>
+        <CuratedGrid
+            group={getPresetGroup('fonts')!}
+            gridClassName={CATALOG_GRID_2COL}
+            sectionOf={(preset) => {
+                const category = THEME_FONTS.find((font) => font.name === preset.name)?.category ?? 'Sans-Serif';
+                return { id: category, title: text.fontCategory(category) };
+            }}
+            renderTile={(preset, index) => (
+                <TypographyPresetPreview key={preset.id} preset={preset} index={index} onPeek={onPeek} onApply={() => onApplyPreset(preset.design, true)} />
+            )}
+        />
     );
 };
 
@@ -33,6 +43,7 @@ const FONT_GLYPHS = 'Gg Qq Rr 0123';
 
 const TypographyPresetPreview = ({ preset, index, onApply, onPeek }: { preset: ComponentPreset, index: number, onApply: () => void, onPeek?: PeekHandler }) => {
     const text = useLibraryText();
+    const shown = usePresetText().preset(preset);
     const requestFont = useRequestFont();
     const cardRef = useRef<HTMLButtonElement>(null);
     const headingFont = preset.design.headingFont as string | undefined;
@@ -51,6 +62,7 @@ const TypographyPresetPreview = ({ preset, index, onApply, onPeek }: { preset: C
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             onClick={onApply}
+            data-option-tile=""
             {...peek}
             className="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
         >
@@ -65,8 +77,8 @@ const TypographyPresetPreview = ({ preset, index, onApply, onPeek }: { preset: C
             </div>
 
             <div className="p-4 bg-theme-sidebar">
-                <h3 className="text-sm font-bold text-theme-text">{preset.name}</h3>
-                <p className="text-xs text-theme-muted mt-1">{preset.description}</p>
+                <h3 className="text-sm font-bold text-theme-text">{shown.name}</h3>
+                <p className="text-xs text-theme-muted mt-1">{shown.description}</p>
             </div>
         </motion.button>
     );

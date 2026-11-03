@@ -1,5 +1,6 @@
 import React from 'react';
-import { INPUT_PRESETS } from '../../../../core/Design/presets/components/inputs';
+import { getPresetGroup } from '../../../../core/Design/presets/components/registry';
+import { CuratedGrid } from './CuratedGrid';
 import { CATALOG_GRID_3COL } from '../panelResponsive.presets';
 import { InputPresetPreview } from './InputPresetPreview';
 import type { PeekHandler } from './peek';
@@ -16,8 +17,10 @@ interface InputsCatalogProps {
 export const InputsCatalog: React.FC<InputsCatalogProps> = ({ onApplyPreset, currentMode, draft, onPeek }) => {
     return (
         // Container query (plan-35): reage ao `@container` de `PresetsCatalog.tsx`.
-        <div className={`grid ${CATALOG_GRID_3COL} gap-6`}>
-            {INPUT_PRESETS.map((preset) => (
+        <CuratedGrid
+            group={getPresetGroup('inputs')!}
+            gridClassName={CATALOG_GRID_3COL}
+            renderTile={(preset) => (
                 <InputPresetPreview
                     key={preset.id}
                     preset={preset}
@@ -26,7 +29,7 @@ export const InputsCatalog: React.FC<InputsCatalogProps> = ({ onApplyPreset, cur
                     onPeek={onPeek}
                     onApply={() => onApplyPreset(preset.design, true)}
                 />
-            ))}
-        </div>
+            )}
+        />
     );
 };

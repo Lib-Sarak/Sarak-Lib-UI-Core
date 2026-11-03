@@ -15,7 +15,7 @@ vi.mock('framer-motion', async () => {
 describe('InputsCatalog', () => {
     it('renderiza a grade de presets de Inputs', () => {
         render(<InputsCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
-        expect(screen.getByText('Classic Underline')).toBeInTheDocument();
+        expect(screen.getByText('Linha inferior')).toBeInTheDocument();
     });
 
     it('a grade reage a CONTAINER QUERY (@min-[768px]:/@min-[1024px]:), não mais a `md:`/`lg:` de viewport (plan-35)', () => {

@@ -80,992 +80,523 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
       </button>
     </div>
     <div
-      class="grid grid-cols-1 @min-[768px]:grid-cols-2 gap-6"
+      class="flex flex-col gap-4"
+      data-preset-group="cards"
     >
       <div
-        class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="flex flex-col gap-3"
       >
         <div
-          aria-hidden="true"
-          class="pointer-events-none"
+          class="grid grid-cols-1 @min-[768px]:grid-cols-2 gap-6"
         >
           <div
-            class="min-h-48"
-            data-sx-lazy="shown"
+            class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            data-option-tile=""
           >
             <div
-              class="sarak-design-scope sarak-scope-r0 dark flex items-center justify-center p-6"
-              style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
+              aria-hidden="true"
+              class="pointer-events-none"
             >
               <div
-                class="w-full"
-                style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
+                class="min-h-48"
+                data-sx-lazy="shown"
               >
                 <div
-                  class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
+                  class="sarak-design-scope sarak-scope-r0 dark flex items-center justify-center p-6"
+                  style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
                 >
-                  <header
-                    class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))]"
-                  >
-                    <h3
-                      data-testid="sample-card-title"
-                    >
-                      Receita do mês
-                    </h3>
-                  </header>
                   <div
-                    class=""
+                    class="w-full"
+                    style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
                   >
-                    <p
-                      class="text-2xl font-bold"
-                      data-testid="sample-card-value"
+                    <div
+                      class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
                     >
-                      R$ 12.480,00
-                    </p>
-                  </div>
-                  <footer
-                    class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)]"
-                  >
-                    <span
-                      class="inline-flex"
-                    >
-                      <button
-                        class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
-                        tabindex="-1"
+                      <header
+                        class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)]"
                       >
-                        <span>
-                          Ver detalhes
+                        <h3
+                          data-testid="sample-card-title"
+                        >
+                          Receita do mês
+                        </h3>
+                      </header>
+                      <div
+                        class=""
+                      >
+                        <p
+                          class="text-2xl font-bold"
+                          data-testid="sample-card-value"
+                        >
+                          R$ 12.480,00
+                        </p>
+                      </div>
+                      <footer
+                        class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)] py-[var(--sarak-card-header-padding,12px)]"
+                      >
+                        <span
+                          class="inline-flex"
+                        >
+                          <button
+                            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
+                            tabindex="-1"
+                          >
+                            <span>
+                              Ver detalhes
+                            </span>
+                          </button>
                         </span>
-                      </button>
-                    </span>
-                  </footer>
+                      </footer>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+            <div
+              class="flex flex-col gap-1 border-t border-theme-border p-3"
+            >
+              <h3
+                class="text-sm font-bold uppercase tracking-wider text-theme-text"
+              >
+                Vidro mínimo
+              </h3>
+              <p
+                class="text-xs text-theme-muted"
+              >
+                Vidro translúcido com desfoque leve e borda quase invisível.
+              </p>
+            </div>
+            <button
+              aria-label="Vidro mínimo"
+              class="absolute inset-0 p-0 rounded-2xl"
+              type="button"
+            />
           </div>
-        </div>
-        <div
-          class="flex flex-col gap-1 border-t border-theme-border p-3"
-        >
-          <h3
-            class="text-sm font-bold uppercase tracking-wider text-theme-text"
-          >
-            Glass Minimal
-          </h3>
-          <p
-            class="text-xs text-theme-muted"
-          >
-            Vidro translúcido, blur leve, borda quase invisível.
-          </p>
-        </div>
-        <button
-          aria-label="Glass Minimal"
-          class="absolute inset-0 p-0 rounded-2xl"
-          type="button"
-        />
-      </div>
-      <div
-        class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
-      >
-        <div
-          aria-hidden="true"
-          class="pointer-events-none"
-        >
           <div
-            class="min-h-48"
-            data-sx-lazy="shown"
+            class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            data-option-tile=""
           >
             <div
-              class="sarak-design-scope sarak-scope-r1 dark flex items-center justify-center p-6"
-              style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
+              aria-hidden="true"
+              class="pointer-events-none"
             >
               <div
-                class="w-full"
-                style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
+                class="min-h-48"
+                data-sx-lazy="shown"
               >
                 <div
-                  class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
+                  class="sarak-design-scope sarak-scope-r1 dark flex items-center justify-center p-6"
+                  style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
                 >
-                  <header
-                    class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))]"
-                  >
-                    <h3
-                      data-testid="sample-card-title"
-                    >
-                      Receita do mês
-                    </h3>
-                  </header>
                   <div
-                    class=""
+                    class="w-full"
+                    style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
                   >
-                    <p
-                      class="text-2xl font-bold"
-                      data-testid="sample-card-value"
+                    <div
+                      class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
                     >
-                      R$ 12.480,00
-                    </p>
-                  </div>
-                  <footer
-                    class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)]"
-                  >
-                    <span
-                      class="inline-flex"
-                    >
-                      <button
-                        class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
-                        tabindex="-1"
+                      <header
+                        class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)]"
                       >
-                        <span>
-                          Ver detalhes
+                        <h3
+                          data-testid="sample-card-title"
+                        >
+                          Receita do mês
+                        </h3>
+                      </header>
+                      <div
+                        class=""
+                      >
+                        <p
+                          class="text-2xl font-bold"
+                          data-testid="sample-card-value"
+                        >
+                          R$ 12.480,00
+                        </p>
+                      </div>
+                      <footer
+                        class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)] py-[var(--sarak-card-header-padding,12px)]"
+                      >
+                        <span
+                          class="inline-flex"
+                        >
+                          <button
+                            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
+                            tabindex="-1"
+                          >
+                            <span>
+                              Ver detalhes
+                            </span>
+                          </button>
                         </span>
-                      </button>
-                    </span>
-                  </footer>
+                      </footer>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+            <div
+              class="flex flex-col gap-1 border-t border-theme-border p-3"
+            >
+              <h3
+                class="text-sm font-bold uppercase tracking-wider text-theme-text"
+              >
+                Plano e discreto
+              </h3>
+              <p
+                class="text-xs text-theme-muted"
+              >
+                Cantos suaves, borda fina e nenhuma sombra: o card some e deixa o conteúdo falar.
+              </p>
+            </div>
+            <button
+              aria-label="Plano e discreto"
+              class="absolute inset-0 p-0 rounded-2xl"
+              type="button"
+            />
           </div>
-        </div>
-        <div
-          class="flex flex-col gap-1 border-t border-theme-border p-3"
-        >
-          <h3
-            class="text-sm font-bold uppercase tracking-wider text-theme-text"
-          >
-            Claymorphism
-          </h3>
-          <p
-            class="text-xs text-theme-muted"
-          >
-            Massinha: super arredondado, sem borda, volume por glow interno + sombra externa.
-          </p>
-        </div>
-        <button
-          aria-label="Claymorphism"
-          class="absolute inset-0 p-0 rounded-2xl"
-          type="button"
-        />
-      </div>
-      <div
-        class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
-      >
-        <div
-          aria-hidden="true"
-          class="pointer-events-none"
-        >
           <div
-            class="min-h-48"
-            data-sx-lazy="shown"
+            class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            data-option-tile=""
           >
             <div
-              class="sarak-design-scope sarak-scope-r2 dark flex items-center justify-center p-6"
-              style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
+              aria-hidden="true"
+              class="pointer-events-none"
             >
               <div
-                class="w-full"
-                style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
+                class="min-h-48"
+                data-sx-lazy="shown"
               >
                 <div
-                  class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
+                  class="sarak-design-scope sarak-scope-r2 dark flex items-center justify-center p-6"
+                  style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
                 >
-                  <header
-                    class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))]"
-                  >
-                    <h3
-                      data-testid="sample-card-title"
-                    >
-                      Receita do mês
-                    </h3>
-                  </header>
                   <div
-                    class=""
+                    class="w-full"
+                    style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
                   >
-                    <p
-                      class="text-2xl font-bold"
-                      data-testid="sample-card-value"
+                    <div
+                      class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
                     >
-                      R$ 12.480,00
-                    </p>
-                  </div>
-                  <footer
-                    class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)]"
-                  >
-                    <span
-                      class="inline-flex"
-                    >
-                      <button
-                        class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
-                        tabindex="-1"
+                      <header
+                        class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)]"
                       >
-                        <span>
-                          Ver detalhes
+                        <h3
+                          data-testid="sample-card-title"
+                        >
+                          Receita do mês
+                        </h3>
+                      </header>
+                      <div
+                        class=""
+                      >
+                        <p
+                          class="text-2xl font-bold"
+                          data-testid="sample-card-value"
+                        >
+                          R$ 12.480,00
+                        </p>
+                      </div>
+                      <footer
+                        class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)] py-[var(--sarak-card-header-padding,12px)]"
+                      >
+                        <span
+                          class="inline-flex"
+                        >
+                          <button
+                            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
+                            tabindex="-1"
+                          >
+                            <span>
+                              Ver detalhes
+                            </span>
+                          </button>
                         </span>
-                      </button>
-                    </span>
-                  </footer>
+                      </footer>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+            <div
+              class="flex flex-col gap-1 border-t border-theme-border p-3"
+            >
+              <h3
+                class="text-sm font-bold uppercase tracking-wider text-theme-text"
+              >
+                Elevado e macio
+              </h3>
+              <p
+                class="text-xs text-theme-muted"
+              >
+                Sem borda, cantos generosos e uma sombra longa e difusa que descola o card do fundo.
+              </p>
+            </div>
+            <button
+              aria-label="Elevado e macio"
+              class="absolute inset-0 p-0 rounded-2xl"
+              type="button"
+            />
           </div>
-        </div>
-        <div
-          class="flex flex-col gap-1 border-t border-theme-border p-3"
-        >
-          <h3
-            class="text-sm font-bold uppercase tracking-wider text-theme-text"
-          >
-            Retro OS
-          </h3>
-          <p
-            class="text-xs text-theme-muted"
-          >
-            Anos 90: cantos duros, borda cinza chanfrada, sem blur, sem sombra.
-          </p>
-        </div>
-        <button
-          aria-label="Retro OS"
-          class="absolute inset-0 p-0 rounded-2xl"
-          type="button"
-        />
-      </div>
-      <div
-        class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
-      >
-        <div
-          aria-hidden="true"
-          class="pointer-events-none"
-        >
           <div
-            class="min-h-48"
-            data-sx-lazy="shown"
+            class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            data-option-tile=""
           >
             <div
-              class="sarak-design-scope sarak-scope-r3 dark flex items-center justify-center p-6"
-              style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
+              aria-hidden="true"
+              class="pointer-events-none"
             >
               <div
-                class="w-full"
-                style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
+                class="min-h-48"
+                data-sx-lazy="shown"
               >
                 <div
-                  class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
+                  class="sarak-design-scope sarak-scope-r3 dark flex items-center justify-center p-6"
+                  style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
                 >
-                  <header
-                    class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))]"
-                  >
-                    <h3
-                      data-testid="sample-card-title"
-                    >
-                      Receita do mês
-                    </h3>
-                  </header>
                   <div
-                    class=""
+                    class="w-full"
+                    style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
                   >
-                    <p
-                      class="text-2xl font-bold"
-                      data-testid="sample-card-value"
+                    <div
+                      class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
                     >
-                      R$ 12.480,00
-                    </p>
-                  </div>
-                  <footer
-                    class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)]"
-                  >
-                    <span
-                      class="inline-flex"
-                    >
-                      <button
-                        class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
-                        tabindex="-1"
+                      <header
+                        class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)]"
                       >
-                        <span>
-                          Ver detalhes
+                        <h3
+                          data-testid="sample-card-title"
+                        >
+                          Receita do mês
+                        </h3>
+                      </header>
+                      <div
+                        class=""
+                      >
+                        <p
+                          class="text-2xl font-bold"
+                          data-testid="sample-card-value"
+                        >
+                          R$ 12.480,00
+                        </p>
+                      </div>
+                      <footer
+                        class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)] py-[var(--sarak-card-header-padding,12px)]"
+                      >
+                        <span
+                          class="inline-flex"
+                        >
+                          <button
+                            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
+                            tabindex="-1"
+                          >
+                            <span>
+                              Ver detalhes
+                            </span>
+                          </button>
                         </span>
-                      </button>
-                    </span>
-                  </footer>
+                      </footer>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+            <div
+              class="flex flex-col gap-1 border-t border-theme-border p-3"
+            >
+              <h3
+                class="text-sm font-bold uppercase tracking-wider text-theme-text"
+              >
+                Neon cibernético
+              </h3>
+              <p
+                class="text-xs text-theme-muted"
+              >
+                Cantos afiados, brilho neon forte e textura de grade técnica.
+              </p>
+            </div>
+            <button
+              aria-label="Neon cibernético"
+              class="absolute inset-0 p-0 rounded-2xl"
+              type="button"
+            />
           </div>
-        </div>
-        <div
-          class="flex flex-col gap-1 border-t border-theme-border p-3"
-        >
-          <h3
-            class="text-sm font-bold uppercase tracking-wider text-theme-text"
-          >
-            Cyberpunk Neon
-          </h3>
-          <p
-            class="text-xs text-theme-muted"
-          >
-            Bordas afiadas, glow neon forte, textura de grid técnico.
-          </p>
-        </div>
-        <button
-          aria-label="Cyberpunk Neon"
-          class="absolute inset-0 p-0 rounded-2xl"
-          type="button"
-        />
-      </div>
-      <div
-        class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
-      >
-        <div
-          aria-hidden="true"
-          class="pointer-events-none"
-        >
           <div
-            class="min-h-48"
-            data-sx-lazy="shown"
+            class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            data-option-tile=""
           >
             <div
-              class="sarak-design-scope sarak-scope-r4 dark flex items-center justify-center p-6"
-              style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
+              aria-hidden="true"
+              class="pointer-events-none"
             >
               <div
-                class="w-full"
-                style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
+                class="min-h-48"
+                data-sx-lazy="shown"
               >
                 <div
-                  class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
+                  class="sarak-design-scope sarak-scope-r4 dark flex items-center justify-center p-6"
+                  style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
                 >
-                  <header
-                    class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))]"
-                  >
-                    <h3
-                      data-testid="sample-card-title"
-                    >
-                      Receita do mês
-                    </h3>
-                  </header>
                   <div
-                    class=""
+                    class="w-full"
+                    style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
                   >
-                    <p
-                      class="text-2xl font-bold"
-                      data-testid="sample-card-value"
+                    <div
+                      class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
                     >
-                      R$ 12.480,00
-                    </p>
-                  </div>
-                  <footer
-                    class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)]"
-                  >
-                    <span
-                      class="inline-flex"
-                    >
-                      <button
-                        class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
-                        tabindex="-1"
+                      <header
+                        class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)]"
                       >
-                        <span>
-                          Ver detalhes
+                        <h3
+                          data-testid="sample-card-title"
+                        >
+                          Receita do mês
+                        </h3>
+                      </header>
+                      <div
+                        class=""
+                      >
+                        <p
+                          class="text-2xl font-bold"
+                          data-testid="sample-card-value"
+                        >
+                          R$ 12.480,00
+                        </p>
+                      </div>
+                      <footer
+                        class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)] py-[var(--sarak-card-header-padding,12px)]"
+                      >
+                        <span
+                          class="inline-flex"
+                        >
+                          <button
+                            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
+                            tabindex="-1"
+                          >
+                            <span>
+                              Ver detalhes
+                            </span>
+                          </button>
                         </span>
-                      </button>
-                    </span>
-                  </footer>
+                      </footer>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+            <div
+              class="flex flex-col gap-1 border-t border-theme-border p-3"
+            >
+              <h3
+                class="text-sm font-bold uppercase tracking-wider text-theme-text"
+              >
+                Faixa lateral
+              </h3>
+              <p
+                class="text-xs text-theme-muted"
+              >
+                Só a borda esquerda é grossa, como um marcador de seção; as outras três somem.
+              </p>
+            </div>
+            <button
+              aria-label="Faixa lateral"
+              class="absolute inset-0 p-0 rounded-2xl"
+              type="button"
+            />
           </div>
-        </div>
-        <div
-          class="flex flex-col gap-1 border-t border-theme-border p-3"
-        >
-          <h3
-            class="text-sm font-bold uppercase tracking-wider text-theme-text"
-          >
-            Holographic HUD
-          </h3>
-          <p
-            class="text-xs text-theme-muted"
-          >
-            Sci-fi ultra transparente: blur pesado, spotlight, feixe de borda animado.
-          </p>
-        </div>
-        <button
-          aria-label="Holographic HUD"
-          class="absolute inset-0 p-0 rounded-2xl"
-          type="button"
-        />
-      </div>
-      <div
-        class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
-      >
-        <div
-          aria-hidden="true"
-          class="pointer-events-none"
-        >
           <div
-            class="min-h-48"
-            data-sx-lazy="shown"
+            class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            data-option-tile=""
           >
             <div
-              class="sarak-design-scope sarak-scope-r5 dark flex items-center justify-center p-6"
-              style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
+              aria-hidden="true"
+              class="pointer-events-none"
             >
               <div
-                class="w-full"
-                style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
+                class="min-h-48"
+                data-sx-lazy="shown"
               >
                 <div
-                  class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
+                  class="sarak-design-scope sarak-scope-r5 dark flex items-center justify-center p-6"
+                  style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
                 >
-                  <header
-                    class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))]"
-                  >
-                    <h3
-                      data-testid="sample-card-title"
-                    >
-                      Receita do mês
-                    </h3>
-                  </header>
                   <div
-                    class=""
+                    class="w-full"
+                    style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
                   >
-                    <p
-                      class="text-2xl font-bold"
-                      data-testid="sample-card-value"
+                    <div
+                      class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
                     >
-                      R$ 12.480,00
-                    </p>
-                  </div>
-                  <footer
-                    class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)]"
-                  >
-                    <span
-                      class="inline-flex"
-                    >
-                      <button
-                        class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
-                        tabindex="-1"
+                      <header
+                        class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)]"
                       >
-                        <span>
-                          Ver detalhes
+                        <h3
+                          data-testid="sample-card-title"
+                        >
+                          Receita do mês
+                        </h3>
+                      </header>
+                      <div
+                        class=""
+                      >
+                        <p
+                          class="text-2xl font-bold"
+                          data-testid="sample-card-value"
+                        >
+                          R$ 12.480,00
+                        </p>
+                      </div>
+                      <footer
+                        class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)] py-[var(--sarak-card-header-padding,12px)]"
+                      >
+                        <span
+                          class="inline-flex"
+                        >
+                          <button
+                            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
+                            tabindex="-1"
+                          >
+                            <span>
+                              Ver detalhes
+                            </span>
+                          </button>
                         </span>
-                      </button>
-                    </span>
-                  </footer>
+                      </footer>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div
-          class="flex flex-col gap-1 border-t border-theme-border p-3"
-        >
-          <h3
-            class="text-sm font-bold uppercase tracking-wider text-theme-text"
-          >
-            Industrial Brutalism
-          </h3>
-          <p
-            class="text-xs text-theme-muted"
-          >
-            Bordas grossas, sombra sólida deslocada, zero blur.
-          </p>
-        </div>
-        <button
-          aria-label="Industrial Brutalism"
-          class="absolute inset-0 p-0 rounded-2xl"
-          type="button"
-        />
-      </div>
-      <div
-        class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
-      >
-        <div
-          aria-hidden="true"
-          class="pointer-events-none"
-        >
-          <div
-            class="min-h-48"
-            data-sx-lazy="shown"
-          >
             <div
-              class="sarak-design-scope sarak-scope-r6 dark flex items-center justify-center p-6"
-              style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
+              class="flex flex-col gap-1 border-t border-theme-border p-3"
             >
-              <div
-                class="w-full"
-                style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
+              <h3
+                class="text-sm font-bold uppercase tracking-wider text-theme-text"
               >
-                <div
-                  class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
-                >
-                  <header
-                    class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))]"
-                  >
-                    <h3
-                      data-testid="sample-card-title"
-                    >
-                      Receita do mês
-                    </h3>
-                  </header>
-                  <div
-                    class=""
-                  >
-                    <p
-                      class="text-2xl font-bold"
-                      data-testid="sample-card-value"
-                    >
-                      R$ 12.480,00
-                    </p>
-                  </div>
-                  <footer
-                    class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)]"
-                  >
-                    <span
-                      class="inline-flex"
-                    >
-                      <button
-                        class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
-                        tabindex="-1"
-                      >
-                        <span>
-                          Ver detalhes
-                        </span>
-                      </button>
-                    </span>
-                  </footer>
-                </div>
-              </div>
+                Centralizado
+              </h3>
+              <p
+                class="text-xs text-theme-muted"
+              >
+                Texto centralizado e cantos redondos: vitrine de destaque ou número grande.
+              </p>
             </div>
+            <button
+              aria-label="Centralizado"
+              class="absolute inset-0 p-0 rounded-2xl"
+              type="button"
+            />
           </div>
         </div>
-        <div
-          class="flex flex-col gap-1 border-t border-theme-border p-3"
-        >
-          <h3
-            class="text-sm font-bold uppercase tracking-wider text-theme-text"
-          >
-            Geometric Cut
-          </h3>
-          <p
-            class="text-xs text-theme-muted"
-          >
-            Chanfro geométrico nos cantos, matte, sem blur — silhueta octogonal.
-          </p>
-        </div>
-        <button
-          aria-label="Geometric Cut"
-          class="absolute inset-0 p-0 rounded-2xl"
-          type="button"
-        />
       </div>
-      <div
-        class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+      <button
+        aria-expanded="false"
+        class="self-start rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] px-3 py-1.5 text-[length:var(--sarak-type-scale-caption,12px)] font-semibold text-[var(--theme-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]"
+        data-preset-toggle="cards"
+        type="button"
       >
-        <div
-          aria-hidden="true"
-          class="pointer-events-none"
-        >
-          <div
-            class="min-h-48"
-            data-sx-lazy="shown"
-          >
-            <div
-              class="sarak-design-scope sarak-scope-r7 dark flex items-center justify-center p-6"
-              style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
-            >
-              <div
-                class="w-full"
-                style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
-              >
-                <div
-                  class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
-                >
-                  <header
-                    class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))]"
-                  >
-                    <h3
-                      data-testid="sample-card-title"
-                    >
-                      Receita do mês
-                    </h3>
-                  </header>
-                  <div
-                    class=""
-                  >
-                    <p
-                      class="text-2xl font-bold"
-                      data-testid="sample-card-value"
-                    >
-                      R$ 12.480,00
-                    </p>
-                  </div>
-                  <footer
-                    class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)]"
-                  >
-                    <span
-                      class="inline-flex"
-                    >
-                      <button
-                        class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
-                        tabindex="-1"
-                      >
-                        <span>
-                          Ver detalhes
-                        </span>
-                      </button>
-                    </span>
-                  </footer>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="flex flex-col gap-1 border-t border-theme-border p-3"
-        >
-          <h3
-            class="text-sm font-bold uppercase tracking-wider text-theme-text"
-          >
-            Asymmetric Accent
-          </h3>
-          <p
-            class="text-xs text-theme-muted"
-          >
-            Barra de destaque só no topo, resto sem borda — flat com acento de cor.
-          </p>
-        </div>
-        <button
-          aria-label="Asymmetric Accent"
-          class="absolute inset-0 p-0 rounded-2xl"
-          type="button"
-        />
-      </div>
-      <div
-        class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
-      >
-        <div
-          aria-hidden="true"
-          class="pointer-events-none"
-        >
-          <div
-            class="min-h-48"
-            data-sx-lazy="shown"
-          >
-            <div
-              class="sarak-design-scope sarak-scope-r8 dark flex items-center justify-center p-6"
-              style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
-            >
-              <div
-                class="w-full"
-                style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
-              >
-                <div
-                  class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
-                >
-                  <header
-                    class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))]"
-                  >
-                    <h3
-                      data-testid="sample-card-title"
-                    >
-                      Receita do mês
-                    </h3>
-                  </header>
-                  <div
-                    class=""
-                  >
-                    <p
-                      class="text-2xl font-bold"
-                      data-testid="sample-card-value"
-                    >
-                      R$ 12.480,00
-                    </p>
-                  </div>
-                  <footer
-                    class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)]"
-                  >
-                    <span
-                      class="inline-flex"
-                    >
-                      <button
-                        class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
-                        tabindex="-1"
-                      >
-                        <span>
-                          Ver detalhes
-                        </span>
-                      </button>
-                    </span>
-                  </footer>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="flex flex-col gap-1 border-t border-theme-border p-3"
-        >
-          <h3
-            class="text-sm font-bold uppercase tracking-wider text-theme-text"
-          >
-            Carbon Tech
-          </h3>
-          <p
-            class="text-xs text-theme-muted"
-          >
-            Textura de fibra de carbono, borda técnica sutil, sem glow espalhado.
-          </p>
-        </div>
-        <button
-          aria-label="Carbon Tech"
-          class="absolute inset-0 p-0 rounded-2xl"
-          type="button"
-        />
-      </div>
-      <div
-        class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
-      >
-        <div
-          aria-hidden="true"
-          class="pointer-events-none"
-        >
-          <div
-            class="min-h-48"
-            data-sx-lazy="shown"
-          >
-            <div
-              class="sarak-design-scope sarak-scope-r9 dark flex items-center justify-center p-6"
-              style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
-            >
-              <div
-                class="w-full"
-                style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
-              >
-                <div
-                  class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
-                >
-                  <header
-                    class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))]"
-                  >
-                    <h3
-                      data-testid="sample-card-title"
-                    >
-                      Receita do mês
-                    </h3>
-                  </header>
-                  <div
-                    class=""
-                  >
-                    <p
-                      class="text-2xl font-bold"
-                      data-testid="sample-card-value"
-                    >
-                      R$ 12.480,00
-                    </p>
-                  </div>
-                  <footer
-                    class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)]"
-                  >
-                    <span
-                      class="inline-flex"
-                    >
-                      <button
-                        class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
-                        tabindex="-1"
-                      >
-                        <span>
-                          Ver detalhes
-                        </span>
-                      </button>
-                    </span>
-                  </footer>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="flex flex-col gap-1 border-t border-theme-border p-3"
-        >
-          <h3
-            class="text-sm font-bold uppercase tracking-wider text-theme-text"
-          >
-            Organic Craft
-          </h3>
-          <p
-            class="text-xs text-theme-muted"
-          >
-            Textura de madeira, radius suave, tom quente — o oposto do synth/tech.
-          </p>
-        </div>
-        <button
-          aria-label="Organic Craft"
-          class="absolute inset-0 p-0 rounded-2xl"
-          type="button"
-        />
-      </div>
-      <div
-        class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
-      >
-        <div
-          aria-hidden="true"
-          class="pointer-events-none"
-        >
-          <div
-            class="min-h-48"
-            data-sx-lazy="shown"
-          >
-            <div
-              class="sarak-design-scope sarak-scope-ra dark flex items-center justify-center p-6"
-              style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
-            >
-              <div
-                class="w-full"
-                style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
-              >
-                <div
-                  class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
-                >
-                  <header
-                    class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))]"
-                  >
-                    <h3
-                      data-testid="sample-card-title"
-                    >
-                      Receita do mês
-                    </h3>
-                  </header>
-                  <div
-                    class=""
-                  >
-                    <p
-                      class="text-2xl font-bold"
-                      data-testid="sample-card-value"
-                    >
-                      R$ 12.480,00
-                    </p>
-                  </div>
-                  <footer
-                    class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)]"
-                  >
-                    <span
-                      class="inline-flex"
-                    >
-                      <button
-                        class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
-                        tabindex="-1"
-                      >
-                        <span>
-                          Ver detalhes
-                        </span>
-                      </button>
-                    </span>
-                  </footer>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="flex flex-col gap-1 border-t border-theme-border p-3"
-        >
-          <h3
-            class="text-sm font-bold uppercase tracking-wider text-theme-text"
-          >
-            Floating Lift
-          </h3>
-          <p
-            class="text-xs text-theme-muted"
-          >
-            Foco em movimento: elevação forte no hover, glow crescente, quase sem sombra em repouso.
-          </p>
-        </div>
-        <button
-          aria-label="Floating Lift"
-          class="absolute inset-0 p-0 rounded-2xl"
-          type="button"
-        />
-      </div>
-      <div
-        class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
-      >
-        <div
-          aria-hidden="true"
-          class="pointer-events-none"
-        >
-          <div
-            class="min-h-48"
-            data-sx-lazy="shown"
-          >
-            <div
-              class="sarak-design-scope sarak-scope-rb dark flex items-center justify-center p-6"
-              style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
-            >
-              <div
-                class="w-full"
-                style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
-              >
-                <div
-                  class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
-                >
-                  <header
-                    class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))]"
-                  >
-                    <h3
-                      data-testid="sample-card-title"
-                    >
-                      Receita do mês
-                    </h3>
-                  </header>
-                  <div
-                    class=""
-                  >
-                    <p
-                      class="text-2xl font-bold"
-                      data-testid="sample-card-value"
-                    >
-                      R$ 12.480,00
-                    </p>
-                  </div>
-                  <footer
-                    class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)]"
-                  >
-                    <span
-                      class="inline-flex"
-                    >
-                      <button
-                        class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
-                        tabindex="-1"
-                      >
-                        <span>
-                          Ver detalhes
-                        </span>
-                      </button>
-                    </span>
-                  </footer>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="flex flex-col gap-1 border-t border-theme-border p-3"
-        >
-          <h3
-            class="text-sm font-bold uppercase tracking-wider text-theme-text"
-          >
-            Scanline CRT
-          </h3>
-          <p
-            class="text-xs text-theme-muted"
-          >
-            Monitor CRT: scanlines, cantos retos, verde-fósforo.
-          </p>
-        </div>
-        <button
-          aria-label="Scanline CRT"
-          class="absolute inset-0 p-0 rounded-2xl"
-          type="button"
-        />
-      </div>
+        Ver todas (28)
+      </button>
     </div>
   </div>
 </div>

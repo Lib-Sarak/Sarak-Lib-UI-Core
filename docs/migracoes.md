@@ -5,6 +5,14 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 8.0.0 — nomes e descrições dos presets do painel em português
+
+**Classificação: MINOR (aditivo).** Nenhum `id` de preset mudou e nenhum token foi acrescentado, removido ou alterado: quem grava ou aplica um preset pelo `id` continua igual.
+
+- O `name` e a `description` de 36 presets publicados passaram do inglês para o português, e o painel os mostra no idioma do sistema. Quem lê esses textos direto do preset, ou compara o `name` em teste, vê o texto novo; compare pelo `id`.
+
+---
+
 ## 8.0.0 — entradas e utilitários que os sistemas montavam à mão
 
 **Classificação: MINOR (aditivo).** Nada foi removido nem mudou de comportamento: `dedupeKey` e `extendOption` são opcionais e, omitidos, tudo sai como antes.

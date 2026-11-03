@@ -22,6 +22,7 @@ export const OptionTile: React.FC<OptionTileProps> = ({ name, description, onApp
     const peek = usePeekHandlers(onPeek, peekTokens);
     return (
         <div
+            data-option-tile=""
             className="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
             {...peek}
         >

@@ -35,6 +35,8 @@
             "typography"
         ],
         "groups": [
+            "fontPairs",
+            "typeScale",
             "fonts"
         ],
         "optionSections": [],
@@ -51,7 +53,15 @@
         ],
         "groups": [
             "cards",
-            "atmosphere"
+            "corners",
+            "density",
+            "shadow",
+            "shadowDirection",
+            "border",
+            "material",
+            "glass",
+            "atmosphere",
+            "gradient"
         ],
         "optionSections": [],
         "screen": "dashboard",
@@ -70,7 +80,18 @@
         ],
         "groups": [
             "buttons",
-            "inputs"
+            "inputs",
+            "tables",
+            "charts",
+            "modal",
+            "notice",
+            "switch",
+            "scroll",
+            "badge",
+            "emptyState",
+            "motion",
+            "pageTransition",
+            "icons"
         ],
         "optionSections": [],
         "screen": "caixas-texto",
@@ -89,6 +110,9 @@
             "navigation"
         ],
         "groups": [
+            "sidebar",
+            "topbar",
+            "contentWidth",
             "globalBlock"
         ],
         "optionSections": [
@@ -99,16 +123,28 @@
             {
                 "id": "where",
                 "textKey": "barQuestionWhere",
-                "tokens": ["navigationStyle", "sidebarPosition", "sidebarWidth", "navbarLayout"],
+                "tokens": [
+                    "navigationStyle",
+                    "sidebarPosition",
+                    "sidebarWidth",
+                    "navbarLayout"
+                ],
                 "fineMatch": "^(sidebar(Min|Max|Collapsed)Width|topbar(Height|CollapsedHeight)|tabSectionMargin|searchPosition(Sidebar|Topbar)|maxContentWidth)$"
             },
             {
                 "id": "how",
                 "textKey": "barQuestionHow",
                 "tokens": [
-                    "sidebarTone", "topbarTone", "sidebarActiveItemStyle", "topbarActiveItemStyle",
-                    "sidebarBorderSide", "sidebarBorderStyle", "sidebarBackgroundStyle", "topbarBackgroundStyle",
-                    "sidebarItemDensity", "topbarItemDensity"
+                    "sidebarTone",
+                    "topbarTone",
+                    "sidebarActiveItemStyle",
+                    "topbarActiveItemStyle",
+                    "sidebarBorderSide",
+                    "sidebarBorderStyle",
+                    "sidebarBackgroundStyle",
+                    "topbarBackgroundStyle",
+                    "sidebarItemDensity",
+                    "topbarItemDensity"
                 ],
                 "fineMatch": "^(sidebar|topbar)(Color|Active|Hover|Item|Category|Border|Icon|Blur|Shadow|Noise|GroupSeparator|Title)|^nav(ItemActive|ActiveMarker|ItemRadius)|^tabGap$"
             },
@@ -116,22 +152,36 @@
                 "id": "what",
                 "textKey": "barQuestionWhat",
                 "tokens": [
-                    "chromeSearchPosition", "chromeUserPosition", "chromeNotificationsPosition",
-                    "preferenceModePosition", "preferenceFontSizePosition", "preferenceNavigationStylePosition",
-                    "preferenceNavCollapsePosition", "preferenceLanguagePosition"
+                    "chromeSearchPosition",
+                    "chromeUserPosition",
+                    "chromeNotificationsPosition",
+                    "preferenceModePosition",
+                    "preferenceFontSizePosition",
+                    "preferenceNavigationStylePosition",
+                    "preferenceNavCollapsePosition",
+                    "preferenceLanguagePosition"
                 ],
                 "fineMatch": "^searchDropdown"
             },
             {
                 "id": "brand",
                 "textKey": "barQuestionBrand",
-                "tokens": ["sidebarLogoPlacement", "shellBrandLogoSize", "brandLogoSizeCollapsed", "sidebarLabelMaxWidth"],
+                "tokens": [
+                    "sidebarLogoPlacement",
+                    "shellBrandLogoSize",
+                    "brandLogoSizeCollapsed",
+                    "sidebarLabelMaxWidth"
+                ],
                 "fineMatch": "^(sidebar|topbar)(Brand|Label)|^topbarLabelMaxWidth$|^identity"
             },
             {
                 "id": "behavior",
                 "textKey": "barQuestionBehavior",
-                "tokens": ["isNavHidden", "sidebarResizable", "isAutoHideEnabled"],
+                "tokens": [
+                    "isNavHidden",
+                    "sidebarResizable",
+                    "isAutoHideEnabled"
+                ],
                 "fineMatch": "^(isSplitViewEnabled)$"
             }
         ],

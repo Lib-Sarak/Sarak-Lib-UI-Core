@@ -1,8 +1,9 @@
 import React from 'react';
-import { act, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { TypographyCatalog } from '../TypographyCatalog';
+import { getPresetGroup } from '../../../../../core/Design/presets/components/registry';
 import { TYPOGRAPHY_PRESETS } from '../../../../../core/Design/presets/components/typography';
 import { UIContext } from '../../../../../core/Provider/context';
 import type { SarakUIContextType } from '../../../../../core/Provider/types';
@@ -48,7 +49,7 @@ describe('TypographyCatalog', () => {
 
     it('mostra o texto de amostra em português, com título, frase e número', () => {
         renderCatalog();
-        expect(screen.getAllByText('Relatório mensal')).toHaveLength(TYPOGRAPHY_PRESETS.length);
+        expect(screen.getAllByText('Relatório mensal')).toHaveLength(getPresetGroup('fonts')!.featured.length);
         expect(screen.getAllByText('A atenção aos detalhes faz a diferença.')[0]).toBeInTheDocument();
         expect(screen.getAllByText('R$ 12.480,00')[0]).toBeInTheDocument();
     });
@@ -88,8 +89,8 @@ describe('TypographyCatalog', () => {
 
     it('a fonte do sistema não pede carga nenhuma', () => {
         renderCatalog('bundled');
-        const systemIndex = TYPOGRAPHY_PRESETS.findIndex((preset) => preset.name === 'System Default');
-        reveal(screen.getAllByRole('button')[systemIndex]);
+        fireEvent.click(screen.getByRole('button', { name: /Ver todas/ }));
+        reveal(screen.getByText('System Default').closest('button')!);
         expect(loadBundledFonts).not.toHaveBeenCalled();
     });
 

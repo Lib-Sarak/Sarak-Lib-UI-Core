@@ -91,6 +91,8 @@ via normal.
 | 65 | Boot subiu de 388,1 para 394,7 KB gzip na rc.5. Medido: quase tudo vem dos quatro catálogos novos de texto (`catalogEntries.access`, `advanced`, `entries`, `system`, cerca de 9 KB gzip na fonte), carregados no boot mesmo sem a peça em uso. Separar o texto das peças opcionais por carga sob demanda devolve esse peso. O teto de `boot:measure` é relativo e não acusa esse crescimento | revisão das plans 153 a 155 | 2026-11-02 | médio |
 | 66 | `barrel:check` não enxerga componente em subpasta: `SarakCarousel` ficou fora do barril de `Media` e nada acusou. Só o spec de navegador achou | achado da `plan-155` | 2026-11-02 | médio |
 | 67 | Plural nos textos de lote: a prévia da `plan-153` mostra "Aprovar 1 selecionados" e "Rejeitar 1 selecionados". O catálogo de textos não tem forma singular para esses rótulos | prévia da `plan-153` | 2026-11-02 | baixo |
+| 68 | `gates/scripts/audit/verify_presets.ts` e `gates/scripts/contrato/check-panel-contract.ts` enumeram só os 5 arquivos antigos de preset: os grupos do registro (`registry.ts`: barra, forma, tabela, movimento…) não passam por `auditor_presets` nem por `panel-contract:check`. Hoje quem cobre é o `presetCatalog.test.ts` | resumo da `plan-141` | 2026-11-03 | médio |
+| 69 | Grupos do painel com uma ou duas opções à vista porque a diferença entre elas só aparece em animação ou em interação, ou tem contraste baixo: janela, rolagem, troca de página, movimento, sombra, direção da sombra, moldura e degradê. As outras opções estão em "Ver todas" (`except` em `registry.ts`). Um desenho estático mostraria a diferença, como a curva de easing no movimento | veredito da `plan-141` | 2026-11-03 | baixo |
 
 ---
 

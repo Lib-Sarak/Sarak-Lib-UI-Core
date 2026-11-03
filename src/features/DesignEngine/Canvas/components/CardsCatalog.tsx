@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { CARD_PRESETS, CARD_TEXTURE_PRESETS } from '../../../../core/Design/presets/components/cards';
+import { getPresetGroup } from '../../../../core/Design/presets/components/registry';
+import { textureFamilyOf } from '../../../../core/Design/presets/components/textureFamilies';
 import { CATALOG_GRID_2COL } from '../panelResponsive.presets';
+import { usePresetText } from '../../hooks/usePresetText';
+import { CuratedGrid } from './CuratedGrid';
 import { Sparkles, Grid } from 'lucide-react';
 import { OptionTile } from './OptionTile';
 import { SampleCard, SAMPLE_TEXTURE_STYLE } from './SampleParts';
@@ -14,11 +17,14 @@ interface CardsCatalogProps {
     currentMode: 'light' | 'dark';
     draft?: Partial<SarakDesignState>;
     onPeek?: PeekHandler;
+    /** A aba que abre primeiro; quem só confere as texturas não precisa desenhar os cards curados antes. */
+    initialTab?: 'curated' | 'textures';
 }
 
-export const CardsCatalog: React.FC<CardsCatalogProps> = ({ onApplyPreset, currentMode, draft, onPeek }) => {
-    const [activeTab, setActiveTab] = useState<'curated' | 'textures'>('curated');
-    const presets = activeTab === 'curated' ? CARD_PRESETS : CARD_TEXTURE_PRESETS;
+export const CardsCatalog: React.FC<CardsCatalogProps> = ({ onApplyPreset, currentMode, draft, onPeek, initialTab = 'curated' }) => {
+    const [activeTab, setActiveTab] = useState<'curated' | 'textures'>(initialTab);
+    const text = usePresetText();
+    const group = getPresetGroup(activeTab === 'curated' ? 'cards' : 'cardTextures')!;
 
     return (
         <div className="flex flex-col gap-6">
@@ -41,18 +47,24 @@ export const CardsCatalog: React.FC<CardsCatalogProps> = ({ onApplyPreset, curre
 
             {/* Container query (plan-35): reage ao espaço real do painel, herdado do
                 `@container` de `PresetsCatalog.tsx` — nunca à largura da janela. */}
-            <div className={`grid ${CATALOG_GRID_2COL} gap-6`}>
-                {presets.map((preset) => (
+            <CuratedGrid
+                group={group}
+                gridClassName={CATALOG_GRID_2COL}
+                sectionOf={activeTab === 'textures' ? (preset) => {
+                    const family = textureFamilyOf(String(preset.design.cardTextureType)) ?? 'technical';
+                    return { id: family, title: text.family(family) };
+                } : undefined}
+                renderTile={(preset) => {
+                    const shown = text.preset(preset);
+                    return (
                     <OptionTile
                         key={preset.id}
-                        name={preset.name}
-                        description={preset.description}
+                        name={shown.name}
+                        description={shown.description}
                         onApply={() => onApplyPreset(preset.design, true)}
                         peekTokens={() => preset.design}
                         onPeek={onPeek}
                     >
-                        {/* Escopamos as variáveis do preset (mesmo mecanismo de produção): o CSS real de
-                            `.sarak-card` lê `--sarak-card-*` de qualquer ancestral, então o cartão real acompanha o preset. */}
                         <SampleScope
                             draft={draft}
                             tokens={preset.design}
@@ -66,8 +78,9 @@ export const CardsCatalog: React.FC<CardsCatalogProps> = ({ onApplyPreset, curre
                             </div>
                         </SampleScope>
                     </OptionTile>
-                ))}
-            </div>
+                    );
+                }}
+            />
         </div>
     );
 };

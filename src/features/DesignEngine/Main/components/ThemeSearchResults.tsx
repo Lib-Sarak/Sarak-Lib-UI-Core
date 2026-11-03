@@ -4,9 +4,10 @@ import { DecisionTokenList, enhanceToken, type ColumnTokenProps } from './Decisi
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { COLUMN_DECISIONS, getDecision, type DecisionId, type TokenLocation } from '../../utils/decisions';
 import {
-    AREAS_FIRST_THRESHOLD, MAX_PER_GROUP, findOptionEntries, groupByDecision, type LocatedResult, type ResultGroup,
+    AREAS_FIRST_THRESHOLD, MAX_PER_GROUP, findOptionEntries, findPresetHits, groupByDecision, type LocatedResult, type ResultGroup,
 } from '../../utils/searchGroups';
 import { suggestQuery } from '../../utils/token-search';
+import { usePresetText } from '../../hooks/usePresetText';
 import type { SarakDesignToken } from '../../../../core/Design/types';
 
 interface ThemeSearchResultsProps extends ColumnTokenProps {
@@ -27,8 +28,14 @@ const decisionName = (text: Translate, id: DecisionId): string => {
     return decision ? text(decision.textKey) : '';
 };
 
+/** A seção de uma pergunta do Layout guarda o id dela ("how", "where"): o caminho mostra o título traduzido, nunca o id cru. */
+const sectionTitle = (text: Translate, location: TokenLocation): string | undefined => {
+    const question = location.layer === 'question' ? getDecision(location.decisionId)?.questions?.find((candidate) => candidate.id === location.section) : undefined;
+    return question ? text(question.textKey) : location.section;
+};
+
 const placeOf = (text: Translate, location: TokenLocation): string =>
-    [decisionName(text, location.decisionId), location.section].filter(Boolean).join(PATH_SEPARATOR);
+    [decisionName(text, location.decisionId), sectionTitle(text, location)].filter(Boolean).join(PATH_SEPARATOR);
 
 const ResultRow: React.FC<{ item: LocatedResult; text: Translate; onOpen: ThemeSearchResultsProps['onOpenToken'] }> = ({ item, text, onOpen }) => {
     const place = placeOf(text, item.location);
@@ -100,8 +107,10 @@ interface OptionsProps {
 }
 
 const OptionEntries: React.FC<OptionsProps> = ({ query, tokenIndex, text, onOpen }) => {
+    const presetText = usePresetText();
     const entries = findOptionEntries(query, tokenIndex, (id) => decisionName(text, id));
-    if (entries.length === 0) return null;
+    const presetHits = findPresetHits(query, (preset) => presetText.preset(preset).name);
+    if (entries.length === 0 && presetHits.length === 0) return null;
     return (
         <section aria-label={text('searchOptionsTitle')} className="flex flex-col gap-1">
             <h3 className="px-3 text-[length:var(--sarak-type-scale-tiny,11px)] font-black uppercase tracking-widest text-[var(--theme-muted)]">{text('searchOptionsTitle')}</h3>
@@ -114,6 +123,11 @@ const OptionEntries: React.FC<OptionsProps> = ({ query, tokenIndex, text, onOpen
                         </li>
                     );
                 })}
+                {presetHits.map((hit) => (
+                    <li key={hit.presetId}>
+                        <button type="button" data-search-preset={hit.presetId} aria-label={text('searchOptionOpen', { place: `${hit.name} (${presetText.group(hit.groupId)})` })} onClick={() => onOpen(hit.decisionId)} className={`${pillClass} ${captionClass} border border-[var(--theme-border)] text-[var(--theme-title)]`}>{hit.name} · {presetText.group(hit.groupId)}</button>
+                    </li>
+                ))}
             </ul>
         </section>
     );

@@ -1,6 +1,8 @@
 import type { SarakDesignToken } from '../../../core/Design/types';
 import type { DecisionId, TokenLocation } from './decisions';
 import { matchesText } from './token-search';
+import { PRESET_GROUPS } from '../../../core/Design/presets/components/registry';
+import type { ComponentPreset } from '../../../core/Design/presets/components/cards';
 
 export interface LocatedResult {
     token: SarakDesignToken;
@@ -51,4 +53,28 @@ export const findOptionEntries = (
         entries.push({ decisionId: location.decisionId, section });
     });
     return entries.slice(0, MAX_OPTION_ENTRIES);
+};
+
+export interface PresetHit {
+    presetId: string;
+    groupId: string;
+    decisionId: DecisionId;
+    name: string;
+}
+
+const MAX_PRESET_HITS = 8;
+
+/**
+ * Os presets que a consulta acha: pelo nome no idioma que vale ou por um sinônimo (`keywords`). O resultado leva à
+ * decisão do grupo do preset. Os grupos por opção de um token só (texturas, fontes) ficam de fora quando a consulta
+ * casaria com dezenas deles: a busca devolve o grupo, não as quarenta texturas.
+ */
+export const findPresetHits = (query: string, resolveName: (preset: ComponentPreset) => string, limit = MAX_PRESET_HITS): PresetHit[] => {
+    const hits: PresetHit[] = [];
+    PRESET_GROUPS.forEach((group) => group.presets.forEach((preset) => {
+        const name = resolveName(preset);
+        const matched = matchesText(query, name) || (preset.keywords ?? []).some((word) => matchesText(query, word));
+        if (matched && !hits.some((hit) => hit.presetId === preset.id)) hits.push({ presetId: preset.id, groupId: group.id, decisionId: group.decision, name });
+    }));
+    return hits.slice(0, limit);
 };

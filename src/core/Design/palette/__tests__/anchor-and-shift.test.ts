@@ -142,11 +142,15 @@ describe('texto da marca nos presets de base média', () => {
     it('todo papel deslocado conserva o matiz da base quando a base tem croma', () => {
         Object.entries(SARAK_PALETTE_PRESETS).filter(([, preset]) => hexToOklch(preset.base)!.chroma > 0.1).forEach(([id, preset]) => {
             const origin = hexToOklch(preset.base)!;
-            MODES.forEach((mode) => SHIFTED.forEach((token) => {
-                const moved = hexToOklch(resolvePalette(preset, mode)[token])!;
-                const gap = Math.min(Math.abs(moved.hue - origin.hue), 360 - Math.abs(moved.hue - origin.hue));
-                expect(gap, `${id} ${mode} ${token}`).toBeLessThan(12);
-            }));
+            MODES.forEach((mode) => {
+                // A paleta sai uma vez por preset e modo, não uma vez por papel.
+                const colors = resolvePalette(preset, mode);
+                SHIFTED.forEach((token) => {
+                    const moved = hexToOklch(colors[token])!;
+                    const gap = Math.min(Math.abs(moved.hue - origin.hue), 360 - Math.abs(moved.hue - origin.hue));
+                    expect(gap, `${id} ${mode} ${token}`).toBeLessThan(12);
+                });
+            });
         });
     });
 });

@@ -116,14 +116,20 @@ const TEXTURE_LAYER_STYLE: React.CSSProperties = {
     '--sarak-vignette-opacity': 0,
 } as React.CSSProperties;
 
+/**
+ * A faixa do cabeçalho e a do rodapé pintam só a largura útil do cartão, que tem padding próprio; a amostra as estende até a
+ * borda (margem negativa igual ao padding) e devolve o recuo ao texto, para a cor da faixa ter a largura do cartão.
+ */
+const BAND_BLEED = 'mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)]';
+
 /** O cartão real, com título, valor e botão. */
 export const SampleCard: React.FC<{ className?: string; texture?: string }> = ({ className, texture }) => {
     const text = useLibraryText();
     return (
         <SarakCard className={className}>
-            <SarakCard.Header><h3 data-testid="sample-card-title">{text('sampleCardTitle')}</h3></SarakCard.Header>
+            <SarakCard.Header className={BAND_BLEED}><h3 data-testid="sample-card-title">{text('sampleCardTitle')}</h3></SarakCard.Header>
             <SarakCard.Body><p data-testid="sample-card-value" className="text-2xl font-bold">{text('fontSampleNumber')}</p></SarakCard.Body>
-            <SarakCard.Footer><SampleButton state="rest" /></SarakCard.Footer>
+            <SarakCard.Footer className={`${BAND_BLEED} py-[var(--sarak-card-header-padding,12px)]`}><SampleButton state="rest" /></SarakCard.Footer>
             {texture && <div aria-hidden="true" data-sample-texture="" data-sx-texture={texture} style={TEXTURE_LAYER_STYLE} />}
         </SarakCard>
     );

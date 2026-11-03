@@ -24,10 +24,10 @@ describe('BarSample', () => {
         expect(screen.getByRole('link', { name: 'Início' })).toBeInTheDocument();
     });
 
-    it('a marca de amostra é neutra: monograma em SVG e um nome genérico, sem marca real', () => {
+    it('a marca de amostra é neutra: um quadrado na cor do tema e um nome genérico, sem marca real', () => {
         const { container } = renderSample();
         expect(screen.getByText('Sua marca')).toBeInTheDocument();
-        expect(container.querySelector('img[src^="data:image/svg+xml"]')).not.toBeNull();
+        expect(container.querySelector('[data-sarak-slot="logo"]')).not.toBeNull();
     });
 
     it('a amostra segue o rascunho: a posição da marca na base muda o lugar dela', () => {

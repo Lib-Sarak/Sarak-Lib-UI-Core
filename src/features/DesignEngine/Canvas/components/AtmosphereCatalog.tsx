@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { MEDIA_PRESETS, TEXTURE_PRESETS } from '../../../../core/Design/presets/components/atmosphere';
+import { getPresetGroup } from '../../../../core/Design/presets/components/registry';
+import { textureFamilyOf } from '../../../../core/Design/presets/components/textureFamilies';
+import { usePresetText } from '../../hooks/usePresetText';
+import { CuratedGrid } from './CuratedGrid';
 import { ComponentPreset } from '../../../../core/Design/presets/components/cards';
 import { Video, Grid } from 'lucide-react';
 import { SarakBackgroundRenderer } from '../../../../core/Design/components/SarakBackgroundRenderer';
@@ -16,10 +19,13 @@ interface AtmosphereCatalogProps {
     currentMode: string;
     draft?: Partial<SarakDesignState>;
     onPeek?: PeekHandler;
+    /** A aba que abre primeiro; quem só confere as texturas não precisa desenhar as atmosferas antes. */
+    initialTab?: 'media' | 'textures';
 }
 
-export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPreset, currentMode, draft, onPeek }) => {
-    const [activeTab, setActiveTab] = useState<'media' | 'textures'>('media');
+export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPreset, currentMode, draft, onPeek, initialTab = 'media' }) => {
+    const [activeTab, setActiveTab] = useState<'media' | 'textures'>(initialTab);
+    const text = usePresetText();
 
     return (
         <div className="flex flex-col gap-6">
@@ -58,16 +64,23 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
                 </div>
             </div>
 
-            <div className={`grid ${CATALOG_GRID_2COL} gap-6`}>
-                {(activeTab === 'media' ? MEDIA_PRESETS : TEXTURE_PRESETS).map((preset) => (
+            <CuratedGrid
+                group={getPresetGroup(activeTab === 'media' ? 'atmosphere' : 'textures')!}
+                gridClassName={CATALOG_GRID_2COL}
+                sectionOf={activeTab === 'textures' ? (preset) => {
+                    const family = textureFamilyOf(String(preset.design.texture)) ?? 'technical';
+                    return { id: family, title: text.family(family) };
+                } : undefined}
+                renderTile={(preset) => (
                     <AtmospherePresetPreview key={preset.id} preset={preset} currentMode={currentMode} draft={draft} onPeek={onPeek} onApply={() => onApplyPreset(preset.design, true)} />
-                ))}
-            </div>
+                )}
+            />
         </div>
     );
 };
 
 const AtmospherePresetPreview = ({ preset, onApply, currentMode, draft, onPeek }: { preset: ComponentPreset, onApply: () => void, currentMode: string, draft?: Partial<SarakDesignState>, onPeek?: PeekHandler }) => {
+    const shown = usePresetText().preset(preset);
     const imageUrl = preset.design.globalBackgroundImageUrl;
     const isVideo = imageUrl && (imageUrl.includes('video') || imageUrl.endsWith('.webm') || imageUrl.endsWith('.mp4'));
     const isImage = imageUrl && !isVideo;
@@ -77,8 +90,8 @@ const AtmospherePresetPreview = ({ preset, onApply, currentMode, draft, onPeek }
 
     return (
         <OptionTile
-            name={preset.name}
-            description={preset.description}
+            name={shown.name}
+            description={shown.description}
             onApply={onApply}
             peekTokens={() => preset.design}
             onPeek={onPeek}
@@ -113,12 +126,6 @@ const AtmospherePresetPreview = ({ preset, onApply, currentMode, draft, onPeek }
                         <SampleButton state="rest" />
                     </div>
                 </SampleScope>
-                <div className="absolute left-3 top-3 z-20 flex items-center gap-2">
-                    {isVideo && <span className="px-2 py-1 rounded bg-[var(--sarak-status-info-color,#3b82f6)]/20 border border-[var(--sarak-status-info-color,#3b82f6)]/50 text-[var(--sarak-status-info-color,#3b82f6)] text-[length:var(--sarak-type-scale2xs,11px)] font-bold uppercase tracking-wider backdrop-blur-md">Live Media</span>}
-                    {isImage && <span className="px-2 py-1 rounded bg-[var(--sarak-secondary-color,#7c5cff)]/20 border border-[var(--sarak-secondary-color,#7c5cff)]/50 text-[var(--sarak-secondary-color,#7c5cff)] text-[length:var(--sarak-type-scale2xs,11px)] font-bold uppercase tracking-wider backdrop-blur-md">Static Image</span>}
-                    {hasGeneratedAtmosphere && <span className="px-2 py-1 rounded bg-[var(--sarak-status-success-color,#10b981)]/20 border border-[var(--sarak-status-success-color,#10b981)]/50 text-[var(--sarak-status-success-color,#10b981)] text-[length:var(--sarak-type-scale2xs,11px)] font-bold uppercase tracking-wider backdrop-blur-md">CSS Atmosphere</span>}
-                    {!isVideo && !isImage && !hasGeneratedAtmosphere && <span className="px-2 py-1 rounded bg-[var(--text-muted,rgba(242,246,251,0.55))]/20 border border-[var(--border-color,rgba(255,255,255,0.09))]/50 text-[var(--text-muted,rgba(242,246,251,0.55))] text-[length:var(--sarak-type-scale2xs,11px)] font-bold uppercase tracking-wider backdrop-blur-md">Solid Void</span>}
-                </div>
             </div>
         </OptionTile>
     );

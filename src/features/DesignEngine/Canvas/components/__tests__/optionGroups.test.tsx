@@ -10,8 +10,7 @@ import { InputsCatalog } from '../InputsCatalog';
 import { AtmosphereCatalog } from '../AtmosphereCatalog';
 import { TypographyCatalog } from '../TypographyCatalog';
 import { SAMPLE_BUTTON_STATES, SAMPLE_TEXTURE_OPACITY } from '../SampleParts';
-import { TEXTURE_PRESETS } from '../../../../../core/Design/presets/components/atmosphere';
-import { CARD_TEXTURE_PRESETS } from '../../../../../core/Design/presets/components/cards';
+import { getPresetGroup } from '../../../../../core/Design/presets/components/registry';
 import { TYPOGRAPHY_PRESETS } from '../../../../../core/Design/presets/components/typography';
 
 /**
@@ -87,31 +86,32 @@ describe('grupos de opções do painel', () => {
 
     it('a textura de atmosfera aparece com a opacidade da amostra e o clique aplica o valor do preset', () => {
         const onApplyPreset = vi.fn();
-        const { container, getByRole, getAllByRole } = render(<AtmosphereCatalog onApplyPreset={onApplyPreset} currentMode="dark" />);
-        fireEvent.click(getByRole('button', { name: /Texturas/ }));
+        const { container, getByRole } = render(<AtmosphereCatalog onApplyPreset={onApplyPreset} currentMode="dark" initialTab="textures" />);
         const scope = container.querySelector('.sarak-design-scope[data-sx-texture]') as HTMLElement;
         expect(scope.style.getPropertyValue('--sarak-bg-pattern-opacity')).toBe(String(SAMPLE_TEXTURE_OPACITY));
         expect(scope).toHaveClass('texture-active');
 
-        const option = getAllByRole('button').find((button) => button.getAttribute('aria-label') === TEXTURE_PRESETS[0].name)!;
-        fireEvent.click(option);
-        expect(onApplyPreset).toHaveBeenCalledWith(TEXTURE_PRESETS[0].design, true);
+        // Só a primeira opção destacada importa aqui: a lista inteira não precisa ser desenhada para conferir o clique.
+        const group = getPresetGroup('textures')!;
+        const preset = group.presets.find((candidate) => candidate.id === group.featured[0])!;
+        fireEvent.click(getByRole('button', { name: 'Grade técnica' }));
+        expect(onApplyPreset).toHaveBeenCalledWith(preset.design, true);
         expect(JSON.stringify(onApplyPreset.mock.calls[0][0])).not.toContain(String(SAMPLE_TEXTURE_OPACITY));
     }, HEAVY_RENDER_TIMEOUT_MS);
 
     it('a textura de cartão aparece no próprio cartão, com opacidade visível, e o clique aplica o valor do preset', () => {
         const onApplyPreset = vi.fn();
-        const { container, getByRole, getAllByRole } = render(<CardsCatalog onApplyPreset={onApplyPreset} currentMode="dark" />);
-        fireEvent.click(getByRole('button', { name: /Texturas/ }));
+        const { container, getByRole } = render(<CardsCatalog onApplyPreset={onApplyPreset} currentMode="dark" initialTab="textures" />);
         const scope = container.querySelector('.sarak-design-scope[data-sx-card-texture-type]') as HTMLElement;
         expect(scope.style.getPropertyValue('--sarak-card-texture-opacity')).toBe(String(SAMPLE_TEXTURE_OPACITY));
         const card = scope.querySelector('.sarak-card') as HTMLElement;
         expect(card).toHaveClass('min-h-40');
         expect(card.querySelector('[data-sample-texture]')!.getAttribute('data-sx-texture')).toBe(scope.getAttribute('data-sx-card-texture-type'));
 
-        const option = getAllByRole('button').find((button) => button.getAttribute('aria-label') === CARD_TEXTURE_PRESETS[0].name)!;
-        fireEvent.click(option);
-        expect(onApplyPreset).toHaveBeenCalledWith(CARD_TEXTURE_PRESETS[0].design, true);
+        const group = getPresetGroup('cardTextures')!;
+        const preset = group.presets.find((candidate) => candidate.id === group.featured[0])!;
+        fireEvent.click(getByRole('button', { name: 'Grade técnica' }));
+        expect(onApplyPreset).toHaveBeenCalledWith(preset.design, true);
     }, HEAVY_RENDER_TIMEOUT_MS);
 
     it('a tipografia mostra um Aa grande e a linha de letras que distinguem, na fonte do preset, e a frase em português', () => {
@@ -127,7 +127,7 @@ describe('grupos de opções do painel', () => {
     it('espiar uma opção não aplica nada; só o clique aplica', () => {
         const onApplyPreset = vi.fn();
         const { getAllByRole } = render(<CardsCatalog onApplyPreset={onApplyPreset} currentMode="dark" onPeek={vi.fn()} />);
-        const option = getAllByRole('button').find((button) => button.getAttribute('aria-label') === 'Glass Minimal')!;
+        const option = getAllByRole('button').find((button) => button.getAttribute('aria-label') === 'Vidro mínimo')!;
         fireEvent.mouseEnter(option.parentElement!);
         fireEvent.focus(option);
         expect(onApplyPreset).not.toHaveBeenCalled();

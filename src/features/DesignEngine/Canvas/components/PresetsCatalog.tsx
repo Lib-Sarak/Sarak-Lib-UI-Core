@@ -8,6 +8,7 @@ import { AtmosphereCatalog } from './AtmosphereCatalog';
 import { TypographyCatalog } from './TypographyCatalog';
 import { ButtonsCatalog } from './ButtonsCatalog';
 import { InputsCatalog } from './InputsCatalog';
+import { PresetGroupCatalog } from './PresetGroupCatalog';
 import { PresetCard } from './PresetCard';
 import { PresetCardPending } from './PresetCardPending';
 import { useCatalogThemes } from './useCatalogThemes';
@@ -17,7 +18,10 @@ import type { PeekHandler } from './peek';
 import { SarakDesignState, SarakUIContextType } from '../../../../core/Provider/types';
 
 /** Os grupos de opções visuais que a coluna de decisões monta, um por vez. */
-export type PresetGroup = 'themes' | 'cards' | 'fonts' | 'atmosphere' | 'buttons' | 'inputs';
+export type PresetGroup = string;
+
+/** Os grupos com catálogo próprio (abas, páginas de tema); os demais vêm do registro e usam o catálogo genérico. */
+const DEDICATED_GROUPS: ReadonlySet<string> = new Set(['themes', 'cards', 'fonts', 'atmosphere', 'buttons', 'inputs']);
 
 interface PresetsCatalogProps {
     /** Qual grupo de opções desenhar. */
@@ -118,5 +122,6 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
         {group === 'atmosphere' && <AtmosphereCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} draft={draft} onPeek={onPeek} />}
         {group === 'buttons' && <ButtonsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} draft={draft} onPeek={onPeek} />}
         {group === 'inputs' && <InputsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} draft={draft} onPeek={onPeek} />}
+        {!DEDICATED_GROUPS.has(group) && <PresetGroupCatalog groupId={group} onApplyPreset={onApplyPreset} currentMode={currentMode} draft={draft} onPeek={onPeek} />}
     </div>
 );

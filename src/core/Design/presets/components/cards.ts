@@ -1,18 +1,21 @@
 import type { SarakDesignState } from '../../../Provider/types';
 import { TEXTURE_OPTIONS } from '../../schema/atmosphere';
+import { CARD_STRUCTURE_PRESETS } from './cardsStructure';
 
 export interface ComponentPreset {
     id: string;
     name: string;
     description: string;
     design: Partial<SarakDesignState>;
+    /** Sinônimos que a busca do painel também acha, além do nome (pt e en). Opcional: o nome sozinho já é achado. */
+    keywords?: readonly string[];
 }
 
-export const CARD_PRESETS: ComponentPreset[] = [
+const LEGACY_CARD_PRESETS: ComponentPreset[] = [
     {
         id: 'card-glass-minimal',
-        name: 'Glass Minimal',
-        description: 'Vidro translúcido, blur leve, borda quase invisível.',
+        name: 'Vidro mínimo',
+        description: 'Vidro translúcido com desfoque leve e borda quase invisível.',
         design: {
             cardBackgroundColor: 'rgba(255,255,255,0.04)',
             cardBackdropBlur: 16,
@@ -25,8 +28,8 @@ export const CARD_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'card-claymorphism',
-        name: 'Claymorphism',
-        description: 'Massinha: super arredondado, sem borda, volume por glow interno + sombra externa.',
+        name: 'Massinha',
+        description: 'Super arredondado, sem borda, com volume dado por brilho interno e sombra externa.',
         design: {
             cardBorderRadius: 32,
             cardBorderWidth: 0,
@@ -39,8 +42,8 @@ export const CARD_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'card-retro-os',
-        name: 'Retro OS',
-        description: 'Anos 90: cantos duros, borda cinza chanfrada, sem blur, sem sombra.',
+        name: 'Sistema retrô',
+        description: 'Anos 90: cantos retos, borda cinza chanfrada, sem desfoque e sem sombra.',
         design: {
             cardBorderRadius: 0,
             cardBorderWidth: 2,
@@ -53,8 +56,8 @@ export const CARD_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'card-cyberpunk-neon',
-        name: 'Cyberpunk Neon',
-        description: 'Bordas afiadas, glow neon forte, textura de grid técnico.',
+        name: 'Neon cibernético',
+        description: 'Cantos afiados, brilho neon forte e textura de grade técnica.',
         design: {
             cardBorderRadius: 0,
             cardBorderWidth: 1,
@@ -68,8 +71,8 @@ export const CARD_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'card-holographic-hud',
-        name: 'Holographic HUD',
-        description: 'Sci-fi ultra transparente: blur pesado, spotlight, feixe de borda animado.',
+        name: 'Painel holográfico',
+        description: 'Ficção científica quase transparente: desfoque pesado, foco de luz e borda animada.',
         design: {
             cardBackgroundColor: 'rgba(255,255,255,0.02)',
             cardBackdropBlur: 32,
@@ -83,8 +86,8 @@ export const CARD_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'card-industrial-brutalist',
-        name: 'Industrial Brutalism',
-        description: 'Bordas grossas, sombra sólida deslocada, zero blur.',
+        name: 'Industrial bruto',
+        description: 'Bordas grossas, sombra sólida deslocada e nenhum desfoque.',
         design: {
             cardBorderRadius: 4,
             cardBorderWidth: 3,
@@ -96,8 +99,8 @@ export const CARD_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'card-geometric-cut',
-        name: 'Geometric Cut',
-        description: 'Chanfro geométrico nos cantos, matte, sem blur — silhueta octogonal.',
+        name: 'Corte geométrico',
+        description: 'Cantos chanfrados, fosco e sem desfoque: silhueta de octógono.',
         design: {
             cardGeometricCut: 24,
             cardBorderRadius: 0,
@@ -109,8 +112,8 @@ export const CARD_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'card-asymmetric-accent',
-        name: 'Asymmetric Accent',
-        description: 'Barra de destaque só no topo, resto sem borda — flat com acento de cor.',
+        name: 'Acento no topo',
+        description: 'Uma barra de destaque só no topo e o resto sem borda: plano com um toque de cor.',
         design: {
             cardBorderTop: 4,
             cardBorderBottom: 0,
@@ -124,8 +127,8 @@ export const CARD_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'card-carbon-tech',
-        name: 'Carbon Tech',
-        description: 'Textura de fibra de carbono, borda técnica sutil, sem glow espalhado.',
+        name: 'Fibra de carbono',
+        description: 'Textura de fibra de carbono com borda técnica sutil e sem brilho espalhado.',
         design: {
             cardTextureType: 'carbon-tech',
             cardBorderRadius: 6,
@@ -137,8 +140,8 @@ export const CARD_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'card-organic-craft',
-        name: 'Organic Craft',
-        description: 'Textura de madeira, radius suave, tom quente — o oposto do synth/tech.',
+        name: 'Artesanal',
+        description: 'Textura de madeira, cantos macios e tom quente: o oposto do tecnológico.',
         design: {
             cardTextureType: 'wood',
             cardBorderRadius: 20,
@@ -150,8 +153,8 @@ export const CARD_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'card-floating-lift',
-        name: 'Floating Lift',
-        description: 'Foco em movimento: elevação forte no hover, glow crescente, quase sem sombra em repouso.',
+        name: 'Flutuante',
+        description: 'Foco no movimento: sobe bastante no hover, o brilho cresce e quase não há sombra em repouso.',
         design: {
             cardHoverTranslate: -12,
             cardHoverGlowIncrease: 0.5,
@@ -163,8 +166,8 @@ export const CARD_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'card-scanline-crt',
-        name: 'Scanline CRT',
-        description: 'Monitor CRT: scanlines, cantos retos, verde-fósforo.',
+        name: 'Monitor de tubo',
+        description: 'Linhas de varredura, cantos retos e verde de fósforo.',
         design: {
             cardTextureType: 'scanlines',
             cardBorderRadius: 0,
@@ -175,6 +178,8 @@ export const CARD_PRESETS: ComponentPreset[] = [
         }
     }
 ];
+
+export const CARD_PRESETS: ComponentPreset[] = [...LEGACY_CARD_PRESETS, ...CARD_STRUCTURE_PRESETS];
 
 // Presets gerados dinamicamente a partir das texturas do Schema (1:1 Paridade com atmosphere.ts)
 export const CARD_TEXTURE_PRESETS: ComponentPreset[] = TEXTURE_OPTIONS.map(texture => ({

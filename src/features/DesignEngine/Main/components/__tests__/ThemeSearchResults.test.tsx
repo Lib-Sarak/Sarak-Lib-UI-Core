@@ -130,3 +130,27 @@ describe('ThemeSearchResults', () => {
         });
     });
 });
+
+describe('ThemeSearchResults — a linha de caminho da área Layout', () => {
+    const QUESTIONS = ['where', 'how', 'what', 'brand', 'behavior'] as const;
+    const LANGUAGES = ['pt', 'en', 'es', 'fr', 'de', 'it'] as const;
+
+    it.each(LANGUAGES)('%s: mostra o título traduzido da pergunta, nunca o id cru', (language) => {
+        const questionIndex = new Map<string, TokenLocation>(QUESTIONS.map((question) => [`tok-${question}`, { decisionId: 'layout', layer: 'question', section: question }]));
+        render(
+            <SarakUIProvider options={{ i18n: { languages: [language], language } }}>
+                <ThemeSearchResults
+                    query="barra" results={QUESTIONS.map((question) => token(`tok-${question}`, question))} tokenIndex={questionIndex}
+                    onOpenToken={vi.fn()} catalogMap={new Map()} draft={{} as never} updateDraft={vi.fn()} previewDevice="desktop"
+                />
+            </SarakUIProvider>,
+        );
+        const paths = screen.getAllByTestId('search-result-path').map((node) => node.textContent ?? '');
+        expect(paths).toHaveLength(QUESTIONS.length);
+        paths.forEach((path) => {
+            const [, section = ''] = path.split(' › ');
+            expect(QUESTIONS as readonly string[]).not.toContain(section);
+            expect(section.length).toBeGreaterThan(0);
+        });
+    });
+});

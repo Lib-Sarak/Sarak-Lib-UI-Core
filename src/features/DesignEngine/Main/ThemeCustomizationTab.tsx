@@ -143,7 +143,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                     panelView={panelView}
                     options={{
                         sarak, globalComponent, catalogMap, draft, updateDraft, previewDevice,
-                        onApplyPreset, onApplyFullTheme: themeActions.handleApplyFullTheme, onPeek,
+                        onApplyPreset, onApplyFullTheme: themeActions.handleApplyFullTheme, onPeek, sampleDraft: previewDraft,
                         currentMode: previewMode, draftMode,
                     }}
                     decisionContext={decisionContext}

@@ -40,6 +40,8 @@ export const resolveChromeToneStyle = (tone: NavigationBarTone, bar: Bar): CSSPr
     const style: Record<string, string> = {
         color: text,
         '--sarak-nav-active-color': strong,
+        // O item ativo preenchido (`*ActiveItemStyle: filled`) pinta o fundo com a cor acima; o texto sobre ele é o fundo da barra, o par que a paleta garante.
+        '--sarak-on-nav-active': BAR_BACKGROUND[bar],
         '--text-muted': text,
         '--theme-muted': text,
         '--text-main': strong,

@@ -26,10 +26,10 @@ describe('ThemeDecisionOptions', () => {
     it.each([
         ['theme', ['catalog-themes']],
         ['colors', ['palette-section']],
-        ['fonts', ['catalog-fonts']],
-        ['shape', ['catalog-cards', 'catalog-atmosphere']],
-        ['components', ['catalog-buttons', 'catalog-inputs']],
-        ['layout', ['global-block']],
+        ['fonts', ['catalog-fontPairs', 'catalog-typeScale', 'catalog-fonts']],
+        ['shape', ['catalog-cards', 'catalog-corners', 'catalog-density', 'catalog-shadow', 'catalog-shadowDirection', 'catalog-border', 'catalog-material', 'catalog-glass', 'catalog-atmosphere', 'catalog-gradient']],
+        ['components', ['catalog-buttons', 'catalog-inputs', 'catalog-tables', 'catalog-charts', 'catalog-modal', 'catalog-notice', 'catalog-switch', 'catalog-scroll', 'catalog-badge', 'catalog-emptyState', 'catalog-motion', 'catalog-pageTransition', 'catalog-icons']],
+        ['layout', ['catalog-sidebar', 'catalog-topbar', 'catalog-contentWidth', 'global-block']],
         ['advanced', []],
     ])('a decisão %s monta os grupos de opção dela', (id, expected) => {
         expect(mounted(id)).toEqual(expected);

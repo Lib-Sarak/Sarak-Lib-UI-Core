@@ -1,6 +1,7 @@
 import React from 'react';
 import { ComponentPreset } from '../../../../core/Design/presets/components/cards';
 import type { SarakDesignState } from '../../../../core/Provider/types';
+import { usePresetText } from '../../hooks/usePresetText';
 import { OptionTile } from './OptionTile';
 import { SampleButtonStates } from './SampleParts';
 import { SampleScope } from './SampleScope';
@@ -15,10 +16,12 @@ interface ButtonPresetPreviewProps {
 }
 
 /** Uma opção de botão: o botão real nos quatro estados, com os tokens do preset por cima do rascunho. */
-export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset, onApply, currentMode, draft, onPeek }) => (
+export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset, onApply, currentMode, draft, onPeek }) => {
+    const shown = usePresetText().preset(preset);
+    return (
     <OptionTile
-        name={preset.name}
-        description={preset.description}
+        name={shown.name}
+        description={shown.description}
         onApply={onApply}
         peekTokens={() => preset.design}
         onPeek={onPeek}
@@ -27,4 +30,5 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
             <SampleButtonStates />
         </SampleScope>
     </OptionTile>
-);
+    );
+};
