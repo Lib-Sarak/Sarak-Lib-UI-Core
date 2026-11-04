@@ -6,6 +6,15 @@ import { getPresetGroup } from '../../../../../core/Design/presets/components/re
 import SarakUIProvider from '../../../../../core/Provider/SarakUIProvider';
 import { PresetGroupCatalog } from '../PresetGroupCatalog';
 
+/** Só o caso do "Ver todas" desliga a amostra: ele prova o botão, não o desenho dos 8 pares de fonte. */
+const sampleSwitch = vi.hoisted(() => ({ off: false }));
+vi.mock('../SampleScope', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('../SampleScope')>();
+    const Original = actual.SampleScope;
+    const Scope = (props: React.ComponentProps<typeof Original>) => (sampleSwitch.off ? null : <Original {...props} />);
+    return { ...actual, SampleScope: Scope };
+});
+
 const withProvider = (node: React.ReactElement) => <SarakUIProvider>{node}</SarakUIProvider>;
 
 describe('PresetGroupCatalog', () => {
@@ -25,7 +34,12 @@ describe('PresetGroupCatalog', () => {
     });
 
     it('grupo com mais opções que as destacadas oferece o "Ver todas"', () => {
-        render(<PresetGroupCatalog groupId="fontPairs" onApplyPreset={vi.fn()} currentMode="light" />);
-        expect(screen.getByRole('button', { name: /Ver todas \(12\)/ })).toBeInTheDocument();
+        sampleSwitch.off = true;
+        try {
+            render(<PresetGroupCatalog groupId="fontPairs" onApplyPreset={vi.fn()} currentMode="light" />);
+            expect(screen.getByRole('button', { name: /Ver todas \(12\)/ })).toBeInTheDocument();
+        } finally {
+            sampleSwitch.off = false;
+        }
     });
 });
