@@ -88,21 +88,26 @@ const open = async (query: string): Promise<{ page: Page; errors: string[] }> =>
     return { page, errors };
 };
 
-const settle = async (page: Page): Promise<void> => {
-    // As amostras só desenham ao entrar na área visível: percorre a coluna, mais de uma vez, até nenhuma ficar pendente.
-    for (let pass = 0; pass < 12; pass += 1) {
-        await page.evaluate(async () => {
-            for (const node of Array.from(document.querySelectorAll('[data-sx-lazy="pending"]'))) {
+/** O seletor das amostras ainda por desenhar dentro da área que o caso lê (um grupo de opções), nunca da coluna inteira. */
+const pendingIn = (area: string): string => `${area} [data-sx-lazy="pending"]`;
+const groupArea = (groupId: string): string => `[data-option-group="${groupId}"]`;
+
+const settle = async (page: Page, area: string): Promise<void> => {
+    // As amostras só desenham ao entrar na área visível: rola até as da área pedida, até nenhuma ficar pendente.
+    const pending = pendingIn(area);
+    await page.locator(area).first().scrollIntoViewIfNeeded();
+    for (let pass = 0; pass < 6; pass += 1) {
+        await page.evaluate(async (selector) => {
+            for (const node of Array.from(document.querySelectorAll(selector))) {
                 node.scrollIntoView({ block: 'center' });
                 for (let wait = 0; wait < 60 && node.getAttribute('data-sx-lazy') === 'pending'; wait += 1) await new Promise((resolve) => setTimeout(resolve, 50));
             }
-        });
-        if ((await page.locator('[data-sx-lazy="pending"]').count()) === 0) break;
-        await page.evaluate(() => window.scrollTo(0, 0));
-        await page.waitForTimeout(500);
+        }, pending);
+        if ((await page.locator(pending).count()) === 0) break;
+        await page.waitForTimeout(300);
     }
-    await page.waitForFunction(() => document.querySelectorAll('[data-sx-lazy="pending"]').length === 0, undefined, { timeout: 90_000 });
-    await page.waitForTimeout(600);
+    await page.waitForFunction((selector) => document.querySelectorAll(selector).length === 0, pending, { timeout: 90_000 });
+    await page.waitForTimeout(300);
 };
 
 for (const mode of MODES) {
@@ -111,9 +116,9 @@ for (const mode of MODES) {
             const { page, errors } = await open(mode.query);
             await page.getByRole('button', { name: new RegExp(`^${decision.name}`) }).click();
             await page.getByRole('heading', { level: 2, name: decision.name }).waitFor();
-            await settle(page);
 
             for (const group of presetGroupsOf(decision.id).filter((candidate) => !INSIDE_ANOTHER_GROUP.has(candidate.id))) {
+                await settle(page, groupArea(group.id));
                 const section = page.locator(`[data-option-group="${group.id}"]`);
                 await expect(section, group.id).toHaveCount(1);
                 const count = await section.locator('[data-option-tile]').count();
@@ -127,7 +132,6 @@ for (const mode of MODES) {
                     await expect(toggle, `${group.id}: sem Ver todas`).toHaveCount(0);
                 }
             }
-            await settle(page);
             if (PREVIEW_DIR) {
                 fs.mkdirSync(PREVIEW_DIR, { recursive: true });
                 for (const group of presetGroupsOf(decision.id).filter((candidate) => !INSIDE_ANOTHER_GROUP.has(candidate.id))) {
@@ -147,7 +151,7 @@ test('a amostra segue o modo que a prévia mostra, mesmo com um tema escuro no r
     const { page } = await open('claro=1');
     await page.getByRole('button', { name: /^Forma/ }).click();
     await page.getByRole('heading', { level: 2, name: 'Forma' }).waitFor();
-    await settle(page);
+    await settle(page, groupArea('cards'));
     const lightness = await page.evaluate(() => {
         const scope = document.querySelector('[data-option-group="cards"] .sarak-design-scope') as HTMLElement;
         const [red, green, blue] = getComputedStyle(scope).backgroundColor.match(/\d+(\.\d+)?/g)!.slice(0, 3).map(Number);
@@ -207,8 +211,8 @@ for (const mode of MODES) {
             const collected: Array<{ group: GroupInfo; shots: string[] }> = [];
             await page.getByRole('button', { name: new RegExp(`^${decision.name}`) }).click();
             await page.getByRole('heading', { level: 2, name: decision.name }).waitFor();
-            await settle(page);
             for (const group of presetGroupsOf(decision.id).filter((candidate) => !INSIDE_ANOTHER_GROUP.has(candidate.id))) {
+                await settle(page, groupArea(group.id));
                 const tiles = page.locator(`[data-option-group="${group.id}"] [data-option-tile]`);
                 const count = await tiles.count();
                 const shots: string[] = [];
@@ -244,7 +248,7 @@ for (const mode of MODES) {
         const { page } = await open(mode.query);
         await page.getByRole('button', { name: /^Layout/ }).click();
         await page.getByRole('heading', { level: 2, name: 'Layout' }).waitFor();
-        await settle(page);
+        await settle(page, groupArea('topbar'));
         const frames = page.locator('[data-option-group="topbar"] [data-testid="bar-sample"]');
         const total = await frames.count();
         expect(total).toBeGreaterThan(0);
@@ -272,7 +276,7 @@ for (const mode of MODES) {
         const { page } = await open(mode.query);
         await page.getByRole('button', { name: /^Forma/ }).click();
         await page.getByRole('heading', { level: 2, name: 'Forma' }).waitFor();
-        await settle(page);
+        await settle(page, groupArea('cards'));
         await page.locator('[data-option-group="cards"] .sarak-card header').first().waitFor({ timeout: 30_000 });
         const widths = await page.locator('[data-option-group="cards"] .sarak-card').evaluateAll((cards) => cards.map((card) => {
             const cardWidth = (card as HTMLElement).clientWidth;
@@ -289,7 +293,7 @@ test('defeito: o trilho do interruptor tem contraste de 3:1 com o fundo da amost
     const { page } = await open('claro=1');
     await page.getByRole('button', { name: /^Componentes/ }).click();
     await page.getByRole('heading', { level: 2, name: 'Componentes' }).waitFor();
-    await settle(page);
+    await settle(page, groupArea('switch'));
     const rails = page.locator('[data-option-group="switch"] input[role="switch"]');
     await page.locator('[data-option-group="switch"]').scrollIntoViewIfNeeded();
     await rails.first().waitFor({ state: 'attached', timeout: 30_000 });
@@ -328,11 +332,10 @@ for (const mode of MODES) {
         const { page } = await open(mode.query);
         await page.getByRole('button', { name: /^Layout/ }).click();
         await page.getByRole('heading', { level: 2, name: 'Layout' }).waitFor();
-        await settle(page);
         const failures: string[] = [];
         for (const groupId of ['sidebar', 'topbar']) {
             await page.locator(`[data-preset-toggle="${groupId}"]`).click();
-            await settle(page);
+            await settle(page, groupArea(groupId));
             const tiles = page.locator(`[data-option-group="${groupId}"] [data-option-tile]`);
             const total = await tiles.count();
             expect(total, groupId).toBe(registry.groups.find((group) => group.id === groupId)!.count);
