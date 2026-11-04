@@ -43,12 +43,22 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
 | 1 | [plan-119-kit-de-importacao-aprendido-nos-importadores](plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md) | Fazer o importador usar a lib por inteiro sem reescrever o que ela entrega, com o kit de importação ensinado pelas licoes medidas nos importadores reais e com a gestao de temas do importador completa: salvar o aplicado como novo, editar, duplicar e criar, persistidos no importador | — | 🟡 Em execução | specs/12-kit-do-consumidor.md + specs/13-instalacao-e-atualizacao.md + specs/09-temas-e-presets.md + specs/15-divida-conhecida.md |
-| 2 | [plan-145-personalidades](plan/plan-145-personalidades.md) | Fazer o painel oferecer dez Personalidades que aplicam forma, fontes, densidade, barras, tabela, movimento e ícones de uma vez, mantendo a paleta escolhida, para que paleta e estrutura combinem livremente em dois cliques | — | 🟢 Aprovada | specs/specs/09-temas-e-presets.md + specs/specs/06-painel-de-customizacao-e-preview.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🚦 **Campanha da `8.0.0-rc.4` (2026-10-27).** Contrato aceito: [`anexos/rc4-contrato.md`](plan/anexos/rc4-contrato.md). Ordem: a `plan-128` vai **sozinha** (cria o hook de idioma e os arquivos de catálogo das outras); depois `plan-129` ‖ `plan-130` ‖ `plan-131` ‖ `plan-132` ‖ `plan-119` lote 8 ‖ `plan-133`, em paralelo (pastas disjuntas; arquivos compartilhados só por acréscimo); depois da 133, `plan-134` ‖ `plan-135`. A 134 e a 135 geram prévias em `C:\tmp\sarak-rc4-previa\` que o dono aprova durante a revisão. Verificação pelo protocolo do contrato §9: uma vez por plan e a bateria completa uma vez, no fechamento, depois do lote 2 do ERP. A versão (`npm version`) é do dono.
 
-> 🚦 **Fila da rc.5 (2026-11-02):** decisão do dono: todas as plans abertas entram na `8.0.0-rc.5`, salvo o lote final da `plan-119`, que espera os importadores. Ordem: `plan-145` → tag. `npm run build` e a bateria de navegador rodam **um executor por vez**. Contrato em `anexos/rc5-contrato.md`.
+> 🚦 **Fila da rc.5 (2026-11-02):** decisão do dono: todas as plans abertas entram na `8.0.0-rc.5`, salvo o lote final da `plan-119`, que espera os importadores. Ordem: tag (as plans da rc.5 estão sintetizadas). `npm run build` e a bateria de navegador rodam **um executor por vez**. Contrato em `anexos/rc5-contrato.md`.
+
+> ⚪ **A `plan-145` foi SINTETIZADA e REMOVIDA em 2026-11-03.**
+> - Destino em [[09-temas-e-presets]]:
+>   - §3: a Personalidade entre preset e tema;
+>   - §4.3.4: os temas embarcados declaram o tom das barras, a marca fica no topo e `sarak-sovereign` segue nos padrões do schema;
+>   - §5: as dez Personalidades e as travas;
+>   - §6.5: `pairsFor` no auditor de contraste.
+> - Destino em [[06-painel-de-customizacao-e-preview]] §2.3: o grupo na decisão Tema, a pergunta antes de descartar ajuste, o campo em "Usar minha marca" e o tom na troca de paleta.
+> - **Ficou de fora:** vereditos, medições e prévias, que ficam no histórico do Git.
+> - Riscos em aberto: backlog #70 e #71.
+> - `00-contexto`: revisado, nada a mudar.
 
 > ⚪ **A `plan-141` foi SINTETIZADA e REMOVIDA em 2026-11-03.** Destino: [[09-temas-e-presets]] §5 (o registro de grupos, a regra de que preset de estrutura não escreve cor, a lista `LEGACY_COLOR_PRESET_IDS`, a cobertura medida e os textos fora do boot) e [[06-painel-de-customizacao-e-preview]] §6.4 e §2.2 (o grupo curado, a distinção medida e a busca por preset). Acréscimo fora do destino declarado: [[05-cromo-e-slots]] §2.1, com o item ativo sob tom contrastante. Também saíram o item 2 da §8 da 09 e a nota de estado da §6.4 da 06, que davam o enriquecimento como pendente. **Ficou de fora:** vereditos, medições e prévias (histórico do Git). Riscos em aberto: backlog #68 e #69. `00-contexto` revisado: nada a mudar.
 

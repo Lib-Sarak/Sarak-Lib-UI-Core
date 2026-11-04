@@ -111,6 +111,8 @@ estado-padrão completo; com um domínio (id de schema **ou** coluna de persist�
 `:105-117`) devolve só aquela fatia. Aplicar um preset sobrepõe **apenas** as chaves do domínio dele — as
 demais do rascunho sobrevivem.
 
+**Entre os dois, a Personalidade:** um preset composto que cobre a estrutura inteira (forma, fontes, densidade, barras, tabela, movimento e ícones) e nenhuma cor (§5). Tema = estrutura + paleta; a Personalidade dá a estrutura, e a paleta, a cor.
+
 **Consequência prática:** quem sabe escrever um preset sabe escrever um tema. Não existe API separada,
 não existe "modo tema" e "modo preset". Existe um `Record` maior e um menor.
 
@@ -349,7 +351,7 @@ pares, com o mesmo matiz e o mesmo croma (`contrast-shift.ts`). Todo texto segue
 
 **Três faixas.** Texto é a semente com o menor deslocamento que passa. Elemento pequeno é a base exata. Superfície grande é tingida. Por isso uma cor pode sair igual à semente num papel e andar em outro.
 
-**O papel da barra.** `sidebarTone` e `topbarTone` valem `neutral`, `surface`, `primary`, `secondary` ou `inverse`, com padrão `neutral`, que devolve o plano de sempre. `palette/tone-plan.ts` dá os papéis e os pares de `PAIRS` de cada tom, nos dois modos. O tom só vale com `colorPalette` válida, e uma cor declarada em `sidebarColor` ou `topbarColor` continua vencendo. Nos tons contrastantes, a barra refaz para os seus descendentes as variáveis de texto, ícone e borda (`chromeToneStyle.ts`), e assim os widgets acompanham o fundo sem token próprio ([[05-cromo-e-slots]] §2.1).
+**O papel da barra.** `sidebarTone` e `topbarTone` valem `neutral`, `surface`, `primary`, `secondary` ou `inverse`, com padrão `neutral`, que devolve o plano de sempre. `palette/tone-plan.ts` dá os papéis e os pares de `PAIRS` de cada tom, nos dois modos. O tom só vale com `colorPalette` válida, e uma cor declarada em `sidebarColor` ou `topbarColor` continua vencendo. Nos tons contrastantes, a barra refaz para os seus descendentes as variáveis de texto, ícone e borda (`chromeToneStyle.ts`), e assim os widgets acompanham o fundo sem token próprio ([[05-cromo-e-slots]] §2.1). **Os temas embarcados declaram o tom das barras**, com o item ativo e a borda da Personalidade mais próxima do seu caráter (`themeBars.test.ts`, que guarda o mapa tema → Personalidade). A posição da marca não entra nesse mapa: todos os temas a mantêm no topo. A exceção é `sarak-sovereign`, que mantém os padrões do schema (§5.3).
 
 **O fundo tem cor.** A neutra leva o matiz da base, com régua própria de luminosidade; a faixa de croma e de L está em `scale.ts` e `seeds.ts`, com teste sobre os presets.
 
@@ -616,6 +618,8 @@ o id, porque um id desconhecido compõe sem paleta.
 
 **Nome e descrição do preset vêm do catálogo, nos seis idiomas, fora do boot.** O português é o `name` e a `description` do próprio preset. Os demais idiomas ficam em `src/core/i18n/presetTexts/`, lidos só pelo painel (`usePresetText`).
 
+**Personalidades** (`personalities.ts`). As dez Personalidades são presets compostos. Cada uma nasce dos presets do registro (`parts`), e o que nenhum grupo cobre vem em `extra`, como a orientação (`navigationStyle`), a posição da marca e o tom das barras. Elas não escrevem nenhuma cor, `colorPalette` nem `mode`. Em barras, declaram `sidebarTone` e `topbarTone`, nunca `sidebarColor` nem `topbarColor`, e os cinco tons aparecem no conjunto. Duas Personalidades diferem em ao menos 8 tokens de estrutura com efeito visível. Todas mantêm os pares de `PAIRS` com todas as paletas do registro, nos dois modos. Os textos ficam em `presetTexts/personalities.ts`, nos seis idiomas. O teste é `personalities.test.ts`, e o spec de navegador mede a legibilidade do cromo nas dez e nos temas embarcados.
+
 ## 5.1 Todo fundo que a lib entrega funciona offline
 
 Nenhuma atmosfera shippada busca recurso em servidor de terceiro. As de tela cheia — as que o painel
@@ -781,7 +785,7 @@ verde com **12 dos 18** reprovando AA, e ninguém sabia.
 texto grande, ≥24px; onde o `textColorMuted` renderiza são 9–14px). Cor com alfa é **composta** sobre a
 cadeia de fundo, não pulada, e **toda cadeia termina numa base opaca**, `colorBgBody`: barra, botão,
 superfície ou item ativo translúcidos são medidos sobre o corpo. **Duas passadas**: o modo nativo do tema e a
-contraparte. Baseline: **0 e 0**, e nenhum par-tema pulado.
+contraparte. Baseline: **0 e 0**, e nenhum par-tema pulado. **Os pares seguem o papel da barra** (`pairsFor`). Numa barra de tom contrastante, o texto do corpo deixa de ser medido sobre ela, e entram os pares do texto da própria barra (`createPalettePlan`). Sem tom contrastante, valem os `PAIRS` de sempre.
 
 > ⚠️ **`pulado` não é `aprovado`.** Um par só é pulado quando o valor não se resolve (`hsl()`, `var()`,
 > gradiente) ou quando o tema declara o **próprio** `colorBgBody` translúcido: o gate **declara** em vez de

@@ -123,6 +123,11 @@ manutenção manual da busca. O teste reprova grupo com menos de dois termos ou 
 O painel conta um caminho de três passos, e a tela segue essa ordem:
 
 1. **Escolher um tema**, na decisão Tema. A aba lista o **catálogo leve** (`themeCatalog`) na hora e carrega o `design` dos embarcados ao abrir (`useCatalogThemes`). O cartão de um tema que ainda não chegou (`PresetCardPending`), ao ser escolhido, carrega o tema e só então aplica; o tema atual permanece até lá. Escolher um tema na prévia compõe por `composeThemeDesign` ([[09-temas-e-presets]] §4.3.3): o que o tema não declara volta ao padrão (ou ao `config` do host), e o "Aplicar" grava esse estado. **A galeria não abre sobre a prévia**, que fica sempre visível; Claro/Escuro, dispositivo e tela ficam na barra dela.
+   - **A decisão Tema abre pelas Personalidades** ([[09-temas-e-presets]] §5), o primeiro grupo, antes dos temas (`PersonalityCatalog`). Cada amostra mostra a Personalidade com a paleta atual do rascunho. Escolher é rascunho e não muda `colorPalette`.
+   - Se o usuário ajustou à mão algum token que a Personalidade escreve, o painel pergunta antes de descartar (`usePersonalitySelection`, `personalityDraft.ts`). A referência para saber o que foi ajustado é o design aplicado, mais o tema escolhido e ainda em rascunho, mais a Personalidade já no rascunho.
+   - "Usar minha marca" tem o campo opcional Personalidade: a marca dá a cor, e a Personalidade, a estrutura.
+   - A busca acha a Personalidade pelo nome.
+   - A troca de paleta calcula as cores das barras com o tom do rascunho (`barTonesOf`), e assim um tom declarado não se confunde com ajuste manual.
 2. **Ajustar o que pesa**, nas decisões da §2.1.
 3. **Aplicar**, na **barra de ações** (`Main/components/ThemeActionBar.tsx`):
 
