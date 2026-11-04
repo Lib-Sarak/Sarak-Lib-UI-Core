@@ -361,7 +361,7 @@ pares, com o mesmo matiz e o mesmo croma (`contrast-shift.ts`). Todo texto segue
 **O texto se corrige contra o fundo efetivo.** Quando o host ou o tema declaram uma cor literal (`#…`, `rgb()`, `rgba()`) por cima
 da paleta, como uma barra escura num tema claro, o texto calculado que reprova contra esse fundo nos pares de `PAIRS` anda na escala
 até passar (`correctPaletteAgainstDeclared`). O texto que já passa mantém o tom, e o que o host ou o tema declararam não é tocado:
-num tema embarcado com fundo próprio, só texto muda, e todo par continua passando. Fundo declarado com `var(...)` ou em outro formato fica fora, porque o
+num tema embarcado com fundo próprio, só texto muda, e todo par continua passando. A exceção é a barra de papel contrastante com fundo fixado: o véu de hover e de ativo dela, quando o tema não o declara, nasce do fundo que vale (`deriveBarVeils`, `bar-veil.ts`), escuro sobre barra clara e claro sobre barra escura. Fundo declarado com `var(...)` ou em outro formato fica fora, porque o
 motor de contraste não o lê.
 
 ## 4.4 Persistir — `localStorage`, e a sincronização entre abas

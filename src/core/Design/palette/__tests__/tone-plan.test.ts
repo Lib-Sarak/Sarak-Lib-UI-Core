@@ -108,3 +108,23 @@ describe('papel de cor — o host vence o padrão que o tema declara', () => {
         expect(themed.sidebarColor).not.toBe(neutral.sidebarColor);
     });
 });
+
+describe('papel contrastante com a cor da barra fixada — o véu nasce do fundo que vale', () => {
+    const input = SARAK_PALETTE_PRESETS[PRESET_IDS[0]];
+    const veilOver = (barColor: string, mode: SarakPaletteMode) =>
+        resolvePalette(input, mode, { sidebarTone: 'inverse', sidebarColor: barColor }).sidebarHoverColor;
+
+    it('barra clara ganha véu escuro e barra escura, véu claro, na opacidade do papel', () => {
+        expect(veilOver('#ffffff', 'light')).toBe('rgba(2, 6, 23, 0.14)');
+        expect(veilOver('#000000', 'dark')).toBe('rgba(255, 255, 255, 0.14)');
+    });
+
+    it('sem cor de barra fixada, o véu continua o que o papel calcula (claro sobre a barra escura do papel)', () => {
+        expect(resolvePalette(input, 'light', { sidebarTone: 'inverse' }).sidebarHoverColor).toMatch(/^rgba\(\d+, \d+, \d+, 0\.14\)$/);
+    });
+
+    it('hover declarado pelo tema não é tocado', () => {
+        const colors = resolvePalette(input, 'light', { sidebarTone: 'inverse', sidebarColor: '#ffffff', sidebarHoverColor: '#123456' });
+        expect(colors.sidebarHoverColor).not.toMatch(/^rgba\(2, 6, 23/);
+    });
+});

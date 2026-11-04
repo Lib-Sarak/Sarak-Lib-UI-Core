@@ -1,5 +1,6 @@
 import { parseToRgba } from '../../Provider/utils/color-engine';
 import { pickOnColor } from '../../Provider/utils/on-color';
+import { deriveBarVeils } from './bar-veil';
 import { rgbToHex } from './color-space';
 import { MIX_SOURCE_SHARE, type ContrastPair } from './contrast-pairs';
 import { findMinimalShift, SHIFT_CONTRAST_GUARD, type ShiftResult } from './contrast-shift';
@@ -206,13 +207,14 @@ export const correctPaletteAgainstDeclared = (
 ): PaletteColors => {
     const overrides = pickDeclaredColors(palette, declared, plan);
     if (Object.keys(overrides).length === 0) return palette;
-    const effective = { ...palette, ...overrides };
+    const veils = deriveBarVeils({ ...palette, ...overrides }, overrides, declared, plan);
+    const effective = { ...palette, ...overrides, ...veils };
     const failing = getTextTokenIds(plan).filter((tokenId) => !(tokenId in declared) && plan.pairs.some((pair) => {
         if (getAdjustableTokenId(pair.fg) !== tokenId) return false;
         const ratio = getPairContrastRatio(pair, effective);
         return ratio !== undefined && ratio < pair.min;
     }));
-    if (failing.length === 0) return palette;
+    if (failing.length === 0) return { ...palette, ...veils };
     const corrected = correctTokenTones(effective, scales, mode, failing, plan);
-    return { ...palette, ...Object.fromEntries(failing.map((tokenId) => [tokenId, corrected[tokenId]])) };
+    return { ...palette, ...veils, ...Object.fromEntries(failing.map((tokenId) => [tokenId, corrected[tokenId]])) };
 };

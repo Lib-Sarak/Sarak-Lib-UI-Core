@@ -50,11 +50,10 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > 🚦 **Fila da rc.5 (2026-11-02):** decisão do dono: todas as plans abertas entram na `8.0.0-rc.5`, salvo o lote final da `plan-119`, que espera os importadores. Ordem: tag (as plans da rc.5 estão sintetizadas). `npm run build` e a bateria de navegador rodam **um executor por vez**. Contrato em `anexos/rc5-contrato.md`.
 
 > ⚪ **A `plan-145` foi SINTETIZADA e REMOVIDA em 2026-11-03.**
-> - Destino em [[09-temas-e-presets]]:
->   - §3: a Personalidade entre preset e tema;
->   - §4.3.4: os temas embarcados declaram o tom das barras, a marca fica no topo e `sarak-sovereign` segue nos padrões do schema;
->   - §5: as dez Personalidades e as travas;
->   - §6.5: `pairsFor` no auditor de contraste.
+> - [[09-temas-e-presets]] §3: a Personalidade entre preset e tema.
+> - [[09-temas-e-presets]] §4.3.4: os temas embarcados declaram o tom das barras, a marca fica no topo e `sarak-sovereign` segue nos padrões do schema.
+> - [[09-temas-e-presets]] §5: as dez Personalidades e as travas.
+> - [[09-temas-e-presets]] §6.5: `pairsFor` no auditor de contraste.
 > - Destino em [[06-painel-de-customizacao-e-preview]] §2.3: o grupo na decisão Tema, a pergunta antes de descartar ajuste, o campo em "Usar minha marca" e o tom na troca de paleta.
 > - **Ficou de fora:** vereditos, medições e prévias, que ficam no histórico do Git.
 > - Riscos em aberto: backlog #70 e #71.

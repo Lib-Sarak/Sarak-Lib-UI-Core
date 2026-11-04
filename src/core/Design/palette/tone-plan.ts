@@ -6,6 +6,8 @@ import type { PaletteColorRole, PaletteScaleName } from './types';
 export interface PalettePlan {
     roles: Readonly<Record<string, PaletteColorRole>>;
     pairs: readonly ContrastPair[];
+    /** As barras cujo papel é contrastante: o hover e o ativo delas são véus que dependem do fundo efetivo. */
+    contrastingBars?: readonly Bar[];
 }
 
 type Bar = 'sidebar' | 'topbar';
@@ -141,13 +143,15 @@ export const createPalettePlan = (declared?: Record<string, unknown>): PalettePl
 
     let roles: Record<string, PaletteColorRole> = { ...PALETTE_ROLE_MAP };
     let pairs: ContrastPair[] = [...PALETTE_PAIRS];
+    const contrastingBars: Bar[] = [];
     (['sidebar', 'topbar'] as const).forEach((bar) => {
         const tone = tones[bar];
         if (tone === 'neutral') return;
         roles = { ...roles, ...toneRoles(bar, tone) };
         if (!isContrastingTone(tone)) return;
+        contrastingBars.push(bar);
         pairs = pairs.filter((pair) => !isBodyTextOverBar(pair, bar) && !(pair.fg === 'navItemActiveColor' && pair.bgChain[0] === `${bar}ActiveColor`));
         pairs.push(activeTextPair(bar));
     });
-    return { roles, pairs };
+    return { roles, pairs, contrastingBars };
 };

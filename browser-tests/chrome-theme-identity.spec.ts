@@ -4,17 +4,20 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { expect, test } from '@playwright/test';
 import { buildHarness } from './build-harness.mjs';
+import { sarakSovereignTheme } from '../src/core/Design/presets/themes/sarak-sovereign';
+import { cyberpunkneonTheme } from '../src/core/Design/presets/themes/cyberpunk-neon';
+import { industrialTerminalTheme } from '../src/core/Design/presets/themes/industrial-terminal';
+import { blueprintProtocolTheme } from '../src/core/Design/presets/themes/blueprint-protocol';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ENTRY = path.join(ROOT, 'browser-tests', 'fixtures', 'chrome-theme-identity-entry.tsx');
 const TAILWIND_CLI = path.join(ROOT, 'node_modules', '@tailwindcss', 'cli', 'dist', 'index.mjs');
 const SOURCE_STYLESHEET = path.join(ROOT, 'src', 'styles', 'sarak-base.css');
-const THEME_STYLES = [
-    { id: 'sarak-sovereign', background: 'solid', active: 'bar' },
-    { id: 'cyberpunk-neon', background: 'texture', active: 'filled' },
-    { id: 'industrial-terminal', background: 'gradient', active: 'underline' },
-    { id: 'blueprint-protocol', background: 'texture', active: 'bar' },
-];
+/** O estilo esperado da barra é o que o `design` do próprio tema declara, não uma cópia à mão. */
+const THEME_STYLES = [sarakSovereignTheme, cyberpunkneonTheme, industrialTerminalTheme, blueprintProtocolTheme].map((theme) => {
+    const design = theme.design as Record<string, string>;
+    return { id: theme.id, background: design.sidebarBackgroundStyle, active: design.sidebarActiveItemStyle };
+});
 
 let harnessDirectory: string | undefined;
 let harnessUrl = '';

@@ -37,12 +37,19 @@ test.afterAll(async () => {
     if (harnessDirectory) fs.rmSync(harnessDirectory, { recursive: true, force: true });
 });
 
+/** O grupo curado mostra poucas famílias e um "Ver todas": o teste mede a galeria inteira, depois de abri-la. */
+const openAllFonts = async (page: import('@playwright/test').Page) => {
+    await page.locator('[data-preset-toggle]').first().click();
+    await page.waitForFunction(() => document.querySelectorAll('[data-testid="font-sample-title"]').length > 10);
+};
+
 const titleFonts = (page: import('@playwright/test').Page) => page.evaluate(() =>
     Array.from(document.querySelectorAll('[data-testid="font-sample-title"]')).map((node) => getComputedStyle(node).fontFamily));
 
 test('origem bundled: cada cartão usa a própria família e a fonte carrega de verdade', async () => {
     const page = await browser.newPage({ viewport: { width: 1200, height: 800 } });
     await page.goto(`${harnessUrl}?origem=bundled&fontes=${encodeURIComponent(DIST_FONTS)}`);
+    await openAllFonts(page);
 
     const families = await titleFonts(page);
     expect(new Set(families.map(FIRST_FAMILY)).size).toBeGreaterThan(10);
@@ -57,6 +64,7 @@ test('origem bundled: cada cartão usa a própria família e a fonte carrega de 
 test('só as famílias dos cartões visíveis são carregadas, não as 42 de uma vez', async () => {
     const page = await browser.newPage({ viewport: { width: 1200, height: 800 } });
     await page.goto(`${harnessUrl}?origem=bundled&fontes=${encodeURIComponent(DIST_FONTS)}`);
+    await openAllFonts(page);
     await page.waitForFunction(() => document.querySelectorAll('style[data-sarak-font]').length > 0);
 
     const total = await page.evaluate(() => document.querySelectorAll('[data-testid="font-sample-title"]').length);

@@ -157,7 +157,10 @@ describe('composeThemeDesign — o texto da paleta se corrige contra o fundo que
                 const withDeclared = resolvePalette(input, mode, resolved);
                 const moved = Object.keys(alone).filter((tokenId) => resolved[tokenId] === undefined && withDeclared[tokenId] !== alone[tokenId]);
 
-                moved.forEach((tokenId) => expect(textTokens.has(tokenId), `${theme.id}/${mode}/${tokenId} não é texto`).toBe(true));
+                // Fora o texto, só o véu de hover/ativo de uma barra de papel contrastante acompanha o fundo que o tema fixou.
+                const contrasting = (['sidebar', 'topbar'] as const).filter((bar) => ['primary', 'secondary', 'inverse'].includes(String(resolved[`${bar}Tone`])));
+                const veilTokens = new Set(contrasting.flatMap((bar) => [`${bar}HoverColor`, `${bar}ActiveColor`]));
+                moved.forEach((tokenId) => expect(textTokens.has(tokenId) || veilTokens.has(tokenId), `${theme.id}/${mode}/${tokenId} não é texto nem véu da barra`).toBe(true));
                 const design = { ...sarakGetDefaultDesignState(), ...withDeclared, ...resolved } as never;
                 pairsFor(design as unknown as Record<string, unknown>).forEach((pair) => {
                     const result = evaluatePair(pair, design);
