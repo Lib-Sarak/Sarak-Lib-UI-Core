@@ -311,7 +311,7 @@ test.describe('botão fantasma', () => {
         const measure = async (page: Page) => {
             const button = probe(page, 'ghost').locator('button');
             await button.hover();
-            await page.waitForTimeout(400);
+            await expect.poll(() => computed(button, 'background-color'), { timeout: 5000 }).not.toBe('rgba(0, 0, 0, 0)');
             return computed(button, 'background-color');
         };
         const padrao = await withScene('schema', undefined, measure);

@@ -115,7 +115,12 @@ for (const mode of [{ name: 'escuro', query: '' }, { name: 'claro', query: '?cla
             await expect(page.getByRole('heading', { level: 2, name: decision })).toBeFocused();
             const previewBox = await box(preview);
             expect(previewBox.width).toBeGreaterThan(400);
-            const option = page.locator('[data-option-group] button, [data-option-group] [role="radio"]').first();
+            // O alvo é a opção que o usuário aponta: o botão de topo do cartão. O primeiro botão da coluna pode ser
+            // um da amostra lazy, coberto por esse botão, e o hover esperaria até o timeout.
+            const tileButtons = page.locator('[data-option-group] [data-option-tile] > button');
+            const option = (await tileButtons.count())
+                ? tileButtons.first()
+                : page.locator('[data-option-group] button, [data-option-group] [role="radio"]').first();
             if (await option.count()) {
                 await option.hover();
                 const hovered = await box(option);
