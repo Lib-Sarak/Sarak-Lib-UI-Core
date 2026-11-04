@@ -1,5 +1,6 @@
 import type { ReactElement, ReactNode, Key } from 'react';
 import type { SarakColumn, SarakPinnedOffsets } from './columnModel';
+import type { SarakCellBehavior } from './SarakCellContent';
 import type { SarakDisplayRow } from './tableDisplayRows';
 import type { TableInteractionEntry } from './useTableInteractions';
 import { SarakDataTableRow } from './SarakDataTableRow';
@@ -16,7 +17,7 @@ export interface SarakDataTableVirtualRow<T> {
     size: number;
 }
 
-export interface SarakDataTableRowsProps<T> {
+export interface SarakDataTableRowsProps<T> extends SarakCellBehavior<T> {
     columns: SarakColumn<T>[];
     rows: Array<SarakDataTableVirtualRow<T>>;
     widths: Record<string, number>;
@@ -24,6 +25,8 @@ export interface SarakDataTableRowsProps<T> {
     containerWidth: number;
     headerHeight: number;
     automaticHeight: boolean;
+    /** Linhas no fluxo do documento, sem virtualização: relatório e impressão. */
+    flow?: boolean;
     cellBackground: string;
     /** Alterna o fundo das linhas ímpares do índice virtual (`tableZebraStriping`). */
     zebra?: boolean;

@@ -1,85 +1,55 @@
 import { useCallback, useState } from 'react';
-import { MORE_PREVIEW_SCREEN_ID } from '../../Canvas/previewScreens';
+import { getDecision, type DecisionId } from '../../utils/decisions';
 
-export type ThemeEditMode = 'impact' | 'essential' | 'complete';
+/** O que a coluna mostra: a lista das decisões, uma decisão aberta ou o atalho "Usar minha marca". */
+export type PanelView =
+    | { kind: 'home'; /** A linha que recebe o foco ao voltar. */ focusId?: string }
+    | { kind: 'brand' }
+    | { kind: 'decision'; id: DecisionId; /** O token que a busca quer à vista. */ focusTokenId?: string };
 
-const PILLAR_CANONICAL_APP: Record<string, string> = {
-    brand: 'auth',
-    typography: 'typography',
-    surfaces: 'dashboard',
-    interaction: 'caixas-texto',
-    navigation: 'dashboard',
-    systems: 'settings',
-    advanced: 'matrix',
-};
+const HOME: PanelView = { kind: 'home' };
 
-const PILLAR_PREVIEW_APPS: Record<string, readonly string[]> = {
-    brand: ['auth'],
-    typography: ['typography'],
-    surfaces: ['dashboard', 'components', 'tabela'],
-    interaction: ['caixas-texto', 'forms'],
-    navigation: ['dashboard'],
-    systems: ['settings', 'logs', 'documentos'],
-    advanced: [MORE_PREVIEW_SCREEN_ID, 'chat', 'graficos', 'matrix', 'kitchen-sink'],
-};
+type PreviewDevice = 'desktop' | 'tablet' | 'smartphone';
+type ViewMode = 'preview' | 'catalog' | 'templates' | 'command-center';
 
-const APP_TO_PILLAR: Record<string, string> = {
-    dashboard: 'surfaces',
-    components: 'surfaces',
-    tabela: 'surfaces',
-    'caixas-texto': 'interaction',
-    forms: 'interaction',
-    typography: 'typography',
-    chat: 'advanced',
-    graficos: 'advanced',
-    matrix: 'advanced',
-    'kitchen-sink': 'advanced',
-    [MORE_PREVIEW_SCREEN_ID]: 'advanced',
-    auth: 'brand',
-    settings: 'systems',
-    logs: 'systems',
-    documentos: 'systems',
+/** Abrir uma decisão leva a prévia à tela canônica dela, salvo se a tela atual já lhe pertence. */
+const screenForDecision = (decisionId: DecisionId, currentApp: string): string => {
+    const decision = getDecision(decisionId);
+    if (!decision) return currentApp;
+    return decision.screens.includes(currentApp) ? currentApp : decision.screen;
 };
 
 export function usePreviewUIState() {
     const [state, setState] = useState({
         activePreviewApp: 'dashboard',
-        previewDevice: 'desktop' as 'desktop' | 'tablet' | 'smartphone',
-        activePillarId: 'surfaces' as string | null,
-        activeSectionId: null as string | null,
-        viewMode: 'preview' as 'preview' | 'catalog' | 'templates' | 'command-center',
+        previewDevice: 'desktop' as PreviewDevice,
+        panelView: HOME as PanelView,
+        viewMode: 'preview' as ViewMode,
         searchQuery: '',
-        editMode: 'essential' as ThemeEditMode,
-        isPreviewStacked: false,
-        isGalleryOpen: false,
     });
 
     const updateState = useCallback((updates: Partial<typeof state>) => {
         setState((previousState) => ({ ...previousState, ...updates }));
     }, []);
 
-    const selectPreviewApp = useCallback((appId: string) => {
+    /** Escolher a tela de amostra só muda a prévia: a coluna não segue (um gesto, sem laço). */
+    const selectPreviewApp = useCallback((appId: string) => updateState({ activePreviewApp: appId }), [updateState]);
+
+    const openDecision = useCallback((decisionId: DecisionId, focusTokenId?: string) => {
         setState((previousState) => ({
             ...previousState,
-            activePreviewApp: appId,
-            activePillarId: APP_TO_PILLAR[appId] ?? previousState.activePillarId,
+            panelView: { kind: 'decision', id: decisionId, focusTokenId },
+            viewMode: 'preview',
+            activePreviewApp: screenForDecision(decisionId, previousState.activePreviewApp),
         }));
     }, []);
 
-    const selectPillar = useCallback((pillarId: string | null) => {
+    const openBrand = useCallback(() => updateState({ panelView: { kind: 'brand' }, viewMode: 'preview' }), [updateState]);
+    const goHome = useCallback(() => {
         setState((previousState) => {
-            if (pillarId === null) return { ...previousState, activePillarId: null };
-
-            const canonicalApp = PILLAR_CANONICAL_APP[pillarId];
-            if (!canonicalApp) return { ...previousState, activePillarId: pillarId };
-
-            const currentAppBelongsToPillar = PILLAR_PREVIEW_APPS[pillarId]?.includes(previousState.activePreviewApp);
-
-            return {
-                ...previousState,
-                activePillarId: pillarId,
-                activePreviewApp: currentAppBelongsToPillar ? previousState.activePreviewApp : canonicalApp,
-            };
+            const { panelView } = previousState;
+            const focusId = panelView.kind === 'decision' ? panelView.id : panelView.kind === 'brand' ? 'brand' : undefined;
+            return { ...previousState, panelView: { kind: 'home', focusId } };
         });
     }, []);
 
@@ -87,21 +57,14 @@ export function usePreviewUIState() {
         activePreviewApp: state.activePreviewApp,
         selectPreviewApp,
         previewDevice: state.previewDevice,
-        setPreviewDevice: useCallback((v: 'desktop' | 'tablet' | 'smartphone') => updateState({ previewDevice: v }), [updateState]),
-        activePillarId: state.activePillarId,
-        setActivePillarId: useCallback((v: string | null) => updateState({ activePillarId: v }), [updateState]),
-        selectPillar,
-        activeSectionId: state.activeSectionId,
-        setActiveSectionId: useCallback((v: string | null) => updateState({ activeSectionId: v }), [updateState]),
+        setPreviewDevice: useCallback((value: PreviewDevice) => updateState({ previewDevice: value }), [updateState]),
+        panelView: state.panelView,
+        openDecision,
+        openBrand,
+        goHome,
         viewMode: state.viewMode,
-        setViewMode: useCallback((v: 'preview' | 'catalog' | 'templates' | 'command-center') => updateState({ viewMode: v }), [updateState]),
+        setViewMode: useCallback((value: ViewMode) => updateState({ viewMode: value }), [updateState]),
         searchQuery: state.searchQuery,
-        setSearchQuery: useCallback((v: string) => updateState({ searchQuery: v }), [updateState]),
-        editMode: state.editMode,
-        setEditMode: useCallback((v: ThemeEditMode) => updateState({ editMode: v }), [updateState]),
-        isPreviewStacked: state.isPreviewStacked,
-        setIsPreviewStacked: useCallback((v: boolean) => updateState({ isPreviewStacked: v }), [updateState]),
-        isGalleryOpen: state.isGalleryOpen,
-        setIsGalleryOpen: useCallback((v: boolean) => updateState({ isGalleryOpen: v }), [updateState]),
+        setSearchQuery: useCallback((value: string) => updateState({ searchQuery: value }), [updateState]),
     };
 }

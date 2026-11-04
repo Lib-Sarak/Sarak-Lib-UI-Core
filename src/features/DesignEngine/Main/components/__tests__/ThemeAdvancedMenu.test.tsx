@@ -7,9 +7,10 @@ import { TypographySchema } from '../../../../../core/Design/schema/typography';
 
 const setup = (viewMode: 'preview' | 'catalog' | 'templates' | 'command-center' = 'preview') => {
     const setViewMode = vi.fn();
+    const onOpenAdvancedTokens = vi.fn();
     const user = userEvent.setup();
-    render(<ThemeAdvancedMenu viewMode={viewMode} setViewMode={setViewMode} />);
-    return { setViewMode, user, trigger: screen.getByRole('button', { name: /Avançado/ }) };
+    render(<ThemeAdvancedMenu viewMode={viewMode} setViewMode={setViewMode} onOpenAdvancedTokens={onOpenAdvancedTokens} />);
+    return { setViewMode, onOpenAdvancedTokens, user, trigger: screen.getByRole('button', { name: /Avançado/ }) };
 };
 
 describe('ThemeAdvancedMenu', () => {
@@ -21,7 +22,7 @@ describe('ThemeAdvancedMenu', () => {
         expect(screen.queryByRole('menu')).toBeNull();
     });
 
-    it('abre com Enter e lista as três entradas mais a volta ao modo normal', async () => {
+    it('abre com Enter e lista as três telas, os outros ajustes e a volta ao modo normal', async () => {
         const { trigger, user } = setup();
 
         trigger.focus();
@@ -29,7 +30,7 @@ describe('ThemeAdvancedMenu', () => {
 
         expect(trigger).toHaveAttribute('aria-expanded', 'true');
         const names = screen.getAllByRole('menuitem').map((item) => item.textContent);
-        expect(names).toEqual(['Tabela de tokens', 'Busca por pilar', 'Temas e JSON', 'Voltar ao modo normal']);
+        expect(names).toEqual(['Tabela de tokens', 'Busca por pilar', 'Temas e JSON', 'Outros ajustes', 'Voltar ao modo normal']);
     });
 
     it('abre com Espaço e foca a primeira entrada', async () => {
@@ -92,6 +93,18 @@ describe('ThemeAdvancedMenu', () => {
         await user.click(screen.getByRole('menuitem', { name: label }));
 
         expect(setViewMode).toHaveBeenCalledWith(mode);
+        expect(screen.queryByRole('menu')).toBeNull();
+        expect(trigger).toHaveFocus();
+    });
+
+    it('"Outros ajustes" abre o pilar Avançado na coluna, sem trocar de tela, e devolve o foco', async () => {
+        const { setViewMode, onOpenAdvancedTokens, trigger, user } = setup();
+        await user.click(trigger);
+
+        await user.click(screen.getByRole('menuitem', { name: 'Outros ajustes' }));
+
+        expect(onOpenAdvancedTokens).toHaveBeenCalledTimes(1);
+        expect(setViewMode).not.toHaveBeenCalled();
         expect(screen.queryByRole('menu')).toBeNull();
         expect(trigger).toHaveFocus();
     });

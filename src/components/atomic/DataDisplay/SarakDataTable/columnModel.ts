@@ -25,6 +25,10 @@ export interface SarakColumn<T> extends SarakColumnValueOptions<T> {
     align?: SarakColumnAlignment;
     /** Render da célula; ausente = `String(row[id])`. */
     render?: (row: T, rowIndex: number) => React.ReactNode;
+    /** Permite editar a célula, em toda a coluna ou por linha; só vale com `onCellEdit` na tabela. */
+    editable?: boolean | ((row: T) => boolean);
+    /** Valida o texto digitado na edição; a mensagem devolvida aparece na célula e impede salvar. */
+    validate?: (value: string, row: T) => string | undefined;
 }
 
 export interface SarakTableSort {

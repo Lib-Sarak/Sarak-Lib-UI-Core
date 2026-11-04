@@ -9,7 +9,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
       class="flex items-center gap-2 p-1 bg-theme-body/20 rounded-xl border border-theme-border w-fit"
     >
       <button
-        class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 bg-theme-primary text-theme-text shadow-lg"
+        class="px-4 py-2 rounded-lg text-[length:var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 bg-theme-primary text-theme-on-primary shadow-lg"
       >
         <svg
           class="lucide lucide-sparkles"
@@ -42,7 +42,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
         Curados
       </button>
       <button
-        class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 text-theme-muted hover:text-theme-text hover:bg-theme-text/5"
+        class="px-4 py-2 rounded-lg text-[length:var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 text-theme-muted hover:text-theme-text hover:bg-theme-text/5"
       >
         <svg
           class="lucide lucide-grid3x3"
@@ -80,1207 +80,522 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
       </button>
     </div>
     <div
-      class="grid grid-cols-1 @min-[768px]:grid-cols-2 gap-6"
+      class="flex flex-col gap-4"
+      data-preset-group="cards"
     >
-      <button
-        animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
-        initial="[object Object]"
-        transition="[object Object]"
+      <div
+        class="flex flex-col gap-3"
       >
         <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#06080d)] overflow-hidden"
+          class="grid grid-cols-1 @min-[768px]:grid-cols-2 gap-6"
         >
           <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
-          />
-          <div
-            class="sarak-design-scope sarak-scope-r0 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
-            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
+            class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            data-option-tile=""
           >
             <div
-              class="flex items-center gap-3 relative z-10"
+              aria-hidden="true"
+              class="pointer-events-none"
             >
               <div
-                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
+                class="min-h-48"
+                data-sx-lazy="shown"
               >
-                <svg
-                  class="text-theme-text/50"
-                  fill="none"
-                  height="16"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  xmlns="http://www.w3.org/2000/svg"
+                <div
+                  class="sarak-design-scope sarak-scope-r0 dark flex items-center justify-center p-6"
+                  style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
                 >
-                  <path
-                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
-                  />
-                  <path
-                    d="M5 3v4"
-                  />
-                  <path
-                    d="M19 17v4"
-                  />
-                  <path
-                    d="M3 5h4"
-                  />
-                  <path
-                    d="M17 19h4"
-                  />
-                </svg>
-              </div>
-              <div
-                class="flex flex-col gap-1.5 flex-1"
-              >
-                <div
-                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
-                />
+                  <div
+                    class="w-full"
+                    style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
+                  >
+                    <div
+                      class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
+                    >
+                      <header
+                        class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)]"
+                      >
+                        <h3
+                          data-testid="sample-card-title"
+                        >
+                          Receita do mês
+                        </h3>
+                      </header>
+                      <div
+                        class=""
+                      >
+                        <p
+                          class="text-2xl font-bold"
+                          data-testid="sample-card-value"
+                        >
+                          R$ 12.480,00
+                        </p>
+                      </div>
+                      <footer
+                        class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)] py-[var(--sarak-card-header-padding,12px)]"
+                      >
+                        <span
+                          class="inline-flex"
+                        >
+                          <button
+                            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
+                            tabindex="-1"
+                          >
+                            <span>
+                              Ver detalhes
+                            </span>
+                          </button>
+                        </span>
+                      </footer>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div
-              class="mt-auto relative z-10 flex flex-col gap-2"
+              class="flex flex-col gap-1 border-t border-theme-border p-3"
+            >
+              <h3
+                class="text-sm font-bold uppercase tracking-wider text-theme-text"
+              >
+                Vidro mínimo
+              </h3>
+              <p
+                class="text-xs text-theme-muted"
+              >
+                Vidro translúcido com desfoque leve e borda quase invisível.
+              </p>
+            </div>
+            <button
+              aria-label="Vidro mínimo"
+              class="absolute inset-0 p-0 rounded-2xl"
+              type="button"
+            />
+          </div>
+          <div
+            class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            data-option-tile=""
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none"
             >
               <div
-                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
+                class="min-h-48"
+                data-sx-lazy="shown"
               >
                 <div
-                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
-                />
-              </div>
-              <div
-                class="flex justify-between items-center"
-              >
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
+                  class="sarak-design-scope sarak-scope-r1 dark flex items-center justify-center p-6"
+                  style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
+                >
+                  <div
+                    class="w-full"
+                    style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
+                  >
+                    <div
+                      class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
+                    >
+                      <header
+                        class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)]"
+                      >
+                        <h3
+                          data-testid="sample-card-title"
+                        >
+                          Receita do mês
+                        </h3>
+                      </header>
+                      <div
+                        class=""
+                      >
+                        <p
+                          class="text-2xl font-bold"
+                          data-testid="sample-card-value"
+                        >
+                          R$ 12.480,00
+                        </p>
+                      </div>
+                      <footer
+                        class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)] py-[var(--sarak-card-header-padding,12px)]"
+                      >
+                        <span
+                          class="inline-flex"
+                        >
+                          <button
+                            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
+                            tabindex="-1"
+                          >
+                            <span>
+                              Ver detalhes
+                            </span>
+                          </button>
+                        </span>
+                      </footer>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+            <div
+              class="flex flex-col gap-1 border-t border-theme-border p-3"
+            >
+              <h3
+                class="text-sm font-bold uppercase tracking-wider text-theme-text"
+              >
+                Plano e discreto
+              </h3>
+              <p
+                class="text-xs text-theme-muted"
+              >
+                Cantos suaves, borda fina e nenhuma sombra: o card some e deixa o conteúdo falar.
+              </p>
+            </div>
+            <button
+              aria-label="Plano e discreto"
+              class="absolute inset-0 p-0 rounded-2xl"
+              type="button"
+            />
+          </div>
+          <div
+            class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            data-option-tile=""
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none"
+            >
+              <div
+                class="min-h-48"
+                data-sx-lazy="shown"
+              >
+                <div
+                  class="sarak-design-scope sarak-scope-r2 dark flex items-center justify-center p-6"
+                  style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
+                >
+                  <div
+                    class="w-full"
+                    style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
+                  >
+                    <div
+                      class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
+                    >
+                      <header
+                        class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)]"
+                      >
+                        <h3
+                          data-testid="sample-card-title"
+                        >
+                          Receita do mês
+                        </h3>
+                      </header>
+                      <div
+                        class=""
+                      >
+                        <p
+                          class="text-2xl font-bold"
+                          data-testid="sample-card-value"
+                        >
+                          R$ 12.480,00
+                        </p>
+                      </div>
+                      <footer
+                        class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)] py-[var(--sarak-card-header-padding,12px)]"
+                      >
+                        <span
+                          class="inline-flex"
+                        >
+                          <button
+                            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
+                            tabindex="-1"
+                          >
+                            <span>
+                              Ver detalhes
+                            </span>
+                          </button>
+                        </span>
+                      </footer>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex flex-col gap-1 border-t border-theme-border p-3"
+            >
+              <h3
+                class="text-sm font-bold uppercase tracking-wider text-theme-text"
+              >
+                Elevado e macio
+              </h3>
+              <p
+                class="text-xs text-theme-muted"
+              >
+                Sem borda, cantos generosos e uma sombra longa e difusa que descola o card do fundo.
+              </p>
+            </div>
+            <button
+              aria-label="Elevado e macio"
+              class="absolute inset-0 p-0 rounded-2xl"
+              type="button"
+            />
+          </div>
+          <div
+            class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            data-option-tile=""
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none"
+            >
+              <div
+                class="min-h-48"
+                data-sx-lazy="shown"
+              >
+                <div
+                  class="sarak-design-scope sarak-scope-r3 dark flex items-center justify-center p-6"
+                  style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
+                >
+                  <div
+                    class="w-full"
+                    style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
+                  >
+                    <div
+                      class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
+                    >
+                      <header
+                        class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)]"
+                      >
+                        <h3
+                          data-testid="sample-card-title"
+                        >
+                          Receita do mês
+                        </h3>
+                      </header>
+                      <div
+                        class=""
+                      >
+                        <p
+                          class="text-2xl font-bold"
+                          data-testid="sample-card-value"
+                        >
+                          R$ 12.480,00
+                        </p>
+                      </div>
+                      <footer
+                        class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)] py-[var(--sarak-card-header-padding,12px)]"
+                      >
+                        <span
+                          class="inline-flex"
+                        >
+                          <button
+                            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
+                            tabindex="-1"
+                          >
+                            <span>
+                              Ver detalhes
+                            </span>
+                          </button>
+                        </span>
+                      </footer>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex flex-col gap-1 border-t border-theme-border p-3"
+            >
+              <h3
+                class="text-sm font-bold uppercase tracking-wider text-theme-text"
+              >
+                Neon cibernético
+              </h3>
+              <p
+                class="text-xs text-theme-muted"
+              >
+                Cantos afiados, brilho neon forte e textura de grade técnica.
+              </p>
+            </div>
+            <button
+              aria-label="Neon cibernético"
+              class="absolute inset-0 p-0 rounded-2xl"
+              type="button"
+            />
+          </div>
+          <div
+            class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            data-option-tile=""
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none"
+            >
+              <div
+                class="min-h-48"
+                data-sx-lazy="shown"
+              >
+                <div
+                  class="sarak-design-scope sarak-scope-r4 dark flex items-center justify-center p-6"
+                  style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
+                >
+                  <div
+                    class="w-full"
+                    style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
+                  >
+                    <div
+                      class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
+                    >
+                      <header
+                        class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)]"
+                      >
+                        <h3
+                          data-testid="sample-card-title"
+                        >
+                          Receita do mês
+                        </h3>
+                      </header>
+                      <div
+                        class=""
+                      >
+                        <p
+                          class="text-2xl font-bold"
+                          data-testid="sample-card-value"
+                        >
+                          R$ 12.480,00
+                        </p>
+                      </div>
+                      <footer
+                        class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)] py-[var(--sarak-card-header-padding,12px)]"
+                      >
+                        <span
+                          class="inline-flex"
+                        >
+                          <button
+                            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
+                            tabindex="-1"
+                          >
+                            <span>
+                              Ver detalhes
+                            </span>
+                          </button>
+                        </span>
+                      </footer>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex flex-col gap-1 border-t border-theme-border p-3"
+            >
+              <h3
+                class="text-sm font-bold uppercase tracking-wider text-theme-text"
+              >
+                Faixa lateral
+              </h3>
+              <p
+                class="text-xs text-theme-muted"
+              >
+                Só a borda esquerda é grossa, como um marcador de seção; as outras três somem.
+              </p>
+            </div>
+            <button
+              aria-label="Faixa lateral"
+              class="absolute inset-0 p-0 rounded-2xl"
+              type="button"
+            />
+          </div>
+          <div
+            class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            data-option-tile=""
+          >
+            <div
+              aria-hidden="true"
+              class="pointer-events-none"
+            >
+              <div
+                class="min-h-48"
+                data-sx-lazy="shown"
+              >
+                <div
+                  class="sarak-design-scope sarak-scope-r5 dark flex items-center justify-center p-6"
+                  style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
+                >
+                  <div
+                    class="w-full"
+                    style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
+                  >
+                    <div
+                      class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
+                    >
+                      <header
+                        class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)]"
+                      >
+                        <h3
+                          data-testid="sample-card-title"
+                        >
+                          Receita do mês
+                        </h3>
+                      </header>
+                      <div
+                        class=""
+                      >
+                        <p
+                          class="text-2xl font-bold"
+                          data-testid="sample-card-value"
+                        >
+                          R$ 12.480,00
+                        </p>
+                      </div>
+                      <footer
+                        class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)] py-[var(--sarak-card-header-padding,12px)]"
+                      >
+                        <span
+                          class="inline-flex"
+                        >
+                          <button
+                            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
+                            tabindex="-1"
+                          >
+                            <span>
+                              Ver detalhes
+                            </span>
+                          </button>
+                        </span>
+                      </footer>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex flex-col gap-1 border-t border-theme-border p-3"
+            >
+              <h3
+                class="text-sm font-bold uppercase tracking-wider text-theme-text"
+              >
+                Centralizado
+              </h3>
+              <p
+                class="text-xs text-theme-muted"
+              >
+                Texto centralizado e cantos redondos: vitrine de destaque ou número grande.
+              </p>
+            </div>
+            <button
+              aria-label="Centralizado"
+              class="absolute inset-0 p-0 rounded-2xl"
+              type="button"
+            />
           </div>
         </div>
-        <div
-          class="p-4 bg-theme-sidebar"
-        >
-          <h3
-            class="text-sm font-bold text-theme-text uppercase tracking-wider"
-          >
-            Glass Minimal
-          </h3>
-          <p
-            class="text-xs text-theme-muted mt-1"
-          >
-            Vidro translúcido, blur leve, borda quase invisível.
-          </p>
-        </div>
-      </button>
+      </div>
       <button
-        animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
-        initial="[object Object]"
-        transition="[object Object]"
+        aria-expanded="false"
+        class="self-start rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] px-3 py-1.5 text-[length:var(--sarak-type-scale-caption,12px)] font-semibold text-[var(--theme-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]"
+        data-preset-toggle="cards"
+        type="button"
       >
-        <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#06080d)] overflow-hidden"
-        >
-          <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
-          />
-          <div
-            class="sarak-design-scope sarak-scope-r1 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
-            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
-          >
-            <div
-              class="flex items-center gap-3 relative z-10"
-            >
-              <div
-                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
-              >
-                <svg
-                  class="text-theme-text/50"
-                  fill="none"
-                  height="16"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
-                  />
-                  <path
-                    d="M5 3v4"
-                  />
-                  <path
-                    d="M19 17v4"
-                  />
-                  <path
-                    d="M3 5h4"
-                  />
-                  <path
-                    d="M17 19h4"
-                  />
-                </svg>
-              </div>
-              <div
-                class="flex flex-col gap-1.5 flex-1"
-              >
-                <div
-                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-            <div
-              class="mt-auto relative z-10 flex flex-col gap-2"
-            >
-              <div
-                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
-              >
-                <div
-                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
-                />
-              </div>
-              <div
-                class="flex justify-between items-center"
-              >
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="p-4 bg-theme-sidebar"
-        >
-          <h3
-            class="text-sm font-bold text-theme-text uppercase tracking-wider"
-          >
-            Claymorphism
-          </h3>
-          <p
-            class="text-xs text-theme-muted mt-1"
-          >
-            Massinha: super arredondado, sem borda, volume por glow interno + sombra externa.
-          </p>
-        </div>
-      </button>
-      <button
-        animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
-        initial="[object Object]"
-        transition="[object Object]"
-      >
-        <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#06080d)] overflow-hidden"
-        >
-          <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
-          />
-          <div
-            class="sarak-design-scope sarak-scope-r2 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
-            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
-          >
-            <div
-              class="flex items-center gap-3 relative z-10"
-            >
-              <div
-                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
-              >
-                <svg
-                  class="text-theme-text/50"
-                  fill="none"
-                  height="16"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
-                  />
-                  <path
-                    d="M5 3v4"
-                  />
-                  <path
-                    d="M19 17v4"
-                  />
-                  <path
-                    d="M3 5h4"
-                  />
-                  <path
-                    d="M17 19h4"
-                  />
-                </svg>
-              </div>
-              <div
-                class="flex flex-col gap-1.5 flex-1"
-              >
-                <div
-                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-            <div
-              class="mt-auto relative z-10 flex flex-col gap-2"
-            >
-              <div
-                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
-              >
-                <div
-                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
-                />
-              </div>
-              <div
-                class="flex justify-between items-center"
-              >
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="p-4 bg-theme-sidebar"
-        >
-          <h3
-            class="text-sm font-bold text-theme-text uppercase tracking-wider"
-          >
-            Retro OS
-          </h3>
-          <p
-            class="text-xs text-theme-muted mt-1"
-          >
-            Anos 90: cantos duros, borda cinza chanfrada, sem blur, sem sombra.
-          </p>
-        </div>
-      </button>
-      <button
-        animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
-        initial="[object Object]"
-        transition="[object Object]"
-      >
-        <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#06080d)] overflow-hidden"
-        >
-          <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
-          />
-          <div
-            class="sarak-design-scope sarak-scope-r3 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
-            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
-          >
-            <div
-              class="flex items-center gap-3 relative z-10"
-            >
-              <div
-                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
-              >
-                <svg
-                  class="text-theme-text/50"
-                  fill="none"
-                  height="16"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
-                  />
-                  <path
-                    d="M5 3v4"
-                  />
-                  <path
-                    d="M19 17v4"
-                  />
-                  <path
-                    d="M3 5h4"
-                  />
-                  <path
-                    d="M17 19h4"
-                  />
-                </svg>
-              </div>
-              <div
-                class="flex flex-col gap-1.5 flex-1"
-              >
-                <div
-                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-            <div
-              class="mt-auto relative z-10 flex flex-col gap-2"
-            >
-              <div
-                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
-              >
-                <div
-                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
-                />
-              </div>
-              <div
-                class="flex justify-between items-center"
-              >
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="p-4 bg-theme-sidebar"
-        >
-          <h3
-            class="text-sm font-bold text-theme-text uppercase tracking-wider"
-          >
-            Cyberpunk Neon
-          </h3>
-          <p
-            class="text-xs text-theme-muted mt-1"
-          >
-            Bordas afiadas, glow neon forte, textura de grid técnico.
-          </p>
-        </div>
-      </button>
-      <button
-        animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
-        initial="[object Object]"
-        transition="[object Object]"
-      >
-        <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#06080d)] overflow-hidden"
-        >
-          <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
-          />
-          <div
-            class="sarak-design-scope sarak-scope-r4 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
-            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
-          >
-            <div
-              class="flex items-center gap-3 relative z-10"
-            >
-              <div
-                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
-              >
-                <svg
-                  class="text-theme-text/50"
-                  fill="none"
-                  height="16"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
-                  />
-                  <path
-                    d="M5 3v4"
-                  />
-                  <path
-                    d="M19 17v4"
-                  />
-                  <path
-                    d="M3 5h4"
-                  />
-                  <path
-                    d="M17 19h4"
-                  />
-                </svg>
-              </div>
-              <div
-                class="flex flex-col gap-1.5 flex-1"
-              >
-                <div
-                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-            <div
-              class="mt-auto relative z-10 flex flex-col gap-2"
-            >
-              <div
-                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
-              >
-                <div
-                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
-                />
-              </div>
-              <div
-                class="flex justify-between items-center"
-              >
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="p-4 bg-theme-sidebar"
-        >
-          <h3
-            class="text-sm font-bold text-theme-text uppercase tracking-wider"
-          >
-            Holographic HUD
-          </h3>
-          <p
-            class="text-xs text-theme-muted mt-1"
-          >
-            Sci-fi ultra transparente: blur pesado, spotlight, feixe de borda animado.
-          </p>
-        </div>
-      </button>
-      <button
-        animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
-        initial="[object Object]"
-        transition="[object Object]"
-      >
-        <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#06080d)] overflow-hidden"
-        >
-          <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
-          />
-          <div
-            class="sarak-design-scope sarak-scope-r5 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
-            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
-          >
-            <div
-              class="flex items-center gap-3 relative z-10"
-            >
-              <div
-                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
-              >
-                <svg
-                  class="text-theme-text/50"
-                  fill="none"
-                  height="16"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
-                  />
-                  <path
-                    d="M5 3v4"
-                  />
-                  <path
-                    d="M19 17v4"
-                  />
-                  <path
-                    d="M3 5h4"
-                  />
-                  <path
-                    d="M17 19h4"
-                  />
-                </svg>
-              </div>
-              <div
-                class="flex flex-col gap-1.5 flex-1"
-              >
-                <div
-                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-            <div
-              class="mt-auto relative z-10 flex flex-col gap-2"
-            >
-              <div
-                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
-              >
-                <div
-                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
-                />
-              </div>
-              <div
-                class="flex justify-between items-center"
-              >
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="p-4 bg-theme-sidebar"
-        >
-          <h3
-            class="text-sm font-bold text-theme-text uppercase tracking-wider"
-          >
-            Industrial Brutalism
-          </h3>
-          <p
-            class="text-xs text-theme-muted mt-1"
-          >
-            Bordas grossas, sombra sólida deslocada, zero blur.
-          </p>
-        </div>
-      </button>
-      <button
-        animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
-        initial="[object Object]"
-        transition="[object Object]"
-      >
-        <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#06080d)] overflow-hidden"
-        >
-          <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
-          />
-          <div
-            class="sarak-design-scope sarak-scope-r6 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
-            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
-          >
-            <div
-              class="flex items-center gap-3 relative z-10"
-            >
-              <div
-                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
-              >
-                <svg
-                  class="text-theme-text/50"
-                  fill="none"
-                  height="16"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
-                  />
-                  <path
-                    d="M5 3v4"
-                  />
-                  <path
-                    d="M19 17v4"
-                  />
-                  <path
-                    d="M3 5h4"
-                  />
-                  <path
-                    d="M17 19h4"
-                  />
-                </svg>
-              </div>
-              <div
-                class="flex flex-col gap-1.5 flex-1"
-              >
-                <div
-                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-            <div
-              class="mt-auto relative z-10 flex flex-col gap-2"
-            >
-              <div
-                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
-              >
-                <div
-                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
-                />
-              </div>
-              <div
-                class="flex justify-between items-center"
-              >
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="p-4 bg-theme-sidebar"
-        >
-          <h3
-            class="text-sm font-bold text-theme-text uppercase tracking-wider"
-          >
-            Geometric Cut
-          </h3>
-          <p
-            class="text-xs text-theme-muted mt-1"
-          >
-            Chanfro geométrico nos cantos, matte, sem blur — silhueta octogonal.
-          </p>
-        </div>
-      </button>
-      <button
-        animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
-        initial="[object Object]"
-        transition="[object Object]"
-      >
-        <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#06080d)] overflow-hidden"
-        >
-          <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
-          />
-          <div
-            class="sarak-design-scope sarak-scope-r7 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
-            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
-          >
-            <div
-              class="flex items-center gap-3 relative z-10"
-            >
-              <div
-                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
-              >
-                <svg
-                  class="text-theme-text/50"
-                  fill="none"
-                  height="16"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
-                  />
-                  <path
-                    d="M5 3v4"
-                  />
-                  <path
-                    d="M19 17v4"
-                  />
-                  <path
-                    d="M3 5h4"
-                  />
-                  <path
-                    d="M17 19h4"
-                  />
-                </svg>
-              </div>
-              <div
-                class="flex flex-col gap-1.5 flex-1"
-              >
-                <div
-                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-            <div
-              class="mt-auto relative z-10 flex flex-col gap-2"
-            >
-              <div
-                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
-              >
-                <div
-                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
-                />
-              </div>
-              <div
-                class="flex justify-between items-center"
-              >
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="p-4 bg-theme-sidebar"
-        >
-          <h3
-            class="text-sm font-bold text-theme-text uppercase tracking-wider"
-          >
-            Asymmetric Accent
-          </h3>
-          <p
-            class="text-xs text-theme-muted mt-1"
-          >
-            Barra de destaque só no topo, resto sem borda — flat com acento de cor.
-          </p>
-        </div>
-      </button>
-      <button
-        animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
-        initial="[object Object]"
-        transition="[object Object]"
-      >
-        <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#06080d)] overflow-hidden"
-        >
-          <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
-          />
-          <div
-            class="sarak-design-scope sarak-scope-r8 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
-            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
-          >
-            <div
-              class="flex items-center gap-3 relative z-10"
-            >
-              <div
-                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
-              >
-                <svg
-                  class="text-theme-text/50"
-                  fill="none"
-                  height="16"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
-                  />
-                  <path
-                    d="M5 3v4"
-                  />
-                  <path
-                    d="M19 17v4"
-                  />
-                  <path
-                    d="M3 5h4"
-                  />
-                  <path
-                    d="M17 19h4"
-                  />
-                </svg>
-              </div>
-              <div
-                class="flex flex-col gap-1.5 flex-1"
-              >
-                <div
-                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-            <div
-              class="mt-auto relative z-10 flex flex-col gap-2"
-            >
-              <div
-                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
-              >
-                <div
-                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
-                />
-              </div>
-              <div
-                class="flex justify-between items-center"
-              >
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="p-4 bg-theme-sidebar"
-        >
-          <h3
-            class="text-sm font-bold text-theme-text uppercase tracking-wider"
-          >
-            Carbon Tech
-          </h3>
-          <p
-            class="text-xs text-theme-muted mt-1"
-          >
-            Textura de fibra de carbono, borda técnica sutil, sem glow espalhado.
-          </p>
-        </div>
-      </button>
-      <button
-        animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
-        initial="[object Object]"
-        transition="[object Object]"
-      >
-        <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#06080d)] overflow-hidden"
-        >
-          <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
-          />
-          <div
-            class="sarak-design-scope sarak-scope-r9 dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
-            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
-          >
-            <div
-              class="flex items-center gap-3 relative z-10"
-            >
-              <div
-                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
-              >
-                <svg
-                  class="text-theme-text/50"
-                  fill="none"
-                  height="16"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
-                  />
-                  <path
-                    d="M5 3v4"
-                  />
-                  <path
-                    d="M19 17v4"
-                  />
-                  <path
-                    d="M3 5h4"
-                  />
-                  <path
-                    d="M17 19h4"
-                  />
-                </svg>
-              </div>
-              <div
-                class="flex flex-col gap-1.5 flex-1"
-              >
-                <div
-                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-            <div
-              class="mt-auto relative z-10 flex flex-col gap-2"
-            >
-              <div
-                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
-              >
-                <div
-                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
-                />
-              </div>
-              <div
-                class="flex justify-between items-center"
-              >
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="p-4 bg-theme-sidebar"
-        >
-          <h3
-            class="text-sm font-bold text-theme-text uppercase tracking-wider"
-          >
-            Organic Craft
-          </h3>
-          <p
-            class="text-xs text-theme-muted mt-1"
-          >
-            Textura de madeira, radius suave, tom quente — o oposto do synth/tech.
-          </p>
-        </div>
-      </button>
-      <button
-        animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
-        initial="[object Object]"
-        transition="[object Object]"
-      >
-        <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#06080d)] overflow-hidden"
-        >
-          <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
-          />
-          <div
-            class="sarak-design-scope sarak-scope-ra dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
-            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
-          >
-            <div
-              class="flex items-center gap-3 relative z-10"
-            >
-              <div
-                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
-              >
-                <svg
-                  class="text-theme-text/50"
-                  fill="none"
-                  height="16"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
-                  />
-                  <path
-                    d="M5 3v4"
-                  />
-                  <path
-                    d="M19 17v4"
-                  />
-                  <path
-                    d="M3 5h4"
-                  />
-                  <path
-                    d="M17 19h4"
-                  />
-                </svg>
-              </div>
-              <div
-                class="flex flex-col gap-1.5 flex-1"
-              >
-                <div
-                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-            <div
-              class="mt-auto relative z-10 flex flex-col gap-2"
-            >
-              <div
-                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
-              >
-                <div
-                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
-                />
-              </div>
-              <div
-                class="flex justify-between items-center"
-              >
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="p-4 bg-theme-sidebar"
-        >
-          <h3
-            class="text-sm font-bold text-theme-text uppercase tracking-wider"
-          >
-            Floating Lift
-          </h3>
-          <p
-            class="text-xs text-theme-muted mt-1"
-          >
-            Foco em movimento: elevação forte no hover, glow crescente, quase sem sombra em repouso.
-          </p>
-        </div>
-      </button>
-      <button
-        animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
-        initial="[object Object]"
-        transition="[object Object]"
-      >
-        <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg,#06080d)] overflow-hidden"
-        >
-          <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,color-mix(in_srgb,var(--color-theme-text)_5%,transparent)_0%,transparent_70%)]"
-          />
-          <div
-            class="sarak-design-scope sarak-scope-rb dark sarak-card relative flex flex-col p-4 transition-transform group-hover:scale-105 duration-[var(--sarak-motion-dur-slow,0.6s)] z-10"
-            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
-          >
-            <div
-              class="flex items-center gap-3 relative z-10"
-            >
-              <div
-                class="w-10 h-10 rounded-full bg-theme-text/10 flex items-center justify-center"
-              >
-                <svg
-                  class="text-theme-text/50"
-                  fill="none"
-                  height="16"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
-                  />
-                  <path
-                    d="M5 3v4"
-                  />
-                  <path
-                    d="M19 17v4"
-                  />
-                  <path
-                    d="M3 5h4"
-                  />
-                  <path
-                    d="M17 19h4"
-                  />
-                </svg>
-              </div>
-              <div
-                class="flex flex-col gap-1.5 flex-1"
-              >
-                <div
-                  class="h-2 w-3/4 bg-theme-text/40 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/2 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-            <div
-              class="mt-auto relative z-10 flex flex-col gap-2"
-            >
-              <div
-                class="h-1 w-full bg-theme-text/10 rounded-full overflow-hidden"
-              >
-                <div
-                  class="h-full w-2/3 bg-theme-text/40 rounded-full"
-                />
-              </div>
-              <div
-                class="flex justify-between items-center"
-              >
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/4 bg-theme-text/20 rounded-full"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="p-4 bg-theme-sidebar"
-        >
-          <h3
-            class="text-sm font-bold text-theme-text uppercase tracking-wider"
-          >
-            Scanline CRT
-          </h3>
-          <p
-            class="text-xs text-theme-muted mt-1"
-          >
-            Monitor CRT: scanlines, cantos retos, verde-fósforo.
-          </p>
-        </div>
+        Ver todas (28)
       </button>
     </div>
   </div>

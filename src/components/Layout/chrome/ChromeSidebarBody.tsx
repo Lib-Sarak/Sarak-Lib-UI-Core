@@ -1,17 +1,17 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { SarakShellNav, type SarakShellNavItem } from '../../atomic/Navigation/SarakShellNav';
 import { SarakShellSearchWidget } from '../../atomic/Navigation/SarakShellSearchWidget';
-import { SarakShellLanguageSelector } from '../../atomic/Navigation/SarakShellLanguageSelector';
-import { ShellFontSizeControl } from '../../atomic/Navigation/ShellFontSizeControl';
-import { ShellNavigationStyleControl } from '../../atomic/Navigation/ShellNavigationStyleControl';
-import { ShellPreferencesMenu } from '../../atomic/Navigation/ShellPreferencesMenu';
 import { SarakSearch } from '../../atomic/Inputs/SarakSearch';
 import type { SarakShellUser } from '../../atomic/Navigation/SarakShellUserWidget';
 import { ChromeFrame } from './ChromeFrame';
 import { ChromeContentRegion } from './ChromeContentRegion';
-import { ChromeBrand, ChromeSearchSlot, ChromeSidebarSlot, ChromeTopbarSlot } from './ChromeSlots';
-import { ChromeCollapseToggle } from './ChromeCollapseToggle';
-import { ChromeUserThemeGroup, ChromeUserWidget } from './ChromeUserThemeGroup';
+import { ChromeSearchSlot, ChromeSidebarSlot, ChromeTopbarSlot } from './ChromeSlots';
+import { ChromeSidebarHeader } from './ChromeSidebarHeader';
+import { ChromeSidebarFooter } from './ChromeSidebarFooter';
+import { ChromeSidebarResizeHandle } from './ChromeSidebarResizeHandle';
+import { useSidebarResize } from './useSidebarResize';
+import { resolveChromeToneStyle } from './chromeToneStyle';
+import { ChromeUserWidget } from './ChromeUserThemeGroup';
 import { ChromeNotificationsWidget, type SarakChromeNotification } from './ChromeNotificationsWidget';
 import { resolveChromeAsidePositionClass, resolveChromeBodyDirectionClass, resolveChromeBackground, resolveChromeContentStyle, resolveChromeSurfaceBorderStyle } from './chromeStructuralStyles';
 import { useChromeAutoHide } from './useChromeAutoHide';
@@ -60,7 +60,10 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
     const {
         sidebarPosition, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled,
         searchPositionSidebar, sidebarBorderSide, sidebarBorderStyle, sidebarBackgroundStyle,
+        sidebarLogoPlacement, sidebarTone, sidebarResizable,
     } = useChromeDesignTokens();
+    const asideRef = useRef<HTMLElement>(null);
+    const resize = useSidebarResize(asideRef, sidebarPosition === 'right' ? 'right' : 'left');
     const { isVisible, sensorProps, surfaceProps } = useChromeAutoHide(isAutoHideEnabled);
     const w = useChromeDefaultWidgets(widgets, {
         hasCustomSearch: Boolean(search),
@@ -72,6 +75,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
     const effectiveSearch = search ?? (w.showSearch
         ? <SarakShellSearchWidget
             variant={isNavHidden ? 'icon' : 'bar'}
+            compact={isNavHidden}
             onClick={w.openSearch}
             items={getSarakSearchItems(nav)}
             onSelect={onNavigate ? (item) => onNavigate(item.id) : undefined}
@@ -103,11 +107,15 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                 {isVisible && (
                     <aside
                         {...surfaceProps}
-                        className={`relative flex flex-col shrink-0 overflow-y-auto transition-[width,min-width] duration-[var(--duration-normal,0.3s)] ${resolveChromeAsidePositionClass(sidebarPosition)}`}
+                        ref={asideRef}
+                        // Sem rolagem na barra inteira: só a lista de navegação rola (e só na vertical); o topo e o rodapé ficam fixos.
+                        className={`relative flex flex-col shrink-0 overflow-hidden ${resize.width === null ? 'transition-[width,min-width] duration-[var(--duration-normal,0.3s)]' : ''} ${resolveChromeAsidePositionClass(sidebarPosition)}`}
                         style={{
                             // `zIndexSidebar`: o empilhamento da sidebar sobre o conteúdo (os popovers do cromo nascem dela).
                             zIndex: 'var(--sarak-z-sidebar, 500)',
-                            width: isNavHidden ? 'var(--sarak-sidebar-collapsed-width, 74px)' : 'var(--sarak-sidebar-width, 240px)',
+                            width: isNavHidden
+                                ? 'var(--sarak-sidebar-collapsed-width, 74px)'
+                                : resize.width !== null ? `${resize.width}px` : 'var(--sarak-sidebar-width, 240px)',
                             // `sidebarMinWidth`/`sidebarMaxWidth` (Spec 05 §2.4) — limitam a
                             // largura efetiva mesmo sem redimensionamento por arraste (que o
                             // cromo apresentacional não tem). O piso é da lateral aberta: recolhida,
@@ -128,16 +136,19 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                             // `sidebarBlur`/`sidebarShadow` (Spec 05 §2.4) — sombra no lugar do shadow-2xl.
                             backdropFilter: 'blur(var(--sarak-sidebar-blur, 10px))',
                             boxShadow: 'var(--sarak-sidebar-shadow, 10px 0 30px rgba(0,0,0,0.5))', // sarak-allow-hardcode: fallback = defaultValue do token
+                            ...resolveChromeToneStyle(sidebarTone, 'sidebar'),
                         }}
                     >
                         {/* `sidebarNoiseOpacity` (Spec 05 §2.4). */}
                         <div aria-hidden="true" className="absolute inset-0 z-0 pointer-events-none mix-blend-overlay" style={chromeNoiseLayerStyle('--sarak-sidebar-noise-opacity', sidebarBackgroundStyle === 'texture')} />
-                        <div className="flex items-center justify-between px-1">
-                            <ChromeBrand brand={brand} logo={logo} compact={isNavHidden} />
-                            {w.showCollapse && (
-                                <ChromeCollapseToggle orientation="sidebar" collapsed={isNavHidden} onToggle={w.toggleNavHidden} />
-                            )}
-                        </div>
+                        <ChromeSidebarHeader
+                            brand={brand}
+                            logo={logo}
+                            showBrand={sidebarLogoPlacement === 'top'}
+                            collapsed={isNavHidden}
+                            showCollapse={w.showCollapse}
+                            onToggleCollapse={w.toggleNavHidden}
+                        />
                         {/* Sem barra superior, `topbarStart`/`topbarEnd` degradam para topo/rodapé da sidebar. */}
                         <ChromeTopbarSlot region="start" className="px-2">{topbarStart}</ChromeTopbarSlot>
                         {searchPositionSidebar === 'top' && (
@@ -150,40 +161,37 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                         {searchPositionSidebar === 'bottom' && (
                             <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pt-2">{effectiveSearch}</ChromeSearchSlot>
                         )}
-                        {/* Markup preservado byte a byte do `topbarActions` no modo sidebar (compat). */}
-                        {endSlot && <div data-sarak-slot="topbarEnd" className="mt-auto p-2">{endSlot}</div>}
-                        <ChromeSidebarSlot region="footer">{sidebarFooter}</ChromeSidebarSlot>
-                        {w.showNotifications && <ChromeNotificationsWidget notifications={notifications} onSelect={onNotificationSelect} variant={isNavHidden ? 'mini' : 'vertical'} />}
-                        {!isNavHidden && (showFontSize || showNavigationStyle || showLanguage) && (
-                            <div className="flex flex-col gap-2 px-2 py-1">
-                                {showFontSize && <ShellFontSizeControl />}
-                                {showNavigationStyle && <ShellNavigationStyleControl />}
-                                {showLanguage && <SarakShellLanguageSelector variant="horizontal" />}
-                            </div>
-                        )}
-                        <ChromeUserThemeGroup
-                            showThemeToggle={w.showThemeToggle}
-                            showUser={w.showUser}
+                        <ChromeSidebarFooter
+                            brand={brand}
+                            logo={logo}
+                            showBrand={sidebarLogoPlacement === 'bottom'}
+                            collapsed={isNavHidden}
+                            endSlot={endSlot}
+                            sidebarFooter={sidebarFooter}
                             user={user}
                             logout={logout}
-                            variant={isNavHidden ? 'mini' : 'vertical'}
+                            notifications={notifications}
+                            onNotificationSelect={onNotificationSelect}
+                            showNotifications={w.showNotifications}
+                            showThemeToggle={w.showThemeToggle}
+                            showUser={w.showUser}
+                            showFontSize={showFontSize}
+                            showNavigationStyle={showNavigationStyle}
+                            showLanguage={showLanguage}
+                            hasPreferencesMenu={hasPreferencesMenu}
+                            menuIds={menuIdsToShow}
+                            menuWidgets={menuWidgets}
+                            onToggleNavCollapsed={w.toggleNavHidden}
                         />
-                        {hasPreferencesMenu && (
-                            <div className="px-2 pb-1">
-                                <ShellPreferencesMenu
-                                    menuIds={menuIdsToShow}
-                                    isNavHidden={isNavHidden}
-                                    onToggleNavCollapsed={w.toggleNavHidden}
-                                    additionalRows={menuWidgets}
-                                    align="start"
-                                />
-                            </div>
+                        {sidebarResizable && !isNavHidden && (
+                            <ChromeSidebarResizeHandle resize={resize} side={sidebarPosition === 'right' ? 'right' : 'left'} />
                         )}
                     </aside>
                 )}
                 <ChromeContentRegion
                     secondaryContent={secondaryContent}
                     isSplitViewEnabled={isSplitViewEnabled}
+                    activeRoute={activeRoute}
                     className={`relative flex-1 min-w-0 min-h-0 overflow-auto`}
                     style={{ color: 'var(--text-main, var(--theme-text-primary, inherit))', ...resolveChromeContentStyle(layoutDensity, maxContentWidth) }}
                 >

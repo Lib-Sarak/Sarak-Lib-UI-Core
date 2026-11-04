@@ -2471,5 +2471,124 @@
     "relatedTokens": [
       "navigationStyle"
     ]
+  },
+  {
+    "tokenId": "sidebarLogoPlacement",
+    "name": "Posição da Marca (Sidebar)",
+    "description": "Em que ponto da barra lateral a marca aparece: no topo, antes da navegação, ou na base, logo acima do rodapé.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "geometry"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "ChromeSidebarBody"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "top",
+      "bottom"
+    ],
+    "relatedTokens": [],
+    "consumerHook": [
+      "useNavigationAppearance"
+    ]
+  },
+  {
+    "tokenId": "sidebarTone",
+    "name": "Papel de Cor (Sidebar)",
+    "description": "Escolhe de qual papel da paleta vem o fundo da barra lateral: neutro (o de sempre), superfície, primária, secundária ou invertido em relação ao corpo. O texto e o ícone da barra seguem legíveis em qualquer papel.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "color"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "ChromeSidebarBody"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "neutral",
+      "surface",
+      "primary",
+      "secondary",
+      "inverse"
+    ],
+    "relatedTokens": [],
+    "consumerHook": [
+      "useNavigationAppearance"
+    ]
+  },
+  {
+    "tokenId": "topbarTone",
+    "name": "Papel de Cor (Topbar)",
+    "description": "Escolhe de qual papel da paleta vem o fundo da barra do topo: neutro (o de sempre), superfície, primária, secundária ou invertido em relação ao corpo. O texto e o ícone da barra seguem legíveis em qualquer papel.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "color"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "ChromeTopbarBody"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "neutral",
+      "surface",
+      "primary",
+      "secondary",
+      "inverse"
+    ],
+    "relatedTokens": [],
+    "consumerHook": [
+      "useNavigationAppearance"
+    ]
+  },
+  {
+    "tokenId": "sidebarResizable",
+    "name": "Largura Ajustável (Sidebar)",
+    "description": "Quando ativo, o usuário ajusta a largura da barra lateral aberta por uma alça na borda; duplo clique volta ao padrão. Some fora da faixa de cromo lateral.",
+    "type": "boolean",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "geometry"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "ChromeSidebarBody"
+    ],
+    "cssVariables": [],
+    "relatedTokens": []
   }
 ]

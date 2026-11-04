@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
+import type { SarakTabsOverflow } from './useTabsOverflow';
 
 export type SarakTabsVariant = 'pills' | 'underlined' | 'enclosed';
 
@@ -13,22 +14,49 @@ const TAB_RADIUS: Record<SarakTabsVariant, string> = {
     enclosed: 'var(--sarak-btn-border-radius, 8px) var(--sarak-btn-border-radius, 8px) 0 0',
 };
 
-export const tabsListClassName = (variant: SarakTabsVariant, listClassName?: string): string =>
+const OVERFLOW_LIST_CLASS: Record<SarakTabsOverflow, string> = {
+    scroll: 'min-w-0 max-w-full overflow-x-auto overflow-y-hidden [scrollbar-width:thin]',
+    wrap: 'flex-wrap max-w-full',
+    menu: 'min-w-0 flex-1 overflow-hidden',
+};
+
+export const tabsListClassName = (variant: SarakTabsVariant, listClassName?: string, overflow: SarakTabsOverflow = 'scroll'): string =>
     mergeSarakClasses(
         'flex items-center',
+        OVERFLOW_LIST_CLASS[overflow],
         variant === 'underlined' && 'border-b border-[var(--theme-border)]',
         variant === 'pills' && 'bg-theme-tint rounded-xl',
         listClassName,
     );
 
-export const tabsListStyle = (variant: SarakTabsVariant): React.CSSProperties | undefined =>
+const baseTabsListStyle = (variant: SarakTabsVariant): React.CSSProperties =>
     variant === 'underlined' ? { gap: 'calc(var(--sarak-layout-gap-md, 16px) * 1.5)' }
     : variant === 'pills' ? { gap: 'var(--sarak-layout-gap-sm, 8px)', padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }
     : { gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' };
 
+const EDGE_FADE = 'calc(var(--sarak-layout-gap-md, 16px) * 2)';
+
+/** Esmaece a borda onde ainda há abas fora da vista (`scroll`). */
+const edgeFadeMask = (atStart: boolean, atEnd: boolean): string =>
+    `linear-gradient(to right, ${atStart ? 'transparent' : 'black'}, black ${atStart ? EDGE_FADE : '0'}, black calc(100% - ${atEnd ? EDGE_FADE : '0px'}), ${atEnd ? 'transparent' : 'black'})`;
+
+export interface TabsListEdges { atStart: boolean; atEnd: boolean }
+
+export const tabsListStyle = (variant: SarakTabsVariant, overflow: SarakTabsOverflow = 'scroll', edges?: TabsListEdges): React.CSSProperties | undefined => {
+    const style: React.CSSProperties = { ...baseTabsListStyle(variant) };
+    // O indicador do `underlined` desce uma borda; sem esta reserva o `overflow` o cortaria.
+    if (variant === 'underlined' && overflow !== 'wrap') style.paddingBottom = 'var(--sarak-border-width, 1px)';
+    if (overflow === 'scroll' && edges && (edges.atStart || edges.atEnd)) {
+        style.maskImage = edgeFadeMask(edges.atStart, edges.atEnd);
+        style.WebkitMaskImage = style.maskImage;
+    }
+    return style;
+};
+
 /** `textTransform`/`fontWeight`/`letterSpacing`/`borderRadius` vão por `style` (vence a classe do
  *  átomo) para neutralizar o `font-black uppercase tracking-widest` e o `rounded-btn` do botão. */
 export const tabItemStyle = (variant: SarakTabsVariant): React.CSSProperties => ({
+    minHeight: 'var(--sarak-touch-target-min, 44px)',
     gap: 'var(--sarak-layout-gap-sm, 8px)',
     paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.625)',
     paddingInline: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)',
@@ -38,9 +66,10 @@ export const tabItemStyle = (variant: SarakTabsVariant): React.CSSProperties => 
     letterSpacing: 'normal',
 });
 
-export const tabItemClassName = (variant: SarakTabsVariant, isActive: boolean, isDisabled: boolean, fullWidth: boolean): string =>
+export const tabItemClassName = (variant: SarakTabsVariant, isActive: boolean, isDisabled: boolean, fullWidth: boolean, overflow: SarakTabsOverflow = 'scroll'): string =>
     clsx(
         'relative text-sm transition-colors',
+        overflow !== 'wrap' && 'shrink-0 whitespace-nowrap',
         fullWidth ? 'flex-1' : '',
         isDisabled && 'opacity-50 cursor-not-allowed',
         variant === 'underlined' && [

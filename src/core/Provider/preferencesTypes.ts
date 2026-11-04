@@ -25,6 +25,8 @@ export interface SarakUserPreferences {
     navigationStyle?: SarakNavigationStylePreference;
     navCollapsed?: boolean;
     language?: string;
+    /** Largura da lateral aberta, em px — só vale com `sidebarResizable` ligado e dentro de `sidebarMinWidth`..`sidebarMaxWidth`. */
+    sidebarWidth?: number;
 }
 
 /** Porta opcional do host para guardar preferência por usuário no servidor

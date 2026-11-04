@@ -189,3 +189,29 @@ describe('ChromeTopbarBody — topbarNoiseOpacity (Spec 05 §2.4)', () => {
         expect((textured.querySelector('.mix-blend-overlay') as HTMLElement).style.opacity).toBe('max(var(--sarak-topbar-noise-opacity, 0), 0.12)');
     });
 });
+
+describe('ChromeTopbarBody — papel de cor da topbar', () => {
+    it('sem paleta calculada a barra segue como sempre, mesmo com topbarTone', () => {
+        const { container } = renderBody({ colorPalette: 'slate', topbarTone: 'primary' });
+        expect(container.querySelector('header')!.style.getPropertyValue('--text-muted')).toBe('');
+    });
+
+    it('com paleta e papel contrastante, a topbar refaz as variáveis de texto a partir dos tokens dela', () => {
+        const { container } = renderBody({ colorPalette: 'oceano', topbarTone: 'primary' });
+        const header = container.querySelector('header')!;
+        expect(header.style.getPropertyValue('--text-muted')).toBe('var(--sarak-topbar-item-text-color)');
+        expect(header.style.getPropertyValue('--sarak-nav-active-color')).toBe('var(--sarak-topbar-item-hover-text-color)');
+    });
+
+    it('papel de superfície não refaz nada: só o fundo muda, pela paleta', () => {
+        const { container } = renderBody({ colorPalette: 'oceano', topbarTone: 'surface' });
+        expect(container.querySelector('header')!.style.getPropertyValue('--text-muted')).toBe('');
+    });
+
+    it('um item com filhos abre o menu suspenso da topbar', () => {
+        renderBody({}, { nav: [{ label: 'Vendas', route: '/vendas', children: [{ label: 'Pedidos', route: '/vendas/pedidos' }] }] });
+        fireEvent.click(screen.getByRole('button', { name: 'Vendas' }));
+        expect(screen.getByRole('group', { name: 'Vendas' })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Pedidos' })).toBeInTheDocument();
+    });
+});

@@ -1,6 +1,7 @@
 import React from 'react';
 import { SarakButton } from '../Buttons/SarakButton';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
+import { SarakLink } from './SarakLink';
 
 /** Token de paginação: número de página ou marcador de reticências. */
 export type SarakPaginationToken = number | 'ellipsis';
@@ -51,6 +52,11 @@ export interface SarakPaginationProps {
     maxVisible?: number;
     /** Disparado ao escolher uma página válida (diferente da atual). */
     onChange: (page: number) => void;
+    /**
+     * Com ele, cada página é um link real: clique simples chama `onChange`, e Ctrl+clique,
+     * clique do meio e abrir em nova aba seguem o `href`, sem passar pelo `onChange`.
+     */
+    getPageHref?: (page: number) => string;
     className?: string;
 }
 
@@ -72,6 +78,17 @@ const pageBtnStyle: React.CSSProperties = {
     textTransform: 'none',
     letterSpacing: 'normal',
 };
+
+const PAGE_TEXT_COLOR = 'var(--text-muted,rgba(242,246,251,0.55))';
+const CURRENT_PAGE_TEXT_COLOR = 'var(--color-theme-card,#101622)';
+
+/** O link pinta a própria cor por classe: a do botão de página chega por `style`, que vence. */
+const pageLinkStyle = (color: string): React.CSSProperties => ({
+    ...pageBtnStyle,
+    color,
+    justifyContent: 'center',
+    textDecoration: 'none',
+});
 
 interface PaginationView {
     currentPage: number;
@@ -114,6 +131,7 @@ interface PaginationControlsProps {
     view: PaginationView;
     text: ReturnType<typeof useLibraryText>;
     onChange: (page: number) => void;
+    getPageHref?: (page: number) => string;
 }
 
 const changePage = (view: PaginationView, onChange: (page: number) => void, page: number): void => {
@@ -124,11 +142,14 @@ interface PaginationEdgeButtonProps extends PaginationControlsProps {
     direction: 'previous' | 'next';
 }
 
-const PaginationEdgeButton = ({ view, text, onChange, direction }: PaginationEdgeButtonProps): React.ReactElement => {
+const PaginationEdgeButton = ({ view, text, onChange, getPageHref, direction }: PaginationEdgeButtonProps): React.ReactElement => {
     const previous = direction === 'previous';
     const label = text(previous ? 'paginationPrevAriaLabel' : 'paginationNextAriaLabel');
     const page = view.currentPage + (previous ? -1 : 1);
     const disabled = previous ? view.currentPage <= 1 : view.currentPage >= view.totalPages;
+    if (getPageHref && !disabled) {
+        return <SarakLink href={getPageHref(page)} aria-label={label} className={baseBtn} style={pageLinkStyle(PAGE_TEXT_COLOR)} onNavigate={() => changePage(view, onChange, page)}>{previous ? '‹' : '›'}</SarakLink>;
+    }
     return <SarakButton variant="ghost" className={`${baseBtn} text-[var(--text-muted,rgba(242,246,251,0.55))] hover:bg-[var(--color-theme-card,#101622)]`} style={pageBtnStyle} onClick={() => changePage(view, onChange, page)} disabled={disabled} aria-label={label}>{previous ? '‹' : '›'}</SarakButton>;
 };
 
@@ -136,20 +157,23 @@ interface PaginationNumberButtonProps extends PaginationControlsProps {
     token: SarakPaginationToken;
 }
 
-const PaginationNumberButton = ({ view, text, onChange, token }: PaginationNumberButtonProps): React.ReactElement => {
+const PaginationNumberButton = ({ view, onChange, getPageHref, token }: PaginationNumberButtonProps): React.ReactElement => {
     if (token === 'ellipsis') return <span className="min-w-9 h-9 inline-flex items-center justify-center text-[var(--text-muted,rgba(242,246,251,0.55))] select-none" aria-hidden="true">…</span>;
     const isCurrent = token === view.currentPage;
     const className = isCurrent
         ? `${baseBtn} bg-[var(--sarak-primary-color,#19e3f0)] text-[var(--color-theme-card,#101622)]`
         : `${baseBtn} text-[var(--text-muted,rgba(242,246,251,0.55))] hover:bg-[var(--color-theme-card,#101622)]`;
+    if (getPageHref) {
+        return <SarakLink href={getPageHref(token)} aria-current={isCurrent ? 'page' : undefined} className={className} style={pageLinkStyle(isCurrent ? CURRENT_PAGE_TEXT_COLOR : PAGE_TEXT_COLOR)} onNavigate={() => changePage(view, onChange, token)}>{token}</SarakLink>;
+    }
     return <SarakButton variant="ghost" aria-current={isCurrent ? 'page' : undefined} className={className} style={pageBtnStyle} onClick={() => changePage(view, onChange, token)}>{token}</SarakButton>;
 };
 
-const PaginationControls = ({ view, text, onChange }: PaginationControlsProps): React.ReactElement => (
+const PaginationControls = ({ view, text, onChange, getPageHref }: PaginationControlsProps): React.ReactElement => (
     <nav className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }} aria-label={text('paginationAriaLabel')}>
-        <PaginationEdgeButton view={view} text={text} onChange={onChange} direction="previous" />
-        {view.tokens.map((token, index) => <PaginationNumberButton key={token === 'ellipsis' ? `ellipsis-${index}` : token} view={view} text={text} onChange={onChange} token={token} />)}
-        <PaginationEdgeButton view={view} text={text} onChange={onChange} direction="next" />
+        <PaginationEdgeButton view={view} text={text} onChange={onChange} getPageHref={getPageHref} direction="previous" />
+        {view.tokens.map((token, index) => <PaginationNumberButton key={token === 'ellipsis' ? `ellipsis-${index}` : token} view={view} text={text} onChange={onChange} getPageHref={getPageHref} token={token} />)}
+        <PaginationEdgeButton view={view} text={text} onChange={onChange} getPageHref={getPageHref} direction="next" />
     </nav>
 );
 
@@ -202,7 +226,7 @@ export const SarakPagination = (props: SarakPaginationProps): React.ReactElement
             className={`flex items-center ${props.className ?? ''}`}
             style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.5)' }}
         >
-            <PaginationControls view={view} text={text} onChange={props.onChange} />
+            <PaginationControls view={view} text={text} onChange={props.onChange} getPageHref={props.getPageHref} />
             <PaginationSummary view={view} text={text} />
             <PaginationPageSizeOptions view={view} onPageSizeChange={props.onPageSizeChange} text={text} />
         </div>

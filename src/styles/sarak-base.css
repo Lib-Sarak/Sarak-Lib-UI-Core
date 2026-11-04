@@ -26,6 +26,7 @@
 @import "./_utilities.css" layer(sarak-lib);
 @import "./_performance.css" layer(sarak-lib);
 @import "./_motion.css" layer(sarak-lib);
+@import "./_print.css" layer(sarak-lib);
 
 @source "../**/*.{ts,tsx}";
 

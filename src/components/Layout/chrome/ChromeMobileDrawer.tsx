@@ -15,12 +15,14 @@ export interface ChromeMobileDrawerProps {
     backgroundStyle: ChromeBackgroundStyle;
     borderSide: ChromeBorderSide;
     borderStyle: ChromeBorderStyle;
+    /** Variáveis de texto da barra num papel de cor contrastante (vazio no neutro). */
+    toneStyle?: React.CSSProperties;
     children: React.ReactNode;
 }
 
 type ChromeMobileDrawerPanelProps = Omit<ChromeMobileDrawerProps, 'isOpen' | 'onClose' | 'closeLabel'>;
 
-function createChromeMobileDrawerStyle({ backgroundStyle, borderSide, borderStyle }: ChromeMobileDrawerPanelProps): React.CSSProperties {
+function createChromeMobileDrawerStyle({ backgroundStyle, borderSide, borderStyle, toneStyle }: ChromeMobileDrawerPanelProps): React.CSSProperties {
     return {
         width: 'var(--sarak-sidebar-width, 240px)',
         background: resolveChromeBackground(backgroundStyle, '--sarak-sidebar-bg', 'var(--theme-sidebar-bg, var(--bg-body, #06080d))'),
@@ -34,6 +36,7 @@ function createChromeMobileDrawerStyle({ backgroundStyle, borderSide, borderStyl
         }),
         backdropFilter: 'blur(var(--sarak-sidebar-blur, 10px))',
         boxShadow: 'var(--sarak-sidebar-shadow, none)',
+        ...toneStyle,
     };
 }
 
@@ -44,7 +47,7 @@ function ChromeMobileDrawerPanel(props: ChromeMobileDrawerPanelProps): React.Rea
             id={drawerId}
             ref={containerRef}
             onKeyDown={onKeyDown}
-            className="fixed inset-y-0 left-0 z-50 flex flex-col shrink-0 overflow-y-auto max-w-[85vw]"
+            className="fixed inset-y-0 left-0 z-50 flex flex-col shrink-0 overflow-y-auto overflow-x-hidden max-w-[85vw]"
             style={createChromeMobileDrawerStyle(props)}
         >
             <div

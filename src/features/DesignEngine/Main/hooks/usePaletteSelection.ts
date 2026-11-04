@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useOverlay } from '../../../../components/atomic/Modals/SarakOverlayProvider';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import {
-    buildPaletteDraftPatch, findManualColorAdjustments, resolveDraftPalette,
+    barTonesOf, buildPaletteDraftPatch, findManualColorAdjustments, resolveDraftPalette,
 } from '../utils/paletteDraft';
 import type { SarakTokenValue } from '../../../../core/Design/types';
 
@@ -25,17 +25,17 @@ export const usePaletteSelection = ({ draft, appliedDesign, updateDraft }: UsePa
 
     return useCallback(async (value: string): Promise<void> => {
         if (draft.colorPalette === value) return;
-        const previous = resolveDraftPalette(draft.colorPalette, mode);
+        const previous = resolveDraftPalette(draft.colorPalette, mode, barTonesOf(draft));
         const reference = Object.keys(previous).length > 0 ? previous : (appliedDesign ?? {});
         const adjusted = findManualColorAdjustments(draft, reference);
         const discard = adjusted.length > 0 && await overlay.confirm({
             title: text('paletteKeepTitle'),
-            message: text('paletteKeepMessage', { count: adjusted.length }),
+            message: text(adjusted.length === 1 ? 'paletteKeepMessageOne' : 'paletteKeepMessageMany', { count: adjusted.length }),
             confirmLabel: text('paletteKeepDiscard'),
             cancelLabel: text('paletteKeepConfirm'),
             tone: 'danger',
         });
-        const patch = buildPaletteDraftPatch(value, mode, discard ? [] : adjusted);
+        const patch = buildPaletteDraftPatch(value, mode, discard ? [] : adjusted, barTonesOf(draft));
         Object.entries(patch).forEach(([tokenId, tokenValue]) => updateDraft(tokenId, tokenValue));
     }, [draft, appliedDesign, mode, overlay, text, updateDraft]);
 };

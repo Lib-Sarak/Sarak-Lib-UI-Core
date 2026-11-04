@@ -42,9 +42,9 @@ export const CHROME_WIDGET_POSITION_TOKEN_IDS: Record<SarakChromeWidgetId, strin
 };
 
 const POSITION_OPTIONS = [
-    { value: 'off', label: 'Não oferecida' },
+    { value: 'off', label: 'Esconder' },
     { value: 'menu', label: 'No menu' },
-    { value: 'pinned', label: 'Fixa na barra' },
+    { value: 'pinned', label: 'Mostrar' },
 ];
 
 /** O que cada posição muda na tela (medido no cromo): o controle sai da barra, vai para o menu ⚙ ou some. */

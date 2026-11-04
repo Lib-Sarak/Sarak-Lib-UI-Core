@@ -1,0 +1,212 @@
+[
+    {
+        "id": "theme",
+        "textKey": "decisionTheme",
+        "pillars": [],
+        "groups": [
+            "personalities",
+            "themes"
+        ],
+        "optionSections": [],
+        "screen": "dashboard",
+        "screens": [
+            "dashboard"
+        ]
+    },
+    {
+        "id": "colors",
+        "textKey": "decisionColors",
+        "pillars": [
+            "brand"
+        ],
+        "groups": [
+            "palettes"
+        ],
+        "optionSections": [],
+        "screen": "dashboard",
+        "screens": [
+            "dashboard",
+            "auth"
+        ]
+    },
+    {
+        "id": "fonts",
+        "textKey": "decisionFonts",
+        "pillars": [
+            "typography"
+        ],
+        "groups": [
+            "fontPairs",
+            "typeScale",
+            "fonts"
+        ],
+        "optionSections": [],
+        "screen": "typography",
+        "screens": [
+            "typography"
+        ]
+    },
+    {
+        "id": "shape",
+        "textKey": "decisionShape",
+        "pillars": [
+            "surfaces"
+        ],
+        "groups": [
+            "cards",
+            "corners",
+            "density",
+            "shadow",
+            "shadowDirection",
+            "border",
+            "material",
+            "glass",
+            "atmosphere",
+            "gradient"
+        ],
+        "optionSections": [],
+        "screen": "dashboard",
+        "screens": [
+            "dashboard",
+            "components",
+            "tabela"
+        ]
+    },
+    {
+        "id": "components",
+        "textKey": "decisionComponents",
+        "pillars": [
+            "interaction",
+            "systems"
+        ],
+        "groups": [
+            "buttons",
+            "inputs",
+            "tables",
+            "charts",
+            "modal",
+            "notice",
+            "switch",
+            "scroll",
+            "badge",
+            "emptyState",
+            "motion",
+            "pageTransition",
+            "icons"
+        ],
+        "optionSections": [],
+        "screen": "caixas-texto",
+        "screens": [
+            "caixas-texto",
+            "forms",
+            "settings",
+            "logs",
+            "documentos"
+        ]
+    },
+    {
+        "id": "layout",
+        "textKey": "decisionLayout",
+        "pillars": [
+            "navigation"
+        ],
+        "groups": [
+            "sidebar",
+            "topbar",
+            "contentWidth",
+            "globalBlock"
+        ],
+        "optionSections": [
+            "Composição da Barra"
+        ],
+        "includeGlobal": true,
+        "questions": [
+            {
+                "id": "where",
+                "textKey": "barQuestionWhere",
+                "tokens": [
+                    "navigationStyle",
+                    "sidebarPosition",
+                    "sidebarWidth",
+                    "navbarLayout"
+                ],
+                "fineMatch": "^(sidebar(Min|Max|Collapsed)Width|topbar(Height|CollapsedHeight)|tabSectionMargin|searchPosition(Sidebar|Topbar)|maxContentWidth)$"
+            },
+            {
+                "id": "how",
+                "textKey": "barQuestionHow",
+                "tokens": [
+                    "sidebarTone",
+                    "topbarTone",
+                    "sidebarActiveItemStyle",
+                    "topbarActiveItemStyle",
+                    "sidebarBorderSide",
+                    "sidebarBorderStyle",
+                    "sidebarBackgroundStyle",
+                    "topbarBackgroundStyle",
+                    "sidebarItemDensity",
+                    "topbarItemDensity"
+                ],
+                "fineMatch": "^(sidebar|topbar)(Color|Active|Hover|Item|Category|Border|Icon|Blur|Shadow|Noise|GroupSeparator|Title)|^nav(ItemActive|ActiveMarker|ItemRadius)|^tabGap$"
+            },
+            {
+                "id": "what",
+                "textKey": "barQuestionWhat",
+                "tokens": [
+                    "chromeSearchPosition",
+                    "chromeUserPosition",
+                    "chromeNotificationsPosition",
+                    "preferenceModePosition",
+                    "preferenceFontSizePosition",
+                    "preferenceNavigationStylePosition",
+                    "preferenceNavCollapsePosition",
+                    "preferenceLanguagePosition"
+                ],
+                "fineMatch": "^searchDropdown"
+            },
+            {
+                "id": "brand",
+                "textKey": "barQuestionBrand",
+                "tokens": [
+                    "sidebarLogoPlacement",
+                    "shellBrandLogoSize",
+                    "brandLogoSizeCollapsed",
+                    "sidebarLabelMaxWidth"
+                ],
+                "fineMatch": "^(sidebar|topbar)(Brand|Label)|^topbarLabelMaxWidth$|^identity"
+            },
+            {
+                "id": "behavior",
+                "textKey": "barQuestionBehavior",
+                "tokens": [
+                    "isNavHidden",
+                    "sidebarResizable",
+                    "isAutoHideEnabled"
+                ],
+                "fineMatch": "^(isSplitViewEnabled)$"
+            }
+        ],
+        "screen": "dashboard",
+        "screens": [
+            "dashboard"
+        ]
+    },
+    {
+        "id": "advanced",
+        "textKey": "decisionAdvanced",
+        "pillars": [
+            "advanced"
+        ],
+        "groups": [],
+        "optionSections": [],
+        "menuOnly": true,
+        "screen": "matrix",
+        "screens": [
+            "matrix",
+            "more-screens",
+            "chat",
+            "graficos",
+            "kitchen-sink"
+        ]
+    }
+]

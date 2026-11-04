@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "138"
+proximo_numero_plan: "156"
 ---
 
 # 0. O que é este arquivo
@@ -43,17 +43,70 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
 | 1 | [plan-119-kit-de-importacao-aprendido-nos-importadores](plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md) | Fazer o importador usar a lib por inteiro sem reescrever o que ela entrega, com o kit de importação ensinado pelas licoes medidas nos importadores reais e com a gestao de temas do importador completa: salvar o aplicado como novo, editar, duplicar e criar, persistidos no importador | — | 🟡 Em execução | specs/12-kit-do-consumidor.md + specs/13-instalacao-e-atualizacao.md + specs/09-temas-e-presets.md + specs/15-divida-conhecida.md |
-| 2 | [plan-133-motor-de-paletas](plan/plan-133-motor-de-paletas.md) | Fazer as cores do tema saírem de uma paleta calculada a partir de uma cor-base e de um tipo de harmonia, com escalas OKLCH, um mapa de papéis comum por modo e correção de contraste que torna legível qualquer cor de entrada, mantendo o ajuste granular de token por cima | — | 🟢 Aprovada | sintetizada · retida por plan-134 (e plan-135) |
-| 3 | [plan-134-catalogo-de-paletas-e-temas](plan/plan-134-catalogo-de-paletas-e-temas.md) | Fazer a lib embarcar de 12 a 15 paletas prontas cobrindo os cinco tipos de harmonia e os 19 temas declararem uma paleta em vez de cores escritas à mão, com a hierarquia de título refeita pela regra comum e aprovada pelo dono numa prévia antes e depois | plan-133-motor-de-paletas | 🟠 Em revisão | specs/09-temas-e-presets.md |
-| 4 | [plan-135-paletas-no-painel-e-no-kit](plan/plan-135-paletas-no-painel-e-no-kit.md) | Fazer o usuário escolher uma paleta pronta ou criar uma a partir de uma cor e de um tipo, com prévia nos dois modos, aplicar e salvar pelo fluxo atual, e continuar ajustando qualquer cor individualmente; e fazer o kit ensinar o tema como estrutura mais paleta | plan-133-motor-de-paletas | 🟢 Aprovada | specs/06-painel-de-customizacao-e-preview.md |
-| 5 | [plan-136-cor-ancora-fundo-tingido-e-harmonia-visivel](plan/plan-136-cor-ancora-fundo-tingido-e-harmonia-visivel.md) | Fazer a troca entre claro e escuro mudar o tom e não a cor da marca, os fundos deixarem de ser preto e branco puros e as paletas de várias cores aparecerem na tela com a distribuição 60-30-10, com presets harmônicos e a criação a partir de uma cor aprovada pelo dono numa prévia | — | 🔴 A executar | specs/specs/09-temas-e-presets.md + specs/arquitetura/02-design-engine.md + specs/adr/024-paleta-calculada-separada-do-tema.md |
-| 6 | [plan-137-bateria-de-navegador-verde-na-rc4](plan/plan-137-bateria-de-navegador-verde-na-rc4.md) | Fazer o npm run cromo-css-real:check terminar sem falha antes da tag 8.0.0-rc.4, consertando na lib o contraste do texto sobre a barra que o host escurece e atualizando os testes de navegador que a campanha deixou para trás, sem afrouxar nenhuma afirmação | — | 🟢 Aprovada | specs/specs/09-temas-e-presets.md + specs/specs/11-testes-e-cobertura.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🚦 **Campanha da `8.0.0-rc.4` (2026-10-27).** Contrato aceito: [`anexos/rc4-contrato.md`](plan/anexos/rc4-contrato.md). Ordem: a `plan-128` vai **sozinha** (cria o hook de idioma e os arquivos de catálogo das outras); depois `plan-129` ‖ `plan-130` ‖ `plan-131` ‖ `plan-132` ‖ `plan-119` lote 8 ‖ `plan-133`, em paralelo (pastas disjuntas; arquivos compartilhados só por acréscimo); depois da 133, `plan-134` ‖ `plan-135`. A 134 e a 135 geram prévias em `C:\tmp\sarak-rc4-previa\` que o dono aprova durante a revisão. Verificação pelo protocolo do contrato §9: uma vez por plan e a bateria completa uma vez, no fechamento, depois do lote 2 do ERP. A versão (`npm version`) é do dono.
 
-> ⚪ **As `plan-128` a `plan-132` foram SINTETIZADAS e REMOVIDAS em 2026-10-28; a `plan-133` foi sintetizada e fica RETIDA pela
-> `plan-134`/`plan-135`, que apontam para o §2 dela.** Destino demonstrado:
+> 🚦 **Fila da rc.5 (2026-11-02):** decisão do dono: todas as plans abertas entram na `8.0.0-rc.5`, salvo o lote final da `plan-119`, que espera os importadores. Ordem: tag (as plans da rc.5 estão sintetizadas). `npm run build` e a bateria de navegador rodam **um executor por vez**. Contrato em `anexos/rc5-contrato.md`.
+
+> ⚪ **A `plan-145` foi SINTETIZADA e REMOVIDA em 2026-11-03.**
+> - [[09-temas-e-presets]] §3: a Personalidade entre preset e tema.
+> - [[09-temas-e-presets]] §4.3.4: os temas embarcados declaram o tom das barras, a marca fica no topo e `sarak-sovereign` segue nos padrões do schema.
+> - [[09-temas-e-presets]] §5: as dez Personalidades e as travas.
+> - [[09-temas-e-presets]] §6.5: `pairsFor` no auditor de contraste.
+> - Destino em [[06-painel-de-customizacao-e-preview]] §2.3: o grupo na decisão Tema, a pergunta antes de descartar ajuste, o campo em "Usar minha marca" e o tom na troca de paleta.
+> - **Ficou de fora:** vereditos, medições e prévias, que ficam no histórico do Git.
+> - Riscos em aberto: backlog #70 e #71.
+> - `00-contexto`: revisado, nada a mudar.
+
+> ⚪ **A `plan-141` foi SINTETIZADA e REMOVIDA em 2026-11-03.** Destino: [[09-temas-e-presets]] §5 (o registro de grupos, a regra de que preset de estrutura não escreve cor, a lista `LEGACY_COLOR_PRESET_IDS`, a cobertura medida e os textos fora do boot) e [[06-painel-de-customizacao-e-preview]] §6.4 e §2.2 (o grupo curado, a distinção medida e a busca por preset). Acréscimo fora do destino declarado: [[05-cromo-e-slots]] §2.1, com o item ativo sob tom contrastante. Também saíram o item 2 da §8 da 09 e a nota de estado da §6.4 da 06, que davam o enriquecimento como pendente. **Ficou de fora:** vereditos, medições e prévias (histórico do Git). Riscos em aberto: backlog #68 e #69. `00-contexto` revisado: nada a mudar.
+
+> ⚪ **As `plan-153`, `plan-154` e `plan-155` foram SINTETIZADAS e REMOVIDAS em 2026-11-02.** Destino: [[10-seguranca-e-acessibilidade]] §3.2, com o mapa como exceção de rede. A 153 e a 154 tinham destino `—`: a superfície fica no catálogo gerado e em `docs/migracoes.md`. **Ficou de fora:** vereditos, medições e prévias (histórico do Git). Riscos em aberto: backlog #65, #66 e #67. `00-contexto` revisado: nada a mudar.
+
+> ⚪ **As `plan-151` e `plan-152` foram SINTETIZADAS e REMOVIDAS em 2026-11-02.** Destino: [[12-kit-do-consumidor]] §2.3, [[10-seguranca-e-acessibilidade]] §3.2 e [[16-integracao-continua]] §4.1 e §4.2. A `plan-152` tinha destino `—`: a superfície fica no catálogo gerado e em `docs/migracoes.md`. **Ficou de fora:** vereditos e medições (histórico do Git). Riscos em aberto: backlog #63 e #64. `00-contexto` revisado: nada a mudar.
+
+> ⚪ **As `plan-140`, `plan-143`, `plan-146`, `plan-147`, `plan-148`, `plan-149` e `plan-150` foram SINTETIZADAS e REMOVIDAS em 2026-11-02.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | 140 — coluna única | [[06-painel-de-customizacao-e-preview]] §2.1, §2.3, §6.6 · [[08-identidade-do-host-e-zero-marca]] §6 |
+> | 143 — cores das paletas | [[09-temas-e-presets]] §4.3.4 (três faixas) e §5 (harmonia) |
+> | 146 — grade e camadas | [[07-responsividade-e-multidispositivo]] §4 · [[10-seguranca-e-acessibilidade]] §2.4 a |
+> | 147 e 148 — gráficos, lista, formulário e abas | catálogo gerado e `docs/migracoes.md` |
+> | 149 — barras | [[05-cromo-e-slots]] §2.1 e §2.1.3 · [[09-temas-e-presets]] §4.3.4 e §4.7 |
+> | 150 — busca | [[06-painel-de-customizacao-e-preview]] §2.2 |
+>
+> **Ficou de fora:** vereditos, medições e prévias (histórico do Git). O id cru de pergunta nos resultados da área Layout foi para o passo 8 da `plan-141`. `00-contexto` revisado: nada a mudar.
+
+> ⚪ **A `plan-139` foi SINTETIZADA e REMOVIDA em 2026-11-02.** Destino: [[06-painel-de-customizacao-e-preview]] §6.4 (opção com componente real, espiada). **Ficou de fora:** vereditos e prévias (histórico do Git). As `plan-140` e `plan-143`, aprovadas, sintetizam depois do commit, porque resumo e veredito delas ainda não estão no Git. `00-contexto` revisado: nada a mudar.
+
+> ⚪ **A `plan-144` foi SINTETIZADA e REMOVIDA em 2026-11-01**, aceita pelo dono com a meta de 300 ms aberta (hoje ~500 ms; a `plan-140` tira a galeria de cima da prévia). Destino: [[06-painel-de-customizacao-e-preview]] §4.1. **Ficou de fora:** as
+> medições (histórico do Git). O spec que não protege a fusão dos commits é o backlog #60. `00-contexto` revisado: nada a mudar.
+
+> ⚪ **As `plan-136`, `plan-138` e `plan-142` foram SINTETIZADAS e REMOVIDAS em 2026-11-01.** Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | 136 — cor âncora | [[09-temas-e-presets]] §4.3.4 (âncora, fundo tingido, 60-30-10) e §5 (id publicado não sai) · [[02-design-engine]] §10.3 · [[024-paleta-calculada-separada-do-tema]], *Consequências* |
+> | 138 — ganhos rápidos | [[06-painel-de-customizacao-e-preview]] §2.3, §2.4, §6.4 |
+> | 142 — desempenho | [[06-painel-de-customizacao-e-preview]] §4.1 · [[11-testes-e-cobertura]] §7.3 |
+>
+> **Ficou de fora:** vereditos, medições e prévias (histórico do Git). A regra das três faixas e a tolerância de harmonia entram com a `plan-143`. A rotina de medição foi para a `plan-144`. `00-contexto` revisado: nada a mudar.
+
+> ⚪ **As `plan-133`, `plan-134`, `plan-135` e `plan-137` foram SINTETIZADAS e REMOVIDAS em 2026-10-31.** A `8.0.0-rc.4` saiu em 2026-10-29.
+> Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | 133 — motor de paletas | a mesma da síntese abaixo; a retenção expirou com a 134 e a 135 |
+> | 134 — catálogo de paletas e temas | [[09-temas-e-presets]] §5 (o tema tira a cor da paleta, sobrescrita justificada, ids proibidos) e §5.3 (`colorPalette` cumpre a declaração de cor; vale o design composto) |
+> | 135 — paletas no painel | [[06-painel-de-customizacao-e-preview]] §2.4; o kit já estava em `sarak-ui/GUIA-FRONTEND.md`, "Cor vem da paleta" |
+> | 137 — bateria de navegador | [[09-temas-e-presets]] §4.3.4 (texto contra o fundo efetivo) · [[11-testes-e-cobertura]] §7.3 (valor de cor vem da página) |
+>
+> **Ficou de fora:** vereditos, medições e prévias (histórico do Git). A `plan-136`, que citava as plans 133 a 135 como referência, passou a
+> apontar para o ADR, as specs, os temas e o spec de navegador. `00-contexto` revisado: nada a mudar.
+
+> ⚪ **As `plan-128` a `plan-132` foram SINTETIZADAS e REMOVIDAS em 2026-10-28; a `plan-133` foi sintetizada no mesmo dia.** Destino demonstrado:
 >
 > | Plan | Onde a verdade dela está agora |
 > |---|---|

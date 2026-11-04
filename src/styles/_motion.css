@@ -44,3 +44,35 @@
         scroll-behavior: auto !important;
     }
 }
+
+
+/* =========================================
+   TROCA DE TEMA — sem transição enquanto a troca é pintada
+   =========================================
+   O `DesignInjector` marca a raiz do escopo (`data-sarak-theme-switching`) quando um tema ou o modo reescreve
+   centenas de variáveis, e a tira dois quadros depois. Sem a regra, cada elemento com `transition` recalcula o
+   estilo a cada quadro enquanto ela dura: a troca de um tema levava de 2 a 3 s só de estilo, e dez vezes isso com a
+   CPU lenta.
+
+   Na camada final e `!important` pelo mesmo motivo do movimento reduzido acima: precisa vencer a classe utilitária
+   de duração e o `transition` em estilo inline dos átomos, e só cede a outra declaração importante de camada
+   anterior. O escopo do painel (`.sarak-design-scope`, a prévia ao vivo) leva a própria marca: é ele quem muda
+   primeiro, num commit anterior ao da raiz. `:root` é a âncora (a variante escopada o troca pela ilha, e os portais do Modo Embarcado levam a
+   própria classe de escopo, marcada junto). `transition: none` e não duração de 0,01 ms: a
+   transição de 0,01 ms ainda é CRIADA para cada elemento (milhares de `transitionrun`), e criar custa quase o mesmo
+   que rodar. `animation` fica como está. O hover e o foco depois da troca animam como antes, porque a marca já saiu. */
+
+:root[data-sarak-theme-switching="true"],
+:root[data-sarak-theme-switching="true"]::before,
+:root[data-sarak-theme-switching="true"]::after,
+:root[data-sarak-theme-switching="true"] *,
+:root[data-sarak-theme-switching="true"] *::before,
+:root[data-sarak-theme-switching="true"] *::after,
+.sarak-design-scope[data-sarak-theme-switching="true"],
+.sarak-design-scope[data-sarak-theme-switching="true"]::before,
+.sarak-design-scope[data-sarak-theme-switching="true"]::after,
+.sarak-design-scope[data-sarak-theme-switching="true"] *,
+.sarak-design-scope[data-sarak-theme-switching="true"] *::before,
+.sarak-design-scope[data-sarak-theme-switching="true"] *::after {
+    transition: none !important;
+}

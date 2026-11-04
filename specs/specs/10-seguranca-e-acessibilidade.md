@@ -215,6 +215,8 @@ Um detalhe de implementação que é regra de projeto: **`onClose` fica atrás d
 motivo escrito — se o efeito dependesse da identidade da função, consumidores que passam closure inline
 o re-executariam a cada render, reentrando o foco e **perdendo digitação**. É a classe de bug que volta.
 
+**Pilha única de camadas.** `useOverlayLayer` guarda a ordem de abertura de Modal e Drawer: a camada nova fica acima da última aberta, seja qual for o tipo, sem número fixo por tipo. Quem abre uma camada só segue no z-index de sempre. A confirmação sobre uma gaveta recebe o foco preso, e ele volta à gaveta ao fechar. A pilha mora no módulo, porque essas peças funcionam sem Provider.
+
 ### b) Teclado e ARIA
 
 Navegação por `Tab`/`Shift+Tab`/`Enter`/`Espaço`/`ESC` nos componentes interativos, e ARIA nos não-nativos.
@@ -325,6 +327,10 @@ A lib **não faz rede** e **nunca embute segredo**: não há `fetch`, `XMLHttpRe
 função do host (`load`, `onSubmit`, `onSend`), que é quem chama a rede, com a autenticação dele
 ([[03-superficie-publica]] §6.3). Não há telemetria, não há phone-home, não há endpoint da lib (o backend
 próprio foi removido — [[003-remocao-backend-proprio]]).
+
+**O gate `network:check`** (`gates/scripts/contrato/check-no-network.mjs`) lê a AST de `src/` e reprova `fetch`, `XMLHttpRequest`, `WebSocket`, `EventSource`, `navigator.sendBeacon` e todo import de `axios`. Exceção mora na `ALLOWLIST` do gate, com o motivo, e a que fica sem ocorrência reprova. O cabeçalho do gate declara o que ele não vê: apelido, acesso por índice e o que o navegador busca sozinho, como `<img>` e `url()`. Ele roda na CI.
+
+**A exceção é o mapa, sempre por URL do consumidor.** `SarakMap` busca blocos de imagem por `<img>`, a partir do `tileUrl` que o consumidor passa, e não há provedor embutido nem chave. Sem `tileUrl` aceito (`https`, `http`, `//` ou caminho absoluto, com `{z}`, `{x}` e `{y}`), nenhuma requisição sai, e o componente mostra o aviso. Os blocos vão com `referrerPolicy="no-referrer"`, e a atribuição do provedor é obrigatória. Como o gate não vê `<img>`, essa exceção não entra na `ALLOWLIST`. Quem a governa é o `img-src` da CSP do consumidor (§3.4).
 
 ## 3.3 Roteamento
 

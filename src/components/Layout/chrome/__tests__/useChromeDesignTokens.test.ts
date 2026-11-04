@@ -21,6 +21,10 @@ describe('useChromeDesignTokens', () => {
             sidebarBackgroundStyle: 'solid',
             sidebarActiveItemStyle: 'bar',
             sidebarItemDensity: 'comfortable',
+            sidebarLogoPlacement: 'top',
+            sidebarTone: 'neutral',
+            topbarTone: 'neutral',
+            sidebarResizable: false,
             topbarBorderStyle: 'solid',
             topbarBorderSide: 'edge',
             topbarBackgroundStyle: 'solid',
@@ -79,6 +83,10 @@ describe('useChromeDesignTokens', () => {
             sidebarBackgroundStyle: 'gradient',
             sidebarActiveItemStyle: 'underline',
             sidebarItemDensity: 'compact',
+            sidebarLogoPlacement: 'top',
+            sidebarTone: 'neutral',
+            topbarTone: 'neutral',
+            sidebarResizable: false,
             topbarBorderStyle: 'dashed',
             topbarBorderSide: 'top',
             topbarBackgroundStyle: 'texture',
@@ -95,6 +103,28 @@ describe('useChromeDesignTokens', () => {
             searchPositionTopbar: 'right',
             mobileNavigationStyle: 'bottom',
         });
+    });
+
+    it('lê a posição da marca e a largura ajustável do design', () => {
+        const { result } = renderHook(() => useChromeDesignTokens(), {
+            wrapper: wrapperWithDesign({ sidebarLogoPlacement: 'bottom', sidebarResizable: true }),
+        });
+        expect(result.current.sidebarLogoPlacement).toBe('bottom');
+        expect(result.current.sidebarResizable).toBe(true);
+    });
+
+    it('o papel de cor da barra só vale com paleta calculada: sem paleta o tema segue com a barra de sempre', () => {
+        const withoutPalette = renderHook(() => useChromeDesignTokens(), {
+            wrapper: wrapperWithDesign({ sidebarTone: 'primary', topbarTone: 'inverse' }),
+        });
+        expect(withoutPalette.result.current.sidebarTone).toBe('neutral');
+        expect(withoutPalette.result.current.topbarTone).toBe('neutral');
+
+        const withPalette = renderHook(() => useChromeDesignTokens(), {
+            wrapper: wrapperWithDesign({ colorPalette: 'oceano', sidebarTone: 'primary', topbarTone: 'inverse' }),
+        });
+        expect(withPalette.result.current.sidebarTone).toBe('primary');
+        expect(withPalette.result.current.topbarTone).toBe('inverse');
     });
 
     it('traduz a opção semântica fluida para o valor CSS do cromo', () => {

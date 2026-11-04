@@ -19,12 +19,14 @@ describe('createPaletteSeeds', () => {
         expect(createPaletteSeeds({ type: 'monochromatic', base: '#2563eb' }).accent.hue).toBeCloseTo(baseHue, 5);
     });
 
-    it('keeps status hues fixed and gives neutrals near-zero chroma', () => {
+    it('keeps status hues fixed and tints the neutral with the base hue', () => {
         const seeds = createPaletteSeeds({ type: 'triadic', base: '#2563eb' });
         expect(seeds.success.hue).toBe(145);
         expect(seeds.error.hue).toBe(25);
         expect(seeds.warning.hue).toBe(85);
         expect(seeds.info.hue).toBe(245);
-        expect(seeds.neutral.chroma).toBeLessThan(0.01);
+        expect(seeds.neutral.chroma).toBeGreaterThanOrEqual(0.012);
+        expect(seeds.neutral.chroma).toBeLessThanOrEqual(0.03);
+        expect(seeds.neutral.hue).toBeCloseTo(seeds.primary.hue, 5);
     });
 });

@@ -71,3 +71,10 @@ it('marca CPF inválido no blur e associa o erro ao campo', async () => {
     expect(input).toHaveAttribute('aria-invalid', 'true');
     expect(input).toHaveAttribute('aria-describedby', error.id);
 });
+
+it('encaminha affixPlacement="inside" ao campo base', () => {
+    render(<SarakMaskedInput aria-label="Fone" mask="phone" suffixText="BR" affixPlacement="inside" />);
+    const input = screen.getByRole('textbox', { name: 'Fone' });
+
+    expect(document.getElementById(`${input.id}-suffix`)?.style.position).toBe('absolute');
+});

@@ -13,49 +13,36 @@ vi.mock('../../../../core/Provider/components/SarakStyle', () => ({
     SarakStyle: (): null => null,
 }));
 
-vi.mock('../components/PresetsCatalog', () => ({
-    PresetsCatalog: (): null => null,
-}));
-
 vi.mock('../components/LiveDraftPreviewFrame', () => ({
-    LiveDraftPreviewFrame: (): null => null,
+    LiveDraftPreviewFrame: (props: { children: ReactNode }): ReactNode => <div data-testid="live-preview-frame">{props.children}</div>,
 }));
 
-const createLayoutProps = (isStacked: boolean): PreviewCanvasLayoutProps => ({
+const createLayoutProps = (): PreviewCanvasLayoutProps => ({
     design: {},
     contextValue: {} as SarakUIContextType,
     previewDevice: 'desktop',
     targetWidth: '100%',
     deviceAspectRatio: undefined,
     getDeviceFrameStyles: () => '',
-    isDualView: true,
-    isGalleryStacked: isStacked,
     isInspecting: false,
     setIsInspecting: () => {},
-    mode: 'light',
-    draftMode: 'light',
-    sarak: {} as SarakUIContextType,
-    onApplyPreset: () => {},
-    previewContent: null,
-    layoutPreset: getPreviewLayoutPreset(isStacked),
+    previewContent: <span data-testid="preview-content" />,
+    layoutPreset: getPreviewLayoutPreset(),
 });
 
 describe('PreviewCanvasLayout', () => {
-    it('mantém o dual-view responsivo ao espaço do container', () => {
-        render(<PreviewCanvasLayout {...createLayoutProps(false)} />);
+    it('desenha só a prévia: a galeria saiu de cima dela', () => {
+        render(<PreviewCanvasLayout {...createLayoutProps()} />);
 
-        const previewLayout = screen.getByTestId('preview-layout');
-        expect(previewLayout.className).toContain('@min-[524px]:flex-row');
-        expect(screen.getByTestId('catalog-preview-frame')).toBeInTheDocument();
+        expect(screen.getByTestId('live-preview-frame')).toContainElement(screen.getByTestId('preview-content'));
+        expect(screen.queryByTestId('catalog-preview-frame')).toBeNull();
     });
 
-    it('dimensiona o quadro do catálogo pela área visível no modo empilhado', () => {
-        render(<PreviewCanvasLayout {...createLayoutProps(true)} />);
+    it('a prévia ocupa a área inteira e rola quando não cabe', () => {
+        render(<PreviewCanvasLayout {...createLayoutProps()} />);
 
         const previewLayout = screen.getByTestId('preview-layout');
-        const catalogFrame = screen.getByTestId('catalog-preview-frame');
-        expect(previewLayout.className).toContain('flex-col');
         expect(previewLayout.className).toContain('overflow-y-auto');
-        expect(catalogFrame.style.height).toBe('calc(100% - 1.5rem)');
+        expect(previewLayout.className).toContain('flex-row');
     });
 });

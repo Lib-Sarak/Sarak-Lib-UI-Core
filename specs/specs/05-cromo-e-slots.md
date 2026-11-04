@@ -43,6 +43,12 @@ item sem categoria fica no grupo raiz. O `icon` é um nome resolvido pelo `Sarak
 para o contrato do `SarakShellNav` e deriva a rota ativa do item marcado `active` (com `activeRoute` como
 fallback); sem `navItems`, usa `nav` + `activeRoute`.
 
+**Grupos.** `SarakShellNavItem` aceita `children` e `defaultExpanded`, com um nível só. O pai é botão, com `aria-expanded` e `aria-controls`. O grupo do item ativo abre sozinho, e mais de um pode ficar aberto. Na lateral e na gaveta do celular, ele abre na própria barra. Na lateral recolhida e na topbar, abre em balão (`ShellNavFlyout`), com setas, Esc e Tab. Item sem filhos mantém o mesmo DOM. Com grupo, o celular usa a gaveta.
+
+**Marca, tom e largura.** `sidebarLogoPlacement` põe a marca no topo ou na base da lateral; recolhida, fica só o símbolo; sem `logoUrl`, não há caixa colorida. `sidebarTone` e `topbarTone` dão o papel de cor ([[09-temas-e-presets]] §4.3.4). `sidebarResizable` liga a alça (`useSidebarResize`), por mouse e teclado, e o valor é preferência do usuário, nunca do tema (§4.7 da mesma spec). Com tom contrastante, o texto do item ativo preenchido usa o fundo da barra (`--sarak-on-nav-active`, `chromeToneStyle.ts`), o par que a paleta garante.
+
+**A barra não rola para o lado.** Só a lista de navegação rola, e na vertical. Topo e rodapé ficam fixos. Recolhida, as preferências viram um ícone só e a busca vira ícone.
+
 **`navigationStyle: 'auto'`** resolve por `useNavigationStyle()`: `'topbar'` no design → topbar;
 qualquer outra coisa → sidebar. **Consequência que vale destacar: trocar o TEMA troca a orientação do
 cromo.** O cromo é parte do design, não configuração de código.
@@ -107,8 +113,7 @@ Item com `href` é uma **âncora** (`<a href>`); item sem `href` continua `<butt
 
 O resultado da busca da barra e o da paleta Ctrl+K são **links de verdade** para a rota do item (o id do item é a rota), como o item de
 navegação (§2.1.2): sem `onNavigate`, o navegador segue o link; com ele, o callback é chamado e a navegação padrão é cancelada. Setas e
-Enter levam ao mesmo destino. O selo do atalho some com o campo focado, com texto e quando a barra é estreita demais para ele e o
-placeholder caberem juntos; mostra a tecla do sistema (Ctrl/⌘). A paleta é `role="dialog"` com `aria-modal`, o campo é `combobox`
+Enter levam ao mesmo destino. O campo não mostra o texto do atalho: Ctrl/⌘+K segue valendo, declarado em `aria-keyshortcuts`. Sem espaço, a busca vira ícone. A paleta é `role="dialog"` com `aria-modal`, o campo é `combobox`
 ligado a uma `listbox` com `aria-activedescendant`, o primeiro resultado vem ativo e o ícone de cada resultado é o do item de navegação.
 
 ## 2.2 Os slots

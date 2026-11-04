@@ -105,6 +105,7 @@ import { composeThemeForMode } from '../../../src/core/Design/presets/themes/com
 import { pickOnColor } from '../../../src/core/Provider/utils/on-color';
 import { MIX_SOURCE_SHARE, PAIRS } from '../../../src/core/Design/palette/contrast-pairs';
 import type { ContrastPair } from '../../../src/core/Design/palette/contrast-pairs';
+import { DEFAULT_PALETTE_PLAN, PALETTE_PAIRS, createPalettePlan } from '../../../src/core/Design/palette/tone-plan';
 import type { SarakTokenValue } from '../../../src/core/Design/types';
 
 export { MIX_SOURCE_SHARE, PAIRS };
@@ -259,6 +260,19 @@ export function evaluatePair(pair: ContrastPair, design: Record<string, unknown>
     return { pair, pulado: false, ratio, pass: ratio >= pair.min };
 }
 
+/**
+ * Os pares que valem para o design. Numa barra de papel contrastante (`sidebarTone`/`topbarTone` primário, secundário ou
+ * invertido) o texto do corpo deixa de valer sobre ela e entram os pares do texto da própria barra (`createPalettePlan`);
+ * sem papel contrastante é `PAIRS` de sempre. O par de foco do campo, que o plano da paleta acrescenta, fica de fora para
+ * não mudar a medição dos temas de papel neutro.
+ */
+export function pairsFor(design: Record<string, unknown>): readonly ContrastPair[] {
+    const plan = createPalettePlan(design);
+    if (plan === DEFAULT_PALETTE_PLAN) return PAIRS;
+    const paletteOnly = new Set(PALETTE_PAIRS.filter((pair) => !PAIRS.includes(pair)));
+    return plan.pairs.filter((pair) => !paletteOnly.has(pair));
+}
+
 export interface ThemeReport {
     id: string;
     resultados: PairResult[];
@@ -269,7 +283,7 @@ export interface ThemeReport {
 export function auditTheme(theme: SarakThemePreset): ThemeReport {
     const nativeMode = (theme.design.mode as 'light' | 'dark') || 'dark';
     const design = composeThemeForMode({ design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte }, nativeMode) as unknown as Record<string, SarakTokenValue>;
-    const resultados = PAIRS.map((pair) => evaluatePair(pair, design));
+    const resultados = pairsFor(design).map((pair) => evaluatePair(pair, design));
     return {
         id: theme.id,
         resultados,
@@ -293,7 +307,7 @@ export function auditThemeOppositeMode(theme: SarakThemePreset): ThemeReport {
     const nativeMode = (theme.design.mode as 'light' | 'dark') || 'dark';
     const oppositeMode = nativeMode === 'dark' ? 'light' : 'dark';
     const shifted = composeThemeForMode({ design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte }, oppositeMode) as unknown as Record<string, SarakTokenValue>;
-    const resultados = PAIRS.map((pair) => evaluatePair(pair, shifted));
+    const resultados = pairsFor(shifted).map((pair) => evaluatePair(pair, shifted));
     return {
         id: theme.id,
         resultados,

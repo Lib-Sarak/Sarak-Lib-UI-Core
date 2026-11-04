@@ -89,4 +89,18 @@ describe('SarakFlex', () => {
         expect(warn).toHaveBeenCalled();
         warn.mockRestore();
     });
+
+    it('`rowGap` e `columnGap` vencem o `gap` no eixo deles; sem eles, só o `gap`', () => {
+        render(
+            <SarakUIProvider>
+                <SarakFlex data-testid="eixos" gap="spacing-md" rowGap="spacing-xl" columnGap="4px"><span /></SarakFlex>
+                <SarakFlex data-testid="so-gap" gap="spacing-md"><span /></SarakFlex>
+            </SarakUIProvider>
+        );
+        const axes = screen.getByTestId('eixos').style;
+        expect(axes.getPropertyValue('row-gap')).toContain('--sarak-layout-gap-lg');
+        expect(axes.getPropertyValue('column-gap')).toBe('4px');
+        const plain = screen.getByTestId('so-gap').style;
+        expect(plain.getPropertyValue('column-gap')).toBe(plain.getPropertyValue('row-gap'));
+    });
 });

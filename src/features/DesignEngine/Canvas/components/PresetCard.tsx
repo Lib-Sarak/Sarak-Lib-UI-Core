@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { SarakThemePreset } from '../../../../core/Design/presets/themes';
 import { resolveThemeForMode } from '../../../../core/Design/presets/themes/color-engine';
@@ -7,6 +7,9 @@ import type { SarakTokenValue } from '../../../../core/Design/types';
 import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
 import { sarakGetDefaultDesignState } from '../../../../core/Design/master-map';
 import { Layout, ArrowRight } from 'lucide-react';
+import type { SarakDesignState } from '../../../../core/Provider/types';
+import { THUMBNAIL_GRID_TEXTURE_SIZE, THUMBNAIL_SHADOW_BLUR, THUMBNAIL_SHADOW_OFFSET_Y, THUMBNAIL_SHADOW_SPREAD } from './presetCardGeometry';
+import { usePeekHandlers, type PeekHandler } from './peek';
 
 const TOKEN_DEFAULTS = sarakGetDefaultDesignState();
 const FALLBACK_RADIUS = 'var(--sarak-card-radius, 10px)';
@@ -31,14 +34,28 @@ const cornerRadius = (design: Record<string, SarakTokenValue>, cornerId: string)
     return toCssLength(declared ? design[cornerId] : design.cardBorderRadius, FALLBACK_RADIUS);
 };
 
-export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: SarakThemePreset, currentMode: string, onApply: () => void, index: number }) => {
+interface PresetCardProps {
+    theme: SarakThemePreset;
+    currentMode: string;
+    onApply: () => void;
+    index: number;
+    /** Os tokens que a espiada compõe por cima do rascunho; omitido, o tema não espia. */
+    peekTokens?: () => Partial<SarakDesignState> | null;
+    onPeek?: PeekHandler;
+}
+
+const noTokens = (): null => null;
+
+export const PresetCard = ({ theme, currentMode, onApply, index, peekTokens, onPeek }: PresetCardProps) => {
+    const peek = usePeekHandlers(onPeek, peekTokens ?? noTokens);
     // plan-26: a miniatura reflete o que `onApply` REALMENTE aplicaria — a
     // contraparte AUTORADA quando existe, e só cai no `syncThemeWithMode`
     // sintetizado para os temas legados sem contraparte.
-    const design = withThemePalette(resolveThemeForMode(
+    // Resolver a paleta custa de 5 a 19 ms por tema: só refaz quando o tema ou o modo mudam, não a cada render do painel.
+    const design = useMemo(() => withThemePalette(resolveThemeForMode(
         { design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte },
         currentMode as 'light' | 'dark',
-    ));
+    )), [theme.design, theme.contraparte, currentMode]);
     const { variables } = useDesignVariables(design);
 
     const primary = String(design.primaryColor || 'var(--color-theme-primary, #19e3f0)');
@@ -64,8 +81,8 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Sara
             ? design.cardShadow
             : design.cardShadowSpread
                 // `cardShadowSpread` é a OPACIDADE da sombra em % (o schema e o `.sarak-card` leem assim), não um desfoque em px.
-                ? `0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, ${design.cardGlowColor || 'var(--color-theme-body)'} ${Math.min(100, Number(design.cardShadowSpread))}%, transparent)`
-                : '0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) color-mix(in srgb, var(--color-theme-body) 50%, transparent)',
+                ? `0 ${THUMBNAIL_SHADOW_OFFSET_Y} ${THUMBNAIL_SHADOW_BLUR} ${THUMBNAIL_SHADOW_SPREAD} color-mix(in srgb, ${design.cardGlowColor || 'var(--color-theme-body)'} ${Math.min(100, Number(design.cardShadowSpread))}%, transparent)`
+                : `0 ${THUMBNAIL_SHADOW_OFFSET_Y} ${THUMBNAIL_SHADOW_BLUR} ${THUMBNAIL_SHADOW_SPREAD} color-mix(in srgb, var(--color-theme-body) 50%, transparent)`,
         clipPath: variables['--sarak-card-clip-path']
     };
 
@@ -78,7 +95,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Sara
                     : design.cardTextureType === 'noise'
                         ? 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")'
                         : 'none',
-                backgroundSize: design.cardTextureType === 'grid' ? 'var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px)' : 'auto'
+                backgroundSize: design.cardTextureType === 'grid' ? `${THUMBNAIL_GRID_TEXTURE_SIZE} ${THUMBNAIL_GRID_TEXTURE_SIZE}` : 'auto'
             }}
         />
     ) : null;
@@ -89,6 +106,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Sara
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             onClick={onApply}
+            {...peek}
             className="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
         >
             {/* Top Showcase Area - Mini Dashboard */}

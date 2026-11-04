@@ -662,4 +662,30 @@ describe('SarakAppChrome (Spec 48 — L1, slots opcionais por região)', () => {
         fireEvent.click(screen.getByText('Projetos'));
         expect(onNavigate).toHaveBeenCalledWith('/projetos');
     });
+
+    describe('erro de render da tela', () => {
+        const Failing = ({ shouldFail }: { shouldFail: boolean }): React.ReactElement => {
+            if (shouldFail) throw new Error('falha interna');
+            return <p>tela</p>;
+        };
+
+        afterEach(() => vi.restoreAllMocks());
+
+        it('a navegação continua, e trocar de rota limpa o erro', () => {
+            vi.spyOn(console, 'error').mockImplementation(() => undefined);
+            const tree = (route: string, shouldFail: boolean): React.ReactElement => (
+                <SarakUIProvider options={{ fonts: 'none' }}>
+                    <SarakAppChrome nav={NAV} activeRoute={route} navigationStyle="sidebar"><Failing shouldFail={shouldFail} /></SarakAppChrome>
+                </SarakUIProvider>
+            );
+            const { rerender } = render(tree('/propostas', true));
+
+            expect(screen.getByRole('alert')).toHaveTextContent('Este bloco não pôde ser exibido');
+            expect(screen.getByText('Projetos')).toBeInTheDocument();
+
+            rerender(tree('/projetos', false));
+
+            expect(screen.getByText('tela')).toBeInTheDocument();
+        });
+    });
 });

@@ -494,6 +494,54 @@
         }
       ]
     },
+    "SarakApprovalQueue": {
+      "propsInterface": "SarakApprovalQueueProps",
+      "source": "src/components/atomic/Templates/SarakApprovalQueue.tsx",
+      "props": [
+        {
+          "name": "items",
+          "type": "SarakApprovalItem[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "onApprove",
+          "type": "(ids: string[]) => void",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "onReject",
+          "type": "(ids: string[], reason: string) => void",
+          "optional": false,
+          "doc": "Recebe os ids e o motivo, que a fila exige antes de confirmar."
+        },
+        {
+          "name": "selectedIds",
+          "type": "string[]",
+          "optional": true,
+          "doc": "Ids marcados para o lote (controlado); omitido, a fila guarda."
+        },
+        {
+          "name": "onSelectedIdsChange",
+          "type": "(ids: string[]) => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "busy",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Trava as ações enquanto o host processa o pedido anterior."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakAssigneePicker": {
       "propsInterface": "SarakAssigneePickerProps",
       "source": "src/components/atomic/Inputs/SarakAssigneePicker.tsx",
@@ -533,6 +581,90 @@
           "type": "boolean",
           "optional": true,
           "doc": "Trava a busca (somente leitura, anunciada como desabilitada) e desabilita o botão de remover."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakAuditLog": {
+      "propsInterface": "SarakAuditLogProps",
+      "source": "src/components/atomic/Templates/SarakAuditLog.tsx",
+      "props": [
+        {
+          "name": "entries",
+          "type": "SarakAuditEntry[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "filters",
+          "type": "SarakAuditFilters",
+          "optional": true,
+          "doc": "Filtros em vigor (controlado). Com `onFiltersChange`, a lib mostra os campos de filtro."
+        },
+        {
+          "name": "onFiltersChange",
+          "type": "(filters: SarakAuditFilters) => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "actors",
+          "type": "string[]",
+          "optional": true,
+          "doc": "Atores e ações oferecidos nos filtros; sem a lista, o filtro correspondente não aparece."
+        },
+        {
+          "name": "actions",
+          "type": "string[]",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "page",
+          "type": "number",
+          "optional": true,
+          "doc": "Paginação do servidor: página atual (1-based), tamanho e total. Sem `onPageChange`, não há paginação."
+        },
+        {
+          "name": "pageSize",
+          "type": "number",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "totalItems",
+          "type": "number",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onPageChange",
+          "type": "(page: number) => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "error",
+          "type": "string | null",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onRetry",
+          "type": "() => void",
+          "optional": true,
+          "doc": ""
         },
         {
           "name": "className",
@@ -1128,6 +1260,66 @@
         }
       ]
     },
+    "SarakCarousel": {
+      "propsInterface": "SarakCarouselProps",
+      "source": "src/components/atomic/Media/SarakCarousel/SarakCarousel.tsx",
+      "props": [
+        {
+          "name": "slides",
+          "type": "SarakCarouselSlide[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": true,
+          "doc": "Slide atual, no modo controlado."
+        },
+        {
+          "name": "defaultIndex",
+          "type": "number",
+          "optional": true,
+          "doc": "Slide inicial no modo não controlado. Omitido, `0`."
+        },
+        {
+          "name": "onIndexChange",
+          "type": "(index: number) => void",
+          "optional": true,
+          "doc": "Chamado a cada troca de slide."
+        },
+        {
+          "name": "autoPlay",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Rotação automática. Omitido, desligada. Ignorada com movimento reduzido."
+        },
+        {
+          "name": "intervalMs",
+          "type": "number",
+          "optional": true,
+          "doc": "Intervalo da rotação em ms. Omitido, `5000`."
+        },
+        {
+          "name": "loop",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Volta ao primeiro depois do último (e ao último antes do primeiro). Omitido, `false`; a rotação automática sempre dá a volta."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome acessível do carrossel."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakCatalogGrid": {
       "propsInterface": "SarakCatalogGridProps",
       "source": "src/components/atomic/Templates/SarakCatalogGridProps.ts",
@@ -1281,6 +1473,42 @@
           "type": "SarakChartGauge",
           "optional": true,
           "doc": "Escala do medidor (`gauge`); omitida, vale 0 a 100. O `%` só aparece com `valueFormat` percentual ou sem `valueFormat`."
+        },
+        {
+          "name": "pattern",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Hachurado sobre as cores, para quem não distingue cor; desligado por padrão. Só no ECharts."
+        },
+        {
+          "name": "getPointColor",
+          "type": "SarakChartPointColor",
+          "optional": true,
+          "doc": "Cor de cada item, pelo nome de um token do tema; `undefined` cai na paleta. Vale em `bar` de uma série, `pie`, `funnel` e `treemap`."
+        },
+        {
+          "name": "showValues",
+          "type": "boolean | 'auto'",
+          "optional": true,
+          "doc": "Valor na ponta da barra, formatado por `valueFormat`; `'auto'` esconde o que não cabe. Só em `bar`."
+        },
+        {
+          "name": "funnel",
+          "type": "SarakChartFunnel",
+          "optional": true,
+          "doc": "Escala do funil (`funnel`); omitida, vai de 0 ao maior valor."
+        },
+        {
+          "name": "axis",
+          "type": "SarakChartAxis",
+          "optional": true,
+          "doc": "Marcas do eixo: teto de marcas e abreviação (`1,2 mi`). Omitido, as marcas seguem a largura."
+        },
+        {
+          "name": "extendOption",
+          "type": "(option: Record<string, unknown>) => Record<string, unknown>",
+          "optional": true,
+          "doc": "Recebe a opção final do ECharts, já montada pela lib, e devolve a que será desenhada; roda por último. Só no ECharts."
         }
       ]
     },
@@ -1411,6 +1639,138 @@
         }
       ]
     },
+    "SarakCodeInput": {
+      "propsInterface": "SarakCodeInputProps",
+      "source": "src/components/atomic/Inputs/SarakCodeInput.tsx",
+      "props": [
+        {
+          "name": "value",
+          "type": "string",
+          "optional": false,
+          "doc": "Código digitado até agora (menor que `length` enquanto incompleto)."
+        },
+        {
+          "name": "onChange",
+          "type": "(value: string) => void",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(value: string) => void",
+          "optional": true,
+          "doc": "Chamado uma vez quando o código chega ao tamanho completo."
+        },
+        {
+          "name": "length",
+          "type": "number",
+          "optional": true,
+          "doc": "Quantos caracteres tem o código; omitido, 6."
+        },
+        {
+          "name": "charset",
+          "type": "'numeric' | 'alphanumeric'",
+          "optional": true,
+          "doc": "`numeric` aceita só dígitos e abre o teclado numérico; omitido, `numeric`."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome do grupo lido pelo leitor de tela; omitido, usa o catálogo no idioma ativo."
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "autoFocus",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Foca a primeira célula ao montar; omitido, `false`."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakColorInput": {
+      "propsInterface": "SarakColorInputProps",
+      "source": "src/components/atomic/Inputs/SarakColorInput.tsx",
+      "props": [
+        {
+          "name": "value",
+          "type": "string",
+          "optional": false,
+          "doc": "Cor atual: hex, `rgb()`/`rgba()`, `var()` ou `color-mix()`, o que a validação do tema aceita."
+        },
+        {
+          "name": "onChange",
+          "type": "(value: string) => void",
+          "optional": false,
+          "doc": "Recebe a cor nova, já conferida; o texto que não é cor não chega aqui."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Rótulo do campo; omitido, o campo fica sem rótulo visível."
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "optional": true,
+          "doc": "Mensagem de erro do host; vence o aviso de cor inválida só quando o texto digitado é válido."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Marca o campo de texto como obrigatório para o navegador e o leitor de tela."
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "contrastAgainst",
+          "type": "string",
+          "optional": true,
+          "doc": "Cor contra a qual o contraste é medido (o fundo do texto, por exemplo); omitida, não há alerta."
+        },
+        {
+          "name": "minContrast",
+          "type": "number",
+          "optional": true,
+          "doc": "Razão mínima do alerta de contraste; omitida, 4,5. Só mede hex e `rgb()` literais."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakCommentThread": {
       "propsInterface": "SarakCommentThreadProps",
       "source": "src/components/atomic/DataDisplay/SarakCommentThread.tsx",
@@ -1483,6 +1843,43 @@
         }
       ]
     },
+    "SarakCopyButton": {
+      "propsInterface": "SarakCopyButtonProps",
+      "source": "src/components/atomic/Buttons/SarakCopyButton.tsx",
+      "extends": "Omit<SarakButtonProps, 'onClick' | 'onCopy' | 'children' | 'value'>",
+      "props": [
+        {
+          "name": "value",
+          "type": "string | (() => string)",
+          "optional": false,
+          "doc": "Texto a copiar, ou função que o devolve no momento do clique."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Rótulo no estado normal; omitido, usa o catálogo no idioma ativo."
+        },
+        {
+          "name": "copiedLabel",
+          "type": "string",
+          "optional": true,
+          "doc": "Rótulo depois de copiar; omitido, usa o catálogo no idioma ativo."
+        },
+        {
+          "name": "onCopy",
+          "type": "(copied: boolean) => void",
+          "optional": true,
+          "doc": "Recebe `true` ao copiar e `false` quando a área de transferência recusou."
+        },
+        {
+          "name": "resetAfter",
+          "type": "number",
+          "optional": true,
+          "doc": "Quanto tempo o botão mostra o resultado antes de voltar ao normal, em ms; omitido, 2000."
+        }
+      ]
+    },
     "SarakCurrencyInput": {
       "propsInterface": "SarakCurrencyInputProps",
       "source": "src/components/atomic/Inputs/SarakCurrencyInput.tsx",
@@ -1529,6 +1926,66 @@
           "type": "React.HTMLAttributes<HTMLInputElement>['inputMode']",
           "optional": true,
           "doc": "Teclado sugerido ao dispositivo. Omitido, solicita teclado decimal na locale atual."
+        }
+      ]
+    },
+    "SarakDashboardGrid": {
+      "propsInterface": "SarakDashboardGridProps",
+      "source": "src/components/atomic/DataDisplay/SarakDashboardGrid/SarakDashboardGridImpl.tsx",
+      "props": [
+        {
+          "name": "widgets",
+          "type": "SarakDashboardWidget[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "layout",
+          "type": "SarakDashboardLayoutItem[]",
+          "optional": false,
+          "doc": "Posição e tamanho de cada widget. Widget sem item entra no fim, com 4 colunas por 2 linhas."
+        },
+        {
+          "name": "onLayoutChange",
+          "type": "(layout: SarakDashboardLayoutItem[]) => void",
+          "optional": true,
+          "doc": "Chamado a cada mudança de posição ou tamanho (arrasto, redimensionamento e teclado) com o layout novo. A persistência é do consumidor."
+        },
+        {
+          "name": "columns",
+          "type": "number",
+          "optional": true,
+          "doc": "Número de colunas da grade. Omitido, `12`."
+        },
+        {
+          "name": "rowHeight",
+          "type": "number",
+          "optional": true,
+          "doc": "Altura de uma linha em px. Omitido, `80`."
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Sem arrastar nem redimensionar; o teclado também não move."
+        },
+        {
+          "name": "narrowBelow",
+          "type": "number",
+          "optional": true,
+          "doc": "Largura do contêiner, em px, abaixo da qual os widgets empilham numa coluna. Omitido, `480`."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome acessível do painel."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
         }
       ]
     },
@@ -1589,6 +2046,7 @@
     "SarakDataTable": {
       "propsInterface": "SarakDataTableProps",
       "source": "src/components/atomic/DataDisplay/SarakDataTable/SarakDataTableImpl.tsx",
+      "extends": "SarakCellBehavior<T>",
       "props": [
         {
           "name": "columns",
@@ -1793,6 +2251,60 @@
           "type": "number",
           "optional": true,
           "doc": "Linhas do esqueleto com `loading` e sem linhas; padrão `8`."
+        },
+        {
+          "name": "bulkActions",
+          "type": "SarakTableBulkAction[]",
+          "optional": true,
+          "doc": "Ações da barra que aparece com linhas selecionadas; `tone: 'danger'` pede confirmação."
+        },
+        {
+          "name": "columnState",
+          "type": "SarakColumnState",
+          "optional": true,
+          "doc": "Colunas escondidas, ordem e largura (controlado). Com esta, `defaultColumnState` ou `onColumnStateChange`, há o botão \"Colunas\"."
+        },
+        {
+          "name": "defaultColumnState",
+          "type": "SarakColumnState",
+          "optional": true,
+          "doc": "Estado de colunas inicial, e o destino de \"voltar ao padrão\"."
+        },
+        {
+          "name": "onColumnStateChange",
+          "type": "(state: SarakColumnState) => void",
+          "optional": true,
+          "doc": "Recebe o estado de colunas atualizado; quem salva é o consumidor."
+        },
+        {
+          "name": "views",
+          "type": "SarakTableView[]",
+          "optional": true,
+          "doc": "Visões salvas; a tabela só as aplica, e quem persiste é o consumidor."
+        },
+        {
+          "name": "activeView",
+          "type": "string | null",
+          "optional": true,
+          "doc": "Id da visão atual (controlado); `null` é o padrão; omitido, a tabela gerencia."
+        },
+        {
+          "name": "onViewChange",
+          "type": "(viewId: string | null, view: SarakTableView | null) => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onViewSave",
+          "type": "(view: SarakTableView) => void",
+          "optional": true,
+          "doc": "Recebe a visão de \"salvar como\": filtros, colunas e ordenação do momento."
+        },
+        {
+          "name": "density",
+          "type": "'standard' | 'report'",
+          "optional": true,
+          "doc": "`report`: relatório leve, sem cromo, com todas as linhas no fluxo da página e sem rolagem própria."
         }
       ]
     },
@@ -1923,6 +2435,37 @@
         }
       ]
     },
+    "SarakDiffView": {
+      "propsInterface": "SarakDiffViewProps",
+      "source": "src/components/atomic/Templates/SarakDiffView.tsx",
+      "extends": "Omit<React.HTMLAttributes<HTMLElement>, 'children'>",
+      "props": [
+        {
+          "name": "fields",
+          "type": "SarakDiffField[]",
+          "optional": true,
+          "doc": "Comparação por campo: cada item mostra antes e depois lado a lado."
+        },
+        {
+          "name": "before",
+          "type": "string",
+          "optional": true,
+          "doc": "Comparação por texto, com `after`: mostra as linhas que entraram e as que saíram."
+        },
+        {
+          "name": "after",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "showUnchanged",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Em campos, mostra também os que não mudaram. Padrão `false`."
+        }
+      ]
+    },
     "SarakDivider": {
       "propsInterface": "SarakDividerProps",
       "source": "src/components/atomic/Layouts/SarakDivider.tsx",
@@ -1945,6 +2488,48 @@
           "type": "boolean",
           "optional": true,
           "doc": "Oculta o componente da árvore acessível. Omitida, é decorativo quando `label` não existe e semântico quando existe; use `false` sem rótulo apenas se também fornecer `aria-label`."
+        }
+      ]
+    },
+    "SarakDocumentFrame": {
+      "propsInterface": "SarakDocumentFrameProps",
+      "source": "src/components/atomic/DataDisplay/SarakDocumentFrame.tsx",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": false,
+          "doc": "O documento: é só ele que sai na impressão."
+        },
+        {
+          "name": "format",
+          "type": "SarakDocumentFormat",
+          "optional": true,
+          "doc": "Tamanho da folha; padrão `a4`."
+        },
+        {
+          "name": "zoom",
+          "type": "number | 'fit'",
+          "optional": true,
+          "doc": "`fit` reduz a folha à largura do contêiner, sem ampliar; um número fixa a escala (`1` = 100%). Padrão `fit`."
+        },
+        {
+          "name": "actions",
+          "type": "ReactNode",
+          "optional": true,
+          "doc": "Ações sobre a folha (formato, zoom, imprimir); não saem na impressão."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome acessível da região do documento."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
         }
       ]
     },
@@ -2023,6 +2608,36 @@
           "type": "React.ReactNode",
           "optional": true,
           "doc": "Ícone ou ilustração composta pelo consumidor."
+        }
+      ]
+    },
+    "SarakErrorBoundary": {
+      "propsInterface": "SarakErrorBoundaryProps",
+      "source": "src/components/atomic/Feedback/SarakErrorBoundary.tsx",
+      "props": [
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "fallback",
+          "type": "React.ReactNode | ((context: SarakErrorBoundaryFallbackContext) => React.ReactNode)",
+          "optional": true,
+          "doc": "Substitui o aviso padrão: um nó fixo ou uma função que recebe o erro e `reset`."
+        },
+        {
+          "name": "onError",
+          "type": "(error: unknown, info: React.ErrorInfo) => void",
+          "optional": true,
+          "doc": "Recebe o erro capturado, para o host registrar."
+        },
+        {
+          "name": "resetKeys",
+          "type": "readonly unknown[]",
+          "optional": true,
+          "doc": "Quando um destes valores muda (a rota, por exemplo), o erro é limpo e o conteúdo remonta."
         }
       ]
     },
@@ -2131,6 +2746,91 @@
           "type": "string",
           "optional": false,
           "doc": "`id` do controle descrito; a mensagem recebe o id `${fieldId}-error`. É obrigatório em TypeScript; se omitido ao contornar a tipagem, a mensagem continua visível e anunciada, mas não pode ser associada ao campo. No controle, use esse id da mensagem em `aria-describedby`."
+        }
+      ]
+    },
+    "SarakFieldRenderer": {
+      "propsInterface": "SarakFieldRendererProps",
+      "source": "src/components/atomic/Inputs/SarakFieldRenderer.tsx",
+      "props": [
+        {
+          "name": "fields",
+          "type": "SarakFieldDefinition[]",
+          "optional": false,
+          "doc": "Campos na ordem em que aparecem. Só dado: nenhuma função nem HTML é lida daqui."
+        },
+        {
+          "name": "values",
+          "type": "Record<string, unknown>",
+          "optional": false,
+          "doc": "Valor atual de cada campo, por `name`."
+        },
+        {
+          "name": "onChange",
+          "type": "(name: string, value: unknown) => void",
+          "optional": false,
+          "doc": "Recebe o nome do campo e o valor novo (`number` no tipo `number`, `boolean` em `checkbox`/`switch`, `string[]` em `tags`)."
+        },
+        {
+          "name": "errors",
+          "type": "Record<string, string>",
+          "optional": true,
+          "doc": "Mensagem de erro por `name`."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakFileAction": {
+      "propsInterface": "SarakFileActionProps",
+      "source": "src/components/atomic/Buttons/SarakFileAction.tsx",
+      "extends": "Omit<SarakButtonProps, 'onClick' | 'children' | 'isLoading'>",
+      "props": [
+        {
+          "name": "load",
+          "type": "() => Promise<Blob>",
+          "optional": false,
+          "doc": "Obtém o arquivo; a lib não faz rede, então a chamada (com a autenticação do host) é do consumidor."
+        },
+        {
+          "name": "mode",
+          "type": "'download' | 'open'",
+          "optional": true,
+          "doc": "`download` salva o arquivo; `open` abre numa aba nova, mas só PDF, imagem raster (PNG, JPEG, GIF, WebP, AVIF, BMP) e texto puro: HTML, SVG e o resto seriam executados na origem do sistema, então são baixados. Omitido, `download`."
+        },
+        {
+          "name": "filename",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome do arquivo salvo no modo `download`; omitido, o navegador escolhe."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Rótulo do botão; omitido, usa o catálogo no idioma ativo (Baixar ou Abrir)."
+        },
+        {
+          "name": "onDone",
+          "type": "() => void",
+          "optional": true,
+          "doc": "Chamado quando o arquivo foi entregue ao navegador. Entregue não é aberto nem salvo: o navegador pode barrar a aba ou o download (`window.open` devolve `null` com `noopener`), e a lib não consegue conferir."
+        },
+        {
+          "name": "onError",
+          "type": "(error: unknown) => void",
+          "optional": true,
+          "doc": "Recebe o que `load` rejeitou."
         }
       ]
     },
@@ -2243,6 +2943,18 @@
           "doc": ""
         },
         {
+          "name": "rowGap",
+          "type": "SarakLayoutGap",
+          "optional": true,
+          "doc": "Espaço entre linhas (quando `wrap` quebra); vence `gap` nesse eixo."
+        },
+        {
+          "name": "columnGap",
+          "type": "SarakLayoutGap",
+          "optional": true,
+          "doc": "Espaço entre colunas; vence `gap` nesse eixo."
+        },
+        {
           "name": "wrap",
           "type": "boolean",
           "optional": true,
@@ -2331,6 +3043,12 @@
           "type": "() => void | Promise<void>",
           "optional": true,
           "doc": "Chamado após um envio bem-sucedido."
+        },
+        {
+          "name": "warnOnUnsaved",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Avisa ao fechar a aba com alteração não salva. Para a rota interna, use `useSarakUnsavedChanges`."
         }
       ]
     },
@@ -2443,6 +3161,30 @@
         }
       ]
     },
+    "SarakGate": {
+      "propsInterface": "SarakGateProps",
+      "source": "src/components/atomic/UX/SarakGate.tsx",
+      "props": [
+        {
+          "name": "allowed",
+          "type": "boolean",
+          "optional": false,
+          "doc": "Resultado da regra, calculado pelo host (papel, permissão, flag). `true` mostra os filhos."
+        },
+        {
+          "name": "fallback",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Mostrado no lugar dos filhos quando `allowed` é `false`; omitido, nada aparece."
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakGrid": {
       "propsInterface": "SarakGridProps",
       "source": "src/components/atomic/Layouts/SarakGrid.tsx",
@@ -2477,6 +3219,18 @@
           "type": "SarakLayoutGap",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "rowGap",
+          "type": "SarakLayoutGap",
+          "optional": true,
+          "doc": "Espaço entre linhas; vence `gap` nesse eixo. Sem ele, vale `gap`."
+        },
+        {
+          "name": "columnGap",
+          "type": "SarakLayoutGap",
+          "optional": true,
+          "doc": "Espaço entre colunas; vence `gap` nesse eixo. Sem ele, vale `gap`."
         },
         {
           "name": "as",
@@ -2647,6 +3401,12 @@
           "type": "React.ReactNode",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "affixPlacement",
+          "type": "'outside' | 'inside'",
+          "optional": true,
+          "doc": "`inside` põe `prefixText`/`suffixText` dentro da borda do campo, sem mudar a largura dele. Omitido, `outside`: ao lado do campo."
         },
         {
           "name": "icon",
@@ -2837,6 +3597,42 @@
         }
       ]
     },
+    "SarakLiveStatus": {
+      "propsInterface": "SarakLiveStatusProps",
+      "source": "src/components/atomic/Templates/SarakLiveStatus.tsx",
+      "props": [
+        {
+          "name": "status",
+          "type": "SarakLiveStatusState",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome da conexão mostrado antes do estado: \"API\", \"Tempo real\"."
+        },
+        {
+          "name": "lastDataAt",
+          "type": "SarakSystemTimestamp | null",
+          "optional": true,
+          "doc": "Quando chegou o último dado; a lib não abre conexão nem mede o tempo."
+        },
+        {
+          "name": "onRetry",
+          "type": "() => void",
+          "optional": true,
+          "doc": "Com ele, offline oferece \"Tentar agora\"."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakManagementGrid": {
       "propsInterface": "SarakManagementGridProps",
       "source": "src/components/atomic/Templates/SarakManagementGrid.tsx",
@@ -2927,6 +3723,72 @@
         }
       ]
     },
+    "SarakMap": {
+      "propsInterface": "SarakMapProps",
+      "source": "src/components/atomic/Media/SarakMap/SarakMapImpl.tsx",
+      "props": [
+        {
+          "name": "tileUrl",
+          "type": "string",
+          "optional": true,
+          "doc": "Molde da URL dos blocos, com `{z}`, `{x}` e `{y}` (`https://…/{z}/{x}/{y}.png`). Sem ele nenhuma requisição sai e o componente mostra o aviso. A lib não embute provedor nem chave."
+        },
+        {
+          "name": "attribution",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": "Atribuição do provedor dos blocos, sempre visível no canto do mapa (os provedores a exigem)."
+        },
+        {
+          "name": "center",
+          "type": "SarakMapPoint",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "zoom",
+          "type": "number",
+          "optional": false,
+          "doc": "Nível de zoom inicial, `0` a `19`."
+        },
+        {
+          "name": "markers",
+          "type": "SarakMapMarker[]",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onMarkerClick",
+          "type": "(marker: SarakMapMarker) => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onViewChange",
+          "type": "(center: SarakMapPoint, zoom: number) => void",
+          "optional": true,
+          "doc": "Chamado quando o usuário arrasta ou aproxima, com o centro e o zoom novos."
+        },
+        {
+          "name": "height",
+          "type": "number",
+          "optional": true,
+          "doc": "Altura do mapa em px. Omitido, `360`."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome acessível do mapa."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakMarkdownRenderer": {
       "propsInterface": "SarakMarkdownRendererProps",
       "source": "src/components/atomic/Media/SarakMarkdownRenderer/SarakMarkdownRendererImpl.tsx",
@@ -2991,6 +3853,54 @@
           "type": "React.HTMLAttributes<HTMLInputElement>['inputMode']",
           "optional": true,
           "doc": "Teclado sugerido ao dispositivo. CNPJ usa texto por padrão; os demais usam numérico."
+        }
+      ]
+    },
+    "SarakMemberList": {
+      "propsInterface": "SarakMemberListProps",
+      "source": "src/components/atomic/Templates/SarakMemberList.tsx",
+      "props": [
+        {
+          "name": "members",
+          "type": "SarakMember[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "invitations",
+          "type": "SarakInvitation[]",
+          "optional": true,
+          "doc": "Convites enviados e ainda sem resposta; sem eles, a seção não aparece."
+        },
+        {
+          "name": "onRemoveMember",
+          "type": "(memberId: string) => void",
+          "optional": true,
+          "doc": "Chamados com o id; a regra (quem pode remover) e a rede são do host. Sem o callback, o botão não aparece."
+        },
+        {
+          "name": "onResendInvitation",
+          "type": "(invitationId: string) => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onRevokeInvitation",
+          "type": "(invitationId: string) => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "renderMemberActions",
+          "type": "(member: SarakMember) => React.ReactNode",
+          "optional": true,
+          "doc": "Ações extras por membro, ao lado de \"Remover\"."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
         }
       ]
     },
@@ -3403,6 +4313,126 @@
           "doc": "Disparado ao escolher uma página válida (diferente da atual)."
         },
         {
+          "name": "getPageHref",
+          "type": "(page: number) => string",
+          "optional": true,
+          "doc": "Com ele, cada página é um link real: clique simples chama `onChange`, e Ctrl+clique, clique do meio e abrir em nova aba seguem o `href`, sem passar pelo `onChange`."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakPermissionMatrix": {
+      "propsInterface": "SarakPermissionMatrixProps",
+      "source": "src/components/atomic/Templates/SarakPermissionMatrix.tsx",
+      "props": [
+        {
+          "name": "roles",
+          "type": "SarakPermissionRole[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "groups",
+          "type": "SarakPermissionGroup[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "granted",
+          "type": "Record<string, string[]>",
+          "optional": false,
+          "doc": "Permissões concedidas direto, por id do papel."
+        },
+        {
+          "name": "inherited",
+          "type": "Record<string, string[]>",
+          "optional": true,
+          "doc": "Permissões que o papel recebe de outro papel, por id do papel. Não se desligam aqui."
+        },
+        {
+          "name": "onToggle",
+          "type": "(roleId: string, permissionId: string, granted: boolean) => void",
+          "optional": true,
+          "doc": "Chamado ao alternar uma célula direta; a regra de permissão é do host."
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Só leitura: a grade navega pelo teclado, mas nada alterna."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome da grade para leitor de tela."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakPopover": {
+      "propsInterface": "SarakPopoverProps",
+      "source": "src/components/atomic/UX/SarakPopover.tsx",
+      "props": [
+        {
+          "name": "trigger",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": "O que abre o popover ao clicar (um botão, em geral). Um elemento React recebe `aria-expanded` e `aria-haspopup`."
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": "Conteúdo do popover."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome do painel para o leitor de tela; sem ele o painel fica sem nome."
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Aberto ou fechado quando o host governa o estado; omitido, o popover guarda o estado."
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Estado inicial no modo sem `open`; omitido, fechado."
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "placement",
+          "type": "SarakPopoverPlacement",
+          "optional": true,
+          "doc": "Lado preferido; se não couber na janela, vai para o oposto. Omitido, `bottom`."
+        },
+        {
+          "name": "showClose",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Mostra o botão de fechar no painel; omitido, só `Esc` e o clique fora fecham."
+        },
+        {
           "name": "className",
           "type": "string",
           "optional": true,
@@ -3467,6 +4497,54 @@
           "type": "SarakValueFormat",
           "optional": true,
           "doc": "Formato do valor mostrado; `percent` é aplicado a `value / max`, os demais a `value` (padrão: percentual)."
+        }
+      ]
+    },
+    "SarakQRCode": {
+      "propsInterface": "SarakQRCodeProps",
+      "source": "src/components/atomic/Media/SarakQRCode/SarakQRCodeImpl.tsx",
+      "props": [
+        {
+          "name": "value",
+          "type": "string",
+          "optional": false,
+          "doc": "Texto codificado no QR (um endereço, um segredo de MFA)."
+        },
+        {
+          "name": "size",
+          "type": "number | string",
+          "optional": true,
+          "doc": "Lado do desenho (número em px ou comprimento CSS); omitido, 12 vezes o espaçamento médio do tema."
+        },
+        {
+          "name": "errorCorrection",
+          "type": "'L' | 'M' | 'Q' | 'H'",
+          "optional": true,
+          "doc": "Redundância contra sujeira e corte: de `L` (menor QR) a `H` (mais robusto). Omitido, `M`."
+        },
+        {
+          "name": "foreground",
+          "type": "string",
+          "optional": true,
+          "doc": "Cor dos módulos; omitida, preto. Escâner lê escuro sobre claro, por isso o par não segue o tema."
+        },
+        {
+          "name": "background",
+          "type": "string",
+          "optional": true,
+          "doc": "Cor do fundo e da margem; omitida, branco."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome acessível; omitido, usa o catálogo no idioma ativo."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
         }
       ]
     },
@@ -3602,6 +4680,18 @@
           "type": "(href: string) => void",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "layout",
+          "type": "SarakResourceRowLayout",
+          "optional": true,
+          "doc": "`inline` põe título, metadados e ações lado a lado e empilha sozinho em contêiner estreito. Omitido, empilha."
+        },
+        {
+          "name": "density",
+          "type": "SarakResourceRowDensity",
+          "optional": true,
+          "doc": "`compact` reduz o respiro da linha. Omitido, `standard`."
         }
       ]
     },
@@ -3650,6 +4740,60 @@
           "type": "string",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakRunProgress": {
+      "propsInterface": "SarakRunProgressProps",
+      "source": "src/components/atomic/Templates/SarakRunProgress.tsx",
+      "props": [
+        {
+          "name": "title",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "phases",
+          "type": "SarakRunPhase[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "optional": true,
+          "doc": "Avanço geral de 0 a 100; omitido, é a média das fases."
+        },
+        {
+          "name": "elapsedMs",
+          "type": "number",
+          "optional": true,
+          "doc": "Tempo decorrido em milissegundos; quem conta o tempo é o host."
+        },
+        {
+          "name": "onCancel",
+          "type": "() => void",
+          "optional": true,
+          "doc": "Com ele, aparece \"Cancelar execução\" enquanto houver fase pendente ou em curso."
+        },
+        {
+          "name": "cancelling",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "lastError",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Último erro da execução, mostrado em destaque."
         },
         {
           "name": "className",
@@ -3932,6 +5076,145 @@
         }
       ]
     },
+    "SarakSessionList": {
+      "propsInterface": "SarakSessionListProps",
+      "source": "src/components/atomic/Templates/SarakSessionList.tsx",
+      "props": [
+        {
+          "name": "sessions",
+          "type": "SarakSession[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "onRevoke",
+          "type": "(sessionId: string) => void",
+          "optional": true,
+          "doc": "Chamado ao encerrar uma sessão; quem revoga o token é o host. Sem ele, o botão não aparece."
+        },
+        {
+          "name": "onRevokeOthers",
+          "type": "() => void",
+          "optional": true,
+          "doc": "Com ele, aparece \"Encerrar as outras sessões\" quando há outra além da atual."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakSetPicker": {
+      "propsInterface": "SarakSetPickerProps",
+      "source": "src/components/atomic/Inputs/SarakSetPicker.tsx",
+      "props": [
+        {
+          "name": "options",
+          "type": "SarakSetPickerOption[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "value",
+          "type": "string[]",
+          "optional": false,
+          "doc": "Valores escolhidos, na ordem em que aparecem na lista de escolhidos."
+        },
+        {
+          "name": "onChange",
+          "type": "(value: string[]) => void",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Rótulo do conjunto, lido pelo leitor de tela como nome das duas listas."
+        },
+        {
+          "name": "searchable",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Mostra o campo de busca nas disponíveis; omitido, `true`."
+        },
+        {
+          "name": "filters",
+          "type": "SarakSetPickerFilter[]",
+          "optional": true,
+          "doc": "Filtros em chips sobre as disponíveis; vários ativos se somam (todos precisam casar). Omitido, não há filtro."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakSettingsPage": {
+      "propsInterface": "SarakSettingsPageProps",
+      "source": "src/components/atomic/Templates/SarakSettingsPage.tsx",
+      "extends": "Omit<React.HTMLAttributes<HTMLElement>, 'title' | 'children'>",
+      "props": [
+        {
+          "name": "title",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "description",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "sections",
+          "type": "SarakSettingsSection[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "isDirty",
+          "type": "boolean",
+          "optional": false,
+          "doc": "Há rascunho diferente do que está salvo."
+        },
+        {
+          "name": "saving",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "saveError",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Falha do último salvamento; aparece acima da barra."
+        },
+        {
+          "name": "onSave",
+          "type": "() => void",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "onDiscard",
+          "type": "() => void",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "onUnsavedChangesControl",
+          "type": "(control: SarakUnsavedChangesControl) => void",
+          "optional": true,
+          "doc": "Recebe o `confirmLeave` do aviso de alterações; ligue-o ao bloqueio de rota do host."
+        }
+      ]
+    },
     "SarakShellLanguageSelector": {
       "propsInterface": "SarakShellLanguageSelectorProps",
       "source": "src/components/atomic/Navigation/SarakShellLanguageSelector.tsx",
@@ -4009,6 +5292,12 @@
           "doc": ""
         },
         {
+          "name": "compact",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Só o ícone, sem rótulo (lateral recolhida); nas linhas de menu o rótulo segue à vista."
+        },
+        {
           "name": "items",
           "type": "SarakSearchItem[]",
           "optional": true,
@@ -4061,6 +5350,48 @@
           "type": "'horizontal' | 'vertical' | 'mini'",
           "optional": true,
           "doc": "Ajusta o arranjo à barra, à lateral ou ao modo compacto; omitida, usa `vertical`."
+        }
+      ]
+    },
+    "SarakSignaturePad": {
+      "propsInterface": "SarakSignaturePadProps",
+      "source": "src/components/atomic/Inputs/SarakSignaturePad/SarakSignaturePad.tsx",
+      "props": [
+        {
+          "name": "onChange",
+          "type": "(value: SarakSignatureValue | null) => void",
+          "optional": false,
+          "doc": "Chamado a cada mudança com a assinatura, ou `null` quando ficou vazia."
+        },
+        {
+          "name": "width",
+          "type": "number",
+          "optional": true,
+          "doc": "Largura do desenho em px. Omitido, `480`."
+        },
+        {
+          "name": "height",
+          "type": "number",
+          "optional": true,
+          "doc": "Altura do desenho em px. Omitido, `180`."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome acessível da área de assinatura."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
         }
       ]
     },
@@ -4540,6 +5871,12 @@
           "doc": "Preencher a largura toda?"
         },
         {
+          "name": "overflow",
+          "type": "SarakTabsOverflow",
+          "optional": true,
+          "doc": "Se as abas não cabem: `scroll` rola a faixa com sinal nas bordas, `wrap` quebra linha, `menu` leva as que não cabem a um menu. Omitido, `scroll`."
+        },
+        {
           "name": "className",
           "type": "string",
           "optional": true,
@@ -4547,6 +5884,84 @@
         },
         {
           "name": "listClassName",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakTagInput": {
+      "propsInterface": "SarakTagInputProps",
+      "source": "src/components/atomic/Inputs/SarakTagInput.tsx",
+      "props": [
+        {
+          "name": "value",
+          "type": "string[]",
+          "optional": false,
+          "doc": "Etiquetas atuais, na ordem em que aparecem."
+        },
+        {
+          "name": "onChange",
+          "type": "(value: string[]) => void",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "separators",
+          "type": "string[]",
+          "optional": true,
+          "doc": "Caracteres que fecham uma etiqueta ao digitar ou colar; `Enter` sempre fecha. Omitido, só a vírgula."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "optional": true,
+          "doc": "Máximo de etiquetas; omitido, sem limite."
+        },
+        {
+          "name": "allowDuplicates",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Aceita a mesma etiqueta duas vezes; omitido, `false`."
+        },
+        {
+          "name": "validate",
+          "type": "(tag: string) => string | undefined",
+          "optional": true,
+          "doc": "Devolve a mensagem de erro de uma etiqueta recusada, ou `undefined` quando ela vale."
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "optional": true,
+          "doc": "Erro do host; o erro da última tentativa recusada, quando existe, aparece no lugar dele."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Marca o campo como obrigatório para o navegador e o leitor de tela."
+        },
+        {
+          "name": "className",
           "type": "string",
           "optional": true,
           "doc": ""
@@ -4716,6 +6131,48 @@
         }
       ]
     },
+    "SarakTour": {
+      "propsInterface": "SarakTourProps",
+      "source": "src/components/atomic/UX/SarakTour/SarakTour.tsx",
+      "props": [
+        {
+          "name": "steps",
+          "type": "SarakTourStep[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "onClose",
+          "type": "(reason: SarakTourCloseReason) => void",
+          "optional": false,
+          "doc": "Chamado ao terminar (`done`), pular (`skip`) ou apertar Esc (`escape`). Quem controla `open` é o consumidor."
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "optional": true,
+          "doc": "Passo atual, no modo controlado."
+        },
+        {
+          "name": "onStepChange",
+          "type": "(step: number) => void",
+          "optional": true,
+          "doc": "Chamado a cada troca de passo."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "doc": "Nome acessível do tour."
+        }
+      ]
+    },
     "SarakTreeView": {
       "propsInterface": "SarakTreeViewProps",
       "source": "src/components/atomic/DataDisplay/SarakTreeView.tsx",
@@ -4879,6 +6336,54 @@
         }
       ]
     },
+    "SarakUsageMeter": {
+      "propsInterface": "SarakUsageMeterProps",
+      "source": "src/components/atomic/Templates/SarakUsageMeter.tsx",
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "doc": "O que se mede: \"Chamadas por dia\", \"Armazenamento\"."
+        },
+        {
+          "name": "used",
+          "type": "number",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "limit",
+          "type": "number",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "unit",
+          "type": "string",
+          "optional": true,
+          "doc": "Unidade escrita depois dos números: \"GB\", \"chamadas\"."
+        },
+        {
+          "name": "warnAt",
+          "type": "number",
+          "optional": true,
+          "doc": "Fração do limite em que o aviso começa. Padrão `0.8`."
+        },
+        {
+          "name": "criticalAt",
+          "type": "number",
+          "optional": true,
+          "doc": "Fração do limite em que o estado vira crítico. Padrão `0.95`."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakValue": {
       "propsInterface": "SarakValueProps",
       "source": "src/components/atomic/Atoms/SarakValue.tsx",
@@ -4912,6 +6417,85 @@
           "type": "'sm' | 'md' | 'lg'",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakVersionList": {
+      "propsInterface": "SarakVersionListProps",
+      "source": "src/components/atomic/Templates/SarakVersionList.tsx",
+      "extends": "Omit<React.HTMLAttributes<HTMLOListElement>, 'children'>",
+      "props": [
+        {
+          "name": "versions",
+          "type": "SarakVersionItem[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "onRestore",
+          "type": "(versionId: string) => void",
+          "optional": true,
+          "doc": "Chamado ao pedir para restaurar uma versão; a lib não restaura nada."
+        },
+        {
+          "name": "openIds",
+          "type": "string[]",
+          "optional": true,
+          "doc": "Ids com a comparação aberta (controlado); omitido, a lista guarda."
+        },
+        {
+          "name": "onOpenIdsChange",
+          "type": "(ids: string[]) => void",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakWizard": {
+      "propsInterface": "SarakWizardProps",
+      "source": "src/components/atomic/Navigation/SarakWizard.tsx",
+      "props": [
+        {
+          "name": "steps",
+          "type": "SarakWizardStep[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "optional": true,
+          "doc": "Etapa atual (0-based) quando o host governa a navegação; omitida, o assistente guarda a etapa."
+        },
+        {
+          "name": "defaultStep",
+          "type": "number",
+          "optional": true,
+          "doc": "Etapa inicial no modo sem `step`; omitida, a primeira."
+        },
+        {
+          "name": "onStepChange",
+          "type": "(index: number) => void",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onFinish",
+          "type": "() => void | Promise<void>",
+          "optional": false,
+          "doc": "Chamado na última etapa, depois da validação dela."
+        },
+        {
+          "name": "onCancel",
+          "type": "() => void",
+          "optional": true,
+          "doc": "Mostra o botão de cancelar; omitido, não há botão."
         },
         {
           "name": "className",
@@ -5047,6 +6631,22 @@
         ]
       },
       {
+        "component": "SarakCodeInput",
+        "prop": "charset",
+        "values": [
+          "numeric",
+          "alphanumeric"
+        ]
+      },
+      {
+        "component": "SarakDataTable",
+        "prop": "density",
+        "values": [
+          "standard",
+          "report"
+        ]
+      },
+      {
         "component": "SarakDatePicker",
         "prop": "mode",
         "values": [
@@ -5071,6 +6671,14 @@
           "minimal",
           "abstract",
           "geometric"
+        ]
+      },
+      {
+        "component": "SarakFileAction",
+        "prop": "mode",
+        "values": [
+          "download",
+          "open"
         ]
       },
       {
@@ -5133,11 +6741,29 @@
         ]
       },
       {
+        "component": "SarakInput",
+        "prop": "affixPlacement",
+        "values": [
+          "outside",
+          "inside"
+        ]
+      },
+      {
         "component": "SarakMenuItem",
         "prop": "markerPosition",
         "values": [
           "edge",
           "top"
+        ]
+      },
+      {
+        "component": "SarakQRCode",
+        "prop": "errorCorrection",
+        "values": [
+          "L",
+          "M",
+          "Q",
+          "H"
         ]
       },
       {

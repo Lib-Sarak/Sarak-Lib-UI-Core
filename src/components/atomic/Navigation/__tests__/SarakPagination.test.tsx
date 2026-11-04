@@ -101,4 +101,59 @@ describe('SarakPagination — idioma que vale', () => {
 
         expect(screen.getByText('11–20 of 95 · Page 2 of 10')).toBeInTheDocument();
     });
+
+    describe('getPageHref', () => {
+        const href = (page: number): string => `/lista?page=${page}`;
+
+        it('sem ele, nenhuma página é link', () => {
+            render(<SarakPagination current={2} total={3} onChange={() => {}} />);
+
+            expect(screen.queryByRole('link')).not.toBeInTheDocument();
+        });
+
+        it('com ele, cada página e as setas são <a href> reais', () => {
+            render(<SarakPagination current={2} total={3} onChange={() => {}} getPageHref={href} />);
+
+            expect(screen.getByRole('link', { name: '3' })).toHaveAttribute('href', '/lista?page=3');
+            expect(screen.getByRole('link', { name: '2' })).toHaveAttribute('aria-current', 'page');
+            expect(screen.getByRole('link', { name: /anterior/i })).toHaveAttribute('href', '/lista?page=1');
+            expect(screen.getByRole('link', { name: /próxima/i })).toHaveAttribute('href', '/lista?page=3');
+        });
+
+        it('na ponta, a seta segue desabilitada e não aponta para página inexistente', () => {
+            render(<SarakPagination current={1} total={3} onChange={() => {}} getPageHref={href} />);
+
+            expect(screen.getByRole('button', { name: /anterior/i })).toBeDisabled();
+            expect(screen.queryByRole('link', { name: /anterior/i })).not.toBeInTheDocument();
+        });
+
+        it('clique simples chama onChange sem recarregar', () => {
+            const onChange = vi.fn();
+            render(<SarakPagination current={2} total={3} onChange={onChange} getPageHref={href} />);
+
+            const notCancelled = fireEvent.click(screen.getByRole('link', { name: '3' }));
+
+            expect(onChange).toHaveBeenCalledWith(3);
+            expect(notCancelled).toBe(false);
+        });
+
+        it('Ctrl+clique fica com o navegador', () => {
+            const onChange = vi.fn();
+            render(<SarakPagination current={2} total={3} onChange={onChange} getPageHref={href} />);
+
+            const notCancelled = fireEvent.click(screen.getByRole('link', { name: '3' }), { ctrlKey: true });
+
+            expect(onChange).not.toHaveBeenCalled();
+            expect(notCancelled).toBe(true);
+        });
+
+        it('clicar na página atual não dispara onChange', () => {
+            const onChange = vi.fn();
+            render(<SarakPagination current={2} total={3} onChange={onChange} getPageHref={href} />);
+
+            fireEvent.click(screen.getByRole('link', { name: '2' }));
+
+            expect(onChange).not.toHaveBeenCalled();
+        });
+    });
 });

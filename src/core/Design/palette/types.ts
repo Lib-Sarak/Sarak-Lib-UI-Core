@@ -49,8 +49,14 @@ export interface SarakPaletteSeeds {
 
 export interface PaletteColorRole {
     scale: PaletteScaleName;
+    /** O tom de cada modo; `PALETTE_BASE_TONE` é a cor da semente, exata. */
     toneByMode: Record<SarakPaletteMode, number>;
     alpha?: number;
+    /**
+     * Texto que se corrige por deslocamento mínimo de luminosidade (mesmo matiz e croma), em vez de saltar de tom
+     * em tom. Lista as origens do deslocamento: o tom da escala de onde a busca parte (a base, ou os dois extremos).
+     */
+    shiftFrom?: readonly number[];
 }
 
 export type PaletteScales = Record<PaletteScaleName, Record<number, RgbColor>>;

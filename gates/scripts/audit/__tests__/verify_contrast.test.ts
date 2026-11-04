@@ -12,6 +12,7 @@ import {
   auditThemeOppositeMode,
   auditContraparteRequired,
   CONTRAPARTE_EXEMPTION_LIST,
+  pairsFor,
 } from '../verify_contrast.ts';
 import { sarakGetDefaultDesignState } from '../../../../src/core/Design/master-map.ts';
 import { SARAK_ALL_THEMES } from '../../../../src/core/Design/presets/themes/all.ts';
@@ -296,7 +297,7 @@ describe('auditThemeOppositeMode — segunda passada', () => {
       const oposto = auditThemeOppositeMode(theme);
       expect(oposto.id).toBe(nativo.id);
       expect(Array.isArray(oposto.resultados)).toBe(true);
-      expect(oposto.resultados.length).toBe(PAIRS.length);
+      expect(oposto.resultados.length).toBe(nativo.resultados.length);
     }
   });
 
@@ -375,9 +376,9 @@ describe('PAIRS — nenhuma cadeia termina em fundo que pode ser translúcido', 
     expect(pulados).toEqual([]);
   });
 
-  it('kinetic-flow, no modo oposto, passa os dois pares do item de navegação ativo', () => {
+  it('kinetic-flow, no modo oposto, passa os dois pares do item de navegação ativo (o da lateral contrastante é o do texto da própria lateral)', () => {
     const theme = SARAK_ALL_THEMES.find((t) => t.id === 'kinetic-flow') as SarakThemePreset;
-    const nav = auditThemeOppositeMode(theme).resultados.filter((r) => r.pair.fg === 'navItemActiveColor');
+    const nav = auditThemeOppositeMode(theme).resultados.filter((r) => r.pair.fg === 'navItemActiveColor' || r.pair.bgChain[0].endsWith('ActiveColor'));
     expect(nav).toHaveLength(2);
     nav.forEach((r) => expect(!r.pulado && r.pass).toBe(true));
   });
@@ -405,4 +406,40 @@ describe('var(--tema) que espelha outro token de cor do próprio tema', () => {
         const result = evaluatePair(par, { ...base, tooltipTextColor: 'var(--minha-cor)' });
         expect(result.pulado).toBe(true);
     });
+});
+
+describe('pairsFor — os pares seguem o papel de cor da barra', () => {
+  const composed = (tones: Record<string, string>): Record<string, unknown> => ({ ...sarakGetDefaultDesignState(), colorPalette: 'oceano', ...tones } as Record<string, unknown>);
+  const bodyOverSidebar = (pair: ContrastPair): boolean => !pair.fg.startsWith('sidebar') && pair.bgChain.includes('sidebarColor');
+
+  it('sem papel contrastante é a lista de sempre, par a par', () => {
+    expect(pairsFor(composed({}))).toBe(PAIRS);
+    expect(pairsFor(composed({ sidebarTone: 'surface', topbarTone: 'neutral' }))).toEqual(PAIRS);
+  });
+
+  it('com a lateral contrastante, o texto do corpo sobre ela sai e entra o texto da própria lateral', () => {
+    expect(PAIRS.some(bodyOverSidebar)).toBe(true);
+    const pairs = pairsFor(composed({ sidebarTone: 'inverse' }));
+    expect(pairs.some(bodyOverSidebar)).toBe(false);
+    expect(pairs.some((pair) => pair.fg === 'sidebarItemHoverTextColor' && pair.bgChain[0] === 'sidebarActiveColor')).toBe(true);
+    expect(pairs.some((pair) => pair.fg === 'inputFocusBorderColor')).toBe(false);
+  });
+
+  it('a topbar contrastante não mexe nos pares da lateral', () => {
+    expect(pairsFor(composed({ topbarTone: 'primary' })).some(bodyOverSidebar)).toBe(true);
+  });
+
+  it('PLANTADO: a lateral invertida de um tema escuro passa nos pares dela e reprovaria nos do corpo', () => {
+    const theme = SARAK_ALL_THEMES.find((candidate) => candidate.id === 'corporate-ledger') as SarakThemePreset;
+    expect(theme.design.sidebarTone).toBe('inverse');
+    expect(auditTheme(theme).falhas).toEqual([]);
+    const bodyOnBar = PAIRS.filter(bodyOverSidebar);
+    expect(bodyOnBar.length).toBeGreaterThan(0);
+  });
+
+  it('MUTAÇÃO: se o texto da lateral contrastante ficar igual ao fundo dela, o par dela reprova', () => {
+    const design = { ...composed({ sidebarTone: 'inverse' }), sidebarColor: '#101010', sidebarItemHoverTextColor: '#111111', sidebarActiveColor: '#101010' };
+    const failing = pairsFor(design).map((pair) => evaluatePair(pair, design)).filter((result) => !result.pulado && !result.pass);
+    expect(failing.some((result) => result.pair.fg === 'sidebarItemHoverTextColor')).toBe(true);
+  });
 });

@@ -5,6 +5,204 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 8.0.0 — Personalidades no painel, e as barras dos temas embarcados com caráter próprio
+
+**Classificação: MINOR (aditivo).** Nenhum `id` de tema ou de preset mudou, nenhum token foi acrescentado ou removido e nenhuma cor mudou.
+
+- **Personalidades.** A decisão Tema do painel abre por dez Personalidades (Corporativo, Executivo, Técnico, Moderno, Suave, Editorial, Brutalista, Vidro,
+  ERP de alta densidade e Painel de operação): presets de **estrutura** que aplicam forma, fontes, densidade, barras, tabela, movimento e ícones, sem cor.
+  "Usar minha marca" ganhou o campo opcional de Personalidade.
+- **As barras dos 19 temas embarcados mudaram de aparência**, sem mudar o `id` nem a cor. Antes, todos declaravam `sidebarTone` e `topbarTone` como
+  `neutral`; agora cada um declara os tokens de barra da Personalidade mais próxima do seu caráter: os dois tons, o estilo do item ativo e a borda.
+  Quem importa um tema embarcado vê a lateral e a topbar com outro fundo (calculado da paleta do tema) e outro item ativo. O tema `sarak-sovereign`
+  (o padrão) não muda, e a posição da marca não muda em nenhum tema.
+- **O que não muda:** uma cor declarada em `sidebarColor`/`topbarColor` continua vencendo o tom, e o tom só vale com `colorPalette` válida; os temas que já
+  declaravam cor própria de barra (por exemplo, a barra escura de um tema claro) seguem com essa cor, e só o item ativo e a borda mudam neles.
+  Quem salvou um tema com as barras de antes mantém o que salvou: valor persistido vence o do tema.
+
+---
+
+## 8.0.0 — nomes e descrições dos presets do painel em português
+
+**Classificação: MINOR (aditivo).** Nenhum `id` de preset mudou e nenhum token foi acrescentado, removido ou alterado: quem grava ou aplica um preset pelo `id` continua igual.
+
+- O `name` e a `description` de 36 presets publicados passaram do inglês para o português, e o painel os mostra no idioma do sistema. Quem lê esses textos direto do preset, ou compara o `name` em teste, vê o texto novo; compare pelo `id`.
+
+---
+
+## 8.0.0 — entradas e utilitários que os sistemas montavam à mão
+
+**Classificação: MINOR (aditivo).** Nada foi removido nem mudou de comportamento: `dedupeKey` e `extendOption` são opcionais e, omitidos, tudo sai como antes.
+**Dependência nova, opcional:** `qrcode` (`>=1.5.0`, peer opcional) — só o `SarakQRCode` a usa, e ele carrega sob demanda. Sem o peer instalado, o componente mostra o
+aviso da lib no lugar do QR. Quem não usa QR não instala nada.
+
+- `SarakColorInput` — `value`, `onChange`, `label`, `error`, `required`, `contrastAgainst`/`minContrast` (alerta, não bloqueio). Só chega ao `onChange` a cor que a validação do tema aceita.
+- `SarakSetPicker` — `options`, `value`, `onChange`, `filters`, `searchable`. Quem guarda a escolha é você.
+- `SarakTagInput` — `value`, `onChange`, `separators`, `max`, `allowDuplicates`, `validate`, `required`.
+- `SarakCodeInput` — `value`, `onChange`, `onComplete`, `length` (6), `charset` (`numeric`).
+- `SarakFieldRenderer` — `fields` (`name`, `type`, `label`, `required`, `options`, `placeholder`), `values`, `onChange(name, value)`, `errors`. É só dado → tela: nada da lista é executado nem vira HTML; tipo desconhecido vira `text`.
+- `SarakWizard` — `steps` (`content`, `validate`), `step`/`defaultStep`, `onStepChange`, `onFinish`, `onCancel`. Só a etapa atual fica montada; `validate`/`onFinish` que rejeitam mostram a mensagem na etapa.
+- `SarakPopover` — `trigger`, `open`/`defaultOpen`/`onOpenChange`, `placement`, `showClose`. Entra na pilha de camadas dos modais e **trava a rolagem da página enquanto está aberto**.
+- `SarakGate` — `allowed`, `fallback`. Esconde interface; **não é controle de acesso**, quem protege o dado é o servidor.
+- `useSarakShortcut(keys, handler, options)`, `sarakShortcutFromEvent`, `sarakFormatShortcut` — o atalho pode mudar a qualquer momento (editável pelo usuário).
+- `SarakCopyButton` — `value`, `onCopy(copied)`; usa a área de transferência e, sem ela, a seleção de texto.
+- `SarakFileAction` — `load(): Promise<Blob>` (a lib não faz rede), `mode`, `filename`. `mode="open"` abre só PDF, imagem raster e texto puro; HTML, SVG e o resto são baixados, porque abertos
+  na origem do sistema seriam executados. `onDone` diz que o arquivo foi entregue ao navegador, não que foi aberto ou salvo.
+- `SarakQRCode` — `value`, `size`, `errorCorrection`, `foreground`/`background` (padrão preto sobre branco, que o leitor exige em qualquer tema). Sob `<Suspense>`.
+- `SarakToast` — `dedupeKey`: enquanto um toast com a mesma chave estiver na tela, `notify` o atualiza, reinicia a duração e devolve o mesmo id.
+- `SarakChartEngine` — `extendOption(option)`: recebe a opção final do ECharts e devolve a que será desenhada; roda por último. Só no ECharts.
+
+---
+
+## 8.0.0 — painel arrastável, mapa, assinatura, tour, carrossel e exportação Excel
+
+**Classificação: MINOR (aditivo).** Nada foi removido nem mudou de comportamento. Nenhuma dependência nova: o painel usa o
+`react-grid-layout`, que já era peer opcional; o mapa, a assinatura, o tour, o carrossel e o escritor de `.xlsx` são código da lib.
+Quem não usa uma peça não paga por ela: o painel e o mapa carregam sob demanda, e o escritor de planilha só é carregado no clique de exportar.
+
+- `SarakDashboardGrid` — `widgets`, `layout` e `onLayoutChange` (quem guarda a posição é você), `columns`, `readOnly`. Setas movem o
+  widget focado, Shift + setas o redimensionam; em contêiner estreito os widgets empilham numa coluna. Importe o CSS do
+  `react-grid-layout` (`react-grid-layout/css/styles.css`) se quiser a alça de redimensionar padrão dele.
+- `SarakMap` — `tileUrl`, `attribution`, `center`, `zoom`, `markers`, `onMarkerClick`. **A lib não embute provedor de mapa nem chave:**
+  você passa o molde da URL dos blocos (`https://…/{z}/{x}/{y}.png`) e a atribuição que o provedor exige. Sem `tileUrl` usável nenhuma
+  requisição sai. Os blocos são `<img>` pedidos pelo navegador, então o gate `network:check` não os enxerga; a CSP do seu sistema
+  precisa liberar `img-src` para o provedor escolhido.
+- `SarakSignaturePad` — devolve `{ png, strokes }`; o nome digitado é a alternativa acessível (devolve `typedName`). **A peça não tem
+  validade jurídica por si:** ela entrega imagem e traços, e quem registra data, autor, origem e prova é o seu sistema.
+- `SarakTour` — passos com `target` (seletor CSS), `onClose('done' | 'skip' | 'escape')`. Quem lembra que o usuário já viu o tour é você.
+- `SarakCarousel` — sem rotação automática por padrão; com `autoPlay` pausa sob o mouse e o foco e não gira com movimento reduzido.
+- `sarakExportXlsx(columns, rows, options)`, `sarakTableToXlsx` e `sarakDownloadXlsx` — ao lado da CSV, com as mesmas colunas, o texto
+  exibido (formato e moeda) e `columnState` para as colunas visíveis. Texto de dado que começa com `=`, `+`, `-`, `@`, tab ou CR sai com
+  `'` na frente, como na CSV.
+
+---
+
+## 8.0.0 — as telas que todo sistema repete: configurações, auditoria, versões, aprovação, execução e acesso
+
+**Classificação: MINOR (aditivo).** Nada foi removido nem mudou de comportamento. Nenhuma dependência nova. Todas as peças são
+apresentacionais: o dado entra por prop, o evento sai por callback, e **a lib não faz rede, não decide permissão nem guarda rascunho**.
+Os textos próprios (rótulos, estados, avisos) saem nos seis idiomas da lib; o que você passa por prop é seu. Estado nunca vai só na cor:
+cada um tem forma e palavra.
+
+- `SarakSettingsPage` — `sections` (`id`, `title`, `content`, `dirty`), `isDirty`, `onSave`, `onDiscard`, `saving`, `saveError`.
+  Índice de seções, barra salvar/descartar sempre à vista e aviso ao fechar a aba (`useSarakUnsavedChanges`). Para barrar a troca de rota,
+  receba o `confirmLeave` em `onUnsavedChangesControl` e ligue ao bloqueio do seu roteador.
+- `SarakAuditLog` — `entries` (`actor`, `action`, `target`, `at`, `detail`), `filters` + `onFiltersChange` (com `actors`/`actions`
+  para os seletores), `page`, `pageSize`, `totalItems`, `onPageChange`. Quem filtra e pagina é o servidor. Compõe `SarakDataTable`, que
+  carrega sob demanda e pede o peer opcional `@tanstack/react-virtual`, como a tabela de sempre.
+- `SarakDiffView` — `fields` (`label`, `before`, `after`) ou `before`/`after` em texto. Cada mudança leva `+`, `−` ou `~` e a palavra
+  Adicionado, Removido ou Alterado. `SarakVersionList` — `versions` (`label`, `author`, `at`, `summary`, `current`, `diff`) e `onRestore`;
+  a comparação com a anterior usa o `SarakDiffView`.
+- `SarakApprovalQueue` — `items` (`title`, `requester`, `at`, `diff`), `onApprove(ids)`, `onReject(ids, reason)`. Rejeitar exige o motivo;
+  há seleção e ação em lote.
+- `SarakRunProgress` — `phases` (`label`, `status`, `progress`), `progress`, `elapsedMs`, `onCancel`, `lastError`. `SarakLiveStatus` —
+  `status` (`connected`, `reconnecting`, `offline`), `lastDataAt`, `onRetry`; a lib só mostra o estado, a conexão é sua.
+  `SarakUsageMeter` — `label`, `used`, `limit`, `unit`, `warnAt`, `criticalAt`.
+- `SarakPermissionMatrix` — `roles`, `groups`, `granted`, `inherited`, `onToggle`, `readOnly`. Grade com uma célula na ordem de Tab; setas,
+  Home, End e PageUp/PageDown movem, Espaço ou Enter alterna. A permissão herdada nunca alterna aqui.
+- `SarakMemberList` — `members`, `invitations`, `onRemoveMember`, `onResendInvitation`, `onRevokeInvitation`. `SarakSessionList` —
+  `sessions` (`device`, `location`, `lastActiveAt`, `current`), `onRevoke`, `onRevokeOthers`; a sessão atual não se encerra daqui.
+
+---
+
+## 8.0.0 — erro fica no bloco, aviso de alterações não salvas e a base que você reescrevia
+
+**Classificação: MINOR (aditivo).** Nada foi removido do barril. Uma mudança de comportamento merece conferência:
+
+- **`SarakSection` e `SarakAppChrome` passam a conter erro de render.** Um erro dentro do conteúdo vira um aviso com "Tentar de
+  novo" naquele bloco, e o resto da tela segue. Se você tem um error boundary **em volta** deles, ele deixa de receber esses erros.
+  Para continuar registrando, coloque um `SarakErrorBoundary` com `onError` **dentro** do conteúdo:
+
+  ```tsx
+  // Antes: o seu boundary, fora do cromo, recebia o erro e trocava a tela inteira.
+  <MeuBoundary onError={registrar}><SarakAppChrome nav={nav}><Tela /></SarakAppChrome></MeuBoundary>
+
+  // Depois: o erro para no bloco, e o registro continua.
+  <SarakAppChrome nav={nav} activeRoute={rota}>
+    <SarakErrorBoundary onError={registrar}><Tela /></SarakErrorBoundary>
+  </SarakAppChrome>
+  ```
+
+  No cromo, o erro é limpo quando `activeRoute` (ou o item `active` de `navItems`) muda. Sem rota informada, só "Tentar de novo" o limpa.
+
+Novidades opcionais:
+
+- `SarakErrorBoundary` — `fallback`, `onError` e `resetKeys`.
+- `useSarakUnsavedChanges({ isDirty, onBlock? })` — avisa ao fechar a aba e devolve `confirmLeave()`, para ligar no bloqueio do seu
+  roteador. `SarakForm` ganha `warnOnUnsaved` (padrão `false`), que cobre o fechamento da aba.
+- `SarakPagination.getPageHref` — cada página vira link real; clique simples segue em `onChange`, Ctrl+clique abre em nova aba.
+- `sarakErrorMessage(error, fallback?)` — texto seguro de `Error`, string e resposta comum de API. Rastro de pilha, HTML e erro do
+  motor JS (`TypeError` etc.) nunca chegam ao usuário.
+- `@sarak/lib-ui-core/testing` — `renderWithSarak` (assíncrona) e `createSarakKitMock`. Pedem `@testing-library/react` no projeto,
+  agora peer opcional.
+
+---
+
+## 8.0.0 — a tabela para o trabalho diário, a moldura de documento e a impressão
+
+Tudo aqui é aditivo: sem as props novas, a `SarakDataTable` não muda. Quem persiste colunas e visões é o sistema, a partir do valor devolvido.
+
+**Ações em lote.** `bulkActions` mostra uma barra com a contagem e o botão de limpar quando há seleção, na tabela e nos cartões. `tone: 'danger'` pede confirmação antes de agir.
+
+⚠️ **`onAction(ids, scope)` tem dois argumentos.** Em "Selecionar todos os N", `ids` só traz as linhas visíveis. Nesse modo, leia `scope`: com `scope.all === true`, a ação vale para todos do servidor, menos `scope.exceptKeys`. Quem usar só `ids` age sobre menos itens do que a barra anuncia.
+
+```tsx
+<SarakDataTable
+    selectable
+    totalCount={total}
+    bulkActions={[{
+        label: 'Arquivar',
+        onAction: (ids, scope) => (scope.all ? archiveAll(scope.exceptKeys) : archive(ids)),
+    }]}
+/>
+```
+
+A confirmação usa o `SarakUIProvider`. Sem ele, a ação de perigo não roda.
+
+**Colunas.** `columnState`, `defaultColumnState` e `onColumnStateChange` guardam colunas escondidas, ordem e largura, e ligam o botão "Colunas" e a alça de largura por teclado.
+
+**Edição na célula.** `SarakColumn.editable`, `SarakColumn.validate` e `onCellEdit(row, column, value)`. O valor chega como o texto digitado, e a conversão é do sistema. Devolva uma promessa para mostrar o estado de salvando; rejeitada, a mensagem aparece na célula.
+
+**Visões salvas.** `views`, `activeView`, `onViewChange` e `onViewSave`. Uma visão guarda `filters`, `columnState` e `sort`. Das chaves de `filters`, a tabela só aplica `searchQuery`; as demais voltam ao sistema sem interpretação.
+
+**Relatório.** `density="report"` tira o cromo e a rolagem própria e põe todas as linhas na página. `getCellTone(row, column)` dá tom à célula, sempre com ícone e texto para leitor de tela.
+
+**Documento e impressão.** `SarakDocumentFrame` mostra a folha em `a4`, `letter` ou `phone` e cabe no contêiner. `sarakPrint(element?)` imprime a página ou só o elemento. Na impressão saem cromo e ações, a tabela sai inteira e o texto escurece em qualquer tema. Com uma moldura na página, sai só o documento.
+
+## 8.0.0 — as barras ganham personalidade (grupos, marca, cor por papel, largura)
+
+**Classificação: MINOR (aditivo).** Nada foi removido do barril e o padrão de cada opção nova é o desenho de antes. Duas
+mudanças de comportamento merecem conferência de quem já usa o cromo:
+
+- **Sem logo, a marca não pinta caixa.** O bloco da marca só aplica `sidebarBrandBackground`/`topbarBrandBackground` quando há
+  logo (`logo` ou `brand.logoUrl`); só com `brand.name` ele é o texto, sem fundo. Com a lateral recolhida e sem logo, o bloco
+  da marca some em vez de ficar uma caixa vazia. Se o seu tema pintava esse fundo atrás do nome, passe a logo ou escreva o
+  fundo no `sidebarColor`.
+- **A lateral deixa de rolar por inteiro.** A rolagem fica só na lista de navegação; marca, busca, preferências e usuário ficam
+  fixos, e a barra nunca tem rolagem horizontal. O menu de preferências abre num portal ao lado do botão (antes ficava preso
+  dentro da barra e saía cortado quando ela estava recolhida), e o texto do atalho da busca (`Ctrl+K`) saiu da tela — o atalho
+  segue funcionando e fica em `aria-keyshortcuts`.
+
+Novidades opcionais:
+
+```tsx
+const NAV = [
+  { label: 'Início', route: '/' },
+  { label: 'Vendas', route: '/vendas', children: [
+    { label: 'Pedidos', route: '/vendas/pedidos' },
+    { label: 'Clientes', route: '/vendas/clientes' },
+  ] },
+];
+<SarakAppChrome nav={NAV} activeRoute={rota} onNavigate={navegar} />
+```
+
+Tokens novos: `sidebarLogoPlacement` (`top` | `bottom`), `sidebarTone` e `topbarTone` (`neutral` | `surface` | `primary` |
+`secondary` | `inverse`, exigem `colorPalette`) e `sidebarResizable` (alça de largura; o valor do usuário é a preferência
+`sidebarWidth`, que `useSarakPreferences` passa a aceitar). Os rótulos das posições dos widgets da barra passam a "Mostrar", "No
+menu" e "Esconder".
+
+---
+
 ## 8.0.0 — um cromo por aplicação
 
 **Classificação: MAJOR.** O `SarakShell`, a descoberta e o registro global de módulos foram removidos.
@@ -59,6 +257,36 @@ menores salvos em temas precisam ser elevados para esse piso.
 Se a aplicação usa `--theme-title` para texto corrido, troque essa referência por
 `--theme-text-primary` ou `--sarak-text-main`. Revise também os títulos customizados e os quatro
 valores de escala em temas próprios.
+
+### As cores dos temas embarcados mudam: a marca é a mesma nos dois modos, o fundo é tingido e a secundária e o acento aparecem
+
+**Classificação: MAJOR (cor).** O motor de paletas (`colorPalette`) muda o que calcula, e os 19 temas embarcados e os 15
+presets mudam de cor. Nenhum id de preset sai (um tema salvo com `colorPalette: 'oceano'` continua válido); o que muda é
+a cor que cada id calcula.
+
+| Antes | Agora |
+|---|---|
+| O botão, o controle ativo e o título usavam tons espelhados da escala (700 no claro, 300 no escuro): a cor escolhida nunca aparecia. | O preenchimento da marca (`btnPrimaryBg`, `rangeActiveColor`, `switchTrackActiveBg`, `checkboxActiveColor`) é a **cor-base exata** nos dois modos. O texto da marca (`primaryColor`, `titleColor`, `cardTitleColor`, `navItemActiveColor`) é a base com o **menor deslocamento de luminosidade** que passa em 4,5:1, no mesmo matiz e croma. |
+| O fundo era cinza puro (croma 0,008), do tom 50 ao 950. | O fundo leva o matiz da base, com croma OKLCH entre 0,012 e 0,030; o corpo tem luminosidade 0,95-0,97 no claro e 0,16-0,19 no escuro, e as camadas diferem em pelo menos 0,03. |
+| A secundária só pintava `secondaryColor` e o gráfico; o acento, a marca. | 60-30-10: a primária pinta ação, título e controle; a secundária o subtítulo, o botão secundário, o cabeçalho de cartão e de tabela, a categoria da lateral e o gráfico; o acento a ênfase, o marcador do item ativo, o anel de foco e o brilho do ícone do cartão. |
+| Os presets declaravam secundária e acento à mão, sem relação com o tipo. | A secundária e o acento saem do ângulo do tipo (a até 15°). Dez presets têm base média e o texto anda pouco; os outros cinco são vivos de propósito. |
+
+O diálogo de troca de paleta escreve "1 cor" e "2 cores" (antes "1 cor(es)"). Quem fixa um token de cor por cima da paleta
+não muda; quem conferia a cor calculada de um preset, ou um snapshot, atualiza o valor esperado.
+
+### Saem 15 tokens `preset*` da geometria interna do painel
+
+As miniaturas de opção do painel de customização passaram a ser desenhadas com os componentes reais, então
+os tokens que dimensionavam o desenho antigo deixaram de ter leitor e saíram do schema:
+`presetCardHoverShadowOffsetY`, `presetCardShadowBlur`, `presetCardShadowOffsetY`, `presetCardShadowSpread`,
+`presetGlowShadowBlur`, `presetGlowShadowBlurLg`, `presetGridTextureSize`, `presetMatteShadowBlur1`,
+`presetMatteShadowBlur2`, `presetMatteShadowOffsetY2`, `presetMatteShadowSpread1`, `presetMatteShadowSpread2`,
+`presetMiniCardHeight`, `presetPreviewMinHeight` e `presetPreviewPaddingY`.
+
+**Antes:** um tema ou payload podia declarar qualquer um deles (e as variáveis `--sarak-preset-*` correspondentes
+eram emitidas), sem efeito em nenhum componente do sistema.
+**Depois:** a chave é descartada com aviso por `validateDesign` e as variáveis deixam de ser emitidas. Nenhum
+tema embarcado os declarava. **Como migrar:** apague a chave do tema; não há substituto, porque nada a lia.
 
 ### Largura padrão do conteúdo
 
@@ -1510,6 +1738,96 @@ como fórmula (começa com `=` ou `@`) sai com um apóstrofo na frente. Não há
 **Textos fixos que passaram para o catálogo de textos da lib** (seis idiomas): "Seleção", "Selecionar linha N", "Redimensionar coluna",
 "Ordenar por …" e os rótulos de seleção dos cartões. No idioma padrão (português) saem iguais; um teste que procurasse o texto em inglês
 num sistema em inglês passa a encontrar o texto em inglês.
+
+### As paletas prontas sobem para 19, e a Secundária e o Acento chegam à tela
+
+**Classificação: MINOR, dentro da 8.0.0 (a cor muda; nenhum nome nem tipo público muda).** Os 15 ids de paleta da rc.4 seguem
+válidos e um `colorPalette` salvo continua resolvendo. O que muda é a **cor** que cada um calcula e o que o catálogo oferece.
+
+| Antes | Depois |
+|---|---|
+| 15 paletas prontas; a Secundária e o Acento saíam de um ângulo do tipo, e a escala descartava a luminosidade da semente. | **19 paletas**, cada uma com as três sementes declaradas (base, secundária, acento). Ids novos: `ciano-azul`, `oliva-viva`, `oliva-dourada`, `tinta-azul`. `ciano-violeta` passa a tríade e devolve o violeta ao tema `sarak-sovereign`. |
+| A Secundária e o Acento quase não apareciam: o subtítulo da semente `#20973d` saía `#003c10`, quase preto. | O texto que parte da semente (subtítulo, ênfase, categoria do menu, foco do campo) a usa com o **menor deslocamento de luminosidade** que o contraste pede; o gráfico e o marcador do menu são a **semente exata**; cabeçalho de cartão e de tabela e o botão secundário continuam **tingidos**, agora mais sutis. |
+| `terra-argila`, `tinta-vinho` e `rosa-pastel` não tinham a cor do nome (oliva, cinza-marrom, rosa forte). | `terra-argila` é terracota, `tinta-vinho` é vinho e `rosa-pastel` chama-se "Rosa profundo". A oliva e a tinta cinza-azulada ganharam ids próprios. |
+
+**O que fazer:** nada muda no seu código. Um tema embarcado, ou um tema seu que use um desses ids em `colorPalette`, sai com
+cores diferentes do que saía na rc.4 (especialmente o subtítulo, a ênfase e o gráfico). Um teste que comparasse cor exata de um
+tema embarcado, ou um snapshot que capturasse uma cor calculada pela paleta, precisa ser regravado. Os temas continuam nos mesmos
+ids de paleta; as quatro paletas novas só aparecem na galeria do painel.
+
+### O painel de customização navega por seis decisões, com a prévia sempre à vista e o ajuste fino em níveis
+
+**Classificação: MINOR, dentro da 8.0.0 (a navegação do painel muda; nenhum nome nem tipo público muda).**
+`SarakCustomizationPanel` segue com o mesmo nome e as mesmas props, e nenhum token foi criado, renomeado ou removido: o
+catálogo e o `design` do tema ficam como estavam. Muda o caminho do usuário dentro do painel.
+
+| Antes | Depois |
+|---|---|
+| Sete pilares num acordeão e um seletor de três modos (**Impacto**, **Essencial**, **Completo**) que dividia os controles por quantidade. | Uma coluna com seis decisões — **Tema, Cores, Fontes, Forma, Componentes, Layout** —, cada linha com o valor que vale agora e uma marca de alterada. O seletor de modo e o `editMode` saem. |
+| A **Galeria de estilos** abria sobre a prévia e a dividia em dois quadros (ou os empilhava). | A galeria sai de cima da prévia: as opções visuais moram dentro de cada decisão, na coluna, e a prévia fica sempre à vista. O interruptor "Empilhar previews" sai. |
+| Os controles de cada pilar ficavam num acordeão por seção. | **Nível 2:** as opções visuais da decisão (temas, paletas, pares de fontes, cards, atmosfera, botões, campos) e os ajustes de efeito visual provado. **Nível 3:** o **Ajuste fino**, recolhido, com a contagem real; abre primeiro nos ajustes de `importance >= 80` e só então, sob **Mostrar todos**, nos demais. |
+| Claro/Escuro, dispositivo e tela de amostra ficavam espalhados entre a barra da prévia e o cromo simulado. | Ficam na **barra da prévia**: modo de cor, tela de amostra e dispositivo. O cromo simulado continua com o próprio menu. |
+| Nenhuma porta para quem só tem uma marca. | **Usar minha marca**, a primeira entrada da coluna: nome, logo, cor principal e par de fontes viram um tema no rascunho (`colorPalette` `custom:analogous:<cor>`, fontes e identidade). Nada é gravado até o **Aplicar**; a identidade segue a porta de marca que já existia (`branding.onChange`). |
+| O pilar **Avançado** era uma seção do acordeão. | Fica no menu **Avançado**, na entrada **Outros ajustes**, junto da tabela de tokens. |
+| Abrir um pilar levava a prévia à tela dele, e escolher a tela levava o painel ao pilar. | Abrir uma decisão leva a prévia à tela canônica dela; escolher a tela na barra muda só a prévia. Um gesto, sem laço. |
+| Em contêiner estreito o painel espremia a prévia. | Abaixo de 640 px **do contêiner** (não da janela; vale no modo embarcado), a coluna e a prévia empilham, o painel rola e a prévia continua ao alcance. |
+
+**O que fazer:** quem automatiza o painel (teste de ponta a ponta, captura) não encontra mais o botão **Abrir galeria**, o
+grupo **Modo de edição** nem o interruptor **Empilhar previews**: entra pela decisão (`Cores`, `Fontes`, `Forma`,
+`Componentes`, `Layout` ou `Tema`) e escolhe a opção dentro dela; a busca por token abre a decisão certa com o controle à vista.
+Quem lia o texto "Galeria de estilos" ou a descrição "Modo de edição" muda para o nome da decisão. Os textos novos
+saem nos seis idiomas da biblioteca.
+
+### `SarakChartEngine`: o hachurado sai do padrão e o funil passa a escalar pelo maior valor
+
+**Classificação: MINOR, dentro da 8.0.0 (nenhum nome público sai; duas saídas visuais mudam).** Props novas, todas com padrão
+que preserva o desenho: `pattern`, `getPointColor`, `showValues`, `funnel` e `axis` (`maxTicks`, `compact`). `config.thickness`
+passa a valer em `bar`, e o rótulo dentro do funil e do treemap passa a ser escolhido pelo contraste com o fundo do item.
+
+| Antes | Depois |
+|---|---|
+| Toda série saía com hachurado (`decal`) sobre a cor. | Sem hachurado. `pattern` liga de volta o mesmo desenho de antes. |
+| O funil escalava de 0 a 1000 fixos: dados menores saíam como uma ponta fina. | O funil escala de 0 ao **maior valor** dos dados, e a dica mostra o valor recebido. `funnel={{ min, max }}` fixa a escala. |
+
+**O que fazer:** onde a **cor era o único sinal** (legenda por cor, estados lado a lado), ligue `pattern` para quem não distingue
+cor. Quem dependia da escala 0–1000 do funil passa `funnel={{ max: 1000 }}`. Um snapshot que capturasse o `decal` ou o `max: 1000`
+do funil precisa ser regravado.
+
+### Linha de recurso compacta, métrica única com link, afixo dentro do campo e abas que não transbordam
+
+**Classificação: MINOR, dentro da 8.0.0 (só se acrescentam props opcionais; nenhum nome nem tipo existente muda).** Sem as props
+novas o desenho é o de antes, com uma exceção: a faixa de abas deixa de transbordar o contêiner.
+
+| Componente | Prop nova | Padrão |
+|---|---|---|
+| `SarakResourceRow` | `layout?: 'stacked' \| 'inline'`, `density?: 'compact' \| 'standard'` | `'stacked'`, `'standard'` |
+| `SarakStats` | `href?: string` dentro de `metrics[chave]`; uma única métrica passa a ocupar a linha inteira da grade | sem `href`, a métrica não navega |
+| `SarakInput`, `SarakCurrencyInput`, `SarakMaskedInput` | `affixPlacement?: 'outside' \| 'inside'` | `'outside'` |
+| `SarakTabs` | `overflow?: 'scroll' \| 'wrap' \| 'menu'` | `'scroll'` |
+
+**O que muda sem você pedir:** (1) a faixa de `SarakTabs` fica no máximo na largura do contêiner e rola dentro dela, com as bordas
+esmaecidas onde ainda há abas; antes ela empurrava a página e as últimas abas sumiam. (2) Cada aba passa a ter ao menos
+`--sarak-touch-target-min` (44 px) de altura. (3) `SarakStats` com uma só métrica deixa de ocupar meia linha.
+
+**O que fazer:** quem montava `SarakCard` + `SarakValue` à mão para ter link passa `metrics={{ chave: { href } }}`. Quem
+empilhava `SarakResourceRow` e queria a linha densa passa `layout="inline" density="compact"`; em contêiner estreito (abaixo de
+640 px) a linha empilha sozinha. Onde o prefixo e o sufixo do campo devem ficar dentro da borda, passe `affixPlacement="inside"`.
+Um snapshot da faixa de abas ou da grade de uma métrica precisa ser regravado.
+
+### Espaço entre colunas da grade, confirmação acima da gaveta e opção marcada do controle segmentado
+
+**Classificação: MINOR, dentro da 8.0.0 (só se acrescentam props opcionais; nenhum nome nem tipo existente muda).** Três defeitos
+medidos no ERP saem, e `SarakGrid` e `SarakFlex` ganham o espaço por eixo.
+
+| Antes | Depois |
+|---|---|
+| `SarakGrid` com `gap` e `templateColumns` desenhava **zero** entre colunas (o computado era `gap: 16px normal`). | O `gap` vale nas duas direções. `rowGap` e `columnGap` (mesmos valores de `gap`: token `spacing-*` ou comprimento CSS) vencem o `gap` no eixo deles, em `SarakGrid` e em `SarakFlex`. |
+| `SarakModal` e a confirmação de `useOverlay().confirm()` abertos com `SarakDrawer` já aberto ficavam **atrás** do fundo da gaveta (o clique caía nela). | Há uma pilha única de camadas abertas: a que abre depois fica acima da última, seja gaveta, modal ou confirmação, e só a do topo responde a Escape e ao Tab. Ao fechar a de cima, o foco volta ao elemento que a abriu. Quem abre uma camada só tem o mesmo `z-index` de antes. |
+| A opção marcada de `SarakSegmentedControl` era igual às outras (só o `aria-checked` mudava). | A opção marcada inverte a superfície: fundo no texto de maior contraste sobre o corpo (`--sarak-on-surface`) e texto na cor do corpo, em todos os temas e modos. |
+
+**O que fazer:** nada muda no seu código. Quem contornava o defeito da grade com `columnGap` em `style` pode trocar por `columnGap`; quem
+fechava a gaveta antes de abrir a confirmação pode deixá-la aberta. Um snapshot que capturasse `gap: … normal` na grade ou a opção
+marcada do controle segmentado sem estilo precisa ser regravado.
 
 ## 7.0.0 — Os nomes públicos passam a identificar a biblioteca
 

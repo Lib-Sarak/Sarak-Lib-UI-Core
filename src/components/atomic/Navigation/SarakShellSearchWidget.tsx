@@ -22,6 +22,8 @@ import {
 
 export interface SarakShellSearchWidgetProps {
     variant?: 'bar' | 'icon';
+    /** Só o ícone, sem rótulo (lateral recolhida); nas linhas de menu o rótulo segue à vista. */
+    compact?: boolean;
     items?: SarakSearchItem[];
     onClick: () => void;
     onSelect?: (item: SarakSearchItem) => void;
@@ -88,47 +90,40 @@ const useCloseSearchOnOutsideClick = (
     }, [containerRef, setSearchState]);
 };
 
-const SearchShortcutBadge = ({ searchModifier, className = '' }: { searchModifier: string; className?: string }): React.ReactElement => (
-    <kbd
-        data-testid="sarak-shell-search-shortcut"
-        className={className + ' flex shrink-0 items-center rounded bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] text-[var(--sarak-type-scale-tiny,11px)] text-[var(--theme-muted)] font-black transition-opacity pointer-events-none'}
-        style={{
-            gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)',
-            paddingInline: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.75)',
-            paddingBlock: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.25)',
-        }}
-    >
-        <span>{searchModifier}</span>
-        <span aria-hidden="true">+</span>
-        <span>K</span>
-    </kbd>
-);
+/**
+ * O atalho não é escrito na tela: fica declarado para a tecnologia assistiva. O gatilho em si (Ctrl/Cmd+K) é do
+ * cromo (`useSearchShortcut`); aqui só se anuncia a combinação da plataforma.
+ */
+const getSearchKeyShortcut = (): string =>
+    getSearchModifierLabel(typeof navigator === 'undefined' ? '' : navigator.userAgent) === '⌘' ? 'Meta+K' : 'Control+K';
 
-const SearchIconTrigger = ({ onClick }: { onClick: () => void }): React.ReactElement => {
+const SearchIconTrigger = ({ onClick, className = '', compact = false }: { onClick: () => void; className?: string; compact?: boolean }): React.ReactElement => {
     const t = useLibraryText();
-    const searchModifier = getSearchModifierLabel(typeof navigator === 'undefined' ? '' : navigator.userAgent);
 
     return (
         <SarakMenuItem
             onClick={onClick}
-            className="group font-tab"
+            className={'group font-tab ' + className}
             title={t('shellSearchWidgetTitle')}
+            collapsed={compact}
+            aria-keyshortcuts={getSearchKeyShortcut()}
             icon={<SarakIcon name="Search" size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />}
             label={t('genericSearchLabel')}
-        >
-            <SearchShortcutBadge searchModifier={searchModifier} className="ml-auto opacity-0 group-hover:opacity-100" />
-        </SarakMenuItem>
+        />
     );
 };
 
-const SearchBar = ({ items, onSelect }: { items: SarakSearchItem[]; onSelect?: (item: SarakSearchItem) => void }): React.ReactElement => {
+const SearchBar = ({ items, onSelect, onClick }: { items: SarakSearchItem[]; onSelect?: (item: SarakSearchItem) => void; onClick: () => void }): React.ReactElement => {
     const t = useLibraryText();
     const state = useShellSearchState(items, onSelect);
-    const searchModifier = getSearchModifierLabel(typeof navigator === 'undefined' ? '' : navigator.userAgent);
 
     return (
         <div className="hidden md:flex items-center w-80 min-w-0 max-w-full group relative @container" ref={state.containerRef}>
-            <div className="flex w-full min-w-0 items-center" style={{ gap: 'var(--sarak-layout-gap-md, 16px)' }}>
+            {/* Sem espaço para a caixa (contêiner abaixo do mínimo útil do campo), vira o ícone que abre a busca. */}
+            {/* sarak-allow-hardcode: o menor contêiner útil do campo (10rem) não tem nome nem token. */}
+            <div className="hidden w-full @max-[10rem]:block"><SearchIconTrigger onClick={onClick} /></div>
+            {/* sarak-allow-hardcode: o mesmo limite do gatilho acima. */}
+            <div className="w-full min-w-0 @max-[10rem]:hidden"><div className="flex w-full min-w-0 items-center">
                 <SarakInput
                     type="search"
                     enterKeyHint="search"
@@ -136,6 +131,7 @@ const SearchBar = ({ items, onSelect }: { items: SarakSearchItem[]; onSelect?: (
                     aria-autocomplete="list"
                     aria-controls={state.canShowResults ? state.listboxId : undefined}
                     aria-expanded={state.canShowResults}
+                    aria-keyshortcuts={getSearchKeyShortcut()}
                     aria-activedescendant={state.canShowResults && state.filteredItems.length > 0 ? state.getOptionId(state.activeIndex) : undefined}
                     value={state.query}
                     placeholder={t('shellSearchWidgetPlaceholder')}
@@ -147,10 +143,7 @@ const SearchBar = ({ items, onSelect }: { items: SarakSearchItem[]; onSelect?: (
                     fullWidth
                     className="min-w-0 flex-1"
                 />
-                {!state.isInputFocused && state.query.length === 0 && (
-                    <SearchShortcutBadge searchModifier={searchModifier} className="@max-xs:hidden" />
-                )}
-            </div>
+            </div></div>
             {state.canShowResults && <SarakShellSearchResults state={state} onSelect={onSelect} />}
         </div>
     );
@@ -158,8 +151,8 @@ const SearchBar = ({ items, onSelect }: { items: SarakSearchItem[]; onSelect?: (
 
 export const SarakShellSearchWidget = (props: SarakShellSearchWidgetProps): React.ReactElement => {
     const variant = props.variant ?? 'bar';
-    if (variant === 'icon') return <SearchIconTrigger onClick={props.onClick} />;
-    return <SearchBar items={props.items ?? []} onSelect={props.onSelect} />;
+    if (variant === 'icon') return <SearchIconTrigger onClick={props.onClick} compact={props.compact} />;
+    return <SearchBar items={props.items ?? []} onSelect={props.onSelect} onClick={props.onClick} />;
 };
 
 export default SarakShellSearchWidget;

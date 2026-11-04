@@ -134,6 +134,12 @@ export const buildHeatmapSeries = (
     }],
 });
 
+function resolveFunnelMax(data: SarakChartDataItem[], config: ChartBuilderConfig | undefined): number {
+    if (config?.funnelMax !== undefined) return config.funnelMax;
+    const values = data.map((item) => Number(item[config?.dataKey || 'v'])).filter(Number.isFinite);
+    return values.length > 0 ? Math.max(...values) : 0;
+}
+
 export const buildFunnelSeries = (
     data: SarakChartDataItem[],
     config: ChartBuilderConfig | undefined,
@@ -146,8 +152,8 @@ export const buildFunnelSeries = (
         top: FUNNEL_VERTICAL_INSET,
         bottom: FUNNEL_VERTICAL_INSET,
         width: '80%',
-        min: 0,
-        max: HEATMAP_MAXIMUM,
+        min: config?.funnelMin ?? 0,
+        max: resolveFunnelMax(data, config),
         minSize: '0%',
         maxSize: '100%',
         sort: 'descending',

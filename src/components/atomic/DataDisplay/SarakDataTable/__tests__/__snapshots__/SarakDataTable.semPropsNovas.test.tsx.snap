@@ -1,0 +1,481 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SarakDataTable sem as props da tabela de trabalho > mantém o DOM da tabela com seleção e detalhe 1`] = `
+<div>
+  <div
+    data-sarak-datatable="true"
+    role="table"
+    style="height: 300px; max-width: 100%; overflow: auto; position: relative;"
+  >
+    <div
+      style="width: 408px; position: relative; height: 220px;"
+    >
+      <div
+        role="row"
+        style="position: sticky; top: 0px; z-index: 3; display: flex; height: 44px; background: var(--sarak-table-header-bg, var(--color-theme-card,#101622)); border-bottom: var(--sarak-border-width, 1px) solid var(--sarak-table-border, var(--border-color,rgba(255,255,255,0.09)));"
+      >
+        <div
+          aria-label="Seleção"
+          role="columnheader"
+          style="width: 48px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center;"
+        >
+          <label
+            class="cursor-pointer"
+          >
+            <div
+              class="flex items-start"
+              style="gap: var(--sarak-layout-gap-sm, 12px);"
+            >
+              <div
+                class="relative flex items-center justify-center"
+              >
+                <input
+                  aria-checked="false"
+                  aria-label="Selecionar todas as linhas visíveis"
+                  class="sr-only"
+                  type="checkbox"
+                />
+                <div
+                  class="w-5 h-5 rounded transition-all duration-[var(--duration-fast,0.2s)] flex items-center justify-center border"
+                  style="background-color: transparent; border-color: var(--sarak-input-border-color, var(--border-color, rgba(255,255,255,0.09))); border-width: 1px; border-style: solid; box-shadow: none;"
+                />
+              </div>
+            </div>
+          </label>
+        </div>
+        <div
+          aria-hidden="true"
+          role="columnheader"
+          style="width: 40px; flex: 0 0 auto;"
+        />
+        <div
+          data-column-id="name"
+          data-pinned="left"
+          draggable="true"
+          role="columnheader"
+          style="width: 160px; flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-start; padding: 0 var(--sarak-table-padding, 12px); font-weight: 600; color: var(--color-theme-title,#f2f6fb); cursor: grab; user-select: none; opacity: 1; position: sticky; left: 88px; z-index: 2; background: var(--sarak-table-header-bg, var(--color-theme-card,#101622));"
+        >
+          <div
+            style="width: 100%; display: flex; justify-content: flex-start;"
+          >
+            <button
+              aria-label="Ordenar por name"
+              class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-1.5 px-3 text-xs bg-transparent text-[var(--sarak-primary-color,#19e3f0)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]"
+              draggable="false"
+              type="button"
+            >
+              <svg
+                class=""
+                fill="none"
+                height="12"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="12"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="m21 16-4 4-4-4"
+                />
+                <path
+                  d="M17 20V4"
+                />
+                <path
+                  d="m3 8 4-4 4 4"
+                />
+                <path
+                  d="M7 4v16"
+                />
+              </svg>
+              <span>
+                Nome
+              </span>
+            </button>
+          </div>
+          <span
+            aria-label="Redimensionar coluna name"
+            aria-orientation="vertical"
+            data-resize-handle="name"
+            role="separator"
+            style="width: 6px; cursor: col-resize; align-self: stretch; flex: 0 0 auto;"
+          />
+        </div>
+        <div
+          data-column-id="amount"
+          draggable="true"
+          role="columnheader"
+          style="width: 160px; flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-end; padding: 0 var(--sarak-table-padding, 12px); font-weight: 600; color: var(--color-theme-title,#f2f6fb); cursor: grab; user-select: none; opacity: 1;"
+        >
+          <span
+            style="flex: 1 1 0%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: right;"
+          >
+            Valor
+          </span>
+          <span
+            aria-label="Redimensionar coluna amount"
+            aria-orientation="vertical"
+            data-resize-handle="amount"
+            role="separator"
+            style="width: 6px; cursor: col-resize; align-self: stretch; flex: 0 0 auto;"
+          />
+        </div>
+      </div>
+      <div
+        data-index="0"
+        role="row"
+        style="position: absolute; top: 44px; left: 0px; display: flex; width: 408px; height: 44px; border-bottom: var(--sarak-border-width, 1px) solid var(--sarak-table-border, var(--border-color,rgba(255,255,255,0.09)));"
+      >
+        <div
+          aria-label="Seleção"
+          role="cell"
+          style="width: 48px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center;"
+        >
+          <label
+            class="cursor-pointer"
+          >
+            <div
+              class="flex items-start"
+              style="gap: var(--sarak-layout-gap-sm, 12px);"
+            >
+              <div
+                class="relative flex items-center justify-center"
+              >
+                <input
+                  aria-checked="false"
+                  aria-label="Selecionar linha 1"
+                  class="sr-only"
+                  type="checkbox"
+                />
+                <div
+                  class="w-5 h-5 rounded transition-all duration-[var(--duration-fast,0.2s)] flex items-center justify-center border"
+                  style="background-color: transparent; border-color: var(--sarak-input-border-color, var(--border-color, rgba(255,255,255,0.09))); border-width: 1px; border-style: solid; box-shadow: none;"
+                />
+              </div>
+            </div>
+          </label>
+        </div>
+        <div
+          role="cell"
+          style="width: 40px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center;"
+        >
+          <button
+            aria-expanded="true"
+            aria-label="Recolher linha"
+            class="inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn flex-shrink-0 w-6 h-6 text-xs bg-transparent text-[var(--sarak-primary-color,#19e3f0)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]"
+            draggable="false"
+            type="button"
+          >
+            <svg
+              class=""
+              fill="none"
+              height="16"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m6 9 6 6 6-6"
+              />
+            </svg>
+          </button>
+        </div>
+        <div
+          data-column-id="name"
+          role="cell"
+          style="width: 160px; flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 0 var(--sarak-table-padding, 12px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--sarak-text-main,#f2f6fb); position: sticky; left: 88px; z-index: 2; background: var(--color-theme-card,#101622);"
+        >
+          Ana
+        </div>
+        <div
+          data-column-id="amount"
+          role="cell"
+          style="width: 160px; flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-end; text-align: right; padding: 0 var(--sarak-table-padding, 12px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--sarak-text-main,#f2f6fb); font-variant-numeric: tabular-nums;"
+        >
+          10
+        </div>
+      </div>
+      <div
+        data-index="1"
+        role="row"
+        style="position: absolute; top: 164px; left: 0px; display: flex; width: 408px; border-bottom: var(--sarak-border-width, 1px) solid var(--sarak-table-border, var(--border-color,rgba(255,255,255,0.09)));"
+      >
+        <div
+          aria-colspan="2"
+          role="cell"
+          style="width: 100%; padding: var(--sarak-table-padding, 12px); color: var(--sarak-text-main,#f2f6fb);"
+        >
+          Ana
+        </div>
+      </div>
+      <div
+        data-index="2"
+        role="row"
+        style="position: absolute; top: 132px; left: 0px; display: flex; width: 408px; height: 44px; border-bottom: var(--sarak-border-width, 1px) solid var(--sarak-table-border, var(--border-color,rgba(255,255,255,0.09)));"
+      >
+        <div
+          aria-label="Seleção"
+          role="cell"
+          style="width: 48px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center;"
+        >
+          <label
+            class="cursor-pointer"
+          >
+            <div
+              class="flex items-start"
+              style="gap: var(--sarak-layout-gap-sm, 12px);"
+            >
+              <div
+                class="relative flex items-center justify-center"
+              >
+                <input
+                  aria-checked="false"
+                  aria-label="Selecionar linha 2"
+                  class="sr-only"
+                  type="checkbox"
+                />
+                <div
+                  class="w-5 h-5 rounded transition-all duration-[var(--duration-fast,0.2s)] flex items-center justify-center border"
+                  style="background-color: transparent; border-color: var(--sarak-input-border-color, var(--border-color, rgba(255,255,255,0.09))); border-width: 1px; border-style: solid; box-shadow: none;"
+                />
+              </div>
+            </div>
+          </label>
+        </div>
+        <div
+          role="cell"
+          style="width: 40px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center;"
+        >
+          <button
+            aria-expanded="false"
+            aria-label="Expandir linha"
+            class="inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn flex-shrink-0 w-6 h-6 text-xs bg-transparent text-[var(--sarak-primary-color,#19e3f0)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]"
+            draggable="false"
+            type="button"
+          >
+            <svg
+              class=""
+              fill="none"
+              height="16"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m9 18 6-6-6-6"
+              />
+            </svg>
+          </button>
+        </div>
+        <div
+          data-column-id="name"
+          role="cell"
+          style="width: 160px; flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 0 var(--sarak-table-padding, 12px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--sarak-text-main,#f2f6fb); position: sticky; left: 88px; z-index: 2; background: var(--color-theme-card,#101622);"
+        >
+          Beto
+        </div>
+        <div
+          data-column-id="amount"
+          role="cell"
+          style="width: 160px; flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-end; text-align: right; padding: 0 var(--sarak-table-padding, 12px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--sarak-text-main,#f2f6fb); font-variant-numeric: tabular-nums;"
+        >
+          20
+        </div>
+      </div>
+      <div
+        aria-label="Totais"
+        role="rowgroup"
+        style="position: absolute; top: 176px; left: 0px; width: 408px; height: 44px;"
+      >
+        <div
+          role="row"
+          style="display: flex; height: 44px; align-items: center; background: var(--color-theme-card,#101622); border-bottom: var(--sarak-border-width, 1px) solid var(--sarak-table-border, var(--border-color,rgba(255,255,255,0.09)));"
+        >
+          <div
+            aria-hidden="true"
+            role="cell"
+            style="width: 88px; flex: 0 0 auto;"
+          />
+          <div
+            data-column-id="name"
+            role="cell"
+            style="width: 160px; flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 0 var(--sarak-table-padding, 12px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--sarak-text-main,#f2f6fb); position: sticky; left: 88px; z-index: 2; background: var(--color-theme-card,#101622); font-weight: 600;"
+          />
+          <div
+            data-column-id="amount"
+            role="cell"
+            style="width: 160px; flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-end; text-align: right; padding: 0 var(--sarak-table-padding, 12px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--sarak-text-main,#f2f6fb); font-variant-numeric: tabular-nums; font-weight: 600;"
+          >
+            30
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`SarakDataTable sem as props da tabela de trabalho > mantém o DOM da tabela simples 1`] = `
+<div>
+  <div
+    data-sarak-datatable="true"
+    role="table"
+    style="height: 300px; max-width: 100%; overflow: auto; position: relative;"
+  >
+    <div
+      style="width: 320px; position: relative; height: 176px;"
+    >
+      <div
+        role="row"
+        style="position: sticky; top: 0px; z-index: 3; display: flex; height: 44px; background: var(--sarak-table-header-bg, var(--color-theme-card,#101622)); border-bottom: var(--sarak-border-width, 1px) solid var(--sarak-table-border, var(--border-color,rgba(255,255,255,0.09)));"
+      >
+        <div
+          data-column-id="name"
+          data-pinned="left"
+          draggable="true"
+          role="columnheader"
+          style="width: 160px; flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-start; padding: 0 var(--sarak-table-padding, 12px); font-weight: 600; color: var(--color-theme-title,#f2f6fb); cursor: grab; user-select: none; opacity: 1; position: sticky; left: 0px; z-index: 2; background: var(--sarak-table-header-bg, var(--color-theme-card,#101622));"
+        >
+          <div
+            style="width: 100%; display: flex; justify-content: flex-start;"
+          >
+            <button
+              aria-label="Ordenar por name"
+              class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-1.5 px-3 text-xs bg-transparent text-[var(--sarak-primary-color,#19e3f0)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]"
+              draggable="false"
+              type="button"
+            >
+              <svg
+                class=""
+                fill="none"
+                height="12"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="12"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="m21 16-4 4-4-4"
+                />
+                <path
+                  d="M17 20V4"
+                />
+                <path
+                  d="m3 8 4-4 4 4"
+                />
+                <path
+                  d="M7 4v16"
+                />
+              </svg>
+              <span>
+                Nome
+              </span>
+            </button>
+          </div>
+          <span
+            aria-label="Redimensionar coluna name"
+            aria-orientation="vertical"
+            data-resize-handle="name"
+            role="separator"
+            style="width: 6px; cursor: col-resize; align-self: stretch; flex: 0 0 auto;"
+          />
+        </div>
+        <div
+          data-column-id="amount"
+          draggable="true"
+          role="columnheader"
+          style="width: 160px; flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-end; padding: 0 var(--sarak-table-padding, 12px); font-weight: 600; color: var(--color-theme-title,#f2f6fb); cursor: grab; user-select: none; opacity: 1;"
+        >
+          <span
+            style="flex: 1 1 0%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: right;"
+          >
+            Valor
+          </span>
+          <span
+            aria-label="Redimensionar coluna amount"
+            aria-orientation="vertical"
+            data-resize-handle="amount"
+            role="separator"
+            style="width: 6px; cursor: col-resize; align-self: stretch; flex: 0 0 auto;"
+          />
+        </div>
+      </div>
+      <div
+        data-index="0"
+        role="row"
+        style="position: absolute; top: 44px; left: 0px; display: flex; width: 320px; height: 44px; border-bottom: var(--sarak-border-width, 1px) solid var(--sarak-table-border, var(--border-color,rgba(255,255,255,0.09)));"
+      >
+        <div
+          data-column-id="name"
+          role="cell"
+          style="width: 160px; flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 0 var(--sarak-table-padding, 12px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--sarak-text-main,#f2f6fb); position: sticky; left: 0px; z-index: 2; background: var(--color-theme-card,#101622);"
+        >
+          Ana
+        </div>
+        <div
+          data-column-id="amount"
+          role="cell"
+          style="width: 160px; flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-end; text-align: right; padding: 0 var(--sarak-table-padding, 12px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--sarak-text-main,#f2f6fb); font-variant-numeric: tabular-nums;"
+        >
+          10
+        </div>
+      </div>
+      <div
+        data-index="1"
+        role="row"
+        style="position: absolute; top: 88px; left: 0px; display: flex; width: 320px; height: 44px; border-bottom: var(--sarak-border-width, 1px) solid var(--sarak-table-border, var(--border-color,rgba(255,255,255,0.09)));"
+      >
+        <div
+          data-column-id="name"
+          role="cell"
+          style="width: 160px; flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 0 var(--sarak-table-padding, 12px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--sarak-text-main,#f2f6fb); position: sticky; left: 0px; z-index: 2; background: var(--color-theme-card,#101622);"
+        >
+          Beto
+        </div>
+        <div
+          data-column-id="amount"
+          role="cell"
+          style="width: 160px; flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-end; text-align: right; padding: 0 var(--sarak-table-padding, 12px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--sarak-text-main,#f2f6fb); font-variant-numeric: tabular-nums;"
+        >
+          20
+        </div>
+      </div>
+      <div
+        aria-label="Totais"
+        role="rowgroup"
+        style="position: absolute; top: 132px; left: 0px; width: 320px; height: 44px;"
+      >
+        <div
+          role="row"
+          style="display: flex; height: 44px; align-items: center; background: var(--color-theme-card,#101622); border-bottom: var(--sarak-border-width, 1px) solid var(--sarak-table-border, var(--border-color,rgba(255,255,255,0.09)));"
+        >
+          <div
+            data-column-id="name"
+            role="cell"
+            style="width: 160px; flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 0 var(--sarak-table-padding, 12px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--sarak-text-main,#f2f6fb); position: sticky; left: 0px; z-index: 2; background: var(--color-theme-card,#101622); font-weight: 600;"
+          />
+          <div
+            data-column-id="amount"
+            role="cell"
+            style="width: 160px; flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-end; text-align: right; padding: 0 var(--sarak-table-padding, 12px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--sarak-text-main,#f2f6fb); font-variant-numeric: tabular-nums; font-weight: 600;"
+          >
+            30
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

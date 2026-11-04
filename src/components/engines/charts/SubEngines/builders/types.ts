@@ -9,7 +9,7 @@ import type { EChartsTheme } from '../useEChartsTheme';
 export type ChartTheme = EChartsTheme;
 
 /** Cor que um token de série resolve neste tema: marca pela paleta derivada, estado pela cor de estado. */
-export function resolveChartColorToken(theme: ChartTheme, token: ChartColorToken): string {
+export function resolveChartColorToken(theme: ChartTheme, token: SarakChartColorToken): string {
     const brandIndex = (CHART_BRAND_TOKENS as readonly string[]).indexOf(token);
     if (brandIndex >= 0) return theme.palette[brandIndex] ?? theme.primaryColor;
     return theme.statusColors[token as ChartStatusToken] ?? theme.primaryColor;
@@ -38,7 +38,8 @@ export const CHART_STATUS_TOKENS = ['statusSuccessColor', 'statusWarningColor', 
 
 export const CHART_COLOR_TOKENS = [...CHART_BRAND_TOKENS, ...CHART_STATUS_TOKENS] as const;
 
-export type ChartColorToken = typeof CHART_COLOR_TOKENS[number];
+/** Nome de um token de cor do tema aceito pelos gráficos. */
+export type SarakChartColorToken = typeof CHART_COLOR_TOKENS[number];
 export type ChartBrandToken = typeof CHART_BRAND_TOKENS[number];
 export type ChartStatusToken = typeof CHART_STATUS_TOKENS[number];
 
@@ -49,6 +50,11 @@ export interface ChartBuilderConfig {
     thickness?: number;
     showGradients?: boolean;
     seriesColor?: string;
+    /** Largura máxima da barra em px; só existe quando o chamador pediu `config.thickness`. */
+    barMaxWidth?: number;
+    /** Escala do funil; omitidos, `min` vale 0 e `max` o maior valor dos dados. */
+    funnelMin?: number;
+    funnelMax?: number;
 }
 
 /** Fragmento de opção ECharts produzido por um builder (mesclado depois). */
@@ -84,3 +90,20 @@ export interface SarakChartGauge {
     min?: number;
     max?: number;
 }
+
+/** Escala do funil; omitida, vai de 0 ao maior valor. */
+export interface SarakChartFunnel {
+    min?: number;
+    max?: number;
+}
+
+/** Marcas do eixo de valor e de categoria. */
+export interface SarakChartAxis {
+    /** Teto de marcas por eixo; omitido, segue a largura do gráfico. */
+    maxTicks?: number;
+    /** Eixo de valor abreviado (`1,2 mi`), no idioma da tela; a dica mantém o valor inteiro. */
+    compact?: boolean;
+}
+
+/** Cor de um item: nome de token do tema, ou `undefined` para cair na paleta. */
+export type SarakChartPointColor = (datum: SarakChartDataItem, index: number) => SarakChartColorToken | undefined;

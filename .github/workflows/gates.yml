@@ -24,14 +24,14 @@ jobs:
     # dos anéis locais, nunca um subconjunto (spec 02 §3 só vale local).
     # ---------------------------------------------------------------------
     gates:
-        runs-on: ubuntu-latest
-        # ubuntu-latest, não matriz de SO: medido (plan-05), zero ocorrências de
+        runs-on: ubuntu-24.04
+        # ubuntu-24.04 fixo (a imagem não muda sem aviso), não matriz de SO: medido (plan-05), zero ocorrências de
         # process.platform/win32/caminho de unidade fora de teste em src/, scripts/,
         # gates/, bin/. Windows custa x2 e macOS x10 em minuto de runner, sem
         # nenhuma superfície de plataforma a testar.
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7
               with:
                   # fetch-depth 0 (histórico + tags completos): o Anel de release
                   # (job separado, abaixo) precisa da última tag e do log entre ela e
@@ -39,7 +39,7 @@ jobs:
                   fetch-depth: 0
 
             - name: Node 24 (o do dono, sem matriz)
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v7
               with:
                   node-version: "24"
                   cache: "npm"
@@ -64,13 +64,13 @@ jobs:
 
             - name: Saída completa do gates:full como artifact (sempre — achado 44)
               if: always()
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v7
               with:
                   name: gates-full-output-${{ github.run_id }}-${{ github.run_attempt }}
                   path: gates-full-output.log
                   retention-days: 30
 
-            # Os SEIS *:check que o gates:full NÃO alcança — enumerados e provados um a
+            # Os *:check que o gates:full NÃO alcança — enumerados e provados um a
             # um pelo executor (plan-05 §5 item 5), não presumidos do levantamento
             # anterior à plan-52:
             #   - plan-index:check   : nunca esteve na cadeia de build/gates:full: só o
@@ -98,7 +98,8 @@ jobs:
             #   - channel-dispute:check : mesmo padrão — vive só no Anel 1 do pre-commit.
             #   - theme-completeness:check : mesmo padrão — vive só no Anel 1 do pre-commit.
             #   - fonts:check : roda também no build; repetido aqui porque confere o dist/fonts versionado.
-            - name: Os 16 *:check que o gates:full não alcança
+            #   - network:check : a lib não faz rede (specs/10 §3.2); roda só aqui.
+            - name: Os *:check que o gates:full não alcança
               run: |
                   npm run plan-index:check
                   npm run gate-limits:check
@@ -116,6 +117,7 @@ jobs:
                   npm run token-docs:check
                   npm run theme-completeness:check
                   npm run fonts:check
+                  npm run network:check
 
     # ---------------------------------------------------------------------
     # CROMO-CSS-REAL — a única medição de CSS RENDERIZADO (valor computado, não
@@ -130,13 +132,13 @@ jobs:
     # Herda o MESMO `on:` do topo deste arquivo — nenhum gatilho novo a manter.
     # ---------------------------------------------------------------------
     cromo-css-real:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-24.04
         steps:
             - name: Checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7
 
             - name: Node 24 (o do dono, sem matriz)
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v7
               with:
                   node-version: "24"
                   cache: "npm"
@@ -163,16 +165,16 @@ jobs:
     # ---------------------------------------------------------------------
     release-tag:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-24.04
         needs: gates
         steps:
             - name: Checkout (histórico + tags completos)
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7
               with:
                   fetch-depth: 0
 
             - name: Node 24
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v7
               with:
                   node-version: "24"
                   cache: "npm"
@@ -197,14 +199,14 @@ jobs:
     # ---------------------------------------------------------------------
     install-sha:
         if: github.event_name == 'pull_request'
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-24.04
         strategy:
             fail-fast: false
             matrix:
                 manager: [npm, pnpm, yarn]
         steps:
             - name: Node 24
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v7
               with:
                   node-version: "24"
 

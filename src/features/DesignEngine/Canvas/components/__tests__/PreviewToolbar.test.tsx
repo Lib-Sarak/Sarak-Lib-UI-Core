@@ -4,16 +4,28 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { PreviewToolbar } from '../PreviewToolbar';
 
-const createProps = (overrides: Partial<React.ComponentProps<typeof PreviewToolbar>> = {}) => ({
-    previewDevice: 'desktop' as const,
+const createProps = (overrides: Partial<React.ComponentProps<typeof PreviewToolbar>> = {}): React.ComponentProps<typeof PreviewToolbar> => ({
+    previewDevice: 'desktop',
     setPreviewDevice: vi.fn(),
-    isPreviewStacked: false,
-    setIsPreviewStacked: vi.fn(),
-    isGalleryOpen: true,
+    mode: 'dark',
+    onModeChange: vi.fn(),
+    activePreviewApp: 'dashboard',
+    selectPreviewApp: vi.fn(),
     ...overrides
 });
 
-describe('PreviewToolbar', () => {
+describe('PreviewToolbar — espiada', () => {
+    it('avisa que é só uma prévia enquanto espia, e volta à dica ao sair', () => {
+        const { rerender } = render(<PreviewToolbar {...createProps({ isPeeking: true })} />);
+        expect(screen.getByRole('status')).toHaveTextContent('Prévia: nada foi gravado');
+
+        rerender(<PreviewToolbar {...createProps({ isPeeking: false })} />);
+        expect(screen.queryByRole('status')).toBeNull();
+        expect(screen.getByText(/Passe o mouse numa opção/)).toBeInTheDocument();
+    });
+});
+
+describe('PreviewToolbar — dispositivo, modo e tela', () => {
     it('expõe os três dispositivos e encaminha a troca ao estado do preview', async () => {
         const user = userEvent.setup();
         const setPreviewDevice = vi.fn();
@@ -26,29 +38,36 @@ describe('PreviewToolbar', () => {
         expect(setPreviewDevice).toHaveBeenCalledWith('tablet');
     });
 
-    it('alterna Empilhar previews por switch acessível', async () => {
+    it('troca o modo claro/escuro pela barra e marca o que está valendo', async () => {
         const user = userEvent.setup();
-        const setIsPreviewStacked = vi.fn();
-        render(<PreviewToolbar {...createProps({ setIsPreviewStacked })} />);
+        const onModeChange = vi.fn();
+        render(<PreviewToolbar {...createProps({ mode: 'dark', onModeChange })} />);
 
-        const stackSwitch = screen.getByRole('switch', { name: 'Empilhar previews' });
-        expect(stackSwitch).toHaveAttribute('aria-disabled', 'false');
-        await user.click(stackSwitch);
+        const group = screen.getByRole('group', { name: 'Modo de cor da prévia' });
+        expect(group).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Escuro' })).toHaveAttribute('aria-pressed', 'true');
+        expect(screen.getByRole('button', { name: 'Claro' })).toHaveAttribute('aria-pressed', 'false');
 
-        expect(setIsPreviewStacked).toHaveBeenCalledWith(true);
+        await user.click(screen.getByRole('button', { name: 'Claro' }));
+        expect(onModeChange).toHaveBeenCalledWith('light');
     });
 
-    it('desativa o empilhamento e explica o motivo enquanto a galeria está fechada', async () => {
-        const setIsPreviewStacked = vi.fn();
-        render(<PreviewToolbar {...createProps({ isGalleryOpen: false, isPreviewStacked: true, setIsPreviewStacked })} />);
+    it('escolhe a tela de amostra por uma lista que traz as 6 principais, as adicionais e "Mais telas"', async () => {
+        const user = userEvent.setup();
+        const selectPreviewApp = vi.fn();
+        render(<PreviewToolbar {...createProps({ selectPreviewApp })} />);
 
-        const stackSwitch = screen.getByRole('switch', { name: 'Empilhar previews' });
-        expect(stackSwitch).toBeDisabled();
-        expect(stackSwitch).toHaveAttribute('aria-disabled', 'true');
-        expect(stackSwitch).toHaveAttribute('aria-checked', 'false');
-        expect(stackSwitch).toHaveAttribute('title', 'Abra a galeria de estilos para empilhar os previews.');
+        const select = screen.getByRole('combobox', { name: 'Tela de amostra' });
+        expect(select).toHaveValue('dashboard');
+        const labels = Array.from(select.querySelectorAll('option')).map((option) => option.textContent);
+        expect(labels).toEqual(expect.arrayContaining(['Painel', 'Formulário', 'Tabela', 'Texto', 'Gráficos', 'Tipografia', 'Matriz', 'Mais telas']));
 
-        await userEvent.setup().click(stackSwitch);
-        expect(setIsPreviewStacked).not.toHaveBeenCalled();
+        await user.selectOptions(select, 'tabela');
+        expect(selectPreviewApp).toHaveBeenCalledWith('tabela');
+    });
+
+    it('não tem mais o interruptor de empilhar previews: a galeria não abre sobre a prévia', () => {
+        render(<PreviewToolbar {...createProps()} />);
+        expect(screen.queryByRole('switch', { name: 'Empilhar previews' })).toBeNull();
     });
 });

@@ -111,6 +111,8 @@ estado-padrão completo; com um domínio (id de schema **ou** coluna de persist�
 `:105-117`) devolve só aquela fatia. Aplicar um preset sobrepõe **apenas** as chaves do domínio dele — as
 demais do rascunho sobrevivem.
 
+**Entre os dois, a Personalidade:** um preset composto que cobre a estrutura inteira (forma, fontes, densidade, barras, tabela, movimento e ícones) e nenhuma cor (§5). Tema = estrutura + paleta; a Personalidade dá a estrutura, e a paleta, a cor.
+
 **Consequência prática:** quem sabe escrever um preset sabe escrever um tema. Não existe API separada,
 não existe "modo tema" e "modo preset". Existe um `Record` maior e um menor.
 
@@ -342,6 +344,26 @@ manual do usuário continuam por cima. Valor inválido é recusado com aviso e o
 `auditor_contraste` mede (`palette/contrast-pairs.ts`, importada pelo gate — §6.5). `sarakResolvePalette(valor, modo)` é
 público, para o host prever a paleta no próprio sistema.
 
+**A cor da marca vale nos dois modos.** Nenhuma cor serve de texto igual nos dois modos: a 4,5:1, o texto precisa de L ≥ 0,58 sobre o fundo escuro e de L ≤ 0,55 sobre o
+claro. Por isso o **preenchimento** de marca (`btnPrimaryBg`, `rangeActiveColor`, `switchTrackActiveBg`, `checkboxActiveColor`) é a base exata nos dois modos, com o texto sobre
+ele escolhido pelo contraste, e o **texto** de marca (`primaryColor`, `titleColor`, `cardTitleColor`, `navItemActiveColor`) anda a menor distância de luminosidade que passa nos
+pares, com o mesmo matiz e o mesmo croma (`contrast-shift.ts`). Todo texto segue em 4,5.
+
+**Três faixas.** Texto é a semente com o menor deslocamento que passa. Elemento pequeno é a base exata. Superfície grande é tingida. Por isso uma cor pode sair igual à semente num papel e andar em outro.
+
+**O papel da barra.** `sidebarTone` e `topbarTone` valem `neutral`, `surface`, `primary`, `secondary` ou `inverse`, com padrão `neutral`, que devolve o plano de sempre. `palette/tone-plan.ts` dá os papéis e os pares de `PAIRS` de cada tom, nos dois modos. O tom só vale com `colorPalette` válida, e uma cor declarada em `sidebarColor` ou `topbarColor` continua vencendo. Nos tons contrastantes, a barra refaz para os seus descendentes as variáveis de texto, ícone e borda (`chromeToneStyle.ts`), e assim os widgets acompanham o fundo sem token próprio ([[05-cromo-e-slots]] §2.1). **Os temas embarcados declaram o tom das barras**, com o item ativo e a borda da Personalidade mais próxima do seu caráter (`themeBars.test.ts`, que guarda o mapa tema → Personalidade). A posição da marca não entra nesse mapa: todos os temas a mantêm no topo. A exceção é `sarak-sovereign`, que mantém os padrões do schema (§5.3).
+
+**O fundo tem cor.** A neutra leva o matiz da base, com régua própria de luminosidade; a faixa de croma e de L está em `scale.ts` e `seeds.ts`, com teste sobre os presets.
+
+**60-30-10.** O mapa de papéis (`role-map.ts`) distribui a primária (ações e títulos), a secundária (subtítulo, botão secundário, cabeçalhos, categoria do menu, gráfico) e o acento
+(ênfase, marcador, foco). Os status seguem semânticos.
+
+**O texto se corrige contra o fundo efetivo.** Quando o host ou o tema declaram uma cor literal (`#…`, `rgb()`, `rgba()`) por cima
+da paleta, como uma barra escura num tema claro, o texto calculado que reprova contra esse fundo nos pares de `PAIRS` anda na escala
+até passar (`correctPaletteAgainstDeclared`). O texto que já passa mantém o tom, e o que o host ou o tema declararam não é tocado:
+num tema embarcado com fundo próprio, só texto muda, e todo par continua passando. A exceção é a barra de papel contrastante com fundo fixado: o véu de hover e de ativo dela, quando o tema não o declara, nasce do fundo que vale (`deriveBarVeils`, `bar-veil.ts`), escuro sobre barra clara e claro sobre barra escura. Fundo declarado com `var(...)` ou em outro formato fica fora, porque o
+motor de contraste não o lê.
+
 ## 4.4 Persistir — `localStorage`, e a sincronização entre abas
 
 Persistência é **local por construção** (`options.persistence`, em `src/core/Provider/types.ts`):
@@ -533,6 +555,7 @@ não entra no tema que ele salva.
 | tamanho da fonte | pequeno · médio · grande | `bodySize`, um degrau abaixo ou acima; médio é exatamente a base do tema |
 | navegação | topo · lateral | `navigationStyle` |
 | navegação recolhida | sim · não | `isNavHidden` |
+| largura da lateral | número, entre `sidebarMinWidth` e `sidebarMaxWidth` | `sidebarWidth`, só com `sidebarResizable` ligado no tema |
 | idioma | um dos habilitados no tema | `language` — só se o tema oferece **e** habilita o idioma escolhido (abaixo) |
 
 **O tema decide o que é oferecido**, por token de tema — um por preferência, com três posições: **não
@@ -578,8 +601,24 @@ itens auditados e o gabarito vivo de `getScaffold()`).
 
 Arquivos: `src/core/Design/presets/themes/` (temas + `index.ts` + `boot.ts` + `loaders.ts` + `registry.ts` + `all.ts`
 + `catalog.generated.ts` + `compose.ts` + `reference.ts` + `color-engine.ts`)
-e `src/core/Design/presets/components/` (5 arquivos: `atmosphere`, `buttons`, `cards`, `inputs`,
-`typography`).
+e `src/core/Design/presets/components/`, cujo índice é o registro de grupos `registry.ts`. `ALL_COMPONENT_PRESETS` sai dele. Cada grupo declara a decisão do painel onde mora, o tipo de amostra, a área de tokens que pode escrever e as opções destacadas. Quantos grupos e presets há sai do registro, nunca daqui.
+
+**Os temas embarcados tiram a cor de uma paleta.** Todo tema embarcado declara `colorPalette` com um preset de
+`src/core/Design/palette/presets.ts`; o que ainda declara de cor é sobrescrita justificada, com uma linha de motivo ao lado, e a
+sobrescrita no `design` tem a sua na `contraparte` (`themePalettes.test.ts`). Quantos presets há por tipo sai do registro
+`SARAK_PALETTE_PRESETS`, nunca daqui. Um preset não pode usar os ids `default`, `matrix`, `neon`, `slate` nem `sunset`
+(`SARAK_LEGACY_PALETTE_IDS`): eram valores do `colorPalette` antigo e podem estar em tema salvo por importador. Um id publicado não sai do registro: a curadoria muda a cor, nunca
+o id, porque um id desconhecido compõe sem paleta.
+
+**A harmonia do preset é aprovada à vista.** A semente declarada pode sair do ângulo do tipo até o limite de `presets.test.ts`, que também guarda as exceções de croma com nome. O teste mira a beleza do preset, não a precisão do ângulo. Os números moram no teste e no registro, nunca aqui.
+
+**Preset de estrutura não escreve cor.** Um preset de componente escreve só tokens da área que o grupo declara, e nenhuma cor: nem token `type: color`, nem literal de cor em valor de texto. `sidebarTone` e `topbarTone` são papel da paleta, não cor (§4.3.4). Os presets publicados que já escreviam cor ficam em `LEGACY_COLOR_PRESET_IDS`, uma lista que só encolhe. O `id` de um preset publicado nunca muda nem sai (`PUBLISHED_PRESET_IDS`). Todo preset, aplicado sobre os temas embarcados nos dois modos, mantém os pares de legibilidade da paleta. Os testes são `presetCatalog.test.ts` e `presetsReadable.test.ts`.
+
+**A cobertura é medida.** Os presets cobrem ao menos 60% dos tokens estéticos sem cor (`coverage.ts`, `npx tsx scripts/measure-preset-coverage.ts`). Todo token de fora tem motivo declarado em `COVERAGE_GAPS`: sem efeito visível isolado, só faz sentido no ajuste fino, ou fica para uma rodada seguinte. A lista só encolhe, e o teste confere os dois sentidos.
+
+**Nome e descrição do preset vêm do catálogo, nos seis idiomas, fora do boot.** O português é o `name` e a `description` do próprio preset. Os demais idiomas ficam em `src/core/i18n/presetTexts/`, lidos só pelo painel (`usePresetText`).
+
+**Personalidades** (`personalities.ts`). As dez Personalidades são presets compostos. Cada uma nasce dos presets do registro (`parts`), e o que nenhum grupo cobre vem em `extra`, como a orientação (`navigationStyle`), a posição da marca e o tom das barras. Elas não escrevem nenhuma cor, `colorPalette` nem `mode`. Em barras, declaram `sidebarTone` e `topbarTone`, nunca `sidebarColor` nem `topbarColor`, e os cinco tons aparecem no conjunto. Duas Personalidades diferem em ao menos 8 tokens de estrutura com efeito visível. Todas mantêm os pares de `PAIRS` com todas as paletas do registro, nos dois modos. Os textos ficam em `presetTexts/personalities.ts`, nos seis idiomas. O teste é `personalities.test.ts`, e o spec de navegador mede a legibilidade do cromo nas dez e nos temas embarcados.
 
 ## 5.1 Todo fundo que a lib entrega funciona offline
 
@@ -653,6 +692,10 @@ O schema separa os tokens em **estéticos** e **funcionais** (`kind` e `modeDepe
   movimento reduzido): eles valem o padrão do sistema, igual em todo tema. Um tema que quer "sem movimento" usa os
   tokens estéticos de movimento (durações e entradas mínimas), não `reducedMotion`;
 - escolhe `texture` e `cardTextureType` que sirvam aos **dois** modos, porque os dois não carregam modo.
+
+**Cor por paleta.** O `colorPalette` cumpre a declaração de cor: o `theme-completeness:check` não cobra do tema a cor que a paleta
+calcula. Onde esta seção diz que o tema declara uma cor, vale o design composto (`composeThemeForMode`), que é o que o
+`auditor_contraste` e o medidor de diversidade leem.
 
 **Identidade do cromo.** Cada tema declara também o conjunto estético das duas barras: texto dos itens, hover, categoria
 e marca; moldura; tratamento do fundo; forma do item ativo; densidade; ícones; e, na topbar, separador, blur e sombra.
@@ -742,7 +785,7 @@ verde com **12 dos 18** reprovando AA, e ninguém sabia.
 texto grande, ≥24px; onde o `textColorMuted` renderiza são 9–14px). Cor com alfa é **composta** sobre a
 cadeia de fundo, não pulada, e **toda cadeia termina numa base opaca**, `colorBgBody`: barra, botão,
 superfície ou item ativo translúcidos são medidos sobre o corpo. **Duas passadas**: o modo nativo do tema e a
-contraparte. Baseline: **0 e 0**, e nenhum par-tema pulado.
+contraparte. Baseline: **0 e 0**, e nenhum par-tema pulado. **Os pares seguem o papel da barra** (`pairsFor`). Numa barra de tom contrastante, o texto do corpo deixa de ser medido sobre ela, e entram os pares do texto da própria barra (`createPalettePlan`). Sem tom contrastante, valem os `PAIRS` de sempre.
 
 > ⚠️ **`pulado` não é `aprovado`.** Um par só é pulado quando o valor não se resolve (`hsl()`, `var()`,
 > gradiente) ou quando o tema declara o **próprio** `colorBgBody` translúcido: o gate **declara** em vez de
@@ -817,7 +860,6 @@ Registrado para não ser redescoberto; **nenhum destes itens tem tarefa aberta n
 | # | Item | Origem | Situação |
 | --- | --- | --- | --- |
 | 1 | **Expansão do catálogo de atmosferas** — mais texturas além das embutidas | plano antigo de mídias de atmosfera *(removido; git)* | aberto. A parte de **hospedagem** saiu deste item: está decidida e é contrato (§5.1) — toda atmosfera shippada é gerada pela lib, nada vem de terceiro |
-| 2 | **Enriquecimento de presets visuais** — a granularidade de `cards.ts` estendida a `inputs`/`tables`/`navigation` | spec antiga de presets *(removida; git)* | **parcial**: `INPUT_PRESETS` existe, tabela/navegação não ganharam família de preset própria |
 
 > ⚠️ **Correção de estado registrada:** a spec antiga de presets carregava
 > `status: "🔴 A Implementar"` — e isso era **falso**. `ButtonPresetPreview.tsx`,

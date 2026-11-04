@@ -26,7 +26,7 @@ export interface ShellPreferenceRowContext {
  * que não têm átomo próprio de navegação (`fontSize`/`navigationStyle`).
  */
 const PreferenceMenuRow: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
-    <div className="flex items-center justify-between gap-[var(--sarak-layout-gap-sm,12px)] px-[var(--sarak-layout-gap-sm,12px)] py-[var(--sarak-layout-gap-sm,8px)]">
+    <div className="flex flex-wrap items-center justify-between gap-[var(--sarak-layout-gap-sm,12px)] px-[var(--sarak-layout-gap-sm,12px)] py-[var(--sarak-layout-gap-sm,8px)]">
         <span className="text-sm text-[var(--text-muted,rgba(242,246,251,0.55))]">{label}</span>
         {children}
     </div>

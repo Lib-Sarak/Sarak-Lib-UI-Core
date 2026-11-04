@@ -4,6 +4,7 @@ import { useSarakDevice } from '../../../core/Provider/DeviceProvider';
 import { sarakResolveResponsiveValue } from '../../../core/Design/resolveResponsiveValue';
 import type { SarakResponsiveValue } from '../../../core/Design/types';
 import type { SarakLayoutGap } from '../../../core/Design/resolveToken';
+import { resolveAxisGaps } from '../hooks/useStructuralStyles.gap';
 import { GridColumnsProvider } from './gridColumnsContext';
 
 const toColumnTemplate = (count: number): string => `repeat(${count}, minmax(0, 1fr))`;
@@ -26,6 +27,10 @@ export interface SarakGridProps extends Omit<React.HTMLAttributes<HTMLDivElement
     columns?: number | SarakResponsiveValue<number>;
     templateAreas?: string;
     gap?: SarakLayoutGap;
+    /** Espaço entre linhas; vence `gap` nesse eixo. Sem ele, vale `gap`. */
+    rowGap?: SarakLayoutGap;
+    /** Espaço entre colunas; vence `gap` nesse eixo. Sem ele, vale `gap`. */
+    columnGap?: SarakLayoutGap;
     as?: React.ElementType;
 }
 
@@ -48,6 +53,8 @@ export const SarakGrid: React.FC<SarakGridProps> = ({
     columns,
     templateAreas,
     gap,
+    rowGap,
+    columnGap,
     as: Component = 'div',
     ...props
 }) => {
@@ -80,7 +87,7 @@ export const SarakGrid: React.FC<SarakGridProps> = ({
             <GridColumnsProvider value={columnCount === undefined ? undefined : Math.max(1, Math.floor(columnCount))}>
                 <Component
                     className={`${structuralStyles.className} ${className}`.trim()}
-                    style={{ ...structuralStyles.style, ...style }}
+                    style={{ ...structuralStyles.style, ...resolveAxisGaps(rowGap, columnGap, 'SarakGrid'), ...style }}
                     {...props}
                 >
                     {children}

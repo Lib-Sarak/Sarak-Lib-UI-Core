@@ -64,7 +64,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
             class="relative w-full flex items-center"
           >
             <div
-              class="relative w-full flex-1 min-w-0"
+              class="relative w-full flex-1 min-w-0 flex items-center"
             >
               <div
                 class="absolute left-3 z-10 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,rgba(242,246,251,0.55)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#19e3f0))]"

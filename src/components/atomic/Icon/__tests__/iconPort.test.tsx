@@ -15,13 +15,14 @@ function ConsumerMark(props: SarakRegisteredIconProps): React.ReactElement {
 }
 
 it('usa iconFamily do Provider em SarakModal', () => {
-    const { container } = render(
+    // O modal sai por portal para o `body`: o `container` do teste não o contém.
+    const { baseElement } = render(
         <SarakUIProvider config={{ mode: 'dark', iconFamily: 'phosphor' }}>
             <SarakModal isOpen onClose={() => undefined} title="Amostra" />
         </SarakUIProvider>,
     );
 
-    expect(container.querySelector('svg')?.getAttribute('viewBox')).toBe('0 0 256 256');
+    expect(baseElement.querySelector('svg')?.getAttribute('viewBox')).toBe('0 0 256 256');
 });
 
 it('usa iconFamily do Provider nos ícones de SarakTable', () => {

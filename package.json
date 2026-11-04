@@ -19,7 +19,7 @@
     ],
     "scripts": {
         "build:css": "tailwindcss -i ./src/styles/sarak-base.css -o ./dist/sarak.css --minify",
-        "build:js": "node scripts/generate-build-info.mjs --prepare && tsup src/index.ts src/testing.ts --format esm,cjs --shims --dts --clean --minify --external react,react-dom,framer-motion,lucide-react,recharts,echarts-for-react,echarts,reactflow,react-grid-layout,react-markdown,react-syntax-highlighter,react-dropzone,pdfjs-dist,clsx,tailwind-merge,date-fns,@tanstack/react-virtual",
+        "build:js": "node scripts/generate-build-info.mjs --prepare && tsup src/index.ts src/testing.ts --format esm,cjs --shims --dts --clean --minify --external react,react-dom,framer-motion,lucide-react,recharts,echarts-for-react,echarts,reactflow,react-grid-layout,react-markdown,react-syntax-highlighter,react-dropzone,pdfjs-dist,qrcode,clsx,tailwind-merge,date-fns,@tanstack/react-virtual",
         "build:css:scoped": "node scripts/build-scoped-css.mjs",
         "build": "npm run token-types:check && npm run token-docs:check && npm run themes:catalog:check && npm run catalog:check && npm run barrel:check && npm run zero-brand:check && npm run guide:check && npm run deep-import:check && npm run fonts:manifest:check && npm run build:js && npm run fonts:embed && npm run fonts:check && npm run theme-boot:check && npm run public-types:check && npm run prefix:check && npm run icon-port:check && npm run kit-names:check && npm run build:css && npm run build:css:scoped && node scripts/copy-base-css.mjs && node scripts/inject-css.mjs && node scripts/generate-build-info.mjs && npm run test:optional-peers",
         "test:optional-peers": "node scripts/test-optional-peer-consumer.mjs",
@@ -51,6 +51,7 @@
         "gate-limits:check": "node gates/scripts/contrato/check-gate-limits.mjs",
         "class-merge:check": "node gates/scripts/contrato/check-class-merge.mjs",
         "icon-port:check": "node gates/scripts/contrato/check-icon-port.mjs",
+        "network:check": "node gates/scripts/contrato/check-no-network.mjs",
         "chrome-token-parity:check": "node gates/scripts/contrato/check-chrome-token-parity.mjs",
         "token-reader:check": "node gates/scripts/contrato/check-token-reader.mjs",
         "css-important:check": "node gates/scripts/contrato/check-css-important-visual.mjs",
@@ -114,6 +115,7 @@
         "@dnd-kit/core": ">=6.3.0",
         "@dnd-kit/sortable": ">=10.0.0",
         "@tanstack/react-virtual": ">=3.0.0",
+        "@testing-library/react": ">=16.0.0",
         "clsx": ">=2.1.0",
         "date-fns": ">=3.3.0",
         "echarts": ">=6.1.0",
@@ -121,6 +123,7 @@
         "framer-motion": ">=11.0.0",
         "lucide-react": ">=0.284.0 <1.0.0",
         "pdfjs-dist": ">=6.2.108",
+        "qrcode": ">=1.5.0",
         "react": ">=18.0.0",
         "react-dom": ">=18.0.0",
         "react-dropzone": ">=14.2.0",
@@ -142,6 +145,9 @@
         "@tanstack/react-virtual": {
             "optional": true
         },
+        "@testing-library/react": {
+            "optional": true
+        },
         "echarts": {
             "optional": true
         },
@@ -149,6 +155,9 @@
             "optional": true
         },
         "pdfjs-dist": {
+            "optional": true
+        },
+        "qrcode": {
             "optional": true
         },
         "react-grid-layout": {
@@ -246,6 +255,7 @@
         "lightningcss": "^1.32.0",
         "lucide-react": "^0.284.0",
         "pdfjs-dist": "^6.2.108",
+        "qrcode": "^1.5.4",
         "react": "^18.0.0",
         "react-dom": "^18.0.0",
         "react-dropzone": "^14.2.3",

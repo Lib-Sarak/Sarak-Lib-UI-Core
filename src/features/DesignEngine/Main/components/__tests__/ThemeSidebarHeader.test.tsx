@@ -10,19 +10,19 @@ const baseProps = () => ({
     setViewMode: vi.fn(),
     searchQuery: '',
     setSearchQuery: vi.fn(),
-    editMode: 'essential' as const,
-    setEditMode: vi.fn()
+    onOpenAdvancedTokens: vi.fn()
 });
 
 describe('ThemeSidebarHeader', () => {
-    it('mantém o título curto, busca, modos e um único botão Avançado', () => {
+    it('mantém o título curto, a busca e um único botão Avançado — sem seletor de modo', () => {
         render(<ThemeSidebarHeader {...baseProps()} />);
 
         expect(screen.getByText('Design')).toBeInTheDocument();
         expect(screen.queryByText('Design Engine')).toBeNull();
         expect(screen.getByPlaceholderText('Buscar token...')).toBeInTheDocument();
-        expect(screen.getByRole('radiogroup', { name: 'Modo de edição' })).toBeInTheDocument();
-        expect(screen.getAllByRole('radio')).toHaveLength(3);
+        expect(screen.queryByRole('radiogroup', { name: 'Modo de edição' })).toBeNull();
+        expect(screen.queryAllByRole('radio')).toHaveLength(0);
+        for (const label of ['Impacto', 'Essencial', 'Completo']) expect(screen.queryByText(label)).toBeNull();
         expect(screen.getByRole('button', { name: /Avançado/ })).toBeInTheDocument();
         for (const name of ['Preview', 'Catálogo', 'Templates', 'Buscar token (avançado)']) {
             expect(screen.queryByRole('button', { name })).toBeNull();
@@ -36,8 +36,6 @@ describe('ThemeSidebarHeader', () => {
         const captionToken = TypographySchema.tokens.find(({ id }) => id === 'typeScaleCaption');
         expect(Number(captionToken?.defaultValue)).toBeGreaterThanOrEqual(12);
         expect(screen.getByPlaceholderText('Buscar token...').className).toContain('--sarak-type-scale-caption');
-        expect(screen.getByText('Modo de edição').className).toContain('--sarak-type-scale-caption');
-        expect(screen.getByText('Essencial').className).toContain('--sarak-type-scale-caption');
     });
 
     it('deixa dispositivo, empilhamento, exportação e aplicação fora do cabeçalho', () => {
@@ -61,24 +59,12 @@ describe('ThemeSidebarHeader', () => {
         expect(setViewMode).toHaveBeenCalledWith('command-center');
     });
 
-    it('seta para a direita muda a seleção do grupo de rádio', async () => {
-        const user = userEvent.setup();
-        const setEditMode = vi.fn();
-        render(<ThemeSidebarHeader {...baseProps()} setEditMode={setEditMode} />);
-
-        const selectedMode = screen.getByRole('radio', { name: 'Essencial' });
-        selectedMode.focus();
-        await user.keyboard('{ArrowRight}');
-
-        expect(setEditMode).toHaveBeenCalledWith('complete');
-    });
-
-    it('mantém o mesmo input de busca ao trocar de modo', () => {
+    it('mantém o mesmo input de busca ao trocar de tela', () => {
         const props = baseProps();
         const { rerender } = render(<ThemeSidebarHeader {...props} />);
         const searchInput = screen.getByPlaceholderText('Buscar token...');
 
-        rerender(<ThemeSidebarHeader {...props} editMode="impact" />);
+        rerender(<ThemeSidebarHeader {...props} viewMode="catalog" />);
 
         expect(screen.getByPlaceholderText('Buscar token...')).toBe(searchInput);
     });

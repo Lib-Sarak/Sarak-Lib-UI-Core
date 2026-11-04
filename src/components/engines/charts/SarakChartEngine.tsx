@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef } from 'react';
+import { useElementWidth } from './SubEngines/useElementWidth';
 import { SarakDataEmpty } from '../../atomic/Feedback/SarakDataEmpty';
 import { SarakOptionalPeerFallback } from '../../atomic/Feedback/SarakOptionalPeerFallback';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
@@ -12,11 +13,11 @@ import RechartsChart from './SubEngines/RechartsChart';
 import { hasRenderableData, resolveChartType } from './SubEngines/chartDataModel';
 import type {
     ChartOptionFragment, SarakChartDataItem, SarakChartGauge, SarakChartPieLabel, SarakChartReferenceBand,
-    SarakChartReferenceLine, SarakChartType, SarakChartZoom,
+    SarakChartReferenceLine, SarakChartType, SarakChartZoom, SarakChartAxis, SarakChartFunnel, SarakChartPointColor,
 } from './SubEngines/builders/types';
 
 export type {
-    SarakChartGauge, SarakChartPieLabel, SarakChartReferenceBand, SarakChartReferenceLine, SarakChartReferenceTone, SarakChartZoom,
+    SarakChartAxis, SarakChartFunnel, SarakChartPointColor, SarakChartGauge, SarakChartPieLabel, SarakChartReferenceBand, SarakChartReferenceLine, SarakChartReferenceTone, SarakChartZoom,
 } from './SubEngines/builders/types';
 
 const OPTIONAL_ECHARTS_PEERS = ['echarts', 'echarts-for-react'] as const;
@@ -24,7 +25,7 @@ const OPTIONAL_RECHARTS_PEER = ['recharts'] as const;
 
 const ECHARTS_ONLY_PROPS = [
     'series', 'stacked', 'orientation', 'legend', 'onPointClick', 'valueFormat', 'height',
-    'referenceLines', 'referenceBands', 'zoom', 'pieLabel', 'gauge',
+    'referenceLines', 'referenceBands', 'zoom', 'pieLabel', 'gauge', 'pattern', 'getPointColor', 'showValues', 'funnel', 'axis', 'extendOption',
 ] as const;
 const CHART_TYPES_WITH_SHORT_VALUE_KEY: readonly SarakChartType[] = ['funnel', 'treemap', 'histogram'];
 
@@ -88,6 +89,18 @@ export interface SarakChartEngineProps {
     pieLabel?: SarakChartPieLabel;
     /** Escala do medidor (`gauge`); omitida, vale 0 a 100. O `%` só aparece com `valueFormat` percentual ou sem `valueFormat`. */
     gauge?: SarakChartGauge;
+    /** Hachurado sobre as cores, para quem não distingue cor; desligado por padrão. Só no ECharts. */
+    pattern?: boolean;
+    /** Cor de cada item, pelo nome de um token do tema; `undefined` cai na paleta. Vale em `bar` de uma série, `pie`, `funnel` e `treemap`. */
+    getPointColor?: SarakChartPointColor;
+    /** Valor na ponta da barra, formatado por `valueFormat`; `'auto'` esconde o que não cabe. Só em `bar`. */
+    showValues?: boolean | 'auto';
+    /** Escala do funil (`funnel`); omitida, vai de 0 ao maior valor. */
+    funnel?: SarakChartFunnel;
+    /** Marcas do eixo: teto de marcas e abreviação (`1,2 mi`). Omitido, as marcas seguem a largura. */
+    axis?: SarakChartAxis;
+    /** Recebe a opção final do ECharts, já montada pela lib, e devolve a que será desenhada; roda por último. Só no ECharts. */
+    extendOption?: (option: Record<string, unknown>) => Record<string, unknown>;
 }
 
 function getUnsupportedRechartsProps(props: SarakChartEngineProps, type: SarakChartType): string[] {
@@ -123,6 +136,7 @@ interface ChartOptionRuntimeInput {
     engine: 'echarts' | 'recharts';
     hasData: boolean;
     locale: string;
+    width: number;
 }
 
 function hasChartData(props: SarakChartEngineProps, type: SarakChartType, dataKey: string): boolean {
@@ -133,9 +147,11 @@ function hasChartData(props: SarakChartEngineProps, type: SarakChartType, dataKe
 }
 
 function useResolvedChartOption(input: ChartOptionRuntimeInput): ChartOptionFragment | null {
-    const { type, props, theme, engine, hasData, locale } = input;
-    const option = useMemo(
-        () => engine === 'echarts' && hasData ? buildChartOption({
+    const { type, props, theme, engine, hasData, locale, width } = input;
+    const { extendOption } = props;
+    const option = useMemo(() => {
+        if (engine !== 'echarts' || !hasData) return null;
+        const built = buildChartOption({
             type,
             data: props.data,
             config: props.config,
@@ -151,9 +167,15 @@ function useResolvedChartOption(input: ChartOptionRuntimeInput): ChartOptionFrag
             zoom: props.zoom,
             pieLabel: props.pieLabel,
             gauge: props.gauge,
-        }) : null,
-        [engine, type, props, theme, hasData, locale],
-    );
+            pattern: props.pattern,
+            getPointColor: props.getPointColor,
+            showValues: props.showValues,
+            funnel: props.funnel,
+            axis: props.axis,
+            width,
+        });
+        return extendOption ? extendOption(built) : built;
+    }, [engine, type, props, theme, hasData, locale, width, extendOption]);
     return option;
 }
 
@@ -178,7 +200,8 @@ function SarakChartContent(props: SarakChartEngineProps): React.ReactElement {
     const engine = props.config?.engine ?? 'echarts';
     const dataKey = props.config?.dataKey ?? (CHART_TYPES_WITH_SHORT_VALUE_KEY.includes(type) ? 'v' : 'value');
     const hasData = hasChartData(props, type, dataKey);
-    const option = useResolvedChartOption({ type, props, theme, engine, hasData, locale });
+    const [frameRef, width] = useElementWidth();
+    const option = useResolvedChartOption({ type, props, theme, engine, hasData, locale, width });
     const onEvents = usePointClickEvents(props, type, dataKey);
 
     useRechartsCompatibilityWarning(engine, props, type);
@@ -198,7 +221,7 @@ function SarakChartContent(props: SarakChartEngineProps): React.ReactElement {
     }
 
     return (
-        <div className="w-full h-full p-6" role="img" aria-label={ariaLabel} style={props.height === undefined ? undefined : { height: props.height }}>
+        <div ref={frameRef} className="w-full h-full p-6" role="img" aria-label={ariaLabel} style={props.height === undefined ? undefined : { height: props.height }}>
             <ReactECharts
                 option={option}
                 style={{ height: '100%', width: '100%' }}

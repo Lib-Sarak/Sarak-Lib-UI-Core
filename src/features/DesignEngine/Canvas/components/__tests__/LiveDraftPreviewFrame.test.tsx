@@ -63,9 +63,9 @@ describe('LiveDraftPreviewFrame inspection actions', () => {
     });
 });
 
-describe('LiveDraftPreviewFrame stacked layout', () => {
+describe('LiveDraftPreviewFrame — quadro único', () => {
     it.each(['desktop', 'tablet', 'smartphone'] as const)(
-        'mantém a moldura rolável e a proporção do aparelho ao empilhar em %s',
+        'mantém a moldura rolável e a proporção do aparelho em %s',
         (previewDevice) => {
             const deviceAspectRatio = previewDevice === 'tablet'
                 ? '768 / 1100'
@@ -73,12 +73,7 @@ describe('LiveDraftPreviewFrame stacked layout', () => {
                     ? '375 / 900'
                     : undefined;
             const { container } = render(
-                <LiveDraftPreviewFrame
-                    {...defaultProps}
-                    previewDevice={previewDevice}
-                    isPreviewStacked
-                    deviceAspectRatio={deviceAspectRatio}
-                >
+                <LiveDraftPreviewFrame {...defaultProps} previewDevice={previewDevice} deviceAspectRatio={deviceAspectRatio}>
                     <div />
                 </LiveDraftPreviewFrame>,
             );
@@ -86,10 +81,8 @@ describe('LiveDraftPreviewFrame stacked layout', () => {
             const frame = container.querySelector('[data-testid="live-preview-frame"]') as HTMLElement;
             const deviceViewport = container.querySelector('[data-testid="device-viewport"]') as HTMLElement;
             expect(frame.className).toContain('overflow-y-auto');
-            expect(frame.className).not.toMatch(/\bresize\b/);
-            expect(frame.className).not.toMatch(/vh\]/);
-            expect(frame.style.height).toBe('calc(100% - 1.5rem)');
-            expect(frame.style.maxHeight).toBe('');
+            expect(frame.className).not.toMatch(/resize/);
+            expect(frame.style.height).toBe('');
             if (previewDevice === 'desktop') {
                 expect(deviceViewport.style.height).toBe('100%');
             } else {

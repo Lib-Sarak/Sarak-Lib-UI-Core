@@ -90,7 +90,7 @@ caminho real do consumidor sem cobertura.
 
 | Item | Valor | Por quê |
 |---|---|---|
-| `runs-on` | `ubuntu-latest` | Windows custa **×2** e macOS **×10** em minuto de runner. Medido: **zero** ocorrências de `process.platform`/`win32`/caminho de unidade fora de teste em `src/`, `scripts/`, `gates/`, `bin/` |
+| `runs-on` | `ubuntu-24.04`, fixo | a imagem não muda sem aviso. Windows custa **×2** e macOS **×10** em minuto de runner. Medido: **zero** ocorrências de `process.platform`/`win32`/caminho de unidade fora de teste em `src/`, `scripts/`, `gates/`, `bin/` |
 | Node | **24**, versão única, sem matriz | é o do dono. Matriz multiplica minuto **e** exposição à intermitência do achado **44** |
 | Cache | `cache: npm` no `setup-node` | `npm ci` sem cache é o passo mais caro e mais bobo |
 | Instalação | **`npm ci`**, nunca `npm install` | respeita o lockfile e falha se ele divergir — é metade do "ambiente determinístico" |
@@ -110,7 +110,7 @@ envelhecer ([[15-divida-conhecida]] §3.3).
 
 Somam-se explicitamente os `*:check` que o `gates:full` **não** alcança, provados um a um:
 `plan-index:check`, `gate-limits:check`, `container-query:check`, `container-query-boundary:check`,
-`persistence-doc:check`, `class-merge:check`, `chrome-token-parity:check` (a fonte é o passo do
+`persistence-doc:check`, `class-merge:check`, `chrome-token-parity:check`, `network:check` (a fonte é o passo do
 `.github/workflows/gates.yml`). O `plan-index:check` é o caso que mais importa: o `pre-commit`
 roda só **metade** dele, e a CI é quem cobre a outra.
 

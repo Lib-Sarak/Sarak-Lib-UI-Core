@@ -1,8 +1,9 @@
 import type { CSSProperties, ReactElement, ReactNode } from 'react';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { SarakCheckbox } from '../../Inputs/SarakCheckbox';
-import { columnAlign, columnText, footerContent } from './columnValue';
+import { columnAlign, footerContent } from './columnValue';
 import type { SarakValueColumn } from './columnValue';
+import { SarakCellContent } from './SarakCellContent';
 import type { SarakDataCardsProps } from './SarakDataCards';
 import { SarakExpandToggle } from './SarakTableControls';
 import type { SarakDisplayRow } from './tableDisplayRows';
@@ -15,6 +16,11 @@ export const CARD_STYLE: CSSProperties = {
     background: 'var(--sarak-card-bg, var(--color-theme-card, #101622))',
     border: 'var(--sarak-border-width, 1px) solid var(--sarak-card-border-color, var(--border-color, rgba(255,255,255,0.09)))',
     borderRadius: 'var(--sarak-card-radius, 10px)', color: 'var(--sarak-text-main, #f2f6fb)', boxSizing: 'border-box',
+};
+
+export const REPORT_CARD_STYLE: CSSProperties = {
+    background: 'transparent', border: 'none', borderRadius: 0,
+    borderBottom: 'var(--sarak-border-width, 1px) solid var(--sarak-table-border, var(--border-color, rgba(255,255,255,0.09)))',
 };
 
 const LABEL_CLASS = 'text-2xs font-semibold uppercase tracking-wider text-[var(--text-muted,rgba(242,246,251,0.55))]';
@@ -95,7 +101,7 @@ export const DataCardBody = <T,>({ props, display }: DataCardBodyProps<T>): Reac
             )}
             {props.columns.map((column) => (
                 <ColumnField key={column.id} id={column.id} header={column.header} align={columnAlign(column)}>
-                    {column.render ? column.render(entry.row, entry.index) : columnText(entry.row, column, props.locale)}
+                    <SarakCellContent column={column} row={entry.row} rowIndex={entry.index} locale={props.locale} getCellTone={props.getCellTone} onCellEdit={props.onCellEdit} />
                 </ColumnField>
             ))}
         </>

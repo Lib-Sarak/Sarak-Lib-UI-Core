@@ -120,6 +120,8 @@ const DEFAULT_BRANDING: SarakBrandingState = {
 > (`useBrandingManager.ts:7-17`; `docs/migracoes.md` §"Identidade da página"). Não havia bug de lógica: o
 > guard funcionava perfeitamente. **O defeito era o default existir.**
 
+**O atalho "Usar minha marca" do painel** (`BrandShortcut`, [[06-painel-de-customizacao-e-preview]] §2.1) usa esta mesma porta: nome e logo vão ao branding, a cor vira `colorPalette` e as fontes vão ao rascunho. Nada é gravado antes de "Aplicar", e a identidade continua nascendo ausente.
+
 `useBrandingManager` (`:31-49`) semeia o estado com `{ ...DEFAULT_BRANDING, ...options.branding.initial }` e
 expõe `updateBranding`, que chama `options.branding.onChange` — a porta "traga sua persistência", para o
 backend **do consumidor**. A lib **não faz fetch** ([[003-remocao-backend-proprio]]).

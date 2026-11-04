@@ -281,3 +281,26 @@ describe('overlayPreferences', () => {
         expect(result).toEqual(design);
     });
 });
+
+describe('overlayPreferences — sidebarWidth (largura da lateral, preferência do usuário)', () => {
+    const base = { mode: 'dark', sidebarWidth: { mob: 200, tab: 220, desk: 240 } } as unknown as SarakDesignState;
+
+    it('com sidebarResizable ligado, a largura do usuário vence a do tema', () => {
+        const design = { ...base, sidebarResizable: true } as unknown as SarakDesignState;
+        const result = overlayPreferences(design, { sidebarWidth: 320 }, undefined, 'dark');
+        expect(result.sidebarWidth).toBe(320);
+    });
+
+    it('sem sidebarResizable (padrão), a preferência guardada não muda a largura', () => {
+        const result = overlayPreferences(base, { sidebarWidth: 320 }, undefined, 'dark');
+        expect(result.sidebarWidth).toEqual({ mob: 200, tab: 220, desk: 240 });
+    });
+
+    it('sem preferência de largura o design não muda, e a entrada nunca é alterada', () => {
+        const design = { ...base, sidebarResizable: true } as unknown as SarakDesignState;
+        const before = JSON.stringify(design);
+        expect(overlayPreferences(design, {}, undefined, 'dark')).toEqual(design);
+        overlayPreferences(design, { sidebarWidth: 300 }, undefined, 'dark');
+        expect(JSON.stringify(design)).toBe(before);
+    });
+});

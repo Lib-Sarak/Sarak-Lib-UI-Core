@@ -56,7 +56,7 @@ describe('GanttTimeline', () => {
 
     it('usa a cor de título nos rótulos das barras', () => {
         renderTimeline();
-        expect(bar('a').style.color).toBe('var(--theme-title, var(--sarak-title-color, inherit))');
+        expect(bar('a').style.color).toBe('var(--theme-text-primary, inherit)');
     });
 
     it('barra recortada no início do intervalo: o progresso termina no mesmo dia da barra inteira', () => {

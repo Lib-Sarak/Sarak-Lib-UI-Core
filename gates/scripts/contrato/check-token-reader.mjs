@@ -123,22 +123,7 @@ export const PANEL_OWN_TOKENS = {
     devicePhoneHeight: PREVIEW_GEOMETRY,
     devicePhoneNotchRadius: PREVIEW_GEOMETRY,
     deviceTabletHeight: PREVIEW_GEOMETRY,
-    presetCardHoverShadowOffsetY: PREVIEW_GEOMETRY,
-    presetCardShadowBlur: PREVIEW_GEOMETRY,
-    presetCardShadowOffsetY: PREVIEW_GEOMETRY,
-    presetCardShadowSpread: PREVIEW_GEOMETRY,
-    presetGlowShadowBlur: PREVIEW_GEOMETRY,
-    presetGlowShadowBlurLg: PREVIEW_GEOMETRY,
-    presetGridTextureSize: PREVIEW_GEOMETRY,
-    presetMatteShadowBlur1: PREVIEW_GEOMETRY,
-    presetMatteShadowBlur2: PREVIEW_GEOMETRY,
-    presetMatteShadowOffsetY2: PREVIEW_GEOMETRY,
-    presetMatteShadowSpread1: PREVIEW_GEOMETRY,
-    presetMatteShadowSpread2: PREVIEW_GEOMETRY,
-    presetMiniCardHeight: PREVIEW_GEOMETRY,
     presetMiniCardMaxWidth: PREVIEW_GEOMETRY,
-    presetPreviewMinHeight: PREVIEW_GEOMETRY,
-    presetPreviewPaddingY: PREVIEW_GEOMETRY,
 };
 
 /** Valor de opção que é a ausência do efeito — não há leitor a exigir. */

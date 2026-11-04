@@ -50,8 +50,8 @@ test('Provider sem tenant aplica e persiste o tema escolhido depois do login', a
     await expect.poll(() => readStoredThemePair(page, TENANT_STORAGE_KEY)).toMatchObject(EXPECTED_TENANT_CACHE);
     expect(await page.evaluate(() => window.__tenantThemeSave)).toBeUndefined();
 
-    await page.getByRole('button', { name: 'Abrir galeria' }).click();
-    await expect(page.getByRole('heading', { name: 'Galeria de estilos' })).toBeVisible();
+    await page.getByRole('button', { name: /^Tema/ }).click();
+    await expect(page.getByRole('heading', { level: 2, name: 'Tema' })).toBeVisible();
     await page.getByRole('button', { name: /Sarak Sovereign/ }).click();
 
     const applyButton = page.getByRole('button', { name: 'Aplicar' });

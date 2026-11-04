@@ -1,4 +1,6 @@
 import { motion } from 'framer-motion';
+import { useId } from 'react';
+import { SarakLink } from '../Navigation/SarakLink';
 import { useSarakStatsData } from './hooks/useSarakStatsData';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
@@ -35,6 +37,8 @@ export interface SarakStatsMetricConfig {
     targetLabel?: string;
     /** Série curta desenhada sob o valor. */
     sparkline?: number[];
+    /** Destino da métrica: o bloco inteiro vira um link, com teclado e foco. Omitido, o bloco não navega. */
+    href?: string;
 }
 
 export interface SarakStatsProps<TData extends Record<string, unknown>> {
@@ -97,7 +101,7 @@ export const SarakStats = <TData extends Record<string, unknown> = Record<string
             {label && <h3 className="text-theme-title font-bold">{label}</h3>}
             {error && <SarakDataErrorNotice error={error} onRetry={retry} />}
             <SarakDataFreshness updatedAt={lastReadAt} stale={Boolean(error && hasData)} />
-            <div className={statsGrid.className} style={statsGrid.style}><SarakStatsGrid stats={stats} keys={keys} loading={loading} mapping={mapping} metrics={metrics} /></div>
+            <div className={statsGrid.className} style={keys.length === 1 ? { ...statsGrid.style, gridTemplateColumns: 'minmax(0, 1fr)' } : statsGrid.style}><SarakStatsGrid stats={stats} keys={keys} loading={loading} mapping={mapping} metrics={metrics} /></div>
         </div>
     );
 };
@@ -114,13 +118,25 @@ const SarakStatsMetric = ({ metricKey, value, label, config }: SarakStatsMetricP
         ? value
         : value == null ? null : String(value);
 
+    const labelId = useId();
+
     return (
         <div
-            className="card hover:bg-theme-tint transition-all rounded-[var(--sarak-card-radius,10px)]"
+            className="card hover:bg-theme-tint transition-all rounded-[var(--sarak-card-radius,10px)] relative min-w-0"
             style={{ padding: 'var(--sarak-layout-gap-md,16px)', transitionDuration: 'var(--duration-normal, 0.3s)' }}
         >
+            {config?.href && (
+                <SarakLink
+                    href={config.href}
+                    aria-labelledby={labelId}
+                    className="rounded-[var(--sarak-card-radius,10px)]"
+                    style={{ position: 'absolute', inset: 0, zIndex: 1, display: 'block' }}
+                >
+                    {null}
+                </SarakLink>
+            )}
             {config?.icon && <div className="text-theme-muted" aria-hidden="true">{config.icon}</div>}
-            <span className="text-2xs text-theme-muted font-black uppercase tracking-widest block" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) / 6)' }}>
+            <span id={labelId} className="text-2xs text-theme-muted font-black uppercase tracking-widest block" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) / 6)' }}>
                 {label}
             </span>
             <motion.div

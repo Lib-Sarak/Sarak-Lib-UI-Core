@@ -201,3 +201,83 @@ describe('ChromeSidebarBody — widgets default (busca/tema/usuário/preferênci
         expect(container.querySelector('[data-sarak-widget="user-theme"]')).toBeNull();
     });
 });
+
+describe('ChromeSidebarBody — personalidade da barra', () => {
+    const BRAND = { name: 'ERP', logoUrl: '/logo.png' };
+    const renderWithBrand = (design: Record<string, unknown>) =>
+        render(
+            <SarakUIProvider config={design}>
+                <ChromeSidebarBody nav={NAV} brand={BRAND} className="" rootStyle={{}}>
+                    <div>conteúdo</div>
+                </ChromeSidebarBody>
+            </SarakUIProvider>,
+        );
+    const brandInside = (region: string, container: HTMLElement): boolean =>
+        Boolean(container.querySelector(`[${region}] .sarak-chrome-brand`));
+
+    it('a barra inteira não rola: só a lista de navegação rola, e só na vertical', () => {
+        const { container } = renderBody({});
+        const aside = container.querySelector('aside') as HTMLElement;
+        expect(aside.className).toContain('overflow-hidden');
+        expect(aside.className).not.toContain('overflow-y-auto');
+        const nav = container.querySelector('nav') as HTMLElement;
+        expect(nav.className).toContain('overflow-y-auto');
+        expect(nav.className).toContain('overflow-x-hidden');
+    });
+
+    it('sidebarLogoPlacement: a marca fica no topo por padrão e na base quando pedido', () => {
+        const top = renderWithBrand({});
+        expect(brandInside('data-sarak-sidebar-header', top.container)).toBe(true);
+        expect(brandInside('data-sarak-sidebar-footer', top.container)).toBe(false);
+        top.unmount();
+
+        const bottom = renderWithBrand({ sidebarLogoPlacement: 'bottom' });
+        expect(brandInside('data-sarak-sidebar-header', bottom.container)).toBe(false);
+        expect(brandInside('data-sarak-sidebar-footer', bottom.container)).toBe(true);
+    });
+
+    it('recolhida, o recolher continua no topo e a marca (só o símbolo) fica no topo ou na base conforme o token', () => {
+        const { container } = renderWithBrand({ isNavHidden: true, sidebarLogoPlacement: 'bottom', preferenceNavCollapsePosition: 'pinned' });
+        expect(container.querySelector('[data-sarak-sidebar-header] [data-sarak-widget="collapse"]')).not.toBeNull();
+        expect(container.querySelector('[data-sarak-sidebar-footer] img')).not.toBeNull();
+        expect(screen.queryByText('ERP')).toBeNull();
+    });
+
+    it('sidebarResizable desligado (padrão): não há alça', () => {
+        renderBody({});
+        expect(screen.queryByRole('separator')).toBeNull();
+    });
+
+    it('sidebarResizable ligado: a alça existe na lateral aberta e some na recolhida', () => {
+        const open = renderBody({ sidebarResizable: true });
+        expect(open.container.querySelector('aside [role="separator"]')).not.toBeNull();
+        open.unmount();
+        renderBody({ sidebarResizable: true, isNavHidden: true });
+        expect(screen.queryByRole('separator')).toBeNull();
+    });
+
+    it('a largura ajustada pelo teclado vence a do tema na lateral', () => {
+        const { container } = renderBody({ sidebarResizable: true });
+        const handle = container.querySelector('[role="separator"]') as HTMLElement;
+        fireEvent.keyDown(handle, { key: 'End' });
+        const style = (container.querySelector('aside') as HTMLElement).getAttribute('style') ?? '';
+        expect(style).toMatch(/width: [0-9]+px/);
+        expect(style).not.toContain('width: var(--sarak-sidebar-width, 240px)');
+    });
+
+    it('papel de cor: sem paleta a barra fica como sempre; com paleta e papel contrastante, refaz as variáveis de texto', () => {
+        const neutral = renderBody({ colorPalette: 'slate', sidebarTone: 'primary' });
+        expect((neutral.container.querySelector('aside') as HTMLElement).style.getPropertyValue('--text-muted')).toBe('');
+        neutral.unmount();
+
+        const toned = renderBody({ colorPalette: 'oceano', sidebarTone: 'primary' });
+        const aside = toned.container.querySelector('aside') as HTMLElement;
+        expect(aside.style.getPropertyValue('--text-muted')).toBe('var(--sarak-sidebar-item-text-color)');
+        expect(aside.style.getPropertyValue('--sarak-nav-active-color')).toBe('var(--sarak-sidebar-item-hover-text-color)');
+    });
+
+    it('papel neutral com paleta: nenhuma variável de texto é refeita', () => {
+        const { container } = renderBody({ colorPalette: 'oceano', sidebarTone: 'neutral' });
+        expect((container.querySelector('aside') as HTMLElement).style.getPropertyValue('--text-muted')).toBe('');
+    });
+});

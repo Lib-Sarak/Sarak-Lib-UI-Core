@@ -3,6 +3,7 @@ import { parsePaletteValue } from './parser';
 import { createPaletteScales } from './scale';
 import { createPaletteSeeds } from './seeds';
 import { PALETTE_ROLE_MAP } from './role-map';
+import { createPalettePlan, type PalettePlan } from './tone-plan';
 import { correctPaletteAgainstDeclared, correctPaletteContrast } from './contrast';
 import type { SarakPaletteInput, SarakPaletteMode, PaletteScales, RgbColor } from './types';
 
@@ -12,9 +13,13 @@ const formatColor = (rgb: RgbColor, alpha?: number): string => {
     return `rgba(${channels.join(', ')}, ${Number(alpha.toFixed(3))})`;
 };
 
-export const createPaletteColorMap = (scales: PaletteScales, mode: SarakPaletteMode): Record<string, string> => {
+export const createPaletteColorMap = (
+    scales: PaletteScales,
+    mode: SarakPaletteMode,
+    roles: PalettePlan['roles'] = PALETTE_ROLE_MAP,
+): Record<string, string> => {
     const colors: Record<string, string> = {};
-    Object.entries(PALETTE_ROLE_MAP).forEach(([tokenId, role]) => {
+    Object.entries(roles).forEach(([tokenId, role]) => {
         const tone = role.toneByMode[mode];
         colors[tokenId] = formatColor(scales[role.scale][tone], role.alpha);
     });
@@ -29,8 +34,9 @@ export const resolvePalette = (
 ): Record<string, string> => {
     const seeds = createPaletteSeeds(input);
     const scales = createPaletteScales(seeds);
-    const colors = correctPaletteContrast(createPaletteColorMap(scales, mode), scales, mode);
-    return declared ? correctPaletteAgainstDeclared(colors, scales, mode, declared) : colors;
+    const plan = createPalettePlan(declared);
+    const colors = correctPaletteContrast(createPaletteColorMap(scales, mode, plan.roles), scales, mode, plan);
+    return declared ? correctPaletteAgainstDeclared(colors, scales, mode, declared, plan) : colors;
 };
 
 export const sarakResolvePalette = (value: string, mode: SarakPaletteMode): Record<string, string> => {
@@ -50,5 +56,7 @@ export const resolvePaletteForDesign = (
     mode: SarakPaletteMode,
 ): Record<string, string> => {
     const input = parsePaletteValue(getPaletteValue(themeDesign, hostConfig));
-    return input ? resolvePalette(input, mode, { ...hostConfig, ...themeDesign }) : {};
+    // O papel de cor da barra é escolha do host (como a posição da marca): vale o do host, mesmo que o tema declare o padrão.
+    const hostTones = Object.fromEntries(['sidebarTone', 'topbarTone'].filter((id) => hostConfig?.[id] !== undefined).map((id) => [id, hostConfig?.[id]]));
+    return input ? resolvePalette(input, mode, { ...hostConfig, ...themeDesign, ...hostTones }) : {};
 };

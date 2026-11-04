@@ -46,4 +46,27 @@ describe('useFocusTrap (Spec 41 — modelo de foco dos overlays)', () => {
         unmount();
         trigger.remove();
     });
+
+    it('camada que não é a do topo ignora Escape e Tab (confirmação aberta sobre a gaveta)', () => {
+        const onClose = vi.fn();
+        const { result, rerender } = renderHook(({ top }: { top: boolean }) => useFocusTrap(true, onClose, top), {
+            initialProps: { top: false },
+        });
+        act(() => { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })); });
+        expect(onClose).not.toHaveBeenCalled();
+
+        const container = document.createElement('div');
+        container.innerHTML = '<button id="a">a</button><button id="b">b</button>';
+        document.body.appendChild(container);
+        result.current.containerRef.current = container;
+        (container.querySelector('#b') as HTMLElement).focus();
+        const tab = { key: 'Tab', shiftKey: false, preventDefault: vi.fn() } as unknown as React.KeyboardEvent<HTMLDivElement>;
+        result.current.handleTrap(tab);
+        expect(tab.preventDefault).not.toHaveBeenCalled();
+
+        rerender({ top: true });
+        act(() => { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })); });
+        expect(onClose).toHaveBeenCalledTimes(1);
+        container.remove();
+    });
 });

@@ -18,3 +18,10 @@ export * from './SarakDatePicker';
 export * from './SarakTimePicker';
 // Spec 11 (Onda 10) — RichText WYSIWYG blindado (contentEditable + sanitizeHtml, zero-dep).
 export * from './SarakRichText';
+// Campo de assinatura em canvas próprio (sem dependência).
+export * from './SarakSignaturePad';
+export * from './SarakColorInput';
+export * from './SarakSetPicker';
+export * from './SarakTagInput';
+export * from './SarakCodeInput';
+export * from './SarakFieldRenderer';

@@ -1,95 +1,74 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
-import * as HookModule from '../usePreviewUIState';
+import { usePreviewUIState } from '../usePreviewUIState';
+import type { DecisionId } from '../../../utils/decisions';
 
 describe('usePreviewUIState', () => {
-    it('should export the hook correctly', () => {
-        expect(HookModule).toBeDefined();
-    });
+    it('começa na lista de decisões, na tela de painel, no desktop e sem modo de edição nem galeria', () => {
+        const { result } = renderHook(() => usePreviewUIState());
 
-    it('inicia em Essencial e permite selecionar Impacto e Completo', () => {
-        const { result } = renderHook(() => HookModule.usePreviewUIState());
-
-        expect(result.current.editMode).toBe('essential');
-
-        act(() => result.current.setEditMode('impact'));
-        expect(result.current.editMode).toBe('impact');
-
-        act(() => result.current.setEditMode('complete'));
-        expect(result.current.editMode).toBe('complete');
-    });
-
-    it('inicia com a galeria fechada e permite abrir e fechar pelo mesmo estado', () => {
-        const { result } = renderHook(() => HookModule.usePreviewUIState());
-
-        expect(result.current.isGalleryOpen).toBe(false);
-        act(() => result.current.setIsGalleryOpen(true));
-        expect(result.current.isGalleryOpen).toBe(true);
-        act(() => result.current.setIsGalleryOpen(false));
-        expect(result.current.isGalleryOpen).toBe(false);
-    });
-
-    it.each([
-        ['brand', 'auth'],
-        ['typography', 'typography'],
-        ['surfaces', 'dashboard'],
-        ['interaction', 'caixas-texto'],
-        ['navigation', 'dashboard'],
-        ['systems', 'settings'],
-        ['advanced', 'matrix'],
-    ])('selecionar o pilar %s abre sua tela canônica sem alterar o pilar escolhido', (pillarId, previewApp) => {
-        const { result } = renderHook(() => HookModule.usePreviewUIState());
-
-        act(() => result.current.selectPillar(pillarId));
-
-        expect(result.current.activePillarId).toBe(pillarId);
-        expect(result.current.activePreviewApp).toBe(previewApp);
-    });
-
-    it('preserva a tela atual quando ela pertence ao pilar escolhido, inclusive navigation com dashboard', () => {
-        const { result } = renderHook(() => HookModule.usePreviewUIState());
-
-        act(() => result.current.selectPillar('navigation'));
+        expect(result.current.panelView).toEqual({ kind: 'home' });
         expect(result.current.activePreviewApp).toBe('dashboard');
-        expect(result.current.activePillarId).toBe('navigation');
+        expect(result.current.previewDevice).toBe('desktop');
+        expect(result.current).not.toHaveProperty('editMode');
+        expect(result.current).not.toHaveProperty('isGalleryOpen');
+    });
+
+    it.each<[DecisionId, string, string]>([
+        ['theme', 'chat', 'dashboard'],
+        ['colors', 'chat', 'dashboard'],
+        ['fonts', 'chat', 'typography'],
+        ['shape', 'chat', 'dashboard'],
+        ['components', 'chat', 'caixas-texto'],
+        ['layout', 'chat', 'dashboard'],
+        ['advanced', 'dashboard', 'matrix'],
+    ])('abrir a decisão %s estando em outra tela (%s) leva a prévia à tela canônica %s', (decisionId, fromScreen, screen) => {
+        const { result } = renderHook(() => usePreviewUIState());
+        act(() => result.current.selectPreviewApp(fromScreen));
+
+        act(() => result.current.openDecision(decisionId));
+
+        expect(result.current.panelView).toEqual({ kind: 'decision', id: decisionId, focusTokenId: undefined });
+        expect(result.current.activePreviewApp).toBe(screen);
+    });
+
+    it('abrir a decisão estando numa tela que já lhe pertence não troca a tela', () => {
+        const { result } = renderHook(() => usePreviewUIState());
+        act(() => result.current.selectPreviewApp('tabela'));
+
+        act(() => result.current.openDecision('shape'));
+
+        expect(result.current.activePreviewApp).toBe('tabela');
+    });
+
+    it('escolher a tela de amostra muda só a prévia: a coluna não segue (um gesto, sem laço)', () => {
+        const { result } = renderHook(() => usePreviewUIState());
+        act(() => result.current.openDecision('fonts'));
 
         act(() => result.current.selectPreviewApp('dashboard'));
+
         expect(result.current.activePreviewApp).toBe('dashboard');
-        expect(result.current.activePillarId).toBe('surfaces');
+        expect(result.current.panelView).toMatchObject({ kind: 'decision', id: 'fonts' });
     });
 
-    it.each([
-        ['dashboard', 'surfaces'],
-        ['forms', 'interaction'],
-        ['tabela', 'surfaces'],
-        ['caixas-texto', 'interaction'],
-        ['graficos', 'advanced'],
-        ['typography', 'typography'],
-        ['components', 'surfaces'],
-        ['auth', 'brand'],
-        ['chat', 'advanced'],
-        ['logs', 'systems'],
-        ['settings', 'systems'],
-        ['documentos', 'systems'],
-        ['matrix', 'advanced'],
-        ['kitchen-sink', 'advanced'],
-        ['more-screens', 'advanced'],
-    ])('selecionar a tela %s atualiza o pilar para %s', (previewApp, pillarId) => {
-        const { result } = renderHook(() => HookModule.usePreviewUIState());
+    it('a busca leva o token à decisão: o id viaja na vista e, ao voltar, o foco vai à linha da decisão', () => {
+        const { result } = renderHook(() => usePreviewUIState());
 
-        act(() => result.current.selectPreviewApp(previewApp));
+        act(() => result.current.openDecision('colors', 'primaryColor'));
+        expect(result.current.panelView).toEqual({ kind: 'decision', id: 'colors', focusTokenId: 'primaryColor' });
 
-        expect(result.current.activePreviewApp).toBe(previewApp);
-        expect(result.current.activePillarId).toBe(pillarId);
+        act(() => result.current.goHome());
+        expect(result.current.panelView).toEqual({ kind: 'home', focusId: 'colors' });
     });
 
-    it('limpa o pilar sem trocar a tela ao recolhê-lo', () => {
-        const { result } = renderHook(() => HookModule.usePreviewUIState());
+    it('o atalho de marca abre a própria tela e sai do modo avançado', () => {
+        const { result } = renderHook(() => usePreviewUIState());
+        act(() => result.current.setViewMode('catalog'));
 
-        act(() => result.current.selectPillar(null));
+        act(() => result.current.openBrand());
 
-        expect(result.current.activePillarId).toBeNull();
-        expect(result.current.activePreviewApp).toBe('dashboard');
+        expect(result.current.panelView).toEqual({ kind: 'brand' });
+        expect(result.current.viewMode).toBe('preview');
     });
 });

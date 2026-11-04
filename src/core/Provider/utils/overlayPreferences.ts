@@ -165,6 +165,9 @@ export const overlayPreferences = (
     if (offered('navCollapsed') && typeof preferences.navCollapsed === 'boolean') {
         result = { ...result, isNavHidden: preferences.navCollapsed };
     }
+    if (design.sidebarResizable === true && typeof preferences.sidebarWidth === 'number') {
+        result = { ...result, sidebarWidth: preferences.sidebarWidth };
+    }
     if (offered('fontSize') && preferences.fontSize) {
         result = { ...result, bodySize: applyFontSizeDelta(String(result.bodySize ?? '14px'), preferences.fontSize) };
     }

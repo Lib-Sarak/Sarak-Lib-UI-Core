@@ -5,22 +5,20 @@ import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { SarakFormGroup } from '../Layouts/SarakFormGroup';
 import { SarakFieldError } from '../Feedback/SarakFieldError';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
+import { ICON_INERT_CLASS, ICON_INTERACTIVE_CLASS, ICON_SIDE_CLASS, resolveIconSlots, type IconSlot } from './internal/iconSlots';
+import { AFFIX_PADDING, ICON_INSET, InsideAffix, useInsideAffixInset, type InsideAffixes } from './internal/insideAffix';
 
 export interface SarakInputProps extends InputHTMLAttributes<HTMLInputElement> {
     label?: string;
     prefixText?: React.ReactNode;
     suffixText?: React.ReactNode;
+    /** `inside` põe `prefixText`/`suffixText` dentro da borda do campo, sem mudar a largura dele. Omitido, `outside`: ao lado do campo. */
+    affixPlacement?: 'outside' | 'inside';
     icon?: React.ReactNode;
     leftIcon?: React.ReactNode;
     rightIcon?: React.ReactNode;
     error?: string;
     fullWidth?: boolean;
-}
-
-interface IconSlot {
-    node: React.ReactNode;
-    side: 'left' | 'right';
-    interactive: boolean;
 }
 
 interface SarakInputViewModel {
@@ -38,16 +36,13 @@ interface SarakInputViewProps {
     error?: string;
     prefixText?: React.ReactNode;
     suffixText?: React.ReactNode;
+    affixPlacement?: 'outside' | 'inside';
     disabled?: boolean;
     nativeProps: InputHTMLAttributes<HTMLInputElement>;
     onFocus?: React.FocusEventHandler<HTMLInputElement>;
     onBlur?: React.FocusEventHandler<HTMLInputElement>;
     viewModel: SarakInputViewModel;
 }
-
-const ICON_SIDE_CLASS = { left: 'absolute left-3 z-10', right: 'absolute right-3 z-10' } as const;
-const ICON_INERT_CLASS = 'pointer-events-none text-[var(--sarak-input-icon-color,var(--text-muted,rgba(242,246,251,0.55)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#19e3f0))]';
-const ICON_INTERACTIVE_CLASS = 'text-[var(--sarak-input-icon-color,var(--text-muted,rgba(242,246,251,0.55)))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#19e3f0))]';
 
 const composeDescribedBy = (providedIds?: string, ...additionalIds: Array<string | undefined>): string | undefined => {
     const descriptionIds = new Set(providedIds?.split(/\s+/).filter(Boolean) ?? []);
@@ -56,24 +51,6 @@ const composeDescribedBy = (providedIds?: string, ...additionalIds: Array<string
 };
 
 const hasAdornment = (node: React.ReactNode): boolean => node !== undefined && node !== null && node !== false;
-
-const resolveIconSlots = (
-    icon: React.ReactNode,
-    leftIcon: React.ReactNode,
-    rightIcon: React.ReactNode,
-    themeSide: 'left' | 'right',
-): IconSlot[] => {
-    if (icon) return [{ node: icon, side: themeSide, interactive: false }];
-    if (leftIcon && rightIcon) {
-        return [
-            { node: leftIcon, side: 'left', interactive: false },
-            { node: rightIcon, side: 'right', interactive: true },
-        ];
-    }
-    if (leftIcon) return [{ node: leftIcon, side: themeSide, interactive: false }];
-    if (rightIcon) return [{ node: rightIcon, side: themeSide, interactive: true }];
-    return [];
-};
 
 const getInputClasses = (
     props: SarakInputProps,
@@ -126,11 +103,13 @@ const getNativeInputProps = (props: SarakInputProps): InputHTMLAttributes<HTMLIn
     delete nativeProps.fullWidth;
     delete nativeProps.prefixText;
     delete nativeProps.suffixText;
+    delete nativeProps.affixPlacement;
     delete nativeProps.className;
     return nativeProps;
 };
 
 interface SarakInputNativeFieldProps {
+    insideAffixes?: InsideAffixes;
     error?: string;
     disabled?: boolean;
     describedBy?: string;
@@ -141,6 +120,7 @@ interface SarakInputNativeFieldProps {
 }
 
 const SarakInputNativeField = ({
+    insideAffixes,
     error,
     disabled,
     describedBy,
@@ -148,8 +128,12 @@ const SarakInputNativeField = ({
     onFocus,
     onBlur,
     viewModel,
-}: SarakInputNativeFieldProps): React.ReactElement => (
-    <div className="relative w-full flex-1 min-w-0">
+}: SarakInputNativeFieldProps): React.ReactElement => {
+    const { hasPrefix, hasSuffix, prefixRef, suffixRef, leftBase, rightBase, insetStyle } = useInsideAffixInset(insideAffixes);
+    return (
+    <div className="relative w-full flex-1 min-w-0 flex items-center">
+        {insideAffixes && hasPrefix && <InsideAffix id={insideAffixes.prefixId} ref={prefixRef} side="left" inset={leftBase}>{insideAffixes.prefix}</InsideAffix>}
+        {insideAffixes && hasSuffix && <InsideAffix id={insideAffixes.suffixId} ref={suffixRef} side="right" inset={rightBase}>{insideAffixes.suffix}</InsideAffix>}
         {viewModel.iconSlots.map((slot) => (
             <div
                 key={slot.side}
@@ -166,7 +150,7 @@ const SarakInputNativeField = ({
             {...nativeProps}
             className={viewModel.inputClasses}
             disabled={disabled}
-            style={viewModel.dynamicStyle}
+            style={{ ...viewModel.dynamicStyle, ...insetStyle }}
             aria-invalid={error ? true : undefined}
             aria-describedby={describedBy}
             onFocus={(event) => { viewModel.setIsFocused(true); onFocus?.(event); }}
@@ -174,18 +158,21 @@ const SarakInputNativeField = ({
             id={viewModel.inputId}
         />
     </div>
-);
+    );
+};
 
 const SarakInputControl = ({
     error,
     prefixText,
     suffixText,
+    affixPlacement,
     disabled,
     nativeProps,
     onFocus,
     onBlur,
     viewModel,
 }: SarakInputViewProps): React.ReactElement => {
+    const inside = affixPlacement === 'inside';
     const hasPrefix = hasAdornment(prefixText);
     const hasSuffix = hasAdornment(suffixText);
     const describedBy = composeDescribedBy(
@@ -198,10 +185,18 @@ const SarakInputControl = ({
     return (
         <div className={mergeSarakClasses(
             'relative w-full flex items-center',
-            hasPrefix || hasSuffix ? 'gap-[var(--sarak-layout-gap-sm,8px)]' : '',
+            !inside && (hasPrefix || hasSuffix) ? 'gap-[var(--sarak-layout-gap-sm,8px)]' : '',
         )}>
-            {hasPrefix && <span id={`${viewModel.inputId}-prefix`} className="shrink-0">{prefixText}</span>}
+            {!inside && hasPrefix && <span id={`${viewModel.inputId}-prefix`} className="shrink-0">{prefixText}</span>}
             <SarakInputNativeField
+                insideAffixes={inside ? {
+                    prefix: prefixText,
+                    suffix: suffixText,
+                    prefixId: `${viewModel.inputId}-prefix`,
+                    suffixId: `${viewModel.inputId}-suffix`,
+                    hasLeftIcon: viewModel.iconSlots.some((slot) => slot.side === 'left'),
+                    hasRightIcon: viewModel.iconSlots.some((slot) => slot.side === 'right'),
+                } : undefined}
                 error={error}
                 disabled={disabled}
                 describedBy={describedBy}
@@ -210,7 +205,7 @@ const SarakInputControl = ({
                 onBlur={onBlur}
                 viewModel={viewModel}
             />
-            {hasSuffix && <span id={`${viewModel.inputId}-suffix`} className="shrink-0">{suffixText}</span>}
+            {!inside && hasSuffix && <span id={`${viewModel.inputId}-suffix`} className="shrink-0">{suffixText}</span>}
         </div>
     );
 };
@@ -237,6 +232,7 @@ export const SarakInput = (props: SarakInputProps): React.ReactElement => {
             error={props.error}
             prefixText={props.prefixText}
             suffixText={props.suffixText}
+            affixPlacement={props.affixPlacement}
             disabled={props.disabled}
             nativeProps={getNativeInputProps(props)}
             onFocus={props.onFocus}

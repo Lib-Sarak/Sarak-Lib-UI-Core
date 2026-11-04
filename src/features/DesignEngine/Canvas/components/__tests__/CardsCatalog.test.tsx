@@ -2,6 +2,9 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
+
+// Cada opção desenha componentes reais (botão em 4 estados, campo, cartão): a lista inteira em jsdom passa dos 5 s padrão sob carga.
+vi.setConfig({ testTimeout: 30000 });
 import { CardsCatalog } from '../CardsCatalog';
 
 vi.mock('../../../../../core/Design/hooks/useDesignVariables', () => ({
@@ -16,7 +19,7 @@ vi.mock('framer-motion', async () => {
 describe('CardsCatalog', () => {
     it('renderiza a aba Curados por padrão e faz snapshot', () => {
         const { container } = render(<CardsCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
-        expect(screen.getByText('Glass Minimal')).toBeInTheDocument();
+        expect(screen.getByText('Vidro mínimo')).toBeInTheDocument();
         expect(container).toMatchSnapshot();
     });
 
@@ -29,7 +32,7 @@ describe('CardsCatalog', () => {
     it('troca para a camada automática de Texturas ao clicar na sub-aba', () => {
         render(<CardsCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
         fireEvent.click(screen.getByRole('button', { name: /Texturas/i }));
-        expect(screen.getByText('Grid Técnico')).toBeInTheDocument();
+        expect(screen.getByText('Grade técnica')).toBeInTheDocument();
     });
 
     it('a grade reage a CONTAINER QUERY (@min-[768px]:), não mais a `md:` de viewport (plan-35)', () => {

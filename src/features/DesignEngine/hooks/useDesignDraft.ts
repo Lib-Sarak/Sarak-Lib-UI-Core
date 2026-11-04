@@ -15,6 +15,14 @@ const areValuesEqual = (valA: unknown, valB: unknown): boolean => {
     return false;
 };
 
+/** Um token que o rascunho muda em relação ao design aplicado: nome legível e os dois valores. */
+export interface SarakDirtyToken {
+    id: string;
+    label: string;
+    applied: unknown;
+    draft: unknown;
+}
+
 export const useDesignDraft = (sarak: SarakUIContextType) => {
     const [draftState, setDraftState] = useState<SarakDesignState | null>((sarak.draftDesign as SarakDesignState) || null);
     const isSyncingRef = React.useRef(false);
@@ -100,18 +108,17 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
         return allKeys.some(key => !areValuesEqual((draftState as Record<string, SarakTokenValue>)[key], (sarak.systemDesign as Record<string, SarakTokenValue>)?.[key]));
     }, [draftState, sarak.systemDesign]);
 
-    const dirtyTokenCount = useMemo(() => {
-        if (!draftState) return 0;
+    const dirtyTokens = useMemo((): SarakDirtyToken[] => {
+        if (!draftState) return [];
         const draftRecord = draftState as Record<string, SarakTokenValue>;
         const systemDesign = sarak.systemDesign as Record<string, SarakTokenValue> | undefined;
-        return sarakGetAllDesignTokens().filter((token) => {
-            const systemValue = systemDesign?.[token.id] === undefined
-                ? token.defaultValue
-                : systemDesign[token.id];
-            const draftValue = draftRecord[token.id] === undefined ? systemValue : draftRecord[token.id];
-            return !areValuesEqual(draftValue, systemValue);
-        }).length;
+        return sarakGetAllDesignTokens().flatMap((token) => {
+            const applied = systemDesign?.[token.id] === undefined ? token.defaultValue : systemDesign[token.id];
+            const next = draftRecord[token.id] === undefined ? applied : draftRecord[token.id];
+            return areValuesEqual(next, applied) ? [] : [{ id: token.id, label: token.label, applied, draft: next }];
+        });
     }, [draftState, sarak.systemDesign]);
+    const dirtyTokenCount = dirtyTokens.length;
 
     useDesignDraftSync(draftState, setDraftState, sarak, isSyncingRef);
 
@@ -220,6 +227,7 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
         previewDraft,
         isDirty,
         dirtyTokenCount,
+        dirtyTokens,
         isComponentDirty,
         updateDraft,
         resetComponent,
@@ -227,6 +235,8 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
         discardDraft,
         handleThemePreview,
         setDraftThemeId: setPendingThemeId,
+        /** O tema escolhido no rascunho e ainda não aplicado; `undefined` quando o rascunho segue o tema do sistema. */
+        draftThemeId: pendingThemeId,
         handleApplyToSystem,
         canUndoLastApply,
         undoLastApply,

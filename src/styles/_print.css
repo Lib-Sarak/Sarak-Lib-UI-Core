@@ -1,0 +1,78 @@
+/* =========================================
+   IMPRESSÃO — o papel leva o conteúdo, não a aplicação
+   =========================================
+   Importado por último em `sarak-lib`. O `!important` existe porque cromo, moldura e áreas de
+   rolagem escrevem medida e `overflow` em estilo inline, e nada mais vence o inline; tudo aqui
+   mora dentro de `@media print`, então a tela não muda.
+
+   A tabela não depende destas regras para sair inteira: `useIsPrinting` troca a janela virtual
+   pelas linhas no fluxo, e isso não se resolve em CSS.
+
+   `CanvasText` com `color-scheme: light` dá texto escuro em qualquer tema, sem cor fixa, e o
+   fundo sai transparente: o papel é o fundo. */
+
+@media print {
+    html,
+    body {
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    /* Só o cromo: `header` e `aside` dentro do conteúdo são do documento do consumidor. */
+    header:not([data-sarak-content] *),
+    aside:not([data-sarak-content] *),
+    [data-sarak-bottom-nav],
+    [data-sarak-no-print],
+    [data-sarak-datatable] [aria-expanded] {
+        display: none !important;
+    }
+
+    [data-sarak-content],
+    main {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    * {
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    /* O tom da célula continua colorido: é regra de negócio, não tema. */
+    [data-sarak-content],
+    [data-sarak-print-target],
+    [data-sarak-datatable],
+    [data-sarak-datacards],
+    [data-sarak-document] {
+        color-scheme: light;
+    }
+
+    :is([data-sarak-content], [data-sarak-print-target], [data-sarak-datatable], [data-sarak-datacards], [data-sarak-document]),
+    :is([data-sarak-content], [data-sarak-print-target], [data-sarak-datatable], [data-sarak-datacards], [data-sarak-document]) *:not([data-cell-tone], [data-cell-tone] *) {
+        color: CanvasText !important;
+        background: transparent !important;
+    }
+
+    /* Com moldura na página, sai só o documento: fica o que é ele ou contém ele. */
+    body:has([data-sarak-document]) *:not(:has([data-sarak-document])):not([data-sarak-document]):not([data-sarak-document] *) {
+        display: none !important;
+    }
+
+    [data-sarak-document] {
+        zoom: 1 !important;
+        width: 100% !important;
+        min-height: 0 !important;
+        border: none !important;
+        border-radius: 0 !important;
+    }
+
+    .sarak-document-frame > * {
+        overflow: visible !important;
+    }
+
+    /* `sarakPrint(element)`: o mesmo recorte, para o elemento pedido. */
+    html[data-sarak-printing] body *:not(:has([data-sarak-print-target])):not([data-sarak-print-target]):not([data-sarak-print-target] *) {
+        display: none !important;
+    }
+}

@@ -171,7 +171,8 @@ describe('DesignInjector', () => {
 
             moveMouse(100, 100);
 
-            expect(document.documentElement.style.getPropertyValue('--mouse-x')).not.toBe('');
+            expect(document.documentElement.style.getPropertyValue('--mouse-x')).toBe('');
+            expect(document.documentElement.style.getPropertyValue('--mouse-y')).toBe('');
             expect(document.documentElement.style.getPropertyValue('--sarak-light-x')).toBe('');
             expect(document.documentElement.style.getPropertyValue('--sarak-light-y')).toBe('');
             view.unmount();

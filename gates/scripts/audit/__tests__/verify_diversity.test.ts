@@ -167,10 +167,10 @@ describe('aggregate', () => {
         expect(a.fundoMedio).toBe(1);
     });
 
-    it('classifica neumorphic-mobile (real, GLOBAL_THEMES) como "neutro" — H cromático com S abaixo do limiar', () => {
+    it('classifica neumorphic-mobile (real, GLOBAL_THEMES) como "azul" — a paleta escolhida lhe dá saturação acima do limiar', () => {
         const tema = SARAK_ALL_THEMES.find((t) => t.id === 'neumorphic-mobile')!;
         const row = measureTheme(tema);
-        expect(row.familia).toBe('neutro');
+        expect(row.familia).toBe('azul');
     });
 });
 

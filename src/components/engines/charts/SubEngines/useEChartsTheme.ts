@@ -129,7 +129,7 @@ function buildBaseOption(theme: ChartThemeSettings): EChartsBaseOption {
     return {
         backgroundColor: 'transparent',
         color: theme.palette,
-        aria: { enabled: true, decal: { show: true } },
+        aria: { enabled: true, decal: { show: false } },
         tooltip: {
             backgroundColor: theme.chartTooltipBg,
             borderColor: theme.borderColor,

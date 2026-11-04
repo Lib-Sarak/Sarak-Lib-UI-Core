@@ -7,6 +7,7 @@ import type { SarakDescriptionListItem } from './SarakDescriptionList';
 import { SarakButton } from '../Buttons/SarakButton';
 import { SarakGrid } from '../Layouts/SarakGrid';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
+import { INLINE_COLUMNS_CLASS } from './resourceRowLayout';
 
 export interface SarakResourceRowAction {
     label: string;
@@ -22,9 +23,22 @@ export interface SarakResourceRowProps extends Omit<React.HTMLAttributes<HTMLEle
     actions?: SarakResourceRowAction[];
     href?: string;
     onNavigate?: (href: string) => void;
+    /** `inline` põe título, metadados e ações lado a lado e empilha sozinho em contêiner estreito. Omitido, empilha. */
+    layout?: SarakResourceRowLayout;
+    /** `compact` reduz o respiro da linha. Omitido, `standard`. */
+    density?: SarakResourceRowDensity;
 }
 
+export type SarakResourceRowLayout = 'stacked' | 'inline';
+export type SarakResourceRowDensity = 'compact' | 'standard';
+
+const GAP_MD = 'var(--sarak-layout-gap-md, 16px)';
+/** Na coluna `auto` da linha, o `min(100%, …)` da lista de metadados é cíclico e a coluna some; cada par ocupa o próprio conteúdo. */
+const INLINE_METADATA_STYLE: React.CSSProperties = { gridTemplateColumns: 'none', gridAutoFlow: 'column', gridAutoColumns: 'max-content' };
+
 interface SarakResourceRowContentProps {
+    layout: SarakResourceRowLayout;
+    density: SarakResourceRowDensity;
     title: React.ReactNode;
     description?: React.ReactNode;
     badges: React.ReactNode[];
@@ -40,10 +54,11 @@ function renderResourceBadge(badge: React.ReactNode, index: number): React.React
     return <SarakBadge key={index}>{badge}</SarakBadge>;
 }
 
-function SarakResourceRowBadges({ badges }: { badges: React.ReactNode[] }): React.ReactElement | null {
+function SarakResourceRowBadges({ badges, compact }: { badges: React.ReactNode[]; compact: boolean }): React.ReactElement | null {
     if (badges.length === 0) return null;
+    const gap = 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)';
     return (
-        <div className="flex flex-wrap" style={{ gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)', marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}>
+        <div className="flex flex-wrap" style={{ gap, marginTop: compact ? gap : 'var(--sarak-layout-gap-sm, 8px)' }}>
             {badges.map(renderResourceBadge)}
         </div>
     );
@@ -52,7 +67,7 @@ function SarakResourceRowBadges({ badges }: { badges: React.ReactNode[] }): Reac
 function SarakResourceRowActions({ actions }: { actions: SarakResourceRowAction[] }): React.ReactElement | null {
     if (actions.length === 0) return null;
     return (
-        <div className="relative z-10 flex flex-wrap items-center" style={{ gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)' }}>
+        <div className="relative z-10 flex max-w-full flex-wrap items-center" style={{ gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)' }}>
             {actions.map((action) => (
                 <SarakButton key={action.label} type="button" variant={action.variant ?? 'ghost'} onClick={action.onClick} style={{ minHeight: 'var(--sarak-touch-target-min, 44px)' }}>
                     {action.label}
@@ -63,6 +78,8 @@ function SarakResourceRowActions({ actions }: { actions: SarakResourceRowAction[
 }
 
 function SarakResourceRowContent({
+    layout,
+    density,
     title,
     description,
     badges,
@@ -70,20 +87,34 @@ function SarakResourceRowContent({
     actions,
     titleId,
 }: SarakResourceRowContentProps): React.ReactElement {
+    const inline = layout === 'inline';
+    const compact = density === 'compact';
+    const padding = compact ? `calc(${GAP_MD} * 0.5)` : GAP_MD;
+    const titleStyle: React.CSSProperties = inline
+        ? { margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }
+        : { margin: 0 };
+    const body = (
+        <>
+            <div className="pointer-events-none relative z-0 min-w-0">
+                <h3 id={titleId} style={titleStyle}>{title}</h3>
+                {description !== undefined && <p className="text-theme-muted" style={{ margin: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5) 0 0' }}>{description}</p>}
+                <SarakResourceRowBadges badges={badges} compact={compact} />
+            </div>
+            {metadata.length > 0 && <SarakDescriptionList items={metadata} className="relative z-0" style={inline ? INLINE_METADATA_STYLE : undefined} />}
+            <SarakResourceRowActions actions={actions} />
+        </>
+    );
+    if (inline) {
+        return <div className={`grid min-w-0 ${INLINE_COLUMNS_CLASS}`} style={{ padding, gap: GAP_MD }}>{body}</div>;
+    }
     return (
         <SarakGrid
             templateColumns="repeat(auto-fit, minmax(min(100%, max-content), 1fr))"
             gap="spacing-md"
             className="min-w-0 items-start"
-            style={{ padding: 'var(--sarak-layout-gap-md, 16px)' }}
+            style={{ padding }}
         >
-            <div className="pointer-events-none relative z-0 min-w-0">
-                <h3 id={titleId} style={{ margin: 0 }}>{title}</h3>
-                {description !== undefined && <p className="text-theme-muted" style={{ margin: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5) 0 0' }}>{description}</p>}
-                <SarakResourceRowBadges badges={badges} />
-            </div>
-            {metadata.length > 0 && <SarakDescriptionList items={metadata} className="relative z-0" />}
-            <SarakResourceRowActions actions={actions} />
+            {body}
         </SarakGrid>
     );
 }
@@ -115,6 +146,8 @@ export const SarakResourceRow = ({
     actions = [],
     href,
     onNavigate,
+    layout = 'stacked',
+    density = 'standard',
     className,
     style,
     ...props
@@ -130,6 +163,8 @@ export const SarakResourceRow = ({
             <SarakCard interactive={Boolean(href)} className="relative w-full">
             <SarakResourceRowDestination href={href} onNavigate={onNavigate} titleId={titleId} />
             <SarakResourceRowContent
+                layout={layout}
+                density={density}
                 title={title}
                 description={description}
                 badges={badges}

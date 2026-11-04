@@ -1,19 +1,31 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { MEDIA_PRESETS, TEXTURE_PRESETS } from '../../../../core/Design/presets/components/atmosphere';
+import { getPresetGroup } from '../../../../core/Design/presets/components/registry';
+import { textureFamilyOf } from '../../../../core/Design/presets/components/textureFamilies';
+import { usePresetText } from '../../hooks/usePresetText';
+import { CuratedGrid } from './CuratedGrid';
 import { ComponentPreset } from '../../../../core/Design/presets/components/cards';
-import { Layers, Play, Image as ImageIcon, Video, Grid } from 'lucide-react';
+import { Video, Grid } from 'lucide-react';
 import { SarakBackgroundRenderer } from '../../../../core/Design/components/SarakBackgroundRenderer';
+import { OptionTile } from './OptionTile';
+import { SampleButton, SAMPLE_TEXTURE_STYLE } from './SampleParts';
+import { SampleScope } from './SampleScope';
+import { CATALOG_GRID_2COL } from '../panelResponsive.presets';
+import type { PeekHandler } from './peek';
 
 import { SarakDesignState } from '../../../../core/Provider/types';
 
 interface AtmosphereCatalogProps {
     onApplyPreset: (presetDesign: Partial<SarakDesignState>, isPartial?: boolean) => void;
     currentMode: string;
+    draft?: Partial<SarakDesignState>;
+    onPeek?: PeekHandler;
+    /** A aba que abre primeiro; quem só confere as texturas não precisa desenhar as atmosferas antes. */
+    initialTab?: 'media' | 'textures';
 }
 
-export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPreset, currentMode }) => {
-    const [activeTab, setActiveTab] = useState<'media' | 'textures'>('media');
+export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPreset, currentMode, draft, onPeek, initialTab = 'media' }) => {
+    const [activeTab, setActiveTab] = useState<'media' | 'textures'>(initialTab);
+    const text = usePresetText();
 
     return (
         <div className="flex flex-col gap-6">
@@ -21,14 +33,14 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
                 <div className="flex items-center gap-2 p-1 bg-theme-body/20 rounded-xl border border-theme-border">
                     <button
                         onClick={() => setActiveTab('media')}
-                        className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'media' ? 'bg-theme-primary text-theme-text shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
+                        className={`px-4 py-2 rounded-lg text-[length:var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'media' ? 'bg-theme-primary text-theme-on-primary shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
                     >
                         <Video size={12} />
                         Atmosferas
                     </button>
                     <button
                         onClick={() => setActiveTab('textures')}
-                        className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'textures' ? 'bg-theme-primary text-theme-text shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
+                        className={`px-4 py-2 rounded-lg text-[length:var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'textures' ? 'bg-theme-primary text-theme-on-primary shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
                     >
                         <Grid size={12} />
                         Texturas
@@ -36,7 +48,7 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
                 </div>
 
                 <div className="flex items-center gap-3 px-4 py-2 bg-theme-body/20 rounded-xl border border-theme-border">
-                    <span className="text-[var(--sarak-type-scale2xs,11px)] font-black text-theme-text uppercase tracking-widest">Opacidade</span>
+                    <span className="text-[length:var(--sarak-type-scale2xs,11px)] font-black text-theme-text uppercase tracking-widest">Opacidade</span>
                     <input
                         key={activeTab}
                         type="range"
@@ -52,70 +64,69 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-6">
-                {(activeTab === 'media' ? MEDIA_PRESETS : TEXTURE_PRESETS).map((preset, i) => (
-                    <AtmospherePresetPreview key={preset.id} preset={preset} index={i} currentMode={currentMode} onApply={() => onApplyPreset(preset.design, true)} />
-                ))}
-            </div>
+            <CuratedGrid
+                group={getPresetGroup(activeTab === 'media' ? 'atmosphere' : 'textures')!}
+                gridClassName={CATALOG_GRID_2COL}
+                sectionOf={activeTab === 'textures' ? (preset) => {
+                    const family = textureFamilyOf(String(preset.design.texture)) ?? 'technical';
+                    return { id: family, title: text.family(family) };
+                } : undefined}
+                renderTile={(preset) => (
+                    <AtmospherePresetPreview key={preset.id} preset={preset} currentMode={currentMode} draft={draft} onPeek={onPeek} onApply={() => onApplyPreset(preset.design, true)} />
+                )}
+            />
         </div>
     );
 };
 
-const AtmospherePresetPreview = ({ preset, index, onApply, currentMode }: { preset: ComponentPreset, index: number, onApply: () => void, currentMode: string }) => {
-    const isVideo = preset.design.globalBackgroundImageUrl && (
-        preset.design.globalBackgroundImageUrl.includes('video') ||
-        preset.design.globalBackgroundImageUrl.endsWith('.webm') ||
-        preset.design.globalBackgroundImageUrl.endsWith('.mp4')
-    );
-
-    const isImage = preset.design.globalBackgroundImageUrl && !isVideo;
-    const hasGeneratedAtmosphere = !preset.design.globalBackgroundImageUrl && preset.design.texture && preset.design.texture !== 'none';
+const AtmospherePresetPreview = ({ preset, onApply, currentMode, draft, onPeek }: { preset: ComponentPreset, onApply: () => void, currentMode: string, draft?: Partial<SarakDesignState>, onPeek?: PeekHandler }) => {
+    const shown = usePresetText().preset(preset);
+    const imageUrl = preset.design.globalBackgroundImageUrl;
+    const isVideo = imageUrl && (imageUrl.includes('video') || imageUrl.endsWith('.webm') || imageUrl.endsWith('.mp4'));
+    const isImage = imageUrl && !isVideo;
+    const texture = preset.design.texture && preset.design.texture !== 'none' ? preset.design.texture : undefined;
+    const hasGeneratedAtmosphere = !imageUrl && texture;
+    const mode = (preset.design.mode || currentMode) === 'light' ? 'light' : 'dark';
 
     return (
-        <motion.button
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.1 }}
-            onClick={onApply}
-            className="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+        <OptionTile
+            name={shown.name}
+            description={shown.description}
+            onApply={onApply}
+            peekTokens={() => preset.design}
+            onPeek={onPeek}
         >
-            <div
-                className="h-64 w-full relative overflow-hidden flex items-center justify-center sarak-card"
-                data-sx-card-texture-type={preset.design.texture && preset.design.texture !== 'none' ? preset.design.texture : undefined}
-                style={{ '--sarak-card-texture-opacity': '0.8' } as React.CSSProperties}
-            >
-                <div className="absolute inset-0 z-0">
-                    {preset.design.globalBackgroundImageUrl && (
+            {/* A atmosfera ocupa o tile inteiro, sem cartão no meio escondendo o que se quer ver: só um rótulo e uma
+                mini peça no canto, para dar escala. A textura aparece com a opacidade da amostra (visível); o valor
+                que o clique aplica continua sendo o do preset. */}
+            <div className="relative h-48 overflow-hidden">
+                {imageUrl && (
+                    <div className="absolute inset-0 z-0">
                         <SarakBackgroundRenderer
-                            imageUrl={preset.design.globalBackgroundImageUrl}
+                            imageUrl={imageUrl}
                             opacity={preset.design.globalBackgroundOpacity}
                             blur={preset.design.globalBackgroundBlur}
-                            mode={(preset.design.mode || currentMode) as 'light' | 'dark'}
+                            mode={mode}
                             disableOverlay={true}
                             zIndex={0}
                         />
-                    )}
-                </div>
-
-                {/* Removido o gradiente preto global para evitar escurecimento não intencional da mídia brilhante */}
-
-                <div className="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-[var(--sarak-motion-dur-slow,0.6s)]">
-                    <div className="p-4 bg-theme-text/5 backdrop-blur-xl border border-theme-text/10 rounded-2xl text-theme-text shadow-2xl">
-                        {isVideo ? <Play size={32} /> : isImage ? <ImageIcon size={32} /> : hasGeneratedAtmosphere ? <Grid size={32} /> : <Layers size={32} />}
                     </div>
-                </div>
-
-                <div className="absolute bottom-0 left-0 w-full p-6 z-20">
-                    <div className="flex items-center gap-3 mb-2">
-                        {isVideo && <span className="px-2 py-1 rounded bg-[var(--sarak-status-info-color,#3b82f6)]/20 border border-[var(--sarak-status-info-color,#3b82f6)]/50 text-[var(--sarak-status-info-color,#3b82f6)] text-[var(--sarak-type-scale2xs,11px)] font-bold uppercase tracking-wider backdrop-blur-md">Live Media</span>}
-                        {isImage && <span className="px-2 py-1 rounded bg-[var(--sarak-secondary-color,#7c5cff)]/20 border border-[var(--sarak-secondary-color,#7c5cff)]/50 text-[var(--sarak-secondary-color,#7c5cff)] text-[var(--sarak-type-scale2xs,11px)] font-bold uppercase tracking-wider backdrop-blur-md">Static Image</span>}
-                        {hasGeneratedAtmosphere && <span className="px-2 py-1 rounded bg-[var(--sarak-status-success-color,#10b981)]/20 border border-[var(--sarak-status-success-color,#10b981)]/50 text-[var(--sarak-status-success-color,#10b981)] text-[var(--sarak-type-scale2xs,11px)] font-bold uppercase tracking-wider backdrop-blur-md">CSS Atmosphere</span>}
-                        {!isVideo && !isImage && !hasGeneratedAtmosphere && <span className="px-2 py-1 rounded bg-[var(--text-muted,rgba(242,246,251,0.55))]/20 border border-[var(--border-color,rgba(255,255,255,0.09))]/50 text-[var(--text-muted,rgba(242,246,251,0.55))] text-[var(--sarak-type-scale2xs,11px)] font-bold uppercase tracking-wider backdrop-blur-md">Solid Void</span>}
+                )}
+                <SampleScope
+                    draft={draft}
+                    tokens={preset.design}
+                    mode={mode}
+                    transparent={Boolean(imageUrl)}
+                    slotClassName="absolute inset-0 z-10"
+                    className={texture ? 'texture-active' : undefined}
+                    style={hasGeneratedAtmosphere ? SAMPLE_TEXTURE_STYLE : undefined}
+                    scopeProps={{ 'data-sx-texture': texture }}
+                >
+                    <div className="absolute bottom-3 right-3 z-10 scale-90 origin-bottom-right opacity-90">
+                        <SampleButton state="rest" />
                     </div>
-                    <h3 className="text-xl font-black text-theme-text uppercase tracking-wider drop-shadow-lg">{preset.name}</h3>
-                    <p className="text-sm text-theme-text/70 mt-1 max-w-lg drop-shadow-md">{preset.description}</p>
-                </div>
+                </SampleScope>
             </div>
-        </motion.button>
+        </OptionTile>
     );
 };

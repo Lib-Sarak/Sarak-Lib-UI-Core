@@ -45,3 +45,5 @@ a curadoria escolhe entradas, não resultados. O preset embarcado e a paleta cri
   num tom, só trocando a entrada ou ajustando a cor explícita por cima; harmonias calculadas de algumas cores-base
   combinam mal, e a única defesa é a prévia; voltar atrás exigiria reescrever presets, painel e o formato do token, que já
   está em temas salvos.
+- **A base é âncora:** nenhuma cor serve de texto igual nos dois modos (a janela de luminosidade a 4,5:1 é vazia), e clarear o fundo piora as bases escuras. O preenchimento de marca é a base
+  exata, e o texto desloca o mínimo. Contorno ou halo no texto foi recusado pelo dono.

@@ -5,7 +5,7 @@ import { SARAK_ALL_THEMES } from '../all';
 import { resolveThemeForMode } from '../color-engine';
 import { resolvePalette, sarakResolvePalette } from '../../../palette/resolve';
 import { parsePaletteValue } from '../../../palette/parser';
-import { evaluatePair } from '../../../../../../gates/scripts/audit/verify_contrast';
+import { evaluatePair, pairsFor } from '../../../../../../gates/scripts/audit/verify_contrast';
 import { PAIRS } from '../../../palette/contrast-pairs';
 import type { SarakTokenValue } from '../../../types';
 
@@ -140,7 +140,8 @@ describe('composeThemeDesign — o texto da paleta se corrige contra o fundo que
         expect(out.sidebarItemTextColor).toBe(palette.sidebarItemTextColor);
     });
 
-    it('nenhum tema embarcado muda de saída: só o texto que reprova contra o fundo declarado é movido', () => {
+    it('tema embarcado com fundo próprio: só texto é movido contra o fundo declarado, e todo par passa', () => {
+        const textTokens = new Set(PAIRS.map((pair) => pair.fg.replace(/^(mix:|on:)/, '')));
         const withPalette = SARAK_ALL_THEMES.filter((theme) => (theme.design as Record<string, unknown>).colorPalette);
         expect(withPalette.length).toBeGreaterThan(0);
 
@@ -151,12 +152,19 @@ describe('composeThemeDesign — o texto da paleta se corrige contra o fundo que
                     ...(theme.contraparte ? { contraparte: theme.contraparte } : {}),
                 }, mode) as Record<string, unknown>;
                 const input = parsePaletteValue(resolved.colorPalette)!;
-                const alone = resolvePalette(input, mode);
+                // O tom das barras muda o fundo calculado e não é correção de texto: a referência já o leva.
+                const alone = resolvePalette(input, mode, { sidebarTone: resolved.sidebarTone, topbarTone: resolved.topbarTone });
                 const withDeclared = resolvePalette(input, mode, resolved);
-                const notDeclared = Object.keys(alone).filter((tokenId) => resolved[tokenId] === undefined);
+                const moved = Object.keys(alone).filter((tokenId) => resolved[tokenId] === undefined && withDeclared[tokenId] !== alone[tokenId]);
 
-                notDeclared.forEach((tokenId) => {
-                    expect(withDeclared[tokenId], `${theme.id}/${mode}/${tokenId}`).toBe(alone[tokenId]);
+                // Fora o texto, só o véu de hover/ativo de uma barra de papel contrastante acompanha o fundo que o tema fixou.
+                const contrasting = (['sidebar', 'topbar'] as const).filter((bar) => ['primary', 'secondary', 'inverse'].includes(String(resolved[`${bar}Tone`])));
+                const veilTokens = new Set(contrasting.flatMap((bar) => [`${bar}HoverColor`, `${bar}ActiveColor`]));
+                moved.forEach((tokenId) => expect(textTokens.has(tokenId) || veilTokens.has(tokenId), `${theme.id}/${mode}/${tokenId} não é texto nem véu da barra`).toBe(true));
+                const design = { ...sarakGetDefaultDesignState(), ...withDeclared, ...resolved } as never;
+                pairsFor(design as unknown as Record<string, unknown>).forEach((pair) => {
+                    const result = evaluatePair(pair, design);
+                    if (!result.pulado) expect(result.pass, `${theme.id}/${mode} ${pair.fg} → ${pair.bgChain.join(' → ')}`).toBe(true);
                 });
             });
         });

@@ -21,7 +21,11 @@ export interface FocusTrap {
     handleTrap: (e: React.KeyboardEvent<HTMLDivElement>) => void;
 }
 
-export const useFocusTrap = (isOpen: boolean, onClose: () => void): FocusTrap => {
+/**
+ * `isTopLayer` (padrão `true`) diz se este overlay é o do topo da pilha de camadas: só ele responde a
+ * Escape e ao Tab, para uma confirmação aberta sobre uma gaveta não fechar as duas de uma vez.
+ */
+export const useFocusTrap = (isOpen: boolean, onClose: () => void, isTopLayer = true): FocusTrap => {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const previouslyFocused = useRef<HTMLElement | null>(null);
 
@@ -30,6 +34,8 @@ export const useFocusTrap = (isOpen: boolean, onClose: () => void): FocusTrap =>
     // o foco e perdendo digitação. Só `isOpen` dispara entrada/saída do trap.
     const onCloseRef = useRef(onClose);
     onCloseRef.current = onClose;
+    const isTopLayerRef = useRef(isTopLayer);
+    isTopLayerRef.current = isTopLayer;
 
     // Entrada do trap (foca o primeiro focável), ESC e restauração do foco ao fechar.
     useEffect(() => {
@@ -41,7 +47,7 @@ export const useFocusTrap = (isOpen: boolean, onClose: () => void): FocusTrap =>
         (first ?? node)?.focus();
 
         const onKey = (e: KeyboardEvent): void => {
-            if (e.key === 'Escape') onCloseRef.current();
+            if (e.key === 'Escape' && isTopLayerRef.current) onCloseRef.current();
         };
         document.addEventListener('keydown', onKey);
 
@@ -54,7 +60,7 @@ export const useFocusTrap = (isOpen: boolean, onClose: () => void): FocusTrap =>
 
     // Focus trap: `Tab` nunca escapa para trás do overlay (early returns, sem else-if).
     const handleTrap = (e: React.KeyboardEvent<HTMLDivElement>): void => {
-        if (e.key !== 'Tab' || !containerRef.current) return;
+        if (e.key !== 'Tab' || !containerRef.current || !isTopLayer) return;
         const items = Array.from(containerRef.current.querySelectorAll<HTMLElement>(FOCUSABLE));
         if (items.length === 0) {
             e.preventDefault();

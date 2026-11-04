@@ -1,10 +1,11 @@
 import { ComponentPreset } from './cards';
+import { INPUT_STRUCTURE_PRESETS } from './inputsStructure';
 
-export const INPUT_PRESETS: ComponentPreset[] = [
+const LEGACY_INPUT_PRESETS: ComponentPreset[] = [
     {
         id: 'input-floating-pill',
-        name: 'Floating Pill',
-        description: 'Radius máximo, sem borda, sombra suave flutuando sobre o fundo.',
+        name: 'Pílula flutuante',
+        description: 'Cantos no máximo, sem borda e sombra suave flutuando sobre o fundo.',
         design: {
             inputBorderType: 'none',
             inputBorderRadius: 120,
@@ -14,8 +15,8 @@ export const INPUT_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'input-terminal-dotted',
-        name: 'Terminal Dotted',
-        description: 'Borda tracejada grossa, fundo puro negro.',
+        name: 'Terminal tracejado',
+        description: 'Borda tracejada e fundo preto puro.',
         design: {
             inputBorderType: 'dashed',
             inputBorderRadius: 0,
@@ -26,8 +27,8 @@ export const INPUT_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'input-industrial-inset',
-        name: 'Industrial Inset',
-        description: 'Sombra forte para dentro, como entalhado no fundo.',
+        name: 'Entalhe industrial',
+        description: 'Sombra forte para dentro, como se estivesse entalhado no fundo.',
         design: {
             inputBorderType: 'none',
             inputBorderRadius: 6,
@@ -37,8 +38,8 @@ export const INPUT_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'input-classic-underline',
-        name: 'Classic Underline',
-        description: 'Estilo Material, só linha inferior.',
+        name: 'Linha inferior',
+        description: 'Estilo Material: só uma linha na base.',
         design: {
             inputBorderType: 'underline',
             inputBorderRadius: 0,
@@ -49,8 +50,8 @@ export const INPUT_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'input-frosted-glass',
-        name: 'Frosted Glass',
-        description: 'Translúcido com blur perceptível.',
+        name: 'Vidro fosco',
+        description: 'Translúcido, com desfoque perceptível.',
         design: {
             inputBorderType: 'solid',
             inputBorderRadius: 8,
@@ -61,8 +62,8 @@ export const INPUT_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'input-high-contrast',
-        name: 'High Contrast (Brutalism)',
-        description: 'Fundo escuro sólido, borda grossa de alto contraste.',
+        name: 'Alto contraste',
+        description: 'Fundo sólido e borda de alto contraste, no estilo brutalista.',
         design: {
             inputBorderType: 'solid',
             inputBorderRadius: 0,
@@ -72,8 +73,8 @@ export const INPUT_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'input-neumorphic-press',
-        name: 'Neumorphic Press',
-        description: 'Extrusão suave (neumorphism real) — diferente do Inset industrial.',
+        name: 'Relevo pressionado',
+        description: 'Extrusão suave de verdade, diferente do entalhe industrial.',
         design: {
             inputBorderType: 'none',
             inputBorderRadius: 14,
@@ -83,8 +84,8 @@ export const INPUT_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'input-cyberpunk-glow-line',
-        name: 'Cyberpunk Glow Line',
-        description: 'Underline com glow sutil em repouso — vizinho neon do Classic Underline.',
+        name: 'Linha luminosa',
+        description: 'Linha inferior com brilho sutil em repouso, vizinha neon da linha inferior comum.',
         design: {
             inputBorderType: 'underline',
             inputBg: '#050505',
@@ -95,8 +96,8 @@ export const INPUT_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'input-paper-craft',
-        name: 'Paper Craft',
-        description: 'Tom quente, borda fina, radius generoso — orgânico.',
+        name: 'Papel artesanal',
+        description: 'Tom quente, borda fina e cantos generosos: orgânico.',
         design: {
             inputBorderType: 'solid',
             inputBorderRadius: 12,
@@ -106,8 +107,8 @@ export const INPUT_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'input-dense-compact',
-        name: 'Dense Compact',
-        description: 'Padding e radius mínimos — utilitário, alta densidade.',
+        name: 'Denso',
+        description: 'Respiro e cantos mínimos: utilitário, de alta densidade.',
         design: {
             inputBorderType: 'solid',
             inputPadding: 6,
@@ -117,8 +118,8 @@ export const INPUT_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'input-spacious-airy',
-        name: 'Spacious Airy',
-        description: 'Padding e radius generosos — o oposto do Dense Compact.',
+        name: 'Espaçoso',
+        description: 'Respiro e cantos generosos: o oposto do campo denso.',
         design: {
             inputBorderType: 'solid',
             inputPadding: 20,
@@ -129,13 +130,14 @@ export const INPUT_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'input-alert-ring',
-        name: 'Alert Ring',
-        description: 'Acento na cor de erro — variante para formulários de alerta.',
+        name: 'Anel de alerta',
+        description: 'Acento na cor de erro: variante para formulários de alerta.',
         design: {
             inputBorderType: 'solid',
             inputBorderRadius: 8,
             inputBorderColor: 'var(--sarak-input-error-color, #ff6b6b)',
-            inputFocusBorderColor: 'var(--sarak-input-error-color, #ff6b6b)',
         }
     }
 ];
+
+export const INPUT_PRESETS: ComponentPreset[] = [...LEGACY_INPUT_PRESETS, ...INPUT_STRUCTURE_PRESETS];

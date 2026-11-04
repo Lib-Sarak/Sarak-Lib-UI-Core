@@ -4,10 +4,11 @@ import { requireTanstackUseVirtualizer } from '../optional-tanstack-virtualizer'
 import type { SarakColumn, SarakTableSort } from './columnModel';
 import { hasFooter } from './columnValue';
 import { cardItemsOf } from './dataCardItems';
+import type { SarakCellBehavior } from './SarakCellContent';
 import type { SarakDisplayRow } from './tableDisplayRows';
 import { SarakDataCardsView } from './SarakDataCardsView';
 
-export interface SarakDataCardsProps<T> {
+export interface SarakDataCardsProps<T> extends SarakCellBehavior<T> {
     columns: Array<SarakColumn<T>>;
     rows: T[];
     height?: number | string;
@@ -26,6 +27,8 @@ export interface SarakDataCardsProps<T> {
     onToggleAll?: (checked: boolean) => void;
     onRowClick?: (row: T) => void;
     className?: string;
+    /** Cartão sem fundo nem borda, só o traço entre os itens. */
+    report?: boolean;
     /** Linhas visuais (grupo, subtotal, detalhe, árvore); ausente = uma linha de dado por `rows`. */
     displayRows?: Array<SarakDisplayRow<T>>;
     /** Linhas sobre as quais o rodapé agrega; ausente, sem rodapé. */

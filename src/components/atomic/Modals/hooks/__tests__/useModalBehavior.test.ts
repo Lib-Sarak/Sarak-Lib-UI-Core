@@ -1,5 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
+import { useOverlayLayer } from '../useOverlayLayer';
 import { useModalBehavior, FOCUSABLE } from '../useModalBehavior';
 
 describe('Spec 13 — useModalBehavior', () => {
@@ -28,9 +29,12 @@ describe('Spec 13 — useModalBehavior', () => {
         expect(onClose).not.toHaveBeenCalled();
     });
 
-    it('trava e restaura o overflow do body conforme abre/fecha', () => {
+    it('trava e restaura o overflow do body conforme abre/fecha (a trava é da pilha de camadas)', () => {
         const { rerender, unmount } = renderHook(
-            ({ open }: { open: boolean }) => useModalBehavior(open, () => undefined),
+            ({ open }: { open: boolean }) => {
+                const layer = useOverlayLayer(open);
+                return useModalBehavior(open, () => undefined, layer.isTop);
+            },
             { initialProps: { open: true } },
         );
         expect(document.body.style.overflow).toBe('hidden');

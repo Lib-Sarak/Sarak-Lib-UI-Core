@@ -136,6 +136,13 @@ que é o nome que o consumidor escreve. A correção foi resolver por AST o padr
 `export const X = lazy(() => import('./Alvo'))` (`collectKitSources.mjs:107-126`). Sem ela o kit
 estaria tecnicamente correto e praticamente inútil naquele item.
 
+## 2.3 A base que o consumidor não reescreve
+
+- **Erro contido.** `SarakErrorBoundary` recebe `fallback`, `onError` e `resetKeys`. `SarakSection` e `SarakAppChrome` o usam por padrão: o erro de render fica no bloco, com "Tentar de novo", e a troca de `activeRoute` o limpa. Um boundary do consumidor em volta do cromo não recebe esses erros: para registrá-los, ele vai dentro do conteúdo.
+- **Alterações não salvas.** `useSarakUnsavedChanges({ isDirty, onBlock? })` avisa ao fechar a aba e devolve `confirmLeave()`, que o consumidor liga no próprio roteador, porque a lib não navega. `SarakForm.warnOnUnsaved`, padrão `false`, cobre o fechamento da aba.
+- **Mensagem de erro.** `sarakErrorMessage(error, fallback?)` devolve texto seguro de `Error`, string e resposta comum de API. Rastro de pilha, HTML, texto longo e erro do motor JS não passam.
+- **Subpath `/testing`.** `renderWithSarak` é assíncrona, e `createSarakKitMock` mantém a lib real com dublês de `SarakDataTable`, `SarakChartEngine` e `SarakPDFViewer`. Lib e Testing Library carregam por `import()` com especificador em variável, para o subpath abrir em Node sem DOM e sem `@testing-library/react`, que é peer opcional. O subpath não importa tipos da lib: importar faz o build mover tipos do barril para um `.d.ts` compartilhado, e `dist/index.d.ts` deixa de declará-los.
+
 # 3. A regra nº 1 do consumidor — leia o catálogo, não assuma
 
 Está no topo do `START-HERE.md` (`sarak-ui/START-HERE.md:14-28`), e o motivo é específico desta

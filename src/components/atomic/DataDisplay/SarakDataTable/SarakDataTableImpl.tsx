@@ -3,13 +3,17 @@ import { getOptionalTanstackUseVirtualizer } from '../optional-tanstack-virtuali
 import { useSarakDevice } from '../../../../core/Provider/DeviceProvider';
 import { SarakOptionalPeerFallback } from '../../Feedback/SarakOptionalPeerFallback';
 import type { SarakColumn, SarakTableSort } from './columnModel';
+import type { SarakCellBehavior } from './SarakCellContent';
+import type { SarakTableBulkAction } from './SarakTableBulkBar';
+import type { SarakColumnState } from './tableColumnState';
 import type { SarakTableGroupBy } from './tableDisplayRows';
+import type { SarakTableView } from './useTableViews';
 import { useSarakDataTableViewModel } from './useSarakDataTableViewModel';
 import { SarakDataTableView } from './SarakDataTableView';
 
 export type SarakDataTableRowHeight<T> = number | ((row: T) => number) | 'auto';
 
-export interface SarakDataTableProps<T = Record<string, unknown>> {
+export interface SarakDataTableProps<T = Record<string, unknown>> extends SarakCellBehavior<T> {
     /** Definição declarativa das colunas (ordem inicial = ordem do array). */
     columns: Array<SarakColumn<T>>;
     /** Linhas de dados; a fonte real (fetch) vive fora — aqui só virtualizamos. */
@@ -65,6 +69,23 @@ export interface SarakDataTableProps<T = Record<string, unknown>> {
     reorderable?: boolean;
     /** Linhas do esqueleto com `loading` e sem linhas; padrão `8`. */
     skeletonRows?: number;
+    /** Ações da barra que aparece com linhas selecionadas; `tone: 'danger'` pede confirmação. */
+    bulkActions?: SarakTableBulkAction[];
+    /** Colunas escondidas, ordem e largura (controlado). Com esta, `defaultColumnState` ou `onColumnStateChange`, há o botão "Colunas". */
+    columnState?: SarakColumnState;
+    /** Estado de colunas inicial, e o destino de "voltar ao padrão". */
+    defaultColumnState?: SarakColumnState;
+    /** Recebe o estado de colunas atualizado; quem salva é o consumidor. */
+    onColumnStateChange?: (state: SarakColumnState) => void;
+    /** Visões salvas; a tabela só as aplica, e quem persiste é o consumidor. */
+    views?: SarakTableView[];
+    /** Id da visão atual (controlado); `null` é o padrão; omitido, a tabela gerencia. */
+    activeView?: string | null;
+    onViewChange?: (viewId: string | null, view: SarakTableView | null) => void;
+    /** Recebe a visão de "salvar como": filtros, colunas e ordenação do momento. */
+    onViewSave?: (view: SarakTableView) => void;
+    /** `report`: relatório leve, sem cromo, com todas as linhas no fluxo da página e sem rolagem própria. */
+    density?: 'standard' | 'report';
 }
 
 const OPTIONAL_PEER = '@tanstack/react-virtual';

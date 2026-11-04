@@ -41,6 +41,11 @@ export interface SarakToastOptions {
     title?: string;
     /** Ação opcional exibida como botão; garante duração mínima de cinco segundos. */
     action?: SarakToastAction;
+    /**
+     * Chave de deduplicação: enquanto um toast com a mesma chave estiver na tela, `notify` não abre outro — atualiza o
+     * existente, reinicia a duração e devolve o mesmo id. Omitida, cada chamada abre um toast.
+     */
+    dedupeKey?: string;
 }
 
 /** Controller público para criar e dispensar notificações. */
@@ -91,20 +96,26 @@ const useToastManager = (): ToastManager => {
     const [toasts, setToasts] = useState<ToastEntry[]>([]);
     const sequence = useRef(0);
     const timers = useRef(new Map<string, ReturnType<typeof setTimeout>>());
+    const liveKeys = useRef(new Map<string, string>());
     const dismiss = useCallback((id: string): void => {
         setToasts((current) => current.filter((toast) => toast.id !== id));
         clearToastTimer(timers.current, id);
+        liveKeys.current.forEach((liveId, key) => { if (liveId === id) liveKeys.current.delete(key); });
     }, []);
     const notify = useCallback((options: SarakToastOptions): string => {
-        sequence.current += 1;
-        const id = `toast-${sequence.current}`;
+        const { dedupeKey } = options;
+        const existingId = dedupeKey === undefined ? undefined : liveKeys.current.get(dedupeKey);
+        sequence.current += existingId === undefined ? 1 : 0;
+        const id = existingId ?? `toast-${sequence.current}`;
         const entry: ToastEntry = {
             ...options,
             id,
             variant: options.variant ?? 'info',
             duration: getToastDuration(options.duration, options.action !== undefined),
         };
-        setToasts((current) => [...current, entry]);
+        setToasts((current) => existingId === undefined ? [...current, entry] : current.map((toast) => toast.id === id ? entry : toast));
+        if (dedupeKey !== undefined) liveKeys.current.set(dedupeKey, id);
+        clearToastTimer(timers.current, id);
         if (entry.duration > 0) timers.current.set(id, setTimeout(() => dismiss(id), entry.duration));
         return id;
     }, [dismiss]);

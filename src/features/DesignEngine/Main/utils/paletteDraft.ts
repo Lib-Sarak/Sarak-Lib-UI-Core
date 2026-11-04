@@ -74,10 +74,13 @@ export const toValidPaletteInput = (input: SarakPaletteInput): SarakPaletteInput
     return parsePaletteValue(buildCustomPaletteValue(input)) ? input : null;
 };
 
-/** Os tokens de cor que a paleta calcula, no modo pedido; `{}` se o valor não for uma paleta. */
-export const resolveDraftPalette = (value: unknown, mode: SarakPaletteMode): Record<string, string> => {
+/** O papel de cor das barras que o rascunho tem: a paleta calcula o fundo e o texto delas a partir dele. */
+export const barTonesOf = (design: Readonly<Record<string, unknown>>): Record<string, unknown> => ({ sidebarTone: design.sidebarTone, topbarTone: design.topbarTone });
+
+/** Os tokens de cor que a paleta calcula, no modo pedido e com o papel das barras; `{}` se o valor não for uma paleta. */
+export const resolveDraftPalette = (value: unknown, mode: SarakPaletteMode, tones?: Record<string, unknown>): Record<string, string> => {
     const input = parsePaletteValue(value);
-    return input ? resolvePalette(input, mode) : {};
+    return input ? resolvePalette(input, mode, tones) : {};
 };
 
 /**
@@ -96,8 +99,9 @@ export const buildPaletteDraftPatch = (
     value: string,
     mode: SarakPaletteMode,
     keptTokenIds: readonly string[] = [],
+    tones?: Record<string, unknown>,
 ): Record<string, string> => {
     const kept = new Set(keptTokenIds);
-    const colors = Object.entries(resolveDraftPalette(value, mode)).filter(([tokenId]) => !kept.has(tokenId));
+    const colors = Object.entries(resolveDraftPalette(value, mode, tones)).filter(([tokenId]) => !kept.has(tokenId));
     return { colorPalette: value, ...Object.fromEntries(colors) };
 };

@@ -44,7 +44,6 @@ export const useStructuralStyles = () => {
             className,
             style: {
                 gap,
-                columnGap: layoutType === 'masonry' && !hasCustomTemplate ? gap : undefined,
                 gridTemplateColumns: templateColumns ?? autoFitTemplateColumns,
                 gridTemplateAreas: templateAreas
             } as React.CSSProperties

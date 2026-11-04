@@ -9,6 +9,9 @@ import { MASTER_DESIGN_MAP } from '../../../master-map';
 
 const roleKeys = Object.keys(PALETTE_ROLE_MAP);
 
+/** Variantes de cor da galeria (a mesma base de um preset de tema, outra combinação): nenhum tema embarcado as usa. */
+const GALLERY_ONLY_PRESETS = ['ciano-azul', 'oliva-dourada', 'oliva-viva', 'tinta-azul'];
+
 describe('os temas embarcados tiram a cor de uma paleta', () => {
     it.each(SARAK_ALL_THEMES.map((theme) => [theme.id, theme] as const))('%s declara um preset que existe', (_id, theme) => {
         const palette = (theme.design as Record<string, unknown>).colorPalette;
@@ -16,9 +19,10 @@ describe('os temas embarcados tiram a cor de uma paleta', () => {
         expect(Object.keys(SARAK_PALETTE_PRESETS)).toContain(palette);
     });
 
-    it('todo preset do catálogo é usado por ao menos um tema (nenhuma entrada sobra)', () => {
+    it('todo preset do catálogo é usado por ao menos um tema, salvo os que só a galeria oferece', () => {
         const used = new Set(SARAK_ALL_THEMES.map((theme) => (theme.design as Record<string, unknown>).colorPalette));
-        for (const id of Object.keys(SARAK_PALETTE_PRESETS)) expect(used.has(id), id).toBe(true);
+        const galleryOnly = Object.keys(SARAK_PALETTE_PRESETS).filter((id) => !used.has(id));
+        expect([...galleryOnly].sort()).toEqual(GALLERY_ONLY_PRESETS);
     });
 
     it('o tema declara só sobrescrita nos tokens de cor: bem menos que o mapa de papéis inteiro', () => {

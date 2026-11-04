@@ -20,12 +20,6 @@ describe('ThemeGlobalSettings', () => {
 // Spec 05 §2.2.1 — o painel oferece a posição das 5 preferências.
 describe('ThemeGlobalSettings — seção "Barra de Preferências do Usuário"', () => {
     const baseProps = () => ({
-        activePillarId: 'global',
-        setActivePillarId: vi.fn(),
-        activeSectionId: 'global-preferences-bar',
-        setActiveSectionId: vi.fn(),
-        isDirty: false,
-        onReset: vi.fn(),
         globalComponent: { id: 'global', label: 'Global', tokens: [] },
         catalogMap: new Map(),
         draft: {},
@@ -36,16 +30,24 @@ describe('ThemeGlobalSettings — seção "Barra de Preferências do Usuário"',
 
     it('lista as 5 preferências, cada uma com as 3 posições oferecidas', () => {
         renderSettings(baseProps());
-        expect(screen.getByText(`Barra de Preferências do Usuário (${PreferencesSchema.tokens.length})`)).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Barra de Preferências do Usuário' })).toBeInTheDocument();
         PreferencesSchema.tokens.forEach((token) => {
             expect(screen.getByRole('combobox', { name: token.label })).toBeInTheDocument();
         });
         // As 3 posições aparecem como opção em cada select — pega o primeiro select.
         const selects = screen.getAllByRole('combobox');
         expect(selects).toHaveLength(PreferencesSchema.tokens.length);
-        expect(screen.getAllByText('Não oferecida').length).toBeGreaterThan(0);
+        expect(screen.getAllByText('Esconder').length).toBeGreaterThan(0);
         expect(screen.getAllByText('No menu').length).toBeGreaterThan(0);
-        expect(screen.getAllByText('Fixa na barra').length).toBeGreaterThan(0);
+        expect(screen.getAllByText('Mostrar').length).toBeGreaterThan(0);
+    });
+
+    it('traz as três seções do bloco global abertas, sem acordeão, e a identidade só com a porta de marca', () => {
+        renderSettings({ ...baseProps(), globalComponent: { id: 'global', label: 'Global', tokens: [] } });
+        ['Preferências Globais', 'Barra de Preferências do Usuário', 'Identidade da Empresa'].forEach((name) => {
+            expect(screen.getByRole('region', { name })).toBeInTheDocument();
+        });
+        expect(screen.queryByRole('button', { name: /Configurações globais/ })).toBeNull();
     });
 
     it('trocar a posição de uma preferência chama updateDraft com o token certo', () => {
@@ -54,5 +56,29 @@ describe('ThemeGlobalSettings — seção "Barra de Preferências do Usuário"',
         const selects = screen.getAllByRole('combobox');
         fireEvent.change(selects[0], { target: { value: 'menu' } });
         expect(props.updateDraft).toHaveBeenCalledWith(PREFERENCE_POSITION_TOKEN_IDS.colorMode, 'menu');
+    });
+});
+
+describe('ThemeGlobalSettings — tokens que a decisão já mostra por pergunta', () => {
+    const base = () => ({
+        globalComponent: { id: 'global', label: 'Global', tokens: [] },
+        catalogMap: new Map(),
+        draft: {},
+        updateDraft: vi.fn(),
+        previewDevice: 'desktop',
+        sarak: { branding: {}, updateBranding: vi.fn() },
+    });
+
+    it('um token citado em omitTokenIds sai da barra de preferências, e os outros ficam', () => {
+        const omitted = PREFERENCE_POSITION_TOKEN_IDS.colorMode;
+        renderSettings({ ...base(), omitTokenIds: new Set([omitted]) });
+        const omittedLabel = PreferencesSchema.tokens.find((token) => token.id === omitted)!.label;
+        expect(screen.queryByRole('combobox', { name: omittedLabel })).toBeNull();
+        expect(screen.getAllByRole('combobox')).toHaveLength(PreferencesSchema.tokens.length - 1);
+    });
+
+    it('com todas as preferências omitidas a seção some inteira, sem título solto', () => {
+        renderSettings({ ...base(), omitTokenIds: new Set(PreferencesSchema.tokens.map((token) => token.id)) });
+        expect(screen.queryByRole('heading', { name: 'Barra de Preferências do Usuário' })).toBeNull();
     });
 });

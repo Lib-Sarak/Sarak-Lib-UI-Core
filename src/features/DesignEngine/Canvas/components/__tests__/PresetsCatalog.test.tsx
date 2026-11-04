@@ -13,19 +13,20 @@ vi.mock('framer-motion', async () => {
     return { ...actual as any, motion: { button: ({ children, className, ...props }: any) => <button className={className} {...props}>{children}</button> } };
 });
 
-describe('PresetsCatalog', () => {
-    const createProps = (onClose = vi.fn()) => ({
+describe('PresetsCatalog — um grupo por vez, sem cromo próprio', () => {
+    const createProps = (group: React.ComponentProps<typeof PresetsCatalog>['group']) => ({
+        group,
         onApplyPreset: vi.fn(),
         currentMode: 'dark' as const,
         draftMode: 'dark' as const,
-        onClose,
     });
 
-    it('renderiza a aba Temas por padrão, independente de qualquer Pilar, e faz snapshot', async () => {
-        const { container } = render(<PresetsCatalog {...createProps()} />);
-        expect(screen.getByRole('heading', { name: 'Galeria de estilos' })).toBeInTheDocument();
-        expect(screen.getByText('Categoria: Temas')).toBeInTheDocument();
-        // Os temas embarcados chegam sob demanda: o snapshot é do estado em que a galeria já os tem.
+    it('o grupo de temas lista os embarcados e não traz cabeçalho, abas nem botão de fechar', async () => {
+        const { container } = render(<PresetsCatalog {...createProps('themes')} />);
+
+        expect(screen.queryByRole('heading', { name: 'Galeria de estilos' })).toBeNull();
+        expect(screen.queryByRole('button', { name: 'Fechar galeria' })).toBeNull();
+        expect(screen.queryByRole('group', { name: 'Categorias da galeria' })).toBeNull();
         // Prazo folgado: o catálogo carrega os temas sob demanda e, com a suíte inteira rodando em paralelo, passa dos 1000 ms padrão do `waitFor`.
         await waitFor(() => expect(container.querySelector('[aria-busy="true"]')).toBeNull(), { timeout: 10000 });
         expect(container).toMatchSnapshot();
@@ -33,7 +34,7 @@ describe('PresetsCatalog', () => {
 
     it('aplica o tema pelo modo bruto do rascunho quando a preferência só clareia a galeria', async () => {
         const onApplyFullTheme = vi.fn();
-        render(<PresetsCatalog {...createProps()} currentMode="light" draftMode="dark" onApplyFullTheme={onApplyFullTheme} />);
+        render(<PresetsCatalog {...createProps('themes')} currentMode="light" draftMode="dark" onApplyFullTheme={onApplyFullTheme} />);
 
         const themeCard = await screen.findByRole('button', { name: /Sarak Sovereign/i }, { timeout: 10000 });
         fireEvent.click(themeCard);
@@ -41,51 +42,36 @@ describe('PresetsCatalog', () => {
         expect(onApplyFullTheme).toHaveBeenCalledWith(expect.objectContaining({ mode: 'dark' }), 'sarak-sovereign');
     });
 
-    it('troca para o catálogo de Tipografia ao clicar na própria aba', () => {
-        render(<PresetsCatalog {...createProps()} />);
-        fireEvent.click(screen.getByRole('button', { name: 'Tipografia' }));
-        expect(screen.getByText('Categoria: Tipografia')).toBeInTheDocument();
-        expect(screen.getAllByText('The quick brown fox jumps over the lazy dog')[0]).toBeInTheDocument();
+    it('o grupo de fontes monta os pares de fontes reais', () => {
+        render(<PresetsCatalog {...createProps('fonts')} />);
+        expect(screen.getAllByText('A atenção aos detalhes faz a diferença.')[0]).toBeInTheDocument();
     });
 
-    it('expõe as seis abas com rótulos em português', () => {
-        render(<PresetsCatalog {...createProps()} />);
-        ['Temas', 'Cards', 'Tipografia', 'Atmosfera', 'Botões', 'Campos'].forEach(label => {
-            expect(screen.getByRole('button', { name: label })).toBeInTheDocument();
-        });
-    }, 15000); // 5000 (default) não bastava sob `vitest --coverage` (instrumentação V8 + contenção de workers, mesma causa do PreviewCanvas.test.tsx, plan-12/R8.1)
+    it.each([
+        ['cards', 'Curados'],
+        ['buttons', 'Curados'],
+        ['atmosphere', 'Atmosferas'],
+    ] as const)('o grupo %s monta o próprio catálogo', (group, marker) => {
+        render(<PresetsCatalog {...createProps(group)} />);
+        expect(screen.getByRole('button', { name: marker })).toBeInTheDocument();
+    }, 30000);
 
-    it('mantém as categorias em uma linha e permite rolagem horizontal', () => {
-        render(<PresetsCatalog {...createProps()} />);
+    it('o grupo de campos monta uma opção por preset de campo', () => {
+        const { container } = render(<PresetsCatalog {...createProps('inputs')} />);
+        expect(container.querySelectorAll('h3').length).toBeGreaterThan(0);
+    }, 30000);
 
-        const categoryTabs = screen.getByRole('group', { name: 'Categorias da galeria' });
-        const tabList = categoryTabs.firstElementChild as HTMLElement;
-
-        expect(categoryTabs).toHaveClass('overflow-x-auto');
-        expect(tabList).toHaveClass('flex-nowrap');
-        expect(screen.getByRole('button', { name: 'Temas' })).toHaveClass('whitespace-nowrap');
-    });
-
-    it('o botão do cabeçalho fecha a galeria', () => {
-        const onClose = vi.fn();
-        render(<PresetsCatalog {...createProps(onClose)} />);
-
-        fireEvent.click(screen.getByRole('button', { name: 'Fechar galeria' }));
-
-        expect(onClose).toHaveBeenCalledTimes(1);
-    });
-
-    it('carrega UMA fronteira @container que serve a aba Temas E os 4 sub-catálogos aninhados (fecha 06-painel-de-customizacao-e-preview.md §6.2)', () => {
-        const { container } = render(<PresetsCatalog {...createProps()} />);
+    it('carrega UMA fronteira @container que serve o grupo montado (fecha 06-painel-de-customizacao-e-preview.md §6.2)', () => {
+        const { container } = render(<PresetsCatalog {...createProps('themes')} />);
 
         const containerBoundary = Array.from(container.querySelectorAll('div'))
             .find((el) => el.className.split(' ').includes('@container'));
         expect(containerBoundary).toBeTruthy();
 
         const globalsGrid = container.querySelector('.grid') as HTMLElement;
-        expect(globalsGrid.className).not.toMatch(/\bmd:grid-cols-2\b/);
+        expect(globalsGrid.className).not.toMatch(/md:grid-cols-2/);
         expect(globalsGrid.className).toMatch(/@min-\[240px\]:grid-cols-2/);
-        // A grade global mora DENTRO da fronteira de container — é dela que ela mede.
+        // A grade mora DENTRO da fronteira de container — é dela que ela mede.
         expect(containerBoundary?.contains(globalsGrid)).toBe(true);
     });
 });

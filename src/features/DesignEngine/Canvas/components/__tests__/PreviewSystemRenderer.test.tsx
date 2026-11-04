@@ -160,11 +160,11 @@ describe('PreviewSystemRenderer — escala pela largura real do contêiner', () 
         expect(container.querySelector<HTMLElement>('.origin-top-left')?.style.transform).toBe('scale(0.95)');
     });
 
-    it('usa o fallback dual-view sem ResizeObserver', () => {
+    it('usa o fallback do teto sem ResizeObserver', () => {
         vi.stubGlobal('ResizeObserver', undefined);
-        const { container } = renderPreview('desktop', { isDualView: true });
+        const { container } = renderPreview('desktop');
 
-        expect(container.querySelector<HTMLElement>('.origin-top-left')?.style.transform).toBe('scale(0.75)');
+        expect(container.querySelector<HTMLElement>('.origin-top-left')?.style.transform).toBe('scale(0.95)');
     });
 });
 

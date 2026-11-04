@@ -1,189 +1,133 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ThemeGlobalSettings } from './ThemeGlobalSettings';
-import { ThemePillarsList } from './ThemePillarsList';
-import { ThemeImpactList } from './ThemeImpactList';
-import { TokenControl } from './TokenControl';
-import { PaletteSection } from './PaletteSection';
-import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
-import { locateToken } from '../../utils/token-search';
+import { ThemeDecisionList } from './ThemeDecisionList';
+import { ThemeDecisionView } from './ThemeDecisionView';
+import { ThemeSearchResults } from './ThemeSearchResults';
+import { BrandShortcut } from './BrandShortcut';
 import { MasterControlPanel } from '../MasterControlPanel';
 import { TemplatesTab } from '../TemplatesTab';
 import { HyperGranularityTab } from '../../Panels/HyperGranularityTab';
-import type { SarakDesignState, SarakUIContextType } from '../../../../core/Provider/types';
-import type { ComponentSchema, SarakDesignToken, SarakTokenValue } from '../../../../core/Design/types';
-import type { ThemePillar } from './ThemePillarsList';
-import type { ThemeEditMode } from '../hooks/usePreviewUIState';
-import type { VisualImpactToken } from '../hooks/useThemeCustomizationData';
+import { getDecision, type DecisionContext, type DecisionId, type TokenLocation } from '../../utils/decisions';
+import type { DecisionOptionsContext } from './ThemeDecisionOptions';
+import type { PanelView } from '../hooks/usePreviewUIState';
+import type { PendingBranding } from '../hooks/usePendingBranding';
+import type { SarakDesignToken } from '../../../../core/Design/types';
+import type { SarakDesignState } from '../../../../core/Provider/types';
 
 interface ThemeSidebarContentProps {
     searchQuery: string;
     filteredResults: SarakDesignToken[];
-    catalogMap: Map<string, { name?: string; description?: string }>;
-    draft: SarakDesignState;
-    updateDraft: (id: string, val: SarakTokenValue) => void;
-    previewDevice: string;
     viewMode: string;
-    activePillarId: string | null;
-    setActivePillarId: (id: string | null) => void;
-    activeSectionId: string | null;
-    setActiveSectionId: (id: string | null) => void;
-    isComponentDirty: (id: string) => boolean;
+    panelView: PanelView;
+    /** Tudo que os grupos de opção e os controles precisam (rascunho, prévia ao vivo, portas de aplicar). */
+    options: DecisionOptionsContext;
+    decisionContext: DecisionContext;
+    tokenIndex: ReadonlyMap<string, TokenLocation>;
+    themeName: string;
+    dirtyDecisions: ReadonlySet<DecisionId>;
+    onOpenDecision: (id: DecisionId, focusTokenId?: string) => void;
+    onOpenBrand: () => void;
+    setPendingBranding: (branding: PendingBranding) => void;
+    onBrandGenerated: () => void;
+    brandInitialName?: string;
+    /** Para as telas avançadas (tabela de tokens e Command Center). */
     resetComponent: (schemaIdOrSchemas: string | string[]) => void;
     resetToken: (id: string) => void;
     handleApplyToSystem: () => void;
     toast: { type: 'success' | 'warning'; message: string } | null;
-    globalComponent: ComponentSchema | undefined;
-    sarak: SarakUIContextType;
-    pillars: ThemePillar[];
-    groupedStructure: Record<string, Record<string, SarakDesignToken[]>>;
-    editMode: ThemeEditMode;
-    visualImpactTokens: VisualImpactToken[];
-    isTokenVisible: (tokenId: string) => boolean;
-    selectPillar: (pillarId: string | null) => void;
-    isGalleryOpen: boolean;
-    setIsGalleryOpen: (isOpen: boolean) => void;
     onApplyFullTheme: (design: Partial<SarakDesignState>, themeId?: string) => void;
 }
 
-export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
-    searchQuery,
-    filteredResults,
-    catalogMap,
-    draft,
-    updateDraft,
-    previewDevice,
-    viewMode,
-    activePillarId,
-    setActivePillarId,
-    activeSectionId,
-    setActiveSectionId,
-    isComponentDirty,
-    resetComponent,
-    resetToken,
-    handleApplyToSystem,
-    toast,
-    globalComponent,
-    sarak,
-    pillars,
-    groupedStructure,
-    editMode,
-    visualImpactTokens,
-    isTokenVisible,
-    selectPillar,
-    isGalleryOpen,
-    setIsGalleryOpen,
-    onApplyFullTheme,
-}) => {
+const fade = { initial: { opacity: 0 }, animate: { opacity: 1 } };
+
+const DecisionColumn: React.FC<ThemeSidebarContentProps> = (props) => {
+    const { panelView, options } = props;
+    if (panelView.kind === 'brand') {
+        return (
+            <BrandShortcut
+                draft={options.draft}
+                appliedDesign={options.sarak.systemDesign as unknown as Record<string, unknown> | undefined}
+                updateDraft={options.updateDraft}
+                onPeek={options.onPeek}
+                setPendingBranding={props.setPendingBranding}
+                onGenerated={props.onBrandGenerated}
+                initialName={props.brandInitialName}
+            />
+        );
+    }
+    if (panelView.kind === 'decision') {
+        const decision = getDecision(panelView.id);
+        if (decision) {
+            return (
+                <ThemeDecisionView
+                    decision={decision}
+                    decisionContext={props.decisionContext}
+                    options={options}
+                    focusTokenId={panelView.focusTokenId}
+                    focusLocation={panelView.focusTokenId ? props.tokenIndex.get(panelView.focusTokenId) : undefined}
+                />
+            );
+        }
+    }
+    return (
+        <ThemeDecisionList
+            draft={options.draft as unknown as Record<string, unknown>}
+            themeName={props.themeName}
+            dirtyDecisions={props.dirtyDecisions}
+            onOpen={(id) => props.onOpenDecision(id)}
+            onOpenBrand={props.onOpenBrand}
+            restoreFocusId={panelView.kind === 'home' ? panelView.focusId : undefined}
+        />
+    );
+};
+
+const AdvancedScreen: React.FC<ThemeSidebarContentProps> = (props) => {
+    const { options } = props;
+    if (props.viewMode === 'catalog') return <MasterControlPanel draft={options.draft} updateDraft={options.updateDraft} resetToken={props.resetToken} />;
+    if (props.viewMode === 'command-center') {
+        return (
+            <HyperGranularityTab
+                draft={options.draft}
+                updateDraft={options.updateDraft}
+                handleApplyToSystem={props.handleApplyToSystem}
+                resetComponent={props.resetComponent}
+                resetToken={props.resetToken}
+                toast={props.toast}
+            />
+        );
+    }
+    return <TemplatesTab onApplyFullTheme={props.onApplyFullTheme} />;
+};
+
+/** O corpo da coluna: a busca, a lista de decisões (ou a decisão aberta) ou, pelo menu Avançado, as telas de quem já conhece o motor. */
+export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = (props) => {
+    const { searchQuery, options } = props;
+    const { catalogMap, draft, updateDraft, previewDevice } = options;
+    const columnKey = props.panelView.kind === 'decision' ? `decision-${props.panelView.id}` : props.panelView.kind;
+
     return (
         <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden custom-scrollbar-sidebar bg-[var(--theme-bg)]/30">
             <AnimatePresence mode="wait">
                 {searchQuery ? (
-                    <motion.div key="search" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-[var(--sarak-layout-gap-sm,12px)] space-y-[var(--sarak-layout-gap-sm,12px)]">
-                        <div className="text-[var(--sarak-type-scale-caption,12px)] font-black text-[var(--theme-muted)] uppercase tracking-widest mb-4">Resultados da busca ({filteredResults?.length ?? 0})</div>
-                        {!filteredResults?.length && (
-                            <div role="status" className="text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-muted)]">Nenhum controle encontrado para &ldquo;{searchQuery}&rdquo;.</div>
-                        )}
-                        {filteredResults?.map(token => {
-                            const meta = catalogMap.get(token.id);
-                            const enhancedToken = { ...token, label: meta?.name || token.label, description: meta?.description || token.description };
-                            const path = locateToken(token.id, groupedStructure, pillars);
-                            return (
-                                <div key={enhancedToken.id} className="space-y-1">
-                                    {path && <div data-testid="search-result-path" className="text-[var(--sarak-type-scale-tiny,11px)] text-[var(--theme-muted)]">{path}</div>}
-                                    <TokenControl token={enhancedToken as SarakDesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} draft={draft as Record<string, SarakTokenValue>} updateDraft={updateDraft} />
-                                </div>
-                            );
-                        })}
-                    </motion.div>
-                ) : viewMode === 'preview' ? (
-                    <motion.div key="pillars" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="pt-2">
-
-                        <section className="mx-[var(--sarak-layout-gap-sm,12px)] mb-[var(--sarak-layout-gap-sm,12px)] flex flex-col gap-[var(--sarak-layout-gap-sm,12px)] rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border,rgba(255,255,255,0.09))] bg-[var(--theme-card,#101622)] p-[var(--sarak-layout-gap-sm,12px)]">
-                            <div>
-                                <h2 className="text-[var(--sarak-type-scale-xl,20px)] font-semibold text-[var(--theme-title,#f2f6fb)]">Começar de um tema</h2>
-                                <p className="mt-1 text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-muted,rgba(242,246,251,0.55))]">
-                                    Escolha um estilo e ajuste os detalhes abaixo.
-                                </p>
-                            </div>
-                            <SarakButton
-                                type="button"
-                                variant="secondary"
-                                size="sm"
-                                aria-expanded={isGalleryOpen}
-                                aria-controls={isGalleryOpen ? 'presets-catalog' : undefined}
-                                onClick={() => setIsGalleryOpen(!isGalleryOpen)}
-                            >
-                                {isGalleryOpen ? 'Fechar galeria' : 'Abrir galeria'}
-                            </SarakButton>
-                        </section>
-
-                        <PaletteSection
-                            draft={draft as unknown as Record<string, unknown>}
-                            appliedDesign={sarak.systemDesign as unknown as Record<string, unknown> | undefined}
-                            updateDraft={updateDraft}
-                        />
-
-                        {/* PILAR 0: CONFIGURAÇÕES GLOBAIS */}
-                        <ThemeGlobalSettings
-                            activePillarId={activePillarId}
-                            setActivePillarId={setActivePillarId}
-                            activeSectionId={activeSectionId}
-                            setActiveSectionId={setActiveSectionId}
-                            isDirty={isComponentDirty('global')}
-                            onReset={() => resetComponent('global')}
-                            globalComponent={globalComponent}
+                    <motion.div key="search" {...fade}>
+                        <ThemeSearchResults
+                            query={searchQuery}
+                            results={props.filteredResults}
+                            tokenIndex={props.tokenIndex}
+                            onOpenToken={props.onOpenDecision}
                             catalogMap={catalogMap}
                             draft={draft}
                             updateDraft={updateDraft}
                             previewDevice={previewDevice}
-                            sarak={sarak}
                         />
-
-                        {editMode === 'impact' ? (
-                            <ThemeImpactList
-                                tokens={visualImpactTokens}
-                                catalogMap={catalogMap}
-                                draft={draft}
-                                updateDraft={updateDraft}
-                                previewDevice={previewDevice}
-                            />
-                        ) : (
-                            <ThemePillarsList
-                                pillars={pillars}
-                                activePillarId={activePillarId}
-                                activeSectionId={activeSectionId}
-                                setActiveSectionId={setActiveSectionId}
-                                groupedStructure={groupedStructure}
-                                isTokenVisible={isTokenVisible}
-                                isComponentDirty={isComponentDirty}
-                                resetComponent={resetComponent}
-                                catalogMap={catalogMap}
-                                draft={draft}
-                                updateDraft={updateDraft}
-                                previewDevice={previewDevice}
-                                selectPillar={selectPillar}
-                            />
-                        )}
                     </motion.div>
-                ) : viewMode === 'catalog' ? (
-                    <motion.div key="catalog" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full">
-                        <MasterControlPanel draft={draft} updateDraft={updateDraft} resetToken={resetToken} />
-                    </motion.div>
-                ) : viewMode === 'command-center' ? (
-                    <motion.div key="command-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full">
-                        <HyperGranularityTab
-                            draft={draft}
-                            updateDraft={updateDraft}
-                            handleApplyToSystem={handleApplyToSystem}
-                            resetComponent={resetComponent}
-                            resetToken={resetToken}
-                            toast={toast}
-                        />
+                ) : props.viewMode === 'preview' ? (
+                    <motion.div key={columnKey} {...fade} className="pt-2">
+                        <DecisionColumn {...props} />
                     </motion.div>
                 ) : (
-                    <motion.div key="templates" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full">
-                        <TemplatesTab onApplyFullTheme={onApplyFullTheme} />
+                    <motion.div key={props.viewMode} {...fade} className="h-full">
+                        <AdvancedScreen {...props} />
                     </motion.div>
                 )}
             </AnimatePresence>

@@ -1,11 +1,12 @@
 import { ComponentPreset } from './cards';
 import { BUTTON_STYLE_OPTIONS } from '../../schema/buttons';
+import { BUTTON_STRUCTURE_PRESETS } from './buttonsStructure';
 
-export const BUTTON_PRESETS: ComponentPreset[] = [
+const LEGACY_BUTTON_PRESETS: ComponentPreset[] = [
     {
         id: 'btn-industrial-matte',
-        name: 'Industrial Matte',
-        description: 'CTA sólido, discreto, cantos levemente arredondados.',
+        name: 'Fosco industrial',
+        description: 'Botão sólido e discreto, com cantos levemente arredondados.',
         design: {
             btnStyleType: 'matte',
             btnBorderRadius: 6,
@@ -15,8 +16,8 @@ export const BUTTON_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'btn-neon-pulse',
-        name: 'Neon Pulse',
-        description: 'Sem preenchimento, glow pulsante rápido em volta.',
+        name: 'Neon pulsante',
+        description: 'Sem preenchimento, com um brilho que pulsa rápido ao redor.',
         design: {
             btnStyleType: 'neon',
             btnBorderRadius: 0,
@@ -26,8 +27,8 @@ export const BUTTON_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'btn-frosted-glass',
-        name: 'Frosted Glass',
-        description: 'Fundo translúcido, blur pesado, cantos suaves.',
+        name: 'Vidro fosco',
+        description: 'Fundo translúcido, desfoque pesado e cantos suaves.',
         design: {
             btnStyleType: 'frosted',
             btnBorderRadius: 16,
@@ -36,8 +37,8 @@ export const BUTTON_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'btn-hollow-borderline',
-        name: 'Hollow Borderline',
-        description: 'Só borda e texto, preenche no hover — minimalista.',
+        name: 'Contorno vazado',
+        description: 'Só borda e texto, que se preenchem no hover: minimalista.',
         design: {
             btnStyleType: 'borderline',
             btnBorderRadius: 8,
@@ -46,8 +47,8 @@ export const BUTTON_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'btn-cyberpunk-wireframe',
-        name: 'Cyberpunk Wireframe',
-        description: 'Esquemático: sem fundo, borda fina, cantos retos.',
+        name: 'Esquema técnico',
+        description: 'Sem fundo, borda fina e cantos retos, como um desenho técnico.',
         design: {
             btnStyleType: 'cyberpunk',
             btnBorderRadius: 0
@@ -55,8 +56,8 @@ export const BUTTON_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'btn-neumorphism-soft',
-        name: 'Neumorphism Soft',
-        description: 'Plástico extrudado, super arredondado, quase sem contraste.',
+        name: 'Relevo suave',
+        description: 'Plástico extrudado, bem arredondado e com pouco contraste.',
         design: {
             btnStyleType: 'neumorphism',
             btnBorderRadius: 20
@@ -64,8 +65,8 @@ export const BUTTON_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'btn-sharp-tag',
-        name: 'Sharp Tag',
-        description: 'Só um canto arredondado — silhueta de etiqueta/ribbon.',
+        name: 'Etiqueta',
+        description: 'Só um canto arredondado: silhueta de etiqueta ou faixa.',
         design: {
             btnStyleType: 'matte',
             btnRadiusTL: 16,
@@ -76,8 +77,8 @@ export const BUTTON_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'btn-neon-slow-breathe',
-        name: 'Neon Slow Breathe',
-        description: 'Glow lento e suave, formato pílula — clima diferente do Neon Pulse.',
+        name: 'Neon que respira',
+        description: 'Brilho lento e suave em formato de pílula: outro clima que o neon pulsante.',
         design: {
             btnStyleType: 'neon',
             btnBorderRadius: 120,
@@ -87,8 +88,8 @@ export const BUTTON_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'btn-frosted-deep-pill',
-        name: 'Frosted Deep Pill',
-        description: 'Pílula total com blur extremo — mais radical que o Frosted Glass.',
+        name: 'Pílula de vidro',
+        description: 'Pílula completa com desfoque extremo: mais radical que o vidro fosco.',
         design: {
             btnStyleType: 'frosted',
             btnBorderRadius: 120,
@@ -97,8 +98,8 @@ export const BUTTON_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'btn-bouncy',
-        name: 'Bouncy',
-        description: 'Escala dramática no hover/clique — feedback tátil e mola.',
+        name: 'Elástico',
+        description: 'Cresce no hover e afunda no clique, com resposta de mola.',
         design: {
             btnStyleType: 'matte',
             btnBorderRadius: 6,
@@ -108,18 +109,17 @@ export const BUTTON_PRESETS: ComponentPreset[] = [
     },
     {
         id: 'btn-ghost-ink',
-        name: 'Ghost Ink',
-        description: 'Borderline com preenchimento escuro no hover, cantos retos.',
+        name: 'Tinta fantasma',
+        description: 'Só o contorno, com cantos retos e um hover discreto.',
         design: {
             btnStyleType: 'borderline',
-            btnBorderRadius: 4,
-            btnGhostHoverBg: 'rgba(0,0,0,0.4)'
+            btnBorderRadius: 4
         }
     },
     {
         id: 'btn-full-block',
-        name: 'Full Block CTA',
-        description: 'Largura total — CTA de bloco para formulários/mobile.',
+        name: 'Bloco inteiro',
+        description: 'Ocupa a largura toda: botão de bloco para formulários e celular.',
         design: {
             btnStyleType: 'matte',
             btnBorderRadius: 12,
@@ -127,6 +127,8 @@ export const BUTTON_PRESETS: ComponentPreset[] = [
         }
     }
 ];
+
+export const BUTTON_PRESETS: ComponentPreset[] = [...LEGACY_BUTTON_PRESETS, ...BUTTON_STRUCTURE_PRESETS];
 
 // Presets gerados dinamicamente a partir dos estilos do Schema (1:1 Paridade com buttons.ts)
 export const BUTTON_STYLE_PRESETS: ComponentPreset[] = BUTTON_STYLE_OPTIONS.map(style => ({

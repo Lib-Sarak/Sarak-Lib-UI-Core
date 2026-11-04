@@ -35,14 +35,15 @@ export const SliderControl: React.FC<SliderControlProps> = ({ label, description
                     {label}
                     <HelpTooltip label={label} description={description} />
                 </span>
-                    <span className="text-[var(--sarak-type-scale2xs,11px)] font-mono text-[var(--theme-primary)]">{localValue}{suffix || unit}</span>
+                    <span className="text-[var(--sarak-type-scale2xs,11px)] font-mono text-[var(--theme-title)]">{localValue}{suffix || unit}</span>
             </div>
             <SarakSlider
                 min={min}
                 max={max}
                 step={step}
                 value={localValue}
-                valueLabel={`${localValue}${suffix || unit}`}
+                // O valor já aparece ao lado do rótulo, em cor legível; o slider só o anuncia (o rótulo dele é na cor de destaque).
+                aria-valuetext={`${localValue}${suffix || unit}`}
                 onChange={(e) => commitValue(parseFloat(e.target.value))}
             />
         </div>

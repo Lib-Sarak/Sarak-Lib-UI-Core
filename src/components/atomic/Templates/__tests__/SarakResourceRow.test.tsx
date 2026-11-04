@@ -44,3 +44,27 @@ describe('SarakResourceRow', () => {
         expect(badge?.parentElement?.closest('span')).toBeNull();
     });
 });
+
+describe('SarakResourceRow layout e density', () => {
+    it('sem as props novas mantém o desenho empilhado de hoje', () => {
+        render(<SarakResourceRow title="Relatório" metadata={[{ label: 'Dono', value: 'Fin' }]} />);
+        expect(screen.getByRole('article').querySelector('[class*="grid-cols-1"]')).toBeNull();
+        expect(screen.getByRole('heading', { name: 'Relatório' }).style.textOverflow).toBe('');
+    });
+
+    it('inline corta o título com reticências e usa colunas por container query', () => {
+        render(<SarakResourceRow layout="inline" title="Relatório trimestral" actions={[{ label: 'Abrir', onClick: vi.fn() }]} />);
+        const heading = screen.getByRole('heading', { name: 'Relatório trimestral' });
+        expect(heading.style.textOverflow).toBe('ellipsis');
+        expect(heading.style.whiteSpace).toBe('nowrap');
+        expect(screen.getByRole('article').querySelector('[class*="@min-[640px]:grid-cols"]')).not.toBeNull();
+    });
+
+    it('compact reduz o respiro da linha', () => {
+        const { rerender } = render(<SarakResourceRow layout="inline" title="Linha" />);
+        const grid = (): HTMLElement | null => screen.getByRole('article').querySelector<HTMLElement>('[class*="grid-cols-1"]');
+        expect(grid()?.style.padding).toBe('var(--sarak-layout-gap-md, 16px)');
+        rerender(<SarakResourceRow layout="inline" density="compact" title="Linha" />);
+        expect(grid()?.style.padding).toBe('calc(var(--sarak-layout-gap-md, 16px) * 0.5)');
+    });
+});

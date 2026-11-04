@@ -1,7 +1,9 @@
 import { renderHook } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { usePaletteSelection } from '../usePaletteSelection';
-import { sarakResolvePalette } from '../../../../../core/Design/palette/resolve';
+import { resolvePalette, sarakResolvePalette } from '../../../../../core/Design/palette/resolve';
+import { parsePaletteValue } from '../../../../../core/Design/palette/parser';
+import { LIBRARY_TEXT_CATALOG } from '../../../../../core/i18n/catalog';
 
 const confirmOverlay = vi.fn();
 vi.mock('../../../../../components/atomic/Modals/SarakOverlayProvider', () => ({
@@ -9,6 +11,8 @@ vi.mock('../../../../../components/atomic/Modals/SarakOverlayProvider', () => ({
 }));
 
 const VALUE = 'custom:triadic:#2563eb';
+
+const toned = (value: string): Record<string, string> => resolvePalette(parsePaletteValue(value)!, 'dark', { sidebarTone: 'primary', topbarTone: 'surface' });
 
 const select = async (draft: Record<string, unknown>, applied: Record<string, unknown> | undefined = {}) => {
     const updateDraft = vi.fn();
@@ -67,5 +71,29 @@ describe('usePaletteSelection', () => {
         const updateDraft = await select({ mode: 'dark', ...previous, colorPalette: 'oceano' }, { sidebarColor: '#000000' });
         expect(confirmOverlay).not.toHaveBeenCalled();
         expect(written(updateDraft).colorPalette).toBe(VALUE);
+    });
+
+    it('com papel de cor nas barras, a cor delas calculada com o papel não é ajuste manual, e a troca de paleta mantém o papel', async () => {
+        const previous = toned('oceano');
+        const updateDraft = await select({ mode: 'dark', ...previous, colorPalette: 'oceano', sidebarTone: 'primary', topbarTone: 'surface' }, { sidebarColor: '#000000' });
+        expect(confirmOverlay).not.toHaveBeenCalled();
+        expect(written(updateDraft).sidebarColor).toBe(toned(VALUE).sidebarColor);
+        expect(written(updateDraft).sidebarColor).not.toBe(sarakResolvePalette(VALUE, 'dark').sidebarColor);
+    });
+    it('o diálogo escreve "1 cor" no singular e "2 cores" no plural', async () => {
+        confirmOverlay.mockResolvedValue(false);
+        await select({ mode: 'dark', sidebarColor: '#123456' }, { sidebarColor: '#000000' });
+        expect(confirmOverlay.mock.calls[0][0].message).toBe('Você ajustou 1 cor à mão. Manter esse ajuste sobre a nova paleta ou descartá-lo?');
+        confirmOverlay.mockClear();
+        await select({ mode: 'dark', sidebarColor: '#123456', topbarColor: '#654321' }, { sidebarColor: '#000000', topbarColor: '#000000' });
+        expect(confirmOverlay.mock.calls[0][0].message).toBe('Você ajustou 2 cores à mão. Manter esses ajustes sobre a nova paleta ou descartá-los?');
+    });
+
+    it('as duas formas do aviso existem nos seis idiomas e nenhuma traz "(es)" ou "(s)"', () => {
+        (['paletteKeepMessageOne', 'paletteKeepMessageMany'] as const).forEach((key) => {
+            const entry = LIBRARY_TEXT_CATALOG[key] as Record<string, string>;
+            expect(Object.keys(entry).sort()).toEqual(['de', 'en', 'es', 'fr', 'it', 'pt']);
+            Object.values(entry).forEach((value) => expect(value).not.toMatch(/\((es|s|n)\)/));
+        });
     });
 });

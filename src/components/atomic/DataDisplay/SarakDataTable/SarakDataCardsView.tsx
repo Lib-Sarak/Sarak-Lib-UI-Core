@@ -6,7 +6,7 @@ import { SarakTableSortButton } from './SarakTableSortButton';
 import type { SarakDisplayRow } from './tableDisplayRows';
 import { cardItemsOf } from './dataCardItems';
 import type { SarakDataCardsProps } from './SarakDataCards';
-import { CARD_STYLE, DataCardBody, DetailCard, GroupCard, SubtotalCard, TotalsCard } from './SarakDataCardParts';
+import { CARD_STYLE, REPORT_CARD_STYLE, DataCardBody, DetailCard, GroupCard, SubtotalCard, TotalsCard } from './SarakDataCardParts';
 
 interface SarakDataCardsViewProps<T> {
     props: SarakDataCardsProps<T>;
@@ -63,7 +63,7 @@ const SarakDataCardRow = <T,>({ props, virtualRow, items, measureElement }: Sara
     if (display.kind === 'detail') return <div {...frame} style={POSITION(virtualRow)}><DetailCard display={display} renderExpanded={props.renderExpanded} /></div>;
     const { entry } = display;
     return (
-        <div key={entry.key} {...frame} tabIndex={props.onRowClick ? 0 : undefined} onClick={(event) => handleCardClick(event, entry.row, props.onRowClick)} onKeyDown={(event) => handleCardKeyDown(event, entry.row, props.onRowClick)} style={{ ...POSITION(virtualRow), ...CARD_STYLE, marginLeft: display.depth ? `calc(var(--sarak-layout-gap-md, 16px) * ${display.depth})` : undefined, width: display.depth ? `calc(100% - var(--sarak-layout-gap-md, 16px) * ${display.depth})` : '100%' }}>
+        <div key={entry.key} {...frame} tabIndex={props.onRowClick ? 0 : undefined} onClick={(event) => handleCardClick(event, entry.row, props.onRowClick)} onKeyDown={(event) => handleCardKeyDown(event, entry.row, props.onRowClick)} style={{ ...POSITION(virtualRow), ...CARD_STYLE, ...(props.report ? REPORT_CARD_STYLE : null), marginLeft: display.depth ? `calc(var(--sarak-layout-gap-md, 16px) * ${display.depth})` : undefined, width: display.depth ? `calc(100% - var(--sarak-layout-gap-md, 16px) * ${display.depth})` : '100%' }}>
             <DataCardBody props={props} display={display} />
         </div>
     );

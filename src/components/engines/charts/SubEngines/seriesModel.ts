@@ -4,10 +4,12 @@ import { buildCartesianAxes, buildLegend } from './cartesianLayout';
 import type { LegendSetting } from './cartesianLayout';
 import { applyChartEnhancements } from './chartEnhancements';
 import type { ChartEnhancementInput } from './chartEnhancements';
+import { applyChartRefinements } from './chartRefinements';
+import type { ChartRefinementInput } from './chartRefinements';
 import { resolveChartColorToken } from './builders/types';
 import type { SarakValueFormat } from '../../../../shared/format';
 import type {
-    ChartBuilderConfig, ChartColorToken, ChartOptionFragment, ChartTheme, SarakChartDataItem, SarakChartType,
+    ChartBuilderConfig, SarakChartColorToken, ChartOptionFragment, ChartTheme, SarakChartDataItem, SarakChartFunnel, SarakChartType,
 } from './builders/types';
 
 const SERIES_CHART_TYPES = ['bar', 'line', 'area'] as const;
@@ -26,7 +28,7 @@ export interface ChartSeriesDefinition {
     stack?: string;
     axis?: SeriesAxis;
     dashed?: boolean;
-    color?: ChartColorToken;
+    color?: SarakChartColorToken;
     format?: SarakValueFormat;
 }
 
@@ -44,7 +46,10 @@ interface ChartOptionConfig extends ChartBuilderConfig {
 
 type ChartExtrasInput = Omit<ChartEnhancementInput, 'type' | 'theme' | 'orientation' | 'seriesFormats' | 'seriesAxes'>;
 
-interface ChartOptionInput extends ChartSeriesOptions, ChartExtrasInput {
+type ChartRefinementExtras = Pick<ChartRefinementInput, 'pattern' | 'getPointColor' | 'showValues' | 'axis' | 'width'>;
+
+interface ChartOptionInput extends ChartSeriesOptions, ChartExtrasInput, ChartRefinementExtras {
+    funnel?: SarakChartFunnel;
     type: SarakChartType;
     data: SarakChartDataItem[];
     config?: ChartOptionConfig;
@@ -85,7 +90,7 @@ export function hasRenderableSeriesData(data: unknown, series: readonly ChartSer
     return data.some((item) => isRecord(item) && keys.some((key) => isFiniteNumber(item[key])));
 }
 
-function resolveSeriesColor(color: ChartColorToken | undefined, index: number, theme: ChartTheme): string {
+function resolveSeriesColor(color: SarakChartColorToken | undefined, index: number, theme: ChartTheme): string {
     if (theme.palette.length === 0) return theme.primaryColor;
     if (color) return resolveChartColorToken(theme, color);
     return theme.palette[index % theme.palette.length] ?? theme.primaryColor;
@@ -175,6 +180,9 @@ export function buildChartOption(input: ChartOptionInput): ChartOptionFragment {
         ...input.config,
         thickness: input.config?.thickness ?? input.theme.chartThickness,
         showGradients: input.config?.showGradients ?? true,
+        barMaxWidth: input.config?.thickness,
+        funnelMin: input.funnel?.min,
+        funnelMax: input.funnel?.max,
     };
     const categoryKey = input.config?.xAxisKey ?? 'name';
     const categories = input.data.map((item) => item[categoryKey]);
@@ -203,11 +211,13 @@ export function buildChartOption(input: ChartOptionInput): ChartOptionFragment {
         ...buildLegend(SELF_CONTAINED_TYPES.includes(input.type) ? false : input.legend, seriesCount, input.theme),
         animation: input.config?.showAnimation ?? true,
     };
-    return applyChartEnhancements(option, {
+    const seriesFormats = configuredSeries ? definitions.map((definition) => definition.format) : undefined;
+    const enhanced = applyChartEnhancements(option, {
         ...input,
-        seriesFormats: configuredSeries ? definitions.map((definition) => definition.format) : undefined,
+        seriesFormats,
         seriesAxes: configuredSeries ? definitions.map((definition) => definition.axis) : undefined,
     });
+    return applyChartRefinements(enhanced, { ...input, seriesFormats });
 }
 
 function handlePointClick(input: PointClickInput, event: unknown): void {

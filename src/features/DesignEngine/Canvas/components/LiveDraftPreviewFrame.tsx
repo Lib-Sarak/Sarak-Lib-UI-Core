@@ -4,7 +4,6 @@ import { getPreviewLayoutPreset } from '../panelResponsive.presets';
 
 interface LiveDraftPreviewFrameProps {
     previewDevice: 'desktop' | 'tablet' | 'smartphone';
-    isPreviewStacked?: boolean;
     targetWidth: string | number;
     deviceAspectRatio: string | undefined;
     getDeviceFrameStyles: () => string;
@@ -93,7 +92,7 @@ const PreviewRenderedContent = (
 );
 
 export const LiveDraftPreviewFrame = (props: LiveDraftPreviewFrameProps): React.ReactElement => {
-    const layoutPreset = getPreviewLayoutPreset(Boolean(props.isPreviewStacked));
+    const layoutPreset = getPreviewLayoutPreset();
     const deviceViewportStyle = getDeviceViewportStyle(
         props.previewDevice,
         props.targetWidth,

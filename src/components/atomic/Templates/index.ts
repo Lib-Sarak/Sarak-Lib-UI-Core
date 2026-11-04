@@ -22,3 +22,16 @@ export * from './SarakSegmentedControl';
 export * from './SarakSection';
 export * from './SarakResourceRow';
 export * from './SarakDescriptionList';
+// Telas que todo sistema repete: configurações, auditoria, versões, aprovação, execução, conexão, uso e acesso.
+export * from './SarakSettingsPage';
+export * from './SarakAuditLog';
+export * from './SarakDiffView';
+export * from './SarakVersionList';
+export * from './SarakApprovalQueue';
+export * from './SarakRunProgress';
+export * from './SarakLiveStatus';
+export * from './SarakUsageMeter';
+export * from './SarakPermissionMatrix';
+export * from './SarakMemberList';
+export * from './SarakSessionList';
+export type { SarakSystemTimestamp } from './hooks/useSystemFormat';

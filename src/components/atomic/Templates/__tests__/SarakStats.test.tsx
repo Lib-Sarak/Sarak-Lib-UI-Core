@@ -94,3 +94,28 @@ describe('SarakStats — props removidas', () => {
         expect([roleProp, densityProp, importanceProp]).toHaveLength(3);
     });
 });
+
+describe('SarakStats href e métrica única', () => {
+    it('uma métrica ocupa a linha inteira da grade', () => {
+        const { container } = render(<SarakStats data={{ total: 3 }} />);
+        expect(container.querySelector<HTMLElement>('[class*="grid"]')?.style.gridTemplateColumns).toBe('minmax(0, 1fr)');
+    });
+
+    it('várias métricas mantêm a grade de hoje', () => {
+        const { container } = render(<SarakStats data={{ a: 1, b: 2 }} />);
+        expect(container.querySelector<HTMLElement>('[class*="grid"]')?.style.gridTemplateColumns).toBe('');
+    });
+
+    it('href torna a métrica um link nomeado pelo rótulo, alcançável por teclado', () => {
+        render(<SarakStats data={{ total: 3 }} mapping={{ total: 'Pedidos abertos' }} metrics={{ total: { href: '/pedidos' } }} />);
+        const link = screen.getByRole('link', { name: 'Pedidos abertos' });
+        expect(link).toHaveAttribute('href', '/pedidos');
+        link.focus();
+        expect(link).toHaveFocus();
+    });
+
+    it('sem href não há link', () => {
+        render(<SarakStats data={{ total: 3 }} />);
+        expect(screen.queryByRole('link')).toBeNull();
+    });
+});

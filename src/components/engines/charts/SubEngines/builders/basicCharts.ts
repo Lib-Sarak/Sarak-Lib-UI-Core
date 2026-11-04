@@ -54,7 +54,7 @@ export const buildBarSeries = (
     series: [{
         data: data.map((item) => item[config?.dataKey || 'value']),
         type: 'bar',
-        barWidth: '40%',
+        ...(config?.barMaxWidth === undefined ? { barWidth: '40%' } : { barMaxWidth: config.barMaxWidth }),
         itemStyle: {
             borderRadius: [10, 10, 2, 2],
             color: createBarColor(theme, config?.showGradients ?? true, config?.seriesColor ?? theme.primaryColor),

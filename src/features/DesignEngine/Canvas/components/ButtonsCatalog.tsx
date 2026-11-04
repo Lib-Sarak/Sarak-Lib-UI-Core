@@ -1,33 +1,37 @@
 import React, { useState } from 'react';
-import { BUTTON_PRESETS, BUTTON_STYLE_PRESETS } from '../../../../core/Design/presets/components/buttons';
-import { ButtonPresetPreview } from './ButtonPresetPreview';
+import { getPresetGroup } from '../../../../core/Design/presets/components/registry';
+import { CuratedGrid } from './CuratedGrid';
 import { CATALOG_GRID_3COL } from '../panelResponsive.presets';
 import { Sparkles, MousePointer2 } from 'lucide-react';
+import { ButtonPresetPreview } from './ButtonPresetPreview';
+import type { PeekHandler } from './peek';
 
 import { SarakDesignState } from '../../../../core/Provider/types';
 
 interface ButtonsCatalogProps {
     onApplyPreset: (presetDesign: Partial<SarakDesignState>, isPartial?: boolean) => void;
     currentMode: string;
+    draft?: Partial<SarakDesignState>;
+    onPeek?: PeekHandler;
 }
 
-export const ButtonsCatalog: React.FC<ButtonsCatalogProps> = ({ onApplyPreset, currentMode }) => {
+export const ButtonsCatalog: React.FC<ButtonsCatalogProps> = ({ onApplyPreset, currentMode, draft, onPeek }) => {
     const [activeTab, setActiveTab] = useState<'curated' | 'styles'>('curated');
-    const presets = activeTab === 'curated' ? BUTTON_PRESETS : BUTTON_STYLE_PRESETS;
+    const group = getPresetGroup(activeTab === 'curated' ? 'buttons' : 'buttonStyles')!;
 
     return (
         <div className="flex flex-col gap-6">
             <div className="flex items-center gap-2 p-1 bg-theme-body/20 rounded-xl border border-theme-border w-fit">
                 <button
                     onClick={() => setActiveTab('curated')}
-                    className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'curated' ? 'bg-theme-primary text-theme-text shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
+                    className={`px-4 py-2 rounded-lg text-[length:var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'curated' ? 'bg-theme-primary text-theme-on-primary shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
                 >
                     <Sparkles size={12} />
                     Curados
                 </button>
                 <button
                     onClick={() => setActiveTab('styles')}
-                    className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'styles' ? 'bg-theme-primary text-theme-text shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
+                    className={`px-4 py-2 rounded-lg text-[length:var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'styles' ? 'bg-theme-primary text-theme-on-primary shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
                 >
                     <MousePointer2 size={12} />
                     Por Estilo
@@ -35,17 +39,20 @@ export const ButtonsCatalog: React.FC<ButtonsCatalogProps> = ({ onApplyPreset, c
             </div>
 
             {/* Container query (plan-35): reage ao `@container` de `PresetsCatalog.tsx`. */}
-            <div className={`grid ${CATALOG_GRID_3COL} gap-6`}>
-                {presets.map((preset, i) => (
+            <CuratedGrid
+                group={group}
+                gridClassName={CATALOG_GRID_3COL}
+                renderTile={(preset) => (
                     <ButtonPresetPreview
                         key={preset.id}
                         preset={preset}
-                        index={i}
                         currentMode={currentMode}
+                        draft={draft}
+                        onPeek={onPeek}
                         onApply={() => onApplyPreset(preset.design, true)}
                     />
-                ))}
-            </div>
+                )}
+            />
         </div>
     );
 };

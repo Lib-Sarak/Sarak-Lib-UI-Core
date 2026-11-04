@@ -429,6 +429,14 @@ primeiro caso sem nenhuma asserção ter rodado.
 commit em que o arquivo existe; não houve etapa em que a cobertura estivesse no disco esperando alguém
 plugá-la. Detalhe do job e do custo em [[16-integracao-continua]] §4.
 
+**O valor esperado de cor vem da página.** Um caso de navegador não escreve a cor do tema à mão nem importa `src/` no Node do Playwright:
+a cor do tema sai do cálculo da paleta, e o Node recusa o JSON que `master-map` importa. A fixture calcula o valor dentro do bundle da
+página e o expõe (`window.__sarakThemeProbe` em `browser-tests/fixtures/harness-entry.tsx`, ou um global da própria fixture), e o
+spec o lê com `page.evaluate`.
+
+**Desempenho se afirma por contagem, não por tempo.** O orçamento da troca de tema (`browser-tests/troca-de-tema.spec.ts`) põe teto em recálculos de estilo e transições iniciadas, em constante nomeada: o tempo varia de máquina para
+máquina, e a contagem, não.
+
 # 8. ✅ Cobertura percentual — ligada em 2026-08-05 (`plan-12`, R8.1), com piso móvel
 
 **Era:** `@vitest/coverage-v8` instalado (`package.json:98`) e **nenhum script o invocava** — a meta de
