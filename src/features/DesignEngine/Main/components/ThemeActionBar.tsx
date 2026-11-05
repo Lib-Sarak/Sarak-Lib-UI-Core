@@ -50,12 +50,12 @@ export const ThemeActionBar: React.FC<ThemeActionBarProps> = ({
     const setMenuOpen = useCallback((open: boolean) => setOpenLayer(open ? 'menu' : null), []);
     const menuActions: ThemeMenuAction[] = [
         ...(canSaveToRuntime ? [
-            { id: 'save', label: text('themeSaveDialogTitle'), onSelect: onSave },
-            { id: 'create', label: text('themeCreateAction'), onSelect: onCreateTheme },
+            { id: 'save', label: text('themeSaveDialogTitle'), onSelect: onSave, testId: 'sarak-panel-save-theme' },
+            { id: 'create', label: text('themeCreateAction'), onSelect: onCreateTheme, testId: 'sarak-panel-new-theme' },
         ] : []),
-        { id: 'export', label: text('themeExportJsonAction'), onSelect: onExport },
+        { id: 'export', label: text('themeExportJsonAction'), onSelect: onExport, testId: 'sarak-panel-export-json' },
         ...(canUndoLastApply ? [{ id: 'undo', label: text('themeUndoLastApplyAction'), onSelect: onUndoLastApply }] : []),
-        ...(canDeleteTheme ? [{ id: 'delete', label: text('themeDeleteAction'), onSelect: onDeleteTheme, danger: true }] : []),
+        ...(canDeleteTheme ? [{ id: 'delete', label: text('themeDeleteAction'), onSelect: onDeleteTheme, danger: true, testId: 'sarak-panel-delete-theme' }] : []),
     ];
 
     return (
@@ -65,6 +65,7 @@ export const ThemeActionBar: React.FC<ThemeActionBarProps> = ({
                 <div className="flex items-center gap-2">
                     <SarakButton
                         onClick={onApply}
+                        data-testid="sarak-panel-apply"
                         disabled={dirtyTokenCount === 0}
                         variant="primary"
                         size="md"

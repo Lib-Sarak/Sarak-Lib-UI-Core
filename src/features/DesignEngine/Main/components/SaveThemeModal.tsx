@@ -181,6 +181,7 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
                         <button
                             type="button"
                             onClick={submit}
+                            data-testid="sarak-save-theme-confirm"
                             disabled={isSaving || !name.trim() || (purpose === 'runtime' && !canSaveToRuntime)}
                             className="flex items-center gap-2 px-6 py-2 bg-[var(--theme-primary)] text-theme-on-primary rounded-lg font-bold text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
                         >

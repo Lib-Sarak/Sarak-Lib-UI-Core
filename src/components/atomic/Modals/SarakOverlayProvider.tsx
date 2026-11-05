@@ -36,6 +36,10 @@ export interface SarakConfirmOptions {
     cancelLabel?: string;
     /** Estilo do botão de confirmação; `danger` indica uma ação destrutiva. */
     tone?: 'default' | 'danger';
+    /** `data-testid` do botão de confirmação, para o teste do importador; omitido, o botão não leva o atributo. */
+    confirmTestId?: string;
+    /** `data-testid` do botão de cancelamento, para o teste do importador; omitido, o botão não leva o atributo. */
+    cancelTestId?: string;
 }
 
 type ActiveOverlayRequest = SarakOverlayRequest & { confirmation?: SarakConfirmOptions };
@@ -97,11 +101,12 @@ const ModalConfirmationActions = ({ confirmation, onFinish }: {
     const text = useLibraryText();
     return (
         <div className="flex w-full justify-end" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
-            <SarakButton type="button" variant="secondary" onClick={() => onFinish(false)}>
+            <SarakButton type="button" variant="secondary" data-testid={confirmation.cancelTestId} onClick={() => onFinish(false)}>
                 {confirmation.cancelLabel ?? text('dialogCancel')}
             </SarakButton>
             <SarakButton
                 type="button"
+                data-testid={confirmation.confirmTestId}
                 variant={confirmation.tone === 'danger' ? 'danger' : 'primary'}
                 onClick={() => onFinish(true)}
             >

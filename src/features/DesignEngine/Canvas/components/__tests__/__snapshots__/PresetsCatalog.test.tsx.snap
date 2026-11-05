@@ -12,6 +12,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       <button
         animate="[object Object]"
         class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+        data-theme-id="sarak-sovereign"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -276,6 +277,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       <button
         animate="[object Object]"
         class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+        data-theme-id="cyberpunk-neon"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -540,6 +542,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       <button
         animate="[object Object]"
         class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+        data-theme-id="industrial-terminal"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -804,6 +807,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       <button
         animate="[object Object]"
         class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+        data-theme-id="neo-brutalism"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -1068,6 +1072,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       <button
         animate="[object Object]"
         class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+        data-theme-id="synthwave-retro"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -1332,6 +1337,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       <button
         animate="[object Object]"
         class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+        data-theme-id="nebula-space"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -1596,6 +1602,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       <button
         animate="[object Object]"
         class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+        data-theme-id="kinetic-flow"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -1860,6 +1867,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       <button
         animate="[object Object]"
         class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+        data-theme-id="cyber-retro-wave"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -2124,6 +2132,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       <button
         animate="[object Object]"
         class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+        data-theme-id="minimalist-airy"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -2368,6 +2377,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       <button
         animate="[object Object]"
         class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+        data-theme-id="data-terminal"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -2632,6 +2642,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       <button
         animate="[object Object]"
         class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+        data-theme-id="neumorphic-mobile"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -2876,6 +2887,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       <button
         animate="[object Object]"
         class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+        data-theme-id="golden-hour"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -3140,6 +3152,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       <button
         animate="[object Object]"
         class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+        data-theme-id="aurora-veil"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -3404,6 +3417,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       <button
         animate="[object Object]"
         class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+        data-theme-id="blueprint-protocol"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -3668,6 +3682,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       <button
         animate="[object Object]"
         class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+        data-theme-id="editorial-ink"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -3912,6 +3927,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       <button
         animate="[object Object]"
         class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+        data-theme-id="organic-clay"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -4176,6 +4192,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       <button
         animate="[object Object]"
         class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+        data-theme-id="high-contrast"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -4420,6 +4437,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       <button
         animate="[object Object]"
         class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+        data-theme-id="corporate-ledger"
         initial="[object Object]"
         transition="[object Object]"
       >
@@ -4664,6 +4682,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       <button
         animate="[object Object]"
         class="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+        data-theme-id="playful-pastel"
         initial="[object Object]"
         transition="[object Object]"
       >

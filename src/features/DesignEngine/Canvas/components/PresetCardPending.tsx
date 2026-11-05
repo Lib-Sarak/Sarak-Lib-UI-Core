@@ -19,6 +19,7 @@ export const PresetCardPending: React.FC<PresetCardPendingProps> = ({ entry, cur
         <button
             type="button"
             onClick={onChoose}
+            data-theme-id={entry.id}
             aria-busy="true"
             className="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary/50 focus:outline-none"
         >

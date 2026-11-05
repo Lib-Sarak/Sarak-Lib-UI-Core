@@ -31,6 +31,11 @@ describe('PresetCardPending — o cartão do tema que ainda não chegou', () => 
         expect(backdrop().style.backgroundColor).toBe('rgb(187, 187, 187)');
     });
 
+    it('leva o id do tema em data-theme-id, como o cartão já carregado', () => {
+        render(<PresetCardPending entry={entry} currentMode="dark" onChoose={vi.fn()} />);
+        expect(screen.getByRole('button')).toHaveAttribute('data-theme-id', 'meu-tema');
+    });
+
     it('escolher chama onChoose e se anuncia ocupado', () => {
         const onChoose = vi.fn();
         render(<PresetCardPending entry={entry} currentMode="dark" onChoose={onChoose} />);

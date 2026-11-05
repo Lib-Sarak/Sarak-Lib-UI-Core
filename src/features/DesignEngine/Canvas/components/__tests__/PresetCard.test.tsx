@@ -28,6 +28,14 @@ describe('PresetCard', () => {
         expect(container.querySelector('.h-48')).toBeInTheDocument();
     });
 
+    it('leva o id do tema em data-theme-id, o alvo estável do teste do importador', () => {
+        const theme = { id: 'meu-tema', name: 'Meu Tema', design: { mode: 'dark' } };
+        const { container } = render(
+            <PresetCard theme={theme as unknown as SarakThemePreset} currentMode="dark" onApply={() => {}} index={0} />,
+        );
+        expect(container.querySelector('button')).toHaveAttribute('data-theme-id', 'meu-tema');
+    });
+
     it('a miniatura de tema usa a contraparte no modo efetivo', () => {
         const theme = {
             id: 'tema-claro',

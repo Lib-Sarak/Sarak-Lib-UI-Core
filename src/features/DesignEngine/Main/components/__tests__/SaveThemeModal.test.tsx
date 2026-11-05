@@ -47,6 +47,17 @@ describe('SaveThemeModal', () => {
         expect(screen.queryByRole('button', { name: 'Salvar' })).not.toBeInTheDocument();
     });
 
+    it('dá ao botão de confirmar o alvo estável de teste, ao salvar e ao exportar', () => {
+        const { unmount } = customRenderWithSavePort(
+            <SaveThemeModal isOpen purpose="runtime" onClose={vi.fn()} onExport={vi.fn()} onSave={vi.fn()} />,
+        );
+        expect(screen.getByTestId('sarak-save-theme-confirm')).toBeInTheDocument();
+        unmount();
+
+        customRender(<SaveThemeModal isOpen purpose="export" onClose={vi.fn()} onExport={vi.fn()} />);
+        expect(screen.getByTestId('sarak-save-theme-confirm')).toBeInTheDocument();
+    });
+
     it('chama onClose ao cancelar ou fechar', () => {
         const onClose = vi.fn();
         customRender(<SaveThemeModal {...defaultProps} onClose={onClose} />);

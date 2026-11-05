@@ -119,6 +119,23 @@ describe('ThemeActionBar', () => {
         expect(handlers.onDeleteTheme).toHaveBeenCalledTimes(1);
     });
 
+    it('dá alvos estáveis de teste ao Aplicar e a cada gesto do menu', async () => {
+        const user = userEvent.setup();
+        render(<ThemeActionBar {...createProps({ canSaveToRuntime: true, canDeleteTheme: true })} />);
+
+        expect(screen.getByRole('button', { name: 'Aplicar' })).toHaveAttribute('data-testid', 'sarak-panel-apply');
+        const menu = await openMenu(user);
+        const expected: Array<[string, string]> = [
+            ['Salvar tema', 'sarak-panel-save-theme'],
+            ['Novo tema', 'sarak-panel-new-theme'],
+            ['Exportar JSON', 'sarak-panel-export-json'],
+            ['Apagar tema', 'sarak-panel-delete-theme'],
+        ];
+        for (const [name, testId] of expected) {
+            expect(within(menu).getByRole('menuitem', { name })).toHaveAttribute('data-testid', testId);
+        }
+    });
+
     it('Apagar tema é o último item, em tom de perigo', async () => {
         const user = userEvent.setup();
         render(<ThemeActionBar {...createProps({ canSaveToRuntime: true, canDeleteTheme: true, canUndoLastApply: true })} />);

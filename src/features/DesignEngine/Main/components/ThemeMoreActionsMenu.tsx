@@ -8,6 +8,8 @@ export interface ThemeMenuAction {
     onSelect: () => void;
     /** Ação destrutiva: ganha o tom de perigo. */
     danger?: boolean;
+    /** `data-testid` do item, o alvo estável do teste do importador. */
+    testId?: string;
 }
 
 const ITEM_CLASS = 'flex w-full items-center rounded-md px-3 py-2 text-left text-[var(--sarak-type-scale-caption,12px)] font-medium normal-case tracking-normal hover:bg-[var(--theme-primary)]/15 focus:bg-[var(--theme-primary)]/15 focus:outline-none ';
@@ -98,6 +100,7 @@ export const ThemeMoreActionsMenu: React.FC<ThemeMoreActionsMenuProps> = ({ acti
                             ref={(node) => { itemRefs.current[index] = node; }}
                             type="button"
                             role="menuitem"
+                            data-testid={action.testId}
                             tabIndex={-1}
                             onClick={() => choose(action)}
                             onKeyDown={(event) => handleItemKeyDown(event, index)}

@@ -35,7 +35,7 @@ do retorno (R1…R12).
 | R3 | Versão da lib legível | **Já existe:** `SARAK_BUILD_INFO.libVersion`, exportado do barril (`src/index.ts:48`). Falta documentar. O `./package.json` não entra no `exports` (ver §3.2). |
 | R4 | `useOverlay().confirm` com alvo de teste | **Confirmado.** `SarakConfirmOptions` (`src/components/atomic/Modals/SarakOverlayProvider.tsx:27-40`) tem `confirmLabel`, mas nenhum `data-testid`. |
 | R5 | `data-theme-id` nos cartões da galeria; alvo do `SarakRadio` | **Confirmado.** Nenhum `data-theme-id` em `src/`. |
-| R6 | Galeria não fecha ao escolher; dois "Fechar galeria" | A documentar, e a desambiguar pelo alvo de teste (passo 9). |
+| R6 | Galeria não fecha ao escolher; dois "Fechar galeria" | **Não procede na 8.0.0** (corrigido pelo revisor em 2026-11-05): a galeria saiu do painel na 8.0.0 (`docs/migracoes.md`, "não encontra mais o botão **Abrir galeria**"); os temas são o grupo da decisão **Tema**. O único "Fechar galeria" do pacote é o do `SarakLightbox`. A documentar como tal no lote 4. |
 | R7 | Salvar tema nomeado também ativa e persiste | A documentar. O caminho está em `useThemePersistenceHandlers`. |
 | R8 | `SarakGrid` em pilha vertical | A documentar (JSDoc e guia). |
 | R9 | Guia multi-tenant, de sem tenant para com tenant | A documentar. |
@@ -143,15 +143,15 @@ do retorno (R1…R12).
 
    | Gesto | `data-testid` |
    |---|---|
-   | Abrir galeria | `sarak-panel-open-gallery` |
-   | Fechar galeria, botão da barra | `sarak-panel-close-gallery` |
-   | Fechar galeria, botão de dentro da galeria | `sarak-gallery-close` |
    | Aplicar (N) | `sarak-panel-apply` |
    | Salvar tema | `sarak-panel-save-theme` |
    | Confirmar no modal de salvar | `sarak-save-theme-confirm` |
    | Novo tema | `sarak-panel-new-theme` |
    | Apagar | `sarak-panel-delete-theme` |
    | Exportar JSON | `sarak-panel-export-json` |
+
+   (Corrigido pelo revisor em 2026-11-05: as três linhas de galeria — `sarak-panel-open-gallery`, `sarak-panel-close-gallery`,
+   `sarak-gallery-close` — saíram da tabela; a galeria não existe na 8.0.0.)
 
    Um teste prova cada atributo, no teste do componente que o desenha. Se um gesto não existir com esse nome no painel, diga no
    resumo, e não invente o gesto.
@@ -164,7 +164,10 @@ do retorno (R1…R12).
     - o filtro do passo 10;
     - os alvos do passo 9 e de `confirmTestId`/`cancelTestId`;
     - o alvo de clique do `SarakRadio` (o rótulo, porque o `<input>` é `sr-only`) (R5);
-    - que escolher um cartão não fecha a galeria, e qual `data-testid` é cada "Fechar galeria" (R6).
+    - que a galeria e seus botões "Abrir/Fechar galeria" saíram na 8.0.0: os temas ficam na decisão **Tema**, cada cartão com
+      `data-theme-id`, e escolher um cartão põe o tema no rascunho até o **Aplicar**. Aponte a entrada de `docs/migracoes.md` que
+      registra a saída. O "Fechar galeria" que ainda existe é o do `SarakLightbox`, componente de mídia (R6; corrigido pelo revisor
+      em 2026-11-05).
 12. Em `docs/persistencia-de-tema.md`, que salvar um tema nomeado também o ativa e grava o estado aplicado (`theme.onSave`, depois
     `applyFullConfigRaw` + `persistDesign`) (R7). Confira a ordem no código antes de escrever.
 13. No JSDoc de `SarakGrid` e no guia: a malha padrão é `auto-fit` de 280px e põe irmãos lado a lado; pilha vertical é
@@ -354,6 +357,70 @@ gramática nova desde a última tag estável. Caso que falha: acrescentar um tok
 - `trail-citation:check -- --staged` não rodado (exige `git add`); rodei a variante sem `--staged` dentro do `quick`.
 - Lotes 3 e 4 não executados.
 
+## Resumo da execução (lote 3, passos 8 a 10) — 2026-11-05
+
+**Resultado:** Concluído com pendências (três gestos da tabela do passo 9 não existem no painel)
+
+**Estado do worktree ao iniciar**
+```
+(limpo)
+```
+
+**O que foi feito**
+- `SarakOverlayProvider.tsx`: `confirmTestId` e `cancelTestId` opcionais em `SarakConfirmOptions` (com JSDoc), aplicados como `data-testid` nos botões Confirmar e Cancelar de `ModalConfirmationActions`; omitidos, o atributo não é renderizado (passo 8).
+- `PresetCard.tsx` e `PresetCardPending.tsx`: `data-theme-id` com o id do tema no botão do cartão (os dois estados do cartão da galeria de temas) (passo 9).
+- `ThemeMoreActionsMenu.tsx`: `ThemeMenuAction` ganha `testId?`, aplicado como `data-testid` no item do menu (passo 9).
+- `ThemeActionBar.tsx`: `sarak-panel-apply` no Aplicar; `sarak-panel-save-theme`, `sarak-panel-new-theme`, `sarak-panel-export-json` e `sarak-panel-delete-theme` nos itens do menu "Mais ações" (passo 9).
+- `SaveThemeModal.tsx`: `sarak-save-theme-confirm` no botão de confirmar (passo 9).
+- `src/testing.ts`: `filterSarakTestConsoleLog` descarta também o texto "[Sarak] CSS não detectado" (modo app); o aviso do modo embarcado ("CSS escopado não detectado") não contém esse trecho e continua passando (passo 10).
+- Testes ao lado de cada componente: `SarakOverlayProvider.test.tsx`, `ThemeActionBar.test.tsx`, `SaveThemeModal.test.tsx`, `PresetCard.test.tsx`, `PresetCardPending.test.tsx`, `src/__tests__/testing.test.ts`.
+- `PresetsCatalog.test.tsx.snap`: atualizado com `-u` só nesse arquivo; o diff são apenas linhas acrescentadas `data-theme-id="<id>"`, nenhuma removida.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/Modals/SarakOverlayProvider.tsx` | alterado | `confirmTestId`/`cancelTestId` |
+| `src/features/DesignEngine/Canvas/components/PresetCard.tsx` | alterado | `data-theme-id` |
+| `src/features/DesignEngine/Canvas/components/PresetCardPending.tsx` | alterado | `data-theme-id` |
+| `src/features/DesignEngine/Main/components/ThemeMoreActionsMenu.tsx` | alterado | `testId` do item |
+| `src/features/DesignEngine/Main/components/ThemeActionBar.tsx` | alterado | `data-testid` do Aplicar e dos itens do menu |
+| `src/features/DesignEngine/Main/components/SaveThemeModal.tsx` | alterado | `data-testid` do confirmar |
+| `src/testing.ts` | alterado | filtro do aviso de CSS |
+| `src/components/atomic/Modals/__tests__/SarakOverlayProvider.test.tsx` | alterado | caso novo |
+| `src/features/DesignEngine/Main/components/__tests__/ThemeActionBar.test.tsx` | alterado | caso novo |
+| `src/features/DesignEngine/Main/components/__tests__/SaveThemeModal.test.tsx` | alterado | caso novo |
+| `src/features/DesignEngine/Canvas/components/__tests__/PresetCard.test.tsx` | alterado | caso novo |
+| `src/features/DesignEngine/Canvas/components/__tests__/PresetCardPending.test.tsx` | alterado | caso novo |
+| `src/__tests__/testing.test.ts` | alterado | caso novo |
+| `src/features/DesignEngine/Canvas/components/__tests__/__snapshots__/PresetsCatalog.test.tsx.snap` | alterado | `data-theme-id` nos cartões |
+
+**Verificações executadas**
+- `npx vitest run src/components/atomic/Modals src/features/DesignEngine src/__tests__ src/components/atomic/DataDisplay` → 227 arquivos; 1 falha (o snapshot acima, efeito esperado de `data-theme-id`). Depois de `-u` em `PresetsCatalog.test.tsx` → 8/8. Os demais 226 arquivos (1328 testes) verdes na mesma rodada.
+- `npm run verify -- --tier=quick` → "nível quick verde".
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → "igual ao baseline de 2026-10-12 — nenhuma regressão".
+
+**Critérios de aceite (lote 3)**
+- [x] R4: `confirmTestId`/`cancelTestId` viram `data-testid`; sem eles o botão não leva o atributo — `SarakOverlayProvider.test.tsx`, caso "aplica confirmTestId e cancelTestId…".
+- [x] R5: `data-theme-id` em todo cartão de tema da galeria (carregado e pendente) — `PresetCard.test.tsx`, `PresetCardPending.test.tsx` e o snapshot da galeria.
+- [ ] R10: `data-testid` da tabela do passo 9 — **parcial**. Existem e têm teste: `sarak-panel-apply`, `sarak-panel-save-theme`, `sarak-save-theme-confirm`, `sarak-panel-new-theme`, `sarak-panel-delete-theme`, `sarak-panel-export-json`. **Não existem no painel** e não foram criados: `sarak-panel-open-gallery`, `sarak-panel-close-gallery`, `sarak-gallery-close` — motivo abaixo.
+- [x] R11: o filtro suprime "[Sarak] CSS não detectado" do modo app e mais nada — `src/__tests__/testing.test.ts`, caso "filters the app-mode missing-CSS notice and only it".
+
+**Decisões e suposições**
+- Os três gestos de galeria não existem: `grep -rin "galeria\|gallery\|Abrir galeria\|Fechar galeria" src/features` não acha botão "Abrir galeria" nem "Fechar galeria" no painel. A galeria de temas hoje é o grupo `themes` do `PresetsCatalog`, montado pela coluna de decisões, sem botão de abrir nem de fechar. O único "Fechar galeria" do repositório é o `aria-label` do `SarakLightbox` (`src/components/atomic/Media/SarakLightbox.tsx:110`), componente de mídia, não do painel. Conforme o passo 9, não inventei o gesto. Isto afeta o lote 4 (passo 11, R6: "qual `data-testid` é cada Fechar galeria") e deve ser reavaliado pelo revisor.
+- "Aplicar (N)": o botão do painel se chama "Aplicar"; o contador é um elemento à parte. O `data-testid` está no botão.
+- Salvar, Novo tema, Exportar JSON e Apagar são itens do menu "Mais ações", só existem no DOM com o menu aberto; o teste abre o menu.
+- `sarak-save-theme-confirm` está no botão de confirmar do `SaveThemeModal`, que é o mesmo botão para salvar e para exportar (o rótulo muda, o botão é um só).
+- `data-theme-id` foi posto nos dois estados do cartão (`PresetCard` e `PresetCardPending`), porque o cartão do tema ainda não carregado também aparece na galeria.
+- O filtro compara pelo trecho "[Sarak] CSS não detectado"; o texto do aviso do modo embarcado começa com "[Sarak] CSS escopado não detectado", logo não casa.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum.
+
+**Pendências / riscos**
+- Três `data-testid` da tabela do passo 9 sem gesto correspondente (ver Decisões).
+- `trail-citation:check -- --staged` não rodado (exige `git add`); a variante sem `--staged` rodou dentro do `quick`.
+- Lotes 4 não executado.
+
 ---
 
 # 10. Veredito
@@ -405,3 +472,20 @@ Aceitos, por estarem declarados nos limites do gate:
 - a gramática de `colorPalette` e o `fluid` foram escritos à mão.
 
 A plan volta a 🟡 para o lote 3.
+
+## Veredito — 2026-11-05 — lote 3 — 🟢 Aprovado; lote 3 fechado (pendência originada na plan, corrigida)
+
+O revisor rodou:
+- Os sete arquivos de teste tocados (`SarakOverlayProvider`, `ThemeActionBar`, `SaveThemeModal`, `PresetCard`, `PresetCardPending`,
+  `PresetsCatalog`, `src/__tests__/testing.test.ts`): 54/54. Não repeti o filtro inteiro da §7, que o executor rodou.
+- Leitura do diff: `data-testid` só aparece quando o importador passa o id, e os cartões carregados e pendentes levam `data-theme-id`.
+  O snapshot só acrescenta linhas `data-theme-id`, e o filtro casa o texto real de `useSarakStylesheetGuard.ts:57` e não o de
+  `:44`, o aviso embarcado.
+- `check-audit-baseline --with-tsc`: igual ao baseline. `trail-citation:check` e `variable-contract:check`: OK.
+
+A pendência declarada pelo executor procede, e o erro estava na plan. A galeria e o botão **Abrir galeria** saíram na 8.0.0, e
+`docs/migracoes.md` registra a saída. No pacote, `dist/index.js` só tem o "Fechar galeria" do `SarakLightbox`. O R6 do
+importador descreve uma versão anterior. Na plan, as três linhas de galeria saíram da tabela do passo 9, e o R6, na §2 e no passo 11,
+passou a dizer o que documentar. Não inventar o gesto foi a conduta certa.
+
+A plan volta a 🟡 para o lote 4.

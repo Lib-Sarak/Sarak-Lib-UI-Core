@@ -64,5 +64,12 @@ export const installSarakTestEnvironment = (
     });
 };
 
+/** Textos que `filterSarakTestConsoleLog` descarta: o jsdom não carrega CSS, e o diagnóstico do modo app dispara sempre. */
+const FILTERED_LOG_FRAGMENTS = ['Could not parse CSS stylesheet', '[Sarak] CSS não detectado'];
+
+/**
+ * Para o `onConsoleLog` do vitest: descarta o aviso de CSS do jsdom e o "[Sarak] CSS não detectado" do modo app.
+ * O aviso do modo embarcado ("CSS escopado não detectado") e qualquer outro log continuam passando.
+ */
 export const filterSarakTestConsoleLog = (log: string): false | undefined =>
-    log.includes('Could not parse CSS stylesheet') ? false : undefined;
+    FILTERED_LOG_FRAGMENTS.some((fragment) => log.includes(fragment)) ? false : undefined;
