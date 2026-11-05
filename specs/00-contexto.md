@@ -170,7 +170,8 @@ agente descobre do jeito difícil se não estiverem escritos:
 - **Todo MAJOR precisa da nota de migração ANCORADA — e isso virou gate** *(2026-08-19)*. O gancho `version`
   abre com `migration-anchor:check`: sem uma entrada em `docs/migracoes.md` cujo título cite `X.0.0` por
   extenso, o `npm version major` **para antes de criar a tag**. Um segundo gate, `minor-no-removal:check`,
-  barra minor/patch que remova nome do barril público.
+  barra minor/patch que remova nome do barril público, e `token-release-notes:check` barra a versão cujas notas omitem
+  token acrescentado, removido ou com gramática nova desde a última tag estável.
 
 ## 3.2 O trabalho não acontece mais na `main` *(desde 2026-08-18)*
 

@@ -143,6 +143,26 @@ estaria tecnicamente correto e praticamente inútil naquele item.
 - **Mensagem de erro.** `sarakErrorMessage(error, fallback?)` devolve texto seguro de `Error`, string e resposta comum de API. Rastro de pilha, HTML, texto longo e erro do motor JS não passam.
 - **Subpath `/testing`.** `renderWithSarak` é assíncrona, e `createSarakKitMock` mantém a lib real com dublês de `SarakDataTable`, `SarakChartEngine` e `SarakPDFViewer`. Lib e Testing Library carregam por `import()` com especificador em variável, para o subpath abrir em Node sem DOM e sem `@testing-library/react`, que é peer opcional. O subpath não importa tipos da lib: importar faz o build mover tipos do barril para um `.d.ts` compartilhado, e `dist/index.d.ts` deixa de declará-los.
 
+## 2.4 Alvos de teste estáveis — contrato do kit
+
+O teste do importador acha os pontos abaixo sem depender de texto, que muda com o idioma. **Renomear qualquer um deles é
+quebra de contrato**, com o mesmo peso de remover um export. A seção "Testar com a lib" do `GUIA-FRONTEND.md` é a fonte
+de quem importa.
+
+| Onde | Alvo |
+|---|---|
+| `useOverlay().confirm` | `confirmTestId`/`cancelTestId` viram `data-testid` dos dois botões; omitidos, os botões não levam o atributo |
+| Painel: Aplicar | `sarak-panel-apply` |
+| Painel, menu **Mais ações**: Salvar tema, Novo tema, Apagar tema, Exportar JSON | `sarak-panel-save-theme`, `sarak-panel-new-theme`, `sarak-panel-delete-theme`, `sarak-panel-export-json` (só existem com o menu aberto) |
+| Modal de salvar: confirmar (o mesmo botão salva e exporta) | `sarak-save-theme-confirm` |
+| Cartão de tema da decisão **Tema**, carregado ou pendente | `data-theme-id="<id do tema>"` |
+
+O painel não tem galeria nem botão de abrir ou fechar galeria desde a 8.0.0, e por isso não há alvo para eles.
+
+O subpath `testing` também cuida do aviso de CSS: `filterSarakTestConsoleLog` descarta, além do aviso do jsdom, o
+"[Sarak] CSS não detectado" do modo app. O aviso do modo embarcado continua passando, e a lib não se cala sozinha em teste:
+a supressão é opt-in, no `onConsoleLog` do importador.
+
 # 3. A regra nº 1 do consumidor — leia o catálogo, não assuma
 
 Está no topo do `START-HERE.md` (`sarak-ui/START-HERE.md:14-28`), e o motivo é específico desta

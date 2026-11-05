@@ -43,12 +43,18 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
 | 1 | [plan-119-kit-de-importacao-aprendido-nos-importadores](plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md) | Fazer o importador usar a lib por inteiro sem reescrever o que ela entrega, com o kit de importação ensinado pelas licoes medidas nos importadores reais e com a gestao de temas do importador completa: salvar o aplicado como novo, editar, duplicar e criar, persistidos no importador | — | 🟡 Em execução | specs/12-kit-do-consumidor.md + specs/13-instalacao-e-atualizacao.md + specs/09-temas-e-presets.md + specs/15-divida-conhecida.md |
-| 2 | [plan-156-retorno-dos-logins-na-8-0-0](plan/plan-156-retorno-dos-logins-na-8-0-0.md) | Fazer a tela de autenticacao ser anunciada pelo leitor de tela, as notas de versao listarem todo token acrescentado ou removido, e o importador testar o painel e o overlay por alvos estaveis e documentados | — | 🟢 Aprovado | specs/10-seguranca-e-acessibilidade.md + specs/03-versionamento-e-release.md + specs/12-kit-do-consumidor.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🚦 **Campanha da `8.0.0-rc.4` (2026-10-27).** Contrato aceito: [`anexos/rc4-contrato.md`](plan/anexos/rc4-contrato.md). Ordem: a `plan-128` vai **sozinha** (cria o hook de idioma e os arquivos de catálogo das outras); depois `plan-129` ‖ `plan-130` ‖ `plan-131` ‖ `plan-132` ‖ `plan-119` lote 8 ‖ `plan-133`, em paralelo (pastas disjuntas; arquivos compartilhados só por acréscimo); depois da 133, `plan-134` ‖ `plan-135`. A 134 e a 135 geram prévias em `C:\tmp\sarak-rc4-previa\` que o dono aprova durante a revisão. Verificação pelo protocolo do contrato §9: uma vez por plan e a bateria completa uma vez, no fechamento, depois do lote 2 do ERP. A versão (`npm version`) é do dono.
 
-> 🚦 **Fila pós-8.0.0 (2026-11-05):** `plan-156` (retorno dos logins na 8.0.0), lotes 1 → 2 → 3 → 4, um veredito por lote. O lote final da `plan-119` segue esperando os importadores.
+> 🚦 **Fila pós-8.0.0 (2026-11-05):** a `plan-156` saiu; a próxima versão é a `8.1.0` (minor). O lote final da `plan-119` segue esperando os importadores.
+
+> ⚪ **A `plan-156` foi SINTETIZADA e REMOVIDA em 2026-11-05.**
+> - [[10-seguranca-e-acessibilidade]] §2.4 b: rótulos ligados, botão de senha nomeado pelo estado e `role="alert"` no `SarakAuthScreen`.
+> - [[03-versionamento-e-release]] §5 e §5.2, e §6 na lista do gancho `version`: a lista de tokens em toda versão e o gate `token-release-notes:check`, com os limites dele.
+> - [[12-kit-do-consumidor]] §2.4: os alvos de teste estáveis viram contrato do kit, junto com o filtro do aviso de CSS.
+> - Acréscimos fora do destino declarado: [[01-gates-e-baseline]], na tabela de gates e na matriz, e `00-contexto` §3.1, onde estão os gates do `version`.
+> - **Ficou de fora:** os vereditos, as medições e a correção do R6, que saiu da plan porque a galeria tinha saído na 8.0.0 (histórico do Git). A documentação do kit (R3 a R9) fica no próprio guia e em `docs/persistencia-de-tema.md`, que a 12 §12 não duplica.
 
 > 🚦 **Fila da rc.5 (2026-11-02):** decisão do dono: todas as plans abertas entram na `8.0.0-rc.5`, salvo o lote final da `plan-119`, que espera os importadores. Ordem: tag (as plans da rc.5 estão sintetizadas). `npm run build` e a bateria de navegador rodam **um executor por vez**. Contrato em `anexos/rc5-contrato.md`.
 

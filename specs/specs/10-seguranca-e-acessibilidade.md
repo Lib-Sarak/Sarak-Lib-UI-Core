@@ -229,6 +229,13 @@ Navegação por `Tab`/`Shift+Tab`/`Enter`/`Espaço`/`ESC` nos componentes intera
 nenhum `axe`, nenhum teste de árvore de acessibilidade agregado. A cobertura é a que os testes por
 componente exercitam. Ver §5.1.
 
+**A tela de autenticação** (`SarakAuthScreen`) é lida pelo leitor de tela:
+- E-mail, Senha e o código MFA têm `label` ligado ao campo por `htmlFor`/`id` (`useId`), e clicar no rótulo foca o campo.
+- O botão de mostrar a senha é nomeado pela próxima ação, "Mostrar senha" ou "Ocultar senha", com as chaves `authShowPassword`/`authHidePassword`
+  nos seis idiomas, sobrescritíveis por `labels`. Ele não tem `aria-pressed`: rótulo que alterna junto com estado de alternância
+  se contradiz.
+- O erro do formulário é `role="alert"`, e o aviso (`errorVariant="warning"`) é `role="status"`.
+
 ### c) ✅ Anel de foco — FECHADO em 2026-08-04 (`plan-08`, F4)
 
 O token existe: **`focusRingWidth`** (`src/core/Design/schema/engineering.ts:12-20`), slider 0-6px,

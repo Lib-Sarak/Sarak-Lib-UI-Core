@@ -134,6 +134,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Cobertura em % | `npm run coverage:check` (dentro de `gates:full`) | Piso móvel: mede, grava, e o piso só sobe — mesma mecânica do `audit:baseline` | **R8.1** — piso hoje: **71,47%** *(medido 2026-08-11; a fonte viva é `gates/baselines/coverage-floor.json`)* |
 | Âncora de migração | `npm run migration-anchor:check` (gancho `version`) | Todo **MAJOR** emitido tem entrada em `docs/migracoes.md` com a versão no título | [[03-versionamento-e-release]] §5 *(plan-53)* |
 | Minor sem remoção | `npm run minor-no-removal:check` (gancho `version`) | **Minor/patch nunca remove nome do barril público** (`dist/index.d.ts`) contra a última tag | [[03-versionamento-e-release]] §3 *(plan-53)* |
+| Tokens nas notas | `npm run token-release-notes:check` (gancho `version`) | A entrada da versão em `docs/migracoes.md` nomeia todo token acrescentado, removido ou com tipo ou gramática nova desde a última tag estável; não vê mudança de valor padrão | [[03-versionamento-e-release]] §5 e §5.2 |
 
 > ⚠️ **Os dois gates de release da `plan-53` (2026-08-19) — o que eles NÃO veem, declarado no cabeçalho de
 > cada arquivo (R18):**
@@ -184,7 +185,7 @@ comando. A `plan-52` fechou os quatro; esta tabela é o que impede que a situaç
 | `build-info` · `package` · `coverage` | — | ✅ | — | — | ✅ |
 | `release:check` | — | — | — | ✅ (só `main`) | ✅ **job `release-tag`** |
 | `cromo-css-real` (`browser-tests/`, Playwright) | — | — | — | — | ✅ **job `cromo-css-real`** ([[16-integracao-continua]] §4.2.1) |
-| `migration-anchor` · `minor-no-removal` | — | — | ✅ *(desde a `plan-53`)* | — | — |
+| `migration-anchor` · `minor-no-removal` · `token-release-notes` | — | — | ✅ | — | — |
 | Segredos (Anel 0) | ✅ **sempre** | — | — | — | ⛔ **impossível** |
 
 ⚠️ **Duas linhas desta tabela merecem leitura, não só consulta:**
