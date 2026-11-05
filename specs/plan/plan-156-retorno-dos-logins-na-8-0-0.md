@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Atender o retorno dos logins na 8.0.0"
 objetivo: "Fazer a tela de autenticacao ser anunciada pelo leitor de tela, as notas de versao listarem todo token acrescentado ou removido, e o importador testar o painel e o overlay por alvos estaveis e documentados"
 dominio: "Templates de autenticação / Versionamento / Kit do consumidor"
-status: "🟡 Em execução"
+status: "🟢 Aprovado"
 prioridade: "Alta"
 tags: ["plan", "acessibilidade", "migracoes", "tokens", "kit-do-consumidor", "testes-do-importador"]
 relacionados: ["[[10-seguranca-e-acessibilidade]]", "[[03-versionamento-e-release]]", "[[12-kit-do-consumidor]]", "[[06-painel-de-customizacao-e-preview]]", "[[11-testes-e-cobertura]]"]
@@ -421,6 +421,60 @@ gramática nova desde a última tag estável. Caso que falha: acrescentar um tok
 - `trail-citation:check -- --staged` não rodado (exige `git add`); a variante sem `--staged` rodou dentro do `quick`.
 - Lotes 4 não executado.
 
+## Resumo da execução (lote 4, passos 11 a 15) — 2026-11-05
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar**
+```
+(limpo)
+```
+
+**O que foi feito**
+- `sarak-ui/GUIA-FRONTEND.md`, §1.2, seção nova "Testar com a lib" (passo 11): `SARAK_BUILD_INFO.libVersion` (R3); o filtro do passo 10 e que o aviso do modo embarcado continua passando; `confirmTestId`/`cancelTestId`; a tabela dos seis `data-testid` do painel que existem (com o aviso de que Salvar, Novo, Apagar e Exportar são itens do menu "Mais ações" e de que o modal de salvar usa o mesmo botão para salvar e exportar); `data-theme-id` dos cartões; o alvo do `SarakRadio` (o rótulo, porque o `<input>` é `sr-only`) (R5); e, no texto atual do passo, que a galeria e os botões "Abrir/Fechar galeria" saíram na 8.0.0, os temas ficam na decisão **Tema**, escolher um cartão põe o tema no rascunho até o **Aplicar**, a entrada de `docs/migracoes.md` que registra a saída, e que o "Fechar galeria" que resta é o do `SarakLightbox` (R6).
+- `docs/persistencia-de-tema.md`, §1.2: parágrafo "Salvar um tema nomeado também o ativa e grava o estado aplicado", com a ordem conferida em `useThemePersistenceHandlers.ts` (`saveTheme` → `theme.onSave`; `setResolvedThemeId`; `applyFullConfigRaw`; `persistDesign`) e o que `persistDesign` faz (`useDesignManager.ts:111-135`) (R7) (passo 12).
+- `src/components/atomic/Layouts/SarakGrid.tsx`: JSDoc do componente com a malha padrão e a pilha vertical (R8) (passo 13).
+- `sarak-ui/GUIA-FRONTEND.md`, §3.10, seção nova "A malha padrão do `SarakGrid` põe os irmãos lado a lado" (R8) (passo 13).
+- `sarak-ui/GUIA-FRONTEND.md`, §3.9 "Tema aplicado por organização": bloco "Da tela pública (sem tenant) para o login (com tenant)", com as opções do Provider antes e depois e o efeito na chave local (R9) (passo 14).
+- `.agents/skills/ui-integra-consumidor/SKILL.md:45-47`: uma frase onde a skill aponta o guia, para a seção "Testar com a lib".
+- `npm run guide` regenerou `sarak-ui/skill/SKILL.md` (cópia da skill); `.claude/skills/` é link simbólico para `.agents/skills/`, por isso aparece no `git status` com a mesma mudança (passo 15).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `sarak-ui/GUIA-FRONTEND.md` | alterado | "Testar com a lib"; malha do `SarakGrid`; transição sem tenant → com tenant |
+| `docs/persistencia-de-tema.md` | alterado | salvar tema nomeado também ativa e persiste |
+| `src/components/atomic/Layouts/SarakGrid.tsx` | alterado | só JSDoc |
+| `.agents/skills/ui-integra-consumidor/SKILL.md` | alterado | ponteiro para a seção nova |
+| `sarak-ui/skill/SKILL.md` | alterado (gerado) | cópia da skill, por `npm run guide` |
+| `.claude/skills/ui-integra-consumidor/SKILL.md` | (mesmo arquivo) | link simbólico para `.agents/skills`; não é edição à parte |
+
+**Verificações executadas**
+- `npm run guide` → kit gerado; `npm run guide:check` → "kit em dia (9 arquivos)".
+- `npm run verify -- --tier=quick` → "nível quick verde", depois de um primeiro `quick` com falha (abaixo).
+- `npm run variable-contract:check` → OK.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → "igual ao baseline de 2026-10-12 — nenhuma regressão".
+- `npm run dev-kit` → sem diferença em `sarak-dev/`.
+- Primeiro `quick`: `section-pointers:check` reprovou, e o `audit:baseline` com ele, porque escrevi "em §1.2" na skill e o gate lê esse "§1.2" como ponteiro do próprio arquivo. Corrigi a causa: a frase passou a dizer "`GUIA-FRONTEND.md` §1.2", como as outras citações da skill; não toquei no gate.
+
+**Critérios de aceite (lote 4)**
+- [x] R3, R5, R6, R7, R8, R9 documentados no guia, em `persistencia-de-tema.md` e no JSDoc; `guide:check` verde — evidência acima.
+- [x] Nenhum arquivo fora da §3.1: o `git status` lista só os arquivos da tabela.
+
+**Decisões e suposições**
+- A fonte do guia é `sarak-ui/GUIA-FRONTEND.md` mesmo: o gerador (`scripts/consumer-kit/kitFiles.mjs`) só reescreve os blocos entre marcadores e preserva o resto byte a byte, então a prosa se edita nele.
+- A tabela de gestos do guia lista só os seis `data-testid` que existem; não cita os três de galeria do passo 9 original, que não foram criados (lote 3).
+- Em R8, o piso da malha `auto-fit` vem do token `layoutGridMinCell` (padrão 280 px, `schema/structural.ts`), não de 280 px fixo: o código mudou depois do texto do passo; escrevi o que o código faz.
+- Em R7, o texto diz que `persistence.onSave` só é chamado nas estratégias `hybrid` e `remote` e com a porta configurada, e que gravação idêntica à última é descartada, porque é o que `persistDesign` faz.
+- Em R9, "antes" é o Provider sem `tenantId` e sem portas (só `localStorage`); "depois" é o exemplo que o guia já trazia. A afirmação de que o tema da chave base não é lido pela organização decorre de `resolveStorageKey` (`${storageKey}::tenant:${tenantId}`).
+- Não há teste novo: o lote é documentação e JSDoc; a prova é `guide:check` e o `quick`.
+
+**Achados fora do escopo (não corrigidos)**
+- `docs/persistencia-de-tema.md` §1.1 ainda diz "escolher um tema na galeria", e o guia usa "galeria" em outros pontos, embora a galeria tenha saído na 8.0.0. Não alterei, por estar fora do passo 12.
+
+**Pendências / riscos**
+- `trail-citation:check -- --staged` não rodado (exige `git add`); a variante sem `--staged` rodou dentro do `quick`.
+
 ---
 
 # 10. Veredito
@@ -489,3 +543,25 @@ importador descreve uma versão anterior. Na plan, as três linhas de galeria sa
 passou a dizer o que documentar. Não inventar o gesto foi a conduta certa.
 
 A plan volta a 🟡 para o lote 4.
+
+## Veredito — 2026-11-05 — lote 4 — 🟢 Aprovado; plan aprovada (4 de 4 lotes)
+
+O revisor conferiu as afirmações das seções novas contra o código:
+- **R7:** a ordem `saveTheme` → `setResolvedThemeId` → `applyFullConfigRaw` → `persistDesign` está em
+  `useThemePersistenceHandlers.ts:99-102`, e a rejeição cai no aviso `themeSaveFailed` (`:110-112`). Em `useDesignManager.ts`, o
+  `localStorage` fica fora do `remote` (`:121`), o `onSave` fica fora do `local` (`:125`), e o descarte de gravação idêntica sai da
+  chave de `:15`.
+- **R9:** a chave por tenant é `resolveStorageKey.ts:14`.
+- **R8:** o `layoutGridMinCell` padrão é 280 (`schema/structural.ts`). O executor escreveu o token em vez de "280px fixo", e está certo.
+- **R5:** o `SarakRadio` tem `sr-only` no `<input>`.
+- **R3:** `SARAK_BUILD_INFO` sai do barril (`src/index.ts:48`).
+- **R6:** existe a entrada "seis decisões" em `docs/migracoes.md`, e "Mais ações" é `themeMoreActions`.
+- A tabela do guia tem só os seis alvos que existem.
+
+Gates: `guide:check` (9 arquivos), `dev-kit:check`, `auditor_sectionpointers`, `check-audit-baseline --with-tsc` (igual ao baseline),
+`trail-citation:check` e `variable-contract:check`: OK.
+
+O achado fora do escopo procede: `docs/persistencia-de-tema.md:29` e `:38` ainda falam em "galeria". Ele é anterior à plan e vai
+para uma tarefa direta antes da síntese.
+
+A plan está pronta para a síntese no destino da §8.

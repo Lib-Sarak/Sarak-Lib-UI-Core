@@ -152,6 +152,15 @@ interface SarakThemeEntry {
 }
 ```
 
+**Salvar um tema nomeado também o ativa e grava o estado aplicado.** O botão "Salvar" do painel não para em `theme.onSave`.
+Em ordem: (1) `sarak.saveTheme` valida o tema, funde-o em `allThemes` e chama `options.theme.onSave`; (2) o tema salvo vira o
+tema resolvido (`activeThemeId`); (3) `applyFullConfigRaw` aplica o design salvo ao Provider; (4) `persistDesign` grava o
+estado aplicado: escreve o `localStorage` (estratégias `local` e `hybrid`) e chama `options.persistence.onSave` (estratégias
+`hybrid` e `remote`, quando a porta existe), com o `activeThemeId` resolvido naquele instante; uma gravação idêntica à última
+é descartada. Se a etapa (1) rejeitar, nada depois dela acontece e o painel avisa que o salvamento falhou. Quem implementa as
+duas portas recebe, portanto, **duas chamadas por um único "Salvar"**: uma de `theme.onSave` (o tema novo, com `operation`) e
+outra de `persistence.onSave` (o estado aplicado). Não trate a segunda como uma gravação inesperada.
+
 Não existe porta separada de leitura: a prop `customThemes` recebe a lista de temas guardados no
 próximo boot, e eles entram na sessão junto dos embarcados. Para apagar, `useSarakUI().deleteTheme(id)`
 remove o tema da coleção da sessão e chama `options.theme.onDelete(id)` quando essa porta opcional

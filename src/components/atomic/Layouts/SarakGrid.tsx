@@ -40,6 +40,11 @@ export interface SarakGridProps extends Omit<React.HTMLAttributes<HTMLDivElement
  * e organiza os componentes filhos (Cards, Tabelas, Gráficos) na malha correta.
  * Ele elimina a necessidade de chumbarmos "grid-cols-X" nas telas.
  *
+ * Malha padrão: sem `templateColumns` nem `columns`, vale a estratégia `auto-fit`
+ * (`repeat(auto-fit, minmax(<piso>, 1fr))`, com o piso do token `layoutGridMinCell`, padrão 280px) e os
+ * filhos ficam **lado a lado** quando cabem. Para uma pilha vertical, passe `templateColumns="1fr"` ou
+ * use `<SarakFlex direction="column">`.
+ *
  * Multidispositivo por padrão (Spec 40.3 — L2): um `templateColumns` fixo colapsa para
  * **uma coluna no celular** (via `useSarakDevice`), então nenhum grid estoura horizontalmente
  * no mobile sem o consumidor escrever CSS. Para controlar por dispositivo, passe um

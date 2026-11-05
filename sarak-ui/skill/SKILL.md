@@ -43,7 +43,9 @@ do cromo, todos **gerados do código-fonte** da versão instalada.
 - Precisa saber "o que a lib tem"? A resposta é o catálogo, nunca uma lista deste arquivo.
 
 O kit também traz **`GUIA-FRONTEND.md`** — o documento único de autoria (4 topologias + todos os
-casos). **Ele é a autoridade sobre COMO escrever as telas**; esta skill cuida da INFRAESTRUTURA.
+casos). **Ele é a autoridade sobre COMO escrever as telas**; esta skill cuida da INFRAESTRUTURA. Para escrever
+testes da tela do importador (versão da lib, filtro do aviso de CSS, `data-testid` e `data-theme-id` estáveis), veja a
+seção "Testar com a lib" em `GUIA-FRONTEND.md` §1.2.
 
 ## Modelo de consumo: um cromo por aplicação
 

@@ -237,6 +237,44 @@ it('mostra os pedidos', async () => {
 
 `createSarakKitMock({ useOverlay: () => overlayDeTeste })` troca ou acrescenta qualquer nome.
 
+### Testar com a lib
+
+O que a lib garante a quem testa a tela do importador, por alvo estável. Renomear qualquer um dos alvos abaixo é quebra
+de contrato.
+
+- **A versão da lib** que o teste está exercitando: `SARAK_BUILD_INFO.libVersion`, exportado do barril
+  (`import { SARAK_BUILD_INFO } from '@sarak/lib-ui-core'`). Não leia o `package.json` do pacote: ele não faz parte do
+  `exports`.
+- **O aviso de CSS no jsdom.** O jsdom não carrega CSS, então a lib avisa "[Sarak] CSS não detectado" em todo teste. O
+  `filterSarakTestConsoleLog` (acima) descarta esse aviso do modo app, e só ele; o aviso do modo embarcado ("CSS
+  escopado não detectado") continua passando. A supressão é opt-in, no seu `vitest.config`: a lib não se cala sozinha.
+- **O diálogo de `useOverlay().confirm`.** Passe `confirmTestId` e `cancelTestId` para receber `data-testid` nos botões
+  Confirmar e Cancelar, sem depender do texto deles (que muda com o idioma e com `confirmLabel`/`cancelLabel`). Sem as
+  opções, os botões não levam o atributo.
+- **O painel de customização.** Estes `data-testid` existem hoje:
+
+  | Gesto | `data-testid` |
+  |---|---|
+  | Aplicar | `sarak-panel-apply` |
+  | Salvar tema | `sarak-panel-save-theme` |
+  | Novo tema | `sarak-panel-new-theme` |
+  | Apagar tema | `sarak-panel-delete-theme` |
+  | Exportar JSON | `sarak-panel-export-json` |
+  | Confirmar no modal de salvar | `sarak-save-theme-confirm` |
+
+  Salvar, Novo, Apagar e Exportar são itens do menu **Mais ações**: abra o menu antes de procurá-los. O modal de salvar
+  usa o mesmo botão para salvar e para exportar, com o mesmo `data-testid`.
+- **Os cartões de tema.** Cada cartão leva `data-theme-id="<id do tema>"`, tanto o já carregado quanto o que ainda
+  carrega. Eles moram na decisão **Tema** do painel.
+- **O `SarakRadio`.** O `<input type="radio">` é `sr-only`, dentro de um `<label>`: em navegador real, clique no
+  **rótulo**, não no `<input>`. Num teste com Testing Library, `getByLabelText` devolve o `<input>`, e clicar nele também
+  marca o radio no jsdom.
+- **A galeria de temas saiu na 8.0.0**, com os botões "Abrir galeria" e "Fechar galeria". Os temas ficam na decisão
+  **Tema**; escolher um cartão põe o tema no **rascunho**, e só o **Aplicar** o grava. A saída está registrada em
+  `docs/migracoes.md`, na entrada "O painel de customização navega por seis decisões, com a prévia sempre à vista e o
+  ajuste fino em níveis". O "Fechar galeria" que ainda existe é o do `SarakLightbox`, componente de mídia, que não tem
+  relação com o painel.
+
 ---
 
 # §2 — As 4 topologias
@@ -719,6 +757,32 @@ organização e a chave local também fica separada por ela:
 </SarakUIProvider>
 ```
 
+**Da tela pública (sem tenant) para o login (com tenant).** Antes do login não há organização: monte o Provider sem
+`tenantId` e sem portas de servidor, e o tema vive só no `localStorage`, na chave base (`storageKey`). Depois do login, passe as
+mesmas opções com `tenantId` e as portas fechadas sobre a organização:
+
+```tsx
+// Antes do login: sem tenant, sem portas do servidor.
+<SarakUIProvider config={temaDeBoot.design} options={{ persistence: { strategy: 'hybrid' } }}>
+
+// Depois do login: o mesmo Provider, agora com a organização.
+<SarakUIProvider
+  config={temaDeBoot.design}
+  options={{
+    persistence: {
+      strategy: 'hybrid',
+      tenantId: organizacao.id,
+      onLoad: () => buscarTemaAplicado(organizacao.id),
+      onSave: (design, activeThemeId) => salvarTemaAplicado(organizacao.id, { design, activeThemeId }),
+    },
+  }}
+>
+```
+
+Com `tenantId`, a chave local passa a ser `${storageKey}::tenant:${tenantId}`: o tema que o visitante deixou na chave base
+**não é lido** pela organização, e o `onLoad` da organização decide o que aparece. Não é preciso remontar o Provider. Se o login
+trouxer o tema da organização no HTML, mantenha `config` com ele e `preferConfigOverCache: true` (abaixo).
+
 Ao trocar a organização, atualize `tenantId` e as portas; o Provider carrega o estado novo sem
 remontar e cancela a gravação pendente da organização anterior. Não passe `activeThemeId` controlado
 se o usuário puder escolher outro tema. O cache restaura o par design/id até `onLoad` responder; uma
@@ -790,6 +854,15 @@ celular/tablet/desktop: o cromo e as primitivas de layout leem o dispositivo soz
 O tipo público `SarakResponsiveValue<T>` recebe um objeto com as chaves exatas `mob`, `tab` e
 `desk`, cada uma com um valor do tipo `T`. Para saber quais props aceitam esse formato, consulte a
 lista atualizada em `catalog.json` → `responsive.responsiveProps`; nem toda prop de layout é responsiva.
+
+### A malha padrão do `SarakGrid` põe os irmãos lado a lado
+
+Sem `templateColumns` nem `columns`, o `SarakGrid` usa a malha `auto-fit`: `repeat(auto-fit, minmax(<piso>, 1fr))`, com o
+piso de célula vindo do token `layoutGridMinCell` (padrão 280px). Dois blocos irmãos cabem lado a lado assim que o
+contêiner comporta duas células, e quem espera uma pilha vertical vê uma fileira.
+
+Para a pilha vertical, declare-a: `<SarakGrid templateColumns="1fr">` (uma coluna fixa) ou
+`<SarakFlex direction="column">` (quando não há malha a fazer).
 
 ### Grade de 12 colunas e spans dos filhos
 
