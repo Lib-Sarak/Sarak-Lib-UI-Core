@@ -5,6 +5,175 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 8.0.0 — tokens acrescentados, removidos e com valor novo desde a 7.0.0
+
+Esta lista corrige o "nenhum token acrescentado" que as entradas da 8.0.0 abaixo repetem plan por plan: cada uma olha só a sua mudança, e a 8.0.0, vista desde a `v7.0.0`, acrescentou, removeu e mudou tokens. **Quem valida tema por lista de chaves deve aceitar as chaves acrescentadas e deixar de exigir as removidas.** As entradas abaixo continuam como estão.
+
+A lista cobre nome, tipo e gramática de valor (opções de um select, faixa e unidade de um slider); não cobre mudança de valor padrão. A lista inteira de opções de um token mora no schema (`src/core/Design/schema/`), não aqui.
+
+Gramáticas que o schema não expressa por opções:
+
+- `colorPalette` passou de select para texto livre: aceita o identificador de um preset de paleta ou `custom:<tipo>:<#base>[,sec=<#hex>][,acc=<#hex>]`.
+- `maxContentWidth` ganhou a opção `fluid` (margem proporcional ao contêiner, entre `layoutPadding` e 128px por lado), que passou a ser o padrão (era `1440px`).
+
+**Acrescentados (56)**
+
+- `cardShadowBlur` — slider (faixa 0 a 120 px)
+- `cardShadowExpansion` — slider (faixa -40 a 40 px)
+- `cardShadowOffsetX` — slider (faixa -60 a 60 px)
+- `cardShadowOffsetY` — slider (faixa -60 a 60 px)
+- `chromeNotificationsPosition` — select (opções: `menu`, `off`, `pinned`)
+- `chromeSearchPosition` — select (opções: `menu`, `off`, `pinned`)
+- `chromeUserPosition` — select (opções: `menu`, `off`, `pinned`)
+- `emphasisColor` — color
+- `globalBackgroundPosition` — select (opções: `absolute`, `fixed`)
+- `inputPaddingHorizontal` — slider (faixa 0 a 32 px)
+- `mobileNavigationStyle` — select (opções: `auto`, `bottom`, `drawer`)
+- `modalWidthFull` — slider (faixa 640 a 1920 px)
+- `modalWidthLg` — slider (faixa 448 a 896 px)
+- `modalWidthMd` — slider (faixa 384 a 768 px)
+- `modalWidthSm` — slider (faixa 320 a 640 px)
+- `modalWidthXl` — slider (faixa 512 a 1280 px)
+- `navItemRadius` — slider (faixa 0 a 24 px)
+- `progressBarHeight` — slider (faixa 2 a 32 px)
+- `progressBarRadius` — slider (faixa 0 a 32 px)
+- `sidebarActiveItemStyle` — select (opções: `bar`, `filled`, `outline`, `pill`, `underline`)
+- `sidebarBackgroundStyle` — select (opções: `gradient`, `solid`, `texture`)
+- `sidebarBorderColor` — color
+- `sidebarBorderSide` — select (opções: `all`, `bottom`, `edge`, `left`, `none`, `right`, `top`)
+- `sidebarBorderStyle` — select (opções: `dashed`, `dotted`, `double`, `none`, `solid`)
+- `sidebarBorderWidth` — slider (faixa 0 a 8 px)
+- `sidebarBrandBackground` — color
+- `sidebarBrandColor` — color
+- `sidebarCategoryColor` — color
+- `sidebarFooterBackground` — color
+- `sidebarIconColor` — color
+- `sidebarIconSize` — slider (faixa 12 a 32 px)
+- `sidebarItemDensity` — select (opções: `comfortable`, `compact`, `spacious`)
+- `sidebarItemHoverTextColor` — color
+- `sidebarItemTextColor` — color
+- `sidebarLogoPlacement` — select (opções: `bottom`, `top`)
+- `sidebarResizable` — boolean
+- `sidebarTone` — select (opções: `inverse`, `neutral`, `primary`, `secondary`, `surface`)
+- `subtitleColor` — color
+- `topbarActiveItemStyle` — select (opções: `bar`, `filled`, `outline`, `pill`, `underline`)
+- `topbarBackgroundStyle` — select (opções: `gradient`, `solid`, `texture`)
+- `topbarBlur` — slider (faixa 0 a 50 px)
+- `topbarBorderColor` — color
+- `topbarBorderSide` — select (opções: `all`, `bottom`, `edge`, `left`, `none`, `right`, `top`)
+- `topbarBorderStyle` — select (opções: `dashed`, `dotted`, `double`, `none`, `solid`)
+- `topbarBorderWidth` — slider (faixa 0 a 8 px)
+- `topbarBrandBackground` — color
+- `topbarBrandColor` — color
+- `topbarGroupSeparatorColor` — color
+- `topbarIconColor` — color
+- `topbarIconSize` — slider (faixa 12 a 32 px)
+- `topbarItemDensity` — select (opções: `comfortable`, `compact`, `spacious`)
+- `topbarItemHoverTextColor` — color
+- `topbarItemTextColor` — color
+- `topbarShadow` — text
+- `topbarTone` — select (opções: `inverse`, `neutral`, `primary`, `secondary`, `surface`)
+- `touchTargetMin` — slider (faixa 24 a 64 px)
+
+**Removidos (59)**
+
+- `aiPanelBg` — color
+- `animFast` — slider (faixa 50 a 400 ms)
+- `animInstant` — slider (faixa 0 a 200 ms)
+- `animNormal` — slider (faixa 100 a 800 ms)
+- `animSlow` — slider (faixa 200 a 2000 ms)
+- `atmosphereNoiseOpacity` — slider (faixa 0 a 1)
+- `borderRadiusLg` — slider (faixa 0 a 60 px)
+- `borderRadiusMd` — slider (faixa 0 a 40 px)
+- `borderRadiusSm` — slider (faixa 0 a 20 px)
+- `cardContentAlignment` — select (opções: `center`, `space-between`, `start`)
+- `cardHoverLift` — slider (faixa 0 a 12 px)
+- `cardImagePosition` — select (opções: `left`, `none`, `right`, `top`)
+- `contentAlignment` — select (opções: `center`, `stretch`)
+- `contrastCurve` — slider (faixa 0.5 a 4)
+- `devicePhoneWidth` — slider (faixa 300 a 450 px)
+- `easeMain` — select (opções: `cubic-bezier(0, 0, 0.2, 1)`, `cubic-bezier(0.16, 1, 0.3, 1)`, `cubic-bezier(0.175, 0.885, 0.32, 1.275)`, `cubic-bezier(0.4, 0, 0.2, 1)`, `cubic-bezier(0.4, 0, 1, 1)`, `cubic-bezier(0.6, 0.05, 0.01, 0.9)`, `linear`)
+- `easeOut` — select (opções: `cubic-bezier(0, 0, 0.2, 1)`, `cubic-bezier(0.19, 1, 0.22, 1)`, `cubic-bezier(0.23, 1, 0.32, 1)`, `cubic-bezier(0.4, 0, 0.2, 1)`, `linear`)
+- `formLayoutDirection` — select (opções: `inline`, `stack`)
+- `identityRedirectUrl` — text
+- `industrialRegistry` — boolean
+- `inputSuccessColor` — color
+- `kbdMinWidth` — slider (faixa 16 a 48 px)
+- `layerBackdropBlur` — slider (faixa 0 a 40 px)
+- `layerBackdropOpacity` — slider (faixa 0 a 1)
+- `layerElevationFactor` — slider (faixa 0.5 a 2)
+- `layout` — select (opções: `flex`, `grid`, `masonry`)
+- `managementGroupDescMaxWidth` — slider (faixa 60 a 400 px)
+- `matrixSearchBg` — color
+- `noiseIntensity` — slider (faixa 0 a 1)
+- `presetCardHoverShadowBlur` — slider (faixa 0 a 80 px)
+- `presetCardHoverShadowOffsetY` — slider (faixa 0 a 30 px)
+- `presetCardHoverShadowSpread` — slider (faixa 0 a 30 px)
+- `presetCardShadowBlur` — slider (faixa 0 a 20 px)
+- `presetCardShadowOffsetY` — slider (faixa 0 a 10 px)
+- `presetCardShadowSpread` — slider (faixa 0 a 10 px)
+- `presetGlowShadowBlur` — slider (faixa 0 a 40 px)
+- `presetGlowShadowBlurLg` — slider (faixa 0 a 60 px)
+- `presetGridTextureSize` — slider (faixa 4 a 20 px)
+- `presetMatteShadowBlur1` — slider (faixa 0 a 30 px)
+- `presetMatteShadowBlur2` — slider (faixa 0 a 12 px)
+- `presetMatteShadowOffsetY2` — slider (faixa 0 a 10 px)
+- `presetMatteShadowSpread1` — slider (faixa 0 a 10 px)
+- `presetMatteShadowSpread2` — slider (faixa 0 a 10 px)
+- `presetMiniCardHeight` — slider (faixa 60 a 300 px)
+- `presetPreviewMinHeight` — slider (faixa 100 a 500 px)
+- `presetPreviewPaddingY` — slider (faixa 0 a 24 px)
+- `scrollbarThumbColor` — color
+- `scrollbarWidth` — slider (faixa 2 a 12 px)
+- `securityPulseSpeed` — slider (faixa 0.5 a 5 s)
+- `securityShieldGlow` — slider (faixa 0 a 200 px)
+- `tableActionPosition` — select (opções: `left`, `right`)
+- `themeDropdownMaxHeight` — slider (faixa 200 a 800 px)
+- `trackingSubtle` — slider (faixa 0 a 1 em)
+- `typeScaleDisplay` — slider (faixa 4 a 16 rem)
+- `visualDotGridSize` — slider (faixa 5 a 40 px)
+- `visualOrbBlur` — slider (faixa 0 a 150 px)
+- `visualPerspective` — slider (faixa 400 a 2000 px)
+- `visualTranslateOffsetSm` — slider (faixa 0 a 60 px)
+- `visualTranslateZMd` — slider (faixa 0 a 100 px)
+
+**Com tipo ou valor novo (32)**
+
+- `bodyFont` — font; opções acrescentadas: 22 valores
+- `btnNeonPulseSpeed` — slider; faixa 0 a 4 s (era faixa 0.5 a 4 s)
+- `cardActionBtnBorderRadius` — slider; faixa 0 a 120 px (era faixa 0 a 40 px)
+- `cardHoverStyle` — select; opções removidas: `3d-tilt`
+- `cardShadowSpread` — slider; faixa 0 a 100 (era faixa 0 a 200 px)
+- `cardTitleFontSize` — slider; faixa 11 a 28 px (era faixa 10 a 40 px)
+- `colorDepth` — number; faixa 0 a 5 (era faixa 1 a 5)
+- `colorPalette` — tipo select → string
+- `focusRingWidth` — slider; faixa 1 a 6 px (era faixa 0 a 6 px)
+- `headingFont` — font; opções acrescentadas: 22 valores
+- `identityFontFamily` — font; opções acrescentadas: 43 valores
+- `identityTracking` — slider; faixa -2 a 8 px (era faixa -0.1 a 0.5 em)
+- `maxContentWidth` — select; opções acrescentadas: `fluid`
+- `monoFont` — font; opções acrescentadas: 22 valores
+- `motionDurationFast` — slider; faixa 0 a 0.5 s (era faixa 0.1 a 0.5 s)
+- `motionDurationNormal` — slider; faixa 0 a 1 s (era faixa 0.2 a 1 s)
+- `motionDurationSlow` — slider; faixa 0 a 2 s (era faixa 0.5 a 2 s)
+- `navActiveMarkerGlow` — slider; faixa 0 a 40 (era faixa 0 a 20)
+- `navigationStyle` — select; opções removidas: `dock`
+- `searchPositionSidebar` — select; opções removidas: `hidden`
+- `sidebarMaxWidth` — slider; faixa 240 a 600 px (era faixa 300 a 600 px)
+- `sidebarMinWidth` — slider; faixa 150 a 400 px (era faixa 150 a 300 px)
+- `systemTone` — select; opções acrescentadas: `none`; opções removidas: `dark`, `light`
+- `topbarCollapsedHeight` — slider; faixa 44 a 56 px (era faixa 24 a 56 px)
+- `typeScale2xs` — slider; faixa 11 a 14 px (era faixa 8 a 14 px)
+- `typeScale3xs` — slider; faixa 11 a 14 px (era faixa 6 a 12 px)
+- `typeScaleMicro` — slider; faixa 11 a 14 px (era faixa 6 a 10 px)
+- `typeScaleTiny` — slider; faixa 11 a 14 px (era faixa 6 a 12 px)
+- `vignetteSoftness` — slider; faixa 0 a 60 (era faixa 0 a 200)
+- `zIndexSidebar` — slider; faixa 10 a 790 (era faixa 100 a 1000)
+- `zIndexToast` — number; faixa 1000 a 9900 (era sem faixa)
+- `zIndexTooltip` — slider; faixa 5000 a 9900 (era faixa 5000 a 9999)
+
+---
+
 ## 8.0.0 — Personalidades no painel, e as barras dos temas embarcados com caráter próprio
 
 **Classificação: MINOR (aditivo).** Nenhum `id` de tema ou de preset mudou, nenhum token foi acrescentado ou removido e nenhuma cor mudou.

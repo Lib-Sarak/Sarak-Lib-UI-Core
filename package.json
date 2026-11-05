@@ -80,8 +80,9 @@
         "release:check": "node gates/scripts/release/check-release-tag.mjs",
         "migration-anchor:check": "node gates/scripts/contrato/check-migration-anchor.mjs",
         "minor-no-removal:check": "node gates/scripts/contrato/check-minor-no-removal.mjs",
+        "token-release-notes:check": "npx tsx gates/scripts/contrato/check-token-release-notes.ts",
         "preversion": "npm run gates:full",
-        "version": "npm run migration-anchor:check && npm run minor-no-removal:check && npm run guide && npm run build && npm run dev-kit && git add package.json package-lock.json dist sarak-ui sarak-dev src/buildInfo.ts src/core/Provider/buildInfo.ts",
+        "version": "npm run migration-anchor:check && npm run minor-no-removal:check && npm run token-release-notes:check && npm run guide && npm run build && npm run dev-kit && git add package.json package-lock.json dist sarak-ui sarak-dev src/buildInfo.ts src/core/Provider/buildInfo.ts",
         "postversion": "git push --follow-tags",
         "prepublishOnly": "npm run build && npm run package:check"
     },

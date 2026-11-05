@@ -298,6 +298,62 @@ gramática nova desde a última tag estável. Caso que falha: acrescentar um tok
 **Decisões e suposições**
 - A decisão da linha "`aria-pressed={!!showPassword}`" do resumo anterior fica superada por esta correção.
 
+## Resumo da execução (lote 2, passos 5 a 7) — 2026-11-05
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar**
+```
+(limpo)
+```
+
+**O que foi feito**
+- `gates/scripts/contrato/helpers/token-release-notes-core.ts` (novo): núcleo puro — `snapshotTokens` (id → tipo + gramática: opções de select, faixa e unidade), `diffSnapshots` (acrescentados, removidos, com tipo ou gramática novos), `baselineTag` (maior tag estável estritamente anterior à versão), `extractVersionNotes` (junta as seções `## ...` cujo título cita a versão; prévia lê a versão-base), `missingNames` (palavra inteira) e `renderTokenLists` (a lista em markdown) (passo 5).
+- `gates/scripts/contrato/check-token-release-notes.ts` (novo): o gate. Fotografa a tag exportando só `src/core/Design` com `git archive` para pasta temporária (apagada no `finally`) e importa o `master-map`; compara com a árvore; confere cada nome na entrada da versão de `package.json`. Falta de nome reprova com a lista; sem diferença passa; sem tag estável anterior libera. Modo `--print --from <tag>` escreve a lista. Limites declarados (R18) no cabeçalho (passo 5).
+- `docs/migracoes.md:8`: seção "8.0.0 — tokens acrescentados, removidos e com valor novo desde a 7.0.0", no topo da 8.0.0, gerada por `--print --from v7.0.0` (56 acrescentados, 59 removidos, 32 com valor novo). Abre dizendo que corrige o "nenhum token acrescentado" das entradas seguintes e que quem valida tema por lista de chaves deve aceitá-la; acrescenta à mão a gramática de `colorPalette` e a opção `fluid` de `maxContentWidth` (passo 6).
+- `package.json`: script `token-release-notes:check` e encadeamento no `version`, depois de `minor-no-removal:check` (passo 7).
+- `gates/scripts/contrato/__tests__/check-token-release-notes.test.ts` (novo): 14 casos — o que o gate pega e o que deixa passar (a entrada cita todos; omite um; cita só em outra versão; palavra inteira), tipo que muda, base de comparação (8.1.0 → `v8.0.0`; 8.0.0 e prévias → `v7.0.0`), seções múltiplas da mesma versão, limite declarado (mudança só de default não é vista).
+- Regenerados pelos geradores, sem edição à mão: `sarak-ui/docs/migracoes.md` (`npm run guide`) e `sarak-dev/` (`npm run dev-kit`: o gate novo entra na lista de gates do `state.json`; o gerador imprime 44 gates), porque `guide:check` e `dev-kit:check` acusaram defasagem como consequência direta das mudanças acima.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `gates/scripts/contrato/check-token-release-notes.ts` | criado | o gate |
+| `gates/scripts/contrato/helpers/token-release-notes-core.ts` | criado | núcleo puro |
+| `gates/scripts/contrato/__tests__/check-token-release-notes.test.ts` | criado | teste do gate |
+| `docs/migracoes.md` | alterado | seção nova no topo da 8.0.0 (+169 linhas, nenhuma removida) |
+| `package.json` | alterado | script novo e encadeamento no `version` |
+| `sarak-ui/docs/migracoes.md` | alterado (gerado) | cópia da migracoes |
+| `sarak-dev/state.json`, `START-HERE.md`, `GUIA-MANUTENCAO.md` | alterado (gerado) | contagens recontadas |
+
+**Verificações executadas**
+- `npx vitest run gates/scripts/contrato/__tests__/check-token-release-notes.test.ts` → 14/14.
+- `npm run token-release-notes:check` → "[OK] v7.0.0 → 8.0.0 — os 147 token(s) que mudaram estão na entrada da versão".
+- Mutação (script fora do repositório, sobre o `docs/migracoes.md` real): retirar a linha `topbarGroupSeparatorColor` da seção → `missingNames` devolve `['topbarGroupSeparatorColor']`; sem mutação, `[]`. Observação: `sidebarLogoPlacement` retirado da minha seção NÃO reprova, porque outras entradas da 8.0.0 já o citam (o gate lê a união das entradas da versão).
+- `npm run verify -- --tier=quick` → sem falha, depois de `npm run guide` e `npm run dev-kit` (antes: 2 falhas de kit defasado).
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → "igual ao baseline de 2026-10-12 — nenhuma regressão".
+
+**Critérios de aceite (lote 2)**
+- [x] O script reprova quando um token que mudou desde a última tag estável não está na entrada da versão, e passa com ele; o teste mostra os dois casos — `check-token-release-notes.test.ts`, bloco `missingNames`.
+- [x] Está no `version` — `package.json`, linha do script `version`.
+- [x] `docs/migracoes.md` tem a seção da 8.0.0 desde a 7.0.0, com nome e tipo (e gramática quando há) — `docs/migracoes.md:8`.
+
+**Decisões e suposições**
+- O gate é `.ts` rodado por `npx tsx` (como `token-docs:check`), e não `.mjs` como o molde: a fotografia precisa importar o `master-map.ts` do schema.
+- Base de comparação: maior tag estável **estritamente anterior** à versão de `package.json` (não "a última tag estável"), porque hoje a `v8.0.0` já existe e a 8.0.0 do `package.json` ainda é a versão comparada com a `v7.0.0`, como a plan pede. Na 8.1.0 a base vira a `v8.0.0`.
+- Gramática = opções de select, faixa e unidade. Listas de mais de 8 opções aparecem só como contagem (fontes: 22 e 44 valores), por R17 (lista viva mora no schema).
+- `colorPalette` não tem gramática legível pelo schema (é `string` sem opções); a gramática dela, copiada da descrição do token, e a opção `fluid` de `maxContentWidth` foram escritas à mão na seção, acima das listas geradas.
+- A seção lista 59 removidos, número que o "nenhum token removido" das entradas anteriores também contradiz; a frase de abertura cita "acrescentou, removeu e mudou".
+- `tar` do Git Bash lê `C:` como host: o gate extrai com `cwd` e caminho relativo.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum.
+
+**Pendências / riscos**
+- O gate lê a união de todas as entradas `## <versão> — ...`; token citado em qualquer entrada da versão satisfaz. Declarado nos limites (item 3).
+- `trail-citation:check -- --staged` não rodado (exige `git add`); rodei a variante sem `--staged` dentro do `quick`.
+- Lotes 3 e 4 não executados.
+
 ---
 
 # 10. Veredito
@@ -332,3 +388,20 @@ O revisor rodou:
 - `check-audit-baseline --with-tsc`: igual ao baseline. `trail-citation:check` e `variable-contract:check`: OK.
 
 O olho tem só o nome da próxima ação, que alterna, sem `aria-pressed`. Os critérios do R1 na §6 estão cumpridos. A plan volta a 🟡 para o lote 2.
+
+## Veredito — 2026-11-05 — lote 2 — 🟢 Aprovado; lote 2 fechado
+
+O revisor rodou:
+- `npx vitest run gates/scripts/contrato/__tests__/check-token-release-notes.test.ts`: 14/14. O teste é puro: não chama `git archive` e não depende de tag na CI.
+- `npm run token-release-notes:check`: OK, `v7.0.0` → 8.0.0, 147 tokens.
+- Amostra dos removidos (`aiPanelBg`, `animFast`, `borderRadiusMd`, `cardContentAlignment`): os quatro existem no schema da `v7.0.0` e não existem na árvore. A lista confere com o medido.
+- `git diff package.json`: o script novo, e o `version` com o gate depois de `minor-no-removal:check`.
+- `check-audit-baseline --with-tsc`: igual ao baseline. `trail-citation:check`, `guide:check` e `dev-kit:check`: OK. `sarak-ui/` e `sarak-dev/` vieram dos geradores.
+
+Aceitos, por estarem declarados nos limites do gate:
+- a base é a maior tag estável anterior à versão do `package.json`;
+- vale a união das entradas da versão;
+- as listas com mais de 8 opções aparecem só como contagem;
+- a gramática de `colorPalette` e o `fluid` foram escritos à mão.
+
+A plan volta a 🟡 para o lote 3.

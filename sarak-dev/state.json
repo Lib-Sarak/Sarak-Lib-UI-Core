@@ -386,6 +386,10 @@
       "comando": "node gates/scripts/contrato/check-token-reader.mjs"
     },
     {
+      "nome": "npm run token-release-notes:check",
+      "comando": "npx tsx gates/scripts/contrato/check-token-release-notes.ts"
+    },
+    {
       "nome": "npm run token-types:check",
       "comando": "npx tsx scripts/generate-token-types.ts --check"
     },
