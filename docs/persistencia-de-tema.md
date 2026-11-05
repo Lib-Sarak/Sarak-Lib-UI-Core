@@ -26,7 +26,7 @@ os tipos.
 ### 1.1 O estado aplicado — `options.persistence.onSave`/`onLoad`
 
 O **design aplicado**, completo, exatamente como o motor de tokens o resolveu. No painel, escolher
-um tema na galeria ou ajustar tokens muda apenas o rascunho; a prévia aparece imediatamente na tela
+um tema na decisão **Tema** (ou uma opção nas demais decisões) muda apenas o rascunho; a prévia aparece imediatamente na tela
 de quem está editando, sem gravar. `Aplicar (N)` é a ação que
 confirma esse rascunho no Provider e persiste o estado aplicado; com a estratégia padrão (`hybrid`),
 isso também grava a chave de `localStorage` do tenant. A porta recebe dois argumentos:
@@ -35,8 +35,8 @@ isso também grava a chave de `localStorage` do tenant. A porta recebe dois argu
 onSave?: (design: SarakThemePayload, activeThemeId?: string) => Promise<void> | void
 ```
 
-- `design` — o payload completo. **Pode não corresponder a nenhum tema salvo.** A galeria e os
-  ajustes de token ficam no rascunho até `Aplicar (N)`; antes disso, não chamam esta porta nem gravam
+- `design` — o payload completo. **Pode não corresponder a nenhum tema salvo.** A escolha na
+  decisão **Tema** e as opções das demais decisões ficam no rascunho até `Aplicar (N)`; antes disso, não chamam esta porta nem gravam
   o estado aplicado. Ao aplicar, o Provider persiste o design inteiro do rascunho.
 - `activeThemeId` — o id do tema que estava efetivamente no ar no instante do save.
   **Opcional de verdade:** vem `undefined` sempre que não há nenhum tema resolvido ainda. Pode
