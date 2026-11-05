@@ -99,6 +99,60 @@ describe('SarakAuthScreen host configuration', () => {
         expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ intent: 'forgot' }));
     });
 
+    it('links each label to its field, so the screen reader announces the field name', () => {
+        renderWithProvider(<SarakAuthScreen />);
+
+        const email = screen.getByLabelText('E-mail');
+        const password = screen.getByLabelText('Senha');
+        expect(email.tagName).toBe('INPUT');
+        expect(password.tagName).toBe('INPUT');
+        expect(email).not.toBe(password);
+
+        // O jsdom não move o foco no clique do rótulo; `control` é o vínculo que o navegador usa para isso.
+        expect((screen.getByText('Senha') as HTMLLabelElement).control).toBe(password);
+        expect((screen.getByText('E-mail') as HTMLLabelElement).control).toBe(email);
+    });
+
+    it('links the MFA label to the code field', () => {
+        renderWithProvider(<SarakAuthScreen allowMfa mfaStep />);
+
+        const code = screen.getByLabelText('Código de verificação');
+        expect(code).toBe(screen.getByPlaceholderText('000000'));
+    });
+
+    it('names the password toggle by the next action, without aria-pressed', () => {
+        renderWithProvider(<SarakAuthScreen />);
+
+        const show = screen.getByRole('button', { name: 'Mostrar senha' });
+        expect(show).not.toHaveAttribute('aria-pressed');
+        expect(screen.getByLabelText('Senha')).toHaveAttribute('type', 'password');
+
+        fireEvent.click(show);
+        const hide = screen.getByRole('button', { name: 'Ocultar senha' });
+        expect(hide).not.toHaveAttribute('aria-pressed');
+        expect(screen.getByLabelText('Senha')).toHaveAttribute('type', 'text');
+    });
+
+    it('lets the host override the password toggle names through labels', () => {
+        renderWithProvider(<SarakAuthScreen labels={{ authShowPassword: 'Reveal', authHidePassword: 'Conceal' }} />);
+
+        fireEvent.click(screen.getByRole('button', { name: 'Reveal' }));
+        expect(screen.getByRole('button', { name: 'Conceal' })).toBeInTheDocument();
+    });
+
+    it('announces a credential error as an alert and a warning as a status', () => {
+        const { rerender } = renderWithProvider(<SarakAuthScreen error="credenciais inválidas" />);
+        expect(screen.getByRole('alert')).toHaveTextContent('credenciais inválidas');
+
+        rerender(
+            <SarakUIProvider>
+                <SarakAuthScreen error="conta quase bloqueada" errorVariant="warning" />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByRole('status')).toHaveTextContent('conta quase bloqueada');
+        expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    });
+
     it('does not show forgot-password action when the host only provides onChange', () => {
         const onChange = vi.fn<(event: SarakAuthScreenEvent) => void>();
         renderWithProvider(<SarakAuthScreen onChange={onChange} />);
