@@ -36,7 +36,7 @@ Ela resolve o problema de o host ter identidade visual própria sem reescrever c
 central resolve o dicionário inteiro de tokens em tempo de execução, e os componentes leem esses tokens em vez
 de terem estilo fixo.
 
-**Quem consome:** outros repositórios React (hoje o ERP Earendel), por dependência **git com tag**, nunca por
+**Quem consome:** outros repositórios React (hoje o ERP Earendel e os dois logins de `Sarak-Lib-Login`), por dependência **git com tag**, nunca por
 registry npm. O consumo é feito como **kit de componentes** com o Provider: o consumidor é dono do layout e
 das rotas, e a lib entrega o look e o cromo apresentacional (`SarakAppChrome`). A lib **não é host** — não
 registra módulos nem resolve rotas ([[adr/018-um-cromo-so-e-o-consumidor-e-dono-das-rotas]]).
@@ -389,9 +389,10 @@ Antes de escolher **como** fazer algo, leia **[[00-knowledge]]** — é o rotead
   quatro vezes por acaso antes de alguém procurá-lo de propósito; a varredura sistemática existe e é a
   **matriz de cobertura** de [`specs/01-gates-e-baseline.md`](specs/01-gates-e-baseline.md), que lista vão a
   vão o que cada gate não enxerga. **R18 nasceu daí** — todo gate declara, no próprio código, o que não vê.
-- **O ERP Earendel é o único consumidor** e está em desenvolvimento simultâneo, consumindo por **caminho
-  local** (`file:`) — decisão do dono enquanto os dois repositórios são ajustados juntos; a migração para
-  `github:…#semver:` vem depois. É um workspace pnpm com 13 projetos e lockfile canônico.
+- **Importadores conhecidos** *(medido em 2026-11-10)*: o ERP Earendel (workspace pnpm, porta única `packages/ui-kit`) e os
+  dois de `Sarak-Lib-Login` (`login-completo` e `login-provedores`). Os três instalam **pela tag**
+  (`github:Lib-Sarak/Sarak-Lib-UI-Core#vX.Y.Z`, pin exato): uma versão nova só chega a eles quando trocam o pin. `file:` é só para
+  iterar localmente.
 - 🔴 **Entre o `dist/` da lib e a tela do consumidor existem TRÊS camadas de cache, e as três falham em
   silêncio.** É a armadilha mais cara desta base — já custou três rodadas de investigação **na lib**, que
   estava certa nas três. (1) `file:` no pnpm é **cópia no store, não link**: todo rebuild exige

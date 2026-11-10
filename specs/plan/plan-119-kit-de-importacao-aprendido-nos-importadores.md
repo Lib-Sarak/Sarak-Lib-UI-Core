@@ -84,8 +84,13 @@ nem tag ([[03-versionamento-e-release]]).
   `sarak-ui/GUIA-FRONTEND.md` (autoria), `src/components/atomic/Templates/SarakResourceRow.tsx` e o teste dele, `docs/migracoes.md`
   (só se o `SarakResourceRow` mudar o que desenha). Os gerados ficam para o fechamento da `rc.4`.
 - **Lotes do registro (§5.1):** os arquivos que cada linha nomear, declarados pelo revisor ao abrir o lote.
-- **Lote final:** a skill `ui-integra-consumidor` (fonte do kit), `sarak-ui/GUIA-FRONTEND.md` (autoria), a CLI `bin/` só se uma
-  lição pedir verificação nova no `sarak-ui check`, `docs/migracoes.md`, e os gerados (`guide`, `dev-kit`).
+- **Lote 9:** `src/components/atomic/Inputs/SarakSwitch.tsx` e o teste dele (I41); `src/features/DesignEngine/hooks/useDesignDraft.ts`
+  e o teste dele (I42); outros componentes que usem o mesmo padrão de toast só se a medição do 9.2 os achar, declarados no resumo;
+  uma linha em `docs/migracoes.md` (próxima versão) por item, se o que o leitor de tela anuncia mudar.
+- **Lote final:** a skill `ui-integra-consumidor` (fonte do kit), `sarak-ui/GUIA-FRONTEND.md` (autoria), `docs/persistencia-de-tema.md`,
+  `docs/migracoes.md` (os títulos sem versão, I47), o gerador do catálogo do kit em `scripts/consumer-kit/` e o teste dele (tokens
+  removidos e renomeados em forma de dado, I48), e os gerados (`guide`, `dev-kit`). A CLI `bin/` fica fora: a verificação de uso é da
+  `plan-157`.
 
 ## 3.2 Fora
 - **Qualquer arquivo de importador.** As correções deles são specs nos repositórios deles.
@@ -106,6 +111,8 @@ nem tag ([[03-versionamento-e-release]]).
 | Código | `src/features/DesignEngine/Main/` · `src/core/Provider/providerProps.ts` · `bin/` · `scripts/consumer-kit/` | o painel, as portas, a CLI e o gerador do kit |
 | Doc | `docs/migracoes.md` · `docs/roteiro-de-validacao-dos-temas.md` · `docs/persistencia-de-tema.md` · `sarak-ui/GUIA-FRONTEND.md` | o que o importador lê hoje |
 | Anexo | `specs/plan/anexos/plan-119-licoes-das-importacoes.md` · `specs/plan/anexos/plan-119-relatorio-erp.md` · `specs/plan/anexos/plan-119-relatorio-login.md` | as lições (lote 0) e o relatório do ERP, com `arquivo:linha` de cada achado |
+| Anexo | `specs/plan/anexos/plan-119-perspectiva-final-login.md` · `specs/plan/anexos/plan-119-relatorio-final-erp.md` | os relatos finais dos importadores na `v8.0.0` (2026-11-10), origem das linhas I41 a I52 |
+| Plan | `specs/plan/plan-157-kit-de-verificacao-de-uso-no-importador.md` | o lote final ensina, no guia, o kit de verificação que ela entrega; ler o que ela já escreveu no guia antes de editar |
 
 # 5. Instruções de execução
 
@@ -280,10 +287,10 @@ real de token de um tema embarcado.
 | I11 | `SarakFlex.gap?: string` (`Layouts/SarakFlex.tsx:15`): `gap="md"` compila e é ignorado | ERP | tipo da união dos valores aceitos | 2 | fechada |
 | I12 | "23 temas" em `docs/persistencia-de-tema.md:109` e `GUIA-FRONTEND.md:558`; "modelo host" em `GUIA-FRONTEND.md:551` (ADR 018) | ERP · lote 0 (21) | corrigir o texto | 2 | fechada |
 | I13 | o exemplo copiável das portas (`docs/persistencia-de-tema.md` §5) não rejeita em falha; o ERP engoliu o erro por semanas | ERP | ensinar "porta que falha rejeita" | 2 | fechada |
-| C1 | helper oficial para ler o tema persistido e injetá-lo no HTML antes do primeiro paint (o ERP escreveu ~220 linhas; `persistencia-de-tema.md` §6 descreve três saídas) | ERP | **dono, 2026-10-19: depois da 8.0.0** (função aditiva; vai ao `00-backlog` no lote final) | final | aberta |
+| C1 | helper oficial para ler o tema persistido e injetá-lo no HTML antes do primeiro paint (o ERP escreveu ~220 linhas; `persistencia-de-tema.md` §6 descreve três saídas) | ERP | **dono, 2026-10-19: depois da 8.0.0** (função aditiva; vai ao `00-backlog` no lote final). **Revisor, 2026-11-10:** a 8.0.0 entregou `sarakCreateThemeBootCss` e `persistence.preferConfigOverCache`; ERP "não", login "indiferente" nos relatos finais; a adoção é do ERP | — | fechada (resolvida na 8.0.0) |
 | C2 | `sarak-ui migrate <major>`: aplicar a tabela de renomes de um MAJOR nos imports do consumidor | ERP | **dono, 2026-10-19: não fazer**; no lugar, tabela "de/para" completa dos renomes na nota da 8.0.0 | 2 | fechada |
-| C3 | `sarak-ui check` em modo `file:` avisar quando o major instalado muda (hoje cala por desenho, `13` §5.1) e comparar a cópia `sarak-ui/` do consumidor com a instalada | ERP | **dono, 2026-10-19: não fazer**; o guia ensina que `file:` é só para iterar localmente e produção instala pela tag | final | aberta |
-| C4 | verificação por máquina para o consumidor (as três regras de gate que o ERP escreveu: `ui-kit`, `ui-ponto-unico`, `ui-token`) | ERP | **dono, 2026-10-19: fazer, opcional para o importador** — plugin de ESLint no pacote, regras ligadas uma a uma, numa plan própria (com ADR) **depois da 8.0.0 e da atualização dos importadores**; o lote final desta plan entrega a lista de regras candidatas que as auditorias provaram comuns, e a linha vai ao `00-backlog` | final | aberta |
+| C3 | `sarak-ui check` em modo `file:` avisar quando o major instalado muda (hoje cala por desenho, `13` §5.1) e comparar a cópia `sarak-ui/` do consumidor com a instalada | ERP | **dono, 2026-10-19: não fazer**; o guia ensina que `file:` é só para iterar localmente e produção instala pela tag (I52). Os dois importadores instalam pela tag desde a 8.0.0 | — | fechada (não fazer) |
+| C4 | verificação por máquina para o consumidor (as três regras de gate que o ERP escreveu: `ui-kit`, `ui-ponto-unico`, `ui-token`) | ERP | **dono, 2026-10-19: fazer, opcional para o importador** — plugin de ESLint no pacote, regras ligadas uma a uma, numa plan própria (com ADR) **depois da 8.0.0 e da atualização dos importadores**; o lote final desta plan entrega a lista de regras candidatas que as auditorias provaram comuns, e a linha vai ao `00-backlog`. **Dono, 2026-11-10:** plan própria agora, sem passar pelo backlog — a `plan-157`, que também recebe a A1 e a A10 do relato final do ERP | — | fechada (→ `plan-157`) |
 | I14 | `SarakAuthScreen` sempre desenha o formulário de e-mail e senha (`src/components/atomic/Templates/SarakAuthScreen.tsx`, `components/AuthForm.tsx`): não há login só por provedor externo | login | corrigir — opção para a tela mostrar só os provedores (sem o formulário de credenciais), com teste | 3 | fechada |
 | I15 | a lib injeta `<style>` em tempo de execução sem *nonce* (`SarakUIProvider.tsx`, `hooks/useSarakBuildSeal.ts`, os injetores de `src/core/Design/components/` e `src/core/Provider/`): o importador é obrigado a `style-src 'unsafe-inline'` | login | corrigir — opção de nonce aplicada a **todo** `<style>` que a lib cria, com teste que prova o atributo em cada um | 3 | fechada |
 | I16 | a porta `theme.onSave` está documentada de três jeitos: `docs/persistencia-de-tema.md:68` (um argumento) × o exemplo da §5 (`(theme, operation)`); as ações do painel (salvar, salvar como novo, duplicar, novo tema, apagar) só aparecem numa entrada antiga de `docs/migracoes.md`, fora da `## 8.0.0` | login | corrigir — assinatura `onSave(theme, operation)` na §1.2, os gestos numa entrada da `## 8.0.0` (a `09` §4.6 é da síntese) | 3 | fechada |
@@ -301,10 +308,10 @@ real de token de um tema embarcado.
 | I28 | **`dompurify` 3.4.16 tem aviso crítico novo** (GHSA-cg2g-xh64-v4q7, GHSA-mrv2-3pqr-j5jr, GHSA-c6gr-qvv4-5v3f; medido pelo login em 2026-10-22, depois da `rc.2`); a faixa `^3.4.16` admite a versão vulnerável e a 3.4.17 corrige | login | corrigir — mínimo `^3.4.17` em `dependencies` e o lock nela; a sanitização provada | 7 | fechada |
 | I29 | **`filterSarakTestConsoleLog` não filtra o aviso que promete:** `Could not parse CSS stylesheet` continua aparecendo (9 vezes no login; também na suíte desta lib). O jsdom escreve direto no stderr, sem passar pelo `onConsoleLog` do Vitest. O teste de `src/__tests__/testing.test.ts:36` prova o retorno da função, não o efeito | login | corrigir — o setup de `@sarak/lib-ui-core/testing` cala o aviso de fato, provado num projeto Vitest consumidor (o aviso ausente na saída), e o guia ensina o caminho que funciona | 7 | fechada |
 | I32 | **a documentação não diz o formato dos valores que chegam ao `onSave`:** os temas embarcados da 8.0.0 usam `var(--x, <reserva>)` e `color-mix()` (inclusive aninhados) em tokens de cor; o login validava cor como valor simples no backend e recusou com 400 os dois `PUT` do "Aplicar" | login | corrigir a documentação — `docs/persistencia-de-tema.md` diz que o payload é opaco para o importador, que valores de cor podem ser `var()`/`color-mix()` aninhados, e que o backend guarda sem validar o formato do token (ou valida só a forma do JSON) | 7 | fechada |
-| I30 | `./package.json` fora do `exports`: o importador lê a versão pelo caminho resolvido para conferir o selo (`data-sarak-build-info`) | login | **proposta do revisor: depois da 8.0.0** (entrada aditiva no `exports`), ao `00-backlog` no lote final | final | aberta |
+| I30 | `./package.json` fora do `exports`: o importador lê a versão pelo caminho resolvido para conferir o selo (`data-sarak-build-info`) | login | **proposta do revisor: depois da 8.0.0** (entrada aditiva no `exports`), ao `00-backlog` no lote final. **Revisor, 2026-11-10:** a porta já existe — `SARAK_BUILD_INFO.libVersion` está no barril (`src/index.ts:48`) e o guia só a cita na seção de testes; o que falta é ensinar (I49). Nada entra no `exports` | final | aberta (→ I49) |
 | I31 | o `vite build` do importador sem as peers opcionais passa, mas com avisos de export ausente nos pedaços sob demanda | login | medir — se dá para tirar o aviso sem voltar a quebrar o build sem a peer, tirar; se não, o guia diz que o aviso é esperado e por quê | 7 | fechada |
-| C6 | seletor de organização (tenant) no cromo: os sistemas multi-tenant mantêm o próprio | login | **proposta do revisor: depois da 8.0.0** (função aditiva; o slot já serve), ao `00-backlog` no lote final | final | aberta |
-| C7 | histórico de versões: entradas de `docs/migracoes.md` sem versão no título e tokens removidos/renomeados sem forma de dado | login | **proposta do revisor:** lote final — toda entrada com a versão, e o `catalog.json` do kit com a lista de tokens removidos e o destino de cada um | final | aberta |
+| C6 | seletor de organização (tenant) no cromo: os sistemas multi-tenant mantêm o próprio | login | **proposta do revisor: depois da 8.0.0** (função aditiva; o slot já serve), ao `00-backlog` no lote final. **Dono, 2026-11-10:** não fazer — os dois importadores responderam "não": o slot do cromo serve e a organização é regra de negócio de cada sistema | — | fechada (não fazer) |
+| C7 | histórico de versões: entradas de `docs/migracoes.md` sem versão no título e tokens removidos/renomeados sem forma de dado | login | **proposta do revisor:** lote final — toda entrada com a versão, e o `catalog.json` do kit com a lista de tokens removidos e o destino de cada um. **2026-11-10:** a prosa das notas por versão já existe (`token-release-notes:check`, depois da `v8.0.0`); faltam as duas partes, I47 e I48 | final | aberta (→ I47, I48) |
 | C5 | span do grid de 12 colunas sem contrato público (`15-divida-conhecida` achado 42) | lote 0 (30) | **dono, 2026-10-19:** declarar `col-span-*` como contrato suportado, com teste que trava o comportamento; `SarakGridItem` ao backlog | 2 | fechada |
 | I33 | **o ERP não achou o valor por dispositivo que a lib tem** e pediu `{ mobile, tablet, desktop }`: `SarakResponsiveValue` = `{ mob, tab, desk }` está no barril e no catálogo, mas o guia o mostra uma vez só, na linha ~1208 de ~1240, como "refino opcional" de 2 props, e o único exemplo do kit é o `tela-exemplo.tsx:106`, ao lado de um `gap="md"` inválido | ERP (pedido da `rc.4`) | **dono, 2026-10-27:** corrigir a exposição — seção curta e visível no guia ("valor por dispositivo"), com o tipo, o formato e a lista das props que o aceitam (lida do catálogo, não transcrita), e um exemplo correto num molde | 8 | fechada |
 | I34 | `<main>` aninhado em `tela-lista.tsx` e `tela-detalhe.tsx`: o cromo já fornece o `<main>` (`ChromeContentRegion.tsx:31`) | ERP (Kit 1) | corrigir o molde | 8 | fechada |
@@ -314,6 +321,18 @@ real de token de um tema embarcado.
 | I38 | `sarak-ui/templates/README.md` não lista os moldes novos | ERP (Kit 5) | listar todos os moldes da pasta | 8 | fechada |
 | I39 | `h1`/`h2` duplicados entre o cabeçalho da página e o cromo nos moldes; o cromo não emite heading (nenhum `<h1>`/`<h2>` em `src/components/Layout/`) — a duplicação está nos moldes | ERP (Kit 6) | corrigir os moldes: um `h1` por página, o do `SarakPageHeader` | 8 | fechada |
 | I40 | o guia não diz que o cromo tem altura própria (`100dvh`, `SarakAppChrome.tsx:197`) e o ERP mantém `height: 100%` em `html/body/#root` em oito entradas (demanda 12) | ERP (demanda 12) | uma linha no guia, **depois** da medição em navegador da `plan-131` (se reproduzir o defeito, o texto diz o conserto) | 8 | fechada |
+| I41 | **`SarakSwitch`: o nome acessível é "rótulo + descrição"**: o `<label>` nativo envolve os dois `<span>` (`SarakSwitch.tsx:50-78`); o `aria-describedby` já existe, mas a descrição também entra no nome. `getByRole('switch', { name: 'Ver pessoas', exact: true })` não acha o controle; o login repete o rótulo em `aria-label` | login (sug. 15; o "atendido" de 2026-11-05 estava errado) | corrigir — o nome é só o `label`; a descrição sai só por `aria-describedby` | 9 | aberta |
+| I42 | **toast do painel: o segundo aviso some no prazo do primeiro**: `useDesignDraft.ts:68` agenda `setTimeout(() => setToast(null), 3000)` sem cancelar o anterior; dois avisos em menos de 3 s (exportar e logo apagar) → o timer do primeiro apaga o segundo | login (sug. 19) | corrigir — cada aviso fica o prazo inteiro dele; o timer anterior é cancelado e o pendente é limpo ao desmontar | 9 | aberta |
+| I43 | a documentação do payload (`docs/persistencia-de-tema.md`, parágrafo do payload opaco) cita só `var()`/`color-mix()`; dois temas embarcados trazem `globalBackgroundImageUrl` com `data:image/svg+xml;base64,…`, e os dois logins escreveram validador próprio para conseguir salvá-los | login (A1 do relato final) | corrigir a documentação — que tokens são de mídia, que valores de imagem chegam ao `onSave` (inclusive `data:`) e qual predicado a lib já aplica ([[10-seguranca-e-acessibilidade]] §2.1) | final | aberta |
+| I44 | a tabela de avisos `IMPORT_IS_UNDEFINED` esperados (`sarak-ui/GUIA-FRONTEND.md`, seção das peers opcionais) não traz o `pdfjs-dist`; o `SarakPDFViewerImpl` o acessa estaticamente | login (I31 parcial) | medir os membros citados com o consumidor de `scripts/test-optional-peer-consumer.mjs` sem a peer e acrescentar a linha | final | aberta |
+| I45 | com `github:…#tag`, o lock do npm registra `git+ssh://` (os dois logins); o guia recomenda a forma sem avisar | login (sug. 7) | uma linha no guia: o efeito e o que fazer se a CI não tem chave SSH | final | aberta |
+| I46 | o mapa "o que a lib já faz" do guia não traz peças que o ERP reescreveu: `sarakIsValidCnpj` (zero menção no guia e em `migracoes.md`), `sarakErrorMessage`, `SarakPagination.getPageHref`, `SarakDocumentFrame` + `sarakPrint` (só nas notas de migração) | ERP (A2-A5 do relato final) | acrescentar ao mapa, com o nome público e o que cobre | final | aberta |
+| I47 | títulos `##` de `docs/migracoes.md` sem versão: o login mediu dez (ex.: `:2319`, `:2359`, `:2436`) | login (C7) | toda entrada com a versão em que saiu, conferida pelo Git (`git tag --contains` do commit da entrada) | final | aberta |
+| I48 | o `sarak-ui/catalog.json` não traz os tokens removidos ou renomeados em forma de dado; o servidor do importador com lista de chaves recusa tema a cada versão e a reconciliação é manual | login · ERP (C7) | o gerador do catálogo publica, por token removido ou renomeado, a versão e o destino (nome novo ou "sem substituto"), derivado da fonte que o `token-release-notes:check` já usa; teste do gerador | final | aberta |
+| I49 | o importador lê o `package.json` pelo caminho resolvido para conferir o selo; a porta é `SARAK_BUILD_INFO` (`src/index.ts:48`), citada só na seção de testes do guia | login (I30) | ensinar na seção do selo de build | final | aberta |
+| I50 | o exemplo de `createSarakKitMock` (guia, seção do subpath `testing`) só faz mock de `@sarak/lib-ui-core` direto; com a porta única que o próprio guia descreve, o ERP manteve dublês próprios (66 linhas, 74 arquivos) | ERP (A6) | o exemplo do pacote-porta (`vi.mock('<porta>', …)` com o retorno do `createSarakKitMock`) | final | aberta |
+| I51 | o ERP serve `dist/fonts/` por middleware próprio no Vite de dev e passa `fonts.baseUrl` só em DEV; o guia só prevê `baseUrl` para esbuild puro, CJS ou CDN | ERP (A9) | medir no consumidor Vite se, instalado pela tag, as fontes carregam sem `baseUrl`; o guia diz o resultado (precisa ou não, e por quê) | final | aberta |
+| I52 | o guia não diz que `file:` é só para iterar localmente e que produção instala pela tag (decisão da C3) | ERP (C3) | uma linha no guia, onde ele fala de `file:` | final | aberta |
 
 **Lote 8 — o kit da `rc.4`** (linhas **I33 a I40** da §5.1; sai na `v8.0.0-rc.4`; segue o protocolo de verificação do
 [`anexos/rc4-contrato.md`](anexos/rc4-contrato.md) §9). Roda em paralelo com as `plan-129` a `plan-132`; a I40 espera a medição da `plan-131`.
@@ -328,11 +347,27 @@ para isto: a prova é `grep` — nenhum `<main` em `sarak-ui/templates/*.tsx`, n
 8.6. `npm run verify -- --tier=quick` uma vez, resumo colado. **Revisor:** `npx vitest run SarakResourceRow` uma vez + o `grep` do 8.1 +
 leitura do guia e dos moldes como um importador que começa do zero. `guide` e `dev-kit` rodam no fechamento da `rc.4`.
 
-**Lote final — o kit de importação consolidado.**
+**Lote 9 — os defeitos dos relatos finais** (linhas **I41 e I42** da §5.1). Comportamento já especificado; cada item com teste de
+regressão que **reprova antes** da correção (cole a falha) e passa depois.
+9.1. **(I41)** Teste por papel: `getByRole('switch', { name: '<label>', exact: true })` acha o controle com `label` e `description`, e
+a descrição é a descrição acessível dele. Depois, a correção no `SarakSwitch` sem mudar o que a tela desenha (mesmos textos, mesma
+ordem, clique no rótulo continua alternando). Sem `label` e com `aria-label` de quem chama, o nome é o `aria-label`.
+9.2. **(I42)** Teste com tempo falso: o primeiro aviso em 0 s e o segundo em 1 s → em 3,5 s o segundo ainda está na tela (o prazo dele vence
+em 4 s); nenhum timer pendente depois de desmontar. Procure o mesmo padrão (`setTimeout` de aviso sem cancelamento) nos outros toasts da lib e liste o
+que achar no resumo; corrija só os que estiverem no painel de customização, e o resto vai para o resumo como achado.
+9.3. `npm run verify -- --tier=quick` uma vez, resumo colado. Os consumidores dos dois arquivos entram no filtro do vitest (o painel
+inteiro para o I42; `SarakSwitch` e quem o renderiza para o I41).
+
+**Lote final — o kit de importação consolidado.** Começa **depois da `plan-157` aprovada**: o guia e a skill ensinam, uma vez só, a
+verificação de uso que ela entrega.
 F.1. Aplicar **uma vez**, sem repetir o que já está lá (R17), as lições do anexo e do registro: na skill `ui-integra-consumidor`, no
 `sarak-ui/GUIA-FRONTEND.md` (a ordem de instalação, a atualização sem cair nas três camadas de cache, a gestão de temas do importador
-com a persistência dele, o mapa "o que a lib já faz") e, se uma lição pedir, num aviso novo do `sarak-ui check`.
-F.2. `npm run guide` e `npm run dev-kit` por último.
+com a persistência dele, o mapa "o que a lib já faz") — com as linhas **I43 a I52** fechadas, cada uma no lugar que a coluna
+*Decisão* nomeia. O que a `plan-157` já escreveu no guia não se reescreve: só se liga ao resto (ordem de instalação, mapa).
+F.2. **(I48)** O gerador do catálogo e o teste dele; `npm run catalog:check` verde.
+F.3. Leitura do guia de ponta a ponta como um importador que começa do zero: nenhum trecho que contradiga outro, nenhum nome que não
+esteja no barril (cole o comando que confere os nomes citados contra `dist/index.d.ts`).
+F.4. `npm run guide` e `npm run dev-kit` por último.
 
 # 6. Critérios de aceite
 
@@ -349,7 +384,10 @@ F.2. `npm run guide` e `npm run dev-kit` por último.
 
 - Lote 0: amostra de três problemas do anexo contra a fonte citada (o commit, a linha, a spec).
 - Lote 1: os quatro gestos e o apagar no navegador; o caso com mutação; o painel sem `onSave`.
-- Lote final: o guia lido como um importador que começa do zero; `npm run verify -- --tier=full` e a bateria do navegador.
+- Lote 9: os dois testes novos reprovam no `HEAD` anterior (stash da correção) e passam com ela; `npx vitest run SarakSwitch useDesignDraft`
+  e os consumidores do painel; `npm run verify -- --tier=full` (toca `src/`).
+- Lote final: o guia lido como um importador que começa do zero; cada linha I43–I52 conferida no texto; `catalog.json` com os tokens
+  removidos (I48) contra as notas da 8.0.0; `npm run verify -- --tier=full` e a bateria do navegador.
 - `git diff --stat` → só a §3.1 do lote.
 
 # 8. Destino da síntese
@@ -2137,3 +2175,20 @@ documento: sem teste a rodar.
 **Lote 8 fechado (I33–I40).** O ERP pode tirar a cadeia de altura dos oito `index.html` (demanda 12) depois de instalar a `rc.4`.
 
 **Status da plan: 🟡 Em execução** (lote final pendente, como antes).
+
+## Nota do revisor — 2026-11-10 — relatos finais e abertura dos lotes 9 e final
+
+Os dois importadores estão na `v8.0.0` pela tag (`github:Lib-Sarak/Sarak-Lib-UI-Core#v8.0.0`) e entregaram o relato final, anexado
+como `anexos/plan-119-perspectiva-final-login.md` e `anexos/plan-119-relatorio-final-erp.md`. Os dois mediram a `v8.0.0` instalada; o
+que o login dá como vivo nas sugestões 2, 6, 9, 10, 12, 13, 14 e 17 já está no `HEAD` (commits `ce54224b` a `4ab69ef2`, depois da tag)
+e não entra no registro.
+
+**Triagem (decisão do dono, 2026-11-10):**
+- Lote 9: I41 e I42, defeitos com o comportamento certo já especificado.
+- Lote final: I43 a I52, kit e documentação; começa depois da `plan-157` aprovada.
+- `plan-157` (nova): a C4, mais a A1 (`var(--sarak-*)` fora do catálogo) e a A10 (equivalência nativo → componente) do ERP.
+- Fechadas sem trabalho: C1 (resolvida na 8.0.0), C3 e C6 (não fazer). A I30 fecha pela I49.
+- `00-backlog`: a A8 do ERP (tema do importador só leitura).
+- Do ERP, sem trabalho na lib: A2-A4 e A7 (adotar o que a 8.0.0 entrega); a parte da lib é a I46 (o mapa) e a `plan-157` (a detecção).
+
+**Status da plan: 🟡 Em execução** (lote 9 despachado; lote final depois da `plan-157`).
