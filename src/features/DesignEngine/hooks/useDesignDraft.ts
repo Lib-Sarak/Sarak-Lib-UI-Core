@@ -2,6 +2,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { MASTER_DESIGN_MAP, sarakGetAllDesignTokens } from '../../../core/Design/master-map';
 import { useDesignDraftSync } from './useDesignDraftSync';
 import { useLastAppliedSnapshot } from './useLastAppliedSnapshot';
+import { useDraftToast } from './useDraftToast';
 import { SarakUIContextType, SarakDesignState } from '../../../core/Provider/types';
 import { SarakTokenValue } from '../../../core/Design/types';
 import { applyColorMode, overlayPreferences } from '../../../core/Provider/utils/overlayPreferences';
@@ -62,11 +63,7 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
         );
     }, [draft, draftTheme, sarak.design?.mode, sarak.preferences?.colorMode]);
 
-    const [toast, setToast] = useState<{ type: 'success' | 'warning', message: string } | null>(null);
-    const showToast = useCallback((type: 'success' | 'warning', message: string) => {
-        setToast({ type, message });
-        setTimeout(() => setToast(null), 3000);
-    }, []);
+    const { toast, showToast } = useDraftToast();
     const { canUndoLastApply, captureBeforeApply, undoLastApply: undoLastApplyRaw } = useLastAppliedSnapshot(sarak, showToast);
     // Mantém o estado local para não ecoar pela ponte bidirecional de sincronização.
     const undoLastApply = useCallback(() => { undoLastApplyRaw(); setDraftState(null); }, [undoLastApplyRaw]);

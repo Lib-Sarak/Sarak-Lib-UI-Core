@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Ensinar a importar a lib com o que os importadores reais mostraram"
 objetivo: "Fazer o importador usar a lib por inteiro sem reescrever o que ela entrega, com o kit de importação ensinado pelas licoes medidas nos importadores reais e com a gestao de temas do importador completa: salvar o aplicado como novo, editar, duplicar e criar, persistidos no importador"
 dominio: "Kit do consumidor / Instalação e atualização / Temas do importador"
-status: "🟠 Em revisão"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "kit-do-consumidor", "importacao", "temas", "persistencia"]
 relacionados: ["[[12-kit-do-consumidor]]", "[[13-instalacao-e-atualizacao]]", "[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[011-tema-salvo-por-uma-porta-de-escrita]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]"]
@@ -321,8 +321,8 @@ real de token de um tema embarcado.
 | I38 | `sarak-ui/templates/README.md` não lista os moldes novos | ERP (Kit 5) | listar todos os moldes da pasta | 8 | fechada |
 | I39 | `h1`/`h2` duplicados entre o cabeçalho da página e o cromo nos moldes; o cromo não emite heading (nenhum `<h1>`/`<h2>` em `src/components/Layout/`) — a duplicação está nos moldes | ERP (Kit 6) | corrigir os moldes: um `h1` por página, o do `SarakPageHeader` | 8 | fechada |
 | I40 | o guia não diz que o cromo tem altura própria (`100dvh`, `SarakAppChrome.tsx:197`) e o ERP mantém `height: 100%` em `html/body/#root` em oito entradas (demanda 12) | ERP (demanda 12) | uma linha no guia, **depois** da medição em navegador da `plan-131` (se reproduzir o defeito, o texto diz o conserto) | 8 | fechada |
-| I41 | **`SarakSwitch`: o nome acessível é "rótulo + descrição"**: o `<label>` nativo envolve os dois `<span>` (`SarakSwitch.tsx:50-78`); o `aria-describedby` já existe, mas a descrição também entra no nome. `getByRole('switch', { name: 'Ver pessoas', exact: true })` não acha o controle; o login repete o rótulo em `aria-label` | login (sug. 15; o "atendido" de 2026-11-05 estava errado) | corrigir — o nome é só o `label`; a descrição sai só por `aria-describedby` | 9 | aberta |
-| I42 | **toast do painel: o segundo aviso some no prazo do primeiro**: `useDesignDraft.ts:68` agenda `setTimeout(() => setToast(null), 3000)` sem cancelar o anterior; dois avisos em menos de 3 s (exportar e logo apagar) → o timer do primeiro apaga o segundo | login (sug. 19) | corrigir — cada aviso fica o prazo inteiro dele; o timer anterior é cancelado e o pendente é limpo ao desmontar | 9 | aberta |
+| I41 | **`SarakSwitch`: o nome acessível é "rótulo + descrição"**: o `<label>` nativo envolve os dois `<span>` (`SarakSwitch.tsx:50-78`); o `aria-describedby` já existe, mas a descrição também entra no nome. `getByRole('switch', { name: 'Ver pessoas', exact: true })` não acha o controle; o login repete o rótulo em `aria-label` | login (sug. 15; o "atendido" de 2026-11-05 estava errado) | corrigir — o nome é só o `label`; a descrição sai só por `aria-describedby` | 9 | fechada |
+| I42 | **toast do painel: o segundo aviso some no prazo do primeiro**: `useDesignDraft.ts:68` agenda `setTimeout(() => setToast(null), 3000)` sem cancelar o anterior; dois avisos em menos de 3 s (exportar e logo apagar) → o timer do primeiro apaga o segundo | login (sug. 19) | corrigir — cada aviso fica o prazo inteiro dele; o timer anterior é cancelado e o pendente é limpo ao desmontar | 9 | fechada |
 | I43 | a documentação do payload (`docs/persistencia-de-tema.md`, parágrafo do payload opaco) cita só `var()`/`color-mix()`; dois temas embarcados trazem `globalBackgroundImageUrl` com `data:image/svg+xml;base64,…`, e os dois logins escreveram validador próprio para conseguir salvá-los | login (A1 do relato final) | corrigir a documentação — que tokens são de mídia, que valores de imagem chegam ao `onSave` (inclusive `data:`) e qual predicado a lib já aplica ([[10-seguranca-e-acessibilidade]] §2.1) | final | aberta |
 | I44 | a tabela de avisos `IMPORT_IS_UNDEFINED` esperados (`sarak-ui/GUIA-FRONTEND.md`, seção das peers opcionais) não traz o `pdfjs-dist`; o `SarakPDFViewerImpl` o acessa estaticamente | login (I31 parcial) | medir os membros citados com o consumidor de `scripts/test-optional-peer-consumer.mjs` sem a peer e acrescentar a linha | final | aberta |
 | I45 | com `github:…#tag`, o lock do npm registra `git+ssh://` (os dois logins); o guia recomenda a forma sem avisar | login (sug. 7) | uma linha no guia: o efeito e o que fazer se a CI não tem chave SSH | final | aberta |
@@ -2283,3 +2283,16 @@ foram descartados: mock, atraso sem aviso e fechamento no blur não têm o defei
 **Decisões e suposições:** o teste novo do hook é por conta da regra de teste 1:1 por arquivo; não alterei nada além do achado.
 
 **Pendências:** as falhas de `plan-index:check` e `dev-kit:check` do resumo anterior não eram achado do veredito e não as reexecutei; o worktree tem muitos arquivos de outras tarefas (`dist/`, `sarak-dev/`, specs, `SarakStats`, `browser-tests/`) que não toquei.
+
+## Veredito — 2026-11-11 — correção 1 (lote 9) — 🟢 Aprovado; lote 9 fechado
+
+**Conferido por mim:** o achado 1 está resolvido. O temporizador do aviso saiu para `src/features/DesignEngine/hooks/useDraftToast.ts`
+(`useState` + `useRef` + limpeza no desmonte, `TOAST_DURATION_MS`), e `useDesignDraft.ts` só o chama (243 linhas; diff de +1 import,
+−5 linhas, +1 chamada). Teste 1:1 do hook novo (`useDraftToast.test.tsx`, 3 casos) e `useDesignDraft.toast.test.tsx` intacto.
+`npm run -s audit:baseline -- --with-tsc` → igual ao baseline; `npx vitest run useDraftToast useDesignDraft SarakSwitch ThemeCustomizationTab`
+→ 8 arquivos, 57 testes verdes. A suíte completa e os demais checks já tinham passado no veredito anterior, sobre o mesmo código menos
+esta extração.
+
+**I41 e I42 fechadas** no registro (§5.1). A nota de `docs/migracoes.md` da I41 fica para o lote final, com a I47.
+
+**Status da plan: 🟡 Em execução** (lote final depois da `plan-157` aprovada).
