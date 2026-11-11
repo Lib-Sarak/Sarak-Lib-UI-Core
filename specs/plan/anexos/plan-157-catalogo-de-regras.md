@@ -21,6 +21,11 @@ liga a regra; *recomendada* diz se entra no conjunto `recommended` — e **nenhu
 | 7 | `no-direct-wrapped-lib` | P | **novo:** `verification.encapsulated` | aviso | não até medir | ERP `ui-kit` (base) |
 | 8 | `no-internal-class-selector` | P + C | prefixo `sarak-` (constante, não lista) | erro | sim | login C4 |
 | 9 | `valid-spacing-value` | P | `catalog.json › tokens.spacing` + props de tipo `SarakLayoutGap` | erro | sim | login C4 ("prop inválida"); ERP I11/I36 — *acrescentada por mim, o dono veta* |
+| 10 | `single-entrypoint` no `package.json` | C | nome do pacote (`catalog.json › lib.name`) + opção `allow` | erro | não (exige opção) | ERP `local-single-ui-entrypoint` (metade que a regra 1 não cobre) |
+| 11 | `kit-in-sync` | C | `kitHash` de `sarak-ui/VERSION` do pacote instalado | aviso | sim | ERP `local-ui-kit-sync` |
+| 12 | `pinned-install` | C | nome do pacote (`catalog.json › lib.name`) | erro | sim | `00-contexto` §8; ERP (`file:` e volta sozinha à 7.0.0) |
+| 13 | `known-icon-name` | P | `catalog.json › tokens.iconNames` + **novo:** `verification.iconNameProps` | erro | sim | `spec 12` §3 (nome de ícone cai no de reserva sem aviso) |
+| 14 | `known-theme-id` | P | `catalog.json › themes.presetIds` + **novo:** `verification.paletteIds` | aviso | não (exige opção `allow`) | `plan-162` (id que saiu); dono, 2026-11-11 |
 
 Ficou de fora, por não ter caso que reprove: nenhuma. Toda regra abaixo tem um caso escrito.
 
@@ -167,6 +172,77 @@ Ficou de fora, por não ter caso que reprove: nenhuma. Toda regra abaixo tem um 
   rodadas anteriores, sem ocorrência atual registrada. **Acréscimo meu** à lista da plan, a partir desse relato.
 
 ---
+
+## 10. `single-entrypoint` no `package.json` — a outra metade da porta única
+
+- **Barra:** `package.json` fora dos caminhos `allow` que declara `@sarak/lib-ui-core` em `dependencies`, `devDependencies`,
+  `peerDependencies` ou `optionalDependencies`. Sem a opção `allow`, a regra não faz nada (mesma razão da regra 1).
+- **Porta:** C (`sarak-ui verify`); o plugin de ESLint não lê `package.json`.
+- **Dado:** o nome do pacote vem de `catalog.json › lib.name`.
+- **Reprova:** com `allow: ['packages/ui-kit/package.json']`, `modules/commercial/web/package.json` com
+  `"dependencies": { "@sarak/lib-ui-core": "github:…#v8.0.0" }` → "declare a lib só na porta única (`packages/ui-kit`)".
+- **Passa:** o mesmo `package.json` com a dependência dentro de `packages/ui-kit/package.json`; e `modules/commercial/web/package.json`
+  que depende de `@erp/ui-kit` (a porta) e não da lib.
+- **Falso positivo esperado:** `package.json` raiz de workspace que fixa a versão para o pnpm/overrides — entra na opção `allow`.
+- **Limite:** não lê `overrides`/`resolutions` nem lockfile.
+- **Quem pediu:** ERP, C4 (`local-single-ui-entrypoint`, "`package.json` fora de `packages/ui-kit` que declara a lib").
+
+## 11. `kit-in-sync` — a cópia do kit no importador difere do pacote instalado
+
+- **Barra:** `sarak-ui/VERSION` (cópia que o importador moveu para a raiz dele) cujo `kitHash` difere do `kitHash` do
+  `sarak-ui/VERSION` do pacote instalado em `node_modules`. Cópia ausente não é achado: o importador pode apontar para o kit instalado
+  (`12` §6, "modo apontar").
+- **Porta:** C. Compara dois arquivos de texto.
+- **Dado:** o arquivo `VERSION` do pacote instalado (formato textual, chave `kitHash=`).
+- **Reprova:** cópia com `kitHash=aaaaaaaaaaaa` e pacote com `kitHash=e96c613b93c6` → "o kit copiado está velho: rode `npx sarak-ui
+  refresh`" (o comando existe e re-sincroniza as cópias).
+- **Passa:** os dois iguais; e cópia inexistente.
+- **Falso positivo esperado:** nenhum quando o pacote instalado é o que o importador quer; o `kitHash` muda só quando a superfície muda.
+- **Limite:** não vê cópias do guia e da skill em `specs/` e `.claude/skills/` (o `refresh` as cobre); só o carimbo.
+- **Quem pediu:** ERP, C4 (`local-ui-kit-sync`, nascida do `VERSION` parado em 3.0.0 com a lib em 6.3/7.0).
+
+## 12. `pinned-install` — a lib se instala pela tag exata
+
+- **Barra:** a dependência `@sarak/lib-ui-core` do `package.json` cuja especificação não termina em `#vX.Y.Z` (`X.Y.Z` com pré-lançamento
+  opcional): `file:`/`link:`/`workspace:`, ramo (`#develop`, `#main`), faixa (`^8.0.0`, `#semver:^8`) e URL sem tag.
+- **Porta:** C.
+- **Dado:** o nome do pacote vem de `catalog.json › lib.name`. O formato da tag é convenção de release, não lista de nomes.
+- **Reprova:** `"@sarak/lib-ui-core": "file:../../Sarak-Lib-UI-Core"` → "instale pela tag exata
+  (`github:<org>/<repo>#vX.Y.Z`); `file:` é só para iterar localmente"; e `"…#develop"`; e `"^8.0.0"`.
+- **Passa:** `"github:Lib-Sarak/Sarak-Lib-UI-Core#v8.0.0"` (como o `packages/ui-kit` do ERP, conferido em 2026-11-11) e `"…#v8.0.0-rc.5"`.
+- **Falso positivo esperado:** quem itera localmente de propósito com `file:`; vale a opção `ignore` ou desligar a regra naquele
+  `package.json` (`allow`).
+- **Limite:** não confere se a tag existe nem se é a mais nova (isso é o `sarak-ui check`).
+- **Quem pediu:** `00-contexto` §8 (os três importadores instalam pela tag, com pin exato); ERP (sofreu com `file:` e com a volta sozinha à 7.0.0).
+
+## 13. `known-icon-name` — nome de ícone que a lib não conhece
+
+- **Barra:** nome de ícone literal passado à lib num ponto que a lib declara receber nome de ícone, e que não está em
+  `catalog.json › tokens.iconNames`. Nome desconhecido cai no ícone de reserva e avisa só no console.
+- **Dado:** `tokens.iconNames` (já gerado) e **novo** `verification.iconNameProps`: a tag `@iconNameProp` no componente diz qual atributo
+  (`name`) ou qual chave de objeto dentro de qual atributo (`navItems[].icon`) leva nome de ícone. O gerador a lê; o código do kit não tem
+  nome de componente.
+- **Reprova:** `<SarakIcon name="Rocketship" />` → "o ícone `Rocketship` não existe na lib; nomes parecidos: `Rocket`"; e
+  `navItems={[{ id: 'a', label: 'A', icon: 'Dashbord' }]}` num `SarakAppChrome`.
+- **Passa:** `<SarakIcon name="Home" />`; `name={nome}` (variável); e nome registrado pelo importador com `sarakRegisterIcons`, pela opção
+  `allow: ['MeuIcone']`.
+- **Falso positivo esperado:** ícone registrado pelo importador (`sarakRegisterIcons`) que o plugin não vê — a opção `allow` cobre.
+- **Limite:** não vê nome montado em variável nem em `.map`.
+- **Quem pediu:** `12` §3 (nome de ícone fora do `IconMap` é erro silencioso).
+
+## 14. `known-theme-id` — id de tema ou de paleta que a lib não conhece
+
+- **Barra:** id literal de tema em `activeThemeId`, `initialTheme` (atributos do Provider) ou `theme.defaultTheme` (opções), fora de
+  `catalog.json › themes.presetIds`; e id literal de `colorPalette` fora das paletas publicadas e do formato `custom:<tipo>:<#base>…`.
+- **Dado:** `themes.presetIds` (já gerado) e **novo** `verification.paletteIds` (as chaves de `SARAK_PALETTE_PRESETS`, coletadas por AST).
+  Os três nomes de chave que a regra procura são contrato do Provider, e um teste confere que existem no catálogo gerado.
+- **Reprova:** `<SarakUIProvider activeThemeId="synthwave-neon">` → "o tema `synthwave-neon` não é embarcado; os que existem estão em
+  `catalog.json › themes.presetIds`"; e `design={{ colorPalette: 'matrix' }}` ("`matrix` é paleta antiga, saiu").
+- **Passa:** `activeThemeId="cyberpunk-neon"`; `colorPalette="oceano"`; `colorPalette="custom:triadic:#336699"`; e `activeThemeId={id}`.
+- **Falso positivo esperado:** **alto para tema** — id de tema próprio do importador (`customThemes`) não é embarcado e a lib não o
+  conhece. Por isso a regra **não entra no `recommended`** e aceita `allow: ['meu-tema']`.
+- **Limite:** não vê id em variável; não lê `customThemes` do importador.
+- **Quem pediu:** dono, 2026-11-11 (importador preso a um id que saiu, como o `synthwave-retro` da `plan-162`).
 
 ## O que este catálogo deixa para o lote 1 e para o lote 2
 

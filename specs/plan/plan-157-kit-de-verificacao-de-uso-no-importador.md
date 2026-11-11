@@ -233,6 +233,88 @@ Depois, e por outra sessão (a plan-119 lote 9, que o prompt avisou), apareceram
 - Detecção de peça reescrita: o nome pega 3 dos 5 casos (A2, A4, A6); A3 e A5 só com apelido registrado na lib. É heurística, e a taxa de falso positivo só se mede no lote 2.
 - Nada foi rodado contra código real nem commitado.
 
+## Resumo da execução (lote 1) — 2026-11-11
+
+**Resultado:** Concluído com pendências (gate `public-types:check` vermelho por causa alheia; ver Achados). Lote 2 não iniciado.
+
+**Estado do worktree ao iniciar**
+```
+ M specs/00-indice.md
+ M specs/plan/plan-158-design-gravado-guarda-escolhas-e-aplica-sem-atraso.md
+ M specs/plan/plan-162-resgatar-temas-antigos-como-temas-novos.md
+```
+(O prompt falava de `SarakSwitch`, `SarakStats`, `dist/` etc. não commitados; na fotografia eles já estavam commitados.) Durante a execução apareceram, por outra sessão e sem eu tocar: `specs/adr/README.md`, `specs/adr/026-…`, `specs/plan/plan-164-…`, `specs/plan/anexos/plan-162-mapa-de-tokens.md`. Não os li nem os alterei.
+
+**O que foi feito**
+- Anexo `plan-157-catalogo-de-regras.md`: regras 10 a 14 (passo 1.0), cada uma com o que barra, porta, dado, caso que reprova e que passa, falso positivo, limite e quem pediu; linhas na tabela. Todas ficaram (cada uma tem caso que reprova).
+- Núcleo em `src/verify/` (tipos, `data.ts` que lê o `sarak-ui/catalog.json` do pacote, detectores puros em `detect/`, mensagens, glob, sugestão de nomes), 11 regras do plugin em `rules/` e a porta de comando em `scan.ts`/`cli.ts` (6 regras: `known-css-var`, `no-literal-color-font`, `no-internal-class-selector` em `.css`; `single-entrypoint`, `pinned-install` em `package.json`; `kit-in-sync`).
+- Entradas de build `src/eslint.ts` (subpath `./eslint` no `exports`) e `src/verify.ts` (carregada só por `bin/sarak-ui.mjs verify`, via import dinâmico); `build:js` lista as duas. Peer opcional `eslint >=9.0.0` e `devDependency eslint ^9.39.5` (para os testes usarem o `Linter` real); `package-lock.json` regenerado.
+- Dado novo no gerador: `scripts/consumer-kit/collectVerification.mjs` (tags de JSDoc `@replacesElement`, `@replacesPiece`, `@encapsulates`, `@iconNameProp`, e as chaves de `SARAK_PALETTE_PRESETS`) → chave `verification` do `catalog.json`. Gerador falha alto em tag malformada ou fora do barril/`testing`.
+- Tags (só comentário) em 17 declarações: SarakTypography, SarakSection, SarakPageHeader, SarakTable, SarakDataTable, SarakFormSection, SarakDescriptionList, SarakTabs, SarakPagination, sarakIsValidCnpj, createSarakKitMock, SarakChartEngine, SarakPDFViewer, SarakMarkdownRenderer, SarakFlowEngine, SarakIcon, SarakAppChrome, SarakShellNav. No `SarakAppChrome.tsx` fundi duas linhas de comentário numa para não passar de 250 linhas.
+- `gates/scripts/contrato/check-no-deep-import.mjs`: `./eslint` entra em `ALLOWED_EXACT` (mais um caso no teste dele). Sem isso o `deep-import:check` derrubava o build.
+- `scripts/test-optional-peer-consumer.mjs`: `eslint` nas peers opcionais e o cenário `assertVerificationKitIsIsolated` (o `dist/index.js` não importa o kit nem o eslint; o plugin carrega no consumidor sem `eslint` e expõe 11 regras).
+- Guia §3.15 "Verificar o uso", passo 6 da skill `ui-integra-consumidor`, entrada `8.1.0` (aditiva) em `docs/migracoes.md`; `npm run guide` e `npm run dev-kit` por último.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/verify/**` (16 arquivos + 2 testes), `src/eslint.ts`, `src/verify.ts` | criado | o kit |
+| `scripts/consumer-kit/collectVerification.mjs` | criado | coletor do dado |
+| `scripts/consumer-kit/buildKitCatalog.mjs` | alterado | chave `verification` |
+| 18 componentes/funções em `src/` | alterado | só a tag de JSDoc |
+| `package.json`, `package-lock.json`, `bin/sarak-ui.mjs` | alterado | entradas, peer, comando `verify` |
+| `gates/scripts/contrato/check-no-deep-import.mjs` e teste | alterado | `./eslint` permitido |
+| `scripts/test-optional-peer-consumer.mjs` | alterado | cenário do kit isolado |
+| `sarak-ui/*`, `sarak-dev/*`, `docs/migracoes.md`, `.agents/skills/ui-integra-consumidor/SKILL.md` | alterado | guia, skill, nota; gerados |
+| `specs/plan/anexos/plan-157-catalogo-de-regras.md` | alterado | regras 10 a 14 |
+| `dist/**`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | alterado | efeito do `npm run build` que rodei (o `dist/` é rastreado) |
+
+**Verificações executadas**
+- `npx vitest run src/verify` → 38/38 (28 do plugin sobre o catálogo real via `Linter` do ESLint; 10 do comando e dos detectores). Cada regra tem caso que reprova e que passa; os cinco `--sarak-*` da A1 reprovam por teste, em `.ts` (plugin) e em `.css` com linhas 2 a 6 (comando).
+- `npx tsc --noEmit` → 0 erros.
+- `npm run build`: todos os gates até `deep-import:check` verdes (`guide:check`, `catalog:check`, `barrel:check` 139, `zero-brand:check`); `tsup` gerou `dist/eslint.{js,cjs,d.ts}` (8.898 B) e `dist/verify.js` (7.661 B) ao lado do `dist/index.js` (223.548 B). **Parou em `public-types:check`** (ver Achados); rodei à mão os passos seguintes (`prefix`, `icon-port`, `kit-names`, `build:css`, `build:css:scoped`, `copy-base-css`, `inject-css`, `generate-build-info`): verdes.
+- `npm run test:optional-peers` → verde: build Vite 8 sem peers (44 avisos em 3 códigos, nenhum do kit); "kit isolado do boot e carregável sem o eslint (rules=11)"; mutação do import nomeado ainda reprova; build com todas as peers.
+- `npm run boot:measure` → boot 395,0 KB gzip (referência 392,0 + catálogo 2,1; teto 397,1): dentro do teto. O fecho do `index.ts` não alcança `src/verify`. Não tenho número "antes" medido no HEAD limpo; a comparação é pelo teto do gate.
+- `npm run guide:check`, `catalog:check`, `kit-names:check`, `package:check` (208 arquivos), `dev-kit:check` → verdes.
+- `npm run verify -- --tier=quick` → só falha `section-pointers:check` (4 ponteiros em `adr/026`), `plan-index:check` (plan-158) e o `audit:baseline` por esses 4 ponteiros; os 13 avisos de cleancode que eu tinha trazido foram corrigidos e `variable-contract:check` está verde (tirei `var(--x…)` de textos).
+- `node bin/sarak-ui.mjs verify --list` → lista as 13 regras.
+
+**Critérios de aceite** (os do lote 1; ADR e catálogo já eram do lote 0)
+- [x] O importador liga o kit sem copiar nada da lib — `import sarak from '@sarak/lib-ui-core/eslint'` e `npx sarak-ui verify --rule …` (guia §3.15; teste do consumidor carrega o subpath).
+- [x] Cada achado com `arquivo:linha`, problema e nome público que substitui — `plugin.test.ts`, `cli.test.ts`.
+- [x] Nenhuma lista de nomes da lib no código do kit — dados de `catalog.json`; ver suposição 3 sobre as chaves de API.
+- [x] Boot sem crescimento; build do importador sem a peer, sem aviso novo — acima.
+- [x] Seção do guia, passo da skill, nota em `docs/migracoes.md`.
+- [ ] Suíte completa, `tsc`, baseline, Anel 1 — `tsc` 0; a suíte completa não é minha; `public-types:check` e o baseline estão vermelhos por causa alheia.
+- [ ] Medição nos três importadores e `recommended` — é o lote 2.
+
+**Decisões e suposições**
+1. Tags em camelCase (`@replacesElement`…), não `@replaces`/`@icon-name-prop` como o anexo exemplificava: o TypeScript corta o nome da tag no hífen. Corrigi o anexo.
+2. `recommended` existe e está vazio; não criei conjunto `all`. Mensagens só em português.
+3. As regras 13 e 14 precisam saber quais chaves olhar. Derivei do catálogo o que dá (props de tipo `SarakLayoutGap`, props de tema do Provider); ficaram como constante no código `defaultTheme`, `theme` e `colorPalette`, e o teste `catálogo de regras` confere que existem no catálogo/no tipo do Provider.
+4. Regra de peça reescrita: o alias vem de tag; o dublê em caminho de teste (`testing/`, `__mocks__`, `mock`) prefere o alias (`createSarakKitMock`), senão vale o nome do barril. Cobre A2, A3, A4, A5 e A6 por teste; o nome do arquivo acusa quando nenhum export acusou.
+5. `known-theme-id` dá falso positivo para tema do próprio importador: a opção `allow` o libera, e por isso não entra no `recommended`.
+6. A porta de comando só lê `.css`, `package.json` e o `VERSION`; as regras "ambas" não varrem `.ts` pelo comando (isso é do plugin).
+7. Tocar `check-no-deep-import.mjs` e a regeneração de `dist/` foram necessárias para o build e saem do §3.1; registrei acima.
+
+**Achados fora do escopo (não corrigidos)**
+- `public-types:check` falha: `DraftToast` (`src/features/DesignEngine/hooks/useDraftToast.ts:5`, do commit do lote 9 da plan-119) aparece em `dist/index.d.ts` sem estar exportado nem na allowlist. O `dist/` do HEAD não o continha. Não é do kit; sem esse conserto o `npm run build` não fecha.
+- `specs/adr/026-…` tem 4 ponteiros `§4.4` mortos (`section-pointers:check`) e a plan-158 está divergente do índice (`plan-index:check`): do revisor.
+- `SarakIcon.tsx:4`: o identificador `SARAK_ICONE_DESCONHECIDO` tem termo em português (aviso do hook de escrita); `SarakMultiSelect.tsx:118` e `SarakUploader.tsx:118` têm `<input>` nativo no audit de composição atômica. Pré-existentes.
+
+**Pendências / riscos**
+- Mutação pedida ao revisor (tirar nome de `tokens.cssVars` e ver o teste cair) não foi feita por mim.
+- Falso positivo de `no-reimplemented-piece` por nome genérico (`formatDate` ↔ `sarakFormatDate`) é esperado; só o lote 2 mede.
+- Não rodei a suíte completa nem `coverage:check`.
+- Nada commitado.
+
+## Resumo da execução (correção 1) — 2026-11-12
+
+**Achado 1 — nota de versão na seção errada: corrigido.**
+- `docs/migracoes.md:8`: o título passou de `## 8.1.0 — kit de verificação de uso (aditivo, sem quebra)` para `## 9.0.0 — kit de verificação de uso (aditivo: nada quebra por causa dele)`. O corpo não mudou. Não havia seção `9.0.0` no arquivo, então a entrada abre a seção; o resto da `9.0.0` (tema gravado, `synthwave-retro`) é de outras plans e não foi escrito aqui.
+- `npm run guide` e `npm run dev-kit` refeitos: `sarak-ui/docs/migracoes.md:8` traz o mesmo título; `grep 8.1.0` nos dois `migracoes.md` → 0.
+- `guide:check`, `dev-kit:check` e `kit-names:check` → verdes. Nada mais foi tocado; suíte completa e build completo ficam com o revisor, como o veredito diz.
+
 ---
 
 # 10. Veredito
@@ -271,3 +353,42 @@ fora do catálogo de seis idiomas da 10 §3.6, por ser ferramenta do desenvolved
   ou no backlog.
 
 **Status da plan: 🟡 Em execução** (lote 1 liberado).
+
+## Veredito — 2026-11-11 — lote 1 — 🔴 Reprovado (1 achado)
+
+**Conferido por mim:**
+- **Mutação** (a da §7), em cópia fora do repositório com junção para `node_modules`: com o `sarak-ui/catalog.json` real,
+  `npx vitest run src/verify` → 38/38; tirando `--sarak-card-radius` de `tokens.cssVars` → 3 reprovam (`known-css-var` no comando e
+  no plugin, e o teste que amarra o "passa" ao catálogo). Os dados vêm do catálogo gerado, não de lista no código do kit.
+- **Componentes tocados:** `git diff -U0 -- src/components src/shared` sem nenhuma linha que não seja comentário — só as tags de JSDoc.
+- `npx tsc --noEmit` → 0. Os testes dos 18 componentes tocados, mais os do kit e os vizinhos do cromo: `npx vitest run …` → 98
+  arquivos, 765 testes verdes.
+- `section-pointers:check` e o `audit:baseline` vermelhos são os 4 ponteiros do `specs/adr/026-…` (correção da `plan-158`), não deste lote.
+- O `public-types:check` que derruba o `npm run build` é o `DraftToast` do lote 9 da `plan-119` (via direta despachada), não deste lote.
+- **Suíte completa:** a rodada de 2026-11-11 caiu por desligamento da máquina (worker sem resposta, 10,7 h); está sendo refeita e é
+  conferida na rodada de correção, junto com o build completo.
+
+1. `docs/migracoes.md:8` (e a cópia em `sarak-ui/docs/migracoes.md`) — a entrada nova é `## 8.1.0 — kit de verificação de uso (aditivo,
+   sem quebra)`, mas a próxima versão é **`9.0.0`**: o dono escolheu remover o `synthwave-retro` (D6 = A da `plan-162`, nota do
+   revisor de 2026-11-11 no índice) e o ADR-026 declara a mudança do dado gravado MAJOR. Critério: a nota de versão ancorada na versão
+   que sai ([[03-versionamento-e-release]]). Correção: a entrada passa para a seção `9.0.0` (mantendo "aditivo" para o que é do kit) e
+   os gerados (`npm run guide`, `npm run dev-kit`) são refeitos.
+
+**Status da plan: 🔵 Em correção.**
+
+## Veredito — 2026-11-11 — correção 1 (lote 1) — 🟢 Aprovado; lote 1 fechado
+
+**Conferido por mim:**
+- Achado 1 resolvido: `docs/migracoes.md:8` e `sarak-ui/docs/migracoes.md:8` em `## 9.0.0 — kit de verificação de uso (aditivo: nada
+  quebra por causa dele)`; 0 ocorrências de `8.1.0` nos dois.
+- **Suíte completa** (`npx vitest run`, rodada que terminou): 727 de 728 arquivos, 5.742 de 5.743 testes verdes. A única falha é
+  `gates/scripts/contrato/__tests__/check-public-types-parity.test.mjs` — o tipo `DraftToast` do lote 9 da `plan-119`, que a tarefa
+  direta já despachada corrige; nada deste lote.
+- `npm run boot:measure` → boot 395,0 KB gzip, teto 397,1 KB; nenhum tema fora do padrão no fecho estático.
+- `npm run test:optional-peers` → "kit de verificação isolado do boot e carregável sem o eslint (rules=11)" e a mutação do import nomeado
+  ainda reprova.
+- A mutação do catálogo e o resto do veredito anterior continuam valendo (o código do kit não mudou na correção).
+
+**Fica para o fechamento da tag:** o `npm run build` completo, que hoje para no `public-types:check` por causa do `DraftToast`.
+
+**Status da plan: 🟡 Em execução** (lote 2: medição nos importadores).

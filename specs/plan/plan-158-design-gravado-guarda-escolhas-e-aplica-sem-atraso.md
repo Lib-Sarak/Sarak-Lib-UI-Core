@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Gravar só as escolhas do design e aplicar sem atraso"
 objetivo: "Fazer o design gravado conter o que o administrador escolheu, nunca o que a paleta calculou, para que trocar tema, paleta, tom da barra ou modo sempre chegue à tela, e fazer a escolha de uma opção no painel responder em menos de 200 ms"
 dominio: "Design Engine / Persistência e rascunho"
-status: "🔴 A executar"
+status: "🔵 Em correção"
 prioridade: "Alta"
 tags: ["plan", "design-engine", "persistencia", "paleta", "painel", "desempenho"]
 relacionados: ["[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[02-design-engine]]", "[[024-paleta-calculada-separada-do-tema]]", "[[009-persistencia-tenant-aware]]", "[[016-preferencias-do-usuario-separadas-do-tema]]"]
@@ -174,8 +174,128 @@ gate nova.
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
+## Resumo da execução (lote 0) — 2026-11-11
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar**
+```
+ M specs/00-indice.md
+ M specs/plan/plan-158-design-gravado-guarda-escolhas-e-aplica-sem-atraso.md
+ M specs/plan/plan-162-resgatar-temas-antigos-como-temas-novos.md
+```
+
+**O que foi feito**
+- Criei `specs/adr/026-design-gravado-guarda-so-as-escolhas.md` em `🟡 Proposto`, com três alternativas e o custo de cada (A: grava só escolhas; B: grava tudo com origem por chave; C: mantém o formato e refaz o que ainda é igual ao cálculo anterior). Cada uma responde: formato em `onSave`/`onLoad`, dado já gravado, custo no boot, sobrevivência do token ajustado à mão.
+- A decisão proposta é a A, com o tratamento do dado antigo descrito na §2.2 do ADR (regra L1, sem pedir nada ao importador, sem gravar na hidratação) e o cache local com dois registros (§2.3).
+- Acrescentei a linha 026 em `specs/adr/README.md`.
+- Este bloco e o `status: 🟠`.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `specs/adr/026-design-gravado-guarda-so-as-escolhas.md` | criado | o ADR |
+| `specs/adr/README.md` | alterado | linha do 026 na tabela |
+| `specs/plan/plan-158-…md` | alterado | este resumo e o `status` |
+
+**Verificações executadas**
+- Lote só de documento: nenhum teste, `tsc` nem gate rodado. Conferi as alternativas contra o código por leitura: `compose.ts:52`, `resolve.ts:53-62`, `useThemeSeed.ts:113`, `overlayPreferences.ts:53-84`, `useDesignManager.ts:100-135`, `useDesignSync.ts:101`, `useDesignRemoteLoader.ts:106`, `useDesignDraft.ts:34-48,198,208-218`, e a §4.4 da spec 09.
+
+**Critérios de aceite**
+- [ ] ADR-026 aprovado pelo dono antes do lote 1 — motivo: depende do revisor/dono; o ADR está em `🟡 Proposto`.
+- [x] ADR-026 com as alternativas e o custo de cada uma — evidência: frontmatter `alternativas_consideradas` e §2/§3 do ADR.
+- Os demais critérios pertencem aos lotes 1 a 3 e não foram tocados.
+
+**Decisões e suposições**
+- Os specs 06/09 moram em `specs/specs/`, não em `specs/`; li de lá.
+- O ADR não cita plan (a plan é removida na síntese).
+- **Pontos que o dono precisa decidir ao aprovar:** (1) A × C — a C não muda nada para o importador, mas não entrega melhoria futura da régua de cor nem limpa resto de tema; (2) a perda única, no dado antigo, do ajuste manual de cor de papel (L1).
+- Suposição conservadora: o schema publicado do dado gravado não foi localizado em `sarak-ui/` por mim; o ADR declara como conferência do lote de implementação se ele exige todas as chaves.
+
+**Achados fora do escopo (não corrigidos)**
+- A leitura do código não revela por qual caminho o resto do High Contrast entrou no design do ERP (os três merges de leitura ou o ramo parcial de `useDesignDraft.ts:198`). O ADR registra isso; o teste 1.1 do lote 1 deve apontá-lo.
+
+**Pendências / riscos**
+- Custo de boot da alternativa A não medido; o lote 1 mede.
+- Nenhum código tocado; `npm run guide`/`dev-kit` não se aplicam a este lote.
+
 ---
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Veredito — 2026-11-11 — lote 0 — 🔴 Reprovado (2 achados)
+
+**Conferido por mim:** só documento (`specs/adr/026-…`, `specs/adr/README.md`, esta plan). As citações do ADR batem com o código:
+`useDesignManager.ts:103` (`{ ...getSeedConfig(), ...parsed }`), `useDesignSync.ts:101` (`{ ...prev, ...parsed }`),
+`useDesignRemoteLoader.ts:106` (`{ ...previous, ...loadedTheme.design }`), `useDesignDraft.ts:198` (o ramo `{ ...base, ...presetDesign }`
+sem `themeId`) e `:208-218` (`applyFullConfigRaw(draft)` e `persistDesign(draft)`). As três alternativas têm custo nomeado, a régua da
+`00-prompt-revisor` §5.2 passa, e a escolha da A com a regra L1 está bem argumentada.
+
+1. `specs/adr/026-design-gravado-guarda-so-as-escolhas.md` §2.1 e §2.2 — o marcador `designFormat: 2` vai **dentro** do dicionário de
+   tokens. Isso contradiz `specs/specs/09-temas-e-presets.md:409` (§4.4.2): "o payload é o dicionário de tokens e nada mais, e misturar
+   identidade com valor obrigaria todo consumidor a filtrá-la antes de gravar" — a razão pela qual o id do tema já viaja como segundo
+   parâmetro. E quebra importador real: o relato final do login (`specs/plan/anexos/plan-119-perspectiva-final-login.md`, linha C7) diz
+   que "o servidor com lista de chaves recusa o tema a cada token novo" — uma chave `designFormat` seria recusada no `onSave`.
+   Correção: o marcador viaja fora do dicionário, pelo mesmo caminho do id (parâmetro de `onSave`; campo do objeto que `onLoad` já pode
+   devolver, `{ design, activeThemeId }`), e o cache local guarda o marcador junto do registro esparso, não dentro dele. Ajuste a §2.1,
+   a §2.2 e o custo da alternativa A.
+2. O ADR muda o contrato de `onSave`/`onLoad` (payload esparso; `onLoad` passa a substituir em vez de fundir) e não diz o efeito no
+   nível da próxima versão. Critério: a plan pede, no 0.1, "o formato que o importador recebe em `onSave` e devolve em `onLoad`", e a
+   [[03-versionamento-e-release]] decide o nível pela quebra de quem integra. Correção: uma linha nas Consequências com o nível (minor
+   ou major) e o motivo, conferido contra a 03, incluindo o caso do importador que hoje guarda o design completo e o devolve.
+
+**Ponto que vai ao dono depois da correção** (não é achado): a perda única, no dado antigo, do ajuste manual de cor de papel (L1).
+
+**Status da plan: 🔵 Em correção.**
+
+---
+
+# 9.1 Resumo da execução (correção 1) — 2026-11-11
+
+## Resumo da execução (correção 1) — 2026-11-11
+
+**Achado 1 — corrigido.** `specs/adr/026-…` §2.1: o dicionário de `onSave` só tem escolhas, sem chave nova; o marcador `format` viaja
+fora dele, como terceiro parâmetro de `onSave` e campo de `{ design, activeThemeId, format }` no `onLoad`, e o cache local o guarda ao
+lado do registro esparso. §2.2 e o custo da alternativa A (frontmatter) ajustados; `designFormat` não aparece mais no ADR. Acrescentei o
+caso que o novo desenho cria: importador que guarda só o primeiro argumento lê-se como dado antigo (L1), declarado em §2.2 e nas
+Consequências.
+
+**Achado 2 — corrigido.** Consequências do ADR: a mudança é **MAJOR**, pelo critério de `specs/specs/03-versionamento-e-release.md`
+(quebra de quem integra por comportamento, sem export alterado), com quem quebra (validação por todas as chaves, leitura do design
+gravado fora da lib como `sarakCreateThemeBootCss`, importador que guarda só o primeiro argumento), o caso do importador que guarda o
+completo e o devolve (continua, pelo caminho do dado antigo) e a exigência de `## X.0.0 — ` em `docs/migracoes.md`.
+
+**Suposição:** o nome `format` para o parâmetro/campo é proposta; a decisão final do nome fica com o dono ao aprovar. Só documento; nada
+rodado. Arquivo alterado: `specs/adr/026-design-gravado-guarda-so-as-escolhas.md` e este bloco. `status: 🟠`.
+
+## Nota do revisor — 2026-11-11 — achado 3, acrescentado ao veredito de hoje (mesma correção)
+
+3. `specs/adr/026-design-gravado-guarda-so-as-escolhas.md` §2.1 — o baseline é `composeThemeDesign(tema do id, …)` com os condutores,
+   e "cor declarada pelo tema ou pelo host continua vencendo a calculada". Mas escolher uma paleta no painel **já vence** a cor que o
+   tema declara: `src/features/DesignEngine/Main/hooks/usePaletteSelection.ts:17` grava `colorPalette` e todas as cores calculadas no
+   rascunho, por cima das do tema (o dono confirmou no uso, 2026-11-11). Pela §2.1 como está, essas cores são iguais ao cálculo, não
+   são gravadas, e ao recarregar o baseline devolve a cor do tema: a paleta escolhida por cima de um tema de cor declarada se perderia.
+   A `plan-164` ainda estende isso com "manter minha paleta" (a paleta vence o tema em toda troca). Correção: a §2.1 diz como a
+   paleta escolhida pelo usuário vence a cor que o tema declara depois de recarregar (por exemplo, o baseline usa as cores do tema só
+   para os papéis que a paleta escolhida não calcula), sem reabrir a decisão A.
+
+## Veredito — 2026-11-11 — correção 1 (lote 0) — 🔴 Reprovado (achados 3 e 4)
+
+**Conferido por mim:** achado 1 resolvido — o marcador saiu do dicionário (`onSave(design, activeThemeId, format)`, campo `format` no
+objeto do `onLoad`, guardado ao lado do registro local; `designFormat` não aparece mais no ADR). Achado 2 resolvido — as Consequências
+declaram **MAJOR**, com quem quebra e o caso do importador que guarda o completo.
+
+3. **Pendente** (acrescentado na nota de hoje, depois que a correção 1 começou): `specs/adr/026-design-gravado-guarda-so-as-escolhas.md`
+   §2.1 continua dizendo que o baseline é o tema composto e que a cor que o tema declara vence a calculada, sem dizer como a paleta
+   escolhida pelo usuário — que hoje já vence a cor declarada do tema (`usePaletteSelection.ts:17`) — sobrevive a recarregar. Correção:
+   a da nota do revisor de hoje.
+4. `specs/adr/026-design-gravado-guarda-so-as-escolhas.md:79`, `:82`, `:118`, `:125` — `npm run -s section-pointers:check` acusa 4
+   ponteiros `§4.4` mortos: o ponteiro de seção de outro arquivo precisa do nome dele junto (`[[09-temas-e-presets]] §4.4`), senão o gate
+   o lê como seção deste ADR. Critério: o gate de ponteiros (o mesmo derruba o `audit:baseline` e o commit). Correção: nomear a spec em
+   cada um; pronto quando `section-pointers:check` passa.
+   **Fechado pelo revisor em 2026-11-11** (só prosa, para destravar o commit do worktree): os 4 ponteiros nomeiam
+   `[[09-temas-e-presets]]`; `section-pointers:check` e `verify --tier=docs` verdes. A correção 2 trata só o achado 3.
+
+**Status da plan: 🔵 Em correção.**
