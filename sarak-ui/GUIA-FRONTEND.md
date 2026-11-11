@@ -979,6 +979,64 @@ de fonte do painel; no tema, a fonte vai pelo **`value` exato** que o seletor gr
 
 Detalhe e a tabela por bundler: `docs/migracoes.md`, `## 8.0.0`.
 
+## 3.15 Verificar o uso → o kit de verificação (opcional)
+
+A lib traz, dentro do pacote, regras que dizem por máquina **onde você usa a lib errado ou mantém à mão algo que ela já entrega**. Cada achado traz `arquivo:linha`, o que está errado e o nome público que substitui. **Nenhuma regra nasce ligada**: você liga uma a uma, e desliga com motivo.
+
+**Duas portas, o mesmo dado** (as listas vêm de `catalog.json › verification` e do resto do catálogo, nunca de cópia):
+
+- **Plugin de ESLint** — `@sarak/lib-ui-core/eslint`, para `.ts`/`.tsx`/`.js`. Peer opcional: `eslint >= 9`, config plana.
+- **Comando** — `npx sarak-ui verify`, para o que o seu ESLint não lê (`.css`, `package.json`, a cópia do kit) e para rodar fora do ESLint, na CI.
+
+**1. Plugin — instalar e ligar regra a regra**
+
+```js
+// eslint.config.mjs
+import sarak from '@sarak/lib-ui-core/eslint';
+
+export default [
+  {
+    files: ['**/*.{ts,tsx}'],
+    plugins: { sarak },
+    rules: {
+      'sarak/known-css-var': 'error',
+      'sarak/valid-spacing-value': 'error',
+      'sarak/prefer-sarak-component': ['error', { allow: ['src/documentos/**'] }],
+      'sarak/single-entrypoint': ['error', { allow: ['packages/ui-kit/src/**'] }],
+    },
+  },
+];
+```
+
+As regras do plugin: `single-entrypoint`, `no-deep-import`, `known-css-var`, `prefer-sarak-component`, `no-reimplemented-piece`, `no-literal-color-font`, `no-direct-wrapped-lib`, `no-internal-class-selector`, `valid-spacing-value`, `known-icon-name`, `known-theme-id`. O conjunto `sarak/recommended` existe e está **vazio** até a medição nos importadores aprovar uma regra para ele.
+
+**2. Comando — `.css`, `package.json`, carimbo do kit**
+
+```bash
+npx sarak-ui verify --list                       # as regras, a porta e a severidade proposta
+npx sarak-ui verify --rule known-css-var --rule pinned-install
+npx sarak-ui verify --format json                # para a CI ou para o seu gate
+```
+
+Ou um `sarak-verify.json` na raiz: `{ "rules": { "known-css-var": "error", "single-entrypoint": ["error", { "allow": ["packages/ui-kit/package.json"] }], "kit-in-sync": "warn" }, "exclude": ["**/vendor/**"] }`. Regras do comando: `known-css-var`, `no-literal-color-font` e `no-internal-class-selector` (nos `.css`), `single-entrypoint` e `pinned-install` (no `package.json`) e `kit-in-sync`. Sai com 1 quando há achado `error`; sem regra ligada, sai com 2 e não faz nada.
+
+**3. Ler o achado**
+
+```
+src/pages/proposal-ui.css:129  error  known-css-var
+    `--sarak-border-radius-md` não é variável pública da lib: o `var()` cai no valor de reserva sem aviso e a tela sai do tema. Nomes parecidos: …
+```
+
+A mensagem diz o que está errado e o nome público que entra no lugar. A regra `no-reimplemented-piece` é heurística (compara o **nome** do que você exporta com o das peças públicas): trate o achado como a pergunta "isto faz o mesmo?", não como sentença.
+
+**4. Desligar uma regra com motivo** — use a opção da regra (`allow` por glob de arquivo, `ignore` por nome) ou o comentário do ESLint com o porquê, para o próximo leitor saber:
+
+```ts
+// eslint-disable-next-line sarak/prefer-sarak-component -- HTML de contrato gerado, sem componente equivalente
+```
+
+**O que o kit não vê:** variável CSS montada por concatenação, id ou nome em variável, `React.createElement(tag)` e o comportamento de uma peça reescrita. Quem não instala o `eslint` não vê erro nem aviso novo, e o kit não entra no boot da página.
+
 ---
 
 # §4 — Templates copiáveis

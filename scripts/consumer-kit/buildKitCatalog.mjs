@@ -23,6 +23,7 @@ import {
     collectTokenGroups,
 } from './collectKitSources.mjs';
 import { collectEmittedSarakCssVars } from './collectEmittedSarakCssVars.mjs';
+import { collectVerification } from './collectVerification.mjs';
 
 /** Guias de autoria que viajam no pacote — título lido do próprio arquivo (nunca à mão). */
 const collectShippedDocs = () => {
@@ -97,6 +98,7 @@ export const buildKitCatalog = () => {
             responsiveProps: collectResponsiveProps(components),
         },
         chromeSlots: collectChromeSlots(components),
+        verification: collectVerification({ barrelExports }),
         shippedDocs: collectShippedDocs(),
     };
 };

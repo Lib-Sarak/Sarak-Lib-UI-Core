@@ -9,4 +9,5 @@ import { lazy } from 'react';
 
 export type { SarakPDFViewerProps } from './SarakPDFViewerImpl';
 
+/** @encapsulates pdfjs-dist */
 export const SarakPDFViewer = lazy(() => import('./SarakPDFViewerImpl'));

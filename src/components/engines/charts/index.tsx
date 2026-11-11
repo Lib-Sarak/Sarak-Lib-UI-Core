@@ -19,6 +19,7 @@ export type { SarakChartEngineProps } from './SarakChartEngine';
 
 const ChartEngineImpl = lazy(() => import('./SarakChartEngine'));
 
+/** @encapsulates echarts echarts-for-react recharts */
 export const SarakChartEngine: React.FC<SarakChartEngineProps> = (props) => (
     <LazyEngineWrapper>
         <ChartEngineImpl {...props} />

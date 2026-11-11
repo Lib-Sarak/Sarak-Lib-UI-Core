@@ -16,7 +16,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const ALLOWED_EXACT = new Set(['.', './testing']);
+const ALLOWED_EXACT = new Set(['.', './testing', './eslint']); // './eslint': plugin do kit de verificação de uso
 const ALLOWED_CSS_SUFFIX = /\.css$/;
 
 export function checkExports(exportsField) {

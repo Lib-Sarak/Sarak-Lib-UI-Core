@@ -39,6 +39,7 @@ export const sarakIsValidCpf = (value: string): boolean => {
     return digits.endsWith(`${firstDigit}${secondDigit}`);
 };
 
+/** @replacesPiece isValidBrazilianCnpj */
 export const sarakIsValidCnpj = (value: string): boolean => {
     const characters = stripDocumentSeparators(value).toUpperCase();
     if (!/^[A-Z0-9]{12}\d{2}$/.test(characters) || isRepeatedCharacter(characters)) return false;

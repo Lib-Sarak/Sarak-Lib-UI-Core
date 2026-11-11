@@ -13648,6 +13648,173 @@
       "doc": "Slot `decoration`: camada decorativa ATRÁS do conteúdo do cromo (imagem/animação escopada ao cromo). É ornamento — `aria-hidden` e sem captura de foco/toque. COMPLEMENTA o fundo/atmosfera global por tema (Design Engine), não o substitui."
     }
   ],
+  "verification": {
+    "nativeEquivalents": [
+      {
+        "element": "dl",
+        "component": "SarakDescriptionList"
+      },
+      {
+        "element": "fieldset",
+        "component": "SarakFormSection"
+      },
+      {
+        "element": "h1",
+        "component": "SarakPageHeader"
+      },
+      {
+        "element": "h1",
+        "component": "SarakSection"
+      },
+      {
+        "element": "h1",
+        "component": "SarakTypography"
+      },
+      {
+        "element": "h2",
+        "component": "SarakPageHeader"
+      },
+      {
+        "element": "h2",
+        "component": "SarakSection"
+      },
+      {
+        "element": "h2",
+        "component": "SarakTypography"
+      },
+      {
+        "element": "h3",
+        "component": "SarakPageHeader"
+      },
+      {
+        "element": "h3",
+        "component": "SarakSection"
+      },
+      {
+        "element": "h3",
+        "component": "SarakTypography"
+      },
+      {
+        "element": "header",
+        "component": "SarakPageHeader",
+        "contains": [
+          "h1"
+        ]
+      },
+      {
+        "element": "nav",
+        "component": "SarakTabs",
+        "contains": [
+          "a",
+          "SarakLink"
+        ]
+      },
+      {
+        "element": "section",
+        "component": "SarakSection",
+        "contains": [
+          "h2",
+          "h3",
+          "h4",
+          "h5",
+          "h6"
+        ]
+      },
+      {
+        "element": "table",
+        "component": "SarakDataTable"
+      },
+      {
+        "element": "table",
+        "component": "SarakTable"
+      }
+    ],
+    "pieceAliases": [
+      {
+        "alias": "isValidBrazilianCnpj",
+        "use": "sarakIsValidCnpj"
+      },
+      {
+        "alias": "LinkPagination",
+        "use": "SarakPagination"
+      },
+      {
+        "alias": "SarakChartEngine",
+        "use": "createSarakKitMock"
+      },
+      {
+        "alias": "SarakDataTable",
+        "use": "createSarakKitMock"
+      },
+      {
+        "alias": "SarakPDFViewer",
+        "use": "createSarakKitMock"
+      }
+    ],
+    "encapsulated": [
+      {
+        "library": "echarts-for-react",
+        "component": "SarakChartEngine"
+      },
+      {
+        "library": "echarts",
+        "component": "SarakChartEngine"
+      },
+      {
+        "library": "pdfjs-dist",
+        "component": "SarakPDFViewer"
+      },
+      {
+        "library": "react-markdown",
+        "component": "SarakMarkdownRenderer"
+      },
+      {
+        "library": "reactflow",
+        "component": "SarakFlowEngine"
+      },
+      {
+        "library": "recharts",
+        "component": "SarakChartEngine"
+      }
+    ],
+    "iconNameProps": [
+      {
+        "component": "SarakAppChrome",
+        "prop": "navItems",
+        "key": "icon"
+      },
+      {
+        "component": "SarakIcon",
+        "prop": "name"
+      },
+      {
+        "component": "SarakShellNav",
+        "prop": "navItems",
+        "key": "icon"
+      }
+    ],
+    "paletteIds": [
+      "amarelo-contraste",
+      "ambar-industrial",
+      "ametista-petroleo",
+      "azul-projeto",
+      "ciano-azul",
+      "ciano-violeta",
+      "cobalto-vivo",
+      "coral-cinetico",
+      "grafite-rosa",
+      "oceano",
+      "oliva-dourada",
+      "oliva-viva",
+      "rosa-pastel",
+      "rosa-synthwave",
+      "terra-argila",
+      "tinta-azul",
+      "tinta-vinho",
+      "verde-neon",
+      "verde-tecnico"
+    ]
+  },
   "shippedDocs": [
     {
       "file": "docs/component-catalog.md",
@@ -13681,6 +13848,6 @@
   "kitStamp": {
     "libVersion": "8.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "e96c613b93c6"
+    "kitHash": "d0d50b1091e5"
   }
 }

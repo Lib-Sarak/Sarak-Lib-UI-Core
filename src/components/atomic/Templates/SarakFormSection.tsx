@@ -25,6 +25,7 @@ const resolveColumnCount = (
         : 1;
 };
 
+/** @replacesElement fieldset */
 export const SarakFormSection = ({
     title,
     description,

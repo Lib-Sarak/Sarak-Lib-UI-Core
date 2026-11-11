@@ -62,7 +62,11 @@ export interface SarakShellNavProps {
     className?: string;
 }
 
-/** Menu vertical de shell guiado por dados, com grupos e estado ativo (Spec 33). */
+/**
+ * Menu vertical de shell guiado por dados, com grupos e estado ativo (Spec 33).
+ *
+ * @iconNameProp navItems[].icon
+ */
 export const SarakShellNav: React.FC<SarakShellNavProps> = ({
     items,
     activeRoute,

@@ -5,6 +5,12 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 9.0.0 — kit de verificação de uso (aditivo: nada quebra por causa dele)
+
+Nada muda para quem não usa. O pacote ganha o subpath `@sarak/lib-ui-core/eslint` (plugin de ESLint, peer opcional `eslint >= 9`) e o comando `npx sarak-ui verify`, que acusam por máquina o uso errado da lib e a peça reescrita à mão que ela já entrega, com `arquivo:linha` e o nome público que substitui. **Nenhuma regra nasce ligada.** O `sarak-ui/catalog.json` ganha a chave `verification` (equivalências nativo → componente, nomes de peça, bibliotecas encapsuladas, props de ícone e ids de paleta). Detalhe: `GUIA-FRONTEND.md` §3.15.
+
+---
+
 ## 8.0.0 — tokens acrescentados, removidos e com valor novo desde a 7.0.0
 
 Esta lista corrige o "nenhum token acrescentado" que as entradas da 8.0.0 abaixo repetem plan por plan: cada uma olha só a sua mudança, e a 8.0.0, vista desde a `v7.0.0`, acrescentou, removeu e mudou tokens. **Quem valida tema por lista de chaves deve aceitar as chaves acrescentadas e deixar de exigir as removidas.** As entradas abaixo continuam como estão.

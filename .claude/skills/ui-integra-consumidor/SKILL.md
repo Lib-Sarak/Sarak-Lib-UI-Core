@@ -313,6 +313,11 @@ tentada: …)` com a dica do `baseUrl`, e a página segue com a genérica da pil
      aplicação como componentes React**, seguindo o `GUIA-FRONTEND.md` (§0 primeiro: a árvore de decisão e a
      regra de fallback universal) e consultando o `catalog.json` para tudo que for lista.
 
+6. **Verificação de uso (opcional) — ofereça o kit de verificação**
+   - Pergunte se o importador quer ligar o kit que confere o uso da lib por máquina (plugin de ESLint
+     `@sarak/lib-ui-core/eslint` e `npx sarak-ui verify`). **Nenhuma regra nasce ligada**: ligue só as que
+     ele escolher, uma a uma. Siga a seção **`GUIA-FRONTEND.md` §3.15** — não reescreva o passo a passo aqui.
+
 ## Como atualizar a biblioteca
 
 A `@sarak/lib-ui-core` é instalada por **URL git**, não por registry — e a `version` do `package.json`

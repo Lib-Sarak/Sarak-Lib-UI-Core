@@ -128,8 +128,8 @@ export interface SarakAppChromeProps {
 }
 
 /**
- * Cromo apresentacional. Renderiza topbar OU sidebar (por `navigationStyle`) + a área
- * de conteúdo, tudo pintado pelos tokens de navegação (Spec 18) que o Design Engine emite.
+ * Cromo apresentacional: topbar OU sidebar (por `navigationStyle`) + área de conteúdo, pintados pelos tokens de navegação (Spec 18).
+ * @iconNameProp navItems[].icon
  */
 export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     children,

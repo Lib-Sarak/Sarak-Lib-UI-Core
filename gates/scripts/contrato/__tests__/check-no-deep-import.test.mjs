@@ -20,6 +20,7 @@ describe('checkExports — R27', () => {
     const problemas = checkExports({
       '.': { types: './dist/index.d.ts' },
       './testing': { types: './dist/testing.d.ts' },
+      './eslint': { types: './dist/eslint.d.ts' },
       './sarak.css': './dist/sarak.css',
       './sarak-scoped.css': './dist/sarak-scoped.css',
     });

@@ -29,6 +29,7 @@ export interface SarakSectionProps extends Omit<React.HTMLAttributes<HTMLElement
     };
 }
 
+/** @replacesElement h1 h2 h3 section[contains:h2,h3,h4,h5,h6] */
 export const SarakSection = ({
     title,
     description,
