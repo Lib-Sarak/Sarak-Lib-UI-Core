@@ -64,6 +64,7 @@ Ponha a **data da decisão no corpo** do documento. Mantenha curto — uma a dua
 | [022](./022-tema-sob-demanda.md) | Os temas embarcados são carregados sob demanda — o boot leva só o tema padrão, e a UX não muda | 🟢 Aceito |
 | [023](./023-fontes-embarcadas-carregadas-sob-demanda.md) | A lib embarca as próprias fontes e as carrega sob demanda — o Google Fonts deixa de ser o padrão e vira opção do host | 🟢 Aceito |
 | [024](./024-paleta-calculada-separada-do-tema.md) | A cor sai do tema: uma paleta calculada a partir de uma cor e de um tipo de harmonia, nos dois modos | 🟢 Aceito |
+| [025](./025-kit-de-verificacao-de-uso-nucleo-unico-duas-portas.md) | O kit de verificação de uso é um núcleo único com duas portas: plugin de ESLint para o código e comando da CLI para o que o ESLint não lê | 🟢 Aceito |
 
 Comece pelo **001** — ele enquadra os outros três da mesma virada (002, 003, 004) e explica a regra de corte que os produziu.
 

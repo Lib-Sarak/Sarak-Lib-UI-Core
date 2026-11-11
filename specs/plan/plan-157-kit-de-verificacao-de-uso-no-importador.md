@@ -106,6 +106,22 @@ recomendado.
 começa.
 
 **Lote 1 — o kit.**
+1.0. **Antes de codificar, acrescente ao anexo as regras 10 a 14** (decisão do dono, 2026-11-11), cada uma no formato das outras: o que
+barra, porta, dado, caso que reprova, caso que passa, falso positivo esperado e quem pediu. Regra para a qual não sair um caso que
+reprova fica fora, com o motivo no anexo.
+- **10 `single-entrypoint` no `package.json`** (C): a regra 1 estendida ao `package.json`. Barra o `package.json` fora dos caminhos
+  `allow` que declara `@sarak/lib-ui-core`. É a outra metade da `local-single-ui-entrypoint` do ERP, que a regra 1 só cobre em import.
+- **11 `kit-in-sync`** (C): a cópia do kit no importador (`sarak-ui/VERSION`, o `kitHash`) difere do kit do pacote instalado. É a
+  `local-ui-kit-sync` do ERP, nascida do `VERSION` parado em 3.0.0 com a lib em 6.3/7.0.
+- **12 `pinned-install`** (C): a dependência `@sarak/lib-ui-core` do `package.json` não está fixada numa tag exata (`#vX.Y.Z`), ou é
+  `file:`, ramo ou faixa. Regra de instalação dos importadores conhecidos (`00-contexto` §8); o ERP sofreu com `file:` e com a volta
+  sozinha para a 7.0.0.
+- **13 `known-icon-name`** (P): nome de ícone literal passado à lib (prop de ícone dos componentes) que não está em
+  `catalog.json › tokens.iconNames`. Nome desconhecido cai no ícone de reserva sem aviso.
+- **14 `known-theme-id`** (P): id literal de tema (`activeThemeId`, `initialTheme`, `options.theme.defaultTheme`) que não está em
+  `catalog.json › themes`, e id literal de paleta (`colorPalette`) fora das paletas publicadas. Pega o importador preso a um id que
+  saiu (o `synthwave-retro`, pela `plan-162`) ou foi digitado errado. Se as paletas não estiverem no catálogo, a parte de paleta fica
+  fora e vai no resumo.
 1.1. Os dados que as regras leem saem do gerador do catálogo e entram no `sarak-ui/catalog.json` (ou num arquivo irmão gerado, se o ADR
 decidir), cobertos pelo `guide:check`/`catalog:check` existentes. Nenhuma lista de nomes da lib escrita à mão no código do kit.
 1.2. Cada regra do catálogo aprovado, **desligada por padrão**; um conjunto `recommended` só com as aprovadas para ele. Cada mensagem traz
@@ -168,8 +184,90 @@ e registre tudo no anexo.
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
+## Resumo da execução (lote 0) — 2026-11-10
+
+**Resultado:** Concluído. Só o lote 0; o lote 1 não foi iniciado e aguarda a aprovação do dono (passo 0.3).
+
+**Estado do worktree ao iniciar**
+(limpo)
+
+Depois, e por outra sessão (a plan-119 lote 9, que o prompt avisou), apareceram `src/components/atomic/Inputs/SarakSwitch.tsx`, `src/components/atomic/Inputs/__tests__/SarakSwitch.test.tsx`, `src/features/DesignEngine/hooks/useDesignDraft.ts` e `src/features/DesignEngine/hooks/__tests__/useDesignDraft.toast.test.tsx` (novo). Não os li, não os toquei.
+
+**O que foi feito**
+- `specs/adr/025-kit-de-verificacao-de-uso-nucleo-unico-duas-portas.md` (novo, 🟡 Proposto): compara (A) só plugin, (B) só CLI e (C) núcleo único com as duas portas, e propõe a C. Contesta em parte a decisão do dono de 2026-10-19: o plugin fica como porta principal, mas sozinho não vê `.css`, e as 5 variáveis `--sarak-*` do ERP (A1) estão todas em `.css`.
+- `specs/plan/anexos/plan-157-catalogo-de-regras.md` (novo): 9 regras, cada uma com porta, dado, severidade, caso que reprova, caso que passa, falso positivo esperado e quem pediu.
+- `specs/adr/README.md:67`: linha do ADR-025 na tabela.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `specs/adr/025-kit-de-verificacao-de-uso-nucleo-unico-duas-portas.md` | criado | ADR proposto |
+| `specs/plan/anexos/plan-157-catalogo-de-regras.md` | criado | catálogo de regras |
+| `specs/adr/README.md` | alterado | uma linha na tabela |
+| `specs/plan/plan-157-…md` | alterado | este resumo e o `status` |
+
+**Verificações executadas** (só leitura; nenhum teste, build ou gate, porque o lote não toca código)
+- ESLint dos três importadores: ERP `^9.39.5`, os dois logins `9.39.5` com `@typescript-eslint/parser 8.66.0`, todos em config plana (`package.json` e `eslint.config.*` de cada um).
+- `@eslint/css` ausente em `node_modules/@eslint` do ERP e do `login-completo` (só `js`, `config-array`, `config-helpers`, `core`, `eslintrc`, `object-schema`, `plugin-kit`). Não conferi o `login-provedores`.
+- `.css` próprios: ERP 12, logins 0. `var(--sarak-` em `.css`: 6 arquivos no ERP.
+- Os 5 `--sarak-*` da A1 continuam nos mesmos `arquivo:linha` do ERP e nenhum está nos 748 nomes de `tokens.cssVars` (`node -e` sobre `sarak-ui/catalog.json`).
+- As 5 peças A2–A6 continuam no ERP; os `export` conferidos por `grep`. `sarakErrorMessage`, `SarakDocumentFrame`, `sarakPrint`, `sarakIsValidCnpj` estão em `barrelExports`; `createSarakKitMock` **não**, porque vive no subpath `testing`.
+- Tamanhos: `catalog.json` 447.957 bytes (313.586 compactado, 68.176 gzip); `cssVars` 21.462; `barrelExports` 11.547; `dist/index.js` 223.303; `dist/testing.js` 2.242 e `.cjs` 2.904 (precedente de entrada extra).
+- `<section>` sem título existe no ERP (`OrderConditionsSteps.tsx:44`), o que justifica a condição na regra 4.
+
+**Critérios de aceite**
+- [x] ADR-025 com alternativas, custo de cada uma e gatilho de reavaliação — evidência: o arquivo. **Falta a aprovação do dono** (passo 0.3).
+- [x] Catálogo de regras no anexo, cada regra com o caso que reprova e o que passa.
+- [ ] Os demais critérios (§6) são dos lotes 1 e 2 — fora deste lote.
+
+**Decisões e suposições**
+- Acrescentei duas regras que a plan não listava, marcadas no anexo para o dono vetar: `no-deep-import` (contrato da spec 03 §2, sem ocorrência real) e `valid-spacing-value` (de "prop inválida" do login e do `gap="md"` dos moldes).
+- Dado novo no `catalog.json`, numa chave `verification`, e **não** num arquivo irmão (a chave pesa menos de 1% e o `package:check` não ganha caminho).
+- Escrevi o ADR e o anexo em português, e a mensagem das regras também. Não li a spec 10 §3.6 (idioma), porque a §4 da plan não a lista; fica para conferir no lote 1.
+- **Do `login-provedores` li só o `package.json` (ESLint `9.39.5`, parser `8.66.0`) e a busca por `var(--sarak-`**; o `eslint.config.js` dele não foi aberto — só o do `login-completo`. A coluna dele na tabela do ADR vem do `package.json`.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum.
+
+**Pendências / riscos**
+- Detecção de peça reescrita: o nome pega 3 dos 5 casos (A2, A4, A6); A3 e A5 só com apelido registrado na lib. É heurística, e a taxa de falso positivo só se mede no lote 2.
+- Nada foi rodado contra código real nem commitado.
+
 ---
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Veredito — 2026-11-10 — lote 0 — 🟢 Aprovado; o lote 1 espera a aprovação do ADR-025 pelo dono
+
+**Conferido por mim:** os arquivos do lote são só documento (`specs/adr/025-…`, `specs/adr/README.md`, o anexo e esta plan). As
+alternativas do ADR batem com os importadores: ERP com `eslint ^9.39.5` (`package.json:61`) e sem `@eslint/css` (`node_modules/@eslint`
+só com `js`); as duas regras que escolhi conferir têm o caso real escrito e existente — `known-css-var`:
+`proposal-ui.css:129` (`var(--sarak-border-radius-md, 8px)`) e `templateLayout.css:60` (`var(--sarak-layout-gap-xs, 4px)`), os cinco
+nomes ausentes dos 748 de `tokens.cssVars` e `--sarak-card-radius`/`--sarak-layout-gap-md` presentes (`node` sobre
+`sarak-ui/catalog.json`); `no-reimplemented-piece`: `packages/ui-kit/src/errorMessage.ts:26` (`export function errorMessage`). O ADR
+nomeia duas alternativas com custo e o gatilho de reavaliação; a régua da `00-prompt-revisor` §5.2 passa. `npm run verify -- --tier=docs`
+verde.
+
+**Para o dono decidir antes do lote 1 (passo 0.3):** o ADR-025 (opção C: núcleo único, plugin de ESLint + `sarak-ui verify` para `.css`);
+as duas regras que o executor acrescentou (`no-deep-import` e `valid-spacing-value`); e a língua das mensagens (o ADR propõe português,
+fora do catálogo de seis idiomas da 10 §3.6, por ser ferramenta do desenvolvedor do importador).
+
+**Status da plan: 🟡 Em execução** (lote 1 aguardando a aprovação do dono).
+
+## Nota do revisor — 2026-11-11 — decisões do dono sobre o lote 0
+
+- **ADR-025 aceito** (opção C: núcleo único com plugin de ESLint e `sarak-ui verify`); `status` do ADR e linha do `adr/README.md`
+  atualizados.
+- **As nove regras do anexo ficam**, inclusive as duas acrescentadas pelo executor (`no-deep-import`, `valid-spacing-value`).
+- **Cinco regras novas (10 a 14)**, levantadas pelo revisor contra os relatos finais do ERP e do login e aceitas pelo dono: passo 1.0 do
+  lote 1.
+- **Mensagens só em português**, fora do catálogo de seis idiomas (registrado no ADR).
+- **Cobertura dos relatos finais.** Com as 14 regras, todo achado de *uso* dos dois importadores tem regra: ERP A1 (3), A2–A6 (5),
+  A10 (4) e as cinco regras da C4 do ERP (1 e 10, 7, 6, 11, 4); login C4 (8 e 9) e o lock em `git+ssh` (12). Ficam fora, por não serem
+  erro de uso que se lê no código do importador: ERP A7 (adotar o CSS de boot), A8 (tema de marca só leitura, `00-backlog` #72) e A9
+  (`fonts.baseUrl` no Vite de dev), e login A1 (imagem `data:` no payload) — os quatro seguem no lote final da `plan-119` (I43, I46, I51)
+  ou no backlog.
+
+**Status da plan: 🟡 Em execução** (lote 1 liberado).

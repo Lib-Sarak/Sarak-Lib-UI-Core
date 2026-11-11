@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "158"
+proximo_numero_plan: "164"
 ---
 
 # 0. O que é este arquivo
@@ -42,8 +42,14 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-119-kit-de-importacao-aprendido-nos-importadores](plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md) | Fazer o importador usar a lib por inteiro sem reescrever o que ela entrega, com o kit de importação ensinado pelas licoes medidas nos importadores reais e com a gestao de temas do importador completa: salvar o aplicado como novo, editar, duplicar e criar, persistidos no importador | — | 🟡 Em execução | specs/12-kit-do-consumidor.md + specs/13-instalacao-e-atualizacao.md + specs/09-temas-e-presets.md + specs/15-divida-conhecida.md |
+| 1 | [plan-119-kit-de-importacao-aprendido-nos-importadores](plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md) | Fazer o importador usar a lib por inteiro sem reescrever o que ela entrega, com o kit de importação ensinado pelas licoes medidas nos importadores reais e com a gestao de temas do importador completa: salvar o aplicado como novo, editar, duplicar e criar, persistidos no importador | — | 🟠 Em revisão | specs/12-kit-do-consumidor.md + specs/13-instalacao-e-atualizacao.md + specs/09-temas-e-presets.md + specs/15-divida-conhecida.md |
 | 2 | [plan-157-kit-de-verificacao-de-uso-no-importador](plan/plan-157-kit-de-verificacao-de-uso-no-importador.md) | Fazer o importador saber por máquina, no próprio repositório, onde usa a lib errado ou mantém à mão algo que ela já entrega, com um kit de verificação opcional distribuído no pacote, ligado regra a regra, cada achado com arquivo:linha e o nome público que substitui | — | 🟡 Em execução | adr/025 + specs/12-kit-do-consumidor.md + arquitetura/03-superficie-publica.md + specs/13-instalacao-e-atualizacao.md |
+| 3 | [plan-158-design-gravado-guarda-escolhas-e-aplica-sem-atraso](plan/plan-158-design-gravado-guarda-escolhas-e-aplica-sem-atraso.md) | Fazer o design gravado conter o que o administrador escolheu, nunca o que a paleta calculou, para que trocar tema, paleta, tom da barra ou modo sempre chegue à tela, e fazer a escolha de uma opção no painel responder em menos de 200 ms | — | 🔴 A executar | adr/026 + specs/09-temas-e-presets.md + specs/06-painel-de-customizacao-e-preview.md |
+| 4 | [plan-159-cromo-real-segue-o-layout-escolhido](plan/plan-159-cromo-real-segue-o-layout-escolhido.md) | Fazer toda opção de Layout que o administrador aplica aparecer no cromo real ou dizer por que não aparece, com a Topbar sem item escondido, a barra de tom contrastante legível e os controles de preferência discretos, com P, M e G configuráveis em relação ao tamanho base do tema | plan-158 | 🔴 A executar | specs/05-cromo-e-slots.md + specs/09-temas-e-presets.md + specs/06-painel-de-customizacao-e-preview.md |
+| 5 | [plan-160-previa-mostra-o-efeito-de-toda-opcao](plan/plan-160-previa-mostra-o-efeito-de-toda-opcao.md) | Fazer a prévia do painel mostrar o efeito de toda opção destacada, por espiada ou escolha, desenhando os componentes reais na largura real do sistema, com as paletas espiando como as outras opções e o menu da prévia dentro da moldura | plan-158 | 🔴 A executar | specs/06-painel-de-customizacao-e-preview.md |
+| 6 | [plan-161-catalogo-do-painel-proporcional-e-com-um-vocabulario](plan/plan-161-catalogo-do-painel-proporcional-e-com-um-vocabulario.md) | Fazer cada decisão do painel caber em cerca de duas telas, com amostras proporcionais (Personalidade em quadrado com o nome, tema como miniatura da prévia real, fontes na mesma grade), presets de card gerados de cada tema, texturas do card e do fundo separadas pelo nome, e um vocabulário único com os termos técnicos em inglês | plan-160 | 🔴 A executar | specs/06-painel-de-customizacao-e-preview.md + specs/09-temas-e-presets.md + specs/10-seguranca-e-acessibilidade.md |
+| 7 | [plan-162-resgatar-temas-antigos-como-temas-novos](plan/plan-162-resgatar-temas-antigos-como-temas-novos.md) | Fazer o catálogo embarcado oferecer, como temas novos e o mais próximos possível do original, os sete temas da lib antiga (Sarak Sovereign, Cyberpunk Neon, Industrial Terminal, Nature Breeze, Neo Brutalism, Dot Matrix Elegant e Cyber Retro-Wave 2077), sem mudar nenhum tema atual e sem o Synthwave Retro na lista | — | 🔴 A executar | specs/09-temas-e-presets.md |
+| 8 | [plan-163-paletas-da-planilha-do-dono](plan/plan-163-paletas-da-planilha-do-dono.md) | Fazer o catálogo de paletas prontas ser o da planilha do dono, com nome nos seis idiomas, sem quebrar o tema salvo de nenhum importador que use uma paleta que mudou ou saiu | — | ⛔ Bloqueada | specs/09-temas-e-presets.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🚦 **Campanha da `8.0.0-rc.4` (2026-10-27).** Contrato aceito: [`anexos/rc4-contrato.md`](plan/anexos/rc4-contrato.md). Ordem: a `plan-128` vai **sozinha** (cria o hook de idioma e os arquivos de catálogo das outras); depois `plan-129` ‖ `plan-130` ‖ `plan-131` ‖ `plan-132` ‖ `plan-119` lote 8 ‖ `plan-133`, em paralelo (pastas disjuntas; arquivos compartilhados só por acréscimo); depois da 133, `plan-134` ‖ `plan-135`. A 134 e a 135 geram prévias em `C:\tmp\sarak-rc4-previa\` que o dono aprova durante a revisão. Verificação pelo protocolo do contrato §9: uma vez por plan e a bateria completa uma vez, no fechamento, depois do lote 2 do ERP. A versão (`npm version`) é do dono.
@@ -52,6 +58,13 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > `plan-119` lote 9 ‖ `plan-157` lote 0, em paralelo (disjuntos: `SarakSwitch.tsx` e `useDesignDraft.ts` × `specs/adr/` e o anexo
 > da 157); depois os lotes 1 e 2 da 157; depois o lote final da 119. **Uma tag só, ao final** (decisão do dono, 2026-11-10), levando
 > também o que entrou depois da `v8.0.0` (a `plan-156`). A versão (`npm version`) é do dono.
+>
+> **Painel e cromo (2026-11-10, da auditoria no ERP).** `plan-158` → `plan-159` → `plan-160` → `plan-161`, em sequência: as quatro
+> mexem no caminho do rascunho e nos catálogos do painel. A `plan-158` começa **depois do lote 9 da 119 aprovado** (o lote 9 mexe em
+> `useDesignDraft.ts`). As quatro entram na mesma tag do fechamento da 119 (decisão do dono, 2026-11-10). Fica fora delas, por via
+> direta: o valor do `SarakStats` que invade o respiro do cartão.
+>
+> **Temas e paletas (2026-11-10).** A `plan-162` corre em paralelo com 158-160 (só cria arquivos novos em `themes/`): os sete temas antigos entram como temas **novos**, sem tocar nos atuais (opção C do dono); o lote 0 para para o dono aprovar o mapa, os nomes e o destino do `synthwave-retro`. A `plan-163` (paletas) está ⛔ até o dono entregar a planilha. O lote 3 da `plan-161` (presets de card gerados dos temas) só começa com a 162 aprovada.
 
 > ⚪ **A `plan-156` foi SINTETIZADA e REMOVIDA em 2026-11-05.**
 > - [[10-seguranca-e-acessibilidade]] §2.4 b: rótulos ligados, botão de senha nomeado pelo estado e `role="alert"` no `SarakAuthScreen`.

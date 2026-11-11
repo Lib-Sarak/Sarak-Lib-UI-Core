@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Ensinar a importar a lib com o que os importadores reais mostraram"
 objetivo: "Fazer o importador usar a lib por inteiro sem reescrever o que ela entrega, com o kit de importação ensinado pelas licoes medidas nos importadores reais e com a gestao de temas do importador completa: salvar o aplicado como novo, editar, duplicar e criar, persistidos no importador"
 dominio: "Kit do consumidor / Instalação e atualização / Temas do importador"
-status: "🟡 Em execução"
+status: "🟠 Em revisão"
 prioridade: "Alta"
 tags: ["plan", "kit-do-consumidor", "importacao", "temas", "persistencia"]
 relacionados: ["[[12-kit-do-consumidor]]", "[[13-instalacao-e-atualizacao]]", "[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[011-tema-salvo-por-uma-porta-de-escrita]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]"]
@@ -2192,3 +2192,94 @@ e não entra no registro.
 - Do ERP, sem trabalho na lib: A2-A4 e A7 (adotar o que a 8.0.0 entrega); a parte da lib é a I46 (o mapa) e a `plan-157` (a detecção).
 
 **Status da plan: 🟡 Em execução** (lote 9 despachado; lote final depois da `plan-157`).
+
+
+## Resumo da execução — lote 9 (2026-11-10)
+
+**Resultado:** Concluído com pendências (as falhas de `plan-index:check` e `dev-kit:check` no `--tier=quick` não são deste lote; ver Pendências)
+
+**Estado do worktree ao iniciar**
+(limpo)
+
+**O que foi feito**
+- `SarakSwitch.tsx:48-50,62,77` (I41): o rótulo ganhou `id` e o input recebe `aria-labelledby` apontando para ele; a descrição segue só por `aria-describedby`. O `<label>` que envolve tudo não mudou (mesmos textos, mesma ordem, clique no rótulo e na descrição continua alternando). Com `aria-label` de quem chama, `labelId` fica indefinido e o `aria-label` é o nome; `aria-labelledby` de quem chama vence pelo spread de `props`, que vem depois.
+- `useDesignDraft.ts:10,68-76` (I42): o timer do toast vai para `useRef`; cada `showToast` cancela o anterior; um `useEffect` de limpeza cancela o pendente ao desmontar. Prazo virou a constante `TOAST_DURATION_MS = 3000`.
+- Testes novos: `SarakSwitch.test.tsx` (9 casos, substitui o placeholder com `TODO`) e `useDesignDraft.toast.test.tsx` (3 casos, arquivo novo).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/Inputs/SarakSwitch.tsx` | alterado | nome acessível = só o `label` |
+| `src/components/atomic/Inputs/__tests__/SarakSwitch.test.tsx` | alterado | testes por papel, descrição, ordem, clique, `aria-label` |
+| `src/features/DesignEngine/hooks/useDesignDraft.ts` | alterado | timer do toast cancelável e limpo ao desmontar |
+| `src/features/DesignEngine/hooks/__tests__/useDesignDraft.toast.test.tsx` | criado | prazo do segundo aviso e timers pendentes após desmontar |
+| esta plan | alterado | este resumo e o `status` |
+
+**Verificações executadas**
+- Antes da correção: `npx vitest run SarakSwitch.test.tsx useDesignDraft.toast.test.tsx` → reprovaram `useDesignDraft.toast` (2 de 3: "o segundo aviso fica o prazo inteiro" e "nenhum timer fica pendente depois de desmontar") e, no Switch, `Unable to find an accessible element with the role "switch" and name "Ver pessoas"` com `Name "Ver pessoasMostra quem está online"`. Os outros casos do Switch já passavam de propósito: travam o que não pode mudar.
+- Depois: `npx vitest run SarakSwitch` → 9/9; `npx vitest run src/features/DesignEngine` (painel inteiro, consumidor do I42) → 139 arquivos, 803 testes verdes; `npx vitest run SarakSwitch SarakFieldRenderer SarakSearchCard KitchenSink PresetSamples` (consumidores do Switch) → 6 arquivos, 50 testes verdes.
+- `npx tsc --noEmit` → 0 erros (a primeira rodada do `--tier=quick` acusou 4 erros TS2769 por `exact: true`, que não existe no tipo de `getByRole`; removi a opção, o nome em string já casa inteiro).
+- `npm run verify -- --tier=quick`: Anel 0 simulado 0 achados; `guide:check`, `kit-names`, `barrel`, gates de CSS verdes. Falhas: `plan-index:check` e `dev-kit:check` (ver Pendências). `audit:baseline --with-tsc` falhou na mesma rodada em que o tsc tinha os 4 erros acima; **não o reexecutei depois da correção**.
+- O reprova-antes foi medido escrevendo o teste antes da correção, e não por stash da correção.
+
+**Critérios de aceite**
+- [x] I41 teste por papel acha o controle pelo `label`, descrição acessível = `description` — `SarakSwitch.test.tsx:16-24`
+- [x] I41 sem mudança visual, clique alterna, `aria-label` vira o nome — `SarakSwitch.test.tsx:26-58`
+- [x] I42 segundo aviso ainda na tela aos 3,5 s e some após 4 s; nenhum timer após desmontar — `useDesignDraft.toast.test.tsx`
+- [ ] `verify --tier=quick` verde — motivo: `plan-index:check` (índice × frontmatter da `plan-157`, da outra sessão) e `dev-kit:check` (3 arquivos de `sarak-dev/` defasados); `audit:baseline` não reexecutado após o conserto do tsc.
+
+**Decisões e suposições**
+- I41: usei `aria-labelledby` em vez de tirar o `<label>` envolvente, para não mudar a área clicável.
+- Não alterei a coluna Estado da §5.1 (I41/I42): é do revisor.
+- Não adicionei nota em `docs/migracoes.md`: o anúncio do leitor de tela muda (a descrição deixa de entrar no nome), mas a plan só pede "se mudar" e eu não sei a versão alvo; deixo para o revisor decidir o texto e a versão.
+- O teste do Switch envolve o componente em `SarakUIProvider` (o componente exige o contexto).
+
+**Achados fora do escopo (não corrigidos)**
+- Mesmo padrão (`setTimeout` de aviso sem cancelamento) no painel: `src/features/DesignEngine/Main/TemplatesTab.tsx:44` (`setCopiedId(null)` após 2 s; dois "copiar" seguidos apagam o segundo indicador cedo). Não é toast (é marca de "copiado"), então não corrigi; o revisor decide.
+- Também sem cancelamento, fora do painel de customização ou sem ser aviso: `Canvas/Mocks/TextMock.tsx:40,45` (mock do canvas), `Panels/AdvancedTab.tsx:31` (atraso do reset, sem aviso), `SarakMultiSelect.tsx:133` (fechar no blur). `SarakCopyButton.tsx:63` e `SarakToast.tsx:119` já cancelam.
+
+**Pendências / riscos**
+- `plan-index:check`: `plan-157` aparece como `🟠 Em revisão` no frontmatter e `🟡 Em execução` no índice — trabalho da sessão paralela, não toquei.
+- `dev-kit:check` defasado (`state.json`, `GUIA-MANUTENCAO.md`, `START-HERE.md`): contagem de testes mudou (inclui os meus); a plan reserva `dev-kit` ao fechamento, então não rodei o gerador.
+- No worktree há arquivos de `specs/adr/` e `plan-157` modificados por outra sessão; não os li nem toquei.
+
+## Veredito — 2026-11-10 — lote 9 — 🔴 Reprovado (1 achado)
+
+**Conferido por mim:** `git diff` de `SarakSwitch.tsx` (`aria-labelledby` para o `id` do rótulo, só sem `aria-label` de quem chama;
+o `aria-labelledby` de quem chama vence pelo spread posterior) e de `useDesignDraft.ts` (timer em `useRef`, cancelado a cada aviso e no
+desmonte, `TOAST_DURATION_MS`); os testes novos lidos. `npm run verify -- --tier=full`: `tsc` verde, `npx vitest run` verde (suíte
+completa), todos os checks de contrato verdes, Anel 0 com 0 achados — **e `audit:baseline --with-tsc` vermelho**, o passo que o
+resumo declara não ter reexecutado.
+
+1. `src/features/DesignEngine/hooks/useDesignDraft.ts:1` e `:28` — `audit:baseline` acusa regressão `auditor_cleancode.mjs.violacoes:
+   0 -> 2`: o arquivo passou de 250 linhas (agora 253) e o hook passou a ter 4 `useState`/`useEffect`. Critério violado: "baseline sem
+   regressão" (§6). Correção: o temporizador do aviso sai do `useDesignDraft` para um hook próprio, em arquivo próprio, que o
+   `useDesignDraft` chama; o comportamento e os testes de `useDesignDraft.toast.test.tsx` continuam os mesmos. Pronto quando
+   `npm run -s audit:baseline -- --with-tsc` passa.
+
+**I41 aprovada** (sem achado). A nota de `docs/migracoes.md` sobre o nome acessível do `SarakSwitch` (a descrição sai do nome) entra
+no lote final, com a I47.
+
+**Achado fora do escopo, transcrito para o `00-backlog`:** `src/features/DesignEngine/Main/TemplatesTab.tsx:44` (marca de "copiado"
+apagada pelo timer do clique anterior). Os outros três casos do resumo (`TextMock.tsx`, `AdvancedTab.tsx`, `SarakMultiSelect.tsx`)
+foram descartados: mock, atraso sem aviso e fechamento no blur não têm o defeito de apagar um segundo aviso.
+
+**Status da plan: 🔵 Em correção.**
+
+
+## Resumo da execução (correção 1) — lote 9 — 2026-11-11
+
+**Achado 1 — `audit:baseline` com regressão `auditor_cleancode.mjs.violacoes: 0 -> 2` em `useDesignDraft.ts`:** procedente e corrigido.
+
+- `src/features/DesignEngine/hooks/useDraftToast.ts` (criado): leva para fora do `useDesignDraft` o `useState` do aviso, o timer em `useRef` (cancelado a cada aviso) e o `useEffect` que o cancela ao desmontar; devolve `{ toast, showToast }`. O prazo de 3 s virou a constante do novo arquivo.
+- `src/features/DesignEngine/hooks/useDesignDraft.ts`: chama `useDraftToast()` no lugar do bloco de toast (diff: +1 import, −4 linhas de estado, +1 chamada). Passou de 253 para 243 linhas; o hook voltou a ter dois `useState` (antes da minha mudança eram três, com o toast).
+- `src/features/DesignEngine/hooks/__tests__/useDraftToast.test.tsx` (criado): teste do hook novo, 3 casos (apaga em 3 s, segundo aviso não morre no timer do primeiro, zero timer após desmontar). `useDesignDraft.toast.test.tsx` ficou intacto.
+
+**Evidência**
+- `npm run -s audit:baseline -- --with-tsc` → `igual ao baseline de 2026-10-12 — nenhuma regressão.`
+- `npx tsc --noEmit` → 0 erros.
+- `npx vitest run useDraftToast useDesignDraft` → 6 arquivos, 37 testes verdes; `npx vitest run src/features/DesignEngine` → 140 arquivos, 806 testes verdes.
+
+**Decisões e suposições:** o teste novo do hook é por conta da regra de teste 1:1 por arquivo; não alterei nada além do achado.
+
+**Pendências:** as falhas de `plan-index:check` e `dev-kit:check` do resumo anterior não eram achado do veredito e não as reexecutei; o worktree tem muitos arquivos de outras tarefas (`dist/`, `sarak-dev/`, specs, `SarakStats`, `browser-tests/`) que não toquei.

@@ -94,6 +94,7 @@ via normal.
 | 70 | Três medidas do cromo abaixo de 4,5:1 que já estavam assim antes das barras com tom: o item ativo em pílula da topbar escura de `nebula-space` e de `aurora-veil` (4,4995) e o nome do usuário na lateral escura de `organic-clay` (4,48). Hoje estão isentas em `KNOWN_BELOW_LIMIT`, no spec de navegador das Personalidades. A lista deve só encolher | veredito da `plan-145` | 2026-11-03 | baixo |
 | 71 | `sidebarLogoPlacement: 'bottom'`: o cabeçalho da lateral mantém a altura com só o botão de recolher, e sobra uma faixa vazia no topo. A marca ainda ocupa uma faixa própria acima do rodapé, o que tira altura do menu. Medido na prévia da `plan-145` (`p-personality-erp-*`, `t-data-terminal-light`) | veredito da `plan-145` | 2026-11-03 | médio |
 | 72 | Tema de marca do importador não tem como ser só leitura: `SarakThemeEntry` traz só `id`, `name`, `design` e `contraparte`, e a imutabilidade vale só para o catálogo da lib. O ERP põe os dele (`erp-corporativo`, `erp-noturno`) em `customThemes` e recusa o id no `onSave`; pelo contrato, o painel oferece "Salvar" e "Apagar" sobre eles e o usuário recebe erro em vez de "Duplicar" (não medido em navegador). Porta aditiva | relato final do ERP (A8), `plan-119` | 2026-11-10 | médio |
+| 73 | `src/features/DesignEngine/Main/TemplatesTab.tsx:44`: a marca de "copiado" some cedo quando se copia duas vezes seguidas, porque o `setTimeout` do primeiro clique não é cancelado (o mesmo defeito que a I42 da `plan-119` corrigiu no aviso do painel) | achado da `plan-119`, lote 9 | 2026-11-10 | baixo |
 
 ---
 
