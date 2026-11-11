@@ -119,3 +119,12 @@ describe('SarakStats href e métrica única', () => {
         expect(screen.queryByRole('link')).toBeNull();
     });
 });
+
+describe('SarakStats — valor longo', () => {
+    it('deixa o valor quebrar dentro do cartão em vez de invadir o respiro interno', () => {
+        render(<SarakStats data={{ open: 'BRL: R$ 312.700,00 + R$ 18.090,00/mês' }} />);
+
+        const value = screen.getByText(/312\.700,00/);
+        expect(value.parentElement?.style.overflowWrap).toBe('anywhere');
+    });
+});

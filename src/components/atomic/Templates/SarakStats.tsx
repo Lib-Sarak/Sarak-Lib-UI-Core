@@ -143,7 +143,7 @@ const SarakStatsMetric = ({ metricKey, value, label, config }: SarakStatsMetricP
                 key={metricKey + '-' + String(value ?? '')}
                 initial={{ opacity: STAT_VALUE_INITIAL_OPACITY, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
-                style={{ fontWeight: 'var(--sarak-h1-weight,800)' }}
+                style={{ fontWeight: 'var(--sarak-h1-weight,800)', overflowWrap: 'anywhere' }}
             >
                 <SarakValue value={displayValue} format={config?.format} size="md" signColor={config?.signColor ?? true} />
             </motion.div>

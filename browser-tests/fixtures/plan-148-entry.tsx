@@ -14,6 +14,11 @@ const TABS = Array.from({ length: TAB_COUNT }, (_, index) => ({ id: `t${index}`,
 const ACTIONS = [{ label: 'Abrir', onClick: () => undefined }, { label: 'Arquivar', onClick: () => undefined }];
 const METADATA = [{ label: 'Dono', value: 'Financeiro' }, { label: 'Atualizado', value: 'ontem' }];
 
+/** Moeda formatada por `Intl` usa espaço não separável entre símbolo e número: cada parcela é uma palavra só. */
+const LONG_VALUE = 'BRL: R$ 312.700,00 + R$ 18.090,00/mês';
+const LONG_VALUE_STATS = { open: LONG_VALUE, won: 'R$ 1.200,00', lost: 3, total: 42 };
+const LONG_VALUE_LABELS = { open: 'Valor em aberto', won: 'Ganho', lost: 'Perdidos', total: 'Total' };
+
 const box = (id: string, width: number, children: React.ReactNode): React.ReactElement => (
     <div data-testid={id} style={{ width, marginBottom: 24 }}>{children}</div>
 );
@@ -29,6 +34,8 @@ const App = (): React.ReactElement => (
         {box('row-narrow', 320, <SarakResourceRow layout="inline" density="compact" title={LONG_TITLE} metadata={METADATA} actions={ACTIONS} />)}
         {box('row-stacked', 900, <SarakResourceRow title={LONG_TITLE} metadata={METADATA} actions={ACTIONS} />)}
         {box('stats-one', 600, <SarakStats data={{ total: 42 }} mapping={{ total: 'Pedidos em aberto no mês' }} metrics={{ total: { href: '#pedidos' } }} />)}
+        {box('stats-long-1440', 1030, <SarakStats data={LONG_VALUE_STATS} mapping={LONG_VALUE_LABELS} />)}
+        {box('stats-long-1024', 1024, <SarakStats data={LONG_VALUE_STATS} mapping={LONG_VALUE_LABELS} />)}
         <div data-testid="fields" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, width: 900, marginBottom: 24 }}>
             <SarakInput aria-label="plain" fullWidth />
             <SarakInput aria-label="outside" fullWidth prefixText="R$" suffixText="/mês" />
