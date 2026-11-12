@@ -30,6 +30,9 @@ import { sarakSovereignClassicTheme } from './sarak-sovereign-classic';
 import { cyberpunkNeonClassicTheme } from './cyberpunk-neon-classic';
 import { industrialTerminalClassicTheme } from './industrial-terminal-classic';
 import { cyberRetroWave2077ClassicTheme } from './cyber-retro-wave-classic';
+import { natureBreezeTheme } from './nature-breeze';
+import { neoBrutalismClassicTheme } from './neo-brutalism-classic';
+import { dotMatrixElegantTheme } from './dot-matrix-elegant';
 
 export const SARAK_ALL_THEMES: SarakThemePreset[] = [
     sarakSovereignTheme,
@@ -55,4 +58,7 @@ export const SARAK_ALL_THEMES: SarakThemePreset[] = [
     cyberpunkNeonClassicTheme,
     industrialTerminalClassicTheme,
     cyberRetroWave2077ClassicTheme,
+    natureBreezeTheme,
+    neoBrutalismClassicTheme,
+    dotMatrixElegantTheme,
 ];

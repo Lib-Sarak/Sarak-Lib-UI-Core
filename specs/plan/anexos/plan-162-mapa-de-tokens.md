@@ -247,7 +247,7 @@ Quatro das sete sobrescritas são `textColorMaster` e entram na contraparte; cad
 | Cyberpunk Neon Classic | escuro | papel esverdeado `#e9f8e9`, texto e primária em verde-escuro (`#00821c`), grade de página e quina cortada mantidas, botão wireframe com contorno verde-escuro |
 | Industrial Terminal Classic | escuro | chapa clara `#fcf1e8`, texto âmbar-escuro `#a25f00`, borda de 2 px, zero raio e zero sombra mantidos: é "o mesmo painel sob luz de oficina" |
 | Nature Breeze | **claro** (D1) | escuro reproduz a **foto**: fundo `#0a100a`, vidro escuro, verde da paleta, Lora nos títulos e cantos de 32 px mantidos |
-| Neo Brutalism Classic | **claro** (D1) | escuro reproduz a **foto**: fundo quase preto, borda grossa e vermelho vivo; a sombra dura passa a ser na cor da primária, porque preta sobre preto some |
+| Neo Brutalism Classic | **claro** (D1) | escuro reproduz a **foto**: fundo quase preto, fio cinza no cartão, vermelho vivo só no item ativo e na aba, **sem sombra** (a dura preta some sobre o preto e a foto não tem outra); a espessura da borda não tem modo e fica a do claro *(corrigido pelo revisor em 2026-11-12, veredito do lote 2: a versão anterior pedia borda grossa e sombra vermelha, contra a foto)* |
 | Dot Matrix Elegant | escuro | marfim `#f7f3e8`, dourado-escuro `#876c00`, pontos discretos e fio dourado de 1 px nas barras |
 | Cyber Retro-Wave 2077 Classic | escuro | papel rosado `#feeefc`, magenta-escuro `#c400c4`, scanlines finas mantidas, Orbitron maiúsculo nos títulos |
 
@@ -351,3 +351,26 @@ Referência do modo nativo escuro: `C:\tmp\sarak-temas-antigos\<tema>-pagina.png
 | Industrial | `colorBgBody`, `colorBgLayer1`, barras | `#0a0a0a`, `#141414` | `#070707`, `#101010` |
 
 Barras: `sidebarColor` e `topbarColor` declarados (`#000000`; Industrial `#101010`) vencem o tom da Personalidade (09 §4.3.4), então a D3 fica. A contraparte espelha, em cada token declarado, o valor que a paleta já calculava no claro: o claro não mudou, exceto o fundo chapado.
+
+## Anexo D — onde a foto venceu o JSON (lote 2)
+
+Nature Breeze e Neo Brutalism Classic são nativos claros (D1): no claro vale a intenção do arquivo (JSON); a contraparte escura reproduz a foto. No Dot Matrix (nativo escuro) a foto vence no nativo. Referência: `C:\tmp\sarak-temas-antigos\<tema>-pagina.png`.
+
+| Tema | Token | JSON | Valor no tema (por quê) |
+|---|---|---|---|
+| Nature Breeze | `texture` | `grid` | `none`: a foto não mostra grade (token sem modo, vale nos dois) |
+| Nature Breeze | `bgGradientMode` | `linear` | `none`: fundo chapado na foto |
+| Nature Breeze | `textColorMaster` (escuro) | `#1b5e20` | `#e6e6e6`: texto claro da foto |
+| Nature Breeze | `titleColor` (escuro) | `#ffffff` | `#ffffff` (igual); texto `#e6e6e6` mantém título ≠ texto |
+| Nature Breeze | `cardBackgroundColor` / `cardBorderColor` (escuro) | `rgba(255,255,255,.4)` / `transparent` | `#050505` / `transparent`: cartão sem preenchimento na foto |
+| Neo Brutalism Classic | `bgGradientMode` | `linear` | `none`: fundo chapado na foto |
+| Neo Brutalism Classic | `cardBorderColor` (escuro) | `#000000` | `#343434` (também na borda da lateral e do topo): o fio medido no pixel da foto (espessura 4 px mantida, é token sem modo) |
+| Neo Brutalism Classic | `cardShadow` (escuro) | `8px 8px 0 #000` | `none`: a foto não tem sombra (achado 8 do veredito do lote 2) |
+| Neo Brutalism Classic | `textColorMaster` (claro) | `#000000` | `#0a0a0a`: `themeSetCoverage` exige título ≠ texto; título `#000000` |
+| Dot Matrix Elegant | `textColorMaster` | `#d4af37` | `#e6e6e6`: a foto pinta texto claro |
+| Dot Matrix Elegant | `cardTitleColor`, `topbarTitleColor` | `#d4af37` | `#ffffff` (foto) |
+| Dot Matrix Elegant | `bgGradientMode` | `linear` | `none`: fundo preto chapado; sem isso o fundo saía marrom |
+| Dot Matrix Elegant | `textureOpacity` | `0.15` | `0.15` no escuro (foto e JSON; achado 9 do veredito do lote 2); `0.08` na contraparte clara, legível sobre o marfim |
+| Dot Matrix Elegant | `surfaceIntensity` / `glassOpacity` | `0.5` / `0.1` | `0.05` / `0`: o material `frosted` clareava o cartão (medido: `#0c0c0c` contra `#0a0a0a` declarado) |
+
+Barras: nos três temas as cores declaradas das barras e seus papéis (tom neutro) existem porque `presetsReadable` reprova barra de tom `primary` (Neo, claro) e de tom `secondary` (Dot Matrix, topo claro) com `textColorMaster` escuro; o tom da Personalidade (D3) não mudou.

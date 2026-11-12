@@ -45,6 +45,9 @@ export const SARAK_THEME_PRESET_IDS = [
     'cyberpunk-neon-classic',
     'industrial-terminal-classic',
     'cyber-retro-wave-classic',
+    'nature-breeze',
+    'neo-brutalism-classic',
+    'dot-matrix-elegant',
 ] as const;
 
 export type SarakThemePresetId = (typeof SARAK_THEME_PRESET_IDS)[number];

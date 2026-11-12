@@ -13845,7 +13845,10 @@
       "sarak-sovereign-classic",
       "cyberpunk-neon-classic",
       "industrial-terminal-classic",
-      "cyber-retro-wave-classic"
+      "cyber-retro-wave-classic",
+      "nature-breeze",
+      "neo-brutalism-classic",
+      "dot-matrix-elegant"
     ],
     "referenceThemeIds": [
       "minimalist-airy",
@@ -14149,6 +14152,6 @@
   "kitStamp": {
     "libVersion": "8.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "f30040f4f632"
+    "kitHash": "612f4742b83f"
   }
 }

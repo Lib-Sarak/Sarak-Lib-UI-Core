@@ -55,7 +55,7 @@ function hasRequiredCoverage(coverage: ThemeSetCoverage): boolean {
 
 describe('cobertura do conjunto de temas embarcados', () => {
     it('declara a opção fluida de largura em todos os temas', () => {
-        expect(SARAK_ALL_THEMES.length).toBe(23);
+        expect(SARAK_ALL_THEMES.length).toBe(26);
         expect(SARAK_ALL_THEMES.every((theme) => theme.design.maxContentWidth === FLUID_MAX_CONTENT_WIDTH_OPTION)).toBe(true);
     });
 

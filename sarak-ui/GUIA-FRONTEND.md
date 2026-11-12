@@ -1550,7 +1550,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 
 **Tokens que saíram** (59) — `catalog.json` → `designTokens.removed`: o id, a versão em que saiu e o destino (o token que ficou no lugar, ou `sem substituto`). Quem valida o tema por lista de chaves deixa de exigir esses ids.
 
-**Temas embutidos** (23): `sarak-sovereign` · `cyberpunk-neon` · `industrial-terminal` · `neo-brutalism` · `synthwave-retro` · `nebula-space` · `kinetic-flow` · `cyber-retro-wave` · `minimalist-airy` · `data-terminal` · `neumorphic-mobile` · `golden-hour` · `aurora-veil` · `blueprint-protocol` · `editorial-ink` · `organic-clay` · `high-contrast` · `corporate-ledger` · `playful-pastel` · `sarak-sovereign-classic` · `cyberpunk-neon-classic` · `industrial-terminal-classic` · `cyber-retro-wave-classic`
+**Temas embutidos** (26): `sarak-sovereign` · `cyberpunk-neon` · `industrial-terminal` · `neo-brutalism` · `synthwave-retro` · `nebula-space` · `kinetic-flow` · `cyber-retro-wave` · `minimalist-airy` · `data-terminal` · `neumorphic-mobile` · `golden-hour` · `aurora-veil` · `blueprint-protocol` · `editorial-ink` · `organic-clay` · `high-contrast` · `corporate-ledger` · `playful-pastel` · `sarak-sovereign-classic` · `cyberpunk-neon-classic` · `industrial-terminal-classic` · `cyber-retro-wave-classic` · `nature-breeze` · `neo-brutalism-classic` · `dot-matrix-elegant`
 
 **Par de referência** (parta destes — completos em todos os eixos): `minimalist-airy` · `sarak-sovereign`
 

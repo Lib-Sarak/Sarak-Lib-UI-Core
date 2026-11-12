@@ -32,4 +32,7 @@ export const SARAK_THEME_LOADERS: Record<LazyThemeId, () => Promise<SarakThemePr
     'cyberpunk-neon-classic': () => import('./cyberpunk-neon-classic').then((m) => m.cyberpunkNeonClassicTheme),
     'industrial-terminal-classic': () => import('./industrial-terminal-classic').then((m) => m.industrialTerminalClassicTheme),
     'cyber-retro-wave-classic': () => import('./cyber-retro-wave-classic').then((m) => m.cyberRetroWave2077ClassicTheme),
+    'nature-breeze': () => import('./nature-breeze').then((m) => m.natureBreezeTheme),
+    'neo-brutalism-classic': () => import('./neo-brutalism-classic').then((m) => m.neoBrutalismClassicTheme),
+    'dot-matrix-elegant': () => import('./dot-matrix-elegant').then((m) => m.dotMatrixElegantTheme),
 };

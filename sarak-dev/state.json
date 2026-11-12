@@ -498,7 +498,8 @@
       "023-fontes-embarcadas-carregadas-sob-demanda.md",
       "024-paleta-calculada-separada-do-tema.md",
       "025-kit-de-verificacao-de-uso-nucleo-unico-duas-portas.md",
-      "026-design-gravado-guarda-so-as-escolhas.md"
+      "026-design-gravado-guarda-so-as-escolhas.md",
+      "027-paleta-do-tema-paleta-por-cima-e-paletas-salvas-no-design.md"
     ],
     "arquitetura": [
       "00-mapa-do-modulo.md",

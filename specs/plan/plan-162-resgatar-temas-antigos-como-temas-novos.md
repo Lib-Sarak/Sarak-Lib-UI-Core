@@ -592,3 +592,173 @@ O lote 1 custou quatro rodadas. Os mesmos três tropeços valem para o lote 2:
 
 Rode, além do vitest de `themes` e de `PresetsCatalog`, `npx vitest run src/core/Design/presets/components`: só ele acusa o segundo
 ponto. A verificação completa (`npm run verify`) é do revisor; se rodá-la, redirecione a saída para arquivo.
+
+## Resumo da execução (lote 2) — 2026-11-12
+
+**Resultado:** Concluído. Três temas novos (Nature Breeze, Neo Brutalism Classic, Dot Matrix Elegant); nenhum tema existente tocado. Pendência de limpeza: `git clean` do `dist/` foi bloqueado por hook (ver abaixo).
+
+**Estado do worktree ao iniciar**
+```
+ M specs/00-indice.md
+ M specs/plan/plan-160-previa-mostra-o-efeito-de-toda-opcao.md
+ M specs/plan/plan-164-paleta-do-tema-paleta-por-cima-e-paletas-salvas.md
+```
+(Durante a sessão apareceram, de outra execução e não tocados por mim: `browser-tests/plan-160-previa-*`, `specs/adr/027-…`, `specs/adr/README.md`.)
+
+**O que foi feito**
+- Três arquivos novos em `src/core/Design/presets/themes/`: `nature-breeze.ts`, `neo-brutalism-classic.ts`, `dot-matrix-elegant.ts`, gerados por script fora do repositório a partir do JSON original, da matriz da §3.5 do anexo e das decisões D1 a D7. Paleta `custom:analogous:` com as sementes do original (D2); Personalidades `soft`, `brutalist`, `executive` (D3).
+- Nature Breeze e Neo Brutalism Classic são **nativos claros** (D1); a contraparte escura reproduz a foto. Dot Matrix é nativo escuro, com contraparte clara (marfim/dourado-escuro da paleta).
+- Registro: `index.ts`, `all.ts`, `loaders.ts`; `catalog.generated.ts` por `npm run themes:catalog` (26 temas). Testes: `themeSetCoverage` (23→26), `compose` (23→26), `themeBars` (3 linhas no mapa), snapshot do `PresetsCatalog` (`-u`, só esse arquivo).
+- Anexo D em `plan-162-mapa-de-tokens.md`: cada caso em que a foto venceu o JSON.
+- `npm run guide` rodado no fim (kit em dia).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/presets/themes/{nature-breeze,neo-brutalism-classic,dot-matrix-elegant}.ts` | criados | os três temas |
+| `themes/{index,all,loaders}.ts`, `catalog.generated.ts` | alterados | registro |
+| `themes/__tests__/{themeSetCoverage,compose,themeBars}.test.ts` | alterados | contagem 26, mapa de Personalidades |
+| `PresetsCatalog.test.tsx.snap` | alterado | 3 cartões a mais |
+| `specs/plan/anexos/plan-162-mapa-de-tokens.md` | alterado | Anexo D |
+| `sarak-ui/*` | alterados (gerados) | `npm run guide` |
+| `sarak-dev/{GUIA-MANUTENCAO,START-HERE}.md`, `state.json` | alterados (gerados) | efeito colateral do `guide`: passou a listar a ADR 027 de outra execução |
+
+**Verificações executadas**
+- `npx vitest run src/core/Design/presets/themes src/core/Design/presets/components PresetsCatalog` → 16 arquivos, 323 testes verdes.
+- `npm run -s audit:baseline -- --with-tsc` → igual ao baseline.
+- `npm run build` → exit 0 (duas vezes: antes e depois do ajuste de valores do Dot Matrix); `theme-boot:check` e `guide:check` dentro dele.
+- `npm run -s boot:measure` → teto relativo 397,9 KB, maior tema 5,9 KB (teto 15 KB), OK. `npm run -s themes:diversity` → cromo OK (4 estilos de item ativo na lateral e no topo; 3 fundos). `theme-completeness:check` → 26 de 26.
+- Navegador: aguardei a execução da plan-160 (Playwright) terminar; só abri o meu quando não havia nenhum `chrome-headless` ativo. Capturas 1440×900, nos dois modos, em `C:\tmp\plan162-lote2\<tema>__<light|dark>.png`; imagens foto | nativo | contraparte em `C:\tmp\plan162-lote2\lado-a-lado\<tema>.png`.
+- Cartão (medido no pixel, escuro): Nature `#090909` contra `#050505` declarado; Neo `#070707` contra `#050505`; Dot `#0c0c0c` contra ≈`#0a0a0a`. Todos abaixo de 4 %. Neo claro `#ffffff` = declarado. Nature claro: o cartão é a paleta (não declarado).
+
+**Critérios de aceite**
+- [x] Três temas no catálogo, nomes e ids aprovados — `index.ts`, `catalog.generated.ts`.
+- [x] Contraparte autorada em cada um — bloco `contraparte`; `presetsReadable` e `compose` medem os dois modos.
+- [x] Travas da 09 §6, diversidade, boot, peso — saídas acima.
+- [x] Nenhum tema existente alterado — `git status`.
+- [x] Lado a lado com a foto e diferenças nomeadas — abaixo.
+- [ ] `git clean -fdq -- dist` — bloqueado pelo hook (`clean.force`); `git restore` de `dist/`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` foi feito, mas sobraram 24 arquivos novos e não rastreados em `dist/` (chunks hash-named e os três `nature-breeze-*`, `neo-brutalism-classic-*`, `dot-matrix-elegant-*`). O dono precisa rodar `git clean -fdq -- dist`.
+
+**Decisões e suposições**
+- **Barras declaradas com tom neutro.** O `presetsReadable` reprovou barra de tom `primary` (Neo, claro) e `secondary` (Dot Matrix, topo claro) com texto escuro. Declarei cor e papéis da barra com os valores do tom `neutral` nos dois modos (o `themePalettes` exige o mesmo conjunto de papéis nos dois modos). O tom da Personalidade (D3) não mudou.
+- **Nature Breeze declara 12 cores no claro** que só repetem o valor que a paleta calcula, porque a trava de paleta exige o mesmo conjunto nos dois modos.
+- **Neo Brutalism Classic claro:** texto `#0a0a0a` e título `#000000` (a trava exige título ≠ texto); o anexo pedia `#000000` no texto.
+- **Neo escuro:** borda `#3a3a3a` com 4 px (espessura é token sem modo) e sombra dura vermelha, como a §5 do anexo; a foto tem fio cinza de 1 px com canto 12.
+- `texture: 'none'` (Nature) e `bgGradientMode: 'none'` (os três): a foto mostra fundo chapado.
+
+**Divergências contra a foto (token · justificativa)**
+- Nature escuro: sidebar sem painel arredondado de vidro (`sidebarBlur`/forma vêm da Personalidade `soft`); logotipo "Vitrine" e fonte do corpo do harness.
+- Neo escuro: cartão com borda de 4 px e sombra vermelha, a foto tem 1 px sem sombra (identidade do tema, ver acima); a navegação no topo da foto é funcional (a vitrine usa a lateral); `textureOpacity`: grade mais visível no claro (0,25, sem referência).
+- Dot Matrix: foto tem a barra lateral sem preenchimento, o tema a pinta `#050505` com o item ativo em pílula dourada (Personalidade `executive`, D3).
+- Composição: a cena da vitrine não é a tela "Sessões TCE-SP".
+- Claro de Nature e Dot Matrix e escuro de Neo/Nature: sem referência além da foto escura; legíveis.
+
+**Achados fora do escopo (não corrigidos)**
+- `themes:showcase`/harness: o `process.cwd` do Markdown continua quebrando a cena `telas` (já no backlog #75); no meu script remendei só o bundle temporário.
+- O `npm run guide` regenera `sarak-dev/` e passa a refletir arquivos de outras execuções (ADR 027).
+
+**Pendências / riscos**
+- `git clean` do `dist/` (acima).
+- `npm run verify` completo não foi rodado (é do revisor).
+
+## Veredito — 2026-11-12 — lote 2 — 🔴 Reprovado (achados 8 e 9; curtos)
+
+**Conferido por mim:**
+- As 3 imagens de `C:\tmp\plan162-lote2\lado-a-lado\` ao lado das fotos.
+- `npx vitest run src/core/Design/presets/themes src/core/Design/presets/components PresetsCatalog` → 16 arquivos, 323 testes verdes.
+- `git status`: nenhum tema existente tocado.
+- Nature Breeze (contraparte escura) e Dot Matrix (nativo escuro) reproduzem a foto em fundo, barra, título, texto, marca e
+  cartão. A medida do preenchimento do cartão no pixel (<4%) foi registrada.
+- Aceitas como justificadas: as barras declaradas com valores do tom `neutral` (trava `presetsReadable`); o título ≠ texto do
+  Neo claro; a barra pintada do Dot Matrix e a forma da barra do Nature (Personalidade da D3); a composição da vitrine.
+
+8. **Neo Brutalism Classic, contraparte escura, não reproduz a foto (D1).** A foto tem cartão com fio cinza fino, canto
+   arredondado e **sem sombra**. A captura tem borda de 4 px e sombra dura vermelha `8px 8px 0px #ff0000` (`contraparte`).
+
+   O executor seguiu a §5 do anexo (`plan-162-mapa-de-tokens.md:250`, "borda grossa e vermelho vivo; a sombra dura passa a ser
+   na cor da primária"). Essa frase, aprovada por mim no lote 0, contradiz a foto: o erro é do anexo, e eu o corrijo neste
+   veredito.
+
+   O que dá por valor: a sombra está na `contraparte`, então varia por modo, e no escuro ela sai (`cardShadow` sem sombra, como a
+   foto). A espessura (`cardBorderWidth`) não tem modo, e os 4 px do nativo claro (a identidade brutalista) ficam nos dois; no
+   escuro, a cor da borda se aproxima do fio da foto. Esse resto é limite do contrato e vai nomeado como divergência.
+
+9. **Dot Matrix: a malha de pontos do fundo está fraca no nativo.** O `design` (escuro, nativo) tem `textureOpacity: 0.08`, e a
+   contraparte clara tem `0.15`. O JSON pede 0,15, e a foto mostra a malha visível no escuro. Os valores parecem trocados de
+   modo. Correção: o nativo segue a foto e o JSON; a contraparte, o que for legível no claro.
+
+Pronto quando a captura e a imagem lado a lado dos dois temas forem refeitas e o vitest acima seguir verde.
+
+**Pendência do dono, não do executor:** o hook bloqueou o `git clean`, e sobraram 24 arquivos não rastreados em `dist/`. Rodar
+`git clean -fdq -- dist` antes do commit.
+
+**Status da plan: 🔵 Em correção.**
+
+## Resumo da execução (correção do lote 2) — 2026-11-12
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar**
+Os mesmos arquivos do fim do lote 2 (temas novos, registros, anexo, guia), mais `browser-tests/plan-160-*`, `specs/adr/027-…` e `specs/plan/plan-160-…`/`plan-164-…` de outras execuções; 24 arquivos não rastreados em `dist/` (do lote 2). Nenhum chrome-headless em execução ao abrir o navegador.
+
+**O que foi feito**
+- **Achado 8** — `neo-brutalism-classic.ts` (`contraparte`): `cardShadow` de `8px 8px 0px #ff0000` para `'none'`; `cardBorderColor`, `sidebarBorderColor` e `topbarBorderColor` de `#3a3a3a` para `#343434`, o fio medido na foto (pixel `#343434` na borda do cartão). A espessura (`cardBorderWidth: 4`) não muda: não tem modo. Comentário do cabeçalho e `description` ajustados (já não citam sombra vermelha).
+- **Achado 9** — `dot-matrix-elegant.ts`: `textureOpacity` do `design` (escuro, nativo) de 0,08 para 0,15 (foto e JSON); da `contraparte` (clara) de 0,15 para 0,08, que na captura fica legível sem pesar sobre o marfim. Comentário do cabeçalho ajustado.
+- `catalog.generated.ts` regenerado (`npm run themes:catalog`, 26 temas); snapshot do `PresetsCatalog` atualizado com `-u` (as linhas do Neo escuro mudaram de borda e sombra).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/presets/themes/neo-brutalism-classic.ts` | alterado | contraparte: sem sombra, fio `#343434` |
+| `src/core/Design/presets/themes/dot-matrix-elegant.ts` | alterado | `textureOpacity` 0,15 no nativo escuro, 0,08 na contraparte clara |
+| `src/features/DesignEngine/Canvas/components/__tests__/__snapshots__/PresetsCatalog.test.tsx.snap` | alterado | snapshot do Neo escuro |
+| `sarak-ui/*` (via `npm run guide`) | alterado | kit regenerado; `sarak-dev/` não foi tocado desta vez |
+
+**Verificações executadas**
+- `npx vitest run src/core/Design/presets/themes src/core/Design/presets/components PresetsCatalog` → 322 de 323 verdes; a falha foi o snapshot do `PresetsCatalog` (esperada, valores do Neo escuro). Depois do `-u`, `PresetsCatalog` → 8 de 8 verdes; as outras 15 suítes (themes e components) já tinham passado na mesma execução.
+- `npm run guide` → kit gerado, 143 componentes, 424 tokens.
+- Capturas refeitas a 1440×900 nos dois modos de `neo-brutalism-classic` e `dot-matrix-elegant` em `C:\tmp\plan162-lote2\`; imagens foto | nativo | contraparte refeitas em `C:\tmp\plan162-lote2\lado-a-lado\` (os dois temas; a de Nature Breeze ficou como estava). Lidas: Neo escuro sem sombra, com fio cinza; Dot Matrix escuro com a malha visível; Dot Matrix claro legível.
+- Build não rodado.
+
+**Critérios de aceite**
+- [x] Achado 8 — `neo-brutalism-classic.ts` contraparte, captura `neo-brutalism-classic__dark.png`.
+- [x] Achado 9 — `dot-matrix-elegant.ts` `design` 0,15 / `contraparte` 0,08, capturas dos dois modos.
+- [x] Capturas e lado a lado refeitos dos dois temas.
+- [x] vitest de themes, components e PresetsCatalog verde; `npm run guide` rodado no fim.
+
+**Decisões e suposições**
+- **Captura sem build:** o harness lê `dist/index.js` por padrão, que estaria defasado e eu não podia rebuildar. Usei `buildHarness(…, { useSourceLibrary: true })` só no meu script de captura (fora do repositório), que lê o código-fonte atual.
+- **Fio nas barras:** também troquei a borda da lateral e do topo escuros do Neo para `#343434`, para ficarem no mesmo fio do cartão da foto; o pedido citava só o cartão.
+- **0,08 na contraparte clara do Dot Matrix:** valor escolhido pela captura, não medido contra referência (a foto não tem claro).
+- **`cardShadow: 'none'` não zera a sombra:** o snapshot mostra que o cartão recebe `0 4px 10px -2px color-mix(var(--color-theme-body) 50%, transparent)`; sobre o fundo escuro, na cor do próprio fundo, a captura não mostra sombra visível. O Dot Matrix já se comportava assim.
+
+**Divergências restantes contra a foto (nomeada)**
+- **Neo escuro:** espessura da borda do cartão, 4 px contra o fio de 1 px da foto. `cardBorderWidth` não tem modo e os 4 px são a identidade do nativo claro. Limite do contrato.
+
+**Achados fora do escopo (não corrigidos)**
+- O Anexo D de `plan-162-mapa-de-tokens.md` (linhas 367-368) segue dizendo `cardBorderColor` `#3a3a3a` e `cardShadow` `8px 8px 0 #ff0000` no Neo escuro; agora são `#343434` e sem sombra. É spec e não foi tocado.
+
+**Pendências / riscos**
+- Os 24 arquivos não rastreados em `dist/` do lote 2 continuam lá (`git clean -fdq -- dist` é do dono); nenhum arquivo novo em `dist/` foi gerado agora.
+
+## Veredito — 2026-11-12 — correção do lote 2 — 🟢 Aprovado; o lote 3 segue
+
+**Conferido por mim:**
+- Valores nos dois arquivos:
+  - Neo, `contraparte`: `cardShadow: 'none'`; borda do cartão, da lateral e do topo `#343434`.
+  - Dot Matrix: `textureOpacity` 0,15 no `design` (escuro) e 0,08 na `contraparte` (clara).
+- As imagens refeitas em `C:\tmp\plan162-lote2\lado-a-lado\`:
+  - Neo escuro sem sombra vermelha, com fio cinza.
+  - Dot Matrix escuro com a malha visível, como na foto; o claro legível.
+- Não repeti o vitest: o executor rodou o filtro pedido, e o snapshot só mudou nas linhas do Neo escuro.
+
+**Aceitos:**
+- O fio também na lateral e no topo do Neo escuro, coerente com a foto.
+- A espessura de 4 px como divergência nomeada (token sem modo).
+- `cardShadow: 'none'` com a sombra residual composta pelos tokens de deslocamento, invisível na cor do fundo e igual ao
+  Dot Matrix.
+
+**Corrigido por mim:** o Anexo D de `plan-162-mapa-de-tokens.md`, que o executor apontou como fora do escopo. As linhas do Neo
+escuro (borda e sombra) e a do `textureOpacity` do Dot Matrix agora dizem o valor final.
+
+**Lote 3 liberado.**
