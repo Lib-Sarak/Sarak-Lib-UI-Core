@@ -83,6 +83,7 @@ outros. Paleta usada por tema embarcado não sai sem o dono decidir.
 - [ ] Harmonia e contraste verdes; exceções nomeadas.
 - [ ] `docs/migracoes.md` atualizado.
 - [ ] Suíte completa verde; `tsc` 0; baseline sem regressão; Anel 1.
+- [ ] Prévia para o dono em `C:\tmp\sarak-previa-163\index.html` (o lote que grava as paletas), com capturas reais; o lote só fecha com o ok do dono nela.
 
 # 7. Como verificar (uso do revisor)
 
@@ -110,3 +111,10 @@ outros. Paleta usada por tema embarcado não sai sem o dono decidir.
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Nota do revisor — 2026-11-12 — prévia HTML para o dono aprovar
+
+A pedido do dono, como nas campanhas anteriores: ao fim de o lote que grava as paletas, o executor gera `C:\tmp\sarak-previa-163\index.html`
+com capturas reais do `dist/` ou do código-fonte (como as prévias da 136 a 149), mostrando cada paleta nos dois modos, como a prévia da plan-143. O resumo do lote dá o caminho.
+O revisor confere a prévia antes do veredito, e o lote só fecha com o ok do dono nela (critério acrescentado à §6). A projeção da
+campanha inteira, feita à mão, está em `C:\tmp\sarak-previa-campanha-9\index.html`: é referência de intenção, não de pixel.

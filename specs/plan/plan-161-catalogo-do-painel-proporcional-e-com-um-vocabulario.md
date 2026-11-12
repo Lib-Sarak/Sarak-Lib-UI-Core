@@ -146,6 +146,7 @@ roda sobre os arquivos atuais e reprova antes da troca.
 - [ ] Textura do card e do fundo lado a lado, com o alvo no nome.
 - [ ] Teste do glossário verde, e reprovando sobre os textos de antes.
 - [ ] Suíte completa verde; `tsc` 0; baseline sem regressão; Anel 1; `npm run build` + `cromo-css-real:check`.
+- [ ] Prévia para o dono em `C:\tmp\sarak-previa-161\index.html` (cada lote), com capturas reais; o lote só fecha com o ok do dono nela.
 
 # 7. Como verificar (uso do revisor)
 
@@ -178,3 +179,10 @@ glossário; nenhuma regra de gate nova.
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Nota do revisor — 2026-11-12 — prévia HTML para o dono aprovar
+
+A pedido do dono, como nas campanhas anteriores: ao fim de cada lote, o executor gera `C:\tmp\sarak-previa-161\index.html`
+com capturas reais do `dist/` ou do código-fonte (como as prévias da 136 a 149), mostrando cada decisão inteira, com as amostras novas, nos dois modos (antes e depois). O resumo do lote dá o caminho.
+O revisor confere a prévia antes do veredito, e o lote só fecha com o ok do dono nela (critério acrescentado à §6). A projeção da
+campanha inteira, feita à mão, está em `C:\tmp\sarak-previa-campanha-9\index.html`: é referência de intenção, não de pixel.

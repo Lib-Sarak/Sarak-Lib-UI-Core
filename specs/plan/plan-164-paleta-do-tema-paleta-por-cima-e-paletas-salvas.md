@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Aplicar a paleta do tema, permitir a paleta escolhida por cima de qualquer tema e salvar paletas com nome"
 objetivo: "Fazer escolher um tema aplicar as cores dele, deixar o usuário pôr uma paleta por cima de qualquer tema (inclusive dos que declaram cor) e salvar uma paleta criada com nome próprio, que aparece na galeria e serve à marca"
 dominio: "Design Engine / Paleta e painel"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Média"
 tags: ["plan", "paletas", "temas", "painel", "persistencia"]
 relacionados: ["[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[024-paleta-calculada-separada-do-tema]]", "[[010-temas-salvos-pelo-usuario]]", "[[011-tema-salvo-por-uma-porta-de-escrita]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]"]
@@ -25,10 +25,11 @@ fica um tema numa paleta específica. Deve ser possível salvar uma paleta criad
 paleta para a marca."
 
 **O que existe hoje (lido em 2026-11-11):**
-- Todo tema tem cor própria, por dois caminhos: 6 dos 19 declaram `colorPalette` (`sarak-sovereign` → `ciano-violeta`,
-  `cyberpunk-neon` → `verde-neon`, `industrial-terminal` → `ambar-industrial`, `nebula-space` → `ametista-petroleo`, `neo-brutalism` →
-  `cobalto-vivo`, `synthwave-retro` → `rosa-synthwave`); os outros 13 declaram as cores direto. A `plan-162` acrescenta sete temas, todos
-  com `colorPalette`.
+- Todo tema tem cor própria: **todos** declaram `colorPalette` (a trava `themes/__tests__/themePalettes.test.ts` o exige), e parte
+  deles declara também papéis de cor por cima da paleta, que vencem a calculada ([[09-temas-e-presets]] §4.3.4). Medido em 2026-11-12,
+  depois do lote 1 da `plan-162`: 23 temas, 11 com papéis declarados por cima (de 8 a 24 dos 92 de `PALETTE_ROLE_MAP`). *Corrigido
+  pelo revisor em 2026-11-12: a versão anterior dizia "6 dos 19 declaram `colorPalette`, os outros 13 declaram as cores direto" —
+  contagem errada (um `grep` que não via a chave entre aspas).*
 - A troca de tema compõe e não herda ([[09-temas-e-presets]] §4.3.3): o tema escolhido aplica a cor que declara.
 - **Escolher uma paleta no painel já vence a cor do tema:** `usePaletteSelection.ts` grava no rascunho `colorPalette` **e todas as cores
   que ela calcula**, por cima das que o tema declara (conferido pelo dono no uso e no código, 2026-11-11). O que não existe é a paleta
@@ -120,6 +121,7 @@ apagar.
 - [ ] Paleta salva com nome, listada em "Minhas paletas", escolhível na marca, gravada no design do sistema e apagável.
 - [ ] Documentação do importador e `docs/migracoes.md` atualizadas.
 - [ ] Suíte completa verde; `tsc` 0; baseline sem regressão; Anel 1; paridade de token (se houver token novo).
+- [ ] Prévia para o dono em `C:\tmp\sarak-previa-164\index.html` (os lotes de código), com capturas reais; o lote só fecha com o ok do dono nela.
 
 # 7. Como verificar (uso do revisor)
 
@@ -144,8 +146,95 @@ apagar.
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
+## Resumo da execução (lote 0) — 2026-11-12
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar**
+```
+ M specs/00-indice.md
+ M specs/plan/plan-160-previa-mostra-o-efeito-de-toda-opcao.md
+ M specs/plan/plan-164-paleta-do-tema-paleta-por-cima-e-paletas-salvas.md
+```
+
+**O que foi feito**
+- `specs/adr/027-paleta-do-tema-paleta-por-cima-e-paletas-salvas-no-design.md` criado, no molde do `template-adr.md`, em `🟡 Proposto`. Registra as decisões 0.1 a 0.3 (§2.1 toggle do sistema, §2.2 paleta vence tudo o que calcula, §2.3 paleta salva no design) com quatro alternativas e o custo de cada: A escolhida; B preferência do usuário ou estado do painel (0.1); C porta própria e D tabela de temas (0.3).
+- O ADR cita o ADR-026 como premissa (§1) e não repete o formato dele. A §2.4 diz como o toggle, a paleta escolhida por cima de tema de cor declarada e a lista de paletas salvas são gravados nesse formato (0.4): são escolhas do design do sistema, cada uma uma chave que difere do baseline do 026.
+- `specs/adr/README.md:68` — linha do 027 na tabela.
+- `npm run dev-kit` rodado (a plan manda em todo lote): `sarak-dev/` regenerado, porque o ADR novo o defasou.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `specs/adr/027-paleta-do-tema-paleta-por-cima-e-paletas-salvas-no-design.md` | criado | ADR-027 |
+| `specs/adr/README.md` | alterado | linha do 027 |
+| `sarak-dev/state.json`, `sarak-dev/GUIA-MANUTENCAO.md`, `sarak-dev/START-HERE.md` | alterado | gerados por `npm run dev-kit` |
+| `specs/plan/plan-164-…md` | alterado | este resumo e o `status` |
+
+**Verificações executadas**
+- `npm run -s verify -- --tier=docs` (1ª vez) → `plan-index:check`, `section-pointers:check`, `guide:check`, Anel 0 (185 linhas, 0 achados) OK; `dev-kit:check` FAIL (3 arquivos defasados).
+- `npm run -s dev-kit` → regenerado (139 componentes, 424 tokens, 44 gates).
+- A 2ª rodada de `verify --tier=docs` está feita no passo seguinte, depois do `plan-index` (resultado abaixo).
+
+**Critérios de aceite**
+- [x] ADR-027 escrito, `🟡 Proposto` — evidência: o arquivo; a aprovação do dono é do revisor, e sem ela o lote 1 não começa.
+- [x] Alternativas conferidas contra `compose.ts:30-55` e `usePaletteSelection.ts:38-39` (lidos).
+- [ ] Os demais critérios da §6 pertencem aos lotes 1 e 2.
+
+**Decisões e suposições**
+- Nomes dos tokens (toggle e lista de paletas) **não** foram fixados: o ADR deixa para o lote 1/2 pela paridade das três fontes.
+- A lista é valor estruturado; o ADR registra que a comparação com o baseline do 026 tem de ser por igualdade profunda e que a regra L1 não pode tratá-la como cor (conferência do lote 2).
+- "Ligar o toggle sem paleta escolhida antes vale a paleta vigente" é suposição minha, registrada como detalhe do lote 1 — o dono não decidiu isso.
+- Pus uma quarta alternativa (D, tabela de temas) separada da C, porque 0.3 recusa as duas com custos distintos.
+
+**Achados fora do escopo (não corrigidos)**
+- Não-rastreados `browser-tests/_probe160.mjs` e `browser-tests/fixtures/plan-160-previa-entry.tsx` apareceram durante a execução; não estavam na fotografia e não são meus (parecem da plan-160). Não toquei.
+
+**Pendências / riscos**
+- Se o ADR-026 mudar na aprovação, o 027 se ajusta na mesma rodada.
+- O trecho "Voltar atrás é caro…" e a ausência de teto para a lista de paletas são julgamento meu; o lote 2 mede.
+
 ---
 
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Nota do revisor — 2026-11-12 — lote 0 liberado antes da `plan-160`
+
+O lote 0 é só o ADR-027 e registra decisões que o dono já tomou em 2026-11-11. Ele parte do formato do ADR-026 (gravar só
+escolhas), que segue 🟡 Proposto: o ADR-027 o cita como premissa e, se o ADR-026 mudar na aprovação, o 027 se ajusta na mesma
+rodada. Os lotes 1 e 2 continuam esperando a 158 e a 160.
+
+**Lote 0 liberado.**
+
+## Veredito — 2026-11-12 — lote 0 — 🟢 Aprovado; o lote 1 espera a aprovação do ADR-026 e do ADR-027 pelo dono
+
+**Conferido por mim:** `specs/adr/027-paleta-do-tema-paleta-por-cima-e-paletas-salvas-no-design.md` inteiro e a linha em
+`specs/adr/README.md`.
+- As decisões 0.1 a 0.3 estão registradas como o dono as tomou, com quatro alternativas e o custo de cada uma.
+- O ADR-026 é citado como premissa, sem repetir o formato dele.
+- A §2.4 diz como o toggle e a lista são gravados no formato do 026 e o que o lote 2 confere: a igualdade profunda da lista e a
+  regra L1, que não pode tocá-la.
+- "Atalho de marca" existe no painel (`ThemeDecisionList.test.tsx:21`).
+
+Um erro de fato, nascido na minha §1 desta plan e copiado no ADR: "6 dos 19 declaram `colorPalette`, os outros 13 declaram as
+cores direto". Medi pelo `SARAK_ALL_THEMES` real: os 23 temas declaram `colorPalette`, e a trava `themePalettes.test.ts` já o
+exigia; 11 deles declaram também de 8 a 24 papéis de cor por cima. Corrigi a §1 desta plan e o §1 do ADR. Nenhuma decisão
+muda.
+
+**Para o lote 1:** como todo tema declara paleta, "ligar o toggle sem paleta escolhida antes vale a paleta vigente" (ADR,
+Consequências) sempre tem valor. Mas, nos 11 temas com papéis declarados por cima, a troca de tema com o toggle ligado leva
+só a paleta, não esses papéis: a cor na tela antes da troca não é exatamente a que segue. O lote 1 trata e testa esse caso, e
+o painel o diz quando acontece.
+
+`npm run -s verify -- --tier=docs` verde depois das correções.
+
+**Status da plan: 🟡 Em execução** (lotes 1 e 2 esperam o ADR-026, o ADR-027, a `plan-158` e a `plan-160`).
+
+## Nota do revisor — 2026-11-12 — prévia HTML para o dono aprovar
+
+A pedido do dono, como nas campanhas anteriores: ao fim de os lotes de código, o executor gera `C:\tmp\sarak-previa-164\index.html`
+com capturas reais do `dist/` ou do código-fonte (como as prévias da 136 a 149), mostrando um tema de cor declarada com e sem "Manter minha paleta", trocando de tema; salvar, escolher e recarregar uma paleta salva. O resumo do lote dá o caminho.
+O revisor confere a prévia antes do veredito, e o lote só fecha com o ok do dono nela (critério acrescentado à §6). A projeção da
+campanha inteira, feita à mão, está em `C:\tmp\sarak-previa-campanha-9\index.html`: é referência de intenção, não de pixel.

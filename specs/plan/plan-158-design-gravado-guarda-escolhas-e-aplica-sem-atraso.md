@@ -144,6 +144,7 @@ aplicar ou descartar. Sem rascunho sujo, nada pergunta. Teste de unidade para os
 - [ ] Sair com rascunho sujo pergunta; sem rascunho, não pergunta.
 - [ ] Nota em `docs/migracoes.md`.
 - [ ] Suíte completa verde; `tsc` 0; baseline sem regressão; Anel 1.
+- [ ] Prévia para o dono em `C:\tmp\sarak-previa-158\index.html` (lotes 1, 2 e 3), com capturas reais; o lote só fecha com o ok do dono nela.
 
 # 7. Como verificar (uso do revisor)
 
@@ -393,3 +394,10 @@ design, nada gravado além de `colorPalette`). `usePaletteSelection.ts` agora ci
 Lote 0 fechado (achados 1 a 6). O ADR-026 segue 🟡 Proposto até o dono aprovar; só então o lote 1 é liberado.
 
 **Status da plan: 🟡 Em execução** (lote 1 aguardando a aprovação do ADR-026).
+
+## Nota do revisor — 2026-11-12 — prévia HTML para o dono aprovar
+
+A pedido do dono, como nas campanhas anteriores: ao fim de lotes 1, 2 e 3, o executor gera `C:\tmp\sarak-previa-158\index.html`
+com capturas reais do `dist/` ou do código-fonte (como as prévias da 136 a 149), mostrando antes e depois de trocar High Contrast → Sovereign, aplicar Invertida e alternar claro/escuro (cromo real), o tempo medido de cada escolha e o aviso ao sair com alterações. O resumo do lote dá o caminho.
+O revisor confere a prévia antes do veredito, e o lote só fecha com o ok do dono nela (critério acrescentado à §6). A projeção da
+campanha inteira, feita à mão, está em `C:\tmp\sarak-previa-campanha-9\index.html`: é referência de intenção, não de pixel.

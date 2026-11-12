@@ -66,6 +66,7 @@ Ponha a **data da decisão no corpo** do documento. Mantenha curto — uma a dua
 | [024](./024-paleta-calculada-separada-do-tema.md) | A cor sai do tema: uma paleta calculada a partir de uma cor e de um tipo de harmonia, nos dois modos | 🟢 Aceito |
 | [025](./025-kit-de-verificacao-de-uso-nucleo-unico-duas-portas.md) | O kit de verificação de uso é um núcleo único com duas portas: plugin de ESLint para o código e comando da CLI para o que o ESLint não lê | 🟢 Aceito |
 | [026](./026-design-gravado-guarda-so-as-escolhas.md) | O design gravado guarda só o que foi escolhido — o que a paleta calcula é recalculado ao carregar | 🟡 Proposto |
+| [027](./027-paleta-do-tema-paleta-por-cima-e-paletas-salvas-no-design.md) | A paleta do tema é o padrão; "manter minha paleta" é escolha do sistema, e as paletas salvas moram no design | 🟡 Proposto |
 
 Comece pelo **001** — ele enquadra os outros três da mesma virada (002, 003, 004) e explica a regra de corte que os produziu.
 

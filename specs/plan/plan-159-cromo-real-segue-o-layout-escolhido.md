@@ -1,7 +1,7 @@
 ---
 tipo: "plan"
-titulo: "Fazer o cromo real seguir o Layout escolhido, com preferências discretas"
-objetivo: "Fazer toda opção de Layout que o administrador aplica aparecer no cromo real ou dizer por que não aparece, com a Topbar sem item escondido, a barra de tom contrastante legível e os controles de preferência discretos, com P, M e G configuráveis em relação ao tamanho base do tema"
+titulo: "Fazer o cromo real seguir o Layout escolhido, com preferências discretas e uma decisão própria para as barras"
+objetivo: "Fazer toda opção de Layout que o administrador aplica aparecer no cromo real ou dizer por que não aparece, com a Topbar sem item escondido, a barra de tom contrastante legível e os controles de preferência discretos, com P, M e G configuráveis em relação ao tamanho base do tema, e reunir as barras numa decisão própria, com um tom que vale para as duas e um interruptor da troca lateral/topo"
 dominio: "Cromo / Preferências do usuário"
 status: "🔴 A executar"
 prioridade: "Alta"
@@ -48,6 +48,26 @@ deixam de ser problema de dado; o que sobra é do cromo e do painel:
      recolhida" com outro nome.
    - "Comportamento da Topbar" (`navbarLayout`) aparece e não tem efeito com a navegação lateral.
 
+7. **Pedido do dono (2026-11-12): uma decisão própria para as barras.** O dono não acha onde se configuram as barras e vê o Layout
+   "não aplicar nada". Hoje tudo isso está na decisão Layout, que mistura as barras com a largura do conteúdo
+   (`design-decisions.json`: grupos `sidebar`, `topbar`, `contentWidth`, `globalBlock` e as perguntas `where`, `how`, `what`,
+   `brand` e `behavior`). Ele pede três coisas:
+   - **Uma categoria das barras** no caminho do painel, ao lado de Tema, Cores, Fontes, Forma, Componentes e Layout.
+   - **O tom vale para as duas barras.** Lido no código:
+     - o tom são dois tokens, `sidebarTone` e `topbarTone`, e os presets de cada barra gravam só o da sua barra
+       (`presets/components/layout.ts`: `sidebar-inverted` grava só `sidebarTone: 'inverse'`, `topbar-inverted` só `topbarTone`);
+     - escolher "Invertida" na Sidebar deixa a Topbar na cor do tema, e é o que o dono vê no ERP;
+     - 8 dos 26 temas declaram tom diferente nas duas barras: `sarak-sovereign-classic`, `cyberpunk-neon` e
+       `cyberpunk-neon-classic` com a lateral `inverse` e o topo `surface`/`neutral`, e também `dot-matrix-elegant`,
+       `industrial-terminal-classic`, `nature-breeze`, `neo-brutalism` e `neo-brutalism-classic`.
+   - **Ligar e desligar a troca lateral/topo pelo usuário.** Há sistemas com um tipo só de navegação. O mecanismo já existe e
+     funciona:
+     - `preferenceNavigationStylePosition: 'off'` ("Esconder", pergunta `what` do Layout) tira a escolha da barra e do ⚙;
+     - `overlayPreferences.ts:154-157` ignora a preferência já gravada quando a escolha não é oferecida
+       (`isPreferenceOffered`).
+
+     Falta ser achável: hoje é uma "posição" entre outras oito, e não um interruptor junto da orientação.
+
 **O que funciona e não se toca:** borda, item ativo, raio, densidade, ícone, blur, posição esquerda/direita/flutuante, gradiente, marca
 na base, largura ajustável, auto-ocultar e as larguras de conteúdo 1000/1200/1440 aplicam no cromo real.
 
@@ -65,6 +85,15 @@ na base, largura ajustável, auto-ocultar e as larguras de conteúdo 1000/1200/1
 - **Lote 3 (o painel diz a verdade):** o aviso de preferência pessoal e os controles condicionais em
   `src/features/DesignEngine/Main/components/` (`DecisionQuestionList.tsx`, `ThemeDecisionView.tsx` e vizinhos); `schema/navigation.ts`
   e `schema/system.ts` (rótulos e o vínculo textura → opacidade); as chaves de texto em `src/core/i18n/`; os testes.
+- **Lote 4 (decisão das barras):**
+  - `src/features/DesignEngine/config/design-decisions.json` (a decisão nova e o que sai do Layout) e o tipo de decisão em
+    `src/features/DesignEngine/utils/decisions.ts`;
+  - os componentes da decisão em `src/features/DesignEngine/Main/components/` (o controle único de tom e o interruptor da troca
+    lateral/topo);
+  - `src/core/Design/presets/components/layout.ts` (o tom sai dos presets de estrutura) e os presets de Personalidade que citam
+    preset de barra (`personalities.ts`);
+  - o ícone e o texto da decisão em `src/core/i18n/` (seis idiomas);
+  - os testes, o snapshot do `PresetsCatalog` e o spec de navegador da `plan-160`, se já existir (a decisão nova entra na lista dele).
 - Em todo lote: `docs/migracoes.md`, `npm run guide`, `npm run dev-kit`.
 
 ## 3.2 Fora
@@ -127,6 +156,41 @@ silêncio.
 3.5. `isNavHidden` passa a se chamar, no painel, como a preferência que ele é ("Navegação recolhida"); confira se o mesmo vale para
 o rótulo de `isAutoHideEnabled`.
 
+**Lote 4 — as barras ganham decisão própria (pedido do dono, 2026-11-12; §2, item 7).** Decisões do dono em 2026-11-12: B1 (a) e B2 (a),
+registradas na §10.
+
+4.1. **Decisão "Barras".** Fica no caminho do painel entre Componentes e Layout e reúne tudo o que é das barras:
+- a orientação (lateral ou topo);
+- a troca pelo usuário (4.3);
+- o tom (4.2);
+- os presets de Sidebar e Topbar;
+- as perguntas `where`, `how`, `what`, `brand` e `behavior`.
+
+O Layout fica com a largura do conteúdo e o que não for de barra. O subtítulo da decisão, na lista, resume a orientação, o tom e a
+troca pelo usuário (por exemplo, "Lateral · Invertida · fixa"). Teste: cada token que hoje aparece no Layout aparece em
+exatamente uma das duas decisões.
+
+4.2. **Um controle de tom para as duas barras.** Escolher um tom grava `sidebarTone` e `topbarTone` juntos. O ajuste de uma barra
+só continua no nível avançado (token por token), como hoje.
+- Os presets de Sidebar e Topbar deixam de gravar tom e ficam só com estrutura (borda, item ativo, densidade, fundo, raio).
+- Os presets cuja identidade é o tom (`sidebar-brand`, `sidebar-inverted`, `sidebar-gradient`, `topbar-brand`,
+  `topbar-inverted`) viram opções do controle de tom ou saem, conforme o executor medir que estrutura sobra neles.
+- A Personalidade que citava um preset de barra continua resolvendo. Se o tom dela vinha do preset, ela passa a gravar o tom
+  das duas barras.
+- Teste que reprova antes: aplicar "Invertida" pela decisão muda o fundo da Sidebar e da Topbar no cromo real.
+
+4.3. **"O usuário pode trocar lateral/topo"**: um interruptor ao lado da orientação.
+- Ligado é a posição atual do token `preferenceNavigationStylePosition` (`menu` ou `pinned`).
+- Desligado é `off`.
+- O controle de posição continua na pergunta `what`, para quem quer `pinned` × `menu`.
+
+Nenhum token novo. Teste: com o interruptor desligado, uma preferência `{"navigationStyle":"sidebar"}` já gravada no navegador não
+muda a orientação escolhida pelo administrador, e a escolha some da barra e do ⚙.
+
+4.4. **Tema que declara tons diferentes** nas duas barras (B2 a): continua podendo declarar; nenhum valor de tema muda. O tom
+escolhido pelo administrador na decisão grava as duas barras e vence o do tema. Teste: com um tema de tons diferentes (`sarak-sovereign-classic`),
+aplicar um tom pela decisão iguala as duas barras no cromo real.
+
 # 6. Critérios de aceite
 
 - [ ] Topbar: todo item visível ou no "Mais", a 1440, 1280 e 1024 px, com a composição do ERP (spec que reprovava antes).
@@ -137,8 +201,12 @@ o rótulo de `isAutoHideEnabled`.
 - [ ] Painel avisa a preferência pessoal que sobrepõe o token e permite apagá-la.
 - [ ] Controle que não vale no modo atual: desabilitado com motivo.
 - [ ] "Textura local" muda pixel; largura fora do intervalo não é aceita em silêncio; rótulo de `isNavHidden` corrigido.
+- [ ] Decisão "Barras" no caminho do painel. Todo token que estava no Layout aparece em exatamente uma das duas decisões.
+- [ ] Um tom aplicado pela decisão muda o fundo da Sidebar e da Topbar no cromo real (teste que reprovava antes).
+- [ ] Interruptor da troca lateral/topo: desligado, a preferência já gravada não vence e a escolha some da barra e do ⚙.
 - [ ] Paridade de token verde; `docs/migracoes.md`; gerados regenerados.
 - [ ] Suíte completa verde; `tsc` 0; baseline sem regressão; Anel 1.
+- [ ] Prévia para o dono em `C:\tmp\sarak-previa-159\index.html` (lotes 1, 2 e 4), com capturas reais; o lote só fecha com o ok do dono nela.
 
 # 7. Como verificar (uso do revisor)
 
@@ -158,7 +226,9 @@ nova.
 
 - **`05`:** §2.1 (o "Mais" da Topbar, no lugar da lista que rola), §2.2.2 (o ⚙ não repete o fixado; controles compactos).
 - **`09`:** §4.7 (P e G a partir de `bodySize`, configuráveis, padrão −2/+2; a tabela muda de "um degrau" para o valor em px).
-- **`06`:** o aviso de preferência pessoal e o controle desabilitado no modo que não vale.
+- **`06`:** o aviso de preferência pessoal e o controle desabilitado no modo que não vale; a decisão "Barras" no caminho do painel
+  (§2.3), o controle único de tom e o interruptor da troca lateral/topo.
+- **`09`:** §4.3.4, o tom escolhido pelo administrador vale para as duas barras; o que o tema declara, conforme a B2.
 
 ---
 
@@ -171,3 +241,43 @@ nova.
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
+
+## Nota do revisor — 2026-11-12 — lote 4 acrescentado a pedido do dono; duas decisões antes dele
+
+O dono pediu uma categoria própria para as barras, com o tom valendo para as duas e um interruptor da troca lateral/topo (§2, item
+7). Entra aqui como lote 4 porque esta plan já é dona do cromo e do painel de Layout. Os lotes 1 a 3 não mudam. O lote 4 roda
+depois do 3, porque o 3.2 desabilita controles por orientação e o 4.1 reorganiza onde eles moram.
+
+**B1 — onde fica a largura do conteúdo.**
+- **(a) Recomendado:** a decisão nova "Barras" e o Layout continua com a largura do conteúdo e o resto que não é barra. Mexe
+  menos, e a `plan-161` reavalia se o Layout magro se funde a Forma.
+- (b) Renomear Layout para "Barras" e mover a largura do conteúdo para Forma: uma decisão a menos, mas a largura do conteúdo
+  não é forma.
+
+**B2 — tema que declara tons diferentes nas duas barras** (8 dos 26, §2, item 7).
+- **(a) Recomendado:** o tema continua podendo declarar. É a cara de alguns temas, conferida contra as fotos na `plan-162`
+  (Dot Matrix com a barra pintada, Sovereign Classic com a lateral invertida). A regra "vale para as duas" é a da escolha do
+  administrador: tom escolhido no painel grava as duas barras e vence o do tema.
+- (b) Todo tema usa um tom só nas duas barras: 8 temas mudam de visual, e o Sovereign Classic e o Cyberpunk Neon deixam de ter a
+  lateral clara no escuro.
+
+Se o que incomoda no ERP é justamente a lateral clara no tema escuro, ela vem do tema declarado (Sovereign Classic e Cyberpunk Neon)
+ou de resto gravado (`plan-158`). Com B2 (a), o administrador a desfaz com um clique no tom; com B2 (b), ela some do tema.
+
+**A `plan-161`** (vocabulário e tamanho de cada decisão) passa a ter uma decisão a mais; ela já depende da 160, que roda depois da 158.
+
+## Decisão do dono — 2026-11-12 — B1 (a) e B2 (a)
+
+- **B1 (a):** decisão nova "Barras"; o Layout continua com a largura do conteúdo e o que não for de barra. A `plan-161` reavalia se o
+  Layout se funde a Forma.
+- **B2 (a):** o tema continua podendo declarar tons diferentes nas duas barras; o tom escolhido pelo administrador grava as duas e vence
+  o do tema.
+
+O lote 4 está decidido e roda depois do lote 3.
+
+## Nota do revisor — 2026-11-12 — prévia HTML para o dono aprovar
+
+A pedido do dono, como nas campanhas anteriores: ao fim de lotes 1, 2 e 4, o executor gera `C:\tmp\sarak-previa-159\index.html`
+com capturas reais do `dist/` ou do código-fonte (como as prévias da 136 a 149), mostrando a Topbar com "Mais" a 1440, 1280 e 1024 px; cada tom nas duas barras em dois temas e nos dois modos; as preferências compactas na barra e no ⚙ (antes e depois); a decisão "Barras" com o interruptor ligado e desligado. O resumo do lote dá o caminho.
+O revisor confere a prévia antes do veredito, e o lote só fecha com o ok do dono nela (critério acrescentado à §6). A projeção da
+campanha inteira, feita à mão, está em `C:\tmp\sarak-previa-campanha-9\index.html`: é referência de intenção, não de pixel.
