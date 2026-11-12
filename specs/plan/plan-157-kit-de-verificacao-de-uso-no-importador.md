@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Verificar por máquina, no importador, o uso correto da lib"
 objetivo: "Fazer o importador saber por máquina, no próprio repositório, onde usa a lib errado ou mantém à mão algo que ela já entrega, com um kit de verificação opcional distribuído no pacote, ligado regra a regra, cada achado com arquivo:linha e o nome público que substitui"
 dominio: "Kit do consumidor / Verificação de uso"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "kit-do-consumidor", "verificacao", "importador", "eslint"]
 relacionados: ["[[12-kit-do-consumidor]]", "[[03-superficie-publica]]", "[[13-instalacao-e-atualizacao]]", "[[00-regras-e-invariantes]]", "[[019-arrastar-e-soltar-do-kanban]]"]
@@ -392,3 +392,91 @@ fora do catálogo de seis idiomas da 10 §3.6, por ser ferramenta do desenvolved
 **Fica para o fechamento da tag:** o `npm run build` completo, que hoje para no `public-types:check` por causa do `DraftToast`.
 
 **Status da plan: 🟡 Em execução** (lote 2: medição nos importadores).
+
+## Resumo da execução (lote 2) — 2026-11-12
+
+**Resultado:** Concluído com pendências (um achado contra a lib, fora do escopo, e o `plan-index:check` vermelho por causa alheia; ver abaixo).
+
+**Estado do worktree ao iniciar**
+(limpo) — `git status --short` vazio, também nos três importadores (ERP, `login-completo`, `login-provedores`).
+
+Durante a execução apareceram, **de outras sessões e não tocados por mim**: `dist/**` (um build, inclusive `dist/eslint.*` e `dist/verify.*`, que são de antes das correções desta rodada), `src/core/Design/presets/themes/**` (quatro temas `*-classic` e testes), `src/features/DesignEngine/**`, `specs/00-indice.md`, `specs/adr/026-…`, `specs/plan/plan-158-…`, `docs/migracoes.md` (+18 linhas da `9.0.0`) e `sarak-ui/docs/migracoes.md`. Como `sarak-ui/` é gerado do worktree, o meu `npm run guide`/`dev-kit` **levou junto** o que essas tarefas mudaram: `sarak-ui/catalog.json`, `START-HERE.md`, `VERSION` e a contagem de temas (19→23) em `GUIA-FRONTEND.md` não são só meus. Quem fechar a outra tarefa regenera de novo.
+
+**O que foi feito**
+- Medição só leitura do kit contra os três importadores, com configuração e harness em `C:\tmp\plan157-lote2\` (nada gravado nas árvores deles; `git status` vazio antes e depois). Plugin: as 11 regras em `error`; comando: as 6 do comando. Também rodei o código do ERP de **2026-10-30** (antes da migração, `git archive` do commit `23ab7e2f` para `C:\tmp`), porque as telas atuais não têm mais o que a regra 4 acusa.
+- Resultado completo no anexo (`specs/plan/anexos/plan-157-catalogo-de-regras.md`, seção "Medição do lote 2"): contagem por regra, cada achado classificado, comandos.
+- Casos conhecidos pegos: A1 (os cinco `var(--sarak-*)` nos mesmos `arquivo:linha`, mais um sexto, `templateLayout.css:48`, verdadeiro); A2–A6 (7 achados, 0 falso no HEAD do ERP); A10: **205 de 205 iguais** à regra do próprio ERP rodada (`createEquivalenceCheck`, só leitura) sobre o mesmo snapshot.
+- Quatro **falsos positivos viraram correção de regra** (`src/verify/rules/names.ts:62-85,105-135`, `src/verify/data.ts:44-52`): `no-reimplemented-piece` não acusa mais tipo (só export de valor), nem embrulho (quem importa a peça pública, de qualquer pacote), nem constante de outra caixa (`SESSION`), nem arquivo com export próprio (`pagination.ts`, `tabs.ts`). 14→5 no snapshot, 11→7 no HEAD do ERP, 5→0 em cada login.
+- Um **defeito** achado ao medir: `no-literal-color-font` quebrava com `TypeError` em `style={{ ...base, cor: x }}` (`src/verify/rules/styles.ts:24`, caso `ContractPdfViewer.tsx:77` do código de 10-30). Corrigido (`styles.ts:49-50`).
+- `recommended` preenchido (`src/verify/plugin.ts:17-30`) com `no-deep-import`, `known-css-var`, `no-internal-class-selector`, `valid-spacing-value`, `known-icon-name`, em `error`. Guia (`sarak-ui/GUIA-FRONTEND.md:1011`) e o teste que dizia "nasce vazio" acertados; `sarak-ui/` e `sarak-dev/` regenerados.
+
+**Arquivos alterados** (os meus)
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `specs/plan/anexos/plan-157-catalogo-de-regras.md` | alterado | seção "Medição do lote 2"; coluna *Recomendada* das regras 4, 5 e 6; S1 da regra 5 |
+| `src/verify/rules/names.ts` | alterado | `no-reimplemented-piece`: valor × tipo, embrulho, nome de arquivo |
+| `src/verify/data.ts` | alterado | `baseName` iguala a caixa, exceto a primeira letra |
+| `src/verify/rules/styles.ts` | alterado | pula o espalhamento no `style` |
+| `src/verify/plugin.ts` | alterado | `recommended` com 5 regras |
+| `src/verify/ruleCatalog.ts` | alterado | um comentário |
+| `src/verify/__tests__/plugin.test.ts` | alterado | 6 testes novos, 1 trocado (`recommended`) |
+| `sarak-ui/GUIA-FRONTEND.md` | alterado | o que é o `recommended` (mais a contagem de temas, de outra tarefa) |
+| `sarak-ui/catalog.json`, `START-HERE.md`, `VERSION`, `sarak-dev/**` | regenerados | efeito do `guide`/`dev-kit` sobre o worktree (inclui trabalho alheio) |
+| `specs/plan/plan-157-…md` | alterado | este resumo e o `status` |
+
+**Verificações executadas**
+- `npx vitest run src/verify` → 2 arquivos, 43 testes verdes (eram 39 antes das correções).
+- `npm run verify -- --tier=quick` → tudo `[OK]` (`tsc`, `audit:baseline --with-tsc`, `barrel:check`, `catalog:check`, `variable-contract:check`, `section-pointers:check`, `guide:check`, `dev-kit:check`, Anel 0 com 2.501 linhas e 0 achado…) **exceto** `plan-index:check`: `plan-162` com índice "🟡 Em execução" × frontmatter "🟠 Em revisão" (do revisor, não desta plan).
+- `npm run guide:check`, `dev-kit:check`, `kit-names:check` → verdes depois da regeneração.
+- Medição: `tsx C:\tmp\plan157-lote2\run-plugin.mts …` (plugin) e `run-cli.mts …` (comando), saídas em `out-*.json`; `compare-erp-rule.mjs` para o 205 de 205.
+- Não rodei a suíte completa, o build nem `test:optional-peers` (do revisor; o build de teste que aparece no worktree não é meu).
+
+**Critérios de aceite**
+- [x] Medição nos três importadores: casos conhecidos pegos, falsos positivos contados — evidência: anexo, seção "Medição do lote 2".
+- [x] `recommended` só com regras sem falso positivo conhecido — evidência: `plugin.ts:17-30` e a tabela do anexo (ficam fora 1, 4, 5, 6, 7, 14, cada uma com o motivo medido).
+- [ ] Os demais critérios (§6) são do lote 1 (já fechado) ou do revisor (suíte completa, `tsc`, baseline).
+
+**Decisões e suposições**
+- A regra 4 (`prefer-sarak-component`) **fica fora do `recommended`**, embora não erre nas telas: acusa a cópia vendorizada do kit e o dublê de teste, e pede `allow`. Mesmo raciocínio para a 6. É decisão minha; o revisor pode ligá-las.
+- As regras 2, 9 e 13 entram no `recommended` **sem nenhuma ocorrência real** que as exercite (0 nos três importadores); a base é o teste unitário e a ausência de falso positivo. Declarado no anexo.
+- O parser do plugin foi o `typescript-eslint` do ERP (8.65) também para os logins (8.66): mesma família, não conferi diferença.
+- Rodei o ERP **antigo** (commit `23ab7e2f`) por `git archive` para fora da árvore; é leitura de histórico, sem tocar o repositório dele.
+- A regra 11 só viu o ERP com as opções `copy`/`installed` (o padrão procura `sarak-ui/VERSION` na raiz); com o padrão ela retornava 0 por cópia ausente, não por estar em dia. Anotado como limite.
+- Cinco achados da regra 5 no código de 10-30 (`formatDate` ×3, `Alert`, `formatCurrency`) ficam **sem classificação**: a regra não compara comportamento.
+
+**Achados fora do escopo (não corrigidos)**
+- `sarak-ui/templates/componente-proprio.tsx:30` (molde que a lib distribui): `border: 'var(--sarak-card-border, none)'`. `--sarak-card-border` **não existe** em `tokens.cssVars`; é a origem provável do A1 `templateLayout.css:77` do ERP (a cópia dele é idêntica). Corrigir o molde é mudança de lib, não de regra. O mesmo molde usa `<section>`/`<h2>` (linhas 25 e 38) e `tela-exemplo.tsx:70` usa `<h3>`, que `prefer-sarak-component` acusa: o molde ensina o que a regra barra.
+- `specs/adr/025-…md:91` diz que o `recommended` "está vazio por princípio" (e `:55` o promete só com o que a medição aprovar); agora ele tem 5 regras. O ADR é do revisor: atualizar na síntese. Conferi por `grep`: `docs/migracoes.md`, `specs/12-kit-do-consumidor.md` e `arquitetura/03-superficie-publica.md` não citam o `recommended`.
+- `plan-index:check` vermelho (plan-162): do revisor.
+- `ERP`: `DeclaredField.tsx:340` (`<fieldset>`) e `LinkPagination.tsx:68` (`<nav>`) em `packages/ui-kit/src/` — verdadeiros pela regra 4, fora do que o gate do ERP lê; `packages/ui-kit/tests/declared/DeclaredDetail.test.tsx:47` e `DeclaredForm.test.tsx:80` usam `.sarak-card` (regra 8). Não são do escopo de uma execução da lib.
+
+**Pendências / riscos**
+- `dist/` do worktree é de outro build e não tem as correções desta rodada; quem for rodar `sarak-ui verify` pelo `bin` precisa do build novo (o `public-types:check` por causa do `DraftToast` seguia parando o `npm run build` no veredito anterior; não reconferi).
+- O que o `recommended` liga é a lista fixa `RECOMMENDED` em `plugin.ts`; mudar de opinião sobre uma regra é uma linha lá, mais o anexo.
+- Os arquivos gerados (`sarak-ui/`, `sarak-dev/`) estão misturados com a mudança de temas de outra tarefa (ver o topo).
+
+## Veredito — 2026-11-12 — lote 2 — 🟢 Aprovado; plan concluída
+
+**Conferido por mim:**
+- `git diff` de `src/verify/**`. Cada uma das 4 correções de regra cita o caso medido e tem teste; `npx vitest run src/verify` →
+  2 arquivos, 43 testes verdes.
+- `npm run build` completo (exit 0) e prova pela regra real, via `dist/eslint.js` com o `recommended`:
+  `var(--sarak-nao-existe)` é acusado, `var(--sarak-card-bg)` não.
+- Suspeitei que o `known-css-var` acusasse variáveis que o `SARAK_DESIGN_MANIFEST` declara (`--sarak-card-border`,
+  `--sarak-error-color` e mais 4). Hipótese refutada: o campo `vars` do manifesto não é lido por nada que emita
+  (`src/core/Provider/utils/validation.ts:40` usa só as chaves), e nenhum CSS ou TS da lib define essas 6. A regra está certa;
+  o defeito é do manifesto (backlog #74).
+- `verify --tier=quick` verde, salvo o `plan-index:check` (status, sincronizado neste veredito).
+
+Perda aceita: a regra 5 (`no-reimplemented-piece`) não olha mais o nome do arquivo quando ele tem algum export de valor. Um
+`Button.tsx` que exporta um hook mais o `export default` deixa de ser acusado. A regra está fora do `recommended`, então não
+bloqueia.
+
+**Fora do escopo, encaminhado:**
+- O ADR-025 dizia que o `recommended` "está vazio por princípio": corrigido por mim (Consequências), apontando o lote 2.
+- O molde `sarak-ui/templates/componente-proprio.tsx:30` usa `--sarak-card-border`, que não existe (a real é
+  `--sarak-card-border-color`). As linhas 25 e 38 dele, e o `tela-exemplo.tsx:70`, usam HTML que a regra 4 barra. Vai para o registro
+  da `plan-119` como **I53** (lote final, antes da tag), com um teste que roda o `recommended` sobre os moldes, porque ele passa a
+  acusar o que o próprio kit ensina.
+
+**Status da plan: 🟢 Aprovada** (lotes 0 a 2 fechados; aguarda síntese).

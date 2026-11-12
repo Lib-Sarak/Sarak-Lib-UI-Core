@@ -282,6 +282,75 @@ describe('runUpdate --latest — atravessa o major SÓ depois de confirmado', ()
     });
 });
 
+describe('runUpdate — spec de TAG EXATA (#v<X.Y.Z>): o update troca o pin', () => {
+    const SPEC = 'github:Lib-Sarak/Sarak-Lib-UI-Core#v9.0.0';
+    const pinDe = (cwd) => JSON.parse(fs.readFileSync(path.join(cwd, 'package.json'), 'utf8')).dependencies['@sarak/lib-ui-core'];
+
+    it('sem --latest: reescreve o pin para a maior tag do MESMO major e instala essa tag', async () => {
+        const cwd = gitConsumer({ gitSpec: SPEC, installedVersion: '9.0.0' });
+        const execCommand = vi.fn();
+
+        const { output, exitCode } = await runUpdate({
+            cwd,
+            packageRoot: fakePackageRoot(),
+            execGitLsRemoteTags: () => lsRemoteTags(['v9.0.0', 'v9.1.0', 'v10.0.0']),
+            execCommand,
+        });
+
+        expect(exitCode).toBe(0);
+        expect(output).toContain('Alvo: v9.1.0');
+        expect(execCommand.mock.calls[0][0]).toContain('npm install github:Lib-Sarak/Sarak-Lib-UI-Core#v9.1.0');
+        expect(execCommand.mock.calls[0][0]).not.toContain('#v9.0.0');
+        expect(pinDe(cwd)).toBe('github:Lib-Sarak/Sarak-Lib-UI-Core#v9.1.0');
+    });
+
+    it('já na maior tag do major -> não executa nada e não toca o package.json', async () => {
+        const cwd = gitConsumer({ gitSpec: SPEC, installedVersion: '9.0.0' });
+        const execCommand = vi.fn();
+
+        const { output } = await runUpdate({ cwd, packageRoot: fakePackageRoot(), execGitLsRemoteTags: () => lsRemoteTags(['v9.0.0', 'v10.0.0']), execCommand });
+
+        expect(output).toContain('Já está atualizado');
+        expect(execCommand).not.toHaveBeenCalled();
+        expect(pinDe(cwd)).toBe(SPEC);
+    });
+
+    it('--latest dentro do mesmo major: troca o pin para a tag mais nova, sem pergunta', async () => {
+        const cwd = gitConsumer({ gitSpec: SPEC, installedVersion: '9.0.0' });
+        const execCommand = vi.fn();
+
+        await runUpdate({ cwd, packageRoot: fakePackageRoot(), latest: true, execGitLsRemoteTags: () => lsRemoteTags(['v9.0.0', 'v9.1.0']), execCommand, input: respostaStream('n') });
+
+        expect(pinDe(cwd)).toBe('github:Lib-Sarak/Sarak-Lib-UI-Core#v9.1.0');
+        expect(execCommand).toHaveBeenCalledTimes(1);
+    });
+
+    it('--latest atravessando major: pede confirmação; recusado não toca o pin, confirmado troca para a tag mais nova', async () => {
+        const tags = () => lsRemoteTags(['v9.0.0', 'v9.1.0', 'v10.2.0']);
+        const recusado = gitConsumer({ gitSpec: SPEC, installedVersion: '9.0.0' });
+        const execRecusado = vi.fn();
+        await runUpdate({ cwd: recusado, packageRoot: fakePackageRoot(), latest: true, execGitLsRemoteTags: tags, execCommand: execRecusado, input: respostaStream('n'), output: sink() });
+        expect(execRecusado).not.toHaveBeenCalled();
+        expect(pinDe(recusado)).toBe(SPEC);
+
+        fs.rmSync(path.join(tmpDir, 'consumer'), { recursive: true, force: true });
+        const confirmado = gitConsumer({ gitSpec: SPEC, installedVersion: '9.0.0' });
+        const execConfirmado = vi.fn();
+        const { output } = await runUpdate({ cwd: confirmado, packageRoot: fakePackageRoot(), latest: true, yes: true, execGitLsRemoteTags: tags, execCommand: execConfirmado, output: sink() });
+        expect(output).toContain('Alvo: v10.2.0');
+        expect(execConfirmado.mock.calls[0][0]).toContain('#v10.2.0');
+        expect(pinDe(confirmado)).toBe('github:Lib-Sarak/Sarak-Lib-UI-Core#v10.2.0');
+    });
+
+    it('github: sem fragmento continua sem reescrita: o spec fica como está', async () => {
+        const cwd = gitConsumer({ gitSpec: 'github:Lib-Sarak/Sarak-Lib-UI-Core', installedVersion: '9.0.0' });
+        const execCommand = vi.fn();
+        await runUpdate({ cwd, packageRoot: fakePackageRoot(), execGitLsRemoteTags: () => lsRemoteTags(['v9.0.0', 'v9.1.0']), execCommand });
+        expect(execCommand.mock.calls[0][0]).toMatch(/npm install github:Lib-Sarak\/Sarak-Lib-UI-Core$/);
+        expect(pinDe(cwd)).toBe('github:Lib-Sarak/Sarak-Lib-UI-Core');
+    });
+});
+
 describe('runUpdateCli — parsing de --latest/--yes e a fronteira de exceção', () => {
     it('propaga --latest e --yes para runUpdate() via argv', async () => {
         const cwd = gitConsumer({ gitSpec: 'github:Lib-Sarak/Sarak-Lib-UI-Core#semver:^1.0.0', installedVersion: '1.0.0' });

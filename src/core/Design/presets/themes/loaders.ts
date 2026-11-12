@@ -28,4 +28,8 @@ export const SARAK_THEME_LOADERS: Record<LazyThemeId, () => Promise<SarakThemePr
     'high-contrast': () => import('./high-contrast').then((m) => m.highContrastTheme),
     'corporate-ledger': () => import('./corporate-ledger').then((m) => m.corporateLedgerTheme),
     'playful-pastel': () => import('./playful-pastel').then((m) => m.playfulPastelTheme),
+    'sarak-sovereign-classic': () => import('./sarak-sovereign-classic').then((m) => m.sarakSovereignClassicTheme),
+    'cyberpunk-neon-classic': () => import('./cyberpunk-neon-classic').then((m) => m.cyberpunkNeonClassicTheme),
+    'industrial-terminal-classic': () => import('./industrial-terminal-classic').then((m) => m.industrialTerminalClassicTheme),
+    'cyber-retro-wave-classic': () => import('./cyber-retro-wave-classic').then((m) => m.cyberRetroWave2077ClassicTheme),
 };

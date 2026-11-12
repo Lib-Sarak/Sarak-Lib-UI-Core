@@ -50,6 +50,9 @@ ela dá um **procedimento**, um **fallback** e um **loop**. Comece sempre por aq
 | pôr imagem, vídeo ou animação no layout | [§3.11](#311-imagem-animação-e-conteúdo-custom-no-layout--dois-níveis) |
 | definir nome da aba, favicon, marca do produto | [§3.12](#312-identidade-da-página--é-sua-sempre) |
 | isolar apps, evitar acoplamento entre módulos | [§3.13](#313-estrutura-e-isolamento) |
+| carregar as fontes do tema, ou a da marca do cliente | [§3.14](#314-fontes--a-lib-já-carrega-do-próprio-pacote) |
+| conferir por máquina o uso da lib (lint ou CI) | [§3.15](#315-verificar-o-uso--o-kit-de-verificação-opcional) |
+| subi a versão e a tela não mudou | [§2.8](#troquei-a-versão-e-a-tela-não-mudou--qual-build-a-página-executa) |
 | copiar um esqueleto pronto e adaptar | [§4 Templates](#4--templates-copiáveis) |
 | compor uma tela de lista com busca, filtros e linhas de recurso | [§4 Templates](#4--templates-copiáveis) — `tela-lista.tsx` |
 | compor uma tela de detalhe com campos e atividade | [§4 Templates](#4--templates-copiáveis) — `tela-detalhe.tsx` |
@@ -91,12 +94,21 @@ um template novo) na próxima versão do kit. Enquanto isso, a regra de fallback
 ```bash
 # garanta um package.json na raiz do diretório-alvo ANTES de instalar
 npm init -y                      # só se ainda não existir
-npm install @sarak/lib-ui-core   # ou o spec git/registry que a sua organização usa
+npm install @sarak/lib-ui-core   # o spec git da sua organização; em produção, pela tag (abaixo)
 ```
 
 > **Por que o `npm init -y` importa:** sem um `package.json` local, o `npm install` sobe a árvore de
 > diretórios, encontra um `package.json` ancestral e instala **lá** — em silêncio, poluindo um projeto
 > alheio. É um erro real, já observado, e sem mensagem nenhuma.
+
+**De onde instalar.** Em produção a lib vem **pela tag**, com pin exato: `npm install "github:Lib-Sarak/Sarak-Lib-UI-Core#v<versão>"`.
+Nada muda até você trocar o pin, e as notas da versão nova se leem antes da troca (§2.8). `file:` e `link:` servem **só para iterar
+localmente** ao lado da lib: não valide uma instalação real com eles. ⚠️ Com `github:…#<tag>` o npm grava no `package-lock.json` a
+origem como `git+ssh://git@github.com/…` (os dois logins viram isso), e o `npm ci` passa a pedir uma chave SSH. Numa CI sem chave,
+troque o protocolo no git antes do `npm ci`: `git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"`.
+
+**A ordem:** (1) `package.json` na raiz · (2) instalar pela tag · (3) `npx sarak-ui init`, que grava as peers e copia este kit ·
+(4) `npm install` · (5) o Provider e o cromo (§1.2) · (6) as telas (§3), uma a uma, pelo catálogo.
 
 O caminho assistido é `npx sarak-ui init`, que grava as `peerDependencies`, gera o starter e copia
 este kit. Detalhes e flags na skill (`sarak-ui/skill/`).
@@ -134,6 +146,11 @@ peer e mostra o fallback se ela faltar.
 | `recharts` | `ResponsiveContainer`, `BarChart`, `LineChart`, `Line`, `XAxis`, `YAxis`, `Tooltip`, `Bar` | `SarakChartEngine` no motor Recharts |
 | `react-syntax-highlighter` | `Prism`; `react-syntax-highlighter/dist/esm/styles/prism`: `oneDark`, `oneLight`, `atomDark` | `SarakChatEngine` e `SarakMarkdownRenderer` |
 | `reactflow` | `BackgroundVariant` | `SarakFlowEngine` |
+
+O `pdfjs-dist` não tem linha nessa tabela porque não gera esse aviso: o `SarakPDFViewer` o importa por namespace e lê
+`getDocument` e `GlobalWorkerOptions` em tempo de execução, e o build de um consumidor Vite 8.3.5 sem as peers (medido) não emitiu
+nenhum `IMPORT_IS_UNDEFINED` para ele. Sem o pacote, a mensagem de "instale o `pdfjs-dist`" aparece no lugar do visualizador, como
+nos outros.
 
 Ao compilar um consumidor client com Vite 8, o bundler pode avisar que não preserva a diretiva
 `"use client"` encontrada em módulos do `framer-motion`. É um aviso esperado do pacote instalado, não
@@ -236,6 +253,16 @@ it('mostra os pedidos', async () => {
 ```
 
 `createSarakKitMock({ useOverlay: () => overlayDeTeste })` troca ou acrescenta qualquer nome.
+
+Com a porta única (§2.2: só o `ui-kit` importa a lib), o `vi.mock` aponta para a **porta**, que é o módulo que os seus arquivos de
+fato importam. Mantenha o que é do `ui-kit` e ponha os dublês da lib por cima:
+
+```tsx
+vi.mock('@meu-sistema/ui-kit', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()), // os componentes do seu ui-kit, reais
+  ...(await createSarakKitMock()),                       // a lib, com os dublês por cima do `export *`
+}));
+```
 
 ### Testar com a lib
 
@@ -440,9 +467,26 @@ terminal interativo, o comando falha em voz alta em vez de atravessar um major s
 > nova" não pode ser medido** — o comando avisa disso e mostra TODAS as notas registradas, em vez de
 > fingir um intervalo que não conferiu.
 
+Com pin de tag exata (`#v<X.Y.Z>`, a instalação recomendada na §1.1), o `update` **troca o pin** no `package.json`: sem `--latest`, para a maior tag do mesmo major; com `--latest`, para a mais nova, e atravessar um major passa pela confirmação acima.
+
 O `update` funciona nos dois modos de dependência: git (`github:…#semver:`) e `file:`/`link:`
 (desenvolvimento lado a lado) — no segundo, `--latest` não se aplica (não há major para pular), e o
 comando só refaz o link/cópia do gerenciador de verdade.
+
+### Troquei a versão e a tela não mudou — qual build a página executa
+
+Entre o `dist/` da lib e a tela há **três camadas de cache, e as três falham em silêncio**: (1) `file:` no pnpm **copia** o pacote
+para o store, então todo rebuild pede reinstalar; (2) o pré-bundle do bundler (Vite: `node_modules/.vite/`) se refaz por lockfile,
+versão e configuração, **nunca por conteúdo**; (3) o navegador guarda esse pré-bundle como `immutable`. Medir a lib por uma
+instalação que não foi refeita, ou por um cache quente, é medir o passado.
+
+Dois carimbos dizem em que camada você está. O código e o teste leem a versão por `SARAK_BUILD_INFO.libVersion`, exportada do
+barril (`import { SARAK_BUILD_INFO } from '@sarak/lib-ui-core'`): é a porta para a versão, porque o `package.json` do pacote não faz
+parte do `exports`. A página mostra o build que **executa** no atributo `data-sarak-build-info` de um elemento da lib (JSON com
+`libVersion`, `baseCommitShort` e `builtAt`); o arquivo `node_modules/@sarak/lib-ui-core/dist/BUILD_INFO.json` mostra o que está
+**instalado**. Iguais: o navegador executa o instalado. Diferentes: é cache, e o procedimento para limpar cada camada, na ordem, está
+na skill (`sarak-ui/skill/`, seção "Rebuildou a lib e a tela não mudou"). O `baseCommit` desse arquivo fica sempre um passo atrás
+do commit que o publica; para "estou atualizado?", use `npx sarak-ui check`, não o `BUILD_INFO`.
 
 ---
 
@@ -543,21 +587,25 @@ A regra única: **estilize por `var(--sarak-*)`**, com fallback. É isso que faz
 seu componente.
 
 ```tsx
+import { SarakTypography } from '@sarak/lib-ui-core';
+
 export function MeuPainel({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
-    <section
+    <div
       style={{
         background: 'var(--sarak-card-bg, transparent)',
-        border: 'var(--sarak-card-border, none)',
+        border: 'var(--sarak-card-border-width, 0) solid var(--sarak-card-border-color, transparent)',
         borderRadius: 'var(--sarak-card-radius, 8px)',
         padding: 'var(--sarak-card-padding-md, 16px)',
+        display: 'flex',
+        flexDirection: 'column',
         gap: 'var(--sarak-layout-gap-md, 16px)',
       }}
     >
-      {/* A cor do texto comum é herdada do escopo pintado pelo Provider — não force. */}
-      <h2 style={{ color: 'var(--sarak-title-color, inherit)' }}>{titulo}</h2>
+      {/* O título vem da peça pública: ela já lê fonte, tamanho e cor do tema. O texto comum herda a cor do escopo — não force. */}
+      <SarakTypography variant="h2">{titulo}</SarakTypography>
       {children}
-    </section>
+    </div>
   );
 }
 ```
@@ -722,6 +770,12 @@ Esse é o envelope completo; os campos de `design` são tokens estéticos declar
   Ele ajusta tokens ao vivo e **exporta o JSON** completo em **Exportar → Exportar JSON**. Exportar
   produz um arquivo; salvar um tema novo é outra operação, que chama `options.theme.onSave` para a
   persistência escolhida pelo app. Sem essa porta, a ação de salvar não aparece no painel.
+- **Os gestos do painel, com `options.theme.onSave` ligado:** **Salvar** substitui o tema seu que está em edição (mesmo id);
+  **Salvar como novo**, **Duplicar** e **Novo tema** criam (o último parte da referência completa); **Apagar** só existe para tema seu,
+  pede confirmação e chama `options.theme.onDelete`. Tema embarcado nunca é sobrescrito — editá-lo é duplicá-lo — e um id seu que
+  colide com o de um embarcado ou de outro tema seu ganha sufixo, com aviso. `onSave(theme, operation)` diz se foi `'create'` ou
+  `'replace'`. Porta que falha **rejeita**: um `catch` que engole o erro faz a tela dizer que salvou o que o banco não guardou. O
+  exemplo copiável das duas portas está em `docs/persistencia-de-tema.md` (§5).
 - **Persistência sem backend:** a seleção do usuário vai para `localStorage` sozinha. Quer guardar no
   seu backend? Use `options.persistence.onSave`/`onLoad` ou `onThemeChange` — a lib entrega o payload,
   quem faz a chamada é você. **O formato do dado, o schema de referência (Postgres e SQLite) e um
@@ -954,8 +1008,11 @@ de fonte do painel; no tema, a fonte vai pelo **`value` exato** que o seletor gr
   para uma família do catálogo: a lib carregaria de novo e a fonte deixaria de seguir a troca de tema.
 - **A origem é `options.fonts`:** omitido = `'bundled'` (o padrão); `{ baseUrl }` quando o seu bundler não acha os
   arquivos (esbuild puro, CJS no navegador) ou você os serve de uma CDN própria — copie a pasta `fonts/` do pacote e
-  aponte para ela; `'google'` só se você **quer** o Google Fonts; `'none'` se você carrega tudo. Vite (dev e `build`)
-  acha os arquivos sozinho.
+  aponte para ela; `'google'` só se você **quer** o Google Fonts; `'none'` se você carrega tudo. **No Vite não precisa de `baseUrl`**: medido num consumidor
+  Vite 8.3.5 com o pacote instalado em `node_modules`, o `build` emite as 60 fontes com hash e o dev server reescreve cada URL para
+  `/node_modules/@sarak/lib-ui-core/dist/fonts/…`, que responde `200 font/woff2`. Se o seu dev server não achar as fontes (a lib
+  instalada fora da raiz do Vite, num workspace, por exemplo), o sintoma é o aviso "não carregou" abaixo, e `baseUrl` aponta para uma
+  cópia da pasta `fonts/`.
 - **A fonte da marca do cliente vai em `options.fonts.custom`**, não em `baseUrl`: `custom` acrescenta uma família
   que a lib não tem, servida por você; `baseUrl` só muda de onde vêm as fontes da lib.
 
@@ -1008,7 +1065,7 @@ export default [
 ];
 ```
 
-As regras do plugin: `single-entrypoint`, `no-deep-import`, `known-css-var`, `prefer-sarak-component`, `no-reimplemented-piece`, `no-literal-color-font`, `no-direct-wrapped-lib`, `no-internal-class-selector`, `valid-spacing-value`, `known-icon-name`, `known-theme-id`. O conjunto `sarak/recommended` existe e está **vazio** até a medição nos importadores aprovar uma regra para ele.
+As regras do plugin: `single-entrypoint`, `no-deep-import`, `known-css-var`, `prefer-sarak-component`, `no-reimplemented-piece`, `no-literal-color-font`, `no-direct-wrapped-lib`, `no-internal-class-selector`, `valid-spacing-value`, `known-icon-name`, `known-theme-id`. O conjunto `sarak/recommended` liga em `error` as cinco que a medição nos importadores reais não acusou em falso e que não pedem opção: `no-deep-import`, `known-css-var`, `no-internal-class-selector`, `valid-spacing-value` e `known-icon-name` (`...sarak.configs.recommended.rules` dentro de `rules`, com `plugins: { sarak }`). As outras ficam de fora por um motivo que você pode ler: `prefer-sarak-component` e `no-literal-color-font` acusam o dublê de teste e o documento impresso (ligue-as com `allow`) — os moldes de `templates/` passam nelas, e um teste da lib trava isso; `no-reimplemented-piece` é heurística de nome; `single-entrypoint` e `known-theme-id` pedem opção.
 
 **2. Comando — `.css`, `package.json`, carimbo do kit**
 
@@ -1084,12 +1141,10 @@ Antes de escrever um componente seu, procure a necessidade aqui. Cada linha diz 
 reconstruir custa mais** e **o que o tema já controla**. O que a lib faz de verdade, com tipo e prop, está no
 `catalog.json` (A.1 e A.4b abaixo); este mapa só aponta e ensina o que a medição mostrou.
 
-> **Estado do mapa:** cartões, sobreposições e tabelas estão preenchidos com o que foi medido em navegador. O lote 2
-> acrescenta o alcance dos leitores de tipografia, botões, campos, alternadores, cores, gráficos, chat e status. O lote 3
-> acrescenta fundo, vidro, sombra, rolagem, movimento, camadas e os componentes especializados, **medidos em
-> navegador** (o que cada valor mudou na tela, não só quem o lê). O lote 4 acrescenta o cromo, a estrutura, a marca e as
-> preferências do usuário (§6.8). Neste mapa, calendário, Gantt e Kanban continuam pendentes; para outras necessidades,
-> consulte o catálogo antes de construir.
+> **O que o mapa cobre:** cartões, sobreposições e tabelas, o alcance dos leitores de tipografia, botões, campos, alternadores,
+> cores, gráficos, chat e status, fundo, vidro, sombra, rolagem, movimento, camadas, os componentes especializados, o cromo, a
+> estrutura, a marca e as preferências do usuário (§6.8), **medidos em navegador** (o que cada valor mudou na tela, não só quem o
+> lê). Para uma necessidade que não está aqui, consulte o catálogo antes de construir.
 
 | Preciso de… | A lib já tem | Por que não reconstruir |
 | --- | --- | --- |
@@ -1103,6 +1158,8 @@ reconstruir custa mais** e **o que o tema já controla**. O que a lib faz de ver
 | aviso de alterações não salvas | `useSarakUnsavedChanges` · `SarakForm` com `warnOnUnsaved` | o aviso do navegador e a confirmação pelo overlay já estão ligados; você só liga `confirmLeave` no roteador |
 | paginação com link real | `SarakPagination` com `getPageHref` | Ctrl+clique e clique do meio funcionam, e o clique simples segue em `onChange`, sem recarregar a página |
 | mensagem de erro para o usuário | `sarakErrorMessage` | lê as respostas comuns de API e barra rastro de pilha, HTML e erro do motor JS |
+| validar CPF e CNPJ, formatar CPF, CNPJ e CEP | `sarakIsValidCpf` · `sarakIsValidCnpj` · `sarakFormatDocument` (o `SarakMaskedInput` usa as mesmas validações) | o cálculo do dígito verificador e a máscara já estão feitos e testados |
+| documento para ver e imprimir (A4, carta, celular) | `SarakDocumentFrame` com `sarakPrint` | a folha escala para o contêiner, as ações ficam fora da impressão e só o documento sai no papel; `window.print()` imprime a tela inteira |
 | testes com Provider e mock do kit | `renderWithSarak` · `createSarakKitMock` (`@sarak/lib-ui-core/testing`) | um mock por módulo envelhece a cada componente novo; os dublês daqui acompanham a lib |
 | dica ao passar o ponteiro / menu de contexto | `SarakTooltip` · `SarakContextMenu` | o menu de contexto se desloca para dentro da tela e fecha por clique fora e por Escape; o tooltip já lê fundo, texto, borda e raio do tema |
 | carregar as fontes do tema (e a da marca) | o Provider, com `options.fonts` e `options.fonts.custom` (§3.14) | só a família em uso é baixada, sem rede de terceiros, e a fonte segue a troca de tema; um `@font-face` seu fica fora disso |
@@ -1119,7 +1176,7 @@ reconstruir custa mais** e **o que o tema já controla**. O que a lib faz de ver
 | camadas de empilhamento | tokens `zIndex*` | menus, busca, modais, gavetas, dicas e avisos derivam da mesma escada; um `z-index` fixo seu entra na disputa |
 | estado vazio, esqueleto de carga, motor de fluxo, matriz expansível | `SarakEmptyState` · `SarakSkeleton` · `SarakFlowEngine` · `SarakExpandableMatrix` | geometria, desfoque e cores têm tokens (`emptyState*`, `skeleton*`, `flow*`, `matrix*`) |
 | navegação, cromo e slots | `SarakAppChrome` (§2 e A.3), com `SarakShellNav` e os widgets de busca, usuário, notificações e preferências | lateral ou topo, barra do celular, recolher, marca, cores, sombra, grão e posição de cada widget vêm dos tokens `sidebar*`, `topbar*`, `nav*`, `identity*`, `chrome*Position` e `preference*Position` (§6.8); um cromo escrito à mão perde tudo isso e a barra do celular |
-| calendário, Gantt e Kanban | ⏳ `SarakKanban` | ⏳ lote seguinte |
+| calendário, Gantt e quadro Kanban | `SarakCalendar` · `SarakGantt` · `SarakKanban` | as três já existem e leem o tema; as props de cada uma estão no catálogo (A.1), e os tokens delas não foram medidos neste mapa |
 | escolha de modo, tamanho da fonte, orientação da navegação e idioma pelo usuário | os widgets do cromo e `useSarakPreferences` (preferências sobrepostas ao tema, nunca gravadas nele) | o administrador decide por token se cada escolha fica fixa na barra, no menu ⚙ ou não é oferecida (`preference*Position`, §6.8); um alternador seu não aplica a contraparte do tema |
 | idioma (textos da lib) | `language` no Provider e nos widgets de preferências | os textos internos acompanham a língua configurada; não replique mensagens da biblioteca |
 | persistência do tema | `localStorage` no Provider; `options.persistence.onSave`/`onLoad` para servidor | a seleção local já persiste; o host controla o armazenamento compartilhado e guarda o payload sem reconstruí-lo |
@@ -1244,7 +1301,7 @@ O que a medição em navegador mostrou, e que o schema sozinho não diz:
 
 ## 6.8 Cromo, estrutura, marca e preferências do usuário
 
-Medido em navegador (lote 4):
+Medido em navegador:
 
 - **A preferência do usuário vence o tema.** `navigationStyle`, `bodySize` e o modo claro/escuro têm uma preferência
   sobreposta (`useSarakPreferences`): com a preferência definida, o valor do tema não aparece. A paleta **só inverte
@@ -1491,7 +1548,9 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 
 **Tokens de TEMA** (424 chaves válidas de `design` num tema JSON) — lista completa com tipo em `catalog.json` → `designTokens.ids`. 37 deles aceitam `SarakResponsiveValue`.
 
-**Temas embutidos** (19): `sarak-sovereign` · `cyberpunk-neon` · `industrial-terminal` · `neo-brutalism` · `synthwave-retro` · `nebula-space` · `kinetic-flow` · `cyber-retro-wave` · `minimalist-airy` · `data-terminal` · `neumorphic-mobile` · `golden-hour` · `aurora-veil` · `blueprint-protocol` · `editorial-ink` · `organic-clay` · `high-contrast` · `corporate-ledger` · `playful-pastel`
+**Tokens que saíram** (59) — `catalog.json` → `designTokens.removed`: o id, a versão em que saiu e o destino (o token que ficou no lugar, ou `sem substituto`). Quem valida o tema por lista de chaves deixa de exigir esses ids.
+
+**Temas embutidos** (23): `sarak-sovereign` · `cyberpunk-neon` · `industrial-terminal` · `neo-brutalism` · `synthwave-retro` · `nebula-space` · `kinetic-flow` · `cyber-retro-wave` · `minimalist-airy` · `data-terminal` · `neumorphic-mobile` · `golden-hour` · `aurora-veil` · `blueprint-protocol` · `editorial-ink` · `organic-clay` · `high-contrast` · `corporate-ledger` · `playful-pastel` · `sarak-sovereign-classic` · `cyberpunk-neon-classic` · `industrial-terminal-classic` · `cyber-retro-wave-classic`
 
 **Par de referência** (parta destes — completos em todos os eixos): `minimalist-airy` · `sarak-sovereign`
 

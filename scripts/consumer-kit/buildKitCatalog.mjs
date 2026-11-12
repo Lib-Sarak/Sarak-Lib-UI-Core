@@ -23,6 +23,7 @@ import {
     collectTokenGroups,
 } from './collectKitSources.mjs';
 import { collectEmittedSarakCssVars } from './collectEmittedSarakCssVars.mjs';
+import { collectRemovedTokens } from './collectRemovedTokens.mjs';
 import { collectVerification } from './collectVerification.mjs';
 
 /** Guias de autoria que viajam no pacote — título lido do próprio arquivo (nunca à mão). */
@@ -83,6 +84,7 @@ export const buildKitCatalog = () => {
             count: designTokens.length,
             groups: collectTokenGroups(),
             responsiveCapable: designTokens.filter((token) => token.responsive).map((token) => token.id),
+            removed: collectRemovedTokens(),
             ids: designTokens,
         },
         themes: {

@@ -46,6 +46,8 @@ const noLiteralColorFont = (context: RuleContext): Visitor => {
         JSXAttribute: (node: StyleAttribute) => {
             if (node.name.name !== 'style' || node.value?.type !== 'JSXExpressionContainer') return;
             for (const property of node.value.expression?.properties ?? []) {
+                // `style={{ ...base, color: x }}`: o espalhamento não tem chave e o valor dele não se lê aqui.
+                if (property.type !== 'Property') continue;
                 const key = keyName(property);
                 const value = stringValueOf(property.value);
                 const kind = key && value ? literalKindOf(cssPropertyOf(key), value) : null;

@@ -87,8 +87,10 @@ condicional se escreve bem) e se **estende** com a segunda porta, pela medição
   - **Tag de JSDoc nova** nos componentes que substituem elemento nativo e nas peças que o importador costuma reescrever: tocar o
     comentário, nunca o comportamento. Mantê-la em dia é disciplina do mantenedor; o gate só cobra que o que está escrito vira dado.
   - A chave `verification` muda o `kitHash` a cada edição dela: é o comportamento certo, e o `dev-kit:check` passa a acusar mais cedo.
-  - **Validação pendente:** nenhuma regra foi rodada contra código real ainda. A medição de acerto e de falso positivo é o lote 2; até
-    lá, o `recommended` está vazio por princípio.
+  - **Validação feita no lote 2 da `plan-157` (2026-11-12):** as regras rodaram no ERP e nos dois logins (medição no anexo
+    `plan-157-catalogo-de-regras.md`). O `recommended` liga as 5 sem falso positivo medido e sem opção do importador (`no-deep-import`,
+    `known-css-var`, `no-internal-class-selector`, `valid-spacing-value`, `known-icon-name`); as demais ficam fora pelo motivo medido,
+    listado em `src/verify/plugin.ts`.
 - **Gatilho de reavaliação:** (a) a medição do lote 2 mostrar que a taxa de falso positivo da detecção de peça reescrita não cai com
   correção de regra; (b) os três importadores adotarem `@eslint/css` — aí a porta 2 perde o motivo para o `.css` e pode encolher a um
   gerador de relatório; (c) um importador sem ESLint pedir o kit; (d) o ESLint mudar a API de plugin. Qualquer um reabre a decisão com um

@@ -66,7 +66,27 @@ dele. "Escolha" é a chave cujo valor **difere do que o motor produziria sem ela
    condutores do passo 1. Toda chave do design que difere do baseline é escolha — inclusive a cor ajustada à mão.
 
 Cor declarada pelo tema ou pelo host continua vencendo a calculada ([[09-temas-e-presets]] §4.3.4): ela está no
-baseline, logo não se grava. O que deixa de vencer é a cor que a própria lib calculou. Um ajuste manual idêntico ao
+baseline, logo não se grava. O que deixa de vencer é a cor que a própria lib calculou.
+
+**A paleta escolhida pelo usuário vence a cor que o tema declara, e sobrevive a recarregar.** Hoje, escolher uma paleta no
+painel grava `colorPalette` e as cores calculadas por cima das que o tema declara (`src/features/DesignEngine/Main/hooks/usePaletteSelection.ts:38-39`, que aplica o patch de `buildPaletteDraftPatch`). Pela
+regra acima essas cores, iguais ao cálculo, não seriam gravadas, e o baseline devolveria a cor do tema ao recarregar. Por
+isso o passo 2 tem uma regra a mais: quando o condutor `colorPalette` **difere** do que o tema declara — ou seja, é uma
+escolha —, o baseline usa as cores **calculadas pela paleta escolhida** para todo papel que ela calcula, no lugar das que o
+tema **e o host** declaram; o que o tema declara de cor e a paleta **não** calcula, e todo o resto do tema, fica como está. O gravado é
+só `colorPalette` (uma chave, no dicionário e sem as cores calculadas); a cor que o usuário ajustou depois, à mão, difere
+desse baseline e é gravada como escolha. Quando o `colorPalette` é o do próprio tema, não há escolha e vale a regra de
+[[09-temas-e-presets]] §4.3.4 (o tema vence). **O cálculo é o do painel, não o da composição:** o baseline calcula a paleta escolhida com a mesma
+entrada que o painel usa — o valor, o modo e os tons da barra, como em `resolveDraftPalette`
+(`src/features/DesignEngine/Main/utils/paletteDraft.ts:81-84`) —, e **não** com a correção contra o que o tema e o host
+declaram (`src/core/Design/palette/resolve.ts:60-61`). Só assim as cores que o painel gravou no rascunho são iguais ao
+baseline e deixam de ser gravadas; com o outro cálculo elas difeririam e voltariam a ser gravadas como escolha, que é o
+que a decisão A existe para impedir. **O lote 1 traz um teste de ida e volta:** escolher a paleta → gravar → recarregar →
+o mesmo design, e nada gravado além de `colorPalette`. O tom da barra não ganha regra nova: `sidebarColor` ou `topbarColor` declarados pelo tema seguem vencendo o tom ([[09-temas-e-presets]] §4.3.4). A
+composição precisa aceitar a paleta escolhida como condutor que vence o tema nas cores que ela calcula; isso é detalhe do
+lote que implementa. **O que este ADR não decide:** se a paleta escolhida também vence o tema nas trocas seguintes de tema
+(o "manter minha paleta" do sistema) — é decisão do ADR-027. Aqui só se garante que a escolha, uma vez aplicada, é
+gravada e volta igual depois de recarregar. Um ajuste manual idêntico ao
 cálculo corrente não é gravado e passa a seguir a paleta — aceito, porque é o comportamento que o administrador espera
 de "não mexi nisto".
 
@@ -112,6 +132,10 @@ ao receber o `onLoad` e a cada `Aplicar` (para o diff). **Não foi medido** — 
     `baseline + escolhas`.
   - O ajuste granular continua vencendo a paleta ([[06-painel-de-customizacao-e-preview]] §2.4): é uma escolha gravada.
 - **Negativas (Trade-offs):**
+  - **Host que declara cor + usuário que escolhe paleta: a paleta vence, e volta igual ao recarregar.** É o que o painel faz
+    hoje (o patch da paleta não consulta o `config` do host); o ADR o mantém e o torna durável. Quem declara `primaryColor`
+    no host passa a ver, nos papéis que a paleta escolhida calcula, a cor dela e não a do host depois de `Aplicar`. Inverter
+    (o host vencendo) mudaria o painel e é decisão do dono, não deste ADR.
   - **Formato novo no contrato com o importador, e é MAJOR** ([[03-versionamento-e-release]] §3: quebra de quem integra,
     inclusive por comportamento, sem que nenhum export mude). O dicionário de `onSave`/`onLoad` passa a ser esparso, e o
     marcador `format` é um parâmetro/campo novo. Quem quebra: o importador que valida o gravado exigindo todas as chaves;

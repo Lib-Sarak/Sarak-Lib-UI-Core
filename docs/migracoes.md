@@ -5,9 +5,37 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 9.0.0 — temas da lib antiga voltam ao catálogo como temas novos (aditivo: nenhum tema existente muda)
+
+O catálogo embarcado ganha, como **temas novos**, versões dos temas da lib antiga, reescritas para o contrato de token de hoje. Nenhum tema que já existia mudou de valor.
+
+| Tema novo | `id` | Modo nativo | Cor (paleta `custom:`) |
+|---|---|---|---|
+| Sarak Sovereign Classic | `sarak-sovereign-classic` | escuro | `#00f2ff` com violeta e magenta |
+| Cyberpunk Neon Classic | `cyberpunk-neon-classic` | escuro | `#00ff64` com magenta e ciano |
+| Industrial Terminal Classic | `industrial-terminal-classic` | escuro | `#ff9900` |
+| Cyber Retro-Wave 2077 Classic | `cyber-retro-wave-classic` | escuro | `#ff00ff` com ciano e rosa |
+
+- **O que muda para quem importa:** `SarakThemePresetId` e `SARAK_THEME_PRESET_IDS` ganham os quatro ids; `SARAK_THEME_CATALOG` lista os quatro; cada um carrega sob demanda, fora do boot. Quem valida id de tema por lista fechada deve aceitá-los.
+- **O que não vem do original, por não existir no contrato de hoje:** a largura da lateral e o `13px` do corpo do Industrial (a largura é funcional e vale o padrão do sistema; o corpo vira `14px`), a posição da navegação, e os valores de token que saíram do schema. O `#00ff41` do Cyberpunk vira `#00ff64`: com a primeira base o motor de paleta reprova um par de contraste no modo claro (4,47:1).
+- **Cada tema tem contraparte clara autorada**; os originais eram só escuros.
+- A mesma versão traz os demais temas resgatados e a saída do `synthwave-retro`; o que cada um muda para o importador está nas entradas seguintes desta versão.
+
+---
+
 ## 9.0.0 — kit de verificação de uso (aditivo: nada quebra por causa dele)
 
 Nada muda para quem não usa. O pacote ganha o subpath `@sarak/lib-ui-core/eslint` (plugin de ESLint, peer opcional `eslint >= 9`) e o comando `npx sarak-ui verify`, que acusam por máquina o uso errado da lib e a peça reescrita à mão que ela já entrega, com `arquivo:linha` e o nome público que substitui. **Nenhuma regra nasce ligada.** O `sarak-ui/catalog.json` ganha a chave `verification` (equivalências nativo → componente, nomes de peça, bibliotecas encapsuladas, props de ícone e ids de paleta). Detalhe: `GUIA-FRONTEND.md` §3.15.
+
+---
+
+## 9.0.0 — o nome acessível do `SarakSwitch` é só o rótulo (aditivo para quem usa; muda o que o leitor de tela anuncia)
+
+Antes, o `<label>` nativo envolvia o rótulo e a descrição, e o leitor de tela anunciava os dois juntos como **nome** ("Ver pessoasMostra quem está online"). Agora o nome é só o `label`, e a descrição sai pela descrição acessível do controle (`aria-describedby`), que o leitor lê depois do nome.
+
+- **O que a tela desenha não muda:** mesmos textos, mesma ordem, e o clique no rótulo ou na descrição continua alternando.
+- **Para o seu teste:** `getByRole('switch', { name: 'Ver pessoas' })` passa a achar o controle; quem repetia o rótulo em `aria-label` só para o teste achar pode retirá-lo. Sem `label` e com `aria-label` seu, o nome é o `aria-label`, e um `aria-labelledby` seu vence os dois.
+- **Se o seu teste procurava o nome com a descrição junta** (`name: 'Ver pessoasMostra quem está online'`), troque pelo rótulo e confira a descrição por `toHaveAccessibleDescription`.
 
 ---
 
@@ -81,67 +109,69 @@ Gramáticas que o schema não expressa por opções:
 - `topbarTone` — select (opções: `inverse`, `neutral`, `primary`, `secondary`, `surface`)
 - `touchTargetMin` — slider (faixa 24 a 64 px)
 
+Cada linha de **Removidos** termina no destino, depois de `→`: o token que ficou no lugar ou `sem substituto`. É o que o servidor que valida tema por lista de chaves lê, em forma de dado, em `sarak-ui/catalog.json` → `designTokens.removed`; versão nova que remove token escreve o destino na própria linha (o gerador do kit recusa a linha sem ele).
+
 **Removidos (59)**
 
-- `aiPanelBg` — color
-- `animFast` — slider (faixa 50 a 400 ms)
-- `animInstant` — slider (faixa 0 a 200 ms)
-- `animNormal` — slider (faixa 100 a 800 ms)
-- `animSlow` — slider (faixa 200 a 2000 ms)
-- `atmosphereNoiseOpacity` — slider (faixa 0 a 1)
-- `borderRadiusLg` — slider (faixa 0 a 60 px)
-- `borderRadiusMd` — slider (faixa 0 a 40 px)
-- `borderRadiusSm` — slider (faixa 0 a 20 px)
-- `cardContentAlignment` — select (opções: `center`, `space-between`, `start`)
-- `cardHoverLift` — slider (faixa 0 a 12 px)
-- `cardImagePosition` — select (opções: `left`, `none`, `right`, `top`)
-- `contentAlignment` — select (opções: `center`, `stretch`)
-- `contrastCurve` — slider (faixa 0.5 a 4)
-- `devicePhoneWidth` — slider (faixa 300 a 450 px)
-- `easeMain` — select (opções: `cubic-bezier(0, 0, 0.2, 1)`, `cubic-bezier(0.16, 1, 0.3, 1)`, `cubic-bezier(0.175, 0.885, 0.32, 1.275)`, `cubic-bezier(0.4, 0, 0.2, 1)`, `cubic-bezier(0.4, 0, 1, 1)`, `cubic-bezier(0.6, 0.05, 0.01, 0.9)`, `linear`)
-- `easeOut` — select (opções: `cubic-bezier(0, 0, 0.2, 1)`, `cubic-bezier(0.19, 1, 0.22, 1)`, `cubic-bezier(0.23, 1, 0.32, 1)`, `cubic-bezier(0.4, 0, 0.2, 1)`, `linear`)
-- `formLayoutDirection` — select (opções: `inline`, `stack`)
-- `identityRedirectUrl` — text
-- `industrialRegistry` — boolean
-- `inputSuccessColor` — color
-- `kbdMinWidth` — slider (faixa 16 a 48 px)
-- `layerBackdropBlur` — slider (faixa 0 a 40 px)
-- `layerBackdropOpacity` — slider (faixa 0 a 1)
-- `layerElevationFactor` — slider (faixa 0.5 a 2)
-- `layout` — select (opções: `flex`, `grid`, `masonry`)
-- `managementGroupDescMaxWidth` — slider (faixa 60 a 400 px)
-- `matrixSearchBg` — color
-- `noiseIntensity` — slider (faixa 0 a 1)
-- `presetCardHoverShadowBlur` — slider (faixa 0 a 80 px)
-- `presetCardHoverShadowOffsetY` — slider (faixa 0 a 30 px)
-- `presetCardHoverShadowSpread` — slider (faixa 0 a 30 px)
-- `presetCardShadowBlur` — slider (faixa 0 a 20 px)
-- `presetCardShadowOffsetY` — slider (faixa 0 a 10 px)
-- `presetCardShadowSpread` — slider (faixa 0 a 10 px)
-- `presetGlowShadowBlur` — slider (faixa 0 a 40 px)
-- `presetGlowShadowBlurLg` — slider (faixa 0 a 60 px)
-- `presetGridTextureSize` — slider (faixa 4 a 20 px)
-- `presetMatteShadowBlur1` — slider (faixa 0 a 30 px)
-- `presetMatteShadowBlur2` — slider (faixa 0 a 12 px)
-- `presetMatteShadowOffsetY2` — slider (faixa 0 a 10 px)
-- `presetMatteShadowSpread1` — slider (faixa 0 a 10 px)
-- `presetMatteShadowSpread2` — slider (faixa 0 a 10 px)
-- `presetMiniCardHeight` — slider (faixa 60 a 300 px)
-- `presetPreviewMinHeight` — slider (faixa 100 a 500 px)
-- `presetPreviewPaddingY` — slider (faixa 0 a 24 px)
-- `scrollbarThumbColor` — color
-- `scrollbarWidth` — slider (faixa 2 a 12 px)
-- `securityPulseSpeed` — slider (faixa 0.5 a 5 s)
-- `securityShieldGlow` — slider (faixa 0 a 200 px)
-- `tableActionPosition` — select (opções: `left`, `right`)
-- `themeDropdownMaxHeight` — slider (faixa 200 a 800 px)
-- `trackingSubtle` — slider (faixa 0 a 1 em)
-- `typeScaleDisplay` — slider (faixa 4 a 16 rem)
-- `visualDotGridSize` — slider (faixa 5 a 40 px)
-- `visualOrbBlur` — slider (faixa 0 a 150 px)
-- `visualPerspective` — slider (faixa 400 a 2000 px)
-- `visualTranslateOffsetSm` — slider (faixa 0 a 60 px)
-- `visualTranslateZMd` — slider (faixa 0 a 100 px)
+- `aiPanelBg` — color → sem substituto
+- `animFast` — slider (faixa 50 a 400 ms) → `motionDurationFast`
+- `animInstant` — slider (faixa 0 a 200 ms) → `motionDurationInstant`
+- `animNormal` — slider (faixa 100 a 800 ms) → `motionDurationNormal`
+- `animSlow` — slider (faixa 200 a 2000 ms) → `motionDurationSlow`
+- `atmosphereNoiseOpacity` — slider (faixa 0 a 1) → `bgNoiseDensity`
+- `borderRadiusLg` — slider (faixa 0 a 60 px) → `borderRadius`
+- `borderRadiusMd` — slider (faixa 0 a 40 px) → `borderRadius`
+- `borderRadiusSm` — slider (faixa 0 a 20 px) → `borderRadius`
+- `cardContentAlignment` — select (opções: `center`, `space-between`, `start`) → `cardTextAlign`
+- `cardHoverLift` — slider (faixa 0 a 12 px) → `cardHoverTranslate`
+- `cardImagePosition` — select (opções: `left`, `none`, `right`, `top`) → sem substituto
+- `contentAlignment` — select (opções: `center`, `stretch`) → sem substituto
+- `contrastCurve` — slider (faixa 0.5 a 4) → `globalContrast`
+- `devicePhoneWidth` — slider (faixa 300 a 450 px) → sem substituto
+- `easeMain` — select (opções: `cubic-bezier(0, 0, 0.2, 1)`, `cubic-bezier(0.16, 1, 0.3, 1)`, `cubic-bezier(0.175, 0.885, 0.32, 1.275)`, `cubic-bezier(0.4, 0, 0.2, 1)`, `cubic-bezier(0.4, 0, 1, 1)`, `cubic-bezier(0.6, 0.05, 0.01, 0.9)`, `linear`) → `motionEaseMain`
+- `easeOut` — select (opções: `cubic-bezier(0, 0, 0.2, 1)`, `cubic-bezier(0.19, 1, 0.22, 1)`, `cubic-bezier(0.23, 1, 0.32, 1)`, `cubic-bezier(0.4, 0, 0.2, 1)`, `linear`) → `motionEaseOut`
+- `formLayoutDirection` — select (opções: `inline`, `stack`) → `formLabelPosition`
+- `identityRedirectUrl` — text → sem substituto
+- `industrialRegistry` — boolean → sem substituto
+- `inputSuccessColor` — color → sem substituto
+- `kbdMinWidth` — slider (faixa 16 a 48 px) → sem substituto
+- `layerBackdropBlur` — slider (faixa 0 a 40 px) → `modalOverlayBlur`
+- `layerBackdropOpacity` — slider (faixa 0 a 1) → `modalOverlayColor`
+- `layerElevationFactor` — slider (faixa 0.5 a 2) → `layeredShadows`
+- `layout` — select (opções: `flex`, `grid`, `masonry`) → `layoutGridTemplate`
+- `managementGroupDescMaxWidth` — slider (faixa 60 a 400 px) → sem substituto
+- `matrixSearchBg` — color → tokens de campo (`input*`)
+- `noiseIntensity` — slider (faixa 0 a 1) → `bgNoiseDensity`
+- `presetCardHoverShadowBlur` — slider (faixa 0 a 80 px) → sem substituto
+- `presetCardHoverShadowOffsetY` — slider (faixa 0 a 30 px) → sem substituto
+- `presetCardHoverShadowSpread` — slider (faixa 0 a 30 px) → sem substituto
+- `presetCardShadowBlur` — slider (faixa 0 a 20 px) → sem substituto
+- `presetCardShadowOffsetY` — slider (faixa 0 a 10 px) → sem substituto
+- `presetCardShadowSpread` — slider (faixa 0 a 10 px) → sem substituto
+- `presetGlowShadowBlur` — slider (faixa 0 a 40 px) → sem substituto
+- `presetGlowShadowBlurLg` — slider (faixa 0 a 60 px) → sem substituto
+- `presetGridTextureSize` — slider (faixa 4 a 20 px) → sem substituto
+- `presetMatteShadowBlur1` — slider (faixa 0 a 30 px) → sem substituto
+- `presetMatteShadowBlur2` — slider (faixa 0 a 12 px) → sem substituto
+- `presetMatteShadowOffsetY2` — slider (faixa 0 a 10 px) → sem substituto
+- `presetMatteShadowSpread1` — slider (faixa 0 a 10 px) → sem substituto
+- `presetMatteShadowSpread2` — slider (faixa 0 a 10 px) → sem substituto
+- `presetMiniCardHeight` — slider (faixa 60 a 300 px) → sem substituto
+- `presetPreviewMinHeight` — slider (faixa 100 a 500 px) → sem substituto
+- `presetPreviewPaddingY` — slider (faixa 0 a 24 px) → sem substituto
+- `scrollbarThumbColor` — color → `scrollThumbColor`
+- `scrollbarWidth` — slider (faixa 2 a 12 px) → `scrollWidth`
+- `securityPulseSpeed` — slider (faixa 0.5 a 5 s) → sem substituto
+- `securityShieldGlow` — slider (faixa 0 a 200 px) → sem substituto
+- `tableActionPosition` — select (opções: `left`, `right`) → sem substituto
+- `themeDropdownMaxHeight` — slider (faixa 200 a 800 px) → sem substituto
+- `trackingSubtle` — slider (faixa 0 a 1 em) → sem substituto
+- `typeScaleDisplay` — slider (faixa 4 a 16 rem) → sem substituto
+- `visualDotGridSize` — slider (faixa 5 a 40 px) → sem substituto
+- `visualOrbBlur` — slider (faixa 0 a 150 px) → sem substituto
+- `visualPerspective` — slider (faixa 400 a 2000 px) → sem substituto
+- `visualTranslateOffsetSm` — slider (faixa 0 a 60 px) → sem substituto
+- `visualTranslateZMd` — slider (faixa 0 a 100 px) → sem substituto
 
 **Com tipo ou valor novo (32)**
 
@@ -2322,7 +2352,7 @@ código seu que faz `switch` exaustivo sobre ela precisa de três casos a mais.
 
 ---
 
-## A barra de preferências do usuário passa a ser configurável pelo administrador (plan-74)
+## 7.0.0 — A barra de preferências do usuário passa a ser configurável pelo administrador (plan-74)
 
 **Classificação: aditiva, não MAJOR.** O token de posição de cada preferência (`preference*Position`,
 schema `preferences.ts`) já existia; esta entrada só cobre a UI nova que o lê — o widget ⚙ "Preferências",
@@ -2362,7 +2392,7 @@ sem teto de `widgets` (que só o `SarakAppChrome` tem). Quem quiser o seletor de
 
 ---
 
-## O seletor de idioma passa a gravar preferência do usuário, e o host pode traduzir a própria aplicação (plan-75)
+## 7.0.0 — O seletor de idioma passa a gravar preferência do usuário, e o host pode traduzir a própria aplicação (plan-75)
 
 **Classificação: MAJOR** — mesmo critério das entradas anteriores desta lista: mudar o default é MAJOR
 mesmo sem tocar em export, prop ou token. `ShellLanguageSelector` deixava a escolha morrer num
@@ -2439,7 +2469,7 @@ Quem quer manter o par fixo de antes, independente do tema, monta o próprio com
 
 ---
 
-## O alternador de tema e o toggle de recolher deixam de mudar o TEMA do sistema — agora gravam preferência do usuário (plan-73)
+## 7.0.0 — O alternador de tema e o toggle de recolher deixam de mudar o TEMA do sistema — agora gravam preferência do usuário (plan-73)
 
 **Classificação: MAJOR** — `ShellThemeToggle` (usado pelos dois cromos, `SarakAppChrome` e `SarakShell`) e o
 toggle de recolher (`ChromeCollapseToggle` no modo ui-kit, o hambúrguer/chevron do `SarakShell` no modo
@@ -2484,7 +2514,7 @@ antes — a porta continua pública, só deixou de ser o caminho dos dois widget
 
 ---
 
-## Revisão da métrica do item de navegação horizontal — a caixa alta sai, o corpo sobe (plan-68)
+## 7.0.0 — Revisão da métrica do item de navegação horizontal — a caixa alta sai, o corpo sobe (plan-68)
 
 **Classificação: MAJOR** — comportamento default muda de novo, sem opt-in, para quem usa
 `navigationStyle: 'topbar'` (o mesmo critério que já classificou majors anteriores desta lista: mudar o
@@ -2618,7 +2648,7 @@ nunca usou os quatro presets de mídia não vê diferença nenhuma.
 
 ---
 
-## Contraparte autorada nos dois temas de referência + porta de derivação `deriveThemeFromReference` (plan-64)
+## 7.0.0 — Contraparte autorada nos dois temas de referência + porta de derivação `deriveThemeFromReference` (plan-64)
 
 **Classificação: MINOR** — capacidade nova, aditiva. `minimalist-airy` e `sarak-sovereign` (os dois
 de `SARAK_REFERENCE_THEMES`) ganharam `contraparte` autorada; nenhum export existente mudou de
@@ -2673,7 +2703,7 @@ contraparte.
 
 ---
 
-## Os quatro widgets do cromo — busca, tema, usuário e idioma — ficam públicos (plan-65)
+## 7.0.0 — Os quatro widgets do cromo — busca, tema, usuário e idioma — ficam públicos (plan-65)
 
 **Classificação: MINOR** — capacidade nova, aditiva: nenhum export existente mudou de forma, e o
 comportamento dentro do `SarakShell` é idêntico ao de antes (os três renderizadores do Shell —
@@ -2725,7 +2755,7 @@ público (`import { ShellUserWidget } from '@sarak/lib-ui-core'`).
 
 ---
 
-## Correção: o átomo de item de navegação passa a se chamar `SarakMenuItem` — `SarakNavItem` nunca chegou a ser importável
+## 7.0.0 — Correção: o átomo de item de navegação passa a se chamar `SarakMenuItem` — `SarakNavItem` nunca chegou a ser importável
 
 **Classificação: correção, não quebra.** O átomo descrito na entrada logo abaixo ("`SarakNavItem` — átomo
 próprio para item de navegação do cromo") **nunca esteve alcançável pelo barril público**, então renomeá-lo
@@ -2762,7 +2792,7 @@ renderizadores de navegação do cromo.
 
 ---
 
-## `SarakNavItem` — átomo próprio para item de navegação do cromo
+## 7.0.0 — `SarakNavItem` — átomo próprio para item de navegação do cromo
 
 **Classificação: MAJOR** — a superfície é aditiva (novo componente, novo tipo), mas o **comportamento
 default muda sem opt-in**: o cromo de todo consumidor troca de métrica de navegação — o mesmo critério que
@@ -2802,7 +2832,7 @@ a métrica de botão de ação, inalterada.
 
 ---
 
-## A `className` passada a `SarakButton`/`SarakIconButton` agora VENCE o default do átomo
+## 7.0.0 — A `className` passada a `SarakButton`/`SarakIconButton` agora VENCE o default do átomo
 
 **Classificação: MAJOR** — nenhum export, prop, token ou assinatura mudou; o que muda é **comportamento
 default e visível**, sem opt-in — o mesmo critério que já classificou majors anteriores desta lista
@@ -2914,7 +2944,7 @@ nem tocar em nada do seu lado.
 
 ---
 
-## O grid zero-config deixa de ser 12 colunas fixas e passa a ser content-aware (plan-47)
+## 6.0.0 — O grid zero-config deixa de ser 12 colunas fixas e passa a ser content-aware (plan-47)
 
 **Classificação: MAJOR** — muda um **comportamento default**, mesmo sem tocar em nenhuma assinatura pública:
 o token `layoutGridTemplate` (schema `structural` e os 5 temas embarcados) tinha `'col-12'` como valor
@@ -2971,7 +3001,7 @@ depender de `templateColumns`, de `span` ou de container query.
 
 ---
 
-## 26 tipos usados em assinatura pública passam a ser importáveis pelo nome (plan-45)
+## 6.0.0 — 26 tipos usados em assinatura pública passam a ser importáveis pelo nome (plan-45)
 
 **Classificação: MINOR** — capacidade nova, aditiva: nenhum tipo mudou de forma, nenhum export
 existente mudou. Só ficou possível importar pelo **nome** tipos que as assinaturas públicas já
@@ -3032,7 +3062,7 @@ build.
 
 ---
 
-## `persistence.onSave` passa a receber o id do tema ativo — segundo parâmetro (plan-42)
+## 6.0.0 — `persistence.onSave` passa a receber o id do tema ativo — segundo parâmetro (plan-42)
 
 **Classificação: MINOR** — capacidade nova, aditiva: o segundo parâmetro é opcional e quem já implementa
 `onSave(design)` continua compilando e sendo chamado exatamente como antes. Nenhum consumidor precisa mudar
@@ -3063,7 +3093,7 @@ com `id` e `name`.
 
 ---
 
-## Container query estrutural agora funciona FORA do `SarakShell` — 10 componentes ganham um `@container` próprio (plan-41)
+## 6.0.0 — Container query estrutural agora funciona FORA do `SarakShell` — 10 componentes ganham um `@container` próprio (plan-41)
 
 **Classificação: MAJOR** — comportamento default muda sem opt-in (mesmo critério da `4.0.0` e da entrada da
 `plan-39` logo abaixo: *"mudar um comportamento default é MAJOR, mesmo mantendo a capacidade — quem dependia
@@ -3121,7 +3151,7 @@ que o estabelece.
 
 ---
 
-## Tema salvo pelo usuário final em runtime — uma porta de escrita nova (ADR-011, plan-38)
+## 5.0.0 — Tema salvo pelo usuário final em runtime — uma porta de escrita nova (ADR-011, plan-38)
 
 **Classificação: MINOR** — capacidade nova retrocompatível: `ThemeEntry.name?`, `options.theme.onSave?` e
 `sarak.saveTheme` são todos **opcionais/aditivos**. Quem não configurar `options.theme.onSave` não vê
@@ -3227,7 +3257,7 @@ falha se um arquivo de produção voltar a montar `@min-[…]` por interpolaçã
 
 ---
 
-## Persistência de tema tenant-aware e `strategy` funcional (ADR-009)
+## 5.0.0 — Persistência de tema tenant-aware e `strategy` funcional (ADR-009)
 
 **Afeta você se** roda **múltiplos tenants na mesma origem** (troca de conta/tenant em runtime, sem
 reload de página) — o tema de um podia vazar para o outro — **ou** se já tem backend próprio e quer que
@@ -3499,7 +3529,7 @@ público** — o outro nunca esteve no barril.
 
 ---
 
-## O "Factory Hard Reset" do painel deixou de apagar o `localStorage` inteiro do seu site
+## 2.0.0 — O "Factory Hard Reset" do painel deixou de apagar o `localStorage` inteiro do seu site
 
 **Se você nunca abriu o painel de customização, nada muda para você.** Esta entrada existe porque
 a mudança é de **comportamento observável**, e o comportamento antigo destruía dado que não era da
@@ -3522,7 +3552,7 @@ O texto do `confirm()` foi reescrito para descrever exatamente isso, e nada alé
 
 ---
 
-## `SarakTable` ganhou `responsive` — o colapso mobile agora tem opt-out
+## 2.0.0 — `SarakTable` ganhou `responsive` — o colapso mobile agora tem opt-out
 
 **Aditivo: não quebra nada.** O default (`true`) é o comportamento que já existia.
 
@@ -3542,7 +3572,7 @@ Mesma prop, mesmo default e mesmo efeito do `SarakDataTable`.
 
 ---
 
-## Engines: `SarakChatEngine` e `SarakFlowEngine` viraram públicos; `SarakVisualEngine` foi removido
+## 1.2.0 — Engines: `SarakChatEngine` e `SarakFlowEngine` viraram públicos; `SarakVisualEngine` foi removido
 
 **Provavelmente não quebra nada para você** — nenhum dos três estava no barril público, então
 não havia como importá-los pela porta oficial. A entrada existe porque o arquivo é o histórico
@@ -3573,7 +3603,7 @@ era importado por ninguém** — código morto que fazia a arquitetura parecer o
 
 ---
 
-## Releases com tag: `#semver:` passa a funcionar — e você não precisa fazer nada
+## 1.1.0 — Releases com tag: `#semver:` passa a funcionar — e você não precisa fazer nada
 
 **Não quebra nada.** Nenhum export mudou, nenhum comportamento mudou, e **nenhuma forma de
 instalar deixou de funcionar**. Esta entrada existe porque uma capacidade NOVA ficou disponível
@@ -3646,7 +3676,7 @@ com a política de MAJOR/MINOR/PATCH descrita em `specs/specs/03-versionamento-e
 
 ---
 
-## CLI do consumidor: comandos reais, multi-gerenciador e aviso de atualização (Spec 51)
+## 1.0.0 — CLI do consumidor: comandos reais, multi-gerenciador e aviso de atualização (Spec 51)
 
 **Não quebra nada.** Tudo abaixo é aditivo: os scripts já gerados em consumidores existentes
 continuam funcionando. A migração é opcional, mas recomendada.
@@ -3683,7 +3713,7 @@ pôde ser feita; **exit 0 sempre**. Ele nunca derruba o seu `dev`.
 
 ---
 
-## Rótulos decorativos — fim da marca da lib estampada em componentes (Spec 49)
+## 1.0.0 — Rótulos decorativos — fim da marca da lib estampada em componentes (Spec 49)
 
 **O que mudou.** A Spec 47 fechou a FONTE do vazamento de identidade (defaults de
 branding → `document.title`/`systemName`), mas alguns componentes **consumidor-facing**
@@ -3724,7 +3754,7 @@ neutros acima.
 
 ---
 
-## Identidade da página — a lib parou de impor a própria marca (Spec 47)
+## 1.0.0 — Identidade da página — a lib parou de impor a própria marca (Spec 47)
 
 **O que mudou.** O `DEFAULT_BRANDING` do Provider trazia `companyName: 'Sarak OS'` e
 `tabName: 'Sarak OS'`. Como o guard a jusante era `if (branding?.tabName)` e o default
@@ -3768,7 +3798,7 @@ Contrato completo em [`identidade-do-host.md`](./identidade-do-host.md).
 
 ---
 
-## `SarakCardGrid.mapping` — fim dos campos de domínio LLM (Spec 42)
+## 1.0.0 — `SarakCardGrid.mapping` — fim dos campos de domínio LLM (Spec 42)
 
 **O que mudou.** O `SarakCoreCard` — a variante `"classic"`, que é a **default** do
 `SarakCardGrid` quando o autor não declara `variant` — carregava um catálogo de modelos

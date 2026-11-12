@@ -3,7 +3,7 @@ import type { Severity } from './types';
 /**
  * O catálogo das regras do kit: qual porta roda cada uma e a severidade proposta. Fonte única do
  * `sarak-ui verify --list`, do plugin e dos testes de paridade. Todas nascem DESLIGADAS: o importador
- * liga uma a uma, e o conjunto `recommended` só recebe a regra que a medição nos importadores aprovar.
+ * liga uma a uma, e o conjunto `recommended` só recebe a regra que a medição nos importadores aprovou.
  */
 export type RulePort = 'plugin' | 'comando' | 'ambas';
 

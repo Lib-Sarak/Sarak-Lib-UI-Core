@@ -2,6 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { PALETTE_ROLE_MAP } from '../../../palette/role-map';
 import { SARAK_PALETTE_PRESETS } from '../../../palette/presets';
+import { parsePaletteValue } from '../../../palette/parser';
 import { SARAK_ALL_THEMES } from '../all';
 import { composeThemeForMode } from '../compose';
 import { resolveThemeForMode } from '../color-engine';
@@ -13,10 +14,11 @@ const roleKeys = Object.keys(PALETTE_ROLE_MAP);
 const GALLERY_ONLY_PRESETS = ['ciano-azul', 'oliva-dourada', 'oliva-viva', 'tinta-azul'];
 
 describe('os temas embarcados tiram a cor de uma paleta', () => {
-    it.each(SARAK_ALL_THEMES.map((theme) => [theme.id, theme] as const))('%s declara um preset que existe', (_id, theme) => {
+    it.each(SARAK_ALL_THEMES.map((theme) => [theme.id, theme] as const))('%s declara um preset que existe, ou uma paleta `custom:` válida', (_id, theme) => {
         const palette = (theme.design as Record<string, unknown>).colorPalette;
         expect(typeof palette).toBe('string');
-        expect(Object.keys(SARAK_PALETTE_PRESETS)).toContain(palette);
+        if (String(palette).startsWith('custom:')) expect(parsePaletteValue(palette), 'paleta custom inválida').not.toBeNull();
+        else expect(Object.keys(SARAK_PALETTE_PRESETS)).toContain(palette);
     });
 
     it('todo preset do catálogo é usado por ao menos um tema, salvo os que só a galeria oferece', () => {

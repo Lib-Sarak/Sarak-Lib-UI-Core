@@ -36,7 +36,7 @@ describe('PresetsCatalog — um grupo por vez, sem cromo próprio', () => {
         const onApplyFullTheme = vi.fn();
         render(<PresetsCatalog {...createProps('themes')} currentMode="light" draftMode="dark" onApplyFullTheme={onApplyFullTheme} />);
 
-        const themeCard = await screen.findByRole('button', { name: /Sarak Sovereign/i }, { timeout: 10000 });
+        const themeCard = await screen.findByRole('button', { name: /Sarak Sovereign(?! Classic)/i }, { timeout: 10000 });
         fireEvent.click(themeCard);
 
         expect(onApplyFullTheme).toHaveBeenCalledWith(expect.objectContaining({ mode: 'dark' }), 'sarak-sovereign');

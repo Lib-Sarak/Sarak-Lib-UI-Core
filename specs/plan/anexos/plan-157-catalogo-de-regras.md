@@ -15,9 +15,9 @@ liga a regra; *recomendada* diz se entra no conjunto `recommended` — e **nenhu
 | 1 | `single-entrypoint` | P | nome do pacote (`catalog.json › lib.name`) + opção do importador | erro | não (exige opção) | ERP `local-single-ui-entrypoint`; login (convenção, C4) |
 | 2 | `no-deep-import` | P | `exports` do `package.json` da lib | erro | sim | contrato [[03-superficie-publica]] §2 — *acrescentada por mim, o dono veta* |
 | 3 | `known-css-var` | P + C | `catalog.json › tokens.cssVars` | erro | sim | ERP A1 e C7; login C4 |
-| 4 | `prefer-sarak-component` | P | **novo:** `verification.nativeEquivalents` | erro | depende da medição | ERP A10 e `local-ui-equivalence` |
-| 5 | `no-reimplemented-piece` | P | `barrelExports` + **novo:** `verification.aliases` | aviso | depende da medição | ERP A2–A6 |
-| 6 | `no-literal-color-font` | P + C | nenhum (análise do valor) | aviso | sim | ERP `ui-token` (50 falsos positivos em 2026-10-25) |
+| 4 | `prefer-sarak-component` | P | **novo:** `verification.nativeEquivalents` | erro | **não** (medido: pede `allow`) | ERP A10 e `local-ui-equivalence` |
+| 5 | `no-reimplemented-piece` | P | `barrelExports` + **novo:** `verification.aliases` | aviso | **não** (medido: heurística de nome) | ERP A2–A6 |
+| 6 | `no-literal-color-font` | P + C | nenhum (análise do valor) | aviso | **não** (medido: pede `allow`) | ERP `ui-token` (50 falsos positivos em 2026-10-25) |
 | 7 | `no-direct-wrapped-lib` | P | **novo:** `verification.encapsulated` | aviso | não até medir | ERP `ui-kit` (base) |
 | 8 | `no-internal-class-selector` | P + C | prefixo `sarak-` (constante, não lista) | erro | sim | login C4 |
 | 9 | `valid-spacing-value` | P | `catalog.json › tokens.spacing` + props de tipo `SarakLayoutGap` | erro | sim | login C4 ("prop inválida"); ERP I11/I36 — *acrescentada por mim, o dono veta* |
@@ -100,7 +100,9 @@ Ficou de fora, por não ter caso que reprove: nenhuma. Toda regra abaixo tem um 
 
 - **Barra:** arquivo ou `export` de nível de módulo cujo nome indica uma peça que a lib já entrega. Dois sinais, em ordem de confiança:
   - **S1 — nome.** O identificador exportado, ou o nome do arquivo, é igual a um nome de `barrelExports` (exato, ou sem o prefixo
-    `sarak`/`Sarak`, sem diferença de caixa). Sem dado novo.
+    `sarak`/`Sarak`, igual na caixa exceto a primeira letra). Sem dado novo. *Depois da medição do lote 2 (seção ao fim):* só conta
+    export de **valor** (tipo não), não conta quem importa a própria peça (embrulho), e o nome do arquivo só vale para arquivo sem
+    export de valor.
   - **S2 — apelido registrado.** Uma tag de JSDoc na peça pública lista nomes que o importador costuma escrever no lugar
     (`@replaces LinkPagination isValidBrazilianCnpj`), gerada para `verification.aliases`. Só vale o que alguém já viu e registrou.
 - **Cobertura medida sobre os cinco casos conhecidos do ERP (A2–A6), todos ainda no código dele hoje:**
@@ -250,3 +252,146 @@ Ficou de fora, por não ter caso que reprove: nenhuma. Toda regra abaixo tem um 
 - **Lote 2** roda **todas** contra o ERP (`packages/ui-kit`, `modules/*/web`) e os dois logins, com configuração em `C:\tmp\`, e fecha a
   coluna *Recomendada*. O que precisa estar pego, sem exceção: os cinco `--sarak-*` do §3, e as peças do §5 que ainda estiverem no código
   do ERP (hoje, todas as cinco).
+
+---
+
+# Medição do lote 2 — 2026-11-12
+
+Só leitura dos importadores: configuração e harness em `C:\tmp\plan157-lote2\` (fora de todas as árvores), sem cache gravado, sem instalar
+nada. `git status --short` dos três importadores: vazio antes e depois de cada rodada. O plugin rodou com o `ESLint` da própria lib e o
+parser `typescript-eslint` do ERP (v8.65; os logins usam a 8.66, mesma família); o comando `sarak-ui verify` rodou por `tsx` sobre
+`src/verify/cli.ts`, porque o `dist/` deste worktree não tinha o kit na hora da medição (o build estava parado por causa alheia). O
+catálogo é o do worktree (`sarak-ui/catalog.json`, 748 nomes em `tokens.cssVars`).
+
+**Escopo medido.** ERP: `packages/ui-kit/**` e `modules/*/web/**` (422 arquivos `.ts/.tsx` no HEAD `19ec1732`) mais `**/*.css`; logins:
+`**/*.ts`/`**/*.tsx` sem `node_modules`/`dist`/`reports` (446 e 504 arquivos) mais `**/*.css` e `package.json`. Como o ERP já migrou as
+telas, medi também o código dele **antes** da migração (commit `23ab7e2f`, 2026-10-30, 229 arquivos de `modules/*/web`, exportado por
+`git archive` para `C:\tmp`) — é onde a regra 4 tem o que acusar.
+
+**Configuração.** Plugin: as 11 regras ligadas em `error`; `single-entrypoint` com `allow: ['packages/ui-kit/**']`. Comando:
+`known-css-var` (erro), `no-literal-color-font`, `no-internal-class-selector`, `single-entrypoint` (`allow: ['packages/ui-kit/package.json']`),
+`pinned-install`, `kit-in-sync`.
+
+## Contagem por regra (depois das correções da seção seguinte)
+
+| Regra | ERP HEAD | ERP 2026-10-30 | login-completo | login-provedores |
+|---|---|---|---|---|
+| 1 `single-entrypoint` (código) | 0 | — | 1 | 1 |
+| 2 `no-deep-import` | 0 | — | 0 | 0 |
+| 3 `known-css-var` — `.css` | 6 | — | 0 | 0 |
+| 3 `known-css-var` — `.ts/.tsx` | 1 | 35 | 0 | 0 |
+| 4 `prefer-sarak-component` | 6 | 205 | 6 | 7 |
+| 5 `no-reimplemented-piece` | 7 | 5 | 0 | 0 |
+| 6 `no-literal-color-font` — `.css` | 73 | — | 0 | 0 |
+| 6 `no-literal-color-font` — `.ts/.tsx` | 0 | 1 | 0 | 0 |
+| 7 `no-direct-wrapped-lib` | 0 | 0 | 0 | 0 |
+| 8 `no-internal-class-selector` (`.ts/.tsx`) | 2 | — | 0 | 0 |
+| 8 `no-internal-class-selector` (`.css`) | 0 | — | 0 | 0 |
+| 9 `valid-spacing-value` | 0 | 0 | 0 | 0 |
+| 10 `single-entrypoint` (`package.json`) | 0 | — | 0 | 0 |
+| 11 `kit-in-sync` (com `copy`/`installed` do monorepo) | 0 | — | n/a (sem cópia do kit) | n/a (sem cópia do kit) |
+| 12 `pinned-install` | 0 | — | 0 | 0 |
+| 13 `known-icon-name` | 0 | 0 | 0 | 0 |
+| 14 `known-theme-id` | 0 | 0 | 0 | 0 |
+
+Comandos: `tsx C:\tmp\plan157-lote2\run-plugin.mts <nome> <raiz> <allow-porta-única> <glob>…` (plugin; saída em `out-<nome>-plugin.json`) e
+`tsx C:\tmp\plan157-lote2\run-cli.mts <raiz> <config.json> json` (comando). A coluna 2026-10-30 só tem as regras que leem `.ts/.tsx` de
+`modules/*/web`.
+
+## O que o kit tinha de pegar
+
+- **A1, os cinco `var(--sarak-*)`: pegos, nos mesmos `arquivo:linha`.** `proposal-ui.css:129` (`--sarak-border-radius-md`), `:154`
+  (`-lg`), `templateLayout.css:60` (`--sarak-layout-gap-xs`), `:76` (`--sarak-card-padding-lg`), `:77` (`--sarak-card-border`). A regra
+  achou um **sexto** que o relato não listava: `templateLayout.css:48` (`--sarak-card-padding-sm`, ausente de `tokens.cssVars`; nenhuma
+  declaração dele em `.css/.ts/.tsx` do ERP). Verdadeiro positivo.
+- **A2–A6: pegos, 7 achados em 5 peças, 0 falso no HEAD.** A2 `errorMessage.ts:26` (nome); A3 `LinkPagination.tsx:48` (apelido); A4
+  `DocumentFrame.tsx:105` (nome); A5 `documentValidation.ts:24` (apelido); A6 `testing/index.tsx:32,52,64` (nome exato, com a mensagem apontando
+  `createSarakKitMock`).
+- **A10 (elemento nativo), no código de antes da migração: 205 de 205 iguais à regra do próprio ERP.** Rodei a `createEquivalenceCheck`
+  do ERP (`tools-local/gate-rules/ui-rules.mjs`, só leitura) sobre o mesmo snapshot: 205 achados nativos dela, 205 do plugin, **os mesmos
+  `arquivo:linha:elemento`** (0 só de um lado, 0 só do outro). Por elemento no plugin: `h1` 44, `h2` 37, `h3` 22, `section` 35, `header`
+  27, `nav` 14, `dl` 15, `fieldset` 10, `table` 1. (O "171" do relato é do commit `98bd1829`, 2026-11-02, já com parte das telas migradas e
+  sem `dl`/`table` na tabela.) Limite da comparação: a regra do ERP trabalha sobre o texto com os comentários já tirados; eu li o
+  arquivo cru.
+- **No HEAD do ERP a regra 4 dá 0 nas telas (`modules/*/web`)**, o que bate com o "hoje 0 no gate" do relato.
+
+## Verdadeiros e falsos positivos, achado por achado
+
+**Regra 3 `known-css-var` — 0 falso.** ERP HEAD: os 6 de `.css` acima + `packages/ui-kit/sarak-ui/templates/componente-proprio.tsx:30`
+(`var(--sarak-card-border, none)`). Snapshot de 2026-10-30: 35 ocorrências de 11 nomes, nenhum em `tokens.cssVars` e nenhum declarado
+pelo importador. Todos verdadeiros. **Achado contra a lib, não contra o importador:** o molde `sarak-ui/templates/componente-proprio.tsx:30`
+que a própria lib distribui ensina `--sarak-card-border`, variável que não existe — é a origem provável do A1 `templateLayout.css:77` (o
+ERP tem a cópia idêntica do molde). Está no resumo como fora do escopo.
+
+**Regra 4 `prefer-sarak-component` — 0 falso nas telas; 6 no HEAD do ERP e 13 nos logins, todos de contexto ou de regra.**
+- ERP `packages/ui-kit/sarak-ui/templates/componente-proprio.tsx:25,38` e `tela-exemplo.tsx:70`: **cópia vendorizada do kit** (`<section>`,
+  `<h2>`, `<h3>` dos moldes); o gate de equivalência do ERP só lê as telas dos módulos (`web/src/`), nunca o `ui-kit`. Falso de contexto → `allow: ['packages/ui-kit/sarak-ui/**']`.
+- ERP `packages/ui-kit/src/declared/DeclaredField.tsx:340` (`<fieldset>` com `<legend>`): verdadeiro pela regra (cabe `SarakFormSection`); o
+  gate do ERP só olha as telas, não o `ui-kit`.
+- ERP `packages/ui-kit/src/LinkPagination.tsx:68` (`<nav>` com `SarakLink`): é a própria cópia A3; verdadeiro.
+- ERP `packages/ui-kit/testing/index.tsx:34` (`<table>` do dublê de teste): falso de contexto (o dublê é de propósito) → `allow`.
+- Logins: `<section>`/`<h3>`/`<table>`/`<h1>` em `modules/access/web/…` (`EffectiveAccessPanel.tsx:131`, `PersonDetail.tsx:160|166`,
+  `RoleEditor.tsx:194|195` ou `196|197`, `PlatformPeople.tsx:100` só no `login-provedores`), `modules/hub/web/src/pages/AuditTrail.tsx:413`
+  e o molde `modules/_template/web/src/pages/List.tsx:20`. São verdadeiros pela regra (condição de título satisfeita); **não confirmei com o
+  dono dos logins** que querem o componente — os logins não têm gate de equivalência.
+- **Decisão: fora do `recommended`.** A regra não erra no alvo (telas), mas acusa cópia do kit e dublê de teste e exige `allow`.
+
+**Regra 5 `no-reimplemented-piece` — 5 falsos corrigidos; sobram 5 não confirmados.** Primeira rodada: ERP HEAD 11, snapshot 14, logins 5 +
+5. Falsos e a correção de cada um (todas em `src/verify/rules/names.ts` e `src/verify/data.ts`, com teste):
+- `formatters.ts:33` `formatDate` e `:43` `formatPercent` (ERP): **embrulho** — o corpo chama `sarakFormatDate`/`sarakFormatPercent`. Passou a
+  não acusar quem **importa** a peça pública (de qualquer pacote, não só da lib: os logins importam `SarakTable`/`SarakPagination` de
+  `@sarak/ui-kit`).
+- `Table.tsx:29` e `Pagination.tsx:22` (os dois logins): embrulho de `SarakTable`/`SarakPagination` vindos de `@sarak/ui-kit`. Mesma correção.
+- `DocumentKind` (`contracts/web/src/templateFormat.ts:3`, valores `'cpf'|'cnpj'|'rg'`, diferentes dos de `SarakDocumentKind`, `'cpf'|'cnpj'|
+  'cep'|'auto'`), `NavigationItem` ×8 (contrato da API do ERP, `modules/hub/api/src/navigation.ts:8`) e `DocumentFrameProps`: **tipo** com
+  nome de peça. Passou a contar só export de **valor**.
+- `SESSION` (`login-*/modules/access/tests/web/screen-helpers.tsx:49|52`, constante de teste) ↔ `SarakSession`: a comparação sem caixa
+  casava. Passou a igualar a caixa, exceto a primeira letra.
+- `pagination.ts:1` e `tabs.ts:1` (logins; `withPage` e a lista de abas) ↔ `SarakPagination`/`SarakTabs`: nome de **arquivo** sem relação com
+  peça. O nome do arquivo passou a valer só para arquivo sem export de valor próprio.
+- **Sobram 5 no código de 2026-10-30, que não consegui provar nem falso nem verdadeiro:** `formatDate` em `finance/web/src/format.ts:10`,
+  `orders/web/src/dates.ts:9`, `purchases/web/src/dates.ts:7`; `Alert` em `proposals/web/src/components/Panel.tsx:26` (um `<p role="alert">`);
+  `formatCurrency` em `proposals/web/src/components/ProposalValue.tsx:11` (um `Intl.NumberFormat`). Nomes genéricos, o limite que o §5 já
+  previa; o `formatDate` foi depois consolidado pelo ERP num embrulho de `sarakFormatDate`, o que sugere verdadeiro, mas a regra não compara
+  comportamento. **Decisão: fica `aviso` e fora do `recommended`.**
+
+**Regra 6 `no-literal-color-font` — 74 achados, todos de contexto; nenhum erro de leitura.** O `var(--x, #reserva)` não acusa (0 falso do tipo
+que o ERP teve). Os 73 de `.css` do ERP estão em: `modules/proposals/core/templates/iarendel-1/styles/custom.css` (modelo de proposta
+impressa, 39 achados), `…/styles/tailwind.generated.css` (arquivo **gerado**, 25) e `modules/proposals/tests/fixtures/issuers/recorta-1/styles/custom.css`
+(fixture, 9) — documento impresso e gerado, o falso esperado do §6, resolvido por `allow` por glob. No snapshot, `ContractPdfViewer.tsx:78`
+(`background: 'white'` na página do PDF): literal de propósito (papel). **Decisão: fora do `recommended`** — o importador precisa do `allow`,
+e o arquivo gerado nem tem como ser corrigido na origem.
+
+**Regra 8 `no-internal-class-selector` — 2 verdadeiros, 0 falso.** `packages/ui-kit/tests/declared/DeclaredDetail.test.tsx:47` e
+`DeclaredForm.test.tsx:80`: `container.querySelectorAll('.sarak-card')`. O §8 dizia 0 ocorrência (só os logins tinham sido varridos); o
+ERP tem 2.
+
+**Regra 1 `single-entrypoint` — 1 achado por login, verdadeiro pela regra:** `modules/access/tests/domain/themes.test.ts:6` importa
+`SARAK_THEME_CATALOG` e `sarakLoadAllThemePresets` da lib fora da porta, num **teste**; cabe em `allow` de teste. ERP: 0 com
+`allow: ['packages/ui-kit/**']`.
+
+**Regras sem ocorrência para medir (0 nos três):** 2, 7, 9, 10, 11, 12, 13, 14. A 12 e a 11 passaram **limpas em dados reais**: os três
+`packages/ui-kit/package.json` declaram `github:Lib-Sarak/Sarak-Lib-UI-Core#v8.0.0`, e no ERP a cópia
+(`packages/ui-kit/sarak-ui/VERSION`) e o pacote instalado têm o mesmo `kitHash` (`e96c613b93c6`). **Limite achado:** o padrão da regra 11 é
+`sarak-ui/VERSION` na raiz e `node_modules/@sarak/lib-ui-core/…` acima dela; o ERP guarda a cópia em `packages/ui-kit/`, e com a
+configuração padrão a regra não via nada (0 por cópia ausente, não por estar em dia) — só com as opções `copy` e `installed` ela conferiu.
+Os logins não têm cópia do kit; para eles a regra não se aplica. Para 13/14/9 não
+houve caso que reprovasse nem falso: no código dos importadores há literais de tema e de paleta (`'minimalist-airy'`, `'ciano-violeta'`,
+`custom:analogous:#…`) só em corpos de requisição de teste, que a regra não lê, e `colorPalette: 'ciano-violeta'` passou. A prova de que
+reprovam continua sendo o teste de cada regra com o catálogo real.
+
+## Correções de regra que a medição pediu (nos arquivos do lote 1)
+
+1. **`no-literal-color-font` quebrava em `style={{ ...base, cor: x }}`** (espalhamento sem chave): `TypeError` em `rules/styles.ts:24`,
+   achado na rodada sobre o código de 2026-10-30 (`ContractPdfViewer.tsx:77`). Corrigido: pula o que não é `Property`. Teste novo.
+2. **`no-reimplemented-piece`**: os quatro ajustes acima (valor × tipo, embrulho por importação, caixa, nome de arquivo). Cinco testes novos.
+3. **`recommended` preenchido** com as cinco regras sem falso positivo medido e sem opção obrigatória, em `error`: `no-deep-import`,
+   `known-css-var`, `no-internal-class-selector`, `valid-spacing-value`, `known-icon-name`. **Ficam de fora:** 4 e 6 (pedem `allow`), 5
+   (heurística), 7 (sem ocorrência), 1 e 14 (pedem opção). As regras 2, 9 e 13 entram **sem ocorrência real que as exercite**: a base é o
+   teste unitário e a ausência de falso positivo.
+
+## Limites medidos
+
+- A regra 4 e a regra 5 não veem comportamento; a 5 sobre nome genérico continua pedindo olho humano.
+- O comando `verify` não lê o `package-lock.json` (o `git+ssh` do login, regra 12, fica fora, como o §12 já dizia).
+- Medido só com a `catalog.json` do worktree em 2026-11-12; os nomes em `tokens.cssVars` mudam com a versão da lib.

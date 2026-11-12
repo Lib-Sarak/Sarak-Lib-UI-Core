@@ -85,10 +85,10 @@ describe('composeThemeDesign — a troca de tema nunca herda token do tema anter
         expect(userAdjusted.primaryColor).toBe('#123abc');
     });
 
-    it('mantém chave por chave a composição rc.3 dos 19 temas sem colorPalette', () => {
+    it('mantém chave por chave a composição rc.3 dos 23 temas sem colorPalette', () => {
         const defaultsWithoutPalette = { ...defaults } as Record<string, unknown>;
         delete defaultsWithoutPalette.colorPalette;
-        expect(SARAK_ALL_THEMES).toHaveLength(19);
+        expect(SARAK_ALL_THEMES).toHaveLength(23);
 
         SARAK_ALL_THEMES.forEach((embedded) => {
             const { colorPalette: _palette, ...withoutPalette } = embedded.design as Record<string, SarakTokenValue>;

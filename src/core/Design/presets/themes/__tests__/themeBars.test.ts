@@ -17,6 +17,7 @@ const CLOSEST_PERSONALITY: Readonly<Record<string, string>> = {
     'blueprint-protocol': 'technical', 'industrial-terminal': 'technical', 'minimalist-airy': 'modern', 'kinetic-flow': 'modern', 'playful-pastel': 'modern',
     'neumorphic-mobile': 'soft', 'organic-clay': 'soft', 'editorial-ink': 'editorial', 'neo-brutalism': 'brutalist',
     'aurora-veil': 'glass', 'nebula-space': 'glass', 'synthwave-retro': 'glass', 'data-terminal': 'erp', 'cyberpunk-neon': 'operations', 'cyber-retro-wave': 'operations',
+    'sarak-sovereign-classic': 'corporate', 'cyberpunk-neon-classic': 'operations', 'industrial-terminal-classic': 'erp', 'cyber-retro-wave-classic': 'glass',
 };
 
 describe('temas embarcados — as barras têm o caráter de uma Personalidade', () => {

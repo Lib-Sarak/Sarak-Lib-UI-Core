@@ -55,6 +55,21 @@ não rejeite esses valores por esperar um formato simples de cor. Por exemplo, o
 }
 ```
 
+**Tokens de mídia não são cor nem URL de rede.** O token de imagem (hoje, `globalBackgroundImageUrl`; a lista dos tokens de mídia
+está em `sarak-ui/catalog.json` → `designTokens.ids`, os de `type: image` e `file`) chega ao `onSave` com um destes valores:
+`''` (sem mídia, o padrão), uma URL `https://` ou `http://`, um caminho do próprio sistema (`/assets/fundo.png`) ou mídia embutida,
+`data:image/svg+xml;base64,…` (o `organic-clay` e o `synthwave-retro` trazem esse, com 626 e 1010 caracteres), todos eles com ou sem o
+invólucro `url(...)`. O predicado que a lib aplica ao carregar é o `isSafeMediaString` (a spec de segurança da lib, §2.1): ele
+recusa qualquer outro esquema (`javascript:`, `vbscript:`, um `data:` que não seja imagem ou vídeo em base64) e os caracteres
+`<`, `>`, `{`, `}` e `;` fora da mídia embutida, e o valor recusado é descartado com aviso. Por isso o backend **não** valida esse
+campo como URL `http`: um validador desse tipo recusa o tema embarcado que a lib mesma entrega, e a coluna que guarda o JSON precisa
+caber o `data:` (use `text`, não `varchar(255)`). Quem quiser validar no servidor aceita o mesmo conjunto acima.
+
+**Servidor que valida as chaves por lista.** Tire a lista de `sarak-ui/catalog.json` → `designTokens.ids`, a cada versão da lib. Um tema
+guardado de antes pode trazer chave que saiu: `designTokens.removed` diz, por token, a versão em que saiu e o destino (o nome que
+ficou no lugar, ou `sem substituto`). A lib descarta a chave removida ao carregar, com aviso; o servidor que a recusa com 400 impede
+o usuário de salvar o tema inteiro por causa dela.
+
 `onLoad` é o inverso. Continua aceitando o formato antigo, que devolve apenas o `design`, ou pode
 devolver o par:
 

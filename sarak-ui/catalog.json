@@ -8710,6 +8710,303 @@
       "tabSectionMargin",
       "topbarHeight"
     ],
+    "removed": [
+      {
+        "id": "aiPanelBg",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "animFast",
+        "removedIn": "8.0.0",
+        "destination": "motionDurationFast"
+      },
+      {
+        "id": "animInstant",
+        "removedIn": "8.0.0",
+        "destination": "motionDurationInstant"
+      },
+      {
+        "id": "animNormal",
+        "removedIn": "8.0.0",
+        "destination": "motionDurationNormal"
+      },
+      {
+        "id": "animSlow",
+        "removedIn": "8.0.0",
+        "destination": "motionDurationSlow"
+      },
+      {
+        "id": "atmosphereNoiseOpacity",
+        "removedIn": "8.0.0",
+        "destination": "bgNoiseDensity"
+      },
+      {
+        "id": "borderRadiusLg",
+        "removedIn": "8.0.0",
+        "destination": "borderRadius"
+      },
+      {
+        "id": "borderRadiusMd",
+        "removedIn": "8.0.0",
+        "destination": "borderRadius"
+      },
+      {
+        "id": "borderRadiusSm",
+        "removedIn": "8.0.0",
+        "destination": "borderRadius"
+      },
+      {
+        "id": "cardContentAlignment",
+        "removedIn": "8.0.0",
+        "destination": "cardTextAlign"
+      },
+      {
+        "id": "cardHoverLift",
+        "removedIn": "8.0.0",
+        "destination": "cardHoverTranslate"
+      },
+      {
+        "id": "cardImagePosition",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "contentAlignment",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "contrastCurve",
+        "removedIn": "8.0.0",
+        "destination": "globalContrast"
+      },
+      {
+        "id": "devicePhoneWidth",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "easeMain",
+        "removedIn": "8.0.0",
+        "destination": "motionEaseMain"
+      },
+      {
+        "id": "easeOut",
+        "removedIn": "8.0.0",
+        "destination": "motionEaseOut"
+      },
+      {
+        "id": "formLayoutDirection",
+        "removedIn": "8.0.0",
+        "destination": "formLabelPosition"
+      },
+      {
+        "id": "identityRedirectUrl",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "industrialRegistry",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "inputSuccessColor",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "kbdMinWidth",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "layerBackdropBlur",
+        "removedIn": "8.0.0",
+        "destination": "modalOverlayBlur"
+      },
+      {
+        "id": "layerBackdropOpacity",
+        "removedIn": "8.0.0",
+        "destination": "modalOverlayColor"
+      },
+      {
+        "id": "layerElevationFactor",
+        "removedIn": "8.0.0",
+        "destination": "layeredShadows"
+      },
+      {
+        "id": "layout",
+        "removedIn": "8.0.0",
+        "destination": "layoutGridTemplate"
+      },
+      {
+        "id": "managementGroupDescMaxWidth",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "matrixSearchBg",
+        "removedIn": "8.0.0",
+        "destination": "tokens de campo (`input*`)"
+      },
+      {
+        "id": "noiseIntensity",
+        "removedIn": "8.0.0",
+        "destination": "bgNoiseDensity"
+      },
+      {
+        "id": "presetCardHoverShadowBlur",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetCardHoverShadowOffsetY",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetCardHoverShadowSpread",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetCardShadowBlur",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetCardShadowOffsetY",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetCardShadowSpread",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetGlowShadowBlur",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetGlowShadowBlurLg",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetGridTextureSize",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetMatteShadowBlur1",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetMatteShadowBlur2",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetMatteShadowOffsetY2",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetMatteShadowSpread1",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetMatteShadowSpread2",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetMiniCardHeight",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetPreviewMinHeight",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetPreviewPaddingY",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "scrollbarThumbColor",
+        "removedIn": "8.0.0",
+        "destination": "scrollThumbColor"
+      },
+      {
+        "id": "scrollbarWidth",
+        "removedIn": "8.0.0",
+        "destination": "scrollWidth"
+      },
+      {
+        "id": "securityPulseSpeed",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "securityShieldGlow",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "tableActionPosition",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "themeDropdownMaxHeight",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "trackingSubtle",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "typeScaleDisplay",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "visualDotGridSize",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "visualOrbBlur",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "visualPerspective",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "visualTranslateOffsetSm",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "visualTranslateZMd",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      }
+    ],
     "ids": [
       {
         "id": "accentColor",
@@ -13544,7 +13841,11 @@
       "organic-clay",
       "high-contrast",
       "corporate-ledger",
-      "playful-pastel"
+      "playful-pastel",
+      "sarak-sovereign-classic",
+      "cyberpunk-neon-classic",
+      "industrial-terminal-classic",
+      "cyber-retro-wave-classic"
     ],
     "referenceThemeIds": [
       "minimalist-airy",
@@ -13848,6 +14149,6 @@
   "kitStamp": {
     "libVersion": "8.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "d0d50b1091e5"
+    "kitHash": "f30040f4f632"
   }
 }

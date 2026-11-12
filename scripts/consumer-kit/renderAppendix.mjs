@@ -91,6 +91,9 @@ const renderTokens = (catalog) => [
         'lista completa com tipo em `catalog.json` → `designTokens.ids`. ' +
         `${catalog.designTokens.responsiveCapable.length} deles aceitam \`SarakResponsiveValue\`.`,
     '',
+    `**Tokens que saíram** (${catalog.designTokens.removed.length}) — \`catalog.json\` → \`designTokens.removed\`: o id, a versão em que saiu e ` +
+        'o destino (o token que ficou no lugar, ou `sem substituto`). Quem valida o tema por lista de chaves deixa de exigir esses ids.',
+    '',
     `**Temas embutidos** (${catalog.themes.presetIds.length}): ` +
         catalog.themes.presetIds.map((id) => `\`${id}\``).join(' · '),
     '',

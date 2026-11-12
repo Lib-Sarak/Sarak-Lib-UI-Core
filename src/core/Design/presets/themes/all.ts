@@ -26,6 +26,10 @@ import { organicClayTheme } from './organic-clay';
 import { highContrastTheme } from './high-contrast';
 import { corporateLedgerTheme } from './corporate-ledger';
 import { playfulPastelTheme } from './playful-pastel';
+import { sarakSovereignClassicTheme } from './sarak-sovereign-classic';
+import { cyberpunkNeonClassicTheme } from './cyberpunk-neon-classic';
+import { industrialTerminalClassicTheme } from './industrial-terminal-classic';
+import { cyberRetroWave2077ClassicTheme } from './cyber-retro-wave-classic';
 
 export const SARAK_ALL_THEMES: SarakThemePreset[] = [
     sarakSovereignTheme,
@@ -47,4 +51,8 @@ export const SARAK_ALL_THEMES: SarakThemePreset[] = [
     highContrastTheme,
     corporateLedgerTheme,
     playfulPastelTheme,
+    sarakSovereignClassicTheme,
+    cyberpunkNeonClassicTheme,
+    industrialTerminalClassicTheme,
+    cyberRetroWave2077ClassicTheme,
 ];

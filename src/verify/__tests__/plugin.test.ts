@@ -46,8 +46,12 @@ describe('catálogo de regras', () => {
         expect(THEME_OPTIONS_KEY).toBe('theme');
         expect(catalog.barrelExports).toContain('sarakRegisterIcons');
     });
-    it('o recommended existe e nasce vazio', () => {
-        expect((plugin.configs.recommended as { rules: object }).rules).toEqual({});
+    it('o recommended só liga regra do plugin que não pede opção, em erro', () => {
+        const { rules: recommended } = plugin.configs.recommended as { rules: Record<string, string> };
+        const ids = Object.keys(recommended).map((key) => key.replace('sarak/', ''));
+        expect(ids.sort()).toEqual(['known-css-var', 'known-icon-name', 'no-deep-import', 'no-internal-class-selector', 'valid-spacing-value']);
+        for (const id of ids) expect(rules[id], id).toBeDefined();
+        expect(new Set(Object.values(recommended))).toEqual(new Set(['error']));
     });
 });
 
@@ -125,12 +129,47 @@ describe('no-reimplemented-piece', () => {
     it('acusa pelo nome do arquivo quando nenhum export acusou', () => {
         reproves('no-reimplemented-piece', 'export default 1;', {}, 'src/errorMessage.ts');
     });
+    it('passa o embrulho: quem importa a peça da lib e a usa não a reescreve', () => {
+        const wrapper = "import { sarakFormatDate } from '@sarak/lib-ui-core';\nexport function formatDate(civil, locale) { return sarakFormatDate(civil, locale); }";
+        passes('no-reimplemented-piece', wrapper, {}, 'packages/ui-kit/src/formatters.ts');
+        passes('no-reimplemented-piece', wrapper, {}, 'packages/ui-kit/src/formatDate.ts');
+        reproves('no-reimplemented-piece', "import { SarakButton } from '@sarak/lib-ui-core';\nexport function formatDate(d) { return String(d); }", {}, 'src/x.ts');
+    });
+    it('passa o embrulho feito pela porta única do projeto (a peça vem de outro pacote que a reexporta)', () => {
+        const code = "import { SarakPagination } from '@sarak/ui-kit';\nexport function Pagination(props) { return <SarakPagination {...props} />; }";
+        passes('no-reimplemented-piece', code, {}, 'modules/access/web/src/components/Pagination.tsx');
+    });
+    it('não confunde constante de outra caixa (`SESSION`) nem arquivo com export próprio (`pagination.ts`)', () => {
+        passes('no-reimplemented-piece', 'export const SESSION = { token: 1 };', {}, 'tests/screen-helpers.tsx');
+        passes('no-reimplemented-piece', 'export function withPage(path, page) { return path; }', {}, 'src/api-client/pagination.ts');
+    });
+    it('não acusa export de tipo com o nome de peça pública (o parser de TS só existe no importador)', () => {
+        const reports: unknown[] = [];
+        const context = { filename: '/proj/src/types.ts', cwd: '/proj', options: [], report: (item: unknown) => reports.push(item), sourceCode: { text: '' } };
+        const visitor = rules['no-reimplemented-piece'].create(context as never) as Record<string, (node: unknown) => void>;
+        const loc = { start: { line: 1, column: 0 } };
+        const typed = (declaration: { type: string; id: { name: string } }) => visitor.ExportNamedDeclaration({ type: 'ExportNamedDeclaration', declaration, specifiers: [], loc });
+        typed({ type: 'TSTypeAliasDeclaration', id: { name: 'DocumentKind' } });
+        typed({ type: 'TSInterfaceDeclaration', id: { name: 'NavigationItem' } });
+        visitor.ExportNamedDeclaration({ type: 'ExportNamedDeclaration', exportKind: 'type', specifiers: [{ exported: { name: 'Alert' } }], loc });
+        visitor.ExportNamedDeclaration({ type: 'ExportNamedDeclaration', specifiers: [{ exported: { name: 'Alert' }, exportKind: 'type' }], loc });
+        visitor['Program:exit'](undefined);
+        expect(reports).toEqual([]);
+        typed({ type: 'FunctionDeclaration', id: { name: 'errorMessage' } });
+        visitor['Program:exit'](undefined);
+        expect(reports).toHaveLength(1);
+    });
 });
 
 describe('no-literal-color-font', () => {
     it('reprova cor e fonte literais', () => {
         reproves('no-literal-color-font', "const a = <div style={{ background: '#fff' }} />;");
         reproves('no-literal-color-font', "const a = <div style={{ fontFamily: \"'Inter', sans-serif\" }} />;");
+    });
+    it('segue lendo as demais chaves quando o style tem espalhamento, sem quebrar', () => {
+        const messages = reproves('no-literal-color-font', "const a = <div style={{ ...base, background: '#fff' }} />;");
+        expect(messages).toHaveLength(1);
+        passes('no-literal-color-font', "const a = <div style={{ ...base, color: 'var(--sarak-primary-color, #19e3f0)' }} />;");
     });
     it('passa var com reserva, palavras-chave e glob permitido', () => {
         passes('no-literal-color-font', "const a = <div style={{ color: 'var(--sarak-primary-color, #19e3f0)', background: 'transparent', borderColor: 'currentColor' }} />;");

@@ -41,7 +41,14 @@ const propsWithType = (
     return found;
 };
 
-const baseName = (name: string): string => name.replace(/^sarak/i, '').toLowerCase();
+/**
+ * O nome sem o prefixo, igualado só na primeira letra: `errorMessage` casa com `sarakErrorMessage`, mas
+ * `SESSION` não casa com `SarakSession` (constante de teste, outra coisa — medido num login real).
+ */
+const baseName = (name: string): string => {
+    const bare = name.replace(/^sarak/i, '');
+    return bare.charAt(0).toLowerCase() + bare.slice(1);
+};
 
 const indexBarrel = (names: string[]): Map<string, string> => {
     const byBase = new Map<string, string>();

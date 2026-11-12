@@ -9,10 +9,12 @@
  * Duas metades:
  *  - sem `--latest`: atualiza DENTRO da faixa (ou, sem faixa declarada, dentro do
  *    MAJOR já instalado — nunca atravessa sozinho), com o comando do gerenciador já
- *    validado por `packageManager.mjs`. Nunca reescreve o spec.
+ *    validado por `packageManager.mjs`. Só reescreve o spec quando ele é uma tag
+ *    exata (`#v<X.Y.Z>`): o pin é a versão, e o comando troca o pin para a maior tag
+ *    do mesmo major.
  *  - com `--latest`: mostra quantos majors pula e as notas de `docs/migracoes.md`
  *    ENTRE a versão instalada e a mais nova, pede confirmação, e só então reescreve a
- *    faixa e roda o comando de atualização para o major alvo.
+ *    faixa (ou o pin de tag exata) e roda o comando de atualização para o alvo.
  *
  * REGRA DURA (herdada da Spec 51): comando não validado para o gerenciador nunca é
  * executado — degrada para instrução genérica. O `refresh` roda de todo jeito ao
@@ -30,7 +32,7 @@ import { compareVersions } from './checkUpdate/semverTags.mjs';
 import { defaultExecGitLsRemoteTags } from './checkUpdate/tagComparison.mjs';
 import { resolveUpdatePlan } from './checkUpdate/updatePlan.mjs';
 import { extractMigrationNotes } from './checkUpdate/migrationNotes.mjs';
-import { bumpSpecMajor, rewritePackageJsonDependency } from './checkUpdate/rewriteRange.mjs';
+import { bumpSpecMajor, isExactTagSpec, pinSpecToTag, rewritePackageJsonDependency } from './checkUpdate/rewriteRange.mjs';
 import { confirm } from './checkUpdate/confirmPrompt.mjs';
 import { escapeCaretForWindowsShell } from './checkUpdate/shellEscape.mjs';
 import { gitUpdateCommand, localRefreshCommand } from './packageManager.mjs';
@@ -103,6 +105,20 @@ function rewriteConsumerRange({ context, novoMajor }) {
     return novoSpec;
 }
 
+/**
+ * Spec de tag exata: o pin É a versão, então subir é trocar o pin para a tag-alvo. Roda depois da
+ * confirmação do `--latest`; spec que não é tag exata (`#semver:`, SHA, `github:` puro) passa direto.
+ */
+function repinExactTag({ context, spec, tag }) {
+    if (!isExactTagSpec(spec)) return spec;
+    const novoSpec = pinSpecToTag(spec, tag);
+    if (novoSpec === spec) return spec;
+    const packageJsonPath = path.join(context.packageDir, 'package.json');
+    const texto = fs.readFileSync(packageJsonPath, 'utf8');
+    fs.writeFileSync(packageJsonPath, rewritePackageJsonDependency({ text: texto, pkgName: PKG_NAME, oldSpec: spec, newSpec: novoSpec }));
+    return novoSpec;
+}
+
 /** `{ ok:false, ... }` num formato de RESULTADO (`{lines,exitCode}`) — ou `{ ok:true, plan }`. */
 async function fetchUpdatePlan({ context, execGitLsRemoteTags }) {
     const { url, pinnedCommit } = resolveRemoteUrl(context.spec);
@@ -158,8 +174,9 @@ async function updateGit({ context, cwd, packageRoot, latest, yes, execGitLsRemo
         return { lines: [`[sarak:update] Já está atualizado — v${plan.installed.join('.')} é a maior versão ${escopo}.`], exitCode: 0 };
     }
 
-    const { spec: specParaReinstalar, recusado } = await resolveSpecToReinstall({ context, plan, latest, packageRoot, yes, input, output });
+    const { spec: specConfirmado, recusado } = await resolveSpecToReinstall({ context, plan, latest, packageRoot, yes, input, output });
     if (recusado) return recusado;
+    const specParaReinstalar = repinExactTag({ context, spec: specConfirmado, tag: alvo.tag });
 
     const { command, validated } = gitUpdateCommand({ manager: context.manager.name, packageName: PKG_NAME, gitSpec: specParaReinstalar });
     const resultado = runManagerCommand({ command, validated, cwd, execCommand, verb: `reinstale "${PKG_NAME}" com o gerenciador deste projeto, na faixa "${specParaReinstalar}"` });

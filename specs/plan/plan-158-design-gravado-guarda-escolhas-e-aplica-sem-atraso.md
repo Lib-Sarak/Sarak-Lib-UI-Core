@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Gravar só as escolhas do design e aplicar sem atraso"
 objetivo: "Fazer o design gravado conter o que o administrador escolheu, nunca o que a paleta calculou, para que trocar tema, paleta, tom da barra ou modo sempre chegue à tela, e fazer a escolha de uma opção no painel responder em menos de 200 ms"
 dominio: "Design Engine / Persistência e rascunho"
-status: "🔵 Em correção"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "design-engine", "persistencia", "paleta", "painel", "desempenho"]
 relacionados: ["[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[02-design-engine]]", "[[024-paleta-calculada-separada-do-tema]]", "[[009-persistencia-tenant-aware]]", "[[016-preferencias-do-usuario-separadas-do-tema]]"]
@@ -299,3 +299,97 @@ declaram **MAJOR**, com quem quebra e o caso do importador que guarda o completo
    `[[09-temas-e-presets]]`; `section-pointers:check` e `verify --tier=docs` verdes. A correção 2 trata só o achado 3.
 
 **Status da plan: 🔵 Em correção.**
+
+---
+
+# 9.2 Resumo da execução (correção 2) — 2026-11-11
+
+## Resumo da execução (correção 2) — 2026-11-11
+
+**Achado 3 — corrigido.** `specs/adr/026-design-gravado-guarda-so-as-escolhas.md` §2.1 ganhou o parágrafo "A paleta escolhida pelo usuário
+vence a cor que o tema declara, e sobrevive a recarregar": quando o condutor `colorPalette` difere do que o tema declara, o baseline usa as
+cores calculadas pela paleta escolhida em todo papel que ela calcula (o que o tema declara e a paleta não calcula, e o resto do tema, fica);
+o gravado é só `colorPalette`, sem as cores calculadas, e o ajuste manual posterior é gravado como escolha. Mantidos: o tema vence quando a
+paleta é a dele (09 §4.3.4), o host continua vencendo a paleta escolhida, o tom da barra sem regra nova. O que o ADR não decide — a paleta
+escolhida vencer o tema nas trocas seguintes ("manter minha paleta") — fica declarado como do ADR-027, coerente com a plan-164. A decisão A não foi reaberta.
+O achado 4 não foi tocado (fechado pelo revisor); só nomeei a spec em dois ponteiros `§4.3` que a minha própria prosa nova introduziu.
+
+**Verificações:** `npm run -s verify -- --tier=docs` → `[OK] nível "docs" verde` (plan-index, section-pointers, guide, dev-kit, Anel 0: 0 achado).
+A primeira rodada acusou 2 ponteiros `§4.3` sem a spec nomeada (linhas 79-80); corrigidos e repetida a verificação.
+
+**Arquivos alterados:** `specs/adr/026-…` e este bloco; `status: 🟠`. Sem código, sem commit.
+
+## Veredito — 2026-11-11 — correção 2 (lote 0) — 🔴 Reprovado (achados 5 e 6)
+
+**Conferido por mim:** o achado 3 foi tratado no lugar certo (§2.1). A paleta escolhida entra no baseline, o gravado é só
+`colorPalette`, o tema vence quando a paleta é a dele, o tom da barra fica sem regra nova e o "manter minha paleta" foi
+remetido ao ADR-027, coerente com a `plan-164`. Os 2 ponteiros `§4.3` novos nomeiam a spec; `section-pointers:check` verde.
+
+`verify --tier=docs` falha em 2 verificações, nenhuma desta correção:
+- `plan-index:check`: o status 🟠 foi gravado sem rodar `npm run plan-index` — sincronizado por mim com este veredito;
+- `guide:check`: kit do consumidor defasado pelos temas novos da `plan-162` lote 1, em andamento no mesmo worktree.
+
+5. `specs/adr/026-design-gravado-guarda-so-as-escolhas.md:79` — "Cor declarada pelo **host** continua vencendo a paleta
+   escolhida, como na composição de hoje" não confere com o código. Hoje, escolher a paleta grava no rascunho toda cor que ela
+   calcula, **sem olhar o host**:
+   - `src/features/DesignEngine/Main/utils/paletteDraft.ts:98-107` monta o patch;
+   - `src/features/DesignEngine/Main/hooks/usePaletteSelection.ts:38-39` o aplica.
+
+   O `config` do host só entra na composição do tema (`src/core/Design/presets/themes/compose.ts:52`), não na escolha da paleta.
+   Logo, hoje a paleta escolhida vence a cor do host, e isso fica gravado. Com a regra escrita, um host que declara
+   `primaryColor` mais um usuário que escolhe a paleta X dão: o painel mostra o primário de X; depois de `Aplicar` e recarregar,
+   o baseline devolve o primário do host. Isso contradiz o próprio parágrafo ("volta igual depois de recarregar").
+
+   Critério: o comportamento atual do painel, e a frase "volta igual" do próprio ADR. Correção: a paleta escolhida vence a cor
+   do host nos papéis que ela calcula, como hoje. Tirar "como na composição de hoje", e o caso host + paleta escolhida vira uma
+   linha nas Consequências. Inverter (o host vencendo) mudaria o painel e exigiria decisão do dono; não é o que se pede aqui.
+
+6. Mesmo parágrafo, "o baseline usa as cores **calculadas pela paleta escolhida**" (`:75`) — não diz **qual cálculo**, e hoje
+   há dois que dão cores diferentes:
+   - o painel calcula só com os tons da barra (`paletteDraft.ts:81-84` → `resolvePalette(input, mode, tones)`);
+   - a composição calcula com o que o tema e o host declaram e corrige contra isso (`src/core/Design/palette/resolve.ts:60-61`,
+     `correctPaletteAgainstDeclared`).
+
+   Se o baseline usar o segundo, as cores que o painel gravou diferem dele e voltam a ser gravadas como escolha — o que a decisão A
+   existe para impedir. Critério: §2.1, "escolha é a chave que difere do baseline" (só funciona se o baseline reproduz exatamente o
+   que o painel escreve). Correção: o ADR fixa que o baseline calcula a paleta escolhida do mesmo jeito que o painel (mesma
+   entrada: valor, modo e tons da barra) e que o lote 1 tem um teste de ida e volta (escolher → gravar → recarregar → mesmo
+   design, nada gravado além de `colorPalette`). Aproveitar e citar `usePaletteSelection.ts` pelo caminho completo,
+   apontando `:38-39` (onde o patch é aplicado) em vez de `:17` (o comentário).
+
+Pronto quando os dois parágrafos estiverem corrigidos e `section-pointers:check` passar. O `guide:check` só passa com a
+`plan-162` e não é critério desta correção.
+
+**Status da plan: 🔵 Em correção.**
+
+---
+
+# 9.3 Resumo da execução (correção 3) — 2026-11-11
+
+## Resumo da execução (correção 3) — 2026-11-11
+
+**Achado 5 — corrigido.** `specs/adr/026-…` §2.1: saiu "como na composição de hoje". A paleta escolhida vence a cor declarada pelo tema **e
+pelo host** nos papéis que ela calcula, como o painel faz hoje (`paletteDraft.ts:98-107`, `usePaletteSelection.ts:38-39`). O caso host + paleta
+escolhida virou uma linha nas Consequências (Negativas), com a nota de que inverter exigiria decisão do dono.
+
+**Achado 6 — corrigido.** §2.1 fixa que o baseline calcula a paleta escolhida com a mesma entrada do painel — valor, modo e tons da barra, como
+em `resolveDraftPalette` (`src/features/DesignEngine/Main/utils/paletteDraft.ts:81-84`) — e não com a correção contra o que tema e host declaram
+(`src/core/Design/palette/resolve.ts:60-61`), com o motivo. Registra o teste de ida e volta do lote 1 (escolher → gravar → recarregar → mesmo
+design, nada gravado além de `colorPalette`). `usePaletteSelection.ts` agora citado pelo caminho completo em `:38-39`, não `:17`.
+
+**Verificações:** ver abaixo (`section-pointers:check`, `plan-index`, `plan-index:check`). Só prosa; sem código; sem commit; `guide:check` não é critério.
+
+## Veredito — 2026-11-12 — correção 3 (lote 0) — 🟢 Aprovado; o lote 1 espera a aprovação do ADR-026 pelo dono
+
+**Conferido por mim:** `git diff` do ADR-026.
+- Achado 5: a paleta escolhida vence a cor que o tema **e o host** declaram, nos papéis que ela calcula. É o que o painel faz
+  (`paletteDraft.ts:98-107`, `usePaletteSelection.ts:38-39`). Sumiu o "como na composição de hoje", e o caso host + paleta
+  escolhida virou uma linha nas Consequências negativas.
+- Achado 6: o baseline usa o cálculo do painel (`resolveDraftPalette`, valor + modo + tons da barra), não a correção contra o
+  que é declarado (`resolve.ts:60-61`). O teste de ida e volta do lote 1 ficou registrado.
+
+`section-pointers:check` verde. O `plan-index:check` só acusava o status, sincronizado neste veredito.
+
+Lote 0 fechado (achados 1 a 6). O ADR-026 segue 🟡 Proposto até o dono aprovar; só então o lote 1 é liberado.
+
+**Status da plan: 🟡 Em execução** (lote 1 aguardando a aprovação do ADR-026).

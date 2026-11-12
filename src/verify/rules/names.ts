@@ -24,9 +24,17 @@ interface DeclarationNode extends AstNode {
 
 interface ExportNode extends AstNode {
     source?: AstNode | null;
+    exportKind?: string;
     declaration?: DeclarationNode | null;
-    specifiers?: { exported: NamedNode }[];
+    specifiers?: { exported: NamedNode; exportKind?: string }[];
 }
+
+interface ImportNode extends AstNode {
+    source: { value?: unknown };
+    specifiers: { imported?: NamedNode }[];
+}
+
+const TYPE_DECLARATIONS = new Set(['TSInterfaceDeclaration', 'TSTypeAliasDeclaration']);
 
 interface PropertyNode extends AstNode {
     key: NamedNode & { value?: unknown };
@@ -59,12 +67,27 @@ const listOf = (names: string[]): string => names.map((name) => `\`${name}\``).j
 
 // ---------------------------------------------------------------- no-reimplemented-piece
 
+/**
+ * Só export de VALOR (função, classe, constante): um tipo com o nome de uma peça pública quase nunca é a
+ * mesma coisa — o `DocumentKind` do importador é outro conjunto de valores, e o `NavigationItem` é o
+ * contrato da API dele. Medido nos importadores reais; o sinal de nome só vale para o que roda.
+ */
 const exportedNames = (node: ExportNode): string[] => {
-    if (node.source) return [];
+    if (node.source || node.exportKind === 'type') return [];
     const declaration = node.declaration;
-    const fromDeclaration = [declaration?.id?.name, ...(declaration?.declarations ?? []).map((item) => item.id.name)];
-    const fromSpecifiers = (node.specifiers ?? []).map((specifier) => specifier.exported.name);
+    const isType = declaration !== undefined && declaration !== null && TYPE_DECLARATIONS.has(declaration.type);
+    const fromDeclaration = isType ? [] : [declaration?.id?.name, ...(declaration?.declarations ?? []).map((item) => item.id.name)];
+    const fromSpecifiers = (node.specifiers ?? []).filter((specifier) => specifier.exportKind !== 'type').map((specifier) => specifier.exported.name);
     return [...fromDeclaration, ...fromSpecifiers].filter((name): name is string => Boolean(name));
+};
+
+/**
+ * Nomes que o arquivo importa, de onde for: quem importa a peça pública (da lib ou da porta única do
+ * projeto, que a reexporta) está EMBRULHANDO-a, não a reescrevendo. O `Table` e o `Pagination` dos logins
+ * importam `SarakTable`/`SarakPagination` de `@sarak/ui-kit`, e não da lib.
+ */
+const importedNames = (node: ImportNode, into: Set<string>): void => {
+    for (const specifier of node.specifiers) if (specifier.imported?.name) into.add(specifier.imported.name);
 };
 
 const pieceMessage = (name: string, data: VerificationData, aliases: Map<string, string[]>, inDouble: boolean): string | null => {
@@ -82,19 +105,28 @@ const noReimplementedPiece = (context: RuleContext): Visitor => {
     const aliases = new Map<string, string[]>();
     for (const { alias, use } of data.catalog.verification.pieceAliases) aliases.set(alias, [...(aliases.get(alias) ?? []), use]);
     const inDouble = TEST_DOUBLE_PATH.test(fileOf(context));
-    let reported = false;
+    const imported = new Set<string>();
+    const candidates: { name: string; loc: AstNode['loc'] }[] = [];
+    const wraps = (name: string): boolean =>
+        [...(aliases.get(name) ?? []), data.barrelByBase.get(baseName(name))].some((use) => use !== undefined && imported.has(use));
     return {
+        ImportDeclaration: (node: ImportNode) => importedNames(node, imported),
         ExportNamedDeclaration: (node: ExportNode) => {
-            for (const name of exportedNames(node).filter((candidate) => !ignore.includes(candidate))) {
-                const message = pieceMessage(name, data, aliases, inDouble);
-                if (message) context.report({ loc: node.loc, message });
-                reported ||= message !== null;
-            }
+            for (const name of exportedNames(node).filter((candidate) => !ignore.includes(candidate))) candidates.push({ name, loc: node.loc });
         },
         'Program:exit': () => {
+            let reported = false;
+            for (const { name, loc } of candidates.filter((candidate) => !wraps(candidate.name))) {
+                const message = pieceMessage(name, data, aliases, inDouble);
+                if (message) context.report({ loc, message });
+                reported ||= message !== null;
+            }
             const file = fileOf(context).split('/').pop() ?? '';
-            const name = file.replace(/\.[^.]+$/, '');
-            const message = reported || name === 'index' || ignore.includes(name) ? null : pieceMessage(name, data, aliases, inDouble);
+            const stem = file.replace(/\.[^.]+$/, '');
+            // O nome do arquivo só vale para arquivo sem export de valor próprio (ex.: `export default`): um
+            // `pagination.ts` com `withPage` ou um `tabs.ts` com a lista de abas não reescrevem peça nenhuma.
+            const skip = reported || candidates.length > 0 || stem === 'index' || ignore.includes(stem) || wraps(stem);
+            const message = skip ? null : pieceMessage(stem, data, aliases, inDouble);
             if (message) context.report({ loc: { line: 1, column: 0 }, message: message.replace(/^`[^`]+` /, `O arquivo \`${file}\` `) });
         },
     };

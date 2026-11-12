@@ -330,3 +330,24 @@ Fatos medidos:
 - `themeBars.test.ts`: `CLOSEST_PERSONALITY` ganha as sete linhas da §6; não precisa de exceção nova.
 - Os specs de navegador e o teste de tema sob demanda que citam `synthwave-retro` (§8) entram no lote 3.
 - Peso: o teto é 15 KB por tema (gzip, minificado); os temas atuais têm de 335 a 491 linhas, e os sete novos vão a ~340 chaves. O número real só existe com o arquivo escrito (lote 1, `boot:measure`).
+
+## Anexo C — onde a foto venceu o JSON (correção 2 do lote 1)
+
+Referência do modo nativo escuro: `C:\tmp\sarak-temas-antigos\<tema>-pagina.png`. Cada linha é um valor do JSON que a foto não mostra.
+
+| Tema | Token | JSON | Foto (valor no tema) |
+|---|---|---|---|
+| Sovereign | `titleColor`, `cardTitleColor`, `topbarTitleColor` / `textColorMaster` | `#ffffff` / `#ffffff` | título `#f0f0f0`, texto `#e6e6e6` (a foto pinta `#e6e6e6`; o título sobe um pouco para a trava `themeSetCoverage`, que exige título ≠ texto) |
+| Sovereign | `cardBackgroundColor`, `cardBorderColor` | `rgba(15,23,42,.6)`, `rgba(255,255,255,.1)` | `#050505`, `rgba(255,255,255,.03)`: cartão sem fundo e borda quase invisível |
+| Sovereign, Cyberpunk, Retro-Wave | `bgGradientMode` | `linear` | `none`: fundo chapado |
+| Cyberpunk | `textColorMaster` | `#00ff41` | `#d9f2e0`: texto quase branco com tinta verde; título `#f0f0f0` |
+| Cyberpunk, Retro-Wave, Industrial | `cardGeometricCut`, raios | corte de 16/24 px, raio 0 | corte 0, raio 12 (Industrial 8): a foto mostra canto arredondado |
+| Cyberpunk | `cardBorderColor`, `sidebarBorderColor`, `topbarBorderColor` | `#00ff41` | verde a 40 % (`#00671b` na foto) |
+| Retro-Wave | `cardBorderColor` e bordas de barra | `#00ffff` | ciano a 40 % (`#006767` na foto) |
+| Retro-Wave | `titleColor` / `textColorMaster` | `#ffffff` / `#ffffff` | `#f2f2f2` / `#e6e6e6` |
+| Industrial | `titleColor`, `cardTitleColor`, `topbarTitleColor` | `#ff9900` | creme `#fff5e5` |
+| Industrial | `textColorMaster` | `#ff9900` | creme `#d6cdc0` |
+| Industrial | `cardTextureType` | `grid` | `none`: cartão liso |
+| Industrial | `colorBgBody`, `colorBgLayer1`, barras | `#0a0a0a`, `#141414` | `#070707`, `#101010` |
+
+Barras: `sidebarColor` e `topbarColor` declarados (`#000000`; Industrial `#101010`) vencem o tom da Personalidade (09 §4.3.4), então a D3 fica. A contraparte espelha, em cada token declarado, o valor que a paleta já calculava no claro: o claro não mudou, exceto o fundo chapado.

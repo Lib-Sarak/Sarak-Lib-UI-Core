@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Ensinar a importar a lib com o que os importadores reais mostraram"
 objetivo: "Fazer o importador usar a lib por inteiro sem reescrever o que ela entrega, com o kit de importação ensinado pelas licoes medidas nos importadores reais e com a gestao de temas do importador completa: salvar o aplicado como novo, editar, duplicar e criar, persistidos no importador"
 dominio: "Kit do consumidor / Instalação e atualização / Temas do importador"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "kit-do-consumidor", "importacao", "temas", "persistencia"]
 relacionados: ["[[12-kit-do-consumidor]]", "[[13-instalacao-e-atualizacao]]", "[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[011-tema-salvo-por-uma-porta-de-escrita]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]"]
@@ -333,6 +333,7 @@ real de token de um tema embarcado.
 | I50 | o exemplo de `createSarakKitMock` (guia, seção do subpath `testing`) só faz mock de `@sarak/lib-ui-core` direto; com a porta única que o próprio guia descreve, o ERP manteve dublês próprios (66 linhas, 74 arquivos) | ERP (A6) | o exemplo do pacote-porta (`vi.mock('<porta>', …)` com o retorno do `createSarakKitMock`) | final | aberta |
 | I51 | o ERP serve `dist/fonts/` por middleware próprio no Vite de dev e passa `fonts.baseUrl` só em DEV; o guia só prevê `baseUrl` para esbuild puro, CJS ou CDN | ERP (A9) | medir no consumidor Vite se, instalado pela tag, as fontes carregam sem `baseUrl`; o guia diz o resultado (precisa ou não, e por quê) | final | aberta |
 | I52 | o guia não diz que `file:` é só para iterar localmente e que produção instala pela tag (decisão da C3) | ERP (C3) | uma linha no guia, onde ele fala de `file:` | final | aberta |
+| I53 | os moldes que o kit distribui ensinam o que o kit de verificação barra: `sarak-ui/templates/componente-proprio.tsx:30` usa `var(--sarak-card-border, none)`, que não existe (a real é `--sarak-card-border-color`; o `known-css-var` do `recommended` acusa); `:25` e `:38` (`<section>`, `<h2>`) e `tela-exemplo.tsx:70` (`<h3>`) usam HTML que a regra `prefer-sarak-component` barra. É a origem provável do A1 `templateLayout.css:77` do ERP, cuja cópia é idêntica | `plan-157`, lote 2 (medição) | corrigir os moldes para usar só variável e peça públicas, e um teste que roda o plugin com o `recommended` e a regra 4 sobre todo arquivo de `sarak-ui/templates/` e exige zero achado, para que o molde não volte a ensinar errado | final | aberta |
 
 **Lote 8 — o kit da `rc.4`** (linhas **I33 a I40** da §5.1; sai na `v8.0.0-rc.4`; segue o protocolo de verificação do
 [`anexos/rc4-contrato.md`](anexos/rc4-contrato.md) §9). Roda em paralelo com as `plan-129` a `plan-132`; a I40 espera a medição da `plan-131`.
@@ -2296,3 +2297,249 @@ esta extração.
 **I41 e I42 fechadas** no registro (§5.1). A nota de `docs/migracoes.md` da I41 fica para o lote final, com a I47.
 
 **Status da plan: 🟡 Em execução** (lote final depois da `plan-157` aprovada).
+
+
+## Resumo da execução (lote final) — 2026-11-12
+
+**Resultado:** Concluído com pendências (duas afirmações do guia não foram medidas por mim; ver Pendências)
+
+**Estado do worktree ao iniciar**
+```
+ M dist/BUILD_INFO.json
+ D dist/…  (22 arquivos de chunk removidos)   M dist/index.{cjs,d.cts,d.ts,js} e dist/testing.*   ?? dist/…  (arquivos novos: chunks, eslint.*, verify.*, temas *-classic)
+ M docs/migracoes.md
+ M sarak-ui/GUIA-FRONTEND.md
+ M sarak-ui/START-HERE.md
+ M sarak-ui/VERSION
+ M sarak-ui/catalog.json
+ M sarak-ui/docs/migracoes.md
+ M specs/00-backlog.md
+ M specs/00-indice.md
+ M specs/adr/025-kit-de-verificacao-de-uso-nucleo-unico-duas-portas.md
+ M specs/adr/026-design-gravado-guarda-so-as-escolhas.md
+ M specs/plan/anexos/plan-157-catalogo-de-regras.md
+ M specs/plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md
+ M specs/plan/plan-157-kit-de-verificacao-de-uso-no-importador.md
+ M specs/plan/plan-158-design-gravado-guarda-escolhas-e-aplica-sem-atraso.md
+ M specs/plan/plan-162-resgatar-temas-antigos-como-temas-novos.md
+ M src/buildInfo.ts
+ M src/core/Design/presets/themes/__tests__/{compose,themeBars,themePalettes,themeSetCoverage}.test.ts
+ M src/core/Design/presets/themes/{all,catalog.generated,index,loaders}.ts
+ M src/core/Provider/buildInfo.ts
+ M src/features/DesignEngine/Canvas/components/__tests__/PresetsCatalog.test.tsx (+ __snapshots__/PresetsCatalog.test.tsx.snap)
+ M src/features/DesignEngine/hooks/useDraftToast.ts
+ M src/verify/__tests__/plugin.test.ts
+ M src/verify/{data,plugin,ruleCatalog}.ts
+ M src/verify/rules/{names,styles}.ts
+?? src/core/Design/presets/themes/{cyber-retro-wave-classic,cyberpunk-neon-classic,industrial-terminal-classic,sarak-sovereign-classic}.ts
+```
+(Fotografia da primeira consulta da sessão, antes de qualquer edição. `dist/`, `src/` e `specs/` acima são de outras tarefas (`plan-157`, `plan-158`, `plan-162`); só toquei no que a seção seguinte lista.)
+
+**O que foi feito**
+
+Linhas fechadas: **I43, I44, I45, I46, I47, I48, I49, I50, I51, I52, I53** e, por consequência, **I30** (→ I49) e **C7** (→ I47 + I48); mais a nota do `SarakSwitch` (I41), que o veredito do lote 9 mandou para este lote.
+
+- **I53** — `sarak-ui/templates/componente-proprio.tsx` (o molde é a própria fonte; só `tela-lista.tsx` e `tela-detalhe.tsx` são copiados de `browser-tests/*.scene.tsx` por `npm run guide`, e esses dois já passavam): `<section>` virou `<div>`, o `<h2>` virou `<SarakTypography variant="h2">`, e `var(--sarak-card-border, none)` virou `var(--sarak-card-border-width, 0) solid var(--sarak-card-border-color, transparent)`. `tela-exemplo.tsx`: `<h3>` virou `<SarakTypography variant="h3">`. O mesmo exemplo errado morava no guia (§3.6, o `MeuPainel` com `--sarak-card-border`, `<section>` e `<h2>`): corrigido igual.
+- **I53, o teste** — `src/verify/__tests__/templates.test.ts` (novo): roda o plugin (`configs.recommended` + `sarak/prefer-sarak-component` em `error`) sobre todo `.ts`/`.tsx` de `sarak-ui/templates/` (recursivo, inclui `ui-kit/`) e exige zero achado. O ESLint do repositório não traz parser de TypeScript, então os tipos saem por `ts.transpileModule` com JSX preservado; as linhas do achado são as do texto sem tipos.
+- **I43** — `docs/persistencia-de-tema.md`: parágrafo "Tokens de mídia não são cor nem URL de rede" (valores aceitos, os dois `data:image/svg+xml;base64,…` embarcados com 626 e 1010 caracteres, o predicado `isSafeMediaString` de `src/core/Provider/utils/cssSafety.ts:91`, por que o backend não valida como URL `http`, coluna `text`).
+- **I44** — medido, e o resultado é **o contrário do que a linha supunha**: o `pdfjs-dist` não aparece. Ver Verificações. O guia (§1.1, depois da tabela de avisos) diz que ele não tem linha e por quê (importação por namespace, `SarakPDFViewerImpl.tsx:15,24`).
+- **I45, I52** — guia §1.1 ("De onde instalar"): pin exato por tag em produção, `file:`/`link:` só para iterar localmente, o `git+ssh://` no lock e a troca de protocolo para CI sem chave. O mesmo na skill `ui-integra-consumidor`, Etapa 2.
+- **I46** — guia §6 (mapa): linhas para `sarakIsValidCpf`/`sarakIsValidCnpj`/`sarakFormatDocument` e para `SarakDocumentFrame` + `sarakPrint`; `sarakErrorMessage` e `SarakPagination.getPageHref` já tinham linha (§6, `:1104-1105` antes das edições). Skill: as mesmas, numa tabela só dela.
+- **I47** — `docs/migracoes.md`: 23 títulos `##` sem versão receberam `X.Y.Z — `, cada versão tirada de `git log --reverse -S"<título>"` (o primeiro commit que trouxe o título) + `git tag --contains <commit>` (a primeira tag). Resultado: 9 em `7.0.0`, 4 em `6.0.0`, 2 em `5.0.0`, 2 em `2.0.0`, 1 em `1.2.0`, 1 em `1.1.0`, 4 em `1.0.0`. `grep "^## " | grep -cvE "[0-9]+\.[0-9]+\.[0-9]+"` → 0.
+- **I48** — `scripts/consumer-kit/collectRemovedTokens.mjs` (novo) lê as listas **Removidos (N)** de `docs/migracoes.md` (a mesma fonte que o `token-release-notes:check` obriga a manter) e o destino que cada linha agora traz depois de `→`; `buildKitCatalog.mjs:87` publica `designTokens.removed: [{ id, removedIn, destination }]` (59 itens, todos `8.0.0`); `renderAppendix.mjs` cita o campo no apêndice A.4. Os 59 destinos foram escritos em `docs/migracoes.md` (linhas `- <id> — <tipo> → <novo>` ou `→ sem substituto`) a partir da prosa da própria 8.0.0 (família `motion*`; ruído → `bgNoiseDensity`; `borderRadius*` → `borderRadius`; `scrollbar*` → `scroll*`; `layer*` → `modalOverlay*`/`layeredShadows`; `formLayoutDirection` → `formLabelPosition`; `layout` → `layoutGridTemplate`; `cardContentAlignment` → `cardTextAlign`; `cardHoverLift` → `cardHoverTranslate`; `contrastCurve` → `globalContrast`; `matrixSearchBg` → "tokens de campo (`input*`)"; peças internas do painel, tokens sem leitor e os `visual*`/`preset*` → `sem substituto`). O gerador falha em voz alta quando a contagem do título não bate com as linhas ou quando uma linha não diz o destino. `docs/persistencia-de-tema.md` ensina o servidor que valida chaves por lista a ler `designTokens.removed`.
+- **I49** — guia §2.8, subseção nova "Troquei a versão e a tela não mudou — qual build a página executa": as três camadas de cache, `SARAK_BUILD_INFO.libVersion` como a porta para a versão, `data-sarak-build-info` × `BUILD_INFO.json`, e o aviso de que `baseCommit` fica um passo atrás (para "estou atualizado?", `sarak-ui check`). Linha na árvore de decisão (§0.1). Skill: uma frase na seção do `BUILD_INFO`.
+- **I50** — guia, seção do subpath `testing`: `vi.mock('<porta>', async (importOriginal) => ({ ...(await importOriginal()), ...(await createSarakKitMock()) }))`. Provei o exemplo antes de escrever: num teste descartável (`src/__tmp_port/`, já removido) o consumidor importou a porta mockada, manteve o export próprio (`MeuNome === 'real'`) e recebeu o dublê de `SarakDataTable`.
+- **I51** — medido (Verificações); guia §3.14 troca "Vite (dev e `build`) acha os arquivos sozinho" pelo resultado medido e pelo caso não medido.
+- **Nota da I41** — `docs/migracoes.md`: entrada `## 9.0.0 — o nome acessível do SarakSwitch é só o rótulo`, antes da `## 8.0.0 — tokens …`.
+- **F.1/F.3 (leitura do guia)** — o que a leitura achou e corrigi: (a) §6 dizia "calendário, Gantt e Kanban continuam pendentes" e a linha do mapa tinha `⏳ lote seguinte`, mas `SarakCalendar`, `SarakGantt` e `SarakKanban` existem no catálogo: a linha agora os nomeia e diz que os tokens deles não foram medidos neste mapa; o parágrafo "Estado do mapa", que narrava lotes de plan, virou "O que o mapa cobre"; `Medido em navegador (lote 4)` virou `Medido em navegador`; (b) a §3.15 (da `plan-157`) dizia que `prefer-sarak-component` e `no-literal-color-font` "acusam a cópia do kit": depois do I53 os moldes passam nas duas, então tirei esse trecho e disse que um teste trava isso — é a única frase da `plan-157` que alterei; (c) a árvore de decisão (§0.1) não apontava para fontes (§3.14), kit de verificação (§3.15) nem versão-que-não-mudou (§2.8): três linhas.
+- **Skill** — `.agents/skills/ui-integra-consumidor/SKILL.md`: instalação recomendada passa a ser pin exato por tag (a faixa `#semver:` fica como suportada); a abertura de "Como atualizar", que dizia "tags/semver fora de escopo por decisão do mantenedor", foi reescrita (a lib tem tags desde a `v1.0.0`); três linhas novas no mapa.
+
+**Arquivos alterados**
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `sarak-ui/templates/componente-proprio.tsx` | alterado | `div` + `SarakTypography`; variável de borda real |
+| `sarak-ui/templates/tela-exemplo.tsx` | alterado | `SarakTypography` no lugar do `<h3>` |
+| `src/verify/__tests__/templates.test.ts` | criado | o plugin sobre todo molde, zero achado |
+| `scripts/consumer-kit/collectRemovedTokens.mjs` | criado | lê os removidos e o destino de `docs/migracoes.md` |
+| `scripts/consumer-kit/buildKitCatalog.mjs` | alterado | `designTokens.removed` |
+| `scripts/consumer-kit/renderAppendix.mjs` | alterado | linha "Tokens que saíram" no A.4 |
+| `scripts/consumer-kit/__tests__/kitGenerator.test.mjs` | alterado | 4 casos do I48 |
+| `docs/migracoes.md` | alterado | 23 títulos com versão; destino nos 59 removidos; frase do formato; nota do `SarakSwitch` |
+| `docs/persistencia-de-tema.md` | alterado | mídia (I43); servidor com lista de chaves (I48) |
+| `sarak-ui/GUIA-FRONTEND.md` | alterado | I44, I45, I46, I49, I50, I51, I52, §3.6, §3.9 (gestos), §3.15, §6, §0.1 |
+| `.agents/skills/ui-integra-consumidor/SKILL.md` | alterado | instalação por tag, abertura de "Como atualizar", `SARAK_BUILD_INFO`, mapa |
+| `sarak-ui/` (`catalog.json`, `VERSION`, `START-HERE.md`, `docs/migracoes.md`, `skill/SKILL.md`, `GUIA-FRONTEND.md`) | gerado | `npm run guide` |
+| `sarak-dev/` | gerado | `npm run dev-kit` (sem diferença no `git status`) |
+| `specs/00-indice.md` | gerado | `npm run plan-index` |
+| esta plan | alterado | este resumo e o `status` |
+
+**Verificações executadas**
+
+- **I53, falha antes da correção:** `npx vitest run src/verify/__tests__/templates.test.ts` sobre os moldes originais → 2 falhas de 9: `componente-proprio.tsx` com `prefer-sarak-component:16 <section>`, `known-css-var:20 --sarak-card-border não é variável pública da lib … Nomes parecidos: --sarak-card-bg-border, --sarak-card-border-bottom, --sarak-card-border-color` e `prefer-sarak-component:27 <h2>`; `tela-exemplo.tsx` com `prefer-sarak-component:46 <h3>`. **Depois da correção:** 9/9. (A primeira versão do teste, sem tirar os tipos, falhava com `Parsing error` nos moldes com tipos; é por isso que o teste transpila antes. Esse erro de parse não é a prova.)
+- **Moldes contra as outras quatro regras** (sonda descartável, removida): `no-literal-color-font`, `no-reimplemented-piece`, `no-direct-wrapped-lib` e `prefer-sarak-component` → 0 achado nos 5 `.tsx`.
+- **I48, falha antes:** `npx vitest run scripts/consumer-kit` com o teste novo e sem o coletor → `TypeError: Cannot read properties of undefined (reading 'length')` (1 falha, 20 passaram); depois: 21/21. O teste do catálogo confere, por token, que o removido não está em `designTokens.ids` e que todo destino que é nome existe em `designTokens.ids` hoje.
+- **I44:** `npm run test:optional-peers` (38 s, saída 0) → build Vite 8.3.5 sem as peers opcionais: 44 avisos em 3 códigos (`IMPORT_IS_UNDEFINED` 25, `MODULE_LEVEL_DIRECTIVE` 18, um de tamanho de chunk); os membros citados são `Prism`, `oneDark`, `oneLight`, `atomDark`, `graphic`, `format`, `use`, `AriaComponent`, `LegendComponent`, `ResponsiveContainer`, `BarChart`, `LineChart`, `Line`, `XAxis`, `YAxis`, `Tooltip`, `Bar`, `BackgroundVariant`, `useVirtualizer` — **nenhum do `pdfjs-dist`**. Os três cenários do consumidor passaram.
+- **I51:** `npm pack` do worktree + consumidor Vite 8.3.5 (lib em `node_modules/@sarak/lib-ui-core`, sem `baseUrl`, tema `editorial-ink`) num diretório de `%TEMP%`: `vite build` → 60 `.woff2` emitidos com hash e `new URL('/assets/…woff2', …)` no JS; servidor de dev → a lib pré-empacotada referencia `/node_modules/@sarak/lib-ui-core/dist/fonts/<arquivo>` e `GET` nessa URL → `200 font/woff2` (o caminho `/node_modules/.vite/deps/fonts/<arquivo>` → `200 text/html`, ou seja, não existe como fonte: só a URL reescrita serve). Sem navegador: só HTTP.
+- `npm run guide` → "143 componentes, 424 tokens de tema, 117 ícones (kitHash f30040f4f632)"; `npm run dev-kit` → "139 componentes públicos, 424 tokens, 44 gates"; depois: `guide:check` em dia (9 arquivos), `dev-kit:check` em dia (0 ponteiros mortos), `catalog:check` em dia.
+- **F.3 — nomes citados contra o barril:** `npm run kit-names:check` (lê `dist/index.d.ts`) → `[OK] Todo nome público citado pelo que o consumidor recebe existe no barril`. Ele não vê "citado mas fora do barril", então conferi à parte os nomes novos: `grep -c "\b<nome>\b" dist/index.d.ts` → `sarakIsValidCpf` 2, `sarakIsValidCnpj` 2, `sarakFormatDocument` 2, `SarakDocumentFrame` 2, `sarakPrint` 2, `sarakErrorMessage` 2, `SARAK_BUILD_INFO` 2, `SarakTypography` 4; `createSarakKitMock` em `dist/testing.d.ts` 3. Variáveis `--sarak-*` do guia, da skill e dos moldes contra `catalog.json` → `tokens.cssVars`: só `--sarak-border-radius-md` (o exemplo de mensagem de erro da §3.15) e `--sarak-x` (genérico) ficam fora da lista.
+- `npx vitest run src/verify scripts/consumer-kit src/__tests__/testing.test.ts` → 5 arquivos, 78 testes verdes. `npx tsc --noEmit` → 0 erro.
+- `npm run verify -- --tier=quick` → verde (47 arquivos alterados; `tsc`, `audit:baseline --with-tsc`, `barrel`, `catalog`, `kit-names`, `plan-index`, `guide`, `dev-kit` e Anel 0 simulado com 0 achado, entre os demais).
+- Não rodei a suíte completa, o build nem a bateria do navegador: são do revisor.
+
+**Critérios de aceite**
+- [x] I43 a I53 com o texto no lugar que a coluna *Decisão* nomeia — evidência: as entradas acima; I47 por `grep` (0 títulos sem versão); I48 por teste do gerador; I53 por teste.
+- [x] I30 fecha pela I49; C7 pela I47 e pela I48 — evidência: guia §2.8; `docs/migracoes.md`; `catalog.json` → `designTokens.removed` (59).
+- [x] `guide:check`, `dev-kit:check`, `catalog:check` verdes — evidência: saídas acima.
+- [x] Nenhum nome do guia fora do barril — evidência: `kit-names:check` + conferência dos nomes novos em `dist/index.d.ts`.
+- [ ] Suíte completa, `tsc`, baseline, Anel 1 e bateria do navegador — fora do papel do executor; só rodei `--tier=quick`.
+- [ ] I45 (`insteadOf` em CI sem chave SSH, e o `git+ssh://` no lock) — não medido por mim (ver Pendências).
+
+**Decisões e suposições**
+- **Importadores: só leitura, e nem isso.** Não abri nenhum arquivo de importador (ERP, `Sarak-Lib-Login`) nesta execução, e nada foi editado nem gravado lá. Também não usei o navegador: o puppeteer compartilhado não foi tocado, então não houve o que esperar da `plan-162`. A I51 e a I44 foram medidas por consumidor descartável em `%TEMP%` (HTTP e build, sem navegador).
+- **I44:** a linha pedia "acrescentar a linha" da tabela; a medição disse que não há linha a acrescentar. Escrevi a ausência e a causa em vez de inventar a linha.
+- **I47:** a "versão em que saiu" é a da **primeira tag** que contém o commit que introduziu o título; nenhum dos 23 caiu numa tag `rc`.
+- **I48:** o destino mora **na linha** de `docs/migracoes.md` (depois de `→`), e o gerador o lê dali, em vez de uma tabela separada, para existir uma fonte só. Só a `## 8.0.0` tem a lista **Removidos (N)** hoje, então só ela entra; o teste do gerador exige 59 e `removedIn: '8.0.0'`. Versão nova que remover token precisa escrever o destino na linha, ou o `npm run guide` falha com a linha e o motivo.
+- **Nota do `SarakSwitch` na `## 9.0.0`:** o veredito do lote 9 não disse a versão; usei a próxima (`9.0.0`), a mesma das duas entradas que já estavam no topo do arquivo. É suposição.
+- **`easeOut` → `motionEaseOut` e `animInstant/Fast/Normal/Slow` → `motionDuration*`:** o destino por nome não está escrito token a token na prosa da 8.0.0; conferi que `motionEaseOut` já existia na `v7.0.0` (`schema/motion.ts:29`) e que todo `motion*` de destino existe hoje (o teste confere).
+- **Moldes `tela-lista.tsx` e `tela-detalhe.tsx`:** não editei `browser-tests/*.scene.tsx`; já passavam no teste.
+- Segui o estilo vizinho dos testes (identificadores em português), mesmo o hook de edição apontando termos em português nos identificadores.
+
+**Achados fora do escopo (não corrigidos)**
+- `gates/scripts/contrato/helpers/token-release-notes-core.ts` (`renderTokenLists`): o `--print` escreve a lista **Removidos** sem o `→ destino` que o gerador do kit agora exige; quem emitir a versão seguinte e colar a saída do `--print` vai ter de acrescentar o destino à mão (o `npm run guide` falha e diz a linha). Cabe ao revisor decidir se o `--print` passa a emitir um marcador.
+- Guia e skill dizem "subir é trocar o pin" para a instalação por tag exata; **não verifiquei** o comportamento do `npx sarak-ui update` com pin exato (a §2.8 fala em faixa e em `#semver:`).
+- `sarak-ui/GUIA-FRONTEND.md` §6.1 a §6.8 e §3.10 a §3.13 não foram relidas linha a linha nesta passada (li §0, §1, §2.6-§2.8, §3.1-§3.8, parte da §3.9, §3.14-§3.15, §4, §5 e o mapa do §6); só procurei por `grep` o que contradiz o que escrevi (`plan-`, `lote`, `⏳`, `rc.`, contagem de temas, "modelo host").
+
+**Pendências / riscos**
+- **I45:** "o npm grava `git+ssh://`" vem do relato dos dois logins, e a troca de protocolo com `git config … insteadOf` é configuração padrão do git; nenhuma das duas foi medida por mim (exige rede e instalar de `github:`). O revisor pode pedir a medição.
+- **I51:** a medição vale para a lib dentro de `node_modules` do projeto do Vite. O caso do ERP (workspace pnpm, lib instalada em outro pacote, `file:`) **não foi reproduzido**; o guia diz isso, mas não afirma a causa do middleware do ERP.
+- O `dist/` do worktree estava com o build de outra sessão (arquivos `D`/`??`); o `npm pack` do I51 e o `test:optional-peers` do I44 empacotaram esse `dist/`, não o do `HEAD`.
+- A coluna *Estado* da §5.1 não foi tocada (é do revisor).
+
+## Veredito — 2026-11-12 — lote final — 🔴 Reprovado (2 achados)
+
+**Conferido por mim:**
+- `npx vitest run src/verify scripts/consumer-kit bin/scaffold src/__tests__/testing.test.ts` → 25 arquivos, 250 testes verdes.
+- `npm run verify -- --tier=quick` → verde.
+- I47, duas datas por `git log -S` + `git tag --contains`: "átomo próprio para item de navegação" → `0434605d` → `v7.0.0`;
+  "deixou de apagar o `localStorage`" → `aa79d724` → `v2.0.0`. Ambas batem com os títulos.
+- I53: a prova de falha antes está no resumo (4 achados nos moldes originais), e o teste cobre `sarak-ui/templates/` recursivo.
+- I44 e I51: medição por consumidor descartável, aceita; o guia diz o caso não medido.
+- I45: o `git+ssh://` é relato dos dois logins, atribuído no texto; o `insteadOf` é configuração padrão do git. Aceito.
+
+1. **O pin exato recomendado não sobe pelo `sarak-ui update`.** Este lote tornou `github:…#v<versão>` a instalação
+   recomendada (guia §1.1 `:104-105`; skill, Etapa 2 `:252`), e o guia manda subir com `sarak-ui update` (§2.8).
+
+   Medi pelo próprio `runUpdate` (`bin/scaffold/runUpdate.mjs`), com spec `#v9.0.0`, versão instalada 9.0.0 e tags
+   `v9.0.0` e `v9.1.0`. Saída:
+   - `[sarak:update] Alvo: v9.1.0.`
+   - `Executado: … npm install github:Lib-Sarak/Sarak-Lib-UI-Core#v9.0.0`
+   - `package.json` depois: `…#v9.0.0`
+
+   O comando anuncia a 9.1.0 e reinstala a 9.0.0. A causa:
+   - `resolveRemoteUrl` só trata SHA como commit fixo (`checkUpdate/resolveRemoteUrl.mjs`);
+   - `bumpSpecMajor` só reescreve `#semver:` (`checkUpdate/rewriteRange.mjs:8`);
+   - sem `--latest`, o spec nem passa pela reescrita (`runUpdate.mjs`, `resolveSpecToReinstall`).
+
+   O defeito é anterior a este lote, mas o lote o pôs no caminho principal.
+
+   Critério: o próprio texto do lote ("subir é trocar o pin") contra o comando que o guia ensina. Corrigir na lib, não no
+   importador.
+
+   Correção:
+   - com spec de tag exata (`#v<X.Y.Z>`), o `update` reescreve o pin para a tag-alvo: a maior do mesmo major; com `--latest`,
+     a mais nova, com a confirmação que já existe;
+   - teste em `bin/scaffold/__tests__/runUpdate.test.mjs` que falha antes;
+   - o guia §2.8 e a skill dizem que o `update` troca o pin.
+
+2. **F.3 incompleto.** O passo pede a leitura do guia de ponta a ponta. O resumo declara que a §3.10 a §3.13 e a §6.1 a §6.8
+   não foram relidas; só um `grep` foi feito nelas.
+
+   Correção: ler essas seções com o mesmo critério do F.3 (nenhum trecho contradiz outro, nenhum nome fora do barril, nenhuma
+   narração de plan ou lote) e listar no resumo o que achou ou "nada achado" por seção.
+
+**Aceito, sem correção:**
+- a ausência da linha do `pdfjs-dist` (I44, medida);
+- os destinos dos 59 removidos (I48, conferidos por teste contra `designTokens.ids`);
+- a nota do `SarakSwitch` na `9.0.0`;
+- a frase da §3.15 da `plan-157` alterada.
+
+**Fora do escopo, encaminhado:** o `--print` do `token-release-notes` não emite o `→ destino` que o gerador agora exige
+(backlog #76).
+
+**Status da plan: 🔵 Em correção.**
+
+
+## Resumo da execução (correção 1) — lote final — 2026-11-12
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar**
+Fotografia (`git status --short`, sem as linhas de `dist/`) tirada antes da primeira edição desta correção: 50 linhas, as mesmas do resumo anterior mais as saídas dele (`sarak-ui/**` e `sarak-dev/**` gerados, `docs/`, guia, skill, `scripts/consumer-kit/`, `src/verify/__tests__/templates.test.ts`, `specs/00-indice.md`, esta plan) e os arquivos de outras tarefas (`plan-157`, `plan-158`, `plan-162`, `src/verify/*`, temas `*-classic`, `useDraftToast.ts`). Nenhum arquivo de `bin/` estava modificado.
+
+**Achado 1 — o `sarak-ui update` não subia o pin de tag exata: procedente e corrigido**
+- **Teste primeiro** (`bin/scaffold/__tests__/runUpdate.test.mjs`, bloco novo "spec de TAG EXATA", 5 casos). Falha antes da correção (3 de 18): spec `#v9.0.0`, instalada 9.0.0, tags `v9.0.0`/`v9.1.0`/`v10.0.0` → `Received: "npm uninstall @sarak/lib-ui-core && npm cache clean --force && npm install github:Lib-Sarak/Sarak-Lib-UI-Core#v9.0.0"` (esperado `#v9.1.0`) e `package.json` ainda em `#v9.0.0`; o mesmo com `--latest` (esperado `#v10.2.0`). É exatamente o defeito do veredito.
+- `bin/scaffold/checkUpdate/rewriteRange.mjs`: `isExactTagSpec` (fragmento `v<X.Y.Z>`) e `pinSpecToTag`.
+- `bin/scaffold/runUpdate.mjs`: `repinExactTag`, chamada em `updateGit` **depois** de `resolveSpecToReinstall` (portanto depois da confirmação do `--latest` quando atravessa major): reescreve o valor no `package.json` com a mesma `rewritePackageJsonDependency` (uma ocorrência exata ou recusa) e manda o spec novo ao comando do gerenciador. O alvo vem do plano que já existia: sem `--latest`, a maior tag do mesmo major; com `--latest`, a mais nova. Comentário de cabeçalho atualizado.
+- Casos do teste: sem `--latest` troca para `v9.1.0` (e o comando traz `#v9.1.0`, não `#v9.0.0`); já na maior do major → nada executado e `package.json` intacto; `--latest` no mesmo major troca sem perguntar; `--latest` atravessando major: recusado não toca o pin, confirmado (`--yes`) troca para `v10.2.0`; `github:` sem fragmento segue sem reescrita.
+- Não mudei `#semver:`, SHA nem `github:` sem fragmento: nenhuma linha desses caminhos mudou, e os 15 testes anteriores continuam verdes.
+- Guia §2.8 e skill ("Como atualizar"): uma frase cada, dizendo que o `update` troca o pin de tag exata (maior tag do major; `--latest` a mais nova, com confirmação ao atravessar major).
+
+**Achado 2 — F.3 nas seções não lidas: procedente; leitura feita, nada a corrigir**
+Critério do F.3: nenhum trecho contradiz outro, nenhum nome fora do barril, nenhuma narração de plan ou lote. Li o texto inteiro de cada seção, e conferi por script todo identificador entre crases de §3.10-§3.13 e §6.1-§6.8 contra `catalog.json` (`designTokens.ids`, componentes, `chromeSlots`, `tokens.cssVars`) e contra `dist/index.d.ts`.
+- **§3.10** — nada achado. Nomes `SarakResponsiveValue`, `useSarakDevice`, `SarakHidden`, `layoutGridMinCell` existem; os spans e a malha `auto-fit` não se contradizem com "viram uma coluna" (a coluna única é do contêiner estreito).
+- **§3.11** — nada achado. Slots `banner` e `footer` existem em `chromeSlots`; `docs/extensibilidade-de-layout.md` existe.
+- **§3.12** — nada achado. `config.systemName` e `branding.initial.{tabName, logoBase64}` existem em `src/core/Provider/types.ts`; `docs/identidade-do-host.md` existe.
+- **§3.13** — nada achado.
+- **§6.1** — nada achado (a regra de `cardLayoutDirection` sem token de inversão bate com a saída do `cardImagePosition`).
+- **§6.2** — nada achado.
+- **§6.3** — nada achado.
+- **§6.4** — nada achado (o "nenhum" e os "outros cinco" batem: três por padrão, dois traços luminosos).
+- **§6.5** — nada achado.
+- **§6.6** — nada achado.
+- **§6.7** — nada achado (`motionEaseOut`, `motionEaseIn`, `motionDurationFast` existem).
+- **§6.8** — nada achado (`contentAlignment` é citado como removido, e consta em `designTokens.removed`).
+Os identificadores citados que não são token (`templateColumns`, `navItems`, `defaultExpanded`, `sidebarFooter`, `className`, `useSarakPreferences`, prefixos `cardHeader`/`cardFooter`/`cardInnerGlow`/`shadowProjection`, `chromeSlots`) são props, hook ou prefixo. Nenhuma ocorrência de `plan-`, `lote` ou `rc.` nessas seções.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `bin/scaffold/checkUpdate/rewriteRange.mjs` | alterado | `isExactTagSpec`, `pinSpecToTag` |
+| `bin/scaffold/runUpdate.mjs` | alterado | `repinExactTag` no `updateGit`; comentário |
+| `bin/scaffold/__tests__/runUpdate.test.mjs` | alterado | 5 casos da tag exata |
+| `sarak-ui/GUIA-FRONTEND.md` | alterado | frase sobre o pin na §2.8 |
+| `.agents/skills/ui-integra-consumidor/SKILL.md` | alterado | frase sobre o pin em "Como atualizar" |
+| `sarak-ui/*`, `sarak-dev/*` | gerado | `npm run guide`, `npm run dev-kit` |
+| `specs/00-indice.md` | gerado | `npm run plan-index` |
+| esta plan | alterado | este resumo e o `status` |
+
+**Verificações executadas**
+- `npx vitest run bin/scaffold src/verify scripts/consumer-kit` → 24 arquivos, 250 testes verdes.
+- `npm run guide` → "143 componentes, 424 tokens de tema, 117 ícones (kitHash f30040f4f632)"; `npm run dev-kit` → "139 componentes públicos, 424 tokens, 44 gates"; ambos por último, depois dos testes.
+- `npm run -s verify -- --tier=quick` → `[OK] nível "quick" verde` (50 arquivos alterados).
+- Importadores: nem leitura.
+
+**Decisões e suposições**
+- Spec de tag exata = fragmento `^v\d+\.\d+\.\d+$` (a forma que o guia recomenda); `#semver:`, SHA e sem fragmento seguem os caminhos antigos.
+- O `check` não foi alterado (o escopo era o `update`); com pin exato ele continua comparando com a maior tag publicada.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum.
+
+**Pendências / riscos**
+- O comando real (`npm uninstall` + `npm install github:…#v<tag>`) não foi executado contra o GitHub; o teste injeta o `execCommand`, como os demais do arquivo.
+
+## Veredito — 2026-11-12 — correção 1 (lote final) — 🟢 Aprovado; plan concluída
+
+**Conferido por mim:**
+- Refiz a sonda do veredito anterior com o `runUpdate` real, `package.json` no formato do npm e tags `v9.0.0`, `v9.1.0`,
+  `v10.0.0`:
+  - spec `#v9.0.0` → comando `npm install …#v9.1.0` e `package.json` em `#v9.1.0`, sem atravessar o major sem `--latest`;
+  - spec `#semver:^9.0.0` → comando e `package.json` inalterados.
+- Com `package.json` compacto (`"x":"y"`), o `rewritePackageJsonDependency`, que já existia, recusa em voz alta: comportamento
+  certo, não regressão.
+- `npx vitest run bin/scaffold` → 20 arquivos, 177 testes verdes. A falha antes da correção (3 de 18) está no resumo.
+- Achado 2: a leitura por seção da §3.10 a §3.13 e da §6.1 a §6.8 foi registrada, com os nomes conferidos contra o catálogo e o
+  `dist/index.d.ts`. Aceito.
+
+**Status da plan: 🟢 Aprovada** (lotes 1 a 9 e final fechados; aguarda síntese).

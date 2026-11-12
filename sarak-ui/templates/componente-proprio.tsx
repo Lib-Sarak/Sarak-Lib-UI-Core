@@ -10,8 +10,12 @@
  *
  * Os nomes REAIS de token estão em `sarak-ui/catalog.json` → `tokens.cssVars`. Nome
  * fora dessa lista não existe: a var não resolve e o fallback fica valendo eternamente.
+ *
+ * Texto e título vêm da peça pública (`SarakTypography`), não de `<h2>`/`<p>` cru: ela já lê
+ * fonte, tamanho e cor do tema. O invólucro é um `<div>` seu, estilizado por token.
  */
 import React from 'react';
+import { SarakTypography } from '@sarak/lib-ui-core';
 
 export interface MeuPainelProps {
     titulo: string;
@@ -22,12 +26,12 @@ export interface MeuPainelProps {
 
 export function MeuPainel({ titulo, destacado = false, children }: MeuPainelProps) {
     return (
-        <section
+        <div
             style={{
                 // Cor, raio, espaçamento e fonte: todos por token. Trocar o tema
                 // (ou o "template" compacto/espaçoso) repinta este componente junto.
                 background: destacado ? 'var(--sarak-accent-color, transparent)' : 'var(--sarak-card-bg, transparent)',
-                border: 'var(--sarak-card-border, none)',
+                border: 'var(--sarak-card-border-width, 0) solid var(--sarak-card-border-color, transparent)',
                 borderRadius: 'var(--sarak-card-radius, 8px)',
                 padding: 'var(--sarak-card-padding-md, 16px)',
                 display: 'flex',
@@ -35,17 +39,10 @@ export function MeuPainel({ titulo, destacado = false, children }: MeuPainelProp
                 gap: 'var(--sarak-layout-gap-sm, 8px)',
             }}
         >
-            <h2
-                style={{
-                    color: 'var(--sarak-title-color, inherit)',
-                    fontFamily: 'var(--sarak-heading-font, inherit)',
-                }}
-            >
-                {titulo}
-            </h2>
+            <SarakTypography variant="h2">{titulo}</SarakTypography>
             {/* Texto comum HERDA a cor do escopo pintado pelo Provider — não force. */}
             {children}
-        </section>
+        </div>
     );
 }
 

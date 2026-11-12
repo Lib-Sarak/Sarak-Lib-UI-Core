@@ -7,6 +7,7 @@ import { collectEmittedSarakCssVars } from '../collectEmittedSarakCssVars.mjs';
 import { injectBlock, kitHashOf, MIGRATIONS, MIGRATIONS_SOURCE, renderVersionFile } from '../kitFiles.mjs';
 import { buildKitCatalog } from '../buildKitCatalog.mjs';
 import { renderAppendix } from '../renderAppendix.mjs';
+import { NO_REPLACEMENT, parseRemovedTokens } from '../collectRemovedTokens.mjs';
 
 const MARCA = 'TESTE:BLOCO';
 const comMarcadores = (miolo) => `prosa antes\n\n<!-- ${MARCA}:INICIO -->\n${miolo}\n<!-- ${MARCA}:FIM -->\n\nprosa depois\n`;
@@ -168,5 +169,42 @@ describe('renderVersionFile / renderAppendix', () => {
         // token sem documentação não aparece como linha do mapa (o gate de documentação mantém a lista do que falta)
         const undocumented = catalog.designTokens.ids.find((token) => !token.usage);
         if (undocumented) expect(apendice).not.toContain(`| \`${undocumented.id}\` |`);
+    });
+});
+
+describe('tokens removidos em forma de dado (I48)', () => {
+    const notes = (entries, total = entries.length) =>
+        ['## 9.0.0 — exemplo', '', `**Removidos (${total})**`, '', ...entries, '', '**Com tipo ou valor novo (1)**'].join('\n');
+
+    it('lê a versão da seção e o destino de cada linha: nome novo ou "sem substituto"', () => {
+        const parsed = parseRemovedTokens(
+            notes(['- `animFast` — slider (faixa 50 a 400 ms) → `motionDurationFast`', '- `aiPanelBg` — color → sem substituto']),
+        );
+        expect(parsed).toEqual([
+            { id: 'animFast', removedIn: '9.0.0', destination: 'motionDurationFast' },
+            { id: 'aiPanelBg', removedIn: '9.0.0', destination: NO_REPLACEMENT },
+        ]);
+    });
+
+    it('falha em voz alta quando a linha não diz o destino', () => {
+        expect(() => parseRemovedTokens(notes(['- `aiPanelBg` — color']))).toThrow(/sem destino/);
+    });
+
+    it('falha quando a contagem do título não bate com as linhas', () => {
+        expect(() => parseRemovedTokens(notes(['- `aiPanelBg` — color → sem substituto'], 2))).toThrow(/tem 1 linha/);
+    });
+
+    it('o catálogo traz os removidos da 8.0.0 de `docs/migracoes.md`, todos com destino que existe hoje', () => {
+        const removed = catalog.designTokens.removed;
+        const current = new Set(catalog.designTokens.ids.map((token) => token.id));
+        expect(removed.length).toBe(59);
+        for (const token of removed) {
+            expect(token.removedIn, token.id).toBe('8.0.0');
+            expect(current.has(token.id), `${token.id} saiu, não pode seguir no catálogo`).toBe(false);
+            const aToken = /^[A-Za-z0-9]+$/.test(token.destination);
+            if (aToken) expect(current.has(token.destination), `${token.id} → ${token.destination}`).toBe(true);
+        }
+        expect(removed.find((token) => token.id === 'animFast')?.destination).toBe('motionDurationFast');
+        expect(removed.find((token) => token.id === 'aiPanelBg')?.destination).toBe(NO_REPLACEMENT);
     });
 });
