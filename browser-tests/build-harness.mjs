@@ -16,6 +16,7 @@ import { createRequire } from 'node:module';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { resolvePackageImport } from './harness-package-imports.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '..');
@@ -89,7 +90,8 @@ function resolveWorkspaceImport(args, libraryEntry) {
     }
 
     let resolvedPath;
-    if (args.path === '@sarak/lib-ui-core') resolvedPath = libraryEntry;
+    if (args.path.startsWith('#') && args.importer) resolvedPath = resolvePackageImport(args.path, args.importer);
+    else if (args.path === '@sarak/lib-ui-core') resolvedPath = libraryEntry;
     else if (args.path.startsWith('.')) resolvedPath = resolveLocalFile(args.path, args.resolveDir || ROOT);
     else {
         try {

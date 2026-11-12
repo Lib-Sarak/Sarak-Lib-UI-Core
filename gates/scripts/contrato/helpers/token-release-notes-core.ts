@@ -139,6 +139,9 @@ function describeRange(grammar: TokenGrammar): string {
     return `faixa ${grammar.min ?? '…'} a ${grammar.max ?? '…'}${unit}`;
 }
 
+/** Destino provisório da linha de um removido; o mesmo texto que o gerador do kit aceita como "sem par". */
+const REMOVED_WITHOUT_DESTINATION = 'sem substituto';
+
 /** As linhas de lista (markdown) que a seção da versão leva: acrescentados, removidos e com valor novo. */
 export function renderTokenLists(diff: TokenDiff, before: TokenSnapshot, after: TokenSnapshot): string {
     const blocks: string[] = [];
@@ -147,7 +150,9 @@ export function renderTokenLists(diff: TokenDiff, before: TokenSnapshot, after: 
         blocks.push(`**Acrescentados (${diff.added.length})**\n\n${lines.join('\n')}`);
     }
     if (diff.removed.length > 0) {
-        const lines = diff.removed.map((id) => `- \`${id}\` — ${describeFacts(before[id])}`);
+        // O gerador do kit lê o destino depois de `→` (`parseRemovedTokens`): sem ele a linha derruba o `guide`.
+        // O núcleo não sabe quem herdou o papel, então escreve o texto honesto; quem edita troca por `nomeNovo`.
+        const lines = diff.removed.map((id) => `- \`${id}\` — ${describeFacts(before[id])} → ${REMOVED_WITHOUT_DESTINATION}`);
         blocks.push(`**Removidos (${diff.removed.length})**\n\n${lines.join('\n')}`);
     }
     if (diff.changed.length > 0) {

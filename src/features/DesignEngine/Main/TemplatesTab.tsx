@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Copy, Check, FileJson, ExternalLink, Code } from 'lucide-react';
 
@@ -19,8 +19,12 @@ interface TemplatesTabProps {
 export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) => {
     const [copiedId, setCopiedId] = useState<string | null>(null);
     const [selectedId, setSelectedId] = useState<string | null>(null);
+    const copiedTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
     const sarak = useSarakUI();
     const { rows, loadTheme } = useCatalogThemes(sarak);
+
+    // Desmonta com o aviso pendente: sem isto o timer dispararia setState num componente morto.
+    useEffect(() => () => clearTimeout(copiedTimer.current), []);
 
     type Loaded = { design?: Record<string, unknown> } | undefined;
 
@@ -41,7 +45,9 @@ export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) 
         withDesign(entry, loaded, (design) => {
             navigator.clipboard.writeText(JSON.stringify(design, null, 2));
             setCopiedId(entry.id);
-            setTimeout(() => setCopiedId(null), 2000);
+            // Novo clique reinicia a janela: o timer do clique anterior não pode apagar o aviso do atual.
+            clearTimeout(copiedTimer.current);
+            copiedTimer.current = setTimeout(() => setCopiedId(null), 2000);
         });
     };
 

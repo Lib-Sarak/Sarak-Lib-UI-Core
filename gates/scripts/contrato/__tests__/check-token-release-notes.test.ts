@@ -2,6 +2,7 @@
 // Teste do PRÓPRIO GATE `token-release-notes:check`: um caso que ele PEGA (token acrescentado, removido ou com
 // gramática nova que a entrada da versão não cita) e um que ele DEIXA PASSAR (a entrada cita todos).
 import { describe, expect, it } from 'vitest';
+import { parseRemovedTokens } from '../../../../scripts/consumer-kit/collectRemovedTokens.mjs';
 import {
     baselineTag,
     diffSnapshots,
@@ -110,6 +111,16 @@ describe('baselineTag', () => {
 });
 
 describe('renderTokenLists', () => {
+    it('escreve o removido com o `→ destino` que o gerador do kit exige', () => {
+        const before = snapshotTokens(BEFORE);
+        const after = snapshotTokens(AFTER);
+        const text = renderTokenLists(diffSnapshots(before, after), before, after);
+        expect(text).toContain('- `legacyGlow` — color → sem substituto');
+        const section = ['## 9.9.0 — tokens', '', text, ''].join('\n');
+        expect(parseRemovedTokens(section)).toEqual([{ id: 'legacyGlow', removedIn: '9.9.0', destination: 'sem substituto' }]);
+    });
+
+
     it('escreve nome e tipo de cada token, e a opção nova de um select', () => {
         const before = snapshotTokens(BEFORE);
         const after = snapshotTokens(AFTER);

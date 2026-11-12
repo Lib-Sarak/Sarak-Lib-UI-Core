@@ -1,4 +1,6 @@
 // @vitest-environment node
+import fs from 'node:fs';
+import path from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { SARAK_DESIGN_MANIFEST } from '../manifest';
 import * as colorEngine from '../utils/color-engine';
@@ -10,6 +12,16 @@ vi.mock('../utils/color-engine', () => ({
 }));
 
 describe('DESIGN_MANIFEST', () => {
+    it('todo nome de `vars` é público (existe em `tokens.cssVars` do catálogo do kit)', () => {
+        const catalog = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'sarak-ui/catalog.json'), 'utf-8')) as {
+            tokens: { cssVars: string[] };
+        };
+        const publicNames = new Set(catalog.tokens.cssVars);
+        const ghosts = Object.entries(SARAK_DESIGN_MANIFEST).flatMap(([key, entry]) =>
+            (entry.vars ?? []).filter((name) => !publicNames.has(name)).map((name) => `${key}: ${name}`));
+        expect(ghosts).toEqual([]);
+    });
+
     it('não publica aliases de largura sem leitor', () => {
         expect(SARAK_DESIGN_MANIFEST.maxContentWidth).toBeUndefined();
     });
