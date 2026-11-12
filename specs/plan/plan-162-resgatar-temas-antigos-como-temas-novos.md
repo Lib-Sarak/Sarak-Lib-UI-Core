@@ -576,3 +576,19 @@ O veredito 🟢 acima rodou só `themes` e `PresetsCatalog`. O `npm run verify` 
 - `npm run verify` completo, rodado por mim com a saída em arquivo: `tsc` ok, `vitest run` ok (1359 s), `audit:baseline --with-tsc` ok, todos os gates ok, `nível "full" verde`, exit 0. O `presetsReadable.test.ts` passa nos 4 temas.
 
 **Lote 1: aprovado.** Status da plan: 🟡 Em execução (lotes seguintes pendentes).
+
+## Nota do revisor — 2026-11-12 — lote 1 fechado (commit `5c0151a6`); o que o lote 2 aproveita
+
+O lote 1 custou quatro rodadas. Os mesmos três tropeços valem para o lote 2:
+
+- **Preenchimento do cartão.** O material `frosted` e o `industrial` pintam um gradiente branco por cima da cor do cartão
+  (`src/styles/_card-materials.css`). Declarar a cor do cartão da foto não basta: ajuste `surfaceIntensity` e `glassOpacity` até a
+  captura ficar a menos de ~4% de luminosidade da cor declarada.
+- **Barra lateral no claro.** Os sete presets `sidebar-*` recompõem a paleta e medem `textColorMaster` sobre o `sidebarColor`; o teste
+  `src/core/Design/presets/components/__tests__/presetsReadable.test.ts` falha se a contraparte clara tiver barra escura com texto
+  escuro. O tom `inverse` calcula texto, ícone e logotipo para barra escura: com barra clara, declare os papéis da barra
+  (`sidebarItemTextColor`, `sidebarIconColor`, `sidebarBrandColor` e os demais) com os valores do tom `neutral`.
+- **Foto contra JSON.** Quando discordam, vale a foto para o modo nativo (registre o caso no anexo, por tema).
+
+Rode, além do vitest de `themes` e de `PresetsCatalog`, `npx vitest run src/core/Design/presets/components`: só ele acusa o segundo
+ponto. A verificação completa (`npm run verify`) é do revisor; se rodá-la, redirecione a saída para arquivo.

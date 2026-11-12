@@ -532,6 +532,17 @@ dado. **Apagar tem porta**, simétrica à de escrever ([[017-porta-de-apagar-tem
 configurada. O armazenamento continua do importador — `onDelete` é o ponto em que ele remove o tema da própria
 fonte, e a lib não toca nela. Id desconhecido não faz nada.
 
+**Os gestos do painel.** O painel oferece quatro: Salvar (substitui o tema do importador em edição, mesmo id), Salvar como novo,
+Duplicar (nome `"X (cópia)"`) e Novo tema. A porta recebe `onSave(theme, operation)` com `operation` `'create'` ou `'replace'`
+(`SarakThemeSaveOperation`); o segundo argumento é opcional, e quem implementa `onSave(entry)` segue funcionando.
+
+- **Tema embarcado não se sobrescreve nem se apaga.** `saveTheme` e `deleteTheme` lançam para id do catálogo da lib; editar um
+  embarcado é salvar uma cópia com outro id.
+- **O id novo é único** contra o catálogo inteiro (embarcados e do importador), com sufixo `-2`, `-3`… (`createUniqueThemeId`).
+- **O tema entra na coleção da sessão antes do `onSave`.** Se o importador rejeita, o erro propaga, o painel avisa e o tema permanece
+  na sessão: perder o tema por falha do backend do importador é o pior desfecho.
+- **Apagar** tira o tema da coleção antes de chamar `onDelete`; se `onDelete` rejeita, o tema volta à coleção e o erro propaga.
+
 **Degradação quando a porta não está configurada:** a ação de salvar não aparece. Não há erro, não há botão
 morto — o consumidor que não implementou `onSave` simplesmente continua com o ciclo de exportar (§4.5).
 

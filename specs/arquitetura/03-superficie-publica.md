@@ -585,6 +585,18 @@ biblioteca, e só o chunk `SarakKanbanImpl-*.js` a importa. O `Suspense` é inte
 `LazyEngineWrapper` — o wrapper exige Provider, e o quadro renderiza sem ele (R34). A lógica pura
 (`sarakMoveCard`) fica fora da fronteira e é exportada.
 
+## 7.2 O subpath `./eslint` e o `verify`
+
+O plugin do kit de verificação ([[12-kit-do-consumidor]] §2.5) é uma entrada de pacote separada: `exports["./eslint"]` aponta para
+`dist/eslint.js`, `.cjs` e `.d.ts`, gerados por `src/eslint.ts` no `build:js`. O `src/verify.ts` é a outra entrada do `tsup`, e só a CLI
+`sarak-ui verify` a carrega (`bin/sarak-ui.mjs` importa `dist/verify.js`): ela **não** é subpath público.
+
+- **Fora do boot.** Nenhuma das duas entra no `dist/index.js` nem no fecho estático dele; quem não as importa não as paga. O
+  `boot:measure` e o cenário do `test:optional-peers` conferem a cada release.
+- **`eslint` é peer opcional** (`>=9.0.0`, config plana): quem não o instala não vê erro nem aviso.
+- **O plugin não importa tipo da lib.** Tipo da lib num arquivo de entrada novo faz o build mover o tipo do barril para um `.d.ts`
+  compartilhado e esvazia o `dist/index.d.ts` (o mesmo vale para o `testing`); só `npm run build` completo acusa.
+
 # 8. Dívidas nomeadas — as duas ondas de limpeza
 
 Esta seção listava **três** dívidas de superfície pública. As três morreram no major `2.0.0` (`plan-09`,
