@@ -19,6 +19,15 @@ let cacheVersion = 0;
 export const isSarakThemePresetId = (id: string): id is SarakThemePresetId =>
     (SARAK_THEME_PRESET_IDS as readonly string[]).includes(id);
 
+/**
+ * Ids de temas que a lib já teve e REMOVEU. Interno (fora do barril) e só cresce. Quem os tem gravado pela persistência
+ * (cache local, `onLoad`) cai no tema padrão; qualquer OUTRO id desconhecido vindo da persistência pode ser tema do
+ * importador ainda em carga e é respeitado.
+ */
+export const SARAK_REMOVED_THEME_IDS: readonly string[] = ['synthwave-retro'];
+
+export const isSarakRemovedThemeId = (id: string): boolean => SARAK_REMOVED_THEME_IDS.includes(id);
+
 /** O tema embarcado já em memória, ou `undefined` — nunca dispara carga. */
 export const getLoadedThemePreset = (id: string): SarakThemePreset | undefined => cache.get(id);
 

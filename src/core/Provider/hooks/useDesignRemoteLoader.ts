@@ -3,6 +3,9 @@ import { validateDesign } from '../utils/validation';
 import { resolveEffectiveStrategy } from '../utils/persistenceStrategy';
 import { writeCachedActiveThemeId } from '../utils/resolveStorageKey';
 import { SarakUIOptions, SarakDesignState, SarakThemePayload, SetDesign } from '../types';
+import { SARAK_DEFAULT_THEME_ID } from '../../Design/presets/themes';
+import { composeDefaultThemeDesign } from './useDesignSync';
+import type { ThemeIdGuard } from './useThemeSeed';
 
 interface LoadedTheme {
     design: SarakThemePayload;
@@ -22,6 +25,7 @@ interface RemoteLoaderProps {
     onLoadBecameAvailable?: () => void;
     design: SarakDesignState;
     resolvedThemeId?: string;
+    themeIdGuard?: ThemeIdGuard;
 }
 
 const isLoadedTheme = (
@@ -57,6 +61,7 @@ export const useDesignRemoteLoader = (props: RemoteLoaderProps): void => {
         onLoadBecameAvailable,
         design,
         resolvedThemeId,
+        themeIdGuard,
     } = props;
 
     // `getSeedConfig` depende da coleção de temas e pode mudar a cada render.
@@ -68,7 +73,10 @@ export const useDesignRemoteLoader = (props: RemoteLoaderProps): void => {
         && optionsRef.current.persistence?.strategy !== 'local';
     const previousRemoteLoadAvailableRef = useRef(isRemoteLoadAvailable);
     const shouldRefreshHybridCacheRef = useRef(false);
+    // O guarda depende de `customThemes`; a ref evita rodar `onLoad` de novo quando ele muda.
+    const themeIdGuardRef = useRef(themeIdGuard);
     getSeedConfigRef.current = getSeedConfig;
+    themeIdGuardRef.current = themeIdGuard;
     activeThemeIdRef.current = activeThemeId;
 
     useEffect(() => {
@@ -97,6 +105,17 @@ export const useDesignRemoteLoader = (props: RemoteLoaderProps): void => {
 
                 const controlledThemeId = activeThemeIdRef.current;
                 const restoredThemeId = controlledThemeId ?? loadedTheme.activeThemeId;
+                const guard = themeIdGuardRef.current;
+
+                if (guard && controlledThemeId === undefined && restoredThemeId !== undefined && guard.isRemovedTheme(restoredThemeId)) {
+                    // Tema que a lib removeu, gravado pelo consumidor: o design que ele guardou era desse tema e é descartado.
+                    guard.warnUnknownThemeOnce(restoredThemeId);
+                    setResolvedThemeId(SARAK_DEFAULT_THEME_ID);
+                    if (strategy === 'hybrid') shouldRefreshHybridCacheRef.current = true;
+                    setDesign((previous) => composeDefaultThemeDesign(previous));
+                    return;
+                }
+
                 if (restoredThemeId !== undefined) setResolvedThemeId(restoredThemeId);
 
                 if (strategy === 'hybrid') shouldRefreshHybridCacheRef.current = true;

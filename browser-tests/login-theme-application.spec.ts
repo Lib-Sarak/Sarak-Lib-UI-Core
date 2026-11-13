@@ -52,7 +52,7 @@ test('Provider sem tenant aplica e persiste o tema escolhido depois do login', a
 
     await page.getByRole('button', { name: /^Tema/ }).click();
     await expect(page.getByRole('heading', { level: 2, name: 'Tema' })).toBeVisible();
-    await page.getByRole('button', { name: /Sarak Sovereign/ }).click();
+    await page.getByRole('button', { name: /Sarak Sovereign(?! Classic)/ }).click();
 
     const applyButton = page.getByRole('button', { name: 'Aplicar' });
     await expect(page.getByText(/\d+ altera(?:ção|ções)/)).toBeVisible();

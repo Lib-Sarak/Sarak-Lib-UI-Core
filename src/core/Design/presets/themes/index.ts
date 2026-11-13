@@ -26,7 +26,6 @@ export const SARAK_THEME_PRESET_IDS = [
     'cyberpunk-neon',
     'industrial-terminal',
     'neo-brutalism',
-    'synthwave-retro',
     'nebula-space',
     'kinetic-flow',
     'cyber-retro-wave',

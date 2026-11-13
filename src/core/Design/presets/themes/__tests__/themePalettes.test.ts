@@ -10,8 +10,11 @@ import { MASTER_DESIGN_MAP } from '../../../master-map';
 
 const roleKeys = Object.keys(PALETTE_ROLE_MAP);
 
-/** Variantes de cor da galeria (a mesma base de um preset de tema, outra combinação): nenhum tema embarcado as usa. */
-const GALLERY_ONLY_PRESETS = ['ciano-azul', 'oliva-dourada', 'oliva-viva', 'tinta-azul'];
+/**
+ * Variantes de cor da galeria (a mesma base de um preset de tema, outra combinação): nenhum tema embarcado as usa.
+ * `rosa-synthwave` é a paleta do tema que saiu do catálogo; ela segue na galeria até a decisão sobre as paletas.
+ */
+const GALLERY_ONLY_PRESETS = ['ciano-azul', 'oliva-dourada', 'oliva-viva', 'rosa-synthwave', 'tinta-azul'];
 
 describe('os temas embarcados tiram a cor de uma paleta', () => {
     it.each(SARAK_ALL_THEMES.map((theme) => [theme.id, theme] as const))('%s declara um preset que existe, ou uma paleta `custom:` válida', (_id, theme) => {

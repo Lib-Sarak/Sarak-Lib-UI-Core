@@ -131,7 +131,7 @@ test('Personalidades e temas: o cromo fica legível nos dois modos', async ({ pa
     test.setTimeout(900_000);
     const scenes = await readScenes(page);
     expect(scenes.personalities).toHaveLength(10);
-    expect(scenes.themes).toHaveLength(19);
+    expect(scenes.themes).toHaveLength(25);
 
     for (const id of scenes.personalities) {
         for (const palette of PALETTES) {

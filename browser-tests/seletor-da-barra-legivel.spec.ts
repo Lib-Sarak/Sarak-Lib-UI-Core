@@ -33,7 +33,7 @@ const CASES: Array<{ name: string; query: string }> = [
     { name: 'item ativo claro com primária escura', query: 'tema=nav-ativo-claro' },
     { name: 'neo-brutalism', query: 'tema-ativo=neo-brutalism' },
     { name: 'industrial-terminal', query: 'tema-ativo=industrial-terminal' },
-    { name: 'synthwave-retro', query: 'tema-ativo=synthwave-retro' },
+    { name: 'cyber-retro-wave-classic', query: 'tema-ativo=cyber-retro-wave-classic' },
     { name: 'nebula-space', query: 'tema-ativo=nebula-space' },
 ];
 

@@ -27,7 +27,7 @@ if (!harnessUrl) {
     throw new Error('O globalSetup não preparou o harness de CSS para esta execução do Playwright.');
 }
 
-const THEMES = ['industrial-terminal', 'neo-brutalism', 'synthwave-retro', 'cyberpunk-neon'] as const;
+const THEMES = ['industrial-terminal', 'neo-brutalism', 'cyber-retro-wave-classic', 'cyberpunk-neon'] as const;
 /** A partir daqui a lista de navegação inteira cabe na barra com o cromo de fábrica. */
 const FULL_LIST_FROM = 1280;
 const WIDTHS = [1440, 1280, 1024] as const;

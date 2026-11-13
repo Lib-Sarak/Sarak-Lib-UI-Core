@@ -5,21 +5,58 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
-## 9.0.0 — temas da lib antiga voltam ao catálogo como temas novos (aditivo: nenhum tema existente muda)
+## 9.0.0 — `SARAK_DESIGN_MANIFEST.vars` lista só nomes da lista pública de variáveis (aditivo para quem usa; muda o que o objeto exportado devolve)
 
-O catálogo embarcado ganha, como **temas novos**, versões dos temas da lib antiga, reescritas para o contrato de token de hoje. Nenhum tema que já existia mudou de valor.
+O `vars` de cada entrada do `SARAK_DESIGN_MANIFEST` listava nomes que não fazem parte da lista pública de variáveis (`tokens.cssVars` do catálogo do kit). Agora ele lista só nomes dessa lista: cada nome fora dela virou o nome público do mesmo papel, ou saiu quando o papel já estava na lista ou não tem nome público. O objeto nunca alimentou CSS; só muda para quem lê `SARAK_DESIGN_MANIFEST[chave].vars`.
+
+**Nomes que nunca existiram** (nenhuma parte da lib os escreveu) viraram o nome público do mesmo papel:
+
+| Antes | Depois |
+|---|---|
+| `--sarak-card-border` (`cardBorderColor`) | `--sarak-card-border-color` |
+| `--sarak-error-color`, `--sarak-success-color`, `--sarak-warning-color` | `--sarak-status-error-color`, `--sarak-status-success-color`, `--sarak-status-warning-color` |
+| `--shadow-orientation`, `--shadow-color-mode`, `--spotlight-opacity` | `--sarak-shadow-orientation`, `--sarak-shadow-color-mode`, `--sarak-card-spotlight-opacity` |
+| `--is-nav-hidden`, `--sidebar-min-width`, `--sidebar-max-width` | `--sarak-is-nav-hidden`, `--sarak-sidebar-min-width`, `--sarak-sidebar-max-width` |
+
+**Nomes internos que continuam emitidos e não são contrato** saíram do manifesto, **não da tela**: `--theme-*` (`--theme-primary`, `--theme-card-bg`, `--theme-font-size-base` e afins), `--font-main`, `--font-heading` e os apelidos sem prefixo `--sarak-` (`--primary-color`, `--radius-theme`, `--topbar-height`). Componentes da lib ainda os leem (o `SarakTypography` lê `--font-main` e `--theme-font-size-base`); quem os usa no seu CSS não perde nada agora, mas eles não são garantidos entre versões. Onde o papel tem nome público (`--sarak-body-font`, `--sarak-heading-font`, `--sarak-primary-color`…), use esse.
+
+`--sarak-font-scale`, `--sarak-font-size` e `--font-size-factor` (`fontScale`) e `--glass-blur` (`glassBlur`, que a lib nunca escreveu; o nome público é `--sarak-glass-blur`, já na lista) saíram sem substituto novo: para `fontScale` não há nome público, e a entrada guarda só a `transform`.
+
+---
+
+## 9.0.0 — sete temas da lib antiga voltam ao catálogo e o `synthwave-retro` sai (MAJOR: o tipo `SarakThemePresetId` perde um id)
+
+O catálogo embarcado ganha, como **temas novos**, versões dos temas da lib antiga, reescritas para o contrato de token de hoje, e perde o `synthwave-retro`. Nenhum outro tema que já existia mudou de valor.
 
 | Tema novo | `id` | Modo nativo | Cor (paleta `custom:`) |
 |---|---|---|---|
 | Sarak Sovereign Classic | `sarak-sovereign-classic` | escuro | `#00f2ff` com violeta e magenta |
 | Cyberpunk Neon Classic | `cyberpunk-neon-classic` | escuro | `#00ff64` com magenta e ciano |
 | Industrial Terminal Classic | `industrial-terminal-classic` | escuro | `#ff9900` |
+| Nature Breeze | `nature-breeze` | claro | `#2e7d32` com amarelo e verde-azulado |
+| Neo Brutalism Classic | `neo-brutalism-classic` | claro | `#ff0000` com amarelo e azul |
+| Dot Matrix Elegant | `dot-matrix-elegant` | escuro | `#d4af37` com dourado-escuro e branco |
 | Cyber Retro-Wave 2077 Classic | `cyber-retro-wave-classic` | escuro | `#ff00ff` com ciano e rosa |
 
-- **O que muda para quem importa:** `SarakThemePresetId` e `SARAK_THEME_PRESET_IDS` ganham os quatro ids; `SARAK_THEME_CATALOG` lista os quatro; cada um carrega sob demanda, fora do boot. Quem valida id de tema por lista fechada deve aceitá-los.
-- **O que não vem do original, por não existir no contrato de hoje:** a largura da lateral e o `13px` do corpo do Industrial (a largura é funcional e vale o padrão do sistema; o corpo vira `14px`), a posição da navegação, e os valores de token que saíram do schema. O `#00ff41` do Cyberpunk vira `#00ff64`: com a primeira base o motor de paleta reprova um par de contraste no modo claro (4,47:1).
-- **Cada tema tem contraparte clara autorada**; os originais eram só escuros.
-- A mesma versão traz os demais temas resgatados e a saída do `synthwave-retro`; o que cada um muda para o importador está nas entradas seguintes desta versão.
+- **O que muda para quem importa:** `SarakThemePresetId` e `SARAK_THEME_PRESET_IDS` ganham os sete ids; `SARAK_THEME_CATALOG` lista os sete; cada um carrega sob demanda, fora do boot. Quem valida id de tema por lista fechada deve aceitá-los.
+- **O que não vem do original, por não existir no contrato de hoje:** a largura da lateral e o `13px` do corpo do Industrial (a largura é funcional e vale o padrão do sistema; o corpo vira `14px`), a posição da navegação, e os valores de token que saíram do schema. O `#00ff41` do Cyberpunk vira `#00ff64`: com a primeira base o motor de paleta reprova um par de contraste no modo claro (4,47:1). O Nature Breeze e o Neo Brutalism Classic nascem claros (a intenção do arquivo original); o escuro deles reproduz a foto do sistema antigo.
+- **Cada tema tem contraparte autorada** para o modo oposto ao nativo; os originais eram só escuros.
+- **O Neo Brutalism Classic no escuro** mantém a borda de 4 px do claro: a espessura da borda não muda com o modo.
+
+### O que saiu: `synthwave-retro`
+
+O tema `synthwave-retro` (Synthwave Retro) foi removido: o arquivo, o id em `SARAK_THEME_PRESET_IDS`, o loader e a entrada do catálogo. O tipo `SarakThemePresetId` perde o literal `'synthwave-retro'`, e é por isso que a versão é MAJOR.
+
+| Antes | Depois |
+|---|---|
+| `<SarakUIProvider initialTheme="synthwave-retro" />` ou `activeThemeId="synthwave-retro"` pintava o Synthwave Retro. | O id não existe mais: o Provider usa o tema padrão (`sarak-sovereign`) no modo pedido (a contraparte autorada quando o modo é claro) e emite `console.warn` nomeando o id. Nada lança, e a tela nunca fica sem tema. |
+| `sarakLoadThemePreset('synthwave-retro')` carregava o tema. | Rejeita, como para qualquer id desconhecido. |
+| `const id: SarakThemePresetId = 'synthwave-retro'` compilava. | Erro de tipo: troque o id. |
+
+- **Quem tem o id gravado** (cache local do Provider, `onLoad` do consumidor, coluna no banco, ou a prop `activeThemeId`): a queda para o tema padrão vale para o id que **a lib removeu** (hoje, só o `synthwave-retro`). O Provider usa o tema padrão (`sarak-sovereign`) no modo pedido (`config.mode`; sem ele, o do design gravado; sem os dois, escuro), **descarta o design que estava gravado sobre o Synthwave Retro** e emite **um** `console.warn` nomeando o id (um por id, somando as portas). Pelo cache local e pelo `onLoad`, `resolvedThemeId` passa a ser `'sarak-sovereign'`. A hidratação não chama `onSave` nem `onThemeChange`; só em `strategy: 'hybrid'`, quando o id removido vem do `onLoad`, o cache local é reescrito com o design e o id do tema padrão. Quando o id removido está só no cache local, o dado antigo fica no `localStorage` até a primeira edição do usuário, e o aviso volta a cada carga até lá. Quem quiser outro tema no lugar grave o id novo.
+- **O tema do importador não é tocado:** pelo cache local e pelo `onLoad`, qualquer **outro** id que a lib não conheça (por exemplo, o de um tema que o seu sistema carrega pela rede e que ainda não chegou em `customThemes`) mantém o design e o id gravados, sem aviso e sem reescrever o cache. Pela prop `activeThemeId` e por `initialTheme` um id desconhecido segue como antes: tema padrão com aviso; nesse caso `resolvedThemeId` é o tema padrão enquanto o id for desconhecido e volta ao id quando o tema entra em `customThemes`.
+- **Substituto mais próximo:** `cyber-retro-wave-classic` (magenta sobre fundo escuro, o mais perto em cor e modo) ou o `cyber-retro-wave` que já existia. Não há apelido automático.
+- **A paleta `rosa-synthwave` continua** no seletor de paletas; ela era usada pelo tema e agora só a galeria a oferece.
 
 ---
 

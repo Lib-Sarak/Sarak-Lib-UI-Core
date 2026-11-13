@@ -3,7 +3,9 @@ import {
     getLoadedThemePreset,
     getLoadedThemePresets,
     getThemeCacheVersion,
+    isSarakRemovedThemeId,
     isSarakThemePresetId,
+    SARAK_REMOVED_THEME_IDS,
     sarakLoadAllThemePresets,
     sarakLoadThemePreset,
     sarakPreloadThemes,
@@ -65,5 +67,17 @@ describe('registry — o cache síncrono e o carregador sob demanda', () => {
         const all = await sarakLoadAllThemePresets();
         expect(all).toHaveLength(SARAK_THEME_PRESET_IDS.length);
         expect(getLoadedThemePresets().map((theme) => theme.id)).toEqual([...SARAK_THEME_PRESET_IDS]);
+    });
+});
+
+describe('registry — os ids de tema que a lib removeu', () => {
+    it('nenhum id removido está entre os embarcados, e `isSarakRemovedThemeId` reconhece a lista', () => {
+        expect(SARAK_REMOVED_THEME_IDS.length).toBeGreaterThan(0);
+        SARAK_REMOVED_THEME_IDS.forEach((id) => {
+            expect((SARAK_THEME_PRESET_IDS as readonly string[]).includes(id), id).toBe(false);
+            expect(isSarakRemovedThemeId(id), id).toBe(true);
+        });
+        expect(isSarakRemovedThemeId('cyberpunk-neon')).toBe(false);
+        expect(isSarakRemovedThemeId('meu-tema')).toBe(false);
     });
 });

@@ -65,7 +65,7 @@ export const useDesignManager = (props: {
     }, []);
 
     // O id do tema que a SEMENTE resolveu e os tokens semeados — `useThemeSeed.ts`.
-    const { resolveSeedThemeId, getSeedConfig } = useThemeSeed({
+    const { resolveSeedThemeId, getSeedConfig, themeIdGuard } = useThemeSeed({
         allThemes, activeThemeId, initialTheme, optionsRef, configRef,
     });
 
@@ -73,7 +73,7 @@ export const useDesignManager = (props: {
     // `useResolvedThemeId.ts`. ADITIVO: não muda a semântica de `activeThemeId`/
     // `initialTheme` (R33). Extraído do corpo deste hook para não estourar o
     // teto de estado por hook (R9) — sem isso são 5 useState/useEffect aqui.
-    const [resolvedThemeId, updateResolvedThemeId] = useResolvedThemeId(activeThemeId, resolveSeedThemeId);
+    const [resolvedThemeId, updateResolvedThemeId] = useResolvedThemeId(activeThemeId, resolveSeedThemeId, themeIdGuard.isUnknownTheme);
     // `persistDesign` lê a ref no instante da gravação para levar o id anunciado
     // junto com o design. O setter atualiza esta ref sincronamente, então aplicar
     // id e persistir na mesma chamada não depende de um render intermediário.
@@ -100,6 +100,8 @@ export const useDesignManager = (props: {
             const saved = localStorage.getItem(storageKey);
             if (saved && optionsRef.current.persistence?.preferConfigOverCache !== true) {
                 const parsed = JSON.parse(saved);
+                // Design gravado sobre um tema que não existe mais: o tema padrão, no modo que o gravado tinha.
+                if (themeIdGuard.isSavedThemeRemoved()) return validateDesign(getSeedConfig(parsed?.mode));
                 return validateDesign({ ...getSeedConfig(), ...parsed });
             }
         } catch (error) {
@@ -178,6 +180,7 @@ export const useDesignManager = (props: {
         setDesign,
         configRef,
         options?.persistence?.preferConfigOverCache === true,
+        themeIdGuard,
     );
     useDesignRemoteLoader({
         isHydrated,
@@ -192,6 +195,7 @@ export const useDesignManager = (props: {
         onLoadBecameAvailable,
         design,
         resolvedThemeId,
+        themeIdGuard,
     });
 
     // Sincronização entre abas/apps (lacuna pré-Teste Real): default ligado, opt-out

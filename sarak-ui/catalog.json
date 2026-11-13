@@ -13827,7 +13827,6 @@
       "cyberpunk-neon",
       "industrial-terminal",
       "neo-brutalism",
-      "synthwave-retro",
       "nebula-space",
       "kinetic-flow",
       "cyber-retro-wave",
@@ -14152,6 +14151,6 @@
   "kitStamp": {
     "libVersion": "8.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "612f4742b83f"
+    "kitHash": "5b1d67d1f919"
   }
 }

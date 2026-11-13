@@ -13,7 +13,6 @@ export const SARAK_THEME_LOADERS: Record<LazyThemeId, () => Promise<SarakThemePr
     'cyberpunk-neon': () => import('./cyberpunk-neon').then((m) => m.cyberpunkneonTheme),
     'industrial-terminal': () => import('./industrial-terminal').then((m) => m.industrialTerminalTheme),
     'neo-brutalism': () => import('./neo-brutalism').then((m) => m.neobrutalismTheme),
-    'synthwave-retro': () => import('./synthwave-retro').then((m) => m.synthwaveRetroTheme),
     'nebula-space': () => import('./nebula-space').then((m) => m.nebulaSpaceTheme),
     'kinetic-flow': () => import('./kinetic-flow').then((m) => m.kineticFlowTheme),
     'cyber-retro-wave': () => import('./cyber-retro-wave').then((m) => m.cyberRetroWaveTheme),

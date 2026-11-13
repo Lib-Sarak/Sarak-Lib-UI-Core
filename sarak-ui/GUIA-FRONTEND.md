@@ -694,7 +694,6 @@ Escolha a base pela marca e pelo contexto do produto; depois ajuste os tokens, n
 | `cyberpunk-neon` | cor neon com contraste controlado, quinas e botão wireframe (`primaryColor`, `cardGeometricCut`, `btnStyleType`) |
 | `industrial-terminal` | material industrial, alto contraste e movimento mecânico (`cardTextureType`, `btnStyleType`, `motion*`) |
 | `neo-brutalism` | papel claro, contorno grosso e sombra dura (`cardBorderWidth`, `cardShadow*`, `borderRadius`) |
-| `synthwave-retro` | arte vetorial, grade e acentos luminosos (`globalBackgroundImageUrl`, `bgGradient*`, `texture`) |
 | `nebula-space` | vidro profundo, raios grandes e transição longa (`cardBackdropBlur`, `cardBorderRadius`, `pageTransitionType`) |
 | `kinetic-flow` | movimento elástico e foco luminoso (`motionEase*`, `cardHoverGlow`, `cardInnerGlow*`) |
 | `cyber-retro-wave` | acabamento prismático e cromo de inspiração Y2K (`texture`, `btnStyleType`, `iconFamily`) |
@@ -1550,7 +1549,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 
 **Tokens que saíram** (59) — `catalog.json` → `designTokens.removed`: o id, a versão em que saiu e o destino (o token que ficou no lugar, ou `sem substituto`). Quem valida o tema por lista de chaves deixa de exigir esses ids.
 
-**Temas embutidos** (26): `sarak-sovereign` · `cyberpunk-neon` · `industrial-terminal` · `neo-brutalism` · `synthwave-retro` · `nebula-space` · `kinetic-flow` · `cyber-retro-wave` · `minimalist-airy` · `data-terminal` · `neumorphic-mobile` · `golden-hour` · `aurora-veil` · `blueprint-protocol` · `editorial-ink` · `organic-clay` · `high-contrast` · `corporate-ledger` · `playful-pastel` · `sarak-sovereign-classic` · `cyberpunk-neon-classic` · `industrial-terminal-classic` · `cyber-retro-wave-classic` · `nature-breeze` · `neo-brutalism-classic` · `dot-matrix-elegant`
+**Temas embutidos** (25): `sarak-sovereign` · `cyberpunk-neon` · `industrial-terminal` · `neo-brutalism` · `nebula-space` · `kinetic-flow` · `cyber-retro-wave` · `minimalist-airy` · `data-terminal` · `neumorphic-mobile` · `golden-hour` · `aurora-veil` · `blueprint-protocol` · `editorial-ink` · `organic-clay` · `high-contrast` · `corporate-ledger` · `playful-pastel` · `sarak-sovereign-classic` · `cyberpunk-neon-classic` · `industrial-terminal-classic` · `cyber-retro-wave-classic` · `nature-breeze` · `neo-brutalism-classic` · `dot-matrix-elegant`
 
 **Par de referência** (parta destes — completos em todos os eixos): `minimalist-airy` · `sarak-sovereign`
 

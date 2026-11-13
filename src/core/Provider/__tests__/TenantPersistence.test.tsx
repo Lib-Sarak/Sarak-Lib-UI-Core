@@ -22,6 +22,12 @@ const EXTRA_STORAGE_KEYS = [
     'provider-save-warning-second::active-theme-id',
 ];
 
+/** Os ids que o cache e o servidor devolvem são de temas do consumidor: têm de estar em `customThemes`, senão são tema removido. */
+const STORED_THEMES = [
+    { id: 'cache-theme', name: 'Cache', design: { primaryColor: '#111111' } },
+    { id: 'server-theme', name: 'Servidor', design: { primaryColor: '#222222' } },
+];
+
 const TenantDesignProbe = () => {
     const ui = useSarakUI();
     const currentDesign = ui.systemDesign ?? {};
@@ -229,6 +235,7 @@ describe('SarakUIProvider — persistência ao trocar tenant', () => {
         const onSave = vi.fn();
         render(
             <SarakUIProvider
+                customThemes={STORED_THEMES}
                 options={{ fonts: 'none', persistence: { storageKey, tenantId: 'tenant-a', onLoad, onSave } }}
             >
                 <TenantDesignProbe />

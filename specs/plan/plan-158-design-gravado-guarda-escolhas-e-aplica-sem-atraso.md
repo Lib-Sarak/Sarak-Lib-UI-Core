@@ -124,6 +124,10 @@ painel responder (o botão `Aplicar` habilitado) e o número de recálculos de e
 não reescreve `<style>` de escopo cujo conteúdo não mudou, e a amostra fora da área visível não recalcula.
 2.3. Meta medida no spec: escolher uma opção responde em **menos de 200 ms** a 1440×900 no harness; o teto de
 `troca-de-tema.spec.ts` não sobe.
+2.4. *(Nota do revisor, 2026-11-12, da medida da `plan-162`.)* Numa troca de tema, o escopo da prévia ao vivo
+(`.sarak-design-scope`, classes `sarak-scope-*`) é remontado **8 vezes**, a ≈105 ms uma da outra. Cada vez tem marca própria e
+≈529 variáveis escritas como estilo inline, e na última janela há ≈3.044 mutações de estilo inline em `div.sarak-card` da prévia
+(trace do CDP, `invalidationTracking`). Meça junto com o 2.2 e trate como a mesma causa até que a medida diga o contrário.
 
 **Lote 3 — sair com alterações pendentes.**
 3.1. Com o rascunho sujo, sair do painel (navegar para outra rota da aplicação, fechar a aba) pergunta antes de descartar: ficar,

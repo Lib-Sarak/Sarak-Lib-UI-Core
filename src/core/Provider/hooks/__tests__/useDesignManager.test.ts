@@ -4,10 +4,14 @@ import { useDesignManager } from '../useDesignManager';
 import { sarakResolvePalette } from '../../../Design/palette/resolve';
 import type { SarakUIOptions, SarakThemePayload } from '../../types';
 
+/** Temas do consumidor que o `onLoad` devolve por id: um id fora do catálogo e de `allThemes` é tema removido. */
+const CONSUMER_THEMES = ['tema-salvo', 'tema-a', 'tema-b'].map((id) => ({ id, design: { primaryColor: '#000000' } }));
+
 const baseProps = (options: SarakUIOptions = {}) => ({
     initialConfig: {} as SarakThemePayload,
     options,
     isHydrated: true,
+    allThemes: CONSUMER_THEMES,
 });
 
 describe('useDesignManager — persistência tenant-aware e strategy (ADR-009 / plan-34)', () => {

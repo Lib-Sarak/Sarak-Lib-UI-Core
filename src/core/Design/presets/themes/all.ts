@@ -11,7 +11,6 @@ import { sarakSovereignTheme } from './sarak-sovereign';
 import { cyberpunkneonTheme } from './cyberpunk-neon';
 import { industrialTerminalTheme } from './industrial-terminal';
 import { neobrutalismTheme } from './neo-brutalism';
-import { synthwaveRetroTheme } from './synthwave-retro';
 import { nebulaSpaceTheme } from './nebula-space';
 import { kineticFlowTheme } from './kinetic-flow';
 import { cyberRetroWaveTheme } from './cyber-retro-wave';
@@ -39,7 +38,6 @@ export const SARAK_ALL_THEMES: SarakThemePreset[] = [
     cyberpunkneonTheme,
     industrialTerminalTheme,
     neobrutalismTheme,
-    synthwaveRetroTheme,
     nebulaSpaceTheme,
     kineticFlowTheme,
     cyberRetroWaveTheme,
