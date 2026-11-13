@@ -401,3 +401,17 @@ A pedido do dono, como nas campanhas anteriores: ao fim de lotes 1, 2 e 3, o exe
 com capturas reais do `dist/` ou do código-fonte (como as prévias da 136 a 149), mostrando antes e depois de trocar High Contrast → Sovereign, aplicar Invertida e alternar claro/escuro (cromo real), o tempo medido de cada escolha e o aviso ao sair com alterações. O resumo do lote dá o caminho.
 O revisor confere a prévia antes do veredito, e o lote só fecha com o ok do dono nela (critério acrescentado à §6). A projeção da
 campanha inteira, feita à mão, está em `C:\tmp\sarak-previa-campanha-9\index.html`: é referência de intenção, não de pixel.
+
+## Nota do revisor — 2026-11-12 — ADR-026 aceito; o lote 1 começa depois da correção do lote 3 da `plan-162`
+
+O dono aceitou o ADR-026 em 2026-11-12: alternativa A, regra L1 para o dado antigo e a perda única do ajuste manual assumida.
+O ADR-027 foi aceito no mesmo dia.
+
+**A ordem:** a correção do lote 3 da `plan-162` mexe nos mesmos hooks que este lote reescreve (`useThemeSeed.ts`,
+`useDesignRemoteLoader.ts`, `useDesignSync.ts`). O lote 1 começa sobre o commit dela, nunca em paralelo.
+
+**O que o lote 1 herda da 162:**
+- O id de tema desconhecido vindo do cache ou do `onLoad` cai no tema padrão, com um aviso por id.
+- A baseline do formato 2 parte do id **já validado**, e o teste `TemaRemovidoGravado.test.tsx` continua verde.
+
+**Lote 1 liberado** (após o commit da correção do lote 3 da `plan-162`).

@@ -1,7 +1,7 @@
 ---
 tipo: "adr"
 titulo: "A paleta do tema é o padrão; \"manter minha paleta\" é escolha do sistema, e as paletas salvas moram no design"
-status: "🟡 Proposto"
+status: "🟢 Aceito"
 tags: ["adr", "paleta", "temas", "painel", "persistencia", "design-engine", "dado-gravado"]
 relacionados: ["[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[024-paleta-calculada-separada-do-tema]]", "[[026-design-gravado-guarda-so-as-escolhas]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[010-temas-salvos-pelo-usuario]]", "[[011-tema-salvo-por-uma-porta-de-escrita]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]"]
 substitui: ""
@@ -16,6 +16,8 @@ alternativas_consideradas:
   - opcao: "D — a paleta salva é uma entrada na tabela de temas (`customThemes`)"
     custo: "Paleta misturada com tema: todo lugar que lista temas (galeria, seletor, exportação) passa a filtrar o que é paleta, e um tema \"só de paleta\" não tem as demais escolhas de um tema."
 ---
+
+**Aceito pelo dono em 2026-11-12.** Premissa: o formato do ADR-026 (gravar só escolhas), aceito no mesmo dia sem mudança.
 
 # 1. Contexto e Problema
 

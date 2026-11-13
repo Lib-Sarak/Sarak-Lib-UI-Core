@@ -1,7 +1,7 @@
 ---
 tipo: "adr"
 titulo: "O design gravado guarda só o que foi escolhido — o que a paleta calcula é recalculado ao carregar"
-status: "🟡 Proposto"
+status: "🟢 Aceito"
 tags: ["adr", "persistencia", "paleta", "design-engine", "painel", "dado-gravado"]
 relacionados: ["[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[02-design-engine]]", "[[024-paleta-calculada-separada-do-tema]]", "[[009-persistencia-tenant-aware]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[022-tema-sob-demanda]]"]
 substitui: ""
@@ -17,7 +17,7 @@ alternativas_consideradas:
 
 # 1. Contexto e Problema
 
-**Decisão proposta em 2026-11-11, a partir da medição de 2026-11-10 no ERP** (lib `v8.0.0`, navegador headless a
+**Aceito pelo dono em 2026-11-12, com a alternativa A e a regra L1 para o dado antigo (custo assumido: a perda única do ajuste manual de cor de papel gravado antes da atualização).** Decisão proposta em 2026-11-11, a partir da medição de 2026-11-10 no ERP** (lib `v8.0.0`, navegador headless a
 1440×900, aplicando pelo painel). Três sintomas — "a paleta invertida não se aplica", "claro/escuro às vezes erra",
 "o tom da barra não se aplica" — têm uma causa comum, em três partes, todas reproduzidas:
 

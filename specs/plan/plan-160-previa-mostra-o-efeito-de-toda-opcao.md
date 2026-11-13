@@ -411,3 +411,19 @@ campanha inteira, feita à mão, está em `C:\tmp\sarak-previa-campanha-9\index.
 - O cartão de tema pendente.
 
 **Lote 1 fechado.**
+
+## Nota do revisor — 2026-11-12 — o spec do lote 1 falha sob carga (entra no lote 2)
+
+O `cromo-css-real:check` do lote 3 da `plan-162` rodou com os workers padrão. O `plan-160-previa-mostra-a-opcao.spec.ts` falhou
+duas vezes, em decisões diferentes:
+- na 1ª, `Componentes`, inputs/Relevo pressionado = 0,000%;
+- na 2ª, `Forma`, 16 opções em 0%.
+
+Com `--workers=1`, passou 7 de 7. Uma opção que tem efeito não pode sair como "sem efeito" por falta de tempo de pintura: isso é um
+falso vermelho no gate de fechamento da release.
+
+**Item novo do lote 2 (2.6):**
+- Antes de medir, a prévia espera estabilizar (por exemplo, dois quadros seguidos iguais), não um intervalo fixo.
+- Se a medida sob carga continuar instável, o arquivo roda em série (`test.describe.configure({ mode: 'serial' })`) e o motivo vai
+  num comentário.
+- Aceite: duas corridas completas de `cromo-css-real:check` com os workers padrão, verdes neste spec.
