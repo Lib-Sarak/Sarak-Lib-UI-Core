@@ -541,7 +541,7 @@ repositório usa **três caminhos**, escolhidos pelo que a ocorrência **é**:
 <span>Search Engine</span>
 ```
 
-**Cobrada por:** `npm run zero-brand:check` (`gates/scripts/contrato/check-zero-brand.mjs`). Varre `src/` por AST — só `StringLiteral`, `JsxText` e partes fixas de template literal contam, para **não** acusar comentário que documenta a correção. O número de arquivos varridos e a confirmação de zero violação vivem em [[01-gates-e-baseline]] §3 — **o que importa é o de violações**, não o de arquivos. A allowlist tem painéis **internos** do Design Engine (hoje `KitchenSinkPreview` e `LayoutTab`; a fonte é `check-zero-brand.mjs`) — ferramenta de autoria da própria lib, nunca embutida pelo consumidor — e o gate também derruba **entrada de allowlist obsoleta**.
+**Cobrada por:** `npm run zero-brand:check` (`gates/scripts/contrato/check-zero-brand.mjs`). Varre `src/` por AST — só `StringLiteral`, `JsxText` e partes fixas de template literal contam, para **não** acusar comentário que documenta a correção. O número de arquivos varridos e a confirmação de zero violação vivem em [[01-gates-e-baseline]] §3 — **o que importa é o de violações**, não o de arquivos. A allowlist tem painéis **internos** do Design Engine (hoje só o `KitchenSinkPreview`; a fonte é `check-zero-brand.mjs`) — ferramenta de autoria da própria lib, nunca embutida pelo consumidor — e o gate também derruba **entrada de allowlist obsoleta**.
 
 ---
 

@@ -139,7 +139,7 @@ com o valor do modo nativo, e texto claro sobre um modal que ficou claro é o de
 - **Posição das preferências do usuário** (`preference*Position`). São funcionais e pertencem à configuração da
   instalação, não ao tema embarcado. Quem decide o que a barra oferece é o administrador de cada instalação.
 
-### 5.7. Ordem de trabalho e lições medidas (temas refeitos, plan-110)
+### 5.7. Ordem de trabalho e lições medidas (temas refeitos)
 
 **Ordem:** (1) modo principal completo; (2) `contraparte` só com o que carrega modo (`kind: aesthetic` e `modeDependent`;
 `mode` entra, geometria, tipografia e movimento não — a trava acusa `contraparte-declares-fixed-aesthetic`);

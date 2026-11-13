@@ -782,9 +782,9 @@ Nestes casos, a instrução certa é **nenhum comando** — é a pergunta.
 **instrui** a sequência e é o dono quem digita. A regra já está escrita em quatro lugares; esta skill
 não a reescreve, só declara que ela **também vale aqui**:
 
-- `specs/00-prompt-executor.md:165`
-- `specs/00-prompt-revisor.md:67` e `:246`
-- `specs/00-contexto.md:303`
+- `specs/00-prompt-executor.md`, seção *Proibições* (item de co-autoria)
+- `specs/00-prompt-revisor.md`, seções *Proibições* e *Checklist*
+- `specs/00-contexto.md`, seção *Fronteiras — o que nunca fazer neste repositório*
 
 ## Referências (roteamento — leia lá, não aqui)
 

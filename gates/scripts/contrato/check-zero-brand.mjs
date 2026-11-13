@@ -61,7 +61,6 @@ const ALLOWLIST = new Set([
     // Kitchen Sink — vitrine interna de todos os componentes/temas, usada só pelo
     // painel de customização do Design Engine dentro da própria lib.
     'features/DesignEngine/Canvas/KitchenSinkPreview.tsx',
-    'features/DesignEngine/Panels/LayoutTab.tsx',
 ]);
 
 const isScannableFile = (file) =>

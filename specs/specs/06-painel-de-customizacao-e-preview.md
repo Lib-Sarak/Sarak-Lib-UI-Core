@@ -453,12 +453,11 @@ mais usa a lib (nós). O painel é o consumidor mais intenso da biblioteca.
 # 8. A allowlist do zero-marca — por que ela é legítima
 
 `gates/scripts/contrato/check-zero-brand.mjs` proíbe os literais de marca da lib como **texto renderizado** em `src/`, com
-**allowlist** na constante `ALLOWLIST` do próprio gate (a fonte) — hoje dois arquivos:
+**allowlist** na constante `ALLOWLIST` do próprio gate (a fonte) — hoje um arquivo:
 
 | Arquivo | Motivo |
 | --- | --- |
 | `features/DesignEngine/Canvas/KitchenSinkPreview.tsx` | vitrine interna de componentes/temas, usada só pelo painel |
-| `features/DesignEngine/Panels/LayoutTab.tsx` | cita a marca como **texto de exemplo** dentro da ferramenta de autoria |
 
 **Por que é legítimo:** estes são **painéis internos** — a ferramenta com que a lib autora temas. O
 consumidor **não embute** o Kitchen Sink no produto dele. A regra zero-marca existe para que a lib não
@@ -511,9 +510,9 @@ as outras cinco eram inalcançáveis e pesavam no bundle sem entregar nada.
 
 **Decisão do dono (2026-08-04): remover os imports mortos**, não restaurar a navegação. `CustomizationPanel`
 (hoje `CustomizationPanelImpl.tsx`) caiu de 49 para 35 linhas — saíram os 6 imports de aba, os ícones que só
-serviam a elas, o `useState` não usado e o `type TabId` órfão. Dos 6 componentes de aba, **quatro continuam em
-`Panels/`** (`AdvancedTab`, `EngineCustomizationTab`, `HyperGranularityTab`, `LayoutTab`), com os próprios
-testes; `LanguageTab` e `ShortcutsTab` foram apagados depois. A ordem
+serviam a elas, o `useState` não usado e o `type TabId` órfão. Dos 6 componentes de aba, **três continuam em
+`Panels/`** (`AdvancedTab`, `EngineCustomizationTab`, `HyperGranularityTab`), com os próprios
+testes; `LanguageTab`, `ShortcutsTab` e `LayoutTab` foram apagados depois. A ordem
 obrigatória foi respeitada: esta remoção só aconteceu **depois** de a §9.5 fechar (F1 antes de F2, porque
 restaurar navegação antes do conserto do `localStorage.clear()` ativaria a perda de dados).
 

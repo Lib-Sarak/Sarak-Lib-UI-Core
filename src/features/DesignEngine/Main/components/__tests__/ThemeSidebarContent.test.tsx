@@ -65,7 +65,6 @@ const baseProps = () => ({
     onBrandGenerated: vi.fn(),
     resetComponent: vi.fn(),
     resetToken: vi.fn(),
-    handleApplyToSystem: vi.fn(),
     toast: null,
     onApplyFullTheme: vi.fn(),
 });
@@ -132,21 +131,19 @@ describe('ThemeSidebarContent', () => {
 
     // O HyperGranularityTab instanciava a PRÓPRIA useDesignDraft — duas fontes de rascunho vivas ao mesmo tempo.
     // Provar UMA fonte = provar que são as MESMAS referências que o painel usa em todo o resto.
-    it('no modo command-center, passa a MESMA instância de draft/updateDraft/handleApplyToSystem/resetComponent/resetToken/toast do painel', () => {
+    it('no modo command-center, passa a MESMA instância de draft/updateDraft/resetComponent/resetToken/toast do painel', () => {
         const draft = { mode: 'dark' };
         const updateDraft = vi.fn();
-        const handleApplyToSystem = vi.fn();
         const resetComponent = vi.fn();
         const resetToken = vi.fn();
         const toast = { type: 'success' as const, message: 'Design aplicado.' };
         const options = { ...baseProps().options, draft, updateDraft };
-        renderContent({ viewMode: 'command-center', options, handleApplyToSystem, resetComponent, resetToken, toast });
+        renderContent({ viewMode: 'command-center', options, resetComponent, resetToken, toast });
 
         const captured = hyperGranularityCapture.props;
         expect(captured).not.toBeNull();
         expect(captured?.draft).toBe(draft);
         expect(captured?.updateDraft).toBe(updateDraft);
-        expect(captured?.handleApplyToSystem).toBe(handleApplyToSystem);
         expect(captured?.resetComponent).toBe(resetComponent);
         expect(captured?.resetToken).toBe(resetToken);
         expect(captured?.toast).toBe(toast);

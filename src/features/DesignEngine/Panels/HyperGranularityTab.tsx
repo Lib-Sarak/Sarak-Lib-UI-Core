@@ -38,7 +38,6 @@ const COMPONENT_ICONS: Record<string, React.ElementType> = {
 export interface HyperGranularityTabProps {
     draft: SarakDesignState;
     updateDraft: (id: string, value: SarakTokenValue) => void;
-    handleApplyToSystem: () => void;
     resetComponent: (schemaIdOrSchemas: string | string[]) => void;
     resetToken: (tokenId: string) => void;
     toast: { type: 'success' | 'warning'; message: string } | null;

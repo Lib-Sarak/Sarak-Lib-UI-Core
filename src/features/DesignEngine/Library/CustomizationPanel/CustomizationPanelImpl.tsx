@@ -6,8 +6,8 @@ import { ThemeCustomizationTab } from '../../Main/ThemeCustomizationTab';
  * Central de Comando Unificada - Foco 100% em Soberania e Gêmeo Digital.
  *
  * O painel monta **uma** aba: a de tema. Dos seis componentes de aba que não eram
- * renderizados, `LanguageTab` e `ShortcutsTab` foram removidos; `AdvancedTab`,
- * `EngineCustomizationTab`, `HyperGranularityTab` e `LayoutTab` continuam em `../Panels/`
+ * renderizados, `LanguageTab`, `ShortcutsTab` e `LayoutTab` foram removidos; `AdvancedTab`,
+ * `EngineCustomizationTab` e `HyperGranularityTab` continuam em `../Panels/`
  * com os seus testes.
  */
 export const CustomizationPanel: React.FC = () => {

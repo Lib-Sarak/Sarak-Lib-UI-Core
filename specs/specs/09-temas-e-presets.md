@@ -32,13 +32,13 @@ export interface ThemePreset {
     name: string;
     description: string;
     design: Record<string, unknown>;
-    contraparte?: Partial<SarakDesignState>;   // plan-26
+    contraparte?: Partial<SarakDesignState>;
 }
 ```
 
 Fonte: `src/core/Design/presets/themes/index.ts:42-47`.
 
-## 2.1 `contraparte` — o par claro/escuro é AUTORADO *(plan-26, 2026-08-11)*
+## 2.1 `contraparte` — o par claro/escuro é AUTORADO *(2026-08-11)*
 
 Bloco **parcial** com os tokens que mudam entre claro e escuro. **Medido: apenas 55 dos 422 carregam modo**
 — 14 de texto, 8 de borda, 33 de fundo. Os outros **367 são agnósticos**: 343 não-cor (estrutura, tipografia,
@@ -217,7 +217,7 @@ motivo legítimo para um tema parcial.
 > `SARAK_THEME_CATALOG`; `sarakLoadThemePreset(id)` **rejeita** com id desconhecido, nunca devolve `undefined`
 > mudo. O fallback é decisão do Provider.
 
-**Quem cai no padrão depende da porta** *(`plan-162`, 2026-11-12)*:
+**Quem cai no padrão depende da porta** *(2026-11-12)*:
 
 | De onde vem o id | Id desconhecido |
 | --- | --- |
@@ -245,7 +245,7 @@ tema inicial usa `initialTheme`; quem quer um seletor de tema controlado pelo pr
 `activeThemeId`; sem ela, do **id que `onLoad` devolve** junto do design (§4.4.2); sem esse, do `initialTheme`.
 A prop controlada vence **sempre** o id carregado.
 
-> 🔴 **`resolvedThemeId` — leia ESTE, nunca `activeThemeId` cru** *(plan-27, 2026-08-11)*. As duas props
+> 🔴 **`resolvedThemeId` — leia ESTE, nunca `activeThemeId` cru** *(2026-08-11)*. As duas props
 > acima são **entrada**; nenhuma delas diz qual tema está **efetivamente no ar**. O contexto passou a expor
 > `resolvedThemeId`, que nasce da semente (`activeThemeId || initialTheme`), acompanha a prop controlada
 > **e é atualizado quando o painel aplica um preset**. Trocar de modo **não** o altera: é o mesmo tema noutro
@@ -253,7 +253,7 @@ A prop controlada vence **sempre** o id carregado.
 >
 > **Sem ele a contraparte é inalcançável.** Quem lê `activeThemeId` cru não acha tema nenhum no consumidor
 > que usa `initialTheme` — e cai no fallback sintetizado **em silêncio**, perdendo os valores autorados. Foi
-> exatamente o que aconteceu entre a `plan-26` e a `plan-27`: o mecanismo existia, correto e testado, e
+> exatamente o que aconteceu entre a entrega da contraparte e a ligação dela aos caminhos de aplicação: o mecanismo existia, correto e testado, e
 > **nada no consumidor real o encontrava**.
 >
 > ⚠️ **A lição, porque ela custou uma plan inteira:** a lib **recomendava o caminho que degradava**.
@@ -261,9 +261,9 @@ A prop controlada vence **sempre** o id carregado.
 > mecanismo novo precisa de um aceite que o exercite **pela porta que a documentação recomenda ao
 > importador** — não pela porta mais conveniente de testar.
 
-### 4.3.1 O que é emitido é o que foi escrito — decisão **D** *(`plan-24-1`, 2026-08-11)*
+### 4.3.1 O que é emitido é o que foi escrito — decisão **D** *(2026-08-11)*
 
-> 🔴 **Mudança de comportamento público.** Até a `plan-24-1`, `useDesignVariables` chamava
+> 🔴 **Mudança de comportamento público.** Até a decisão D, `useDesignVariables` chamava
 > `syncThemeWithMode` **a cada render, sem condição**: toda cor de todo tema de todo consumidor era
 > reescrita antes de virar CSS Variable. Medido nos 18 temas embarcados, cada um no **próprio modo nativo**:
 > **1299 de 1316 valores alterados**, e **178 de 648** veredictos de contraste divergindo entre o escrito e o
@@ -288,12 +288,12 @@ Rodar a conversão **a cada render** produzia um efeito do qual a UI dependia se
 **tema e modo eram independentes** — você estava no claro, escolhia um tema escuro, e o motor o convertia
 para claro na hora. **O seu modo vencia.**
 
-Desligar a reescrita levou junto essa garantia: durante a `plan-24-1`, **escolher um tema passou a trocar o
+Desligar a reescrita levou junto essa garantia: logo depois da decisão D, **escolher um tema passou a trocar o
 modo do usuário**. Foi encontrado no consumidor real, não pela suíte.
 
-O fechamento veio em duas partes: a **`plan-26`** criou `resolveThemeForMode` — três casos (modo nativo →
+O fechamento veio em duas partes: primeiro nasceu `resolveThemeForMode` — três casos (modo nativo →
 `design`; modo oposto **com** contraparte → merge autorado; **sem** contraparte → `syncThemeWithMode`, o
-fallback dos temas legados isentos) — e a **`plan-27`** ligou os **cinco** caminhos que aplicam tema ou trocam modo:
+fallback dos temas legados isentos) — e depois ele foi ligado aos **cinco** caminhos que aplicam tema ou trocam modo:
 `PresetsCatalog`, `ShellThemeToggle`, `useDesignSync`, `PresetCard` e o **token `mode`** do painel, que só
 trocava o rótulo.
 
@@ -626,13 +626,13 @@ Arquivos: `src/core/Design/presets/themes/` (temas + `index.ts` + `boot.ts` + `l
 + `catalog.generated.ts` + `compose.ts` + `reference.ts` + `color-engine.ts`)
 e `src/core/Design/presets/components/`, cujo índice é o registro de grupos `registry.ts`. `ALL_COMPONENT_PRESETS` sai dele. Cada grupo declara a decisão do painel onde mora, o tipo de amostra, a área de tokens que pode escrever e as opções destacadas. Quantos grupos e presets há sai do registro, nunca daqui.
 
-**Tema que sai do catálogo** *(`plan-162`, 2026-11-12)*:
+**Tema que sai do catálogo** *(2026-11-12)*:
 - O id vai para `SARAK_REMOVED_THEME_IDS` (§4.3). Um teste confere que nenhum id da lista volta a `SARAK_THEME_PRESET_IDS`.
 - Tirar um id muda o tipo público, então é quebra (`03-versionamento-e-release.md`). A nota em `docs/migracoes.md` diz o que vê
   quem tem o id gravado.
 - O primeiro a sair foi o `synthwave-retro`, na 9.0.0.
 
-**Temas resgatados da lib antiga** *(`plan-162`)*. São sete temas da lib de antes da `v1.0.0` (commit `7c4dbaed`), escritos como
+**Temas resgatados da lib antiga** *(2026-11-12)*. São sete temas da lib de antes da `v1.0.0` (commit `7c4dbaed`), escritos como
 temas **novos**:
 - Nenhum tema que já existia mudou.
 - Quando há homônimo no catálogo, o resgatado leva o sufixo `-classic` no id e "Classic" no nome (por exemplo `cyberpunk-neon-classic`).
@@ -817,7 +817,7 @@ predicado testado em isolamento.
 `masterTemplate` hardcoded que, nas palavras do próprio comentário (`:7-9`), *"já nasceu desatualizado"*.
 Um gerador que carrega a própria cópia do dicionário fabrica drift a cada execução.
 
-## 6.5 `auditor_contraste` — a única trava que olha o RESULTADO, não a estrutura *(`plan-24`)*
+## 6.5 `auditor_contraste` — a única trava que olha o RESULTADO, não a estrutura
 
 As quatro acima perguntam *"o tema tem as chaves certas, com valores dentro do contrato?"*. Um tema pode
 passar nas quatro e ainda entregar **texto ilegível** — foi exatamente o que aconteceu: `auditor_presets`

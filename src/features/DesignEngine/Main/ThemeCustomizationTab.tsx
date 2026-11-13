@@ -157,7 +157,6 @@ export const ThemeCustomizationTab: React.FC = () => {
                     brandInitialName={branding?.companyName}
                     resetComponent={resetComponent}
                     resetToken={resetToken}
-                    handleApplyToSystem={handleApplyToSystem}
                     toast={toast}
                     onApplyFullTheme={themeActions.handleApplyFullTheme}
                 />
