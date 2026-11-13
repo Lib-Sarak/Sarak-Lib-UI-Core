@@ -31,8 +31,8 @@ fixa regras: ids proibidos (`default`, `matrix`, `neon`, `slate`, `sunset`), as 
 **Por que cuidado com id.** O id da paleta fica gravado no tema do importador (`colorPalette`). Paleta que some deixaria esse tema sem
 cor calculada (09 §4.3.4: valor inválido é recusado com aviso e o tema compõe sem paleta).
 
-**Temas que usam paleta.** Temas embarcados declaram `colorPalette` (o `sarak-sovereign` usa `ciano-violeta`); a `plan-162` pode criar
-outros. Paleta usada por tema embarcado não sai sem o dono decidir.
+**Temas que usam paleta.** Temas embarcados declaram `colorPalette` (o `sarak-sovereign` usa `ciano-violeta`); os sete resgatados
+(09 §5) também declaram. Paleta usada por tema embarcado não sai sem o dono decidir.
 
 # 3. Escopo
 

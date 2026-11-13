@@ -58,7 +58,7 @@ paleta para a marca."
 - Em todo lote: `docs/migracoes.md`, `npm run guide`, `npm run dev-kit`.
 
 ## 3.2 Fora
-- O catálogo de paletas prontas: `plan-163`. Os temas: `plan-162`.
+- O catálogo de paletas prontas: `plan-163`. Os temas resgatados: já entregues (09 §5).
 - O motor de paleta (escala, papéis, contraste) além da regra de precedência do lote 1.
 - O formato do design gravado: `plan-158` (esta plan o usa como está).
 - Qualquer arquivo de importador. Versão e tag.

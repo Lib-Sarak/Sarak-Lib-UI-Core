@@ -108,7 +108,7 @@ nome acessível.
 2.3. Meça o custo: tempo para abrir a decisão Tema e memória com todas as miniaturas visíveis, antes e depois. Se a miniatura real
 custar mais que o dobro de abrir a decisão hoje, pare e relate antes de seguir.
 
-**Lote 3 — o card de cada tema.** Só começa com a `plan-162` aprovada: os presets saem dos temas resgatados, não dos de hoje.
+**Lote 3 — o card de cada tema.** Os presets saem dos temas resgatados (09 §5, já entregues), não dos de antes.
 3.1. Um gerador em `scripts/` produz, a partir de cada tema embarcado, o preset de card daquele tema (os tokens de card que o tema
 declara), com `--check` ligado junto dos outros checks de gerado. Nenhum preset transcrito à mão.
 3.2. A amostra de preset de card é desenhada sobre uma base neutra fixa, não sobre o rascunho: o mesmo preset tem a mesma amostra em

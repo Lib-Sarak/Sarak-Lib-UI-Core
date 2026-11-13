@@ -414,8 +414,12 @@ O ADR-027 foi aceito no mesmo dia.
 **A ordem:** a correção do lote 3 da `plan-162` mexe nos mesmos hooks que este lote reescreve (`useThemeSeed.ts`,
 `useDesignRemoteLoader.ts`, `useDesignSync.ts`). O lote 1 começa sobre o commit dela, nunca em paralelo.
 
-**O que o lote 1 herda da 162:**
-- O id de tema desconhecido vindo do cache ou do `onLoad` cai no tema padrão, com um aviso por id.
-- A baseline do formato 2 parte do id **já validado**, e o teste `TemaRemovidoGravado.test.tsx` continua verde.
+**O que o lote 1 herda da 162** (sintetizada na 09 §4.3, commit `5214a31f`):
+- Pelo cache ou pelo `onLoad`, só o id que a lib removeu (`SARAK_REMOVED_THEME_IDS`) cai no tema padrão, com um aviso por id.
+  Outro id desconhecido mantém o design gravado, sem aviso: pode ser tema do importador ainda em carga.
+- A validação mora no `ThemeIdGuard` de `useThemeSeed.ts`, que as três portas usam. O lote 1 reescreve esses hooks e mantém o guarda
+  como a única fonte da decisão.
+- A baseline do formato 2 parte do id **já validado**. `TemaRemovidoGravado.test.tsx` (13 casos) e `useResolvedThemeId.test.ts`
+  continuam verdes.
 
-**Lote 1 liberado** (após o commit da correção do lote 3 da `plan-162`).
+**Lote 1 liberado** (a 162 foi commitada em `5214a31f`).

@@ -211,11 +211,23 @@ motivo legítimo para um tema parcial.
 
 > **Um id de tema que não existe mais não quebra nada — e não passa em silêncio.** Venha ele de
 > `activeThemeId`, de `initialTheme` ou da persistência do próprio consumidor, a lib **nunca fica sem tema e
-> nunca lança**: cai no **tema padrão** (`SARAK_DEFAULT_THEME_ID`, `sarak-sovereign`) no **modo pedido**, pela contraparte autorada — o de `config.mode` quando há um explícito,
+> nunca lança**. Pela prop, ou pela persistência quando a lib removeu o id (tabela abaixo), cai no **tema padrão** (`SARAK_DEFAULT_THEME_ID`, `sarak-sovereign`) no **modo pedido**, pela contraparte autorada — o de `config.mode` quando há um explícito,
 > senão o modo do design no ar, senão escuro (o default do schema) — e emite **um** `console.warn` nomeando
 > o id que não encontrou. Quais ids existem hoje é fonte viva: `SARAK_THEME_PRESET_IDS` e o catálogo
 > `SARAK_THEME_CATALOG`; `sarakLoadThemePreset(id)` **rejeita** com id desconhecido, nunca devolve `undefined`
 > mudo. O fallback é decisão do Provider.
+
+**Quem cai no padrão depende da porta** *(`plan-162`, 2026-11-12)*:
+
+| De onde vem o id | Id desconhecido |
+| --- | --- |
+| `activeThemeId` ou `initialTheme` | padrão no modo pedido, com o aviso. `resolvedThemeId` é o padrão enquanto o id for desconhecido e volta a ele quando o tema fica conhecido (`customThemes` muda) |
+| Persistência (cache local, `onLoad`) e id que **a lib removeu** (`SARAK_REMOVED_THEME_IDS`, interno, no registro de temas; só cresce) | padrão no modo do design gravado. O design gravado é descartado, sai um aviso e, em `'hybrid'`, o cache passa a guardar o id padrão. Nenhum `onSave` |
+| Persistência e qualquer **outro** id desconhecido | o design gravado é aplicado como está, sem aviso e sem reescrever o cache: pode ser tema do importador ainda em carga |
+
+- O importador que declara em `customThemes` um id da lista de removidos continua dono dele: o id deixa de ser desconhecido.
+- O aviso sai uma vez por id na vida do Provider, somando as três portas (`useThemeSeed.ts`, `ThemeIdGuard`).
+- Contraprova: `TemaRemovidoGravado.test.tsx` e `useResolvedThemeId.test.ts`.
 
 Duas portas, **contratos de estabilidade diferentes**:
 
@@ -613,6 +625,25 @@ itens auditados e o gabarito vivo de `getScaffold()`).
 Arquivos: `src/core/Design/presets/themes/` (temas + `index.ts` + `boot.ts` + `loaders.ts` + `registry.ts` + `all.ts`
 + `catalog.generated.ts` + `compose.ts` + `reference.ts` + `color-engine.ts`)
 e `src/core/Design/presets/components/`, cujo índice é o registro de grupos `registry.ts`. `ALL_COMPONENT_PRESETS` sai dele. Cada grupo declara a decisão do painel onde mora, o tipo de amostra, a área de tokens que pode escrever e as opções destacadas. Quantos grupos e presets há sai do registro, nunca daqui.
+
+**Tema que sai do catálogo** *(`plan-162`, 2026-11-12)*:
+- O id vai para `SARAK_REMOVED_THEME_IDS` (§4.3). Um teste confere que nenhum id da lista volta a `SARAK_THEME_PRESET_IDS`.
+- Tirar um id muda o tipo público, então é quebra (`03-versionamento-e-release.md`). A nota em `docs/migracoes.md` diz o que vê
+  quem tem o id gravado.
+- O primeiro a sair foi o `synthwave-retro`, na 9.0.0.
+
+**Temas resgatados da lib antiga** *(`plan-162`)*. São sete temas da lib de antes da `v1.0.0` (commit `7c4dbaed`), escritos como
+temas **novos**:
+- Nenhum tema que já existia mudou.
+- Quando há homônimo no catálogo, o resgatado leva o sufixo `-classic` no id e "Classic" no nome (por exemplo `cyberpunk-neon-classic`).
+  Quem não tem homônimo fica com o id original (`nature-breeze`, `dot-matrix-elegant`).
+- Os originais eram só escuros: a contraparte clara de cada um é desenho novo. Nature Breeze e Neo Brutalism Classic têm modo nativo
+  claro.
+- Os sete seguem as mesmas regras de todo tema embarcado: paleta calculada, tom de barra ligado a uma Personalidade, todo token
+  estético declarado e carga sob demanda.
+- A diversidade deles se mede por `themes:diversity` e `themeSetCoverage`, fora dos critérios de `--new`: o resgate perto do
+  homônimo é intencional.
+- Valor original que o contrato atual não aceita segue o padrão de hoje, e não volta ao schema.
 
 **Os temas embarcados tiram a cor de uma paleta.** Todo tema embarcado declara `colorPalette` com um preset de
 `src/core/Design/palette/presets.ts`; o que ainda declara de cor é sobrescrita justificada, com uma linha de motivo ao lado, e a
