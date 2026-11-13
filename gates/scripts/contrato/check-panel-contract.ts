@@ -23,9 +23,10 @@
 // -------------------------------------------------------------------------
 // 1. (i) e (ii) só olham token `slider`/`number`. Texto, cor e enumeração têm contrato próprio e são
 //    cobertos por `tokenContractParity`; aqui só entra o que a validação CORTA em vez de descartar.
-// 2. (i) julga o padrão do schema e (ii) os temas e presets que a lib embarca (`SARAK_ALL_THEMES`,
-//    `presets/components/*`). Tema do consumidor, tema salvo e JSON importado são julgados por
-//    `validateDesign` em runtime — que corta —, não por este gate.
+// 2. (i) julga o padrão do schema e (ii) os temas e presets que a lib embarca (`SARAK_ALL_THEMES` e os
+//    grupos de `presets/components/registry.ts`; preset exportado fora de um grupo não é julgado).
+//    Tema do consumidor, tema salvo e JSON importado são julgados por `validateDesign` em runtime — que
+//    corta —, não por este gate.
 // 3. (ii) confere a grade do `step` de tema e preset contando a partir do `min` (ou de 0), com o passo
 //    do schema (ou 1, o do painel sem faixa). Não corrige: o `validateDesign` de runtime NÃO encaixa o valor
 //    na grade — o tema do consumidor com 0,35 num passo de 0,1 é desenhado como está e regravado em outro
@@ -42,11 +43,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { sarakGetAllDesignTokens, sarakGetDefaultDesignState } from '../../../src/core/Design/master-map';
 import { SARAK_ALL_THEMES } from '../../../src/core/Design/presets/themes/all';
-import { CARD_PRESETS, CARD_TEXTURE_PRESETS } from '../../../src/core/Design/presets/components/cards';
-import { BUTTON_PRESETS, BUTTON_STYLE_PRESETS } from '../../../src/core/Design/presets/components/buttons';
-import { INPUT_PRESETS } from '../../../src/core/Design/presets/components/inputs';
-import { TYPOGRAPHY_PRESETS } from '../../../src/core/Design/presets/components/typography';
-import { MEDIA_PRESETS, TEXTURE_PRESETS } from '../../../src/core/Design/presets/components/atmosphere';
+import { PRESET_GROUPS } from '../../../src/core/Design/presets/components/registry';
 import { auditTokenContract, type TokenContractDrift } from '../../../src/core/Provider/utils/validation';
 import type { SarakDesignToken } from '../../../src/core/Design/types';
 
@@ -161,16 +158,29 @@ function optionFindings(tokens: SarakDesignToken[]): OptionFinding[] {
     return out;
 }
 
+/**
+ * Os presets vêm dos grupos do registro (o que o painel oferece), não de arquivos enumerados à mão:
+ * lista à mão deixava de fora todo grupo novo. Preset em dois grupos é julgado uma vez, com o nome do
+ * primeiro grupo na fonte (`preset-<grupo>:<id>`).
+ */
+function presetSources(): ThemeSource[] {
+    const seen = new Set<string>();
+    const out: ThemeSource[] = [];
+    for (const group of PRESET_GROUPS) {
+        for (const preset of group.presets) {
+            if (seen.has(preset.id)) continue;
+            seen.add(preset.id);
+            out.push({ fonte: `preset-${group.id}:${preset.id}`, design: preset.design as Record<string, unknown> });
+        }
+    }
+    return out;
+}
+
 export function shippedSources(): ThemeSource[] {
-    const partial = (label: string, list: Array<{ id: string; design?: unknown }>): ThemeSource[] =>
-        list.map((p) => ({ fonte: `${label}:${p.id}`, design: p.design as Record<string, unknown> }));
     return [
         { fonte: 'defaults', design: sarakGetDefaultDesignState() as Record<string, unknown> },
         ...SARAK_ALL_THEMES.map((theme) => ({ fonte: `tema:${theme.id}`, design: theme.design as Record<string, unknown> })),
-        ...partial('preset-card', CARD_PRESETS), ...partial('preset-card-textura', CARD_TEXTURE_PRESETS),
-        ...partial('preset-botao', BUTTON_PRESETS), ...partial('preset-botao-estilo', BUTTON_STYLE_PRESETS),
-        ...partial('preset-input', INPUT_PRESETS), ...partial('preset-tipografia', TYPOGRAPHY_PRESETS),
-        ...partial('preset-midia', MEDIA_PRESETS), ...partial('preset-textura', TEXTURE_PRESETS),
+        ...presetSources(),
     ];
 }
 

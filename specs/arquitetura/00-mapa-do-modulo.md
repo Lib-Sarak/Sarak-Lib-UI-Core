@@ -66,7 +66,7 @@ Confirmadas varrendo `src/components/atomic/`. São **15 pastas**: 14 categorias
 | `Templates` | ✅ | ✅ |
 | `UX` | ✅ | — |
 
-> ⚠️ **A coluna do barril não é decorativa.** Categoria **sem** `index.ts` tem apenas os `.tsx` de **raiz** varridos pelo gerador da superfície pública — componente em subpasta escapa do gate e do catálogo ([[03-superficie-publica]] §3). `Cards`, `Icon` e `Tables` estão nessa condição.
+> ⚠️ **A coluna do barril não é decorativa.** Categoria **sem** `index.ts` tem varridos os `.tsx` de **raiz** e as subpastas com barril próprio — componente em subpasta sem barril escapa do gate e do catálogo ([[03-superficie-publica]] §3). `Cards`, `Icon` e `Tables` estão nessa condição.
 
 # 4. As 3 camadas e a regra de dependência
 

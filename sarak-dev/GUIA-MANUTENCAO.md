@@ -111,10 +111,10 @@ A regra de alocação está em `specs/arquitetura/00-mapa-do-modulo.md`:
 - é infraestrutura agnóstica de UI → `src/core/`;
 - é casca de app → `src/components/Layout/`.
 
-⚠️ **Limitação conhecida do coletor** (`scripts/publicComponents.mjs`): categoria **sem** barril
-`index.ts` só tem a **raiz** varrida. Componente em subpasta de uma categoria sem barril escapa do
-`npm run barrel:check`. Se a sua categoria não tem barril e você precisa de subpasta, crie o
-barril.
+⚠️ **Limitação conhecida do coletor** (`scripts/publicComponents.mjs`): subpasta com `index.ts`
+próprio entra pelo que esse barril exporta; subpasta **sem** barril escapa do
+`npm run barrel:check` e do catálogo. Componente público em subpasta precisa de `index.ts` na
+subpasta.
 
 ## 3.2 O que o componente precisa ter
 

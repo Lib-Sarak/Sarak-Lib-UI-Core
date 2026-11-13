@@ -593,7 +593,7 @@ export type { SarakGridProps } from './components/atomic/Layouts/SarakGrid';
 
 > ✅ **O vão de `engines/` foi FECHADO em P26** (decisão D2, 2026-07-29). O gate varria `components/atomic/**` e `components/Layout/**` e **não via `components/engines/**`** — resultado: 3 das 4 categorias de engine viviam fora do barril e o gate ficava verde. Hoje `collectPublicComponentNames()` varre `engines/` como raiz por categoria; `SarakChatEngine` e `SarakFlowEngine` foram expostos atrás de fronteira lazy, `SarakVisualEngine` foi removido por não ter consumidor real, e a contagem foi de 78 para 81. Ver [[03-superficie-publica]] §9.
 >
-> ⚠️ **O vão que CONTINUA de pé, declarado.** Categoria **sem barril de categoria** só tem os `.tsx` de **raiz** varridos (`scripts/publicComponents.mjs:167-172`) — componente colocado em subpasta escapa do gate e do catálogo. Isso é deliberado em alguns casos (as peças internas do cromo vivem em `Layout/chrome/` justamente por isso), mas um componente público esquecido numa subpasta passa em silêncio. **É este vão que mantém a regra em ⚠️** — a prova de resolução não o alcança.
+> ⚠️ **O vão que CONTINUA de pé, declarado.** Subpasta só entra na fonte de nomes se tiver barril próprio (`<Sub>/index.ts`), e entra pelo que esse barril exporta, mesmo quando o barril da categoria esquece de re-exportá-la (fechado em 2026-11-12, backlog #66: era como o `SarakCarousel` ficou fora do barril de `Media`). Componente em subpasta **sem** barril continua escapando do gate e do catálogo (`scripts/publicComponents.mjs`, `collectFromSubfolderBarrels`). Isso é deliberado para `Layout/chrome/`, `internal/` e `hooks/`, mas um componente público largado numa subpasta sem barril passa em silêncio. **É este vão que mantém a regra em ⚠️** — a prova de resolução não o alcança.
 >
 > ⚠️ **Dois vãos NOVOS, declarados junto com a prova mais funda que os criou.** (1) "O valor **é** o componente" é conferido por **prefixo de caminho** contra `src/components/{atomic,engines,Layout}/`, não por identidade de declaração: dois componentes homônimos em categorias diferentes ainda passariam um pelo outro. (2) Só a resolução do **valor** subiu para o *type checker*; a metade do `<Nome>Props` continua por AST sintática, porque Props não tem o mesmo histórico de colisão medido. Os quatro limites estão no cabeçalho do próprio gate.
 
@@ -638,9 +638,9 @@ O antigo achado 30 provou que atenção humana não pega essa classe: ela reapar
 
 ```js
 // CERTO — o limite mora no código do gate, junto do código que o cria.
-//   scripts/publicComponents.mjs:167-172
-//   "categoria SEM barril de categoria só tem a RAIZ varrida — componente em
-//    subpasta escapa deste gate e do catálogo. Deliberado para Layout/chrome/."
+//   gates/scripts/contrato/check-barrel-parity.mjs, LIMITES DECLARADOS, item 1
+//   "Subpasta só entra na fonte de nomes se tiver barril próprio … Componente
+//    colocado em subpasta SEM barril escapa do gate e do catálogo."
 
 // ERRADO — cabeçalho que promete um escopo que o código não tem.
 //   auditor_ghostvars.mjs:5-10 diz que o registro vem de `useDesignVariables.ts`;

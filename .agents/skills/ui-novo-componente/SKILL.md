@@ -63,9 +63,9 @@ mais cruel é que a tela não quebra: o valor apenas não pinta nada.
   exclusão obsoleta.
 - **Nada pesado sai eager do barril** — componente que arrasta biblioteca grande vive atrás de
   fronteira `React.lazy`, senão o barril anula a fronteira que já existia lá dentro.
-- ⚠️ **Limitação conhecida do coletor** (`scripts/publicComponents.mjs`): categoria **sem** barril
-  `index.ts` só tem a **raiz** varrida. Componente em subpasta de categoria sem barril escapa do
-  `barrel:check` e do catálogo. Se precisar de subpasta, crie o barril da categoria.
+- ⚠️ **Limitação conhecida do coletor** (`scripts/publicComponents.mjs`): subpasta com `index.ts`
+  próprio entra pelo que esse barril exporta; subpasta **sem** barril escapa do `barrel:check` e do
+  catálogo. Componente público em subpasta precisa de `index.ts` na subpasta.
 
 ### 4. Teste 1:1 (obrigatório)
 `__tests__/<Nome>.test.tsx` **ao lado** do componente/hook. Sem ele o `auditor_coverage` reprova.

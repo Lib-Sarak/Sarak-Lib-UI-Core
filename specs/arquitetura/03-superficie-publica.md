@@ -44,7 +44,7 @@ O escopo são **duas raízes organizadas por categoria** — `src/components/ato
 
 > **`engines/` entrou no escopo em P26** (decisão D2). Até ali o gate varria menos do que a regra R14 exigia, e três dos quatro engines viviam fora do barril público sem que nada acendesse. Ver §8.
 
-> ⚠️ **Limitação conhecida, escrita no próprio código (`:167-172`): categoria SEM barril só tem a RAIZ varrida.** Um componente colocado em subpasta **escapa do gate** e do catálogo. Isso é usado deliberadamente em alguns casos — as peças internas do cromo vivem em `Layout/chrome/` justamente para não virarem peça de barril — mas é uma faca de dois lados: um componente público esquecido numa subpasta passa em silêncio.
+> ⚠️ **Limitação conhecida, escrita no próprio código (`scripts/publicComponents.mjs` e o cabeçalho de `check-barrel-parity.mjs`): subpasta só entra se tiver barril próprio (`<Sub>/index.ts`).** A subpasta com barril entra pelo que esse barril exporta (a `lazy()`, nunca a `Impl`), mesmo que o barril da categoria a esqueça. Um componente em subpasta **sem** barril **escapa do gate** e do catálogo. Isso é usado deliberadamente — as peças internas do cromo vivem em `Layout/chrome/` justamente para não virarem peça de barril —, mas um componente público largado numa subpasta sem barril passa em silêncio.
 
 ## 3.1 Onde o componente MORA decide o que os gates enxergam
 
