@@ -67,6 +67,7 @@ export const organicClayTheme: SarakThemePreset = {
     "topbarTone": "neutral",
     "sidebarBackgroundStyle": "texture",
     "sidebarActiveItemStyle": "pill",
+    "sidebarActiveGlass": "on",
     "sidebarItemDensity": "spacious",
     "sidebarIconSize": 18,
     "topbarBorderWidth": 1,

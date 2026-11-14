@@ -29,6 +29,7 @@ export type {
     SarakBrandingState,
 } from './core/Provider/types';
 export type { SarakUIProviderProps } from './core/Provider/providerProps';
+export type { SarakDesignFormat, SarakSavedDesign } from './core/Provider/designFormatTypes';
 export type { SarakFontSource, SarakFontsOption, SarakFontsOptions } from './core/Provider/providerProps';
 export type { SarakCustomFont, SarakCustomFontFile, SarakFontFallback } from './core/Provider/providerProps';
 // Preferências do usuário como camada separada do tema — sobreposta ao

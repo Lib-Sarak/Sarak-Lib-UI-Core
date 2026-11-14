@@ -5314,6 +5314,12 @@
           "type": "(item: SarakSearchItem) => void",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "menuItemHeight",
+          "type": "boolean",
+          "optional": true,
+          "doc": "O campo com a altura de um item do menu lateral (a mesma densidade), em vez da altura de campo de formulário."
         }
       ]
     },

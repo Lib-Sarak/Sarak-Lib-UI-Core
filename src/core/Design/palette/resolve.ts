@@ -60,3 +60,28 @@ export const resolvePaletteForDesign = (
     const hostTones = Object.fromEntries(['sidebarTone', 'topbarTone'].filter((id) => hostConfig?.[id] !== undefined).map((id) => [id, hostConfig?.[id]]));
     return input ? resolvePalette(input, mode, { ...hostConfig, ...themeDesign, ...hostTones }) : {};
 };
+
+const BAR_TONES = ['surface', 'primary', 'secondary', 'inverse'] as const;
+
+/**
+ * Todo token que a paleta pode calcular, em qualquer tom de barra: o mapa de papéis e os papéis de cada tom. É o que um
+ * design gravado antes do formato de escolhas pode trazer como cópia de cálculo, ou como resto da paleta de outro tema.
+ */
+export const PALETTE_CALCULATED_KEYS: ReadonlySet<string> = new Set([
+    ...Object.keys(PALETTE_ROLE_MAP),
+    ...BAR_TONES.flatMap((tone) => Object.keys(createPalettePlan({ sidebarTone: tone, topbarTone: tone }).roles)),
+]);
+
+/**
+ * As cores de uma paleta escolhida no painel: o valor, o modo e os tons da barra, sem a correção contra o que o tema e o
+ * host declaram. É a mesma entrada com que o painel grava a paleta no rascunho, e por isso o design recomposto a partir
+ * dela devolve exatamente as cores que o painel mostrou; `{}` se o valor não for uma paleta.
+ */
+export const resolveChosenPalette = (
+    value: unknown,
+    mode: SarakPaletteMode,
+    tones?: Record<string, unknown>,
+): Record<string, string> => {
+    const input = parsePaletteValue(value);
+    return input ? resolvePalette(input, mode, tones) : {};
+};

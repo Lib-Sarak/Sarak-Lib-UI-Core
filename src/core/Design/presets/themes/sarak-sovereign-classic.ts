@@ -36,6 +36,7 @@ export const sarakSovereignClassicTheme: SarakThemePreset = {
         sidebarBorderSide: 'none',
         sidebarBackgroundStyle: 'solid',
         sidebarActiveItemStyle: 'bar',
+        sidebarActiveGlass: 'on',
         sidebarItemDensity: 'compact',
         sidebarIconSize: 20,
         sidebarLogoPlacement: 'top',

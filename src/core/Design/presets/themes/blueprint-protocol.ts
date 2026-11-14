@@ -71,6 +71,7 @@ export const blueprintProtocolTheme: SarakThemePreset = {
             "topbarTone": "neutral",
             "sidebarBackgroundStyle": "texture",
             "sidebarActiveItemStyle": "outline",
+            "sidebarActiveGlass": "on",
             "sidebarItemDensity": "compact",
             "sidebarIconSize": 16,
             "topbarBorderWidth": 1,

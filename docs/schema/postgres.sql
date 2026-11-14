@@ -64,8 +64,8 @@ CREATE UNIQUE INDEX sarak_theme_definitions_tenant_theme_uk
 -- =============================================================================
 -- 2) O tema APLICADO agora — estado corrente, SINGULAR por tenant
 --    (docs/persistencia-de-tema.md §1.1). Entregue via
---    `options.persistence.onSave(design, activeThemeId)` / lido por `onLoad`
---    como { design: state_design, activeThemeId: active_theme_id }.
+--    `options.persistence.onSave(design, activeThemeId, format)` / lido por `onLoad`
+--    como { design: state_design, activeThemeId: active_theme_id, format: design_format }.
 --    No cache local `hybrid`, `design` permanece no formato JSON bruto da chave
 --    efetiva e o id usa a chave companheira `<storageKey>::active-theme-id`.
 -- =============================================================================
@@ -73,10 +73,15 @@ CREATE TABLE sarak_applied_theme_state (
     tenant_id           TEXT,
     tenant_key          TEXT GENERATED ALWAYS AS (COALESCE(tenant_id, '')) STORED,
 
-    -- O payload COMPLETO resolvido pelo motor de tokens no instante do save.
+    -- As ESCOLHAS do design aplicado (tema, paleta, tons, modo e o que foi
+    -- ajustado à mão) quando design_format = 2; o payload completo quando é NULL.
     -- Pode não corresponder a NENHUMA linha de sarak_theme_definitions — o
     -- usuário ajusta tokens sem clicar em "Salvar tema" (§1.1). OPAQUE.
     state_design        JSONB NOT NULL,
+
+    -- O 3º argumento de onSave: 2 quando state_design traz só as escolhas. Devolva-o
+    -- no onLoad; sem ele, a lib lê o gravado como do formato anterior (§1.1).
+    design_format       SMALLINT,
 
     -- O id do tema que estava no ar quando este estado foi salvo (plan-42).
     -- PODE ser NULL (nenhum tema resolvido ainda) e PODE apontar para um tema

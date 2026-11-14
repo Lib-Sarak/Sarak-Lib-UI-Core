@@ -103,7 +103,7 @@ export const PreferencesSchema: ComponentSchema = {
             PREFERENCE_POSITION_TOKEN_IDS.navCollapsed,
             'Preferência: Navegação Recolhida',
             'Onde o controle de recolher a navegação do usuário final aparece — não oferecida, no menu ⚙, ou fixa na barra.',
-            'menu',
+            'pinned',
         ),
         buildPositionToken(
             PREFERENCE_POSITION_TOKEN_IDS.language,

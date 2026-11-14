@@ -14,6 +14,25 @@ import React from 'react';
  * Zero hardcode (Regra 2): onde há medida, ela vem de token `--sarak-*` com fallback.
  */
 
+/**
+ * Monograma da marca sem logo: a inicial do nome sobre o gradiente da primária, no raio do tema. É o que sobra da marca
+ * na lateral recolhida.
+ */
+const ChromeBrandMonogram: React.FC<{ name: string }> = ({ name }) => (
+    <span
+        aria-hidden="true"
+        data-sarak-brand-monogram="true"
+        className="flex h-8 w-8 shrink-0 items-center justify-center text-xs font-black"
+        style={{
+            borderRadius: 'var(--sarak-border-radius, 12px)',
+            background: 'linear-gradient(135deg, var(--theme-primary, #19e3f0), color-mix(in srgb, var(--theme-primary, #19e3f0) 50%, transparent))',
+            color: 'var(--theme-on-primary, #020617)',
+        }}
+    >
+        {name.trim().charAt(0).toUpperCase()}
+    </span>
+);
+
 /** Identidade do cromo: slot `logo` (quando presente) tem precedência sobre `brand.logoUrl`. */
 export const ChromeBrand: React.FC<{
     brand?: { name?: string; logoUrl?: string };
@@ -21,25 +40,33 @@ export const ChromeBrand: React.FC<{
     horizontal?: boolean;
     /** Colapsado (`isNavHidden`): mantém o logo, esconde o nome. */
     compact?: boolean;
-}> = ({ brand, logo, horizontal, compact }) => {
+    /**
+     * Dentro da faixa do cabeçalho da lateral: quem pinta o fundo da marca e dá a altura é a faixa; aqui sobra só o
+     * respiro lateral, e a marca sem logo ganha o monograma.
+     */
+    band?: boolean;
+}> = ({ brand, logo, horizontal, compact, band }) => {
     const hasLogo = Boolean(logo || brand?.logoUrl);
     if (!hasLogo && !brand?.name) return null;
-    // Recolhido o nome some: sem logo, não sobraria nada dentro do bloco — nem a caixa colorida.
-    if (!hasLogo && compact) return null;
+    const showMonogram = band && !hasLogo && Boolean(brand?.name);
+    // Recolhido o nome some: sem logo nem monograma, não sobraria nada dentro do bloco — nem a caixa colorida.
+    if (!hasLogo && !showMonogram && compact) return null;
     return (
         // O invólucro leva o respiro do token `identityPadding` (padrão 0, soma-se ao respiro
-        // base do bloco); o bloco interno mantém a anatomia de sempre. O fundo da marca só pinta com logo: sem
-        // imagem, o bloco é só o nome (ou nada), nunca uma caixa colorida.
+        // base do bloco); o bloco interno mantém a anatomia de sempre. Fora da faixa, o fundo da marca só pinta com
+        // logo: sem imagem, o bloco é só o nome (ou nada), nunca uma caixa colorida.
         <div
             className="relative z-10 min-w-0"
             style={{
-                padding: 'var(--sarak-identity-padding, 16px)',
-                background: !hasLogo ? undefined : horizontal
+                padding: band ? undefined : 'var(--sarak-identity-padding, 16px)',
+                paddingInline: band && !compact ? 'var(--sarak-identity-padding, 16px)' : undefined,
+                background: band || !hasLogo ? undefined : horizontal
                     ? 'var(--sarak-topbar-brand-bg, transparent)'
                     : 'var(--sarak-sidebar-brand-bg, transparent)',
             }}
         >
-            <div className={`sarak-chrome-brand flex items-center gap-2 min-w-0 ${horizontal ? '' : 'px-2 py-3'} ${compact ? 'justify-center' : ''}`}>
+            <div className={`sarak-chrome-brand flex items-center gap-2 min-w-0 ${horizontal || band ? '' : 'px-2 py-3'} ${compact ? 'justify-center' : ''}`}>
+                {showMonogram && <ChromeBrandMonogram name={brand?.name ?? ''} />}
                 {logo
                     ? <span data-sarak-slot="logo" className="flex items-center shrink-0 min-w-0">{logo}</span>
                     : brand?.logoUrl && (
@@ -164,11 +191,12 @@ export const ChromeTopbarSlot: React.FC<{ region: 'start' | 'end'; children?: Re
 export const ChromeSearchSlot: React.FC<{
     position: 'top' | 'bottom' | 'left' | 'center' | 'right' | 'hidden';
     className?: string;
+    style?: React.CSSProperties;
     children?: React.ReactNode;
-}> = ({ position, className = '', children }) => {
+}> = ({ position, className = '', style, children }) => {
     if (!children || position === 'hidden') return null;
     return (
-        <div data-sarak-slot="search" className={`relative z-10 min-w-0 ${className}`}>
+        <div data-sarak-slot="search" className={`relative z-10 min-w-0 ${className}`} style={style}>
             {children}
         </div>
     );

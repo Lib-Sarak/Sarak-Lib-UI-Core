@@ -63,6 +63,7 @@ export const editorialInkTheme: SarakThemePreset = {
     "topbarTone": "neutral",
     "sidebarBackgroundStyle": "solid",
     "sidebarActiveItemStyle": "bar",
+    "sidebarActiveGlass": "on",
     "sidebarItemDensity": "comfortable",
     "sidebarIconSize": 16,
     "topbarBorderWidth": 2,

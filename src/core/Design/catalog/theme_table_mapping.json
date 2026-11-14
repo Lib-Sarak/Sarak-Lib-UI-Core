@@ -185,6 +185,7 @@
     "sidebarFooterBackground",
     "sidebarBackgroundStyle",
     "sidebarActiveItemStyle",
+    "sidebarActiveGlass",
     "sidebarItemDensity",
     "sidebarIconSize",
     "sidebarIconColor",

@@ -12,7 +12,7 @@ export const SIDEBAR_PRESETS: ComponentPreset[] = [
         keywords: ['limpa', 'clean', 'simples', 'padrao'],
         design: {
             sidebarTone: 'neutral', sidebarBorderSide: 'edge', sidebarBorderStyle: 'solid', sidebarBorderWidth: 1,
-            sidebarActiveItemStyle: 'bar', sidebarItemDensity: 'comfortable', sidebarBackgroundStyle: 'solid', sidebarBlur: 0, navItemRadius: 8,
+            sidebarActiveItemStyle: 'bar', sidebarActiveGlass: 'off', sidebarItemDensity: 'comfortable', sidebarBackgroundStyle: 'solid', sidebarBlur: 0, navItemRadius: 8,
         },
     },
     {
@@ -38,11 +38,11 @@ export const SIDEBAR_PRESETS: ComponentPreset[] = [
     {
         id: 'sidebar-floating',
         name: 'Flutuante',
-        description: 'Contornada, com vidro desfocado e itens em pílula: parece solta da tela.',
+        description: 'Sem contorno, num vidro em degradê e com itens em pílula: parece solta da tela.',
         keywords: ['flutuante', 'floating', 'vidro', 'pilula'],
         design: {
-            sidebarTone: 'surface', sidebarBorderSide: 'all', sidebarBorderStyle: 'solid', sidebarBorderWidth: 1,
-            sidebarBlur: 22, sidebarActiveItemStyle: 'pill', navItemRadius: 20, sidebarItemDensity: 'comfortable',
+            sidebarTone: 'surface', sidebarBorderSide: 'none', sidebarBackgroundStyle: 'gradient',
+            sidebarBlur: 22, sidebarActiveItemStyle: 'pill', sidebarActiveGlass: 'on', navItemRadius: 20, sidebarItemDensity: 'comfortable',
         },
     },
     {

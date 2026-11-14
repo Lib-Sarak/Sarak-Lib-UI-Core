@@ -1896,6 +1896,39 @@
     ]
   },
   {
+    "tokenId": "sidebarActiveGlass",
+    "name": "Vidro do Item Ativo (Sidebar)",
+    "description": "Brilho interno translúcido no item atual da navegação lateral.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "navegação",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "geometry"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "SarakMenuItem"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "on",
+      "off"
+    ],
+    "relatedTokens": [
+      "sidebarActiveItemStyle",
+      "navActiveMarkerColor"
+    ],
+    "consumerHook": [
+      "useNavigationAppearance"
+    ]
+  },
+  {
     "tokenId": "sidebarItemDensity",
     "name": "Densidade dos Itens (Sidebar)",
     "description": "Espaçamento vertical dos itens da navegação lateral.",

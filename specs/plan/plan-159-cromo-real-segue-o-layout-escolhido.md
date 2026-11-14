@@ -7,7 +7,7 @@ status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "cromo", "topbar", "sidebar", "preferencias", "painel"]
 relacionados: ["[[05-cromo-e-slots]]", "[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]"]
-depende_de: "plan-158"
+depende_de: "plan-158, plan-165"
 retida_por: ""
 destino_sintese: "specs/05-cromo-e-slots.md + specs/09-temas-e-presets.md + specs/06-painel-de-customizacao-e-preview.md"
 ---
@@ -68,8 +68,9 @@ deixam de ser problema de dado; o que sobra é do cromo e do painel:
 
      Falta ser achável: hoje é uma "posição" entre outras oito, e não um interruptor junto da orientação.
 
-**O que funciona e não se toca:** borda, item ativo, raio, densidade, ícone, blur, posição esquerda/direita/flutuante, gradiente, marca
-na base, largura ajustável, auto-ocultar e as larguras de conteúdo 1000/1200/1440 aplicam no cromo real.
+**O que funciona e não se toca:** borda, densidade, blur, posição esquerda/direita/flutuante, gradiente, largura ajustável,
+auto-ocultar e as larguras de conteúdo 1000/1200/1440 aplicam no cromo real. A anatomia da barra lateral (item ativo, ícones, raio da
+moldura, cabeçalho e marca, rodapé e usuário) é da `plan-165`, que roda antes desta (nota do revisor de 2026-11-13, §10).
 
 # 3. Escopo
 
@@ -164,7 +165,9 @@ registradas na §10.
 - a troca pelo usuário (4.3);
 - o tom (4.2);
 - os presets de Sidebar e Topbar;
-- as perguntas `where`, `how`, `what`, `brand` e `behavior`.
+- as perguntas `where`, `how`, `what`, `brand` e `behavior`;
+- os tokens de barra que a `plan-165` cria (`sidebarActiveGlass`, `userAvatarStyle`) e todo token do item da barra (estilo do item
+  ativo, cores, marcador). Pedido do dono (2026-11-13): tudo o que é da barra fica na configuração da barra.
 
 O Layout fica com a largura do conteúdo e o que não for de barra. O subtítulo da decisão, na lista, resume a orientação, o tom e a
 troca pelo usuário (por exemplo, "Lateral · Invertida · fixa"). Teste: cada token que hoje aparece no Layout aparece em
@@ -281,3 +284,15 @@ A pedido do dono, como nas campanhas anteriores: ao fim de lotes 1, 2 e 4, o exe
 com capturas reais do `dist/` ou do código-fonte (como as prévias da 136 a 149), mostrando a Topbar com "Mais" a 1440, 1280 e 1024 px; cada tom nas duas barras em dois temas e nos dois modos; as preferências compactas na barra e no ⚙ (antes e depois); a decisão "Barras" com o interruptor ligado e desligado. O resumo do lote dá o caminho.
 O revisor confere a prévia antes do veredito, e o lote só fecha com o ok do dono nela (critério acrescentado à §6). A projeção da
 campanha inteira, feita à mão, está em `C:\tmp\sarak-previa-campanha-9\index.html`: é referência de intenção, não de pixel.
+
+## Nota do revisor — 2026-11-13 — a `plan-165` roda antes desta e muda três pontos
+
+O dono pediu de volta a anatomia da barra lateral da lib antiga (`plan-165`). Ela mexe nos mesmos arquivos do cromo e roda antes
+desta plan. O que muda aqui:
+- **§2, "não se toca":** o item ativo, o ícone, o raio, a marca e o rodapé saíram da lista. São da 165.
+- **Lote 2:** a composição padrão já vem decidida pela 165 (D4 dela). Na barra ficam busca, seta de recolher, idioma, notificações e
+  usuário; no ⚙ ficam modo claro/escuro, P/M/G e lateral/topo. O 2.1 desta plan cuida da **forma** desses controles (linhas de menu
+  com seleção dentro do ⚙; grupo compacto quando o sistema os fixa na barra). Siga a métrica de linha que a 165 der ao rodapé.
+- **Lote 1, 1.3 (contraste do tom):** meça sobre a anatomia da 165 (fundo do ativo quase invisível, marcador na primária).
+
+Os lotes 1 a 4 seguem com o resto do escopo.

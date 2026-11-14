@@ -23,22 +23,23 @@ describe('ChromeSidebarBody (tokens de cromo no modo sidebar)', () => {
         expect(content.style.padding).toBe('var(--sarak-layout-padding, 16px)');
     });
 
-    it('sidebarPosition="right": a sidebar migra para o fim da linha e a borda externa acompanha a posição', () => {
+    it('sidebarPosition="right": a sidebar migra para o fim da linha; a linha do lado do conteúdo é sempre cheia e as outras só com margem', () => {
         const { container } = renderBody({ sidebarPosition: 'right' });
         const row = container.querySelector('aside')!.parentElement!;
         expect(row.className).toContain('flex-row-reverse');
         const style = container.querySelector('aside')!.getAttribute('style') ?? '';
         expect(style).toContain('border-left-width: var(--sarak-sidebar-border-width, 1px)');
-        expect(style).toContain('border-right-width: 0px');
+        expect(style).toContain('border-right-width: min(var(--sarak-sidebar-border-width, 1px), calc(var(--sarak-tab-section-margin, 8px) * 1000))');
     });
 
-    it('sidebarPosition="left" (default): flex-row e borda externa à direita — comportamento de hoje', () => {
+    it('sidebarPosition="left" (default): flex-row e moldura de cartão, com o raio do tema e o lado colado à tela reto sem margem', () => {
         const { container } = renderBody({});
         const row = container.querySelector('aside')!.parentElement!;
         expect(row.className).toContain('flex-row');
         const style = container.querySelector('aside')!.getAttribute('style') ?? '';
         expect(style).toContain('border-right-width: var(--sarak-sidebar-border-width, 1px)');
-        expect(style).toContain('border-left-width: 0px');
+        expect(style).toContain('border-left-width: min(var(--sarak-sidebar-border-width, 1px), calc(var(--sarak-tab-section-margin, 8px) * 1000))');
+        expect(style).toContain('border-radius: min(var(--sarak-border-radius, 12px), calc(var(--sarak-tab-section-margin, 8px) * 1000))');
     });
 
     it('isNavHidden: a sidebar usa a largura RECOLHIDA em vez da largura cheia', () => {
@@ -175,7 +176,8 @@ describe('ChromeSidebarBody — widgets default (busca/tema/usuário/preferênci
     it('sem `widgets`, os controles de fábrica continuam oferecidos', () => {
         const { container } = renderBody({});
         expect(container.querySelector('[data-sarak-slot="search"]')).not.toBeNull();
-        expect(container.querySelector('[data-sarak-widget="collapse"]')).toBeNull();
+        // A seta de recolher é fixa no cabeçalho por padrão (D2 da anatomia da barra).
+        expect(container.querySelector('[data-sarak-sidebar-header] [data-sarak-widget="collapse"]')).not.toBeNull();
         expect(container.querySelector('[data-sarak-widget="preferences-menu"]')).not.toBeNull();
         expect(container.querySelector('[data-sarak-widget="user-theme"]')).not.toBeNull();
     });

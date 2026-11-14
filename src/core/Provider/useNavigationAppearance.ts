@@ -9,12 +9,14 @@ export type NavigationActiveItemStyle = 'bar' | 'pill' | 'underline' | 'filled' 
 export type NavigationItemDensity = 'compact' | 'comfortable' | 'spacious';
 export type NavigationBarTone = 'neutral' | 'surface' | 'primary' | 'secondary' | 'inverse';
 export type SidebarLogoPlacement = 'top' | 'bottom';
+export type SidebarActiveGlass = 'on' | 'off';
 
 export interface NavigationAppearance {
     sidebarBorderStyle: ChromeBorderStyle;
     sidebarBorderSide: ChromeBorderSide;
     sidebarBackgroundStyle: ChromeBackgroundStyle;
     sidebarActiveItemStyle: NavigationActiveItemStyle;
+    sidebarActiveGlass: SidebarActiveGlass;
     sidebarItemDensity: NavigationItemDensity;
     sidebarLogoPlacement: SidebarLogoPlacement;
     sidebarTone: NavigationBarTone;
@@ -33,6 +35,7 @@ const validValues: Record<keyof NavigationAppearance, readonly string[]> = {
     sidebarBorderSide: enumValues(['edge', 'top', 'right', 'bottom', 'left', 'all', 'none']),
     sidebarBackgroundStyle: enumValues(['solid', 'gradient', 'texture']),
     sidebarActiveItemStyle: enumValues(['bar', 'pill', 'underline', 'filled', 'outline']),
+    sidebarActiveGlass: enumValues(['on', 'off']),
     sidebarItemDensity: enumValues(['compact', 'comfortable', 'spacious']),
     sidebarLogoPlacement: enumValues(['top', 'bottom']),
     sidebarTone: enumValues(['neutral', 'surface', 'primary', 'secondary', 'inverse']),
@@ -65,6 +68,7 @@ export const useNavigationAppearance = (): NavigationAppearance => {
         sidebarBorderSide: resolveToken(design, 'sidebarBorderSide'),
         sidebarBackgroundStyle: resolveToken(design, 'sidebarBackgroundStyle'),
         sidebarActiveItemStyle: resolveToken(design, 'sidebarActiveItemStyle'),
+        sidebarActiveGlass: resolveToken(design, 'sidebarActiveGlass'),
         sidebarItemDensity: resolveToken(design, 'sidebarItemDensity'),
         sidebarLogoPlacement: resolveToken(design, 'sidebarLogoPlacement'),
         sidebarTone: resolveToken(design, 'sidebarTone'),

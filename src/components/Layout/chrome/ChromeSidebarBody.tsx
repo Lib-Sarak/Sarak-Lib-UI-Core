@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { SarakShellNav, type SarakShellNavItem } from '../../atomic/Navigation/SarakShellNav';
 import { SarakShellSearchWidget } from '../../atomic/Navigation/SarakShellSearchWidget';
+import { VERTICAL_NAV_GAP, VERTICAL_NAV_PADDING, VERTICAL_NAV_SECTION_GAP } from '../../atomic/Navigation/menuItemMetrics';
 import { SarakSearch } from '../../atomic/Inputs/SarakSearch';
 import type { SarakShellUser } from '../../atomic/Navigation/SarakShellUserWidget';
 import { ChromeFrame } from './ChromeFrame';
@@ -18,6 +19,7 @@ import { useChromeAutoHide } from './useChromeAutoHide';
 import { useChromeDesignTokens } from './useChromeDesignTokens';
 import { useChromeDefaultWidgets } from './useChromeDefaultWidgets';
 import { chromeNoiseLayerStyle } from './noiseTexture';
+import { resolveSidebarFrameStyle } from './sidebarFrame';
 import type { SarakChromeWidgets } from './chromeWidgets';
 import { getSarakSearchItems } from './navItem';
 
@@ -49,6 +51,13 @@ export interface ChromeSidebarBodyProps {
 }
 
 /**
+ * A busca na coluna dos itens: o recuo lateral da lista, e abaixo do topo o mesmo respiro que separa as seções da lista
+ * (a lista já começa com o próprio recuo, então embaixo dela não sobra vão).
+ */
+const SEARCH_TOP_STYLE: React.CSSProperties = { paddingInline: VERTICAL_NAV_PADDING, paddingTop: VERTICAL_NAV_SECTION_GAP };
+const SEARCH_BOTTOM_STYLE: React.CSSProperties = { paddingInline: VERTICAL_NAV_PADDING, paddingTop: VERTICAL_NAV_GAP };
+
+/**
  * Corpo do modo SIDEBAR do `SarakAppChrome` — extraído de `SarakAppChrome.tsx`
  * para o arquivo caber no teto de 250 linhas (R9) antes de ganhar o consumo
  * dos tokens de cromo que faltavam.
@@ -76,6 +85,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
         ? <SarakShellSearchWidget
             variant={isNavHidden ? 'icon' : 'bar'}
             compact={isNavHidden}
+            menuItemHeight
             onClick={w.openSearch}
             items={getSarakSearchItems(nav)}
             onSelect={onNavigate ? (item) => onNavigate(item.id) : undefined}
@@ -125,14 +135,14 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                             margin: 'var(--sarak-tab-section-margin, 8px)',
                             height: 'calc(100% - (var(--sarak-tab-section-margin, 8px) * 2))',
                             background: resolveChromeBackground(sidebarBackgroundStyle, '--sarak-sidebar-bg', 'var(--theme-sidebar-bg, transparent)'),
-                            ...resolveChromeSurfaceBorderStyle({
+                            ...resolveSidebarFrameStyle(sidebarPosition, sidebarBorderSide, resolveChromeSurfaceBorderStyle({
                                 side: sidebarBorderSide,
                                 style: sidebarBorderStyle,
                                 widthVariable: '--sarak-sidebar-border-width',
                                 colorVariable: '--sarak-sidebar-border-color',
                                 surface: 'sidebar',
                                 sidebarPosition,
-                            }),
+                            })),
                             // `sidebarBlur`/`sidebarShadow` (Spec 05 §2.4) — sombra no lugar do shadow-2xl.
                             backdropFilter: 'blur(var(--sarak-sidebar-blur, 10px))',
                             boxShadow: 'var(--sarak-sidebar-shadow, 10px 0 30px rgba(0,0,0,0.5))', // sarak-allow-hardcode: fallback = defaultValue do token
@@ -152,14 +162,14 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                         {/* Sem barra superior, `topbarStart`/`topbarEnd` degradam para topo/rodapé da sidebar. */}
                         <ChromeTopbarSlot region="start" className="px-2">{topbarStart}</ChromeTopbarSlot>
                         {searchPositionSidebar === 'top' && (
-                            <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pb-2">{effectiveSearch}</ChromeSearchSlot>
+                            <ChromeSearchSlot position={searchPositionSidebar} style={SEARCH_TOP_STYLE}>{effectiveSearch}</ChromeSearchSlot>
                         )}
                         <ChromeSidebarSlot region="header">{sidebarHeader}</ChromeSidebarSlot>
                         {nav.length > 0 && (
                             <SarakShellNav items={nav} activeRoute={activeRoute} onNavigate={onNavigate} orientation="vertical" collapsed={isNavHidden} className="flex-1 min-h-0" />
                         )}
                         {searchPositionSidebar === 'bottom' && (
-                            <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pt-2">{effectiveSearch}</ChromeSearchSlot>
+                            <ChromeSearchSlot position={searchPositionSidebar} style={SEARCH_BOTTOM_STYLE}>{effectiveSearch}</ChromeSearchSlot>
                         )}
                         <ChromeSidebarFooter
                             brand={brand}

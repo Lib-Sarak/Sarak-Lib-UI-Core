@@ -36,6 +36,7 @@ export const cyberpunkNeonClassicTheme: SarakThemePreset = {
         sidebarBorderSide: 'edge',
         sidebarBackgroundStyle: 'solid',
         sidebarActiveItemStyle: 'filled',
+        sidebarActiveGlass: 'on',
         sidebarItemDensity: 'compact',
         sidebarIconSize: 20,
         sidebarLogoPlacement: 'bottom',

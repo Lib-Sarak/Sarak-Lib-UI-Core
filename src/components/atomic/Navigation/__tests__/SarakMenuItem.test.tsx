@@ -240,6 +240,26 @@ describe('SarakMenuItem — tratamento ativo, densidade e ícones por barra', ()
         if (style === 'outline') expect(item.style.border).toBe('var(--sarak-border-width, 1px) solid var(--sarak-nav-active-color, #19e3f0)');
     });
 
+    it.each(['bar', 'pill', 'underline', 'filled', 'outline'] as const)('vidro ligado (padrão) põe o brilho interno no ativo vertical com o estilo %s', (style) => {
+        render(
+            <DesignOverrideContext.Provider value={{ sidebarActiveItemStyle: style } as never}>
+                <SarakMenuItem label="Módulo" orientation="vertical" active />
+            </DesignOverrideContext.Provider>,
+        );
+        expect(screen.getByRole('button', { name: 'Módulo' }).style.boxShadow).toContain('inset');
+    });
+
+    it('vidro desligado tira o brilho; inativo e horizontal nunca têm', () => {
+        render(
+            <DesignOverrideContext.Provider value={{ sidebarActiveGlass: 'off' } as never}>
+                <SarakMenuItem label="Desligado" orientation="vertical" active />
+            </DesignOverrideContext.Provider>,
+        );
+        render(<SarakMenuItem label="Inativo" orientation="vertical" />);
+        render(<SarakMenuItem label="Aba" orientation="horizontal" active />);
+        for (const name of ['Desligado', 'Inativo', 'Aba']) expect(screen.getByRole('button', { name }).style.boxShadow).toBe('');
+    });
+
     it('densidade compacta troca o respiro sem perder o piso de toque e os ícones leem tamanho/cor', () => {
         render(
             <DesignOverrideContext.Provider value={{ sidebarItemDensity: 'compact' } as never}>

@@ -47,16 +47,16 @@
       "nota": "Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §2 do guia).",
       "mapeamento": {
         "colunas": 13,
-        "entradasBrutas": 424,
-        "idsUnicos": 424
+        "entradasBrutas": 425,
+        "idsUnicos": 425
       },
       "particoes": {
         "arquivos": 13,
-        "tokens": 424
+        "tokens": 425
       },
       "tipoPublico": {
         "interface": "SarakDesignTokens",
-        "ids": 424,
+        "ids": 425,
         "responsivos": 37
       }
     }

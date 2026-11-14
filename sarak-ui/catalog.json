@@ -174,6 +174,7 @@
     "SarakDescriptionList",
     "SarakDescriptionListItem",
     "SarakDescriptionListProps",
+    "SarakDesignFormat",
     "SarakDesignScope",
     "SarakDesignScopeProps",
     "SarakDesignState",
@@ -373,6 +374,7 @@
     "SarakRunPhaseStatus",
     "SarakRunProgress",
     "SarakRunProgressProps",
+    "SarakSavedDesign",
     "SarakScrim",
     "SarakScrimProps",
     "SarakSearch",
@@ -5940,6 +5942,12 @@
           "type": "(item: SarakSearchItem) => void",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "menuItemHeight",
+          "type": "boolean",
+          "optional": true,
+          "doc": "O campo com a altura de um item do menu lateral (a mesma densidade), em vez da altura de campo de formulário."
         }
       ]
     },
@@ -8284,6 +8292,7 @@
       "--sarak-shadow-projection-blur",
       "--sarak-shell-brand-logo-size",
       "--sarak-sidebar-active-color",
+      "--sarak-sidebar-active-glass",
       "--sarak-sidebar-active-item-style",
       "--sarak-sidebar-background-style",
       "--sarak-sidebar-bg",
@@ -8639,7 +8648,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 424,
+    "count": 425,
     "groups": {
       "global": "0. Configurações Globais",
       "branding": "Identidade Visual",
@@ -12414,6 +12423,20 @@
         ]
       },
       {
+        "id": "sidebarActiveGlass",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Vidro do Item Ativo (Sidebar)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Acabamento de vidro do item ativo da barra lateral; soma a qualquer estilo do item ativo.",
+        "interactsWith": [
+          "sidebarActiveItemStyle",
+          "navActiveMarkerColor"
+        ]
+      },
+      {
         "id": "sidebarActiveItemStyle",
         "type": "string",
         "responsive": false,
@@ -12600,7 +12623,7 @@
         "label": "Cor do Ícone (Sidebar)",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Cor dos ícones na barra lateral.",
+        "usage": "Cor dos ícones inativos na barra lateral; o padrão acompanha o rótulo do item, e o ativo usa a cor do item ativo.",
         "interactsWith": [
           "sidebarColor"
         ]
@@ -14151,6 +14174,6 @@
   "kitStamp": {
     "libVersion": "8.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "5b1d67d1f919"
+    "kitHash": "fc9a09914c6d"
   }
 }

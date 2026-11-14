@@ -39,6 +39,7 @@ export const auroraVeilTheme: SarakThemePreset = {
         "topbarTone": "surface",
         "sidebarBackgroundStyle": "gradient",
         "sidebarActiveItemStyle": "outline",
+        "sidebarActiveGlass": "on",
         "sidebarItemDensity": "spacious",
         "sidebarIconSize": 20,
         "topbarBorderWidth": 1,

@@ -136,7 +136,7 @@ describe('SarakUIProvider — persistência ao trocar tenant', () => {
         fireEvent.click(screen.getByRole('button', { name: 'Editar tema' }));
         advanceFakeTimers(PERSISTENCE_DEBOUNCE_MS);
         expect(onSaveTenantB).toHaveBeenCalledTimes(1);
-        expect(onSaveTenantB).toHaveBeenCalledWith(expect.objectContaining({ primaryColor: '#45ab67' }), expect.any(String));
+        expect(onSaveTenantB).toHaveBeenCalledWith(expect.objectContaining({ primaryColor: '#45ab67' }), expect.any(String), 2);
 
         rerender(renderProvider({
             strategy: 'remote',
@@ -217,7 +217,7 @@ describe('SarakUIProvider — persistência ao trocar tenant', () => {
         fireEvent.click(screen.getByRole('button', { name: 'Editar tema' }));
         advanceFakeTimers(PERSISTENCE_DEBOUNCE_MS);
         expect(onSaveTenantB).toHaveBeenCalledTimes(1);
-        expect(onSaveTenantB).toHaveBeenCalledWith(expect.objectContaining({ primaryColor: '#45ab67' }), expect.any(String));
+        expect(onSaveTenantB).toHaveBeenCalledWith(expect.objectContaining({ primaryColor: '#45ab67' }), expect.any(String), 2);
         expect(onSaveTenantA).not.toHaveBeenCalled();
     });
 

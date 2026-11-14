@@ -40,6 +40,7 @@ export const dotMatrixElegantTheme: SarakThemePreset = {
         sidebarBorderSide: 'edge',
         sidebarBackgroundStyle: 'solid',
         sidebarActiveItemStyle: 'pill',
+        sidebarActiveGlass: 'on',
         sidebarItemDensity: 'spacious',
         sidebarIconSize: 22,
         sidebarLogoPlacement: 'top',

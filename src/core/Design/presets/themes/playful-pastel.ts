@@ -63,6 +63,7 @@ export const playfulPastelTheme: SarakThemePreset = {
     "topbarTone": "surface",
     "sidebarBackgroundStyle": "gradient",
     "sidebarActiveItemStyle": "pill",
+    "sidebarActiveGlass": "on",
     "sidebarItemDensity": "spacious",
     "sidebarIconSize": 20,
     "topbarBorderWidth": 1,

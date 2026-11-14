@@ -69,6 +69,7 @@ export const highContrastTheme: SarakThemePreset = {
     "topbarTone": "surface",
     "sidebarBackgroundStyle": "solid",
     "sidebarActiveItemStyle": "bar",
+    "sidebarActiveGlass": "on",
     "sidebarItemDensity": "comfortable",
     "sidebarIconSize": 20,
     // borda de contraste máximo, sem translucidez

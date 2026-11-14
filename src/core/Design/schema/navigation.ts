@@ -81,6 +81,11 @@ const NAV_ITEM_ACTIVE_STYLE_OPTIONS = [
     { id: 'outline', value: 'outline', label: 'Contorno' },
 ];
 
+const SIDEBAR_ACTIVE_GLASS_OPTIONS = [
+    { id: 'on', value: 'on', label: 'Ligado' },
+    { id: 'off', value: 'off', label: 'Desligado' },
+];
+
 const CHROME_BORDER_STYLE_OPTIONS = [
     { id: 'solid', value: 'solid', label: 'Sólida' },
     { id: 'dashed', value: 'dashed', label: 'Tracejada' },
@@ -410,6 +415,16 @@ export const NavigationSchema: ComponentSchema = {
             ['sidebarActiveColor', 'navItemActiveColor', 'navActiveMarkerColor'],
         ),
         createChromeSelectToken(
+            'sidebarActiveGlass',
+            'Vidro do Item Ativo (Sidebar)',
+            'Brilho interno translúcido no item atual da navegação lateral.',
+            'Acabamento de vidro do item ativo da barra lateral; soma a qualquer estilo do item ativo.',
+            SIDEBAR_ACTIVE_GLASS_OPTIONS,
+            'on',
+            ['SarakMenuItem'],
+            ['sidebarActiveItemStyle', 'navActiveMarkerColor'],
+        ),
+        createChromeSelectToken(
             'sidebarItemDensity',
             'Densidade dos Itens (Sidebar)',
             'Espaçamento vertical dos itens da navegação lateral.',
@@ -432,8 +447,8 @@ export const NavigationSchema: ComponentSchema = {
             'sidebarIconColor',
             'Cor do Ícone (Sidebar)',
             'Cor dos ícones dos itens da navegação lateral.',
-            'Cor dos ícones na barra lateral.',
-            '#19e3f0',
+            'Cor dos ícones inativos na barra lateral; o padrão acompanha o rótulo do item, e o ativo usa a cor do item ativo.',
+            'rgba(242,246,251,0.72)',
             '--sarak-sidebar-icon-color',
             ['sidebarColor'],
         ),

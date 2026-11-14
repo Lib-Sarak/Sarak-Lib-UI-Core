@@ -199,21 +199,29 @@ test('marca: no topo por padrão, na base quando pedido, e recolhida fica só o 
     expect(await where()).toMatchObject({ footer: true, name: false, image: true });
 });
 
-test('marca sem logo: nenhuma caixa colorida, e recolhida o bloco some; com logo, o fundo da marca pinta', async ({ page }) => {
+// A anatomia da barra pinta o fundo da marca na FAIXA inteira do cabeçalho, com ou sem logo; o que não pode haver é uma
+// caixa colorida menor dentro dela, nem fundo sobrando na barra recolhida.
+test('marca: o fundo pinta a faixa inteira, sem caixa colorida dentro, e recolhida não sobra fundo', async ({ page }) => {
     const brandBackground = () => page.evaluate(() => {
+        const band = document.querySelector<HTMLElement>('aside [data-sarak-sidebar-header]');
         const block = document.querySelector('.sarak-chrome-brand')?.parentElement;
-        return block ? getComputedStyle(block).backgroundColor : null;
+        return {
+            band: band ? getComputedStyle(band).backgroundColor : null,
+            inner: block && block !== band ? getComputedStyle(block).backgroundColor : null,
+        };
     });
     const design = { sidebarBrandBackground: '#ff00ff' };
 
     await open(page, { design });
-    expect(await brandBackground()).toBe('rgb(255, 0, 255)');
+    expect(await brandBackground()).toEqual({ band: 'rgb(255, 0, 255)', inner: 'rgba(0, 0, 0, 0)' });
 
     await open(page, { design, query: { logo: 'none' } });
-    expect(await brandBackground()).toBe('rgba(0, 0, 0, 0)');
+    expect(await brandBackground()).toEqual({ band: 'rgb(255, 0, 255)', inner: 'rgba(0, 0, 0, 0)' });
 
     await open(page, { design: { ...design, isNavHidden: true }, query: { logo: 'none' } });
-    expect(await brandBackground(), 'recolhida e sem logo não sobra bloco').toBeNull();
+    const collapsed = await brandBackground();
+    expect(collapsed.band, 'recolhida não sobra fundo de marca').toBe('rgba(0, 0, 0, 0)');
+    expect([null, 'rgba(0, 0, 0, 0)']).toContain(collapsed.inner);
 });
 
 test('marca: o topo da lateral tem a altura do topo da área de conteúdo', async ({ page }) => {

@@ -6,6 +6,7 @@ import { groupByCategory, isNavGroup } from './internal/shellNavTree';
 import { useShellNavExpansion } from './internal/useShellNavExpansion';
 import { useNavigationStyle } from '../../../core/Provider/useNavigationStyle';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
+import { VERTICAL_NAV_GAP, VERTICAL_NAV_PADDING } from './menuItemMetrics';
 
 /**
  * SarakShellNav — Navegação de shell 100% orientada a dados (Spec 33 + Spec 14)
@@ -61,6 +62,9 @@ export interface SarakShellNavProps {
     collapsed?: boolean;
     className?: string;
 }
+
+// sarak-allow-hardcode: espaçamento entre letras é proporção da própria fonte (em), não medida de layout; nenhum token o declara.
+const CATEGORY_TRACKING = '0.2em';
 
 /**
  * Menu vertical de shell guiado por dados, com grupos e estado ativo (Spec 33).
@@ -127,8 +131,8 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
             className={`relative z-10 flex ${horizontal ? 'items-center overflow-x-auto shrink-0' : 'h-full min-h-0 overflow-y-auto overflow-x-hidden'} ${className}`}
             style={{
                 flexDirection: horizontal ? 'row' : 'column',
-                gap: 'var(--sarak-layout-gap-sm, 8px)',
-                padding: 'var(--sarak-layout-gap-md, 16px)',
+                gap: horizontal ? 'var(--sarak-layout-gap-sm, 8px)' : VERTICAL_NAV_GAP,
+                padding: horizontal ? 'var(--sarak-layout-gap-md, 16px)' : VERTICAL_NAV_PADDING,
             }}
         >
             {brand && (brand.name || brand.logoUrl) ? (
@@ -194,9 +198,15 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                         }}
                     >
                         {category && !horizontal && !collapsed ? (
+                            // Título de seção da anatomia antiga: caixa alta, negrito e espaçamento largo, na cor do texto da barra.
                             <div
-                                className="text-2xs font-bold uppercase tracking-widest select-none"
-                                style={{ color: 'var(--sarak-sidebar-category-color, var(--sarak-on-sidebar, rgba(242,246,251,0.385)))', paddingInline: 'var(--sarak-layout-gap-sm, 8px)', marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}
+                                className="truncate text-sm font-bold uppercase select-none"
+                                style={{
+                                    color: 'var(--sarak-sidebar-category-color, var(--sarak-on-sidebar, rgba(242,246,251,0.72)))',
+                                    letterSpacing: CATEGORY_TRACKING,
+                                    paddingInline: `calc(${VERTICAL_NAV_GAP} * 1.5)`,
+                                    marginTop: VERTICAL_NAV_GAP,
+                                }}
                             >
                                 {category}
                             </div>

@@ -1,15 +1,18 @@
 import { useEffect, useRef, MutableRefObject } from 'react';
 import { validateDesign } from '../utils/validation';
 import { resolveEffectiveStrategy } from '../utils/persistenceStrategy';
-import { writeCachedActiveThemeId } from '../utils/resolveStorageKey';
+import { readCachedActiveThemeId, writeCachedActiveThemeId, writeCachedDesign } from '../utils/resolveStorageKey';
+import { SARAK_DESIGN_FORMAT_CHOICES } from '../utils/designChoices';
 import { SarakUIOptions, SarakDesignState, SarakThemePayload, SetDesign } from '../types';
 import { SARAK_DEFAULT_THEME_ID } from '../../Design/presets/themes';
 import { composeDefaultThemeDesign } from './useDesignSync';
 import type { ThemeIdGuard } from './useThemeSeed';
+import type { SavedDesign } from './useDesignChoices';
 
 interface LoadedTheme {
     design: SarakThemePayload;
     activeThemeId?: string;
+    format?: number;
 }
 
 interface RemoteLoaderProps {
@@ -26,6 +29,8 @@ interface RemoteLoaderProps {
     design: SarakDesignState;
     resolvedThemeId?: string;
     themeIdGuard?: ThemeIdGuard;
+    /** Lê o gravado no formato dele (`useDesignChoices.ts`); sem ele, funde por cima como no formato anterior. */
+    restoreSaved?: (previous: SarakDesignState, saved: SavedDesign) => SarakDesignState;
 }
 
 const isLoadedTheme = (
@@ -45,7 +50,8 @@ const resolveLoadedTheme = (
  *
  * `strategy` (ADR-009 §2.2) define a origem: `'local'` ignora `onLoad`; `'remote'`
  * substitui o fallback síncrono pela semente mais o estado remoto, para o cache
- * local não vencer por acidente; `'hybrid'` mescla o estado remoto ao atual.
+ * local não vencer por acidente; `'hybrid'` mescla o estado remoto ao atual. O gravado no formato de escolhas
+ * (`format: 2`) não funde: é refeito pelo tema e substitui o que havia, para um valor que saiu do servidor sair da tela.
  */
 export const useDesignRemoteLoader = (props: RemoteLoaderProps): void => {
     const {
@@ -62,6 +68,7 @@ export const useDesignRemoteLoader = (props: RemoteLoaderProps): void => {
         design,
         resolvedThemeId,
         themeIdGuard,
+        restoreSaved,
     } = props;
 
     // `getSeedConfig` depende da coleção de temas e pode mudar a cada render.
@@ -73,6 +80,10 @@ export const useDesignRemoteLoader = (props: RemoteLoaderProps): void => {
         && optionsRef.current.persistence?.strategy !== 'local';
     const previousRemoteLoadAvailableRef = useRef(isRemoteLoadAvailable);
     const shouldRefreshHybridCacheRef = useRef(false);
+    // As escolhas que o onLoad devolveu no formato 2: o cache as guarda ao lado do design completo.
+    const loadedChoicesRef = useRef<{ format: number; design: Record<string, unknown> } | undefined>(undefined);
+    const restoreSavedRef = useRef(restoreSaved);
+    restoreSavedRef.current = restoreSaved;
     // O guarda depende de `customThemes`; a ref evita rodar `onLoad` de novo quando ele muda.
     const themeIdGuardRef = useRef(themeIdGuard);
     getSeedConfigRef.current = getSeedConfig;
@@ -112,6 +123,7 @@ export const useDesignRemoteLoader = (props: RemoteLoaderProps): void => {
                     guard.warnUnknownThemeOnce(restoredThemeId);
                     setResolvedThemeId(SARAK_DEFAULT_THEME_ID);
                     if (strategy === 'hybrid') shouldRefreshHybridCacheRef.current = true;
+                    loadedChoicesRef.current = undefined;
                     setDesign((previous) => composeDefaultThemeDesign(previous));
                     return;
                 }
@@ -120,9 +132,18 @@ export const useDesignRemoteLoader = (props: RemoteLoaderProps): void => {
 
                 if (strategy === 'hybrid') shouldRefreshHybridCacheRef.current = true;
 
+                const saved: SavedDesign = {
+                    design: loadedTheme.design as Record<string, unknown>,
+                    format: loadedTheme.format,
+                    // O tema do gravado é o id gravado com ele (o do onLoad, senão o do cache); sem id, nada é refeito.
+                    themeId: loadedTheme.activeThemeId ?? (strategy === 'hybrid' ? readCachedActiveThemeId(storageKey) : undefined),
+                };
+                loadedChoicesRef.current = saved.format === SARAK_DESIGN_FORMAT_CHOICES ? { format: saved.format, design: saved.design } : undefined;
+                const restore = restoreSavedRef.current
+                    ?? ((previous: SarakDesignState) => validateDesign({ ...previous, ...saved.design }));
                 setDesign(strategy === 'remote'
-                    ? () => validateDesign({ ...getSeedConfigRef.current(), ...loadedTheme.design })
-                    : (previous) => validateDesign({ ...previous, ...loadedTheme.design }));
+                    ? () => restore(getSeedConfigRef.current(), saved)
+                    : (previous) => restore(previous, saved));
             } catch (error) {
                 console.error('[Sarak:Design] onLoad error:', error);
             } finally {
@@ -148,7 +169,7 @@ export const useDesignRemoteLoader = (props: RemoteLoaderProps): void => {
         if (!isHydrated || !isBackendLoaded || !shouldRefreshHybridCacheRef.current) return;
         shouldRefreshHybridCacheRef.current = false;
         try {
-            localStorage.setItem(storageKey, JSON.stringify(design));
+            writeCachedDesign(storageKey, design, loadedChoicesRef.current);
             writeCachedActiveThemeId(storageKey, resolvedThemeId);
         } catch (error) {
             console.error('[Sarak:Design] localStorage remote hydration error:', error);

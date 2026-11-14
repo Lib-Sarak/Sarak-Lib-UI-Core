@@ -7,6 +7,9 @@ import { SarakUIContextType, SarakDesignState } from '../../../core/Provider/typ
 import { SarakTokenValue } from '../../../core/Design/types';
 import { applyColorMode, overlayPreferences } from '../../../core/Provider/utils/overlayPreferences';
 import { composeThemeDesign } from '../../../core/Design/presets/themes/compose';
+import { findThemeEntry, replaceDesignChoice } from '../../../core/Provider/utils/designChoices';
+
+const BAR_TONE_KEYS: ReadonlySet<string> = new Set(['sidebarTone', 'topbarTone']);
 
 const areValuesEqual = (valA: unknown, valB: unknown): boolean => {
     if (valA === valB) return true;
@@ -151,13 +154,16 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
             return;
         }
 
+        // O tom da barra decide cores que a paleta calcula: elas são refeitas, e o que foi escolhido à mão fica.
+        const theme = BAR_TONE_KEYS.has(key) ? findThemeEntry(sarak.allThemes, draftTheme?.id) : undefined;
         setDraftState((prev: SarakDesignState | null) => {
             const current = prev || draft;
             const currentAsRecord = current as Record<string, SarakTokenValue>;
             if (currentAsRecord[key] === value) return prev;
+            if (theme) return replaceDesignChoice(currentAsRecord, { [key]: value }, theme, sarak.getHostConfig?.() as Record<string, unknown>);
             return { ...current, [key]: value } as SarakDesignState;
         });
-    }, [draft, draftTheme, showToast]);
+    }, [draft, draftTheme, showToast, sarak.allThemes, sarak.getHostConfig]);
 
     const resetComponent = useCallback((schemaIdOrSchemas: string | string[]) => {
         const componentKeys = typeof schemaIdOrSchemas === 'string'

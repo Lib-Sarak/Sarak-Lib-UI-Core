@@ -110,7 +110,12 @@ const testSuccessfulTenantThemeApplication = (): void => {
         const persistedDesign = parsePersistedTenantDesign();
         expect(persistedDesign).toMatchObject(APPLIED_TENANT_DESIGN);
         expect(localStorage.getItem(TENANT_ACTIVE_THEME_STORAGE_KEY)).toBe('sarak-sovereign');
-        expect(onSave).toHaveBeenCalledWith(persistedDesign, 'sarak-sovereign');
+        // A porta recebe as escolhas (as cores do tenant) e o marcador; o cache local guarda o design inteiro (ADR-026).
+        expect(onSave).toHaveBeenCalledWith(
+            expect.objectContaining({ primaryColor: '#06080d', colorBgBody: '#06080d' }),
+            'sarak-sovereign',
+            2,
+        );
         expect(onSaveTheme).not.toHaveBeenCalled();
     }, 15000);
 };

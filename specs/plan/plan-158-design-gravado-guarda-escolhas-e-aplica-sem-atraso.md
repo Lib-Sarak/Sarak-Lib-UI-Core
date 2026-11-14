@@ -423,3 +423,297 @@ O ADR-027 foi aceito no mesmo dia.
   continuam verdes.
 
 **Lote 1 liberado** (a 162 foi commitada em `5214a31f`).
+
+---
+
+# 9.4 Resumo da execução (lote 1)
+
+## Resumo da execução (lote 1) — 2026-11-13
+
+**Resultado:** Concluído com pendências (a prévia espera o ok do dono; o spec de navegador e a suíte completa são do revisor)
+
+**Estado do worktree ao iniciar**
+```
+(limpo) — HEAD 82c61dab, sobre 5214a31f (plan-162 lote 3)
+```
+
+**Teste 1.1 antes da correção (pedido no prompt): reprova.** Pelo cache local e pelo `onLoad` sozinhos, o caminho do painel (prévia
+High Contrast → Aplicar → recarregar → prévia Sovereign → Aplicar) **já saía limpo** no código de antes: a troca em memória compõe do
+padrão (`compose.ts:52`). O resto entra por um caminho que o ADR deixou em aberto e o teste achou: o ERP passa o design que gravou como
+**`config` do host** no boot seguinte (`ERP/packages/ui-kit/src/themePersistence.ts:134-136`, `injectedThemePayload`), e o `config` vence
+tudo o que o tema novo não declara. Com esse caminho, o 1.1 reprova antes da correção com **87 chaves** do High Contrast no design depois
+de aplicar o Sovereign (`expected [ 'sidebarColor', …(86) ] to deeply equal []`). Por isso o 1.1 roda os dois casos (`it.each`): o do
+cache/`onLoad` (controle, passava antes) e o do `config` injetado (reprovava). Antes da correção, 6 dos 7 casos do arquivo novo
+reprovavam: 1.1-config (87 chaves), 1.2-sidebar e 1.2-topbar (`expected '#061011' to be '#00383c'`), 1.2-paleta (`[ 'sidebarColor', …(92) ]`
+gravadas em vez de `[ 'colorPalette' ]`), 1.3 (`colorBgBody: '#000000'` em vez de `'#061011'`) e 1.5 (`--sarak-color-bg-body → light:
+expected '#000000' not to be '#000000'`).
+
+**O que foi feito**
+- `src/core/Provider/utils/designChoices.ts` (novo) — a regra do ADR-026 §2.1/§2.2 em funções puras: `composeChoiceBaseline` (o tema do id
+  resolvido para o modo, composto com `composeThemeDesign`, com os tons escolhidos e, quando a paleta escolhida difere da do tema, as cores
+  dela calculadas como o painel calcula — `resolveChosenPalette(valor, modo, tons)`); `extractDesignChoices` (condutores que diferem do
+  tema + toda chave que difere do baseline; o modo só se difere do nativo); `recomposeDesignChoices`; `replaceDesignChoice` (troca de tom
+  no rascunho); `normalizeLegacyDesign` (regra L1: saem as chaves de `PALETTE_CALCULATED_KEYS` que o tema do id e o host não declaram;
+  sem paleta válida, nada sai); `findThemeEntry`.
+- `src/core/Design/palette/resolve.ts:64-87` — `PALETTE_CALCULATED_KEYS` (o mapa de papéis + os papéis de cada tom de barra) e
+  `resolveChosenPalette` (o cálculo do painel, sem a correção contra o declarado).
+- `src/core/Provider/hooks/useDesignChoices.ts` (novo) — `restoreSavedDesign` (formato 2 → refaz e **substitui**; sem marcador → funde
+  como antes e passa pela L1; sem o tema em memória → funde como antes e fica pendente), `readCachedSavedDesign`, `deliverToOnSave`,
+  o hook `useDesignChoices` (`restore`, `toPersisted`, `pendingRef`) e `useDeferredDesignRestore` (refaz quando o tema do gravado
+  chega à memória; prop controlada manda e edição do usuário apaga a pendência).
+- `src/core/Provider/hooks/useDesignManager.ts:102-111` — o boot lê o cache pelo formato dele; `:125-136` `persistDesign` grava as
+  escolhas com o marcador (`onSave(escolhas, id, 2)`), o cache com o completo e o registro `::choices`; sem o tema em memória, o completo
+  e sem marcador, como antes. `safeSetDesign` apaga a pendência.
+- `src/core/Provider/hooks/useDesignSync.ts:108-114` — a re-hidratação do cache usa o mesmo `restore` (senão fundiria o cru por cima do
+  corrigido).
+- `src/core/Provider/hooks/useDesignRemoteLoader.ts:135-147` e `:172` — o `onLoad` com `format: 2` substitui; sem marcador, funde e passa pela L1;
+  o refresh do cache em `'hybrid'` grava o registro de escolhas junto (`writeCachedDesign`).
+- `src/core/Provider/utils/resolveStorageKey.ts:37-82` — a chave `::choices`, presa ao completo por assinatura (djb2): outra aba com lib
+  anterior regrava o completo e o registro velho deixa de valer.
+- `src/features/DesignEngine/hooks/useDesignDraft.ts:156-165` — trocar `sidebarTone`/`topbarTone` no rascunho refaz as cores que a paleta
+  calcula (`replaceDesignChoice`); o que foi escolhido à mão fica.
+- `src/core/Provider/designFormatTypes.ts` (novo), `types.ts:159-163`, `src/index.ts:32` — `SarakDesignFormat`, `SarakSavedDesign`;
+  `onSave` ganhou o 3º parâmetro e `onLoad` o campo `format`. O `ThemeIdGuard` de `useThemeSeed.ts` não foi tocado: segue a única fonte
+  da decisão sobre id gravado; o formato 2 só olha o id depois dela.
+- `docs/migracoes.md` — entrada `## 9.0.0 — o design gravado guarda só as escolhas (MAJOR…)`; `docs/persistencia-de-tema.md` §1.1 e o
+  exemplo multi-tenant; `docs/schema/postgres.sql`/`sqlite.sql` — coluna `design_format`; `sarak-ui/GUIA-FRONTEND.md` — os dois
+  exemplos de `onSave` guardam o `format`; `npm run guide` regerou `sarak-ui/` (catálogo com os 2 tipos novos, carimbo).
+- Testes novos: `designGravadoEscolhas.persistenceIntegration.test.tsx` (1.1 ×2, 1.2 ×3 com a ida e volta, 1.3, 1.5), `designChoices.test.ts`
+  (15), `useDesignChoices.test.ts` (8). Testes existentes ajustados ao contrato novo (ver Decisões).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Provider/utils/designChoices.ts` | criado | baseline, extrair, recompor, L1 |
+| `src/core/Provider/hooks/useDesignChoices.ts` | criado | restaurar o gravado, montar o que se grava, recompor adiado |
+| `src/core/Provider/designFormatTypes.ts` | criado | `SarakDesignFormat`, `SarakSavedDesign` |
+| `src/core/Design/palette/resolve.ts` | alterado | `PALETTE_CALCULATED_KEYS`, `resolveChosenPalette` |
+| `src/core/Provider/hooks/useDesignManager.ts` | alterado | boot e `persistDesign` pelo formato 2; pendência |
+| `src/core/Provider/hooks/useDesignSync.ts` | alterado | re-hidratação pelo `restore` |
+| `src/core/Provider/hooks/useDesignRemoteLoader.ts` | alterado | `onLoad` formato 2 substitui; L1; cache com escolhas |
+| `src/core/Provider/utils/resolveStorageKey.ts` | alterado | registro `::choices` com assinatura |
+| `src/core/Provider/types.ts` | alterado | assinatura de `onSave`/`onLoad` |
+| `src/index.ts` | alterado | exporta os 2 tipos |
+| `src/features/DesignEngine/hooks/useDesignDraft.ts` | alterado | tom da barra refaz as cores calculadas |
+| `src/features/DesignEngine/hooks/__tests__/designGravadoEscolhas.persistenceIntegration.test.tsx` | criado | testes 1.1, 1.2, 1.3, 1.5 |
+| `src/core/Provider/utils/__tests__/designChoices.test.ts` | criado | unidade da util |
+| `src/core/Provider/hooks/__tests__/useDesignChoices.test.ts` | criado | unidade do hook |
+| `src/core/Provider/hooks/__tests__/useDesignManager.test.ts` | alterado | 3 asserções de `onSave` com o `2` |
+| `src/core/Provider/__tests__/TenantPersistence.test.tsx` | alterado | 2 asserções de `onSave` com o `2` |
+| `src/features/DesignEngine/hooks/__tests__/themeApplication.persistenceIntegration.test.tsx` | alterado | o desfazer grava escolhas + `2` |
+| `src/features/DesignEngine/hooks/__tests__/useDesignDraft.persistenceIntegration.test.tsx` | alterado | aplicar tema grava escolhas + `2` |
+| `src/features/DesignEngine/Main/__tests__/LoginThemeApplication.test.tsx` | alterado | `onSave` recebe as escolhas + `2` |
+| `docs/migracoes.md`, `sarak-ui/docs/migracoes.md` | alterado | entrada MAJOR 9.0.0 (a 2ª é cópia gerada) |
+| `docs/persistencia-de-tema.md` | alterado | §1.1: formato, marcador, `onLoad` substitui, cache `::choices` |
+| `docs/schema/postgres.sql`, `docs/schema/sqlite.sql` | alterado | coluna `design_format` |
+| `sarak-ui/GUIA-FRONTEND.md` | alterado | exemplos de `onSave` com `format` |
+| `sarak-ui/START-HERE.md`, `sarak-ui/VERSION`, `sarak-ui/catalog.json` | alterado | gerados por `npm run guide` |
+
+**Verificações executadas**
+- Arquivo novo, antes da correção → 6 de 7 reprovam (detalhe acima); depois → 7/7.
+- `npx vitest run src/core/Provider src/features/DesignEngine src/core/Design` + os 6 testes de fora que usam `persistence`/`onLoad`/
+  `localStorage` → **266 arquivos, 2266 testes, 0 falhas** (inclui `TemaRemovidoGravado.test.tsx` 13/13 e `useResolvedThemeId.test.ts`
+  6/6). Na 1ª rodada, depois da implementação, 12 falharam em 5 arquivos: todas eram asserções do contrato antigo (ver Decisões).
+- `npm run verify -- --tier=quick` → `[OK] nível "quick" verde` (tsc 0, `audit:baseline --with-tsc`, Anel 1, guide/dev-kit, Anel 0: 0 achado).
+  A 1ª rodada acusou 2 erros de tipo meus e 3 violações do auditor de clean code minhas (`else if`, `types.ts` 263 e `index.ts` 251 linhas);
+  corrigidos (`deliverToOnSave`; tipos em `designFormatTypes.ts`).
+- Custo medido (o ADR §2.3 pedia): média de 50 execuções, design de 428 chaves, jsdom — extrair 26-27 ms; recompor+validar 13 ms;
+  L1+validar 13-18 ms; trocar o tom no rascunho 37-38 ms. Uma medida anterior, com o baseline ainda sem validar e outra carga na máquina,
+  deu 11 / 6 / 6 ms. O tema composto no modo nativo extrai `{}`.
+- Prévia: `C:\tmp\sarak-previa-158\index.html` — o caso medido (Sovereign com as 8 superfícies do High Contrast, a secundária/subtítulo
+  de outra paleta e a lateral Invertida) pelo cache e pelo `onLoad` em `'hybrid'`, `dist/` 8.0.0 × código-fonte, Chromium 1440×900:
+  antes, fundo/lateral/topo/cartão `#000000` nas 4 alternâncias de modo; depois, lateral `#ddeced` (Invertida) e as 4 variáveis trocam
+  a cada alternância. Dados em `dados.json`.
+- **Não rodei:** suíte completa, `cromo-css-real:check`/specs de navegador, build (do revisor). `troca-de-tema.spec.ts` não foi tocado.
+
+**Critérios de aceite**
+- [x] Trocar de tema pelo painel não deixa valor do tema anterior — evidência: 1.1 (2 casos), reprovava antes pelo caminho do `config`.
+- [x] Tom da barra e paleta mudam a cor depois de qualquer número de aplicações — 1.2 (sidebar e topbar, 3 tons, Aplicar + recarregar a
+  cada um; paleta com ida e volta e só `colorPalette` gravado, `format: 2`).
+- [x] Design gravado no formato antigo é corrigido pela lib ao carregar — 1.3 (cache + `onLoad` em hybrid; fundo, tom e modo claro iguais
+  ao limpo; nenhum `onSave`).
+- [x] Modo claro troca fundo, barra e card nas 4 alternâncias — 1.5 (variáveis emitidas) e a tabela da prévia.
+- [x] Nota em `docs/migracoes.md` — entrada MAJOR 9.0.0.
+- [ ] Suíte completa verde; `tsc` 0; baseline; Anel 1 — rodei `verify --tier=quick` (verde) e os consumidores; a suíte completa é do revisor.
+- [ ] Prévia com o ok do dono — gerada; espera o dono.
+- Os critérios dos lotes 2 e 3 não foram tocados.
+
+**Decisões e suposições**
+- **O id que recompõe é só o gravado** (o do `onLoad`, senão a chave `::active-theme-id` do cache), nunca o da semente ou da prop. A 1ª
+  versão usava `resolveSeedThemeId()`; ao conferir `browser-tests/tema-sob-demanda.spec.ts:168-193` (design salvo sem id + `initialTheme`
+  de outro tema), vi que ela aplicaria a L1 com o tema errado e violaria 09 §4.3.2 ("pinta do salvo; o id carrega depois, sem tocar o
+  design") e o ADR §2.2 ("nunca se descarta valor por não saber de onde ele veio"). Gravado sem id fica como está.
+- **Tom escolhido vence o tom do host no cálculo** (`designChoices.ts`, `composeChoiceBaseline`). Sem isso, um host que declara tom — o
+  ERP, que devolve o gravado como `config` — tornaria impossível trocar o tom pelo painel. O ADR diz que o tom "não ganha regra nova";
+  a regra que já existia (o tom do host vence o do tema, `resolve.ts:60`) continua; o que entra é o tom escolhido acima do do host,
+  como a paleta escolhida já fica acima do host (ADR §2.1, achado 5). Para o revisor confirmar.
+- **O tema composto em memória não muda**; o que muda é o que se grava e como se lê. O cache mantém o completo na chave de sempre (o
+  primeiro quadro e a sincronização entre abas leem dele) e o registro `::choices` ao lado, preso ao completo por assinatura.
+- **`onSave` com o 3º argumento só quando há marcador** (`deliverToOnSave`): quem declara `onSave(design, id)` segue recebendo dois.
+- **Testes ajustados ao contrato novo, sem mudar o que provam:** 8 asserções esperavam `onSave(design, id)` e passaram a esperar o `2`; 2
+  asserções esperavam a cor do próprio tema dentro do gravado (`primaryColor` do tema aplicado / do tema inicial) e passaram a esperar que
+  ela **não** esteja lá (é baseline). Nenhum fixture de `onLoad` foi trocado.
+- Atualizei também `docs/persistencia-de-tema.md`, `docs/schema/*.sql` e `sarak-ui/GUIA-FRONTEND.md`, fora da lista literal da §3.1: são o
+  formato que o importador recebe (o ADR pede "o schema publicado do dado gravado é conferência do lote"); sem eles, o exemplo da lib
+  ensinaria a descartar o marcador. O schema de referência não exigia todas as chaves (o `state_design` é opaco).
+- `useLastAppliedSnapshot.ts`, `overlayPreferences.ts`, `compose.ts` e `useDesignStorageSync.ts` (na §3.1) não precisaram mudar: o desfazer
+  passa por `persistDesign`, o modo recalcula certo com o dado corrigido (1.5), e a sincronização entre abas lê o completo.
+- Nenhum tema embarcado mudou de valor; nenhum depende de cor calculada gravada.
+
+**Achados fora do escopo (não corrigidos)**
+- **ERP: `config` = o design gravado** (`themePersistence.ts:134-136`). Com o dado antigo injetado, o `config` é cor declarada pelo host e
+  vence a paleta e o tom até o primeiro `Aplicar` desta versão, que grava só as escolhas; a partir daí o `config` traz só elas. E o
+  `saveAppliedTheme` do ERP (`:47-54`) guarda só `{ design, activeThemeId }`: sem o `format` de volta, cada carga lê o gravado como antigo
+  (L1) — o ajuste manual de cor de papel não dura. Os dois vão para a nota de migração, mas pedem campanha no ERP.
+- `useDesignSync` tem 10 parâmetros (eram 9; o teto é 4) — acrescentei o `restoreSaved` em vez de reestruturar a assinatura.
+- `resolve.ts:60`: na composição, `design.sidebarTone` sai do tema (o tema vence o host), mas a paleta é calculada com o tom do host
+  (o host vence) — o design mostra um tom e pinta outro quando o host declara tom. Pré-existente.
+
+**Pendências / riscos**
+- MAJOR (ADR-026): importador que valida todas as chaves, que lê o gravado fora da lib (`sarakCreateThemeBootCss`) ou que não guarda o
+  `format` muda de comportamento — na nota de migração.
+- O spec de navegador `tema-sob-demanda.spec.ts` e os que leem o gravado (`plan-135`, `plan-140`, `login-theme-application`) não foram
+  rodados por mim; pela leitura, `plan-135` espera `sidebarColor` ajustado à mão (é escolha, vai) e `plan-140` espera `colorPalette`
+  (escolha, vai).
+- Custo: trocar o tom no rascunho custa ~38 ms (jsdom) — entra no orçamento do lote 2 (200 ms por escolha).
+- **Worktree mudou durante a execução, fora do meu escopo e sem toque meu:** `specs/00-backlog.md`, `specs/plan/plan-159-…md` (nota do
+  revisor de 2026-11-13) e `specs/plan/plan-165-barra-lateral-volta-a-anatomia-antiga.md` (novo, não rastreado). O `00-indice.md` foi
+  regenerado por mim com `npm run plan-index` depois do status 🟠 e já inclui a 165.
+
+## Veredito — 2026-11-13 — lote 1 — 🔵 Em correção (achado 7; a forma está aceita)
+
+**Conferido por mim:**
+- `designChoices.ts` inteiro, contra o ADR-026 §2.1/§2.2.
+- A prévia `C:\tmp\sarak-previa-158\`: antes, a Invertida não pega e o modo claro fica preto; depois, a lateral clara no escuro e as
+  quatro variáveis trocam a cada alternância.
+- **A suíte completa** (`npx vitest run`, a parte do `--tier=full` que o `quick` do executor não roda): 2074 arquivos, 5873 testes,
+  **7 falhas, todas em `designGravadoEscolhas.persistenceIntegration.test.tsx`**. O mesmo arquivo, sozinho, passa 7 de 7 (cerca de
+  2 s por caso).
+
+**Aceito:**
+- O formato 2 fora do dicionário e o 3º argumento de `onSave` só quando há marcador.
+- O cache com o design completo e o registro `::choices` preso por assinatura.
+- A regra L1 com "tema do id + host declarado".
+- O id que recompõe ser só o gravado, nunca o da semente. A leitura de `tema-sob-demanda.spec.ts` que levou a isso está certa.
+- **O tom escolhido vence o tom do host no cálculo.** É a mesma precedência que a paleta escolhida já tem (ADR-026 §2.1, achado 5),
+  e sem ela o painel não troca o tom de um host que declara tom. Na síntese, a 09 §4.3.4 diz isso.
+- Os arquivos fora da lista literal da §3.1 (`docs/persistencia-de-tema.md`, `docs/schema/*.sql`, `sarak-ui/GUIA-FRONTEND.md`). São o
+  formato que o importador recebe, e o ADR pede essa conferência.
+- Os 10 testes antigos ajustados ao contrato novo, sem mudar o que provam.
+
+**Achado 7 — o teste novo reprova na suíte completa.**
+- Sob a carga da suíte inteira (4 workers), os `waitFor` do arquivo estouram o padrão de 1 s, e o primeiro caso estoura o tempo do
+  teste.
+- A suíte completa é critério de aceite (§6), e ela está vermelha por causa deste arquivo.
+- **Conserto:** o mesmo que os testes pesados do repositório já usam, com nome e motivo:
+  - `configure({ asyncUtilTimeout: … })` com uma constante nomeada, como `CardDetailComposition.test.tsx:49`;
+  - um tempo de teste explícito nos casos que recarregam o Provider.
+
+  Não troque as asserções nem encurte o caminho que os casos percorrem.
+- **Verificação:** a suíte completa, `npx vitest run`, verde, com o número de arquivos e de testes no resumo. Aqui ela não é
+  redundante: é a falha.
+
+**Para o backlog (não bloqueia):**
+- `useDesignSync` passou de 9 para 10 parâmetros (o teto é 4). O auditor não acusa porque a violação já estava no baseline; ela só
+  piorou.
+- Os dois achados do ERP vão para a campanha do ERP:
+  - o `config` do host é o próprio gravado;
+  - o `saveAppliedTheme` descarta o `format`.
+
+  A nota de migração já os descreve.
+
+**Prévia para o dono:** `C:\tmp\sarak-previa-158\index.html`. O lote 1 só fecha com o ok dele nela, além da correção do achado 7.
+
+**Status da plan: 🔵 Em correção.**
+
+---
+
+# 9.5 Resumo da execução (lote 1, correção 1)
+
+## Resumo da execução (lote 1, correção 1) — 2026-11-13
+
+**Resultado:** Concluído com pendências. O achado 7 está corrigido: o arquivo passa 7/7 dentro da suíte completa. A suíte completa
+**não** fecha verde, mas por 3 falhas em arquivos de outra tarefa que mudou o worktree durante esta execução (abaixo).
+
+**Estado do worktree ao iniciar**
+O de antes desta correção: os arquivos do lote 1 (§9.4), mais `specs/00-backlog.md`, `specs/00-indice.md`,
+`specs/plan/plan-159-…md` e `specs/plan/plan-165-…md` (não rastreado), do revisor.
+
+**Achado 7 — corrigido.** `src/features/DesignEngine/hooks/__tests__/designGravadoEscolhas.persistenceIntegration.test.tsx:21-31`.
+Segui o padrão de `CardDetailComposition.test.tsx:46-50`:
+- `MOUNT_TIMEOUT_MS = 30_000` e `configure({ asyncUtilTimeout: MOUNT_TIMEOUT_MS })`, com o motivo num comentário;
+- tempo de teste explícito em cada caso:
+  - `RELOAD_CASE_TIMEOUT_MS = 6 × MOUNT_TIMEOUT_MS` nos três que recarregam o Provider (1.1, 1.2 tom, 1.2 paleta; `:185`, `:207`, `:230`),
+    porque o 1.2 do tom faz até seis montagens;
+  - `MOUNT_CASE_TIMEOUT_MS = MOUNT_TIMEOUT_MS + 15_000` nos dois que só montam (1.3, 1.5; `:277`, `:303`).
+
+Nenhuma asserção nem caminho de caso mudou.
+
+**Verificações executadas**
+- O arquivo sozinho: 7/7.
+- `npx vitest run` completo: **734 arquivos, 5873 testes: 5870 passaram, 3 falharam (em 3 arquivos), 0 pulados.**
+  - Dentro dela, `designGravadoEscolhas…` passou 7/7, com os casos entre 1,0 e 4,5 s. Antes da correção, os mesmos casos estouravam o
+    `waitFor` de 1 s e o teste de 5 s.
+  - As 3 falhas não são deste lote:
+    - `src/core/Design/palette/__tests__/role-map.test.ts`, 2 testes: `navActiveMarkerColor: expected 'accent' to be 'primary'` e a
+      anatomia da barra lateral;
+    - `src/core/Design/schema/__tests__/preferences.test.ts`, 1 teste: `expected 'menu' to be 'pinned'`;
+    - `src/features/DesignEngine/Panels/__tests__/LayoutTab.test.tsx`: "Cannot find module". O arquivo aparece como apagado no worktree.
+
+**Critérios de aceite**
+- [x] Achado 7: o arquivo passa na suíte completa — evidência acima.
+- [ ] Suíte completa verde — motivo: as 3 falhas acima, em arquivos que outra tarefa estava mudando durante esta execução.
+
+**Achados fora do escopo (não corrigidos)**
+- **O worktree mudou durante a execução, sem toque meu**, em arquivos que não estavam na fotografia. Pelo nome, é o trabalho da
+  `plan-165` (anatomia da barra lateral). Exemplos:
+  - `src/core/Design/palette/role-map.ts`, `src/core/Design/schema/preferences.ts`, `navigation.ts`;
+  - `src/components/Layout/chrome/*`, `SarakShellNav.tsx`, `CustomizationPanelImpl.tsx`;
+  - `LayoutTab.tsx` e o teste dele, apagados;
+  - `browser-tests/barra-lateral-anatomia*`, `src/components/Layout/chrome/sidebarFrame.ts`;
+  - `specs/specs/06`, `08`, `09` e `00-regras-e-invariantes.md`;
+  - `.agents/skills/*`, `.githooks/pre-commit`, `gates/scripts/contrato/*`, `dist/sarak.css`.
+
+  Parei de mexer em código e não toquei em nenhum deles. As 3 falhas da suíte estão nesses arquivos.
+- `src/core/Design/palette/resolve.ts` continua só com as 25 linhas do lote 1 (`git diff --stat`). Já `role-map.ts`, vizinho dele,
+  é da outra tarefa: os commits precisam sair separados.
+
+**Pendências / riscos**
+- A suíte completa só fecha verde depois que a outra tarefa terminar ou for isolada. Vale rodá-la de novo então.
+- A prévia `C:\tmp\sarak-previa-158\index.html` ainda espera o ok do dono.
+
+## Veredito — 2026-11-13 — correção 1 do lote 1 — achado 7 resolvido; o 🟢 espera só o ok do dono na prévia
+
+**Conferido por mim:**
+- O cabeçalho do arquivo de teste (`:21-31`) e os tempos por caso (`:185`, `:207`, `:230`, `:277`, `:303`): constante nomeada com
+  motivo e `configure({ asyncUtilTimeout })`, como `CardDetailComposition.test.tsx`. Nenhuma asserção mudou.
+- O resumo da suíte completa: o arquivo passou 7/7 dentro dela.
+
+Não repeti a suíte.
+
+**As 3 falhas da suíte não são deste lote:**
+- `role-map.test.ts` e `preferences.test.ts` estão em arquivos da `plan-165`, em execução no mesmo worktree.
+- `LayoutTab.test.tsx` foi apagado pela tarefa direta de higiene (backlog 35), já aprovada. O vitest pegou o arquivo durante a remoção.
+
+Nenhuma dessas falhas toca arquivo da §3.1 desta plan.
+
+**Achado 7: resolvido.**
+
+**Falta para o 🟢:** o ok do dono na prévia `C:\tmp\sarak-previa-158\index.html`, que já foi levada a ele. Com o ok, o lote 1 fecha e
+o commit sai separado do da 165, que divide o worktree.
+
+**Status da plan: 🟠 Em revisão** (aguardando o dono na prévia).
+
+## Veredito — 2026-11-13 — lote 1 — 🟢 Aprovado; o lote 2 segue
+
+O dono aprovou a prévia `C:\tmp\sarak-previa-158\index.html` em 2026-11-13. Rodei `audit:baseline --with-tsc` no worktree atual:
+igual ao baseline, sem regressão.
+
+**O commit do lote 1 sai separado do da `plan-165`.** Três gerados do kit (`sarak-ui/catalog.json`, `START-HERE.md` e `VERSION`)
+já misturam os dois lotes e vão no commit da 165. Lá eles são regenerados de qualquer forma.
+
+**Lote 2 liberado.** Ele roda junto com a 165, que mexe em outros arquivos (cromo, paleta e schema da barra). Os dois usam
+navegador, então confira os processos antes de abrir o Playwright, como nas rodadas anteriores. A nota 2.4 (a prévia remonta
+8 vezes por troca) faz parte do lote.
+
+**Status da plan: 🟡 Em execução** (lotes 2 e 3).

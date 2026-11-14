@@ -51,7 +51,7 @@ describe('defaults do cromo', () => {
         expect(result.current.showSearch).toBe(true);
         expect(result.current.showThemeToggle).toBe(true);
         expect(result.current.showUser).toBe(true);
-        expect(result.current.showCollapse).toBe(false);
+        expect(result.current.showCollapse).toBe(true);
         expect(result.current.widgetPlacement.menu).toEqual(expect.arrayContaining([
             'fontSize', 'navigationStyle', 'navCollapsed',
         ]));
@@ -111,7 +111,7 @@ describe('opt-out dos widgets padrão', () => {
         expect(result.current.showThemeToggle).toBe(false);
         expect(result.current.showSearch).toBe(true);
         expect(result.current.showUser).toBe(true);
-        expect(result.current.showCollapse).toBe(false);
+        expect(result.current.showCollapse).toBe(true);
     });
 
     it('sem `hasUser`, oferece o widget para renderizar o estado desabilitado', () => {

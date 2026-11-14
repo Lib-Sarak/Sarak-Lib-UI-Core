@@ -2832,6 +2832,18 @@
    ]
   },
   {
+   "id": "sidebarActiveGlass",
+   "group": "navigation",
+   "label": "Vidro do Item Ativo (Sidebar)",
+   "kind": "aesthetic",
+   "modeDependent": false,
+   "usage": "Acabamento de vidro do item ativo da barra lateral; soma a qualquer estilo do item ativo.",
+   "interactsWith": [
+    "sidebarActiveItemStyle",
+    "navActiveMarkerColor"
+   ]
+  },
+  {
    "id": "sidebarActiveItemStyle",
    "group": "navigation",
    "label": "Estilo do Item Ativo (Sidebar)",
@@ -2988,7 +3000,7 @@
    "label": "Cor do Ícone (Sidebar)",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Cor dos ícones na barra lateral.",
+   "usage": "Cor dos ícones inativos na barra lateral; o padrão acompanha o rótulo do item, e o ativo usa a cor do item ativo.",
    "interactsWith": [
     "sidebarColor"
    ]

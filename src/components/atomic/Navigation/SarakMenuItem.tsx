@@ -3,8 +3,16 @@ import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import { sarakIsSafeLinkHref, shouldHandleSameTabNavigation } from './linkNavigation';
 import { SarakIcon } from '../Icon/SarakIcon';
 import { useNavigationAppearance } from '../../../core/Provider/useNavigationAppearance';
+import { MENU_ITEM_TEXT_CLASS, resolveVerticalMenuItemClasses } from './menuItemMetrics';
 
 export type SarakMenuItemOrientation = 'vertical' | 'horizontal';
+
+/**
+ * O vidro do item ativo da barra lateral (`sidebarActiveGlass`): um brilho interno da cor do marcador a 5%, que soma
+ * a qualquer estilo do ativo.
+ */
+// sarak-allow-hardcode: o raio do brilho interno (20 px) é desenho do acabamento, não medida de layout; nenhum token o declara.
+const ACTIVE_GLASS_SHADOW = 'inset 0 0 20px color-mix(in srgb, var(--sarak-nav-marker-color, #19e3f0) 5%, transparent)';
 
 export interface SarakMenuItemProps extends Omit<React.HTMLAttributes<HTMLElement>, 'title' | 'onClick' | 'type'> {
     /** Nome registrado ou elemento renderizado à esquerda do rótulo. */
@@ -80,19 +88,16 @@ export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
     // Raio do item (fundo do ativo e do hover): UM token para as três formas — lateral, topo e
     // recolhido —, `navItemRadius` (`--sarak-nav-item-radius`). O literal depois da vírgula é o
     // padrão do token, para fora do Provider.
+    // A métrica vertical vem de `menuItemMetrics`, a fonte única que a busca da barra também lê.
     const densityClasses = isVertical
-        ? {
-            compact: 'gap-2 px-2 py-1.5',
-            comfortable: 'gap-3 px-3 py-2.5',
-            spacious: 'gap-4 px-4 py-3',
-        }[itemDensity]
+        ? `${resolveVerticalMenuItemClasses(itemDensity)} ${MENU_ITEM_TEXT_CLASS}`
         : {
             compact: 'gap-1 px-3 py-1',
             comfortable: 'gap-2 px-4 py-1.5',
             spacious: 'gap-3 px-5 py-2',
         }[itemDensity];
     const base = isVertical
-        ? `relative flex items-center w-full min-w-0 rounded-[var(--sarak-nav-item-radius,12px)] text-sm font-normal normal-case tracking-normal transition-colors ${densityClasses}`
+        ? `relative flex items-center w-full min-w-0 rounded-[var(--sarak-nav-item-radius,12px)] font-normal normal-case tracking-normal transition-colors ${densityClasses}`
         : `relative inline-flex items-center justify-center shrink-0 min-w-0 rounded-[var(--sarak-nav-item-radius,12px)] text-sm font-light normal-case tracking-normal transition-colors ${densityClasses}`;
 
     const collapsedClass = collapsed ? (isVertical ? 'justify-center' : 'w-8 h-8 p-0') : '';
@@ -117,6 +122,7 @@ export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
         : activeItemStyle === 'underline' || activeItemStyle === 'outline'
             ? 'transparent'
             : `var(${activeBackgroundVariable}, transparent)`;
+    const glass = isVertical && active && appearance.sidebarActiveGlass === 'on';
     const itemStyle: React.CSSProperties = {
         minHeight: 'var(--sarak-touch-target-active, 0px)',
         minWidth: 'var(--sarak-touch-target-active, 0px)',
@@ -129,6 +135,7 @@ export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
         border: active && activeItemStyle === 'outline'
             ? 'var(--sarak-border-width, 1px) solid var(--sarak-nav-active-color, #19e3f0)'
             : undefined,
+        boxShadow: glass ? ACTIVE_GLASS_SHADOW : undefined,
         ...props.style,
     };
     const tone = active

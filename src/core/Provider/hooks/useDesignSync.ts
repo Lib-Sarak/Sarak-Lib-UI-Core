@@ -7,6 +7,8 @@ import { getLoadedThemePreset, isSarakThemePresetId } from '../../Design/presets
 import type { SarakTokenValue } from '../../Design/types';
 import { SarakDesignState, SarakThemeEntry, SarakThemePayload, SetDesign } from '../types';
 import type { ThemeIdGuard } from './useThemeSeed';
+import { readCachedSavedDesign, type SavedDesign } from './useDesignChoices';
+import { readCachedActiveThemeId } from '../utils/resolveStorageKey';
 
 /** O tema padrão no modo do design que está no ar: o que um id de tema removido recebe, qualquer que seja a porta. */
 export const composeDefaultThemeDesign = (
@@ -34,6 +36,8 @@ export const useDesignSync = (
     configRef?: MutableRefObject<SarakThemePayload | undefined>,
     preferConfigOverCache = false,
     themeIdGuard?: ThemeIdGuard,
+    // Lê o gravado no formato dele: escolhas refeitas pelo tema, ou o dado antigo pela regra L1 (`useDesignChoices.ts`).
+    restoreSaved?: (previous: SarakDesignState, saved: SavedDesign) => SarakDesignState,
 ) => {
     // Guarda o último `activeThemeId` efetivamente aplicado. Sem isso, qualquer
     // render que produza uma nova referência de `allThemes` (ex.: consumidor que
@@ -103,16 +107,15 @@ export const useDesignSync = (
         // Se não temos tema ativo, e ainda não hidratamos, tentamos ler do cache local
         if (!hasHydratedRef.current) {
             try {
-                const saved = localStorage.getItem(storageKey);
+                const saved = readCachedSavedDesign(storageKey, readCachedActiveThemeId(storageKey));
                 // O design gravado sobre um tema removido é descartado: a semente já pôs o tema padrão.
                 if (saved && !themeIdGuard?.isSavedThemeRemoved()) {
-                    const parsed = JSON.parse(saved);
-                    setDesign((prev) => validateDesign({ ...prev, ...parsed }));
+                    setDesign((prev) => (restoreSaved ? restoreSaved(prev, saved) : validateDesign({ ...prev, ...saved.full })));
                 }
             } catch (error) {
                 console.error('[Sarak:Design] localStorage re-hydration error:', error);
             }
             hasHydratedRef.current = true;
         }
-    }, [isHydrated, storageKey, activeThemeId, allThemes, setDesign, hasHydratedRef, preferConfigOverCache, themeIdGuard]);
+    }, [isHydrated, storageKey, activeThemeId, allThemes, setDesign, hasHydratedRef, preferConfigOverCache, themeIdGuard, restoreSaved]);
 };

@@ -36,6 +36,7 @@ export const cyberRetroWave2077ClassicTheme: SarakThemePreset = {
         sidebarBorderSide: 'all',
         sidebarBackgroundStyle: 'solid',
         sidebarActiveItemStyle: 'outline',
+        sidebarActiveGlass: 'on',
         sidebarItemDensity: 'comfortable',
         sidebarIconSize: 18,
         sidebarLogoPlacement: 'top',

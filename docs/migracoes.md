@@ -5,6 +5,84 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 9.0.0 — a barra lateral volta à anatomia da lib antiga (padrões que mudaram)
+
+A barra lateral de todo tema volta a nascer com a anatomia que a lib antiga desenhava. **Nenhum token saiu nem mudou de nome**: cada um
+continua editável no painel e declarável pelo tema. O que mudou foram os **padrões** — o valor que vale quando nem o tema nem o host
+declaram o token.
+
+| | Antes | Depois |
+|---|---|---|
+| Marcador do item ativo (`navActiveMarkerColor`, papel da paleta) | cor de destaque (acento) | a primária, exata |
+| Fundo do item ativo (`sidebarActiveColor`, papel da paleta) | primária a 60% | primária a 10% |
+| Ícone inativo (`sidebarIconColor`) | a primária (papel) e `#19e3f0` (padrão sem paleta) | a cor do rótulo do item |
+| Título de seção (`sidebarCategoryColor`, papel da paleta) | a secundária | a cor do texto da barra; 14 px, negrito, espaçamento 0,2 em |
+| Fundo da marca (`sidebarBrandBackground`, papel da paleta) | acento sólido, só atrás do logo | primária a 5%, na faixa inteira do cabeçalho |
+| Recolher a navegação (`preferenceNavCollapsePosition`) | `'menu'` (no ⚙) | `'pinned'`: a seta no cabeçalho da barra (e o botão de menu na barra do topo) |
+| Moldura da barra | cantos retos, linha só do lado do conteúdo | cartão: o raio do tema (`borderRadius`) e, com `sidebarBorderSide: 'edge'`, a linha nos quatro lados; encostada na tela (`tabSectionMargin` 0), o lado colado fica reto |
+| Cabeçalho da marca | só o nome, sem faixa | faixa da altura do topo com linha embaixo; sem logo, monograma (a inicial do nome); com a marca embaixo, o topo é só a seta |
+| Busca da barra | altura de campo de formulário | a altura de um item do menu |
+| Recuo da lista | o espaçamento de página (`--sarak-layout-gap-*`) | o mesmo espaçamento, com teto de 1/15 da largura da barra (16 px em 240) |
+| Item inativo (`sidebarItemTextColor` e `sidebarIconColor`, papéis da paleta) | quase branco (tom 100 no escuro) | apagado (tom 400 no escuro, 600 no claro), sempre a 4,5:1; só o ativo e o passar do mouse acendem |
+| Vidro do item ativo (token novo `sidebarActiveGlass`, `'on'` \| `'off'`) | — | `'on'`: brilho interno da cor do marcador, em qualquer estilo do ativo; `'off'` desliga. No painel, na configuração da barra |
+| Busca no topo da barra | colada no cabeçalho, recuo próprio | abaixo do topo, o mesmo vão que separa as seções da lista, e na coluna dos itens |
+| Sub-aba recuada (`children`) | recuo de 1,5 × o espaçamento de página | o ícone da sub-aba sob o rótulo do pai |
+| `navItems` | sem sub-abas (os filhos do `nav` não tinham porta equivalente) | `children` e `defaultExpanded`, com a regra do `nav`: um nível, o pai não navega, filho `active` abre o grupo. Aditivo |
+
+**O que fazer.** Nada, para seguir a anatomia. Para manter o desenho anterior, declare o token no `config` ou no tema (por exemplo,
+`preferenceNavCollapsePosition: 'menu'` devolve o recolher ao ⚙, `sidebarBorderSide: 'right'` volta à linha de um lado). **Valor já
+gravado continua valendo**: quem gravou a posição do recolher ou uma cor da barra no design não muda.
+
+---
+
+## 9.0.0 — o design gravado guarda só as escolhas (MAJOR: `onSave` recebe um dicionário esparso e um marcador de formato)
+
+Trocar tema, paleta, tom da barra ou modo deixava de chegar à tela depois de algumas aplicações: o `Aplicar` gravava também as cores que a
+paleta calcula, e a cor gravada passava a valer como cor declarada (vencendo o tom da barra e a paleta nova), além de trazer o que sobrou do
+tema anterior. Agora a lib grava só o que foi **escolhido** — o tema (pelo id, como antes), a paleta, os tons da barra, o modo e o que foi
+ajustado à mão — e refaz o que a paleta calcula a cada carga.
+
+| | Antes | Depois |
+|---|---|---|
+| `persistence.onSave` | `onSave(design, activeThemeId)`, com o design inteiro | `onSave(escolhas, activeThemeId, 2)`: o dicionário traz só as chaves escolhidas, sem chave nova dentro dele; o `2` é o marcador do formato |
+| `persistence.onLoad` | devolve `design` ou `{ design, activeThemeId }` | devolva também o marcador: `{ design, activeThemeId, format }` |
+| `onLoad` em `'hybrid'` | funde por cima do cache: `{ ...local, ...remoto }` | com `format: 2`, **substitui**: o design é refeito pelo tema e pelas escolhas, e um valor que saiu do servidor sai da tela |
+| Cache local | o design inteiro na chave de sempre | a chave de sempre continua com o design inteiro (é ela que pinta o primeiro quadro); as escolhas ficam ao lado, em `<chave>::choices` |
+
+**O que fazer.** Guarde o terceiro argumento de `onSave` junto do design e do id, e devolva-o no `onLoad`:
+
+```ts
+persistence: {
+  onSave: (design, activeThemeId, format) => salvar({ design, activeThemeId, format }),
+  onLoad: async () => buscar(), // { design, activeThemeId, format }
+}
+```
+
+**O dado que você já tem gravado é corrigido pela lib ao carregar**, sem nada a limpar no banco nem no `localStorage`. Gravado sem o
+marcador, ele é lido como do formato anterior: saem as cores que a paleta calcula e que o tema do id e o `config` do host não declaram (as
+cores de papel — fundo, superfícies, barra, texto, botões; a lista é `PALETTE_ROLE_MAP` mais os papéis de cada tom de barra), e o resto
+fica. A tela passa a mostrar as cores do tema e da paleta escolhida. A correção vale para a tela e não chama `onSave`; o próximo `Aplicar`
+grava no formato novo. **O custo, uma vez:** uma cor de papel ajustada à mão antes desta versão não se distingue do resto de um tema anterior
+e volta ao valor da paleta; refaça o ajuste e ele passa a ser gravado como escolha.
+
+**Quem quebra:**
+- **Servidor que exige todas as chaves no design gravado:** passa a receber só as escolhas (pode ser `{}` para quem aplicou um tema sem
+  mexer em nada). O servidor que valida as chaves por lista (`sarak-ui/catalog.json` → `designTokens.ids`) continua funcionando: nenhuma
+  chave nova entra no dicionário.
+- **Quem lê o design gravado fora da lib** (o CSS de primeiro quadro de `sarakCreateThemeBootCss(design)`, um render no servidor, um
+  relatório) passa a ler só as escolhas. Para o primeiro quadro, use o design que a lib tem em memória (`useSarakUI().design`) ou o da
+  chave de sempre do `localStorage`, que continua inteira.
+- **Quem guarda só o primeiro argumento de `onSave`:** devolve as escolhas sem o marcador, e a lib as lê como dado do formato anterior a cada
+  carga — a cor de papel ajustada à mão volta à da paleta toda vez. Nada se corrompe, mas o ajuste não dura: guarde o `format`.
+- **Quem passa o design gravado como `config` do `SarakUIProvider`** (para pintar o primeiro quadro com o que veio no HTML): o `config` é cor
+  declarada pelo host e vence a paleta e o tom. Com o dado antigo, as cores dele continuam valendo até o primeiro `Aplicar` desta versão, que
+  grava só as escolhas; a partir daí, o `config` passa a trazer só elas.
+
+Quando o tema do id não está em memória no instante de gravar (um tema do importador que ainda não carregou), a lib grava o design inteiro e
+sem marcador, como antes: nenhum valor é descartado por não se saber de onde veio. A decisão e as alternativas estão no ADR-026.
+
+---
+
 ## 9.0.0 — `SARAK_DESIGN_MANIFEST.vars` lista só nomes da lista pública de variáveis (aditivo para quem usa; muda o que o objeto exportado devolve)
 
 O `vars` de cada entrada do `SARAK_DESIGN_MANIFEST` listava nomes que não fazem parte da lista pública de variáveis (`tokens.cssVars` do catálogo do kit). Agora ele lista só nomes dessa lista: cada nome fora dela virou o nome público do mesmo papel, ou saiu quando o papel já estava na lista ou não tem nome público. O objeto nunca alimentou CSS; só muda para quem lê `SARAK_DESIGN_MANIFEST[chave].vars`.

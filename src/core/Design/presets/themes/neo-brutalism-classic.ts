@@ -49,6 +49,7 @@ export const neoBrutalismClassicTheme: SarakThemePreset = {
         sidebarFooterBackground: '#fae3df',
         sidebarBackgroundStyle: 'solid',
         sidebarActiveItemStyle: 'filled',
+        sidebarActiveGlass: 'on',
         sidebarItemDensity: 'comfortable',
         sidebarIconSize: 18,
         sidebarIconColor: '#cc0000',

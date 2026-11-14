@@ -129,11 +129,9 @@ describe('aplicação de tema e persistência — integração com SarakUIProvid
 
         expect(screen.getByTestId('active-theme-id')).toHaveTextContent('tema-inicial');
         expect(onSave).toHaveBeenCalledTimes(1);
-        expect(onSave).toHaveBeenNthCalledWith(
-            1,
-            expect.objectContaining({ primaryColor: '#111111' }),
-            'tema-inicial',
-        );
+        // O gravado traz só as escolhas: a primária é a do próprio tema inicial, e por isso não vai (ADR-026).
+        expect(onSave).toHaveBeenNthCalledWith(1, expect.any(Object), 'tema-inicial', 2);
+        expect(onSave.mock.calls[0][0]).not.toHaveProperty('primaryColor');
         expect(undoSaveWasSynchronous).toBe(true);
     });
 });

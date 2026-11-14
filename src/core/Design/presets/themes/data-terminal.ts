@@ -39,6 +39,7 @@ export const dataTerminal: SarakThemePreset = {
         "topbarTone": "surface",
         "sidebarBackgroundStyle": "texture",
         "sidebarActiveItemStyle": "bar",
+        "sidebarActiveGlass": "on",
         "sidebarItemDensity": "compact",
         "sidebarIconSize": 16,
         "topbarBorderWidth": 1,

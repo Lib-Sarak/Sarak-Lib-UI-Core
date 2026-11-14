@@ -1657,6 +1657,7 @@ Props (`SarakShellSearchWidgetProps` — `src/components/atomic/Navigation/Sarak
 | `items` | `SarakSearchItem[]` | não |  |
 | `onClick` | `() => void` | sim |  |
 | `onSelect` | `(item: SarakSearchItem) => void` | não |  |
+| `menuItemHeight` | `boolean` | não | O campo com a altura de um item do menu lateral (a mesma densidade), em vez da altura de campo de formulário. |
 
 ### SarakShellThemeToggle
 

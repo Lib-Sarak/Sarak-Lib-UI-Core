@@ -125,7 +125,8 @@ describe('ChromeTopbarBody — widgets default', () => {
     it('sem `widgets`, os widgets de fábrica ficam oferecidos e o menu de preferências é montado', () => {
         const { container } = renderBody({});
         expect(container.querySelector('[data-sarak-slot="search"]')).not.toBeNull();
-        expect(container.querySelector('[data-sarak-widget="collapse"]')).toBeNull();
+        // O recolher é fixo por padrão (D2 da anatomia da barra lateral) e aparece também no topo.
+        expect(container.querySelector('[data-sarak-widget="collapse"]')).not.toBeNull();
         expect(container.querySelector('[data-sarak-widget="preferences-menu"]')).not.toBeNull();
         expect(container.querySelector('[data-sarak-widget="user-theme"]')).not.toBeNull();
         expect(container.querySelector('[aria-label="Notificações indisponíveis"]')).toHaveAttribute('aria-disabled', 'true');

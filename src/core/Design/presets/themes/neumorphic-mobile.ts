@@ -46,6 +46,7 @@ export const neumorphicMobile: SarakThemePreset = {
         "topbarTone": "neutral",
         "sidebarBackgroundStyle": "solid",
         "sidebarActiveItemStyle": "pill",
+        "sidebarActiveGlass": "on",
         "sidebarItemDensity": "comfortable",
         "sidebarIconSize": 18,
         "topbarBorderWidth": 1,

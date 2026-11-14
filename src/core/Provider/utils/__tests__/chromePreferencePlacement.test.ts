@@ -3,9 +3,9 @@ import { splitChromeWidgetsByPlacement, splitPreferencesByPlacement } from '../c
 import { CHROME_WIDGET_POSITION_TOKEN_IDS, PREFERENCE_POSITION_TOKEN_IDS } from '../../preferencesTypes';
 
 describe('splitPreferencesByPlacement', () => {
-    it('padrão de fábrica (chave ausente): modo e idioma ficam fixos; fonte, navegação e recolher vão ao menu', () => {
+    it('padrão de fábrica (chave ausente): modo, idioma e recolher ficam fixos; fonte e navegação vão ao menu', () => {
         const result = splitPreferencesByPlacement(undefined);
-        expect(result.pinned.sort()).toEqual(['colorMode', 'language'].sort());
+        expect(result.pinned.sort()).toEqual(['colorMode', 'language', 'navCollapsed'].sort());
         expect(result.offered.sort()).toEqual(['colorMode', 'fontSize', 'language', 'navigationStyle', 'navCollapsed'].sort());
         expect(result.menu.sort()).toEqual(['colorMode', 'fontSize', 'language', 'navigationStyle', 'navCollapsed'].sort());
     });

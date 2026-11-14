@@ -26,7 +26,7 @@ describe('preferences (schema)', () => {
         expect(byId[PREFERENCE_POSITION_TOKEN_IDS.colorMode]).toBe('pinned');
         expect(byId[PREFERENCE_POSITION_TOKEN_IDS.fontSize]).toBe('menu');
         expect(byId[PREFERENCE_POSITION_TOKEN_IDS.navigationStyle]).toBe('menu');
-        expect(byId[PREFERENCE_POSITION_TOKEN_IDS.navCollapsed]).toBe('menu');
+        expect(byId[PREFERENCE_POSITION_TOKEN_IDS.navCollapsed]).toBe('pinned');
         expect(byId[PREFERENCE_POSITION_TOKEN_IDS.language]).toBe('pinned');
 
         const chromeDefaults = Object.fromEntries(NavigationSchema.tokens.map((token) => [token.id, token.defaultValue]));

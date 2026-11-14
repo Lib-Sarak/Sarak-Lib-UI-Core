@@ -25,19 +25,26 @@ os tipos.
 
 ### 1.1 O estado aplicado — `options.persistence.onSave`/`onLoad`
 
-O **design aplicado**, completo, exatamente como o motor de tokens o resolveu. No painel, escolher
+O **design aplicado**, guardado pelo que foi **escolhido**: o tema (pelo id), a paleta, os tons da barra, o modo e o que foi
+ajustado à mão. O que a paleta calcula não é gravado e a lib o refaz a cada carga — por isso trocar a paleta, o tom da barra
+ou o modo depois de qualquer número de aplicações sempre chega à tela. No painel, escolher
 um tema na decisão **Tema** (ou uma opção nas demais decisões) muda apenas o rascunho; a prévia aparece imediatamente na tela
 de quem está editando, sem gravar. `Aplicar (N)` é a ação que
 confirma esse rascunho no Provider e persiste o estado aplicado; com a estratégia padrão (`hybrid`),
-isso também grava a chave de `localStorage` do tenant. A porta recebe dois argumentos:
+isso também grava a chave de `localStorage` do tenant. A porta recebe três argumentos:
 
 ```ts
-onSave?: (design: SarakThemePayload, activeThemeId?: string) => Promise<void> | void
+onSave?: (design: SarakThemePayload, activeThemeId?: string, format?: 2) => Promise<void> | void
 ```
 
-- `design` — o payload completo. **Pode não corresponder a nenhum tema salvo.** A escolha na
+- `design` — as escolhas: só as chaves cujo valor difere do que o tema do id produz com a paleta e os tons escolhidos. Nenhuma
+  chave nova entra no dicionário, e ele pode vir vazio (`{}`) para quem aplicou um tema sem mexer em nada. **Pode não
+  corresponder a nenhum tema salvo.** A escolha na
   decisão **Tema** e as opções das demais decisões ficam no rascunho até `Aplicar (N)`; antes disso, não chamam esta porta nem gravam
-  o estado aplicado. Ao aplicar, o Provider persiste o design inteiro do rascunho.
+  o estado aplicado.
+- `format` — `2` quando `design` traz só as escolhas. **Guarde-o e devolva-o no `onLoad`**: sem ele, a lib lê o gravado como
+  dado do formato anterior (abaixo). Vem `undefined` quando o tema do id não estava em memória no instante de gravar; aí
+  `design` vai inteiro, como antes, e nada é descartado.
 - `activeThemeId` — o id do tema que estava efetivamente no ar no instante do save.
   **Opcional de verdade:** vem `undefined` sempre que não há nenhum tema resolvido ainda. Pode
   apontar tanto para um tema embarcado da lib (`'minimalist-airy'`, por exemplo) quanto para um
@@ -70,16 +77,22 @@ guardado de antes pode trazer chave que saiu: `designTokens.removed` diz, por to
 ficou no lugar, ou `sem substituto`). A lib descarta a chave removida ao carregar, com aviso; o servidor que a recusa com 400 impede
 o usuário de salvar o tema inteiro por causa dela.
 
-`onLoad` é o inverso. Continua aceitando o formato antigo, que devolve apenas o `design`, ou pode
-devolver o par:
+`onLoad` é o inverso. Devolva o que `onSave` entregou — `{ design, activeThemeId, format }` (`SarakSavedDesign`). Continua
+aceitando o formato antigo, que devolve apenas o `design`, ou o par sem o marcador:
 
 ```ts
-onLoad?: () => Promise<SarakThemePayload | { design: SarakThemePayload; activeThemeId?: string } | null | undefined>
+onLoad?: () => Promise<SarakThemePayload | SarakSavedDesign | null | undefined>
   | SarakThemePayload
-  | { design: SarakThemePayload; activeThemeId?: string }
+  | SarakSavedDesign
   | null
   | undefined
 ```
+
+Com `format: 2`, o Provider refaz o design pelo tema do id e pelas escolhas, e o resultado **substitui** o que veio do cache
+local (sem fundir por cima): um valor que saiu do servidor sai da tela. Sem o marcador, o gravado é dado do formato anterior,
+que trazia as cores calculadas e o que sobrou de outro tema: a lib funde por cima, como antes, e tira dele as cores que a paleta
+calcula e que o tema do id e o `config` do host não declaram (a cor de papel ajustada à mão nesse dado volta à da paleta). Essa
+correção vale para a tela, não chama `onSave`, e o próximo `Aplicar` grava no formato novo.
 
 Quando `activeThemeId` vier no objeto, o Provider restaura essa identidade junto com o `design`.
 `activeThemeId` controlado na prop do Provider continua vencendo. `null`/`undefined` significa que
@@ -87,9 +100,10 @@ nenhum estado foi salvo. `onLoad` não recebe argumento: a lib nunca pede identi
 porque não tem esse conceito (§4). Ao trocar `tenantId`, a lib chama `onLoad` de novo sem exigir
 remontagem do Provider.
 
-No cache local da estratégia `hybrid`, o design continua no formato JSON bruto da chave efetiva
-(`storageKey`, já particionada por `tenantId`) e o id fica na chave companheira
-`${storageKey}::active-theme-id`. Assim, o cache restaura o par sem alterar o formato de design
+No cache local da estratégia `hybrid`, o design **inteiro** continua no formato JSON bruto da chave efetiva
+(`storageKey`, já particionada por `tenantId`) — é ele que pinta o primeiro quadro — e o id fica na chave companheira
+`${storageKey}::active-theme-id`. As escolhas ficam numa terceira, `${storageKey}::choices`, presa ao design inteiro gravado
+junto: com o tema em memória, o Provider refaz o design por elas. Assim, o cache restaura o par sem alterar o formato de design
 que o sync entre abas já lê. O id do cache é usado enquanto `onLoad` está pendente; um id devolvido
 por `onLoad` substitui o cache e atualiza as duas entradas locais sem chamar `onSave`. Se a resposta
 não trouxer id, o id em cache é mantido. A prop controlada continua acima das duas fontes.
@@ -119,7 +133,7 @@ function App({ tenantId }: { tenantId: string }) {
           storageKey: 'tema-aplicado',
           tenantId,
           onLoad: () => buscarTemaDoBackend(tenantId),
-          onSave: (design, activeThemeId) => salvarTemaNoBackend(tenantId, design, activeThemeId),
+          onSave: (design, activeThemeId, format) => salvarTemaNoBackend(tenantId, design, activeThemeId, format),
         },
       }}
     >

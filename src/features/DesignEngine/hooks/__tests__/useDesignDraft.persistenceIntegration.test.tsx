@@ -151,10 +151,8 @@ describe('Editar o rascunho não grava nem espalha — só "Aplicar" grava, pela
         });
 
         expect(onSave).toHaveBeenCalledTimes(1);
-        expect(onSave).toHaveBeenNthCalledWith(
-            1,
-            expect.objectContaining({ primaryColor: '#123456' }),
-            'tema-aplicado',
-        );
+        // O gravado traz só as escolhas: a primária é a do tema aplicado, e por isso não vai (ADR-026).
+        expect(onSave).toHaveBeenNthCalledWith(1, expect.any(Object), 'tema-aplicado', 2);
+        expect(onSave.mock.calls[0][0]).not.toHaveProperty('primaryColor');
     });
 });

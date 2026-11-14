@@ -63,6 +63,7 @@ export const corporateLedgerTheme: SarakThemePreset = {
     "topbarTone": "surface",
     "sidebarBackgroundStyle": "solid",
     "sidebarActiveItemStyle": "bar",
+    "sidebarActiveGlass": "on",
     "sidebarItemDensity": "compact",
     "sidebarIconSize": 16,
     "topbarBorderWidth": 1,

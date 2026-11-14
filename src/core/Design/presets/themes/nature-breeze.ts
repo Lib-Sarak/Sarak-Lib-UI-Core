@@ -38,6 +38,7 @@ export const natureBreezeTheme: SarakThemePreset = {
         sidebarBorderSide: 'none',
         sidebarBackgroundStyle: 'solid',
         sidebarActiveItemStyle: 'pill',
+        sidebarActiveGlass: 'on',
         sidebarItemDensity: 'comfortable',
         sidebarIconSize: 18,
         sidebarLogoPlacement: 'top',

@@ -51,6 +51,7 @@ export const industrialTerminalTheme: SarakThemePreset = {
         topbarTone: 'neutral',
         sidebarBackgroundStyle: 'gradient',
         sidebarActiveItemStyle: 'outline',
+        sidebarActiveGlass: 'on',
         sidebarItemDensity: 'compact',
         sidebarIconSize: 16,
         topbarBorderWidth: 1,

@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { validateDesign } from '../utils/validation';
-import { resolveStorageKey, writeCachedActiveThemeId } from '../utils/resolveStorageKey';
+import { readCachedActiveThemeId, resolveStorageKey, writeCachedActiveThemeId, writeCachedDesign } from '../utils/resolveStorageKey';
 import { resolveEffectiveStrategy } from '../utils/persistenceStrategy';
 import { useThemeSeed } from './useThemeSeed';
+import { deliverToOnSave, readCachedSavedDesign, useDeferredDesignRestore, useDesignChoices } from './useDesignChoices';
 import { useDesignSync } from './useDesignSync';
 import { useDesignRemoteLoader } from './useDesignRemoteLoader';
 import { useDesignStorageSync } from './useDesignStorageSync';
@@ -68,6 +69,8 @@ export const useDesignManager = (props: {
     const { resolveSeedThemeId, getSeedConfig, themeIdGuard } = useThemeSeed({
         allThemes, activeThemeId, initialTheme, optionsRef, configRef,
     });
+    // O gravado guarda só as escolhas; o que a paleta calcula é refeito ao carregar (`useDesignChoices.ts`).
+    const designChoices = useDesignChoices(allThemes, configRef);
 
     // plan-27 — o tema EFETIVAMENTE no ar (não a prop `activeThemeId` crua); ver
     // `useResolvedThemeId.ts`. ADITIVO: não muda a semântica de `activeThemeId`/
@@ -97,12 +100,13 @@ export const useDesignManager = (props: {
         if (strategy === 'remote') return validateDesign(getSeedConfig());
 
         try {
-            const saved = localStorage.getItem(storageKey);
-            if (saved && optionsRef.current.persistence?.preferConfigOverCache !== true) {
-                const parsed = JSON.parse(saved);
+            const saved = optionsRef.current.persistence?.preferConfigOverCache !== true
+                ? readCachedSavedDesign(storageKey, readCachedActiveThemeId(storageKey))
+                : undefined;
+            if (saved) {
                 // Design gravado sobre um tema que não existe mais: o tema padrão, no modo que o gravado tinha.
-                if (themeIdGuard.isSavedThemeRemoved()) return validateDesign(getSeedConfig(parsed?.mode));
-                return validateDesign({ ...getSeedConfig(), ...parsed });
+                if (themeIdGuard.isSavedThemeRemoved()) return validateDesign(getSeedConfig(saved.full.mode));
+                return designChoices.restore(getSeedConfig(), saved);
             }
         } catch (error) {
             console.error('[Sarak:Design] localStorage load error:', error);
@@ -119,13 +123,15 @@ export const useDesignManager = (props: {
 
         const opt = optionsRef.current;
         const strategy = resolveEffectiveStrategy(opt?.persistence);
+        // As escolhas, com o marcador; sem o tema em memória, o design inteiro e sem marcador, como antes.
+        const persisted = designChoices.toPersisted(config, activeThemeIdAtSave);
         try {
             if (strategy !== 'remote') {
-                localStorage.setItem(storageKey, JSON.stringify(config));
+                writeCachedDesign(storageKey, config, persisted.format === undefined ? undefined : { format: persisted.format, design: persisted.design });
                 writeCachedActiveThemeId(storageKey, activeThemeIdAtSave);
             }
             if (strategy !== 'local' && opt?.persistence?.onSave) {
-                await opt.persistence.onSave(config, activeThemeIdAtSave);
+                await deliverToOnSave(opt.persistence.onSave, persisted, activeThemeIdAtSave);
             }
             onThemeChangeRef.current?.(config);
             lastPersistedSignatureRef.current = signature;
@@ -134,7 +140,7 @@ export const useDesignManager = (props: {
             console.error('[Sarak:Design] Save error:', error);
             recordPersistenceSaveFailure();
         }
-    }, [isHydrated, storageKey, recordPersistenceSaveFailure]);
+    }, [isHydrated, storageKey, recordPersistenceSaveFailure, designChoices.toPersisted]);
 
     const previousStorageKeyRef = useRef(storageKey);
     useEffect(() => {
@@ -181,7 +187,9 @@ export const useDesignManager = (props: {
         configRef,
         options?.persistence?.preferConfigOverCache === true,
         themeIdGuard,
+        designChoices.restore,
     );
+    useDeferredDesignRestore(designChoices.pendingRef, allThemes, activeThemeId, designChoices.restore, setDesign);
     useDesignRemoteLoader({
         isHydrated,
         optionsRef,
@@ -196,6 +204,7 @@ export const useDesignManager = (props: {
         design,
         resolvedThemeId,
         themeIdGuard,
+        restoreSaved: designChoices.restore,
     });
 
     // Sincronização entre abas/apps (lacuna pré-Teste Real): default ligado, opt-out
@@ -206,11 +215,12 @@ export const useDesignManager = (props: {
     const safeSetDesign = useCallback((next: SarakDesignState | ((prev: SarakDesignState) => SarakDesignState)) => {
         userChangedDesignRef.current = true;
         lastAttemptedSignatureRef.current = null;
+        designChoices.pendingRef.current = null;
         setDesign((prev) => {
             const updated = typeof next === 'function' ? next(prev) : next;
             return validateDesign(updated);
         });
-    }, []);
+    }, [designChoices.pendingRef]);
 
     const applyConfig = useCallback((partial: Partial<SarakThemePayload>) => {
         safeSetDesign((prev) => ({ ...prev, ...partial }));

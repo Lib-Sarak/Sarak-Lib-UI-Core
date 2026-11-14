@@ -27,15 +27,18 @@ const shiftRole = (scale: PaletteScaleName, ...origins: number[]): PaletteColorR
 export const PALETTE_ROLE_MAP: Readonly<Record<string, PaletteColorRole>> = {
     sidebarColor: colorRole('neutral', 100, 950),
     sidebarHoverColor: colorRole('primary', 200, 800, 0.6),
-    sidebarActiveColor: colorRole('primary', 300, 700, 0.6),
-    sidebarItemTextColor: colorRole('neutral', 800, 100),
+    // A anatomia da barra: o ativo é um véu da primária, quase invisível; quem marca é a barra luminosa na primária.
+    sidebarActiveColor: colorRole('primary', BASE, BASE, 0.1),
+    // Item inativo apagado, como na anatomia antiga: só o ativo e o passar do mouse acendem (o par de 4,5:1 segura o piso).
+    sidebarItemTextColor: colorRole('neutral', 600, 400),
     sidebarItemHoverTextColor: colorRole('neutral', 950, 50),
-    sidebarCategoryColor: shiftRole('secondary', BASE),
+    // Título de seção na cor do texto da barra e ícone inativo na do rótulo, não em cor de destaque: a lista não parece acesa.
+    sidebarCategoryColor: colorRole('neutral', 950, 50),
     sidebarBrandColor: colorRole('accent', 700, 300),
     sidebarBorderColor: colorRole('neutral', 200, 800, 0.64),
-    sidebarBrandBackground: colorRole('accent', 100, 900),
+    sidebarBrandBackground: colorRole('primary', BASE, BASE, 0.05),
     sidebarFooterBackground: colorRole('neutral', 100, 900),
-    sidebarIconColor: colorRole('primary', 600, 300),
+    sidebarIconColor: colorRole('neutral', 600, 400),
     topbarColor: colorRole('neutral', 100, 950),
     topbarHoverColor: colorRole('primary', 200, 800, 0.6),
     topbarActiveColor: colorRole('primary', 300, 700, 0.6),
@@ -48,7 +51,7 @@ export const PALETTE_ROLE_MAP: Readonly<Record<string, PaletteColorRole>> = {
     topbarIconColor: colorRole('primary', 600, 300),
     topbarTitleColor: colorRole('neutral', 950, 50),
     navItemActiveColor: shiftRole('primary', BASE),
-    navActiveMarkerColor: colorRole('accent', BASE, BASE),
+    navActiveMarkerColor: colorRole('primary', BASE, BASE),
     cardInnerGlowColor: colorRole('primary', 300, 700, 0.07),
     cardHeaderBg: colorRole('secondary', 100, 900),
     cardHeaderBorder: colorRole('secondary', 200, 800, 0.64),

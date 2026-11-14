@@ -32,8 +32,17 @@ describe('PALETTE_ROLE_MAP', () => {
     it('distribui 60-30-10: a primária pinta ação e controle, a secundária o cabeçalho, o acento a ênfase e o foco', () => {
         const scaleOf = (tokens: string[]): string[] => [...new Set(tokens.map((token) => PALETTE_ROLE_MAP[token].scale))];
         expect(scaleOf(['btnPrimaryBg', 'rangeActiveColor', 'switchTrackActiveBg', 'checkboxActiveColor', 'primaryColor', 'titleColor'])).toEqual(['primary']);
-        expect(scaleOf(['subtitleColor', 'btnSecondaryBg', 'cardHeaderBg', 'cardHeaderBorder', 'tableHeaderBg', 'sidebarCategoryColor', 'chartColorPalette'])).toEqual(['secondary']);
-        expect(scaleOf(['emphasisColor', 'navActiveMarkerColor', 'inputFocusBorderColor', 'cardTitleIconGlow', 'sidebarBrandColor'])).toEqual(['accent']);
+        expect(scaleOf(['subtitleColor', 'btnSecondaryBg', 'cardHeaderBg', 'cardHeaderBorder', 'tableHeaderBg', 'chartColorPalette'])).toEqual(['secondary']);
+        expect(scaleOf(['emphasisColor', 'inputFocusBorderColor', 'cardTitleIconGlow', 'sidebarBrandColor'])).toEqual(['accent']);
+    });
+
+    it('a barra lateral segue a anatomia: marcador e véu do ativo na primária, ícone e título de seção na cor do texto', () => {
+        expect(PALETTE_ROLE_MAP.navActiveMarkerColor).toEqual({ scale: 'primary', toneByMode: { light: PALETTE_BASE_TONE, dark: PALETTE_BASE_TONE } });
+        expect(PALETTE_ROLE_MAP.sidebarActiveColor.scale).toBe('primary');
+        expect(PALETTE_ROLE_MAP.sidebarActiveColor.alpha).toBeLessThanOrEqual(0.15);
+        expect(PALETTE_ROLE_MAP.sidebarIconColor).toEqual(PALETTE_ROLE_MAP.sidebarItemTextColor);
+        expect(PALETTE_ROLE_MAP.sidebarCategoryColor.scale).toBe('neutral');
+        expect(PALETTE_ROLE_MAP.sidebarBrandBackground.alpha).toBeLessThanOrEqual(0.1);
     });
 
     it('o preenchimento de marca é a cor da semente, exata, nos dois modos', () => {
@@ -52,10 +61,10 @@ describe('PALETTE_ROLE_MAP', () => {
 
 describe('PALETTE_ROLE_MAP — a área define o tratamento da cor', () => {
     const TEXT = {
-        secondary: ['subtitleColor', 'sidebarCategoryColor', 'secondaryColor'],
+        secondary: ['subtitleColor', 'secondaryColor'],
         accent: ['emphasisColor', 'accentColor', 'tertiaryColor', 'inputFocusBorderColor'],
     } as const;
-    const SMALL = { secondary: ['chartColorPalette'], accent: ['navActiveMarkerColor'] } as const;
+    const SMALL = { primary: ['navActiveMarkerColor'], secondary: ['chartColorPalette'] } as const;
     const SURFACE = ['cardHeaderBg', 'cardHeaderBorder', 'tableHeaderBg', 'btnSecondaryBg'];
 
     it.each(Object.entries(TEXT))('texto da %s: parte da semente e anda o mínimo (shiftFrom na base)', (scale, tokens) => {
