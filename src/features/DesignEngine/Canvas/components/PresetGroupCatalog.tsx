@@ -1,5 +1,5 @@
-import React from 'react';
-import { resolvePaletteForDesign } from '../../../../core/Design/palette/resolve';
+import React, { useMemo, useRef } from 'react';
+import { PALETTE_CALCULATED_KEYS, resolvePaletteForDesign } from '../../../../core/Design/palette/resolve';
 import { getPresetGroup } from '../../../../core/Design/presets/components/registry';
 import type { ComponentPreset } from '../../../../core/Design/presets/components/cards';
 import type { SarakDesignState } from '../../../../core/Provider/types';
@@ -12,6 +12,7 @@ import { OptionTile } from './OptionTile';
 import { PresetSample } from './PresetSamples';
 import { SampleScope } from './SampleScope';
 import type { PeekHandler } from './peek';
+import { useValueWhileVisible } from '../hooks/useValueWhileVisible';
 
 interface PresetGroupCatalogProps {
     groupId: string;
@@ -36,28 +37,57 @@ export const useFontsOf = (preset: ComponentPreset): void => {
     }, [requestFont, headingFont, bodyFont]);
 };
 
+/** As chaves de papel, em ordem fixa: a parte do design que o cálculo da paleta lê, além do valor da paleta e dos tons. */
+const PALETTE_ROLE_KEYS = [...PALETTE_CALCULATED_KEYS].sort();
+/** Quantas entradas a memória guarda: as opções de barra de uma tela e as das escolhas anteriores. */
+const BAR_TONE_CACHE_LIMIT = 64;
+const BAR_TONE_CACHE = new Map<string, Partial<SarakDesignState>>();
+
+/**
+ * Tudo o que `resolvePaletteForDesign` lê do design: o valor da paleta, os tons das barras e, em cada chave de papel, se ela
+ * está declarada e com qual texto (a correção contra o declarado usa a presença da chave e a cor literal). Mesma chave, mesmas
+ * cores: as opções com o mesmo tom calculam a paleta uma vez, e não uma por opção a cada escolha.
+ */
+const paletteInputKey = (design: Record<string, unknown>, mode: 'light' | 'dark'): string => [
+    mode, String(design.colorPalette), String(design.sidebarTone), String(design.topbarTone),
+    ...PALETTE_ROLE_KEYS.map((id) => (id in design ? `${typeof design[id] === 'string' ? design[id] : '?'}` : '-')),
+].join('|');
+
 /**
  * As cores da barra que o papel (`sidebarTone`/`topbarTone`) calcula: o rascunho traz as cores já gravadas, e o papel só
  * aparece na amostra se a paleta for recalculada com ele. Só as chaves da barra entram, para o resto da amostra ficar como está.
  */
 export const barToneColors = (draft: Partial<SarakDesignState> | undefined, overlay: Partial<SarakDesignState>, mode: 'light' | 'dark'): Partial<SarakDesignState> => {
     if (!draft) return {};
-    const palette = resolvePaletteForDesign({ ...draft, ...overlay } as Record<string, unknown>, undefined, mode);
-    return Object.fromEntries(Object.entries(palette).filter(([id]) => /^(sidebar|topbar)/.test(id))) as Partial<SarakDesignState>;
+    const input = { ...draft, ...overlay } as Record<string, unknown>;
+    const key = paletteInputKey(input, mode);
+    const cached = BAR_TONE_CACHE.get(key);
+    if (cached) return cached;
+    const palette = resolvePaletteForDesign(input, undefined, mode);
+    const colors = Object.fromEntries(Object.entries(palette).filter(([id]) => /^(sidebar|topbar)/.test(id))) as Partial<SarakDesignState>;
+    if (BAR_TONE_CACHE.size >= BAR_TONE_CACHE_LIMIT) BAR_TONE_CACHE.delete(BAR_TONE_CACHE.keys().next().value as string);
+    BAR_TONE_CACHE.set(key, colors);
+    return colors;
 };
 
 const Tile: React.FC<PresetGroupCatalogProps & { preset: ComponentPreset; kind: Parameters<typeof PresetSample>[0]['kind'] }> = ({ groupId, preset, kind, onApplyPreset, currentMode, draft, onPeek }) => {
     const text = usePresetText();
     const shown = text.preset(preset);
     useFontsOf(preset);
-    const tokens = NAVIGATION_STYLE[groupId]
-        ? { ...BAR_WIDGETS_OFF, ...barToneColors(draft, preset.design, currentMode), ...preset.design, navigationStyle: NAVIGATION_STYLE[groupId] } as Partial<SarakDesignState>
-        : preset.design;
+    // Fora da área visível a opção guarda o rascunho que mostrou por último: não recalcula a paleta nem o escopo a cada escolha.
+    const sampleRef = useRef<HTMLDivElement>(null);
+    const shownDraft = useValueWhileVisible(sampleRef, draft);
+    const tokens = useMemo(() => (NAVIGATION_STYLE[groupId]
+        ? { ...BAR_WIDGETS_OFF, ...barToneColors(shownDraft, preset.design, currentMode), ...preset.design, navigationStyle: NAVIGATION_STYLE[groupId] } as Partial<SarakDesignState>
+        : preset.design), [groupId, shownDraft, preset.design, currentMode]);
+    // O mesmo elemento enquanto a amostra não muda: o React não reconcilia o cromo inteiro da miniatura a cada escolha.
+    const sample = useMemo(() => (kind === 'bar' && shownDraft
+        ? <BarSample draft={shownDraft as SarakDesignState} mode={currentMode} tokens={tokens} miniature={groupId === 'topbar' ? 'topbar' : 'sidebar'} />
+        : <SampleScope draft={shownDraft} tokens={tokens} mode={currentMode}><PresetSample kind={kind} preset={preset} /></SampleScope>
+    ), [kind, shownDraft, currentMode, tokens, groupId, preset]);
     return (
         <OptionTile name={shown.name} description={shown.description} onApply={() => onApplyPreset(preset.design, true)} peekTokens={() => preset.design} onPeek={onPeek}>
-            {kind === 'bar' && draft
-                ? <BarSample draft={draft as SarakDesignState} mode={currentMode} tokens={tokens} miniature={groupId === 'topbar' ? 'topbar' : 'sidebar'} />
-                : <SampleScope draft={draft} tokens={tokens} mode={currentMode}><PresetSample kind={kind} preset={preset} /></SampleScope>}
+            <div ref={sampleRef}>{sample}</div>
         </OptionTile>
     );
 };

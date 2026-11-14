@@ -4,6 +4,8 @@ import { useOnFirstVisible } from '../hooks/useOnFirstVisible';
 interface LazyWhenVisibleProps {
     children: React.ReactNode;
     className?: string;
+    /** O elemento do espaço reservado, para quem também acompanha a visibilidade dele (a amostra que congela fora da tela). */
+    containerRef?: React.RefObject<HTMLDivElement>;
 }
 
 /**
@@ -11,8 +13,9 @@ interface LazyWhenVisibleProps {
  * com componentes reais, é isto que faz abrir a aba custar o que cabe na tela e não a lista inteira.
  * O espaço reservado (a altura vem de `className`) já existe antes, então a rolagem não pula.
  */
-export const LazyWhenVisible: React.FC<LazyWhenVisibleProps> = ({ children, className }) => {
-    const ref = useRef<HTMLDivElement>(null);
+export const LazyWhenVisible: React.FC<LazyWhenVisibleProps> = ({ children, className, containerRef }) => {
+    const ownRef = useRef<HTMLDivElement>(null);
+    const ref = containerRef ?? ownRef;
     const [seen, setSeen] = useState(false);
     const show = useCallback(() => setSeen(true), []);
     useOnFirstVisible(ref, show);

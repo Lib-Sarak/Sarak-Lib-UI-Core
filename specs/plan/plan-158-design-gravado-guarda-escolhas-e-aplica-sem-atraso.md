@@ -1,9 +1,9 @@
 ---
 tipo: "plan"
 titulo: "Gravar só as escolhas do design e aplicar sem atraso"
-objetivo: "Fazer o design gravado conter o que o administrador escolheu, nunca o que a paleta calculou, para que trocar tema, paleta, tom da barra ou modo sempre chegue à tela, e fazer a escolha de uma opção no painel responder em menos de 200 ms"
+objetivo: "Fazer o design gravado conter o que o administrador escolheu, nunca o que a paleta calculou, para que trocar tema, paleta, tom da barra ou modo sempre chegue à tela, e fazer a escolha de uma opção no painel responder em menos de 250 ms (de ~490 ms antes)"
 dominio: "Design Engine / Persistência e rascunho"
-status: "🟡 Em execução"
+status: "🟢 Aprovado"
 prioridade: "Alta"
 tags: ["plan", "design-engine", "persistencia", "paleta", "painel", "desempenho"]
 relacionados: ["[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[02-design-engine]]", "[[024-paleta-calculada-separada-do-tema]]", "[[009-persistencia-tenant-aware]]", "[[016-preferencias-do-usuario-separadas-do-tema]]"]
@@ -15,7 +15,7 @@ destino_sintese: "adr/026 + specs/09-temas-e-presets.md + specs/06-painel-de-cus
 # 1. Objetivo
 
 No sistema real, trocar tema, paleta, tom da barra ou modo claro/escuro muda a tela toda vez, inclusive depois de muitas aplicações
-seguidas e com cache antigo no navegador, e escolher uma opção no painel responde em menos de 200 ms.
+seguidas e com cache antigo no navegador, e escolher uma opção no painel responde em menos de 250 ms.
 
 # 2. Contexto
 
@@ -122,7 +122,7 @@ painel responder (o botão `Aplicar` habilitado) e o número de recálculos de e
 **antes** de mudar código e registre o número.
 2.2. Ache, com o Profiler, o que reescreve os `<style>` a cada escolha e por que amostras fora da tela recalculam. A meta: uma escolha
 não reescreve `<style>` de escopo cujo conteúdo não mudou, e a amostra fora da área visível não recalcula.
-2.3. Meta medida no spec: escolher uma opção responde em **menos de 200 ms** a 1440×900 no harness; o teto de
+2.3. Meta medida no spec: escolher uma opção responde em **menos de 250 ms** (mediana, React de produção; decisão do dono em 2026-11-14) a 1440×900 no harness; o teto de
 `troca-de-tema.spec.ts` não sobe.
 2.4. *(Nota do revisor, 2026-11-12, da medida da `plan-162`.)* Numa troca de tema, o escopo da prévia ao vivo
 (`.sarak-design-scope`, classes `sarak-scope-*`) é remontado **8 vezes**, a ≈105 ms uma da outra. Cada vez tem marca própria e
@@ -143,7 +143,7 @@ aplicar ou descartar. Sem rascunho sujo, nada pergunta. Teste de unidade para os
 - [ ] Tom da barra e paleta mudam a cor depois de qualquer número de aplicações (teste 1.2, que reprovava antes).
 - [ ] Design gravado no formato antigo é corrigido pela lib ao carregar, sem ação do importador (teste 1.3).
 - [ ] Modo claro troca fundo, barra e card nas 4 alternâncias com o design do caso medido.
-- [ ] Escolher uma opção no painel: menos de 200 ms, medido no spec de navegador novo, com o número de antes registrado.
+- [ ] Escolher uma opção no painel: menos de 250 ms (mediana, React de produção), medido no spec de navegador novo, com o número de antes registrado.
 - [ ] Teto de `troca-de-tema.spec.ts` sem subir.
 - [ ] Sair com rascunho sujo pergunta; sem rascunho, não pergunta.
 - [ ] Nota em `docs/migracoes.md`.
@@ -717,3 +717,381 @@ navegador, então confira os processos antes de abrir o Playwright, como nas rod
 8 vezes por troca) faz parte do lote.
 
 **Status da plan: 🟡 Em execução** (lotes 2 e 3).
+
+---
+
+# 9.6 Resumo da execução (lote 2)
+
+## Resumo da execução (lote 2) — 2026-11-13
+
+**Resultado:** Concluído com pendências. 2.1, 2.2 e 2.4 estão feitos e medidos. A meta de tempo da 2.3 (menos de 200 ms) só fecha com a
+máquina quieta: lá a mediana ficou entre 167 e 242 ms (abaixo de 200 em 2 de 6 rodadas). Com carga, não fecha. O teto de
+`troca-de-tema.spec.ts` não subiu.
+
+**Estado do worktree ao iniciar**
+O lote 1 staged e não commitado. Em curso, a `plan-165`: arquivos do cromo, da navegação, `role-map.ts`, `schema/navigation.ts`,
+`preferences.ts`, catálogo de tokens, `design-decisions.json`, `dist/sarak.css`, `docs/component-catalog.*`, os testes deles e
+`specs/plan/plan-165-…` (adicionado). A fotografia completa está guardada fora do repositório.
+
+**2.1 — spec de navegador, rodado antes de mudar código.** `browser-tests/escolha-no-painel.spec.ts`, no molde de `troca-de-tema.spec.ts`
+e sobre a mesma cena (`fixtures/troca-de-tema-entry.tsx`, 1440×900). Dois casos:
+1. **A escolha na Barra lateral.** Decisão Layout; 5 escolhas medidas, alternando "Invertida" e "Na cor da marca", depois de uma de
+   aquecimento. Mede o tempo do clique até o quadro seguinte ao Aplicar habilitado (`performance.now()` na página; vale a mediana), os
+   recálculos de estilo e os `<style>` inseridos, removidos ou reescritos. Tetos: mediana < 200 ms e 0 `<style>`.
+2. **A troca de tema.** Mede quantos escopos são montados de novo e quantas vezes o estilo inline de cada amostra é reescrito, separando
+   as visíveis das fora da área visível. A visibilidade vem de um `IntersectionObserver`, com o recorte das colunas roláveis e a mesma
+   folga do hook. Tetos: 0 remontagens e 0 reescritas fora da área visível.
+
+**O número de antes** (3 execuções, máquina sem carga):
+- mediana da escolha **492, 468 e 514 ms**;
+- 6 a 8 recálculos de estilo por escolha;
+- 0 `<style>` por escolha;
+- na troca de tema, 0 remontagens e 11 `<style>`.
+
+O caso 2, rodado sobre uma cópia do código de antes fora do repositório, reprova: as 4 amostras fora da área visível reescreviam
+531, 531, 529 e 529 propriedades.
+
+**2.2 — o que o Profiler mostrou, e o que mudou.** Uma escolha antes custava 464 ms de JS (`FunctionCall`) e 15 ms de recálculo de estilo.
+Os `<style>` **não** são reescritos numa escolha neste harness: o React só regrava o `__html` quando o texto muda, e a opção da Barra
+lateral não muda valor responsivo. O custo era render:
+- `Tile` → `barToneColors` → `resolvePaletteForDesign`: **226 ms**. Cada cartão de barra recalculava a paleta inteira, com a correção de
+  contraste, a cada escolha. Correções em `PresetGroupCatalog.tsx`:
+  - cache exato pelo que a paleta lê (`paletteInputKey`: valor, modo, tons e, em cada chave de papel, a presença e o texto). As opções do
+    mesmo tom calculam uma vez;
+  - `tokens` e o **elemento** da amostra memorizados: o React não reconcilia o cromo inteiro da miniatura;
+  - o rascunho congelado fora da área visível.
+- `mergeUIContextValue`: **64 ms**. Cada consumidor de `useSarakUI` copiava o design inteiro duas vezes a cada render. Agora o mesmo par
+  (contexto, override) devolve o mesmo objeto (`WeakMap`).
+- A troca de tom do lote 1 (`replaceDesignChoice`): 21 ms. Os baselines passam a ser guardados por tema, host e condutores
+  (`designChoices.ts`, `baselineFor`), e o baseline do tom anterior é o da troca anterior.
+- **Amostra fora da área visível não recalcula:** `useValueWhileVisible` (novo) devolve o rascunho visto por último enquanto a amostra está
+  fora da tela. Na tela, o valor chega adiado (`useDeferredValue`): a prévia ao vivo e o Aplicar respondem no render urgente, e as amostras
+  se refazem logo depois, num render que o React interrompe. Usado em `SampleScope` (com `LazyWhenVisible` expondo o espaço reservado),
+  `PresetGroupCatalog` e `PersonalityCatalog`.
+
+**2.4 — a "remontagem 8 vezes".** Medido: **nenhum escopo é montado de novo**, nem antes nem depois. Os "8 escopos com marca própria" são as
+**8 amostras de Personalidade** da decisão Tema (`sarak-scope-re` a `rl`), mais as 2 da prévia (`r2`, `r3`). Cada uma reescrevia ~529
+propriedades de estilo inline na troca, inclusive as 4 fora da área visível. Isso vinha de `PersonalityCatalog.tsx:26`, que calculava
+`barToneColors` com o rascunho vivo e assim furava o congelamento.
+
+Depois, as 4 de fora reescrevem **0**; as 4 visíveis, 529 cada, num render adiado. Os `<style>` escritos na troca caem de 11 para 7. As
+~4.500 mutações em `div.sarak-card` são os cartões da prévia ao vivo, que mudam com o tema: reduzi-las é mudar como o cartão escreve o
+próprio estilo, fora deste lote. No harness, as mutações saem todas na mesma janela de ~15 ms, não a ~105 ms uma da outra como a nota
+mediu no ERP.
+
+**2.3 — a meta.**
+
+| Medida | Antes | Depois |
+|---|---|---|
+| Spec, máquina sem carga (mediana de 5 escolhas) | 492 · 468 · 514 ms | 177 · 205 · 205 (antes do cache de baseline) · 242 · 230 · 167 ms (depois dele) |
+| A/B intercalado, com a carga da plan-165 (10 escolhas cada) | 585 ms | 295 ms |
+| A/B intercalado, com um processo externo ocupando um núcleo (12 escolhas cada) | 580 ms | 426 ms (215 a 1.020) |
+| Recálculos de estilo por escolha | 6–8 | 6–10 |
+| `troca-de-tema.spec.ts` (tetos 32 / 174 / 2) | — | 23 e 25 recálculos / 8 transições / 1 recálculo da tela inteira |
+
+O que sobra numa escolha, medido:
+- **Um Layout do documento inteiro, de ~55 ms**, com só 39 objetos sujos e raiz no `#document`. Ele acontece mesmo com todos os escopos
+  escondidos: o rascunho aparece na tela real de quem edita (06 §4) e muda variáveis herdadas na raiz (`--sarak-sidebar-icon-size`
+  18→20 px, `--sarak-nav-item-radius`, as cores da lateral, `data-sx-sidebar-*` em `<html>`). Tirar esse custo é mudar 06 §4 ou o CSS do
+  painel; nenhum dos dois é deste lote.
+- A reconciliação do React **de desenvolvimento**, que é o que o harness empacota.
+
+O caso de tempo do spec reprova quando a máquina está carregada. Na última rodada, um processo `find` externo ao repositório (PID 34528,
+7.485 s de CPU acumulados) ocupava um núcleo, além do Docker.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `browser-tests/escolha-no-painel.spec.ts` | criado | o spec do 2.1 e da nota 2.4 |
+| `src/features/DesignEngine/Canvas/hooks/useValueWhileVisible.ts` | criado | o valor congelado fora da tela e adiado na tela |
+| `src/features/DesignEngine/Canvas/hooks/__tests__/useValueWhileVisible.test.tsx` | criado | 4 casos |
+| `src/features/DesignEngine/Canvas/components/PresetGroupCatalog.tsx` | alterado | cache exato de `barToneColors`; `Tile` congela fora da tela e memoriza tokens e amostra |
+| `src/features/DesignEngine/Canvas/components/SampleScope.tsx` | alterado | o escopo usa o rascunho visto por último |
+| `src/features/DesignEngine/Canvas/components/LazyWhenVisible.tsx` | alterado | prop opcional `containerRef` |
+| `src/features/DesignEngine/Canvas/components/PersonalityCatalog.tsx` | alterado | o mesmo padrão do `Tile` |
+| `src/core/Provider/mergeUIContextValue.ts` | alterado | mesmo par → mesmo objeto |
+| `src/core/Provider/__tests__/mergeUIContextValue.test.ts` | alterado | 2 casos do cache |
+| `src/core/Provider/utils/designChoices.ts` | alterado | `baselineFor` (cache de baseline) |
+| `C:\tmp\sarak-previa-158\index.html` | alterado (fora do repo) | seção nova "Lote 2"; a do lote 1 ficou |
+
+**Verificações executadas**
+- O spec novo antes da correção (3 execuções) e depois (8 execuções), mais dois A/B intercalados. Números acima.
+- `troca-de-tema.spec.ts`, os 4 casos: passaram, dentro do teto.
+- `npx vitest run` completo: **736 arquivos, 5901 testes, 5901 passaram, 0 falharam, 0 pulados.**
+- `npm run verify -- --tier=quick`: tudo verde, menos `plan-index:check`, que acusou só o status da `plan-165` (do revisor) e foi
+  sincronizado pelo `npm run plan-index` deste fechamento.
+- Os testes do lote 1 (`designChoices`, `useDesignChoices`, `designGravadoEscolhas`) passaram 30/30 depois do cache de baseline.
+- **Não rodei** o build nem `cromo-css-real:check`. O CSS de `dist/` é o que a 165 gerou.
+
+**Critérios de aceite**
+- [x] Uma escolha não reescreve `<style>` de escopo cujo conteúdo não mudou — 0 em todas as escolhas medidas.
+- [x] A amostra fora da área visível não recalcula — caso 2 do spec: 0 reescritas depois; 531/531/529/529 antes.
+- [x] O teto de `troca-de-tema.spec.ts` não sobe — 23 e 25 / 8 / 1.
+- [x] O número de antes registrado — 492/468/514 ms.
+- [ ] Escolher uma opção responde em menos de 200 ms — com a máquina quieta, a mediana ficou entre 167 e 242 ms (abaixo de 200 em 2 de 6
+  rodadas); com carga, não. Motivo e o que sobra: acima.
+- [ ] Prévia com o ok do dono — gerada em `C:\tmp\sarak-previa-158\index.html#lote2`.
+
+**Decisões e suposições**
+- **Arquivos fora da lista literal da §3.1:** `mergeUIContextValue.ts`, `PersonalityCatalog.tsx`, `LazyWhenVisible.tsx`, o hook novo e o
+  `designChoices.ts` do lote 1. Foram as causas que o Profiler mediu para os critérios 2.2 a 2.4: a fusão do contexto em cada consumidor,
+  a Personalidade furando o congelamento e o espaço reservado que o `SampleScope` precisava observar. Nenhum toca arquivo da `plan-165`.
+- **As amostras visíveis se atualizam um instante depois da prévia** (`useDeferredValue`). É o que deixa a escolha responder antes de as
+  amostras se refazerem. O resultado final é o mesmo: as capturas de antes e depois do painel são iguais.
+- **`mergeUIContextValue` devolve o mesmo objeto para o mesmo par.** `useSarakUI()` deixa de criar um objeto novo a cada render quando
+  nada mudou. Nada do contrato publicado muda (sem nota de migração).
+- **A medida de tempo é a mediana**, e com a máquina quieta, como a plan pede ("no harness"). Mantive o teto de 200 ms no spec, pedido
+  pela 2.3, mesmo com ele reprovando sob carga. `troca-de-tema.spec.ts` não afirma tempo por esse mesmo motivo: o revisor decide se o
+  teto de tempo fica.
+
+**Achados fora do escopo (não corrigidos)**
+- O Layout do documento inteiro (~55 ms) a cada escolha, explicado acima (06 §4 e o CSS do painel).
+- As ~4.500 mutações de estilo inline em `div.sarak-card` da prévia numa troca de tema: o cartão escreve o próprio estilo inline.
+- O harness empacota o React de desenvolvimento (`jsxDEV`). As medidas de tempo de todos os specs incluem esse custo.
+- Os rótulos das opções de Barra lateral (por exemplo "LIMPA") saem quase ilegíveis, brancos sobre o tile claro, **antes e depois**
+  (capturas da prévia). Isso é cromo ou painel, provavelmente na área da 165.
+- Um processo `find` externo (PID 34528) ocupa um núcleo da máquina sem parar.
+
+**Pendências / riscos**
+- A meta de 200 ms sem folga: para fechar com carga é preciso atacar o Layout da raiz ou medir em build de produção. Decisão do revisor
+  ou do dono.
+- O worktree mudou durante a execução, sem toque meu: a `plan-165` rebuildou `dist/` (chunks apagados e recriados, `index.*`,
+  `sarak-scoped.css`, `BUILD_INFO.json`, `buildInfo.ts`) e mexeu nos temas, em `presets/components/layout.ts`, em `sarak-dev/`, em
+  `docs/migracoes.md` e na cópia do kit, nos specs e testes do cromo, e em dois `.snap` do Canvas (`PreviewCanvas`, `AtmosphereCatalog`).
+  O commit deste lote precisa sair separado.
+
+## Veredito — 2026-11-13 — lote 2 — 🔵 Em correção (e o lote 1, já no índice, volta para correção)
+
+**O que conferi e como**
+- `npm run build`: passa.
+- `cromo-css-real:check`: 667 casos passaram e 2 reprovaram, e os 2 se repetem numa segunda rodada isolada:
+  `login-theme-application.spec.ts:41` e `plan-141-presets-do-painel.spec.ts:206` (Layout, claro).
+- **Bisseção em cópias fora do repositório** (`git archive` do HEAD, junção para `node_modules`, build com o git do repositório só
+  no comando do build; as cópias já foram apagadas):
+
+  | Cópia | `login-theme-application` | `plan-141` Layout claro |
+  |---|---|---|
+  | HEAD (`7b8b8bfe`) | passa | — |
+  | HEAD + índice (lote 1 desta plan) | **reprova** | passa |
+  | worktree sem os 10 arquivos do lote 2 (lote 1 + `plan-165`) | **reprova** | **reprova** |
+  | worktree inteiro | **reprova** | **reprova** |
+
+  A falha do login nasce no **lote 1**. A do `plan-141` nasce na `plan-165` e foi para lá (veredito dela de hoje).
+- O spec novo, 3 rodadas minhas na máquina com o processo externo ainda ativo: passa, passa e **reprova** (mediana 214 ms).
+- Não repeti o vitest completo, o quick nem o `troca-de-tema.spec.ts` do executor.
+
+**Achados**
+1. **Bloqueio — o rascunho vaza para o sistema antes de Aplicar (lote 1).** `login-theme-application.spec.ts:62`: depois do login o
+   sistema mostra o fundo gravado do tenant (`#123456`, conferido com uma sonda na cópia). Basta escolher Sarak Sovereign no painel,
+   **sem Aplicar**, e o fundo do sistema já vira o do tema (`#061011`). Isso fere 06 (o rascunho só chega ao sistema no Aplicar), e o
+   spec que guarda isso existia e passava no HEAD. O lote 1 alterou `LoginThemeApplication.test.tsx` (vitest), mas este caso de
+   navegador não foi rodado. Os candidatos são os caminhos que o lote 1 mudou no Provider: `useDesignSync.ts:110` (a hidratação com
+   `restoreSaved`), `useDesignRemoteLoader.ts`, `useDesignManager.ts` e `resolveStorageKey.ts` (`readCachedActiveThemeId`).
+   - **Correção:** achar a causa, consertar sem mudar o spec e rodar `login-theme-application.spec.ts` junto com os vizinhos de
+     persistência no navegador (`browser-tests/*persist*`, `*login*`, `*tenant*`, `*tema*`).
+   - **O commit staged do lote 1 não sai até isso fechar.** O comando dele que entreguei antes fica cancelado.
+2. **Bloqueio — a meta de 200 ms (2.3) não fecha, e o caso de tempo está instável.** Caiu de ~490 para ~170–240 ms, um ganho real. Mas
+   um teto que reprova uma em três rodadas é um caso intermitente, e o gate não pode tê-lo. Decisão do dono: está no relatório desta
+   revisão. Recomendação do revisor: medir no React de produção, que é o que o usuário roda (o harness empacota o de desenvolvimento:
+   `build-harness.mjs` não define `NODE_ENV`), com 200 ms de teto e mais amostras.
+3. **Aviso — a chave do cache `baselineFor` está incompleta** (`designChoices.ts`). A chave é `theme.design`, mas
+   `composeChoiceBaseline` → `resolveThemeForMode` também lê `theme.contraparte`. Um tema refeito com o mesmo `design` e outra
+   contraparte recebe o baseline velho. Hoje ninguém faz isso (quem grava cria um `design` novo), mas é cache que pode mentir.
+   - **Correção:** chave pelo objeto `theme`, ou incluir a contraparte. Um caso de teste com a contraparte trocada.
+4. **Fora do escopo:** na prévia (`lote2-depois-layout-invertida.png`), os rótulos dos cartões ("LIMPA", "CONTORNADA") saem brancos
+   sobre cartão claro, antes e depois. Backlog 82.
+
+**O que fica do lote 2:** 2.1, 2.2 e 2.4 estão medidos e bem justificados:
+- 0 reescritas fora da área visível (antes eram 531/531/529/529);
+- 0 `<style>` por escolha;
+- o teto da troca de tema mantido.
+
+Os arquivos fora da lista literal (`mergeUIContextValue.ts`, `PersonalityCatalog.tsx`, `LazyWhenVisible.tsx`, o hook novo) foram
+aceitos: cada um é causa medida pelo Profiler.
+
+**Falta para o 🟢:**
+- a correção do achado 1;
+- a decisão do dono no achado 2, e a execução dela;
+- a correção do achado 3;
+- o ok do dono na prévia `C:\tmp\sarak-previa-158\index.html#lote2`.
+
+**Status da plan: 🔵 Em correção.**
+
+## Avaliação do dono — 2026-11-13 — prévia do lote 2 aprovada
+
+- **A prévia `C:\tmp\sarak-previa-158\index.html#lote2` foi aprovada**, com a confirmação de que as escolhas de cor das barras continuam
+  todas disponíveis:
+  - o papel de cor (`sidebarTone` e `topbarTone`): neutro, superfície, primária, secundária ou invertido;
+  - a cor específica (`sidebarColor` e `topbarColor`), que vence o papel.
+- **Meta de 200 ms (achado 2): o dono aceitou a recomendação (a).** O caso de tempo passa a medir no React de produção
+  (`NODE_ENV=production` no harness deste spec), com teto de 200 ms e mais amostras. A correção do lote 2 executa isso junto com os
+  achados 1 e 3.
+
+# 9.7 Resumo da execução (lote 2, correção 1 — achados 1 a 3)
+
+## Resumo da execução (lote 2, correção 1) — 2026-11-14
+
+**Resultado:** Concluído com pendências. Os achados 1 e 3 estão corrigidos, cada um com teste que reprova sem a correção. O achado 2 foi
+executado como o dono decidiu (React de produção, teto de 200 ms, 15 amostras), mas **o teto ainda reprova em parte das rodadas**. Não
+afrouxei o teto: a decisão volta para o dono (abaixo).
+
+**Estado do worktree ao iniciar**
+O lote 1 desta plan no índice, o lote 2 no worktree e a `plan-165` em andamento nos arquivos dela. Durante a execução, o commit
+`a49335ed` (`plan-165`, lote 1) entrou no HEAD **e levou junto o lote 1 desta plan**, que estava no índice: `useDesignChoices.ts`,
+`useDesignManager.ts`, `designChoices.ts`, `LoginThemeApplication.test.tsx` e os testes deles. A correção do achado 1 está agora no
+worktree, por cima desse commit.
+
+**Achado 1 — corrigido** (`src/core/Provider/hooks/useDesignManager.ts:67-71`, `:202`).
+- **Causa.** A releitura do cache (`useDesignSync`) roda enquanto `hasHydratedRef` for falso. O `onLoadBecameAvailable` zera essa ref
+  antes do `onLoad`, e nada a marcava depois que o `onLoad` terminava. Quando a coleção de temas mudava (o painel abrindo a aba Tema
+  monta o catálogo), a releitura rodava de novo e trocava o design do tenant pelo do cache. A sonda mediu isso: depois do login o
+  sistema mostra `#123456`, e abrir a aba Tema, sem escolher nada, já o troca por `#061011`.
+- **Correção.** `markBackendLoaded`: o `onLoad` que termina marca a hidratação da chave, e a releitura do cache não refaz o carregado.
+- **Teste.** `LoginThemeApplication.test.tsx`, novo caso `testTenantDesignSurvivesThemeCollectionChange`: login, `onLoad` resolvido,
+  a coleção de temas trocada e o primário e o fundo continuam `#123456`. Sem a correção, o caso reprova (mutação conferida).
+- `browser-tests/login-theme-application.spec.ts` não foi alterado.
+
+**Achado 2 — executado como decidido; o teto ainda não fecha.**
+- `browser-tests/build-harness.mjs`: opção `production` (`define` de `process.env.NODE_ENV`; sem a opção, `development`, como antes).
+- `browser-tests/escolha-no-painel.spec.ts`: `buildHarness(ENTRY, { production: true })`, `MEASURED_CHOICES = 15`, e os LIMITES 2 e 3
+  atualizados.
+- **Corte medido no caminho de uma escolha** (`src/core/Provider/utils/designChoices.ts`, `baselineFor`). O `config` do host chega
+  como objeto novo a cada render (`SarakUIProvider.tsx:63`, `config = {}`), e o cache por identidade errava sempre: 3 chamadas de
+  `composeChoiceBaseline` por escolha (~18 ms). O host e os drivers agora são chave por conteúdo. Depois disso,
+  `resolvePaletteForDesign` saiu do perfil da escolha.
+- **Medido com a máquina sem outro processo de teste** (`npm run build` antes; 15 escolhas por rodada):
+  - 3 rodadas de `escolha-no-painel`: medianas **207,6 ms (reprova), 204,8 ms (reprova) e < 200 ms (passa)**;
+  - dentro do `cromo-css-real:check`: passou;
+  - 0 `<style>` escritos por escolha, em todas as rodadas.
+- **O que sobra por escolha** (perfil CDP, React de produção):
+  - Layout de ~60–65 ms do documento inteiro (`#document`, 1918 objetos, 39 sujos). É o rascunho na tela real, que a 06 §4 pede:
+    a escolha escreve 22 variáveis em `html` e `body`;
+  - ~70 ms de JS.
+  - Os 8 cartões da prévia (`SmartCard`) não são a alavanca: limpando o estilo inline deles na página, a mediana ficou em 172–189 ms
+    contra 197–258 ms como estão. A variação dentro de uma mesma rodada vai de 105 a 470 ms.
+- **Decisão do dono (HITL).** Com o rascunho na tela real, a mediana fica perto de 200 ms nesta máquina. Opções:
+  - **(a)** Manter 200 ms e atacar o layout da raiz: mudança de arquitetura do rascunho, fora desta plan.
+  - **(b)** Teto de 250 ms no harness, com as contagens (0 `<style>`, 0 remontagens) segurando a regressão.
+  - **(c)** Medir sem o rascunho na tela real, só o painel.
+
+  Recomendação do executor: **(b)**. O ganho real (de ~490 para ~200 ms) está medido, e as contagens não variam com a máquina.
+
+**Achado 3 — corrigido** (`src/core/Provider/utils/designChoices.ts`, `baselineFor`).
+- A chave é `theme.design`, depois a contraparte do tema (`theme.contraparte`, ou uma sentinela sem contraparte), depois o conteúdo do
+  host e dos drivers. Cada entrada guarda até 16 baselines.
+- **Testes** (`designChoices.test.ts`, `describe('baseline guardado entre chamadas')`):
+  - mesmo `design` com outra contraparte devolve o fundo da contraparte nova (`#fedcba`). Com a chave antiga, reprova (mutação
+    conferida);
+  - host com outro conteúdo devolve outro resultado, e o mesmo conteúdo num objeto novo devolve o mesmo resultado.
+
+**Verificações executadas**
+- `npm run build`: passa.
+- `npx tsc --noEmit`: 0 erros.
+- `npx vitest run` completo: **5904 testes, 5904 passaram, 0 falharam.**
+- `npm run verify -- --tier=quick`: verde (inclui `plan-index:check`, `section-pointers:check` e o Anel 0 simulado).
+- Specs de navegador de login, persistência, tenant e tema: `importador-temas`, `login-theme-application`, `lote3-tema-cliente`,
+  `telas-de-sistema`, `tema-sob-demanda`, `tenant-provider-replacement`, `transicao-padrao-do-tema` e `troca-de-tema`. **46 passaram.**
+- `npm run cromo-css-real:check`: **669 passaram, 17 reprovaram.** Nenhum é deste lote:
+  - 15 em `barra-lateral-anatomia.spec.ts`, spec não rastreado da `plan-165`;
+  - 2 em `cartao-cede-a-classe.spec.ts:69` (material, nos modos app e embarcado: "o gradiente da classe, não o do material").
+    Também reprovam rodados sozinhos, e reprovam com o `build-harness.mjs` do HEAD (contraprova; o meu foi devolvido). Esta correção
+    só mexe no estado do Provider, não no CSS. O dist é construído do worktree, que tem mudanças de outra tarefa em presets e temas.
+  - `login-theme-application` e `plan-141` Layout claro, os dois que reprovavam no veredito, passaram.
+
+**Critérios de aceite**
+- [x] Achado 1: o rascunho não chega ao sistema antes de Aplicar no login — spec de navegador passa sem alteração, caso vitest novo.
+- [ ] Achado 2: mediana < 200 ms estável — motivo: 2 de 3 rodadas a 205–208 ms; decisão do dono acima.
+- [x] Achado 3: chave do baseline com a contraparte — teste com a contraparte trocada.
+
+**Pendências / riscos**
+- O lote 1 desta plan já está no HEAD (`a49335ed`), sem a correção do achado 1. Ela precisa de um commit próprio: `useDesignManager.ts`
+  e `LoginThemeApplication.test.tsx`.
+- `cartao-cede-a-classe.spec.ts:69` reprova no worktree atual, e a causa não foi isolada (não é desta plan).
+
+## Veredito — 2026-11-14 — correção 1 do lote 2 — 🟠 achados 1 e 3 fechados; o achado 2 espera o dono
+
+**O que conferi e como**
+- **Achado 1** (`useDesignManager.ts:67-71`, `:202`). A causa explica exatamente o que medi na bisseção: a releitura do cache rodava
+  de novo quando a coleção de temas mudava.
+  - Conferi o risco da correção: a marca de hidratação no fim do `onLoad` não pode impedir a leitura do cache local na estratégia
+    `local` nem no `onLoad` sem dados. Não impede: `useDesignSync` é chamado antes de `useDesignRemoteLoader` (`:185` e `:198`), e o
+    efeito dele lê o cache antes da marca.
+  - Os testes de estratégia `local` (`TenantPersistence`, `TemaRemovidoGravado`) estão na suíte completa que o executor rodou (5904/5904).
+  - O spec de navegador que eu tinha provado reprovar passa sem alteração, e o caso vitest novo tem mutação conferida.
+- **Achado 3:** a chave tem a contraparte, e o teste com a contraparte trocada tem mutação conferida. A chave por conteúdo do host
+  também corrige um cache que errava sempre (`config = {}` novo a cada render). É ganho medido, dentro do escopo.
+- O `cartao-cede-a-classe` reprova também com o harness do HEAD: é o backlog 83, não desta plan. Os 15 da anatomia são do lote 3 da
+  `plan-165`.
+- Não repeti a suíte, o build, o quick nem os 46 specs de navegador do executor.
+
+**O commit `a49335ed` (`plan-165`, lote 1) levou junto o lote 1 desta plan, sem a correção do achado 1.** O comando que o revisor
+entregou dava `git commit` sem limitar aos caminhos, e o índice ainda tinha o lote 1 desta plan. Daqui em diante, comando de commit
+com outra entrega no índice usa `git commit -- <caminhos>`. Não se reescreve o histórico: a correção vai no próximo commit, junto com o
+lote 2.
+
+**Achado 2 — decisão do dono.** O executor aplicou a opção (a) (React de produção, 15 amostras, teto 200 ms). O resultado ficou em 207,
+205 e < 200 ms, e o caso segue intermitente.
+- Opções:
+  - (a) manter 200 ms e mudar a arquitetura do rascunho na tela real (06 §4), fora desta plan;
+  - (b) teto de 250 ms;
+  - (c) medir só o painel, sem o rascunho na tela.
+- O revisor concorda com o executor: **(b)**. O ganho de ~490 para ~200 ms está medido, e as contagens (0 `<style>` e 0 reescritas fora
+  da tela) seguram a regressão sem depender da máquina.
+
+**Falta para o 🟢:** a decisão do achado 2 e a troca do teto no spec, que é uma constante mais o LIMITE escrito.
+
+**Status da plan: 🟠 Em revisão** (aguardando o dono no achado 2).
+
+## Decisão do dono — 2026-11-14 — achado 2: opção (b)
+
+- **Teto de 250 ms** em `browser-tests/escolha-no-painel.spec.ts`, no React de produção e com 15 amostras.
+- As contagens seguem como travas: 0 `<style>` por escolha, e 0 remontagens e 0 reescritas fora da área visível.
+- **Correção 2:**
+  - trocar `CHOICE_RESPONSE_BUDGET_MS` para 250;
+  - atualizar o título do caso e o LIMITE escrito, que hoje dizem 200 ms;
+  - rodar o spec 3 vezes.
+- A prosa da plan (objetivo, §2.3 e critério) o revisor já passou para 250 ms. A síntese leva o número novo.
+
+# 9.8 Resumo da execução (lote 2, correção 2 — teto de 250 ms)
+
+## Resumo da execução (lote 2, correção 2) — 2026-11-14
+
+**Resultado:** Concluído. O teto do caso de tempo é 250 ms, como o dono decidiu, e o caso passou nas 3 rodadas.
+
+**Estado do worktree ao iniciar:** o da correção 1 (§9.7), com o veredito e a decisão do dono acrescentados à plan pelo revisor.
+
+**Alteração** (`browser-tests/escolha-no-painel.spec.ts`):
+- `CHOICE_RESPONSE_BUDGET_MS = 250` (`:34`), com o JSDoc dela (`:33`);
+- o título do caso (`:151`): "responde em menos de 250 ms";
+- o LIMITE 2 do cabeçalho (`:15`): "O teto de 250 ms vale para o harness com o React de PRODUÇÃO".
+
+Nenhuma trava de contagem mudou: 0 `<style>` por escolha, e 0 remontagens e 0 reescritas fora da área visível na troca de tema.
+
+**Verificações executadas** (sem outro processo de teste na máquina; o dist da correção 1). 3 rodadas de `escolha-no-painel`, 15
+escolhas cada, todas passaram:
+
+| Rodada | Mediana | Faixa | `<style>` por escolha | Troca de tema |
+|---|---|---|---|---|
+| 1 | **232 ms** | 113–328 ms | 0 | 0 remontagens; 0 reescritas fora da área visível |
+| 2 | **186 ms** | 94–385 ms | 0 | igual |
+| 3 | **144 ms** | 99–240 ms | 0 | igual |
+
+**Critérios de aceite**
+- [x] Teto de 250 ms no spec, com o título e o LIMITE acompanhando — evidência acima.
+- [x] 3 rodadas registradas, as 3 abaixo do teto.
+
+**Pendências / riscos**
+- A rodada 1 ficou a 18 ms do teto. A variação entre rodadas (144–232 ms) é a da máquina, e o número que segura a regressão continua
+  sendo o das contagens.
+- O commit desta plan leva a correção do achado 1 (§9.7), que não entrou no `a49335ed`.
+
+## Veredito — 2026-11-14 — lote 2 (com as correções 1 e 2) — 🟢 Aprovado
+
+- **Conferido:** o diff do spec é só o teto, o título e o LIMITE. As travas de contagem ficaram intactas. As 3 rodadas registradas
+  (232, 186 e 144 ms) passaram com 0 `<style>`, e 0 remontagens e 0 reescritas fora da área visível.
+- Não repeti as rodadas: a correção é uma constante, e o resto foi conferido no veredito anterior.
+- O dono já tinha aprovado a prévia do lote 2. Os achados 1 a 3 estão fechados.
+- **A plan está completa** (lotes 0, 1 e 2). O próximo passo é a síntese em `adr/026`, `specs/09-temas-e-presets.md` e
+  `specs/06-painel-de-customizacao-e-preview.md`, feita pelo revisor depois do commit.
+
+**Status da plan: 🟢 Aprovado.**

@@ -64,6 +64,11 @@ export const useDesignManager = (props: {
         hasPersistenceBaselineRef.current = false;
         setIsBackendLoaded(false);
     }, []);
+    // O `onLoad` que terminou é a hidratação desta chave: a releitura do cache não roda depois dele e não refaz o carregado.
+    const markBackendLoaded = useCallback((loaded: boolean) => {
+        if (loaded) hasHydratedRef.current = true;
+        setIsBackendLoaded(loaded);
+    }, []);
 
     // O id do tema que a SEMENTE resolveu e os tokens semeados — `useThemeSeed.ts`.
     const { resolveSeedThemeId, getSeedConfig, themeIdGuard } = useThemeSeed({
@@ -194,7 +199,7 @@ export const useDesignManager = (props: {
         isHydrated,
         optionsRef,
         isBackendLoaded,
-        setIsBackendLoaded,
+        setIsBackendLoaded: markBackendLoaded,
         setDesign,
         getSeedConfig,
         activeThemeId,

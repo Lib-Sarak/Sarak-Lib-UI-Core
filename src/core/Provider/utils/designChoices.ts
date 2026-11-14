@@ -62,9 +62,42 @@ const composeChoiceBaseline = (theme: ModeResolvableTheme, drivers: DesignRecord
     return { ...base, colorPalette: chosen, ...resolveChosenPalette(chosen, mode, barTones) };
 };
 
+interface CachedBaseline {
+    raw: DesignRecord;
+    validated?: DesignRecord;
+}
+
+/** A chave do tema sem contraparte no cache: `WeakMap` só aceita objeto como chave. */
+const NO_CONTRAPARTE = {};
+/** Quantos pares de host e condutores ficam guardados por tema: os do rascunho atual e os das trocas anteriores. */
+const BASELINE_CACHE_LIMIT = 16;
+type ByInput = Map<string, CachedBaseline>;
+const BASELINE_CACHE = new WeakMap<object, WeakMap<object, ByInput>>();
+
+/**
+ * O baseline do tema para os condutores, guardado pelo que ele lê: o `design` e a contraparte do tema (por referência), o
+ * host e os condutores (pelo conteúdo: o `config` do host chega como objeto novo a cada render quando é escrito inline ou
+ * omitido). Trocar o tom no rascunho compara contra o baseline do tom anterior, que é o da troca anterior, e não precisa
+ * compor nem calcular a paleta de novo. Quem o recebe só lê.
+ */
+const baselineFor = (theme: ModeResolvableTheme, drivers: DesignRecord, hostConfig: DesignRecord | undefined): CachedBaseline => {
+    const byContraparte = BASELINE_CACHE.get(theme.design) ?? new WeakMap<object, ByInput>();
+    BASELINE_CACHE.set(theme.design, byContraparte);
+    const contraparteKey = theme.contraparte ?? NO_CONTRAPARTE;
+    const byInput = byContraparte.get(contraparteKey) ?? new Map<string, CachedBaseline>();
+    byContraparte.set(contraparteKey, byInput);
+    const key = JSON.stringify([drivers, hostConfig ?? null], sortKeys);
+    const cached = byInput.get(key);
+    if (cached) return cached;
+    if (byInput.size >= BASELINE_CACHE_LIMIT) byInput.delete(byInput.keys().next().value as string);
+    const entry: CachedBaseline = { raw: composeChoiceBaseline(theme, drivers, hostConfig) };
+    byInput.set(key, entry);
+    return entry;
+};
+
 const driversOf = (design: DesignRecord, theme: ModeResolvableTheme, hostConfig: DesignRecord | undefined): DesignRecord => {
     const mode = modeOf(design.mode) ?? nativeModeOf(theme);
-    const reference = composeChoiceBaseline(theme, { mode }, hostConfig);
+    const reference = baselineFor(theme, { mode }, hostConfig).raw;
     const chosen = DRIVER_KEYS.filter((key) => design[key] !== undefined && !sameValue(design[key], reference[key]));
     return { mode, ...pickDefined(design, chosen) };
 };
@@ -76,8 +109,10 @@ const driversOf = (design: DesignRecord, theme: ModeResolvableTheme, hostConfig:
 export const extractDesignChoices = (design: DesignRecord, theme: ModeResolvableTheme, hostConfig?: DesignRecord): DesignRecord => {
     const drivers = driversOf(design, theme, hostConfig);
     // O design chega validado (o do sistema) ou não (o rascunho): o que só o validador acrescenta ou normaliza não é escolha.
-    const baseline = composeChoiceBaseline(theme, drivers, hostConfig);
-    const validated = validateDesign(baseline) as unknown as DesignRecord;
+    const entry = baselineFor(theme, drivers, hostConfig);
+    const baseline = entry.raw;
+    entry.validated ??= validateDesign(baseline) as unknown as DesignRecord;
+    const { validated } = entry;
     const choices: DesignRecord = pickDefined(drivers, DRIVER_KEYS);
     if (drivers.mode !== nativeModeOf(theme)) choices.mode = drivers.mode;
     Object.entries(design).forEach(([key, value]) => {
@@ -89,7 +124,7 @@ export const extractDesignChoices = (design: DesignRecord, theme: ModeResolvable
 /** O design inteiro a partir das escolhas: o que o motor produz com os condutores delas, e as escolhas por cima. Sem validar. */
 export const recomposeDesignChoices = (choices: DesignRecord, theme: ModeResolvableTheme, hostConfig?: DesignRecord): SarakDesignState => {
     const drivers = pickDefined(choices, ['mode', ...DRIVER_KEYS]);
-    return { ...composeChoiceBaseline(theme, drivers, hostConfig), ...choices } as unknown as SarakDesignState;
+    return { ...baselineFor(theme, drivers, hostConfig).raw, ...choices } as unknown as SarakDesignState;
 };
 
 /** Troca uma escolha e refaz o que a paleta calcula a partir dela: o rascunho que muda o tom da barra. */

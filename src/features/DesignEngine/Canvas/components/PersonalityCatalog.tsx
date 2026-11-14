@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useRef } from 'react';
 import { PERSONALITIES, type Personality } from '../../../../core/Design/presets/components/personalities';
 import type { SarakDesignState } from '../../../../core/Provider/types';
 import { BarSample } from '../../Main/components/BarSample';
@@ -9,6 +9,7 @@ import { OptionTile } from './OptionTile';
 import { SampleScope } from './SampleScope';
 import { SampleButton, SampleCard } from './SampleParts';
 import type { PeekHandler } from './peek';
+import { useValueWhileVisible } from '../hooks/useValueWhileVisible';
 
 interface PersonalityCatalogProps {
     /** O rascunho como a prévia o mostra: cada amostra é a Personalidade aplicada por cima dele, com a paleta dele. */
@@ -23,17 +24,24 @@ const PersonalityTile: React.FC<PersonalityCatalogProps & { personality: Persona
     const shown = text.preset(personality);
     useFontsOf(personality);
     const miniature = personality.design.navigationStyle === 'topbar' ? 'topbar' : 'sidebar';
-    const tokens = { ...BAR_WIDGETS_OFF, ...barToneColors(draft, personality.design, currentMode), ...personality.design } as Partial<SarakDesignState>;
+    // Fora da área visível a opção guarda o rascunho que mostrou por último: não recalcula a paleta nem os escopos.
+    const sampleRef = useRef<HTMLDivElement>(null);
+    const shownDraft = useValueWhileVisible(sampleRef, draft);
+    const tokens = useMemo(
+        () => ({ ...BAR_WIDGETS_OFF, ...barToneColors(shownDraft, personality.design, currentMode), ...personality.design }) as Partial<SarakDesignState>,
+        [shownDraft, personality.design, currentMode],
+    );
+    const sample = useMemo(() => shownDraft && (
+        <div className="flex flex-col gap-2">
+            <BarSample draft={shownDraft as SarakDesignState} mode={currentMode} tokens={tokens} miniature={miniature} />
+            <SampleScope draft={shownDraft} tokens={tokens} mode={currentMode} slotClassName="min-h-24">
+                <div className="flex flex-col gap-3 p-2"><SampleCard /><SampleButton state="rest" /></div>
+            </SampleScope>
+        </div>
+    ), [shownDraft, currentMode, tokens, miniature]);
     return (
         <OptionTile name={shown.name} description={shown.description} onApply={() => onSelect(personality)} peekTokens={() => personality.design} onPeek={onPeek}>
-            {draft && (
-                <div className="flex flex-col gap-2">
-                    <BarSample draft={draft as SarakDesignState} mode={currentMode} tokens={tokens} miniature={miniature} />
-                    <SampleScope draft={draft} tokens={tokens} mode={currentMode} slotClassName="min-h-24">
-                        <div className="flex flex-col gap-3 p-2"><SampleCard /><SampleButton state="rest" /></div>
-                    </SampleScope>
-                </div>
-            )}
+            <div ref={sampleRef}>{sample}</div>
         </OptionTile>
     );
 };

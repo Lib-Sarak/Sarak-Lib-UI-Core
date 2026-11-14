@@ -85,6 +85,28 @@ describe('recomposeDesignChoices', () => {
     });
 });
 
+describe('baseline guardado entre chamadas', () => {
+    it('o mesmo `design` com outra contraparte refaz o baseline pela contraparte nova', () => {
+        expect(sovereign.contraparte).toBeDefined();
+        const changed: ModeResolvableTheme = { design: sovereign.design, contraparte: { ...sovereign.contraparte, colorBgBody: '#fedcba' } };
+        const before = recomposeDesignChoices({ mode: 'light' }, sovereign);
+        const after = recomposeDesignChoices({ mode: 'light' }, changed);
+
+        expect(before.colorBgBody).not.toBe('#fedcba');
+        expect(after.colorBgBody).toBe('#fedcba');
+    });
+
+    it('o host entra pelo conteúdo: outro valor refaz o baseline, e o mesmo valor em outro objeto dá o mesmo design', () => {
+        const first = recomposeDesignChoices({}, sovereign, { colorBgBody: '#111111' });
+        const changed = recomposeDesignChoices({}, sovereign, { colorBgBody: '#222222' });
+        const sameContent = recomposeDesignChoices({}, sovereign, { colorBgBody: '#111111' });
+
+        expect(first.colorBgBody).toBe('#111111');
+        expect(changed.colorBgBody).toBe('#222222');
+        expect(sameContent).toEqual(first);
+    });
+});
+
 describe('normalizeLegacyDesign — regra L1', () => {
     it('tira a cor calculada que o tema não declara (resto de outro tema) e mantém o resto do design', () => {
         const legacy = { ...composed(sovereign, 'dark'), colorBgBody: '#000000', sidebarColor: '#000000', bodySize: '18px' };
