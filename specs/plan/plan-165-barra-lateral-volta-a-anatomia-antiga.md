@@ -734,6 +734,87 @@ temas, no escuro e no claro (capturas reais, `img/p110-*`).
 - **Limpa × Compacta está em 2,04% no claro**, que é o par mais apertado da lateral. Já era assim antes desta correção e não mudou com ela.
 - Backlog: `cartao-cede-a-classe` reprova num build novo do HEAD (acima).
 
+## Resumo da execução (lote 2 — rodapé, usuário, marca, ≡ do topo) — 2026-11-14
+
+**Resultado:** Concluído com pendências. O spec da anatomia fecha em 102 ✓ / 15 ✗ (com o `plan-145`); as 15 reprovações são as mesmas do lote 1, todas sobrescrita de tema (lote 3). Todos os casos novos do lote passam nos 4 temas.
+
+**Estado do worktree ao iniciar**
+```
+(limpo)
+```
+Durante a execução apareceram, sem que eu os tocasse, trabalho de outras tarefas no mesmo worktree: `specs/00-indice.md` e `plan-158` (do revisor); `src/features/DesignEngine/Canvas/*`, `Main/*`, `Library/CustomizationPanel/*`, `config/design-decisions.json` (parte), `decisions.ts`, `src/index.ts`, `src/core/i18n/catalogEntries.panel.ts`, `browser-tests/plan-160-…` e o `dist/` inteiro reconstruído. Não os revertei nem formatei. `docs/migracoes.md` (e a cópia em `sarak-ui/docs/`) também tinha uma entrada de outra tarefa (CRLF): editei só as linhas da entrada da barra, por substituição exata.
+
+**O que foi feito**
+- **1.9 marca sem corte.** `ChromeSlots.tsx` (`ChromeBrand` + `ChromeBrandName`) e `useFitBrandName.ts` (novo): o nome quebra entre palavras, a fonte volta à do tema e diminui de 1 em 1 px até caber em duas linhas (piso = rótulo do item, `0,875 rem`); no piso, a largura do token (`…LabelMaxWidth`) cede a 100% da barra. Sem `truncate`. Na barra do topo a marca é `shrink-0`: quem cede é a lista de abas. Token novo `brandDisplay` (`both|logo|name`), nas três fontes, no hook `useNavigationAppearance`, no painel (pergunta `brand`) e declarado `'both'` nos 25 temas (o gate de completude exige). `logo` sem imagem cai no nome; `name` com imagem mostra o monograma na faixa da lateral.
+- **2.1 composição padrão.** `preferenceModePosition` passou a `'menu'` (`schema/preferences.ts`); o resto do D4 já era o padrão (idioma, busca, usuário, notificações `pinned`; fonte, lateral/topo `menu`; recolher `pinned`).
+- **2.2 rodapé em linhas.** `ChromeSidebarFooter.tsx` reescrito: região `data-sarak-footer-rows` com o recuo e o vão da lista; idioma (`SarakShellLanguageSelector` vertical, indicador na cor ativa), notificações (`ChromeNotificationsWidget` com variante em linha: contador à direita, lista que abre para cima), modo fixado (`SarakShellThemeToggle` vertical/mini agora em `SarakMenuItem`) e o ⚙ (`ShellPreferencesMenu variant="row"`) em linha própria, acima do usuário. Todas pelo `SarakMenuItem`, com ícone por nome, então altura, coluna e cor são as do item. Nenhuma tem borda própria. `SarakMenuItem` passou a respeitar um `aria-label` explícito (antes o sobrescrevia com `undefined`).
+- **2.2-b recolhida.** Cada controle usa `SarakMenuItem collapsed` (ícone no eixo da lista); o aviso de notificação é um ponto absoluto, que não desloca o ícone. Linhas empilhadas, uma por linha. Spec mede o eixo.
+- **O ⚙ não repete o fixado (lateral).** `ChromeSidebarBody.tsx`: o conteúdo do ⚙ é o oferecido menos o que já tem controle na barra (recolhida: só modo e seta têm ícone próprio). Ver Decisões.
+- **2.3 widget não ligado (D5).** `useChromeDefaultWidgets.ts`: em produção, usuário sem `user`+`logout` e notificações sem itens+seletor saem de `pinned/offered/menu`. Fora de produção, linha apagada (`ChromeUnavailableWidget`: lateral e recolhida com a métrica do item e sem caixa; o topo mantém a caixa) e o aviso único.
+- **2.4 usuário.** `SarakShellUserWidget.tsx`: faixa `data-sarak-user-strip` com linha em cima (cor da borda da barra), véu de 5% da cor do marcador, recuo = recuo da lista + recuo do item (avatar na coluna dos ícones); nome `text-sm` negrito acima, papel `text-2xs` caixa alta `tracking-widest` com escudo, sair à direita. Recolhida, avatar e sair empilhados e centrados.
+- **2.5 avatar.** Token novo `userAvatarStyle` (`initials|icon`), nas três fontes, no hook, no painel (pergunta "O que aparece", junto do usuário), declarado `'initials'` nos 25 temas. Com imagem, a imagem vale.
+- **2.6 ≡ do topo.** Token novo `preferenceNavCollapsePositionTopbar` (`off|menu|pinned`, padrão `menu`), funcional, nas três fontes, no painel e em `BAR_WIDGETS_OFF`. `useChromeDefaultWidgets(…, { bar: 'topbar' })` lê o recolher dele; a lateral continua em `preferenceNavCollapsePosition` (valor gravado vale).
+- **2.7 nome da marca.** `role-map.ts`: `sidebarBrandColor` e `topbarBrandColor` → neutra 950/50.
+- **Achado no caminho (contraste do ícone).** Com o ⚙ e os rodapés passando a usar a cor de ícone da barra, o `plan-145` reprovou o ⚙ em `high-contrast`, `cyber-retro-wave` e `neo-brutalism` (1,2 a 2,3:1): o papel `sidebarIconColor` (apagado) não tinha par de contraste e a paleta de alto contraste o deixava abaixo do texto. Adicionei o par em `contrast-pairs.ts` (`sidebarIconColor` × barra, **3:1**, o piso de não-texto; 4,5 reprovava 3 temas Classic que declaram o próprio ícone).
+- **Prévia** `C:\tmp\sarak-previa-165\index.html` (seção do lote 2 no topo) e **prévia interativa** `C:\tmp\sarak-previa-165\interativo\index.html` (+ `harness.html`, `bundle.js`, CSS, estáticos): controles de tema (3), modo, logo, posição e exibição da marca, vidro, lateral/topo, recolhida, avatar, ≡ do topo e nome da marca; recarrega a cena por parâmetros da fixture.
+- Docs/gerados: `docs/migracoes.md` (linhas novas e a do recolher corrigida), `npm run guide`, `npm run dev-kit`, `catalog`, `themes:catalog`, `generate-token-types`, `build:css`.
+
+**Arquivos alterados** (só os desta execução; os de outras tarefas estão listados acima)
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/Layout/chrome/useFitBrandName.ts` (+ teste) | criado | encolhe o nome da marca até caber |
+| `src/components/Layout/chrome/ChromeSlots.tsx` | alterado | `ChromeBrandName`, `brandDisplay`, sem `truncate` |
+| `src/components/Layout/chrome/ChromeSidebarFooter.tsx` | alterado | rodapé em linhas |
+| `src/components/Layout/chrome/ChromeSidebarBody.tsx` | alterado | ⚙ sem repetir o fixado |
+| `src/components/Layout/chrome/ChromeNotificationsWidget.tsx`, `ChromeUnavailableWidget.tsx`, `ChromeUserThemeGroup.tsx`, `ChromeTopbarBody.tsx`, `useChromeDefaultWidgets.ts` | alterado | linha de notificações, linha apagada, D5, recolher por barra |
+| `src/components/atomic/Navigation/` `SarakMenuItem`, `SarakShellThemeToggle`, `SarakShellLanguageSelector`, `SarakShellUserWidget`, `ShellPreferencesMenu`, `menuItemMetrics` | alterado | linhas, faixa e avatar do usuário, `aria-label` explícito |
+| `src/core/Design/schema/navigation.ts`, `preferences.ts`; `catalog/*.json`; `useNavigationAppearance.ts`; `preferencesTypes.ts`; `generated/*`; `design-decisions.json`; `PresetGroupCatalog.tsx`; `presets/components/coverage.ts`; 25 `presets/themes/*.ts` | alterado | 3 tokens novos (`brandDisplay`, `userAvatarStyle`, `preferenceNavCollapsePositionTopbar`) e padrão do modo |
+| `src/core/Design/palette/role-map.ts`, `contrast-pairs.ts` | alterado | cor do nome da marca; par de contraste do ícone |
+| testes de unidade (14 arquivos) e `browser-tests/barra-lateral-anatomia.spec.ts`, `fixtures/barra-lateral-anatomia-entry.tsx`, `plan-141-presets-do-painel.spec.ts` | alterado | casos novos e padrões novos |
+| 2 snapshots (`PreviewCanvas`, `AtmosphereCatalog`) | alterado | `-u` nos dois, conferido: só o rodapé em linhas e `data-sx-brand-display` |
+| `docs/migracoes.md`, `sarak-ui/**`, `sarak-dev/**` | alterado/gerado | nota de migração e gerados |
+
+**Verificações executadas**
+- `npx vitest run src/components/Layout src/components/atomic/Navigation src/core/Design/palette src/core/Design/schema` → 73 arquivos, 881 ✓ (depois dos ajustes, 0 ✗).
+- `npx vitest run src/core/Provider src/core/Design src/features/DesignEngine src/core/i18n` → 10 ✗ na primeira rodada (padrões antigos, contagens 8→9/10, `coverage.ts`, 2 snapshots, `peek` — este último passou sozinho, é de outra tarefa); corrigidos e rodados de novo por pasta (`src/core/Provider/__tests__`, `utils`, `features/DesignEngine/utils`, `Main`, `core/Design/presets`): 0 ✗.
+- Spec da anatomia + `plan-145` (build:css feito) → 102 ✓ / 15 ✗ (as 15 do lote 1, sobrescrita de tema: `sarak-sovereign-classic` ativo a 0,6, ícone, moldura sem linha, títulos roxos, inativo; `cyberpunk-neon-classic` ativo preenchido, ícone, títulos; `dot-matrix-elegant` pílula sem marcador). Casos novos: marca inteira (lateral e topo, 2 nomes), `brandDisplay`, contraste da marca e não-acento, rodapé (altura ±2, sem borda, colunas, indicadores), composição padrão e ⚙, usuário, ≡ do topo, recolhida — todos ✓ nos 4 temas.
+- Vizinhos (`plan-145`, `seletor-da-barra-legivel`, `plan-149`, `troca-de-tema`, `plan-141`): 63 ✓ / 3 ✗ na 1ª rodada; as 3 eram o seletor `span.truncate` do `plan-141` (atualizado para `[data-sarak-brand-name]`) e o ⚙ no `plan-145` (par de contraste acima); depois: `plan-141` "topbar cabem" e `plan-145` ✓.
+- `npm run verify -- --tier=quick` → **verde** (`tsc`, baseline sem regressão, Anel 0 simulado: 2731 linhas, 0 achados, Anel 1). Na 1ª passada o baseline acusou `hardcoded` 0→1 (`flex-col` no widget do usuário), `coverage` órfãos 0→1 (faltava teste de `useFitBrandName`) e `contraste modo oposto` 0→3 (par de 4,5:1); os três corrigidos.
+- Não rodei a suíte completa, `npm run build` nem o Anel 2.
+
+**Critérios de aceite (os do lote 2 + 1.9, 2.2-b, 2.6, 2.7)**
+- [x] Composição padrão do D4; rodapé em linhas da altura do item; ⚙ acima do usuário — spec "rodapé" e "composição padrão" ✓ nos 4 temas.
+- [x] Alinhamento (ícones, avatar, indicadores) — spec "rodapé" ✓.
+- [x] Recolhida, um controle por linha no eixo da lista — spec "recolhida: cada controle…" ✓.
+- [x] Widget não ligado (D5): teste de unidade nos dois ambientes (`useChromeDefaultWidgets.test.ts`) e `ChromeUnavailableWidget.test.tsx`.
+- [x] Usuário (nome acima do papel, faixa com borda) e `userAvatarStyle` nos dois valores — spec "usuário" ✓; `SarakShellUserWidget.test.tsx`.
+- [x] 1.9 marca sem corte + `brandDisplay` — spec ✓ nos 4 temas; `ChromeSlots.test.tsx`, `useFitBrandName.test.ts`, `useNavigationAppearance.test.tsx`.
+- [x] 2.6 ≡ no topo escondido, nas duas barras — spec e `useChromeDefaultWidgets.test.ts`.
+- [x] 2.7 nome da marca no texto forte, ≥ 4,5:1 e não o acento — spec ✓ (nos 4 temas, incluindo os Classic).
+- [x] Prévia + prévia interativa em `C:\tmp\sarak-previa-165\`.
+- [ ] Contraste e Personalidades verdes nos 25 temas e dois modos (3.3) — `plan-145` ✓ em todos; `auditor_contraste` sem regressão (3 pares do ícone fechados pelo piso de 3:1); a revisão dos temas é do lote 3.
+- [ ] O lote só fecha com o ok do dono na prévia — pendente.
+
+**Decisões e suposições**
+- **O ⚙ da lateral não repete o fixado.** A plan (D4) manda, mas a 05 §2.2.2 diz "fixa na barra… e também no ⚙" e o código fazia isso (`menu` = oferecido inteiro). Segui o D4 só na lateral (no topo nada mudou, aprovado). A 05 §2.2.2 precisa ser ajustada na síntese.
+- **≡ do topo por token próprio** em vez de ler o mesmo `preferenceNavCollapsePosition`: a plan pede "lido por barra" e o padrão tem de diferir por barra; sem token novo não há como distinguir "padrão" de "gravado". Custo: 1 token funcional a mais (e a contagem da composição passou de 8 para 9).
+- **`userAvatarStyle` e `brandDisplay` como tokens estéticos** (fábrica `createChromeSelectToken`): o gate de completude exigiu a declaração nos 25 temas (`'initials'`, `'both'`, o próprio padrão, sem efeito visual); o lote 3 põe `'icon'` nos 7 resgatados.
+- **Par de contraste do ícone a 3:1** (não 4,5): é elemento não textual, e 4,5 reprovava 3 temas Classic por cor que o tema declara.
+- **Notificações em linha mostram o contador** (a lista não tem estado de lido); o "ponto aceso" só existe recolhido.
+- **Linha de idioma só com a barra aberta**; recolhida, o idioma vai para o ⚙ (como já era).
+- Atualizei `plan-141` (seletor do nome da marca) e dois snapshots: eram trava do desenho antigo.
+
+**Achados fora do escopo (não corrigidos)**
+- A lista de notificações abre dentro do `aside` (`overflow-hidden`) e, na lateral recolhida (74 px), fica cortada; já era assim no desenho antigo.
+- `ChromeNotificationsWidget`/`ChromeUserWidget` dentro do ⚙ (rows `vertical`) abrem um popup dentro do popup do ⚙; só aparece com usuário/notificações em posição `menu`.
+- `src/features/DesignEngine/Canvas/components/TypographyCatalog.tsx(60,13)` tem `TS2783` (`ref` duplicado) no `tsc` — arquivo de outra tarefa; o `quick` passou no momento em que rodei.
+- `dist/` e `src/buildInfo.ts`/`sarak-*` foram reconstruídos por outra execução do build no mesmo worktree.
+
+**Pendências / riscos**
+- 15 casos do spec da anatomia vermelhos até o lote 3 (sem `skip`).
+- `token-release-notes:check` continua dependendo da emissão da 9.0.0 (as linhas dos tokens novos estão na entrada 9.0.0).
+- Não rodei a suíte completa nem o build; o revisor roda.
+
 ---
 
 # 10. Veredito
@@ -960,3 +1041,234 @@ anatomia.
 - **O lote 2 começa depois do commit**, com os itens 1.9, 2.2, 2.2-b, 2.6, 2.7 e a prévia interativa.
 
 **Status da plan: 🟡 Em execução** (lotes 2 e 3).
+
+## Veredito — 2026-11-14 — lote 2 — 🔵 Em correção (achados 1 e 2)
+
+**O que conferi e como**
+- O resumo, contra os itens 1.9, 2.1 a 2.7 e os pedidos do dono.
+- A prévia `C:\tmp\sarak-previa-165\index.html`, na seção do lote 2: Sovereign Classic aberta e Sarak Sovereign recolhida.
+- `useChromeDefaultWidgets.ts` (a regra D5) contra `PreviewSystemRenderer.tsx:97` (a barra da prévia do painel).
+- **Estado combinado das três execuções em paralelo** (`plan-158` lote 3, `plan-160` lote 2, `plan-165` lote 2), no mesmo worktree:
+  - `npm run verify -- --tier=quick`: tudo `[OK]`, menos o `plan-index:check` (status das plans, acertado neste veredito);
+  - `npx vitest run` completo: 5990 casos, **5988 ✓ e 2 ✗**, os dois em `gates/scripts/audit/__tests__/verify_contrast.test.ts`
+    (achado 1 da `plan-165`).
+- `cromo-css-real:check` **não rodei nesta rodada**: as três plans voltam para correção, e a suíte de navegador roda uma vez sobre as
+  três corrigidas.
+- Não repeti o spec da anatomia, os vizinhos nem os testes de unidade do executor.
+
+**Achados**
+1. **Bloqueio — o par de contraste do ícone entrou relaxado, e a suíte reprova.** `verify_contrast.test.ts` trava dois pontos:
+   "todo par exige 4,5:1" (linha 155) e a contagem de 89 pares (linha 130). O par novo `sidebarIconColor` × barra tem `min: 3`.
+   - O precedente vai contra o relaxamento: o ícone do campo (`inputIconColor`) é par de 4,5:1.
+   - A invariante de contraste (`00-regras-e-invariantes.md`, linha 987) cobre pares de texto e fundo. Um piso de 3:1 para elemento
+     que não é texto é **regra nova**, e não sai de dentro de um lote.
+   - **Correção:** o par fica em 4,5:1 e a contagem passa para 90. Os três temas Classic que declaram o próprio ícone ajustam a cor dele,
+     e entram na lista do lote 3, que já revê a sobrescrita desses temas.
+   - Se o executor achar que 3:1 é o certo para ícone, isso vira **decisão do dono** no relatório, com os dois casos (`inputIconColor`
+     e `sidebarIconColor`) tratados do mesmo jeito. Até ela, vale 4,5:1.
+2. **Bloqueio — a prévia do painel perdeu o usuário e as notificações.** `PreviewSystemRenderer.tsx` monta o `SarakAppChrome` sem
+   `user`, `logout` nem notificações.
+   - Com a D5 (2.3), **em produção** (o ERP) a barra de exemplo do painel fica sem os dois. A pergunta do avatar
+     (`userAvatarStyle`, 2.5) e as posições de usuário e notificações deixam de ter efeito visível na prévia.
+   - Fora de produção, a prévia mostra "Usuário indisponível" e "Notificações indisponíveis" (fotos da `plan-160`,
+     `C:\tmp\sarak-previa-160\tabela-depois.png`).
+   - **Correção:** a prévia é amostra, então leva um usuário de amostra (nome, papel e sair sem efeito) e duas ou três notificações com
+     seletor sem efeito.
+   - **Teste:** com `NODE_ENV=production`, a prévia mostra a faixa do usuário, e trocar `userAvatarStyle` muda o avatar nela.
+   - `PreviewSystemRenderer.tsx` não está na lista da `plan-160`, mas ela mexe em `Canvas/`: reler o arquivo antes de gravar.
+3. **Aviso, para o dono na prévia:** na barra recolhida, o ponto das notificações cobre metade do sino
+   (`l2-sarak-sovereign-recolhida.png`). Recomendação: um ponto menor, no canto de cima à direita, fora do desenho do ícone.
+
+**Decisões do executor que ficam (vão para a síntese)**
+- O ⚙ da lateral não repete o que já está fixado (D4). Na síntese, a 05 §2.2.2 muda.
+- O ≡ do topo ganha token próprio (`preferenceNavCollapsePositionTopbar`); `brandDisplay` e `userAvatarStyle` são tokens estéticos,
+  declarados nos 25 temas.
+- Idioma em linha só com a barra aberta; recolhida, o idioma fica no ⚙.
+
+**Falta para o 🟢:**
+- a correção dos achados 1 e 2;
+- `npx vitest run gates/scripts/audit` verde;
+- o ok do dono na prévia do lote 2 (a estática e a interativa `C:\tmp\sarak-previa-165\interativo\index.html`), com o achado 3.
+
+**Status da plan: 🔵 Em correção.**
+
+## Resumo da execução (correção 1, lote 2) — 2026-11-15
+
+**Resultado:** Concluído (achados 1, 2 e 3)
+
+**Estado do worktree ao iniciar**
+Worktree compartilhado e sujo, com o lote 2 desta plan e as execuções das plans 158 e 160 (180 linhas fora os `dist/` apagados; o `dist/` foi reconstruído por outra tarefa). Não toquei nos arquivos delas, salvo o snapshot abaixo.
+
+**O que foi feito**
+- **Achado 1** — `contrast-pairs.ts`: o par `sidebarIconColor` voltou a `min: 4.5`; `verify_contrast.test.ts`: contagem 89 → 90. A 4,5:1, três temas Classic reprovavam no modo oposto (claro): `sarak-sovereign-classic` 4,16 · `cyberpunk-neon-classic` 4,11 · `industrial-terminal-classic` 4,49. Escureci só a cor do ícone do claro neles (`#007b82→#006f75`, `#00822f→#007429`, `#9a5a00→#8f5200`). O 3:1 deixa de existir; não há decisão de dono pendente sobre ele.
+- **Achado 2** — `PreviewSystemRenderer.tsx`: o cromo da prévia recebe usuário de amostra (Ana Souza, Administradora), `logout` sem efeito e três notificações de amostra com seletor sem efeito. Testes novos em `PreviewSystemRenderer.test.tsx`: com `NODE_ENV=production` a faixa do usuário e o botão de notificações aparecem; trocar `userAvatarStyle` muda o avatar. Mutação: sem `user`/`logout`, os dois testes reprovam.
+- **Achado 3** — `ChromeNotificationsWidget.tsx`: o ponto da barra recolhida tem metade do tamanho e fica no canto de cima à direita do ícone (ancorado em 50% da linha mais meio ícone), fora do sino; teste ajustado.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/palette/contrast-pairs.ts` | alterado | par do ícone a 4,5 |
+| `gates/scripts/audit/__tests__/verify_contrast.test.ts` | alterado | 89 → 90 pares |
+| `src/core/Design/presets/themes/{sarak-sovereign,cyberpunk-neon,industrial-terminal}-classic.ts` | alterado | cor do ícone no claro |
+| `src/features/DesignEngine/Canvas/components/PreviewSystemRenderer.tsx` | alterado | usuário e notificações de amostra |
+| `.../components/__tests__/PreviewSystemRenderer.test.tsx` | alterado | 2 testes novos |
+| `src/components/Layout/chrome/ChromeNotificationsWidget.tsx` (+ teste) | alterado | ponto recolhido |
+| `src/features/DesignEngine/Canvas/__tests__/__snapshots__/PreviewCanvas.test.tsx.snap` | alterado | regravado (`-u`): a barra da prévia ganhou a faixa do usuário; o arquivo já tinha edição da plan-160, e a regravação reflete o estado combinado |
+
+**Verificações executadas**
+- `npx vitest run gates/scripts/audit` → 14 arquivos, 158 ✓.
+- `npx vitest run src/features/DesignEngine/Canvas` → 240 ✓ e 1 ✗ (o snapshot acima, regravado depois: 3 ✓).
+- `npx vitest run src/components/Layout src/components/atomic/Navigation` → 59 arquivos, 642 ✓.
+- `npm run verify -- --tier=quick` → tsc, baseline com tsc, Anel 0 (0 achados) e os demais `[OK]`; 1 `[FAIL]`: `variable-contract:check` em `features/DesignEngine/Main/components/LeavePanelDialog.tsx:25` (arquivo que não é meu; passou na rodada anterior).
+- Navegador: não rodei (sem outro Playwright ativo, mas a suíte única de navegador é do revisor, depois das três correções).
+
+**Critérios de aceite**
+- [x] Achado 1 — evidência: `gates/scripts/audit` 158 ✓, par a 4,5 e contagem 90.
+- [x] Achado 2 — evidência: dois testes novos + mutação.
+- [x] Achado 3 — evidência: teste do ponto; **o ok visual do dono segue pendente** (prévia não regenerada nesta rodada).
+
+**Decisões e suposições**
+- Ajustei a cor do ícone dos três Classic nesta correção (não só os listei para o lote 3), porque sem isso a suíte de contraste reprova; o lote 3 pode revê-las junto com a sobrescrita dos temas.
+- Amostra em português fixo, como os demais textos da prévia (`Mais telas`, `Sarak Preview`).
+
+**Achados fora do escopo (não corrigidos)**
+- `LeavePanelDialog.tsx:25`: `var(--sarak-modal-width-md, 28rem)` com padrão do token 448px (`variable-contract:check`), de outra tarefa.
+
+**Pendências / riscos**
+- As capturas da prévia estática/interativa (`C:\tmp\sarak-previa-165`) não foram regeneradas: o ponto recolhido e a prévia do painel mudaram.
+- Navegador e suíte completa ficam com o revisor.
+
+## Veredito — 2026-11-15 — correção 1 do lote 2 — 🟠 achados 1 a 3 fechados; falta a prévia refeita e o ok do dono
+
+**O que conferi e como**
+- `contrast-pairs.ts`: o par `sidebarIconColor` voltou a 4,5:1, e o contrato do gate conta 90 pares.
+- Os três temas Classic escureceram só a cor do ícone do modo claro.
+- `PreviewSystemRenderer.tsx`: usuário, sair e notificações de amostra.
+- `ChromeNotificationsWidget.tsx`: o ponto recolhido fica no canto do ícone, fora do sino.
+- **Estado combinado** (esta correção, a correção da outra plan em paralelo e o lote 2 da `plan-160`, ainda em correção):
+  - `npm run verify -- --tier=quick`: tudo `[OK]`;
+  - `npx vitest run` completo: **6004 casos, 6004 ✓**.
+- `cromo-css-real:check` (navegador): **ainda não rodei**. Roda uma vez antes do commit, depois do ok do dono na prévia.
+- Não repeti a mutação nem os testes de unidade do executor.
+
+**Decisões do executor que ficam**
+- A cor do ícone dos três Classic foi ajustada já nesta correção. O lote 3 pode revê-la junto com a sobrescrita desses temas.
+- A amostra é em português fixo, como os outros textos da prévia.
+
+**Achados**
+1. **Pendência — as capturas da prévia não foram refeitas.** O ponto das notificações e a barra da prévia do painel mudaram, e
+   `C:\tmp\sarak-previa-165` ainda mostra o estado anterior.
+   - Refazer, nos três temas: a lateral recolhida (o ponto) e a prévia do painel com a faixa do usuário (iniciais e ícone).
+   - A prévia interativa também é reconstruída sobre o código atual.
+   - Só captura: nada muda no código.
+
+**Falta para o 🟢:**
+- as capturas refeitas;
+- o ok do dono na prévia do lote 2 (estática e interativa);
+- o `cromo-css-real:check`, que o revisor roda.
+
+**Status da plan: 🟠 Em revisão.**
+
+## Avaliação do dono — 2026-11-15 — prévia do lote 2 aprovada
+
+- O dono aprovou a prévia do lote 2, a estática e a interativa, como estavam.
+- Com isso, a pendência do veredito de 2026-11-15 (refazer as capturas) cai: o ponto das notificações e a barra da prévia do painel
+  são correções pedidas pela revisão e ficam conferidas pelos testes.
+- Falta para o 🟢 só o `cromo-css-real:check`, que o revisor roda agora.
+
+## Veredito — 2026-11-15 — lote 2 — 🔵 Em correção (achado 1, da suíte de navegador)
+
+**O que conferi e como**
+- `npm run -s cromo-css-real:check` (build e navegador, workers padrão) sobre o estado das três plans juntas: **698 ✓ e 21 ✗**, as
+  mesmas 21 da rodada do executor da `plan-160`:
+  - 15 do spec da anatomia: sobrescrita de tema, lote 3 da `plan-165`, já conhecidas;
+  - 2 do `cartao-cede-a-classe`: backlog 83, anteriores a estas plans;
+  - **4 novas, todas do lote 2 da `plan-165`** (achado 1 do veredito dela de hoje).
+- A origem das 4 novas é o lote 2 desta plan. Nenhuma é defeito de produto: são testes antigos que procuram o desenho anterior.
+  - `plan-122-preview-mode.spec.ts:62`, `plan-135-paletas-no-painel.spec.ts:66` e `paletas-cabem-na-coluna.spec.ts:38` procuram o
+    botão "Modo Claro/Escuro" fixo na barra da prévia (`.sarak-device-desktop`). Com o item 2.1, o padrão do modo passou a `menu`, e
+    o botão fica no ⚙.
+  - `chrome-theme-identity.spec.ts:76` procura `.sarak-chrome-brand span.truncate`. O item 1.9 tirou o `truncate`, o mesmo seletor
+    que o executor já tinha trocado no `plan-141`.
+
+**Achados**
+1. **Bloqueio — 4 casos de navegador vermelhos por trava do desenho antigo.**
+   - **Correção:** os três specs do modo chegam ao botão pelo ⚙ da barra da prévia, e cada um mantém o que prova (a prévia e os
+     cartões acompanham o modo, nos dois sentidos).
+   - O `chrome-theme-identity` lê o nome da marca por `[data-sarak-brand-name]`.
+   - Rodar os 4 specs e os vizinhos da barra (`plan-141`, `plan-145`, `plan-149`, `seletor-da-barra-legivel`, `troca-de-tema`).
+   - Antes de dar o lote por pronto, procurar em `browser-tests/` todo seletor do desenho antigo: `span.truncate` da marca e o botão de
+     modo fixo.
+   - O código de produto não muda.
+
+**Falta para o 🟢:** a correção do achado 1. A prévia já está aprovada pelo dono.
+
+**Status da plan: 🔵 Em correção.**
+
+## Resumo da execução (correção 2, lote 2 — suíte de navegador) — 2026-11-15
+
+**Resultado:** Concluído (achado 1)
+
+**Estado do worktree ao iniciar**
+Worktree compartilhado e sujo (188 linhas fora os `dist/` apagados): lote 2 desta plan e as execuções das plans 158 e 160, com a 160 rodando o lote 3 em paralelo. Antes do Playwright conferi os processos: nenhum Playwright, build ou vitest rodando. Só toquei em `browser-tests/`.
+
+**O que foi feito**
+- Criado `browser-tests/preview-mode-toggle.ts` (não é spec): abre o ⚙ da barra da prévia, acha o item "Modo Claro/Escuro" no menu, clica e fecha com Esc. Um ponto só para a mudança de desenho (o modo mora no ⚙).
+- `plan-122-preview-mode.spec.ts`, `plan-135-paletas-no-painel.spec.ts` e `paletas-cabem-na-coluna.spec.ts` chegam ao item pelo helper; cada um mantém o que prova (o item oferece o modo oposto, e a prévia e os cartões acompanham nos dois sentidos).
+- `chrome-theme-identity.spec.ts:76` lê o nome da marca por `[data-sarak-brand-name]` em vez de `span.truncate`.
+- `plan-122-preview-mode.spec.ts:81` (achado extra, só de spec): o cartão do tema era `getByRole('button', { name: /Sarak Sovereign/i })`, que casa também o "Sarak Sovereign Classic" (modo estrito) e ficava escondido atrás da falha do botão; agora `button[data-theme-id="sarak-sovereign"]`.
+- Varredura em `browser-tests/` por `span.truncate`, `name: 'Modo Claro|Escuro'` e "Mudar para modo": nada mais do desenho antigo. Os `.sarak-chrome-brand span` dos specs 145/149 continuam válidos (o nome segue sendo um `span`).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `browser-tests/preview-mode-toggle.ts` | criado | helper do modo pelo ⚙ |
+| `browser-tests/plan-122-preview-mode.spec.ts` | alterado | modo pelo ⚙; seletor do cartão do tema |
+| `browser-tests/plan-135-paletas-no-painel.spec.ts` | alterado | modo pelo ⚙ |
+| `browser-tests/paletas-cabem-na-coluna.spec.ts` | alterado | modo pelo ⚙ |
+| `browser-tests/chrome-theme-identity.spec.ts` | alterado | seletor do nome da marca |
+
+**Verificações executadas**
+- `playwright test` de `plan-122`, `plan-135` e `paletas-cabem-na-coluna`: 6 ✓ (plan-122 após o ajuste do cartão: 3 ✓).
+- `chrome-theme-identity` (config padrão e config própria): 1 ✓ em cada.
+- Vizinhos `plan-141`, `plan-145`, `plan-149`, `seletor-da-barra-legivel`, `troca-de-tema` e `barra-lateral-anatomia`: **167 ✓ e 15 ✗**, as mesmas 15 do spec da anatomia (sobrescrita de tema, lote 3).
+- Não rodei o `cromo-css-real:check` inteiro (build) nem a suíte de unidade; são do revisor.
+
+**Critérios de aceite**
+- [x] Os 4 casos do achado 1 verdes — evidência: saídas acima.
+- [x] Vizinhos da barra rodados — evidência: 167 ✓ / 15 ✗ conhecidas.
+- [x] Seletor do desenho antigo procurado em `browser-tests/` — evidência: varredura sem restos.
+- [x] Código de produto intacto — evidência: só `browser-tests/` no diff desta correção.
+
+**Decisões e suposições**
+- Helper compartilhado em vez de repetir o passo do ⚙ em três specs.
+- O ajuste do cartão do tema no `plan-122` é do mesmo arquivo e só de spec; foi o que destravou o resto do caso.
+
+**Achados fora do escopo (não corrigidos)**
+- Os 2 casos do `cartao-cede-a-classe` (backlog 83) não estão nos 6 specs que rodei; seguem como já registrado.
+
+**Pendências / riscos**
+- Os 15 casos da anatomia continuam do lote 3.
+
+## Veredito — 2026-11-15 — correção 2 do lote 2 — 🟢 Aprovado; o lote 2 fecha e o lote 3 pode começar
+
+**O que conferi e como**
+- O diff dos 4 specs e do helper `browser-tests/preview-mode-toggle.ts`:
+  - os três specs do modo chegam ao item pelo ⚙ da barra da prévia (`[data-sarak-widget="preferences-menu"]`);
+  - cada um continua provando o que provava: o item oferece o modo oposto, e a prévia e os cartões acompanham o modo nos dois sentidos.
+- `chrome-theme-identity.spec.ts:76` lê `[data-sarak-brand-name]`.
+- O ajuste extra do `plan-122` (`button[data-theme-id="sarak-sovereign"]`) estreita um seletor que casava dois cartões. Fica.
+- Só `browser-tests/` mudou nesta correção. Os arquivos de `src/` que aparecem no worktree são do lote 3 da `plan-160`, em execução.
+- `npx tsc --noEmit`: 0 erros.
+- Não repeti os 4 specs nem os vizinhos (167 ✓, 15 ✗, as 15 conhecidas da anatomia, que são do lote 3). O `cromo-css-real:check`
+  inteiro já rodou sobre o lote 2 (veredito anterior), e esta correção só troca seletor nos 4 casos que lá falharam.
+
+**Decisões do executor que ficam**
+- Um helper só para o modo pelo ⚙, em vez de repetir o passo nos três specs.
+
+**O lote 2 está aprovado.** O código dele já entrou no `107f81f8`. Esta correção sai num commit próprio.
+
+**Próximo:** o lote 3 (temas que sobrescrevem a barra e ícones). Ele roda em paralelo com o lote 3 da `plan-160`. Os dois dividem
+`docs/migracoes.md`, os kits gerados e, talvez, o snapshot do `PresetsCatalog`.
+
+**Status da plan: 🟡 Em execução** (lote 3).

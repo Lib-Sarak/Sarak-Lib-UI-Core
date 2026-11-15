@@ -15,6 +15,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildHarness } from './build-harness.mjs';
+import { switchPreviewMode } from './preview-mode-toggle';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ENTRY = path.join(HERE, 'fixtures', 'plan-135-paletas-entry.tsx');
@@ -74,7 +75,7 @@ test('escolher uma pronta, criar a partir de uma cor, ajustar um token e aplicar
     await expect(gallery).toBeVisible();
     await capture(page, '1-galeria-por-tipo.png', 'Galeria de paletas: uma linha por paleta, com filtro por tipo.');
 
-    await page.locator('.sarak-device-desktop').getByRole('button', { name: 'Modo Claro' }).click();
+    await switchPreviewMode(page, 'Modo Claro');
     await capture(page, '2-galeria-modo-claro.png', 'A mesma galeria com o painel e a prévia no modo claro.');
 
     const firstPreset = gallery.getByRole('radio').first();
