@@ -1,13 +1,38 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
 import { SarakInput } from '../../../../components/atomic/Inputs/SarakInput';
 import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
+import { SarakBadge, type SarakBadgeVariant } from '../../../../components/atomic/Feedback/SarakBadge';
+import { SarakDataTable, type SarakColumn } from '../../../../components/atomic/DataDisplay/SarakDataTable';
+
+interface OperationalRow { id: string; name: string; version: string; status: string; load: string }
+interface LedgerRow { id: string; date: string; desc: string; amount: string; status: string }
+
+const OPERATIONAL_HEIGHT = 208;
+const LEDGER_ROW_HEIGHT = 28;
+const LEDGER_HEIGHT = LEDGER_ROW_HEIGHT * 7;
+const STATUS_VARIANT: Readonly<Record<string, SarakBadgeVariant>> = { Online: 'success', Warning: 'warning' };
+
+/** As colunas do painel operacional: a tabela real da lib, que lê densidade, listras e cantos do design (o componente preguiçoso perde o tipo da linha). */
+const OPERATIONAL_COLUMNS: Array<SarakColumn<unknown>> = [
+    { id: 'id', header: 'CÓDIGO', width: 100 },
+    { id: 'name', header: 'MÓDULO', width: 170 },
+    { id: 'version', header: 'VERSÃO', width: 90 },
+    { id: 'status', header: 'STATUS', width: 120, render: (row) => { const { status } = row as OperationalRow; return <SarakBadge variant={STATUS_VARIANT[status] ?? 'muted'} soft pill>{status}</SarakBadge>; } },
+    { id: 'load', header: 'CARGA', width: 90 },
+];
+
+const LEDGER_COLUMNS: Array<SarakColumn<unknown>> = [
+    { id: 'id', header: 'Transaction ID', width: 130 },
+    { id: 'date', header: 'Date', width: 110 },
+    { id: 'desc', header: 'Description', width: 200 },
+    { id: 'amount', header: 'Amount', width: 120, align: 'right' },
+    { id: 'status', header: 'Status', width: 110 },
+];
 
 export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
-    const [searchQuery, setSearchQuery] = useState('');
-
-    const excelRows = [
+    const excelRows: LedgerRow[] = [
         { id: 'TRX-901', date: '12/04/2026', desc: 'AWS Hosting', amount: '-$1,240.00', status: 'Cleared' },
         { id: 'TRX-902', date: '13/04/2026', desc: 'Stripe Payout', amount: '+$8,450.00', status: 'Processing' },
         { id: 'TRX-903', date: '14/04/2026', desc: 'Github Copilot', amount: '-$190.00', status: 'Cleared' },
@@ -16,7 +41,7 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
         { id: 'TRX-906', date: '17/04/2026', desc: 'Google Cloud', amount: '-$840.00', status: 'Cleared' },
     ];
 
-    const interactiveRows = [
+    const interactiveRows: OperationalRow[] = [
         { id: 'SRK-091', name: 'Scraper_V2_Core', version: 'v3.2', status: 'Online', load: '14%' },
         { id: 'SRK-092', name: 'Parser_Engine_JS', version: 'v2.0', status: 'Idle', load: '0%' },
         { id: 'SRK-093', name: 'Auth_Identity_DB', version: 'v5.1', status: 'Online', load: '45%' },
@@ -43,46 +68,9 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                             />
                         </div>
                     </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left text-xs border-collapse">
-                            <thead>
-                                <tr className="border-b border-[var(--sarak-table-border)] text-[var(--text-secondary)]" style={{ backgroundColor: 'var(--sarak-table-header-bg)', fontFamily: 'var(--font-heading)' }}>
-                                    {['CÓDIGO', 'MÓDULO', 'VERSÃO', 'STATUS', 'CARGA'].map(h => (
-                                        <th key={h} className="font-bold uppercase tracking-wider px-4 py-3 border-r border-[var(--sarak-table-border)] last:border-r-0">
-                                            {h}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-[var(--sarak-table-border)]">
-                                {interactiveRows.map((row, i) => (
-                                    <tr key={i} className="hover:bg-theme-text/5 transition-colors group">
-                                        <td className="px-4 py-3 font-bold text-[var(--theme-title)] border-r border-[var(--sarak-table-border)]">{row.id}</td>
-                                        <td className="px-4 py-3 font-medium text-[var(--theme-title)] border-r border-[var(--sarak-table-border)]">{row.name}</td>
-                                        <td className="px-4 py-3 text-[var(--text-secondary)] border-r border-[var(--sarak-table-border)]">{row.version}</td>
-                                        <td className="px-4 py-3 border-r border-[var(--sarak-table-border)]">
-                                            <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold border flex w-max items-center gap-1.5 ${
-                                                row.status === 'Online' ? 'bg-[var(--sarak-status-success-color,#10b981)]/10 text-[var(--sarak-status-success-color,#10b981)] border-[var(--sarak-status-success-color,#10b981)]/20' :
-                                                row.status === 'Warning' ? 'bg-[var(--sarak-status-warning-color,#f59e0b)]/10 text-[var(--sarak-status-warning-color,#f59e0b)] border-[var(--sarak-status-warning-color,#f59e0b)]/20' :
-                                                'bg-[var(--text-muted,rgba(242,246,251,0.55))]/10 text-[var(--text-muted,rgba(242,246,251,0.55))] border-[var(--border-color,rgba(255,255,255,0.09))]/20'
-                                            }`}>
-                                                <div className={`w-1.5 h-1.5 rounded-full ${row.status === 'Online' ? 'bg-[var(--sarak-status-success-color,#10b981)] animate-pulse' : row.status === 'Warning' ? 'bg-[var(--sarak-status-warning-color,#f59e0b)]' : 'bg-[var(--text-muted,rgba(242,246,251,0.55))]'}`} />
-                                                {row.status}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-3 border-r border-[var(--sarak-table-border)] last:border-r-0">
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-[10px] font-bold w-6">{row.load}</span>
-                                                <div className="flex-1 h-1.5 bg-[var(--theme-border)] rounded-full overflow-hidden">
-                                                    <div className="h-full bg-[var(--theme-primary)]" style={{ width: row.load }} />
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                    <React.Suspense fallback={<div style={{ height: OPERATIONAL_HEIGHT }} aria-hidden="true" />}>
+                        <SarakDataTable columns={OPERATIONAL_COLUMNS} rows={interactiveRows} height={OPERATIONAL_HEIGHT} responsive={false} reorderable={false} getRowKey={(row) => (row as { id: string }).id} />
+                    </React.Suspense>
                 </div>
 
                 {/* Mini Tabela em Card */}
@@ -107,7 +95,7 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                                         <span className="text-[10px] text-[var(--text-secondary)]">admin@sarak.io</span>
                                     </div>
                                 </div>
-                                <div className="text-xs font-mono font-bold text-[var(--theme-title)]">{Math.floor(Math.random() * 1000)} pts</div>
+                                <div className="text-xs font-mono font-bold text-[var(--theme-title)]">{i * 137 + 44} pts</div>
                             </div>
                         ))}
                     </div>
@@ -127,35 +115,9 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                         </SarakButton>
                     </div>
                 </div>
-                <div className="overflow-x-auto">
-                    {/* Aqui forçamos a tabela a não ter padding vertical (densidade extrema) e usar monoespaço */}
-                    <table className="w-full text-left text-[10px] font-mono border-collapse">
-                        <thead>
-                            <tr className="border-b border-[var(--sarak-table-border)] text-[var(--text-secondary)] bg-[var(--sarak-table-header-bg)]">
-                                {['Transaction ID', 'Date', 'Description', 'Amount', 'Status'].map(h => (
-                                    <th key={h} className="font-bold uppercase px-3 py-1.5 border-r border-[var(--sarak-table-border)] last:border-r-0">
-                                        <div className="flex items-center gap-1">{h} <SarakIcon name="ArrowUpDown" size={8} className="opacity-50" /></div>
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-[var(--sarak-table-border)]">
-                            {excelRows.map((row, i) => (
-                                <tr key={i} className="hover:bg-[var(--sarak-table-row-hover)] transition-colors">
-                                    <td className="px-3 py-1 font-bold text-[var(--theme-title)] border-r border-[var(--sarak-table-border)] opacity-80">{row.id}</td>
-                                    <td className="px-3 py-1 text-[var(--text-secondary)] border-r border-[var(--sarak-table-border)]">{row.date}</td>
-                                    <td className="px-3 py-1 text-[var(--theme-title)] border-r border-[var(--sarak-table-border)] truncate max-w-[200px]">{row.desc}</td>
-                                    <td className={`px-3 py-1 border-r border-[var(--sarak-table-border)] font-bold text-right ${row.amount.includes('+') ? 'text-[var(--sarak-status-success-color,#10b981)]' : 'text-[var(--theme-title)]'}`}>
-                                        {row.amount}
-                                    </td>
-                                    <td className="px-3 py-1 border-r border-[var(--sarak-table-border)] last:border-r-0 text-[var(--text-secondary)] italic">
-                                        {row.status}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                <React.Suspense fallback={<div style={{ height: LEDGER_HEIGHT }} aria-hidden="true" />}>
+                    <SarakDataTable columns={LEDGER_COLUMNS} rows={excelRows} height={LEDGER_HEIGHT} rowHeight={LEDGER_ROW_HEIGHT} headerHeight={LEDGER_ROW_HEIGHT} responsive={false} reorderable={false} getRowKey={(row) => (row as { id: string }).id} />
+                </React.Suspense>
                 <div className="p-2 border-t border-[var(--sarak-table-border)] bg-[var(--sarak-table-header-bg)] text-[9px] font-mono text-[var(--text-secondary)] flex justify-between">
                     <span>6 ROWS LOADED</span>
                     <span>SUM: +$11,940.00</span>

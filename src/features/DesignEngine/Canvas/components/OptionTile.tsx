@@ -1,13 +1,12 @@
 import React from 'react';
-import type { SarakDesignState } from '../../../../core/Provider/types';
-import { usePeekHandlers, type PeekHandler } from './peek';
+import { usePeekHandlers, type PeekHandler, type PeekTokens } from './peek';
 
 interface OptionTileProps {
     name: string;
     description?: string;
     onApply: () => void;
     /** Tokens que a espiada compõe por cima do rascunho; `null` enquanto a opção ainda não os tem. */
-    peekTokens: () => Partial<SarakDesignState> | null;
+    peekTokens: () => PeekTokens;
     onPeek?: PeekHandler;
     /** A amostra desenhada com os componentes reais. É só para ver: o toque e o teclado vão no botão da opção. */
     children: React.ReactNode;

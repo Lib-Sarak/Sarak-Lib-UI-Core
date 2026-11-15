@@ -141,6 +141,32 @@ describe('PreviewSystemRenderer — navegação do celular (`mobileNavigationSty
     });
 });
 
+describe('PreviewSystemRenderer — usuário e notificações de amostra', () => {
+    afterEach(() => vi.unstubAllEnvs());
+
+    it('em produção a barra de exemplo mostra a faixa do usuário e o botão de notificações', () => {
+        vi.stubEnv('NODE_ENV', 'production');
+        const { container } = renderPreview('desktop');
+
+        const strip = container.querySelector('[data-sarak-user-strip]');
+        expect(strip).not.toBeNull();
+        expect(strip?.textContent).toContain('Ana Souza');
+        expect(container.querySelector('[data-sarak-widget="notifications"]')).not.toBeNull();
+        expect(container.textContent).not.toContain('indisponível');
+    });
+
+    it('trocar o estilo do avatar no rascunho muda o avatar da faixa', () => {
+        vi.stubEnv('NODE_ENV', 'production');
+        const initials = renderPreview('desktop', { tokens: { userAvatarStyle: 'initials' } });
+        expect(initials.container.querySelector('[data-sarak-avatar-initials]')?.textContent).toBe('AS');
+        initials.unmount();
+
+        const icon = renderPreview('desktop', { tokens: { userAvatarStyle: 'icon' } });
+        expect(icon.container.querySelector('[data-sarak-avatar-initials]')).toBeNull();
+        expect(icon.container.querySelector('[data-sarak-user-strip] svg')).not.toBeNull();
+    });
+});
+
 describe('PreviewSystemRenderer — escala pela largura real do contêiner', () => {
     it('reduz a escala no contêiner estreito até o piso de 0.5', () => {
         vi.stubGlobal('ResizeObserver', ResizeObserverStub);

@@ -33,7 +33,9 @@ describe('PALETTE_ROLE_MAP', () => {
         const scaleOf = (tokens: string[]): string[] => [...new Set(tokens.map((token) => PALETTE_ROLE_MAP[token].scale))];
         expect(scaleOf(['btnPrimaryBg', 'rangeActiveColor', 'switchTrackActiveBg', 'checkboxActiveColor', 'primaryColor', 'titleColor'])).toEqual(['primary']);
         expect(scaleOf(['subtitleColor', 'btnSecondaryBg', 'cardHeaderBg', 'cardHeaderBorder', 'tableHeaderBg', 'chartColorPalette'])).toEqual(['secondary']);
-        expect(scaleOf(['emphasisColor', 'inputFocusBorderColor', 'cardTitleIconGlow', 'sidebarBrandColor'])).toEqual(['accent']);
+        expect(scaleOf(['emphasisColor', 'inputFocusBorderColor', 'cardTitleIconGlow'])).toEqual(['accent']);
+        // O nome da marca está no texto forte da barra, não no acento.
+        expect(scaleOf(['sidebarBrandColor', 'topbarBrandColor'])).toEqual(['neutral']);
     });
 
     it('a barra lateral segue a anatomia: marcador e véu do ativo na primária, ícone e título de seção na cor do texto', () => {

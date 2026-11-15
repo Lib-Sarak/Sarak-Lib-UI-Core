@@ -77,12 +77,13 @@ const usePreviewCanvasModel = (props: PreviewCanvasProps): PreviewCanvasLayoutPr
         [tokens],
     );
     const { isInspecting, setIsInspecting } = useInspector(props.onInspectComponent);
-    // A espiada só vale para a prévia grande; o contexto e a coluna seguem o rascunho, senão tudo recolore ao passar o mouse.
+    // A espiada só vale para a prévia grande; a coluna segue o rascunho, senão tudo recolore ao passar o mouse.
+    // O contexto da prévia leva a espiada também: o componente real que lê `design` em JS (interruptor, tabela listrada) a mostra, como as variáveis de CSS.
     const previewTokens = React.useMemo(
         () => (props.peekTokens ? { ...tokens, ...props.peekTokens } : tokens),
         [tokens, props.peekTokens],
     );
-    const contextValue = usePreviewContextValue(parentContext, tokens, props.onUpdateDraft) as SarakUIContextType;
+    const contextValue = usePreviewContextValue(parentContext, previewTokens, props.onUpdateDraft) as SarakUIContextType;
     const apps = usePreviewApps(previewTokens, props.config, props.previewAnimationStyle, props.selectPreviewApp);
     const deviceStyles = useDeviceStyles(props.previewDevice, tokens);
     const layoutPreset = getPreviewLayoutPreset();

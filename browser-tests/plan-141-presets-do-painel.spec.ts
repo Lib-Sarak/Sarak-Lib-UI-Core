@@ -254,7 +254,7 @@ for (const mode of MODES) {
         expect(total).toBeGreaterThan(0);
         for (let index = 0; index < total; index += 1) {
             await frames.nth(index).scrollIntoViewIfNeeded();
-            await frames.nth(index).locator('.sarak-chrome-brand span.truncate').waitFor({ timeout: 30_000 });
+            await frames.nth(index).locator('.sarak-chrome-brand [data-sarak-brand-name]').waitFor({ timeout: 30_000 });
             const overflow = await frames.nth(index).evaluate((frame) => {
                 const box = frame.getBoundingClientRect();
                 const inside = (element: Element | null): boolean => {
@@ -262,7 +262,7 @@ for (const mode of MODES) {
                     const rect = element.getBoundingClientRect();
                     return rect.width > 0 && rect.left >= box.left - 1 && rect.right <= box.right + 1 && rect.top >= box.top - 1 && rect.bottom <= box.bottom + 1;
                 };
-                const brand = frame.querySelector('.sarak-chrome-brand span.truncate');
+                const brand = frame.querySelector('.sarak-chrome-brand [data-sarak-brand-name]');
                 const label = Array.from(frame.querySelectorAll('nav a, nav button, nav span')).find((node) => (node.textContent ?? '').trim().length > 0) ?? null;
                 const clipped = (element: Element | null): boolean => !element || (element as HTMLElement).scrollWidth > (element as HTMLElement).clientWidth;
                 return { frameFits: frame.scrollWidth <= frame.clientWidth, brandInside: inside(brand), labelInside: inside(label), brandClipped: clipped(brand),  };

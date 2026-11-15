@@ -7,7 +7,7 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ## 9.0.0 — a barra lateral volta à anatomia da lib antiga (padrões que mudaram)
 
-A barra lateral de todo tema volta a nascer com a anatomia que a lib antiga desenhava. **Nenhum token saiu nem mudou de nome**: cada um
+A barra lateral de todo tema volta a nascer com a anatomia que a lib antiga desenhava. **Nenhum token saiu nem mudou de nome** (entraram `sidebarActiveGlass`, `brandDisplay`, `userAvatarStyle` e `preferenceNavCollapsePositionTopbar`, todos aditivos): cada um
 continua editável no painel e declarável pelo tema. O que mudou foram os **padrões** — o valor que vale quando nem o tema nem o host
 declaram o token.
 
@@ -18,7 +18,7 @@ declaram o token.
 | Ícone inativo (`sidebarIconColor`) | a primária (papel) e `#19e3f0` (padrão sem paleta) | a cor do rótulo do item |
 | Título de seção (`sidebarCategoryColor`, papel da paleta) | a secundária | a cor do texto da barra; 14 px, negrito, espaçamento 0,2 em |
 | Fundo da marca (`sidebarBrandBackground`, papel da paleta) | acento sólido, só atrás do logo | primária a 5%, na faixa inteira do cabeçalho |
-| Recolher a navegação (`preferenceNavCollapsePosition`) | `'menu'` (no ⚙) | `'pinned'`: a seta no cabeçalho da barra (e o botão de menu na barra do topo) |
+| Recolher a navegação (`preferenceNavCollapsePosition`) | `'menu'` (no ⚙) | `'pinned'`: a seta no cabeçalho da barra lateral |
 | Moldura da barra | cantos retos, linha só do lado do conteúdo | cartão: o raio do tema (`borderRadius`) e, com `sidebarBorderSide: 'edge'`, a linha nos quatro lados; encostada na tela (`tabSectionMargin` 0), o lado colado fica reto |
 | Cabeçalho da marca | só o nome, sem faixa | faixa da altura do topo com linha embaixo; sem logo, monograma (a inicial do nome); com a marca embaixo, o topo é só a seta |
 | Busca da barra | altura de campo de formulário | a altura de um item do menu |
@@ -28,10 +28,42 @@ declaram o token.
 | Busca no topo da barra | colada no cabeçalho, recuo próprio | abaixo do topo, o mesmo vão que separa as seções da lista, e na coluna dos itens |
 | Sub-aba recuada (`children`) | recuo de 1,5 × o espaçamento de página | o ícone da sub-aba sob o rótulo do pai |
 | `navItems` | sem sub-abas (os filhos do `nav` não tinham porta equivalente) | `children` e `defaultExpanded`, com a regra do `nav`: um nível, o pai não navega, filho `active` abre o grupo. Aditivo |
+| Botão de menu (≡) da barra do topo (token novo `preferenceNavCollapsePositionTopbar`, `'off'` \| `'menu'` \| `'pinned'`) | seguia `preferenceNavCollapsePosition` (na lateral e no topo) | `'menu'`: a lateral mostra a seta e o topo **não** mostra o ≡, como antes. `'pinned'` liga o ≡ no topo. O valor já gravado em `preferenceNavCollapsePosition` continua valendo para a lateral |
+| Composição padrão (`preferenceModePosition`) | `'pinned'` (modo claro/escuro solto na barra) | `'menu'`: modo, tamanho da fonte e lateral/topo no ⚙; idioma, notificações e usuário na barra |
+| ⚙ da lateral | repetia o que já estava fixado na barra | guarda só o que não está na barra (recolhida, também o que não cabe sem rótulo) |
+| Rodapé da lateral | sino solto com contador, pílula de idioma com borda, "Modo claro" solto e ⚙ isolado embaixo do usuário | linhas com a métrica do item de menu, na coluna dos itens: ícone, rótulo e indicador à direita (código do idioma na cor ativa; contador de notificações). O ⚙ é uma linha própria acima do usuário. Recolhida, um ícone por linha no eixo da lista |
+| Usuário e notificações que o sistema não ligou (sem `user`/`logout`, sem `notifications` com itens e `onNotificationSelect`) | linha desabilitada em caixa com borda, em qualquer ambiente | **em produção não aparecem**; fora dela, linha apagada sem caixa e o aviso único no console que diz o que ligar |
+| Faixa do usuário | borda e fundo conforme o tema (alguns sem nada); papel maior que o nome | sempre linha em cima na cor da borda da barra, fundo tingido e o mesmo respiro; nome (14 px, negrito) acima do papel (11 px, caixa alta, com escudo); sair à direita |
+| Avatar do usuário (token novo `userAvatarStyle`, `'initials'` \| `'icon'`) | iniciais | `'initials'` (padrão); `'icon'` mostra o ícone de pessoa. Com imagem (`avatarUrl`), a imagem vale. No painel, na configuração da barra |
+| Marca (token novo `brandDisplay`, `'both'` \| `'logo'` \| `'name'`) | logo e nome, sempre | `'both'` (padrão); `'logo'` só o logo (sem imagem, cai no nome); `'name'` só o nome. No painel, na pergunta da marca |
+| Nome da marca (nas duas barras) | cortado com "…" na largura do token `sidebarLabelMaxWidth`/`topbarLabelMaxWidth` | quebra entre palavras em até duas linhas e, se ainda não couber, a fonte diminui até caber (nunca abaixo do rótulo do item). Na barra do topo a marca não encolhe: quem cede é a lista de abas |
+| Cor do nome da marca (`sidebarBrandColor`, `topbarBrandColor`, papéis da paleta) | acento | o texto forte da barra, como na lib antiga |
 
 **O que fazer.** Nada, para seguir a anatomia. Para manter o desenho anterior, declare o token no `config` ou no tema (por exemplo,
 `preferenceNavCollapsePosition: 'menu'` devolve o recolher ao ⚙, `sidebarBorderSide: 'right'` volta à linha de um lado). **Valor já
 gravado continua valendo**: quem gravou a posição do recolher ou uma cor da barra no design não muda.
+
+---
+
+## 9.0.0 — o painel pergunta antes de descartar o rascunho (aditivo: a prop é opcional)
+
+Antes, sair do painel de personalização com alterações ainda não aplicadas descartava tudo em silêncio. Agora, com o rascunho sujo:
+
+- **Fechar a aba** mostra o aviso do navegador (`beforeunload`), sem ação sua.
+- **Sair para outra rota pelo cromo da lib** (`SarakAppChrome`: barra lateral, topo, barra inferior, busca e drawer do celular) pergunta "Ficar no painel",
+  "Descartar e sair" ou "Aplicar e sair" **sozinho**, sem ligação nenhuma do seu lado: o cromo espera a resposta antes de chamar o seu `onNavigate`.
+  "Ficar" não chama o `onNavigate`; "Descartar e sair" e "Aplicar e sair" chamam. Sem rascunho sujo, o `onNavigate` é chamado na hora.
+- **Navegação que não passa pelo cromo** (voltar do navegador, link no conteúdo) só pergunta se você ligar o painel ao seu roteador — a lib não vê essa
+  navegação. Ligar é opcional:
+
+```tsx
+const leave = useRef<SarakPanelLeaveControl>();
+<SarakCustomizationPanel onUnsavedChangesControl={(control) => { leave.current = control; }} />;
+// No bloqueio de rota do seu roteador: `if (!(await leave.current?.confirmLeave() ?? true)) cancelNavigation();`
+```
+
+`confirmLeave()` resolve `true` para sair (sem perguntar quando não há rascunho sujo) e `false` para ficar. Os tipos `SarakCustomizationPanelProps` e
+`SarakPanelLeaveControl` saem de `@sarak/lib-ui-core`. Nada quebra: quem não passa a prop ganha o aviso do navegador e a pergunta do cromo.
 
 ---
 

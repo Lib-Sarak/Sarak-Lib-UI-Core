@@ -211,7 +211,7 @@ export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
                 role={isNavigable ? undefined : 'link'}
                 aria-disabled={isNavigable ? undefined : true}
                 aria-current={active ? 'page' : undefined}
-                aria-label={collapsed || badge !== undefined ? accessibleLabel : undefined}
+                aria-label={collapsed || badge !== undefined ? accessibleLabel : props['aria-label']}
                 tabIndex={isNavigable ? tabIndex : -1}
                 title={accessibleTitle}
                 className={itemClassName}
@@ -231,7 +231,7 @@ export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
             disabled={disabled}
             aria-disabled={disabled ? true : undefined}
             aria-current={active ? 'page' : undefined}
-            aria-label={collapsed || badge !== undefined ? accessibleLabel : undefined}
+            aria-label={collapsed || badge !== undefined ? accessibleLabel : props['aria-label']}
             tabIndex={disabled ? -1 : tabIndex}
             title={accessibleTitle}
             className={itemClassName}

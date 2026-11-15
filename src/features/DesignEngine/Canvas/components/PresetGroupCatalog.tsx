@@ -25,7 +25,7 @@ interface PresetGroupCatalogProps {
 /** Os grupos de barra mostram a lateral ou o topo; o resto, o componente da opção. */
 const NAVIGATION_STYLE: Readonly<Record<string, string>> = { sidebar: 'sidebar', topbar: 'topbar' };
 /** Na amostra de uma barra só ficam a navegação e a marca: os widgets não são o que o preset desenha, e o que o tom contrastante faz com eles é da barra, não da opção. */
-export const BAR_WIDGETS_OFF = { chromeSearchPosition: 'off', chromeUserPosition: 'off', chromeNotificationsPosition: 'off', preferenceModePosition: 'off', preferenceLanguagePosition: 'off', preferenceFontSizePosition: 'off', preferenceNavigationStylePosition: 'off', preferenceNavCollapsePosition: 'off' } as Partial<SarakDesignState>;
+export const BAR_WIDGETS_OFF = { chromeSearchPosition: 'off', chromeUserPosition: 'off', chromeNotificationsPosition: 'off', preferenceModePosition: 'off', preferenceLanguagePosition: 'off', preferenceFontSizePosition: 'off', preferenceNavigationStylePosition: 'off', preferenceNavCollapsePosition: 'off', preferenceNavCollapsePositionTopbar: 'off' } as Partial<SarakDesignState>;
 const WIDE_GROUPS: ReadonlySet<string> = new Set(['sidebar', 'topbar', 'fontPairs', 'typeScale', 'fonts', 'cards']);
 
 /** Pede a fonte do preset antes de desenhar: sem isto a amostra de um par mostra a fonte do rascunho. */

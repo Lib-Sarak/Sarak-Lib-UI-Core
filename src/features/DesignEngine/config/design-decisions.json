@@ -102,7 +102,17 @@
             "settings",
             "logs",
             "documentos"
-        ]
+        ],
+        "groupScreens": {
+            "tables": "tabela",
+            "charts": "graficos",
+            "modal": "components",
+            "notice": "components",
+            "switch": "components",
+            "scroll": "components",
+            "badge": "components",
+            "emptyState": "components"
+        }
     },
     {
         "id": "layout",
@@ -157,10 +167,12 @@
                     "chromeSearchPosition",
                     "chromeUserPosition",
                     "chromeNotificationsPosition",
+                    "userAvatarStyle",
                     "preferenceModePosition",
                     "preferenceFontSizePosition",
                     "preferenceNavigationStylePosition",
                     "preferenceNavCollapsePosition",
+                    "preferenceNavCollapsePositionTopbar",
                     "preferenceLanguagePosition"
                 ],
                 "fineMatch": "^searchDropdown"
@@ -170,6 +182,7 @@
                 "textKey": "barQuestionBrand",
                 "tokens": [
                     "sidebarLogoPlacement",
+                    "brandDisplay",
                     "shellBrandLogoSize",
                     "brandLogoSizeCollapsed",
                     "sidebarLabelMaxWidth"

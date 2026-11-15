@@ -49,3 +49,10 @@ export const VERTICAL_NAV_PADDING = 'min(var(--sarak-layout-gap-md, 16px), calc(
 export const VERTICAL_NAV_GAP = 'min(var(--sarak-layout-gap-sm, 8px), calc(var(--sarak-sidebar-width, 240px) / 30))';
 /** O vão entre duas seções da lista: o vão da lista mais o respiro acima do título da seção. */
 export const VERTICAL_NAV_SECTION_GAP = `calc(${VERTICAL_NAV_GAP} * 2)`;
+
+/**
+ * O recuo do ícone do item vertical a partir da borda da barra: o recuo da lista mais o do item. O rodapé e o avatar do
+ * usuário se alinham por ele à coluna dos ícones da lista.
+ */
+export const verticalMenuItemInset = (density: NavigationItemDensity): string =>
+    `calc(${VERTICAL_NAV_PADDING} + ${verticalMenuItemSpacing(density, 'px')})`;

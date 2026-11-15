@@ -74,6 +74,7 @@ const GroupBody: React.FC<{ group: OptionGroup; context: DecisionOptionsContext 
                 draft={context.draft as unknown as Record<string, unknown>}
                 appliedDesign={context.sarak.systemDesign as unknown as Record<string, unknown> | undefined}
                 updateDraft={context.updateDraft}
+                onPeek={context.onPeek}
             />
         );
     }

@@ -47,6 +47,7 @@ export const PAIRS: readonly ContrastPair[] = [
     { fg: 'inputIconColor', bgChain: ['inputBg', 'colorBgBody'], min: 4.5 },
     { fg: 'topbarTitleColor', bgChain: ['topbarColor', 'colorBgBody'], min: 4.5 },
     { fg: 'sidebarItemTextColor', bgChain: ['sidebarColor', 'colorBgBody'], min: 4.5 },
+    { fg: 'sidebarIconColor', bgChain: ['sidebarColor', 'colorBgBody'], min: 4.5 },
     { fg: 'sidebarItemHoverTextColor', bgChain: ['sidebarHoverColor', 'sidebarColor', 'colorBgBody'], min: 4.5 },
     { fg: 'sidebarCategoryColor', bgChain: ['sidebarColor', 'colorBgBody'], min: 4.5 },
     { fg: 'sidebarBrandColor', bgChain: ['sidebarBrandBackground', 'sidebarColor', 'colorBgBody'], min: 4.5 },

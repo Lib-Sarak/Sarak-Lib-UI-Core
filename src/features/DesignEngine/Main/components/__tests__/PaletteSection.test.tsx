@@ -3,6 +3,7 @@ import { act, fireEvent, render, screen, waitFor, within } from '@testing-librar
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { PaletteSection } from '../PaletteSection';
+import { PEEK_DELAY_MS } from '../../../Canvas/components/peek';
 import { parsePaletteValue } from '../../../../../core/Design/palette/parser';
 import { sarakResolvePalette } from '../../../../../core/Design/palette/resolve';
 import type { SarakTokenValue } from '../../../../../core/Design/types';
@@ -108,16 +109,34 @@ describe('PaletteSection', () => {
         expect(radios.filter((radio) => radio.getAttribute('tabindex') === '0')).toHaveLength(1);
     });
 
-    it('as setas movem o foco e a seleção, dando a volta no fim da lista', async () => {
+    it('as setas só movem o foco, dando a volta no fim da lista: o rascunho não muda', async () => {
         render(<Harness initial={{ ...baseDraft(), colorPalette: 'oceano' }} applied={{}} />);
         const oceano = screen.getByRole('radio', { name: /Oceano/ });
         oceano.focus();
         await act(async () => { fireEvent.keyDown(oceano, { key: 'ArrowRight' }); });
-        await waitFor(() => expect(captured.draft.colorPalette).toBe('floresta'));
         expect(screen.getByRole('radio', { name: /Floresta/ })).toHaveFocus();
         await act(async () => { fireEvent.keyDown(screen.getByRole('radio', { name: /Floresta/ }), { key: 'ArrowLeft' }); });
-        await waitFor(() => expect(captured.draft.colorPalette).toBe('oceano'));
         await act(async () => { fireEvent.keyDown(screen.getByRole('radio', { name: /Oceano/ }), { key: 'ArrowLeft' }); });
-        await waitFor(() => expect(captured.draft.colorPalette).toBe('brasa'));
+        expect(screen.getByRole('radio', { name: /Brasa/ })).toHaveFocus();
+        expect(captured.draft.colorPalette).toBe('oceano');
+    });
+
+    it('Enter na paleta com o foco a escolhe (o clique do botão), e escolher grava no rascunho', async () => {
+        render(<Harness initial={{ ...baseDraft(), colorPalette: 'oceano' }} applied={{}} />);
+        await act(async () => { fireEvent.click(screen.getByRole('radio', { name: /Floresta/ })); });
+        await waitFor(() => expect(captured.draft.colorPalette).toBe('floresta'));
+    });
+
+    it('espiar uma paleta entrega o que ela escreveria, sem gravar no rascunho', async () => {
+        vi.useFakeTimers();
+        window.matchMedia = vi.fn().mockReturnValue({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() }) as unknown as typeof window.matchMedia;
+        const onPeek = vi.fn();
+        const updateDraft = vi.fn();
+        render(<PaletteSection draft={baseDraft()} appliedDesign={{}} updateDraft={updateDraft} onPeek={onPeek} />);
+        fireEvent.mouseEnter(screen.getByRole('radio', { name: /Floresta/ }));
+        act(() => { vi.advanceTimersByTime(PEEK_DELAY_MS); });
+        vi.useRealTimers();
+        expect(onPeek).toHaveBeenCalledWith(expect.objectContaining({ colorPalette: 'floresta', primaryColor: expect.any(String) }));
+        expect(updateDraft).not.toHaveBeenCalled();
     });
 });

@@ -8,7 +8,8 @@ describe('preferences (schema)', () => {
     });
 
     it('cada preferência tem um token de posição próprio, e o schema declara exatamente esses 5', () => {
-        const schemaIds = PreferencesSchema.tokens.map((t) => t.id).sort();
+        // O recolher da barra do topo tem token próprio (`preferenceNavCollapsePositionTopbar`), fora das 5 preferências do usuário.
+        const schemaIds = PreferencesSchema.tokens.map((t) => t.id).filter((id) => id !== 'preferenceNavCollapsePositionTopbar').sort();
         const mappedIds = Object.values(PREFERENCE_POSITION_TOKEN_IDS).sort();
         expect(schemaIds).toEqual(mappedIds);
         expect(schemaIds).toHaveLength(5);
@@ -23,7 +24,8 @@ describe('preferences (schema)', () => {
 
     it('padrão de fábrica: controles essenciais ficam fixos e layout/tipografia ficam no menu', () => {
         const byId = Object.fromEntries(PreferencesSchema.tokens.map((t) => [t.id, t.defaultValue]));
-        expect(byId[PREFERENCE_POSITION_TOKEN_IDS.colorMode]).toBe('pinned');
+        expect(byId[PREFERENCE_POSITION_TOKEN_IDS.colorMode]).toBe('menu');
+        expect(byId.preferenceNavCollapsePositionTopbar).toBe('menu');
         expect(byId[PREFERENCE_POSITION_TOKEN_IDS.fontSize]).toBe('menu');
         expect(byId[PREFERENCE_POSITION_TOKEN_IDS.navigationStyle]).toBe('menu');
         expect(byId[PREFERENCE_POSITION_TOKEN_IDS.navCollapsed]).toBe('pinned');

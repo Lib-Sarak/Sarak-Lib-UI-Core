@@ -51,6 +51,8 @@ export const cyberpunkneonTheme: SarakThemePreset = {
         sidebarBackgroundStyle: 'texture',
         sidebarActiveItemStyle: 'filled',
         sidebarActiveGlass: 'on',
+        brandDisplay: 'both',
+        userAvatarStyle: 'initials',
         sidebarItemDensity: 'compact',
         sidebarIconSize: 20,
         topbarBorderWidth: 1,

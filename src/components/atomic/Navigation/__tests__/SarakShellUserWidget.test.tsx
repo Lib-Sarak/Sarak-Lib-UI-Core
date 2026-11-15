@@ -23,7 +23,7 @@ describe('SarakShellUserWidget — identidade genérica', () => {
         expect(name).toBeInTheDocument();
         expect(name.className).toContain('theme-title');
         expect(role).toBeInTheDocument();
-        expect(role.className).toContain('--sarak-subtitle-color');
+        expect(role.className).toContain(variant === 'vertical' ? '--sarak-sidebar-item-text-color' : '--sarak-subtitle-color');
         expect(screen.queryByText(/Master|Admin|\d+/)).not.toBeInTheDocument();
     });
 
@@ -62,5 +62,47 @@ describe('SarakShellUserWidget — identidade genérica', () => {
         fireEvent.click(screen.getByRole('button'));
 
         expect(logout).toHaveBeenCalledOnce();
+    });
+});
+
+describe('SarakShellUserWidget — faixa e avatar da lateral', () => {
+    const renderWith = (config: Record<string, unknown>, user: SarakShellUser = { name: 'Ana Lima', role: 'Finance Manager' }): ReturnType<typeof render> =>
+        render(
+            <SarakUIProvider config={{ language: 'en', ...config }}>
+                <SarakShellUserWidget user={user} logout={() => undefined} variant="vertical" />
+            </SarakUIProvider>,
+        );
+
+    it('a faixa tem linha em cima na cor da borda da barra e fundo tingido, nome em cima e papel em caixa alta embaixo', () => {
+        const { container } = renderWith({});
+        const strip = container.querySelector('[data-sarak-user-strip]') as HTMLElement;
+        expect(strip.style.borderTop).toContain('var(--sarak-sidebar-border-color');
+        expect(strip.style.background).toContain('color-mix');
+        const name = screen.getByText('Ana Lima');
+        const role = screen.getByText('Finance Manager');
+        expect(name.className).toContain('text-sm');
+        expect(name.className).toContain('font-bold');
+        expect(role.className).toContain('text-2xs');
+        expect(role.className).toContain('uppercase');
+        expect(role.className).toContain('tracking-widest');
+        expect(name.compareDocumentPosition(role) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
+    it('`userAvatarStyle: initials` (o padrão) mostra as iniciais', () => {
+        const { container } = renderWith({});
+        expect(container.querySelector('[data-sarak-avatar-initials]')).toHaveTextContent('AL');
+    });
+
+    it('`userAvatarStyle: icon` mostra o ícone de pessoa no lugar das iniciais', () => {
+        const { container } = renderWith({ userAvatarStyle: 'icon' });
+        expect(container.querySelector('[data-sarak-avatar-initials]')).toBeNull();
+        expect(screen.queryByText('AL')).toBeNull();
+        expect(container.querySelector('[aria-hidden="true"] svg')).not.toBeNull();
+    });
+
+    it('com imagem, a imagem vale nos dois estilos', () => {
+        const avatarUrl = new URL('/ana.png', window.location.href).href;
+        const { container } = renderWith({ userAvatarStyle: 'icon' }, { name: 'Ana Lima', avatarUrl });
+        expect(container.querySelector('img')).toHaveAttribute('src', avatarUrl);
     });
 });

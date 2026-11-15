@@ -533,6 +533,37 @@
     ]
   },
   {
+    "tokenId": "preferenceNavCollapsePositionTopbar",
+    "name": "Preferência: Menu da Barra do Topo — Posição",
+    "description": "Onde o botão de menu (≡) que compacta a barra do topo aparece: não oferecida, no menu ⚙, ou fixa na barra.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "chrome-composition"
+    ],
+    "tags": [
+      "preferencias",
+      "colapso",
+      "barra"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "preferences.ts",
+    "digitalTwins": [
+      "SarakAppChrome"
+    ],
+    "cssVariables": [
+      "--sarak-preference-nav-collapse-position-topbar"
+    ],
+    "allowedValues": [
+      "off",
+      "menu",
+      "pinned"
+    ],
+    "relatedTokens": [
+      "preferenceNavCollapsePosition"
+    ]
+  },
+  {
     "tokenId": "preferenceLanguagePosition",
     "name": "Preferência: Idioma — Posição",
     "description": "Onde a escolha de idioma do usuário final aparece: não oferecida, no menu ⚙, ou fixa na barra.",

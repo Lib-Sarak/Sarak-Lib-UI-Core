@@ -34,7 +34,8 @@ export const PALETTE_ROLE_MAP: Readonly<Record<string, PaletteColorRole>> = {
     sidebarItemHoverTextColor: colorRole('neutral', 950, 50),
     // Título de seção na cor do texto da barra e ícone inativo na do rótulo, não em cor de destaque: a lista não parece acesa.
     sidebarCategoryColor: colorRole('neutral', 950, 50),
-    sidebarBrandColor: colorRole('accent', 700, 300),
+    // O nome da marca no texto forte da barra, como na lib antiga; quem quiser acento declara o token.
+    sidebarBrandColor: colorRole('neutral', 950, 50),
     sidebarBorderColor: colorRole('neutral', 200, 800, 0.64),
     sidebarBrandBackground: colorRole('primary', BASE, BASE, 0.05),
     sidebarFooterBackground: colorRole('neutral', 100, 900),
@@ -44,7 +45,7 @@ export const PALETTE_ROLE_MAP: Readonly<Record<string, PaletteColorRole>> = {
     topbarActiveColor: colorRole('primary', 300, 700, 0.6),
     topbarItemTextColor: colorRole('neutral', 800, 100),
     topbarItemHoverTextColor: colorRole('neutral', 950, 50),
-    topbarBrandColor: colorRole('accent', 700, 300),
+    topbarBrandColor: colorRole('neutral', 950, 50),
     topbarBrandBackground: colorRole('accent', 100, 900),
     topbarBorderColor: colorRole('neutral', 200, 800, 0.64),
     topbarGroupSeparatorColor: colorRole('neutral', 200, 800, 0.64),

@@ -113,6 +113,17 @@ painel. As larguras de conteúdo aparecem na prévia. Tablet e celular continuam
 3.4. Tablet: títulos dos cards e o menu da prévia sem corte; celular: nenhum botão do painel por cima da moldura.
 3.5. A marca d'água "SARAK TWIN" sai de `LiveDraftPreviewFrame.tsx`, sem substituto. Confira por que o `zero-brand:check` não a
 acusou (allowlist ou padrão de busca) e relate no resumo; se for lacuna do gate, vai para os achados fora do escopo.
+3.6. As 14 opções que a medição por grupo expôs sem efeito na prévia (`KNOWN_PENDING` da correção do lote 2, acrescentadas pelo
+revisor em 2026-11-15): `components/tables` (2), `components/modal` (1), `shape/shadow` (2), `shape/shadowDirection` (1),
+`shape/glass` (3), `shape/atmosphere` (3) e `shape/gradient` (2).
+   - Para cada uma, o resumo diz a causa: a prévia não desenha quem lê o token, ou o token não tem efeito em lugar nenhum.
+   - Se a prévia não desenha, conserte a prévia.
+   - Se o componente não lê o token, conserte o componente: a `SarakDataTable` ganha listras, raio e respiro, como já tem a
+     `SarakTableView`.
+   - Se o token não tem efeito em lugar nenhum, vai para o relatório como decisão do dono (tirar a opção ou dar efeito a ela).
+   - Cada uma sai de `KNOWN_PENDING` com o motivo provado.
+3.7. **Rolar a lista de opções muda a prévia** (30,4% dos pixels na medição da correção do lote 2, sem espiar nada): achar a causa e
+consertar. Rolar o painel não pode mexer no que a prévia mostra.
 
 **Em todo lote:** o spec do lote 1 roda e a contagem sobe; nada que passava passa a reprovar.
 
@@ -128,6 +139,7 @@ acusou (allowlist ou padrão de busca) e relate no resumo; se for lacuna do gate
 - [ ] Menu ⚙ dentro da moldura e na escala; nenhum item da prévia leva para fora do painel.
 - [ ] Tablet e celular sem corte nem botão sobre a moldura.
 - [ ] Nenhuma marca d'água na prévia, em nenhum dispositivo.
+- [ ] `KNOWN_PENDING` só com as larguras de conteúdo até o 3.1 e vazio no fim do lote 3 (3.6); rolar o painel não muda a prévia (3.7).
 - [ ] Suíte completa verde; `tsc` 0; baseline sem regressão; Anel 1; `npm run build` + `cromo-css-real:check`.
 - [ ] Prévia para o dono em `C:\tmp\sarak-previa-160\index.html` (lotes 2 e 3), com capturas reais; o lote só fecha com o ok do dono nela.
 
@@ -427,3 +439,194 @@ falso vermelho no gate de fechamento da release.
 - Se a medida sob carga continuar instável, o arquivo roda em série (`test.describe.configure({ mode: 'serial' })`) e o motivo vai
   num comentário.
 - Aceite: duas corridas completas de `cromo-css-real:check` com os workers padrão, verdes neste spec.
+
+## Resumo da execução (lote 2) — 2026-11-14
+
+**Resultado:** Concluído com pendências (lote 3 não executado; ok do dono na prévia pendente; `contentWidth` Média/Larga continuam em `KNOWN_PENDING`, são do lote 3).
+
+**Estado do worktree ao iniciar**
+(limpo) — a plan-165 (lote 2) entrou em paralelo e modificou cromo, navegação, catálogo de tokens, `docs/migracoes.md`, `sarak-dev/`, `sarak-ui/`, `ThemeCustomizationTab.test.tsx`, `CustomizationPanel*`, `Main/components/LeavePanelDialog*`, `useLeavePanelGuard*`; não toquei nesses.
+
+**O que foi feito**
+- 2.1 `config/design-decisions.json` + `utils/decisions.ts`: `groupScreens` por decisão (tables→tabela, charts→graficos, modal/notice/switch/scroll/badge/emptyState→components) e `peekScreenOf`. `usePeekPreview` guarda tela junto com os tokens e expõe `keepPeekScreen`; `ThemeCustomizationTab.tsx` passa `peekScreen ?? activePreviewApp` à prévia e envolve `onApplyPreset` (escolher mantém a tela). `PresetsCatalog.tsx` (`peekFor`) liga cada grupo à sua tela.
+- 2.2 `ComponentsMock.tsx`: `SarakSwitch`, `SarakBadge`, `SarakAlert`, `SarakEmptyState` reais, lista com `custom-scrollbar`. `TableMock.tsx`: duas `SarakDataTable` reais (com `SarakBadge` no status); removido o `Math.random()` dos pontos (a prévia piscava). `ChartsMock.tsx`: respeita `chartShowGrid` e `chartSmoothing`. `PreviewCanvas.tsx`: o contexto da prévia agora leva a espiada (sem isso o componente real que lê `design` em JS não reagia).
+- 2.3 `PresetsCatalog.tsx`: espiar preset de `topbar`/`sidebar` acrescenta `navigationStyle` correspondente, só durante a espiada.
+- 2.4 `PaletteGallery.tsx` (`PaletteOption`), `PaletteSection.tsx`, `ThemeDecisionOptions.tsx`: hover e foco espiam (`buildPaletteDraftPatch`, sem gravar); setas só movem o foco; clique/Enter escolhem.
+- 2.5 `peek.ts`: `getTokens` aceita promessa (sair antes de chegar não aplica); `PresetCardPending` recebe `peekTokens`/`onPeek`; `PresetCard` assume a espiada se o cartão que trocou o pendente já está sob o ponteiro (`:hover` conferido no mount e 200 ms depois). Item saiu de `KNOWN_PENDING`.
+- 2.6 spec: `shareWhenStable` (zero é conferido com a prévia estável, até 3 fotos extras).
+
+**Arquivos alterados** (meus; testes incluídos)
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/features/DesignEngine/config/design-decisions.json`, `utils/decisions.ts` | alterado | `groupScreens`, `peekScreenOf` |
+| `Main/hooks/usePeekPreview.ts`, `Main/ThemeCustomizationTab.tsx` | alterado | tela da espiada, `keepPeekScreen` |
+| `Canvas/components/peek.ts`, `OptionTile.tsx`, `PresetCard.tsx`, `PresetCardPending.tsx`, `PresetsCatalog.tsx` | alterado | espiada assíncrona, tela, navegação, retomada sob o ponteiro |
+| `Canvas/PreviewCanvas.tsx` | alterado | contexto com a espiada |
+| `Canvas/Mocks/ComponentsMock.tsx`, `TableMock.tsx`, `ChartsMock.tsx` | alterado | componentes reais |
+| `Main/components/PaletteGallery.tsx`, `PaletteSection.tsx`, `ThemeDecisionOptions.tsx` | alterado | espiada de paleta |
+| testes: `peek`, `PresetCardPending`, `PresetsCatalog`, `PaletteGallery`, `PaletteSection`, `usePeekPreview`, `decisions`, `TableMock`, `ComponentsMock` (novo) | alterado/criado | cobertura do acima |
+| `browser-tests/plan-160-previa-mostra-a-opcao.spec.ts` | alterado | listas, conferência de zeros, dois testes do cartão pendente |
+| `dist/`, `BUILD_INFO`/`buildInfo.ts` | regerados por `npm run build` | build rodado 3 vezes (preciso para o spec ler o `dist/`) |
+
+**Verificações executadas**
+- `npx vitest run` dos arquivos acima e de `Main/__tests__`, `Canvas/Mocks` → verdes (117 testes numa rodada; `peek`+`PresetCard` 18).
+- `npx tsc --noEmit` → 0 erros.
+- `npm run build` → exit 0 (três vezes; a última com o código final).
+- Spec do navegador (completo, build final): **8 passed (6,0 min)**. Contagem depois: Componentes tables 6/6 · charts 6/6 · modal 1/1 · notice 3/3 · switch 3/3 · scroll 1/1 · badge 4/4 · emptyState 4/4 · buttons 7/7 · inputs 5/5 · icons 6/7 · motion 0/1 · pageTransition 0/1 (as duas de animação e Preenchidos: exceções permanentes) → de 18/49 para 47/49 + 2 exceções; Cores 19/19; Layout topbar 8/8, sidebar 7/8 (Limpa, exceção), contentWidth 1/4 (pendente, lote 3); Temas 25/25.
+- `npm run -s verify -- --tier=quick` → só `plan-index:check` falha, por plan-165 (índice 🟡 × frontmatter 🟠); resto `[OK]`.
+- Não rodei a suíte completa (é do revisor). Rodadas parciais de DesignEngine mostraram falhas que são da plan-165: `PreviewCanvas` snapshot (`data-sx-brand-display`, widgets), `AtmosphereCatalog` snapshot, `useThemeCustomizationData` e `decisions` (8→9 controles em "O que aparece", token novo `brandDisplay`).
+- Prévia: `C:\tmp\sarak-previa-160\index.html` (6 pares antes/depois: tabela, interruptor, selo, gráfico, barra de topo, paleta).
+
+**Critérios de aceite (lote 2)**
+- [x] Espiada leva à tela do grupo e volta; escolher mantém — `usePeekPreview.test`, `PresetsCatalog.test`.
+- [x] Interruptor, selo e tabela são os componentes reais — `ComponentsMock.test`, `TableMock.test`.
+- [x] Topbar com navegação lateral muda a prévia (8/8) — spec.
+- [x] Paletas espiam no hover/foco; só Enter/clique escolhem — `PaletteGallery.test`, spec 19/19.
+- [x] Cartão pendente espia; sair antes não aplica; saiu de `KNOWN_PENDING` — 2 testes do spec.
+- [x] 2.6: espera por estabilidade, spec verde sob a rodada completa. **Não feito:** duas corridas de `cromo-css-real:check` com workers padrão (só rodei o spec isolado, 3 vezes verde).
+- [ ] Ok do dono na prévia — pendente.
+
+**Decisões e suposições**
+- Modal e avisos (toast/dica) são réplicas na tela Componentes, com as mesmas variáveis: os reais abrem em portal no `body`, fora da moldura.
+- Espiar leva a outra tela, então toda opção "muda pixels" só por isso. Por isso tirei de `PERMANENT_EXCEPTIONS` `charts/Área suave`, `notice/Suave` e `switch/Tátil` (a prova "aplicada" deixou de valer) e a trava inversa ignora exceções `applied`. Consequência: o spec prova que a prévia muda, não que o efeito próprio da opção apareceu; isso é conferido pelas variáveis, não por pixel isolado.
+- Acrescentei `theme/themes/sarak-sovereign` como exceção `applied` (tema do harness; 0,000–0,09% oscilava em torno do limiar).
+- Não usei `mode: 'serial'` (uma falha pularia as outras decisões).
+- `docs/migracoes.md`: nada a registrar (mudança interna do painel).
+
+**Achados fora do escopo (não corrigidos)**
+- A tabela "Financial_Ledger" da prévia não preenche a largura (colunas de largura fixa); detalhe do mock.
+- Falhas de teste e `plan-index:check` da plan-165 acima.
+- `SarakDataTable` lazy perde o tipo da linha (cast em `TableMock`).
+
+**Pendências / riscos**
+- Lote 3 (largura real desktop, ⚙, links, tablet, marca d'água) e ok do dono.
+- `PresetCard` espia sob o ponteiro dependendo do `:hover` atualizar em ≤200 ms; em máquina lenta pode perder a espiada até o próximo movimento do mouse.
+
+## Veredito — 2026-11-14 — lote 2 — 🔵 Em correção (achado 1)
+
+**O que conferi e como**
+- O resumo e o diff de `browser-tests/plan-160-previa-mostra-a-opcao.spec.ts` (a medição, as listas e os dois casos novos do cartão
+  pendente).
+- As prévias `C:\tmp\sarak-previa-160\index.html`: tabela e barra do topo, antes e depois.
+- **Estado combinado das três execuções em paralelo** (`plan-158` lote 3, `plan-160` lote 2, `plan-165` lote 2), no mesmo worktree:
+  - `npm run verify -- --tier=quick`: tudo `[OK]`, menos o `plan-index:check` (status das plans, acertado neste veredito);
+  - `npx vitest run` completo: 5990 casos, **5988 ✓ e 2 ✗**, os dois em `gates/scripts/audit/__tests__/verify_contrast.test.ts`
+    (achado 1 da `plan-165`).
+- `cromo-css-real:check` **não rodei nesta rodada**: as três plans voltam para correção, e a suíte de navegador roda uma vez sobre as
+  três corrigidas.
+- Não repeti o spec do navegador, o build nem os testes de unidade do executor.
+
+**Achados**
+1. **Bloqueio — a prova do item 2.1 ficou vazia para todo grupo com tela própria.** `measureDecision` tira **uma** linha de base por
+   decisão, na tela em que a decisão abre. A espiada de um grupo com tela própria (tabelas, gráficos, aviso, interruptor, rolagem, selo,
+   estado vazio, modal) leva a prévia para outra tela, e qualquer opção desse grupo dá "mudou", com ou sem efeito.
+   - O resumo admite isso, e a prova está nos números do próprio executor: `charts/Área suave`, `notice/Suave` e `switch/Tátil`
+     aplicam o que o harness já tem, e mesmo assim passaram a "mudar a prévia" e saíram das exceções.
+   - Por isso o "18/49 → 47/49" de Componentes não mede o objetivo da plan (a prévia mostra o efeito de toda opção).
+   - **Correção:** a linha de base de cada grupo é tirada **na tela do grupo**, com a prévia já levada até ela. As três exceções
+     `applied` voltam, e a trava inversa volta a valer para elas: uma `applied` que muda pixel reprova de novo.
+   - **Mutação, em cópia fora do repositório:** o `ComponentsMock` volta a desenhar o interruptor com `div` (como antes do lote). O caso
+     de Componentes tem de reprovar em `switch`. Com a medição de hoje, passa.
+   - Refazer a contagem por grupo no resumo com a medição nova.
+2. **Pendência do 2.6 — as duas rodadas de `cromo-css-real:check` com os workers padrão ainda não foram feitas.** O critério é do lote e
+   segue pendente.
+3. **Fora do escopo, da `plan-165`:** a barra de exemplo da prévia mostra "Usuário indisponível" e "Notificações indisponíveis"
+   (`tabela-antes.png`, `tabela-depois.png`). Foi para a `plan-165` (achado 2 dela). Nas fotos refeitas desta plan, esperar a
+   correção de lá.
+
+**Decisões do executor que ficam**
+- Modal e avisos na tela Componentes são réplicas com as mesmas variáveis (os reais abrem em portal, fora da moldura).
+- `theme/themes/sarak-sovereign` como exceção `applied` (é o tema do harness).
+- A conferência de zeros (`shareWhenStable`), sem `mode: 'serial'`.
+
+**Falta para o 🟢:** o achado 1 com a mutação, o 2.6 e o ok do dono nas prévias refeitas.
+
+**Status da plan: 🔵 Em correção.**
+
+## Resumo da execução (correção 1 do lote 2) — 2026-11-15
+
+**Resultado:** Concluído com pendências
+
+**Estado do worktree ao iniciar**
+Compartilhado com as plans 158 e 165: dezenas de arquivos modificados que não são desta plan (`src/components/Layout/**`, `src/core/Design/**`, `sarak-ui/**`, `dist/**`, specs de navegador da 165, plans 158 e 165). Desta plan, já modificados pelo lote 2: `browser-tests/plan-160-previa-mostra-a-opcao.spec.ts`, `src/features/DesignEngine/**` e a própria plan. Nada fora disso foi tocado.
+
+**O que foi feito**
+- Achado 1, `browser-tests/plan-160-previa-mostra-a-opcao.spec.ts`: a linha de base deixou de ser uma por decisão. Cada opção rola até a vista, tira a própria base (mouse fora) e só então espia (`peekOption`). Cada grupo é levado antes à tela declarada em `groupScreens` (lido de `design-decisions.json`) pelo seletor de tela da barra da prévia (`showGroupScreen`). `markApplied` e `hoverPendingCard` seguem a mesma ordem (rolar, base, espiar).
+- Descoberta que a medição nova provou (`diag7`, fora do repositório): **rolar a opção até a vista, sem espiar, já muda 30,4% da prévia** (e a espiada volta ao valor de antes). A base única contava a rolagem como efeito da opção em toda decisão. Os números de Forma "33/33" e de Componentes "47/49" dos lotes 1 e 2 estavam inflados por isso.
+- A trava inversa voltou a valer para `applied` (removido o `!== 'applied'`). As exceções `applied` `charts/Área suave`, `notice/Suave` e `switch/Tátil` voltaram, mais `badge/Pílula`, `emptyState/Esferas suaves`, `colors/…Ciano e violeta — Triádica`, `shape/shadowDirection/Para baixo`, `shape/border/Sólida`, `shape/material/Vidro fosco` e `shape/atmosphere/Nenhuma (Sem Mídia)` (todas provadas por `preset.applied` ou pela escolha de outra opção).
+- `ComponentsMock.tsx`: cada seção leva `data-peek-group` (a prévia desta tela é mais alta que a moldura e o spec rola a seção até o centro); o diálogo lê `--sarak-modal-border-radius` (o `--radius-modal` do tema resolve na raiz); a lista de rolagem refaz `--scroll-*` a partir das variáveis do escopo; terceiro interruptor ("Alertas de estoque") para o efeito do estilo passar do limiar. Teste ajustado de 2 para 3 interruptores.
+- Spec: `ignoreDefaultArgs: ['--hide-scrollbars']` (a barra de rolagem não pintava no headless e a opção de rolagem não tinha como aparecer), teto do `beforeAll` de 900 s para 1.800 s (a medição por opção leva ~14 min).
+- `KNOWN_PENDING` (defeitos que a medição honesta expôs, a decidir): `components/tables` (Padrão, Listrada: a `SarakDataTable` não lê listras, raio nem respiro; só a `SarakTableView` lê), `components/modal` (Clássica: só os cantos mudam, abaixo do limiar), `shape/shadow` (2), `shape/shadowDirection/Centralizada`, `shape/glass` (3), `shape/atmosphere` (3), `shape/gradient` (2), e `layout/contentWidth` (2, do lote 3).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `browser-tests/plan-160-previa-mostra-a-opcao.spec.ts` | alterado | base por opção, tela do grupo, listas, scrollbars, teto |
+| `src/features/DesignEngine/Canvas/Mocks/ComponentsMock.tsx` | alterado | `data-peek-group`, raio do diálogo, variáveis de rolagem, 3º interruptor |
+| `src/features/DesignEngine/Canvas/Mocks/__tests__/ComponentsMock.test.tsx` | alterado | 3 interruptores |
+| `dist/**` | regerado | `build:js`, `fonts:embed`, `build:css`, `build:css:scoped`, `copy-base-css`, `inject-css`, `generate-build-info` |
+
+**Verificações executadas**
+- `npx playwright test browser-tests/plan-160-previa-mostra-a-opcao.spec.ts` (completo, `dist/` refeito) → **8 passed (17,0 min)**. Contagem por grupo: theme personalities 10/10, themes 24/25 (+1 `applied`); colors 18/19 (+1 `applied`); fonts 7/8 (+1), 5/5, 8/8; shape cards 6/6, corners 3/3, density 5/5, shadow 0/2, shadowDirection 0/2, border 1/2, material 3/4, glass 0/3, atmosphere 0/4, gradient 0/2; components buttons 7/7, inputs 5/5, tables 4/6, charts 5/6, modal 0/1, notice 2/3, switch 2/3, scroll 1/1, badge 3/4, emptyState 3/4, motion 0/1, pageTransition 0/1, icons 6/7; layout sidebar 7/8, topbar 8/8, contentWidth 1/4.
+- **Mutação, em cópia fora do repositório** (`C:\tmp\mut160`, `node_modules` por junção, `tsup` direto, `ComponentsMock` com o interruptor desenhado à mão): Componentes **reprova** — `switch 0/3`, `switch/Assimétrico = 0,000%` e `switch/Vidro = 0,000%` fora de qualquer lista. Cópia removida; `node_modules` do repositório intacto.
+- `npx vitest run src/features/DesignEngine/Canvas/Mocks` → 9 arquivos; `ComponentsMock.test.tsx` 4 passed depois do ajuste.
+- `npm run verify -- --tier=quick` → todas as linhas `[OK]` (inclui `tsc`).
+- `npx playwright test --config=browser-tests/playwright.config.ts` (o trecho de navegador do `cromo-css-real:check`, workers padrão, uma vez) → **698 passed, 21 failed (58,0 min)**. Falhas: `barra-lateral-anatomia` (vários casos), `cartao-cede-a-classe` (2, gradiente do material), `chrome-theme-identity` (1), `paletas-cabem-na-coluna`, `plan-135-paletas-no-painel`, `plan-122-preview-mode` (os três procuram o botão "Modo Claro/Escuro" dentro de `.sarak-device-desktop`, que não existe mais na barra do cromo da 165). Nenhum arquivo meu entra nesses caminhos; não rodei controle em `HEAD`.
+
+**Critérios de aceite**
+- [x] Linha de base por grupo, na tela do grupo — `showGroupScreen`/`peekOption` no spec.
+- [x] Exceções `applied` voltam e a trava inversa vale para elas — spec, `item de lista que já muda a prévia`.
+- [x] Mutação do interruptor reprova Componentes — saída acima.
+- [x] Contagem por grupo refeita — acima.
+- [ ] 2.6, duas rodadas de `cromo-css-real:check` com workers padrão — pendente. O `npm run build` do script para em `guide:check` (`sarak-ui/catalog.json`, `VERSION`, `docs/migracoes.md`, `START-HERE.md` defasados; vêm do trabalho das outras plans e `npm run guide` reescreve arquivos que não são desta), então refiz só o `dist/` pelos passos do build e rodei o trecho do Playwright uma vez, com 21 falhas das outras plans.
+- [ ] Ok do dono nas prévias refeitas — não refiz as capturas (`C:\tmp\sarak-previa-160`); as de antes foram tiradas com a base antiga.
+
+**Decisões e suposições**
+- Os zeros novos de Forma e de tabela/diálogo entram em `KNOWN_PENDING` em vez de serem consertados aqui: o achado pedia a medição, e consertar a `SarakDataTable`, sombra, vidro, atmosfera e degradê é trabalho de componente/painel fora do escopo. O revisor decide se viram lote 3 ou plan nova.
+- `modal/Clássica` foi para `KNOWN_PENDING` e não para `applied`: o grupo tem um tile só, então não há outra opção para escolher e provar que está aplicada.
+- Base por opção custa ~1 foto a mais por opção (spec de ~3 min por decisão grande); o teto de tempo foi dobrado por isso.
+
+**Achados fora do escopo (não corrigidos)**
+- `npm run build` falha em `guide:check` por causa do kit `sarak-ui/` defasado das outras plans.
+- Em Painel, a prévia sobre `sarak-sovereign` desenha os cartões estreitos e altos, com texto cortado (`sh-antes.png` no diagnóstico); a barra lateral nova (165) parece tomar a largura.
+- As 21 falhas de navegador listadas acima.
+- A tabela do "Financial_Ledger" na prévia ainda não preenche a largura.
+
+**Pendências / riscos**
+- Os números de lotes anteriores (Forma 33/33, Componentes 47/49) não valem; a cobertura real hoje deixa 16 opções em `KNOWN_PENDING` (14 que a medição expôs + 2 do lote 3).
+- O ok do dono continua faltando.
+
+## Avaliação do dono — 2026-11-15 — prévia do lote 2 aprovada
+
+- O dono aprovou a prévia `C:\tmp\sarak-previa-160\index.html` (seis pares antes e depois), antes da correção do achado 1.
+- A aprovação vale para o que a prévia mostra. A medição do spec (achado 1) segue na revisão da correção.
+
+## Veredito — 2026-11-15 — correção 1 do lote 2 — 🟢 Aprovado; o lote 2 fecha e o lote 3 cresce (3.6 e 3.7)
+
+**O que conferi e como**
+- O diff do spec: `showGroupScreen` leva a prévia à tela do grupo, e cada opção tira a própria linha de base antes de espiar
+  (`peekOption`).
+- A trava inversa vale de novo para as exceções `applied`, e as três que tinham saído voltaram com prova.
+- A mutação do executor (o interruptor desenhado à mão faz Componentes reprovar) cobre o pedido do achado 1.
+- `npm run -s cromo-css-real:check` (build e navegador, workers padrão) sobre o estado das três plans juntas: **698 ✓ e 21 ✗**, as
+  mesmas 21 da rodada do executor da `plan-160`:
+  - 15 do spec da anatomia: sobrescrita de tema, lote 3 da `plan-165`, já conhecidas;
+  - 2 do `cartao-cede-a-classe`: backlog 83, anteriores a estas plans;
+  - **4 novas, todas do lote 2 da `plan-165`** (achado 1 do veredito dela de hoje).
+- **2.6:** com a rodada do executor e a minha, são duas rodadas inteiras com os workers padrão, e o spec desta plan passa nas duas.
+- O ok do dono na prévia está registrado acima.
+
+**Decisões do executor que ficam**
+- As opções sem efeito expostas pela medição entram em `KNOWN_PENDING`, não em conserto dentro da correção: o achado pedia a
+  medição. Viraram o item 3.6 do lote 3, porque o objetivo da plan é toda opção ter efeito.
+- `modal/Clássica` em `KNOWN_PENDING`, e não como `applied`: o grupo tem uma opção só.
+- O teto do `beforeAll` passou para 1.800 s.
+
+**Achados encaminhados ao lote 3**
+- 3.6: as 14 opções sem efeito, cada uma com a causa.
+- 3.7: rolar a lista de opções muda a prévia (30,4%, sem espiar nada). Isso fere o "a prévia mostra o rascunho".
+- Os cartões estreitos e cortados em Painel: é o 3.1 (largura real do desktop) que conserta.
+
+**O commit** sai junto com os da `plan-158` e da `plan-165` (os três lotes dividem arquivos), quando a `plan-165` fechar.
+
+**Status da plan: 🟡 Em execução** (lote 3).

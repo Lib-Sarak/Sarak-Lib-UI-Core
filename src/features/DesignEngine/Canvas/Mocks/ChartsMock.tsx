@@ -13,7 +13,9 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
     // Cores e configurações reativas extraídas dos tokens
     const primaryColor = 'var(--sarak-chart-primary, #19e3f0)';
     const strokeThickness = 'var(--sarak-chart-thickness, 2px)';
-    const gridOpacity = 'var(--sarak-chart-grid-opacity, 0.06)';
+    // A grade e a suavização são escolhas do gráfico, não só de variável de CSS: sem grade a linha some, sem suavização a curva vira reta.
+    const gridOpacity = tokens?.chartShowGrid === false ? 0 : 'var(--sarak-chart-grid-opacity, 0.06)';
+    const smooth = tokens?.chartSmoothing !== false;
     const tooltipBg = 'var(--sarak-chart-tooltip-bg, rgba(11,15,23,0.92))';
 
     return (
@@ -57,7 +59,7 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                         {/* Gráfico SVG */}
                         <svg className="w-full h-full overflow-visible z-10" viewBox="0 0 300 120" preserveAspectRatio="none">
                             <path 
-                                d="M 0 90 Q 50 30 100 70 T 200 20 T 300 60" 
+                                d={smooth ? 'M 0 90 Q 50 30 100 70 T 200 20 T 300 60' : 'M 0 90 L 50 30 L 100 70 L 200 20 L 300 60'} 
                                 fill="none" 
                                 stroke={primaryColor} 
                                 strokeWidth={strokeThickness}
@@ -104,12 +106,12 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                                 </linearGradient>
                             </defs>
                             <path 
-                                d="M 0 100 Q 60 40 120 80 T 240 10 T 300 120 L 300 120 L 0 120 Z" 
+                                d={smooth ? 'M 0 100 Q 60 40 120 80 T 240 10 T 300 120 L 300 120 L 0 120 Z' : 'M 0 100 L 60 40 L 120 80 L 240 10 L 300 120 L 0 120 Z'} 
                                 fill="url(#areaGrad)"
                                 className="transition-all duration-[var(--sarak-motion-dur-slow,0.6s)]"
                             />
                             <path 
-                                d="M 0 100 Q 60 40 120 80 T 240 10 T 300 120" 
+                                d={smooth ? 'M 0 100 Q 60 40 120 80 T 240 10 T 300 120' : 'M 0 100 L 60 40 L 120 80 L 240 10 L 300 120'} 
                                 fill="none" 
                                 stroke={primaryColor} 
                                 strokeWidth={strokeThickness}

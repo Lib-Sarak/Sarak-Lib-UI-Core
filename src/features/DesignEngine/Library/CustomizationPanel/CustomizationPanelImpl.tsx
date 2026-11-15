@@ -1,5 +1,5 @@
 import React from 'react';
-import { ThemeCustomizationTab } from '../../Main/ThemeCustomizationTab';
+import { ThemeCustomizationTab, type ThemeCustomizationTabProps } from '../../Main/ThemeCustomizationTab';
 
 /**
  * CustomizationPanel (v6.0)
@@ -10,7 +10,7 @@ import { ThemeCustomizationTab } from '../../Main/ThemeCustomizationTab';
  * `EngineCustomizationTab` e `HyperGranularityTab` continuam em `../Panels/`
  * com os seus testes.
  */
-export const CustomizationPanel: React.FC = () => {
+export const CustomizationPanel: React.FC<ThemeCustomizationTabProps> = ({ onUnsavedChangesControl }) => {
     return (
         <div className="flex flex-col h-full animate-in fade-in zoom-in duration-[var(--sarak-motion-dur-slow,0.6s)] overflow-hidden">
             {/* Header */}
@@ -23,7 +23,7 @@ export const CustomizationPanel: React.FC = () => {
             {/* Sub-Components Viewport */}
             <div className="flex-grow p-8 pt-0 overflow-hidden">
                 <div className="h-full bg-theme-body/20 rounded-3xl border border-theme-text/5 flex flex-col backdrop-blur-sm shadow-2xl overflow-hidden">
-                    <ThemeCustomizationTab />
+                    <ThemeCustomizationTab onUnsavedChangesControl={onUnsavedChangesControl} />
                 </div>
             </div>
         </div>

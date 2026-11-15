@@ -31,30 +31,29 @@ describe('SarakAppChrome — barra configurável pelo administrador', () => {
         expect(screen.getByLabelText('Recolher navegação')).toBeInTheDocument();
     });
 
-    it('padrão de fábrica: fonte, navegação e recolher ficam no menu de preferências', () => {
+    it('padrão de fábrica: modo, fonte e navegação ficam no menu; o recolher é a seta fixa da barra, que o menu não repete', () => {
         renderAtDevice('desktop', {}, chrome());
         const trigger = screen.getByLabelText('Preferências');
         fireEvent.click(trigger);
         const menu = screen.getByRole('menu');
         expect(within(menu).getByText('Tamanho da fonte')).toBeInTheDocument();
         expect(within(menu).getByRole('group', { name: 'Estilo de navegação' })).toBeInTheDocument();
-        const collapseControl = within(menu).getByText('Recolher navegação');
-        expect(collapseControl).toBeInTheDocument();
-        fireEvent.click(collapseControl);
-        expect(within(menu).getByText('Expandir navegação')).toBeInTheDocument();
+        expect(within(menu).getByText('Modo Claro')).toBeInTheDocument();
+        expect(within(menu).queryByText('Recolher navegação')).toBeNull();
+        fireEvent.click(screen.getByLabelText('Recolher navegação'));
+        expect(screen.getByLabelText('Expandir navegação')).toBeInTheDocument();
     });
 
-    it("uma preferência em 'menu' (fontSize) faz o ⚙ nascer, com as fixadas TAMBÉM dentro dele", () => {
-        renderAtDevice('desktop', { [PREFERENCE_POSITION_TOKEN_IDS.fontSize]: 'menu' }, chrome());
+    it("uma preferência em 'menu' (fontSize) faz o ⚙ nascer; a fixada (modo) não se repete dentro dele", () => {
+        renderAtDevice('desktop', { [PREFERENCE_POSITION_TOKEN_IDS.fontSize]: 'menu', [PREFERENCE_POSITION_TOKEN_IDS.colorMode]: 'pinned' }, chrome());
         const trigger = screen.getByLabelText('Preferências');
         fireEvent.click(trigger);
         const menu = screen.getByRole('menu');
         expect(menu).toBeInTheDocument();
         expect(screen.getByText('Tamanho da fonte')).toBeInTheDocument();
-        // colorMode (pinned de fábrica) também aparece DENTRO do menu — além do
-        // controle direto que já existia fora dele (por isso a busca é escopada).
-        const { getByText } = within(menu);
-        expect(getByText('Modo Claro')).toBeInTheDocument();
+        // colorMode fixado é a linha do rodapé da barra; o menu guarda só o que não está nela.
+        expect(within(menu).queryByText('Modo Claro')).toBeNull();
+        expect(screen.getByText('Modo Claro')).toBeInTheDocument();
     });
 
     it("posição 'pinned' de uma preferência NOVA (navigationStyle) mostra o controle direto na barra", () => {
@@ -81,7 +80,7 @@ describe('SarakAppChrome — barra configurável pelo administrador', () => {
         renderAtDevice('desktop', { [PREFERENCE_POSITION_TOKEN_IDS.navigationStyle]: 'pinned' }, chrome());
         fireEvent.click(screen.getByLabelText('Preferências'));
         const menu = screen.getByRole('menu');
-        fireEvent.click(within(menu).getByText('Recolher navegação'));
+        fireEvent.click(screen.getByLabelText('Recolher navegação'));
         expect(screen.getAllByRole('group', { name: 'Estilo de navegação' })).toHaveLength(1);
         expect(within(menu).getByRole('group', { name: 'Estilo de navegação' })).toBeInTheDocument();
     });

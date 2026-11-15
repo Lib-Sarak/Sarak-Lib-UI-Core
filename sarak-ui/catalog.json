@@ -153,6 +153,7 @@
     "SarakCustomFont",
     "SarakCustomFontFile",
     "SarakCustomizationPanel",
+    "SarakCustomizationPanelProps",
     "SarakDashboardGrid",
     "SarakDashboardGridProps",
     "SarakDashboardLayoutItem",
@@ -334,6 +335,7 @@
     "SarakPaletteMode",
     "SarakPaletteSeeds",
     "SarakPaletteType",
+    "SarakPanelLeaveControl",
     "SarakPdfSource",
     "SarakPermissionGroup",
     "SarakPermissionItem",
@@ -2500,6 +2502,18 @@
           "type": "React.HTMLAttributes<HTMLInputElement>['inputMode']",
           "optional": true,
           "doc": "Teclado sugerido ao dispositivo. Omitido, solicita teclado decimal na locale atual."
+        }
+      ]
+    },
+    "SarakCustomizationPanel": {
+      "propsInterface": "SarakCustomizationPanelProps",
+      "source": "src/features/DesignEngine/Main/hooks/useLeavePanelGuard.ts",
+      "props": [
+        {
+          "name": "onUnsavedChangesControl",
+          "type": "(control: SarakPanelLeaveControl) => void",
+          "optional": true,
+          "doc": "Recebe o `confirmLeave` do painel. Opcional: o cromo da lib já pergunta sozinho; ligue-o ao bloqueio de rota do host só para a navegação que não passa pelo cromo (voltar do navegador, link no conteúdo)."
         }
       ]
     },
@@ -7810,6 +7824,7 @@
       "--sarak-border-style",
       "--sarak-border-type",
       "--sarak-border-width",
+      "--sarak-brand-display",
       "--sarak-brand-logo-size-collapsed",
       "--sarak-breakpoint-desktop",
       "--sarak-breakpoint-tablet",
@@ -8239,6 +8254,7 @@
       "--sarak-preference-language-position",
       "--sarak-preference-mode-position",
       "--sarak-preference-nav-collapse-position",
+      "--sarak-preference-nav-collapse-position-topbar",
       "--sarak-preference-navigation-style-position",
       "--sarak-preset-mini-card-max-width",
       "--sarak-primary-color",
@@ -8511,6 +8527,7 @@
       "--sarak-type-scale-xs",
       "--sarak-type-scale2xs",
       "--sarak-type-scale3xs",
+      "--sarak-user-avatar-style",
       "--sarak-vignette-blend-mode",
       "--sarak-vignette-color",
       "--sarak-vignette-opacity",
@@ -8648,7 +8665,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 425,
+    "count": 428,
     "groups": {
       "global": "0. Configurações Globais",
       "branding": "Identidade Visual",
@@ -9270,6 +9287,20 @@
         "kind": "aesthetic",
         "modeDependent": false,
         "usage": "Espessura das linhas divisórias do feed de atividade e do separador do painel dividido, e das demais linhas que leem a variável de borda do sistema (dados, botões de ícone com contorno)."
+      },
+      {
+        "id": "brandDisplay",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Marca: Logo, Nome ou Ambos",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Com \"só o logo\" e sem imagem de logo, a marca cai no nome; \"só o nome\" esconde a imagem. O nome nunca é cortado com reticências.",
+        "interactsWith": [
+          "sidebarLogoPlacement",
+          "shellBrandLogoSize"
+        ]
       },
       {
         "id": "brandLogoSizeCollapsed",
@@ -12095,7 +12126,17 @@
         "label": "Preferência: Navegação Recolhida",
         "kind": "functional",
         "modeDependent": false,
-        "usage": "Posição do botão de recolher a navegação: fixo, no menu de preferências ou não oferecido."
+        "usage": "Posição do botão de recolher a navegação na barra lateral: fixo (a seta do cabeçalho), no menu de preferências ou não oferecido."
+      },
+      {
+        "id": "preferenceNavCollapsePositionTopbar",
+        "type": "string",
+        "responsive": false,
+        "group": "preferences",
+        "label": "Preferência: Menu da Barra do Topo",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Posição do botão de menu (≡) que compacta a barra do topo: fixo, no menu de preferências ou não oferecido; por padrão fica só no menu."
       },
       {
         "id": "preferenceNavigationStylePosition",
@@ -13765,6 +13806,19 @@
         "usage": "Define o tamanho XS usado por rótulos de eixo e valores pequenos dos gráficos."
       },
       {
+        "id": "userAvatarStyle",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Avatar do Usuário",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Avatar do widget de usuário quando o sistema não entrega imagem; com imagem, ela vale.",
+        "interactsWith": [
+          "chromeUserPosition"
+        ]
+      },
+      {
         "id": "vignetteOpacity",
         "type": "number",
         "responsive": false,
@@ -14174,6 +14228,6 @@
   "kitStamp": {
     "libVersion": "8.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "fc9a09914c6d"
+    "kitHash": "61669d890d7d"
   }
 }

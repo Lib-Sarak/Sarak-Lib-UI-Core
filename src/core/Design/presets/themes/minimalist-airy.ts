@@ -65,6 +65,8 @@ export const minimalistAiry: SarakThemePreset = {
             "sidebarBackgroundStyle": "solid",
             "sidebarActiveItemStyle": "pill",
             "sidebarActiveGlass": "on",
+        "brandDisplay": "both",
+        "userAvatarStyle": "initials",
             "sidebarItemDensity": "spacious",
             "sidebarIconSize": 16,
             "topbarBorderWidth": 1,

@@ -33,10 +33,16 @@ export interface DecisionDef {
     screen: string;
     /** As telas de amostra que já pertencem à decisão: abrir a decisão estando numa delas não troca a tela. */
     screens: string[];
+    /** A tela em que cada grupo de opções aparece: espiar uma opção do grupo leva a prévia até ela enquanto dura (spec 06 §6.4). Grupo ausente = a tela em que a prévia já está. */
+    groupScreens?: Record<string, string>;
 }
 
 export const DECISIONS = DecisionConfig as DecisionDef[];
 export const COLUMN_DECISIONS = DECISIONS.filter((decision) => !decision.menuOnly);
+
+/** A tela de amostra em que as opções do grupo aparecem, ou `undefined` quando a prévia pode ficar onde está. */
+export const peekScreenOf = (group: string): string | undefined =>
+    DECISIONS.find((decision) => decision.groups.includes(group))?.groupScreens?.[group];
 
 export const getDecision = (id: string): DecisionDef | undefined => DECISIONS.find((decision) => decision.id === id);
 

@@ -11,11 +11,12 @@ if (!mountNode) {
 /**
  * O conteúdo da foto da barra antiga: marca "Sarak OS", dois grupos (um item em "Personalização", cinco em
  * "Relatórios", um ativo, e o grupo "Vendas" com três sub-abas), usuário com saída, uma notificação e dois idiomas. Uma cena por consulta: `?theme=<id>`,
- * `?design=<json>` sobrescreve tokens, `?logo=1` põe imagem na marca, `?light=1` troca o modo e `?route=<href>` escolhe o ativo.
+ * `?design=<json>` sobrescreve tokens, `?logo=1` põe imagem na marca, `?name=<texto>` troca o nome da marca, `?light=1` troca o modo e `?route=<href>` escolhe o ativo.
  */
 const params = new URLSearchParams(location.search);
 const design = JSON.parse(params.get('design') ?? '{}') as Record<string, unknown>;
 const WITH_LOGO = params.get('logo') === '1';
+const BRAND_NAME = params.get('name') ?? 'Sarak OS';
 const LOGO = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 32"><rect width="96" height="32" rx="6" fill="#888"/></svg>');
 
 /** Pela porta recomendada (`navItems`), com um grupo "Vendas" de três sub-abas (uma com selo). */
@@ -58,7 +59,7 @@ const App = (): React.ReactElement => {
         >
             <div data-testid="frame" style={{ height: '100vh', width: '100%' }}>
                 <SarakAppChrome
-                    brand={WITH_LOGO ? { name: 'Sarak OS', logoUrl: LOGO } : { name: 'Sarak OS' }}
+                    brand={WITH_LOGO ? { name: BRAND_NAME, logoUrl: LOGO } : { name: BRAND_NAME }}
                     navItems={markActive(NAV, route)}
                     onNavigate={setRoute}
                     user={{ name: 'Sarak User', role: 'user' }}

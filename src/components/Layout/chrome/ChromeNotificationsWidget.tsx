@@ -54,12 +54,14 @@ interface ChromeNotificationMenuProps {
     onSelect: (notification: SarakChromeNotification) => void;
     onClose: () => void;
     label: string;
+    /** Na lateral a linha fica no pé da barra: a lista abre para cima e alinhada à esquerda. */
+    opensUpward?: boolean;
 }
 
 const ChromeNotificationMenu: React.FC<ChromeNotificationMenuProps> = (
-    { notifications, onSelect, onClose, label }: ChromeNotificationMenuProps,
+    { notifications, onSelect, onClose, label, opensUpward }: ChromeNotificationMenuProps,
 ): React.ReactElement => (
-    <div role="menu" aria-label={label} className="absolute right-0 top-full z-[calc(var(--sarak-z-sidebar,500)_+_100)] min-w-56 rounded-xl border border-[var(--theme-border)] bg-[var(--theme-card)] p-2 shadow-xl">
+    <div role="menu" aria-label={label} className={`absolute z-[calc(var(--sarak-z-sidebar,500)_+_100)] min-w-56 rounded-xl border border-[var(--theme-border)] bg-[var(--theme-card)] p-2 shadow-xl ${opensUpward ? 'left-0 bottom-full' : 'right-0 top-full'}`}>
         {notifications.map((notification) => (
             <SarakMenuItem
                 key={notification.id}
@@ -73,6 +75,56 @@ const ChromeNotificationMenu: React.FC<ChromeNotificationMenuProps> = (
             </SarakMenuItem>
         ))}
     </div>
+);
+
+interface ChromeNotificationRowProps {
+    collapsed: boolean;
+    notificationCount: number;
+    isOpen: boolean;
+    onToggle: () => void;
+    label: string;
+}
+
+/**
+ * A linha da lateral, com a métrica do item de menu: o ícone, o rótulo e, à direita, o contador. Recolhida, é só o ícone
+ * centrado no eixo da lista, e o aviso é um ponto aceso fora do fluxo, que não desloca o ícone.
+ */
+/** O ponto da barra recolhida: no canto de cima à direita do ícone (centrado na linha), fora do desenho do sino. */
+const NOTIFICATION_DOT_SIZE = 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)';
+const NOTIFICATION_DOT_STYLE: React.CSSProperties = {
+    width: NOTIFICATION_DOT_SIZE,
+    height: NOTIFICATION_DOT_SIZE,
+    left: `calc(50% + var(--sarak-sidebar-icon-size, 18px) / 2 - ${NOTIFICATION_DOT_SIZE} / 2)`,
+    top: `calc(50% - var(--sarak-sidebar-icon-size, 18px) / 2 - ${NOTIFICATION_DOT_SIZE} / 2)`,
+};
+
+const ChromeNotificationRow: React.FC<ChromeNotificationRowProps> = ({
+    collapsed, notificationCount, isOpen, onToggle, label,
+}: ChromeNotificationRowProps): React.ReactElement => (
+    <>
+        <SarakMenuItem
+            icon="Bell"
+            label={label}
+            collapsed={collapsed}
+            onClick={onToggle}
+            aria-haspopup="menu"
+            aria-expanded={isOpen}
+        >
+            {!collapsed && (
+                <span data-sarak-row-indicator="true" className="shrink-0 text-2xs font-bold text-[var(--sarak-nav-active-color,var(--theme-primary))]">
+                    {notificationCount}
+                </span>
+            )}
+        </SarakMenuItem>
+        {collapsed && notificationCount > 0 && (
+            <span
+                aria-hidden="true"
+                data-sarak-row-indicator="true"
+                className="pointer-events-none absolute rounded-full bg-[var(--sarak-nav-active-color,var(--theme-primary))]"
+                style={NOTIFICATION_DOT_STYLE}
+            />
+        )}
+    </>
 );
 
 export const ChromeNotificationsWidget: React.FC<ChromeNotificationsWidgetProps> = ({
@@ -93,20 +145,20 @@ export const ChromeNotificationsWidget: React.FC<ChromeNotificationsWidgetProps>
     }
 
     const label = t('sidebarNotificationsLabel');
+    const isRow = variant !== 'horizontal';
+    const toggle = (): void => setIsOpen((open) => !open);
     return (
         <div className="relative" data-sarak-widget="notifications">
-            <ChromeNotificationsButton
-                isOpen={isOpen}
-                notificationCount={notifications.length}
-                onToggle={() => setIsOpen((open) => !open)}
-                label={label}
-            />
+            {isRow
+                ? <ChromeNotificationRow collapsed={variant === 'mini'} notificationCount={notifications.length} isOpen={isOpen} onToggle={toggle} label={label} />
+                : <ChromeNotificationsButton isOpen={isOpen} notificationCount={notifications.length} onToggle={toggle} label={label} />}
             {isOpen && (
                 <ChromeNotificationMenu
                     notifications={notifications}
                     onSelect={onSelect}
                     onClose={() => setIsOpen(false)}
                     label={label}
+                    opensUpward={isRow}
                 />
             )}
         </div>

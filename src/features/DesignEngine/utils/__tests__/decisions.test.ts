@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { DECISIONS, ESSENTIAL_IMPORTANCE, buildTokenIndex, decisionLayers, getDecision, type DecisionContext, type DecisionDef } from '../decisions';
+import { DECISIONS, ESSENTIAL_IMPORTANCE, buildTokenIndex, decisionLayers, getDecision, peekScreenOf, type DecisionContext, type DecisionDef } from '../decisions';
 import { buildDecisionContext } from '../decisionContext';
 
 const ctx = buildDecisionContext();
@@ -119,10 +119,11 @@ describe('a decisão Layout por pergunta (nível 2)', () => {
         layers.questionTokenIds.forEach((id) => expect(elsewhere.has(id), id).toBe(false));
     });
 
-    it('"O que aparece" traz os oito controles de composição; "Marca" traz a posição do logo; "Comportamento" a largura ajustável', () => {
+    it('"O que aparece" traz os controles de composição (oito widgets, o ≡ do topo e o avatar do usuário); "Marca" traz a posição do logo; "Comportamento" a largura ajustável', () => {
         const byQuestion = (id: string): string[] => layers.questions.find((question) => question.id === id)!.tokens.map((token) => token.id);
-        expect(byQuestion('what')).toHaveLength(8);
+        expect(byQuestion('what')).toHaveLength(10);
         expect(byQuestion('brand')).toContain('sidebarLogoPlacement');
+        expect(byQuestion('brand')).toContain('brandDisplay');
         expect(byQuestion('behavior')).toContain('sidebarResizable');
         expect(byQuestion('how')).toEqual(expect.arrayContaining(['sidebarTone', 'topbarTone']));
     });
@@ -158,5 +159,33 @@ describe('a decisão Layout: ajuste fino sob a pergunta certa', () => {
             const other = decisionLayers(decision, ctx);
             [...other.essential, ...other.rest].forEach((section) => expect(section.titleKey, decision.id).toBeUndefined());
         });
+    });
+});
+
+describe('peekScreenOf — a tela em que as opções de um grupo aparecem', () => {
+    it.each([
+        ['tables', 'tabela'], ['charts', 'graficos'], ['switch', 'components'], ['badge', 'components'],
+        ['notice', 'components'], ['modal', 'components'], ['scroll', 'components'], ['emptyState', 'components'],
+    ])('%s leva a prévia à tela %s', (group, screen) => {
+        expect(peekScreenOf(group)).toBe(screen);
+    });
+
+    it('grupo sem tela própria deixa a prévia onde está', () => {
+        expect(peekScreenOf('cards')).toBeUndefined();
+        expect(peekScreenOf('nao-existe')).toBeUndefined();
+    });
+
+    it('toda tela declarada existe entre as telas de amostra', async () => {
+        const { MAIN_PREVIEW_SCREENS, ADDITIONAL_PREVIEW_SCREENS } = await import('../../Canvas/previewScreens');
+        const known = new Set<string>([...MAIN_PREVIEW_SCREENS, ...ADDITIONAL_PREVIEW_SCREENS].map(({ id }) => id));
+        DECISIONS.flatMap((decision) => Object.entries(decision.groupScreens ?? {})).forEach(([group, screen]) => {
+            expect(known.has(screen), group + ' -> ' + screen).toBe(true);
+        });
+    });
+
+    it('todo grupo com tela pertence à decisão que o declara', () => {
+        DECISIONS.forEach((decision) => Object.keys(decision.groupScreens ?? {}).forEach((group) => {
+            expect(decision.groups, decision.id + '/' + group).toContain(group);
+        }));
     });
 });

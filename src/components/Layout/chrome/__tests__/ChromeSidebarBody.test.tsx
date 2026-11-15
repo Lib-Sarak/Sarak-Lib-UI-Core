@@ -182,12 +182,13 @@ describe('ChromeSidebarBody — widgets default (busca/tema/usuário/preferênci
         expect(container.querySelector('[data-sarak-widget="user-theme"]')).not.toBeNull();
     });
 
-    it('tamanho da fonte, orientação e recolhimento ficam no menu de preferências por padrão', () => {
+    it('modo, tamanho da fonte e orientação ficam no menu de preferências por padrão; o recolher é a seta do cabeçalho', () => {
         renderBody({});
         fireEvent.click(screen.getByRole('button', { name: 'Preferências' }));
         expect(screen.getByText('Tamanho da fonte')).toBeInTheDocument();
         expect(screen.getByText('Navegação')).toBeInTheDocument();
-        expect(screen.getByText('Recolher navegação')).toBeInTheDocument();
+        expect(screen.getByText(/^Modo /)).toBeInTheDocument();
+        expect(screen.queryByText('Recolher navegação')).toBeNull();
     });
 
     it('`widgets` desliga cada default isoladamente', () => {

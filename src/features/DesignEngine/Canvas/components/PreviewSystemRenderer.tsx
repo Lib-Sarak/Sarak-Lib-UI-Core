@@ -1,5 +1,6 @@
 import React from 'react';
-import { SarakAppChrome, type SarakNavItem } from '../../../../components/Layout/SarakAppChrome';
+import { SarakAppChrome, type SarakChromeNotification, type SarakNavItem } from '../../../../components/Layout/SarakAppChrome';
+import type { SarakShellUser } from '../../../../components/atomic/Navigation/SarakShellUserWidget';
 import { SarakDeviceProvider } from '../../../../core/Provider/DeviceProvider';
 import { SarakDesignScope } from '../../../../core/Design/components/DesignScope';
 import type { SarakUIContextType, SarakDesignState } from '../../../../core/Provider/types';
@@ -28,6 +29,15 @@ export const arePreviewPropsEqual = (
     previous.sarak === next.sarak &&
     previous.previewDevice === next.previewDevice &&
     previous.activePreviewApp === next.activePreviewApp;
+
+/** A prévia é amostra: usuário, sair e notificações de exemplo, sem efeito, para a barra mostrar o que o painel configura. */
+const SAMPLE_USER: SarakShellUser = { name: 'Ana Souza', role: 'Administradora' };
+const SAMPLE_NOTIFICATIONS: SarakChromeNotification[] = [
+    { id: 'sample-1', label: 'Novo pedido recebido', description: 'Há 5 minutos' },
+    { id: 'sample-2', label: 'Relatório mensal pronto', description: 'Há 1 hora' },
+    { id: 'sample-3', label: 'Convite aceito', description: 'Ontem' },
+];
+const noop = (): void => undefined;
 
 function createNavigationItems(
     apps: PreviewSystemRendererProps['apps'],
@@ -98,6 +108,10 @@ const PreviewDeviceSurface = (props: PreviewDeviceSurfaceProps): React.ReactElem
                         brand={{ name: activeDesign.systemName || 'Sarak Preview' }}
                         navItems={navigationItems}
                         onNavigate={onNavigate}
+                        user={SAMPLE_USER}
+                        logout={noop}
+                        notifications={SAMPLE_NOTIFICATIONS}
+                        onNotificationSelect={noop}
                         style={{ width: '100%', height: '100%' }}
                     >
                         {activeApp}

@@ -52,7 +52,7 @@ describe('ThemeDecisionView', () => {
         renderView('layout');
 
         const what = screen.getByRole('region', { name: 'O que aparece na barra' });
-        expect(what.querySelectorAll('[data-token-row]')).toHaveLength(8);
+        expect(what.querySelectorAll('[data-token-row]')).toHaveLength(10); // os oito widgets, o ≡ do topo e o avatar do usuário
     });
 
     it('as outras decisões não ganham pergunta nem amostra de barra', () => {

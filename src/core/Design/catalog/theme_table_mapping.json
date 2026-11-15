@@ -186,6 +186,8 @@
     "sidebarBackgroundStyle",
     "sidebarActiveItemStyle",
     "sidebarActiveGlass",
+    "brandDisplay",
+    "userAvatarStyle",
     "sidebarItemDensity",
     "sidebarIconSize",
     "sidebarIconColor",
@@ -448,6 +450,7 @@
     "preferenceFontSizePosition",
     "preferenceNavigationStylePosition",
     "preferenceNavCollapsePosition",
+    "preferenceNavCollapsePositionTopbar",
     "preferenceLanguagePosition"
   ]
 }

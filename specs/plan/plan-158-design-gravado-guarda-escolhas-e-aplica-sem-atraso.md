@@ -1095,3 +1095,255 @@ escolhas cada, todas passaram:
   `specs/06-painel-de-customizacao-e-preview.md`, feita pelo revisor depois do commit.
 
 **Status da plan: 🟢 Aprovado.**
+
+## Nota do revisor — 2026-11-14 — a plan não está completa: falta o lote 3
+
+- O veredito anterior disse "a plan está completa (lotes 0, 1 e 2)". **Está errado:** o lote 3 (§5, sair do painel com o rascunho sujo
+  pergunta antes de descartar) nunca foi executado.
+- O critério "Sair com rascunho sujo pergunta; sem rascunho, não pergunta" segue aberto.
+- O 🟢 vale para o lote 2. A plan volta para 🟡, e **a síntese espera o lote 3**.
+- O lote 3 pode rodar em paralelo com o lote 2 da `plan-165` e o lote 2 da `plan-160`:
+  - os arquivos dele são `Main/` (o componente que monta o painel e o `ThemeActionBar.tsx`) e o catálogo de `src/core/i18n/`;
+  - a `plan-160` mexe em `Main/hooks/usePeekPreview.ts` e `usePreviewUIState.ts`, que não são deste lote;
+  - no catálogo de textos, cada plan relê o arquivo antes de gravar.
+
+**Status da plan: 🟡 Em execução** (lote 3).
+
+---
+
+# 9.9 Resumo da execução (lote 3)
+
+## Resumo da execução (lote 3) — 2026-11-14
+
+**Resultado:** Concluído com pendências (a prévia espera o ok do dono; a ligação ao roteador é do host — ver Decisões).
+
+**Estado do worktree ao iniciar**
+Em andamento, de outras tarefas (`plan-165` lote 2 e `plan-160` lote 2): temas, cromo (`Layout/chrome/*`), `role-map.ts`, `schema/navigation.ts`, `useNavigationAppearance.ts`,
+catálogo de tokens, `PreviewCanvas`, `PresetCardPending`, `PresetsCatalog`, `peek.ts`, `Main/ThemeCustomizationTab.tsx` (o trecho da espiada), `Main/components/ThemeDecisionOptions.tsx`,
+`Main/hooks/usePeekPreview.ts`, `config/design-decisions.json`, `utils/decisions.ts`, `specs/00-indice.md` e esta plan. Mais tarde, durante a execução, apareceram sem toque meu:
+`Canvas/Mocks/*`, `Canvas/components/OptionTile.tsx`, `PresetGroupCatalog.tsx`, `Main/components/PaletteGallery.tsx`/`PaletteSection.tsx` e os testes deles, `SarakMenuItem.tsx`, `SarakShell*`,
+`useFitBrandName.ts` (novo). Não toquei em nenhum.
+
+**O que foi feito**
+- `Main/hooks/useLeavePanelGuard.ts` (novo) — com rascunho sujo: `beforeunload` (fechar a aba) e `confirmLeave()`, que abre a pergunta e resolve `true` (sair) ou `false` (ficar). Sem rascunho sujo resolve `true` na hora e não abre nada. "Aplicar e sair" chama o `handleApply` do painel; "Descartar e sair", o `handleDiscard`. Desmontar com a pergunta aberta responde `false`.
+- `Main/components/LeavePanelDialog.tsx` (novo) — o diálogo (`SarakModal`) com 3 botões: Ficar no painel / Descartar e sair / Aplicar e sair. Esc e o X valem como "ficar", nunca como descartar.
+- `Main/ThemeCustomizationTab.tsx:22-23, 38-40, 100-102, 228` — 2 imports, a prop `onUnsavedChangesControl`, a chamada do hook (dirty = `isDirty || pendingBranding.isDirty`, a mesma que habilita o Aplicar) e o diálogo. Só substituições exatas; o trecho da espiada (da `plan-160`) ficou como estava.
+- `Library/CustomizationPanel/index.tsx` e `CustomizationPanelImpl.tsx` — a prop passa pela fronteira lazy; `SarakCustomizationPanelProps` e `SarakPanelLeaveControl` exportados. `src/index.ts:111` — os dois tipos na mesma linha do export do painel (o arquivo ficou em 249 linhas; com uma linha a mais o auditor acusava 251).
+- `core/i18n/catalogEntries.panel.ts` — 5 chaves (`panelLeaveTitle`, `panelLeaveMessage`, `panelLeaveStay`, `panelLeaveApply`, `panelLeaveDiscard`) nos 6 idiomas. Reli o arquivo antes de gravar: sem mudança de outra plan.
+- `docs/migracoes.md` — entrada "o painel pergunta antes de descartar o rascunho" (aditivo), com o exemplo de ligação ao roteador. `npm run guide` e `npm run dev-kit` regerados (a superfície pública ganhou 2 tipos e 1 prop).
+- Prévia: `C:\tmp\sarak-previa-158\index.html#lote3`, com 4 capturas reais e `dados-lote3.json`.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/features/DesignEngine/Main/hooks/useLeavePanelGuard.ts` | criado | o guarda: aviso da aba e `confirmLeave` |
+| `src/features/DesignEngine/Main/components/LeavePanelDialog.tsx` | criado | a pergunta de 3 escolhas |
+| `src/features/DesignEngine/Main/hooks/__tests__/useLeavePanelGuard.test.tsx` | criado | 7 casos |
+| `src/features/DesignEngine/Main/components/__tests__/LeavePanelDialog.test.tsx` | criado | 5 casos |
+| `src/features/DesignEngine/Main/ThemeCustomizationTab.tsx` | alterado | prop, hook e diálogo |
+| `src/features/DesignEngine/Main/__tests__/ThemeCustomizationTab.test.tsx` | alterado | 4 casos novos (sujo × limpo, as 3 escolhas); `act` no import |
+| `src/features/DesignEngine/Library/CustomizationPanel/index.tsx`, `CustomizationPanelImpl.tsx` | alterado | a prop atravessa o lazy |
+| `src/index.ts` | alterado | 2 tipos exportados |
+| `src/core/i18n/catalogEntries.panel.ts` | alterado | 5 chaves × 6 idiomas |
+| `docs/migracoes.md`, `sarak-ui/*`, `sarak-dev/*` | alterado | nota de migração; kits regerados (os gerados já misturam a 165) |
+
+**Verificações executadas**
+- `npx vitest run` dos arquivos acima + `src/core/i18n` + `ThemeActionBar.test.tsx` → 11 arquivos, 111 testes, 0 falha (inclui a paridade do catálogo).
+- **Mutação:** com `if (!dirtyRef.current) return Promise.resolve(true)` apagado, os 2 casos "sem rascunho sujo" (hook e painel) reprovam; restaurado.
+- Navegador (Chromium 1440×900, React de produção, `CustomizationPanel` real, sem outro processo de Playwright/build na máquina): limpo → `confirmLeave` resolve `true` sem diálogo; "Invertida" escolhida → pergunta aparece; "Ficar" → `false`, rascunho mantido; "Descartar e sair" → `true`, Aplicar desabilitado. Dados em `dados-lote3.json`.
+- `npx tsc --noEmit` → 1 erro, `Canvas/components/__tests__/peek.test.tsx(98,87)` TS2559, arquivo da `plan-160`; nenhum meu.
+- `guide:check`, `dev-kit:check`, `barrel:check` → verdes depois do último ajuste do `index.ts`. O auditor de Clean Code acusou 2 violações minhas na 1ª passada (hook com 4 `useState/useEffect`; `index.ts` com 251 linhas) — corrigidas (`useWarnBeforeUnload` extraído; export numa linha só) e a seção de Clean Code voltou a "nenhum crime".
+- `npx vitest run src/features/DesignEngine/Main src/features/DesignEngine/Library src/core/i18n` → **5 falhas, nenhuma deste lote**: `PaletteSection` (setas), `ThemeDecisionView` ("O que aparece"), `usePeekPreview` ×2 e `ThemeCustomizationTab`/`filteredResults` — arquivos que a `plan-160` está editando (`PaletteSection.tsx`, `usePeekPreview.ts`, `decisions.ts`, `design-decisions.json`).
+- **Não rodei:** suíte completa, build, `cromo-css-real:check` (do revisor). `run_audit` ainda acusa itens da `plan-165` (`SarakShellUserWidget.tsx:136`, `useFitBrandName.ts` sem teste, `SarakMultiSelect`/`SarakUploader`, R10).
+
+**Critérios de aceite**
+- [x] Sair com rascunho sujo pergunta — `ThemeCustomizationTab.test.tsx` (3 casos) e a captura `lote3-pergunta.png`.
+- [x] Sem rascunho, não pergunta — hook, painel e `lote3-limpo.png`.
+- [x] Textos nos seis idiomas — `catalog.test.ts` verde.
+- [x] Nota em `docs/migracoes.md`.
+- [ ] Prévia com o ok do dono — `C:\tmp\sarak-previa-158\index.html#lote3`.
+- [ ] Suíte completa verde; `tsc` 0; baseline — do revisor; as falhas acima são de outras plans.
+
+**Decisões e suposições**
+- **A lib não navega** (como `SarakSettingsPage`/`useSarakUnsavedChanges`): a pergunta de "outra rota" só roda se o host ligar `onUnsavedChangesControl` ao bloqueio do roteador. Não existe gancho de navegação na lib para fazê-lo por dentro. Sem a ligação, vale só o aviso da aba. **Para o revisor confirmar** — se a intenção era o painel interceptar a rota sozinho, é decisão de arquitetura.
+- Reusei o padrão de `useSarakUnsavedChanges` em vez do hook em si: ele é de 2 escolhas (`overlay.confirm`), e a plan pede 3.
+- Arquivos fora da §3.1: `Library/CustomizationPanel/index.tsx`, `CustomizationPanelImpl.tsx` e `src/index.ts` — a prop e os tipos precisam atravessar a fronteira lazy e o barril.
+- O diálogo usa `SarakModal` próprio, não `useOverlay().confirm`: com o overlay, fechar por Esc não avisaria o guarda.
+- "Aplicar e sair" confia no `handleApply` do painel (síncrono); a captura não cobre esse botão (o teste de unidade cobre).
+
+**Achados fora do escopo (não corrigidos)**
+- `Canvas/components/__tests__/peek.test.tsx(98,87)` — TS2559; e as 5 falhas de vitest acima: trabalho em curso da `plan-160`.
+- `ThemeCustomizationTab.tsx` está em 234 linhas (teto 250): o próximo que mexer nele precisa extrair antes.
+
+**Pendências / riscos**
+- Os três gerados do kit (`sarak-ui/catalog.json`, `START-HERE.md`, `VERSION`) e `sarak-dev/*` já misturam 165 e 160; no commit, regerar.
+- Esta plan fica 🟠; a síntese em `adr/026`, `09` §4 e `06` §4/§4.1 é do revisor.
+
+**Complemento (2026-11-14, depois do resumo):** `npm run verify -- --tier=quick` no worktree compartilhado → `tsc --noEmit` **0 erros** (o erro de `peek.test.tsx` já tinha sido resolvido pela outra tarefa); `audit:baseline --with-tsc` reprova só em `auditor_hardcoded.estruturalLiquido 0→1` (`SarakShellUserWidget.tsx:136`) e `auditor_coverage.orfaos 0→1` (`useFitBrandName.ts`), ambos da `plan-165`; Clean Code não regrediu; plan-index, section-pointers, guide, dev-kit, trail-citation e Anel 0 (2270 linhas, 0 achado) verdes.
+
+## Veredito — 2026-11-14 — lote 3 — 🔵 Em correção (achado 1)
+
+**O que conferi e como**
+- O resumo, `useLeavePanelGuard.ts`, a ligação em `ThemeCustomizationTab.tsx` e a prévia `C:\tmp\sarak-previa-158\index.html#lote3`.
+- O "Aplicar e sair": `handleApplyGlobalChanges` (`useThemePersistenceHandlers.ts:118`) aplica ao sistema na hora; a gravação no
+  servidor segue em segundo plano. A suposição do executor vale.
+- **Como o ERP, que originou o item 3.1, sai do painel:** `modules/shell/web/src/pages/Design.tsx` monta `<SarakCustomizationPanel />`
+  sem prop nenhuma, e a troca de rota passa pelo `onNavigate` do cromo da lib (`App.tsx:62`, `HubChrome` → `SarakAppChrome`).
+- **Estado combinado das três execuções em paralelo** (`plan-158` lote 3, `plan-160` lote 2, `plan-165` lote 2), no mesmo worktree:
+  - `npm run verify -- --tier=quick`: tudo `[OK]`, menos o `plan-index:check` (status das plans, acertado neste veredito);
+  - `npx vitest run` completo: 5990 casos, **5988 ✓ e 2 ✗**, os dois em `gates/scripts/audit/__tests__/verify_contrast.test.ts`
+    (achado 1 da `plan-165`).
+- `cromo-css-real:check` **não rodei nesta rodada**: as três plans voltam para correção, e a suíte de navegador roda uma vez sobre as
+  três corrigidas.
+- Não repeti a mutação, os testes de unidade nem a sonda de navegador do executor.
+
+**Achados**
+1. **Bloqueio — no caso que originou o item, o rascunho continua se perdendo sem aviso.** No ERP, clicar em outra rota da barra não pergunta
+   nada: a pergunta só existe se o host ligar `onUnsavedChangesControl` ao roteador dele. Isso põe o conserto no consumidor. A premissa
+   "a lib não navega" não vale aqui: a navegação passa pelo `onNavigate` do `SarakAppChrome`, que é da lib.
+   - **Correção:** um guarda de navegação no Provider. O painel o registra enquanto está montado com rascunho sujo, e o
+     `SarakAppChrome` espera a resposta antes de chamar o `onNavigate` do host, em toda porta do cromo que navega: lateral, topo, barra
+     inferior, busca e ⚙. "Ficar" não chama; "Descartar e sair" e "Aplicar e sair" chamam.
+   - A prop `onUnsavedChangesControl` fica, para a navegação que não passa pelo cromo (voltar do navegador, link no conteúdo).
+     `docs/migracoes.md` passa a dizer isso: ligar a prop deixa de ser obrigatório.
+   - **Teste:** o painel dentro do `SarakAppChrome`, com rascunho sujo. Clicar num item da lateral pergunta, e o `onNavigate` do host
+     não é chamado até a escolha. Cobrir as três escolhas e o caso limpo, que navega na hora.
+   - **Mutação:** com o cromo chamando o `onNavigate` direto, o caso reprova.
+2. **Aviso — os três botões da pergunta saem empilhados, com larguras diferentes e alinhados à direita** (`lote3-pergunta.png`).
+   Recomendação: lado a lado (Ficar no painel · Descartar e sair · Aplicar e sair) e, quando não couberem, empilhados com a mesma largura.
+   A palavra final é do dono, na prévia.
+
+**Decisões do executor que ficam**
+- Diálogo próprio (`SarakModal`), em vez de `useOverlay().confirm`: só assim Esc e o X contam como "ficar".
+- `Library/CustomizationPanel/*` e `src/index.ts` fora da lista literal: a prop e os tipos atravessam a fronteira lazy e o barril.
+
+**Falta para o 🟢:** a correção dos achados 1 e 2, a prévia refeita com o clique numa rota da barra e o ok do dono nela.
+
+**Status da plan: 🔵 Em correção.**
+
+---
+
+# 9.10 Resumo da execução (lote 3, correção 1)
+
+## Resumo da execução (lote 3, correção 1) — 2026-11-15
+
+**Resultado:** Concluído com pendências (a prévia refeita espera o ok do dono; o empilhamento no caso estreito não foi capturado no navegador).
+
+**Estado do worktree ao iniciar**
+223 linhas de `git status --short`, de três origens: a entrega do lote 3 (esta plan, sem commit), a `plan-160` e a `plan-165` (cromo, temas, `role-map`, `Canvas/*`, `Main/components/Palette*`, `usePeekPreview`, `config/design-decisions.json`, `browser-tests/*`). A fotografia inteira ficou em `status-corr1.txt` no scratchpad da sessão; não toquei em nenhum arquivo dessas duas plans. `SarakAppChrome.tsx` e `SarakUIProvider.tsx` não estavam entre os modificados (`git status`), e reli os dois antes de gravar.
+
+**O que foi feito**
+
+*Achado 1 — o cromo pergunta sozinho*
+- `src/core/Provider/navigationGuard.tsx` (novo) — `SarakNavigationGuardProvider` (registro de guardas num `ref`), `useRegisterNavigationGuard(guard | null)` e `useGuardedNavigate(onNavigate)`. Sem guarda, `onNavigate` roda na mesma chamada (síncrono); com guarda, só depois de `true`. Fora do Provider é transparente.
+- `src/core/Provider/SarakUIProvider.tsx:30` (import) e `:216` — o Provider envolve os filhos com o guarda, dentro do `SarakOverlayProvider`.
+- `src/components/Layout/SarakAppChrome.tsx:4` (import), `:142`, `:164` — `onNavigate` do host é renomeado para `hostNavigate` e o `onNavigate` que desce para o corpo da barra lateral, o do topo e o `SarakAppChromeMobile` (e, por ele, a barra inferior, a busca e o drawer) é o `useGuardedNavigate(hostNavigate)`. Um ponto só: todas as portas do cromo já recebiam `onNavigate` por prop.
+- `Main/hooks/useLeavePanelGuard.ts` — registra `confirmLeave` no guarda do Provider **só quando `isDirty`** (`useRegisterNavigationGuard(isDirty ? confirmLeave : null)`); limpo, nada é registrado e a rota muda na hora. `ThemeCustomizationTab.tsx` não foi tocado (o painel ganha o comportamento pelo hook que já usava). Comentários do hook e da prop `onUnsavedChangesControl` agora dizem que ela é opcional e serve à navegação que não passa pelo cromo.
+- `docs/migracoes.md` — a entrada do painel passa a dizer: o cromo pergunta sozinho; ligar `onUnsavedChangesControl` é opcional, só para voltar do navegador e link no conteúdo. `npm run guide` e `npm run dev-kit` regerados (`sarak-ui/docs/migracoes.md` espelha).
+
+*Achado 2 — botões lado a lado*
+- `Main/components/LeavePanelDialog.tsx:23-32` — o rodapé é uma grade `repeat(auto-fit, minmax(min(100%, calc(var(--sarak-modal-width-md, 448px) / 2.5)), 1fr))`, botões `fullWidth`, modal `size="xl"`. Ficar no painel · Descartar e sair · Aplicar e sair numa linha, mesma largura; sem espaço, uma coluna com a mesma largura. A 1ª tentativa (`11rem`, depois `gap-lg * 7`) foi barrada pelo auditor de hardcode e depois dependia do tema (com o gap maior do tema do harness caiu para 2+1); a atual deriva de um token que o `variable-contract:check` conhece (fallback `448px`).
+
+*Testes*
+- `src/core/Provider/__tests__/navigationGuard.test.tsx` (novo, 6 casos): sem guarda é síncrono; com guarda espera `true`; `false` mantém; guarda desregistrado volta a navegar na hora; sem `onNavigate` do host devolve `undefined`; fora do Provider é transparente.
+- `src/features/DesignEngine/Main/__tests__/ChromeNavigationGuard.test.tsx` (novo, 6 casos): o `SarakAppChrome` real dentro do `SarakUIProvider` real, com o guarda e o diálogo do painel como filho; clicar em "Propostas" na lateral. Limpo navega na hora e não pergunta; sujo pergunta e o `onNavigate` do host não é chamado; Ficar não navega e não mexe no rascunho; Descartar descarta e navega; Aplicar aplica e navega; a barra de topo (tablet) passa pelo mesmo guarda. (Nasceu em `components/Layout/__tests__/` e foi movido: o `auditor_arquitetura` proíbe `components` importar `features`.)
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Provider/navigationGuard.tsx` | criado | guarda de navegação (Provider + 2 hooks) |
+| `src/core/Provider/__tests__/navigationGuard.test.tsx` | criado | 6 casos |
+| `src/core/Provider/SarakUIProvider.tsx` | alterado | monta o guarda em volta dos filhos |
+| `src/components/Layout/SarakAppChrome.tsx` | alterado | `onNavigate` do host passa por `useGuardedNavigate` |
+| `src/features/DesignEngine/Main/hooks/useLeavePanelGuard.ts` | alterado | registra o `confirmLeave` no guarda quando sujo; docs |
+| `src/features/DesignEngine/Main/components/LeavePanelDialog.tsx` | alterado | rodapé em grade, botões de mesma largura, modal `xl` |
+| `src/features/DesignEngine/Main/__tests__/ChromeNavigationGuard.test.tsx` | criado | 6 casos, o painel dentro do cromo |
+| `docs/migracoes.md`, `sarak-ui/*`, `sarak-dev/*` | alterado | nota corrigida; kits regerados |
+
+**Verificações executadas**
+- `npx vitest run` de `src/components/Layout`, `src/core/Provider/__tests__/navigationGuard.test.tsx`, `useLeavePanelGuard`, `LeavePanelDialog`, `ThemeCustomizationTab`, `ChromeNavigationGuard` e `src/core/i18n` → 43 arquivos, 458 testes, 0 falha (antes do último ajuste de fallback do diálogo e da mudança de pasta do teste; depois dela, `ChromeNavigationGuard` + `LeavePanelDialog` → 11 testes, 0 falha).
+- **Mutação pedida:** com `SarakAppChrome.tsx` chamando o `onNavigate` do host direto (`const onNavigate = hostNavigate`), 5 dos 6 casos reprovam (sujo pergunta, Ficar, Descartar, Aplicar, topbar); só o caso "limpo" passa, como deve. Restaurado (`grep` confirma `useGuardedNavigate(hostNavigate)` na linha 164).
+- **Navegador** (Chromium 1440×900, React de produção, `CustomizationPanel` real dentro do `SarakAppChrome` real, `onNavigate` do host anotando a rota; nenhum Playwright/build rodando antes): limpo → host recebeu `/propostas` na hora, sem diálogo; "Invertida" escolhida → host recebeu **nada**, diálogo aberto, 3 botões de 224 px na mesma linha (`y` igual); Ficar → nada recebido, diálogo fechado; Descartar → `/propostas`; sujo de novo + Aplicar → `/propostas`. Dados em `C:\tmp\sarak-previa-158\dados-lote3-rota.json`.
+- `npm run verify -- --tier=quick` → tudo `[OK]` (`tsc`, `audit:baseline --with-tsc`, barrel, catalog, variable-contract, section-pointers, trail-citation, Anel 0 com 3476 linhas e 0 achado) **menos** `plan-index:check`, que acusa só `plan-165` (índice `🔵` × frontmatter `🟠`: status dela, do revisor).
+- **Não rodei:** suíte completa, build, `cromo-css-real:check` (do revisor).
+
+**Critérios de aceite**
+- [x] Clicar numa rota do cromo com rascunho sujo pergunta, e o `onNavigate` do host não é chamado antes da escolha — `ChromeNavigationGuard.test.tsx` e `dados-lote3-rota.json` (`sujo.navegou: []`).
+- [x] As três escolhas e o caso limpo — os mesmos dois.
+- [x] Mutação reprova o caso — acima.
+- [x] A prop `onUnsavedChangesControl` fica e `docs/migracoes.md` diz que ligar é opcional.
+- [x] Botões lado a lado, mesma largura — `lote3-pergunta-rota.png` (224 px × 3).
+- [ ] Prévia refeita com o ok do dono — `C:\tmp\sarak-previa-158\index.html#lote3-correcao`.
+- [ ] Botões empilhados com a mesma largura quando não cabem — **não capturado**: o painel no celular não oferece a escolha usada para sujar o rascunho, e a 640 px a captura não chegou à pergunta. A regra é `auto-fit` + `fullWidth`; a medida da linha é a única evidência de navegador.
+
+**Decisões e suposições**
+- O guarda mora no Provider, mas o cromo o consome por `useGuardedNavigate` no `SarakAppChrome`, não em cada corpo (lateral/topo/mobile): um ponto cobre todas as portas, porque todas já recebiam `onNavigate` por prop.
+- O guarda só é registrado com o rascunho sujo, não "enquanto o painel está montado": assim o caso limpo continua síncrono, sem microtarefa a mais para quem usa o `onNavigate` em teste.
+- Vários painéis sujos ao mesmo tempo: vale o último registrado. Existe um painel por tela; não tratei o resto.
+- O ⚙ do cromo (menu de preferências) não navega, só abre o menu; não há porta dele para guardar.
+- Modal `xl` em vez de `md`: com `md` (~448 px) três botões em caixa alta não cabem lado a lado. A largura dos botões vem do modal, não de um valor novo.
+- O teste do painel dentro do cromo usa o par real que o painel monta (`useLeavePanelGuard` + `LeavePanelDialog`) e não o `ThemeCustomizationTab` inteiro: o painel real fica coberto pela captura de navegador; em jsdom ele exige os mocks pesados do arquivo de teste dele.
+
+**Achados fora do escopo (não corrigidos)**
+- `plan-index:check` falha por status da `plan-165` (índice × frontmatter): do revisor.
+- A prévia `#lote3` (1ª versão) fala em "a lib não navega"; marquei como superada e acrescentei `#lote3-correcao`, sem apagar as capturas antigas.
+
+**Pendências / riscos**
+- Os gerados do kit (`sarak-ui/*`, `sarak-dev/*`) misturam 165 e 160; no commit, regerar.
+- Navegação que não passa pelo cromo (voltar do navegador, link no conteúdo) continua dependendo da ligação opcional do host.
+
+## Veredito — 2026-11-15 — correção 1 do lote 3 — 🟠 achados 1 e 2 fechados; o 🟢 espera o dono na prévia
+
+**O que conferi e como**
+- `navigationGuard.tsx`: sem guarda, a navegação segue na mesma chamada; com guarda, só depois de `true`; fora do Provider não muda
+  nada.
+- `SarakAppChrome.tsx:164`: o `onNavigate` do host passa por `useGuardedNavigate` num ponto só, e esse ponto alcança todas as
+  portas do cromo.
+- `useLeavePanelGuard.ts`: o guarda só é registrado com o rascunho sujo.
+- A captura `C:\tmp\sarak-previa-158\lote3-pergunta-rota.png`: três botões lado a lado, com a mesma largura.
+- **Estado combinado** (esta correção, a correção da outra plan em paralelo e o lote 2 da `plan-160`, ainda em correção):
+  - `npm run verify -- --tier=quick`: tudo `[OK]`;
+  - `npx vitest run` completo: **6004 casos, 6004 ✓**.
+- `cromo-css-real:check` (navegador): **ainda não rodei**. Roda uma vez antes do commit, depois do ok do dono na prévia.
+- Não repeti a mutação (5 de 6 casos reprovam com o cromo chamando o host direto), os testes de unidade nem a sonda de navegador do
+  executor.
+
+**Decisões do executor que ficam**
+- Um ponto só no `SarakAppChrome`, em vez de um em cada corpo de barra.
+- O guarda é registrado só com o rascunho sujo: o caso limpo continua síncrono.
+- Com vários guardas, vale o último registrado.
+- O modal `xl`.
+- O empilhamento em tela estreita ficou sem captura de navegador. A regra (`auto-fit` com botões `fullWidth`) é o suficiente.
+
+**Falta para o 🟢:**
+- o ok do dono na prévia `C:\tmp\sarak-previa-158\index.html#lote3-correcao`;
+- o `cromo-css-real:check`, que o revisor roda.
+
+Depois disso, a síntese da plan inteira.
+
+**Status da plan: 🟠 Em revisão** (aguardando o dono).
+
+
+## Avaliação do dono — 2026-11-15 — prévia do lote 3 aprovada
+
+- O dono aprovou a prévia `C:\tmp\sarak-previa-158\index.html#lote3-correcao`: a pergunta aparece ao clicar numa rota da barra, com os três botões lado a lado.
+- Falta para o 🟢 só o `cromo-css-real:check`, que o revisor roda agora.
+
+## Veredito — 2026-11-15 — lote 3 (com a correção 1) — 🟢 Aprovado; a plan está completa
+
+**O que conferi e como**
+- `npm run -s cromo-css-real:check` (build e navegador, workers padrão) sobre o estado das três plans juntas: **698 ✓ e 21 ✗**, as
+  mesmas 21 da rodada do executor da `plan-160`:
+  - 15 do spec da anatomia: sobrescrita de tema, lote 3 da `plan-165`, já conhecidas;
+  - 2 do `cartao-cede-a-classe`: backlog 83, anteriores a estas plans;
+  - **4 novas, todas do lote 2 da `plan-165`** (achado 1 do veredito dela de hoje).
+- Nenhuma das 21 toca o guarda de navegação nem o diálogo. O `login-theme-application` e o `escolha-no-painel` (o teto de 250 ms)
+  passam.
+- O ok do dono na prévia está registrado acima.
+
+**A plan está completa:** os lotes 0, 1, 2 e 3 foram aprovados.
+- **A síntese** (ADR-026, 09 §4.3.3, §4.3.4 e §4.4, 06 §4 e §4.1) espera a autorização do dono e o commit.
+- **O commit** sai junto com os da `plan-160` e da `plan-165`. Os três lotes dividem arquivos (`ThemeCustomizationTab.tsx`,
+  `docs/migracoes.md`, os kits gerados `sarak-ui/` e `sarak-dev/`, `src/index.ts`), e o comando vem quando a `plan-165` fechar.
+
+**Status da plan: 🟢 Aprovado.**

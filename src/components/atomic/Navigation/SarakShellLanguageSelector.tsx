@@ -143,11 +143,13 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
         <div className="relative">
             <SarakMenuItem
                 onClick={() => setIsOpen(!isOpen)}
-                className="group font-tab"
-                icon={<SarakIcon name="Globe" size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />}
+                className="font-tab"
+                icon="Globe"
                 label={t('languageSelectorLabel')}
+                aria-haspopup="menu"
+                aria-expanded={isOpen}
             >
-                <span className="text-2xs font-bold text-[var(--theme-primary)]">{currentLang.id.toUpperCase()}</span>
+                <span data-sarak-row-indicator="true" className="shrink-0 text-2xs font-bold text-[var(--sarak-nav-active-color,var(--theme-primary))]">{currentLang.id.toUpperCase()}</span>
             </SarakMenuItem>
             {dropdown}
         </div>

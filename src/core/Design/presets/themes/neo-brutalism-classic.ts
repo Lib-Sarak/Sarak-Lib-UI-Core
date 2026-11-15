@@ -50,6 +50,8 @@ export const neoBrutalismClassicTheme: SarakThemePreset = {
         sidebarBackgroundStyle: 'solid',
         sidebarActiveItemStyle: 'filled',
         sidebarActiveGlass: 'on',
+        brandDisplay: 'both',
+        userAvatarStyle: 'initials',
         sidebarItemDensity: 'comfortable',
         sidebarIconSize: 18,
         sidebarIconColor: '#cc0000',

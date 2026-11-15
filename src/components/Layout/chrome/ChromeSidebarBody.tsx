@@ -21,6 +21,7 @@ import { useChromeDefaultWidgets } from './useChromeDefaultWidgets';
 import { chromeNoiseLayerStyle } from './noiseTexture';
 import { resolveSidebarFrameStyle } from './sidebarFrame';
 import type { SarakChromeWidgets } from './chromeWidgets';
+import type { SarakPreferenceId } from '../../../core/Provider/preferencesTypes';
 import { getSarakSearchItems } from './navItem';
 
 export interface ChromeSidebarBodyProps {
@@ -94,19 +95,23 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
     const showFontSize = w.preferencePlacement.pinned.includes('fontSize');
     const showNavigationStyle = w.preferencePlacement.pinned.includes('navigationStyle');
     const showLanguage = w.preferencePlacement.pinned.includes('language');
-    // Sidebar recolhida (ícone-only) não tem coluna para o controle com rótulo —
-    // mas a preferência continua oferecida (Spec 05 §2.3, "nada some"), então o ⚙
-    // a recebe, mesmo quando nenhuma está em posição `menu` (que já a levaria).
-    const collapsedExtras = w.preferencePlacement.pinned.filter((id) => id !== 'colorMode' && id !== 'navCollapsed');
-    const menuIdsToShow = isNavHidden ? [...new Set([...w.preferencePlacement.menu, ...collapsedExtras])] : w.preferencePlacement.menu;
+    // A barra mostra o que é fixado e o ⚙ guarda o resto: o que já tem controle na barra não se repete no ⚙. Recolhida
+    // (ícone-only), não há coluna para o controle com rótulo — a preferência fixada sem ícone próprio vai para o ⚙ (Spec 05
+    // §2.3, "nada some"); só o modo e a seta de recolher têm ícone recolhido.
+    const hasOwnControl = (id: SarakPreferenceId): boolean =>
+        w.preferencePlacement.pinned.includes(id) && (!isNavHidden || id === 'colorMode' || id === 'navCollapsed');
+    const menuIdsToShow = w.preferencePlacement.offered.filter((id) => !hasOwnControl(id));
+    const searchInMenu = w.showSearchInMenu && !w.showSearch;
+    const userInMenu = w.showUserInMenu && !w.showUser;
+    const notificationsInMenu = w.showNotificationsInMenu && !w.showNotifications;
     const menuWidgets = (
         <>
-            {w.showSearchInMenu && <SarakShellSearchWidget variant="icon" onClick={w.openSearch} />}
-            {w.showUserInMenu && <ChromeUserWidget user={user} logout={logout} variant="vertical" />}
-            {w.showNotificationsInMenu && <ChromeNotificationsWidget notifications={notifications} onSelect={onNotificationSelect} variant="vertical" />}
+            {searchInMenu && <SarakShellSearchWidget variant="icon" onClick={w.openSearch} />}
+            {userInMenu && <ChromeUserWidget user={user} logout={logout} variant="vertical" />}
+            {notificationsInMenu && <ChromeNotificationsWidget notifications={notifications} onSelect={onNotificationSelect} variant="vertical" />}
         </>
     );
-    const hasPreferencesMenu = w.widgetPlacement.menu.length > 0 || menuIdsToShow.length > 0;
+    const hasPreferencesMenu = menuIdsToShow.length > 0 || searchInMenu || userInMenu || notificationsInMenu;
 
     return (
         <ChromeFrame decoration={decoration} banner={banner} footer={footer} className={className} rootStyle={rootStyle}>

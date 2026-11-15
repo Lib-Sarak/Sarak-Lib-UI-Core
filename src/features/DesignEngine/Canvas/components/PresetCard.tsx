@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { SarakThemePreset } from '../../../../core/Design/presets/themes';
 import { resolveThemeForMode } from '../../../../core/Design/presets/themes/color-engine';
@@ -47,7 +47,8 @@ interface PresetCardProps {
 const noTokens = (): null => null;
 
 export const PresetCard = ({ theme, currentMode, onApply, index, peekTokens, onPeek }: PresetCardProps) => {
-    const peek = usePeekHandlers(onPeek, peekTokens ?? noTokens);
+    const root = useRef<HTMLButtonElement>(null);
+    const peek = usePeekHandlers(onPeek, peekTokens ?? noTokens, root);
     // plan-26: a miniatura reflete o que `onApply` REALMENTE aplicaria — a
     // contraparte AUTORADA quando existe, e só cai no `syncThemeWithMode`
     // sintetizado para os temas legados sem contraparte.
@@ -106,6 +107,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index, peekTokens, onP
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             onClick={onApply}
+            ref={root}
             data-theme-id={theme.id}
             {...peek}
             className="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"

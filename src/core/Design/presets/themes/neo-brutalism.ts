@@ -57,6 +57,8 @@ export const neobrutalismTheme: SarakThemePreset = {
         sidebarBackgroundStyle: 'solid',
         sidebarActiveItemStyle: 'filled',
         sidebarActiveGlass: 'on',
+        brandDisplay: 'both',
+        userAvatarStyle: 'initials',
         sidebarItemDensity: 'spacious',
         sidebarIconSize: 20,
         // borda preta chapada é a assinatura brutalista

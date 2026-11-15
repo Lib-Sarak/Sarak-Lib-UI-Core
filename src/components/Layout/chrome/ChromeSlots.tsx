@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { useNavigationAppearance } from '../../../core/Provider/useNavigationAppearance';
+import { BRAND_NAME_LINE_HEIGHT, useFitBrandName } from './useFitBrandName';
 
 /**
  * Regiões de slot do cromo (Spec 48 — L1).
@@ -33,7 +35,40 @@ const ChromeBrandMonogram: React.FC<{ name: string }> = ({ name }) => (
     </span>
 );
 
-/** Identidade do cromo: slot `logo` (quando presente) tem precedência sobre `brand.logoUrl`. */
+/**
+ * O nome da marca: quebra entre palavras em até duas linhas e encolhe até caber, nunca com reticências.
+ * `sidebarLabelMaxWidth`/`topbarLabelMaxWidth` (Spec 05 §2.4) são a largura em que o nome passa para a linha de baixo.
+ */
+const ChromeBrandName: React.FC<{ name: string; horizontal?: boolean }> = ({ name, horizontal }) => {
+    const ref = useRef<HTMLSpanElement>(null);
+    useFitBrandName(ref, name);
+    const maxWidth = horizontal ? 'var(--sarak-topbar-label-max-width, 150px)' : 'var(--sarak-sidebar-label-max-width, 120px)';
+    return (
+        <span
+            ref={ref}
+            data-sarak-brand-name="true"
+            style={{
+                // Tipografia do nome da marca: `identityFontFamily`/`identityFontWeight`/`identityTracking`.
+                fontFamily: 'var(--sarak-identity-font, var(--font-heading, var(--font-main, inherit)))',
+                fontWeight: 'var(--sarak-identity-weight, 800)',
+                letterSpacing: 'var(--sarak-identity-tracking, 0px)',
+                lineHeight: BRAND_NAME_LINE_HEIGHT,
+                width: 'fit-content',
+                maxWidth: `min(${maxWidth}, 100%)`,
+                color: horizontal
+                    ? 'var(--sarak-topbar-brand-color, var(--sarak-topbar-title-color, var(--color-theme-title, inherit)))'
+                    : 'var(--sarak-sidebar-brand-color, var(--sarak-on-sidebar, #f2f6fb))',
+            }}
+        >
+            {name}
+        </span>
+    );
+};
+
+/**
+ * Identidade do cromo: slot `logo` (quando presente) tem precedência sobre `brand.logoUrl`. `brandDisplay` escolhe o que a
+ * marca mostra: logo e nome, só o logo (cai no nome quando não há imagem) ou só o nome.
+ */
 export const ChromeBrand: React.FC<{
     brand?: { name?: string; logoUrl?: string };
     logo?: React.ReactNode;
@@ -46,28 +81,33 @@ export const ChromeBrand: React.FC<{
      */
     band?: boolean;
 }> = ({ brand, logo, horizontal, compact, band }) => {
-    const hasLogo = Boolean(logo || brand?.logoUrl);
-    if (!hasLogo && !brand?.name) return null;
-    const showMonogram = band && !hasLogo && Boolean(brand?.name);
+    const { brandDisplay } = useNavigationAppearance();
+    const hasImage = Boolean(logo || brand?.logoUrl);
+    const hasName = Boolean(brand?.name);
+    if (!hasImage && !hasName) return null;
+    const showLogo = hasImage && brandDisplay !== 'name';
+    const showName = hasName && (brandDisplay !== 'logo' || !hasImage);
+    const showMonogram = band && !showLogo && hasName;
     // Recolhido o nome some: sem logo nem monograma, não sobraria nada dentro do bloco — nem a caixa colorida.
-    if (!hasLogo && !showMonogram && compact) return null;
+    if (!showLogo && !showMonogram && compact) return null;
     return (
         // O invólucro leva o respiro do token `identityPadding` (padrão 0, soma-se ao respiro
         // base do bloco); o bloco interno mantém a anatomia de sempre. Fora da faixa, o fundo da marca só pinta com
-        // logo: sem imagem, o bloco é só o nome (ou nada), nunca uma caixa colorida.
+        // logo: sem imagem, o bloco é só o nome (ou nada), nunca uma caixa colorida. Na barra do topo a marca não
+        // encolhe para dar espaço às abas: quem cede é a lista delas.
         <div
-            className="relative z-10 min-w-0"
+            className={`relative z-10 ${horizontal ? 'shrink-0' : 'min-w-0'}`}
             style={{
                 padding: band ? undefined : 'var(--sarak-identity-padding, 16px)',
                 paddingInline: band && !compact ? 'var(--sarak-identity-padding, 16px)' : undefined,
-                background: band || !hasLogo ? undefined : horizontal
+                background: band || !showLogo ? undefined : horizontal
                     ? 'var(--sarak-topbar-brand-bg, transparent)'
                     : 'var(--sarak-sidebar-brand-bg, transparent)',
             }}
         >
             <div className={`sarak-chrome-brand flex items-center gap-2 min-w-0 ${horizontal || band ? '' : 'px-2 py-3'} ${compact ? 'justify-center' : ''}`}>
                 {showMonogram && <ChromeBrandMonogram name={brand?.name ?? ''} />}
-                {logo
+                {showLogo && (logo
                     ? <span data-sarak-slot="logo" className="flex items-center shrink-0 min-w-0">{logo}</span>
                     : brand?.logoUrl && (
                         // `shellBrandLogoSize`/`brandLogoSizeCollapsed` (Spec 05 §2.4) — altura
@@ -79,26 +119,8 @@ export const ChromeBrand: React.FC<{
                             className="object-contain shrink-0"
                             style={{ height: compact ? 'var(--sarak-brand-logo-size-collapsed, 20px)' : 'var(--sarak-shell-brand-logo-size, 32px)' }}
                         />
-                    )}
-                {brand?.name && !compact && (
-                    <span
-                        className="truncate"
-                        style={{
-                            // Tipografia do nome da marca: `identityFontFamily`/`identityFontWeight`/`identityTracking`.
-                            fontFamily: 'var(--sarak-identity-font, var(--font-heading, var(--font-main, inherit)))',
-                            fontWeight: 'var(--sarak-identity-weight, 800)',
-                            letterSpacing: 'var(--sarak-identity-tracking, 0px)',
-                            color: horizontal
-                                ? 'var(--sarak-topbar-brand-color, var(--sarak-topbar-title-color, var(--color-theme-title, inherit)))'
-                                : 'var(--sarak-sidebar-brand-color, var(--sarak-on-sidebar, #f2f6fb))',
-                            // `sidebarLabelMaxWidth`/`topbarLabelMaxWidth` (Spec 05 §2.4) — trunca
-                            // por orientação, mesmo par de tokens que o Shell já consome.
-                            maxWidth: horizontal ? 'var(--sarak-topbar-label-max-width, 150px)' : 'var(--sarak-sidebar-label-max-width, 120px)',
-                        }}
-                    >
-                        {brand.name}
-                    </span>
-                )}
+                    ))}
+                {showName && !compact && <ChromeBrandName name={brand?.name ?? ''} horizontal={horizontal} />}
             </div>
         </div>
     );

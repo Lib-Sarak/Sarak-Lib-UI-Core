@@ -69,6 +69,8 @@ export const cyberRetroWaveTheme: SarakThemePreset = {
             "sidebarBackgroundStyle": "texture",
             "sidebarActiveItemStyle": "filled",
             "sidebarActiveGlass": "on",
+        "brandDisplay": "both",
+        "userAvatarStyle": "initials",
             "sidebarItemDensity": "compact",
             "sidebarIconSize": 18,
             "topbarBorderWidth": 1,

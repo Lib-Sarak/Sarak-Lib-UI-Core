@@ -5,6 +5,7 @@ import { placeAnchored, type AnchoredCoords } from './internal/anchoredPosition'
 import { useFocusTrap } from '../Modals/hooks/useFocusTrap';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
 import { SarakIcon } from '../Icon/SarakIcon';
+import { SarakMenuItem } from './SarakMenuItem';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import type { SarakPreferenceId } from '../../../core/Provider/preferencesTypes';
@@ -17,6 +18,11 @@ export interface ShellPreferencesMenuProps extends Omit<ShellPreferenceRowContex
     additionalRows?: React.ReactNode;
     /** Lado da tela em que a barra vive — decide para onde o menu abre. */
     align?: 'start' | 'end';
+    /**
+     * `icon` é o botão só de ícone (barra do topo); `row` é a linha da lateral, com a métrica do item de menu: ícone e
+     * rótulo (recolhida, só o ícone centrado no eixo da lista).
+     */
+    variant?: 'icon' | 'row';
     className?: string;
 }
 
@@ -37,7 +43,7 @@ const MENU_ID = 'sarak-preferences-menu';
  * existe botão que abre um painel sem nada dentro.
  */
 export const ShellPreferencesMenu: React.FC<ShellPreferencesMenuProps> = ({
-    menuIds, isNavHidden, onToggleNavCollapsed, additionalRows, align = 'end', className = '',
+    menuIds, isNavHidden, onToggleNavCollapsed, additionalRows, align = 'end', variant = 'icon', className = '',
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [coords, setCoords] = useState<AnchoredCoords | null>(null);
@@ -58,17 +64,30 @@ export const ShellPreferencesMenu: React.FC<ShellPreferencesMenuProps> = ({
 
     return (
         <div ref={anchorRef} className={mergeSarakClasses('relative', className)} data-sarak-widget="preferences-menu">
-            <SarakIconButton
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsOpen((v) => !v)}
-                aria-haspopup="true"
-                aria-expanded={isOpen}
-                aria-controls={MENU_ID}
-                aria-label={isOpen ? t('preferencesCloseAriaLabel') : t('preferencesLabel')}
-                icon={<SarakIcon name="Settings" size={16} />}
-            />
+            {variant === 'row' ? (
+                <SarakMenuItem
+                    icon="Settings"
+                    label={t('preferencesLabel')}
+                    collapsed={isNavHidden}
+                    aria-label={t('preferencesLabel')}
+                    onClick={() => setIsOpen((v) => !v)}
+                    aria-haspopup="true"
+                    aria-expanded={isOpen}
+                    aria-controls={MENU_ID}
+                />
+            ) : (
+                <SarakIconButton
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsOpen((v) => !v)}
+                    aria-haspopup="true"
+                    aria-expanded={isOpen}
+                    aria-controls={MENU_ID}
+                    aria-label={isOpen ? t('preferencesCloseAriaLabel') : t('preferencesLabel')}
+                    icon={<SarakIcon name="Settings" size={16} />}
+                />
+            )}
             {isOpen && typeof document !== 'undefined' && createPortal(
                 <SarakPortalScope>
                     <div

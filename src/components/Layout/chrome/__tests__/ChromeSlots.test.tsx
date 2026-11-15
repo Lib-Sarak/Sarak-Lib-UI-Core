@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect } from 'vitest';
 import { ChromeBrand, ChromeDecoration, ChromeSidebarSlot, ChromeStrip, ChromeTopbarSlot } from '../ChromeSlots';
+import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 
 describe('ChromeSlots (Spec 48 — L1, regiões de slot do cromo)', () => {
     it('AUSENTE = não renderiza a região (nenhum espaço morto)', () => {
@@ -160,5 +161,54 @@ describe('ChromeBrand — tokens de identidade', () => {
     it('o rodapé lateral lê o fundo próprio', () => {
         const { container } = render(<ChromeSidebarSlot region="footer"><span>Rodapé</span></ChromeSidebarSlot>);
         expect((container.firstElementChild as HTMLElement).style.background).toBe('var(--sarak-sidebar-footer-bg, transparent)');
+    });
+});
+
+describe('ChromeBrand — o nome nunca é cortado com reticências', () => {
+    it('o nome quebra entre palavras (sem `truncate`) e encolhe pelo hook, com a largura de quebra do token', () => {
+        render(<ChromeBrand brand={{ name: 'Sistema de Relatórios do Tribunal' }} />);
+        const name = screen.getByText('Sistema de Relatórios do Tribunal');
+        expect(name.className).not.toContain('truncate');
+        expect(name).toHaveAttribute('data-sarak-brand-name', 'true');
+        expect(name.style.lineHeight).toBe('1.2');
+        expect(name.style.maxWidth).toContain('var(--sarak-sidebar-label-max-width, 120px)');
+    });
+
+    it('na barra do topo a marca não encolhe para dar espaço às abas', () => {
+        const { container } = render(<ChromeBrand brand={{ name: 'ERP' }} horizontal />);
+        expect((container.firstElementChild as HTMLElement).className).toContain('shrink-0');
+    });
+});
+
+describe('ChromeBrand — brandDisplay (logo, nome ou ambos)', () => {
+    const renderBrand = (brandDisplay: string, withImage = true, band = false): ReturnType<typeof render> => render(
+        <SarakUIProvider config={{ brandDisplay }}>
+            <ChromeBrand brand={withImage ? { name: 'ERP', logoUrl: '/logo.png' } : { name: 'ERP' }} band={band} />
+        </SarakUIProvider>,
+    );
+
+    it('`both` mostra o que o sistema passou: o logo e o nome', () => {
+        const { container } = renderBrand('both');
+        expect(container.querySelector('img')).not.toBeNull();
+        expect(screen.getByText('ERP')).toBeInTheDocument();
+    });
+
+    it('`logo` mostra só o logo', () => {
+        const { container } = renderBrand('logo');
+        expect(container.querySelector('img')).not.toBeNull();
+        expect(screen.queryByText('ERP')).toBeNull();
+    });
+
+    it('`logo` sem imagem cai no nome', () => {
+        const { container } = renderBrand('logo', false);
+        expect(container.querySelector('img')).toBeNull();
+        expect(screen.getByText('ERP')).toBeInTheDocument();
+    });
+
+    it('`name` mostra só o nome, mesmo com imagem; na faixa da lateral o monograma toma o lugar da imagem', () => {
+        const { container } = renderBrand('name', true, true);
+        expect(container.querySelector('img')).toBeNull();
+        expect(screen.getByText('ERP')).toBeInTheDocument();
+        expect(container.querySelector('[data-sarak-brand-monogram]')).not.toBeNull();
     });
 });

@@ -1,7 +1,8 @@
 import React from 'react';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
+import { PEEK_DELAY_MS } from '../../../Canvas/components/peek';
 import { PaletteGallery } from '../PaletteGallery';
 
 vi.mock('../../../../../core/Design/palette/presets', () => ({
@@ -58,7 +59,8 @@ describe('PaletteGallery', () => {
         render(<PaletteGallery selectedId="oceano" onSelect={onSelect} />);
         fireEvent.click(screen.getByRole('button', { name: 'Análoga' }));
         fireEvent.keyDown(screen.getByRole('radio', { name: /Floresta/ }), { key: 'ArrowDown' });
-        expect(onSelect).toHaveBeenLastCalledWith('oceano');
+        expect(screen.getByRole('radio', { name: /Oceano/ })).toHaveFocus();
+        expect(onSelect).not.toHaveBeenCalled();
     });
 
     it('marca só a paleta selecionada e dá o foco de tabulação a ela', () => {
@@ -74,16 +76,65 @@ describe('PaletteGallery', () => {
         expect(screen.getByRole('radio', { name: /Oceano/ })).toHaveAttribute('tabindex', '0');
     });
 
-    it('o clique e as setas escolhem a paleta e movem o foco, circulando nas pontas', () => {
+    it('o clique escolhe a paleta', () => {
         const onSelect = vi.fn();
         render(<PaletteGallery selectedId="oceano" onSelect={onSelect} />);
         fireEvent.click(screen.getByRole('radio', { name: /Floresta/ }));
         expect(onSelect).toHaveBeenLastCalledWith('floresta');
+    });
+
+    it('as setas só movem o foco, circulando nas pontas; escolher é o clique ou o Enter', () => {
+        const onSelect = vi.fn();
+        render(<PaletteGallery selectedId="oceano" onSelect={onSelect} />);
         fireEvent.keyDown(screen.getByRole('radio', { name: /Brasa/ }), { key: 'ArrowDown' });
-        expect(onSelect).toHaveBeenLastCalledWith('oceano');
+        expect(screen.getByRole('radio', { name: /Oceano/ })).toHaveFocus();
         fireEvent.keyDown(screen.getByRole('radio', { name: /Oceano/ }), { key: 'ArrowUp' });
-        expect(onSelect).toHaveBeenLastCalledWith('brasa');
         expect(screen.getByRole('radio', { name: /Brasa/ })).toHaveFocus();
+        expect(onSelect).not.toHaveBeenCalled();
+    });
+
+    it('o foco itinerante segue a opção que tem o foco', () => {
+        render(<PaletteGallery selectedId="oceano" onSelect={() => undefined} />);
+        fireEvent.focus(screen.getByRole('radio', { name: /Floresta/ }));
+        expect(screen.getByRole('radio', { name: /Floresta/ })).toHaveAttribute('tabindex', '0');
+        expect(screen.getByRole('radio', { name: /Oceano/ })).toHaveAttribute('tabindex', '-1');
+    });
+
+    describe('espiada', () => {
+        beforeEach(() => { vi.useFakeTimers(); window.matchMedia = vi.fn().mockReturnValue({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() }) as unknown as typeof window.matchMedia; });
+        afterEach(() => { vi.useRealTimers(); });
+        const peekTokensOf = (id: string) => ({ colorPalette: id });
+
+        it('o mouse espia a paleta e sair devolve null, sem escolher', () => {
+            const onPeek = vi.fn();
+            const onSelect = vi.fn();
+            render(<PaletteGallery selectedId="oceano" onSelect={onSelect} onPeek={onPeek} peekTokensOf={peekTokensOf} />);
+            const option = screen.getByRole('radio', { name: /Floresta/ });
+            fireEvent.mouseEnter(option);
+            act(() => { vi.advanceTimersByTime(PEEK_DELAY_MS); });
+            expect(onPeek).toHaveBeenCalledWith({ colorPalette: 'floresta' });
+            fireEvent.mouseLeave(option);
+            expect(onPeek).toHaveBeenLastCalledWith(null);
+            expect(onSelect).not.toHaveBeenCalled();
+        });
+
+        it('a seta move o foco e o foco espia; só o clique escolhe', () => {
+            const onPeek = vi.fn();
+            const onSelect = vi.fn();
+            render(<PaletteGallery selectedId="oceano" onSelect={onSelect} onPeek={onPeek} peekTokensOf={peekTokensOf} />);
+            fireEvent.keyDown(screen.getByRole('radio', { name: /Brasa/ }), { key: 'ArrowDown' });
+            act(() => { vi.advanceTimersByTime(PEEK_DELAY_MS); });
+            expect(onPeek).toHaveBeenCalledWith({ colorPalette: 'oceano' });
+            expect(onSelect).not.toHaveBeenCalled();
+        });
+
+        it('sem onPeek a galeria não espia', () => {
+            render(<PaletteGallery selectedId="oceano" onSelect={() => undefined} peekTokensOf={peekTokensOf} />);
+            expect(() => {
+                fireEvent.mouseEnter(screen.getByRole('radio', { name: /Floresta/ }));
+                act(() => { vi.advanceTimersByTime(PEEK_DELAY_MS); });
+            }).not.toThrow();
+        });
     });
 
     it('outras teclas não escolhem nada', () => {

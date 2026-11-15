@@ -1,7 +1,8 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { act, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { describe, it, expect, vi } from 'vitest';
+import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
+import { PEEK_DELAY_MS } from '../peek';
 import { PresetsCatalog } from '../PresetsCatalog';
 
 vi.mock('../../../../../core/Design/hooks/useDesignVariables', () => ({
@@ -73,5 +74,44 @@ describe('PresetsCatalog — um grupo por vez, sem cromo próprio', () => {
         expect(globalsGrid.className).toMatch(/@min-\[240px\]:grid-cols-2/);
         // A grade mora DENTRO da fronteira de container — é dela que ela mede.
         expect(containerBoundary?.contains(globalsGrid)).toBe(true);
+    });
+
+    describe('espiada de uma opção do grupo', () => {
+        beforeEach(() => {
+            vi.useFakeTimers();
+            window.matchMedia = vi.fn().mockReturnValue({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() }) as unknown as typeof window.matchMedia;
+        });
+        afterEach(() => { vi.useRealTimers(); });
+
+        const peekFirstOption = (group: React.ComponentProps<typeof PresetsCatalog>['group']) => {
+            const onPeek = vi.fn();
+            const { container } = render(<PresetsCatalog {...createProps(group)} onPeek={onPeek} />);
+            fireEvent.mouseEnter(container.querySelector('[data-option-tile]') as HTMLElement);
+            act(() => { vi.advanceTimersByTime(PEEK_DELAY_MS); });
+            return onPeek;
+        };
+
+        it('a opção de tabela leva a prévia à tela da tabela, e sair devolve null', () => {
+            const onPeek = peekFirstOption('tables');
+            expect(onPeek).toHaveBeenCalledWith(expect.objectContaining({ tableDensity: expect.any(String) }), 'tabela');
+        });
+
+        it.each([['badge', 'components'], ['charts', 'graficos'], ['emptyState', 'components']] as const)('o grupo %s leva à tela %s', (group, screenId) => {
+            expect(peekFirstOption(group)).toHaveBeenCalledWith(expect.any(Object), screenId);
+        });
+
+        it('grupo sem tela própria espia sem mudar de tela', () => {
+            expect(peekFirstOption('corners')).toHaveBeenCalledWith(expect.any(Object), undefined);
+        });
+
+        it.each([['topbar', 'topbar'], ['sidebar', 'sidebar']] as const)('a opção de %s acrescenta a navegação que mostra a barra', (group, navigation) => {
+            expect(peekFirstOption(group)).toHaveBeenCalledWith(expect.objectContaining({ navigationStyle: navigation }), undefined);
+        });
+
+        it('sem onPeek a galeria não espia', () => {
+            const { container } = render(<PresetsCatalog {...createProps('tables')} />);
+            fireEvent.mouseEnter(container.querySelector('[data-option-tile]') as HTMLElement);
+            expect(() => act(() => { vi.advanceTimersByTime(PEEK_DELAY_MS); })).not.toThrow();
+        });
     });
 });

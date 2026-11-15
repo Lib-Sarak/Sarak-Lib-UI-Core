@@ -66,6 +66,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
         hasLogout: Boolean(logout),
         hasNotifications: Boolean(notifications?.length),
         hasNotificationHandler: Boolean(onNotificationSelect),
+        bar: 'topbar',
     });
     const effectiveSearch = search ?? (w.showSearch
         ? <SarakShellSearchWidget

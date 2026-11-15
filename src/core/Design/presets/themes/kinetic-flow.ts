@@ -65,6 +65,8 @@ export const kineticFlowTheme: SarakThemePreset = {
             "sidebarBackgroundStyle": "gradient",
             "sidebarActiveItemStyle": "pill",
             "sidebarActiveGlass": "on",
+        "brandDisplay": "both",
+        "userAvatarStyle": "initials",
             "sidebarItemDensity": "spacious",
             "sidebarIconSize": 20,
             "topbarBorderWidth": 1,

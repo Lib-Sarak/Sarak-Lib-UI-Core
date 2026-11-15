@@ -40,6 +40,8 @@ export const goldenHourTheme: SarakThemePreset = {
         "sidebarBackgroundStyle": "gradient",
         "sidebarActiveItemStyle": "pill",
         "sidebarActiveGlass": "on",
+        "brandDisplay": "both",
+        "userAvatarStyle": "initials",
         "sidebarItemDensity": "comfortable",
         "sidebarIconSize": 18,
         "topbarBorderWidth": 1,

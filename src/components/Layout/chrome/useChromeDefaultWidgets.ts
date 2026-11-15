@@ -7,7 +7,13 @@ import {
     type ChromeWidgetsPlacement,
 } from '../../../core/Provider/utils/chromePreferencePlacement';
 import { isChromeWidgetEnabled, type SarakChromeWidgets } from './chromeWidgets';
-import { PREFERENCE_IDS, type SarakChromeWidgetId, type SarakPreferenceId } from '../../../core/Provider/preferencesTypes';
+import {
+    PREFERENCE_IDS,
+    PREFERENCE_POSITION_TOKEN_IDS,
+    getNavCollapsePositionTopbar,
+    type SarakChromeWidgetId,
+    type SarakPreferenceId,
+} from '../../../core/Provider/preferencesTypes';
 
 export interface ChromeDefaultWidgetsOptions {
     /** O consumidor trouxe o próprio `search`? Com ele, a busca — e o atalho — são do
@@ -18,6 +24,11 @@ export interface ChromeDefaultWidgetsOptions {
     hasLogout?: boolean;
     hasNotifications?: boolean;
     hasNotificationHandler?: boolean;
+    /**
+     * A barra que monta os widgets: o recolher da lateral é a seta do cabeçalho (`preferenceNavCollapsePosition`) e o do
+     * topo é o ≡ (`preferenceNavCollapsePositionTopbar`), escondido por padrão. Omitida, vale a lateral.
+     */
+    bar?: 'sidebar' | 'topbar';
 }
 
 export interface ChromeDefaultWidgetsState {
@@ -53,12 +64,29 @@ const isPreferenceId = (id: SarakChromeWidgetId): id is SarakPreferenceId =>
 
 const EMPTY_WIDGET_PLACEMENT: ChromeWidgetsPlacement = { pinned: [], offered: [], menu: [] };
 
+/** O recolher da barra do topo vem do token dela; o resto do design é o mesmo. */
+const designForBar = (design: Record<string, unknown> | undefined, bar: 'sidebar' | 'topbar'): Record<string, unknown> | undefined =>
+    bar === 'topbar'
+        ? { ...design, [PREFERENCE_POSITION_TOKEN_IDS.navCollapsed]: getNavCollapsePositionTopbar(design) }
+        : design;
+
+/**
+ * Em produção, usuário e notificações que o sistema não ligou (sem `user`/`logout`, sem notificações e seletor) não
+ * aparecem. Fora dela aparecem como linha apagada, com o aviso único no console que diz o que ligar.
+ */
+const isProduction = (): boolean => process.env.NODE_ENV === 'production';
+
 const resolveWidgetPlacement = (
     hasProvider: boolean,
-    design: Record<string, unknown> | undefined,
+    rawDesign: Record<string, unknown> | undefined,
     widgets: SarakChromeWidgets,
+    options: ChromeDefaultWidgetsOptions,
 ): ChromeWidgetsPlacement => {
     if (!hasProvider) return EMPTY_WIDGET_PLACEMENT;
+    const design = designForBar(rawDesign, options.bar ?? 'sidebar');
+    const showUnconnected = !isProduction();
+    const userConnected = Boolean(options.hasUser && options.hasLogout);
+    const notificationsConnected = Boolean(options.hasNotifications && options.hasNotificationHandler);
     return splitChromeWidgetsByPlacement(design, {
         search: isChromeWidgetEnabled(widgets.search) && design?.chromeSearchPosition !== 'off',
         colorMode: isChromeWidgetEnabled(widgets.themeToggle),
@@ -66,8 +94,8 @@ const resolveWidgetPlacement = (
         navigationStyle: isChromeWidgetEnabled(widgets.navigationStyle),
         navCollapsed: isChromeWidgetEnabled(widgets.collapse),
         language: isChromeWidgetEnabled(widgets.language),
-        user: isChromeWidgetEnabled(widgets.user) && design?.chromeUserPosition !== 'off',
-        notifications: isChromeWidgetEnabled(widgets.notifications) && design?.chromeNotificationsPosition !== 'off',
+        user: isChromeWidgetEnabled(widgets.user) && design?.chromeUserPosition !== 'off' && (userConnected || showUnconnected),
+        notifications: isChromeWidgetEnabled(widgets.notifications) && design?.chromeNotificationsPosition !== 'off' && (notificationsConnected || showUnconnected),
     });
 };
 
@@ -121,7 +149,7 @@ const getMissingWidgetConnections = (options: ChromeDefaultWidgetsOptions, place
 };
 
 const warnAboutMissingWidgetConnections = (missing: string[]): void => {
-    if (process.env.NODE_ENV === 'production' || missing.length === 0) return;
+    if (isProduction() || missing.length === 0) return;
     const warningKey = missing.join('|');
     if (WARNED_WIDGET_CONFIGURATIONS.has(warningKey)) return;
     WARNED_WIDGET_CONFIGURATIONS.add(warningKey);
@@ -157,7 +185,7 @@ export const useChromeDefaultWidgets = (
     const sarak = useSarakUIOptional();
     const hasProvider = Boolean(sarak);
     const design = sarak?.design as unknown as Record<string, unknown> | undefined;
-    const widgetPlacement = resolveWidgetPlacement(hasProvider, design, widgets);
+    const widgetPlacement = resolveWidgetPlacement(hasProvider, design, widgets, options);
     const preferencePlacement = resolvePreferencePlacement(widgetPlacement);
     const visibility = resolveWidgetVisibility(widgetPlacement, options.hasCustomSearch ?? false);
     useMissingWidgetConnectionWarning(options, widgetPlacement);

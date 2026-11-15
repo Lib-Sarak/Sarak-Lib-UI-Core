@@ -3,6 +3,8 @@ import { SarakIcon } from '../Icon/SarakIcon';
 import { motion } from 'framer-motion';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
+import { useNavigationAppearance, type UserAvatarStyle } from '../../../core/Provider/useNavigationAppearance';
+import { verticalMenuItemInset } from './menuItemMetrics';
 
 /** Identidade do usuário exibida pelo widget do cromo. */
 export interface SarakShellUser {
@@ -52,7 +54,15 @@ const getUserInitials = (name: string): string => name
     .join('')
     .toLocaleUpperCase();
 
-const SarakShellUserAvatar = ({ name, avatarUrl }: { name: string; avatarUrl?: string }): React.ReactElement => {
+/**
+ * A faixa do usuário na lateral: linha em cima na cor da borda da barra e fundo levemente tingido (um véu da cor do
+ * marcador), sempre com a mesma anatomia. O recuo lateral leva o avatar à coluna dos ícones da lista.
+ */
+// sarak-allow-hardcode: o véu de 5% é o mesmo do brilho do item ativo; nenhum token o declara.
+const USER_STRIP_TINT = 'color-mix(in srgb, var(--sarak-nav-marker-color, var(--theme-primary)) 5%, transparent)';
+const USER_STRIP_LINE = 'var(--sarak-border-width, 1px) solid var(--sarak-sidebar-border-color, var(--border-color, rgba(255,255,255,0.09)))';
+
+const SarakShellUserAvatar = ({ name, avatarUrl, avatarStyle }: { name: string; avatarUrl?: string; avatarStyle: UserAvatarStyle }): React.ReactElement => {
     const [failedAvatarUrl, setFailedAvatarUrl] = useState<string>();
     const showAvatar = isSafeAvatarUrl(avatarUrl) && failedAvatarUrl !== avatarUrl;
 
@@ -66,7 +76,9 @@ const SarakShellUserAvatar = ({ name, avatarUrl }: { name: string; avatarUrl?: s
                     onError={() => setFailedAvatarUrl(avatarUrl)}
                 />
             ) : (
-                <span className="relative z-10 text-xs font-bold">{getUserInitials(name)}</span>
+                avatarStyle === 'icon'
+                    ? <SarakIcon name="User" size={16} className="relative z-10" />
+                    : <span data-sarak-avatar-initials="true" className="relative z-10 text-xs font-bold">{getUserInitials(name)}</span>
             )}
         </div>
     );
@@ -76,6 +88,7 @@ export const SarakShellUserWidget: React.FC<SarakShellUserWidgetProps> = ({
     user, logout, variant = 'vertical'
 }) => {
     const t = useLibraryText();
+    const { sidebarItemDensity, userAvatarStyle } = useNavigationAppearance();
     const isHorizontal = variant === 'horizontal';
     const isMini = variant === 'mini';
     const displayName = user?.name || t('genericUserLabel');
@@ -98,7 +111,7 @@ export const SarakShellUserWidget: React.FC<SarakShellUserWidgetProps> = ({
                 </div>
 
                 <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                    <SarakShellUserAvatar name={displayName} avatarUrl={user?.avatarUrl} />
+                    <SarakShellUserAvatar name={displayName} avatarUrl={user?.avatarUrl} avatarStyle={userAvatarStyle} />
 
                     {logout && (
                         <SarakIconButton
@@ -115,51 +128,55 @@ export const SarakShellUserWidget: React.FC<SarakShellUserWidgetProps> = ({
         );
     }
 
-    // Vertical / Sidebar Variant
+    // Vertical / Sidebar Variant: o nome em cima, mais forte; embaixo o papel pequeno, em caixa alta, com o escudo; sair à direita.
+    // Recolhida (`mini`), o avatar e o botão de sair ficam um por linha, centrados no eixo dos ícones da lista.
     return (
         <div
-            className={`border-t border-[var(--theme-border)] bg-[var(--theme-card)]/50 relative z-20 ${isMini ? 'flex justify-center' : ''}`}
-            style={{ padding: 'var(--sarak-layout-gap-md, 16px)' }}
+            data-sarak-user-strip="true"
+            className={`relative z-20 flex items-center ${isMini ? 'justify-center' : 'justify-between'}`}
+            style={{
+                flexDirection: isMini ? 'column' : 'row',
+                borderTop: USER_STRIP_LINE,
+                background: USER_STRIP_TINT,
+                paddingBlock: 'var(--sarak-layout-gap-sm, 8px)',
+                paddingInline: isMini ? undefined : verticalMenuItemInset(sidebarItemDensity),
+                gap: 'var(--sarak-layout-gap-sm, 8px)',
+            }}
         >
-            <div
-                className={`flex items-center group ${isMini ? '' : 'justify-between w-full'}`}
-                style={isMini ? { flexDirection: 'column', gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 1.5)' } : undefined}
-            >
-                <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 1.5)', flexDirection: isMini ? 'column' : 'row' }}>
-                    <SarakShellUserAvatar name={displayName} avatarUrl={user?.avatarUrl} />
+            <div className="flex min-w-0 items-center" style={{ gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 1.5)' }}>
+                <SarakShellUserAvatar name={displayName} avatarUrl={user?.avatarUrl} avatarStyle={userAvatarStyle} />
 
-                    {isMini && (
-                        <span className="sr-only">{user?.role ? `${displayName}, ${user.role}` : displayName}</span>
-                    )}
+                {isMini && (
+                    <span className="sr-only">{user?.role ? `${displayName}, ${user.role}` : displayName}</span>
+                )}
 
-                    {!isMini && (
-                        <div className="flex overflow-hidden" style={{ flexDirection: 'column' }}>
-                            <span className="text-xs font-bold text-[var(--theme-title)]/90 leading-tight truncate">
-                                {displayName}
-                            </span>
-                            {user?.role && (
-                                <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.75)' }}>
-                                    <SarakIcon name="Shield" size={8} className="text-[var(--theme-primary)]" />
-                                    <span className="text-[var(--sarak-type-scale-tiny,11px)] text-[var(--sarak-subtitle-color,var(--theme-subtitle,#f2f6fb))] font-black">
-                                        {user.role}
-                                    </span>
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
-
-                {logout && (
-                    <SarakIconButton
-                        onClick={logout}
-                        variant="ghost"
-                        size="xs"
-                        className={`text-[var(--theme-muted)] ${LOGOUT_HOVER_TEXT} ${LOGOUT_HOVER_TINT} ${isMini ? `${LOGOUT_TINT} ${LOGOUT_TEXT}` : ''}`}
-                        title={t('userLogoutTitle')}
-                        icon={<SarakIcon name="LogOut" size={isMini ? 12 : 14} />}
-                    />
+                {!isMini && (
+                    <div className="flex min-w-0 overflow-hidden" style={{ flexDirection: 'column' }}>
+                        <span data-sarak-user-name="true" className="text-sm font-bold text-[var(--sarak-sidebar-item-hover-text-color,var(--theme-title))] leading-tight truncate">
+                            {displayName}
+                        </span>
+                        {user?.role && (
+                            <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.75)' }}>
+                                <SarakIcon name="Shield" size={8} className="shrink-0 text-[var(--sarak-nav-active-color,var(--theme-primary))]" />
+                                <span data-sarak-user-role="true" className="text-2xs font-black uppercase tracking-widest text-[var(--sarak-sidebar-item-text-color,var(--theme-muted))] truncate">
+                                    {user.role}
+                                </span>
+                            </div>
+                        )}
+                    </div>
                 )}
             </div>
+
+            {logout && (
+                <SarakIconButton
+                    onClick={logout}
+                    variant="ghost"
+                    size="xs"
+                    className={`shrink-0 text-[var(--theme-muted)] ${LOGOUT_HOVER_TEXT} ${LOGOUT_HOVER_TINT} ${isMini ? `${LOGOUT_TINT} ${LOGOUT_TEXT}` : ''}`}
+                    title={t('userLogoutTitle')}
+                    icon={<SarakIcon name="LogOut" size={isMini ? 12 : 14} />}
+                />
+            )}
         </div>
     );
 };

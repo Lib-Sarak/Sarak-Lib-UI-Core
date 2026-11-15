@@ -12,12 +12,15 @@
  */
 import React, { lazy } from 'react';
 import LazyEngineWrapper from '../../../../components/engines/LazyEngineWrapper';
+import type { SarakCustomizationPanelProps } from '../../Main/hooks/useLeavePanelGuard';
 
 const CustomizationPanelImpl = lazy(() => import('./CustomizationPanelImpl'));
 
-export const SarakCustomizationPanel: React.FC = () => (
+export type { SarakCustomizationPanelProps, SarakPanelLeaveControl } from '../../Main/hooks/useLeavePanelGuard';
+
+export const SarakCustomizationPanel: React.FC<SarakCustomizationPanelProps> = (props) => (
     <LazyEngineWrapper>
-        <CustomizationPanelImpl />
+        <CustomizationPanelImpl {...props} />
     </LazyEngineWrapper>
 );
 

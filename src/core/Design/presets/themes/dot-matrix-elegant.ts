@@ -41,6 +41,8 @@ export const dotMatrixElegantTheme: SarakThemePreset = {
         sidebarBackgroundStyle: 'solid',
         sidebarActiveItemStyle: 'pill',
         sidebarActiveGlass: 'on',
+        brandDisplay: 'both',
+        userAvatarStyle: 'initials',
         sidebarItemDensity: 'spacious',
         sidebarIconSize: 22,
         sidebarLogoPlacement: 'top',

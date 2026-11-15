@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import type { SarakThemePreset } from '../../../../core/Design/presets/themes';
 import { resolveThemeForMode } from '../../../../core/Design/presets/themes/color-engine';
 import type { SarakTokenValue } from '../../../../core/Design/types';
@@ -14,6 +14,7 @@ import { PresetCardPending } from './PresetCardPending';
 import { useCatalogThemes } from './useCatalogThemes';
 import { THEME_GALLERY_GRID_2COL } from '../panelResponsive.presets';
 import type { PeekHandler } from './peek';
+import { peekScreenOf } from '../../utils/decisions';
 
 import { SarakDesignState, SarakUIContextType } from '../../../../core/Provider/types';
 
@@ -85,11 +86,24 @@ const ThemesGallery: React.FC<ThemesGalleryProps> = ({ onApplyPreset, onApplyFul
                     key={entry.id}
                     entry={entry}
                     currentMode={currentMode}
+                    peekTokens={() => loadTheme(entry.id).then((loaded) => (loaded ? themePayload(loaded as SarakThemePreset) : null))}
+                    onPeek={onPeek}
                     onChoose={() => { void loadTheme(entry.id).then((loaded) => applyTheme(loaded as SarakThemePreset | undefined)); }}
                 />
             )))}
         </div>
     );
+};
+
+/** A barra que a opção altera só aparece se a navegação for a dela: espiar um preset de topo com a lateral (e o inverso) a mostra, só enquanto dura. */
+const PEEK_NAVIGATION: Readonly<Record<string, string>> = { sidebar: 'sidebar', topbar: 'topbar' };
+
+/** O que a espiada de uma opção do grupo leva à prévia: a tela do componente e, nas barras, a navegação que a mostra. */
+const peekFor = (group: string, onPeek: PeekHandler | undefined): PeekHandler | undefined => {
+    if (!onPeek) return undefined;
+    const screen = peekScreenOf(group);
+    const navigationStyle = PEEK_NAVIGATION[group];
+    return (tokens) => onPeek(tokens && navigationStyle ? { ...tokens, navigationStyle } : tokens, tokens ? screen : undefined);
 };
 
 /**
@@ -104,8 +118,10 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
     draftMode,
     sarak,
     draft,
-    onPeek,
-}) => (
+    onPeek: rawPeek,
+}) => {
+    const onPeek = useMemo(() => peekFor(group, rawPeek), [group, rawPeek]);
+    return (
     <div id={`presets-${group}`} className="@container w-full">
         {group === 'themes' && (
             <ThemesGallery
@@ -124,4 +140,5 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
         {group === 'inputs' && <InputsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} draft={draft} onPeek={onPeek} />}
         {!DEDICATED_GROUPS.has(group) && <PresetGroupCatalog groupId={group} onApplyPreset={onApplyPreset} currentMode={currentMode} draft={draft} onPeek={onPeek} />}
     </div>
-);
+    );
+};

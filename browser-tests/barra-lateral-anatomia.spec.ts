@@ -43,16 +43,17 @@ test.afterAll(() => {
     if (harnessDirectory) fs.rmSync(harnessDirectory, { recursive: true, force: true });
 });
 
-interface Scene { theme: string; design?: Record<string, unknown>; logo?: boolean; route?: string; viewport?: { width: number; height: number } }
+interface Scene { theme: string; design?: Record<string, unknown>; logo?: boolean; route?: string; name?: string; viewport?: { width: number; height: number } }
 
 async function open(page: Page, scene: Scene): Promise<void> {
     const query = new URLSearchParams({ theme: scene.theme, design: JSON.stringify(scene.design ?? {}) });
     if (scene.logo) query.set('logo', '1');
     if (scene.route) query.set('route', scene.route);
+    if (scene.name) query.set('name', scene.name);
     await page.setViewportSize(scene.viewport ?? DESKTOP);
     await page.goto(`${harnessUrl}?${query.toString()}`);
     await expect(page.getByTestId('content')).toBeVisible();
-    await page.waitForFunction(() => document.querySelector('aside [aria-current="page"]') !== null);
+    await page.waitForFunction(() => document.querySelector('[aria-current="page"]') !== null);
 }
 
 /** Instala no documento um leitor de cor que pinta a cor num pixel e devolve `[r, g, b, a]` (a de 0 a 1). */
@@ -428,6 +429,155 @@ for (const theme of THEMES) {
             expect(measure.background[3]).toBeLessThanOrEqual(MAX_ACTIVE_ALPHA);
             expect(measure.shadow).toContain('inset');
             expect(measure.badgeTruncated, 'o selo trunca "Orçamentos"').toBe(false);
+        });
+
+        test('marca: "Sarak OS" e um nome de três palavras aparecem inteiros, na lateral e no topo, sem reticências', async ({ page }) => {
+            for (const navigationStyle of ['sidebar', 'topbar'] as const) {
+                for (const name of ['Sarak OS', 'Sistema de Relatórios Tribunal']) {
+                    await open(page, { theme, design: { navigationStyle }, name });
+                    const brand = await page.evaluate(() => {
+                        const node = document.querySelector<HTMLElement>('[data-sarak-brand-name]')!;
+                        const style = getComputedStyle(node);
+                        const lineHeight = parseFloat(style.lineHeight);
+                        return {
+                            overflowX: node.scrollWidth - node.clientWidth,
+                            lines: Math.round(node.getBoundingClientRect().height / lineHeight),
+                            truncates: style.textOverflow === 'ellipsis',
+                            fontSize: parseFloat(style.fontSize),
+                            floor: 0.875 * parseFloat(getComputedStyle(document.documentElement).fontSize),
+                        };
+                    });
+                    const where = `${navigationStyle} / ${name}`;
+                    expect(brand.overflowX, `${where}: nome mais largo que a caixa`).toBeLessThanOrEqual(SUBPIXEL);
+                    expect(brand.truncates, `${where}: reticências`).toBe(false);
+                    expect(brand.lines, `${where}: até duas linhas`).toBeLessThanOrEqual(2);
+                    expect(brand.fontSize, `${where}: fonte abaixo do rótulo do item`).toBeGreaterThanOrEqual(brand.floor - SUBPIXEL);
+                }
+            }
+        });
+
+        test('brandDisplay: "logo" mostra só o logo, "name" só o nome', async ({ page }) => {
+            await open(page, { theme, logo: true, design: { brandDisplay: 'logo' } });
+            await expect(page.locator('aside [data-sarak-brand-name]')).toHaveCount(0);
+            await expect(page.locator('aside img').first()).toBeVisible();
+            await open(page, { theme, logo: true, design: { brandDisplay: 'name' } });
+            await expect(page.locator('aside [data-sarak-brand-name]')).toBeVisible();
+            await expect(page.locator('aside [data-sarak-sidebar-header] img')).toHaveCount(0);
+        });
+
+        test('marca: o nome tem contraste de 4,5:1 e não é o acento', async ({ page }) => {
+            await open(page, { theme });
+            await installColorReader(page);
+            const measured = await page.evaluate(() => {
+                const rgba = (window as unknown as { __rgba: (color: string) => number[] }).__rgba;
+                const aside = document.querySelector('aside')!;
+                const header = aside.querySelector<HTMLElement>('[data-sarak-sidebar-header]')!;
+                return {
+                    name: rgba(getComputedStyle(aside.querySelector('[data-sarak-brand-name]')!).color),
+                    band: rgba(getComputedStyle(header).backgroundColor),
+                    aside: rgba(getComputedStyle(aside).backgroundColor),
+                };
+            });
+            const background = over(measured.band, measured.aside);
+            expect(contrast(over(measured.name, background), background), 'nome da marca legível').toBeGreaterThanOrEqual(MIN_TEXT_CONTRAST);
+            expect(sameColor(measured.name, await themeColor(page, '--sarak-accent-color')), 'o nome da marca está no acento').toBe(false);
+        });
+
+        test('rodapé: linhas da altura do item de menu, sem borda própria, ícones e indicadores na coluna da lista', async ({ page }) => {
+            await open(page, { theme });
+            const footer = await page.evaluate((selector) => {
+                const aside = document.querySelector('aside')!;
+                const rows = Array.from(aside.querySelectorAll<HTMLElement>('[data-sarak-footer-rows] button'));
+                const icon = (node: HTMLElement): DOMRect => node.querySelector<HTMLElement>('span[aria-hidden="true"]:not([class*="absolute"])')!.getBoundingClientRect();
+                const item = aside.querySelector<HTMLElement>(selector)!;
+                const strip = aside.querySelector<HTMLElement>('[data-sarak-user-strip]')!;
+                const avatar = strip.querySelector<HTMLElement>('[aria-hidden="true"]')!.getBoundingClientRect();
+                return {
+                    labels: rows.map((row) => row.textContent ?? ''),
+                    heights: rows.map((row) => row.getBoundingClientRect().height),
+                    borders: rows.map((row) => parseFloat(getComputedStyle(row).borderTopWidth) + parseFloat(getComputedStyle(row).borderLeftWidth)),
+                    iconLefts: rows.map((row) => icon(row).left),
+                    indicatorRights: rows.map((row) => row.querySelector<HTMLElement>('[data-sarak-row-indicator]')?.getBoundingClientRect().right ?? null),
+                    listIconLeft: icon(item).left,
+                    itemHeight: item.getBoundingClientRect().height,
+                    avatarLeft: avatar.left,
+                };
+            }, TOP_ITEMS);
+            expect(footer.labels.some((label) => label.includes('PT')), 'a linha de idioma mostra o código').toBe(true);
+            expect(footer.labels.some((label) => label.includes('1')), 'a linha de notificações mostra o contador').toBe(true);
+            footer.heights.forEach((height) => expect(Math.abs(height - footer.itemHeight), `altura ${height} × item ${footer.itemHeight}`).toBeLessThanOrEqual(ITEM_HEIGHT_TOLERANCE));
+            footer.borders.forEach((border) => expect(border, 'borda própria').toBe(0));
+            footer.iconLefts.forEach((left) => expect(Math.abs(left - footer.listIconLeft), `ícone ${left} × lista ${footer.listIconLeft}`).toBeLessThanOrEqual(SUBPIXEL));
+            expect(Math.abs(footer.avatarLeft - footer.listIconLeft), `avatar ${footer.avatarLeft} × lista ${footer.listIconLeft}`).toBeLessThanOrEqual(SUBPIXEL);
+            const indicators = footer.indicatorRights.filter((right): right is number => right !== null);
+            expect(indicators.length, 'linhas com indicador').toBeGreaterThanOrEqual(2);
+            indicators.forEach((right, index) => expect(Math.abs(right - indicators[0]), `indicador ${index}`).toBeLessThanOrEqual(SUBPIXEL));
+        });
+
+        test('composição padrão: a barra mostra idioma, notificações e usuário; o ⚙ guarda modo, fonte e lateral/topo', async ({ page }) => {
+            await open(page, { theme });
+            const aside = page.locator('aside');
+            await expect(aside.locator('[data-sarak-footer-rows]').getByText('PT')).toBeVisible();
+            await expect(aside.locator('[data-sarak-widget="notifications"]')).toBeVisible();
+            await expect(aside.locator('[data-sarak-user-strip]')).toBeVisible();
+            await aside.getByRole('button', { name: 'Preferências' }).click();
+            const menu = page.getByRole('menu', { name: 'Preferências' });
+            await expect(menu).toContainText(/Modo (Claro|Escuro)/);
+            await expect(menu).toContainText('Lateral');
+            await expect(menu.locator('[data-sarak-user-strip]'), 'o ⚙ repete o usuário fixado').toHaveCount(0);
+        });
+
+        test('usuário: o nome acima do papel, maior que ele, e a faixa com borda em cima', async ({ page }) => {
+            await open(page, { theme });
+            const strip = await page.evaluate(() => {
+                const node = document.querySelector<HTMLElement>('aside [data-sarak-user-strip]')!;
+                const name = node.querySelector<HTMLElement>('[data-sarak-user-name]')!;
+                const role = node.querySelector<HTMLElement>('[data-sarak-user-role]')!;
+                return {
+                    borderTop: parseFloat(getComputedStyle(node).borderTopWidth),
+                    nameSize: parseFloat(getComputedStyle(name).fontSize),
+                    roleSize: parseFloat(getComputedStyle(role).fontSize),
+                    nameWeight: Number(getComputedStyle(name).fontWeight),
+                    nameAbove: name.getBoundingClientRect().bottom <= role.getBoundingClientRect().top + 1,
+                };
+            });
+            expect(strip.borderTop, 'borda superior da faixa').toBeGreaterThan(0);
+            expect(strip.nameSize, `nome ${strip.nameSize} × papel ${strip.roleSize}`).toBeGreaterThan(strip.roleSize);
+            expect(strip.nameWeight).toBeGreaterThanOrEqual(600);
+            expect(strip.nameAbove, 'o nome fica em cima do papel').toBe(true);
+        });
+
+        test('recolher: a lateral tem a seta e o topo não tem o ≡ por padrão; ligado pelo token do topo, ele volta', async ({ page }) => {
+            await open(page, { theme });
+            await expect(page.locator('aside [data-sarak-widget="collapse"]')).toHaveCount(1);
+            await open(page, { theme, design: { navigationStyle: 'topbar' } });
+            await expect(page.locator('header [data-sarak-widget="collapse"]')).toHaveCount(0);
+            await open(page, { theme, design: { navigationStyle: 'topbar', preferenceNavCollapsePositionTopbar: 'pinned' } });
+            await expect(page.locator('header [data-sarak-widget="collapse"]')).toHaveCount(1);
+        });
+
+        test('recolhida: cada controle do rodapé, um por linha, no eixo dos ícones da lista', async ({ page }) => {
+            await open(page, { theme, design: { isNavHidden: true, sidebarLogoPlacement: 'top', preferenceModePosition: 'pinned' } });
+            const axes = await page.evaluate((selector) => {
+                const aside = document.querySelector('aside')!;
+                const centerX = (node: Element): number => { const box = node.getBoundingClientRect(); return box.left + box.width / 2; };
+                const listIcon = aside.querySelector<HTMLElement>(`${selector} span[aria-hidden="true"]:not([class*="absolute"])`)!;
+                const rows = Array.from(aside.querySelectorAll<HTMLElement>('[data-sarak-footer-rows] button'));
+                const strip = aside.querySelector<HTMLElement>('[data-sarak-user-strip]')!;
+                const iconOf = (node: HTMLElement): Element => node.querySelector('span[aria-hidden="true"]:not([class*="absolute"])') ?? node.querySelector('svg')!;
+                const stacked = (nodes: Element[]): boolean => nodes.every((node, index) => index === 0 || node.getBoundingClientRect().top >= nodes[index - 1].getBoundingClientRect().bottom - 1);
+                const stripControls = [strip.querySelector('[aria-hidden="true"]')!, strip.querySelector('button')!];
+                return {
+                    list: centerX(listIcon),
+                    rows: rows.map((row) => centerX(iconOf(row))),
+                    strip: stripControls.map((node) => centerX(node)),
+                    stacked: stacked(rows) && stacked(stripControls),
+                    count: rows.length,
+                };
+            }, TOP_ITEMS);
+            expect(axes.count, 'controles no rodapé recolhido (notificações, modo e ⚙)').toBeGreaterThanOrEqual(3);
+            for (const center of [...axes.rows, ...axes.strip]) expect(Math.abs(center - axes.list), `eixo ${center} × lista ${axes.list}`).toBeLessThanOrEqual(SUBPIXEL);
+            expect(axes.stacked, 'um controle por linha').toBe(true);
         });
 
         test('recolhida: monograma, ícones centrados e marcador no ativo', async ({ page }) => {

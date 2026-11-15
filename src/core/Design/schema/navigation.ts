@@ -86,6 +86,17 @@ const SIDEBAR_ACTIVE_GLASS_OPTIONS = [
     { id: 'off', value: 'off', label: 'Desligado' },
 ];
 
+const BRAND_DISPLAY_OPTIONS = [
+    { id: 'both', value: 'both', label: 'Logo e nome' },
+    { id: 'logo', value: 'logo', label: 'Só o logo' },
+    { id: 'name', value: 'name', label: 'Só o nome' },
+];
+
+const USER_AVATAR_STYLE_OPTIONS = [
+    { id: 'initials', value: 'initials', label: 'Iniciais' },
+    { id: 'icon', value: 'icon', label: 'Ícone' },
+];
+
 const CHROME_BORDER_STYLE_OPTIONS = [
     { id: 'solid', value: 'solid', label: 'Sólida' },
     { id: 'dashed', value: 'dashed', label: 'Tracejada' },
@@ -423,6 +434,26 @@ export const NavigationSchema: ComponentSchema = {
             'on',
             ['SarakMenuItem'],
             ['sidebarActiveItemStyle', 'navActiveMarkerColor'],
+        ),
+        createChromeSelectToken(
+            'brandDisplay',
+            'Marca: Logo, Nome ou Ambos',
+            'O que a marca mostra nas barras: o logo e o nome, só o logo ou só o nome.',
+            'Com "só o logo" e sem imagem de logo, a marca cai no nome; "só o nome" esconde a imagem. O nome nunca é cortado com reticências.',
+            BRAND_DISPLAY_OPTIONS,
+            'both',
+            ['ChromeBrand'],
+            ['sidebarLogoPlacement', 'shellBrandLogoSize'],
+        ),
+        createChromeSelectToken(
+            'userAvatarStyle',
+            'Avatar do Usuário',
+            'O avatar do usuário sem foto: as iniciais do nome ou o ícone de pessoa.',
+            'Avatar do widget de usuário quando o sistema não entrega imagem; com imagem, ela vale.',
+            USER_AVATAR_STYLE_OPTIONS,
+            'initials',
+            ['SarakShellUserWidget'],
+            ['chromeUserPosition'],
         ),
         createChromeSelectToken(
             'sidebarItemDensity',

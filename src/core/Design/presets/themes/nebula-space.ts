@@ -52,6 +52,8 @@ export const nebulaSpaceTheme: SarakThemePreset = {
         sidebarBackgroundStyle: 'texture',
         sidebarActiveItemStyle: 'outline',
         sidebarActiveGlass: 'on',
+        brandDisplay: 'both',
+        userAvatarStyle: 'initials',
         sidebarItemDensity: 'comfortable',
         sidebarIconSize: 18,
         topbarBorderWidth: 1,

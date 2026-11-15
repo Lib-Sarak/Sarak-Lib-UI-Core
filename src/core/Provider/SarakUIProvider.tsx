@@ -27,6 +27,7 @@ import { useLibraryText } from '../i18n/useLibraryText';
 import { SarakOverlayProvider } from '../../components/atomic/Modals/SarakOverlayProvider';
 import { useThemeDeletionHandler } from './hooks/useThemeDeletionHandler';
 import { useBodyThemeTransition } from './hooks/useBodyThemeTransition';
+import { SarakNavigationGuardProvider } from './navigationGuard';
 
 // Re-exports para manter compatibilidade com arquivos que importam do Provider
 export * from './types';
@@ -212,7 +213,7 @@ const SarakUIProviderCore: React.FC<SarakUIProviderProps> = ({
                         <MotionConfig reducedMotion={effectiveDesign?.reducedMotion === true ? 'always' : 'user'}>
                             <SarakToastProvider>
                                 <PersistenceSaveFailureToast failureCount={persistenceSaveFailureCount} />
-                                <SarakOverlayProvider>{children}</SarakOverlayProvider>
+                                <SarakOverlayProvider><SarakNavigationGuardProvider>{children}</SarakNavigationGuardProvider></SarakOverlayProvider>
                             </SarakToastProvider>
                         </MotionConfig>
                     ) : null}

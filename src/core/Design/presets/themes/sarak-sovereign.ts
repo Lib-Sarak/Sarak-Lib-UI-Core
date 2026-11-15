@@ -54,6 +54,8 @@ export const sarakSovereignTheme: SarakThemePreset = {
         sidebarBackgroundStyle: 'solid',
         sidebarActiveItemStyle: 'bar',
         sidebarActiveGlass: 'on',
+        brandDisplay: 'both',
+        userAvatarStyle: 'initials',
         sidebarItemDensity: 'comfortable',
         sidebarIconSize: 18,
         topbarBorderWidth: 1,

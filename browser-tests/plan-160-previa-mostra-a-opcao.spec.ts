@@ -1,6 +1,8 @@
 /**
  * A prévia do painel mostra o efeito de toda opção destacada: espiar (hover) cada opção de cada grupo, de cada decisão, e medir
  * quantos pixels da prévia mudam contra a linha de base tirada imediatamente antes, com a barra de rolagem fora da conta.
+ * A linha de base é de CADA opção, tirada depois de rolá-la até a vista e na tela do grupo (`groupScreens`): rolar a página, ou
+ * saltar de tela, já muda a prévia, e uma base única contaria isso como efeito da opção.
  *
  * A REGRA: toda opção destacada muda a prévia acima do limiar. Quem não muda cai em uma de duas listas, e só nelas:
  *  - `PERMANENT_EXCEPTIONS`: o que nunca vai mudar a prévia, cada um com o motivo PROVADO por mecanismo, não por nome:
@@ -30,6 +32,7 @@ import { buildHarness } from './build-harness.mjs';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ENTRY = path.join(HERE, 'fixtures', 'plan-160-previa-entry.tsx');
 const DIST_FONTS = pathToFileURL(path.resolve(HERE, '..', 'dist', 'fonts')).href;
+const DECISIONS_FILE = path.resolve(HERE, '..', 'src', 'features', 'DesignEngine', 'config', 'design-decisions.json');
 const MATRIX_FILE = process.env.SARAK_PLAN160_MATRIZ;
 /** Depuração: mede só esta decisão (id). */
 const ONLY = process.env.SARAK_PLAN160_SO;
@@ -38,6 +41,11 @@ const DECISIONS = [
     { id: 'theme', name: 'Tema' }, { id: 'colors', name: 'Cores' }, { id: 'fonts', name: 'Fontes' },
     { id: 'shape', name: 'Forma' }, { id: 'components', name: 'Componentes' }, { id: 'layout', name: 'Layout' },
 ] as const;
+
+/** A tela em que cada grupo mostra as opções, como a decisão declara (`groupScreens`): a mesma fonte que a espiada usa para levar a prévia até lá. */
+const GROUP_SCREENS: Record<string, string> = Object.fromEntries(
+    (JSON.parse(fs.readFileSync(DECISIONS_FILE, 'utf8')) as Array<{ groupScreens?: Record<string, string> }>).flatMap((decision) => Object.entries(decision.groupScreens ?? {})),
+);
 
 /** Fração mínima da área da prévia com pixel diferente para a opção contar como "mudou a prévia". */
 const MIN_CHANGED_SHARE = 0.0003;
@@ -51,6 +59,9 @@ const STABLE_CAP_MS = 1500;
 const QUIET_MS = 90;
 const BASELINE_FLOOR_MS = 80;
 const LATE_PEEK_MS = 500;
+/** A conferência de um zero: quantas fotos extras, a que intervalo. Duas fotos seguidas iguais encerram. */
+const STABLE_ATTEMPTS = 3;
+const STABLE_RETRY_MS = 250;
 /** Os tokens que só mexem em movimento: duração, atraso, curva e transição de página. */
 const MOTION_TOKEN = /^(motion|pageTransition)/;
 
@@ -61,50 +72,52 @@ type ExceptionKind = 'applied' | 'animation' | 'other-mode';
 
 /** Chave `decisão/grupo/opção`. Cada item prova o próprio motivo (ver o cabeçalho). */
 const PERMANENT_EXCEPTIONS: Record<string, { kind: ExceptionKind; reason: string }> = {
+    'theme/themes/sarak-sovereign': { kind: 'applied', reason: 'é o tema do harness: a prévia já o tem, e a diferença que sobra fica em torno do limiar' },
     'fonts/fontPairs/Moderno': { kind: 'applied', reason: 'é o par de fontes do tema do harness (headingFont e bodyFont já valem): espiar o que já está aplicado não muda nada' },
-    'components/charts/Área suave': { kind: 'applied', reason: 'todos os tokens de gráfico dela já valem no design do harness' },
-    'components/notice/Suave': { kind: 'applied', reason: 'todos os tokens de aviso dela já valem no design do harness' },
-    'components/switch/Tátil': { kind: 'applied', reason: 'switchStyleType já vale no design do harness' },
     'components/icons/Preenchidos': { kind: 'applied', reason: 'é a família e o traço que o tema do harness já usa; escolher outro ícone e espiar de novo a faz mudar' },
     'layout/sidebar/Limpa': { kind: 'applied', reason: 'é o design do tema do harness a menos de sidebarBlur; escolher outra e espiar de novo a faz mudar' },
     'layout/contentWidth/Fluida': { kind: 'applied', reason: 'maxContentWidth já vale (fluida); escolher outra largura e espiar de novo a faz mudar' },
+    'components/charts/Área suave': { kind: 'applied', reason: 'é o tipo, a espessura e a suavização que o tema do harness já tem; escolher outro gráfico e espiar de novo a faz mudar' },
+    'components/notice/Suave': { kind: 'applied', reason: 'é o raio da dica e o filete que o tema do harness já tem; escolher outro aviso e espiar de novo a faz mudar' },
+    'components/switch/Tátil': { kind: 'applied', reason: 'switchStyleType já vale (tátil); escolher outro interruptor e espiar de novo a faz mudar' },
+    'components/badge/Pílula': { kind: 'applied', reason: 'é o raio de selo que o tema do harness já usa; escolher outro selo e espiar de novo a faz mudar' },
+    'components/emptyState/Esferas suaves': { kind: 'applied', reason: 'é o estado vazio que o tema do harness já tem; escolher outro e espiar de novo a faz mudar' },
+    'colors/Paletas prontas/Ciano e violeta — Triádica': { kind: 'applied', reason: 'é a paleta do tema do harness; escolher outra e espiar de novo a faz mudar' },
+    'shape/shadowDirection/Para baixo': { kind: 'applied', reason: 'shadowOrientation já vale (para baixo) no tema do harness' },
+    'shape/border/Sólida': { kind: 'applied', reason: 'borderType já vale (sólida) no tema do harness' },
+    'shape/material/Vidro fosco': { kind: 'applied', reason: 'surfaceMaterial já vale (vidro fosco) no tema do harness' },
+    'shape/atmosphere/Nenhuma (Sem Mídia)': { kind: 'applied', reason: 'globalBackgroundImageUrl já está vazio no tema do harness' },
     'components/motion/Instantâneo': { kind: 'animation', reason: 'escreve só tokens motion*: durações e atraso, que a foto sem animação não vê' },
     'components/pageTransition/Esmaecer': { kind: 'animation', reason: 'escreve só pageTransitionType, que só atua na troca de tela (fade já é o valor do harness)' },
 };
 
-const NOT_ON_SCREEN = 'a espiada compõe as variáveis do grupo no escopo da prévia, mas a tela que a decisão abre (Texto) não desenha o componente que as lê';
-
 /** Por `decisão/grupo`: o defeito do painel e as opções que ele atinge. A esvaziar até o fim do lote 3. */
 const KNOWN_PENDING: Record<string, { reason: string; options: string[] }> = {
-    'colors/Paletas prontas': {
-        reason: 'a galeria de paletas só tem onSelect: hover e foco não compõem nada (nenhuma variável do escopo da prévia muda e nenhum pixel)',
-        options: [
-            'Terra e argila — Monocromática', 'Oliva viva — Monocromática', 'Oliva dourada — Monocromática', 'Âmbar industrial — Monocromática',
-            'Tinta e vinho — Monocromática', 'Tinta azul — Monocromática', 'Oceano — Análoga', 'Ciano e azul — Análoga', 'Verde néon — Complementar',
-            'Cobalto vivo — Complementar', 'Azul de projeto — Complementar', 'Amarelo contraste — Complementar', 'Rosa synthwave — Complementar dividida',
-            'Coral cinético — Complementar dividida', 'Ciano e violeta — Triádica', 'Grafite e rosa — Triádica', 'Verde técnico — Triádica',
-            'Ametista e petróleo — Triádica', 'Rosa profundo — Triádica',
-        ],
+    'shape/shadow': {
+        reason: 'as variáveis de sombra chegam ao escopo da prévia, mas nenhum pixel muda acima do limiar (sombra escura sobre fundo escuro, na tela Painel)',
+        options: ['Sem sombra', 'Suave'],
     },
-    'components/tables': { reason: `${NOT_ON_SCREEN}; o mock de tabela é <table> cru, sem o componente real`, options: ['Padrão', 'Listrada', 'Compacta', 'Arejada', 'Listrada e redonda', 'Reta e densa'] },
-    'components/charts': { reason: NOT_ON_SCREEN, options: ['Linha reta', 'Linha forte', 'Barras limpas', 'Barras com grade', 'Dispersão'] },
-    'components/modal': { reason: NOT_ON_SCREEN, options: ['Clássica'] },
-    'components/notice': { reason: NOT_ON_SCREEN, options: ['Reta e sem faixa', 'Redonda e marcada'] },
-    'components/switch': { reason: `${NOT_ON_SCREEN}; o mock desenha o interruptor com div, sem o componente real`, options: ['Assimétrico', 'Vidro'] },
-    'components/scroll': { reason: NOT_ON_SCREEN, options: ['Fina'] },
-    'components/badge': { reason: `${NOT_ON_SCREEN}; o mock desenha o selo com span fixo, sem o componente real`, options: ['Pílula', 'Retangular', 'Com brilho', 'Etiqueta'] },
-    'components/emptyState': { reason: NOT_ON_SCREEN, options: ['Esferas suaves', 'Compacto', 'Com anel', 'Aberto e amplo'] },
-    'layout/topbar': {
-        reason: 'as variáveis de topbar chegam ao escopo da prévia e nenhum pixel muda: a prévia navega pela barra lateral e não desenha a barra de topo',
-        options: ['Plana', 'Sólida', 'Com separador', 'Vidro', 'Na cor da marca', 'Compacta', 'Invertida', 'Contornada'],
+    'shape/shadowDirection': { reason: 'a direção da sombra muda variáveis e nenhum pixel acima do limiar, como a sombra', options: ['Centralizada'] },
+    'shape/glass': {
+        reason: 'as variáveis de vidro chegam ao escopo da prévia, e nenhum pixel muda acima do limiar na tela Painel',
+        options: ['Cristalino', 'Facetado', 'Vívido'],
+    },
+    'shape/atmosphere': {
+        reason: 'textura, vinheta e padrão chegam ao escopo da prévia, e nenhum pixel muda acima do limiar: o fundo da tela Painel é coberto pelas superfícies',
+        options: ['Aurora Cinética', 'Nebulosa Estelar', 'Cinemático Escuro'],
+    },
+    'shape/gradient': { reason: 'o modo de degradê muda a variável e nenhum pixel acima do limiar: o fundo da tela Painel é coberto pelas superfícies', options: ['Fundo liso', 'Degradê linear'] },
+    'components/tables': {
+        reason: 'a tabela da prévia é a SarakDataTable, que não lê as listras (tableZebraStriping) nem o raio e o respiro da tabela (tableBorderRadius, tableCellPadding): as variáveis chegam ao escopo e nenhum pixel muda; só a SarakTableView as lê',
+        options: ['Padrão', 'Listrada'],
+    },
+    'components/modal': {
+        reason: 'único tile do grupo, então não há outra opção para escolher e provar que está aplicada; a única variável que muda é o raio do diálogo (12 para 16 px, só os cantos), abaixo do limiar',
+        options: ['Clássica'],
     },
     'layout/contentWidth': {
         reason: 'a variável de largura chega ao escopo da prévia, mas a prévia desktop tem a largura do container, que não passa de 1.200 px de conteúdo: só a largura de 1.000 px aparece',
         options: ['Média (1200 px)', 'Larga (1440 px)'],
-    },
-    'theme/themes (carga pendente)': {
-        reason: 'o cartão de tema ainda não carregado (PresetCardPending) não recebe peekTokens nem onPeek: só o PresetCard recebe',
-        options: [PENDING_THEME_ID],
     },
 };
 
@@ -172,6 +185,26 @@ const settlePreview = (page: Page, floorMs: number): Promise<void> => page.evalu
     tick();
 }), [floorMs, QUIET_MS, STABLE_CAP_MS] as const);
 
+/** A tela que a prévia mostra agora (o seletor de tela da barra da prévia). */
+/** O seletor mostra a primeira tela quando a decisão abre numa que ele não lista (as telas de decisão): por isso a tela de abertura só é refeita se o grupo anterior a trocou. */
+const screenSelect = (page: Page): Locator => page.locator('select').filter({ has: page.locator('option[value="dashboard"]') });
+
+/**
+ * Leva a prévia à tela em que o grupo mostra as opções, pela barra da prévia (sem espiar, sem mexer no rascunho). Grupo sem tela
+ * própria fica na tela em que a decisão abriu. A linha de base de um grupo se tira DEPOIS disto: com a prévia já na tela do
+ * grupo, o que a espiada muda é o efeito da opção, não o salto de tela. A tela é mais alta que a prévia: a seção do grupo
+ * (`data-peek-group`) é rolada até o centro da prévia (a moldura corta o que passa dela, mesmo com o elemento dentro da janela), porque a foto só pega o que está visível.
+ */
+const showGroupScreen = async (page: Page, group: string, openingScreen: string): Promise<void> => {
+    const select = screenSelect(page);
+    const target = GROUP_SCREENS[group] ?? openingScreen;
+    if ((await select.inputValue()) !== target) await select.selectOption(target);
+    const section = page.locator(`[data-testid="live-preview-frame"] [data-peek-group="${group}"]`).first();
+    if ((await section.count()) > 0) await section.evaluate((node) => node.scrollIntoView({ block: 'center' }));
+    await page.mouse.move(2, 2);
+    await settlePreview(page, BASELINE_FLOOR_MS);
+};
+
 interface Baseline { shot: Buffer; variables: Record<string, string> }
 
 /** A prévia como o rascunho a deixa, com o mouse fora de qualquer opção. */
@@ -227,6 +260,27 @@ const openDecision = async (decisionName: string, query = ''): Promise<{ page: P
     return { page, errors };
 };
 
+const previewShot = (page: Page): Promise<Buffer> => page.locator('[data-testid="live-preview-frame"]').screenshot({ animations: 'disabled' });
+
+/**
+ * A fração que mudou, medida com a prévia ESTÁVEL: a foto vale quando uma segunda, tirada logo depois, é igual a ela. Sob carga
+ * a espiada pode ainda estar pintando (componente preguiçoso, gráfico), e uma opção com efeito sairia como "sem efeito". Só o
+ * que dá zero paga a conferência: se a prévia ainda mexe, espera e mede de novo, até o teto de tentativas.
+ */
+const shareWhenStable = async (page: Page, base: Baseline): Promise<number> => {
+    let shot = await previewShot(page);
+    let share = await changedShare(page, base.shot, shot);
+    for (let attempt = 0; attempt < STABLE_ATTEMPTS && share < MIN_CHANGED_SHARE; attempt += 1) {
+        await page.waitForTimeout(STABLE_RETRY_MS);
+        const next = await previewShot(page);
+        const moved = await changedShare(page, shot, next);
+        share = Math.max(share, await changedShare(page, base.shot, next));
+        shot = next;
+        if (moved < MIN_CHANGED_SHARE && attempt > 0) break;
+    }
+    return share;
+};
+
 /**
  * Uma espiada contra a linha de base dada. Se, passado o piso, nenhuma variável do escopo da prévia mudou, espera mais um
  * pouco antes da foto: a espiada pode ainda não ter composto. Opção sem efeito visível nem de variável paga essa espera.
@@ -241,27 +295,25 @@ const peekAgainst = async (page: Page, element: Locator, base: Baseline): Promis
         await settlePreview(page, LATE_PEEK_MS);
         after = await previewVariables(page);
     }
-    const peeked = await page.locator('[data-testid="live-preview-frame"]').screenshot({ animations: 'disabled' });
     const changedVariables = Object.keys({ ...base.variables, ...after }).filter((name) => base.variables[name] !== after[name]);
-    return { share: await changedShare(page, base.shot, peeked), changedVariables };
+    return { share: await shareWhenStable(page, base), changedVariables };
 };
 
-/** Escolhe (clique) a opção `chosen`, toma a linha de base nova e espia cada opção de `probes`: marca como aplicada a que passa a mudar. */
-/** Espia uma opção contra a linha de base. */
-const peekOption = async (page: Page, element: Locator, base: Baseline): Promise<Peek> => {
+/**
+ * Espia uma opção contra a linha de base DELA: rola a opção até a vista, tira a linha de base e só então põe o mouse nela. A
+ * prévia depende da rolagem da página (rolar a opção até a vista, sem espiar, já muda a prévia), então uma linha de base tirada
+ * antes da rolagem contaria a rolagem como efeito da opção.
+ */
+const peekOption = async (page: Page, element: Locator): Promise<Peek> => {
     await element.scrollIntoViewIfNeeded();
-    return peekAgainst(page, element, base);
+    return peekAgainst(page, element, await takeBaseline(page));
 };
 
 const probeAfterChoosing = async (page: Page, chosen: Target, probes: Array<{ entry: Measured; own: Target }>): Promise<void> => {
     if (probes.length === 0) return;
     await page.locator(chosen.selector).scrollIntoViewIfNeeded();
     await page.locator(chosen.selector).click();
-    const base = await takeBaseline(page);
-    for (const { entry, own } of probes) {
-        await page.locator(own.selector).scrollIntoViewIfNeeded();
-        entry.applied = (await peekAgainst(page, page.locator(own.selector), base)).share >= MIN_CHANGED_SHARE;
-    }
+    for (const { entry, own } of probes) entry.applied = (await peekOption(page, page.locator(own.selector))).share >= MIN_CHANGED_SHARE;
 };
 
 /**
@@ -269,12 +321,13 @@ const probeAfterChoosing = async (page: Page, chosen: Target, probes: Array<{ en
  * base; para a própria primeira, escolhe a segunda. A que passa a mudar era a que o design já tinha, e por isso não mudava.
  * Roda depois de toda a medição, porque o clique grava no rascunho.
  */
-const markApplied = async (page: Page, targets: Target[], measured: Measured[]): Promise<void> => {
+const markApplied = async (page: Page, targets: Target[], measured: Measured[], openingScreen: string): Promise<void> => {
     for (const group of [...new Set(measured.map((item) => item.group))]) {
         const choices = targets.filter((target) => target.group === group && !target.busy);
         const zeros = measured.filter((item) => item.group === group && item.share < MIN_CHANGED_SHARE)
             .flatMap((entry) => { const own = choices.find((target) => target.option === entry.option); return own ? [{ entry, own }] : []; });
         if (choices.length < 2) continue;
+        await showGroupScreen(page, group, openingScreen);
         await probeAfterChoosing(page, choices[0], zeros.filter((pair) => pair.own !== choices[0]));
         await probeAfterChoosing(page, choices[1], zeros.filter((pair) => pair.own === choices[0]));
     }
@@ -285,22 +338,30 @@ const measureDecision = async (decisionName: string): Promise<Measured[]> => {
     const { page, errors } = await openDecision(decisionName);
     const targets = await collectTargets(page);
     const registry = await page.evaluate(() => (window as unknown as { __plan160: Record<string, PresetFacts> }).__plan160);
-    const base = await takeBaseline(page);
+    const openingScreen = await screenSelect(page).inputValue();
     const measured: Measured[] = [];
-    for (const target of targets) {
-        const peek = await peekOption(page, page.locator(target.selector), base);
-        measured.push({ group: target.group, option: target.option, share: peek.share, applied: false, changedVariables: peek.changedVariables, preset: registry[`${target.group}/${target.option}`] ?? null });
+    for (const group of [...new Set(targets.map((target) => target.group))]) {
+        await showGroupScreen(page, group, openingScreen);
+        for (const target of targets.filter((candidate) => candidate.group === group)) {
+            const peek = await peekOption(page, page.locator(target.selector));
+            measured.push({ group: target.group, option: target.option, share: peek.share, applied: false, changedVariables: peek.changedVariables, preset: registry[`${target.group}/${target.option}`] ?? null });
+        }
     }
-    await markApplied(page, targets, measured);
+    await markApplied(page, targets, measured, openingScreen);
     await page.close();
     expect(errors).toEqual([]);
     return measured;
 };
 
+// A medição inteira roda no beforeAll, uma decisão por vez, num navegador só: nada aqui compete com outro teste do arquivo. Sob
+// carga (outros arquivos em paralelo) o que se perde é tempo de pintura, e a conferência de zeros acima absorve isso; se ela
+// não bastar, o arquivo inteiro passa a rodar em série.
 test.beforeAll(async () => {
-    test.setTimeout(900_000);
+    test.setTimeout(1_800_000);
     const executablePath = process.env.SARAK_CHROMIUM_EXECUTABLE_PATH;
-    browser = await chromium.launch(executablePath ? { executablePath } : {});
+    // O Playwright esconde as barras de rolagem no headless; a opção de rolagem só se vê com elas pintadas.
+    // O Playwright esconde as barras de rolagem no headless; a opção de rolagem só se vê com elas pintadas.
+    browser = await chromium.launch({ ignoreDefaultArgs: ['--hide-scrollbars'], ...(executablePath ? { executablePath } : {}) });
     const harness = await buildHarness(ENTRY);
     harnessDirectory = harness.outDir;
     harnessUrl = pathToFileURL(harness.htmlPath).href;
@@ -354,13 +415,38 @@ for (const decision of DECISIONS) {
     });
 }
 
-test('Tema: o cartão de tema ainda não carregado espia como os outros', async () => {
+/** Abre o Tema com o import do tema pendente seguro, tira a linha de base e põe o mouse no cartão pendente. */
+const hoverPendingCard = async (): Promise<{ page: Page; errors: string[]; base: Baseline; card: Locator }> => {
     const { page, errors } = await openDecision('Tema', `&hold=${PENDING_THEME_ID}`);
     const card = page.locator(`[data-theme-id="${PENDING_THEME_ID}"]`);
     await expect(card, 'o import do tema está seguro: o cartão é o pendente').toHaveAttribute('aria-busy', 'true');
-    const { share } = await peekOption(page, card, await takeBaseline(page));
+    await card.scrollIntoViewIfNeeded();
+    const base = await takeBaseline(page);
+    const box = await card.boundingBox();
+    if (box) await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await settlePreview(page, PEEK_FLOOR_MS);
+    return { page, errors, base, card };
+};
+
+test('Tema: o cartão de tema ainda não carregado não aplica nada enquanto o tema não chega, nem se o mouse sai antes dele', async () => {
+    const { page, errors, base, card } = await hoverPendingCard();
+    expect(await changedShare(page, base.shot, await previewShot(page)), 'com o tema ainda preso, a espiada não muda a prévia').toBeLessThan(MIN_CHANGED_SHARE);
+    await page.mouse.move(2, 2);
+    await page.evaluate(() => (window as unknown as { __releaseTheme: () => void }).__releaseTheme());
+    await expect(card, 'o tema chegou: o cartão deixou de estar ocupado').not.toHaveAttribute('aria-busy', 'true');
+    await settlePreview(page, 700);
+    expect(await changedShare(page, base.shot, await previewShot(page)), 'o mouse saiu antes de o tema chegar: nada foi aplicado').toBeLessThan(MIN_CHANGED_SHARE);
     await page.close();
     expect(errors).toEqual([]);
-    const listed = KNOWN_PENDING['theme/themes (carga pendente)']?.options.includes(PENDING_THEME_ID) ?? false;
-    expect(share >= MIN_CHANGED_SHARE, `cartão pendente: ${(share * 100).toFixed(3)}% (listado: ${listed})`).toBe(!listed);
+});
+
+test('Tema: o cartão de tema ainda não carregado carrega o tema ao ser espiado e mostra a prévia dele quando chega', async () => {
+    const { page, errors, base, card } = await hoverPendingCard();
+    await page.evaluate(() => (window as unknown as { __releaseTheme: () => void }).__releaseTheme());
+    await expect(card, 'o tema chegou: o cartão deixou de estar ocupado').not.toHaveAttribute('aria-busy', 'true');
+    await settlePreview(page, PEEK_FLOOR_MS + 400);
+    const share = await shareWhenStable(page, base);
+    await page.close();
+    expect(errors).toEqual([]);
+    expect(share, `cartão que estava pendente: ${(share * 100).toFixed(3)}%`).toBeGreaterThanOrEqual(MIN_CHANGED_SHARE);
 });

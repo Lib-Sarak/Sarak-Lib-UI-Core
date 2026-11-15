@@ -5,6 +5,7 @@ import { SarakIcon } from '../../atomic/Icon/SarakIcon';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import type { SarakShellUser } from '../../atomic/Navigation/SarakShellUserWidget';
 import { ChromeUnavailableWidget } from './ChromeUnavailableWidget';
+import { VERTICAL_NAV_GAP, VERTICAL_NAV_PADDING } from '../../atomic/Navigation/menuItemMetrics';
 
 export interface ChromeUserThemeGroupProps {
     showThemeToggle: boolean;
@@ -26,12 +27,16 @@ export const ChromeUserWidget: React.FC<ChromeUserWidgetProps> = (
 ): React.ReactElement => {
     const t = useLibraryText();
     if (!user || !logout) {
-        return (
+        const unavailable = (
             <ChromeUnavailableWidget
                 label={t('chromeUserUnavailableLabel')}
                 icon={<SarakIcon name="User" size={16} />}
                 variant={variant}
             />
+        );
+        // Na lateral a linha apagada fica na coluna dos itens da lista, como as outras linhas do rodapé.
+        return variant === 'horizontal' ? unavailable : (
+            <div style={{ paddingInline: VERTICAL_NAV_PADDING, paddingBlock: VERTICAL_NAV_GAP }}>{unavailable}</div>
         );
     }
     return <SarakShellUserWidget user={user} logout={logout} variant={variant} />;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { type SarakShellNavItem } from '../atomic/Navigation/SarakShellNav';
 import { useNavigationStyle } from '../../core/Provider/useNavigationStyle';
+import { useGuardedNavigate } from '../../core/Provider/navigationGuard';
 import { useChromeRootBackground } from './chrome/useChromeRootBackground';
 import { useSarakDevice } from '../../core/Provider/DeviceProvider';
 import type { SarakShellUser } from '../atomic/Navigation/SarakShellUserWidget';
@@ -138,7 +139,7 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     navItems,
     nav = [],
     activeRoute,
-    onNavigate,
+    onNavigate: hostNavigate,
     navigationStyle = 'auto',
     topbarActions,
     logo,
@@ -158,6 +159,9 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     className = '',
     style,
 }) => {
+    // Toda porta do cromo que navega (lateral, topo, barra inferior, busca, drawer) passa por aqui:
+    // com trabalho a perder (rascunho do painel), o guarda pergunta antes de chamar o `onNavigate` do host.
+    const onNavigate = useGuardedNavigate(hostNavigate);
     const designNav = useNavigationStyle();
     const device = useSarakDevice();
     const resolved = navigationStyle === 'auto' ? (designNav === 'topbar' ? 'topbar' : 'sidebar') : navigationStyle;
