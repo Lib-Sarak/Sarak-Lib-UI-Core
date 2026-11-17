@@ -177,7 +177,9 @@ test('NÃO MUDA NADA: body sem classe de entrelinha computa a entrelinha do toke
 // ── Item 4 — valor de CSS malformado em estilo inline ────────────────────────────────────────────
 
 const THEME_BORDER_EXPRESSION = 'var(--color-theme-border, rgba(255,255,255,0.1))';
-const THEME_CARD_EXPRESSION = 'var(--color-theme-card, rgba(255,255,255,0.1))';
+const THEME_CARD_EXPRESSION = 'var(--color-theme-card, #101622)';
+/** O que o trilho desligado lê: metade texto, metade cartão (`IDLE_TRACK_BG` em `switchStyles.ts`). */
+const IDLE_TRACK_EXPRESSION = `color-mix(in srgb, var(--sarak-text-main, #f2f6fb) 50%, ${THEME_CARD_EXPRESSION})`;
 const THEME_PRIMARY_EXPRESSION = 'var(--color-theme-primary, #3b82f6)';
 /** O que o foco do campo lê: o token dedicado, com a primária só como reserva (`useAtomicStyles.ts`). */
 const INPUT_FOCUS_EXPRESSION = 'var(--sarak-input-focus-border-color, var(--sarak-primary-color, #19e3f0))';
@@ -254,13 +256,16 @@ test('item 4: campo neumorphism em foco computa o anel primário e a sombra inte
     });
 });
 
-test('item 4: trilho do switch desligado computa o fundo de cartão do tema', async () => {
+test('item 4: trilho do switch desligado computa a mistura de texto e cartão do tema', async () => {
     await withScene('atomos', undefined, async (page) => {
         const track = page.locator('[data-probe="alternador"] .relative > div').first();
-        const expected = await resolveExpression(track, 'background-color', THEME_CARD_EXPRESSION);
+        const expected = await resolveExpression(track, 'background-color', IDLE_TRACK_EXPRESSION);
         expect(expected, 'o fundo pretendido precisa diferir do transparente, ou o caso não distingue nada').not.toBe('rgba(0, 0, 0, 0)');
+        expect(expected, 'a mistura precisa diferir do cartão puro, ou o caso não distingue nada').not.toBe(
+            await resolveExpression(track, 'background-color', THEME_CARD_EXPRESSION),
+        );
 
-        await expect(track, 'useAtomicStyles.ts:138 — fundo do trilho').toHaveCSS('background-color', expected);
+        await expect(track, 'switchStyles.ts — IDLE_TRACK_BG, fundo do trilho desligado').toHaveCSS('background-color', expected);
     });
 });
 
