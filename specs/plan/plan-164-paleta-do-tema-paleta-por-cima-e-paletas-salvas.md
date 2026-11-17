@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Aplicar a paleta do tema, permitir a paleta escolhida por cima de qualquer tema e salvar paletas com nome"
 objetivo: "Fazer escolher um tema aplicar as cores dele, deixar o usuário pôr uma paleta por cima de qualquer tema (inclusive dos que declaram cor) e salvar uma paleta criada com nome próprio, que aparece na galeria e serve à marca"
 dominio: "Design Engine / Paleta e painel"
-status: "🟠 Em revisão"
+status: "🟡 Em execução"
 prioridade: "Média"
 tags: ["plan", "paletas", "temas", "painel", "persistencia"]
 relacionados: ["[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[024-paleta-calculada-separada-do-tema]]", "[[010-temas-salvos-pelo-usuario]]", "[[011-tema-salvo-por-uma-porta-de-escrita]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]"]
@@ -410,3 +410,18 @@ do dono nas duas prévias.
 **Commit:** junto com as plans 159 e 161, depois da correção da 159.
 
 **Status da plan: 🟠 Em revisão** (aguardando o ok do dono).
+
+## Nota do revisor — 2026-11-17 — meta de rolagem de Cores no lote 2
+
+Decisão do dono na `plan-161`: a decisão Cores (hoje 6,1 alturas da área de 660 px a 1440×900) passa a ter, no lote 2 desta plan,
+a meta de **no máximo 2,5 alturas**, a mesma das outras decisões. Meça com o spec `plan-161-catalogo-proporcional.spec.ts`, que já
+declara a medida, e baixe o limite de Cores nele para 2,5 no mesmo lote. Critério acrescentado ao lote 2.
+
+## Nota do revisor — 2026-11-17 — ok do dono na prévia do lote 1
+
+O dono aprovou a prévia (`C:\tmp\sarak-previa-164\index.html`). Ele perguntou por que, na etapa 2, a cor é a mesma com o interruptor
+desligado e ligado. Resposta: escolher uma paleta aplica a paleta nos dois estados. A diferença dessa etapa é a pergunta antes de
+descartar as 22 cores do tema (1 com o interruptor desligado, 0 com ele ligado) e o texto do interruptor. A cor se separa na troca de
+tema (etapa 3). O código do lote saiu no commit `9f08de71`.
+
+**Lote 1 fechado. Status da plan: 🟡 Em execução** (lote 2).

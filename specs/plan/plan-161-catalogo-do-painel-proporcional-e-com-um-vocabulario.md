@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fazer o catálogo do painel proporcional, curto e com um vocabulário só"
 objetivo: "Fazer cada decisão do painel caber em cerca de duas telas, com amostras proporcionais (Personalidade em quadrado com o nome, tema como miniatura da prévia real, fontes na mesma grade), presets de card gerados de cada tema, texturas do card e do fundo separadas pelo nome, e um vocabulário único com os termos técnicos em inglês"
 dominio: "Painel de customização / Catálogo de opções"
-status: "🟠 Em revisão"
+status: "🟡 Em execução"
 prioridade: "Média"
 tags: ["plan", "painel", "catalogo", "amostras", "presets", "vocabulario"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[09-temas-e-presets]]", "[[10-seguranca-e-acessibilidade]]", "[[07-responsividade-e-multidispositivo]]"]
@@ -371,3 +371,16 @@ e a amostra de Topbar desta plan depende do "Mais" da 159.
 **Commit:** junto com as plans 159 e 164, depois da correção da 159.
 
 **Status da plan: 🟠 Em revisão** (aguardando o dono).
+
+## Nota do revisor — 2026-11-17 — ok do dono na prévia e decisões do lote 1
+
+O dono aprovou a prévia refeita (`C:\tmp\sarak-previa-161\index.html`, código do commit `9f08de71`) e decidiu:
+1. **Cartão de tema:** nas colunas da grade, o nome do tema quebra uma letra por linha. Fica para o lote 2, que troca o cartão pela
+   miniatura real. **A release 9.0.0 não sai sem o lote 2 desta plan.**
+2. **Meta de rolagem:** 2,5 alturas da área, como o spec do lote fixou. O lote 4 não pode piorar Fontes, Forma, Componentes e Layout.
+3. **Cores (6,1 alturas):** a meta das 2,5 alturas passa ao lote 2 da `plan-164`, que já mexe na galeria de paletas.
+
+Para o lote 2: a amostra larga da Barra de topo deixa um vazio sob a barra (o quadro mantém 100 px de altura). Ajuste junto com o
+cartão, se couber no lote.
+
+**Lote 1 fechado. Status da plan: 🟡 Em execução** (lote 2).

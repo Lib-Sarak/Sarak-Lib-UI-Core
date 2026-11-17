@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fazer o cromo real seguir o Layout escolhido, com preferências discretas e uma decisão própria para as barras"
 objetivo: "Fazer toda opção de Layout que o administrador aplica aparecer no cromo real ou dizer por que não aparece, com a Topbar sem item escondido, a barra de tom contrastante legível e os controles de preferência discretos, com P, M e G configuráveis em relação ao tamanho base do tema, e reunir as barras numa decisão própria, com um tom que vale para as duas e um interruptor da troca lateral/topo"
 dominio: "Cromo / Preferências do usuário"
-status: "🟠 Em revisão"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "cromo", "topbar", "sidebar", "preferencias", "painel"]
 relacionados: ["[[05-cromo-e-slots]]", "[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]"]
@@ -517,3 +517,11 @@ lote 2.
 **Commit:** junto com as plans 161 e 164, depois do ok do dono nas três prévias.
 
 **Status da plan: 🟠 Em revisão** (aguardando o ok do dono).
+
+## Nota do revisor — 2026-11-17 — ok do dono na prévia do lote 1
+
+O dono aprovou a prévia do lote 1 (`C:\tmp\sarak-previa-159\index.html`). Na conversa, ele perguntou por que P/M/G, Lateral/Topo e o
+modo aparecem na barra. Resposta: a seção 1.A reproduz a composição fixada do ERP (o pior caso de espaço), e a 1.B mostra a de
+fábrica, com as três no ⚙. O código do lote saiu no commit `9f08de71`, junto com as plans 161 e 164.
+
+**Lote 1 fechado. Status da plan: 🟡 Em execução** (lote 2).
