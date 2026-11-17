@@ -4,13 +4,15 @@
  * A linha de base é de CADA opção, tirada depois de rolá-la até a vista e na tela do grupo (`groupScreens`): rolar a página, ou
  * saltar de tela, já muda a prévia, e uma base única contaria isso como efeito da opção.
  *
- * A REGRA: toda opção destacada muda a prévia acima do limiar. Quem não muda cai em uma de duas listas, e só nelas:
+ * A REGRA: toda opção destacada muda a prévia acima do limiar (pixels que mudam forte, ou área grande que muda pouco). Quem não muda cai em uma de duas listas, e só nelas:
  *  - `PERMANENT_EXCEPTIONS`: o que nunca vai mudar a prévia, cada um com o motivo PROVADO por mecanismo, não por nome:
  *      `applied` — espiar a opção que o design já tem não muda nada; o spec escolhe (clique) outra opção do grupo e espia de
  *        novo: a que passa a mudar estava aplicada.
  *      `animation` — a opção só mexe em duração, atraso ou curva (a foto é tirada com `animations: 'disabled'`); o spec lê as
  *        variáveis do escopo da prévia antes e depois da espiada e exige que as que mudaram sejam todas de movimento.
- *      `other-mode` — só muda no outro modo (Claro/Escuro). Nenhuma opção cai aqui hoje; a espiada no outro modo não é medida.
+ *      `other-mode` — só muda no outro modo (Claro/Escuro): o spec espia de novo, no modo claro, o que não mudou no escuro, e a
+ *        que passa a mudar ali está provada.
+ *      `computed` — o efeito é real e a foto não o distingue: o spec lê o estilo computado no elemento que consome o valor.
  *  - `KNOWN_PENDING`: defeito do painel (a prévia não tem onde mostrar a opção, ou a galeria não espia). Tem de estar VAZIA ao
  *    fim do lote 3; é o que torna a §6 da plan conferível por máquina.
  * O spec trava nos dois sentidos: zero fora das listas reprova (regressão), e item de lista que passou a mudar reprova (tire-o).
@@ -51,6 +53,13 @@ const GROUP_SCREENS: Record<string, string> = Object.fromEntries(
 const MIN_CHANGED_SHARE = 0.0003;
 /** Soma da diferença dos três canais acima da qual um pixel conta (ruído de serrilhado fica abaixo). */
 const PIXEL_NOISE = 30;
+/**
+ * Efeito de baixo contraste e de área grande (sombra escura sobre fundo escuro, textura, degradê, listra de tabela, vidro): cada
+ * pixel muda pouco, e nenhum passa de `PIXEL_NOISE`. Conta como mudança quando pelo menos `BROAD_MIN_SHARE` da área muda
+ * `BROAD_DELTA` ou mais: o ruído de serrilhado mora nas bordas e fica longe dessa área.
+ */
+const BROAD_DELTA = 6;
+const BROAD_MIN_SHARE = 0.005;
 /** Largura, em px, da borda direita ignorada: é onde a barra de rolagem da prévia pinta. */
 const SCROLLBAR_STRIP = 24;
 /** A espiada só compõe depois de 150 ms (`PEEK_DELAY_MS`); o piso cobre esse atraso e o teto limita a espera por quadro estável. */
@@ -68,7 +77,16 @@ const MOTION_TOKEN = /^(motion|pageTransition)/;
 /** O cartão de tema ainda não carregado (`PresetCardPending`) é medido à parte, com o import do tema seguro. */
 const PENDING_THEME_ID = 'neo-brutalism';
 
-type ExceptionKind = 'applied' | 'animation' | 'other-mode';
+type ExceptionKind = 'applied' | 'animation' | 'other-mode' | 'computed';
+
+/**
+ * Prova pelo estilo computado, para a opção cujo efeito é real mas fica abaixo do que a foto distingue (a barra de rolagem fina,
+ * reduzida a 0,61 de escala): o spec lê a propriedade no elemento que a consome, antes e durante a espiada, e exige que ela passe
+ * a valer o que a opção escreve. Prova o leitor (a variável chega e o elemento a usa), não o pixel.
+ */
+const COMPUTED_PROOFS: Record<string, { selector: string; property: string; after: string }> = {
+    'components/scroll/Fina': { selector: '[data-testid="live-preview-frame"] [data-peek-group~="scroll"] .custom-scrollbar', property: '--scroll-w', after: '3px' },
+};
 
 /** Chave `decisão/grupo/opção`. Cada item prova o próprio motivo (ver o cabeçalho). */
 const PERMANENT_EXCEPTIONS: Record<string, { kind: ExceptionKind; reason: string }> = {
@@ -87,39 +105,16 @@ const PERMANENT_EXCEPTIONS: Record<string, { kind: ExceptionKind; reason: string
     'shape/border/Sólida': { kind: 'applied', reason: 'borderType já vale (sólida) no tema do harness' },
     'shape/material/Vidro fosco': { kind: 'applied', reason: 'surfaceMaterial já vale (vidro fosco) no tema do harness' },
     'shape/atmosphere/Nenhuma (Sem Mídia)': { kind: 'applied', reason: 'globalBackgroundImageUrl já está vazio no tema do harness' },
+    'components/tables/Padrão': { kind: 'applied', reason: 'densidade, listras, raio e respiro que o tema do harness já tem (os quatro tokens valem o mesmo): espiar o que já está aplicado não muda nada' },
+    'components/modal/Clássica': { kind: 'applied', reason: 'cabeçalho, alinhamento, desfoque e raio de desktop que o tema do harness já tem; é a única opção destacada do grupo' },
+    'shape/glass/Facetado': { kind: 'other-mode', reason: 'o brilho de quina e a saturação do vidro só aparecem no claro; no escuro o spec mede 0, no claro a prévia muda' },
+    'components/scroll/Fina': { kind: 'computed', reason: 'a barra de 3 px chega ao elemento da lista (--scroll-w de 6 para 3 px); reduzida a 0,61 de escala a diferença de pixel fica no limiar (ora acima, ora abaixo de 30), então a prova é o estilo computado e a trava de pixel não vale para ela' },
     'components/motion/Instantâneo': { kind: 'animation', reason: 'escreve só tokens motion*: durações e atraso, que a foto sem animação não vê' },
     'components/pageTransition/Esmaecer': { kind: 'animation', reason: 'escreve só pageTransitionType, que só atua na troca de tela (fade já é o valor do harness)' },
 };
 
 /** Por `decisão/grupo`: o defeito do painel e as opções que ele atinge. A esvaziar até o fim do lote 3. */
-const KNOWN_PENDING: Record<string, { reason: string; options: string[] }> = {
-    'shape/shadow': {
-        reason: 'as variáveis de sombra chegam ao escopo da prévia, mas nenhum pixel muda acima do limiar (sombra escura sobre fundo escuro, na tela Painel)',
-        options: ['Sem sombra', 'Suave'],
-    },
-    'shape/shadowDirection': { reason: 'a direção da sombra muda variáveis e nenhum pixel acima do limiar, como a sombra', options: ['Centralizada'] },
-    'shape/glass': {
-        reason: 'as variáveis de vidro chegam ao escopo da prévia, e nenhum pixel muda acima do limiar na tela Painel',
-        options: ['Cristalino', 'Facetado', 'Vívido'],
-    },
-    'shape/atmosphere': {
-        reason: 'textura, vinheta e padrão chegam ao escopo da prévia, e nenhum pixel muda acima do limiar: o fundo da tela Painel é coberto pelas superfícies',
-        options: ['Aurora Cinética', 'Nebulosa Estelar', 'Cinemático Escuro'],
-    },
-    'shape/gradient': { reason: 'o modo de degradê muda a variável e nenhum pixel acima do limiar: o fundo da tela Painel é coberto pelas superfícies', options: ['Fundo liso', 'Degradê linear'] },
-    'components/tables': {
-        reason: 'a tabela da prévia é a SarakDataTable, que não lê as listras (tableZebraStriping) nem o raio e o respiro da tabela (tableBorderRadius, tableCellPadding): as variáveis chegam ao escopo e nenhum pixel muda; só a SarakTableView as lê',
-        options: ['Padrão', 'Listrada'],
-    },
-    'components/modal': {
-        reason: 'único tile do grupo, então não há outra opção para escolher e provar que está aplicada; a única variável que muda é o raio do diálogo (12 para 16 px, só os cantos), abaixo do limiar',
-        options: ['Clássica'],
-    },
-    'layout/contentWidth': {
-        reason: 'a variável de largura chega ao escopo da prévia, mas a prévia desktop tem a largura do container, que não passa de 1.200 px de conteúdo: só a largura de 1.000 px aparece',
-        options: ['Média (1200 px)', 'Larga (1440 px)'],
-    },
-};
+const KNOWN_PENDING: Record<string, { reason: string; options: string[] }> = {};
 
 let browser: Browser;
 let harnessDirectory: string;
@@ -129,11 +124,11 @@ let results: Record<string, Measured[]>;
 interface Target { group: string; option: string; selector: string; busy: boolean }
 /** O que o registro de presets diz da opção: os tokens que ela escreve e se todos já valem no design do harness. */
 interface PresetFacts { keys: string[]; applied: boolean }
-interface Measured { group: string; option: string; share: number; applied: boolean; changedVariables: string[]; preset: PresetFacts | null }
+interface Measured { group: string; option: string; share: number; lightShare?: number; computed?: { before: string; after: string; expected: string }; applied: boolean; changedVariables: string[]; preset: PresetFacts | null }
 interface Peek { share: number; changedVariables: string[] }
 
 /** Quanto do quadro difere do outro, como fração da área, sem a faixa da barra de rolagem. */
-const changedShare = (page: Page, first: Buffer, second: Buffer): Promise<number> => page.evaluate(async ([a, b, strip, noise]) => {
+const changedShare = (page: Page, first: Buffer, second: Buffer): Promise<number> => page.evaluate(async ([a, b, strip, noise, broadDelta, broadMinShare]) => {
     const decode = async (base64: string): Promise<ImageData> => {
         const bitmap = await createImageBitmap(await (await fetch(`data:image/png;base64,${base64}`)).blob());
         const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
@@ -145,15 +140,18 @@ const changedShare = (page: Page, first: Buffer, second: Buffer): Promise<number
     if (one.width !== two.width || one.height !== two.height) return 1;
     const width = one.width - strip;
     let differing = 0;
+    let faint = 0;
     for (let y = 0; y < one.height; y += 1) {
         for (let x = 0; x < width; x += 1) {
             const i = (y * one.width + x) * 4;
             const delta = Math.abs(one.data[i] - two.data[i]) + Math.abs(one.data[i + 1] - two.data[i + 1]) + Math.abs(one.data[i + 2] - two.data[i + 2]);
             if (delta > noise) differing += 1;
+            if (delta >= broadDelta) faint += 1;
         }
     }
-    return differing / (width * one.height);
-}, [first.toString('base64'), second.toString('base64'), SCROLLBAR_STRIP, PIXEL_NOISE] as const);
+    const area = width * one.height;
+    return Math.max(differing / area, faint / area >= broadMinShare ? faint / area : 0);
+}, [first.toString('base64'), second.toString('base64'), SCROLLBAR_STRIP, PIXEL_NOISE, BROAD_DELTA, BROAD_MIN_SHARE] as const);
 
 /** As variáveis `--*` que o escopo da prévia carrega, para ver quais a espiada mudou. */
 const previewVariables = (page: Page): Promise<Record<string, string>> => page.evaluate(() => {
@@ -199,7 +197,7 @@ const showGroupScreen = async (page: Page, group: string, openingScreen: string)
     const select = screenSelect(page);
     const target = GROUP_SCREENS[group] ?? openingScreen;
     if ((await select.inputValue()) !== target) await select.selectOption(target);
-    const section = page.locator(`[data-testid="live-preview-frame"] [data-peek-group="${group}"]`).first();
+    const section = page.locator(`[data-testid="live-preview-frame"] [data-peek-group~="${group}"]`).first();
     if ((await section.count()) > 0) await section.evaluate((node) => node.scrollIntoView({ block: 'center' }));
     await page.mouse.move(2, 2);
     await settlePreview(page, BASELINE_FLOOR_MS);
@@ -260,6 +258,17 @@ const openDecision = async (decisionName: string, query = ''): Promise<{ page: P
     return { page, errors };
 };
 
+/**
+ * A prévia desktop desenha a janela do sistema e a reduz para caber: um elemento ocupa `escala²` da área que ocuparia em tamanho
+ * real. A fração que mudou é dividida por isso (peso = 1/escala²), para o limiar valer para a área do sistema desenhado, e não
+ * para a da moldura. Tablet e celular não reduzem (escala 1).
+ */
+const areaWeight = (page: Page): Promise<number> => page.evaluate(() => {
+    const layer = document.querySelector('[data-testid="live-preview-frame"] .origin-top-left') as HTMLElement | null;
+    const scale = Number.parseFloat(layer?.style.transform.replace('scale(', '') ?? '1');
+    return Number.isFinite(scale) && scale > 0 ? 1 / (scale * scale) : 1;
+});
+
 const previewShot = (page: Page): Promise<Buffer> => page.locator('[data-testid="live-preview-frame"]').screenshot({ animations: 'disabled' });
 
 /**
@@ -268,13 +277,14 @@ const previewShot = (page: Page): Promise<Buffer> => page.locator('[data-testid=
  * que dá zero paga a conferência: se a prévia ainda mexe, espera e mede de novo, até o teto de tentativas.
  */
 const shareWhenStable = async (page: Page, base: Baseline): Promise<number> => {
+    const weight = await areaWeight(page);
     let shot = await previewShot(page);
-    let share = await changedShare(page, base.shot, shot);
+    let share = (await changedShare(page, base.shot, shot)) * weight;
     for (let attempt = 0; attempt < STABLE_ATTEMPTS && share < MIN_CHANGED_SHARE; attempt += 1) {
         await page.waitForTimeout(STABLE_RETRY_MS);
         const next = await previewShot(page);
-        const moved = await changedShare(page, shot, next);
-        share = Math.max(share, await changedShare(page, base.shot, next));
+        const moved = (await changedShare(page, shot, next)) * weight;
+        share = Math.max(share, (await changedShare(page, base.shot, next)) * weight);
         shot = next;
         if (moved < MIN_CHANGED_SHARE && attempt > 0) break;
     }
@@ -334,7 +344,42 @@ const markApplied = async (page: Page, targets: Target[], measured: Measured[], 
 };
 
 
-const measureDecision = async (decisionName: string): Promise<Measured[]> => {
+/**
+ * O modo de cor da prévia, pelo ⚙ da barra dela (é onde o modo mora): o item mostra o modo para onde vai, `label` é o que ele diz
+ * ANTES do clique.
+ */
+const setPreviewMode = async (page: Page, label: 'Modo Claro' | 'Modo Escuro'): Promise<void> => {
+    await page.locator('.sarak-device-desktop [data-sarak-widget="preferences-menu"]').getByRole('button').first().click();
+    await page.getByRole('menu', { name: 'Preferências' }).getByText(label, { exact: true }).click();
+    await page.keyboard.press('Escape');
+    await page.mouse.move(2, 2);
+    await settlePreview(page, PEEK_FLOOR_MS + 400);
+};
+
+/**
+ * O que não mudou no escuro é espiado de novo no claro: sombra escura sobre fundo escuro, por exemplo, não se vê, e se vê no
+ * claro. A opção que muda no outro modo fica provada como `other-mode`. Roda antes de qualquer clique, com o rascunho intacto.
+ */
+const measureInLightMode = async (page: Page, targets: Target[], measured: Measured[], openingScreen: string): Promise<void> => {
+    const zeros = measured.filter((item) => item.share < MIN_CHANGED_SHARE);
+    if (zeros.length === 0) return;
+    await setPreviewMode(page, 'Modo Claro');
+    for (const item of zeros) {
+        const own = targets.find((target) => target.group === item.group && target.option === item.option);
+        if (!own) continue;
+        await showGroupScreen(page, item.group, openingScreen);
+        item.lightShare = (await peekOption(page, page.locator(own.selector))).share;
+    }
+    await setPreviewMode(page, 'Modo Escuro');
+};
+
+/** O valor computado de uma propriedade (variável ou CSS) no elemento da prova. */
+const readComputed = (page: Page, proof: { selector: string; property: string }): Promise<string> => page.evaluate(({ selector, property }) => {
+    const node = document.querySelector(selector);
+    return node ? getComputedStyle(node).getPropertyValue(property).trim() : '';
+}, proof);
+
+const measureDecision = async (decisionName: string, decisionId: string): Promise<Measured[]> => {
     const { page, errors } = await openDecision(decisionName);
     const targets = await collectTargets(page);
     const registry = await page.evaluate(() => (window as unknown as { __plan160: Record<string, PresetFacts> }).__plan160);
@@ -343,10 +388,19 @@ const measureDecision = async (decisionName: string): Promise<Measured[]> => {
     for (const group of [...new Set(targets.map((target) => target.group))]) {
         await showGroupScreen(page, group, openingScreen);
         for (const target of targets.filter((candidate) => candidate.group === group)) {
+            const proof = COMPUTED_PROOFS[`${decisionId}/${target.group}/${target.option}`];
+            let before = '';
+            if (proof) {
+                await page.mouse.move(2, 2);
+                await settlePreview(page, BASELINE_FLOOR_MS);
+                before = await readComputed(page, proof);
+            }
             const peek = await peekOption(page, page.locator(target.selector));
-            measured.push({ group: target.group, option: target.option, share: peek.share, applied: false, changedVariables: peek.changedVariables, preset: registry[`${target.group}/${target.option}`] ?? null });
+            const computed = proof ? { before, after: await readComputed(page, proof), expected: proof.after } : undefined;
+            measured.push({ group: target.group, option: target.option, share: peek.share, applied: false, changedVariables: peek.changedVariables, preset: registry[`${target.group}/${target.option}`] ?? null, computed });
         }
     }
+    await measureInLightMode(page, targets, measured, openingScreen);
     await markApplied(page, targets, measured, openingScreen);
     await page.close();
     expect(errors).toEqual([]);
@@ -369,10 +423,10 @@ test.beforeAll(async () => {
     const measured: Measured[][] = [];
     for (const decision of DECISIONS) {
         const started = Date.now();
-        measured.push(!ONLY || ONLY === decision.id ? await measureDecision(decision.name) : []);
+        measured.push(!ONLY || ONLY === decision.id ? await measureDecision(decision.name, decision.id) : []);
         console.log('TEMPO', decision.id, ((Date.now() - started) / 1000).toFixed(1), 's');
     }
-    if (MATRIX_FILE) fs.writeFileSync(MATRIX_FILE, DECISIONS.flatMap((decision, index) => measured[index].map((item) => `${decision.id}/${item.group}/${item.option}|${item.share.toFixed(4)}|${item.applied}|${item.changedVariables.join(',')}|${item.preset ? `${item.preset.applied}:${item.preset.keys.join(',')}` : 'sem-registro'}`)).join(String.fromCharCode(10)));
+    if (MATRIX_FILE) fs.writeFileSync(MATRIX_FILE, DECISIONS.flatMap((decision, index) => measured[index].map((item) => `${decision.id}/${item.group}/${item.option}|${item.share.toFixed(4)}|${(item.lightShare ?? -1).toFixed(4)}|${item.applied}|${item.changedVariables.join(',')}|${item.preset ? `${item.preset.applied}:${item.preset.keys.join(',')}` : 'sem-registro'}`)).join(String.fromCharCode(10)));
     results = Object.fromEntries(DECISIONS.map((decision, index) => [decision.id, measured[index]]));
 });
 
@@ -391,6 +445,8 @@ const pendingKeys = (): Set<string> => new Set(Object.entries(KNOWN_PENDING).fla
 const provenKinds = (item: Measured): ExceptionKind[] => {
     const kinds: ExceptionKind[] = [];
     if (item.applied || item.preset?.applied) kinds.push('applied');
+    if ((item.lightShare ?? 0) >= MIN_CHANGED_SHARE) kinds.push('other-mode');
+    if (item.computed && item.computed.before !== item.computed.after && item.computed.after === item.computed.expected) kinds.push('computed');
     if (item.preset && item.preset.keys.length > 0 && item.preset.keys.every((key) => MOTION_TOKEN.test(key))) kinds.push('animation');
     return kinds;
 };
@@ -411,7 +467,7 @@ for (const decision of DECISIONS) {
         expect(measured.length, 'a decisão tem de mostrar ao menos uma opção medível').toBeGreaterThan(0);
         expect(zeros.filter((item) => !isListed(item)).map((item) => `${item.group}/${item.option} = ${(item.share * 100).toFixed(3)}%`), 'opção que não muda a prévia e não está em nenhuma lista').toEqual([]);
         expect(wrongProof.map((item) => `${item.group}/${item.option}: lista ${PERMANENT_EXCEPTIONS[keyOf(decision.id, item)].kind}, provas ${provenKinds(item).join('+') || 'nenhuma'}`), 'exceção permanente sem a prova do motivo').toEqual([]);
-        expect(measured.filter((item) => item.share >= MIN_CHANGED_SHARE && isListed(item)).map((item) => keyOf(decision.id, item)), 'item de lista que já muda a prévia: tire-o da lista').toEqual([]);
+        expect(measured.filter((item) => item.share >= MIN_CHANGED_SHARE && isListed(item) && PERMANENT_EXCEPTIONS[keyOf(decision.id, item)]?.kind !== 'computed').map((item) => keyOf(decision.id, item)), 'item de lista que já muda a prévia: tire-o da lista').toEqual([]);
     });
 }
 

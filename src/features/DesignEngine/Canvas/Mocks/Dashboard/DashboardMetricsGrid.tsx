@@ -6,13 +6,15 @@ import { SarakIcon } from '../../../../../components/atomic/Icon/SarakIcon';
 import { SmartCard } from './DashboardShared';
 
 export const DashboardMetricsGrid = ({ tokens, variables, textureType, items, mappings }: any) => {
+    // O contêiner é a própria grade (não a janela do sistema): ao lado do painel lateral, no tablet, ela é estreita e os cartões empilham.
     return (
-        <div className="grid grid-cols-1 @md:grid-cols-12 gap-6 auto-rows-auto">
+        <div className="@container w-full">
+        <div className="grid grid-cols-1 @min-[448px]:grid-cols-12 gap-6 auto-rows-auto">
             {/* ROW 1 */}
-            <SarakTitleCard item={items.cpu} mapping={mappings.cpu} design={tokens} className="@md:col-span-3" label="Card de Título (CPU Cluster)" />
-            <SarakSearchCard item={items.search} mapping={mappings.search} design={tokens} className="@md:col-span-3" label="Card de Interação (Busca)" />
+            <SarakTitleCard item={items.cpu} mapping={mappings.cpu} design={tokens} className="@min-[448px]:col-span-6 @min-[768px]:col-span-3" label="Card de Título (CPU Cluster)" />
+            <SarakSearchCard item={items.search} mapping={mappings.search} design={tokens} className="@min-[448px]:col-span-6 @min-[768px]:col-span-3" label="Card de Interação (Busca)" />
             
-            <SmartCard variables={variables} textureType={textureType} className="@md:col-span-3 p-5 @md:p-6 !gap-4" label="Card de Métricas (Latency)">
+            <SmartCard variables={variables} textureType={textureType} className="@min-[448px]:col-span-6 @min-[768px]:col-span-3 p-5 @md:p-6 !gap-4" label="Card de Métricas (Latency)">
                 <div className="flex justify-between items-center text-[var(--text-muted,rgba(242,246,251,0.55))]">
                     <span className="text-[11px] uppercase font-bold tracking-wider">Latency</span>
                     <SarakIcon name="Activity" size={14} />
@@ -28,10 +30,10 @@ export const DashboardMetricsGrid = ({ tokens, variables, textureType, items, ma
                 </div>
             </SmartCard>
 
-            <SarakTitleCard item={items.health} mapping={mappings.health} design={tokens} className="@md:col-span-3" label="Card de Título (Health)" />
+            <SarakTitleCard item={items.health} mapping={mappings.health} design={tokens} className="@min-[448px]:col-span-6 @min-[768px]:col-span-3" label="Card de Título (Health)" />
 
             {/* ROW 2 */}
-            <SmartCard variables={variables} textureType={textureType} className="@md:col-span-12 h-[420px] p-5 @md:p-6 @lg:p-8" label="Card de Gráficos (Data Flow)">
+            <SmartCard variables={variables} textureType={textureType} className="@min-[448px]:col-span-12 h-[420px] p-5 @md:p-6 @lg:p-8" label="Card de Gráficos (Data Flow)">
                 <div className="flex justify-between items-center">
                     <div>
                         <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted,rgba(242,246,251,0.55))]">Data Flow Engine</h3>
@@ -53,7 +55,7 @@ export const DashboardMetricsGrid = ({ tokens, variables, textureType, items, ma
             </SmartCard>
 
             {/* ROW 3 */}
-            <SmartCard variables={variables} textureType={textureType} className="@md:col-span-4 p-5 @md:p-6 @lg:p-8" label="Card de Ação (Inventory)">
+            <SmartCard variables={variables} textureType={textureType} className="@min-[448px]:col-span-6 @min-[768px]:col-span-4 p-5 @md:p-6 @lg:p-8" label="Card de Ação (Inventory)">
                 <div className="flex items-center gap-4 mb-4">
                     <SarakIcon name="Package" size={20} className="text-[var(--theme-primary)]" />
                     <h3 className="text-sm font-bold text-theme-text uppercase italic tracking-wider">Inventory Flow</h3>
@@ -90,7 +92,7 @@ export const DashboardMetricsGrid = ({ tokens, variables, textureType, items, ma
                 </div>
             </SmartCard>
 
-            <SmartCard variables={variables} textureType={textureType} className="@md:col-span-5 p-0" label="Card de Tabela (Access)">
+            <SmartCard variables={variables} textureType={textureType} className="@min-[448px]:col-span-12 @min-[768px]:col-span-5 p-0" label="Card de Tabela (Access)">
                 <div className="p-5 pb-3 @md:p-8 @md:pb-4 flex justify-between items-center">
                     <div className="flex items-center gap-4">
                         <SarakIcon name="Shield" size={20} className="text-[var(--theme-primary)]" />
@@ -125,10 +127,10 @@ export const DashboardMetricsGrid = ({ tokens, variables, textureType, items, ma
                 </div>
             </SmartCard>
 
-            <SarakActionCard item={items.anomaly} mapping={mappings.anomaly} design={tokens} className="@md:col-span-3 h-full" onAction={() => alert("Acknowledge Action Executed!")} label="Card de Interação (Radar)" />
+            <SarakActionCard item={items.anomaly} mapping={mappings.anomaly} design={tokens} className="@min-[448px]:col-span-6 @min-[768px]:col-span-3 h-full" onAction={() => alert("Acknowledge Action Executed!")} label="Card de Interação (Radar)" />
             
             {/* ROW 4 */}
-            <SmartCard variables={variables} textureType={textureType} className="@md:col-span-3 p-5 @md:p-6 @lg:p-8" label="Card de Métricas (Ambiente)">
+            <SmartCard variables={variables} textureType={textureType} className="@min-[448px]:col-span-6 @min-[768px]:col-span-3 p-5 @md:p-6 @lg:p-8" label="Card de Métricas (Ambiente)">
                 <div className="flex justify-between mb-6">
                     <span className="text-[11px] font-bold uppercase text-[var(--text-muted,rgba(242,246,251,0.55))] tracking-widest">Environment</span>
                     <SarakIcon name="Thermometer" size={16} style={{ color: 'var(--theme-error, var(--theme-primary))' }} />
@@ -146,7 +148,7 @@ export const DashboardMetricsGrid = ({ tokens, variables, textureType, items, ma
                 </div>
             </SmartCard>
             
-            <SmartCard variables={variables} textureType={textureType} className="@md:col-span-4 p-5 @md:p-6 @lg:p-8" label="Card de Métricas (Energia)">
+            <SmartCard variables={variables} textureType={textureType} className="@min-[448px]:col-span-6 @min-[768px]:col-span-4 p-5 @md:p-6 @lg:p-8" label="Card de Métricas (Energia)">
                 <div className="flex justify-between mb-6">
                     <span className="text-[11px] font-bold uppercase text-[var(--text-muted,rgba(242,246,251,0.55))] tracking-widest">Energy Grid</span>
                     <SarakIcon name="Zap" size={16} style={{ color: 'var(--theme-warning, var(--theme-primary))' }} />
@@ -166,7 +168,7 @@ export const DashboardMetricsGrid = ({ tokens, variables, textureType, items, ma
                 </div>
             </SmartCard>
 
-            <SmartCard variables={variables} textureType={textureType} className="@md:col-span-5 p-5 @md:p-6 @lg:p-8 overflow-visible" label="Card de Interação (Terminal)">
+            <SmartCard variables={variables} textureType={textureType} className="@min-[448px]:col-span-12 @min-[768px]:col-span-5 p-5 @md:p-6 @lg:p-8 overflow-visible" label="Card de Interação (Terminal)">
                 <div className="flex justify-between items-center mb-6">
                     <h3 className="text-[11px] font-bold uppercase text-[var(--text-muted,rgba(242,246,251,0.55))] tracking-widest">Operational Commands</h3>
                     <SarakIcon name="Terminal" size={16} className="text-[var(--theme-primary)]" />
@@ -181,6 +183,7 @@ export const DashboardMetricsGrid = ({ tokens, variables, textureType, items, ma
                     </div>
                 </div>
             </SmartCard>
+        </div>
         </div>
     );
 };

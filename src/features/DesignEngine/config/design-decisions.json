@@ -70,7 +70,11 @@
             "dashboard",
             "components",
             "tabela"
-        ]
+        ],
+        "groupScreens": {
+            "shadow": "components",
+            "shadowDirection": "components"
+        }
     },
     {
         "id": "components",

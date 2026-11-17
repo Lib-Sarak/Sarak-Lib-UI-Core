@@ -8,6 +8,12 @@ export const KIND_FUNCTIONAL = 'functional';
 /** O eixo da contraparte: declarado nela de propósito, embora não "carregue modo" (é o modo oposto em si). */
 export const MODE_AXIS_KEY = 'mode';
 
+/**
+ * As faixas da marca valem nos dois modos: o tema que as declara as escreve uma vez, no design, e a contraparte as herda. A cobrança
+ * de "sobrescrita da paleta tem a irmã na contraparte" não se aplica a elas, porque a irmã seria a mesma cor repetida.
+ */
+export const SAME_IN_BOTH_MODES_KEYS: ReadonlySet<string> = new Set(['sidebarBrandBackground', 'topbarBrandBackground']);
+
 export interface CompletenessTokenLike {
     id: string;
     kind?: string;
@@ -91,7 +97,7 @@ export function gapsOfTheme(
         if (!isDeclared(theme.contraparte, id)) add('missing-mode-aesthetic', id);
     }
     for (const id of fromPalette) {
-        if (modeDependentAll.has(id) && isDeclared(theme.design, id) && !isDeclared(theme.contraparte, id)) add('palette-override-missing-in-contraparte', id);
+        if (modeDependentAll.has(id) && !SAME_IN_BOTH_MODES_KEYS.has(id) && isDeclared(theme.design, id) && !isDeclared(theme.contraparte, id)) add('palette-override-missing-in-contraparte', id);
     }
     for (const id of Object.keys(theme.contraparte)) {
         if (functionalIds.has(id)) add('contraparte-declares-functional', id);

@@ -52,6 +52,7 @@ const PaletteOption: React.FC<PaletteOptionProps> = (props) => {
             onClick={onSelect}
             onKeyDown={onKeyDown}
             onMouseEnter={peek.onMouseEnter}
+            onMouseMove={peek.onMouseMove}
             onMouseLeave={peek.onMouseLeave}
             onFocus={() => { onFocusOption(); peek.onFocus(); }}
             onBlur={peek.onBlur}

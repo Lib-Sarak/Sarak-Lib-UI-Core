@@ -160,6 +160,14 @@ describe('SarakMenuItem', () => {
         expect(screen.getByRole('link', { name: 'Projetos 4' })).toBeInTheDocument();
         expect(screen.getByText('4')).toBeInTheDocument();
     });
+
+    it('o respiro do selo na lista vertical é o da lista, e na horizontal o do espaçamento do layout', () => {
+        const { unmount } = render(<SarakMenuItem label="Projetos" href="/projetos" badge={4} orientation="vertical" />);
+        expect(screen.getByText('4').style.paddingInline).toContain('--sarak-sidebar-width');
+        unmount();
+        render(<SarakMenuItem label="Aba" href="/aba" badge={4} orientation="horizontal" />);
+        expect(screen.getByText('4').style.paddingInline).toBe('var(--sarak-layout-gap-sm, 8px)');
+    });
 });
 
 describe('SarakMenuItem — navegação com clique do meio', () => {

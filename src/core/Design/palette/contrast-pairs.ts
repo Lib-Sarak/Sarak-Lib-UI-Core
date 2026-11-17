@@ -1,8 +1,24 @@
+/** O texto de comparação: o par passa a exigir ao menos o contraste que este texto tem sobre o fundo dele. */
+export interface ContrastBeat {
+    fg: string;
+    bgChain: readonly string[];
+}
+
 export interface ContrastPair {
     fg: string;
     bgChain: readonly string[];
     min: number;
+    /** Além de `min`, o contraste do texto não pode ficar abaixo do deste outro texto (o item ativo contra o inativo). */
+    beat?: ContrastBeat;
 }
+
+/**
+ * Elemento de cadeia de fundo que não é token: a luz que o degradê da barra soma no fim (a cor da barra com 16% de branco,
+ * `resolveChromeBackground`). Em `bgChain`, `GRADIENT_LIGHT_ID@0.16` compõe branco a 16% sobre o fundo seguinte.
+ */
+export const GRADIENT_LIGHT_ID = 'gradientLight';
+export const GRADIENT_LIGHT_SHARE = 0.16;
+export const GRADIENT_LIGHT_COLOR = '#ffffff';
 
 /** The component contrast contract shared by the runtime palette and its audit gate. */
 export const PAIRS: readonly ContrastPair[] = [
@@ -55,7 +71,9 @@ export const PAIRS: readonly ContrastPair[] = [
     { fg: 'topbarItemHoverTextColor', bgChain: ['topbarHoverColor', 'topbarColor', 'colorBgBody'], min: 4.5 },
     { fg: 'topbarBrandColor', bgChain: ['topbarBrandBackground', 'topbarColor', 'colorBgBody'], min: 4.5 },
     { fg: 'tooltipTextColor', bgChain: ['tooltipBg', 'colorBgBody'], min: 4.5 },
-    { fg: 'navItemActiveColor', bgChain: ['sidebarActiveColor', 'sidebarColor', 'colorBgBody'], min: 4.5 },
+    // Na barra lateral o item inativo é apagado de propósito; o ativo é o texto mais legível da lista e nunca fica abaixo dele, mesmo
+    // quando a base da paleta é escura. A topbar não apaga o inativo (texto do corpo), então só vale o piso.
+    { fg: 'navItemActiveColor', bgChain: ['sidebarActiveColor', 'sidebarColor', 'colorBgBody'], min: 4.5, beat: { fg: 'sidebarItemTextColor', bgChain: ['sidebarColor', 'colorBgBody'] } },
     { fg: 'navItemActiveColor', bgChain: ['topbarActiveColor', 'topbarColor', 'colorBgBody'], min: 4.5 },
     { fg: 'on:primaryColor', bgChain: ['primaryColor', 'colorBgBody'], min: 4.5 },
     { fg: 'on:secondaryColor', bgChain: ['secondaryColor', 'colorBgBody'], min: 4.5 },

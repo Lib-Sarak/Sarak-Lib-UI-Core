@@ -21,6 +21,16 @@ const CLOSEST_PERSONALITY: Readonly<Record<string, string>> = {
     'nature-breeze': 'soft', 'neo-brutalism-classic': 'brutalist', 'dot-matrix-elegant': 'executive',
 };
 
+/**
+ * Os temas resgatados seguem a anatomia da barra antiga (09 §5): item ativo com a barra luminosa e a moldura em cartão. Nesses
+ * dois tokens eles não espelham a Personalidade mais próxima; o resto da barra (tons, bordas dos topos) segue o contrato.
+ */
+const RESCUED_ANATOMY_THEMES: ReadonlySet<string> = new Set([
+    'sarak-sovereign-classic', 'cyberpunk-neon-classic', 'industrial-terminal-classic', 'cyber-retro-wave-classic',
+    'nature-breeze', 'neo-brutalism-classic', 'dot-matrix-elegant',
+]);
+const ANATOMY_KEYS: ReadonlySet<string> = new Set(['sidebarActiveItemStyle', 'sidebarBorderSide']);
+
 describe('temas embarcados — as barras têm o caráter de uma Personalidade', () => {
     it('todo tema embarcado tem uma Personalidade mais próxima declarada aqui, e nenhuma sobra', () => {
         expect(SARAK_ALL_THEMES.map((theme) => theme.id).filter((id) => id !== SCHEMA_DEFAULT_THEME).sort()).toEqual(Object.keys(CLOSEST_PERSONALITY).sort());
@@ -30,9 +40,23 @@ describe('temas embarcados — as barras têm o caráter de uma Personalidade', 
     it.each(SARAK_ALL_THEMES.filter((theme) => theme.id !== SCHEMA_DEFAULT_THEME).map((theme) => [theme.id, theme] as const))('%s declara os tons, o item ativo e a borda da Personalidade', (id, theme) => {
         const personality = getPersonality(`personality-${CLOSEST_PERSONALITY[id]}`)!;
         const design = theme.design as Record<string, unknown>;
-        BAR_KEYS.filter((key) => key in personality.design).forEach((key) => expect(design[key], `${id}.${key}`).toEqual((personality.design as Record<string, unknown>)[key]));
+        BAR_KEYS.filter((key) => key in personality.design && !(RESCUED_ANATOMY_THEMES.has(id) && ANATOMY_KEYS.has(key))).forEach((key) => expect(design[key], `${id}.${key}`).toEqual((personality.design as Record<string, unknown>)[key]));
         expect(design.sidebarTone).toBe(personality.design.sidebarTone);
         expect(design.topbarTone).toBe(personality.design.topbarTone);
+    });
+
+    it.each([...RESCUED_ANATOMY_THEMES])('%s declara o item ativo com a barra luminosa e a borda da moldura', (id) => {
+        const design = SARAK_ALL_THEMES.find((theme) => theme.id === id)!.design as Record<string, unknown>;
+        expect(design.sidebarActiveItemStyle).toBe('bar');
+        expect(design.sidebarBorderSide).not.toBe('none');
+        expect(design.userAvatarStyle).toBe('icon');
+    });
+
+    it.each([...RESCUED_ANATOMY_THEMES])('%s não grava a cor de ícone, de rótulo nem de título de seção da barra (a paleta calcula)', (id) => {
+        const theme = SARAK_ALL_THEMES.find((candidate) => candidate.id === id)!;
+        for (const block of [theme.design, theme.contraparte] as Array<Record<string, unknown> | undefined>) {
+            for (const key of ['sidebarIconColor', 'sidebarItemTextColor', 'sidebarCategoryColor']) expect(block?.[key], `${id}.${key}`).toBeUndefined();
+        }
     });
 
     it('o tema padrão segue com os padrões do schema nas barras', () => {

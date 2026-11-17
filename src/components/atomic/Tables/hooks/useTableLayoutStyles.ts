@@ -6,10 +6,12 @@ export interface TableLayoutContext {
     cellDensityClass: string;
 }
 
+// O respiro horizontal da célula é o do token (`--sarak-table-padding`, que o `tableCellPadding` escreve em px, padrão 12 no desktop);
+// a densidade continua dona do respiro vertical e do corpo do texto.
 const densityMap: Record<string, string> = {
-    'compact': 'py-1.5 px-2 text-sm',
-    'spacious': 'py-5 px-6',
-    'comfortable': 'py-3 px-4'
+    'compact': 'py-1.5 px-[var(--sarak-table-padding,12px)] text-sm',
+    'spacious': 'py-5 px-[var(--sarak-table-padding,12px)]',
+    'comfortable': 'py-3 px-[var(--sarak-table-padding,12px)]'
 };
 
 /**

@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Design Engine / Temas"
 status: "🟢 Vigente"
 prioridade: "Máxima"
 tags: ["spec", "temas", "presets", "design-engine", "tokens", "validacao"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[06-painel-de-customizacao-e-preview]]", "[[10-seguranca-e-acessibilidade]]", "[[003-remocao-backend-proprio]]", "[[011-tema-salvo-por-uma-porta-de-escrita]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]", "[[024-paleta-calculada-separada-do-tema]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-design-engine]]", "[[04-contrato-de-tokens-e-paridade]]", "[[06-painel-de-customizacao-e-preview]]", "[[10-seguranca-e-acessibilidade]]", "[[003-remocao-backend-proprio]]", "[[011-tema-salvo-por-uma-porta-de-escrita]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]", "[[024-paleta-calculada-separada-do-tema]]", "[[026-design-gravado-guarda-so-as-escolhas]]", "[[05-cromo-e-slots]]"]
 ---
 
 # 1. Propósito e a frase que resume tudo
@@ -343,6 +343,16 @@ pelo Provider (`useDesignSync`) e pela prévia do painel (`useDesignDraft.handle
 o valor do tema anterior nunca fica. O `config` chega ao efeito por ref (`configRef`) e à prévia por
 `getHostConfig()`: nunca é dependência do efeito (§3.1 de [[02-design-engine]]).
 
+**A mesma composição é a referência do que se grava** ([[026-design-gravado-guarda-so-as-escolhas]]). Uma chave do design é
+**escolha** quando difere do que o motor produz sem ela; o que a composição e a paleta produzem é **calculado** e nunca é gravado
+(§4.4.2). A referência se monta em dois passos (`designChoices.ts`):
+1. os **condutores** (`colorPalette`, `sidebarTone`, `topbarTone` e `mode`) entram quando diferem do tema resolvido;
+2. com eles fixados, a referência é `composeThemeDesign` do tema do id no modo pedido, com as chaves preservadas e o `config` do
+   host. Toda chave do design que difere dela é escolha, inclusive a cor ajustada à mão.
+
+A cor que o tema ou o host declaram está na referência e por isso não se grava: continua vencendo a calculada. O que deixa de vencer é
+a cor que a própria lib calculou. Um ajuste manual igual ao cálculo do momento não é escolha e passa a seguir a paleta.
+
 ### 4.3.4 A cor pode vir de uma paleta calculada ([[024-paleta-calculada-separada-do-tema]])
 
 Um `design` com `colorPalette` recebe os tokens de cor **calculados** pelo motor de `src/core/Design/palette/`, a partir de
@@ -361,9 +371,62 @@ claro. Por isso o **preenchimento** de marca (`btnPrimaryBg`, `rangeActiveColor`
 ele escolhido pelo contraste, e o **texto** de marca (`primaryColor`, `titleColor`, `cardTitleColor`, `navItemActiveColor`) anda a menor distância de luminosidade que passa nos
 pares, com o mesmo matiz e o mesmo croma (`contrast-shift.ts`). Todo texto segue em 4,5.
 
+**A cor da paleta varia pouco entre os modos.** A troca de modo muda o fundo e o texto; a base, a secundária e o acento não clareiam
+nem mudam. O texto de marca anda no máximo **0,04** de luminosidade OKLCH a partir da base (`primaryColor`, `cardTitleColor`), o título
+**0,06** e o texto do item ativo **0,13**, em cada modo e em **toda** paleta do registro, sem recorte por origem
+(`anchor-and-shift.test.ts`). A base de um preset é escolhida para caber nessa régua. Há duas exceções nomeadas, ambas só de texto:
+- no claro, nas paletas de base verde e verde-azulada, o texto do item ativo anda até **0,21**, para ficar acima do inativo (a lista
+  está no teste);
+- com a barra em degradê, o texto do ativo anda até **0,21**. No escuro, com a lateral de tom `surface`, chega a **0,28**, e no topo do
+  `petroleo-profundo`, a 0,215 (`gradient-bar-contrast.test.ts`).
+
 **Três faixas.** Texto é a semente com o menor deslocamento que passa. Elemento pequeno é a base exata. Superfície grande é tingida. Por isso uma cor pode sair igual à semente num papel e andar em outro.
 
-**O papel da barra.** `sidebarTone` e `topbarTone` valem `neutral`, `surface`, `primary`, `secondary` ou `inverse`, com padrão `neutral`, que devolve o plano de sempre. `palette/tone-plan.ts` dá os papéis e os pares de `PAIRS` de cada tom, nos dois modos. O tom só vale com `colorPalette` válida, e uma cor declarada em `sidebarColor` ou `topbarColor` continua vencendo. Nos tons contrastantes, a barra refaz para os seus descendentes as variáveis de texto, ícone e borda (`chromeToneStyle.ts`), e assim os widgets acompanham o fundo sem token próprio ([[05-cromo-e-slots]] §2.1). **Os temas embarcados declaram o tom das barras**, com o item ativo e a borda da Personalidade mais próxima do seu caráter (`themeBars.test.ts`, que guarda o mapa tema → Personalidade). A posição da marca não entra nesse mapa: todos os temas a mantêm no topo. A exceção é `sarak-sovereign`, que mantém os padrões do schema (§5.3).
+**As faixas da marca são preenchimento.** `sidebarBrandBackground` e `topbarBrandBackground` são a primária exata, sem transparência,
+iguais nos dois modos e em qualquer tom de barra. O texto sobre elas (`sidebarBrandColor`, `topbarBrandColor`) é escolhido pelo
+contraste, como o do botão primário: o claro se passa a 4,5:1, senão o escuro. Por isso também é igual nos dois modos. O par de cada faixa
+está em `PAIRS`. O que muda com o modo é o fundo da barra, os ícones, os rótulos, o item ativo e o véu.
+
+**A tinta da superfície no escuro.** A primária exata some sobre o fundo escuro quando tinge uma superfície grande. Por isso o motor emite
+duas variáveis (`emitSurfaceTint`, `designVariableHelpers.ts`):
+
+| Variável | No escuro | No claro | Quem lê |
+| --- | --- | --- | --- |
+| `--sarak-surface-tint-color` | o tom do texto do item ativo (`--sarak-nav-active-color`) | a primária | os três degradês de fundo (`_background.css`) |
+| `--sarak-surface-neon-color` | o mesmo tom | a primária a 40% (só com primária literal) | a borda e o brilho do cartão neon (`presets/components/cards.ts`) |
+
+O preenchimento (botão, faixa da marca, trilho do interruptor) segue a base exata.
+
+**O interruptor.** O trilho ligado (`switchTrackActiveBg`) é a base exata e passa de 3:1 sobre cada superfície, em toda paleta e nos dois
+modos (`switch-glass-border.test.ts`):
+- no estilo `glass`, ligado, o trilho mantém a translucidez e ganha uma borda de 1 px opaca na cor ativa, que dá o contraste;
+- desligado, em todo estilo, o trilho é metade texto e metade cartão (`color-mix` de `--sarak-text-main` com `--color-theme-card`, em
+  `switchStyles.ts`) e a bolinha é opaca. A bolinha passa de 3:1 sobre o trilho, e o trilho passa de 3:1 sobre o fundo, em todo estilo,
+  modo e paleta (`switch-idle-thumb.test.ts`).
+
+**O papel da barra.** `sidebarTone` e `topbarTone` valem `neutral`, `surface`, `primary`, `secondary` ou `inverse`, com padrão `neutral`, que devolve o plano de sempre. `palette/tone-plan.ts` dá os papéis e os pares de `PAIRS` de cada tom, nos dois modos. O tom só vale com `colorPalette` válida, e uma cor declarada em `sidebarColor` ou `topbarColor` continua vencendo. Nos tons contrastantes, a barra refaz para os seus descendentes as variáveis de texto, ícone e borda (`chromeToneStyle.ts`), e assim os widgets acompanham o fundo sem token próprio ([[05-cromo-e-slots]] §2.1). Nesses tons, o texto do item ativo é o texto forte da barra, e um `navItemActiveColor` declarado não chega ao item. **Os temas embarcados declaram o tom das barras**, com o item ativo e a borda da Personalidade mais próxima do seu caráter (`themeBars.test.ts`, que guarda o mapa tema → Personalidade). Os sete temas resgatados (§5) fogem do mapa em dois tokens: o item ativo é `bar` e a borda da lateral nunca é `'none'`. A posição da marca não entra nesse mapa: todos os temas a mantêm no topo. A exceção é `sarak-sovereign`, que mantém os padrões do schema (§5.3).
+
+O tom escolhido vence o tom do `config` do host no cálculo, como a paleta escolhida (§4.4.2). Uma cor declarada em `sidebarColor` ou `topbarColor` continua vencendo o tom.
+
+**Os papéis da barra lateral** (`role-map.ts`, no tom `neutral`):
+
+| Papel | Token | Cor |
+| --- | --- | --- |
+| marcador do item ativo | `navActiveMarkerColor` | a primária exata |
+| fundo do item ativo | `sidebarActiveColor` | véu da primária a 10% |
+| texto do item ativo | `navItemActiveColor` | a primária, com o deslocamento mínimo |
+| texto e ícone do item inativo | `sidebarItemTextColor`, `sidebarIconColor` | neutra apagada (600 no claro, 500 no escuro), sempre a 4,5:1 |
+| título de seção | `sidebarCategoryColor` | o texto forte da barra, não uma cor de destaque |
+
+**O ativo vence o inativo.** O par do texto ativo na lateral tem `beat` (`contrast-pairs.ts`): além do piso de 4,5:1, o contraste dele não
+pode ficar abaixo do contraste do inativo sobre a barra (`getPairMinimum`, `contrast.ts`). Quando é preciso, o texto ativo anda até passar.
+No topo, o inativo é o texto do corpo e não é apagado, então só o piso vale ali. Contraprova: `nav-active-over-inactive.test.ts`, com toda
+paleta, os dois modos e os tons `neutral` e `surface`.
+
+**A barra em degradê.** Com `sidebarBackgroundStyle` ou `topbarBackgroundStyle` em `gradient`, o plano da paleta ganha pares a mais. O texto
+do item ativo, o do inativo, o ícone e o do hover passam a valer também sobre a parada clara do degradê: a cor da barra com 16% de branco
+(`GRADIENT_LIGHT_ID` na cadeia de fundo). O texto anda o mínimo até passar nas duas paradas, e a cor da paleta não muda. Com fundo sólido, o
+cálculo é o de sempre.
 
 **O fundo tem cor.** A neutra leva o matiz da base, com régua própria de luminosidade; a faixa de croma e de L está em `scale.ts` e `seeds.ts`, com teste sobre os presets.
 
@@ -395,7 +458,7 @@ Ver [[005-modelo-modulos-plugin-e-apps-separados]] e [[018-um-cromo-so-e-o-consu
 | `strategy` | `localStorage` | `onLoad` do consumidor | Resolução |
 | --- | --- | --- | --- |
 | `'local'` | grava e lê | **ignorado**, mesmo se fornecido | só o cache local |
-| `'hybrid'` *(default)* | grava e lê | chamado | funde **por cima** do que veio do cache: `{ ...local, ...remoto }` |
+| `'hybrid'` *(default)* | grava e lê | chamado | gravado no formato de escolhas (§4.4.2): **substitui**, refeito pelo tema. Gravado antigo: funde **por cima** do que veio do cache, `{ ...local, ...remoto }` |
 | `'remote'` | **não grava** | chamado | **substitui**: `{ ...semente, ...remoto }` — impede o cache local de vencer por acidente |
 
 **O custo do `'hybrid'` no primeiro paint, que o integrador precisa conhecer antes de escolher:** o design
@@ -410,21 +473,43 @@ multi-tenant na mesma origem não vazem tema entre inquilinos. A composição te
 nunca compõem a chave por conta própria. **Trocar `tenantId` recarrega:** a lib descarta o estado do inquilino
 anterior e chama `onLoad` de novo para o novo, **sem remontar o Provider**.
 
-> ⚠️ **Consequência que governa o design de token, e não é óbvia: em `'hybrid'`, chave ausente na fonte
-> remota NÃO apaga a chave presente no cache local.** Para tirar um valor de circulação de fato, ele sai
-> das **duas** fontes. É a mesma assimetria que faz valor persistido vencer default —
+> ⚠️ **Consequência que governa o design de token, e não é óbvia: em `'hybrid'`, com gravado sem o marcador de
+> formato, chave ausente na fonte remota NÃO apaga a chave presente no cache local.** Para tirar um valor de
+> circulação de fato, ele sai das **duas** fontes. No formato de escolhas o remoto substitui, e a chave ausente sai. É a mesma assimetria que faz valor persistido vencer default —
 > ver [[07-responsividade-e-multidispositivo]] §6.1, regra 4.
 
 ### 4.4.2 O que a porta entrega — e recebe
 
-`onSave` recebe **duas** coisas: o conjunto de tokens **e o `id` do tema ativo**. O id viaja como
-**segundo parâmetro**, não dentro do payload — o payload é o dicionário de tokens e nada mais, e misturar
-identidade com valor obrigaria todo consumidor a filtrá-la antes de gravar.
+`onSave(design, activeThemeId, format)` recebe o dicionário de tokens, **o `id` do tema ativo** e o
+**marcador de formato**. O id e o marcador viajam como parâmetros, não dentro do payload — o payload é o dicionário de
+tokens e nada mais, e misturar identidade com valor obrigaria todo consumidor a filtrá-la antes de gravar. O terceiro
+argumento só vai quando há marcador; quem declara `onSave(design, id)` continua funcionando.
 
-**`onLoad` devolve o par de volta.** Ele pode devolver só o design (o formato mais simples, que continua
-aceito) **ou** `{ design, activeThemeId }`; com o id presente, é o tema resolvido no boot (§4.3).
+**`onLoad` devolve o que recebeu.** Ele pode devolver só o design (o formato mais simples, que continua
+aceito) **ou** `{ design, activeThemeId, format }` (`SarakSavedDesign`); com o id presente, é o tema resolvido no boot (§4.3).
 `null` ou `undefined` significa *nada gravado ainda* e não aplica nem grava coisa alguma. Sem o id de volta, o
 consumidor guardaria *quais tokens* estão aplicados, mas não conseguiria restaurar *de qual tema eles vieram*.
+
+**O dicionário gravado é só escolhas** ([[026-design-gravado-guarda-so-as-escolhas]]). Com o tema do id em memória, a lib grava
+as escolhas (§4.3.3) com `format: 2` (`SarakDesignFormat`); o que a paleta calcula nunca é gravado e é refeito a cada carga. Sem
+o tema em memória, grava o design completo, sem marcador: nunca se descarta um valor por não saber de onde ele veio. O design em memória
+não muda: `useSarakUI().design`, o rascunho e o painel leem o design completo. Só o que vai para `onSave`, `onLoad` e o cache é esparso.
+
+**A paleta escolhida vence a cor do tema e sobrevive a recarregar.** Quando o `colorPalette` gravado difere do que o tema declara, a
+referência usa as cores **calculadas pela paleta escolhida** em todo papel que ela calcula, no lugar das que o tema e o host declaram. O
+cálculo é o do painel (o valor, o modo e os tons da barra), sem a correção contra a cor declarada. O que o tema declara e a paleta
+não calcula fica como está. O gravado leva só `colorPalette`, e o ajuste à mão feito depois é gravado como escolha. Quando o `colorPalette`
+é o do próprio tema, vale a regra de sempre: a cor do tema vence (§4.3.4).
+
+**Ao carregar:**
+
+| O gravado | O que a lib faz |
+| --- | --- |
+| `format: 2` (do `onLoad` ou do cache) | refaz o design pelo tema do id, com as escolhas por cima, e **substitui** o que havia |
+| sem marcador (dado antigo, ou importador que guarda só o 1.º argumento) | regra **L1**: tira toda chave que a paleta calcula e que o tema do id e o `config` do host não declaram, e preserva o resto. Isso remove a cópia do cálculo e o resto de outro tema; um ajuste manual de cor de papel no dado antigo não se distingue desse resto e se perde uma vez |
+| tema do id ainda não em memória | funde como antes e refaz quando o tema chega (`useDeferredDesignRestore`); uma prop controlada ou uma edição do usuário cancela a espera |
+
+A correção do dado antigo vale para a tela e **não grava na hora**: vira gravado no próximo `Aplicar`. O importador não limpa nada.
 
 **A lib não grava sem mudança.** O boot e a hidratação — a local e a do `onLoad` — não chamam `onSave` e não chamam
 `onThemeChange`; a única escrita da hidratação é a do cache local em `'hybrid'`, descrita abaixo. Só gravam a edição do usuário (com o atraso de 1,5 s) e
@@ -441,7 +526,10 @@ que existe é **criar um derivado**, que passa a viver no importador. É o que m
 igual em todos os consumidores e o que torna a atualização da lib segura.
 
 **O cache local guarda o par.** Em `'hybrid'`, o design fica na chave efetiva (formato de sempre) e o id do tema ativo na chave
-companheira `<chave efetiva>::active-theme-id`; no boot, o id do cache vale até o `onLoad` responder (precedência da §4.3: prop
+companheira `<chave efetiva>::active-theme-id`. O design completo continua na chave efetiva, e é ele que pinta o primeiro quadro sem
+esperar o tema sob demanda. Ao lado, `<chave efetiva>::choices` guarda as escolhas com o marcador, assinadas pelo completo que
+acompanham. Quando a assinatura confere, as escolhas são a fonte da verdade; se o completo mudou sem elas, vale o completo, como
+dado antigo. A sincronização entre abas escuta a chave efetiva. No boot, o id do cache vale até o `onLoad` responder (precedência da §4.3: prop
 controlada > `onLoad` > cache > semente). O resultado do `onLoad` que difere do cache é **escrito de volta no cache** — sem `onSave`,
 porque hidratação não é edição —, e assim outro dispositivo que trocou o tema não faz a próxima recarga pintar o tema velho.
 
@@ -641,6 +729,9 @@ temas **novos**:
   claro.
 - Os sete seguem as mesmas regras de todo tema embarcado: paleta calculada, tom de barra ligado a uma Personalidade, todo token
   estético declarado e carga sob demanda.
+- A barra lateral deles tem a anatomia da lib antiga: item ativo `bar`, borda da moldura (`sidebarBorderSide` diferente de `'none'`) e
+  avatar `icon`. Nenhum grava cor de ícone, de rótulo ou de título de seção da barra (`sidebarIconColor`, `sidebarItemTextColor`,
+  `sidebarCategoryColor`): a paleta calcula essas cores (`themeBars.test.ts`).
 - A diversidade deles se mede por `themes:diversity` e `themeSetCoverage`, fora dos critérios de `--new`: o resgate perto do
   homônimo é intencional.
 - Valor original que o contrato atual não aceita segue o padrão de hoje, e não volta ao schema.
@@ -654,7 +745,16 @@ o id, porque um id desconhecido compõe sem paleta.
 
 **A harmonia do preset é aprovada à vista.** A semente declarada pode sair do ângulo do tipo até o limite de `presets.test.ts`, que também guarda as exceções de croma com nome. O teste mira a beleza do preset, não a precisão do ângulo. Os números moram no teste e no registro, nunca aqui.
 
-**Preset de estrutura não escreve cor.** Um preset de componente escreve só tokens da área que o grupo declara, e nenhuma cor: nem token `type: color`, nem literal de cor em valor de texto. `sidebarTone` e `topbarTone` são papel da paleta, não cor (§4.3.4). Os presets publicados que já escreviam cor ficam em `LEGACY_COLOR_PRESET_IDS`, uma lista que só encolhe. O `id` de um preset publicado nunca muda nem sai (`PUBLISHED_PRESET_IDS`). Todo preset, aplicado sobre os temas embarcados nos dois modos, mantém os pares de legibilidade da paleta. Os testes são `presetCatalog.test.ts` e `presetsReadable.test.ts`.
+**A curadoria não abre exceção nova.** Uma paleta nova cuja secundária ou acento sai da harmonia do tipo fica com a base e o tipo. A
+semente fora é recalculada no centro da faixa do tipo, com a luminosidade e o croma OKLCH da cor escolhida, trazidos para dentro do
+sRGB. Quando o croma fica abaixo do piso de `presets.test.ts`, a luminosidade da semente anda o mínimo, no mesmo matiz, até alcançá-lo.
+Base que faz o texto de marca passar da régua da §4.3.4 anda só em luminosidade, com o mesmo matiz, no menor passo que a faz passar.
+
+**O nome de cada paleta está no catálogo de textos, nos seis idiomas.** `SARAK_PALETTE_PRESET_TEXT_KEYS` (`presets.ts`) liga o id à
+chave; os textos ficam em `catalogEntries.palette.ts` e, por tipo de harmonia, em `catalogEntries.palettePresets<Tipo>.ts`.
+`presets.test.ts` cobra o nome de todo preset nos seis idiomas, sem repetição.
+
+**Preset de estrutura não escreve cor.** Um preset de componente escreve só tokens da área que o grupo declara, e nenhuma cor: nem token `type: color`, nem literal de cor em valor de texto. `sidebarTone` e `topbarTone` são papel da paleta, não cor (§4.3.4); por isso um preset de barra pode trocar o tom para se distinguir de outro, como a Compacta (`sidebar-compact`, tom `surface`) faz em relação à Limpa. Os presets publicados que já escreviam cor ficam em `LEGACY_COLOR_PRESET_IDS`, uma lista que só encolhe. O `id` de um preset publicado nunca muda nem sai (`PUBLISHED_PRESET_IDS`). Todo preset, aplicado sobre os temas embarcados nos dois modos, mantém os pares de legibilidade da paleta. Os testes são `presetCatalog.test.ts` e `presetsReadable.test.ts`.
 
 **A cobertura é medida.** Os presets cobrem ao menos 60% dos tokens estéticos sem cor (`coverage.ts`, `npx tsx scripts/measure-preset-coverage.ts`). Todo token de fora tem motivo declarado em `COVERAGE_GAPS`: sem efeito visível isolado, só faz sentido no ajuste fino, ou fica para uma rodada seguinte. A lista só encolhe, e o teste confere os dois sentidos.
 
@@ -742,7 +842,11 @@ calcula. Onde esta seção diz que o tema declara uma cor, vale o design compost
 **Identidade do cromo.** Cada tema declara também o conjunto estético das duas barras: texto dos itens, hover, categoria
 e marca; moldura; tratamento do fundo; forma do item ativo; densidade; ícones; e, na topbar, separador, blur e sombra.
 Os 16 valores cromáticos e de sombra que carregam modo aparecem na `contraparte`; geometria e escolhas de estilo ficam
-no `design` principal. `sarak-sovereign` mantém os padrões do schema. O auditor de contraste verifica os textos inativos,
+no `design` principal. **A faixa da marca é a exceção:** ela vale nos dois modos (§4.3.4). O tema que declara
+`sidebarBrandBackground` ou `topbarBrandBackground` o faz uma vez, no `design`, com o valor do seu modo; a contraparte não o redeclara, e
+o texto da faixa não é declarado (é o do contraste). A isenção é `SAME_IN_BOTH_MODES_KEYS`
+(`gates/scripts/contrato/helpers/theme-completeness-core.ts`), e `themePalettes.test.ts` confere que, em todo tema embarcado, as duas
+faixas são iguais nos dois modos e o texto delas passa a 4,5:1. `sarak-sovereign` mantém os padrões do schema. O auditor de contraste verifica os textos inativos,
 hover, categoria e marca sobre a barra correspondente nos dois modos; o item ativo também continua coberto.
 
 **A trava é o `theme-completeness:check`** (`gates/scripts/contrato/check-theme-completeness.ts`): reprova estético
@@ -827,7 +931,9 @@ verde com **12 dos 18** reprovando AA, e ninguém sabia.
 texto grande, ≥24px; onde o `textColorMuted` renderiza são 9–14px). Cor com alfa é **composta** sobre a
 cadeia de fundo, não pulada, e **toda cadeia termina numa base opaca**, `colorBgBody`: barra, botão,
 superfície ou item ativo translúcidos são medidos sobre o corpo. **Duas passadas**: o modo nativo do tema e a
-contraparte. Baseline: **0 e 0**, e nenhum par-tema pulado. **Os pares seguem o papel da barra** (`pairsFor`). Numa barra de tom contrastante, o texto do corpo deixa de ser medido sobre ela, e entram os pares do texto da própria barra (`createPalettePlan`). Sem tom contrastante, valem os `PAIRS` de sempre.
+contraparte. Baseline: **0 e 0**, e nenhum par-tema pulado. **Os pares seguem o papel da barra** (`pairsFor`). Numa barra de tom contrastante, o texto do corpo deixa de ser medido sobre ela, e entram os pares do texto da própria barra (`createPalettePlan`). Sem tom contrastante, valem os `PAIRS` de sempre. Duas regras do cálculo ficam fora do gate, que mede o tema como declarado: os pares da
+parada clara do degradê (o branco a 16% não é token de tema) e o `beat` do item ativo. Quem as cobra são `gradient-bar-contrast.test.ts` e
+`nav-active-over-inactive.test.ts` (§4.3.4).
 
 > ⚠️ **`pulado` não é `aprovado`.** Um par só é pulado quando o valor não se resolve (`hsl()`, `var()`,
 > gradiente) ou quando o tema declara o **próprio** `colorBgBody` translúcido: o gate **declara** em vez de
@@ -935,6 +1041,11 @@ Os testes que cobrem esta spec **já existem** — ela documenta o que eles cobr
 | Nenhuma atmosfera shippada depende de servidor de terceiro | `src/core/Design/presets/components/__tests__/atmosphere.test.ts` |
 | Eixos faltantes detectados | `src/core/Design/utils/__tests__/themeAxes.test.ts` |
 | Export completo (não subconjunto) | `src/features/DesignEngine/Main/utils/__tests__/exportTheme.test.ts` |
+| O gravado guarda só escolhas; o dado antigo é corrigido ao carregar (L1) | `src/core/Provider/utils/__tests__/designChoices.test.ts` · `src/features/DesignEngine/hooks/__tests__/designGravadoEscolhas.persistenceIntegration.test.tsx` |
+| Régua de deslocamento do texto de marca em toda paleta | `src/core/Design/palette/__tests__/anchor-and-shift.test.ts` |
+| Item ativo acima do inativo; texto da barra nas duas paradas do degradê | `src/core/Design/palette/__tests__/nav-active-over-inactive.test.ts` · `gradient-bar-contrast.test.ts` |
+| Interruptor a 3:1, ligado e desligado | `src/core/Design/palette/__tests__/switch-glass-border.test.ts` · `switch-idle-thumb.test.ts` |
+| Faixas da marca iguais nos dois modos em todo tema | `src/core/Design/presets/themes/__tests__/themePalettes.test.ts` |
 | Cada um dos sete tokens de gráfico muda a opção entregue ao ECharts | `src/components/engines/charts/SubEngines/__tests__/useEChartsTheme.test.ts` · `src/components/engines/charts/__tests__/SarakChartEngine.test.tsx` |
 
 **Nada a implementar.** Um tema novo é coberto automaticamente pelas duas suítes de contrato — é o que

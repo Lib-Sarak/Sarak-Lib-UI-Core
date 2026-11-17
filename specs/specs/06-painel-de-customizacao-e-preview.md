@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Design Engine / Autoria"
 status: "🟢 Vigente"
 prioridade: "Alta"
 tags: ["spec", "design-engine", "painel", "preview", "gemeo-digital", "folksonomia"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-design-engine]]", "[[09-temas-e-presets]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[08-identidade-do-host-e-zero-marca]]", "[[10-seguranca-e-acessibilidade]]", "[[003-remocao-backend-proprio]]", "[[024-paleta-calculada-separada-do-tema]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-design-engine]]", "[[09-temas-e-presets]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[08-identidade-do-host-e-zero-marca]]", "[[10-seguranca-e-acessibilidade]]", "[[003-remocao-backend-proprio]]", "[[024-paleta-calculada-separada-do-tema]]", "[[05-cromo-e-slots]]", "[[07-responsividade-e-multidispositivo]]"]
 ---
 
 # 1. O que é, e por que vive em `features/`
@@ -157,6 +157,9 @@ opcionais (`PaletteCreator`).
 
 - **Escolher é rascunho.** A escolha grava `colorPalette` e as cores calculadas para o modo do rascunho; o "Aplicar" grava pelo fluxo de
   sempre. Não há porta nem entidade própria: a paleta vai no tema salvo, como o valor de `colorPalette` ([[09-temas-e-presets]] §4.3.4).
+- **Paleta espia como as outras opções** (§6.4). Passar o mouse ou focar uma paleta compõe na prévia as cores dela
+  (`buildPaletteDraftPatch`, com os tons de barra do rascunho), sem gravar. No teclado, as setas movem o foco, e o foco espia;
+  só Enter ou clique escolhem (`PaletteGallery.tsx`, `PaletteSection.tsx`).
 - **O ajuste granular vence a paleta.** Mudar uma cor depois de escolher a paleta grava um valor explícito no `design`.
 - **Trocar de paleta com cor ajustada à mão pergunta.** Só o botão explícito de descartar perde os ajustes; cancelar ou fechar o diálogo
   (Esc, clique fora) mantém o ajuste sobre a paleta nova (`usePaletteSelection`).
@@ -249,6 +252,22 @@ Mostrar o rascunho na tela real é seguro porque o modo claro/escuro é sobrepos
 do tema salvo** e nunca gravado nele (`overlayPreferences.ts`): experimentar não acumula conversão de
 paleta.
 
+**Sair com o rascunho sujo pergunta antes.** "Sujo" é o mesmo estado que habilita o `Aplicar`: rascunho com alteração ou marca
+pendente (`ThemeCustomizationTab.tsx`). O guarda é `Main/hooks/useLeavePanelGuard.ts`, e a pergunta é
+`Main/components/LeavePanelDialog.tsx`, um `SarakModal` próprio com três escolhas: **Ficar no painel**, **Descartar e sair** e
+**Aplicar e sair**. Elas ficam lado a lado e com a mesma largura, e empilham numa coluna quando não cabem. Os textos estão no catálogo
+(`panelLeave*`, `core/i18n/catalogEntries.panel.ts`), nos seis idiomas.
+
+| Saída | Como o painel pergunta |
+| --- | --- |
+| **Rota do cromo da lib** (lateral, topo, barra inferior, busca, drawer) | O `SarakUIProvider` monta `SarakNavigationGuardProvider` (`core/Provider/navigationGuard.tsx`). O painel registra a pergunta **só com o rascunho sujo**, e o `SarakAppChrome` passa o `onNavigate` do host por `useGuardedNavigate` num ponto só, que alcança todas as portas do cromo. O host não liga nada. Com guarda registrado, o `onNavigate` do host só roda depois da resposta "sair". Sem guarda, roda na mesma chamada. Com mais de um guarda, vale o último registrado |
+| **Fechar ou recarregar a aba** | aviso do navegador (`beforeunload`), só com o rascunho sujo |
+| **Navegação fora do cromo** (voltar do navegador, link no conteúdo) | a prop opcional `onUnsavedChangesControl` do `SarakCustomizationPanel` entrega `confirmLeave()`, que o host liga ao bloqueio do roteador dele. A promessa resolve `true` (sair) ou `false` (ficar). Os tipos `SarakCustomizationPanelProps` e `SarakPanelLeaveControl` saem no barril |
+
+- **Sem rascunho sujo, nada pergunta:** `confirmLeave()` resolve `true` na hora, e nenhum guarda fica registrado.
+- **Esc e o X valem "ficar"**, nunca "descartar". Desmontar o painel com a pergunta aberta também responde "ficar".
+- **"Aplicar e sair"** passa pelo `Aplicar` de sempre, a porta única de gravação. **"Descartar e sair"** passa pelo Descartar.
+
 **A restrição que qualquer alteração neste caminho tem de respeitar:** o preview repinta porque lê o
 **rascunho**, nunca o sistema. Quem mexer no handler mantém o rascunho alimentado — sem isso, o painel
 mostra o tema anterior e a escolha parece não ter efeito.
@@ -265,6 +284,21 @@ estruturais — não são otimização pontual:
 | **Uma única instância de `useDesignDraft`** no painel | duas instâncias significam dois estados de rascunho divergindo, e o dobro de render por interação |
 | **`getAllDesignTokens()` memoizado** | recomputar o dicionário **inteiro** de tokens a cada quadro do arraste |
 | **Debounce no commit do slider** | gravar/propagar em cada quadro, em vez de no valor final |
+
+**Escolher uma opção responde em menos de 250 ms.** O teto vale para a mediana de 15 escolhas, depois de uma de aquecimento, com o
+React de produção a 1440×900, em `browser-tests/escolha-no-painel.spec.ts`. O tempo é medido do clique ao quadro seguinte ao
+`Aplicar` habilitado. O tempo varia com a máquina. O que segura a regressão são as contagens do mesmo spec, que não variam:
+
+- uma escolha que não muda valor responsivo **não insere, remove nem reescreve `<style>`**;
+- uma troca de tema **não remonta escopo** de prévia, e **nenhuma amostra fora da área visível reescreve** o próprio estilo.
+
+As decisões de código que sustentam isso:
+
+| Decisão | O que evita |
+| --- | --- |
+| **A amostra fora da área visível fica congelada** no rascunho visto por último (`Canvas/hooks/useValueWhileVisible.ts`, usado em `SampleScope`, `PresetGroupCatalog` e `PersonalityCatalog`). Na área visível, o rascunho chega adiado (`useDeferredValue`) | cada amostra do painel recalcular e reescrever o estilo a cada escolha. A prévia ao vivo e o `Aplicar` respondem no render urgente, e as amostras visíveis se refazem logo depois, num render que o React pode interromper |
+| **As cores de barra das amostras vêm de cache** (`barToneColors`, `PresetGroupCatalog.tsx`), com chave por tudo o que a paleta lê: valor, modo, tons, estilo de fundo das barras e cada papel de cor. Da paleta calculada, entram na amostra só as chaves da lateral, do topo e do item de navegação (`sidebar*`, `topbar*`, `nav*`) | cada cartão de barra recalcular a paleta inteira, com a correção de contraste, a cada escolha |
+| **O mesmo par (contexto, override) devolve o mesmo objeto** em `mergeUIContextValue` (`WeakMap`) | cada consumidor de `useSarakUI()` copiar o design inteiro a cada render |
 
 **A troca de tema não tem transição.** Quando centenas de variáveis mudam de uma vez (`THEME_SWITCH_MIN_CHANGED_VARIABLES`), a marca `data-sarak-theme-switching` entra antes da escrita e sai depois da
 pintura, e `_motion.css` desliga as transições enquanto ela existe; hover, foco e abertura seguem animando. Sem isso, cada elemento recalcula estilo a cada quadro, e o recálculo chega a 68% do custo da troca. Ajuste de um token
@@ -361,6 +395,16 @@ Duas metades, e as duas são necessárias:
 | **Dispositivo lógico** | `SarakDeviceProvider overrideDevice={previewDevice}` — faz `useSarakDevice()` dentro do preview devolver o dispositivo simulado, então o reflow real acontece (cromo colapsa, tabela vira cards) | `Canvas/components/PreviewSystemRenderer.tsx` |
 | **Moldura física** | largura-alvo + moldura de aparelho: `desktop: 100%`, `tablet: 768px`, `smartphone: 375px`, com bordas/raio simulando o device | `Canvas/hooks/useDeviceStyles.ts` |
 
+**A largura que a prévia desenha.** No desktop, a moldura ocupa o espaço do painel, mas o sistema é desenhado na largura de uma janela
+real, `PREVIEW_DESKTOP_SYSTEM_WIDTH = 1920` px (`PreviewSystemRenderer.tsx`), e reduzido para caber: escala = largura medida ÷ 1.920,
+entre 0,2 e 1 (`useContainerScale.ts`, regra por dispositivo). Assim, as três larguras de conteúdo (1.000, 1.200 e 1.440 px) aparecem
+distintas na prévia, como no sistema real. Tablet e celular desenham na largura do aparelho, em escala 1.
+
+**Nada na prévia sai do painel.** Os itens da navegação de exemplo apontam para `#<tela>`. A camada da prévia cancela o que o item não
+trata: Ctrl/Cmd/Shift/Alt+clique, botão do meio, menu de contexto e âncora sem tratador (`keepPreviewLinksInside`). O botão de inspeção
+fica no canto da moldura, fora do aparelho. A prévia não tem marca d'água nem marca da lib: sem `systemName` no design, a barra
+mostra o nome neutro "Meu sistema".
+
 **Limite declarado:** o preview prova o **reflow**, não a **detecção** ([[07-responsividade-e-multidispositivo]] §7).
 
 **A barra do preview** (`Canvas/components/PreviewToolbar.tsx`) é onde moram o **dispositivo** (Desktop, Tablet,
@@ -395,6 +439,12 @@ forma candidato, e default que não conserta opção) valem aqui integralmente �
 
 `PreviewSystemRenderer` monta o **`SarakAppChrome`** — o mesmo que o consumidor monta — com a navegação de exemplo derivada das telas do preview, e a seleção de um item troca a tela ativa (`onNavigate`). Isso vale nas três geometrias de dispositivo. O administrador configura, no painel, **a barra que o usuário final vai ver**: topbar/sidebar, os oito widgets e o estado desabilitado do que depende do consumidor.
 
+**Os popovers do cromo abrem dentro da moldura.** O menu ⚙ (`ShellPreferencesMenu`) e o balão da navegação (`ShellNavFlyout`) se
+desenham num portal, e o destino dele vem de `useSarakPortalFrame()` (`core/Provider/portalFrame.tsx`). Sem moldura, o destino é o
+`body` e as coordenadas valem como vêm: nada muda para o importador. A prévia entrega um nó dentro da camada reduzida e converte as
+coordenadas da janela para as da camada (subtrai a origem e divide pela escala). Assim, os dois abrem dentro da moldura, na escala da
+prévia. `SarakPopover`, `SarakContextMenu`, `SarakTooltip`, modal e toast continuam no `body`.
+
 ## 6.3 Mocks modulares
 
 `Canvas/Mocks/` — telas falsas que exercitam os componentes reais: `DashboardMock`, `TableMock`,
@@ -405,7 +455,23 @@ forma candidato, e default que não conserta opção) valem aqui integralmente �
 `DashboardMock` é montado de **sub-peças** (`Mocks/Dashboard/`: `DashboardHeader`,
 `DashboardMetricsGrid`, `DashboardSidePanel`, `DashboardShared`) — e isso não é higiene de arquivo: é o que
 faz o preview **simular a paridade atômica de verdade**, com composição em vários níveis, em vez de um
-bloco monolítico que só testaria o token de superfície.
+bloco monolítico que só testaria o token de superfície. A grade de cartões do Painel mede a própria largura (`@container`), e não a
+janela: colunas por `@min-[448px]`/`@min-[768px]`, e a etiqueta de rascunho dos cartões só aparece em contêiner largo.
+
+**Cada grupo de opções tem onde aparecer.** Os mocks desenham, com o componente real da lib, o que cada grupo de preset muda:
+
+| Tela | O que desenha |
+| --- | --- |
+| **Componentes** (`ComponentsMock`) | `SarakSwitch`, `SarakBadge`, `SarakAlert` e `SarakEmptyState` reais. A seção **Elevação** tem três blocos com `box-shadow: var(--dynamic-shadow)`, sobre uma faixa mais clara que o fundo. A lista rolável refaz as variáveis `--scroll-*` a partir das do escopo. O diálogo e os avisos de sistema são réplicas com as mesmas variáveis (o diálogo lê `--sarak-modal-border-radius`): os reais abrem em portal no `body`, fora da moldura. Cada seção leva `data-peek-group` com o grupo que ela mostra |
+| **Tabela** (`TableMock`) | duas `SarakDataTable` reais, com `SarakBadge` no status. A `SarakDataTable` lê listras (`tableZebraStriping`), raio (`tableBorderRadius`, só com o token no design) e respiro (`--sarak-table-padding`, que o `tableCellPadding` escreve) |
+| **Gráficos** (`ChartsMock`) | respeita `chartShowGrid` e `chartSmoothing` |
+
+A `SarakTableView` lê o mesmo respiro horizontal (`--sarak-table-padding`, `useTableLayoutStyles.ts`). A densidade (`tableDensity`)
+fica com o respiro vertical e o corpo do texto.
+
+**A tela de cada grupo** é declarada em `config/design-decisions.json`, no `groupScreens` da decisão. Hoje são tabelas → `tabela`,
+gráficos → `graficos`, e diálogo, aviso, interruptor, rolagem, selo, estado vazio, sombra e direção da sombra → `components`.
+`peekScreenOf(group)` (`utils/decisions.ts`) a devolve, e grupo sem entrada não troca de tela. É a tela que a espiada usa (§6.4, §6.6).
 
 ## 6.4 Catálogos visuais
 
@@ -417,7 +483,24 @@ bloco monolítico que só testaria o token de superfície.
 
 Cards, botões, campos e texturas são desenhados com o componente real, com a opção por cima do rascunho, dentro de um escopo próprio, e só quando entram na área visível (`OptionTile`, `SampleScope`, `LazyWhenVisible`). A miniatura de tema mantém o desenho próprio do `PresetCard`, escolha do dono. Atmosfera e textura de fundo ocupam a amostra inteira, sem cartão por cima.
 
-**Espiada.** Passar o mouse ou focar uma opção compõe o efeito na prévia grande, sem gravar nada: não passa pelo rascunho, não conta como alteração e reverte ao sair. Não existe em toque, onde o toque já escolhe (`usePeekPreview`, `peek.ts`).
+**Espiada.** Passar o mouse ou focar uma opção compõe o efeito na prévia grande, sem gravar nada: não passa pelo rascunho, não conta como alteração e reverte ao sair. Não existe em toque, onde o toque já escolhe (`usePeekPreview`, `peek.ts`). A espiada começa depois de `PEEK_DELAY_MS` (150 ms) e vale para toda opção destacada: cartões de grupo, Personalidades, temas, inclusive o cartão de tema que ainda não carregou, e paletas (§2.4).
+
+- **A espiada leva a prévia à tela do grupo** (`groupScreens`, §6.3) enquanto dura, e ela volta à tela anterior ao sair. Escolher a opção espiada mantém a tela (`keepPeekScreen`, `usePeekPreview.ts`).
+- **A barra que a opção altera aparece.** Espiar um preset de Topbar com a navegação lateral, ou de Sidebar com a navegação no topo, põe na prévia o `navigationStyle` da barra do preset, só durante a espiada (`peekFor`, `PresetsCatalog.tsx`).
+- **O tema ainda não carregado espia** (`PresetCardPending`). A espiada carrega o tema e mostra a prévia quando ele chega. Sair antes de ele chegar não aplica nada: `getTokens` aceita promessa, e a promessa que volta depois da saída é descartada.
+- **Rolar a lista não espia.** O `mouseenter` disparado durante a rolagem não espia (`SCROLL_QUIET_MS`, 200 ms depois do último `scroll`), nem o `mouseenter` sem o ponteiro ter saído do lugar. Mexer o mouse sobre a opção espia (`onMouseMove`). O `mousemove` sintético do fim da rolagem não conta. Rolar o painel não muda o que a prévia mostra.
+- **O componente real que lê o design em JS** (`useSarakUI()`) vê a espiada: o contexto da prévia leva o rascunho com a espiada por cima.
+
+**Toda opção destacada muda a prévia.** Um spec de navegador espia cada opção destacada de cada decisão, na tela do grupo, e mede a
+diferença de pixels contra uma linha de base tirada logo antes, normalizada pela escala da prévia. As únicas exceções ficam listadas no
+spec, cada uma com a prova do motivo:
+
+| Exceção | Por que não muda pixel |
+| --- | --- |
+| **já aplicada** | o design já tem o que a opção escreve. A prova é escolher outra opção e espiar de novo, ou ler que todos os tokens dela já valem |
+| **só em animação** | a opção só escreve tokens de movimento ou de transição de página, e a foto é tirada sem animação |
+| **só no outro modo** | o efeito só aparece no claro, ou só no escuro. O spec espia de novo no outro modo |
+| **estilo computado** | o efeito existe, mas é fino demais para o limiar de pixel na escala da prévia (a rolagem "Fina", 6 → 3 px). A prova é o estilo computado do elemento |
 
 A amostra de fonte usa a fonte real (`headingFont` no título, `bodyFont` no corpo), carregada só quando o cartão entra na área visível e pela origem de `options.fonts` (`useRequestFont`); com `none`, mostra a
 fonte que houver. Escolher uma fonte grava só `headingFont` e `bodyFont`.
@@ -437,6 +520,9 @@ Abrir uma decisão leva a prévia à **tela canônica** dela, e escolher uma tel
 
 - Abrir uma decisão cuja tela atual já pertence a ela **não troca a tela**.
 - O estado inicial é a lista de decisões, com a tela `dashboard`.
+- **A tela da espiada não é a tela da decisão.** Abrir a decisão continua levando à tela canônica (`screen`). A espiada de um grupo com
+  `groupScreens` mostra a tela do grupo por cima dela, sem mudar o estado de tela, e por isso ela volta ao sair: a prévia recebe
+  `peekScreen ?? activePreviewApp` (`ThemeCustomizationTab.tsx`). Só escolher a opção espiada grava a tela do grupo como a tela ativa.
 
 **O menu do preview** mostra **seis telas** com rótulo humano — **Painel · Formulário · Tabela · Texto · Gráficos ·
 Tipografia** — e um sétimo item, **"Mais telas"**, que abre a grade do `MoreScreensMock` com as restantes
@@ -582,4 +668,9 @@ hoje é decisão do consumidor (ele exporta o componente e monta onde quiser, ou
 | Seis telas com rótulo humano e "Mais telas" ativo para as secundárias | `Canvas/components/__tests__/PreviewSystemRenderer.test.tsx` · `Canvas/Mocks/__tests__/MoreScreensMock.test.tsx` | ✅ suíte |
 | Menu Avançado: três entradas e a volta, teclado (setas com direção, Home, End, Esc devolve o foco) | `Main/components/__tests__/ThemeAdvancedMenu.test.tsx` · `ThemeSidebarHeader.test.tsx` | ✅ suíte |
 | Selo de dispositivo nos três dispositivos; nenhum em token fixo; piso de 12 px pelo schema | `Main/components/__tests__/TokenControl.test.tsx` | ✅ suíte |
-| O painel em navegador real (empilhado com metade da altura, selo, menu) | — | ❌ **não medido** — não há caso em `browser-tests/` para o painel |
+| Sair com rascunho sujo: pergunta só quando sujo, as três escolhas, Esc vale "ficar"; o cromo espera a resposta antes do `onNavigate` do host, na lateral e no topo | `Main/hooks/__tests__/useLeavePanelGuard.test.tsx` · `Main/components/__tests__/LeavePanelDialog.test.tsx` · `Main/__tests__/ChromeNavigationGuard.test.tsx` · `src/core/Provider/__tests__/navigationGuard.test.tsx` | ✅ suíte |
+| Popover do cromo pela moldura: destino e conversão de coordenadas; sem moldura, `body` e identidade | `src/core/Provider/__tests__/portalFrame.test.tsx` | ✅ suíte |
+| Espiada: tela do grupo e volta, promessa descartada ao sair, rolagem que não espia | `Main/hooks/__tests__/usePeekPreview.test.ts` · `Canvas/components/__tests__/peek.test.tsx` · `peek.scroll.test.tsx` | ✅ suíte |
+| Amostra fora da área visível congelada | `Canvas/hooks/__tests__/useValueWhileVisible.test.tsx` | ✅ suíte |
+| Escolher uma opção: < 250 ms (mediana, React de produção), 0 `<style>` por escolha, 0 remontagem e 0 reescrita fora da área visível na troca de tema | `browser-tests/escolha-no-painel.spec.ts` | ✅ navegador |
+| Toda opção destacada muda a prévia, com as exceções provadas (§6.4); a prévia desktop na largura do sistema, o ⚙ dentro da moldura, os links que não saem, tablet e celular sem corte, rolar o painel sem espiar, o respiro da célula por opção de `tableCellPadding` | os specs de navegador da prévia em `browser-tests/` | ✅ navegador |

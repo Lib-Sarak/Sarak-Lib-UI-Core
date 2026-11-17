@@ -30,23 +30,24 @@ export const PALETTE_ROLE_MAP: Readonly<Record<string, PaletteColorRole>> = {
     // A anatomia da barra: o ativo é um véu da primária, quase invisível; quem marca é a barra luminosa na primária.
     sidebarActiveColor: colorRole('primary', BASE, BASE, 0.1),
     // Item inativo apagado, como na anatomia antiga: só o ativo e o passar do mouse acendem (o par de 4,5:1 segura o piso).
-    sidebarItemTextColor: colorRole('neutral', 600, 400),
+    sidebarItemTextColor: colorRole('neutral', 600, 500),
     sidebarItemHoverTextColor: colorRole('neutral', 950, 50),
     // Título de seção na cor do texto da barra e ícone inativo na do rótulo, não em cor de destaque: a lista não parece acesa.
     sidebarCategoryColor: colorRole('neutral', 950, 50),
-    // O nome da marca no texto forte da barra, como na lib antiga; quem quiser acento declara o token.
-    sidebarBrandColor: colorRole('neutral', 950, 50),
+    // A faixa da marca é a primária exata nos dois modos (o preenchimento de marca): não acompanha o fundo da barra. O texto sobre ela é
+    // o claro se passa a 4,5:1 e o escuro se não, como o do botão primário; é o mesmo nos dois modos porque a faixa também é.
+    sidebarBrandColor: shiftRole('neutral', 50, 950),
     sidebarBorderColor: colorRole('neutral', 200, 800, 0.64),
-    sidebarBrandBackground: colorRole('primary', BASE, BASE, 0.05),
+    sidebarBrandBackground: colorRole('primary', BASE, BASE),
     sidebarFooterBackground: colorRole('neutral', 100, 900),
-    sidebarIconColor: colorRole('neutral', 600, 400),
+    sidebarIconColor: colorRole('neutral', 600, 500),
     topbarColor: colorRole('neutral', 100, 950),
     topbarHoverColor: colorRole('primary', 200, 800, 0.6),
     topbarActiveColor: colorRole('primary', 300, 700, 0.6),
     topbarItemTextColor: colorRole('neutral', 800, 100),
     topbarItemHoverTextColor: colorRole('neutral', 950, 50),
-    topbarBrandColor: colorRole('neutral', 950, 50),
-    topbarBrandBackground: colorRole('accent', 100, 900),
+    topbarBrandColor: shiftRole('neutral', 50, 950),
+    topbarBrandBackground: colorRole('primary', BASE, BASE),
     topbarBorderColor: colorRole('neutral', 200, 800, 0.64),
     topbarGroupSeparatorColor: colorRole('neutral', 200, 800, 0.64),
     topbarIconColor: colorRole('primary', 600, 300),

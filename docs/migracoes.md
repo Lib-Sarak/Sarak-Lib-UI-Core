@@ -5,6 +5,101 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 9.0.0 — o catálogo de paletas prontas passa de 19 para 78, e a base de seis paletas antigas escurece (ids intactos; a cor do botão muda nelas)
+
+A galeria do painel e `SARAK_PALETTE_PRESETS` ganham 59 paletas, cada uma com o nome nos seis idiomas. Os 19 ids anteriores continuam válidos e nenhum virou apelido de outro. As novas pedem ao motor o mesmo cálculo das antigas (escala, papéis, contraste); a lista completa é o próprio `SARAK_PALETTE_PRESETS` (ou `Object.keys` dele).
+
+**Regra única de luminosidade.** Em toda paleta, o texto da marca anda até 0,04 de luminosidade entre o claro e o escuro (título até 0,06, item ativo até 0,13), e a cor da paleta varia pouco entre os modos. Para isso, a base de uma paleta que passava da régua foi escurecida ou clareada só em luminosidade, com o mesmo matiz, no menor passo que a faz passar. Isso vale para 57 das novas e para seis das antigas, que eram as vivas: `ciano-violeta`, `ciano-azul`, `verde-neon`, `azul-projeto`, `amarelo-contraste` e `ambar-industrial`. A secundária e o acento das seis ficam como estavam.
+
+**O que muda para o importador:** quem salvou um tema com um destes seis ids vê o botão primário (e o que nasce da base) mais escuro que antes, nos dois modos. A mudança aparece em temas embarcados que declaram essas paletas:
+
+| Tema embarcado | Paleta | Base antes | Base agora |
+|---|---|---|---|
+| `sarak-sovereign`, `cyber-retro-wave` | `ciano-violeta` | `#19e3f0` | `#008790` |
+| `cyberpunk-neon` | `verde-neon` | `#00ff6a` | `#008e38` |
+| `industrial-terminal`, `golden-hour` | `ambar-industrial` | `#ff9a1f` | `#b26700` |
+| `high-contrast` | `amarelo-contraste` | `#ffd400` | `#927800` |
+| `blueprint-protocol` | `azul-projeto` | `#6fa3d9` | `#4a7db1` |
+
+`ciano-azul` (`#19e3f0` → `#008790`) não é usada por tema embarcado. Quem precisar do brilho antigo declara a cor como paleta própria (`custom:<tipo>:<hex>`).
+
+**Item ativo da barra lateral.** Com as bases mais escuras, o item ativo perdia em contraste para o inativo no modo escuro. Agora o texto do item ativo tem, no mínimo, o contraste do inativo, e duas cores mudam em toda paleta, mesmo a de um tema salvo antes: no modo escuro o item inativo e o ícone da barra lateral ficam um tom mais apagados (tom 400 → 500 da escala neutra); no modo claro, nas paletas de base verde ou verde-azulada (`ciano-violeta`, `ciano-azul`, `verde-neon`, `oliva-viva`, `verde-tecnico`, `oliva-industrial`, `forest-tech`, `emerald-mist`, `neo-matrix`, `emerald-royal` e `neon-matrix-green`), o texto do item ativo fica mais escuro. Quem declara o texto do item ativo ou do inativo no próprio tema não é afetado.
+
+**Barra com fundo em degradê.** Com `sidebarBackgroundStyle` ou `topbarBackgroundStyle` em `gradient`, o texto do item ativo, o do inativo e o ícone passam a valer 4,5:1 também sobre a parada clara do degradê (a cor da barra com 16% de branco). O texto clareia (no escuro) ou escurece (no claro) o mínimo até passar; a cor da paleta não muda. Com o fundo sólido nada muda.
+
+Em 38 das novas, a secundária e o acento foram recalculados no ângulo que o tipo da paleta pede (o centro da faixa de harmonia), com a luminosidade e o croma da cor original trazidos para dentro do sRGB. Quando o croma ficou abaixo de 60% do da base, a luminosidade da semente andou o mínimo até alcançá-lo, no mesmo matiz. A cor que o painel mostra nelas pode diferir da do rascunho de origem.
+
+| | Antes | Depois |
+|---|---|---|
+| Paletas prontas na galeria | 19 | 78 |
+| Ids dos 19 anteriores | válidos | válidos; a base de seis escurece |
+| Ids novos | não existiam | válidos em `colorPalette` (um deles é `neon-crimson`) |
+
+---
+
+## 9.0.0 — `SarakDataTable` lê os cantos da tabela do design
+
+A moldura da `SarakDataTable` colunar passa a ter o raio do token `tableBorderRadius` (`--sarak-table-border-radius`, que segue o raio do cartão quando o tema não o declara), como a `SarakTableView` já tinha. Sem `SarakUIProvider`, nada muda. Para manter os cantos retos, declare `tableBorderRadius: 0` no tema ou na configuração.
+
+| | Antes | Depois |
+|---|---|---|
+| Moldura da `SarakDataTable` (com Provider) | cantos retos; `tableBorderRadius` não tinha efeito nela | o raio do token |
+
+---
+
+## 9.0.0 — `SarakTableView` lê o respiro da célula (`tableCellPadding`) e a sombra "Suave" do painel ficou mais visível
+
+Duas mudanças de padrão, sem token novo e sem token removido.
+
+- **Respiro horizontal da `SarakTableView`.** A célula passa a ler `--sarak-table-padding` (o que o `tableCellPadding` escreve, em px), como a `SarakDataTable` já lia. A densidade (`tableDensity`) continua dona do respiro vertical e do corpo do texto. Com `SarakUIProvider`, o token sempre chega (padrão 12 px no desktop); sem ele, a reserva também é 12 px: a tabela confortável passa de 16 px para 12 px de respiro horizontal. Para manter o de antes, declare `tableCellPadding` com o valor da densidade (compacta 8, confortável 16, arejada 24).
+- **Sombra "Suave" do painel.** O preset `shadow-soft` (opção "Suave" de Sombra) passa de intensidade 0,4 / projeção 36 px a alfa 0,15 / ambiente 0,3 para intensidade 0,8 / projeção 56 px a alfa 0,4 / ambiente 0,55: mais espalhada e visível na prévia. Quem a tinha gravada continua com os valores antigos; só quem a escolhe de novo recebe os novos.
+
+| | Antes | Depois |
+|---|---|---|
+| Respiro horizontal da célula da `SarakTableView` (com Provider) | 8, 16 ou 24 px, pela densidade | `tableCellPadding` (padrão 12 px) |
+| Preset "Suave" de Sombra | intensidade 0,4, projeção 36 px, alfa 0,15, ambiente 0,3 | intensidade 0,8, projeção 56 px, alfa 0,4, ambiente 0,55 |
+
+---
+
+## 9.0.0 — a faixa da marca é a cor primária sólida, a mesma nos dois modos (muda a cor da faixa em todo tema sem faixa declarada)
+
+`sidebarBrandBackground` (a faixa da marca no topo da barra lateral) e `topbarBrandBackground` (a faixa da marca na barra do topo) deixam de acompanhar o fundo da barra: o padrão da paleta passa a ser a primária exata (a base da paleta, sem transparência), igual no modo claro e no escuro, como o preenchimento de marca do botão primário. Antes, a lateral era a primária a 5% sobre o fundo e a do topo o acento claro/escuro, então a faixa trocava com o modo. O texto sobre ela (`sidebarBrandColor` e `topbarBrandColor`) é escolhido pelo contraste contra a faixa, com 4,5:1: claro se passa, escuro se não, e por isso também é igual nos dois modos. O monograma da marca (sem logo) e a seta de recolher, dentro da faixa, leem esse mesmo texto; o monograma ganha o fundo da marca e um aro, em vez do gradiente da primária, que sumiria na faixa. Nos papéis de barra `surface`, `primary`, `secondary` e `inverse` a faixa também vale a primária e o texto a escolha pelo contraste (antes cada papel trazia uma faixa e um texto próprios). Fundo da barra, ícones, rótulos, item ativo e véu continuam trocando com o modo.
+
+Os quatro temas Classic que declaravam a faixa em cada modo usam um valor só: `sarak-sovereign-classic` `#340029`, `cyberpunk-neon-classic` `#002020` e `industrial-terminal-classic` `#2a1500`, escritos no design e herdados pela contraparte, sem texto declarado. `dot-matrix-elegant` declarava a faixa do topo em cada modo (`#1b1b1b` no escuro e `#eeeeee` no claro) e passa a usar `#1b1b1b` nos dois, com o texto escolhido pelo contraste. O `neo-brutalism-classic` deixou de declarar a faixa (`#e6efff` no claro e `#000b55` no escuro) e a faixa dele é a primária sólida do padrão. Quem clona um desses temas e quer a faixa de antes declara os tokens no próprio tema, nos dois modos.
+
+| | Antes | Depois |
+|---|---|---|
+| Faixa da lateral (padrão) | primária a 5% sobre o fundo da barra, muda com o modo | primária sólida, igual nos dois modos |
+| Faixa do topo (padrão) | acento 100/900, muda com o modo | primária sólida, igual nos dois modos |
+| Texto da faixa | neutro 950/50, por modo | escolhido pelo contraste (4,5:1), o mesmo nos dois modos |
+| Monograma e seta na faixa | gradiente da primária e cor de ação | o texto da marca; monograma com fundo da marca e aro |
+
+---
+
+## 9.0.0 — a barra lateral "Compacta" passa do tom Neutro ao Superfície
+
+A opção "Compacta" do grupo Barra lateral (`sidebar-compact`) deixa de usar `sidebarTone: 'neutral'` e passa a `'surface'`: o fundo da barra sobe do tom neutro para o de superfície, o mesmo dos cartões. Densidade, tamanho de ícone, raio e item ativo não mudaram. Com a faixa da marca sólida na primária, a Compacta e a Limpa (as duas em Neutro) deixaram de se distinguir a olho; o tom é o que as separa. Quem escolheu "Compacta" no painel vê a barra com o fundo de superfície; quem quer o fundo de antes escolhe "Compacta" e muda o tom da barra para "Neutro".
+
+| | Antes | Depois |
+|---|---|---|
+| Fundo da barra da opção "Compacta" | tom Neutro | tom Superfície |
+
+---
+
+## 9.0.0 — os temas resgatados seguem a anatomia da barra, e dois ícones novos
+
+Os sete temas resgatados (`sarak-sovereign-classic`, `cyberpunk-neon-classic`, `industrial-terminal-classic`, `cyber-retro-wave-classic`, `nature-breeze`, `neo-brutalism-classic` e `dot-matrix-elegant`) deixam de sobrescrever os tokens que desmontavam a anatomia e passam a declará-la: item ativo com a barra luminosa na primária (`sidebarActiveItemStyle: 'bar'`) e véu de 12%, ícone, rótulo e título de seção nas cores que a paleta calcula, moldura em cartão (`sidebarBorderSide` sem `'none'`) e avatar em ícone (`userAvatarStyle: 'icon'`). Nenhuma cor de fundo da barra mudou; a faixa da marca, sim (entrada acima). Quem clona um desses temas e quer o desenho anterior declara os tokens no próprio tema. O selo de um item da lista vertical passa a ter o respiro da lista (com teto pela largura da barra), e não o espaçamento de página. `FileSearch` e `GitBranch` entram nos nomes de ícone curados.
+
+| | Antes | Depois |
+|---|---|---|
+| Item ativo dos 7 resgatados | `filled`, `outline` ou `pill`, fundo a 60% | `bar` (barra na primária), véu de 12% |
+| Ícone, rótulo e título de seção desses temas | cores gravadas no tema (destaque, magenta) | as da paleta (neutras) |
+| Avatar do usuário desses temas | iniciais | ícone |
+| Selo de item da lista vertical | respiro = espaçamento de página (48 px num tema largo) | respiro da lista (8 px numa barra de 240) |
+| Ícones `FileSearch` e `GitBranch` | caíam no ícone de aviso | existem nas três famílias |
+
+---
+
 ## 9.0.0 — a barra lateral volta à anatomia da lib antiga (padrões que mudaram)
 
 A barra lateral de todo tema volta a nascer com a anatomia que a lib antiga desenhava. **Nenhum token saiu nem mudou de nome** (entraram `sidebarActiveGlass`, `brandDisplay`, `userAvatarStyle` e `preferenceNavCollapsePositionTopbar`, todos aditivos): cada um

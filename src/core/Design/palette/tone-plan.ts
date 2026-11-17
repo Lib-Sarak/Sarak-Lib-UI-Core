@@ -1,4 +1,4 @@
-import { PAIRS as SHARED_PAIRS, type ContrastPair } from './contrast-pairs';
+import { GRADIENT_LIGHT_SHARE, GRADIENT_LIGHT_ID, PAIRS as SHARED_PAIRS, type ContrastPair } from './contrast-pairs';
 import { PALETTE_ROLE_MAP } from './role-map';
 import type { PaletteColorRole, PaletteScaleName } from './types';
 
@@ -34,13 +34,13 @@ const role = ([scale, light, dark, alpha = 1]: RoleSpec): PaletteColorRole => ({
 /**
  * Cada papel é uma coluna de especificações [escala, tom claro, tom escuro, opacidade] por função da barra. O
  * `surface` só troca o fundo, que continua claro (o texto da paleta neutra segue valendo); os outros três escurecem
- * (ou, no `inverse`, invertem em relação ao corpo) e por isso trazem o próprio texto, ícone e marcador.
+ * (ou, no `inverse`, invertem em relação ao corpo) e por isso trazem o próprio texto, ícone e marcador. A faixa da marca e o texto
+ * dela não entram: valem os do mapa de papéis, a primária exata nos dois modos, em qualquer tom.
  */
 // @sarak-token-reader sidebarTone, topbarTone tabela
 const TONE_SPECS: Record<Exclude<BarTone, 'neutral'>, Record<string, RoleSpec>> = {
     surface: {
         color: ['secondary', 100, 900],
-        brandBackground: ['secondary', 100, 900],
         border: ['secondary', 200, 800, 0.64],
         footerBackground: ['secondary', 200, 800],
     },
@@ -51,8 +51,6 @@ const TONE_SPECS: Record<Exclude<BarTone, 'neutral'>, Record<string, RoleSpec>> 
         itemText: ['neutral', 100, 100],
         itemHoverText: ['neutral', 50, 50],
         category: ['neutral', 200, 200],
-        brand: ['neutral', 50, 50],
-        brandBackground: ['primary', 800, 900],
         border: ['primary', 600, 700, 0.64],
         icon: ['neutral', 100, 100],
         footerBackground: ['primary', 800, 900],
@@ -65,8 +63,6 @@ const TONE_SPECS: Record<Exclude<BarTone, 'neutral'>, Record<string, RoleSpec>> 
         itemText: ['neutral', 100, 100],
         itemHoverText: ['neutral', 50, 50],
         category: ['neutral', 200, 200],
-        brand: ['neutral', 50, 50],
-        brandBackground: ['secondary', 800, 900],
         border: ['secondary', 600, 700, 0.64],
         icon: ['neutral', 100, 100],
         footerBackground: ['secondary', 800, 900],
@@ -79,8 +75,6 @@ const TONE_SPECS: Record<Exclude<BarTone, 'neutral'>, Record<string, RoleSpec>> 
         itemText: ['neutral', 200, 800],
         itemHoverText: ['neutral', 50, 950],
         category: ['neutral', 300, 700],
-        brand: ['neutral', 50, 950],
-        brandBackground: ['neutral', 800, 200],
         border: ['neutral', 700, 300, 0.64],
         icon: ['neutral', 300, 700],
         footerBackground: ['neutral', 800, 200],
@@ -132,6 +126,20 @@ const activeTextPair = (bar: Bar): ContrastPair => ({
     min: 4.5,
 });
 
+/** Os textos que o degradê da barra não pode apagar: o do item ativo, o do inativo, o ícone e o do hover (ativo da barra contrastante). */
+const gradientTextTokens = (bar: Bar): readonly string[] => ['navItemActiveColor', `${bar}ItemTextColor`, `${bar}IconColor`, `${bar}ItemHoverTextColor`];
+
+const withGradientLight = (chain: readonly string[], bar: Bar): string[] =>
+    chain.flatMap((token) => (token === `${bar}Color` ? [`${GRADIENT_LIGHT_ID}@${GRADIENT_LIGHT_SHARE}`, token] : [token]));
+
+/** Com o fundo em degradê, cada texto da barra vale também sobre a parada clara dele (a cor da barra com 16% de branco). */
+const gradientPairs = (pairs: readonly ContrastPair[], bar: Bar): ContrastPair[] =>
+    pairs.filter((pair) => gradientTextTokens(bar).includes(pair.fg) && pair.bgChain.includes(`${bar}Color`)).map((pair) => ({
+        ...pair,
+        bgChain: withGradientLight(pair.bgChain, bar),
+        ...(pair.beat ? { beat: { ...pair.beat, bgChain: withGradientLight(pair.beat.bgChain, bar) } } : {}),
+    }));
+
 /** O plano da paleta para os papéis declarados; sem papel (ou `neutral`), é exatamente o de sempre. */
 export const createPalettePlan = (declared?: Record<string, unknown>): PalettePlan => {
     const tones: Record<Bar, BarTone> = { sidebar: 'neutral', topbar: 'neutral' };
@@ -139,7 +147,8 @@ export const createPalettePlan = (declared?: Record<string, unknown>): PalettePl
         const value = declared?.[`${bar}Tone`];
         if (isBarTone(value)) tones[bar] = value;
     });
-    if (tones.sidebar === 'neutral' && tones.topbar === 'neutral') return DEFAULT_PALETTE_PLAN;
+    const gradientBars = (['sidebar', 'topbar'] as const).filter((bar) => declared?.[`${bar}BackgroundStyle`] === 'gradient');
+    if (tones.sidebar === 'neutral' && tones.topbar === 'neutral' && gradientBars.length === 0) return DEFAULT_PALETTE_PLAN;
 
     let roles: Record<string, PaletteColorRole> = { ...PALETTE_ROLE_MAP };
     let pairs: ContrastPair[] = [...PALETTE_PAIRS];
@@ -153,5 +162,6 @@ export const createPalettePlan = (declared?: Record<string, unknown>): PalettePl
         pairs = pairs.filter((pair) => !isBodyTextOverBar(pair, bar) && !(pair.fg === 'navItemActiveColor' && pair.bgChain[0] === `${bar}ActiveColor`));
         pairs.push(activeTextPair(bar));
     });
+    gradientBars.forEach((bar) => { pairs.push(...gradientPairs(pairs, bar)); });
     return { roles, pairs, contrastingBars };
 };

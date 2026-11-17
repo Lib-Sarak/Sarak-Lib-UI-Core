@@ -18,15 +18,15 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       >
         <div
           class="h-48 w-full relative flex transition-colors overflow-hidden"
-          style="background-color: rgb(13, 24, 24);"
+          style="background-color: rgb(13, 24, 25);"
         >
           <div
             class="absolute top-0 left-0 w-full h-6 flex items-center px-4 gap-3 border-b z-10 shadow-xl"
-            style="border-color: rgba(20, 31, 32, 0.72); background-color: rgb(13, 24, 24);"
+            style="border-color: rgba(20, 31, 32, 0.72); background-color: rgb(13, 24, 25);"
           >
             <div
               class="w-4 h-4 rounded-sm shadow-lg"
-              style="background-color: rgb(25, 227, 240);"
+              style="background-color: rgb(19, 141, 150);"
             />
             <div
               class="w-12 h-0.5 rounded-full bg-theme-text/20"
@@ -59,7 +59,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
               >
                 <div
                   class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                  style="background-color: rgb(13, 24, 24); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 14px; border-top-right-radius: 14px; border-bottom-right-radius: 14px; border-bottom-left-radius: 14px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
+                  style="background-color: rgb(13, 24, 25); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 14px; border-top-right-radius: 14px; border-bottom-right-radius: 14px; border-bottom-left-radius: 14px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(42, 154, 163, 0.18) 20%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -74,7 +74,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                 </div>
                 <div
                   class="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                  style="background-color: rgb(13, 24, 24); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 14px; border-top-right-radius: 14px; border-bottom-right-radius: 14px; border-bottom-left-radius: 14px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
+                  style="background-color: rgb(13, 24, 25); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 14px; border-top-right-radius: 14px; border-bottom-right-radius: 14px; border-bottom-left-radius: 14px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(42, 154, 163, 0.18) 20%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -91,7 +91,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                     />
                     <div
                       class="w-4 h-2 rounded-full"
-                      style="background-color: rgb(25, 227, 240);"
+                      style="background-color: rgb(19, 141, 150);"
                     />
                   </div>
                   <div
@@ -107,7 +107,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                 </div>
                 <div
                   class="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all"
-                  style="background-color: rgb(13, 24, 24); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 14px; border-top-right-radius: 14px; border-bottom-right-radius: 14px; border-bottom-left-radius: 14px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
+                  style="background-color: rgb(13, 24, 25); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 14px; border-top-right-radius: 14px; border-bottom-right-radius: 14px; border-bottom-left-radius: 14px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(42, 154, 163, 0.18) 20%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -124,7 +124,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
               >
                 <div
                   class="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all"
-                  style="background-color: rgb(13, 24, 24); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 14px; border-top-right-radius: 14px; border-bottom-right-radius: 14px; border-bottom-left-radius: 14px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
+                  style="background-color: rgb(13, 24, 25); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 14px; border-top-right-radius: 14px; border-bottom-right-radius: 14px; border-bottom-left-radius: 14px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(42, 154, 163, 0.18) 20%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -138,41 +138,41 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                   >
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 40%; background-color: rgb(25, 227, 240); opacity: 0.7;"
+                      style="height: 40%; background-color: rgb(19, 141, 150); opacity: 0.7;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 70%; background-color: rgb(25, 227, 240); opacity: 0.73;"
+                      style="height: 70%; background-color: rgb(19, 141, 150); opacity: 0.73;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 30%; background-color: rgb(25, 227, 240); opacity: 0.76;"
+                      style="height: 30%; background-color: rgb(19, 141, 150); opacity: 0.76;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 90%; background-color: rgb(25, 227, 240); opacity: 0.7899999999999999;"
+                      style="height: 90%; background-color: rgb(19, 141, 150); opacity: 0.7899999999999999;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 50%; background-color: rgb(25, 227, 240); opacity: 0.82;"
+                      style="height: 50%; background-color: rgb(19, 141, 150); opacity: 0.82;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 80%; background-color: rgb(25, 227, 240); opacity: 0.85;"
+                      style="height: 80%; background-color: rgb(19, 141, 150); opacity: 0.85;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 60%; background-color: rgb(25, 227, 240); opacity: 0.8799999999999999;"
+                      style="height: 60%; background-color: rgb(19, 141, 150); opacity: 0.8799999999999999;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 45%; background-color: rgb(25, 227, 240); opacity: 0.9099999999999999;"
+                      style="height: 45%; background-color: rgb(19, 141, 150); opacity: 0.9099999999999999;"
                     />
                   </div>
                 </div>
                 <div
                   class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                  style="background-color: rgb(13, 24, 24); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 14px; border-top-right-radius: 14px; border-bottom-right-radius: 14px; border-bottom-left-radius: 14px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
+                  style="background-color: rgb(13, 24, 25); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 14px; border-top-right-radius: 14px; border-bottom-right-radius: 14px; border-bottom-left-radius: 14px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(42, 154, 163, 0.18) 20%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -283,15 +283,15 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       >
         <div
           class="h-48 w-full relative flex transition-colors overflow-hidden"
-          style="background-color: rgb(13, 25, 15);"
+          style="background-color: rgb(16, 23, 17);"
         >
           <div
             class="absolute top-0 left-0 w-full h-6 flex items-center px-4 gap-3 border-b z-10 shadow-xl"
-            style="border-color: rgba(21, 32, 22, 0.72); background-color: rgb(13, 25, 15);"
+            style="border-color: rgba(24, 31, 24, 0.72); background-color: rgb(16, 23, 17);"
           >
             <div
               class="w-4 h-4 rounded-sm shadow-lg"
-              style="background-color: rgb(0, 255, 106);"
+              style="background-color: rgb(16, 147, 61);"
             />
             <div
               class="w-12 h-0.5 rounded-full bg-theme-text/20"
@@ -324,7 +324,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
               >
                 <div
                   class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                  style="background-color: rgb(13, 25, 15); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(21, 32, 22, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 165, 66, 0.18) 20%, transparent);"
+                  style="background-color: rgb(16, 23, 17); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(24, 31, 24, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(43, 163, 76, 0.18) 20%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -339,7 +339,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                 </div>
                 <div
                   class="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                  style="background-color: rgb(13, 25, 15); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(21, 32, 22, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 165, 66, 0.18) 20%, transparent);"
+                  style="background-color: rgb(16, 23, 17); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(24, 31, 24, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(43, 163, 76, 0.18) 20%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -356,7 +356,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                     />
                     <div
                       class="w-4 h-2 rounded-full"
-                      style="background-color: rgb(0, 255, 106);"
+                      style="background-color: rgb(16, 147, 61);"
                     />
                   </div>
                   <div
@@ -372,7 +372,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                 </div>
                 <div
                   class="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all"
-                  style="background-color: rgb(13, 25, 15); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(21, 32, 22, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 165, 66, 0.18) 20%, transparent);"
+                  style="background-color: rgb(16, 23, 17); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(24, 31, 24, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(43, 163, 76, 0.18) 20%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -389,7 +389,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
               >
                 <div
                   class="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all"
-                  style="background-color: rgb(13, 25, 15); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(21, 32, 22, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 165, 66, 0.18) 20%, transparent);"
+                  style="background-color: rgb(16, 23, 17); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(24, 31, 24, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(43, 163, 76, 0.18) 20%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -403,41 +403,41 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                   >
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 40%; background-color: rgb(0, 255, 106); opacity: 0.7;"
+                      style="height: 40%; background-color: rgb(16, 147, 61); opacity: 0.7;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 70%; background-color: rgb(0, 255, 106); opacity: 0.73;"
+                      style="height: 70%; background-color: rgb(16, 147, 61); opacity: 0.73;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 30%; background-color: rgb(0, 255, 106); opacity: 0.76;"
+                      style="height: 30%; background-color: rgb(16, 147, 61); opacity: 0.76;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 90%; background-color: rgb(0, 255, 106); opacity: 0.7899999999999999;"
+                      style="height: 90%; background-color: rgb(16, 147, 61); opacity: 0.7899999999999999;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 50%; background-color: rgb(0, 255, 106); opacity: 0.82;"
+                      style="height: 50%; background-color: rgb(16, 147, 61); opacity: 0.82;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 80%; background-color: rgb(0, 255, 106); opacity: 0.85;"
+                      style="height: 80%; background-color: rgb(16, 147, 61); opacity: 0.85;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 60%; background-color: rgb(0, 255, 106); opacity: 0.8799999999999999;"
+                      style="height: 60%; background-color: rgb(16, 147, 61); opacity: 0.8799999999999999;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 45%; background-color: rgb(0, 255, 106); opacity: 0.9099999999999999;"
+                      style="height: 45%; background-color: rgb(16, 147, 61); opacity: 0.9099999999999999;"
                     />
                   </div>
                 </div>
                 <div
                   class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                  style="background-color: rgb(13, 25, 15); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(21, 32, 22, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 165, 66, 0.18) 20%, transparent);"
+                  style="background-color: rgb(16, 23, 17); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(24, 31, 24, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(43, 163, 76, 0.18) 20%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -548,15 +548,15 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       >
         <div
           class="h-48 w-full relative flex transition-colors overflow-hidden"
-          style="background-color: rgb(27, 20, 13);"
+          style="background-color: rgb(27, 20, 14);"
         >
           <div
             class="absolute top-0 left-0 w-full h-6 flex items-center px-4 gap-3 border-b z-10 shadow-xl"
-            style="border-color: rgba(34, 27, 21, 0.72); background-color: rgb(27, 20, 13);"
+            style="border-color: rgba(34, 27, 21, 0.72); background-color: rgb(27, 20, 14);"
           >
             <div
               class="w-4 h-4 rounded-sm shadow-lg"
-              style="background-color: rgb(255, 154, 31);"
+              style="background-color: rgb(185, 109, 16);"
             />
             <div
               class="w-12 h-0.5 rounded-full bg-theme-text/20"
@@ -589,7 +589,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
               >
                 <div
                   class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                  style="background-color: rgb(27, 20, 13); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
+                  style="background-color: rgb(27, 20, 14); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -604,7 +604,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                 </div>
                 <div
                   class="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                  style="background-color: rgb(27, 20, 13); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
+                  style="background-color: rgb(27, 20, 14); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -621,7 +621,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                     />
                     <div
                       class="w-4 h-2 rounded-full"
-                      style="background-color: rgb(255, 154, 31);"
+                      style="background-color: rgb(185, 109, 16);"
                     />
                   </div>
                   <div
@@ -637,7 +637,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                 </div>
                 <div
                   class="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all"
-                  style="background-color: rgb(27, 20, 13); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
+                  style="background-color: rgb(27, 20, 14); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -654,7 +654,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
               >
                 <div
                   class="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all"
-                  style="background-color: rgb(27, 20, 13); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
+                  style="background-color: rgb(27, 20, 14); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -668,41 +668,41 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                   >
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 40%; background-color: rgb(255, 154, 31); opacity: 0.7;"
+                      style="height: 40%; background-color: rgb(185, 109, 16); opacity: 0.7;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 70%; background-color: rgb(255, 154, 31); opacity: 0.73;"
+                      style="height: 70%; background-color: rgb(185, 109, 16); opacity: 0.73;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 30%; background-color: rgb(255, 154, 31); opacity: 0.76;"
+                      style="height: 30%; background-color: rgb(185, 109, 16); opacity: 0.76;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 90%; background-color: rgb(255, 154, 31); opacity: 0.7899999999999999;"
+                      style="height: 90%; background-color: rgb(185, 109, 16); opacity: 0.7899999999999999;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 50%; background-color: rgb(255, 154, 31); opacity: 0.82;"
+                      style="height: 50%; background-color: rgb(185, 109, 16); opacity: 0.82;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 80%; background-color: rgb(255, 154, 31); opacity: 0.85;"
+                      style="height: 80%; background-color: rgb(185, 109, 16); opacity: 0.85;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 60%; background-color: rgb(255, 154, 31); opacity: 0.8799999999999999;"
+                      style="height: 60%; background-color: rgb(185, 109, 16); opacity: 0.8799999999999999;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 45%; background-color: rgb(255, 154, 31); opacity: 0.9099999999999999;"
+                      style="height: 45%; background-color: rgb(185, 109, 16); opacity: 0.9099999999999999;"
                     />
                   </div>
                 </div>
                 <div
                   class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                  style="background-color: rgb(27, 20, 13); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
+                  style="background-color: rgb(27, 20, 14); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--color-theme-body) 50%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -1616,7 +1616,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           >
             <div
               class="w-4 h-4 rounded-sm shadow-lg"
-              style="background-color: rgb(25, 227, 240);"
+              style="background-color: rgb(27, 145, 154);"
             />
             <div
               class="w-12 h-0.5 rounded-full bg-theme-text/20"
@@ -1649,7 +1649,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
               >
                 <div
                   class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                  style="background-color: rgb(23, 27, 46); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
+                  style="background-color: rgb(23, 27, 46); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(42, 154, 163, 0.18) 20%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -1664,7 +1664,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                 </div>
                 <div
                   class="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                  style="background-color: rgb(23, 27, 46); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
+                  style="background-color: rgb(23, 27, 46); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(42, 154, 163, 0.18) 20%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -1681,7 +1681,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                     />
                     <div
                       class="w-4 h-2 rounded-full"
-                      style="background-color: rgb(25, 227, 240);"
+                      style="background-color: rgb(27, 145, 154);"
                     />
                   </div>
                   <div
@@ -1697,7 +1697,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                 </div>
                 <div
                   class="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all"
-                  style="background-color: rgb(23, 27, 46); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
+                  style="background-color: rgb(23, 27, 46); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(42, 154, 163, 0.18) 20%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -1714,7 +1714,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
               >
                 <div
                   class="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all"
-                  style="background-color: rgb(23, 27, 46); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
+                  style="background-color: rgb(23, 27, 46); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(42, 154, 163, 0.18) 20%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -1728,41 +1728,41 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                   >
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 40%; background-color: rgb(25, 227, 240); opacity: 0.7;"
+                      style="height: 40%; background-color: rgb(27, 145, 154); opacity: 0.7;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 70%; background-color: rgb(25, 227, 240); opacity: 0.73;"
+                      style="height: 70%; background-color: rgb(27, 145, 154); opacity: 0.73;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 30%; background-color: rgb(25, 227, 240); opacity: 0.76;"
+                      style="height: 30%; background-color: rgb(27, 145, 154); opacity: 0.76;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 90%; background-color: rgb(25, 227, 240); opacity: 0.7899999999999999;"
+                      style="height: 90%; background-color: rgb(27, 145, 154); opacity: 0.7899999999999999;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 50%; background-color: rgb(25, 227, 240); opacity: 0.82;"
+                      style="height: 50%; background-color: rgb(27, 145, 154); opacity: 0.82;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 80%; background-color: rgb(25, 227, 240); opacity: 0.85;"
+                      style="height: 80%; background-color: rgb(27, 145, 154); opacity: 0.85;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 60%; background-color: rgb(25, 227, 240); opacity: 0.8799999999999999;"
+                      style="height: 60%; background-color: rgb(27, 145, 154); opacity: 0.8799999999999999;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 45%; background-color: rgb(25, 227, 240); opacity: 0.9099999999999999;"
+                      style="height: 45%; background-color: rgb(27, 145, 154); opacity: 0.9099999999999999;"
                     />
                   </div>
                 </div>
                 <div
                   class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                  style="background-color: rgb(23, 27, 46); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(0, 156, 165, 0.18) 20%, transparent);"
+                  style="background-color: rgb(23, 27, 46); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(20, 31, 32, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(42, 154, 163, 0.18) 20%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -2628,15 +2628,15 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
       >
         <div
           class="h-48 w-full relative flex transition-colors overflow-hidden"
-          style="background-color: rgb(27, 20, 13);"
+          style="background-color: rgb(27, 20, 14);"
         >
           <div
             class="absolute top-0 left-0 w-full h-6 flex items-center px-4 gap-3 border-b z-10 shadow-xl"
-            style="border-color: rgba(34, 27, 21, 0.72); background-color: rgb(27, 20, 13);"
+            style="border-color: rgba(34, 27, 21, 0.72); background-color: rgb(27, 20, 14);"
           >
             <div
               class="w-4 h-4 rounded-sm shadow-lg"
-              style="background-color: rgb(255, 154, 31);"
+              style="background-color: rgb(185, 109, 16);"
             />
             <div
               class="w-12 h-0.5 rounded-full bg-theme-text/20"
@@ -2669,7 +2669,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
               >
                 <div
                   class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                  style="background-color: rgb(27, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(196, 114, 0, 0.18) 12%, transparent);"
+                  style="background-color: rgb(27, 20, 14); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(193, 116, 29, 0.18) 12%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -2684,7 +2684,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                 </div>
                 <div
                   class="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                  style="background-color: rgb(27, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(196, 114, 0, 0.18) 12%, transparent);"
+                  style="background-color: rgb(27, 20, 14); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(193, 116, 29, 0.18) 12%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -2701,7 +2701,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                     />
                     <div
                       class="w-4 h-2 rounded-full"
-                      style="background-color: rgb(255, 154, 31);"
+                      style="background-color: rgb(185, 109, 16);"
                     />
                   </div>
                   <div
@@ -2717,7 +2717,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                 </div>
                 <div
                   class="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all"
-                  style="background-color: rgb(27, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(196, 114, 0, 0.18) 12%, transparent);"
+                  style="background-color: rgb(27, 20, 14); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(193, 116, 29, 0.18) 12%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -2734,7 +2734,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
               >
                 <div
                   class="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all"
-                  style="background-color: rgb(27, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(196, 114, 0, 0.18) 12%, transparent);"
+                  style="background-color: rgb(27, 20, 14); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(193, 116, 29, 0.18) 12%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -2748,41 +2748,41 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                   >
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 40%; background-color: rgb(255, 154, 31); opacity: 0.7;"
+                      style="height: 40%; background-color: rgb(185, 109, 16); opacity: 0.7;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 70%; background-color: rgb(255, 154, 31); opacity: 0.73;"
+                      style="height: 70%; background-color: rgb(185, 109, 16); opacity: 0.73;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 30%; background-color: rgb(255, 154, 31); opacity: 0.76;"
+                      style="height: 30%; background-color: rgb(185, 109, 16); opacity: 0.76;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 90%; background-color: rgb(255, 154, 31); opacity: 0.7899999999999999;"
+                      style="height: 90%; background-color: rgb(185, 109, 16); opacity: 0.7899999999999999;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 50%; background-color: rgb(255, 154, 31); opacity: 0.82;"
+                      style="height: 50%; background-color: rgb(185, 109, 16); opacity: 0.82;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 80%; background-color: rgb(255, 154, 31); opacity: 0.85;"
+                      style="height: 80%; background-color: rgb(185, 109, 16); opacity: 0.85;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 60%; background-color: rgb(255, 154, 31); opacity: 0.8799999999999999;"
+                      style="height: 60%; background-color: rgb(185, 109, 16); opacity: 0.8799999999999999;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 45%; background-color: rgb(255, 154, 31); opacity: 0.9099999999999999;"
+                      style="height: 45%; background-color: rgb(185, 109, 16); opacity: 0.9099999999999999;"
                     />
                   </div>
                 </div>
                 <div
                   class="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all"
-                  style="background-color: rgb(27, 20, 13); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(196, 114, 0, 0.18) 12%, transparent);"
+                  style="background-color: rgb(27, 20, 14); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-color: rgba(34, 27, 21, 0.72); border-style: solid; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; backdrop-filter: blur(var(--sarak-card-backdrop-blur, 12px)); box-shadow: 0 4px 10px -2px color-mix(in srgb, rgba(193, 116, 29, 0.18) 12%, transparent);"
                 >
                   <div
                     class="absolute inset-0 pointer-events-none opacity-50"
@@ -3941,7 +3941,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           >
             <div
               class="w-4 h-4 rounded-sm shadow-lg"
-              style="background-color: rgb(255, 212, 0);"
+              style="background-color: rgb(151, 125, 13);"
             />
             <div
               class="w-12 h-0.5 rounded-full bg-theme-text/20"
@@ -3998,7 +3998,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                     />
                     <div
                       class="w-4 h-2 rounded-full"
-                      style="background-color: rgb(255, 212, 0);"
+                      style="background-color: rgb(151, 125, 13);"
                     />
                   </div>
                   <div
@@ -4037,35 +4037,35 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
                   >
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 40%; background-color: rgb(255, 212, 0); opacity: 0.7;"
+                      style="height: 40%; background-color: rgb(151, 125, 13); opacity: 0.7;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 70%; background-color: rgb(255, 212, 0); opacity: 0.73;"
+                      style="height: 70%; background-color: rgb(151, 125, 13); opacity: 0.73;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 30%; background-color: rgb(255, 212, 0); opacity: 0.76;"
+                      style="height: 30%; background-color: rgb(151, 125, 13); opacity: 0.76;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 90%; background-color: rgb(255, 212, 0); opacity: 0.7899999999999999;"
+                      style="height: 90%; background-color: rgb(151, 125, 13); opacity: 0.7899999999999999;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 50%; background-color: rgb(255, 212, 0); opacity: 0.82;"
+                      style="height: 50%; background-color: rgb(151, 125, 13); opacity: 0.82;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 80%; background-color: rgb(255, 212, 0); opacity: 0.85;"
+                      style="height: 80%; background-color: rgb(151, 125, 13); opacity: 0.85;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 60%; background-color: rgb(255, 212, 0); opacity: 0.8799999999999999;"
+                      style="height: 60%; background-color: rgb(151, 125, 13); opacity: 0.8799999999999999;"
                     />
                     <div
                       class="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]"
-                      style="height: 45%; background-color: rgb(255, 212, 0); opacity: 0.9099999999999999;"
+                      style="height: 45%; background-color: rgb(151, 125, 13); opacity: 0.9099999999999999;"
                     />
                   </div>
                 </div>

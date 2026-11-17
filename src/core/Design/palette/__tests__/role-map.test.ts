@@ -44,7 +44,13 @@ describe('PALETTE_ROLE_MAP', () => {
         expect(PALETTE_ROLE_MAP.sidebarActiveColor.alpha).toBeLessThanOrEqual(0.15);
         expect(PALETTE_ROLE_MAP.sidebarIconColor).toEqual(PALETTE_ROLE_MAP.sidebarItemTextColor);
         expect(PALETTE_ROLE_MAP.sidebarCategoryColor.scale).toBe('neutral');
-        expect(PALETTE_ROLE_MAP.sidebarBrandBackground.alpha).toBeLessThanOrEqual(0.1);
+    });
+
+    it('as faixas da marca são a primária exata, sem alfa, nos dois modos, e o texto delas é escolhido pelo contraste', () => {
+        for (const key of ['sidebarBrandBackground', 'topbarBrandBackground']) {
+            expect(PALETTE_ROLE_MAP[key], key).toEqual({ scale: 'primary', toneByMode: { light: PALETTE_BASE_TONE, dark: PALETTE_BASE_TONE } });
+        }
+        for (const key of ['sidebarBrandColor', 'topbarBrandColor']) expect(PALETTE_ROLE_MAP[key].shiftFrom, key).toEqual([50, 950]);
     });
 
     it('o preenchimento de marca é a cor da semente, exata, nos dois modos', () => {

@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalScope';
+import { useSarakPortalFrame } from '../../../core/Provider/portalFrame';
 import { placeAnchored, type AnchoredCoords } from './internal/anchoredPosition';
 import { useFocusTrap } from '../Modals/hooks/useFocusTrap';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
@@ -33,7 +34,7 @@ const MENU_ID = 'sarak-preferences-menu';
  * configurada pelo administrador") — vive na camada atômica para compor
  * a barra do `SarakAppChrome` junto aos demais widgets.
  *
- * O menu vive num portal no `body`, em `fixed` a partir do retângulo do botão: a lateral recolhida tem 74 px e o
+ * O menu vive num portal (o `body`, ou a moldura do host que desenha o sistema, como a prévia do painel), em `fixed` a partir do retângulo do botão: a lateral recolhida tem 74 px e o
  * `overflow` dela cortaria um menu absoluto ("Lateral", "P M G" saíam pela metade). Na lateral abre ao lado do
  * botão, alinhado à base; no topo, abaixo e alinhado à borda final.
  *
@@ -51,14 +52,15 @@ export const ShellPreferencesMenu: React.FC<ShellPreferencesMenuProps> = ({
     const close = () => setIsOpen(false);
     const { containerRef, handleTrap } = useFocusTrap(isOpen, close);
     const t = useLibraryText();
+    const { container, localize } = useSarakPortalFrame();
 
     useLayoutEffect(() => {
         if (!isOpen || !anchorRef.current || !containerRef.current) {
             setCoords(null);
             return;
         }
-        setCoords(placeAnchored(anchorRef.current.getBoundingClientRect(), containerRef.current.getBoundingClientRect(), align === 'start' ? 'side-up' : 'below-end'));
-    }, [isOpen, align, containerRef]);
+        setCoords(localize(placeAnchored(anchorRef.current.getBoundingClientRect(), containerRef.current.getBoundingClientRect(), align === 'start' ? 'side-up' : 'below-end')));
+    }, [isOpen, align, containerRef, localize]);
 
     if (menuIds.length === 0 && !additionalRows) return null;
 
@@ -88,7 +90,7 @@ export const ShellPreferencesMenu: React.FC<ShellPreferencesMenuProps> = ({
                     icon={<SarakIcon name="Settings" size={16} />}
                 />
             )}
-            {isOpen && typeof document !== 'undefined' && createPortal(
+            {isOpen && container !== null && createPortal(
                 <SarakPortalScope>
                     <div
                         id={MENU_ID}
@@ -111,7 +113,7 @@ export const ShellPreferencesMenu: React.FC<ShellPreferencesMenuProps> = ({
                         {additionalRows}
                     </div>
                 </SarakPortalScope>,
-                document.body,
+                container,
             )}
         </div>
     );

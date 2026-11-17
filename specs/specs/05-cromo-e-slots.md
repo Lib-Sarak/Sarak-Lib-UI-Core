@@ -30,22 +30,22 @@ A contagem não é fixada aqui: o catálogo é a fonte viva ([[00-regras-e-invar
 | `onNavigate?: (route) => void` | **o host decide COMO navegar** — redirect de página inteira, router local, o que for |
 | `navigationStyle?: 'sidebar' \| 'topbar' \| 'auto'` | `'auto'` (default) segue `design.navigationStyle` |
 | `widgets?: { search?, themeToggle?, user?, notifications?, collapse?, fontSize?, navigationStyle?, language? }` | opt-out dos widgets que nascem montados (§2.2.1) — omitido = ligado, só `false` desliga aquele; é teto: tira o widget da barra e do ⚙, e nunca liga preferência que o tema não oferece |
-| `user?: SarakShellUser` · `logout?: () => void` | identidade e sessão **do consumidor**: `{ name, role?, avatarUrl?, email? }` alimenta o widget de usuário (só `avatarUrl` `http(s)` ou relativo vira imagem; sem ela, as iniciais do nome), que **aparece desabilitado** sem `user` ou sem `logout` (§2.2.1) |
-| `notifications?: SarakChromeNotification[]` · `onNotificationSelect?` | itens e tratamento do widget de notificações, que aparece desabilitado sem os dois (§2.2.1) |
+| `user?: SarakShellUser` · `logout?: () => void` | identidade e sessão **do consumidor**: `{ name, role?, avatarUrl?, email? }` alimenta o widget de usuário (só `avatarUrl` `http(s)` ou relativo vira imagem; sem ela, o avatar de `userAvatarStyle`, §2.1.4). Sem `user` ou sem `logout`, o widget **não aparece em produção** e aparece desabilitado fora dela (§2.2.1) |
+| `notifications?: SarakChromeNotification[]` · `onNotificationSelect?` | itens e tratamento do widget de notificações; sem os dois, a mesma regra do usuário (§2.2.1) |
 | `className?` / `style?` | escape hatch; o `style` sobrescreve a altura própria (§5) |
 
 `SarakNavItem` (`src/components/Layout/chrome/navItem.ts`):
-`{ id, label, icon?, href, active?, disabled?, badge?, target?, category? }` — `id` estável para chave de render, `href` é o destino, e o
+`{ id, label, icon?, href, active?, disabled?, badge?, target?, category?, children?, defaultExpanded? }` — `id` estável para chave de render, `href` é o destino, e o
 **consumidor marca qual item está ativo**. `category` agrupa visualmente (mesmo campo do `SarakShellNavItem`);
 item sem categoria fica no grupo raiz. O `icon` é um nome resolvido pelo `SarakIcon` (curado ou registrado) ou um elemento ([[03-superficie-publica]] §6.2).
 
 **A resolução de precedência, explícita** (`SarakAppChrome.tsx`): com `navItems`, o cromo mapeia
-para o contrato do `SarakShellNav` e deriva a rota ativa do item marcado `active` (com `activeRoute` como
-fallback); sem `navItems`, usa `nav` + `activeRoute`.
+para o contrato do `SarakShellNav` (`toShellNavItems`) e deriva a rota ativa do item marcado `active`, procurado também entre os
+filhos (`findActiveNavItemHref`, com `activeRoute` como fallback); sem `navItems`, usa `nav` + `activeRoute`.
 
-**Grupos.** `SarakShellNavItem` aceita `children` e `defaultExpanded`, com um nível só. O pai é botão, com `aria-expanded` e `aria-controls`. O grupo do item ativo abre sozinho, e mais de um pode ficar aberto. Na lateral e na gaveta do celular, ele abre na própria barra. Na lateral recolhida e na topbar, abre em balão (`ShellNavFlyout`), com setas, Esc e Tab. Item sem filhos mantém o mesmo DOM. Com grupo, o celular usa a gaveta.
+**Grupos.** `SarakShellNavItem` e `SarakNavItem` aceitam `children` e `defaultExpanded`, com um nível só: filho de filho é ignorado, e o pai com filhos não navega. A conversão de `navItems` repassa os filhos; quem não passa `children` recebe o mesmo de sempre. O pai é botão, com `aria-expanded` e `aria-controls`. O grupo do item ativo (um filho pode ser o `active`) abre sozinho, e mais de um pode ficar aberto. Na lateral e na gaveta do celular, ele abre na própria barra. Na lateral recolhida e na topbar, abre em balão (`ShellNavFlyout`), com setas, Esc e Tab. Item sem filhos mantém o mesmo DOM. Com grupo, o celular usa a gaveta.
 
-**Marca, tom e largura.** `sidebarLogoPlacement` põe a marca no topo ou na base da lateral; recolhida, fica só o símbolo; sem `logoUrl`, não há caixa colorida. `sidebarTone` e `topbarTone` dão o papel de cor ([[09-temas-e-presets]] §4.3.4). `sidebarResizable` liga a alça (`useSidebarResize`), por mouse e teclado, e o valor é preferência do usuário, nunca do tema (§4.7 da mesma spec). Com tom contrastante, o texto do item ativo preenchido usa o fundo da barra (`--sarak-on-nav-active`, `chromeToneStyle.ts`), o par que a paleta garante.
+**Marca, tom e largura.** `sidebarLogoPlacement` põe a marca no topo ou na base da lateral; no topo, ela fica na faixa da marca (§2.1.4). `brandDisplay` escolhe o que a marca mostra nas duas barras: `both` (padrão, o que o sistema passou), `logo` (cai no nome quando não há imagem) ou `name`. Fora da faixa, o fundo da marca só pinta com logo: sem imagem, não há caixa colorida. `sidebarTone` e `topbarTone` dão o papel de cor ([[09-temas-e-presets]] §4.3.4). `sidebarResizable` liga a alça (`useSidebarResize`), por mouse e teclado, e o valor é preferência do usuário, nunca do tema (§4.7 da mesma spec). Com tom contrastante, o texto do item ativo preenchido usa o fundo da barra (`--sarak-on-nav-active`, `chromeToneStyle.ts`), o par que a paleta garante.
 
 **A barra não rola para o lado.** Só a lista de navegação rola, e na vertical. Topo e rodapé ficam fixos. Recolhida, as preferências viram um ícone só e a busca vira ícone.
 
@@ -59,7 +59,7 @@ cromo.** O cromo é parte do design, não configuração de código.
 >
 > | Nome | O que é |
 > | --- | --- |
-> | `SarakNavItem` **(tipo)** | a **forma do dado** da prop `navItems` da tabela acima — `{ id, label, icon?, href, active?, disabled?, badge?, target?, category? }`, de `Layout/chrome/navItem.ts` |
+> | `SarakNavItem` **(tipo)** | a **forma do dado** da prop `navItems` da tabela acima — `{ id, label, icon?, href, active?, disabled?, badge?, target?, category?, children?, defaultExpanded? }`, de `Layout/chrome/navItem.ts` |
 > | `SarakMenuItem` **(componente)** | o **átomo** que desenha um item de menu, de `atomic/Navigation/SarakMenuItem.tsx` |
 >
 > O consumidor **declara** `SarakNavItem[]` e a lib **desenha** com `SarakMenuItem`. Os dois são
@@ -115,6 +115,36 @@ O resultado da busca da barra e o da paleta Ctrl+K são **links de verdade** par
 navegação (§2.1.2): sem `onNavigate`, o navegador segue o link; com ele, o callback é chamado e a navegação padrão é cancelada. Setas e
 Enter levam ao mesmo destino. O campo não mostra o texto do atalho: Ctrl/⌘+K segue valendo, declarado em `aria-keyshortcuts`. Sem espaço, a busca vira ícone. A paleta é `role="dialog"` com `aria-modal`, o campo é `combobox`
 ligado a uma `listbox` com `aria-activedescendant`, o primeiro resultado vem ativo e o ícone de cada resultado é o do item de navegação.
+
+### 2.1.4 A anatomia da barra lateral
+
+A barra lateral tem **uma anatomia só, igual em todo tema**. O tema muda cor, fonte, raio e textura por cima dela, e cada peça
+continua sendo um token que o tema declara e o painel ajusta (§2.4). As cores de cada papel vêm da paleta
+([[09-temas-e-presets]] §4.3.4).
+
+| Peça | Como é |
+| --- | --- |
+| Moldura | a `<aside>` é um cartão: o raio `borderRadius` (`--sarak-border-radius`) e, com `sidebarBorderSide: 'edge'`, a linha nos quatro lados (`chrome/sidebarFrame.ts`). Encostada na tela (`tabSectionMargin` zero), o raio e as linhas dos lados colados somem, e fica só a linha do lado do conteúdo. `sidebarPosition: 'floating'` tem moldura própria e não muda |
+| Faixa da marca | com a marca no topo: a altura do topo da área de conteúdo (`--sarak-topbar-height`), linha embaixo na cor da borda da barra e o fundo `sidebarBrandBackground`, com ou sem logo; dentro dela a marca não pinta fundo próprio. A seta de recolher fica à direita. Com a marca na base, o topo é só a seta, sem faixa nem altura mínima; sem marca e sem seta, o topo não existe (`ChromeSidebarHeader.tsx`) |
+| Monograma | sem logo, a faixa mostra a inicial de `brand.name` (`data-sarak-brand-monogram`), no raio do tema, no texto da marca sobre o fundo da marca, com um aro do mesmo texto. Recolhida, a marca é só ele (ou o logo) |
+| Nome da marca | **nunca é cortado com reticências** (`ChromeBrandName`, `useFitBrandName.ts`): quebra entre palavras em até duas linhas e, se ainda não cabe, a fonte diminui de 1 em 1 px até o piso do rótulo do item (`0,875rem`); no piso, a largura de `sidebarLabelMaxWidth`/`topbarLabelMaxWidth` cede a 100% da barra. Sobre o fundo da marca (a faixa, ou o bloco com logo) ele leva o texto da marca, escolhido pelo contraste contra esse fundo; sem fundo por baixo, o texto forte da barra. Na topbar a marca não encolhe: quem cede espaço é a lista de abas. Âncora: `data-sarak-brand-name` |
+| Busca | a altura de um item de menu na densidade do tema (`menuItemHeight`, que o cromo liga) e o recuo lateral da lista; entre o topo e a busca, o vão entre seções. A dica do atalho continua escondida (§2.1.3) |
+| Título de seção | caixa alta, negrito, `text-sm`, espaçamento de 0,2 em, na cor `sidebarCategoryColor` |
+| Recuo e vão da lista | o espaçamento do layout com teto pela largura da barra: `min(--sarak-layout-gap-md, largura/15)` e `min(--sarak-layout-gap-sm, largura/30)`, 16 e 8 px numa barra de 240 px. Um tema de respiro de página largo não espreme os itens no meio da barra |
+| Item ativo | o padrão é `bar`: um marcador de 4 × 16 px na borda, na cor `navActiveMarkerColor` e com o brilho `navActiveMarkerGlow`, sobre o véu `sidebarActiveColor`; os outros estilos (`pill`, `filled`, `outline`, `underline`) continuam. `sidebarActiveGlass` (`on` por padrão) soma, a qualquer estilo, o vidro: um brilho interno da cor do marcador a 5% (`inset 0 0 20px`). Só o item vertical o recebe; a topbar não |
+| Item inativo | rótulo e ícone apagados (`sidebarItemTextColor`, `sidebarIconColor`), ainda a 4,5:1 contra a barra; o ativo e o ponteiro acendem |
+| Sub-aba | recua até o rótulo do pai: o recuo do item, mais o ícone, mais o vão, pela métrica da densidade. O selo, na lista vertical, usa o vão da lista como respiro |
+| Rodapé | linhas com a métrica do item vertical, todas pelo `SarakMenuItem` (`data-sarak-footer-rows`): idioma, com o código do idioma que vale à direita, na cor ativa; notificações, com o contador à direita; o modo, quando fixado; e o ⚙ em linha própria, acima do usuário. Nenhuma linha tem borda própria. Ícones na coluna dos ícones da lista, rótulos na dos rótulos, indicadores na mesma borda direita. A linha do idioma só existe com a barra aberta |
+| Usuário | uma faixa (`data-sarak-user-strip`) igual em todo tema: linha em cima na cor da borda da barra, véu de 5% da cor do marcador e o avatar na coluna dos ícones. O nome vem em cima, mais forte; embaixo, o papel em caixa alta, com espaçamento largo e o ícone de escudo; sair fica à direita. `userAvatarStyle` escolhe o avatar sem foto: `initials` (padrão) ou `icon`, o ícone `User`; com imagem válida, vale a imagem |
+| Recolhida | a marca no monograma ou no logo, ícones centralizados e o marcador visível no ativo. Cada controle do rodapé é só o ícone, um por linha, no eixo dos ícones da lista; o aviso de notificação é um ponto no canto de cima à direita do ícone, fora do fluxo, e não o desloca. Avatar e sair ficam empilhados |
+
+**A métrica do item tem fonte única** (`atomic/Navigation/menuItemMetrics.ts`): as classes de cada densidade, que o `SarakMenuItem`
+aplica. A altura da busca e o recuo da sub-aba leem o passo dessas mesmas classes, então nada se separa do item quando a densidade
+muda. A `className` do chamador continua vencendo ([[00-regras-e-invariantes]] **R35**).
+
+**Os presets de barra lateral do painel se distinguem a olho** (`presets/components/layout.ts`): a Contornada tem contorno em toda a
+barra e o item ativo contornado; a Flutuante não tem contorno, tem o fundo em degradê e o item em pílula, com vidro; a Compacta, de itens
+apertados, fica no tom Superfície, e a Limpa no Neutro. A medição de navegador compara a amostra de cada par de opções do mesmo grupo.
 
 ## 2.2 Os slots
 
@@ -177,40 +207,43 @@ quem não usa o slot.
 
 O cromo nasce com **todos** os widgets montados — busca com atalho, alternância de tema, widget de usuário, notificações, colapso da navegação, e as preferências de tamanho de fonte, orientação da navegação e idioma — e o consumidor desliga o que não quiser ([[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]). **Nenhum tema esconde widget:** a barra é completa em todo tema.
 
-**Um widget que depende do consumidor aparece, mas desabilitado, até ele o ligar** — nunca some e nunca finge funcionar:
+**Um widget que depende do consumidor só funciona quando ele o liga, e nunca finge funcionar.** Sem a conexão, **em produção**
+(`process.env.NODE_ENV === 'production'`) ele não aparece; fora de produção aparece desabilitado, para o desenvolvedor ver o que falta:
 
 | Widget | Ativo quando | Sem a conexão |
 | --- | --- | --- |
 | busca | há `SarakUIProvider`, não foi desligada e o slot `search` está vazio | o palette lista a **própria navegação** do cromo e seleciona pelo mesmo `onNavigate`; o Ctrl/Cmd+K só é escutado nessas condições — fora delas, fica livre para o navegador e para o consumidor |
 | alternância de tema | há `SarakUIProvider` e não foi desligada | grava a **preferência** de modo de quem clicou — nunca o tema do sistema ([[09-temas-e-presets]] §4.7) |
-| usuário | o consumidor entregou `user` **e** `logout` | **desabilitado**: sem identidade a lib não inventa nome |
-| notificações | o consumidor entregou `notifications` com itens **e** `onNotificationSelect` | **desabilitado** |
+| usuário | o consumidor entregou `user` **e** `logout` | em produção, **ausente**; fora dela, **desabilitado**: sem identidade a lib não inventa nome |
+| notificações | o consumidor entregou `notifications` com itens **e** `onNotificationSelect` | em produção, **ausente**; fora dela, **desabilitado** |
 | colapso | há `SarakUIProvider` e não foi desligado | grava a **preferência** de navegação recolhida de quem clicou — nunca o tema |
 
-O estado desabilitado é `aria-disabled="true"`, **sem handler**, focável, com um **rótulo de estado** para o usuário final ("Usuário indisponível", "Notificações indisponíveis", traduzidos) — nunca uma instrução de desenvolvedor. **O que ligar** vai para o desenvolvedor, num **aviso único** no console, só fora de produção ("Conecte … ao SarakAppChrome…"). Nenhum widget clicável faz nada em silêncio.
+O estado desabilitado é `aria-disabled="true"`, **sem handler**, focável, com um **rótulo de estado** para o usuário final ("Usuário indisponível", "Notificações indisponíveis", traduzidos) — nunca uma instrução de desenvolvedor. Na lateral ele é uma linha apagada, com a métrica do item de menu e sem caixa; na topbar, uma caixa (`ChromeUnavailableWidget.tsx`). **O que ligar** vai para o desenvolvedor, num **aviso único** no console, só fora de produção ("Conecte … ao SarakAppChrome…"). Nenhum widget clicável faz nada em silêncio.
 
 **Onde cada um mora.** A busca ocupa o slot `search`. Tema, usuário e notificações **não têm slot**: nascem numa região própria, marcada `data-sarak-widget` — e não `data-sarak-slot`, porque não são conteúdo do consumidor. Por isso o conteúdo que o consumidor põe em `topbarEnd`/`sidebarFooter` **não** os substitui: quem já monta tema/usuário à mão desliga o default correspondente. A alternativa — dar precedência a esses slots — apagaria tema e usuário sempre que qualquer botão fosse posto ali.
 
 ### 2.2.2 A composição da barra — decisão do sistema, nunca do tema
 
-Cada um dos **oito** widgets — modo claro/escuro, tamanho da fonte, navegação topo/lateral, navegação recolhida, idioma, busca, usuário e notificações — tem **uma de três posições**, escolhida pelo **sistema** no painel, na seção *Composição da Barra* (pilar de navegação, **visível no modo Essencial**):
+Cada um dos **oito** widgets — modo claro/escuro, tamanho da fonte, navegação topo/lateral, navegação recolhida, idioma, busca, usuário e notificações — tem **uma de três posições**, escolhida pelo **sistema** no painel, na seção *Composição da Barra* (pilar de navegação, **visível no modo Essencial**). A navegação recolhida tem uma posição por barra: `preferenceNavCollapsePosition` é a seta da lateral, e `preferenceNavCollapsePositionTopbar` é o ≡ que compacta a topbar. São **nove** tokens de composição.
 
 | Posição | O que o usuário final vê |
 | --- | --- |
 | **não oferecida** | nada — vale o valor do sistema |
 | **no menu** | um item dentro do ⚙ *Preferências* |
-| **fixa na barra** | um controle direto na barra — e também dentro do ⚙, quando ele existe |
+| **fixa na barra** | um controle direto na barra. Na topbar ele também aparece dentro do ⚙, quando o ⚙ existe; na lateral, o ⚙ não repete o que já tem controle na barra |
 
-**O padrão de fábrica:** modo claro/escuro, busca, usuário, notificações e idioma **fixos na barra**; tamanho da fonte, navegação
-topo/lateral e navegação recolhida **no menu** ⚙ Preferências (o rodapé da barra mostra só o que o usuário usa sempre). Valor que o
-sistema já salvou continua valendo. A composição é do **sistema** (o design configurado), **nunca do tema**: nenhum tema distribuído declara token de composição, e por isso escolher um tema no painel **não desfaz** a composição do sistema.
+**O padrão de fábrica:** busca, usuário, notificações e idioma **fixos na barra**; modo claro/escuro, tamanho da fonte e navegação
+topo/lateral **no menu** ⚙ Preferências; a navegação recolhida **fixa na lateral** (a seta do cabeçalho, §2.1.4) e **no menu** na
+topbar, que por padrão não mostra o ≡. Valor que o sistema já salvou continua valendo. A composição é do **sistema** (o design configurado), **nunca do tema**: nenhum tema distribuído declara token de composição, e por isso escolher um tema no painel **não desfaz** a composição do sistema.
 
 **Regras que fecham o comportamento:**
 - **O ⚙ só nasce quando pelo menos um widget está *no menu*.** Uma barra só com fixados não o faz aparecer — não há botão que abre painel vazio.
 - **Sidebar recolhida:** o ⚙ continua — é um ícone e cabe — e recebe o que é fixado e não tem ícone próprio. Recolher a navegação nunca tira do usuário o acesso a um widget oferecido.
 - **Celular:** tudo o que é oferecido vai para o drawer, fixado ou não, sem ⚙ separado; a navegação recolhida não ganha linha, porque o hambúrguer já é o colapso. Nada some (§2.3).
 - **Duas camadas de controle:** a prop `widgets` do `SarakAppChrome` é do **código** e é o teto — o que o desenvolvedor desligou não volta pelo painel. A posição é do **sistema** e escolhe dentro desse teto.
-- A prévia do painel mostra a barra que o usuário vai ver, porque monta o cromo real.
+- A prévia do painel mostra a barra que o usuário vai ver, porque monta o cromo real. Ela é amostra: leva um usuário, o sair e
+  notificações de exemplo, sem efeito, para que o que o painel configura neles (posição, avatar) apareça também em produção
+  (`PreviewSystemRenderer.tsx`).
 
 **O seletor de idioma** só monta com **dois ou mais** idiomas habilitados e, fora do caminho de substituição pelo host, também precisa estar oferecido. Ele mostra o **idioma que vale** ([[09-temas-e-presets]] §4.7) e grava a preferência; o host pode substituí-lo inteiro por `window.__SARAK_OVERRIDES__['shell-language-selector']`, que o monta dentro de um invólucro (`sarak-language-override-wrapper`) e não depende das duas condições.
 
@@ -248,25 +281,28 @@ O cromo lê esses tokens por um hook único e os traduz em classe estrutural:
 | `isAutoHideEnabled` | a nav só existe no ar sob o ponteiro; uma faixa sensível na borda a traz de volta |
 | `searchPositionTopbar` | `left`, `center`, `right` ou `hidden` para o slot `search` na topbar |
 | `searchPositionSidebar` | `top` ou `bottom` para o slot `search` na sidebar/drawer |
-| `chromeSearchPosition` · `chromeUserPosition` · `chromeNotificationsPosition` · `preferenceModePosition` · `preferenceFontSizePosition` · `preferenceNavigationStylePosition` · `preferenceNavCollapsePosition` · `preferenceLanguagePosition` | a **composição** de cada widget: `pinned`, `menu` ou `off` (§2.2.2) |
+| `chromeSearchPosition` · `chromeUserPosition` · `chromeNotificationsPosition` · `preferenceModePosition` · `preferenceFontSizePosition` · `preferenceNavigationStylePosition` · `preferenceNavCollapsePosition` · `preferenceNavCollapsePositionTopbar` · `preferenceLanguagePosition` | a **composição** de cada widget: `pinned`, `menu` ou `off` (§2.2.2) |
 | `tabGap` · `tabSectionMargin` | espaçamento entre itens e margem da seção de nav |
 | `sidebar*`/`topbar*` de identidade (por barra): `…ItemTextColor` · `…ItemHoverTextColor` · `…CategoryColor` · `…BrandColor` · `…BorderColor`/`…BorderWidth`/`…BorderStyle`/`…BorderSide` · `…BrandBackground` · `…FooterBackground` · `…BackgroundStyle` · `…ActiveItemStyle` · `…ItemDensity` · `…IconSize`/`…IconColor` · separador de grupo · sombra e blur também no topo | texto, moldura, fundo, item ativo, densidade e ícones de cada barra. Os valores de enumeração estão no schema (`schema/navigation.ts`: estilo do item ativo `bar`/`pill`/`underline`/`filled`/`outline`; borda `solid`…`none` e lados; fundo `solid`/`gradient`/`texture`; densidade `compact`/`comfortable`/`spacious`, respeitando `touchTargetMin`). Declarados pelas fábricas `createChromeColorToken`/`createChromeSliderToken`/`createChromeSelectToken`, cada um nas três fontes. **A densidade e o estilo do item não mudam a métrica do item** fixada pelo [[015-metrica-do-item-de-navegacao-horizontal]] |
 | `maxContentWidth` | largura máxima da região de conteúdo, centralizada. O padrão é `fluid`: a região acompanha o contêiner e cada margem lateral cresce com ele, de `layoutPadding` até 128 px (`calc(100% − 2 × clamp(layoutPadding, 5%, 128px))`); o valor gravado é a palavra `fluid` e só `resolveMaxContentWidth` (`schema/system.ts`) o traduz para CSS, no leitor do cromo e na emissão de `--sarak-max-content-width`. Os tetos `1000px`…`1600px` e `100%` continuam como opção. O respiro de `layoutPadding` continua nos quatro lados |
 | `layoutDensity` | escala o respiro da região de conteúdo: `compact` < `comfortable` < `spacious`. `comfortable` é a identidade: o respiro é exatamente o de `--sarak-layout-padding` |
 | `isSplitViewEnabled` | liga a vista dividida, que só aparece com o slot `secondaryContent` preenchido (§2.2) |
-| `sidebarActiveColor` · `topbarActiveColor` | **fundo** do item ativo, cada orientação o seu. Default `transparent`, deliberado: o fundo real é o da barra (`sidebarColor`/`topbarColor`) |
+| `sidebarActiveColor` · `topbarActiveColor` | **fundo** do item ativo, cada orientação o seu. O padrão do schema, sem paleta, é `transparent`: o fundo real é o da barra (`sidebarColor`/`topbarColor`); com paleta, o da lateral é o véu da primária com alfa baixo ([[09-temas-e-presets]] §4.3.4) |
 | `navItemActiveColor` | **texto e ícone** do item ativo, nas duas orientações e nos dois cromos — é o token que carrega o sinal visível |
 | `sidebarHoverColor` · `topbarHoverColor` | fundo do item sob o ponteiro, cada orientação o seu; o texto também muda, de `--text-muted` para `--sarak-text-main` |
-| `navActiveMarkerColor` · `navActiveMarkerGlow` | cor e brilho do marcador do item ativo (o marcador é desenhado pelo `SarakShellNav`) |
+| `navActiveMarkerColor` · `navActiveMarkerGlow` | cor e brilho do marcador do item ativo (o marcador é desenhado pelo `SarakMenuItem`, que o `SarakShellNav` compõe) |
+| `sidebarActiveGlass` | o vidro do item ativo da lateral, `on` (padrão) ou `off`, somado a qualquer estilo do item ativo (§2.1.4) |
 | `sidebarNoiseOpacity` · `topbarNoiseOpacity` | camada de ruído sobre cada barra (`chrome/noiseTexture.ts`) |
 | `sidebarBlur` · `sidebarShadow` | desfoque de fundo e sombra da sidebar; a sombra do modo `floating` também vem do token |
 | `topbarBlur` · `topbarShadow` | desfoque do conteúdo atrás da topbar e sombra projetada pela barra superior |
 | `sidebarItemTextColor` · `sidebarItemHoverTextColor` · `sidebarCategoryColor` · `sidebarBrandColor` | texto inativo, texto sob o ponteiro, rótulo de categoria e marca da sidebar |
 | `topbarItemTextColor` · `topbarItemHoverTextColor` · `topbarBrandColor` | texto inativo, texto sob o ponteiro e marca da topbar |
-| `sidebarBorderColor` · `sidebarBorderWidth` · `sidebarBorderStyle` · `sidebarBorderSide` | cor, espessura, traço e lados da moldura da sidebar; `edge` acompanha o lado externo |
+| `sidebarBorderColor` · `sidebarBorderWidth` · `sidebarBorderStyle` · `sidebarBorderSide` | cor, espessura, traço e lados da moldura da sidebar; `edge` desenha a moldura de cartão nos quatro lados e só a linha do lado do conteúdo quando a barra encosta na tela (§2.1.4) |
 | `topbarBorderColor` · `topbarBorderWidth` · `topbarBorderStyle` · `topbarBorderSide` | cor, espessura, traço e lados da moldura da topbar; `edge` fica junto ao conteúdo |
-| `sidebarBrandBackground` · `sidebarFooterBackground` | fundos da marca e do rodapé da sidebar |
-| `topbarBrandBackground` | fundo da região da marca na topbar |
+| `sidebarBrandBackground` · `sidebarFooterBackground` | a faixa da marca no topo da lateral, com ou sem logo (§2.1.4), e o fundo do rodapé da sidebar |
+| `topbarBrandBackground` | fundo da região da marca na topbar, que só pinta com logo |
+| `brandDisplay` | o que a marca mostra nas duas barras: `both`, `logo` ou `name` (§2.1) |
+| `userAvatarStyle` | o avatar do usuário sem foto: `initials` ou `icon` (§2.1.4) |
 | `sidebarBackgroundStyle` · `topbarBackgroundStyle` | tratamento sólido, gradiente ou textura local, sem dependência de rede |
 | `sidebarActiveItemStyle` · `topbarActiveItemStyle` | forma do item atual: `bar`, `pill`, `underline`, `filled` ou `outline` |
 | `sidebarItemDensity` · `topbarItemDensity` | espaçamento compacto, confortável ou espaçoso, mantendo o alvo de toque mínimo |
@@ -488,7 +524,8 @@ Regra 2 ([[00-regras-e-invariantes]]).
 - [x] O bug de altura está documentado com sintoma, causa e correção.
 - [x] O cromo é único: não há host, registro nem Discovery, e a navegação é dado do consumidor.
 - [x] O item de navegação é um link de verdade, com a regra dos modificadores (§2.1.2).
-- [x] Os oito widgets têm composição do sistema, padrão "fixa na barra", e o que depende do consumidor aparece desabilitado (§2.2).
+- [x] Os oito widgets têm composição do sistema e o padrão de fábrica da §2.2.2; o que depende do consumidor, sem a conexão, some em produção e aparece desabilitado fora dela (§2.2.1).
+- [x] A barra lateral tem a mesma anatomia em todo tema, e cada peça é token (§2.1.4).
 - [x] Todo valor visual citado é token com fallback.
 
 # 9. Plano de testes (Quality Gate)
@@ -509,14 +546,18 @@ Regra 2 ([[00-regras-e-invariantes]]).
 | Widgets default: conjunto completo, cada opt-out isolado, slot `search` vencendo o default, atalho e suas três travas, celular | `src/components/Layout/__tests__/SarakAppChrome.test.tsx` · `SarakAppChromeMobile.test.tsx` · `chrome/__tests__/useChromeDefaultWidgets.test.ts` | ✅ suíte |
 | O palette busca os itens dados (`items` é obrigatório) e seleciona por clique e teclado; a busca embutida navega pelo resultado | `src/components/atomic/Inputs/__tests__/SarakSearch.test.tsx` · `src/components/atomic/Navigation/__tests__/SarakShellSearchWidget.test.tsx` | ✅ suíte |
 | Posição de cada widget: as três posições, ⚙ só com item no menu, teto de `widgets`, sidebar recolhida | `src/core/Provider/utils/__tests__/chromePreferencePlacement.test.ts` · `src/components/Layout/__tests__/SarakAppChrome.preferencesBar.test.tsx` | ✅ suíte |
-| Nenhum tema distribuído declara composição nem esconde a busca; os oito tokens de composição entram no Essencial | `src/core/Design/presets/themes/__tests__/chromeWidgetDefaults.test.ts` · `src/features/DesignEngine/utils/__tests__/dynamic-categories.test.ts` | ✅ suíte |
-| Widget sem conexão: `aria-disabled`, sem handler, rótulo de estado, aviso único em desenvolvimento | `src/components/Layout/chrome/__tests__/ChromeUnavailableWidget.test.tsx` · `ChromeNotificationsWidget.test.tsx` · `useChromeDefaultWidgets.test.ts` | ✅ suíte |
+| Nenhum tema distribuído declara composição nem esconde a busca; os nove tokens de composição entram no Essencial | `src/core/Design/presets/themes/__tests__/chromeWidgetDefaults.test.ts` · `src/features/DesignEngine/utils/__tests__/dynamic-categories.test.ts` | ✅ suíte |
+| Widget sem conexão: ausente em produção; fora dela, `aria-disabled`, sem handler, rótulo de estado e aviso único | `src/components/Layout/chrome/__tests__/ChromeUnavailableWidget.test.tsx` · `ChromeNotificationsWidget.test.tsx` · `useChromeDefaultWidgets.test.ts` | ✅ suíte |
 | Item de navegação: âncora, modificadores e clique do meio ao navegador, `disabled`, `badge`, `target` | `src/components/atomic/Navigation/__tests__/SarakMenuItem.test.tsx` · `SarakLink.test.tsx` | ✅ suíte |
 | O ⚙ como overlay: abre por teclado, ESC fecha, o foco volta ao ⚙; não monta vazio | `src/components/atomic/Navigation/__tests__/ShellPreferencesMenu.test.tsx` | ✅ suíte |
 | O seletor de idioma: lista o que o tema habilita, grava preferência, não monta com um idioma, mostra o idioma que vale | `src/components/atomic/Navigation/__tests__/SarakShellLanguageSelector.test.tsx` | ✅ suíte |
 | Item horizontal em caixa normal e corpo legível, medido em navegador real | `browser-tests/cromo-css-real.spec.ts` | ✅ gate (`npm run cromo-css-real:check`) |
 | Contrato da pílula — raio do item horizontal diferente do botão de ação | `browser-tests/cromo-css-real.spec.ts` | ✅ gate (`npm run cromo-css-real:check`) |
 | **Fundo da raiz do cromo**: `background-color` computado com e sem mídia global, em Chromium real contra o `dist/` buildado | `browser-tests/cromo-css-real.spec.ts` | ✅ gate (`npm run cromo-css-real:check`) |
+| `navItems` com sub-abas: filhos de um nível e `defaultExpanded` repassados, neto ignorado, filho ativo abre o grupo | `src/components/Layout/chrome/__tests__/navItem.test.tsx` | ✅ suíte |
+| A métrica do item tem fonte única: altura da busca e recuo da sub-aba nas três densidades | `src/components/atomic/Navigation/__tests__/menuItemMetrics.test.tsx` | ✅ suíte |
+| O nome da marca encolhe até caber, sem reticências | `src/components/Layout/chrome/__tests__/useFitBrandName.test.ts` · `ChromeSlots.test.tsx` | ✅ suíte |
+| **Anatomia da barra lateral** em quatro temas: moldura, faixa e monograma, marca inteira, busca e títulos, item ativo e vidro, inativo apagado, sub-abas, rodapé em linhas e alinhado, usuário, recolhida, composição padrão e nenhum item atrás do rodapé (1440 × 900 e 1280 × 720) | `browser-tests/barra-lateral-anatomia.spec.ts` | ✅ gate (`npm run cromo-css-real:check`) |
 | Os quatro widgets do cromo montados dentro de slots, sem registro | `src/components/atomic/Navigation/__tests__/ShellWidgetsForaDoShell.test.tsx` | ✅ suíte |
 
 ⚠️ **Ressalva metodológica herdada** ([[07-responsividade-e-multidispositivo]] §7): teste que usa

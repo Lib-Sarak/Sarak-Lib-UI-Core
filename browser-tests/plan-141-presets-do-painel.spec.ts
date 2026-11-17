@@ -315,7 +315,11 @@ test('defeito: o trilho do interruptor tem contraste de 3:1 com o fundo da amost
             let behind: Element | null = rail.parentElement;
             while (behind && parse(getComputedStyle(behind).backgroundColor)[3] === 0) behind = behind.parentElement;
             const background = parse(getComputedStyle(behind ?? scope).backgroundColor);
-            const [red, green, blue, alpha] = parse(getComputedStyle(rail).backgroundColor);
+            // No vidro o trilho é translúcido de propósito: quem sustenta o 3:1 é a borda opaca na cor ativa, e é ela que se mede.
+            const railStyle = getComputedStyle(rail);
+            const border = parse(railStyle.borderTopColor);
+            const glassBorder = Number.parseFloat(railStyle.borderTopWidth) > 0 && border[3] === 1 && railStyle.backdropFilter !== 'none';
+            const [red, green, blue, alpha] = glassBorder ? border : parse(railStyle.backgroundColor);
             const over = [0, 1, 2].map((channel) => [red, green, blue][channel] * alpha + background[channel] * (1 - alpha));
             const [light, dark] = [luminance(over), luminance(background)].sort((a, b) => b - a);
             return (light + 0.05) / (dark + 0.05);

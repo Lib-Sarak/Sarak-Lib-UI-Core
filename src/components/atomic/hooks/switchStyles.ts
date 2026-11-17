@@ -11,8 +11,12 @@ export interface SwitchStyles {
 
 const ACTIVE_BG = 'var(--sarak-switch-active-bg, var(--sarak-primary-color,#19e3f0))';
 const THUMB_BG = 'var(--sarak-switch-thumb, #ffffff)';
-const IDLE_TRACK_BG = 'var(--color-theme-card, #101622)';
+const CARD_BG = 'var(--color-theme-card, #101622)';
+/** Desligado, o trilho é metade texto e metade cartão: um neutro médio que dá 3:1 à bolinha clara e ao fundo da amostra, nos dois modos. */
+const IDLE_TRACK_BG = `color-mix(in srgb, var(--sarak-text-main, #f2f6fb) 50%, ${CARD_BG})`;
 const GLASS_BORDER = '1px solid var(--color-theme-border, rgba(255,255,255,0.09))';
+/** Ligado, o vidro mantém a translucidez do trilho e ganha o contorno opaco na cor ativa: é ele que sustenta o contraste de 3:1. */
+const GLASS_ACTIVE_BORDER = `1px solid ${ACTIVE_BG}`;
 const DEFAULT_GLASS_BLUR = 4;
 const PULSE_ANIMATION = 'sarak-switch-pulse calc(var(--sarak-motion-dur-slow, 0.6s) * 2.67) var(--sarak-motion-ease-out, cubic-bezier(0.16, 1, 0.3, 1)) infinite';
 
@@ -34,7 +38,7 @@ function glassBlur(design: SarakThemePayload | undefined): string {
  * - `tactile` — o trilho pílula e o thumb redondo de sempre, o mais neutro;
  * - `asymmetric` — cantos desiguais no trilho e no thumb, mais orgânico;
  * - `pulsing` — thumb em ponto que emite um pulso na cor de `switchPulseColor` ao ligar;
- * - `glass` — trilho translúcido com desfoque de `switchBackdropBlur` e borda fina.
+ * - `glass` — trilho translúcido com desfoque de `switchBackdropBlur` e borda fina; ligado, a borda é opaca na cor ativa.
  */
 export function resolveSwitchStyles(design: SarakThemePayload | undefined, checked: boolean): SwitchStyles {
     const styleType = resolveStyleType(design);
@@ -58,10 +62,11 @@ export function resolveSwitchStyles(design: SarakThemePayload | undefined, check
         trackStyle.backgroundColor = checked
             ? `color-mix(in srgb, ${ACTIVE_BG} 55%, transparent)`
             : IDLE_TRACK_BG;
-        trackStyle.border = GLASS_BORDER;
+        trackStyle.border = checked ? GLASS_ACTIVE_BORDER : GLASS_BORDER;
         trackStyle.backdropFilter = glassBlur(design);
         trackStyle.WebkitBackdropFilter = glassBlur(design);
-        thumbStyle.backgroundColor = `color-mix(in srgb, ${THUMB_BG} 85%, transparent)`;
+        // Desligado a bolinha é opaca: translúcida sobre o trilho médio ela perde o 3:1 no escuro.
+        if (checked) thumbStyle.backgroundColor = `color-mix(in srgb, ${THUMB_BG} 85%, transparent)`;
     }
 
     return { trackStyle, thumbStyle };

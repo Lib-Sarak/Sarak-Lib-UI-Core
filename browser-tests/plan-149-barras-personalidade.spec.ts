@@ -252,10 +252,13 @@ for (const mode of MODES) {
                 const body = parse(getComputedStyle(document.body).backgroundColor);
                 const flat = asideBg[3] < 1 ? asideBg.slice(0, 3).map((c, i) => c * asideBg[3] + body[i] * (1 - asideBg[3])) : asideBg.slice(0, 3);
                 const textOf = (selector: string): number[] => parse(getComputedStyle(aside.querySelector(selector) as HTMLElement).color);
+                // O nome da marca fica sobre a faixa do cabeçalho (a primária), não sobre a barra: mede-se contra a faixa composta sobre a barra.
+                const band = parse(getComputedStyle(aside.querySelector('[data-sarak-sidebar-header]') as HTMLElement).backgroundColor);
+                const brandBackground = band[3] > 0 ? band.slice(0, 3).map((c, i) => c * band[3] + flat[i] * (1 - band[3])) : flat;
                 return {
                     background: flat.map(Math.round).join(','),
                     idle: ratio(textOf('a[href="#home"]'), flat),
-                    brand: ratio(textOf('.sarak-chrome-brand span'), flat),
+                    brand: ratio(textOf('.sarak-chrome-brand span'), brandBackground),
                     group: ratio(textOf('[data-sarak-nav-group] button'), flat),
                 };
             });

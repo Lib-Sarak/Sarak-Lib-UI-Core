@@ -100,7 +100,8 @@ function measure(page: Page, orientation: 'sidebar' | 'topbar'): Promise<Legibil
             idle: against(bar.querySelector('a[href="#home"]')),
             active: against(active),
             name: against(byText('Ana')),
-            avatar: against(byText('A')),
+            // Iniciais ou, no avatar em ícone (`userAvatarStyle: 'icon'`), o desenho do ícone.
+            avatar: against(byText('A') ?? bar.querySelector('[data-sarak-user-strip] [aria-hidden="true"] svg, [data-sarak-widget="user-theme"] div[aria-hidden="true"] svg')),
             language: against(byText('PT')),
             gear: against(gear),
             logout: against(userButtons[userButtons.length - 1]),
@@ -123,7 +124,8 @@ function expectLegible(m: Legibility, where: string): void {
         ['idioma', m.language, TEXT_CONTRAST], ['avatar', m.avatar, ICON_CONTRAST], ['engrenagem', m.gear, ICON_CONTRAST], ['botão de sair', m.logout, ICON_CONTRAST],
     ];
     pieces.filter(([label]) => !KNOWN_BELOW_LIMIT.has(`${where}|${label}`)).forEach(([label, value, minimum]) => {
-        expect.soft(value, `${label} (${where})`).toBeGreaterThanOrEqual(minimum);
+        expect.soft(value, `${label} (${where}): peça não encontrada na barra`).not.toBeNull();
+        if (value !== null) expect.soft(value, `${label} (${where})`).toBeGreaterThanOrEqual(minimum);
     });
 }
 

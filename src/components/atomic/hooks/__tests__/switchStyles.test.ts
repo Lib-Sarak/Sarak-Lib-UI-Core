@@ -45,6 +45,21 @@ describe('resolveSwitchStyles', () => {
         expect(String(thumbStyle.backgroundColor)).toContain('color-mix');
     });
 
+    it('glass ligado mantém o trilho translúcido e leva a borda de 1px opaca na cor ativa; desligado, a borda fina de sempre', () => {
+        const on = resolveSwitchStyles(design({ switchStyleType: 'glass' }), true).trackStyle;
+        const off = resolveSwitchStyles(design({ switchStyleType: 'glass' }), false).trackStyle;
+
+        expect(on.border).toBe('1px solid var(--sarak-switch-active-bg, var(--sarak-primary-color,#19e3f0))');
+        expect(String(on.backgroundColor)).toContain('color-mix');
+        expect(off.border).toContain('var(--color-theme-border');
+    });
+
+    it('os outros estilos ligados não ganham borda de cor ativa', () => {
+        for (const switchStyleType of ['tactile', 'asymmetric', 'pulsing']) {
+            expect(resolveSwitchStyles(design({ switchStyleType }), true).trackStyle.border, switchStyleType).toBeUndefined();
+        }
+    });
+
     it('o desfoque de vidro só existe em glass', () => {
         for (const switchStyleType of ['tactile', 'asymmetric', 'pulsing']) {
             const { trackStyle } = resolveSwitchStyles(design({ switchStyleType, switchBackdropBlur: 12 }), true);

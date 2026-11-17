@@ -3,7 +3,7 @@ import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import { sarakIsSafeLinkHref, shouldHandleSameTabNavigation } from './linkNavigation';
 import { SarakIcon } from '../Icon/SarakIcon';
 import { useNavigationAppearance } from '../../../core/Provider/useNavigationAppearance';
-import { MENU_ITEM_TEXT_CLASS, resolveVerticalMenuItemClasses } from './menuItemMetrics';
+import { MENU_ITEM_TEXT_CLASS, VERTICAL_NAV_GAP, resolveVerticalMenuItemClasses } from './menuItemMetrics';
 
 export type SarakMenuItemOrientation = 'vertical' | 'horizontal';
 
@@ -172,7 +172,8 @@ export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
             {badge !== undefined && (
                 <span
                     className="inline-flex shrink-0 items-center justify-center rounded-full border border-[var(--border-color,rgba(255,255,255,0.09))] bg-[var(--theme-card,transparent)] text-[var(--text-muted,rgba(242,246,251,0.55))]"
-                    style={{ paddingInline: 'var(--sarak-layout-gap-sm, 8px)' }}
+                    // Na lista vertical o respiro do selo é o da lista (com teto pela largura da barra): o espaçamento de página, em tema de respiro largo, o faria comer o rótulo.
+                    style={{ paddingInline: isVertical ? VERTICAL_NAV_GAP : 'var(--sarak-layout-gap-sm, 8px)' }}
                 >
                     {badge}
                 </span>

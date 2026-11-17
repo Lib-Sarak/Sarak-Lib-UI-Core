@@ -61,8 +61,8 @@ const LEGACY_CARD_PRESETS: ComponentPreset[] = [
         design: {
             cardBorderRadius: 0,
             cardBorderWidth: 1,
-            cardBorderColor: 'var(--theme-primary-focus)',
-            cardGlowColor: 'var(--theme-primary-focus)',
+            cardBorderColor: 'var(--sarak-surface-neon-color, var(--theme-primary-focus))',
+            cardGlowColor: 'var(--sarak-surface-neon-color, var(--theme-primary-focus))',
             cardGlowIntensity: 0.6,
             cardShadowSpread: 20,
             cardBackdropBlur: 4,

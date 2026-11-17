@@ -41,6 +41,8 @@ export const useFontsOf = (preset: ComponentPreset): void => {
 const PALETTE_ROLE_KEYS = [...PALETTE_CALCULATED_KEYS].sort();
 /** Quantas entradas a memória guarda: as opções de barra de uma tela e as das escolhas anteriores. */
 const BAR_TONE_CACHE_LIMIT = 64;
+/** As chaves que o papel da barra recalcula: as da lateral, as do topo e as do item de navegação (`nav*`). */
+const BAR_COLOR_KEY = /^(sidebar|topbar|nav)/;
 const BAR_TONE_CACHE = new Map<string, Partial<SarakDesignState>>();
 
 /**
@@ -49,13 +51,14 @@ const BAR_TONE_CACHE = new Map<string, Partial<SarakDesignState>>();
  * cores: as opções com o mesmo tom calculam a paleta uma vez, e não uma por opção a cada escolha.
  */
 const paletteInputKey = (design: Record<string, unknown>, mode: 'light' | 'dark'): string => [
-    mode, String(design.colorPalette), String(design.sidebarTone), String(design.topbarTone),
+    mode, String(design.colorPalette), String(design.sidebarTone), String(design.topbarTone), String(design.sidebarBackgroundStyle), String(design.topbarBackgroundStyle),
     ...PALETTE_ROLE_KEYS.map((id) => (id in design ? `${typeof design[id] === 'string' ? design[id] : '?'}` : '-')),
 ].join('|');
 
 /**
- * As cores da barra que o papel (`sidebarTone`/`topbarTone`) calcula: o rascunho traz as cores já gravadas, e o papel só
- * aparece na amostra se a paleta for recalculada com ele. Só as chaves da barra entram, para o resto da amostra ficar como está.
+ * As cores da barra que o papel (`sidebarTone`/`topbarTone`) e o fundo em degradê calculam: o rascunho traz as cores já gravadas, e o papel só
+ * aparece na amostra se a paleta for recalculada com ele. Entram as chaves da barra e as `nav*` (o texto do item ativo é recalculado
+ * com o tom, e sem ele a amostra mostraria uma cor que a lib não emite); o resto da amostra fica como está.
  */
 export const barToneColors = (draft: Partial<SarakDesignState> | undefined, overlay: Partial<SarakDesignState>, mode: 'light' | 'dark'): Partial<SarakDesignState> => {
     if (!draft) return {};
@@ -64,7 +67,7 @@ export const barToneColors = (draft: Partial<SarakDesignState> | undefined, over
     const cached = BAR_TONE_CACHE.get(key);
     if (cached) return cached;
     const palette = resolvePaletteForDesign(input, undefined, mode);
-    const colors = Object.fromEntries(Object.entries(palette).filter(([id]) => /^(sidebar|topbar)/.test(id))) as Partial<SarakDesignState>;
+    const colors = Object.fromEntries(Object.entries(palette).filter(([id]) => BAR_COLOR_KEY.test(id))) as Partial<SarakDesignState>;
     if (BAR_TONE_CACHE.size >= BAR_TONE_CACHE_LIMIT) BAR_TONE_CACHE.delete(BAR_TONE_CACHE.keys().next().value as string);
     BAR_TONE_CACHE.set(key, colors);
     return colors;

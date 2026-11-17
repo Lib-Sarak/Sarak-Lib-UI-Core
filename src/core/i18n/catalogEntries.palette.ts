@@ -1,8 +1,16 @@
 import type { SarakLibraryLanguage } from './catalog.types';
+import { CATALOG_PALETTE_PRESETS_MONOCHROMATIC } from './catalogEntries.palettePresetsMono';
+import { CATALOG_PALETTE_PRESETS_ANALOGOUS } from './catalogEntries.palettePresetsAnalogous';
+import { CATALOG_PALETTE_PRESETS_COMPLEMENTARY } from './catalogEntries.palettePresetsComplementary';
+import { CATALOG_PALETTE_PRESETS_SPLIT_COMPLEMENTARY } from './catalogEntries.palettePresetsSplit';
+import { CATALOG_PALETTE_PRESETS_TRIADIC } from './catalogEntries.palettePresetsTriadic';
 
 type LibraryTextEntry = Record<SarakLibraryLanguage, string>;
 
-/** Nomes dos tipos de harmonia oferecidos pelo motor de paletas. */
+/**
+ * Nomes dos tipos de harmonia oferecidos pelo motor de paletas e das 19 paletas prontas de origem. As demais paletas prontas ficam
+ * em `catalogEntries.palettePresets<Tipo>.ts`, um arquivo por tipo de harmonia, para cada arquivo caber no teto de linhas.
+ */
 export const CATALOG_PALETTE = {
     paletteTypeMonochromatic: {
         pt: 'Monocromática', en: 'Monochromatic', es: 'Monocromática',
@@ -201,4 +209,9 @@ export const CATALOG_PALETTE = {
         pt: 'Tinta e vinho', en: 'Ink and wine', es: 'Tinta y vino',
         fr: 'Encre et vin', de: 'Tinte und Wein', it: 'Inchiostro e vino',
     },
+    ...CATALOG_PALETTE_PRESETS_MONOCHROMATIC,
+    ...CATALOG_PALETTE_PRESETS_ANALOGOUS,
+    ...CATALOG_PALETTE_PRESETS_COMPLEMENTARY,
+    ...CATALOG_PALETTE_PRESETS_SPLIT_COMPLEMENTARY,
+    ...CATALOG_PALETTE_PRESETS_TRIADIC,
 } satisfies Record<string, LibraryTextEntry>;

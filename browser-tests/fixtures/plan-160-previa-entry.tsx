@@ -21,9 +21,11 @@ if (heldTheme) {
  * no design do harness (padrão do sistema + tema `sarak-sovereign`). É a prova de "já aplicada" e de "só mexe em movimento".
  */
 const currentDesign: Record<string, unknown> = { ...(sarakGetDefaultDesignState() as unknown as Record<string, unknown>), ...(sarakSovereignTheme.design as Record<string, unknown>) };
+/** A prévia do harness é desktop: um token responsivo (`{ mob, tab, desk }`) vale o seu valor de desktop. */
+const atDesktop = (value: unknown): unknown => (value !== null && typeof value === 'object' && 'desk' in value ? (value as { desk: unknown }).desk : value);
 (window as unknown as { __plan160: unknown }).__plan160 = Object.fromEntries(PRESET_GROUPS.flatMap((group) => group.presets.map((preset) => {
     const keys = Object.keys(preset.design);
-    const applied = keys.every((key) => JSON.stringify(currentDesign[key]) === JSON.stringify((preset.design as Record<string, unknown>)[key]));
+    const applied = keys.every((key) => JSON.stringify(atDesktop(currentDesign[key])) === JSON.stringify(atDesktop((preset.design as Record<string, unknown>)[key])));
     return [`${group.id}/${preset.name}`, { keys, applied }];
 })));
 

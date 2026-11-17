@@ -1,4 +1,4 @@
-import { computeColorVariants } from '../../Provider/utils/color-engine';
+import { computeColorVariants, parseToRgba } from '../../Provider/utils/color-engine';
 import { isLiteralColor, pickOnColor } from '../../Provider/utils/on-color';
 
 /** Mesmo valor de token; o objeto responsivo se compara por ponto (a validação reordena as chaves). */
@@ -107,3 +107,25 @@ export const resolveTitleColor = (variables: Record<string, string>, isDark: boo
     if (declared && (isDark || !isDefault)) return declared;
     return variables['--text-main'] || declared || (isDark ? '#ffffff' : '#0f172a');
 };
+
+const NEON_EDGE_LIGHT_ALPHA = 0.4;
+
+/**
+ * Emite `--sarak-surface-tint-color` (a cor que tinge a superfície grande: o degradê de fundo) e `--sarak-surface-neon-color` (a do
+ * contorno e do brilho neon do cartão). No escuro a primária exata é escura demais sobre o fundo e a tinta some; ali as duas usam o tom
+ * que o texto da primária já usa (`--sarak-nav-active-color`). No claro a tinta é a própria primária e o neon, a primária a 40%, como
+ * sempre foi. A 40% só sai quando a primária é literal (um `var()` não se decompõe em canais).
+ */
+export function emitSurfaceTint(variables: Record<string, string>, isDark: boolean): void {
+    const primary = variables['--theme-primary'] || variables['--primary-color'];
+    const tint = (isDark && variables['--sarak-nav-active-color']) || primary;
+    if (!tint) return;
+    variables['--sarak-surface-tint-color'] = tint;
+    if (isDark) {
+        variables['--sarak-surface-neon-color'] = tint;
+        return;
+    }
+    if (!isLiteralColor(primary)) return;
+    const { r, g, b } = parseToRgba(primary);
+    variables['--sarak-surface-neon-color'] = `rgba(${r}, ${g}, ${b}, ${NEON_EDGE_LIGHT_ALPHA})`;
+}

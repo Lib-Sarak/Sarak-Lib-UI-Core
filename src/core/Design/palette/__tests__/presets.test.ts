@@ -10,11 +10,13 @@ import type { SarakPaletteType } from '../types';
 
 const TYPES: SarakPaletteType[] = ['monochromatic', 'analogous', 'complementary', 'split-complementary', 'triadic'];
 const ids = Object.keys(SARAK_PALETTE_PRESETS);
+/** Estes testes calculam a paleta de todo o catálogo nos dois modos: o tempo cresce com o catálogo, então os 5 s padrão não bastam. */
+const CATALOG_TIMEOUT_MS = 30_000;
 
 describe('SARAK_PALETTE_PRESETS — o catálogo de paletas prontas', () => {
-    it('tem de 12 a 19 presets', () => {
+    it('tem de 12 a 78 presets', () => {
         expect(ids.length).toBeGreaterThanOrEqual(12);
-        expect(ids.length).toBeLessThanOrEqual(19);
+        expect(ids.length).toBeLessThanOrEqual(78);
     });
 
     it('tem ao menos três monocromáticos', () => {
@@ -33,7 +35,7 @@ describe('SARAK_PALETTE_PRESETS — o catálogo de paletas prontas', () => {
                 expect(Object.keys(resolvePalette(SARAK_PALETTE_PRESETS[id], mode)).length, `${id} ${mode}`).toBeGreaterThan(0);
             }
         }
-    });
+    }, CATALOG_TIMEOUT_MS);
 
     it('todo preset tem o nome no catálogo de textos, nos seis idiomas, e nenhum nome é repetido', () => {
         expect(Object.keys(SARAK_PALETTE_PRESET_TEXT_KEYS).sort()).toEqual([...ids].sort());

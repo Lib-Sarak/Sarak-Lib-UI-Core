@@ -42,13 +42,9 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-158-design-gravado-guarda-escolhas-e-aplica-sem-atraso](plan/plan-158-design-gravado-guarda-escolhas-e-aplica-sem-atraso.md) | Fazer o design gravado conter o que o administrador escolheu, nunca o que a paleta calculou, para que trocar tema, paleta, tom da barra ou modo sempre chegue à tela, e fazer a escolha de uma opção no painel responder em menos de 250 ms (de ~490 ms antes) | — | 🟢 Aprovado | adr/026 + specs/09-temas-e-presets.md + specs/06-painel-de-customizacao-e-preview.md |
-| 2 | [plan-159-cromo-real-segue-o-layout-escolhido](plan/plan-159-cromo-real-segue-o-layout-escolhido.md) | Fazer toda opção de Layout que o administrador aplica aparecer no cromo real ou dizer por que não aparece, com a Topbar sem item escondido, a barra de tom contrastante legível e os controles de preferência discretos, com P, M e G configuráveis em relação ao tamanho base do tema, e reunir as barras numa decisão própria, com um tom que vale para as duas e um interruptor da troca lateral/topo | plan-158, plan-165 | 🔴 A executar | specs/05-cromo-e-slots.md + specs/09-temas-e-presets.md + specs/06-painel-de-customizacao-e-preview.md |
-| 3 | [plan-160-previa-mostra-o-efeito-de-toda-opcao](plan/plan-160-previa-mostra-o-efeito-de-toda-opcao.md) | Fazer a prévia do painel mostrar o efeito de toda opção destacada, por espiada ou escolha, desenhando os componentes reais na largura real do sistema, com as paletas espiando como as outras opções e o menu da prévia dentro da moldura | plan-158 | 🟡 Em execução | specs/06-painel-de-customizacao-e-preview.md |
-| 4 | [plan-161-catalogo-do-painel-proporcional-e-com-um-vocabulario](plan/plan-161-catalogo-do-painel-proporcional-e-com-um-vocabulario.md) | Fazer cada decisão do painel caber em cerca de duas telas, com amostras proporcionais (Personalidade em quadrado com o nome, tema como miniatura da prévia real, fontes na mesma grade), presets de card gerados de cada tema, texturas do card e do fundo separadas pelo nome, e um vocabulário único com os termos técnicos em inglês | plan-160 | 🔴 A executar | specs/06-painel-de-customizacao-e-preview.md + specs/09-temas-e-presets.md + specs/10-seguranca-e-acessibilidade.md |
-| 5 | [plan-163-paletas-da-planilha-do-dono](plan/plan-163-paletas-da-planilha-do-dono.md) | Fazer o catálogo de paletas prontas ser o da planilha do dono, com nome nos seis idiomas, sem quebrar o tema salvo de nenhum importador que use uma paleta que mudou ou saiu | — | ⛔ Bloqueada | specs/09-temas-e-presets.md |
-| 6 | [plan-164-paleta-do-tema-paleta-por-cima-e-paletas-salvas](plan/plan-164-paleta-do-tema-paleta-por-cima-e-paletas-salvas.md) | Fazer escolher um tema aplicar as cores dele, deixar o usuário pôr uma paleta por cima de qualquer tema (inclusive dos que declaram cor) e salvar uma paleta criada com nome próprio, que aparece na galeria e serve à marca | plan-160 | 🟡 Em execução | adr/027 + specs/09-temas-e-presets.md + specs/06-painel-de-customizacao-e-preview.md |
-| 7 | [plan-165-barra-lateral-volta-a-anatomia-antiga](plan/plan-165-barra-lateral-volta-a-anatomia-antiga.md) | Fazer a barra lateral de todo tema nascer com a anatomia da lib antiga (moldura de cartão, cabeçalho da marca com monograma e seta, títulos de seção largos, item ativo com barra luminosa na cor primária e fundo quase invisível, ícones discretos, rodapé em linhas iguais às do menu e cartão do usuário com hierarquia), sem tirar do administrador nenhum token de ajuste, e corrigir os defeitos que a medição achou no caminho | plan-158 (lote 1) | 🟡 Em execução | specs/05-cromo-e-slots.md + specs/09-temas-e-presets.md |
+| 1 | [plan-159-cromo-real-segue-o-layout-escolhido](plan/plan-159-cromo-real-segue-o-layout-escolhido.md) | Fazer toda opção de Layout que o administrador aplica aparecer no cromo real ou dizer por que não aparece, com a Topbar sem item escondido, a barra de tom contrastante legível e os controles de preferência discretos, com P, M e G configuráveis em relação ao tamanho base do tema, e reunir as barras numa decisão própria, com um tom que vale para as duas e um interruptor da troca lateral/topo | — | 🔴 A executar | specs/05-cromo-e-slots.md + specs/09-temas-e-presets.md + specs/06-painel-de-customizacao-e-preview.md |
+| 2 | [plan-161-catalogo-do-painel-proporcional-e-com-um-vocabulario](plan/plan-161-catalogo-do-painel-proporcional-e-com-um-vocabulario.md) | Fazer cada decisão do painel caber em cerca de duas telas, com amostras proporcionais (Personalidade em quadrado com o nome, tema como miniatura da prévia real, fontes na mesma grade), presets de card gerados de cada tema, texturas do card e do fundo separadas pelo nome, e um vocabulário único com os termos técnicos em inglês | — | 🔴 A executar | specs/06-painel-de-customizacao-e-preview.md + specs/09-temas-e-presets.md + specs/10-seguranca-e-acessibilidade.md |
+| 3 | [plan-164-paleta-do-tema-paleta-por-cima-e-paletas-salvas](plan/plan-164-paleta-do-tema-paleta-por-cima-e-paletas-salvas.md) | Fazer escolher um tema aplicar as cores dele, deixar o usuário pôr uma paleta por cima de qualquer tema (inclusive dos que declaram cor) e salvar uma paleta criada com nome próprio, que aparece na galeria e serve à marca | — | 🟡 Em execução | adr/027 + specs/09-temas-e-presets.md + specs/06-painel-de-customizacao-e-preview.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🚦 **Campanha da `8.0.0-rc.4` (2026-10-27).** Contrato aceito: [`anexos/rc4-contrato.md`](plan/anexos/rc4-contrato.md). Ordem: a `plan-128` vai **sozinha** (cria o hook de idioma e os arquivos de catálogo das outras); depois `plan-129` ‖ `plan-130` ‖ `plan-131` ‖ `plan-132` ‖ `plan-119` lote 8 ‖ `plan-133`, em paralelo (pastas disjuntas; arquivos compartilhados só por acréscimo); depois da 133, `plan-134` ‖ `plan-135`. A 134 e a 135 geram prévias em `C:\tmp\sarak-rc4-previa\` que o dono aprova durante a revisão. Verificação pelo protocolo do contrato §9: uma vez por plan e a bateria completa uma vez, no fechamento, depois do lote 2 do ERP. A versão (`npm version`) é do dono.
@@ -67,7 +63,33 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > tema, com cada token ainda editável. Ela roda **depois do lote 1 da 158 e antes da 159**, porque mexe nos mesmos arquivos do cromo;
 > a 159 ganhou uma nota com o que muda nela. Entra na 9.0.0.
 >
-> **Temas e paletas (2026-11-10).** A `plan-163` (paletas) está ⛔ até o dono entregar a planilha. A `plan-164` (paleta do tema, paleta por cima e paletas salvas, pedido de 2026-11-11) vem depois da 158 e da 160. **A próxima versão é `9.0.0`**: o `synthwave-retro` saiu do catálogo.
+> **Temas e paletas (2026-11-16).** A `plan-164` (paleta do tema, paleta por cima e paletas salvas) espera o dono no ADR-027. **A próxima versão é `9.0.0`**.
+
+> ⚪ **As `plan-158`, `plan-160`, `plan-163` e `plan-165` foram SINTETIZADAS e REMOVIDAS em 2026-11-16**, no mesmo commit do fechamento conjunto. A 158 tem código nos commits `5598d43d` e `107f81f8`.
+> - **158:** o destino `adr/026` já estava aceito. A [[09-temas-e-presets]] recebeu a §4.3.3 (a composição é a referência do que se grava; os condutores) e a §4.4.1–4.4.2 (formato 2 só de escolhas, `onSave`/`onLoad` com `format`, L1 ao carregar, registro `::choices`). A [[06-painel-de-customizacao-e-preview]] recebeu a §4 (sair com rascunho sujo pergunta antes em toda rota do cromo, no `beforeunload` e no controle do host) e a §4.1 (teto de 250 ms por escolha e as travas de contagem).
+> - **160:** foi para a [[06-painel-de-customizacao-e-preview]]:
+>   - [[06-painel-de-customizacao-e-preview]] §2.4: a paleta espia;
+>   - [[06-painel-de-customizacao-e-preview]] §6.2 e §6.2.2: o desktop a 1920 px reduzido, portal na moldura, prévia sem marca;
+>   - [[06-painel-de-customizacao-e-preview]] §6.3: as telas por grupo, a seção Elevação e o `tableCellPadding` nas duas tabelas;
+>   - [[06-painel-de-customizacao-e-preview]] §6.4: a espiada leva à tela do grupo, e toda opção destacada muda a prévia, com as quatro exceções;
+>   - [[06-painel-de-customizacao-e-preview]] §6.6 e §11: os casos de navegador.
+> - **163:** foi para a [[09-temas-e-presets]]:
+>   - [[09-temas-e-presets]] §4.3.4: a régua de deslocamento, com tetos e exceções nomeadas; o `beat` do ativo sobre o inativo; os pares na parada clara do degradê; a tinta de superfície no escuro; o interruptor ligado e desligado a 3:1;
+>   - [[09-temas-e-presets]] §5: a curadoria sem exceção e as chaves de nome das paletas;
+>   - [[09-temas-e-presets]] §6.5 e §10: o que o gate de contraste deixa aos testes de unidade, e os testes.
+> - **165:** foi para a [[05-cromo-e-slots]]:
+>   - [[05-cromo-e-slots]] §2.1 e §2.1.4: a anatomia da barra lateral, as sub-abas e `brandDisplay`;
+>   - [[05-cromo-e-slots]] §2.2.1 e §2.2.2: os widgets sem conexão ausentes em produção e o padrão de fábrica da composição;
+>   - [[05-cromo-e-slots]] §2.4, §8 e §9: os tokens novos da barra, os critérios e os testes.
+>
+>   E para a [[09-temas-e-presets]]: §4.3.4 (as faixas da marca na primária exata nos dois modos, o texto por contraste, o papel da barra nos tons contrastantes), §5 (`sidebar-compact` em Superfície) e §5.3 (a faixa é exceção à simetria).
+> - **`00-contexto` revisado:** a Stack passa a dizer "sem regressão visual contra imagem de referência". Os specs de navegador comparam pixels contra uma base da própria rodada, e não contra imagem gravada.
+> - **Ficou de fora:**
+>   - vereditos, medições, prévias, bases e cores por paleta (histórico do Git e `docs/migracoes.md`);
+>   - os bugs corrigidos.
+>
+>   Os ADR-026 e ADR-014 são imutáveis e não foram tocados. Dois pontos do ADR-026 ficaram datados, e a verdade vale pela [[09-temas-e-presets]] §4.3.4: o tom escolhido vence o do host no cálculo, e o custo no boot, que o ADR dava como não medido, foi medido na execução.
+> - **Riscos em aberto:** backlog #80, #83, #84, #85, #86 e #87.
 
 > ⚪ **A `plan-162` foi SINTETIZADA e REMOVIDA em 2026-11-12** (commit da execução `5214a31f`).
 > - [[09-temas-e-presets]] §4.3: quem cai no tema padrão em cada porta, `SARAK_REMOVED_THEME_IDS` e `resolvedThemeId` com id desconhecido.

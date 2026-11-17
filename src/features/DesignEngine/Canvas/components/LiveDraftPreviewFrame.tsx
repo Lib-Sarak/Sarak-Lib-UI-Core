@@ -83,10 +83,6 @@ const PreviewRenderedContent = (
     props: Pick<LiveDraftPreviewFrameProps, 'previewDevice' | 'children'>,
 ): React.ReactElement => (
     <div className={'relative sarak-device-' + props.previewDevice + ' min-h-0 w-full flex-1'}>
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.02]">
-            {/* sarak-allow-hardcode: marca d'água decorativa da pré-visualização; nenhum token de escala chega a 10rem */}
-            <span className="text-[10rem] font-black text-theme-text uppercase tracking-[var(--sarak-tracking-tight,0.2em)] -rotate-12 select-none">SARAK TWIN</span>
-        </div>
         {props.children}
     </div>
 );
@@ -106,16 +102,14 @@ export const LiveDraftPreviewFrame = (props: LiveDraftPreviewFrameProps): React.
 
     return (
         <div data-testid="live-preview-frame" className={frameClassName} style={layoutPreset.frameStyle}>
+            {/* O botão é do painel, não da tela de amostra: fica no canto da moldura, fora do aparelho (tablet e celular). */}
+            <PreviewInspectionButton isInspecting={props.isInspecting} setIsInspecting={props.setIsInspecting} />
             <div
                 data-testid="device-viewport"
                 className={'relative flex shrink-0 flex-col max-w-full ' + props.getDeviceFrameStyles()}
                 style={deviceViewportStyle}
             >
                 <PreviewDeviceHardware previewDevice={props.previewDevice} />
-                <PreviewInspectionButton
-                    isInspecting={props.isInspecting}
-                    setIsInspecting={props.setIsInspecting}
-                />
                 <PreviewInspectionOverlay isInspecting={props.isInspecting} />
                 <PreviewRenderedContent previewDevice={props.previewDevice}>
                     {props.children}

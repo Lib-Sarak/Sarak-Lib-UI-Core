@@ -103,7 +103,7 @@ import { SARAK_ALL_THEMES } from '../../../src/core/Design/presets/themes/all';
 import type { SarakThemePreset } from '../../../src/core/Design/presets/themes/index';
 import { composeThemeForMode } from '../../../src/core/Design/presets/themes/compose';
 import { pickOnColor } from '../../../src/core/Provider/utils/on-color';
-import { MIX_SOURCE_SHARE, PAIRS } from '../../../src/core/Design/palette/contrast-pairs';
+import { GRADIENT_LIGHT_ID, MIX_SOURCE_SHARE, PAIRS } from '../../../src/core/Design/palette/contrast-pairs';
 import type { ContrastPair } from '../../../src/core/Design/palette/contrast-pairs';
 import { DEFAULT_PALETTE_PLAN, PALETTE_PAIRS, createPalettePlan } from '../../../src/core/Design/palette/tone-plan';
 import type { SarakTokenValue } from '../../../src/core/Design/types';
@@ -264,13 +264,14 @@ export function evaluatePair(pair: ContrastPair, design: Record<string, unknown>
  * Os pares que valem para o design. Numa barra de papel contrastante (`sidebarTone`/`topbarTone` primário, secundário ou
  * invertido) o texto do corpo deixa de valer sobre ela e entram os pares do texto da própria barra (`createPalettePlan`);
  * sem papel contrastante é `PAIRS` de sempre. O par de foco do campo, que o plano da paleta acrescenta, fica de fora para
- * não mudar a medição dos temas de papel neutro.
+ * não mudar a medição dos temas de papel neutro. Os pares da parada clara do degradê também ficam de fora: são contrato do
+ * cálculo da paleta (o fundo é a cor da barra com 16% de branco, que não é token de tema), e a auditoria mede o tema como declarado.
  */
 export function pairsFor(design: Record<string, unknown>): readonly ContrastPair[] {
     const plan = createPalettePlan(design);
     if (plan === DEFAULT_PALETTE_PLAN) return PAIRS;
     const paletteOnly = new Set(PALETTE_PAIRS.filter((pair) => !PAIRS.includes(pair)));
-    return plan.pairs.filter((pair) => !paletteOnly.has(pair));
+    return plan.pairs.filter((pair) => !paletteOnly.has(pair) && !pair.bgChain.some((link) => link.startsWith(GRADIENT_LIGHT_ID)));
 }
 
 export interface ThemeReport {

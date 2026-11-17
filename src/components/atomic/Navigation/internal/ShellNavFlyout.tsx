@@ -1,6 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { SarakPortalScope } from '../../../../core/Provider/components/SarakPortalScope';
+import { useSarakPortalFrame } from '../../../../core/Provider/portalFrame';
 import { placeAnchored, type AnchoredCoords, type AnchoredPlacement } from './anchoredPosition';
 
 export interface ShellNavFlyoutProps {
@@ -17,7 +18,7 @@ const FOCUSABLE = 'a[href], button:not([disabled])';
 
 /**
  * Balão dos filhos de um grupo quando a lista não cabe na própria barra: ao lado do ícone na lateral recolhida,
- * abaixo do item na topbar. Vive num portal no `body`, posicionado por `fixed` a partir do retângulo da âncora —
+ * abaixo do item na topbar. Vive num portal (o `body`, ou a moldura do host que desenha o sistema), posicionado por `fixed` a partir do retângulo da âncora —
  * o `overflow` da barra e o `backdrop-filter` dela (que ancora descendentes `fixed`) não o cortam.
  *
  * Teclado: o foco entra no primeiro item; setas movem entre os itens; Esc fecha e devolve o foco ao gatilho;
@@ -26,11 +27,12 @@ const FOCUSABLE = 'a[href], button:not([disabled])';
 export const ShellNavFlyout: React.FC<ShellNavFlyoutProps> = ({ id, label, anchorRef, placement, onClose, children }) => {
     const flyoutRef = useRef<HTMLDivElement | null>(null);
     const [coords, setCoords] = useState<AnchoredCoords | null>(null);
+    const { container, localize } = useSarakPortalFrame();
 
     useLayoutEffect(() => {
         if (!anchorRef.current || !flyoutRef.current) return;
-        setCoords(placeAnchored(anchorRef.current.getBoundingClientRect(), flyoutRef.current.getBoundingClientRect(), placement));
-    }, [anchorRef, placement]);
+        setCoords(localize(placeAnchored(anchorRef.current.getBoundingClientRect(), flyoutRef.current.getBoundingClientRect(), placement)));
+    }, [anchorRef, placement, localize]);
 
     // O balão nasce `visibility: hidden` até ser medido, e elemento oculto não recebe foco: o foco entra quando ele aparece.
     const isPlaced = coords !== null;
@@ -68,7 +70,7 @@ export const ShellNavFlyout: React.FC<ShellNavFlyoutProps> = ({ id, label, ancho
         items[(current + step + items.length) % items.length]?.focus();
     };
 
-    if (typeof document === 'undefined') return null;
+    if (container === null) return null;
     return createPortal(
         <SarakPortalScope>
             <div
@@ -96,7 +98,7 @@ export const ShellNavFlyout: React.FC<ShellNavFlyoutProps> = ({ id, label, ancho
                 {children}
             </div>
         </SarakPortalScope>,
-        document.body,
+        container,
     );
 };
 

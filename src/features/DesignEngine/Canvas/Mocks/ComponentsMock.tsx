@@ -63,6 +63,28 @@ const NoticeSurfaces: React.FC = () => (
     </div>
 );
 
+/**
+ * A elevação: três blocos com a sombra do design (`--dynamic-shadow`, a que a intensidade, a direção e a projeção escrevem), sobre uma
+ * faixa mais clara que o fundo — sombra preta só se distingue de um fundo que não seja quase preto.
+ */
+const ELEVATED_BLOCKS = ['Painel', 'Cartão', 'Menu'];
+const ElevationSurfaces: React.FC = () => (
+    <div
+        className="flex flex-wrap items-center justify-center gap-8 p-10"
+        style={{ borderRadius: 'var(--sarak-card-radius, 10px)', backgroundColor: 'color-mix(in srgb, var(--theme-title, #f2f6fb) 22%, var(--theme-body, #06080d))' }}
+    >
+        {ELEVATED_BLOCKS.map((name) => (
+            <div
+                key={name}
+                className="flex h-20 w-40 items-center justify-center text-xs font-bold text-[var(--theme-title)]"
+                style={{ borderRadius: 'var(--sarak-card-radius, 10px)', backgroundColor: 'var(--theme-card)', boxShadow: 'var(--dynamic-shadow)' }}
+            >
+                {name}
+            </div>
+        ))}
+    </div>
+);
+
 /** O painel do diálogo sobre o fundo escurecido, na moldura: o diálogo real abre num portal e cobriria a tela do painel. */
 const ModalSurface: React.FC = () => (
     <div className="relative flex h-44 items-center justify-center overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] bg-[var(--theme-body)]">
@@ -102,6 +124,11 @@ export const MockComponents: React.FC<{ tokens?: unknown }> = () => (
                 <div className={SECTION_TITLE}>Inputs & Toggles</div>
                 <Controls />
             </div>
+        </div>
+
+        <div className="space-y-4" data-peek-group="shadow shadowDirection">
+            <div className={SECTION_TITLE}>Elevação</div>
+            <ElevationSurfaces />
         </div>
 
         <div className="space-y-4" data-peek-group="badge">

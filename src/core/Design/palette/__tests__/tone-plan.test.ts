@@ -11,6 +11,8 @@ import type { SarakPaletteMode } from '../types';
 const TONES = ['neutral', 'surface', 'primary', 'secondary', 'inverse'] as const;
 const MODES: SarakPaletteMode[] = ['light', 'dark'];
 const PRESET_IDS = Object.keys(SARAK_PALETTE_PRESETS);
+/** Cada teste calcula a paleta de todos os presets nos dois modos: o tempo cresce com o catálogo, então os 5 s padrão não bastam. */
+const PER_CATALOG_TIMEOUT_MS = 30_000;
 
 const failuresOf = (colors: Record<string, string>, declared: Record<string, unknown>): string[] => {
     const design = { ...sarakGetDefaultDesignState(), ...colors };
@@ -34,7 +36,7 @@ describe('papel de cor da barra — tom neutral', () => {
                 expect(withNeutral, `${id} ${mode}`).toEqual(withoutTone);
             }
         }
-    });
+    }, PER_CATALOG_TIMEOUT_MS);
 });
 
 describe.each(TONES)('papel de cor da barra — tom %s', (tone) => {
@@ -46,7 +48,7 @@ describe.each(TONES)('papel de cor da barra — tom %s', (tone) => {
                 expect(failuresOf(colors, declared), `${id} ${mode}`).toEqual([]);
             }
         }
-    });
+    }, PER_CATALOG_TIMEOUT_MS);
 });
 
 describe('papel de cor da barra — o que cada tom faz', () => {

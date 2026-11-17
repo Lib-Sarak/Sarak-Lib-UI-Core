@@ -43,11 +43,12 @@ test.afterAll(() => {
     if (harnessDirectory) fs.rmSync(harnessDirectory, { recursive: true, force: true });
 });
 
-interface Scene { theme: string; design?: Record<string, unknown>; logo?: boolean; route?: string; name?: string; viewport?: { width: number; height: number } }
+interface Scene { theme: string; design?: Record<string, unknown>; light?: boolean; logo?: boolean; route?: string; name?: string; viewport?: { width: number; height: number } }
 
 async function open(page: Page, scene: Scene): Promise<void> {
     const query = new URLSearchParams({ theme: scene.theme, design: JSON.stringify(scene.design ?? {}) });
     if (scene.logo) query.set('logo', '1');
+    if (scene.light) query.set('light', '1');
     if (scene.route) query.set('route', scene.route);
     if (scene.name) query.set('name', scene.name);
     await page.setViewportSize(scene.viewport ?? DESKTOP);
@@ -481,6 +482,30 @@ for (const theme of THEMES) {
             const background = over(measured.band, measured.aside);
             expect(contrast(over(measured.name, background), background), 'nome da marca legível').toBeGreaterThanOrEqual(MIN_TEXT_CONTRAST);
             expect(sameColor(measured.name, await themeColor(page, '--sarak-accent-color')), 'o nome da marca está no acento').toBe(false);
+        });
+
+        test('faixa da marca: a mesma cor no claro e no escuro, com o nome e a seta a 4,5:1 nos dois', async ({ page }) => {
+            const bands: Array<{ band: number[]; name: number[]; arrow: number[] }> = [];
+            for (const light of [false, true]) {
+                await open(page, { theme, light, design: { sidebarLogoPlacement: 'top' } });
+                await installColorReader(page);
+                bands.push(await page.evaluate(() => {
+                    const rgba = (window as unknown as { __rgba: (color: string) => number[] }).__rgba;
+                    const header = document.querySelector('aside')!.querySelector<HTMLElement>('[data-sarak-sidebar-header]')!;
+                    return {
+                        band: rgba(getComputedStyle(header).backgroundColor),
+                        name: rgba(getComputedStyle(header.querySelector('[data-sarak-brand-name]')!).color),
+                        arrow: rgba(getComputedStyle(header.querySelector('[data-sarak-widget="collapse"]')!).color),
+                    };
+                }));
+            }
+            const [dark, light] = bands;
+            expect(sameColor(dark.band, light.band), `faixa: escuro ${dark.band} × claro ${light.band}`).toBe(true);
+            expect(dark.band[3], 'a faixa é sólida').toBe(1);
+            for (const mode of [dark, light]) {
+                expect(contrast(over(mode.name, mode.band), mode.band), 'nome da marca sobre a faixa').toBeGreaterThanOrEqual(MIN_TEXT_CONTRAST);
+                expect(contrast(over(mode.arrow, mode.band), mode.band), 'seta sobre a faixa').toBeGreaterThanOrEqual(MIN_TEXT_CONTRAST);
+            }
         });
 
         test('rodapé: linhas da altura do item de menu, sem borda própria, ícones e indicadores na coluna da lista', async ({ page }) => {

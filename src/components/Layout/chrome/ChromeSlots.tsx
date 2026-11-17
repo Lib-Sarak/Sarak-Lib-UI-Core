@@ -17,8 +17,9 @@ import { BRAND_NAME_LINE_HEIGHT, useFitBrandName } from './useFitBrandName';
  */
 
 /**
- * Monograma da marca sem logo: a inicial do nome sobre o gradiente da primária, no raio do tema. É o que sobra da marca
- * na lateral recolhida.
+ * Monograma da marca sem logo: a inicial do nome, no raio do tema, na cor do texto da marca sobre o fundo da marca, com um aro do
+ * texto. Na faixa a cor do fundo é a dela, e o aro é o que desenha a caixa; recolhida, o monograma carrega o fundo da marca sozinho,
+ * e o texto dele foi escolhido contra esse fundo, não contra a barra.
  */
 const ChromeBrandMonogram: React.FC<{ name: string }> = ({ name }) => (
     <span
@@ -27,8 +28,9 @@ const ChromeBrandMonogram: React.FC<{ name: string }> = ({ name }) => (
         className="flex h-8 w-8 shrink-0 items-center justify-center text-xs font-black"
         style={{
             borderRadius: 'var(--sarak-border-radius, 12px)',
-            background: 'linear-gradient(135deg, var(--theme-primary, #19e3f0), color-mix(in srgb, var(--theme-primary, #19e3f0) 50%, transparent))',
-            color: 'var(--theme-on-primary, #020617)',
+            background: 'var(--sarak-sidebar-brand-bg, transparent)',
+            boxShadow: 'inset 0 0 0 var(--sarak-border-width, 1px) color-mix(in srgb, var(--sarak-sidebar-brand-color, var(--sarak-on-sidebar, #f2f6fb)) 40%, transparent)',
+            color: 'var(--sarak-sidebar-brand-color, var(--sarak-on-sidebar, #f2f6fb))',
         }}
     >
         {name.trim().charAt(0).toUpperCase()}
@@ -36,10 +38,12 @@ const ChromeBrandMonogram: React.FC<{ name: string }> = ({ name }) => (
 );
 
 /**
- * O nome da marca: quebra entre palavras em até duas linhas e encolhe até caber, nunca com reticências.
+ * O nome da marca: quebra entre palavras em até duas linhas e encolhe até caber, nunca com reticências. Sobre o fundo da marca
+ * (a faixa, ou o bloco com logo) ele leva o texto da marca, escolhido contra esse fundo; sem fundo, está sobre a barra e leva o
+ * texto forte dela.
  * `sidebarLabelMaxWidth`/`topbarLabelMaxWidth` (Spec 05 §2.4) são a largura em que o nome passa para a linha de baixo.
  */
-const ChromeBrandName: React.FC<{ name: string; horizontal?: boolean }> = ({ name, horizontal }) => {
+const ChromeBrandName: React.FC<{ name: string; horizontal?: boolean; onBrandFill: boolean }> = ({ name, horizontal, onBrandFill }) => {
     const ref = useRef<HTMLSpanElement>(null);
     useFitBrandName(ref, name);
     const maxWidth = horizontal ? 'var(--sarak-topbar-label-max-width, 150px)' : 'var(--sarak-sidebar-label-max-width, 120px)';
@@ -55,9 +59,13 @@ const ChromeBrandName: React.FC<{ name: string; horizontal?: boolean }> = ({ nam
                 lineHeight: BRAND_NAME_LINE_HEIGHT,
                 width: 'fit-content',
                 maxWidth: `min(${maxWidth}, 100%)`,
-                color: horizontal
-                    ? 'var(--sarak-topbar-brand-color, var(--sarak-topbar-title-color, var(--color-theme-title, inherit)))'
-                    : 'var(--sarak-sidebar-brand-color, var(--sarak-on-sidebar, #f2f6fb))',
+                color: onBrandFill
+                    ? horizontal
+                        ? 'var(--sarak-topbar-brand-color, var(--sarak-topbar-title-color, var(--color-theme-title, inherit)))'
+                        : 'var(--sarak-sidebar-brand-color, var(--sarak-on-sidebar, #f2f6fb))'
+                    : horizontal
+                        ? 'var(--sarak-topbar-title-color, var(--color-theme-title, inherit))'
+                        : 'var(--sarak-sidebar-item-hover-text-color, var(--sarak-on-sidebar, #f2f6fb))',
             }}
         >
             {name}
@@ -120,7 +128,7 @@ export const ChromeBrand: React.FC<{
                             style={{ height: compact ? 'var(--sarak-brand-logo-size-collapsed, 20px)' : 'var(--sarak-shell-brand-logo-size, 32px)' }}
                         />
                     ))}
-                {showName && !compact && <ChromeBrandName name={brand?.name ?? ''} horizontal={horizontal} />}
+                {showName && !compact && <ChromeBrandName name={brand?.name ?? ''} horizontal={horizontal} onBrandFill={Boolean(band || showLogo)} />}
             </div>
         </div>
     );

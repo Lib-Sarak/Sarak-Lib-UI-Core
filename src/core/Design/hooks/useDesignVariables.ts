@@ -5,7 +5,7 @@ import { resolveMaxContentWidth } from '../schema/system';
 import { computeColorVariants, parseToRgba, rgbToHsl } from '../../../core/Provider/utils/color-engine';
 import { isSafeMediaString } from '../../../core/Provider/utils/cssSafety';
 import type { SarakTokenValue } from '../types';
-import { collectDeclaredExceptionVars, emitColorChannels, emitOnColors, isUndeclaredException, resolveTitleColor } from './designVariableHelpers';
+import { collectDeclaredExceptionVars, emitColorChannels, emitOnColors, emitSurfaceTint, isUndeclaredException, resolveTitleColor } from './designVariableHelpers';
 
 const toKebabCase = (str: string) => str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
 
@@ -196,12 +196,12 @@ export const useDesignVariables = (
                 variables[alias] = value;
             }
         });
-
         emitColorChannels(variables, anchorColor, variantShape);
 
         const primaryColor = variables['--theme-primary'] || variables['--primary-color'] || '#3b82f6';
         const { r, g, b } = parseToRgba(primaryColor);
         const [, , primaryLightness] = rgbToHsl(r, g, b);
+        emitSurfaceTint(variables, isDark); // tinta do degradê e do neon
         emitOnColors(variables, anchorColor); // texto de maior contraste sobre cada cor sólida
         variables['--theme-title'] = variables['--color-theme-title'] = resolveTitleColor(variables, isDark, tokens.find((token) => token.id === 'titleColor')?.defaultValue);
         variables['--theme-on-primary'] ??= primaryLightness > 55 ? '#020617' : '#ffffff';

@@ -12,11 +12,17 @@ export interface ChromeSidebarHeaderProps {
     onToggleCollapse: () => void;
 }
 
-/** A faixa da marca: a altura do topo da área de conteúdo, linha embaixo na cor da borda da barra e o fundo da marca. */
+/**
+ * A faixa da marca: a altura do topo da área de conteúdo, linha embaixo na cor da borda da barra e o fundo da marca. O fundo é a
+ * primária, então o que fica sobre ele (o nome, o monograma e a seta) lê o texto da marca, escolhido pelo contraste contra a faixa:
+ * a seta é um botão fantasma, que pinta com `--sarak-primary-color`, e dentro da faixa essa variável é o texto da marca.
+ */
 const BAND_STYLE: React.CSSProperties = {
     height: 'var(--sarak-topbar-height, 64px)',
     borderBottom: 'var(--sarak-border-width, 1px) solid var(--sarak-sidebar-border-color, var(--border-color, rgba(255,255,255,0.09)))',
     background: 'var(--sarak-sidebar-brand-bg, transparent)',
+    color: 'var(--sarak-sidebar-brand-color, var(--sarak-on-sidebar, #f2f6fb))',
+    ['--sarak-primary-color' as string]: 'var(--sarak-sidebar-brand-color, var(--sarak-on-sidebar, #f2f6fb))',
 };
 
 /**

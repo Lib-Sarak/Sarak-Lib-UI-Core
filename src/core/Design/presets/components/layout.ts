@@ -51,7 +51,7 @@ export const SIDEBAR_PRESETS: ComponentPreset[] = [
         description: 'Itens apertados e ícones pequenos: cabe mais menu na mesma altura.',
         keywords: ['compacta', 'compact', 'densa', 'pequena'],
         design: {
-            sidebarTone: 'neutral', sidebarItemDensity: 'compact', sidebarIconSize: 16, sidebarActiveItemStyle: 'bar',
+            sidebarTone: 'surface', sidebarItemDensity: 'compact', sidebarIconSize: 16, sidebarActiveItemStyle: 'bar',
             sidebarBorderSide: 'edge', sidebarBorderWidth: 1, navItemRadius: 6,
         },
     },

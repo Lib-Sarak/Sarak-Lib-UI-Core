@@ -16,14 +16,46 @@ export const PEEK_DELAY_MS = 150;
 /** Quanto esperar para o navegador atualizar o :hover de um elemento recém-montado. */
 const HOVER_SETTLE_MS = 200;
 
+/**
+ * Rolar a lista leva opções para debaixo de um ponteiro parado, e o navegador dispara o `mouseenter` delas. Isso não é o
+ * usuário escolhendo olhar a opção: enquanto a rolagem corre (e por esta janela depois do último `scroll`), o enter não espia.
+ * Mexer o mouse depois dela espia, pelo `mousemove` — mas só o movimento de verdade: o navegador também dispara um `mousemove`
+ * sintético quando a rolagem acaba (mesma posição do ponteiro), e esse não espia.
+ */
+export const SCROLL_QUIET_MS = 200;
+
+let lastScrollAt = Number.NEGATIVE_INFINITY;
+let pointerMoved = false;
+let lastPointer: { x: number; y: number } | null = null;
+let tracked = false;
+
+const trackScrollAndPointer = (): void => {
+    if (tracked || typeof window === 'undefined') return;
+    tracked = true;
+    window.addEventListener('scroll', () => { lastScrollAt = Date.now(); }, { capture: true, passive: true });
+    window.addEventListener('mousemove', (event) => {
+        pointerMoved = lastPointer === null || lastPointer.x !== event.clientX || lastPointer.y !== event.clientY;
+        lastPointer = { x: event.clientX, y: event.clientY };
+    }, { capture: true, passive: true });
+};
+
+const isScrolling = (): boolean => Date.now() - lastScrollAt < SCROLL_QUIET_MS;
+
 /** Em aparelho sem ponteiro que paire (toque), o toque já escolhe: não há espiada. */
 export const canPeekHere = (): boolean => {
     if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return true;
     return !window.matchMedia('(hover: none)').matches;
 };
 
+/** O que o navegador entrega no `mouseenter`: a posição do ponteiro, para distinguir o enter do mouse que se mexeu do que a rolagem causou. */
+interface PointerPosition {
+    clientX: number;
+    clientY: number;
+}
+
 interface PeekHandlers {
-    onMouseEnter: () => void;
+    onMouseEnter: (event?: PointerPosition) => void;
+    onMouseMove: () => void;
     onMouseLeave: () => void;
     onFocus: () => void;
     onBlur: () => void;
@@ -81,13 +113,27 @@ export const usePeekHandlers = (
     }, [clearTimer, show]);
 
     useEffect(() => stop, [stop]);
+    useEffect(trackScrollAndPointer, []);
+
+    const startByPointer = useCallback((event?: PointerPosition) => {
+        if (isScrolling()) return;
+        // Entrar sem o ponteiro ter saído do lugar é a rolagem pondo a opção sob ele (o navegador dispara o enter um pouco depois dela).
+        if (event && lastPointer && lastPointer.x === event.clientX && lastPointer.y === event.clientY) return;
+        start();
+    }, [start]);
+
+    // O ponteiro que se mexe sobre a opção espia se o enter foi engolido pela rolagem; com a espiada já em curso, nada a fazer.
+    const moveOver = useCallback(() => {
+        if (peeking.current || timer.current !== null || !pointerMoved || isScrolling()) return;
+        start();
+    }, [start]);
 
     // O elemento que já nasce sob o ponteiro (o cartão que trocou o pendente) espia sem esperar um novo movimento do mouse.
     // O navegador só atualiza o :hover de um nó novo depois do próximo quadro, por isso a conferência se repete uma vez.
     useEffect(() => {
         const check = (): void => {
             const node = hoverTarget?.current;
-            if (peeking.current || timer.current !== null) return;
+            if (peeking.current || timer.current !== null || isScrolling()) return;
             if (node && typeof node.matches === 'function' && node.matches(':hover')) start();
         };
         check();
@@ -95,5 +141,5 @@ export const usePeekHandlers = (
         return () => { if (later !== null) clearTimeout(later); };
     }, [hoverTarget, start]);
 
-    return { onMouseEnter: start, onMouseLeave: stop, onFocus: start, onBlur: stop };
+    return { onMouseEnter: startByPointer, onMouseMove: moveOver, onMouseLeave: stop, onFocus: start, onBlur: stop };
 };
