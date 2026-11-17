@@ -27,12 +27,11 @@ describe('ButtonsCatalog', () => {
         expect(screen.getAllByText('Contorno')[0]).toBeInTheDocument();
     }, HEAVY_RENDER_TIMEOUT_MS);
 
-    it('a grade reage a CONTAINER QUERY (@min-[768px]:/@min-[1024px]:), não mais a `md:`/`lg:` de viewport (plan-35)', () => {
+    it('a grade é a única do painel: colunas automáticas pela largura da coluna, não da janela', () => {
         const { container } = render(<ButtonsCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
         const grid = container.querySelector('.grid') as HTMLElement;
         expect(grid.className).not.toMatch(/\bmd:grid-cols-2\b/);
         expect(grid.className).not.toMatch(/\blg:grid-cols-3\b/);
-        expect(grid.className).toMatch(/@min-\[768px\]:grid-cols-2/);
-        expect(grid.className).toMatch(/@min-\[1024px\]:grid-cols-3/);
+        expect(grid.className).toContain('grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))]');
     });
 });

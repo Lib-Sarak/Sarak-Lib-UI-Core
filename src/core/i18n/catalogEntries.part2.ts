@@ -130,6 +130,14 @@ export const CATALOG_PART_2 = {
         de: `Hauptnavigation`,
         it: `Navigazione principale`,
     },
+    shellNavMore: {
+        pt: `Mais`,
+        en: `More`,
+        es: `Más`,
+        fr: `Plus`,
+        de: `Mehr`,
+        it: `Altro`,
+    },
     shellNavBrandLogoAlt: {
         pt: `Logo`, en: `Logo`, es: `Logo`, fr: `Logo`, de: `Logo`, it: `Logo`,
     },

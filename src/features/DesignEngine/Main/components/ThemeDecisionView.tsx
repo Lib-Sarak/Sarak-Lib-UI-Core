@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
+import { ForceOpenSections } from './CollapsibleSection';
 import { ThemeDecisionOptions, type DecisionOptionsContext } from './ThemeDecisionOptions';
 import { DecisionSectionList, DecisionTokenList } from './DecisionTokenList';
 import { DecisionQuestionList } from './DecisionQuestionList';
@@ -34,6 +35,8 @@ const revealsFineTuning = (location: TokenLocation | undefined): { open: boolean
 /** Uma decisão aberta: as opções visuais e os ajustes principais (nível 2) e, recolhido, o ajuste fino (nível 3). */
 export const ThemeDecisionView: React.FC<ThemeDecisionViewProps> = ({ decision, decisionContext, options, focusTokenId, focusLocation }) => {
     const text = useLibraryText();
+    // Quem já abriu as seções por cima (a busca, o teste) continua valendo: a decisão só acrescenta a abertura pelo token achado.
+    const forceOpen = useContext(ForceOpenSections) || Boolean(focusTokenId);
     const container = useRef<HTMLDivElement>(null);
     const layers = useMemo(() => decisionLayers(decision, decisionContext), [decision, decisionContext]);
     useRevealToken(focusTokenId, container);
@@ -42,6 +45,7 @@ export const ThemeDecisionView: React.FC<ThemeDecisionViewProps> = ({ decision, 
     const tokenProps = { catalogMap, draft, updateDraft, previewDevice };
 
     return (
+        <ForceOpenSections.Provider value={forceOpen}>
         <div ref={container} data-testid={`decision-${decision.id}`} className="flex flex-col gap-5 p-[var(--sarak-layout-gap-sm,12px)]">
             <ThemeDecisionOptions groups={decision.groups} context={{ ...options, omitTokenIds: layers.questionTokenIds }} />
             <DecisionQuestionList questions={layers.questions} mode={options.draftMode} {...tokenProps} />
@@ -60,5 +64,6 @@ export const ThemeDecisionView: React.FC<ThemeDecisionViewProps> = ({ decision, 
                 {...tokenProps}
             />
         </div>
+        </ForceOpenSections.Provider>
     );
 };

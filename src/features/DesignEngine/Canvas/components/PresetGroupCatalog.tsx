@@ -6,9 +6,10 @@ import type { SarakDesignState } from '../../../../core/Provider/types';
 import { useRequestFont } from '../../../../core/Provider/hooks/useRequestFont';
 import { BarSample } from '../../Main/components/BarSample';
 import { usePresetText } from '../../hooks/usePresetText';
-import { CATALOG_GRID_2COL, CATALOG_GRID_3COL } from '../panelResponsive.presets';
+import { CATALOG_GRID, WIDE_SAMPLE_GRID } from '../panelResponsive.presets';
 import { CuratedGrid } from './CuratedGrid';
 import { OptionTile } from './OptionTile';
+import { SAMPLE_FRAME_HEIGHT } from './OptionSampleFrame';
 import { PresetSample } from './PresetSamples';
 import { SampleScope } from './SampleScope';
 import type { PeekHandler } from './peek';
@@ -26,7 +27,7 @@ interface PresetGroupCatalogProps {
 const NAVIGATION_STYLE: Readonly<Record<string, string>> = { sidebar: 'sidebar', topbar: 'topbar' };
 /** Na amostra de uma barra só ficam a navegação e a marca: os widgets não são o que o preset desenha, e o que o tom contrastante faz com eles é da barra, não da opção. */
 export const BAR_WIDGETS_OFF = { chromeSearchPosition: 'off', chromeUserPosition: 'off', chromeNotificationsPosition: 'off', preferenceModePosition: 'off', preferenceLanguagePosition: 'off', preferenceFontSizePosition: 'off', preferenceNavigationStylePosition: 'off', preferenceNavCollapsePosition: 'off', preferenceNavCollapsePositionTopbar: 'off' } as Partial<SarakDesignState>;
-const WIDE_GROUPS: ReadonlySet<string> = new Set(['sidebar', 'topbar', 'fontPairs', 'typeScale', 'fonts', 'cards']);
+
 
 /** Pede a fonte do preset antes de desenhar: sem isto a amostra de um par mostra a fonte do rascunho. */
 export const useFontsOf = (preset: ComponentPreset): void => {
@@ -89,7 +90,7 @@ const Tile: React.FC<PresetGroupCatalogProps & { preset: ComponentPreset; kind: 
         : <SampleScope draft={shownDraft} tokens={tokens} mode={currentMode}><PresetSample kind={kind} preset={preset} /></SampleScope>
     ), [kind, shownDraft, currentMode, tokens, groupId, preset]);
     return (
-        <OptionTile name={shown.name} description={shown.description} onApply={() => onApplyPreset(preset.design, true)} peekTokens={() => preset.design} onPeek={onPeek}>
+        <OptionTile name={shown.name} description={shown.description} frameHeight={groupId === 'topbar' ? SAMPLE_FRAME_HEIGHT.topbar : kind === 'input' ? SAMPLE_FRAME_HEIGHT.input : SAMPLE_FRAME_HEIGHT.default} onApply={() => onApplyPreset(preset.design, true)} peekTokens={() => preset.design} onPeek={onPeek}>
             <div ref={sampleRef}>{sample}</div>
         </OptionTile>
     );
@@ -102,7 +103,7 @@ export const PresetGroupCatalog: React.FC<PresetGroupCatalogProps> = (props) => 
     return (
         <CuratedGrid
             group={group}
-            gridClassName={WIDE_GROUPS.has(group.id) ? CATALOG_GRID_2COL : CATALOG_GRID_3COL}
+            gridClassName={props.groupId === 'topbar' ? WIDE_SAMPLE_GRID : CATALOG_GRID}
             renderTile={(preset) => <Tile key={preset.id} {...props} preset={preset} kind={group.sample} />}
         />
     );

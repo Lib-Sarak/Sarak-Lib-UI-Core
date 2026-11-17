@@ -158,6 +158,34 @@
     ]
   },
   {
+    "tokenId": "keepPalette",
+    "visualImpact": "cores",
+    "name": "Manter Minha Paleta",
+    "description": "Quando ativo, a paleta escolhida é aplicada por cima do tema que for selecionado: vence todas as cores que ela calcula, inclusive as que o tema declara.",
+    "type": "boolean",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "branding"
+    ],
+    "tags": [
+      "palette",
+      "color",
+      "theme"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "colorPalette"
+    ]
+  },
+  {
     "tokenId": "surfaceColor",
     "name": "Cor de Superfície",
     "description": "Tom para objetos elevados e content boxes em cima do background principal.",

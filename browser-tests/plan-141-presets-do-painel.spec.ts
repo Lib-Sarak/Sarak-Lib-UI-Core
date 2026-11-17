@@ -79,6 +79,13 @@ ${coverageBlock()}
     fs.writeFileSync(path.join(directory, 'index.html'), html, 'utf8');
 };
 
+/** As decisões abrem com os grupos recolhidos (só o em uso aberto): estes casos medem as opções de cada grupo, então abrem todos. */
+const openAllGroups = async (page: Page): Promise<void> => {
+    await page.waitForTimeout(300);
+    const closed = page.locator('[data-group-toggle][aria-expanded="false"]');
+    for (let round = 0; round < 60 && (await closed.count()) > 0; round += 1) await closed.first().click();
+};
+
 const open = async (query: string): Promise<{ page: Page; errors: string[] }> => {
     const page = await browser.newPage({ viewport: { width: 1600, height: 1000 } });
     const errors: string[] = [];
@@ -116,6 +123,7 @@ for (const mode of MODES) {
             const { page, errors } = await open(mode.query);
             await page.getByRole('button', { name: new RegExp(`^${decision.name}`) }).click();
             await page.getByRole('heading', { level: 2, name: decision.name }).waitFor();
+            await openAllGroups(page);
 
             for (const group of presetGroupsOf(decision.id).filter((candidate) => !INSIDE_ANOTHER_GROUP.has(candidate.id))) {
                 await settle(page, groupArea(group.id));
@@ -151,6 +159,7 @@ test('a amostra segue o modo que a prévia mostra, mesmo com um tema escuro no r
     const { page } = await open('claro=1');
     await page.getByRole('button', { name: /^Forma/ }).click();
     await page.getByRole('heading', { level: 2, name: 'Forma' }).waitFor();
+    await openAllGroups(page);
     await settle(page, groupArea('cards'));
     const lightness = await page.evaluate(() => {
         const scope = document.querySelector('[data-option-group="cards"] .sarak-design-scope') as HTMLElement;
@@ -165,6 +174,7 @@ test('"Ver todas" abre as demais opções e "Ver menos" devolve as destacadas', 
     const { page } = await open('');
     await page.getByRole('button', { name: /^Componentes/ }).click();
     await page.getByRole('heading', { level: 2, name: 'Componentes' }).waitFor();
+    await openAllGroups(page);
     const toggle = page.locator('[data-preset-toggle="icons"], [data-preset-toggle="inputs"]').first();
     const group = (await toggle.getAttribute('data-preset-toggle'))!;
     const total = registry.groups.find((candidate) => candidate.id === group)!.count;
@@ -211,6 +221,7 @@ for (const mode of MODES) {
             const collected: Array<{ group: GroupInfo; shots: string[] }> = [];
             await page.getByRole('button', { name: new RegExp(`^${decision.name}`) }).click();
             await page.getByRole('heading', { level: 2, name: decision.name }).waitFor();
+            await openAllGroups(page);
             for (const group of presetGroupsOf(decision.id).filter((candidate) => !INSIDE_ANOTHER_GROUP.has(candidate.id))) {
                 await settle(page, groupArea(group.id));
                 const tiles = page.locator(`[data-option-group="${group.id}"] [data-option-tile]`);
@@ -248,6 +259,7 @@ for (const mode of MODES) {
         const { page } = await open(mode.query);
         await page.getByRole('button', { name: /^Layout/ }).click();
         await page.getByRole('heading', { level: 2, name: 'Layout' }).waitFor();
+        await openAllGroups(page);
         await settle(page, groupArea('topbar'));
         const frames = page.locator('[data-option-group="topbar"] [data-testid="bar-sample"]');
         const total = await frames.count();
@@ -276,15 +288,21 @@ for (const mode of MODES) {
         const { page } = await open(mode.query);
         await page.getByRole('button', { name: /^Forma/ }).click();
         await page.getByRole('heading', { level: 2, name: 'Forma' }).waitFor();
+        await openAllGroups(page);
         await settle(page, groupArea('cards'));
         await page.locator('[data-option-group="cards"] .sarak-card header').first().waitFor({ timeout: 30_000 });
         const widths = await page.locator('[data-option-group="cards"] .sarak-card').evaluateAll((cards) => cards.map((card) => {
-            const cardWidth = (card as HTMLElement).clientWidth;
+            const element = card as HTMLElement;
+            const scale = element.getBoundingClientRect().width / element.offsetWidth; // a amostra é reduzida por `transform`: as duas medidas na mesma escala
+            const cardWidth = element.clientWidth * scale;
             const band = (selector: string): number => (card.querySelector(selector) as HTMLElement).getBoundingClientRect().width;
             return { card: Math.round(cardWidth), header: Math.round(band('header')), footer: Math.round(band('footer')) };
         }));
         expect(widths.length).toBeGreaterThan(0);
-        for (const item of widths) expect(item, JSON.stringify(item)).toEqual({ card: item.card, header: item.card, footer: item.card });
+        for (const item of widths) {
+            expect(Math.abs(item.header - item.card), JSON.stringify(item)).toBeLessThanOrEqual(1);
+            expect(Math.abs(item.footer - item.card), JSON.stringify(item)).toBeLessThanOrEqual(1);
+        }
         await page.close();
     });
 }
@@ -293,6 +311,7 @@ test('defeito: o trilho do interruptor tem contraste de 3:1 com o fundo da amost
     const { page } = await open('claro=1');
     await page.getByRole('button', { name: /^Componentes/ }).click();
     await page.getByRole('heading', { level: 2, name: 'Componentes' }).waitFor();
+    await openAllGroups(page);
     await settle(page, groupArea('switch'));
     const rails = page.locator('[data-option-group="switch"] input[role="switch"]');
     await page.locator('[data-option-group="switch"]').scrollIntoViewIfNeeded();
@@ -336,6 +355,7 @@ for (const mode of MODES) {
         const { page } = await open(mode.query);
         await page.getByRole('button', { name: /^Layout/ }).click();
         await page.getByRole('heading', { level: 2, name: 'Layout' }).waitFor();
+        await openAllGroups(page);
         const failures: string[] = [];
         for (const groupId of ['sidebar', 'topbar']) {
             await page.locator(`[data-preset-toggle="${groupId}"]`).click();

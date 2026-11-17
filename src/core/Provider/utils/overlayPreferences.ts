@@ -1,5 +1,5 @@
 import { syncThemeWithMode } from '../../Design/presets/themes/color-engine';
-import { resolvePaletteForDesign } from '../../Design/palette/resolve';
+import { PALETTE_CALCULATED_KEYS, resolvePaletteForDesign } from '../../Design/palette/resolve';
 import { isValidPaletteValue } from '../../Design/palette/parser';
 import { isPreferenceOffered } from '../../Design/schema/preferences';
 import type { SarakTokenValue } from '../../Design/types';
@@ -59,7 +59,9 @@ const applyCalculatedPaletteMode = (
     const designRecord = design as unknown as Record<string, unknown>;
     const currentPalette = resolvePaletteForDesign(designRecord, undefined, currentMode);
     const targetPalette = resolvePaletteForDesign(designRecord, undefined, targetMode);
-    const themeOverrides = getPaletteThemeOverrides(theme, targetMode);
+    // Com "manter minha paleta", a cor que o tema declara não volta na troca de modo: a paleta calcula nos dois.
+    const keepPalette = designRecord.keepPalette === true;
+    const themeOverrides = keepPalette ? {} : getPaletteThemeOverrides(theme, targetMode);
     const next = { ...design } as Record<string, unknown>;
 
     Object.entries(targetPalette).forEach(([tokenId, color]) => {
@@ -76,7 +78,10 @@ const applyCalculatedPaletteMode = (
         const nativeMode = (theme?.design?.mode as 'light' | 'dark') || 'dark';
         const trackedKeys = Object.keys(counterpart);
         const trackedValues = targetMode === nativeMode ? pickKeys(theme?.design, trackedKeys) : counterpart;
-        Object.assign(next, trackedValues);
+        const wanted = keepPalette
+            ? Object.fromEntries(Object.entries(trackedValues).filter(([tokenId]) => !PALETTE_CALCULATED_KEYS.has(tokenId)))
+            : trackedValues;
+        Object.assign(next, wanted);
     }
 
     next.mode = targetMode;

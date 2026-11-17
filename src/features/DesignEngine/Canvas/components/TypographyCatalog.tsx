@@ -5,7 +5,7 @@ import { THEME_FONTS } from '../../../../core/Design/schema/typography';
 import { usePresetText } from '../../hooks/usePresetText';
 import { CuratedGrid } from './CuratedGrid';
 import { ComponentPreset } from '../../../../core/Design/presets/components/cards';
-import { CATALOG_GRID_2COL } from '../panelResponsive.presets';
+import { CATALOG_GRID } from '../panelResponsive.presets';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { useRequestFont } from '../../../../core/Provider/hooks/useRequestFont';
 import { useOnFirstVisible } from '../hooks/useOnFirstVisible';
@@ -25,7 +25,7 @@ export const TypographyCatalog: React.FC<TypographyCatalogProps> = ({ onApplyPre
         // Container query (plan-35): reage ao `@container` de `PresetsCatalog.tsx`.
         <CuratedGrid
             group={getPresetGroup('fonts')!}
-            gridClassName={CATALOG_GRID_2COL}
+            gridClassName={CATALOG_GRID}
             sectionOf={(preset) => {
                 const category = THEME_FONTS.find((font) => font.name === preset.name)?.category ?? 'Sans-Serif';
                 return { id: category, title: text.fontCategory(category) };
@@ -60,25 +60,25 @@ const TypographyPresetPreview = ({ preset, index, onApply, onPeek }: { preset: C
             ref={cardRef}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
+            transition={{ delay: index * 0.05 }}
             onClick={onApply}
             data-option-tile=""
+            title={shown.description}
             {...peek}
-            className="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]"
+            className="group flex flex-col text-left overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar hover:border-theme-primary transition-colors duration-[var(--sarak-motion-dur-normal,0.3s)]"
         >
-            <div className="min-h-56 w-full relative p-8 flex flex-col justify-end gap-2 bg-[var(--color-theme-bg,#06080d)] text-theme-text overflow-hidden">
-                <div className="flex items-end gap-4">
-                    <span data-testid="font-sample-specimen" aria-hidden="true" className="text-7xl leading-none font-bold text-theme-primary" style={{ fontFamily: headingFont }}>{FONT_SPECIMEN}</span>
-                    <span data-testid="font-sample-title" className="text-3xl leading-tight font-bold" style={{ fontFamily: headingFont }}>{text('fontSampleTitle')}</span>
+            <div data-option-sample="" className="flex w-full flex-col gap-1 bg-[var(--color-theme-bg,#06080d)] p-2 text-theme-text">
+                <div className="flex items-end gap-2">
+                    <span data-testid="font-sample-specimen" aria-hidden="true" className="text-4xl leading-none font-bold text-theme-primary" style={{ fontFamily: headingFont }}>{FONT_SPECIMEN}</span>
+                    <span data-testid="font-sample-title" className="break-words text-sm leading-tight font-bold" style={{ fontFamily: headingFont }}>{text('fontSampleTitle')}</span>
                 </div>
-                <p data-testid="font-sample-glyphs" className="text-xl tracking-wider" style={{ fontFamily: bodyFont }}>{FONT_GLYPHS}</p>
-                <p data-testid="font-sample-body" className="text-base text-theme-text/90" style={{ fontFamily: bodyFont }}>{text('fontSamplePhrase')}</p>
-                <p className="text-sm text-theme-text/60" style={{ fontFamily: bodyFont }}>{text('fontSampleNumber')}</p>
+                <p data-testid="font-sample-glyphs" className="break-words text-xs tracking-wider" style={{ fontFamily: bodyFont }}>{FONT_GLYPHS}</p>
+                <p data-testid="font-sample-body" className="break-words text-xs leading-snug text-theme-text/90" style={{ fontFamily: bodyFont }}>{text('fontSamplePhrase')}</p>
+                <p className="break-words text-xs text-theme-text/60" style={{ fontFamily: bodyFont }}>{text('fontSampleNumber')}</p>
             </div>
-
-            <div className="p-4 bg-theme-sidebar">
-                <h3 className="text-sm font-bold text-theme-text">{shown.name}</h3>
-                <p className="text-xs text-theme-muted mt-1">{shown.description}</p>
+            <div className="border-t border-theme-border px-2 py-1.5">
+                <h3 className="break-words text-xs font-semibold leading-tight text-theme-text">{shown.name}</h3>
+                <p className="sr-only">{shown.description}</p>
             </div>
         </motion.button>
     );

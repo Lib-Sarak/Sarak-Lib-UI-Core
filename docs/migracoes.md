@@ -5,6 +5,33 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 9.0.0 — a barra de topo não rola mais para o lado: o que não cabe vai para um botão "Mais" logo depois do último item visível
+
+Na navegação no topo, a lista de itens rolava na horizontal com a barra de rolagem oculta, e o item que não cabia ficava inalcançável sem sinal nenhum. Agora a lista não rola: o item que não cabe sai da lista e aparece dentro de um botão "Mais" (texto nos seis idiomas, sem ícone, com a seta) logo depois do último item que coube, que abre um balão com os itens escondidos, em ordem, e navega pelo mesmo `onNavigate`. Nada de configuração: o comportamento vale para toda barra de topo, e só aparece quando algo não cabe.
+
+**O que muda para o importador:** quem media a lista de navegação do topo por rolagem (`scrollWidth` do `nav`) ou esperava `overflow-x: auto` nela passa a ler o `nav` sem rolagem; cada item de navegação da topbar agora vive numa célula `data-sarak-nav-cell`, e o item escondido fica com `visibility: hidden` (fora do foco e do leitor de tela) até o "Mais" abri-lo. Se o item ativo está escondido, o "Mais" se desenha como ativo. A navegação lateral e a do celular não mudam.
+
+| | Antes | Depois |
+|---|---|---|
+| Item que não cabe na topbar | ficava atrás da borda, alcançável só por rolagem sem barra | vai para o botão "Mais", que abre um balão com ele |
+| `nav` horizontal | `overflow-x: auto` | `overflow-x: hidden`, com o "Mais" a um vão de item do último item visível |
+| Âncoras de teste | — | `data-sarak-nav-cell` (cada item) e `data-sarak-nav-more` (o botão) |
+
+---
+
+## 9.0.0 — o token `keepPalette` ("manter minha paleta"): com ele ligado, a paleta escolhida vale por cima de qualquer tema
+
+Escolher um tema continua aplicando as cores dele, e isso não muda. O token novo `keepPalette` (booleano, padrão `false`, escolha do sistema e não preferência do usuário) liga o outro comportamento: a paleta que estava escolhida (`colorPalette`) é aplicada por cima do tema que entra, em toda troca, e vence todas as cores que ela calcula, inclusive as que o tema declara. O que o tema declara e a paleta não calcula, e o resto do tema, fica como o tema declara. A troca entre claro e escuro também segue a paleta, sem trazer de volta a cor declarada pelo tema.
+
+**O que muda para o importador:** nada, se não ligar o token. Instalação existente não tem a chave e lê o padrão (desligado). O painel de customização ganha o interruptor "Manter minha paleta" junto da galeria de paletas. No design gravado, `keepPalette: true` é uma escolha como `colorPalette`: grava e volta igual ao recarregar. Servidor que valida a lista de chaves do design (como o dos logins) precisa aceitar a chave `keepPalette`.
+
+| | Antes | Depois |
+|---|---|---|
+| Trocar de tema com uma paleta escolhida | as cores do tema novo | as cores do tema novo; com `keepPalette` ligado, a paleta escolhida |
+| Chave `keepPalette` no design | não existia | booleano, padrão `false`; só `true` é gravado |
+
+---
+
 ## 9.0.0 — o catálogo de paletas prontas passa de 19 para 78, e a base de seis paletas antigas escurece (ids intactos; a cor do botão muda nelas)
 
 A galeria do painel e `SARAK_PALETTE_PRESETS` ganham 59 paletas, cada uma com o nome nos seis idiomas. Os 19 ids anteriores continuam válidos e nenhum virou apelido de outro. As novas pedem ao motor o mesmo cálculo das antigas (escala, papéis, contraste); a lista completa é o próprio `SARAK_PALETTE_PRESETS` (ou `Object.keys` dele).

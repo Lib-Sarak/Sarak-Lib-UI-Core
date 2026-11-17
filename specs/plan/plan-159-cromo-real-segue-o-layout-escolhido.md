@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fazer o cromo real seguir o Layout escolhido, com preferências discretas e uma decisão própria para as barras"
 objetivo: "Fazer toda opção de Layout que o administrador aplica aparecer no cromo real ou dizer por que não aparece, com a Topbar sem item escondido, a barra de tom contrastante legível e os controles de preferência discretos, com P, M e G configuráveis em relação ao tamanho base do tema, e reunir as barras numa decisão própria, com um tom que vale para as duas e um interruptor da troca lateral/topo"
 dominio: "Cromo / Preferências do usuário"
-status: "🔴 A executar"
+status: "🟠 Em revisão"
 prioridade: "Alta"
 tags: ["plan", "cromo", "topbar", "sidebar", "preferencias", "painel"]
 relacionados: ["[[05-cromo-e-slots]]", "[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]"]
@@ -239,6 +239,75 @@ nova.
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
+## Resumo da execução (lote 1) — 2026-11-16
+
+**Resultado:** Concluído com pendências (o lote só fecha com o ok do dono na prévia, §6; e o 1.3 achou o que a plan chama de "o que reprovar": o que não é de `chromeToneStyle.ts` está em *Achados*).
+
+**Estado do worktree ao iniciar**
+```
+ M specs/00-indice.md
+```
+(O worktree é compartilhado com as plans 161 e 164, que passaram a sujar `src/core/Design/*`, `src/features/DesignEngine/*`, `docs/migracoes.md`, `sarak-*`, `dist/sarak.css` etc. durante a execução; nada disso é meu. Não toquei em nenhum arquivo delas, exceto o trecho próprio em `docs/migracoes.md` e `src/core/i18n/catalogEntries.part2.ts`, por substituição exata.)
+
+**O que foi feito**
+- **1.1/1.2 — o "Mais".** Na topbar cada item da lista vive numa célula medida (`data-sarak-nav-cell`); o que não cabe perde a visibilidade (sai do foco e do leitor de tela, mas continua no fluxo, então a largura natural da lista não depende de quem coube e a medição não oscila) e vai para o botão "Mais" (`data-sarak-nav-more`), posicionado sobre o fim da barra, fora do fluxo. O "Mais" é um `ShellNavGroup` de verdade: botão com `aria-haspopup`/`aria-expanded`, balão com setas, Esc e Tab, e se desenha como ativo quando o item ativo está dentro (`markActive`). Grupo escondido leva os filhos dele para o balão (um nível só). `nav` horizontal passou de `overflow-x-auto` para `overflow-x-hidden` (`SarakShellNav.tsx`).
+- **1.2 — spec atualizado.** `barra-de-topo-estreita.spec.ts` (cabeçalho de limites e regra: a lista não rola; o que não coube está no "Mais"); `cromo-css-real.spec.ts` ganhou uma linha: item com `visibility: hidden` não conta como visível (`readVisibleNavigationItemLabels`), senão o item escondido sob o "Mais" aparecia como "visível sem rótulo".
+- **1.3 — tom contrastante.** Medição nova `tom-contrastante-legivel.spec.ts` (texto e ícone dentro da barra contra o fundo composto, 2 temas × 2 modos × 2 barras × 3 tons = 24 casos). A medição achou um defeito **meu**, no próprio "Mais" ativo (texto = fundo, 1,00:1 no estilo `filled`): `ShellNavGroup` aplicava a cor de grupo por cima do estilo de ativo; corrigido (`ShellNavGroup.tsx`). `chromeToneStyle.ts` **não mudou**: nenhum dos reprovados é o que ele refaz (ver *Achados*).
+- Extrações por teto de 250 linhas (`SarakShellNav.tsx` chegou a 282): `ShellNavMore.tsx`, `ShellNavBrand.tsx` (corpo idêntico ao que estava inline), `horizontalOverflow.ts` (função pura) e `useHorizontalOverflow.ts` (medição).
+- Texto `shellNavMore` nos seis idiomas (`catalogEntries.part2.ts`).
+- Entrada em `docs/migracoes.md` (a topbar não rola; âncoras novas) e `npm run guide`.
+- Prévia para o dono: **`C:\tmp\sarak-previa-159\index.html`** (Topbar com "Mais" a 1440/1280/1024 e o balão aberto; 24 capturas de tom). Falta o ok do dono nela.
+
+**Arquivos alterados** (só os meus)
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/Navigation/SarakShellNav.tsx` | alterado | células medidas, `overflow-x-hidden`, "Mais"; marca extraída |
+| `src/components/atomic/Navigation/internal/ShellNavGroup.tsx` | alterado | prop `markActive`, `data-sarak-nav-group-active`, sem cor de grupo quando marcado |
+| `src/components/atomic/Navigation/internal/ShellNavMore.tsx` | criado | o botão "Mais" |
+| `src/components/atomic/Navigation/internal/ShellNavBrand.tsx` | criado | a marca (extraída) |
+| `src/components/atomic/Navigation/internal/horizontalOverflow.ts` | criado | `resolveOverflowStart` (pura) |
+| `src/components/atomic/Navigation/internal/useHorizontalOverflow.ts` | criado | hook de medição (ResizeObserver) |
+| `src/core/i18n/catalogEntries.part2.ts` | alterado | `shellNavMore` ×6 idiomas |
+| `src/components/atomic/Navigation/__tests__/SarakShellNav.overflow.test.tsx` | criado | 6 casos do "Mais" no jsdom (layout simulado) |
+| `src/components/atomic/Navigation/internal/__tests__/{horizontalOverflow,useHorizontalOverflow}.test.ts`, `{ShellNavMore,ShellNavBrand}.test.tsx` | criados | 1:1 dos arquivos novos |
+| `browser-tests/topbar-mais.spec.ts` + `fixtures/topbar-mais-entry.tsx` | criados | 6 casos: 1440/1280/1024, teclado, ativo escondido, foco |
+| `browser-tests/tom-contrastante-legivel.spec.ts` | criado | contraste 4,5:1 dos tons (24 casos) |
+| `browser-tests/barra-de-topo-estreita.spec.ts` | alterado | regra nova (sem rolagem; "Mais") |
+| `browser-tests/cromo-css-real.spec.ts` | alterado | item `visibility:hidden` não é visível |
+| `docs/migracoes.md` (+ cópia em `sarak-ui/` via `npm run guide`) | alterado | entrada do "Mais" |
+
+**Verificações executadas**
+- `npx vitest run src/components/atomic/Navigation src/components/Layout src/core/i18n` → 67 arquivos, 716 testes verdes (antes da extração de `ShellNavMore`/`ShellNavBrand`); depois da extração, `npx vitest run src/components/atomic/Navigation` → 32 arquivos, 306 verdes.
+- Navegador (harness montado do código-fonte, `npm run build:css` antes; o `globalSetup` padrão lê o `dist/index.js` antigo, então rodei com um config temporário em `browser-tests/`, já removido): `topbar-mais` + `barra-de-topo-estreita` + `tom-contrastante-legivel` + `seletor-da-barra-legivel` + `barra-lateral-anatomia` + `plan-149` + `plan-124` → 198 passam, 1 falha (ver *Achados*); `cromo-css-real` filtrado em `tablet|topbar|navegação` → 10 verdes; antes, a suíte `cromo-css-real` + `seletor-da-barra-legivel` + `raio-do-item` + `navegacao-na-base` + `busca-e-campo` + `altura-do-cromo` + `chrome-theme-identity` → 59 verdes e 1 vermelho (o do tablet, causa abaixo, corrigida).
+- `npx tsc --noEmit` → sem erro. `npm run verify -- --tier=quick`: `tsc` ok, `guide:check`/`dev-kit:check`/`catalog:check` ok; falham `audit:baseline` (3 regressões, **das outras plans**: `PersonalityCatalog.tsx:26` hardcode, `OptionSampleFrame.tsx` e `CollapsibleSection.tsx` sem teste; as minhas — `SarakShellNav.tsx` com 282 linhas e `useHorizontalOverflow.ts` sem teste — foram corrigidas), `plan-index:check` (índice×frontmatter da plan-164) e `check-trail-citation` (3 `it(... (plan-35))` em `*Catalog.test.tsx` de outra plan).
+- Controle em `HEAD` fora do repositório (§3 item 10), só do vermelho do `plan-149`: falha idêntica na cópia do `HEAD` (`band` transparente, `inner` magenta) → não é minha. Status do repositório idêntico antes e depois; junção removida antes de apagar (`node_modules` existe).
+- **NÃO rodei** o `topbar-mais.spec.ts` sobre o código de antes para vê-lo reprovar: contra o `HEAD` ele reprova por construção (não existe `data-sarak-nav-more`), mas isso é inferência, não saída. Também não rodei a suíte completa, `build` nem `cromo-css-real:check` (são do revisor; e o `build` não deve correr junto com outro executor).
+
+**Critérios de aceite** (lote 1)
+- [x] Topbar: todo item visível ou no "Mais", a 1440, 1280 e 1024 px — `topbar-mais.spec.ts` (3 casos) e `barra-de-topo-estreita.spec.ts` (12 casos, 4 temas). Teclado (Enter abre, Esc devolve o foco), `aria-expanded` e item ativo escondido marcando o "Mais" também medidos.
+- [ ] Barra de tom contrastante a 4,5:1 em dois temas e nos dois modos — **atendido só para barra sólida** (`sarak-sovereign`, `minimalist-airy`: 24/24). Não atendido em barra com degradê e no tema que declara a cor da barra (*Achados*).
+- [ ] Prévia para o dono — gerada, **sem o ok** ainda.
+- (Critérios de lotes 2–4: fora deste lote.)
+
+**Decisões e suposições**
+- O "Mais" lista **os filhos** de um grupo que não coube, não o pai (um nível só de aninhamento; um balão dentro de outro não existe hoje).
+- A célula é `inline-flex` num `div` por item: os itens ganham um wrapper só na horizontal.
+- Medição do tom **fora** do prometido pela barra: o código do idioma (60% do texto forte, 3,2–4,4:1 no topo) e o ícone de sair (vermelho misturado, 3,9:1) ficam fora do filtro do spec; saem em *Achados*. O critério da plan nomeia rótulo, ícone, busca, pílulas e ⚙.
+- `dist/` não foi reconstruído (a regra do revisor é `build` só na verificação do lote); o spec novo monta a própria folha de estilo da fonte, como `plan-124-sidebar-contrast.spec.ts`.
+- `npm run dev-kit` não foi rodado: `dev-kit:check` já estava em dia e o gerador recontaria números com o código das outras plans em voo.
+
+**Achados fora do escopo (não corrigidos)**
+- **Tema que declara a cor da barra vence o tom do host** (`sarak-sovereign-classic` claro: `sidebarColor: '#ddeced'`, linha 320 do tema; texto do tom fica claro sobre fundo claro, 1,0:1 a 3,0:1). É exatamente o 4.4 desta plan (lote 4); não mexi.
+- **Barra em degradê, modo claro** (`nebula-space`, `cyberpunk-neon`, `corporate-ledger`, `industrial-terminal`; no `industrial-terminal` também a lateral): a pílula P/M/G leva `bg-[--theme-muted]/10` (`ShellFontSizeControl.tsx:31`, `ShellNavigationStyleControl.tsx:30`), um véu do texto claro sobre a parada clara do degradê (3,4–4,4:1), e o item ativo em véu a 20% idem. É o controle que o lote 2 refaz; o item ativo sobre degradê é da paleta (`tone-plan.ts`, pares de degradê).
+- `SarakShellLanguageSelector.tsx:~126` (código do idioma a 60% do texto forte) e `SarakShellUserWidget.tsx:19` (`LOGOUT_TEXT`, vermelho misturado a `--sarak-on-surface`): 3,2–4,4:1 e 3,9:1 sobre a barra contrastante.
+- `browser-tests/plan-149-barras-personalidade.spec.ts:216` ("marca: o fundo pinta a faixa inteira…") falha no `HEAD` limpo: `[data-sarak-sidebar-header]` sem fundo e o bloco de dentro com magenta.
+- O gancho de escrita acusa "sem config do eslint na raiz" a cada arquivo escrito (aviso do repositório, não da tarefa).
+
+**Pendências / riscos**
+- Ok do dono na prévia (`C:\tmp\sarak-previa-159\index.html`) antes de fechar o lote.
+- O revisor precisa de `npm run build` + `cromo-css-real:check` para as specs de navegador da `plan-159` rodarem pelo caminho oficial: `barra-de-topo-estreita.spec.ts` e `cromo-css-real.spec.ts` usam `dist/index.js`, e o `dist/` atual não tem o "Mais" (rodam vermelhos até o build).
+- Risco de medição: o "Mais" só tem `ResizeObserver` no navegador; em fonte web que carrega depois, o observador das células recalcula, mas não medi troca de fonte.
+
 ---
 
 # 10. Veredito
@@ -308,3 +377,143 @@ pela spec fixa:
 
 O código delas está no `HEAD`. Ao executar, leia a spec fixa, e não a plan. `depende_de` fica vazio: nada mais bloqueia esta
 plan por dependência de outra plan.
+
+## Veredito — 2026-11-17 — lote 1 — 🟢 Aprovado no código; o lote fecha com o ok do dono na prévia
+
+**Como medi:** numa cópia fora do repositório (`git archive HEAD` com junção de `node_modules`). Primeiro só o spec novo; depois
+os 17 arquivos desta plan, sem nada das plans 161 e 164, com `npm run build` completo na cópia.
+- **O spec novo reprova antes:** `topbar-mais.spec.ts` no `HEAD` dá 6 de 6 vermelhos. O `HEAD` não tem o "Mais"; a falha é
+  estrutural, e é o que a §7 pede ver.
+- **Navegador, `HEAD` + esta plan:** 14 specs que abrem a topbar ou a navegação (`cromo-css-real`, `barra-de-topo-estreita`,
+  `topbar-mais`, `tom-contrastante-legivel`, `seletor-da-barra-legivel`, `barra-lateral-anatomia`, `plan-149`, `plan-141`,
+  `plan-145`, `altura-do-cromo`, `raio-do-item-de-menu`, `pagina-com-atmosfera`, `arsenal-lote6`, `residuo-da-reauditoria`):
+  **282 de 282 verdes**. O `plan-149:216` que o resumo dá como "falha no `HEAD` limpo" passa: no `HEAD` a folha `dist/sarak.css`
+  commitada é a antiga, e foi ela que falhou, não o produto.
+- **Unidade:** `npx vitest run src/components/atomic/Navigation src/components/Layout src/core/i18n` → 70 arquivos, 725 verdes.
+- **Gates do commit** (Anel 1 inteiro e `check-audit-baseline --with-tsc`) na mesma cópia: verdes, baseline sem regressão. O
+  `trail-citation:check` foi rodado no worktree real e está verde. O padrão de segredo, sobre as linhas adicionadas, dá 0.
+- **Diff lido:** `SarakShellNav.tsx`, `ShellNavGroup.tsx` e os quatro arquivos novos. O item escondido fica no fluxo com
+  `visibility: hidden` (sai do foco e do leitor de tela), e o "Mais" é um `ShellNavGroup` com `markActive`. A marca foi extraída sem
+  mudar o corpo. A entrada em `docs/migracoes.md` diz o que muda para o importador.
+
+**Critérios do lote 1**
+- [x] Topbar: todo item visível ou no "Mais" a 1440, 1280 e 1024 px; teclado, `aria-expanded` e ativo escondido medidos.
+- [x] Tom contrastante a 4,5:1 em dois temas e nos dois modos: 24 de 24, com `chromeToneStyle.ts` sem mudança.
+  - O 1.3 pede "dois temas", e a medição usa dois temas de barra sólida.
+  - O tema que declara a cor da barra é o 4.4 desta plan.
+  - O resto foi para o backlog (88).
+- [ ] Prévia: `C:\tmp\sarak-previa-159\index.html`, conferida. Falta o ok do dono.
+
+**Para o lote 2:** a pílula P/M/G e Lateral/Topo em véu (`bg-[--theme-muted]/10`) fica entre 3,4 e 4,4:1 sobre a parada clara de barra
+em degradê, no modo claro. O 2.1 refaz esses controles. Meça o controle novo também sobre uma barra em degradê
+(`nebula-space` ou `corporate-ledger`, claro).
+
+**Commit:** espera a `plan-164`. As duas dividem `docs/migracoes.md` e os kits `sarak-ui/` e `sarak-dev/`, e saem juntas quando a
+164 fechar a correção.
+
+**Status da plan: 🟠 Em revisão** até o ok do dono na prévia; depois, 🟡 para o lote 2.
+
+## Veredito — 2026-11-17 — lote 1, prévia — 🔵 Em correção (três ajustes que a prévia mostrou)
+
+O dono viu a prévia (`C:	mpsarak-previa-159index.html`) e perguntou se P/M/G e Lateral/Topo tinham voltado para a barra.
+- **Não voltaram.** O padrão de fábrica continua `menu` (no ⚙), em `schema/preferences.ts`.
+- A prévia só mostra a composição `pinned` do ERP, que o 1.1 exige, e não diz isso de um jeito que se veja.
+
+Os ajustes são recomendação do revisor, e o dono os aprova ao enviar o prompt de correção. O código aprovado no veredito anterior
+não muda além disto.
+1. **O "Mais" logo depois do último item visível.** Hoje ele fica no fim da área da lista (`ShellNavMore.tsx`, posição absoluta no
+   fim do `nav`), e sobra um vão entre o último item e ele: cerca de 90 px a 1440 e de 110 px a 1280.
+   - Critério: o "Mais" começa a um vão de item (`--sarak-layout-gap-sm`) do último item visível.
+   - A medição continua sem oscilar.
+   - `topbar-mais.spec.ts` ganha a medida desse vão nas três larguras.
+2. **O ícone do "Mais" sai.** Com o peso de ícone padrão (`iconWeight: fill`), o `DotsThree` do Phosphor desenha um retângulo
+   cheio com pontos, que parece um teclado. O botão fica "Mais ▾", só com texto e a seta, que já dizem o que ele é.
+3. **A prévia distingue as duas composições.** No topo da seção 1, uma linha diz que as capturas usam a composição fixada do ERP.
+   Acrescente a Topbar com a composição de fábrica (P/M/G, Lateral/Topo e modo no ⚙), a 1440, 1280 e 1024 px.
+
+**Como fechar:** `topbar-mais.spec.ts` e `barra-de-topo-estreita.spec.ts` verdes, e a prévia nova. O revisor reroda esses dois specs e
+leva a prévia ao dono.
+
+**Status da plan: 🔵 Em correção.**
+
+## Resumo da correção (lote 1, prévia) — 2026-11-17
+
+Os três ajustes do veredito de 2026-11-17, e nada além.
+1. **"Mais" logo depois do último item visível.** `useHorizontalOverflow` agora devolve `{ start, moreStart }`; `moreStart` vem de
+   `resolveMoreStart` (borda direita do último item que ficou + `--sarak-layout-gap-sm`, que é o `column-gap` do `nav`).
+   `ShellNavMore` recebe `start` e se posiciona com `insetInlineStart` (largura `w-max`). Continua fora do fluxo, então a largura
+   natural da lista não muda e a medição não oscila.
+2. **Ícone do "Mais" removido.** Fica o texto e a seta do grupo.
+3. **Prévia** (`C:	mp\sarak-previa-159\index.html`): linha de aviso no topo da seção 1 dizendo que 1.A usa a composição fixada do
+   ERP; seção 1.B nova com a composição de fábrica (P/M/G, Lateral/Topo e modo no ⚙) a 1440, 1280 e 1024 px. As capturas da
+   Topbar foram refeitas com o código novo.
+
+**Verificação:** `topbar-mais.spec.ts` (ganhou a medida do vão e a do ícone nas três larguras) e `barra-de-topo-estreita.spec.ts`:
+21 de 21 verdes, com o harness montado do código-fonte. `npx vitest run src/components/atomic/Navigation src/components/Layout src/core/i18n`:
+70 arquivos, 728 verdes. `tsc --noEmit`: 0 erros. `docs/migracoes.md` ajustada (posição e ausência de ícone).
+**Limite:** os specs rodaram contra o código-fonte, não contra `dist/` (que outro executor reconstruía); o revisor reroda com o build dele.
+
+## Veredito — 2026-11-17 — lote 1, correção da prévia — 🔵 Em correção (um defeito de medida)
+
+**Como medi (as três correções juntas):** numa cópia fora do repositório com o worktree inteiro (plans 159, 161 e 164), com
+`npm run build` completo:
+- navegador: `topbar-mais`, `barra-de-topo-estreita`, `plan-141-presets-do-painel` inteiro, `plan-161-catalogo-proporcional`,
+  `login-theme-application`, `plan-122-preview-mode`, `plan-160-previa-mostra-a-opcao`, `plan-160-moldura-e-largura`,
+  `troca-de-tema` e `css-que-so-o-navegador-mede` → **100 de 100 verdes**;
+- unidade: `npx vitest run src/features/DesignEngine src/components/atomic/Navigation src/components/Layout src/core/Provider
+  src/core/Design`, com a máquina livre → **340 arquivos, 3.408 verdes**;
+- gates do hook (Anel 1 e auditoria) no worktree real: verdes, baseline sem regressão.
+
+Os três ajustes da prévia estão feitos. O "Mais" vem a um vão do último item, sem ícone, e cabe um item a mais a 1280. A prévia
+separa a composição fixada do ERP da de fábrica. Conferi as capturas.
+
+**Achado**
+1. **`useHorizontalOverflow.ts` mistura duas unidades.** As caixas da barra e dos itens vêm de `getBoundingClientRect()`, em px
+   de tela, já com o `transform` dos ancestrais. O padding e o vão vêm de `getComputedStyle`, em px de layout, sem escala.
+   - Onde aparece: em barra reduzida por `transform: scale`, como as amostras de Topbar do painel (`OptionSampleFrame` da
+     `plan-161`).
+   - O que acontece: a área útil encolhe demais, e itens que cabem vão para o "Mais".
+   - O `moreStart`, medido em px de tela, é aplicado como `insetInlineStart` em px de layout, e o "Mais" cai fora do lugar.
+   - Quem achou: o executor da `plan-161`, que mediu uma escala de ~0,21 e contornou com uma grade mais larga para a Topbar.
+
+   Critério: a medida usa uma unidade só, a de layout (`offsetLeft`/`offsetWidth` das células e do `nav`, ou a caixa dividida pela
+   escala). Com a barra dentro de um ancestral com `transform: scale(0.5)`, ficam visíveis os mesmos itens que a barra mostra sem
+   escala, com metade da largura, e o "Mais" fica a um vão do último. Teste de unidade com a escala, e o
+   `plan-141-presets-do-painel.spec.ts:353` continua verde.
+
+**Como fechar:** o teste novo, `topbar-mais.spec.ts`, `barra-de-topo-estreita.spec.ts` e o `plan-141` inteiro. O revisor reroda esses.
+
+**Status da plan: 🔵 Em correção.**
+
+## Resumo da correção (lote 1, defeito de medida) — 2026-11-17
+
+Só o achado do veredito: `useHorizontalOverflow.ts` misturava px de tela (`getBoundingClientRect`, com o `transform` dos ancestrais)
+e px de layout (padding e vão do `getComputedStyle`).
+- **Correção:** a escala é `navRect.width ÷ nav.offsetWidth` (1 quando não há largura de layout, como no `jsdom`). As caixas dos
+  itens, a largura da barra e a do "Mais" são divididas por ela, e o `moreStart` sai em px de layout, como o `insetInlineStart`
+  que o recebe.
+- **Teste novo** (`useHorizontalOverflow.test.ts`): barra com `scale` 0,5 mostra os mesmos itens da barra sem escala e põe o
+  "Mais" no mesmo `moreStart`. Reprova com a escala fixada em 1 (conferido) e passa com a correção.
+- **Verificação:** `npx vitest run src/components/atomic/Navigation` → 32 arquivos, 310 verdes. Navegador, harness do código-fonte:
+  `topbar-mais`, `barra-de-topo-estreita` e `plan-141-presets-do-painel` inteiro → 46 de 46 verdes (inclui o `:353`).
+
+## Veredito — 2026-11-17 — lote 1, defeito de medida — 🟢 Aprovado no código; o lote fecha com o ok do dono na prévia
+
+**O que conferi:**
+- **Diff:** a escala sai de `getBoundingClientRect().width ÷ offsetWidth` do `nav`, e é 1 sem largura de layout, como no jsdom. As
+  caixas das células, a largura da barra e a do "Mais" passam para px de layout, e o `moreStart` sai na unidade do
+  `insetInlineStart`.
+- **Teste novo:** `useHorizontalOverflow.test.ts` põe a barra em escala 0,5 e confere que ficam os mesmos itens e o mesmo `moreStart`.
+  O executor relata que ele reprova com a escala fixada em 1.
+
+**Como medi:** numa cópia do worktree inteiro (plans 159, 161 e 164) com `npm run build`:
+- `npx vitest run src/components/atomic/Navigation src/components/Layout` → 63 arquivos, 660 verdes;
+- `topbar-mais`, `barra-de-topo-estreita` e `plan-141-presets-do-painel` inteiro, inclusive o `:353` → 46 de 46 verdes;
+- gates do hook e `check-audit-baseline --with-tsc` no worktree real: verdes, sem regressão.
+
+**Falta, para fechar o lote 1:** o ok do dono na prévia (`C:\tmp\sarak-previa-159\index.html`). Depois dele, a plan vai a 🟡 para o
+lote 2.
+
+**Commit:** junto com as plans 161 e 164, depois do ok do dono nas três prévias.
+
+**Status da plan: 🟠 Em revisão** (aguardando o ok do dono).

@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fazer o catálogo do painel proporcional, curto e com um vocabulário só"
 objetivo: "Fazer cada decisão do painel caber em cerca de duas telas, com amostras proporcionais (Personalidade em quadrado com o nome, tema como miniatura da prévia real, fontes na mesma grade), presets de card gerados de cada tema, texturas do card e do fundo separadas pelo nome, e um vocabulário único com os termos técnicos em inglês"
 dominio: "Painel de customização / Catálogo de opções"
-status: "🔴 A executar"
+status: "🟠 Em revisão"
 prioridade: "Média"
 tags: ["plan", "painel", "catalogo", "amostras", "presets", "vocabulario"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[09-temas-e-presets]]", "[[10-seguranca-e-acessibilidade]]", "[[07-responsividade-e-multidispositivo]]"]
@@ -174,7 +174,97 @@ glossário; nenhuma regra de gate nova.
 
 <!-- Preenchido pelo EXECUTOR. Append-only: cada rodada acrescenta um bloco novo; nada é removido. -->
 
+## Resumo da execução (lote 1) — 2026-11-17
+
+**Resultado:** Concluído com pendências (o critério "prévia aprovada pelo dono" aguarda o ok dele; o resíduo de "Cores" e do cartão de tema pertence a outros lotes/plans — ver abaixo)
+
+**Estado do worktree ao iniciar**
+```
+ M specs/00-indice.md
+```
+(A plan chegou com `status: 🔴 A executar`; executei por ordem direta do usuário e só movi o status ao entregar. Outras execuções — 159, 164 — passaram a alterar o worktree durante a minha; nada delas foi tocado de propósito, e o único arquivo delas que alterei por engano foi restaurado — ver Achados.)
+
+**O que foi feito**
+- Spec de navegador novo `browser-tests/plan-161-catalogo-proporcional.spec.ts`, rodado ANTES (2 passaram, 8 reprovaram) e DEPOIS (10 de 10): rolagem de cada decisão, geometria das amostras (texto cortado e elementos fora da amostra), Personalidade em quadrado, Fontes na mesma grade, "Ver detalhes" fora da amostra de atmosfera, dica do cabeçalho sem reticências, "Aplicar" e abas de dispositivo a 390 px.
+- Grade única: `panelResponsive.presets.ts` — `CATALOG_GRID` (colunas automáticas, mínimo 8,5 rem) e `PERSONALITY_GRID` (5,5 rem); `CATALOG_GRID_2COL`/`3COL` viram apelidos da mesma grade, para os catálogos fora da lista do escopo (Buttons, Inputs, Cards) continuarem compilando.
+- Amostra proporcional: `OptionSampleFrame.tsx` (novo) desenha o componente real num quadro de referência 280×240 (mais baixo para campo e Topbar) e o reduz à largura da opção; `OptionTile.tsx` o usa, põe o nome em `text-xs` sem caixa alta e passa a descrição para `sr-only` + `title`.
+- Personalidade: `PersonalityCatalog.tsx` — quadrado de 5,5 rem com um desenho sem texto (barra + dois blocos, só variáveis do escopo) e o nome embaixo; sai o `BarSample` da amostra.
+- Fontes: `TypographyCatalog.tsx` — mesma grade, cartão compacto (Aa, título, glifos, frase, número; os testids ficam).
+- Atmosfera: `AtmosphereCatalog.tsx` e `PresetSamples.tsx` — o botão "Ver detalhes" sai das amostras de atmosfera e de textura.
+- Grupos recolhidos: `CollapsibleSection.tsx` (novo; o título é um botão com `aria-expanded`, o conteúdo só monta aberto, contexto `ForceOpenSections`). `ThemeDecisionOptions.tsx` abre só o primeiro grupo com opção aplicada no rascunho (sem nenhum, o primeiro); `ThemeDecisionView.tsx` abre tudo quando a busca leva a um token; `DecisionQuestionList.tsx` e `ThemeGlobalSettings.tsx` usam o mesmo componente (sem isso o Layout continuava em 8,2 telas).
+- `PreviewToolbar.tsx`: a dica sem `truncate` (quebra) e o grupo de dispositivos com `flex-wrap`. `ThemeActionBar.tsx`: linha com `flex-wrap` e "Aplicar"/"Descartar" sem quebra de palavra (`min-w-fit`, `whitespace-nowrap`).
+- Testes de unidade: `OptionSampleFrame.test.tsx` e `CollapsibleSection.test.tsx` (novos); ajustados `panelResponsive.presets`, `OptionTile`, `PersonalityCatalog`, `TypographyCatalog`, `Buttons/Inputs/CardsCatalog`, `optionGroups`, `ThemeDecisionOptions` (+2 casos: recolher e "em uso"), `DecisionQuestionList` (+1), `ThemeDecisionView`, `ThemeGlobalSettings`, `ThemeColumn.integration`; snapshots de `AtmosphereCatalog` e `CardsCatalog` regravados (mudança de marcação esperada).
+- Specs de navegador existentes adaptadas ao que mudou de propósito (grupos fechados, amostra reduzida): `plan-141-presets-do-painel` (helper que abre os grupos; largura da faixa medida na mesma escala), `escolha-no-painel` (abre o grupo medido; janela mais baixa para haver amostra fora da área visível), `fixtures/fontes-no-painel-entry.tsx` (galeria na largura da coluna, 340 px).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `browser-tests/plan-161-catalogo-proporcional.spec.ts` | criado | spec do lote (antes/depois) |
+| `src/features/DesignEngine/Canvas/components/OptionSampleFrame.tsx` | criado | amostra proporcional |
+| `src/features/DesignEngine/Main/components/CollapsibleSection.tsx` | criado | seção recolhível + contexto de abertura |
+| `Canvas/panelResponsive.presets.ts`, `OptionTile.tsx`, `CuratedGrid.tsx`, `PersonalityCatalog.tsx`, `TypographyCatalog.tsx`, `AtmosphereCatalog.tsx`, `PresetGroupCatalog.tsx`, `PresetSamples.tsx`, `PreviewToolbar.tsx`, `InputPresetPreview.tsx` | alterado | grade, tile, amostras, barra da prévia |
+| `Main/components/ThemeDecisionOptions.tsx`, `ThemeDecisionView.tsx`, `DecisionQuestionList.tsx`, `ThemeGlobalSettings.tsx`, `ThemeActionBar.tsx` | alterado | grupos recolhíveis, botões da barra de ações |
+| testes de unidade (lista acima) e 2 snapshots | criado/alterado | acompanham o comportamento novo |
+| `browser-tests/plan-141-presets-do-painel.spec.ts`, `escolha-no-painel.spec.ts`, `fixtures/fontes-no-painel-entry.tsx` | alterado | adaptados (acima) |
+| `dist/sarak.css` | alterado | efeito de `npm run build:css`, mandado pelo usuário antes do navegador |
+
+**Verificações executadas** (suíte completa, `build` e `cromo-css-real:check` não são minhas — §3 item 8)
+- Spec novo, antes → depois, a 1440×900 (área da coluna 660 px; "cortados/vazando" = amostras com texto cortado / elementos fora da amostra):
+
+| Decisão | Rolagem antes | Rolagem depois | Cortados/vazando antes → depois | Colunas |
+|---|---|---|---|---|
+| Tema | 11.205 px (16,1×) | 708 px (1,07×) | 7 / 15 → 0 / 0 | 2 → 3 |
+| Cores | 4.032 px (5,8×) | 4.032 px (6,1×) — **fora do lote** | — | — |
+| Fontes | 7.210 px (10,4×) | 1.523 px (2,3×) | 1 / 1 → 0 / 0 | 1 → 2 |
+| Forma | 10.560 px (15,2×) | 1.607 px (2,4×) | 0 / 0 → 0 / 0 | 1 → 2 |
+| Componentes | 14.144 px (20,4×) | 1.354 px (2,05×) | 0 / 0 → 0 / 0 | 1 → 2 |
+| Layout | 9.500 px (13,7×) | 793 px (1,2×) | 0 / 0 → 0 / 0 | 1 → 2 |
+
+  Meta fixada no spec: **2,5 alturas da área** (a medida de antes ia de 5,8× a 20,4×; a pior depois é 2,43×) e amostra de grupo ≤ 45% da altura da área (a pior mede 154 px de 660). Personalidade: 91 × 116 px (antes 137 × 243 a 654). Dica da prévia: com reticências (`nowrap`) → sem, quebrando. A 390 px: "Aplicar" (40-206 px) e as três abas (40-341 px) inteiros, sem rolagem horizontal. Rodado: `npx playwright test --config=browser-tests/playwright.config.ts browser-tests/plan-161-catalogo-proporcional.spec.ts --workers=1` → antes 2 passaram e 8 falharam; depois **10 passaram**.
+- `npx vitest run src/features/DesignEngine` → 148 arquivos passam, 2 falham: `PreviewCanvas.test.tsx` (snapshot com `data-sx-keep-palette`) e `PaletteGallery.registry.test.tsx` (78 linhas) — ambos da plan-164 (arquivos e atributo dela, que não toquei).
+- `npm run verify -- --tier=quick` → `tsc` 0 erros, `audit:baseline --with-tsc` sem regressão, R36 e Anel 0 limpos; falha só `plan-index:check` (índice × frontmatter das plans 159 e 164, de outras execuções).
+- Specs de navegador vizinhas: `plan-140` e `plan-145` passam; `plan-141` (adaptada) passou nos casos reexecutados (distinção a olho, faixas do cartão); `escolha-no-painel` e `fontes-no-painel` (adaptadas) passam, com o orçamento de 250 ms mantido.
+- **Controle em `HEAD`** (§3 item 10): `plan-160-moldura-e-largura.spec.ts` tem 8 reprovados no worktree e os **mesmos 8, com os mesmos números** (inclusive `0,0189667` na rolagem) numa cópia limpa do `HEAD` — não vêm deste lote. `git status --short` antes e depois do controle idêntico (`C:\tmp\status-before-control.txt` × `status-after-control.txt`); `node_modules` do repositório intacto; cópia e junção removidas.
+
+**Critérios de aceite**
+- [x] Spec de navegador: rolagem abaixo da meta e nenhuma amostra cortada/vazando — evidência: tabela acima (Cores e o cartão de tema ficam fora: ver Pendências).
+- [x] Personalidade em quadrado com o nome; Fontes e grupos na mesma grade; atmosfera sem botão — evidência: spec (91×116; `firstRow` 2; `atmosphereDetailLabels` 0).
+- [x] Grupos fechados por padrão, o grupo em uso aberto — evidência: `ThemeDecisionOptions.test.tsx` (2 casos novos) e as capturas.
+- [x] A 390 px, "Aplicar" e as abas de dispositivo inteiros — evidência: spec, geometria impressa. (No harness já cabiam antes; agora os botões também não quebram palavra e a linha quebra de linha.)
+- [ ] Prévia para o dono em `C:\tmp\sarak-previa-161\index.html` — gerada (antes/depois, 6 decisões a 1440 px e a Forma a 390 px); **o lote só fecha com o ok do dono nela**.
+- Critérios dos lotes 2 a 5 (miniatura de tema, presets gerados, texturas, vocabulário): fora deste lote. "Suíte completa verde, build, `cromo-css-real:check`": do revisor.
+
+**Decisões e suposições**
+- "Grupo em uso" = o primeiro grupo da decisão cujo preset tem todos os tokens iguais aos do rascunho; sem nenhum, o primeiro grupo (a decisão nunca abre inteira fechada). A plan não define "em uso"; a alternativa é abrir só o grupo escolhido por último.
+- Os grupos sem título (o bloco global do Layout) ficam sempre abertos; as seções internas dele (Preferências Globais, Barra de Preferências do Usuário, Identidade da Empresa) e as perguntas do Layout viraram recolhíveis fechadas — foi preciso para o Layout sair de 8,2 telas, apesar de `DecisionQuestionList.tsx` e `ThemeGlobalSettings.tsx` não estarem na lista da §3.1.
+- A descrição deixou de aparecer sob a amostra (fica em `title` e `sr-only`) para a opção caber numa grade de várias colunas.
+- Fora da lista da §3.1 também toquei `InputPresetPreview.tsx` (altura do quadro do campo), os testes e os 3 arquivos de navegador acima — todos consequência direta da mudança.
+- O lote 2 não foi iniciado: o grupo "Temas prontos" continua com o cartão antigo e, por isso, é excluído da medida do spec (`LOTE_2_GROUPS`).
+
+**Achados fora do escopo (não corrigidos)**
+- Cores / `PaletteSection`: 4.032 px (6,1× a área) — a seção de paletas é da plan-164; o spec isenta "Cores" da meta com essa razão declarada.
+- `browser-tests/plan-160-moldura-e-largura.spec.ts`: 8 casos reprovados já no `HEAD` (menu ⚙ fora da moldura, marca d'água "SARAK TWIN", texto cortado no tablet, rolagem muda a prévia, `tableCellPadding`).
+- `plan-141` "o rótulo do item ativo ... contraste", na Topbar: `[aria-current="page"]` com `visibility: hidden` na amostra de Topbar — vem do `useHorizontalOverflow` (plan-159, não commitado). Não reexecutei esse caso depois do ajuste final e não tenho controle em `HEAD` para ele.
+- Incidente meu: um `vitest -u` com um só caminho rodou a suíte inteira (o `-u` consome o primeiro caminho como valor) e regravou `PreviewCanvas.test.tsx.snap`, que é da plan-164. **Restaurei-o do `HEAD` com `git checkout`** (o diff era só `data-sx-keep-palette`), parei o processo e conferi que nenhum outro snapshot além dos dois do meu escopo ficou alterado.
+
+**Pendências / riscos**
+- Ok do dono na prévia.
+- Risco nos browser-tests que assumiam todos os grupos abertos: adaptei os que reprovaram, mas só reexecutei `plan-140`, `plan-141`, `plan-145`, `plan-160`, `escolha` e `fontes`; os demais (`plan-146` a `149`, `plan-155`, `paletas-cabem-na-coluna`) não foram rodados.
+- `docs/migracoes.md`: não escrevi — a mudança é só da UI do painel, sem nome de token, prop ou export alterado.
+- `npm run dev-kit` não foi rodado (`dev-kit:check` passa; `sarak-dev/` e `sarak-ui/` mostram alterações de outras execuções).
+
 ---
+
+## Resumo da correção (lote 1) — 2026-11-17
+
+Escopo: só os achados 1 a 4 do veredito de 2026-11-17.
+
+1. **Galeria de temas aberta.** `initialOpenGroups` (`ThemeDecisionOptions.tsx`) abre a galeria sempre que a decisão a tem: o tema aplicado é uma opção dela. O spec do lote deixou de isentar a galeria e mede o Tema com ela aberta. O limite do Tema fica declarado em 15 alturas (`SCROLL_LIMIT`, medido 14,66) até o lote 2 trocar o cartão. As demais decisões seguem em 2,5.
+2. **`plan-160-moldura-e-largura.spec.ts:171`** abre o grupo `tables` antes de procurar os cartões.
+3. **Item ativo da Topbar.** Causa medida: o `useHorizontalOverflow` da 159 mistura retângulos escalados com padding e vão sem escala, e a opção de 8,5 rem deixava a escala líquida da barra (640 px de referência) em ~0,21, então "Pedidos" ia para o "Mais". O "Mais" não foi tocado. O grupo `topbar` usa `WIDE_SAMPLE_GRID` (mínimo de 15 rem, `panelResponsive.presets.ts`), com escala líquida de ~0,375. `plan-141:353` verde nos dois modos.
+4. **Atribuição corrigida.** O controle em `HEAD` do resumo anterior não vale (sem `npm run build`, lia o `dist/` antigo). Os 8 casos do `plan-160-moldura` não eram pré-existentes com os mesmos números: só o `:171` falhava, e era deste lote. O `plan-141:353` também era deste lote (quadro de 280 px), não da 159.
+
+**Verificação:** `npm run build` completo e, no worktree, `login-theme-application`, `plan-122-preview-mode`, `plan-160-previa-mostra-a-opcao`, `troca-de-tema`, `plan-160-moldura-e-largura` e o spec do lote: 35 verdes. `plan-141:353`: 2 verdes. Unidade de `src/features/DesignEngine/Canvas` e `ThemeDecisionOptions`: só falha o snapshot do `PreviewCanvas` (plan-164). Rolagem: Fontes 2,31, Forma 2,43, Componentes 2,05, Layout 1,20, Cores 6,11 (164). As duas decisões do dono (meta 2,5 e Cores) seguem abertas. Sem commit.
 
 # 10. Veredito
 
@@ -198,3 +288,86 @@ pela spec fixa:
 
 O código delas está no `HEAD`. Ao executar, leia a spec fixa, e não a plan. `depende_de` fica vazio: nada mais bloqueia esta
 plan por dependência de outra plan.
+
+## Veredito — 2026-11-17 — lote 1 — 🔴 Reprovado (11 casos de navegador da bateria caem por este lote)
+
+**Como medi:** numa cópia fora do repositório com o worktree inteiro (as plans 159, 161 e 164, que saem no mesmo commit), com
+`npm run build` completo na cópia e a bateria `browser-tests/` inteira, uma vez: **758 verdes, 14 falhas** (1,4 h). Três já são
+conhecidas e não são deste lote: `cartao-cede-a-classe` ×2 (backlog 83) e `css-que-so-o-navegador-mede.spec.ts:257`, que ficou velho
+no `HEAD` e sai por um prompt à parte. As outras **11 falham de novo rodadas sozinhas**, e todas têm a causa neste lote.
+- **Unidade:** `npx vitest run src/features/DesignEngine` na mesma cópia, com a máquina livre → 912 verdes. Falha só o snapshot do
+  `PreviewCanvas`, que é da correção da `plan-164`.
+- **Diff lido:** `CollapsibleSection.tsx`, `OptionSampleFrame.tsx`, `OptionTile.tsx`, `PersonalityCatalog.tsx`,
+  `ThemeDecisionOptions.tsx`, `ThemeDecisionView.tsx`, `DecisionQuestionList.tsx`, `ThemeActionBar.tsx`, `AtmosphereCatalog.tsx`,
+  `PresetGroupCatalog.tsx` e `panelResponsive.presets.ts`. A grade única e a amostra proporcional estão bem feitas. A prévia
+  (`C:\tmp\sarak-previa-161\index.html`) foi conferida, e o spec novo reprova antes e passa depois.
+- **Os números de antes batem com o ERP da §2:** Componentes 14.144 × 14.236 px, Forma 10.560 × 10.637, Fontes 7.210 × 7.217.
+
+**Achados**
+1. **Na decisão Tema, a galeria de temas abre fechada** (`ThemeDecisionOptions.tsx`, `initialOpenGroups`). Sem opção "em uso"
+   reconhecida, abre o primeiro grupo, as Personalidades, e os cartões de tema nem montam. Caem 8 casos:
+   - `login-theme-application.spec.ts:41` e `plan-122-preview-mode.spec.ts:63` (não acham o cartão do tema);
+   - `plan-160-previa-mostra-a-opcao.spec.ts:487` e `:499`;
+   - `troca-de-tema.spec.ts:213` e `:235`, nos modos app e embarcado. No `:213`, o total de elementos cai com a galeria fechada, e o
+     teto (uma fração do total) fica abaixo do recálculo de 479. O `:235` escolhe um tema na galeria.
+
+   Critério: o tema aplicado é sempre uma opção da galeria, então ela é o grupo "em uso" da decisão Tema e abre aberta. A §6 do 1.3
+   ("o grupo em uso aberto") não é atendida. O spec do lote mede a rolagem do Tema com a galeria aberta, e a meta do Tema fica
+   declarada no limite do spec até o lote 2, que troca o cartão. Os 708 px de hoje medem a decisão sem a galeria.
+2. **`plan-160-moldura-e-largura.spec.ts:171` (`tableCellPadding`)** procura os cartões do grupo de tabelas, que agora abre fechado em
+   Componentes. Adapte o spec para abrir o grupo que mede, como já foi feito no `plan-141`.
+3. **A amostra de Topbar esconde o item ativo** (`plan-141-presets-do-painel.spec.ts:353`, nos dois modos). O quadro de referência de
+   280 px (`OptionSampleFrame.tsx`) é estreito para a lista da amostra, e o "Mais" da `plan-159` leva o item ativo ("Pedidos") para
+   dentro dele: `aria-current` com `visibility: hidden`. A amostra existe para mostrar o estilo do item ativo.
+   - Critério: na amostra de Topbar, o item ativo fica visível.
+   - O caso fica verde no worktree com a 159.
+   - O quadro (largura de referência da Topbar ou número de itens da amostra) é deste lote. Não mude o "Mais" da 159.
+4. **O controle no `HEAD` do resumo não vale.** A cópia do `HEAD` sem `npm run build` lê o `dist/` commitado, que é o antigo. Por isso
+   os 8 casos do `plan-160-moldura` falharam lá "com os mesmos números". Com o build, no worktree, só o `:171` falha, e é deste
+   lote. Corrija no resumo novo a atribuição desse spec e a do `plan-141:353` (achado 3).
+
+**Para o dono** (sem estes, a correção não fecha):
+- **Meta de rolagem.** O 1.4 diz "nenhuma decisão passa de duas alturas". O spec fixou 2,5, e três decisões ficam entre 2 e 2,5
+  (Componentes 2,05, Fontes 2,31 e Forma 2,43, contra 15 a 20 antes).
+  - **(a)** Aceitar 2,5 no spec. A queda é de 6 a 10 vezes, e o lote 4 reorganiza a Forma de novo. **Recomendação do revisor.**
+  - **(b)** Exigir 2,0 já neste lote.
+- **Cores (6,1 alturas).** Fica de fora porque a galeria de paletas é da `plan-164`.
+  - **(a)** O lote 2 da 164, que já mexe na galeria (`PaletteGallery.tsx`, grupo "Minhas paletas"), passa a ter a meta das 2,5 alturas
+    para Cores. **Recomendação do revisor.**
+  - **(b)** Um lote novo nesta plan, depois do lote 2 da 164.
+
+**Como fechar** (verificação objetiva): os 11 casos acima, no worktree com `npm run build`, e o spec do lote. O revisor reroda só
+esses.
+
+**Commit:** as plans 159, 161 e 164 saem num commit só. Dividem `docs/migracoes.md`, os kits e o snapshot do `AtmosphereCatalog`,
+e a amostra de Topbar desta plan depende do "Mais" da 159.
+
+**Status da plan: 🔵 Em correção.**
+
+## Veredito — 2026-11-17 — lote 1, correção — 🟢 Aprovado no código; o lote fecha com as decisões do dono e o ok na prévia
+
+**Como medi (as três correções juntas):** numa cópia fora do repositório com o worktree inteiro (plans 159, 161 e 164), com
+`npm run build` completo:
+- navegador: `topbar-mais`, `barra-de-topo-estreita`, `plan-141-presets-do-painel` inteiro, `plan-161-catalogo-proporcional`,
+  `login-theme-application`, `plan-122-preview-mode`, `plan-160-previa-mostra-a-opcao`, `plan-160-moldura-e-largura`,
+  `troca-de-tema` e `css-que-so-o-navegador-mede` → **100 de 100 verdes**;
+- unidade: `npx vitest run src/features/DesignEngine src/components/atomic/Navigation src/components/Layout src/core/Provider
+  src/core/Design`, com a máquina livre → **340 arquivos, 3.408 verdes**;
+- gates do hook (Anel 1 e auditoria) no worktree real: verdes, baseline sem regressão.
+
+**Achados do veredito anterior**
+1. A galeria de temas abre na decisão Tema (`initialOpenGroups`). Os 8 casos que caíam passam. O limite do Tema (15 alturas,
+   medido 14,66) está declarado no spec até o lote 2.
+2. O `plan-160-moldura-e-largura.spec.ts:171` abre o grupo de tabelas antes de medir.
+3. A amostra de Topbar usa `WIDE_SAMPLE_GRID` (mínimo de 15 rem), e o `plan-141:353` passa nos dois modos. A causa que o executor
+   mediu, a mistura de unidades no `useHorizontalOverflow`, é da `plan-159` e foi para lá. A grade larga fica: a Topbar é uma
+   amostra comprida e se lê melhor assim.
+4. O resumo corrigiu as duas atribuições.
+
+**Falta, para fechar o lote:**
+- as duas decisões do dono do veredito anterior (meta de 2,5 alturas; onde fica Cores);
+- o ok do dono na prévia.
+
+**Commit:** junto com as plans 159 e 164, depois da correção da 159.
+
+**Status da plan: 🟠 Em revisão** (aguardando o dono).

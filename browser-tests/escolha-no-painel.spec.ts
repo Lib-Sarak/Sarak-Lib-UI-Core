@@ -148,12 +148,19 @@ const openDecision = async (page: Page, name: RegExp, heading: string): Promise<
     await expect(page.getByRole('heading', { level: 2, name: heading })).toBeVisible();
 };
 
+/** Os grupos de opção abrem recolhidos (só o em uso aberto): o caso abre o grupo que vai medir. */
+const openGroup = async (page: Page, group: string): Promise<void> => {
+    const toggle = page.locator(`[data-group-toggle="${group}"]`);
+    if ((await toggle.getAttribute('aria-expanded')) === 'false') await toggle.click();
+};
+
 test('escolher uma opção da Barra lateral responde em menos de 250 ms, sem reescrever <style>', async () => {
     const page = await browser.newPage({ viewport: VIEWPORT });
     const pageErrors: string[] = [];
     page.on('pageerror', (error) => pageErrors.push(error.message));
     await page.goto(harnessUrl);
     await openDecision(page, /^Layout/, 'Layout');
+    await openGroup(page, 'sidebar');
     const cdp = await page.context().newCDPSession(page);
     await cdp.send('Performance.enable');
     await settle(page, cdp);
@@ -211,9 +218,11 @@ const watchScopeStyles = (page: Page): Promise<void> => page.evaluate((margin) =
 }), VISIBILITY_MARGIN);
 
 test('trocar o tema não remonta escopo, e a amostra fora da área visível não reescreve o estilo', async () => {
-    const page = await browser.newPage({ viewport: VIEWPORT });
+    // A grade compacta cabe quase inteira numa tela alta: a janela baixa deixa parte das Personalidades fora da área visível.
+    const page = await browser.newPage({ viewport: { ...VIEWPORT, height: 520 } });
     await page.goto(harnessUrl);
     await openDecision(page, /^Tema/, 'Tema');
+    await openGroup(page, 'themes');
     const cdp = await page.context().newCDPSession(page);
     await cdp.send('Performance.enable');
     await settle(page, cdp);

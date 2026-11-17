@@ -38,6 +38,7 @@
     "tertiaryColor",
     "accentColor",
     "colorPalette",
+    "keepPalette",
     "surfaceColor",
     "textureColor",
     "titleColor",

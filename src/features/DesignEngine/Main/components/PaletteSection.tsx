@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
+import { SarakSwitch } from '../../../../components/atomic/Inputs/SarakSwitch';
 import { PaletteGallery } from './PaletteGallery';
 import { PaletteCreator } from './PaletteCreator';
 import { usePaletteSelection } from '../hooks/usePaletteSelection';
@@ -47,6 +48,12 @@ export const PaletteSection: React.FC<PaletteSectionProps> = ({ draft, appliedDe
             ) : (
                 <SarakButton type="button" variant="secondary" size="sm" fullWidth className="min-w-0 whitespace-normal break-words text-center font-semibold normal-case tracking-normal" onClick={() => setIsCreating(true)}>{text('paletteCreateOpen')}</SarakButton>
             )}
+            <SarakSwitch
+                checked={draft.keepPalette === true}
+                onChange={(event) => updateDraft('keepPalette', event.target.checked)}
+                label={text('paletteKeepLabel')}
+                description={text(draft.keepPalette === true ? 'paletteKeepOn' : 'paletteKeepOff')}
+            />
             <PaletteGallery
                 selectedId={typeof draft.colorPalette === 'string' ? draft.colorPalette : ''}
                 onSelect={(id) => { void selectPalette(id); }}

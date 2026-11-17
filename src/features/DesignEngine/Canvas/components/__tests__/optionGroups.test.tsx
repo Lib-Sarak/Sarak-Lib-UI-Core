@@ -76,11 +76,10 @@ describe('grupos de opções do painel', () => {
         expect(first.querySelector('[data-sample-state="focus"] input')).toBeInTheDocument();
     });
 
-    it('a atmosfera ocupa o tile inteiro, sem cartão no centro, com uma mini peça no canto', () => {
+    it('a atmosfera ocupa o tile inteiro, sem cartão no centro e sem botão por cima da amostra', () => {
         const { container } = render(<AtmosphereCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
         expect(container.querySelector('.sarak-card')).toBeNull();
-        const corner = container.querySelector('.absolute.bottom-3.right-3') as HTMLElement;
-        expect(corner.querySelector('button')).toBeInTheDocument();
+        expect(container.querySelector('[data-option-sample] button')).toBeNull();
         expect(container.querySelector('.sarak-design-scope')!.parentElement).toHaveClass('absolute', 'inset-0');
     });
 

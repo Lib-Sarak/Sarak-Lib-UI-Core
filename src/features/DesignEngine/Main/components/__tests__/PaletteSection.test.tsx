@@ -3,6 +3,7 @@ import { act, fireEvent, render, screen, waitFor, within } from '@testing-librar
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { PaletteSection } from '../PaletteSection';
+import { SarakUIProvider } from '../../../../../core/Provider/SarakUIProvider';
 import { PEEK_DELAY_MS } from '../../../Canvas/components/peek';
 import { parsePaletteValue } from '../../../../../core/Design/palette/parser';
 import { sarakResolvePalette } from '../../../../../core/Design/palette/resolve';
@@ -18,7 +19,8 @@ vi.mock('../../../../../core/Design/palette/presets', () => ({
 }));
 
 const confirmOverlay = vi.fn();
-vi.mock('../../../../../components/atomic/Modals/SarakOverlayProvider', () => ({
+vi.mock('../../../../../components/atomic/Modals/SarakOverlayProvider', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('../../../../../components/atomic/Modals/SarakOverlayProvider')>()),
     useOverlay: () => ({ open: vi.fn(), close: vi.fn(), confirm: confirmOverlay }),
 }));
 
@@ -30,7 +32,7 @@ const Harness: React.FC<{ initial: Draft; applied?: Draft }> = ({ initial, appli
     const [draft, setDraft] = useState<Draft>(initial);
     captured.draft = draft;
     const updateDraft = (id: string, value: SarakTokenValue) => setDraft((prev) => ({ ...prev, [id]: value }));
-    return <PaletteSection draft={draft} appliedDesign={applied} updateDraft={updateDraft} />;
+    return <SarakUIProvider><PaletteSection draft={draft} appliedDesign={applied} updateDraft={updateDraft} /></SarakUIProvider>;
 };
 
 const baseDraft = (): Draft => ({ mode: 'dark', primaryColor: '#19e3f0', sidebarColor: '#000000', colorPalette: '' });
@@ -132,11 +134,31 @@ describe('PaletteSection', () => {
         window.matchMedia = vi.fn().mockReturnValue({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() }) as unknown as typeof window.matchMedia;
         const onPeek = vi.fn();
         const updateDraft = vi.fn();
-        render(<PaletteSection draft={baseDraft()} appliedDesign={{}} updateDraft={updateDraft} onPeek={onPeek} />);
+        render(<SarakUIProvider><PaletteSection draft={baseDraft()} appliedDesign={{}} updateDraft={updateDraft} onPeek={onPeek} /></SarakUIProvider>);
         fireEvent.mouseEnter(screen.getByRole('radio', { name: /Floresta/ }));
         act(() => { vi.advanceTimersByTime(PEEK_DELAY_MS); });
         vi.useRealTimers();
         expect(onPeek).toHaveBeenCalledWith(expect.objectContaining({ colorPalette: 'floresta', primaryColor: expect.any(String) }));
         expect(updateDraft).not.toHaveBeenCalled();
+    });
+});
+
+describe('PaletteSection — manter minha paleta', () => {
+    it('mostra o interruptor desligado, com o texto do padrão, e ligar grava keepPalette no rascunho', async () => {
+        render(<Harness initial={baseDraft()} applied={{}} />);
+        const toggle = screen.getByRole('switch', { name: /Manter minha paleta/ });
+        expect(toggle).not.toBeChecked();
+        expect(screen.getByText(/escolher um tema aplica as cores dele/)).toBeInTheDocument();
+        fireEvent.click(toggle);
+        await waitFor(() => expect(captured.draft.keepPalette).toBe(true));
+    });
+
+    it('ligado, o estado fica visível: a paleta vale por cima do tema, e desligar volta às cores do tema', async () => {
+        render(<Harness initial={{ ...baseDraft(), keepPalette: true }} applied={{}} />);
+        const toggle = screen.getByRole('switch', { name: /Manter minha paleta/ });
+        expect(toggle).toBeChecked();
+        expect(screen.getByText(/vale por cima do tema/)).toBeInTheDocument();
+        fireEvent.click(toggle);
+        await waitFor(() => expect(captured.draft.keepPalette).toBe(false));
     });
 });

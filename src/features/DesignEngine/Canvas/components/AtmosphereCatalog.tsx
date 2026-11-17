@@ -7,9 +7,9 @@ import { ComponentPreset } from '../../../../core/Design/presets/components/card
 import { Video, Grid } from 'lucide-react';
 import { SarakBackgroundRenderer } from '../../../../core/Design/components/SarakBackgroundRenderer';
 import { OptionTile } from './OptionTile';
-import { SampleButton, SAMPLE_TEXTURE_STYLE } from './SampleParts';
+import { SAMPLE_TEXTURE_STYLE } from './SampleParts';
 import { SampleScope } from './SampleScope';
-import { CATALOG_GRID_2COL } from '../panelResponsive.presets';
+import { CATALOG_GRID } from '../panelResponsive.presets';
 import type { PeekHandler } from './peek';
 
 import { SarakDesignState } from '../../../../core/Provider/types';
@@ -66,7 +66,7 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
 
             <CuratedGrid
                 group={getPresetGroup(activeTab === 'media' ? 'atmosphere' : 'textures')!}
-                gridClassName={CATALOG_GRID_2COL}
+                gridClassName={CATALOG_GRID}
                 sectionOf={activeTab === 'textures' ? (preset) => {
                     const family = textureFamilyOf(String(preset.design.texture)) ?? 'technical';
                     return { id: family, title: text.family(family) };
@@ -96,10 +96,9 @@ const AtmospherePresetPreview = ({ preset, onApply, currentMode, draft, onPeek }
             peekTokens={() => preset.design}
             onPeek={onPeek}
         >
-            {/* A atmosfera ocupa o tile inteiro, sem cartão no meio escondendo o que se quer ver: só um rótulo e uma
-                mini peça no canto, para dar escala. A textura aparece com a opacidade da amostra (visível); o valor
+            {/* A atmosfera ocupa o tile inteiro, sem cartão nem botão por cima do que se quer ver. A textura aparece com a opacidade da amostra (visível); o valor
                 que o clique aplica continua sendo o do preset. */}
-            <div className="relative h-48 overflow-hidden">
+            <div className="relative h-full overflow-hidden">
                 {imageUrl && (
                     <div className="absolute inset-0 z-0">
                         <SarakBackgroundRenderer
@@ -122,9 +121,7 @@ const AtmospherePresetPreview = ({ preset, onApply, currentMode, draft, onPeek }
                     style={hasGeneratedAtmosphere ? SAMPLE_TEXTURE_STYLE : undefined}
                     scopeProps={{ 'data-sx-texture': texture }}
                 >
-                    <div className="absolute bottom-3 right-3 z-10 scale-90 origin-bottom-right opacity-90">
-                        <SampleButton state="rest" />
-                    </div>
+                    <div aria-hidden="true" className="h-full w-full" />
                 </SampleScope>
             </div>
         </OptionTile>

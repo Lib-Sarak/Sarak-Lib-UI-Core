@@ -73,6 +73,19 @@ export const PALETTE_CALCULATED_KEYS: ReadonlySet<string> = new Set([
 ]);
 
 /**
+ * "Manter minha paleta": com `keepPalette` ligado no design, a paleta que o usuário escolheu (`chosen`, a do design anterior
+ * à troca de tema) vale por cima do tema — o `colorPalette` dela e TODA cor que ela calcula, inclusive as que o tema
+ * declara. O que o tema declara e a paleta não calcula, e o resto do tema, fica como está. Desligado, ou sem paleta válida
+ * escolhida, devolve o design como veio.
+ */
+export const applyKeptPalette = (design: Record<string, unknown>, chosen: unknown): Record<string, unknown> => {
+    if (design.keepPalette !== true || !parsePaletteValue(chosen)) return design;
+    const mode: SarakPaletteMode = design.mode === 'light' ? 'light' : 'dark';
+    const tones = { sidebarTone: design.sidebarTone, topbarTone: design.topbarTone };
+    return { ...design, colorPalette: chosen, ...resolveChosenPalette(chosen, mode, tones) };
+};
+
+/**
  * As cores de uma paleta escolhida no painel: o valor, o modo e os tons da barra, sem a correção contra o que o tema e o
  * host declaram. É a mesma entrada com que o painel grava a paleta no rascunho, e por isso o design recomposto a partir
  * dela devolve exatamente as cores que o painel mostrou; `{}` se o valor não for uma paleta.

@@ -62,7 +62,7 @@ export const ThemeActionBar: React.FC<ThemeActionBarProps> = ({
         <div role="group" aria-label="Ações do tema" className="shrink-0 border-t border-[var(--theme-border)] bg-[var(--theme-surface)] p-3">
             <div className="flex flex-col gap-2">
                 <ThemePendingChanges tokens={dirtyTokens} isOpen={openLayer === 'changes'} onToggle={toggleChanges} />
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                     <SarakButton
                         onClick={onApply}
                         data-testid="sarak-panel-apply"
@@ -71,11 +71,11 @@ export const ThemeActionBar: React.FC<ThemeActionBarProps> = ({
                         size="md"
                         leftIcon={<Check size={14} />}
                         aria-describedby={dirtyTokenCount > 0 ? 'theme-pending-changes-count' : undefined}
-                        className="min-w-0 flex-1 whitespace-normal break-words disabled:opacity-80"
+                        className="min-w-fit flex-1 whitespace-nowrap disabled:opacity-80"
                     >
                         {ACTION_LABELS.apply}
                     </SarakButton>
-                    <SarakButton onClick={onDiscard} disabled={!isDirty} variant="secondary" size="md" className="min-w-0 whitespace-normal break-words disabled:opacity-80">
+                    <SarakButton onClick={onDiscard} disabled={!isDirty} variant="secondary" size="md" className="min-w-fit whitespace-nowrap disabled:opacity-80">
                         {ACTION_LABELS.discard}
                     </SarakButton>
                     <ThemeMoreActionsMenu actions={menuActions} isOpen={openLayer === 'menu'} onOpenChange={setMenuOpen} />

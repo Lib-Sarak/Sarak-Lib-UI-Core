@@ -5,8 +5,8 @@
  * coleta `.tsx` (`specs/arquitetura/00-mapa-do-modulo.md` §5.1: é onde a lógica de
  * breakpoint deve morar quando cresce, mesmo idioma de `useStructuralStyles.presets.ts`).
  *
- * As grades dos subcatálogos usam os limiares antigos (`md:` = 768 = `BREAKPOINT_TABLET`,
- * `lg:` = 1024 = `BREAKPOINT_DESKTOP`). A grade de temas começa quando cabem dois cartões
+ * As grades dos subcatálogos medem a coluna: o número de colunas sai da largura dela, e cada opção tem pelo menos 8,5 rem
+ * (5,5 rem nas Personalidades). A grade de temas começa quando cabem dois cartões
  * de 112 px com o vão de 16 px. Todos medem o container, nunca a janela.
  *
  * As classes são escritas LITERAL de propósito: o scanner do Tailwind v4 lê o
@@ -14,8 +14,14 @@
  * classe válida, e a regra correspondente nunca é gerada no CSS publicado. O teste companheiro
  * compara a forma literal com a medida calculada, para pegar deriva se a largura mínima mudar.
  */
-export const CATALOG_GRID_2COL = 'grid-cols-1 @min-[768px]:grid-cols-2';
-export const CATALOG_GRID_3COL = 'grid-cols-1 @min-[768px]:grid-cols-2 @min-[1024px]:grid-cols-3';
+export const CATALOG_GRID = 'grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))]';
+/** Os nomes antigos apontam para a mesma grade: não há mais uma de duas e uma de três colunas. */
+export const CATALOG_GRID_2COL = CATALOG_GRID;
+export const CATALOG_GRID_3COL = CATALOG_GRID;
+/** A grade da amostra larga (a barra de topo): a miniatura precisa de escala suficiente para a barra mostrar o item ativo, então a opção é mais larga. */
+export const WIDE_SAMPLE_GRID = 'grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]';
+/** A grade das Personalidades: quadrados menores que as demais opções. */
+export const PERSONALITY_GRID = 'grid-cols-[repeat(auto-fill,minmax(5.5rem,1fr))]';
 export const THEME_GALLERY_CARD_MIN_WIDTH = 112;
 export const THEME_GALLERY_GRID_GAP = 16;
 export const THEME_GALLERY_GRID_MIN_WIDTH = THEME_GALLERY_CARD_MIN_WIDTH * 2 + THEME_GALLERY_GRID_GAP;

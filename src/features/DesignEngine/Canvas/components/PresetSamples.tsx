@@ -147,8 +147,9 @@ const SAMPLES: Record<PresetSampleKind, (props: { preset: ComponentPreset }) => 
             <div className="sarak-glass relative w-3/4 p-6 text-sm"><SampleButton state="rest" /></div>
         </Frame>
     ),
-    atmosphere: () => <Frame><SampleButton state="rest" /></Frame>,
-    texture: () => <Frame><SampleButton state="rest" /></Frame>,
+    // Atmosfera e textura são o fundo: nada por cima do que se quer ver.
+    atmosphere: () => <Frame><span aria-hidden="true" /></Frame>,
+    texture: () => <Frame><span aria-hidden="true" /></Frame>,
     button: () => <Frame><SampleButton state="rest" /></Frame>,
     input: () => <SampleInputStates />,
     table: ({ preset }) => <TableSample preset={preset} />,

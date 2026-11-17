@@ -33,11 +33,11 @@ export const CuratedGrid: React.FC<CuratedGridProps> = ({ group, gridClassName, 
         : [['all', { title: '', items: [...shown] }] as const];
 
     return (
-        <div data-preset-group={group.id} className="flex flex-col gap-4">
+        <div data-preset-group={group.id} className="flex flex-col gap-3">
             {sections.map(([id, section]) => (
                 <div key={id} className="flex flex-col gap-3">
                     {section.title && <h4 className="text-xs font-semibold text-[var(--theme-muted)]">{section.title}</h4>}
-                    <div className={`grid ${gridClassName} gap-6`}>{section.items.map((preset, index) => renderTile(preset, index))}</div>
+                    <div className={`grid ${gridClassName} gap-3`}>{section.items.map((preset, index) => renderTile(preset, index))}</div>
                 </div>
             ))}
             {hasMore && (

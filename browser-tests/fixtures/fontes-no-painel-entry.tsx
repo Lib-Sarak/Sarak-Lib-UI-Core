@@ -10,10 +10,10 @@ const params = new URLSearchParams(window.location.search);
 const source = params.get('origem') ?? 'bundled';
 const baseUrl = params.get('fontes') ?? undefined;
 
-/** A galeria de fontes do painel dentro de um Provider com a origem de fontes pedida na URL. */
+/** A galeria de fontes do painel, na largura da coluna dele (a grade compacta tem uma coluna por 8,5 rem), dentro de um Provider com a origem de fontes pedida na URL. */
 createRoot(rootElement).render(
     <SarakUIProvider initialTheme="sarak-sovereign" options={{ fonts: { source: source as 'bundled' | 'google' | 'none', baseUrl } }}>
-        <div style={{ width: '1100px', height: '700px', overflow: 'auto' }} data-testid="galeria-de-fontes">
+        <div style={{ width: '340px', height: '700px', overflow: 'auto' }} data-testid="galeria-de-fontes">
             <TypographyCatalog onApplyPreset={() => undefined} currentMode="dark" />
         </div>
     </SarakUIProvider>,

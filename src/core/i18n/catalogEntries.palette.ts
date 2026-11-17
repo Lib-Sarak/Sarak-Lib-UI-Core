@@ -44,6 +44,26 @@ export const CATALOG_PALETTE = {
         de: 'Wählen Sie eine fertige Palette oder erstellen Sie eine aus einer Farbe. Sie bleibt ein Entwurf, bis Sie anwenden.',
         it: 'Scegli una tavolozza pronta o creane una da un colore. Resta una bozza finché non applichi.',
     },
+    paletteKeepLabel: {
+        pt: 'Manter minha paleta', en: 'Keep my palette', es: 'Mantener mi paleta',
+        fr: 'Garder ma palette', de: 'Meine Palette behalten', it: 'Mantieni la mia tavolozza',
+    },
+    paletteKeepOff: {
+        pt: 'Desligado: escolher um tema aplica as cores dele.',
+        en: 'Off: choosing a theme applies its own colors.',
+        es: 'Desactivado: elegir un tema aplica los colores de ese tema.',
+        fr: 'Désactivé : choisir un thème applique ses propres couleurs.',
+        de: 'Aus: Die Wahl eines Themas wendet dessen eigene Farben an.',
+        it: 'Disattivato: scegliere un tema applica i suoi colori.',
+    },
+    paletteKeepOn: {
+        pt: 'A paleta escolhida vale por cima do tema, inclusive das cores que o tema declara. Desligar volta às cores do tema.',
+        en: 'The chosen palette applies on top of the theme, including the colors the theme declares. Turning it off returns to the theme colors.',
+        es: 'La paleta elegida se aplica sobre el tema, incluidos los colores que el tema declara. Al desactivarla vuelven los colores del tema.',
+        fr: 'La palette choisie s’applique par-dessus le thème, y compris les couleurs que le thème déclare. La désactiver rétablit les couleurs du thème.',
+        de: 'Die gewählte Palette gilt über dem Thema, auch über den Farben, die das Thema festlegt. Ausschalten stellt die Themenfarben wieder her.',
+        it: 'La tavolozza scelta vale sopra il tema, anche sui colori che il tema dichiara. Disattivarla ripristina i colori del tema.',
+    },
     paletteGalleryLabel: {
         pt: 'Paletas prontas', en: 'Ready-made palettes', es: 'Paletas listas',
         fr: 'Palettes prêtes', de: 'Fertige Paletten', it: 'Tavolozze pronte',

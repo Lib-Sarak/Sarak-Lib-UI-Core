@@ -172,6 +172,8 @@ test('tableCellPadding: cada opção de tabela muda o respiro da célula da tabe
     const page = await openPanel('Componentes');
     await page.locator('select').filter({ has: page.locator('option[value="dashboard"]') }).selectOption('tabela');
     await page.waitForTimeout(SETTLE_MS);
+    const toggle = page.locator('[data-group-toggle="tables"]');
+    if ((await toggle.getAttribute('aria-expanded')) === 'false') await toggle.click();
     const cellPadding = (): Promise<number> => page.evaluate((frameSelector) => {
         const cell = document.querySelector(`${frameSelector} [data-sarak-datatable] [role="cell"]`) as HTMLElement;
         return Number.parseFloat(getComputedStyle(cell).paddingLeft);

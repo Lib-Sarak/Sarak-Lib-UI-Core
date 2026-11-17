@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { SarakTooltip } from '../UX/SarakTooltip';
 import { ShellNavEntry } from './internal/ShellNavEntry';
 import { ShellNavGroup } from './internal/ShellNavGroup';
 import { groupByCategory, isNavGroup } from './internal/shellNavTree';
 import { useShellNavExpansion } from './internal/useShellNavExpansion';
+import { NAV_CELL_ATTRIBUTE, useHorizontalOverflow } from './internal/useHorizontalOverflow';
+import { ShellNavMore } from './internal/ShellNavMore';
+import { ShellNavBrand } from './internal/ShellNavBrand';
 import { useNavigationStyle } from '../../../core/Provider/useNavigationStyle';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { VERTICAL_NAV_GAP, VERTICAL_NAV_PADDING } from './menuItemMetrics';
@@ -99,8 +102,16 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
     const safeItems = items ?? [];
     const groups = groupByCategory(safeItems);
     const expansion = useShellNavExpansion(safeItems, activeRoute);
+    const navRef = useRef<HTMLElement | null>(null);
+    // Na topbar o que não cabe vai para o "Mais", no fim da lista: nenhum item fica inalcançável sem sinal (Spec 05 §2.1).
+    const flatItems = Array.from(groups.values()).flat();
+    const overflow = useHorizontalOverflow(navRef, horizontal, `${flatItems.map((item) => item.route).join('|')}|${collapsed}`);
+    const firstHidden = overflow.start ?? flatItems.length;
+    const hiddenItems = flatItems.slice(firstHidden);
+    const hasMore = horizontal && hiddenItems.length > 0;
+    const indexOf = (item: SarakShellNavItem): number => flatItems.indexOf(item);
 
-    const renderItem = (item: SarakShellNavItem): React.ReactNode => {
+    const renderLeaf = (item: SarakShellNavItem): React.ReactNode => {
         if (isNavGroup(item)) {
             return (
                 <ShellNavGroup
@@ -125,53 +136,34 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
             : entry;
     };
 
+    // Na horizontal cada item mora numa célula medida; a que não coube perde a visibilidade (some do foco e do leitor de tela)
+    // mas continua no fluxo, para a largura natural da lista não depender de quem coube.
+    const renderItem = (item: SarakShellNavItem): React.ReactNode => {
+        if (!horizontal) return renderLeaf(item);
+        return (
+            <div
+                key={item.route}
+                {...{ [NAV_CELL_ATTRIBUTE]: 'true' }}
+                className="inline-flex shrink-0"
+                style={indexOf(item) >= firstHidden ? { visibility: 'hidden' } : undefined}
+            >
+                {renderLeaf(item)}
+            </div>
+        );
+    };
+
     return (
         <nav
+            ref={navRef}
             aria-label={t('shellNavAriaLabel')}
-            className={`relative z-10 flex ${horizontal ? 'items-center overflow-x-auto shrink-0' : 'h-full min-h-0 overflow-y-auto overflow-x-hidden'} ${className}`}
+            className={`relative z-10 flex ${horizontal ? 'items-center overflow-x-hidden shrink-0' : 'h-full min-h-0 overflow-y-auto overflow-x-hidden'} ${className}`}
             style={{
                 flexDirection: horizontal ? 'row' : 'column',
                 gap: horizontal ? 'var(--sarak-layout-gap-sm, 8px)' : VERTICAL_NAV_GAP,
                 padding: horizontal ? 'var(--sarak-layout-gap-md, 16px)' : VERTICAL_NAV_PADDING,
             }}
         >
-            {brand && (brand.name || brand.logoUrl) ? (
-                <div
-                    className="flex items-center shrink-0"
-                    style={{
-                        gap: 'var(--sarak-layout-gap-sm, 8px)',
-                        background: horizontal
-                            ? 'var(--sarak-topbar-brand-bg, transparent)'
-                            : 'var(--sarak-sidebar-brand-bg, transparent)',
-                        marginBottom: horizontal ? undefined : 'var(--sarak-layout-gap-md, 16px)',
-                        marginInlineEnd: horizontal ? 'var(--sarak-layout-gap-md, 16px)' : undefined,
-                    }}
-                >
-                    {brand.logoUrl ? (
-                        <img
-                            src={brand.logoUrl}
-                            alt={brand.name ?? t('shellNavBrandLogoAlt')}
-                            className="object-contain"
-                            style={{ height: 'var(--sarak-shell-brand-logo-size, 32px)' }}
-                        />
-                    ) : null}
-                    {brand.name ? (
-                        <span
-                            className="truncate"
-                            style={{
-                                color: horizontal
-                                    ? 'var(--sarak-topbar-brand-color, var(--sarak-topbar-title-color, #f2f6fb))'
-                                    : 'var(--sarak-sidebar-brand-color, var(--sarak-on-sidebar, #f2f6fb))',
-                                fontFamily: 'var(--sarak-identity-font, var(--font-heading, var(--font-main, inherit)))',
-                                fontWeight: 'var(--sarak-identity-weight, 800)',
-                                letterSpacing: 'var(--sarak-identity-tracking, 0px)',
-                            }}
-                        >
-                            {brand.name}
-                        </span>
-                    ) : null}
-                </div>
-            ) : null}
+            {brand && (brand.name || brand.logoUrl) ? <ShellNavBrand brand={brand} horizontal={horizontal} /> : null}
 
             {Array.from(groups.entries()).map(([category, groupItems], index) => (
                 <React.Fragment key={category || 'raiz'}>
@@ -180,7 +172,7 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                         <span
                             aria-hidden="true"
                             className="self-stretch shrink-0"
-                            style={{ width: 'var(--sarak-border-width, 1px)', background: 'var(--sarak-topbar-group-separator-color, var(--sarak-card-border-color, rgba(255,255,255,0.09)))' }}
+                            style={{ visibility: indexOf(groupItems[0]) >= firstHidden ? 'hidden' : undefined, width: 'var(--sarak-border-width, 1px)', background: 'var(--sarak-topbar-group-separator-color, var(--sarak-card-border-color, rgba(255,255,255,0.09)))' }}
                         />
                     ) : null}
                     <div
@@ -215,6 +207,18 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                     </div>
                 </React.Fragment>
             ))}
+
+            {horizontal ? (
+                <ShellNavMore
+                    hiddenItems={hiddenItems}
+                    activeRoute={activeRoute}
+                    visible={hasMore}
+                    start={overflow.moreStart}
+                    collapsed={collapsed}
+                    onToggle={expansion.toggle}
+                    onSelect={select}
+                />
+            ) : null}
         </nav>
     );
 };

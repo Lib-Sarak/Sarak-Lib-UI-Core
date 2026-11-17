@@ -8,6 +8,8 @@ import { SarakTokenValue } from '../../../core/Design/types';
 import { applyColorMode, overlayPreferences } from '../../../core/Provider/utils/overlayPreferences';
 import { composeThemeDesign } from '../../../core/Design/presets/themes/compose';
 import { findThemeEntry, replaceDesignChoice } from '../../../core/Provider/utils/designChoices';
+import { toggleKeepPalette } from '../utils/keepPalette';
+import { discardsCustomColor } from '../utils/discardsCustomColor';
 
 const BAR_TONE_KEYS: ReadonlySet<string> = new Set(['sidebarTone', 'topbarTone']);
 
@@ -128,21 +130,8 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
             const targetMode = value;
             const activeTheme = draftTheme;
             const current = draft as SarakDesignState;
-            const currentMode = current.mode === 'light' ? 'light' : 'dark';
-            const counterpart = activeTheme?.contraparte;
-            const nativeMode = activeTheme?.design?.mode === 'light' ? 'light' : 'dark';
-            const sourceForCurrentMode = (currentMode === nativeMode ? activeTheme?.design : counterpart) as
-                Record<string, SarakTokenValue> | undefined;
             const nextModeDraft = applyColorMode(current, targetMode, activeTheme);
-            const discardedCustomization = Boolean(counterpart && currentMode !== targetMode && Object.keys(counterpart).some((tokenId) =>
-                !areValuesEqual(
-                    (current as Record<string, SarakTokenValue>)[tokenId],
-                    sourceForCurrentMode?.[tokenId],
-                ) && !areValuesEqual(
-                    (current as Record<string, SarakTokenValue>)[tokenId],
-                    (nextModeDraft as Record<string, SarakTokenValue>)[tokenId],
-                ),
-            ));
+            const discardedCustomization = discardsCustomColor(current, nextModeDraft, activeTheme);
             setDraftState((prev: SarakDesignState | null) => {
                 const currentDraft = prev || draft;
                 if (currentDraft.mode === targetMode) return prev;
@@ -151,6 +140,13 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
             if (discardedCustomization) {
                 showToast('warning', `A troca para o modo ${targetMode === 'dark' ? 'escuro' : 'claro'} substituiu uma customização de cor pela contraparte do tema.`);
             }
+            return;
+        }
+
+        // "Manter minha paleta" decide quais cores valem, a do tema ou a da paleta: o rascunho as refaz.
+        if (key === 'keepPalette') {
+            const theme = findThemeEntry(sarak.allThemes, draftTheme?.id);
+            setDraftState((prev: SarakDesignState | null) => toggleKeepPalette(prev, draft, value === true, { theme, hostConfig: sarak.getHostConfig?.() as Record<string, unknown> | undefined }));
             return;
         }
 

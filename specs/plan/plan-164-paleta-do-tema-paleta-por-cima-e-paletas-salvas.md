@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Aplicar a paleta do tema, permitir a paleta escolhida por cima de qualquer tema e salvar paletas com nome"
 objetivo: "Fazer escolher um tema aplicar as cores dele, deixar o usuário pôr uma paleta por cima de qualquer tema (inclusive dos que declaram cor) e salvar uma paleta criada com nome próprio, que aparece na galeria e serve à marca"
 dominio: "Design Engine / Paleta e painel"
-status: "🟡 Em execução"
+status: "🟠 Em revisão"
 prioridade: "Média"
 tags: ["plan", "paletas", "temas", "painel", "persistencia"]
 relacionados: ["[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[024-paleta-calculada-separada-do-tema]]", "[[010-temas-salvos-pelo-usuario]]", "[[011-tema-salvo-por-uma-porta-de-escrita]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]"]
@@ -196,6 +196,78 @@ apagar.
 
 ---
 
+## Resumo da execução (lote 1) — 2026-11-16
+
+**Resultado:** Concluído com pendências (a prévia para o dono não foi gerada)
+
+**Estado do worktree ao iniciar**
+```
+ M specs/00-indice.md
+```
+(Durante a execução apareceram, vindos das plans 159 e 161 em paralelo e não tocados por mim: `src/components/atomic/Navigation/*`, `src/features/DesignEngine/Canvas/*`, `ThemeActionBar.tsx`, `ThemeDecisionOptions.tsx`, `ThemeDecisionView.tsx`, `catalogEntries.part2.ts`, `dist/sarak.css`, `browser-tests/*` e os não rastreados `horizontalOverflow.ts`, `useHorizontalOverflow.ts`, `OptionSampleFrame.tsx`. Nenhum foi necessário para o lote.)
+
+**O que foi feito**
+- Token novo `keepPalette` (boolean, `functional`, padrão `false`) nas três fontes: `schema/colors.ts`, `catalog/theme_table_mapping.json` (coluna `colors_and_atmosphere`) e `catalog/partitions/colors_and_atmosphere.json`; gerados `design-token-ids.ts` e `design-token-docs.json` por `npm run token-types`. O leitor é `applyKeptPalette` (R40: `token-reader:check` OK).
+- `core/Design/palette/resolve.ts`: `applyKeptPalette(design, chosen)` — com `keepPalette` ligado e paleta válida, grava `colorPalette` e TODA cor que a paleta calcula (mesma entrada de `resolveChosenPalette`, com os tons das barras do design), inclusive as que o tema declara.
+- `presets/themes/compose.ts`: `keepPalette` entra em `THEME_PRESERVED_KEYS` e a composição termina com `applyKeptPalette(design, prev.colorPalette ?? host.colorPalette)`. Desligado, nada muda.
+- `Provider/utils/designChoices.ts`: `keepPalette` vira condutor (`DRIVER_KEYS`) e `composeChoiceBaseline` o repassa à composição, para o design gravado (ADR-026) recompor a mesma tela ao recarregar, inclusive quando a paleta escolhida é a do próprio tema.
+- `Provider/utils/overlayPreferences.ts`: com `keepPalette`, a troca claro/escuro não traz de volta a cor que o tema declara (`themeOverrides` vazio; contraparte sem as chaves `PALETTE_CALCULATED_KEYS`).
+- Painel: `useDesignDraft.ts` trata `updateDraft('keepPalette', …)` por `utils/keepPalette.ts` (`toggleKeepPalette`): ligar aplica a paleta vigente por cima das cores declaradas pelo tema; desligar devolve ao rascunho `colorPalette` e as cores calculadas do tema atual e preserva o resto do rascunho. A extração do bloco de aviso da troca de modo para `utils/discardsCustomColor.ts` foi necessária para o arquivo ficar em 245 linhas (teto 250); comportamento igual.
+- `PaletteSection.tsx`: `SarakSwitch` "Manter minha paleta" junto da galeria, com a descrição que muda com o estado (ligado: "A paleta escolhida vale por cima do tema…"). Textos em seis idiomas em `catalogEntries.palette.ts` (`paletteKeepLabel`, `paletteKeepOff`, `paletteKeepOn`).
+- `docs/migracoes.md`: entrada 9.0.0 do `keepPalette`. `npm run guide` e `npm run dev-kit` rodados (429 tokens).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/schema/colors.ts`, `catalog/theme_table_mapping.json`, `catalog/partitions/colors_and_atmosphere.json`, `Provider/generated/design-token-ids.ts`, `design-token-docs.json` | alterado | token `keepPalette` |
+| `src/core/Design/palette/resolve.ts` | alterado | `applyKeptPalette` |
+| `src/core/Design/presets/themes/compose.ts` | alterado | preserva e aplica `keepPalette` |
+| `src/core/Provider/utils/designChoices.ts`, `overlayPreferences.ts` | alterado | condutor do gravado; troca de modo |
+| `src/features/DesignEngine/hooks/useDesignDraft.ts` | alterado | caminho de `keepPalette`; bloco de modo extraído |
+| `src/features/DesignEngine/utils/keepPalette.ts`, `discardsCustomColor.ts` | criado | `toggleKeepPalette`; aviso de troca de modo |
+| `src/features/DesignEngine/Main/components/PaletteSection.tsx` | alterado | o interruptor |
+| `src/core/i18n/catalogEntries.palette.ts` | alterado | três textos × seis idiomas |
+| testes: `themes/__tests__/keepPalette.test.ts` (novo), `utils/__tests__/keepPalette.test.ts` (novo), `designChoices.test.ts`, `overlayPreferences.test.ts`, `PaletteSection.test.tsx` | criado/alterado | ver verificações |
+| `docs/migracoes.md` | alterado | entrada do token |
+| `sarak-ui/*`, `sarak-dev/*` | alterado | gerados por `guide` e `dev-kit` (carregam também o efeito dos componentes das plans 159/161 em curso) |
+
+**Verificações executadas**
+- 1.1: `themes/__tests__/keepPalette.test.ts` → para cada tema embarcado, escolher o tema aplica a paleta e os papéis que ele declara, mesmo com outra paleta escolhida antes (`keepPalette` desligado).
+- 1.2: o mesmo arquivo, com `keepPalette` ligado → cada tema ganha a paleta escolhida em todo papel que ela calcula, e a segunda troca mantém a paleta. Rodado sobre o `HEAD` em cópia fora do repositório (`git archive` + junção; `git status` idêntico antes e depois; `node_modules` íntegro): 52 falhas ali; no worktree passam.
+- `npx vitest run src/core/Provider src/core/Design/presets src/core/Design/__tests__ …/PaletteSection.test.tsx src/features/DesignEngine/utils` → 109 arquivos, 1274 testes verdes.
+- `npx vitest run src/features/DesignEngine/Main src/features/DesignEngine/utils src/features/DesignEngine/hooks src/core/Provider/utils src/core/Design/presets/themes src/core/Design/palette` (pasta de paletas do painel e vizinhos) → 121 de 122 arquivos verdes; o 122º (`PaletteSection.test.tsx`) quebrou porque `SarakSwitch` exige o Provider, foi consertado e roda 12/12.
+- `npx tsc --noEmit -p .` → 0 erros no estado final (1 erro de tipo no meu teste, corrigido).
+- `npm run verify -- --tier=quick` → gates de contrato OK (token-reader, token-docs, token-types, theme-completeness, panel-contract, dev-kit, guide; Anel 0: 1387 linhas, 0 achados). O baseline do `run_audit` acusou 2 órfãos de cobertura (`useHorizontalOverflow.ts`, `OptionSampleFrame.tsx`) e 1 arquivo de 282 linhas (`SarakShellNav.tsx`): todos das plans 159/161, não meus. O `tsc` que ele acusou era o meu e foi corrigido.
+- `npm run token-release-notes:check` → falha em 5 tokens contra a entrada `8.0.0` (`brandDisplay`, `keepPalette`, `preferenceNavCollapsePositionTopbar`, `sidebarActiveGlass`, `userAvatarStyle`): quatro não são meus, e o gate compara com a entrada 8.0.0 enquanto a campanha anota em 9.0.0. Registrei `keepPalette` na entrada 9.0.0, que é a convenção do arquivo.
+
+**Critérios de aceite**
+- [x] ADR-027 aprovado antes do lote 1 — o ADR está 🟢 Aceito (2026-11-12).
+- [x] Escolher qualquer tema aplica a cor dele (teste por tema) — `themes/__tests__/keepPalette.test.ts`, bloco 1.
+- [x] "Manter minha paleta" faz a paleta valer por cima de qualquer tema, inclusive os de cor declarada (reprovava antes: 52 falhas no `HEAD`).
+- [ ] Paleta salva, "Minhas paletas", marca — lote 2.
+- [ ] Documentação do importador (`persistencia-de-tema.md`, guia, artefato) — lote 2; `migracoes.md` do lote 1 feito.
+- [ ] Suíte completa, baseline, Anel 1 — são do revisor (§3 item 8 do prompt do executor); o `quick` está acima.
+- [ ] Prévia para o dono em `C:\tmp\sarak-previa-164\index.html` — **não gerada**: pedi só o lote 1 e a prévia exige `dist/` e capturas reais, o que conflita com o build/CSS dos outros executores em paralelo. Fica para o revisor decidir quando.
+
+**Decisões e suposições**
+- Nome do token: `keepPalette`; `kind: functional` (igual em todo tema, o tema não o declara).
+- "Ligar sem paleta escolhida antes vale a paleta vigente" (ADR): ligar aplica a vigente (a do tema, na prática) por cima das cores declaradas. Tratei o aviso do revisor (11 temas com papéis declarados): ligar já tira essas cores do rascunho para a tela mostrar o que a troca de tema vai manter, e o texto do controle diz isso quando ligado. Sem pergunta: ajustes manuais de cor no momento de ligar são substituídos pelas cores da paleta, e desligar também devolve as cores do tema.
+- Ligar/desligar mexe só em `colorPalette` e nas chaves que a paleta calcula (`PALETTE_CALCULATED_KEYS`); o resto do rascunho fica.
+- Fora da lista da §3.1, mas necessários: `designChoices.ts` (reload com a paleta do próprio tema), `overlayPreferences.ts` (a troca de modo devolvia a cor do tema por cima da paleta) e dois utilitários novos; justifico por 0.4 do lote 0 e pelo teto de 250 linhas.
+- `usePaletteSelection.ts` e `PaletteGallery.tsx` não precisaram mudar.
+- No teste do painel mantive o mock de `useOverlay`, agora parcial (`importOriginal`), porque `SarakSwitch` exige o `SarakUIProvider`.
+
+**Achados fora do escopo (não corrigidos)**
+- `src/core/i18n/catalogEntries.palette.ts:220` — o hook acusa identificador com termo em português (`palettePresetAzulProjeto`); é do catálogo de paletas, anterior a esta execução.
+- `token-release-notes:check` já estava vermelho para `brandDisplay`, `preferenceNavCollapsePositionTopbar`, `sidebarActiveGlass` e `userAvatarStyle`.
+
+**Pendências / riscos**
+- Prévia ao dono (acima) e navegador: não rodei spec de navegador nem `build:css`.
+- Servidor que valida a lista de chaves do design precisa aceitar `keepPalette` (anotado em `migracoes.md`).
+- `sarak-ui/` e `sarak-dev/` foram regenerados com o worktree compartilhado: o diff deles mistura o meu token com o das plans 159/161; conferir ao commitar (`git commit -- <caminhos>`).
+
+---
+
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
@@ -250,3 +322,91 @@ pela spec fixa:
 
 O código delas está no `HEAD`. Ao executar, leia a spec fixa, e não a plan. `depende_de` fica vazio: nada mais bloqueia esta
 plan por dependência de outra plan.
+
+## Veredito — 2026-11-17 — lote 1 — 🔵 Em correção (dois itens objetivos)
+
+**Como medi:** numa cópia fora do repositório (`git archive HEAD` com junção), com os 20 arquivos desta plan e nada das plans 159 e
+161.
+- **Unidade:** `npx vitest run src/core src/features/DesignEngine src/components/atomic/Navigation src/components/Layout` → 341
+  arquivos, 7 falhas. Rodei os 6 arquivos de novo, na cópia desta plan e numa cópia equivalente ao `HEAD`:
+  - **Desta plan:**
+    - `PreviewCanvas.test.tsx` ("propriedades de estilo reais") e `AtmosphereCatalog.test.tsx` ("abas de mídia/textura") quebram
+      no snapshot. O token novo sai na raiz da prévia como `data-sx-keep-palette="false"` e `--sarak-keep-palette`, e os
+      snapshots não foram atualizados.
+    - O filtro da execução não incluiu `DesignEngine/Canvas`, consumidor de todo token emitido.
+  - **Não são desta plan:**
+    - `switch-glass-border.test.ts` estoura o tempo de 5 s também no `HEAD`.
+    - `PaletteGallery.registry`, `compose.test` e `BarSample` passaram na repetição.
+    - Os três vão ao backlog (89).
+- **Gates do commit e `check-audit-baseline --with-tsc`** na cópia: verdes, baseline sem regressão. Os `guide:check` e
+  `dev-kit:check` caem só na cópia, porque os kits regenerados no worktree misturam as três plans.
+- **Diff lido:**
+  - `applyKeptPalette` em `resolve.ts` e a chamada no fim de `composeThemeDesign`;
+  - o condutor em `designChoices.ts` e o filtro em `overlayPreferences.ts`;
+  - `toggleKeepPalette` e `discardsCustomColor`, equivalente ao bloco que saiu de `useDesignDraft.ts`;
+  - o interruptor em `PaletteSection.tsx` e os textos nos seis idiomas.
+- **As portas:** o Provider (`useDesignSync`), o painel (`useDesignDraft`), a Personalidade (`personalityDraft.ts`) e o apagar tema
+  (`useThemeDeletionHandler`) passam todos por `composeThemeDesign`, e por isso a regra vale em todas.
+- **O teste 1.2 reprova antes:** 52 falhas no `HEAD`, segundo o resumo. Não repeti, e a leitura do teste confirma que ele compara cada
+  papel calculado com a paleta escolhida.
+- **Fora da §3.1, com justificativa aceita:** `designChoices.ts`, `overlayPreferences.ts` e os dois utilitários novos. Recarregar e
+  trocar de modo são parte do 0.4, e a extração serve ao teto de 250 linhas.
+
+**Achados**
+1. **Snapshots** (`src/features/DesignEngine/Canvas/__tests__/__snapshots__/PreviewCanvas.test.tsx.snap` e
+   `Canvas/components/__tests__/__snapshots__/AtmosphereCatalog.test.tsx.snap`):
+   - rode `npx vitest run src/features/DesignEngine/Canvas`;
+   - leia o diff antes de qualquer `-u`: a única mudança desta plan é `data-sx-keep-palette` e `--sarak-keep-palette`;
+   - atualize só o `PreviewCanvas`.
+   O `AtmosphereCatalog` já tem as linhas do `keepPalette` no worktree, porque o `vitest -u` da `plan-161` as absorveu junto com o
+   desenho novo dela. Não rode `-u` nele: confira as 8 linhas e diga no resumo. Ele vai no commit da 161.
+2. **Prévia não gerada** (§6; nota de 2026-11-12):
+   - Gere `C:\tmp\sarak-previa-164\index.html` sem escrever no `dist/`: harness do código-fonte com
+     `buildHarness(entry, { useSourceLibrary: true })` e a folha CSS gerada na pasta do próprio harness, como faz
+     `browser-tests/topbar-mais.spec.ts`.
+   - Mostre um tema de cor declarada (`sarak-sovereign-classic`) com "Manter minha paleta" desligado e ligado.
+   - Mostre a troca para um segundo tema com o interruptor ligado.
+   - Mostre o interruptor no painel, nos dois estados, com o texto que muda.
+   - A parte das paletas salvas é do lote 2.
+
+**Como fechar** (verificação objetiva): o filtro `src/features/DesignEngine/Canvas` verde, o resumo com as linhas do diff dos
+snapshots e o caminho da prévia. O revisor reroda só esse filtro e confere a prévia.
+
+**Commit:** junto com o lote 1 da `plan-159`, que divide `docs/migracoes.md` e os kits com esta plan, depois desta correção e do ok
+do dono nas duas prévias.
+
+**Status da plan: 🔵 Em correção.**
+
+## Resumo da execução (correção do veredito de 2026-11-17) — 2026-11-17
+
+**Resultado:** Concluído.
+
+1. **Snapshots.** `npx vitest run src/features/DesignEngine/Canvas` deu 1 falha (PreviewCanvas) e 255 passando; o AtmosphereCatalog já passava. Li o diff do PreviewCanvas antes do `-u`: só entram `data-sx-keep-palette="false"` (2 linhas, uma por raiz) e `--sarak-keep-palette: false` no `style` (2 linhas); sem o token, as linhas de estilo são idênticas. Rodei `-u` só em `PreviewCanvas.test.tsx` (4 inserções, 2 remoções; 3/3 passam). No AtmosphereCatalog não rodei `-u`: o diff do worktree tem 8 linhas com `keep-palette`, absorvidas pelo `-u` da plan-161; vai no commit da 161.
+2. **Prévia.** `C:\tmp\sarak-previa-164\index.html` (com 6 capturas e `medidas.json`), gerada por harness do código-fonte (`useSourceLibrary`) com o CSS gerado na pasta do harness; `dist/` intocado; harness e scripts temporários removidos. Tema `sarak-sovereign-classic`: desligado, escolher paleta pergunta antes de descartar 22 cores e a troca para Cyberpunk Neon Classic traz a cor dele (#00ff64); ligado, sem pergunta, e a troca mantém a paleta (#718095). O interruptor aparece nos dois estados com o texto que muda. Limite: só Chromium escuro 1600×900; paletas salvas são do lote 2.
+
+## Veredito — 2026-11-17 — lote 1, correção — 🟢 Aprovado no código; o lote fecha com o ok do dono na prévia
+
+**Como medi (as três correções juntas):** numa cópia fora do repositório com o worktree inteiro (plans 159, 161 e 164), com
+`npm run build` completo:
+- navegador: `topbar-mais`, `barra-de-topo-estreita`, `plan-141-presets-do-painel` inteiro, `plan-161-catalogo-proporcional`,
+  `login-theme-application`, `plan-122-preview-mode`, `plan-160-previa-mostra-a-opcao`, `plan-160-moldura-e-largura`,
+  `troca-de-tema` e `css-que-so-o-navegador-mede` → **100 de 100 verdes**;
+- unidade: `npx vitest run src/features/DesignEngine src/components/atomic/Navigation src/components/Layout src/core/Provider
+  src/core/Design`, com a máquina livre → **340 arquivos, 3.408 verdes**;
+- gates do hook (Anel 1 e auditoria) no worktree real: verdes, baseline sem regressão.
+
+**Achados do veredito anterior**
+1. O snapshot do `PreviewCanvas` só ganhou as quatro linhas do `keepPalette` (`data-sx-keep-palette` e `--sarak-keep-palette`, nas
+   duas raízes). O do `AtmosphereCatalog` não foi regravado: as linhas do token já estavam lá, e ele vai no mesmo commit.
+2. A prévia foi gerada do código-fonte, sem tocar o `dist/` (`C:	mpsarak-previa-164index.html`). Conferi as capturas:
+   - desligado, a troca para o Cyberpunk Neon Classic traz a cor do tema (#00ff64);
+   - ligado, a paleta escolhida fica (#718095);
+   - o texto do interruptor muda com o estado.
+
+   Os cartões de tema da galeria ainda têm o desenho antigo, que o lote 2 da `plan-161` troca.
+
+**Falta, para fechar o lote:** o ok do dono na prévia. Depois dele, a plan vai a 🟡 para o lote 2.
+
+**Commit:** junto com as plans 159 e 161, depois da correção da 159.
+
+**Status da plan: 🟠 Em revisão** (aguardando o ok do dono).

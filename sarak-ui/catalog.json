@@ -8177,6 +8177,7 @@
       "--sarak-kanban-card-radius",
       "--sarak-kanban-header-padding-y",
       "--sarak-kanban-header-tracking",
+      "--sarak-keep-palette",
       "--sarak-layered-shadows",
       "--sarak-layout-density",
       "--sarak-layout-gap",
@@ -8669,7 +8670,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 428,
+    "count": 429,
     "groups": {
       "global": "0. Configurações Globais",
       "branding": "Identidade Visual",
@@ -11579,6 +11580,19 @@
         "usage": "Espaço entre as letras do título de cada coluna do `SarakKanban`, em `em`."
       },
       {
+        "id": "keepPalette",
+        "type": "boolean",
+        "responsive": false,
+        "group": "colors",
+        "label": "Manter Minha Paleta",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Desligado (padrão), escolher um tema aplica as cores dele; ligado, a paleta escolhida vale por cima de qualquer tema, em toda troca, inclusive das cores que o tema declara.",
+        "interactsWith": [
+          "colorPalette"
+        ]
+      },
+      {
         "id": "layeredShadows",
         "type": "number",
         "responsive": false,
@@ -14291,6 +14305,6 @@
   "kitStamp": {
     "libVersion": "8.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "10c173c724e2"
+    "kitHash": "a3060105fae1"
   }
 }

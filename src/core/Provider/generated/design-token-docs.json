@@ -2125,6 +2125,17 @@
    "usage": "Espaço entre as letras do título de cada coluna do `SarakKanban`, em `em`."
   },
   {
+   "id": "keepPalette",
+   "group": "colors",
+   "label": "Manter Minha Paleta",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Desligado (padrão), escolher um tema aplica as cores dele; ligado, a paleta escolhida vale por cima de qualquer tema, em toda troca, inclusive das cores que o tema declara.",
+   "interactsWith": [
+    "colorPalette"
+   ]
+  },
+  {
    "id": "layeredShadows",
    "group": "atmosphere",
    "label": "Sombras em Camadas (Layered)",

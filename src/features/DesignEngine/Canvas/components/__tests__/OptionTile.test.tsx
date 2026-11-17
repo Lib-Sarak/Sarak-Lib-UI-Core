@@ -14,7 +14,9 @@ describe('OptionTile', () => {
 
         expect(sample).toHaveTextContent('botão real da amostra');
         expect(sample.contains(screen.getByRole('heading', { name: 'Glass' }))).toBe(false);
-        expect(screen.getByText('Vidro fosco')).toBeInTheDocument();
+        // A descrição fica no leitor de tela e no balão: a opção compacta não a escreve por baixo da amostra.
+        expect(screen.getByText('Vidro fosco')).toHaveClass('sr-only');
+        expect(container.querySelector('[data-option-tile]')).toHaveAttribute('title', 'Vidro fosco');
     });
 
     it('a opção é um único botão acessível pelo nome: o botão da amostra não aninha em outro botão', () => {

@@ -304,3 +304,21 @@ describe('overlayPreferences — sidebarWidth (largura da lateral, preferência 
         expect(JSON.stringify(design)).toBe(before);
     });
 });
+
+describe('colorMode com "manter minha paleta" ligado', () => {
+    const declared = { id: 'tema-com-cor', design: { mode: 'dark', colorPalette: 'oceano', sidebarColor: '#ff0000' }, contraparte: { mode: 'light', sidebarColor: '#00ff00' } } as unknown as SarakThemeEntry;
+    const base = (keepPalette: boolean) => ({
+        mode: 'dark', colorPalette: 'amarelo-contraste', keepPalette, ...sarakResolvePalette('amarelo-contraste', 'dark'),
+    }) as unknown as SarakDesignState;
+
+    it('a troca de modo não traz de volta a cor que o tema declara: a paleta calcula nos dois modos', () => {
+        const result = overlayPreferences(base(true), { colorMode: 'light' }, declared, 'dark');
+        expect(result.mode).toBe('light');
+        expect(result.sidebarColor).toBe(sarakResolvePalette('amarelo-contraste', 'light').sidebarColor);
+    });
+
+    it('desligado, a cor que o tema declara no modo pedido vence a paleta, como antes', () => {
+        const result = overlayPreferences(base(false), { colorMode: 'light' }, declared, 'dark');
+        expect(result.sidebarColor).toBe('#00ff00');
+    });
+});

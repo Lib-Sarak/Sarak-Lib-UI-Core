@@ -20,7 +20,7 @@ type Mode = 'light' | 'dark';
 
 const BAR_TONE_KEYS = ['sidebarTone', 'topbarTone'] as const;
 /** Os condutores: decidem o cálculo, por isso são fixados antes de se comparar o resto. */
-const DRIVER_KEYS = ['colorPalette', ...BAR_TONE_KEYS] as const;
+const DRIVER_KEYS = ['colorPalette', 'keepPalette', ...BAR_TONE_KEYS] as const;
 
 const modeOf = (value: unknown): Mode | undefined => (value === 'light' || value === 'dark' ? value : undefined);
 const nativeModeOf = (theme: ModeResolvableTheme): Mode => modeOf(theme.design?.mode) ?? 'dark';
@@ -52,8 +52,10 @@ const composeChoiceBaseline = (theme: ModeResolvableTheme, drivers: DesignRecord
     const mode = modeOf(drivers.mode) ?? nativeModeOf(theme);
     const resolved = resolveThemeForMode(theme, mode) as DesignRecord;
     const tones = pickDefined(drivers, BAR_TONE_KEYS);
+    // "Manter minha paleta" ligado: a paleta escolhida (ou, sem escolha, a do tema) vale por cima das cores que o tema declara.
+    const kept = drivers.keepPalette === true ? { keepPalette: true, colorPalette: drivers.colorPalette ?? resolved.colorPalette } : {};
     const base = {
-        ...(composeThemeDesign({ ...resolved, ...tones }, { mode }, { ...hostConfig, ...tones }) as unknown as DesignRecord),
+        ...(composeThemeDesign({ ...resolved, ...tones }, { mode, ...kept }, { ...hostConfig, ...tones }) as unknown as DesignRecord),
         ...tones,
     };
     const chosen = drivers.colorPalette;

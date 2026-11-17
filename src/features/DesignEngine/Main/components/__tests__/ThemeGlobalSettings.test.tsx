@@ -4,12 +4,13 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import * as ComponentModule from '../ThemeGlobalSettings';
 import { ThemeGlobalSettings } from '../ThemeGlobalSettings';
+import { ForceOpenSections } from '../CollapsibleSection';
 import SarakUIProvider from '../../../../../core/Provider/SarakUIProvider';
 import { PreferencesSchema, PREFERENCE_POSITION_TOKEN_IDS } from '../../../../../core/Design/schema/preferences';
 
 // `SarakSelect` (o combobox de cada posição) lê `useSarakUI` mandatório.
 const renderSettings = (props: Record<string, unknown>) =>
-    render(<SarakUIProvider><ThemeGlobalSettings {...(props as unknown as React.ComponentProps<typeof ThemeGlobalSettings>)} /></SarakUIProvider>);
+    render(<SarakUIProvider><ForceOpenSections.Provider value><ThemeGlobalSettings {...(props as unknown as React.ComponentProps<typeof ThemeGlobalSettings>)} /></ForceOpenSections.Provider></SarakUIProvider>);
 
 describe('ThemeGlobalSettings', () => {
     it('should be defined and export its contents without crashing', () => {

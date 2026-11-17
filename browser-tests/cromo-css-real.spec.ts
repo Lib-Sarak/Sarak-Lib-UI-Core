@@ -275,6 +275,8 @@ async function readVisibleNavigationItemLabels(page: Page): Promise<string[]> {
         return items
             .filter((item) => {
                 const box = item.getBoundingClientRect();
+                // O item que não coube na topbar fica no fluxo, mas sem visibilidade (e vai para o "Mais"): não está visível.
+                if (getComputedStyle(item).visibility === 'hidden') return false;
                 const intersectsNavigation = box.width > 0 && box.height > 0
                     && box.right > navigationBox.left && box.left < navigationBox.right
                     && box.bottom > navigationBox.top && box.top < navigationBox.bottom;

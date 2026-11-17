@@ -4,6 +4,7 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import SarakUIProvider from '../../../../../core/Provider/SarakUIProvider';
 import { ThemeDecisionView } from '../ThemeDecisionView';
+import { ForceOpenSections } from '../CollapsibleSection';
 import type { DecisionOptionsContext } from '../ThemeDecisionOptions';
 import { buildDecisionContext } from '../../../utils/decisionContext';
 import { buildTokenIndex, getDecision } from '../../../utils/decisions';
@@ -16,6 +17,7 @@ const options = { sarak: {}, draft: {}, updateDraft: vi.fn(), catalogMap: new Ma
 
 const renderView = (decisionId: string, focusTokenId?: string) => render(
     <SarakUIProvider>
+        <ForceOpenSections.Provider value>
         <ThemeDecisionView
             decision={getDecision(decisionId)!}
             decisionContext={decisionContext}
@@ -23,6 +25,7 @@ const renderView = (decisionId: string, focusTokenId?: string) => render(
             focusTokenId={focusTokenId}
             focusLocation={focusTokenId ? tokenIndex.get(focusTokenId) : undefined}
         />
+        </ForceOpenSections.Provider>
     </SarakUIProvider>,
 );
 

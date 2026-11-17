@@ -70,6 +70,17 @@ export const ColorsSchema: ComponentSchema = {
             defaultValue: '',
         },
         {
+            id: 'keepPalette',
+            kind: 'functional',
+            modeDependent: false,
+            usage: 'Desligado (padrão), escolher um tema aplica as cores dele; ligado, a paleta escolhida vale por cima de qualquer tema, em toda troca, inclusive das cores que o tema declara.',
+            interactsWith: ['colorPalette'],
+            label: 'Manter Minha Paleta',
+            type: 'boolean',
+            description: 'Quando ativo, a paleta escolhida em `colorPalette` é aplicada por cima do tema que for selecionado: vence todas as cores que ela calcula, inclusive as que o tema declara. É escolha do sistema, não preferência do usuário.',
+            defaultValue: false,
+        },
+        {
             id: 'surfaceColor',
             kind: 'aesthetic',
             modeDependent: true,

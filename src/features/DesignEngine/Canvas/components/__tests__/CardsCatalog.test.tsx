@@ -35,10 +35,10 @@ describe('CardsCatalog', () => {
         expect(screen.getByText('Grade técnica')).toBeInTheDocument();
     });
 
-    it('a grade reage a CONTAINER QUERY (@min-[768px]:), não mais a `md:` de viewport (plan-35)', () => {
+    it('a grade é a única do painel: colunas automáticas pela largura da coluna, não da janela', () => {
         const { container } = render(<CardsCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
         const grid = container.querySelector('.grid') as HTMLElement;
         expect(grid.className).not.toMatch(/\bmd:grid-cols-2\b/);
-        expect(grid.className).toMatch(/@min-\[768px\]:grid-cols-2/);
+        expect(grid.className).toContain('grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))]');
     });
 });

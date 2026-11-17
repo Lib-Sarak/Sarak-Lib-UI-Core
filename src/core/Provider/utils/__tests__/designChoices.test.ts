@@ -146,3 +146,37 @@ describe('findThemeEntry', () => {
         expect(findThemeEntry(custom, undefined)).toBeUndefined();
     });
 });
+
+describe('"manter minha paleta" no design gravado', () => {
+    const CHOSEN = 'custom:triadic:#d11a5f';
+    const kept = (theme: ModeResolvableTheme, mode: 'light' | 'dark'): DesignRecord =>
+        validateDesign(composeThemeDesign(
+            resolveThemeForMode(theme, mode) as DesignRecord,
+            { mode, keepPalette: true, colorPalette: CHOSEN },
+        )) as unknown as DesignRecord;
+
+    it('o interruptor ligado e a paleta escolhida por cima de um tema de cor declarada são as escolhas gravadas', () => {
+        expect(extractDesignChoices(kept(highContrast, 'dark'), highContrast)).toEqual({ colorPalette: CHOSEN, keepPalette: true });
+    });
+
+    it('recarregar devolve a mesma tela: o design recomposto das escolhas é o que estava na tela', () => {
+        const onScreen = kept(highContrast, 'dark');
+        const choices = extractDesignChoices(onScreen, highContrast);
+        expect(validateDesign(recomposeDesignChoices(choices, highContrast))).toEqual(onScreen);
+    });
+
+    it('ligado com a paleta do próprio tema, as cores que o tema declara seguem de fora depois de recarregar', () => {
+        const own = { ...composed(highContrast, 'dark'), keepPalette: true } as DesignRecord;
+        const onScreen = validateDesign(composeThemeDesign(
+            resolveThemeForMode(highContrast, 'dark') as DesignRecord,
+            { mode: 'dark', keepPalette: true, colorPalette: (own as DesignRecord).colorPalette },
+        )) as unknown as DesignRecord;
+        const choices = extractDesignChoices(onScreen, highContrast);
+        expect(choices.keepPalette).toBe(true);
+        expect(validateDesign(recomposeDesignChoices(choices, highContrast))).toEqual(onScreen);
+    });
+
+    it('desligado é o padrão e não é gravado', () => {
+        expect(extractDesignChoices(composed(highContrast, 'dark'), highContrast)).not.toHaveProperty('keepPalette');
+    });
+});
