@@ -9,6 +9,7 @@ export const CATALOG_PANEL_COLUMN = {
     decisionFonts: { pt: 'Fontes', en: 'Fonts', es: 'Fuentes', fr: 'Polices', de: 'Schriften', it: 'Font' },
     decisionShape: { pt: 'Forma', en: 'Shape', es: 'Forma', fr: 'Forme', de: 'Form', it: 'Forma' },
     decisionComponents: { pt: 'Componentes', en: 'Components', es: 'Componentes', fr: 'Composants', de: 'Komponenten', it: 'Componenti' },
+    decisionBars: { pt: 'Barras', en: 'Bars', es: 'Barras', fr: 'Barres', de: 'Leisten', it: 'Barre' },
     decisionLayout: { pt: 'Layout', en: 'Layout', es: 'Diseño', fr: 'Mise en page', de: 'Layout', it: 'Layout' },
     decisionAdvanced: { pt: 'Outros ajustes', en: 'Other settings', es: 'Otros ajustes', fr: 'Autres réglages', de: 'Weitere Einstellungen', it: 'Altre impostazioni' },
     decisionChanged: { pt: 'Alterada', en: 'Changed', es: 'Modificada', fr: 'Modifiée', de: 'Geändert', it: 'Modificata' },

@@ -27,6 +27,18 @@ export const CATALOG_LAYOUT = {
         pt: 'Comportamento da barra', en: 'How the bar behaves', es: 'Comportamiento de la barra',
         fr: 'Comportement de la barre', de: 'Verhalten der Leiste', it: 'Comportamento della barra',
     },
+    barSwitchLabel: {
+        pt: 'O usuário pode trocar entre lateral e topo', en: 'The user can switch between side and top', es: 'El usuario puede alternar entre lateral y superior',
+        fr: 'L’utilisateur peut basculer entre latérale et en haut', de: 'Der Benutzer kann zwischen seitlich und oben wechseln', it: 'L’utente può passare tra laterale e in alto',
+    },
+    barSwitchHint: {
+        pt: 'Desligado, nem a barra nem o menu ⚙ oferecem a troca, e a escolha que o usuário já gravou no navegador deixa de valer: a orientação é a que você definiu.',
+        en: 'Off, neither the bar nor the ⚙ menu offers the switch, and the choice the user already saved in the browser stops applying: the orientation is the one you set.',
+        es: 'Desactivado, ni la barra ni el menú ⚙ ofrecen el cambio, y la elección que el usuario ya guardó en el navegador deja de valer: la orientación es la que usted definió.',
+        fr: 'Désactivé, ni la barre ni le menu ⚙ ne proposent le changement, et le choix déjà enregistré par l’utilisateur dans le navigateur cesse de s’appliquer : l’orientation est celle que vous avez définie.',
+        de: 'Aus: Weder die Leiste noch das ⚙-Menü bieten den Wechsel an, und die bereits im Browser gespeicherte Wahl des Benutzers gilt nicht mehr: Die Ausrichtung ist die von Ihnen festgelegte.',
+        it: 'Disattivato, né la barra né il menu ⚙ offrono il passaggio, e la scelta già salvata dall’utente nel browser non vale più: l’orientamento è quello che hai definito.',
+    },
     barSampleHome: { pt: 'Início', en: 'Home', es: 'Inicio', fr: 'Accueil', de: 'Start', it: 'Home' },
     barSampleSales: { pt: 'Vendas', en: 'Sales', es: 'Ventas', fr: 'Ventes', de: 'Verkauf', it: 'Vendite' },
     barSampleOrders: { pt: 'Pedidos', en: 'Orders', es: 'Pedidos', fr: 'Commandes', de: 'Bestellungen', it: 'Ordini' },

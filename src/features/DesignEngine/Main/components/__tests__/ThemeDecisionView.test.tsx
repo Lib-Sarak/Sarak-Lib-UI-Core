@@ -40,8 +40,8 @@ describe('ThemeDecisionView', () => {
         expect(screen.getByRole('button', { name: /Ajuste fino/ })).toHaveAttribute('aria-expanded', 'false');
     });
 
-    it('a decisão Layout responde às cinco perguntas da barra, cada uma com a amostra real', () => {
-        renderView('layout');
+    it('a decisão Barras responde às cinco perguntas da barra, cada uma com a amostra real', () => {
+        renderView('bars');
 
         ['Onde fica a barra', 'Como é a barra', 'O que aparece na barra', 'Marca', 'Comportamento da barra'].forEach((name) => {
             const region = screen.getByRole('region', { name });
@@ -52,7 +52,7 @@ describe('ThemeDecisionView', () => {
     });
 
     it('a pergunta "O que aparece" põe os controles em linguagem do usuário', () => {
-        renderView('layout');
+        renderView('bars');
 
         const what = screen.getByRole('region', { name: 'O que aparece na barra' });
         expect(what.querySelectorAll('[data-token-row]')).toHaveLength(12); // os oito widgets, o ≡ do topo, o avatar do usuário e os dois degraus de P e G

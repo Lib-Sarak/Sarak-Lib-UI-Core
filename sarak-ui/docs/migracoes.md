@@ -5,6 +5,20 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 9.0.0 — as barras ganham uma decisão própria no painel, o papel de cor vale para as duas e a troca lateral/topo pelo usuário vira um interruptor
+
+O painel de Design ganha a decisão **Barras**, entre Componentes e Layout (`DecisionId` `bars`). Ela reúne tudo o que é da barra: a orientação, o interruptor "O usuário pode trocar entre lateral e topo", o papel de cor, os presets de Barra lateral e de Barra de topo, as cinco perguntas (onde, como, o que aparece, marca e comportamento) e os ajustes finos de barra. O **Layout** fica com a largura do conteúdo e o resto (bloco global, identidade). Cada token está em exatamente uma das duas; `maxContentWidth` e `zIndexSidebar` mudaram de lugar (a largura foi para o Layout, o z-index da lateral para o Comportamento da barra) e `mobileNavigationStyle` entrou na pergunta "Onde fica a barra". O preset de Barra lateral **Texturizada** ficou mais marcado (grão a 30%, borda tracejada de 2 px, item ativo cheio e raio 4) para se distinguir de Limpa e Contornada. E a espiada de um papel de cor da barra na galeria agora recalcula a cor da barra como a escolha, em vez de deixar a cor que o tema declara por cima.
+
+**O papel de cor vale para as duas barras.** Escolher "Cor da marca", "Secundária", "Superfície", "Neutra" ou "Invertida" grava `sidebarTone` e `topbarTone` juntos (grupo novo `barTone`, presets `bar-tone-*`). O ajuste de uma barra só continua no ajuste fino, token por token. Os presets de estrutura (`sidebar-*`, `topbar-*`) deixam de gravar tom, e quatro saem por serem só tom: `sidebar-brand`, `sidebar-inverted`, `topbar-brand` e `topbar-inverted` (as Personalidades continuam gravando os dois tons por conta própria). O texto de `sidebar-gradient`, `sidebar-clean`, `sidebar-solid`, `topbar-flat` e `topbar-solid` deixou de citar o tom.
+
+**Mudança de comportamento do motor.** O papel de cor escolhido no painel passa a vencer a cor de barra que o tema ou o `config` do host declaram **para aquela barra** (`sidebarColor`, `sidebarHoverColor`, `sidebarItemTextColor`… e as do topo; a faixa da marca fica como está). Antes, um tema que declarava `sidebarColor` ignorava o tom escolhido e a barra não mudava. A barra sem tom escolhido continua com a cor que o tema declara, e nenhum valor de tema mudou.
+
+**O interruptor** grava `preferenceNavigationStylePosition`: ligado é `menu` ou `pinned`, desligado é `off`. Desligado, a escolha some da barra e do ⚙ e a preferência `navigationStyle` que o usuário já gravou no navegador deixa de valer (continua gravada, e volta a valer se o interruptor ligar). Nenhum token novo.
+
+**O que muda para o importador:** quem media o painel por `data-decision-row="layout"` para achar `sidebar`, `topbar` ou as perguntas passa a procurar em `bars`; `data-option-group="barTone"` é novo. Quem aplicava os presets pelos ids removidos aplica `bar-tone-primary` e `bar-tone-inverse`. A lista de decisões tem sete linhas.
+
+---
+
 ## 9.0.0 — o painel avisa a preferência pessoal que está por cima do tema, desabilita o controle que não vale e mostra o intervalo da largura da lateral
 
 Três ajustes do painel de Design, sem token novo e sem mudar o que o cromo desenha. (1) O token que uma preferência do próprio administrador sobrepõe (`navigationStyle`, `bodySize`, `mode`, `isNavHidden` e `sidebarWidth`) ganha, junto do controle, "Sua preferência pessoal (<valor>) está por cima do tema" e a ação "Apagar minha preferência", que apaga só aquela chave de `sarak-ui-preferences-v1`; preferência que o tema não oferece (`preference*Position` em `off`) não vence nada e não é avisada. (2) O controle que declara depender de `navigationStyle` (`navbarLayout` e os `topbar*` só do topo; `sidebarPosition`, `shellBrandLogoSize`, `sidebarLabelMaxWidth` e os `sidebar*` só da lateral) fica desabilitado, com o motivo, quando o tema usa a outra navegação. (3) O campo da largura da lateral nasce com o intervalo que vale — o do token cruzado com `sidebarMinWidth`/`sidebarMaxWidth` do dispositivo da prévia — e o mostra; antes 260 virava 300 px em silêncio.

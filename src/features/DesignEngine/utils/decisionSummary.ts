@@ -41,6 +41,34 @@ const VALUE_TEXT: Record<string, Record<string, LibraryTextKey>> = {
     inputBorderType: { solid: 'summaryFieldSolid', dashed: 'summaryFieldDashed', none: 'summaryFieldNone', underline: 'summaryFieldUnderline' },
 };
 
+const TONE_TEXT: Record<string, LibraryTextKey> = {
+    neutral: 'summaryToneNeutral', surface: 'summaryToneSurface', primary: 'summaryTonePrimary', secondary: 'summaryToneSecondary', inverse: 'summaryToneInverse',
+};
+
+const SWITCH_TEXT: Record<string, LibraryTextKey> = { off: 'summaryBarsFixed', menu: 'summaryBarsSwitchMenu', pinned: 'summaryBarsSwitchPinned' };
+
+const capitalized = (value: string): string => value.charAt(0).toLocaleUpperCase() + value.slice(1);
+
+/** O que as barras são agora: a orientação, o papel de cor da barra que vale nela e como o usuário troca a orientação. */
+const summarizeBars = (draft: DraftRecord, text: LibraryTextFn): string => {
+    const isTop = asText(draft.navigationStyle) === 'topbar';
+    const tone = TONE_TEXT[asText(draft[isTop ? 'topbarTone' : 'sidebarTone'])];
+    const swap = SWITCH_TEXT[asText(draft.preferenceNavigationStylePosition)];
+    return joinParts([
+        capitalized(valueName('navigationStyle', draft, text)),
+        tone ? capitalized(text(tone)) : '',
+        swap ? text(swap) : '',
+    ]);
+};
+
+/** A largura do conteúdo, no que o usuário lê: o px do preset, "fluido" ou "em tela inteira". */
+const summarizeLayout = (draft: DraftRecord, text: LibraryTextFn): string => {
+    const raw = asText(draft.maxContentWidth);
+    if (raw === '') return '';
+    const width = raw === 'fluid' ? text('summaryWidthFluid') : raw === '100%' ? text('summaryWidthFull') : raw.replace(/px$/, ' px');
+    return text('summaryLayout', { width });
+};
+
 const valueName = (tokenId: string, draft: DraftRecord, text: LibraryTextFn): string => {
     const key = VALUE_TEXT[tokenId]?.[asText(draft[tokenId])];
     return key ? text(key) : '';
@@ -56,10 +84,8 @@ const SUMMARIES: Record<DecisionId, (draft: DraftRecord, text: LibraryTextFn) =>
         const field = valueName('inputBorderType', draft, text);
         return button && field ? text('summaryComponents', { button, field }) : button || field;
     },
-    layout: (draft, text) => {
-        const style = valueName('navigationStyle', draft, text);
-        return style ? text('summaryLayout', { style }) : '';
-    },
+    bars: summarizeBars,
+    layout: summarizeLayout,
     advanced: () => '',
 };
 

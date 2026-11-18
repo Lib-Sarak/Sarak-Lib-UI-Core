@@ -23,7 +23,7 @@ import { buildHarness } from './build-harness.mjs';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ENTRY = path.join(HERE, 'fixtures', 'plan-140-coluna-entry.tsx');
 const PREVIEW_DIR = process.env.SARAK_PREVIA_161_DIR;
-const DECISIONS = ['Tema', 'Cores', 'Fontes', 'Forma', 'Componentes', 'Layout'] as const;
+const DECISIONS = ['Tema', 'Cores', 'Fontes', 'Forma', 'Componentes', 'Barras', 'Layout'] as const;
 
 /** A meta de rolagem: nenhuma decisão passa de tantas alturas da área da coluna a 1440×900 (a medida de antes chegou a 15×). */
 const MAX_SCROLL_SCREENS = 2.5;
@@ -349,8 +349,8 @@ test.describe('Barra de topo: a amostra larga sem vazio sob a barra e com o item
     test('nenhuma das amostras deixa espaço sob a barra, e "Pedidos" aparece em todas', async () => {
         test.setTimeout(120_000);
         const page = await open(1440, 900);
-        await page.getByRole('button', { name: /^Layout/ }).click();
-        await page.getByRole('heading', { level: 2, name: 'Layout' }).waitFor();
+        await page.getByRole('button', { name: /^Barras/ }).click();
+        await page.getByRole('heading', { level: 2, name: 'Barras' }).waitFor();
         await revealEverything(page);
         await page.locator('[data-preset-group="topbar"]').scrollIntoViewIfNeeded();
         await page.waitForTimeout(1500);
@@ -368,7 +368,7 @@ test.describe('Barra de topo: a amostra larga sem vazio sob a barra e com o item
         report.narrow.topbarSamples = tiles;
         console.log('[plan-161] escondidos', tiles.filter((tile) => !tile.activeVisible).map((tile) => tile.name).join('; '));
         console.log(`[plan-161] amostras de topbar: ${tiles.length}, vazio máx ${Math.max(...tiles.map((tile) => tile.empty))} px, ativo visível ${tiles.filter((tile) => tile.activeVisible).length}`);
-        expect(tiles.length, 'as amostras da Barra de topo (8 no registro)').toBe(8);
+        expect(tiles.length, 'as amostras da Barra de topo (7 no registro)').toBe(7);
         expect(tiles.filter((tile) => tile.empty < -MAX_TOPBAR_VOID || tile.empty > MAX_TOPBAR_VOID).map((tile) => `${tile.name}: ${tile.empty}px`), 'vazio sob a barra').toEqual([]);
         expect(tiles.filter((tile) => !tile.activeVisible).map((tile) => tile.name), 'item ativo escondido').toEqual([]);
         await page.close();

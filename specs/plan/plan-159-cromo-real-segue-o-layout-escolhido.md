@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fazer o cromo real seguir o Layout escolhido, com preferências discretas e uma decisão própria para as barras"
 objetivo: "Fazer toda opção de Layout que o administrador aplica aparecer no cromo real ou dizer por que não aparece, com a Topbar sem item escondido, a barra de tom contrastante legível e os controles de preferência discretos, com P, M e G configuráveis em relação ao tamanho base do tema, e reunir as barras numa decisão própria, com um tom que vale para as duas e um interruptor da troca lateral/topo"
 dominio: "Cromo / Preferências do usuário"
-status: "🟠 Em revisão"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "cromo", "topbar", "sidebar", "preferencias", "painel"]
 relacionados: ["[[05-cromo-e-slots]]", "[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]"]
@@ -1101,7 +1101,7 @@ Durante a execução apareceram modificados e **não são meus**: `specs/00-back
 - **2. Espiar Neutra/Superfície.** A espiada compunha `{...rascunho, ...tokens}` sem recalcular a cor da barra. Novo `utils/peekWithTones.ts` (a espiada com tom passa por `replaceDesignChoice`, o mesmo cálculo da escolha), ligado em `ThemeCustomizationTab.tsx` (`tonedPeek`). "Superfície" passou a mudar a prévia. **"Neutra" continua em 0 %: o tema do harness (`sarak-sovereign`) já declara `neutral` nas duas barras, é a opção aplicada.** Por isso entrou UMA entrada na lista de exceções do spec (`bars/barTone/Neutra`, tipo `applied`), que o próprio spec prova por mecanismo (clica outra opção e espia de novo). Diverge do critério ("sem pôr as duas opções em lista"): só uma entrou, e a razão não é a do achado 1.
 - **3. `plan-141`.** `:353` — o grupo `sidebar` agora cabe inteiro nos destaques e não tem o botão "ver todas" (`[data-preset-toggle]`); o spec só clica nele se existir. `:216` — `sidebar-textured` ficou distinto de `clean` e `outlined`: opacidade do grão 0,1→0,3, borda tracejada de 2 px, item ativo `filled`, raio 4 (`layout.ts`).
 - **4. Escolha ausente do ⚙.** `barras-decisao.spec.ts`, com o interruptor desligado e aplicado: nenhum texto Lateral/Topo no cromo e, se o botão "Preferências" existir, o menu aberto não tem item `menuitemradio` nem texto dessas opções.
-- **Prévia** `C:	mp\sarak-previa-159\index.html`: seção 4.2/4.4 com "Invertida" (claro e escuro, lateral e topo, capturas novas `l4-tom-invertida*.png`) e o limite antigo removido.
+- **Prévia** `C:\tmp\sarak-previa-159\index.html`: seção 4.2/4.4 com "Invertida" (claro e escuro, lateral e topo, capturas novas `l4-tom-invertida*.png`) e o limite antigo removido.
 
 **Arquivos alterados** (só os desta correção)
 | Arquivo | Natureza | O que mudou |
@@ -1140,3 +1140,90 @@ Durante a execução apareceram modificados e **não são meus**: `specs/00-back
 - Ok do dono na prévia. Síntese em 09 §4.3.4: a regra vale para as duas barras quando os tons são iguais e um foi escolhido.
 - `docs/migracoes.md` não ganhou linha para o grão e a borda novos do preset `Texturizada` nem para a espiada de tom.
 - Um tema salvo com tons iguais e cor de barra própria agora vê o tom vencer a cor quando um dos tons foi escolhido.
+
+## Veredito — 2026-11-18 — lote 4, correção 4 — 🔵 Em correção (três itens pequenos)
+
+**Como medi:** `npm run build` no worktree e `barras-decisao`, `plan-141-presets-do-painel` (`:216`, `:353`) e
+`plan-160-previa-mostra-a-opcao` (`:456`) deram **16 de 16 verdes**. O Anel 1 está verde, o `check-audit-baseline --with-tsc` sem regressão e o Anel 0 com 0.
+- **Os quatro itens fecham.**
+  - `pairedTones` e `chosenBars` contam as duas barras como escolhidas quando os tons são iguais e um foi escolhido, sem mudar o
+    formato do ADR-026.
+  - A espiada de tom passa pelo mesmo cálculo da escolha.
+  - A exceção `bars/barTone/Neutra` (`applied`, com prova por mecanismo) é legítima: é o tom que o tema do harness já tem.
+- **Prévia** (`C:\tmp\sarak-previa-159\index.html`) conferida: com "Invertida", a lateral e o topo ficam na mesma cor, nos dois modos.
+
+**Achados**
+1. **O item 5 (nota do revisor) não foi feito.** `plan-140-painel-coluna-unica.spec.ts:95` ainda procura o botão da decisão por um
+   nome que começa com "Barras", e isso casa também com os presets "Barras limpas" e "Barras com grade".
+   - Critério: o clique mira a linha da decisão, e o `:84` fica verde 3 de 3 nos dois modos (`--repeat-each=3`).
+2. **Entrada morta** `layout/sidebar/Limpa` na lista de `plan-160-previa-mostra-a-opcao.spec.ts` (o grupo agora é de `bars`).
+   Repontar ou tirar.
+3. **`docs/migracoes.md`**: uma linha na entrada do lote 4 para o preset "Texturizada" (grão, borda tracejada, item ativo cheio)
+   e para a espiada de tom que agora recalcula a cor da barra. É o que o importador vê mudar sem ter pedido.
+
+**Como fechar:** depois do build, `plan-140-painel-coluna-unica.spec.ts:84 --repeat-each=3` e `plan-160-previa-mostra-a-opcao.spec.ts:456`.
+O revisor reroda só esses.
+
+**Commit:** depois do ok do dono na prévia.
+
+**Status da plan: 🔵 Em correção.**
+
+## Resumo da execução (correção 5, lote 4) — 2026-11-18
+
+**Resultado:** Concluído.
+
+**Estado do worktree ao iniciar**
+O lote 4 e as correções anteriores sem commit (50 linhas de `git status --short`, fora `dist/`, em `scratchpad/foto-corr5.txt`); nada novo de outra tarefa que eu tenha tocado.
+
+**O que foi feito, por item**
+- **1.** `plan-140-painel-coluna-unica.spec.ts`: o laço das decisões clica `[data-decision-row="<id>"]` (colors, fonts, shape, components, bars, layout) em vez de `getByRole('button', { name: /^Barras/ })`, que também casava "Barras limpas" e "Barras com grade".
+- **2.** `plan-160-previa-mostra-a-opcao.spec.ts`: a chave `layout/sidebar/Limpa` virou `bars/sidebar/Limpa`. O caso continua verde com a chave repontada (a regra de "item de lista que já muda" não o acusou).
+- **3.** `docs/migracoes.md` (e a cópia em `sarak-ui/` por `npm run guide`): duas frases na entrada do lote 4, sobre o preset Texturizada e a espiada de tom.
+
+**Arquivos alterados** (só os desta correção)
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `browser-tests/plan-140-painel-coluna-unica.spec.ts` | alterado | clique pela linha da decisão |
+| `browser-tests/plan-160-previa-mostra-a-opcao.spec.ts` | alterado | chave `bars/sidebar/Limpa` |
+| `docs/migracoes.md`, `sarak-ui/docs/migracoes.md` | alterado | Texturizada e espiada de tom |
+
+**Verificações executadas**
+- `npm run build` → exit 0.
+- `plan-140-painel-coluna-unica.spec.ts:84 --repeat-each=3` (`-g "todo texto da coluna"`) → 6/6 (3 escuro + 3 claro).
+- `plan-160-previa-mostra-a-opcao.spec.ts` `-g "Barras: toda opção"` → 1/1 (`CONTAGEM bars barTone 4/5`).
+- Não rodei a suíte completa nem `verify`.
+
+**Critérios de aceite**
+- [x] 1 — `:84` 3 de 3 nos dois modos.
+- [x] 2 — entrada repontada, `:456` verde.
+- [x] 3 — linha em `docs/migracoes.md`.
+
+**Achados fora do escopo (não corrigidos):** nenhum novo.
+
+**Pendências / riscos:** ok do dono na prévia; commit depois dele.
+
+## Veredito — 2026-11-18 — lote 4, correção 5 — 🟢 Aprovado no código; o lote fecha com o ok do dono na prévia
+
+**Como medi:** o `dist/` é posterior ao último código mudado; esta correção só toca spec e doc.
+- `plan-140-painel-coluna-unica.spec.ts:84 --repeat-each=3`: 6 de 6.
+- `plan-160-previa-mostra-a-opcao.spec.ts` "Barras: toda opção": 1 de 1.
+- **Diff lido:**
+  - o laço do `:84` clica a linha da decisão (`data-decision-row`);
+  - a chave virou `bars/sidebar/Limpa`;
+  - a entrada do lote 4 em `docs/migracoes.md` cita o preset Texturizada e a espiada de tom.
+- Os outros casos do `plan-140` que ainda acham a decisão pelo nome voltam à lista a cada passo e passaram em todas as baterias.
+
+**Falta, para fechar o lote 4:** o ok do dono na prévia `C:\tmp\sarak-previa-159\index.html`. O lote 4 é o último: com o ok, a plan fica 🟢 Aprovada e espera a
+síntese (05, 06 e 09, inclusive a regra nova da 09 §4.3.4).
+
+**Commit:** depois do ok (comando na conversa).
+
+**Status da plan: 🟠 Em revisão** até o ok do dono.
+
+## Nota do revisor — 2026-11-18 — ok do dono na prévia do lote 4
+
+O dono aprovou a prévia `C:\tmp\sarak-previa-159\index.html` (decisão Barras, interruptor, "Invertida" iguala as duas barras).
+
+**Lote 4 fechado, e com ele a plan (o lote 4 é o último). Status da plan: 🟢 Aprovada.** Ela espera a síntese em 05, 06 e 09,
+inclusive a regra nova da 09 §4.3.4: o papel escolhido vence a cor declarada pelo tema e pelo host, e as duas barras contam como
+escolhidas quando os tons são iguais.

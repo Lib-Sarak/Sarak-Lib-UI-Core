@@ -3,6 +3,7 @@ type SixTuple = readonly [string, string, string, string, string, string];
 
 export const PRESET_GROUP_TITLES: Readonly<Record<string, SixTuple>> = {
     personalities: ['Personalidades', 'Personalities', 'Personalidades', 'Personnalités', 'Persönlichkeiten', 'Personalità'],
+    barTone: ['Cor das barras', 'Bar color', 'Color de las barras', 'Couleur des barres', 'Farbe der Leisten', 'Colore delle barre'],
     sidebar: ['Barra lateral', 'Sidebar', 'Barra lateral', 'Barre latérale', 'Seitenleiste', 'Barra laterale'],
     topbar: ['Barra de topo', 'Top bar', 'Barra superior', 'Barre du haut', 'Obere Leiste', 'Barra superiore'],
     contentWidth: ['Largura do conteúdo', 'Content width', 'Ancho del contenido', 'Largeur du contenu', 'Inhaltsbreite', 'Larghezza del contenuto'],

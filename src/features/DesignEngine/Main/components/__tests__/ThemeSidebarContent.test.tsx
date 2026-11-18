@@ -75,13 +75,13 @@ const renderContent = (overrides: Record<string, unknown> = {}) => {
 };
 
 describe('ThemeSidebarContent', () => {
-    it('na lista, mostra "Usar minha marca" primeiro e as seis decisões, sem galeria nem modos', () => {
+    it('na lista, mostra "Usar minha marca" primeiro e as sete decisões, sem galeria nem modos', () => {
         renderContent();
 
         expect(screen.getByRole('button', { name: /Usar minha marca/ })).toBeInTheDocument();
         const rows = screen.getAllByRole('listitem').map((row) => row.textContent);
-        expect(rows).toHaveLength(6);
-        ['Tema', 'Cores', 'Fontes', 'Forma', 'Componentes', 'Layout'].forEach((title, index) => expect(rows[index]).toContain(title));
+        expect(rows).toHaveLength(7);
+        ['Tema', 'Cores', 'Fontes', 'Forma', 'Componentes', 'Barras', 'Layout'].forEach((title, index) => expect(rows[index]).toContain(title));
         expect(screen.queryByRole('button', { name: 'Abrir galeria' })).toBeNull();
         expect(screen.queryByRole('radiogroup')).toBeNull();
     });

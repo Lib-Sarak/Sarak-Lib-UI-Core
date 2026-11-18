@@ -43,8 +43,8 @@ export const PERSONALITIES: Personality[] = [
     personality(
         'personality-corporate', 'Corporativo', 'Sóbrio e denso, com tabelas fortes e a lateral escura: o ar de um sistema de empresa.',
         ['corporativo', 'corporate', 'empresa', 'sobrio', 'formal'],
-        ['corners-soft', 'shadow-defined', 'border-solid', 'pair-corporate', 'typescale-standard', 'density-compact', 'sidebar-inverted', 'topbar-solid', 'table-striped', 'motion-agile', 'icons-lucide-fine'],
-        { navigationStyle: 'sidebar', sidebarLogoPlacement: 'top', sidebarTone: 'inverse', topbarTone: 'surface', sidebarActiveItemStyle: 'bar', tableDensity: 'compact', tableCellPadding: 8, tableBorderRadius: 6 },
+        ['corners-soft', 'shadow-defined', 'border-solid', 'pair-corporate', 'typescale-standard', 'density-compact', 'topbar-solid', 'table-striped', 'motion-agile', 'icons-lucide-fine'],
+        { navigationStyle: 'sidebar', sidebarLogoPlacement: 'top', sidebarTone: 'inverse', topbarTone: 'surface', sidebarActiveItemStyle: 'bar', sidebarBorderSide: 'none', sidebarBlur: 0, navItemRadius: 10, sidebarIconSize: 20, tableDensity: 'compact', tableCellPadding: 8, tableBorderRadius: 6 },
     ),
     personality(
         'personality-executive', 'Executivo', 'Espaçoso e serifado, com a navegação no topo: poucas coisas por tela, cada uma com respiro.',

@@ -121,32 +121,33 @@
         }
     },
     {
-        "id": "layout",
-        "textKey": "decisionLayout",
+        "id": "bars",
+        "textKey": "decisionBars",
         "pillars": [
             "navigation"
         ],
         "groups": [
+            "barTone",
             "sidebar",
-            "topbar",
-            "contentWidth",
-            "globalBlock"
+            "topbar"
         ],
         "optionSections": [
             "Composição da Barra"
         ],
-        "includeGlobal": true,
+        "tokenScope": "bars",
         "questions": [
             {
                 "id": "where",
                 "textKey": "barQuestionWhere",
                 "tokens": [
                     "navigationStyle",
+                    "mobileNavigationStyle",
                     "sidebarPosition",
                     "sidebarWidth",
                     "navbarLayout"
                 ],
-                "fineMatch": "^(sidebar(Min|Max|Collapsed)Width|topbar(Height|CollapsedHeight)|tabSectionMargin|searchPosition(Sidebar|Topbar)|maxContentWidth)$"
+                "fineMatch": "^(sidebar(Min|Max|Collapsed)Width|topbar(Height|CollapsedHeight)|tabSectionMargin|searchPosition(Sidebar|Topbar))$",
+                "control": "navigationSwitch"
             },
             {
                 "id": "how",
@@ -164,7 +165,7 @@
                     "sidebarItemDensity",
                     "topbarItemDensity"
                 ],
-                "fineMatch": "^(sidebar|topbar)(Color|Active|Hover|Item|Category|Border|Icon|Blur|Shadow|Noise|GroupSeparator|Title)|^nav(ItemActive|ActiveMarker|ItemRadius)|^tabGap$"
+                "fineMatch": "^(sidebar|topbar)(Color|Active|Hover|Item|Category|Border|Icon|Blur|Shadow|Noise|Footer|GroupSeparator|Title)|^nav(ItemActive|ActiveMarker|ItemRadius)|^tabGap$"
             },
             {
                 "id": "what",
@@ -205,9 +206,27 @@
                     "sidebarResizable",
                     "isAutoHideEnabled"
                 ],
-                "fineMatch": "^(isSplitViewEnabled)$"
+                "fineMatch": "^(isSplitViewEnabled|zIndexSidebar)$"
             }
         ],
+        "screen": "dashboard",
+        "screens": [
+            "dashboard"
+        ]
+    },
+    {
+        "id": "layout",
+        "textKey": "decisionLayout",
+        "pillars": [
+            "navigation"
+        ],
+        "groups": [
+            "contentWidth",
+            "globalBlock"
+        ],
+        "optionSections": [],
+        "includeGlobal": true,
+        "tokenScope": "notBars",
         "screen": "dashboard",
         "screens": [
             "dashboard"

@@ -3,6 +3,7 @@ import { resolveThemeForMode, type ModeResolvableTheme } from '../../Design/pres
 import { getLoadedThemePreset } from '../../Design/presets/themes/registry';
 import { PALETTE_CALCULATED_KEYS, resolveChosenPalette } from '../../Design/palette/resolve';
 import { isValidPaletteValue } from '../../Design/palette/parser';
+import { PALETTE_ROLE_MAP } from '../../Design/palette/role-map';
 import { validateDesign } from './validation';
 import type { SarakTokenValue } from '../../Design/types';
 import type { SarakDesignState, SarakThemeEntry } from '../types';
@@ -36,6 +37,56 @@ const sameValue = (a: unknown, b: unknown): boolean => a === b || JSON.stringify
 const pickDefined = (source: DesignRecord, keys: readonly string[]): DesignRecord =>
     Object.fromEntries(keys.filter((key) => source[key] !== undefined).map((key) => [key, source[key]]));
 
+const BARS = ['sidebar', 'topbar'] as const;
+
+/** As cores de cada barra que o papel de cor calcula: a faixa da marca fica de fora, é a primária exata em qualquer papel. */
+export const TONE_DRIVEN_KEYS: Readonly<Record<(typeof BARS)[number], readonly string[]>> = {
+    sidebar: Object.keys(PALETTE_ROLE_MAP).filter((key) => key.startsWith('sidebar') && !key.includes('Brand')),
+    topbar: Object.keys(PALETTE_ROLE_MAP).filter((key) => key.startsWith('topbar') && !key.includes('Brand')),
+};
+
+/**
+ * As cores que o papel escolhido para cada barra calcula e que o tema NÃO pode devolver numa troca de modo: as da barra cujo papel
+ * no design difere do que o tema declara para o modo pedido. É a mesma regra de `withoutDeclaredBarColors`, para o caminho em que
+ * o modo é trocado sobre um design que já tem o papel escolhido.
+ */
+export const chosenToneKeys = (design: DesignRecord, theme: { design?: DesignRecord; contraparte?: DesignRecord } | undefined, targetMode: Mode): Set<string> => {
+    const native = modeOf(theme?.design?.mode) ?? 'dark';
+    const declared = targetMode === native ? { ...theme?.design } : { ...theme?.design, ...theme?.contraparte };
+    return new Set(chosenBars(design, declared).flatMap((bar) => TONE_DRIVEN_KEYS[bar]));
+};
+
+/**
+ * As barras cujo papel foi escolhido: o papel difere do que o tema declara. O controle de tom grava sempre os dois iguais; quando
+ * os dois do design são iguais e ao menos um difere do tema, as duas contam como escolhidas, também a que já tinha esse tom no
+ * tema (o tema que declara a lateral `inverse` e uma cor própria, com "Invertida" escolhida).
+ */
+const chosenBars = (design: DesignRecord, declared: DesignRecord): (typeof BARS)[number][] => {
+    const differs = (bar: (typeof BARS)[number]): boolean => design[`${bar}Tone`] !== undefined && design[`${bar}Tone`] !== (declared[`${bar}Tone`] ?? 'neutral');
+    const together = design.sidebarTone !== undefined && design.sidebarTone === design.topbarTone && BARS.some(differs);
+    return BARS.filter((bar) => together || differs(bar));
+};
+
+/**
+ * O papel de cor escolhido para uma barra vence a cor que o tema ou o host declaram para ela: sem isto, o tema que declara
+ * `sidebarColor` ignora o papel escolhido no painel e a barra não muda. A barra sem papel escolhido fica como o tema a declara.
+ */
+const withoutDeclaredBarColors = (design: DesignRecord, tones: DesignRecord): DesignRecord => {
+    const dropped = BARS.filter((bar) => tones[`${bar}Tone`] !== undefined).flatMap((bar) => TONE_DRIVEN_KEYS[bar]);
+    return dropped.length === 0 ? design : Object.fromEntries(Object.entries(design).filter(([key]) => !dropped.includes(key)));
+};
+
+/**
+ * O controle de tom grava os dois tons iguais, um por vez: o que já é o do tema não chega como escolha. Com um tom escolhido e o
+ * da outra barra igual a ele (o do tema ou o escolhido), as duas contam como escolhidas, e a cor declarada não volta em nenhuma.
+ */
+const pairedTones = (tones: DesignRecord, declared: DesignRecord): DesignRecord => {
+    const [first, second] = BAR_TONE_KEYS;
+    const [a, b] = [tones[first] ?? declared[first], tones[second] ?? declared[second]];
+    const chosenOne = tones[first] !== undefined || tones[second] !== undefined;
+    return chosenOne && a !== undefined && a === b ? { ...tones, [first]: a, [second]: b } : tones;
+};
+
 /** O tema do id, com `design`, entre os do consumidor e os embarcados em memória; `undefined` se não está em memória. */
 export const findThemeEntry = (allThemes: SarakThemeEntry[] | undefined, id: string | undefined): ModeResolvableTheme | undefined => {
     if (!id) return undefined;
@@ -50,12 +101,13 @@ export const findThemeEntry = (allThemes: SarakThemeEntry[] | undefined, id: str
  */
 const composeChoiceBaseline = (theme: ModeResolvableTheme, drivers: DesignRecord, hostConfig: DesignRecord | undefined): DesignRecord => {
     const mode = modeOf(drivers.mode) ?? nativeModeOf(theme);
-    const resolved = resolveThemeForMode(theme, mode) as DesignRecord;
-    const tones = pickDefined(drivers, BAR_TONE_KEYS);
+    const declared = resolveThemeForMode(theme, mode) as DesignRecord;
+    const tones = pairedTones(pickDefined(drivers, BAR_TONE_KEYS), { ...declared, ...pickDefined(hostConfig ?? {}, BAR_TONE_KEYS) });
+    const resolved = withoutDeclaredBarColors(declared, tones);
     // "Manter minha paleta" ligado: a paleta escolhida (ou, sem escolha, a do tema) vale por cima das cores que o tema declara.
     const kept = drivers.keepPalette === true ? { keepPalette: true, colorPalette: drivers.colorPalette ?? resolved.colorPalette } : {};
     const base = {
-        ...(composeThemeDesign({ ...resolved, ...tones }, { mode, ...kept }, { ...hostConfig, ...tones }) as unknown as DesignRecord),
+        ...(composeThemeDesign({ ...resolved, ...tones }, { mode, ...kept }, { ...withoutDeclaredBarColors(hostConfig ?? {}, tones), ...tones }) as unknown as DesignRecord),
         ...tones,
     };
     const chosen = drivers.colorPalette;

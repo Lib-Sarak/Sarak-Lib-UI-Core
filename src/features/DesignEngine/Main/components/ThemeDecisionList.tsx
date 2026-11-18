@@ -52,6 +52,9 @@ const DecisionGlyph: React.FC<{ id: DecisionId; draft: ThemeDecisionListProps['d
         return <span aria-hidden="true" className={'flex ' + GLYPH_WIDTH}><i className="block h-4 w-9 rounded-md" style={{ background: colorOf(draft, 'primaryColor') }} /></span>;
     }
     if (id === 'layout') {
+        return <span aria-hidden="true" className={'flex ' + GLYPH_WIDTH}><i className="block h-5 w-9 rounded-sm border-x-2 border-[var(--theme-muted)] bg-[var(--theme-border)]" /></span>;
+    }
+    if (id === 'bars') {
         const isTop = draft.navigationStyle === 'topbar';
         return (
             <span aria-hidden="true" className={'flex gap-0.5 ' + (isTop ? 'h-5 flex-col' : 'h-5 flex-row') + ' ' + GLYPH_WIDTH}>

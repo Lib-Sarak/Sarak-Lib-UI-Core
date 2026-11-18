@@ -21,13 +21,13 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ENTRY = path.join(HERE, 'fixtures', 'plan-141-presets-entry.tsx');
 const PREVIEW_DIR = process.env.SARAK_PREVIA_141_DIR;
 const COVERAGE_BEFORE = process.env.SARAK_PREVIA_141_ANTES;
-type PresetDecisionId = 'fonts' | 'shape' | 'components' | 'layout';
+type PresetDecisionId = 'fonts' | 'shape' | 'components' | 'bars' | 'layout';
 interface GroupInfo { id: string; decision: PresetDecisionId; count: number; featured: number; featuredIds: string[]; ids: string[] }
 interface Registry { presetCount: number; groups: GroupInfo[]; coverage: { covered: number; total: number; ratio: number; families: Array<{ family: string; covered: number; total: number }> } }
 let registry: Registry;
 const presetGroupsOf = (decision: PresetDecisionId): GroupInfo[] => registry.groups.filter((group) => group.decision === decision);
 const DECISIONS: ReadonlyArray<{ id: PresetDecisionId; name: string }> = [
-    { id: 'fonts', name: 'Fontes' }, { id: 'shape', name: 'Forma' }, { id: 'components', name: 'Componentes' }, { id: 'layout', name: 'Layout' },
+    { id: 'fonts', name: 'Fontes' }, { id: 'shape', name: 'Forma' }, { id: 'components', name: 'Componentes' }, { id: 'bars', name: 'Barras' }, { id: 'layout', name: 'Layout' },
 ];
 /** Os grupos que moram dentro de uma aba de outro grupo, não em seção própria (as texturas do card e do fundo já têm seção própria). */
 const INSIDE_ANOTHER_GROUP = new Set(['buttonStyles']);
@@ -257,8 +257,8 @@ for (const mode of MODES) {
 for (const mode of MODES) {
     test(`defeito: a marca e o rótulo da topbar cabem no quadro (${mode.name})`, async () => {
         const { page } = await open(mode.query);
-        await page.getByRole('button', { name: /^Layout/ }).click();
-        await page.getByRole('heading', { level: 2, name: 'Layout' }).waitFor();
+        await page.getByRole('button', { name: /^Barras/ }).click();
+        await page.getByRole('heading', { level: 2, name: 'Barras' }).waitFor();
         await openAllGroups(page);
         await settle(page, groupArea('topbar'));
         const frames = page.locator('[data-option-group="topbar"] [data-testid="bar-sample"]');
@@ -353,12 +353,14 @@ for (const mode of MODES) {
     test(`o rótulo do item ativo de toda barra lateral e topbar tem contraste de 4,5:1 com o fundo do item (${mode.name})`, async () => {
         test.setTimeout(240_000);
         const { page } = await open(mode.query);
-        await page.getByRole('button', { name: /^Layout/ }).click();
-        await page.getByRole('heading', { level: 2, name: 'Layout' }).waitFor();
+        await page.getByRole('button', { name: /^Barras/ }).click();
+        await page.getByRole('heading', { level: 2, name: 'Barras' }).waitFor();
         await openAllGroups(page);
         const failures: string[] = [];
         for (const groupId of ['sidebar', 'topbar']) {
-            await page.locator(`[data-preset-toggle="${groupId}"]`).click();
+            // O grupo que cabe inteiro nos destaques não tem o botão "ver todas".
+            const showAll = page.locator(`[data-preset-toggle="${groupId}"]`);
+            if (await showAll.count() > 0) await showAll.click();
             await settle(page, groupArea(groupId));
             const tiles = page.locator(`[data-option-group="${groupId}"] [data-option-tile]`);
             const total = await tiles.count();

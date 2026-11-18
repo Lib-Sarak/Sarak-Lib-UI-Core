@@ -50,7 +50,7 @@ export const ThemeDecisionView: React.FC<ThemeDecisionViewProps> = ({ decision, 
     return (
         <ForceOpenSections.Provider value={forceOpen}>
         <div ref={container} data-testid={`decision-${decision.id}`} className="flex flex-col gap-5 p-[var(--sarak-layout-gap-sm,12px)]">
-            <ThemeDecisionOptions groups={decision.groups} context={{ ...options, omitTokenIds: layers.questionTokenIds }} />
+            <ThemeDecisionOptions groups={decision.groups} context={{ ...options, omitTokenIds: layers.omitFromGlobal }} />
             <DecisionQuestionList questions={layers.questions} mode={options.draftMode} {...tokenProps} />
             {layers.mainTokens.length > MAIN_TOKENS_OPEN_LIMIT && (
                 <CollapsibleSection title={text('optionsMainTitle')} toggleId="main-tokens">

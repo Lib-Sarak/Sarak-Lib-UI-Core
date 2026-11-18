@@ -72,9 +72,40 @@ describe('recomposeDesignChoices', () => {
         expect(design.topbarColor).toBe(expected.topbarColor);
     });
 
-    it('a cor da barra que o tema declara continua vencendo o tom', () => {
+    it('o tom escolhido vence a cor da barra que o tema declara', () => {
         const design = recomposeDesignChoices({ sidebarTone: 'primary' }, highContrast) as unknown as DesignRecord;
+        const expected = resolvePaletteForDesign({ ...resolveThemeForMode(highContrast, 'dark'), sidebarTone: 'primary' }, undefined, 'dark');
+        expect(design.sidebarColor).not.toBe('#000000');
+        expect(design.sidebarColor).toBe(expected.sidebarColor);
+    });
+
+    it('a barra sem tom escolhido segue a cor que o tema declara', () => {
+        const design = recomposeDesignChoices({ topbarTone: 'primary' }, highContrast) as unknown as DesignRecord;
         expect(design.sidebarColor).toBe('#000000');
+        expect(design.topbarColor).not.toBe(highContrast.design.topbarColor);
+    });
+
+    it('tema que declara cor e tom diferentes nas duas barras: o mesmo tom nas duas deixa as barras iguais', async () => {
+        const classic = asTheme(await sarakLoadThemePreset('sarak-sovereign-classic') as SarakThemeEntry);
+        ['light', 'dark'].forEach((mode) => {
+            const design = recomposeDesignChoices({ mode, sidebarTone: 'primary', topbarTone: 'primary' }, classic) as unknown as DesignRecord;
+            expect(design.sidebarColor).toBe(design.topbarColor);
+            expect(design.sidebarColor).not.toBe(resolveThemeForMode(classic, mode as 'light' | 'dark').sidebarColor);
+        });
+    });
+
+    it('tema que já declara o papel da lateral: escolher esse papel nas duas barras também iguala as duas', async () => {
+        const classic = asTheme(await sarakLoadThemePreset('sarak-sovereign-classic') as SarakThemeEntry);
+        ['light', 'dark'].forEach((mode) => {
+            const native = resolveThemeForMode(classic, mode as 'light' | 'dark');
+            const declared = native.sidebarTone as string;
+            expect(declared, 'o tema declara tom na lateral').toBeDefined();
+            // O painel grava um tom por vez: o da lateral já é o do tema (nada muda), e o do topo, que difere, chega depois.
+            const start = recomposeDesignChoices({ mode }, classic);
+            const design = replaceDesignChoice(start as unknown as DesignRecord, { topbarTone: declared }, classic) as unknown as DesignRecord;
+            expect(design.sidebarColor).toBe(design.topbarColor);
+            expect(design.sidebarColor).not.toBe(native.sidebarColor);
+        });
     });
 
     it('o tom escolhido vence o tom que o host declara', () => {

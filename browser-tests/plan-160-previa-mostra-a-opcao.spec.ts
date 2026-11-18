@@ -41,7 +41,7 @@ const ONLY = process.env.SARAK_PLAN160_SO;
 
 const DECISIONS = [
     { id: 'theme', name: 'Tema' }, { id: 'colors', name: 'Cores' }, { id: 'fonts', name: 'Fontes' },
-    { id: 'shape', name: 'Forma' }, { id: 'components', name: 'Componentes' }, { id: 'layout', name: 'Layout' },
+    { id: 'shape', name: 'Forma' }, { id: 'components', name: 'Componentes' }, { id: 'bars', name: 'Barras' }, { id: 'layout', name: 'Layout' },
 ] as const;
 
 /** A tela em que cada grupo mostra as opções, como a decisão declara (`groupScreens`): a mesma fonte que a espiada usa para levar a prévia até lá. */
@@ -93,7 +93,8 @@ const PERMANENT_EXCEPTIONS: Record<string, { kind: ExceptionKind; reason: string
     'theme/themes/sarak-sovereign': { kind: 'applied', reason: 'é o tema do harness: a prévia já o tem, e a diferença que sobra fica em torno do limiar' },
     'fonts/fontPairs/Moderno': { kind: 'applied', reason: 'é o par de fontes do tema do harness (headingFont e bodyFont já valem): espiar o que já está aplicado não muda nada' },
     'components/icons/Preenchidos': { kind: 'applied', reason: 'é a família e o traço que o tema do harness já usa; escolher outro ícone e espiar de novo a faz mudar' },
-    'layout/sidebar/Limpa': { kind: 'applied', reason: 'é o design do tema do harness a menos de sidebarBlur; escolher outra e espiar de novo a faz mudar' },
+    'bars/sidebar/Limpa': { kind: 'applied', reason: 'é o design do tema do harness a menos de sidebarBlur; escolher outra e espiar de novo a faz mudar' },
+    'bars/barTone/Neutra': { kind: 'applied', reason: 'sidebarTone e topbarTone já são neutros no tema do harness; escolher outro tom e espiar de novo a faz mudar' },
     'layout/contentWidth/Fluida': { kind: 'applied', reason: 'maxContentWidth já vale (fluida); escolher outra largura e espiar de novo a faz mudar' },
     'components/charts/Área suave': { kind: 'applied', reason: 'é o tipo, a espessura e a suavização que o tema do harness já tem; escolher outro gráfico e espiar de novo a faz mudar' },
     'components/notice/Suave': { kind: 'applied', reason: 'é o raio da dica e o filete que o tema do harness já tem; escolher outro aviso e espiar de novo a faz mudar' },

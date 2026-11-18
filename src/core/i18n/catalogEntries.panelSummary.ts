@@ -5,9 +5,19 @@ type LibraryTextEntry = Record<SarakLibraryLanguage, string>;
 /** A linha de valor de cada decisão na coluna do painel: o nome legível do que vale agora, nunca o id do token. */
 export const CATALOG_PANEL_SUMMARY = {
     summaryLayout: {
-        pt: 'Navegação: {style}', en: 'Navigation: {style}', es: 'Navegación: {style}',
-        fr: 'Navigation : {style}', de: 'Navigation: {style}', it: 'Navigazione: {style}',
+        pt: 'Conteúdo {width}', en: 'Content {width}', es: 'Contenido {width}',
+        fr: 'Contenu {width}', de: 'Inhalt {width}', it: 'Contenuto {width}',
     },
+    summaryWidthFluid: { pt: 'fluido', en: 'fluid', es: 'fluido', fr: 'fluide', de: 'flexibel', it: 'fluido' },
+    summaryWidthFull: { pt: 'em tela inteira', en: 'full screen', es: 'a pantalla completa', fr: 'plein écran', de: 'im Vollbild', it: 'a schermo intero' },
+    summaryToneNeutral: { pt: 'neutra', en: 'neutral', es: 'neutra', fr: 'neutre', de: 'neutral', it: 'neutra' },
+    summaryToneSurface: { pt: 'superfície', en: 'surface', es: 'superficie', fr: 'surface', de: 'Fläche', it: 'superficie' },
+    summaryTonePrimary: { pt: 'cor da marca', en: 'brand color', es: 'color de la marca', fr: 'couleur de la marque', de: 'Markenfarbe', it: 'colore del brand' },
+    summaryToneSecondary: { pt: 'secundária', en: 'secondary', es: 'secundaria', fr: 'secondaire', de: 'sekundär', it: 'secondaria' },
+    summaryToneInverse: { pt: 'invertida', en: 'inverted', es: 'invertida', fr: 'inversée', de: 'invertiert', it: 'invertita' },
+    summaryBarsFixed: { pt: 'orientação fixa', en: 'fixed orientation', es: 'orientación fija', fr: 'orientation fixe', de: 'feste Ausrichtung', it: 'orientamento fisso' },
+    summaryBarsSwitchMenu: { pt: 'troca no menu', en: 'switch in the menu', es: 'cambio en el menú', fr: 'bascule dans le menu', de: 'Wechsel im Menü', it: 'passaggio nel menu' },
+    summaryBarsSwitchPinned: { pt: 'troca na barra', en: 'switch on the bar', es: 'cambio en la barra', fr: 'bascule sur la barre', de: 'Wechsel in der Leiste', it: 'passaggio nella barra' },
     summaryComponents: {
         pt: 'Botão {button} · Campo {field}', en: 'Button {button} · Field {field}', es: 'Botón {button} · Campo {field}',
         fr: 'Bouton {button} · Champ {field}', de: 'Schaltfläche {button} · Feld {field}', it: 'Pulsante {button} · Campo {field}',

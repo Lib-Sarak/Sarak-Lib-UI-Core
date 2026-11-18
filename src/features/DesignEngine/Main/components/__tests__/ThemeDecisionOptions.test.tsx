@@ -31,7 +31,8 @@ describe('ThemeDecisionOptions', () => {
         ['fonts', ['catalog-fontPairs', 'catalog-typeScale', 'catalog-fonts']],
         ['shape', ['catalog-cards', 'catalog-corners', 'catalog-density', 'catalog-shadow', 'catalog-shadowDirection', 'catalog-border', 'catalog-material', 'catalog-glass', 'catalog-atmosphere', 'catalog-gradient', 'catalog-cardTextures', 'catalog-textures']],
         ['components', ['catalog-buttons', 'catalog-inputs', 'catalog-tables', 'catalog-charts', 'catalog-modal', 'catalog-notice', 'catalog-switch', 'catalog-scroll', 'catalog-badge', 'catalog-emptyState', 'catalog-motion', 'catalog-pageTransition', 'catalog-icons']],
-        ['layout', ['catalog-sidebar', 'catalog-topbar', 'catalog-contentWidth', 'global-block']],
+        ['bars', ['catalog-barTone', 'catalog-sidebar', 'catalog-topbar']],
+        ['layout', ['catalog-contentWidth', 'global-block']],
         ['advanced', []],
     ])('a decisão %s monta os grupos de opção dela', (id, expected) => {
         expect(mounted(id)).toEqual(expected);

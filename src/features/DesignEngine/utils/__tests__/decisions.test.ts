@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { DECISIONS, ESSENTIAL_IMPORTANCE, buildTokenIndex, decisionLayers, getDecision, peekScreenOf, type DecisionContext, type DecisionDef } from '../decisions';
+import { DECISIONS, ESSENTIAL_IMPORTANCE, buildTokenIndex, decisionLayers, decisionTokenIds, getDecision, peekScreenOf, type DecisionContext, type DecisionDef } from '../decisions';
 import { buildDecisionContext } from '../decisionContext';
 
 const ctx = buildDecisionContext();
@@ -78,10 +78,10 @@ describe('camadas de uma decisão', () => {
         expect(layers.fineTotal).toBeGreaterThan(0);
     });
 
-    it('o nível 2 traz os tokens de efeito visual provado e a composição da barra sobe no Layout', () => {
+    it('o nível 2 traz os tokens de efeito visual provado e a composição da barra sobe nas Barras', () => {
         const colors = decisionLayers(getDecision('colors')!, ctx);
         expect(colors.mainTokens.map((token) => token.id)).toContain('primaryColor');
-        const layout = decisionLayers(getDecision('layout')!, ctx);
+        const layout = decisionLayers(getDecision('bars')!, ctx);
         // A composição da barra agora sobe pela pergunta "O que aparece": a seção sozinha não sobra.
         expect(layout.barSections.map((section) => section.title)).not.toContain('Composição da Barra');
         expect(layout.questions.find((question) => question.id === 'what')?.tokens.map((token) => token.id)).toContain('chromeSearchPosition');
@@ -91,15 +91,15 @@ describe('camadas de uma decisão', () => {
         const index = buildTokenIndex(ctx);
         expect(index.get('primaryColor')).toMatchObject({ decisionId: 'colors', layer: 'main' });
         expect(index.get('mode')).toMatchObject({ decisionId: 'layout', layer: 'global' });
-        expect(index.get('sidebarTone')).toMatchObject({ decisionId: 'layout', layer: 'question', section: 'how' });
-        expect(index.get('navigationStyle')).toMatchObject({ decisionId: 'layout', layer: 'question', section: 'where' });
+        expect(index.get('sidebarTone')).toMatchObject({ decisionId: 'bars', layer: 'question', section: 'how' });
+        expect(index.get('navigationStyle')).toMatchObject({ decisionId: 'bars', layer: 'question', section: 'where' });
         const advancedToken = Object.values(ctx.grouped.advanced).flat()[0];
         expect(index.has(advancedToken.id)).toBe(true);
     });
 });
 
-describe('a decisão Layout por pergunta (nível 2)', () => {
-    const layout = getDecision('layout')!;
+describe('a decisão Barras por pergunta (nível 2)', () => {
+    const layout = getDecision('bars')!;
     const layers = decisionLayers(layout, ctx);
     const QUESTION_IDS = ['where', 'how', 'what', 'brand', 'behavior'];
 
@@ -129,15 +129,15 @@ describe('a decisão Layout por pergunta (nível 2)', () => {
         expect(byQuestion('how')).toEqual(expect.arrayContaining(['sidebarTone', 'topbarTone']));
     });
 
-    it('só a decisão Layout tem perguntas', () => {
-        DECISIONS.filter((decision) => decision.id !== 'layout').forEach((decision) => {
+    it('só a decisão Barras tem perguntas', () => {
+        DECISIONS.filter((decision) => decision.id !== 'bars').forEach((decision) => {
             expect(decisionLayers(decision, ctx).questions, decision.id).toEqual([]);
         });
     });
 });
 
-describe('a decisão Layout: ajuste fino sob a pergunta certa', () => {
-    const layers = decisionLayers(getDecision('layout')!, ctx);
+describe('a decisão Barras: ajuste fino sob a pergunta certa', () => {
+    const layers = decisionLayers(getDecision('bars')!, ctx);
     const fine = [...layers.essential, ...layers.rest];
     const idsUnder = (question: string): string[] => flatIds(fine.filter((section) => section.title === question));
 
@@ -155,8 +155,8 @@ describe('a decisão Layout: ajuste fino sob a pergunta certa', () => {
     });
 
     it('token sem pergunta segue na categoria de origem e as outras decisões não mudam', () => {
-        expect(flatIds(fine.filter((section) => section.title === 'Geral'))).toContain('layoutPadding');
-        DECISIONS.filter((decision) => decision.id !== 'layout').forEach((decision) => {
+        expect(flatIds(decisionLayers(getDecision('layout')!, ctx).rest)).toContain('layoutPadding');
+        DECISIONS.filter((decision) => decision.id !== 'bars').forEach((decision) => {
             const other = decisionLayers(decision, ctx);
             [...other.essential, ...other.rest].forEach((section) => expect(section.titleKey, decision.id).toBeUndefined());
         });
@@ -188,5 +188,35 @@ describe('peekScreenOf — a tela em que as opções de um grupo aparecem', () =
         DECISIONS.forEach((decision) => Object.keys(decision.groupScreens ?? {}).forEach((group) => {
             expect(decision.groups, decision.id + '/' + group).toContain(group);
         }));
+    });
+});
+
+describe('Barras e Layout dividem o pilar de navegação sem repetir token', () => {
+    const reachable = (id: string): Set<string> => decisionTokenIds(getDecision(id)!, ctx);
+
+    it('cada token aparece em exatamente uma das duas decisões', () => {
+        const bars = reachable('bars');
+        const layout = reachable('layout');
+        expect([...bars].filter((id) => layout.has(id))).toEqual([]);
+        expect(bars.size).toBeGreaterThan(60);
+        expect(layout.size).toBeGreaterThan(40);
+    });
+
+    it('a largura do conteúdo e o bloco global ficam no Layout; o tom, a orientação e a troca do usuário, nas Barras', () => {
+        const has = (id: string, wanted: string[]): string[] => wanted.filter((token) => !reachable(id).has(token));
+        expect(has('layout', ['maxContentWidth', 'mode', 'bodySize'])).toEqual([]);
+        expect(has('bars', ['sidebarTone', 'topbarTone', 'navigationStyle', 'preferenceNavigationStylePosition', 'sidebarFooterBackground', 'userAvatarStyle'])).toEqual([]);
+        expect(getDecision('layout')!.groups).toEqual(['contentWidth', 'globalBlock']);
+    });
+
+    it('a pergunta da orientação traz o interruptor da troca pelo usuário', () => {
+        const where = decisionLayers(getDecision('bars')!, ctx).questions.find((question) => question.id === 'where');
+        expect(where?.control).toBe('navigationSwitch');
+    });
+
+    it('Barras vem entre Componentes e Layout na coluna', () => {
+        const order = DECISIONS.map((decision) => decision.id);
+        expect(order.indexOf('bars')).toBe(order.indexOf('components') + 1);
+        expect(order.indexOf('layout')).toBe(order.indexOf('bars') + 1);
     });
 });

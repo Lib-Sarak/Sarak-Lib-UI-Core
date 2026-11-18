@@ -3,7 +3,7 @@ import { BUTTON_PRESETS, BUTTON_STYLE_PRESETS } from './buttons';
 import { INPUT_PRESETS } from './inputs';
 import { AMBIENT_PRESETS, GRADIENT_PRESETS, MEDIA_PRESETS, TEXTURE_PRESETS } from './atmosphere';
 import { TYPOGRAPHY_PRESETS } from './typography';
-import { CONTENT_WIDTH_PRESETS, SIDEBAR_PRESETS, TOPBAR_PRESETS } from './layout';
+import { BAR_TONE_PRESETS, CONTENT_WIDTH_PRESETS, SIDEBAR_PRESETS, TOPBAR_PRESETS } from './layout';
 import { CORNER_PRESETS, DENSITY_PRESETS } from './shapeGeometry';
 import { BORDER_PRESETS, GLASS_PRESETS, MATERIAL_PRESETS, SHADOW_DIRECTION_PRESETS, SHADOW_PRESETS } from './shapeSurface';
 import { CHART_PRESETS, TABLE_PRESETS } from './dataPresets';
@@ -13,7 +13,7 @@ import { ICON_PRESETS, MOTION_PRESETS, PAGE_TRANSITION_PRESETS } from './motionI
 import { FEATURED_FONTS, FONT_PAIR_PRESETS, TYPE_SCALE_PRESETS } from './typographyKits';
 import { FEATURED_TEXTURES } from './textureFamilies';
 
-export type PresetDecisionId = 'fonts' | 'shape' | 'components' | 'layout';
+export type PresetDecisionId = 'fonts' | 'shape' | 'components' | 'bars' | 'layout';
 
 /** O desenho que a galeria usa para mostrar a opção: sempre o componente real, nunca uma imagem. */
 export type PresetSampleKind =
@@ -78,8 +78,9 @@ export const PRESET_GROUPS: readonly PresetGroupDef[] = [
     { id: 'pageTransition', decision: 'components', sample: 'page', presets: PAGE_TRANSITION_PRESETS, featured: except(idsOf(PAGE_TRANSITION_PRESETS), ['page-slide-up', 'page-slide-side', 'page-zoom', 'page-none']), areas: ['animations'], owns: /^pageTransitionType$/, optionsOfOneToken: true },
     { id: 'icons', decision: 'components', sample: 'icons', presets: ICON_PRESETS, featured: except(idsOf(ICON_PRESETS), ['icons-tabler-light']), areas: ['system'], owns: /^icon/ },
 
-    { id: 'sidebar', decision: 'layout', sample: 'bar', presets: SIDEBAR_PRESETS, featured: firstIds(SIDEBAR_PRESETS, 8), areas: ['navigation'], owns: /^(sidebar|nav)/ },
-    { id: 'topbar', decision: 'layout', sample: 'bar', presets: TOPBAR_PRESETS, featured: firstIds(TOPBAR_PRESETS, 8), areas: ['navigation'], owns: /^topbar/ },
+    { id: 'barTone', decision: 'bars', sample: 'bar', presets: BAR_TONE_PRESETS, featured: idsOf(BAR_TONE_PRESETS), areas: ['navigation'], owns: /^(sidebar|topbar)Tone$/ },
+    { id: 'sidebar', decision: 'bars', sample: 'bar', presets: SIDEBAR_PRESETS, featured: firstIds(SIDEBAR_PRESETS, 8), areas: ['navigation'], owns: /^(sidebar|nav)/ },
+    { id: 'topbar', decision: 'bars', sample: 'bar', presets: TOPBAR_PRESETS, featured: firstIds(TOPBAR_PRESETS, 8), areas: ['navigation'], owns: /^topbar/ },
     { id: 'contentWidth', decision: 'layout', sample: 'width', presets: CONTENT_WIDTH_PRESETS, featured: except(idsOf(CONTENT_WIDTH_PRESETS), ['content-width-1600', 'content-width-full']), areas: ['system'], owns: /^maxContentWidth$/, optionsOfOneToken: true },
 ];
 

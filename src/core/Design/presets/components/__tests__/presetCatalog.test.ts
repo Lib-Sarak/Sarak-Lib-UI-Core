@@ -15,7 +15,7 @@ const DEFAULTS = sarakGetDefaultDesignState() as Record<string, unknown>;
 
 /** Mínimos por grupo; o grupo que fica abaixo tem o motivo no comentário ao lado (menos tokens, menos opções distintas). */
 const MIN_COUNT: Record<string, number> = {
-    sidebar: 8, topbar: 6, contentWidth: 6, cards: 18, cardTextures: 40, corners: 4, density: 4, shadow: 4, shadowDirection: 5, border: 5,
+    barTone: 5, sidebar: 8, topbar: 6, contentWidth: 6, cards: 18, cardTextures: 40, corners: 4, density: 4, shadow: 4, shadowDirection: 5, border: 5,
     material: 4, glass: 4, atmosphere: 11, gradient: 4, textures: 40, buttons: 18, inputs: 16, tables: 5, charts: 5,
     modal: 3, notice: 3, switch: 4, scroll: 3, badge: 3, emptyState: 3, motion: 4, pageTransition: 5, icons: 6, fontPairs: 10, typeScale: 4, fonts: 42,
 };

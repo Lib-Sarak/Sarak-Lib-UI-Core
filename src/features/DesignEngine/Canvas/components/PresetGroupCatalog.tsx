@@ -25,6 +25,11 @@ interface PresetGroupCatalogProps {
 
 /** Os grupos de barra mostram a lateral ou o topo; o resto, o componente da opção. */
 const NAVIGATION_STYLE: Readonly<Record<string, string>> = { sidebar: 'sidebar', topbar: 'topbar' };
+/** O papel de cor vale para as duas barras: a amostra mostra a que a orientação do rascunho usa. */
+const TONE_GROUP = 'barTone';
+const isTopSample = (groupId: string, draft: Partial<SarakDesignState> | undefined): boolean =>
+    groupId === 'topbar' || (groupId === TONE_GROUP && draft?.navigationStyle === 'topbar');
+const isBarGroup = (groupId: string): boolean => groupId in NAVIGATION_STYLE || groupId === TONE_GROUP;
 /** Na amostra de uma barra só ficam a navegação e a marca: os widgets não são o que o preset desenha, e o que o tom contrastante faz com eles é da barra, não da opção. */
 export const BAR_WIDGETS_OFF = { chromeSearchPosition: 'off', chromeUserPosition: 'off', chromeNotificationsPosition: 'off', preferenceModePosition: 'off', preferenceLanguagePosition: 'off', preferenceFontSizePosition: 'off', preferenceNavigationStylePosition: 'off', preferenceNavCollapsePosition: 'off', preferenceNavCollapsePositionTopbar: 'off' } as Partial<SarakDesignState>;
 
@@ -81,16 +86,17 @@ const Tile: React.FC<PresetGroupCatalogProps & { preset: ComponentPreset; kind: 
     // Fora da área visível a opção guarda o rascunho que mostrou por último: não recalcula a paleta nem o escopo a cada escolha.
     const sampleRef = useRef<HTMLDivElement>(null);
     const shownDraft = useValueWhileVisible(sampleRef, draft);
-    const tokens = useMemo(() => (NAVIGATION_STYLE[groupId]
-        ? { ...BAR_WIDGETS_OFF, ...barToneColors(shownDraft, preset.design, currentMode), ...preset.design, navigationStyle: NAVIGATION_STYLE[groupId] } as Partial<SarakDesignState>
+    const tokens = useMemo(() => (isBarGroup(groupId)
+        ? { ...BAR_WIDGETS_OFF, ...barToneColors(shownDraft, preset.design, currentMode), ...preset.design, ...(NAVIGATION_STYLE[groupId] ? { navigationStyle: NAVIGATION_STYLE[groupId] } : {}) } as Partial<SarakDesignState>
         : preset.design), [groupId, shownDraft, preset.design, currentMode]);
+    const top = isTopSample(groupId, shownDraft);
     // O mesmo elemento enquanto a amostra não muda: o React não reconcilia o cromo inteiro da miniatura a cada escolha.
     const sample = useMemo(() => (kind === 'bar' && shownDraft
-        ? <BarSample draft={shownDraft as SarakDesignState} mode={currentMode} tokens={tokens} miniature={groupId === 'topbar' ? 'topbar' : 'sidebar'} />
+        ? <BarSample draft={shownDraft as SarakDesignState} mode={currentMode} tokens={tokens} miniature={top ? 'topbar' : 'sidebar'} />
         : <SampleScope draft={shownDraft} tokens={tokens} mode={currentMode}><PresetSample kind={kind} preset={preset} /></SampleScope>
-    ), [kind, shownDraft, currentMode, tokens, groupId, preset]);
+    ), [kind, shownDraft, currentMode, tokens, top, preset]);
     return (
-        <OptionTile name={shown.name} description={shown.description} frameWidth={groupId === 'topbar' ? TOPBAR_FRAME_WIDTH : undefined} frameHeight={groupId === 'topbar' ? SAMPLE_FRAME_HEIGHT.topbar : kind === 'input' ? SAMPLE_FRAME_HEIGHT.input : SAMPLE_FRAME_HEIGHT.default} onApply={() => onApplyPreset(preset.design, true)} peekTokens={() => preset.design} onPeek={onPeek}>
+        <OptionTile name={shown.name} description={shown.description} frameWidth={top ? TOPBAR_FRAME_WIDTH : undefined} frameHeight={top ? SAMPLE_FRAME_HEIGHT.topbar : kind === 'input' ? SAMPLE_FRAME_HEIGHT.input : SAMPLE_FRAME_HEIGHT.default} onApply={() => onApplyPreset(preset.design, true)} peekTokens={() => preset.design} onPeek={onPeek}>
             <div ref={sampleRef}>{sample}</div>
         </OptionTile>
     );
@@ -103,7 +109,7 @@ export const PresetGroupCatalog: React.FC<PresetGroupCatalogProps> = (props) => 
     return (
         <CuratedGrid
             group={group}
-            gridClassName={props.groupId === 'topbar' ? WIDE_SAMPLE_GRID : CATALOG_GRID}
+            gridClassName={isTopSample(props.groupId, props.draft) ? WIDE_SAMPLE_GRID : CATALOG_GRID}
             renderTile={(preset) => <Tile key={preset.id} {...props} preset={preset} kind={group.sample} />}
         />
     );

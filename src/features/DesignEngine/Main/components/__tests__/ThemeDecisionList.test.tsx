@@ -18,11 +18,11 @@ const renderList = (props: Partial<React.ComponentProps<typeof ThemeDecisionList
 );
 
 describe('ThemeDecisionList', () => {
-    it('lista as seis decisões na ordem do protótipo, depois do atalho de marca', () => {
+    it('lista as sete decisões na ordem do protótipo, depois do atalho de marca', () => {
         renderList();
 
         const rows = within(screen.getByRole('list', { name: 'Decisões do tema' })).getAllByRole('button');
-        expect(rows.map((row) => row.getAttribute('data-decision-row'))).toEqual(['theme', 'colors', 'fonts', 'shape', 'components', 'layout']);
+        expect(rows.map((row) => row.getAttribute('data-decision-row'))).toEqual(['theme', 'colors', 'fonts', 'shape', 'components', 'bars', 'layout']);
         expect(screen.getByRole('button', { name: /Usar minha marca/ }).getAttribute('data-decision-row')).toBe('brand');
     });
 

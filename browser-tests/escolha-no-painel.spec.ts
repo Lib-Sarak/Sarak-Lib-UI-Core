@@ -3,7 +3,7 @@
  * painel responder: cada escolha reescrevia os `<style>` de cada escopo de prévia e de amostra, e a troca de tema remontava o
  * escopo da prévia ao vivo várias vezes, cada remontagem com classe nova e ≈529 variáveis escritas como estilo inline.
  *
- * Três medidas, na decisão Layout (escolha de uma opção da Barra lateral) e na decisão Tema (troca de tema):
+ * Três medidas, na decisão Barras (escolha de uma opção da Barra lateral) e na decisão Tema (troca de tema):
  *   1. O tempo do clique até o quadro seguinte ao `Aplicar` habilitado (`performance.now()` na página), e os recálculos de estilo.
  *   2. Quantos `<style>` a escolha insere, remove ou reescreve: uma escolha que não muda valor responsivo não reescreve nenhum.
  *   3. Quantas vezes um escopo `.sarak-design-scope` é montado de novo durante a troca de tema.
@@ -39,7 +39,7 @@ const STYLE_WRITES_BUDGET = 0;
 /** Uma troca de tema não remonta escopo de prévia: o escopo troca as variáveis, não nasce de novo. */
 const SCOPE_REMOUNT_BUDGET = 0;
 /** As duas opções alternadas da Barra lateral (a primeira de cada nome é a da Barra lateral). */
-const SIDEBAR_OPTIONS = ['Invertida', 'Na cor da marca'] as const;
+const SIDEBAR_OPTIONS = ['Contornada', 'Flutuante'] as const;
 const THEME_CARD = /Cyberpunk Neon(?! Classic)/;
 /** A mesma folga com que a amostra decide se está visível (`useValueWhileVisible`): logo abaixo da dobra ela já se atualiza. */
 const VISIBILITY_MARGIN = '25%';
@@ -159,7 +159,7 @@ test('escolher uma opção da Barra lateral responde em menos de 250 ms, sem ree
     const pageErrors: string[] = [];
     page.on('pageerror', (error) => pageErrors.push(error.message));
     await page.goto(harnessUrl);
-    await openDecision(page, /^Layout/, 'Layout');
+    await openDecision(page, /^Barras/, 'Barras');
     await openGroup(page, 'sidebar');
     const cdp = await page.context().newCDPSession(page);
     await cdp.send('Performance.enable');

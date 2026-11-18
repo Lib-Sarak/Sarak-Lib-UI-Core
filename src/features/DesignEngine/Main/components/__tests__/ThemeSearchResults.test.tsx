@@ -109,7 +109,7 @@ describe('ThemeSearchResults', () => {
     });
 
     describe('sem resultado', () => {
-        it('sugere o termo mais próximo e oferece as seis decisões', async () => {
+        it('sugere o termo mais próximo e oferece as sete decisões', async () => {
             const onOpenToken = vi.fn();
             const catalogMap = new Map([['headingFont', { name: 'Fonte dos títulos', tags: ['tooltip'] }]]);
             render(
@@ -123,7 +123,7 @@ describe('ThemeSearchResults', () => {
 
             expect(screen.getByText('Você quis dizer “tooltip”?')).toBeInTheDocument();
             const decisions = document.querySelectorAll('[data-search-decision]');
-            expect(decisions).toHaveLength(6);
+            expect(decisions).toHaveLength(7);
 
             await userEvent.click(screen.getByRole('button', { name: 'Cores' }));
             expect(onOpenToken).toHaveBeenCalledWith('colors');
@@ -131,12 +131,12 @@ describe('ThemeSearchResults', () => {
     });
 });
 
-describe('ThemeSearchResults — a linha de caminho da área Layout', () => {
+describe('ThemeSearchResults — a linha de caminho da área Barras', () => {
     const QUESTIONS = ['where', 'how', 'what', 'brand', 'behavior'] as const;
     const LANGUAGES = ['pt', 'en', 'es', 'fr', 'de', 'it'] as const;
 
     it.each(LANGUAGES)('%s: mostra o título traduzido da pergunta, nunca o id cru', (language) => {
-        const questionIndex = new Map<string, TokenLocation>(QUESTIONS.map((question) => [`tok-${question}`, { decisionId: 'layout', layer: 'question', section: question }]));
+        const questionIndex = new Map<string, TokenLocation>(QUESTIONS.map((question) => [`tok-${question}`, { decisionId: 'bars', layer: 'question', section: question }]));
         render(
             <SarakUIProvider options={{ i18n: { languages: [language], language } }}>
                 <ThemeSearchResults

@@ -75,7 +75,7 @@ describe('presets de componente — legíveis sobre todo tema embarcado, nos doi
 
     it('os presets de tom da barra existem e entram no caminho que recompõe a paleta', () => {
         const toned = ALL_COMPONENT_PRESETS.filter((preset) => 'sidebarTone' in preset.design || 'topbarTone' in preset.design);
-        expect(toned.length).toBeGreaterThanOrEqual(8);
+        expect(toned.map((preset) => preset.id).sort()).toEqual(['bar-tone-inverse', 'bar-tone-neutral', 'bar-tone-primary', 'bar-tone-secondary', 'bar-tone-surface']);
         toned.forEach((preset) => expect(changesColor(preset.design as Record<string, unknown>)).toBe(true));
     });
 });

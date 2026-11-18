@@ -22,13 +22,15 @@ import { SaveThemeModal } from './components/SaveThemeModal';
 import { LeavePanelDialog } from './components/LeavePanelDialog';
 import { useLeavePanelGuard, type SarakCustomizationPanelProps } from './hooks/useLeavePanelGuard';
 import { dirtyDecisionSet, getDecision, type DecisionId } from '../utils/decisions';
+import { peekWithTones } from '../utils/peekWithTones';
+import { findThemeEntry } from '../../../core/Provider/utils/designChoices';
 
 /** O que cada clique do inspetor da prévia abre na coluna. */
 const INSPECTED_DECISION: Record<string, DecisionId> = {
     controls: 'components',
     cards: 'shape',
     typography: 'fonts',
-    shell: 'layout',
+    shell: 'bars',
 };
 
 /** Esc volta da decisão à lista — a menos que algo aberto por cima (menu, diálogo) já o tenha tomado para si. */
@@ -85,8 +87,14 @@ export const ThemeCustomizationTab: React.FC<ThemeCustomizationTabProps> = ({ on
         return { ...previewDraft, systemName: pending.companyName ?? previewDraft.systemName, logoUrl: pending.logoBase64 ?? previewDraft.logoUrl };
     }, [previewDraft, pendingBranding.pending]);
 
+    // A espiada de um tom de barra passa pelo mesmo cálculo da escolha: a cor que o tema declara não a esconde.
+    const tonedPeek = useMemo(
+        () => peekWithTones(peekTokens, previewWithBrand, findThemeEntry(sarak.allThemes, draftThemeId ?? sarak.resolvedThemeId), sarak.getHostConfig?.() as Record<string, unknown> | undefined),
+        [peekTokens, previewWithBrand, sarak, draftThemeId],
+    );
+
     const handleInspectComponent = useCallback((schemaId: string) => {
-        openDecision(INSPECTED_DECISION[schemaId] ?? 'layout');
+        openDecision(INSPECTED_DECISION[schemaId] ?? 'bars');
     }, [openDecision]);
 
     const handleApply = useCallback(() => {
@@ -209,7 +217,7 @@ export const ThemeCustomizationTab: React.FC<ThemeCustomizationTabProps> = ({ on
                     draftTokens={previewWithBrand}
                     onInspectComponent={handleInspectComponent}
                     onApplyFullTheme={themeActions.handleApplyFullTheme}
-                    peekTokens={peekTokens}
+                    peekTokens={tonedPeek}
                 />
                 </div>
                 <ThemeFeedbackToast toast={toast} />
