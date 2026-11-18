@@ -1,84 +1,10 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] = `
+exports[`CardsCatalog > renderiza os cards curados por padrão, sem abas, e faz snapshot 1`] = `
 <div>
   <div
     class="flex flex-col gap-6"
   >
-    <div
-      class="flex items-center gap-2 p-1 bg-theme-body/20 rounded-xl border border-theme-border w-fit"
-    >
-      <button
-        class="px-4 py-2 rounded-lg text-[length:var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 bg-theme-primary text-theme-on-primary shadow-lg"
-      >
-        <svg
-          class="lucide lucide-sparkles"
-          fill="none"
-          height="12"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          viewBox="0 0 24 24"
-          width="12"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
-          />
-          <path
-            d="M5 3v4"
-          />
-          <path
-            d="M19 17v4"
-          />
-          <path
-            d="M3 5h4"
-          />
-          <path
-            d="M17 19h4"
-          />
-        </svg>
-        Curados
-      </button>
-      <button
-        class="px-4 py-2 rounded-lg text-[length:var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 text-theme-muted hover:text-theme-text hover:bg-theme-text/5"
-      >
-        <svg
-          class="lucide lucide-grid3x3"
-          fill="none"
-          height="12"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          viewBox="0 0 24 24"
-          width="12"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <rect
-            height="18"
-            rx="2"
-            width="18"
-            x="3"
-            y="3"
-          />
-          <path
-            d="M3 9h18"
-          />
-          <path
-            d="M3 15h18"
-          />
-          <path
-            d="M9 3v18"
-          />
-          <path
-            d="M15 3v18"
-          />
-        </svg>
-        Texturas
-      </button>
-    </div>
     <div
       class="flex flex-col gap-3"
       data-preset-group="cards"

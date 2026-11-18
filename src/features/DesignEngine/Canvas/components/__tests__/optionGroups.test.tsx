@@ -85,7 +85,7 @@ describe('grupos de opções do painel', () => {
 
     it('a textura de atmosfera aparece com a opacidade da amostra e o clique aplica o valor do preset', () => {
         const onApplyPreset = vi.fn();
-        const { container, getByRole } = render(<AtmosphereCatalog onApplyPreset={onApplyPreset} currentMode="dark" initialTab="textures" />);
+        const { container, getByRole } = render(<AtmosphereCatalog onApplyPreset={onApplyPreset} currentMode="dark" section="textures" />);
         const scope = container.querySelector('.sarak-design-scope[data-sx-texture]') as HTMLElement;
         expect(scope.style.getPropertyValue('--sarak-bg-pattern-opacity')).toBe(String(SAMPLE_TEXTURE_OPACITY));
         expect(scope).toHaveClass('texture-active');
@@ -100,7 +100,7 @@ describe('grupos de opções do painel', () => {
 
     it('a textura de cartão aparece no próprio cartão, com opacidade visível, e o clique aplica o valor do preset', () => {
         const onApplyPreset = vi.fn();
-        const { container, getByRole } = render(<CardsCatalog onApplyPreset={onApplyPreset} currentMode="dark" initialTab="textures" />);
+        const { container, getByRole } = render(<CardsCatalog onApplyPreset={onApplyPreset} currentMode="dark" section="textures" />);
         const scope = container.querySelector('.sarak-design-scope[data-sx-card-texture-type]') as HTMLElement;
         expect(scope.style.getPropertyValue('--sarak-card-texture-opacity')).toBe(String(SAMPLE_TEXTURE_OPACITY));
         const card = scope.querySelector('.sarak-card') as HTMLElement;

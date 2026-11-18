@@ -62,7 +62,9 @@
             "material",
             "glass",
             "atmosphere",
-            "gradient"
+            "gradient",
+            "cardTextures",
+            "textures"
         ],
         "optionSections": [],
         "screen": "dashboard",

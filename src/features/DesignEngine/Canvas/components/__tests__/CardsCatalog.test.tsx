@@ -20,7 +20,7 @@ vi.mock('framer-motion', async () => {
 });
 
 describe('CardsCatalog', () => {
-    it('renderiza a aba Curados por padrão e faz snapshot', () => {
+    it('renderiza os cards curados por padrão, sem abas, e faz snapshot', () => {
         const { container } = render(<CardsCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
         expect(screen.getByText('Vidro mínimo')).toBeInTheDocument();
         expect(container).toMatchSnapshot();
@@ -32,9 +32,9 @@ describe('CardsCatalog', () => {
         expect(container.querySelector('.sarak-design-scope')?.classList.contains('light')).toBe(true);
     });
 
-    it('troca para a camada automática de Texturas ao clicar na sub-aba', () => {
-        render(<CardsCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
-        fireEvent.click(screen.getByRole('button', { name: /Texturas/i }));
+    it('a textura do card é um grupo à parte, sem aba nenhuma', () => {
+        render(<CardsCatalog onApplyPreset={vi.fn()} currentMode="dark" section="textures" />);
+        expect(screen.queryByRole('button', { name: /^(Texturas|Curados)$/ })).toBeNull();
         expect(screen.getByText('Grade técnica')).toBeInTheDocument();
     });
 
@@ -69,9 +69,9 @@ describe('CardsCatalog', () => {
 
     it('a textura continua sobre o rascunho (ela se soma à paleta já escolhida)', () => {
         const draft = { colorPalette: 'rascunho-marcador' } as unknown as Partial<SarakDesignState>;
-        render(<CardsCatalog onApplyPreset={vi.fn()} currentMode="dark" draft={draft} initialTab="textures" />);
+        render(<CardsCatalog onApplyPreset={vi.fn()} currentMode="dark" draft={draft} section="textures" />);
         vi.mocked(useDesignVariables).mockClear();
-        render(<CardsCatalog onApplyPreset={vi.fn()} currentMode="dark" draft={draft} initialTab="textures" />);
+        render(<CardsCatalog onApplyPreset={vi.fn()} currentMode="dark" draft={draft} section="textures" />);
         const designs = vi.mocked(useDesignVariables).mock.calls.map((call) => call[0] as unknown as Record<string, unknown>);
         expect(designs.some((design) => design.colorPalette === 'rascunho-marcador')).toBe(true);
     });

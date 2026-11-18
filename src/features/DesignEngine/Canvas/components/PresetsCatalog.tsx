@@ -23,7 +23,7 @@ import { SarakDesignState, SarakUIContextType } from '../../../../core/Provider/
 export type PresetGroup = string;
 
 /** Os grupos com catálogo próprio (abas, páginas de tema); os demais vêm do registro e usam o catálogo genérico. */
-const DEDICATED_GROUPS: ReadonlySet<string> = new Set(['themes', 'cards', 'fonts', 'atmosphere', 'buttons', 'inputs']);
+const DEDICATED_GROUPS: ReadonlySet<string> = new Set(['themes', 'cards', 'cardTextures', 'fonts', 'atmosphere', 'textures', 'buttons', 'inputs']);
 
 interface PresetsCatalogProps {
     /** Qual grupo de opções desenhar. */
@@ -135,8 +135,10 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
             />
         )}
         {group === 'cards' && <CardsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} draft={draft} onPeek={onPeek} />}
+        {group === 'cardTextures' && <CardsCatalog section="textures" onApplyPreset={onApplyPreset} currentMode={currentMode} draft={draft} onPeek={onPeek} />}
         {group === 'fonts' && <TypographyCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} onPeek={onPeek} />}
         {group === 'atmosphere' && <AtmosphereCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} draft={draft} onPeek={onPeek} />}
+        {group === 'textures' && <AtmosphereCatalog section="textures" onApplyPreset={onApplyPreset} currentMode={currentMode} draft={draft} onPeek={onPeek} />}
         {group === 'buttons' && <ButtonsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} draft={draft} onPeek={onPeek} />}
         {group === 'inputs' && <InputsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} draft={draft} onPeek={onPeek} />}
         {!DEDICATED_GROUPS.has(group) && <PresetGroupCatalog groupId={group} onApplyPreset={onApplyPreset} currentMode={currentMode} draft={draft} onPeek={onPeek} />}

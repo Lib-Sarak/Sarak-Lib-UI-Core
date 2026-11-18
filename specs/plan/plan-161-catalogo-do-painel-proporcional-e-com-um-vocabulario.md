@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fazer o catálogo do painel proporcional, curto e com um vocabulário só"
 objetivo: "Fazer cada decisão do painel caber em cerca de duas telas, com amostras proporcionais (Personalidade em quadrado com o nome, tema como miniatura da prévia real, fontes na mesma grade), presets de card gerados de cada tema, texturas do card e do fundo separadas pelo nome, e um vocabulário único com os termos técnicos em inglês"
 dominio: "Painel de customização / Catálogo de opções"
-status: "🟡 Em execução"
+status: "🟠 Em revisão"
 prioridade: "Média"
 tags: ["plan", "painel", "catalogo", "amostras", "presets", "vocabulario"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[09-temas-e-presets]]", "[[10-seguranca-e-acessibilidade]]", "[[07-responsividade-e-multidispositivo]]"]
@@ -815,3 +815,90 @@ do achado 2. Elas entram no lote 4, que trata das texturas do card, com o mesmo 
 O dono aprovou a prévia `C:\tmp\sarak-previa-161\lote3-correcao.html`.
 
 **Lote 3 fechado. Status da plan: 🟡 Em execução** (lote 4). O commit sai junto com a `plan-159` e o lote 2 da `plan-164`.
+
+---
+
+## Resumo da execução (lote 4) — 2026-11-18
+
+**Resultado:** Concluído com pendências (ok do dono na prévia pendente; "Ver todas" aberto nos dois grupos de textura passa da meta de rolagem, que mede a Forma como abre)
+
+**Estado do worktree ao iniciar**
+(só `dist/` modificado/não rastreado pelo build; nenhum arquivo de `src/`, `specs/` ou `browser-tests/`)
+
+**O que foi feito**
+- O trabalho de grupos já estava no `HEAD` (commit 1b16329c: `cardTextures` e `textures` vizinhos em `design-decisions.json`, títulos "Textura do card"/"Textura do fundo" em `groups.ts`, `CardsCatalog`/`AtmosphereCatalog` por `section`, spec "Forma: textura do card e textura do fundo"). Este lote completou o que faltava:
+- `src/styles/_card-defaults.css`: nota do revisor de 2026-11-18. As regras `[data-sx-texture] main|section|article|.sarak-module-container` e a geometria `[data-sx-texture] :is(.card, .sarak-card)` ganham `:where(:not(.sarak-design-scope… ))`: dentro de um escopo de design, o escopo mais próximo manda e a textura do tema atual (ancestral) não alcança a amostra. O `:where()` mantém a especificidade; a regra de transição de `[data-sx-texture] main…` não lê valor e não mudou.
+- `src/styles/__tests__/cartaoQueCedeAClasse.test.ts`: caso novo exige a exclusão em toda regra de `_card-defaults.css` que lê `data-sx-texture` do ancestral (≥ 10 regras); o seletor do teste da âncora `.card` acompanha o `:where(`.
+- `AtmosphereCatalog.tsx`: a amostra da textura do fundo usa quadro de 150×129 (`FINE_GRAIN_FRAME`) em vez de 280×240 reduzido à metade. Sem isso, o `plan-141` (que agora vê o grupo `textures` na Forma) reprovava Forma nos dois modos: grade, pontos e planta diferiam em 0,38% a 1,5% dos pixels.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/styles/_card-defaults.css` | alterado | 5 seletores de textura excluem escopo `none`/escopo |
+| `src/styles/__tests__/cartaoQueCedeAClasse.test.ts` | alterado | +1 caso, 1 seletor |
+| `src/features/DesignEngine/Canvas/components/AtmosphereCatalog.tsx` | alterado | quadro de amostra fino para textura do fundo |
+| `dist/*`, `buildInfo` | alterados pelo `npm run build` | efeito do build |
+
+**Verificações executadas**
+- `npx vitest run src/styles src/features/DesignEngine/Canvas` → 61 arquivos / 399 testes verdes (cartaoQueCedeAClasse: 130 em `src/styles`).
+- Mutação: `[data-sx-texture] article` sem a exclusão → o caso novo reprova (`['[data-sx-texture] article']`); restaurado, verde.
+- `npm run build` → exit 0.
+- Navegador: `plan-161-catalogo-proporcional` 24/24; `plan-141-presets-do-painel` verde (os 2 casos "Forma: distingue a olho" reprovavam antes do quadro fino, passam depois); `troca-de-tema` verde na rodada conjunta (51 de 53, as 2 falhas eram as do plan-141 acima). Textura do card/fundo aplicada ao rascunho: 22 amostras, 0 mudaram.
+- Forma como abre: 790 px / 660 = 1,2 altura. Com os dois grupos de textura abertos: 8.047 px (12,2×) — não é a meta (que mede o estado padrão).
+- `npm run verify -- --tier=quick` → verde (tsc, baseline, Anel 1, Anel 0: 0).
+
+**Critérios de aceite**
+- [x] Textura do card e do fundo lado a lado, com o alvo no nome; nenhuma aba só "Texturas" — spec do lote (grupos vizinhos, títulos, 0 botão/aba "Texturas").
+- [x] A amostra não herda a textura do tema atual (nota do revisor) — CSS + teste + mutação.
+- [ ] Prévia `C:\tmp\sarak-previa-161\index.html` (antes/depois da Forma) — gerada; aguarda o ok do dono. (O `index.html` anterior foi sobrescrito; as prévias dos lotes 2 e 3 seguem em `index-lote3*.html`/`lote3*.html`.)
+
+**Decisões e suposições**
+- O quadro fino (150×129) só vale para a textura do fundo; cardTextures não precisou.
+- A regra de transição `[data-sx-texture] main…` ficou como está (não lê valor de textura).
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum novo. Com os dois grupos de textura abertos a Forma rola 12×; o "Ver todas" de cards (7,8×) já era conhecido.
+
+**Pendências / riscos**
+- Ok do dono na prévia. `docs/migracoes.md` e `npm run dev-kit` não tocados (nenhum id, token ou prop mudou). Só o Chromium exercitou o CSS com `:where(:not(...))`.
+
+## Veredito — 2026-11-18 — lote 4 — 🟢 Aprovado no código; o lote fecha com o ok do dono na prévia
+
+**O que conferi:** o diff do lote inteiro, que está em duas partes:
+- a parte já gravada no commit `1b16329c` (ver abaixo);
+- as três alterações que ainda estão no worktree.
+
+- **4.1 atendido.**
+  - `cardTextures` e `textures` são grupos vizinhos da Forma (`design-decisions.json`).
+  - Os títulos dizem o alvo nos seis idiomas: "Textura do card" e "Textura do fundo".
+  - A Atmosfera perdeu "e textura" do nome.
+  - Saíram as abas internas "Curados/Texturas" (`CardsCatalog`) e "Atmosferas/Texturas" (`AtmosphereCatalog`). Cada catálogo
+    desenha uma seção.
+- **Nota do revisor do lote 3 atendida.** As regras de textura do ancestral ganharam a exclusão do escopo dentro de `:where()`, sem
+  mudar a especificidade. Isso vale para `_card-defaults.css` (contêineres e cartão) e para `_atmosphere.css` (`::after` do
+  cartão, por tipo). O escopo mais próximo manda, e o cartão sob escopo continua coberto pela regra do próprio escopo.
+- **Build** completo no worktree: exit 0.
+- **Navegador:** `plan-161-catalogo-proporcional`, `plan-141-presets-do-painel`, `troca-de-tema`, `textura-muda-pixel`,
+  `cartao-cede-a-classe`, `cromo-css-real` e `plan-160-previa-mostra-a-opcao` deram **109 verdes e 2 vermelhos**. Os dois vermelhos
+  são `cartao-cede-a-classe:69` (material) nos dois modos, o caso conhecido do backlog 83, que já falhava antes deste lote.
+- **Gates:** Anel 1 verde (o `plan-index:check` cai só pelo 🟠, e o revisor o regenera). `check-audit-baseline --with-tsc` sem
+  regressão. Anel 0 com 0.
+- **Prévia** (`C:\tmp\sarak-previa-161\index.html`) conferida. A Forma abre com os dois grupos de textura no fim, um ao lado do outro. Cada amostra mostra a
+  própria textura, e as amostras não mudam com outro tema no rascunho.
+
+**Para o lote 5** (não barra este lote):
+- O caso `plan-161-catalogo-proporcional.spec.ts:666` diz no nome que a Forma "com os dois grupos de textura abertos fica na meta".
+  Ele só afirma a Forma como abre. O nome tem de dizer o que o caso mede.
+
+**Para o dono:** com "Textura do card" e "Textura do fundo" abertos ao mesmo tempo, a Forma rola 12,2 alturas. A meta de 2,5 mede a
+decisão como abre (1,2 altura), como em todas as decisões. Abrir os dois grupos é escolha de quem usa o painel.
+
+**Histórico:** o commit `1b16329c` leva a primeira parte deste lote com a mensagem do commit das plans 159, 161 (lote 3) e 164. A
+causa é o comando de commit do revisor, que adicionava por diretório. O mesmo comando levou o temporário
+`browser-tests/tmp-lote4-antes.spec.ts` para o `2ca24fff`, e o `1b16329c` o apaga. Os dois commits estão só no local.
+
+**Falta, para fechar o lote 4:** o ok do dono na prévia.
+
+**Commit:** depois do ok, um commit só para o lote 4, que reúne a parte do `1b16329c` e o worktree.
+
+**Status da plan: 🟠 Em revisão** até o ok do dono.

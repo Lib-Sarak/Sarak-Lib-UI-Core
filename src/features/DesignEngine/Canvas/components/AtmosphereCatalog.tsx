@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { getPresetGroup } from '../../../../core/Design/presets/components/registry';
 import { textureFamilyOf } from '../../../../core/Design/presets/components/textureFamilies';
 import { usePresetText } from '../../hooks/usePresetText';
 import { CuratedGrid } from './CuratedGrid';
 import { ComponentPreset } from '../../../../core/Design/presets/components/cards';
-import { Video, Grid } from 'lucide-react';
 import { SarakBackgroundRenderer } from '../../../../core/Design/components/SarakBackgroundRenderer';
 import { OptionTile } from './OptionTile';
 import { SAMPLE_TEXTURE_STYLE } from './SampleParts';
@@ -19,43 +18,25 @@ interface AtmosphereCatalogProps {
     currentMode: string;
     draft?: Partial<SarakDesignState>;
     onPeek?: PeekHandler;
-    /** A aba que abre primeiro; quem só confere as texturas não precisa desenhar as atmosferas antes. */
-    initialTab?: 'media' | 'textures';
+    /** Qual grupo o catálogo desenha: as atmosferas ou a textura do fundo. Cada um é um grupo da decisão Forma, com título próprio. */
+    section?: 'media' | 'textures';
 }
 
-export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPreset, currentMode, draft, onPeek, initialTab = 'media' }) => {
-    const [activeTab, setActiveTab] = useState<'media' | 'textures'>(initialTab);
+export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPreset, currentMode, draft, onPeek, section = 'media' }) => {
     const text = usePresetText();
 
     return (
         <div className="flex flex-col gap-6">
-            <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-2 p-1 bg-theme-body/20 rounded-xl border border-theme-border">
-                    <button
-                        onClick={() => setActiveTab('media')}
-                        className={`px-4 py-2 rounded-lg text-[length:var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'media' ? 'bg-theme-primary text-theme-on-primary shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
-                    >
-                        <Video size={12} />
-                        Atmosferas
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('textures')}
-                        className={`px-4 py-2 rounded-lg text-[length:var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'textures' ? 'bg-theme-primary text-theme-on-primary shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
-                    >
-                        <Grid size={12} />
-                        Texturas
-                    </button>
-                </div>
-
+            <div className="flex items-center justify-end gap-4">
                 <div className="flex items-center gap-3 px-4 py-2 bg-theme-body/20 rounded-xl border border-theme-border">
                     <span className="text-[length:var(--sarak-type-scale2xs,11px)] font-black text-theme-text uppercase tracking-widest">Opacidade</span>
                     <input
-                        key={activeTab}
+                        key={section}
                         type="range"
                         min="0" max="1" step="0.01"
-                        defaultValue={activeTab === 'textures' ? 0.08 : 1}
+                        defaultValue={section === 'textures' ? 0.08 : 1}
                         onChange={(e) => onApplyPreset(
-                            activeTab === 'textures'
+                            section === 'textures'
                                 ? { textureOpacity: parseFloat(e.target.value) }
                                 : { globalBackgroundOpacity: parseFloat(e.target.value) }
                             , true)}
@@ -65,21 +46,24 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
             </div>
 
             <CuratedGrid
-                group={getPresetGroup(activeTab === 'media' ? 'atmosphere' : 'textures')!}
+                group={getPresetGroup(section === 'media' ? 'atmosphere' : 'textures')!}
                 gridClassName={CATALOG_GRID}
-                sectionOf={activeTab === 'textures' ? (preset) => {
+                sectionOf={section === 'textures' ? (preset) => {
                     const family = textureFamilyOf(String(preset.design.texture)) ?? 'technical';
                     return { id: family, title: text.family(family) };
                 } : undefined}
                 renderTile={(preset) => (
-                    <AtmospherePresetPreview key={preset.id} preset={preset} currentMode={currentMode} draft={draft} onPeek={onPeek} onApply={() => onApplyPreset(preset.design, true)} />
+                    <AtmospherePresetPreview key={preset.id} preset={preset} currentMode={currentMode} draft={draft} onPeek={onPeek} fineGrain={section === 'textures'} onApply={() => onApplyPreset(preset.design, true)} />
                 )}
             />
         </div>
     );
 };
 
-const AtmospherePresetPreview = ({ preset, onApply, currentMode, draft, onPeek }: { preset: ComponentPreset, onApply: () => void, currentMode: string, draft?: Partial<SarakDesignState>, onPeek?: PeekHandler }) => {
+/** A textura do fundo é de traço fino (1 px a cada 16 ou 32): no quadro de referência reduzido pela metade, grade, pontos e planta somem. Esse quadro é o do tamanho da opção. */
+const FINE_GRAIN_FRAME = { width: 150, height: 129 } as const;
+
+const AtmospherePresetPreview = ({ preset, onApply, currentMode, draft, onPeek, fineGrain = false }: { preset: ComponentPreset, onApply: () => void, currentMode: string, draft?: Partial<SarakDesignState>, onPeek?: PeekHandler, fineGrain?: boolean }) => {
     const shown = usePresetText().preset(preset);
     const imageUrl = preset.design.globalBackgroundImageUrl;
     const isVideo = imageUrl && (imageUrl.includes('video') || imageUrl.endsWith('.webm') || imageUrl.endsWith('.mp4'));
@@ -95,6 +79,8 @@ const AtmospherePresetPreview = ({ preset, onApply, currentMode, draft, onPeek }
             onApply={onApply}
             peekTokens={() => preset.design}
             onPeek={onPeek}
+            frameWidth={fineGrain ? FINE_GRAIN_FRAME.width : undefined}
+            frameHeight={fineGrain ? FINE_GRAIN_FRAME.height : undefined}
         >
             {/* A atmosfera ocupa o tile inteiro, sem cartão nem botão por cima do que se quer ver. A textura aparece com a opacidade da amostra (visível); o valor
                 que o clique aplica continua sendo o do preset. */}

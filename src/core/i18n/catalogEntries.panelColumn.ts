@@ -17,7 +17,7 @@ export const CATALOG_PANEL_COLUMN = {
     optionGroupThemes: { pt: 'Temas prontos', en: 'Ready themes', es: 'Temas listos', fr: 'Thèmes prêts', de: 'Fertige Themen', it: 'Temi pronti' },
     optionGroupFonts: { pt: 'Pares de fontes', en: 'Font pairs', es: 'Pares de fuentes', fr: 'Paires de polices', de: 'Schriftpaare', it: 'Coppie di font' },
     optionGroupCards: { pt: 'Estilo dos cards', en: 'Card style', es: 'Estilo de las tarjetas', fr: 'Style des cartes', de: 'Kartenstil', it: 'Stile delle schede' },
-    optionGroupAtmosphere: { pt: 'Atmosfera e textura', en: 'Atmosphere and texture', es: 'Atmósfera y textura', fr: 'Atmosphère et texture', de: 'Atmosphäre und Textur', it: 'Atmosfera e texture' },
+    optionGroupAtmosphere: { pt: 'Atmosfera', en: 'Atmosphere', es: 'Atmósfera', fr: 'Atmosphère', de: 'Atmosphäre', it: 'Atmosfera' },
     optionGroupButtons: { pt: 'Botões', en: 'Buttons', es: 'Botones', fr: 'Boutons', de: 'Schaltflächen', it: 'Pulsanti' },
     optionGroupInputs: { pt: 'Campos', en: 'Fields', es: 'Campos', fr: 'Champs', de: 'Felder', it: 'Campi' },
     optionGroupGlobal: { pt: 'Preferências e identidade', en: 'Preferences and identity', es: 'Preferencias e identidad', fr: 'Préférences et identité', de: 'Einstellungen und Identität', it: 'Preferenze e identità' },

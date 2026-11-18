@@ -547,3 +547,132 @@ test.describe('o card de cada tema, sobre uma base neutra', () => {
         await page.close();
     });
 });
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Lote 4: a textura do card e a do fundo, cada uma num grupo da Forma com o alvo no nome
+// ---------------------------------------------------------------------------------------------------------------------
+/** Abre um grupo da Forma (e o "Ver todas" dele), rola até desenhar todas as amostras e volta ao topo do grupo. */
+const openFormGroup = async (page: Page, group: string, seeAll = true): Promise<void> => {
+    const selector = `[data-preset-group="${group}"]`;
+    const toggle = page.locator(`[data-group-toggle="${group}"]`);
+    if ((await toggle.getAttribute('aria-expanded')) === 'false') await toggle.click();
+    const more = page.locator(`[data-preset-toggle="${group}"]`);
+    if (seeAll && (await more.count()) && (await more.getAttribute('aria-expanded')) === 'false') await more.click();
+    await page.locator(selector).scrollIntoViewIfNeeded();
+    await page.evaluate(async (css) => {
+        for (let round = 0; round < 4; round += 1) {
+            const tiles = Array.from(document.querySelectorAll<HTMLElement>(`${css} [data-option-tile]`));
+            const pending = tiles.filter((tile) => !tile.querySelector('.sarak-card, .sarak-design-scope'));
+            if (!pending.length) return;
+            for (const tile of pending) {
+                tile.scrollIntoView({ block: 'center' });
+                await new Promise((resolve) => setTimeout(resolve, 120));
+            }
+        }
+    }, selector);
+    await page.waitForTimeout(300);
+};
+
+const openForm = async (page: Page): Promise<void> => {
+    await page.getByRole('button', { name: /^Forma/ }).click();
+    await page.getByRole('heading', { level: 2, name: 'Forma' }).waitFor();
+    await page.waitForTimeout(500);
+};
+
+/** O que a amostra desenha de textura: o `::after` do card e o `::before` do escopo (fundo), mais a cor do fundo do escopo. */
+const textureSignatures = (page: Page, groups: string[]): Promise<Record<string, string>> => page.evaluate((ids) => {
+    const result: Record<string, string> = {};
+    for (const id of ids) {
+        document.querySelectorAll<HTMLElement>(`[data-preset-group="${id}"] [data-option-tile]`).forEach((tile, index) => {
+            const name = `${id}:${index}:${Array.from(tile.querySelectorAll('h3')).pop()?.textContent?.trim() ?? ''}`;
+            const card = tile.querySelector<HTMLElement>('.sarak-card');
+            const scope = tile.querySelector<HTMLElement>('.sarak-design-scope');
+            const image = (element: Element | null, pseudo: string): string => (element ? getComputedStyle(element, pseudo).backgroundImage.slice(0, 90) : '-');
+            result[name] = [image(card, '::after'), image(scope, '::before'), scope ? getComputedStyle(scope).backgroundColor : '-'].join(' | ');
+        });
+    }
+    return result;
+}, groups);
+
+test.describe('Forma: textura do card e textura do fundo', () => {
+    test('são dois grupos vizinhos com o alvo no nome, e nenhuma aba se chama só "Texturas"', async () => {
+        const page = await open(1440, 900);
+        await openForm(page);
+        const toggles = await page.locator('[data-group-toggle]').evaluateAll((nodes) => nodes.map((node) => ({ id: node.getAttribute('data-group-toggle') ?? '', title: (node.textContent ?? '').trim() })));
+        const ids = toggles.map((toggle) => toggle.id);
+        const card = toggles.find((toggle) => toggle.id === 'cardTextures');
+        const background = toggles.find((toggle) => toggle.id === 'textures');
+        report.narrow.formaTexturas = { grupos: toggles.map((toggle) => `${toggle.id}: ${toggle.title}`) };
+        console.log(`[plan-161] Forma, grupos: ${JSON.stringify(toggles.map((toggle) => toggle.title))}`);
+        expect(card?.title, 'título do grupo da textura do card').toMatch(/Textura do card/);
+        expect(background?.title, 'título do grupo da textura do fundo').toMatch(/Textura do fundo/);
+        expect(Math.abs(ids.indexOf('cardTextures') - ids.indexOf('textures')), 'os dois grupos são vizinhos').toBe(1);
+        const onlyTextures = await page.getByRole('button', { name: /^Texturas$/ }).count();
+        expect(onlyTextures, 'botão que se chama só "Texturas"').toBe(0);
+        expect(await page.getByRole('tab', { name: /^Texturas$/ }).count(), 'aba que se chama só "Texturas"').toBe(0);
+        expect(await page.locator('[data-group-toggle="atmosphere"]').textContent(), 'a Atmosfera já não carrega a textura no nome').not.toMatch(/textura/i);
+
+        await openFormGroup(page, 'cardTextures');
+        await snap(page, 'forma-textura-do-card.png', 'Forma › Textura do card, "Ver todas": as famílias de textura, cada amostra com a textura dela.');
+        await openFormGroup(page, 'textures');
+        await snap(page, 'forma-textura-do-fundo.png', 'Forma › Textura do fundo, "Ver todas": ao lado da textura do card, com o alvo no nome.');
+        for (const group of ['cardTextures', 'textures']) {
+            const drawn = await page.locator(`[data-preset-group="${group}"] [data-option-tile]`).count();
+            expect(drawn, `opções do grupo ${group}`).toBeGreaterThanOrEqual(30);
+        }
+        await page.close();
+    });
+
+    test('a textura do card que o rascunho já tem não aparece nas amostras de card nem nas de fundo', async () => {
+        const page = await open(1440, 900);
+        await openForm(page);
+        await openFormGroup(page, 'cards', false);
+        await openFormGroup(page, 'cardTextures', false);
+        await openFormGroup(page, 'textures', false);
+        const groups = ['cards', 'cardTextures', 'textures'];
+        const before = await textureSignatures(page, groups);
+        const grid = page.locator('[data-preset-group="cardTextures"] [data-option-tile]', { hasText: /Grade|Grid/i }).first();
+        await grid.scrollIntoViewIfNeeded();
+        await grid.click();
+        await page.waitForTimeout(800);
+        const after = await textureSignatures(page, groups);
+        const changed = Object.keys(before).filter((key) => before[key] !== after[key]);
+        report.narrow.texturaDoCardNoRascunho = { amostras: Object.keys(before).length, mudaram: changed };
+        console.log(`[plan-161] textura do card aplicada: ${Object.keys(before).length} amostras, ${changed.length} mudaram ${JSON.stringify(changed.slice(0, 5))}`);
+        expect(changed, 'amostras que herdaram a textura do card aplicada').toEqual([]);
+        await page.close();
+    });
+
+    test('a textura do fundo que o rascunho já tem não aparece nas amostras de card nem nas de fundo', async () => {
+        const page = await open(1440, 900);
+        await openForm(page);
+        await openFormGroup(page, 'cards', false);
+        await openFormGroup(page, 'cardTextures', false);
+        await openFormGroup(page, 'textures', false);
+        const groups = ['cards', 'cardTextures', 'textures'];
+        const before = await textureSignatures(page, groups);
+        const grid = page.locator('[data-preset-group="textures"] [data-option-tile]', { hasText: /Grade|Grid/i }).first();
+        await grid.scrollIntoViewIfNeeded();
+        await grid.click();
+        await page.waitForTimeout(800);
+        const after = await textureSignatures(page, groups);
+        const changed = Object.keys(before).filter((key) => before[key] !== after[key]);
+        report.narrow.texturaDoFundoNoRascunho = { amostras: Object.keys(before).length, mudaram: changed };
+        console.log(`[plan-161] textura do fundo aplicada: ${Object.keys(before).length} amostras, ${changed.length} mudaram ${JSON.stringify(changed.slice(0, 5))}`);
+        expect(changed, 'amostras que herdaram a textura do fundo aplicada').toEqual([]);
+        await page.close();
+    });
+
+    test('a rolagem da Forma, com os dois grupos de textura abertos, fica na meta', async () => {
+        const page = await open(1440, 900);
+        await openForm(page);
+        const closed = await measureScroll(page);
+        await openFormGroup(page, 'cardTextures');
+        await openFormGroup(page, 'textures');
+        const opened = await measureScroll(page);
+        report.narrow.formaTexturasRolagem = { fechada: closed, aberta: opened, alturasAberta: Number((opened.scrollHeight / opened.clientHeight).toFixed(2)) };
+        console.log(`[plan-161] Forma: ${JSON.stringify(report.narrow.formaTexturasRolagem)}`);
+        expect(closed.scrollHeight / closed.clientHeight, 'Forma como abre').toBeLessThanOrEqual(MAX_SCROLL_SCREENS);
+        await page.close();
+    });
+});

@@ -29,7 +29,7 @@ describe('ThemeDecisionOptions', () => {
         ['theme', ['catalog-personalities', 'catalog-themes']],
         ['colors', ['palette-section']],
         ['fonts', ['catalog-fontPairs', 'catalog-typeScale', 'catalog-fonts']],
-        ['shape', ['catalog-cards', 'catalog-corners', 'catalog-density', 'catalog-shadow', 'catalog-shadowDirection', 'catalog-border', 'catalog-material', 'catalog-glass', 'catalog-atmosphere', 'catalog-gradient']],
+        ['shape', ['catalog-cards', 'catalog-corners', 'catalog-density', 'catalog-shadow', 'catalog-shadowDirection', 'catalog-border', 'catalog-material', 'catalog-glass', 'catalog-atmosphere', 'catalog-gradient', 'catalog-cardTextures', 'catalog-textures']],
         ['components', ['catalog-buttons', 'catalog-inputs', 'catalog-tables', 'catalog-charts', 'catalog-modal', 'catalog-notice', 'catalog-switch', 'catalog-scroll', 'catalog-badge', 'catalog-emptyState', 'catalog-motion', 'catalog-pageTransition', 'catalog-icons']],
         ['layout', ['catalog-sidebar', 'catalog-topbar', 'catalog-contentWidth', 'global-block']],
         ['advanced', []],
@@ -41,7 +41,9 @@ describe('ThemeDecisionOptions', () => {
         render(<ThemeDecisionOptions groups={groupsOf('shape')} context={context} />);
 
         expect(screen.getByRole('heading', { level: 3, name: 'Estilo dos cards' })).toBeInTheDocument();
-        expect(screen.getByRole('heading', { level: 3, name: 'Atmosfera e textura' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 3, name: 'Atmosfera' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 3, name: 'Textura do card' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 3, name: 'Textura do fundo' })).toBeInTheDocument();
     });
 
     it('os grupos abrem fechados e só o primeiro fica aberto; clicar no título abre e fecha o grupo', () => {

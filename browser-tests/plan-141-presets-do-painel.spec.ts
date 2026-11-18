@@ -29,8 +29,8 @@ const presetGroupsOf = (decision: PresetDecisionId): GroupInfo[] => registry.gro
 const DECISIONS: ReadonlyArray<{ id: PresetDecisionId; name: string }> = [
     { id: 'fonts', name: 'Fontes' }, { id: 'shape', name: 'Forma' }, { id: 'components', name: 'Componentes' }, { id: 'layout', name: 'Layout' },
 ];
-/** Os grupos que moram dentro de uma aba de outro grupo, não em seção própria. */
-const INSIDE_ANOTHER_GROUP = new Set(['cardTextures', 'textures', 'buttonStyles']);
+/** Os grupos que moram dentro de uma aba de outro grupo, não em seção própria (as texturas do card e do fundo já têm seção própria). */
+const INSIDE_ANOTHER_GROUP = new Set(['buttonStyles']);
 const MODES = [{ name: 'escuro', query: '' }, { name: 'claro', query: 'claro=1' }] as const;
 
 interface Capture { file: string; caption: string; mode: string }

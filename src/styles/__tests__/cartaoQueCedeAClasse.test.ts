@@ -50,7 +50,7 @@ describe('a geometria do cartão mora na subcamada que cede à classe', () => {
     });
 
     it('a âncora .card sob escopo e textura recebe a geometria', () => {
-        const scoped = bodyOf(defaults, '[data-sx-texture] :is(.card, .sarak-card)');
+        const scoped = bodyOf(defaults, '[data-sx-texture] :is(.card, .sarak-card):where(');
         expect(defaults).toContain('.sarak-design-scope :is(.card, .sarak-card)');
         for (const property of ['border-radius', 'border-style', 'border-left-width', 'backdrop-filter', 'transition']) {
             expect(scoped, property).toContain(`${property}:`);
@@ -159,6 +159,12 @@ describe('o que saiu da camada final', () => {
         expect(reset).toContain('background-color: transparent;');
         expect(reset).toContain('background-image: none;');
         expect(reset).not.toMatch(/!important/);
+    });
+
+    it('o escopo mais próximo manda: nenhuma regra de _card-defaults.css lê a textura do ancestral sem excluir o escopo', () => {
+        const readers = defaults.split(/\r?\n/).map((line) => line.trim().replace(/,$/, '')).filter((line) => !line.includes('{') && /^(?:body:not\(\[data-sx-texture="none"\]\)|\[data-sx-texture\]) /.test(line));
+        expect(readers.length, 'regras que leem data-sx-texture do ancestral').toBeGreaterThanOrEqual(10);
+        expect(readers.filter((selector) => !/:where\(:not\(\.sarak-design-scope.*\)\)$/.test(selector))).toEqual([]);
     });
 
     it('o !important de aurora-classic saiu: a opacidade lê os tokens de textura', () => {

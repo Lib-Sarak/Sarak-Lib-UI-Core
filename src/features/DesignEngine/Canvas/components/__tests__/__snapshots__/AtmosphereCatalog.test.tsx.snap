@@ -1,83 +1,13 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`AtmosphereCatalog > renderiza as abas de mídia/textura do catálogo 1`] = `
+exports[`AtmosphereCatalog > renderiza as atmosferas sem abas, com a opacidade 1`] = `
 <div>
   <div
     class="flex flex-col gap-6"
   >
     <div
-      class="flex items-center justify-between gap-4"
+      class="flex items-center justify-end gap-4"
     >
-      <div
-        class="flex items-center gap-2 p-1 bg-theme-body/20 rounded-xl border border-theme-border"
-      >
-        <button
-          class="px-4 py-2 rounded-lg text-[length:var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 bg-theme-primary text-theme-on-primary shadow-lg"
-        >
-          <svg
-            class="lucide lucide-video"
-            fill="none"
-            height="12"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-            width="12"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="m22 8-6 4 6 4V8Z"
-            />
-            <rect
-              height="12"
-              rx="2"
-              ry="2"
-              width="14"
-              x="2"
-              y="6"
-            />
-          </svg>
-          Atmosferas
-        </button>
-        <button
-          class="px-4 py-2 rounded-lg text-[length:var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 text-theme-muted hover:text-theme-text hover:bg-theme-text/5"
-        >
-          <svg
-            class="lucide lucide-grid3x3"
-            fill="none"
-            height="12"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-            width="12"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect
-              height="18"
-              rx="2"
-              width="18"
-              x="3"
-              y="3"
-            />
-            <path
-              d="M3 9h18"
-            />
-            <path
-              d="M3 15h18"
-            />
-            <path
-              d="M9 3v18"
-            />
-            <path
-              d="M15 3v18"
-            />
-          </svg>
-          Texturas
-        </button>
-      </div>
       <div
         class="flex items-center gap-3 px-4 py-2 bg-theme-body/20 rounded-xl border border-theme-border"
       >

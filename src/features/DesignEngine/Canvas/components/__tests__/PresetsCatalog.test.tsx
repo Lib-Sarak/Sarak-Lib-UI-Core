@@ -51,12 +51,18 @@ describe('PresetsCatalog — um grupo por vez, sem cromo próprio', () => {
     });
 
     it.each([
-        ['cards', 'Curados'],
-        ['buttons', 'Curados'],
-        ['atmosphere', 'Atmosferas'],
+        ['cards', 'cards'],
+        ['cardTextures', 'cardTextures'],
+        ['atmosphere', 'atmosphere'],
+        ['textures', 'textures'],
     ] as const)('o grupo %s monta o próprio catálogo', (group, marker) => {
-        render(<PresetsCatalog {...createProps(group)} />);
-        expect(screen.getByRole('button', { name: marker })).toBeInTheDocument();
+        const { container } = render(<PresetsCatalog {...createProps(group)} />);
+        expect(container.querySelector('[data-preset-group="' + marker + '"]')).not.toBeNull();
+    }, 30000);
+
+    it('o grupo de botões segue com o catálogo próprio (abas Curados e por estilo)', () => {
+        render(<PresetsCatalog {...createProps('buttons')} />);
+        expect(screen.getByRole('button', { name: 'Curados' })).toBeInTheDocument();
     }, 30000);
 
     it('o grupo de campos monta uma opção por preset de campo', () => {
