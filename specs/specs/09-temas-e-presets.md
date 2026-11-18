@@ -404,9 +404,13 @@ modos (`switch-glass-border.test.ts`):
   `switchStyles.ts`) e a bolinha é opaca. A bolinha passa de 3:1 sobre o trilho, e o trilho passa de 3:1 sobre o fundo, em todo estilo,
   modo e paleta (`switch-idle-thumb.test.ts`).
 
-**O papel da barra.** `sidebarTone` e `topbarTone` valem `neutral`, `surface`, `primary`, `secondary` ou `inverse`, com padrão `neutral`, que devolve o plano de sempre. `palette/tone-plan.ts` dá os papéis e os pares de `PAIRS` de cada tom, nos dois modos. O tom só vale com `colorPalette` válida, e uma cor declarada em `sidebarColor` ou `topbarColor` continua vencendo. Nos tons contrastantes, a barra refaz para os seus descendentes as variáveis de texto, ícone e borda (`chromeToneStyle.ts`), e assim os widgets acompanham o fundo sem token próprio ([[05-cromo-e-slots]] §2.1). Nesses tons, o texto do item ativo é o texto forte da barra, e um `navItemActiveColor` declarado não chega ao item. **Os temas embarcados declaram o tom das barras**, com o item ativo e a borda da Personalidade mais próxima do seu caráter (`themeBars.test.ts`, que guarda o mapa tema → Personalidade). Os sete temas resgatados (§5) fogem do mapa em dois tokens: o item ativo é `bar` e a borda da lateral nunca é `'none'`. A posição da marca não entra nesse mapa: todos os temas a mantêm no topo. A exceção é `sarak-sovereign`, que mantém os padrões do schema (§5.3).
+**O papel da barra.** `sidebarTone` e `topbarTone` valem `neutral`, `surface`, `primary`, `secondary` ou `inverse`, com padrão `neutral`, que devolve o plano de sempre. `palette/tone-plan.ts` dá os papéis e os pares de `PAIRS` de cada tom, nos dois modos. O tom só vale com `colorPalette` válida. Nos tons contrastantes, a barra refaz para os seus descendentes as variáveis de texto, ícone e borda (`chromeToneStyle.ts`), e assim os widgets acompanham o fundo sem token próprio ([[05-cromo-e-slots]] §2.1). Nesses tons, o texto do item ativo é o texto forte da barra, e um `navItemActiveColor` declarado não chega ao item. **Os temas embarcados declaram o tom das barras**, com o item ativo e a borda da Personalidade mais próxima do seu caráter (`themeBars.test.ts`, que guarda o mapa tema → Personalidade). Os sete temas resgatados (§5) fogem do mapa em dois tokens: o item ativo é `bar` e a borda da lateral nunca é `'none'`. A posição da marca não entra nesse mapa: todos os temas a mantêm no topo. A exceção é `sarak-sovereign`, que mantém os padrões do schema (§5.3).
 
-O tom escolhido vence o tom do `config` do host no cálculo, como a paleta escolhida (§4.4.2). Uma cor declarada em `sidebarColor` ou `topbarColor` continua vencendo o tom.
+O tom escolhido vence o tom do `config` do host no cálculo, como a paleta escolhida (§4.4.2).
+
+**O tom escolhido vence a cor declarada da barra.** Sem tom escolhido, a cor que o tema ou o `config` do host declaram para a barra (`sidebarColor`, `topbarColor` e as demais cores da barra que o papel calcula, menos a faixa da marca) vence o tom. A barra tem tom escolhido quando o tom do design difere do que o tema declara para ela no modo pedido; aí o papel escolhido vence essas cores declaradas, ao recompor as escolhas e na troca de modo (`designChoices.ts`: `TONE_DRIVEN_KEYS`, `chosenToneKeys`; `overlayPreferences.ts`). **Quando os dois tons do design são iguais e ao menos um foi escolhido, as duas barras contam como escolhidas**, inclusive a que já tinha esse tom no tema. É o que o controle único de tom do painel grava ([[06-painel-de-customizacao-e-preview]] §2.1.2), e é o que iguala as duas barras num tema que declara tons e cores diferentes (como `sarak-sovereign-classic`). O tema continua podendo declarar tons diferentes nas duas barras; nenhum valor de tema muda por isso.
+
+**Manter minha paleta** ([[027-paleta-do-tema-paleta-por-cima-e-paletas-salvas-no-design]]). `keepPalette` (booleano, funcional, padrão desligado) é escolha do sistema. Desligado, escolher um tema aplica a paleta e as cores que ele declara. Ligado, a paleta escolhida (sem escolha, a vigente) vale por cima de qualquer tema, em toda troca: a composição termina com `applyKeptPalette` (`palette/resolve.ts`), que grava `colorPalette` e toda cor que a paleta calcula, inclusive as que o tema declara. Na troca de modo, a cor declarada pelo tema não volta. O resto do tema fica como ele o declara.
 
 **Os papéis da barra lateral** (`role-map.ts`, no tom `neutral`):
 
@@ -646,6 +650,10 @@ Duplicar (nome `"X (cópia)"`) e Novo tema. A porta recebe `onSave(theme, operat
 **Degradação quando a porta não está configurada:** a ação de salvar não aparece. Não há erro, não há botão
 morto — o consumidor que não implementou `onSave` simplesmente continua com o ciclo de exportar (§4.5).
 
+**Paleta salva não tem porta própria** ([[027-paleta-do-tema-paleta-por-cima-e-paletas-salvas-no-design]]). A lista mora no design do sistema, no token `savedPalettes` (texto, funcional, padrão vazio): cada item é `id|nome|valor` (o `valor` é o `colorPalette` `custom:…`), separados por `~`, e o leitor é `savedPalettesOf` (`palette/savedPalettes.ts`). O nome repetido substitui; o teto é de 24 paletas e de 40 caracteres no nome, com o nome limpo do que abriria string ou bloco numa variável CSS. A validação descarta item inválido (`normalizeSavedPalettes`). A lista vai e volta pelo mesmo `persistence.onSave`/`onLoad` do design (§4.4.2), e no formato de escolhas ([[026-design-gravado-guarda-so-as-escolhas]]) só a lista com itens é gravada. Escolher uma paleta salva é escolher o `valor` dela como `colorPalette`.
+
+**Trocar de tema não apaga as escolhas do sistema que o tema não declara.** `keepPalette` e `savedPalettes` estão em `THEME_PRESERVED_KEYS` (`compose.ts`): o valor do design anterior fica, e também fica quando o tema aplicado traz o padrão do schema para a chave, como faz um tema salvo pelo painel.
+
 ## 4.7 Preferência do usuário — sobreposta ao tema, nunca gravada nele
 
 > A prévia e a galeria do painel também recebem a preferência de modo por cima do rascunho, com a contraparte do tema **do
@@ -663,7 +671,7 @@ não entra no tema que ele salva.
 | Preferência | Valores | O que sobrepõe no tema |
 | --- | --- | --- |
 | modo | claro · escuro · sistema (acompanha a troca do sistema operacional) | o modo — só as chaves que carregam modo (abaixo) |
-| tamanho da fonte | pequeno · médio · grande | `bodySize`, um degrau abaixo ou acima; médio é exatamente a base do tema |
+| tamanho da fonte | pequeno · médio · grande | `bodySize`: pequeno é a base menos `preferenceFontSizeReduction`, grande é a base mais `preferenceFontSizeIncrease` (px, de 0 a 6, padrão 2 cada, piso de 8 px); médio é exatamente a base do tema. O rótulo de `bodySize` é o valor em px |
 | navegação | topo · lateral | `navigationStyle` |
 | navegação recolhida | sim · não | `isNavHidden` |
 | largura da lateral | número, entre `sidebarMinWidth` e `sidebarMaxWidth` | `sidebarWidth`, só com `sidebarResizable` ligado no tema |

@@ -63,15 +63,17 @@ cola que faz a folksonomia funcionar e é o único ponto que precisa de manuten�
 inventa um rótulo novo de categoria. Categoria não reconhecida cai em `'Geral'` (`:18`) — degrada, não
 quebra.
 
-## 2.1 Uma coluna, seis decisões e três níveis
+## 2.1 Uma coluna, sete decisões e três níveis
 
-O painel tem **uma coluna só**, sem seletor de modo. Ela lista **seis decisões**, declaradas em `config/design-decisions.json` e lidas por `utils/decisions.ts`: Tema, Cores, Fontes, Forma, Componentes e Layout. A primeira entrada é o atalho **"Usar minha marca"** (`BrandShortcut`). Cada linha mostra o valor atual e uma marca de alterada.
+O painel tem **uma coluna só**, sem seletor de modo. Ela lista **sete decisões**, declaradas em `config/design-decisions.json` e lidas por `utils/decisions.ts`: Tema, Cores, Fontes, Forma, Componentes, Barras e Layout. A primeira entrada é o atalho **"Usar minha marca"** (`BrandShortcut`). Cada linha mostra o valor atual e uma marca de alterada.
 
 | Nível | O que mostra | Como é derivado |
 | --- | --- | --- |
 | **1. Decisões** | a lista da coluna | `COLUMN_DECISIONS` |
-| **2. Dentro da decisão** | opções visuais com amostra real, em grupos | a entrada da decisão no JSON. A decisão Layout se organiza por pergunta: Onde fica, Como é, O que aparece, Marca e Comportamento |
+| **2. Dentro da decisão** | opções visuais com amostra real, em grupos | a entrada da decisão no JSON. A decisão Barras se organiza por pergunta: Onde fica, Como é, O que aparece, Marca e Comportamento (§2.1.2) |
 | **3. Ajuste fino** | os tokens da decisão, recolhidos com a contagem real, primeiro os de `importance >= 80` e depois "Mostrar todos" | catálogo e `fineMatch` por pergunta, para os tokens sem preset cair sob a pergunta certa |
+
+Os **"Ajustes principais"** de uma decisão com mais de oito controles abrem recolhidos (`MAIN_TOKENS_OPEN_LIMIT`, `ThemeDecisionView.tsx`).
 
 Ao abrir uma decisão, a tela troca na mesma coluna, com voltar. Esc volta. O foco vai ao título ao entrar e à linha ao voltar.
 
@@ -83,10 +85,26 @@ Ao abrir uma decisão, a tela troca na mesma coluna, com voltar. Esc volta. O fo
 
 ### 2.1.1 A seção "Composição da Barra"
 
-Na decisão **Layout**, sob a pergunta **O que aparece**, mora a seção *Composição da Barra*: os **oito** tokens que dizem onde cada widget do cromo aparece — `pinned`, `menu` ou `off` — para modo claro/escuro, tamanho da fonte, navegação topo/lateral, navegação recolhida, idioma, busca, usuário e notificações ([[05-cromo-e-slots]] §2.2.2). Ela nasce da folksonomia como as demais: os oito tokens carregam a categoria `chrome-composition` no catálogo, e o painel a mostra como seção própria do pilar.
+Na decisão **Barras**, sob a pergunta **O que aparece**, mora a seção *Composição da Barra*: os **oito** tokens que dizem onde cada widget do cromo aparece — `pinned`, `menu` ou `off` — para modo claro/escuro, tamanho da fonte, navegação topo/lateral, navegação recolhida, idioma, busca, usuário e notificações ([[05-cromo-e-slots]] §2.2.2). Ela nasce da folksonomia como as demais: os oito tokens carregam a categoria `chrome-composition` no catálogo, e o painel a mostra como seção própria do pilar.
 
 - **Aparece no nível 2.** Os oito não exigem abrir o ajuste fino, e os rótulos falam a língua do usuário: "Mostrar", "No menu" e "Esconder".
 - **É do sistema, não do tema.** Escolher um tema no painel **não** altera essa seção: nenhum tema distribuído declara token de composição.
+- Os dois tokens do tamanho da fonte do usuário, `preferenceFontSizeReduction` e `preferenceFontSizeIncrease` ([[09-temas-e-presets]] §4.7), moram na mesma pergunta.
+
+### 2.1.2 A decisão Barras
+
+A decisão **Barras** fica entre Componentes e Layout e reúne tudo o que é das barras: a orientação, a troca pelo usuário, o tom, os presets de Barra lateral e de Barra de topo, as cinco perguntas e os ajustes finos de barra (item, cores, marcador, rodapé). O **Layout** fica com a largura do conteúdo e o bloco global. Cada token está em uma das duas, nunca nas duas (`tokenScope` `bars`/`notBars`, `utils/barScope.ts`). Na lista, a linha das Barras resume a orientação, o tom e a troca (por exemplo, "Lateral · Invertida · troca no menu").
+
+- **Um tom para as duas barras.** O grupo `barTone` (presets `bar-tone-neutral`, `surface`, `primary`, `secondary` e `inverse`) grava `sidebarTone` e `topbarTone` juntos; o ajuste de uma barra só fica no ajuste fino. Os presets de Barra lateral e de Barra de topo gravam só estrutura (borda, item ativo, densidade, fundo, raio), sem tom. Quem vence a cor declarada pelo tema está em [[09-temas-e-presets]] §4.3.4.
+- **Espiar um tom** passa pelo mesmo cálculo da escolha (`utils/peekWithTones.ts`): a prévia mostra a barra no tom espiado, também num tema que declara a cor da barra.
+- **"O usuário pode trocar entre lateral e topo"** é um interruptor na pergunta Onde fica (`NavigationSwitchControl.tsx`). Desligado grava `off` em `preferenceNavigationStylePosition`; ligado volta ao padrão do token (`menu`), e quem já está em `menu` ou `pinned` fica. Desligado, a escolha some da barra e do ⚙, e a preferência de navegação que o usuário já gravou deixa de valer (continua gravada e volta a valer se o interruptor ligar). A posição `pinned` × `menu` continua na pergunta O que aparece.
+
+### 2.1.3 O painel diz o que o controle faz
+
+- **A preferência pessoal por cima do tema é avisada.** Quando o administrador edita um token que uma preferência dele mesmo sobrepõe (`navigationStyle`, `bodySize`, `mode`, `isNavHidden`, `sidebarWidth`), a linha do controle diz "Sua preferência pessoal (<valor>) está por cima do tema" e oferece apagar só aquela preferência (`DecisionTokenRow.tsx`, `utils/tokenNotes.ts`). O aviso só aparece quando o tema oferece a preferência ([[09-temas-e-presets]] §4.7); a largura, só com `sidebarResizable`. Apagar tira a chave do que o usuário gravou (`storedPreferences`), sem o modo padrão do host. O aviso vale nos controles da decisão; os resultados da busca não o mostram.
+- **Controle que não vale na orientação do rascunho fica desabilitado com o motivo.** O token que declara `interactsWith: ['navigationStyle']` fica num `fieldset` desabilitado quando a orientação do rascunho é a outra.
+- **A largura da lateral mostra o intervalo que vale**: o slider nasce entre o mínimo do token e `sidebarMinWidth`/`sidebarMaxWidth` do dispositivo da prévia, com o texto "Entre X e Y px" (`sidebarWidthRange`).
+- `isNavHidden` se chama **"Navegação recolhida"**: é o que ele faz (a barra fica como trilho de ícones).
 
 ## 2.2 A busca de token — por sentido, não por substring
 
@@ -163,6 +181,16 @@ opcionais (`PaletteCreator`).
 - **O ajuste granular vence a paleta.** Mudar uma cor depois de escolher a paleta grava um valor explícito no `design`.
 - **Trocar de paleta com cor ajustada à mão pergunta.** Só o botão explícito de descartar perde os ajustes; cancelar ou fechar o diálogo
   (Esc, clique fora) mantém o ajuste sobre a paleta nova (`usePaletteSelection`).
+- **"Manter minha paleta"** é um interruptor junto da galeria (`PaletteSection.tsx`), com a descrição do estado. Ligar aplica a paleta
+  vigente por cima das cores que o tema declara; desligar devolve ao rascunho a paleta e as cores do tema atual e preserva o resto
+  (`utils/keepPalette.ts`). A regra está em [[09-temas-e-presets]] §4.3.4.
+- **A galeria é em grupos recolhíveis**: "Minhas paletas" e um grupo por tipo. Só o grupo da paleta escolhida abre, e "Minhas paletas"
+  abre quando a lista cresce (`useOpenGalleryGroups.ts`). O filtro por tipo mostra "Minhas paletas" só em "Todas".
+- **Paleta criada se salva com nome.** O criador tem "Nome da paleta" e "Salvar paleta" (`useSavedPalettes.ts`). Nome repetido pergunta
+  antes de substituir, e apagar pede confirmação. Salvar é rascunho e não escolhe a paleta; o "Aplicar" grava a lista no design do
+  sistema ([[09-temas-e-presets]] §4.6). A paleta salva se escolhe e se espia como as outras. A lista (`savedPalettes`) não aparece
+  como campo na busca nem no ajuste fino.
+- **"Usar minha marca" oferece as paletas salvas** no campo "Paleta da marca", quando há alguma (`BrandShortcut.tsx`, `useBrandForm.ts`).
 
 # 3. Controles polimórficos
 

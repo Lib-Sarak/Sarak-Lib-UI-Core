@@ -86,10 +86,15 @@ Ambas são **escolhas do design do sistema**, e é por isso que o 026 as preserv
   conferir no lote 2: o valor estruturado precisa caber na comparação com o baseline do 026 (igualdade profunda, não por
   referência) e a lista não pode ser tratada como "cor" pela regra L1.
 
-> **Nota de implementação (2026-11-18, plan-164 lote 2).** O dicionário de tokens só aceita valor simples. Por isso a lista é um
+> **Nota de implementação (2026-11-18).** O dicionário de tokens só aceita valor simples. Por isso a lista é um
 > token `string` (`savedPalettes`), com cada item `id|nome|valor` separado por `~` e lido por `savedPalettesOf`. A comparação com o
 > baseline do 026 é por igualdade de texto, não profunda. O teto é de 24 paletas e de 40 caracteres no nome. A decisão (a lista mora
 > no design e passa pelo mesmo `onSave`) não muda.
+>
+> O toggle é o token `keepPalette` (booleano, funcional, padrão desligado). Ligar sem paleta escolhida antes vale a paleta vigente,
+> e ligar já tira do rascunho as cores que o tema declara por cima dela. As duas chaves ficam de pé na troca de tema mesmo quando o
+> tema aplicado traz o padrão do schema para elas, como faz um tema salvo pelo painel. O resultado está em [[09-temas-e-presets]]
+> §4.3.4 e §4.6 e em [[06-painel-de-customizacao-e-preview]] §2.4.
 
 Este ADR **não** muda o formato do 026: acrescenta duas chaves a ele. Se o 026 não for aprovado, as duas chaves continuam
 valendo no formato de hoje (o design completo), sem a regra do baseline.

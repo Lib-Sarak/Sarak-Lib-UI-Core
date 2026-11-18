@@ -49,6 +49,8 @@ filhos (`findActiveNavItemHref`, com `activeRoute` como fallback); sem `navItems
 
 **A barra não rola para o lado.** Só a lista de navegação rola, e na vertical. Topo e rodapé ficam fixos. Recolhida, as preferências viram um ícone só e a busca vira ícone.
 
+**Na topbar, nenhum item fica escondido sem sinal.** A lista não rola: cada item ocupa uma célula medida (`useHorizontalOverflow`), e o que não cabe sai da vista, do foco e do leitor de tela e vai para o botão **"Mais"** (`ShellNavMore`, `data-sarak-nav-more`), no fim da lista. O "Mais" é um grupo como os de cima: balão, setas, Esc, Tab e `aria-expanded`. Um grupo que não coube entra no "Mais" com os filhos, num nível só. Com o item ativo dentro dele, o "Mais" se desenha como ativo.
+
 **`navigationStyle: 'auto'`** resolve por `useNavigationStyle()`: `'topbar'` no design → topbar;
 qualquer outra coisa → sidebar. **Consequência que vale destacar: trocar o TEMA troca a orientação do
 cromo.** O cromo é parte do design, não configuração de código.
@@ -229,15 +231,16 @@ Cada um dos **oito** widgets — modo claro/escuro, tamanho da fonte, navegaçã
 | Posição | O que o usuário final vê |
 | --- | --- |
 | **não oferecida** | nada — vale o valor do sistema |
-| **no menu** | um item dentro do ⚙ *Preferências* |
-| **fixa na barra** | um controle direto na barra. Na topbar ele também aparece dentro do ⚙, quando o ⚙ existe; na lateral, o ⚙ não repete o que já tem controle na barra |
+| **no menu** | uma linha dentro do ⚙ *Preferências*; as escolhas (tamanho da fonte, navegação) são linhas com seleção (`menuitemradio`), não pílulas |
+| **fixa na barra** | um controle direto na barra. Tamanho da fonte e navegação formam um grupo compacto, com a altura de um item de navegação (`ShellPreferenceChoiceGroup`). O ⚙ não repete o que já está fixo na barra visível, nas duas orientações |
 
 **O padrão de fábrica:** busca, usuário, notificações e idioma **fixos na barra**; modo claro/escuro, tamanho da fonte e navegação
 topo/lateral **no menu** ⚙ Preferências; a navegação recolhida **fixa na lateral** (a seta do cabeçalho, §2.1.4) e **no menu** na
 topbar, que por padrão não mostra o ≡. Valor que o sistema já salvou continua valendo. A composição é do **sistema** (o design configurado), **nunca do tema**: nenhum tema distribuído declara token de composição, e por isso escolher um tema no painel **não desfaz** a composição do sistema.
 
 **Regras que fecham o comportamento:**
-- **O ⚙ só nasce quando pelo menos um widget está *no menu*.** Uma barra só com fixados não o faz aparecer — não há botão que abre painel vazio.
+- **O ⚙ só nasce quando pelo menos um widget está *no menu*.** Uma barra só com fixados não o faz aparecer — não há botão que abre painel vazio. Busca, usuário e notificações fixos na barra também não se repetem no ⚙.
+- **O ⚙ é superfície.** As linhas dele leem o texto da superfície, e não o da barra de tom contrastante que o abriu (`ShellPreferencesMenu.tsx`).
 - **Sidebar recolhida:** o ⚙ continua — é um ícone e cabe — e recebe o que é fixado e não tem ícone próprio. Recolher a navegação nunca tira do usuário o acesso a um widget oferecido.
 - **Celular:** tudo o que é oferecido vai para o drawer, fixado ou não, sem ⚙ separado; a navegação recolhida não ganha linha, porque o hambúrguer já é o colapso. Nada some (§2.3).
 - **Duas camadas de controle:** a prop `widgets` do `SarakAppChrome` é do **código** e é o teto — o que o desenvolvedor desligou não volta pelo painel. A posição é do **sistema** e escolhe dentro desse teto.
