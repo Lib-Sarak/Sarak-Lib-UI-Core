@@ -5,9 +5,11 @@ import { DesignOverrideContext } from '../../../../core/Provider/context';
 import { SarakMenuItem } from '../SarakMenuItem';
 import { SarakShellSearchWidget } from '../SarakShellSearchWidget';
 import {
+    HORIZONTAL_MENU_ITEM_CLASSES,
     MENU_ITEM_LINE_HEIGHT,
     MENU_ITEM_TEXT_CLASS,
     VERTICAL_MENU_ITEM_CLASSES,
+    horizontalMenuItemBlockPadding,
     nestedMenuItemIndent,
     verticalMenuItemHeight,
     verticalMenuItemSpacing,
@@ -53,5 +55,19 @@ describe('menuItemMetrics — a fonte única da linha do menu vertical', () => {
         expect(classes).not.toContain('py-2.5');
         expect(classes).toContain('text-2xs');
         expect(classes).not.toContain('text-sm');
+    });
+});
+
+describe('menuItemMetrics — a fonte única do item da barra do topo', () => {
+    it.each(['compact', 'comfortable', 'spacious'] as const)('o respiro vertical de %s sai das classes do item horizontal', (density) => {
+        const py = HORIZONTAL_MENU_ITEM_CLASSES[density].match(/py-([0-9.]+)/)?.[1];
+        expect(toPx(horizontalMenuItemBlockPadding(density))).toBe(Number(py) * 4);
+    });
+
+    it('o SarakMenuItem horizontal usa exatamente essas classes', () => {
+        render(<SarakMenuItem label="Aba" orientation="horizontal" />);
+        HORIZONTAL_MENU_ITEM_CLASSES.comfortable.split(' ').forEach((cls) => {
+            expect(screen.getByRole('button', { name: 'Aba' }).className.split(' ')).toContain(cls);
+        });
     });
 });

@@ -6,8 +6,7 @@ import {
     CATALOG_GRID_3COL,
     PERSONALITY_GRID,
     WIDE_SAMPLE_GRID,
-    THEME_GALLERY_GRID_2COL,
-    THEME_GALLERY_GRID_MIN_WIDTH,
+    THEME_GALLERY_GRID,
     PANEL_SPLIT_COLUMN,
     PANEL_SPLIT_HANDLE,
     PANEL_SPLIT_MIN_WIDTH,
@@ -27,9 +26,9 @@ describe('panelResponsive.presets (plan-35 — container query, não viewport)',
         [CATALOG_GRID, PERSONALITY_GRID, WIDE_SAMPLE_GRID].forEach((value) => expect(value).not.toMatch(/(^|\s)(sm|md|lg|xl):/));
     });
 
-    it('a galeria de temas abre duas colunas quando cabem dois cartões legíveis e o vão', () => {
-        expect(THEME_GALLERY_GRID_MIN_WIDTH).toBe(240);
-        expect(THEME_GALLERY_GRID_2COL).toBe('grid-cols-1 @min-[240px]:grid-cols-2');
+    it('a galeria de temas mede a coluna: três miniaturas por linha na coluna padrão, e nunca pela janela', () => {
+        expect(THEME_GALLERY_GRID).toBe('grid-cols-[repeat(auto-fill,minmax(5.5rem,1fr))]');
+        expect(THEME_GALLERY_GRID).not.toMatch(/(^|\s)(sm|md|lg|xl):/);
     });
 
     it('o painel inteiro mede o contêiner: coluna e prévia lado a lado só a partir do limiar, nunca pela janela', () => {

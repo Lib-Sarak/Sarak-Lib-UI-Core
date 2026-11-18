@@ -80,6 +80,30 @@ const buildPositionToken = (
     defaultValue,
 });
 
+/** Os dois degraus da preferência de tamanho da fonte, em px sobre `bodySize`: quanto P reduz e quanto G aumenta. */
+export const FONT_SIZE_REDUCTION_TOKEN_ID = 'preferenceFontSizeReduction';
+export const FONT_SIZE_INCREASE_TOKEN_ID = 'preferenceFontSizeIncrease';
+
+const buildFontSizeStepToken = (
+    id: string,
+    label: string,
+    description: string,
+    usage: string,
+): NonNullable<ComponentSchema['tokens']>[number] => ({
+    id,
+    kind: 'functional',
+    modeDependent: false,
+    usage,
+    interactsWith: ['bodySize', PREFERENCE_POSITION_TOKEN_IDS.fontSize],
+    label,
+    type: 'slider',
+    description,
+    axis: 'density',
+    unit: 'px',
+    constraints: { min: 0, max: 6, step: 1 },
+    defaultValue: 2,
+});
+
 /**
  * Padrão de fábrica: controles essenciais ficam fixos; escolhas de layout e
  * tipografia ficam agrupadas no menu de preferências.
@@ -123,6 +147,18 @@ export const PreferencesSchema: ComponentSchema = {
             'Preferência: Idioma',
             'Onde a escolha de idioma do usuário final aparece — não oferecida, no menu ⚙, ou fixa na barra.',
             'pinned',
+        ),
+        buildFontSizeStepToken(
+            FONT_SIZE_REDUCTION_TOKEN_ID,
+            'Tamanho da Fonte: Quanto o P Reduz',
+            'Quantos pixels a opção P do usuário final tira do tamanho global das fontes (`bodySize`). Com 2 e base de 14 px, o P entrega 12 px.',
+            'Redução, em px, que a preferência P aplica sobre `bodySize`: P = `bodySize` − este valor (piso de 8 px). Só vale quando a escolha de tamanho da fonte é oferecida ao usuário.',
+        ),
+        buildFontSizeStepToken(
+            FONT_SIZE_INCREASE_TOKEN_ID,
+            'Tamanho da Fonte: Quanto o G Aumenta',
+            'Quantos pixels a opção G do usuário final soma ao tamanho global das fontes (`bodySize`). Com 2 e base de 14 px, o G entrega 16 px.',
+            'Aumento, em px, que a preferência G aplica sobre `bodySize`: G = `bodySize` + este valor. Só vale quando a escolha de tamanho da fonte é oferecida ao usuário.',
         ),
     ],
 };

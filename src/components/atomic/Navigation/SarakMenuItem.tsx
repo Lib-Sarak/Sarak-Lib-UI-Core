@@ -3,7 +3,7 @@ import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import { sarakIsSafeLinkHref, shouldHandleSameTabNavigation } from './linkNavigation';
 import { SarakIcon } from '../Icon/SarakIcon';
 import { useNavigationAppearance } from '../../../core/Provider/useNavigationAppearance';
-import { MENU_ITEM_TEXT_CLASS, VERTICAL_NAV_GAP, resolveVerticalMenuItemClasses } from './menuItemMetrics';
+import { HORIZONTAL_MENU_ITEM_CLASSES, MENU_ITEM_TEXT_CLASS, VERTICAL_NAV_GAP, resolveVerticalMenuItemClasses } from './menuItemMetrics';
 
 export type SarakMenuItemOrientation = 'vertical' | 'horizontal';
 
@@ -91,11 +91,7 @@ export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
     // A métrica vertical vem de `menuItemMetrics`, a fonte única que a busca da barra também lê.
     const densityClasses = isVertical
         ? `${resolveVerticalMenuItemClasses(itemDensity)} ${MENU_ITEM_TEXT_CLASS}`
-        : {
-            compact: 'gap-1 px-3 py-1',
-            comfortable: 'gap-2 px-4 py-1.5',
-            spacious: 'gap-3 px-5 py-2',
-        }[itemDensity];
+        : HORIZONTAL_MENU_ITEM_CLASSES[itemDensity];
     const base = isVertical
         ? `relative flex items-center w-full min-w-0 rounded-[var(--sarak-nav-item-radius,12px)] font-normal normal-case tracking-normal transition-colors ${densityClasses}`
         : `relative inline-flex items-center justify-center shrink-0 min-w-0 rounded-[var(--sarak-nav-item-radius,12px)] text-sm font-light normal-case tracking-normal transition-colors ${densityClasses}`;

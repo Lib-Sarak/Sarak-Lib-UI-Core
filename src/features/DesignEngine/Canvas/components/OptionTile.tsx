@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { OptionSampleFrame, SAMPLE_FRAME_HEIGHT } from './OptionSampleFrame';
 import { usePeekHandlers, type PeekHandler, type PeekTokens } from './peek';
 
@@ -13,6 +13,12 @@ interface OptionTileProps {
     sampleShape?: 'frame' | 'square';
     /** A altura do quadro de referência (`frame`); a amostra baixa pede menos que o padrão. */
     frameHeight?: number;
+    /** A largura do quadro de referência (`frame`); a miniatura de um tema desenha o app inteiro e pede mais que o padrão. */
+    frameWidth?: number;
+    /** Atributos do botão da opção (o alvo estável de teste do tema, `aria-busy`); a opção em si não os conhece. */
+    buttonProps?: Record<string, string>;
+    /** A opção que nasce sob o ponteiro (o cartão que trocou o pendente) espia sem esperar o mouse se mexer. */
+    peekWhenMounted?: boolean;
     /** A amostra desenhada com os componentes reais. É só para ver: o toque e o teclado vão no botão da opção. */
     children: React.ReactNode;
 }
@@ -22,8 +28,9 @@ interface OptionTileProps {
  * botão transparente por cima de tudo. O botão separado existe porque a amostra tem botões e campos reais, e botão dentro
  * de botão não é HTML válido. Não sabe onde está: serve a toda grade de opções do painel.
  */
-export const OptionTile: React.FC<OptionTileProps> = ({ name, description, onApply, peekTokens, onPeek, sampleShape = 'frame', frameHeight = SAMPLE_FRAME_HEIGHT.default, children }) => {
-    const peek = usePeekHandlers(onPeek, peekTokens);
+export const OptionTile: React.FC<OptionTileProps> = ({ name, description, onApply, peekTokens, onPeek, sampleShape = 'frame', frameHeight = SAMPLE_FRAME_HEIGHT.default, frameWidth, buttonProps, peekWhenMounted = false, children }) => {
+    const button = useRef<HTMLButtonElement>(null);
+    const peek = usePeekHandlers(onPeek, peekTokens, peekWhenMounted ? button : undefined);
     return (
         <div
             data-option-tile=""
@@ -34,7 +41,7 @@ export const OptionTile: React.FC<OptionTileProps> = ({ name, description, onApp
             <div aria-hidden="true" className="pointer-events-none">
                 {sampleShape === 'square'
                     ? <div data-option-sample="" className="aspect-square w-full overflow-hidden">{children}</div>
-                    : <OptionSampleFrame height={frameHeight}>{children}</OptionSampleFrame>}
+                    : <OptionSampleFrame height={frameHeight} width={frameWidth}>{children}</OptionSampleFrame>}
             </div>
             <div className="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5">
                 <h3 className="break-words text-xs font-semibold leading-tight text-theme-text">{name}</h3>
@@ -44,6 +51,8 @@ export const OptionTile: React.FC<OptionTileProps> = ({ name, description, onApp
                 type="button"
                 onClick={onApply}
                 aria-label={name}
+                ref={button}
+                {...buttonProps}
                 // `p-0` é a exceção do CSS global `button:hover`/`button:active`, que pintaria o botão transparente de ciano e o moveria.
                 className="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
             />

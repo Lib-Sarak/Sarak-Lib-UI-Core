@@ -6,8 +6,7 @@
  * breakpoint deve morar quando cresce, mesmo idioma de `useStructuralStyles.presets.ts`).
  *
  * As grades dos subcatálogos medem a coluna: o número de colunas sai da largura dela, e cada opção tem pelo menos 8,5 rem
- * (5,5 rem nas Personalidades). A grade de temas começa quando cabem dois cartões
- * de 112 px com o vão de 16 px. Todos medem o container, nunca a janela.
+ * (5,5 rem nas Personalidades e nos temas). Todos medem o container, nunca a janela.
  *
  * As classes são escritas LITERAL de propósito: o scanner do Tailwind v4 lê o
  * arquivo como TEXTO — uma classe montada por interpolação de template literal nunca vira
@@ -22,10 +21,11 @@ export const CATALOG_GRID_3COL = CATALOG_GRID;
 export const WIDE_SAMPLE_GRID = 'grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]';
 /** A grade das Personalidades: quadrados menores que as demais opções. */
 export const PERSONALITY_GRID = 'grid-cols-[repeat(auto-fill,minmax(5.5rem,1fr))]';
-export const THEME_GALLERY_CARD_MIN_WIDTH = 112;
-export const THEME_GALLERY_GRID_GAP = 16;
-export const THEME_GALLERY_GRID_MIN_WIDTH = THEME_GALLERY_CARD_MIN_WIDTH * 2 + THEME_GALLERY_GRID_GAP;
-export const THEME_GALLERY_GRID_2COL = 'grid-cols-1 @min-[240px]:grid-cols-2';
+/**
+ * A grade da galeria de temas: a miniatura é o sistema inteiro reduzido, então cabem três por linha na coluna padrão (duas
+ * quando ela estreita). 5,5 rem dá ao nome, em duas ou três linhas, a largura da palavra mais longa dos temas embarcados.
+ */
+export const THEME_GALLERY_GRID = 'grid-cols-[repeat(auto-fill,minmax(5.5rem,1fr))]';
 
 /**
  * O painel inteiro (coluna de decisões + prévia) também mede o seu CONTÊINER: acima de `PANEL_SPLIT_MIN_WIDTH`

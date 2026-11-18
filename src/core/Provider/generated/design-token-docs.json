@@ -181,7 +181,7 @@
    "label": "Tamanho Global das Fontes",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Tamanho da fonte do `body` (12 a 20 px): todo texto que herda dele muda, e as alturas do cromo acompanham. A preferência de tamanho do usuário (P/M/G) soma-se a este valor."
+   "usage": "Tamanho da fonte do `body` (12 a 20 px): todo texto que herda dele muda, e as alturas do cromo acompanham. A preferência de tamanho do usuário (P/M/G) parte deste valor: o P reduz `preferenceFontSizeReduction` px e o G soma `preferenceFontSizeIncrease` px."
   },
   {
    "id": "bodyWeight",
@@ -2556,12 +2556,36 @@
    ]
   },
   {
+   "id": "preferenceFontSizeIncrease",
+   "group": "preferences",
+   "label": "Tamanho da Fonte: Quanto o G Aumenta",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Aumento, em px, que a preferência G aplica sobre `bodySize`: G = `bodySize` + este valor. Só vale quando a escolha de tamanho da fonte é oferecida ao usuário.",
+   "interactsWith": [
+    "bodySize",
+    "preferenceFontSizePosition"
+   ]
+  },
+  {
    "id": "preferenceFontSizePosition",
    "group": "preferences",
    "label": "Preferência: Tamanho da Fonte",
    "kind": "functional",
    "modeDependent": false,
    "usage": "Posição da escolha de tamanho da fonte (P/M/G): fixa, no menu de preferências ou não oferecida."
+  },
+  {
+   "id": "preferenceFontSizeReduction",
+   "group": "preferences",
+   "label": "Tamanho da Fonte: Quanto o P Reduz",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Redução, em px, que a preferência P aplica sobre `bodySize`: P = `bodySize` − este valor (piso de 8 px). Só vale quando a escolha de tamanho da fonte é oferecida ao usuário.",
+   "interactsWith": [
+    "bodySize",
+    "preferenceFontSizePosition"
+   ]
   },
   {
    "id": "preferenceLanguagePosition",

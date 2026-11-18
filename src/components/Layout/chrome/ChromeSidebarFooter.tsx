@@ -59,8 +59,8 @@ export const ChromeSidebarFooter: React.FC<ChromeSidebarFooterProps> = (props) =
                 >
                     {showControls && (
                         <div className="flex flex-col" style={{ gap: VERTICAL_NAV_GAP }}>
-                            {showFontSize && <ShellFontSizeControl />}
-                            {showNavigationStyle && <ShellNavigationStyleControl />}
+                            {showFontSize && <ShellFontSizeControl orientation="vertical" />}
+                            {showNavigationStyle && <ShellNavigationStyleControl orientation="vertical" />}
                         </div>
                     )}
                     {!collapsed && showLanguage && <SarakShellLanguageSelector variant="vertical" />}

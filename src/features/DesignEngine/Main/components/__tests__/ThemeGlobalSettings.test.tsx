@@ -18,7 +18,9 @@ describe('ThemeGlobalSettings', () => {
     });
 });
 
-// Spec 05 §2.2.1 — o painel oferece a posição das 5 preferências.
+// Spec 05 §2.2.1 — o painel oferece a posição das 5 preferências. Os dois degraus de P e G são sliders, não posições.
+const POSITION_TOKENS = PreferencesSchema.tokens.filter((token) => token.type === 'select');
+
 describe('ThemeGlobalSettings — seção "Barra de Preferências do Usuário"', () => {
     const baseProps = () => ({
         globalComponent: { id: 'global', label: 'Global', tokens: [] },
@@ -32,12 +34,12 @@ describe('ThemeGlobalSettings — seção "Barra de Preferências do Usuário"',
     it('lista as 5 preferências, cada uma com as 3 posições oferecidas', () => {
         renderSettings(baseProps());
         expect(screen.getByRole('heading', { name: 'Barra de Preferências do Usuário' })).toBeInTheDocument();
-        PreferencesSchema.tokens.forEach((token) => {
+        POSITION_TOKENS.forEach((token) => {
             expect(screen.getByRole('combobox', { name: token.label })).toBeInTheDocument();
         });
         // As 3 posições aparecem como opção em cada select — pega o primeiro select.
         const selects = screen.getAllByRole('combobox');
-        expect(selects).toHaveLength(PreferencesSchema.tokens.length);
+        expect(selects).toHaveLength(POSITION_TOKENS.length);
         expect(screen.getAllByText('Esconder').length).toBeGreaterThan(0);
         expect(screen.getAllByText('No menu').length).toBeGreaterThan(0);
         expect(screen.getAllByText('Mostrar').length).toBeGreaterThan(0);
@@ -75,7 +77,7 @@ describe('ThemeGlobalSettings — tokens que a decisão já mostra por pergunta'
         renderSettings({ ...base(), omitTokenIds: new Set([omitted]) });
         const omittedLabel = PreferencesSchema.tokens.find((token) => token.id === omitted)!.label;
         expect(screen.queryByRole('combobox', { name: omittedLabel })).toBeNull();
-        expect(screen.getAllByRole('combobox')).toHaveLength(PreferencesSchema.tokens.length - 1);
+        expect(screen.getAllByRole('combobox')).toHaveLength(POSITION_TOKENS.length - 1);
     });
 
     it('com todas as preferências omitidas a seção some inteira, sem título solto', () => {

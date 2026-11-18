@@ -51,3 +51,13 @@ describe('ShellNavigationStyleControl — idioma que vale', () => {
         expect(screen.getByRole('button', { name: 'Top' })).toBeInTheDocument();
     });
 });
+
+describe('ShellNavigationStyleControl — variante menu', () => {
+    it('vira linhas de menu com a orientação do tema marcada, e clicar grava a PREFERÊNCIA', () => {
+        mockDesign = { navigationStyle: 'topbar' };
+        render(<ShellNavigationStyleControl variant="menu" />);
+        expect(screen.getByRole('menuitemradio', { name: 'Topo' })).toHaveAttribute('aria-checked', 'true');
+        fireEvent.click(screen.getByRole('menuitemradio', { name: 'Lateral' }));
+        expect(updatePreferencesMock).toHaveBeenCalledWith({ navigationStyle: 'sidebar' });
+    });
+});

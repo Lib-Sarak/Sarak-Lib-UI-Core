@@ -9,10 +9,11 @@ import { TypographyCatalog } from './TypographyCatalog';
 import { ButtonsCatalog } from './ButtonsCatalog';
 import { InputsCatalog } from './InputsCatalog';
 import { PresetGroupCatalog } from './PresetGroupCatalog';
-import { PresetCard } from './PresetCard';
+import { PresetCard, MINIATURE_STILL_CSS } from './PresetCard';
+import { SarakStyle } from '../../../../core/Provider/components/SarakStyle';
 import { PresetCardPending } from './PresetCardPending';
 import { useCatalogThemes } from './useCatalogThemes';
-import { THEME_GALLERY_GRID_2COL } from '../panelResponsive.presets';
+import { THEME_GALLERY_GRID } from '../panelResponsive.presets';
 import type { PeekHandler } from './peek';
 import { peekScreenOf } from '../../utils/decisions';
 
@@ -68,8 +69,9 @@ const ThemesGallery: React.FC<ThemesGalleryProps> = ({ onApplyPreset, onApplyFul
     };
 
     return (
-        <div className={`grid ${THEME_GALLERY_GRID_2COL} gap-4`}>
-            {rows.map(({ entry, theme }, i) => (theme ? (
+        <div className={`grid ${THEME_GALLERY_GRID} gap-3`}>
+            <SarakStyle dangerouslySetInnerHTML={{ __html: MINIATURE_STILL_CSS }} />
+            {rows.map(({ entry, theme }) => (theme ? (
                 <PresetCard
                     key={entry.id}
                     theme={theme}
@@ -77,7 +79,6 @@ const ThemesGallery: React.FC<ThemesGalleryProps> = ({ onApplyPreset, onApplyFul
                     onApply={() => applyTheme(theme)}
                     peekTokens={() => themePayload(theme)}
                     onPeek={onPeek}
-                    index={i}
                 />
             ) : (
                 // Escolhido antes de chegar: carrega e só então aplica — o tema

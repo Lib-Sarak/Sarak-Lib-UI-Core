@@ -39,16 +39,17 @@ describe('renderShellPreferenceRow — dispatcher do ⚙ Preferências / drawer 
         expect(screen.getByText('Expandir navegação')).toBeInTheDocument();
     });
 
-    it('fontSize: linha com label "Tamanho da fonte" e o segmented control (P/M/G)', () => {
+    it('fontSize: linhas de menu com seleção (Pequena/Média/Grande), não pílulas', () => {
         renderRow(renderShellPreferenceRow('fontSize', ctx()));
-        expect(screen.getByText('Tamanho da fonte')).toBeInTheDocument();
         expect(screen.getByRole('group', { name: 'Tamanho da fonte' })).toBeInTheDocument();
+        expect(screen.getAllByRole('menuitemradio').map((row) => row.textContent)).toEqual(['Pequena', 'Média', 'Grande']);
+        expect(screen.queryByRole('button', { pressed: true })).toBeNull();
     });
 
-    it('navigationStyle: linha com label "Navegação" e o segmented control (Topo/Lateral)', () => {
+    it('navigationStyle: linhas de menu com seleção (Lateral/Topo), não pílulas', () => {
         renderRow(renderShellPreferenceRow('navigationStyle', ctx()));
-        expect(screen.getByText('Navegação')).toBeInTheDocument();
         expect(screen.getByRole('group', { name: 'Estilo de navegação' })).toBeInTheDocument();
+        expect(screen.getAllByRole('menuitemradio').map((row) => row.textContent)).toEqual(['Lateral', 'Topo']);
     });
 
     it('language: linha do ShellLanguageSelector (variante vertical) — não monta sem 2+ idiomas habilitados', () => {

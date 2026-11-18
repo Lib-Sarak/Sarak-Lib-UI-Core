@@ -1,44 +1,134 @@
-import React, { useMemo, useRef } from 'react';
-import { motion } from 'framer-motion';
+import React, { useMemo } from 'react';
+import { SarakAppChrome, type SarakNavItem } from '../../../../components/Layout/SarakAppChrome';
+import { SarakCard } from '../../../../components/atomic/Cards/SarakCard';
+import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
+import { DesignOverrideContext } from '../../../../core/Provider/SarakUIProvider';
 import { SarakThemePreset } from '../../../../core/Design/presets/themes';
 import { resolveThemeForMode } from '../../../../core/Design/presets/themes/color-engine';
 import { withThemePalette } from '../../../../core/Design/presets/themes/compose';
 import type { SarakTokenValue } from '../../../../core/Design/types';
-import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
-import { sarakGetDefaultDesignState } from '../../../../core/Design/master-map';
-import { Layout, ArrowRight } from 'lucide-react';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import type { SarakDesignState } from '../../../../core/Provider/types';
-import { THUMBNAIL_GRID_TEXTURE_SIZE, THUMBNAIL_SHADOW_BLUR, THUMBNAIL_SHADOW_OFFSET_Y, THUMBNAIL_SHADOW_SPREAD } from './presetCardGeometry';
-import { usePeekHandlers, type PeekHandler } from './peek';
+import { LazyWhenVisible } from './LazyWhenVisible';
+import { OptionTile } from './OptionTile';
+import { BAR_WIDGETS_OFF } from './PresetGroupCatalog';
+import type { PeekHandler } from './peek';
 
-const TOKEN_DEFAULTS = sarakGetDefaultDesignState();
-const FALLBACK_RADIUS = 'var(--sarak-card-radius, 10px)';
+/** O quadro de referência da miniatura de um tema, em px de tela: o tamanho em que o sistema é desenhado antes de a opção o reduzir. */
+export const THEME_FRAME = { width: 640, height: 400 } as const;
 
-/** Valor de token em CSS para a miniatura: o ponto `desk` de um token responsivo, e `px` num número. */
-const toCssLength = (value: SarakTokenValue | undefined, fallback: string): string => {
-    const raw = value !== null && typeof value === 'object' ? value.desk : value;
-    if (typeof raw === 'number') return `${raw}px`;
-    return raw === undefined || raw === '' ? fallback : String(raw);
+const SCOPE_INK: React.CSSProperties = { color: 'var(--sarak-text-main)', backgroundColor: 'var(--sarak-bg-base)' };
+/** A classe do escopo de toda miniatura; é por ela que a regra abaixo a alcança. */
+const MINIATURE_CLASS = 'sarak-theme-miniature';
+/**
+ * A miniatura é uma figura parada: o tema pode trazer animação sem fim (pulso do cartão, cintilar de estrelas, deriva da
+ * atmosfera), e ela, repetida em vinte miniaturas, recalcula o estilo a cada quadro enquanto a galeria está aberta.
+ * A galeria escreve esta regra uma vez, sem `!important`: ela fica fora de qualquer camada, e o CSS fora de camada vence o das camadas.
+ */
+export const MINIATURE_STILL_CSS = `.${MINIATURE_CLASS},.${MINIATURE_CLASS}::before,.${MINIATURE_CLASS}::after,.${MINIATURE_CLASS} *,.${MINIATURE_CLASS} *::before,.${MINIATURE_CLASS} *::after{animation:none;transition:none}`;
+const noop = (): void => undefined;
+const BAR_HEIGHTS = [40, 70, 30, 90, 50, 80, 60];
+
+/** Marca de amostra neutra: um quadrado na cor primária do tema. */
+const SampleLogo: React.FC = () => (
+    <span aria-hidden="true" className="block aspect-square rounded-[var(--sarak-card-radius,10px)]" style={{ height: 'var(--sarak-shell-brand-logo-size, 32px)', backgroundColor: 'var(--theme-primary)' }} />
+);
+
+/** O conteúdo do sistema da miniatura: três cartões de métrica e um de gráfico, só com as variáveis do escopo (o tema aplicado inteiro). */
+const ThemeContent: React.FC = () => {
+    const text = useLibraryText();
+    return (
+        <div aria-hidden="true" className="flex h-full w-full flex-col gap-4 p-5">
+            <div className="flex flex-col gap-1.5">
+                <span className="block h-3 w-1/3 rounded-full" style={{ backgroundColor: 'var(--sarak-text-main)', opacity: 0.6 }} />
+                <span className="block h-2 w-1/4 rounded-full" style={{ backgroundColor: 'var(--sarak-text-main)', opacity: 0.25 }} />
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+                {[0, 1, 2].map((index) => (
+                    <SarakCard key={index}>
+                        <SarakCard.Body>
+                            <span className="block h-2 w-3/5 rounded-full" style={{ backgroundColor: 'var(--sarak-text-main)', opacity: 0.25 }} />
+                            <p className="mt-2 text-2xl font-bold">{text('fontSampleNumber')}</p>
+                        </SarakCard.Body>
+                    </SarakCard>
+                ))}
+            </div>
+            <SarakCard className="flex-1">
+                <SarakCard.Body>
+                    <div className="flex h-full items-end gap-2">
+                        {BAR_HEIGHTS.map((height, index) => <span key={index} className="block flex-1 rounded-t-sm" style={{ height: `${height}%`, backgroundColor: 'var(--theme-primary)', opacity: 0.55 + index * 0.06 }} />)}
+                    </div>
+                </SarakCard.Body>
+            </SarakCard>
+        </div>
+    );
 };
 
-const isDefaultCorner = (value: SarakTokenValue, defaultValue: SarakTokenValue): boolean => {
-    if (typeof value === 'object' && typeof defaultValue === 'object') {
-        return value.mob === defaultValue.mob && value.tab === defaultValue.tab && value.desk === defaultValue.desk;
-    }
-    return value === defaultValue;
+/**
+ * O escopo de variáveis da miniatura, enxuto: as variáveis do tema e o contexto de design para os componentes de dentro, e nada
+ * do que o `SarakDesignScope` guarda para uma tela viva (a marca de troca de tema, o fundo, o CSS responsivo). Uma figura parada
+ * não precisa deles, e um escopo completo por miniatura fazia trocar o tema do painel recalcular o estilo dezenas de vezes.
+ */
+const MiniatureScope: React.FC<{ design: SarakDesignState; children: React.ReactNode }> = ({ design, children }) => {
+    const { variables, attributes } = useDesignVariables(design as unknown as Record<string, unknown>);
+    return (
+        <DesignOverrideContext.Provider value={design}>
+            <div className={`sarak-design-scope ${MINIATURE_CLASS} ${design.mode || 'dark'}`} style={{ width: '100%', height: '100%', ...variables, ...SCOPE_INK, position: 'relative' }} {...attributes}>
+                {children}
+            </div>
+        </DesignOverrideContext.Provider>
+    );
 };
 
-/** O canto é exceção do raio mestre: só vale quando o tema o declara com valor diferente do padrão. */
-const cornerRadius = (design: Record<string, SarakTokenValue>, cornerId: string): string => {
-    const declared = design[cornerId] !== undefined && !isDefaultCorner(design[cornerId], TOKEN_DEFAULTS[cornerId]);
-    return toCssLength(declared ? design[cornerId] : design.cardBorderRadius, FALLBACK_RADIUS);
-};
+interface ThemeMiniatureProps {
+    theme: SarakThemePreset;
+    currentMode: string;
+}
+
+/**
+ * O sistema desenhado com o tema aplicado inteiro: o cromo real (a barra lateral ou a de topo que o tema declara) e cartões reais.
+ * Só monta quando a opção entra na área visível (`LazyWhenVisible`), e é aqui, não no cartão, que a paleta é resolvida:
+ * resolver custa de 5 a 19 ms por tema, e uma galeria longa não paga isso pelas miniaturas que ninguém viu.
+ */
+const ThemeMiniature: React.FC<ThemeMiniatureProps> = React.memo(({ theme, currentMode }) => {
+    const text = useLibraryText();
+    const design = useMemo(() => ({
+        ...BAR_WIDGETS_OFF,
+        ...withThemePalette(resolveThemeForMode(
+            { design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte },
+            currentMode as 'light' | 'dark',
+        )),
+        globalBackgroundImageUrl: undefined,
+    }) as unknown as SarakDesignState, [theme.design, theme.contraparte, currentMode]);
+    const navItems = useMemo<SarakNavItem[]>(() => [
+        { id: 'home', label: text('barSampleHome'), href: '#home', icon: 'Home' },
+        { id: 'sales', label: text('barSampleSales'), href: '#sales', icon: 'Briefcase' },
+        { id: 'orders', label: text('barSampleOrders'), href: '#orders', icon: 'FileText', active: true },
+    ], [text]);
+    return (
+        <MiniatureScope design={design}>
+            <div data-testid="theme-miniature" style={{ width: THEME_FRAME.width, height: THEME_FRAME.height, transform: 'translateZ(0)' }}>
+                <SarakAppChrome
+                    brand={{ name: text('barSampleBrand') }}
+                    logo={<SampleLogo />}
+                    navItems={navItems}
+                    user={{ name: text('barSampleUser') }}
+                    logout={noop}
+                    onNavigate={noop}
+                    style={{ height: '100%' }}
+                >
+                    <ThemeContent />
+                </SarakAppChrome>
+            </div>
+        </MiniatureScope>
+    );
+});
+ThemeMiniature.displayName = 'ThemeMiniature';
 
 interface PresetCardProps {
     theme: SarakThemePreset;
     currentMode: string;
     onApply: () => void;
-    index: number;
     /** Os tokens que a espiada compõe por cima do rascunho; omitido, o tema não espia. */
     peekTokens?: () => Partial<SarakDesignState> | null;
     onPeek?: PeekHandler;
@@ -46,176 +136,24 @@ interface PresetCardProps {
 
 const noTokens = (): null => null;
 
-export const PresetCard = ({ theme, currentMode, onApply, index, peekTokens, onPeek }: PresetCardProps) => {
-    const root = useRef<HTMLButtonElement>(null);
-    const peek = usePeekHandlers(onPeek, peekTokens ?? noTokens, root);
-    // plan-26: a miniatura reflete o que `onApply` REALMENTE aplicaria — a
-    // contraparte AUTORADA quando existe, e só cai no `syncThemeWithMode`
-    // sintetizado para os temas legados sem contraparte.
-    // Resolver a paleta custa de 5 a 19 ms por tema: só refaz quando o tema ou o modo mudam, não a cada render do painel.
-    const design = useMemo(() => withThemePalette(resolveThemeForMode(
-        { design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte },
-        currentMode as 'light' | 'dark',
-    )), [theme.design, theme.contraparte, currentMode]);
-    const { variables } = useDesignVariables(design);
-
-    const primary = String(design.primaryColor || 'var(--color-theme-primary, #19e3f0)');
-    const secondary = String(design.secondaryColor || 'var(--color-theme-secondary, #7c5cff)');
-    const bgBase = String(design.surfaceColor || 'var(--color-theme-bg, #06080d)');
-    const isLight = design.mode === 'light';
-
-    const borderWidth = toCssLength(design.cardBorderWidth, 'var(--sarak-border-width, 1px)');
-    const cardStyle = {
-        backgroundColor: String(design.cardBackgroundColor || (isLight ? 'color-mix(in srgb, var(--color-theme-text) 70%, transparent)' : 'color-mix(in srgb, var(--color-theme-text) 5%, transparent)')),
-        borderTopWidth: variables['--sarak-card-border-top'] || borderWidth,
-        borderRightWidth: variables['--sarak-card-border-right'] || borderWidth,
-        borderBottomWidth: variables['--sarak-card-border-bottom'] || borderWidth,
-        borderLeftWidth: variables['--sarak-card-border-left'] || borderWidth,
-        borderColor: String(design.cardBorderColor || (isLight ? 'color-mix(in srgb, var(--color-theme-body) 10%, transparent)' : 'color-mix(in srgb, var(--color-theme-text) 10%, transparent)')),
-        borderStyle: variables['--sarak-border-style'] || 'solid',
-        borderTopLeftRadius: cornerRadius(design, 'cardRadiusTL'),
-        borderTopRightRadius: cornerRadius(design, 'cardRadiusTR'),
-        borderBottomRightRadius: cornerRadius(design, 'cardRadiusBR'),
-        borderBottomLeftRadius: cornerRadius(design, 'cardRadiusBL'),
-        backdropFilter: `blur(${variables['--sarak-card-backdrop-blur'] || 'var(--sarak-card-backdrop-blur, 12px)'})`,
-        boxShadow: design.cardShadow && design.cardShadow !== 'none'
-            ? design.cardShadow
-            : design.cardShadowSpread
-                // `cardShadowSpread` é a OPACIDADE da sombra em % (o schema e o `.sarak-card` leem assim), não um desfoque em px.
-                ? `0 ${THUMBNAIL_SHADOW_OFFSET_Y} ${THUMBNAIL_SHADOW_BLUR} ${THUMBNAIL_SHADOW_SPREAD} color-mix(in srgb, ${design.cardGlowColor || 'var(--color-theme-body)'} ${Math.min(100, Number(design.cardShadowSpread))}%, transparent)`
-                : `0 ${THUMBNAIL_SHADOW_OFFSET_Y} ${THUMBNAIL_SHADOW_BLUR} ${THUMBNAIL_SHADOW_SPREAD} color-mix(in srgb, var(--color-theme-body) 50%, transparent)`,
-        clipPath: variables['--sarak-card-clip-path']
-    };
-
-    const textureLayer = design.cardTextureType && design.cardTextureType !== 'none' ? (
-        <div
-            className="absolute inset-0 pointer-events-none opacity-50"
-            style={{
-                backgroundImage: design.cardTextureType === 'grid'
-                    ? 'linear-gradient(to right, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px)), linear-gradient(to bottom, var(--border-color,rgba(255,255,255,0.09)) var(--sarak-border-width, 1px), transparent var(--sarak-border-width, 1px))'
-                    : design.cardTextureType === 'noise'
-                        ? 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")'
-                        : 'none',
-                backgroundSize: design.cardTextureType === 'grid' ? `${THUMBNAIL_GRID_TEXTURE_SIZE} ${THUMBNAIL_GRID_TEXTURE_SIZE}` : 'auto'
-            }}
-        />
-    ) : null;
-
-    return (
-        <motion.button
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            onClick={onApply}
-            ref={root}
-            data-theme-id={theme.id}
-            {...peek}
-            className="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden sarak-card hover:bg-theme-sidebar transition-all duration-[var(--sarak-motion-dur-normal,0.3s)] hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
-        >
-            {/* Top Showcase Area - Mini Dashboard */}
-            <div
-                className="h-48 w-full relative flex transition-colors overflow-hidden"
-                style={{ backgroundColor: bgBase, ...(variables as React.CSSProperties) }}
-            >
-                {/* Mini Shell Navigation */}
-                {design.navigationStyle === 'sidebar' ? (
-                    <div className="h-full w-8 flex flex-col items-center py-3 gap-2 border-r z-10 shrink-0 shadow-xl" style={{ borderColor: cardStyle.borderColor as string, backgroundColor: cardStyle.backgroundColor as string }}>
-                        <div className="w-4 h-4 rounded-sm mb-3 shadow-lg" style={{ backgroundColor: primary }} />
-                        <div className="w-3 h-0.5 rounded-full bg-theme-text/20" />
-                        <div className="w-3 h-0.5 rounded-full bg-theme-text/20" />
-                        <div className="w-3 h-0.5 rounded-full bg-theme-text/20" />
-                    </div>
-                ) : (
-                    <div className="absolute top-0 left-0 w-full h-6 flex items-center px-4 gap-3 border-b z-10 shadow-xl" style={{ borderColor: cardStyle.borderColor as string, backgroundColor: cardStyle.backgroundColor as string }}>
-                        <div className="w-4 h-4 rounded-sm shadow-lg" style={{ backgroundColor: primary }} />
-                        <div className="w-12 h-0.5 rounded-full bg-theme-text/20" />
-                        <div className="flex-1" />
-                        <div className="w-3 h-3 rounded-full bg-theme-text/20" />
-                    </div>
-                )}
-
-                {/* Mini Content Area */}
-                <div className={`flex-1 flex flex-col p-4 gap-3 relative z-0 ${design.navigationStyle === 'topbar' ? 'mt-6' : ''}`}>
-                    {/* Header Title */}
-                    <div className="flex flex-col gap-1 mb-1">
-                        <div className="h-2 w-24 bg-theme-text/50 rounded-full" />
-                        <div className="h-1.5 w-16 bg-theme-text/20 rounded-full" />
-                    </div>
-
-                    {/* Mini Grid Layout */}
-                    <div className="flex-1 flex flex-col gap-3">
-                        {/* Top Row: 3 cards */}
-                        <div className="flex gap-3 h-[45%]">
-                            {/* Card 1: Text */}
-                            <div className="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all" style={cardStyle as React.CSSProperties}>
-                                {textureLayer}
-                                <div className="h-1.5 w-10 bg-theme-text/20 rounded-full relative z-10" />
-                                <div className="h-2.5 w-16 bg-theme-text/60 rounded-full mt-auto relative z-10" />
-                            </div>
-
-                            {/* Card 2: Filter/Toggles */}
-                            <div className="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all" style={cardStyle as React.CSSProperties}>
-                                {textureLayer}
-                                <div className="h-1.5 w-12 bg-theme-text/20 rounded-full mb-1 relative z-10" />
-                                <div className="flex items-center justify-between mt-auto relative z-10">
-                                    <div className="h-1 w-10 bg-theme-text/20 rounded-full" />
-                                    <div className="w-4 h-2 rounded-full" style={{ backgroundColor: primary }} />
-                                </div>
-                                <div className="flex items-center justify-between relative z-10 mt-1">
-                                    <div className="h-1 w-8 bg-theme-text/20 rounded-full" />
-                                    <div className="w-4 h-2 rounded-full bg-theme-text/10" />
-                                </div>
-                            </div>
-
-                            {/* Card 3: Status */}
-                            <div className="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all" style={cardStyle as React.CSSProperties}>
-                                {textureLayer}
-                                <div className="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,1px)] border-t-transparent relative z-10" style={{ borderColor: `${secondary} transparent ${secondary} ${secondary}` }} />
-                            </div>
-                        </div>
-
-                        {/* Bottom Row: 2 cards */}
-                        <div className="flex gap-3 h-[55%]">
-                            {/* Card 4: Bar Chart */}
-                            <div className="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all" style={cardStyle as React.CSSProperties}>
-                                {textureLayer}
-                                <div className="h-1.5 w-16 bg-theme-text/20 rounded-full mb-auto relative z-10" />
-                                <div className="flex items-end justify-between gap-1 h-8 px-1 relative z-10 mt-2">
-                                    {[40, 70, 30, 90, 50, 80, 60, 45].map((h, i) => (
-                                        <div key={i} className="w-full rounded-t-[var(--border-color,rgba(255,255,255,0.09))]" style={{ height: `${h}%`, backgroundColor: primary, opacity: 0.7 + (i * 0.03) }} />
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Card 5: Logs */}
-                            <div className="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all" style={cardStyle as React.CSSProperties}>
-                                {textureLayer}
-                                <div className="h-1.5 w-12 bg-theme-text/20 rounded-full mb-1.5 relative z-10" />
-                                <div className="h-0.5 w-full bg-theme-text/10 rounded-full relative z-10" />
-                                <div className="h-0.5 w-4/5 bg-theme-text/10 rounded-full relative z-10" />
-                                <div className="h-0.5 w-5/6 bg-theme-text/10 rounded-full relative z-10" />
-                                <div className="h-0.5 w-3/4 bg-theme-text/10 rounded-full relative z-10" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Content Area - Minimalista */}
-            <div className="px-4 py-3 flex items-start gap-2 border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0">
-                <h3 className="min-w-0 flex-1 break-words text-[var(--sarak-type-scale-caption,12px)] leading-tight font-black uppercase tracking-wide text-theme-text group-hover:text-theme-primary transition-colors">
-                    {theme.name}
-                </h3>
-
-                <div className="shrink-0 flex items-center gap-2">
-                    <div className="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,11px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1">
-                        <Layout size={8} /> {String(design.navigationStyle || 'sidebar')}
-                    </div>
-                    <div className="flex items-center gap-1 text-[var(--sarak-type-scale3xs,11px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-[var(--sarak-motion-dur-normal,0.3s)]">
-                        <ArrowRight size={12} />
-                    </div>
-                </div>
-            </div>
-        </motion.button>
-    );
-};
+/**
+ * A opção de um tema na galeria: a miniatura é o sistema real com o tema aplicado (desenhada só quando visível), e o nome
+ * fica embaixo, proporcional. A miniatura e o botão seguem o `OptionTile`: o nome acessível é só o nome do tema.
+ */
+export const PresetCard = ({ theme, currentMode, onApply, peekTokens, onPeek }: PresetCardProps) => (
+    <OptionTile
+        name={theme.name}
+        description={theme.description}
+        onApply={onApply}
+        peekTokens={peekTokens ?? noTokens}
+        onPeek={onPeek}
+        frameWidth={THEME_FRAME.width}
+        frameHeight={THEME_FRAME.height}
+        buttonProps={{ 'data-theme-id': theme.id }}
+        peekWhenMounted
+    >
+        <LazyWhenVisible className="h-full">
+            <ThemeMiniature theme={theme} currentMode={currentMode} />
+        </LazyWhenVisible>
+    </OptionTile>
+);

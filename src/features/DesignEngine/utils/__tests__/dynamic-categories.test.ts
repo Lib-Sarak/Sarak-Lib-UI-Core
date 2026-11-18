@@ -61,7 +61,7 @@ describe('dynamic-categories', () => {
         expect(groups.navigation[CHROME_COMPOSITION_CATEGORY]).toEqual([token]);
     });
 
-    it('inclui os nove tokens reais da composição no conjunto Essencial do painel', () => {
+    it('inclui os onze tokens reais da composição no conjunto Essencial do painel', () => {
         const catalogEntries = TokenCatalog as unknown as {
             tokenId: string;
             categories?: string[];
@@ -76,8 +76,8 @@ describe('dynamic-categories', () => {
                 .map((token) => token.tokenId),
         );
 
-        // Os oito widgets mais a posição do ≡ da barra do topo.
-        expect(compositionTokens).toHaveLength(9);
+        // Os oito widgets, a posição do ≡ da barra do topo e os dois degraus de P e G do tamanho da fonte.
+        expect(compositionTokens).toHaveLength(11);
         expect(compositionTokens.filter((token) => !essentialTokenIds.has(token.tokenId))).toEqual([]);
     });
 });

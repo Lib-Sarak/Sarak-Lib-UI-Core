@@ -140,6 +140,32 @@ describe('ChromeTopbarBody — widgets default', () => {
         expect(screen.getByText('Recolher navegação')).toBeInTheDocument();
     });
 
+    it('tamanho da fonte e orientação fixados ficam só na barra, em grupo compacto: o ⚙ não os repete', () => {
+        const { container } = renderBody({ preferenceFontSizePosition: 'pinned', preferenceNavigationStylePosition: 'pinned' });
+        expect(screen.getByRole('group', { name: 'Tamanho da fonte' })).toBeInTheDocument();
+        expect(screen.getByRole('group', { name: 'Estilo de navegação' })).toBeInTheDocument();
+        fireEvent.click(screen.getByRole('button', { name: 'Preferências' }));
+        const menu = screen.getByRole('menu');
+        expect(menu.querySelector('[role="group"]')).toBeNull();
+        expect(container.querySelectorAll('[role="group"]')).toHaveLength(2);
+    });
+
+    it('a busca fixada na barra não se repete no ⚙', () => {
+        renderBody({ preferenceModePosition: 'menu' });
+        fireEvent.click(screen.getByRole('button', { name: 'Preferências' }));
+        const menu = screen.getByRole('menu');
+        expect(menu.querySelector('[data-sarak-widget="search"], [aria-label*="usca"]')).toBeNull();
+    });
+
+    it('tudo fixado e nada no menu: o ⚙ nem nasce', () => {
+        const { container } = renderBody({
+            preferenceModePosition: 'pinned', preferenceFontSizePosition: 'pinned', preferenceNavigationStylePosition: 'pinned',
+            preferenceNavCollapsePosition: 'pinned', preferenceNavCollapsePositionTopbar: 'pinned', preferenceLanguagePosition: 'pinned',
+            chromeSearchPosition: 'pinned', chromeUserPosition: 'pinned', chromeNotificationsPosition: 'pinned',
+        });
+        expect(container.querySelector('[data-sarak-widget="preferences-menu"]')).toBeNull();
+    });
+
     it('`widgets` desliga cada default isoladamente', () => {
         const { container } = renderBody({}, { widgets: { search: false, collapse: false, themeToggle: false, user: false } });
         expect(container.querySelector('[data-sarak-slot="search"]')).toBeNull();

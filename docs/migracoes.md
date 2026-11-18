@@ -5,6 +5,26 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 9.0.0 — P e G do tamanho da fonte configuráveis em px, controles de preferência discretos e o ⚙ que não repete o que está na barra
+
+O tamanho da fonte do usuário (P/M/G) deixa de usar uma escala fixa de cinco degraus e passa a se mover em px a partir de `bodySize`: dois tokens novos, `preferenceFontSizeReduction` (quanto o P reduz) e `preferenceFontSizeIncrease` (quanto o G aumenta), ambos em px, de 0 a 6, padrão 2. Com o padrão nada muda nas bases de 14 a 18 px; nas pontas o defeito some: com base 12 px o P era igual ao M, e com base 20 px o G era igual ao M — agora são 10 px e 22 px. O P nunca desce de 8 px. Os dois tokens ficam na decisão Layout, junto da composição da barra.
+
+Os controles ficam discretos. Fixados na barra, P/M/G e Lateral/Topo são um grupo compacto com a altura de um item de navegação e sem véu de fundo (o texto fica direto sobre a barra); no ⚙ e na gaveta do celular viram linhas de menu com a escolha marcada por visto, não pílulas. O ⚙ da barra do topo também deixa de repetir o que já está fixado na barra visível (busca, tamanho, orientação, modo, idioma): uma barra com tudo fixado não mostra o ⚙. Na barra lateral recolhida a exceção continua: o fixado sem ícone próprio vai para o ⚙.
+
+O rótulo das opções de `bodySize` deixa de usar P/M/G e mostra o valor (`12 px`, `14 px`…).
+
+**O que muda para o importador:** quem media a pílula de P/M/G (`aria-pressed` num `<button>` dentro de `[role="group"]` com véu `bg-[…]/10`) vê o mesmo grupo e os mesmos botões, sem o véu; dentro do ⚙ a escolha passa a ser `role="menuitemradio"` com `aria-checked`. `ShellFontSizeControl` e `ShellNavigationStyleControl` ganham as props `variant` (`bar` ou `menu`) e `orientation`; sem elas, valem `bar` e horizontal. Instalação existente não tem as chaves e lê o padrão (2 px), então nada se reescreve.
+
+| | Antes | Depois |
+|---|---|---|
+| P e G | um degrau numa escala fixa de 5 valores (iguais ao M nas pontas) | `bodySize` − `preferenceFontSizeReduction` e `bodySize` + `preferenceFontSizeIncrease` (padrão ±2 px, piso de 8 px) |
+| Rótulo de `bodySize` | `P (Pequeno - 14px)` | `14 px` |
+| P/M/G e Lateral/Topo na barra (1440 px, tema padrão) | pílulas com véu: 146 × 62 px e 153 × 62 px | grupo compacto sem véu: 100 × 28 px e 117 × 28 px (a altura do item de navegação) |
+| P/M/G e Lateral/Topo no ⚙ | pílulas | linhas com seleção marcada (`menuitemradio`) |
+| ⚙ da barra do topo | repetia o fixado na barra: 306 × 510 px | só o que não está na barra: 159 × 310 px na composição de fábrica e 159 × 61 px com tudo fixado, menos o modo |
+
+---
+
 ## 9.0.0 — a barra de topo não rola mais para o lado: o que não cabe vai para um botão "Mais" logo depois do último item visível
 
 Na navegação no topo, a lista de itens rolava na horizontal com a barra de rolagem oculta, e o item que não cabia ficava inalcançável sem sinal nenhum. Agora a lista não rola: o item que não cabe sai da lista e aparece dentro de um botão "Mais" (texto nos seis idiomas, sem ícone, com a seta) logo depois do último item que coube, que abre um balão com os itens escondidos, em ordem, e navega pelo mesmo `onNavigate`. Nada de configuração: o comportamento vale para toda barra de topo, e só aparece quando algo não cabe.

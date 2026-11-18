@@ -25,7 +25,7 @@ describe('PresetCardPending — o cartão do tema que ainda não chegou', () => 
 
     it('desenha a amostra do modo PEDIDO: a nativa quando o modo bate, a oposta quando não', () => {
         const { container, rerender } = render(<PresetCardPending entry={entry} currentMode="dark" onChoose={vi.fn()} />);
-        const backdrop = () => container.querySelector('div') as HTMLElement;
+        const backdrop = () => container.querySelector('[data-testid="theme-swatch"]') as HTMLElement;
         expect(backdrop().style.backgroundColor).toBe('rgb(34, 34, 34)');
 
         rerender(<PresetCardPending entry={entry} currentMode="light" onChoose={vi.fn()} />);

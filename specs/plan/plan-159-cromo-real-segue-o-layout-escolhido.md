@@ -308,6 +308,89 @@ nova.
 - O revisor precisa de `npm run build` + `cromo-css-real:check` para as specs de navegador da `plan-159` rodarem pelo caminho oficial: `barra-de-topo-estreita.spec.ts` e `cromo-css-real.spec.ts` usam `dist/index.js`, e o `dist/` atual não tem o "Mais" (rodam vermelhos até o build).
 - Risco de medição: o "Mais" só tem `ResizeObserver` no navegador; em fonte web que carrega depois, o observador das células recalcula, mas não medi troca de fonte.
 
+## Resumo da execução (lote 2) — 2026-11-17
+
+**Resultado:** Concluído com pendências (o lote só fecha com o ok do dono na prévia, §6; ver *Pendências*).
+
+**Estado do worktree ao iniciar**
+```
+ M dist/sarak.css
+```
+(O worktree é compartilhado com a `plan-161`, que mexe em `src/features/DesignEngine/Canvas/*` e em specs de navegador dela durante esta execução. Não toquei nesses arquivos. `docs/migracoes.md`, `sarak-ui/` e `sarak-dev/` são compartilhados: o que é meu em `docs/migracoes.md` é a entrada "P e G do tamanho da fonte configuráveis em px…", no topo.)
+
+**O que foi feito**
+- **2.3 — P e G em px a partir de `bodySize`.** `overlayPreferences.ts` deixa de usar a escala fixa de cinco degraus: P = `bodySize` − `preferenceFontSizeReduction`, G = `bodySize` + `preferenceFontSizeIncrease` (padrão 2 px cada), com piso de 8 px; valor inválido nos tokens cai em 2 px; base que não é px volta como veio. Base 12 → P 10 (≠ M); base 20 → G 22 (≠ M).
+- **2.3/2.5 — dois tokens novos, nas três fontes.** `preferenceFontSizeReduction` e `preferenceFontSizeIncrease` (slider, px, 0–6, passo 1, padrão 2): schema `schema/preferences.ts`, partição `catalog/partitions/structural.json`, roteamento `catalog/theme_table_mapping.json`; `npm run token-types` regenerou `design-token-ids.ts` e `design-token-docs.json`. Entram na decisão Layout, na pergunta "O que aparece" (`design-decisions.json`), com os testes de contagem atualizados (10→12, 9→11).
+- **2.4 — rótulo de `bodySize`** passa a `12 px … 20 px` (`schema/global.ts`), e o `usage` diz como P e G partem dele.
+- **2.1 — controles compactos.** Novo `internal/ShellPreferenceChoiceGroup.tsx`, usado por `ShellFontSizeControl` e `ShellNavigationStyleControl` (props novas `variant: 'bar' | 'menu'` e `orientation`). Na barra: grupo sem véu de fundo, com a altura de um item de navegação (28 px = 28 px medido). No ⚙ e na gaveta: linhas de menu (`role="menuitemradio"`, `aria-checked`, visto na escolhida), não pílulas. `shellPreferenceRow.tsx` passa a usar a variante `menu`; `ChromeSidebarFooter.tsx` usa o grupo vertical.
+- **2.2 — o ⚙ não repete o fixado.** `ChromeTopbarBody.tsx`: `menuIdsToShow` (menu − fixados) e busca/usuário/notificações no menu só se não estiverem fixados; o ⚙ não nasce se nada sobra. Era assim também com a busca ("Buscar" fixo na barra e dentro do ⚙). A exceção da lateral recolhida já existia em `ChromeSidebarBody.tsx` e não mudou.
+- **Contraste sobre degradê (nota do revisor).** O grupo novo não tem véu; a opção não escolhida lê `--sarak-text-main` (a primeira versão usava o apagado do item inativo e reprovou a 3,16:1 na lateral `nebula-space` claro). Medido a 4,5:1 sobre cada parada do degradê em `nebula-space` e `corporate-ledger`, claro, nas duas barras (4 casos novos em `tom-contrastante-legivel.spec.ts`).
+- **Métrica compartilhada.** As classes do item horizontal saíram de `SarakMenuItem.tsx` para `menuItemMetrics.ts` (`HORIZONTAL_MENU_ITEM_CLASSES`, `horizontalMenuItemBlockPadding`), para o grupo da barra ler a mesma fonte que o item.
+- `docs/migracoes.md` (entrada nova, com os números medidos), `npm run guide`, `npm run dev-kit`.
+- **Prévia:** `C:\tmp\sarak-previa-159\index.html` (a do lote 1 ficou em `index-lote1.html`; sem escrever no `dist/`). Composição de fábrica e composição fixada do ERP, nos dois modos, sobre barra em degradê (`nebula-space` e `corporate-ledger`), com antes (`HEAD`) e depois lado a lado, e o ⚙ aberto.
+
+**Medidas (Chromium, 1440 px, tema padrão; antes = cópia do `HEAD` fora do repositório)**
+| | Antes | Depois |
+|---|---|---|
+| Item de navegação da topbar | 57,3 × 28 | 57,3 × 28 |
+| Grupo P/M/G fixado | 146,3 × 62 | 99,9 × 28 |
+| Grupo Lateral/Topo fixado | 152,7 × 62 | 117,2 × 28 |
+| Menu ⚙, composição de fábrica | 306,3 × 510,5 | 159,4 × 310,5 |
+| Menu ⚙, composição fixada do ERP | 306,3 × 510,5 | 159,4 × 61 |
+
+**Arquivos alterados** (só os meus)
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Provider/utils/overlayPreferences.ts` | alterado | P/G em px a partir de `bodySize`, piso, leitor `bodySize direto` |
+| `src/core/Design/schema/preferences.ts`, `global.ts` | alterado | dois tokens novos; rótulo de `bodySize` |
+| `src/core/Design/catalog/partitions/structural.json`, `theme_table_mapping.json` | alterado | os dois tokens nas outras duas fontes |
+| `src/core/Provider/generated/design-token-ids.ts`, `design-token-docs.json` | gerado | `npm run token-types` |
+| `src/features/DesignEngine/config/design-decisions.json` | alterado | tokens na pergunta "O que aparece" |
+| `src/components/atomic/Navigation/internal/ShellPreferenceChoiceGroup.tsx` | criado | grupo da barra e linhas do menu |
+| `ShellFontSizeControl.tsx`, `ShellNavigationStyleControl.tsx`, `shellPreferenceRow.tsx`, `menuItemMetrics.ts`, `SarakMenuItem.tsx` | alterado | usam o grupo; variante `menu`; métrica horizontal compartilhada |
+| `src/components/Layout/chrome/ChromeTopbarBody.tsx`, `ChromeSidebarFooter.tsx` | alterado | o ⚙ não repete o fixado; grupo vertical na lateral |
+| Testes: `ShellPreferenceChoiceGroup.test.tsx` (criado), `ShellFontSizeControl`, `ShellNavigationStyleControl`, `shellPreferenceRow`, `menuItemMetrics`, `ChromeTopbarBody`, `overlayPreferences`, `preferences` (schema), `ThemeGlobalSettings`, `ThemeDecisionView`, `useThemeCustomizationData`, `decisions`, `dynamic-categories` | alterado | casos novos e contagens |
+| `browser-tests/preferencias-discretas.spec.ts` | criado | altura do grupo, ⚙ sem repetição, menu com linhas |
+| `browser-tests/tom-contrastante-legivel.spec.ts` | alterado | 4 casos de contraste dos grupos sobre degradê; limite 2 e cabeçalho atualizados |
+| `docs/migracoes.md`, `sarak-ui/*`, `sarak-dev/*` | alterado | entrada e kits regenerados |
+| `dist/*`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | gerado | efeito do `npm run build` que o prompt mandou rodar |
+
+**Verificações executadas**
+- `npx vitest run` por pasta, em rodadas separadas do Playwright: `src/components/atomic/Navigation` + `src/components/Layout` → 64 arquivos, 679 verdes (depois da última edição); `src/core/Provider` → 76 arquivos, 688; `src/core/Design` → 51 arquivos, 1.153; `src/features/DesignEngine/Main` + `utils` → 62 arquivos, 478 verdes. A rodada inteira de `src/features/DesignEngine`, antes dos ajustes, deu 7 vermelhos: 4 eram meus (contagens de tokens em `decisions`, `dynamic-categories`, `ThemeDecisionView`, `useThemeCustomizationData`/`ThemeGlobalSettings`) e foram corrigidos; os outros ficam em *Achados*.
+- `npx tsc --noEmit` → 0 erros. `npm run verify -- --tier=quick` → `tsc`, `audit:baseline --with-tsc`, `barrel`, `catalog`, `token-types`, `token-docs`, `token-reader`, `chrome-token-parity`, `guide:check`, `dev-kit:check`, Anel 0 verdes; falham `css-important:check` (`PresetCard.tsx:28`) e `plan-index:check` (`plan-161`: índice 🟡 × frontmatter 🟠), das duas, da `plan-161`. A primeira passada acusou 3 hardcodes estruturais meus (`ShellPreferenceChoiceGroup.tsx`), corrigidos.
+- `npm run build` → exit 0 (todas as portas do `build`, inclusive `token-types:check`, `token-docs:check` e `guide:check`).
+- Navegador, com o `dist/` novo e depois do build: `topbar-mais`, `barra-de-topo-estreita`, `cromo-css-real`, `tom-contrastante-legivel` (24 + 4 casos), `plan-141-presets-do-painel` inteiro e `preferencias-discretas` → **109 de 109 verdes**. A medição de contraste sobre degradê reprovou na primeira versão do grupo (3,16:1) e passou depois da correção.
+- Controle em `HEAD` fora do repositório (cópia `git archive` + junção de `node_modules`) só para os números de "antes"; junção removida antes de apagar, `node_modules` existe.
+
+**Critérios de aceite** (lote 2)
+- [x] Grupo de P/M/G e Lateral/Topo com a altura de um item; menu ⚙ com linhas; números de antes e depois acima — `preferencias-discretas.spec.ts:57` e a tabela.
+- [x] O ⚙ não repete o fixado na barra visível; a exceção da lateral recolhida continua — `preferencias-discretas.spec.ts:68`, `ChromeTopbarBody.test.tsx`; lateral recolhida: `ChromeSidebarBody.tsx:101` (inalterado).
+- [x] P e G configuráveis em px a partir de `bodySize`, padrão −2/+2, sem P = M nem G = M nas pontas — `overlayPreferences.test.ts` (base 12 e 20).
+- [x] Controle novo a 4,5:1 sobre barra em degradê, claro — `tom-contrastante-legivel.spec.ts` (nebula-space e corporate-ledger, as duas barras).
+- [x] Paridade de token verde (`token-types`, `token-docs`, `token-reader`, `catalog`, `barrel`, `build`); `docs/migracoes.md`; gerados regenerados.
+- [ ] Prévia para o dono em `C:\tmp\sarak-previa-159\index.html` — gerada; **falta o ok do dono**.
+
+**Decisões e suposições**
+- Nomes dos tokens: `preferenceFontSizeReduction` e `preferenceFontSizeIncrease` (a plan não os nomeou). Slider de 0 a 6 px, passo 1; piso de 8 px no resultado do P (suposição: abaixo disso o texto some).
+- O ⚙ do topo não repetir o fixado foi feito em `ChromeTopbarBody.tsx`, como já era no `ChromeSidebarBody.tsx`, e não em `useChromeDefaultWidgets.ts` (que não está na §3.1). Vale também para busca, usuário e notificações.
+- A opção não escolhida lê `--sarak-text-main`, e não o token do rótulo do item inativo: o apagado reprovou sobre degradê (3,16:1). Custo: sem o apagado, a hierarquia da opção escolhida vem só do fundo.
+- Os dois tokens ficaram na pergunta "O que aparece" da decisão Layout (a §2.5 diz "junto da composição da barra"); a decisão "Barras" é do lote 4 e os move.
+- Não toquei `ChromeUserThemeGroup.tsx` nem `chromeWidgets.ts` (§3.1 os lista, mas nada precisou mudar neles). O texto da `05` §2.2.2 ("e também dentro do ⚙") fica para a síntese.
+- A gaveta do celular (`SarakAppChromeMobile`) usa `renderShellPreferenceRow`, então também ganha as linhas com seleção; não a mexi além disso.
+- `npm run build` reescreveu `dist/` (rastreado) e os dois `buildInfo.ts`; o prompt mandou rodá-lo, e o `dist/sarak.css` já vinha sujo antes (fotografia). A prévia não escreveu no `dist/`.
+
+**Achados fora do escopo (não corrigidos)**
+- `src/features/DesignEngine/Canvas/components/PresetCard.tsx:28` — `!important` montado em TypeScript (`css-important:check` vermelho); `plan-161`, em voo.
+- Rodada de `src/features/DesignEngine`, antes dos meus ajustes: `PreviewCanvas.test.tsx` (snapshot de width/height), `AtmosphereCatalog.test.tsx` (snapshot) e `PresetsCatalog.test.tsx` (snapshot e `@min-[240px]:grid-cols-2`) vermelhos. Os arquivos são da `plan-161` (`PresetsCatalog.tsx`, `OptionSampleFrame.tsx`…, modificados na fotografia durante a execução); não rodei controle em `HEAD` para eles, então a causa é inferência.
+- `plan-index:check`: `plan-161` com índice 🟡 e frontmatter 🟠.
+- O gancho de escrita acusa "sem config do eslint na raiz" a cada arquivo (aviso do repositório).
+
+**Pendências / riscos**
+- Ok do dono na prévia antes de fechar o lote (§6).
+- O grupo fixado na barra não tem mais o véu: em barra de papel `surface` o grupo se distingue só pelo contorno de 1 px e pelo fundo da escolhida. Medi contraste de texto, não "legibilidade como controle".
+- Instalação que gravou `preferenceFontSizePosition: pinned` (ERP) passa a ver o grupo compacto sem mudar nada (a plan não pede migração do valor gravado).
+- Não medi densidades `compact`/`spacious` do item da topbar nem a lateral recolhida em navegador (limites 1 e 2 do spec novo).
+
 ---
 
 # 10. Veredito
@@ -525,3 +608,64 @@ modo aparecem na barra. Resposta: a seção 1.A reproduz a composição fixada d
 fábrica, com as três no ⚙. O código do lote saiu no commit `9f08de71`, junto com as plans 161 e 164.
 
 **Lote 1 fechado. Status da plan: 🟡 Em execução** (lote 2).
+
+## Veredito — 2026-11-17 — lote 2 — 🔵 Em correção (um item objetivo)
+
+**Como medi:** as plans 159 e 161 (lote 2) dividem o worktree e saem no mesmo commit, então medi as duas juntas.
+- **Cópia fora do repositório** (`HEAD` + modificados + não rastreados, menos `dist/`, sem `presetCardGeometry.ts`), com
+  `npm run build` completo: exit 0. Na mesma cópia, a bateria de navegador `topbar-mais`, `barra-de-topo-estreita`,
+  `cromo-css-real`, `tom-contrastante-legivel`, `plan-141`, `preferencias-discretas`, `plan-161-catalogo-proporcional`,
+  `login-theme-application`, `plan-122-preview-mode`, `plan-160-previa-mostra-a-opcao`, `plan-160-moldura-e-largura` e
+  `troca-de-tema` deu **151 de 151 verdes**. Isso inclui os três specs que o resumo da 161 não reexecutou.
+- **Gates do commit** (Anel 1 e `check-audit-baseline --with-tsc`): baseline sem regressão. Um vermelho real: `css-important:check`
+  (achado da 161). O `plan-index:check` é do revisor, e o `trail-citation:check` só cai na cópia sem `.git`.
+- **Unidade:** `npx vitest run` de `Navigation`, `Layout`, `core/Provider`, `core/Design` e `features/DesignEngine`. Na cópia,
+  os mocks deixaram de valer em 44 arquivos (186 falhas que não se repetem fora dela). Os 44 rodados de novo **no worktree real**: 42
+  verdes e 2 vermelhos, os snapshots do `PreviewCanvas` e do `AtmosphereCatalog` (achado da 159).
+- **Segredo** (Anel 0), sobre as linhas adicionadas e os não rastreados fora de `dist/`: 0.
+- **Diff lido:** `overlayPreferences.ts` (P e G em px a partir de `bodySize`, piso de 8 px), `ChromeTopbarBody.tsx` (o ⚙ tira o
+  que já está fixado), `ShellPreferenceChoiceGroup.tsx` e as variantes `bar`/`menu` dos dois controles. Os tokens novos estão nas
+  três fontes.
+- **Prévia** (`C:\tmp\sarak-previa-159\index.html`) conferida: o grupo P/M/G e o de Lateral/Topo na altura do item, e o ⚙ em
+  linhas com o visto. Os números de antes e depois batem com a tabela do resumo.
+
+**Achado**
+1. **Snapshots desta plan.** `src/features/DesignEngine/Canvas/__tests__/PreviewCanvas.test.tsx` ("propriedades de estilo reais") e
+   `Canvas/components/__tests__/AtmosphereCatalog.test.tsx` ("abas de mídia/textura") caem no worktree real. A única diferença,
+   em cada nó do snapshot, são as duas variáveis novas desta plan: `--sarak-preference-font-size-reduction: 2px` e
+   `--sarak-preference-font-size-increase: 2px`. O resumo as atribui à 161, mas não são dela. É a mesma lição do lote 1 da 164: token
+   emitido muda a raiz da prévia, e o filtro de unidade de quem cria token inclui `src/features/DesignEngine/Canvas`.
+   - Rode `npx vitest run src/features/DesignEngine/Canvas`, leia o diff e atualize só esses dois snapshots, se a diferença for só a
+     dessas duas variáveis.
+   - Corrija no resumo novo a atribuição.
+
+**Fica para a síntese** (não é correção): o texto da 05 §2.2.2 ("e também dentro do ⚙"), como o 2.2 já manda.
+
+**Como fechar** (verificação objetiva): `src/features/DesignEngine/Canvas` verde e o resumo com as linhas do diff dos dois
+snapshots. O revisor reroda só esse filtro.
+
+**Commit:** junto com o lote 2 da `plan-161`, depois das duas correções e do ok do dono nas duas prévias. O lote 2 da `plan-164`
+espera esse commit (as duas criam token).
+
+**Status da plan: 🔵 Em correção.**
+
+## Veredito — 2026-11-17 — lote 2, correção — 🟢 Aprovado no código; o lote fecha com o ok do dono na prévia
+
+**Como medi:** só o filtro do achado, no worktree real. `npx vitest run src/features/DesignEngine/Canvas` deu 52 de 52 arquivos e
+259 de 259 testes verdes. O diff dos dois snapshots conferido pelo executor (2 e 4 linhas) traz só as duas variáveis de preferência.
+O vermelho do `PresetsCatalog` que o resumo cita era passageiro: a correção da `plan-161` estava em andamento na mesma árvore, e o
+snapshot é dela. Na minha rodada, ele já passa.
+
+**Falta, para fechar o lote 2:** o ok do dono na prévia (`C:	mpsarak-previa-159index.html`).
+
+**Commit:** junto com o lote 2 da `plan-161`, depois da correção dela e do ok do dono nas duas prévias.
+
+**Status da plan: 🟠 Em revisão** até o ok do dono.
+
+## Nota do revisor — 2026-11-17 — ok do dono na prévia do lote 2
+
+O dono aprovou a prévia do lote 2 (`C:	mpsarak-previa-159index.html`). Ele confirmou que P/M/G e Lateral/Topo vão para a barra
+pela configuração (`preferenceFontSizePosition` e `preferenceNavigationStylePosition` em **Mostrar**), com padrão **No menu** em todos
+os temas, e que o claro/escuro fica no ⚙ por padrão (`preferenceModePosition`).
+
+**Lote 2 fechado. Status da plan: 🟡 Em execução** (próximo lote). O commit sai junto com o lote 2 da `plan-161`.

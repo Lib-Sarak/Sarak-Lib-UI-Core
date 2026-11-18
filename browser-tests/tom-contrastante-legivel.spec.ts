@@ -7,6 +7,7 @@
  * -------------------------------------------------------------------------
  * LIMITES DECLARADOS (R18) — o que esta medição NÃO vê
  * -------------------------------------------------------------------------
+ * 0. Os controles P/M/G e Lateral/Topo sobre barra em degradê (último bloco do arquivo) medem o texto do grupo contra cada parada de cor do degradê, no modo claro, sem tom contrastante.
  * 1. O fundo é a cor composta dos ancestrais da barra sobre o fundo da página; fundo em degradê vale por cada parada de cor dele
  *    (a pior), e a textura da barra (`*BackgroundStyle: texture`) não entra.
  * 1.1. O código do idioma (60% do texto forte) e o botão de sair (vermelho misturado ao texto) não são medidos: ficam fora da
@@ -14,8 +15,8 @@
  * 2. Só dois temas de barra SÓLIDA que NÃO declaram a cor das barras (`sarak-sovereign` e `minimalist-airy`: a paleta calcula o
  *    fundo do tom) e os papéis `inverse`, `primary` e `secondary`. Não medido, e reprova hoje: tema que declara o
  *    fundo da barra (`sarak-sovereign-classic`, `dot-matrix-elegant`) vence o tom que o host põe no `config`; e barra em degradê
- *    (`nebula-space`, `cyberpunk-neon`, `corporate-ledger` e `industrial-terminal`, no modo claro; a lateral também) com a pílula translúcida e o item ativo em véu sobre a
- *    parada clara do degradê (3,4 a 4,4:1) — o véu das pílulas é refeito no lote 2.
+ *    (`nebula-space`, `cyberpunk-neon`, `corporate-ledger` e `industrial-terminal`, no modo claro; a lateral também) com o item ativo em véu sobre a parada clara do degradê (3,4 a 4,4:1);
+ *    o controle P/M/G e Lateral/Topo deixou o véu e é medido no último bloco.
  * 3. Só texto e ícone visíveis, no estado de repouso: hover, foco e item desabilitado não entram.
  * 4. Só Chromium headless, a 1440×900, lendo o código-fonte com a folha `dist/sarak.css` (rodar `npm run build:css` antes).
  * -------------------------------------------------------------------------
@@ -48,8 +49,9 @@ test.afterAll(() => {
 interface Reading { what: string; color: string; background: string; ratio: number }
 
 /** Todo texto e ícone visível dentro da barra, com a cor e o fundo composto (ancestrais sobre o fundo da página). */
-const readBar = (page: Page, bar: 'sidebar' | 'topbar'): Promise<Reading[]> => page.evaluate((selector) => {
-    const root = document.querySelector(selector) as HTMLElement;
+const readBar = (page: Page, bar: 'sidebar' | 'topbar', scope?: string): Promise<Reading[]> => page.evaluate(([selector, scopeSelector]) => {
+    const barRoot = document.querySelector(selector) as HTMLElement;
+    const roots = scopeSelector ? [...barRoot.querySelectorAll<HTMLElement>(scopeSelector)] : [barRoot];
     type Rgba = [number, number, number, number];
     const canvas = document.createElement('canvas');
     canvas.width = 1;
@@ -120,7 +122,7 @@ const readBar = (page: Page, bar: 'sidebar' | 'topbar'): Promise<Reading[]> => p
         }).sort((a, b) => a.ratio - b.ratio)[0];
         readings.push({ what, color: getComputedStyle(element).color, background: `rgb(${worst.bg.slice(0, 3).map(Math.round).join(',')})`, ratio: worst.ratio });
     };
-    for (const element of root.querySelectorAll('*')) {
+    for (const element of roots.flatMap((scopeRoot) => [...scopeRoot.querySelectorAll('*')])) {
         if (!visible(element)) continue;
         const hasText = [...element.childNodes].some((n) => n.nodeType === Node.TEXT_NODE && (n.textContent ?? '').trim().length > 0);
         if (hasText) record(element, `texto "${label(element)}"`);
@@ -128,7 +130,7 @@ const readBar = (page: Page, bar: 'sidebar' | 'topbar'): Promise<Reading[]> => p
         else if (element instanceof HTMLInputElement) record(element, `campo "${element.placeholder || element.getAttribute('aria-label') || 'busca'}"`);
     }
     return readings;
-}, bar === 'sidebar' ? 'aside' : 'header');
+}, [bar === 'sidebar' ? 'aside' : 'header', scope ?? ''] as const);
 
 for (const theme of THEMES) {
     for (const light of [false, true]) {
@@ -158,5 +160,36 @@ for (const theme of THEMES) {
                 });
             }
         }
+    }
+}
+
+// P/M/G e Lateral/Topo sobre barra em degradê no modo claro: o grupo fixado na barra não tem véu de fundo, então o texto de cada
+// opção (a escolhida e as outras) é medido contra cada parada de cor do degradê.
+const GRADIENT_THEMES = ['nebula-space', 'corporate-ledger'] as const;
+const GROUP_SELECTOR = '[role="group"]';
+
+for (const theme of GRADIENT_THEMES) {
+    for (const bar of BARS) {
+        test(`${theme}, claro, ${bar} em degradê: o grupo P/M/G e o de Lateral/Topo passam 4,5:1 sobre cada parada`, async ({ page }) => {
+            const design = {
+                navigationStyle: bar,
+                preferenceFontSizePosition: 'pinned',
+                preferenceNavigationStylePosition: 'pinned',
+                [`${bar}BackgroundStyle`]: 'gradient',
+            };
+            const query = new URLSearchParams({ theme, design: JSON.stringify(design), light: '1' });
+            await page.setViewportSize({ width: 1440, height: 900 });
+            await page.goto(`${harnessUrl}?${query.toString()}`);
+            await expect(page.getByTestId('content')).toBeVisible();
+            await page.waitForFunction(() => document.querySelector('[aria-current="page"]') !== null);
+            await page.waitForTimeout(500);
+            const groups = await page.locator(`${bar === 'sidebar' ? 'aside' : 'header'} ${GROUP_SELECTOR}`).count();
+            expect(groups, 'os dois grupos fixados estão na barra').toBeGreaterThanOrEqual(2);
+            const readings = await readBar(page, bar, GROUP_SELECTOR);
+            expect(readings.length, 'os grupos têm texto para medir (P, M, G, Lateral, Topo)').toBeGreaterThanOrEqual(5);
+            const failing = readings.filter((reading) => reading.ratio < MIN_TEXT_CONTRAST)
+                .map((reading) => `${reading.what}: ${reading.color} sobre ${reading.background} = ${reading.ratio.toFixed(2)}`);
+            expect(failing, 'o que não passa 4,5:1 contra o degradê').toEqual([]);
+        });
     }
 }

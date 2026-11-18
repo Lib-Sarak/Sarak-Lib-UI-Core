@@ -119,9 +119,10 @@ describe('a decisão Layout por pergunta (nível 2)', () => {
         layers.questionTokenIds.forEach((id) => expect(elsewhere.has(id), id).toBe(false));
     });
 
-    it('"O que aparece" traz os controles de composição (oito widgets, o ≡ do topo e o avatar do usuário); "Marca" traz a posição do logo; "Comportamento" a largura ajustável', () => {
+    it('"O que aparece" traz os controles de composição (oito widgets, o ≡ do topo, o avatar do usuário e os dois degraus de P e G); "Marca" traz a posição do logo; "Comportamento" a largura ajustável', () => {
         const byQuestion = (id: string): string[] => layers.questions.find((question) => question.id === id)!.tokens.map((token) => token.id);
-        expect(byQuestion('what')).toHaveLength(10);
+        expect(byQuestion('what')).toHaveLength(12);
+        expect(byQuestion('what')).toEqual(expect.arrayContaining(['preferenceFontSizeReduction', 'preferenceFontSizeIncrease']));
         expect(byQuestion('brand')).toContain('sidebarLogoPlacement');
         expect(byQuestion('brand')).toContain('brandDisplay');
         expect(byQuestion('behavior')).toContain('sidebarResizable');

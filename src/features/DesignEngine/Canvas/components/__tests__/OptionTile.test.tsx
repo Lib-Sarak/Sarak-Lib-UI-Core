@@ -35,6 +35,13 @@ describe('OptionTile', () => {
         expect(screen.getByRole('button', { name: 'Glass' })).toHaveClass('p-0', 'absolute', 'inset-0');
     });
 
+    it('os atributos do botão (o alvo estável do tema) chegam ao botão', () => {
+        render(<OptionTile name="Glass" onApply={() => {}} peekTokens={() => null} buttonProps={{ 'data-theme-id': 'glass', 'aria-busy': 'true' }}><span>amostra</span></OptionTile>);
+        const button = screen.getByRole('button', { name: 'Glass' });
+        expect(button).toHaveAttribute('data-theme-id', 'glass');
+        expect(button).toHaveAttribute('aria-busy', 'true');
+    });
+
     it('sem descrição não desenha o parágrafo', () => {
         const { container } = render(<OptionTile name="Glass" onApply={() => {}} peekTokens={() => null}><span /></OptionTile>);
         expect(container.querySelector('p')).toBeNull();

@@ -5,9 +5,11 @@ import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
 import { PEEK_DELAY_MS } from '../peek';
 import { PresetsCatalog } from '../PresetsCatalog';
 
-vi.mock('../../../../../core/Design/hooks/useDesignVariables', () => ({
-    useDesignVariables: vi.fn(() => ({ variables: {}, attributes: {} }))
-}));
+// O resultado é o mesmo objeto a cada chamada, como o do hook de verdade (que memoriza): o escopo das miniaturas compara as variáveis entre renders.
+vi.mock('../../../../../core/Design/hooks/useDesignVariables', () => {
+    const stable = { variables: {}, attributes: {} };
+    return { useDesignVariables: vi.fn(() => stable) };
+});
 
 vi.mock('framer-motion', async () => {
     const actual = await vi.importActual('framer-motion');
@@ -71,7 +73,7 @@ describe('PresetsCatalog — um grupo por vez, sem cromo próprio', () => {
 
         const globalsGrid = container.querySelector('.grid') as HTMLElement;
         expect(globalsGrid.className).not.toMatch(/md:grid-cols-2/);
-        expect(globalsGrid.className).toMatch(/@min-\[240px\]:grid-cols-2/);
+        expect(globalsGrid.className).toContain('grid-cols-[repeat(auto-fill,minmax(5.5rem,1fr))]');
         // A grade mora DENTRO da fronteira de container — é dela que ela mede.
         expect(containerBoundary?.contains(globalsGrid)).toBe(true);
     });

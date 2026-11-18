@@ -73,16 +73,16 @@ test('a prévia e os cartões acompanham a preferência clara e o toggle alterna
     await closePreviewMenu(page);
     const lightBody = await sovereignBody(page, 'light');
     const darkBody = await sovereignBody(page, 'dark');
-    const lightSurface = await sovereignBody(page, 'lightSurface');
     await expect.poll(() => previewSurface.evaluate((surface) => getComputedStyle(surface).backgroundColor))
         .toBe(lightBody);
 
     await page.getByRole('button', { name: /^Tema/ }).click();
     const themeCard = page.locator('button[data-theme-id="sarak-sovereign"]');
     await expect(themeCard).toBeVisible();
-    const themeCardSurface = themeCard.locator(':scope > div').first();
+    // A miniatura é o sistema real com o tema: o fundo do escopo dela é o mesmo da prévia grande (`--sarak-bg-base`).
+    const themeCardSurface = page.locator('[data-option-tile]', { has: themeCard }).locator('.sarak-theme-miniature').first();
     await expect.poll(() => themeCardSurface.evaluate((surface) => getComputedStyle(surface).backgroundColor))
-        .toBe(lightSurface);
+        .toBe(lightBody);
 
     await switchPreviewMode(page, 'Modo Escuro');
     await openPreviewModeItem(page, 'Modo Claro');

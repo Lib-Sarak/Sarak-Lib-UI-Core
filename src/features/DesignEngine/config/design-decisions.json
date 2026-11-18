@@ -177,7 +177,9 @@
                     "preferenceNavigationStylePosition",
                     "preferenceNavCollapsePosition",
                     "preferenceNavCollapsePositionTopbar",
-                    "preferenceLanguagePosition"
+                    "preferenceLanguagePosition",
+                    "preferenceFontSizeReduction",
+                    "preferenceFontSizeIncrease"
                 ],
                 "fineMatch": "^searchDropdown"
             },

@@ -16,22 +16,22 @@ const countingTheme = (primaryColor = '#ff0000'): { theme: SarakThemePreset; rea
 };
 
 const READS_ON_FIRST_RENDER = 2;
-const READS_WHEN_CALCULATION_IS_REUSED = 1;
 
 describe('PresetCard — o tema resolvido é memorizado', () => {
     it('um novo render do painel com o mesmo tema e o mesmo modo não refaz o cálculo', () => {
         const { theme, reads } = countingTheme();
-        const { rerender } = render(<PresetCard theme={theme} currentMode="dark" onApply={() => {}} index={0} />);
+        const { rerender } = render(<PresetCard theme={theme} currentMode="dark" onApply={() => {}} />);
         expect(reads()).toBe(READS_ON_FIRST_RENDER);
 
-        rerender(<PresetCard theme={theme} currentMode="dark" onApply={() => {}} index={1} />);
-        expect(reads()).toBe(READS_ON_FIRST_RENDER + READS_WHEN_CALCULATION_IS_REUSED);
+        rerender(<PresetCard theme={theme} currentMode="dark" onApply={() => {}} />);
+        // A miniatura é memorizada: com o mesmo tema e o mesmo modo ela nem renderiza de novo.
+        expect(reads()).toBe(READS_ON_FIRST_RENDER);
     });
 
     it('trocar o modo refaz o cálculo', () => {
         const { theme, reads } = countingTheme();
-        const { rerender } = render(<PresetCard theme={theme} currentMode="dark" onApply={() => {}} index={0} />);
-        rerender(<PresetCard theme={theme} currentMode="light" onApply={() => {}} index={0} />);
+        const { rerender } = render(<PresetCard theme={theme} currentMode="dark" onApply={() => {}} />);
+        rerender(<PresetCard theme={theme} currentMode="light" onApply={() => {}} />);
         expect(reads()).toBe(READS_ON_FIRST_RENDER + READS_ON_FIRST_RENDER);
     });
 });

@@ -221,13 +221,14 @@ const collectTargets = (page: Page): Promise<Target[]> => page.evaluate(() => {
     };
     document.querySelectorAll('[data-option-group]').forEach((area) => {
         const group = area.getAttribute('data-option-group') ?? '';
-        area.querySelectorAll('[data-option-tile]').forEach((tile, index) => add(tile, group, Array.from(tile.querySelectorAll('h3')).pop()?.textContent?.trim() ?? `#${index}`, index));
+        // O cartão de tema também é uma opção (`data-option-tile`), mas entra abaixo, pelo botão com o id do tema.
+        area.querySelectorAll('[data-option-tile]:not(:has([data-theme-id]))').forEach((tile, index) => add(tile, group, Array.from(tile.querySelectorAll('h3')).pop()?.textContent?.trim() ?? `#${index}`, index));
     });
     document.querySelectorAll('[role="radiogroup"]').forEach((gallery) => {
         const group = gallery.getAttribute('aria-label') ?? 'radiogroup';
         gallery.querySelectorAll('[role="radio"]').forEach((radio, index) => add(radio, group, radio.getAttribute('aria-label') ?? radio.textContent?.trim() ?? `#${index}`, index));
     });
-    document.querySelectorAll('[data-theme-id]').forEach((card, index) => add(card, 'themes', card.getAttribute('data-theme-id') ?? `#${index}`, index, card.getAttribute('aria-busy') === 'true'));
+    document.querySelectorAll('[data-theme-id]').forEach((button, index) => { const card = button.closest('[data-option-tile]') ?? button; add(card, 'themes', button.getAttribute('data-theme-id') ?? `#${index}`, index, button.getAttribute('aria-busy') === 'true'); });
     return targets;
 });
 

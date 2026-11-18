@@ -226,28 +226,54 @@ describe('overlayPreferences', () => {
             expect(result.bodySize).toBe('14px');
         });
 
-        it('"lg" sobe um degrau a partir da base', () => {
+        it('"lg" soma o aumento de G (padrão +2 px) à base', () => {
             const design = { bodySize: '16px', ...OFERECIDA } as unknown as SarakDesignState;
             const result = overlayPreferences(design, { fontSize: 'lg' }, undefined, 'light');
             expect(result.bodySize).toBe('18px');
         });
 
-        it('"sm" desce um degrau a partir da base', () => {
+        it('"sm" tira a redução de P (padrão −2 px) da base', () => {
             const design = { bodySize: '16px', ...OFERECIDA } as unknown as SarakDesignState;
             const result = overlayPreferences(design, { fontSize: 'sm' }, undefined, 'light');
             expect(result.bodySize).toBe('14px');
         });
 
-        it('clampa no topo da escala — não estoura além de "20px"', () => {
-            const design = { bodySize: '20px', ...OFERECIDA } as unknown as SarakDesignState;
-            const result = overlayPreferences(design, { fontSize: 'lg' }, undefined, 'light');
-            expect(result.bodySize).toBe('20px');
+        it('ponta de baixo: com base 12 px, P é 10 px e nunca igual a M', () => {
+            const design = { bodySize: '12px', ...OFERECIDA } as unknown as SarakDesignState;
+            const small = overlayPreferences(design, { fontSize: 'sm' }, undefined, 'light').bodySize;
+            const medium = overlayPreferences(design, { fontSize: 'md' }, undefined, 'light').bodySize;
+            expect(small).toBe('10px');
+            expect(small).not.toBe(medium);
         });
 
-        it('clampa no piso da escala — não estoura além de "12px"', () => {
-            const design = { bodySize: '12px', ...OFERECIDA } as unknown as SarakDesignState;
-            const result = overlayPreferences(design, { fontSize: 'sm' }, undefined, 'light');
-            expect(result.bodySize).toBe('12px');
+        it('ponta de cima: com base 20 px, G é 22 px e nunca igual a M', () => {
+            const design = { bodySize: '20px', ...OFERECIDA } as unknown as SarakDesignState;
+            const large = overlayPreferences(design, { fontSize: 'lg' }, undefined, 'light').bodySize;
+            const medium = overlayPreferences(design, { fontSize: 'md' }, undefined, 'light').bodySize;
+            expect(large).toBe('22px');
+            expect(large).not.toBe(medium);
+        });
+
+        it('a redução e o aumento são configuráveis, cada um por seu token', () => {
+            const design = { bodySize: '16px', preferenceFontSizeReduction: 3, preferenceFontSizeIncrease: 1, ...OFERECIDA } as unknown as SarakDesignState;
+            expect(overlayPreferences(design, { fontSize: 'sm' }, undefined, 'light').bodySize).toBe('13px');
+            expect(overlayPreferences(design, { fontSize: 'lg' }, undefined, 'light').bodySize).toBe('17px');
+        });
+
+        it('valor inválido nos tokens (texto, negativo) cai no padrão de fábrica de 2 px', () => {
+            const design = { bodySize: '16px', preferenceFontSizeReduction: 'x', preferenceFontSizeIncrease: -4, ...OFERECIDA } as unknown as SarakDesignState;
+            expect(overlayPreferences(design, { fontSize: 'sm' }, undefined, 'light').bodySize).toBe('14px');
+            expect(overlayPreferences(design, { fontSize: 'lg' }, undefined, 'light').bodySize).toBe('18px');
+        });
+
+        it('redução grande não passa do piso legível de 8 px', () => {
+            const design = { bodySize: '12px', preferenceFontSizeReduction: 6, ...OFERECIDA } as unknown as SarakDesignState;
+            expect(overlayPreferences(design, { fontSize: 'sm' }, undefined, 'light').bodySize).toBe('8px');
+        });
+
+        it('base que não é px volta como veio', () => {
+            const design = { bodySize: '1rem', ...OFERECIDA } as unknown as SarakDesignState;
+            expect(overlayPreferences(design, { fontSize: 'lg' }, undefined, 'light').bodySize).toBe('1rem');
         });
 
         it('afirma a VARIÁVEL CSS emitida, não só o valor da sobreposição', () => {

@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, expect, it } from 'vitest';
-import { OptionSampleFrame, SAMPLE_FRAME_HEIGHT, SAMPLE_REFERENCE } from '../OptionSampleFrame';
+import { OptionSampleFrame, SAMPLE_FRAME_HEIGHT, SAMPLE_REFERENCE, TOPBAR_FRAME_WIDTH } from '../OptionSampleFrame';
 
 describe('OptionSampleFrame', () => {
     it('desenha o conteúdo no quadro de referência e guarda a proporção dele na opção', () => {
@@ -19,6 +19,12 @@ describe('OptionSampleFrame', () => {
         expect((container.querySelector('[data-option-sample]') as HTMLElement).style.aspectRatio).toBe(`${SAMPLE_REFERENCE.width} / ${SAMPLE_FRAME_HEIGHT.topbar}`);
         expect(SAMPLE_FRAME_HEIGHT.topbar).toBeLessThan(SAMPLE_FRAME_HEIGHT.default);
         expect(SAMPLE_FRAME_HEIGHT.input).toBeLessThan(SAMPLE_FRAME_HEIGHT.default);
+    });
+
+    it('a largura do quadro de referência é trocável: a miniatura de um tema e a barra de topo pedem mais que o padrão', () => {
+        const { container, getByText } = render(<OptionSampleFrame width={TOPBAR_FRAME_WIDTH} height={SAMPLE_FRAME_HEIGHT.topbar}><span>barra</span></OptionSampleFrame>);
+        expect((container.querySelector('[data-option-sample]') as HTMLElement).style.aspectRatio).toBe(`${TOPBAR_FRAME_WIDTH} / ${SAMPLE_FRAME_HEIGHT.topbar}`);
+        expect((getByText('barra').parentElement as HTMLElement).style.width).toBe(`${TOPBAR_FRAME_WIDTH}px`);
     });
 
     it('sem ResizeObserver (jsdom) parte da escala de partida, sem quebrar', () => {

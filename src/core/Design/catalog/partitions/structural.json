@@ -593,5 +593,71 @@
     "relatedTokens": [
       "preferenceModePosition"
     ]
+  },
+  {
+    "tokenId": "preferenceFontSizeReduction",
+    "name": "Tamanho da Fonte: Quanto o P Reduz",
+    "description": "Quantos pixels a opção P do usuário final tira do tamanho global das fontes (`bodySize`).",
+    "type": "slider",
+    "importance": 80,
+    "categories": [
+      "chrome-composition"
+    ],
+    "tags": [
+      "preferencias",
+      "fonte",
+      "barra"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "preferences.ts",
+    "digitalTwins": [
+      "SarakAppChrome"
+    ],
+    "cssVariables": [
+      "--sarak-preference-font-size-reduction"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 6,
+      "step": 1
+    },
+    "relatedTokens": [
+      "preferenceFontSizeIncrease",
+      "preferenceFontSizePosition",
+      "bodySize"
+    ]
+  },
+  {
+    "tokenId": "preferenceFontSizeIncrease",
+    "name": "Tamanho da Fonte: Quanto o G Aumenta",
+    "description": "Quantos pixels a opção G do usuário final soma ao tamanho global das fontes (`bodySize`).",
+    "type": "slider",
+    "importance": 80,
+    "categories": [
+      "chrome-composition"
+    ],
+    "tags": [
+      "preferencias",
+      "fonte",
+      "barra"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "preferences.ts",
+    "digitalTwins": [
+      "SarakAppChrome"
+    ],
+    "cssVariables": [
+      "--sarak-preference-font-size-increase"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 6,
+      "step": 1
+    },
+    "relatedTokens": [
+      "preferenceFontSizeReduction",
+      "preferenceFontSizePosition",
+      "bodySize"
+    ]
   }
 ]

@@ -25,9 +25,8 @@ const DECISIONS = ['Tema', 'Cores', 'Fontes', 'Forma', 'Componentes', 'Layout'] 
 
 /** A meta de rolagem: nenhuma decisão passa de tantas alturas da área da coluna a 1440×900 (a medida de antes chegou a 15×). */
 const MAX_SCROLL_SCREENS = 2.5;
-/** O Tema mede com a galeria de temas aberta (ela é o grupo em uso da decisão); o cartão antigo cai no lote 2, então o limite fica declarado aqui até lá. */
-const SCROLL_LIMIT: Readonly<Record<string, number>> = { Tema: 15 };
-/** O que esta rodada não mede: a miniatura de tema é do lote 2, e a seção de paletas é da plan-164. */
+/** O Tema mede com a galeria de temas aberta (ela é o grupo em uso da decisão), com a miniatura de tema do lote 2. */
+/** O que esta rodada não mede: a seção de paletas é da plan-164. */
 const NOT_IN_LOTE_1: Readonly<Record<string, string>> = { Cores: 'a seção de paletas é da plan-164' };
 
 /** O lado máximo, em px, de um quadrado de Personalidade (a plan pede "quadrado pequeno com o nome"). */
@@ -179,7 +178,7 @@ test.describe('1440×900: rolagem e amostras de cada decisão', () => {
             console.log(`[plan-161] ${JSON.stringify(entry)}`);
             if (clipped.length) console.log(`[plan-161] ${decision} cortados: ${clipped.slice(0, 6).map((tile) => `${tile.name} → ${tile.clippedText.join('|')}`).join(' ; ')}`);
 
-            if (!NOT_IN_LOTE_1[decision]) expect(screens, `rolagem de ${decision}: ${initial.scrollHeight}px de ${initial.clientHeight}px`).toBeLessThanOrEqual(SCROLL_LIMIT[decision] ?? MAX_SCROLL_SCREENS);
+            if (!NOT_IN_LOTE_1[decision]) expect(screens, `rolagem de ${decision}: ${initial.scrollHeight}px de ${initial.clientHeight}px`).toBeLessThanOrEqual(MAX_SCROLL_SCREENS);
             expect(clipped.map((tile) => `${tile.name}: ${tile.clippedText.join('|')}`), `texto cortado em ${decision}`).toEqual([]);
             expect(leaking.map((tile) => `${tile.name}: ${tile.leaks}`), `elementos vazando em ${decision}`).toEqual([]);
             if (!NOT_IN_LOTE_1[decision]) expect(worst, `a amostra mais alta de ${decision}`).toBeLessThanOrEqual(initial.clientHeight * MAX_TILE_HEIGHT_RATIO);
@@ -250,6 +249,154 @@ test.describe('1440×900: rolagem e amostras de cada decisão', () => {
         expect(hint, 'a dica da barra da prévia existe a 1440').not.toBeNull();
         expect(hint?.ellipsis, 'sem reticências').toBe(false);
         expect(hint?.truncated, 'sem texto escondido').toBe(false);
+        await page.close();
+    });
+});
+
+/**
+ * O custo de abrir a decisão Tema (passo 2.3): o tempo do clique até o primeiro cartão de tema pintado e, com todas as
+ * miniaturas desenhadas (rolando a coluna até o fim), a memória do JavaScript depois de coletar o lixo e o número de nós
+ * do DOM. Cada rodada abre uma página nova; vale a mediana.
+ */
+const COST_RUNS = 3;
+const median = (values: number[]): number => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)];
+
+const measureThemeCost = async (): Promise<{ openMs: number; heapMb: number; nodes: number; cards: number }> => {
+    const page = await open(1440, 900);
+    const session = await page.context().newCDPSession(page);
+    await session.send('HeapProfiler.enable');
+    const opened = await page.evaluate(() => new Promise<number>((resolve) => {
+        const started = performance.now();
+        const button = Array.from(document.querySelectorAll<HTMLButtonElement>('button')).find((node) => /^Tema/.test((node.textContent ?? '').trim()));
+        button?.click();
+        const poll = (): void => {
+            if (document.querySelector('[data-theme-id]')) requestAnimationFrame(() => requestAnimationFrame(() => resolve(performance.now() - started)));
+            else requestAnimationFrame(poll);
+        };
+        poll();
+    }));
+    await revealEverything(page);
+    await page.evaluate(async () => {
+        const scroller = (document.querySelector('[data-testid^="decision-"]') as HTMLElement).closest('.overflow-y-auto, .overflow-auto') as HTMLElement;
+        for (let top = 0; top <= scroller.scrollHeight; top += scroller.clientHeight / 2) { scroller.scrollTop = top; await new Promise((resolve) => setTimeout(resolve, 80)); }
+    });
+    await page.waitForTimeout(800);
+    await session.send('HeapProfiler.collectGarbage');
+    const metrics = await session.send('Performance.getMetrics').catch(() => ({ metrics: [] as Array<{ name: string; value: number }> }));
+    await session.send('Performance.enable');
+    const heap = (await session.send('Performance.getMetrics')).metrics.find((metric) => metric.name === 'JSHeapUsedSize')?.value ?? metrics.metrics.find((metric) => metric.name === 'JSHeapUsedSize')?.value ?? 0;
+    const counts = await page.evaluate(() => ({ nodes: document.querySelectorAll('*').length, cards: document.querySelectorAll('[data-theme-id]').length }));
+    await page.close();
+    return { openMs: opened, heapMb: heap / 1048576, nodes: counts.nodes, cards: counts.cards };
+};
+
+test.describe('custo da miniatura de tema', () => {
+    test('abrir a decisão Tema: tempo, memória e nós, medidos', async () => {
+        test.setTimeout(240_000);
+        const runs: Array<{ openMs: number; heapMb: number; nodes: number; cards: number }> = [];
+        for (let run = 0; run < COST_RUNS; run += 1) runs.push(await measureThemeCost());
+        const cost = { openMs: Math.round(median(runs.map((item) => item.openMs))), heapMb: Number(median(runs.map((item) => item.heapMb)).toFixed(1)), nodes: median(runs.map((item) => item.nodes)), cards: runs[0].cards, runs };
+        report.narrow.themeCost = cost;
+        console.log(`[plan-161] custo do Tema ${JSON.stringify({ ...cost, runs: undefined })}`);
+        const baseline = process.env.SARAK_CUSTO_161_ANTES ? JSON.parse(process.env.SARAK_CUSTO_161_ANTES) as { openMs: number } : null;
+        if (baseline) expect(cost.openMs, `abrir o Tema custa no máximo o dobro de antes (${baseline.openMs} ms)`).toBeLessThanOrEqual(baseline.openMs * 2);
+        expect(cost.cards).toBeGreaterThan(0);
+    });
+});
+
+/** As larguras da coluna de decisões que o administrador alcança: o mínimo, o padrão e uma coluna arrastada larga. */
+const COLUMN_WIDTHS = [280, 320, 480, 600] as const;
+/** O nome do tema cabe em até tantas linhas, e nenhuma palavra se parte no meio (a medida de antes era uma letra por linha). */
+const MAX_NAME_LINES = 4;
+
+test.describe('o nome do tema na galeria', () => {
+    for (const width of COLUMN_WIDTHS) {
+        test(`com a coluna em ${width}px o nome não quebra uma letra por linha nem se corta`, async () => {
+            const page = await open(1440, 900);
+            await page.evaluate((value) => (document.querySelector('[style*="--sarak-design-engine-sidebar-w"]') as HTMLElement).style.setProperty('--sarak-design-engine-sidebar-w', `${value}px`), width);
+            await page.getByRole('button', { name: /^Tema/ }).click();
+            await page.getByRole('heading', { level: 2, name: 'Tema' }).waitFor();
+            await page.locator('[data-theme-id]').first().waitFor();
+            const names = await page.evaluate(() => Array.from(document.querySelectorAll<HTMLElement>('[data-theme-id]')).map((button) => {
+                const tile = button.closest('[data-option-tile]') as HTMLElement;
+                const heading = tile.querySelector('h3') as HTMLElement;
+                const line = parseFloat(getComputedStyle(heading).lineHeight) || heading.getBoundingClientRect().height;
+                const words = (heading.textContent ?? '').split(/[\s-]+/);
+                const probe = document.createElement('span');
+                probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font:inherit;letter-spacing:inherit';
+                heading.appendChild(probe);
+                let longest = 0;
+                words.forEach((word) => { probe.textContent = word; longest = Math.max(longest, probe.getBoundingClientRect().width); });
+                probe.remove();
+                return { name: heading.textContent ?? '', lines: Math.round(heading.getBoundingClientRect().height / line), cut: heading.scrollWidth > heading.clientWidth + 1, room: heading.clientWidth, longestWord: Math.ceil(longest), tile: Math.round(tile.getBoundingClientRect().width) };
+            }));
+            const columns = await columnsOf(page);
+            report.narrow[`themeNames${width}`] = { columns, widest: Math.max(...names.map((item) => item.tile)), worstLines: Math.max(...names.map((item) => item.lines)) };
+            console.log(`[plan-161] nome do tema a ${width}px: ${JSON.stringify(report.narrow[`themeNames${width}`])}`);
+            expect(names.length).toBeGreaterThan(0);
+            expect(names.filter((item) => item.cut).map((item) => item.name), 'nome cortado').toEqual([]);
+            expect(names.filter((item) => item.lines > MAX_NAME_LINES).map((item) => `${item.name}: ${item.lines} linhas`), `nome em mais de ${MAX_NAME_LINES} linhas`).toEqual([]);
+            expect(names.filter((item) => item.longestWord > item.room + 1).map((item) => `${item.name}: palavra de ${item.longestWord}px em ${item.room}px`), 'palavra partida no meio').toEqual([]);
+            await page.close();
+        });
+    }
+});
+
+/** O vazio máximo, em px de tela, entre a barra desenhada e a borda de baixo da opção na amostra larga da Barra de topo. */
+const MAX_TOPBAR_VOID = 6;
+
+test.describe('Barra de topo: a amostra larga sem vazio sob a barra e com o item ativo visível', () => {
+    test('nenhuma das amostras deixa espaço sob a barra, e "Pedidos" aparece em todas', async () => {
+        test.setTimeout(120_000);
+        const page = await open(1440, 900);
+        await page.getByRole('button', { name: /^Layout/ }).click();
+        await page.getByRole('heading', { level: 2, name: 'Layout' }).waitFor();
+        await revealEverything(page);
+        await page.locator('[data-preset-group="topbar"]').scrollIntoViewIfNeeded();
+        await page.waitForTimeout(1500);
+        const tiles = await page.evaluate(() => Array.from(document.querySelectorAll<HTMLElement>('[data-preset-group="topbar"] [data-option-tile]')).map((tile) => {
+            const sample = tile.querySelector('[data-option-sample]') as HTMLElement;
+            const bar = tile.querySelector('[data-testid="bar-sample"]') as HTMLElement | null;
+            const active = tile.querySelector<HTMLElement>('[aria-current="page"]');
+            const rect = active?.getBoundingClientRect();
+            return {
+                name: tile.querySelector('h3')?.textContent?.trim() ?? '',
+                empty: bar ? Math.round((sample.getBoundingClientRect().bottom - bar.getBoundingClientRect().bottom) * 10) / 10 : -1,
+                activeVisible: Boolean(active && rect && rect.width > 0 && getComputedStyle(active).visibility !== 'hidden'),
+            };
+        }));
+        report.narrow.topbarSamples = tiles;
+        console.log('[plan-161] escondidos', tiles.filter((tile) => !tile.activeVisible).map((tile) => tile.name).join('; '));
+        console.log(`[plan-161] amostras de topbar: ${tiles.length}, vazio máx ${Math.max(...tiles.map((tile) => tile.empty))} px, ativo visível ${tiles.filter((tile) => tile.activeVisible).length}`);
+        expect(tiles.length, 'as amostras da Barra de topo (8 no registro)').toBe(8);
+        expect(tiles.filter((tile) => tile.empty < -MAX_TOPBAR_VOID || tile.empty > MAX_TOPBAR_VOID).map((tile) => `${tile.name}: ${tile.empty}px`), 'vazio sob a barra').toEqual([]);
+        expect(tiles.filter((tile) => !tile.activeVisible).map((tile) => tile.name), 'item ativo escondido').toEqual([]);
+        await page.close();
+    });
+});
+
+test.describe('390×844: a galeria de temas', () => {
+    test('o cartão do tema cabe na coluna, com o nome inteiro', async () => {
+        const page = await open(390, 844);
+        await page.getByRole('button', { name: /^Tema/ }).click();
+        await page.getByRole('heading', { level: 2, name: 'Tema' }).waitFor();
+        await page.locator('[data-theme-id]').first().waitFor();
+        await page.locator('[data-theme-id]').first().scrollIntoViewIfNeeded();
+        await page.waitForTimeout(500);
+        const geometry = await page.evaluate(() => {
+            const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-theme-id]')).map((button) => button.closest('[data-option-tile]') as HTMLElement);
+            const names = cards.map((card) => {
+                const heading = card.querySelector('h3') as HTMLElement;
+                return { cut: heading.scrollWidth > heading.clientWidth + 1, lines: Math.round(heading.getBoundingClientRect().height / (parseFloat(getComputedStyle(heading).lineHeight) || 16)) };
+            });
+            return { cards: cards.length, width: Math.round(cards[0].getBoundingClientRect().width), cut: names.filter((item) => item.cut).length, worstLines: Math.max(...names.map((item) => item.lines)), pageScroll: document.documentElement.scrollWidth, viewport: window.innerWidth };
+        });
+        report.narrow.themes390 = geometry;
+        console.log(`[plan-161] temas a 390: ${JSON.stringify(geometry)}`);
+        await snap(page, 'estreito-tema.png', 'Decisão Tema a 390×844.');
+        expect(geometry.cut, 'nome cortado').toBe(0);
+        expect(geometry.worstLines, 'nome em poucas linhas').toBeLessThanOrEqual(MAX_NAME_LINES);
+        expect(geometry.pageScroll, 'sem rolagem horizontal da página').toBeLessThanOrEqual(geometry.viewport);
         await page.close();
     });
 });

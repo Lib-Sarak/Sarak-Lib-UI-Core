@@ -384,3 +384,124 @@ Para o lote 2: a amostra larga da Barra de topo deixa um vazio sob a barra (o qu
 cartão, se couber no lote.
 
 **Lote 1 fechado. Status da plan: 🟡 Em execução** (lote 2).
+
+---
+
+## Resumo da execução (lote 2) — 2026-11-17
+
+**Resultado:** Concluído com pendências (build completo para em `guide:check` por causa da plan-159; ok do dono na prévia pendente)
+
+**Estado do worktree ao iniciar**
+```
+ M dist/sarak.css
+```
+(A plan-159 passou a alterar o worktree durante a execução; nada dela foi tocado.)
+
+**O que foi feito**
+- `PresetCard.tsx`: a miniatura passa a ser o sistema real (`SarakAppChrome`, barra lateral ou de topo conforme o tema, e `SarakCard` reais) dentro de um escopo de variáveis do tema, num quadro de 640×400 reduzido à opção. Só monta quando a opção entra na área visível (`LazyWhenVisible`), e é dentro dela que a paleta é resolvida. O cartão é um `OptionTile`: nome em `text-xs`, sem caixa alta; o selo de navegação saiu (a barra desenhada já mostra qual é), e o nome acessível é só o do tema.
+- Escopo enxuto (`MiniatureScope`): variáveis e contexto de design, sem a marca de troca de tema, o fundo e o CSS responsivo do `SarakDesignScope`. Regra única (`MINIATURE_STILL_CSS`, escrita pela galeria) desliga animação e transição por dentro das miniaturas: o tema traz animação infinita (`pulse`, `stars-twinkle`, `nebula-drift`, `aurora-flow`) que, em ~20 miniaturas, fazia a troca de tema passar de 32 para 117-244 recálculos de estilo (medido: com a regra, `troca-de-tema` passa nos dois modos).
+- `PresetCardPending.tsx`: mesmo `OptionTile` e mesmo quadro (amostra de cor), `aria-busy` e `data-theme-id` no botão.
+- `OptionTile.tsx` ganha `frameWidth`, `buttonProps` e `peekWhenMounted`; `OptionSampleFrame.tsx` ganha `width` e `TOPBAR_FRAME_WIDTH`.
+- Galeria em `THEME_GALLERY_GRID` (colunas de no mínimo 5,5 rem: três por linha na coluna padrão); sai o atraso escalonado de entrada (`index`).
+- Barra de topo: o quadro da amostra larga passa a 640×112, a proporção do desenho (`PresetGroupCatalog.tsx`, `OptionSampleFrame.tsx`); sem vazio sob a barra.
+- `presetCardGeometry.ts` removido (só a miniatura antiga o usava).
+- Spec do lote: limite do Tema baixado para 2,5; casos novos de custo (tempo, heap, nós), nome do tema em 4 larguras de coluna, Barra de topo (vazio e item ativo) e galeria a 390 px.
+- Specs adaptados ao cartão novo: `plan-122-preview-mode` (o fundo da miniatura é o `--sarak-bg-base`, o mesmo da prévia), `plan-160-previa-mostra-a-opcao` (o cartão de tema também é `data-option-tile`; o alvo é um só). `PresetsCatalog.test.tsx`: mock de `useDesignVariables` devolve objeto estável (o mock devolvia um novo a cada chamada e o escopo entrava em laço) e snapshot regravado.
+
+**Arquivos alterados** (meus): `Canvas/components/{PresetCard,PresetCardPending,OptionTile,OptionSampleFrame,PresetGroupCatalog,PresetsCatalog}.tsx`, `Canvas/panelResponsive.presets.ts`, `presetCardGeometry.ts` (removido), testes `PresetCard`, `PresetCard.memo`, `PresetCardPending`, `OptionTile`, `OptionSampleFrame`, `PresetsCatalog` (+snapshot), `panelResponsive.presets`; `browser-tests/{plan-161-catalogo-proporcional,plan-122-preview-mode,plan-160-previa-mostra-a-opcao}.spec.ts`. `dist/*` e `src/buildInfo.ts`/`src/core/Provider/buildInfo.ts` mudaram pelo build.
+
+**Verificações executadas**
+- Custo do Tema (passo 2.3), mediana de 3 rodadas, 25 cartões, 1440×900: antes 879 ms / 44,8 MB / 2.222 nós; depois 761 ms (0,87×, limite 2×) / 45,1 MB / 2.551 nós.
+- Rolagem (altura da coluna 660 px): Tema 9.677 → **1.076 px (1,63×)**; Cores 6,11× (plan-164); Fontes 2,31; Forma 2,43; Componentes 2,05; Layout 1,20. Nenhum cortado/vazando.
+- Nome do tema com a coluna em 280/320/480/600 px: no máximo 4/3/3/3 linhas, nenhum cortado, nenhuma palavra partida. A 390 px: antes 25 de 25 cortados e até 26 linhas; depois 0 e 3 linhas.
+- Barra de topo: 8 amostras no registro (não 9), vazio máx. 0 px, "Pedidos" visível nas 8 (o caso espera 1,5 s após revelar, pois o "Mais" da plan-159 assenta depois do desenho; 3 execuções seguidas verdes).
+- Playwright, rodada 1: `login-theme-application`, `plan-141`, `plan-160-moldura-e-largura` verdes; falharam `plan-122:63`, `plan-160-previa` (Tema) e `troca-de-tema:235` ×2 — corrigidos como acima; rodada 2 (`plan-122`, `plan-160-previa`, spec do lote): 27 verdes e o caso de topo, depois ajustado e verde; `troca-de-tema` rerrodado: 2 verdes. Não reexecutei `login-theme-application`, `plan-141` e `plan-160-moldura` depois da regra de animação e do escopo enxuto.
+- Vitest: `PresetCard*`, `PresetCardPending`, `OptionTile`, `OptionSampleFrame`, `PresetsCatalog`, `panelResponsive` verdes. `src/features/DesignEngine` falha em 5 casos que não são deste lote: snapshot do `AtmosphereCatalog` (atributos de preferências da plan-159), `ThemeGlobalSettings` ×2, `ThemeDecisionView` ×1, `useThemeCustomizationData` ×1 (rótulos e preferências da 159). Vitest e Playwright em rodadas separadas.
+- `npm run build`: falha em `guide:check` (kit do consumidor defasado em 5 arquivos pelos tokens da 159; não regenerei os kits, que são compartilhados). Rodei o resto da cadeia sem `guide:check` (build:js, fontes, tipos públicos, css, optional-peers): verde.
+- Controle em `HEAD` (cópia fora do repositório, só para o "antes" a 390 px): `git status --short` idêntico antes e depois (fora de `dist/`), `node_modules` intacto, cópia e junção removidas.
+
+**Critérios de aceite**
+- [x] Miniatura = prévia real com o tema; nome proporcional; custo dentro do limite — evidência acima.
+- [x] Tema abaixo de 2,5 alturas (1,63) com a galeria aberta.
+- [x] Nome sem uma letra por linha em nenhuma largura da grade.
+- [x] Amostra larga da Barra de topo sem vazio, "Pedidos" visível.
+- [ ] Prévia em `C:	mp\sarak-previa-161\index.html` — refeita (Tema antes/depois a 1440 e 390, tabela de rolagem, custo); aguarda o ok do dono.
+- Critérios dos lotes 3 a 5: fora deste lote. Suíte completa, `tsc` e `cromo-css-real:check`: do revisor.
+
+**Decisões e suposições**
+- O selo "sidebar"/"topbar" saiu do cartão em vez de mudar de lugar: a miniatura já mostra a barra.
+- Miniatura em 640×400 (3 por linha, ~91 px): fica um panorama de cores e formas, não texto legível; o ganho de rolagem vem disso.
+- A regra que congela animação mora na galeria (um `<style>` escrito uma vez) e usa `!important`; é a única forma de vencer a animação do tema por dentro de um escopo.
+- Não alterei o orçamento de 32 recálculos de `troca-de-tema`: a causa era animação nas miniaturas e foi removida.
+
+**Achados fora do escopo (não corrigidos)**
+- `guide:check` vermelho e as 5 falhas de unidade acima pertencem à plan-159; o snapshot do `AtmosphereCatalog` também depende dela.
+- `src/buildInfo.ts` e `src/core/Provider/buildInfo.ts` aparecem alterados pelo `generate-build-info` do build.
+- A amostra de Barra lateral (Layout) tem o mesmo descompasso de quadro da Topbar (quadro 280×240 contra o desenho 520×320); não medi vazio ali.
+
+**Pendências / riscos**
+- Ok do dono na prévia.
+- `login-theme-application`, `plan-141` e `plan-160-moldura` não foram reexecutados depois do último ajuste (regra de animação e escopo enxuto); `docs/migracoes.md` não tocado; `npm run dev-kit` não rodado.
+
+## Veredito — 2026-11-17 — lote 2 — 🔵 Em correção (um item objetivo; ele barra o commit)
+
+**Como medi:** as plans 159 e 161 (lote 2) dividem o worktree e saem no mesmo commit, então medi as duas juntas.
+- **Cópia fora do repositório** (`HEAD` + modificados + não rastreados, menos `dist/`, sem `presetCardGeometry.ts`), com
+  `npm run build` completo: exit 0. Na mesma cópia, a bateria de navegador `topbar-mais`, `barra-de-topo-estreita`,
+  `cromo-css-real`, `tom-contrastante-legivel`, `plan-141`, `preferencias-discretas`, `plan-161-catalogo-proporcional`,
+  `login-theme-application`, `plan-122-preview-mode`, `plan-160-previa-mostra-a-opcao`, `plan-160-moldura-e-largura` e
+  `troca-de-tema` deu **151 de 151 verdes**. Isso inclui os três specs que o resumo da 161 não reexecutou.
+- **Gates do commit** (Anel 1 e `check-audit-baseline --with-tsc`): baseline sem regressão. Um vermelho real: `css-important:check`
+  (achado da 161). O `plan-index:check` é do revisor, e o `trail-citation:check` só cai na cópia sem `.git`.
+- **Unidade:** `npx vitest run` de `Navigation`, `Layout`, `core/Provider`, `core/Design` e `features/DesignEngine`. Na cópia,
+  os mocks deixaram de valer em 44 arquivos (186 falhas que não se repetem fora dela). Os 44 rodados de novo **no worktree real**: 42
+  verdes e 2 vermelhos, os snapshots do `PreviewCanvas` e do `AtmosphereCatalog` (achado da 159).
+- **Segredo** (Anel 0), sobre as linhas adicionadas e os não rastreados fora de `dist/`: 0.
+- **Diff lido:** `PresetCard.tsx` (a miniatura é o `SarakAppChrome` e o `SarakCard` reais, num escopo enxuto e só quando visível),
+  `PresetCardPending.tsx`, `OptionTile.tsx`, `OptionSampleFrame.tsx`, `PresetGroupCatalog.tsx`, `PresetsCatalog.tsx` e
+  `panelResponsive.presets.ts`.
+- **Prévia** (`C:\tmp\sarak-previa-161\index.html`) conferida: miniaturas legíveis como panorama, três por linha, nome sem uma letra
+  por linha a 1440 e a 390 px. Rolagem do Tema em 1,63 alturas. O custo de abrir o Tema fica em 0,87× o de antes.
+
+**Achado**
+1. **`css-important:check` vermelho** (`PresetCard.tsx:28`, `MINIATURE_STILL_CSS`): a regra que congela a animação das
+   miniaturas monta um `!important` em TypeScript. O gate roda no gancho de commit e derruba o commit das duas plans.
+   - Congele a animação sem `!important`. Um caminho a medir: o token `reducedMotion` (`schema/engineering.ts`) no design de cada
+     miniatura, se ele de fato desliga as animações do tema (`pulse`, `stars-twinkle`, `nebula-drift`, `aurora-flow`). Outro: uma
+     regra injetada sem camada e com especificidade suficiente. Escolha a mais simples que passe.
+   - Critério: `css-important:check` verde e `troca-de-tema.spec.ts` verde nos dois modos, sem mexer no orçamento de 32 recálculos.
+
+**Atribuição:** os snapshots do `PreviewCanvas` e do `AtmosphereCatalog` não são desta plan. São da 159 (as duas variáveis de
+preferência dela), e ela os corrige.
+
+**Como fechar** (verificação objetiva): `css-important:check` e `troca-de-tema.spec.ts` (com `npm run build`). O revisor reroda
+só esses dois.
+
+**Commit:** junto com o lote 2 da `plan-159`, depois das duas correções e do ok do dono nas duas prévias.
+
+**Status da plan: 🔵 Em correção.**
+
+### Correção do veredito de 2026-11-17 — sem `!important`
+
+- `MINIATURE_STILL_CSS` (`PresetCard.tsx`) perdeu o `!important`; a regra segue sem camada, que vence o CSS das camadas. O token `reducedMotion` não serve: é do `:root`, não de uma miniatura.
+- `npm run css-important:check`: OK. `npm run build`: completo, verde. `troca-de-tema.spec.ts`: 4 de 4 (uma rodada anterior reprovou 1 caso de mover o mouse, 1104 > 868 elementos; em 2 repetições isolada e na rodada inteira seguinte passou, sem mudar código).
+
+## Veredito — 2026-11-17 — lote 2, correção — 🟢 Aprovado no código; o lote fecha com o ok do dono na prévia
+
+**Como medi:** só o que o achado pede, no worktree real.
+- `npm run css-important:check`: OK.
+- `npm run build` refeito pelo revisor, porque o `dist/` era anterior à última edição do `PresetCard.tsx`: exit 0.
+- `troca-de-tema.spec.ts` com `--repeat-each=2`: 8 de 8 nos dois modos, sem a falha intermitente que o resumo cita.
+
+**Antes do commit** (das duas plans juntas): Anel 1 e `check-audit-baseline --with-tsc` sem regressão, e varredura de segredo
+(Anel 0) sobre as linhas adicionadas e os não rastreados fora de `dist/`: 0.
+
+**Falta, para fechar o lote 2:** o ok do dono na prévia (`C:	mpsarak-previa-161index.html`).
+
+**Status da plan: 🟠 Em revisão** até o ok do dono.
+
+## Nota do revisor — 2026-11-17 — ok do dono na prévia do lote 2
+
+O dono aprovou a prévia do lote 2 (`C:\tmp\sarak-previa-161\index.html`).
+
+**Lote 2 fechado. Status da plan: 🟡 Em execução** (lote 3). O commit sai junto com o lote 2 da `plan-159`.

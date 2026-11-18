@@ -22,17 +22,6 @@ export interface ShellPreferenceRowContext {
 }
 
 /**
- * Um item de menu por LINHA (label + controle), para as duas preferências
- * que não têm átomo próprio de navegação (`fontSize`/`navigationStyle`).
- */
-const PreferenceMenuRow: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
-    <div className="flex flex-wrap items-center justify-between gap-[var(--sarak-layout-gap-sm,12px)] px-[var(--sarak-layout-gap-sm,12px)] py-[var(--sarak-layout-gap-sm,8px)]">
-        <span className="text-sm text-[var(--text-muted,rgba(242,246,251,0.55))]">{label}</span>
-        {children}
-    </div>
-);
-
-/**
  * Dispatcher central — a ÚNICA função que decide qual controle representa
  * cada preferência dentro do ⚙ "Preferências" ou do drawer mobile (onde tudo
  * que é oferecido é listado sem distinção fixada/no-menu — Spec 05 §2.3).
@@ -54,17 +43,9 @@ export const renderShellPreferenceRow = (id: SarakPreferenceId, ctx: ShellPrefer
                 />
             );
         case 'fontSize':
-            return (
-                <PreferenceMenuRow key={id} label={ctx.t('fontSizeGroupAriaLabel')}>
-                    <ShellFontSizeControl />
-                </PreferenceMenuRow>
-            );
+            return <ShellFontSizeControl key={id} variant="menu" />;
         case 'navigationStyle':
-            return (
-                <PreferenceMenuRow key={id} label={ctx.t('preferenceNavigationStyleRowLabel')}>
-                    <ShellNavigationStyleControl />
-                </PreferenceMenuRow>
-            );
+            return <ShellNavigationStyleControl key={id} variant="menu" />;
         case 'language':
             return <SarakShellLanguageSelector key={id} variant="vertical" />;
         default:

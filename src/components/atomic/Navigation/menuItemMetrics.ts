@@ -11,6 +11,16 @@ export const VERTICAL_MENU_ITEM_CLASSES: Readonly<Record<NavigationItemDensity, 
     spacious: 'gap-4 px-4 py-3',
 };
 
+/**
+ * A métrica do item da barra do topo por densidade (`topbarItemDensity`): recuo, vão e respiro vertical. É a fonte única do
+ * `SarakMenuItem` horizontal e dos grupos de preferência fixados na barra, que ganham a altura de um item de navegação.
+ */
+export const HORIZONTAL_MENU_ITEM_CLASSES: Readonly<Record<NavigationItemDensity, string>> = {
+    compact: 'gap-1 px-3 py-1',
+    comfortable: 'gap-2 px-4 py-1.5',
+    spacious: 'gap-3 px-5 py-2',
+};
+
 /** O texto da linha de menu (14 px numa linha de 20 px). */
 export const MENU_ITEM_TEXT_CLASS = 'text-sm';
 // sarak-allow-hardcode: o tamanho e a linha da classe `text-sm` acima, que nenhum token declara.
@@ -56,3 +66,9 @@ export const VERTICAL_NAV_SECTION_GAP = `calc(${VERTICAL_NAV_GAP} * 2)`;
  */
 export const verticalMenuItemInset = (density: NavigationItemDensity): string =>
     `calc(${VERTICAL_NAV_PADDING} + ${verticalMenuItemSpacing(density, 'px')})`;
+
+/** O respiro vertical (`py`) do item da barra do topo na densidade dada, em rem — a altura do grupo de preferência fixado. */
+export const horizontalMenuItemBlockPadding = (density: NavigationItemDensity): string => {
+    const match = (HORIZONTAL_MENU_ITEM_CLASSES[density] ?? HORIZONTAL_MENU_ITEM_CLASSES.comfortable).match(/(?:^|\s)py-([0-9.]+)(?:\s|$)/);
+    return `${Number(match?.[1] ?? 0) * SPACING_STEP_REM}rem`;
+};

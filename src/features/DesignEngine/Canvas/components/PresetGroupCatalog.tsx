@@ -9,7 +9,7 @@ import { usePresetText } from '../../hooks/usePresetText';
 import { CATALOG_GRID, WIDE_SAMPLE_GRID } from '../panelResponsive.presets';
 import { CuratedGrid } from './CuratedGrid';
 import { OptionTile } from './OptionTile';
-import { SAMPLE_FRAME_HEIGHT } from './OptionSampleFrame';
+import { SAMPLE_FRAME_HEIGHT, TOPBAR_FRAME_WIDTH } from './OptionSampleFrame';
 import { PresetSample } from './PresetSamples';
 import { SampleScope } from './SampleScope';
 import type { PeekHandler } from './peek';
@@ -90,7 +90,7 @@ const Tile: React.FC<PresetGroupCatalogProps & { preset: ComponentPreset; kind: 
         : <SampleScope draft={shownDraft} tokens={tokens} mode={currentMode}><PresetSample kind={kind} preset={preset} /></SampleScope>
     ), [kind, shownDraft, currentMode, tokens, groupId, preset]);
     return (
-        <OptionTile name={shown.name} description={shown.description} frameHeight={groupId === 'topbar' ? SAMPLE_FRAME_HEIGHT.topbar : kind === 'input' ? SAMPLE_FRAME_HEIGHT.input : SAMPLE_FRAME_HEIGHT.default} onApply={() => onApplyPreset(preset.design, true)} peekTokens={() => preset.design} onPeek={onPeek}>
+        <OptionTile name={shown.name} description={shown.description} frameWidth={groupId === 'topbar' ? TOPBAR_FRAME_WIDTH : undefined} frameHeight={groupId === 'topbar' ? SAMPLE_FRAME_HEIGHT.topbar : kind === 'input' ? SAMPLE_FRAME_HEIGHT.input : SAMPLE_FRAME_HEIGHT.default} onApply={() => onApplyPreset(preset.design, true)} peekTokens={() => preset.design} onPeek={onPeek}>
             <div ref={sampleRef}>{sample}</div>
         </OptionTile>
     );
