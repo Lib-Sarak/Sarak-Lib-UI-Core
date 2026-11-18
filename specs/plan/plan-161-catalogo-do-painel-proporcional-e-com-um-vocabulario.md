@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fazer o catálogo do painel proporcional, curto e com um vocabulário só"
 objetivo: "Fazer cada decisão do painel caber em cerca de duas telas, com amostras proporcionais (Personalidade em quadrado com o nome, tema como miniatura da prévia real, fontes na mesma grade), presets de card gerados de cada tema, texturas do card e do fundo separadas pelo nome, e um vocabulário único com os termos técnicos em inglês"
 dominio: "Painel de customização / Catálogo de opções"
-status: "🟠 Em revisão"
+status: "🟡 Em execução"
 prioridade: "Média"
 tags: ["plan", "painel", "catalogo", "amostras", "presets", "vocabulario"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[09-temas-e-presets]]", "[[10-seguranca-e-acessibilidade]]", "[[07-responsividade-e-multidispositivo]]"]
@@ -902,3 +902,17 @@ causa é o comando de commit do revisor, que adicionava por diretório. O mesmo 
 **Commit:** depois do ok, um commit só para o lote 4, que reúne a parte do `1b16329c` e o worktree.
 
 **Status da plan: 🟠 Em revisão** até o ok do dono.
+
+## Nota do revisor — 2026-11-18 — lote 4 commitado; um caso de navegador entra no lote 5
+
+O dono commitou o lote 4 (`d158b55e`, que substituiu o `1b16329c`). Tomo isso como o ok na prévia. **Lote 4 fechado.**
+
+**Para o lote 5**, junto do item do nome do caso `:666`:
+- `escolha-no-painel.spec.ts:220` ("trocar o tema não remonta escopo…") falha no `HEAD` `d158b55e`, com build, por "a cena tem amostra
+  fora da área visível" (0).
+- Desde o lote 2, a miniatura de tema só é desenhada quando entra na área visível. Por isso a cena do caso não tem mais escopo fora
+  da tela, e a premissa do caso ficou velha.
+- Critério: o caso mede de novo o que promete. Uma amostra fora da área visível não reescreve estilo, ou nem monta escopo, e o
+  caso afirma isso. Verde nos dois modos de execução do spec.
+
+**Status da plan: 🟡 Em execução** (lote 5, depois do lote 4 da `plan-159`).

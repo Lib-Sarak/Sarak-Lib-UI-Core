@@ -86,7 +86,7 @@ const PaletteOption: React.FC<PaletteOptionProps> = (props) => {
     );
 };
 
-const FILTER_CLASS = 'rounded-full border px-2 py-0.5 text-[length:var(--sarak-type-scale-caption,12px)] ';
+const FILTER_CLASS = 'rounded-full border px-2 py-0.5 text-[length:var(--sarak-type-scale-caption,12px)] hover:bg-[var(--theme-surface)] hover:text-[var(--theme-title)] ';
 const FILTER_ON = 'border-[var(--theme-primary)] bg-[var(--theme-surface)] font-semibold text-[var(--theme-title)]';
 const FILTER_OFF = 'border-[var(--theme-border)] text-[var(--theme-muted)]';
 

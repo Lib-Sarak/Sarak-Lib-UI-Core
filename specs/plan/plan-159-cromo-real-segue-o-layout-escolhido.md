@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fazer o cromo real seguir o Layout escolhido, com preferências discretas e uma decisão própria para as barras"
 objetivo: "Fazer toda opção de Layout que o administrador aplica aparecer no cromo real ou dizer por que não aparece, com a Topbar sem item escondido, a barra de tom contrastante legível e os controles de preferência discretos, com P, M e G configuráveis em relação ao tamanho base do tema, e reunir as barras numa decisão própria, com um tom que vale para as duas e um interruptor da troca lateral/topo"
 dominio: "Cromo / Preferências do usuário"
-status: "🟡 Em execução"
+status: "🟠 Em revisão"
 prioridade: "Alta"
 tags: ["plan", "cromo", "topbar", "sidebar", "preferencias", "painel"]
 relacionados: ["[[05-cromo-e-slots]]", "[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[016-preferencias-do-usuario-separadas-do-tema]]", "[[014-cromo-do-modo-ui-kit-com-widgets-por-padrao]]"]
@@ -950,3 +950,193 @@ Com isto fecham o lote 3 e as correções 1 a 3, e a prévia já tem o ok do don
 **Próximo:** lote 4, depois do lote 4 da `plan-161`, porque os dois mexem em `design-decisions.json`.
 
 **Status da plan: 🟡 Em execução** (lote 4).
+
+## Resumo da execução (lote 4) — 2026-11-18
+
+**Resultado:** Concluído com pendências (o lote só fecha com o ok do dono na prévia; limite do 4.4 abaixo).
+
+**Estado do worktree ao iniciar**
+Só `dist/` (build regenerado, sujo antes de eu começar: `M dist/BUILD_INFO.json`, `M dist/index.*`, `M dist/sarak*.css`, chunks `D`/`??`). Nenhum arquivo de `src/`, `specs/` ou `browser-tests/` modificado. Fotografia completa em `scratchpad/foto-lote4.txt`.
+
+**O que foi feito**
+- **4.1 Decisão "Barras".** `design-decisions.json`: decisão `bars` entre Componentes e Layout (grupos `barTone`, `sidebar`, `topbar`; as cinco perguntas; `tokenScope: bars`). O Layout ficou com `contentWidth` e `globalBlock` (`tokenScope: notBars`). `decisions.ts` + `barScope.ts` + `regroupByQuestion.ts` (extraídos pelo teto de 250 linhas): cada token é de uma só decisão (`isBarToken` = citado numa pergunta ou reclamado por `fineMatch`); o bloco global do Layout omite o que é de barra (`omitFromGlobal`). Entraram nas Barras `sidebarFooterBackground`, `zIndexSidebar` e `mobileNavigationStyle`; `maxContentWidth` saiu do "Onde fica a barra" para o Layout. Resumo da linha ("Lateral · Invertida · troca no menu") em `decisionSummary.ts`; o Layout resume a largura. Glifo, inspetor da prévia (`shell` → `bars`) e textos nos seis idiomas.
+- **4.2 Tom das duas barras.** Grupo de presets `barTone` (`bar-tone-neutral|surface|primary|secondary|inverse`, cada um grava `sidebarTone` e `topbarTone`), amostra pela orientação do rascunho (`PresetGroupCatalog.tsx`). Presets `sidebar-*`/`topbar-*` deixam de gravar tom; saíram `sidebar-brand`, `sidebar-inverted`, `topbar-brand`, `topbar-inverted` (só tom; a estrutura que sobrava repetia `sidebar-solid`/`topbar-solid`). `sidebar-gradient` ficou (o degradê é estrutura), sem tom. A Personalidade Corporativo, que citava `sidebar-inverted`, passou a gravar a estrutura em `extra` (borda none, blur 0, raio 10, ícone 20); todas as Personalidades já gravavam os dois tons em `extra`.
+- **4.3 Interruptor.** `NavigationSwitchControl.tsx`, na pergunta "Onde fica a barra" (`control: navigationSwitch`): grava `preferenceNavigationStylePosition` (`off` desligado; ligado = padrão do token, `menu`; quem já está em `menu`/`pinned` fica). Nenhum token novo.
+- **4.4 Tema que declara tons diferentes.** Nenhum valor de tema mudou. **Mudança de motor** (fora da lista da §3.1, necessária ao critério): `designChoices.ts` (`withoutDeclaredBarColors`, `chosenToneKeys`) e `overlayPreferences.ts` — o papel escolhido para uma barra, quando difere do que o tema declara, vence as cores de barra que o tema/host declaram, ao recompor as escolhas e na troca de modo. Sem isso o Sovereign Classic mantinha `#ddeced`/`#edecff` com qualquer tom.
+- `docs/migracoes.md` (entrada nova), `npm run guide`, `npm run dev-kit`.
+- **Prévia:** `C:\tmp\sarak-previa-159\index.html` (a do lote 3 em `index-lote3.html`).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/features/DesignEngine/config/design-decisions.json` | alterado | decisão `bars`; Layout magro |
+| `src/features/DesignEngine/utils/{decisions,decisionSummary}.ts` | alterado | `bars`, `tokenScope`, `control`, `omitFromGlobal`, resumos |
+| `src/features/DesignEngine/utils/{barScope,regroupByQuestion}.ts` | criado | extraídos de `decisions.ts` (teto de linhas) |
+| `src/features/DesignEngine/Main/components/NavigationSwitchControl.tsx` | criado | o interruptor |
+| `DecisionQuestionList.tsx`, `ThemeDecisionView.tsx`, `ThemeDecisionList.tsx`, `ThemeCustomizationTab.tsx`, `Canvas/components/PresetGroupCatalog.tsx` | alterado | interruptor na pergunta, omit do global, glifos, amostra do tom |
+| `src/core/Design/presets/components/{layout,registry,personalities}.ts` | alterado | presets sem tom, `BAR_TONE_PRESETS`, grupo `barTone` |
+| `src/core/i18n/{catalogEntries.layout,panelColumn,panelSummary}.ts`, `presetTexts/{layout,groups}.ts` | alterado | textos nos seis idiomas |
+| `src/core/Provider/utils/{designChoices,overlayPreferences}.ts` | alterado | tom escolhido vence a cor declarada |
+| Testes de unidade (`decisions`, `decisionSummary`, `barScope`, `regroupByQuestion`, `NavigationSwitchControl`, `NavigationSwitchEffect`, `designChoices`, `presetCatalog`, `presetsReadable`, `ThemeDecisionList/Options/View/SearchResults/SidebarContent`) | criado/alterado | casos novos e contagens |
+| `browser-tests/barras-decisao.spec.ts` + `fixtures/barras-entry.tsx` | criado | 4 casos no cromo real |
+| `browser-tests/{plan-140,plan-141,plan-160-previa,plan-161,escolha-no-painel}*.spec.ts` | alterado | lista de decisões e opções de barra que saíram |
+| `docs/migracoes.md`, `sarak-ui/*` | alterado | entrada e kit |
+
+**Verificações executadas**
+- `npx vitest run` por pastas, em rodadas separadas: `DesignEngine/utils` + `core/Design/presets/components` verdes depois dos ajustes (17 arquivos, 200 testes em `DesignEngine/utils`); `DesignEngine/Main` + `core/i18n` (os 3 vermelhos eram contagens de "seis decisões", corrigidas e verdes: 32/32 nos arquivos tocados); `DesignEngine/Canvas`+`hooks`+`Library` (336/337: o único vermelho, `PresetsCatalog` "grupo de temas", era timeout de 5 s sob carga e passa isolado, 18/18); `src/core` + `components/Layout` + `atomic/Navigation` (2627/2628: `switch-glass-border`, timeout sob carga, passa isolado 2/2). `tsc --noEmit` → 0.
+- Navegador (harness do código-fonte): `barras-decisao.spec.ts` 4/4 (lista e partição sem token repetido; tom "Cor da marca" e depois "Secundária" iguala lateral e topo do cromo real no Sovereign Classic, claro e escuro; interruptor com preferência gravada); `plan-141 -g defeito` 5/5; `plan-161 -g Barra de topo` 1/1; `escolha-no-painel -g Barra lateral` 1/1; `plan-140` 6/8.
+- O caso de tom reprovava antes: medido por sonda no código de antes — `replaceDesignChoice` com tom `primary` nas duas barras deixava `#ddeced`/`#edecff`; hoje ficam `#00585d`. Não rodei o spec novo sobre uma cópia do `HEAD` (é inferência pela sonda, não saída do spec).
+- `npm run verify -- --tier=quick` → todos `[OK]` (incluindo `audit:baseline --with-tsc`, `barrel`, `catalog`, `token-types/docs`, `guide`, `dev-kit`). A 1.ª passada acusou `decisions.ts` com 279 linhas; extraí e fechou em 248.
+
+**Critérios de aceite (lote 4)**
+- [x] Decisão "Barras" no caminho do painel; token em exatamente uma das duas — `decisions.test.ts` ("Barras e Layout dividem…") e `barras-decisao.spec.ts:90`.
+- [x] Tom aplicado pela decisão muda o fundo da Sidebar e da Topbar no cromo real — `barras-decisao.spec.ts:118` (2 modos).
+- [x] Interruptor: desligado, a preferência gravada não vence e a escolha some da barra — `NavigationSwitchEffect.test.tsx` (Provider real) e `barras-decisao.spec.ts:144`. A ausência da escolha no ⚙ não foi medida em navegador (só o efeito na orientação).
+- [x] Tema com tons diferentes: aplicar um tom iguala as duas barras — mesmo spec, Sovereign Classic.
+- [ ] Prévia — gerada, **falta o ok do dono**.
+
+**Decisões e suposições**
+- Presets removidos: `sidebar-brand`, `sidebar-inverted`, `topbar-brand`, `topbar-inverted` (a plan deixava "viram opções ou saem"). Eles não constam de `PUBLISHED_PRESET_IDS`.
+- O tom escolhido vence o tema **só quando difere** do tom que o tema declara para a barra (o motor só enxerga escolha que difere). Limite: "Invertida" na lateral do Sovereign Classic (que já declara `inverse`) mantém a cor declarada `#ddeced`; por isso o spec usa "Cor da marca" e "Secundária". Resolver exigiria gravar a escolha mesmo quando igual ao tema (mudança de formato das escolhas, ADR-026): ficou fora.
+- `mobileNavigationStyle` foi para "Onde fica a barra"; `zIndexSidebar` para "Comportamento"; `sidebarFooterBackground` para "Como é a barra". `mode`, `bodySize` e a identidade da empresa ficam no Layout.
+- Ao religar o interruptor o valor é o padrão do token (`menu`), não a posição anterior.
+- Mexi em `designChoices.ts` e `overlayPreferences.ts` (fora da §3.1) e na regra de 09 §4.3.4 ("a cor declarada vence") para a barra com papel escolhido; o teste antigo "a cor da barra que o tema declara continua vencendo o tom" foi trocado por três (`designChoices.test.ts`). Vai para a síntese em 09.
+
+**Achados fora do escopo (não corrigidos)**
+- `browser-tests/plan-140-painel-coluna-unica.spec.ts:84` ("todo texto da coluna passa de 4,5:1") falha na decisão **Cores** (botão "Monocromática" a 1,87:1), 2 de 8; não mexi em Cores e não rodei controle em `HEAD`, então a causa é inferência.
+- O gancho de escrita acusa "sem config do eslint na raiz".
+- Um processo de vitest da minha primeira rodada sobreviveu ao `TaskStop`; encerrei à mão.
+
+**Pendências / riscos**
+- Ok do dono na prévia; síntese em 05/06/09: decisão "Barras", tom único, interruptor e a regra nova do tom contra a cor declarada.
+- Não rodei a suíte completa, `build` nem `cromo-css-real:check` (do revisor); os specs de navegador rodaram contra o código-fonte, não contra `dist/`.
+- Tema salvo com tom igual ao do tema e cor própria não muda; quem tinha tom escolhido diferente do tema e uma cor declarada passa a ver o tom (efeito pretendido).
+
+## Veredito — 2026-11-18 — lote 4 — 🔵 Em correção (quatro itens objetivos)
+
+**Como medi.**
+- **Build** completo no worktree: exit 0.
+- **Navegador:** `barras-decisao`, `plan-140`, `plan-141`, `plan-160-previa-mostra-a-opcao`, `plan-161-catalogo-proporcional`,
+  `escolha-no-painel`, `cromo-css-real`, `topbar-mais`, `troca-de-tema`, `preferencias-discretas`, `tom-contrastante-legivel`,
+  `menu-preferencias-legivel`, `barra-de-topo-estreita`, `login-theme-application` e `plan-122-preview-mode` deram **174 verdes e
+  7 vermelhos**.
+- **Controle no `HEAD`:** `d158b55e`, em cópia fora do repositório, com build.
+  - Dois dos 7 vermelhos falham também lá e não são deste lote: `plan-140:84` (é da `plan-164`) e `escolha-no-painel:220` (é da
+    `plan-161`).
+  - Os outros cinco são deste lote.
+- **Diff lido:** `design-decisions.json`, `decisions.ts`, `barScope.ts`, `regroupByQuestion.ts`, `decisionSummary.ts`,
+  `NavigationSwitchControl.tsx`, `layout.ts`/`registry.ts`/`personalities.ts`, `designChoices.ts` e `overlayPreferences.ts`.
+  - A decisão Barras e a partição dos tokens estão certas.
+  - O interruptor grava o token que já existia, sem token novo.
+  - A Personalidade Corporativo continua resolvendo.
+- **Prévia** (`C:\tmp\sarak-previa-159\index.html`) conferida. Ela já declara o limite do achado 1.
+
+**Achados**
+1. **"Invertida" não iguala as duas barras no Sovereign Classic.** É exatamente o caso que o 4.2 nomeia, e o 4.4 pede que qualquer
+   tom aplicado pela decisão iguale as duas barras. Hoje só vence a cor declarada a barra cujo tom escolhido difere do que o tema
+   declara. Por isso a lateral (o tema declara `inverse`) fica com a cor declarada, e o topo muda. O painel ainda marca "Invertida"
+   como o tom em uso, com a lateral clara.
+   - Um caminho a medir, sem mudar o formato das escolhas: quando os dois tons do design são iguais e ao menos um foi escolhido, as
+     duas barras contam como escolhidas. O controle do tom grava sempre os dois iguais. Valem a recomposição das escolhas e a troca
+     de modo.
+   - Se não houver caminho sem mudar o formato do ADR-026, pare e traga o relatório.
+   - Critério: `barras-decisao.spec.ts` aplica "Invertida" no Sovereign Classic, claro e escuro, e as duas barras ficam iguais no
+     cromo real. Reprova antes.
+2. **Espiar "Neutra" e "Superfície" não muda a prévia** (`plan-160-previa-mostra-a-opcao.spec.ts:456`, Barras: `barTone/Neutra` e
+   `barTone/Superfície` com 0,000%). Provavelmente é a mesma causa do achado 1: na espiada, o tom igual ao que o tema declara não
+   vence a cor declarada.
+   - Critério: o caso verde, sem pôr as duas opções em lista de exceção.
+3. **`plan-141-presets-do-painel.spec.ts`.**
+   - O `:216` (Barras, escuro) mostra duas duplas da Barra lateral que diferem em menos de 2% dos pixels: `sidebar-clean` ×
+     `sidebar-textured` com 1,45% e `sidebar-outlined` × `sidebar-textured` com 1,18%. Sem o tom, a estrutura desses presets
+     ficou próxima demais. Faça cada preset se distinguir a olho ou funda os presets, conforme medir.
+   - O `:353` (os dois modos) esgota o tempo procurando o grupo `sidebar` onde ele ficava antes do lote. Rodado sozinho, falha
+     igual. Adapte o spec à decisão Barras.
+   - Critério: os dois casos verdes nos dois modos.
+4. **"A escolha some do ⚙" não é medida.** O critério do 4.3 diz "some da barra e do ⚙". O `barras-decisao.spec.ts:144` mede só a
+   orientação.
+   - Critério: com o interruptor desligado, o spec afirma que a escolha lateral/topo não está nem na barra nem no menu ⚙.
+
+**Para a síntese** (não é correção): a regra nova da 09 §4.3.4 (o papel escolhido para a barra vence a cor que o tema e o `config`
+do host declaram). Ela entra na síntese junto com o resultado do achado 1.
+
+**Como fechar** (verificação objetiva): `npm run build` e, no navegador, `barras-decisao`, `plan-141-presets-do-painel` (`:216` e
+`:353`) e `plan-160-previa-mostra-a-opcao` (`:456`). Atualize a seção 4.2/4.4 da prévia com "Invertida". O revisor reroda só
+esses.
+
+**Status da plan: 🔵 Em correção.**
+
+## Nota do revisor — 2026-11-18 — mais um item para a correção do lote 4
+
+5. **`plan-140-painel-coluna-unica.spec.ts:84` é intermitente na decisão Barras.** O `getByRole('button', { name: /^Barras/ })` que este
+   lote acrescentou casa também com os presets "Barras limpas" e "Barras com grade" quando a decisão anterior ainda está aberta (strict
+   mode). O executor da `plan-164` viu 2 falhas em 5 rodadas, e o revisor, 1 em 2.
+   - Critério: o clique mira a linha da decisão, e o caso fica verde 3 de 3 nos dois modos.
+
+## Resumo da execução (correção 4, lote 4) — 2026-11-18
+
+**Resultado:** Concluído (os quatro itens do veredito; um ajuste de lista no item 2, declarado abaixo).
+
+**Estado do worktree ao iniciar**
+```
+ M browser-tests/escolha-no-painel.spec.ts
+ M browser-tests/plan-140-painel-coluna-unica.spec.ts
+ M browser-tests/plan-141-presets-do-painel.spec.ts
+ M browser-tests/plan-160-previa-mostra-a-opcao.spec.ts
+ M browser-tests/plan-161-catalogo-proporcional.spec.ts
+ M docs/migracoes.md
+ M sarak-ui/docs/migracoes.md
+ M specs/00-indice.md
+ M specs/plan/plan-159-cromo-real-segue-o-layout-escolhido.md
+ M specs/plan/plan-161-catalogo-do-painel-proporcional-e-com-um-vocabulario.md
+ M specs/plan/plan-164-paleta-do-tema-paleta-por-cima-e-paletas-salvas.md
+ M src/buildInfo.ts, src/core/Design/presets/components/{layout,personalities,registry}.ts (+ testes), src/core/Provider/{buildInfo.ts,utils/designChoices.ts,utils/overlayPreferences.ts} (+ teste), src/core/i18n/*, src/features/DesignEngine/* (o lote 4 sem commit)
+?? browser-tests/barras-decisao.spec.ts, browser-tests/fixtures/barras-entry.tsx, NavigationSwitchControl.tsx, barScope.ts, regroupByQuestion.ts (+ testes)
+ (mais `dist/` regenerado; fotografia completa, sem `dist/`, em `scratchpad/foto-corr4.txt`)
+```
+Durante a execução apareceram modificados e **não são meus**: `specs/00-backlog.md` e `src/features/DesignEngine/Main/components/PaletteGallery.tsx`.
+
+**O que foi feito, por item**
+- **1. "Invertida" iguala as duas barras.** A causa: o painel grava um tom por vez e o tom que já é o do tema não chega como escolha (só o topo diferia). `designChoices.ts`: `pairedTones` (em `composeChoiceBaseline`) — com um tom escolhido e o da outra barra igual a ele (o do tema/host ou o escolhido), as duas barras contam como escolhidas e a cor declarada não volta em nenhuma; `chosenBars` faz o mesmo na troca de modo (`chosenToneKeys`). Sem mudar o formato das escolhas (ADR-026). Testes: `designChoices.test.ts` (`replaceDesignChoice` com o tom do tema no topo: reprovava antes — `#ddeced` × `#0d1818` — e passa) e `barras-decisao.spec.ts` (passo "Invertida", claro e escuro, lateral = topo e ≠ cor declarada).
+- **2. Espiar Neutra/Superfície.** A espiada compunha `{...rascunho, ...tokens}` sem recalcular a cor da barra. Novo `utils/peekWithTones.ts` (a espiada com tom passa por `replaceDesignChoice`, o mesmo cálculo da escolha), ligado em `ThemeCustomizationTab.tsx` (`tonedPeek`). "Superfície" passou a mudar a prévia. **"Neutra" continua em 0 %: o tema do harness (`sarak-sovereign`) já declara `neutral` nas duas barras, é a opção aplicada.** Por isso entrou UMA entrada na lista de exceções do spec (`bars/barTone/Neutra`, tipo `applied`), que o próprio spec prova por mecanismo (clica outra opção e espia de novo). Diverge do critério ("sem pôr as duas opções em lista"): só uma entrou, e a razão não é a do achado 1.
+- **3. `plan-141`.** `:353` — o grupo `sidebar` agora cabe inteiro nos destaques e não tem o botão "ver todas" (`[data-preset-toggle]`); o spec só clica nele se existir. `:216` — `sidebar-textured` ficou distinto de `clean` e `outlined`: opacidade do grão 0,1→0,3, borda tracejada de 2 px, item ativo `filled`, raio 4 (`layout.ts`).
+- **4. Escolha ausente do ⚙.** `barras-decisao.spec.ts`, com o interruptor desligado e aplicado: nenhum texto Lateral/Topo no cromo e, se o botão "Preferências" existir, o menu aberto não tem item `menuitemradio` nem texto dessas opções.
+- **Prévia** `C:	mp\sarak-previa-159\index.html`: seção 4.2/4.4 com "Invertida" (claro e escuro, lateral e topo, capturas novas `l4-tom-invertida*.png`) e o limite antigo removido.
+
+**Arquivos alterados** (só os desta correção)
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Provider/utils/designChoices.ts` | alterado | `pairedTones`, `chosenBars` |
+| `src/core/Provider/utils/__tests__/designChoices.test.ts` | alterado | caso do tom que o tema já declara |
+| `src/features/DesignEngine/utils/peekWithTones.ts` + `__tests__/peekWithTones.test.ts` | criados | espiada com tom |
+| `src/features/DesignEngine/Main/ThemeCustomizationTab.tsx` | alterado | `tonedPeek` |
+| `src/core/Design/presets/components/layout.ts` | alterado | `sidebar-textured` |
+| `browser-tests/barras-decisao.spec.ts` | alterado | "Invertida" + ⚙; limite 4 reescrito |
+| `browser-tests/plan-141-presets-do-painel.spec.ts` | alterado | botão "ver todas" opcional |
+| `browser-tests/plan-160-previa-mostra-a-opcao.spec.ts` | alterado | exceção `bars/barTone/Neutra` |
+
+**Verificações executadas**
+- `npm run build` → exit 0 (depois de esperar um `npm run build` de outra sessão terminar: dois builds no mesmo `dist/` se atropelaram na primeira tentativa).
+- Navegador, depois do build: `barras-decisao` 4/4; `plan-141` `-g "Barras: cada opção|rótulo do item ativo"` (os dois do `:216` e os dois do `:353`, claro e escuro) 4/4; `plan-160` `-g "Barras: toda opção"` 1/1 (`CONTAGEM bars barTone 4/5`).
+- `npx tsc --noEmit` → 0 (um erro de tipo meu no teste novo, corrigido). `npx vitest run` em `DesignEngine/Main/__tests__` + `DesignEngine/utils` + `core/Design/presets` → 42 arquivos, 643 verdes; `designChoices.test.ts` 24/24; `peekWithTones.test.ts` 3/3.
+- NÃO rodei: suíte completa, `verify --tier=quick`, nem o `barras-decisao` sobre o `HEAD` (o vermelho "antes" do item 1 foi visto no teste de unidade, não no spec).
+
+**Critérios de aceite**
+- [x] 1 — `barras-decisao.spec.ts` (Invertida, claro e escuro). 
+- [x] 2 — `plan-160` `Barras` verde, com só `Neutra` em exceção `applied` (divergência declarada).
+- [x] 3 — `plan-141` `:216` e `:353`, nos dois modos.
+- [x] 4 — `barras-decisao.spec.ts` (interruptor).
+- [x] Prévia atualizada com "Invertida". O ok do dono nela continua pendente.
+
+**Decisões e suposições**
+- O par de tons vale também para o `config` do host (um tom que o host declara conta como "o do tema"), coerente com o 09 §4.3.4.
+- `sidebar-textured` mexe em estrutura (não em tom) para se distinguir; o item ativo `filled` coincide com o de `sidebar-solid`, que difere pelo grão e pela borda (medido ≥ 2 %).
+
+**Achados fora do escopo (não corrigidos)**
+- `browser-tests/plan-160-previa-mostra-a-opcao.spec.ts`: a chave `layout/sidebar/Limpa` da lista ficou do tempo em que o grupo era do Layout (agora é `bars`); não gera erro, mas é entrada morta.
+- `plan-140:84` e `escolha-no-painel:220` seguem vermelhos no `HEAD` (já registrados no veredito).
+
+**Pendências / riscos**
+- Ok do dono na prévia. Síntese em 09 §4.3.4: a regra vale para as duas barras quando os tons são iguais e um foi escolhido.
+- `docs/migracoes.md` não ganhou linha para o grão e a borda novos do preset `Texturizada` nem para a espiada de tom.
+- Um tema salvo com tons iguais e cor de barra própria agora vê o tom vencer a cor quando um dos tons foi escolhido.

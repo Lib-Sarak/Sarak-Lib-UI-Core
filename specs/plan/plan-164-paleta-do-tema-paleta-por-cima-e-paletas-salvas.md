@@ -585,3 +585,61 @@ O dono aprovou a prévia `C:\tmp\sarak-previa-164\lote2\index.html`. Os "Ajustes
 de oito controles (decisão 5 do resumo) ficam como foram executados e aprovados na prévia.
 
 **Lote 2 fechado, e com ele a plan (o lote 2 é o último). Status da plan: 🟢 Aprovada**, à espera da síntese (destino: ADR-027, [[09-temas-e-presets]] e [[06-painel-de-customizacao-e-preview]]). O commit sai junto com a `plan-159` e o lote 3 da `plan-161`.
+
+## Veredito — 2026-11-18 — regressão achada depois da aprovação — 🔵 Em correção (um item objetivo)
+
+**Como medi:** no `HEAD` `d158b55e`, em cópia fora do repositório, com build. O `plan-140-painel-coluna-unica.spec.ts:84` ("todo texto
+da coluna passa de 4,5:1") falha na decisão **Cores**, nos dois modos. O chip de filtro "Monocromática" da galeria de paletas fica com
+1,87:1 no escuro e 2,16:1 no claro (`PaletteGallery.tsx:89`, `FILTER_CLASS`). O revisor não rodou o `plan-140` ao aprovar o lote 2.
+
+**Achado**
+1. O chip de filtro da galeria de paletas (ativo e inativo) passa de 4,5:1 contra o fundo dele nos dois modos.
+   - Critério: `plan-140-painel-coluna-unica.spec.ts:84` verde nos dois modos, com `npm run build`.
+
+**Como fechar:** `npm run build` e `plan-140-painel-coluna-unica.spec.ts:84`. O revisor reroda só esse. A síntese espera esta
+correção.
+
+**Status da plan: 🔵 Em correção.**
+
+## Resumo da execução (correção do veredito de 2026-11-18, regressão do `plan-140`) — 2026-11-18
+
+**Resultado:** Concluído.
+
+**Estado do worktree ao iniciar:** worktree compartilhado, sujo de outras tarefas (plans 159/161: `browser-tests/*`, `src/features/DesignEngine/Main/*`, `src/core/i18n/*`, `dist/*`, entre outros); `PaletteGallery.tsx` estava limpo.
+
+**Causa medida (não a que o veredito supunha).** O chip não tinha cor errada em repouso: `Todas` 10,06:1 e `Monocromática` em repouso 10,06:1. Depois do clique em "Cores", o ponteiro fica sobre o chip "Monocromática" (`hover: true` na sonda), e o `button:hover` global põe fundo `rgb(21,155,165)` (a cor primária) enquanto o texto segue `--theme-muted` (`rgb(182,196,197)`): 1,87:1 no escuro, 2,16:1 no claro.
+
+**O que foi feito**
+- `src/features/DesignEngine/Main/components/PaletteGallery.tsx:89` — `FILTER_CLASS` ganha `hover:bg-[var(--theme-surface)] hover:text-[var(--theme-title)]`, valendo para o chip ativo e o inativo. Nenhuma outra linha.
+
+**Verificações executadas**
+- `npm run build` → passou (rodado de novo no estado final).
+- `npx playwright test browser-tests/plan-140-painel-coluna-unica.spec.ts:84` → antes: 2 falhas (Cores, 1,87 e 2,16); depois: 2 de 2 verdes (escuro e claro), no estado final.
+- `npx vitest run …/Main/components/__tests__/PaletteGallery` → 2 arquivos, 24 testes verdes.
+
+**Critérios de aceite**
+- [x] `plan-140-painel-coluna-unica.spec.ts:84` verde nos dois modos, com `npm run build` — evidência acima.
+
+**Decisões e suposições**
+- Ajustei o estado de hover, não a cor em repouso: tentei antes `text-[var(--theme-title)]` no chip inativo e o contraste piorou (1,16:1), o que apontou o fundo de hover como causa; essa tentativa foi revertida.
+- Sem teste de unidade novo: o contraste de hover só existe no navegador, e o `plan-140:84` já é a trava (reprovava antes).
+
+**Achados fora do escopo (não corrigidos)**
+- `plan-140…spec.ts:84` (escuro) falhou 2 de 5 execuções, sem relação com o chip, em `getByRole('button', { name: /^Barras/ })` ("strict mode violation": resolveu para "Barras limpas"/"Barras com grade", ou seja, a tela ainda estava na decisão anterior depois do `Escape`). Passou em 3 de 3 nas execuções finais. O spec está modificado no worktree por outra tarefa (decisão "Barras", plans 159/161).
+- Durante a execução, `dist/sarak.css` sumiu por alguns instantes (build concorrente de outra tarefa).
+
+**Pendências / riscos:** nenhuma da correção. Não rodei a suíte completa nem outros specs de navegador (são do revisor). Nada commitado.
+
+## Veredito — 2026-11-18 — correção (chip de filtro) — 🟢 Aprovado
+
+**Como medi:** o diff é uma linha (`PaletteGallery.tsx:89`, `FILTER_CLASS`). Ela dá ao chip um hover próprio, com fundo de superfície e
+texto de título. O `dist/` atual já traz a classe (`CustomizationPanelImpl` e `sarak.css`). No `plan-140-painel-coluna-unica.spec.ts:84`,
+a decisão Cores passa nos dois modos. O caso do escuro caiu depois, ao clicar em "Barras" (`^Barras` também casa com os presets "Barras
+limpas" e "Barras com grade"). Esse trecho do spec é do lote 4 da `plan-159`, e o item foi para lá.
+
+**A causa medida pelo executor corrige o veredito anterior.** Em repouso, o chip tinha 10,06:1. A falha vinha do hover global de botão,
+que pinta o fundo com a primária e não troca o texto. A regra global vale para todo botão sem hover próprio e foi para o backlog (#90).
+
+**Commit:** junto com os registros do revisor (comando na conversa).
+
+**Status da plan: 🟢 Aprovada.** Ela espera a síntese no ADR-027 e nas specs 09 e 06.
