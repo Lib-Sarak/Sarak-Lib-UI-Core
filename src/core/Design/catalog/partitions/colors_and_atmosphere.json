@@ -186,6 +186,34 @@
     ]
   },
   {
+    "tokenId": "savedPalettes",
+    "visualImpact": "cores",
+    "name": "Paletas Salvas",
+    "description": "As paletas criadas no painel e guardadas com nome: aparecem em \"Minhas paletas\" na galeria e no atalho de marca.",
+    "type": "string",
+    "importance": 40,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "branding"
+    ],
+    "tags": [
+      "palette",
+      "color",
+      "brand"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "colorPalette"
+    ]
+  },
+  {
     "tokenId": "surfaceColor",
     "name": "Cor de Superfície",
     "description": "Tom para objetos elevados e content boxes em cima do background principal.",

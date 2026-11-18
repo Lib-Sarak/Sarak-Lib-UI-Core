@@ -38,6 +38,25 @@ describe('composeThemeDesign — a troca de tema nunca herda token do tema anter
         });
     });
 
+    it('o tema que traz o padrão do schema (o que o painel salva) não desliga keepPalette nem apaga a paleta escolhida', () => {
+        const panelSavedTheme = { ...defaults, primaryColor: '#0000ff' } as Record<string, unknown>;
+        const previous = { keepPalette: true, colorPalette: 'oceano', savedPalettes: 'sp-1|Marca|custom:analogous:#c2410c', systemName: 'ERP' };
+        const out = composeThemeDesign(panelSavedTheme, previous);
+        expect(out.keepPalette).toBe(true);
+        expect(out.colorPalette).toBe('oceano');
+        expect(out.savedPalettes).toBe(previous.savedPalettes);
+        expect(out.systemName).toBe('ERP');
+    });
+
+    it('toda chave preservada com padrão no schema sobrevive a um tema que só traz o padrão', () => {
+        const previous: Record<string, unknown> = {};
+        THEME_PRESERVED_KEYS.forEach((key) => {
+            if (key in defaults) previous[key] = typeof defaults[key as keyof typeof defaults] === 'boolean' ? !defaults[key as keyof typeof defaults] : 'do-anterior';
+        });
+        const out = composeThemeDesign({ ...defaults } as Record<string, unknown>, previous) as Record<string, unknown>;
+        THEME_PRESERVED_KEYS.filter((key) => key in defaults).forEach((key) => expect(out[key], key).toBe(previous[key]));
+    });
+
     it('sem anterior, parte do padrão do schema', () => {
         const out = composeThemeDesign({ primaryColor: '#abcdef' });
         expect(out.primaryColor).toBe('#abcdef');

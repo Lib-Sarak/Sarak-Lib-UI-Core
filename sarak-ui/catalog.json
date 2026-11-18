@@ -8279,6 +8279,7 @@
       "--sarak-range-active-color",
       "--sarak-reduced-motion",
       "--sarak-saturation",
+      "--sarak-saved-palettes",
       "--sarak-scroll-padding",
       "--sarak-scroll-radius",
       "--sarak-scroll-thumb-color",
@@ -8672,7 +8673,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 431,
+    "count": 432,
     "groups": {
       "global": "0. Configurações Globais",
       "branding": "Identidade Visual",
@@ -11531,7 +11532,7 @@
         "type": "boolean",
         "responsive": false,
         "group": "navigation",
-        "label": "Ocultar Navegação",
+        "label": "Navegação recolhida",
         "kind": "functional",
         "modeDependent": false,
         "usage": "Recolhe a navegação: a lateral estreita para o piso de largura e esconde rótulos; o topo encolhe para a altura recolhida. É o mesmo estado que o usuário alterna pelo botão de recolher.",
@@ -12267,6 +12268,19 @@
         "usage": "Zera as transições e animações da interface (duração de 0,00001 s) e as durações usadas por JavaScript; é requisito de acessibilidade, não estilo.",
         "interactsWith": [
           "animEnabled"
+        ]
+      },
+      {
+        "id": "savedPalettes",
+        "type": "string",
+        "responsive": false,
+        "group": "colors",
+        "label": "Paletas Salvas",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Guarda as paletas que o administrador criou com nome: aparecem no grupo \"Minhas paletas\" da galeria e no atalho de marca. Escolher uma é escolher o `colorPalette` dela.",
+        "interactsWith": [
+          "colorPalette"
         ]
       },
       {
@@ -14335,6 +14349,6 @@
   "kitStamp": {
     "libVersion": "8.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "b54f1069e228"
+    "kitHash": "5f96c70fda7c"
   }
 }

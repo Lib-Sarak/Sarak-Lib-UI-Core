@@ -30,6 +30,18 @@ export interface ShellPreferencesMenuProps extends Omit<ShellPreferenceRowContex
 const MENU_ID = 'sarak-preferences-menu';
 
 /**
+ * O menu abre num portal sobre o fundo do CARTÃO, não sobre a barra. A linha (`SarakMenuItem` vertical) lê os tokens do item
+ * da barra, que num tom contrastante (`inverse`, `primary`, `secondary`) são calculados contra o fundo da barra e somem sobre o
+ * cartão. Aqui o texto, o ícone e o hover da linha passam a seguir o texto do corpo, que é o par do fundo do cartão; a barra não muda.
+ */
+const SURFACE_ITEM_TONE = {
+    '--sarak-sidebar-item-text-color': 'var(--sarak-text-main, #f2f6fb)',
+    '--sarak-sidebar-item-hover-text-color': 'var(--sarak-text-main, #f2f6fb)',
+    '--sarak-sidebar-icon-color': 'var(--sarak-text-main, #f2f6fb)',
+    '--sarak-sidebar-hover-color': 'color-mix(in srgb, var(--sarak-text-main, #f2f6fb) 10%, transparent)',
+} as React.CSSProperties;
+
+/**
  * O widget ⚙ "Preferências" (Spec 05 §2.2.1, nova subseção "a barra
  * configurada pelo administrador") — vive na camada atômica para compor
  * a barra do `SarakAppChrome` junto aos demais widgets.
@@ -100,6 +112,7 @@ export const ShellPreferencesMenu: React.FC<ShellPreferencesMenuProps> = ({
                         onKeyDown={handleTrap}
                         className="fixed z-[calc(var(--sarak-z-sidebar,500)_+_100)] min-w-[var(--sarak-context-menu-min-width,10rem)] max-w-[calc(100vw-var(--sarak-layout-gap-md,16px)*2)] rounded-[var(--sarak-card-radius,10px)] border p-[var(--sarak-layout-gap-sm,8px)] flex shadow-[var(--dynamic-shadow)]"
                         style={{
+                            ...SURFACE_ITEM_TONE,
                             flexDirection: 'column',
                             gap: 'var(--sarak-layout-gap-sm, 8px)',
                             background: 'var(--color-theme-card,#101622)',

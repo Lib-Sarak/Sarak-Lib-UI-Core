@@ -9,6 +9,7 @@ import { clampToTokenBounds, isOffTokenGrid, isOutsideTokenBounds } from '../../
 import type { SarakDesignToken } from '../../Design/types';
 import { warnForFunctionalRangeClamp } from './validationFunctionalRangeWarnings';
 import { isValidPaletteValue } from '../../Design/palette/parser';
+import { normalizeSavedPalettes } from '../../Design/palette/savedPalettes';
 
 export { isValidColor } from './colorValidation';
 
@@ -100,6 +101,8 @@ const coerceTokenValue = (token: SarakDesignToken, value: unknown): unknown => {
         }
         case 'string':
             if (token.id === 'colorPalette') return isValidPaletteValue(value) ? value : undefined;
+            // A lista de paletas salvas: o texto canônico do que sobra depois de descartar entrada inválida (nome com aspas, valor que não é paleta).
+            if (token.id === 'savedPalettes') return typeof value === 'string' ? normalizeSavedPalettes(value) : undefined;
             return typeof value === 'string' && isSafeCssString(value) ? value : undefined;
         case 'color':
             return isValidColor(value) ? value : undefined;

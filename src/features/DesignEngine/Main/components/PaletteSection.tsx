@@ -5,6 +5,8 @@ import { SarakSwitch } from '../../../../components/atomic/Inputs/SarakSwitch';
 import { PaletteGallery } from './PaletteGallery';
 import { PaletteCreator } from './PaletteCreator';
 import { usePaletteSelection } from '../hooks/usePaletteSelection';
+import { useSavedPalettes, type SavePaletteOutcome } from '../hooks/useSavedPalettes';
+import { sanitizePaletteName } from '../../../../core/Design/palette/savedPalettes';
 import { barTonesOf, buildPaletteDraftPatch } from '../utils/paletteDraft';
 import type { PeekHandler } from '../../Canvas/components/peek';
 import type { SarakDesignState } from '../../../../core/Provider/types';
@@ -26,13 +28,21 @@ const HEX_COLOR = /^#[0-9a-f]{6}$/i;
 export const PaletteSection: React.FC<PaletteSectionProps> = ({ draft, appliedDesign, updateDraft, onPeek }) => {
     const text = useLibraryText();
     const [isCreating, setIsCreating] = useState(false);
+    // O nome da paleta recém-salva: o criador fecha para mostrar "Minhas paletas", e esta mensagem diz o que aconteceu.
+    const [savedNotice, setSavedNotice] = useState<string | null>(null);
     const selectPalette = usePaletteSelection({ draft, appliedDesign, updateDraft });
+    const { saved, save, remove } = useSavedPalettes({ draft, updateDraft });
     const primary = draft.primaryColor;
     const initialBase = typeof primary === 'string' && HEX_COLOR.test(primary) ? primary : FALLBACK_BASE;
     const mode = draft.mode === 'light' ? 'light' : 'dark';
     // O que a escolha gravaria, sem gravar: a espiada compõe isto por cima do rascunho.
     const peekTokensOf = (id: string) => buildPaletteDraftPatch(id, mode, [], barTonesOf(draft)) as Partial<SarakDesignState>;
     const handleCreate = (value: string) => { void selectPalette(value); setIsCreating(false); };
+    const handleSave = async (name: string, value: string): Promise<SavePaletteOutcome> => {
+        const outcome = await save(name, value);
+        if (outcome === 'saved') { setSavedNotice(sanitizePaletteName(name)); setIsCreating(false); }
+        return outcome;
+    };
 
     return (
         <section
@@ -44,9 +54,12 @@ export const PaletteSection: React.FC<PaletteSectionProps> = ({ draft, appliedDe
                 <p className="mt-1 text-[length:var(--sarak-type-scale-caption,12px)] text-[var(--theme-muted,rgba(242,246,251,0.55))]">{text('paletteSectionHint')}</p>
             </div>
             {isCreating ? (
-                <PaletteCreator initialBase={initialBase} onConfirm={handleCreate} onClose={() => setIsCreating(false)} />
+                <PaletteCreator initialBase={initialBase} onConfirm={handleCreate} onClose={() => setIsCreating(false)} onSave={handleSave} />
             ) : (
-                <SarakButton type="button" variant="secondary" size="sm" fullWidth className="min-w-0 whitespace-normal break-words text-center font-semibold normal-case tracking-normal" onClick={() => setIsCreating(true)}>{text('paletteCreateOpen')}</SarakButton>
+                <SarakButton type="button" variant="secondary" size="sm" fullWidth className="min-w-0 whitespace-normal break-words text-center font-semibold normal-case tracking-normal" onClick={() => { setSavedNotice(null); setIsCreating(true); }}>{text('paletteCreateOpen')}</SarakButton>
+            )}
+            {savedNotice && (
+                <p role="status" className="text-[length:var(--sarak-type-scale-caption,12px)] text-[var(--theme-muted)]">{text('paletteSavedStatus', { name: savedNotice })}</p>
             )}
             <SarakSwitch
                 checked={draft.keepPalette === true}
@@ -60,6 +73,8 @@ export const PaletteSection: React.FC<PaletteSectionProps> = ({ draft, appliedDe
                 mode={mode}
                 onPeek={onPeek}
                 peekTokensOf={peekTokensOf}
+                savedPalettes={saved}
+                onDeleteSaved={(entry) => { void remove(entry); }}
             />
         </section>
     );

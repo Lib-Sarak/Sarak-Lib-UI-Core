@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Aplicar a paleta do tema, permitir a paleta escolhida por cima de qualquer tema e salvar paletas com nome"
 objetivo: "Fazer escolher um tema aplicar as cores dele, deixar o usuário pôr uma paleta por cima de qualquer tema (inclusive dos que declaram cor) e salvar uma paleta criada com nome próprio, que aparece na galeria e serve à marca"
 dominio: "Design Engine / Paleta e painel"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Média"
 tags: ["plan", "paletas", "temas", "painel", "persistencia"]
 relacionados: ["[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[024-paleta-calculada-separada-do-tema]]", "[[010-temas-salvos-pelo-usuario]]", "[[011-tema-salvo-por-uma-porta-de-escrita]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]"]
@@ -266,6 +266,90 @@ apagar.
 - Servidor que valida a lista de chaves do design precisa aceitar `keepPalette` (anotado em `migracoes.md`).
 - `sarak-ui/` e `sarak-dev/` foram regenerados com o worktree compartilhado: o diff deles mistura o meu token com o das plans 159/161; conferir ao commitar (`git commit -- <caminhos>`).
 
+
+---
+
+## Resumo da execução (lote 2) — 2026-11-17
+
+**Resultado:** Concluído com pendências (o ok do dono na prévia; a suíte completa e o navegador inteiro são do revisor)
+
+**Estado do worktree ao iniciar**
+```
+(limpo)
+```
+(Durante a execução apareceram, de outras tarefas em paralelo e não tocados por mim: `package.json`, `scripts/verify-changes.mjs`, `src/core/Design/catalog/partitions/{branding_config,layout_and_navigation}.json`, `schema/{navigation,system}.ts`, `presets/components/cards.ts`, `DecisionTokenList.tsx`, `CardsCatalog.tsx`, `src/core/i18n/presetTexts/*`, `catalogEntries.tokenNotes.ts`, `tokenNotes.ts`, `DecisionTokenRow.tsx`, `browser-tests/{painel-avisa-a-verdade,textura-muda-pixel}.spec.ts`, entre outros.)
+
+**O que foi feito**
+- **Token `savedPalettes`** (texto, `functional`, padrão `''`) nas três fontes — `schema/colors.ts`, `catalog/theme_table_mapping.json` (coluna `colors_and_atmosphere`) e `catalog/partitions/colors_and_atmosphere.json` — e `design-token-ids.ts`/`design-token-docs.json` gerados por `npm run token-types`. Leitor: `savedPalettesOf` (`src/core/Design/palette/savedPalettes.ts`); `token-reader:check` OK.
+- **`src/core/Design/palette/savedPalettes.ts`** (novo): lista `{ id, name, value }` ↔ texto compacto (`id|nome|valor` separados por `~`), `decode` tolerante, `savePalette` (nome igual substitui; teto de 24; nome até 40 caracteres), `removeSavedPalette`, `sanitizePaletteName` (só letras, números, espaço e `-_.,&+!?@#%`: nada que abra string ou bloco numa variável CSS).
+- **`Provider/utils/validation.ts`**: `savedPalettes` passa por `normalizeSavedPalettes` (descarta entrada inválida; o valor gravado à mão com aspas ou chaves chega limpo).
+- **`presets/themes/compose.ts`**: `savedPalettes` entra em `THEME_PRESERVED_KEYS` e é reposto por cima do tema depois da composição (`compose.ts:59-60`). Sem isso, um tema salvo pelo painel — que traz o padrão `''` de todo token (`exportTheme.ts` `resolveCompleteDesign`) — apagava a lista ao ser aplicado.
+- **Painel:** `hooks/useSavedPalettes.ts` (novo: salvar com pergunta de substituição, apagar com confirmação, tudo em rascunho); `PaletteCreator.tsx` ganha "Nome da paleta" + "Salvar paleta" + mensagem de situação (`onSave` opcional); `PaletteSection.tsx` liga o hook, fecha o criador depois de salvar e mostra a mensagem; `PaletteGallery.tsx` reescrita em grupos recolhíveis (`Minhas paletas` + um por tipo), só o grupo da paleta escolhida abre, linha de salva com botão de apagar; `hooks/useOpenGalleryGroups.ts` (novo, extraído por excesso de estado no clean-code) abre "Minhas paletas" quando a lista cresce.
+- **Marca:** `useBrandForm.ts` (`paletteId`, `brandPaletteValue`, `brandPatch` com a lista) e `BrandShortcut.tsx` (campo "Paleta da marca", só quando há salvas; "Gerar da cor acima" mantém o comportamento de antes).
+- **Textos:** `catalogEntries.paletteSaved.ts` (novo, 17 chaves × 6 idiomas) ligado em `catalog.ts`.
+- **Meta de Cores (nota do revisor de 2026-11-17):** a decisão rolava 6,11 alturas (4032 px de 660 px: galeria 2523 px + "Ajustes principais" 1384 px). Agora rola **1,51** (994 px). Duas mudanças: a galeria por grupos recolhidos e `ThemeDecisionView.tsx` — "Ajustes principais" abre recolhido quando tem mais de oito controles (`MAIN_TOKENS_OPEN_LIMIT`). `utils/decisions.ts`: a decisão que tem o grupo `palettes` toma `savedPalettes` para si (`SECTION_OWNED_TOKEN_IDS`), para a lista não aparecer como campo de texto nos ajustes. `browser-tests/plan-161-catalogo-proporcional.spec.ts`: removida a exceção `NOT_IN_LOTE_1` de Cores — o limite dela passa a ser o `MAX_SCROLL_SCREENS = 2.5` das outras decisões, e a medida de amostra também.
+- **Documentação:** `docs/migracoes.md` (entrada 9.0.0 de `savedPalettes`), `docs/persistencia-de-tema.md` (parágrafo das duas chaves de paleta), `sarak-ui/GUIA-FRONTEND.md` (autoria: paleta de marca com nome e "Manter minha paleta"); `docs/schema/*.sql` não muda (o design é JSONB/JSON opaco). `npm run guide` e `npm run dev-kit` rodados (432 tokens).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/palette/savedPalettes.ts` | criado | formato, leitor e operações da lista |
+| `src/core/Design/schema/colors.ts`, `catalog/theme_table_mapping.json`, `catalog/partitions/colors_and_atmosphere.json` | alterado | token `savedPalettes` |
+| `src/core/Provider/generated/design-token-ids.ts`, `design-token-docs.json` | alterado (gerado) | token novo |
+| `src/core/Provider/utils/validation.ts` | alterado | normaliza `savedPalettes` |
+| `src/core/Design/presets/themes/compose.ts` | alterado | preserva a lista por cima do tema |
+| `src/core/i18n/catalogEntries.paletteSaved.ts`, `catalog.ts` | criado/alterado | 17 textos × 6 idiomas |
+| `src/features/DesignEngine/Main/hooks/{useSavedPalettes,useOpenGalleryGroups}.ts` | criado | salvar/apagar; grupos abertos |
+| `Main/hooks/useBrandForm.ts`, `Main/components/{BrandShortcut,PaletteCreator,PaletteGallery,PaletteSection,ThemeDecisionView}.tsx`, `utils/decisions.ts` | alterado | ver acima |
+| testes novos: `savedPalettes.test.ts` (palette e themes), `validation.savedPalettes.test.ts`, `useSavedPalettes.test.ts`, `useOpenGalleryGroups.test.ts`, `ThemeDecisionView.mainTokens.test.tsx`, `decisions.savedPalettes.test.ts`, `savedPalettes.persistenceIntegration.test.tsx` | criado | ver verificações |
+| testes alterados: `PaletteGallery.test`, `PaletteGallery.registry.test`, `PaletteSection.test`, `PaletteCreator.test`, `BrandShortcut.test`, `useBrandForm.test` | alterado | grupos recolhidos; salvar, escolher, apagar, marca |
+| `browser-tests/plan-161-catalogo-proporcional.spec.ts` | alterado | Cores deixa de ser exceção |
+| `docs/migracoes.md`, `docs/persistencia-de-tema.md`, `sarak-ui/GUIA-FRONTEND.md` | alterado | ver acima |
+| `sarak-ui/*`, `sarak-dev/*` | alterado (gerado) | `guide` e `dev-kit`; carregam também o efeito das tarefas em paralelo |
+| `specs/plan/plan-164-…md` | alterado | este resumo e o `status` |
+
+**Verificações executadas**
+- `npx tsc --noEmit -p .` → 0 erros.
+- `npm run verify -- --tier=quick` (2ª rodada, no estado final) → tudo OK (`tsc`, `audit:baseline --with-tsc` sem regressão, `barrel`, `catalog`, `token-types`, `token-docs`, `token-reader`, `theme-completeness`, `panel-contract`, `persistence-doc`, `guide`, `dev-kit`, Anel 0: 0 achados) **menos** `plan-index:check`: `plan-161` está `🟠` no frontmatter e `🟡` no índice (do revisor, não desta plan). A 1ª rodada acusou 1 valor fixo (`min-h-[1em]`, meu) e 1 aviso de clean code (`PaletteGallery` com 4 `useState/useEffect`, meu); os dois foram corrigidos.
+- `npx vitest run src/features/DesignEngine src/core/Design src/core/Provider src/core/i18n` (rodada ampla, antes dos três últimos arquivos de teste e do aviso da seção) → 290 de 292 arquivos, **2908 de 2911 testes verdes**; as 3 falhas são tempo estourado (5 s) em `switch-glass-border.test.ts` (2; a nota do revisor de 2026-11-17 já as dá como falha também no `HEAD`) e `BarSample.test.tsx` (1, que passa isolado). Os arquivos de teste que escrevi depois dessa rodada, mais `PaletteSection`/`PaletteCreator`/`PaletteGallery`/`BarSample`, rodados em seguida: todos verdes.
+- Teste do `compose` reprova sem a correção: com a linha de reposição desligada, "um tema que traz o padrão do schema (vazio) … não apaga a lista" cai (1 falha em 4); restaurada, 4/4. As demais afirmações não reprovam sem ela porque `THEME_PRESERVED_KEYS` já cobre o caso de tema sem a chave.
+- **Integração pelo Provider real** (`savedPalettes.persistenceIntegration.test.tsx`, 3/3): salvar é rascunho (`onSave` não chamado, `systemDesign` vazio); `Aplicar` grava `savedPalettes: 'sp-1|Marca azul|custom:analogous:#2563eb'` com `format: 2`; recarregar devolve a lista; trocar de tema aplicado a mantém; apagar (diálogo real, botão "Apagar") + `Aplicar` tira a chave do gravado, e recarregar não a traz de volta.
+- **Navegador** (`plan-161-catalogo-proporcional.spec.ts -g "Cores|Forma"`) → Cores `{scrollHeight: 994, clientHeight: 660, screens: 1.51}` com o limite de 2,5 (antes 6,11 / 4032 px); Forma 1,72 (antes 3,07).
+- **Prévia** `C:\tmp\sarak-previa-164\lote2\index.html` (9 capturas reais do código-fonte, sem tocar o `dist/`; `medidas.json` ao lado; o `index.html` do lote 1 ganhou o link): Cores curta; criador com nome; salvar → "Minhas paletas"; nome repetido pergunta; escolher a salva; **Aplicar → `onSave` recebeu `savedPalettes`, recarregar a página → a paleta e a escolha seguem, `Aplicar` desabilitado (nenhum desvio)**; marca oferece a salva; apagar pede confirmação; grupo some vazio. Limite: Chromium escuro 1440×900.
+
+**Critérios de aceite**
+- [x] Escolher qualquer tema aplica a cor dele — lote 1, inalterado.
+- [x] "Manter minha paleta" — lote 1, inalterado.
+- [x] Paleta salva com nome, listada em "Minhas paletas", escolhível na marca, gravada no design do sistema e apagável — `PaletteSection.test.tsx` ("paletas salvas com nome"), `BrandShortcut.test.tsx` ("paletas salvas"), `savedPalettes.persistenceIntegration.test.tsx`.
+- [x] Documentação do importador e `docs/migracoes.md` — acima.
+- [x] Meta de Cores ≤ 2,5 alturas, medida pelo spec da 161 com o limite de Cores igual ao das outras — 1,51.
+- [ ] Suíte completa verde, Anel 1 e baseline — são do revisor; o `quick` está acima (verde fora o `plan-index` da 161).
+- [ ] Ok do dono na prévia do lote 2 — a prévia está pronta; falta o ok.
+
+**Decisões e suposições**
+1. **A lista é gravada como texto compacto, não como lista estruturada.** O ADR-027 §2.3/§2.4 diz "chave com a lista `{ id, nome, valor }`" e "valor estruturado, igualdade profunda". O dicionário de tokens só tem valor simples (`SarakTokenValue = string | number | boolean | …`; o gerador de tipos, a validação por tipo e a variável CSS que o motor emite para todo token, nenhum aceita lista). Gravei `id|nome|valor` separados por `~` num token `string`; `savedPalettesOf`/`encodeSavedPalettes` são a leitura e a escrita, e a comparação com o baseline do 026 é por igualdade de texto (mais simples que a profunda). Consequência para o ADR: a decisão (a lista mora no design, mesmo `onSave`, nenhuma porta nova) segue; a forma do valor mudou. **O revisor decide se ajusta o ADR-027 §2.3/2.4 na síntese.**
+2. **Teto de 24 paletas e de 40 caracteres no nome** — o ADR deixou "o lote mede e, se preciso, impõe um teto". Medida: ≈ 60 caracteres por paleta, 24 paletas ≈ 1,5 KB por `Aplicar`; o teto é de interface e de leitura (`MAX_SAVED_PALETTES`), não fecha porta.
+3. **Salvar não escolhe a paleta**; escolher é o clique na galeria (ou "Usar esta paleta" no criador), como com as demais. Depois de salvar, o criador fecha para o "Minhas paletas" aparecer (a mensagem fica na seção).
+4. **O token fica fora da busca e do ajuste fino** (`SECTION_OWNED_TOKEN_IDS` em `decisions.ts`): um campo de texto cru com a lista não serve a ninguém. Fica na contagem da decisão (a decisão Cores aparece como alterada quando só a lista muda).
+5. **Os "Ajustes principais" de qualquer decisão com mais de oito controles abrem recolhidos**, não só os de Cores. A meta de Cores não fechava sem isso (a galeria sozinha deixava 2,3 alturas só de ajustes principais). Efeito colateral medido: Forma foi de 3,07 para 1,72. Se o dono quiser a regra só em Cores, é uma condição em `ThemeDecisionView.tsx`.
+6. **O filtro por tipo esconde "Minhas paletas"** (só "Todas" a mostra). Suposição de desenho; os chips não ganharam um "Minhas".
+7. **Duas paletas salvas com o mesmo valor** marcam as duas como escolhidas (o `colorPalette` é o mesmo). Aceito: o nome é diferente, o efeito é igual.
+8. `usePaletteSelection.ts` não mudou; `useBrandForm.ts`/`BrandShortcut.tsx` entram por 3.1 (atalho de marca).
+
+**Achados fora do escopo (não corrigidos)**
+- `browser-tests/plan-161-catalogo-proporcional.spec.ts`: no `HEAD` (cópia fora do repositório, `git archive` + junção; `node_modules` íntegro depois, e a cópia apagada) o teste "rolagem e amostras de cada decisão" **já reprova** 4 decisões contra o limite de 2,5: Tema 8,51 (5614 px), Fontes 4,85 (3199 px), Forma 3,07 e Componentes 3,96 (2611 px); Layout passa com 2,47. Hoje (com este lote) Forma passa (1,72) por efeito da decisão 5 acima; Tema, Fontes e Componentes seguem reprovando e são da 161, não desta plan.
+- `src/core/Design/palette/__tests__/switch-glass-border.test.ts`: 2 testes estouram 5 s sob carga (já anotado pelo revisor como falha também no `HEAD`).
+- `token-release-notes:check` segue acusando a entrada `8.0.0` para `keepPalette`, `savedPalettes` e outros (compara com 8.0.0 enquanto a campanha anota em 9.0.0); registrei `savedPalettes` na entrada 9.0.0, como o lote 1 fez.
+- **`keepPalette` tem o mesmo defeito que corrigi para `savedPalettes`:** um tema salvo pelo painel traz `keepPalette: false` (padrão do schema) e, ao ser aplicado, vence a chave preservada pela composição, então desliga "Manter minha paleta" sem aviso. Não toquei (lote 1, fora do escopo); a correção é a mesma reposição de `compose.ts:59-60`.
+- Os "Transform failed" que a 1ª rodada ampla acusou em `ThemeSearchResults`, `ThemeSidebarContent`, `LoginThemeApplication`, `ThemeColumn.integration` e `presetSearch` eram arquivos de outra tarefa em edição no mesmo instante; passam depois.
+
+**Pendências / riscos**
+- Ok do dono na prévia do lote 2.
+- Servidor que valida a lista de chaves do design (como o dos logins) precisa aceitar `savedPalettes` — anotado em `docs/migracoes.md` e em `docs/persistencia-de-tema.md`.
+- `sarak-ui/` e `sarak-dev/` foram regenerados com o worktree compartilhado: o diff deles mistura este lote com o das tarefas em paralelo; conferir ao commitar (`git commit -- <caminhos>`).
+- `src/core/i18n/catalog.ts`, `colors_and_atmosphere.json`, `theme_table_mapping.json` e `design-token-ids.ts` também têm edições de outras tarefas misturadas com as minhas.
+- Não rodei a suíte completa, o `build` nem `cromo-css-real:check` (o painel mudou de desenho, o §7 da plan pede os dois ao revisor).
+
 ---
 
 # 10. Veredito
@@ -398,7 +482,7 @@ do dono nas duas prévias.
 **Achados do veredito anterior**
 1. O snapshot do `PreviewCanvas` só ganhou as quatro linhas do `keepPalette` (`data-sx-keep-palette` e `--sarak-keep-palette`, nas
    duas raízes). O do `AtmosphereCatalog` não foi regravado: as linhas do token já estavam lá, e ele vai no mesmo commit.
-2. A prévia foi gerada do código-fonte, sem tocar o `dist/` (`C:	mpsarak-previa-164index.html`). Conferi as capturas:
+2. A prévia foi gerada do código-fonte, sem tocar o `dist/` (`C:\tmp\sarak-previa-164\index.html`). Conferi as capturas:
    - desligado, a troca para o Cyberpunk Neon Classic traz a cor do tema (#00ff64);
    - ligado, a paleta escolhida fica (#718095);
    - o texto do interruptor muda com o estado.
@@ -425,3 +509,79 @@ descartar as 22 cores do tema (1 com o interruptor desligado, 0 com ele ligado) 
 tema (etapa 3). O código do lote saiu no commit `9f08de71`.
 
 **Lote 1 fechado. Status da plan: 🟡 Em execução** (lote 2).
+
+## Veredito — 2026-11-18 — lote 2 — 🔵 Em correção (um item objetivo, do lote 1)
+
+**Como medi**
+- No worktree real, `npx vitest run` de `compose.test.ts`, `src/core/Design/palette`, os testes novos de `savedPalettes` (tema,
+  validação e integração pelo Provider), `src/features/DesignEngine/Main` e `src/features/DesignEngine/utils`: 90 de 90 arquivos e
+  1173 de 1173 testes verdes.
+- **Diff lido:** `savedPalettes.ts`, `validation.ts`, `compose.ts`, `useSavedPalettes.ts`, `useOpenGalleryGroups.ts`,
+  `PaletteGallery.tsx`, `PaletteCreator.tsx`, `PaletteSection.tsx`, `useBrandForm.ts`, `BrandShortcut.tsx`, `decisions.ts` e
+  `ThemeDecisionView.tsx`. O nome passa por uma lista de caracteres permitidos que exclui os separadores `|` e `~`.
+- **Sonda** (`npx tsx` sobre `composeThemeDesign`): um tema com todo padrão do schema (o que o painel salva), aplicado sobre um
+  design com "Manter minha paleta" ligado e uma paleta escolhida, devolve `keepPalette: false` e nenhum `colorPalette`.
+  `savedPalettes` e `systemName` sobrevivem.
+
+**Achado**
+1. **Aplicar um tema salvo pelo painel desliga "Manter minha paleta" e perde a paleta escolhida.** É o defeito que o resumo aponta
+   em "fora do escopo", e a sonda o confirma. Ele é do lote 1 desta plan (critério "a paleta vale por cima de qualquer tema"), então
+   se corrige aqui. A causa é a mesma do `savedPalettes`: a chave preservada perde para o padrão que o tema traz.
+   - Critério: com um tema que traz o padrão do schema, `keepPalette` ligado e a paleta escolhida seguem. Vale também para toda
+     chave de `THEME_PRESERVED_KEYS` com padrão definido no schema, e não só para estas duas. O teste reprova sem o conserto.
+
+**Atribuição corrigida:** o "`plan-161-catalogo-proporcional` já reprova no `HEAD`" do resumo veio de uma cópia sem `npm run build`,
+que lê o `dist/` da última release. Na cópia com build (veredito do lote 3 da 161), o spec passa inteiro.
+
+**Para o dono (com a prévia):** a decisão 5 do resumo recolhe os "Ajustes principais" em **toda** decisão com mais de oito controles,
+não só em Cores (Forma foi de 3,07 para 1,72 alturas). Se o dono quiser isso só em Cores, é uma condição em `ThemeDecisionView.tsx`.
+
+**ADR-027:** a forma do valor (texto compacto num token `string`, comparado por igualdade de texto) entrou como nota de
+implementação no próprio ADR. A decisão não muda.
+
+**Como fechar** (verificação objetiva): o teste novo e `compose.test.ts`. O revisor reroda só esses. A medida de navegador (Cores,
+`cromo-css-real:check`) e a suíte completa ficam para a verificação conjunta das três plans, antes do commit.
+
+**Commit:** junto com o lote 3 da `plan-159` e o lote 3 da `plan-161`, depois das correções e do ok do dono nas prévias.
+
+**Status da plan: 🔵 Em correção.**
+
+## Resumo da execução (correção do veredito de 2026-11-18) — 2026-11-18
+
+**Resultado:** Concluído.
+
+1. **Conserto.** Em `composeThemeDesign`, para cada chave de `THEME_PRESERVED_KEYS` que existe no padrão do schema: se o tema resolvido traz exatamente o padrão dela (o que o painel salva), vale o valor do design anterior (ou do host). O tema que declara um valor diferente do padrão continua vencendo (`systemName`, `mode`). Isso substitui a reposição só de `savedPalettes`.
+2. **Testes** em `compose.test.ts`: um com `keepPalette` ligado, paleta escolhida, `savedPalettes` e `systemName` sobre um tema com todo padrão do schema, e um que percorre toda chave preservada com padrão no schema. Sem o conserto (condição trocada por `false`) os dois reprovam; restaurado, passam.
+3. **Verificação.** `compose.test.ts`: 16 de 16. Vizinhos (`src/core/Design/presets`, `src/core/Design/hooks`, `src/features/DesignEngine/hooks`): 37 arquivos, 530 testes verdes. `tsc`: 0 erros.
+4. **Efeito colateral a saber.** Um tema que declara `mode: 'dark'` (o padrão) sobre um design anterior em `light` agora mantém `light`; é a mesma regra, e nenhum teste existente depende do contrário.
+
+**Status da plan: 🟠 Em revisão.**
+
+## Veredito — 2026-11-18 — lote 2, correção — 🟢 Aprovado no código; o lote fecha com o ok do dono na prévia
+
+**Como medi:** `compose.test.ts` e os vizinhos que compõem tema (`src/core/Provider/hooks`, `src/features/DesignEngine/hooks` e
+`utils/__tests__`): 56 de 56 arquivos e 422 de 422 testes verdes. O executor fez a mutação (os dois testes novos reprovam sem o
+conserto). O `tsc` acusa 1 erro, em `neutralCardBase.ts:21`, que é da correção da `plan-161` em andamento, não desta plan.
+
+**O efeito colateral declarado** (um tema que declara `mode: "dark"` não troca um design anterior em `light`) **não chega à tela**.
+Toda chamada que aplica tema resolve o tema para o modo pedido antes de compor:
+- `useDesignSync.ts`, pelo modo do design anterior;
+- a galeria, em `PresetsCatalog.tsx:57`, pelo `draftMode`;
+- o tema de referência, escolhido pelo modo do rascunho.
+
+O `mode` que chega à composição já é o pedido.
+
+**Falta, para fechar o lote 2:**
+- o ok do dono na prévia (`C:\tmp\sarak-previa-164\lote2\index.html`);
+- a resposta dele sobre os "Ajustes principais" recolhidos em toda decisão com mais de oito controles, ou só em Cores.
+
+**Commit:** junto com o lote 3 da `plan-159` (fechado) e o lote 3 da `plan-161`, depois da verificação conjunta com build.
+
+**Status da plan: 🟠 Em revisão** até o ok do dono.
+
+## Nota do revisor — 2026-11-18 — ok do dono na prévia do lote 2
+
+O dono aprovou a prévia `C:\tmp\sarak-previa-164\lote2\index.html`. Os "Ajustes principais" recolhidos em toda decisão com mais
+de oito controles (decisão 5 do resumo) ficam como foram executados e aprovados na prévia.
+
+**Lote 2 fechado, e com ele a plan (o lote 2 é o último). Status da plan: 🟢 Aprovada**, à espera da síntese (destino: ADR-027, [[09-temas-e-presets]] e [[06-painel-de-customizacao-e-preview]]). O commit sai junto com a `plan-159` e o lote 3 da `plan-161`.

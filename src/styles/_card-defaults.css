@@ -134,14 +134,15 @@
 /* SOMBRA DECLARADA (`cardShadow`, texto livre): quando o tema escreve uma sombra, ela é a sombra do
    cartão — em repouso (a de baixo do ponteiro é de `_card-materials.css`) — no lugar da composta pelos
    tokens `cardShadow*`; `none` (o padrão) deixa a composta valer. O brilho interno (`cardInnerGlow*`)
-   continua somado. */
-[data-sx-card-shadow]:not([data-sx-card-shadow="none"]) .sarak-card {
+   continua somado. O cartão dentro de um `.sarak-design-scope` que declara `none` fica com a sombra composta: o escopo
+   mais próximo manda, e o tema da página (o `html`/`body`) não vale para ele. */
+[data-sx-card-shadow]:not([data-sx-card-shadow="none"]) .sarak-card:where(:not(.sarak-design-scope[data-sx-card-shadow="none"] .sarak-card)) {
     --sarak-card-shadow-full:
         var(--sarak-card-shadow),
         inset 0 0 var(--sarak-card-inner-glow-width, 1px) var(--sarak-card-inner-glow-color, transparent);
 }
 
-[data-sx-card-shadow]:not([data-sx-card-shadow="none"]) .sarak-modal-panel {
+[data-sx-card-shadow]:not([data-sx-card-shadow="none"]) .sarak-modal-panel:where(:not(.sarak-design-scope[data-sx-card-shadow="none"] .sarak-modal-panel)) {
     --sarak-card-shadow-full:
         var(--sarak-card-shadow),
         inset 0 0 var(--sarak-card-inner-glow-width, 1px) var(--sarak-card-inner-glow-color, transparent);

@@ -14,6 +14,8 @@ import type {
 
 type PreferencesManagerResult = {
     preferences: SarakUserPreferences;
+    /** Só o que o usuário escolheu (ou o servidor devolveu), sem o modo padrão do host que `preferences` acrescenta. */
+    storedPreferences: SarakUserPreferences;
     updatePreferences: (partial: Partial<SarakUserPreferences>) => void;
     systemColorScheme: 'light' | 'dark';
 };
@@ -109,5 +111,5 @@ export const usePreferencesManager = (
         setPreferences((prev) => validatePreferences({ ...prev, ...partial }));
     }, []);
 
-    return { preferences: preferencesWithHostDefault, updatePreferences, systemColorScheme };
+    return { preferences: preferencesWithHostDefault, storedPreferences: preferences, updatePreferences, systemColorScheme };
 };

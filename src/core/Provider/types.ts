@@ -207,6 +207,8 @@ export interface SarakBrandingState {
 
 export interface SarakUIContextType {
     preferences: SarakUserPreferences; // Preferências do usuário — camada separada do tema
+    /** O que o usuário gravou, sem o modo padrão do host: é o que "apagar a preferência" de fato remove. */
+    storedPreferences?: SarakUserPreferences;
     updatePreferences: (partial: Partial<SarakUserPreferences>) => void;
     design: SarakThemePayload;
     systemDesign?: SarakThemePayload; // Design persistido do sistema (sem rascunho/branding)
@@ -242,8 +244,6 @@ export interface SarakUIContextType {
     onMediaUpload?: (file: File) => Promise<string>;
 }
 
-// `SarakUIProviderProps` mora em `./providerProps.ts` — só para manter este
-// arquivo abaixo do limite de linhas do auditor de Clean Code (250).
+// `SarakUIProviderProps` mora em `./providerProps.ts` — mantém este arquivo abaixo do limite do auditor de Clean Code (250).
 export type { SarakUIProviderProps } from './providerProps';
-export type { SarakFontSource, SarakFontsOptions, SarakFontsOption } from './providerProps';
-export type { SarakCustomFont, SarakCustomFontFile, SarakFontFallback } from './providerProps';
+export type { SarakFontSource, SarakFontsOptions, SarakFontsOption, SarakCustomFont, SarakCustomFontFile, SarakFontFallback } from './providerProps';

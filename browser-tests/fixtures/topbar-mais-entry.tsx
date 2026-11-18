@@ -27,7 +27,7 @@ const design = {
 
 createRoot(rootElement).render(
     <SarakUIProvider config={design}>
-        <SarakAppChrome navigationStyle="topbar" navItems={navItems} brand={{ name: 'Sistema' }}>
+        <SarakAppChrome navigationStyle={params.get('nav') === 'sidebar' ? 'sidebar' : 'topbar'} navItems={navItems} brand={{ name: 'Sistema' }}>
             <main>Conteúdo</main>
         </SarakAppChrome>
     </SarakUIProvider>,

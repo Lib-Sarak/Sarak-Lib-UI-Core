@@ -26,7 +26,7 @@ describe('textos dos presets do painel — seis idiomas', () => {
     });
 
     it('nenhum preset escrito à mão fica sem tradução (cairia no português)', () => {
-        const derived = /^(tex-|card-tex-|typo-|btn-style-)/;
+        const derived = /^(tex-|card-tex-|card-theme-|typo-|btn-style-)/;
         const missing = ALL_COMPONENT_PRESETS.filter((preset) => !derived.test(preset.id) && PRESET_TEXT_TABLE[preset.id] === undefined);
         expect(missing.map((preset) => preset.id)).toEqual([]);
     });

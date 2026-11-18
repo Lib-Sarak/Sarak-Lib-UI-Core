@@ -83,7 +83,7 @@ export interface DecisionQuestion {
 export interface DecisionLayers {
     /** Nível 2: as perguntas da decisão, na ordem do config. */
     questions: DecisionQuestion[];
-    /** Os ids que as perguntas mostram: o bloco global não os repete. */
+    /** Os ids que as perguntas e a seção de paletas mostram: nem o bloco global nem os ajustes os repetem. */
     questionTokenIds: ReadonlySet<string>;
     /** Nível 2: tokens com efeito visual provado (`visualImpact`). */
     mainTokens: SarakDesignToken[];
@@ -181,11 +181,15 @@ const resolveQuestions = (def: DecisionDef, sections: DecisionSection[], ctx: De
     });
 };
 
+/** O token que a seção de paletas lê e grava por conta própria: a lista salva não é campo de texto de ninguém. */
+const SECTION_OWNED_TOKEN_IDS: readonly string[] = ['savedPalettes'];
+
 export const decisionLayers = (def: DecisionDef, ctx: DecisionContext): DecisionLayers => {
     const sections = pillarSections(def, ctx);
     const isBar = (section: DecisionSection): boolean => def.optionSections.includes(section.title);
     const questions = resolveQuestions(def, sections, ctx);
-    const questionTokenIds = new Set(questions.flatMap((question) => question.tokens.map((token) => token.id)));
+    const owned = def.groups.includes('palettes') ? SECTION_OWNED_TOKEN_IDS : [];
+    const questionTokenIds = new Set([...questions.flatMap((question) => question.tokens.map((token) => token.id)), ...owned]);
     const globals = globalIds(def, ctx);
     const barSections = takeUnseen(sections.filter(isBar), new Set([...globals, ...questionTokenIds]));
     const afterBar = new Set([...globals, ...questionTokenIds, ...idsOf(barSections)]);

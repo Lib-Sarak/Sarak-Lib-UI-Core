@@ -10,9 +10,9 @@ import { TYPOGRAPHY_PRESETS } from '../../../../../core/Design/presets/component
 
 const FIRST_PAIR = TYPOGRAPHY_PRESETS[0];
 
-const renderBrand = () => {
+const renderBrand = (extra: Record<string, unknown> = {}) => {
     const props = {
-        draft: { mode: 'dark', headingFont: FIRST_PAIR.design.headingFont, bodyFont: FIRST_PAIR.design.bodyFont } as never,
+        draft: { mode: 'dark', headingFont: FIRST_PAIR.design.headingFont, bodyFont: FIRST_PAIR.design.bodyFont, ...extra } as never,
         appliedDesign: {},
         updateDraft: vi.fn(),
         onPeek: vi.fn(),
@@ -93,5 +93,32 @@ describe('BrandShortcut', () => {
         await user.click(screen.getByRole('button', { name: 'Gerar meu tema' }));
 
         await waitFor(() => expect(updateDraft).toHaveBeenLastCalledWith('bodyFont', otherPair.design.bodyFont));
+    });
+
+    describe('paletas salvas', () => {
+        const SAVED = 'sp-1|Marca azul|custom:triadic:#2563eb~sp-2|Quente|custom:complementary:#aa3366';
+
+        it('sem paleta salva, o campo da paleta da marca não aparece', () => {
+            renderBrand();
+            expect(screen.queryByLabelText('Paleta da marca')).toBeNull();
+        });
+
+        it('com salvas, oferece "Gerar da cor acima" e cada uma pelo nome', () => {
+            renderBrand({ savedPalettes: SAVED });
+            const options = Array.from(screen.getByLabelText('Paleta da marca').querySelectorAll('option')).map((option) => option.textContent);
+            expect(options).toEqual(['Gerar da cor acima', 'Marca azul', 'Quente']);
+        });
+
+        it('a prévia espia a salva escolhida e "Gerar meu tema" grava o valor dela como colorPalette', async () => {
+            const user = userEvent.setup();
+            const { onPeek, updateDraft, onGenerated } = renderBrand({ savedPalettes: SAVED });
+            fireEvent.change(screen.getByLabelText('Paleta da marca'), { target: { value: 'sp-2' } });
+            await waitFor(() => expect(onPeek).toHaveBeenLastCalledWith(expect.objectContaining({ colorPalette: 'custom:complementary:#aa3366' })));
+            expect(updateDraft).not.toHaveBeenCalled();
+
+            await user.click(screen.getByRole('button', { name: 'Gerar meu tema' }));
+            await waitFor(() => expect(onGenerated).toHaveBeenCalledTimes(1));
+            expect(updateDraft).toHaveBeenCalledWith('colorPalette', 'custom:complementary:#aa3366');
+        });
     });
 });

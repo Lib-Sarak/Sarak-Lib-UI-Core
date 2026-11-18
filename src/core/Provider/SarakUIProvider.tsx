@@ -104,7 +104,7 @@ const SarakUIProviderCore: React.FC<SarakUIProviderProps> = ({
     const { branding, updateBranding } = useBrandingManager(options);
     // 2.6 Preferências do usuário — camada separada, nunca persistida no tema;
     //     `effectiveDesign` sobrepõe as OFERECIDAS pelo tema resolvido.
-    const { preferences, updatePreferences, systemColorScheme } = usePreferencesManager(options, isHydrated);
+    const { preferences, storedPreferences, updatePreferences, systemColorScheme } = usePreferencesManager(options, isHydrated);
     const activeTheme = allThemes.find((theme) => theme.id === resolvedThemeId);
 
     // 3. Gerenciamento de Rascunho (Live Preview) — sobre o design BRUTO: o
@@ -130,6 +130,7 @@ const SarakUIProviderCore: React.FC<SarakUIProviderProps> = ({
         design: effectiveDesign, // Estado EFETIVO — tema + preferências oferecidas sobrepostas
         systemDesign: design,    // Estado persistido (Sistema/tema), sem preferência nenhuma
         preferences,
+        storedPreferences,
         updatePreferences,
         draftDesign: drafting.draftDesign,   // Estado volátil (Preview)
         isDrafting: drafting.isDrafting,
@@ -156,7 +157,7 @@ const SarakUIProviderCore: React.FC<SarakUIProviderProps> = ({
         onMediaUpload,
         activeDesign: effectiveDesign // já é o sistema (+ rascunho, se houver) + preferências
     }), [
-        design, effectiveDesign, preferences, updatePreferences,
+        design, effectiveDesign, preferences, storedPreferences, updatePreferences,
         drafting.draftDesign, drafting.isDrafting,
         drafting.setIsDrafting, drafting.lockDrafting, setDesign,
         drafting.setDraftDesign, drafting.smartApplyConfig,

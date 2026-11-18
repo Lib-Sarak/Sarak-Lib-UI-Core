@@ -391,6 +391,86 @@ nova.
 - Instalação que gravou `preferenceFontSizePosition: pinned` (ERP) passa a ver o grupo compacto sem mudar nada (a plan não pede migração do valor gravado).
 - Não medi densidades `compact`/`spacious` do item da topbar nem a lateral recolhida em navegador (limites 1 e 2 do spec novo).
 
+## Resumo da execução (lote 3) — 2026-11-17
+
+**Resultado:** Concluído com pendências (o lote só fecha com o ok do dono na prévia).
+
+**Estado do worktree ao iniciar**
+```
+ M src/core/Design/catalog/partitions/colors_and_atmosphere.json
+ M src/core/Design/catalog/theme_table_mapping.json
+ M src/core/Design/presets/themes/compose.ts
+ M src/core/Design/schema/colors.ts
+ M src/core/Provider/generated/design-token-docs.json
+ M src/core/Provider/generated/design-token-ids.ts
+ M src/core/Provider/utils/validation.ts
+ M src/core/i18n/catalog.ts
+ M src/features/DesignEngine/Main/components/BrandShortcut.tsx
+ M src/features/DesignEngine/Main/components/PaletteCreator.tsx
+ M src/features/DesignEngine/Main/components/PaletteGallery.tsx
+ M src/features/DesignEngine/Main/components/PaletteSection.tsx
+ M src/features/DesignEngine/Main/components/ThemeDecisionView.tsx
+ M src/features/DesignEngine/Main/hooks/useBrandForm.ts
+ M src/features/DesignEngine/utils/decisions.ts
+?? browser-tests/_probe164.spec.ts
+?? src/core/Design/palette/savedPalettes.ts
+?? src/core/i18n/catalogEntries.paletteSaved.ts
+?? src/features/DesignEngine/Main/hooks/useSavedPalettes.ts
+```
+(Compartilhado com as plans 161 e 164, que sujaram outros arquivos durante a execução; não os toquei. Em `catalog.ts` acrescentei só o import e o spread de `CATALOG_TOKEN_NOTES`; `ThemeDecisionView.tsx` não foi editado por mim.)
+
+**O que foi feito**
+- **3.1** `DecisionTokenRow.tsx` (novo, usado por `DecisionTokenList.tsx`): aviso "Sua preferência pessoal (<valor>) está por cima do tema" e ação "Apagar minha preferência" (`updatePreferences({ chave: undefined })`, apaga só aquela chave). Lógica em `utils/tokenNotes.ts` (`personalOverrideOf`): `navigationStyle`, `bodySize`, `mode`, `isNavHidden`, `sidebarWidth`; só avisa se o tema oferece a preferência (régua de `overlayPreferences`; largura só com `sidebarResizable`).
+- **3.2** Controle que declara `interactsWith: ['navigationStyle']` fica num `<fieldset disabled>` com o motivo quando a orientação do rascunho é a outra (`orientationOf`/`requiredOrientationIfInactive`).
+- **3.3** Já resolvido no `HEAD` (`noiseTexture.ts`: `max(var(opacidade), 0.12)` com textura, na barra do topo e na lateral). Não mudei o cromo; `browser-tests/textura-muda-pixel.spec.ts` mede a captura sólida × textura com ruído 0 (e a repetição sólida idêntica, como controle).
+- **3.4** `sidebarWidthRange`/`withEffectiveBounds`: o slider da largura nasce com o intervalo token × `sidebarMinWidth`/`sidebarMaxWidth` do dispositivo da prévia e mostra "Entre X e Y px".
+- **3.5** `isNavHidden`: "Ocultar Navegação" → "Navegação recolhida" (schema, partição do catálogo e gerados). `isAutoHideEnabled` mantém o rótulo (esconde a navegação até o ponteiro chegar à borda; é outra coisa); a descrição, no schema e na partição, deixou de dizer "recolhe".
+- Textos em `catalogEntries.tokenNotes.ts` (seis idiomas, só chaves novas). `docs/migracoes.md`, `npm run guide`, `npm run dev-kit`.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/features/DesignEngine/utils/tokenNotes.ts` | criado | lógica pura das notas |
+| `src/features/DesignEngine/Main/components/DecisionTokenRow.tsx` | criado | linha com aviso, desabilitado e intervalo |
+| `src/features/DesignEngine/Main/components/DecisionTokenList.tsx` | alterado | usa `DecisionTokenRow` |
+| `src/core/i18n/catalogEntries.tokenNotes.ts`, `catalog.ts` | criado/alterado | textos novos |
+| `src/core/Design/schema/navigation.ts`, `system.ts`, `catalog/partitions/layout_and_navigation.json`, `branding_config.json` | alterado | rótulo e descrições |
+| `src/core/Provider/generated/design-token-*` | gerado | `npm run token-types` |
+| `utils/__tests__/tokenNotes.test.ts`, `Main/components/__tests__/DecisionTokenRow.test.tsx` | criado | 17 casos |
+| `browser-tests/painel-avisa-a-verdade.spec.ts` + `fixtures/painel-avisa-entry.tsx` | criado | 6 casos em navegador |
+| `browser-tests/textura-muda-pixel.spec.ts` | criado | 4 casos |
+| `browser-tests/fixtures/topbar-mais-entry.tsx` | alterado | param `nav=sidebar` |
+| `docs/migracoes.md`, `sarak-ui/*`, `sarak-dev/*` | alterado | entrada e kits |
+
+**Verificações executadas**
+- `npx vitest run src/features/DesignEngine/Main src/features/DesignEngine/utils src/core/i18n src/core/Design/schema src/core/Design/catalog` → 189 arquivos, 640 testes verdes (JSON). Uma rodada anterior, sob carga, deu 19 falhas por timeout de 5 s em `PaletteSection.test.tsx` (da plan 164); não se repetiu.
+- Navegador (config temporário, já removido): `painel-avisa-a-verdade` 6/6, `textura-muda-pixel` 4/4.
+- `token-types`, `token-docs:check`, `catalog:check`, `token-reader:check` verdes. `tsc --noEmit`: um erro, em `src/core/i18n/presetTexts/textures.ts:58` (outra plan, em edição); nenhum nos meus arquivos.
+- NÃO rodei: suíte completa, `verify --tier=quick`, `build`, nem o spec de textura contra o código de antes (o `HEAD` já tem o piso).
+
+**Critérios de aceite (lote 3)**
+- [x] Aviso de preferência pessoal com ação que a apaga — `DecisionTokenRow.test.tsx`, `painel-avisa-a-verdade.spec.ts:61`.
+- [x] Controle que não vale fica desabilitado com motivo — spec `:77` e `:85`.
+- [x] "Textura local" muda pixel — `textura-muda-pixel.spec.ts`.
+- [x] Largura respeita e mostra o intervalo — spec `:92`.
+- [x] Rótulo de `isNavHidden` corrigido — spec `:101`.
+- [ ] Prévia: `C:\tmp\sarak-previa-159\index.html` (a do lote 2 em `index-lote2.html`) — falta o ok do dono.
+
+**Decisões e suposições**
+- Desabilito pelo `navigationStyle` do rascunho, mesmo com a troca lateral/topo oferecida ao usuário (leitura literal do 3.2).
+- Escopo do desabilitar = só token que declara `interactsWith: ['navigationStyle']` (6 tokens hoje), não todo `sidebar*`/`topbar*`; os demais valem também em gaveta/celular.
+- 3.3: sem mudança de código; defeito medido no v8.0.0 já não existe no `HEAD`.
+- Mexi nas partições `layout_and_navigation.json` e `branding_config.json` (fora da lista da §3.1) porque o rótulo/descrição do catálogo vencem os do schema.
+- Fixture compartilhado `topbar-mais-entry.tsx` ganhou o param `nav`.
+
+**Achados fora do escopo (não corrigidos)**
+- `src/core/i18n/presetTexts/textures.ts:58` com erro de sintaxe no worktree (plan 161/164, em voo).
+
+**Pendências / riscos**
+- Ok do dono na prévia.
+- Sem recarga em runtime: apagar a preferência pelo painel depende do Provider reidratar; no navegador o `localStorage` foi conferido, o efeito na barra não.
+- A nota de preferência só aparece nos controles renderizados por `DecisionTokenList` (não nos resultados da busca).
+
 ---
 
 # 10. Veredito
@@ -498,7 +578,7 @@ em degradê, no modo claro. O 2.1 refaz esses controles. Meça o controle novo t
 
 ## Veredito — 2026-11-17 — lote 1, prévia — 🔵 Em correção (três ajustes que a prévia mostrou)
 
-O dono viu a prévia (`C:	mpsarak-previa-159index.html`) e perguntou se P/M/G e Lateral/Topo tinham voltado para a barra.
+O dono viu a prévia (`C:\tmp\sarak-previa-159\index.html`) e perguntou se P/M/G e Lateral/Topo tinham voltado para a barra.
 - **Não voltaram.** O padrão de fábrica continua `menu` (no ⚙), em `schema/preferences.ts`.
 - A prévia só mostra a composição `pinned` do ERP, que o 1.1 exige, e não diz isso de um jeito que se veja.
 
@@ -527,7 +607,7 @@ Os três ajustes do veredito de 2026-11-17, e nada além.
    `ShellNavMore` recebe `start` e se posiciona com `insetInlineStart` (largura `w-max`). Continua fora do fluxo, então a largura
    natural da lista não muda e a medição não oscila.
 2. **Ícone do "Mais" removido.** Fica o texto e a seta do grupo.
-3. **Prévia** (`C:	mp\sarak-previa-159\index.html`): linha de aviso no topo da seção 1 dizendo que 1.A usa a composição fixada do
+3. **Prévia** (`C:\tmp\sarak-previa-159\index.html`): linha de aviso no topo da seção 1 dizendo que 1.A usa a composição fixada do
    ERP; seção 1.B nova com a composição de fábrica (P/M/G, Lateral/Topo e modo no ⚙) a 1440, 1280 e 1024 px. As capturas da
    Topbar foram refeitas com o código novo.
 
@@ -656,7 +736,7 @@ espera esse commit (as duas criam token).
 O vermelho do `PresetsCatalog` que o resumo cita era passageiro: a correção da `plan-161` estava em andamento na mesma árvore, e o
 snapshot é dela. Na minha rodada, ele já passa.
 
-**Falta, para fechar o lote 2:** o ok do dono na prévia (`C:	mpsarak-previa-159index.html`).
+**Falta, para fechar o lote 2:** o ok do dono na prévia (`C:\tmp\sarak-previa-159\index.html`).
 
 **Commit:** junto com o lote 2 da `plan-161`, depois da correção dela e do ok do dono nas duas prévias.
 
@@ -664,8 +744,209 @@ snapshot é dela. Na minha rodada, ele já passa.
 
 ## Nota do revisor — 2026-11-17 — ok do dono na prévia do lote 2
 
-O dono aprovou a prévia do lote 2 (`C:	mpsarak-previa-159index.html`). Ele confirmou que P/M/G e Lateral/Topo vão para a barra
+O dono aprovou a prévia do lote 2 (`C:\tmp\sarak-previa-159\index.html`). Ele confirmou que P/M/G e Lateral/Topo vão para a barra
 pela configuração (`preferenceFontSizePosition` e `preferenceNavigationStylePosition` em **Mostrar**), com padrão **No menu** em todos
 os temas, e que o claro/escuro fica no ⚙ por padrão (`preferenceModePosition`).
 
 **Lote 2 fechado. Status da plan: 🟡 Em execução** (próximo lote). O commit sai junto com o lote 2 da `plan-161`.
+
+## Veredito — 2026-11-17 — lote 3 — 🔵 Em correção (dois itens objetivos)
+
+**Como medi:** no worktree real.
+- `tokenNotes.test.ts`, `DecisionTokenRow.test.tsx` e `DecisionTokenList`: 21 de 21 verdes.
+- `painel-avisa-a-verdade.spec.ts` e `textura-muda-pixel.spec.ts` pelo config padrão de `browser-tests/`: 10 de 10 verdes.
+- **Mutação** numa cópia fora do repositório: tirei o piso de opacidade de `noiseTexture.ts`, e os dois casos "muda pixel" reprovam. O
+  3.3 já estava resolvido no `HEAD`, e o spec tem dente.
+- **Diff lido:** `tokenNotes.ts`, `DecisionTokenRow.tsx`, `DecisionTokenList.tsx`, o rótulo de `isNavHidden` e o caminho de
+  `updatePreferences` em `usePreferencesManager.ts`.
+
+**Achados**
+1. **Aviso falso no modo quando o host define `preferences.defaultColorMode`.** O contexto expõe as preferências já com o padrão do
+   host (`withHostDefaultColorMode`). Sem escolha nenhuma do usuário, `personalOverrideOf('mode', …)` vê um `colorMode` e mostra
+   "Sua preferência pessoal (…) está por cima do tema". O botão de apagar grava `colorMode: undefined`, o padrão do host volta, e o
+   aviso fica onde está: a ação não faz nada.
+   - Critério: com `defaultColorMode` e nada gravado, sem aviso. Com escolha gravada, aviso, e apagar o tira. Teste de unidade dos
+     dois casos.
+2. **Falta medir o efeito de apagar.** O resumo declara que conferiu o `localStorage`, mas não a barra. Valor gravado não prova tela.
+   - Critério: um teste com o `SarakUIProvider` real e uma preferência gravada que muda o design efetivo (por exemplo
+     `navigationStyle` diferente do tema). Clicar em apagar volta o design efetivo ao valor do tema.
+
+**Como fechar** (verificação objetiva): os testes novos dos dois itens e o filtro `src/features/DesignEngine/utils` +
+`Main/components/__tests__/DecisionTokenRow`. O revisor reroda só esses e manda a prévia ao dono.
+
+**Commit:** junto com o lote 2 da `plan-164` e o lote 3 da `plan-161`, depois das correções e do ok do dono nas prévias.
+
+**Status da plan: 🔵 Em correção.**
+
+## Veredito — 2026-11-18 — lote 3, correção — 🟢 Aprovado no código; o lote fecha com o ok do dono na prévia
+
+**Como medi:** só o filtro do veredito, no worktree real. `npx vitest run src/features/DesignEngine/utils` e `DecisionTokenRow`: 16 de
+16 arquivos e 188 de 188 testes verdes. O executor fez a mutação do achado 1 (os dois casos reprovam lendo `preferences`), e o caso do
+achado 2 mede o design efetivo do Provider real voltando ao do tema. O `tsc` acusa 1 erro, em `compose.test.ts:57`, que é da correção
+da `plan-164` em andamento, não deste lote.
+
+**Tipo público:** `storedPreferences?` entra como campo opcional do contexto, com um tipo que já é exportado (`SarakUserPreferences`).
+O `public-types:check` lê o `dist/index.d.ts` e roda na verificação conjunta, com build, antes do commit.
+
+**Falta, para fechar o lote 3:** o ok do dono na prévia (`C:\tmp\sarak-previa-159\index.html`).
+
+**Commit:** junto com o lote 2 da `plan-164` e o lote 3 da `plan-161`.
+
+**Status da plan: 🟠 Em revisão** até o ok do dono.
+
+## Nota do revisor — 2026-11-18 — ok do dono na prévia do lote 3
+
+O dono aprovou a prévia do lote 3 (`C:\tmp\sarak-previa-159\index.html`).
+
+**Lote 3 fechado. Status da plan: 🟡 Em execução** (lote 4). O commit sai junto com o lote 2 da `plan-164` e o lote 3 da `plan-161`.
+
+## Veredito — 2026-11-18 — achado do dono na prévia do lote 2 — 🔵 Em correção (um item objetivo)
+
+O dono viu, na prévia do lote 2 (`index-lote2.html`, Corporate Ledger claro e escuro, ⚙ aberto), que as linhas não escolhidas do ⚙
+ficam ilegíveis: Pequena, Grande, Lateral, Recolher navegação, Idioma, Buscar e Modo Escuro. A captura é do código real.
+
+**Causa** (código lido): no ⚙ e na gaveta, a linha é um `SarakMenuItem` vertical. Sem `active`, ele pinta o texto com
+`--sarak-sidebar-item-text-color` (`SarakMenuItem.tsx:140`), que é a cor do item **da barra**, escolhida contra o fundo da barra. O
+⚙ abre sobre o fundo do cartão. Com tom da barra diferente do cartão (`sidebarTone: "inverse"` no Corporate Ledger), o texto some nos
+dois modos. Na coluna "antes" da prévia, Recolher navegação, Idioma e Buscar já estavam apagados, então o defeito é anterior. O lote 2
+o amplia, porque P/M/G e Lateral/Topo viraram linhas do mesmo menu.
+
+**Achado**
+1. **O texto das linhas do ⚙ (e da gaveta, se ela abre sobre o cartão) segue a superfície onde o menu abre, não a barra.**
+   - Critério: em navegador, o contraste do texto de toda linha do ⚙ contra o fundo dele é de pelo menos 4,5:1. Medir com a linha
+     escolhida e com as não escolhidas, em claro e escuro, no Corporate Ledger (tom invertido) e no tema padrão. O caso reprova antes do
+     conserto. A barra em si não muda.
+
+**Como fechar:** o caso novo, `tom-contrastante-legivel.spec.ts` e `preferencias-discretas.spec.ts` (com `npm run build`). Prévia
+com o ⚙ aberto nos dois modos, para o dono.
+
+**Commit:** junto com o lote 3 desta plan, o lote 2 da `plan-164` e o lote 3 da `plan-161`.
+
+**Status da plan: 🔵 Em correção.**
+
+
+## Resumo da execução (correção 2) — 2026-11-18
+
+**Resultado:** Concluído (a prévia com o ⚙ aberto nos dois modos espera o ok do dono).
+
+**Estado do worktree ao iniciar**
+O worktree já tinha, de outras tarefas e de lotes anteriores desta plan, as alterações das plans 161 e 164 (`PaletteCreator`, `PaletteGallery`, `PaletteSection`, `BrandShortcut`, `presets/components/cards.ts`, `i18n/presetTexts/`, `catalog.ts`, `cardsThemes.generated.ts` e afins), o lote 3 desta plan (`DecisionTokenRow`, `tokenNotes`, `catalogEntries.tokenNotes.ts`, Provider) e o `dist/` regenerado. Nenhum desses arquivos foi tocado nesta correção; a fotografia completa está em `scratchpad/foto-corr2.txt`.
+
+**O que foi feito**
+- Achado 1: `ShellPreferencesMenu.tsx` — o menu do ⚙ (portal sobre o fundo do cartão) redefine, só para as suas linhas, os quatro tokens que o `SarakMenuItem` vertical lê (`--sarak-sidebar-item-text-color`, `--sarak-sidebar-item-hover-text-color`, `--sarak-sidebar-icon-color`, `--sarak-sidebar-hover-color`) para o texto do corpo (`--sarak-text-main`), o par do fundo do cartão. A barra não muda e o `SarakMenuItem` também não: o conserto é na superfície que abre o menu.
+- Caso novo `browser-tests/menu-preferencias-legivel.spec.ts`: 12 cenas (Corporate Ledger, tema padrão, tema padrão com as duas barras em `inverse` × claro/escuro × ⚙ na lateral/no topo), com tamanho, orientação e modo no menu. Mede texto e ícone de **toda** linha (a escolhida e as não escolhidas) contra o fundo composto do menu, mínimo 4,5:1.
+- Gaveta do celular: não alterada. Ela abre sobre o fundo da barra com o tom dela (`ChromeMobileDrawer.tsx:28`), então o texto da barra é o par certo ali; não há o defeito.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/Navigation/ShellPreferencesMenu.tsx` | alterado | `SURFACE_ITEM_TONE` aplicado ao menu do ⚙ |
+| `browser-tests/menu-preferencias-legivel.spec.ts` | criado | contraste das linhas do ⚙, 12 cenas |
+
+**Verificações executadas**
+- Caso novo **antes** do conserto: reprovou. As três primeiras cenas lidas (Corporate Ledger escuro/lateral, escuro/topo, claro/lateral) acusaram texto de 1,07:1 a 1,21:1 e ícone de 1,62:1 a 1,97:1 (ex.: `texto "Pequena": rgb(223,220,232) sobre rgb(244,241,254) = 1.21`). A saída foi cortada por mim depois dessas três; não li as outras nove antes do conserto.
+- Caso novo **depois** → 12 passed.
+- `npm run build` → exit 0 (inclui o consumidor com todos os peers opcionais).
+- `tom-contrastante-legivel.spec.ts` + `preferencias-discretas.spec.ts` (contra o build) → 31 passed.
+- Capturas do ⚙ aberto, antes e depois: `C:\tmp\sarak-previa-159\index-correcao-menu.html`.
+
+**Critérios de aceite**
+- [x] Texto das linhas do ⚙ segue a superfície onde o menu abre — `ShellPreferencesMenu.tsx` (`SURFACE_ITEM_TONE`).
+- [x] Contraste ≥ 4,5:1 em toda linha, escolhida e não escolhidas, claro e escuro, Corporate Ledger e tema padrão — `menu-preferencias-legivel.spec.ts`, 12/12.
+- [x] O caso reprova antes do conserto — ver acima (três cenas lidas).
+- [x] A barra em si não muda — `tom-contrastante-legivel.spec.ts` e `preferencias-discretas.spec.ts` verdes.
+- [ ] Prévia aprovada pelo dono — pendente.
+
+**Decisões e suposições**
+- O texto do corpo (`--sarak-text-main`) vale como par do fundo do cartão; o caso mede isso em vez de supor. Ele é o mesmo token que as linhas de P/M/G e Lateral/Topo (`ShellPreferenceChoiceGroup`) já liam.
+- O texto não escolhido deixa de ser "apagado" (muted) no ⚙: fica com a cor do texto do corpo, porque 4,5:1 é o critério e o muted do corpo não foi medido. A escolhida segue distinta pelo peso e pelo visto.
+- O hover da linha vira um véu de 10% do texto do corpo, em vez do `--sarak-sidebar-hover-color` da barra (que também é calculado contra a barra).
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum.
+
+**Pendências / riscos**
+- Rodei só o que o prompt mandou (build, o caso novo e os dois casos citados) mais `vitest run src/components/atomic/Navigation src/components/Layout/chrome` (57 arquivos, 563 testes verdes) e `tsc --noEmit` (sem erro); suíte completa, baseline e `verify` não foram rodados.
+
+## Veredito — 2026-11-18 — correção 2 (texto do ⚙) — 🔵 Em correção (um item objetivo; ele barra o commit)
+
+**Verificação conjunta das plans 159, 161 e 164** (saem no mesmo commit):
+- **Navegador:** numa cópia fora do repositório (o worktree inteiro, menos `dist/`), `npm run build` com exit 0 e
+  `public-types:check` OK. A bateria `topbar-mais`, `barra-de-topo-estreita`, `cromo-css-real`, `tom-contrastante-legivel`,
+  `plan-141`, `preferencias-discretas`, `plan-161-catalogo-proporcional`, `login-theme-application`, `plan-122-preview-mode`,
+  `plan-160-previa-mostra-a-opcao`, `plan-160-moldura-e-largura`, `troca-de-tema`, `painel-avisa-a-verdade`,
+  `textura-muda-pixel` e `menu-preferencias-legivel` deu **176 de 176 verdes**.
+- **Unidade, no worktree real:** `Navigation`, `Layout/chrome`, `core/Provider`, `core/Design`, `core/i18n`,
+  `features/DesignEngine`, `src/styles` e o gerador de cards deram 361 de 361 arquivos e 3629 de 3629 testes.
+- **Segredo** (Anel 0), nas linhas adicionadas e nos não rastreados fora de `dist/`: 0.
+- **Gates do commit:** um vermelho real, `audit:baseline` com `auditor_cleancode` de 0 para 1 (abaixo, item da 159). O
+  `plan-index:check` é do revisor e foi regenerado.
+- **Diff lido:** `ShellPreferencesMenu.tsx` redefine, só no menu, os quatro tokens da linha para o texto do corpo. A barra não muda. O
+  caso novo mede texto e ícone de toda linha nas 12 cenas, e o executor o viu reprovar antes do conserto (de 1,07:1 a 1,21:1).
+
+**Achado**
+1. **`src/core/Provider/types.ts` passou do teto de 250 linhas** (`auditor_cleancode` de 0 para 1). O `audit:baseline` derruba o
+   commit das três plans. As duas linhas a mais são do campo `storedPreferences` da correção do lote 3 desta plan (o `HEAD` tem
+   249). O resumo da 161 a atribuiu à 164, mas não é dela.
+   - Critério: `types.ts` volta a 250 linhas ou menos sem perder o campo nem a descrição, e
+     `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` fica sem regressão.
+
+**Como fechar:** só esse comando. O revisor reroda só ele.
+
+**Falta, para o commit:** o ok do dono na prévia `C:\tmp\sarak-previa-159\index-correcao-menu.html`.
+
+**Status da plan: 🔵 Em correção.**
+
+## Nota do revisor — 2026-11-18 — ok do dono na prévia da correção 2
+
+O dono aprovou a prévia `C:\tmp\sarak-previa-159\index-correcao-menu.html` (o ⚙ legível nos dois modos). Falta só o item do
+`types.ts` (veredito da correção 2) para o commit.
+
+**Status da plan: 🔵 Em correção** (o item do `types.ts`).
+
+
+## Resumo da execução (correção 3) — 2026-11-18
+
+**Resultado:** Concluído.
+
+**Estado do worktree ao iniciar**
+O mesmo das correções anteriores (alterações das plans 161 e 164, lotes desta plan e `dist/` regenerado); fotografia em `scratchpad/foto-corr3.txt`. Nada além de `types.ts` foi tocado.
+
+**O que foi feito**
+- `src/core/Provider/types.ts` — o auditor contava 251 linhas (`HEAD` tinha 249; o campo `storedPreferences` somou 2). Fundi as duas linhas finais de `export type { ... } from './providerProps'` numa só e o comentário de duas linhas sobre `SarakUIProviderProps` numa linha. O campo `storedPreferences` e a descrição dele ficaram como estavam; nenhum export foi removido (os seis nomes seguem exportados).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Provider/types.ts` | alterado | 251 → 249 linhas pelo auditor; mesmos exports e mesmo campo |
+
+**Verificações executadas**
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → "igual ao baseline de 2026-10-12 — nenhuma regressão" (antes da segunda condensação reprovava com `auditor_cleancode` 0 → 1, porque o auditor contava 251 com `wc` em 250).
+
+**Critérios de aceite**
+- [x] `types.ts` no teto sem perder o campo nem a descrição — `types.ts` (`storedPreferences` e o JSDoc).
+- [x] Baseline sem regressão — saída acima.
+
+**Decisões e suposições**
+- Condensei exports e um comentário em vez de mover o campo; o resultado é equivalente para o consumidor.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum.
+
+**Pendências / riscos**
+- Não rodei `build` nem a suíte; o `public-types:check` fica com o revisor (os nomes exportados não mudaram).
+
+## Veredito — 2026-11-18 — correção 3 (`types.ts`) — 🟢 Aprovado
+
+**Como medi:** `src/core/Provider/types.ts` tem 249 linhas, e o campo `storedPreferences` e a descrição dele seguem no lugar. O
+diff só funde dois `export type` e um comentário, com os mesmos seis nomes exportados.
+- `check-audit-baseline --with-tsc`: sem regressão.
+- `public-types:check`: OK. Anel 1 verde. O `plan-index:check` é do revisor e foi regenerado com este veredito.
+
+Com isto fecham o lote 3 e as correções 1 a 3, e a prévia já tem o ok do dono.
+
+**Commit:** junto com o lote 3 da `plan-161` e o lote 2 da `plan-164`, num commit só.
+
+**Próximo:** lote 4, depois do lote 4 da `plan-161`, porque os dois mexem em `design-decisions.json`.
+
+**Status da plan: 🟡 Em execução** (lote 4).

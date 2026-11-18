@@ -38,6 +38,8 @@ export const PRESET_GROUP_TITLES: Readonly<Record<string, SixTuple>> = {
 };
 
 export const PRESET_FAMILY_TITLES: Readonly<Record<string, SixTuple>> = {
+    cardsCurated: ['Cards curados', 'Curated cards', 'Tarjetas curadas', 'Cartes sélectionnées', 'Kuratierte Karten', 'Schede selezionate'],
+    cardsOfThemes: ['Cards dos temas', 'Theme cards', 'Tarjetas de los temas', 'Cartes des thèmes', 'Karten der Themen', 'Schede dei temi'],
     technical: ['Técnicas', 'Technical', 'Técnicas', 'Techniques', 'Technisch', 'Tecniche'],
     organic: ['Orgânicas', 'Organic', 'Orgánicas', 'Organiques', 'Organisch', 'Organiche'],
     geometric: ['Geométricas', 'Geometric', 'Geométricas', 'Géométriques', 'Geometrisch', 'Geometriche'],

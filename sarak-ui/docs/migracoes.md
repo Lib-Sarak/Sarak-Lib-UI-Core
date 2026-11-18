@@ -5,6 +5,16 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 9.0.0 — o painel avisa a preferência pessoal que está por cima do tema, desabilita o controle que não vale e mostra o intervalo da largura da lateral
+
+Três ajustes do painel de Design, sem token novo e sem mudar o que o cromo desenha. (1) O token que uma preferência do próprio administrador sobrepõe (`navigationStyle`, `bodySize`, `mode`, `isNavHidden` e `sidebarWidth`) ganha, junto do controle, "Sua preferência pessoal (<valor>) está por cima do tema" e a ação "Apagar minha preferência", que apaga só aquela chave de `sarak-ui-preferences-v1`; preferência que o tema não oferece (`preference*Position` em `off`) não vence nada e não é avisada. (2) O controle que declara depender de `navigationStyle` (`navbarLayout` e os `topbar*` só do topo; `sidebarPosition`, `shellBrandLogoSize`, `sidebarLabelMaxWidth` e os `sidebar*` só da lateral) fica desabilitado, com o motivo, quando o tema usa a outra navegação. (3) O campo da largura da lateral nasce com o intervalo que vale — o do token cruzado com `sidebarMinWidth`/`sidebarMaxWidth` do dispositivo da prévia — e o mostra; antes 260 virava 300 px em silêncio.
+
+O rótulo de `isNavHidden` passa de "Ocultar Navegação" para "Navegação recolhida" (é o que o token faz: a barra continua na tela como trilho de ícones, o mesmo estado do botão de recolher); `isAutoHideEnabled` mantém "Auto-ocultar Menus", e a descrição dele deixa de dizer "recolhe". "Textura local" já muda pixel na barra (a camada nunca desce de 0,12 de opacidade); a medição agora é um spec de navegador.
+
+**O que muda para o importador:** quem media o painel vê, em cada linha de controle, um `<fieldset>` em volta do controle (desabilitado quando o controle não vale) e, às vezes, uma nota abaixo (`data-testid` `token-personal-note`, `token-inactive-note` e `token-range-note`); a linha `[data-token-row]` continua a mesma. O rótulo antigo de `isNavHidden` some do catálogo e de `sarak-ui/catalog.json`.
+
+---
+
 ## 9.0.0 — P e G do tamanho da fonte configuráveis em px, controles de preferência discretos e o ⚙ que não repete o que está na barra
 
 O tamanho da fonte do usuário (P/M/G) deixa de usar uma escala fixa de cinco degraus e passa a se mover em px a partir de `bodySize`: dois tokens novos, `preferenceFontSizeReduction` (quanto o P reduz) e `preferenceFontSizeIncrease` (quanto o G aumenta), ambos em px, de 0 a 6, padrão 2. Com o padrão nada muda nas bases de 14 a 18 px; nas pontas o defeito some: com base 12 px o P era igual ao M, e com base 20 px o G era igual ao M — agora são 10 px e 22 px. O P nunca desce de 8 px. Os dois tokens ficam na decisão Layout, junto da composição da barra.
@@ -49,6 +59,25 @@ Escolher um tema continua aplicando as cores dele, e isso não muda. O token nov
 |---|---|---|
 | Trocar de tema com uma paleta escolhida | as cores do tema novo | as cores do tema novo; com `keepPalette` ligado, a paleta escolhida |
 | Chave `keepPalette` no design | não existia | booleano, padrão `false`; só `true` é gravado |
+
+
+## 9.0.0 — o token `savedPalettes` (paletas salvas com nome) e a galeria de paletas recolhida por grupo
+
+O painel passa a guardar uma paleta criada com nome próprio. O criador ganha o campo "Nome da paleta" e o botão "Salvar paleta"; a galeria ganha o grupo "Minhas paletas" (escolhível, com espiada e com o botão de apagar, que pede confirmação) e o atalho "Usar minha marca" ganha o campo "Paleta da marca", que oferece as salvas. Nome repetido pergunta antes de substituir. Escolher uma paleta salva é escolher o `colorPalette` dela, como com qualquer paleta.
+
+**Onde a lista mora:** no próprio design do sistema, numa chave nova, `savedPalettes` (texto, padrão `''`). Ela é gravada pelo mesmo `onSave` do design, junto do resto, e volta pelo mesmo `onLoad`: **nenhuma porta nova, nenhuma tabela nova, nenhum código novo no importador.** O valor é a lista em texto compacto — entradas `id|nome|valor` separadas por `~`, em que `valor` é um `colorPalette` `custom:<tipo>:<#base>[,sec=<#hex>][,acc=<#hex>]` — porque o dicionário de tokens só guarda valor simples; quem lê a lista no código usa `savedPalettes` da lib, não o texto. A validação do design descarta a entrada inválida e o nome com aspas, chaves ou barras. O teto é de 24 paletas; o nome tem até 40 caracteres.
+
+**A troca de tema não apaga a lista.** As paletas salvas são do sistema, não do tema: nem um tema salvo pelo painel, que carrega o padrão (vazio) de todo token, a zera ao ser aplicado.
+
+**O que muda para o importador:** nada, se ninguém salvar paleta. Instalação existente não tem a chave e lê o padrão (nenhuma paleta). No design gravado, `savedPalettes` com itens é uma escolha como `colorPalette`: grava e volta igual ao recarregar; sem itens, some do gravado. **Servidor que valida a lista de chaves do design (como o dos logins) precisa aceitar a chave `savedPalettes` uma vez**, e o payload cresce com o número de paletas salvas (cerca de 60 caracteres por paleta). Tirar a chave depois de importadores a gravarem é MAJOR para quem a guarda.
+
+Na galeria, os grupos de paletas (`Minhas paletas` e um por tipo) abrem recolhidos, menos o da paleta escolhida; a decisão **Cores** rola no máximo 2,5 alturas da coluna, e os "Ajustes principais" de uma decisão com mais de oito controles abrem recolhidos. Nada disso muda o que o painel grava.
+
+| | Antes | Depois |
+|---|---|---|
+| Guardar uma paleta criada | só como valor de `colorPalette`, sem nome | com nome, em `savedPalettes`, no design do sistema |
+| Chave `savedPalettes` no design | não existia | texto, padrão `''`; só a lista com itens é gravada |
+| Aplicar um tema salvo pelo painel | trazia o padrão de todo token | a lista de paletas salvas do sistema fica |
 
 ---
 

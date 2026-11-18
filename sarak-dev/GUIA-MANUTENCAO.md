@@ -298,11 +298,11 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | Fonte | Medida | Valor |
 | --- | --- | --- |
 | `catalog/theme_table_mapping.json` | colunas | 13 |
-| `catalog/theme_table_mapping.json` | entradas brutas | 431 |
-| `catalog/theme_table_mapping.json` | **ids únicos** | **431** |
+| `catalog/theme_table_mapping.json` | entradas brutas | 432 |
+| `catalog/theme_table_mapping.json` | **ids únicos** | **432** |
 | `catalog/partitions/` | arquivos | 13 |
-| `catalog/partitions/` | tokens | 431 |
-| `SarakDesignTokens` (tipo público) | ids | 431 |
+| `catalog/partitions/` | tokens | 432 |
+| `SarakDesignTokens` (tipo público) | ids | 432 |
 | `SarakDesignTokens` (tipo público) | responsivos | 37 |
 
 > Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §2 do guia).
@@ -315,13 +315,14 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Componentes públicos: 139** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
-### B.3 Gates registrados (44)
+### B.3 Gates registrados (45)
 
 | Comando | O que roda |
 | --- | --- |
 | `npm run audit` | `node gates/scripts/audit/run_audit.mjs` |
 | `npm run barrel:check` | `node gates/scripts/contrato/check-barrel-parity.mjs --check` |
 | `npm run build-info:check` | `node scripts/generate-build-info.mjs --check` |
+| `npm run card-presets:check` | `npx tsx scripts/generate-theme-card-presets.ts --check` |
 | `npm run catalog:check` | `node scripts/generate-component-catalog.mjs --check` |
 | `npm run channel-dispute:check` | `npx tsx gates/scripts/contrato/check-channel-dispute.ts` |
 | `npm run chrome-token-parity:check` | `node gates/scripts/contrato/check-chrome-token-parity.mjs` |

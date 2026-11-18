@@ -2082,7 +2082,7 @@
   {
    "id": "isNavHidden",
    "group": "navigation",
-   "label": "Ocultar Navegação",
+   "label": "Navegação recolhida",
    "kind": "functional",
    "modeDependent": false,
    "usage": "Recolhe a navegação: a lateral estreita para o piso de largura e esconde rótulos; o topo encolhe para a altura recolhida. É o mesmo estado que o usuário alterna pelo botão de recolher.",
@@ -2684,6 +2684,17 @@
    "usage": "Zera as transições e animações da interface (duração de 0,00001 s) e as durações usadas por JavaScript; é requisito de acessibilidade, não estilo.",
    "interactsWith": [
     "animEnabled"
+   ]
+  },
+  {
+   "id": "savedPalettes",
+   "group": "colors",
+   "label": "Paletas Salvas",
+   "kind": "functional",
+   "modeDependent": false,
+   "usage": "Guarda as paletas que o administrador criou com nome: aparecem no grupo \"Minhas paletas\" da galeria e no atalho de marca. Escolher uma é escolher o `colorPalette` dela.",
+   "interactsWith": [
+    "colorPalette"
    ]
   },
   {

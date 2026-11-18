@@ -358,7 +358,7 @@
   {
     "tokenId": "isAutoHideEnabled",
     "name": "Auto-ocultar Menus",
-    "description": "Recolhe automaticamente barras de navegação (Sidebar ou Topbar) quando o usuário rola a página ou perde foco.",
+    "description": "Esconde a navegação (Sidebar ou Topbar) por inteiro até o ponteiro chegar à borda da tela, devolvendo toda a largura ao conteúdo. Não é o recolher: recolhida, a barra continua na tela como trilho de ícones (veja isNavHidden).",
     "type": "boolean",
     "importance": 50,
     "categories": [

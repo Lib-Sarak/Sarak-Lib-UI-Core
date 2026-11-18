@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
-import { ForceOpenSections } from './CollapsibleSection';
+import { CollapsibleSection, ForceOpenSections } from './CollapsibleSection';
 import { ThemeDecisionOptions, type DecisionOptionsContext } from './ThemeDecisionOptions';
 import { DecisionSectionList, DecisionTokenList } from './DecisionTokenList';
 import { DecisionQuestionList } from './DecisionQuestionList';
@@ -27,6 +27,9 @@ const useRevealToken = (focusTokenId: string | undefined, container: React.RefOb
     }, [focusTokenId, container]);
 };
 
+/** Os ajustes principais passam a abrir recolhidos quando são mais que isto: uma lista longa de controles empurra o resto da decisão para longe. */
+const MAIN_TOKENS_OPEN_LIMIT = 8;
+
 const revealsFineTuning = (location: TokenLocation | undefined): { open: boolean; showAll: boolean } => ({
     open: location?.layer === 'essential' || location?.layer === 'rest',
     showAll: location?.layer === 'rest',
@@ -49,7 +52,12 @@ export const ThemeDecisionView: React.FC<ThemeDecisionViewProps> = ({ decision, 
         <div ref={container} data-testid={`decision-${decision.id}`} className="flex flex-col gap-5 p-[var(--sarak-layout-gap-sm,12px)]">
             <ThemeDecisionOptions groups={decision.groups} context={{ ...options, omitTokenIds: layers.questionTokenIds }} />
             <DecisionQuestionList questions={layers.questions} mode={options.draftMode} {...tokenProps} />
-            {layers.mainTokens.length > 0 && (
+            {layers.mainTokens.length > MAIN_TOKENS_OPEN_LIMIT && (
+                <CollapsibleSection title={text('optionsMainTitle')} toggleId="main-tokens">
+                    <DecisionTokenList tokens={layers.mainTokens} {...tokenProps} />
+                </CollapsibleSection>
+            )}
+            {layers.mainTokens.length > 0 && layers.mainTokens.length <= MAIN_TOKENS_OPEN_LIMIT && (
                 <section aria-label={text('optionsMainTitle')} className="flex flex-col gap-3">
                     <h3 className="text-xs font-semibold text-[var(--theme-muted)]">{text('optionsMainTitle')}</h3>
                     <DecisionTokenList tokens={layers.mainTokens} {...tokenProps} />

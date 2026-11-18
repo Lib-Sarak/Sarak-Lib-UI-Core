@@ -17,6 +17,7 @@ export const THEME_PRESERVED_KEYS = [
     'enabledLanguages',
     'mode',
     'keepPalette',
+    'savedPalettes',
 ] as const;
 
 const getPaletteMode = (
@@ -54,6 +55,12 @@ export const composeThemeDesign = (
     const palette = resolvePaletteForDesign(resolvedTheme, host, getPaletteMode(resolvedTheme, host, prev));
     const design = { ...sarakGetDefaultDesignState(), ...preserved, ...palette, ...host, ...resolvedTheme } as Record<string, unknown>;
     // Com "manter minha paleta" ligado, a paleta do design anterior vale por cima do tema que acabou de entrar.
+    // O tema que o painel salva traz o padrão do schema em todo token: esse valor não é escolha do tema, e não apaga o que é do sistema.
+    const defaults = sarakGetDefaultDesignState() as Record<string, unknown>;
+    THEME_PRESERVED_KEYS.forEach((key) => {
+        const owned = prev[key] ?? host[key];
+        if (owned !== undefined && key in defaults && resolvedTheme[key] === defaults[key]) design[key] = owned;
+    });
     const kept = applyKeptPalette(design, prev.colorPalette ?? host.colorPalette);
     if (kept.colorPalette === '') delete kept.colorPalette;
     return kept as unknown as SarakDesignState;

@@ -10,7 +10,9 @@
  *
  * LIMITES DECLARADOS (R18): Chromium headless; o tema `sarak-sovereign`; lê `src/` pelo esbuild do harness (não mede o `dist/`);
  * "vazando" é geométrico — texto, controle ou imagem cuja caixa passa da caixa da amostra — e ignora o que é decoração
- * absoluta (fundo, textura, brilho); a rolagem é a da coluna, com o ajuste fino recolhido.
+ * absoluta (fundo, textura, brilho); a rolagem é a da coluna, com o ajuste fino recolhido. A amostra do card (lote 3) é neutra em forma,
+ * borda, sombra, respiro e fundo: o motor deixa o escopo da amostra mandar nos atributos `data-sx-*` (`_card-defaults.css`, `_card-materials.css`).
+ * A medida de rolagem do "Ver todas" de cards lê o `dist/sarak.css`: com o build defasado a grade sai de uma coluna só; rode `npm run build` antes.
  */
 import { test, expect, chromium, type Browser, type Page } from '@playwright/test';
 import fs from 'node:fs';
@@ -26,8 +28,6 @@ const DECISIONS = ['Tema', 'Cores', 'Fontes', 'Forma', 'Componentes', 'Layout'] 
 /** A meta de rolagem: nenhuma decisão passa de tantas alturas da área da coluna a 1440×900 (a medida de antes chegou a 15×). */
 const MAX_SCROLL_SCREENS = 2.5;
 /** O Tema mede com a galeria de temas aberta (ela é o grupo em uso da decisão), com a miniatura de tema do lote 2. */
-/** O que esta rodada não mede: a seção de paletas é da plan-164. */
-const NOT_IN_LOTE_1: Readonly<Record<string, string>> = { Cores: 'a seção de paletas é da plan-164' };
 
 /** O lado máximo, em px, de um quadrado de Personalidade (a plan pede "quadrado pequeno com o nome"). */
 const MAX_PERSONALITY_SIDE = 120;
@@ -178,10 +178,10 @@ test.describe('1440×900: rolagem e amostras de cada decisão', () => {
             console.log(`[plan-161] ${JSON.stringify(entry)}`);
             if (clipped.length) console.log(`[plan-161] ${decision} cortados: ${clipped.slice(0, 6).map((tile) => `${tile.name} → ${tile.clippedText.join('|')}`).join(' ; ')}`);
 
-            if (!NOT_IN_LOTE_1[decision]) expect(screens, `rolagem de ${decision}: ${initial.scrollHeight}px de ${initial.clientHeight}px`).toBeLessThanOrEqual(MAX_SCROLL_SCREENS);
+            expect(screens, `rolagem de ${decision}: ${initial.scrollHeight}px de ${initial.clientHeight}px`).toBeLessThanOrEqual(MAX_SCROLL_SCREENS);
             expect(clipped.map((tile) => `${tile.name}: ${tile.clippedText.join('|')}`), `texto cortado em ${decision}`).toEqual([]);
             expect(leaking.map((tile) => `${tile.name}: ${tile.leaks}`), `elementos vazando em ${decision}`).toEqual([]);
-            if (!NOT_IN_LOTE_1[decision]) expect(worst, `a amostra mais alta de ${decision}`).toBeLessThanOrEqual(initial.clientHeight * MAX_TILE_HEIGHT_RATIO);
+            expect(worst, `a amostra mais alta de ${decision}`).toBeLessThanOrEqual(initial.clientHeight * MAX_TILE_HEIGHT_RATIO);
             await page.close();
         });
     }
@@ -430,6 +430,120 @@ test.describe('390×844: Aplicar e as abas de dispositivo', () => {
             expect(device!.right, `a aba "${device!.text}" dentro da tela`).toBeLessThanOrEqual(geometry.viewport);
         }
         expect(geometry.pageScroll, 'sem rolagem horizontal da página').toBeLessThanOrEqual(geometry.viewport);
+        await page.close();
+    });
+});
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Lote 3: o card de cada tema, desenhado sobre uma base neutra fixa
+// ---------------------------------------------------------------------------------------------------------------------
+/** O que o card de uma amostra desenha: forma, borda, sombra e respiro, lidos do estilo calculado do `.sarak-card` dentro do tile. */
+const cardSignatures = (page: Page): Promise<Record<string, Record<string, string>>> => page.evaluate(() => {
+    const result: Record<string, Record<string, string>> = {};
+    document.querySelectorAll<HTMLElement>('[data-preset-group="cards"] [data-option-tile]').forEach((tile, index) => {
+        const card = tile.querySelector<HTMLElement>('.sarak-card');
+        const name = `${index}:${Array.from(tile.querySelectorAll('h3')).pop()?.textContent?.trim() ?? ''}`;
+        if (!card) return;
+        const style = getComputedStyle(card);
+        result[name] = {
+            radius: style.borderTopLeftRadius, border: `${style.borderTopWidth} ${style.borderTopStyle}`, shadow: style.boxShadow, padding: style.paddingTop, background: style.backgroundColor,
+        };
+    });
+    return result;
+});
+
+const openCardsGroup = async (page: Page): Promise<void> => {
+    await page.getByRole('button', { name: /^Forma/ }).click();
+    await page.getByRole('heading', { level: 2, name: 'Forma' }).waitFor();
+    const toggle = page.locator('[data-group-toggle="cards"]');
+    if ((await toggle.getAttribute('aria-expanded')) === 'false') await toggle.click();
+    const seeAll = page.locator('[data-preset-toggle="cards"]');
+    if ((await seeAll.getAttribute('aria-expanded')) === 'false') await seeAll.click();
+    await page.locator('[data-preset-group="cards"]').scrollIntoViewIfNeeded();
+    await page.evaluate(async () => {
+        const group = document.querySelector('[data-preset-group="cards"]') as HTMLElement;
+        const scroller = group.closest('.overflow-y-auto, .overflow-auto') as HTMLElement | null;
+        if (!scroller) return;
+        const top = group.getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop;
+        for (let y = top; y <= top + group.scrollHeight + scroller.clientHeight; y += Math.max(120, scroller.clientHeight / 2)) {
+            scroller.scrollTop = y;
+            await new Promise((resolve) => setTimeout(resolve, 80));
+        }
+        scroller.scrollTop = top;
+    });
+    // A amostra só se desenha quando entra na área visível: o que ficou para trás recebe uma visita até desenhar.
+    await page.evaluate(async () => {
+        for (let round = 0; round < 4; round += 1) {
+            const pending = Array.from(document.querySelectorAll<HTMLElement>('[data-preset-group="cards"] [data-option-tile]')).filter((tile) => !tile.querySelector('.sarak-card'));
+            if (!pending.length) return;
+            for (const tile of pending) {
+                tile.scrollIntoView({ block: 'center' });
+                await new Promise((resolve) => setTimeout(resolve, 150));
+            }
+        }
+    });
+    await page.waitForTimeout(400);
+};
+
+test.describe('o card de cada tema, sobre uma base neutra', () => {
+    test('há um card por tema embarcado, em seção própria, e a amostra não muda quando o tema atual muda', async () => {
+        const page = await open(1440, 900);
+        await openCardsGroup(page);
+        const headings = await page.locator('[data-preset-group="cards"] h4').allTextContents();
+        const before = await cardSignatures(page);
+        await snap(page, 'forma-cards-dos-temas.png', 'Forma › Estilo dos cards, "Ver todas": os cards curados e o card de cada tema, sobre a base neutra (tema atual: Sarak Sovereign).');
+
+        await page.getByRole('button', { name: /Voltar para a lista de decisões/ }).click();
+        await page.getByRole('button', { name: /^Tema/ }).click();
+        await page.getByRole('heading', { level: 2, name: 'Tema' }).waitFor();
+        const brutalism = page.locator('[data-theme-id="neo-brutalism"]');
+        await brutalism.scrollIntoViewIfNeeded();
+        await brutalism.click();
+        await page.waitForTimeout(800);
+        await page.getByRole('button', { name: /Voltar para a lista de decisões/ }).click();
+        await openCardsGroup(page);
+        const after = await cardSignatures(page);
+        await snap(page, 'forma-cards-dos-temas-outro-tema.png', 'O mesmo grupo com outro tema aplicado ao rascunho (Neo Brutalism): as amostras não mudam.');
+
+        report.narrow.themeCards = { sections: headings, tiles: Object.keys(before).length };
+        console.log(`[plan-161] cards: ${Object.keys(before).length} amostras; seções ${JSON.stringify(headings)}`);
+        expect(headings, 'seções').toEqual(expect.arrayContaining(['Cards curados', 'Cards dos temas']));
+        const tiles = await page.locator('[data-preset-group="cards"] [data-option-tile]').count();
+        const undrawn = await page.locator('[data-preset-group="cards"] [data-option-tile]').evaluateAll((nodes) => nodes.filter((node) => !node.querySelector('.sarak-card')).map((node) => Array.from(node.querySelectorAll('h3')).pop()?.textContent?.trim()));
+        expect(undrawn, 'opção sem card desenhado').toEqual([]);
+        expect(Object.keys(before).length, 'toda opção desenhou o card').toBe(tiles);
+        expect(tiles, 'os curados e um card por tema embarcado').toBeGreaterThanOrEqual(25 + 28);
+        expect(after, 'forma, borda, sombra, respiro e fundo de cada card são os mesmos sob qualquer tema atual').toEqual(before);
+        await page.close();
+    });
+
+    test('Forma com o "Ver todas" de cards aberto: rolagem e geometria das amostras de card', async () => {
+        const page = await open(1440, 900);
+        await openCardsGroup(page);
+        const scroll = await measureScroll(page);
+        const geometry = await page.locator('[data-preset-group="cards"] [data-option-tile]').evaluateAll((nodes) => {
+            const boxes = nodes.map((node) => node.getBoundingClientRect());
+            const firstRow = boxes.filter((box) => Math.abs(box.top - boxes[0].top) < 4).length;
+            const grid = document.querySelector('[data-preset-group="cards"] .grid') as HTMLElement;
+            return {
+                template: getComputedStyle(grid).gridTemplateColumns, tiles: boxes.length, columns: firstRow,
+                width: Math.round(boxes[0].width), height: Math.round(boxes[0].height), tallest: Math.round(Math.max(...boxes.map((box) => box.height))),
+            };
+        });
+        const entry = { scrollHeight: scroll.scrollHeight, clientHeight: scroll.clientHeight, screens: Number((scroll.scrollHeight / Math.max(1, scroll.clientHeight)).toFixed(2)), ...geometry };
+        report.narrow.formaCardsVerTodas = entry;
+        console.log(`[plan-161] Forma, "Ver todas" de cards aberto: ${JSON.stringify(entry)}`);
+        expect(entry.columns, 'colunas das amostras de card a 1440 px').toBeGreaterThanOrEqual(2);
+        expect(entry.tallest, 'a amostra de card mais alta').toBeLessThanOrEqual(scroll.clientHeight * MAX_TILE_HEIGHT_RATIO);
+        await page.close();
+    });
+
+    test('o card de dois temas diferentes tem amostras diferentes (a base neutra não achata os presets)', async () => {
+        const page = await open(1440, 900);
+        await openCardsGroup(page);
+        const signatures = await cardSignatures(page);
+        const distinct = new Set(Object.values(signatures).map((signature) => JSON.stringify(signature)));
+        expect(distinct.size, 'assinaturas distintas entre as amostras').toBeGreaterThan(Object.keys(signatures).length * 0.6);
         await page.close();
     });
 });

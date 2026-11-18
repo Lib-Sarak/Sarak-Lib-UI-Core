@@ -425,7 +425,7 @@ cartão, se couber no lote.
 - [x] Tema abaixo de 2,5 alturas (1,63) com a galeria aberta.
 - [x] Nome sem uma letra por linha em nenhuma largura da grade.
 - [x] Amostra larga da Barra de topo sem vazio, "Pedidos" visível.
-- [ ] Prévia em `C:	mp\sarak-previa-161\index.html` — refeita (Tema antes/depois a 1440 e 390, tabela de rolagem, custo); aguarda o ok do dono.
+- [ ] Prévia em `C:\tmp\sarak-previa-161\index.html` — refeita (Tema antes/depois a 1440 e 390, tabela de rolagem, custo); aguarda o ok do dono.
 - Critérios dos lotes 3 a 5: fora deste lote. Suíte completa, `tsc` e `cromo-css-real:check`: do revisor.
 
 **Decisões e suposições**
@@ -496,7 +496,7 @@ só esses dois.
 **Antes do commit** (das duas plans juntas): Anel 1 e `check-audit-baseline --with-tsc` sem regressão, e varredura de segredo
 (Anel 0) sobre as linhas adicionadas e os não rastreados fora de `dist/`: 0.
 
-**Falta, para fechar o lote 2:** o ok do dono na prévia (`C:	mpsarak-previa-161index.html`).
+**Falta, para fechar o lote 2:** o ok do dono na prévia (`C:\tmp\sarak-previa-161\index.html`).
 
 **Status da plan: 🟠 Em revisão** até o ok do dono.
 
@@ -505,3 +505,313 @@ só esses dois.
 O dono aprovou a prévia do lote 2 (`C:\tmp\sarak-previa-161\index.html`).
 
 **Lote 2 fechado. Status da plan: 🟡 Em execução** (lote 3). O commit sai junto com o lote 2 da `plan-159`.
+
+---
+
+## Resumo da execução (lote 3) — 2026-11-17
+
+**Resultado:** Concluído com pendências (a sombra da amostra herda atributo do tema atual; ok do dono na prévia; a proposta 3.3 aguarda veredito)
+
+**Estado do worktree ao iniciar**
+```
+ M src/core/Design/catalog/partitions/colors_and_atmosphere.json
+ M src/core/Design/catalog/theme_table_mapping.json
+ M src/core/Design/presets/themes/compose.ts
+ M src/core/Design/schema/colors.ts
+ M src/core/Provider/generated/design-token-docs.json
+ M src/core/Provider/generated/design-token-ids.ts
+ M src/core/Provider/utils/validation.ts
+ M src/core/i18n/catalog.ts
+ M src/features/DesignEngine/Main/components/BrandShortcut.tsx
+ M src/features/DesignEngine/Main/components/PaletteCreator.tsx
+ M src/features/DesignEngine/Main/components/PaletteGallery.tsx
+ M src/features/DesignEngine/Main/components/PaletteSection.tsx
+ M src/features/DesignEngine/Main/components/ThemeDecisionView.tsx
+ M src/features/DesignEngine/Main/hooks/useBrandForm.ts
+ M src/features/DesignEngine/utils/decisions.ts
+?? browser-tests/_probe164.spec.ts
+?? src/core/Design/palette/savedPalettes.ts
+?? src/core/i18n/catalogEntries.paletteSaved.ts
+?? src/features/DesignEngine/Main/hooks/useSavedPalettes.ts
+```
+(As plans 159 e 164 alteraram o worktree em paralelo durante a execução; nada delas foi tocado. Não toquei em `Main/components/` nem no catálogo de `src/core/i18n/` fora de `presetTexts/`.)
+
+**O que foi feito**
+- `scripts/cardPresetsFromThemes.ts` (novo): `themeCardDesign(theme)` devolve os tokens de card que o tema declara, nas áreas `cards`, `cardTitle` e `cardAction`, menos token do tipo cor e menos valor de texto com cor literal (hex, rgb, hsl, oklch). `buildThemeCardPreset` monta `card-theme-<id do tema>`, com o nome do tema.
+- `scripts/generate-theme-card-presets.ts` (novo) grava `src/core/Design/presets/components/cardsThemes.generated.ts` (25 presets, 46 a 47 tokens cada) e tem `--check` byte a byte, com os limites declarados (R18). `package.json`: `card-presets` e `card-presets:check`, o segundo no encadeamento do `build` logo depois de `themes:catalog:check`. `scripts/verify-changes.mjs`: o check entra no Anel 1 e nos níveis `themes` e `schema-meta`.
+- `cards.ts`: `CARD_PRESETS` passa a terminar com `THEME_CARD_PRESETS` (grupo `cards` do registro; os destacados não mudam, então os 25 ficam em "Ver todas"). `coverage.ts`: `catalogSectionRadius` e `catalogItemRadius` saem de `COVERAGE_GAPS` (os cards dos temas passaram a cobri-los; a lista só encolhe).
+- `CardsCatalog.tsx`: a aba Curados, com "Ver todas", mostra duas seções (Cards curados e Cards dos temas) e desenha a amostra sobre `sarakGetDefaultDesignState()` em vez do rascunho; a aba Texturas segue sobre o rascunho (lote 4).
+- `presetTexts/`: `textures.ts` ganha `THEME_CARD_DESCRIPTION` (seis idiomas; o nome é o do próprio tema), `index.ts` deriva o texto de `card-theme-*`, `groups.ts` ganha os títulos de família `cardsCurated` e `cardsOfThemes`.
+- Testes: `scripts/__tests__/cardPresetsFromThemes.test.ts` (novo), `CardsCatalog.test.tsx` (+3 casos; snapshot "Ver todas (28)" passa a "(53)"), `presetTexts.test.ts` (o regex de "derivado" aceita `card-theme-`) e `browser-tests/plan-161-catalogo-proporcional.spec.ts` (bloco do lote 3, 2 casos).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `scripts/cardPresetsFromThemes.ts`, `scripts/generate-theme-card-presets.ts` | criado | derivação e gerador com `--check` |
+| `src/core/Design/presets/components/cardsThemes.generated.ts` | criado (gerado) | 25 presets de card |
+| `src/core/Design/presets/components/cards.ts`, `coverage.ts` | alterado | o grupo `cards` inclui os gerados; 2 lacunas de cobertura saem |
+| `src/features/DesignEngine/Canvas/components/CardsCatalog.tsx` | alterado | seções e base neutra |
+| `src/core/i18n/presetTexts/textures.ts`, `index.ts`, `groups.ts` | alterado | textos dos presets de tema e títulos de seção |
+| `package.json`, `scripts/verify-changes.mjs` | alterado | scripts e Anel 1 |
+| `scripts/__tests__/cardPresetsFromThemes.test.ts`, `CardsCatalog.test.tsx` (+ snapshot), `presetTexts.test.ts`, `browser-tests/plan-161-catalogo-proporcional.spec.ts` | criado/alterado | testes |
+
+**Verificações executadas**
+- `npm run verify -- --tier=quick` → `tsc` 0 erros, `audit:baseline --with-tsc` sem regressão, Anel 1 inteiro (incluindo `card-presets:check`, `themes:catalog:check`, `token-docs`, `panel-contract`, `guide:check`, `dev-kit:check`, `plan-index:check`) e Anel 0 (2.722 linhas, 0 achados): verde.
+- `npx vitest run` sobre `scripts/__tests__/cardPresetsFromThemes.test.ts`, `src/core/Design/presets`, `src/core/i18n`, `CardsCatalog.test.tsx` e `PresetsCatalog.test.tsx` → 26 arquivos passam, 1 falha: `compose.test.ts:143` por timeout de 5 s sob carga; sozinho passa (14 de 14, 15 s). `compose.ts` é da outra execução.
+- Gate (§7 da plan): `card-presets:check` com um valor trocado à mão no gerado (`cardBorderWidth` 3 → 9 no primeiro preset) → `DEFASADO`, exit 1; restaurado → `em dia (25 temas)`, exit 0. No teste do gerador: tema que muda `cardBorderWidth` muda o preset; tema que deixa de declarar o token o tira; `cardBackgroundColor: '#112233'`, `cardShadow: '2px 2px 0 rgba(0,0,0,0.5)'` e `cardHeaderBorder: '#ffffff'` ficam de fora, `cardShadow: 'none'` fica; `sidebarWidth` e `tableDensity` do tema não entram; `undefined` não vira chave.
+- Mutação da base neutra: com `draft={draft}` no lugar da base neutra, o caso "o rascunho não entra no escopo da amostra" reprova (1 falha); restaurado, 7 de 7.
+- Navegador (`npx playwright test --config=browser-tests/playwright.config.ts browser-tests/plan-161-catalogo-proporcional.spec.ts -g "o card de cada tema"`): 2 de 2 verdes. 53 amostras (28 curados + 25 de tema), seções `Cards curados` e `Cards dos temas`; trocando o tema atual do rascunho para Neo Brutalism, raio, borda, respiro e fundo das 53 amostras ficam idênticos; assinaturas distintas em mais de 60% delas.
+- `presetCatalog.test.ts` (inclui "nenhum preset de estrutura escreve cor", área do grupo, contrato do valor, pares a menos de 2 tokens) e `presetTexts.test.ts` (seis idiomas, nomes sem repetição no grupo): verdes com os 25 novos.
+
+**Critérios de aceite** (deste lote)
+- [x] Presets de card gerados dos temas, com `--check` — evidência: gerador, `card-presets:check` no `build` e no Anel 1, mutação acima.
+- [ ] Amostra sobre base neutra fixa ("o mesmo preset tem a mesma amostra em qualquer tema atual") — **parcial**: forma, borda, respiro e fundo iguais nas 53; a **sombra muda** nas 53 (ver Achados).
+- [x] Proposta dos atuais no resumo — abaixo (3.3). Nenhum removido.
+- [ ] Prévia em `C:/tmp/sarak-previa-161/lote3.html` (linkada do `index.html`) — gerada; **o lote só fecha com o ok do dono**.
+- Suíte completa, build e `cromo-css-real:check`: do revisor.
+
+**Proposta (3.3) — os cards atuais × os gerados** (medida: dos tokens sem cor que o card gravava, quantos o card de algum tema repete; responsivo pelo `desk`)
+| Card atual | Iguais | Mais próximo | Proposta |
+|---|---|---|---|
+| `card-retro-os` | 5 de 6 | Industrial Terminal Classic | sai, id como apelido |
+| `card-scanline-crt` | 5 de 5 | Cyberpunk Neon | sai, apelido |
+| `card-industrial-brutalist` | 3 de 4 | Neo Brutalism | sai, apelido |
+| `card-cyberpunk-neon` | 3 de 6 | Cyberpunk Neon | sai, apelido |
+| `card-carbon-tech`, `card-geometric-cut`, `card-asymmetric-accent`, `card-organic-craft`, `card-claymorphism`, `card-glass-minimal`, `card-holographic-hud`, `card-floating-lift` | 2 a 4 | (nenhum domina) | ficam |
+
+A medida não vê a cor (os escritos à mão gravam cor, o gerado nunca), então "sai" perde o neon, o verde de fósforo e o cinza chanfrado desses quatro. A plan fala em 14; `cards.ts` tem 12 escritos à mão (os outros 16, de `cardsStructure.ts`, não gravam cor e não entram na comparação). Os 12 estão em `PUBLISHED_PRESET_IDS`: remover exige o apelido e vai pelo veredito.
+
+**Decisões e suposições**
+- Os 25 entram no grupo `cards` que já existe, e não num grupo novo: um grupo novo exigiria `design-decisions.json` e a lista de grupos da decisão, que são do lote 4 e de `Main/components/`.
+- Só o `design` nativo do tema entra; a `contraparte` (modo oposto) não.
+- A descrição em português é um modelo fixo com o nome do tema ("O card do tema X: forma, borda, sombra, textura e respiro que o tema declara."). "card" minúsculo no meio da frase; os outros idiomas seguem o vocabulário que os textos de textura já usam (o glossário é do lote 5).
+- `cardShadow` de texto com cor literal fica de fora do preset (regra "preset de estrutura não escreve cor"); a sombra do tema chega pelos tokens numéricos (`cardShadowOffsetX/Y`, `Blur`, `Spread`, `Expansion`).
+- Os ids novos não entram em `PUBLISHED_PRESET_IDS` (ainda não saíram numa release).
+- A base neutra é `sarakGetDefaultDesignState()`; o modo (claro ou escuro) continua o da prévia.
+
+**Achados fora do escopo (não corrigidos)**
+- **A sombra da amostra herda o tema atual** (`src/styles/_card-defaults.css:138` e `_card-materials.css`): `[data-sx-card-shadow]:not([data-sx-card-shadow="none"]) .sarak-card` e `[data-sx-surface-material="…"] .sarak-card` casam por ANCESTRAL, e o painel herda os `data-sx-*` do tema atual; um atributo do escopo da amostra não desfaz o do ancestral. Medido: a sombra muda em 53 de 53 amostras ao trocar o tema do rascunho para Neo Brutalism. Conserto possível, no motor: parar o seletor no escopo mais próximo.
+- "Ver todas" do grupo Cards passa de 28 para 53 opções, cada uma ainda numa linha na coluna padrão (a amostra do card curado é `min-h-48`, não passa pelo quadro proporcional do lote 1); a rolagem com o grupo aberto cresce. A meta de 2,5 alturas é medida com o grupo no estado padrão.
+- `compose.test.ts:143` estoura 5 s sob carga (passa sozinho).
+
+**Pendências / riscos**
+- Ok do dono na prévia; veredito da proposta 3.3.
+- `docs/migracoes.md`: não escrevi (nenhum id, prop ou token removido). `npm run dev-kit` não rodado (kits compartilhados com as outras execuções); `dev-kit:check` e `guide:check` passam.
+- Outros specs de navegador do painel não foram reexecutados neste lote (só o do lote 3, 2 casos); o `plan-141` mede o grupo `cards` e deve ser conferido pelo revisor.
+
+## Veredito — 2026-11-17 — lote 3 — 🔵 Em correção (três itens objetivos)
+
+**Como medi**
+- `card-presets:check`: em dia (25 temas).
+- `npx vitest run` do gerador, `src/core/Design/presets`, `src/core/i18n/presetTexts` e `src/features/DesignEngine/Canvas`: 698 de
+  699. A falha é `compose.test.ts` (o `compose.ts` é da `plan-164`), não deste lote.
+- Numa cópia fora do repositório (o worktree inteiro, menos `dist/`), `npm run build` com exit 0. Na mesma cópia,
+  `plan-161-catalogo-proporcional` e `plan-141-presets-do-painel`: 43 de 44. O vermelho, `plan-141:158`, é deste lote (achado 1).
+- **Diff lido:** `cardPresetsFromThemes.ts`, `generate-theme-card-presets.ts`, `cards.ts`, `coverage.ts`, `CardsCatalog.tsx`, os
+  textos de `presetTexts/` e o `package.json`. O gerador e o `--check` estão bem feitos, e a mutação do resumo confere.
+
+**Achados**
+1. **A amostra de card ignora o modo da prévia** (`plan-141-presets-do-painel.spec.ts:158`, verde no lote 2). `NEUTRAL_CARD_BASE` é
+   `sarakGetDefaultDesignState()`, com a paleta escura fixa. Com a prévia em modo claro, o escopo da amostra recebe a classe `light`,
+   mas `--sarak-bg-body` sai `#06080d`, com luminância 0,03 contra o mínimo de 0,5 do caso.
+   - Critério: a base neutra é fixa por tema (não segue o rascunho), mas segue o modo que a prévia mostra. O `plan-141:158` volta a
+     verde.
+2. **O critério 3.2 não está atendido: a sombra da amostra segue o tema atual.** O resumo mostra a sombra mudando nas 53 amostras e a
+   põe "fora do escopo", mas "o mesmo preset tem a mesma amostra em qualquer tema atual" é o critério deste lote. A causa está no motor
+   (`_card-defaults.css` e `_card-materials.css` casam `data-sx-*` por ancestral), e o conserto é na lib, como o resumo propõe.
+   - Critério: o caso "o card de cada tema" do spec do lote passa a comparar também a sombra, e a sombra fica idêntica entre os dois
+     temas.
+3. **A amostra de card fica fora da grade comum.** O 1.2 manda uma grade só para os grupos de preset. A do card é `min-h-48`, uma por
+   linha, e com os 25 novos o "Ver todas" vai de 28 para 53 linhas.
+   - Critério: a amostra de card fica na grade comum do lote 1 (várias colunas a 1440 px, quadro proporcional). O resumo informa a
+     rolagem de Forma com o "Ver todas" de cards aberto, antes e depois.
+
+**Veredito da proposta 3.3: nenhum dos 12 sai.** O gerado nunca grava cor, então não substitui o card escrito à mão: tirar os quatro
+apagaria o neon, o verde de fósforo e o cinza chanfrado que eles mostram. Os 12 ficam como estão, sem apelido.
+
+**Como fechar** (verificação objetiva): `plan-141-presets-do-painel.spec.ts` e `plan-161-catalogo-proporcional.spec.ts` (com
+`npm run build`) e `CardsCatalog.test.tsx`. O revisor reroda só esses e manda a prévia ao dono.
+
+**Commit:** junto com o lote 2 da `plan-164` e o lote 3 da `plan-159`, depois das correções e do ok do dono nas prévias.
+
+**Status da plan: 🔵 Em correção.**
+
+## Resumo da execução (lote 3, correção 1) — 2026-11-18
+
+**Resultado:** Concluído (os três achados; o ok do dono na prévia continua pendente)
+
+**Estado do worktree ao iniciar**
+(fotografia antes da primeira edição; os arquivos de outras tarefas já estavam nela)
+```
+ M browser-tests/fixtures/topbar-mais-entry.tsx
+ M browser-tests/plan-161-catalogo-proporcional.spec.ts
+ M docs/migracoes.md
+ M docs/persistencia-de-tema.md
+ M package.json
+ M sarak-dev/GUIA-MANUTENCAO.md
+ M sarak-dev/START-HERE.md
+ M sarak-dev/state.json
+ M sarak-ui/GUIA-FRONTEND.md
+ M sarak-ui/START-HERE.md
+ M sarak-ui/VERSION
+ M sarak-ui/catalog.json
+ M sarak-ui/docs/migracoes.md
+ M scripts/verify-changes.mjs
+ M specs/00-indice.md
+ M specs/plan/plan-159-cromo-real-segue-o-layout-escolhido.md
+ M specs/plan/plan-161-catalogo-do-painel-proporcional-e-com-um-vocabulario.md
+ M specs/plan/plan-164-paleta-do-tema-paleta-por-cima-e-paletas-salvas.md
+ M src/core/Design/catalog/partitions/branding_config.json
+ M src/core/Design/catalog/partitions/colors_and_atmosphere.json
+ M src/core/Design/catalog/partitions/layout_and_navigation.json
+ M src/core/Design/catalog/theme_table_mapping.json
+ M src/core/Design/presets/components/cards.ts
+ M src/core/Design/presets/components/coverage.ts
+ M src/core/Design/presets/themes/compose.ts
+ M src/core/Design/schema/colors.ts
+ M src/core/Design/schema/navigation.ts
+ M src/core/Design/schema/system.ts
+ M src/core/Provider/SarakUIProvider.tsx
+ M src/core/Provider/generated/design-token-docs.json
+ M src/core/Provider/generated/design-token-ids.ts
+ M src/core/Provider/hooks/usePreferencesManager.ts
+ M src/core/Provider/types.ts
+ M src/core/Provider/utils/validation.ts
+ M src/core/i18n/catalog.ts
+ M src/core/i18n/presetTexts/__tests__/presetTexts.test.ts
+ M src/core/i18n/presetTexts/groups.ts
+ M src/core/i18n/presetTexts/index.ts
+ M src/core/i18n/presetTexts/textures.ts
+ M src/features/DesignEngine/Canvas/components/CardsCatalog.tsx
+ M src/features/DesignEngine/Canvas/components/__tests__/CardsCatalog.test.tsx
+ M src/features/DesignEngine/Canvas/components/__tests__/__snapshots__/CardsCatalog.test.tsx.snap
+ M src/features/DesignEngine/Main/components/BrandShortcut.tsx
+ M src/features/DesignEngine/Main/components/DecisionTokenList.tsx
+ M src/features/DesignEngine/Main/components/PaletteCreator.tsx
+ M src/features/DesignEngine/Main/components/PaletteGallery.tsx
+ M src/features/DesignEngine/Main/components/PaletteSection.tsx
+ M src/features/DesignEngine/Main/components/ThemeDecisionView.tsx
+ M src/features/DesignEngine/Main/components/__tests__/BrandShortcut.test.tsx
+ M src/features/DesignEngine/Main/components/__tests__/PaletteCreator.test.tsx
+ M src/features/DesignEngine/Main/components/__tests__/PaletteGallery.registry.test.tsx
+ M src/features/DesignEngine/Main/components/__tests__/PaletteGallery.test.tsx
+ M src/features/DesignEngine/Main/components/__tests__/PaletteSection.test.tsx
+ M src/features/DesignEngine/Main/hooks/__tests__/useBrandForm.test.ts
+ M src/features/DesignEngine/Main/hooks/useBrandForm.ts
+ M src/features/DesignEngine/utils/decisions.ts
+?? browser-tests/fixtures/painel-avisa-entry.tsx
+?? browser-tests/painel-avisa-a-verdade.spec.ts
+?? browser-tests/textura-muda-pixel.spec.ts
+?? scripts/__tests__/cardPresetsFromThemes.test.ts
+?? scripts/cardPresetsFromThemes.ts
+?? scripts/generate-theme-card-presets.ts
+?? src/core/Design/palette/__tests__/savedPalettes.test.ts
+?? src/core/Design/palette/savedPalettes.ts
+?? src/core/Design/presets/components/cardsThemes.generated.ts
+?? src/core/Design/presets/themes/__tests__/savedPalettes.test.ts
+?? src/core/Provider/utils/__tests__/validation.savedPalettes.test.ts
+?? src/core/i18n/catalogEntries.paletteSaved.ts
+?? src/core/i18n/catalogEntries.tokenNotes.ts
+?? src/features/DesignEngine/Main/components/DecisionTokenRow.tsx
+?? src/features/DesignEngine/Main/components/__tests__/DecisionTokenRow.test.tsx
+?? src/features/DesignEngine/Main/components/__tests__/ThemeDecisionView.mainTokens.test.tsx
+?? src/features/DesignEngine/Main/hooks/__tests__/useOpenGalleryGroups.test.ts
+?? src/features/DesignEngine/Main/hooks/__tests__/useSavedPalettes.test.ts
+?? src/features/DesignEngine/Main/hooks/useOpenGalleryGroups.ts
+?? src/features/DesignEngine/Main/hooks/useSavedPalettes.ts
+?? src/features/DesignEngine/hooks/__tests__/savedPalettes.persistenceIntegration.test.tsx
+?? src/features/DesignEngine/utils/__tests__/decisions.savedPalettes.test.ts
+?? src/features/DesignEngine/utils/__tests__/tokenNotes.test.ts
+?? src/features/DesignEngine/utils/tokenNotes.ts
+```
+
+**O que foi feito**
+- **Achado 1** — `neutralCardBase.ts` (novo): a base neutra é o design padrão do motor com as cores do tema padrão do sistema (`SARAK_BOOT_THEMES[0]`) no modo da prévia, por `composeThemeForMode`; guardada por modo. `CardsCatalog.tsx` passa `neutralCardBase(currentMode)` no lugar da constante `NEUTRAL_CARD_BASE`. A base continua sem o rascunho, mas segue o modo.
+- **Achado 2** — `_card-defaults.css` (sombra declarada do cartão e do modal) e `_card-materials.css` (4 materiais, 5 molduras, sombra declarada sob o ponteiro, halo do `glow-only`): as 13 regras que leem `data-sx-*` do ancestral ganham `:where(:not(.sarak-design-scope ... .sarak-card))`, que exclui o cartão de um escopo de design com outro valor do mesmo atributo. O escopo emite todos os atributos, então ele é o ancestral mais próximo; o `:where()` mantém a especificidade (a ordem de empate da camada não muda). O caso "o card de cada tema" de `plan-161-catalogo-proporcional.spec.ts` passa a comparar o objeto inteiro, com a sombra.
+- **Achado 3** — sem mudança de código: a amostra de card já está na grade comum (`CATALOG_GRID`, quadro proporcional de `OptionSampleFrame`); ver "Decisões". O spec ganha o caso "Forma com o Ver todas de cards aberto", que mede rolagem, colunas e altura da amostra e exige 2 colunas ou mais e amostra de até 45% da coluna.
+- **3.3** — nenhum card escrito à mão saiu (veredito); nada foi removido.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/features/DesignEngine/Canvas/components/neutralCardBase.ts` | criado | base neutra por modo |
+| `src/features/DesignEngine/Canvas/components/__tests__/neutralCardBase.test.ts` | criado | 3 casos: segue o modo, fixa por modo, fora das cores é o padrão |
+| `src/features/DesignEngine/Canvas/components/CardsCatalog.tsx` | alterado | usa `neutralCardBase(currentMode)` |
+| `src/features/DesignEngine/Canvas/components/__tests__/CardsCatalog.test.tsx` | alterado | +1 caso: o modo claro dá fundo claro mesmo com tema escuro no rascunho |
+| `src/styles/_card-defaults.css`, `src/styles/_card-materials.css` | alterado | escopo mais próximo manda (13 regras) e o porquê em comentário |
+| `src/styles/__tests__/cartaoQueCedeAClasse.test.ts` | alterado | 3 seletores de texto atualizados + 1 caso que exige a exclusão nas 13 regras |
+| `browser-tests/plan-161-catalogo-proporcional.spec.ts` | alterado | sombra entra na igualdade; caso de rolagem do "Ver todas" de cards; cabeçalho atualizado |
+| `dist/*`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | alterados pelo `npm run build` | o `dist/` é rastreado: o build regravou os chunks e o carimbo (`baseCommitShort` 64b55a4) |
+
+**Verificações executadas**
+- `npm run build` → exit 0 (duas vezes: antes e depois do CSS); `dist/sarak.css` e `dist/sarak-scoped.css` trazem as regras novas.
+- `npx playwright test ... plan-141-presets-do-painel.spec.ts plan-161-catalogo-proporcional.spec.ts` (sobre o build com o CSS novo) → **45 passed**, incluindo `plan-141:158` e o caso do card de cada tema com a sombra.
+- `npx vitest run` de `CardsCatalog.test.tsx`, `neutralCardBase.test.ts` e `src/styles/__tests__/cartaoQueCedeAClasse.test.ts` → 34 passed (rodada final); `src/styles`, `src/features/DesignEngine/Canvas`, o gerador e `presetTexts` → 445 de 445 depois do ajuste dos 3 seletores.
+- Mutação 1: `neutralCardBase` fixando `'dark'` → reprovam `neutralCardBase.test.ts` (segue o modo) e `CardsCatalog.test.tsx` (fundo claro); restaurado.
+- Mutação 2: as duas folhas de CSS voltadas ao `HEAD` + `npm run build:css` → o caso do card de cada tema reprova com 53 de 53 amostras diferentes; restaurado, passa. (O `dist/sarak.css` voltou ao do build com a correção.)
+- `npm run verify -- --tier=quick` → `tsc` 0 erro; `barrel`, `catalog`, `card-presets`, `token-docs`, `variable-contract`, `panel-contract`, `dev-kit` e os demais `*:check` OK; Anel 0 simulado 3146 linhas, 0 achado; **`audit:baseline` falha**: `auditor_cleancode` 0 → 1, em `src/core/Provider/types.ts` ("252 linhas"), arquivo da `plan-164` que já constava como modificado na fotografia. Não é deste lote.
+- Um primeiro `tsc` acusou `neutralCardBase.ts(21,43)` (TS2345, `SarakThemePreset` contra o parâmetro de `composeThemeForMode`); corrigido com o mesmo idioma de `catalog.ts`, e o segundo `tsc` fechou em 0.
+
+**Rolagem de Forma com o "Ver todas" de cards aberto (1440×900, coluna de 660 px)**
+| | Rolagem | Colunas | Amostra |
+|---|---|---|---|
+| Antes, com o `dist/sarak.css` defasado | 16.563 px (25,1×) | 1 | 295×278 |
+| Antes, com `npm run build` | 5.126 px (7,77×) | 2 | 142×147 (a mais alta, 160) |
+| Depois | 5.126 px (7,77×) | 2 | 142×147 (a mais alta, 160) |
+
+**Critérios de aceite**
+- [x] A base neutra segue o modo da prévia, sem seguir o tema do rascunho; `plan-141:158` verde — `neutralCardBase.ts`, 45 de 45 no navegador.
+- [x] A sombra da amostra não herda o `data-sx-*` do ancestral; o caso "o card de cada tema" compara a sombra e passa — `plan-161-catalogo-proporcional.spec.ts` (igualdade do objeto inteiro nas 53 amostras); mutação 2 reprova com 53 de 53.
+- [x] A amostra de card está na grade comum do lote 1, em várias colunas a 1440 px, quadro proporcional; rolagem informada antes e depois — tabela acima.
+- [x] Nenhum dos 12 cards atuais sai.
+- [ ] Ok do dono na prévia `C:\tmp\sarak-previa-161\lote3-correcao.html` — pendente.
+
+**Decisões e suposições**
+- **Achado 3 não se reproduz com o build em dia.** "Uma por linha" e "53 linhas" saem do `dist/sarak.css` defasado que o harness copia: a classe da grade não existia nele (medi 1 coluna e 25,1×). Com `npm run build` a amostra já tem 2 colunas e 142×147 antes de qualquer edição. Não mexi no tamanho da amostra: a célula é a da grade do lote 1 (8,5 rem), e mais colunas pediriam uma célula menor, o que muda o lote 1. Fica registrada a divergência; o caso novo do spec trava as duas condições (colunas e altura).
+- A base neutra usa as cores do tema padrão (`sarak-sovereign`) por modo, e não as cores escuras do padrão do schema. No modo escuro isso muda o tom do fundo da amostra em relação ao lote 3 anterior (o padrão do schema era `#06080d`); o fundo continua igual entre todas as amostras e entre os temas atuais.
+- A exclusão `:where(:not(.sarak-design-scope ...))` assume que o escopo mais próximo manda quando há UM escopo entre o ancestral e o cartão (o caso do painel). Com dois escopos aninhados, o interno que concorda com o ancestral e o intermediário que discorda ficaria excluído. Não há esse aninhamento hoje; declarado.
+- As folhas de CSS são do motor, mas o veredito mandou o conserto ali. Só os atributos de sombra, material, moldura e hover do cartão foram tratados; os demais `data-sx-*` por ancestral (textura, por exemplo) não foram tocados.
+- O `npm run build` pedido regravou o `dist/` e os dois `buildInfo.ts` (rastreados). Não os restaurei; a decisão do que entra no commit é do revisor.
+
+**Achados fora do escopo (não corrigidos)**
+- `src/core/Provider/types.ts:1` — 252 linhas fazem o `auditor_cleancode` passar de 0 para 1 e o `audit:baseline` falhar. Arquivo da `plan-164`.
+- Os outros seletores `[data-sx-texture] ...` em `_card-defaults.css:163-199` também leem o ancestral (a textura do tema atual alcança o cartão de um escopo com outra textura); mesma causa, fora dos atributos que o veredito citou.
+- Arquivos que apareceram modificados depois da fotografia e não são meus: `src/components/atomic/Navigation/ShellPreferencesMenu.tsx`, `src/core/Design/presets/themes/__tests__/compose.test.ts`, `specs/adr/027-...md`, `browser-tests/menu-preferencias-legivel.spec.ts` (execuções em paralelo).
+
+**Pendências / riscos**
+- Ok do dono na prévia `lote3-correcao.html`.
+- `npm run dev-kit` e `docs/migracoes.md` não tocados (nenhum id, prop ou token mudou de assinatura).
+- O CSS novo usa `:not()` com seletor complexo dentro de `:where()` (Chromium, Firefox 84+, Safari 9+); o build escopado (`sarak-scoped.css`) conservou as regras, mas só o Chromium foi exercitado no navegador.
+
+## Veredito — 2026-11-18 — lote 3, correção 1 — 🟢 Aprovado no código; o lote fecha com o ok do dono na prévia
+
+**Verificação conjunta das plans 159, 161 e 164** (saem no mesmo commit):
+- **Navegador:** numa cópia fora do repositório (o worktree inteiro, menos `dist/`), `npm run build` com exit 0 e
+  `public-types:check` OK. A bateria `topbar-mais`, `barra-de-topo-estreita`, `cromo-css-real`, `tom-contrastante-legivel`,
+  `plan-141`, `preferencias-discretas`, `plan-161-catalogo-proporcional`, `login-theme-application`, `plan-122-preview-mode`,
+  `plan-160-previa-mostra-a-opcao`, `plan-160-moldura-e-largura`, `troca-de-tema`, `painel-avisa-a-verdade`,
+  `textura-muda-pixel` e `menu-preferencias-legivel` deu **176 de 176 verdes**.
+- **Unidade, no worktree real:** `Navigation`, `Layout/chrome`, `core/Provider`, `core/Design`, `core/i18n`,
+  `features/DesignEngine`, `src/styles` e o gerador de cards deram 361 de 361 arquivos e 3629 de 3629 testes.
+- **Segredo** (Anel 0), nas linhas adicionadas e nos não rastreados fora de `dist/`: 0.
+- **Gates do commit:** um vermelho real, `audit:baseline` com `auditor_cleancode` de 0 para 1 (abaixo, item da 159). O
+  `plan-index:check` é do revisor e foi regenerado.
+- **Diff lido:** `neutralCardBase.ts` (a base segue o modo, não o rascunho), `CardsCatalog.tsx` e as 13 regras de `_card-defaults.css`
+  e `_card-materials.css`, com a exclusão dentro de `:where()`, que não muda a especificidade. As duas mutações do resumo conferem.
+- **O achado 3 do veredito anterior não procede.** O revisor leu `min-h-48` no código. Com o build em dia, a amostra já fica na grade
+  comum, com 2 colunas e 142×147 px. O caso novo do spec trava colunas e altura.
+
+**Para o lote 4 (texturas):** as regras `[data-sx-texture] …` de `_card-defaults.css:163-199` também leem o ancestral, a mesma causa
+do achado 2. Elas entram no lote 4, que trata das texturas do card, com o mesmo critério: a amostra não herda a textura do tema atual.
+
+**Falta, para fechar o lote 3:** o ok do dono na prévia `C:\tmp\sarak-previa-161\lote3-correcao.html`.
+
+**Commit:** junto com a correção 2 da `plan-159` e o lote 2 da `plan-164`.
+
+**Status da plan: 🟠 Em revisão** até o ok do dono.
+
+## Nota do revisor — 2026-11-18 — ok do dono na prévia do lote 3
+
+O dono aprovou a prévia `C:\tmp\sarak-previa-161\lote3-correcao.html`.
+
+**Lote 3 fechado. Status da plan: 🟡 Em execução** (lote 4). O commit sai junto com a `plan-159` e o lote 2 da `plan-164`.

@@ -142,7 +142,7 @@ export const NavigationSchema: ComponentSchema = {
             modeDependent: false,
             usage: "Recolhe a navegação: a lateral estreita para o piso de largura e esconde rótulos; o topo encolhe para a altura recolhida. É o mesmo estado que o usuário alterna pelo botão de recolher.",
             interactsWith: ['sidebarMinWidth', 'topbarCollapsedHeight', 'brandLogoSizeCollapsed'],
-            label: 'Ocultar Navegação',
+            label: 'Navegação recolhida',
             type: 'boolean',
             description: 'Quando ativo, recolhe a navegação: a barra lateral fica no trilho estreito (74 px) e a barra do topo na geometria compacta — o conteúdo ganha o espaço, e o menu continua alcançável. Não a remove da tela.',
             defaultValue: false,

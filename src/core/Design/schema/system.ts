@@ -86,7 +86,7 @@ export const SystemSchema: ComponentSchema = {
             usage: "Esconde a navegação até o ponteiro chegar à borda e devolve a largura ao conteúdo; ligado, a barra não aparece no primeiro quadro.",
             label: 'Auto-ocultar Menus',
             type: 'boolean',
-            description: 'Quando ativo, oculta automaticamente sidebar/topbar após um período de inatividade ou ao rolar a página, maximizando o espaço de conteúdo.',
+            description: 'Quando ativo, esconde a navegação por inteiro (sidebar ou topbar) até o ponteiro chegar à borda da tela, devolvendo toda a largura ao conteúdo. Não é o "recolher": recolhida, a barra continua na tela como trilho de ícones (veja `isNavHidden`).',
             defaultValue: false
         },
         // --- ARQUITETURA DE BORDAS ---

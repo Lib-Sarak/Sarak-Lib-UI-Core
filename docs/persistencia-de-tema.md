@@ -50,6 +50,12 @@ onSave?: (design: SarakThemePayload, activeThemeId?: string, format?: 2) => Prom
   apontar tanto para um tema embarcado da lib (`'minimalist-airy'`, por exemplo) quanto para um
   tema salvo pelo importador — a lib não distingue as duas origens neste campo.
 
+**Duas chaves de paleta que o importador não precisa tratar à parte** (ADR-027). `keepPalette` (booleano) e `savedPalettes` (texto)
+são escolhas do design do sistema como qualquer outra: gravadas pelo `onSave` quando diferem do padrão (`false` e `''`), devolvidas
+pelo `onLoad`. `savedPalettes` guarda as paletas criadas no painel com nome (`id|nome|valor` separadas por `~`, até 24); a troca de
+tema não a apaga, e a lib descarta a entrada inválida ao carregar. Se o seu servidor valida a lista de chaves do design, acrescente as
+duas; se guarda o design como JSON opaco (os esquemas de `docs/schema/`), nada muda.
+
 Trate os valores de `design` como opacos. Tokens de cor podem conter `var()` e `color-mix()` aninhados,
 e não precisam ser cores literais. O backend pode guardar o JSON como veio ou validar apenas sua forma;
 não rejeite esses valores por esperar um formato simples de cor. Por exemplo, o tema embarcado

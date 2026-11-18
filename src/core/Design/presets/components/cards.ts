@@ -1,6 +1,7 @@
 import type { SarakDesignState } from '../../../Provider/types';
 import { TEXTURE_OPTIONS } from '../../schema/atmosphere';
 import { CARD_STRUCTURE_PRESETS } from './cardsStructure';
+import { THEME_CARD_PRESETS } from './cardsThemes.generated';
 
 export interface ComponentPreset {
     id: string;
@@ -179,7 +180,10 @@ const LEGACY_CARD_PRESETS: ComponentPreset[] = [
     }
 ];
 
-export const CARD_PRESETS: ComponentPreset[] = [...LEGACY_CARD_PRESETS, ...CARD_STRUCTURE_PRESETS];
+export { THEME_CARD_PRESETS };
+
+/** Os cards escritos à mão (curados) e, por último, o card de cada tema, gerado do próprio tema (`npm run card-presets`). */
+export const CARD_PRESETS: ComponentPreset[] = [...LEGACY_CARD_PRESETS, ...CARD_STRUCTURE_PRESETS, ...THEME_CARD_PRESETS];
 
 // Presets gerados dinamicamente a partir das texturas do Schema (1:1 Paridade com atmosphere.ts)
 export const CARD_TEXTURE_PRESETS: ComponentPreset[] = TEXTURE_OPTIONS.map(texture => ({

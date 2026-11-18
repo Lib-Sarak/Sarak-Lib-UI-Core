@@ -54,6 +54,9 @@ export const TEXTURE_DESCRIPTION_TEMPLATES: Readonly<Record<'background' | 'card
     card: ['Card com a textura de superfície {name}.', 'Card with the {name} surface texture.', 'Tarjeta con la textura de superficie {name}.', 'Carte avec la texture de surface {name}.', 'Karte mit der Oberflächentextur {name}.', 'Scheda con la texture di superficie {name}.'],
 };
 
+/** Descrição do preset de card de um tema (`card-theme-*`): o nome é o do próprio tema, igual em todo idioma. */
+export const THEME_CARD_DESCRIPTION: SixTuple = ['O card do tema {name}: forma, borda, sombra, textura e respiro que o tema declara.', 'The card of the {name} theme: the shape, border, shadow, texture and spacing the theme declares.', 'La tarjeta del tema {name}: la forma, el borde, la sombra, la textura y el espacio que declara el tema.', 'La carte du thème {name} : la forme, la bordure, l\'ombre, la texture et l\'espacement que le thème déclare.', 'Die Karte des Themas {name}: Form, Rand, Schatten, Textur und Abstand, die das Thema festlegt.', 'La scheda del tema {name}: forma, bordo, ombra, texture e spazio che il tema dichiara.'];
+
 /** Descrição das categorias de fonte. Ordem da tupla: pt, en, es, fr, de, it. */
 export const FONT_CATEGORY_DESCRIPTIONS: Readonly<Record<string, SixTuple>> = {
     'Sans-Serif': ['Fonte sem serifa.', 'Sans-serif font.', 'Fuente sin serifa.', 'Police sans empattement.', 'Serifenlose Schrift.', 'Font senza grazie.'],

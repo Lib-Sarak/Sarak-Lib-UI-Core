@@ -81,6 +81,17 @@ export const ColorsSchema: ComponentSchema = {
             defaultValue: false,
         },
         {
+            id: 'savedPalettes',
+            kind: 'functional',
+            modeDependent: false,
+            usage: 'Guarda as paletas que o administrador criou com nome: aparecem no grupo "Minhas paletas" da galeria e no atalho de marca. Escolher uma é escolher o `colorPalette` dela.',
+            interactsWith: ['colorPalette'],
+            label: 'Paletas Salvas',
+            type: 'string',
+            description: 'Lista das paletas salvas em texto compacto: entradas `id|nome|valor` separadas por `~`, em que `valor` é um `colorPalette` `custom:<tipo>:<#base>[,sec=<#hex>][,acc=<#hex>]`. Vazio (padrão) = nenhuma paleta salva. É dado do sistema, não do tema: a troca de tema não a muda. O painel a lê e a grava; quem persiste o design a guarda como qualquer outra chave.',
+            defaultValue: '',
+        },
+        {
             id: 'surfaceColor',
             kind: 'aesthetic',
             modeDependent: true,

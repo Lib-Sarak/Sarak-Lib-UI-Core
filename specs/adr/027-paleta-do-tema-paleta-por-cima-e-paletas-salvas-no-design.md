@@ -86,6 +86,11 @@ Ambas são **escolhas do design do sistema**, e é por isso que o 026 as preserv
   conferir no lote 2: o valor estruturado precisa caber na comparação com o baseline do 026 (igualdade profunda, não por
   referência) e a lista não pode ser tratada como "cor" pela regra L1.
 
+> **Nota de implementação (2026-11-18, plan-164 lote 2).** O dicionário de tokens só aceita valor simples. Por isso a lista é um
+> token `string` (`savedPalettes`), com cada item `id|nome|valor` separado por `~` e lido por `savedPalettesOf`. A comparação com o
+> baseline do 026 é por igualdade de texto, não profunda. O teto é de 24 paletas e de 40 caracteres no nome. A decisão (a lista mora
+> no design e passa pelo mesmo `onSave`) não muda.
+
 Este ADR **não** muda o formato do 026: acrescenta duas chaves a ele. Se o 026 não for aprovado, as duas chaves continuam
 valendo no formato de hoje (o design completo), sem a regra do baseline.
 

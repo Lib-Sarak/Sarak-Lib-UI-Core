@@ -11,6 +11,10 @@ import { SampleScope } from './SampleScope';
 import type { PeekHandler } from './peek';
 
 import { SarakDesignState } from '../../../../core/Provider/types';
+import { neutralCardBase } from './neutralCardBase';
+
+/** O card de um tema é o preset gerado `card-theme-*`; o resto dos curados é escrito à mão. */
+const THEME_CARD_ID_PREFIX = 'card-theme-';
 
 interface CardsCatalogProps {
     onApplyPreset: (presetDesign: Partial<SarakDesignState>, isPartial?: boolean) => void;
@@ -53,7 +57,10 @@ export const CardsCatalog: React.FC<CardsCatalogProps> = ({ onApplyPreset, curre
                 sectionOf={activeTab === 'textures' ? (preset) => {
                     const family = textureFamilyOf(String(preset.design.cardTextureType)) ?? 'technical';
                     return { id: family, title: text.family(family) };
-                } : undefined}
+                } : (preset) => {
+                    const family = preset.id.startsWith(THEME_CARD_ID_PREFIX) ? 'cardsOfThemes' : 'cardsCurated';
+                    return { id: family, title: text.family(family) };
+                }}
                 renderTile={(preset) => {
                     const shown = text.preset(preset);
                     return (
@@ -66,7 +73,9 @@ export const CardsCatalog: React.FC<CardsCatalogProps> = ({ onApplyPreset, curre
                         onPeek={onPeek}
                     >
                         <SampleScope
-                            draft={draft}
+                            // O card curado é desenhado sobre uma base neutra (sem o rascunho, no modo da prévia): o mesmo preset tem a mesma amostra em qualquer tema atual.
+                            // A textura continua sobre o rascunho: ela é um valor que se soma à paleta que já está escolhida.
+                            draft={activeTab === 'textures' ? draft : neutralCardBase(currentMode)}
                             tokens={preset.design}
                             mode={currentMode}
                             className="flex items-center justify-center p-6"

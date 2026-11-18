@@ -1,5 +1,5 @@
 import React from 'react';
-import { TokenControl } from './TokenControl';
+import { DecisionTokenRow } from './DecisionTokenRow';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import type { LibraryTextKey } from '../../../../core/i18n/catalog';
 import type { SarakDesignState } from '../../../../core/Provider/types';
@@ -30,21 +30,9 @@ export const DecisionTokenList: React.FC<DecisionTokenListProps> = ({ tokens, ca
     const draftRecord = draft as Record<string, SarakTokenValue>;
     return (
         <div className="flex flex-col gap-4">
-            {tokens.map((token) => {
-                const enhanced = enhanceToken(token, catalogMap);
-                return (
-                    <div key={enhanced.id} data-token-row={enhanced.id} tabIndex={-1} className="rounded-[var(--sarak-card-radius,10px)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]">
-                        <TokenControl
-                            token={enhanced}
-                            value={draftRecord[enhanced.id]}
-                            onChange={(value) => updateDraft(enhanced.id, value)}
-                            previewDevice={previewDevice}
-                            draft={draftRecord}
-                            updateDraft={updateDraft}
-                        />
-                    </div>
-                );
-            })}
+            {tokens.map((token) => (
+                <DecisionTokenRow key={token.id} token={enhanceToken(token, catalogMap)} draft={draftRecord} updateDraft={updateDraft} previewDevice={previewDevice} />
+            ))}
         </div>
     );
 };
