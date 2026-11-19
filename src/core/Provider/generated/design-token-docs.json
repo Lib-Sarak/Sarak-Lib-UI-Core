@@ -260,7 +260,7 @@
    "label": "Altura do Logo da Marca (Recolhida)",
    "kind": "functional",
    "modeDependent": false,
-   "usage": "Lado do logo na barra do topo recolhida; só aparece com `isNavHidden` ligado.",
+   "usage": "Lado do logo na Topbar recolhida; só aparece com `isNavHidden` ligado.",
    "interactsWith": [
     "isNavHidden"
    ]
@@ -651,7 +651,7 @@
   {
    "id": "cardHeaderBg",
    "group": "cards",
-   "label": "Fundo do Header",
+   "label": "Fundo do cabeçalho do card",
    "kind": "aesthetic",
    "modeDependent": true,
    "usage": "Pinta o fundo do cabeçalho de `SarakCard.Header`; transparente funde o cabeçalho ao corpo do cartão."
@@ -1284,7 +1284,7 @@
    "label": "Design Engine: Largura Máxima do Painel",
    "kind": "functional",
    "modeDependent": false,
-   "usage": "Largura máxima da barra lateral do painel de customização; só o painel a lê.",
+   "usage": "Largura máxima da Sidebar do painel de customização; só o painel a lê.",
    "interactsWith": [
     "designEngineSidebarMinWidth"
    ]
@@ -1295,7 +1295,7 @@
    "label": "Design Engine: Largura Mínima do Painel",
    "kind": "functional",
    "modeDependent": false,
-   "usage": "Largura mínima da barra lateral do painel de customização; só o painel a lê.",
+   "usage": "Largura mínima da Sidebar do painel de customização; só o painel a lê.",
    "interactsWith": [
     "designEngineSidebarMaxWidth"
    ]
@@ -1747,7 +1747,7 @@
   {
    "id": "headerAlignment",
    "group": "structural",
-   "label": "Alinhamento do Header",
+   "label": "Alinhamento do cabeçalho",
    "kind": "aesthetic",
    "modeDependent": false,
    "usage": "Disposição do cabeçalho de tabelas e catálogos: título e ações espaçados, centrados ou no início."
@@ -2504,7 +2504,7 @@
    "label": "Comportamento da Topbar",
    "kind": "functional",
    "modeDependent": false,
-   "usage": "Comportamento da barra do topo: fixa ao rolar, rola junto com o conteúdo ou oculta. Só vale com navegação no topo.",
+   "usage": "Comportamento da Topbar: fixa ao rolar, rola junto com o conteúdo ou oculta. Só vale com navegação no topo.",
    "interactsWith": [
     "navigationStyle"
    ]
@@ -2515,7 +2515,7 @@
    "label": "Estrutura de Navegação",
    "kind": "functional",
    "modeDependent": false,
-   "usage": "Escolhe onde fica a navegação: Sidebar (coluna lateral) ou Topbar (cabeçalho). Troca a estrutura inteira do cromo; a preferência do usuário, quando oferecida, vence o valor do tema.",
+   "usage": "Escolhe onde fica a navegação: Sidebar (coluna lateral) ou Topbar (barra horizontal). Troca a estrutura inteira do cromo; a preferência do usuário, quando oferecida, vence o valor do tema.",
    "interactsWith": [
     "sidebarPosition",
     "mobileNavigationStyle"
@@ -2598,10 +2598,10 @@
   {
    "id": "preferenceModePosition",
    "group": "preferences",
-   "label": "Preferência: Modo Claro/Escuro",
+   "label": "Preferência: Light mode ou Dark mode",
    "kind": "functional",
    "modeDependent": false,
-   "usage": "Posição da escolha de modo claro/escuro do usuário: fixa na barra, no menu de preferências ou não oferecida; quando some, a escolha não existe para o usuário."
+   "usage": "Posição da escolha de Light mode ou Dark mode do usuário: fixa na barra, no menu de preferências ou não oferecida; quando some, a escolha não existe para o usuário."
   },
   {
    "id": "preferenceNavCollapsePosition",
@@ -2609,15 +2609,15 @@
    "label": "Preferência: Navegação Recolhida",
    "kind": "functional",
    "modeDependent": false,
-   "usage": "Posição do botão de recolher a navegação na barra lateral: fixo (a seta do cabeçalho), no menu de preferências ou não oferecido."
+   "usage": "Posição do botão de recolher a navegação na Sidebar: fixo (a seta da própria Sidebar), no menu de preferências ou não oferecido."
   },
   {
    "id": "preferenceNavCollapsePositionTopbar",
    "group": "preferences",
-   "label": "Preferência: Menu da Barra do Topo",
+   "label": "Preferência: Menu da Topbar",
    "kind": "functional",
    "modeDependent": false,
-   "usage": "Posição do botão de menu (≡) que compacta a barra do topo: fixo, no menu de preferências ou não oferecido; por padrão fica só no menu."
+   "usage": "Posição do botão de menu (≡) que compacta a Topbar: fixo, no menu de preferências ou não oferecido; por padrão fica só no menu."
   },
   {
    "id": "preferenceNavigationStylePosition",
@@ -2812,7 +2812,7 @@
    "label": "Posição Pesquisa (Topbar)",
    "kind": "functional",
    "modeDependent": false,
-   "usage": "Onde a busca fica na barra do topo: esquerda (antes da navegação), centro (no meio do espaço livre entre a navegação e o grupo final, não no centro da barra), direita (no grupo final) ou oculta.",
+   "usage": "Onde a busca fica na Topbar: esquerda (antes da navegação), centro (no meio do espaço livre entre a navegação e o grupo final, não no centro da barra), direita (no grupo final) ou oculta.",
    "interactsWith": [
     "navigationStyle",
     "chromeSearchPosition"
@@ -2903,7 +2903,7 @@
    "label": "Vidro do Item Ativo (Sidebar)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Acabamento de vidro do item ativo da barra lateral; soma a qualquer estilo do item ativo.",
+   "usage": "Acabamento de vidro do item ativo da Sidebar; soma a qualquer estilo do item ativo.",
    "interactsWith": [
     "sidebarActiveItemStyle",
     "navActiveMarkerColor"
@@ -2915,7 +2915,7 @@
    "label": "Estilo do Item Ativo (Sidebar)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Tratamento visual do item ativo na barra lateral.",
+   "usage": "Tratamento visual do item ativo na Sidebar.",
    "interactsWith": [
     "sidebarActiveColor",
     "navItemActiveColor",
@@ -2928,7 +2928,7 @@
    "label": "Tratamento do Fundo (Sidebar)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Tratamento de fundo da barra lateral.",
+   "usage": "Tratamento de fundo da Sidebar.",
    "interactsWith": [
     "sidebarColor",
     "sidebarNoiseOpacity"
@@ -2951,7 +2951,7 @@
    "label": "Borda (Sidebar)",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Cor da moldura da barra lateral.",
+   "usage": "Cor da moldura da Sidebar.",
    "interactsWith": [
     "sidebarColor"
    ]
@@ -2962,7 +2962,7 @@
    "label": "Lados da Borda (Sidebar)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Lados da moldura da barra lateral; a opção externa acompanha sua posição e a barra flutuante usa todos os lados.",
+   "usage": "Lados da moldura da Sidebar; a opção externa acompanha sua posição e a barra flutuante usa todos os lados.",
    "interactsWith": []
   },
   {
@@ -2971,7 +2971,7 @@
    "label": "Estilo da Borda (Sidebar)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Estilo de linha da moldura da barra lateral.",
+   "usage": "Estilo de linha da moldura da Sidebar.",
    "interactsWith": []
   },
   {
@@ -2980,7 +2980,7 @@
    "label": "Espessura da Borda (Sidebar)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Largura em pixels da moldura da barra lateral."
+   "usage": "Largura em pixels da moldura da Sidebar."
   },
   {
    "id": "sidebarBrandBackground",
@@ -2988,7 +2988,7 @@
    "label": "Fundo da Marca (Sidebar)",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Cor de fundo da área da marca na barra lateral.",
+   "usage": "Cor de fundo da área da marca na Sidebar.",
    "interactsWith": [
     "sidebarColor"
    ]
@@ -2999,7 +2999,7 @@
    "label": "Nome da Marca (Sidebar)",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Cor do nome da marca na barra lateral.",
+   "usage": "Cor do nome da marca na Sidebar.",
    "interactsWith": [
     "sidebarColor",
     "identityFontFamily"
@@ -3011,7 +3011,7 @@
    "label": "Rótulo de Categoria (Sidebar)",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Cor do rótulo de categoria na barra lateral; deve contrastar com o fundo da barra.",
+   "usage": "Cor do rótulo de categoria na Sidebar; deve contrastar com o fundo da barra.",
    "interactsWith": [
     "sidebarColor"
    ]
@@ -3044,7 +3044,7 @@
    "label": "Fundo do Rodapé (Sidebar)",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Cor de fundo do rodapé da barra lateral.",
+   "usage": "Cor de fundo do rodapé da Sidebar.",
    "interactsWith": [
     "sidebarColor"
    ]
@@ -3066,7 +3066,7 @@
    "label": "Cor do Ícone (Sidebar)",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Cor dos ícones inativos na barra lateral; o padrão acompanha o rótulo do item, e o ativo usa a cor do item ativo.",
+   "usage": "Cor dos ícones inativos na Sidebar; o padrão acompanha o rótulo do item, e o ativo usa a cor do item ativo.",
    "interactsWith": [
     "sidebarColor"
    ]
@@ -3077,7 +3077,7 @@
    "label": "Tamanho do Ícone (Sidebar)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Tamanho dos ícones da barra lateral."
+   "usage": "Tamanho dos ícones da Sidebar."
   },
   {
    "id": "sidebarItemDensity",
@@ -3094,7 +3094,7 @@
    "label": "Texto do Item em Hover (Sidebar)",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Cor do texto de item sob o ponteiro na barra lateral.",
+   "usage": "Cor do texto de item sob o ponteiro na Sidebar.",
    "interactsWith": [
     "sidebarColor",
     "sidebarItemTextColor"
@@ -3106,7 +3106,7 @@
    "label": "Texto do Item (Sidebar)",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Cor do texto de item inativo na barra lateral; deve permanecer legível sobre o fundo da barra.",
+   "usage": "Cor do texto de item inativo na Sidebar; deve permanecer legível sobre o fundo da barra.",
    "interactsWith": [
     "sidebarColor"
    ]
@@ -3209,7 +3209,7 @@
    "label": "Papel de Cor (Sidebar)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Papel de cor do fundo da barra lateral: a paleta calcula o fundo e os textos legíveis sobre ele, nos dois modos. Uma cor declarada em `sidebarColor` continua vencendo.",
+   "usage": "Papel de cor do fundo da Sidebar: a paleta calcula o fundo e os textos legíveis sobre ele, nos dois modos. Uma cor declarada em `sidebarColor` continua vencendo.",
    "interactsWith": [
     "sidebarColor",
     "sidebarActiveItemStyle"
@@ -3476,7 +3476,7 @@
    "label": "Margem da Seção de Abas",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Margem vertical das seções da navegação lateral e da barra do topo, por breakpoint."
+   "usage": "Margem vertical das seções da navegação lateral e da Topbar, por breakpoint."
   },
   {
    "id": "tertiaryColor",
@@ -3637,7 +3637,7 @@
    "label": "Ativo da Topbar",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Fundo do item ativo da barra do topo; o padrão é transparente.",
+   "usage": "Fundo do item ativo da Topbar; o padrão é transparente.",
    "interactsWith": [
     "navigationStyle"
    ]
@@ -3648,7 +3648,7 @@
    "label": "Estilo do Item Ativo (Topbar)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Tratamento visual do item ativo na barra superior.",
+   "usage": "Tratamento visual do item ativo na Topbar.",
    "interactsWith": [
     "topbarActiveColor",
     "navItemActiveColor",
@@ -3661,7 +3661,7 @@
    "label": "Tratamento do Fundo (Topbar)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Tratamento de fundo da barra superior.",
+   "usage": "Tratamento de fundo da Topbar.",
    "interactsWith": [
     "topbarColor",
     "topbarNoiseOpacity"
@@ -3673,7 +3673,7 @@
    "label": "Backdrop Blur (Topbar)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Desfoque do conteúdo que passa atrás da barra superior; funciona melhor com fundo translúcido."
+   "usage": "Desfoque do conteúdo que passa atrás da Topbar; funciona melhor com fundo translúcido."
   },
   {
    "id": "topbarBorderColor",
@@ -3681,7 +3681,7 @@
    "label": "Borda (Topbar)",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Cor da moldura da barra superior.",
+   "usage": "Cor da moldura da Topbar.",
    "interactsWith": [
     "topbarColor"
    ]
@@ -3692,7 +3692,7 @@
    "label": "Lados da Borda (Topbar)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Lados da moldura da barra superior; a opção externa fica junto ao conteúdo e se adapta à barra na base do celular.",
+   "usage": "Lados da moldura da Topbar; a opção externa fica junto ao conteúdo e se adapta à barra na base do celular.",
    "interactsWith": []
   },
   {
@@ -3701,7 +3701,7 @@
    "label": "Estilo da Borda (Topbar)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Estilo de linha da moldura da barra superior.",
+   "usage": "Estilo de linha da moldura da Topbar.",
    "interactsWith": []
   },
   {
@@ -3710,7 +3710,7 @@
    "label": "Espessura da Borda (Topbar)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Largura em pixels da moldura da barra superior."
+   "usage": "Largura em pixels da moldura da Topbar."
   },
   {
    "id": "topbarBrandBackground",
@@ -3718,7 +3718,7 @@
    "label": "Fundo da Marca (Topbar)",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Cor de fundo da área da marca na barra superior.",
+   "usage": "Cor de fundo da área da marca na Topbar.",
    "interactsWith": [
     "topbarColor"
    ]
@@ -3729,7 +3729,7 @@
    "label": "Nome da Marca (Topbar)",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Cor do nome da marca na barra superior.",
+   "usage": "Cor do nome da marca na Topbar.",
    "interactsWith": [
     "topbarColor",
     "identityFontFamily"
@@ -3741,7 +3741,7 @@
    "label": "Altura da Topbar (Recolhida)",
    "kind": "functional",
    "modeDependent": false,
-   "usage": "Altura da barra do topo recolhida; só aparece com `isNavHidden` ligado. Abaixo do alvo mínimo de toque (`touchTargetMin`) os controles da barra transbordam com ponteiro de dedo; por isso o padrão não cai abaixo dele.",
+   "usage": "Altura da Topbar recolhida; só aparece com `isNavHidden` ligado. Abaixo do alvo mínimo de toque (`touchTargetMin`) os controles da barra transbordam com ponteiro de dedo; por isso o padrão não cai abaixo dele.",
    "interactsWith": [
     "isNavHidden"
    ]
@@ -3752,7 +3752,7 @@
    "label": "Cor da Topbar (Fundo)",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Pinta o fundo da barra do topo; a cor entra na paleta derivada do cromo.",
+   "usage": "Pinta o fundo da Topbar; a cor entra na paleta derivada do cromo.",
    "interactsWith": [
     "navigationStyle"
    ]
@@ -3774,7 +3774,7 @@
    "label": "Altura da Topbar",
    "kind": "functional",
    "modeDependent": false,
-   "usage": "Altura da barra do topo, por breakpoint.",
+   "usage": "Altura da Topbar, por breakpoint.",
    "interactsWith": [
     "navigationStyle"
    ]
@@ -3785,7 +3785,7 @@
    "label": "Hover da Topbar",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Fundo do item da barra do topo sob o ponteiro; o padrão é um branco translúcido.",
+   "usage": "Fundo do item da Topbar sob o ponteiro; o padrão é um branco translúcido.",
    "interactsWith": [
     "navigationStyle"
    ]
@@ -3796,7 +3796,7 @@
    "label": "Cor do Ícone (Topbar)",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Cor dos ícones na barra superior.",
+   "usage": "Cor dos ícones na Topbar.",
    "interactsWith": [
     "topbarColor"
    ]
@@ -3807,7 +3807,7 @@
    "label": "Tamanho do Ícone (Topbar)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Tamanho dos ícones da barra superior."
+   "usage": "Tamanho dos ícones da Topbar."
   },
   {
    "id": "topbarItemDensity",
@@ -3815,7 +3815,7 @@
    "label": "Densidade dos Itens (Topbar)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Densidade das abas na barra superior; o alvo de toque mínimo continua sendo aplicado.",
+   "usage": "Densidade das abas na Topbar; o alvo de toque mínimo continua sendo aplicado.",
    "interactsWith": []
   },
   {
@@ -3824,7 +3824,7 @@
    "label": "Texto do Item em Hover (Topbar)",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Cor do texto de item sob o ponteiro na barra superior.",
+   "usage": "Cor do texto de item sob o ponteiro na Topbar.",
    "interactsWith": [
     "topbarColor",
     "topbarItemTextColor"
@@ -3836,7 +3836,7 @@
    "label": "Texto do Item (Topbar)",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Cor do texto de item inativo na barra superior; deve permanecer legível sobre o fundo da barra.",
+   "usage": "Cor do texto de item inativo na Topbar; deve permanecer legível sobre o fundo da barra.",
    "interactsWith": [
     "topbarColor"
    ]
@@ -3847,7 +3847,7 @@
    "label": "Largura Máxima do Rótulo (Topbar)",
    "kind": "functional",
    "modeDependent": false,
-   "usage": "Largura máxima do rótulo da marca na barra do topo; acima dela o texto é cortado.",
+   "usage": "Largura máxima do rótulo da marca na Topbar; acima dela o texto é cortado.",
    "interactsWith": [
     "navigationStyle"
    ]
@@ -3858,7 +3858,7 @@
    "label": "Opacidade do Ruído (Topbar)",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Opacidade da textura de grão sobre a barra do topo; 0 desliga.",
+   "usage": "Opacidade da textura de grão sobre a Topbar; 0 desliga.",
    "interactsWith": [
     "navigationStyle"
    ]
@@ -3869,7 +3869,7 @@
    "label": "Sombra da Topbar",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Sombra CSS completa projetada pela barra superior.",
+   "usage": "Sombra CSS completa projetada pela Topbar.",
    "interactsWith": [
     "navigationStyle"
    ]
@@ -3880,7 +3880,7 @@
    "label": "Cor do Título (Topbar)",
    "kind": "aesthetic",
    "modeDependent": true,
-   "usage": "Cor do nome da marca na barra do topo.",
+   "usage": "Cor do nome da marca na Topbar.",
    "interactsWith": [
     "navigationStyle"
    ]
@@ -3891,7 +3891,7 @@
    "label": "Papel de Cor (Topbar)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Papel de cor do fundo da barra do topo: a paleta calcula o fundo e os textos legíveis sobre ele, nos dois modos. Uma cor declarada em `topbarColor` continua vencendo.",
+   "usage": "Papel de cor do fundo da Topbar: a paleta calcula o fundo e os textos legíveis sobre ele, nos dois modos. Uma cor declarada em `topbarColor` continua vencendo.",
    "interactsWith": [
     "topbarColor",
     "topbarActiveItemStyle"

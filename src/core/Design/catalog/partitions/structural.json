@@ -242,7 +242,7 @@
   },
   {
     "tokenId": "headerAlignment",
-    "name": "Alinhamento do Header",
+    "name": "Alinhamento do cabeçalho",
     "description": "Distribuição horizontal dos elementos no cabeçalho das seções.",
     "type": "select",
     "importance": 70,
@@ -407,8 +407,8 @@
   },
   {
     "tokenId": "preferenceModePosition",
-    "name": "Preferência: Modo Claro/Escuro — Posição",
-    "description": "Onde a escolha de modo (claro/escuro/sistema) do usuário final aparece: não oferecida, no menu ⚙, ou fixa na barra.",
+    "name": "Preferência: Light mode ou Dark mode — Posição",
+    "description": "Onde a escolha de Light mode, Dark mode ou do sistema do usuário final aparece: não oferecida, no menu ⚙, ou fixa na barra.",
     "type": "select",
     "importance": 80,
     "categories": [
@@ -534,8 +534,8 @@
   },
   {
     "tokenId": "preferenceNavCollapsePositionTopbar",
-    "name": "Preferência: Menu da Barra do Topo — Posição",
-    "description": "Onde o botão de menu (≡) que compacta a barra do topo aparece: não oferecida, no menu ⚙, ou fixa na barra.",
+    "name": "Preferência: Menu da Topbar — Posição",
+    "description": "Onde o botão de menu (≡) que compacta a Topbar aparece: não oferecida, no menu ⚙, ou fixa na barra.",
     "type": "select",
     "importance": 80,
     "categories": [

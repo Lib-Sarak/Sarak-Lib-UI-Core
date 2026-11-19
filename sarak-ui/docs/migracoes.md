@@ -5,6 +5,18 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 9.0.0 — nomes visíveis do painel: Sidebar, Topbar, Dark mode e Light mode
+
+Só texto que o painel mostra; nenhum id, token, prop ou export mudou. Termo técnico fica em inglês, igual nos seis idiomas:
+
+- **Títulos de grupo:** "Barra lateral" (e "Barre latérale", "Seitenleiste"…) passa a **Sidebar**; "Barra de topo" ("Top bar", "Barra superior"…) passa a **Topbar**. Rótulos e descrições dos tokens da barra dizem Sidebar/Topbar em vez de "barra lateral", "barra superior" e "barra do topo".
+- **Opções de modo e navegação:** "Dark Mode (Padrão)" e "Light Mode" passam a **Dark mode (padrão)** e **Light mode**; "Sidebar (Esquerda)" e "Topbar (Cabeçalho)" passam a **Sidebar (esquerda)** e **Topbar (horizontal)**; a preferência "Modo Claro/Escuro" passa a "Light mode ou Dark mode".
+- **Cabeçalho do card:** os rótulos "… do Header" dos tokens `cardHeader*` e `headerAlignment` passam a dizer "cabeçalho".
+
+**O que muda para o importador:** quem procura o painel pelo texto (`getByText("Barra lateral")`, `getByRole('button', { name: /Barra de topo/ })`, o rótulo "Dark Mode (Padrão)") troca pelos nomes novos; os atributos `data-group-toggle`, `data-option-group` e `data-decision-row` não mudaram.
+
+---
+
 ## 9.0.0 — as barras ganham uma decisão própria no painel, o papel de cor vale para as duas e a troca lateral/topo pelo usuário vira um interruptor
 
 O painel de Design ganha a decisão **Barras**, entre Componentes e Layout (`DecisionId` `bars`). Ela reúne tudo o que é da barra: a orientação, o interruptor "O usuário pode trocar entre lateral e topo", o papel de cor, os presets de Barra lateral e de Barra de topo, as cinco perguntas (onde, como, o que aparece, marca e comportamento) e os ajustes finos de barra. O **Layout** fica com a largura do conteúdo e o resto (bloco global, identidade). Cada token está em exatamente uma das duas; `maxContentWidth` e `zIndexSidebar` mudaram de lugar (a largura foi para o Layout, o z-index da lateral para o Comportamento da barra) e `mobileNavigationStyle` entrou na pergunta "Onde fica a barra". O preset de Barra lateral **Texturizada** ficou mais marcado (grão a 30%, borda tracejada de 2 px, item ativo cheio e raio 4) para se distinguir de Limpa e Contornada. E a espiada de um papel de cor da barra na galeria agora recalcula a cor da barra como a escolha, em vez de deixar a cor que o tema declara por cima.

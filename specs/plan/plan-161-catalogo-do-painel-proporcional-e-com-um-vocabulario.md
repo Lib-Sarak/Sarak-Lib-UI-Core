@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fazer o catálogo do painel proporcional, curto e com um vocabulário só"
 objetivo: "Fazer cada decisão do painel caber em cerca de duas telas, com amostras proporcionais (Personalidade em quadrado com o nome, tema como miniatura da prévia real, fontes na mesma grade), presets de card gerados de cada tema, texturas do card e do fundo separadas pelo nome, e um vocabulário único com os termos técnicos em inglês"
 dominio: "Painel de customização / Catálogo de opções"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Média"
 tags: ["plan", "painel", "catalogo", "amostras", "presets", "vocabulario"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[09-temas-e-presets]]", "[[10-seguranca-e-acessibilidade]]", "[[07-responsividade-e-multidispositivo]]"]
@@ -65,7 +65,7 @@ funcionamento está certo.
 - Em todo lote: `docs/migracoes.md` se o importador vir diferença; `npm run dev-kit` por último.
 
 ## 3.2 Fora
-- O que a prévia grande mostra e a espiada: `plan-160`. O cromo: `plan-159`. O desempenho: `plan-158`.
+- O que a prévia grande mostra e a espiada: `plan-160`. O cromo: [[05-cromo-e-slots]] e a decisão Barras ([[06-painel-de-customizacao-e-preview]] §2.1.2). O desempenho: `plan-158`.
 - Traduzir o painel para outros idiomas (decisão do dono). O conteúdo de exemplo das telas falsas fica como está, salvo os nomes
   das peças.
 - Mudar o que um preset grava (só a amostra e a origem dos presets de card mudam). Os ids de preset existentes continuam válidos.
@@ -916,3 +916,143 @@ O dono commitou o lote 4 (`d158b55e`, que substituiu o `1b16329c`). Tomo isso co
   caso afirma isso. Verde nos dois modos de execução do spec.
 
 **Status da plan: 🟡 Em execução** (lote 5, depois do lote 4 da `plan-159`).
+
+---
+
+## Resumo da execução (lote 5) — 2026-11-18
+
+**Resultado:** Concluído com pendências (ok do dono na prévia; achados de escopo abaixo)
+
+**Estado do worktree ao iniciar**
+Fotografia antes da primeira edição: só trabalho da plan-159 (lote 4), já no índice (`A`/`M` em `browser-tests/`, `src/core/Design/presets/`, `src/features/DesignEngine/Main/`, `src/core/i18n/` e `docs/migracoes.md`), sem `src/core/Design/schema/` nem `presetTexts/personalities.ts` modificados. Esse trabalho foi commitado durante a execução; nada dele foi tocado.
+
+**O que foi feito**
+- `src/core/i18n/__tests__/glossary.test.ts` (novo): teste do glossário, com a lista de termos banidos como dado (barra lateral/superior/de topo e equivalentes em es/fr/de/it, `Header`, `cabeçalho` como nome da Topbar, "modo claro/escuro" e `Dark Mode`/`Light Mode` como nome). Varre `schema/*.ts`, `presetTexts/*.ts` e `catalogEntries.*.ts`; fora ficam comentário, linha de identificador (`id`, `cssVars`, `structuralConsumer`), trecho entre crases no schema e as linhas do alternador de modo do shell. **Rodado antes da troca: reprovou com mais de 100 ocorrências** (schema, `groups.ts`, `personalities.ts`, `catalogEntries.layout/part3/tokenNotes`); depois da troca passa.
+- Troca de texto: `schema/{barPersonality,navigation,preferences,specialized}.ts` ("barra lateral"/"barra superior"/"barra do topo" → Sidebar/Topbar); `global.ts` (opções "Dark mode (padrão)", "Light mode", "Sidebar (esquerda)", "Topbar (horizontal)"); `cards.ts` e `structural.ts` ("Header" → "cabeçalho do card"/"cabeçalho"); `presetTexts/groups.ts` (grupos `sidebar` e `topbar` = Sidebar/Topbar nos seis idiomas); `presetTexts/personalities.ts` (descrições nos seis idiomas); `catalogEntries.layout.ts`, `catalogEntries.part3.ts`, `catalogEntries.tokenNotes.ts` (de/fr/es/it).
+- `usePresetText.test.ts`: o título do grupo `sidebar` passa a ser "Sidebar" nos seis idiomas.
+- Item do revisor 1: `plan-161-catalogo-proporcional.spec.ts:666` agora se chama "a Forma como abre fica na meta de rolagem; com os dois grupos de textura abertos só se mede, sem meta".
+- Item do revisor 2: `escolha-no-painel.spec.ts` (caso "trocar o tema não remonta escopo…"): a premissa era escopo fora da área visível, que a miniatura lazy (lote 2) deixou de ter. O caso mede agora as opções (`data-option-tile`) fora da área visível: exige que existam, que nenhuma monte escopo na troca e que nenhuma reescreva estilo; a visível segue acompanhando o tema.
+- Gerados: `npx tsx scripts/generate-token-types.ts` (`design-token-docs.json`), `npm run guide`, `catalog`, `dev-kit`.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/i18n/__tests__/glossary.test.ts` | criado | teste do glossário |
+| `src/core/Design/schema/{barPersonality,cards,global,navigation,preferences,specialized,structural}.ts` | alterado | rótulos e descrições |
+| `src/core/i18n/presetTexts/{groups,personalities}.ts`, `catalogEntries.{layout,part3,tokenNotes}.ts` | alterado | textos nos seis idiomas |
+| `src/features/DesignEngine/hooks/__tests__/usePresetText.test.ts` | alterado | título do grupo |
+| `browser-tests/escolha-no-painel.spec.ts`, `plan-161-catalogo-proporcional.spec.ts` | alterado | os dois itens do revisor |
+| `src/core/Provider/generated/design-token-docs.json`, `sarak-ui/*`, `sarak-dev/*` | alterado (gerado) | efeito dos gerados |
+| `dist/*`, `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts` | alterado | efeito do `npm run build` |
+
+**Verificações executadas**
+- `npx vitest run src/core/i18n/__tests__/glossary.test.ts` → antes da troca 1 falha com >100 achados; depois 2 de 2.
+- `npx vitest run src/core/i18n src/core/Design src/features/DesignEngine` → 2272 de 2275; as 3 falhas (`switch-glass-border` ×2, `PresetsCatalog`) eram da máquina sob carga (build em paralelo) e **passam sozinhas: 20 de 20**.
+- `npm run build` → exit 0 (duas primeiras tentativas pararam em `token-types:check` e `guide:check` por gerado defasado; regenerados).
+- `npx playwright test … plan-161-catalogo-proporcional.spec.ts escolha-no-painel.spec.ts` → **27 de 27**, incluindo o caso `:220` (verde) e o `:666` renomeado.
+- `npm run verify -- --tier=quick` → verde (tsc, baseline, Anel 1, Anel 0: 0 achado).
+- Não reexecutei o caso `:220` em mutação (ver Pendências).
+
+**Critérios de aceite**
+- [x] Teste do glossário verde e reprovando sobre os textos de antes — evidência acima.
+- [x] Item `:666` e item `escolha-no-painel:220` — evidência acima.
+- [ ] Prévia em `C:\tmp\sarak-previa-161\index-lote5.html` e `glossario-lote5.html` — gerada; **aguarda o ok do dono**.
+
+**Decisões e suposições**
+- "cabeçalho" fica quando é o cabeçalho de card, tabela ou seção (peça diferente); só deixa de nomear a Topbar/cromo. `Header` virou "cabeçalho do card" (`cardHeader*`) e "cabeçalho" (`headerAlignment`).
+- Topbar como "(horizontal)" e não "(Cabeçalho)" na opção de navegação.
+- O glossário vale para Sidebar/Topbar em todos os idiomas (termo técnico, igual nos seis); as opções curtas "Lateral"/"Latérale"/"Laterale" do seletor de orientação ficam, pois não nomeiam a peça.
+- Os textos do alternador de modo do shell (`themeToggleLabel*`, `themeToggleTitleTo*`) ficam: são do usuário final e traduzidos, não do painel.
+- Os títulos das telas de `Canvas/Mocks/` não tinham termo banido (conferido por grep); nada alterado ali.
+
+**Achados fora do escopo (não corrigidos)**
+- `src/core/Design/catalog/partitions/*.json` guardam nome e descrição próprios com os mesmos termos (`barra lateral` ×~15, `barra superior`, `Modo Claro/Escuro` em `structural.json:410`). Não estão na §3.1 do lote.
+- Comentários de código e JSDoc em `src/components/` e `src/core/Design/presets/` ainda dizem "barra lateral"/"barra do topo"; não são texto do painel.
+- `escolha-no-painel.spec.ts` ainda tem "Barra lateral" em títulos de caso e comentários (nome de caso, não texto do painel).
+
+**Pendências / riscos**
+- Ok do dono na prévia. `docs/migracoes.md` não tocado: nenhum id, token ou prop mudou, só texto exibido.
+- O teste lê texto com regex sobre linhas; texto de schema em várias linhas pode escapar (a varredura é por linha). Uma lista de termos nova entra em `BANNED_TERMS`.
+
+## Veredito — 2026-11-18 — lote 5 — 🔵 Em correção (dois itens objetivos)
+
+**Como medi.**
+- Li o diff do schema, do `presetTexts`, dos `catalogEntries`, do `glossary.test.ts` e dos dois specs de navegador.
+- Anel 1 verde (o `plan-index:check` cai só pelo 🟠). `check-audit-baseline --with-tsc` sem regressão.
+- O teste do glossário reprovava antes da troca e passa depois, e os dois itens do revisor do lote 4 estão feitos.
+
+**Achados**
+1. **O texto que o painel mostra de cada token vem do catálogo de design, e ele ficou de fora.**
+   - `DecisionTokenList.tsx:21` prefere o nome e a descrição de `src/core/Design/catalog/partitions/*.json` (`TokenCatalog`) ao
+     rótulo do schema. Para esses tokens, a troca feita no schema não chega à tela.
+   - Os arquivos ainda dizem "barra lateral", "barra do topo", "Modo Claro/Escuro" e "Header": `layout_and_navigation`,
+     `cards_engine`, `components_base`, `structural` e `typography`.
+   - O resumo os pôs fora do escopo, mas são texto do painel (§5.1: "todo texto que o painel mostra").
+   - Critério: o glossário aplicado a `name` e `description` das partições, sem mudar id. O `glossary.test.ts` passa a varrer também
+     esses dois campos das partições, e reprova antes da troca.
+2. **`docs/migracoes.md`:** uma linha para os nomes visíveis que mudaram (os títulos de grupo Sidebar e Topbar, e as opções
+   "Dark mode" e "Light mode"), para o importador que procura o painel pelo texto. Rode `npm run guide` em seguida.
+
+**Prévia:** refaça as capturas de decisão (Barras e Layout) depois do item 1. O texto das linhas de token vem das partições.
+
+**Como fechar:** `npx vitest run src/core/i18n/__tests__/glossary.test.ts` (com a reprovação de antes registrada no resumo),
+`npm run build` e `plan-161-catalogo-proporcional.spec.ts`. O revisor reroda só esses.
+
+**Status da plan: 🔵 Em correção.**
+
+## Resumo da execução (lote 5, correção 1) — 2026-11-18
+
+Escopo: só os achados 1 e 2 do veredito de 2026-11-18 (lote 5).
+
+**Estado do worktree ao iniciar** (fotografia antes da primeira edição, sem `dist/`): as alterações do lote 5 já descritas (schema, `presetTexts`, `catalogEntries`, `glossary.test.ts`, os dois specs, gerados `sarak-ui/` e `design-token-docs.json`) e o próprio arquivo da plan; nenhuma outra tarefa.
+
+1. **Partições do catálogo de design.**
+   - `glossary.test.ts` ganhou o caso "nome e descrição das partições do catálogo de design seguem o mesmo glossário": lê os `*.json` de `src/core/Design/catalog/partitions/` e varre só `name` e `description`.
+   - **Reprovação de antes** (rodado sobre as partições sem a troca, com o caso novo): 1 falha com **31 ocorrências** em 4 arquivos (`cards_engine` 5, `components_base` 1, `layout_and_navigation` 21, `structural` 4). Exemplos: `layout_and_navigation.json sidebarTone.description — barra lateral`, `topbarBlur.description — barra superior`, `shellBrandLogoSize.description — cabeçalho do shell`, `cards_engine.json cardHeaderBg.name — Header`, `structural.json preferenceModePosition.name — Modo Claro/Escuro`. Saída completa em `C:\tmp\glossary-antes-l5c.txt`. O teste também reprovou `schema/preferences.ts:117` ("Modo Claro/Escuro", que o regex anterior não pegava por causa do "C" maiúsculo): o regex agora aceita maiúscula e minúscula.
+   - Depois, três casos acrescentados aos padrões (`cabeçalho de navegação`, `cabeçalho superior`, `sobre o cabeçalho.`) para pegar o cabeçalho que nomeava a Topbar nas descrições (413, 447, 512, 600 de `layout_and_navigation.json`); esses também foram trocados.
+   - Troca nas partições (só `name` e `description`, nenhum `tokenId`): `barra lateral`→Sidebar, `barra superior`/`barra do topo`→Topbar, `cabeçalho do shell`→`shell`, `cabeçalho da sidebar`→Sidebar, `cabeçalho de navegação`→Topbar, `Header`→"Cabeçalho do Card"/"cabeçalho" (`cardHeader*`, `headerAlignment`), `Headers (H1…)`→"títulos", "status headers"→"cabeçalhos de status", `Modo Claro/Escuro`→"Light mode ou Dark mode", `primeira linha (cabeçalho)`→"primeira linha, a de títulos de coluna". `schema/preferences.ts:117` idem.
+   - Depois: `npx vitest run src/core/i18n/__tests__/glossary.test.ts` → 3 de 3.
+2. **`docs/migracoes.md`:** entrada nova "9.0.0 — nomes visíveis do painel: Sidebar, Topbar, Dark mode e Light mode" (títulos de grupo, opções de modo e navegação, rótulos de cabeçalho do card; o que o importador troca; atributos `data-*` intactos). Depois: `npx tsx scripts/generate-token-types.ts`, `npm run guide`, `catalog`, `dev-kit`.
+
+**Verificações executadas**
+- `npm run build` → exit 0.
+- `npx playwright test … plan-161-catalogo-proporcional.spec.ts` → **25 de 25** (a Forma como abre, 1,2 altura; com os dois grupos de textura abertos 12,21, só medida).
+- `npm run verify -- --tier=quick` → verde (Anel 0: 522 linhas, 0 achado).
+- Prévia: capturas de Barras e Layout refeitas (`C:\tmp\sarak-previa-161\lote5-correcao-desktop-barras.png`, `lote5-correcao-desktop-layout.png`, no `index-lote5-correcao.html`); a de Barras mostra "Sidebar" e "Topbar" como títulos de grupo. `glossario-lote5.html` aponta para elas.
+
+**Critérios de aceite**
+- [x] Glossário aplicado a `name` e `description` das partições, sem mudar id; teste varre os dois campos e reprovou antes — acima.
+- [x] Linha no `docs/migracoes.md` e `npm run guide` — acima.
+- [ ] Ok do dono na prévia refeita.
+
+**Decisões e suposições**
+- A linha do `migracoes.md` foi escrita como entrada própria (a convenção do arquivo é uma entrada por mudança), e não um parágrafo solto.
+- Os `Headers` de `typography.json` viraram "títulos" (são os H1–H6), não "cabeçalho do card".
+
+**Achados fora do escopo (não corrigidos)**
+- Comentários de código e JSDoc em `src/components/` e `src/core/Design/presets/` ainda dizem "barra lateral" e "barra do topo"; não são texto do painel.
+
+**Pendências / riscos**
+- Ok do dono na prévia. Rodei só o teste do glossário, o build e o spec do lote, como pedido; a suíte completa e os outros specs de navegador são do revisor.
+
+## Veredito — 2026-11-18 — lote 5, correção 1 — 🟢 Aprovado no código; o lote fecha com o ok do dono na prévia
+
+**Como medi.**
+- `glossary.test.ts` com 3 de 3. A reprovação de antes, com 31 ocorrências nas partições, está no resumo.
+- As partições têm 0 ocorrência dos termos banidos (contagem do revisor sobre os `*.json`).
+- `npm run build` com exit 0, e `plan-161-catalogo-proporcional.spec.ts` com 25 de 25.
+- Anel 1 verde (o `plan-index:check` cai só pelo 🟠). `check-audit-baseline --with-tsc` sem regressão. Anel 0 com 0.
+- A entrada de `docs/migracoes.md` cobre os nomes visíveis e diz que os `data-*` não mudam.
+- **Prévia** (`C:\tmp\sarak-previa-161\index-lote5-correcao.html`) conferida: na decisão Barras, "Sidebar" e "Topbar" são os títulos de grupo.
+
+**Falta, para fechar o lote 5:** o ok do dono na prévia. O lote 5 é o último. Com o ok, a plan fica 🟢 Aprovada e espera a síntese.
+
+**Status da plan: 🟠 Em revisão** até o ok do dono.
+
+## Nota do revisor — 2026-11-18 — ok do dono no vocabulário (lote 5)
+
+O dono aprovou o vocabulário do lote 5. **Lote 5 fechado, e com ele a plan (o lote 5 é o último). Status da plan: 🟢 Aprovada.** Ela
+espera a síntese em 06, 09 e 10.
+
+Os pontos que o dono levantou na mesma prévia (a miniatura de tema com a tela real, os gráficos só com estilo, as amostras com o
+componente real e o lugar de cada textura) não reabrem esta plan. Eles são a `plan-166`, que depende desta.

@@ -154,7 +154,7 @@ export const StructuralSchema: ComponentSchema = {
             kind: 'aesthetic',
             modeDependent: false,
             usage: "Disposição do cabeçalho de tabelas e catálogos: título e ações espaçados, centrados ou no início.",
-            label: 'Alinhamento do Header',
+            label: 'Alinhamento do cabeçalho',
             type: 'select',
             description: 'Distribuição horizontal dos elementos dentro de um cabeçalho de seção/página — Espaçado empurra título e ações para as extremidades opostas (o mais comum), Centro/Início agrupam os elementos.',
             axis: 'geometry',

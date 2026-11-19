@@ -6,10 +6,10 @@ export const PRESET_TEXTS_PERSONALITIES: PresetTextTable = {
         name: ['Corporate', 'Corporativo', 'Corporate', 'Unternehmen', 'Aziendale'],
         description: [
             'Sober and dense, with strong tables and a dark side bar: the look of a company system.',
-            'Sobrio y denso, con tablas marcadas y la barra lateral oscura: el aire de un sistema de empresa.',
-            "Sobre et dense, avec des tableaux marqués et la barre latérale sombre : l'allure d'un système d'entreprise.",
-            'Nüchtern und dicht, mit kräftigen Tabellen und dunkler Seitenleiste: der Look eines Unternehmenssystems.',
-            "Sobrio e denso, con tabelle marcate e la barra laterale scura: l'aspetto di un sistema aziendale.",
+            'Sobrio y denso, con tablas marcadas y la Sidebar oscura: el aire de un sistema de empresa.',
+            "Sobre et dense, avec des tableaux marqués et la Sidebar sombre : l'allure d'un système d'entreprise.",
+            'Nüchtern und dicht, mit kräftigen Tabellen und dunkler Sidebar: der Look eines Unternehmenssystems.',
+            "Sobrio e denso, con tabelle marcate e la Sidebar scura: l'aspetto di un sistema aziendale.",
         ],
     },
     'personality-executive': {
@@ -36,10 +36,10 @@ export const PRESET_TEXTS_PERSONALITIES: PresetTextTable = {
         name: ['Modern', 'Moderno', 'Moderne', 'Modern', 'Moderno'],
         description: [
             'Rounded and light: the side bar floats free of the screen, in the brand color, and the motion has a bounce.',
-            'Redondeado y ligero: la barra lateral flota suelta de la pantalla, en el color de la marca, y el movimiento rebota.',
-            "Arrondi et léger : la barre latérale flotte, détachée de l'écran, aux couleurs de la marque, et le mouvement a du rebond.",
-            'Abgerundet und leicht: die Seitenleiste schwebt frei vom Bildschirm, in Markenfarbe, und die Bewegung federt nach.',
-            'Arrotondato e leggero: la barra laterale fluttua staccata dallo schermo, nel colore del brand, e il movimento rimbalza.',
+            'Redondeado y ligero: la Sidebar flota suelta de la pantalla, en el color de la marca, y el movimiento rebota.',
+            "Arrondi et léger : la Sidebar flotte, détachée de l'écran, aux couleurs de la marque, et le mouvement a du rebond.",
+            'Abgerundet und leicht: die Sidebar schwebt frei vom Bildschirm, in Markenfarbe, und die Bewegung federt nach.',
+            'Arrotondato e leggero: la Sidebar fluttua staccata dallo schermo, nel colore del brand, e il movimento rimbalza.',
         ],
     },
     'personality-soft': {
@@ -75,10 +75,10 @@ export const PRESET_TEXTS_PERSONALITIES: PresetTextTable = {
     'personality-glass': {
         name: ['Glass', 'Vidrio', 'Verre', 'Glas', 'Vetro'],
         description: [
-            'Translucent with atmosphere: crystal glass over a background of color blobs, and the top bar in pills.',
-            'Translúcido y con atmósfera: vidrio cristalino sobre un fondo de manchas de color, y la barra superior en píldoras.',
-            "Translucide et plein d'atmosphère : verre cristallin sur un fond de taches de couleur, et la barre du haut en pilules.",
-            'Durchscheinend und mit Atmosphäre: Kristallglas über einem Hintergrund aus Farbflecken, die obere Leiste in Pillenform.',
+            'Translucent with atmosphere: crystal glass over a background of color blobs, and the Topbar in pills.',
+            'Translúcido y con atmósfera: vidrio cristalino sobre un fondo de manchas de color, y la Topbar en píldoras.',
+            "Translucide et plein d'atmosphère : verre cristallin sur un fond de taches de couleur, et la Topbar en pilules.",
+            'Durchscheinend und mit Atmosphäre: Kristallglas über einem Hintergrund aus Farbflecken, die Topbar in Pillenform.',
             'Traslucido e con atmosfera: vetro cristallino su uno sfondo di macchie di colore, e la barra in alto a pillole.',
         ],
     },
@@ -86,10 +86,10 @@ export const PRESET_TEXTS_PERSONALITIES: PresetTextTable = {
         name: ['High-density ERP', 'ERP de alta densidad', 'ERP haute densité', 'ERP mit hoher Dichte', 'ERP ad alta densità'],
         description: [
             'The most data per screen: minimal spacing, a spreadsheet-style table and the brand at the bottom of the side bar.',
-            'El máximo de datos por pantalla: espacios mínimos, tabla de hoja de cálculo y la marca en la base de la barra lateral.',
-            "Le maximum de données par écran : espaces minimaux, tableau façon tableur et la marque en bas de la barre latérale.",
-            'So viele Daten wie möglich pro Bildschirm: minimale Abstände, eine Tabelle wie in der Tabellenkalkulation und die Marke am Fuß der Seitenleiste.',
-            'Il massimo dei dati per schermata: spazi minimi, tabella in stile foglio di calcolo e il marchio in fondo alla barra laterale.',
+            'El máximo de datos por pantalla: espacios mínimos, tabla de hoja de cálculo y la marca en la base de la Sidebar.',
+            "Le maximum de données par écran : espaces minimaux, tableau façon tableur et la marque en bas de la Sidebar.",
+            'So viele Daten wie möglich pro Bildschirm: minimale Abstände, eine Tabelle wie in der Tabellenkalkulation und die Marke am Fuß der Sidebar.',
+            'Il massimo dei dati per schermata: spazi minimi, tabella in stile foglio di calcolo e il marchio in fondo alla Sidebar.',
         ],
     },
     'personality-operations': {

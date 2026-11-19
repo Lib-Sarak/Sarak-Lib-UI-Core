@@ -2,7 +2,7 @@
   {
     "tokenId": "isNavHidden",
     "name": "Navegação recolhida",
-    "description": "Quando ativo, recolhe a navegação: a barra lateral fica no trilho estreito (74 px) e a barra do topo na geometria compacta — o conteúdo ganha o espaço, e o menu continua alcançável. Não a remove da tela.",
+    "description": "Quando ativo, recolhe a navegação: a Sidebar fica no trilho estreito (74 px) e a Topbar na geometria compacta — o conteúdo ganha o espaço, e o menu continua alcançável. Não a remove da tela.",
     "type": "boolean",
     "importance": 95,
     "categories": [
@@ -31,7 +31,7 @@
   {
     "tokenId": "sidebarPosition",
     "name": "Posição da Sidebar",
-    "description": "Define o alinhamento e estrutura primária da barra lateral no shell da aplicação.",
+    "description": "Define o alinhamento e estrutura primária da Sidebar no shell da aplicação.",
     "type": "select",
     "importance": 90,
     "categories": [
@@ -127,7 +127,7 @@
   {
     "tokenId": "shellBrandLogoSize",
     "name": "Altura do Logo da Marca",
-    "description": "Altura do logo da marca exibido no cabeçalho do shell, em pixels.",
+    "description": "Altura do logo da marca exibido no shell, em pixels.",
     "type": "slider",
     "importance": 60,
     "categories": [
@@ -192,7 +192,7 @@
   {
     "tokenId": "sidebarLabelMaxWidth",
     "name": "Largura Máxima do Rótulo (Sidebar)",
-    "description": "Largura máxima do texto de nome do sistema exibido no cabeçalho da sidebar antes de truncar.",
+    "description": "Largura máxima do texto de nome do sistema exibido no Sidebar antes de truncar.",
     "type": "slider",
     "importance": 40,
     "categories": [
@@ -224,7 +224,7 @@
   {
     "tokenId": "sidebarMinWidth",
     "name": "Largura Mínima da Sidebar",
-    "description": "Limita o tamanho mínimo da barra lateral ao ser redimensionada.",
+    "description": "Limita o tamanho mínimo da Sidebar ao ser redimensionada.",
     "type": "slider",
     "importance": 80,
     "categories": [
@@ -256,7 +256,7 @@
   {
     "tokenId": "sidebarMaxWidth",
     "name": "Largura Máxima da Sidebar",
-    "description": "Limita o tamanho máximo da barra lateral ao ser redimensionada.",
+    "description": "Limita o tamanho máximo da Sidebar ao ser redimensionada.",
     "type": "slider",
     "importance": 80,
     "categories": [
@@ -318,7 +318,7 @@
   {
     "tokenId": "sidebarHoverColor",
     "name": "Hover da Sidebar",
-    "description": "Cor de fundo aplicada ao interagir (passar o mouse) sobre a barra lateral ou itens dentro dela.",
+    "description": "Cor de fundo aplicada ao interagir (passar o mouse) sobre a Sidebar ou itens dentro dela.",
     "type": "color",
     "importance": 70,
     "categories": [
@@ -347,7 +347,7 @@
   {
     "tokenId": "sidebarActiveColor",
     "name": "Ativo da Sidebar",
-    "description": "Cor de destaque usada quando a barra lateral inteira ou itens específicos estão focados ou ativos.",
+    "description": "Cor de destaque usada quando a Sidebar inteira ou itens específicos estão focados ou ativos.",
     "type": "color",
     "importance": 80,
     "categories": [
@@ -410,7 +410,7 @@
   {
     "tokenId": "topbarHeight",
     "name": "Altura da Topbar",
-    "description": "Altura vertical do cabeçalho de navegação (topbar).",
+    "description": "Altura vertical do Topbar.",
     "type": "slider",
     "importance": 90,
     "categories": [
@@ -444,7 +444,7 @@
   {
     "tokenId": "topbarCollapsedHeight",
     "name": "Altura da Topbar (Recolhida)",
-    "description": "Altura do cabeçalho de navegação quando está no modo recolhido (hover-to-expand).",
+    "description": "Altura do Topbar quando está no modo recolhido (hover-to-expand).",
     "type": "slider",
     "importance": 55,
     "categories": [
@@ -476,7 +476,7 @@
   {
     "tokenId": "brandLogoSizeCollapsed",
     "name": "Altura do Logo da Marca (Recolhida)",
-    "description": "Altura do logo da marca no cabeçalho do shell quando a navegação está no modo recolhido.",
+    "description": "Altura do logo da marca no shell quando a navegação está no modo recolhido.",
     "type": "slider",
     "importance": 40,
     "categories": [
@@ -509,7 +509,7 @@
   {
     "tokenId": "topbarColor",
     "name": "Cor da Topbar (Fundo)",
-    "description": "Cor de fundo base do cabeçalho superior de navegação.",
+    "description": "Cor de fundo base do Topbar.",
     "type": "color",
     "importance": 90,
     "categories": [
@@ -539,7 +539,7 @@
   {
     "tokenId": "topbarHoverColor",
     "name": "Hover da Topbar",
-    "description": "Cor ao passar o mouse sobre a barra superior.",
+    "description": "Cor ao passar o mouse sobre a Topbar.",
     "type": "color",
     "importance": 70,
     "categories": [
@@ -597,7 +597,7 @@
   {
     "tokenId": "topbarNoiseOpacity",
     "name": "Opacidade do Ruído (Topbar)",
-    "description": "Intensidade da textura visual de ruído aplicada sobre o cabeçalho.",
+    "description": "Intensidade da textura visual de ruído aplicada sobre a Topbar.",
     "type": "slider",
     "importance": 60,
     "categories": [
@@ -922,7 +922,7 @@
   {
     "tokenId": "sidebarShadow",
     "name": "Sombra da Sidebar",
-    "description": "Configuração da sombra projetada (box-shadow) pela barra lateral sobre o conteúdo da página.",
+    "description": "Configuração da sombra projetada (box-shadow) pela Sidebar sobre o conteúdo da página.",
     "type": "text",
     "importance": 70,
     "categories": [
@@ -1429,7 +1429,7 @@
   {
     "tokenId": "zIndexSidebar",
     "name": "Sidebar Z-Index",
-    "description": "Nível Z aplicado à barra lateral de navegação (Sidebar).",
+    "description": "Nível Z aplicado à Sidebar de navegação (Sidebar).",
     "type": "slider",
     "importance": 70,
     "categories": [
@@ -2326,7 +2326,7 @@
   {
     "tokenId": "topbarGroupSeparatorColor",
     "name": "Separador de Grupos (Topbar)",
-    "description": "Cor da linha que separa grupos de navegação na barra superior.",
+    "description": "Cor da linha que separa grupos de navegação na Topbar.",
     "type": "color",
     "importance": 80,
     "categories": [
@@ -2517,7 +2517,7 @@
   {
     "tokenId": "topbarBlur",
     "name": "Backdrop Blur (Topbar)",
-    "description": "Intensidade do desfoque de fundo da barra superior, em pixels.",
+    "description": "Intensidade do desfoque de fundo da Topbar, em pixels.",
     "type": "slider",
     "importance": 80,
     "categories": [
@@ -2546,7 +2546,7 @@
   {
     "tokenId": "topbarShadow",
     "name": "Sombra da Topbar",
-    "description": "Definição CSS completa de box-shadow para a barra superior.",
+    "description": "Definição CSS completa de box-shadow para a Topbar.",
     "type": "text",
     "importance": 80,
     "categories": [
@@ -2574,7 +2574,7 @@
   {
     "tokenId": "sidebarLogoPlacement",
     "name": "Posição da Marca (Sidebar)",
-    "description": "Em que ponto da barra lateral a marca aparece: no topo, antes da navegação, ou na base, logo acima do rodapé.",
+    "description": "Em que ponto da Sidebar a marca aparece: no topo, antes da navegação, ou na base, logo acima do rodapé.",
     "type": "select",
     "importance": 80,
     "categories": [
@@ -2604,7 +2604,7 @@
   {
     "tokenId": "sidebarTone",
     "name": "Papel de Cor (Sidebar)",
-    "description": "Escolhe de qual papel da paleta vem o fundo da barra lateral: neutro (o de sempre), superfície, primária, secundária ou invertido em relação ao corpo. O texto e o ícone da barra seguem legíveis em qualquer papel.",
+    "description": "Escolhe de qual papel da paleta vem o fundo da Sidebar: neutro (o de sempre), superfície, primária, secundária ou invertido em relação ao corpo. O texto e o ícone da barra seguem legíveis em qualquer papel.",
     "type": "select",
     "importance": 80,
     "categories": [
@@ -2637,7 +2637,7 @@
   {
     "tokenId": "topbarTone",
     "name": "Papel de Cor (Topbar)",
-    "description": "Escolhe de qual papel da paleta vem o fundo da barra do topo: neutro (o de sempre), superfície, primária, secundária ou invertido em relação ao corpo. O texto e o ícone da barra seguem legíveis em qualquer papel.",
+    "description": "Escolhe de qual papel da paleta vem o fundo da Topbar: neutro (o de sempre), superfície, primária, secundária ou invertido em relação ao corpo. O texto e o ícone da barra seguem legíveis em qualquer papel.",
     "type": "select",
     "importance": 80,
     "categories": [
@@ -2670,7 +2670,7 @@
   {
     "tokenId": "sidebarResizable",
     "name": "Largura Ajustável (Sidebar)",
-    "description": "Quando ativo, o usuário ajusta a largura da barra lateral aberta por uma alça na borda; duplo clique volta ao padrão. Some fora da faixa de cromo lateral.",
+    "description": "Quando ativo, o usuário ajusta a largura da Sidebar aberta por uma alça na borda; duplo clique volta ao padrão. Some fora da faixa de cromo lateral.",
     "type": "boolean",
     "importance": 80,
     "categories": [

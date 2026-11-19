@@ -663,7 +663,7 @@ test.describe('Forma: textura do card e textura do fundo', () => {
         await page.close();
     });
 
-    test('a rolagem da Forma, com os dois grupos de textura abertos, fica na meta', async () => {
+    test('a Forma como abre fica na meta de rolagem; com os dois grupos de textura abertos só se mede, sem meta', async () => {
         const page = await open(1440, 900);
         await openForm(page);
         const closed = await measureScroll(page);

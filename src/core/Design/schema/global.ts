@@ -15,8 +15,8 @@ export const GlobalSchema: ComponentSchema = {
             description: 'Modo nativo do tema (claro ou escuro). A paleta inverte pela preferência de modo do usuário, que aplica a contraparte do tema; o valor sozinho decide o ícone do alternador e a mistura da vinheta. Vários tokens de cor têm defaults distintos por modo.',
             constraints: {
                 options: [
-                    { value: 'dark', label: 'Dark Mode (Padrão)' },
-                    { value: 'light', label: 'Light Mode' }
+                    { value: 'dark', label: 'Dark mode (padrão)' },
+                    { value: 'light', label: 'Light mode' }
                 ]
             },
             defaultValue: 'dark'
@@ -25,15 +25,15 @@ export const GlobalSchema: ComponentSchema = {
             id: 'navigationStyle',
             kind: 'functional',
             modeDependent: false,
-            usage: "Escolhe onde fica a navegação: Sidebar (coluna lateral) ou Topbar (cabeçalho). Troca a estrutura inteira do cromo; a preferência do usuário, quando oferecida, vence o valor do tema.",
+            usage: "Escolhe onde fica a navegação: Sidebar (coluna lateral) ou Topbar (barra horizontal). Troca a estrutura inteira do cromo; a preferência do usuário, quando oferecida, vence o valor do tema.",
             interactsWith: ['sidebarPosition', 'mobileNavigationStyle'],
             label: 'Estrutura de Navegação',
             type: 'select',
-            description: 'Define onde a navegação principal do sistema é renderizada: Sidebar (coluna fixa à esquerda, ideal para apps densos com muitos itens de menu) ou Topbar (cabeçalho horizontal, mais compacto verticalmente). Muda a estrutura de layout inteira, não só cor. No celular o cromo tem a própria escolha (Navegação no Celular).',
+            description: 'Define onde a navegação principal do sistema é renderizada: Sidebar (coluna fixa à esquerda, ideal para apps densos com muitos itens de menu) ou Topbar (barra horizontal, mais compacto verticalmente). Muda a estrutura de layout inteira, não só cor. No celular o cromo tem a própria escolha (Navegação no Celular).',
             constraints: {
                 options: [
-                    { value: 'sidebar', label: 'Sidebar (Esquerda)' },
-                    { value: 'topbar', label: 'Topbar (Cabeçalho)' }
+                    { value: 'sidebar', label: 'Sidebar (esquerda)' },
+                    { value: 'topbar', label: 'Topbar (horizontal)' }
                 ]
             },
             defaultValue: 'sidebar',

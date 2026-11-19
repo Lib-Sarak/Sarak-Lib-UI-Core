@@ -202,6 +202,13 @@ const watchScopeStyles = (page: Page): Promise<void> => page.evaluate((margin) =
     const records: Record<string, { visible: boolean; writes: number }> = {};
     const elements = [...document.querySelectorAll('[data-option-tile] .sarak-design-scope')];
     (window as unknown as { __scopeStyles: typeof records }).__scopeStyles = records;
+    // A miniatura de tema só monta o escopo quando a opção entra na área visível; por isso a opção FORA dela se mede pela própria
+    // opção (`data-option-tile`), com ou sem escopo dentro, e não pelos escopos que existem antes da troca.
+    const tileObserver = new IntersectionObserver((entries) => {
+        (window as unknown as { __outsideTiles: Element[] }).__outsideTiles = entries.filter((entry) => !entry.isIntersecting).map((entry) => entry.target);
+        tileObserver.disconnect();
+    }, { rootMargin: margin });
+    document.querySelectorAll('[data-option-tile]').forEach((tile) => tileObserver.observe(tile));
     const visibility = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
             const name = scopeClass(entry.target);
@@ -231,20 +238,30 @@ test('trocar o tema não remonta escopo, e a amostra fora da área visível não
 
     await page.getByRole('button', { name: THEME_CARD }).click();
     await settle(page, cdp);
-    const { mounts, writes, scopes } = await page.evaluate(() => ({
-        mounts: window.__scopeMounts,
-        writes: window.__styleWrites,
-        scopes: (window as unknown as { __scopeStyles: Record<string, { visible: boolean; writes: number }> }).__scopeStyles,
-    }));
-    const hidden = Object.values(scopes).filter((scope) => !scope.visible);
+    const { mounts, writes, scopes, outside } = await page.evaluate(() => {
+        const records = (window as unknown as { __scopeStyles: Record<string, { visible: boolean; writes: number }> }).__scopeStyles;
+        const tiles = (window as unknown as { __outsideTiles: Element[] }).__outsideTiles;
+        const scopeNameOf = (element: Element): string | undefined => [...element.classList].find((name) => name.startsWith('sarak-scope-'));
+        return {
+            mounts: window.__scopeMounts,
+            writes: window.__styleWrites,
+            scopes: records,
+            outside: tiles.map((tile) => {
+                const scope = tile.querySelector('.sarak-design-scope');
+                const name = scope ? scopeNameOf(scope) : undefined;
+                return { mounted: scope !== null, writes: name !== undefined ? (records[name]?.writes ?? 0) : 0 };
+            }),
+        };
+    });
     const visible = Object.values(scopes).filter((scope) => scope.visible);
     test.info().annotations.push({
         type: 'medido',
-        description: `troca de tema: ${mounts} escopos montados de novo; ${writes} <style> escritos; amostras visíveis: ${visible.map((scope) => scope.writes).join(', ')} propriedades reescritas; fora da área visível: ${hidden.map((scope) => scope.writes).join(', ')}`,
+        description: `troca de tema: ${mounts} escopos montados de novo; ${writes} <style> escritos; amostras visíveis: ${visible.map((scope) => scope.writes).join(', ')} propriedades reescritas; opções fora da área visível: ${outside.length}, com escopo montado: ${outside.filter((tile) => tile.mounted).length}`,
     });
     expect(mounts, 'escopos .sarak-design-scope montados de novo na troca de tema').toBeLessThanOrEqual(SCOPE_REMOUNT_BUDGET);
-    expect(hidden.length, 'a cena tem amostra fora da área visível').toBeGreaterThan(0);
-    expect(hidden.map((scope) => scope.writes), 'estilo reescrito em amostra fora da área visível').toEqual(hidden.map(() => 0));
+    expect(outside.length, 'a cena tem opção fora da área visível').toBeGreaterThan(0);
+    expect(outside.filter((tile) => tile.mounted), 'opção fora da área visível que montou escopo na troca').toEqual([]);
+    expect(outside.map((tile) => tile.writes), 'estilo reescrito em opção fora da área visível').toEqual(outside.map(() => 0));
     expect(visible.every((scope) => scope.writes > 0), 'a amostra visível acompanha o tema novo').toBe(true);
     await page.close();
 });

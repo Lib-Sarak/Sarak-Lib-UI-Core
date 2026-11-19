@@ -13,14 +13,15 @@ describe('usePresetText', () => {
     it('sem Provider, o texto sai em português', () => {
         const { result } = renderHook(() => usePresetText());
         expect(result.current.preset(CARD_PRESETS[0]).name).toBe('Vidro mínimo');
-        expect(result.current.group('sidebar')).toBe('Barra lateral');
+        expect(result.current.group('sidebar')).toBe('Sidebar');
         expect(result.current.ui('seeAllCount', { count: 9 })).toBe('Ver todas (9)');
     });
 
     it('com o idioma do sistema, o nome e o título acompanham', () => {
         const { result } = renderHook(() => usePresetText(), inLanguage('en'));
         expect(result.current.preset(CARD_PRESETS[0]).name).not.toBe('Vidro mínimo');
-        expect(result.current.group('sidebar')).not.toBe('Barra lateral');
+        // Termo técnico: o título do grupo é o mesmo nos seis idiomas (glossário).
+        expect(result.current.group('sidebar')).toBe('Sidebar');
         expect(result.current.family('technical')).not.toBe('Técnicas');
     });
 });

@@ -1570,7 +1570,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `bodySize` | estético | não | Tamanho da fonte do `body` (12 a 20 px): todo texto que herda dele muda, e as alturas do cromo acompanham. A preferência de tamanho do usuário (P/M/G) parte deste valor: o P reduz `preferenceFontSizeReduction` px e o G soma `preferenceFontSizeIncrease` px. | — |
 | `mobileNavigationStyle` | funcional | não | Onde a navegação fica no celular: barra na base, gaveta atrás do hambúrguer ou automático (barra com até 5 destinos, gaveta acima disso). Tablet e desktop não mudam. | `navigationStyle` |
 | `mode` | estético | não | Declara o modo nativo do tema: define o ícone do alternador e a mistura da vinheta. A paleta só inverte pela preferência de modo do usuário (`colorMode`), que aplica a contraparte; sozinho, o valor não repinta a tela. | `vignetteOpacity` |
-| `navigationStyle` | funcional | não | Escolhe onde fica a navegação: Sidebar (coluna lateral) ou Topbar (cabeçalho). Troca a estrutura inteira do cromo; a preferência do usuário, quando oferecida, vence o valor do tema. | `sidebarPosition` · `mobileNavigationStyle` |
+| `navigationStyle` | funcional | não | Escolhe onde fica a navegação: Sidebar (coluna lateral) ou Topbar (barra horizontal). Troca a estrutura inteira do cromo; a preferência do usuário, quando oferecida, vence o valor do tema. | `sidebarPosition` · `mobileNavigationStyle` |
 
 #### Identidade Visual (`branding`)
 
@@ -1608,42 +1608,42 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | Token | Natureza | Modo | O que muda | Depende de |
 | --- | --- | --- | --- | --- |
 | `brandDisplay` | estético | não | Com "só o logo" e sem imagem de logo, a marca cai no nome; "só o nome" esconde a imagem. O nome nunca é cortado com reticências. | `sidebarLogoPlacement` · `shellBrandLogoSize` |
-| `brandLogoSizeCollapsed` | funcional | não | Lado do logo na barra do topo recolhida; só aparece com `isNavHidden` ligado. | `isNavHidden` |
+| `brandLogoSizeCollapsed` | funcional | não | Lado do logo na Topbar recolhida; só aparece com `isNavHidden` ligado. | `isNavHidden` |
 | `chromeNotificationsPosition` | funcional | não | Posição das notificações no cromo: fixas, no menu de preferências ou não oferecidas. | — |
 | `chromeSearchPosition` | funcional | não | Posição do widget de busca no cromo: fixo na barra, dentro do menu de preferências ou não oferecido; fora da barra ele some do lugar de origem. | `searchPositionTopbar` · `searchPositionSidebar` |
 | `chromeUserPosition` | funcional | não | Posição do widget de usuário no cromo: fixo, no menu de preferências ou não oferecido; sem ele a navegação ganha o espaço. | — |
 | `isNavHidden` | funcional | não | Recolhe a navegação: a lateral estreita para o piso de largura e esconde rótulos; o topo encolhe para a altura recolhida. É o mesmo estado que o usuário alterna pelo botão de recolher. | `sidebarMinWidth` · `topbarCollapsedHeight` · `brandLogoSizeCollapsed` |
 | `navActiveMarkerColor` | estético | sim | Cor do marcador luminoso ao lado do item ativo e do brilho dele. | `navActiveMarkerGlow` |
 | `navActiveMarkerGlow` | estético | não | Raio do brilho do marcador do item ativo; 0 deixa só a barrinha. | `navActiveMarkerColor` |
-| `navbarLayout` | funcional | não | Comportamento da barra do topo: fixa ao rolar, rola junto com o conteúdo ou oculta. Só vale com navegação no topo. | `navigationStyle` |
+| `navbarLayout` | funcional | não | Comportamento da Topbar: fixa ao rolar, rola junto com o conteúdo ou oculta. Só vale com navegação no topo. | `navigationStyle` |
 | `navItemActiveColor` | estético | sim | Cor do item ativo da navegação: texto, ícone e contorno do item atual, na lateral e no topo; também participa dos controles selecionados do cromo. Garanta contraste de texto e ícone nos dois modos. | — |
 | `navItemRadius` | estético | não | Raio dos cantos do item da navegação, o fundo do ativo e do hover, na lateral, no topo e no recolhido; 0 deixa o item reto e 16 ou mais o torna cápsula. | `sidebarActiveColor` · `topbarActiveColor` · `sidebarHoverColor` · `topbarHoverColor` |
 | `searchDropdownGap` | funcional | não | Distância, em rem, entre o topo da tela e a paleta de busca; empurra o painel para baixo. | `searchDropdownWidth` |
 | `searchDropdownWidth` | funcional | não | Largura máxima da paleta de busca. | `searchDropdownGap` |
 | `searchPositionSidebar` | funcional | não | Onde a busca fica na navegação lateral: no topo ou no rodapé do bloco. | `navigationStyle` · `chromeSearchPosition` |
-| `searchPositionTopbar` | funcional | não | Onde a busca fica na barra do topo: esquerda (antes da navegação), centro (no meio do espaço livre entre a navegação e o grupo final, não no centro da barra), direita (no grupo final) ou oculta. | `navigationStyle` · `chromeSearchPosition` |
+| `searchPositionTopbar` | funcional | não | Onde a busca fica na Topbar: esquerda (antes da navegação), centro (no meio do espaço livre entre a navegação e o grupo final, não no centro da barra), direita (no grupo final) ou oculta. | `navigationStyle` · `chromeSearchPosition` |
 | `shellBrandLogoSize` | funcional | não | Lado da imagem do logo na navegação lateral; aumenta a altura do bloco da marca. | `navigationStyle` |
 | `sidebarActiveColor` | estético | sim | Fundo do item ativo da navegação lateral; o padrão é transparente, e o marcador do item vem de `navActiveMarkerColor`. | `navigationStyle` · `navActiveMarkerColor` |
-| `sidebarActiveGlass` | estético | não | Acabamento de vidro do item ativo da barra lateral; soma a qualquer estilo do item ativo. | `sidebarActiveItemStyle` · `navActiveMarkerColor` |
-| `sidebarActiveItemStyle` | estético | não | Tratamento visual do item ativo na barra lateral. | `sidebarActiveColor` · `navItemActiveColor` · `navActiveMarkerColor` |
-| `sidebarBackgroundStyle` | estético | não | Tratamento de fundo da barra lateral. | `sidebarColor` · `sidebarNoiseOpacity` |
+| `sidebarActiveGlass` | estético | não | Acabamento de vidro do item ativo da Sidebar; soma a qualquer estilo do item ativo. | `sidebarActiveItemStyle` · `navActiveMarkerColor` |
+| `sidebarActiveItemStyle` | estético | não | Tratamento visual do item ativo na Sidebar. | `sidebarActiveColor` · `navItemActiveColor` · `navActiveMarkerColor` |
+| `sidebarBackgroundStyle` | estético | não | Tratamento de fundo da Sidebar. | `sidebarColor` · `sidebarNoiseOpacity` |
 | `sidebarBlur` | estético | não | Desfoque do que passa atrás da navegação lateral, útil com cor translúcida. | `sidebarColor` |
-| `sidebarBorderColor` | estético | sim | Cor da moldura da barra lateral. | `sidebarColor` |
-| `sidebarBorderSide` | estético | não | Lados da moldura da barra lateral; a opção externa acompanha sua posição e a barra flutuante usa todos os lados. | — |
-| `sidebarBorderStyle` | estético | não | Estilo de linha da moldura da barra lateral. | — |
-| `sidebarBorderWidth` | estético | não | Largura em pixels da moldura da barra lateral. | — |
-| `sidebarBrandBackground` | estético | sim | Cor de fundo da área da marca na barra lateral. | `sidebarColor` |
-| `sidebarBrandColor` | estético | sim | Cor do nome da marca na barra lateral. | `sidebarColor` · `identityFontFamily` |
-| `sidebarCategoryColor` | estético | sim | Cor do rótulo de categoria na barra lateral; deve contrastar com o fundo da barra. | `sidebarColor` |
+| `sidebarBorderColor` | estético | sim | Cor da moldura da Sidebar. | `sidebarColor` |
+| `sidebarBorderSide` | estético | não | Lados da moldura da Sidebar; a opção externa acompanha sua posição e a barra flutuante usa todos os lados. | — |
+| `sidebarBorderStyle` | estético | não | Estilo de linha da moldura da Sidebar. | — |
+| `sidebarBorderWidth` | estético | não | Largura em pixels da moldura da Sidebar. | — |
+| `sidebarBrandBackground` | estético | sim | Cor de fundo da área da marca na Sidebar. | `sidebarColor` |
+| `sidebarBrandColor` | estético | sim | Cor do nome da marca na Sidebar. | `sidebarColor` · `identityFontFamily` |
+| `sidebarCategoryColor` | estético | sim | Cor do rótulo de categoria na Sidebar; deve contrastar com o fundo da barra. | `sidebarColor` |
 | `sidebarCollapsedWidth` | funcional | não | Largura da navegação lateral recolhida (só ícones); vale sem o piso de `sidebarMinWidth`, que é da lateral aberta. | `isNavHidden` |
 | `sidebarColor` | estético | sim | Pinta o fundo da navegação lateral; a cor entra na paleta derivada do cromo. | `navigationStyle` |
-| `sidebarFooterBackground` | estético | sim | Cor de fundo do rodapé da barra lateral. | `sidebarColor` |
+| `sidebarFooterBackground` | estético | sim | Cor de fundo do rodapé da Sidebar. | `sidebarColor` |
 | `sidebarHoverColor` | estético | sim | Fundo do item da navegação lateral sob o ponteiro; o padrão é um branco translúcido. | `navigationStyle` |
-| `sidebarIconColor` | estético | sim | Cor dos ícones inativos na barra lateral; o padrão acompanha o rótulo do item, e o ativo usa a cor do item ativo. | `sidebarColor` |
-| `sidebarIconSize` | estético | não | Tamanho dos ícones da barra lateral. | — |
+| `sidebarIconColor` | estético | sim | Cor dos ícones inativos na Sidebar; o padrão acompanha o rótulo do item, e o ativo usa a cor do item ativo. | `sidebarColor` |
+| `sidebarIconSize` | estético | não | Tamanho dos ícones da Sidebar. | — |
 | `sidebarItemDensity` | estético | não | Densidade das linhas de navegação lateral; o alvo de toque mínimo continua sendo aplicado. | — |
-| `sidebarItemHoverTextColor` | estético | sim | Cor do texto de item sob o ponteiro na barra lateral. | `sidebarColor` · `sidebarItemTextColor` |
-| `sidebarItemTextColor` | estético | sim | Cor do texto de item inativo na barra lateral; deve permanecer legível sobre o fundo da barra. | `sidebarColor` |
+| `sidebarItemHoverTextColor` | estético | sim | Cor do texto de item sob o ponteiro na Sidebar. | `sidebarColor` · `sidebarItemTextColor` |
+| `sidebarItemTextColor` | estético | sim | Cor do texto de item inativo na Sidebar; deve permanecer legível sobre o fundo da barra. | `sidebarColor` |
 | `sidebarLabelMaxWidth` | funcional | não | Largura máxima do rótulo da marca na navegação lateral; acima dela o texto é cortado. | `navigationStyle` |
 | `sidebarLogoPlacement` | estético | não | Põe a marca no topo da lateral (padrão) ou na base, acima do rodapé; só vale na lateral. Recolhida, fica só o símbolo. | `sidebarPosition` · `shellBrandLogoSize` |
 | `sidebarMaxWidth` | funcional | não | Teto de largura da navegação lateral; `sidebarWidth` acima dele é cortado. | `sidebarWidth` |
@@ -1652,35 +1652,35 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `sidebarPosition` | funcional | não | Lado da navegação lateral: esquerda, direita (inverte a ordem) ou flutuante (cartão arredondado com margem). Só vale com navegação lateral. | `navigationStyle` |
 | `sidebarResizable` | funcional | não | Liga uma alça na borda da lateral aberta: o usuário arrasta ou usa as setas, entre o piso e o teto de largura. O valor escolhido é preferência do usuário, nunca do tema. | `sidebarWidth` · `sidebarMinWidth` · `sidebarMaxWidth` |
 | `sidebarShadow` | estético | sim | Sombra da navegação lateral, escrita como `box-shadow` completo; a cor da sombra precisa ser trocada na contraparte. | `navigationStyle` |
-| `sidebarTone` | estético | não | Papel de cor do fundo da barra lateral: a paleta calcula o fundo e os textos legíveis sobre ele, nos dois modos. Uma cor declarada em `sidebarColor` continua vencendo. | `sidebarColor` · `sidebarActiveItemStyle` |
+| `sidebarTone` | estético | não | Papel de cor do fundo da Sidebar: a paleta calcula o fundo e os textos legíveis sobre ele, nos dois modos. Uma cor declarada em `sidebarColor` continua vencendo. | `sidebarColor` · `sidebarActiveItemStyle` |
 | `sidebarWidth` | funcional | não | Largura da navegação lateral (um valor por breakpoint), dentro do piso e do teto de `sidebarMinWidth` e `sidebarMaxWidth`. | `sidebarMinWidth` · `sidebarMaxWidth` |
 | `tabGap` | estético | não | Espaço entre os itens da navegação, por breakpoint; a lateral usa metade do valor em cada eixo. | — |
-| `tabSectionMargin` | estético | não | Margem vertical das seções da navegação lateral e da barra do topo, por breakpoint. | — |
-| `topbarActiveColor` | estético | sim | Fundo do item ativo da barra do topo; o padrão é transparente. | `navigationStyle` |
-| `topbarActiveItemStyle` | estético | não | Tratamento visual do item ativo na barra superior. | `topbarActiveColor` · `navItemActiveColor` · `navActiveMarkerColor` |
-| `topbarBackgroundStyle` | estético | não | Tratamento de fundo da barra superior. | `topbarColor` · `topbarNoiseOpacity` |
-| `topbarBlur` | estético | não | Desfoque do conteúdo que passa atrás da barra superior; funciona melhor com fundo translúcido. | — |
-| `topbarBorderColor` | estético | sim | Cor da moldura da barra superior. | `topbarColor` |
-| `topbarBorderSide` | estético | não | Lados da moldura da barra superior; a opção externa fica junto ao conteúdo e se adapta à barra na base do celular. | — |
-| `topbarBorderStyle` | estético | não | Estilo de linha da moldura da barra superior. | — |
-| `topbarBorderWidth` | estético | não | Largura em pixels da moldura da barra superior. | — |
-| `topbarBrandBackground` | estético | sim | Cor de fundo da área da marca na barra superior. | `topbarColor` |
-| `topbarBrandColor` | estético | sim | Cor do nome da marca na barra superior. | `topbarColor` · `identityFontFamily` |
-| `topbarCollapsedHeight` | funcional | não | Altura da barra do topo recolhida; só aparece com `isNavHidden` ligado. Abaixo do alvo mínimo de toque (`touchTargetMin`) os controles da barra transbordam com ponteiro de dedo; por isso o padrão não cai abaixo dele. | `isNavHidden` |
-| `topbarColor` | estético | sim | Pinta o fundo da barra do topo; a cor entra na paleta derivada do cromo. | `navigationStyle` |
+| `tabSectionMargin` | estético | não | Margem vertical das seções da navegação lateral e da Topbar, por breakpoint. | — |
+| `topbarActiveColor` | estético | sim | Fundo do item ativo da Topbar; o padrão é transparente. | `navigationStyle` |
+| `topbarActiveItemStyle` | estético | não | Tratamento visual do item ativo na Topbar. | `topbarActiveColor` · `navItemActiveColor` · `navActiveMarkerColor` |
+| `topbarBackgroundStyle` | estético | não | Tratamento de fundo da Topbar. | `topbarColor` · `topbarNoiseOpacity` |
+| `topbarBlur` | estético | não | Desfoque do conteúdo que passa atrás da Topbar; funciona melhor com fundo translúcido. | — |
+| `topbarBorderColor` | estético | sim | Cor da moldura da Topbar. | `topbarColor` |
+| `topbarBorderSide` | estético | não | Lados da moldura da Topbar; a opção externa fica junto ao conteúdo e se adapta à barra na base do celular. | — |
+| `topbarBorderStyle` | estético | não | Estilo de linha da moldura da Topbar. | — |
+| `topbarBorderWidth` | estético | não | Largura em pixels da moldura da Topbar. | — |
+| `topbarBrandBackground` | estético | sim | Cor de fundo da área da marca na Topbar. | `topbarColor` |
+| `topbarBrandColor` | estético | sim | Cor do nome da marca na Topbar. | `topbarColor` · `identityFontFamily` |
+| `topbarCollapsedHeight` | funcional | não | Altura da Topbar recolhida; só aparece com `isNavHidden` ligado. Abaixo do alvo mínimo de toque (`touchTargetMin`) os controles da barra transbordam com ponteiro de dedo; por isso o padrão não cai abaixo dele. | `isNavHidden` |
+| `topbarColor` | estético | sim | Pinta o fundo da Topbar; a cor entra na paleta derivada do cromo. | `navigationStyle` |
 | `topbarGroupSeparatorColor` | estético | sim | Cor do separador entre grupos de navegação horizontal. | `topbarColor` |
-| `topbarHeight` | funcional | não | Altura da barra do topo, por breakpoint. | `navigationStyle` |
-| `topbarHoverColor` | estético | sim | Fundo do item da barra do topo sob o ponteiro; o padrão é um branco translúcido. | `navigationStyle` |
-| `topbarIconColor` | estético | sim | Cor dos ícones na barra superior. | `topbarColor` |
-| `topbarIconSize` | estético | não | Tamanho dos ícones da barra superior. | — |
-| `topbarItemDensity` | estético | não | Densidade das abas na barra superior; o alvo de toque mínimo continua sendo aplicado. | — |
-| `topbarItemHoverTextColor` | estético | sim | Cor do texto de item sob o ponteiro na barra superior. | `topbarColor` · `topbarItemTextColor` |
-| `topbarItemTextColor` | estético | sim | Cor do texto de item inativo na barra superior; deve permanecer legível sobre o fundo da barra. | `topbarColor` |
-| `topbarLabelMaxWidth` | funcional | não | Largura máxima do rótulo da marca na barra do topo; acima dela o texto é cortado. | `navigationStyle` |
-| `topbarNoiseOpacity` | estético | sim | Opacidade da textura de grão sobre a barra do topo; 0 desliga. | `navigationStyle` |
-| `topbarShadow` | estético | sim | Sombra CSS completa projetada pela barra superior. | `navigationStyle` |
-| `topbarTitleColor` | estético | sim | Cor do nome da marca na barra do topo. | `navigationStyle` |
-| `topbarTone` | estético | não | Papel de cor do fundo da barra do topo: a paleta calcula o fundo e os textos legíveis sobre ele, nos dois modos. Uma cor declarada em `topbarColor` continua vencendo. | `topbarColor` · `topbarActiveItemStyle` |
+| `topbarHeight` | funcional | não | Altura da Topbar, por breakpoint. | `navigationStyle` |
+| `topbarHoverColor` | estético | sim | Fundo do item da Topbar sob o ponteiro; o padrão é um branco translúcido. | `navigationStyle` |
+| `topbarIconColor` | estético | sim | Cor dos ícones na Topbar. | `topbarColor` |
+| `topbarIconSize` | estético | não | Tamanho dos ícones da Topbar. | — |
+| `topbarItemDensity` | estético | não | Densidade das abas na Topbar; o alvo de toque mínimo continua sendo aplicado. | — |
+| `topbarItemHoverTextColor` | estético | sim | Cor do texto de item sob o ponteiro na Topbar. | `topbarColor` · `topbarItemTextColor` |
+| `topbarItemTextColor` | estético | sim | Cor do texto de item inativo na Topbar; deve permanecer legível sobre o fundo da barra. | `topbarColor` |
+| `topbarLabelMaxWidth` | funcional | não | Largura máxima do rótulo da marca na Topbar; acima dela o texto é cortado. | `navigationStyle` |
+| `topbarNoiseOpacity` | estético | sim | Opacidade da textura de grão sobre a Topbar; 0 desliga. | `navigationStyle` |
+| `topbarShadow` | estético | sim | Sombra CSS completa projetada pela Topbar. | `navigationStyle` |
+| `topbarTitleColor` | estético | sim | Cor do nome da marca na Topbar. | `navigationStyle` |
+| `topbarTone` | estético | não | Papel de cor do fundo da Topbar: a paleta calcula o fundo e os textos legíveis sobre ele, nos dois modos. Uma cor declarada em `topbarColor` continua vencendo. | `topbarColor` · `topbarActiveItemStyle` |
 | `userAvatarStyle` | estético | não | Avatar do widget de usuário quando o sistema não entrega imagem; com imagem, ela vale. | `chromeUserPosition` |
 
 #### Card Geral (`cards`)
@@ -2034,8 +2034,8 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `authHeroOrbBlur` | estético | não | Desfoque dos orbes de fundo da tela de autenticação (`AuthHero`); 10 px os mostra como discos e 250 px os dilui em atmosfera. | — |
 | `chartEngineMinHeight` | funcional | não | Altura mínima reservada ao gráfico Recharts antes de os dados chegarem, para a página não saltar; é um piso de layout, não de estilo. | — |
 | `chatBubbleGlassBlur` | estético | não | Desfoque do vidro da bolha de resposta do `SarakChatEngine`; só vale com `chatBubbleStyle: glass` (o padrão do motor). | `chatBubbleStyle` |
-| `designEngineSidebarMaxWidth` | funcional | não | Largura máxima da barra lateral do painel de customização; só o painel a lê. | `designEngineSidebarMinWidth` |
-| `designEngineSidebarMinWidth` | funcional | não | Largura mínima da barra lateral do painel de customização; só o painel a lê. | `designEngineSidebarMaxWidth` |
+| `designEngineSidebarMaxWidth` | funcional | não | Largura máxima da Sidebar do painel de customização; só o painel a lê. | `designEngineSidebarMinWidth` |
+| `designEngineSidebarMinWidth` | funcional | não | Largura mínima da Sidebar do painel de customização; só o painel a lê. | `designEngineSidebarMaxWidth` |
 | `dotGridDotOffset` | estético | não | Posição do ponto dentro de cada célula da grade de pontos do estado vazio geométrico e da tela de autenticação (`AuthHero`). | `dotGridTileSize` |
 | `dotGridDotSize` | estético | não | Raio de cada ponto da grade decorativa do estado vazio geométrico e da tela de autenticação (`AuthHero`). | `dotGridTileSize` |
 | `dotGridTileSize` | estético | não | Lado da célula que se repete na grade de pontos do estado vazio geométrico e do `AuthHero`; define o espaçamento entre pontos. | — |
@@ -2135,9 +2135,9 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `preferenceFontSizePosition` | funcional | não | Posição da escolha de tamanho da fonte (P/M/G): fixa, no menu de preferências ou não oferecida. | — |
 | `preferenceFontSizeReduction` | funcional | não | Redução, em px, que a preferência P aplica sobre `bodySize`: P = `bodySize` − este valor (piso de 8 px). Só vale quando a escolha de tamanho da fonte é oferecida ao usuário. | `bodySize` · `preferenceFontSizePosition` |
 | `preferenceLanguagePosition` | funcional | não | Posição da escolha de idioma: fixa, no menu de preferências ou não oferecida. | — |
-| `preferenceModePosition` | funcional | não | Posição da escolha de modo claro/escuro do usuário: fixa na barra, no menu de preferências ou não oferecida; quando some, a escolha não existe para o usuário. | — |
-| `preferenceNavCollapsePosition` | funcional | não | Posição do botão de recolher a navegação na barra lateral: fixo (a seta do cabeçalho), no menu de preferências ou não oferecido. | — |
-| `preferenceNavCollapsePositionTopbar` | funcional | não | Posição do botão de menu (≡) que compacta a barra do topo: fixo, no menu de preferências ou não oferecido; por padrão fica só no menu. | — |
+| `preferenceModePosition` | funcional | não | Posição da escolha de Light mode ou Dark mode do usuário: fixa na barra, no menu de preferências ou não oferecida; quando some, a escolha não existe para o usuário. | — |
+| `preferenceNavCollapsePosition` | funcional | não | Posição do botão de recolher a navegação na Sidebar: fixo (a seta da própria Sidebar), no menu de preferências ou não oferecido. | — |
+| `preferenceNavCollapsePositionTopbar` | funcional | não | Posição do botão de menu (≡) que compacta a Topbar: fixo, no menu de preferências ou não oferecido; por padrão fica só no menu. | — |
 | `preferenceNavigationStylePosition` | funcional | não | Posição da escolha de orientação da navegação (lateral/topo): fixa, no menu de preferências ou não oferecida. | — |
 
 ### A.5 Ícones (119 nomes válidos)

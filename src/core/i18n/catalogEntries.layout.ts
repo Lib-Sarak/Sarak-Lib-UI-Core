@@ -45,7 +45,7 @@ export const CATALOG_LAYOUT = {
     barSampleBrand: { pt: 'Sua marca', en: 'Your brand', es: 'Su marca', fr: 'Votre marque', de: 'Ihre Marke', it: 'Il tuo marchio' },
     barSampleUser: { pt: 'Usuário', en: 'User', es: 'Usuario', fr: 'Utilisateur', de: 'Benutzer', it: 'Utente' },
     chromeSidebarResizeLabel: {
-        pt: 'Ajustar a largura da barra lateral', en: 'Resize the sidebar', es: 'Ajustar el ancho de la barra lateral',
-        fr: 'Ajuster la largeur de la barre latérale', de: 'Breite der Seitenleiste anpassen', it: 'Regola la larghezza della barra laterale',
+        pt: 'Ajustar a largura da Sidebar', en: 'Resize the sidebar', es: 'Ajustar el ancho de la Sidebar',
+        fr: 'Ajuster la largeur de la Sidebar', de: 'Breite der Sidebar anpassen', it: 'Regola la larghezza della Sidebare',
     },
 } satisfies Record<string, LibraryTextEntry>;

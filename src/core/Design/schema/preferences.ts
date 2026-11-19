@@ -35,7 +35,7 @@ export const PREFERENCE_POSITION_TOKEN_IDS: Record<SarakPreferenceId, string> = 
 };
 
 /**
- * O recolher da barra do topo é lido por um token próprio: a lateral mostra a seta do cabeçalho por padrão
+ * O recolher da Topbar é lido por um token próprio: a lateral mostra a seta do cabeçalho por padrão
  * (`preferenceNavCollapsePosition`), e o topo só mostra o ≡ quando o sistema o liga aqui.
  */
 export const NAV_COLLAPSE_TOPBAR_POSITION_TOKEN_ID = 'preferenceNavCollapsePositionTopbar';
@@ -55,11 +55,11 @@ const POSITION_OPTIONS = [
 
 /** O que cada posição muda na tela (medido no cromo): o controle sai da barra, vai para o menu ⚙ ou some. */
 const POSITION_USAGE: Record<string, string> = {
-    preferenceModePosition: "Posição da escolha de modo claro/escuro do usuário: fixa na barra, no menu de preferências ou não oferecida; quando some, a escolha não existe para o usuário.",
+    preferenceModePosition: "Posição da escolha de Light mode ou Dark mode do usuário: fixa na barra, no menu de preferências ou não oferecida; quando some, a escolha não existe para o usuário.",
     preferenceFontSizePosition: "Posição da escolha de tamanho da fonte (P/M/G): fixa, no menu de preferências ou não oferecida.",
     preferenceNavigationStylePosition: "Posição da escolha de orientação da navegação (lateral/topo): fixa, no menu de preferências ou não oferecida.",
-    preferenceNavCollapsePosition: "Posição do botão de recolher a navegação na barra lateral: fixo (a seta do cabeçalho), no menu de preferências ou não oferecido.",
-    preferenceNavCollapsePositionTopbar: "Posição do botão de menu (≡) que compacta a barra do topo: fixo, no menu de preferências ou não oferecido; por padrão fica só no menu.",
+    preferenceNavCollapsePosition: "Posição do botão de recolher a navegação na Sidebar: fixo (a seta da própria Sidebar), no menu de preferências ou não oferecido.",
+    preferenceNavCollapsePositionTopbar: "Posição do botão de menu (≡) que compacta a Topbar: fixo, no menu de preferências ou não oferecido; por padrão fica só no menu.",
     preferenceLanguagePosition: "Posição da escolha de idioma: fixa, no menu de preferências ou não oferecida.",
 };
 
@@ -114,8 +114,8 @@ export const PreferencesSchema: ComponentSchema = {
     tokens: [
         buildPositionToken(
             PREFERENCE_POSITION_TOKEN_IDS.colorMode,
-            'Preferência: Modo Claro/Escuro',
-            'Onde a escolha de modo (claro/escuro/sistema) do usuário final aparece — não oferecida, no menu ⚙, ou fixa na barra.',
+            'Preferência: Light mode ou Dark mode',
+            'Onde a escolha de Light mode, Dark mode ou do sistema do usuário final aparece — não oferecida, no menu ⚙, ou fixa na barra.',
             'menu',
         ),
         buildPositionToken(
@@ -138,8 +138,8 @@ export const PreferencesSchema: ComponentSchema = {
         ),
         buildPositionToken(
             NAV_COLLAPSE_TOPBAR_POSITION_TOKEN_ID,
-            'Preferência: Menu da Barra do Topo',
-            'Onde o botão de menu (≡) que compacta a barra do topo aparece — não oferecida, no menu ⚙, ou fixa na barra.',
+            'Preferência: Menu da Topbar',
+            'Onde o botão de menu (≡) que compacta a Topbar aparece — não oferecida, no menu ⚙, ou fixa na barra.',
             'menu',
         ),
         buildPositionToken(
@@ -189,7 +189,7 @@ export const getChromeWidgetPosition = (
     return isChromeWidgetPosition(value) ? value : DEFAULT_POSITIONS[tokenId];
 };
 
-/** A posição do recolher na barra do topo: o token próprio, e na falta dele o padrão de fábrica (no menu). */
+/** A posição do recolher na Topbar: o token próprio, e na falta dele o padrão de fábrica (no menu). */
 export const getNavCollapsePositionTopbar = (design: Record<string, unknown> | undefined): SarakPreferencePosition => {
     const value = design?.[NAV_COLLAPSE_TOPBAR_POSITION_TOKEN_ID];
     return isChromeWidgetPosition(value) ? value : DEFAULT_POSITIONS[NAV_COLLAPSE_TOPBAR_POSITION_TOKEN_ID];

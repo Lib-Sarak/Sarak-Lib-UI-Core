@@ -3,7 +3,7 @@
     "tokenId": "headingFont",
     "visualImpact": "fontes",
     "name": "Fonte de Títulos",
-    "description": "Família tipográfica principal usada em Headers (H1, H2, etc).",
+    "description": "Família tipográfica principal usada em títulos (H1, H2, etc).",
     "type": "font",
     "importance": 95,
     "categories": [
