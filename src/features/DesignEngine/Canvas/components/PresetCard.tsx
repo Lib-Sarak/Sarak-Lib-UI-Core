@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
+import { SarakDeviceProvider } from '../../../../core/Provider/DeviceProvider';
 import { SarakAppChrome, type SarakNavItem } from '../../../../components/Layout/SarakAppChrome';
-import { SarakCard } from '../../../../components/atomic/Cards/SarakCard';
 import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
 import { DesignOverrideContext } from '../../../../core/Provider/SarakUIProvider';
 import { SarakThemePreset } from '../../../../core/Design/presets/themes';
@@ -9,13 +9,14 @@ import { withThemePalette } from '../../../../core/Design/presets/themes/compose
 import type { SarakTokenValue } from '../../../../core/Design/types';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import type { SarakDesignState } from '../../../../core/Provider/types';
+import { MockDashboard } from '../Mocks/DashboardMock';
 import { LazyWhenVisible } from './LazyWhenVisible';
 import { OptionTile } from './OptionTile';
 import { BAR_WIDGETS_OFF } from './PresetGroupCatalog';
 import type { PeekHandler } from './peek';
 
 /** O quadro de referência da miniatura de um tema, em px de tela: o tamanho em que o sistema é desenhado antes de a opção o reduzir. */
-export const THEME_FRAME = { width: 640, height: 400 } as const;
+export const THEME_FRAME = { width: 1024, height: 576 } as const;
 
 const SCOPE_INK: React.CSSProperties = { color: 'var(--sarak-text-main)', backgroundColor: 'var(--sarak-bg-base)' };
 /** A classe do escopo de toda miniatura; é por ela que a regra abaixo a alcança. */
@@ -27,42 +28,11 @@ const MINIATURE_CLASS = 'sarak-theme-miniature';
  */
 export const MINIATURE_STILL_CSS = `.${MINIATURE_CLASS},.${MINIATURE_CLASS}::before,.${MINIATURE_CLASS}::after,.${MINIATURE_CLASS} *,.${MINIATURE_CLASS} *::before,.${MINIATURE_CLASS} *::after{animation:none;transition:none}`;
 const noop = (): void => undefined;
-const BAR_HEIGHTS = [40, 70, 30, 90, 50, 80, 60];
 
 /** Marca de amostra neutra: um quadrado na cor primária do tema. */
 const SampleLogo: React.FC = () => (
     <span aria-hidden="true" className="block aspect-square rounded-[var(--sarak-card-radius,10px)]" style={{ height: 'var(--sarak-shell-brand-logo-size, 32px)', backgroundColor: 'var(--theme-primary)' }} />
 );
-
-/** O conteúdo do sistema da miniatura: três cartões de métrica e um de gráfico, só com as variáveis do escopo (o tema aplicado inteiro). */
-const ThemeContent: React.FC = () => {
-    const text = useLibraryText();
-    return (
-        <div aria-hidden="true" className="flex h-full w-full flex-col gap-4 p-5">
-            <div className="flex flex-col gap-1.5">
-                <span className="block h-3 w-1/3 rounded-full" style={{ backgroundColor: 'var(--sarak-text-main)', opacity: 0.6 }} />
-                <span className="block h-2 w-1/4 rounded-full" style={{ backgroundColor: 'var(--sarak-text-main)', opacity: 0.25 }} />
-            </div>
-            <div className="grid grid-cols-3 gap-4">
-                {[0, 1, 2].map((index) => (
-                    <SarakCard key={index}>
-                        <SarakCard.Body>
-                            <span className="block h-2 w-3/5 rounded-full" style={{ backgroundColor: 'var(--sarak-text-main)', opacity: 0.25 }} />
-                            <p className="mt-2 text-2xl font-bold">{text('fontSampleNumber')}</p>
-                        </SarakCard.Body>
-                    </SarakCard>
-                ))}
-            </div>
-            <SarakCard className="flex-1">
-                <SarakCard.Body>
-                    <div className="flex h-full items-end gap-2">
-                        {BAR_HEIGHTS.map((height, index) => <span key={index} className="block flex-1 rounded-t-sm" style={{ height: `${height}%`, backgroundColor: 'var(--theme-primary)', opacity: 0.55 + index * 0.06 }} />)}
-                    </div>
-                </SarakCard.Body>
-            </SarakCard>
-        </div>
-    );
-};
 
 /**
  * O escopo de variáveis da miniatura, enxuto: as variáveis do tema e o contexto de design para os componentes de dentro, e nada
@@ -86,7 +56,8 @@ interface ThemeMiniatureProps {
 }
 
 /**
- * O sistema desenhado com o tema aplicado inteiro: o cromo real (a barra lateral ou a de topo que o tema declara) e cartões reais.
+ * O sistema desenhado com o tema aplicado inteiro: o cromo real (a barra lateral ou a de topo que o tema declara) e a tela "Painel"
+ * inteira da prévia (`MockDashboard`), reduzida; abrir a galeria custa menos de 2× o da miniatura anterior (medido em `amostras-reais-custo`).
  * Só monta quando a opção entra na área visível (`LazyWhenVisible`), e é aqui, não no cartão, que a paleta é resolvida:
  * resolver custa de 5 a 19 ms por tema, e uma galeria longa não paga isso pelas miniaturas que ninguém viu.
  */
@@ -107,19 +78,21 @@ const ThemeMiniature: React.FC<ThemeMiniatureProps> = React.memo(({ theme, curre
     ], [text]);
     return (
         <MiniatureScope design={design}>
-            <div data-testid="theme-miniature" style={{ width: THEME_FRAME.width, height: THEME_FRAME.height, transform: 'translateZ(0)' }}>
-                <SarakAppChrome
-                    brand={{ name: text('barSampleBrand') }}
-                    logo={<SampleLogo />}
-                    navItems={navItems}
-                    user={{ name: text('barSampleUser') }}
-                    logout={noop}
-                    onNavigate={noop}
-                    style={{ height: '100%' }}
-                >
-                    <ThemeContent />
-                </SarakAppChrome>
-            </div>
+            <SarakDeviceProvider overrideDevice="desktop">
+                <div data-testid="theme-miniature" style={{ width: THEME_FRAME.width, height: THEME_FRAME.height, transform: 'translateZ(0)' }}>
+                    <SarakAppChrome
+                        brand={{ name: text('barSampleBrand') }}
+                        logo={<SampleLogo />}
+                        navItems={navItems}
+                        user={{ name: text('barSampleUser') }}
+                        logout={noop}
+                        onNavigate={noop}
+                        style={{ height: '100%' }}
+                    >
+                        <div className="h-full overflow-hidden"><MockDashboard tokens={design} inheritVariables /></div>
+                    </SarakAppChrome>
+                </div>
+            </SarakDeviceProvider>
         </MiniatureScope>
     );
 });

@@ -22,10 +22,10 @@ export const WIDE_SAMPLE_GRID = 'grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]
 /** A grade das Personalidades: quadrados menores que as demais opções. */
 export const PERSONALITY_GRID = 'grid-cols-[repeat(auto-fill,minmax(5.5rem,1fr))]';
 /**
- * A grade da galeria de temas: a miniatura é o sistema inteiro reduzido, então cabem três por linha na coluna padrão (duas
- * quando ela estreita). 5,5 rem dá ao nome, em duas ou três linhas, a largura da palavra mais longa dos temas embarcados.
+ * A grade da galeria de temas: a miniatura é o topo da tela "Painel" reduzido, e só lê com duas por linha na coluna padrão
+ * (a de três linhas deixava a tela ilegível). É a mesma largura mínima das demais opções.
  */
-export const THEME_GALLERY_GRID = 'grid-cols-[repeat(auto-fill,minmax(5.5rem,1fr))]';
+export const THEME_GALLERY_GRID = 'grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))]';
 
 /**
  * O painel inteiro (coluna de decisões + prévia) também mede o seu CONTÊINER: acima de `PANEL_SPLIT_MIN_WIDTH`

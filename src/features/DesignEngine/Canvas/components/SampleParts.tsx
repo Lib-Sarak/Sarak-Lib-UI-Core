@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
-import { SarakCard } from '../../../../components/atomic/Cards/SarakCard';
+import { SarakTitleCard } from '../../../../components/atomic/Cards/SarakTitleCard';
 import { SarakInput } from '../../../../components/atomic/Inputs/SarakInput';
+import { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 
 /**
@@ -103,34 +104,23 @@ export const SAMPLE_TEXTURE_STYLE = {
 } as React.CSSProperties;
 
 /**
- * A textura de cartão, desenhada no próprio cartão: o motor de textura do fundo (`data-sx-texture`) tem as mesmas imagens por
- * nome. A regra própria de cartão (`.sarak-card[data-sx-card-texture-type]::after`) perde para a do ancestral (a textura do
- * rascunho, acima da galeria) quando o nome é outro, e a amostra mostraria sempre a do rascunho.
+ * O registro e o mapa de campos do cartão da amostra: o "CPU Cluster" da tela "Painel" da prévia, sem as etiquetas de capacidade
+ * (o texto delas fica em 3,9:1 no escuro, abaixo dos 4,5:1 que o painel cobra de todo texto da coluna).
  */
-const TEXTURE_LAYER_STYLE: React.CSSProperties = {
-    position: 'absolute',
-    inset: 0,
-    borderRadius: 'inherit',
-    overflow: 'hidden',
-    pointerEvents: 'none',
-    '--sarak-vignette-opacity': 0,
-} as React.CSSProperties;
+const SAMPLE_CARD_ITEM = { title: 'CPU Cluster', subtitle: 'Node-04-PR', context: '42000', input_caps: [] as string[] };
+const SAMPLE_CARD_MAPPING = { title: 'title', subtitle: 'subtitle', context: 'context', input_caps: 'input_caps', icon: 'Cpu' };
 
 /**
- * A faixa do cabeçalho e a do rodapé pintam só a largura útil do cartão, que tem padding próprio; a amostra as estende até a
- * borda (margem negativa igual ao padding) e devolve o recuo ao texto, para a cor da faixa ter a largura do cartão.
+ * O cartão real do painel (chip de título, conteúdo e ação), como a tela "Painel" o desenha, com o design do escopo da amostra
+ * (a opção por cima do rascunho). A textura do cartão é do grupo dela e é a do cartão de verdade (`data-sx-card-texture-type`, com a opacidade do rascunho): sem
+ * `texture`, o cartão não herda a do rascunho, e a amostra de cada grupo mostra só o que o grupo escolhe.
  */
-const BAND_BLEED = 'mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)]';
-
-/** O cartão real, com título, valor e botão. */
-export const SampleCard: React.FC<{ className?: string; texture?: string }> = ({ className, texture }) => {
-    const text = useLibraryText();
+export const SampleTitleCard: React.FC<{ texture?: string }> = ({ texture }) => {
+    const { design } = useSarakUI();
+    const shown = useMemo(() => ({ ...design, cardTextureType: texture ?? 'none' }), [design, texture]);
     return (
-        <SarakCard className={className}>
-            <SarakCard.Header className={BAND_BLEED}><h3 data-testid="sample-card-title">{text('sampleCardTitle')}</h3></SarakCard.Header>
-            <SarakCard.Body><p data-testid="sample-card-value" className="text-2xl font-bold">{text('fontSampleNumber')}</p></SarakCard.Body>
-            <SarakCard.Footer className={`${BAND_BLEED} py-[var(--sarak-card-header-padding,12px)]`}><SampleButton state="rest" /></SarakCard.Footer>
-            {texture && <div aria-hidden="true" data-sample-texture="" data-sx-texture={texture} style={TEXTURE_LAYER_STYLE} />}
-        </SarakCard>
+        <div className="relative w-full" style={{ maxWidth: 'var(--sarak-preset-mini-card-max-width,280px)' }}>
+            <SarakTitleCard item={SAMPLE_CARD_ITEM} mapping={SAMPLE_CARD_MAPPING} design={shown} />
+        </div>
     );
 };

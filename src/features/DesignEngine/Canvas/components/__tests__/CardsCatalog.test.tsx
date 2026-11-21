@@ -10,13 +10,19 @@ import { useDesignVariables } from '../../../../../core/Design/hooks/useDesignVa
 import { THEME_CARD_PRESETS } from '../../../../../core/Design/presets/components/cards';
 import type { SarakDesignState } from '../../../../../core/Provider/types';
 
+// O cartão real do painel (`SarakTitleCard`) lê o design pelo contexto; sem o Provider, o teste entrega um design vazio.
+vi.mock('../../../../../core/Provider/SarakUIProvider', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('../../../../../core/Provider/SarakUIProvider')>()),
+    useSarakUI: () => ({ design: {}, isDrafting: false }),
+}));
+
 vi.mock('../../../../../core/Design/hooks/useDesignVariables', () => ({
     useDesignVariables: vi.fn(() => ({ variables: {}, attributes: {} }))
 }));
 
 vi.mock('framer-motion', async () => {
     const actual = await vi.importActual('framer-motion');
-    return { ...actual as any, motion: { button: ({ children, className, ...props }: any) => <button className={className} {...props}>{children}</button> } };
+    return { ...actual as any, motion: { button: ({ children, className, ...props }: any) => <button className={className} {...props}>{children}</button>, div: ({ children, className, style, initial: _initial, animate: _animate, whileHover: _whileHover, ...props }: any) => <div className={className} style={style} {...props}>{children}</div> } };
 });
 
 describe('CardsCatalog', () => {
@@ -45,26 +51,21 @@ describe('CardsCatalog', () => {
         expect(grid.className).toContain('grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))]');
     });
 
-    it('o card curado é desenhado sobre uma base neutra: o rascunho não entra no escopo da amostra', () => {
+    it('o card é desenhado sobre o rascunho (o tema atual): o rascunho entra no escopo da amostra', () => {
         const draft = { colorPalette: 'rascunho-marcador' } as unknown as Partial<SarakDesignState>;
         vi.mocked(useDesignVariables).mockClear();
         render(<CardsCatalog onApplyPreset={vi.fn()} currentMode="dark" draft={draft} />);
         const designs = vi.mocked(useDesignVariables).mock.calls.map((call) => call[0] as unknown as Record<string, unknown>);
         expect(designs.length).toBeGreaterThan(0);
-        expect(designs.filter((design) => design.colorPalette === 'rascunho-marcador')).toEqual([]);
+        expect(designs.every((design) => design.colorPalette === 'rascunho-marcador')).toBe(true);
     });
 
-    it('a base neutra segue o modo da prévia: no claro o fundo da amostra é claro, mesmo com um tema escuro no rascunho', () => {
-        const draft = { colorBgBody: '#06080d', mode: 'dark' } as unknown as Partial<SarakDesignState>;
-        const bodyOf = (mode: 'light' | 'dark'): string => {
-            vi.mocked(useDesignVariables).mockClear();
-            render(<CardsCatalog onApplyPreset={vi.fn()} currentMode={mode} draft={draft} />);
-            return String((vi.mocked(useDesignVariables).mock.calls[0][0] as unknown as Record<string, unknown>).colorBgBody);
-        };
-        const light = bodyOf('light');
-        const dark = bodyOf('dark');
-        expect(light).not.toBe('#06080d');
-        expect(light).not.toBe(dark);
+    it('o card é o cartão real do painel, e a amostra de card não herda a textura do rascunho', () => {
+        const draft = { cardTextureType: 'grid' } as unknown as Partial<SarakDesignState>;
+        const { container } = render(<CardsCatalog onApplyPreset={vi.fn()} currentMode="dark" draft={draft} />);
+        const card = container.querySelector('.sarak-card') as HTMLElement;
+        expect(card).toHaveTextContent('CPU Cluster');
+        expect(card.getAttribute('data-sx-card-texture-type')).toBe('none');
     });
 
     it('a textura continua sobre o rascunho (ela se soma à paleta já escolhida)', () => {

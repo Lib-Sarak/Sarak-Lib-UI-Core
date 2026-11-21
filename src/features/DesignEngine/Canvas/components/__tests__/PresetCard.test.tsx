@@ -5,6 +5,12 @@ import * as ComponentModule from '../PresetCard';
 import { PresetCard } from '../PresetCard';
 import { SarakThemePreset } from '../../../../../core/Design/presets/themes';
 
+// O cartão real do painel (`SarakTitleCard`) lê o design pelo contexto; sem o Provider, o teste entrega um design vazio.
+vi.mock('../../../../../core/Provider/SarakUIProvider', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('../../../../../core/Provider/SarakUIProvider')>()),
+    useSarakUI: () => ({ design: {}, isDrafting: false }),
+}));
+
 const themeOf = (patch: Record<string, unknown> = {}): SarakThemePreset => ({
     id: 'meu-tema',
     name: 'Meu Tema',
@@ -24,9 +30,10 @@ describe('PresetCard — a miniatura é o sistema real com o tema', () => {
         const { container } = render(<PresetCard theme={themeOf()} currentMode="dark" onApply={() => {}} />);
         const button = screen.getByRole('button', { name: 'Meu Tema' });
 
-        expect(container.querySelectorAll('button')).toHaveLength(1);
+        // A miniatura é a tela real (com botões dentro), mas só um botão é da opção; o resto está escondido do leitor de tela.
+        expect(container.querySelectorAll('[data-theme-id]')).toHaveLength(1);
         expect(button).toHaveAttribute('data-theme-id', 'meu-tema');
-        expect(container.querySelector('h3')).toHaveTextContent('Meu Tema');
+        expect(container.querySelector('[data-option-tile] > div[class*="border-t"] h3')).toHaveTextContent('Meu Tema');
     });
 
     it('o selo de navegação não entra no nome acessível nem fica sobre o nome', () => {
@@ -38,7 +45,7 @@ describe('PresetCard — a miniatura é o sistema real com o tema', () => {
 
     it('o nome é proporcional à miniatura: sem caixa alta e com quebra por palavra', () => {
         const { container } = render(<PresetCard theme={themeOf({ name: 'Tema com nome comprido' })} currentMode="dark" onApply={() => {}} />);
-        const name = container.querySelector('h3') as HTMLElement;
+        const name = container.querySelector('[data-option-tile] > div[class*="border-t"] h3') as HTMLElement;
 
         expect(name).toHaveClass('text-xs', 'break-words');
         expect(name).not.toHaveClass('uppercase');

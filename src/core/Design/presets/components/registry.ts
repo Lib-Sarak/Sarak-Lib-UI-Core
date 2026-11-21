@@ -33,6 +33,8 @@ export interface PresetGroupDef {
     owns?: RegExp;
     /** O grupo lista as opções de um token só (cada preset, um valor): a distinção é o valor, não dois tokens. */
     optionsOfOneToken?: boolean;
+    /** O grupo lista as opções de um token e grava junto o ajuste dele (a textura do card e a opacidade): a distinção é o valor do token principal. */
+    optionsOfTokenAndSetting?: boolean;
 }
 
 const firstIds = (presets: readonly ComponentPreset[], count: number): string[] => presets.slice(0, count).map((preset) => preset.id);
@@ -43,6 +45,8 @@ const except = (ids: readonly string[], demoted: readonly string[]): string[] =>
 const FEATURED_CARDS = ['card-glass-minimal', 'card-flat-minimal', 'card-soft-elevated', 'card-cyberpunk-neon', 'card-side-accent', 'card-glow-halo', 'card-centered', 'card-organic-craft'];
 const FEATURED_BUTTONS = ['btn-industrial-matte', 'btn-solid-pill', 'btn-neon-pulse', 'btn-frosted-glass', 'btn-hollow-borderline', 'btn-square-flat', 'btn-neumorphism-soft', 'btn-bouncy'];
 const FEATURED_INPUTS = ['input-soft-round', 'input-classic-underline', 'input-floating-pill', 'input-frosted-glass', 'input-sharp-outline', 'input-flat-filled', 'input-search-pill', 'input-neumorphic-press'];
+/** As texturas à vista do grupo do card: as que a moldura mostra acima de 2% dos pixels nos dois modos (hexagon, blueprint-pro e grain não chegam lá com o traço de 2px). */
+const FEATURED_CARD_TEXTURES = ['grid', 'dots', 'carbon', 'paper', 'aurora', 'honeycomb', 'noise', 'fluid'];
 const FEATURED_ATMOSPHERE = ['bg-none', 'bg-kinetic-flow', 'bg-stellar-nebula', 'bg-dark-cinematic', 'bg-vignette-soft', 'bg-film-grain', 'bg-vivid', 'bg-tone-cyber'];
 
 export const PRESET_GROUPS: readonly PresetGroupDef[] = [
@@ -51,7 +55,7 @@ export const PRESET_GROUPS: readonly PresetGroupDef[] = [
     { id: 'fonts', decision: 'fonts', sample: 'font', presets: TYPOGRAPHY_PRESETS, featured: FEATURED_FONTS.map((name) => `typo-${name.toLowerCase().replace(/\s+/g, '-')}`), areas: ['typography'], owns: /^(headingFont|bodyFont)$/, optionsOfOneToken: true },
 
     { id: 'cards', decision: 'shape', sample: 'card', presets: CARD_PRESETS, featured: except(FEATURED_CARDS, ['card-glow-halo', 'card-organic-craft']), areas: ['cards', 'cardTitle', 'cardAction'] },
-    { id: 'cardTextures', decision: 'shape', sample: 'cardTexture', presets: CARD_TEXTURE_PRESETS, featured: FEATURED_TEXTURES.map((texture) => `card-tex-${texture}`), areas: ['cards'], owns: /^cardTextureType$/, optionsOfOneToken: true },
+    { id: 'cardTextures', decision: 'shape', sample: 'cardTexture', presets: CARD_TEXTURE_PRESETS, featured: FEATURED_CARD_TEXTURES.map((texture) => `card-tex-${texture}`), areas: ['cards'], owns: /^cardTexture(Type|Opacity)$/, optionsOfTokenAndSetting: true },
     { id: 'corners', decision: 'shape', sample: 'surface', presets: CORNER_PRESETS, featured: except(idsOf(CORNER_PRESETS), ['corners-rounded', 'corners-round']), areas: ['system', 'cards', 'buttons', 'inputs', 'tables', 'overlays', 'status', 'navigation'], owns: /Radius$/ },
     { id: 'density', decision: 'shape', sample: 'surface', presets: DENSITY_PRESETS, featured: idsOf(DENSITY_PRESETS), areas: ['system', 'cards', 'tables', 'navigation', 'structural'], owns: /^(layout|cardPaddingMd|cardHeaderPadding|table(Density|CellPadding)|sidebarItemDensity|topbarItemDensity|formFieldDensity|globalSectionGap|tabGap)/ },
     { id: 'shadow', decision: 'shape', sample: 'card', presets: SHADOW_PRESETS, featured: except(idsOf(SHADOW_PRESETS), ['shadow-defined', 'shadow-colored', 'shadow-ambient', 'shadow-dramatic']), areas: ['atmosphere'], owns: /^(shadow|layeredShadows)/ },

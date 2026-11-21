@@ -1,8 +1,14 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { PresetCard } from '../PresetCard';
 import type { SarakThemePreset } from '../../../../../core/Design/presets/themes';
+
+// O cartão real do painel (`SarakTitleCard`) lê o design pelo contexto; sem o Provider, o teste entrega um design vazio.
+vi.mock('../../../../../core/Provider/SarakUIProvider', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('../../../../../core/Provider/SarakUIProvider')>()),
+    useSarakUI: () => ({ design: {}, isDrafting: false }),
+}));
 
 /**
  * Um tema cuja `contraparte` conta as leituras. O `PresetCard` a lê uma vez na lista de dependências do

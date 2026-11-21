@@ -10,10 +10,13 @@ interface MockDashboardProps {
   config?: any;
   animationVariants?: any;
   animationStyle?: string;
+  /** O escopo de fora já escreve as variáveis do design (a miniatura de tema): os cartões não as repetem uma a uma no estilo de cada um. */
+  inheritVariables?: boolean;
 }
 
-export const MockDashboard: React.FC<MockDashboardProps> = ({ tokens }) => {
-  const { variables } = useDesignVariables(tokens);
+export const MockDashboard: React.FC<MockDashboardProps> = ({ tokens, inheritVariables = false }) => {
+  const { variables: ownVariables } = useDesignVariables(tokens);
+  const variables = inheritVariables ? {} : ownVariables;
   const textureType = tokens?.cardTextureType || 'none';
 
   // Dados mockados

@@ -5,12 +5,12 @@ import { CATALOG_GRID_2COL } from '../panelResponsive.presets';
 import { usePresetText } from '../../hooks/usePresetText';
 import { CuratedGrid } from './CuratedGrid';
 import { OptionTile } from './OptionTile';
-import { SampleCard, SAMPLE_TEXTURE_STYLE } from './SampleParts';
+import { SampleTitleCard } from './SampleParts';
+import { CARD_FRAME_WIDTH } from './OptionSampleFrame';
 import { SampleScope } from './SampleScope';
 import type { PeekHandler } from './peek';
 
 import { SarakDesignState } from '../../../../core/Provider/types';
-import { neutralCardBase } from './neutralCardBase';
 
 /** O card de um tema é o preset gerado `card-theme-*`; o resto dos curados é escrito à mão. */
 const THEME_CARD_ID_PREFIX = 'card-theme-';
@@ -52,20 +52,18 @@ export const CardsCatalog: React.FC<CardsCatalogProps> = ({ onApplyPreset, curre
                         onApply={() => onApplyPreset(preset.design, true)}
                         peekTokens={() => preset.design}
                         onPeek={onPeek}
+                        frameWidth={CARD_FRAME_WIDTH}
+                        buttonProps={{ 'data-preset-id': preset.id }}
                     >
                         <SampleScope
-                            // O card curado é desenhado sobre uma base neutra (sem o rascunho, no modo da prévia): o mesmo preset tem a mesma amostra em qualquer tema atual.
-                            // A textura continua sobre o rascunho: ela é um valor que se soma à paleta que já está escolhida.
-                            draft={section === 'textures' ? draft : neutralCardBase(currentMode)}
+                            // O card é desenhado sobre o rascunho (o tema atual): é o que a aplicação vai mostrar.
+                            draft={draft}
                             tokens={preset.design}
                             mode={currentMode}
                             className="flex items-center justify-center p-6"
-                            style={section === 'textures' ? SAMPLE_TEXTURE_STYLE : undefined}
                             scopeProps={section === 'textures' ? { 'data-sx-card-texture-type': String(preset.design.cardTextureType) } : undefined}
                         >
-                            <div className="w-full" style={{ maxWidth: 'var(--sarak-preset-mini-card-max-width,280px)' }}>
-                                <SampleCard className={section === 'textures' ? 'min-h-40' : undefined} texture={section === 'textures' ? String(preset.design.cardTextureType) : undefined} />
-                            </div>
+                            <SampleTitleCard texture={section === 'textures' ? String(preset.design.cardTextureType) : undefined} />
                         </SampleScope>
                     </OptionTile>
                     );

@@ -185,7 +185,7 @@ test('"Ver todas" abre as demais opções e "Ver menos" devolve as destacadas', 
 });
 
 /** Dois quadros de pixels diferem em quanto da área? Um pixel conta quando a soma da diferença dos canais passa do ruído de serrilhado. */
-const DIFFERING_SHARE = (page: Page, first: string, second: string): Promise<number> => page.evaluate(async ([a, b]) => {
+const DIFFERING_SHARE = (page: Page, first: string, second: string, shift = 0): Promise<number> => page.evaluate(async ([a, b, tolerance]) => {
     const decode = async (base64: string): Promise<ImageData> => {
         const bitmap = await createImageBitmap(await (await fetch(`data:image/png;base64,${base64}`)).blob());
         const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
@@ -197,19 +197,42 @@ const DIFFERING_SHARE = (page: Page, first: string, second: string): Promise<num
     const width = Math.max(one.width, two.width);
     const height = Math.max(one.height, two.height);
     let differing = 0;
+    const deltaAt = (x: number, y: number, nx: number, ny: number): number => {
+        const i = (y * one.width + x) * 4;
+        const j = (ny * two.width + nx) * 4;
+        return Math.abs(one.data[i] - two.data[j]) + Math.abs(one.data[i + 1] - two.data[j + 1]) + Math.abs(one.data[i + 2] - two.data[j + 2]);
+    };
+    // Com `tolerance`, a fotografia do mesmo desenho deslocada de até esse tanto de pixels (a posição fracionária da opção, que muda a altura do recorte em 1 px) não conta como diferença.
+    const nearest = (x: number, y: number): number => {
+        let best = Infinity;
+        for (let dy = -tolerance; dy <= tolerance; dy += 1) for (let dx = -tolerance; dx <= tolerance; dx += 1) {
+            const [nx, ny] = [x + dx, y + dy];
+            if (nx >= 0 && ny >= 0 && nx < two.width && ny < two.height) best = Math.min(best, deltaAt(x, y, nx, ny));
+        }
+        return best;
+    };
     for (let y = 0; y < height; y += 1) {
         for (let x = 0; x < width; x += 1) {
-            if (x >= one.width || y >= one.height || x >= two.width || y >= two.height) { differing += 1; continue; }
-            const i = (y * one.width + x) * 4;
-            const j = (y * two.width + x) * 4;
-            const delta = Math.abs(one.data[i] - two.data[j]) + Math.abs(one.data[i + 1] - two.data[j + 1]) + Math.abs(one.data[i + 2] - two.data[j + 2]);
-            if (delta > 30) differing += 1;
+            if (x >= one.width || y >= one.height || x >= two.width || y >= two.height) { if (tolerance === 0) differing += 1; continue; }
+            if ((tolerance === 0 ? deltaAt(x, y, x, y) : nearest(x, y)) > 30) differing += 1;
         }
     }
     return differing / (width * height);
-}, [first, second] as const);
+}, [first, second, shift] as const);
 
 const MIN_DIFFERING_SHARE = 0.02;
+/** A amostra do card SEM textura (a opção "Nenhuma", que mora atrás do "Ver todas"): o que a textura do card tem de superar em 2% dos pixels. */
+const shotOfNoneCard = async (page: Page, groupId: string): Promise<string> => {
+    await page.locator(`[data-preset-toggle="${groupId}"][aria-expanded="false"]`).click();
+    const tile = page.locator(`[data-preset-group="${groupId}"] [data-option-tile]:has(button[data-preset-id="card-tex-none"])`);
+    const sample = tile.locator('> div').first();
+    await sample.scrollIntoViewIfNeeded();
+    await sample.locator('[data-sx-lazy="pending"]').first().waitFor({ state: 'detached', timeout: 30_000 });
+    return (await sample.screenshot({ animations: 'disabled' })).toString('base64');
+};
+/** As amostras de card desenham o card real do painel, num quadro maior: entre duas opções destacadas a diferença é de ao menos 5% dos pixels. */
+const CARD_GROUPS: ReadonlySet<string> = new Set(['cards', 'shadow', 'shadowDirection', 'material', 'corners', 'density', 'border']);
+const MIN_DIFFERING_SHARE_OF_CARD = 0.05;
 /** Os grupos que só existem dentro da aba de outro grupo não têm seção própria na página: o caso confere os que se veem. */
 for (const mode of MODES) {
     for (const decision of DECISIONS) {
@@ -218,7 +241,7 @@ for (const mode of MODES) {
             const { page } = await open(mode.query);
             const indistinct: string[] = [];
             const matrix: string[] = [];
-            const collected: Array<{ group: GroupInfo; shots: string[] }> = [];
+            const collected: Array<{ group: GroupInfo; shots: string[]; reference?: string }> = [];
             await page.getByRole('button', { name: new RegExp(`^${decision.name}`) }).click();
             await page.getByRole('heading', { level: 2, name: decision.name }).waitFor();
             await openAllGroups(page);
@@ -233,23 +256,32 @@ for (const mode of MODES) {
                     await sample.locator('[data-sx-lazy="pending"]').first().waitFor({ state: 'detached', timeout: 30_000 });
                     shots.push((await sample.screenshot({ animations: 'disabled' })).toString('base64'));
                 }
-                collected.push({ group, shots });
+                collected.push({ group, shots, reference: group.id === 'cardTextures' ? await shotOfNoneCard(page, group.id) : undefined });
             }
             // A página de comparação só abre depois das capturas: uma aba nova tira a da prévia do primeiro plano, e as amostras lazy param de desenhar.
             const comparer = await browser.newPage();
-            for (const { group, shots } of collected) {
+            for (const { group, shots, reference } of collected) {
+                if (reference) {
+                    // A textura do card é comparada com o card sem ela (não com as outras texturas): ela tem de aparecer.
+                    for (let index = 0; index < shots.length; index += 1) {
+                        const share = await DIFFERING_SHARE(comparer, shots[index], reference, 1);
+                        matrix.push(`${mode.name}|${group.id}|${group.featuredIds[index]}|sem-textura|${share.toFixed(4)}`);
+                        if (share < MIN_DIFFERING_SHARE) indistinct.push(`${group.id}: ${group.featuredIds[index]} × card sem textura = ${(share * 100).toFixed(2)}%`);
+                    }
+                    continue;
+                }
                 for (let first = 0; first < shots.length; first += 1) {
                     for (let second = first + 1; second < shots.length; second += 1) {
                         const share = await DIFFERING_SHARE(comparer, shots[first], shots[second]);
                         matrix.push(`${mode.name}|${group.id}|${group.featuredIds[first]}|${group.featuredIds[second]}|${share.toFixed(4)}`);
-                        if (share < MIN_DIFFERING_SHARE) indistinct.push(`${group.id}: ${group.featuredIds[first]} × ${group.featuredIds[second]} = ${(share * 100).toFixed(2)}%`);
+                        if (share < (CARD_GROUPS.has(group.id) ? MIN_DIFFERING_SHARE_OF_CARD : MIN_DIFFERING_SHARE)) indistinct.push(`${group.id}: ${group.featuredIds[first]} × ${group.featuredIds[second]} = ${(share * 100).toFixed(2)}%`);
                     }
                 }
             }
             if (process.env.SARAK_PLAN141_MATRIX) fs.appendFileSync(process.env.SARAK_PLAN141_MATRIX, `${matrix.join(String.fromCharCode(10))}${String.fromCharCode(10)}`);
             await comparer.close();
             await page.close();
-            expect(indistinct, 'duplas destacadas que diferem em menos de 2% dos pixels').toEqual([]);
+            expect(indistinct, 'duplas destacadas que diferem em menos de 2% dos pixels (5% nos grupos de card)').toEqual([]);
         });
     }
 }
@@ -280,28 +312,6 @@ for (const mode of MODES) {
                 return { frameFits: frame.scrollWidth <= frame.clientWidth, brandInside: inside(brand), labelInside: inside(label), brandClipped: clipped(brand),  };
             });
             expect(overflow, `topbar #${index}`).toMatchObject({ frameFits: true, brandInside: true, labelInside: true, brandClipped: false });
-        }
-        await page.close();
-    });
-
-    test(`defeito: as faixas do SampleCard têm a largura do card (${mode.name})`, async () => {
-        const { page } = await open(mode.query);
-        await page.getByRole('button', { name: /^Forma/ }).click();
-        await page.getByRole('heading', { level: 2, name: 'Forma' }).waitFor();
-        await openAllGroups(page);
-        await settle(page, groupArea('cards'));
-        await page.locator('[data-option-group="cards"] .sarak-card header').first().waitFor({ timeout: 30_000 });
-        const widths = await page.locator('[data-option-group="cards"] .sarak-card').evaluateAll((cards) => cards.map((card) => {
-            const element = card as HTMLElement;
-            const scale = element.getBoundingClientRect().width / element.offsetWidth; // a amostra é reduzida por `transform`: as duas medidas na mesma escala
-            const cardWidth = element.clientWidth * scale;
-            const band = (selector: string): number => (card.querySelector(selector) as HTMLElement).getBoundingClientRect().width;
-            return { card: Math.round(cardWidth), header: Math.round(band('header')), footer: Math.round(band('footer')) };
-        }));
-        expect(widths.length).toBeGreaterThan(0);
-        for (const item of widths) {
-            expect(Math.abs(item.header - item.card), JSON.stringify(item)).toBeLessThanOrEqual(1);
-            expect(Math.abs(item.footer - item.card), JSON.stringify(item)).toBeLessThanOrEqual(1);
         }
         await page.close();
     });

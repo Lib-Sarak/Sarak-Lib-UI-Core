@@ -5,6 +5,14 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 9.0.0 — escolher uma textura de card no painel grava também a opacidade
+
+Cada preset do grupo **Textura do card** (`card-tex-*`) passa a gravar `cardTextureOpacity` junto com `cardTextureType`, num valor próprio de cada textura: o menor em que ela aparece e o texto do card continua legível, nos dois modos. Antes só o tipo era gravado e a textura aparecia na opacidade que o tema ou o rascunho já tinham (0,06 por padrão, quase invisível na maioria).
+
+**O que muda para o importador:** quem aplicava um `card-tex-*` e dependia de a opacidade ficar como estava passa a receber a do preset; para manter a opacidade antiga, regrave `cardTextureOpacity` depois (pelo ajuste fino do painel ou no `design`). O grupo `cardTextures` deixa de ser de um token só no registro (`owns` aceita `cardTextureOpacity`). A miniatura de tema do painel passa a ser a tela "Painel" inteira com o tema aplicado. **A textura do card passa a aparecer nas bordas do card e some atrás do conteúdo** (uma moldura de 14 px com máscara em `.sarak-card::after`), em todo sistema que usa `cardTextureType`, para o texto manter 4,5:1 contra o fundo; o fundo da página e o `cardTextureType` não mudam.
+
+---
+
 ## 9.0.0 — nomes visíveis do painel: Sidebar, Topbar, Dark mode e Light mode
 
 Só texto que o painel mostra; nenhum id, token, prop ou export mudou. Termo técnico fica em inglês, igual nos seis idiomas:

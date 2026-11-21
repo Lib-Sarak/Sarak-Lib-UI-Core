@@ -26,8 +26,8 @@ describe('panelResponsive.presets (plan-35 — container query, não viewport)',
         [CATALOG_GRID, PERSONALITY_GRID, WIDE_SAMPLE_GRID].forEach((value) => expect(value).not.toMatch(/(^|\s)(sm|md|lg|xl):/));
     });
 
-    it('a galeria de temas mede a coluna: três miniaturas por linha na coluna padrão, e nunca pela janela', () => {
-        expect(THEME_GALLERY_GRID).toBe('grid-cols-[repeat(auto-fill,minmax(5.5rem,1fr))]');
+    it('a galeria de temas mede a coluna: duas miniaturas por linha na coluna padrão, e nunca pela janela', () => {
+        expect(THEME_GALLERY_GRID).toBe('grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))]');
         expect(THEME_GALLERY_GRID).not.toMatch(/(^|\s)(sm|md|lg|xl):/);
     });
 

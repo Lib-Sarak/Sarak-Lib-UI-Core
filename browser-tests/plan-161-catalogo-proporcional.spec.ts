@@ -10,8 +10,8 @@
  *
  * LIMITES DECLARADOS (R18): Chromium headless; o tema `sarak-sovereign`; lê `src/` pelo esbuild do harness (não mede o `dist/`);
  * "vazando" é geométrico — texto, controle ou imagem cuja caixa passa da caixa da amostra — e ignora o que é decoração
- * absoluta (fundo, textura, brilho); a rolagem é a da coluna, com o ajuste fino recolhido. A amostra do card (lote 3) é neutra em forma,
- * borda, sombra, respiro e fundo: o motor deixa o escopo da amostra mandar nos atributos `data-sx-*` (`_card-defaults.css`, `_card-materials.css`).
+ * absoluta (fundo, textura, brilho); a rolagem é a da coluna, com o ajuste fino recolhido. A amostra do card é o card real do painel sobre o
+ * rascunho (decisão D1 da plan-166): ela segue o tema atual, e o motor deixa o escopo da amostra mandar nos atributos `data-sx-*` (`_card-defaults.css`, `_card-materials.css`).
  * A medida de rolagem do "Ver todas" de cards lê o `dist/sarak.css`: com o build defasado a grade sai de uma coluna só; rode `npm run build` antes.
  */
 import { test, expect, chromium, type Browser, type Page } from '@playwright/test';
@@ -435,7 +435,7 @@ test.describe('390×844: Aplicar e as abas de dispositivo', () => {
 });
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Lote 3: o card de cada tema, desenhado sobre uma base neutra fixa
+// Lote 3: o card de cada tema, desenhado sobre o rascunho (a base neutra saiu na plan-166)
 // ---------------------------------------------------------------------------------------------------------------------
 /** O que o card de uma amostra desenha: forma, borda, sombra e respiro, lidos do estilo calculado do `.sarak-card` dentro do tile. */
 const cardSignatures = (page: Page): Promise<Record<string, Record<string, string>>> => page.evaluate(() => {
@@ -485,13 +485,13 @@ const openCardsGroup = async (page: Page): Promise<void> => {
     await page.waitForTimeout(400);
 };
 
-test.describe('o card de cada tema, sobre uma base neutra', () => {
-    test('há um card por tema embarcado, em seção própria, e a amostra não muda quando o tema atual muda', async () => {
+test.describe('o card de cada tema, sobre o rascunho', () => {
+    test('há um card por tema embarcado, em seção própria, e a amostra segue o tema atual', async () => {
         const page = await open(1440, 900);
         await openCardsGroup(page);
         const headings = await page.locator('[data-preset-group="cards"] h4').allTextContents();
         const before = await cardSignatures(page);
-        await snap(page, 'forma-cards-dos-temas.png', 'Forma › Estilo dos cards, "Ver todas": os cards curados e o card de cada tema, sobre a base neutra (tema atual: Sarak Sovereign).');
+        await snap(page, 'forma-cards-dos-temas.png', 'Forma › Estilo dos cards, "Ver todas": os cards curados e o card de cada tema, sobre o rascunho (tema atual: Sarak Sovereign).');
 
         await page.getByRole('button', { name: /Voltar para a lista de decisões/ }).click();
         await page.getByRole('button', { name: /^Tema/ }).click();
@@ -503,7 +503,7 @@ test.describe('o card de cada tema, sobre uma base neutra', () => {
         await page.getByRole('button', { name: /Voltar para a lista de decisões/ }).click();
         await openCardsGroup(page);
         const after = await cardSignatures(page);
-        await snap(page, 'forma-cards-dos-temas-outro-tema.png', 'O mesmo grupo com outro tema aplicado ao rascunho (Neo Brutalism): as amostras não mudam.');
+        await snap(page, 'forma-cards-dos-temas-outro-tema.png', 'O mesmo grupo com outro tema aplicado ao rascunho (Neo Brutalism): as amostras seguem o tema.');
 
         report.narrow.themeCards = { sections: headings, tiles: Object.keys(before).length };
         console.log(`[plan-161] cards: ${Object.keys(before).length} amostras; seções ${JSON.stringify(headings)}`);
@@ -513,7 +513,7 @@ test.describe('o card de cada tema, sobre uma base neutra', () => {
         expect(undrawn, 'opção sem card desenhado').toEqual([]);
         expect(Object.keys(before).length, 'toda opção desenhou o card').toBe(tiles);
         expect(tiles, 'os curados e um card por tema embarcado').toBeGreaterThanOrEqual(25 + 28);
-        expect(after, 'forma, borda, sombra, respiro e fundo de cada card são os mesmos sob qualquer tema atual').toEqual(before);
+        expect(after, 'o card de cada amostra segue o tema atual (forma, borda, sombra, respiro e fundo mudam com ele)').not.toEqual(before);
         await page.close();
     });
 
@@ -538,7 +538,7 @@ test.describe('o card de cada tema, sobre uma base neutra', () => {
         await page.close();
     });
 
-    test('o card de dois temas diferentes tem amostras diferentes (a base neutra não achata os presets)', async () => {
+    test('o card de dois temas diferentes tem amostras diferentes (o rascunho não achata os presets)', async () => {
         const page = await open(1440, 900);
         await openCardsGroup(page);
         const signatures = await cardSignatures(page);

@@ -9,7 +9,7 @@ import { usePresetText } from '../../hooks/usePresetText';
 import { CATALOG_GRID, WIDE_SAMPLE_GRID } from '../panelResponsive.presets';
 import { CuratedGrid } from './CuratedGrid';
 import { OptionTile } from './OptionTile';
-import { SAMPLE_FRAME_HEIGHT, TOPBAR_FRAME_WIDTH } from './OptionSampleFrame';
+import { CARD_FRAME_WIDTH, SAMPLE_FRAME_HEIGHT, TOPBAR_FRAME_WIDTH } from './OptionSampleFrame';
 import { PresetSample } from './PresetSamples';
 import { SampleScope } from './SampleScope';
 import type { PeekHandler } from './peek';
@@ -79,6 +79,9 @@ export const barToneColors = (draft: Partial<SarakDesignState> | undefined, over
     return colors;
 };
 
+/** As amostras que desenham o card real do painel pedem o quadro mais largo. */
+const CARD_KINDS: ReadonlySet<string> = new Set(['card', 'cardTexture', 'surface']);
+
 const Tile: React.FC<PresetGroupCatalogProps & { preset: ComponentPreset; kind: Parameters<typeof PresetSample>[0]['kind'] }> = ({ groupId, preset, kind, onApplyPreset, currentMode, draft, onPeek }) => {
     const text = usePresetText();
     const shown = text.preset(preset);
@@ -96,7 +99,7 @@ const Tile: React.FC<PresetGroupCatalogProps & { preset: ComponentPreset; kind: 
         : <SampleScope draft={shownDraft} tokens={tokens} mode={currentMode}><PresetSample kind={kind} preset={preset} /></SampleScope>
     ), [kind, shownDraft, currentMode, tokens, top, preset]);
     return (
-        <OptionTile name={shown.name} description={shown.description} frameWidth={top ? TOPBAR_FRAME_WIDTH : undefined} frameHeight={top ? SAMPLE_FRAME_HEIGHT.topbar : kind === 'input' ? SAMPLE_FRAME_HEIGHT.input : SAMPLE_FRAME_HEIGHT.default} onApply={() => onApplyPreset(preset.design, true)} peekTokens={() => preset.design} onPeek={onPeek}>
+        <OptionTile name={shown.name} description={shown.description} frameWidth={top ? TOPBAR_FRAME_WIDTH : CARD_KINDS.has(kind) ? CARD_FRAME_WIDTH : undefined} frameHeight={top ? SAMPLE_FRAME_HEIGHT.topbar : kind === 'input' ? SAMPLE_FRAME_HEIGHT.input : SAMPLE_FRAME_HEIGHT.default} onApply={() => onApplyPreset(preset.design, true)} peekTokens={() => preset.design} onPeek={onPeek}>
             <div ref={sampleRef}>{sample}</div>
         </OptionTile>
     );

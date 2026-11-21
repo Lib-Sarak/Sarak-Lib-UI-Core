@@ -5,6 +5,12 @@ import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
 import { PEEK_DELAY_MS } from '../peek';
 import { PresetsCatalog } from '../PresetsCatalog';
 
+// O cartão real do painel (`SarakTitleCard`) lê o design pelo contexto; sem o Provider, o teste entrega um design vazio.
+vi.mock('../../../../../core/Provider/SarakUIProvider', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('../../../../../core/Provider/SarakUIProvider')>()),
+    useSarakUI: () => ({ design: {}, isDrafting: false }),
+}));
+
 // O resultado é o mesmo objeto a cada chamada, como o do hook de verdade (que memoriza): o escopo das miniaturas compara as variáveis entre renders.
 vi.mock('../../../../../core/Design/hooks/useDesignVariables', () => {
     const stable = { variables: {}, attributes: {} };
@@ -13,7 +19,7 @@ vi.mock('../../../../../core/Design/hooks/useDesignVariables', () => {
 
 vi.mock('framer-motion', async () => {
     const actual = await vi.importActual('framer-motion');
-    return { ...actual as any, motion: { button: ({ children, className, ...props }: any) => <button className={className} {...props}>{children}</button> } };
+    return { ...actual as any, motion: { button: ({ children, className, ...props }: any) => <button className={className} {...props}>{children}</button>, div: ({ children, className, style, initial: _initial, animate: _animate, whileHover: _whileHover, ...props }: any) => <div className={className} style={style} {...props}>{children}</div> } };
 });
 
 describe('PresetsCatalog — um grupo por vez, sem cromo próprio', () => {
@@ -79,7 +85,7 @@ describe('PresetsCatalog — um grupo por vez, sem cromo próprio', () => {
 
         const globalsGrid = container.querySelector('.grid') as HTMLElement;
         expect(globalsGrid.className).not.toMatch(/md:grid-cols-2/);
-        expect(globalsGrid.className).toContain('grid-cols-[repeat(auto-fill,minmax(5.5rem,1fr))]');
+        expect(globalsGrid.className).toContain('grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))]');
         // A grade mora DENTRO da fronteira de container — é dela que ela mede.
         expect(containerBoundary?.contains(globalsGrid)).toBe(true);
     });

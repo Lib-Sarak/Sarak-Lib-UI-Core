@@ -2,6 +2,8 @@ import React, { useLayoutEffect, useRef, useState } from 'react';
 
 /** O quadro de referência em que toda amostra é desenhada (em px de tela); a opção o reduz à largura que a grade dá. */
 export const SAMPLE_REFERENCE = { width: 280, height: 240 } as const;
+/** A largura do quadro das amostras de card: o card real do painel pede mais que o quadro padrão para o chip de título e a ação caberem. */
+export const CARD_FRAME_WIDTH = 300;
 /** A altura do quadro quando a amostra é baixa (um campo, a barra de topo, que tem a proporção do desenho dela): quadro menor, para o desenho ocupar o que o olho compara. */
 export const SAMPLE_FRAME_HEIGHT = { default: SAMPLE_REFERENCE.height, input: 170, topbar: 112 } as const;
 /** A largura do quadro da barra de topo: a do quadro de referência do `BarSample` (640×112), para a barra preencher a opção sem vazio por baixo. */

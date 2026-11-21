@@ -5,7 +5,7 @@ import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import type { PresetSampleKind } from '../../../../core/Design/presets/components/registry';
 import type { ComponentPreset } from '../../../../core/Design/presets/components/cards';
-import { SampleButton, SampleCard, SampleInputStates } from './SampleParts';
+import { SampleButton, SampleInputStates, SampleTitleCard } from './SampleParts';
 import { Frame, MotionSample, PageSample, WidthSample } from './PresetSamplesMotion';
 
 const ICON_NAMES = ['Home', 'Settings', 'User', 'Bell', 'Search', 'FileText'] as const;
@@ -138,9 +138,9 @@ const SwitchStage: React.FC = () => (
 const SAMPLES: Record<PresetSampleKind, (props: { preset: ComponentPreset }) => React.ReactElement> = {
     bar: () => <Frame>{null}</Frame>,
     width: ({ preset }) => <WidthSample preset={preset} />,
-    card: () => <Frame><div className="w-full" style={{ maxWidth: 'var(--sarak-preset-mini-card-max-width,280px)' }}><SampleCard /></div></Frame>,
-    cardTexture: () => <Frame><div className="w-full" style={{ maxWidth: 'var(--sarak-preset-mini-card-max-width,280px)' }}><SampleCard /></div></Frame>,
-    surface: () => <Frame className="flex-col gap-3"><div className="w-full" style={{ maxWidth: 'var(--sarak-preset-mini-card-max-width,280px)' }}><SampleCard /></div><SampleInputStates /></Frame>,
+    card: () => <Frame><SampleTitleCard /></Frame>,
+    cardTexture: () => <Frame><SampleTitleCard /></Frame>,
+    surface: () => <Frame><SampleTitleCard /></Frame>,
     glass: () => (
         <Frame className="relative overflow-hidden">
             <div aria-hidden="true" className="absolute inset-0" style={{ background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-secondary, var(--theme-primary-focus)))' }} />
