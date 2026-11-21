@@ -764,6 +764,17 @@ chave; os textos ficam em `catalogEntries.palette.ts` e, por tipo de harmonia, e
 
 **Preset de estrutura não escreve cor.** Um preset de componente escreve só tokens da área que o grupo declara, e nenhuma cor: nem token `type: color`, nem literal de cor em valor de texto. `sidebarTone` e `topbarTone` são papel da paleta, não cor (§4.3.4); por isso um preset de barra pode trocar o tom para se distinguir de outro, como a Compacta (`sidebar-compact`, tom `surface`) faz em relação à Limpa. Os presets publicados que já escreviam cor ficam em `LEGACY_COLOR_PRESET_IDS`, uma lista que só encolhe. O `id` de um preset publicado nunca muda nem sai (`PUBLISHED_PRESET_IDS`). Todo preset, aplicado sobre os temas embarcados nos dois modos, mantém os pares de legibilidade da paleta. Os testes são `presetCatalog.test.ts` e `presetsReadable.test.ts`.
 
+**O card de cada tema é gerado do tema.** `npm run card-presets` (`scripts/generate-theme-card-presets.ts`) lê cada tema embarcado e grava `cardsThemes.generated.ts` (`THEME_CARD_PRESETS`, id `card-theme-<tema>`), com os tokens de card que o tema declara e nenhuma cor. O `card-presets:check` corre no `build` e reprova o gerado que diverge dos temas. Os cards escritos à mão (`LEGACY_CARD_PRESETS`) ficam ao lado dos gerados: o gerado não carrega cor, e por isso não os substitui.
+
+**Textura do card.** Cada preset de textura do card (`CARD_TEXTURE_PRESETS`, `cards.ts`) grava `cardTextureType` e a própria `cardTextureOpacity` (`CARD_TEXTURE_OPACITY`). O grupo `cardTextures` escreve os dois tokens. A textura do card é desenhada só numa moldura nas bordas do card e some atrás do conteúdo (`_atmosphere.css`):
+- a máscara do `::after` tem `--sarak-card-texture-frame` (20 px, abaixo do respiro interno do card), e o texto fica sobre fundo limpo;
+- as texturas de traço fino desenham, só no card, com traço de 2 px e opacidade cheia;
+- a textura do fundo não passa por essa regra.
+
+As destacadas (`FEATURED_CARD_TEXTURES`, `registry.ts`) são as que diferem do card sem textura em ao menos 2% dos pixels, nos dois modos, cada uma na menor opacidade que passa. As demais ficam em "Ver todas".
+
+**Gráficos por estilo.** Os presets do grupo `charts` (`CHART_PRESETS`, `dataPresets.ts`) escrevem só estilo: `chartThickness`, `chartSmoothing`, `chartShowGrid` e `chartGridOpacity`. Nenhum grava `chartType`, e nenhum nome diz um tipo (Suave, Reta, Forte, Com grade, Fina; `presetCatalog.test.ts` reprova). O tipo é do importador, no `type` do componente. O `chartType` fica só no ajuste fino, como "Tipo padrão (quando o componente não define)" (`COVERAGE_GAPS`, `fine-tuning`).
+
 **A cobertura é medida.** Os presets cobrem ao menos 60% dos tokens estéticos sem cor (`coverage.ts`, `npx tsx scripts/measure-preset-coverage.ts`). Todo token de fora tem motivo declarado em `COVERAGE_GAPS`: sem efeito visível isolado, só faz sentido no ajuste fino, ou fica para uma rodada seguinte. A lista só encolhe, e o teste confere os dois sentidos.
 
 **Nome e descrição do preset vêm do catálogo, nos seis idiomas, fora do boot.** O português é o `name` e a `description` do próprio preset. Os demais idiomas ficam em `src/core/i18n/presetTexts/`, lidos só pelo painel (`usePresetText`).
@@ -928,6 +939,8 @@ predicado testado em isolamento.
 `scripts/generate_themes.ts:35` chama `getScaffold()` **em tempo de execução**. Ele substituiu um
 `masterTemplate` hardcoded que, nas palavras do próprio comentário (`:7-9`), *"já nasceu desatualizado"*.
 Um gerador que carrega a própria cópia do dicionário fabrica drift a cada execução.
+
+O gerador dos presets de card (`scripts/generate-theme-card-presets.ts`) segue a mesma regra: ele lê os temas, e o `card-presets:check` compara o gerado byte a byte.
 
 ## 6.5 `auditor_contraste` — a única trava que olha o RESULTADO, não a estrutura
 

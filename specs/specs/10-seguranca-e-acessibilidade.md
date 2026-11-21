@@ -410,7 +410,9 @@ do componente vence. O `SarakDatePicker` usa o locale do `date-fns` dos seis idi
 saem de um catálogo com os seis idiomas oferecidos (`src/core/i18n/`, lido por `useLibraryText`), e
 repintam na troca, sem recarga. O catálogo escolhe pela parte primária do código (`pt-BR` → `pt`). Sem
 Provider, ou fora dos seis, saem em português. O painel de design é
-ferramenta do administrador e não entra nessa promessa. Texto passado pelo consumidor por prop é dele, e a
+ferramenta do administrador e não entra nessa promessa.
+
+**Um nome só para cada peça, nos textos do painel.** O termo técnico fica em inglês: Sidebar, Topbar, Card, Preset, Token, Dark mode e Light mode, Hover, Blur, Badge e Toast. Frases, ações e descrições continuam no idioma do texto ("Aplicar", "Tamanho da fonte"). O glossário vale para o que o administrador lê (rótulos do schema, partições do catálogo, `presetTexts/` e títulos das telas da prévia), em todos os idiomas do catálogo, e não para identificador (`data-*`, ids de token, props). `src/core/i18n/__tests__/glossary.test.ts` tem a lista dos nomes que saíram como dado e reprova o texto que volta a usá-los. Texto passado pelo consumidor por prop é dele, e a
 lib não o traduz. Um teste de paridade exige toda chave do catálogo preenchida nos seis idiomas.
 
 # 4. Regras derivadas (o que fazer / o que nunca fazer)
