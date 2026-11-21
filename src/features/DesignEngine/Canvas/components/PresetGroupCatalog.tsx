@@ -9,7 +9,7 @@ import { usePresetText } from '../../hooks/usePresetText';
 import { CATALOG_GRID, WIDE_SAMPLE_GRID } from '../panelResponsive.presets';
 import { CuratedGrid } from './CuratedGrid';
 import { OptionTile } from './OptionTile';
-import { CARD_FRAME_WIDTH, SAMPLE_FRAME_HEIGHT, TOPBAR_FRAME_WIDTH } from './OptionSampleFrame';
+import { CARD_FRAME_WIDTH, CHART_FRAME, SAMPLE_FRAME_HEIGHT, TOPBAR_FRAME_WIDTH } from './OptionSampleFrame';
 import { PresetSample } from './PresetSamples';
 import { SampleScope } from './SampleScope';
 import type { PeekHandler } from './peek';
@@ -89,9 +89,10 @@ const Tile: React.FC<PresetGroupCatalogProps & { preset: ComponentPreset; kind: 
     // Fora da área visível a opção guarda o rascunho que mostrou por último: não recalcula a paleta nem o escopo a cada escolha.
     const sampleRef = useRef<HTMLDivElement>(null);
     const shownDraft = useValueWhileVisible(sampleRef, draft);
-    const tokens = useMemo(() => (isBarGroup(groupId)
-        ? { ...BAR_WIDGETS_OFF, ...barToneColors(shownDraft, preset.design, currentMode), ...preset.design, ...(NAVIGATION_STYLE[groupId] ? { navigationStyle: NAVIGATION_STYLE[groupId] } : {}) } as Partial<SarakDesignState>
-        : preset.design), [groupId, shownDraft, preset.design, currentMode]);
+    const tokens = useMemo(() => {
+        if (isBarGroup(groupId)) return { ...BAR_WIDGETS_OFF, ...barToneColors(shownDraft, preset.design, currentMode), ...preset.design, ...(NAVIGATION_STYLE[groupId] ? { navigationStyle: NAVIGATION_STYLE[groupId] } : {}) } as Partial<SarakDesignState>;
+        return preset.design;
+    }, [groupId, shownDraft, preset.design, currentMode]);
     const top = isTopSample(groupId, shownDraft);
     // O mesmo elemento enquanto a amostra não muda: o React não reconcilia o cromo inteiro da miniatura a cada escolha.
     const sample = useMemo(() => (kind === 'bar' && shownDraft
@@ -99,7 +100,7 @@ const Tile: React.FC<PresetGroupCatalogProps & { preset: ComponentPreset; kind: 
         : <SampleScope draft={shownDraft} tokens={tokens} mode={currentMode}><PresetSample kind={kind} preset={preset} /></SampleScope>
     ), [kind, shownDraft, currentMode, tokens, top, preset]);
     return (
-        <OptionTile name={shown.name} description={shown.description} frameWidth={top ? TOPBAR_FRAME_WIDTH : CARD_KINDS.has(kind) ? CARD_FRAME_WIDTH : undefined} frameHeight={top ? SAMPLE_FRAME_HEIGHT.topbar : kind === 'input' ? SAMPLE_FRAME_HEIGHT.input : SAMPLE_FRAME_HEIGHT.default} onApply={() => onApplyPreset(preset.design, true)} peekTokens={() => preset.design} onPeek={onPeek}>
+        <OptionTile name={shown.name} description={shown.description} frameWidth={top ? TOPBAR_FRAME_WIDTH : CARD_KINDS.has(kind) ? CARD_FRAME_WIDTH : kind === 'chart' ? CHART_FRAME.width : undefined} frameHeight={top ? SAMPLE_FRAME_HEIGHT.topbar : kind === 'input' ? SAMPLE_FRAME_HEIGHT.input : kind === 'chart' ? CHART_FRAME.height : SAMPLE_FRAME_HEIGHT.default} onApply={() => onApplyPreset(preset.design, true)} peekTokens={() => preset.design} onPeek={onPeek}>
             <div ref={sampleRef}>{sample}</div>
         </OptionTile>
     );

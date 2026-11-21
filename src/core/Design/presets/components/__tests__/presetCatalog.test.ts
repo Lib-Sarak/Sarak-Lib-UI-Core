@@ -6,6 +6,7 @@ import { TEXTURE_OPTIONS } from '../../../schema/atmosphere';
 import { THEME_FONTS } from '../../../schema/typography';
 import { ALL_COMPONENT_PRESETS, PRESET_GROUPS, type PresetGroupDef } from '../registry';
 import { CARD_TEXTURE_OPACITY } from '../cards';
+import { PRESET_TEXTS_COMPONENTS_B } from '../../../../i18n/presetTexts/componentsB';
 import { COVERAGE_GAPS, measurePresetCoverage } from '../coverage';
 import { TEXTURE_FAMILIES, textureFamilyOf } from '../textureFamilies';
 import { LEGACY_CLOSE_PAIRS, LEGACY_COLOR_PRESET_IDS, PUBLISHED_PRESET_IDS } from './publishedPresets';
@@ -89,6 +90,27 @@ describe('presets de componente — curadoria', () => {
         const invisible = group.presets.filter((preset) => preset.design.cardTextureType !== 'none' && (preset.design.cardTextureOpacity as number) <= 0).map((preset) => preset.id);
         expect(invisible).toEqual([]);
         expect(group.presets.every((preset) => Object.keys(preset.design).sort().join() === 'cardTextureOpacity,cardTextureType')).toBe(true);
+    });
+
+    it('charts: o grupo lista só estilo — nenhum preset grava chartType nem leva tipo de gráfico no nome', () => {
+        const group = PRESET_GROUPS.find((candidate) => candidate.id === 'charts') as PresetGroupDef;
+        expect(group.presets.filter((preset) => 'chartType' in preset.design).map((preset) => preset.id)).toEqual([]);
+        const chartTypes = /\b(linha|line|barras?|bars?|bar|[aá]rea|area|pizza|pie|donut|radar|dispers[aã]o|scatter|mapa de calor|heatmap|gauge)\b/i;
+        expect(group.presets.filter((preset) => chartTypes.test(preset.name ?? '')).map((preset) => preset.id)).toEqual([]);
+        group.presets.forEach((preset) => {
+            expect(Object.keys(preset.design).sort()).toEqual(['chartGridOpacity', 'chartShowGrid', 'chartSmoothing', 'chartThickness']);
+        });
+    });
+
+    it('charts: os textos dos seis idiomas também não dizem o tipo', () => {
+        const group = PRESET_GROUPS.find((candidate) => candidate.id === 'charts') as PresetGroupDef;
+        const chartTypes = /\b(line|lines|bars?|area|pie|donut|radar|scatter|heatmap|gauge|l[ií]nea|barras?|[aá]rea|ligne|barres?|aire|linie|balken|fl[aä]che|linea|barre|area)\b/i;
+        const texts = PRESET_TEXTS_COMPONENTS_B;
+        group.presets.forEach((preset) => {
+            const entry = texts[preset.id];
+            expect(entry, preset.id).toBeDefined();
+            expect(entry.name.filter((name) => chartTypes.test(name)), preset.id).toEqual([]);
+        });
     });
 
     it('cardTextures: os valores de opacidade por textura não mudam sem uma nova medida', () => {

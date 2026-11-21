@@ -5,6 +5,18 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 9.0.0 — escolher um estilo de gráfico no painel não muda mais o tipo padrão
+
+O grupo **Gráficos** do painel passa a listar **estilos**, nunca tipos: cada preset grava só `chartThickness`, `chartSmoothing`, `chartShowGrid` e `chartGridOpacity`. Antes os presets também gravavam `chartType` ("Área suave" gravava `area`, "Barras limpas" gravava `bar`), e como o `SarakChartEngine` usa o `type` do componente primeiro e o `chartType` do design depois, escolher um estilo trocava o tipo de todo gráfico que não passava `type`.
+
+- **Ids e nomes:** `chart-area-smooth`, `chart-line-sharp`, `chart-line-bold`, `chart-bars-clean`, `chart-bars-grid`, `chart-radar-fine` e `chart-scatter` saem; entram `chart-style-smooth` (Suave), `chart-style-straight` (Reta), `chart-style-bold` (Forte), `chart-style-grid` (Com grade) e `chart-style-fine` (Fina), nos seis idiomas.
+- **`chartType`:** o token continua com o mesmo id, as mesmas opções e o mesmo padrão (`area`); só o rótulo do ajuste fino passa a ser "Tipo padrão (quando o componente não define)".
+- **Prévia:** espiar ou escolher um estilo abre a tela "Gráficos", que mostra os oito tipos de `chartType` pelo `SarakChartEngine` com o estilo do rascunho.
+
+**O que muda para o importador:** quem dependia de escolher um estilo no painel para trocar o tipo dos gráficos sem `type` passa a gravar `chartType` pelo ajuste fino do painel ou a passar `type` no componente (o recomendado: o tipo é de quem usa o componente). Quem guardou um dos ids antigos de preset de gráfico (atalho ou tema salvo) troca pelo estilo equivalente; o `chartType` que o preset gravava deixa de vir junto.
+
+---
+
 ## 9.0.0 — escolher uma textura de card no painel grava também a opacidade
 
 Cada preset do grupo **Textura do card** (`card-tex-*`) passa a gravar `cardTextureOpacity` junto com `cardTextureType`, num valor próprio de cada textura: o menor em que ela aparece e o texto do card continua legível, nos dois modos. Antes só o tipo era gravado e a textura aparecia na opacidade que o tema ou o rascunho já tinham (0,06 por padrão, quase invisível na maioria).

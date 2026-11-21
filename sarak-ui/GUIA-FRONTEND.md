@@ -1946,7 +1946,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `chartSmoothing` | estético | não | Curva as linhas de dados em vez de ligar os pontos por segmentos retos. | `chartType` |
 | `chartThickness` | estético | não | Controla a espessura das linhas nos gráficos de linha e área. | `chartType` |
 | `chartTooltipBg` | estético | sim | Pinta o fundo das dicas que aparecem sobre os dados dos gráficos. | — |
-| `chartType` | estético | não | Escolhe a forma padrão de visualização dos dados quando o componente não recebe um tipo próprio. | — |
+| `chartType` | estético | não | Define o tipo de gráfico padrão, usado só quando o componente não recebe um `type` próprio. | — |
 
 #### Transições e Animações (`animations`)
 

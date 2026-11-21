@@ -1100,10 +1100,10 @@
   {
    "id": "chartType",
    "group": "data",
-   "label": "Tipo de Gráfico",
+   "label": "Tipo padrão (quando o componente não define)",
    "kind": "aesthetic",
    "modeDependent": false,
-   "usage": "Escolhe a forma padrão de visualização dos dados quando o componente não recebe um tipo próprio."
+   "usage": "Define o tipo de gráfico padrão, usado só quando o componente não recebe um `type` próprio."
   },
   {
    "id": "chatAnimationSpeed",

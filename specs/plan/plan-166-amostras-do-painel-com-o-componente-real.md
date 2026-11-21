@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Montar as amostras do painel com o componente real, medindo o custo antes"
 objetivo: "Fazer a miniatura de tema mostrar a tela real do sistema com o tema aplicado e cada amostra de card, textura, gráfico, tabela, modal, aviso, estado vazio e progresso ser o componente real como a aplicação o desenha, com o custo de abrir cada decisão medido e dentro do teto aprovado pelo dono"
 dominio: "Painel de customização / Amostras e prévia"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Média"
 tags: ["plan", "painel", "amostras", "miniatura", "graficos", "desempenho"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[09-temas-e-presets]]", "[[07-responsividade-e-multidispositivo]]"]
@@ -1169,3 +1169,131 @@ divergência do executor procede. As falhas são anteriores à plan e foram para
 **O lote 2 fecha** com o ok do dono nas capturas da T5. Os lotes 1 e 2 saem num commit só.
 
 **Status da plan: 🟡 Em execução** (lote 3: Componentes e gráficos por estilo).
+
+## Resumo da execução (lote 3) — 2026-11-20
+
+**Resultado:** Concluído com pendências (só 3 dos 5 estilos de gráfico ficam em destaque; ver Decisões)
+
+**Estado do worktree ao iniciar**
+Entregas dos lotes 1 e 2 já commitadas; ` M dist/` (build anterior) e ` M src/buildInfo.ts`, ` M src/core/Provider/buildInfo.ts` de outra tarefa. Nada em `src/` do lote 3 pendente.
+
+**O que foi feito**
+- `dataPresets.ts`: `CHART_PRESETS` só com estilo (espessura, suavização, grade, opacidade da grade); nenhum grava `chartType`. Ids novos `chart-style-smooth|straight|bold|grid|fine` (Suave, Reta, Forte, Com grade, Fina); saem "Área suave", "Linha reta/forte", "Barras limpas/com grade", "Radar fino", "Dispersão". Nenhum id antigo estava em `PUBLISHED_PRESET_IDS`.
+- `registry.ts`: grupo `charts` com `owns` só dos 4 tokens de estilo; destacadas = Suave, Forte e Fina.
+- `componentsB.ts`: nomes e descrições dos cinco estilos nos seis idiomas, sem tipo de gráfico.
+- `data.ts` e `partitions/data_and_charts.json`: `chartType` com rótulo "Tipo padrão (quando o componente não define)" (id, opções e padrão intactos). `coverage.ts`: `chartType` entra em `fine-tuning` (nenhum preset o grava mais) — arquivo fora da lista da §3.1, necessário para o teste de cobertura.
+- `PresetSamplesReal.tsx` (novo, carregado por `React.lazy`): `ChartSample` (um `SarakChartEngine` `type="area"`, 300×220, sem animação), `TableSample` (`SarakDataTable`), `ProgressSample` (`SarakBadge`+`SarakProgress`), `EmptySample` (`SarakEmptyState`). `PresetSamples.tsx` perde as versões desenhadas à mão de gráfico, tabela, selo/progresso e estado vazio; modal e aviso ficam como estavam. `PresetGroupCatalog.tsx`: a amostra de gráfico usa a primária do rascunho como `chartColorPalette` (só na amostra) e o quadro `CHART_FRAME` 316×236 (`OptionSampleFrame.tsx`).
+- `ChartsMock.tsx`: a tela "Gráficos" mostra os 8 tipos do `chartType` pelo `SarakChartEngine` (line, area, bar, pie, radar, scatter, heatmap, gauge) com o estilo do rascunho; o grupo `charts` já levava a prévia à tela `graficos` (`design-decisions.json`), confirmado nas capturas de espiar e escolher.
+- `docs/migracoes.md` (e kit regenerado por `npm run guide`, mais `catalog`, `dev-kit`).
+- Testes: `presetCatalog.test.ts` (reprova preset de gráfico com `chartType` ou com tipo no nome, em pt e nos 5 idiomas), `PresetSamples.test.tsx`, `PresetSamplesReal.test.tsx` (novo), `ChartsMock.test.tsx` (8 tipos). Navegador: `plan-141` (gráfico entra no grupo de 5% de diferença, espera o canvas e o módulo real), `plan-160` (exceção "Área suave" removida).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/presets/components/{dataPresets,registry,coverage}.ts` | alterado | estilos de gráfico, destaque, cobertura |
+| `src/core/Design/schema/data.ts`, `catalog/partitions/data_and_charts.json`, `generated/design-token-docs.json` | alterado | rótulo do `chartType` |
+| `src/core/i18n/presetTexts/componentsB.ts` | alterado | textos dos estilos |
+| `src/features/DesignEngine/Canvas/components/{PresetSamples,PresetGroupCatalog,OptionSampleFrame}.tsx` | alterado | amostras reais, quadro de gráfico |
+| `.../components/PresetSamplesReal.tsx` e `__tests__/PresetSamplesReal.test.tsx` | criado | amostras reais e teste |
+| `.../Mocks/ChartsMock.tsx` e `__tests__/ChartsMock.test.tsx` | alterado | 8 tipos |
+| testes de unidade citados acima | alterado | |
+| `browser-tests/plan-141-presets-do-painel.spec.ts`, `plan-160-previa-mostra-a-opcao.spec.ts` | alterado | ver acima |
+| `docs/migracoes.md`, `sarak-ui/*` | alterado | nota e kit gerado |
+
+**Verificações executadas**
+- `npm run build` → verde (duas vezes; a segunda com os destaques finais).
+- `npx tsc --noEmit` → 0 erros. `npm run verify -- --tier=quick` → só o `tsc` e o baseline `--with-tsc` falharam, por um erro de tipo no teste novo, corrigido depois; o restante verde (Anel 0: 352 linhas, 0 achado). Não repeti o `quick` depois da correção, só o `tsc`.
+- `plan-141` Componentes → 4 passed; gráficos (escuro/claro): Suave×Forte 6,06/6,86%, Suave×Fina 5,57/6,50%, Forte×Fina 9,93/10,53% (limite 5%).
+- `plan-160` → 9 passed (rodada completa, com `dist/` anterior) e Componentes de novo com o `dist/` final → passed. `plan-161`, `troca-de-tema`, `escolha-no-painel`, `plan-140` → 39 passed. `amostras-reais-custo` (Tabela, Gráfico, Selo, Estado vazio) → 16 passed.
+- Vitest `presets/components`, `Canvas`, `i18n` → 548 passed, 1 failed: o snapshot da galeria de temas de `PresetsCatalog.test.tsx` (pending × shown; já registrado como intermitente nos lotes anteriores; não toca em nada deste lote).
+- Não rodei `cromo-css-real:check` completo (nenhum CSS mudou).
+
+**Custo** (spec de custo, mediana de 3, ms para abrir escuro/claro; "hoje" = catálogo já com o componente real, "protótipo" = o do lote 1): Tabela 388/278 → 328/259; Gráfico 359/266 (35 MB de heap, 79 nós); Selo e progresso e Estado vazio ~210–300 ms. Dentro do teto de 2× dos números de hoje do lote 1 (Tabela 283/247, Gráfico 342/227, Selo 327/300, Vazio 229/309).
+
+**Critérios de aceite**
+- [x] Nenhum preset de gráfico grava `chartType` nem tem nome de tipo — `presetCatalog.test.ts`.
+- [x] Amostra de gráfico = um gráfico real, nas cores do tema; destacadas diferem ≥ 5% nos dois modos — `plan-141`.
+- [x] Espiar/escolher leva à tela "Gráficos" com os 8 tipos — capturas `depois-graficos-*`, `ChartsMock.test.tsx`.
+- [x] Tabela, estado vazio e progresso reais; modal e aviso como hoje.
+- [x] Cada decisão dentro do teto; `troca-de-tema` verde.
+- [x] `docs/migracoes.md`, gerados, `tsc` 0.
+- [ ] Prévia para o dono e ok dele — `C:/tmp/sarak-previa-166/lote3/index.html` (antes × depois, dois modos).
+
+**Decisões e suposições**
+- A diferença de 5% não fecha com cinco estilos: a grade pouco muda pixel e só a espessura e a suavização pesam. Medi cada combinação no `plan-141`; ficam em destaque Suave (4, curva, grade 0,5), Forte (8, curva, sem grade) e Fina (1, reta, sem grade). Reta e Com grade ficam em "Ver todas". Sem Limpa (diferia só em um token).
+- Todas as amostras de gráfico usam `type="area"`: o tipo é igual para o estilo ser a única diferença.
+- O estado vazio usa o componente sem `type` (abstrato, o padrão da aplicação).
+- A amostra de gráfico tem os dados 3,9,2,10,4,9,1 (mais amplitude) para a suavização aparecer.
+- As amostras reais carregam em módulo à parte (`React.lazy`), para não prender motor de gráfico, tabela e estado vazio ao boot do consumidor; o quadro vazio segura o lugar.
+- O `plan-141` espera o módulo real (e 1,2 s no estado vazio, por causa da entrada animada) antes de fotografar; sem isso comparava quadros vazios.
+
+**Achados fora do escopo (não corrigidos)**
+- `SarakChartEngine`: o espaçamento interno fixo comprime o desenho na tela "Gráficos" da prévia e na amostra (radar e dispersão saem pequenos); o motor está fora do escopo.
+- `PresetsCatalog.test.tsx`: snapshot da galeria de temas intermitente.
+
+**Pendências / riscos**
+- Ok do dono na prévia; destaque de 3 estilos (e não 5) para decidir.
+- `dist/` foi regravado pelo `npm run build` (já sujo de outra tarefa).
+
+## Veredito — 2026-11-20 — lote 3 — 🟠 Entregue; espera o ok do dono e duas decisões
+
+**Como medi:**
+- Li o resumo e o `git status` do lote.
+- Rodei o Anel 1 (scratchpad `anel.sh`), com o `audit:baseline --with-tsc` igual ao baseline. O único vermelho foi `plan-index:check`, por
+  falta de regenerar o índice.
+- Simulei o Anel 0: 0 ocorrências.
+- Olhei `lote3/depois-componentes-charts-escuro.png` e `lote3/depois-graficos-escolher-claro.png`.
+
+**Achado 1 — a amostra não pinta o gráfico como a tela pinta.** `PresetGroupCatalog` passa a primária do rascunho como
+`chartColorPalette`, só na amostra: a amostra sai verde-água. A tela "Gráficos" usa a paleta de gráfico do tema e sai roxa. A amostra
+promete uma cor que o gráfico real não tem, o que contraria a regra da plan (amostra = componente real). **Correção:** a amostra usa a
+mesma paleta de gráfico que a tela usa.
+
+**Achado 2 (decisão G1) — os gráficos saem achatados.** O espaçamento interno fixo do `SarakChartEngine` comprime o desenho: na tela
+"Gráficos", linha, área e barras viram uma faixa fina, e radar e dispersão ficam minúsculos. O executor registrou isso fora do escopo.
+- **(a)** Vai para o backlog, e uma plan própria corrige o motor. **Recomendação do revisor:** mexer no motor vale para todo importador e
+  pede bateria própria.
+- **(b)** Entra neste lote.
+
+**Decisão G2 — três estilos em destaque, e não cinco.** Só Suave, Forte e Fina diferem 5% entre si. Reta e Com grade ficam em "Ver
+todas".
+
+**Status da plan: 🟠 Em revisão** até o ok do dono na prévia (`C:\tmp\sarak-previa-166\lote3\index.html`) e as decisões G1 e G2.
+
+## Resumo da execução (lote 3, correção 1) — 2026-11-20
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar:** o das entregas do lote 3 (modificados e não rastreados) e `dist/` (ambiente).
+
+**Achado 1 — a amostra de gráfico trocava a paleta**
+- `PresetGroupCatalog.tsx`: saiu o ramo que punha `chartColorPalette = primaryColor` nos tokens da amostra de gráfico (e `kind` saiu das dependências do `useMemo`). A amostra agora usa a paleta de gráfico do rascunho, a mesma da tela "Gráficos". Nada mais mudou.
+
+**Verificações executadas**
+- `npm run build` → verde. `npx tsc --noEmit` → 0 erros. `PresetGroupCatalog.test.tsx` → 3 passed.
+- `plan-141-presets-do-painel -g Componentes` → 4 passed (escuro e claro, gráficos dentro do limite de 5%).
+- Capturas novas: `C:/tmp/sarak-previa-166/lote3/depois-componentes-charts-escuro.png` e `-claro.png` (gráficos na paleta do rascunho).
+
+**Achados fora do escopo / pendências:** nenhum novo; o ok do dono na prévia do lote 3 segue pendente.
+
+## Veredito — 2026-11-20 — lote 3, correção 1 — 🟠 Achado 1 fecha; o lote espera o ok do dono e a decisão G1
+
+**Como medi:**
+- Conferi o diff de `PresetGroupCatalog.tsx`: não sobra troca de `chartColorPalette`.
+- Olhei `lote3/depois-componentes-charts-claro.png`: a amostra sai roxa, na paleta de gráfico do tema, como a tela "Gráficos".
+- Anel 1 (scratchpad `anel.sh`) verde, com `audit:baseline --with-tsc` igual ao baseline. Anel 0: 0 ocorrências.
+
+**Achado 1 fecha.** Falta o ok do dono na prévia e a decisão G1 (gráficos achatados pelo motor: backlog e plan própria, ou dentro
+deste lote). G2 (três estilos em destaque) também espera o dono.
+
+**Status da plan: 🟠 Em revisão.**
+
+## Veredito — 2026-11-20 — lote 3 — 🟢 Plan aprovada
+
+**O dono aprovou a prévia do lote 3, com a recomendação do revisor:**
+- **G1 (a):** o achatamento dos gráficos pelo motor vai para o backlog (#93), para uma plan própria.
+- **G2:** três estilos em destaque (Suave, Forte e Fina); Reta e Com grade ficam em "Ver todas".
+
+Os gates foram conferidos no veredito anterior: Anel 1 verde, `audit:baseline --with-tsc` igual ao baseline e Anel 0 com 0 ocorrências.
+
+**Status da plan: 🟢 Aprovada.** Aguarda a síntese em 06 e 09.

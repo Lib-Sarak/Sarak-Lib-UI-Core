@@ -6,6 +6,8 @@ export const SAMPLE_REFERENCE = { width: 280, height: 240 } as const;
 export const CARD_FRAME_WIDTH = 300;
 /** A altura do quadro quando a amostra é baixa (um campo, a barra de topo, que tem a proporção do desenho dela): quadro menor, para o desenho ocupar o que o olho compara. */
 export const SAMPLE_FRAME_HEIGHT = { default: SAMPLE_REFERENCE.height, input: 170, topbar: 112 } as const;
+/** O quadro da amostra de gráfico: o do gráfico real (300×220) mais o respiro de 8 px de cada lado; o motor tem espaçamento interno fixo, e abaixo disto o desenho não lê. */
+export const CHART_FRAME = { width: 316, height: 236 } as const;
 /** A largura do quadro da barra de topo: a do quadro de referência do `BarSample` (640×112), para a barra preencher a opção sem vazio por baixo. */
 export const TOPBAR_FRAME_WIDTH = 640;
 /** A amostra preenche o quadro de referência: a cadeia do espaço reservado até o escopo ocupa a altura, e o conteúdo fica ao centro. */

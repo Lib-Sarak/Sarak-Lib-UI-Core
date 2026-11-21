@@ -230,8 +230,12 @@ const shotOfNoneCard = async (page: Page, groupId: string): Promise<string> => {
     await sample.locator('[data-sx-lazy="pending"]').first().waitFor({ state: 'detached', timeout: 30_000 });
     return (await sample.screenshot({ animations: 'disabled' })).toString('base64');
 };
-/** As amostras de card desenham o card real do painel, num quadro maior: entre duas opções destacadas a diferença é de ao menos 5% dos pixels. */
-const CARD_GROUPS: ReadonlySet<string> = new Set(['cards', 'shadow', 'shadowDirection', 'material', 'corners', 'density', 'border']);
+/** As amostras de card desenham o card real do painel, num quadro maior, e a de gráfico é o gráfico real: entre duas opções destacadas a diferença é de ao menos 5% dos pixels. */
+const CARD_GROUPS: ReadonlySet<string> = new Set(['cards', 'shadow', 'shadowDirection', 'material', 'corners', 'density', 'border', 'charts']);
+/** O gráfico real desenha num canvas, depois do módulo do motor: a foto só vale com o canvas pintado. */
+const CANVAS_GROUPS: ReadonlySet<string> = new Set(['charts']);
+/** As amostras que são o componente real chegam num módulo à parte (o quadro vazio segura o lugar): a foto só vale depois dele, e o estado vazio ainda tem a entrada animada. */
+const REAL_COMPONENT_GROUPS: ReadonlyMap<string, number> = new Map([['charts', 0], ['tables', 0], ['badge', 0], ['emptyState', 1200]]);
 const MIN_DIFFERING_SHARE_OF_CARD = 0.05;
 /** Os grupos que só existem dentro da aba de outro grupo não têm seção própria na página: o caso confere os que se veem. */
 for (const mode of MODES) {
@@ -254,6 +258,8 @@ for (const mode of MODES) {
                     const sample = tiles.nth(index).locator('> div').first();
                     await sample.scrollIntoViewIfNeeded();
                     await sample.locator('[data-sx-lazy="pending"]').first().waitFor({ state: 'detached', timeout: 30_000 });
+                    if (REAL_COMPONENT_GROUPS.has(group.id)) { await sample.locator('[data-sample-loading]').first().waitFor({ state: 'detached', timeout: 30_000 }); await page.waitForTimeout(REAL_COMPONENT_GROUPS.get(group.id) ?? 0); }
+                    if (CANVAS_GROUPS.has(group.id)) { await sample.locator('canvas').first().waitFor({ timeout: 30_000 }); await page.waitForTimeout(400); }
                     shots.push((await sample.screenshot({ animations: 'disabled' })).toString('base64'));
                 }
                 collected.push({ group, shots, reference: group.id === 'cardTextures' ? await shotOfNoneCard(page, group.id) : undefined });

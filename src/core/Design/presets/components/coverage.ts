@@ -31,7 +31,7 @@ const gaps = (reason: CoverageGap, ids: string[]): Array<[string, CoverageGap]> 
 
 export const COVERAGE_GAPS: ReadonlyMap<string, CoverageGap> = new Map<string, CoverageGap>([
     ...gaps('fine-tuning', [
-        'bodySize', 'identityAlignment', 'identityPadding', 'identityFontFamily', 'identityFontWeight', 'identityTracking', 'identityHoverEffect',
+        'chartType', 'bodySize', 'identityAlignment', 'identityPadding', 'identityFontFamily', 'identityFontWeight', 'identityTracking', 'identityHoverEffect',
         'borderWidth', 'borderStyle', 'sidebarLogoPlacement', 'brandDisplay', 'userAvatarStyle', 'tabSectionMargin',
         'cardSearchBorderBeamActive', 'cardHoverStyle', 'surfaceIntensity', 'headerAlignment', 'textSmoothing', 'textGlowIntensity',
         'typeScaleMicro', 'typeScaleTiny', 'typeScale3xs', 'typeScale2xs', 'typeScaleCaption', 'typeScaleXs',

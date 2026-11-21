@@ -71,7 +71,7 @@ export const PRESET_GROUPS: readonly PresetGroupDef[] = [
     { id: 'buttonStyles', decision: 'components', sample: 'button', presets: BUTTON_STYLE_PRESETS, featured: idsOf(BUTTON_STYLE_PRESETS), areas: ['buttons'], owns: /^btnStyleType$/, optionsOfOneToken: true },
     { id: 'inputs', decision: 'components', sample: 'input', presets: INPUT_PRESETS, featured: except(FEATURED_INPUTS, ['input-sharp-outline', 'input-flat-filled', 'input-search-pill']), areas: ['inputs'] },
     { id: 'tables', decision: 'components', sample: 'table', presets: TABLE_PRESETS, featured: idsOf(TABLE_PRESETS), areas: ['tables'], owns: /^table/ },
-    { id: 'charts', decision: 'components', sample: 'chart', presets: CHART_PRESETS, featured: except(idsOf(CHART_PRESETS), ['chart-radar-fine']), areas: ['data'], owns: /^chart/ },
+    { id: 'charts', decision: 'components', sample: 'chart', presets: CHART_PRESETS, featured: except(idsOf(CHART_PRESETS), ['chart-style-straight', 'chart-style-grid']), areas: ['data'], owns: /^chart(Thickness|Smoothing|ShowGrid|GridOpacity)$/ },
     { id: 'modal', decision: 'components', sample: 'modal', presets: MODAL_PRESETS, featured: except(idsOf(MODAL_PRESETS), ['modal-stacked-center', 'modal-floating-sharp', 'modal-frosted-backdrop']), areas: ['overlays'], owns: /^modal/ },
     { id: 'notice', decision: 'components', sample: 'notice', presets: NOTICE_PRESETS, featured: idsOf(NOTICE_PRESETS), areas: ['overlays'], owns: /^(tooltip|toast)/ },
     { id: 'switch', decision: 'components', sample: 'switch', presets: SWITCH_PRESETS, featured: except(idsOf(SWITCH_PRESETS), ['switch-pulsing']), areas: ['switches'], owns: /^switch/, optionsOfOneToken: true },

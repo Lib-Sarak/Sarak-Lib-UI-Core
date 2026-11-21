@@ -46,55 +46,45 @@ export const TABLE_PRESETS: ComponentPreset[] = [
     },
 ];
 
-/** Gráfico: formato, espessura da linha, suavização e a grade de fundo. A cor das séries vem da paleta. */
+/**
+ * Gráfico: só o ESTILO (espessura do traço, suavização e grade de fundo). O tipo (linha, barras, pizza…) é de quem usa o componente,
+ * no `type`; o `chartType` do design é apenas o tipo padrão, no ajuste fino. Nenhum preset grava `chartType` nem leva tipo no nome.
+ * A cor das séries vem da paleta.
+ */
 export const CHART_PRESETS: ComponentPreset[] = [
     {
-        id: 'chart-area-smooth',
-        name: 'Área suave',
-        description: 'Área preenchida com curva suave e grade discreta.',
-        keywords: ['area', 'suave', 'smooth', 'curva'],
-        design: { chartType: 'area', chartThickness: 2, chartSmoothing: true, chartShowGrid: true, chartGridOpacity: 0.06 },
+        id: 'chart-style-smooth',
+        name: 'Suave',
+        description: 'Traço médio e curvo sobre uma grade bem marcada: o desenho flui, com a escala sempre à vista.',
+        keywords: ['suave', 'smooth', 'curva', 'discreto'],
+        design: { chartThickness: 5, chartSmoothing: true, chartShowGrid: true, chartGridOpacity: 0.5 },
     },
     {
-        id: 'chart-line-sharp',
-        name: 'Linha reta',
-        description: 'Linha fina, de ponto a ponto, com grade visível: leitura exata dos valores.',
-        keywords: ['linha', 'line', 'reta', 'preciso'],
-        design: { chartType: 'line', chartThickness: 2, chartSmoothing: false, chartShowGrid: true, chartGridOpacity: 0.16 },
+        id: 'chart-style-straight',
+        name: 'Reta',
+        description: 'Traço fino, de ponto a ponto, com grade visível: leitura exata dos valores.',
+        keywords: ['reta', 'straight', 'preciso', 'exato'],
+        design: { chartThickness: 2, chartSmoothing: false, chartShowGrid: true, chartGridOpacity: 0.16 },
     },
     {
-        id: 'chart-line-bold',
-        name: 'Linha forte',
-        description: 'Linha grossa e curva, sem grade: o traço é o protagonista.',
-        keywords: ['linha', 'grossa', 'bold', 'destaque'],
-        design: { chartType: 'line', chartThickness: 6, chartSmoothing: true, chartShowGrid: false, chartGridOpacity: 0.06 },
+        id: 'chart-style-bold',
+        name: 'Forte',
+        description: 'Traço grosso e curvo, sem grade: o desenho é o protagonista.',
+        keywords: ['forte', 'bold', 'grosso', 'destaque'],
+        design: { chartThickness: 8, chartSmoothing: true, chartShowGrid: false, chartGridOpacity: 0.06 },
     },
     {
-        id: 'chart-bars-clean',
-        name: 'Barras limpas',
-        description: 'Barras sem grade, para comparar valores de relance.',
-        keywords: ['barras', 'bars', 'colunas', 'comparar'],
-        design: { chartType: 'bar', chartThickness: 3, chartShowGrid: false, chartGridOpacity: 0.06 },
+        id: 'chart-style-grid',
+        name: 'Com grade',
+        description: 'Traço grosso, de ponto a ponto, sobre uma grade bem marcada: para ler cada valor na escala.',
+        keywords: ['grade', 'grid', 'escala', 'marcada'],
+        design: { chartThickness: 8, chartSmoothing: false, chartShowGrid: true, chartGridOpacity: 0.5 },
     },
     {
-        id: 'chart-bars-grid',
-        name: 'Barras com grade',
-        description: 'Barras sobre uma grade bem marcada, para ler cada valor na escala.',
-        keywords: ['barras', 'grade', 'grid', 'escala'],
-        design: { chartType: 'bar', chartThickness: 3, chartShowGrid: true, chartGridOpacity: 0.28 },
-    },
-    {
-        id: 'chart-radar-fine',
-        name: 'Radar fino',
-        description: 'Radar de traço fino e grade leve, para comparar várias medidas.',
-        keywords: ['radar', 'aranha', 'spider', 'medidas'],
-        design: { chartType: 'radar', chartThickness: 1, chartSmoothing: false, chartShowGrid: true, chartGridOpacity: 0.14 },
-    },
-    {
-        id: 'chart-scatter',
-        name: 'Dispersão',
-        description: 'Pontos soltos sobre uma grade tênue, para ver agrupamentos.',
-        keywords: ['dispersao', 'scatter', 'pontos', 'nuvem'],
-        design: { chartType: 'scatter', chartThickness: 4, chartShowGrid: true, chartGridOpacity: 0.1 },
+        id: 'chart-style-fine',
+        name: 'Fina',
+        description: 'O traço mais fino, de ponto a ponto e sem grade: um desenho leve, que não pesa na tela.',
+        keywords: ['fina', 'fine', 'delicada', 'leve'],
+        design: { chartThickness: 1, chartSmoothing: false, chartShowGrid: false, chartGridOpacity: 0.06 },
     },
 ];

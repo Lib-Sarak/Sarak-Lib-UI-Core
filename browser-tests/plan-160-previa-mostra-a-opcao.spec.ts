@@ -96,7 +96,6 @@ const PERMANENT_EXCEPTIONS: Record<string, { kind: ExceptionKind; reason: string
     'bars/sidebar/Limpa': { kind: 'applied', reason: 'é o design do tema do harness a menos de sidebarBlur; escolher outra e espiar de novo a faz mudar' },
     'bars/barTone/Neutra': { kind: 'applied', reason: 'sidebarTone e topbarTone já são neutros no tema do harness; escolher outro tom e espiar de novo a faz mudar' },
     'layout/contentWidth/Fluida': { kind: 'applied', reason: 'maxContentWidth já vale (fluida); escolher outra largura e espiar de novo a faz mudar' },
-    'components/charts/Área suave': { kind: 'applied', reason: 'é o tipo, a espessura e a suavização que o tema do harness já tem; escolher outro gráfico e espiar de novo a faz mudar' },
     'components/notice/Suave': { kind: 'applied', reason: 'é o raio da dica e o filete que o tema do harness já tem; escolher outro aviso e espiar de novo a faz mudar' },
     'components/switch/Tátil': { kind: 'applied', reason: 'switchStyleType já vale (tátil); escolher outro interruptor e espiar de novo a faz mudar' },
     'components/badge/Pílula': { kind: 'applied', reason: 'é o raio de selo que o tema do harness já usa; escolher outro selo e espiar de novo a faz mudar' },
