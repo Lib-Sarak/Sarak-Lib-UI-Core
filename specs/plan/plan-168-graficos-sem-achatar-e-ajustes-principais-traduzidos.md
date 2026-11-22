@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Gráficos que ocupam o quadro e os ajustes principais do painel nos seis idiomas"
 objetivo: "Fazer o SarakChartEngine usar o espaço do quadro em todos os tipos, sem achatar o desenho em quadros médios, e mostrar nos seis idiomas o nome e a descrição dos tokens que aparecem nas decisões principais do painel"
 dominio: "Componentes / Gráficos · Painel / Idiomas"
-status: "🟠 Em revisão"
+status: "🔵 Em correção"
 prioridade: "Média"
 tags: ["plan", "graficos", "i18n", "painel", "release-9-0-0"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[09-temas-e-presets]]", "[[10-seguranca-e-acessibilidade]]"]
@@ -227,6 +227,68 @@ O registro anterior permanece acima por ser append-only. Ele media a caixa dos e
 **Prévias:** antes da correção (`antes-correcao-graficos-light.png`, `antes-correcao-graficos-dark.png`) e estado final (`depois-graficos-light.png`, `depois-graficos-dark.png`, `medicao-depois.json`) em `C:\Users\Igor\AppData\Local\Temp\sarak-previa-168\` (`%TEMP%`).
 
 **Critérios de aceite:** medição do lote 1, eixo zero, radar sem rótulos cortados, spec na bateria normal lendo `dist/`, nota 9.0.0 e kits regenerados: implementados. Build completo permanece pendente pelo erro de `inject-css`; `verify --tier=quick` permanece pendente pelos achados listados. Nenhum commit foi criado.
+
+## Resumo da execução (lote 3) — 2026-11-22
+
+**Resultado:** Concluído (build completo e bateria de navegador consolidada ficam com o revisor).
+
+**Estado do worktree ao iniciar**
+Compartilhado com as plans 167 e 169 (cerca de 60 linhas fora de `dist/`): specs de navegador, `src/styles/_elements.css`, cards, `SarakChartEngine`, `useEChartsTheme`, catálogo i18n, `DecisionTokenList.tsx`, `ThemeActionBar.tsx`, `ThemeDecisionList.tsx` etc. já modificados; não rastreados antes de eu começar: `catalogEntries.decisionTokenDescriptions(.chrome).ts`, `catalogEntries.decisionTokens.ts`, `decisionTokenTexts.test.ts`, `contraste-hover-botao.spec.ts`, `check-zero-brand.test.mjs`. Nada disso foi revertido nem formatado.
+
+**O que foi feito**
+- 3.1: `mode` e `bodySize` ganharam nome (`catalogEntries.decisionTokens.ts`) e descrição (`catalogEntries.decisionTokenDescriptions.ts`) em en/es/fr/de/it; o pt continua o do catálogo de tokens. `decisionTokenTexts.test.ts` passou a incluir o bloco global da decisão Layout (preferências e o que as perguntas não cobrem): o total foi de 58 para **60** tokens, com teste novo que exige `mode` e `bodySize`.
+- 3.2: `catalogEntries.decisionOptions.ts` (novo, registrado em `catalog.ts`) guarda 109 rótulos de opção, chaveados pelo rótulo em português do schema, nos seis idiomas. `enhanceToken` (`DecisionTokenList.tsx`) troca só o `label` das opções de `constraints.options`/`options`, e só nos 60 tokens das decisões principais, e só fora do pt; `id`, `value`, ordem, padrão e schema ficam intactos. Não entram nome de fonte (`headingFont`, `bodyFont`) nem "N px". O ajuste fino segue em português.
+- 3.3: `ThemeGlobalSettings.tsx` (3 títulos de seção e 4 campos de identidade) e `ExceptionRelation.tsx` (4 notas e 2 ações) leem o catálogo (`catalogEntries.panelLiterals.ts`, novo). O nome do mestre dentro da nota agora vem do catálogo de tokens no idioma do painel, e não do schema em português.
+- 3.4: `decisionTextsEmIngles.test.tsx` (novo) renderiza `DecisionTokenList` dos tokens de todas as decisões, `ThemeGlobalSettings` e os quatro estados de `ExceptionRelation` em pt e en, abre cada ajuda "?" e lê rótulo, descrição, texto das opções, títulos, campos e notas; reprova o que for igual ao português fora de uma lista de 17 textos que são nome próprio/termo técnico (nomes de preset e de textura em inglês no próprio schema, "Topbar (horizontal)", "Light mode", "Layout"), e reprova opção que mude id/valor/ordem.
+- 3.5: prévia em inglês e alemão de Barras e Layout, com as linhas, uma ajuda aberta e um seletor aberto, em `%TEMP%\sarak-previa-168\` (12 arquivos `lote3-{en,de}-{bars,layout}-{linhas,ajuda,seletor}.png`). O `<select>` nativo não desenha a lista numa captura; para mostrá-la aberta o script dá `size` ao elemento na página (só na prévia, nada no código).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/i18n/catalogEntries.decisionOptions.ts` | criado (não rastreado) | 109 rótulos de opção nos seis idiomas |
+| `src/core/i18n/catalogEntries.panelLiterals.ts` | criado (não rastreado) | 13 textos do bloco global e da nota mestre × canto |
+| `src/core/i18n/catalog.ts` | alterado | registra as duas tabelas novas |
+| `src/core/i18n/catalogEntries.decisionTokens.ts` | alterado (não rastreado) | nome de `mode` e `bodySize` |
+| `src/core/i18n/catalogEntries.decisionTokenDescriptions.ts` | alterado (não rastreado) | descrição de `mode` e `bodySize` |
+| `src/features/DesignEngine/Main/components/DecisionTokenList.tsx` | alterado | `enhanceToken` traduz o rótulo das opções |
+| `src/features/DesignEngine/Main/components/ThemeGlobalSettings.tsx` | alterado | literais pelo catálogo |
+| `src/features/DesignEngine/components/ExceptionRelation.tsx` | alterado | literais pelo catálogo; nome do mestre no idioma |
+| `src/features/DesignEngine/utils/__tests__/decisionTokenTexts.test.ts` | alterado (não rastreado) | inclui o bloco global; 58 → 60 |
+| `src/features/DesignEngine/Main/components/__tests__/decisionTextsEmIngles.test.tsx` | criado (não rastreado) | o teste de renderização em inglês |
+
+**Verificações executadas**
+- `npx vitest run decisionTextsEmIngles.test.tsx src/features/DesignEngine/components ThemeGlobalSettings.test.tsx DecisionTokenList.test.tsx` → 17 arquivos, 109 testes verdes (inclui os testes de `ExceptionRelation` em pt).
+- `npx vitest run decisionTokenTexts.test.ts src/core/i18n` → 9 arquivos, 78 testes verdes (glossário incluso, sobre os arquivos novos).
+- Mutação: `Gaveta`→`Gaveta` em `en` e `Back to master`→`Voltar ao mestre` em `en` → o teste novo reprova as duas (`mobileNavigationStyle.option.drawer`, `own.action`); revertidas, conferidas por grep.
+- `npx tsc --noEmit` → 0 erros (1ª passada acusou um erro de tipo no teste novo, corrigido).
+- `npm run verify -- --tier=quick` → "nível quick verde", Anel 0 simulado 2132 linhas, 0 achados.
+- Prévia: `previa-lote3.mjs` (scratchpad) sobre `plan-141-presets-entry.tsx` com `?idioma=en|de`, esbuild do harness lendo `src/` (sem `npm run build`, sem tocar `dist/`); 0 erros de página nos 4 casos.
+
+**Critérios de aceite**
+- [x] `mode`/`bodySize` com nome e descrição nos seis idiomas, e o teste de 60 reprova a falta — `decisionTokenTexts.test.ts`.
+- [x] Opções com só o rótulo traduzido — `decisionTextsEmIngles.test.tsx` (4º caso compara chaves id/valor/ordem em pt e en) e o `git diff` sem tocar `partitions/` nem `schema/`.
+- [x] Literais de `ThemeGlobalSettings.tsx` e `ExceptionRelation.tsx` pelo catálogo.
+- [x] Teste de inglês com lista curta e justificada.
+- [x] Prévia em en e de.
+- [ ] Build completo e a bateria consolidada de navegador: não rodei, são do revisor.
+
+**Decisões e suposições**
+- A chave de cada opção é o rótulo em português do schema (`decisionOption_<rótulo pt>`), não `token+valor`: 109 textos distintos cobrem os seletores (34 deles, fora as duas fontes e o tamanho em px), porque muitos repetem os mesmos rótulos (texturas, tons, densidades, posições). Se o schema mudar o rótulo pt, a opção cai no texto do schema (sem quebrar) e o teste de inglês acusa.
+- A tradução de opção só vale para os 60 tokens das decisões principais (`DECISION_TOKEN_IDS`); o ajuste fino mostra a mesma opção em português, como o §3.2 pede.
+- `Hexagonais (Céptico)` virou "Hexagonal (Skeptic)" e equivalentes, tradução literal de um nome que parece erro de grafia no schema.
+- Nomes de preset em inglês (`Industrial Matte`, `Cyber Neon Glow` etc.) ficam iguais nos seis idiomas e entram na lista de iguais do teste.
+- O teste renderiza em pt e en (não nos seis): os outros quatro idiomas são cobertos pelo teste de catálogo (não vazio, rótulo ≠ inglês, descrição própria).
+- Sem nota em `docs/migracoes.md`: o lote 3 não muda API, id, valor nem padrão, só texto mostrado em idioma que antes aparecia em português.
+
+**Achados fora do escopo (não corrigidos)**
+- `TokenControl.tsx:65-71`: o selo de dispositivo ("Só no Mobile", "Só no Tablet", "Desktop") e o aviso "Este valor vale só para …" estão em português e aparecem nas linhas responsivas em qualquer idioma.
+- `HelpTooltip.tsx:30`: a ajuda de token sem descrição usa o texto "Configuração granular para o parâmetro …" em português.
+- Nas capturas, o título "Personalizar o tema", o seletor de tela "Painel" e a amostra ("Meu sistema", rótulos do preview) seguem em português (já relatado no lote 2; backlog #94).
+- `plan-168` fica `🟠 Em revisão`: o status já estava assim ao chegar (movido pelo revisor).
+
+**Pendências / riscos**
+- O `<select>` da prévia está aberto por `size` na captura, não pelo popup nativo.
+- A lista de 17 textos iguais no teste é fechada: nome novo de preset em inglês no schema exige entrar nela.
 
 # 10. Veredito
 
@@ -472,3 +534,38 @@ justificada do que é igual nos dois idiomas.
 O ajuste fino continua fora.
 
 **Status da plan: 🟠 Em revisão** (ok do dono na prévia refeita e decisão I1).
+
+## Veredito — 2026-11-22 — lote 3 — 🔵 Em correção (a tradução passa; três defeitos que ela causa no uso)
+
+**Como medi:** li o diff e as tabelas; rodei o painel no Chromium nos seis idiomas, comparando cada texto da coluna com o português; usei
+a busca, um seletor e a lista de pendências em inglês; medi o estouro de cada linha com e sem as fontes do tema; mutei uma opção (o teste
+novo reprova); rodei os arquivos da plan sobre o `HEAD` isolado (98 arquivos, 779 testes, `tsc` 0), o `audit:baseline` (igual) e o Anel 0
+(0 achados). Não rodei build, bateria nem suíte inteira.
+
+**Passos 3.1 a 3.4: aprovados.** Rótulo, opção e nota das linhas das decisões principais saem no idioma. O que fica igual ao português é
+termo técnico, nome próprio ou palavra igual nas duas línguas. `id`, `value` e ordem não mudam.
+
+**Achado 1 — seletor cortado pela borda da coluna.** `mobileNavigationStyle` estoura a coluna com a opção traduzida: en +22 px, es +14,
+fr +33, de +12 com as fontes do tema (en +5 e fr +18 sem elas); em pt não estoura. Aparece cortado em `lote3-de-bars-seletor.png`.
+**Correção:** o seletor do painel nunca passa da largura da linha (`BasicControls.tsx`, que entra no escopo), com teste de navegador que
+percorre as decisões nos seis idiomas. Não se resolve encurtando a tradução.
+
+**Achado 2 — a busca não acha o nome que a tela mostra.** `token-search.ts` indexa só o português. Buscando cada um dos 60 ajustes pelo
+nome exibido, ele vem em primeiro em 60 (pt), 43 (en), 31 (es), 17 (fr), 5 (de) e 23 (it); em alemão 26 nem aparecem. "System theme" não
+acha `mode`.
+**Correção:** a busca indexa o nome e as opções no idioma do painel, além do português (`token-search.ts` e quem a chama entram no
+escopo); um teste exige os 60 entre os 5 primeiros nos seis idiomas, sem piorar o português; o placeholder "Buscar token..." de
+`ThemeSidebarHeader.tsx` vai para o catálogo.
+
+**Achado 3 — a lista de pendências mostra o nome em português.** Em inglês, mudar "Sidebar position" lista "Posição da Sidebar", porque
+`useDesignDraft` entrega o `label` do schema.
+**Correção:** `ThemePendingChanges` mostra o nome pela mesma leitura do `enhanceToken`, com teste em inglês.
+
+**Ajuste de texto:** "Hexagonal (Skeptic)" e equivalentes traduzem um erro de grafia do schema. Nos cinco idiomas fica só o nome da
+textura, sem o parêntese.
+
+**Prévia:** refazer só Barras em en, fr e de com o seletor inteiro, a busca e a lista de pendências. O ok do dono vem depois dela.
+
+**Fora do escopo:** descrições dos 25 temas, "Curados", "Por Estilo", "Opacidade" e o selo de dispositivo foram para o backlog #94.
+
+**Status da plan: 🔵 Em correção.**

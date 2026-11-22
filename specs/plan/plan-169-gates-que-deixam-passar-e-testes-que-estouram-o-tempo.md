@@ -295,6 +295,85 @@ precisar de tempo próprio, o valor fica no teste, com o motivo.
 **Pendências / riscos**
 - Falta rodar `coverage:check` e o 2.1.
 
+## Resumo da execução (correção 3: gates 2.2 e 2.3 e texto com marca) — 2026-11-22
+
+**Resultado:** Concluído (achados 1, 2 e 3, decisão Z1 a; `coverage:check` é do revisor e o 2.1 espera a 167; sem build e sem navegador)
+
+**Estado do worktree ao iniciar**
+`git status --short` (sem `dist/`) com trabalho concorrente das plans 167/168/170 (browser-tests, cards, i18n, `DecisionTokenList` e demais de `Main/components`, `_elements.css`, snapshots de Cards/PreviewCanvas/CardsCatalog) e da própria 169 (os dois gates, o teste do chrome, o teste novo do zero-brand, specs 01 e 05, migracoes). Nenhum arquivo das outras plans foi tocado; nenhum dos arquivos de `src/` que editei estava modificado na fotografia.
+
+**O que foi feito**
+- Achado 1 — `check-zero-brand.mjs`: voltou a varrer todo literal de texto de `src/` (`.ts` e `.tsx`), com a marca por padrão (`/\bsarak\b/gi`). Isenções, todas escritas no cabeçalho: pacote, `--sarak-`, `sarak-`, `*-sarak`, `sarak:` e `sarak/`, etiqueta `[Sarak…]`, `SarakX`, os temas `Sarak Sovereign` e `Sarak Sovereign Classic`, o argumento de `console.*` e o tipo literal (`T['sarak']`). Antes de eu fechar essas isenções o gate novo achava 31 ocorrências técnicas; hoje 0.
+- Achado 1 — `check-zero-brand.test.mjs`: 9 formas (JSX, atributo, padrão de prop, objeto exportado, catálogo `.ts`, constante importada, dado em `.ts`, `document.title`, template) × "Sarak AI" e "SARAK TWIN"; mais os casos de isenção e um que não isenta texto de produto ao lado de nome técnico. 21/21.
+- Achado 2 — `check-chrome-token-parity.mjs`: o schema é avaliado (`ts.transpileModule` mais carregador de import relativo), não lido como texto; entram o token de fábrica e o de `barPersonality.ts`. Token que o cromo lê por mapa de ids exportado (`CHROME_WIDGET_POSITION_TOKEN_IDS`) conta pela citação do mapa. `SarakShellUserWidget.tsx` entrou nos arquivos varridos (lê `userAvatarStyle`). Cabeçalho (limites 2 e 3) acertado.
+- Achado 2 — teste do chrome: extração × `NavigationSchema` importado (os 75 ids), mutação de token de fábrica, mutação em `barPersonality.ts`, caso do mapa de ids. 20/20.
+- Achado 3 (Z1 a) — `ALLOWLIST` do zero-brand ficou vazia (os painéis chegam ao importador), com o motivo escrito. 17 textos com marca viraram nome fictício ou de função em 12 arquivos de `src/features/DesignEngine/` ("Acme Service", "Acme Support", "Acme Enterprise", `contato@acme.example`, "Ana Souza", "Kitchen Sink", "motor de design" etc.), inclusive "Igor Sarak". Dois testes (`ChatMock`, `MockForms`) e dois snapshots (`AdvancedTab`, `EngineCustomizationTab`, regenerados com `-u` só neles) acompanharam.
+- Specs 01 (§2.2, linhas de zero-marca e de paridade) e 05 §2.4.1 acertadas ao que os gates fazem.
+
+**Gate do HEAD × gate novo (casos plantados, mesma fixture nos dois)**
+
+Zero-brand ("reprova" = violação achada):
+
+| Forma | "Sarak AI": HEAD / novo | "SARAK TWIN": HEAD / novo |
+|---|---|---|
+| texto JSX | reprova / reprova | PASSA / reprova |
+| atributo textual | reprova / reprova | PASSA / reprova |
+| padrão de prop | reprova / reprova | PASSA / reprova |
+| objeto exportado | reprova / reprova | PASSA / reprova |
+| catálogo de idiomas `.ts` | reprova / reprova | PASSA / reprova |
+| constante importada | reprova / reprova | PASSA / reprova |
+| dado em `.ts` | reprova / reprova | PASSA / reprova |
+| `document.title` | reprova / reprova | PASSA / reprova |
+| template com parte fixa | reprova / reprova | PASSA / reprova |
+
+Chrome-token-parity (raiz de fixture, sem consumidor):
+
+| Caso plantado | HEAD | novo |
+|---|---|---|
+| token de fábrica em `navigation.ts` | PASSA | reprova (1) |
+| token em `barPersonality.ts` | PASSA | reprova (1) |
+| `mobileNavigationX` em `global.ts` | PASSA | reprova (1) |
+
+No repositório: HEAD "46 de 46"; novo "83 de 83" (os 75 de `navigation.ts`, os de `system` e os de id com `navigation` fora dele). O controle do HEAD foi o arquivo do gate extraído de `git show HEAD:` para fora do repositório, com a fixture sob `%TEMP%`; nada foi escrito no Git.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `gates/scripts/contrato/check-zero-brand.mjs` | alterado | varre todo literal; isenções explícitas; allowlist vazia; cabeçalho |
+| `gates/scripts/contrato/__tests__/check-zero-brand.test.mjs` | alterado (não rastreado) | 9 formas × 2 frases, isenções |
+| `gates/scripts/contrato/check-chrome-token-parity.mjs` | alterado | avalia o schema, mapa de ids, `SarakShellUserWidget`, cabeçalho |
+| `gates/scripts/contrato/__tests__/check-chrome-token-parity.test.mjs` | alterado | extração × schema importado e 3 mutações novas |
+| `specs/specs/01-gates-e-baseline.md`, `specs/specs/05-cromo-e-slots.md` | alterado | escopo e isenções dos dois gates |
+| `src/features/DesignEngine/`: `Canvas/KitchenSinkPreview.tsx`, `Canvas/Mocks/{AuthMock,ChartsMock,ChatMock,MockForms,TableMock,TextMock}.tsx`, `Canvas/Mocks/Dashboard/DashboardMetricsGrid.tsx`, `components/controls/HelpTooltip.tsx`, `Main/TemplatesTab.tsx`, `Panels/{AdvancedTab,EngineCustomizationTab}.tsx` | alterado | texto com marca trocado (Z1 a) |
+| `Canvas/Mocks/__tests__/{ChatMock,MockForms}.test.tsx`; `Panels/__tests__/__snapshots__/{AdvancedTab,EngineCustomizationTab}.test.tsx.snap` | alterado | expectativas dos textos novos |
+| esta plan | alterado | este bloco e o `status` |
+
+**Verificações executadas**
+- `npx vitest run` dos dois testes de gate → 41/41 (21 e 20).
+- `npx vitest run` de `Canvas/Mocks`, `Panels`, `components/controls`, `Main/TemplatesTab` → 86 verdes e 2 snapshots vermelhos esperados; depois `-u` só nos dois → 5/5.
+- `npm run zero-brand:check` → 830 arquivos, 0 problemas; `npm run chrome-token-parity:check` → 83 de 83.
+- `npm run verify -- --tier=quick` → verde, com Anel 0 (2037 linhas, 0 achados), `guide:check`, `token-docs:check` e `catalog:check`.
+- Não rodei suíte inteira, build, navegador nem `coverage:check`.
+
+**Critérios de aceite**
+- [x] Achado 1 — evidência: tabela acima e `check-zero-brand.test.mjs`.
+- [x] Achado 2 — evidência: tabela acima, `check-chrome-token-parity.test.mjs`, "83 de 83".
+- [x] Achado 3 — allowlist vazia, textos trocados, "Igor Sarak" fora; nada no baseline (quick verde).
+- [ ] `coverage:check` e 2.1 — pendentes (revisor; vez da 167).
+
+**Decisões e suposições**
+- `[Sarak:UI]`, `sarak:check` e `sarak/…` são isenções por padrão de prefixo técnico, não por arquivo. Suposição: o veredito as admite em "o que é técnico (prefixos)".
+- `preferenceNavigationStylePosition` (em `preferences.ts`, id com `navigation`) é lido pelo cromo por mapa de ids. Em vez de isentá-lo, o gate aceita a citação do mapa exportado pelo schema (limite 2 declarado). É mais frouxo que citar o id: um mapa citado vale para todos os ids dele.
+- Os 12 arquivos de `src/` com texto trocado, mais 2 testes e 2 snapshots, passam dos 10 do §3.1; autorizado pela Z1 a.
+- "Ana Souza" e o domínio `acme.example` são os nomes fictícios.
+- Não regenerei catálogo nem kits: nenhuma descrição de token mudou (o gate não achou marca nelas).
+
+**Achados fora do escopo (não corrigidos)**
+- `src/shared/types/index.ts:2` — comentário de cabeçalho "Sarak Matrix UI Types"; é comentário, o gate não o vê e ele não vira texto de produto.
+
+**Pendências / riscos**
+- O `dist/` só muda no próximo build; não rodei build.
+
 ---
 
 # 10. Veredito
@@ -538,5 +617,25 @@ Fecham sobre o `HEAD` sem os gates. Os gates, os testes deles e as specs 01 e 05
 
 **Seguem pendentes:** o 2.1, quando a 167 liberar build e bateria; o `coverage:check`, do revisor, no fechamento. A síntese também
 atualiza a 08 §7, a 06 §8 e a R12.
+
+**Status da plan: 🔵 Em correção.**
+
+## Nota do revisor — 2026-11-22 — decisão Z1 do dono: (a), com nome genérico
+
+**Decisão do dono:** "a base é genérica e deve usar nomes genéricos e intuitivos, como (marca, nome...)". Texto de exemplo diz a função
+do campo. Não usa nome de pessoa nem de empresa inventada.
+
+**A correção 3 terminou antes da decisão completa e usou nomes inventados. Corrigir:**
+- "Ana Souza" → "Nome", em `DashboardMetricsGrid.tsx`, `TextMock.tsx` e também `PreviewSystemRenderer.tsx`, que já o trazia;
+- "Acme Service", "Acme Support", "Acme Enterprise" e "SISTEMA ACME" → "Marca", "Suporte", "Empresa" e "Sistema", conforme a função;
+- `contato@acme.example` e `admin@acme.example` → `nome@example.com`;
+- "DIGITAL TWIN OS" → "Sistema";
+- o placeholder "Ex: Sarak Sovereign Customizado" de `SaveThemeModal.tsx` → "Nome do tema";
+- esses nomes saem do catálogo de idiomas, nos seis: reusar chave que já exista ou criar em `catalogEntries.layout.ts`, fora dos arquivos
+  da plan-168.
+
+Os nomes dos temas embarcados ("Sarak Sovereign") continuam: são o id público do tema, como a opção (a) dizia.
+
+**Os gates da correção 3 ainda não foram revisados.** Entram na revisão junto com esta troca.
 
 **Status da plan: 🔵 Em correção.**
