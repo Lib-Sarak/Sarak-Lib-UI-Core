@@ -1071,3 +1071,39 @@ A entrada em `RUNTIME_VARS_FILES` não cegou o gate.
 da 168 e não vale para as desta plan, que ainda serão refeitas.
 
 **Status da plan: 🔵 Em correção.**
+
+## Resumo da execução (correção 2, achados 2 a 6) — 2026-11-22
+
+**Achado 2 — snapshots.** `SarakDataTable.semPropsNovas` e `PreviewCanvas` regenerados com `-u` só neles; `CardsCatalog` e `SarakTitleCard` de novo ao fim (classes do achado 4). Diff do `PreviewCanvas` também traz o `aria-label="Inspecionar"` e `text-[var(--theme-primary)]`, que vêm de código já no worktree (168), não desta plan.
+
+**Achado 3 — sair da lateral recolhida.** `SarakShellUserWidget.tsx`: `text-[color:var(...)]` e `hover:text-[color:var(...)]`, com o motivo no comentário. `chromeToneContrast.ts`: o sair é medido também na lateral (parada + tinta de 5% do marcador + tinta de erro de 15%), mínimo 3,05. Testes: `SarakShellUserWidget.test.tsx` (cai sem o prefixo `color:`, provado por mutação), `chromeToneStyle.test.ts` (lateral entrega a cor), e `plan-149` confere a cor pintada = cor calculada (lateral recolhida e topbar, 2 modos × 3 tons).
+
+**Achado 4 — `SarakTitleCard`.** Título `--sarak-card-title-color` no repouso e mistura de 60% da primária com ele no hover; subtítulo `--sarak-subtitle-color` → `--sarak-text-sec`. A reserva do `--sarak-text-sec` passou a `rgba(242,246,251,0.72)` (o `variable-contract:check` acusou `#f2f6fb`). Teste de unidade exige os dois tokens.
+
+**Achado 5 — 7 vermelhos de `tom-contrastante-legivel`.**
+- 6 casos: o texto inativo agora também é medido sobre a faixa do usuário (5%) e o botão de idioma (10% da própria cor), e **inativo e forte se resolvem juntos** (até 4 rodadas), em `chromeToneContrast.ts`. Teste numérico em `chromeToneStyle.test.ts` (cai se as superfícies extras saírem: 4,11 < 4,5, provado por mutação).
+- `nebula-space` claro, lateral (1,05:1): no papel de superfície, a cor forte corrigida passava a pintar o controle escolhido (`--sarak-nav-active-color`), mas o texto sobre ele seguia o do botão primário. `chromeToneStyle.ts` agora define `--sarak-on-nav-active` como o fundo da barra. Teste de unidade.
+- Limiares e specs não mudaram.
+
+**Prova (cópia `%TEMP%\sarak-167-copia`, build novo às 19:34, posterior à última edição; `GIT_DIR` só inline):** `tom-contrastante-legivel` (28/28), `contraste-do-cromo-nas-barras`, `contraste-do-que-faltava` (24/24), `plan-149-barras-personalidade` (30/30) e `contraste-hover-botao` (16/16), todos com exit 0 (logs em `logs5\`). Gates na raiz: `dev-kit:check`, `variable-contract:check`, `catalog:check`, `guide:check`, `token-reader:check`, `token-types:check`, `theme-completeness:check`, `audit:baseline --with-tsc` e `tsc --noEmit` verdes. `vitest` de `Layout/chrome`, `Navigation`, `Buttons`, `Cards`, `DataDisplay`, `DesignEngine`, `Templates`, `Layout`, `core/Design/palette`: verdes, **exceto** `MasterControlPanel.test.tsx` (ver abaixo).
+
+**Fora desta plan, para o dono:** `MasterControlPanel.test.tsx` não carrega: o mock de `core/Design/master-map` não define `sarakGetDefaultDesignState`, que `designVariableHelpers.ts` (alteração não commitada, dos 29 achados da 169, `DEFAULT_BODY_BG`) agora importa. Não é desta plan; o teste precisa do export no mock.
+
+**Achado 6 — capturas** (antes = HEAD `20b5a460`; depois = worktree), todas em `C:\Users\Igor\AppData\Local\Temp\sarak-previa-167\passo6\`, com prefixo `antes-` e `depois-`:
+- `sair-recolhida-{neutro,contrastante}-{claro,escuro}.png`
+- `sair-topo-{neutro,contrastante}-{claro,escuro}.png`
+- `botao-fantasma-repouso-modo-{claro,escuro}.png`
+- `titlecard-{repouso,hover}-{padrao,escuro,claro}.png`
+
+(32 arquivos.) O sair da recolhida em tom contrastante claro aparecia vermelho e apagado (1,1:1) e agora é claro. **Aguardando o ok do dono**; as duas baterias inteiras na raiz só depois dele.
+
+## Resumo da execução (correção 2, bateria final na raiz) — 2026-11-22
+
+Ok do dono nas capturas recebido (passo6). Rodei `npm run cromo-css-real:check` na raiz (build novo + playwright): **a bateria não chega a rodar**. O playwright aborta ao carregar os specs:
+
+`TypeError: Module ".../src/core/Design/catalog/partitions/mode.json" needs an import attribute of "type: json"`
+
+- **Causa (não é desta plan, é da 168):** `browser-tests/paletas-cabem-na-coluna.spec.ts:15` importa `LIBRARY_TEXT_CATALOG` de `src/core/i18n/catalog`, que agora reexporta `src/core/i18n/catalogEntries.decisionTokens.ts` (linhas 1–2: `import { TokenCatalog } from '../Design/catalog'`, que importa os `.json` de `Design/catalog/partitions/`). Esse arquivo foi criado no commit `7febd22b` (plan-168) e não existe em `20b5a460`. O Node nativo não importa JSON sem atributo, e o carregador do Playwright não o injeta.
+- **Dono:** plan-168 (`catalogEntries.decisionTokens.ts`). Não editei: é arquivo da 168 e o conserto (o spec não pode importar o catálogo que puxa JSON, ou o catálogo precisa ler o JSON de outro jeito) é decisão dela. Não afrouxei nem toquei o spec.
+- Os cinco specs desta plan e os demais que rodei isolados passam; só o carregamento da suíte inteira cai.
+- A bateria na raiz (duas rodadas verdes) fica pendente desse conserto da 168.

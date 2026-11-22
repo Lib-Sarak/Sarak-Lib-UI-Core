@@ -729,3 +729,35 @@ auditoria contra o baseline e a varredura de segredos ficaram verdes.
 **Não rodei de novo:** o navegador (nenhum arquivo do commit mudou). A bateria inteira é do fechamento.
 
 **Status da plan: 🟢 Aprovada.**
+
+## Veredito — 2026-11-22 20:08 — regressão no commit `7febd22b` — 🔵 Em correção (a bateria de navegador não carrega)
+
+**Falha do revisor:** o 🟢 saiu sem que a bateria inteira de navegador tivesse sido carregada. O `playwright test --list` já acusaria o erro.
+
+**Medido:** a bateria aborta antes de rodar qualquer spec, com `needs an import attribute of "type: json"`.
+- `browser-tests/paletas-cabem-na-coluna.spec.ts:15` importa `LIBRARY_TEXT_CATALOG` de `src/core/i18n/catalog` no Node.
+- O catálogo agora reexporta `catalogEntries.decisionTokens.ts`, que importa `Design/catalog`, e este importa os `.json` de `partitions/`.
+- O Node do Playwright não aceita JSON sem o atributo. O pacote não tem o problema, porque o `tsup` embute o JSON.
+
+**Conserto:** o spec lê `CATALOG_PALETTE.paletteCreateOpen` de `src/core/i18n/catalogEntries.palette.ts`, que não puxa o catálogo de
+design. Testado numa cópia: o erro de JSON some na carga. O catálogo e os textos não mudam.
+
+**Prova:** numa cópia com build novo, `paletas-cabem-na-coluna` verde e o `playwright test --list` da bateria sem erro de carga, com o
+`globalSetup` rodando. A bateria inteira volta para a 167, na raiz.
+
+**Status da plan: 🔵 Em correção.**
+
+## Veredito — 2026-11-22 20:22 — conserto do carregamento da bateria — 🟢 Aprovado
+
+**Como medi:**
+- o diff tem as duas linhas pedidas, e `paletteCreateOpen` mora em `catalogEntries.palette.ts`;
+- na raiz, com o worktree de hoje (inclusive as mudanças em curso da 169 e da 167), `playwright test --list` da bateria inteira, com
+  `SARAK_CROMO_HARNESS_URL` simulado, porque o `--list` não roda o `globalSetup`: **84 arquivos e 894 testes, exit 0, nenhum erro de
+  JSON**;
+- sem a variável, o `--list` cai só no aviso do próprio `globalSetup`, que não é defeito.
+
+**Aceito da execução:** `paletas-cabem-na-coluna` 3 de 3 e `calendario-tom` com o `globalSetup`, num build novo da cópia.
+
+**Não rodei:** a bateria inteira, que volta para a 167, na raiz.
+
+**Status da plan: 🟢 Aprovada.**

@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fechar os pontos cegos de quatro gates, gerar a tabela de temas do guia e acabar com os testes que estouram o tempo sob carga"
 objetivo: "Fazer o auditor de hardcode, o chrome-token-parity e o zero-brand verem o que hoje deixam passar, tirar o rastro de plan da 01-gates-e-baseline, gerar a tabela de arquétipos do guia a partir do catálogo de temas e deixar a suíte de unidade verde sob a carga do npm version"
 dominio: "Qualidade / Gates e suíte"
-status: "🟡 Em execução"
+status: "🔵 Em correção"
 prioridade: "Média"
 tags: ["plan", "gates", "suite", "guia", "release-9-0-0"]
 relacionados: ["[[01-gates-e-baseline]]", "[[05-cromo-e-slots]]", "[[09-temas-e-presets]]"]
@@ -889,3 +889,340 @@ vermelho é desta plan. Num conjunto isolado, `HEAD` + 169 + 168, os gates que b
 execução nova desta plan até a 167 fechar.
 
 **Status da plan: 🟡 Em execução.**
+
+## Resumo da execução (passo 2.1, decisão H1 a) — 2026-11-22
+
+**Resultado:** Concluído com pendências: os achados que esperam a 167 ou o dono e o `cromo-css-real:check`.
+
+**Estado do worktree ao iniciar**
+`git status --short` antes da primeira edição: trabalho concorrente da 167 e de outras tarefas em `browser-tests/`, `dist/`, `docs/`, `sarak-dev/`, `sarak-ui/`, `gates/scripts/audit/auditor_ghostvars.mjs`, `src/components/Layout/chrome/`, `Buttons/SarakButton.tsx`, `Cards/`, `SarakShellUserWidget`, os 25 temas, `schema/colors.ts`, `Design/hooks/{designVariableHelpers,useDesignVariables}.ts`, `Provider/{constants,manifest}.ts`, `color-engine.ts`, `removedTokenKeys.ts`, os snapshots de `PreviewCanvas`, `CardsCatalog`, `AtmosphereCatalog`, `SarakActionCard`, `SarakTitleCard` e `SarakDataTable`, `Main/components/Theme*`, `_elements.css` e `?? browser-tests/contraste-hover-botao.spec.ts`. Nenhum dos arquivos que editei estava nessa lista. No fim, `git status --short` comparado com a fotografia acusa só os 16 arquivos abaixo.
+
+**O que foi feito**
+- `gates/scripts/audit/auditor_hardcoded.mjs`: o gate passou a varrer `.ts` além de `.tsx` (`SCANNED_EXTENSIONS`; `.d.ts` fica de fora). O comentário de "ponto cego conhecido" virou a declaração do escopo. As três isenções estão escritas no cabeçalho, cada uma com o motivo:
+  - `DESIGN_DATA_DIRS`: `.ts` de `presets/`, `schema/` e `palette/`. Um `.tsx` nessas pastas continua cobrado.
+  - `COLOR_MATH_FILES`: os três caminhos exatos.
+  - `CONTAINER_QUERY_CONDITION_RE`: tira da leitura só a condição `@min-[…]`/`@max-[…]`. A classe que ela liga continua cobrada.
+- O detector estrutural também lê `.ts`. Medido: ele fica em 0, porque só acha classe dentro de `className` ou de um helper de classe.
+- `gates/scripts/audit/__tests__/auditor_hardcoded.ts-scope.test.mjs` (novo): 11 casos do próprio gate. Cobre o `.ts` em `components/`, o tema, `schema/` e `palette/`, um `.tsx` em pasta de dado, o `.d.ts`, o marcador, a condição isenta contra a classe cobrada, o `.tsx` com condição e a matemática de cor pelo caminho exato contra o mesmo nome em outra pasta.
+- Correções no código, dentro do teto (14 arquivos de `src/`, teto 25):
+  - `overlayPreferences.ts`: o `'14px'` de reserva virou `DEFAULT_BODY_SIZE`, lido do `defaultValue` de `bodySize` no schema (o valor é o mesmo).
+  - `manifest-transformers.ts`: a sombra em camadas virou a lista `LAYERED_SHADOW_STEPS` com `join`. O template de várias linhas não aceitava o marcador no meio. O valor CSS é o mesmo, sem as quebras de linha.
+- Os demais achados meus viraram isenção pontual (lista abaixo). Em todos, a saída fica idêntica.
+
+**Medição (raiz, só leitura)**
+| Momento | Valor | Arquivos de código |
+|---|---|---|
+| gate do `HEAD` (só `.tsx`) | 0 | — |
+| `.ts` sem nenhuma isenção | 1080 | 80 (51 dado de design: 951; 3 matemática de cor: 5; 26 código: 124) |
+| com as três isenções de escopo | 99 | 20 (a condição de container query respondia por 25) |
+| depois das correções e isenções pontuais | **34** | 7, todos em espera (abaixo) |
+
+**Isenções pontuais (`sarak-allow-hardcode:` com motivo)**
+| Arquivo | Linhas do `HEAD` | Motivo escrito |
+|---|---|---|
+| `atomic/hooks/buttonStyles.ts` | 27, 33, 40, 41, 56 | o raio do brilho neon (5 a 20 px) é desenho do acabamento, sem token |
+| `atomic/hooks/buttonStyles.ts` | 77 | a sombra é só a reserva composta de `var(--sarak-dynamic-shadow)`; o detector só limpa reserva de valor único |
+| `atomic/hooks/choiceStyles.ts` | 22, 37 | piso funcional: `--sarak-border-width` aceita 0 e apagaria o controle desmarcado |
+| `atomic/hooks/inputStyles.ts` | 15, 17, 18 | piso funcional: o traço de 2 px é o desenho das variantes sublinhada e tracejada, e o de 1 px é o contorno do campo; o token aceita 0 |
+| `atomic/hooks/neumorphismStyles.ts` | 5, 6, 9, 10 | os deslocamentos e o desfoque da sombra dupla são o relevo do neumorfismo, sem token |
+| `atomic/hooks/switchStyles.ts` | 17, 19 | piso funcional: o contorno de 1 px do vidro sustenta o contraste de 3:1 |
+| `atomic/hooks/switchStyles.ts` | 52, 53 | os raios assimétricos são o desenho da variante, sem token |
+| `atomic/hooks/useStructuralStyles.presets.ts` | 40 | a coluna mínima de 280 px da estratégia auto-fit; o Tailwind exige a classe literal |
+| `engines/charts/SubEngines/categoricalPalette.ts` | 52 | o ECharts desenha em canvas, que não lê `var()`; é a reserva do cálculo |
+| `engines/charts/SubEngines/useEChartsTheme.ts` | 10, 11 | idem |
+| `DesignEngine/Canvas/hooks/useDeviceStyles.ts` | 12, 13 | 768 e 375 px são a largura do aparelho simulado na prévia |
+| `DesignEngine/Canvas/hooks/useDeviceStyles.ts` | 20, 23, 25 | o raio, a moldura e a sombra desenham o aparelho simulado; classe literal |
+| `DesignEngine/Canvas/panelResponsive.presets.ts` | 16, 21, 23, 28 | a largura mínima da opção na grade, conferida pelo teste companheiro; classe literal |
+| `DesignEngine/Canvas/panelResponsive.presets.ts` | 42, 43 | a altura de 32rem da coluna empilhada; classe literal |
+| `core/Design/resolveToken.ts` | 109 | os comprimentos são exemplos no texto do aviso ao desenvolvedor |
+| `core/Provider/fontLoader.ts` | 76 | `1em` é exigido pela sintaxe de `font` em `document.fonts.load`; a sonda não desenha nada |
+| `core/Provider/utils/manifest-transformers.ts` | 3, 9-13, 31, 40-42 | o transformador é a origem do valor do token; não há `var()` para onde levá-lo |
+
+**Achados em espera (não corrigidos, fora do baseline, sem isenção) — os 34 que o gate acusa hoje**
+- **Espera a 167** (área dela):
+  - `src/components/Layout/chrome/chromeStructuralStyles.ts:72` (`, 1px)`) e `noiseTexture.ts:16` (`200px 200px`).
+  - `src/components/atomic/hooks/buttonStyles.ts` (linhas 29, 36 e 73 no worktree): o contorno `1px solid` do botão neon e do fosco. O conserto certo é `var(--sarak-border-width, 1px)`, como no ramo cyberpunk do mesmo arquivo. Mas `Buttons/__tests__/SarakButton.test.tsx:30` fixa `toContain('1px solid')` e reprovaria. Fica para quando a 167 fechar, e o teste muda junto.
+- **Espera o dono do trabalho não commitado** (os arquivos já estavam modificados na fotografia e não constam da lista da 167 que recebi; não li o diff). Os 29 achados já existem no `HEAD`: rodei o gate novo sobre a versão de `git show HEAD:` e deu a mesma contagem.
+  - `src/core/Design/hooks/designVariableHelpers.ts`: 91, 107 (5 hex).
+  - `src/core/Design/hooks/useDesignVariables.ts`: 63, 193, 199 (5 hex).
+  - `src/core/Provider/constants.ts`: 21, 36-38, 43-45 (7 hex).
+  - `src/core/Provider/manifest.ts`: 29-81 (12 hex).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `gates/scripts/audit/auditor_hardcoded.mjs` | alterado | `.ts` varrido; três isenções de escopo com motivo; condição de container query fora da leitura |
+| `gates/scripts/audit/__tests__/auditor_hardcoded.ts-scope.test.mjs` | criado (não rastreado) | 11 casos do gate |
+| `src/components/atomic/hooks/{buttonStyles,choiceStyles,inputStyles,neumorphismStyles,switchStyles,useStructuralStyles.presets}.ts` | alterado | só comentários de isenção |
+| `src/components/engines/charts/SubEngines/{categoricalPalette,useEChartsTheme}.ts` | alterado | só comentários de isenção |
+| `src/features/DesignEngine/Canvas/hooks/useDeviceStyles.ts`, `Canvas/panelResponsive.presets.ts` | alterado | só comentários de isenção |
+| `src/core/Design/resolveToken.ts`, `src/core/Provider/fontLoader.ts` | alterado | só comentários de isenção |
+| `src/core/Provider/utils/manifest-transformers.ts` | alterado | isenções e `LAYERED_SHADOW_STEPS` |
+| `src/core/Provider/utils/overlayPreferences.ts` | alterado | `DEFAULT_BODY_SIZE` do schema no lugar de `'14px'` |
+| esta plan | alterado | este bloco e o `status` |
+
+**Verificações executadas**
+- Mutação, com os dois gates na cópia fora da raiz e a fixture em `C:\tmp\fx`, caso `export const LAYOUT = 'shrink-0 w-[12px]';`:
+
+  | Onde plantei | gate do `HEAD` | gate novo |
+  |---|---|---|
+  | `src/components/atomic/DataDisplay/Fixture/fixtureLayout.ts` | exit 0, Valor 0 (passava) | **exit 1, Valor 1** |
+  | `src/core/Design/presets/themes/fixture-theme.ts` | exit 0 | **exit 0** |
+- `npx vitest run gates/scripts/audit/__tests__/auditor_hardcoded*` → 4 arquivos, 20/20 (11 novos e 9 antigos).
+- `npx vitest run` das pastas tocadas e das que as consomem (`atomic/hooks`, `atomic/Inputs`, `atomic/Navigation`, `atomic/Templates`, `engines/charts/SubEngines`, `core/Provider`, `core/Design/__tests__`, `core/Design/palette`, `core/Design/presets/components`, `DesignEngine/Canvas/{hooks,__tests__,components/__tests__}`) → 320 arquivos; 2926/2928 verdes.
+  - Os 2 vermelhos: `PreviewCanvas.test.tsx` ("propriedades de estilo reais") e `CardsCatalog.test.tsx` (snapshot). Os snapshots deles já estavam modificados na fotografia.
+  - Controle: na cópia, com os meus 14 arquivos de `src/` trocados pela versão do `HEAD`, os dois falham igual (2 failed, 9 passed). Não são desta entrega. Não usei `-u`.
+- Build na cópia `C:\tmp\p169-build`: tar dos arquivos rastreados e não rastreados, mais junção do `node_modules`.
+  - A cadeia de `npm run build` rodou passo a passo, com `GIT_DIR` passado só às duas chamadas de `generate-build-info` (`git rev-parse HEAD`). **25/25 passos ok.**
+  - O último passo (`test:optional-peers`) exige `npm_execpath`. Rodei-o com `npm run test:optional-peers`, sem `GIT_DIR` → exit 0, "pass: Vite 8 build with all optional peers".
+- CSS: recompilei `dist/sarak.css` com os meus 14 arquivos de `src/` no estado do `HEAD`. Ficou **idêntico byte a byte** ao do build (281.114 bytes): os comentários não geram classe.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` na cópia → exit 1. A única linha é `auditor_hardcoded.mjs.valor: 0 -> 34`, os 34 em espera acima. `tsc` e os demais auditores sem regressão.
+- Desmontagem: `fs.unlinkSync` da junção (confirmei `isSymbolicLink`), depois a cópia apagada. O `node_modules` real está intacto. `git status --short` final = fotografia + os 16 arquivos desta entrega.
+- Não rodei `npm run verify -- --tier=quick`: o `tsc` e o baseline já rodaram na cópia, e o Anel 1 não rodou. Não rodei a bateria de navegador nem o build na raiz.
+
+**Critérios de aceite (2.1)**
+- [x] O gate varre `.ts`, com as três isenções escritas e cada motivo — `auditor_hardcoded.mjs`, cabeçalho de `SCANNED_EXTENSIONS`/`DESIGN_DATA_DIRS`/`COLOR_MATH_FILES`/`CONTAINER_QUERY_CONDITION_RE`.
+- [x] Mutação: a classe com medida num `.ts` de `src/components/` reprova, e o mesmo valor num tema passa (tabela acima e teste do gate).
+- [x] Teto de 25: 14 arquivos de `src/`, 16 com o gate e o teste.
+- [x] Isenções pontuais listadas com motivo; nada entrou no baseline.
+- [x] Build novo na cópia: 25/25.
+- [ ] Gate verde e `check-audit-baseline --with-tsc` sem regressão — **não**: 34 achados em espera (3 + 2 da 167, 29 do dono dos arquivos de Provider e Design/hooks).
+- [ ] `npm run cromo-css-real:check` sozinho — pendente, depois que a 167 fechar a bateria dela.
+
+**Decisões e suposições**
+- Uso `var(--sarak-border-width, 1px)` só onde o contorno é decorativo. Onde o contorno é a única demarcação do controle (campo, caixa de seleção, trilho do switch), o token aceita 0 e apagaria o controle. Ali o valor ficou como piso funcional, com isenção, como a lib já faz no marcador de hoje do calendário.
+- Toquei os dois arquivos de `engines/charts/` (a §3.2 os listava como da 168) só com comentário. A 168 está aprovada e commitada (7febd22b), e eles não estavam modificados na fotografia.
+- Isenção de dado de design só para `.ts`: não há `.tsx` nessas pastas hoje, e um futuro componente ali continua cobrado.
+- A isenção da condição de container query vale também em `.tsx`: a regra é a mesma. Os `.tsx` seguem em 0.
+- Tratei os 4 arquivos de Provider e Design/hooks como de outra tarefa, porque já estavam modificados na fotografia, mesmo fora da lista da 167.
+
+**Achados fora do escopo (não corrigidos)**
+- `auditor_hardcoded.mjs`: identificadores em português anteriores a esta entrega (`nomes`, `textoAntes`, `textoDepois`, `atual`, `pai`, `nomeVariavel`, `structuralBruto`), apontados pelo hook de ADR-023.
+- `PreviewCanvas.test.tsx` e `CardsCatalog.test.tsx` vermelhos no worktree de hoje, com os snapshots em edição por outra tarefa.
+
+**Pendências / riscos**
+- O gate só fica verde quando os 34 achados em espera forem tratados pelos donos. Até lá, o `audit:baseline` bloqueia o commit desta entrega.
+- `npm run cromo-css-real:check`, sozinho, depois da bateria da 167.
+- `coverage:check`, do revisor, no fechamento.
+
+## Veredito — 2026-11-22 19:03 — passo 2.1 — 🔵 Em correção (o gate entregue deixa a raiz vermelha)
+
+**Como medi:** gates na raiz. Cópia do worktree com mutações do revisor no `auditor_hardcoded` e o `vitest` de
+`gates/scripts/audit/__tests__` (169 de 169). Os quatro arquivos dos 29 achados conferidos contra a plan-167.
+
+**Aprovado:**
+- o escopo novo do gate e as três isenções, com o motivo de cada uma;
+- a mutação do revisor: medida literal num `.ts` de `components/` reprova; a mesma classe atrás de `@min-[…]` também reprova; a
+  condição sozinha passa; hex num tema passa; hex em `Design/hooks/` reprova; um nome parecido com o da matemática de cor, em outra
+  pasta, reprova;
+- `DEFAULT_BODY_SIZE` lido do schema e `LAYERED_SHADOW_STEPS` com o mesmo valor;
+- as isenções pontuais. O brilho do neon e o relevo do neumorfismo ficam isentos porque criar token público novo está fora do escopo
+  desta plan. A síntese registra isso.
+- Medido e não é falha desta entrega: o marcador vale para a própria linha e para a de baixo, regra que já estava no `HEAD`.
+
+**Achados, nesta ordem:**
+
+1. **A raiz está vermelha por causa desta entrega e bloqueia o commit de todas as plans, inclusive o da 167.** O `audit:baseline` foi de
+   0 para 34 no `auditor_hardcoded`, e o hook mede o worktree. É a mesma falha do achado 1 da 167. Tire do worktree a mudança do gate e
+   o teste novo dele:
+   - guarde os dois num patch em `%TEMP%`;
+   - volte `auditor_hardcoded.mjs` ao `HEAD` e retire o teste;
+   - os comentários de isenção nos 14 arquivos ficam: o gate de hoje não os lê.
+   Prova: o `audit:baseline` da raiz sem a linha do `auditor_hardcoded`.
+2. **Os 29 achados "do dono do trabalho não commitado" são da plan-167.** `designVariableHelpers.ts`, `useDesignVariables.ts`,
+   `constants.ts` e `manifest.ts` estão no escopo da D1 dela. O prompt do revisor não citou esses arquivos: a falha é do revisor. Os
+   29 já existem no `HEAD` e são hardcode de verdade: reserva de cor repetida no transformador e nos padrões. Eles se corrigem como o
+   `bodySize`, lendo o padrão do schema. Isenção só com motivo de verdade, e nada no baseline.
+3. **Os 5 achados da área da 167** (`chromeStructuralStyles.ts`, `noiseTexture.ts`, o `1px solid` de `buttonStyles.ts`) se corrigem
+   como o próprio resumo propõe. O `SarakButton.test.tsx` muda junto.
+
+**Ordem:** o achado 1 agora. Os achados 2 e 3 e a reaplicação do patch vêm depois do commit da 167. Depois, `npm run cromo-css-real:check`
+sozinho, com o gate em 0. Um único commit leva o gate, o teste e as correções.
+
+**Fora desta plan:** o `variable-contract:check` da raiz está vermelho no `SarakTitleCard.tsx:99` (reserva `#f2f6fb`). É o achado 4 da
+167, em execução.
+
+**Status da plan: 🔵 Em correção.**
+
+## Resumo da execução (correção 7: achado 1 do veredito "2026-11-22 19:03") — 2026-11-22
+
+**Resultado:** Concluído (só o achado 1). Os achados 2 e 3, a reaplicação do patch e o `cromo-css-real:check` ficam para depois do commit da 167.
+
+**Estado do worktree ao iniciar**
+`git status --short`: 215 linhas. É a fotografia da execução anterior (trabalho da 167 e de outras tarefas) mais os 16 arquivos desta plan, entre eles `M gates/scripts/audit/auditor_hardcoded.mjs` e `?? gates/scripts/audit/__tests__/auditor_hardcoded.ts-scope.test.mjs`.
+
+**O que foi feito**
+- Gravei a mudança do gate e o teste novo num patch: `C:\Users\Igor\AppData\Local\Temp\plan-169-auditor-hardcoded-ts.patch`.
+  - Tem 10.158 bytes e dois blocos `diff --git`: `auditor_hardcoded.mjs` e o teste novo, este como arquivo criado (`--- /dev/null`).
+  - Montei o patch com `git diff --binary` do auditor e `git diff --no-index --binary /dev/null <teste>`.
+- Conferi a reaplicação numa cópia fora do repositório (`C:\tmp\p169-patchcheck`, já apagada).
+  - A cópia partiu do `auditor_hardcoded.mjs` de `git show HEAD:`.
+  - `git apply --check` e `git apply` passaram.
+  - Os dois arquivos resultantes ficaram iguais aos do worktree, comparados sem o `\r`.
+- Voltei `auditor_hardcoded.mjs` ao `HEAD` (`git show HEAD:… >` o arquivo). O blob do disco, do índice e do `HEAD` é o mesmo: `26de7c7f`.
+- Retirei o teste novo do worktree (`fs.rmSync`).
+- Os comentários `sarak-allow-hardcode:` dos 14 arquivos de `src/`, o `DEFAULT_BODY_SIZE` e o `LAYERED_SHADOW_STEPS` ficaram como estavam.
+- Não toquei os arquivos da plan-167, nem os quatro dos 29 achados.
+
+**Verificações executadas**
+- `npm run audit:baseline` na raiz → exit 0: `[audit:baseline] igual ao baseline de 2026-10-12 — nenhuma regressão.` A linha do `auditor_hardcoded` sumiu.
+- `git status --short` final comparado com o inicial: a única diferença é a saída de `?? gates/scripts/audit/__tests__/auditor_hardcoded.ts-scope.test.mjs`.
+  - `auditor_hardcoded.mjs` ainda aparece como ` M`, mas `git diff --quiet` não acusa diferença e o blob é o mesmo do `HEAD`. Sobrou só o carimbo de data do índice, que o `git status` não renovou.
+  - Não rodei `git update-index --refresh` porque escreve no índice.
+
+**Critérios de aceite (achado 1)**
+- [x] Patch em `%TEMP%`, com o caminho completo acima, que reaplica numa cópia.
+- [x] Auditor no `HEAD` e teste fora do worktree.
+- [x] Comentários de isenção mantidos nos 14 arquivos.
+- [x] `audit:baseline` da raiz sem a linha do `auditor_hardcoded`.
+
+**Pendências / riscos**
+- Depois do commit da 167, nesta ordem:
+  1. Os achados 2 e 3 (os 29 hex lidos do padrão do schema, e os 5 da área da 167 com o `SarakButton.test.tsx`).
+  2. A reaplicação do patch.
+  3. `npm run cromo-css-real:check` sozinho, com o gate em 0.
+  4. Um único commit para o gate, o teste e as correções.
+- O patch foi gerado contra o `HEAD` `f10c36b2`. Se o commit da 167 mexer em `auditor_hardcoded.mjs`, ele pode precisar de ajuste.
+
+## Veredito — 2026-11-22 19:11 — correção 7 (achado 1) — 🟡 Aprovado; o resto do 2.1 espera o commit da 167
+
+**Como medi:** na raiz, `audit:baseline`, `variable-contract:check` e `dev-kit:check` verdes. O `auditor_hardcoded.mjs` está igual ao
+`HEAD` e o teste novo saiu do worktree. O patch `C:\Users\Igor\AppData\Local\Temp\plan-169-auditor-hardcoded-ts.patch` aplica no worktree
+e, sobre o `HEAD`, devolve o auditor e o teste idênticos aos que o revisor testou com mutação no veredito "19:03". Os 46 marcadores de
+isenção continuam em `src/`.
+
+**Segue, depois do commit da 167:** os achados 2 e 3 do veredito "19:03", a reaplicação do patch, o `cromo-css-real:check` sozinho e um
+commit único.
+
+**Status da plan: 🟡 Em execução.**
+
+## Resumo da execução (correção 8: achado 2 do veredito "2026-11-22 19:03", nos quatro arquivos) — 2026-11-22
+
+**Resultado:** Concluído com uma decisão pendente: 2 dos 29 achados (`buttonColor` e `buttonHoverColor` do seed) não têm token no schema, e a escolha vai ao dono, abaixo.
+
+**Estado do worktree ao iniciar**
+`git status --short`: 214 linhas. É a fotografia da correção 7. Os quatro arquivos já tinham as mudanças da D1 da 167 (sem `colorDepth`/`colorVariation`, nem `variantShape`, nem o terceiro argumento de `computeColorVariants`). Li só o diff desses quatro, para preservá-lo. As mudanças da D1 ficaram intactas: nenhuma linha minha cai num trecho que a D1 mexeu.
+
+**O que foi feito**
+- `src/core/Provider/manifest.ts` (12 achados): as 14 entradas de cor passam por `colorVariantsWithSchemaDefault(tokenId)`, que usa como reserva o `defaultValue` do token, lido de `sarakGetDefaultDesignState()`.
+  - `errorColor`, `successColor` e `warningColor` leem `statusErrorColor`, `statusSuccessColor` e `statusWarningColor`. São os tokens que emitem a mesma variável, com o mesmo valor.
+  - As duas `rgba` (`cardBackgroundColor`, `cardBorderColor`) não eram achado, mas repetiam a mesma reserva e entraram no mesmo leitor.
+- `src/core/Provider/constants.ts` (5 de 7): `primaryColor`, `secondaryColor`, `tertiaryColor`, `textureColor` e `titleColor` do `DEFAULT_INDUSTRIAL_SEED` leem `SCHEMA_DEFAULTS`.
+- `src/core/Design/hooks/useDesignVariables.ts` (5):
+  - a âncora do modo virou `MODE_ANCHOR_DARK`/`MODE_ANCHOR_LIGHT`;
+  - a reserva do primário virou o `defaultValue` de `primaryColor`, do mesmo `tokens` que a linha do título já usa;
+  - o texto sobre o primário virou `ON_COLOR_DARK`/`ON_COLOR_LIGHT`, que já existiam com os mesmos valores.
+- `src/core/Design/hooks/designVariableHelpers.ts` (5):
+  - O fundo de reserva do corpo virou `DEFAULT_BODY_BG` (`colorBgBody` do schema) no escuro e a âncora branca no claro.
+  - O título de reserva virou o `tokenDefault` que a função já recebe no escuro (sem ele, `ON_COLOR_LIGHT`) e `ON_COLOR_DARK` no claro.
+  - O JSDoc citava `#ffffff` como padrão do token, mas o schema diz `#f2f6fb`, inclusive no `HEAD`. Ficou sem o valor.
+- `src/core/Provider/utils/on-color.ts` (um dos três arquivos de matemática de cor isentos): acrescentei `MODE_ANCHOR_DARK = '#000000'` e `MODE_ANCHOR_LIGHT = '#ffffff'`, com o motivo no JSDoc: são operandos do cálculo das variantes e dos canais, não cor de tema.
+- Nenhuma isenção nova: os 27 achados corrigidos viraram leitura do schema ou de uma constante do arquivo de matemática de cor.
+
+**Valores que mudam** (só na reserva, que entra quando o valor chega vazio)
+| Onde | Antes | Agora (padrão do schema) |
+|---|---|---|
+| manifesto `primaryColor` | `#3b82f6` | `#19e3f0` |
+| manifesto `secondaryColor` | `#6366f1` | `#7c5cff` |
+| manifesto `tertiaryColor` | `#10b981` | `#34d399` |
+| manifesto `accentColor` | `#f43f5e` | `#ff4fd8` |
+| manifesto `surfaceColor` | `#1e293b` | `#101622` |
+| manifesto `textureColor` | `#ffffff` | `#cfe9ff` |
+| manifesto `sidebarColor`, `topbarColor` | `#000000` | `#04060a` |
+| manifesto `cardBackgroundColor` | `rgba(30, 41, 59, 0.4)` | `#101622` |
+| manifesto `cardBorderColor` | `rgba(255, 255, 255, 0.1)` | `rgba(255, 255, 255, 0.09)` |
+| manifesto `titleColor` | `#ffffff` | `#f2f6fb` |
+| seed `primaryColor`, `textureColor` | `#00f2ff` | `#19e3f0`, `#cfe9ff` |
+| seed `secondaryColor`, `tertiaryColor`, `titleColor` | `#6366f1`, `#10b981`, `#ffffff` | `#7c5cff`, `#34d399`, `#f2f6fb` |
+| `useDesignVariables`, reserva do primário | `#3b82f6` | `#19e3f0` |
+| `emitOnColors`, corpo no escuro sem literal | `#050505` | `#06080d` |
+| `resolveTitleColor`, sem nada declarado | escuro `#ffffff`, claro `#0f172a` | escuro: o padrão do token (`#f2f6fb`); claro: `#020617` |
+
+Nos status (erro, sucesso, aviso), na âncora e no texto sobre o primário, o valor não muda.
+
+Alcance:
+- No manifesto, `computeColorVariants(String(v), …)` só usa a reserva quando `String(v)` é vazio.
+- O seed não tem leitor nenhum em `src/`, `scripts/`, `gates/`, `bin/`, `sarak-ui/`, `sarak-dev/` e `docs/`, e não sai no barril.
+- O `SARAK_DESIGN_MANIFEST` é exportado em `src/index.ts`. Um importador que chame `transform('')` recebe as variantes do padrão novo.
+
+**Decisão pendente (dono)**
+- `constants.ts:48-49` (linhas do worktree): `buttonColor: '#00f2ff'` e `buttonHoverColor: '#60a5fa'` do `DEFAULT_INDUSTRIAL_SEED`. Nenhum dos dois é token do schema, então não há padrão para ler.
+  - (a) **Recomendação:** remover o `DEFAULT_INDUSTRIAL_SEED` inteiro. Ele não tem leitor e não é público; a D1 já tirou dele `colorDepth`/`colorVariation`.
+  - (b) Remover só as duas chaves.
+  - (c) `buttonColor` lê `btnPrimaryBg` (mesmo papel, `#19e3f0`) e `buttonHoverColor` sai.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Provider/manifest.ts` | alterado | `SCHEMA_DEFAULTS` e `colorVariantsWithSchemaDefault`; 14 entradas de cor |
+| `src/core/Provider/constants.ts` | alterado | `SCHEMA_DEFAULTS`; 5 cores do seed |
+| `src/core/Design/hooks/useDesignVariables.ts` | alterado | âncora, primário e texto sobre o primário |
+| `src/core/Design/hooks/designVariableHelpers.ts` | alterado | `DEFAULT_BODY_BG`, âncora, título de reserva e JSDoc |
+| `src/core/Provider/utils/on-color.ts` | alterado | `MODE_ANCHOR_DARK`/`MODE_ANCHOR_LIGHT` |
+| esta plan | alterado | este bloco |
+
+Teto: são 19 arquivos de `src/` nesta plan (os 14 do 2.1 e estes 5), dentro dos 25.
+
+**Verificações executadas**
+- Os 29 achados, com o gate do patch `C:\Users\Igor\AppData\Local\Temp\plan-169-auditor-hardcoded-ts.patch` aplicado numa cópia `C:\tmp\p169-gate` (`src/` e `gates/` do worktree, mais junção do `node_modules`): o Valor foi de **34 para 7**.
+  - Os 7 que restam: os 5 da área da 167 (`buttonStyles.ts` 29/36/73, `chromeStructuralStyles.ts:72`, `noiseTexture.ts:16`) e os 2 do seed acima. Zero em `manifest.ts`, `useDesignVariables.ts` e `designVariableHelpers.ts`.
+  - A junção saiu com `fs.unlinkSync`, depois a cópia foi apagada, e o `node_modules` real está intacto.
+- `node node_modules/typescript/bin/tsc --noEmit` na raiz → exit 0, 0 erros.
+- `npx vitest run` das pastas tocadas e das que as consomem (`src/core/Design`, `src/core/Provider`, `Layout/chrome`, `atomic/{Cards,Feedback,Navigation,Tables/hooks}`, `engines/charts/SubEngines`, `DesignEngine/{Canvas/Mocks,Canvas/components,Panels,hooks}`, `src/styles`) → **296 arquivos, 3277/3277 verdes**. Sem `-u`.
+- `npm run audit:baseline` na raiz, com o gate no `HEAD` → "igual ao baseline de 2026-10-12 — nenhuma regressão".
+- `git status --short` final comparado com o inicial: só entrou ` M src/core/Provider/utils/on-color.ts`. Os outros quatro já estavam modificados.
+- Sem build, sem navegador, sem commit.
+
+**Critérios de aceite (achado 2, nos quatro arquivos)**
+- [x] Cada cor repetida lê o padrão do schema (ou a constante de matemática de cor), sem isenção nova — 27 de 29, gate do patch na cópia.
+- [x] Mudanças da D1 preservadas — nenhuma linha da D1 no meu diff; tsc 0; 3277/3277.
+- [ ] `buttonColor`/`buttonHoverColor` do seed — decisão do dono (acima).
+
+**Decisões e suposições**
+- A âncora preto/branco foi para `on-color.ts` em vez de virar isenção pontual: ela é matemática de cor, e esse arquivo já é isento por isso.
+- No claro, o fundo de reserva é a própria âncora branca. Era o mesmo `#ffffff`, e o schema não declara padrão do modo claro.
+- No claro, o título de reserva é `ON_COLOR_DARK`: o schema não tem padrão claro de `titleColor`, e essa é a tinta que o motor já usa sobre fundo claro.
+- `on-color.ts` é o único arquivo fora dos quatro, e o acréscimo é de duas constantes.
+
+**Pendências / riscos**
+- A decisão do seed.
+- Depois do commit da 167:
+  1. os 5 achados da área dela;
+  2. a reaplicação do patch;
+  3. `npm run cromo-css-real:check` sozinho;
+  4. o commit único.
+
+## Veredito — 2026-11-22 19:56 — correção 8 (os 29 achados nos quatro arquivos) — 🔵 Em correção (um teste do painel deixou de carregar)
+
+**Como medi:** diff dos cinco arquivos lido linha a linha. A D1 da 167 está preservada. `vitest` dos testes que simulam
+`core/Design/master-map`. Controle numa cópia do worktree: só o mock com a função nova.
+
+**Aprovado:**
+- cada reserva de cor passa a ser o padrão do token no schema. É a mesma regra que o `variable-contract` cobra: reserva = padrão do
+  token;
+- a âncora preta e branca foi para `on-color.ts`, que já é isento como matemática de cor;
+- a tabela de valores que mudam é honesta. Eles só valem quando o valor chega vazio;
+- o JSDoc que citava o padrão errado foi corrigido.
+
+**Achados, nesta ordem:**
+
+1. **`src/features/DesignEngine/Main/__tests__/MasterControlPanel.test.tsx` não carrega por causa desta entrega.** O mock de `master-map` não
+   define `sarakGetDefaultDesignState`, que `manifest.ts`, `constants.ts` e `designVariableHelpers.ts` agora chamam ao importar.
+   Medido na cópia: com a função no mock, o arquivo passa 7 de 7; sem ela, não carrega. Pôr a leitura dentro das funções não basta, porque
+   a de `constants.ts` continua no import. O mock ganha a função, e ela devolve o padrão de verdade
+   (`vi.importActual`), para o teste não fixar outro valor.
+2. **A seleção de pastas deixou de fora um consumidor.** Os três arquivos são importados por quase toda a lib. A prova desta correção é a
+   suíte inteira (`npx vitest run`), com os vermelhos atribuídos por controle contra o `HEAD`.
+3. **`SARAK_DESIGN_MANIFEST` é público, e a reserva de 14 cores mudou.** A entrada 9.0.0 de `docs/migracoes.md` ganha uma linha: a
+   reserva passa a ser o padrão do token. Essa linha entra no commit final, depois do commit da 167, que também edita esse arquivo.
+
+**Decisão S1 do dono** (`buttonColor` e `buttonHoverColor` do `DEFAULT_INDUSTRIAL_SEED`): o revisor recomenda **(a)**, remover a semente
+inteira. Medido: o único uso dela em `src/`, `scripts/`, `gates/`, `bin/`, `sarak-ui/`, `docs/` e `browser-tests/` é a própria
+declaração, e ela não sai no barril. Com (a), a leitura do schema no import de `constants.ts` também some.
+
+**Status da plan: 🔵 Em correção.**
+
+## Nota do revisor — 2026-11-22 20:08 — decisão S1 do dono: (a)
+
+O `DEFAULT_INDUSTRIAL_SEED` sai inteiro de `src/core/Provider/constants.ts`, preservando a D1 da 167 no arquivo. O resto do veredito
+"correção 8" vale como está.
