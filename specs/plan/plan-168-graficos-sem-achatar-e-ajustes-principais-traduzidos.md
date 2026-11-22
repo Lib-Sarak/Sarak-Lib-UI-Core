@@ -290,6 +290,65 @@ Compartilhado com as plans 167 e 169 (cerca de 60 linhas fora de `dist/`): specs
 - O `<select>` da prévia está aberto por `size` na captura, não pelo popup nativo.
 - A lista de 17 textos iguais no teste é fechada: nome novo de preset em inglês no schema exige entrar nela.
 
+## Resumo da execução (lote 3, correção 1) — 2026-11-22
+
+**Resultado:** Concluído com pendências (prévia não gerada; ver Pendências).
+
+**Estado do worktree ao iniciar**
+Compartilhado com as plans 167 e 169 (69 linhas fora de `dist/`): os mesmos arquivos do lote anterior, mais as entregas dessas plans (cards, cromo, `PresetSamples.test.tsx`, `PreviewSystemRenderer.tsx` etc.). Nenhum desses foi tocado por mim; `PresetSamples.test.tsx` não foi editado nesta rodada.
+
+**O que foi feito, por achado**
+- **Achado 1 (estouro):** `SelectControl` passou a `SarakSelect fullWidth` (a lista ocupa a largura da linha e corta o texto que não cabe). Depois, para o teto de linhas, `SelectControl`, `SelectOption` e `optionValue` saíram de `BasicControls.tsx` (251 → 202 linhas) para `SelectControl.tsx` (53 linhas), reexportados por `BasicControls.tsx` (`export * from './SelectControl'`), então nenhum import mudou. `browser-tests/seletor-cabe-na-coluna.spec.ts` (novo) percorre as 7 decisões da coluna em pt, en, es, fr, de e it, com e sem as fontes do tema, e mede a borda de cada select, input e slider contra a da linha (`data-token-row`), tolerância de 1 px.
+- **Achado 2 (busca):** `token-index.ts` ganhou `localizedLabel` e `localizedOptions` em `SearchableToken` (entram em `names`/`title` e em `other`; a chave do cache inclui os dois). `Main/hooks/searchableTokens.ts` (novo) monta os tokens com o nome e as opções no idioma do painel, só para os 60 ajustes principais e fora do pt (o português segue indexado). `useThemeCustomizationData.ts` usa esse montador com `useLibraryLanguage`. O placeholder virou a chave `themeSearchPlaceholder` (`catalogEntries.panelLiterals.ts`), lida em `ThemeSidebarHeader.tsx`.
+- **Achado 3 (pendências):** `ThemePendingChanges.tsx` mostra o nome pela mesma tabela do `enhanceToken` (`decisionToken_<id>_name`) fora do pt; no pt segue o `label` que recebe, sem mudança.
+- **Ajuste de texto:** `Hexagonais (Céptico)` fica só `Hexagonal`, `Hexagonales`, `Hexagonal`, `Sechseckig`, `Esagonale` (`catalogEntries.decisionOptions.ts`).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/features/DesignEngine/components/controls/BasicControls.tsx` | alterado | sem o select; reexporta `SelectControl` |
+| `src/features/DesignEngine/components/controls/SelectControl.tsx` | criado | o select, agora `fullWidth` |
+| `src/features/DesignEngine/components/controls/__tests__/SelectControl.test.tsx` | criado | opção/valor, largura total, `optionValue` |
+| `src/features/DesignEngine/utils/token-index.ts` | alterado | campos localizados no índice e no cache |
+| `src/features/DesignEngine/Main/hooks/searchableTokens.ts` | criado | tokens de busca no idioma do painel |
+| `src/features/DesignEngine/Main/hooks/useThemeCustomizationData.ts` | alterado | usa o montador e o idioma |
+| `src/features/DesignEngine/Main/hooks/__tests__/searchTokensTraduzidos.test.ts` | criado | os 60 entre os 5 primeiros em 6 idiomas; pt em 1º; "System theme" → `mode` |
+| `src/features/DesignEngine/Main/components/ThemeSidebarHeader.tsx` | alterado | placeholder pelo catálogo |
+| `src/features/DesignEngine/Main/components/ThemePendingChanges.tsx` | alterado | nome no idioma do painel |
+| `src/features/DesignEngine/Main/components/__tests__/ThemeSidebarHeader.test.tsx`, `ThemePendingChanges.test.tsx` | alterados | um teste em alemão e um em inglês |
+| `src/core/i18n/catalogEntries.panelLiterals.ts` | alterado | `themeSearchPlaceholder` |
+| `src/core/i18n/catalogEntries.decisionOptions.ts` | alterado | hexágono sem parêntese |
+| `browser-tests/seletor-cabe-na-coluna.spec.ts` | criado | o spec de estouro |
+
+**Verificações executadas**
+- Estouro, antes da correção (mutação: `fullWidth` removido, en e de com as fontes do tema): `bars/mobileNavigationStyle <select>` +34 px (en) e +24 px (de) → reprova. Depois: `npx playwright test … seletor-cabe-na-coluna.spec.ts` → **12 passed** (6 idiomas × com/sem fontes), 0 controle fora da linha. A medição é pelo harness sobre `src/` (CSS de `dist/`), sem build. `BasicControls.tsx` restaurado após a mutação (conferido por grep).
+- Busca: `searchTokensTraduzidos.test.ts` → verde: os 60 ajustes entre os 5 primeiros em pt, en, es, fr, de e it; no pt, 60 em primeiro lugar (igual a antes). Mutação deste teste (desligar a indexação localizada) foi interrompida antes de terminar e **não** foi concluída; o arquivo foi restaurado (grep: 0 ocorrências da mutação).
+- `npx vitest run src/features/DesignEngine/Main src/features/DesignEngine/utils src/features/DesignEngine/components/controls src/core/i18n` → 92 arquivos, 703 testes verdes (antes da extração do `SelectControl`); depois dela, `…/components/controls` → 9 arquivos, 40 testes verdes.
+- `npm run -s audit:baseline` → "igual ao baseline", sem regressão (o `auditor_cleancode` volta a 0 com o arquivo em 202 linhas). `zero-brand:check` → verde na segunda rodada (a primeira falhou enquanto outra plan editava).
+- `npx tsc --noEmit` → 1 erro, **fora desta plan**: `src/features/DesignEngine/Canvas/components/PreviewSystemRenderer.tsx(158,39)` `Cannot find name 'text'` (edição em curso de outra plan: `text` é declarado na linha 175, em outro componente). Sem ele, 0 erros (conferido na rodada anterior).
+
+**Critérios de aceite**
+- [x] Seletor nunca passa da largura da linha, com teste de navegador nos seis idiomas, com e sem fontes do tema.
+- [x] Busca indexa nome e opções no idioma do painel; os 60 entre os 5 primeiros nos seis idiomas; pt sem piorar.
+- [x] Placeholder no catálogo; lista de pendências com o nome no idioma.
+- [x] Ajuste de texto do hexágono.
+- [x] `BasicControls.tsx` dentro do teto; baseline igual.
+- [ ] Prévia de Barras em en, fr e de (seletor, busca, pendências): **não gerada** — motivo abaixo.
+
+**Decisões e suposições**
+- `fullWidth` muda o aspecto: os selects do painel passam a ocupar a largura da linha, em vez da largura da opção mais curta. Foi a única solução sem tocar `SarakSelect` (fora do escopo), porque `w-fit` no contêiner não deixa o `max-width` do `<select>` agir.
+- O `SelectControl` extraído ganhou arquivo de teste próprio (cobertura 1:1).
+- Só `useThemeCustomizationData` (a coluna) recebeu a busca localizada; `MasterControlPanel.tsx` e `useSovereignSearch.ts` (painéis legados) seguem indexando o português.
+- A busca indexa o nome e as opções, não a descrição.
+
+**Achados fora do escopo (não corrigidos)**
+- `PreviewSystemRenderer.tsx:158`: `text` indefinido, de outra plan, derruba a prévia do harness em tempo de execução (`text is not defined`, 3 erros de página) e o `tsc`.
+
+**Pendências / riscos**
+- **Prévia:** o script `previa-c1.mjs` (scratchpad) está pronto, mas o harness não monta a coluna com o `PreviewSystemRenderer.tsx` quebrado pela outra plan; esperei cerca de 8 minutos e o arquivo não mudou. Gerar quando ela fechar (`node` do script, saída em `%TEMP%\sarak-previa-168\lote3c1-{en,fr,de}-bars-{busca,seletor,pendencias}.png`).
+- A mutação do teste de busca ficou por concluir.
+- `verify --tier=quick` não ficou verde só por esse `tsc` alheio; o resto do nível (baseline, Anel 0, gates) passou.
+
 # 10. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only: um bloco por rodada, com o que foi verificado e como. -->
@@ -567,5 +626,28 @@ textura, sem o parêntese.
 **Prévia:** refazer só Barras em en, fr e de com o seletor inteiro, a busca e a lista de pendências. O ok do dono vem depois dela.
 
 **Fora do escopo:** descrições dos 25 temas, "Curados", "Por Estilo", "Opacidade" e o selo de dispositivo foram para o backlog #94.
+
+**Status da plan: 🔵 Em correção.**
+
+## Veredito — 2026-11-22 — lote 3 (correção 1) — 🔵 Em correção (um achado: o valor selecionado fica cortado)
+
+**Como medi:** usei o painel no Chromium nos seis idiomas (estouro, largura do texto de cada opção, busca, pendências); mutei a indexação
+localizada (6 casos do teste novo caem; a mutação que faltava no resumo está feita); rodei os arquivos da plan sobre o `HEAD` isolado:
+`tsc` 0 e 788 testes verdes em `Main`, `utils`, `components`, `Panels`, `Library` e `i18n`. Em `Canvas`, 2 vermelhos que não são desta
+plan: `PreviewCanvas` cai no `HEAD` puro (sai com a plan-167) e `PresetSamples` é da plan-169. Não rodei build, bateria nem suíte inteira.
+
+**Aprovados:** achado 2 (busca pelo nome exibido, com o português sem mudar), achado 3 (pendências no idioma), o ajuste do hexágono e a
+extração do `SelectControl`. Nenhuma linha estoura mais.
+
+**Achado 1, o que resta — o estouro virou corte.** A opção selecionada de `mobileNavigationStyle` perde o fim: en 33 px, es 25, fr 45,
+de 23 e it 4 com as fontes do tema. O spec novo não vê, porque mede só a caixa do controle.
+**Correção:**
+- com a caixa resolvida, encurtar esse texto passa a valer (a proibição do veredito anterior era sobre o estouro). Textos medidos na
+  largura real, todos com folga: en "Automatic (up to 5 at the bottom)", es "Automático (hasta 5 abajo)", fr "Automatique (5 max. en bas)",
+  de "Automatisch (bis zu 5 unten)", it "Automatico (fino a 5 in basso)". O português não muda;
+- `seletor-cabe-na-coluna.spec.ts` passa a reprovar também o texto de qualquer opção mais largo que a área útil do seletor.
+
+**Prévia:** o revisor gerou `revisor-c1-{en,fr,de}-{busca,seletor,pendencias}.png` em `%TEMP%\sarak-previa-168\`. A correção refaz só as
+três de seletor, e o ok do dono vem com elas.
 
 **Status da plan: 🔵 Em correção.**

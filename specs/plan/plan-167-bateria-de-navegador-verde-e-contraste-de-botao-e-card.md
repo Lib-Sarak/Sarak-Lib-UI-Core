@@ -866,3 +866,48 @@ corrigir no componente o botão que cai abaixo de 4,5:1; aceitos por isso.
 **Escopo da correção:** exclusivamente os achados acima. Build e bateria rodam sozinhos, com a vez dada pelo dono.
 
 **Status da plan: 🔵 Em correção.**
+
+## Nota do revisor — 2026-11-22 — achado 2 medido: decisão D1 do dono
+
+**O achado do executor procede.** Nenhum arquivo de `src/` lê as variantes que `colorDepth` e `colorVariation` moldam. Os dois únicos
+leitores eram as linhas de `_elements.css` que a decisão 2.2 tirou. A falha foi do revisor, que decidiu o 2.2 sem medir quem mais dependia
+delas.
+
+**Religar no botão primário reabre o defeito que esta plan fecha.** Medido nos 25 temas × 2 modos, com `btnPrimaryText` sobre as variantes
+de `btnPrimaryBg`, no ajuste que cada tema declara: 12 de 50 ficam abaixo de 4,5:1 no hover e 28 de 50 no pressionado (mínimo 3,77). Nos
+50 existe algum ajuste do painel que reprova. No repouso os 50 passam.
+
+**D1 — decisão do dono:**
+- **a) recomendada:** remover os dois tokens na 9.0.0. As variáveis `-hover` e `-active` continuam emitidas com o fator 1, porque são
+  públicas. 48 dos 50 casos já usam 1/1; os dois com profundidade 0 mudam só o valor da variável, que a lib não lê.
+- **b)** manter para o importador, fora do painel, com descrição verdadeira e exceção declarada à R40.
+- **c)** religar com correção de contraste no motor: trabalho novo, muda o botão nos temas e volta atrás no 2.2.
+
+**Escopo do achado 2, se o dono escolher (a):** `schema/colors.ts`, as chaves nos temas, catálogo e mapeamento, manifesto, `constants.ts`,
+`coverage.ts`, a leitura em `useDesignVariables.ts`, `REMOVED_TOKEN_KEYS`, os testes que os citam, os gerados e a entrada 9.0.0 de
+`docs/migracoes.md` nomeando os dois. Os gerados se regeneram depois que a plan-169 parar, porque ela também os regenera.
+
+**Codificação (achado 3):** conferida pelo revisor, 0 ocorrências. O `grep -c "Ã"` que o veredito pediu dá falso positivo; vale o padrão
+estrito.
+
+**Build e navegador:** os vermelhos individuais em cópia isolada; medição de tempo só com a máquina livre; as duas baterias finais na raiz,
+com as plans 168 e 169 paradas.
+
+## Nota do revisor — 2026-11-22 — decisão D1 do dono: (a), remover
+
+**Decisão do dono:** (a). `colorDepth` e `colorVariation` saem na 9.0.0.
+
+**O escopo da nota anterior só olhava `src/`. Entram também, pela varredura do repositório inteiro:**
+- `src/core/Provider/utils/color-engine.ts`: `ColorVariantShape` e o parâmetro de forma saem; a saída fica idêntica à do fator 1;
+- navegador: `arsenal-lote4.spec.ts` (P11), `arsenal-restante-desenha.spec.ts` (os casos dos dois tokens) e as cenas `cor-profunda` e
+  `cor-variada` de `browser-tests/fixtures/harness-entry.tsx`. Um teste de unidade passa a provar que `-hover` e `-active` seguem
+  emitidas com o valor do fator 1;
+- snapshots `AtmosphereCatalog` e `PreviewCanvas`: regenerar só eles e conferir que o diff é só das variáveis removidas;
+- gerados: `design-token-ids.ts`, `design-token-docs.json`, `docs/component-catalog.{md,json}`, `sarak-ui/catalog.json`,
+  `sarak-ui/GUIA-FRONTEND.md` e a cópia de `docs/migracoes.md` no kit;
+- a entrada 9.0.0 diz três coisas: o valor salvo é descartado com aviso; as chaves saem do tipo público `SarakDesignTokens` (objeto de
+  tema em TypeScript que as cite deixa de compilar); `--sarak-color-depth` e `--sarak-color-variation` deixam de existir, e
+  `industrial-terminal-classic`, o único com profundidade 0, passa a emitir `-hover` e `-active` com o fator 1.
+- As entradas antigas de `docs/migracoes.md` são histórico e não mudam.
+
+**Do revisor, na síntese:** `specs/arquitetura/02-design-engine.md` §10.3.

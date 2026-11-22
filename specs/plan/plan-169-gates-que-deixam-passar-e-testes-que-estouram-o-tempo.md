@@ -374,6 +374,85 @@ No repositório: HEAD "46 de 46"; novo "83 de 83" (os 75 de `navigation.ts`, os 
 **Pendências / riscos**
 - O `dist/` só muda no próximo build; não rodei build.
 
+## Resumo da execução (correção 4: achados 1 a 5 do veredito "correção 3") — 2026-11-22
+
+**Resultado:** Concluído com uma ressalva (achado 3 e `PresetSamples` abaixo); `coverage:check` é do revisor, o 2.1 espera a 167; sem build e sem navegador.
+
+**Estado do worktree ao iniciar**
+`git status --short` (sem `dist/`) com 76 entradas: trabalho das plans 167/168/170 (browser-tests, cards, i18n `catalogEntries.*`, `Main/components`, `_elements.css`, snapshots) e da própria 169 (os dois gates e seus testes, specs 01/05, guia, o lote anterior do zero-brand). Os arquivos que editei nesta rodada e que já estavam modificados por outra plan: os snapshots de `SarakActionCard`, `SarakTitleCard` e `PreviewCanvas` (ver Decisões).
+
+**O que foi feito**
+- Achado 1 — `check-zero-brand.mjs`: isenções reescritas para o uso técnico real, todas em minúsculas ou por existência: pacote, `--sarak-`, `sarak-`, `sarak:`/`sarak/`, utilitárias `transition-sarak` e `rounded-sarak`; etiqueta de diagnóstico só nas formas exatas (`[Sarak]`, `[Sarak:Design|UI|Preferences|Link|Icon]`, `[sarak verify]`); palavra com a marca só se for identificador que existe em `src/` ou chave em minúsculas com prefixo (`sarak_lang`) ou sentinela `__SARAK_X__`; nome de tema só nos arquivos do tema e no gerado `cardsThemes.generated.ts`. A marca passou a ser procurada como trecho (`SarakOS`, `SARAKTWIN`, `Sarak_OS` contam). Caminho de módulo (`import`/`export from`) não é texto.
+- Achado 1 — o comentário CSS de `SovereignThemeInjector.tsx` perdeu a marca, sem isenção (e o teste e 5 snapshots acompanharam a linha de comentário).
+- Achado 2 — o gate varre os `.json` de `src/` (valores, não chaves). Três descrições trocadas em `catalog/partitions/{layout_and_navigation,motion_and_animation,specialized_engines}.json` ("scrollbar", "páginas completas", "Matriz"). O gate novo achou também 5 nomes de componente que não existem em `src/` na lista `digitalTwins` (`SarakContainer` ×2, `SarakHeader`, `SarakOverlay` ×2, nenhum consumidor no código): saíram da lista. `'SarakStack'` (rótulo de aviso em `useResponsiveStyles.ts`) virou `'useResponsiveStyles'` e o `Symbol('sarakStylesheetWarningFiltered')` de `testing.ts` virou `Symbol('stylesheetWarningFiltered')`. `token-docs:check`, `token-types:check`, `catalog:check`, `guide:check` e `themes:catalog:check`/`card-presets:check` (pelo quick) já estavam em dia: nenhum gerado mudou, porque as três descrições não entram neles.
+- Achado 3 — `check-chrome-token-parity.mjs`: `MAPA.chave` prova só a chave dele; citar o nome do mapa não aprova mais nada. Leitor genérico só conta se estiver declarado em `GENERIC_READERS` (`splitChromeWidgetsByPlacement` para o mapa de widgets, `getNavCollapsePositionTopbar` para o token do recolher da Topbar), se a função existir em `src/` (`staleReaders`) e se o cromo a chamar. `preferences.ts` entrou (menos os dois passos de tamanho de fonte, em `NOT_CHROME_TOKENS`, com o motivo `overlayPreferences.ts`). `system.ts` passou a ser avaliado (corte no primeiro token depois do marcador de bordas). Cabeçalho (limites 1 a 3) e as specs 01 e 05 acertados. Repositório: 88 de 88 (eram 83).
+- Achado 4 — `PresetSamples.test.tsx`: os três `waitFor` sob demanda passaram de 1 s para `LAZY_MODULE_WAIT_MS` (10 s) e os testes de table/badge/empty ganharam o teto de 30 s, com o motivo escrito (o módulo real chega por import sob demanda e leva mais que 1 s com a máquina carregada).
+- Achado 5 — nomes genéricos pelo catálogo nos seis idiomas: 6 chaves novas em `catalogEntries.layout.ts` (`sampleTextBrand`=Marca, `sampleTextName`=Nome, `sampleTextSystem`=Sistema, `sampleTextCompany`=Empresa, `sampleTextSupport`=Suporte, `sampleTextThemeName`=Nome do tema). "Acme Service/Support/Enterprise", "SISTEMA ACME", "Ana Souza" (Dashboard, TextMock, `PreviewSystemRenderer`), "Digital Twin OS" e o placeholder de `SaveThemeModal.tsx` leem do catálogo via `useLibraryText`; os e-mails viraram `nome@example.com` (não traduzido). `PreviewSystemRenderer`: o usuário de amostra passou a `{ name: text('sampleTextName'), role }`.
+
+**Gate do HEAD × gate novo (mesma fixture nos dois; 4 formas por texto: JSX, objeto `.ts`, padrão de prop, `document.title`)**
+
+| Texto | HEAD | novo |
+|---|---|---|
+| "Sarak AI", "[Sarak AI] Olá", "[Sarak OS]" | reprova 4/4 | reprova 4/4 |
+| "SARAK TWIN", "Sarak: bem-vindo", "Sarak/AI", "SARAK-TWIN", "Sarak-OS", "SarakOS", "SarakAI", "Powered-by-Sarak", "SARAKTWIN", "Sarak_OS", "Ex: Sarak Sovereign Customizado" | PASSA 0/4 | reprova 4/4 |
+| uso técnico (`@sarak/lib-ui-core`, `--sarak-x`, `data-sarak-slot`, `transition-sarak`, `sarak:check`, `[Sarak:UI] aviso`, `[sarak verify]`, `sarak_lang`) | passa | passa |
+
+No teste, as 10 formas (as 9 anteriores mais valor de `.json`) × 18 textos reprovam, os usos técnicos passam, `SarakButton` só passa se o identificador existe, o nome do tema só passa em arquivo do tema. 185/185.
+
+Chrome-token-parity (fixture, sem leitor; o gate do HEAD não vê mapa nem preferências):
+
+| Caso plantado | HEAD | novo |
+|---|---|---|
+| id inventado no mapa (cromo lê só `POSITION_IDS.colorMode`) | PASSA | reprova (`tokenInventado`) |
+| token de fábrica em `system.ts`, antes do marcador | PASSA | reprova (`layoutDeFabrica`) |
+| posição de preferência sem leitor | PASSA | reprova (`preferenceModePosition`) |
+
+**Arquivos alterados** (os desta rodada; sem listar o que já constava no resumo anterior)
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `gates/scripts/contrato/check-zero-brand.mjs`, `__tests__/check-zero-brand.test.mjs` | alterado | isenções estreitas, `.json`, caminho de módulo; 185 casos |
+| `gates/scripts/contrato/check-chrome-token-parity.mjs`, `__tests__/check-chrome-token-parity.test.mjs` | alterado | chave, leitores declarados, `preferences.ts`, `system.ts` avaliado; 25 casos |
+| `specs/specs/01-gates-e-baseline.md`, `specs/specs/05-cromo-e-slots.md` | alterado | escopo e isenções |
+| `src/core/i18n/catalogEntries.layout.ts` | alterado | 6 chaves de texto de amostra |
+| `src/features/DesignEngine/Canvas/Mocks/{AuthMock,ChatMock,MockForms,TableMock,TextMock}.tsx`, `Mocks/Dashboard/{DashboardMetricsGrid,DashboardHeader}.tsx`, `Canvas/components/PreviewSystemRenderer.tsx`, `Main/components/SaveThemeModal.tsx` | alterado | texto de amostra pelo catálogo |
+| `src/features/DesignEngine/Canvas/components/__tests__/{PresetSamples,PreviewSystemRenderer}.test.tsx`, `Canvas/Mocks/__tests__/{ChatMock,MockForms}.test.tsx`, `Main/components/__tests__/SaveThemeModal.test.tsx`, `src/core/Provider/components/__tests__/SovereignThemeInjector.test.tsx` | alterado | espera do `waitFor` e textos novos |
+| `src/features/DesignEngine/Canvas/__tests__/__snapshots__/PreviewCanvas.test.tsx.snap`; `src/components/atomic/Cards/__tests__/__snapshots__/{SarakActionCard,SarakSearchCard,SarakTitleCard}.test.tsx.snap`; `src/components/atomic/Templates/components/__tests__/__snapshots__/SarakCoreCard.test.tsx.snap` | alterado | só 1 a 3 linhas cada (comentário CSS da ponte; no `PreviewCanvas` também "Nome"/"N" do usuário de amostra), editadas à mão |
+| `src/core/Provider/components/SovereignThemeInjector.tsx` | alterado | comentário CSS sem a marca |
+| `src/core/Design/catalog/partitions/{layout_and_navigation,motion_and_animation,specialized_engines,components_base,structural}.json` | alterado | 3 descrições e 5 nomes de componente inexistentes |
+| `src/components/atomic/hooks/useResponsiveStyles.ts`, `src/testing.ts` | alterado | rótulo e descrição de Symbol sem a marca |
+
+**Verificações executadas**
+- `npx vitest run` dos dois testes de gate → 210/210 (185 e 25).
+- `npm run zero-brand:check` → 0 problemas (agora varrendo `.json`); `npm run chrome-token-parity:check` → 88 de 88.
+- `PresetSamples.test.tsx` sob carga: 16 processos de CPU em laço (16 núcleos) durante as rodadas 1 e 2; 3 rodadas seguidas, 29/29 cada. A 1ª levou 289 s e a 2ª 237 s por causa da carga; a 3ª (38 s) já correu com a carga quase no fim. O teste antes falhava com `expected +0 to be 1` (1 s de `waitFor`) e não falhou nas três.
+- `npx vitest run src/features/DesignEngine/Canvas` → 53 arquivos, 281/281; os testes de Cards, hooks, Provider/components, i18n e `testing` rodaram verdes em uma execução (depois de corrigir o `text` fora do escopo em `PreviewSystemRenderer`, que quebrou 20 testes e foi consertado).
+- `npm run verify -- --tier=quick` (rodado de novo, com o código de saída) → 30 verificações OK e 1 falha: `plan-index:check` (índice "🔵 Em correção" × frontmatter "🟠 Em revisão"). O índice é do revisor; o frontmatter foi movido para 🟠 por mim, como manda o ritual. As demais (`tsc`, baseline, Anel 1, Anel 0) passaram. A afirmação "sem erro" que escrevi antes vinha de uma saída filtrada e estava errada.
+- Não rodei suíte inteira, build, navegador, `coverage:check`.
+
+**Critérios de aceite**
+- [x] Achado 1 — evidência: tabela e `check-zero-brand.test.mjs`.
+- [x] Achado 2 — três descrições trocadas; `.json` varrido; gerados em dia.
+- [x] Achado 3 — evidência: tabela, 25/25, 88 de 88.
+- [x] Achado 4 — 3 rodadas verdes sob carga.
+- [x] Achado 5 — nomes genéricos pelo catálogo; sem nome de pessoa nem de empresa.
+- [ ] `coverage:check` e 2.1 — pendentes.
+
+**Decisões e suposições**
+- Os snapshots de `SarakActionCard` e `SarakTitleCard` (arquivos da 167) levaram só a troca da linha de comentário CSS que o veredito mandou tirar do injetor, editada à mão com `sed`, sem `-u`; o de `PreviewCanvas` (também com diff de outras plans) levou essa linha e a do usuário de amostra. Não toquei no resto.
+- `PreviewSystemRenderer.test.tsx` esperava as iniciais "AS" de "Ana Souza"; passou a esperar "N" (de "Nome").
+- O gate varre `.json` de `src/` exceto `*.golden.json` e `*.validation.json`.
+- Os dois leitores de `GENERIC_READERS` foram escolhidos por existirem hoje em `src/` e serem os que o cromo chama; `getNavCollapsePositionTopbar` cobre o token `preferenceNavCollapsePositionTopbar`, que não tem chave de mapa.
+- Marca como trecho, sem limite de palavra: qualquer texto com "sarak" dentro, fora das isenções, reprova.
+
+**Achados fora do escopo (não corrigidos)**
+- `catalogEntries.layout.ts:49` — a tradução italiana "Sidebare" (já relatada na correção 1) segue lá.
+- `digitalTwins` das partições do catálogo não tem consumidor no código; poderia sair do JSON.
+- `src/shared/types/index.ts:2` — comentário com "Sarak Matrix UI Types" (comentário, o gate não vê).
+
+**Pendências / riscos**
+- O `dist/` só muda no próximo build; não rodei build nem os snapshots dos kits.
+- A prova de carga do `PresetSamples` cobriu 2 rodadas com a máquina saturada e 1 com ela terminando.
+
 ---
 
 # 10. Veredito
@@ -637,5 +716,76 @@ do campo. Não usa nome de pessoa nem de empresa inventada.
 Os nomes dos temas embarcados ("Sarak Sovereign") continuam: são o id público do tema, como a opção (a) dizia.
 
 **Os gates da correção 3 ainda não foram revisados.** Entram na revisão junto com esta troca.
+
+**Status da plan: 🔵 Em correção.**
+
+## Veredito — 2026-11-22 — correção 3 — 🔵 Em correção (a base dos dois gates passa; as isenções e três recortes não)
+
+**Como medi:** rodei os arquivos da correção sobre o `HEAD` isolado (33 arquivos, 179 testes, `tsc` 0, gates verdes); plantei 20 textos em
+9 formas contra o gate novo e o do `HEAD`; comparei a extração do `chrome-token-parity` com o schema importado e plantei tokens sem
+leitor; rodei `src/features/DesignEngine/Canvas` no worktree. Não rodei build, navegador, suíte inteira nem `coverage:check`.
+
+**Aprovado:** a varredura de todo literal (as 6 formas que regrediam voltaram a reprovar), a allowlist vazia, os 75 de 75 tokens de
+`NavigationSchema` e os plantios de fábrica, de `barPersonality.ts` e de `global.ts`.
+
+**Achado 1 — isenções largas do `zero-brand`.**
+- Regressão: "[Sarak AI] Olá" e "[Sarak OS]" eram reprovados em 9 de 9 formas no `HEAD` e hoje passam em todas.
+- Também passam: "Sarak: bem-vindo", "Sarak/AI", "SARAK-TWIN", "Sarak-OS", "SarakOS", "SarakAI", "Powered-by-Sarak", "SARAKTWIN",
+  "Sarak_OS" e "Ex: Sarak Sovereign Customizado".
+**Correção:** cada isenção casa só o uso técnico real. Etiqueta de diagnóstico pela forma exata das que existem; prefixo, comando e
+plugin só em minúsculas; `SarakX` só quando é identificador que existe em `src/`; nome de tema só nos arquivos e gerados do tema. O
+comentário CSS de `SovereignThemeInjector.tsx` perde a marca, sem isenção. Todos esses textos entram no teste, junto dos usos técnicos
+que devem passar.
+
+**Achado 2 — as descrições do catálogo, que a Z1 citava, ficaram com marca.** "scrollbar do Sarak", "páginas completas do Sarak" e
+"Matriz Sarak" estão em `src/core/Design/catalog/partitions/*.json` e aparecem na ajuda do painel. O resumo diz que não havia nenhuma
+porque o gate só lê `.ts` e `.tsx`.
+**Correção:** trocar as três, o gate varre esses `.json` e os gerados se regeneram.
+
+**Achado 3 — três buracos no `chrome-token-parity`.**
+- **Mapa:** citar `PREFERENCE_POSITION_TOKEN_IDS.navCollapsed` aprova qualquer id do mapa; um id inventado passa. É assim que
+  `preferenceNavigationStylePosition` passa hoje. `MAPA.chave` prova só aquela chave; leitor genérico só conta se declarado e chamado.
+- **`preferences.ts`:** os tokens de posição de preferência são do cromo e ficam fora. Entram. Os dois passos de tamanho de fonte ficam
+  fora com o motivo verdadeiro (quem os lê é `overlayPreferences.ts`, do Provider).
+- **`system.ts`:** segue lido como texto, e um token de fábrica plantado passa. Avaliar como os outros.
+Acertar o cabeçalho, o comentário velho de `extractSchemaTokens` e as specs 01 e 05, que dizem "os outros grupos descrevem superfícies
+fora do cromo".
+
+**Achado 4 — `PresetSamples.test.tsx` cai sob carga (#89). O arquivo passa da plan-168 para esta, com o diff que já tem.** Caiu com a CPU
+em 88% (`expected +0 to be 1`) e passa sozinho. O teto de 30 s, que o revisor aceitou, não alcança a causa: cada `waitFor` espera só
+1 s pelo componente sob demanda.
+**Correção:** eliminar a espera que compete com a carga (carregar o módulo antes do laço) ou dar prazo ao `waitFor`, com o motivo; três
+rodadas verdes com a máquina carregada.
+
+**Achado 5 — a nota Z1 acima (nomes genéricos) ainda não foi executada.**
+
+**Commit:** nada de código desta correção até os achados fecharem. O 2.1 e o `coverage:check` seguem pendentes.
+
+**Status da plan: 🔵 Em correção.**
+
+## Veredito — 2026-11-22 — correção 4 — 🔵 Em correção (gates e descrições aprovados; falta o resto da varredura Z1)
+
+**Como medi:** li o diff; plantei 25 textos em 9 formas no `zero-brand` e no do `HEAD`, e uma marca num `.json` do catálogo; plantei no
+`chrome-token-parity` token em `barPersonality.ts`, fábrica em `system.ts`, posição de preferência sem leitor e id inventado num mapa;
+rodei gates, `tsc` (0) e testes tocados sobre o `HEAD` isolado; varri a prévia por nome de pessoa e de empresa.
+
+**Aprovados:**
+- **Achado 1:** os 23 textos de produto reprovam em 9 de 9 formas e os 2 usos técnicos passam. Nenhuma regressão contra o `HEAD`.
+- **Achado 2:** as três descrições sem marca; marca plantada num `.json` reprova. Aceitos os 5 nomes inexistentes tirados de
+  `digitalTwins`, o rótulo do hook e o `Symbol` (nenhum tem leitor pelo nome antigo).
+- **Achado 3:** os quatro plantios reprovam e a chave citada continua passando; 88 de 88.
+- **Achado 4:** a espera de 10 s ataca a causa. A prova final é a suíte inteira.
+
+**Achado 5, o que resta — empresas e produtos reais na prévia.** A nota Z1 do revisor não os listou, mas a decisão do dono os cobre:
+- `TableMock.tsx`: "AWS Hosting", "Stripe Payout", "Github Copilot", "Vercel Pro" e "Google Cloud" viram nomes de função (Hospedagem,
+  Recebimento, Licença, Assinatura, Armazenamento);
+- `DashboardSidePanel.tsx`: "GPT-4o" vira "Modelo".
+Os botões de login social continuam: o provedor é a função deles. De carona, a tradução italiana "Sidebare" de `catalogEntries.layout.ts`
+vira "Sidebar".
+
+**Commit parcial:** depende da suíte inteira desta revisão. Dois snapshots (`SarakActionCard`, `SarakTitleCard`) levam também linhas da
+plan-167: com só a linha do comentário passam sobre o `HEAD`, então saem no commit dela.
+
+**Seguem pendentes:** o 2.1 (vez da 167) e o `coverage:check` (do revisor, no fechamento).
 
 **Status da plan: 🔵 Em correção.**
