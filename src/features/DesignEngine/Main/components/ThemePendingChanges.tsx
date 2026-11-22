@@ -1,6 +1,8 @@
 import React from 'react';
 import { ChevronUp } from 'lucide-react';
-import { useLibraryText } from '../../../../core/i18n/useLibraryText';
+import { useLibraryLanguage, useLibraryText } from '../../../../core/i18n/useLibraryText';
+import { LIBRARY_TEXT_CATALOG, type LibraryTextKey } from '../../../../core/i18n/catalog';
+import { decisionTokenTextKey } from '../../../../core/i18n/catalogEntries.decisionTokens';
 import type { SarakDirtyToken } from '../../hooks/useDesignDraft';
 
 const LIST_ID = 'theme-pending-changes-list';
@@ -11,6 +13,10 @@ const formatValue = (value: unknown): string => {
     if (value === undefined || value === null || value === '') return '—';
     return typeof value === 'object' ? JSON.stringify(value) : String(value);
 };
+
+/** O nome do token como a coluna o mostra no idioma do painel; fora do português e sem texto traduzido, vale o do schema. */
+const shownName = (token: SarakDirtyToken, language: ReturnType<typeof useLibraryLanguage>): string =>
+    (language === 'pt' ? undefined : LIBRARY_TEXT_CATALOG[decisionTokenTextKey(token.id, 'name') as LibraryTextKey]?.[language]) || token.label;
 
 interface ThemePendingChangesProps {
     tokens: SarakDirtyToken[];
@@ -25,6 +31,7 @@ interface ThemePendingChangesProps {
  */
 export const ThemePendingChanges: React.FC<ThemePendingChangesProps> = ({ tokens, isOpen, onToggle }) => {
     const text = useLibraryText();
+    const language = useLibraryLanguage();
     if (tokens.length === 0) return null;
     const label = text(tokens.length === 1 ? 'themePendingChangeCount' : 'themePendingChangesCount', { count: tokens.length });
 
@@ -50,7 +57,7 @@ export const ThemePendingChanges: React.FC<ThemePendingChangesProps> = ({ tokens
                 >
                     {tokens.map((token) => (
                         <li key={token.id} className="flex flex-col gap-0.5 px-1 py-1">
-                            <span className="font-medium text-[var(--color-theme-title,CanvasText)]">{token.label}</span>
+                            <span className="font-medium text-[var(--color-theme-title,CanvasText)]">{shownName(token, language)}</span>
                             <span className="break-words text-[var(--theme-muted)]">
                                 {text('themeChangeApplied')}: {formatValue(token.applied)} → {text('themeChangeDraft')}: {formatValue(token.draft)}
                             </span>

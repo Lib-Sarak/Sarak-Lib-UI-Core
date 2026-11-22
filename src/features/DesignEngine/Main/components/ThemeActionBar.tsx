@@ -6,11 +6,6 @@ import type { SarakDirtyToken } from '../../hooks/useDesignDraft';
 import { ThemeMoreActionsMenu, type ThemeMenuAction } from './ThemeMoreActionsMenu';
 import { ThemePendingChanges } from './ThemePendingChanges';
 
-const ACTION_LABELS = {
-    apply: 'Aplicar',
-    discard: 'Descartar'
-} as const;
-
 interface ThemeActionBarProps {
     isDirty: boolean;
     dirtyTokenCount: number;
@@ -73,10 +68,10 @@ export const ThemeActionBar: React.FC<ThemeActionBarProps> = ({
                         aria-describedby={dirtyTokenCount > 0 ? 'theme-pending-changes-count' : undefined}
                         className="min-w-fit flex-1 whitespace-nowrap disabled:opacity-80"
                     >
-                        {ACTION_LABELS.apply}
+                        {text('themeApplyAction')}
                     </SarakButton>
                     <SarakButton onClick={onDiscard} disabled={!isDirty} variant="secondary" size="md" className="min-w-fit whitespace-nowrap disabled:opacity-80">
-                        {ACTION_LABELS.discard}
+                        {text('settingsDiscard')}
                     </SarakButton>
                     <ThemeMoreActionsMenu actions={menuActions} isOpen={openLayer === 'menu'} onOpenChange={setMenuOpen} />
                 </div>

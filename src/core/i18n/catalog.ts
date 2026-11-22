@@ -19,6 +19,9 @@ import { CATALOG_SYSTEM } from './catalogEntries.system';
 import { CATALOG_ACCESS } from './catalogEntries.access';
 import { CATALOG_ADVANCED } from './catalogEntries.advanced';
 import { CATALOG_TOKEN_NOTES } from './catalogEntries.tokenNotes';
+import { CATALOG_DECISION_TOKENS } from './catalogEntries.decisionTokens';
+import { CATALOG_DECISION_OPTIONS } from './catalogEntries.decisionOptions';
+import { CATALOG_PANEL_LITERALS } from './catalogEntries.panelLiterals';
 
 export type { SarakLibraryLanguage } from './catalog.types';
 import type { SarakLibraryLanguage } from './catalog.types';
@@ -61,6 +64,9 @@ export const LIBRARY_TEXT_CATALOG = {
     ...CATALOG_ACCESS,
     ...CATALOG_ADVANCED,
     ...CATALOG_TOKEN_NOTES,
+    ...CATALOG_DECISION_TOKENS,
+    ...CATALOG_DECISION_OPTIONS,
+    ...CATALOG_PANEL_LITERALS,
 } satisfies Record<string, LibraryTextEntry>;
 
 export type LibraryTextKey = keyof typeof LIBRARY_TEXT_CATALOG;

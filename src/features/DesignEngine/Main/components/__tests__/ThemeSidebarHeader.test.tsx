@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { ThemeSidebarHeader } from '../ThemeSidebarHeader';
+import SarakUIProvider from '../../../../../core/Provider/SarakUIProvider';
 import { TypographySchema } from '../../../../../core/Design/schema/typography';
 
 const baseProps = () => ({
@@ -67,5 +68,15 @@ describe('ThemeSidebarHeader', () => {
         rerender(<ThemeSidebarHeader {...props} viewMode="catalog" />);
 
         expect(screen.getByPlaceholderText('Buscar token...')).toBe(searchInput);
+    });
+
+    it('o campo de busca segue o idioma do painel', () => {
+        render(
+            <SarakUIProvider options={{ fonts: 'none', i18n: { languages: ['de'], language: 'de' } }}>
+                <ThemeSidebarHeader {...baseProps()} />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByPlaceholderText('Einstellung suchen...')).toBeInTheDocument();
+        expect(screen.queryByPlaceholderText('Buscar token...')).toBeNull();
     });
 });
