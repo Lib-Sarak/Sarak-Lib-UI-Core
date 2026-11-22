@@ -9,9 +9,6 @@ const GRID_OPACITY = 0.23;
 const LINE_THICKNESS = 5;
 const AXIS_FONT_SIZE = 13;
 const SMALL_GAP = 10;
-const MOBILE_GAP = 14;
-const TABLET_GAP = 20;
-const DESKTOP_GAP = 26;
 
 function wrapperWithDesign(design: Record<string, unknown>): React.ComponentType<{ children: React.ReactNode }> {
     const value = { design } as unknown as SarakUIContextType;
@@ -74,19 +71,21 @@ describe('cores de estado fora da paleta', () => {
 });
 
 describe('tipografia e espaçamento do tema', () => {
-    it('resolve fonte, escala de texto e espaçamento responsivo', () => {
+    it('usa os rótulos para dimensionar o espaço do gráfico', () => {
         const { result } = renderHook(() => useEChartsTheme(), {
             wrapper: wrapperWithDesign({
                 bodyFont: 'Inter', headingFont: 'Georgia', textColorSecondary: 'slategray',
                 textColorMaster: 'navy', cardBorderColor: 'silver', colorBgBody: 'whitesmoke',
                 typeScaleXs: AXIS_FONT_SIZE, layoutGapSm: SMALL_GAP,
-                layoutGapMd: { mob: MOBILE_GAP, tab: TABLET_GAP, desk: DESKTOP_GAP },
             }),
         });
 
         expect(result.current.axisLabelMargin).toBe(SMALL_GAP);
         expect(result.current.fontSize).toBe(AXIS_FONT_SIZE);
-        expect(result.current.baseOption.grid.left).toBe(DESKTOP_GAP);
+        expect(result.current.baseOption.grid.left).toBe(SMALL_GAP);
+        expect(result.current.baseOption.grid.right).toBe(SMALL_GAP);
+        expect(result.current.baseOption.grid.top).toBe(AXIS_FONT_SIZE * 2);
+        expect(result.current.baseOption.grid.bottom).toBe(AXIS_FONT_SIZE * 2);
         expect(result.current.baseOption.tooltip.backgroundColor).toBe(result.current.chartTooltipBg);
     });
 });

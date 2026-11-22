@@ -6,6 +6,9 @@ const ECHARTS_GRAPHIC = echarts.graphic;
 const DEFAULT_GAUGE_VALUE = 0;
 const DEFAULT_GAUGE_MAXIMUM = 100;
 const HEATMAP_MAXIMUM = 1000;
+const RADAR_MAXIMUM_HEADROOM = 1.05;
+const RADAR_RADIUS = '70%';
+const GAUGE_RADIUS = '90%';
 const HEATMAP_EMPHASIS_SHADOW_BLUR = 10;
 const RADAR_AREA_OPACITY = 0.6;
 const GAUGE_TRACK_WIDTH = 14;
@@ -19,30 +22,35 @@ export const buildRadarConfig = (
     data: SarakChartDataItem[],
     config: ChartBuilderConfig | undefined,
     theme: ChartTheme,
-): ChartOptionFragment => ({
-    radar: {
-        indicator: data.map((item) => ({ name: item[config?.xAxisKey || 'name'], max: HEATMAP_MAXIMUM })),
-        splitArea: { show: false },
-        splitLine: { lineStyle: { color: theme.borderColor, opacity: theme.chartGridOpacity } },
-        axisLine: { lineStyle: { color: theme.borderColor, opacity: theme.chartGridOpacity } },
-    },
-    series: [{
-        type: 'radar',
-        data: [{
-            value: data.map((item) => item[config?.dataKey || 'value']),
-            name: 'Métrica',
-            symbol: 'none',
-            areaStyle: {
-                color: new ECHARTS_GRAPHIC.RadialGradient(0.5, 0.5, 1, [
-                    { offset: 0, color: theme.primaryColor },
-                    { offset: 1, color: theme.secondaryColor },
-                ]),
-                opacity: RADAR_AREA_OPACITY,
-            },
-            lineStyle: { color: theme.primaryColor, width: theme.chartThickness },
+): ChartOptionFragment => {
+    const dataKey = config?.dataKey || 'value';
+    const maximum = Math.max(1, ...data.map((item) => Number(item[dataKey])).filter(Number.isFinite));
+    return {
+        radar: {
+            radius: RADAR_RADIUS,
+            indicator: data.map((item) => ({ name: item[config?.xAxisKey || 'name'], max: maximum * RADAR_MAXIMUM_HEADROOM })),
+            splitArea: { show: false },
+            splitLine: { lineStyle: { color: theme.borderColor, opacity: theme.chartGridOpacity } },
+            axisLine: { lineStyle: { color: theme.borderColor, opacity: theme.chartGridOpacity } },
+        },
+        series: [{
+            type: 'radar',
+            data: [{
+                value: data.map((item) => item[dataKey]),
+                name: 'Métrica',
+                symbol: 'none',
+                areaStyle: {
+                    color: new ECHARTS_GRAPHIC.RadialGradient(0.5, 0.5, 1, [
+                        { offset: 0, color: theme.primaryColor },
+                        { offset: 1, color: theme.secondaryColor },
+                    ]),
+                    opacity: RADAR_AREA_OPACITY,
+                },
+                lineStyle: { color: theme.primaryColor, width: theme.chartThickness },
+            }],
         }],
-    }],
-});
+    };
+};
 
 function createGaugeProgress(theme: ChartTheme): Record<string, unknown> {
     return {
@@ -94,6 +102,7 @@ export const buildGaugeSeries = (
             endAngle: -30,
             min: 0,
             max: DEFAULT_GAUGE_MAXIMUM,
+            radius: GAUGE_RADIUS,
             progress: createGaugeProgress(theme),
             pointer: { show: false },
             axisLine: createGaugeAxisLine(theme),

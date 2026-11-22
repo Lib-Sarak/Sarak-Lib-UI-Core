@@ -120,6 +120,7 @@ exports[`chart builders — caracterização da saída > advancedCharts.buildGau
         "show": true,
         "width": 14,
       },
+      "radius": "90%",
       "splitLine": {
         "show": false,
       },
@@ -193,18 +194,19 @@ exports[`chart builders — caracterização da saída > advancedCharts.buildRad
     },
     "indicator": [
       {
-        "max": 1000,
+        "max": 31.5,
         "name": "A",
       },
       {
-        "max": 1000,
+        "max": 31.5,
         "name": "B",
       },
       {
-        "max": 1000,
+        "max": 31.5,
         "name": "C",
       },
     ],
+    "radius": "70%",
     "splitArea": {
       "show": false,
     },
@@ -550,7 +552,7 @@ exports[`chart builders — caracterização da saída > basicCharts.buildPieSer
       "name": "Distribuição",
       "radius": [
         "55%",
-        "85%",
+        "95%",
       ],
       "type": "pie",
     },
