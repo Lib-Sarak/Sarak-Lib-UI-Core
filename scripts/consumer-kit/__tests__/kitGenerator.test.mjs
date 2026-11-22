@@ -8,6 +8,7 @@ import { injectBlock, kitHashOf, MIGRATIONS, MIGRATIONS_SOURCE, renderVersionFil
 import { buildKitCatalog } from '../buildKitCatalog.mjs';
 import { renderAppendix } from '../renderAppendix.mjs';
 import { NO_REPLACEMENT, parseRemovedTokens } from '../collectRemovedTokens.mjs';
+import { injectThemeArchetypes, readThemeArchetypes } from '../../generate-consumer-kit.mjs';
 
 const MARCA = 'TESTE:BLOCO';
 const comMarcadores = (miolo) => `prosa antes\n\n<!-- ${MARCA}:INICIO -->\n${miolo}\n<!-- ${MARCA}:FIM -->\n\nprosa depois\n`;
@@ -129,6 +130,25 @@ describe('buildKitCatalog — as fontes vivas realmente chegam ao kit', () => {
 });
 
 describe('renderVersionFile / renderAppendix', () => {
+    it('gera a tabela de arquétipos de todo o catálogo de temas, incluindo os sete resgatados', () => {
+        const guide = fs.readFileSync(new URL('../../../sarak-ui/GUIA-FRONTEND.md', import.meta.url), 'utf8');
+        const themes = readThemeArchetypes();
+        const generated = injectThemeArchetypes(guide, themes);
+        const rescued = [
+            'sarak-sovereign-classic',
+            'cyberpunk-neon-classic',
+            'industrial-terminal-classic',
+            'cyber-retro-wave-classic',
+            'neo-brutalism-classic',
+            'nature-breeze',
+            'dot-matrix-elegant',
+        ];
+
+        expect(rescued.every((id) => themes.some((theme) => theme.id === id))).toBe(true);
+        expect(rescued.every((id) => generated.includes(`| \`${id}\``))).toBe(true);
+        expect(generated).toContain(themes.find((theme) => theme.id === 'nature-breeze')?.description);
+    });
+
     it('o VERSION carrega o carimbo que o refresh do consumidor compara', () => {
         const texto = renderVersionFile({ catalog, kitHash: 'abc123' });
 

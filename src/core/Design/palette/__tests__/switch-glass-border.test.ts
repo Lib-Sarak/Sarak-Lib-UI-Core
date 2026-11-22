@@ -8,6 +8,9 @@ const MODES: SarakPaletteMode[] = ['light', 'dark'];
 /** A borda opaca do trilho de vidro ligado é a cor ativa do interruptor; ela precisa de 3:1 (controle de interface) com a superfície onde o interruptor fica. */
 const MIN_CONTROL_CONTRAST = 3;
 const SURFACES = ['colorBgBody', 'cardBackgroundColor', 'colorBgLayer1', 'surfaceColor'] as const;
+const RESOLVED_PALETTES = Object.entries(SARAK_PALETTE_PRESETS).flatMap(([id, preset]) =>
+    MODES.map((mode) => ({ id, mode, colors: resolvePalette(preset, mode) as Record<string, string> })),
+);
 
 const luminance = (hex: string): number => {
     const [red, green, blue] = [1, 3, 5].map((start) => {
@@ -25,21 +28,19 @@ const ratio = (first: string, second: string): number => {
 describe('trilho do interruptor de vidro — a borda na cor ativa', () => {
     it('a cor ativa (a base exata da paleta) passa de 3:1 sobre cada superfície, nas 78 paletas e nos dois modos', () => {
         const failures: string[] = [];
-        Object.entries(SARAK_PALETTE_PRESETS).forEach(([id, preset]) => MODES.forEach((mode) => {
-            const colors = resolvePalette(preset, mode) as Record<string, string>;
+        RESOLVED_PALETTES.forEach(({ id, mode, colors }) => {
             SURFACES.forEach((surface) => {
                 const value = ratio(colors.switchTrackActiveBg, colors[surface]);
                 if (value < MIN_CONTROL_CONTRAST) failures.push(`${id} ${mode} ${surface}: ${value.toFixed(2)}`);
             });
-        }));
+        });
         expect(Object.keys(SARAK_PALETTE_PRESETS).length).toBe(78);
         expect(failures).toEqual([]);
     });
 
     it('o trilho ligado é a base exata da primária: a borda mostra a cor da paleta, sem deslocamento', () => {
-        Object.values(SARAK_PALETTE_PRESETS).forEach((preset) => MODES.forEach((mode) => {
-            const colors = resolvePalette(preset, mode) as Record<string, string>;
+        RESOLVED_PALETTES.forEach(({ colors }) => {
             expect(colors.switchTrackActiveBg).toBe(colors.btnPrimaryBg);
-        }));
+        });
     });
 });

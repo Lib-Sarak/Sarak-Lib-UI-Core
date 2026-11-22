@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 
 import { Message } from './types';
 import { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 
 interface MessageBubbleProps {
   msg: Message;
@@ -11,6 +12,7 @@ interface MessageBubbleProps {
 
 export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
   const { design } = useSarakUI();
+  const text = useLibraryText();
   const { chatBubbleStyle = 'glass', chatBubbleRadius, chatUserBg } = design || {};
   const isUser = msg.role === 'user';
 
@@ -63,7 +65,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
               <div className="w-5 h-5 rounded-full bg-[var(--sarak-primary-color,#19e3f0)] flex items-center justify-center">
                  <SarakIcon name="Bot" size={12} className="text-[var(--sarak-primary-color,#19e3f0)]" />
               </div>
-              <span className="text-2xs font-bold text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase tracking-widest">Sarak Assistant</span>
+              <span className="text-2xs font-bold text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase tracking-widest">{text('chatAssistantLabel')}</span>
             </div>
           ) : (
             <span className="text-2xs font-bold text-[var(--sarak-primary-color,#19e3f0)] uppercase tracking-widest">Requisitante</span>

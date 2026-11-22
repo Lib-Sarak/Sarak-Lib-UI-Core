@@ -1,7 +1,7 @@
 import React from 'react';
 import { act, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, it, expect, vi } from 'vitest';
 import { PEEK_DELAY_MS } from '../peek';
 import { PresetsCatalog } from '../PresetsCatalog';
 
@@ -23,6 +23,19 @@ vi.mock('framer-motion', async () => {
 });
 
 describe('PresetsCatalog — um grupo por vez, sem cromo próprio', () => {
+    // Sem observador de interseção o `useOnFirstVisible` mostra tudo na hora e o snapshot compete com o efeito.
+    // Este nunca intersecta: as miniaturas ficam `pending`, o mesmo estado em qualquer carga.
+    const originalObserver = globalThis.IntersectionObserver;
+    beforeAll(() => {
+        globalThis.IntersectionObserver = class {
+            observe() {}
+            unobserve() {}
+            disconnect() {}
+            takeRecords() { return []; }
+        } as unknown as typeof IntersectionObserver;
+    });
+    afterAll(() => { globalThis.IntersectionObserver = originalObserver; });
+
     const createProps = (group: React.ComponentProps<typeof PresetsCatalog>['group']) => ({
         group,
         onApplyPreset: vi.fn(),

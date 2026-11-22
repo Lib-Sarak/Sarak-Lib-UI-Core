@@ -688,26 +688,37 @@ Escolha a base pela marca e pelo contexto do produto; depois ajuste os tokens, n
 3. **Tokens de marca:** derive do preset completo e sobrescreva `primaryColor`, `accentColor` e os tokens de marca que a identidade pedir. Confira contraste nas duas aparências.
 4. **Ajustes de superfície:** só então refine tipografia, cartões, botões, fundo e gráficos. Preserve a `contraparte` gerada pela derivação.
 
+<!-- SARAK-KIT:ARQUETIPOS:INICIO -->
+
 | Arquétipo embarcado | Demonstra |
 | --- | --- |
-| `sarak-sovereign` | referência completa; vidro, atmosfera, identidade e contraparte (`surfaceMaterial`, `texture`, `contraparte`) |
-| `cyberpunk-neon` | cor neon com contraste controlado, quinas e botão wireframe (`primaryColor`, `cardGeometricCut`, `btnStyleType`) |
-| `industrial-terminal` | material industrial, alto contraste e movimento mecânico (`cardTextureType`, `btnStyleType`, `motion*`) |
-| `neo-brutalism` | papel claro, contorno grosso e sombra dura (`cardBorderWidth`, `cardShadow*`, `borderRadius`) |
-| `nebula-space` | vidro profundo, raios grandes e transição longa (`cardBackdropBlur`, `cardBorderRadius`, `pageTransitionType`) |
-| `kinetic-flow` | movimento elástico e foco luminoso (`motionEase*`, `cardHoverGlow`, `cardInnerGlow*`) |
-| `cyber-retro-wave` | acabamento prismático e cromo de inspiração Y2K (`texture`, `btnStyleType`, `iconFamily`) |
-| `minimalist-airy` | referência clara com espaço e leitura de conteúdo (`layoutDensity`, `layoutPadding`, `headingFont`) |
-| `data-terminal` | caderno técnico compacto e monoespaçado (`layoutDensity`, `monoFont`, `chartType`) |
-| `neumorphic-mobile` | superfície tátil e controles amplos (`surfaceMaterial`, `cardShadow*`, `btnStyleType`) |
-| `golden-hour` | papel quente, tipografia editorial e grão (`headingFont`, `texture`, `textureOpacity`) |
-| `aurora-veil` | vidro claro e aurora difusa (`cardBackdropBlur`, `bgGradient*`, `surfaceMaterial`) |
-| `blueprint-protocol` | grade técnica, cotas e marcação de revisão (`texture`, `monoFont`, `borderStyle`) |
-| `editorial-ink` | coluna editorial, serifada e espaçosa (`headingFont`, `bodySize`, `maxContentWidth`) |
-| `organic-clay` | material terroso, contorno orgânico e calma tátil (`cardTextureType`, `surfaceMaterial`, `borderRadius`) |
-| `high-contrast` | extremos tonais, leitura ampliada e contornos definidos (`bodySize`, `cardBorderWidth`, pares de contraste) |
-| `corporate-ledger` | tabela densa e relatório de negócios (`layoutDensity`, `table*`, `chartColorPalette`) |
-| `playful-pastel` | cor pastel, formas macias e pequenos gestos de movimento (`primaryColor`, `cardBorderRadius`, `motion*`) |
+| `sarak-sovereign` — Sarak Sovereign | Sala de comando: vidro escuro sobre constelação, ciano contido, Outfit nos títulos e Phosphor preenchido. |
+| `cyberpunk-neon` — Cyberpunk Neon | Néon ácido: verde sobre preto, quina cortada, mono maiúsculo e botão wireframe. |
+| `industrial-terminal` — Industrial Terminal | CRT âmbar de chão de fábrica: chapa, listra de perigo, zero raio, estêncil e movimento mecânico. |
+| `neo-brutalism` — Neo Brutalism | Brutalismo claro: papel creme, borda preta grossa, cor chapada, sombra dura deslocada. |
+| `nebula-space` — Nebula Space | Espaço profundo: violeta e gelo sobre azul-noite, vidro espesso, estrelas, ícone fino e movimento longo. |
+| `kinetic-flow` — Kinetic Flow | Performance em grafite, coral, âmbar e menta; curva elástica e foco de luz nos cartões. |
+| `cyber-retro-wave` — Cyber Retro Wave | Y2K prateado com prisma, ciano elétrico, violeta e verde ácido; geometria polida e brilho neon controlado. |
+| `minimalist-airy` — Minimalist Airy | Referência clara do conjunto: papel branco, tinta de alto contraste, azul preciso e espaço generoso. |
+| `data-terminal` — Data Terminal | Caderno de laboratório em verde técnico, mono e compacto; a contraparte leva a grade ao terminal escuro. |
+| `neumorphic-mobile` — Neumorphic Mobile | Interface móvel tátil em cinza suave, com relevo neumórfico, rosa controlado e controles amplos. |
+| `golden-hour` — Golden Hour | Editorial de fim de tarde em papel creme, tinta serifada, ouro quente e grão fotográfico. |
+| `aurora-veil` — Aurora Veil | Véu de vidro lavanda com aurora verde-água e rosa, difuso e luminoso nos dois modos. |
+| `blueprint-protocol` — Blueprint Protocol | Cianótipo técnico em azul médio, grade de engenharia, cotas monoespaçadas e linha vermelha de revisão. |
+| `editorial-ink` — Editorial Ink | Papel quente, tinta precisa e uma coluna de leitura com ritmo editorial. |
+| `organic-clay` — Organic Clay | Barro, madeira e contornos topográficos em uma superfície tátil e tranquila. |
+| `high-contrast` — High Contrast | Preto e branco absolutos, amarelo de ação e contornos definidos para leitura imediata. |
+| `corporate-ledger` — Corporate Ledger | Um caderno de dados preciso, denso e pronto para tabelas e relatórios. |
+| `playful-pastel` — Playful Pastel | Pastéis vivos, formas macias e pequenos gestos de movimento com leitura clara. |
+| `sarak-sovereign-classic` — Sarak Sovereign Classic | O Sovereign de origem: vidro escuro, ciano vivo com violeta e magenta, Inter no corpo, Outfit nos títulos e marcador de item ativo com brilho. |
+| `cyberpunk-neon-classic` — Cyberpunk Neon Classic | Hacker de terminal: verde #00ff41 sobre preto, cantos retos com quina cortada, mono em tudo, grade de HUD e botão wireframe. |
+| `industrial-terminal-classic` — Industrial Terminal Classic | Painel de máquina: âmbar #ff9900 sobre grafite, zero raio, borda grossa, listra de perigo, mono maiúsculo e movimento nulo. |
+| `cyber-retro-wave-classic` — Cyber Retro-Wave 2077 Classic | Neon dos anos 80: magenta e ciano sobre violeta-escuro, quina cortada, Orbitron maiúsculo, VT323 no código e scanlines. |
+| `nature-breeze` — Nature Breeze | Brisa de jardim: verde #2e7d32 com amarelo e verde-azulado sobre papel esverdeado, Lora nos títulos, vidro leve de cantos de 32 px e botão em pílula. No escuro, o preto da foto com o verde da marca. |
+| `neo-brutalism-classic` — Neo Brutalism Classic | Brutalismo de origem: vermelho #ff0000 com amarelo e azul puros sobre papel neutro, borda preta de 4 px, sombra dura deslocada, Space Grotesk e cantos retos. No escuro, o preto da foto, sem sombra. |
+| `dot-matrix-elegant` — Dot Matrix Elegant | Matriz de pontos elegante: dourado #d4af37 sobre preto, pontos de fundo, Outfit leve nos títulos, cantos de 4 px e respiro largo. No claro, marfim com dourado-escuro. |
+
+<!-- SARAK-KIT:ARQUETIPOS:FIM -->
 
 Os nomes ajudam a escolher um ponto de partida; confirme os ids, amostras e modos do catálogo no runtime. A vitrine gerada mede cada preset nas duas aparências e nos tamanhos desktop e celular.
 
