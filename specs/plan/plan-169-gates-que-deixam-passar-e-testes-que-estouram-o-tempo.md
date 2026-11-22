@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fechar os pontos cegos de quatro gates, gerar a tabela de temas do guia e acabar com os testes que estouram o tempo sob carga"
 objetivo: "Fazer o auditor de hardcode, o chrome-token-parity e o zero-brand verem o que hoje deixam passar, tirar o rastro de plan da 01-gates-e-baseline, gerar a tabela de arquétipos do guia a partir do catálogo de temas e deixar a suíte de unidade verde sob a carga do npm version"
 dominio: "Qualidade / Gates e suíte"
-status: "🔵 Em correção"
+status: "🟡 Em execução"
 prioridade: "Média"
 tags: ["plan", "gates", "suite", "guia", "release-9-0-0"]
 relacionados: ["[[01-gates-e-baseline]]", "[[05-cromo-e-slots]]", "[[09-temas-e-presets]]"]
@@ -789,3 +789,103 @@ plan-167: com só a linha do comentário passam sobre o `HEAD`, então saem no c
 **Seguem pendentes:** o 2.1 (vez da 167) e o `coverage:check` (do revisor, no fechamento).
 
 **Status da plan: 🔵 Em correção.**
+
+## Resumo da execução (correção 5: achado 5 do veredito "correção 4") — 2026-11-22
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar:** worktree compartilhado e sujo (trabalho das plans 167/168 e desta); `TableMock.tsx` e `catalogEntries.layout.ts` já constavam como modificados. Editei só as linhas abaixo, por substituição exata.
+
+**O que foi feito**
+- `TableMock.tsx:36-41` — `AWS Hosting`→`Hospedagem`, `Stripe Payout`→`Recebimento`, `Github Copilot`→`Licença`, `Vercel Pro`→`Assinatura`, `Google Cloud`→`Armazenamento`.
+- `Dashboard/DashboardSidePanel.tsx:17` — `GPT-4o`→`Modelo` (mensagem agora `New Model Injected: Modelo`).
+- `catalogEntries.layout.ts:55` — `Sidebare`→`Sidebar` (italiano).
+- `__tests__/TableMock.test.tsx:62` — a asserção citava `AWS Hosting`; passou a `Hospedagem` (consequência necessária da troca).
+- Login social intocado, como mandado.
+
+**Verificações executadas**
+- `npx vitest run …/Mocks/__tests__/TableMock.test.tsx …/DashboardMock.test.tsx` → 2 arquivos, 9 testes verdes.
+- `npx vitest run src/features/DesignEngine/Canvas/Mocks src/core/i18n src/features/DesignEngine/Canvas/__tests__` → 119 verdes, 1 falha (abaixo).
+- `grep` por `AWS Hosting|GPT-4o|Sidebare|Stripe Payout|Vercel Pro|Github Copilot|Google Cloud` em `src` → sem ocorrências restantes (fora o login social).
+
+**Critérios de aceite**
+- [x] Cinco nomes do TableMock, GPT-4o e Sidebare trocados.
+- [ ] "Regenerar o snapshot afetado com `-u`": **não feito — nenhum snapshot cita os textos trocados** (grep em `*.snap`: zero). O único snapshot vermelho, `PreviewCanvas.test.tsx.snap`, diverge em ordem/presença de variáveis `--sarak-color-*` no `style` do cromo — efeito de trabalho de outra tarefa (o `.snap` e `useDesignVariables`/`colors.ts` já estavam modificados na fotografia), não da minha troca. Rodar `-u` ali regravaria trabalho alheio; deixei como está.
+
+**Decisões e suposições**
+- Editei `TableMock.test.tsx` mesmo fora da lista literal, pois a asserção quebraria.
+- "Modelo" no painel lateral foi literal do pedido, ainda que a frase fique em inglês+português.
+
+**Achados fora do escopo (não corrigidos)**
+- `PreviewCanvas.test.tsx` vermelho por snapshot desatualizado em relação ao trabalho em andamento nas variáveis de cor; quem regenera é o dono dessa mudança.
+
+**Pendências / riscos**
+- 2.1 segue esperando a 167; `coverage:check` é do revisor. Sem build, navegador ou commit.
+
+## Veredito — 2026-11-22 — correção 5 — 🔵 Em correção (achado 5 aprovado; um nome de pessoa que a varredura do revisor não viu)
+
+**Como medi:** li o diff; varri `src/` inteiro, `bin/` e os templates do kit por nome de pessoa, empresa e produto; montei `HEAD` + só os
+arquivos desta plan numa cópia e rodei os gates (verdes) e o `tsc` (0). A suíte inteira roda nessa cópia.
+
+**Achado 5 da correção 4: aprovado.** Os seis textos e o "Sidebare" saíram. O português dentro de frase em inglês é do backlog #94.
+
+**Achado 1 — "Maria Souza" nas amostras do painel.** `sampleInputValue` (`src/core/i18n/catalogEntries.panel.ts`) leva nome de pessoa nos
+seis idiomas, e aparece na amostra de campo e nas quatro linhas da de tabela. As duas varreduras anteriores do revisor só olharam
+`features/` e `components/`.
+**Correção:** o valor vira Nome, Name, Nombre, Nom, Name e Nome (pt, en, es, fr, de, it), e `SampleParts.test.tsx` acompanha. É a única
+linha a mudar nesse arquivo, que também tem diff da plan-168. Os testes e o spec de navegador da assinatura usam dado próprio e não mudam.
+
+**Commit parcial:** sai se a suíte da cópia isolada passar, com as linhas desta plan dos três snapshots compartilhados por patch no índice.
+
+**Seguem pendentes:** o 2.1 (vez da 167) e o `coverage:check` (do revisor, no fechamento).
+
+**Status da plan: 🔵 Em correção.**
+
+## Resumo da execução (correção 6: achado 1 do veredito "correção 5") — 2026-11-22
+
+**Resultado:** Concluído
+
+**Estado do worktree ao iniciar:** worktree compartilhado e sujo (trabalho das plans 167/168 e desta); `catalogEntries.panel.ts` já constava modificado (diff da 168).
+
+**O que foi feito**
+- `src/core/i18n/catalogEntries.panel.ts:37` — `sampleInputValue` de "Maria Souza"/"María Souza"/"Marie Souza" para Nome, Name, Nombre, Nom, Name, Nome (pt, en, es, fr, de, it). Só essa linha, por substituição por número de linha.
+- `SampleParts.test.tsx:59` — valor esperado `'Maria Souza'` → `'Nome'` (o teste roda em pt; a primeira tentativa com `'Name'` falhou e foi corrigida).
+
+**Verificações executadas**
+- `npx vitest run …/SampleParts.test.tsx …/PresetSamples.test.tsx` → 2 arquivos verdes.
+
+**Critérios de aceite**
+- [x] Seis idiomas trocados — `catalogEntries.panel.ts:37`.
+- [x] Teste de SampleParts acompanha; testes de assinatura não tocados.
+
+**Achados fora do escopo (não corrigidos):** nenhum.
+
+**Pendências / riscos:** 2.1 aguarda a 167; `coverage:check` é do revisor. Sem build, navegador nem commit.
+
+## Veredito — 2026-11-22 — correção 6 — 🟡 Correções aprovadas; resta o 2.1
+
+**Como medi:** rodei a suíte inteira numa cópia com `HEAD` + só os arquivos desta plan: **6986 de 6986 testes verdes em 779 arquivos**,
+com a máquina carregada por outras sessões (a prova do `PresetSamples`). Sobre ela, a correção 6: 359 testes das pastas consumidoras
+verdes, `tsc` 0 e `zero-brand:check` verde.
+
+**Aprovados:** o achado 1 da correção 5 e, com ele, os gates 2.2 e 2.3, a Z1 e o lote 4.
+
+**Commit parcial liberado:** os arquivos testados na cópia, com as linhas desta plan de `SarakActionCard`, `SarakTitleCard` e
+`PreviewCanvas` por patch no índice. Só passa no hook depois que a plan-167 deixar `audit:baseline`, `variable-contract:check` e
+`dev-kit:check` verdes.
+
+**Resta:** o 2.1 (H1 a), quando a 167 liberar build e navegador, e o `coverage:check`, do revisor, no fechamento.
+
+**Status da plan: 🟡 Em execução.**
+
+## Veredito — 2026-11-22 16:00 — nova revisão sem entrega nova — 🟡 O veredito "correção 6" continua valendo
+
+**Como medi:** nenhum resumo nem arquivo desta plan mudou depois do veredito "correção 6". O conjunto do commit parcial segue idêntico ao
+testado (6986 de 6986), o patch dos três snapshots ainda aplica no índice, e na suíte inteira do worktree de hoje (7017 de 7020) nenhum
+vermelho é desta plan. Num conjunto isolado, `HEAD` + 169 + 168, os gates que bloqueiam o commit ficam verdes: o bloqueio vem só da 167
+(achado 1 do veredito "2026-11-22 16:00" dela).
+
+**Resta:** o commit parcial, o 2.1 depois que a 167 liberar build e navegador, e o `coverage:check`, do revisor, no fechamento. Sem
+execução nova desta plan até a 167 fechar.
+
+**Status da plan: 🟡 Em execução.**

@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Gráficos que ocupam o quadro e os ajustes principais do painel nos seis idiomas"
 objetivo: "Fazer o SarakChartEngine usar o espaço do quadro em todos os tipos, sem achatar o desenho em quadros médios, e mostrar nos seis idiomas o nome e a descrição dos tokens que aparecem nas decisões principais do painel"
 dominio: "Componentes / Gráficos · Painel / Idiomas"
-status: "🔵 Em correção"
+status: "🟢 Aprovada"
 prioridade: "Média"
 tags: ["plan", "graficos", "i18n", "painel", "release-9-0-0"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[09-temas-e-presets]]", "[[10-seguranca-e-acessibilidade]]"]
@@ -651,3 +651,81 @@ de 23 e it 4 com as fontes do tema. O spec novo não vê, porque mede só a caix
 três de seletor, e o ok do dono vem com elas.
 
 **Status da plan: 🔵 Em correção.**
+
+## Resumo da execução (lote 3, correção 2) — 2026-11-22
+
+**Resultado:** Concluído. Achado 1 do veredito "lote 3 (correção 1)" resolvido; o ok do dono vem com as três capturas.
+
+**Estado do worktree ao iniciar**
+Worktree compartilhado, com trabalho não commitado das plans 167 e 169 e dos temas (133 linhas fora de `dist/`; arquivos dessas plans não foram tocados por esta correção). Os artefatos de `dist/` aparecem modificados por causa do build que a prova exigiu.
+
+**O que foi feito**
+- `src/core/i18n/catalogEntries.decisionOptions.ts:72` — os cinco textos da opção automática de `mobileNavigationStyle` do veredito: en "Automatic (up to 5 at the bottom)", es "Automático (hasta 5 abajo)", fr "Automatique (5 max. en bas)", de "Automatisch (bis zu 5 unten)", it "Automatico (fino a 5 in basso)". O português (chave da linha e `schema/global.ts`) não mudou.
+- `browser-tests/seletor-cabe-na-coluna.spec.ts` — além da caixa, mede a largura de cada opção de cada `<select>` (`measureText` na fonte computada) contra a área útil (`clientWidth` menos o padding) e reprova a que passa de 1 px; cabeçalho e limites declarados atualizados.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/i18n/catalogEntries.decisionOptions.ts` | alterado | cinco textos da opção automática |
+| `browser-tests/seletor-cabe-na-coluna.spec.ts` | alterado | verificação do texto de cada opção |
+
+**Verificações executadas**
+- Prova com o texto antigo (catálogo revertido por `sed`, depois restaurado): 9 de 12 casos reprovam — ex.: de com fontes `"Automatisch (bis zu 5 Einträge unten)" +23px`, de sem fontes +8, it com fontes +4; pt (3 casos) passa. Saída na conversa.
+- Com os textos novos: `seletor-cabe-na-coluna.spec.ts` → 12 passed (11,2 min), com a bateria da 167 fora do ar.
+- Capturas refeitas em `%TEMP%\sarak-previa-168\`: `c2-en-seletor.png`, `c2-fr-seletor.png`, `c2-de-seletor.png` (Barras, linha "Navigation mobile"; o valor selecionado aparece inteiro). Li a de fr.
+- Não rodei suíte, `tsc` nem baseline (são do revisor).
+
+**Critérios de aceite**
+- [x] cinco textos, português intacto — evidência: `catalogEntries.decisionOptions.ts:72`
+- [x] spec reprova texto de opção largo demais, provado com o texto antigo — evidência: 9 vermelhos acima
+- [x] três capturas refeitas — evidência: arquivos `c2-*-seletor.png`
+
+**Decisões e suposições**
+- "Área útil" = `clientWidth` − padding horizontal; a seta nativa não é descontada à parte (o padding direito a reserva). Tolerância de 1 px, a mesma do spec.
+- Capturas mostram o painel inteiro em Barras com a linha visível, sem o menu nativo aberto (não se fotografa em headless).
+- Antivírus: nenhum `bundle.js` sumiu nem deu timeout; não consultei `Get-MpThreatDetection` por não haver sintoma.
+
+**Fora do escopo desta correção, mas feito por segunda instrução do dono (plan-167, achado 1 — botão de sair)**
+- Causa: regressão do `685d83f5` (plan-170). Correção: `SarakShellUserWidget.tsx:17-22` volta ao `color-mix` de 40% de erro + `--sarak-on-surface`, no repouso e no hover, encabeçado por `--sarak-shell-logout-text-color`; `chromeToneStyle.ts:84` entrega a cor calculada nessa variável em vez de sobrescrever `--sarak-status-error-color` (que pinta o fundo sólido do hover). Testes de unidade ajustados (`chromeToneStyle.test.ts`, `SarakShellUserWidget.test.tsx`). `contrast-pairs.ts` já media `mix:statusErrorColor`, que agora é o que o botão pinta; não mudou. Limiar e spec não mudaram.
+- Armadilha medida: com o nome `--sarak-logout-text-color` o spec seguia vermelho (1,65 e 1,88), porque o Tailwind ordena as utilities por nome e a classe `text-[var(--sarak-primary-color…)]` do botão fantasma vinha depois da minha e vencia. O nome `--sarak-shell-…` ordena depois (posições 87028 > 86267 em `dist/sarak.css`). A solução depende dessa ordem alfabética; é frágil.
+- Prova em build novo (`npm run build`, exit 0): `contraste-do-que-faltava` 24/24 e `contraste-do-cromo-nas-barras` 1/1 verdes (25 passed); `vitest` de `SarakShellUserWidget` + `Layout/chrome` → 25 arquivos, 250 testes verdes.
+- Capturas do sair, em repouso (hover não fotografado), tema `industrial-terminal`, barra lateral, em `%TEMP%\sarak-previa-167\`: `sair-neutral-light.png`, `sair-neutral-dark.png`, `sair-inverse-light.png`, `sair-inverse-dark.png`. Cor do botão: neutro claro rgb(78,70,63), neutro escuro rgb(201,191,183), contrastante claro rgb(230,220,212), contrastante escuro rgb(34,27,21). Na barra expandida o sair é o ícone mudo (a tinta vermelha só existe na variante mini e no hover); a prova de 4,5:1 é a do spec.
+- Esses arquivos estão no escopo da plan-167; o resumo e o status da 167 ficam com a execução dela (não editei `plan-167`).
+
+**Achados fora do escopo (não corrigidos)**
+- A dependência da ordem alfabética do Tailwind entre `LOGOUT_TEXT` e a variante fantasma do `SarakIconButton` (acima) pede uma solução que não dependa de nome.
+
+**Pendências / riscos**
+- Ok do dono nas capturas (168 e sair).
+- Outras mudanças do worktree (catálogo gerado, `DashboardSidePanel`, plans 167/169/170, snapshots) são de outras execuções.
+
+## Veredito — 2026-11-22 16:20 — lote 3 (correção 2) — 🟠 Aprovado tecnicamente; espera o ok do dono nas capturas
+
+**Como medi:**
+- cópia isolada com `HEAD` + commit parcial da 169 + os 27 arquivos não commitados desta plan: **7011 de 7011 testes em 783 arquivos**,
+  `tsc` 0, `audit:baseline` igual e os gates do Anel 1 verdes (o `trail-citation:check` precisa de git e foi conferido na raiz, verde);
+- `seletor-cabe-na-coluna` num build novo do worktree: 12 de 12. Mutação do revisor (o texto alemão antigo): 2 de 2 caem, +23 e +8 px;
+- li as três capturas `c2-{en,fr,de}-seletor.png`: o valor selecionado aparece inteiro.
+
+**Aprovado:** o achado do veredito "lote 3 (correção 1)" e, com ele, os lotes 2 e 3.
+
+**Fora desta plan:** o botão de sair, executado junto por instrução do dono, foi revisado na plan-167 (achado 3 do veredito
+"2026-11-22 16:00") e não entra no commit desta.
+
+**Não rodei:** a bateria inteira de navegador, que é do fechamento.
+
+**Para o 🟢:** o ok do dono nas três capturas. O commit leva só os 27 arquivos testados e entra depois do commit parcial da 169.
+
+**Status da plan: 🟠 Em revisão.**
+
+## Veredito — 2026-11-22 17:58 — lote 3 (correção 2) — 🟢 Aprovado
+
+**Ok do dono:** "ok, para as previas", sobre as três capturas `c2-{en,fr,de}-seletor.png`, inalteradas desde a revisão.
+
+**Como conferi antes do 🟢:** os arquivos do commit seguem idênticos ao conjunto que passou a suíte inteira no veredito "16:20". Nesse
+conjunto repeti o `vitest` de `core/i18n` e de `features/DesignEngine` (1126 de 1126) e o `tsc` (0). Na raiz, os gates do Anel 1, a
+auditoria contra o baseline e a varredura de segredos ficaram verdes.
+
+**Não rodei de novo:** o navegador (nenhum arquivo do commit mudou). A bateria inteira é do fechamento.
+
+**Status da plan: 🟢 Aprovada.**

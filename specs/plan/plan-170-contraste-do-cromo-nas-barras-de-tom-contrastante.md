@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Levar a 4,5:1 o item ativo, o idioma, o botão de sair e o nome do usuário nas barras de tom contrastante e em degradê"
 objetivo: "Fazer cada peça do cromo ficar em ao menos 4,5:1 (texto) ou 3:1 (ícone) sobre a barra que a desenha, inclusive nas paradas claras do degradê, e esvaziar a lista de exceções do teste das Personalidades"
 dominio: "Cromo / Contraste"
-status: "🟢 Aprovado"
+status: "🔵 Em correção"
 prioridade: "Média"
 tags: ["plan", "cromo", "contraste", "acessibilidade", "release-9-0-0"]
 relacionados: ["[[05-cromo-e-slots]]", "[[09-temas-e-presets]]", "[[10-seguranca-e-acessibilidade]]"]
@@ -736,3 +736,37 @@ M  src/core/Design/palette/tone-plan.ts
 junto de `docs/migracoes.md` e do kit. Até lá, esse teste fica vermelho no `HEAD`: não dar push entre os dois commits.
 
 **Status da plan: 🟢 Aprovado** (aguarda a síntese).
+
+## Veredito — 2026-11-22 — regressão achada depois do commit — 🔵 Em correção (retiro o 🟢)
+
+**A falha foi do revisor**, que aprovou sem rodar `contraste-do-que-faltava.spec.ts` e deixou a bateria para o fechamento.
+
+**Regressão do commit `685d83f5` (não empurrado).** `LOGOUT_TEXT` e `LOGOUT_HOVER_TEXT`, em `SarakShellUserWidget.tsx`, trocaram o
+`color-mix` (40% de erro + texto de maior contraste) pelo vermelho cru em todos os usos. A cor calculada só entra nas barras
+contrastantes: `resolveChromeToneStyle` devolve vazio no tom neutro. Fora delas, o sair mede **1,73:1 no claro e 1,94:1 no escuro**
+(mínimo 4,5) na bateria de 2026-11-22. O gate não acusa, porque `contrast-pairs.ts` segue medindo `mix:statusErrorColor` (linhas 112 e
+113), que o componente não pinta mais.
+
+**Correção, executada pela plan-167 (achado 1 dela), que tem a vez do navegador:**
+- fora das barras contrastantes, o sair volta ao `color-mix` de antes, no repouso e no hover;
+- nas barras contrastantes, a cor calculada chega por variável própria do texto do sair, sem sobrescrever `--sarak-status-error-color`,
+  que também pinta o fundo sólido do hover;
+- o par do gate mede o que o componente pinta, e o teste de unidade deixa de exigir a classe crua;
+- prova num build novo: `contraste-do-que-faltava` e `contraste-do-cromo-nas-barras` verdes, e captura do sair em barra neutra e
+  contrastante, claro e escuro, para o ok do dono.
+
+**Status da plan: 🔵 Em correção.**
+
+## Veredito — 2026-11-22 16:00 — a regressão do `685d83f5` é maior que o botão de sair — 🔵 Em correção (executa a plan-167)
+
+**Falha do revisor, a segunda nesta plan:** o 🟢 saiu também sem rodar `browser-tests/tom-contrastante-legivel.spec.ts`. Medido por
+`git archive`: 28 de 28 verdes no commit anterior a `685d83f5` e 7 vermelhos nele (texto do usuário e ícone do idioma entre 3,85 e 4,46;
+P/M/G e Lateral a 1,05 em nebula-space claro). São regressão da plan, não dívida antiga.
+
+**Quem corrige:** a plan-167, achados 3 e 5 do veredito "2026-11-22 16:00" dela, que tem as causas medidas. O conserto do sair entregue na
+execução da plan-168 fecha `contraste-do-que-faltava`, mas não pinta a cor na lateral recolhida.
+
+**Para voltar ao 🟢:** `contraste-do-que-faltava`, `contraste-do-cromo-nas-barras`, `tom-contrastante-legivel` e
+`plan-149-barras-personalidade` verdes juntos num build novo, e o ok do dono nas capturas novas do sair.
+
+**Status da plan: 🔵 Em correção.**

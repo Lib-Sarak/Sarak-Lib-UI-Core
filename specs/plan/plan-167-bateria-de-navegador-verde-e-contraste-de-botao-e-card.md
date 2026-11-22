@@ -911,3 +911,163 @@ com as plans 168 e 169 paradas.
 - As entradas antigas de `docs/migracoes.md` são histórico e não mudam.
 
 **Do revisor, na síntese:** `specs/arquitetura/02-design-engine.md` §10.3.
+
+## Nota do revisor — 2026-11-22 08:22 — passagem para uma conversa nova
+
+A conversa anterior não gravou resumo na §9 depois do veredito dos 5 achados. Estado medido pelo revisor:
+
+| Achado | Estado |
+|---|---|
+| 1 — bateria | em andamento na cópia `%TEMP%\sarak-167-copia` (sincronizada 08:06, build 08:10), com um laço por spec gravando em `logs2\` e `logs2\ordem.txt`. O laço é solto da conversa e pode seguir rodando |
+| 2 — D1 (a) | código, temas, testes de navegador e a entrada 9.0.0 editados na raiz desde 08:01, **sem revisão**. Faltam os gerados (`token-types:check`, `catalog:check` e `guide:check` vermelhos), a cópia de `docs/migracoes.md` no kit e os snapshots `PreviewCanvas` e `AtmosphereCatalog` |
+| 3 — codificação | pronto e conferido |
+| 4 — card de título | não começou: título e subtítulo seguem com `--theme-text-primary`, sem hover no título |
+| 5 — prévias | não começou: as quatro de `%TEMP%\sarak-previa-167\` são de 2026-11-21 |
+
+**Resultados parciais em `logs2\`:**
+- verdes: `arsenal-lote4`, `arsenal-restante-desenha` e `plan-140-painel-coluna-unica`;
+- `contraste-hover-botao`: 2 de 16 vermelhos (painel app claro e painel embarcado claro);
+- `contraste-do-que-faltava`: 2 de 24 vermelhos, o botão de sair em `contraste-claro` e `contraste-escuro` (1,73 e 1,94 para um mínimo
+  de 4,5). Conferir no `HEAD` e contra o commit `685d83f5` (plan-170), que mexeu na cor desse botão;
+- em andamento: `plan-141-presets-do-painel`;
+- sem resultado novo, da última bateria completa (24 falhas): `amostras-reais-custo`, `plan-149`, `plan-161` e `tom-contrastante`.
+
+**Antivírus:** entre 07:32 e 07:57 o Defender pôs 7 `bundle.js` do harness em quarentena (`Trojan:Win32/Bearfoos.A!ml`, falso positivo
+provável). Os timeouts dessa janela em `logs\` não valem. Timeout novo: conferir `Get-MpThreatDetection` antes de classificar. Havendo
+detecção nova, parar e avisar o dono. Nunca permitir a ameaça, criar exclusão ou mudar o build para escapar do antivírus.
+
+**Ordem dos gerados:** os da D1 podem sair já, porque o que resta da plan-169 não os altera. Só o snapshot `PreviewCanvas` espera a 169
+parar.
+
+**Nomes na nota acima:** `plan-140`, `plan-141`, `plan-149` e `plan-161` são **arquivos de teste**, não plans abertas (as plans com esses
+números já foram sintetizadas): `browser-tests/plan-140-painel-coluna-unica.spec.ts`, `browser-tests/plan-141-presets-do-painel.spec.ts`,
+`browser-tests/plan-149-barras-personalidade.spec.ts` e `browser-tests/plan-161-catalogo-proporcional.spec.ts`.
+
+## Resumo da execução (correção 1, passo 1 — D1) — 2026-11-22
+
+**Passo 1 — D1 (a), remover `colorDepth` e `colorVariation`: concluído, exceto o snapshot `PreviewCanvas` (espera a plan-169 parar; há um vitest dele rodando na raiz às 08:26).**
+
+- Diff conferido contra as duas notas da D1: schema (`colors.ts`), 25 temas (50 linhas removidas, só as duas chaves), `constants.ts`, `manifest.ts`, `coverage.ts` (`PALETTE_IDS`), `color-engine.ts` (`ColorVariantShape`, `rotateHue` e o parâmetro de forma saem; hover = ×1,1, active = ×0,9), `useDesignVariables.ts`, `designVariableHelpers.ts`, `REMOVED_TOKEN_KEYS`, testes (`useDesignVariables`, `removedTokenKeys`, `manifest`) e a entrada 9.0.0 de `docs/migracoes.md` com os três pontos. As entradas antigas não mudaram. Os dois tokens só aparecem agora em teste que prova a ausência, em `REMOVED_TOKEN_KEYS` e na migração.
+- Gerados regenerados pelos scripts: `npm run token-types` (430 tokens), `npm run catalog` (139 componentes), `npm run guide` (kit com a cópia de `docs/migracoes.md`).
+- Snapshot `AtmosphereCatalog` regenerado com `-u` só nele; o diff por palavra tem exatamente 4 remoções de `--sarak-color-depth: 1; --sarak-color-variation: 1`.
+- Verificações: `token-types:check`, `catalog:check`, `guide:check`, `token-reader:check`, `theme-completeness:check` verdes (25/25); `tsc --noEmit` sem saída (0 erros); `audit:baseline --with-tsc` "igual ao baseline… nenhuma regressão"; `vitest run src/core/Design src/core/Provider` → 130 arquivos, 1934 testes verdes.
+- Pendência do passo: `PreviewCanvas.test.tsx.snap` (2 ocorrências das variáveis), regenerar com `-u` só nele quando a 169 parar. `dev-kit:check` não foi rodado (fora da lista do passo).
+
+## Nota do revisor — 2026-11-22 — a causa do vermelho do botão de sair
+
+É regressão da plan-170 (`685d83f5`), já provada: não precisa do controle no `HEAD`. A correção é desta plan, pelo veredito
+"regressão achada depois do commit" da §10 da plan-170. `SarakShellUserWidget.tsx`, `chromeToneStyle.ts`, `chromeToneContrast.ts`,
+`contrast-pairs.ts` e os testes deles entram no escopo. O limiar e o `contraste-do-que-faltava.spec.ts` não mudam.
+
+## Resumo da execução (correção 1, passo 2 — achado 4, `SarakTitleCard`) — 2026-11-22
+
+- **Escolha:** subtítulo em `--sarak-text-sec` (fallback `--theme-text-primary`); título em `--theme-text-primary` no repouso e, no hover, mistura de 60% de `--sarak-primary-color` com `--theme-text-primary` (`color-mix`). Etiquetas seguem em texto primário. `src/components/atomic/Cards/SarakTitleCard.tsx`.
+- **Por quê:** `textColorSecondary` entra nos pares de contraste da paleta contra o cartão (`palette/contrast-pairs.ts:35-41`, mínimo 4,5), logo mantém a hierarquia (abaixo do título) sem tema novo. A primária pura no hover ficou em 4,54–4,66 nos três temas, margem curta; a mistura dá folga.
+- **Medido no navegador (sonda na cópia, transição desligada), razão sobre o fundo composto do cartão:**
+
+| tema | subtítulo `--sarak-text-sec` | título repouso | título hover (mistura 60%) | primária pura (descartada) |
+|---|---|---|---|---|
+| padrão (escuro) | 13,91 | 16,86 | 8,03 | 4,66 |
+| cyberpunk-neon (escuro) | 13,71 | 16,72 | 7,90 | 4,61 |
+| minimalist-airy (claro) | 15,31 | 17,48 | 8,32 | 4,54 |
+
+- **Teste:** `browser-tests/contraste-hover-botao.spec.ts` (bloco do card): mantém 4,5:1 em hover para as três partes; a segunda asserção "hover não reduz o contraste do repouso" deixa de valer só para o **título**, que muda de cor de propósito (o limiar de 4,5:1 não mudou).
+- **Unidade:** `SarakTitleCard.test.tsx` atualizado; snapshots `SarakTitleCard` e `CardsCatalog` regenerados com `-u` só neles (diff = só as classes do título e do subtítulo). `PresetsCatalog` e `PreviewCanvas` (plan-169) ainda não foram regenerados.
+- **Verificação:** `npx vitest run src/components/atomic/Cards` (16 verdes + o snapshot regenerado); build novo na cópia `%TEMP%\sarak-167-copia` (`GIT_DIR` só inline no comando do build; a cópia não é repositório) e `contraste-hover-botao -g SarakTitleCard` → 3/3 verdes, com `color-mix` presente em `dist/sarak.css`. Uma primeira rodada deu 3/3 num `dist` velho porque o build tinha falhado por falta de `.git`; descartada.
+
+## Nota do revisor — 2026-11-22 09:30 — três gates desta plan bloqueiam o commit de todas
+
+- `dev-kit:check`: a D1 tirou dois tokens e o `sarak-dev/` ainda conta 432. Rodar `npm run dev-kit`.
+- `variable-contract:check`: não vê `style['--x'] = …` em `chromeToneStyle.ts`. Escrever `--sarak-shell-logout-text-color` como chave de
+  objeto (por exemplo, `Object.assign(style, { '--sarak-shell-logout-text-color': cor })`).
+- `audit:baseline` (`auditor_ghostvars` 0 → 2): `src/components/Layout/chrome/chromeToneStyle.ts` escreve variável em runtime e entra em
+  `RUNTIME_VARS_FILES` de `gates/scripts/audit/auditor_ghostvars.mjs`, com o motivo. É fonte real, não isenção.
+
+O revisor testou as duas últimas juntas numa cópia: os dois gates ficam verdes. Nada entra no baseline.
+
+## Resumo da execução (correção 1, passos 3 e 4 — achado 1 e achado 5) — 2026-11-22
+
+**Passo 3 — cada vermelho, sozinho, num build novo da cópia `%TEMP%\sarak-167-copia` (build com `GIT_DIR` só inline) e, para os que caem, no controle `%TEMP%\sarak-167-head` (`git archive HEAD` de `20b5a460`, build próprio, `node_modules` por junção).** Defender: última detecção 07:57 (as 7 já conhecidas); nenhuma nova.
+
+| spec | cópia (worktree) | HEAD limpo | destino |
+|---|---|---|---|
+| `arsenal-lote4` (10), `arsenal-restante-desenha` (27), `plan-140` (8), `plan-141` (27), `plan-161` (25), `amostras-reais-custo` (31, 2 skipped, 12,6 min) | verdes | não rodado | nada a fazer. `plan-161` e `amostras-reais-custo` estavam sem resultado; `amostras-reais-custo` mede tempo e passou com a máquina carregada pela raiz |
+| `contraste-hover-botao` | 2 de 16 vermelhos → **16/16 depois do conserto** | n/a (spec novo da 167) | **código perdeu algo:** o texto do `SarakButton` `ghost` era a cor primária crua e dava 4,10:1 sobre a superfície tingida do painel no tema claro (botões ESCURO/TABLET/MOBILE/VIEW ALL HISTORY), já em repouso. Conserto em `SarakButton.tsx` (`ghost`): `color-mix(in srgb, primária 85%, --sarak-on-surface)`. Medido: 5,22:1 claro e 5,68:1 escuro (antes 4,10 e 4,54). Snapshot `SarakDataTable.semPropsNovas` regenerado (diff = só essa classe) |
+| `contraste-do-que-faltava` (botão de sair, 2 casos: 1,73 e 1,94) | 2 vermelhos | **cai igual** (2 vermelhos) | **fora da 167, é da plan-170.** O commit `685d83f5` trocou o texto do sair por `--sarak-status-error-color` cru. O worktree já traz o conserto da 170 (`SarakShellUserWidget.tsx` e `chromeToneStyle.ts`, modificados às 08:51, com `--sarak-shell-logout-text-color`); a cópia é de 08:06 e não o tem. Não toquei |
+| `plan-149-barras-personalidade` (sair, lateral recolhida, primary/light: 1,11) | 1 vermelho | **cai igual** | mesma causa, plan-170. O `chromeToneContrast.ts:182` só calcula a cor do sair para a topbar, e a lateral recolhida fica sem ela |
+| `tom-contrastante-legivel` (28 casos) | 7 vermelhos (depois de reverter o IconButton; ver abaixo) | **cai igual: os mesmos 7** | **fora da 167, é da plan-170** (contraste do cromo em barra contrastante): ícone da barra a 3,85–4,21 e texto "user" a 4,39–4,46 em `minimalist-airy` claro e `sarak-sovereign` claro, texto "Lateral"/"M" a 1,05 em `nebula-space` claro (degradê). Leituras no log da cópia `logs2\tom.r3.log` |
+
+- **Erro meu, corrigido:** a primeira versão do conserto também mudou o ghost do `SarakIconButton`; isso derrubou 9 casos a mais de `tom-contrastante-legivel` (o `ChromeCollapseToggle` usa o `SarakIconButton` ghost e caiu a 4,44:1). Revertido: só o `SarakButton` mudou. Depois da reversão o conjunto vermelho ficou idêntico ao do HEAD.
+- **Aviso ao dono:** `contraste-do-que-faltava` (sair), `plan-149` (sair) e `tom-contrastante-legivel` (7) dependem da plan-170. Provado que caem no HEAD limpo e que a causa está em arquivos da 170. Não consegui deixá-los verdes dentro da 167.
+- `fontes-no-painel` não está na lista do achado 1; não rodei.
+- Verificação de unidade: `vitest run src/components/atomic/Buttons src/components/atomic/DataDisplay/SarakDataTable` → 45 arquivos, 287 testes, depois de regenerar o snapshot do DataTable.
+- Nota de migração do ghost adicionada em `docs/migracoes.md` (9.0.0) e kit regenerado (`guide:check` verde).
+
+**Passo 4 — capturas antes/depois do hover e do `SarakTitleCard`** (antes = HEAD `20b5a460`; depois = worktree da cópia). Todas em `C:\Users\Igor\AppData\Local\Temp\sarak-previa-167\passo4\`: `antes-botao-{neutro,texto-apagado,fantasma}-hover-{modo-claro,modo-escuro}.png` e `depois-…` (12 imagens), `antes-titlecard-hover-{padrao,escuro,claro}.png` e `depois-…` (6). **Aguardando o ok do dono.**
+
+## Veredito — 2026-11-22 16:00 — correção 1, passos 1 a 4, e o botão de sair — 🔵 Em correção (6 achados)
+
+**Como medi:** cópia do worktree com build novo, fora da raiz. Suíte inteira: 7017 de 7020 (os 3 vermelhos são desta plan: achados 1 e 2).
+Navegador: 92 de 99 nos cinco specs de contraste do achado 1 anterior (os 7 vermelhos são o achado 5). Sonda nos 25 temas × 2 modos ×
+3 tons × lateral recolhida e topo, no código entregue e num conserto candidato em cópia descartável. O `dist/` da raiz (08:53) não serve
+de prova: `SarakIconButton.tsx` mudou às 09:30, depois dele.
+
+**Aprovados:** D1 no código e na migração; codificação; o `ghost` do `SarakButton` (85%) com a nota; `contraste-do-que-faltava`,
+`contraste-do-cromo-nas-barras`, `plan-149-barras-personalidade` e `contraste-hover-botao` verdes no worktree com build novo.
+
+**Achados, nesta ordem:**
+
+1. **Três gates seguem vermelhos e bloqueiam o commit de todas as plans** (nota "09:30"). É o primeiro passo, antes de qualquer outro:
+   `npm run dev-kit`; a chave de objeto em `chromeToneStyle.ts`; `RUNTIME_VARS_FILES` em `auditor_ghostvars.mjs`.
+2. **Dois snapshots vermelhos.** `SarakDataTable.semPropsNovas` guarda a classe do `SarakIconButton` que foi revertida (regenerado 08:54,
+   revertido 09:30; os 287 verdes do resumo são anteriores à reversão). `PreviewCanvas` já pode ser regenerado: a 169 está parada e o
+   patch dela não depende do worktree. `-u` só nos dois.
+3. **O botão de sair da lateral recolhida não pinta a cor dele (150 de 150 cenas medidas).** Causa: o `tailwind-merge` lê
+   `text-[var(...,color-mix(...40%...))]` como tamanho de fonte, por causa do `%`. Não remove a cor do fantasma nem
+   `text-[var(--theme-muted)]`, que vence, e apaga o `text-xs` do botão. A dependência de ordem alfabética relatada vem daí.
+   - `text-[color:var(...)]` e `hover:text-[color:var(...)]` em `SarakShellUserWidget.tsx`: medido, a cor certa em todas as cenas e o
+     tamanho de volta. Sem depender do nome da variável.
+   - `chromeToneContrast.ts`: calcular a cor do sair também na lateral, sobre parada + tinta da faixa (5%) + tinta de erro (15%), com
+     folga de arredondamento (3,05). Só com o tipo, a recolhida em tom contrastante cai abaixo de 3:1; com os dois, nenhuma cena medida cai.
+   - Teste que caia sem o tipo (a classe apagada some e `text-xs` fica) e cena de navegador da recolhida que confira a cor pintada.
+4. **`SarakTitleCard` deixou de obedecer a `cardTitleColor` e a `subtitleColor`: regressão de tokens públicos.** Medido com magenta e
+   verde no config: o `HEAD` pinta as duas; o worktree, nenhuma (`--theme-text-primary` sempre existe e vence). A sugestão de
+   `--theme-text-secondary` do achado 4 anterior era do revisor e estava errada. Título: `--sarak-card-title-color` no repouso e mistura
+   de 60% da primária com ele no hover; subtítulo: `--sarak-subtitle-color`. Testado na cópia: os tokens pintam e
+   `contraste-hover-botao` segue verde. O teste de unidade volta a exigir os dois tokens.
+5. **Os 7 vermelhos de `tom-contrastante-legivel` são regressão de `685d83f5` e fecham nesta plan.** Controle por `git archive`: 28 de
+   28 verdes no commit anterior, 7 vermelhos no `685d83f5`. Os arquivos já estão no escopo; `tone-plan.ts` entra se a causa exigir.
+   - 6 casos: `resolveIdleForeground` mede só a parada nua, e o texto inativo aparece também sobre a faixa do usuário (5%) e o botão de
+     idioma (10% da própria cor). Medir esses fundos fecha os 6, mas muda a tinta em que o texto forte se apoia e derruba
+     `contraste-do-cromo-nas-barras` (idioma 4,46 em nebula-space): **o inativo e o forte se resolvem juntos.**
+   - `nebula-space` claro, lateral (1,05:1): o ramo do papel `surface` em `resolveChromeToneStyle` aplica um texto forte calculado para
+     um fundo que não é o pintado. Sem esse ramo, o caso passa. Achar a divergência sem desfazer o que o ramo corrige nos outros temas.
+   - Limiares e specs não mudam.
+6. **As capturas não servem ao ok do dono.** As quatro `sair-*` mostram a lateral expandida, onde o sair é mudo e não mudou; o par do
+   fantasma é idêntico byte a byte (a mudança é no repouso, e a foto é do hover); as do card mudam com o achado 4. Refazer: sair na
+   recolhida e no topo, neutro e contrastante, claro e escuro; fantasma em repouso; card em repouso e hover.
+
+**Prova da correção:** num build novo da cópia, posterior à última edição, os cinco specs acima verdes juntos; `vitest` de
+`Layout/chrome`, `Navigation`, `Buttons`, `Cards`, `DataDisplay` e `DesignEngine/Canvas`; os três gates. As duas baterias inteiras na raiz
+vêm depois do ok das capturas. Até lá, a 168 e a 169 ficam paradas.
+
+**Status da plan: 🔵 Em correção.**
+
+## Resumo da execução (correção 2, achado 1 — três gates) — 2026-11-22
+
+- `npm run dev-kit` (sarak-dev/ regenerado: 430 tokens, 139 componentes, 45 gates).
+- `chromeToneStyle.ts`: `--sarak-shell-logout-text-color` passou a chave de objeto (`Object.assign(style, { '…': cor })`).
+- `auditor_ghostvars.mjs`: `chromeToneStyle.ts` entra em `RUNTIME_VARS_FILES`, com o motivo em comentário. Nada no baseline.
+- Verdes: `dev-kit:check`, `variable-contract:check`, `audit:baseline` (igual ao baseline, nenhuma regressão).
+- **Parei aqui, como pedido, para o dono commitar a plan-169.** Achados 2 a 6 não iniciados.
+
+## Veredito — 2026-11-22 17:58 — correção 2, achado 1 — aprovado; a plan segue 🔵 nos achados 2 a 6
+
+**Como medi:** na raiz, os três gates e o resto do Anel 1 verdes. Em cópia do worktree, duas mutações no `auditor_ghostvars`: uma
+variável inexistente consumida em `chromeToneStyle.ts` reprova, e apagar a linha que emite a cor do sair reprova os dois consumos dela.
+A entrada em `RUNTIME_VARS_FILES` não cegou o gate.
+
+**Segue:** achados 2 a 6 do veredito "2026-11-22 16:00", depois que o dono commitar a 169 e a 168. O ok de hoje do dono é das capturas
+da 168 e não vale para as desta plan, que ainda serão refeitas.
+
+**Status da plan: 🔵 Em correção.**
