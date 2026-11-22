@@ -349,14 +349,10 @@ concatenação não existe no CSS publicado ([[07-responsividade-e-multidisposit
 `npm run chrome-token-parity:check` cobra a metade que nenhum outro auditor cobrava: **não o valor do
 token, a existência do consumidor**. Para cada token da lista, o gate exige uma referência ao `id` ou a uma
 das variáveis CSS declaradas **no `SarakAppChrome`** — `src/components/Layout/**`, mais os
-átomos compartilhados que ele usa para pintar o item de menu e a busca (`SarakMenuItem`, `SarakSearch`,
-`SarakShellNav`). Ausência de consumidor é bloqueio, e ele roda no `pre-commit`.
+átomos compartilhados que ele usa para pintar o item de menu, a busca e o avatar (`SarakMenuItem`, `SarakSearch`,
+`SarakShellNav`, `SarakShellUserWidget`). Um token que o cromo lê por um mapa de ids exportado do schema conta por `MAPA.chave` (`CHROME_WIDGET_POSITION_TOKEN_IDS.search`) ou pela chamada de um leitor genérico declarado no gate (`splitChromeWidgetsByPlacement`); citar só o nome do mapa não aprova os outros ids dele, e um id novo no mapa fica reprovado até alguém o ler. Ausência de consumidor é bloqueio, e ele roda no `pre-commit`.
 
-**O escopo são dois schemas, e nenhum deles por lista fechada:** todo token de `schema/navigation.ts` e a
-seção de layout de `schema/system.ts`, recortada no marcador da seção de bordas. Token novo dentro desse
-recorte entra na varredura sem editar o gate — token de layout declarado **depois** daquele marcador fica
-fora, e é limite declarado, não descuido.
-
+**O escopo cobre os tokens de cromo em qualquer schema:** todo token de `schema/navigation.ts` (o schema é avaliado, não lido como texto: o token montado por fábrica e o de `barPersonality.ts` entram), a seção de layout de `schema/system.ts` até o marcador de bordas (também avaliada, não lida como texto), os tokens de posição de `schema/preferences.ts` (os dois passos de tamanho de fonte ficam fora: quem os lê é o Provider, em `overlayPreferences.ts`) e todo token cujo id contém `navigation` nos demais `schema/*.ts`. Esse recorte inclui escolhas de navegação definidas fora do schema dedicado, como a navegação móvel de `schema/global.ts`, sem tratar outros grupos globais como tokens do cromo.
 **A contagem é fonte viva: o próprio comando a imprime.** O que esta spec fixa é a *relação* — todo token
 coberto tem consumidor no cromo, e o que não tem está em `ORPHAN_TOKENS`, cada um com origem
 `arquivo:linha`. **Hoje a lista está vazia**: todo token coberto tem consumidor.

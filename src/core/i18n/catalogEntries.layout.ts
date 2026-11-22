@@ -43,9 +43,15 @@ export const CATALOG_LAYOUT = {
     barSampleSales: { pt: 'Vendas', en: 'Sales', es: 'Ventas', fr: 'Ventes', de: 'Verkauf', it: 'Vendite' },
     barSampleOrders: { pt: 'Pedidos', en: 'Orders', es: 'Pedidos', fr: 'Commandes', de: 'Bestellungen', it: 'Ordini' },
     barSampleBrand: { pt: 'Sua marca', en: 'Your brand', es: 'Su marca', fr: 'Votre marque', de: 'Ihre Marke', it: 'Il tuo marchio' },
+    sampleTextBrand: { pt: 'Marca', en: 'Brand', es: 'Marca', fr: 'Marque', de: 'Marke', it: 'Marchio' },
+    sampleTextName: { pt: 'Nome', en: 'Name', es: 'Nombre', fr: 'Nom', de: 'Name', it: 'Nome' },
+    sampleTextSystem: { pt: 'Sistema', en: 'System', es: 'Sistema', fr: 'Système', de: 'System', it: 'Sistema' },
+    sampleTextCompany: { pt: 'Empresa', en: 'Company', es: 'Empresa', fr: 'Entreprise', de: 'Unternehmen', it: 'Azienda' },
+    sampleTextSupport: { pt: 'Suporte', en: 'Support', es: 'Soporte', fr: 'Assistance', de: 'Support', it: 'Supporto' },
+    sampleTextThemeName: { pt: 'Nome do tema', en: 'Theme name', es: 'Nombre del tema', fr: 'Nom du thème', de: 'Name des Themas', it: 'Nome del tema' },
     barSampleUser: { pt: 'Usuário', en: 'User', es: 'Usuario', fr: 'Utilisateur', de: 'Benutzer', it: 'Utente' },
     chromeSidebarResizeLabel: {
         pt: 'Ajustar a largura da Sidebar', en: 'Resize the sidebar', es: 'Ajustar el ancho de la Sidebar',
-        fr: 'Ajuster la largeur de la Sidebar', de: 'Breite der Sidebar anpassen', it: 'Regola la larghezza della Sidebare',
+        fr: 'Ajuster la largeur de la Sidebar', de: 'Breite der Sidebar anpassen', it: 'Regola la larghezza della Sidebar',
     },
 } satisfies Record<string, LibraryTextEntry>;

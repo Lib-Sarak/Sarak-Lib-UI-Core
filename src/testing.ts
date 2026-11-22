@@ -7,7 +7,7 @@ interface JsdomError {
 
 type JsdomErrorListener = (error: JsdomError) => void;
 
-const FILTERED_VIRTUAL_CONSOLE = Symbol('sarakStylesheetWarningFiltered');
+const FILTERED_VIRTUAL_CONSOLE = Symbol('stylesheetWarningFiltered');
 
 interface JsdomVirtualConsole {
     [FILTERED_VIRTUAL_CONSOLE]?: boolean;

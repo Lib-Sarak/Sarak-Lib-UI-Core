@@ -38,7 +38,7 @@ describe('MockForms', () => {
     it('renderiza os inputs e controles', () => {
         render(<MockForms {...defaultProps} />);
         
-        expect(screen.getByPlaceholderText('Sarak Enterprise')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Empresa')).toBeInTheDocument();
         expect(screen.getByPlaceholderText('00.000.000/0001-00')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /SALVAR E CONTINUAR/i })).toBeInTheDocument();
     });

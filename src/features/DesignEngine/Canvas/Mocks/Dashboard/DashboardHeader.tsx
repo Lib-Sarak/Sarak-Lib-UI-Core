@@ -1,12 +1,14 @@
 import React from 'react';
+import { useLibraryText } from '../../../../../core/i18n/useLibraryText';
 
 export const DashboardHeader = () => {
+    const text = useLibraryText();
     return (
         <div className="flex justify-between items-end mb-8 border-b border-theme-text/5 pb-4">
             <div>
                 <div className="flex items-center gap-2 mb-1">
                     <div className="w-2 h-2 rounded-full bg-[var(--theme-primary)] animate-pulse" />
-                    <h1 className="text-2xl font-bold tracking-tight uppercase italic text-theme-text">Digital Twin OS</h1>
+                    <h1 className="text-2xl font-bold tracking-tight uppercase italic text-theme-text">{text('sampleTextSystem')}</h1>
                 </div>
                 <p className="text-xs font-mono text-[var(--text-muted,rgba(242,246,251,0.55))] tracking-widest uppercase">
                     Operational Intelligence // System Live // Node-04-PR

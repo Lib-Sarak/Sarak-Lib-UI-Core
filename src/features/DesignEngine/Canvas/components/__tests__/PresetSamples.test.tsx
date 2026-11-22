@@ -19,6 +19,13 @@ vi.mock('../../../../../components/atomic/DataDisplay/SarakDataTable', () => ({
 /** O que cada componente real deixa no DOM para a amostra ser reconhecida. */
 const REAL_MARK = { table: '[data-real-table]', badge: '[role="progressbar"]', empty: '[role="status"], h2' } as const;
 
+/** Cada render do Provider leva cerca de 1 s no jsdom e o laço de gráfico renderiza uma vez por opção: o teto padrão de 5 s não cobre o laço. */
+const CHART_LOOP_TIMEOUT_MS = 30_000;
+
+/** Os componentes reais chegam por import sob demanda: com a máquina carregada o módulo leva mais que o 1 s padrão do `waitFor`, e o teto de cada teste acompanha esse prazo. */
+const LAZY_MODULE_WAIT_MS = 10_000;
+const LAZY_TEST_TIMEOUT_MS = 30_000;
+
 /** Uma amostra por tipo declarado no registro: cada uma tem de desenhar alguma coisa e nunca lançar. */
 const KINDS = [...new Map(PRESET_GROUPS.map((group) => [group.sample, group])).values()];
 
@@ -32,19 +39,19 @@ describe('PresetSample', () => {
         const charts = PRESET_GROUPS.find((group) => group.id === 'charts')!.presets;
         for (const preset of charts) {
             const { container, unmount } = render(<SarakUIProvider><PresetSample kind="chart" preset={preset} /></SarakUIProvider>);
-            await waitFor(() => expect(container.querySelectorAll('[data-chart-engine]').length).toBe(1));
+            await waitFor(() => expect(container.querySelectorAll('[data-chart-engine]').length).toBe(1), { timeout: LAZY_MODULE_WAIT_MS });
             expect(container.querySelector('[data-chart-engine]')?.getAttribute('data-chart-engine')).toBe('area');
             unmount();
         }
-    });
+    }, CHART_LOOP_TIMEOUT_MS);
 
     it.each([['table', 'tabela'], ['badge', 'selo e progresso'], ['empty', 'estado vazio']] as const)('a amostra de %s (%s) carrega o componente real sob demanda', async (kind, _label) => {
         const group = PRESET_GROUPS.find((candidate) => candidate.sample === kind)!;
         const { container } = render(<SarakUIProvider><PresetSample kind={kind} preset={group.presets[0]} /></SarakUIProvider>);
         // O quadro vazio segura o lugar até o módulo do componente real chegar.
         expect(container.firstElementChild).not.toBeNull();
-        await waitFor(() => expect(container.querySelector(REAL_MARK[kind])).not.toBeNull());
-    });
+        await waitFor(() => expect(container.querySelector(REAL_MARK[kind])).not.toBeNull(), { timeout: LAZY_MODULE_WAIT_MS });
+    }, LAZY_TEST_TIMEOUT_MS);
 
     it('a largura do conteúdo vira uma caixa proporcional', () => {
         const widths = PRESET_GROUPS.find((group) => group.id === 'contentWidth')!.presets;

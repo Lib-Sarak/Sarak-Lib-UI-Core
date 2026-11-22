@@ -151,7 +151,7 @@ describe('PreviewSystemRenderer — usuário e notificações de amostra', () =>
 
         const strip = container.querySelector('[data-sarak-user-strip]');
         expect(strip).not.toBeNull();
-        expect(strip?.textContent).toContain('Ana Souza');
+        expect(strip?.textContent).toContain('Nome');
         expect(container.querySelector('[data-sarak-widget="notifications"]')).not.toBeNull();
         expect(container.textContent).not.toContain('indisponível');
     });
@@ -159,7 +159,7 @@ describe('PreviewSystemRenderer — usuário e notificações de amostra', () =>
     it('trocar o estilo do avatar no rascunho muda o avatar da faixa', () => {
         vi.stubEnv('NODE_ENV', 'production');
         const initials = renderPreview('desktop', { tokens: { userAvatarStyle: 'initials' } });
-        expect(initials.container.querySelector('[data-sarak-avatar-initials]')?.textContent).toBe('AS');
+        expect(initials.container.querySelector('[data-sarak-avatar-initials]')?.textContent).toBe('N');
         initials.unmount();
 
         const icon = renderPreview('desktop', { tokens: { userAvatarStyle: 'icon' } });

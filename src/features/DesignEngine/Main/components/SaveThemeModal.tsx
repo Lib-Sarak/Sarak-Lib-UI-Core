@@ -162,7 +162,7 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
                                 id="save-theme-name"
                                 value={name}
                                 onChange={(event) => setName(event.target.value)}
-                                placeholder="Ex: Sarak Sovereign Customizado"
+                                placeholder={text('sampleTextThemeName')}
                                 disabled={isSaving}
                                 autoFocus
                             />

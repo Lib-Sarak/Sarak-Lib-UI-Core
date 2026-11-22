@@ -22,7 +22,7 @@ export const AdvancedTab: React.FC = () => {
      */
     const handleHardReset = () => {
         const confirmed = confirm(
-            'ATENÇÃO: Isso apagará as configurações visuais da Sarak guardadas neste navegador '
+            'ATENÇÃO: Isso apagará as configurações visuais guardadas neste navegador '
             + '(tema e idioma) e recarregará a página. Nenhum outro dado deste site é afetado. Continuar?'
         );
         if (!confirmed) return;
@@ -68,7 +68,7 @@ export const AdvancedTab: React.FC = () => {
                     <div className="p-4 rounded-2xl bg-[var(--sarak-secondary-color,#7c5cff)]/5 border border-[var(--sarak-secondary-color,#7c5cff)]/10 flex items-start gap-4">
                         <HelpCircle className="w-5 h-5 text-[var(--sarak-secondary-color,#7c5cff)] shrink-0 mt-1" />
                         <div className="space-y-2">
-                            <h4 className="text-2xs font-bold text-theme-text/80 uppercase">Sobre a Sarak Matrix v5.0</h4>
+                            <h4 className="text-2xs font-bold text-theme-text/80 uppercase">Sobre o motor de design v5.0</h4>
                             <p className="text-2xs text-theme-text/40 leading-relaxed uppercase font-medium">
                                 O Motor Elite SDT gerencia 100% da visualidade através de tokens source-driven. 
                                 Qualquer alteração aqui reflete em todos os módulos registrados instantaneamente via Context Bridge.
@@ -93,7 +93,7 @@ export const AdvancedTab: React.FC = () => {
                             </div>
                             <div>
                                 <h4 className="text-xs font-black uppercase tracking-widest text-theme-text/90">Factory Hard Reset</h4>
-                                <p className="text-2xs text-theme-text/30 uppercase font-medium">Apagar tema e idioma guardados pela Sarak neste navegador</p>
+                                <p className="text-2xs text-theme-text/30 uppercase font-medium">Apagar tema e idioma guardados neste navegador</p>
                             </div>
                         </div>
 

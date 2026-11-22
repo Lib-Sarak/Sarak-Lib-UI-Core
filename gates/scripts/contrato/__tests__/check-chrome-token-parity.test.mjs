@@ -3,8 +3,12 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
+import { NavigationSchema } from '../../../../src/core/Design/schema/navigation';
 import {
     CONSUMER_GROUPS,
+    GENERIC_READERS,
+    NOT_CHROME_TOKENS,
+    staleReaders,
     ORPHAN_TOKENS,
     checkChromeTokenParity,
     getChromeTokens,
@@ -200,5 +204,161 @@ describe('getChromeTokens — extração dinâmica do schema', () => {
         });
 
         expect(getChromeTokens({ root }).map((token) => token.id)).toEqual(['layoutPadding']);
+    });
+
+    it('MUTAÇÃO: token de navegação em global.ts sem consumidor reprova', () => {
+        const root = createFixtureRoot({
+            'src/core/Design/schema/navigation.ts': 'export const NavigationSchema = { tokens: [] };',
+            'src/core/Design/schema/system.ts': 'export const SystemSchema = { tokens: [ // --- ARQUITETURA DE BORDAS --- ] };',
+            'src/core/Design/schema/global.ts': [
+                'export const GlobalSchema = {',
+                '    tokens: [',
+                "        { id: 'mobileNavigationStyle', defaultValue: 'drawer' },",
+                "        { id: 'bodySize', defaultValue: '14px' },",
+                '    ],',
+                '};',
+            ].join('\n'),
+            'appchrome/Chrome.tsx': 'export const Chrome = () => null;',
+        });
+        const tokens = getChromeTokens({ root });
+
+        expect(tokens.map((token) => token.id)).toEqual(['mobileNavigationStyle']);
+        expect(checkChromeTokenParity({ root, tokens, groups: appChromeGroup })).toEqual([
+            { id: 'mobileNavigationStyle', semConsumidor: ['SarakAppChrome'] },
+        ]);
+    });
+});
+
+describe('getChromeTokens — token que a leitura de texto não enxergava', () => {
+    const systemEmpty = 'export const SystemSchema = { tokens: [ // --- ARQUITETURA DE BORDAS --- ] };';
+    const chromeEmpty = 'export const Chrome = () => null;';
+    const navigationWith = (imports, tokens) => [
+        imports,
+        "const make = (id: string) => ({ id, type: 'select', defaultValue: 'a', cssVars: ['--sarak-' + id] });",
+        'export const NavigationSchema = {',
+        '    tokens: [',
+        tokens,
+        '    ],',
+        '};',
+    ].join('\n');
+
+    it('extrai os mesmos ids do schema importado (todo o navigation.ts, o de fábrica e o de barPersonality incluídos)', () => {
+        const extracted = new Set(getChromeTokens().map((token) => token.id));
+        const imported = NavigationSchema.tokens.map((token) => token.id);
+
+        expect(imported.length).toBeGreaterThan(70);
+        expect(imported.filter((id) => !extracted.has(id))).toEqual([]);
+    });
+
+    it('MUTAÇÃO: token de fábrica sem consumidor reprova', () => {
+        const root = createFixtureRoot({
+            'src/core/Design/schema/system.ts': systemEmpty,
+            'src/core/Design/schema/navigation.ts': navigationWith('', "        make('tokenDeFabrica'),"),
+            'appchrome/Chrome.tsx': chromeEmpty,
+        });
+        const tokens = getChromeTokens({ root });
+
+        expect(tokens.map((token) => token.id)).toEqual(['tokenDeFabrica']);
+        expect(checkChromeTokenParity({ root, tokens, groups: appChromeGroup })).toEqual([
+            { id: 'tokenDeFabrica', semConsumidor: ['SarakAppChrome'] },
+        ]);
+    });
+
+    it('MUTAÇÃO: token em barPersonality.ts sem consumidor reprova', () => {
+        const root = createFixtureRoot({
+            'src/core/Design/schema/system.ts': systemEmpty,
+            'src/core/Design/schema/barPersonality.ts': "export const BarPersonalitySchema = { tokens: [{ id: 'tokenDaPersonalidade', cssVars: [] }] };",
+            'src/core/Design/schema/navigation.ts': navigationWith("import { BarPersonalitySchema } from './barPersonality';", '        ...BarPersonalitySchema.tokens,'),
+            'appchrome/Chrome.tsx': chromeEmpty,
+        });
+        const tokens = getChromeTokens({ root });
+
+        expect(tokens.map((token) => token.id)).toEqual(['tokenDaPersonalidade']);
+        expect(checkChromeTokenParity({ root, tokens, groups: appChromeGroup })).toEqual([
+            { id: 'tokenDaPersonalidade', semConsumidor: ['SarakAppChrome'] },
+        ]);
+    });
+
+    it('token lido por mapa de ids exportado do schema só conta como consumido se o cromo lê a chave dele no mapa', () => {
+        const files = {
+            'src/core/Design/schema/navigation.ts': 'export const NavigationSchema = { tokens: [] };',
+            'src/core/Design/schema/system.ts': systemEmpty,
+            'src/core/Design/schema/preferences.ts': [
+                "export const POSITION_IDS = { navigationStyle: 'preferenceNavigationStylePosition' };",
+                "export const PreferencesSchema = { tokens: [{ id: 'preferenceNavigationStylePosition' }] };",
+            ].join('\n'),
+        };
+        const without = createFixtureRoot({ ...files, 'appchrome/Chrome.tsx': chromeEmpty });
+        const withMap = createFixtureRoot({ ...files, 'appchrome/Chrome.tsx': 'const id = POSITION_IDS.navigationStyle;' });
+
+        expect(checkChromeTokenParity({ root: without, tokens: getChromeTokens({ root: without }), groups: appChromeGroup })).toHaveLength(1);
+        expect(checkChromeTokenParity({ root: withMap, tokens: getChromeTokens({ root: withMap }), groups: appChromeGroup })).toEqual([]);
+    });
+});
+
+describe('getChromeTokens — mapa de ids, fábrica em system.ts e posição de preferência', () => {
+    const navigationEmpty = 'export const NavigationSchema = { tokens: [] };';
+    const chrome = (content) => ({ 'appchrome/Chrome.tsx': content });
+    const preferences = [
+        "export const POSITION_IDS = { colorMode: 'preferenceModePosition', language: 'preferenceLanguagePosition' };",
+        'export const PreferencesSchema = { tokens: [',
+        "    { id: 'preferenceModePosition' }, { id: 'preferenceLanguagePosition' }, { id: 'preferenceFontSizeReduction' },",
+        '] };',
+    ].join('\n');
+    const run = (files, readers = []) => {
+        const root = createFixtureRoot(files);
+        return checkChromeTokenParity({ root, tokens: getChromeTokens({ root }), groups: appChromeGroup, readers }).map((entry) => entry.id);
+    };
+    const base = {
+        'src/core/Design/schema/navigation.ts': navigationEmpty,
+        'src/core/Design/schema/system.ts': 'export const SystemSchema = { tokens: [] };',
+    };
+
+    it('MUTAÇÃO: id inventado no mapa reprova, mesmo com outra chave do mapa lida pelo cromo', () => {
+        const withInvented = preferences.replace("language: 'preferenceLanguagePosition' }", "language: 'preferenceLanguagePosition', invented: 'tokenInventado' }")
+            .replace("{ id: 'preferenceFontSizeReduction' },", "{ id: 'tokenInventado' },");
+
+        expect(run({ ...base, 'src/core/Design/schema/preferences.ts': withInvented, ...chrome('const a = POSITION_IDS.colorMode; const b = POSITION_IDS.language;') }))
+            .toEqual(['tokenInventado']);
+    });
+
+    it('MUTAÇÃO: posição de preferência sem leitor reprova; com a chave lida ou o leitor declarado e chamado, passa', () => {
+        const files = { ...base, 'src/core/Design/schema/preferences.ts': preferences };
+        const readers = [{ name: 'readAllPositions', reads: 'POSITION_IDS' }];
+
+        expect(run({ ...files, ...chrome('export const Chrome = () => null;') }, readers)).toEqual(['preferenceModePosition', 'preferenceLanguagePosition']);
+        expect(run({ ...files, ...chrome('const a = POSITION_IDS.colorMode; const b = POSITION_IDS["language"];') }, readers)).toEqual([]);
+        expect(run({ ...files, ...chrome('readAllPositions(design);') }, readers)).toEqual([]);
+        expect(run({ ...files, ...chrome('const unused = readAllPositions;') }, readers)).toHaveLength(2);
+    });
+
+    it('os passos de tamanho de fonte ficam fora, com o motivo escrito', () => {
+        const root = createFixtureRoot({ ...base, 'src/core/Design/schema/preferences.ts': preferences, ...chrome('') });
+
+        expect(getChromeTokens({ root }).map((token) => token.id)).not.toContain('preferenceFontSizeReduction');
+        expect(NOT_CHROME_TOKENS.preferenceFontSizeReduction).toMatch(/overlayPreferences/);
+    });
+
+    it('MUTAÇÃO: token de fábrica em system.ts, antes do marcador de bordas, reprova; depois dele fica fora', () => {
+        const system = [
+            "const make = (id: string) => ({ id, cssVars: ['--x-' + id] });",
+            'export const SystemSchema = { tokens: [',
+            "    make('layoutDeFabrica'),",
+            '    // --- ARQUITETURA DE BORDAS ---',
+            "    { id: 'borderRadius' },",
+            "    make('bordaDeFabrica'),",
+            '] };',
+        ].join('\n');
+
+        expect(run({ 'src/core/Design/schema/navigation.ts': navigationEmpty, 'src/core/Design/schema/system.ts': system, ...chrome('') }))
+            .toEqual(['layoutDeFabrica']);
+    });
+
+    it('o leitor declarado existe em src/ (a declaração obsoleta é acusada)', () => {
+        const root = createFixtureRoot({ 'src/core/Provider/reader.ts': 'export const readAllPositions = () => null;' });
+
+        expect(staleReaders({ root, readers: [{ name: 'readAllPositions', reads: 'X' }, { name: 'sumiu', reads: 'X' }] })).toEqual([{ name: 'sumiu', reads: 'X' }]);
+        expect(staleReaders()).toEqual([]);
+        expect(GENERIC_READERS.map((reader) => reader.name)).toContain('splitChromeWidgetsByPlacement');
     });
 });

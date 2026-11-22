@@ -1,11 +1,11 @@
 /**
  * Gate ZERO-MARCA (Spec 49 — L2).
  *
- * A lib NUNCA estampa a própria marca ('Sarak Lib'/'Sarak OS'/'Sarak AI') no produto
- * do consumidor. Este gate falha o build se qualquer literal de marca da lib aparecer
- * como TEXTO de saída (JSX text ou string literal) em `src/`, fora da ALLOWLIST
- * explícita dos painéis INTERNOS do Design Engine (ferramenta de autoria da própria
- * lib — Kitchen Sink, abas de customização — não embutidos pelo consumidor).
+ * A lib NUNCA estampa a própria marca em texto que o usuário do consumidor lê. Este gate falha o build
+ * se a palavra da marca aparecer em QUALQUER literal de texto de `src/` (JSX, atributo, catálogo de idiomas,
+ * objeto exportado, constante, `document.title`), fora das isenções explícitas de `TECHNICAL_EXEMPTIONS`
+ * (técnico e nome de tema embarcado), do diagnóstico de console e da ALLOWLIST (hoje vazia: os painéis do
+ * Design Engine chegam ao importador e seguem a regra).
  *
  * Escaneia por AST (TypeScript compiler API), não por regex de arquivo inteiro, para
  * não acusar falso-positivo em comentário (ex.: notas de migração que DOCUMENTAM a
@@ -25,7 +25,8 @@
  *    consumidor — `sarak-ui/templates/` (o código que o `init` copia para o
  *    projeto dele), `bin/scaffold/generators/` (que gera esse código) e
  *    `docs/` (que viaja no tarball).
- * 2. Dentro de `src/`, ficam de fora `.d.ts`, `__tests__/`, `.test.` e `.spec.`
+ * 2. Dentro de `src/`, todo literal de texto conta, em `.ts` e `.tsx`. Ficam de fora o tipo literal
+ *    (`T['sarak']`), o argumento de `console.*` e `.d.ts`, `__tests__/`, `.test.` e `.spec.`
  *    (ver `isScannableFile`).
  *
  * EXPOSIÇÃO MEDIDA (plan-06, 2026-08-03): **ZERO violações reais**.
@@ -49,26 +50,49 @@ import ts from 'typescript';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const SRC = path.join(ROOT, 'src');
 
-/** Literais de marca da lib proibidos como TEXTO renderizado (Spec 49 §2/§5). */
-const BRAND_LITERALS = ['Sarak Lib', 'Sarak OS', 'Sarak AI'];
+/** A marca é procurada como trecho, sem limite de palavra: "SarakOS", "SARAKTWIN" e "Sarak_OS" também contam; todo literal de texto de `src/`. */
+const BRAND_WORD_RE = /sarak/gi;
 
 /**
- * Painéis INTERNOS do Design Engine — ferramenta de autoria da própria lib, nunca
- * embutida pelo consumidor no produto dele (Spec 49 §2 "Fora de escopo"). Caminhos
- * relativos a `src/`, com o motivo de cada exclusão.
+ * Isenções explícitas — cada uma casa só o uso técnico real, sempre com diferença de maiúscula/minúscula
+ * (a marca em texto de produto costuma vir em caixa de título ou alta):
+ * - pacote (`@sarak/lib-ui-core`), prefixo de variável (`--sarak-`), de classe/atributo (`sarak-`), comando npm
+ *   (`sarak:check`) e plugin (`sarak/…`), só em minúsculas, mais as duas utilitárias `transition-sarak` e `rounded-sarak`;
+ * - etiqueta de diagnóstico, só nas formas exatas que existem (`DIAGNOSTIC_LABEL`);
+ * - nome de componente, de função ou de constante com a marca, só quando é identificador que existe em `src/` (`identifiers`),
+ *   e chave de armazenamento em minúsculas com prefixo (`TECHNICAL_KEY`);
+ * - nome dos temas embarcados que levam o nome da lib, só nos arquivos do tema (`THEME_NAME_FILE`).
  */
-const ALLOWLIST = new Set([
-    // Kitchen Sink — vitrine interna de todos os componentes/temas, usada só pelo
-    // painel de customização do Design Engine dentro da própria lib.
-    'features/DesignEngine/Canvas/KitchenSinkPreview.tsx',
-]);
+const TECHNICAL_EXEMPTIONS = [
+    /@sarak\/lib-ui-core/g,
+    /--sarak-[\w-]*/g,
+    /\bsarak-[\w-]+/g,
+    /\bsarak[:/][\w-]*/g,
+    /\b(?:transition|rounded)-sarak\b/g,
+];
+const DIAGNOSTIC_LABEL = /\[(?:Sarak(?::(?:Design|UI|Preferences|Link|Icon))?|sarak verify)\]/g;
+/** Palavra contínua (identificador, chave) que contém a marca. */
+const SARAK_WORD = /[\w$]*sarak[\w$]*/gi;
+/** Chave de armazenamento em minúsculas com prefixo (`sarak_lang`, `__sarak_tree_root__`) e sentinela `__SARAK_X__`. */
+const TECHNICAL_KEY = /^(?:_*sarak(?:_[a-z0-9]+)+_*|__SARAK_[A-Z0-9_]+__)$/;
+const THEME_NAME = /\bSarak Sovereign(?: Classic)?\b/g;
+/** Onde o nome do tema embarcado é dado do tema: os arquivos do tema e os gerados a partir deles. */
+const THEME_NAME_FILE = /^core\/Design\/presets\/(?:themes\/[^/]+|components\/cardsThemes\.generated)\.ts$/;
+
+/**
+ * Arquivos fora da varredura. Vazia de propósito: o painel de customização e a vitrine do Design Engine
+ * são exportados e chegam ao importador (o `dist/` carrega os textos deles), então a regra vale para eles.
+ * Só entra aqui arquivo que NÃO entra no pacote, com o motivo escrito ao lado.
+ */
+const ALLOWLIST = new Set([]);
 
 const isScannableFile = (file) =>
-    /\.tsx?$/.test(file) &&
+    /\.(?:tsx?|json)$/.test(file) &&
     !file.endsWith('.d.ts') &&
     !file.includes('.test.') &&
     !file.includes('.spec.') &&
-    !file.split(path.sep).includes('__tests__');
+    !file.split(path.sep).includes('__tests__') &&
+    !/\.golden\.json$|\.validation\.json$/.test(file);
 
 const walkFiles = (dir, out = []) => {
     for (const entry of fs.readdirSync(dir)) {
@@ -84,55 +108,109 @@ const walkFiles = (dir, out = []) => {
     return out;
 };
 
-const literalsIn = (text) => BRAND_LITERALS.filter((literal) => text.includes(literal));
+/** Marca encontrada em `text`, depois de tirar o que a isenção explícita cobre. */
+const literalsIn = (text, { identifiers, themeNameFile }) => {
+    let rest = TECHNICAL_EXEMPTIONS.reduce((value, pattern) => value.replace(pattern, ''), text);
+    rest = rest.replace(DIAGNOSTIC_LABEL, '');
+    rest = rest.replace(SARAK_WORD, (word) => (identifiers.has(word) || TECHNICAL_KEY.test(word) ? '' : word));
+    if (themeNameFile) rest = rest.replace(THEME_NAME, '');
+    return [...rest.matchAll(BRAND_WORD_RE)].map(([match]) => match);
+};
 
-/** Varre um arquivo por AST; devolve as ocorrências (linha + literal achado). */
-const scanFile = (file) => {
-    const source = ts.createSourceFile(file, fs.readFileSync(file, 'utf-8'), ts.ScriptTarget.Latest, true);
-    const hits = [];
+/** Diagnóstico de console: texto para quem desenvolve, nunca para o usuário final do consumidor. */
+const isConsoleArgument = (node) => {
+    for (let parent = node.parent; parent; parent = parent.parent) {
+        if (ts.isCallExpression(parent) && ts.isPropertyAccessExpression(parent.expression) && parent.expression.expression.getText() === 'console') return true;
+        if (ts.isBlock(parent) || ts.isSourceFile(parent)) return false;
+    }
+    return false;
+};
 
+/** Tipo literal (`Pick<X, 'sarak'>`, `T['sarak']`) nomeia propriedade: não é texto que alguém lê. */
+const isTypePosition = (node) => ts.isLiteralTypeNode(node.parent);
+
+/** Caminho de módulo (`import … from './SarakButton'`, `import('./SarakX')`) é endereço de arquivo, não texto. */
+const isModuleSpecifier = (node) =>
+    ((ts.isImportDeclaration(node.parent) || ts.isExportDeclaration(node.parent)) && node.parent.moduleSpecifier === node) ||
+    (ts.isCallExpression(node.parent) && node.parent.expression.kind === ts.SyntaxKind.ImportKeyword) ||
+    ts.isExternalModuleReference(node.parent);
+
+const textOf = (node, source) => {
+    if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) return node.text;
+    if (ts.isJsxText(node)) return node.getText(source);
+    if (ts.isTemplateHead(node) || ts.isTemplateMiddle(node) || ts.isTemplateTail(node)) return node.text;
+    return null;
+};
+
+const parseSource = (file) => ts.createSourceFile(file, fs.readFileSync(file, 'utf-8'), ts.ScriptTarget.Latest, true);
+
+/** Todo identificador com a marca declarado ou usado em `src/` (`SarakButton`, `sarakLoadThemePreset`, `SARAK_CSS`): só esses nomes são isentos no texto. */
+const collectIdentifiers = (sources) => {
+    const identifiers = new Set();
     const visit = (node) => {
-        let text = null;
-        if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
-            text = node.text;
-        } else if (ts.isJsxText(node)) {
-            text = node.getText(source);
-        } else if (ts.isTemplateHead(node) || ts.isTemplateMiddle(node) || ts.isTemplateTail(node)) {
-            text = node.text;
-        }
+        if (ts.isIdentifier(node) && /sarak/i.test(node.text) && !/^sarak$/i.test(node.text)) identifiers.add(node.text);
+        ts.forEachChild(node, visit);
+    };
+    sources.forEach((source) => visit(source));
+    return identifiers;
+};
 
-        if (text) {
-            for (const literal of literalsIn(text)) {
+/** Todo literal de texto do arquivo conta: o destino (JSX, catálogo, `document.title`) não muda o que o usuário lê. */
+const scanSource = (source, context) => {
+    const hits = [];
+    const visit = (node) => {
+        const text = textOf(node, source);
+        if (text && !isTypePosition(node) && !isModuleSpecifier(node) && !isConsoleArgument(node)) {
+            for (const literal of literalsIn(text, context)) {
                 const { line } = source.getLineAndCharacterOfPosition(node.getStart(source));
                 hits.push({ literal, line: line + 1 });
             }
         }
-
         ts.forEachChild(node, visit);
     };
-
     visit(source);
     return hits;
 };
 
+/** Valor textual de um JSON (catálogo de descrições): toda string conta, a chave não. */
+const scanJson = (file, context) => {
+    const raw = fs.readFileSync(file, 'utf-8');
+    const hits = [];
+    const visit = (value) => {
+        if (typeof value === 'string') {
+            for (const literal of literalsIn(value, context)) {
+                const index = raw.indexOf(JSON.stringify(value).slice(1, -1));
+                hits.push({ literal, line: index < 0 ? 0 : raw.slice(0, index).split('\n').length });
+            }
+        } else if (Array.isArray(value)) value.forEach(visit);
+        else if (value && typeof value === 'object') Object.values(value).forEach(visit);
+    };
+    visit(JSON.parse(raw));
+    return hits;
+};
+
 /** Executa a varredura completa. Retorna as violações + exclusões obsoletas. */
-export const runZeroBrandCheck = () => {
-    const files = walkFiles(SRC);
+export const runZeroBrandCheck = ({ src = SRC, allowlist = ALLOWLIST } = {}) => {
+    const files = walkFiles(src);
     const violations = [];
     const seenAllowlist = new Set();
+    const sources = new Map(files.filter((file) => /\.tsx?$/.test(file)).map((file) => [file, parseSource(file)]));
+    const identifiers = collectIdentifiers(sources.values());
 
     for (const file of files) {
-        const rel = path.relative(SRC, file).split(path.sep).join('/');
-        if (ALLOWLIST.has(rel)) {
+        const rel = path.relative(src, file).split(path.sep).join('/');
+        if (allowlist.has(rel)) {
             seenAllowlist.add(rel);
             continue;
         }
-        for (const hit of scanFile(file)) {
+        const context = { identifiers, themeNameFile: THEME_NAME_FILE.test(rel) };
+        const hits = sources.has(file) ? scanSource(sources.get(file), context) : scanJson(file, context);
+        for (const hit of hits) {
             violations.push({ file: rel, line: hit.line, literal: hit.literal });
         }
     }
 
-    const staleAllowlist = [...ALLOWLIST].filter((rel) => !seenAllowlist.has(rel));
+    const staleAllowlist = [...allowlist].filter((rel) => !seenAllowlist.has(rel));
 
     return { violations, staleAllowlist, scannedCount: files.length };
 };

@@ -1166,7 +1166,7 @@
   {
     "tokenId": "scrollWidth",
     "name": "Largura da Barra",
-    "description": "Largura (ou altura) principal do scrollbar do Sarak.",
+    "description": "Largura (ou altura) principal do scrollbar.",
     "type": "slider",
     "importance": 75,
     "categories": [

@@ -71,7 +71,7 @@ export const SovereignThemeInjector: React.FC<SovereignThemeInjectorProps> = ({ 
         // No entanto, injetamos as regras usando os tokens da Sarak.
         if (colorMode === 'light') {
             return [
-                '/* Sarak Sovereign Bridge - Light Mode Hijack */',
+                '/* Bridge - Light Mode Hijack */',
                 '/* Textos Ofensivos (Brancos e Cinzas Claros que somem no modo Claro) */',
                 rule('light', LIGHT_HIJACKED_TEXT, 'color: var(--theme-text-primary,var(--sarak-text-main,#f2f6fb));'),
                 rule('light', LIGHT_HIJACKED_MUTED_TEXT, 'color: var(--theme-muted);'),
@@ -90,7 +90,7 @@ export const SovereignThemeInjector: React.FC<SovereignThemeInjectorProps> = ({ 
         // caso o tema seja colorido (ex: Tema Cyberpunk Dark), o "bg-zinc-950" hardcoded
         // atrapalharia a coesão da matiz do cartão.
         return [
-            '/* Sarak Sovereign Bridge - Dark Mode Hue Hijack */',
+            '/* Bridge - Dark Mode Hue Hijack */',
             rule('dark', DARK_HIJACKED_SURFACES, 'background-color: var(--theme-card);'),
         ].join('\n');
     }, [design?.mode, manifest, mode]);

@@ -9,7 +9,7 @@ exports[`PreviewCanvas > deve usar propriedades de estilo reais (width/height) e
   <style
     id="sarak-sovereign-bridge"
   >
-    /* Sarak Sovereign Bridge - Dark Mode Hue Hijack */
+    /* Bridge - Dark Mode Hue Hijack */
 body.dark .bg-zinc-950:not([data-sarak-own-palette] *),
 body.dark .bg-black\\/40:not([data-sarak-own-palette] *),
 body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
@@ -1659,7 +1659,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
                                     class="relative z-10 text-xs font-bold"
                                     data-sarak-avatar-initials="true"
                                   >
-                                    AS
+                                    N
                                   </span>
                                 </div>
                                 <div
@@ -1670,7 +1670,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
                                     class="text-sm font-bold text-[var(--sarak-sidebar-item-hover-text-color,var(--theme-title))] leading-tight truncate"
                                     data-sarak-user-name="true"
                                   >
-                                    Ana Souza
+                                    Nome
                                   </span>
                                   <div
                                     class="flex items-center"
@@ -1702,7 +1702,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
                                 </div>
                               </div>
                               <button
-                                class="inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn flex-shrink-0 w-6 h-6 text-xs bg-transparent active:scale-[0.98] shrink-0 text-[var(--theme-muted)] hover:text-[color-mix(in_srgb,var(--sarak-status-error-color,#ef4444)_40%,var(--sarak-on-surface,#ffffff))] hover:bg-[var(--theme-error-bg,rgba(239,68,68,0.15))]"
+                                class="inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn flex-shrink-0 w-6 h-6 text-xs bg-transparent active:scale-[0.98] shrink-0 text-[var(--theme-muted)] hover:text-[var(--sarak-status-error-color,#ef4444)] hover:bg-[var(--theme-error-bg,rgba(239,68,68,0.15))]"
                                 title="Sair"
                               >
                                 <svg

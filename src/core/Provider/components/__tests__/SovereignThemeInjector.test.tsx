@@ -20,7 +20,7 @@ describe('SovereignThemeInjector', () => {
         );
         const styleEl = container.querySelector('#sarak-sovereign-bridge');
         expect(styleEl).not.toBeNull();
-        expect(styleEl?.innerHTML).toContain('Sarak Sovereign Bridge - Light Mode Hijack');
+        expect(styleEl?.innerHTML).toContain('Bridge - Light Mode Hijack');
         expect(styleEl?.innerHTML).toContain('body.light .text-white');
         expect(styleEl?.innerHTML).toContain('var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))');
         expect(styleEl?.innerHTML).not.toContain('var(--color-theme-title');
@@ -33,7 +33,7 @@ describe('SovereignThemeInjector', () => {
         );
         const styleEl = container.querySelector('#sarak-sovereign-bridge');
         expect(styleEl).not.toBeNull();
-        expect(styleEl?.innerHTML).toContain('Sarak Sovereign Bridge - Dark Mode Hue Hijack');
+        expect(styleEl?.innerHTML).toContain('Bridge - Dark Mode Hue Hijack');
         expect(styleEl?.innerHTML).toContain('body.dark .bg-zinc-950');
     });
 
@@ -42,6 +42,6 @@ describe('SovereignThemeInjector', () => {
             <SovereignThemeInjector design={{}} manifest={{}} />
         );
         const styleEl = container.querySelector('#sarak-sovereign-bridge');
-        expect(styleEl?.innerHTML).toContain('Sarak Sovereign Bridge - Dark Mode Hue Hijack');
+        expect(styleEl?.innerHTML).toContain('Bridge - Dark Mode Hue Hijack');
     });
 });

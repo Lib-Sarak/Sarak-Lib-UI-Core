@@ -207,8 +207,7 @@
     "databaseColumn": "components_base",
     "schemaOrigin": "overlays.ts",
     "digitalTwins": [
-      "SarakModal",
-      "SarakOverlay"
+      "SarakModal"
     ],
     "cssVariables": [
       "--sarak-modal-overlay"
@@ -237,8 +236,7 @@
     "databaseColumn": "components_base",
     "schemaOrigin": "overlays.ts",
     "digitalTwins": [
-      "SarakModal",
-      "SarakOverlay"
+      "SarakModal"
     ],
     "cssVariables": [
       "--sarak-modal-blur"

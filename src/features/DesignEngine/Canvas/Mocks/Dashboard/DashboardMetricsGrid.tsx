@@ -3,9 +3,11 @@ import { SarakTitleCard } from '../../../../../components/atomic/Cards/SarakTitl
 import { SarakSearchCard } from '../../../../../components/atomic/Cards/SarakSearchCard';
 import { SarakActionCard } from '../../../../../components/atomic/Cards/SarakActionCard';
 import { SarakIcon } from '../../../../../components/atomic/Icon/SarakIcon';
+import { useLibraryText } from '../../../../../core/i18n/useLibraryText';
 import { SmartCard } from './DashboardShared';
 
 export const DashboardMetricsGrid = ({ tokens, variables, textureType, items, mappings }: any) => {
+    const text = useLibraryText();
     // O contêiner é a própria grade (não a janela do sistema): ao lado do painel lateral, no tablet, ela é estreita e os cartões empilham.
     return (
         <div className="@container w-full">
@@ -111,7 +113,7 @@ export const DashboardMetricsGrid = ({ tokens, variables, textureType, items, ma
                         </thead>
                         <tbody className="divide-y divide-theme-text/5">
                             {[
-                                { user: 'Igor Sarak', sector: 'R&D Lab', status: 'Authorized', color: 'var(--theme-primary)' },
+                                { user: text('sampleTextName'), sector: 'R&D Lab', status: 'Authorized', color: 'var(--theme-primary)' },
                                 { user: 'Alpha Node', sector: 'Server Room', status: 'Active', color: 'var(--theme-secondary, var(--theme-primary))' },
                                 { user: 'Unknown', sector: 'Main Gate', status: 'Warning', color: 'var(--theme-warning, var(--theme-primary))' },
                                 { user: 'Support-01', sector: 'Office', status: 'Authorized', color: 'var(--theme-primary)' },

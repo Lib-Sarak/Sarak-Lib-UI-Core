@@ -30,7 +30,7 @@ export const HelpTooltip: React.FC<{ label: string, description?: string }> = ({
                             </div>
                             <div className="h-[length:var(--sarak-border-width,1px)] w-full bg-[var(--theme-border)]" />
                 <p className="text-[var(--sarak-type-scale2xs,11px)] text-[var(--theme-muted)] leading-relaxed uppercase font-medium">
-                                {description || `Configuração granular para o parâmetro ${label.toLowerCase()} no ecossistema Sarak UI.`}
+                                {description || `Configuração granular para o parâmetro ${label.toLowerCase()} no motor de design.`}
                             </p>
                         </div>
                         <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-8 border-transparent border-t-[var(--theme-surface)]" />

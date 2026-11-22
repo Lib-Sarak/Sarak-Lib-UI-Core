@@ -59,7 +59,7 @@ describe('MockTable', () => {
         render(<MockTable {...defaultProps} />);
         
         expect(screen.getByText('TRX-901')).toBeInTheDocument();
-        expect(screen.getByText('AWS Hosting')).toBeInTheDocument();
+        expect(screen.getByText('Hospedagem')).toBeInTheDocument();
         expect(screen.getByText('+$8,450.00')).toBeInTheDocument();
     });
 

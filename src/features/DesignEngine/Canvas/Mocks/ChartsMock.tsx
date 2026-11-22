@@ -62,7 +62,7 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ animationVariants }) => 
                     <SarakIcon name="BarChart3" className="text-[var(--theme-primary)]" size={20} />
                     <h2 className="text-2xl font-black text-theme-text uppercase tracking-widest text-left">Advanced Analytics & Charts</h2>
                 </div>
-                <p className="text-sm text-theme-text/40 uppercase tracking-tighter text-left">Galeria de Múltiplos Espécimes de Gráficos Reativos ao Motor Sarak</p>
+                <p className="text-sm text-theme-text/40 uppercase tracking-tighter text-left">Galeria de Múltiplos Espécimes de Gráficos Reativos ao Motor de Design</p>
             </div>
         </div>
 

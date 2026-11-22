@@ -119,7 +119,7 @@ export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) 
                         <ExternalLink size={10} /> GitHub
                     </a>
                 </div>
-                <span className="text-[var(--sarak-type-scale-tiny,11px)] font-black uppercase tracking-[var(--sarak-tracking-wide,0.3em)] text-theme-text/10">Sarak v13.0</span>
+                <span className="text-[var(--sarak-type-scale-tiny,11px)] font-black uppercase tracking-[var(--sarak-tracking-wide,0.3em)] text-theme-text/10">v13.0</span>
             </div>
         </div>
     );

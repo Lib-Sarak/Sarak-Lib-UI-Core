@@ -4,9 +4,11 @@ import { Chrome, Github } from 'lucide-react';
 import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
 import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
 import { SarakSocialButton } from '../../../../components/atomic/Buttons/SarakSocialButton';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { SarakInput } from '../../../../components/atomic/Inputs/SarakInput';
 
 export const MockAuth: React.FC<any> = ({ tokens, animationVariants }) => {
+  const text = useLibraryText();
   return (
     <motion.div 
       variants={animationVariants} 
@@ -24,7 +26,7 @@ export const MockAuth: React.FC<any> = ({ tokens, animationVariants }) => {
           <div className="w-16 h-16 bg-[var(--theme-primary)] rounded-2xl flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(var(--theme-primary-rgb),0.3)]">
             <SarakIcon name="Cpu" size={32} className="text-theme-on-primary" />
           </div>
-          <h1 className="text-3xl font-black text-theme-text tracking-tight mb-8">Sarak MyService</h1>
+          <h1 className="text-3xl font-black text-theme-text tracking-tight mb-8">{text('sampleTextBrand')}</h1>
           
           <div className="flex items-center gap-4">
             <SarakButton variant="secondary" size="sm" leftIcon={<SarakIcon name="Shield" size={14} className="text-[var(--theme-primary)] opacity-70" />}>

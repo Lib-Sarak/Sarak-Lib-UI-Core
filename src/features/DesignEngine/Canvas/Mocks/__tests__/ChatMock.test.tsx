@@ -31,7 +31,7 @@ describe('MockChat', () => {
         render(<MockChat {...defaultProps} />);
         
         expect(screen.getByText('Workspace Chat')).toBeInTheDocument();
-        expect(screen.getByText('Sarak Support')).toBeInTheDocument();
+        expect(screen.getByText('Suporte')).toBeInTheDocument();
         expect(screen.getByText(/Bem-vindo ao canal do projeto Alpha/i)).toBeInTheDocument();
         expect(screen.getByText(/Thread In-Line/i)).toBeInTheDocument();
     });

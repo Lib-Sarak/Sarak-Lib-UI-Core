@@ -40,7 +40,7 @@ describe('SaveThemeModal', () => {
 
         expect(screen.getByRole('heading', { name: 'Exportar tema (JSON)' })).toBeInTheDocument();
         expect(screen.getByDisplayValue('Meu Tema')).toBeInTheDocument();
-        fireEvent.change(screen.getByPlaceholderText('Ex: Sarak Sovereign Customizado'), { target: { value: 'Tema Corporativo' } });
+        fireEvent.change(screen.getByPlaceholderText('Nome do tema'), { target: { value: 'Tema Corporativo' } });
         fireEvent.click(screen.getByRole('button', { name: 'Exportar JSON' }));
 
         expect(onExport).toHaveBeenCalledWith('Tema Corporativo');

@@ -2,8 +2,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
 import { SarakInput } from '../../../../components/atomic/Inputs/SarakInput';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { SarakIconButton } from '../../../../components/atomic/Buttons/SarakIconButton';
 export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
+    const text = useLibraryText();
     const bubbleStyle = tokens?.chatBubbleStyle || 'glass';
     const radius = tokens?.chatBubbleRadius || 12;
     const speed = tokens?.chatAnimationSpeed || 0.4;
@@ -97,7 +99,7 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
                 {/* Variante 1: Widget Flutuante (Suporte) */}
                 <div className="sarak-card flex flex-col h-[350px] border border-[var(--theme-border)] bg-[var(--theme-card)] rounded-2xl overflow-hidden relative">
                     <div className="h-12 bg-[var(--theme-primary)] text-theme-on-primary flex items-center justify-between px-4 shrink-0 shadow-md relative z-10">
-                        <span className="text-xs font-black tracking-wider flex items-center gap-2"><SarakIcon name="MessageSquare" size={14} /> Sarak Support</span>
+                        <span className="text-xs font-black tracking-wider flex items-center gap-2"><SarakIcon name="MessageSquare" size={14} /> {text('sampleTextSupport')}</span>
                         <div className="flex gap-2 opacity-70"><SarakIcon name="Minimize2" size={12} /><SarakIcon name="MoreHorizontal" size={12} /></div>
                     </div>
                     <div className="flex-1 p-4 bg-gradient-to-b from-[var(--theme-card)] to-[var(--theme-body)] flex flex-col gap-3 overflow-y-auto custom-scrollbar text-[10px]">

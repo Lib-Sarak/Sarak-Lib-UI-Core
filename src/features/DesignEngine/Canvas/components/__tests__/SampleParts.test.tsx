@@ -56,7 +56,7 @@ describe('SampleParts', () => {
         const restInput = container.querySelector('[data-sample-state="rest"] input') as HTMLInputElement;
         const focusInput = container.querySelector('[data-sample-state="focus"] input') as HTMLInputElement;
 
-        expect(restInput).toHaveValue('Maria Souza');
+        expect(restInput).toHaveValue('Nome');
         expect(focusInput.getAttribute('style')).not.toBe(restInput.getAttribute('style'));
     });
 });

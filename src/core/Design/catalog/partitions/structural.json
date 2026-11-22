@@ -186,9 +186,7 @@
     ],
     "databaseColumn": "structural",
     "schemaOrigin": "structural.ts",
-    "digitalTwins": [
-      "SarakContainer"
-    ],
+    "digitalTwins": [],
     "cssVariables": [
       "--sarak-global-flow-direction"
     ],
@@ -221,9 +219,7 @@
     ],
     "databaseColumn": "structural",
     "schemaOrigin": "structural.ts",
-    "digitalTwins": [
-      "SarakContainer"
-    ],
+    "digitalTwins": [],
     "cssVariables": [
       "--sarak-global-flow-align"
     ],
@@ -258,9 +254,7 @@
     ],
     "databaseColumn": "structural",
     "schemaOrigin": "structural.ts",
-    "digitalTwins": [
-      "SarakHeader"
-    ],
+    "digitalTwins": [],
     "cssVariables": [
       "--sarak-header-alignment"
     ],

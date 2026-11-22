@@ -33,12 +33,12 @@ const LEDGER_COLUMNS: Array<SarakColumn<unknown>> = [
 
 export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
     const excelRows: LedgerRow[] = [
-        { id: 'TRX-901', date: '12/04/2026', desc: 'AWS Hosting', amount: '-$1,240.00', status: 'Cleared' },
-        { id: 'TRX-902', date: '13/04/2026', desc: 'Stripe Payout', amount: '+$8,450.00', status: 'Processing' },
-        { id: 'TRX-903', date: '14/04/2026', desc: 'Github Copilot', amount: '-$190.00', status: 'Cleared' },
-        { id: 'TRX-904', date: '15/04/2026', desc: 'Vercel Pro', amount: '-$40.00', status: 'Cleared' },
+        { id: 'TRX-901', date: '12/04/2026', desc: 'Hospedagem', amount: '-$1,240.00', status: 'Cleared' },
+        { id: 'TRX-902', date: '13/04/2026', desc: 'Recebimento', amount: '+$8,450.00', status: 'Processing' },
+        { id: 'TRX-903', date: '14/04/2026', desc: 'Licença', amount: '-$190.00', status: 'Cleared' },
+        { id: 'TRX-904', date: '15/04/2026', desc: 'Assinatura', amount: '-$40.00', status: 'Cleared' },
         { id: 'TRX-905', date: '16/04/2026', desc: 'Client Retainer', amount: '+$5,000.00', status: 'Pending' },
-        { id: 'TRX-906', date: '17/04/2026', desc: 'Google Cloud', amount: '-$840.00', status: 'Cleared' },
+        { id: 'TRX-906', date: '17/04/2026', desc: 'Armazenamento', amount: '-$840.00', status: 'Cleared' },
     ];
 
     const interactiveRows: OperationalRow[] = [
@@ -92,7 +92,7 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                                     <div className="w-8 h-8 rounded-full bg-[var(--theme-primary)]/20 flex items-center justify-center font-bold text-xs text-[var(--theme-primary)]">U{i}</div>
                                     <div className="flex flex-col">
                                         <span className="text-xs font-bold text-[var(--theme-title)] truncate max-w-[120px]">User_Alpha_{i}9</span>
-                                        <span className="text-[10px] text-[var(--text-secondary)]">admin@sarak.io</span>
+                                        <span className="text-[10px] text-[var(--text-secondary)]">nome@example.com</span>
                                     </div>
                                 </div>
                                 <div className="text-xs font-mono font-bold text-[var(--theme-title)]">{i * 137 + 44} pts</div>

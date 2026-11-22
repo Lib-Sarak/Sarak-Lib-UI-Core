@@ -17,7 +17,7 @@ export const useResponsiveStyles = () => {
         breakpoint: 'md' | 'lg' = 'md',
         gapOverride?: SarakLayoutGap
     ) => {
-        const gap = resolveGap(gapOverride, design?.layoutGap || 'var(--sarak-layout-gap-md, 16px)', 'SarakStack');
+        const gap = resolveGap(gapOverride, design?.layoutGap || 'var(--sarak-layout-gap-md, 16px)', 'useResponsiveStyles');
         const stackBreakpointClasses: Record<'md' | 'lg', string> = {
             md: 'flex flex-col @min-[768px]:flex-row',
             lg: 'flex flex-col @min-[1024px]:flex-row'

@@ -1,6 +1,6 @@
 import React from 'react';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { SarakAppChrome, type SarakChromeNotification, type SarakNavItem } from '../../../../components/Layout/SarakAppChrome';
-import type { SarakShellUser } from '../../../../components/atomic/Navigation/SarakShellUserWidget';
 import { SarakDeviceProvider } from '../../../../core/Provider/DeviceProvider';
 import { SarakDesignScope } from '../../../../core/Design/components/DesignScope';
 import type { SarakUIContextType, SarakDesignState } from '../../../../core/Provider/types';
@@ -65,7 +65,7 @@ const previewBaseStyle = (globalBackgroundImageUrl: string | undefined): React.C
 });
 
 /** A prévia é amostra: usuário, sair e notificações de exemplo, sem efeito, para a barra mostrar o que o painel configura. */
-const SAMPLE_USER: SarakShellUser = { name: 'Ana Souza', role: 'Administradora' };
+const SAMPLE_USER_ROLE = 'Administradora';
 const SAMPLE_NOTIFICATIONS: SarakChromeNotification[] = [
     { id: 'sample-1', label: 'Novo pedido recebido', description: 'Há 5 minutos' },
     { id: 'sample-2', label: 'Relatório mensal pronto', description: 'Há 1 hora' },
@@ -120,6 +120,7 @@ interface PreviewDeviceSurfaceProps {
 }
 
 const PreviewDeviceSurface = (props: PreviewDeviceSurfaceProps): React.ReactElement => {
+    const text = useLibraryText();
     const { activeDesign, previewDevice, containerRef, scale, navigationItems, onNavigate, activeApp } = props;
     const layerRef = React.useRef<HTMLDivElement | null>(null);
     const [portalNode, setPortalNode] = React.useState<HTMLDivElement | null>(null);
@@ -155,7 +156,7 @@ const PreviewDeviceSurface = (props: PreviewDeviceSurfaceProps): React.ReactElem
                         brand={{ name: activeDesign.systemName || SAMPLE_BRAND_NAME }}
                         navItems={navigationItems}
                         onNavigate={onNavigate}
-                        user={SAMPLE_USER}
+                        user={{ name: text('sampleTextName'), role: SAMPLE_USER_ROLE }}
                         logout={noop}
                         notifications={SAMPLE_NOTIFICATIONS}
                         onNotificationSelect={noop}
