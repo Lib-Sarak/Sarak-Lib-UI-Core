@@ -68,7 +68,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
     search, banner, footer, decoration, user, logout, notifications, onNotificationSelect, widgets, className, rootStyle, children,
 }) => {
     const {
-        sidebarPosition, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled,
+        design, sidebarPosition, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled,
         searchPositionSidebar, sidebarBorderSide, sidebarBorderStyle, sidebarBackgroundStyle,
         sidebarLogoPlacement, sidebarTone, sidebarResizable,
     } = useChromeDesignTokens();
@@ -151,7 +151,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                             // `sidebarBlur`/`sidebarShadow` (Spec 05 §2.4) — sombra no lugar do shadow-2xl.
                             backdropFilter: 'blur(var(--sarak-sidebar-blur, 10px))',
                             boxShadow: 'var(--sarak-sidebar-shadow, 10px 0 30px rgba(0,0,0,0.5))', // sarak-allow-hardcode: fallback = defaultValue do token
-                            ...resolveChromeToneStyle(sidebarTone, 'sidebar'),
+                            ...resolveChromeToneStyle(sidebarTone, 'sidebar', design),
                         }}
                     >
                         {/* `sidebarNoiseOpacity` (Spec 05 §2.4). */}

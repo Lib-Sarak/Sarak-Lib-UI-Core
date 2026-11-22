@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { sarakGetDefaultDesignState } from '../../master-map';
 import { evaluatePair } from '../../../../../gates/scripts/audit/verify_contrast';
-import { PAIRS } from '../contrast-pairs';
+import { GRADIENT_LIGHT_ID, GRADIENT_LIGHT_SHARE, PAIRS } from '../contrast-pairs';
 import { SARAK_PALETTE_PRESETS } from '../presets';
 import { resolvePalette } from '../resolve';
 import { createPalettePlan, DEFAULT_PALETTE_PLAN } from '../tone-plan';
@@ -91,6 +91,24 @@ describe('papel de cor da barra — o que cada tom faz', () => {
         const declared = { sidebarTone: 'primary', sidebarColor: '#102030' };
         const colors = resolvePalette(SARAK_PALETTE_PRESETS[PRESET_IDS[0]], 'light', declared);
         expect(failuresOf({ ...colors, sidebarColor: '#102030' }, declared)).toEqual([]);
+    });
+
+    it('o par ativo mede a opacidade declarada do véu e exige contraste pelo menos igual ao texto inativo', () => {
+        for (const bar of ['sidebar', 'topbar'] as const) {
+            const declared = { [`${bar}Tone`]: 'primary', [`${bar}BackgroundStyle`]: 'gradient' };
+            const pairs = createPalettePlan(declared).pairs;
+            const active = pairs.find((pair) => pair.fg === `${bar}ItemHoverTextColor`
+                && pair.bgChain[0] === `${bar}ActiveColor`)!;
+            const gradientActive = pairs.find((pair) => pair.fg === active.fg
+                && pair.bgChain[0] === active.bgChain[0] && pair.bgChain.includes(`${GRADIENT_LIGHT_ID}@${GRADIENT_LIGHT_SHARE}`))!;
+
+            expect(active.beat).toEqual({ fg: `${bar}ItemTextColor`, bgChain: [`${bar}Color`, 'colorBgBody'] });
+            expect(gradientActive.beat?.bgChain).toEqual([
+                `${GRADIENT_LIGHT_ID}@${GRADIENT_LIGHT_SHARE}`, `${bar}Color`, 'colorBgBody',
+            ]);
+            const colors = resolvePalette(SARAK_PALETTE_PRESETS[PRESET_IDS[0]], 'light', declared);
+            expect(colors[`${bar}ActiveColor`]).toContain('0.2');
+        }
     });
 });
 

@@ -244,8 +244,19 @@ describe('SarakMenuItem — tratamento ativo, densidade e ícones por barra', ()
         if (markerVisible) expect(item.querySelector('[aria-hidden="true"]')).not.toBeNull();
         else expect(item.querySelector('[aria-hidden="true"]')).toBeNull();
         if (background !== undefined) expect(item.style.backgroundColor).toBe(background);
+        expect(item.style.outline).toBe('');
         if (style === 'filled') expect(item.style.color).toBe('var(--sarak-on-nav-active, #020617)');
         if (style === 'outline') expect(item.style.border).toBe('var(--sarak-border-width, 1px) solid var(--sarak-nav-active-color, #19e3f0)');
+    });
+
+    it('a pílula ativa ganha contorno pelo texto quando a barra tem tom contrastante', () => {
+        render(
+            <DesignOverrideContext.Provider value={{ sidebarTone: 'primary', sidebarActiveItemStyle: 'pill' } as never}>
+                <SarakMenuItem label="Módulo" orientation="vertical" active />
+            </DesignOverrideContext.Provider>,
+        );
+        expect(screen.getByRole('button', { name: 'Módulo' }).style.outline)
+            .toBe('var(--sarak-border-width, 1px) solid var(--sarak-nav-active-color, #19e3f0)');
     });
 
     it.each(['bar', 'pill', 'underline', 'filled', 'outline'] as const)('vidro ligado (padrão) põe o brilho interno no ativo vertical com o estilo %s', (style) => {

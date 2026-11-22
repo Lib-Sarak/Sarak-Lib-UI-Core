@@ -103,12 +103,15 @@ const BAR_ONLY_FUNCTIONS: Record<string, Bar> = { category: 'sidebar', footerBac
 const isBarTone = (value: unknown): value is BarTone =>
     value === 'neutral' || value === 'surface' || value === 'primary' || value === 'secondary' || value === 'inverse';
 
-const toneRoles = (bar: Bar, tone: Exclude<BarTone, 'neutral'>): Record<string, PaletteColorRole> => {
+const toneRoles = (bar: Bar, tone: Exclude<BarTone, 'neutral'>, gradient: boolean): Record<string, PaletteColorRole> => {
     const roles: Record<string, PaletteColorRole> = {};
     Object.entries(TONE_SPECS[tone]).forEach(([fn, spec]) => {
         if (BAR_ONLY_FUNCTIONS[fn] && BAR_ONLY_FUNCTIONS[fn] !== bar) return;
         roles[bar + FUNCTION_TOKEN_SUFFIX[fn]] = role(spec);
     });
+    if (gradient && isContrastingTone(tone) && roles[`${bar}ActiveColor`]) {
+        roles[`${bar}ActiveColor`] = role(['neutral', 900, 900, 0.2]);
+    }
     return roles;
 };
 
@@ -119,11 +122,12 @@ const isContrastingTone = (tone: BarTone): boolean => tone === 'primary' || tone
 const isBodyTextOverBar = (pair: ContrastPair, bar: Bar): boolean =>
     !pair.fg.startsWith(bar) && pair.bgChain.some((token) => token === `${bar}Color` || token === `${bar}HoverColor`);
 
-/** No lugar de `navItemActiveColor` (a cor de ênfase global), o texto do item ativo da barra contrastante é o do hover. */
+/** O item ativo usa o texto forte sobre o véu declarado e não pode perder para o rótulo inativo. */
 const activeTextPair = (bar: Bar): ContrastPair => ({
     fg: `${bar}ItemHoverTextColor`,
     bgChain: [`${bar}ActiveColor`, `${bar}Color`, 'colorBgBody'],
     min: 4.5,
+    beat: { fg: `${bar}ItemTextColor`, bgChain: [`${bar}Color`, 'colorBgBody'] },
 });
 
 /** Os textos que o degradê da barra não pode apagar: o do item ativo, o do inativo, o ícone e o do hover (ativo da barra contrastante). */
@@ -156,7 +160,7 @@ export const createPalettePlan = (declared?: Record<string, unknown>): PalettePl
     (['sidebar', 'topbar'] as const).forEach((bar) => {
         const tone = tones[bar];
         if (tone === 'neutral') return;
-        roles = { ...roles, ...toneRoles(bar, tone) };
+        roles = { ...roles, ...toneRoles(bar, tone, declared?.[`${bar}BackgroundStyle`] === 'gradient') };
         if (!isContrastingTone(tone)) return;
         contrastingBars.push(bar);
         pairs = pairs.filter((pair) => !isBodyTextOverBar(pair, bar) && !(pair.fg === 'navItemActiveColor' && pair.bgChain[0] === `${bar}ActiveColor`));

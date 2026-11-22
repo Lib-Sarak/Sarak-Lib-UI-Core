@@ -43,6 +43,50 @@ describe('resolveChromeToneStyle', () => {
         expect(style['--sarak-on-surface']).toBe('var(--sarak-topbar-item-hover-text-color)');
     });
 
+    it('a topbar contrastante preserva o véu da pílula na intensidade compartilhada com a paleta', () => {
+        const style = resolveChromeToneStyle('primary', 'topbar', {
+            topbarColor: '#005e22',
+            topbarBackgroundStyle: 'gradient',
+            topbarActiveItemStyle: 'pill',
+            topbarItemTextColor: '#ecf7ed',
+            topbarItemHoverTextColor: '#ecf7ed',
+            topbarActiveColor: 'rgba(236, 247, 237, 0.2)',
+            statusErrorColor: '#ef4444',
+            colorBgBody: '#ffffff',
+        }) as Record<string, string>;
+        expect(style['--sarak-topbar-active-color']).toBe('rgba(236, 247, 237, 0.2)');
+        expect(style['--sarak-topbar-item-hover-text-color']).toBe(style['--sarak-nav-active-color']);
+        expect(style['--sarak-status-error-color']).toBeDefined();
+    });
+
+    it('ajusta o texto inativo só o necessário para o ativo não perder para ele após escurecer o véu', () => {
+        const style = resolveChromeToneStyle('inverse', 'topbar', {
+            topbarColor: '#f4f4f4',
+            topbarBackgroundStyle: 'gradient',
+            topbarActiveItemStyle: 'pill',
+            topbarItemTextColor: '#020617',
+            topbarItemHoverTextColor: '#020617',
+            topbarActiveColor: 'rgba(2, 6, 23, 0.2)',
+            colorBgBody: '#ffffff',
+        }) as Record<string, string>;
+        expect(style['--sarak-topbar-item-text-color']).not.toBe('#020617');
+    });
+
+    it('um papel de superfície só corrige o texto forte quando a parada clara o exige', () => {
+        const style = resolveChromeToneStyle('surface', 'sidebar', {
+            sidebarColor: '#ffffff',
+            sidebarBackgroundStyle: 'gradient',
+            sidebarActiveItemStyle: 'pill',
+            sidebarItemTextColor: '#767676',
+            sidebarItemHoverTextColor: '#767676',
+            sidebarActiveColor: 'rgba(118, 118, 118, 0.2)',
+            navActiveMarkerColor: '#767676',
+            colorBgBody: '#ffffff',
+        }) as Record<string, string>;
+        expect(style['--sarak-sidebar-item-hover-text-color']).not.toBe('var(--sarak-sidebar-item-hover-text-color)');
+        expect(style['--theme-title']).toBe(style['--sarak-sidebar-item-hover-text-color']);
+    });
+
     it('no neutro e na superfície o rodapé não muda: nenhuma dessas variáveis é refeita', () => {
         for (const tone of ['neutral', 'surface'] as const) {
             expect(resolveChromeToneStyle(tone, 'sidebar')).toEqual({});

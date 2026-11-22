@@ -227,7 +227,10 @@ describe('ChromeTopbarBody — papel de cor da topbar', () => {
         const { container } = renderBody({ colorPalette: 'oceano', topbarTone: 'primary' });
         const header = container.querySelector('header')!;
         expect(header.style.getPropertyValue('--text-muted')).toBe('var(--sarak-topbar-item-text-color)');
-        expect(header.style.getPropertyValue('--sarak-nav-active-color')).toBe('var(--sarak-topbar-item-hover-text-color)');
+        // O texto ativo é a cor forte calculada contra a pior parada da barra, a mesma que o hover da barra recebe.
+        const strong = header.style.getPropertyValue('--sarak-topbar-item-hover-text-color');
+        expect(strong).toMatch(/^#[0-9a-f]{6}$/i);
+        expect(header.style.getPropertyValue('--sarak-nav-active-color')).toBe(strong);
     });
 
     it('papel de superfície não refaz nada: só o fundo muda, pela paleta', () => {

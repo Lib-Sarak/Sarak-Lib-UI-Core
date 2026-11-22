@@ -56,7 +56,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
     search, banner, footer, decoration, user, logout, notifications, onNotificationSelect, widgets, className, rootStyle, children,
 }) => {
     const {
-        navbarLayout, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled,
+        design, navbarLayout, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled,
         searchPositionTopbar, topbarBorderSide, topbarBorderStyle, topbarBackgroundStyle, topbarTone,
     } = useChromeDesignTokens();
     const { isVisible, sensorProps, surfaceProps } = useChromeAutoHide(isAutoHideEnabled);
@@ -128,7 +128,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
                         }),
                         backdropFilter: 'blur(var(--sarak-topbar-blur, 0px))',
                         boxShadow: 'var(--sarak-topbar-shadow, none)',
-                        ...resolveChromeToneStyle(topbarTone, 'topbar'),
+                        ...resolveChromeToneStyle(topbarTone, 'topbar', design),
                     }}
                 >
                     {/* `topbarNoiseOpacity` (Spec 05 §2.4). */}

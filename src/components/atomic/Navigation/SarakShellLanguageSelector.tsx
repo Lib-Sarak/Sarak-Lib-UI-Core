@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { LANGUAGES } from '../../../core/i18n/languages';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useNavigationAppearance } from '../../../core/Provider/useNavigationAppearance';
+import { isValidPaletteValue } from '../../../core/Design/palette/parser';
 import { languageCode, primaryLanguage } from '../../../core/i18n/resolveLanguage';
 import { useSarakLanguage } from '../../../core/i18n/useSarakLanguage';
 import type { SarakI18nLanguage } from '../../../core/i18n/types';
@@ -51,6 +53,7 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
     variant = 'horizontal'
 }) => {
     const { design, options } = useSarakUI();
+    const navigationAppearance = useNavigationAppearance();
     const { language, setLanguage } = useSarakLanguage();
     const t = useLibraryText();
     const [isOpen, setIsOpen] = useState(false);
@@ -81,6 +84,10 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
     };
 
     const isHorizontal = variant === 'horizontal';
+    const tone = isHorizontal ? navigationAppearance.topbarTone : navigationAppearance.sidebarTone;
+    const isContrastTone = isValidPaletteValue(design?.colorPalette)
+        && (tone === 'primary' || tone === 'secondary' || tone === 'inverse');
+    const languageCodeOpacity = isContrastTone ? 'opacity-100' : 'opacity-60';
 
     const dropdown = (
         <AnimatePresence>
@@ -128,7 +135,7 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
                 >
                     <div className="flex items-center w-full" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                         <span className="text-2xs">{currentLang.flag}</span>
-                        <span className="text-3xs font-black uppercase tracking-widest text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]/60 group-hover:text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]">
+                        <span className={`text-3xs font-black uppercase tracking-widest text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))] ${languageCodeOpacity} group-hover:opacity-100 group-hover:text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]`}>
                             {currentLang.id}
                         </span>
                         <SarakIcon name="ChevronDown" size={10} className={`text-[var(--theme-muted)] transition-transform ${isOpen ? 'rotate-180' : ''}`} />

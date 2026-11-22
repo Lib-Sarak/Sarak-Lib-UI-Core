@@ -19,6 +19,23 @@ afterEach(() => {
 });
 
 describe('ShellLanguageSelector', () => {
+    it('mantém a intensidade discreta fora de um tom contrastante', () => {
+        const { container } = renderWithProvider(<SarakShellLanguageSelector variant="horizontal" />);
+        const languageCode = container.querySelector('.text-3xs');
+
+        expect(languageCode?.className).toContain('opacity-60');
+    });
+
+    it('usa opacidade total quando a topbar tem um tom contrastante', () => {
+        const { container } = renderWithProvider(
+            <SarakShellLanguageSelector variant="horizontal" />,
+            { ...TWO_LANGUAGES, colorPalette: 'oceano', topbarTone: 'primary' },
+        );
+        const languageCode = container.querySelector('.text-3xs');
+
+        expect(languageCode?.className).toContain('opacity-100');
+    });
+
     it('renderiza com variante horizontal, listando os idiomas habilitados no tema', () => {
         renderWithProvider(<SarakShellLanguageSelector variant="horizontal" />);
         expect(screen.getByText('pt')).toBeInTheDocument();

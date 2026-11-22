@@ -59,7 +59,9 @@ describe('SarakShellUserWidget — identidade genérica', () => {
                 <SarakShellUserWidget user={{ name: 'Ana Lima' }} logout={logout} />
             </SarakUIProvider>,
         );
-        fireEvent.click(screen.getByRole('button'));
+        const logoutButton = screen.getByRole('button');
+        expect(logoutButton.className).toContain('text-[var(--sarak-status-error-color,#ef4444)]');
+        fireEvent.click(logoutButton);
 
         expect(logout).toHaveBeenCalledOnce();
     });

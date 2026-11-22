@@ -276,7 +276,10 @@ describe('ChromeSidebarBody — personalidade da barra', () => {
         const toned = renderBody({ colorPalette: 'oceano', sidebarTone: 'primary' });
         const aside = toned.container.querySelector('aside') as HTMLElement;
         expect(aside.style.getPropertyValue('--text-muted')).toBe('var(--sarak-sidebar-item-text-color)');
-        expect(aside.style.getPropertyValue('--sarak-nav-active-color')).toBe('var(--sarak-sidebar-item-hover-text-color)');
+        // O texto ativo é a cor forte calculada contra a pior parada da barra, a mesma que o hover da barra recebe.
+        const strong = aside.style.getPropertyValue('--sarak-sidebar-item-hover-text-color');
+        expect(strong).toMatch(/^#[0-9a-f]{6}$/i);
+        expect(aside.style.getPropertyValue('--sarak-nav-active-color')).toBe(strong);
     });
 
     it('papel neutral com paleta: nenhuma variável de texto é refeita', () => {

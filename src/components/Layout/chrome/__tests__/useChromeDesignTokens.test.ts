@@ -16,6 +16,7 @@ describe('useChromeDesignTokens', () => {
     it('fora do Provider, degrada para os defaults do schema — nunca lança', () => {
         const { result } = renderHook(() => useChromeDesignTokens());
         expect(result.current).toEqual({
+            design: {},
             sidebarBorderStyle: 'solid',
             sidebarBorderSide: 'edge',
             sidebarBackgroundStyle: 'solid',
@@ -82,6 +83,7 @@ describe('useChromeDesignTokens', () => {
             }),
         });
         expect(result.current).toEqual({
+            design: expect.objectContaining({ sidebarPosition: 'right', sidebarBorderStyle: 'dotted' }),
             sidebarBorderStyle: 'dotted',
             sidebarBorderSide: 'bottom',
             sidebarBackgroundStyle: 'gradient',

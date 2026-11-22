@@ -78,6 +78,8 @@ export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
     const isVertical = orientation === 'vertical';
     const appearance = useNavigationAppearance();
     const activeItemStyle = isVertical ? appearance.sidebarActiveItemStyle : appearance.topbarActiveItemStyle;
+    const hasContrastingPill = active && activeItemStyle === 'pill'
+        && ['primary', 'secondary', 'inverse'].includes(isVertical ? appearance.sidebarTone : appearance.topbarTone);
     const itemDensity = isVertical ? appearance.sidebarItemDensity : appearance.topbarItemDensity;
     const iconSize = isVertical
         ? 'var(--sarak-sidebar-icon-size, 18px)'
@@ -128,6 +130,9 @@ export const SarakMenuItem: React.FC<SarakMenuItemProps> = ({
                 : 'var(--sarak-nav-active-color, #19e3f0)'
             : undefined,
         backgroundColor: active ? activeBackground : undefined,
+        outline: hasContrastingPill
+            ? 'var(--sarak-border-width, 1px) solid var(--sarak-nav-active-color, #19e3f0)'
+            : undefined,
         border: active && activeItemStyle === 'outline'
             ? 'var(--sarak-border-width, 1px) solid var(--sarak-nav-active-color, #19e3f0)'
             : undefined,

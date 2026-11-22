@@ -20,6 +20,9 @@ export const GRADIENT_LIGHT_ID = 'gradientLight';
 export const GRADIENT_LIGHT_SHARE = 0.16;
 export const GRADIENT_LIGHT_COLOR = '#ffffff';
 
+/** Mede no par a opacidade inteira declarada para o véu ativo (20% nas barras contrastantes). */
+export const CONTRASTING_ACTIVE_VEIL_SHARE = 1;
+
 /** The component contrast contract shared by the runtime palette and its audit gate. */
 export const PAIRS: readonly ContrastPair[] = [
     { fg: 'textColorMaster', bgChain: ['colorBgBody'], min: 4.5 },

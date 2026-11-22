@@ -11,6 +11,7 @@ export type ChromeSearchPositionSidebar = 'top' | 'bottom';
 export type ChromeSearchPositionTopbar = 'left' | 'center' | 'right' | 'hidden';
 
 export interface ChromeDesignTokens extends NavigationAppearance {
+    design: Record<string, unknown>;
     sidebarPosition: ChromeSidebarPosition;
     navbarLayout: ChromeNavbarLayout;
     layoutDensity: ChromeLayoutDensity;
@@ -42,20 +43,21 @@ const resolveLayoutDensity = (value: unknown): ChromeLayoutDensity =>
  * comportamento de hoje (`token.defaultValue`, `useDesignVariables.ts:72`).
  */
 export const useChromeDesignTokens = (): ChromeDesignTokens => {
-    const design = useSarakUIOptional()?.design;
+    const design = useSarakUIOptional()?.design as Record<string, unknown> | undefined;
     const navigationAppearance = useNavigationAppearance();
     return {
         ...navigationAppearance,
-        sidebarTone: resolveEffectiveTone(navigationAppearance.sidebarTone, design as Record<string, unknown> | undefined),
-        topbarTone: resolveEffectiveTone(navigationAppearance.topbarTone, design as Record<string, unknown> | undefined),
+        design: design ?? {},
+        sidebarTone: resolveEffectiveTone(navigationAppearance.sidebarTone, design),
+        topbarTone: resolveEffectiveTone(navigationAppearance.topbarTone, design),
         sidebarResizable: design?.sidebarResizable === true,
         sidebarPosition: (design?.sidebarPosition as ChromeSidebarPosition) || 'left',
         navbarLayout: (design?.navbarLayout as ChromeNavbarLayout) || 'sticky',
         layoutDensity: resolveLayoutDensity(design?.layoutDensity),
         maxContentWidth: resolveMaxContentWidth(design?.maxContentWidth),
-        isSplitViewEnabled: design?.isSplitViewEnabled ?? false,
-        isNavHidden: design?.isNavHidden ?? false,
-        isAutoHideEnabled: design?.isAutoHideEnabled ?? false,
+        isSplitViewEnabled: design?.isSplitViewEnabled === true,
+        isNavHidden: design?.isNavHidden === true,
+        isAutoHideEnabled: design?.isAutoHideEnabled === true,
         searchPositionSidebar: resolveSidebarSearchPosition(design?.searchPositionSidebar),
         searchPositionTopbar: (design?.searchPositionTopbar as ChromeSearchPositionTopbar) || 'left',
         mobileNavigationStyle: resolveMobileNavigationStyle(design?.mobileNavigationStyle),
