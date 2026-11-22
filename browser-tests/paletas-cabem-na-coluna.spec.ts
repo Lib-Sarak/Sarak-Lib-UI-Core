@@ -12,11 +12,11 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildHarness } from './build-harness.mjs';
 import { switchPreviewMode } from './preview-mode-toggle';
-import { LIBRARY_TEXT_CATALOG } from '../src/core/i18n/catalog';
+import { CATALOG_PALETTE } from '../src/core/i18n/catalogEntries.palette';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ENTRY = path.join(HERE, 'fixtures', 'plan-135-paletas-entry.tsx');
-const LABELS = Object.values(LIBRARY_TEXT_CATALOG.paletteCreateOpen);
+const LABELS = Object.values(CATALOG_PALETTE.paletteCreateOpen);
 
 let browser: Browser;
 let harnessDirectory: string;
