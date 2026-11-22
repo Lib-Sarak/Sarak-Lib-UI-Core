@@ -252,6 +252,49 @@ precisar de tempo próprio, o valor fica no teste, com o motivo.
 **Pendências / riscos**
 - O tipo de `CATALOG_LAYOUT.…pt` não foi conferido por `tsc` nesta rodada.
 
+## Resumo da execução (correção 2: compose e PresetsCatalog) — 2026-11-22
+
+**Resultado:** Concluído (escopo: só os dois achados; `coverage:check` é do revisor e o 2.1 espera a revisão da 167)
+
+**Estado do worktree ao iniciar**
+`git status --short` com alterações concorrentes das plans 167/168/170 (browser-tests, chrome, cards, charts, i18n, DesignEngine, `_elements.css`), da própria 169 (gates, guia, `compose.test.ts`, `ChromeSidebarResizeHandle.test.tsx`, `BarSample`, `PaletteGallery.registry`, `switch-glass-border`) e `dist/` regenerado. O snapshot `PresetsCatalog.test.tsx.snap` já aparecia modificado (da 167/168); passou a ser da 169 por instrução do usuário. Nada fora do escopo foi tocado.
+
+**O que foi feito**
+- Achado 1 — `src/core/Design/presets/themes/__tests__/compose.test.ts`: o caso "todo par passa" voltou a todos os temas com paleta × claro e escuro, um `it.each` por tema e modo, sem timeout próprio. A asserção `toContain('sidebarItemTextColor')` fica só em `neo-brutalism`/claro. Um teste a mais garante que a lista de casos não esvazia e que `neo-brutalism`/claro está nela.
+- Achado 2 — `src/features/DesignEngine/Canvas/components/__tests__/PresetsCatalog.test.tsx`: `IntersectionObserver` que nunca intersecta, instalado em `beforeAll` (antes de qualquer render) e restaurado em `afterAll`.
+- Snapshot `__snapshots__/PresetsCatalog.test.tsx.snap` regenerado só com `npx vitest run <arquivo> -u`, sem edição à mão.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/presets/themes/__tests__/compose.test.ts` | alterado | `it.each` por tema com paleta × modo; asserção do texto movido só em neo-brutalism/claro |
+| `src/features/DesignEngine/Canvas/components/__tests__/PresetsCatalog.test.tsx` | alterado | observador que nunca intersecta |
+| `src/features/DesignEngine/Canvas/components/__tests__/__snapshots__/PresetsCatalog.test.tsx.snap` | alterado | regenerado (−1995/+2 linhas) |
+| esta plan | alterado | este bloco e o `status` |
+
+**Verificações executadas**
+- `npx vitest run …/compose.test.ts` → 66/66 passaram (tests 3,74 s no arquivo; 25 temas com paleta × 2 modos).
+- `npx vitest run …/PresetsCatalog.test.tsx -u` → 1 snapshot atualizado, 18/18.
+- Três rodadas seguidas sem `-u` de `PresetsCatalog.test.tsx` → 18/18, 18/18, 18/18; sem snapshot escrito ou obsoleto.
+- Conferi o snapshot novo: 25 ocorrências de `data-sx-lazy="pending"` e 0 de `shown`.
+- Não rodei `coverage:check`, `tsc`, quick nem mutação.
+
+**Critérios de aceite**
+- [x] `compose`: todos os temas com paleta × dois modos, um caso cada, sem subir timeout — evidência: 66/66.
+- [x] `PresetsCatalog`: estado determinístico, snapshot regenerado, três rodadas verdes.
+- [ ] `coverage:check` verde duas vezes — com o revisor.
+- [ ] 2.1 — espera a revisão da 167.
+
+**Decisões e suposições**
+- Contei 25 `pending` no snapshot (a plan descrevia 24 miniaturas): é o que o componente renderiza no worktree atual, e o snapshot foi gerado por `-u` como mandado.
+- Renomeei a variável de lista para `themeModeCases` (hook de identificadores em inglês).
+
+**Achados fora do escopo (não corrigidos)**
+- O diff do snapshot encolheu ~2.000 linhas porque as miniaturas pendentes não renderizam o conteúdo; não conferi se as 4 linhas de subtítulo da 167/168 seguem coerentes além de a rodada passar.
+
+**Pendências / riscos**
+- Falta rodar `coverage:check` e o 2.1.
+
 ---
 
 # 10. Veredito
@@ -445,5 +488,55 @@ agora (16/16): não há motivo para reduzir.
 O revisor roda o `coverage:check` no fechamento, com o worktree parado.
 
 **2.1:** depois da revisão da 167.
+
+**Status da plan: 🔵 Em correção.**
+
+## Veredito — 2026-11-22 — correção 2 — 🔵 Em correção (os dois testes aprovados; os gates 2.2 e 2.3 reprovados)
+
+**Como medi:** li os diffs; rodei os testes da plan numa cópia do `HEAD` só com os arquivos dela; mutei o `compose`, o `zero-brand` e o
+`chrome-token-parity` nessa cópia, com o gate do `HEAD` como controle; rodei no worktree os gates do Anel 1, o `audit:baseline` (igual) e
+o Anel 0 (0 achados). Não rodei build, navegador, suíte inteira nem `coverage:check`.
+
+**Achados da correção 2: aprovados.**
+- `compose`: 25 temas × 2 modos; um texto ilegível plantado em `nature-breeze`/escuro (fora da amostra antiga) derruba só esse caso.
+- `PresetsCatalog`: verde e determinístico. As 1.995 linhas que saíram do snapshot eram a única miniatura que escapava na corrida; o
+  desenho sob demanda continua coberto por `PresetCard.test.tsx`.
+
+**Retiro o aceite dos passos 2.2 e 2.3 (2026-11-21). A falha foi do revisor**, que aceitou os testes de mutação da execução sem plantar
+os próprios casos.
+
+**Achado 1 (2.3) — o `zero-brand` novo deixa passar o que o do `HEAD` reprovava.** `scanFile` só olha string ligada a JSX no mesmo arquivo.
+"Sarak AI", "Sarak OS" e "Sarak Lib", plantados em 6 de 9 formas, eram reprovados no `HEAD` e hoje passam: padrão de prop, objeto
+exportado, catálogo de idiomas em `.ts`, constante importada, dado em `.ts` e `document.title`.
+**Correção:** voltar a varrer todo literal de texto, com a marca por padrão. São isenções explícitas o que é técnico (pacote, prefixos,
+componente), o diagnóstico de console e os nomes dos temas embarcados. O teste planta as 9 formas, com uma frase antiga e uma nova.
+
+**Achado 2 (2.2) — o `chrome-token-parity` não vê 36 dos 75 tokens de `NavigationSchema`.** `extractSchemaTokens` só lê objeto literal:
+perde o que nasce de fábrica (`createChromeSelectToken('brandDisplay', …)`) e o que vem de `barPersonality.ts`. O recorte por
+`/navigation/` no id também não pega `sidebarTone`, `topbarTone`, `sidebarResizable` nem `sidebarLogoPlacement`. Um token sem consumidor
+plantado em `barPersonality.ts` passa com "46 de 46". O cabeçalho e as specs 01 e 05 dizem "`navigation.ts` inteiro", e é falso.
+**Correção:** o gate cobre os 75, mais os de `system` e `global` que já cobre; um teste compara a extração com o schema importado; a
+mutação planta um token de fábrica e um em `barPersonality.ts`. Dos 36, 35 já têm consumidor pelo critério do gate. `userAvatarStyle` é
+lido em `SarakShellUserWidget.tsx`, fora dos arquivos varridos: entra o arquivo, não uma exceção. Acertar o cabeçalho e as duas specs.
+
+**Achado 3 (2.5) — 13 isenções novas com motivo que não procede.** O comentário diz que os painéis não chegam ao consumidor. O
+`SarakCustomizationPanel` é público, e o `dist/` do `HEAD` carrega "Igor Sarak", "Sarak MyService", "Sarak Support", "Sarak v13.0" e
+"ecossistema Sarak UI". A spec 08 §7.3 só admite isenção do que não é consumidor-facing. A tensão está registrada lá e na 06 §8 para um
+arquivo; ampliá-la para treze é decisão do dono.
+
+**Z1 — decisão do dono:**
+- **a) recomendada:** o painel é produto. Os textos com marca que entram no pacote viram nomes fictícios ou de função, inclusive as
+  descrições do catálogo de tokens; na allowlist fica só o que não entra no pacote, com esse motivo. Autorizado passar dos 10 arquivos
+  do §3.1 para essa troca de texto.
+- **b)** o painel segue isento, e o motivo passa a dizer que chega ao importador.
+- **Nas duas:** "Igor Sarak" vira nome fictício, porque é nome de pessoa.
+
+**Spec 01:** corrigi nesta revisão os erros de prosa da execução ("dúvida" por "dívida", o `×`, o travessão e duas frases).
+
+**Commit parcial liberado:** testes (#89, `ChromeSidebarResizeHandle`, `PresetsCatalog`), "Assistente"/"Catálogo" e gerador com o guia.
+Fecham sobre o `HEAD` sem os gates. Os gates, os testes deles e as specs 01 e 05 esperam a correção.
+
+**Seguem pendentes:** o 2.1, quando a 167 liberar build e bateria; o `coverage:check`, do revisor, no fechamento. A síntese também
+atualiza a 08 §7, a 06 §8 e a R12.
 
 **Status da plan: 🔵 Em correção.**

@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Deixar a bateria de navegador verde num build novo e corrigir o contraste do hover de botão e do SarakTitleCard"
 objetivo: "Fazer o cromo-css-real:check passar inteiro num build novo do HEAD antes da tag 9.0.0, decidindo caso a caso se o teste ficou velho ou se o código perdeu algo, e levar a 4,5:1 o botão sob o ponteiro e o texto do SarakTitleCard"
 dominio: "Qualidade / Bateria de navegador e contraste"
-status: "🟠 Em revisão"
+status: "🔵 Em correção"
 prioridade: "Alta"
 tags: ["plan", "navegador", "contraste", "acessibilidade", "release-9-0-0"]
 relacionados: ["[[10-seguranca-e-acessibilidade]]", "[[05-cromo-e-slots]]", "[[06-painel-de-customizacao-e-preview]]"]
@@ -822,3 +822,47 @@ pm run guide regenerou o kit consumidor. Os pares estáveis estão em %TEMP%\sar
 
 O vermelho de `PresetsCatalog.test.tsx` já existe no `HEAD` (snapshot que depende do instante). A plan-169 torna o teste determinístico e
 regenera o snapshot, inclusive as linhas do card desta plan. A 167 não edita mais esse arquivo. Os lotes 2 e 3 ainda não foram revisados.
+
+## Veredito — 2026-11-22 — lotes 2 e 3 — 🔴 Reprovado (5 achados; a bateria inteira não está verde)
+
+**Como medi:** `git status` e `git diff` dos arquivos de produção e dos specs desta plan; leitura integral de `browser-tests/contraste-hover-botao.spec.ts`;
+`npm run token-reader:check` (OK); `npx vitest run` de SarakTitleCard, SarakActionCard, cardTokensQueDesenham, CardsCatalog, LiveDraftPreviewFrame
+e DecisionTokenList (6 arquivos, 67 testes verdes). **Não rodei `npm run build`, a bateria nem `verify -- --tier=full`:** há `npm` e `node` de outra
+execução ativos desde 04:19, e a regra é uma plan de cada vez no `dist/`. A conferência no navegador fica para a correção.
+
+**O que passa:** a decisão do 2.2 (fundo global fora, `transform` mantido) está em `src/styles/_elements.css:91-99`; os specs `cromo-css-real`,
+`css-que-so-o-navegador-mede` e `arsenal-lote4` acompanham a regra sem afrouxar limiar; `LiveDraftPreviewFrame` ganhou `aria-label` do catálogo; a
+nota 9.0.0 está em `docs/migracoes.md`; as prévias existem em `%TEMP%\sarak-previa-167\` (dois pares).
+
+**Achados:**
+1. `specs/plan/…167….md` §9, resumo de 2026-11-22, critério "Bateria completa verde em build novo" — **não atendido.** A última rodada completa teve 24
+   falhas e não foi repetida; o resumo lista como "fora do escopo" `amostras-reais-custo`, `contraste-do-que-faltava`, `plan-140`, `plan-141`, `plan-149`,
+   `plan-161` e `tom-contrastante`. A meta desta plan é a bateria inteira verde, então nenhum vermelho é "fora do escopo". Dois deles (`contraste-do-que-faltava`,
+   `plan-141`) leem contraste e hover, e podem ser efeito da remoção do fundo no hover ou do `SarakTitleCard`. Para cada um: rodar sozinho num build
+   novo, dizer se o HEAD limpo já o derruba, e corrigir o teste velho ou o código. Fechamento: bateria inteira verde duas vezes seguidas.
+2. `src/core/Design/schema/colors.ts:167` e `:180` — o `description` de `colorDepth` e `colorVariation` afirma que `--theme-primary-hover` e
+   `--theme-primary-active` são "lidos pelos estados globais de hover e pressionado de `button` em `_elements.css`". **Passou a ser falso:** o `grep` em
+   `src/` só acha `_base.css` (a declaração), o schema e um teste. A regra R40 ("token sem leitor não entra") e `browser-tests/arsenal-lote4.spec.ts` (P11, que
+   agora só confere que a *variável* muda, sem leitor na tela) ficam sem prova de efeito. Os dois tokens têm outro leitor visível? Se sim, a descrição
+   cita esse; se não, o ajuste do painel não muda a tela e isso precisa ir ao dono (escopo da plan: `colors.ts` está fora, então **pare e traga ao revisor**
+   com a medição antes de mexer).
+3. `browser-tests/contraste-hover-botao.spec.ts:~226-233` — o bloco do `SarakTitleCard` tem os acentos corrompidos nos nomes (`padrÃ£o`, `tÃ­tulo`,
+   `subtÃ­tulo`, `nÃ£o`, `visÃ­vel`): o arquivo foi regravado com a codificação errada. Corrigir para UTF-8 (`padrão`, `título`…), e conferir os demais arquivos
+   desta plan com `grep -c "Ã"`.
+4. `src/components/atomic/Cards/SarakTitleCard.tsx:99-104` — o subtítulo passou a usar `--theme-text-primary`, a mesma cor do título, e o título perdeu a cor
+   de hover (`group-hover:text-…`). O contraste fecha, mas some a hierarquia subtítulo/título e o aceno do hover. Decidir por token que mantém 4,5:1 e a
+   distinção (por exemplo, `--theme-text-secondary` se alcançar o limite), medir nos três temas e deixar no resumo a escolha e o porquê. Se não houver, o
+   dono decide com as prévias.
+5. **Prévia sem parecer.** O critério "prévia com o ok do dono" segue aberto. Os dois pares em `%TEMP%` precisam ir ao dono (hover do painel e `SarakTitleCard`
+   escuro), e o lote só fecha com a resposta. O `C:/tmp/sarak-previa-167/` foi negado pelo sandbox; copiar o par final para lá, quando o dono liberar, ou
+   manter no `%TEMP%` e avisar o caminho.
+
+**Fora do escopo desta plan, no mesmo diff (não é da 167, fica de fora do commit dela):** `DecisionTokenList.tsx`, `ThemeSearchResults.tsx`, `ThemeActionBar.tsx`,
+`catalogEntries.*` e `decisionTokens` são da plan-168; `SarakMenuItem.tsx`, `chromeTone*` e `SarakShellUserWidget.tsx`, da plan-170;
+`PresetsCatalog.test.tsx` e o snapshot dele, da plan-169. O commit da 167 sai com `git commit -- <caminhos>` limitado a esta plan.
+`SarakActionCard.tsx`, `ThemeAdvancedMenu.tsx`, `ThemeMoreActionsMenu.tsx` e `ThemeDecisionList.tsx` ficam fora da lista literal da §3.1, mas o veredito de 2026-11-21 mandou
+corrigir no componente o botão que cai abaixo de 4,5:1; aceitos por isso.
+
+**Escopo da correção:** exclusivamente os achados acima. Build e bateria rodam sozinhos, com a vez dada pelo dono.
+
+**Status da plan: 🔵 Em correção.**
