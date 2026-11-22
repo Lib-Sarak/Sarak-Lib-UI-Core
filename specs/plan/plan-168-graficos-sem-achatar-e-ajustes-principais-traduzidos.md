@@ -429,3 +429,46 @@ agora. Na suíte inteira chega a 4,8 s, colado nos 5 s, porque renderiza o Provi
 **Textos em português fora dos 58 tokens:** backlog #94.
 
 **Status da plan: 🟠 Em revisão** (só o ok do dono).
+
+## Nota do revisor — 2026-11-22 — a prévia do lote 2 refeita e a decisão I1
+
+**Corrige o veredito acima.** A prévia do executor não mostra os rótulos do lote 2: os textos que conferi nela são títulos de grupo e de
+preset que já existiam no `HEAD`. Dela, só os dois botões são deste lote.
+
+**Como medi:** renderizei o painel do worktree no Chromium nos seis idiomas (harness no scratchpad, com o `dist/sarak.css` do worktree),
+abri os grupos das decisões, sem o ajuste fino, e li cada linha e cada ajuda "?". São 59 tokens distintos:
+
+- **57 com nome e descrição no idioma**, todos do catálogo novo. O 58º, `savedPalettes`, não tem linha própria.
+- **`mode` e `bodySize` (decisão Layout) inteiros em português** nos cinco idiomas. Vêm do bloco global, que o §2 desta plan não listou
+  (`mainTokens` e `questionTokenIds`); por isso o teste de 58 passa.
+- **As opções de 33 dos 37 seletores em português** (103 textos distintos), por exemplo "Sidebar position: Esquerda". O §3.2 cita "opções"
+  como fora e a tradução só cobria nome e descrição.
+- **Literais em português nas mesmas telas:** os títulos e campos de `ThemeGlobalSettings.tsx` e as notas de `ExceptionRelation.tsx`.
+
+A falha é do recorte da plan, não da execução.
+
+**Commit:** o lote 1 fecha sozinho sobre o `HEAD` (186 testes dos gráficos, `tsc` 0) e pode ir agora. Os dois lotes juntos também fecham
+(865 testes das pastas tocadas, `tsc` 0).
+
+**I1 — decisão do dono:**
+
+- **a)** fechar como está e levar os três itens ao backlog;
+- **b) recomendada:** lote 3 nesta plan, antes da tag.
+
+**Lote 3 (vale só se o dono escolher b):**
+
+3.1. `mode` e `bodySize` com nome e descrição nos seis idiomas. O teste passa a incluir o bloco global das decisões.
+
+3.2. O texto das opções dos seletores das decisões principais nos seis idiomas. Só muda o rótulo mostrado: `id`, `value`, ordem e padrão
+ficam iguais, e o schema não muda. Nome de fonte e unidade não se traduzem.
+
+3.3. Os literais de `ThemeGlobalSettings.tsx` e de `ExceptionRelation.tsx` pelo catálogo de idiomas (os dois arquivos entram no escopo).
+
+3.4. Um teste que renderiza cada decisão em inglês e reprova rótulo, descrição, opção ou nota igual ao português, com lista curta e
+justificada do que é igual nos dois idiomas.
+
+3.5. Prévia em inglês e alemão de Barras e de Layout, com as linhas dos tokens, uma ajuda aberta e um seletor aberto.
+
+O ajuste fino continua fora.
+
+**Status da plan: 🟠 Em revisão** (ok do dono na prévia refeita e decisão I1).
