@@ -42,7 +42,6 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-171-testes-que-estouram-o-tempo-no-npm-version-da-rc](plan/plan-171-testes-que-estouram-o-tempo-no-npm-version-da-rc.md) | Tirar dos três testes que derrubaram o preversion o custo que eles mesmos criam (laço num único caso, duas montagens num caso), para a nova tentativa da 9.0.0-rc.1 com a máquina ociosa | — | 🟢 Aprovada | specs/01-gates-e-baseline.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🚦 **Campanha da `8.0.0-rc.4` (2026-10-27).** Contrato aceito: [`anexos/rc4-contrato.md`](plan/anexos/rc4-contrato.md). Ordem: a `plan-128` vai **sozinha** (cria o hook de idioma e os arquivos de catálogo das outras); depois `plan-129` ‖ `plan-130` ‖ `plan-131` ‖ `plan-132` ‖ `plan-119` lote 8 ‖ `plan-133`, em paralelo (pastas disjuntas; arquivos compartilhados só por acréscimo); depois da 133, `plan-134` ‖ `plan-135`. A 134 e a 135 geram prévias em `C:\tmp\sarak-rc4-previa\` que o dono aprova durante a revisão. Verificação pelo protocolo do contrato §9: uma vez por plan e a bateria completa uma vez, no fechamento, depois do lote 2 do ERP. A versão (`npm version`) é do dono.
@@ -64,6 +63,10 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > **Temas e paletas (2026-11-16).** A `plan-164` (paleta do tema, paleta por cima e paletas salvas) tem o ADR-026 e o ADR-027 aceitos e o lote 1 liberado; roda em paralelo com a 159 e a 161, que mexem no cromo e no catálogo do painel. **A próxima versão é `9.0.0`**.
 
 > **Fechamento da 9.0.0 (2026-11-21, decisão do dono).** As correções que sobraram entram antes da tag, em duas plans paralelas e sem arquivo em comum: a `plan-167` (bateria de navegador verde num build novo, backlog #92, mais o contraste do hover de botão, #90, e do `SarakTitleCard`, #91) e a `plan-168` (gráficos que ocupam o quadro, #93, e os ajustes principais do painel nos seis idiomas). Em 2026-11-21 entraram também a `plan-169` (gates que deixam passar e testes que estouram o tempo sob carga, backlog #10, #21, #22, #77, #84 e #89; sem build nem navegador) e a `plan-170` (contraste do cromo nas barras de tom contrastante, #70, #86 e #88), e os #85 e #87 entraram na 167. Com as quatro: síntese, a nota de fechamento da campanha e o `npm version major`, que é do dono. As baterias de navegador da 167, da 168 e da 170 rodam uma de cada vez.
+
+> ⚪ **A `plan-171` foi SINTETIZADA e REMOVIDA em 2026-11-23.** Código no commit `2e42ba47`: os três testes que derrubaram o primeiro `npm version 9.0.0-rc.1` repartidos em casos (`resolve.test.ts`, `themeSetCoverage.test.ts`, `ExceptionRelation.test.tsx`). Destino demonstrado:
+> - **[[01-gates-e-baseline]] §2.4:** a carga da máquina pesa mais que o custo do teste, e o `npm version` roda com a máquina ociosa.
+> - **Ficou de fora:** a medição da suíte e o veredito (histórico do Git). O risco estrutural, com os 93 arquivos na faixa dos que caíram, é o backlog #1.
 
 > ⚪ **A `plan-169` foi SINTETIZADA e REMOVIDA em 2026-11-23.** Código nos commits `b6734c53`, `1277ffde`, `8dc9fa44` e `143a2a4d`. Destino demonstrado:
 > - **[[01-gates-e-baseline]]:** a §2.1 diz o que o `auditor_hardcoded` lê (`.ts` e `.tsx`) e as três isenções de escopo. A linha do Kit na §2.2 diz que a tabela de arquétipos sai do catálogo de temas. A §2.4 traz a regra de que o teste que estoura o tempo se conserta no próprio teste. As linhas do `zero-brand` e do `chrome-token-parity` e a coluna *Cobra* sem rastro de plan já estavam no commit `1277ffde`.
