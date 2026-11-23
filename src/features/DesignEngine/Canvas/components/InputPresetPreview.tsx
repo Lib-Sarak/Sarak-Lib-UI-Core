@@ -3,6 +3,7 @@ import { ComponentPreset } from '../../../../core/Design/presets/components/card
 import type { SarakDesignState } from '../../../../core/Provider/types';
 import { usePresetText } from '../../hooks/usePresetText';
 import { OptionTile } from './OptionTile';
+import { SAMPLE_FRAME_HEIGHT } from './OptionSampleFrame';
 import { SampleInputStates } from './SampleParts';
 import { SampleScope } from './SampleScope';
 import type { PeekHandler } from './peek';
@@ -23,6 +24,7 @@ export const InputPresetPreview: React.FC<InputPresetPreviewProps> = ({ preset, 
         name={shown.name}
         description={shown.description}
         onApply={onApply}
+        frameHeight={SAMPLE_FRAME_HEIGHT.input}
         peekTokens={() => preset.design}
         onPeek={onPeek}
     >

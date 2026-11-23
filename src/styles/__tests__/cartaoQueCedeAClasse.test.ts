@@ -50,7 +50,7 @@ describe('a geometria do cartão mora na subcamada que cede à classe', () => {
     });
 
     it('a âncora .card sob escopo e textura recebe a geometria', () => {
-        const scoped = bodyOf(defaults, '[data-sx-texture] :is(.card, .sarak-card)');
+        const scoped = bodyOf(defaults, '[data-sx-texture] :is(.card, .sarak-card):where(');
         expect(defaults).toContain('.sarak-design-scope :is(.card, .sarak-card)');
         for (const property of ['border-radius', 'border-style', 'border-left-width', 'backdrop-filter', 'transition']) {
             expect(scoped, property).toContain(`${property}:`);
@@ -112,16 +112,24 @@ describe('o nome bg-theme-card tem um sentido só: a utilitária de cor', () => 
 
 describe('sombra declarada e glow-only', () => {
     it('cardShadow declarada vira a sombra do cartão (repouso e hover); none deixa a composta valer', () => {
-        expect(defaults).toMatch(/\[data-sx-card-shadow\]:not\(\[data-sx-card-shadow="none"\]\) \.sarak-card \{[^}]*--sarak-card-shadow-full:\s*var\(--sarak-card-shadow\)/);
-        expect(materials).toMatch(/\[data-sx-card-shadow\]:not\(\[data-sx-card-shadow="none"\]\) \.sarak-card:hover \{[^}]*box-shadow: var\(--sarak-card-shadow-full\)/);
+        expect(defaults).toMatch(/\[data-sx-card-shadow\]:not\(\[data-sx-card-shadow="none"\]\) \.sarak-card:where\(:not\(\.sarak-design-scope\[data-sx-card-shadow="none"\] \.sarak-card\)\) \{[^}]*--sarak-card-shadow-full:\s*var\(--sarak-card-shadow\)/);
+        expect(materials).toMatch(/\[data-sx-card-shadow\]:not\(\[data-sx-card-shadow="none"\]\) \.sarak-card:hover:where\(:not\(\.sarak-design-scope\[data-sx-card-shadow="none"\] \.sarak-card\)\) \{[^}]*box-shadow: var\(--sarak-card-shadow-full\)/);
     });
 
     it('glow-only acende a camada de brilho e acrescenta o halo, sem mover o cartão', () => {
         const hover = bodyOf(cards, '[data-sx-card-hover-style="glow-only"] .sarak-card[data-sx-card-interactive="true"]:hover {');
         expect(hover).toContain('transform: none;');
-        const halo = bodyOf(materials, '[data-sx-card-hover-style="glow-only"] .sarak-card[data-sx-card-interactive="true"]:hover {');
+        const halo = bodyOf(materials, '[data-sx-card-hover-style="glow-only"] .sarak-card[data-sx-card-interactive="true"]:hover:where(');
         expect(halo).toMatch(/box-shadow:[^;]*--sarak-card-shadow-full[^;]*color-mix/);
         expect(bodyOf(cards, '[data-sx-card-hover-style="glow-only"] .sarak-card[data-sx-card-interactive="true"]:hover::before')).toContain('opacity: 1;');
+    });
+
+    it('o escopo mais próximo manda: toda regra que lê data-sx-* do ancestral exclui o cartão de um escopo com outro valor', () => {
+        const attributes = '(?:card-shadow|surface-material|border-type|card-hover-style)';
+        const reader = new RegExp(`^\\[data-sx-${attributes}[^{]*\\.(?:sarak-card|sarak-modal-panel)[^{]*\\{`, 'gm');
+        const readers = [...defaults.matchAll(reader), ...materials.matchAll(reader)].map((match) => match[0]);
+        expect(readers).toHaveLength(13);
+        expect(readers.filter((selector) => !/:where\(:not\(\.sarak-design-scope.*\.(?:sarak-card|sarak-modal-panel)\)\)/.test(selector))).toEqual([]);
     });
 
     it('a sombra sob o ponteiro vem depois do material e da moldura no mesmo arquivo (empatam em especificidade)', () => {
@@ -151,6 +159,12 @@ describe('o que saiu da camada final', () => {
         expect(reset).toContain('background-color: transparent;');
         expect(reset).toContain('background-image: none;');
         expect(reset).not.toMatch(/!important/);
+    });
+
+    it('o escopo mais próximo manda: nenhuma regra de _card-defaults.css lê a textura do ancestral sem excluir o escopo', () => {
+        const readers = defaults.split(/\r?\n/).map((line) => line.trim().replace(/,$/, '')).filter((line) => !line.includes('{') && /^(?:body:not\(\[data-sx-texture="none"\]\)|\[data-sx-texture\]) /.test(line));
+        expect(readers.length, 'regras que leem data-sx-texture do ancestral').toBeGreaterThanOrEqual(10);
+        expect(readers.filter((selector) => !/:where\(:not\(\.sarak-design-scope.*\)\)$/.test(selector))).toEqual([]);
     });
 
     it('o !important de aurora-classic saiu: a opacidade lê os tokens de textura', () => {

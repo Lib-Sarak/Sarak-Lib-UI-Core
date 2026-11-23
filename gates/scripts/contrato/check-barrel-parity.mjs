@@ -38,9 +38,11 @@
  * -------------------------------------------------------------------------
  * LIMITES DECLARADOS (R18) — o que este gate NÃO vê
  * -------------------------------------------------------------------------
- * 1. Categoria SEM barril de categoria só tem os `.tsx` de RAIZ varridos
- *    (`scripts/publicComponents.mjs`) — componente colocado em subpasta escapa
- *    do gate e do catálogo. Deliberado para as peças internas de `Layout/chrome/`.
+ * 1. Subpasta só entra na fonte de nomes se tiver barril próprio (`<Sub>/index.ts`),
+ *    e entra pelo que esse barril exporta, mesmo que o barril da categoria a esqueça
+ *    (`scripts/publicComponents.mjs`). Componente colocado em subpasta SEM barril
+ *    escapa do gate e do catálogo. Deliberado para as peças internas de
+ *    `Layout/chrome/`, `internal/` e `hooks/`.
  * 2. **A verificação de "o valor É o componente" (`resolvesToComponentValue`) é por
  *    PREFIXO DE CAMINHO**, não por identidade de declaração contra o arquivo exato
  *    que `publicComponents.mjs` encontrou (esse cruzamento exigiria `publicComponents.mjs`

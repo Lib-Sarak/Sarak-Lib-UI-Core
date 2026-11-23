@@ -2,51 +2,41 @@ import React from 'react';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import type { SarakFontSizePreference } from '../../../core/Provider/preferencesTypes';
+import { ShellPreferenceChoiceGroup, type ShellPreferenceChoice } from './internal/ShellPreferenceChoiceGroup';
+
+export interface ShellFontSizeControlProps {
+    /** `bar` é o grupo compacto fixado na barra; `menu`, as linhas do ⚙ e da gaveta. Omitida, vale `bar`. */
+    variant?: 'bar' | 'menu';
+    /** Só na variante `bar`: `vertical` é a coluna da barra lateral. */
+    orientation?: 'horizontal' | 'vertical';
+}
 
 /**
  * Controle da preferência "tamanho da fonte" (Spec 09 §4.7) — três degraus
  * relativos à base do tema, nunca um valor absoluto. Grava PREFERÊNCIA, nunca
- * o tema: quem resolve o `bodySize` efetivo é `overlayPreferences`.
- *
- * @sarak-encapsula button — segmented control de 3 opções, sem equivalente em
- *   `SarakButton`/`SarakIconButton` (não são ação isolada, são grupo exclusivo
- *   com `aria-pressed`); o `<button>` nativo aqui é o que dá foco/teclado por
- *   construção, como em `SarakMenuItem`.
+ * o tema: quem resolve o `bodySize` efetivo é `overlayPreferences`, com a
+ * redução de P e o aumento de G que o administrador configurou.
  */
-export const ShellFontSizeControl: React.FC = () => {
+export const ShellFontSizeControl: React.FC<ShellFontSizeControlProps> = ({ variant = 'bar', orientation }) => {
     const sarak = useSarakUIOptional();
     const t = useLibraryText();
     const current = sarak?.preferences.fontSize ?? 'md';
 
-    const OPTIONS: { value: SarakFontSizePreference; label: string; full: string }[] = [
+    const choices: ShellPreferenceChoice<SarakFontSizePreference>[] = [
         { value: 'sm', label: t('fontSizeSmallAbbrev'), full: t('fontSizeSmallFull') },
         { value: 'md', label: t('fontSizeMediumAbbrev'), full: t('fontSizeMediumFull') },
         { value: 'lg', label: t('fontSizeLargeAbbrev'), full: t('fontSizeLargeFull') },
     ];
 
     return (
-        <div
-            role="group"
-            aria-label={t('fontSizeGroupAriaLabel')}
-            className="inline-flex items-center gap-[var(--sarak-layout-gap-sm,8px)] rounded-[var(--sarak-card-radius,10px)] p-[var(--sarak-layout-gap-sm,8px)] bg-[var(--theme-muted,rgba(242,246,251,0.55))]/10"
-        >
-            {OPTIONS.map((opt) => (
-                <button
-                    key={opt.value}
-                    type="button"
-                    aria-pressed={current === opt.value}
-                    title={opt.full}
-                    onClick={() => sarak?.updatePreferences({ fontSize: opt.value })}
-                    className={`px-[var(--sarak-layout-gap-sm,8px)] py-[var(--sarak-layout-gap-sm,8px)] rounded-[var(--sarak-card-radius,10px)] text-xs font-black transition-colors ${
-                        current === opt.value
-                            ? 'bg-[var(--sarak-nav-active-color,#19e3f0)] text-[var(--sarak-on-nav-active,var(--color-theme-on-primary,#020617))]'
-                            : 'text-[var(--text-muted,rgba(242,246,251,0.55))] hover:text-[var(--sarak-text-main,#f2f6fb)]'
-                    }`}
-                >
-                    {opt.label}
-                </button>
-            ))}
-        </div>
+        <ShellPreferenceChoiceGroup
+            label={t('fontSizeGroupAriaLabel')}
+            choices={choices}
+            current={current}
+            onSelect={(fontSize) => sarak?.updatePreferences({ fontSize })}
+            variant={variant}
+            orientation={orientation}
+        />
     );
 };
 

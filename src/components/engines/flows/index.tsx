@@ -16,6 +16,7 @@ export type { SarakFlowEngineProps } from './SarakFlowEngine';
 
 const FlowEngineImpl = lazy(() => import('./SarakFlowEngine'));
 
+/** @encapsulates reactflow */
 export const SarakFlowEngine: React.FC<SarakFlowEngineProps> = (props) => (
     <LazyEngineWrapper>
         <FlowEngineImpl {...props} />

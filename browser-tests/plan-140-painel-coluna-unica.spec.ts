@@ -21,7 +21,7 @@ import { columnContrasts, type TextContrast } from './fixtures/column-contrast';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ENTRY = path.join(HERE, 'fixtures', 'plan-140-coluna-entry.tsx');
 const PREVIEW_DIR = process.env.SARAK_PREVIA_140_DIR;
-const DECISIONS = ['Tema', 'Cores', 'Fontes', 'Forma', 'Componentes', 'Layout'] as const;
+const DECISIONS = ['Tema', 'Cores', 'Fontes', 'Forma', 'Componentes', 'Barras', 'Layout'] as const;
 
 interface Capture { file: string; caption: string }
 const captures: Capture[] = [];
@@ -91,8 +91,9 @@ for (const mode of [{ name: 'escuro', query: '' }, { name: 'claro', query: '?cla
         expect(home.some((item) => item.text.startsWith('Design '))).toBe(true);
         expect(failures(home)).toEqual([]);
 
-        for (const decisionName of ['Cores', 'Fontes', 'Forma', 'Componentes', 'Layout']) {
-            await page.getByRole('button', { name: new RegExp(`^${decisionName}`) }).click();
+        for (const [decisionName, decisionId] of [['Cores', 'colors'], ['Fontes', 'fonts'], ['Forma', 'shape'], ['Componentes', 'components'], ['Barras', 'bars'], ['Layout', 'layout']]) {
+            // A linha da decisão, não um botão pelo nome: "Barras" também começa o nome dos presets "Barras limpas" e "Barras com grade".
+            await page.locator(`[data-decision-row="${decisionId}"]`).click();
             await page.getByRole('heading', { level: 2, name: decisionName }).waitFor();
             await page.waitForTimeout(1200);
             const decision = await columnContrasts(page);

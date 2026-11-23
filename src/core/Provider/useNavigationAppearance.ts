@@ -9,12 +9,18 @@ export type NavigationActiveItemStyle = 'bar' | 'pill' | 'underline' | 'filled' 
 export type NavigationItemDensity = 'compact' | 'comfortable' | 'spacious';
 export type NavigationBarTone = 'neutral' | 'surface' | 'primary' | 'secondary' | 'inverse';
 export type SidebarLogoPlacement = 'top' | 'bottom';
+export type SidebarActiveGlass = 'on' | 'off';
+export type BrandDisplay = 'both' | 'logo' | 'name';
+export type UserAvatarStyle = 'initials' | 'icon';
 
 export interface NavigationAppearance {
     sidebarBorderStyle: ChromeBorderStyle;
     sidebarBorderSide: ChromeBorderSide;
     sidebarBackgroundStyle: ChromeBackgroundStyle;
     sidebarActiveItemStyle: NavigationActiveItemStyle;
+    sidebarActiveGlass: SidebarActiveGlass;
+    brandDisplay: BrandDisplay;
+    userAvatarStyle: UserAvatarStyle;
     sidebarItemDensity: NavigationItemDensity;
     sidebarLogoPlacement: SidebarLogoPlacement;
     sidebarTone: NavigationBarTone;
@@ -33,6 +39,9 @@ const validValues: Record<keyof NavigationAppearance, readonly string[]> = {
     sidebarBorderSide: enumValues(['edge', 'top', 'right', 'bottom', 'left', 'all', 'none']),
     sidebarBackgroundStyle: enumValues(['solid', 'gradient', 'texture']),
     sidebarActiveItemStyle: enumValues(['bar', 'pill', 'underline', 'filled', 'outline']),
+    sidebarActiveGlass: enumValues(['on', 'off']),
+    brandDisplay: enumValues(['both', 'logo', 'name']),
+    userAvatarStyle: enumValues(['initials', 'icon']),
     sidebarItemDensity: enumValues(['compact', 'comfortable', 'spacious']),
     sidebarLogoPlacement: enumValues(['top', 'bottom']),
     sidebarTone: enumValues(['neutral', 'surface', 'primary', 'secondary', 'inverse']),
@@ -65,6 +74,9 @@ export const useNavigationAppearance = (): NavigationAppearance => {
         sidebarBorderSide: resolveToken(design, 'sidebarBorderSide'),
         sidebarBackgroundStyle: resolveToken(design, 'sidebarBackgroundStyle'),
         sidebarActiveItemStyle: resolveToken(design, 'sidebarActiveItemStyle'),
+        sidebarActiveGlass: resolveToken(design, 'sidebarActiveGlass'),
+        brandDisplay: resolveToken(design, 'brandDisplay'),
+        userAvatarStyle: resolveToken(design, 'userAvatarStyle'),
         sidebarItemDensity: resolveToken(design, 'sidebarItemDensity'),
         sidebarLogoPlacement: resolveToken(design, 'sidebarLogoPlacement'),
         sidebarTone: resolveToken(design, 'sidebarTone'),

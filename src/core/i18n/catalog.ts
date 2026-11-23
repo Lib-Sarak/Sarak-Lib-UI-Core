@@ -11,12 +11,17 @@ import { CATALOG_FORMS } from './catalogEntries.forms';
 import { CATALOG_FEEDBACK } from './catalogEntries.feedback';
 import { CATALOG_ENTRIES } from './catalogEntries.entries';
 import { CATALOG_PALETTE } from './catalogEntries.palette';
+import { CATALOG_PALETTE_SAVED } from './catalogEntries.paletteSaved';
 import { CATALOG_PANEL } from './catalogEntries.panel';
 import { CATALOG_PANEL_COLUMN } from './catalogEntries.panelColumn';
 import { CATALOG_PANEL_SUMMARY } from './catalogEntries.panelSummary';
 import { CATALOG_SYSTEM } from './catalogEntries.system';
 import { CATALOG_ACCESS } from './catalogEntries.access';
 import { CATALOG_ADVANCED } from './catalogEntries.advanced';
+import { CATALOG_TOKEN_NOTES } from './catalogEntries.tokenNotes';
+import { CATALOG_DECISION_TOKENS } from './catalogEntries.decisionTokens';
+import { CATALOG_DECISION_OPTIONS } from './catalogEntries.decisionOptions';
+import { CATALOG_PANEL_LITERALS } from './catalogEntries.panelLiterals';
 
 export type { SarakLibraryLanguage } from './catalog.types';
 import type { SarakLibraryLanguage } from './catalog.types';
@@ -51,12 +56,17 @@ export const LIBRARY_TEXT_CATALOG = {
     ...CATALOG_FEEDBACK,
     ...CATALOG_ENTRIES,
     ...CATALOG_PALETTE,
+    ...CATALOG_PALETTE_SAVED,
     ...CATALOG_PANEL,
     ...CATALOG_PANEL_COLUMN,
     ...CATALOG_PANEL_SUMMARY,
     ...CATALOG_SYSTEM,
     ...CATALOG_ACCESS,
     ...CATALOG_ADVANCED,
+    ...CATALOG_TOKEN_NOTES,
+    ...CATALOG_DECISION_TOKENS,
+    ...CATALOG_DECISION_OPTIONS,
+    ...CATALOG_PANEL_LITERALS,
 } satisfies Record<string, LibraryTextEntry>;
 
 export type LibraryTextKey = keyof typeof LIBRARY_TEXT_CATALOG;

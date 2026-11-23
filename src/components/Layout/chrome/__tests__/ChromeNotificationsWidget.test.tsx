@@ -39,4 +39,31 @@ describe('ChromeNotificationsWidget', () => {
         expect(onSelect).toHaveBeenCalledWith({ id: 'n1', label: 'Atualizar', description: 'Há novidades' });
         expect(screen.queryByRole('menu')).toBeNull();
     });
+
+    it('na lateral é uma linha de menu com o contador à direita, e a lista abre para cima', () => {
+        const onSelect = vi.fn();
+        const { container } = renderWidget(
+            <ChromeNotificationsWidget notifications={[{ id: 'n1', label: 'Atualizar' }]} onSelect={onSelect} variant="vertical" />,
+        );
+        const row = screen.getByRole('button', { name: /Notificações/ });
+        expect(row.className).toContain('px-3');
+        expect(container.querySelector('[data-sarak-row-indicator]')).toHaveTextContent('1');
+        fireEvent.click(row);
+        expect(screen.getByRole('menu').className).toContain('bottom-full');
+    });
+
+    it('recolhida, é só o ícone e o aviso é um ponto fora do fluxo, que não desloca o ícone', () => {
+        const { container } = renderWidget(
+            <ChromeNotificationsWidget notifications={[{ id: 'n1', label: 'Atualizar' }]} onSelect={vi.fn()} variant="mini" />,
+        );
+        const row = screen.getByRole('button', { name: 'Notificações' });
+        expect(row.className).toContain('justify-center');
+        expect(row.querySelector('[data-sarak-row-indicator]')).toBeNull();
+        expect(container.querySelector('[data-sarak-row-indicator]')!.className).toContain('absolute');
+        const dot = container.querySelector<HTMLElement>('[data-sarak-row-indicator]')!;
+        // Ancorado no canto de cima à direita do ícone, e não no canto da linha (onde cobria metade do sino).
+        expect(dot.style.left).toContain('50%');
+        expect(dot.style.top).toContain('50%');
+        expect(dot.style.right).toBe('');
+    });
 });

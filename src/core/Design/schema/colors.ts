@@ -70,6 +70,28 @@ export const ColorsSchema: ComponentSchema = {
             defaultValue: '',
         },
         {
+            id: 'keepPalette',
+            kind: 'functional',
+            modeDependent: false,
+            usage: 'Desligado (padrão), escolher um tema aplica as cores dele; ligado, a paleta escolhida vale por cima de qualquer tema, em toda troca, inclusive das cores que o tema declara.',
+            interactsWith: ['colorPalette'],
+            label: 'Manter Minha Paleta',
+            type: 'boolean',
+            description: 'Quando ativo, a paleta escolhida em `colorPalette` é aplicada por cima do tema que for selecionado: vence todas as cores que ela calcula, inclusive as que o tema declara. É escolha do sistema, não preferência do usuário.',
+            defaultValue: false,
+        },
+        {
+            id: 'savedPalettes',
+            kind: 'functional',
+            modeDependent: false,
+            usage: 'Guarda as paletas que o administrador criou com nome: aparecem no grupo "Minhas paletas" da galeria e no atalho de marca. Escolher uma é escolher o `colorPalette` dela.',
+            interactsWith: ['colorPalette'],
+            label: 'Paletas Salvas',
+            type: 'string',
+            description: 'Lista das paletas salvas em texto compacto: entradas `id|nome|valor` separadas por `~`, em que `valor` é um `colorPalette` `custom:<tipo>:<#base>[,sec=<#hex>][,acc=<#hex>]`. Vazio (padrão) = nenhuma paleta salva. É dado do sistema, não do tema: a troca de tema não a muda. O painel a lê e a grava; quem persiste o design a guarda como qualquer outra chave.',
+            defaultValue: '',
+        },
+        {
             id: 'surfaceColor',
             kind: 'aesthetic',
             modeDependent: true,
@@ -134,32 +156,6 @@ export const ColorsSchema: ComponentSchema = {
             axis: 'color',
             defaultValue: '#19e3f0',
             cssVars: ['--sarak-emphasis-color', '--theme-emphasis']
-        },
-        {
-            id: 'colorDepth',
-            kind: 'aesthetic',
-            modeDependent: false,
-            usage: "Controla a distância tonal das variantes geradas para as cores, incluindo o hover e o pressionado globais dos botões.",
-            label: 'Profundidade da Cor',
-            type: 'number',
-            description: 'Fator passado ao gerador das variantes de cores declaradas com `generateVariants`. Nas variantes da cor primária, os valores resultantes alimentam `--theme-primary-hover` e `--theme-primary-active`, lidos pelos estados globais de hover e pressionado de `button` em `_elements.css`.',
-            axis: 'color',
-            constraints: { min: 0, max: 5, step: 1 },
-            defaultValue: 1,
-            cssVars: ['--sarak-color-depth']
-        },
-        {
-            id: 'colorVariation',
-            kind: 'aesthetic',
-            modeDependent: false,
-            usage: "Controla a variação de matiz e saturação das variantes geradas, incluindo o hover e o pressionado globais dos botões.",
-            label: 'Variação da Cor',
-            type: 'number',
-            description: 'Fator passado ao gerador das variantes de cores declaradas com `generateVariants`. Nas variantes da cor primária, os valores resultantes alimentam `--theme-primary-hover` e `--theme-primary-active`, lidos pelos estados globais de hover e pressionado de `button` em `_elements.css`.',
-            axis: 'color',
-            constraints: { min: 1, max: 5, step: 1 },
-            defaultValue: 1,
-            cssVars: ['--sarak-color-variation']
         },
         // --- CORES DE SUPERFÍCIE ---
         {

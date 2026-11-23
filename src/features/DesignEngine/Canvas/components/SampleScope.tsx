@@ -1,7 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { SarakDesignScope } from '../../../../core/Design/components/DesignScope';
 import type { SarakDesignState } from '../../../../core/Provider/types';
 import { LazyWhenVisible } from './LazyWhenVisible';
+import { useValueWhileVisible } from '../hooks/useValueWhileVisible';
 
 interface SampleScopeProps {
     /** O rascunho atual: a amostra é a opção aplicada POR CIMA dele. */
@@ -25,14 +26,19 @@ interface SampleScopeProps {
 /** As cores vêm das variáveis do ESCOPO: `text-theme-*` e `bg-theme-*` leem a variável do `@theme`, resolvida em `:root`, e não mudam dentro dele. */
 const SCOPE_INK: React.CSSProperties = { color: 'var(--sarak-text-main)' };
 
-/** O escopo de uma amostra: rascunho + opção + modo, desenhado só quando entra na área visível. */
+/**
+ * O escopo de uma amostra: rascunho + opção + modo, desenhado só quando entra na área visível. Fora dela a amostra
+ * guarda o rascunho que mostrou por último: uma escolha no painel não refaz as variáveis de quem ninguém está vendo.
+ */
 export const SampleScope: React.FC<SampleScopeProps> = ({ draft, tokens, mode, transparent = false, className = '', slotClassName = 'min-h-48', style, scopeProps, children }) => {
+    const slotRef = useRef<HTMLDivElement>(null);
+    const shownDraft = useValueWhileVisible(slotRef, draft);
     const design = useMemo(
-        () => ({ ...draft, ...tokens, mode, globalBackgroundImageUrl: undefined }) as SarakDesignState,
-        [draft, tokens, mode],
+        () => ({ ...shownDraft, ...tokens, mode, globalBackgroundImageUrl: undefined }) as SarakDesignState,
+        [shownDraft, tokens, mode],
     );
     return (
-        <LazyWhenVisible className={slotClassName}>
+        <LazyWhenVisible className={slotClassName} containerRef={slotRef}>
             <SarakDesignScope design={design} className={className} style={{ ...SCOPE_INK, ...(transparent ? {} : { backgroundColor: 'var(--sarak-bg-base)' }), ...style }} {...scopeProps}>
                 {children}
             </SarakDesignScope>

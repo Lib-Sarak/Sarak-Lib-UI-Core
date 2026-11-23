@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { PresetsCatalog, type PresetGroup } from '../../Canvas/components/PresetsCatalog';
 import { PaletteSection } from './PaletteSection';
+import { CollapsibleSection } from './CollapsibleSection';
 import { PersonalityCatalog } from '../../Canvas/components/PersonalityCatalog';
 import { usePersonalitySelection } from '../hooks/usePersonalitySelection';
 import { ThemeGlobalSettings } from './ThemeGlobalSettings';
@@ -74,6 +75,7 @@ const GroupBody: React.FC<{ group: OptionGroup; context: DecisionOptionsContext 
                 draft={context.draft as unknown as Record<string, unknown>}
                 appliedDesign={context.sarak.systemDesign as unknown as Record<string, unknown> | undefined}
                 updateDraft={context.updateDraft}
+                onPeek={context.onPeek}
             />
         );
     }
@@ -90,20 +92,49 @@ const GroupBody: React.FC<{ group: OptionGroup; context: DecisionOptionsContext 
     );
 };
 
-/** O nível 2, primeira metade: os grupos de opção visual da decisão, cada um com o componente real. */
-export const ThemeDecisionOptions: React.FC<{ groups: readonly OptionGroup[]; context: DecisionOptionsContext }> = ({ groups, context }) => {
+/** O grupo tem uma opção aplicada: todo token que ela escreve já vale no rascunho. */
+const hasAppliedOption = (group: OptionGroup, draft: Partial<SarakDesignState> | undefined): boolean => {
+    const registered = getPresetGroup(group);
+    if (!registered || !draft) return false;
+    const values = draft as Record<string, unknown>;
+    return registered.presets.some((preset) => {
+        const entries = Object.entries(preset.design);
+        return entries.length > 0 && entries.every(([id, value]) => values[id] === value);
+    });
+};
+
+/**
+ * Os grupos abertos de saída: o primeiro com uma opção aplicada (o "em uso") ou, sem nenhum, o primeiro — a decisão nunca abre
+ * toda fechada. A galeria de temas é sempre o "em uso" da decisão que a tem: o tema aplicado é uma opção dela.
+ */
+const initialOpenGroups = (groups: readonly OptionGroup[], draft: Partial<SarakDesignState> | undefined): ReadonlySet<OptionGroup> => {
+    const inUse = groups.includes('themes') ? 'themes' : (groups.find((group) => hasAppliedOption(group, draft)) ?? groups[0]);
+    return new Set(inUse ? [inUse] : []);
+};
+
+/**
+ * O nível 2, primeira metade: os grupos de opção visual da decisão, cada um com o componente real. Abrem fechados, menos o em
+ * uso; `openAll` abre todos (a busca de token precisa achar a linha onde ela estiver).
+ */
+export const ThemeDecisionOptions: React.FC<{ groups: readonly OptionGroup[]; context: DecisionOptionsContext; openAll?: boolean }> = ({ groups, context, openAll = false }) => {
     const text = useLibraryText();
     const presetText = usePresetText();
+    const [opened, setOpened] = useState<ReadonlySet<OptionGroup>>(() => initialOpenGroups(groups, context.sampleDraft ?? context.draft));
+    const toggle = (group: OptionGroup): void => setOpened((current) => {
+        const next = new Set(current);
+        if (!next.delete(group)) next.add(group);
+        return next;
+    });
     return (
         <>
             {groups.map((group) => {
                 const titleKey = GROUP_TITLE[group];
                 const title = titleKey ? text(titleKey) : (getPresetGroup(group) || group === 'personalities' ? presetText.group(group) : undefined);
+                if (!title) return <section key={group} data-option-group={group} className="flex flex-col gap-3"><GroupBody group={group} context={context} /></section>;
                 return (
-                    <section key={group} aria-label={title} data-option-group={group} className="flex flex-col gap-3">
-                        {title && <h3 className="text-xs font-semibold text-[var(--theme-muted)]">{title}</h3>}
+                    <CollapsibleSection key={group} title={title} toggleId={group} sectionProps={{ 'data-option-group': group }} open={openAll || opened.has(group)} onToggle={() => toggle(group)}>
                         <GroupBody group={group} context={context} />
-                    </section>
+                    </CollapsibleSection>
                 );
             })}
         </>

@@ -1,5 +1,5 @@
 import { sarakGetDefaultDesignState } from '../../master-map';
-import { resolvePaletteForDesign } from '../../palette/resolve';
+import { applyKeptPalette, resolvePaletteForDesign } from '../../palette/resolve';
 import type { SarakDesignState } from '../../../Provider/types';
 import type { SarakPaletteMode } from '../../palette/types';
 import { resolveThemeForMode, type ModeResolvableTheme } from './color-engine';
@@ -16,6 +16,8 @@ export const THEME_PRESERVED_KEYS = [
     'availableLanguages',
     'enabledLanguages',
     'mode',
+    'keepPalette',
+    'savedPalettes',
 ] as const;
 
 const getPaletteMode = (
@@ -33,6 +35,8 @@ const getPaletteMode = (
  * usuário) → paleta calculada → `config` do host → tema resolvido para o modo.
  * O tema vence o que declara; o `config` vale no resto; o token que o tema novo
  * e o host não fixam volta ao padrão — nunca herda o valor do tema anterior.
+ * Única exceção: com `keepPalette` ligado, a paleta do design anterior vale por
+ * cima do tema, inclusive das cores que ele declara.
  *
  * Chamada pelo Provider (`useDesignSync`) e pela prévia do painel
  * (`useDesignDraft`): duas portas, um resolvedor.
@@ -50,8 +54,16 @@ export const composeThemeDesign = (
     const host = (hostConfig ?? {}) as Record<string, unknown>;
     const palette = resolvePaletteForDesign(resolvedTheme, host, getPaletteMode(resolvedTheme, host, prev));
     const design = { ...sarakGetDefaultDesignState(), ...preserved, ...palette, ...host, ...resolvedTheme } as Record<string, unknown>;
-    if (design.colorPalette === '') delete design.colorPalette;
-    return design as unknown as SarakDesignState;
+    // Com "manter minha paleta" ligado, a paleta do design anterior vale por cima do tema que acabou de entrar.
+    // O tema que o painel salva traz o padrão do schema em todo token: esse valor não é escolha do tema, e não apaga o que é do sistema.
+    const defaults = sarakGetDefaultDesignState() as Record<string, unknown>;
+    THEME_PRESERVED_KEYS.forEach((key) => {
+        const owned = prev[key] ?? host[key];
+        if (owned !== undefined && key in defaults && resolvedTheme[key] === defaults[key]) design[key] = owned;
+    });
+    const kept = applyKeptPalette(design, prev.colorPalette ?? host.colorPalette);
+    if (kept.colorPalette === '') delete kept.colorPalette;
+    return kept as unknown as SarakDesignState;
 };
 
 /**

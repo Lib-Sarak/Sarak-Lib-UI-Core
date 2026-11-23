@@ -2,6 +2,7 @@ import React from 'react';
 import '@testing-library/jest-dom';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
+import { SarakUIProvider } from '../../../../../core/Provider/SarakUIProvider';
 import { LiveDraftPreviewFrame } from '../LiveDraftPreviewFrame';
 
 const defaultProps = {
@@ -29,14 +30,14 @@ describe('LiveDraftPreviewFrame rendering', () => {
                 <div />
             </LiveDraftPreviewFrame>
         );
-        expect(screen.getByTitle('Modo de Inspeção (Selecionar elemento)')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Inspecionar' })).toBeInTheDocument();
 
         rerender(
             <LiveDraftPreviewFrame {...defaultProps} previewDevice="desktop">
                 <div />
             </LiveDraftPreviewFrame>
         );
-        expect(screen.getByTitle('Modo de Inspeção (Selecionar elemento)')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Inspecionar' })).toBeInTheDocument();
     });
 });
 
@@ -49,8 +50,27 @@ describe('LiveDraftPreviewFrame inspection actions', () => {
             </LiveDraftPreviewFrame>
         );
 
-        fireEvent.click(screen.getByTitle('Modo de Inspeção (Selecionar elemento)'));
+        fireEvent.click(screen.getByRole('button', { name: 'Inspecionar' }));
         expect(setIsInspecting).toHaveBeenCalledWith(true);
+    });
+
+    it.each([
+        ['pt', 'Inspecionar'],
+        ['en', 'Inspect'],
+        ['es', 'Inspeccionar'],
+        ['fr', 'Inspecter'],
+        ['de', 'Untersuchen'],
+        ['it', 'Ispeziona'],
+    ])('usa o rótulo do catálogo em %s', (language, label) => {
+        render(
+            <SarakUIProvider config={{ language }}>
+                <LiveDraftPreviewFrame {...defaultProps}>
+                    <div />
+                </LiveDraftPreviewFrame>
+            </SarakUIProvider>,
+        );
+
+        expect(screen.getByRole('button', { name: label })).toBeInTheDocument();
     });
 
     it('quando isInspecting=true, mostra o overlay de instrução', () => {

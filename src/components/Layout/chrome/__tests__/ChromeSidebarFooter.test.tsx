@@ -84,4 +84,20 @@ describe('ChromeSidebarFooter', () => {
         renderFooter({ showFontSize: true, showNavigationStyle: true });
         expect(screen.getByText('Lateral')).toBeInTheDocument();
     });
+
+    it('o ⚙ é uma linha própria (ícone e rótulo), acima do usuário', () => {
+        const { container } = renderFooter({
+            hasPreferencesMenu: true, menuIds: ['fontSize'], showUser: true, user: { name: 'Ana' }, logout: vi.fn(),
+        });
+        const settings = screen.getByRole('button', { name: 'Preferências' });
+        expect(settings).toHaveTextContent('Preferências');
+        expect(settings.className).toContain('px-3');
+        const strip = container.querySelector('[data-sarak-user-strip]') as HTMLElement;
+        expect(settings.compareDocumentPosition(strip) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
+    it('sem nenhuma linha, a região de linhas não existe (nenhum respiro morto)', () => {
+        const { container } = renderFooter();
+        expect(container.querySelector('[data-sarak-footer-rows]')).toBeNull();
+    });
 });

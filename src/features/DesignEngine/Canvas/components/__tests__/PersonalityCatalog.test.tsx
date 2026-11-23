@@ -23,9 +23,11 @@ describe('PersonalityCatalog', () => {
         expect(screen.getByText(/A cor fica a da paleta escolhida/)).toBeInTheDocument();
     });
 
-    it('cada amostra é o cromo real do rascunho (a paleta atual), na orientação da Personalidade', () => {
+    it('cada Personalidade é um quadrado pequeno com o nome, na orientação dela e sem texto dentro da amostra', () => {
         render(withProvider(<PersonalityCatalog draft={DRAFT} currentMode="dark" onSelect={vi.fn()} />));
-        expect(screen.getAllByTestId('bar-sample')).toHaveLength(PERSONALITIES.length);
+        expect(document.querySelectorAll('[data-option-tile][data-option-sample], [data-option-tile] [data-option-sample]')).toHaveLength(PERSONALITIES.length);
+        document.querySelectorAll('[data-option-sample]').forEach((sample) => expect(sample.textContent).toBe(''));
+        expect(document.querySelector('[data-preset-group="personalities"] .grid')?.className).toContain('minmax(5.5rem,1fr)');
     });
 
     it('o clique entrega a Personalidade a quem decide (a pergunta de ajuste é dele); a galeria não grava', () => {

@@ -18,6 +18,8 @@ interface SarakDataTableViewProps<T> {
 }
 
 const HEADER_BACKGROUND = 'var(--sarak-table-header-bg, var(--color-theme-card,#101622))';
+/** Os cantos da tabela, do design (`tableBorderRadius`); sem o token no design, a moldura não ganha estilo algum, como sempre foi. */
+const TABLE_CORNER_RADIUS = 'var(--sarak-table-border-radius, var(--sarak-card-radius, 10px))';
 const CELL_BACKGROUND = 'var(--color-theme-card,#101622)';
 const REPORT_BACKGROUND = 'transparent';
 const DEFAULT_HEIGHT = 44;
@@ -58,12 +60,16 @@ const CardsView = <T,>({ model }: SarakDataTableViewProps<T>): ReactElement => (
 
 const TableGrid = <T,>({ model }: SarakDataTableViewProps<T>): ReactElement => {
     // Átomo-de-dados: tolera montar sem SarakUIProvider (sem listras).
-    const zebra = useSarakUIOptional()?.design?.tableZebraStriping === true && !model.report;
+    const design = useSarakUIOptional()?.design;
+    const zebra = design?.tableZebraStriping === true && !model.report;
     const headerHeight = model.props.headerHeight ?? DEFAULT_HEIGHT;
     const props = rowsProps(model, zebra);
     const footer = hasFooter(model.ordered);
     const footerHeight = footer ? headerHeight : 0;
-    const frame: CSSProperties = model.flow ? { width: '100%' } : { height: model.props.height ?? '100%', maxWidth: '100%', overflow: 'auto', position: 'relative' };
+    const frame: CSSProperties = {
+        ...(model.flow ? { width: '100%' } : { height: model.props.height ?? '100%', maxWidth: '100%', overflow: 'auto', position: 'relative' }),
+        ...(design?.tableBorderRadius === undefined ? null : { borderRadius: TABLE_CORNER_RADIUS }),
+    };
     const sheet: CSSProperties = model.flow ? { width: '100%' } : { width: model.containerWidth, position: 'relative', height: headerHeight + model.virtualTotalSize + footerHeight };
     return (
         <div ref={model.scrollRef} data-sarak-datatable="true" data-density={model.report ? 'report' : undefined} role="table" aria-busy={model.props.loading ? true : undefined} className={model.props.className} style={frame}>

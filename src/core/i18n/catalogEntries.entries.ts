@@ -4,6 +4,14 @@ type LibraryTextEntry = Record<SarakLibraryLanguage, string>;
 
 /** Textos das entradas e utilitários: cor, conjunto, etiquetas, código, formulário gerado, assistente, popover, copiar, QR e arquivo. */
 export const CATALOG_ENTRIES = {
+    chatAssistantLabel: {
+        pt: 'Assistente', en: 'Assistant', es: 'Asistente',
+        fr: 'Assistant', de: 'Assistent', it: 'Assistente',
+    },
+    catalogLabel: {
+        pt: 'Catálogo', en: 'Catalog', es: 'Catálogo',
+        fr: 'Catalogue', de: 'Katalog', it: 'Catalogo',
+    },
     colorInputSwatch: {
         pt: 'Escolher cor', en: 'Pick a color', es: 'Elegir color',
         fr: 'Choisir une couleur', de: 'Farbe wählen', it: 'Scegli il colore',

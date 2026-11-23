@@ -1,11 +1,13 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
-import { SarakCheckbox, SarakSelect } from '../../../../components/atomic/Inputs';
+import { SarakCheckbox, SarakInput, SarakSelect } from '../../../../components/atomic/Inputs';
 import { ColorControl } from '../../components/DesignControls';
 import { PaletteSwatch } from './PaletteSwatch';
 import { usePaletteCreatorState } from '../hooks/usePaletteCreatorState';
 import { PALETTE_TYPES, PALETTE_TYPE_TEXT_KEY, buildCustomPaletteValue } from '../utils/paletteDraft';
+import { MAX_SAVED_PALETTES, MAX_SAVED_PALETTE_NAME } from '../../../../core/Design/palette/savedPalettes';
+import type { SavePaletteOutcome } from '../hooks/useSavedPalettes';
 import type { SarakPaletteType } from '../../../../core/Design/palette/types';
 import type { LibraryTextKey } from '../../../../core/i18n/catalog';
 
@@ -13,7 +15,16 @@ interface PaletteCreatorProps {
     initialBase: string;
     onConfirm: (value: string) => void;
     onClose: () => void;
+    /** Guarda a paleta com nome; sem ele o criador não oferece "Salvar paleta". */
+    onSave?: (name: string, value: string) => Promise<SavePaletteOutcome>;
 }
+
+/** O texto que a tentativa de salvar mostra: o motivo da recusa ou a confirmação de que a paleta foi guardada. */
+const saveStatusKey = (outcome: SavePaletteOutcome): LibraryTextKey | null => {
+    if (outcome === 'saved') return 'paletteSavedStatus';
+    if (outcome === 'name') return 'paletteSaveNameRequired';
+    return outcome === 'full' ? 'paletteSaveFull' : null;
+};
 
 interface OptionalColorFieldProps {
     useLabel: LibraryTextKey;
@@ -41,13 +52,22 @@ const OptionalColorField: React.FC<OptionalColorFieldProps> = ({ useLabel, color
 };
 
 /** Criação a partir de uma cor (sem `<form>`: o Enter do campo de cor só confirma a cor, não a paleta): cor-base, tipo, secundária e acento opcionais, com a prévia ao vivo dos dois modos. */
-export const PaletteCreator: React.FC<PaletteCreatorProps> = ({ initialBase, onConfirm, onClose }) => {
+export const PaletteCreator: React.FC<PaletteCreatorProps> = ({ initialBase, onConfirm, onClose, onSave }) => {
     const text = useLibraryText();
+    const [name, setName] = useState('');
+    const [status, setStatus] = useState<{ key: LibraryTextKey; name: string } | null>(null);
     const { base, setBase, type, setType, secondary, setSecondary, accent, setAccent, input } = usePaletteCreatorState(initialBase);
     const typeOptions = useMemo(
         () => PALETTE_TYPES.map((option) => ({ value: option, label: text(PALETTE_TYPE_TEXT_KEY[option]) })),
         [text],
     );
+    const save = async () => {
+        if (!input || !onSave) return;
+        const outcome = await onSave(name, buildCustomPaletteValue(input));
+        const key = saveStatusKey(outcome);
+        setStatus(key ? { key, name: name.trim() } : null);
+        if (outcome === 'saved') setName('');
+    };
     return (
         <div
             role="group"
@@ -66,6 +86,21 @@ export const PaletteCreator: React.FC<PaletteCreatorProps> = ({ initialBase, onC
             {input && (
                 <div role="img" aria-label={text('palettePreviewLabel', { name: text('paletteCustomName') })}>
                     <PaletteSwatch input={input} />
+                </div>
+            )}
+            {onSave && (
+                <div className="flex flex-col gap-2">
+                    <SarakInput
+                        label={text('paletteSaveNameLabel')}
+                        fullWidth
+                        value={name}
+                        maxLength={MAX_SAVED_PALETTE_NAME}
+                        onChange={(event) => { setName(event.target.value); setStatus(null); }}
+                    />
+                    <SarakButton type="button" variant="secondary" size="sm" disabled={!input} onClick={() => { void save(); }}>{text('paletteSaveAction')}</SarakButton>
+                    <p role="status" className="min-h-[var(--sarak-type-scale-caption,12px)] text-[length:var(--sarak-type-scale-caption,12px)] text-[var(--theme-muted)]">
+                        {status ? text(status.key, { name: status.name, max: MAX_SAVED_PALETTES }) : ''}
+                    </p>
                 </div>
             )}
             <div className="flex gap-2">

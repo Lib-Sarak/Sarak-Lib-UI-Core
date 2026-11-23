@@ -155,6 +155,7 @@ function renderFamilyIcon({ IconComponent, family, presentation, weight, strokeW
     return <IconComponent {...presentation} strokeWidth={strokeWidth} />;
 }
 
+/** @iconNameProp name */
 export const SarakIcon = (props: SarakIconProps): React.ReactElement => {
     const design = useSarakUIOptional()?.design;
     const family = (design?.iconFamily || 'lucide') as SarakIconFamily;

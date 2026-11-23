@@ -19,21 +19,27 @@ import { useThemeCustomizationActions } from './hooks/useThemeCustomizationActio
 import { usePeekPreview } from './hooks/usePeekPreview';
 import { usePendingBranding } from './hooks/usePendingBranding';
 import { SaveThemeModal } from './components/SaveThemeModal';
+import { LeavePanelDialog } from './components/LeavePanelDialog';
+import { useLeavePanelGuard, type SarakCustomizationPanelProps } from './hooks/useLeavePanelGuard';
 import { dirtyDecisionSet, getDecision, type DecisionId } from '../utils/decisions';
+import { peekWithTones } from '../utils/peekWithTones';
+import { findThemeEntry } from '../../../core/Provider/utils/designChoices';
 
 /** O que cada clique do inspetor da prévia abre na coluna. */
 const INSPECTED_DECISION: Record<string, DecisionId> = {
     controls: 'components',
     cards: 'shape',
     typography: 'fonts',
-    shell: 'layout',
+    shell: 'bars',
 };
 
 /** Esc volta da decisão à lista — a menos que algo aberto por cima (menu, diálogo) já o tenha tomado para si. */
 const isEscapeForColumn = (event: React.KeyboardEvent): boolean =>
     event.key === 'Escape' && !event.defaultPrevented && !(event.target as HTMLElement).closest('[role="dialog"], [role="menu"], [role="listbox"]');
 
-export const ThemeCustomizationTab: React.FC = () => {
+export type ThemeCustomizationTabProps = SarakCustomizationPanelProps;
+
+export const ThemeCustomizationTab: React.FC<ThemeCustomizationTabProps> = ({ onUnsavedChangesControl }) => {
     const {
         sarak,
         activePreviewApp, selectPreviewApp,
@@ -53,13 +59,15 @@ export const ThemeCustomizationTab: React.FC = () => {
         setDraftThemeId, draftThemeId,
         canUndoLastApply, undoLastApply
     } = useDesignDraft(sarak);
-    const { peekTokens, onPeek, isPeeking } = usePeekPreview();
+    const { peekTokens, peekScreen, onPeek, isPeeking, keepPeekScreen } = usePeekPreview(selectPreviewApp);
     const pendingBranding = usePendingBranding({ branding, updateBranding, dirtyLabel: text('brandDirtyLabel') });
     const themeActions = useThemeCustomizationActions({
         sarak, draft, handleApplyToSystem, handleThemePreview, discardDraft, setDraftThemeId,
         showToast, setCurrentThemeName, setIsSaveModalOpen, setIsSaving,
     });
-    const onApplyPreset = useApplyPreset(updateDraft, themeActions.handleApplyFullTheme);
+    // Escolher a opção que se espia mantém a tela a que a espiada levou: sair dela não devolve a prévia à tela de antes.
+    const applyPreset = useApplyPreset(updateDraft, themeActions.handleApplyFullTheme);
+    const onApplyPreset = useMemo(() => keepPeekScreen(applyPreset), [keepPeekScreen, applyPreset]);
     const { size: sidebarWidth, startResizing: startSidebarResize, isResizing } = useResizable({
         initialSize: 320,
         minSize: 280,
@@ -79,8 +87,14 @@ export const ThemeCustomizationTab: React.FC = () => {
         return { ...previewDraft, systemName: pending.companyName ?? previewDraft.systemName, logoUrl: pending.logoBase64 ?? previewDraft.logoUrl };
     }, [previewDraft, pendingBranding.pending]);
 
+    // A espiada de um tom de barra passa pelo mesmo cálculo da escolha: a cor que o tema declara não a esconde.
+    const tonedPeek = useMemo(
+        () => peekWithTones(peekTokens, previewWithBrand, findThemeEntry(sarak.allThemes, draftThemeId ?? sarak.resolvedThemeId), sarak.getHostConfig?.() as Record<string, unknown> | undefined),
+        [peekTokens, previewWithBrand, sarak, draftThemeId],
+    );
+
     const handleInspectComponent = useCallback((schemaId: string) => {
-        openDecision(INSPECTED_DECISION[schemaId] ?? 'layout');
+        openDecision(INSPECTED_DECISION[schemaId] ?? 'bars');
     }, [openDecision]);
 
     const handleApply = useCallback(() => {
@@ -91,6 +105,9 @@ export const ThemeCustomizationTab: React.FC = () => {
         themeActions.handleDiscardChanges();
         pendingBranding.clear();
     }, [themeActions, pendingBranding]);
+    const leaveGuard = useLeavePanelGuard({
+        isDirty: isDirty || pendingBranding.isDirty, onApply: handleApply, onDiscard: handleDiscard, onControl: onUnsavedChangesControl,
+    });
     const discardDecision = useCallback((decisionId: DecisionId) => {
         decisionIds.get(decisionId)?.forEach((tokenId) => { if (dirtyIds.has(tokenId)) resetToken(tokenId); });
     }, [decisionIds, dirtyIds, resetToken]);
@@ -157,7 +174,6 @@ export const ThemeCustomizationTab: React.FC = () => {
                     brandInitialName={branding?.companyName}
                     resetComponent={resetComponent}
                     resetToken={resetToken}
-                    handleApplyToSystem={handleApplyToSystem}
                     toast={toast}
                     onApplyFullTheme={themeActions.handleApplyFullTheme}
                 />
@@ -190,7 +206,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                 <div className="flex min-h-0 min-w-0 flex-1">
                 <PreviewCanvas
                     previewDevice={previewDevice}
-                    activePreviewApp={activePreviewApp}
+                    activePreviewApp={peekScreen ?? activePreviewApp}
                     config={previewWithBrand as unknown as SarakUIOptions}
                     onUpdateDraft={updateDraft}
                     sarak={sarak}
@@ -201,7 +217,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                     draftTokens={previewWithBrand}
                     onInspectComponent={handleInspectComponent}
                     onApplyFullTheme={themeActions.handleApplyFullTheme}
-                    peekTokens={peekTokens}
+                    peekTokens={tonedPeek}
                 />
                 </div>
                 <ThemeFeedbackToast toast={toast} />
@@ -217,6 +233,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                 onSave={themeActions.handleSaveTheme}
                 isSaving={isSaving}
             />
+            <LeavePanelDialog isOpen={leaveGuard.isAsking} onChoose={leaveGuard.choose} />
         </div>
         </div>
     );

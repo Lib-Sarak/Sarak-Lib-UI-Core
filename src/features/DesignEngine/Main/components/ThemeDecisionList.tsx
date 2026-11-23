@@ -16,7 +16,7 @@ interface ThemeDecisionListProps {
     restoreFocusId?: string;
 }
 
-const ROW_CLASS = 'flex w-full items-center gap-3 rounded-[var(--sarak-card-radius,10px)] px-3 py-2 text-left hover:bg-[var(--theme-primary)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]';
+const ROW_CLASS = 'flex w-full items-center gap-3 rounded-[var(--sarak-card-radius,10px)] px-3 py-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]';
 
 const colorOf = (draft: Readonly<Record<string, unknown>>, id: string): string => (typeof draft[id] === 'string' ? (draft[id] as string) : 'transparent');
 
@@ -52,6 +52,9 @@ const DecisionGlyph: React.FC<{ id: DecisionId; draft: ThemeDecisionListProps['d
         return <span aria-hidden="true" className={'flex ' + GLYPH_WIDTH}><i className="block h-4 w-9 rounded-md" style={{ background: colorOf(draft, 'primaryColor') }} /></span>;
     }
     if (id === 'layout') {
+        return <span aria-hidden="true" className={'flex ' + GLYPH_WIDTH}><i className="block h-5 w-9 rounded-sm border-x-2 border-[var(--theme-muted)] bg-[var(--theme-border)]" /></span>;
+    }
+    if (id === 'bars') {
         const isTop = draft.navigationStyle === 'topbar';
         return (
             <span aria-hidden="true" className={'flex gap-0.5 ' + (isTop ? 'h-5 flex-col' : 'h-5 flex-row') + ' ' + GLYPH_WIDTH}>
@@ -77,7 +80,7 @@ export const ThemeDecisionList: React.FC<ThemeDecisionListProps> = ({ draft, the
                 type="button"
                 data-decision-row="brand"
                 onClick={onOpenBrand}
-                className="mb-2 flex w-full items-center gap-3 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-primary)]/50 bg-[var(--theme-surface)] p-3 text-left hover:bg-[var(--theme-primary)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]"
+                className="mb-2 flex w-full items-center gap-3 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-primary)]/50 bg-[var(--theme-surface)] p-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]"
             >
                 <span aria-hidden="true" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--theme-primary)]/20 text-[var(--theme-primary)]"><Sparkles size={16} /></span>
                 <span className="min-w-0">

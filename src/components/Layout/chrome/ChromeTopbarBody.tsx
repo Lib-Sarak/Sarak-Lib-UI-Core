@@ -56,7 +56,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
     search, banner, footer, decoration, user, logout, notifications, onNotificationSelect, widgets, className, rootStyle, children,
 }) => {
     const {
-        navbarLayout, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled,
+        design, navbarLayout, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled,
         searchPositionTopbar, topbarBorderSide, topbarBorderStyle, topbarBackgroundStyle, topbarTone,
     } = useChromeDesignTokens();
     const { isVisible, sensorProps, surfaceProps } = useChromeAutoHide(isAutoHideEnabled);
@@ -66,6 +66,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
         hasLogout: Boolean(logout),
         hasNotifications: Boolean(notifications?.length),
         hasNotificationHandler: Boolean(onNotificationSelect),
+        bar: 'topbar',
     });
     const effectiveSearch = search ?? (w.showSearch
         ? <SarakShellSearchWidget
@@ -78,14 +79,20 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
     const showFontSize = w.preferencePlacement.pinned.includes('fontSize');
     const showNavigationStyle = w.preferencePlacement.pinned.includes('navigationStyle');
     const showLanguage = w.preferencePlacement.pinned.includes('language');
+    // A barra mostra o que é fixado e o ⚙ guarda o resto: o que já tem controle na barra não se repete no ⚙. Se nada sobra,
+    // o ⚙ nem nasce (Spec 05 §2.2.2).
+    const menuIdsToShow = w.preferencePlacement.menu.filter((id) => !w.preferencePlacement.pinned.includes(id));
+    const searchInMenu = w.showSearchInMenu && !w.showSearch;
+    const userInMenu = w.showUserInMenu && !w.showUser;
+    const notificationsInMenu = w.showNotificationsInMenu && !w.showNotifications;
     const menuWidgets = (
         <>
-            {w.showSearchInMenu && <SarakShellSearchWidget variant="icon" onClick={w.openSearch} />}
-            {w.showUserInMenu && <ChromeUserWidget user={user} logout={logout} variant="vertical" />}
-            {w.showNotificationsInMenu && <ChromeNotificationsWidget notifications={notifications} onSelect={onNotificationSelect} variant="vertical" />}
+            {searchInMenu && <SarakShellSearchWidget variant="icon" onClick={w.openSearch} />}
+            {userInMenu && <ChromeUserWidget user={user} logout={logout} variant="vertical" />}
+            {notificationsInMenu && <ChromeNotificationsWidget notifications={notifications} onSelect={onNotificationSelect} variant="vertical" />}
         </>
     );
-    const hasMenuWidgets = w.widgetPlacement.menu.length > 0;
+    const hasMenuWidgets = menuIdsToShow.length > 0 || searchInMenu || userInMenu || notificationsInMenu;
     // `center`: a busca ocupa o meio do espaço livre entre a navegação e o grupo final (não o centro geométrico da barra);
     // por isso a navegação deixa de tomar o espaço (`flex-1`) e a busca vem depois dela, num contêiner que o toma.
     const isSearchCentered = searchPositionTopbar === 'center' && Boolean(effectiveSearch);
@@ -121,7 +128,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
                         }),
                         backdropFilter: 'blur(var(--sarak-topbar-blur, 0px))',
                         boxShadow: 'var(--sarak-topbar-shadow, none)',
-                        ...resolveChromeToneStyle(topbarTone, 'topbar'),
+                        ...resolveChromeToneStyle(topbarTone, 'topbar', design),
                     }}
                 >
                     {/* `topbarNoiseOpacity` (Spec 05 §2.4). */}
@@ -171,7 +178,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
                             {w.showNotifications && <ChromeNotificationsWidget notifications={notifications} onSelect={onNotificationSelect} variant="horizontal" />}
                             {hasMenuWidgets && (
                                 <ShellPreferencesMenu
-                                    menuIds={w.preferencePlacement.menu}
+                                    menuIds={menuIdsToShow}
                                     isNavHidden={isNavHidden}
                                     onToggleNavCollapsed={w.toggleNavHidden}
                                     additionalRows={menuWidgets}

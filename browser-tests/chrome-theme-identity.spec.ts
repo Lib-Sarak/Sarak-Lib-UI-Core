@@ -73,7 +73,7 @@ async function readSidebarStyle(page: import('@playwright/test').Page): Promise<
     return page.evaluate(() => {
         const sidebar = document.querySelector('aside')!;
         const inactiveItem = sidebar.querySelector('a[href="/reports"]')!;
-        const brand = sidebar.querySelector('.sarak-chrome-brand span.truncate')!;
+        const brand = sidebar.querySelector('[data-sarak-brand-name]')!;
         const textureLayer = sidebar.querySelector(':scope > div.absolute')!;
         const marker = sidebar.querySelector('a[aria-current="page"] span[aria-hidden="true"]');
         const sidebarStyle = getComputedStyle(sidebar);

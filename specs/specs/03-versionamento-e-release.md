@@ -150,6 +150,12 @@ Todo MAJOR tem entrada em `docs/migracoes.md`, mais recente primeiro, com:
 
 > **Breaking change sem entrada em `docs/migracoes.md` é entrega incompleta.**
 
+**Toda versão que muda token traz a lista dele.** A entrada da versão em `docs/migracoes.md` nomeia cada token
+acrescentado, removido ou com tipo ou gramática de valor nova desde a última tag **estável** anterior, com o tipo e,
+quando houver, a gramática. Major, minor ou patch, tanto faz. Quem valida tema por lista de chaves depende dessa lista para
+aceitar as chaves novas e parar de exigir as removidas. O `npx tsx gates/scripts/contrato/check-token-release-notes.ts --print --from vX.Y.Z`
+escreve a seção; a da 8.0.0, desde a 7.0.0, abre a entrada da 8.0.0.
+
 A renumeração desta spec **não é** breaking change, e mesmo assim ganhou entrada: um número que **anda para trás** normalmente significa perda de capacidade, e o consumidor merece ler que aqui não significa.
 
 ## 5.1 O título carrega a versão — e essa exigência é nova, não a obrigação
@@ -170,15 +176,16 @@ nasceu (`plan-10`, 2026-08-19), **três dos seis majors não tinham o número no
 > quem lia.** Quem escreveu as notas cumpriu a obrigação; ninguém nunca disse que o título precisava carregar
 > a versão. As três âncoras foram **transportadas** em 2026-08-19 (`plan-53`) — nenhuma nota foi inventada.
 
-## 5.2 Os dois gates que impedem a reincidência — e a assimetria entre eles
+## 5.2 Os gates que impedem a reincidência — e a assimetria entre eles
 
-**Desde a `plan-53` (2026-08-19), a obrigação deixou de ser só conduta.** Os dois gates rodam no gancho
+**Desde a `plan-53` (2026-08-19), a obrigação deixou de ser só conduta.** Os três gates rodam no gancho
 `version` — o único instante em que o `package.json` já tem a versão nova **e a tag ainda não existe**:
 
 | Gate | Cobra | Limite declarado (R18) |
 | --- | --- | --- |
 | `migration-anchor:check` | `npm version major` é barrado se `docs/migracoes.md` não tiver entrada cujo título cite a versão emitida por extenso | Confere só a **presença** da âncora, nunca o conteúdo — nota vazia ou errada passa igual. E só cobra **MAJOR** |
 | `minor-no-removal:check` | Minor/patch que **remove um nome do barril público** (`dist/index.d.ts`) contra a última tag é sempre barrado | Não vê quebra de **comportamento**, só de superfície |
+| `token-release-notes:check` | A entrada da versão (as seções `## …` cujo título a cita) nomeia todo token acrescentado, removido ou com tipo ou gramática nova desde a maior tag estável anterior: a `8.1.0` contra a `v8.0.0`, a `8.0.0` e suas prévias contra a `v7.0.0` | Vê nome, tipo e gramática (opções, faixa, unidade); **não** vê mudança de valor padrão, de descrição ou de `cssVars`. A gramática de `string` livre (`colorPalette`) é texto de quem escreve. Confere a **presença** do nome, não a lista certa. Sem tag estável anterior, libera |
 
 > **Prévia de major:** o caráter major do bump é decidido contra a última tag **estável** (sem `-`): `8.0.0-rc.N`
 > contra `v7.0.0` é major e `minor-no-removal:check` libera a remoção; prévia de não-major (`8.1.0-rc.1`, base
@@ -204,7 +211,7 @@ npm version <major|minor|patch>
 | Gancho | Quando o npm roda | O que faz aqui |
 | --- | --- | --- |
 | `preversion` | ANTES do bump | `npm run gates:full` (build + `package:check` + suíte). **Falhou, não versiona.** |
-| `version` | DEPOIS do bump, ANTES do commit | **`migration-anchor:check` e `minor-no-removal:check` primeiro** (§5.2), depois `npm run guide && npm run build && npm run dev-kit`, e `git add` de `dist/` + `sarak-ui/` + `sarak-dev/` — os **três** artefatos gerados que carimbam a `version` — **mais** `src/buildInfo.ts` e `src/core/Provider/buildInfo.ts`, os arquivos gerados do selo de build ([[05-build-e-distribuicao]] §6): sem eles a tag sairia com `src/` diferente do `dist/` e a árvore suja |
+| `version` | DEPOIS do bump, ANTES do commit | **`migration-anchor:check`, `minor-no-removal:check` e `token-release-notes:check` primeiro** (§5.2), depois `npm run guide && npm run build && npm run dev-kit`, e `git add` de `dist/` + `sarak-ui/` + `sarak-dev/` — os **três** artefatos gerados que carimbam a `version` — **mais** `src/buildInfo.ts` e `src/core/Provider/buildInfo.ts`, os arquivos gerados do selo de build ([[05-build-e-distribuicao]] §6): sem eles a tag sairia com `src/` diferente do `dist/` e a árvore suja |
 | `postversion` | depois do commit e da tag | `git push --follow-tags` |
 
 Formato da tag: **`vX.Y.Z`**, anotada, criada pelo próprio `npm version`.

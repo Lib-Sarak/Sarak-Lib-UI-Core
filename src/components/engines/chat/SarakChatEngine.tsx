@@ -9,6 +9,7 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakInput } from '../../../components/atomic/Inputs/SarakInput';
 import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
 import { SarakOptionalPeerFallback } from '../../atomic/Feedback/SarakOptionalPeerFallback';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 const ReactMarkdown = ReactMarkdownModule.default;
 const SyntaxHighlighter = SyntaxHighlighterModule.Prism;
@@ -48,6 +49,7 @@ const SarakChatContent: React.FC<SarakChatEngineProps> = ({
     const [input, setInput] = useState('');
     const scrollRef = useRef<HTMLDivElement>(null);
     const { design } = useSarakUI();
+    const text = useLibraryText();
     const { chatBubbleStyle = 'glass', chatBubbleRadius, chatUserBg } = design || {};
     const cardTextureType = design?.cardTextureType || 'none';
 
@@ -86,7 +88,7 @@ const SarakChatContent: React.FC<SarakChatEngineProps> = ({
                         <SarakIcon name="Bot" size={18} />
                     </div>
                     <div>
-                        <h3 className="text-xs font-black uppercase tracking-widest text-[var(--text-main,#f2f6fb)]">Sarak Assistant</h3>
+                        <h3 className="text-xs font-black uppercase tracking-widest text-[var(--text-main,#f2f6fb)]">{text('chatAssistantLabel')}</h3>
                         <p className="text-2xs text-[var(--theme-primary)] font-bold animate-pulse">Online & Ready</p>
                     </div>
                 </div>

@@ -125,6 +125,7 @@ describe('ChromeTopbarBody — widgets default', () => {
     it('sem `widgets`, os widgets de fábrica ficam oferecidos e o menu de preferências é montado', () => {
         const { container } = renderBody({});
         expect(container.querySelector('[data-sarak-slot="search"]')).not.toBeNull();
+        // O recolher é a seta fixa da lateral; o ≡ do topo fica escondido por padrão e só vai ao menu ⚙.
         expect(container.querySelector('[data-sarak-widget="collapse"]')).toBeNull();
         expect(container.querySelector('[data-sarak-widget="preferences-menu"]')).not.toBeNull();
         expect(container.querySelector('[data-sarak-widget="user-theme"]')).not.toBeNull();
@@ -137,6 +138,32 @@ describe('ChromeTopbarBody — widgets default', () => {
         expect(screen.getByText('Tamanho da fonte')).toBeInTheDocument();
         expect(screen.getByText('Navegação')).toBeInTheDocument();
         expect(screen.getByText('Recolher navegação')).toBeInTheDocument();
+    });
+
+    it('tamanho da fonte e orientação fixados ficam só na barra, em grupo compacto: o ⚙ não os repete', () => {
+        const { container } = renderBody({ preferenceFontSizePosition: 'pinned', preferenceNavigationStylePosition: 'pinned' });
+        expect(screen.getByRole('group', { name: 'Tamanho da fonte' })).toBeInTheDocument();
+        expect(screen.getByRole('group', { name: 'Estilo de navegação' })).toBeInTheDocument();
+        fireEvent.click(screen.getByRole('button', { name: 'Preferências' }));
+        const menu = screen.getByRole('menu');
+        expect(menu.querySelector('[role="group"]')).toBeNull();
+        expect(container.querySelectorAll('[role="group"]')).toHaveLength(2);
+    });
+
+    it('a busca fixada na barra não se repete no ⚙', () => {
+        renderBody({ preferenceModePosition: 'menu' });
+        fireEvent.click(screen.getByRole('button', { name: 'Preferências' }));
+        const menu = screen.getByRole('menu');
+        expect(menu.querySelector('[data-sarak-widget="search"], [aria-label*="usca"]')).toBeNull();
+    });
+
+    it('tudo fixado e nada no menu: o ⚙ nem nasce', () => {
+        const { container } = renderBody({
+            preferenceModePosition: 'pinned', preferenceFontSizePosition: 'pinned', preferenceNavigationStylePosition: 'pinned',
+            preferenceNavCollapsePosition: 'pinned', preferenceNavCollapsePositionTopbar: 'pinned', preferenceLanguagePosition: 'pinned',
+            chromeSearchPosition: 'pinned', chromeUserPosition: 'pinned', chromeNotificationsPosition: 'pinned',
+        });
+        expect(container.querySelector('[data-sarak-widget="preferences-menu"]')).toBeNull();
     });
 
     it('`widgets` desliga cada default isoladamente', () => {
@@ -200,7 +227,10 @@ describe('ChromeTopbarBody — papel de cor da topbar', () => {
         const { container } = renderBody({ colorPalette: 'oceano', topbarTone: 'primary' });
         const header = container.querySelector('header')!;
         expect(header.style.getPropertyValue('--text-muted')).toBe('var(--sarak-topbar-item-text-color)');
-        expect(header.style.getPropertyValue('--sarak-nav-active-color')).toBe('var(--sarak-topbar-item-hover-text-color)');
+        // O texto ativo é a cor forte calculada contra a pior parada da barra, a mesma que o hover da barra recebe.
+        const strong = header.style.getPropertyValue('--sarak-topbar-item-hover-text-color');
+        expect(strong).toMatch(/^#[0-9a-f]{6}$/i);
+        expect(header.style.getPropertyValue('--sarak-nav-active-color')).toBe(strong);
     });
 
     it('papel de superfície não refaz nada: só o fundo muda, pela paleta', () => {

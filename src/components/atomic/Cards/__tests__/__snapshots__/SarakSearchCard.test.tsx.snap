@@ -9,7 +9,7 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
   <style
     id="sarak-sovereign-bridge"
   >
-    /* Sarak Sovereign Bridge - Dark Mode Hue Hijack */
+    /* Bridge - Dark Mode Hue Hijack */
 body.dark .bg-zinc-950:not([data-sarak-own-palette] *),
 body.dark .bg-black\\/40:not([data-sarak-own-palette] *),
 body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
@@ -198,7 +198,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
                 />
                 <div
                   class="block w-10 h-6 rounded-full transition-all duration-[var(--duration-normal,0.3s)] ease-in-out"
-                  style="background-color: var(--color-theme-card, #101622);"
+                  style="background-color: color-mix(in srgb, var(--sarak-text-main, #f2f6fb) 50%, var(--color-theme-card, #101622));"
                 />
                 <div
                   class="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-[var(--duration-normal,0.3s)] ease-in-out shadow-sm"

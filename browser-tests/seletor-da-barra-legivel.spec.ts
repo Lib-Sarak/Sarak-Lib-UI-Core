@@ -9,7 +9,7 @@
  * -------------------------------------------------------------------------
  * LIMITES DECLARADOS (R18) — o que esta medição NÃO vê
  * -------------------------------------------------------------------------
- * 1. Só os botões selecionados dos dois seletores dentro do menu de preferências do harness, no modo nativo do tema.
+ * 1. Só a opção selecionada de tamanho e navegação, no menu e no grupo compacto fixado à barra.
  * 2. Os temas embarcados (quatro com item ativo diferente da primária ou não) e duas cores sintéticas, uma escura e uma clara,
  *    que reproduzem o caso: item ativo escuro com primária clara, e o inverso.
  * 3. Cor do item ativo que não é literal (`var()`, `color-mix`) não recebe `--sarak-on-nav-active`: vale a reserva do
@@ -33,7 +33,7 @@ const CASES: Array<{ name: string; query: string }> = [
     { name: 'item ativo claro com primária escura', query: 'tema=nav-ativo-claro' },
     { name: 'neo-brutalism', query: 'tema-ativo=neo-brutalism' },
     { name: 'industrial-terminal', query: 'tema-ativo=industrial-terminal' },
-    { name: 'synthwave-retro', query: 'tema-ativo=synthwave-retro' },
+    { name: 'cyber-retro-wave-classic', query: 'tema-ativo=cyber-retro-wave-classic' },
     { name: 'nebula-space', query: 'tema-ativo=nebula-space' },
 ];
 
@@ -47,7 +47,7 @@ test.afterAll(async () => {
     await browser.close();
 });
 
-interface PressedMeasure {
+interface SelectedMeasure {
     group: string;
     label: string;
     color: string;
@@ -55,8 +55,8 @@ interface PressedMeasure {
     ratio: number;
 }
 
-/** Os botões selecionados dos grupos de preferência: cor do texto, fundo e a razão de contraste computada no menu. */
-const measurePressed = (menu: Locator): Promise<PressedMeasure[]> => menu.evaluate((menuElement) => {
+/** Mede o texto selecionado sobre o fundo; as linhas do menu usam a superfície quando não pintam fundo próprio. */
+const measureSelected = (items: Locator): Promise<SelectedMeasure[]> => items.evaluateAll((elements) => {
     const channels = (value: string): number[] => (value.match(/[\d.]+/g) ?? []).map(Number);
     const luminance = ([r, g, b]: number[]): number => {
         const linear = (channel: number): number => {
@@ -65,21 +65,25 @@ const measurePressed = (menu: Locator): Promise<PressedMeasure[]> => menu.evalua
         };
         return 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b);
     };
-    return [...menuElement.querySelectorAll('[role="group"] button[aria-pressed="true"]')].map((button) => {
-        const style = getComputedStyle(button);
-        const [light, dark] = [luminance(channels(style.color)), luminance(channels(style.backgroundColor))].sort((a, b) => b - a);
+    return elements.map((element) => {
+        const style = getComputedStyle(element);
+        const parentMenu = element.closest('[role="menu"]');
+        const itemBackground = style.backgroundColor === 'rgba(0, 0, 0, 0)' && parentMenu
+            ? getComputedStyle(parentMenu).backgroundColor
+            : style.backgroundColor;
+        const [light, dark] = [luminance(channels(style.color)), luminance(channels(itemBackground))].sort((a, b) => b - a);
         return {
-            group: button.closest('[role="group"]')?.getAttribute('aria-label') ?? '',
-            label: button.textContent ?? '',
+            group: element.closest('[role="group"]')?.getAttribute('aria-label') ?? '',
+            label: element.textContent ?? '',
             color: style.color,
-            background: style.backgroundColor,
+            background: itemBackground,
             ratio: (light + 0.05) / (dark + 0.05),
         };
     });
 });
 
 for (const { name, query } of CASES) {
-    test(`o botão selecionado dos seletores da barra tem ${MIN_CONTRAST}:1 contra o próprio fundo: ${name}`, async () => {
+    test(`a opção selecionada no menu tem ${MIN_CONTRAST}:1 contra a superfície: ${name}`, async () => {
         const page = await browser.newPage({ viewport: { width: 1440, height: 800 } });
         try {
             await page.goto(`${harnessUrl}?chrome=topbar&${query}`);
@@ -89,9 +93,26 @@ for (const { name, query } of CASES) {
             await expect(preferencesMenu).toBeVisible();
             // As transições de hidratação do tema terminam antes de a cor computada valer.
             await page.waitForTimeout(1500);
-            const pressed = await measurePressed(preferencesMenu);
-            expect(pressed.length, 'os dois seletores têm um botão selecionado').toBe(2);
-            for (const item of pressed) {
+            const selected = await measureSelected(preferencesMenu.locator('[role="group"] [role="menuitemradio"][aria-checked="true"]'));
+            expect(selected.length, 'os dois seletores têm uma opção selecionada no menu').toBe(2);
+            for (const item of selected) {
+                expect(item.ratio, `${item.group} "${item.label}": texto ${item.color} sobre ${item.background}`).toBeGreaterThanOrEqual(MIN_CONTRAST);
+            }
+        } finally {
+            await page.close();
+        }
+    });
+
+    test(`a opção selecionada na barra tem ${MIN_CONTRAST}:1 contra o item ativo: ${name}`, async () => {
+        const page = await browser.newPage({ viewport: { width: 1440, height: 800 } });
+        try {
+            await page.goto(`${harnessUrl}?chrome=topbar&seletores=barra&${query}`);
+            await page.getByRole('link', { name: 'Início' }).waitFor({ state: 'visible' });
+            const selectedButtons = page.locator('[role="group"] button[aria-pressed="true"]');
+            await expect(selectedButtons).toHaveCount(2);
+            await page.waitForTimeout(1500);
+            const selected = await measureSelected(selectedButtons);
+            for (const item of selected) {
                 expect(item.ratio, `${item.group} "${item.label}": texto ${item.color} sobre ${item.background}`).toBeGreaterThanOrEqual(MIN_CONTRAST);
             }
         } finally {

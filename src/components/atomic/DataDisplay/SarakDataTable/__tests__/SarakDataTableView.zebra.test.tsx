@@ -1,3 +1,4 @@
+import { TABLE_PRESETS } from '../../../../../core/Design/presets/components/dataPresets';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { SarakUIProvider } from '../../../../../core/Provider/SarakUIProvider';
@@ -58,5 +59,27 @@ describe('tableZebraStriping na SarakDataTable', () => {
     it('desligado (padrão), nenhuma linha tem fundo alternado', () => {
         render(<SarakUIProvider><SarakDataTableView model={createModel()} /></SarakUIProvider>);
         expect(rowOf('Beto').getAttribute('style')).not.toContain('color-mix');
+    });
+});
+
+describe('tableBorderRadius na SarakDataTable', () => {
+    const frameOf = (container: HTMLElement): HTMLElement => container.querySelector('[data-sarak-datatable="true"]') as HTMLElement;
+
+    it('com o token no design, a moldura da tabela recebe os cantos dele', () => {
+        const { container } = render(<SarakUIProvider config={{ tableBorderRadius: 14 }}><SarakDataTableView model={createModel()} /></SarakUIProvider>);
+        expect(frameOf(container).style.borderRadius).toBe('var(--sarak-table-border-radius, var(--sarak-card-radius, 10px))');
+    });
+
+    it('sem Provider (átomo solto, sem design), a moldura não ganha estilo de canto', () => {
+        const { container } = render(<SarakDataTableView model={createModel()} />);
+        expect(frameOf(container).style.borderRadius).toBe('');
+    });
+});
+
+describe('tableCellPadding na SarakDataTable', () => {
+    it.each(TABLE_PRESETS.map((preset) => [preset.name, preset.design.tableCellPadding as number]))('%s (tableCellPadding %s): a célula lê o respiro de --sarak-table-padding', (_name, padding) => {
+        render(<SarakUIProvider config={{ tableCellPadding: padding }}><SarakDataTableView model={createModel()} /></SarakUIProvider>);
+        const cell = screen.getByText('Ana');
+        expect(cell.closest('[role="cell"]')?.getAttribute('style')).toContain('var(--sarak-table-padding, 12px)');
     });
 });

@@ -30,13 +30,13 @@ export const SARAK_ICON_NAMES = [
     'User', 'UserPlus', 'Users', 'LogIn', 'LogOut', 'Lock', 'Shield', 'ShieldCheck', 'Eye', 'EyeOff',
 
     // Conteúdo, arquivos e mídia.
-    'File', 'FileText', 'FileSpreadsheet', 'Folder', 'Image', 'Paperclip', 'ScrollText',
+    'File', 'FileText', 'FileSearch', 'FileSpreadsheet', 'Folder', 'Image', 'Paperclip', 'ScrollText',
     'Clipboard', 'Copy', 'Download', 'Upload', 'UploadCloud', 'Printer', 'Save',
     'Edit', 'Edit3', 'Bold', 'Italic', 'Plus', 'Trash2', 'Type', 'AlignLeft', 'Hash',
 
     // Dados, métricas e infraestrutura.
     'Activity', 'BarChart3', 'LineChart', 'PieChart', 'ScatterChart', 'TrendingUp',
-    'Database', 'Layers', 'Network', 'Box', 'Package', 'Cpu', 'Cloud', 'Terminal', 'Binary',
+    'Database', 'Layers', 'Network', 'GitBranch', 'Box', 'Package', 'Cpu', 'Cloud', 'Terminal', 'Binary',
     'Thermometer', 'History', 'Calendar', 'Clock',
 
     // Comunicação e colaboração.

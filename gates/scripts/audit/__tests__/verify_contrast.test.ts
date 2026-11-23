@@ -126,8 +126,8 @@ describe('resolveChain', () => {
 });
 
 describe('PAIRS — o contrato da lista de pares reais', () => {
-  it('mede os 89 pares de texto e fundo cobertos', () => {
-    expect(PAIRS.length).toBe(89);
+  it('mede os 90 pares de texto e fundo cobertos', () => {
+    expect(PAIRS.length).toBe(90);
   });
 
   describe('ícone do campo (inputIconColor × fundo do campo)', () => {

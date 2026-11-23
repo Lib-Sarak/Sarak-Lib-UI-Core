@@ -19,18 +19,21 @@ describe('decisionSummary', () => {
         expect(paletteName({ colorPalette: 'oceano' }, text)).not.toContain('custom');
     });
 
-    const draft = { headingFont: "'Outfit', sans-serif", bodyFont: 'Inter', surfaceMaterial: 'frosted', layoutDensity: 'comfortable', btnStyleType: 'frosted', inputBorderType: 'solid', navigationStyle: 'sidebar' };
+    const draft = { headingFont: "'Outfit', sans-serif", bodyFont: 'Inter', surfaceMaterial: 'frosted', layoutDensity: 'comfortable', btnStyleType: 'frosted', inputBorderType: 'solid', navigationStyle: 'sidebar', sidebarTone: 'inverse', topbarTone: 'surface', preferenceNavigationStylePosition: 'menu', maxContentWidth: '1200px' };
 
     it('cada decisão resume o que vale agora pelo nome legível, nunca pelo id do token', () => {
         expect(summarizeDecision('fonts', draft, text)).toBe('Outfit + Inter');
         expect(summarizeDecision('shape', draft, text)).toBe('Vidro fosco · Confortável');
         expect(summarizeDecision('components', draft, text)).toBe('Botão de vidro · Campo contornado');
-        expect(summarizeDecision('layout', draft, text)).toBe('Navegação: lateral');
+        expect(summarizeDecision('bars', draft, text)).toBe('Lateral · Invertida · troca no menu');
+        expect(summarizeDecision('bars', { ...draft, navigationStyle: 'topbar', preferenceNavigationStylePosition: 'off' }, text)).toBe('No topo · Superfície · orientação fixa');
+        expect(summarizeDecision('layout', draft, text)).toBe('Conteúdo 1200 px');
+        expect(summarizeDecision('layout', { maxContentWidth: 'fluid' }, text)).toBe('Conteúdo fluido');
     });
 
     it('o valor que o catálogo de textos não conhece some da linha em vez de aparecer como id', () => {
         expect(summarizeDecision('shape', { surfaceMaterial: 'inventado', layoutDensity: 'compact' }, text)).toBe('Compacta');
-        expect(summarizeDecision('layout', { navigationStyle: 'inventado' }, text)).toBe('');
+        expect(summarizeDecision('bars', { navigationStyle: 'inventado' }, text)).toBe('');
         expect(summarizeDecision('components', { btnStyleType: 'inventado', inputBorderType: 'dashed' }, text)).toBe('tracejado');
     });
 
@@ -38,7 +41,7 @@ describe('decisionSummary', () => {
         const translate = (key: LibraryTextKey, vars?: Record<string, string | number>): string =>
             Object.entries(vars ?? {}).reduce((out, [name, value]) => out.split(`{${name}}`).join(String(value)), LIBRARY_TEXT_CATALOG[key][language]);
 
-        const lines = [summarizeDecision('shape', draft, translate), summarizeDecision('components', draft, translate), summarizeDecision('layout', draft, translate)];
+        const lines = [summarizeDecision('shape', draft, translate), summarizeDecision('components', draft, translate), summarizeDecision('bars', draft, translate), summarizeDecision('layout', draft, translate)];
 
         lines.forEach((line) => {
             expect(line).not.toBe('');

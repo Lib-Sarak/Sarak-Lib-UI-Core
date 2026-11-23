@@ -186,9 +186,7 @@
     ],
     "databaseColumn": "structural",
     "schemaOrigin": "structural.ts",
-    "digitalTwins": [
-      "SarakContainer"
-    ],
+    "digitalTwins": [],
     "cssVariables": [
       "--sarak-global-flow-direction"
     ],
@@ -221,9 +219,7 @@
     ],
     "databaseColumn": "structural",
     "schemaOrigin": "structural.ts",
-    "digitalTwins": [
-      "SarakContainer"
-    ],
+    "digitalTwins": [],
     "cssVariables": [
       "--sarak-global-flow-align"
     ],
@@ -242,7 +238,7 @@
   },
   {
     "tokenId": "headerAlignment",
-    "name": "Alinhamento do Header",
+    "name": "Alinhamento do cabeçalho",
     "description": "Distribuição horizontal dos elementos no cabeçalho das seções.",
     "type": "select",
     "importance": 70,
@@ -258,9 +254,7 @@
     ],
     "databaseColumn": "structural",
     "schemaOrigin": "structural.ts",
-    "digitalTwins": [
-      "SarakHeader"
-    ],
+    "digitalTwins": [],
     "cssVariables": [
       "--sarak-header-alignment"
     ],
@@ -407,8 +401,8 @@
   },
   {
     "tokenId": "preferenceModePosition",
-    "name": "Preferência: Modo Claro/Escuro — Posição",
-    "description": "Onde a escolha de modo (claro/escuro/sistema) do usuário final aparece: não oferecida, no menu ⚙, ou fixa na barra.",
+    "name": "Preferência: Light mode ou Dark mode — Posição",
+    "description": "Onde a escolha de Light mode, Dark mode ou do sistema do usuário final aparece: não oferecida, no menu ⚙, ou fixa na barra.",
     "type": "select",
     "importance": 80,
     "categories": [
@@ -533,6 +527,37 @@
     ]
   },
   {
+    "tokenId": "preferenceNavCollapsePositionTopbar",
+    "name": "Preferência: Menu da Topbar — Posição",
+    "description": "Onde o botão de menu (≡) que compacta a Topbar aparece: não oferecida, no menu ⚙, ou fixa na barra.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "chrome-composition"
+    ],
+    "tags": [
+      "preferencias",
+      "colapso",
+      "barra"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "preferences.ts",
+    "digitalTwins": [
+      "SarakAppChrome"
+    ],
+    "cssVariables": [
+      "--sarak-preference-nav-collapse-position-topbar"
+    ],
+    "allowedValues": [
+      "off",
+      "menu",
+      "pinned"
+    ],
+    "relatedTokens": [
+      "preferenceNavCollapsePosition"
+    ]
+  },
+  {
     "tokenId": "preferenceLanguagePosition",
     "name": "Preferência: Idioma — Posição",
     "description": "Onde a escolha de idioma do usuário final aparece: não oferecida, no menu ⚙, ou fixa na barra.",
@@ -561,6 +586,72 @@
     ],
     "relatedTokens": [
       "preferenceModePosition"
+    ]
+  },
+  {
+    "tokenId": "preferenceFontSizeReduction",
+    "name": "Tamanho da Fonte: Quanto o P Reduz",
+    "description": "Quantos pixels a opção P do usuário final tira do tamanho global das fontes (`bodySize`).",
+    "type": "slider",
+    "importance": 80,
+    "categories": [
+      "chrome-composition"
+    ],
+    "tags": [
+      "preferencias",
+      "fonte",
+      "barra"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "preferences.ts",
+    "digitalTwins": [
+      "SarakAppChrome"
+    ],
+    "cssVariables": [
+      "--sarak-preference-font-size-reduction"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 6,
+      "step": 1
+    },
+    "relatedTokens": [
+      "preferenceFontSizeIncrease",
+      "preferenceFontSizePosition",
+      "bodySize"
+    ]
+  },
+  {
+    "tokenId": "preferenceFontSizeIncrease",
+    "name": "Tamanho da Fonte: Quanto o G Aumenta",
+    "description": "Quantos pixels a opção G do usuário final soma ao tamanho global das fontes (`bodySize`).",
+    "type": "slider",
+    "importance": 80,
+    "categories": [
+      "chrome-composition"
+    ],
+    "tags": [
+      "preferencias",
+      "fonte",
+      "barra"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "preferences.ts",
+    "digitalTwins": [
+      "SarakAppChrome"
+    ],
+    "cssVariables": [
+      "--sarak-preference-font-size-increase"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 6,
+      "step": 1
+    },
+    "relatedTokens": [
+      "preferenceFontSizeReduction",
+      "preferenceFontSizePosition",
+      "bodySize"
     ]
   }
 ]

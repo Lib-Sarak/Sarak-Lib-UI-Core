@@ -71,6 +71,9 @@ export const blueprintProtocolTheme: SarakThemePreset = {
             "topbarTone": "neutral",
             "sidebarBackgroundStyle": "texture",
             "sidebarActiveItemStyle": "outline",
+            "sidebarActiveGlass": "on",
+        "brandDisplay": "both",
+        "userAvatarStyle": "initials",
             "sidebarItemDensity": "compact",
             "sidebarIconSize": 16,
             "topbarBorderWidth": 1,
@@ -293,8 +296,6 @@ export const blueprintProtocolTheme: SarakThemePreset = {
             "switchBackdropBlur": 4,
             // o azul de planta técnica é o fundo do tema; a neutra da paleta é quase preta
             "surfaceColor": "#101622",
-            "colorDepth": 1,
-            "colorVariation": 1,
             // o azul de planta técnica é o fundo do tema; a neutra da paleta é quase preta
             "cardBackgroundColor": "#24466f",
             "chartGridOpacity": 0.1,

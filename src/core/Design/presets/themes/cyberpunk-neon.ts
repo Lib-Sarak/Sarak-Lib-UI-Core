@@ -50,6 +50,9 @@ export const cyberpunkneonTheme: SarakThemePreset = {
         topbarTone: 'neutral',
         sidebarBackgroundStyle: 'texture',
         sidebarActiveItemStyle: 'filled',
+        sidebarActiveGlass: 'on',
+        brandDisplay: 'both',
+        userAvatarStyle: 'initials',
         sidebarItemDensity: 'compact',
         sidebarIconSize: 20,
         topbarBorderWidth: 1,
@@ -206,8 +209,6 @@ export const cyberpunkneonTheme: SarakThemePreset = {
         switchStyleType: 'asymmetric',
         switchBackdropBlur: 0,
         // --- Paletas e Gradientes ---
-        colorDepth: 1,
-        colorVariation: 1,
         // --- Gráficos & Dados ---
         chartGridOpacity: 0.1,
         // area: leitura de tendência com preenchimento suave

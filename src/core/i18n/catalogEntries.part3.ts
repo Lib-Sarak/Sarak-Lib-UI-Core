@@ -133,7 +133,7 @@ export const CATALOG_PART_3 = {
         it: `Stile di navigazione`,
     },
     navigationStyleSidebarLabel: {
-        pt: `Lateral`, en: `Sidebar`, es: `Lateral`, fr: `Latérale`, de: `Seitenleiste`, it: `Laterale`,
+        pt: `Lateral`, en: `Sidebar`, es: `Lateral`, fr: `Latérale`, de: `Sidebar`, it: `Laterale`,
     },
     navigationStyleTopbarLabel: {
         pt: `Topo`, en: `Top`, es: `Superior`, fr: `Haut`, de: `Oben`, it: `Alto`,

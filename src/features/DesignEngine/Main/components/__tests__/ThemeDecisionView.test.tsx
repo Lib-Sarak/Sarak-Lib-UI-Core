@@ -4,6 +4,7 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import SarakUIProvider from '../../../../../core/Provider/SarakUIProvider';
 import { ThemeDecisionView } from '../ThemeDecisionView';
+import { ForceOpenSections } from '../CollapsibleSection';
 import type { DecisionOptionsContext } from '../ThemeDecisionOptions';
 import { buildDecisionContext } from '../../../utils/decisionContext';
 import { buildTokenIndex, getDecision } from '../../../utils/decisions';
@@ -16,6 +17,7 @@ const options = { sarak: {}, draft: {}, updateDraft: vi.fn(), catalogMap: new Ma
 
 const renderView = (decisionId: string, focusTokenId?: string) => render(
     <SarakUIProvider>
+        <ForceOpenSections.Provider value>
         <ThemeDecisionView
             decision={getDecision(decisionId)!}
             decisionContext={decisionContext}
@@ -23,6 +25,7 @@ const renderView = (decisionId: string, focusTokenId?: string) => render(
             focusTokenId={focusTokenId}
             focusLocation={focusTokenId ? tokenIndex.get(focusTokenId) : undefined}
         />
+        </ForceOpenSections.Provider>
     </SarakUIProvider>,
 );
 
@@ -37,8 +40,8 @@ describe('ThemeDecisionView', () => {
         expect(screen.getByRole('button', { name: /Ajuste fino/ })).toHaveAttribute('aria-expanded', 'false');
     });
 
-    it('a decisão Layout responde às cinco perguntas da barra, cada uma com a amostra real', () => {
-        renderView('layout');
+    it('a decisão Barras responde às cinco perguntas da barra, cada uma com a amostra real', () => {
+        renderView('bars');
 
         ['Onde fica a barra', 'Como é a barra', 'O que aparece na barra', 'Marca', 'Comportamento da barra'].forEach((name) => {
             const region = screen.getByRole('region', { name });
@@ -49,10 +52,10 @@ describe('ThemeDecisionView', () => {
     });
 
     it('a pergunta "O que aparece" põe os controles em linguagem do usuário', () => {
-        renderView('layout');
+        renderView('bars');
 
         const what = screen.getByRole('region', { name: 'O que aparece na barra' });
-        expect(what.querySelectorAll('[data-token-row]')).toHaveLength(8);
+        expect(what.querySelectorAll('[data-token-row]')).toHaveLength(12); // os oito widgets, o ≡ do topo, o avatar do usuário e os dois degraus de P e G
     });
 
     it('as outras decisões não ganham pergunta nem amostra de barra', () => {

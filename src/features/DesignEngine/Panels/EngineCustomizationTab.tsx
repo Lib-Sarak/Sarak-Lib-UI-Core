@@ -152,7 +152,7 @@ export const EngineCustomizationTab: React.FC = () => {
                 <div className="p-4 rounded-2xl bg-[var(--theme-primary)]/5 border border-[var(--theme-primary)]/10 flex items-start gap-4">
                     <Sparkles className="w-5 h-5 text-[var(--theme-primary)] shrink-0 mt-1" />
                     <p className="text-2xs text-theme-text/40 leading-relaxed uppercase font-medium">
-                        As cores e estilos são sincronizados dinamicamente com o Sarak Design Engine v7.5.
+                        As cores e estilos são sincronizados dinamicamente com o motor de design v7.5.
                     </p>
                 </div>
             </Section>

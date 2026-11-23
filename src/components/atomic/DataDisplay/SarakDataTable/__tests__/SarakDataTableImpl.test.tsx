@@ -264,3 +264,4 @@ describe('Spec 40.2 — SarakDataTable: contenção do scroll', () => {
         expect(container.querySelector('[data-sarak-datacards="true"]')).toBeNull();
     });
 });
+

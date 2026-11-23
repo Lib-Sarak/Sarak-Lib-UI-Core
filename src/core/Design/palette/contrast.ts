@@ -2,7 +2,7 @@ import { parseToRgba } from '../../Provider/utils/color-engine';
 import { pickOnColor } from '../../Provider/utils/on-color';
 import { deriveBarVeils } from './bar-veil';
 import { rgbToHex } from './color-space';
-import { MIX_SOURCE_SHARE, type ContrastPair } from './contrast-pairs';
+import { GRADIENT_LIGHT_COLOR, GRADIENT_LIGHT_ID, MIX_SOURCE_SHARE, type ContrastPair } from './contrast-pairs';
 import { findMinimalShift, SHIFT_CONTRAST_GUARD, type ShiftResult } from './contrast-shift';
 import { PALETTE_LIGHTNESS_SCALE } from './scale';
 import { DEFAULT_PALETTE_PLAN, type PalettePlan } from './tone-plan';
@@ -49,7 +49,7 @@ const resolveBackground = (chain: readonly string[], colors: PaletteColors): Rgb
     let background: RgbChannels = [base.r, base.g, base.b];
     for (let index = chain.length - 2; index >= 0; index -= 1) {
         const [tokenId, tint] = chain[index].split('@');
-        const color = parseToRgba(colors[tokenId]);
+        const color = parseToRgba(tokenId === GRADIENT_LIGHT_ID ? GRADIENT_LIGHT_COLOR : colors[tokenId]);
         const opacity = tint === undefined ? color.a : color.a * Number(tint);
         background = compositeOver({ ...color, a: opacity }, background);
     }
@@ -84,6 +84,13 @@ const getPairContrastRatio = (pair: ContrastPair, colors: PaletteColors): number
     return contrastRatio(mixed, background);
 };
 
+/** O mínimo do par: o piso dele e, se declara `beat`, o contraste do texto que ele não pode perder para. */
+const getPairMinimum = (pair: ContrastPair, colors: PaletteColors): number => {
+    if (!pair.beat) return pair.min;
+    const beaten = getPairContrastRatio({ fg: pair.beat.fg, bgChain: pair.beat.bgChain, min: pair.min }, colors);
+    return beaten === undefined ? pair.min : Math.max(pair.min, beaten);
+};
+
 const getAdjustableTokenId = (foreground: string): string | undefined => {
     if (foreground.startsWith('on:')) return undefined;
     return foreground.replace(/^(mix:)/, '');
@@ -95,12 +102,24 @@ const formatPaletteColor = (rgb: RgbColor, alpha?: number): string => {
     return `rgba(${channels.join(', ')}, ${Number(alpha.toFixed(3))})`;
 };
 
+/** O mínimo de cada par da busca, calculado uma vez: o texto de comparação não é o que a busca ajusta. */
+const searchMinimums = new WeakMap<CandidateSearch, number[]>();
+
+const getSearchMinimums = (search: CandidateSearch): number[] => {
+    const cached = searchMinimums.get(search);
+    if (cached) return cached;
+    const minimums = search.pairs.map((pair) => getPairMinimum(pair, search.colors));
+    searchMinimums.set(search, minimums);
+    return minimums;
+};
+
 const scoreColor = (color: string, search: CandidateSearch, guard: number = 0): { failedPairs: number; minimumRatio: number } => {
     const candidateColors = { ...search.colors, [search.tokenId]: color };
+    const minimums = getSearchMinimums(search);
     const ratios = search.pairs.map((pair) => getPairContrastRatio(pair, candidateColors));
     const resolvedRatios = ratios.filter((ratio): ratio is number => ratio !== undefined);
     return {
-        failedPairs: ratios.filter((ratio, index) => ratio === undefined || ratio < search.pairs[index].min + guard).length,
+        failedPairs: ratios.filter((ratio, index) => ratio === undefined || ratio < minimums[index] + guard).length,
         minimumRatio: resolvedRatios.length ? Math.min(...resolvedRatios) : 0,
     };
 };
@@ -212,7 +231,7 @@ export const correctPaletteAgainstDeclared = (
     const failing = getTextTokenIds(plan).filter((tokenId) => !(tokenId in declared) && plan.pairs.some((pair) => {
         if (getAdjustableTokenId(pair.fg) !== tokenId) return false;
         const ratio = getPairContrastRatio(pair, effective);
-        return ratio !== undefined && ratio < pair.min;
+        return ratio !== undefined && ratio < getPairMinimum(pair, effective);
     }));
     if (failing.length === 0) return { ...palette, ...veils };
     const corrected = correctTokenTones(effective, scales, mode, failing, plan);

@@ -1,78 +1,101 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { afterEach, describe, it, expect, vi } from 'vitest';
 import * as ComponentModule from '../PresetCard';
 import { PresetCard } from '../PresetCard';
 import { SarakThemePreset } from '../../../../../core/Design/presets/themes';
 
-describe('PresetCard', () => {
+// O cartão real do painel (`SarakTitleCard`) lê o design pelo contexto; sem o Provider, o teste entrega um design vazio.
+vi.mock('../../../../../core/Provider/SarakUIProvider', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('../../../../../core/Provider/SarakUIProvider')>()),
+    useSarakUI: () => ({ design: {}, isDrafting: false }),
+}));
+
+const themeOf = (patch: Record<string, unknown> = {}): SarakThemePreset => ({
+    id: 'meu-tema',
+    name: 'Meu Tema',
+    description: 'Um tema de teste.',
+    design: { primaryColor: '#ff0000', surfaceColor: '#101622', mode: 'dark', navigationStyle: 'sidebar' },
+    ...patch,
+} as unknown as SarakThemePreset);
+
+describe('PresetCard — a miniatura é o sistema real com o tema', () => {
+    afterEach(() => { vi.unstubAllGlobals(); });
+
     it('should be defined and export its contents without crashing', () => {
         expect(ComponentModule).toBeDefined();
     });
 
-    it('renders the selected theme preview', () => {
-        const dummyTheme = {
-            id: 'test',
-            name: 'Test Theme',
-            design: {
-                primaryColor: '#ff0000',
-                surfaceColor: '#000000',
-                mode: 'dark'
-            }
-        };
-        const { container } = render(
-            <PresetCard theme={dummyTheme as unknown as SarakThemePreset} currentMode="dark" onApply={() => {}} index={0} />
-        );
-        expect(container.querySelector('button')).toBeInTheDocument();
-        expect(container.querySelector('h3')).toHaveTextContent('Test Theme');
-        expect(container.querySelector('.h-48')).toBeInTheDocument();
+    it('é um botão só, com o id do tema em data-theme-id e o nome do tema como nome acessível', () => {
+        const { container } = render(<PresetCard theme={themeOf()} currentMode="dark" onApply={() => {}} />);
+        const button = screen.getByRole('button', { name: 'Meu Tema' });
+
+        // A miniatura é a tela real (com botões dentro), mas só um botão é da opção; o resto está escondido do leitor de tela.
+        expect(container.querySelectorAll('[data-theme-id]')).toHaveLength(1);
+        expect(button).toHaveAttribute('data-theme-id', 'meu-tema');
+        expect(container.querySelector('[data-option-tile] > div[class*="border-t"] h3')).toHaveTextContent('Meu Tema');
     });
 
-    it('a miniatura de tema usa a contraparte no modo efetivo', () => {
-        const theme = {
-            id: 'tema-claro',
-            name: 'Tema Claro',
-            design: { mode: 'dark', surfaceColor: '#101622' },
-            contraparte: { surfaceColor: '#ffffff' },
-        };
-        const { container } = render(
-            <PresetCard theme={theme as unknown as SarakThemePreset} currentMode="light" onApply={() => {}} index={0} />,
-        );
-        const previewSurface = container.querySelector('.h-48') as HTMLElement;
+    it('o selo de navegação não entra no nome acessível nem fica sobre o nome', () => {
+        render(<PresetCard theme={themeOf()} currentMode="dark" onApply={() => {}} />);
 
-        expect(previewSurface.style.backgroundColor).toBe('rgb(255, 255, 255)');
+        expect(screen.getByRole('button', { name: 'Meu Tema' })).toBeInTheDocument();
+        expect(screen.queryByText(/^sidebar$/i)).toBeNull();
     });
 
-    it('mantém o nome legível e permite que ele quebre em cartões estreitos', () => {
-        const theme = { id: 'tema-longo', name: 'Tema com nome comprido', design: { mode: 'dark' } };
-        const { container } = render(
-            <PresetCard theme={theme as unknown as SarakThemePreset} currentMode="dark" onApply={() => {}} index={0} />,
-        );
-        const themeName = container.querySelector('h3');
+    it('o nome é proporcional à miniatura: sem caixa alta e com quebra por palavra', () => {
+        const { container } = render(<PresetCard theme={themeOf({ name: 'Tema com nome comprido' })} currentMode="dark" onApply={() => {}} />);
+        const name = container.querySelector('[data-option-tile] > div[class*="border-t"] h3') as HTMLElement;
 
-        expect(themeName).toHaveClass('min-w-0', 'break-words', 'text-[var(--sarak-type-scale-caption,12px)]');
+        expect(name).toHaveClass('text-xs', 'break-words');
+        expect(name).not.toHaveClass('uppercase');
     });
 
-    it('cardShadowSpread é a OPACIDADE da sombra em % (o sentido do schema), não um desfoque em px', () => {
-        const theme = { id: 't', name: 'T', design: { primaryColor: '#ff0000', mode: 'dark', cardShadowSpread: 40 } };
-        const { container } = render(
-            <PresetCard theme={theme as unknown as SarakThemePreset} currentMode="dark" onApply={() => {}} index={0} />
-        );
-        const shadows = Array.from(container.querySelectorAll<HTMLElement>('[style]')).map((el) => el.style.boxShadow).filter(Boolean);
+    it('desenha o cromo real dentro do escopo do tema, escondido do leitor de tela', async () => {
+        const { container } = render(<PresetCard theme={themeOf()} currentMode="dark" onApply={() => {}} />);
+        const miniature = await waitFor(() => {
+            const node = container.querySelector('[data-testid="theme-miniature"]');
+            expect(node).not.toBeNull();
+            return node as HTMLElement;
+        });
 
-        expect(shadows.some((value) => value.includes('40%'))).toBe(true);
-        expect(shadows.some((value) => /(^|\s)40px/.test(value))).toBe(false);
+        expect(miniature.closest('.sarak-design-scope')).not.toBeNull();
+        expect(miniature.closest('[aria-hidden="true"]')).not.toBeNull();
     });
 
-    it('a textura grid desenha a grade com a cor de borda: nenhuma cor no lugar de posição de parada', () => {
-        const theme = { id: 't', name: 'T', design: { primaryColor: '#ff0000', mode: 'dark', cardTextureType: 'grid' } };
-        const { container } = render(
-            <PresetCard theme={theme as unknown as SarakThemePreset} currentMode="dark" onApply={() => {}} index={0} />
-        );
-        const layer = Array.from(container.querySelectorAll<HTMLElement>('[style]')).find((el) => el.style.backgroundImage.includes('linear-gradient'));
+    it('a miniatura usa o modo pedido (a contraparte quando o tema a tem)', async () => {
+        const theme = themeOf({ design: { mode: 'dark', surfaceColor: '#101622', navigationStyle: 'sidebar' }, contraparte: { surfaceColor: '#ffffff' } });
+        const { container } = render(<PresetCard theme={theme} currentMode="light" onApply={() => {}} />);
 
-        expect(layer, 'o gradiente é válido (o CSSOM o aceitou)').toBeDefined();
-        expect(layer!.getAttribute('style')).toMatch(/var\(--border-color,rgba\([^)]*\)\) var\(--sarak-border-width, 1px\), transparent/);
-        expect(layer!.getAttribute('style')).not.toMatch(/\) var\(--border-color/);
+        await waitFor(() => expect(container.querySelector('.sarak-design-scope')).toHaveClass('light'));
+    });
+
+    it('só desenha quando a opção entra na área visível, e só então resolve a paleta do tema', async () => {
+        let reads = 0;
+        const theme = themeOf();
+        Object.defineProperty(theme, 'contraparte', { get: () => { reads += 1; return undefined; }, enumerable: true });
+        let reveal: () => void = () => {};
+        vi.stubGlobal('IntersectionObserver', class {
+            constructor(callback: IntersectionObserverCallback) { reveal = () => callback([{ isIntersecting: true } as IntersectionObserverEntry], this as unknown as IntersectionObserver); }
+            observe(): void {}
+            disconnect(): void {}
+        });
+        const { container } = render(<PresetCard theme={theme} currentMode="dark" onApply={() => {}} />);
+
+        expect(container.querySelector('[data-sx-lazy="pending"]')).toBeInTheDocument();
+        expect(container.querySelector('[data-testid="theme-miniature"]')).toBeNull();
+        expect(reads).toBe(0);
+
+        reveal();
+        await waitFor(() => expect(container.querySelector('[data-testid="theme-miniature"]')).not.toBeNull());
+        expect(reads).toBeGreaterThan(0);
+    });
+
+    it('escolher chama onApply', () => {
+        const onApply = vi.fn();
+        render(<PresetCard theme={themeOf()} currentMode="dark" onApply={onApply} />);
+        fireEvent.click(screen.getByRole('button', { name: 'Meu Tema' }));
+
+        expect(onApply).toHaveBeenCalledTimes(1);
     });
 });

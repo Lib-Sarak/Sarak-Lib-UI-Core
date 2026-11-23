@@ -27,7 +27,7 @@
   {
     "tokenId": "pageTransitionType",
     "name": "Transição de Página",
-    "description": "Efeito padrão aplicado na troca de rotas ou páginas completas do Sarak.",
+    "description": "Efeito padrão aplicado na troca de rotas ou páginas completas.",
     "type": "select",
     "importance": 85,
     "categories": [

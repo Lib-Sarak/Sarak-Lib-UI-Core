@@ -1,6 +1,7 @@
 import React from 'react';
 import { type SarakShellNavItem } from '../atomic/Navigation/SarakShellNav';
 import { useNavigationStyle } from '../../core/Provider/useNavigationStyle';
+import { useGuardedNavigate } from '../../core/Provider/navigationGuard';
 import { useChromeRootBackground } from './chrome/useChromeRootBackground';
 import { useSarakDevice } from '../../core/Provider/DeviceProvider';
 import type { SarakShellUser } from '../atomic/Navigation/SarakShellUserWidget';
@@ -8,7 +9,7 @@ import { SarakAppChromeMobile } from './SarakAppChromeMobile';
 import { ChromeSidebarBody } from './chrome/ChromeSidebarBody';
 import { ChromeTopbarBody } from './chrome/ChromeTopbarBody';
 import type { SarakChromeNotification } from './chrome/ChromeNotificationsWidget';
-import type { SarakNavItem } from './chrome/navItem';
+import { findActiveNavItemHref, toShellNavItems, type SarakNavItem } from './chrome/navItem';
 import type { SarakChromeWidgets } from './chrome/chromeWidgets';
 
 /** Contrato de navegação estruturada com ícone first-class (Spec 40.2 — L1). */
@@ -128,8 +129,8 @@ export interface SarakAppChromeProps {
 }
 
 /**
- * Cromo apresentacional. Renderiza topbar OU sidebar (por `navigationStyle`) + a área
- * de conteúdo, tudo pintado pelos tokens de navegação (Spec 18) que o Design Engine emite.
+ * Cromo apresentacional: topbar OU sidebar (por `navigationStyle`) + área de conteúdo, pintados pelos tokens de navegação (Spec 18).
+ * @iconNameProp navItems[].icon
  */
 export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     children,
@@ -138,7 +139,7 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     navItems,
     nav = [],
     activeRoute,
-    onNavigate,
+    onNavigate: hostNavigate,
     navigationStyle = 'auto',
     topbarActions,
     logo,
@@ -158,6 +159,9 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     className = '',
     style,
 }) => {
+    // Toda porta do cromo que navega (lateral, topo, barra inferior, busca, drawer) passa por aqui:
+    // com trabalho a perder (rascunho do painel), o guarda pergunta antes de chamar o `onNavigate` do host.
+    const onNavigate = useGuardedNavigate(hostNavigate);
     const designNav = useNavigationStyle();
     const device = useSarakDevice();
     const resolved = navigationStyle === 'auto' ? (designNav === 'topbar' ? 'topbar' : 'sidebar') : navigationStyle;
@@ -173,14 +177,10 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     // `navItems` (Spec 40.2 — L1) tem precedência: mapeia o modelo estruturado
     // (id/href/active + ícone + `category`) para o contrato do `SarakShellNav`,
     // reusando o mesmo renderizador de ícone (`SarakIcon`) + `aria-current` + foco por
-    // teclado + agrupamento por categoria. A rota ativa vem do item marcado `active`;
-    // sem `navItems`, cai no `nav`/`activeRoute`.
-    const effectiveNav: SarakShellNavItem[] = navItems
-        ? navItems.map(({ label, href, icon, category, disabled, badge, target }) => ({ label, route: href, icon, category, disabled, badge, target }))
-        : nav;
-    const effectiveActiveRoute = navItems
-        ? navItems.find((item) => item.active)?.href ?? activeRoute
-        : activeRoute;
+    // teclado + agrupamento por categoria + sub-abas. A rota ativa vem do item (ou filho)
+    // marcado `active`; sem `navItems`, cai no `nav`/`activeRoute`.
+    const effectiveNav: SarakShellNavItem[] = navItems ? toShellNavItems(navItems) : nav;
+    const effectiveActiveRoute = navItems ? findActiveNavItemHref(navItems) ?? activeRoute : activeRoute;
 
     // `topbarActions` é o nome legado do slot `topbarEnd` (Spec 48 — L1): mesmo lugar,
     // mesma semântica. Preservado sem breaking change; `topbarEnd` tem precedência.

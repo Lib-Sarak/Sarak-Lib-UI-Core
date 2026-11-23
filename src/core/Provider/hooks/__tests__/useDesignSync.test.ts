@@ -86,14 +86,17 @@ describe('useDesignSync', () => {
         const setDesign = vi.fn();
         const hasHydratedRef = { current: false };
         const themeA: SarakThemeEntry = { id: 'a', design: { primaryColor: '#000000' } };
+        // O aviso é do guarda compartilhado (um por id, somando as portas): o hook só o aciona.
+        const themeIdGuard = { isUnknownTheme: () => true, isRemovedTheme: () => true, isSavedThemeRemoved: () => false, warnUnknownThemeOnce: vi.fn() };
 
         expect(() =>
-            renderHook(() => useDesignSync(true, 'tema-removido-do-catalogo', [themeA], 'test-key', hasHydratedRef, setDesign)),
+            renderHook(() => useDesignSync(true, 'tema-removido-do-catalogo', [themeA], 'test-key', hasHydratedRef, setDesign, undefined, false, themeIdGuard)),
         ).not.toThrow();
 
         expect(setDesign).toHaveBeenCalledTimes(1);
-        expect(warnSpy).toHaveBeenCalledTimes(1);
-        expect(warnSpy.mock.calls[0][0]).toContain('tema-removido-do-catalogo');
+        expect(themeIdGuard.warnUnknownThemeOnce).toHaveBeenCalledTimes(1);
+        expect(themeIdGuard.warnUnknownThemeOnce).toHaveBeenCalledWith('tema-removido-do-catalogo');
+        expect(warnSpy).not.toHaveBeenCalled();
 
         const updater = setDesign.mock.calls[0][0] as (prev: Record<string, unknown>) => Record<string, unknown>;
         // O usuário estava no modo ESCURO — a referência aplicada tem de ser a

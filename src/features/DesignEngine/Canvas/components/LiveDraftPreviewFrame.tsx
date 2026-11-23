@@ -1,5 +1,6 @@
 import React from 'react';
 import { Monitor } from 'lucide-react';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { getPreviewLayoutPreset } from '../panelResponsive.presets';
 
 interface LiveDraftPreviewFrameProps {
@@ -51,20 +52,26 @@ const PreviewDeviceHardware = (props: {
 
 const PreviewInspectionButton = (
     props: Pick<LiveDraftPreviewFrameProps, 'isInspecting' | 'setIsInspecting'>,
-): React.ReactElement => (
-    <button
-        onClick={() => props.setIsInspecting(!props.isInspecting)}
-        className={'absolute top-4 right-4 z-[9999] p-2 rounded-full backdrop-blur-md border shadow-2xl transition-all ' + (
-            props.isInspecting
-                ? 'bg-[var(--theme-primary)] text-theme-on-primary border-[var(--theme-primary)] animate-pulse scale-110'
-                : 'bg-theme-body/40 border-theme-text/10 text-theme-text/50 hover:text-theme-on-primary hover:bg-theme-body/60 opacity-0 group-hover:opacity-100'
-        )}
-        style={props.isInspecting ? { backgroundColor: 'var(--theme-primary, #19e3f0)', borderColor: 'var(--theme-primary, #19e3f0)' } : {}}
-        title="Modo de Inspeção (Selecionar elemento)"
-    >
-        <Monitor size={16} />
-    </button>
-);
+): React.ReactElement => {
+    const text = useLibraryText();
+    const inspectLabel = text('previewInspect');
+
+    return (
+        <button
+            aria-label={inspectLabel}
+            onClick={() => props.setIsInspecting(!props.isInspecting)}
+            className={'absolute top-4 right-4 z-[9999] p-2 rounded-full backdrop-blur-md border shadow-2xl transition-all ' + (
+                props.isInspecting
+                    ? 'bg-[var(--theme-primary)] text-theme-on-primary border-[var(--theme-primary)] animate-pulse scale-110'
+                    : 'bg-theme-body/40 border-theme-text/10 text-[var(--theme-primary)] hover:bg-theme-body/60 opacity-0 group-hover:opacity-100'
+            )}
+            style={props.isInspecting ? { backgroundColor: 'var(--theme-primary, #19e3f0)', borderColor: 'var(--theme-primary, #19e3f0)' } : {}}
+            title="Modo de Inspeção (Selecionar elemento)"
+        >
+            <Monitor size={16} />
+        </button>
+    );
+};
 
 const PreviewInspectionOverlay = (props: { isInspecting: boolean }): React.ReactElement | null => {
     if (!props.isInspecting) return null;
@@ -83,10 +90,6 @@ const PreviewRenderedContent = (
     props: Pick<LiveDraftPreviewFrameProps, 'previewDevice' | 'children'>,
 ): React.ReactElement => (
     <div className={'relative sarak-device-' + props.previewDevice + ' min-h-0 w-full flex-1'}>
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.02]">
-            {/* sarak-allow-hardcode: marca d'água decorativa da pré-visualização; nenhum token de escala chega a 10rem */}
-            <span className="text-[10rem] font-black text-theme-text uppercase tracking-[var(--sarak-tracking-tight,0.2em)] -rotate-12 select-none">SARAK TWIN</span>
-        </div>
         {props.children}
     </div>
 );
@@ -106,16 +109,14 @@ export const LiveDraftPreviewFrame = (props: LiveDraftPreviewFrameProps): React.
 
     return (
         <div data-testid="live-preview-frame" className={frameClassName} style={layoutPreset.frameStyle}>
+            {/* O botão é do painel, não da tela de amostra: fica no canto da moldura, fora do aparelho (tablet e celular). */}
+            <PreviewInspectionButton isInspecting={props.isInspecting} setIsInspecting={props.setIsInspecting} />
             <div
                 data-testid="device-viewport"
                 className={'relative flex shrink-0 flex-col max-w-full ' + props.getDeviceFrameStyles()}
                 style={deviceViewportStyle}
             >
                 <PreviewDeviceHardware previewDevice={props.previewDevice} />
-                <PreviewInspectionButton
-                    isInspecting={props.isInspecting}
-                    setIsInspecting={props.setIsInspecting}
-                />
                 <PreviewInspectionOverlay isInspecting={props.isInspecting} />
                 <PreviewRenderedContent previewDevice={props.previewDevice}>
                     {props.children}

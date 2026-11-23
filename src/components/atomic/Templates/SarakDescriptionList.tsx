@@ -11,6 +11,7 @@ export interface SarakDescriptionListProps extends Omit<React.HTMLAttributes<HTM
     items: SarakDescriptionListItem[];
 }
 
+/** @replacesElement dl */
 export const SarakDescriptionList = ({ items, className, style, ...props }: SarakDescriptionListProps): React.ReactElement => {
     // SarakGrid exposes div attributes even when its polymorphic `as` renders a description list.
     const gridProps = props as React.HTMLAttributes<HTMLDivElement>;

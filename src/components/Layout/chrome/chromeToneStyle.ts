@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import type { NavigationBarTone } from '../../../core/Provider/useNavigationAppearance';
+import { resolveChromeToneContrastColors } from './chromeToneContrast';
 
 type Bar = 'sidebar' | 'topbar';
 
@@ -27,33 +28,44 @@ const BAR_TOKENS: Record<Bar, { text: string; strong: string; border: string }> 
 };
 
 /**
- * Num papel contrastante a barra refaz, só para os seus descendentes, as variáveis de texto, ícone e borda do corpo a
- * partir dos tokens da própria barra — que a paleta calculou legíveis sobre o fundo dela. Assim os widgets que não
- * conhecem a barra (preferências, usuário, busca) acompanham o fundo sem cada um ganhar um token novo; o texto do item
- * ativo (`navItemActiveColor`, a ênfase global) também vira o texto forte da barra, que é o que a paleta garante sobre
- * o fundo ativo dela. Num papel neutro ou de superfície devolve vazio: nada muda.
+ * Num papel contrastante, a barra refaz as variáveis dos widgets com a cor forte calculada para a pior parada e mede o
+ * véu ativo com a opacidade declarada pela paleta. No papel de superfície, só corrige o texto forte quando o fundo autorado
+ * pede. Num papel neutro ou sem cores literais resolvíveis, mantém o estilo de sempre.
  */
-export const resolveChromeToneStyle = (tone: NavigationBarTone, bar: Bar): CSSProperties => {
-    if (!CONTRASTING_TONES.includes(tone)) return {};
+export const resolveChromeToneStyle = (tone: NavigationBarTone, bar: Bar, design?: Record<string, unknown>): CSSProperties => {
+    if (tone === 'neutral') return {};
     const { text, strong, border } = BAR_TOKENS[bar];
-    const veil = `color-mix(in srgb, ${strong} 16%, transparent)`;
+    const contrastColors = resolveChromeToneContrastColors(tone, bar, design);
+    const resolvedStrong = contrastColors.strongTextColor ?? strong;
+    if (!CONTRASTING_TONES.includes(tone)) {
+        if (!contrastColors.strongTextColor) return {};
+        return {
+            [`--sarak-${bar}-item-hover-text-color`]: resolvedStrong,
+            '--sarak-nav-active-color': resolvedStrong,
+            // A cor forte também pinta o fundo do controle escolhido (Lateral, P/M/G): o texto sobre ele é o fundo da barra, o par oposto, e não o texto do botão primário.
+            '--sarak-on-nav-active': BAR_BACKGROUND[bar],
+            '--theme-title': resolvedStrong,
+        } as CSSProperties;
+    }
+    const veil = `color-mix(in srgb, ${resolvedStrong} 16%, transparent)`;
     const style: Record<string, string> = {
         color: text,
-        '--sarak-nav-active-color': strong,
+        '--sarak-nav-active-color': resolvedStrong,
         // O item ativo preenchido (`*ActiveItemStyle: filled`) pinta o fundo com a cor acima; o texto sobre ele é o fundo da barra, o par que a paleta garante.
         '--sarak-on-nav-active': BAR_BACKGROUND[bar],
         '--text-muted': text,
         '--theme-muted': text,
-        '--text-main': strong,
-        '--sarak-text-main': strong,
-        '--theme-text-primary': strong,
+        '--text-main': resolvedStrong,
+        '--sarak-text-main': resolvedStrong,
+        '--theme-text-primary': resolvedStrong,
+        [`--sarak-${bar}-item-hover-text-color`]: resolvedStrong,
         // O nome, o avatar, o seletor de idioma e a engrenagem (o botão fantasma lê `--sarak-primary-color`) leem a cor primária e os títulos do corpo: dentro da barra
         // contrastante eles seguem o texto forte dela, e o texto sobre a cor primária (idioma ativo) segue o fundo da barra.
-        '--theme-primary': strong,
+        '--theme-primary': resolvedStrong,
         // O botão de sair (variante mini: topbar e lateral recolhida) mistura o vermelho de erro com `--sarak-on-surface`.
-        '--sarak-on-surface': strong,
-        '--sarak-primary-color': strong,
-        '--theme-title': strong,
+        '--sarak-on-surface': resolvedStrong,
+        '--sarak-primary-color': resolvedStrong,
+        '--theme-title': resolvedStrong,
         '--theme-subtitle': text,
         '--sarak-subtitle-color': text,
         '--theme-on-primary': BAR_BACKGROUND[bar],
@@ -65,9 +77,12 @@ export const resolveChromeToneStyle = (tone: NavigationBarTone, bar: Bar): CSSPr
         '--color-theme-card': veil,
         '--sarak-card-bg': veil,
         '--sarak-input-bg': veil,
-        '--sarak-input-text-color': strong,
+        '--sarak-input-text-color': resolvedStrong,
         '--sarak-input-icon-color': text,
         '--sarak-input-border-color': border,
     };
+    if (contrastColors.idleTextColor) style[`--sarak-${bar}-item-text-color`] = contrastColors.idleTextColor;
+    if (contrastColors.activeBackgroundColor) style[`--sarak-${bar}-active-color`] = contrastColors.activeBackgroundColor;
+    if (contrastColors.logoutTextColor) Object.assign(style, { '--sarak-shell-logout-text-color': contrastColors.logoutTextColor });
     return style as CSSProperties;
 };

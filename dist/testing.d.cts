@@ -18,10 +18,16 @@ declare const renderWithSarak: (ui: React__default.ReactElement, { provider, ...
  * A lib real com os dublês dos três componentes que não rodam no jsdom. Para o `vi.mock` do
  * consumidor: `vi.mock('@sarak/lib-ui-core', () => createSarakKitMock())`. `overrides`
  * troca ou acrescenta qualquer nome, inclusive os dublês.
+ *
+ * @replacesPiece SarakDataTable SarakChartEngine SarakPDFViewer
  */
 declare const createSarakKitMock: (overrides?: Record<string, unknown>) => Promise<Record<string, unknown>>;
 
 declare const installSarakTestEnvironment: (target?: Window | undefined) => void;
+/**
+ * Para o `onConsoleLog` do vitest: descarta o aviso de CSS do jsdom e o "[Sarak] CSS não detectado" do modo app.
+ * O aviso do modo embarcado ("CSS escopado não detectado") e qualquer outro log continuam passando.
+ */
 declare const filterSarakTestConsoleLog: (log: string) => false | undefined;
 
 export { type SarakRenderOptions, type SarakRenderProviderProps, createSarakKitMock, filterSarakTestConsoleLog, installSarakTestEnvironment, renderWithSarak };

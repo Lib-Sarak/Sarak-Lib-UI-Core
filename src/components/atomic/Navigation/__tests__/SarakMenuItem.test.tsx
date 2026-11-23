@@ -160,6 +160,14 @@ describe('SarakMenuItem', () => {
         expect(screen.getByRole('link', { name: 'Projetos 4' })).toBeInTheDocument();
         expect(screen.getByText('4')).toBeInTheDocument();
     });
+
+    it('o respiro do selo na lista vertical é o da lista, e na horizontal o do espaçamento do layout', () => {
+        const { unmount } = render(<SarakMenuItem label="Projetos" href="/projetos" badge={4} orientation="vertical" />);
+        expect(screen.getByText('4').style.paddingInline).toContain('--sarak-sidebar-width');
+        unmount();
+        render(<SarakMenuItem label="Aba" href="/aba" badge={4} orientation="horizontal" />);
+        expect(screen.getByText('4').style.paddingInline).toBe('var(--sarak-layout-gap-sm, 8px)');
+    });
 });
 
 describe('SarakMenuItem — navegação com clique do meio', () => {
@@ -236,8 +244,39 @@ describe('SarakMenuItem — tratamento ativo, densidade e ícones por barra', ()
         if (markerVisible) expect(item.querySelector('[aria-hidden="true"]')).not.toBeNull();
         else expect(item.querySelector('[aria-hidden="true"]')).toBeNull();
         if (background !== undefined) expect(item.style.backgroundColor).toBe(background);
+        expect(item.style.outline).toBe('');
         if (style === 'filled') expect(item.style.color).toBe('var(--sarak-on-nav-active, #020617)');
         if (style === 'outline') expect(item.style.border).toBe('var(--sarak-border-width, 1px) solid var(--sarak-nav-active-color, #19e3f0)');
+    });
+
+    it('a pílula ativa ganha contorno pelo texto quando a barra tem tom contrastante', () => {
+        render(
+            <DesignOverrideContext.Provider value={{ sidebarTone: 'primary', sidebarActiveItemStyle: 'pill' } as never}>
+                <SarakMenuItem label="Módulo" orientation="vertical" active />
+            </DesignOverrideContext.Provider>,
+        );
+        expect(screen.getByRole('button', { name: 'Módulo' }).style.outline)
+            .toBe('var(--sarak-border-width, 1px) solid var(--sarak-nav-active-color, #19e3f0)');
+    });
+
+    it.each(['bar', 'pill', 'underline', 'filled', 'outline'] as const)('vidro ligado (padrão) põe o brilho interno no ativo vertical com o estilo %s', (style) => {
+        render(
+            <DesignOverrideContext.Provider value={{ sidebarActiveItemStyle: style } as never}>
+                <SarakMenuItem label="Módulo" orientation="vertical" active />
+            </DesignOverrideContext.Provider>,
+        );
+        expect(screen.getByRole('button', { name: 'Módulo' }).style.boxShadow).toContain('inset');
+    });
+
+    it('vidro desligado tira o brilho; inativo e horizontal nunca têm', () => {
+        render(
+            <DesignOverrideContext.Provider value={{ sidebarActiveGlass: 'off' } as never}>
+                <SarakMenuItem label="Desligado" orientation="vertical" active />
+            </DesignOverrideContext.Provider>,
+        );
+        render(<SarakMenuItem label="Inativo" orientation="vertical" />);
+        render(<SarakMenuItem label="Aba" orientation="horizontal" active />);
+        for (const name of ['Desligado', 'Inativo', 'Aba']) expect(screen.getByRole('button', { name }).style.boxShadow).toBe('');
     });
 
     it('densidade compacta troca o respiro sem perder o piso de toque e os ícones leem tamanho/cor', () => {

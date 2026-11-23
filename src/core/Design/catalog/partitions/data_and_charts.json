@@ -94,8 +94,8 @@
   },
   {
     "tokenId": "chartType",
-    "name": "Tipo de Gráfico",
-    "description": "Formato de renderização padrão para blocos genéricos de visualização de dados.",
+    "name": "Tipo padrão (quando o componente não define)",
+    "description": "Tipo de gráfico usado quando o componente não recebe um `type` próprio; o estilo (traço, curva e grade) é escolhido à parte.",
     "type": "select",
     "importance": 80,
     "categories": [

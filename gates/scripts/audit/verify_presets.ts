@@ -8,11 +8,7 @@
 // -------------------------------------------------------------------------
 import { getScaffold } from '../../../src/core/Design/master-map.ts';
 import { SARAK_ALL_THEMES } from '../../../src/core/Design/presets/themes/all.ts';
-import { CARD_PRESETS } from '../../../src/core/Design/presets/components/cards.ts';
-import { BUTTON_PRESETS } from '../../../src/core/Design/presets/components/buttons.ts';
-import { INPUT_PRESETS } from '../../../src/core/Design/presets/components/inputs.ts';
-import { ATMOSPHERE_PRESETS } from '../../../src/core/Design/presets/components/atmosphere.ts';
-import { TYPOGRAPHY_PRESETS } from '../../../src/core/Design/presets/components/typography.ts';
+import { PRESET_GROUPS } from '../../../src/core/Design/presets/components/registry.ts';
 import { PAYLOAD_EXTRA_KEYS } from '../../../src/core/Provider/payloadExtraKeys.ts';
 
 // ==========================================================================
@@ -48,11 +44,17 @@ export function findOrphanKeys(design: Record<string, unknown>, scaffold: Record
 export function collect(): AuditableItem[] {
     const items: AuditableItem[] = [];
     SARAK_ALL_THEMES.forEach(t => items.push({ id: t.id, label: `Tema: ${t.name}`, design: t.design }));
-    CARD_PRESETS.forEach(p => items.push({ id: p.id, label: `Preset Card: ${p.name}`, design: p.design }));
-    BUTTON_PRESETS.forEach(p => items.push({ id: p.id, label: `Preset Botão: ${p.name}`, design: p.design }));
-    INPUT_PRESETS.forEach(p => items.push({ id: p.id, label: `Preset Input: ${p.name}`, design: p.design }));
-    ATMOSPHERE_PRESETS.forEach(p => items.push({ id: p.id, label: `Preset Atmosfera: ${p.name}`, design: p.design }));
-    TYPOGRAPHY_PRESETS.forEach(p => items.push({ id: p.id, label: `Preset Tipografia: ${p.name}`, design: p.design }));
+    // Os presets vêm dos grupos do registro (o que o painel oferece), não de arquivos
+    // enumerados à mão: lista à mão deixava de fora todo grupo novo. Preset em dois
+    // grupos é auditado uma vez, com o rótulo do primeiro.
+    const seen = new Set<string>();
+    for (const group of PRESET_GROUPS) {
+        for (const p of group.presets) {
+            if (seen.has(p.id)) continue;
+            seen.add(p.id);
+            items.push({ id: p.id, label: `Preset ${group.id}: ${p.name}`, design: p.design as Record<string, unknown> });
+        }
+    }
     return items;
 }
 

@@ -1,8 +1,10 @@
 import DecisionConfig from '../config/design-decisions.json';
 import type { SarakDesignToken } from '../../../core/Design/types';
 import type { LibraryTextKey } from '../../../core/i18n/catalog';
+import { inScope, isBarToken } from './barScope';
+import { regroupByQuestion } from './regroupByQuestion';
 
-export type DecisionId = 'theme' | 'colors' | 'fonts' | 'shape' | 'components' | 'layout' | 'advanced';
+export type DecisionId = 'theme' | 'colors' | 'fonts' | 'shape' | 'components' | 'bars' | 'layout' | 'advanced';
 /** Um grupo de opções da decisão: os da tabela de `ThemeDecisionOptions` ou qualquer id do registro de presets. */
 export type OptionGroup = string;
 
@@ -13,6 +15,8 @@ export interface DecisionQuestionDef {
     tokens: string[];
     /** Regex (id do token) dos ajustes finos que pertencem a esta pergunta: no nível 3 eles saem sob o título dela, não sob a categoria do catálogo. */
     fineMatch?: string;
+    /** Um controle próprio que abre a pergunta, além dos tokens (hoje: o interruptor da troca lateral/topo pelo usuário). */
+    control?: 'navigationSwitch';
 }
 
 export interface DecisionDef {
@@ -25,6 +29,11 @@ export interface DecisionDef {
     optionSections: string[];
     /** O bloco global (preferências, barra de preferências e identidade) mora aqui. */
     includeGlobal?: boolean;
+    /**
+     * Quando dois decisões leem o mesmo pilar, qual parte dele é desta: `bars` fica só com o que as perguntas da decisão Barras
+     * reclamam (citado ou por `fineMatch`), `notBars` com o resto. Cada token aparece numa só das duas.
+     */
+    tokenScope?: 'bars' | 'notBars';
     /** Perguntas do nível 2, cada uma com amostra real; um token citado aqui sai do ajuste fino e do bloco global. */
     questions?: DecisionQuestionDef[];
     /** Fica fora da coluna: só o menu Avançado abre. */
@@ -33,10 +42,17 @@ export interface DecisionDef {
     screen: string;
     /** As telas de amostra que já pertencem à decisão: abrir a decisão estando numa delas não troca a tela. */
     screens: string[];
+    /** A tela em que cada grupo de opções aparece: espiar uma opção do grupo leva a prévia até ela enquanto dura (spec 06 §6.4). Grupo ausente = a tela em que a prévia já está. */
+    groupScreens?: Record<string, string>;
 }
 
 export const DECISIONS = DecisionConfig as DecisionDef[];
+export { isBarToken };
 export const COLUMN_DECISIONS = DECISIONS.filter((decision) => !decision.menuOnly);
+
+/** A tela de amostra em que as opções do grupo aparecem, ou `undefined` quando a prévia pode ficar onde está. */
+export const peekScreenOf = (group: string): string | undefined =>
+    DECISIONS.find((decision) => decision.groups.includes(group))?.groupScreens?.[group];
 
 export const getDecision = (id: string): DecisionDef | undefined => DECISIONS.find((decision) => decision.id === id);
 
@@ -72,13 +88,16 @@ export interface DecisionQuestion {
     id: string;
     textKey: LibraryTextKey;
     tokens: SarakDesignToken[];
+    control?: DecisionQuestionDef['control'];
 }
 
 export interface DecisionLayers {
     /** Nível 2: as perguntas da decisão, na ordem do config. */
     questions: DecisionQuestion[];
-    /** Os ids que as perguntas mostram: o bloco global não os repete. */
+    /** Os ids que as perguntas e a seção de paletas mostram: nem o bloco global nem os ajustes os repetem. */
     questionTokenIds: ReadonlySet<string>;
+    /** O que o bloco global NÃO repete: o que as perguntas mostram e, na decisão que divide o pilar, o que é das Barras. */
+    omitFromGlobal: ReadonlySet<string>;
     /** Nível 2: tokens com efeito visual provado (`visualImpact`). */
     mainTokens: SarakDesignToken[];
     /** Nível 2: seções inteiras que a decisão sobe (a composição da barra). */
@@ -110,14 +129,20 @@ const pillarSections = (def: DecisionDef, ctx: DecisionContext): DecisionSection
     const byTitle = new Map<string, SarakDesignToken[]>();
     def.pillars.forEach((pillarId) => {
         Object.entries(ctx.grouped[pillarId] ?? {}).forEach(([title, tokens]) => {
-            byTitle.set(title, [...(byTitle.get(title) ?? []), ...tokens]);
+            byTitle.set(title, [...(byTitle.get(title) ?? []), ...tokens.filter((token) => inScope(def, token.id))]);
         });
     });
-    return [...byTitle].map(([title, tokens]) => ({ title, tokens }));
+    const sections = [...byTitle].flatMap(([title, tokens]) => (tokens.length > 0 ? [{ title, tokens }] : []));
+    // As barras também reclamam tokens do bloco global (orientação, recolher, preferências da barra): sobem como uma seção só.
+    const owned = def.tokenScope === 'bars' ? [...ctx.globalTokens, ...ctx.preferenceTokens].filter((token) => isBarToken(token.id)) : [];
+    return owned.length > 0 ? [...sections, { title: 'barGlobal', tokens: owned }] : sections;
 };
 
-const globalIds = (def: DecisionDef, ctx: DecisionContext): Set<string> =>
-    new Set(def.includeGlobal ? [...ctx.globalTokens, ...ctx.preferenceTokens].map((token) => token.id) : []);
+/** Os tokens do bloco global que esta decisão mostra: sem o que a decisão Barras reclama, quando a decisão é a outra metade. */
+const globalTokensOf = (def: DecisionDef, ctx: DecisionContext): SarakDesignToken[] =>
+    (def.includeGlobal ? [...ctx.globalTokens, ...ctx.preferenceTokens].filter((token) => inScope(def, token.id)) : []);
+
+const globalIds = (def: DecisionDef, ctx: DecisionContext): Set<string> => new Set(globalTokensOf(def, ctx).map((token) => token.id));
 
 /** Cada token aparece uma vez só (a folksonomia o repete em toda subcategoria dele) e nunca onde `taken` já o mostra. */
 const takeUnseen = (sections: DecisionSection[], taken: ReadonlySet<string>): DecisionSection[] => {
@@ -130,26 +155,6 @@ const takeUnseen = (sections: DecisionSection[], taken: ReadonlySet<string>): De
 
 const idsOf = (sections: DecisionSection[]): string[] => sections.flatMap((section) => section.tokens.map((token) => token.id));
 
-/** Os ajustes finos que uma pergunta reclama (`fineMatch`) saem sob o título dela, na ordem das perguntas; o resto fica na categoria de origem. */
-const regroupByQuestion = (sections: DecisionSection[], def: DecisionDef): DecisionSection[] => {
-    const matchers = (def.questions ?? []).filter((question) => question.fineMatch).map((question) => ({ question, pattern: new RegExp(question.fineMatch as string) }));
-    if (matchers.length === 0) return sections;
-    const claimed = new Map<string, SarakDesignToken[]>();
-    const rest = sections.flatMap((section) => {
-        const kept = section.tokens.filter((token) => {
-            const owner = matchers.find(({ pattern }) => pattern.test(token.id));
-            if (!owner) return true;
-            claimed.set(owner.question.id, [...(claimed.get(owner.question.id) ?? []), token]);
-            return false;
-        });
-        return kept.length > 0 ? [{ ...section, tokens: kept }] : [];
-    });
-    const byQuestion = matchers.flatMap(({ question }) => (claimed.has(question.id)
-        ? [{ title: question.id, titleKey: question.textKey, tokens: claimed.get(question.id) as SarakDesignToken[] }]
-        : []));
-    return [...byQuestion, ...rest];
-};
-
 const splitByImportance = (sections: DecisionSection[], ctx: DecisionContext): Pick<DecisionLayers, 'essential' | 'rest'> => {
     const pick = (wanted: boolean): DecisionSection[] => sections.flatMap((section) => {
         const tokens = section.tokens.filter((token) => isEssential(ctx, token.id) === wanted);
@@ -161,7 +166,7 @@ const splitByImportance = (sections: DecisionSection[], ctx: DecisionContext): P
 /** Os tokens de cada pergunta, achados no que a decisão alcança (seções dos pilares e bloco global); id que não existe não entra. */
 const resolveQuestions = (def: DecisionDef, sections: DecisionSection[], ctx: DecisionContext): DecisionQuestion[] => {
     const pool = new Map<string, SarakDesignToken>();
-    const reachable = [...sections.flatMap((section) => section.tokens), ...(def.includeGlobal ? [...ctx.globalTokens, ...ctx.preferenceTokens] : [])];
+    const reachable = [...sections.flatMap((section) => section.tokens), ...globalTokensOf(def, ctx)];
     reachable.forEach((token) => { if (!pool.has(token.id)) pool.set(token.id, token); });
     const shown = new Set<string>();
     return (def.questions ?? []).flatMap((question) => {
@@ -171,15 +176,19 @@ const resolveQuestions = (def: DecisionDef, sections: DecisionSection[], ctx: De
             shown.add(id);
             return [token];
         });
-        return tokens.length > 0 ? [{ id: question.id, textKey: question.textKey, tokens }] : [];
+        return tokens.length > 0 ? [{ id: question.id, textKey: question.textKey, tokens, control: question.control }] : [];
     });
 };
+
+/** O token que a seção de paletas lê e grava por conta própria: a lista salva não é campo de texto de ninguém. */
+const SECTION_OWNED_TOKEN_IDS: readonly string[] = ['savedPalettes'];
 
 export const decisionLayers = (def: DecisionDef, ctx: DecisionContext): DecisionLayers => {
     const sections = pillarSections(def, ctx);
     const isBar = (section: DecisionSection): boolean => def.optionSections.includes(section.title);
     const questions = resolveQuestions(def, sections, ctx);
-    const questionTokenIds = new Set(questions.flatMap((question) => question.tokens.map((token) => token.id)));
+    const owned = def.groups.includes('palettes') ? SECTION_OWNED_TOKEN_IDS : [];
+    const questionTokenIds = new Set([...questions.flatMap((question) => question.tokens.map((token) => token.id)), ...owned]);
     const globals = globalIds(def, ctx);
     const barSections = takeUnseen(sections.filter(isBar), new Set([...globals, ...questionTokenIds]));
     const afterBar = new Set([...globals, ...questionTokenIds, ...idsOf(barSections)]);
@@ -188,7 +197,9 @@ export const decisionLayers = (def: DecisionDef, ctx: DecisionContext): Decision
     const claimed = new Set([...afterBar, ...mainTokens.map((token) => token.id)]);
     const fine = takeUnseen(sections.filter((section) => !isBar(section)), claimed);
     const { essential, rest } = splitByImportance(regroupByQuestion(fine, def), ctx);
-    return { questions, questionTokenIds, mainTokens, barSections, essential, rest, fineTotal: idsOf(fine).length };
+    const barOwned = def.tokenScope === 'notBars' ? [...ctx.globalTokens, ...ctx.preferenceTokens].filter((token) => isBarToken(token.id)).map((token) => token.id) : [];
+    const omitFromGlobal = new Set([...questionTokenIds, ...barOwned]);
+    return { questions, questionTokenIds, omitFromGlobal, mainTokens, barSections, essential, rest, fineTotal: idsOf(fine).length };
 };
 
 const indexLayer = (index: Map<string, TokenLocation>, sections: DecisionSection[], decisionId: DecisionId, layer: TokenLayer): void => {
@@ -202,7 +213,7 @@ export const buildTokenIndex = (ctx: DecisionContext): Map<string, TokenLocation
     const index = new Map<string, TokenLocation>();
     DECISIONS.forEach((def) => {
         const layers = decisionLayers(def, ctx);
-        const globals = def.includeGlobal ? [{ title: '', tokens: [...ctx.globalTokens, ...ctx.preferenceTokens] }] : [];
+        const globals = def.includeGlobal ? [{ title: '', tokens: globalTokensOf(def, ctx) }] : [];
         // A pergunta vence o bloco global: o token que ela mostra não está mais lá.
         indexLayer(index, layers.questions.map((question) => ({ title: question.id, tokens: question.tokens })), def.id, 'question');
         indexLayer(index, globals, def.id, 'global');
@@ -223,7 +234,7 @@ export const decisionTokenIds = (def: DecisionDef, ctx: DecisionContext): Set<st
     const layers = decisionLayers(def, ctx);
     const ids = new Set<string>([...layers.mainTokens.map((token) => token.id), ...layers.questionTokenIds]);
     [...layers.barSections, ...layers.essential, ...layers.rest].forEach((section) => section.tokens.forEach((token) => ids.add(token.id)));
-    if (def.includeGlobal) [...ctx.globalTokens, ...ctx.preferenceTokens].forEach((token) => ids.add(token.id));
+    globalTokensOf(def, ctx).forEach((token) => ids.add(token.id));
     return ids;
 };
 

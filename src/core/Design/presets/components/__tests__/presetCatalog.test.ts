@@ -5,6 +5,8 @@ import { auditTokenContract } from '../../../../Provider/utils/validation';
 import { TEXTURE_OPTIONS } from '../../../schema/atmosphere';
 import { THEME_FONTS } from '../../../schema/typography';
 import { ALL_COMPONENT_PRESETS, PRESET_GROUPS, type PresetGroupDef } from '../registry';
+import { CARD_TEXTURE_OPACITY } from '../cards';
+import { PRESET_TEXTS_COMPONENTS_B } from '../../../../i18n/presetTexts/componentsB';
 import { COVERAGE_GAPS, measurePresetCoverage } from '../coverage';
 import { TEXTURE_FAMILIES, textureFamilyOf } from '../textureFamilies';
 import { LEGACY_CLOSE_PAIRS, LEGACY_COLOR_PRESET_IDS, PUBLISHED_PRESET_IDS } from './publishedPresets';
@@ -15,7 +17,7 @@ const DEFAULTS = sarakGetDefaultDesignState() as Record<string, unknown>;
 
 /** Mínimos por grupo; o grupo que fica abaixo tem o motivo no comentário ao lado (menos tokens, menos opções distintas). */
 const MIN_COUNT: Record<string, number> = {
-    sidebar: 8, topbar: 6, contentWidth: 6, cards: 18, cardTextures: 40, corners: 4, density: 4, shadow: 4, shadowDirection: 5, border: 5,
+    barTone: 5, sidebar: 8, topbar: 6, contentWidth: 6, cards: 18, cardTextures: 40, corners: 4, density: 4, shadow: 4, shadowDirection: 5, border: 5,
     material: 4, glass: 4, atmosphere: 11, gradient: 4, textures: 40, buttons: 18, inputs: 16, tables: 5, charts: 5,
     modal: 3, notice: 3, switch: 4, scroll: 3, badge: 3, emptyState: 3, motion: 4, pageTransition: 5, icons: 6, fontPairs: 10, typeScale: 4, fonts: 42,
 };
@@ -31,7 +33,7 @@ const valueOf = (design: Record<string, unknown>, id: string): unknown => (id in
 const differingTokens = (a: Record<string, unknown>, b: Record<string, unknown>): string[] =>
     [...new Set([...Object.keys(a), ...Object.keys(b)])].filter((id) => JSON.stringify(valueOf(a, id)) !== JSON.stringify(valueOf(b, id)));
 
-const curated = (): PresetGroupDef[] => PRESET_GROUPS.filter((group) => !group.optionsOfOneToken);
+const curated = (): PresetGroupDef[] => PRESET_GROUPS.filter((group) => !group.optionsOfOneToken && !group.optionsOfTokenAndSetting);
 
 describe('presets de componente — o registro', () => {
     it('todo id é único no catálogo inteiro', () => {
@@ -77,6 +79,53 @@ describe('presets de componente — curadoria', () => {
     it.each(PRESET_GROUPS.filter((group) => group.optionsOfOneToken).map((group) => [group.id, group] as const))('%s: cada opção é um valor diferente do mesmo token', (_id, group) => {
         const keys = group.presets.map((preset) => JSON.stringify(preset.design));
         expect(new Set(keys).size).toBe(keys.length);
+    });
+
+    it('cardTextures: cada textura grava o tipo dela e a própria opacidade (uma textura escolhida aparece na aplicação)', () => {
+        const group = PRESET_GROUPS.find((candidate) => candidate.id === 'cardTextures') as PresetGroupDef;
+        const types = group.presets.map((preset) => preset.design.cardTextureType);
+        expect(new Set(types).size).toBe(types.length);
+        const withoutOpacity = group.presets.filter((preset) => typeof preset.design.cardTextureOpacity !== 'number').map((preset) => preset.id);
+        expect(withoutOpacity).toEqual([]);
+        const invisible = group.presets.filter((preset) => preset.design.cardTextureType !== 'none' && (preset.design.cardTextureOpacity as number) <= 0).map((preset) => preset.id);
+        expect(invisible).toEqual([]);
+        expect(group.presets.every((preset) => Object.keys(preset.design).sort().join() === 'cardTextureOpacity,cardTextureType')).toBe(true);
+    });
+
+    it('charts: o grupo lista só estilo — nenhum preset grava chartType nem leva tipo de gráfico no nome', () => {
+        const group = PRESET_GROUPS.find((candidate) => candidate.id === 'charts') as PresetGroupDef;
+        expect(group.presets.filter((preset) => 'chartType' in preset.design).map((preset) => preset.id)).toEqual([]);
+        const chartTypes = /\b(linha|line|barras?|bars?|bar|[aá]rea|area|pizza|pie|donut|radar|dispers[aã]o|scatter|mapa de calor|heatmap|gauge)\b/i;
+        expect(group.presets.filter((preset) => chartTypes.test(preset.name ?? '')).map((preset) => preset.id)).toEqual([]);
+        group.presets.forEach((preset) => {
+            expect(Object.keys(preset.design).sort()).toEqual(['chartGridOpacity', 'chartShowGrid', 'chartSmoothing', 'chartThickness']);
+        });
+    });
+
+    it('charts: os textos dos seis idiomas também não dizem o tipo', () => {
+        const group = PRESET_GROUPS.find((candidate) => candidate.id === 'charts') as PresetGroupDef;
+        const chartTypes = /\b(line|lines|bars?|area|pie|donut|radar|scatter|heatmap|gauge|l[ií]nea|barras?|[aá]rea|ligne|barres?|aire|linie|balken|fl[aä]che|linea|barre|area)\b/i;
+        const texts = PRESET_TEXTS_COMPONENTS_B;
+        group.presets.forEach((preset) => {
+            const entry = texts[preset.id];
+            expect(entry, preset.id).toBeDefined();
+            expect(entry.name.filter((name) => chartTypes.test(name)), preset.id).toEqual([]);
+        });
+    });
+
+    it('cardTextures: os valores de opacidade por textura não mudam sem uma nova medida', () => {
+        expect(CARD_TEXTURE_OPACITY).toEqual({
+        grid: 1, dots: 1, noise: 0.35, grain: 0.12, mesh: 1, waves: 1,
+        squares: 1, stripes: 1, topo: 1, diamond: 1, prestige: 1, carbon: 0.25,
+        brushed: 1, frosted: 1, circuit: 1, paper: 0.4, scanlines: 1, hexagon: 1,
+        silk: 1, blueprint: 1, aurora: 0.8, stars: 1, honeycomb: 0.45, isometric: 0.8,
+        radar: 1, crosshatch: 1, 'micro-dots': 1, pinstripes: 1, constellation: 1, 'circuit-pro': 1,
+        'carbon-tech': 1, 'topo-deep': 1, 'prism-mesh': 1, 'cyber-binary': 1, 'blueprint-pro': 1, 'wave-pulse': 1,
+        wood: 1, stucco: 0.12, fluid: 0.2, nebula: 1,
+            none: 0.06,
+        });
+        expect(Object.values(CARD_TEXTURE_OPACITY).every((value) => value > 0 && value <= 1)).toBe(true);
+        expect(Object.keys(CARD_TEXTURE_OPACITY).sort()).toEqual(TEXTURE_OPTIONS.map((texture) => texture.value).sort());
     });
 });
 

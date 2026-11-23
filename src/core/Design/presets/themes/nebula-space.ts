@@ -51,6 +51,9 @@ export const nebulaSpaceTheme: SarakThemePreset = {
         topbarTone: 'surface',
         sidebarBackgroundStyle: 'texture',
         sidebarActiveItemStyle: 'outline',
+        sidebarActiveGlass: 'on',
+        brandDisplay: 'both',
+        userAvatarStyle: 'initials',
         sidebarItemDensity: 'comfortable',
         sidebarIconSize: 18,
         topbarBorderWidth: 1,
@@ -200,8 +203,6 @@ export const nebulaSpaceTheme: SarakThemePreset = {
         switchStyleType: 'glass',
         switchBackdropBlur: 8,
         // --- Paletas e Gradientes ---
-        colorDepth: 1,
-        colorVariation: 1,
         // --- Gráficos & Dados ---
         chartGridOpacity: 0.1,
         chartType: 'line',

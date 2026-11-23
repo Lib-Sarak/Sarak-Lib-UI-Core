@@ -4,6 +4,10 @@ import { parseToRgba } from './color-engine';
 export const ON_COLOR_DARK = '#020617';
 export const ON_COLOR_LIGHT = '#ffffff';
 
+/** A âncora de cálculo de cada modo: preto absoluto no escuro, branco absoluto no claro. É operando das variantes e dos canais, não cor de tema. */
+export const MODE_ANCHOR_DARK = '#000000';
+export const MODE_ANCHOR_LIGHT = '#ffffff';
+
 const LITERAL_COLOR = /^(#[0-9a-fA-F]{3,8}|rgba?\(.+\)|transparent)$/i;
 
 /** A cor é um literal que `parseToRgba` entende (hex, `rgb()`/`rgba()`, `transparent`) — `var()` e `color-mix()` não são. */

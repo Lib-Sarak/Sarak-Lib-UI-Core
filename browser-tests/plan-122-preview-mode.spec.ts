@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildHarness } from './build-harness.mjs';
+import { closePreviewMenu, openPreviewModeItem, switchPreviewMode } from './preview-mode-toggle';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ENTRY = path.join(HERE, 'fixtures', 'plan-122-preview-mode-entry.tsx');
@@ -66,30 +67,32 @@ test('a prévia e os cartões acompanham a preferência clara e o toggle alterna
 
     await page.goto(harnessUrl);
     const previewSurface = page.locator('.sarak-device-desktop > div.absolute.inset-0.z-0');
-    const previewToggle = page.locator('.sarak-device-desktop').getByRole('button', { name: 'Modo Escuro' });
 
-    await expect(previewToggle).toBeVisible();
+    // No claro, o item do ⚙ da barra da prévia oferece o modo escuro.
+    await openPreviewModeItem(page, 'Modo Escuro');
+    await closePreviewMenu(page);
     const lightBody = await sovereignBody(page, 'light');
     const darkBody = await sovereignBody(page, 'dark');
-    const lightSurface = await sovereignBody(page, 'lightSurface');
     await expect.poll(() => previewSurface.evaluate((surface) => getComputedStyle(surface).backgroundColor))
         .toBe(lightBody);
 
     await page.getByRole('button', { name: /^Tema/ }).click();
-    const themeCard = page.getByRole('button', { name: /Sarak Sovereign/i });
+    const themeCard = page.locator('button[data-theme-id="sarak-sovereign"]');
     await expect(themeCard).toBeVisible();
-    const themeCardSurface = themeCard.locator(':scope > div').first();
+    // A miniatura é o sistema real com o tema: o fundo do escopo dela é o mesmo da prévia grande (`--sarak-bg-base`).
+    const themeCardSurface = page.locator('[data-option-tile]', { has: themeCard }).locator('.sarak-theme-miniature').first();
     await expect.poll(() => themeCardSurface.evaluate((surface) => getComputedStyle(surface).backgroundColor))
-        .toBe(lightSurface);
+        .toBe(lightBody);
 
-    await previewToggle.click();
-    const darkModeToggle = page.locator('.sarak-device-desktop').getByRole('button', { name: 'Modo Claro' });
-    await expect(darkModeToggle).toBeVisible();
+    await switchPreviewMode(page, 'Modo Escuro');
+    await openPreviewModeItem(page, 'Modo Claro');
+    await closePreviewMenu(page);
     await expect.poll(() => previewSurface.evaluate((surface) => getComputedStyle(surface).backgroundColor))
         .toBe(darkBody);
 
-    await darkModeToggle.click();
-    await expect(page.locator('.sarak-device-desktop').getByRole('button', { name: 'Modo Escuro' })).toBeVisible();
+    await switchPreviewMode(page, 'Modo Claro');
+    await openPreviewModeItem(page, 'Modo Escuro');
+    await closePreviewMenu(page);
     await expect.poll(() => previewSurface.evaluate((surface) => getComputedStyle(surface).backgroundColor))
         .toBe(lightBody);
     expect(pageErrors).toEqual([]);

@@ -4,10 +4,14 @@ import { useDesignManager } from '../useDesignManager';
 import { sarakResolvePalette } from '../../../Design/palette/resolve';
 import type { SarakUIOptions, SarakThemePayload } from '../../types';
 
+/** Temas do consumidor que o `onLoad` devolve por id: um id fora do catálogo e de `allThemes` é tema removido. */
+const CONSUMER_THEMES = ['tema-salvo', 'tema-a', 'tema-b'].map((id) => ({ id, design: { primaryColor: '#000000' } }));
+
 const baseProps = (options: SarakUIOptions = {}) => ({
     initialConfig: {} as SarakThemePayload,
     options,
     isHydrated: true,
+    allThemes: CONSUMER_THEMES,
 });
 
 describe('useDesignManager — persistência tenant-aware e strategy (ADR-009 / plan-34)', () => {
@@ -134,6 +138,7 @@ describe('useDesignManager — onSave recebe o id do tema ativo (plan-42)', () =
         expect(onSave).toHaveBeenCalledWith(
             expect.objectContaining({ primaryColor: '#777777' }),
             result.current.resolvedThemeId,
+            2,
         );
     });
 
@@ -238,7 +243,7 @@ describe('useDesignManager — ciclo de carga do tema ativo', () => {
             await result.current.persistDesign({ ...result.current.design, primaryColor: '#654321' } as never);
         });
 
-        expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ primaryColor: '#654321' }), 'tema-salvo');
+        expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ primaryColor: '#654321' }), 'tema-salvo', 2);
     });
 
     it('trocar tenantId chama onLoad de novo e aplica o estado do tenant novo sem remontagem', async () => {
@@ -350,7 +355,7 @@ describe('useDesignManager — ciclo de carga do tema ativo', () => {
 
         expect(onSaveTenantA).not.toHaveBeenCalled();
         expect(onSaveTenantB).toHaveBeenCalledTimes(1);
-        expect(onSaveTenantB).toHaveBeenCalledWith(expect.objectContaining({ primaryColor: '#45ab67' }), expect.any(String));
+        expect(onSaveTenantB).toHaveBeenCalledWith(expect.objectContaining({ primaryColor: '#45ab67' }), expect.any(String), 2);
 
         rerender({ tenantId: 'tenant-c', onLoad: onLoadTenantC, onSave: vi.fn() });
         await act(async () => Promise.resolve());

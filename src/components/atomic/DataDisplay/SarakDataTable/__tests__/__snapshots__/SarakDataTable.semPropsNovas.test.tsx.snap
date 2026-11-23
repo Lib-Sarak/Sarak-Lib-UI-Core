@@ -60,7 +60,7 @@ exports[`SarakDataTable sem as props da tabela de trabalho > mantém o DOM da ta
           >
             <button
               aria-label="Ordenar por name"
-              class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-1.5 px-3 text-xs bg-transparent text-[var(--sarak-primary-color,#19e3f0)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]"
+              class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-1.5 px-3 text-xs bg-transparent text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_85%,var(--sarak-on-surface,#ffffff))] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]"
               draggable="false"
               type="button"
             >
@@ -350,7 +350,7 @@ exports[`SarakDataTable sem as props da tabela de trabalho > mantém o DOM da ta
           >
             <button
               aria-label="Ordenar por name"
-              class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-1.5 px-3 text-xs bg-transparent text-[var(--sarak-primary-color,#19e3f0)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]"
+              class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-1.5 px-3 text-xs bg-transparent text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_85%,var(--sarak-on-surface,#ffffff))] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]"
               draggable="false"
               type="button"
             >

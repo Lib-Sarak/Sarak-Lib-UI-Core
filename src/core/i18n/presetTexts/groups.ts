@@ -3,11 +3,12 @@ type SixTuple = readonly [string, string, string, string, string, string];
 
 export const PRESET_GROUP_TITLES: Readonly<Record<string, SixTuple>> = {
     personalities: ['Personalidades', 'Personalities', 'Personalidades', 'Personnalités', 'Persönlichkeiten', 'Personalità'],
-    sidebar: ['Barra lateral', 'Sidebar', 'Barra lateral', 'Barre latérale', 'Seitenleiste', 'Barra laterale'],
-    topbar: ['Barra de topo', 'Top bar', 'Barra superior', 'Barre du haut', 'Obere Leiste', 'Barra superiore'],
+    barTone: ['Cor das barras', 'Bar color', 'Color de las barras', 'Couleur des barres', 'Farbe der Leisten', 'Colore delle barre'],
+    sidebar: ['Sidebar', 'Sidebar', 'Sidebar', 'Sidebar', 'Sidebar', 'Sidebar'],
+    topbar: ['Topbar', 'Topbar', 'Topbar', 'Topbar', 'Topbar', 'Topbar'],
     contentWidth: ['Largura do conteúdo', 'Content width', 'Ancho del contenido', 'Largeur du contenu', 'Inhaltsbreite', 'Larghezza del contenuto'],
     cards: ['Estilo dos cards', 'Card style', 'Estilo de las tarjetas', 'Style des cartes', 'Kartenstil', 'Stile delle schede'],
-    cardTextures: ['Textura dos cards', 'Card texture', 'Textura de las tarjetas', 'Texture des cartes', 'Kartentextur', 'Texture delle schede'],
+    cardTextures: ['Textura do card', 'Card texture', 'Textura de la tarjeta', 'Texture de la carte', 'Kartentextur', 'Texture della scheda'],
     corners: ['Cantos', 'Corners', 'Esquinas', 'Coins', 'Ecken', 'Angoli'],
     density: ['Densidade', 'Density', 'Densidad', 'Densité', 'Dichte', 'Densità'],
     shadow: ['Sombra', 'Shadow', 'Sombra', 'Ombre', 'Schatten', 'Ombra'],
@@ -17,7 +18,7 @@ export const PRESET_GROUP_TITLES: Readonly<Record<string, SixTuple>> = {
     glass: ['Vidro', 'Glass', 'Vidrio', 'Verre', 'Glas', 'Vetro'],
     atmosphere: ['Atmosfera', 'Atmosphere', 'Atmósfera', 'Atmosphère', 'Atmosphäre', 'Atmosfera'],
     gradient: ['Degradê do fundo', 'Background gradient', 'Degradado del fondo', 'Dégradé du fond', 'Hintergrundverlauf', 'Sfumatura dello sfondo'],
-    textures: ['Texturas de fundo', 'Background textures', 'Texturas de fondo', 'Textures de fond', 'Hintergrundtexturen', 'Texture di sfondo'],
+    textures: ['Textura do fundo', 'Background texture', 'Textura del fondo', 'Texture du fond', 'Hintergrundtextur', 'Texture dello sfondo'],
     buttons: ['Botões', 'Buttons', 'Botones', 'Boutons', 'Schaltflächen', 'Pulsanti'],
     buttonStyles: ['Botões por estilo', 'Buttons by style', 'Botones por estilo', 'Boutons par style', 'Schaltflächen nach Stil', 'Pulsanti per stile'],
     inputs: ['Campos', 'Fields', 'Campos', 'Champs', 'Felder', 'Campi'],
@@ -38,6 +39,8 @@ export const PRESET_GROUP_TITLES: Readonly<Record<string, SixTuple>> = {
 };
 
 export const PRESET_FAMILY_TITLES: Readonly<Record<string, SixTuple>> = {
+    cardsCurated: ['Cards curados', 'Curated cards', 'Tarjetas curadas', 'Cartes sélectionnées', 'Kuratierte Karten', 'Schede selezionate'],
+    cardsOfThemes: ['Cards dos temas', 'Theme cards', 'Tarjetas de los temas', 'Cartes des thèmes', 'Karten der Themen', 'Schede dei temi'],
     technical: ['Técnicas', 'Technical', 'Técnicas', 'Techniques', 'Technisch', 'Tecniche'],
     organic: ['Orgânicas', 'Organic', 'Orgánicas', 'Organiques', 'Organisch', 'Organiche'],
     geometric: ['Geométricas', 'Geometric', 'Geométricas', 'Géométriques', 'Geometrisch', 'Geometriche'],

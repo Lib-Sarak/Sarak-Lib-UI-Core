@@ -9,6 +9,7 @@
 import { lazy, type LazyExoticComponent, type ReactElement } from 'react';
 import type { SarakDataTableProps } from './SarakDataTableImpl';
 
+/** @replacesElement table */
 export const SarakDataTable: LazyExoticComponent<
     <T>(props: SarakDataTableProps<T>) => ReactElement
 > = lazy(() => import('./SarakDataTableImpl'));

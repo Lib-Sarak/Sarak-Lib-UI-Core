@@ -8,7 +8,7 @@ import { PERSONALITIES, getPersonality } from '../../../../core/Design/presets/c
 import { usePresetText } from '../../hooks/usePresetText';
 import { usePaletteSelection } from '../hooks/usePaletteSelection';
 import { barTonesOf, buildPaletteDraftPatch } from '../utils/paletteDraft';
-import { FONT_OPTIONS, HEX_COLOR, fontPresetOf, paletteValueOf, useBrandForm } from '../hooks/useBrandForm';
+import { FONT_OPTIONS, HEX_COLOR, brandPaletteValue, fontPresetOf, useBrandForm } from '../hooks/useBrandForm';
 import type { PeekHandler } from '../../Canvas/components/peek';
 import type { PendingBranding } from '../hooks/usePendingBranding';
 import type { SarakDesignState } from '../../../../core/Provider/types';
@@ -30,12 +30,13 @@ interface BrandShortcutProps {
 export const BrandShortcut: React.FC<BrandShortcutProps> = ({ draft, appliedDesign, updateDraft, onPeek, setPendingBranding, onGenerated, initialName = '' }) => {
     const text = useLibraryText();
     const presetText = usePresetText();
-    const { form, change } = useBrandForm(draft, initialName, onPeek);
+    const { form, change, saved } = useBrandForm(draft, initialName, onPeek);
+    const paletteOptions = [{ value: '', label: text('brandPaletteFromColor') }, ...saved.map((entry) => ({ value: entry.id, label: entry.name }))];
     const personalityOptions = [{ value: '', label: presetText.ui('brandPersonalityNone') }, ...PERSONALITIES.map((personality) => ({ value: personality.id, label: presetText.preset(personality).name }))];
     const selectPalette = usePaletteSelection({ draft: draft as unknown as Record<string, unknown>, appliedDesign, updateDraft });
 
     const generate = async () => {
-        const value = paletteValueOf(form.color);
+        const value = brandPaletteValue(form, saved);
         if (value) await selectPalette(value);
         const personality = getPersonality(form.personalityId);
         Object.entries(personality?.design ?? {}).forEach(([tokenId, tokenValue]) => updateDraft(tokenId, tokenValue as SarakTokenValue));
@@ -58,6 +59,9 @@ export const BrandShortcut: React.FC<BrandShortcutProps> = ({ draft, appliedDesi
             <SarakInput label={text('brandName')} fullWidth value={form.name} onChange={(event) => change({ name: event.target.value })} />
             <MediaUploaderControl label={text('brandLogo')} value={form.logo} onChange={(logo) => change({ logo })} />
             <ColorControl label={text('brandColor')} value={form.color} onChange={(color) => { if (HEX_COLOR.test(color)) change({ color }); }} />
+            {saved.length > 0 && (
+                <SarakSelect label={text('brandPaletteLabel')} fullWidth value={form.paletteId} options={paletteOptions} onChange={(event) => change({ paletteId: event.target.value })} />
+            )}
             <SarakSelect label={text('brandFontStyle')} fullWidth value={form.fontId} options={FONT_OPTIONS} onChange={(event) => change({ fontId: event.target.value })} />
             <SarakSelect label={presetText.ui('brandPersonality')} fullWidth value={form.personalityId} options={personalityOptions} onChange={(event) => change({ personalityId: event.target.value })} />
             <SarakButton type="button" variant="primary" fullWidth onClick={() => { void generate(); }}>{text('brandGenerate')}</SarakButton>

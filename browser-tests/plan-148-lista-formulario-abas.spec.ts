@@ -81,6 +81,31 @@ test('uma métrica preenche a célula e o link responde ao teclado', async ({ pa
     expect(new URL(page.url()).hash).toBe('#pedidos');
 });
 
+for (const [viewport, id] of [[1440, 'stats-long-1440'], [1024, 'stats-long-1024']] as const) {
+    test(`valor longo de métrica fica dentro do respiro do cartão a ${viewport} px, 4 por linha`, async ({ page }) => {
+        await page.setViewportSize({ width: viewport, height: 900 });
+        await page.goto(harnessUrl);
+        await expect(page.getByTestId(id)).toBeVisible();
+        const m = await page.evaluate((testId) => {
+            const cards = [...document.querySelectorAll<HTMLElement>(`[data-testid="${testId}"] .card`)];
+            const card = cards[0];
+            const style = getComputedStyle(card);
+            const box = card.getBoundingClientRect();
+            const value = card.querySelector('[data-sign]')!;
+            const range = document.createRange();
+            range.selectNodeContents(value);
+            const text = [...range.getClientRects()];
+            return {
+                perRow: cards.filter((c) => Math.round(c.getBoundingClientRect().top) === Math.round(box.top)).length,
+                contentRight: box.right - Number.parseFloat(style.paddingRight) - Number.parseFloat(style.borderRightWidth),
+                valueRight: Math.max(...text.map((r) => r.right)),
+            };
+        }, id);
+        expect(m.perRow, 'quatro cartões por linha').toBe(4);
+        expect(m.valueRight, 'a borda direita do valor fica dentro da área de conteúdo').toBeLessThanOrEqual(m.contentRight + SUBPIXEL);
+    });
+}
+
 test('afixo dentro: campos de uma linha mantêm a mesma largura e o texto não cobre o afixo', async ({ page }) => {
     await open(page);
     const m = await page.evaluate(() => {

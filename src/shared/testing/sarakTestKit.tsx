@@ -113,6 +113,8 @@ const PdfViewerDouble = (): React.ReactElement => <div role="document" />;
  * A lib real com os dublês dos três componentes que não rodam no jsdom. Para o `vi.mock` do
  * consumidor: `vi.mock('@sarak/lib-ui-core', () => createSarakKitMock())`. `overrides`
  * troca ou acrescenta qualquer nome, inclusive os dublês.
+ *
+ * @replacesPiece SarakDataTable SarakChartEngine SarakPDFViewer
  */
 export const createSarakKitMock = async (overrides: Record<string, unknown> = {}): Promise<Record<string, unknown>> => {
     const library = await loadLibrary();

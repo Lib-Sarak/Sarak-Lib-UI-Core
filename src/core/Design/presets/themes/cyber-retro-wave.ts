@@ -68,6 +68,9 @@ export const cyberRetroWaveTheme: SarakThemePreset = {
             "topbarTone": "neutral",
             "sidebarBackgroundStyle": "texture",
             "sidebarActiveItemStyle": "filled",
+            "sidebarActiveGlass": "on",
+        "brandDisplay": "both",
+        "userAvatarStyle": "initials",
             "sidebarItemDensity": "compact",
             "sidebarIconSize": 18,
             "topbarBorderWidth": 1,
@@ -290,8 +293,6 @@ export const cyberRetroWaveTheme: SarakThemePreset = {
             "switchBackdropBlur": 4,
             // fundo prata do tema; a neutra da paleta seria quase branca
             "surfaceColor": "#ffffff",
-            "colorDepth": 1,
-            "colorVariation": 1,
             // fundo prata do tema; a neutra da paleta seria quase branca
             "cardBackgroundColor": "#ffffff",
             "chartGridOpacity": 0.08,

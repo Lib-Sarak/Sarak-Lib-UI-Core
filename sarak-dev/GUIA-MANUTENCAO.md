@@ -111,10 +111,10 @@ A regra de alocação está em `specs/arquitetura/00-mapa-do-modulo.md`:
 - é infraestrutura agnóstica de UI → `src/core/`;
 - é casca de app → `src/components/Layout/`.
 
-⚠️ **Limitação conhecida do coletor** (`scripts/publicComponents.mjs`): categoria **sem** barril
-`index.ts` só tem a **raiz** varrida. Componente em subpasta de uma categoria sem barril escapa do
-`npm run barrel:check`. Se a sua categoria não tem barril e você precisa de subpasta, crie o
-barril.
+⚠️ **Limitação conhecida do coletor** (`scripts/publicComponents.mjs`): subpasta com `index.ts`
+próprio entra pelo que esse barril exporta; subpasta **sem** barril escapa do
+`npm run barrel:check` e do catálogo. Componente público em subpasta precisa de `index.ts` na
+subpasta.
 
 ## 3.2 O que o componente precisa ter
 
@@ -298,11 +298,11 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | Fonte | Medida | Valor |
 | --- | --- | --- |
 | `catalog/theme_table_mapping.json` | colunas | 13 |
-| `catalog/theme_table_mapping.json` | entradas brutas | 424 |
-| `catalog/theme_table_mapping.json` | **ids únicos** | **424** |
+| `catalog/theme_table_mapping.json` | entradas brutas | 430 |
+| `catalog/theme_table_mapping.json` | **ids únicos** | **430** |
 | `catalog/partitions/` | arquivos | 13 |
-| `catalog/partitions/` | tokens | 424 |
-| `SarakDesignTokens` (tipo público) | ids | 424 |
+| `catalog/partitions/` | tokens | 430 |
+| `SarakDesignTokens` (tipo público) | ids | 430 |
 | `SarakDesignTokens` (tipo público) | responsivos | 37 |
 
 > Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §2 do guia).
@@ -315,13 +315,14 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Componentes públicos: 139** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
-### B.3 Gates registrados (43)
+### B.3 Gates registrados (45)
 
 | Comando | O que roda |
 | --- | --- |
 | `npm run audit` | `node gates/scripts/audit/run_audit.mjs` |
 | `npm run barrel:check` | `node gates/scripts/contrato/check-barrel-parity.mjs --check` |
 | `npm run build-info:check` | `node scripts/generate-build-info.mjs --check` |
+| `npm run card-presets:check` | `npx tsx scripts/generate-theme-card-presets.ts --check` |
 | `npm run catalog:check` | `node scripts/generate-component-catalog.mjs --check` |
 | `npm run channel-dispute:check` | `npx tsx gates/scripts/contrato/check-channel-dispute.ts` |
 | `npm run chrome-token-parity:check` | `node gates/scripts/contrato/check-chrome-token-parity.mjs` |
@@ -358,6 +359,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run themes:catalog:check` | `npx tsx scripts/generate-theme-catalog.ts --check` |
 | `npm run token-docs:check` | `npx tsx gates/scripts/contrato/check-token-documentation.ts` |
 | `npm run token-reader:check` | `node gates/scripts/contrato/check-token-reader.mjs` |
+| `npm run token-release-notes:check` | `npx tsx gates/scripts/contrato/check-token-release-notes.ts` |
 | `npm run token-types:check` | `npx tsx scripts/generate-token-types.ts --check` |
 | `npm run trail-citation:check` | `node gates/scripts/contrato/check-trail-citation.mjs` |
 | `npm run variable-contract:check` | `npx tsx gates/scripts/contrato/check-variable-contract.ts` |
@@ -395,7 +397,7 @@ Fonte: `gates/baselines/audit-baseline.json`. **Não edite à mão** — o núme
 
 ### B.5 A base de specs
 
-**ADR (24)** — decisões imutáveis: `001-tres-arquiteturas.md` · `002-remocao-motor-manifesto.md` · `003-remocao-backend-proprio.md` · `004-remocao-design-agent.md` · `005-modelo-modulos-plugin-e-apps-separados.md` · `006-zero-marca-soberania-host.md` · `007-distribuicao-por-git.md` · `008-releases-com-tag-e-semver-em-git.md` · `009-persistencia-tenant-aware.md` · `010-temas-salvos-pelo-usuario.md` · `011-tema-salvo-por-uma-porta-de-escrita.md` · `012-escrita-git-sob-autorizacao-do-dono.md` · `013-item-de-navegacao-como-atomo-proprio.md` · `014-cromo-do-modo-ui-kit-com-widgets-por-padrao.md` · `015-metrica-do-item-de-navegacao-horizontal.md` · `016-preferencias-do-usuario-separadas-do-tema.md` · `017-porta-de-apagar-tema-simetrica-a-de-escrever.md` · `018-um-cromo-so-e-o-consumidor-e-dono-das-rotas.md` · `019-arrastar-e-soltar-do-kanban.md` · `020-gantt-casca-propria.md` · `021-navegacao-na-base-do-celular.md` · `022-tema-sob-demanda.md` · `023-fontes-embarcadas-carregadas-sob-demanda.md` · `024-paleta-calculada-separada-do-tema.md`
+**ADR (27)** — decisões imutáveis: `001-tres-arquiteturas.md` · `002-remocao-motor-manifesto.md` · `003-remocao-backend-proprio.md` · `004-remocao-design-agent.md` · `005-modelo-modulos-plugin-e-apps-separados.md` · `006-zero-marca-soberania-host.md` · `007-distribuicao-por-git.md` · `008-releases-com-tag-e-semver-em-git.md` · `009-persistencia-tenant-aware.md` · `010-temas-salvos-pelo-usuario.md` · `011-tema-salvo-por-uma-porta-de-escrita.md` · `012-escrita-git-sob-autorizacao-do-dono.md` · `013-item-de-navegacao-como-atomo-proprio.md` · `014-cromo-do-modo-ui-kit-com-widgets-por-padrao.md` · `015-metrica-do-item-de-navegacao-horizontal.md` · `016-preferencias-do-usuario-separadas-do-tema.md` · `017-porta-de-apagar-tema-simetrica-a-de-escrever.md` · `018-um-cromo-so-e-o-consumidor-e-dono-das-rotas.md` · `019-arrastar-e-soltar-do-kanban.md` · `020-gantt-casca-propria.md` · `021-navegacao-na-base-do-celular.md` · `022-tema-sob-demanda.md` · `023-fontes-embarcadas-carregadas-sob-demanda.md` · `024-paleta-calculada-separada-do-tema.md` · `025-kit-de-verificacao-de-uso-nucleo-unico-duas-portas.md` · `026-design-gravado-guarda-so-as-escolhas.md` · `027-paleta-do-tema-paleta-por-cima-e-paletas-salvas-no-design.md`
 
 **Arquitetura (6)** — visão macro viva: `00-mapa-do-modulo.md` · `01-forma-do-produto-e-modos-de-consumo.md` · `02-design-engine.md` · `03-superficie-publica.md` · `04-contrato-de-tokens-e-paridade.md` · `05-build-e-distribuicao.md`
 

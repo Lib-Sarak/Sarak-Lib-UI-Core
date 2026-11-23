@@ -7,7 +7,9 @@ import { deriveCategoricalPalette } from './categoricalPalette';
 import type { CategoricalPaletteMode } from './categoricalPalette';
 import { rgbToHex } from './oklch';
 
+// sarak-allow-hardcode: o ECharts desenha em canvas, que não lê var(); esta cor é só a reserva do cálculo quando o tema não resolve uma cor, não estilo aplicado por CSS.
 const CHART_THEME_FALLBACK_COLOR = '#3b82f6';
+// sarak-allow-hardcode: o ECharts desenha em canvas, que não lê var(); esta cor é só a reserva do cálculo quando o tema não resolve uma cor, não estilo aplicado por CSS.
 const SURFACE_FALLBACK: Record<CategoricalPaletteMode, string> = { light: '#fcfcfb', dark: '#1a1a19' };
 const RGB_CHANNEL_MAX = 255;
 const DEFAULT_CHART_GRID_OPACITY = 0.05;
@@ -20,7 +22,6 @@ const DEFAULT_ANIMATION_DURATION = 2500;
 type ResolvedDesign = ReturnType<typeof useSarakUI>['design'];
 
 interface ChartThemeSettings extends Omit<EChartsTheme, 'baseOption'> {
-    gridMargin: number;
     tooltipPadding: number[];
 }
 
@@ -120,7 +121,6 @@ function resolveThemeSettings(design: ResolvedDesign): ChartThemeSettings {
         chartType: design.chartType ?? 'line',
         chartThickness: resolveDesignNumber(design.chartThickness, DEFAULT_CHART_THICKNESS),
         chartSmoothing: design.chartSmoothing ?? true,
-        gridMargin: mediumGap,
         tooltipPadding: [smallGap, mediumGap],
     };
 }
@@ -139,10 +139,10 @@ function buildBaseOption(theme: ChartThemeSettings): EChartsBaseOption {
             padding: theme.tooltipPadding,
         },
         grid: {
-            top: theme.gridMargin * 2,
-            bottom: theme.gridMargin * 2,
-            left: theme.gridMargin,
-            right: theme.gridMargin,
+            top: theme.fontSize * 2,
+            bottom: theme.fontSize * 2,
+            left: theme.axisLabelMargin,
+            right: theme.axisLabelMargin,
             containLabel: true,
         },
         animation: true,

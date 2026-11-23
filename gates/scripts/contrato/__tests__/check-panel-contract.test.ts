@@ -10,9 +10,12 @@ import {
     readControlSources,
     registryKeys,
     schemaTypes,
+    shippedSources,
     type ControlSources,
 } from '../check-panel-contract';
 import type { SarakDesignToken } from '../../../../src/core/Design/types';
+import { ALL_COMPONENT_PRESETS } from '../../../../src/core/Design/presets/components/registry';
+import { TABLE_PRESETS } from '../../../../src/core/Design/presets/components/dataPresets';
 
 const slider = (patch: Partial<SarakDesignToken>): SarakDesignToken => ({
     id: 'tokenDeTeste', label: 'Teste', type: 'slider', defaultValue: 10, ...patch,
@@ -145,5 +148,19 @@ describe('o repositório real', () => {
         expect(report.controls).toEqual([]);
         expect(report.options).toEqual([]);
         expect(report.checked.types).toBeGreaterThanOrEqual(10);
+    });
+});
+
+describe('fontes julgadas — todo grupo do registro de presets', () => {
+    it('todo preset de PRESET_GROUPS vira fonte do item (ii), uma vez só', () => {
+        const sourceLabels = shippedSources().map((source) => source.fonte);
+        const presetIds = ALL_COMPONENT_PRESETS.map((preset) => preset.id);
+        const missing = presetIds.filter((id) => !sourceLabels.some((label) => label.endsWith(`:${id}`)));
+        expect(missing).toEqual([]);
+        expect(sourceLabels.filter((label) => label.startsWith('preset-'))).toHaveLength(ALL_COMPONENT_PRESETS.length);
+    });
+
+    it('a fonte diz de que grupo o preset veio (um preset de tabela não passava por aqui)', () => {
+        expect(shippedSources().map((source) => source.fonte)).toContain(`preset-tables:${TABLE_PRESETS[0].id}`);
     });
 });

@@ -21,16 +21,16 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ENTRY = path.join(HERE, 'fixtures', 'plan-141-presets-entry.tsx');
 const PREVIEW_DIR = process.env.SARAK_PREVIA_141_DIR;
 const COVERAGE_BEFORE = process.env.SARAK_PREVIA_141_ANTES;
-type PresetDecisionId = 'fonts' | 'shape' | 'components' | 'layout';
+type PresetDecisionId = 'fonts' | 'shape' | 'components' | 'bars' | 'layout';
 interface GroupInfo { id: string; decision: PresetDecisionId; count: number; featured: number; featuredIds: string[]; ids: string[] }
 interface Registry { presetCount: number; groups: GroupInfo[]; coverage: { covered: number; total: number; ratio: number; families: Array<{ family: string; covered: number; total: number }> } }
 let registry: Registry;
 const presetGroupsOf = (decision: PresetDecisionId): GroupInfo[] => registry.groups.filter((group) => group.decision === decision);
 const DECISIONS: ReadonlyArray<{ id: PresetDecisionId; name: string }> = [
-    { id: 'fonts', name: 'Fontes' }, { id: 'shape', name: 'Forma' }, { id: 'components', name: 'Componentes' }, { id: 'layout', name: 'Layout' },
+    { id: 'fonts', name: 'Fontes' }, { id: 'shape', name: 'Forma' }, { id: 'components', name: 'Componentes' }, { id: 'bars', name: 'Barras' }, { id: 'layout', name: 'Layout' },
 ];
-/** Os grupos que moram dentro de uma aba de outro grupo, não em seção própria. */
-const INSIDE_ANOTHER_GROUP = new Set(['cardTextures', 'textures', 'buttonStyles']);
+/** Os grupos que moram dentro de uma aba de outro grupo, não em seção própria (as texturas do card e do fundo já têm seção própria). */
+const INSIDE_ANOTHER_GROUP = new Set(['buttonStyles']);
 const MODES = [{ name: 'escuro', query: '' }, { name: 'claro', query: 'claro=1' }] as const;
 
 interface Capture { file: string; caption: string; mode: string }
@@ -79,6 +79,13 @@ ${coverageBlock()}
     fs.writeFileSync(path.join(directory, 'index.html'), html, 'utf8');
 };
 
+/** As decisões abrem com os grupos recolhidos (só o em uso aberto): estes casos medem as opções de cada grupo, então abrem todos. */
+const openAllGroups = async (page: Page): Promise<void> => {
+    await page.waitForTimeout(300);
+    const closed = page.locator('[data-group-toggle][aria-expanded="false"]');
+    for (let round = 0; round < 60 && (await closed.count()) > 0; round += 1) await closed.first().click();
+};
+
 const open = async (query: string): Promise<{ page: Page; errors: string[] }> => {
     const page = await browser.newPage({ viewport: { width: 1600, height: 1000 } });
     const errors: string[] = [];
@@ -116,6 +123,7 @@ for (const mode of MODES) {
             const { page, errors } = await open(mode.query);
             await page.getByRole('button', { name: new RegExp(`^${decision.name}`) }).click();
             await page.getByRole('heading', { level: 2, name: decision.name }).waitFor();
+            await openAllGroups(page);
 
             for (const group of presetGroupsOf(decision.id).filter((candidate) => !INSIDE_ANOTHER_GROUP.has(candidate.id))) {
                 await settle(page, groupArea(group.id));
@@ -151,6 +159,7 @@ test('a amostra segue o modo que a prévia mostra, mesmo com um tema escuro no r
     const { page } = await open('claro=1');
     await page.getByRole('button', { name: /^Forma/ }).click();
     await page.getByRole('heading', { level: 2, name: 'Forma' }).waitFor();
+    await openAllGroups(page);
     await settle(page, groupArea('cards'));
     const lightness = await page.evaluate(() => {
         const scope = document.querySelector('[data-option-group="cards"] .sarak-design-scope') as HTMLElement;
@@ -165,6 +174,7 @@ test('"Ver todas" abre as demais opções e "Ver menos" devolve as destacadas', 
     const { page } = await open('');
     await page.getByRole('button', { name: /^Componentes/ }).click();
     await page.getByRole('heading', { level: 2, name: 'Componentes' }).waitFor();
+    await openAllGroups(page);
     const toggle = page.locator('[data-preset-toggle="icons"], [data-preset-toggle="inputs"]').first();
     const group = (await toggle.getAttribute('data-preset-toggle'))!;
     const total = registry.groups.find((candidate) => candidate.id === group)!.count;
@@ -175,7 +185,7 @@ test('"Ver todas" abre as demais opções e "Ver menos" devolve as destacadas', 
 });
 
 /** Dois quadros de pixels diferem em quanto da área? Um pixel conta quando a soma da diferença dos canais passa do ruído de serrilhado. */
-const DIFFERING_SHARE = (page: Page, first: string, second: string): Promise<number> => page.evaluate(async ([a, b]) => {
+const DIFFERING_SHARE = (page: Page, first: string, second: string, shift = 0): Promise<number> => page.evaluate(async ([a, b, tolerance]) => {
     const decode = async (base64: string): Promise<ImageData> => {
         const bitmap = await createImageBitmap(await (await fetch(`data:image/png;base64,${base64}`)).blob());
         const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
@@ -187,19 +197,46 @@ const DIFFERING_SHARE = (page: Page, first: string, second: string): Promise<num
     const width = Math.max(one.width, two.width);
     const height = Math.max(one.height, two.height);
     let differing = 0;
+    const deltaAt = (x: number, y: number, nx: number, ny: number): number => {
+        const i = (y * one.width + x) * 4;
+        const j = (ny * two.width + nx) * 4;
+        return Math.abs(one.data[i] - two.data[j]) + Math.abs(one.data[i + 1] - two.data[j + 1]) + Math.abs(one.data[i + 2] - two.data[j + 2]);
+    };
+    // Com `tolerance`, a fotografia do mesmo desenho deslocada de até esse tanto de pixels (a posição fracionária da opção, que muda a altura do recorte em 1 px) não conta como diferença.
+    const nearest = (x: number, y: number): number => {
+        let best = Infinity;
+        for (let dy = -tolerance; dy <= tolerance; dy += 1) for (let dx = -tolerance; dx <= tolerance; dx += 1) {
+            const [nx, ny] = [x + dx, y + dy];
+            if (nx >= 0 && ny >= 0 && nx < two.width && ny < two.height) best = Math.min(best, deltaAt(x, y, nx, ny));
+        }
+        return best;
+    };
     for (let y = 0; y < height; y += 1) {
         for (let x = 0; x < width; x += 1) {
-            if (x >= one.width || y >= one.height || x >= two.width || y >= two.height) { differing += 1; continue; }
-            const i = (y * one.width + x) * 4;
-            const j = (y * two.width + x) * 4;
-            const delta = Math.abs(one.data[i] - two.data[j]) + Math.abs(one.data[i + 1] - two.data[j + 1]) + Math.abs(one.data[i + 2] - two.data[j + 2]);
-            if (delta > 30) differing += 1;
+            if (x >= one.width || y >= one.height || x >= two.width || y >= two.height) { if (tolerance === 0) differing += 1; continue; }
+            if ((tolerance === 0 ? deltaAt(x, y, x, y) : nearest(x, y)) > 30) differing += 1;
         }
     }
     return differing / (width * height);
-}, [first, second] as const);
+}, [first, second, shift] as const);
 
 const MIN_DIFFERING_SHARE = 0.02;
+/** A amostra do card SEM textura (a opção "Nenhuma", que mora atrás do "Ver todas"): o que a textura do card tem de superar em 2% dos pixels. */
+const shotOfNoneCard = async (page: Page, groupId: string): Promise<string> => {
+    await page.locator(`[data-preset-toggle="${groupId}"][aria-expanded="false"]`).click();
+    const tile = page.locator(`[data-preset-group="${groupId}"] [data-option-tile]:has(button[data-preset-id="card-tex-none"])`);
+    const sample = tile.locator('> div').first();
+    await sample.scrollIntoViewIfNeeded();
+    await sample.locator('[data-sx-lazy="pending"]').first().waitFor({ state: 'detached', timeout: 30_000 });
+    return (await sample.screenshot({ animations: 'disabled' })).toString('base64');
+};
+/** As amostras de card desenham o card real do painel, num quadro maior, e a de gráfico é o gráfico real: entre duas opções destacadas a diferença é de ao menos 5% dos pixels. */
+const CARD_GROUPS: ReadonlySet<string> = new Set(['cards', 'shadow', 'shadowDirection', 'material', 'corners', 'density', 'border', 'charts']);
+/** O gráfico real desenha num canvas, depois do módulo do motor: a foto só vale com o canvas pintado. */
+const CANVAS_GROUPS: ReadonlySet<string> = new Set(['charts']);
+/** As amostras que são o componente real chegam num módulo à parte (o quadro vazio segura o lugar): a foto só vale depois dele, e o estado vazio ainda tem a entrada animada. */
+const REAL_COMPONENT_GROUPS: ReadonlyMap<string, number> = new Map([['charts', 0], ['tables', 0], ['badge', 0], ['emptyState', 1200]]);
+const MIN_DIFFERING_SHARE_OF_CARD = 0.05;
 /** Os grupos que só existem dentro da aba de outro grupo não têm seção própria na página: o caso confere os que se veem. */
 for (const mode of MODES) {
     for (const decision of DECISIONS) {
@@ -208,9 +245,10 @@ for (const mode of MODES) {
             const { page } = await open(mode.query);
             const indistinct: string[] = [];
             const matrix: string[] = [];
-            const collected: Array<{ group: GroupInfo; shots: string[] }> = [];
+            const collected: Array<{ group: GroupInfo; shots: string[]; reference?: string }> = [];
             await page.getByRole('button', { name: new RegExp(`^${decision.name}`) }).click();
             await page.getByRole('heading', { level: 2, name: decision.name }).waitFor();
+            await openAllGroups(page);
             for (const group of presetGroupsOf(decision.id).filter((candidate) => !INSIDE_ANOTHER_GROUP.has(candidate.id))) {
                 await settle(page, groupArea(group.id));
                 const tiles = page.locator(`[data-option-group="${group.id}"] [data-option-tile]`);
@@ -220,25 +258,36 @@ for (const mode of MODES) {
                     const sample = tiles.nth(index).locator('> div').first();
                     await sample.scrollIntoViewIfNeeded();
                     await sample.locator('[data-sx-lazy="pending"]').first().waitFor({ state: 'detached', timeout: 30_000 });
+                    if (REAL_COMPONENT_GROUPS.has(group.id)) { await sample.locator('[data-sample-loading]').first().waitFor({ state: 'detached', timeout: 30_000 }); await page.waitForTimeout(REAL_COMPONENT_GROUPS.get(group.id) ?? 0); }
+                    if (CANVAS_GROUPS.has(group.id)) { await sample.locator('canvas').first().waitFor({ timeout: 30_000 }); await page.waitForTimeout(400); }
                     shots.push((await sample.screenshot({ animations: 'disabled' })).toString('base64'));
                 }
-                collected.push({ group, shots });
+                collected.push({ group, shots, reference: group.id === 'cardTextures' ? await shotOfNoneCard(page, group.id) : undefined });
             }
             // A página de comparação só abre depois das capturas: uma aba nova tira a da prévia do primeiro plano, e as amostras lazy param de desenhar.
             const comparer = await browser.newPage();
-            for (const { group, shots } of collected) {
+            for (const { group, shots, reference } of collected) {
+                if (reference) {
+                    // A textura do card é comparada com o card sem ela (não com as outras texturas): ela tem de aparecer.
+                    for (let index = 0; index < shots.length; index += 1) {
+                        const share = await DIFFERING_SHARE(comparer, shots[index], reference, 1);
+                        matrix.push(`${mode.name}|${group.id}|${group.featuredIds[index]}|sem-textura|${share.toFixed(4)}`);
+                        if (share < MIN_DIFFERING_SHARE) indistinct.push(`${group.id}: ${group.featuredIds[index]} × card sem textura = ${(share * 100).toFixed(2)}%`);
+                    }
+                    continue;
+                }
                 for (let first = 0; first < shots.length; first += 1) {
                     for (let second = first + 1; second < shots.length; second += 1) {
                         const share = await DIFFERING_SHARE(comparer, shots[first], shots[second]);
                         matrix.push(`${mode.name}|${group.id}|${group.featuredIds[first]}|${group.featuredIds[second]}|${share.toFixed(4)}`);
-                        if (share < MIN_DIFFERING_SHARE) indistinct.push(`${group.id}: ${group.featuredIds[first]} × ${group.featuredIds[second]} = ${(share * 100).toFixed(2)}%`);
+                        if (share < (CARD_GROUPS.has(group.id) ? MIN_DIFFERING_SHARE_OF_CARD : MIN_DIFFERING_SHARE)) indistinct.push(`${group.id}: ${group.featuredIds[first]} × ${group.featuredIds[second]} = ${(share * 100).toFixed(2)}%`);
                     }
                 }
             }
             if (process.env.SARAK_PLAN141_MATRIX) fs.appendFileSync(process.env.SARAK_PLAN141_MATRIX, `${matrix.join(String.fromCharCode(10))}${String.fromCharCode(10)}`);
             await comparer.close();
             await page.close();
-            expect(indistinct, 'duplas destacadas que diferem em menos de 2% dos pixels').toEqual([]);
+            expect(indistinct, 'duplas destacadas que diferem em menos de 2% dos pixels (5% nos grupos de card)').toEqual([]);
         });
     }
 }
@@ -246,15 +295,16 @@ for (const mode of MODES) {
 for (const mode of MODES) {
     test(`defeito: a marca e o rótulo da topbar cabem no quadro (${mode.name})`, async () => {
         const { page } = await open(mode.query);
-        await page.getByRole('button', { name: /^Layout/ }).click();
-        await page.getByRole('heading', { level: 2, name: 'Layout' }).waitFor();
+        await page.getByRole('button', { name: /^Barras/ }).click();
+        await page.getByRole('heading', { level: 2, name: 'Barras' }).waitFor();
+        await openAllGroups(page);
         await settle(page, groupArea('topbar'));
         const frames = page.locator('[data-option-group="topbar"] [data-testid="bar-sample"]');
         const total = await frames.count();
         expect(total).toBeGreaterThan(0);
         for (let index = 0; index < total; index += 1) {
             await frames.nth(index).scrollIntoViewIfNeeded();
-            await frames.nth(index).locator('.sarak-chrome-brand span.truncate').waitFor({ timeout: 30_000 });
+            await frames.nth(index).locator('.sarak-chrome-brand [data-sarak-brand-name]').waitFor({ timeout: 30_000 });
             const overflow = await frames.nth(index).evaluate((frame) => {
                 const box = frame.getBoundingClientRect();
                 const inside = (element: Element | null): boolean => {
@@ -262,7 +312,7 @@ for (const mode of MODES) {
                     const rect = element.getBoundingClientRect();
                     return rect.width > 0 && rect.left >= box.left - 1 && rect.right <= box.right + 1 && rect.top >= box.top - 1 && rect.bottom <= box.bottom + 1;
                 };
-                const brand = frame.querySelector('.sarak-chrome-brand span.truncate');
+                const brand = frame.querySelector('.sarak-chrome-brand [data-sarak-brand-name]');
                 const label = Array.from(frame.querySelectorAll('nav a, nav button, nav span')).find((node) => (node.textContent ?? '').trim().length > 0) ?? null;
                 const clipped = (element: Element | null): boolean => !element || (element as HTMLElement).scrollWidth > (element as HTMLElement).clientWidth;
                 return { frameFits: frame.scrollWidth <= frame.clientWidth, brandInside: inside(brand), labelInside: inside(label), brandClipped: clipped(brand),  };
@@ -271,28 +321,13 @@ for (const mode of MODES) {
         }
         await page.close();
     });
-
-    test(`defeito: as faixas do SampleCard têm a largura do card (${mode.name})`, async () => {
-        const { page } = await open(mode.query);
-        await page.getByRole('button', { name: /^Forma/ }).click();
-        await page.getByRole('heading', { level: 2, name: 'Forma' }).waitFor();
-        await settle(page, groupArea('cards'));
-        await page.locator('[data-option-group="cards"] .sarak-card header').first().waitFor({ timeout: 30_000 });
-        const widths = await page.locator('[data-option-group="cards"] .sarak-card').evaluateAll((cards) => cards.map((card) => {
-            const cardWidth = (card as HTMLElement).clientWidth;
-            const band = (selector: string): number => (card.querySelector(selector) as HTMLElement).getBoundingClientRect().width;
-            return { card: Math.round(cardWidth), header: Math.round(band('header')), footer: Math.round(band('footer')) };
-        }));
-        expect(widths.length).toBeGreaterThan(0);
-        for (const item of widths) expect(item, JSON.stringify(item)).toEqual({ card: item.card, header: item.card, footer: item.card });
-        await page.close();
-    });
 }
 
 test('defeito: o trilho do interruptor tem contraste de 3:1 com o fundo da amostra, no claro', async () => {
     const { page } = await open('claro=1');
     await page.getByRole('button', { name: /^Componentes/ }).click();
     await page.getByRole('heading', { level: 2, name: 'Componentes' }).waitFor();
+    await openAllGroups(page);
     await settle(page, groupArea('switch'));
     const rails = page.locator('[data-option-group="switch"] input[role="switch"]');
     await page.locator('[data-option-group="switch"]').scrollIntoViewIfNeeded();
@@ -315,7 +350,11 @@ test('defeito: o trilho do interruptor tem contraste de 3:1 com o fundo da amost
             let behind: Element | null = rail.parentElement;
             while (behind && parse(getComputedStyle(behind).backgroundColor)[3] === 0) behind = behind.parentElement;
             const background = parse(getComputedStyle(behind ?? scope).backgroundColor);
-            const [red, green, blue, alpha] = parse(getComputedStyle(rail).backgroundColor);
+            // No vidro o trilho é translúcido de propósito: quem sustenta o 3:1 é a borda opaca na cor ativa, e é ela que se mede.
+            const railStyle = getComputedStyle(rail);
+            const border = parse(railStyle.borderTopColor);
+            const glassBorder = Number.parseFloat(railStyle.borderTopWidth) > 0 && border[3] === 1 && railStyle.backdropFilter !== 'none';
+            const [red, green, blue, alpha] = glassBorder ? border : parse(railStyle.backgroundColor);
             const over = [0, 1, 2].map((channel) => [red, green, blue][channel] * alpha + background[channel] * (1 - alpha));
             const [light, dark] = [luminance(over), luminance(background)].sort((a, b) => b - a);
             return (light + 0.05) / (dark + 0.05);
@@ -330,11 +369,14 @@ for (const mode of MODES) {
     test(`o rótulo do item ativo de toda barra lateral e topbar tem contraste de 4,5:1 com o fundo do item (${mode.name})`, async () => {
         test.setTimeout(240_000);
         const { page } = await open(mode.query);
-        await page.getByRole('button', { name: /^Layout/ }).click();
-        await page.getByRole('heading', { level: 2, name: 'Layout' }).waitFor();
+        await page.getByRole('button', { name: /^Barras/ }).click();
+        await page.getByRole('heading', { level: 2, name: 'Barras' }).waitFor();
+        await openAllGroups(page);
         const failures: string[] = [];
         for (const groupId of ['sidebar', 'topbar']) {
-            await page.locator(`[data-preset-toggle="${groupId}"]`).click();
+            // O grupo que cabe inteiro nos destaques não tem o botão "ver todas".
+            const showAll = page.locator(`[data-preset-toggle="${groupId}"]`);
+            if (await showAll.count() > 0) await showAll.click();
             await settle(page, groupArea(groupId));
             const tiles = page.locator(`[data-option-group="${groupId}"] [data-option-tile]`);
             const total = await tiles.count();

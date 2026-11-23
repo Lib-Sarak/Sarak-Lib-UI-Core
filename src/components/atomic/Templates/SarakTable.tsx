@@ -13,6 +13,7 @@ export interface SarakTableProps<TData extends Record<string, unknown> = Record<
     error?: string | null;
 }
 
+/** @replacesElement table */
 export const SarakTable = <TData extends Record<string, unknown> = Record<string, unknown>>(
     props: SarakTableProps<TData>,
 ): ReactElement => <SarakTableView {...useSarakTableViewModel(props)} />;

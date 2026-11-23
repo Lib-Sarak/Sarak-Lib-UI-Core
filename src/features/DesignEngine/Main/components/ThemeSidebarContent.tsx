@@ -33,7 +33,6 @@ interface ThemeSidebarContentProps {
     /** Para as telas avançadas (tabela de tokens e Command Center). */
     resetComponent: (schemaIdOrSchemas: string | string[]) => void;
     resetToken: (id: string) => void;
-    handleApplyToSystem: () => void;
     toast: { type: 'success' | 'warning'; message: string } | null;
     onApplyFullTheme: (design: Partial<SarakDesignState>, themeId?: string) => void;
 }
@@ -89,7 +88,6 @@ const AdvancedScreen: React.FC<ThemeSidebarContentProps> = (props) => {
             <HyperGranularityTab
                 draft={options.draft}
                 updateDraft={options.updateDraft}
-                handleApplyToSystem={props.handleApplyToSystem}
                 resetComponent={props.resetComponent}
                 resetToken={props.resetToken}
                 toast={props.toast}

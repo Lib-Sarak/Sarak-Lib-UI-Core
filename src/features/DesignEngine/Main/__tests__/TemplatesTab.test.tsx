@@ -1,6 +1,6 @@
 import React from 'react';
 import '@testing-library/jest-dom';
-import { render, fireEvent, screen, waitFor } from '@testing-library/react';
+import { render, fireEvent, screen, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TemplatesTab } from '../TemplatesTab';
 import { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
@@ -107,5 +107,25 @@ describe('TemplatesTab', () => {
 
         expect(mockClipboard.writeText).toHaveBeenCalledTimes(1);
         expect(mockClipboard.writeText).toHaveBeenCalledWith(JSON.stringify({ mode: 'dark' }, null, 2));
+    });
+
+    it('o segundo clique em copiar reinicia a janela do aviso, sem o timer do primeiro apagá-lo', () => {
+        vi.useFakeTimers();
+        try {
+            Object.assign(navigator, { clipboard: { writeText: vi.fn() } });
+            render(<TemplatesTab onApplyFullTheme={vi.fn()} />);
+
+            const copyButton = screen.getAllByTestId('icon-copy')[0].closest('button')!;
+            fireEvent.click(copyButton);
+            act(() => { vi.advanceTimersByTime(1500); });
+            fireEvent.click(copyButton);
+            act(() => { vi.advanceTimersByTime(1000); }); // 2500 ms desde o 1º clique, 1000 ms desde o 2º
+
+            expect(screen.getAllByTestId('icon-copy')).toHaveLength(1); // o aviso do 1º tema ainda está de pé
+            act(() => { vi.advanceTimersByTime(1100); });
+            expect(screen.getAllByTestId('icon-copy')).toHaveLength(2);
+        } finally {
+            vi.useRealTimers();
+        }
     });
 });

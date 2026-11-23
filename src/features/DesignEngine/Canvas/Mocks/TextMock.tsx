@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
 import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { SarakInput } from '../../../../components/atomic/Inputs/SarakInput';
 
 interface TextMockProps {
@@ -12,14 +13,15 @@ interface TextMockProps {
 }
 
 export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, animationStyle }) => {
+    const text = useLibraryText();
     const [reportText, setReportText] = React.useState(
-        `RELATÓRIO DE PERFORMANCE OPERACIONAL // SISTEMA SARAK UI\n` +
+        `RELATÓRIO DE PERFORMANCE OPERACIONAL // ${text('sampleTextSystem').toUpperCase()}\n` +
         `-----------------------------------------------------\n` +
         `Data de Auditoria: 2026-05-19T02:00:00Z\n` +
         `Servidor de Origem: Node-04-PR (Core Principal)\n` +
         `Status do Cluster: Otimizado / Sem Gargalos Detectados\n\n` +
         `1. COMPORTAMENTO DO GÊMEO DIGITAL\n` +
-        `O motor de design atômico Sarak foi inicializado com sucesso nas subcamadas do sistema. ` +
+        `O motor de design atômico foi inicializado com sucesso nas subcamadas do sistema. ` +
         `Todos os espécimes visuais mapeados em tempo de execução renderizaram de forma reativa a partir das variáveis CSS declaradas. ` +
         `Não foram observados picos de CPU ou vazamento de memória durante a troca dinâmica de paletas ou escalas de arredondamento de borda.\n\n` +
         `2. MÉTRICAS DE INTERAÇÃO DO USUÁRIO\n` +
@@ -187,7 +189,7 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                         <div className="mt-8 pt-4 border-t border-theme-text/5 flex flex-col gap-2 font-mono text-[9px] text-theme-text/30 uppercase text-left">
                             <div className="flex items-center gap-2">
                                 <SarakIcon name="CornerDownRight" size={10} />
-                                <span>Verificado por: Igor Sarak // Lead Architect</span>
+                                <span>Verificado por: {text('sampleTextName')} // Lead Architect</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <SarakIcon name="CornerDownRight" size={10} />

@@ -19,6 +19,7 @@ import {
     SarakGrid,
     SarakPageHeader,
     SarakSkeleton,
+    SarakTypography,
     type SarakResponsiveValue,
 } from '@sarak/lib-ui-core';
 
@@ -67,7 +68,7 @@ function CardItem({ item }: { item: Item }): React.ReactElement {
     return (
         <SarakCard>
             <SarakCard.Body>
-                <h3>{item.nome}</h3>
+                <SarakTypography variant="h3">{item.nome}</SarakTypography>
             </SarakCard.Body>
         </SarakCard>
     );

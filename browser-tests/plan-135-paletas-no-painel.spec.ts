@@ -15,6 +15,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildHarness } from './build-harness.mjs';
+import { switchPreviewMode } from './preview-mode-toggle';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ENTRY = path.join(HERE, 'fixtures', 'plan-135-paletas-entry.tsx');
@@ -74,7 +75,7 @@ test('escolher uma pronta, criar a partir de uma cor, ajustar um token e aplicar
     await expect(gallery).toBeVisible();
     await capture(page, '1-galeria-por-tipo.png', 'Galeria de paletas: uma linha por paleta, com filtro por tipo.');
 
-    await page.locator('.sarak-device-desktop').getByRole('button', { name: 'Modo Claro' }).click();
+    await switchPreviewMode(page, 'Modo Claro');
     await capture(page, '2-galeria-modo-claro.png', 'A mesma galeria com o painel e a prévia no modo claro.');
 
     const firstPreset = gallery.getByRole('radio').first();
@@ -104,7 +105,11 @@ test('escolher uma pronta, criar a partir de uma cor, ajustar um token e aplicar
     await page.getByRole('button', { name: 'Voltar para a lista de decisões' }).click();
     await page.getByRole('button', { name: /^Cores/ }).click();
 
-    await gallery.getByRole('radio').first().click();
+    // A paleta criada não pertence a um grupo pronto; abra a família e troque por outra paleta pronta.
+    await gallery.locator('[data-palette-group="triadic"] [data-group-toggle]').click();
+    const alternatePalette = gallery.getByRole('radio', { name: 'Grafite e rosa' });
+    await expect(alternatePalette).toHaveAttribute('aria-checked', 'false');
+    await alternatePalette.click();
     const dialog = page.getByRole('dialog');
     await expect(dialog).toContainText('Trocar de paleta?');
     await capture(page, '5-troca-com-ajustes.png', 'Trocar de paleta com um ajuste manual: o painel pergunta se o ajuste fica.');

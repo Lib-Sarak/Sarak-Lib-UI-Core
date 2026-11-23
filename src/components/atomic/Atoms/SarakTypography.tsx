@@ -88,6 +88,8 @@ const colorVar: Record<SarakTypographyColor, string> = {
  * Único átomo de texto/hierarquia tipográfica da Sarak — resolvível via manifesto
  * (`"type": "SarakTypography"`) ou uso direto em TSX. 100% orientado a tokens já
  * existentes no Design Engine (nenhum valor visual novo introduzido).
+ *
+ * @replacesElement h1 h2 h3
  */
 export const SarakTypography: React.FC<SarakTypographyProps> = ({
     variant = 'body',

@@ -1,19 +1,41 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { act, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { describe, it, expect, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, it, expect, vi } from 'vitest';
+import { PEEK_DELAY_MS } from '../peek';
 import { PresetsCatalog } from '../PresetsCatalog';
 
-vi.mock('../../../../../core/Design/hooks/useDesignVariables', () => ({
-    useDesignVariables: vi.fn(() => ({ variables: {}, attributes: {} }))
+// O cartão real do painel (`SarakTitleCard`) lê o design pelo contexto; sem o Provider, o teste entrega um design vazio.
+vi.mock('../../../../../core/Provider/SarakUIProvider', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('../../../../../core/Provider/SarakUIProvider')>()),
+    useSarakUI: () => ({ design: {}, isDrafting: false }),
 }));
+
+// O resultado é o mesmo objeto a cada chamada, como o do hook de verdade (que memoriza): o escopo das miniaturas compara as variáveis entre renders.
+vi.mock('../../../../../core/Design/hooks/useDesignVariables', () => {
+    const stable = { variables: {}, attributes: {} };
+    return { useDesignVariables: vi.fn(() => stable) };
+});
 
 vi.mock('framer-motion', async () => {
     const actual = await vi.importActual('framer-motion');
-    return { ...actual as any, motion: { button: ({ children, className, ...props }: any) => <button className={className} {...props}>{children}</button> } };
+    return { ...actual as any, motion: { button: ({ children, className, ...props }: any) => <button className={className} {...props}>{children}</button>, div: ({ children, className, style, initial: _initial, animate: _animate, whileHover: _whileHover, ...props }: any) => <div className={className} style={style} {...props}>{children}</div> } };
 });
 
 describe('PresetsCatalog — um grupo por vez, sem cromo próprio', () => {
+    // Sem observador de interseção o `useOnFirstVisible` mostra tudo na hora e o snapshot compete com o efeito.
+    // Este nunca intersecta: as miniaturas ficam `pending`, o mesmo estado em qualquer carga.
+    const originalObserver = globalThis.IntersectionObserver;
+    beforeAll(() => {
+        globalThis.IntersectionObserver = class {
+            observe() {}
+            unobserve() {}
+            disconnect() {}
+            takeRecords() { return []; }
+        } as unknown as typeof IntersectionObserver;
+    });
+    afterAll(() => { globalThis.IntersectionObserver = originalObserver; });
+
     const createProps = (group: React.ComponentProps<typeof PresetsCatalog>['group']) => ({
         group,
         onApplyPreset: vi.fn(),
@@ -36,7 +58,7 @@ describe('PresetsCatalog — um grupo por vez, sem cromo próprio', () => {
         const onApplyFullTheme = vi.fn();
         render(<PresetsCatalog {...createProps('themes')} currentMode="light" draftMode="dark" onApplyFullTheme={onApplyFullTheme} />);
 
-        const themeCard = await screen.findByRole('button', { name: /Sarak Sovereign/i }, { timeout: 10000 });
+        const themeCard = await screen.findByRole('button', { name: /Sarak Sovereign(?! Classic)/i }, { timeout: 10000 });
         fireEvent.click(themeCard);
 
         expect(onApplyFullTheme).toHaveBeenCalledWith(expect.objectContaining({ mode: 'dark' }), 'sarak-sovereign');
@@ -48,12 +70,18 @@ describe('PresetsCatalog — um grupo por vez, sem cromo próprio', () => {
     });
 
     it.each([
-        ['cards', 'Curados'],
-        ['buttons', 'Curados'],
-        ['atmosphere', 'Atmosferas'],
+        ['cards', 'cards'],
+        ['cardTextures', 'cardTextures'],
+        ['atmosphere', 'atmosphere'],
+        ['textures', 'textures'],
     ] as const)('o grupo %s monta o próprio catálogo', (group, marker) => {
-        render(<PresetsCatalog {...createProps(group)} />);
-        expect(screen.getByRole('button', { name: marker })).toBeInTheDocument();
+        const { container } = render(<PresetsCatalog {...createProps(group)} />);
+        expect(container.querySelector('[data-preset-group="' + marker + '"]')).not.toBeNull();
+    }, 30000);
+
+    it('o grupo de botões segue com o catálogo próprio (abas Curados e por estilo)', () => {
+        render(<PresetsCatalog {...createProps('buttons')} />);
+        expect(screen.getByRole('button', { name: 'Curados' })).toBeInTheDocument();
     }, 30000);
 
     it('o grupo de campos monta uma opção por preset de campo', () => {
@@ -70,8 +98,47 @@ describe('PresetsCatalog — um grupo por vez, sem cromo próprio', () => {
 
         const globalsGrid = container.querySelector('.grid') as HTMLElement;
         expect(globalsGrid.className).not.toMatch(/md:grid-cols-2/);
-        expect(globalsGrid.className).toMatch(/@min-\[240px\]:grid-cols-2/);
+        expect(globalsGrid.className).toContain('grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))]');
         // A grade mora DENTRO da fronteira de container — é dela que ela mede.
         expect(containerBoundary?.contains(globalsGrid)).toBe(true);
+    });
+
+    describe('espiada de uma opção do grupo', () => {
+        beforeEach(() => {
+            vi.useFakeTimers();
+            window.matchMedia = vi.fn().mockReturnValue({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() }) as unknown as typeof window.matchMedia;
+        });
+        afterEach(() => { vi.useRealTimers(); });
+
+        const peekFirstOption = (group: React.ComponentProps<typeof PresetsCatalog>['group']) => {
+            const onPeek = vi.fn();
+            const { container } = render(<PresetsCatalog {...createProps(group)} onPeek={onPeek} />);
+            fireEvent.mouseEnter(container.querySelector('[data-option-tile]') as HTMLElement);
+            act(() => { vi.advanceTimersByTime(PEEK_DELAY_MS); });
+            return onPeek;
+        };
+
+        it('a opção de tabela leva a prévia à tela da tabela, e sair devolve null', () => {
+            const onPeek = peekFirstOption('tables');
+            expect(onPeek).toHaveBeenCalledWith(expect.objectContaining({ tableDensity: expect.any(String) }), 'tabela');
+        });
+
+        it.each([['badge', 'components'], ['charts', 'graficos'], ['emptyState', 'components']] as const)('o grupo %s leva à tela %s', (group, screenId) => {
+            expect(peekFirstOption(group)).toHaveBeenCalledWith(expect.any(Object), screenId);
+        });
+
+        it('grupo sem tela própria espia sem mudar de tela', () => {
+            expect(peekFirstOption('corners')).toHaveBeenCalledWith(expect.any(Object), undefined);
+        });
+
+        it.each([['topbar', 'topbar'], ['sidebar', 'sidebar']] as const)('a opção de %s acrescenta a navegação que mostra a barra', (group, navigation) => {
+            expect(peekFirstOption(group)).toHaveBeenCalledWith(expect.objectContaining({ navigationStyle: navigation }), undefined);
+        });
+
+        it('sem onPeek a galeria não espia', () => {
+            const { container } = render(<PresetsCatalog {...createProps('tables')} />);
+            fireEvent.mouseEnter(container.querySelector('[data-option-tile]') as HTMLElement);
+            expect(() => act(() => { vi.advanceTimersByTime(PEEK_DELAY_MS); })).not.toThrow();
+        });
     });
 });

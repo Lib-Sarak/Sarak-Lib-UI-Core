@@ -58,14 +58,27 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 
 > ⚠️ **Relatório × FAIL.** O balde **deduzido** do `auditor_hardcoded` (ícones, `w-full`/`h-full`, alinhamento) é **relatório**: aparece na reconciliação, é contado, e **não reprova**. Só o líquido reprova. Já a linha final de `verify_parity` é relatório de contagem **bruta**; o número que importa para paridade é o das **três fontes**, que hoje batem em **423**. Ver [[04-contrato-de-tokens-e-paridade]] §2.
 
+**O que o `auditor_hardcoded` lê.** O detector de valor varre `.tsx` e `.ts` de `src/components`, `src/features` e `src/core`, e o
+estrutural varre `src/components/atomic`. Ficam fora `.d.ts`, `__tests__/`, `Mocks` e `__e2e__`. Um gerador de estilo em `.ts`
+(`buttonStyles.ts`, `kanbanLayout.ts`) é cobrado como o `.tsx` que o usa. As isenções de escopo são três, escritas no gate com o motivo:
+
+- o `.ts` de `core/Design/presets/`, `schema/` e `palette/`, porque ali o literal é o valor do token. Um `.tsx` dessas pastas
+  continua cobrado;
+- três arquivos de matemática de cor (`colorMath.ts`, `on-color.ts` e `colorParts.ts`), em que o literal é operando de cálculo;
+- a condição de container query (`@min-[768px]:`), porque o CSS não aceita `var()` em condição de consulta. A classe que a condição
+  liga continua cobrada.
+
+Fora delas, a isenção é pontual: o marcador `sarak-allow-hardcode:` com o motivo na linha de cima. Guarda
+`gates/scripts/audit/__tests__/auditor_hardcoded.ts-scope.test.mjs`.
+
 ## 2.2 Os gates de contrato
 
 | Gate | Comando | Garante | Cobra | Custo |
 | --- | --- | --- | --- | --- |
 | Barril | `npm run barrel:check` | Todo componente derivado por AST está no barril **e o nome RESOLVE para o componente** (type checker, não presença sintática), com o `<Nome>Props` | R14 | ~5,6 s |
 | Catálogo | `npm run catalog:check` | `docs/component-catalog.{json,md}` commitado == gerado agora | R17 | ~1,5 s |
-| Zero-marca | `npm run zero-brand:check` | Nenhuma marca da lib como texto em componente consumidor-facing | R12 | ~1,3 s |
-| Kit | `npm run guide:check` | `sarak-ui/` commitado == gerado agora (6 arquivos) | R17 | ~1,8 s |
+| Zero-marca | `npm run zero-brand:check` | Nenhuma marca da lib em literal de texto de `src/` (`.ts` e `.tsx`: JSX, catálogo de idiomas, objeto, constante, `document.title`), por padrão e não por lista de frases. Varre também os `.json` do catálogo e procura a marca como trecho, não como palavra. Cada isenção casa só o uso técnico real: pacote, prefixos e utilitárias em minúsculas, etiqueta de diagnóstico nas formas exatas, identificador que existe em `src/`, chave de armazenamento em minúsculas, o nome dos dois temas embarcados só nos arquivos do tema, o argumento de `console.*`, o caminho de módulo e o tipo literal; a allowlist de arquivos é vazia, porque os painéis do Design Engine chegam ao importador | R12 | ~1,3 s |
+| Kit | `npm run guide:check` | `sarak-ui/` commitado == gerado agora (6 arquivos). A tabela de arquétipos do `GUIA-FRONTEND.md`, entre os marcadores `SARAK-KIT:ARQUETIPOS`, sai de `SARAK_THEME_CATALOG` (`catalog.generated.ts`): um tema novo ou removido muda a tabela sem tocar no guia, e a tabela velha reprova | R17 | ~1,8 s |
 | Kit do mantenedor | `npm run dev-kit:check` | `sarak-dev/` commitado == gerado agora (3 arquivos) **e zero ponteiro morto** na prosa | R17 · R23 · R29 | ~2,0 s |
 | Pacote | `npm run package:check` | O tarball não leva proibido nem esquece obrigatório | **R19** | precisa de `dist/` |
 | Deep import | `npm run deep-import:check` | `package.json.exports` só expõe raiz + subcaminhos `.css` | **R27** | ~0,3 s |
@@ -75,8 +88,8 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Nomes do kit × barril | `npm run kit-names:check` | Todo nome importado de `@sarak/lib-ui-core` em `README.md`, `docs/*.md`, `sarak-ui/**` (`.md`/`.ts`/`.tsx`) e no `main.tsx`/`ExampleModule.tsx` que o `init` gera existe no barril; em crase, acusa o nome antigo de uma renomeação de `docs/migracoes.md` e o nome de formato público (`Sarak*`, `useSarak*`, `SARAK_*`) que não existe em `src/`. Todo arquivo chamado `migracoes.md` fica fora — cita nomes velhos de propósito. Prosa sem crase não é lida | **R23** | precisa de `dist/` |
 | Container query literal | `npm run container-query:check` | Nenhum arquivo de produção monta classe `@min-[…]` por interpolação de template literal, **e** `sarak-base.css` restringe o scan do Tailwind (`source(none)` + `@source` explícito), **e** todo nome de classe de container query tem medida **válida** | [[07-responsividade-e-multidispositivo]] §6.1 | ~0,3 s |
 | Container garantido | `npm run container-query-boundary:check` | Arquivo de produção que **chama** `getGridStyles`/`getResponsiveStackStyles`/`getHeaderStyles`/`getResponsiveSpacingStyles` contém a classe `@container` em algum elemento — quem emite container query planta o container ([[07-responsividade-e-multidispositivo]] §6.1) | [[07-responsividade-e-multidispositivo]] §6.1 | ~0,3 s |
-| Tipos públicos | `npm run public-types:check` | Todo tipo citado em assinatura pública é **importável pelo nome** a partir do barril — o `barrel:check` cobre componente, não tipo | — *(plan-45)* | ~1 s |
-| Paridade doc × persistência | `npm run persistence-doc:check` | A documentação de persistência bate com o código — mesma família do `catalog:check` | R17 *(plan-52)* | ~0,8 s |
+| Tipos públicos | `npm run public-types:check` | Todo tipo citado em assinatura pública é **importável pelo nome** a partir do barril — o `barrel:check` cobre componente, não tipo | — | ~1 s |
+| Paridade doc × persistência | `npm run persistence-doc:check` | A documentação de persistência bate com o código — mesma família do `catalog:check` | R17  | ~0,8 s |
 | Merge de classe no átomo | `npm run class-merge:check` | Átomo de `src/components/atomic/**` compõe `className` por `mergeSarakClasses`, não por concatenação de template literal — a classe do chamador vence a do átomo; a allowlist declara, com motivo, os ainda não convertidos. **E** nenhum arquivo desse escopo importa `tailwind-merge` (por `import`, `require` ou `import()`) fora da porta `hooks/mergeSarakClasses.ts`; `__tests__/` fica livre | **R35** | ~0,2 s |
 | Leitor de token | `npm run token-reader:check` | Todo token do schema tem leitor: a variável que o motor emite (`--sarak-<kebab>` e `cssVars`) é lida em `var(` com o nome ancorado (prefixo não conta), toda opção de `select` tem regra `[data-sx-<kebab>="…"]`, `classPrefix` ou componente que a acessa pelo valor, e leitor declarado por `@sarak-token-reader <id> tabela|direto` tem teste por opção. `ALLOWLIST` com motivo, que se esvazia sozinha — e está vazia | **R40** | ~1,8 s |
 | `!important` visual | `npm run css-important:check` | Nenhum `!important` em seletor amplo de `src/styles/*.css` **nem em string/template de TypeScript** escreve propriedade visual que o componente controla; exceção declarada que vence é acusada | **R41** | ~7 s *(idem)* |
@@ -89,12 +102,12 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Porta de ícones | `npm run icon-port:check` | Nenhum `.ts`/`.tsx` de `src/` importa `lucide-react`, `@phosphor-icons/react` ou `@tabler/icons-react` (por `import`, reexport, `require()` ou `import()`) fora de `components/atomic/Icon/families/`; o painel de autoria (`features/DesignEngine/`) fica fora, declarado | **R39** | ~0,9 s |
 | Prefixo do barril público | `npm run prefix:check` | Todo nome exportado segue a convenção da espécie (PascalCase → `Sarak`, constante → `SARAK_`, hook → `use`, função → contém `Sarak`); allowlist exige motivo e se autolimpa | **R37** | ~0,3 s |
 | Trava de escrita do agente | `node gates/scripts/contrato/check-agent-git-write.mjs` | Sessão cujo ambiente carrega `CLAUDECODE`, `AI_AGENT` ou `CLAUDE_CODE_SESSION_ID` e **não** carrega `SARAK_GIT_ESCRITA_AUTORIZADA` não commita nem empurra: o hook bloqueia antes de qualquer outro passo. Decisão exportada e testada por fixture; só `commit` e `push`, só os marcadores medidos | **R38** | ~0,06 s |
-| Paridade token de cromo × consumidor | `npm run chrome-token-parity:check` | Todo token de cromo coberto tem consumidor no `SarakAppChrome` — a existência do consumidor, não o valor. Escopo: `schema/navigation.ts` inteiro + a seção de layout de `schema/system.ts`; a dívida ficaria declarada em `ORPHAN_TOKENS`, hoje vazia | [[05-cromo-e-slots]] §2.4 | ~0,3 s |
+| Paridade token de cromo × consumidor | `npm run chrome-token-parity:check` | Todo token de cromo coberto tem consumidor no `SarakAppChrome` — a existência do consumidor, não o valor. Escopo: `schema/navigation.ts` inteiro (o schema é avaliado, então o token montado por fábrica e o de `barPersonality.ts` entram), layout de `schema/system.ts` até o marcador de bordas (também avaliado), os tokens de posição de `schema/preferences.ts` (fora só os dois passos de tamanho de fonte, lidos pelo Provider) e ids com `navigation` nos demais `schema/*.ts`; os outros grupos descrevem superfícies que não são o cromo. O token lido por mapa de ids exportado do schema conta por `MAPA.chave` ou pela chamada de um leitor genérico declarado no gate; citar só o nome do mapa não basta. A dívida ficaria declarada em `ORPHAN_TOKENS`, hoje vazia | [[05-cromo-e-slots]] §2.4.1 | ~0,3 s |
 
-> ⚠️ **`container-query:check` (plan-39) — o que ele NÃO vê, declarado no próprio cabeçalho (R18):** é
+> ⚠️ **`container-query:check` — o que ele NÃO vê, declarado no próprio cabeçalho (R18):** é
 > **estático** — não constrói CSS. Prova só que o **nome** da classe está soletrado literal no arquivo; não
 > prova que a regra correspondente foi de fato **gerada** no `dist/sarak.css` publicado (isso exige rodar
-> `npm run build` e comparar, como fez a `plan-39` na entrega). Só detecta o padrão textual de abertura de
+> `npm run build` e comparar, como se fez na entrega do gate). Só detecta o padrão textual de abertura de
 > interpolação de template literal logo após o colchete — concatenação de string escaparia (nenhum caso
 > assim existe hoje, medido). É por **texto de linha, não por AST** — uma linha de comentário que reproduza o
 > mesmo padrão também é acusada, de propósito: é a mesma armadilha que já quebrou o build uma vez (comentário
@@ -104,11 +117,11 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 > que `src/styles/sarak-base.css` declara `source(none)` no `@import "tailwindcss"` e mantém pelo menos um
 > `@source` não vazio. Sem isso a detecção AUTOMÁTICA do Tailwind volta a varrer o repositório inteiro
 > (`.md` incluído, respeitando só `.gitignore`) — foi o que derrubou `npm run build` durante esta própria
-> plan: uma classe de container query inválida, citada em prosa em duas plans (`plan-35`, `plan-39`), virou
+> plan: uma classe de container query inválida, citada em prosa em duas plans, virou
 > uma media query inválida e quebrou `build:css:scoped`. Essa checagem também é textual — não valida se o
 > glob do `@source` continua amplo o bastante para cobrir todo `.ts`/`.tsx` de produção.
 
-> ⚠️ **`container-query-boundary:check` (plan-41) — o que ele NÃO vê:** é **textual e por arquivo** — prova
+> ⚠️ **`container-query-boundary:check` — o que ele NÃO vê:** é **textual e por arquivo** — prova
 > que a string `@container` existe **em algum lugar** do mesmo arquivo que chama um dos quatro produtores de
 > classe. **Não prova ancestralidade real em JSX**: um `@container` num elemento *irmão* passaria e
 > continuaria quebrado em runtime. Não prova que a query **casa** (isso é browser real). É
@@ -117,7 +130,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 > chamador se autossustenta, mas quem viesse a depender de um ancestral declarado em outro arquivo seria
 > acusado sem motivo.
 
-> ⚠️ **`public-types:check` (plan-45) — o que ele NÃO vê:** cobre tipo que aparece **diretamente** como tipo
+> ⚠️ **`public-types:check` — o que ele NÃO vê:** cobre tipo que aparece **diretamente** como tipo
 > de prop, parâmetro ou retorno público. Tipo que só existe como **detalhe de composição interna** de outro
 > tipo público (membro de interseção, alias local) fica fora de propósito — não é vocabulário do consumidor.
 > As exclusões são **nomeadas uma a uma**, com motivo, em `gates/allowlists/publicTypeExclusions.mjs`; o
@@ -132,10 +145,11 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Segredos | `python gates/scripts/segredo/verificar_commit.py --raiz .` (Anel 0) | Nenhum segredo nem arquivo sensível no staged | **R22** |
 | `BUILD_INFO.json` | `npm run build-info:check` (dentro de `gates:full`) | `dist/BUILD_INFO.json` commitado bate com o que o gerador produz agora | **R29** |
 | Cobertura em % | `npm run coverage:check` (dentro de `gates:full`) | Piso móvel: mede, grava, e o piso só sobe — mesma mecânica do `audit:baseline` | **R8.1** — piso hoje: **71,47%** *(medido 2026-08-11; a fonte viva é `gates/baselines/coverage-floor.json`)* |
-| Âncora de migração | `npm run migration-anchor:check` (gancho `version`) | Todo **MAJOR** emitido tem entrada em `docs/migracoes.md` com a versão no título | [[03-versionamento-e-release]] §5 *(plan-53)* |
-| Minor sem remoção | `npm run minor-no-removal:check` (gancho `version`) | **Minor/patch nunca remove nome do barril público** (`dist/index.d.ts`) contra a última tag | [[03-versionamento-e-release]] §3 *(plan-53)* |
+| Âncora de migração | `npm run migration-anchor:check` (gancho `version`) | Todo **MAJOR** emitido tem entrada em `docs/migracoes.md` com a versão no título | [[03-versionamento-e-release]] §5  |
+| Minor sem remoção | `npm run minor-no-removal:check` (gancho `version`) | **Minor/patch nunca remove nome do barril público** (`dist/index.d.ts`) contra a última tag | [[03-versionamento-e-release]] §3  |
+| Tokens nas notas | `npm run token-release-notes:check` (gancho `version`) | A entrada da versão em `docs/migracoes.md` nomeia todo token acrescentado, removido ou com tipo ou gramática nova desde a última tag estável; não vê mudança de valor padrão | [[03-versionamento-e-release]] §5 e §5.2 |
 
-> ⚠️ **Os dois gates de release da `plan-53` (2026-08-19) — o que eles NÃO veem, declarado no cabeçalho de
+> ⚠️ **Os dois gates de release de 2026-08-19 — o que eles NÃO veem, declarado no cabeçalho de
 > cada arquivo (R18):**
 >
 > - **`migration-anchor:check`** confere só a **presença** da âncora, nunca o conteúdo — uma nota vazia ou
@@ -184,7 +198,7 @@ comando. A `plan-52` fechou os quatro; esta tabela é o que impede que a situaç
 | `build-info` · `package` · `coverage` | — | ✅ | — | — | ✅ |
 | `release:check` | — | — | — | ✅ (só `main`) | ✅ **job `release-tag`** |
 | `cromo-css-real` (`browser-tests/`, Playwright) | — | — | — | — | ✅ **job `cromo-css-real`** ([[16-integracao-continua]] §4.2.1) |
-| `migration-anchor` · `minor-no-removal` | — | — | ✅ *(desde a `plan-53`)* | — | — |
+| `migration-anchor` · `minor-no-removal` · `token-release-notes` | — | — | ✅ | — | — |
 | Segredos (Anel 0) | ✅ **sempre** | — | — | — | ⛔ **impossível** |
 
 ⚠️ **Duas linhas desta tabela merecem leitura, não só consulta:**
@@ -219,6 +233,8 @@ npx vitest run
 **Cobra R6 · R13 · R24 · R25 · R26 · R28.** A suíte **é** gate: ela roda no Anel 3 do `pre-push` e bloqueia ([[02-enforcement-por-commit]] §4). Seis regras dependem exclusivamente dela, e cada uma nomeia o arquivo do seu teste em [[00-regras-e-invariantes]] — `tokenContractParity`, `HostIdentity`/`EmbeddedMode`, `scopeCss`, `shippedThemesConsoleClean`, `iconCatalogParity`/`iconContract`, `checkUpdateCli.contract.test.mjs`. Todo gate novo das plans 12/16 também nasceu com **self-test** próprio (um caso pego, um liberado) — 51 casos, em 12 arquivos.
 
 > **Regra dura: "suítes verdes" exige a suíte INTEIRA.** Rodar pasta a dedo esconde snapshot de terceiro que quebrou. Esta regra não é preferência de estilo; ela já custou uma spec aprovada com snapshot vermelho fora da pasta olhada.
+
+> **Regra dura: teste que estoura o tempo se conserta no próprio teste.** O tempo padrão do vitest não sobe para a suíte. O `preversion` roda a suíte inteira com cobertura, e um teste que passa de 5 s sob carga derruba a release. O conserto ataca a causa: um laço grande vira um caso por item (`it.each`), a montagem cara acontece uma vez, e o teste confere o dado em vez de desenhar o que não precisa. Se um teste precisar de prazo próprio, como a espera de um módulo carregado sob demanda, a constante fica no teste, com o motivo ao lado (`PresetSamples.test.tsx`).
 
 Duas coisas do `vitest.config.ts` que importam para quem lê a saída:
 
@@ -290,7 +306,7 @@ O que existe é **uma** medição em navegador real: `browser-tests/*.spec.ts`, 
 | `guide:check` **(R17·R29)** | `npm run guide:check` | ✅ kit em dia (6 arquivos) |
 | `dev-kit:check` **(R17·R23·R29)** | `npm run dev-kit:check` | ✅ kit em dia (3 arquivos, **0 ponteiros mortos**) — não valida ponteiro de **seção**, que é o `auditor_sectionpointers` |
 | `deep-import:check` **(R27)** | `npm run deep-import:check` | ✅ **0** — `exports` só expõe a raiz e subcaminhos de CSS |
-| `gate-limits:check` **(R18)** | `npm run gate-limits:check` | ✅ **todos** os scripts de `gates/scripts/` declaram o que não veem — a **relação**, não a cifra. *(A contagem é fonte viva: o próprio gate a imprime. Era 29 em 2026-08-11, 30 em 2026-08-12, **35** em 2026-08-19 com os dois gates da `plan-53`; publicar o número aqui foi o que o deixou errado três vezes — [[15-divida-conhecida]] §3.3.)* |
+| `gate-limits:check` **(R18)** | `npm run gate-limits:check` | ✅ **todos** os scripts de `gates/scripts/` declaram o que não veem — a **relação**, não a cifra. *(A contagem é fonte viva: o próprio gate a imprime. Era 29 em 2026-08-11, 30 em 2026-08-12, **35** em 2026-08-19 com os dois gates de release; publicar o número aqui foi o que o deixou errado três vezes — [[15-divida-conhecida]] §3.3.)* |
 | `token-types:check` **(R4·R29)** | `npm run token-types:check` | ✅ **423 tokens**, em dia |
 | `build-info:check` **(R29)** | `npm run build-info:check` | ✅ íntegro |
 | `coverage:check` **(R8.1)** | `npm run coverage:check` | ✅ **72,43% contra piso de 71,47%** — piso móvel: melhora regrava (só com `--write`), piora bloqueia |

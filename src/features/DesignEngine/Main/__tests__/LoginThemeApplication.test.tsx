@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ThemeCustomizationTab } from '../ThemeCustomizationTab';
 import { SarakUIProvider, useSarakUI } from '../../../../core/Provider/SarakUIProvider';
-import { SarakThemePayload, SarakUIOptions } from '../../../../core/Provider/types';
+import { SarakThemeEntry, SarakThemePayload, SarakUIOptions } from '../../../../core/Provider/types';
 
 const STORAGE_KEY = 'login-theme-application';
 const TENANT_ID = 'tenant-acme';
@@ -32,6 +32,9 @@ interface LoginThemeScenarioProps {
     showCustomizationPanel?: boolean;
 }
 
+/** Um tema próprio qualquer: trocar a lista depois do login muda a coleção de temas, como a aba Tema faz ao carregar as amostras. */
+const OWN_THEME: SarakThemeEntry = { id: 'tema-proprio-do-teste', name: 'Tema próprio', design: { mode: 'dark', colorPalette: 'neutral' } };
+
 const TenantDesignProbe = (): React.ReactElement => {
     const { systemDesign } = useSarakUI();
     return (
@@ -55,6 +58,7 @@ const TenantThemeApplyControl = (): React.ReactElement => {
 
 const LoginThemeScenario = ({ onLoad, onSave, onSaveTheme, showCustomizationPanel = true }: LoginThemeScenarioProps): React.ReactElement => {
     const [tenantId, setTenantId] = useState<string | undefined>();
+    const [customThemes, setCustomThemes] = useState<SarakThemeEntry[] | undefined>();
     const persistence: NonNullable<SarakUIOptions['persistence']> = tenantId
         ? { storageKey: STORAGE_KEY, crossTabSync: true, tenantId, onLoad, onSave }
         : { storageKey: STORAGE_KEY, crossTabSync: true };
@@ -67,7 +71,8 @@ const LoginThemeScenario = ({ onLoad, onSave, onSaveTheme, showCustomizationPane
     return (
         <>
             <button type="button" onClick={() => setTenantId(TENANT_ID)}>Fazer login</button>
-            <SarakUIProvider options={options}>
+            <button type="button" onClick={() => setCustomThemes([OWN_THEME])}>Trocar os temas</button>
+            <SarakUIProvider options={options} customThemes={customThemes}>
                 <TenantDesignProbe />
                 {showCustomizationPanel ? <ThemeCustomizationTab /> : <TenantThemeApplyControl />}
             </SarakUIProvider>
@@ -110,7 +115,12 @@ const testSuccessfulTenantThemeApplication = (): void => {
         const persistedDesign = parsePersistedTenantDesign();
         expect(persistedDesign).toMatchObject(APPLIED_TENANT_DESIGN);
         expect(localStorage.getItem(TENANT_ACTIVE_THEME_STORAGE_KEY)).toBe('sarak-sovereign');
-        expect(onSave).toHaveBeenCalledWith(persistedDesign, 'sarak-sovereign');
+        // A porta recebe as escolhas (as cores do tenant) e o marcador; o cache local guarda o design inteiro (ADR-026).
+        expect(onSave).toHaveBeenCalledWith(
+            expect.objectContaining({ primaryColor: '#06080d', colorBgBody: '#06080d' }),
+            'sarak-sovereign',
+            2,
+        );
         expect(onSaveTheme).not.toHaveBeenCalled();
     }, 15000);
 };
@@ -139,6 +149,22 @@ const testRejectedTenantSaveApplication = (): void => {
     }, 15000);
 };
 
+const testTenantDesignSurvivesThemeCollectionChange = (): void => {
+    it('o design carregado do tenant continua no sistema quando a coleção de temas muda depois do login', async () => {
+        const onLoad = vi.fn<TenantOnLoad>().mockResolvedValue(TENANT_DESIGN);
+
+        render(<LoginThemeScenario onLoad={onLoad} onSave={vi.fn<TenantOnSave>()} onSaveTheme={vi.fn<ThemeOnSave>()} showCustomizationPanel={false} />);
+        fireEvent.click(screen.getByRole('button', { name: 'Fazer login' }));
+        await act(async () => { await onLoad.mock.results[0]?.value; });
+        await waitFor(() => expect(localStorage.getItem(TENANT_ACTIVE_THEME_STORAGE_KEY)).toBe('sarak-sovereign'));
+
+        fireEvent.click(screen.getByRole('button', { name: 'Trocar os temas' }));
+
+        expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#123456');
+        expect(screen.getByTestId('tenant-system-background')).toHaveTextContent('#123456');
+    }, 15000);
+};
+
 describe('SarakUIProvider — aplicar tema depois do login', () => {
     afterEach(() => {
         vi.useRealTimers();
@@ -146,4 +172,5 @@ describe('SarakUIProvider — aplicar tema depois do login', () => {
     });
     testSuccessfulTenantThemeApplication();
     testRejectedTenantSaveApplication();
+    testTenantDesignSurvivesThemeCollectionChange();
 });

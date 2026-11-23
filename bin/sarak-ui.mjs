@@ -20,7 +20,7 @@ import { runUpdateCli } from './scaffold/runUpdate.mjs';
 const NUMERIC_FLAGS = new Set(['frontendPort']);
 const BOOLEAN_FLAGS = new Set(['force', 'yes', 'notify', 'latest']);
 
-const COMMANDS = ['init', 'check', 'refresh', 'update'];
+const COMMANDS = ['init', 'check', 'refresh', 'update', 'verify'];
 
 function toCamelCase(kebab) {
     return kebab.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
@@ -64,6 +64,8 @@ Comandos:
             lockfile subindo a árvore) e em dependência local (file:/link:).
   refresh   Re-sincroniza o kit "sarak-ui/" e as cópias movidas para specs/ e
             .claude/skills/ depois de atualizar a lib.
+  verify    Confere o uso da lib no que o ESLint não lê (.css, package.json, kit copiado).
+            Nenhuma regra nasce ligada: "verify --list" mostra as que existem.
   update    Atualiza a lib DE VERDADE (não só avisa) e re-sincroniza o kit. Sem
             "--latest", nunca atravessa um major. Com "--latest", mostra quantos
             majors pula e as notas de docs/migracoes.md, pede confirmação, e só
@@ -125,6 +127,14 @@ async function main() {
     }
 
     if (command === 'init') return runInitCommand(rest);
+    if (command === 'verify') {
+        // Carregado só quando o comando roda: o kit de verificação não pesa em quem não o usa.
+        const { runVerifyCli } = await import('../dist/verify.js');
+        const cli = runVerifyCli({ argv: rest });
+        console.log(cli.output);
+        process.exitCode = cli.exitCode;
+        return;
+    }
     if (command === 'update') {
         const cli = await runUpdateCli({ argv: rest });
         if (cli.output) console.log(cli.output);

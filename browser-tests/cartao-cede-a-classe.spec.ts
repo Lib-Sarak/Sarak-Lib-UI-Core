@@ -27,6 +27,7 @@ const DESKTOP = { width: 1280, height: 900 } as const;
 
 /** Folga para a transição do aperto assentar: bem acima da duração rápida padrão (0,2 s). */
 const PRESS_SETTLE_MS = 500;
+const CHROMIUM_EXECUTABLE_PATH = process.env.SARAK_CHROMIUM_EXECUTABLE_PATH;
 
 const harnessUrl = process.env.SARAK_CROMO_HARNESS_URL;
 if (!harnessUrl) {
@@ -36,7 +37,7 @@ if (!harnessUrl) {
 let browser: Browser;
 
 test.beforeAll(async () => {
-    browser = await chromium.launch();
+    browser = await chromium.launch(CHROMIUM_EXECUTABLE_PATH ? { executablePath: CHROMIUM_EXECUTABLE_PATH } : undefined);
 });
 
 test.afterAll(async () => {

@@ -80,7 +80,7 @@ describe('useThemeCustomizationData', () => {
                 .filter((entry) => (entry as { categories?: string[] }).categories?.includes('chrome-composition'))
                 .map((entry) => (entry as unknown as { tokenId: string }).tokenId);
             const found = new Set((result.current.filteredResults ?? []).map((token) => token.id));
-            expect(chromeIds).toHaveLength(8);
+            expect(chromeIds).toHaveLength(11);
             chromeIds.forEach((id) => expect(found.has(id)).toBe(true));
         });
     });

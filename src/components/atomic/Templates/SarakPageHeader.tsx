@@ -16,6 +16,7 @@ export interface SarakPageHeaderProps extends Omit<React.HTMLAttributes<HTMLElem
     loadingLabel?: string;
 }
 
+/** @replacesElement h1 h2 h3 header[contains:h1] */
 export const SarakPageHeader = ({
     title,
     subtitle,

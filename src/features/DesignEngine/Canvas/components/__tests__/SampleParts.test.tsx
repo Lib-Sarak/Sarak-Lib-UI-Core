@@ -1,16 +1,23 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
-import { SAMPLE_BUTTON_STATES, SampleButton, SampleButtonStates, SampleCard, SampleInputStates } from '../SampleParts';
+import { describe, expect, it, vi } from 'vitest';
+import { SAMPLE_BUTTON_STATES, SampleButton, SampleButtonStates, SampleInputStates, SampleTitleCard } from '../SampleParts';
+
+// O cartão real do painel (`SarakTitleCard`) lê o design pelo contexto; sem o Provider, o teste entrega um design vazio.
+vi.mock('../../../../../core/Provider/SarakUIProvider', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('../../../../../core/Provider/SarakUIProvider')>()),
+    useSarakUI: () => ({ design: {}, isDrafting: false }),
+}));
 
 describe('SampleParts', () => {
-    it('SampleCard desenha o cartão real com título, valor e botão', () => {
-        const { container } = render(<SampleCard />);
+    it('SampleTitleCard desenha o cartão real do painel, sem a textura do rascunho, e a textura do grupo quando há', () => {
+        const { container, rerender } = render(<SampleTitleCard />);
         const card = container.querySelector('.sarak-card') as HTMLElement;
 
-        expect(card.querySelector('[data-testid="sample-card-title"]')).toHaveTextContent('Receita do mês');
-        expect(card.querySelector('[data-testid="sample-card-value"]')).toBeInTheDocument();
-        expect(card.querySelector('button')).toBeInTheDocument();
+        expect(card).toHaveTextContent('CPU Cluster');
+        expect(card.getAttribute('data-sx-card-texture-type')).toBe('none');
+        rerender(<SampleTitleCard texture="grid" />);
+        expect((container.querySelector('.sarak-card') as HTMLElement).getAttribute('data-sx-card-texture-type')).toBe('grid');
     });
 
     it('SampleButtonStates mostra repouso, hover, foco e inativo na ordem, cada um com o nome', () => {
@@ -49,7 +56,7 @@ describe('SampleParts', () => {
         const restInput = container.querySelector('[data-sample-state="rest"] input') as HTMLInputElement;
         const focusInput = container.querySelector('[data-sample-state="focus"] input') as HTMLInputElement;
 
-        expect(restInput).toHaveValue('Maria Souza');
+        expect(restInput).toHaveValue('Nome');
         expect(focusInput.getAttribute('style')).not.toBe(restInput.getAttribute('style'));
     });
 });

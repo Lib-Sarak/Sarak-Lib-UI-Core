@@ -17,7 +17,6 @@ describe('HyperGranularityTab', () => {
     const baseProps = () => ({
         draft: {},
         updateDraft: vi.fn(),
-        handleApplyToSystem: vi.fn(),
         resetComponent: vi.fn(),
         resetToken: vi.fn(),
         toast: null

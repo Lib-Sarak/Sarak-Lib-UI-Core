@@ -48,7 +48,7 @@ export function decideAgentGitWrite(env) {
 function printBlock(markers) {
     console.log('');
     console.log('⛔ GIT BLOQUEADO — sessão de agente tentou escrever no Git sem autorização.');
-    console.log(`   Regra violada : agente não commita nem empurra sem autorização declarada naquele comando`);
+    console.log(`   Regra violada : R38 — agente não commita nem empurra sem autorização declarada naquele comando`);
     console.log('                   (specs/specs/17-contrato-de-operacao-git.md §2.0)');
     console.log(`   Motivo        : o ambiente carrega ${markers.join(', ')}, marcador de sessão de agente,`);
     console.log(`                   e não carrega ${AUTHORIZATION_VAR}.`);

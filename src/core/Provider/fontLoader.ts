@@ -73,6 +73,7 @@ const probeWeight = (entry: LoadableFontFamily): string =>
 async function confirmLoaded(family: string, entry: LoadableFontFamily, origin: string, hint?: string): Promise<void> {
     const fontSet = typeof document.fonts?.load === 'function' ? document.fonts : null;
     if (!fontSet) return;
+    // sarak-allow-hardcode: o 1em é o tamanho que a sintaxe de font exige em document.fonts.load; a sonda não desenha nada.
     const faces = await fontSet.load(`${probeWeight(entry)} 1em ${cssString(family)}`).catch(() => null);
     if (!faces || faces.length === 0 || faces.some((face) => face.status === 'error')) warnFontFailure(family, origin, hint);
 }

@@ -3,6 +3,7 @@ import { getPersonality } from '../../../../core/Design/presets/components/perso
 import { TYPOGRAPHY_PRESETS } from '../../../../core/Design/presets/components/typography';
 import { sarakGetDefaultDesignState } from '../../../../core/Design/master-map';
 import { barTonesOf, buildCustomPaletteValue, buildPaletteDraftPatch, toValidPaletteInput } from '../utils/paletteDraft';
+import { savedPalettesOf, type SarakSavedPalette } from '../../../../core/Design/palette/savedPalettes';
 import type { PeekHandler } from '../../Canvas/components/peek';
 import type { SarakDesignState } from '../../../../core/Provider/types';
 
@@ -15,6 +16,8 @@ export interface BrandForm {
     personalityId: string;
     /** O usuário escolheu o par de fontes: ele vence as fontes da Personalidade. */
     fontTouched: boolean;
+    /** A paleta salva que serve à marca; `''` gera a paleta da cor acima. */
+    paletteId: string;
 }
 
 const FALLBACK_COLOR = String(sarakGetDefaultDesignState().primaryColor);
@@ -38,13 +41,18 @@ const initialForm = (draft: SarakDesignState, initialName: string): BrandForm =>
         fontId: (TYPOGRAPHY_PRESETS.find((preset) => preset.design.headingFont === heading) ?? TYPOGRAPHY_PRESETS[0]).id,
         personalityId: '',
         fontTouched: false,
+        paletteId: '',
     };
 };
 
+/** A paleta da marca: a salva escolhida (se ainda existe) ou a gerada da cor. */
+export const brandPaletteValue = (form: BrandForm, saved: readonly SarakSavedPalette[]): string | null =>
+    saved.find((entry) => entry.id === form.paletteId)?.value ?? paletteValueOf(form.color);
+
 /** O que a prévia compõe por cima do rascunho enquanto o formulário muda: paleta, Personalidade, fontes, nome e logo. */
 /** `tones`: o papel das barras do rascunho; com Personalidade, vale o dela, porque é ele que a paleta calcula. */
-export const brandPatch = (form: BrandForm, mode: 'light' | 'dark', tones: Record<string, unknown> = {}): Partial<SarakDesignState> => {
-    const value = paletteValueOf(form.color);
+export const brandPatch = (form: BrandForm, mode: 'light' | 'dark', tones: Record<string, unknown> = {}, saved: readonly SarakSavedPalette[] = []): Partial<SarakDesignState> => {
+    const value = brandPaletteValue(form, saved);
     const personality = getPersonality(form.personalityId);
     const fonts = personality && !form.fontTouched ? {} : fontPresetOf(form.fontId).design;
     return {
@@ -61,7 +69,8 @@ export const brandPatch = (form: BrandForm, mode: 'light' | 'dark', tones: Recor
 export const useBrandForm = (draft: SarakDesignState, initialName: string, onPeek?: PeekHandler) => {
     const [state, setState] = useState(() => ({ form: initialForm(draft, initialName), touched: false }));
     const mode = draft.mode === 'light' ? 'light' : 'dark';
-    const patch = useMemo(() => brandPatch(state.form, mode, barTonesOf(draft as unknown as Record<string, unknown>)), [state.form, mode, draft]);
+    const saved = useMemo(() => savedPalettesOf(draft as unknown as Record<string, unknown>), [draft]);
+    const patch = useMemo(() => brandPatch(state.form, mode, barTonesOf(draft as unknown as Record<string, unknown>), saved), [state.form, mode, draft, saved]);
 
     useEffect(() => {
         if (!state.touched) return undefined;
@@ -73,7 +82,7 @@ export const useBrandForm = (draft: SarakDesignState, initialName: string, onPee
         touched: true,
         form: { ...current.form, ...partial, ...('fontId' in partial ? { fontTouched: true } : {}) },
     }));
-    return { form: state.form, change };
+    return { form: state.form, change, saved };
 };
 
 export const FONT_OPTIONS = TYPOGRAPHY_PRESETS.map((preset) => ({ value: preset.id, label: preset.name }));

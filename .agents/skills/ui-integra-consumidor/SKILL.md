@@ -43,7 +43,9 @@ do cromo, todos **gerados do código-fonte** da versão instalada.
 - Precisa saber "o que a lib tem"? A resposta é o catálogo, nunca uma lista deste arquivo.
 
 O kit também traz **`GUIA-FRONTEND.md`** — o documento único de autoria (4 topologias + todos os
-casos). **Ele é a autoridade sobre COMO escrever as telas**; esta skill cuida da INFRAESTRUTURA.
+casos). **Ele é a autoridade sobre COMO escrever as telas**; esta skill cuida da INFRAESTRUTURA. Para escrever
+testes da tela do importador (versão da lib, filtro do aviso de CSS, `data-testid` e `data-theme-id` estáveis), veja a
+seção "Testar com a lib" em `GUIA-FRONTEND.md` §1.2.
 
 ## Modelo de consumo: um cromo por aplicação
 
@@ -247,7 +249,13 @@ tentada: …)` com a dica do `baseUrl`, e a página segue com a genérica da pil
      `ls package.json` antes). **Por quê:** sem `package.json` local, o `npm install github:...` sobe
      a árvore de diretórios e instala **lá**, em silêncio, poluindo um projeto alheio (achado real:
      289 pacotes num projeto não relacionado). Nunca pule, mesmo em diretório aparentemente vazio.
-   - **Ação (RECOMENDADO — faixa semver por tag):**
+   - **Ação (RECOMENDADO — pin exato por tag):**
+     `npm install "github:Lib-Sarak/Sarak-Lib-UI-Core#v<versão>"` (a tag da versão que o usuário pediu).
+     Nada muda até alguém trocar o pin, e as notas da versão nova se leem antes da troca. É como os
+     importadores reais instalam. `file:`/`link:` é **só para iterar localmente** ao lado da lib — nunca
+     para validar uma instalação real. ⚠️ Com `github:…#<tag>` o npm grava `git+ssh://` no
+     `package-lock.json`; numa CI sem chave SSH, a troca de protocolo está no `GUIA-FRONTEND.md` §1.1.
+   - **Ação (SUPORTADO — faixa semver por tag):**
      `npm install "github:Lib-Sarak/Sarak-Lib-UI-Core#semver:^1.0.0"`.
      O npm resolve a faixa contra as **tags** do repositório: a instalação pega a maior versão
      compatível, e depois `npm update @sarak/lib-ui-core` sobe sozinho para a próxima — **sem
@@ -311,11 +319,17 @@ tentada: …)` com a dica do `baseUrl`, e a página segue com a genérica da pil
      aplicação como componentes React**, seguindo o `GUIA-FRONTEND.md` (§0 primeiro: a árvore de decisão e a
      regra de fallback universal) e consultando o `catalog.json` para tudo que for lista.
 
+6. **Verificação de uso (opcional) — ofereça o kit de verificação**
+   - Pergunte se o importador quer ligar o kit que confere o uso da lib por máquina (plugin de ESLint
+     `@sarak/lib-ui-core/eslint` e `npx sarak-ui verify`). **Nenhuma regra nasce ligada**: ligue só as que
+     ele escolher, uma a uma. Siga a seção **`GUIA-FRONTEND.md` §3.15** — não reescreva o passo a passo aqui.
+
 ## Como atualizar a biblioteca
 
-A `@sarak/lib-ui-core` é instalada por **URL git**, não por registry — e a `version` do `package.json`
-fica parada por muitos commits (o módulo ainda está em desenvolvimento; tags/semver fora de escopo por
-decisão do mantenedor). Consequência **não intuitiva**:
+A `@sarak/lib-ui-core` é instalada por **URL git**, não por registry. Instalada **por tag** (`#v<versão>` ou
+`#semver:^X`), a versão é a da tag e subir é trocar o pin, com as notas de migração lidas antes. Instalada
+**sem tag** (`github:…` direto), a `version` do `package.json` fica parada por muitos commits, e a
+consequência **não é intuitiva** — o restante desta seção descreve esse modo e o que vale nos dois:
 
 - **Um `npm install` comum NÃO atualiza a lib — e é o comportamento ESPERADO do npm.** O
   `package-lock.json` grava o commit git resolvido na primeira instalação (`resolved: "...#<sha>"`).
@@ -334,6 +348,9 @@ também serviria o commit velho) → `npm install <mesmo spec git>` → **`sarak
 (re-sincroniza o `sarak-ui/` e as cópias movidas). No pnpm/yarn é `remove` + `add` + `refresh`
 (medido: ambos re-resolvem o HEAD remoto sem precisar limpar cache). A última etapa é o que impede a
 lib nova conviver com instruções velhas.
+
+Com pin de tag exata (`#v<X.Y.Z>`), `npx sarak-ui update` **troca o pin** no `package.json` — a maior tag do mesmo major, ou a mais
+nova com `--latest` (que pede confirmação ao atravessar major) — e reinstala.
 
 ```bash
 npm run sarak:check          # veredito sob demanda
@@ -354,7 +371,9 @@ dependência.
 **Por que NÃO usar `dist/BUILD_INFO.json` para "estou atualizado?":** o arquivo existe, mas **não
 pode** conter o commit que o publica — o `dist/` é commitado DEPOIS de gerado, e gravar dentro dele o
 próprio hash é auto-referência impossível. Por isso o campo se chama `baseCommit` (sempre um passo
-atrás). Use `BUILD_INFO` só para `builtAt`/`libVersion`; para "estou atualizado?", `sarak:check`.
+atrás). Use `BUILD_INFO` só para `builtAt`/`libVersion`; para "estou atualizado?", `sarak:check`. No código e no teste do
+importador, a versão da lib vem de `SARAK_BUILD_INFO.libVersion` (exportado do barril); o `package.json` do pacote não
+está no `exports`.
 
 **Qual build o navegador está executando:** no DevTools, leia o atributo
 `data-sarak-build-info` de um elemento da lib. Ele contém JSON com `libVersion`, `baseCommitShort` e
@@ -473,6 +492,9 @@ do modo claro/escuro e do celular, e some na próxima atualização.
 | persistência local e no servidor | `localStorage` no Provider · `options.persistence.onSave`/`onLoad` | a aplicação controla a gravação remota e conserva o payload recebido |
 | modo embarcado | `options={{ mode: 'embedded' }}` | o estilo da lib fica escopado à raiz do Provider |
 | painel e exportação | `SarakCustomizationPanel` · Exportar → Exportar JSON | a central edita ao vivo; a aplicação salva ou envia o JSON exportado |
+| salvar, duplicar e apagar temas do importador | o painel, com `options.theme.onSave` e `options.theme.onDelete` | Salvar substitui, Salvar como novo e Duplicar criam; embarcado nunca é sobrescrito; porta que falha **rejeita** (`GUIA-FRONTEND.md` §3.9, `docs/persistencia-de-tema.md`) |
+| validar CPF e CNPJ, formatar CPF, CNPJ e CEP | `sarakIsValidCpf` · `sarakIsValidCnpj` · `sarakFormatDocument` | o dígito verificador e a máscara já estão feitos e testados |
+| mensagem de erro de API, página com link real, documento para imprimir | `sarakErrorMessage` · `SarakPagination` (`getPageHref`) · `SarakDocumentFrame` + `sarakPrint` | cada uma tem a linha no `GUIA-FRONTEND.md` §6, com o que cobre |
 | derivar tema para identidade do cliente | `sarakDeriveThemeFromReference` | parte de um preset completo, sobrescreve tokens de marca e mantém a contraparte |
 
 **Armadilhas medidas (cartões):** a textura do cartão muda de cor no modo oposto porque a cor vem da `contraparte`;

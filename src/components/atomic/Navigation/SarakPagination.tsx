@@ -217,7 +217,11 @@ const PaginationPageSizeOptions = ({ view, onPageSizeChange, text }: {
     );
 };
 
-/** Controles de página, resumo de resultados e opções de tamanho. */
+/**
+ * Controles de página, resumo de resultados e opções de tamanho.
+ *
+ * @replacesPiece LinkPagination
+ */
 export const SarakPagination = (props: SarakPaginationProps): React.ReactElement => {
     const text = useLibraryText();
     const view = createPaginationView(props);

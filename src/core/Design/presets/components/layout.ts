@@ -1,18 +1,19 @@
 import type { ComponentPreset } from './cards';
 
 /**
- * Presets do cromo: barra lateral, barra de topo e largura do conteúdo. Cada um escreve o jeito da barra (moldura, item
- * ativo, densidade, fundo) e, onde faz sentido, o `tone`: um PAPEL da paleta, nunca uma cor escrita à mão.
+ * Presets do cromo: barra lateral, barra de topo, o papel de cor das duas barras e a largura do conteúdo. Os de barra escrevem só
+ * a estrutura (moldura, item ativo, densidade, fundo); o papel de cor da paleta (`sidebarTone`/`topbarTone`) é do grupo `barTone`,
+ * que grava os dois juntos. Nunca uma cor escrita à mão.
  */
 export const SIDEBAR_PRESETS: ComponentPreset[] = [
     {
         id: 'sidebar-clean',
         name: 'Limpa',
-        description: 'Fundo neutro, uma linha na borda e o item ativo marcado por uma barrinha.',
+        description: 'Uma linha na borda e o item ativo marcado por uma barrinha.',
         keywords: ['limpa', 'clean', 'simples', 'padrao'],
         design: {
-            sidebarTone: 'neutral', sidebarBorderSide: 'edge', sidebarBorderStyle: 'solid', sidebarBorderWidth: 1,
-            sidebarActiveItemStyle: 'bar', sidebarItemDensity: 'comfortable', sidebarBackgroundStyle: 'solid', sidebarBlur: 0, navItemRadius: 8,
+            sidebarBorderSide: 'edge', sidebarBorderStyle: 'solid', sidebarBorderWidth: 1,
+            sidebarActiveItemStyle: 'bar', sidebarActiveGlass: 'off', sidebarItemDensity: 'comfortable', sidebarBackgroundStyle: 'solid', sidebarBlur: 0, navItemRadius: 8,
         },
     },
     {
@@ -21,28 +22,28 @@ export const SIDEBAR_PRESETS: ComponentPreset[] = [
         description: 'A barra inteira ganha contorno e o item ativo aparece só em linha.',
         keywords: ['contorno', 'outline', 'borda'],
         design: {
-            sidebarTone: 'surface', sidebarBorderSide: 'all', sidebarBorderStyle: 'solid', sidebarBorderWidth: 1,
+            sidebarBorderSide: 'all', sidebarBorderStyle: 'solid', sidebarBorderWidth: 1,
             sidebarActiveItemStyle: 'outline', sidebarItemDensity: 'comfortable', navItemRadius: 12,
         },
     },
     {
         id: 'sidebar-solid',
         name: 'Sólida',
-        description: 'Sem moldura, no tom da superfície, com o item ativo preenchido.',
+        description: 'Sem moldura e com o item ativo preenchido.',
         keywords: ['solida', 'solid', 'preenchida', 'filled'],
         design: {
-            sidebarTone: 'surface', sidebarBorderSide: 'none', sidebarActiveItemStyle: 'filled', sidebarItemDensity: 'comfortable',
+            sidebarBorderSide: 'none', sidebarActiveItemStyle: 'filled', sidebarItemDensity: 'comfortable',
             sidebarBackgroundStyle: 'solid', sidebarBlur: 0, navItemRadius: 10,
         },
     },
     {
         id: 'sidebar-floating',
         name: 'Flutuante',
-        description: 'Contornada, com vidro desfocado e itens em pílula: parece solta da tela.',
+        description: 'Sem contorno, num vidro em degradê e com itens em pílula: parece solta da tela.',
         keywords: ['flutuante', 'floating', 'vidro', 'pilula'],
         design: {
-            sidebarTone: 'surface', sidebarBorderSide: 'all', sidebarBorderStyle: 'solid', sidebarBorderWidth: 1,
-            sidebarBlur: 22, sidebarActiveItemStyle: 'pill', navItemRadius: 20, sidebarItemDensity: 'comfortable',
+            sidebarBorderSide: 'none', sidebarBackgroundStyle: 'gradient',
+            sidebarBlur: 22, sidebarActiveItemStyle: 'pill', sidebarActiveGlass: 'on', navItemRadius: 20, sidebarItemDensity: 'comfortable',
         },
     },
     {
@@ -51,23 +52,9 @@ export const SIDEBAR_PRESETS: ComponentPreset[] = [
         description: 'Itens apertados e ícones pequenos: cabe mais menu na mesma altura.',
         keywords: ['compacta', 'compact', 'densa', 'pequena'],
         design: {
-            sidebarTone: 'neutral', sidebarItemDensity: 'compact', sidebarIconSize: 16, sidebarActiveItemStyle: 'bar',
+            sidebarItemDensity: 'compact', sidebarIconSize: 16, sidebarActiveItemStyle: 'bar',
             sidebarBorderSide: 'edge', sidebarBorderWidth: 1, navItemRadius: 6,
         },
-    },
-    {
-        id: 'sidebar-brand',
-        name: 'Na cor da marca',
-        description: 'A barra toma o papel primário da paleta e o item ativo vira pílula.',
-        keywords: ['marca', 'brand', 'primaria', 'colorida'],
-        design: { sidebarTone: 'primary', sidebarBorderSide: 'none', sidebarActiveItemStyle: 'pill', sidebarBlur: 0, navItemRadius: 14, sidebarItemDensity: 'comfortable' },
-    },
-    {
-        id: 'sidebar-inverted',
-        name: 'Invertida',
-        description: 'Contraste oposto ao do tema: escura no claro, clara no escuro.',
-        keywords: ['invertida', 'inverse', 'contraste', 'oposta'],
-        design: { sidebarTone: 'inverse', sidebarBorderSide: 'none', sidebarActiveItemStyle: 'outline', sidebarBlur: 0, navItemRadius: 10, sidebarIconSize: 20 },
     },
     {
         id: 'sidebar-airy',
@@ -75,16 +62,16 @@ export const SIDEBAR_PRESETS: ComponentPreset[] = [
         description: 'Itens espaçosos, ícones maiores e cantos bem redondos.',
         keywords: ['arejada', 'airy', 'espacosa', 'larga'],
         design: {
-            sidebarTone: 'neutral', sidebarItemDensity: 'spacious', sidebarIconSize: 22, sidebarActiveItemStyle: 'pill',
+            sidebarItemDensity: 'spacious', sidebarIconSize: 22, sidebarActiveItemStyle: 'pill',
             sidebarBorderSide: 'edge', sidebarBorderWidth: 1, navItemRadius: 16,
         },
     },
     {
         id: 'sidebar-gradient',
         name: 'Degradê',
-        description: 'Fundo em degradê no papel secundário da paleta, sem moldura.',
-        keywords: ['degrade', 'gradient', 'secundaria'],
-        design: { sidebarTone: 'secondary', sidebarBackgroundStyle: 'gradient', sidebarBorderSide: 'none', sidebarActiveItemStyle: 'underline', sidebarBlur: 0 },
+        description: 'Fundo em degradê, sem moldura e com o item ativo sublinhado.',
+        keywords: ['degrade', 'gradient'],
+        design: { sidebarBackgroundStyle: 'gradient', sidebarBorderSide: 'none', sidebarActiveItemStyle: 'underline', sidebarBlur: 0 },
     },
     {
         id: 'sidebar-textured',
@@ -92,8 +79,8 @@ export const SIDEBAR_PRESETS: ComponentPreset[] = [
         description: 'Fundo com textura e grão discreto, e uma borda tracejada na lateral.',
         keywords: ['textura', 'texture', 'grao', 'ruido'],
         design: {
-            sidebarTone: 'neutral', sidebarBackgroundStyle: 'texture', sidebarNoiseOpacity: 0.1, sidebarBorderSide: 'edge',
-            sidebarBorderStyle: 'dashed', sidebarBorderWidth: 1, sidebarActiveItemStyle: 'bar', navActiveMarkerGlow: 16,
+            sidebarBackgroundStyle: 'texture', sidebarNoiseOpacity: 0.3, sidebarBorderSide: 'edge',
+            sidebarBorderStyle: 'dashed', sidebarBorderWidth: 2, sidebarActiveItemStyle: 'filled', navActiveMarkerGlow: 16, navItemRadius: 4,
         },
     },
 ];
@@ -102,37 +89,30 @@ export const TOPBAR_PRESETS: ComponentPreset[] = [
     {
         id: 'topbar-flat',
         name: 'Plana',
-        description: 'Sem moldura e sem desfoque, no tom do fundo: a barra some e deixa o conteúdo subir.',
+        description: 'Sem moldura e sem desfoque: a barra some e deixa o conteúdo subir.',
         keywords: ['plana', 'flat', 'transparente', 'sem borda'],
-        design: { topbarTone: 'neutral', topbarBorderSide: 'none', topbarBlur: 0, topbarActiveItemStyle: 'underline', topbarItemDensity: 'comfortable', topbarBackgroundStyle: 'solid' },
+        design: { topbarBorderSide: 'none', topbarBlur: 0, topbarActiveItemStyle: 'underline', topbarItemDensity: 'comfortable', topbarBackgroundStyle: 'solid' },
     },
     {
         id: 'topbar-solid',
         name: 'Sólida',
-        description: 'No tom da superfície, com uma linha na base e o item ativo preenchido.',
+        description: 'Com uma linha na base e o item ativo preenchido.',
         keywords: ['solida', 'solid', 'preenchida'],
-        design: { topbarTone: 'surface', topbarBorderSide: 'edge', topbarBorderStyle: 'solid', topbarBorderWidth: 1, topbarActiveItemStyle: 'filled', topbarBlur: 0 },
+        design: { topbarBorderSide: 'edge', topbarBorderStyle: 'solid', topbarBorderWidth: 1, topbarActiveItemStyle: 'filled', topbarBlur: 0 },
     },
     {
         id: 'topbar-divided',
         name: 'Com separador',
         description: 'Uma linha grossa separa a barra do conteúdo.',
         keywords: ['separador', 'divider', 'linha', 'divisor'],
-        design: { topbarTone: 'neutral', topbarBorderSide: 'edge', topbarBorderStyle: 'solid', topbarBorderWidth: 2, topbarActiveItemStyle: 'bar', topbarBlur: 0 },
+        design: { topbarBorderSide: 'edge', topbarBorderStyle: 'solid', topbarBorderWidth: 2, topbarActiveItemStyle: 'bar', topbarBlur: 0 },
     },
     {
         id: 'topbar-glass',
         name: 'Vidro',
         description: 'Desfoque forte por trás e itens em pílula: o conteúdo passa por baixo.',
         keywords: ['vidro', 'glass', 'desfoque', 'blur'],
-        design: { topbarTone: 'surface', topbarBlur: 30, topbarBorderSide: 'edge', topbarBorderWidth: 1, topbarActiveItemStyle: 'pill', topbarBackgroundStyle: 'solid' },
-    },
-    {
-        id: 'topbar-brand',
-        name: 'Na cor da marca',
-        description: 'A barra toma o papel primário da paleta, sem moldura.',
-        keywords: ['marca', 'brand', 'primaria', 'colorida'],
-        design: { topbarTone: 'primary', topbarBorderSide: 'none', topbarActiveItemStyle: 'pill', topbarBlur: 0, topbarItemDensity: 'comfortable' },
+        design: { topbarBlur: 30, topbarBorderSide: 'edge', topbarBorderWidth: 1, topbarActiveItemStyle: 'pill', topbarBackgroundStyle: 'solid' },
     },
     {
         id: 'topbar-compact',
@@ -142,26 +122,39 @@ export const TOPBAR_PRESETS: ComponentPreset[] = [
         design: { topbarItemDensity: 'compact', topbarIconSize: 16, topbarActiveItemStyle: 'underline', topbarBorderSide: 'edge', topbarBorderWidth: 1, topbarBlur: 0 },
     },
     {
-        id: 'topbar-inverted',
-        name: 'Invertida',
-        description: 'Contraste oposto ao do tema, sem moldura.',
-        keywords: ['invertida', 'inverse', 'contraste'],
-        design: { topbarTone: 'inverse', topbarBorderSide: 'none', topbarActiveItemStyle: 'filled', topbarBlur: 0 },
-    },
-    {
         id: 'topbar-outlined',
         name: 'Contornada',
         description: 'Contorno em volta de toda a barra e item ativo só em linha.',
         keywords: ['contorno', 'outline', 'borda'],
-        design: { topbarTone: 'surface', topbarBorderSide: 'all', topbarBorderStyle: 'solid', topbarBorderWidth: 1, topbarActiveItemStyle: 'outline', topbarItemDensity: 'comfortable' },
+        design: { topbarBorderSide: 'all', topbarBorderStyle: 'solid', topbarBorderWidth: 1, topbarActiveItemStyle: 'outline', topbarItemDensity: 'comfortable' },
     },
     {
         id: 'topbar-textured',
         name: 'Texturizada',
         description: 'Fundo com textura, grão discreto e uma linha tracejada na base.',
         keywords: ['textura', 'texture', 'grao'],
-        design: { topbarBackgroundStyle: 'texture', topbarNoiseOpacity: 0.1, topbarBorderSide: 'edge', topbarBorderStyle: 'dashed', topbarBorderWidth: 1, topbarTone: 'neutral' },
+        design: { topbarBackgroundStyle: 'texture', topbarNoiseOpacity: 0.1, topbarBorderSide: 'edge', topbarBorderStyle: 'dashed', topbarBorderWidth: 1, },
     },
+];
+
+/**
+ * O papel de cor das barras, uma opção por papel da paleta. Cada uma grava o da lateral e o do topo juntos: escolher "Invertida"
+ * inverte as duas. O ajuste de uma barra só continua no ajuste fino (token por token).
+ */
+const barTonePreset = (tone: 'neutral' | 'surface' | 'primary' | 'secondary' | 'inverse', name: string, description: string, keywords: string[]): ComponentPreset => ({
+    id: `bar-tone-${tone}`,
+    name,
+    description,
+    keywords,
+    design: { sidebarTone: tone, topbarTone: tone },
+});
+
+export const BAR_TONE_PRESETS: ComponentPreset[] = [
+    barTonePreset('neutral', 'Neutra', 'As duas barras no fundo de sempre da paleta.', ['neutra', 'neutral', 'padrao', 'fundo']),
+    barTonePreset('surface', 'Superfície', 'As duas barras no tom da superfície, um degrau acima do fundo.', ['superficie', 'surface', 'clara']),
+    barTonePreset('primary', 'Cor da marca', 'As duas barras tomam o papel primário da paleta.', ['marca', 'brand', 'primaria', 'colorida']),
+    barTonePreset('secondary', 'Secundária', 'As duas barras tomam o papel secundário da paleta.', ['secundaria', 'secondary']),
+    barTonePreset('inverse', 'Invertida', 'Contraste oposto ao do tema nas duas barras: escuras no claro, claras no escuro.', ['invertida', 'inverse', 'contraste', 'oposta']),
 ];
 
 /** As seis larguras de `maxContentWidth`, uma por preset. */

@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Segurança / Acessibilidade"
 status: "🟢 Vigente"
 prioridade: "Máxima"
 tags: ["spec", "seguranca", "acessibilidade", "a11y", "fronteira", "sanitizacao", "escopo"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[02-design-engine]]", "[[09-temas-e-presets]]", "[[002-remocao-motor-manifesto]]", "[[003-remocao-backend-proprio]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[01-forma-do-produto-e-modos-de-consumo]]", "[[02-design-engine]]", "[[09-temas-e-presets]]", "[[05-cromo-e-slots]]", "[[06-painel-de-customizacao-e-preview]]", "[[002-remocao-motor-manifesto]]", "[[003-remocao-backend-proprio]]"]
 ---
 
 # 1. Propósito, e o que MUDOU de superfície hostil
@@ -229,6 +229,13 @@ Navegação por `Tab`/`Shift+Tab`/`Enter`/`Espaço`/`ESC` nos componentes intera
 nenhum `axe`, nenhum teste de árvore de acessibilidade agregado. A cobertura é a que os testes por
 componente exercitam. Ver §5.1.
 
+**A tela de autenticação** (`SarakAuthScreen`) é lida pelo leitor de tela:
+- E-mail, Senha e o código MFA têm `label` ligado ao campo por `htmlFor`/`id` (`useId`), e clicar no rótulo foca o campo.
+- O botão de mostrar a senha é nomeado pela próxima ação, "Mostrar senha" ou "Ocultar senha", com as chaves `authShowPassword`/`authHidePassword`
+  nos seis idiomas, sobrescritíveis por `labels`. Ele não tem `aria-pressed`: rótulo que alterna junto com estado de alternância
+  se contradiz.
+- O erro do formulário é `role="alert"`, e o aviso (`errorVariant="warning"`) é `role="status"`.
+
 ### c) ✅ Anel de foco — FECHADO em 2026-08-04 (`plan-08`, F4)
 
 O token existe: **`focusRingWidth`** (`src/core/Design/schema/engineering.ts:12-20`), slider 0-6px,
@@ -251,8 +258,8 @@ token aparecem em gate. **Documentado, não corrigido** (esta spec não altera c
 
 ### d) Contraste — o que a lib faz, e o que ela NÃO promete
 
-**Não existe garantia de contraste WCAG AA verificada.** Não há cálculo de razão de contraste, nem teste,
-nem gate. O que existe é:
+**Não existe garantia de contraste WCAG AA para o tema do consumidor.** O que a lib desenha por conta própria é medido
+(abaixo); o que o tema declara, não. Para o tema, o que existe é:
 
 - **Orientação de autoria** nas descrições dos tokens de cor ("deve manter contraste alto contra X" —
   `schema/buttons.ts:145`, `schema/card-title.ts:27`, `schema/card-action.ts:34`, `schema/card-search.ts:32,41`;
@@ -267,6 +274,24 @@ dela. Prometer AA exigiria a lib **recusar** valores do consumidor, o que contra
 A auditoria existe para o que a lib entrega: o `auditor_contraste` mede os pares de texto dos temas embarcados,
 nos dois modos (**R31**, [[01-gates-e-baseline]]); o tema do consumidor fica fora dela, e o contraste não textual
 (borda de campo, partes de gráfico) ainda não é medido ([[15-divida-conhecida]] achado **59**).
+
+**O que a lib calcula e o navegador mede.** Nas peças abaixo, o contraste é medido em navegador, num build novo, nos dois modos e sem
+lista de exceções:
+
+- **O cromo nas barras de tom contrastante** (`primary`, `secondary`, `inverse`) **e em degradê.** O texto da barra (marca, item,
+  item ativo, nome do usuário, código do idioma) fica em ao menos 4,5:1, e o ícone (avatar, ⚙, sair) em ao menos 3:1. A conta vale sobre
+  cada parada do degradê e sobre os fundos que a peça pisa: a faixa do usuário (5% do marcador), o botão de idioma (10% da própria cor) e
+  a tinta de erro do sair (15%). A cor sai do cálculo (`chromeToneContrast.ts`), e a do tema não muda ([[09-temas-e-presets]]
+  §4.3.4). Guardam `tom-contrastante-legivel`, `contraste-do-cromo-nas-barras`, `contraste-do-que-faltava`,
+  `plan-149-barras-personalidade` e `plan-145-personalidades`, este com `KNOWN_BELOW_LIMIT` vazio.
+- **O botão sob o ponteiro.** A regra de elemento de `<button>` (`src/styles/_elements.css`) só move o botão (`transform`) no hover e
+  no aperto, sem pintar fundo. O fundo do hover é de cada componente. O `ghost` do `SarakButton` usa no repouso a primária a 85%
+  misturada ao texto da superfície. `contraste-hover-botao.spec.ts` mede onde o hover muda a cor ou o fundo e reprova abaixo de 4,5:1
+  ou abaixo do repouso.
+- **O `SarakTitleCard`.** O título segue `cardTitleColor` (`--sarak-card-title-color`) e, no hover, mistura 60% da primária a
+  ela. O subtítulo segue `subtitleColor` (`--sarak-subtitle-color`). A etiqueta de capacidade usa o texto principal sobre a
+  primária a 15%. Título, subtítulo e etiquetas ficam em 4,5:1 (`contraste-hover-botao.spec.ts`), e o teste de unidade exige os dois
+  tokens (`SarakTitleCard.test.tsx`).
 
 ### e) Toque, movimento e teclado do celular
 
@@ -403,7 +428,10 @@ do componente vence. O `SarakDatePicker` usa o locale do `date-fns` dos seis idi
 saem de um catálogo com os seis idiomas oferecidos (`src/core/i18n/`, lido por `useLibraryText`), e
 repintam na troca, sem recarga. O catálogo escolhe pela parte primária do código (`pt-BR` → `pt`). Sem
 Provider, ou fora dos seis, saem em português. O painel de design é
-ferramenta do administrador e não entra nessa promessa. Texto passado pelo consumidor por prop é dele, e a
+ferramenta do administrador e não entra nessa promessa por inteiro: os rótulos dele saem do catálogo, e dos tokens só os das
+decisões principais têm nome, descrição e opções nos seis idiomas ([[06-painel-de-customizacao-e-preview]] §2.1).
+
+**Um nome só para cada peça, nos textos do painel.** O termo técnico fica em inglês: Sidebar, Topbar, Card, Preset, Token, Dark mode e Light mode, Hover, Blur, Badge e Toast. Frases, ações e descrições continuam no idioma do texto ("Aplicar", "Tamanho da fonte"). O glossário vale para o que o administrador lê (rótulos do schema, partições do catálogo, `presetTexts/` e títulos das telas da prévia), em todos os idiomas do catálogo, e não para identificador (`data-*`, ids de token, props). `src/core/i18n/__tests__/glossary.test.ts` tem a lista dos nomes que saíram como dado e reprova o texto que volta a usá-los. Ele lê todo `catalogEntries.*.ts`, e por isso cobre também o nome, a descrição e as opções dos tokens das decisões principais. Texto passado pelo consumidor por prop é dele, e a
 lib não o traduz. Um teste de paridade exige toda chave do catálogo preenchida nos seis idiomas.
 
 # 4. Regras derivadas (o que fazer / o que nunca fazer)

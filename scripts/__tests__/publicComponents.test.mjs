@@ -68,3 +68,58 @@ describe('collectFromCategoryRoot — R14 (categoria SEM barril)', () => {
     }
   });
 });
+
+// Categoria COM barril: a fonte de nomes não pode ser só o barril da categoria. Se ele
+// esquece o `export * from './SarakX'` de uma subpasta que tem barril próprio, o componente
+// sai da fonte e o `barrel:check` fecha verde sem ele (foi o caso do `SarakCarousel`, fora do
+// barril de `Media`, achado só pelo navegador). Subpasta COM `index.ts` é módulo de componente;
+// subpasta SEM `index.ts` (`internal/`, `hooks/`, `chrome/`) continua peça interna.
+describe('collectFromCategoryRoot — subpasta com barril próprio (categoria COM barril)', () => {
+  it('coleta o componente da subpasta com index.ts mesmo que o barril da categoria o esqueça', () => {
+    const root = plantFakeAtomicRoot({
+      'Media/index.ts': "export * from './SarakLightbox';",
+      'Media/SarakLightbox.tsx': 'export const SarakLightbox = () => null;',
+      'Media/SarakCarousel/index.ts': "export { SarakCarousel } from './SarakCarousel';",
+      'Media/SarakCarousel/SarakCarousel.tsx': 'export const SarakCarousel = () => null;',
+    });
+    try {
+      const names = new Set();
+      collectFromCategoryRoot(root, names);
+      expect([...names].sort()).toEqual(['SarakCarousel', 'SarakLightbox']);
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it('coleta pelo barril da subpasta, não pelos arquivos dela: a peça Impl atrás da fronteira lazy fica privada', () => {
+    const root = plantFakeAtomicRoot({
+      'Media/index.ts': '',
+      'Media/SarakPDFViewer/index.ts': "export const SarakPDFViewer = lazy(() => import('./SarakPDFViewerImpl'));",
+      'Media/SarakPDFViewer/SarakPDFViewerImpl.tsx': 'export default function SarakPDFViewerImpl() { return null; }',
+    });
+    try {
+      const names = new Set();
+      collectFromCategoryRoot(root, names);
+      expect([...names]).toEqual(['SarakPDFViewer']);
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it('subpasta SEM index.ts continua interna, com ou sem barril na categoria', () => {
+    const root = plantFakeAtomicRoot({
+      'Inputs/index.ts': "export * from './SarakInput';",
+      'Inputs/SarakInput.tsx': 'export const SarakInput = () => null;',
+      'Inputs/internal/CalendarPanel.tsx': 'export const CalendarPanel = () => null;',
+      'Cards/hooks/useCard.ts': 'export const UseCard = () => null;',
+      'Cards/SarakCard.tsx': 'export const SarakCard = () => null;',
+    });
+    try {
+      const names = new Set();
+      collectFromCategoryRoot(root, names);
+      expect([...names].sort()).toEqual(['SarakCard', 'SarakInput']);
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+});

@@ -40,6 +40,14 @@ export const CATALOG_PART_5 = {
         pt: 'Senha', en: 'Password', es: 'Contraseña',
         fr: 'Mot de passe', de: 'Passwort', it: 'Password',
     },
+    authShowPassword: {
+        pt: 'Mostrar senha', en: 'Show password', es: 'Mostrar contraseña',
+        fr: 'Afficher le mot de passe', de: 'Passwort anzeigen', it: 'Mostra password',
+    },
+    authHidePassword: {
+        pt: 'Ocultar senha', en: 'Hide password', es: 'Ocultar contraseña',
+        fr: 'Masquer le mot de passe', de: 'Passwort verbergen', it: 'Nascondi password',
+    },
     authMfaLabel: {
         pt: 'Código de verificação', en: 'Verification code', es: 'Código de verificación',
         fr: 'Code de vérification', de: 'Bestätigungscode', it: 'Codice di verifica',

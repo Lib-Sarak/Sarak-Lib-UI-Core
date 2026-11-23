@@ -60,3 +60,41 @@ export const resolvePaletteForDesign = (
     const hostTones = Object.fromEntries(['sidebarTone', 'topbarTone'].filter((id) => hostConfig?.[id] !== undefined).map((id) => [id, hostConfig?.[id]]));
     return input ? resolvePalette(input, mode, { ...hostConfig, ...themeDesign, ...hostTones }) : {};
 };
+
+const BAR_TONES = ['surface', 'primary', 'secondary', 'inverse'] as const;
+
+/**
+ * Todo token que a paleta pode calcular, em qualquer tom de barra: o mapa de papéis e os papéis de cada tom. É o que um
+ * design gravado antes do formato de escolhas pode trazer como cópia de cálculo, ou como resto da paleta de outro tema.
+ */
+export const PALETTE_CALCULATED_KEYS: ReadonlySet<string> = new Set([
+    ...Object.keys(PALETTE_ROLE_MAP),
+    ...BAR_TONES.flatMap((tone) => Object.keys(createPalettePlan({ sidebarTone: tone, topbarTone: tone }).roles)),
+]);
+
+/**
+ * "Manter minha paleta": com `keepPalette` ligado no design, a paleta que o usuário escolheu (`chosen`, a do design anterior
+ * à troca de tema) vale por cima do tema — o `colorPalette` dela e TODA cor que ela calcula, inclusive as que o tema
+ * declara. O que o tema declara e a paleta não calcula, e o resto do tema, fica como está. Desligado, ou sem paleta válida
+ * escolhida, devolve o design como veio.
+ */
+export const applyKeptPalette = (design: Record<string, unknown>, chosen: unknown): Record<string, unknown> => {
+    if (design.keepPalette !== true || !parsePaletteValue(chosen)) return design;
+    const mode: SarakPaletteMode = design.mode === 'light' ? 'light' : 'dark';
+    const tones = { sidebarTone: design.sidebarTone, topbarTone: design.topbarTone };
+    return { ...design, colorPalette: chosen, ...resolveChosenPalette(chosen, mode, tones) };
+};
+
+/**
+ * As cores de uma paleta escolhida no painel: o valor, o modo e os tons da barra, sem a correção contra o que o tema e o
+ * host declaram. É a mesma entrada com que o painel grava a paleta no rascunho, e por isso o design recomposto a partir
+ * dela devolve exatamente as cores que o painel mostrou; `{}` se o valor não for uma paleta.
+ */
+export const resolveChosenPalette = (
+    value: unknown,
+    mode: SarakPaletteMode,
+    tones?: Record<string, unknown>,
+): Record<string, string> => {
+    const input = parsePaletteValue(value);
+    return input ? resolvePalette(input, mode, tones) : {};
+};

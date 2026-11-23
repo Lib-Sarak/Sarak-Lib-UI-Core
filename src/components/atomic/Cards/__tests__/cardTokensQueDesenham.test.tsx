@@ -87,6 +87,7 @@ describe('botão de ação do SarakActionCard', () => {
         );
         const button = screen.getByText('Executar').closest('button');
         expect(button).toHaveClass('sarak-card-action-btn', 'sarak-card-action-btn--filled');
+        expect(button?.style.getPropertyValue('--sarak-card-action-btn-hover-bg')).toBe('var(--sarak-card-action-btn-bg)');
     });
 
     it('no estilo borderline o fundo transparente do estilo é preservado', () => {
@@ -98,6 +99,7 @@ describe('botão de ação do SarakActionCard', () => {
         const button = screen.getByText('Executar').closest('button');
         expect(button).toHaveClass('sarak-card-action-btn');
         expect(button).not.toHaveClass('sarak-card-action-btn--filled');
+        expect(button?.style.getPropertyValue('--sarak-card-action-btn-hover-bg')).toBe('');
     });
 });
 

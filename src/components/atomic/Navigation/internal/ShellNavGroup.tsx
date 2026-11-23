@@ -15,6 +15,8 @@ export interface ShellNavGroupProps {
     expanded: boolean;
     onToggle: (item: SarakShellNavItem) => void;
     onSelect?: (route: string) => void;
+    /** O grupo se desenha como item ativo quando o item ativo está dentro dele (o "Mais" da topbar). */
+    markActive?: boolean;
 }
 
 const MOTION = 'var(--duration-fast, 0.2s)';
@@ -24,7 +26,7 @@ const MOTION = 'var(--duration-fast, 0.2s)';
  * aberta (e na gaveta do celular) os filhos abrem na própria barra, com rolagem; na lateral recolhida e na topbar
  * abrem num balão ao lado do item. Um nível só de aninhamento.
  */
-export const ShellNavGroup: React.FC<ShellNavGroupProps> = ({ item, activeRoute, horizontal, collapsed, expanded, onToggle, onSelect }) => {
+export const ShellNavGroup: React.FC<ShellNavGroupProps> = ({ item, activeRoute, horizontal, collapsed, expanded, onToggle, onSelect, markActive = false }) => {
     const panelId = useId();
     const anchorRef = useRef<HTMLDivElement | null>(null);
     const [flyoutOpen, setFlyoutOpen] = useState(false);
@@ -50,12 +52,15 @@ export const ShellNavGroup: React.FC<ShellNavGroupProps> = ({ item, activeRoute,
                 badge={item.badge}
                 disabled={item.disabled}
                 collapsed={collapsed}
+                active={markActive && hasActiveChild}
+                data-sarak-nav-group-active={hasActiveChild ? 'true' : undefined}
                 orientation={horizontal ? 'horizontal' : 'vertical'}
                 aria-expanded={open}
                 aria-controls={useFlyout && !open ? undefined : panelId}
                 aria-haspopup={useFlyout ? 'true' : undefined}
                 className="relative"
-                style={hasActiveChild && !open ? { color: 'var(--sarak-nav-active-color, #19e3f0)' } : undefined}
+                // Marcado como ativo (o "Mais"), o item já se pinta como ativo, inclusive o texto sobre o fundo preenchido; só o grupo comum recebe a cor.
+                style={hasActiveChild && !open && !markActive ? { color: 'var(--sarak-nav-active-color, #19e3f0)' } : undefined}
                 onClick={toggle}
             >
                 {collapsed ? null : (

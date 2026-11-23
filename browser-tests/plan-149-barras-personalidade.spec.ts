@@ -199,21 +199,29 @@ test('marca: no topo por padrão, na base quando pedido, e recolhida fica só o 
     expect(await where()).toMatchObject({ footer: true, name: false, image: true });
 });
 
-test('marca sem logo: nenhuma caixa colorida, e recolhida o bloco some; com logo, o fundo da marca pinta', async ({ page }) => {
+// A anatomia da barra pinta o fundo da marca na FAIXA inteira do cabeçalho, com ou sem logo; o que não pode haver é uma
+// caixa colorida menor dentro dela, nem fundo sobrando na barra recolhida.
+test('marca: o fundo pinta a faixa inteira, sem caixa colorida dentro, e recolhida não sobra fundo', async ({ page }) => {
     const brandBackground = () => page.evaluate(() => {
+        const band = document.querySelector<HTMLElement>('aside [data-sarak-sidebar-header]');
         const block = document.querySelector('.sarak-chrome-brand')?.parentElement;
-        return block ? getComputedStyle(block).backgroundColor : null;
+        return {
+            band: band ? getComputedStyle(band).backgroundColor : null,
+            inner: block && block !== band ? getComputedStyle(block).backgroundColor : null,
+        };
     });
     const design = { sidebarBrandBackground: '#ff00ff' };
 
     await open(page, { design });
-    expect(await brandBackground()).toBe('rgb(255, 0, 255)');
+    expect(await brandBackground()).toEqual({ band: 'rgb(255, 0, 255)', inner: 'rgba(0, 0, 0, 0)' });
 
     await open(page, { design, query: { logo: 'none' } });
-    expect(await brandBackground()).toBe('rgba(0, 0, 0, 0)');
+    expect(await brandBackground()).toEqual({ band: 'rgb(255, 0, 255)', inner: 'rgba(0, 0, 0, 0)' });
 
     await open(page, { design: { ...design, isNavHidden: true }, query: { logo: 'none' } });
-    expect(await brandBackground(), 'recolhida e sem logo não sobra bloco').toBeNull();
+    const collapsed = await brandBackground();
+    expect(collapsed.band, 'recolhida não sobra fundo de marca').toBe('rgba(0, 0, 0, 0)');
+    expect([null, 'rgba(0, 0, 0, 0)']).toContain(collapsed.inner);
 });
 
 test('marca: o topo da lateral tem a altura do topo da área de conteúdo', async ({ page }) => {
@@ -244,10 +252,13 @@ for (const mode of MODES) {
                 const body = parse(getComputedStyle(document.body).backgroundColor);
                 const flat = asideBg[3] < 1 ? asideBg.slice(0, 3).map((c, i) => c * asideBg[3] + body[i] * (1 - asideBg[3])) : asideBg.slice(0, 3);
                 const textOf = (selector: string): number[] => parse(getComputedStyle(aside.querySelector(selector) as HTMLElement).color);
+                // O nome da marca fica sobre a faixa do cabeçalho (a primária), não sobre a barra: mede-se contra a faixa composta sobre a barra.
+                const band = parse(getComputedStyle(aside.querySelector('[data-sarak-sidebar-header]') as HTMLElement).backgroundColor);
+                const brandBackground = band[3] > 0 ? band.slice(0, 3).map((c, i) => c * band[3] + flat[i] * (1 - band[3])) : flat;
                 return {
                     background: flat.map(Math.round).join(','),
                     idle: ratio(textOf('a[href="#home"]'), flat),
-                    brand: ratio(textOf('.sarak-chrome-brand span'), flat),
+                    brand: ratio(textOf('.sarak-chrome-brand span'), brandBackground),
                     group: ratio(textOf('[data-sarak-nav-group] button'), flat),
                 };
             });
@@ -307,9 +318,17 @@ test('rodapé nas barras contrastantes: nome, avatar, idioma e engrenagem legív
                     const icon = buttons[buttons.length - 1];
                     if (!icon) return null;
                     const [hi, lo] = [lum(parse(getComputedStyle(icon).color)), lum(flat)].sort((x, y) => y - x);
-                    return (hi + 0.05) / (lo + 0.05);
+                    // A cor pintada é a que a barra calculou (`--sarak-shell-logout-text-color`): o `tailwind-merge` já a perdeu para a do fantasma.
+                    const calculated = getComputedStyle(icon).getPropertyValue('--sarak-shell-logout-text-color').trim();
+                    const painted = parse(getComputedStyle(icon).color);
+                    const expected = calculated ? parse(calculated) : null;
+                    return {
+                        ratio: (hi + 0.05) / (lo + 0.05),
+                        paintsCalculatedColor: expected === null || expected.every((channel, index) => Math.abs(channel - painted[index]) < 1.5),
+                    };
                 }, scene.bar);
-                expect(logout, `botão de sair, ${scene.name} (${where})`).toBeGreaterThanOrEqual(ICON_CONTRAST);
+                expect(logout?.ratio, `botão de sair, ${scene.name} (${where})`).toBeGreaterThanOrEqual(ICON_CONTRAST);
+                expect(logout?.paintsCalculatedColor, `o sair pinta a cor que a barra calculou, ${scene.name} (${where})`).toBe(true);
             }
         }
     }

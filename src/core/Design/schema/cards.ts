@@ -295,7 +295,7 @@ export const CardSchema: ComponentSchema = {
         // --- HEADER ---
         {
             id: 'cardHeaderBg',
-            label: 'Fundo do Header',
+            label: 'Fundo do cabeçalho do card',
             type: 'color',
             kind: 'aesthetic',
             modeDependent: true,

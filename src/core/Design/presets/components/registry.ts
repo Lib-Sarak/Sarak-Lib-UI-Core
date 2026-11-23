@@ -3,7 +3,7 @@ import { BUTTON_PRESETS, BUTTON_STYLE_PRESETS } from './buttons';
 import { INPUT_PRESETS } from './inputs';
 import { AMBIENT_PRESETS, GRADIENT_PRESETS, MEDIA_PRESETS, TEXTURE_PRESETS } from './atmosphere';
 import { TYPOGRAPHY_PRESETS } from './typography';
-import { CONTENT_WIDTH_PRESETS, SIDEBAR_PRESETS, TOPBAR_PRESETS } from './layout';
+import { BAR_TONE_PRESETS, CONTENT_WIDTH_PRESETS, SIDEBAR_PRESETS, TOPBAR_PRESETS } from './layout';
 import { CORNER_PRESETS, DENSITY_PRESETS } from './shapeGeometry';
 import { BORDER_PRESETS, GLASS_PRESETS, MATERIAL_PRESETS, SHADOW_DIRECTION_PRESETS, SHADOW_PRESETS } from './shapeSurface';
 import { CHART_PRESETS, TABLE_PRESETS } from './dataPresets';
@@ -13,7 +13,7 @@ import { ICON_PRESETS, MOTION_PRESETS, PAGE_TRANSITION_PRESETS } from './motionI
 import { FEATURED_FONTS, FONT_PAIR_PRESETS, TYPE_SCALE_PRESETS } from './typographyKits';
 import { FEATURED_TEXTURES } from './textureFamilies';
 
-export type PresetDecisionId = 'fonts' | 'shape' | 'components' | 'layout';
+export type PresetDecisionId = 'fonts' | 'shape' | 'components' | 'bars' | 'layout';
 
 /** O desenho que a galeria usa para mostrar a opção: sempre o componente real, nunca uma imagem. */
 export type PresetSampleKind =
@@ -33,6 +33,8 @@ export interface PresetGroupDef {
     owns?: RegExp;
     /** O grupo lista as opções de um token só (cada preset, um valor): a distinção é o valor, não dois tokens. */
     optionsOfOneToken?: boolean;
+    /** O grupo lista as opções de um token e grava junto o ajuste dele (a textura do card e a opacidade): a distinção é o valor do token principal. */
+    optionsOfTokenAndSetting?: boolean;
 }
 
 const firstIds = (presets: readonly ComponentPreset[], count: number): string[] => presets.slice(0, count).map((preset) => preset.id);
@@ -43,6 +45,8 @@ const except = (ids: readonly string[], demoted: readonly string[]): string[] =>
 const FEATURED_CARDS = ['card-glass-minimal', 'card-flat-minimal', 'card-soft-elevated', 'card-cyberpunk-neon', 'card-side-accent', 'card-glow-halo', 'card-centered', 'card-organic-craft'];
 const FEATURED_BUTTONS = ['btn-industrial-matte', 'btn-solid-pill', 'btn-neon-pulse', 'btn-frosted-glass', 'btn-hollow-borderline', 'btn-square-flat', 'btn-neumorphism-soft', 'btn-bouncy'];
 const FEATURED_INPUTS = ['input-soft-round', 'input-classic-underline', 'input-floating-pill', 'input-frosted-glass', 'input-sharp-outline', 'input-flat-filled', 'input-search-pill', 'input-neumorphic-press'];
+/** As texturas à vista do grupo do card: as que a moldura mostra acima de 2% dos pixels nos dois modos (hexagon, blueprint-pro e grain não chegam lá com o traço de 2px). */
+const FEATURED_CARD_TEXTURES = ['grid', 'dots', 'carbon', 'paper', 'aurora', 'honeycomb', 'noise', 'fluid'];
 const FEATURED_ATMOSPHERE = ['bg-none', 'bg-kinetic-flow', 'bg-stellar-nebula', 'bg-dark-cinematic', 'bg-vignette-soft', 'bg-film-grain', 'bg-vivid', 'bg-tone-cyber'];
 
 export const PRESET_GROUPS: readonly PresetGroupDef[] = [
@@ -51,7 +55,7 @@ export const PRESET_GROUPS: readonly PresetGroupDef[] = [
     { id: 'fonts', decision: 'fonts', sample: 'font', presets: TYPOGRAPHY_PRESETS, featured: FEATURED_FONTS.map((name) => `typo-${name.toLowerCase().replace(/\s+/g, '-')}`), areas: ['typography'], owns: /^(headingFont|bodyFont)$/, optionsOfOneToken: true },
 
     { id: 'cards', decision: 'shape', sample: 'card', presets: CARD_PRESETS, featured: except(FEATURED_CARDS, ['card-glow-halo', 'card-organic-craft']), areas: ['cards', 'cardTitle', 'cardAction'] },
-    { id: 'cardTextures', decision: 'shape', sample: 'cardTexture', presets: CARD_TEXTURE_PRESETS, featured: FEATURED_TEXTURES.map((texture) => `card-tex-${texture}`), areas: ['cards'], owns: /^cardTextureType$/, optionsOfOneToken: true },
+    { id: 'cardTextures', decision: 'shape', sample: 'cardTexture', presets: CARD_TEXTURE_PRESETS, featured: FEATURED_CARD_TEXTURES.map((texture) => `card-tex-${texture}`), areas: ['cards'], owns: /^cardTexture(Type|Opacity)$/, optionsOfTokenAndSetting: true },
     { id: 'corners', decision: 'shape', sample: 'surface', presets: CORNER_PRESETS, featured: except(idsOf(CORNER_PRESETS), ['corners-rounded', 'corners-round']), areas: ['system', 'cards', 'buttons', 'inputs', 'tables', 'overlays', 'status', 'navigation'], owns: /Radius$/ },
     { id: 'density', decision: 'shape', sample: 'surface', presets: DENSITY_PRESETS, featured: idsOf(DENSITY_PRESETS), areas: ['system', 'cards', 'tables', 'navigation', 'structural'], owns: /^(layout|cardPaddingMd|cardHeaderPadding|table(Density|CellPadding)|sidebarItemDensity|topbarItemDensity|formFieldDensity|globalSectionGap|tabGap)/ },
     { id: 'shadow', decision: 'shape', sample: 'card', presets: SHADOW_PRESETS, featured: except(idsOf(SHADOW_PRESETS), ['shadow-defined', 'shadow-colored', 'shadow-ambient', 'shadow-dramatic']), areas: ['atmosphere'], owns: /^(shadow|layeredShadows)/ },
@@ -67,7 +71,7 @@ export const PRESET_GROUPS: readonly PresetGroupDef[] = [
     { id: 'buttonStyles', decision: 'components', sample: 'button', presets: BUTTON_STYLE_PRESETS, featured: idsOf(BUTTON_STYLE_PRESETS), areas: ['buttons'], owns: /^btnStyleType$/, optionsOfOneToken: true },
     { id: 'inputs', decision: 'components', sample: 'input', presets: INPUT_PRESETS, featured: except(FEATURED_INPUTS, ['input-sharp-outline', 'input-flat-filled', 'input-search-pill']), areas: ['inputs'] },
     { id: 'tables', decision: 'components', sample: 'table', presets: TABLE_PRESETS, featured: idsOf(TABLE_PRESETS), areas: ['tables'], owns: /^table/ },
-    { id: 'charts', decision: 'components', sample: 'chart', presets: CHART_PRESETS, featured: except(idsOf(CHART_PRESETS), ['chart-radar-fine']), areas: ['data'], owns: /^chart/ },
+    { id: 'charts', decision: 'components', sample: 'chart', presets: CHART_PRESETS, featured: except(idsOf(CHART_PRESETS), ['chart-style-straight', 'chart-style-grid']), areas: ['data'], owns: /^chart(Thickness|Smoothing|ShowGrid|GridOpacity)$/ },
     { id: 'modal', decision: 'components', sample: 'modal', presets: MODAL_PRESETS, featured: except(idsOf(MODAL_PRESETS), ['modal-stacked-center', 'modal-floating-sharp', 'modal-frosted-backdrop']), areas: ['overlays'], owns: /^modal/ },
     { id: 'notice', decision: 'components', sample: 'notice', presets: NOTICE_PRESETS, featured: idsOf(NOTICE_PRESETS), areas: ['overlays'], owns: /^(tooltip|toast)/ },
     { id: 'switch', decision: 'components', sample: 'switch', presets: SWITCH_PRESETS, featured: except(idsOf(SWITCH_PRESETS), ['switch-pulsing']), areas: ['switches'], owns: /^switch/, optionsOfOneToken: true },
@@ -78,8 +82,9 @@ export const PRESET_GROUPS: readonly PresetGroupDef[] = [
     { id: 'pageTransition', decision: 'components', sample: 'page', presets: PAGE_TRANSITION_PRESETS, featured: except(idsOf(PAGE_TRANSITION_PRESETS), ['page-slide-up', 'page-slide-side', 'page-zoom', 'page-none']), areas: ['animations'], owns: /^pageTransitionType$/, optionsOfOneToken: true },
     { id: 'icons', decision: 'components', sample: 'icons', presets: ICON_PRESETS, featured: except(idsOf(ICON_PRESETS), ['icons-tabler-light']), areas: ['system'], owns: /^icon/ },
 
-    { id: 'sidebar', decision: 'layout', sample: 'bar', presets: SIDEBAR_PRESETS, featured: firstIds(SIDEBAR_PRESETS, 8), areas: ['navigation'], owns: /^(sidebar|nav)/ },
-    { id: 'topbar', decision: 'layout', sample: 'bar', presets: TOPBAR_PRESETS, featured: firstIds(TOPBAR_PRESETS, 8), areas: ['navigation'], owns: /^topbar/ },
+    { id: 'barTone', decision: 'bars', sample: 'bar', presets: BAR_TONE_PRESETS, featured: idsOf(BAR_TONE_PRESETS), areas: ['navigation'], owns: /^(sidebar|topbar)Tone$/ },
+    { id: 'sidebar', decision: 'bars', sample: 'bar', presets: SIDEBAR_PRESETS, featured: firstIds(SIDEBAR_PRESETS, 8), areas: ['navigation'], owns: /^(sidebar|nav)/ },
+    { id: 'topbar', decision: 'bars', sample: 'bar', presets: TOPBAR_PRESETS, featured: firstIds(TOPBAR_PRESETS, 8), areas: ['navigation'], owns: /^topbar/ },
     { id: 'contentWidth', decision: 'layout', sample: 'width', presets: CONTENT_WIDTH_PRESETS, featured: except(idsOf(CONTENT_WIDTH_PRESETS), ['content-width-1600', 'content-width-full']), areas: ['system'], owns: /^maxContentWidth$/, optionsOfOneToken: true },
 ];
 

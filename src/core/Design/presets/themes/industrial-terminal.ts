@@ -51,6 +51,9 @@ export const industrialTerminalTheme: SarakThemePreset = {
         topbarTone: 'neutral',
         sidebarBackgroundStyle: 'gradient',
         sidebarActiveItemStyle: 'outline',
+        sidebarActiveGlass: 'on',
+        brandDisplay: 'both',
+        userAvatarStyle: 'initials',
         sidebarItemDensity: 'compact',
         sidebarIconSize: 16,
         topbarBorderWidth: 1,
@@ -201,8 +204,6 @@ export const industrialTerminalTheme: SarakThemePreset = {
         switchStyleType: 'tactile',
         switchBackdropBlur: 0,
         // --- Paletas e Gradientes ---
-        colorDepth: 1,
-        colorVariation: 1,
         // --- Gráficos & Dados ---
         chartGridOpacity: 0.14,
         // bar: leitura de medição discreta (turno, lote), sem suavização

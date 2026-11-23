@@ -62,7 +62,9 @@
             "material",
             "glass",
             "atmosphere",
-            "gradient"
+            "gradient",
+            "cardTextures",
+            "textures"
         ],
         "optionSections": [],
         "screen": "dashboard",
@@ -70,7 +72,11 @@
             "dashboard",
             "components",
             "tabela"
-        ]
+        ],
+        "groupScreens": {
+            "shadow": "components",
+            "shadowDirection": "components"
+        }
     },
     {
         "id": "components",
@@ -102,35 +108,46 @@
             "settings",
             "logs",
             "documentos"
-        ]
+        ],
+        "groupScreens": {
+            "tables": "tabela",
+            "charts": "graficos",
+            "modal": "components",
+            "notice": "components",
+            "switch": "components",
+            "scroll": "components",
+            "badge": "components",
+            "emptyState": "components"
+        }
     },
     {
-        "id": "layout",
-        "textKey": "decisionLayout",
+        "id": "bars",
+        "textKey": "decisionBars",
         "pillars": [
             "navigation"
         ],
         "groups": [
+            "barTone",
             "sidebar",
-            "topbar",
-            "contentWidth",
-            "globalBlock"
+            "topbar"
         ],
         "optionSections": [
             "Composição da Barra"
         ],
-        "includeGlobal": true,
+        "tokenScope": "bars",
         "questions": [
             {
                 "id": "where",
                 "textKey": "barQuestionWhere",
                 "tokens": [
                     "navigationStyle",
+                    "mobileNavigationStyle",
                     "sidebarPosition",
                     "sidebarWidth",
                     "navbarLayout"
                 ],
-                "fineMatch": "^(sidebar(Min|Max|Collapsed)Width|topbar(Height|CollapsedHeight)|tabSectionMargin|searchPosition(Sidebar|Topbar)|maxContentWidth)$"
+                "fineMatch": "^(sidebar(Min|Max|Collapsed)Width|topbar(Height|CollapsedHeight)|tabSectionMargin|searchPosition(Sidebar|Topbar))$",
+                "control": "navigationSwitch"
             },
             {
                 "id": "how",
@@ -139,6 +156,7 @@
                     "sidebarTone",
                     "topbarTone",
                     "sidebarActiveItemStyle",
+                    "sidebarActiveGlass",
                     "topbarActiveItemStyle",
                     "sidebarBorderSide",
                     "sidebarBorderStyle",
@@ -147,7 +165,7 @@
                     "sidebarItemDensity",
                     "topbarItemDensity"
                 ],
-                "fineMatch": "^(sidebar|topbar)(Color|Active|Hover|Item|Category|Border|Icon|Blur|Shadow|Noise|GroupSeparator|Title)|^nav(ItemActive|ActiveMarker|ItemRadius)|^tabGap$"
+                "fineMatch": "^(sidebar|topbar)(Color|Active|Hover|Item|Category|Border|Icon|Blur|Shadow|Noise|Footer|GroupSeparator|Title)|^nav(ItemActive|ActiveMarker|ItemRadius)|^tabGap$"
             },
             {
                 "id": "what",
@@ -156,11 +174,15 @@
                     "chromeSearchPosition",
                     "chromeUserPosition",
                     "chromeNotificationsPosition",
+                    "userAvatarStyle",
                     "preferenceModePosition",
                     "preferenceFontSizePosition",
                     "preferenceNavigationStylePosition",
                     "preferenceNavCollapsePosition",
-                    "preferenceLanguagePosition"
+                    "preferenceNavCollapsePositionTopbar",
+                    "preferenceLanguagePosition",
+                    "preferenceFontSizeReduction",
+                    "preferenceFontSizeIncrease"
                 ],
                 "fineMatch": "^searchDropdown"
             },
@@ -169,6 +191,7 @@
                 "textKey": "barQuestionBrand",
                 "tokens": [
                     "sidebarLogoPlacement",
+                    "brandDisplay",
                     "shellBrandLogoSize",
                     "brandLogoSizeCollapsed",
                     "sidebarLabelMaxWidth"
@@ -183,9 +206,27 @@
                     "sidebarResizable",
                     "isAutoHideEnabled"
                 ],
-                "fineMatch": "^(isSplitViewEnabled)$"
+                "fineMatch": "^(isSplitViewEnabled|zIndexSidebar)$"
             }
         ],
+        "screen": "dashboard",
+        "screens": [
+            "dashboard"
+        ]
+    },
+    {
+        "id": "layout",
+        "textKey": "decisionLayout",
+        "pillars": [
+            "navigation"
+        ],
+        "groups": [
+            "contentWidth",
+            "globalBlock"
+        ],
+        "optionSections": [],
+        "includeGlobal": true,
+        "tokenScope": "notBars",
         "screen": "dashboard",
         "screens": [
             "dashboard"

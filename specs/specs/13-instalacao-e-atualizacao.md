@@ -36,6 +36,9 @@ npm install github:Lib-Sarak/Sarak-Lib-UI-Core                 # SUPORTADO
 comportamento de um registry, sem registry. `github:` puro continua suportado e **nunca foi
 declarado errado**: a decisão D4 é explícita em não forçar migração de ninguém.
 
+O **pin de tag exata** (`github:…#vX.Y.Z`) também é suportado e é o que o guia recomenda em produção; `file:` e `link:` servem só para
+iterar localmente. O `update` o trata como o pin que é: sobe trocando o pin para a tag-alvo (§9.4.1).
+
 O default do scaffolder, quando o consumidor ainda não tem a dependência gravada, é
 `github:Lib-Sarak/Sarak-Lib-UI-Core` (`bin/scaffold/constants.mjs:50`). Quando **já existe**, o
 `init` reusa o spec real do projeto (`bin/scaffold/runInit.mjs:31-33`) — nunca assume o
@@ -69,7 +72,8 @@ As obrigatórias são `clsx`, `date-fns`, `framer-motion`, `lucide-react`, `reac
 tabela renderiza todas as linhas. São importadas pelo
 barril ou por código eager. As opcionais são `@dnd-kit/core` e `@dnd-kit/sortable` (o arrastar do
 `SarakKanban`, [[019-arrastar-e-soltar-do-kanban]]), `echarts`, `echarts-for-react`, `pdfjs-dist`,
-`react-markdown`, `react-syntax-highlighter`, `reactflow` e `recharts`, usadas por peças lazy;
+`react-markdown`, `react-syntax-highlighter`, `reactflow` e `recharts`, usadas por peças lazy; `eslint` (`>=9.0.0`), só
+quando o importador liga o plugin do kit de verificação ([[12-kit-do-consumidor]] §2.5);
 `react-grid-layout` não tem import runtime alcançável pelo barril e `tailwindcss` só participa do
 build CSS da biblioteca. Cada opcional é declarada em `peerDependenciesMeta`.
 
@@ -87,6 +91,9 @@ uma lista escrita à mão (`bin/scaffold/generators/packageJsonFields.mjs:14-19`
 antes de qualquer Provider montar. É parte do contrato público, não conveniência — sem ele os
 componentes não têm forma geométrica, porque o Tailwind interno não é processado no build do
 consumidor.
+
+**CSP com nonce.** Na importação, a lib lê `<meta property="csp-nonce" nonce="…">` e injeta a folha global já com esse nonce.
+`options.styleNonce` vale para todo `<style>` criado depois da montagem. Sem a meta e sem `styleNonce`, nada muda.
 
 **Modo Embarcado:** aí sim há um import explícito — `@sarak/lib-ui-core/sarak-scoped.css` — e o
 `init` o escreve no `main.tsx` gerado (`bin/scaffold/generators/mainTsx.mjs:11`).
@@ -154,8 +161,11 @@ recebia.** É o argumento a favor do smoke test de instalação existir.
 # 4. O CLI de subcomandos
 
 ```
-sarak-ui init | check | refresh    (+ --help / -h)
+sarak-ui init | check | refresh | update | verify    (+ --help / -h)
 ```
+
+O `verify` confere o uso da lib no que o ESLint não lê e não escreve nada no projeto; flags, códigos de saída e regras estão em
+[[12-kit-do-consumidor]] §2.5.
 
 `bin/sarak-ui.mjs:20` fixa a lista; `:109-113` delega para os três módulos que **já existiam**
 (`runInit`, `runCheckCli`, `runRefreshCli`) — a Spec 51 acrescentou **superfície pública**, não
@@ -489,7 +499,7 @@ re-sincroniza o kit `sarak-ui/` — **sempre**, mesmo quando o comando de atuali
 | --- | --- | --- |
 | Alvo | a maior tag **dentro da faixa declarada** — ou, sem faixa (`github:` puro, `>=1.0.0`), dentro do **major já instalado** | a maior tag publicada, **de qualquer major** |
 | Atravessa MAJOR sozinho? | **nunca** | só depois de confirmado |
-| Reescreve o `package.json`? | nunca | só depois de confirmado, e **só o MAJOR da faixa** |
+| Reescreve o `package.json`? | nunca, salvo spec de tag exata (`#vX.Y.Z`): o pin vai para a maior tag do mesmo major | só depois de confirmado, e **só o MAJOR da faixa** (no pin de tag exata, para a tag-alvo) |
 
 > **O piso "sem faixa declarada, nunca passa do major instalado" é decisão de desenho, não consequência.**
 > `github:` puro não tem faixa que proteja o consumidor de um `npm install` que resolveria até a tag mais nova

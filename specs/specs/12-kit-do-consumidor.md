@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Habilitação do consumidor / Documentação viva"
 status: "🟢 Vigente"
 prioridade: "Alta"
 tags: ["spec", "consumidor", "kit", "documentacao-viva", "gate", "empacotamento", "skill"]
-relacionados: ["[[13-instalacao-e-atualizacao]]", "[[14-artefatos-do-mantenedor]]", "[[01-gates-e-baseline]]", "[[00-regras-e-invariantes]]", "[[03-versionamento-e-release]]"]
+relacionados: ["[[13-instalacao-e-atualizacao]]", "[[14-artefatos-do-mantenedor]]", "[[01-gates-e-baseline]]", "[[00-regras-e-invariantes]]", "[[03-versionamento-e-release]]", "[[025-kit-de-verificacao-de-uso-nucleo-unico-duas-portas]]"]
 ---
 
 # 1. O que é
@@ -49,7 +49,7 @@ carregador** (nada de `@fontsource`, `<link>` do Google ou `@font-face` à mão 
 `options.fonts` e quando usar cada uma; `custom` para a fonte da marca e `baseUrl` só para servir **as mesmas** fontes
 de outro lugar; `font-src` e LGPD. O importador de temas também aprende a regra do `value` exato.
 
-O que o kit ensina sobre **criar o tema do cliente** (prosa à mão: `GUIA-FRONTEND.md` §3.9 e a skill espelhada) é o
+O que o kit ensina sobre **criar o tema do cliente** (prosa à mão em `GUIA-FRONTEND.md` §3.9 e na skill espelhada; só a tabela de arquétipos é gerada, do catálogo de temas) é o
 diferencial da lib, a granularidade token a token: da identidade visual (marca, tipografia, cantos, densidade, tom,
 movimento) ao arquétipo embarcado mais próximo e aos tokens que a carregam, nessa ordem; os temas embarcados como
 **exemplos de capacidade**, não como produto final; a receita mínima (poucas chaves sobre uma referência) e a completa
@@ -141,7 +141,63 @@ estaria tecnicamente correto e praticamente inútil naquele item.
 - **Erro contido.** `SarakErrorBoundary` recebe `fallback`, `onError` e `resetKeys`. `SarakSection` e `SarakAppChrome` o usam por padrão: o erro de render fica no bloco, com "Tentar de novo", e a troca de `activeRoute` o limpa. Um boundary do consumidor em volta do cromo não recebe esses erros: para registrá-los, ele vai dentro do conteúdo.
 - **Alterações não salvas.** `useSarakUnsavedChanges({ isDirty, onBlock? })` avisa ao fechar a aba e devolve `confirmLeave()`, que o consumidor liga no próprio roteador, porque a lib não navega. `SarakForm.warnOnUnsaved`, padrão `false`, cobre o fechamento da aba.
 - **Mensagem de erro.** `sarakErrorMessage(error, fallback?)` devolve texto seguro de `Error`, string e resposta comum de API. Rastro de pilha, HTML, texto longo e erro do motor JS não passam.
-- **Subpath `/testing`.** `renderWithSarak` é assíncrona, e `createSarakKitMock` mantém a lib real com dublês de `SarakDataTable`, `SarakChartEngine` e `SarakPDFViewer`. Lib e Testing Library carregam por `import()` com especificador em variável, para o subpath abrir em Node sem DOM e sem `@testing-library/react`, que é peer opcional. O subpath não importa tipos da lib: importar faz o build mover tipos do barril para um `.d.ts` compartilhado, e `dist/index.d.ts` deixa de declará-los.
+- **Subpath `/testing`.** `renderWithSarak` é assíncrona, e `createSarakKitMock` mantém a lib real com dublês de `SarakDataTable`, `SarakChartEngine` e `SarakPDFViewer`. Lib e Testing Library carregam por `import()` com especificador em variável, para o subpath abrir em Node sem DOM e sem `@testing-library/react`, que é peer opcional. `installSarakTestEnvironment` instala o `matchMedia` de reserva (quando o ambiente não tem) e o filtro do aviso de folha de estilo do jsdom no console virtual. O subpath não importa tipos da lib: importar faz o build mover tipos do barril para um `.d.ts` compartilhado, e `dist/index.d.ts` deixa de declará-los.
+
+## 2.4 Alvos de teste estáveis — contrato do kit
+
+O teste do importador acha os pontos abaixo sem depender de texto, que muda com o idioma. **Renomear qualquer um deles é
+quebra de contrato**, com o mesmo peso de remover um export. A seção "Testar com a lib" do `GUIA-FRONTEND.md` é a fonte
+de quem importa.
+
+| Onde | Alvo |
+|---|---|
+| `useOverlay().confirm` | `confirmTestId`/`cancelTestId` viram `data-testid` dos dois botões; omitidos, os botões não levam o atributo |
+| Painel: Aplicar | `sarak-panel-apply` |
+| Painel, menu **Mais ações**: Salvar tema, Novo tema, Apagar tema, Exportar JSON | `sarak-panel-save-theme`, `sarak-panel-new-theme`, `sarak-panel-delete-theme`, `sarak-panel-export-json` (só existem com o menu aberto) |
+| Modal de salvar: confirmar (o mesmo botão salva e exporta) | `sarak-save-theme-confirm` |
+| Cartão de tema da decisão **Tema**, carregado ou pendente | `data-theme-id="<id do tema>"` |
+
+O painel não tem galeria nem botão de abrir ou fechar galeria desde a 8.0.0, e por isso não há alvo para eles.
+
+O subpath `testing` também cuida do aviso de CSS: `filterSarakTestConsoleLog` descarta, além do aviso do jsdom, o
+"[Sarak] CSS não detectado" do modo app. O aviso do modo embarcado continua passando, e a lib não se cala sozinha em teste:
+a supressão é opt-in, no `onConsoleLog` do importador.
+
+## 2.4.1 O que o catálogo diz dos tokens removidos
+
+`designTokens.removed` traz `{ id, removedIn, destination }` por token removido, e esses ids saem de `designTokens.ids`. A fonte é o
+`docs/migracoes.md`: o gerador (`scripts/consumer-kit/collectRemovedTokens.mjs`) lê cada lista "Removidos (N)" (linha
+`- id — tipo → destino`) e **falha em voz alta** se a contagem do título não bate com as linhas ou se uma linha não traz destino. Uma
+versão que remove token precisa, então, escrever o destino de cada um na nota de migração antes de o `guide` passar.
+
+## 2.5 O kit de verificação de uso
+
+O importador sabe por máquina onde usa a lib errado, ou mantém à mão algo que ela já entrega. O kit de verificação é **opcional** e
+tem a forma decidida na [[025-kit-de-verificacao-de-uso-nucleo-unico-duas-portas]]: um núcleo de funções puras (`src/verify/`, sem
+React e sem importar o barril) com duas portas.
+
+| Porta | Para quê | Como se liga |
+| --- | --- | --- |
+| Plugin de ESLint, subpath `@sarak/lib-ui-core/eslint` | o que pede árvore: `.ts`, `.tsx`, `.js` | o importador liga cada regra pelo nome; `configs.recommended` liga cinco |
+| `npx sarak-ui verify` | o que o ESLint do importador não lê (`.css`, `package.json`, a cópia do kit) e quem roda fora do ESLint | `--rule <regra>[=error\|warn]`, `--config <arquivo>`, `--root`, `--format text\|json`, `--list` |
+
+- **Nenhuma regra nasce ligada.** O `verify` sem `--rule` nem arquivo de configuração na raiz sai com código 2; com achado de severidade
+  erro sai com 1; sem achado, 0. O `--list` mostra as treze regras, a porta e a severidade proposta de cada (`src/verify/ruleCatalog.ts`).
+- **O `recommended`** (todas em `error`): `no-deep-import`, `known-css-var`, `no-internal-class-selector`, `valid-spacing-value` e
+  `known-icon-name`. As outras ficam fora pelo motivo medido nos importadores, escrito em `src/verify/plugin.ts`: acusam cópia do kit,
+  dublê de teste ou documento e pedem `allow` (`prefer-sarak-component`, `no-literal-color-font`); são heurística de nome
+  (`no-reimplemented-piece`); não tiveram ocorrência para medir (`no-direct-wrapped-lib`); ou pedem opção do importador
+  (`single-entrypoint`, `known-theme-id`).
+- **Os dados vêm do catálogo, não do código do kit.** A chave `verification` do `sarak-ui/catalog.json` traz `nativeEquivalents`,
+  `pieceAliases`, `encapsulated`, `iconNameProps` e `paletteIds`. A fonte é uma tag de JSDoc nos componentes e funções públicas
+  (`@replacesElement`, `@replacesPiece`, `@encapsulates`, `@iconNameProp`, lidas por AST em
+  `scripts/consumer-kit/collectVerification.mjs`; tag fora do barril ou do `testing`, ou fora do formato, derruba o `guide`). É a R17 do
+  §2: o equivalente não nasce numa lista paralela. O `kitHash` cobre a chave, e `guide:check` e `catalog:check` a travam.
+- **Cada achado traz `arquivo:linha`, o que está errado e o nome público que substitui.** A mensagem é só em português: é ferramenta do
+  desenvolvedor do importador, fora do catálogo de seis idiomas.
+- **O que o kit não vê.** `no-reimplemented-piece` casa por nome (exato ou sem o prefixo `sarak`) ou por apelido registrado na tag; uma
+  peça reescrita com outro nome passa, e um `Button.tsx` que exporta também um hook deixa de ser acusado. As equivalências condicionais
+  (`<section>` só pede `SarakSection` com título dentro) só valem onde há árvore, isto é, no plugin.
 
 # 3. A regra nº 1 do consumidor — leia o catálogo, não assuma
 

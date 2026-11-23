@@ -30,4 +30,17 @@ describe('ChromeUnavailableWidget', () => {
         const vertical = screen.getByRole('button', { name: 'Conecte o widget' });
         expect(vertical.querySelector('span:not([aria-hidden])')!.className).not.toContain('hidden');
     });
+
+    it('na lateral é uma linha com a métrica do item de menu e sem caixa com borda; no topo continua a caixa', () => {
+        const icon = <span aria-hidden="true">i</span>;
+        const { rerender } = render(<ChromeUnavailableWidget label="Conecte o widget" icon={icon} variant="vertical" />);
+        const row = screen.getByRole('button', { name: 'Conecte o widget' });
+        expect(row.className).toContain('px-3');
+        expect(row.className).toContain('py-2.5');
+        expect(row.className).not.toContain('border');
+        rerender(<ChromeUnavailableWidget label="Conecte o widget" icon={icon} variant="mini" />);
+        expect(screen.getByRole('button', { name: 'Conecte o widget' }).className).toContain('justify-center');
+        rerender(<ChromeUnavailableWidget label="Conecte o widget" icon={icon} variant="horizontal" />);
+        expect(screen.getByRole('button', { name: 'Conecte o widget' }).className).toContain('border');
+    });
 });

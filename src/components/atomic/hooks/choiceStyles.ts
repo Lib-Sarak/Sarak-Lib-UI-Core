@@ -19,6 +19,7 @@ export const getCheckboxStyles = (
         borderColor: active
             ? 'var(--sarak-input-focus-border-color, var(--sarak-primary-color, #19e3f0))'
             : 'var(--sarak-input-border-color, var(--border-color, rgba(255,255,255,0.09)))',
+        // sarak-allow-hardcode: piso funcional: o contorno de 1 px do controle desmarcado não segue --sarak-border-width, que aceita 0 e apagaria o campo.
         borderWidth: '1px',
         borderStyle: 'solid',
         boxShadow: getChoiceFocusRing(focused),
@@ -34,6 +35,7 @@ export const getRadioStyles = (
     borderColor: checked
         ? 'var(--sarak-input-focus-border-color, var(--sarak-primary-color, #19e3f0))'
         : 'var(--sarak-input-border-color, var(--border-color, rgba(255,255,255,0.09)))',
+    // sarak-allow-hardcode: piso funcional: o contorno de 1 px do controle desmarcado não segue --sarak-border-width, que aceita 0 e apagaria o campo.
     borderWidth: '1px',
     borderStyle: 'solid',
     boxShadow: getChoiceFocusRing(focused),

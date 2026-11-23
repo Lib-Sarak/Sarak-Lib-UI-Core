@@ -14,7 +14,7 @@ export const DashboardSidePanel = ({ variables, textureType }: any) => {
                 {[
                     { time: '2m ago', type: 'System', msg: 'Security Protocol Updated', color: 'var(--theme-primary)' },
                     { time: '12m ago', type: 'Warning', msg: 'Latency Spike in Node D-1', color: 'var(--theme-warning, var(--theme-primary))' },
-                    { time: '45m ago', type: 'AI', msg: 'New Model Injected: GPT-4o', color: 'var(--theme-secondary, var(--theme-primary))' },
+                    { time: '45m ago', type: 'AI', msg: 'New Model Injected: Modelo', color: 'var(--theme-secondary, var(--theme-primary))' },
                     { time: '1h ago', type: 'Security', msg: 'SSH Breach Attempt Blocked', color: 'var(--theme-error, var(--theme-primary))' },
                     { time: '2h ago', type: 'Ops', msg: 'Sync with Cloud Cluster Complete', color: 'rgb(100, 116, 139)' },
                 ].map((item, i) => (

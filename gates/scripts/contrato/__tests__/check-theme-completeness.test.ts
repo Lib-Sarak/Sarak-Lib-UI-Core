@@ -66,6 +66,8 @@ describe('theme-completeness:check — o tema que declara paleta', () => {
     };
     const paletteReasons = (theme: CompletenessThemeLike): string[] =>
         gapsOfTheme(theme, tokens, paletteTokens).map((gap) => `${gap.reason}:${gap.tokenId}`);
+    const bandReasons = (theme: CompletenessThemeLike): string[] =>
+        gapsOfTheme(theme, [...tokens, { id: 'sidebarBrandBackground', kind: 'aesthetic', modeDependent: true }], new Set([...paletteTokens, 'sidebarBrandBackground'])).map((gap) => `${gap.reason}:${gap.tokenId}`);
 
     it('deixa passar o tema com paleta que não declara a cor que ela calcula, no design nem na contraparte', () => {
         expect(paletteReasons(withPalette)).toEqual([]);
@@ -85,6 +87,13 @@ describe('theme-completeness:check — o tema que declara paleta', () => {
         expect(paletteReasons(kept)).toEqual([]);
         const leaking = { ...kept, contraparte: { mode: 'light' } };
         expect(paletteReasons(leaking)).toEqual(['palette-override-missing-in-contraparte:primaryColor']);
+    });
+
+    it('a faixa da marca declarada só no design passa (vale nos dois modos); a mesma cor de outro token, não', () => {
+        const band = { ...withPalette, design: { ...withPalette.design, sidebarBrandBackground: '#340029' } };
+        expect(bandReasons(band)).toEqual([]);
+        const both = { ...band, design: { ...band.design, primaryColor: '#fff' } };
+        expect(bandReasons(both)).toEqual(['palette-override-missing-in-contraparte:primaryColor']);
     });
 });
 

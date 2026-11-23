@@ -394,7 +394,7 @@
   {
     "tokenId": "cardBorderTop",
     "name": "Borda do Card: Topo",
-    "description": "Espessura isolada da borda superior do cartão. Usada em cartões que destacam a parte superior (ex: status headers).",
+    "description": "Espessura isolada da borda superior do cartão. Usada em cartões que destacam a parte superior (ex: cabeçalhos de status).",
     "type": "slider",
     "importance": 40,
     "categories": [
@@ -677,7 +677,7 @@
   },
   {
     "tokenId": "cardHeaderBg",
-    "name": "Cor de Fundo do Header",
+    "name": "Cor de Fundo do Cabeçalho do Card",
     "description": "Fundo específico para a seção de cabeçalho do cartão.",
     "type": "color",
     "importance": 50,
@@ -705,8 +705,8 @@
   },
   {
     "tokenId": "cardHeaderBorder",
-    "name": "Linha Divisora Inferior do Header",
-    "description": "Cor da borda que separa o header do corpo do cartão.",
+    "name": "Linha Divisora Inferior do Cabeçalho do Card",
+    "description": "Cor da borda que separa o cabeçalho do corpo do cartão.",
     "type": "color",
     "importance": 40,
     "categories": [
@@ -733,8 +733,8 @@
   },
   {
     "tokenId": "cardHeaderPadding",
-    "name": "Padding Vertical do Header",
-    "description": "Espaço de respiro vertical interno do header.",
+    "name": "Padding Vertical do Cabeçalho do Card",
+    "description": "Espaço de respiro vertical interno do cabeçalho do cartão.",
     "type": "slider",
     "importance": 40,
     "categories": [

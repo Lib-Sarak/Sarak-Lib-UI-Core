@@ -12,9 +12,12 @@ const getInputBorderStyles = (
 
     if (borderType === 'none') return { border: 'none' };
     if (borderType === 'underline') {
+        // sarak-allow-hardcode: piso funcional: o traço de 2 px é o próprio desenho da variante sublinhada, que não tem outra borda; --sarak-border-width aceita 0 e apagaria o campo.
         return { border: 'none', borderBottom: `2px solid ${resolvedBorderColor}`, borderRadius: '0px' };
     }
+    // sarak-allow-hardcode: piso funcional: o traço de 2 px é o próprio desenho da variante tracejada; --sarak-border-width aceita 0 e apagaria o campo.
     if (borderType === 'dashed') return { border: `2px dashed ${resolvedBorderColor}` };
+    // sarak-allow-hardcode: piso funcional: o contorno de 1 px do controle desmarcado não segue --sarak-border-width, que aceita 0 e apagaria o campo.
     return { border: `1px solid ${resolvedBorderColor}` };
 };
 

@@ -49,6 +49,7 @@ const DISTINCT_FLOOR = 6;
 const VARIATION_LIGHTNESS_STEP = 0.15;
 const HUE_SHIFTS = [0, 25, -25, 50, -50, 80, -80, 110, -110, 145, -145, 180] as const;
 const LIGHTNESS_OFFSETS = [0, -0.06, 0.06, -0.12, 0.12] as const;
+// sarak-allow-hardcode: o ECharts desenha em canvas, que não lê var(); esta cor é só a reserva do cálculo quando o tema não resolve uma cor, não estilo aplicado por CSS.
 const FALLBACK_BRAND = ['#3b82f6', '#8b5cf6', '#f43f5e', '#10b981'] as const;
 
 const isDarkSurface = (surface: string): boolean => {

@@ -65,7 +65,6 @@ const baseProps = () => ({
     onBrandGenerated: vi.fn(),
     resetComponent: vi.fn(),
     resetToken: vi.fn(),
-    handleApplyToSystem: vi.fn(),
     toast: null,
     onApplyFullTheme: vi.fn(),
 });
@@ -76,13 +75,13 @@ const renderContent = (overrides: Record<string, unknown> = {}) => {
 };
 
 describe('ThemeSidebarContent', () => {
-    it('na lista, mostra "Usar minha marca" primeiro e as seis decisões, sem galeria nem modos', () => {
+    it('na lista, mostra "Usar minha marca" primeiro e as sete decisões, sem galeria nem modos', () => {
         renderContent();
 
         expect(screen.getByRole('button', { name: /Usar minha marca/ })).toBeInTheDocument();
         const rows = screen.getAllByRole('listitem').map((row) => row.textContent);
-        expect(rows).toHaveLength(6);
-        ['Tema', 'Cores', 'Fontes', 'Forma', 'Componentes', 'Layout'].forEach((title, index) => expect(rows[index]).toContain(title));
+        expect(rows).toHaveLength(7);
+        ['Tema', 'Cores', 'Fontes', 'Forma', 'Componentes', 'Barras', 'Layout'].forEach((title, index) => expect(rows[index]).toContain(title));
         expect(screen.queryByRole('button', { name: 'Abrir galeria' })).toBeNull();
         expect(screen.queryByRole('radiogroup')).toBeNull();
     });
@@ -132,21 +131,19 @@ describe('ThemeSidebarContent', () => {
 
     // O HyperGranularityTab instanciava a PRÓPRIA useDesignDraft — duas fontes de rascunho vivas ao mesmo tempo.
     // Provar UMA fonte = provar que são as MESMAS referências que o painel usa em todo o resto.
-    it('no modo command-center, passa a MESMA instância de draft/updateDraft/handleApplyToSystem/resetComponent/resetToken/toast do painel', () => {
+    it('no modo command-center, passa a MESMA instância de draft/updateDraft/resetComponent/resetToken/toast do painel', () => {
         const draft = { mode: 'dark' };
         const updateDraft = vi.fn();
-        const handleApplyToSystem = vi.fn();
         const resetComponent = vi.fn();
         const resetToken = vi.fn();
         const toast = { type: 'success' as const, message: 'Design aplicado.' };
         const options = { ...baseProps().options, draft, updateDraft };
-        renderContent({ viewMode: 'command-center', options, handleApplyToSystem, resetComponent, resetToken, toast });
+        renderContent({ viewMode: 'command-center', options, resetComponent, resetToken, toast });
 
         const captured = hyperGranularityCapture.props;
         expect(captured).not.toBeNull();
         expect(captured?.draft).toBe(draft);
         expect(captured?.updateDraft).toBe(updateDraft);
-        expect(captured?.handleApplyToSystem).toBe(handleApplyToSystem);
         expect(captured?.resetComponent).toBe(resetComponent);
         expect(captured?.resetToken).toBe(resetToken);
         expect(captured?.toast).toBe(toast);

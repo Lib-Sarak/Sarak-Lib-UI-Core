@@ -6,6 +6,16 @@
  * texto do valor, e recusa agir se a ocorrência não for exatamente uma.
  */
 const SEMVER_FRAGMENT_RE = /^semver:(\^|~)?\d+\.\d+\.\d+$/;
+const EXACT_TAG_FRAGMENT_RE = /^v\d+\.\d+\.\d+$/;
+
+/** O spec fixa uma tag exata (`github:owner/repo#v9.0.0`)? É o pin que o guia recomenda em produção. */
+export const isExactTagSpec = (spec) => {
+    const hashIndex = spec.indexOf('#');
+    return hashIndex !== -1 && EXACT_TAG_FRAGMENT_RE.test(spec.slice(hashIndex + 1));
+};
+
+/** `github:owner/repo#v9.0.0` + `v9.1.0` → `github:owner/repo#v9.1.0`; spec que não é tag exata volta sem alteração. */
+export const pinSpecToTag = (spec, tag) => (isExactTagSpec(spec) ? `${spec.slice(0, spec.indexOf('#'))}#${tag}` : spec);
 
 /**
  * `github:owner/repo#semver:^3.0.0` + `6` → `github:owner/repo#semver:^6.0.0`. O

@@ -12,6 +12,8 @@ import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { SarakInput } from '../Inputs/SarakInput';
 import type { SarakSearchItem } from '../Inputs/SarakSearch';
 import { SarakMenuItem } from './SarakMenuItem';
+import { MENU_ITEM_FONT_SIZE, verticalMenuItemHeight } from './menuItemMetrics';
+import { useNavigationAppearance } from '../../../core/Provider/useNavigationAppearance';
 import { getSearchModifierLabel } from '../Inputs/internal/searchPresentation';
 import { useSearchKeyboardNavigation } from '../Inputs/internal/useSearchKeyboardNavigation';
 import {
@@ -27,7 +29,21 @@ export interface SarakShellSearchWidgetProps {
     items?: SarakSearchItem[];
     onClick: () => void;
     onSelect?: (item: SarakSearchItem) => void;
+    /** O campo com a altura de um item do menu lateral (a mesma densidade), em vez da altura de campo de formulário. */
+    menuItemHeight?: boolean;
 }
+
+const useMenuItemFieldStyle = (enabled: boolean): React.CSSProperties | undefined => {
+    const { sidebarItemDensity } = useNavigationAppearance();
+    if (!enabled) return undefined;
+    // A mesma métrica do item do menu lateral (`menuItemMetrics`): o campo mede o que o item mede.
+    return {
+        boxSizing: 'border-box',
+        height: verticalMenuItemHeight(sidebarItemDensity),
+        paddingBlock: 0,
+        fontSize: MENU_ITEM_FONT_SIZE,
+    };
+};
 
 interface ShellSearchState extends ShellSearchResultsState {
     containerRef: RefObject<HTMLDivElement>;
@@ -113,9 +129,10 @@ const SearchIconTrigger = ({ onClick, className = '', compact = false }: { onCli
     );
 };
 
-const SearchBar = ({ items, onSelect, onClick }: { items: SarakSearchItem[]; onSelect?: (item: SarakSearchItem) => void; onClick: () => void }): React.ReactElement => {
+const SearchBar = ({ items, onSelect, onClick, menuItemHeight = false }: { items: SarakSearchItem[]; onSelect?: (item: SarakSearchItem) => void; onClick: () => void; menuItemHeight?: boolean }): React.ReactElement => {
     const t = useLibraryText();
     const state = useShellSearchState(items, onSelect);
+    const fieldStyle = useMenuItemFieldStyle(menuItemHeight);
 
     return (
         <div className="hidden md:flex items-center w-80 min-w-0 max-w-full group relative @container" ref={state.containerRef}>
@@ -142,6 +159,7 @@ const SearchBar = ({ items, onSelect, onClick }: { items: SarakSearchItem[]; onS
                     leftIcon={<SarakIcon name="Search" size={14} className="text-[var(--theme-muted)] group-focus-within:text-[var(--theme-primary)] transition-colors" />}
                     fullWidth
                     className="min-w-0 flex-1"
+                    style={fieldStyle}
                 />
             </div></div>
             {state.canShowResults && <SarakShellSearchResults state={state} onSelect={onSelect} />}
@@ -152,7 +170,7 @@ const SearchBar = ({ items, onSelect, onClick }: { items: SarakSearchItem[]; onS
 export const SarakShellSearchWidget = (props: SarakShellSearchWidgetProps): React.ReactElement => {
     const variant = props.variant ?? 'bar';
     if (variant === 'icon') return <SearchIconTrigger onClick={props.onClick} compact={props.compact} />;
-    return <SearchBar items={props.items ?? []} onSelect={props.onSelect} onClick={props.onClick} />;
+    return <SearchBar items={props.items ?? []} onSelect={props.onSelect} onClick={props.onClick} menuItemHeight={props.menuItemHeight} />;
 };
 
 export default SarakShellSearchWidget;

@@ -153,6 +153,7 @@
     "SarakCustomFont",
     "SarakCustomFontFile",
     "SarakCustomizationPanel",
+    "SarakCustomizationPanelProps",
     "SarakDashboardGrid",
     "SarakDashboardGridProps",
     "SarakDashboardLayoutItem",
@@ -174,6 +175,7 @@
     "SarakDescriptionList",
     "SarakDescriptionListItem",
     "SarakDescriptionListProps",
+    "SarakDesignFormat",
     "SarakDesignScope",
     "SarakDesignScopeProps",
     "SarakDesignState",
@@ -333,6 +335,7 @@
     "SarakPaletteMode",
     "SarakPaletteSeeds",
     "SarakPaletteType",
+    "SarakPanelLeaveControl",
     "SarakPdfSource",
     "SarakPermissionGroup",
     "SarakPermissionItem",
@@ -373,6 +376,7 @@
     "SarakRunPhaseStatus",
     "SarakRunProgress",
     "SarakRunProgressProps",
+    "SarakSavedDesign",
     "SarakScrim",
     "SarakScrimProps",
     "SarakSearch",
@@ -2498,6 +2502,18 @@
           "type": "React.HTMLAttributes<HTMLInputElement>['inputMode']",
           "optional": true,
           "doc": "Teclado sugerido ao dispositivo. Omitido, solicita teclado decimal na locale atual."
+        }
+      ]
+    },
+    "SarakCustomizationPanel": {
+      "propsInterface": "SarakCustomizationPanelProps",
+      "source": "src/features/DesignEngine/Main/hooks/useLeavePanelGuard.ts",
+      "props": [
+        {
+          "name": "onUnsavedChangesControl",
+          "type": "(control: SarakPanelLeaveControl) => void",
+          "optional": true,
+          "doc": "Recebe o `confirmLeave` do painel. Opcional: o cromo da lib já pergunta sozinho; ligue-o ao bloqueio de rota do host só para a navegação que não passa pelo cromo (voltar do navegador, link no conteúdo)."
         }
       ]
     },
@@ -5940,6 +5956,12 @@
           "type": "(item: SarakSearchItem) => void",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "menuItemHeight",
+          "type": "boolean",
+          "optional": true,
+          "doc": "O campo com a altura de um item do menu lateral (a mesma densidade), em vez da altura de campo de formulário."
         }
       ]
     },
@@ -7802,6 +7824,7 @@
       "--sarak-border-style",
       "--sarak-border-type",
       "--sarak-border-width",
+      "--sarak-brand-display",
       "--sarak-brand-logo-size-collapsed",
       "--sarak-breakpoint-desktop",
       "--sarak-breakpoint-tablet",
@@ -7985,7 +8008,6 @@
       "--sarak-color-bg-layer1",
       "--sarak-color-bg-layer2",
       "--sarak-color-bg-modal",
-      "--sarak-color-depth",
       "--sarak-color-palette",
       "--sarak-color-primary",
       "--sarak-color-primary-10",
@@ -8023,7 +8045,6 @@
       "--sarak-color-tertiary-hover",
       "--sarak-color-tertiary-light",
       "--sarak-color-tertiary-rgb",
-      "--sarak-color-variation",
       "--sarak-context-menu-min-width",
       "--sarak-contrast",
       "--sarak-control-height-toggle",
@@ -8154,6 +8175,7 @@
       "--sarak-kanban-card-radius",
       "--sarak-kanban-header-padding-y",
       "--sarak-kanban-header-tracking",
+      "--sarak-keep-palette",
       "--sarak-layered-shadows",
       "--sarak-layout-density",
       "--sarak-layout-gap",
@@ -8227,10 +8249,13 @@
       "--sarak-on-topbar",
       "--sarak-on-warning",
       "--sarak-page-transition-type",
+      "--sarak-preference-font-size-increase",
       "--sarak-preference-font-size-position",
+      "--sarak-preference-font-size-reduction",
       "--sarak-preference-language-position",
       "--sarak-preference-mode-position",
       "--sarak-preference-nav-collapse-position",
+      "--sarak-preference-nav-collapse-position-topbar",
       "--sarak-preference-navigation-style-position",
       "--sarak-preset-mini-card-max-width",
       "--sarak-primary-color",
@@ -8252,6 +8277,7 @@
       "--sarak-range-active-color",
       "--sarak-reduced-motion",
       "--sarak-saturation",
+      "--sarak-saved-palettes",
       "--sarak-scroll-padding",
       "--sarak-scroll-radius",
       "--sarak-scroll-thumb-color",
@@ -8284,6 +8310,7 @@
       "--sarak-shadow-projection-blur",
       "--sarak-shell-brand-logo-size",
       "--sarak-sidebar-active-color",
+      "--sarak-sidebar-active-glass",
       "--sarak-sidebar-active-item-style",
       "--sarak-sidebar-background-style",
       "--sarak-sidebar-bg",
@@ -8375,6 +8402,8 @@
       "--sarak-surface-color",
       "--sarak-surface-intensity",
       "--sarak-surface-material",
+      "--sarak-surface-neon-color",
+      "--sarak-surface-tint-color",
       "--sarak-switch-active-bg",
       "--sarak-switch-active-bg-10",
       "--sarak-switch-active-bg-20",
@@ -8502,6 +8531,7 @@
       "--sarak-type-scale-xs",
       "--sarak-type-scale2xs",
       "--sarak-type-scale3xs",
+      "--sarak-user-avatar-style",
       "--sarak-vignette-blend-mode",
       "--sarak-vignette-color",
       "--sarak-vignette-opacity",
@@ -8566,6 +8596,7 @@
       "EyeOff",
       "File",
       "FileText",
+      "FileSearch",
       "FileSpreadsheet",
       "Folder",
       "Image",
@@ -8596,6 +8627,7 @@
       "Database",
       "Layers",
       "Network",
+      "GitBranch",
       "Box",
       "Package",
       "Cpu",
@@ -8639,7 +8671,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 424,
+    "count": 430,
     "groups": {
       "global": "0. Configurações Globais",
       "branding": "Identidade Visual",
@@ -8709,6 +8741,303 @@
       "tableCellPadding",
       "tabSectionMargin",
       "topbarHeight"
+    ],
+    "removed": [
+      {
+        "id": "aiPanelBg",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "animFast",
+        "removedIn": "8.0.0",
+        "destination": "motionDurationFast"
+      },
+      {
+        "id": "animInstant",
+        "removedIn": "8.0.0",
+        "destination": "motionDurationInstant"
+      },
+      {
+        "id": "animNormal",
+        "removedIn": "8.0.0",
+        "destination": "motionDurationNormal"
+      },
+      {
+        "id": "animSlow",
+        "removedIn": "8.0.0",
+        "destination": "motionDurationSlow"
+      },
+      {
+        "id": "atmosphereNoiseOpacity",
+        "removedIn": "8.0.0",
+        "destination": "bgNoiseDensity"
+      },
+      {
+        "id": "borderRadiusLg",
+        "removedIn": "8.0.0",
+        "destination": "borderRadius"
+      },
+      {
+        "id": "borderRadiusMd",
+        "removedIn": "8.0.0",
+        "destination": "borderRadius"
+      },
+      {
+        "id": "borderRadiusSm",
+        "removedIn": "8.0.0",
+        "destination": "borderRadius"
+      },
+      {
+        "id": "cardContentAlignment",
+        "removedIn": "8.0.0",
+        "destination": "cardTextAlign"
+      },
+      {
+        "id": "cardHoverLift",
+        "removedIn": "8.0.0",
+        "destination": "cardHoverTranslate"
+      },
+      {
+        "id": "cardImagePosition",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "contentAlignment",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "contrastCurve",
+        "removedIn": "8.0.0",
+        "destination": "globalContrast"
+      },
+      {
+        "id": "devicePhoneWidth",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "easeMain",
+        "removedIn": "8.0.0",
+        "destination": "motionEaseMain"
+      },
+      {
+        "id": "easeOut",
+        "removedIn": "8.0.0",
+        "destination": "motionEaseOut"
+      },
+      {
+        "id": "formLayoutDirection",
+        "removedIn": "8.0.0",
+        "destination": "formLabelPosition"
+      },
+      {
+        "id": "identityRedirectUrl",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "industrialRegistry",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "inputSuccessColor",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "kbdMinWidth",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "layerBackdropBlur",
+        "removedIn": "8.0.0",
+        "destination": "modalOverlayBlur"
+      },
+      {
+        "id": "layerBackdropOpacity",
+        "removedIn": "8.0.0",
+        "destination": "modalOverlayColor"
+      },
+      {
+        "id": "layerElevationFactor",
+        "removedIn": "8.0.0",
+        "destination": "layeredShadows"
+      },
+      {
+        "id": "layout",
+        "removedIn": "8.0.0",
+        "destination": "layoutGridTemplate"
+      },
+      {
+        "id": "managementGroupDescMaxWidth",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "matrixSearchBg",
+        "removedIn": "8.0.0",
+        "destination": "tokens de campo (`input*`)"
+      },
+      {
+        "id": "noiseIntensity",
+        "removedIn": "8.0.0",
+        "destination": "bgNoiseDensity"
+      },
+      {
+        "id": "presetCardHoverShadowBlur",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetCardHoverShadowOffsetY",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetCardHoverShadowSpread",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetCardShadowBlur",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetCardShadowOffsetY",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetCardShadowSpread",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetGlowShadowBlur",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetGlowShadowBlurLg",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetGridTextureSize",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetMatteShadowBlur1",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetMatteShadowBlur2",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetMatteShadowOffsetY2",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetMatteShadowSpread1",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetMatteShadowSpread2",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetMiniCardHeight",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetPreviewMinHeight",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "presetPreviewPaddingY",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "scrollbarThumbColor",
+        "removedIn": "8.0.0",
+        "destination": "scrollThumbColor"
+      },
+      {
+        "id": "scrollbarWidth",
+        "removedIn": "8.0.0",
+        "destination": "scrollWidth"
+      },
+      {
+        "id": "securityPulseSpeed",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "securityShieldGlow",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "tableActionPosition",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "themeDropdownMaxHeight",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "trackingSubtle",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "typeScaleDisplay",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "visualDotGridSize",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "visualOrbBlur",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "visualPerspective",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "visualTranslateOffsetSm",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      },
+      {
+        "id": "visualTranslateZMd",
+        "removedIn": "8.0.0",
+        "destination": "sem substituto"
+      }
     ],
     "ids": [
       {
@@ -8892,7 +9221,7 @@
         "label": "Tamanho Global das Fontes",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Tamanho da fonte do `body` (12 a 20 px): todo texto que herda dele muda, e as alturas do cromo acompanham. A preferência de tamanho do usuário (P/M/G) soma-se a este valor."
+        "usage": "Tamanho da fonte do `body` (12 a 20 px): todo texto que herda dele muda, e as alturas do cromo acompanham. A preferência de tamanho do usuário (P/M/G) parte deste valor: o P reduz `preferenceFontSizeReduction` px e o G soma `preferenceFontSizeIncrease` px."
       },
       {
         "id": "bodyWeight",
@@ -8966,6 +9295,20 @@
         "usage": "Espessura das linhas divisórias do feed de atividade e do separador do painel dividido, e das demais linhas que leem a variável de borda do sistema (dados, botões de ícone com contorno)."
       },
       {
+        "id": "brandDisplay",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Marca: Logo, Nome ou Ambos",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Com \"só o logo\" e sem imagem de logo, a marca cai no nome; \"só o nome\" esconde a imagem. O nome nunca é cortado com reticências.",
+        "interactsWith": [
+          "sidebarLogoPlacement",
+          "shellBrandLogoSize"
+        ]
+      },
+      {
         "id": "brandLogoSizeCollapsed",
         "type": "number",
         "responsive": false,
@@ -8973,7 +9316,7 @@
         "label": "Altura do Logo da Marca (Recolhida)",
         "kind": "functional",
         "modeDependent": false,
-        "usage": "Lado do logo na barra do topo recolhida; só aparece com `isNavHidden` ligado.",
+        "usage": "Lado do logo na Topbar recolhida; só aparece com `isNavHidden` ligado.",
         "interactsWith": [
           "isNavHidden"
         ]
@@ -9446,7 +9789,7 @@
         "type": "string",
         "responsive": false,
         "group": "cards",
-        "label": "Fundo do Header",
+        "label": "Fundo do cabeçalho do card",
         "kind": "aesthetic",
         "modeDependent": true,
         "usage": "Pinta o fundo do cabeçalho de `SarakCard.Header`; transparente funde o cabeçalho ao corpo do cartão."
@@ -9987,10 +10330,10 @@
         "type": "string",
         "responsive": false,
         "group": "data",
-        "label": "Tipo de Gráfico",
+        "label": "Tipo padrão (quando o componente não define)",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Escolhe a forma padrão de visualização dos dados quando o componente não recebe um tipo próprio."
+        "usage": "Define o tipo de gráfico padrão, usado só quando o componente não recebe um `type` próprio."
       },
       {
         "id": "chatAnimationSpeed",
@@ -10156,16 +10499,6 @@
         "usage": "Pinta o painel de conteúdo de modais e diálogos."
       },
       {
-        "id": "colorDepth",
-        "type": "number",
-        "responsive": false,
-        "group": "colors",
-        "label": "Profundidade da Cor",
-        "kind": "aesthetic",
-        "modeDependent": false,
-        "usage": "Controla a distância tonal das variantes geradas para as cores, incluindo o hover e o pressionado globais dos botões."
-      },
-      {
         "id": "colorPalette",
         "type": "string",
         "responsive": false,
@@ -10174,16 +10507,6 @@
         "kind": "aesthetic",
         "modeDependent": false,
         "usage": "Seleciona a regra de cálculo das cores do tema nos dois modos; cores declaradas explicitamente continuam vencendo."
-      },
-      {
-        "id": "colorVariation",
-        "type": "number",
-        "responsive": false,
-        "group": "colors",
-        "label": "Variação da Cor",
-        "kind": "aesthetic",
-        "modeDependent": false,
-        "usage": "Controla a variação de matiz e saturação das variantes geradas, incluindo o hover e o pressionado globais dos botões."
       },
       {
         "id": "contextMenuMinWidth",
@@ -10213,7 +10536,7 @@
         "label": "Design Engine: Largura Máxima do Painel",
         "kind": "functional",
         "modeDependent": false,
-        "usage": "Largura máxima da barra lateral do painel de customização; só o painel a lê.",
+        "usage": "Largura máxima da Sidebar do painel de customização; só o painel a lê.",
         "interactsWith": [
           "designEngineSidebarMinWidth"
         ]
@@ -10226,7 +10549,7 @@
         "label": "Design Engine: Largura Mínima do Painel",
         "kind": "functional",
         "modeDependent": false,
-        "usage": "Largura mínima da barra lateral do painel de customização; só o painel a lê.",
+        "usage": "Largura mínima da Sidebar do painel de customização; só o painel a lê.",
         "interactsWith": [
           "designEngineSidebarMaxWidth"
         ]
@@ -10778,7 +11101,7 @@
         "type": "string",
         "responsive": false,
         "group": "structural",
-        "label": "Alinhamento do Header",
+        "label": "Alinhamento do cabeçalho",
         "kind": "aesthetic",
         "modeDependent": false,
         "usage": "Disposição do cabeçalho de tabelas e catálogos: título e ações espaçados, centrados ou no início."
@@ -11187,7 +11510,7 @@
         "type": "boolean",
         "responsive": false,
         "group": "navigation",
-        "label": "Ocultar Navegação",
+        "label": "Navegação recolhida",
         "kind": "functional",
         "modeDependent": false,
         "usage": "Recolhe a navegação: a lateral estreita para o piso de largura e esconde rótulos; o topo encolhe para a altura recolhida. É o mesmo estado que o usuário alterna pelo botão de recolher.",
@@ -11236,6 +11559,19 @@
         "kind": "aesthetic",
         "modeDependent": false,
         "usage": "Espaço entre as letras do título de cada coluna do `SarakKanban`, em `em`."
+      },
+      {
+        "id": "keepPalette",
+        "type": "boolean",
+        "responsive": false,
+        "group": "colors",
+        "label": "Manter Minha Paleta",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Desligado (padrão), escolher um tema aplica as cores dele; ligado, a paleta escolhida vale por cima de qualquer tema, em toda troca, inclusive das cores que o tema declara.",
+        "interactsWith": [
+          "colorPalette"
+        ]
       },
       {
         "id": "layeredShadows",
@@ -11692,7 +12028,7 @@
         "label": "Comportamento da Topbar",
         "kind": "functional",
         "modeDependent": false,
-        "usage": "Comportamento da barra do topo: fixa ao rolar, rola junto com o conteúdo ou oculta. Só vale com navegação no topo.",
+        "usage": "Comportamento da Topbar: fixa ao rolar, rola junto com o conteúdo ou oculta. Só vale com navegação no topo.",
         "interactsWith": [
           "navigationStyle"
         ]
@@ -11705,7 +12041,7 @@
         "label": "Estrutura de Navegação",
         "kind": "functional",
         "modeDependent": false,
-        "usage": "Escolhe onde fica a navegação: Sidebar (coluna lateral) ou Topbar (cabeçalho). Troca a estrutura inteira do cromo; a preferência do usuário, quando oferecida, vence o valor do tema.",
+        "usage": "Escolhe onde fica a navegação: Sidebar (coluna lateral) ou Topbar (barra horizontal). Troca a estrutura inteira do cromo; a preferência do usuário, quando oferecida, vence o valor do tema.",
         "interactsWith": [
           "sidebarPosition",
           "mobileNavigationStyle"
@@ -11752,6 +12088,20 @@
         ]
       },
       {
+        "id": "preferenceFontSizeIncrease",
+        "type": "number",
+        "responsive": false,
+        "group": "preferences",
+        "label": "Tamanho da Fonte: Quanto o G Aumenta",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Aumento, em px, que a preferência G aplica sobre `bodySize`: G = `bodySize` + este valor. Só vale quando a escolha de tamanho da fonte é oferecida ao usuário.",
+        "interactsWith": [
+          "bodySize",
+          "preferenceFontSizePosition"
+        ]
+      },
+      {
         "id": "preferenceFontSizePosition",
         "type": "string",
         "responsive": false,
@@ -11760,6 +12110,20 @@
         "kind": "functional",
         "modeDependent": false,
         "usage": "Posição da escolha de tamanho da fonte (P/M/G): fixa, no menu de preferências ou não oferecida."
+      },
+      {
+        "id": "preferenceFontSizeReduction",
+        "type": "number",
+        "responsive": false,
+        "group": "preferences",
+        "label": "Tamanho da Fonte: Quanto o P Reduz",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Redução, em px, que a preferência P aplica sobre `bodySize`: P = `bodySize` − este valor (piso de 8 px). Só vale quando a escolha de tamanho da fonte é oferecida ao usuário.",
+        "interactsWith": [
+          "bodySize",
+          "preferenceFontSizePosition"
+        ]
       },
       {
         "id": "preferenceLanguagePosition",
@@ -11776,10 +12140,10 @@
         "type": "string",
         "responsive": false,
         "group": "preferences",
-        "label": "Preferência: Modo Claro/Escuro",
+        "label": "Preferência: Light mode ou Dark mode",
         "kind": "functional",
         "modeDependent": false,
-        "usage": "Posição da escolha de modo claro/escuro do usuário: fixa na barra, no menu de preferências ou não oferecida; quando some, a escolha não existe para o usuário."
+        "usage": "Posição da escolha de Light mode ou Dark mode do usuário: fixa na barra, no menu de preferências ou não oferecida; quando some, a escolha não existe para o usuário."
       },
       {
         "id": "preferenceNavCollapsePosition",
@@ -11789,7 +12153,17 @@
         "label": "Preferência: Navegação Recolhida",
         "kind": "functional",
         "modeDependent": false,
-        "usage": "Posição do botão de recolher a navegação: fixo, no menu de preferências ou não oferecido."
+        "usage": "Posição do botão de recolher a navegação na Sidebar: fixo (a seta da própria Sidebar), no menu de preferências ou não oferecido."
+      },
+      {
+        "id": "preferenceNavCollapsePositionTopbar",
+        "type": "string",
+        "responsive": false,
+        "group": "preferences",
+        "label": "Preferência: Menu da Topbar",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Posição do botão de menu (≡) que compacta a Topbar: fixo, no menu de preferências ou não oferecido; por padrão fica só no menu."
       },
       {
         "id": "preferenceNavigationStylePosition",
@@ -11872,6 +12246,19 @@
         "usage": "Zera as transições e animações da interface (duração de 0,00001 s) e as durações usadas por JavaScript; é requisito de acessibilidade, não estilo.",
         "interactsWith": [
           "animEnabled"
+        ]
+      },
+      {
+        "id": "savedPalettes",
+        "type": "string",
+        "responsive": false,
+        "group": "colors",
+        "label": "Paletas Salvas",
+        "kind": "functional",
+        "modeDependent": false,
+        "usage": "Guarda as paletas que o administrador criou com nome: aparecem no grupo \"Minhas paletas\" da galeria e no atalho de marca. Escolher uma é escolher o `colorPalette` dela.",
+        "interactsWith": [
+          "colorPalette"
         ]
       },
       {
@@ -12013,7 +12400,7 @@
         "label": "Posição Pesquisa (Topbar)",
         "kind": "functional",
         "modeDependent": false,
-        "usage": "Onde a busca fica na barra do topo: esquerda (antes da navegação), centro (no meio do espaço livre entre a navegação e o grupo final, não no centro da barra), direita (no grupo final) ou oculta.",
+        "usage": "Onde a busca fica na Topbar: esquerda (antes da navegação), centro (no meio do espaço livre entre a navegação e o grupo final, não no centro da barra), direita (no grupo final) ou oculta.",
         "interactsWith": [
           "navigationStyle",
           "chromeSearchPosition"
@@ -12117,6 +12504,20 @@
         ]
       },
       {
+        "id": "sidebarActiveGlass",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Vidro do Item Ativo (Sidebar)",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Acabamento de vidro do item ativo da Sidebar; soma a qualquer estilo do item ativo.",
+        "interactsWith": [
+          "sidebarActiveItemStyle",
+          "navActiveMarkerColor"
+        ]
+      },
+      {
         "id": "sidebarActiveItemStyle",
         "type": "string",
         "responsive": false,
@@ -12124,7 +12525,7 @@
         "label": "Estilo do Item Ativo (Sidebar)",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Tratamento visual do item ativo na barra lateral.",
+        "usage": "Tratamento visual do item ativo na Sidebar.",
         "interactsWith": [
           "sidebarActiveColor",
           "navItemActiveColor",
@@ -12139,7 +12540,7 @@
         "label": "Tratamento do Fundo (Sidebar)",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Tratamento de fundo da barra lateral.",
+        "usage": "Tratamento de fundo da Sidebar.",
         "interactsWith": [
           "sidebarColor",
           "sidebarNoiseOpacity"
@@ -12166,7 +12567,7 @@
         "label": "Borda (Sidebar)",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Cor da moldura da barra lateral.",
+        "usage": "Cor da moldura da Sidebar.",
         "interactsWith": [
           "sidebarColor"
         ]
@@ -12179,7 +12580,7 @@
         "label": "Lados da Borda (Sidebar)",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Lados da moldura da barra lateral; a opção externa acompanha sua posição e a barra flutuante usa todos os lados.",
+        "usage": "Lados da moldura da Sidebar; a opção externa acompanha sua posição e a barra flutuante usa todos os lados.",
         "interactsWith": []
       },
       {
@@ -12190,7 +12591,7 @@
         "label": "Estilo da Borda (Sidebar)",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Estilo de linha da moldura da barra lateral.",
+        "usage": "Estilo de linha da moldura da Sidebar.",
         "interactsWith": []
       },
       {
@@ -12201,7 +12602,7 @@
         "label": "Espessura da Borda (Sidebar)",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Largura em pixels da moldura da barra lateral."
+        "usage": "Largura em pixels da moldura da Sidebar."
       },
       {
         "id": "sidebarBrandBackground",
@@ -12211,7 +12612,7 @@
         "label": "Fundo da Marca (Sidebar)",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Cor de fundo da área da marca na barra lateral.",
+        "usage": "Cor de fundo da área da marca na Sidebar.",
         "interactsWith": [
           "sidebarColor"
         ]
@@ -12224,7 +12625,7 @@
         "label": "Nome da Marca (Sidebar)",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Cor do nome da marca na barra lateral.",
+        "usage": "Cor do nome da marca na Sidebar.",
         "interactsWith": [
           "sidebarColor",
           "identityFontFamily"
@@ -12238,7 +12639,7 @@
         "label": "Rótulo de Categoria (Sidebar)",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Cor do rótulo de categoria na barra lateral; deve contrastar com o fundo da barra.",
+        "usage": "Cor do rótulo de categoria na Sidebar; deve contrastar com o fundo da barra.",
         "interactsWith": [
           "sidebarColor"
         ]
@@ -12277,7 +12678,7 @@
         "label": "Fundo do Rodapé (Sidebar)",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Cor de fundo do rodapé da barra lateral.",
+        "usage": "Cor de fundo do rodapé da Sidebar.",
         "interactsWith": [
           "sidebarColor"
         ]
@@ -12303,7 +12704,7 @@
         "label": "Cor do Ícone (Sidebar)",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Cor dos ícones na barra lateral.",
+        "usage": "Cor dos ícones inativos na Sidebar; o padrão acompanha o rótulo do item, e o ativo usa a cor do item ativo.",
         "interactsWith": [
           "sidebarColor"
         ]
@@ -12316,7 +12717,7 @@
         "label": "Tamanho do Ícone (Sidebar)",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Tamanho dos ícones da barra lateral."
+        "usage": "Tamanho dos ícones da Sidebar."
       },
       {
         "id": "sidebarItemDensity",
@@ -12337,7 +12738,7 @@
         "label": "Texto do Item em Hover (Sidebar)",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Cor do texto de item sob o ponteiro na barra lateral.",
+        "usage": "Cor do texto de item sob o ponteiro na Sidebar.",
         "interactsWith": [
           "sidebarColor",
           "sidebarItemTextColor"
@@ -12351,7 +12752,7 @@
         "label": "Texto do Item (Sidebar)",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Cor do texto de item inativo na barra lateral; deve permanecer legível sobre o fundo da barra.",
+        "usage": "Cor do texto de item inativo na Sidebar; deve permanecer legível sobre o fundo da barra.",
         "interactsWith": [
           "sidebarColor"
         ]
@@ -12472,7 +12873,7 @@
         "label": "Papel de Cor (Sidebar)",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Papel de cor do fundo da barra lateral: a paleta calcula o fundo e os textos legíveis sobre ele, nos dois modos. Uma cor declarada em `sidebarColor` continua vencendo.",
+        "usage": "Papel de cor do fundo da Sidebar: a paleta calcula o fundo e os textos legíveis sobre ele, nos dois modos. Uma cor declarada em `sidebarColor` continua vencendo.",
         "interactsWith": [
           "sidebarColor",
           "sidebarActiveItemStyle"
@@ -12799,7 +13200,7 @@
         "label": "Margem da Seção de Abas",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Margem vertical das seções da navegação lateral e da barra do topo, por breakpoint."
+        "usage": "Margem vertical das seções da navegação lateral e da Topbar, por breakpoint."
       },
       {
         "id": "tertiaryColor",
@@ -12996,7 +13397,7 @@
         "label": "Ativo da Topbar",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Fundo do item ativo da barra do topo; o padrão é transparente.",
+        "usage": "Fundo do item ativo da Topbar; o padrão é transparente.",
         "interactsWith": [
           "navigationStyle"
         ]
@@ -13009,7 +13410,7 @@
         "label": "Estilo do Item Ativo (Topbar)",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Tratamento visual do item ativo na barra superior.",
+        "usage": "Tratamento visual do item ativo na Topbar.",
         "interactsWith": [
           "topbarActiveColor",
           "navItemActiveColor",
@@ -13024,7 +13425,7 @@
         "label": "Tratamento do Fundo (Topbar)",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Tratamento de fundo da barra superior.",
+        "usage": "Tratamento de fundo da Topbar.",
         "interactsWith": [
           "topbarColor",
           "topbarNoiseOpacity"
@@ -13038,7 +13439,7 @@
         "label": "Backdrop Blur (Topbar)",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Desfoque do conteúdo que passa atrás da barra superior; funciona melhor com fundo translúcido."
+        "usage": "Desfoque do conteúdo que passa atrás da Topbar; funciona melhor com fundo translúcido."
       },
       {
         "id": "topbarBorderColor",
@@ -13048,7 +13449,7 @@
         "label": "Borda (Topbar)",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Cor da moldura da barra superior.",
+        "usage": "Cor da moldura da Topbar.",
         "interactsWith": [
           "topbarColor"
         ]
@@ -13061,7 +13462,7 @@
         "label": "Lados da Borda (Topbar)",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Lados da moldura da barra superior; a opção externa fica junto ao conteúdo e se adapta à barra na base do celular.",
+        "usage": "Lados da moldura da Topbar; a opção externa fica junto ao conteúdo e se adapta à barra na base do celular.",
         "interactsWith": []
       },
       {
@@ -13072,7 +13473,7 @@
         "label": "Estilo da Borda (Topbar)",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Estilo de linha da moldura da barra superior.",
+        "usage": "Estilo de linha da moldura da Topbar.",
         "interactsWith": []
       },
       {
@@ -13083,7 +13484,7 @@
         "label": "Espessura da Borda (Topbar)",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Largura em pixels da moldura da barra superior."
+        "usage": "Largura em pixels da moldura da Topbar."
       },
       {
         "id": "topbarBrandBackground",
@@ -13093,7 +13494,7 @@
         "label": "Fundo da Marca (Topbar)",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Cor de fundo da área da marca na barra superior.",
+        "usage": "Cor de fundo da área da marca na Topbar.",
         "interactsWith": [
           "topbarColor"
         ]
@@ -13106,7 +13507,7 @@
         "label": "Nome da Marca (Topbar)",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Cor do nome da marca na barra superior.",
+        "usage": "Cor do nome da marca na Topbar.",
         "interactsWith": [
           "topbarColor",
           "identityFontFamily"
@@ -13120,7 +13521,7 @@
         "label": "Altura da Topbar (Recolhida)",
         "kind": "functional",
         "modeDependent": false,
-        "usage": "Altura da barra do topo recolhida; só aparece com `isNavHidden` ligado. Abaixo do alvo mínimo de toque (`touchTargetMin`) os controles da barra transbordam com ponteiro de dedo; por isso o padrão não cai abaixo dele.",
+        "usage": "Altura da Topbar recolhida; só aparece com `isNavHidden` ligado. Abaixo do alvo mínimo de toque (`touchTargetMin`) os controles da barra transbordam com ponteiro de dedo; por isso o padrão não cai abaixo dele.",
         "interactsWith": [
           "isNavHidden"
         ]
@@ -13133,7 +13534,7 @@
         "label": "Cor da Topbar (Fundo)",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Pinta o fundo da barra do topo; a cor entra na paleta derivada do cromo.",
+        "usage": "Pinta o fundo da Topbar; a cor entra na paleta derivada do cromo.",
         "interactsWith": [
           "navigationStyle"
         ]
@@ -13159,7 +13560,7 @@
         "label": "Altura da Topbar",
         "kind": "functional",
         "modeDependent": false,
-        "usage": "Altura da barra do topo, por breakpoint.",
+        "usage": "Altura da Topbar, por breakpoint.",
         "interactsWith": [
           "navigationStyle"
         ]
@@ -13172,7 +13573,7 @@
         "label": "Hover da Topbar",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Fundo do item da barra do topo sob o ponteiro; o padrão é um branco translúcido.",
+        "usage": "Fundo do item da Topbar sob o ponteiro; o padrão é um branco translúcido.",
         "interactsWith": [
           "navigationStyle"
         ]
@@ -13185,7 +13586,7 @@
         "label": "Cor do Ícone (Topbar)",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Cor dos ícones na barra superior.",
+        "usage": "Cor dos ícones na Topbar.",
         "interactsWith": [
           "topbarColor"
         ]
@@ -13198,7 +13599,7 @@
         "label": "Tamanho do Ícone (Topbar)",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Tamanho dos ícones da barra superior."
+        "usage": "Tamanho dos ícones da Topbar."
       },
       {
         "id": "topbarItemDensity",
@@ -13208,7 +13609,7 @@
         "label": "Densidade dos Itens (Topbar)",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Densidade das abas na barra superior; o alvo de toque mínimo continua sendo aplicado.",
+        "usage": "Densidade das abas na Topbar; o alvo de toque mínimo continua sendo aplicado.",
         "interactsWith": []
       },
       {
@@ -13219,7 +13620,7 @@
         "label": "Texto do Item em Hover (Topbar)",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Cor do texto de item sob o ponteiro na barra superior.",
+        "usage": "Cor do texto de item sob o ponteiro na Topbar.",
         "interactsWith": [
           "topbarColor",
           "topbarItemTextColor"
@@ -13233,7 +13634,7 @@
         "label": "Texto do Item (Topbar)",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Cor do texto de item inativo na barra superior; deve permanecer legível sobre o fundo da barra.",
+        "usage": "Cor do texto de item inativo na Topbar; deve permanecer legível sobre o fundo da barra.",
         "interactsWith": [
           "topbarColor"
         ]
@@ -13246,7 +13647,7 @@
         "label": "Largura Máxima do Rótulo (Topbar)",
         "kind": "functional",
         "modeDependent": false,
-        "usage": "Largura máxima do rótulo da marca na barra do topo; acima dela o texto é cortado.",
+        "usage": "Largura máxima do rótulo da marca na Topbar; acima dela o texto é cortado.",
         "interactsWith": [
           "navigationStyle"
         ]
@@ -13259,7 +13660,7 @@
         "label": "Opacidade do Ruído (Topbar)",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Opacidade da textura de grão sobre a barra do topo; 0 desliga.",
+        "usage": "Opacidade da textura de grão sobre a Topbar; 0 desliga.",
         "interactsWith": [
           "navigationStyle"
         ]
@@ -13272,7 +13673,7 @@
         "label": "Sombra da Topbar",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Sombra CSS completa projetada pela barra superior.",
+        "usage": "Sombra CSS completa projetada pela Topbar.",
         "interactsWith": [
           "navigationStyle"
         ]
@@ -13285,7 +13686,7 @@
         "label": "Cor do Título (Topbar)",
         "kind": "aesthetic",
         "modeDependent": true,
-        "usage": "Cor do nome da marca na barra do topo.",
+        "usage": "Cor do nome da marca na Topbar.",
         "interactsWith": [
           "navigationStyle"
         ]
@@ -13298,7 +13699,7 @@
         "label": "Papel de Cor (Topbar)",
         "kind": "aesthetic",
         "modeDependent": false,
-        "usage": "Papel de cor do fundo da barra do topo: a paleta calcula o fundo e os textos legíveis sobre ele, nos dois modos. Uma cor declarada em `topbarColor` continua vencendo.",
+        "usage": "Papel de cor do fundo da Topbar: a paleta calcula o fundo e os textos legíveis sobre ele, nos dois modos. Uma cor declarada em `topbarColor` continua vencendo.",
         "interactsWith": [
           "topbarColor",
           "topbarActiveItemStyle"
@@ -13445,6 +13846,19 @@
         "usage": "Define o tamanho XS usado por rótulos de eixo e valores pequenos dos gráficos."
       },
       {
+        "id": "userAvatarStyle",
+        "type": "string",
+        "responsive": false,
+        "group": "navigation",
+        "label": "Avatar do Usuário",
+        "kind": "aesthetic",
+        "modeDependent": false,
+        "usage": "Avatar do widget de usuário quando o sistema não entrega imagem; com imagem, ela vale.",
+        "interactsWith": [
+          "chromeUserPosition"
+        ]
+      },
+      {
         "id": "vignetteOpacity",
         "type": "number",
         "responsive": false,
@@ -13530,7 +13944,6 @@
       "cyberpunk-neon",
       "industrial-terminal",
       "neo-brutalism",
-      "synthwave-retro",
       "nebula-space",
       "kinetic-flow",
       "cyber-retro-wave",
@@ -13544,7 +13957,14 @@
       "organic-clay",
       "high-contrast",
       "corporate-ledger",
-      "playful-pastel"
+      "playful-pastel",
+      "sarak-sovereign-classic",
+      "cyberpunk-neon-classic",
+      "industrial-terminal-classic",
+      "cyber-retro-wave-classic",
+      "nature-breeze",
+      "neo-brutalism-classic",
+      "dot-matrix-elegant"
     ],
     "referenceThemeIds": [
       "minimalist-airy",
@@ -13648,6 +14068,232 @@
       "doc": "Slot `decoration`: camada decorativa ATRÁS do conteúdo do cromo (imagem/animação escopada ao cromo). É ornamento — `aria-hidden` e sem captura de foco/toque. COMPLEMENTA o fundo/atmosfera global por tema (Design Engine), não o substitui."
     }
   ],
+  "verification": {
+    "nativeEquivalents": [
+      {
+        "element": "dl",
+        "component": "SarakDescriptionList"
+      },
+      {
+        "element": "fieldset",
+        "component": "SarakFormSection"
+      },
+      {
+        "element": "h1",
+        "component": "SarakPageHeader"
+      },
+      {
+        "element": "h1",
+        "component": "SarakSection"
+      },
+      {
+        "element": "h1",
+        "component": "SarakTypography"
+      },
+      {
+        "element": "h2",
+        "component": "SarakPageHeader"
+      },
+      {
+        "element": "h2",
+        "component": "SarakSection"
+      },
+      {
+        "element": "h2",
+        "component": "SarakTypography"
+      },
+      {
+        "element": "h3",
+        "component": "SarakPageHeader"
+      },
+      {
+        "element": "h3",
+        "component": "SarakSection"
+      },
+      {
+        "element": "h3",
+        "component": "SarakTypography"
+      },
+      {
+        "element": "header",
+        "component": "SarakPageHeader",
+        "contains": [
+          "h1"
+        ]
+      },
+      {
+        "element": "nav",
+        "component": "SarakTabs",
+        "contains": [
+          "a",
+          "SarakLink"
+        ]
+      },
+      {
+        "element": "section",
+        "component": "SarakSection",
+        "contains": [
+          "h2",
+          "h3",
+          "h4",
+          "h5",
+          "h6"
+        ]
+      },
+      {
+        "element": "table",
+        "component": "SarakDataTable"
+      },
+      {
+        "element": "table",
+        "component": "SarakTable"
+      }
+    ],
+    "pieceAliases": [
+      {
+        "alias": "isValidBrazilianCnpj",
+        "use": "sarakIsValidCnpj"
+      },
+      {
+        "alias": "LinkPagination",
+        "use": "SarakPagination"
+      },
+      {
+        "alias": "SarakChartEngine",
+        "use": "createSarakKitMock"
+      },
+      {
+        "alias": "SarakDataTable",
+        "use": "createSarakKitMock"
+      },
+      {
+        "alias": "SarakPDFViewer",
+        "use": "createSarakKitMock"
+      }
+    ],
+    "encapsulated": [
+      {
+        "library": "echarts-for-react",
+        "component": "SarakChartEngine"
+      },
+      {
+        "library": "echarts",
+        "component": "SarakChartEngine"
+      },
+      {
+        "library": "pdfjs-dist",
+        "component": "SarakPDFViewer"
+      },
+      {
+        "library": "react-markdown",
+        "component": "SarakMarkdownRenderer"
+      },
+      {
+        "library": "reactflow",
+        "component": "SarakFlowEngine"
+      },
+      {
+        "library": "recharts",
+        "component": "SarakChartEngine"
+      }
+    ],
+    "iconNameProps": [
+      {
+        "component": "SarakAppChrome",
+        "prop": "navItems",
+        "key": "icon"
+      },
+      {
+        "component": "SarakIcon",
+        "prop": "name"
+      },
+      {
+        "component": "SarakShellNav",
+        "prop": "navItems",
+        "key": "icon"
+      }
+    ],
+    "paletteIds": [
+      "amarelo-contraste",
+      "ambar-industrial",
+      "amethyst-pro",
+      "ametista-petroleo",
+      "arctic-exec",
+      "azul-projeto",
+      "boreal-aurora",
+      "bronze-industrial",
+      "ciano-azul",
+      "ciano-violeta",
+      "citrus-corporativo",
+      "cobalto-vivo",
+      "contrast-crimson-alert",
+      "contrast-deep-amber",
+      "contrast-emerald-ops",
+      "contrast-maximum-blue",
+      "cool-arctic-steel",
+      "cool-cloud-azure",
+      "cool-midnight-blue",
+      "coral-cinetico",
+      "cyber-indigo",
+      "cyber-slate",
+      "dynamic-amber-spark",
+      "dynamic-crimson-pulse",
+      "dynamic-emerald-flow",
+      "dynamic-indigo-core",
+      "dynamic-violet-tech",
+      "emerald-mist",
+      "emerald-royal",
+      "esmeralda-corporate",
+      "forest-tech",
+      "grafite-rosa",
+      "granito-cinza",
+      "indigo-velvet",
+      "magma-industrial",
+      "neo-matrix",
+      "neon-acid-lime",
+      "neon-crimson",
+      "neon-cyber-cyan",
+      "neon-electric-purple",
+      "neon-laser-pink",
+      "neon-matrix-green",
+      "neon-sunset-glow",
+      "neptor-azul",
+      "nova-corporate",
+      "ocean-breeze",
+      "oceano",
+      "oliva-dourada",
+      "oliva-industrial",
+      "oliva-viva",
+      "petroleo-profundo",
+      "rosa-pastel",
+      "rosa-synthwave",
+      "royal-amber",
+      "rubi-corporativo",
+      "ruby-velvet",
+      "safira-moderna",
+      "soft-lavender-mist",
+      "soft-peach-elegant",
+      "soft-rose-quartz",
+      "soft-sage-clean",
+      "soft-sky-minimal",
+      "solar-eclipse",
+      "solar-flare-pro",
+      "sunset-corporate",
+      "teal-executivo",
+      "terra-argila",
+      "tinta-azul",
+      "tinta-vinho",
+      "titanium-pro",
+      "verde-neon",
+      "verde-tecnico",
+      "violeta-clinico",
+      "warm-amber-executive",
+      "warm-corporate-coral",
+      "warm-ruby-executive",
+      "warm-sunset-gold",
+      "warm-terra-cotta"
+    ]
+  },
   "shippedDocs": [
     {
       "file": "docs/component-catalog.md",
@@ -13681,6 +14327,6 @@
   "kitStamp": {
     "libVersion": "8.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "e96c613b93c6"
+    "kitHash": "c5333c8f2a31"
   }
 }

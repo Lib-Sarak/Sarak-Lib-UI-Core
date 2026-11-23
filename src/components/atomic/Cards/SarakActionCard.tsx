@@ -36,6 +36,9 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
     usePauseBeamOffscreen(spotlight.ref, design.borderBeamEnabled === true);
     const { getGridStyles, getFlexStyles } = useStructuralStyles();
     const [isExpanded, setIsExpanded] = useState(false);
+    const actionButtonStyle = design.btnStyleType === 'borderline'
+        ? undefined
+        : { '--sarak-card-action-btn-hover-bg': 'var(--sarak-card-action-btn-bg)' } as React.CSSProperties;
 
     const getVal = (obj: Record<string, unknown>, path: string | undefined): unknown => {
         if (!path) return undefined;
@@ -82,7 +85,7 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
             {/* DRAFT BADGE (v6.3) */}
             {globalUI?.isDrafting && (
                 <div
-                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-[var(--color-theme-card,#101622)] border border-[var(--sarak-primary-color,#19e3f0)]/20 font-black uppercase text-[var(--sarak-primary-color,#19e3f0)] shadow-[0_0_10px_var(--sarak-card-glow-color,rgba(25,227,240,0.18))]"
+                    className="absolute top-2 left-4 z-40 pointer-events-none hidden @4xl:flex items-center rounded bg-[var(--color-theme-card,#101622)] border border-[var(--sarak-primary-color,#19e3f0)]/20 font-black uppercase text-[var(--sarak-primary-color,#19e3f0)] shadow-[0_0_10px_var(--sarak-card-glow-color,rgba(25,227,240,0.18))]"
                     style={{
                         gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)',
                         paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
@@ -126,7 +129,8 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                         variant="primary"
                         onClick={() => onAction && onAction(item)}
                         rightIcon={<SarakIcon name="ExternalLink" size={10} className="stroke-[3]" />}
-                        className={`flex-1 text-3xs font-black uppercase tracking-widest sarak-card-action-btn${design.btnStyleType === 'borderline' ? '' : ' sarak-card-action-btn--filled'}`}
+                        className={`flex-1 text-3xs font-black uppercase tracking-widest sarak-card-action-btn${design.btnStyleType === 'borderline' ? '' : ' sarak-card-action-btn--filled hover:brightness-100'}`}
+                        style={actionButtonStyle}
                     >
                         {actionLabel}
                     </SarakButton>

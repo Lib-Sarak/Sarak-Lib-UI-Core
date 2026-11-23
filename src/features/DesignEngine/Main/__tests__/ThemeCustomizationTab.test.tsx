@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ThemeCustomizationTab } from '../ThemeCustomizationTab';
@@ -307,5 +307,74 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
         expect(mockHandleApplyToSystem).toHaveBeenCalledTimes(1);
         expect(mockSetIsSaveModalOpen).not.toHaveBeenCalled();
         expect(fetchSpy).not.toHaveBeenCalled();
+    });
+
+    describe('sair do painel com o rascunho sujo', () => {
+        const mockDraft = (isDirty: boolean, discardDraft = vi.fn()) => {
+            vi.mocked(useDesignDraft).mockReturnValue({
+                draft: { mode: 'light' }, previewDraft: { mode: 'dark' }, updateDraft: vi.fn(), handleApplyToSystem: mockHandleApplyToSystem,
+                isComponentDirty: vi.fn(() => false), resetComponent: vi.fn(), resetToken: vi.fn(), isDirty,
+                dirtyTokenCount: isDirty ? 1 : 0,
+                dirtyTokens: isDirty ? [{ id: 'primaryColor', label: 'Cor primária', applied: '#000000', draft: '#ffffff' }] : [],
+                discardDraft, toast: null, showToast: vi.fn(), handleThemePreview: vi.fn(),
+            } as any);
+        };
+        const askToLeave = async (onControl: ReturnType<typeof vi.fn>) => {
+            let answer: boolean | undefined;
+            await act(async () => { void onControl.mock.calls.at(-1)![0].confirmLeave().then((value: boolean) => { answer = value; }); });
+            return () => answer;
+        };
+
+        it('com alteração pendente, sair pergunta; "Ficar no painel" mantém o rascunho', async () => {
+            const discardDraft = vi.fn();
+            mockDraft(true, discardDraft);
+            const onControl = vi.fn();
+            render(<ThemeCustomizationTab onUnsavedChangesControl={onControl} />);
+
+            const answer = await askToLeave(onControl);
+            expect(screen.getByRole('dialog')).toBeInTheDocument();
+            await act(async () => { fireEvent.click(screen.getByTestId('sarak-panel-leave-stay')); });
+
+            expect(answer()).toBe(false);
+            expect(discardDraft).not.toHaveBeenCalled();
+            expect(mockHandleApplyToSystem).not.toHaveBeenCalled();
+        });
+
+        it('"Aplicar e sair" aplica o rascunho e libera a saída', async () => {
+            mockDraft(true);
+            const onControl = vi.fn();
+            render(<ThemeCustomizationTab onUnsavedChangesControl={onControl} />);
+
+            const answer = await askToLeave(onControl);
+            await act(async () => { fireEvent.click(screen.getByTestId('sarak-panel-leave-apply')); });
+
+            expect(answer()).toBe(true);
+            expect(mockHandleApplyToSystem).toHaveBeenCalledTimes(1);
+        });
+
+        it('"Descartar e sair" descarta o rascunho e libera a saída', async () => {
+            const discardDraft = vi.fn();
+            mockDraft(true, discardDraft);
+            const onControl = vi.fn();
+            render(<ThemeCustomizationTab onUnsavedChangesControl={onControl} />);
+
+            const answer = await askToLeave(onControl);
+            await act(async () => { fireEvent.click(screen.getByTestId('sarak-panel-leave-discard')); });
+
+            expect(answer()).toBe(true);
+            expect(discardDraft).toHaveBeenCalledTimes(1);
+            expect(mockHandleApplyToSystem).not.toHaveBeenCalled();
+        });
+
+        it('sem alteração pendente, sair libera na hora e não pergunta', async () => {
+            mockDraft(false);
+            const onControl = vi.fn();
+            render(<ThemeCustomizationTab onUnsavedChangesControl={onControl} />);
+
+            const answer = await askToLeave(onControl);
+
+            expect(answer()).toBe(true);
+            expect(screen.queryByRole('dialog')).toBeNull();
+        });
     });
 });

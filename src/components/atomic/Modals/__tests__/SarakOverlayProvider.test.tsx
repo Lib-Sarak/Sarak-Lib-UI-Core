@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen, type RenderResult } from '@testing-library/react';
+import { act, fireEvent, render, screen, type RenderResult } from '@testing-library/react';
 import { expect, it } from 'vitest';
 import { SarakOverlayProvider, useOverlay, type SarakOverlayController } from '../SarakOverlayProvider';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
@@ -54,6 +54,20 @@ it('resolve true ao confirmar e devolve o foco ao disparador', async () => {
     fireEvent.click(screen.getByRole('button', { name: 'Confirmar' }));
     await expect(confirmation).resolves.toBe(true);
     expect(trigger).toHaveFocus();
+});
+
+it('aplica confirmTestId e cancelTestId como data-testid, e sem eles o diálogo não leva o atributo', async () => {
+    let controller!: SarakOverlayController;
+    render(<SarakUIProvider><SarakOverlayProvider><OverlayProbe onReady={(value) => { controller = value; }} /></SarakOverlayProvider></SarakUIProvider>);
+
+    act(() => { void controller.confirm({ title: 'Com alvos', message: 'x', confirmTestId: 'ok-alvo', cancelTestId: 'no-alvo' }); });
+    expect(screen.getByRole('button', { name: 'Confirmar' })).toHaveAttribute('data-testid', 'ok-alvo');
+    expect(screen.getByRole('button', { name: 'Cancelar' })).toHaveAttribute('data-testid', 'no-alvo');
+    fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }));
+
+    act(() => { void controller.confirm({ title: 'Sem alvos', message: 'x' }); });
+    expect(screen.getByRole('button', { name: 'Confirmar' })).not.toHaveAttribute('data-testid');
+    expect(screen.getByRole('button', { name: 'Cancelar' })).not.toHaveAttribute('data-testid');
 });
 
 it('resolve false ao pressionar Escape e devolve o foco ao disparador', async () => {

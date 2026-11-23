@@ -13,6 +13,12 @@ import { SAMPLE_BUTTON_STATES, SAMPLE_TEXTURE_OPACITY } from '../SampleParts';
 import { getPresetGroup } from '../../../../../core/Design/presets/components/registry';
 import { TYPOGRAPHY_PRESETS } from '../../../../../core/Design/presets/components/typography';
 
+// O cartão real do painel (`SarakTitleCard`) lê o design pelo contexto; sem o Provider, o teste entrega um design vazio.
+vi.mock('../../../../../core/Provider/SarakUIProvider', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('../../../../../core/Provider/SarakUIProvider')>()),
+    useSarakUI: () => ({ design: {}, isDrafting: false }),
+}));
+
 /**
  * Cada grupo de opções é montado SOZINHO, sem a galeria (`PresetsCatalog`) em volta: é o que deixa a coluna única
  * da plan seguinte usá-los sem reescrevê-los.
@@ -52,12 +58,12 @@ describe('grupos de opções do painel', () => {
         expect(lightScope).not.toHaveClass('dark');
     }, HEAVY_RENDER_TIMEOUT_MS);
 
-    it('os cartões usam o átomo real: título, valor e botão', () => {
+    it('os cartões usam o átomo real do painel: chip de título e contexto', () => {
         const { container } = render(<CardsCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
         const card = container.querySelector('.sarak-card') as HTMLElement;
-        expect(card.querySelector('[data-testid="sample-card-title"]')).toBeInTheDocument();
-        expect(card.querySelector('[data-testid="sample-card-value"]')).toBeInTheDocument();
-        expect(card.querySelector('button')).toBeInTheDocument();
+        expect(card).toHaveTextContent('CPU Cluster');
+        expect(card).toHaveTextContent('Node-04-PR');
+        expect(card).toHaveTextContent('Contexto');
     });
 
     it('os botões aparecem nos quatro estados, lado a lado, com o botão real', () => {
@@ -76,17 +82,16 @@ describe('grupos de opções do painel', () => {
         expect(first.querySelector('[data-sample-state="focus"] input')).toBeInTheDocument();
     });
 
-    it('a atmosfera ocupa o tile inteiro, sem cartão no centro, com uma mini peça no canto', () => {
+    it('a atmosfera ocupa o tile inteiro, sem cartão no centro e sem botão por cima da amostra', () => {
         const { container } = render(<AtmosphereCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
         expect(container.querySelector('.sarak-card')).toBeNull();
-        const corner = container.querySelector('.absolute.bottom-3.right-3') as HTMLElement;
-        expect(corner.querySelector('button')).toBeInTheDocument();
+        expect(container.querySelector('[data-option-sample] button')).toBeNull();
         expect(container.querySelector('.sarak-design-scope')!.parentElement).toHaveClass('absolute', 'inset-0');
     });
 
     it('a textura de atmosfera aparece com a opacidade da amostra e o clique aplica o valor do preset', () => {
         const onApplyPreset = vi.fn();
-        const { container, getByRole } = render(<AtmosphereCatalog onApplyPreset={onApplyPreset} currentMode="dark" initialTab="textures" />);
+        const { container, getByRole } = render(<AtmosphereCatalog onApplyPreset={onApplyPreset} currentMode="dark" section="textures" />);
         const scope = container.querySelector('.sarak-design-scope[data-sx-texture]') as HTMLElement;
         expect(scope.style.getPropertyValue('--sarak-bg-pattern-opacity')).toBe(String(SAMPLE_TEXTURE_OPACITY));
         expect(scope).toHaveClass('texture-active');
@@ -99,14 +104,15 @@ describe('grupos de opções do painel', () => {
         expect(JSON.stringify(onApplyPreset.mock.calls[0][0])).not.toContain(String(SAMPLE_TEXTURE_OPACITY));
     }, HEAVY_RENDER_TIMEOUT_MS);
 
-    it('a textura de cartão aparece no próprio cartão, com opacidade visível, e o clique aplica o valor do preset', () => {
+    it('a textura de cartão é a do próprio cartão, com a opacidade do rascunho, e o clique aplica o valor do preset', () => {
         const onApplyPreset = vi.fn();
-        const { container, getByRole } = render(<CardsCatalog onApplyPreset={onApplyPreset} currentMode="dark" initialTab="textures" />);
+        const { container, getByRole } = render(<CardsCatalog onApplyPreset={onApplyPreset} currentMode="dark" section="textures" />);
         const scope = container.querySelector('.sarak-design-scope[data-sx-card-texture-type]') as HTMLElement;
-        expect(scope.style.getPropertyValue('--sarak-card-texture-opacity')).toBe(String(SAMPLE_TEXTURE_OPACITY));
+        // É a textura do cartão de verdade: a opacidade é a do rascunho (a amostra não a sobrescreve) e o texto do cartão não é coberto.
+        expect(scope.style.getPropertyValue('--sarak-card-texture-opacity')).not.toBe(String(SAMPLE_TEXTURE_OPACITY));
+        expect(scope.querySelector('[data-sx-texture]')).toBeNull();
         const card = scope.querySelector('.sarak-card') as HTMLElement;
-        expect(card).toHaveClass('min-h-40');
-        expect(card.querySelector('[data-sample-texture]')!.getAttribute('data-sx-texture')).toBe(scope.getAttribute('data-sx-card-texture-type'));
+        expect(card.getAttribute('data-sx-card-texture-type')).toBe(scope.getAttribute('data-sx-card-texture-type'));
 
         const group = getPresetGroup('cardTextures')!;
         const preset = group.presets.find((candidate) => candidate.id === group.featured[0])!;

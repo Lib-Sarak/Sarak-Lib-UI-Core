@@ -14,7 +14,9 @@ describe('OptionTile', () => {
 
         expect(sample).toHaveTextContent('botão real da amostra');
         expect(sample.contains(screen.getByRole('heading', { name: 'Glass' }))).toBe(false);
-        expect(screen.getByText('Vidro fosco')).toBeInTheDocument();
+        // A descrição fica no leitor de tela e no balão: a opção compacta não a escreve por baixo da amostra.
+        expect(screen.getByText('Vidro fosco')).toHaveClass('sr-only');
+        expect(container.querySelector('[data-option-tile]')).toHaveAttribute('title', 'Vidro fosco');
     });
 
     it('a opção é um único botão acessível pelo nome: o botão da amostra não aninha em outro botão', () => {
@@ -31,6 +33,13 @@ describe('OptionTile', () => {
     it('o botão da opção usa p-0, a exceção do CSS global de hover e aperto de botão, para não pintar a amostra', () => {
         render(<OptionTile name="Glass" onApply={() => {}} peekTokens={() => null}><span /></OptionTile>);
         expect(screen.getByRole('button', { name: 'Glass' })).toHaveClass('p-0', 'absolute', 'inset-0');
+    });
+
+    it('os atributos do botão (o alvo estável do tema) chegam ao botão', () => {
+        render(<OptionTile name="Glass" onApply={() => {}} peekTokens={() => null} buttonProps={{ 'data-theme-id': 'glass', 'aria-busy': 'true' }}><span>amostra</span></OptionTile>);
+        const button = screen.getByRole('button', { name: 'Glass' });
+        expect(button).toHaveAttribute('data-theme-id', 'glass');
+        expect(button).toHaveAttribute('aria-busy', 'true');
     });
 
     it('sem descrição não desenha o parágrafo', () => {

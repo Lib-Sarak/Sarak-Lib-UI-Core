@@ -1,10 +1,12 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest';
 import {
+    CATALOG_GRID,
     CATALOG_GRID_2COL,
     CATALOG_GRID_3COL,
-    THEME_GALLERY_GRID_2COL,
-    THEME_GALLERY_GRID_MIN_WIDTH,
+    PERSONALITY_GRID,
+    WIDE_SAMPLE_GRID,
+    THEME_GALLERY_GRID,
     PANEL_SPLIT_COLUMN,
     PANEL_SPLIT_HANDLE,
     PANEL_SPLIT_MIN_WIDTH,
@@ -13,25 +15,20 @@ import {
     PREVIEW_TOOLBAR_HINT,
     getPreviewLayoutPreset,
 } from '../panelResponsive.presets';
-import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../../../../core/Design/breakpoints';
 
 describe('panelResponsive.presets (plan-35 — container query, não viewport)', () => {
-    it('CATALOG_GRID_2COL usa o MESMO número do antigo `md:` (BREAKPOINT_TABLET), só como container query', () => {
-        expect(CATALOG_GRID_2COL).toBe(`grid-cols-1 @min-[${BREAKPOINT_TABLET}px]:grid-cols-2`);
-        expect(CATALOG_GRID_2COL).not.toContain('md:');
+    it('a grade das opções é uma só e mede a coluna: colunas automáticas, sem `md:` nem `lg:` de janela', () => {
+        expect(CATALOG_GRID).toBe('grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))]');
+        expect(CATALOG_GRID_2COL).toBe(CATALOG_GRID);
+        expect(CATALOG_GRID_3COL).toBe(CATALOG_GRID);
+        expect(PERSONALITY_GRID).toBe('grid-cols-[repeat(auto-fill,minmax(5.5rem,1fr))]');
+        expect(WIDE_SAMPLE_GRID).toBe('grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]');
+        [CATALOG_GRID, PERSONALITY_GRID, WIDE_SAMPLE_GRID].forEach((value) => expect(value).not.toMatch(/(^|\s)(sm|md|lg|xl):/));
     });
 
-    it('a galeria de temas abre duas colunas quando cabem dois cartões legíveis e o vão', () => {
-        expect(THEME_GALLERY_GRID_MIN_WIDTH).toBe(240);
-        expect(THEME_GALLERY_GRID_2COL).toBe('grid-cols-1 @min-[240px]:grid-cols-2');
-    });
-
-    it('CATALOG_GRID_3COL usa os MESMOS números dos antigos `md:`/`lg:` (BREAKPOINT_TABLET/BREAKPOINT_DESKTOP)', () => {
-        expect(CATALOG_GRID_3COL).toBe(
-            `grid-cols-1 @min-[${BREAKPOINT_TABLET}px]:grid-cols-2 @min-[${BREAKPOINT_DESKTOP}px]:grid-cols-3`,
-        );
-        expect(CATALOG_GRID_3COL).not.toContain('md:');
-        expect(CATALOG_GRID_3COL).not.toContain('lg:');
+    it('a galeria de temas mede a coluna: duas miniaturas por linha na coluna padrão, e nunca pela janela', () => {
+        expect(THEME_GALLERY_GRID).toBe('grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))]');
+        expect(THEME_GALLERY_GRID).not.toMatch(/(^|\s)(sm|md|lg|xl):/);
     });
 
     it('o painel inteiro mede o contêiner: coluna e prévia lado a lado só a partir do limiar, nunca pela janela', () => {

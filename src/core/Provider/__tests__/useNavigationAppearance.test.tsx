@@ -24,6 +24,9 @@ describe('useNavigationAppearance', () => {
             sidebarBorderSide: 'edge',
             sidebarBackgroundStyle: 'solid',
             sidebarActiveItemStyle: 'bar',
+            sidebarActiveGlass: 'on',
+            brandDisplay: 'both',
+            userAvatarStyle: 'initials',
             sidebarItemDensity: 'comfortable',
             sidebarLogoPlacement: 'top',
             sidebarTone: 'neutral',
@@ -52,6 +55,7 @@ describe('useNavigationAppearance', () => {
                 sidebarBorderSide: 'all',
                 sidebarBackgroundStyle: 'texture',
                 sidebarActiveItemStyle: 'filled',
+                sidebarActiveGlass: 'off',
                 sidebarItemDensity: 'compact',
                 topbarBorderStyle: 'double',
                 topbarBorderSide: 'left',
@@ -65,6 +69,9 @@ describe('useNavigationAppearance', () => {
             sidebarBorderSide: 'all',
             sidebarBackgroundStyle: 'texture',
             sidebarActiveItemStyle: 'filled',
+            sidebarActiveGlass: 'off',
+            brandDisplay: 'both',
+            userAvatarStyle: 'initials',
             sidebarItemDensity: 'compact',
             sidebarLogoPlacement: 'top',
             sidebarTone: 'neutral',
@@ -75,6 +82,19 @@ describe('useNavigationAppearance', () => {
             topbarActiveItemStyle: 'outline',
             topbarItemDensity: 'spacious',
         });
+    });
+
+    it('lê o que a marca mostra e o estilo do avatar, e ignora valor fora do contrato', () => {
+        const { result } = renderHook(() => useNavigationAppearance(), {
+            wrapper: wrapperWithDesign({ brandDisplay: 'logo', userAvatarStyle: 'icon' }),
+        });
+        expect(result.current.brandDisplay).toBe('logo');
+        expect(result.current.userAvatarStyle).toBe('icon');
+        const { result: invalid } = renderHook(() => useNavigationAppearance(), {
+            wrapper: wrapperWithDesign({ brandDisplay: 'nada', userAvatarStyle: 'foto' }),
+        });
+        expect(invalid.current.brandDisplay).toBe('both');
+        expect(invalid.current.userAvatarStyle).toBe('initials');
     });
 
     it('aplica o rascunho de tema sobre o design persistido', () => {

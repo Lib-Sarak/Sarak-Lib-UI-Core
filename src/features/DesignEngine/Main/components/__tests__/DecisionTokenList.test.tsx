@@ -15,6 +15,13 @@ describe('DecisionTokenList', () => {
         expect(enhanceToken(token('outro', 'Outro'), catalogMap)).toMatchObject({ label: 'Outro' });
     });
 
+    it('usa nome e descrição dos ajustes principais no idioma do painel', () => {
+        expect(enhanceToken(token('primaryColor', 'Cor'), catalogMap, 'en')).toMatchObject({
+            label: 'Primary color',
+            description: 'The system’s main highlight color: links, focus and active states. The primary button background is `btnPrimaryBg`.',
+        });
+    });
+
     it('cada token vira uma linha com o id, por onde a busca o encontra e o põe em foco', () => {
         render(<SarakUIProvider><DecisionTokenList tokens={[token('headingFont', 'Fonte'), token('outro', 'Outro')]} {...common} /></SarakUIProvider>);
 

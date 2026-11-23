@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "156"
+proximo_numero_plan: "171"
 ---
 
 # 0. O que é este arquivo
@@ -42,12 +42,107 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-119-kit-de-importacao-aprendido-nos-importadores](plan/plan-119-kit-de-importacao-aprendido-nos-importadores.md) | Fazer o importador usar a lib por inteiro sem reescrever o que ela entrega, com o kit de importação ensinado pelas licoes medidas nos importadores reais e com a gestao de temas do importador completa: salvar o aplicado como novo, editar, duplicar e criar, persistidos no importador | — | 🟡 Em execução | specs/12-kit-do-consumidor.md + specs/13-instalacao-e-atualizacao.md + specs/09-temas-e-presets.md + specs/15-divida-conhecida.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🚦 **Campanha da `8.0.0-rc.4` (2026-10-27).** Contrato aceito: [`anexos/rc4-contrato.md`](plan/anexos/rc4-contrato.md). Ordem: a `plan-128` vai **sozinha** (cria o hook de idioma e os arquivos de catálogo das outras); depois `plan-129` ‖ `plan-130` ‖ `plan-131` ‖ `plan-132` ‖ `plan-119` lote 8 ‖ `plan-133`, em paralelo (pastas disjuntas; arquivos compartilhados só por acréscimo); depois da 133, `plan-134` ‖ `plan-135`. A 134 e a 135 geram prévias em `C:\tmp\sarak-rc4-previa\` que o dono aprova durante a revisão. Verificação pelo protocolo do contrato §9: uma vez por plan e a bateria completa uma vez, no fechamento, depois do lote 2 do ERP. A versão (`npm version`) é do dono.
 
-> 🚦 **Fila da rc.5 (2026-11-02):** decisão do dono: todas as plans abertas entram na `8.0.0-rc.5`, salvo o lote final da `plan-119`, que espera os importadores. Ordem: tag (as plans da rc.5 estão sintetizadas). `npm run build` e a bateria de navegador rodam **um executor por vez**. Contrato em `anexos/rc5-contrato.md`.
+> 🚦 **Fila de 2026-11-10 — fechamento da `plan-119`.** Os importadores estão na `v8.0.0` e entregaram os relatos finais. Ordem:
+> `plan-119` lote 9 ‖ `plan-157` lote 0, em paralelo (disjuntos: `SarakSwitch.tsx` e `useDesignDraft.ts` × `specs/adr/` e o anexo
+> da 157); depois os lotes 1 e 2 da 157; depois o lote final da 119. **Uma tag só, ao final** (decisão do dono, 2026-11-10), levando
+> também o que entrou depois da `v8.0.0` (a `plan-156`). A versão (`npm version`) é do dono.
+>
+> **Painel e cromo (2026-11-10, da auditoria no ERP).** `plan-158` → `plan-159` → `plan-160` → `plan-161`, em sequência: as quatro
+> mexem no caminho do rascunho e nos catálogos do painel. A `plan-158` começa **depois do lote 9 da 119 aprovado** (o lote 9 mexe em
+> `useDesignDraft.ts`). As quatro entram na mesma tag do fechamento da 119 (decisão do dono, 2026-11-10). Fica fora delas, por via
+> direta: o valor do `SarakStats` que invade o respiro do cartão.
+>
+> **Barra lateral (2026-11-13, pedido do dono).** A `plan-165` devolve a anatomia da barra lateral da lib antiga como padrão de todo
+> tema, com cada token ainda editável. Ela roda **depois do lote 1 da 158 e antes da 159**, porque mexe nos mesmos arquivos do cromo;
+> a 159 ganhou uma nota com o que muda nela. Entra na 9.0.0.
+>
+> **Temas e paletas (2026-11-16).** A `plan-164` (paleta do tema, paleta por cima e paletas salvas) tem o ADR-026 e o ADR-027 aceitos e o lote 1 liberado; roda em paralelo com a 159 e a 161, que mexem no cromo e no catálogo do painel. **A próxima versão é `9.0.0`**.
+
+> **Fechamento da 9.0.0 (2026-11-21, decisão do dono).** As correções que sobraram entram antes da tag, em duas plans paralelas e sem arquivo em comum: a `plan-167` (bateria de navegador verde num build novo, backlog #92, mais o contraste do hover de botão, #90, e do `SarakTitleCard`, #91) e a `plan-168` (gráficos que ocupam o quadro, #93, e os ajustes principais do painel nos seis idiomas). Em 2026-11-21 entraram também a `plan-169` (gates que deixam passar e testes que estouram o tempo sob carga, backlog #10, #21, #22, #77, #84 e #89; sem build nem navegador) e a `plan-170` (contraste do cromo nas barras de tom contrastante, #70, #86 e #88), e os #85 e #87 entraram na 167. Com as quatro: síntese, a nota de fechamento da campanha e o `npm version major`, que é do dono. As baterias de navegador da 167, da 168 e da 170 rodam uma de cada vez.
+
+> ⚪ **A `plan-169` foi SINTETIZADA e REMOVIDA em 2026-11-23.** Código nos commits `b6734c53`, `1277ffde`, `8dc9fa44` e `143a2a4d`. Destino demonstrado:
+> - **[[01-gates-e-baseline]]:** a §2.1 diz o que o `auditor_hardcoded` lê (`.ts` e `.tsx`) e as três isenções de escopo. A linha do Kit na §2.2 diz que a tabela de arquétipos sai do catálogo de temas. A §2.4 traz a regra de que o teste que estoura o tempo se conserta no próprio teste. As linhas do `zero-brand` e do `chrome-token-parity` e a coluna *Cobra* sem rastro de plan já estavam no commit `1277ffde`.
+> - **[[05-cromo-e-slots]] §2.4.1:** o escopo do `chrome-token-parity` em qualquer schema, que já estava no commit `1277ffde`.
+> - **[[09-temas-e-presets]] §5 e [[12-kit-do-consumidor]]:** a tabela de arquétipos do guia é gerada (divergência corrigida na hora).
+> - **Ficou de fora:** vereditos e medições (histórico do Git). As amostras com nomes genéricos, o Assistente e o Catálogo no idioma do painel e a remoção de `DEFAULT_INDUSTRIAL_SEED` são correção de defeito. As reservas do manifesto lidas do schema já são regra da R42 (`variable-contract`) e estão em `docs/migracoes.md`. O `coverage:check` duas vezes sai no fechamento, com a máquina livre. `00-contexto` revisto, nada a mudar.
+
+> ⚪ **As `plan-167`, `plan-168` e `plan-170` foram SINTETIZADAS e REMOVIDAS em 2026-11-23.** Código da 167 no commit `8dc9fa44`; da 168 nos commits `3b8aab35`, `7febd22b` e `486ff521`; da 170 nos commits `685d83f5` e `8dc9fa44`. Destino demonstrado:
+>
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | 167 — bateria verde, hover de botão e `SarakTitleCard` | [[10-seguranca-e-acessibilidade]] §2.4 d (o que a lib calcula e o navegador mede: hover sem fundo global, `ghost` a 85%, título e subtítulo pelos tokens) · [[05-cromo-e-slots]] §2.2.2 (a escolha marcada legível no menu e na barra) |
+> | 168 — gráficos e ajustes principais traduzidos | [[06-painel-de-customizacao-e-preview]] §2.1 (nome, descrição e opções nos seis idiomas, com a ordem de recuo) e §6.3 (60% da altura do quadro, `grid`, eixo e raios) · [[10-seguranca-e-acessibilidade]] §3.6 (glossário sobre todo `catalogEntries.*`) |
+> | 170 — contraste do cromo nas barras contrastantes | [[09-temas-e-presets]] §4.3.4 (a peça contra a parada menos favorável e o par da paleta sobre o véu de 20%) e a tabela de testes · [[10-seguranca-e-acessibilidade]] §2.4 d (4,5:1 e 3:1 sem exceção) |
+>
+> **Ficou de fora:** vereditos, medições e capturas (histórico do Git); a remoção de `colorDepth` e `colorVariation` (D1), que nenhuma spec fixa citava e está em `docs/migracoes.md`; a regra de não pôr no CSS da lib classe que só a fixture usa, que não virou regra de spec; a corrida do `fontes-no-painel.spec.ts` e o `ICON_MINIMUM` sem leitor, que foram para a `plan-169`. `00-contexto` revisado: nada a mudar.
+
+> ⚪ **As `plan-161` e `plan-166` foram SINTETIZADAS e REMOVIDAS em 2026-11-21.** Código da 161 nos commits `9f08de71`, `64b55a48`, `2ca24fff`, `d158b55e` e `7ce5e00c`; da 166 nos commits `901c5d9e` e `c1305b17`.
+> - **161:** a [[06-painel-de-customizacao-e-preview]] recebeu, na §2.1, a meta de 2,5 alturas por decisão e os grupos fechados com o em uso aberto e, na §6.4, a grade única, a Personalidade em quadrado e as duas texturas como grupos vizinhos da Forma, com o alvo no nome. A [[09-temas-e-presets]] recebeu, na §5, o card de cada tema gerado (`card-presets`, sem cor, ao lado dos escritos à mão) e, na §6.4, o gerador que lê os temas. A [[10-seguranca-e-acessibilidade]] recebeu, na §3.6, o glossário do painel e o teste que o guarda.
+> - **166:** a [[06-painel-de-customizacao-e-preview]] recebeu, na §6.4, as amostras com o componente real (miniatura do tema = tela "Painel" inteira no quadro de desktop, card real sobre o rascunho, texturas, gráfico, tabela, progresso e estado vazio reais, diálogo e aviso como réplicas), os limiares de pixel (2%, 5% e 2% contra o card sem textura) e os tetos de custo (2× por grupo, 2,5× no Tema); na §6.3, a tela "Gráficos" com os oito tipos. A [[09-temas-e-presets]] recebeu, na §5, a textura do card na moldura de 20 px, com a opacidade gravada pelo preset e as destacadas medidas, e os gráficos por estilo, com o `chartType` só no ajuste fino.
+> - **Ficou de fora:** as rodadas e medidas das prévias (narrativa de execução); a base neutra do lote 3 da 161, que a 166 desfez (decisão D1); e os achados que foram ao backlog: #91 (contraste das etiquetas do `SarakTitleCard`), #92 (oito casos de navegador que falham num build novo) e #93 (motor de gráficos achatado).
+
+> ⚪ **As `plan-159` e `plan-164` foram SINTETIZADAS e REMOVIDAS em 2026-11-18.** Código da 159 nos commits `9f08de71`, `64b55a48`, `2ca24fff` e `61dbbe27`; da 164 nos commits `9f08de71`, `2ca24fff` e `0811ece5`.
+> - **159:** a [[05-cromo-e-slots]] recebeu, na §2.1, o "Mais" da topbar no lugar da lista que rolava e, na §2.2.2, o ⚙ que não repete o fixado (nas duas orientações), o grupo compacto na barra, as linhas com seleção no menu e o ⚙ com o texto da superfície. A [[09-temas-e-presets]] recebeu, na §4.3.4, a regra nova do tom escolhido contra a cor que o tema e o host declaram (as duas barras contam como escolhidas com os tons iguais) e, na §4.7, o P e o G em px a partir de `bodySize`. A [[06-painel-de-customizacao-e-preview]] recebeu, na §2.1, as sete decisões e os "Ajustes principais" recolhidos acima de oito controles; na §2.1.1, a Composição da Barra na decisão Barras; e as §2.1.2 (decisão Barras, tom único, espiada de tom, interruptor da troca lateral/topo) e §2.1.3 (aviso de preferência pessoal, controle desabilitado com motivo, intervalo da largura, "Navegação recolhida").
+> - **164:** o `adr/027` ganhou a nota de implementação (`keepPalette`, ligar sem paleta escolhida, chaves preservadas na troca de tema). A [[09-temas-e-presets]] recebeu "Manter minha paleta" na §4.3.4 e, na §4.6, a paleta salva sem porta própria (`savedPalettes`, formato, teto, validação) e as chaves preservadas da composição. A [[06-painel-de-customizacao-e-preview]] §2.4 recebeu o interruptor, a galeria em grupos, "Minhas paletas", salvar com nome e a paleta salva no atalho de marca.
+> - **Ficou de fora:** as medições e números das prévias (narrativa de execução); o hover global de botão (backlog #90) e os contrastes do backlog #88; o conserto do chip de filtro da galeria (é correção de defeito, não vai para spec fixa); e o contrato do 00-contexto (revisto, nada a mudar).
+
+> ⚪ **As `plan-158`, `plan-160`, `plan-163` e `plan-165` foram SINTETIZADAS e REMOVIDAS em 2026-11-16**, no mesmo commit do fechamento conjunto. A 158 tem código nos commits `5598d43d` e `107f81f8`.
+> - **158:** o destino `adr/026` já estava aceito. A [[09-temas-e-presets]] recebeu a §4.3.3 (a composição é a referência do que se grava; os condutores) e a §4.4.1–4.4.2 (formato 2 só de escolhas, `onSave`/`onLoad` com `format`, L1 ao carregar, registro `::choices`). A [[06-painel-de-customizacao-e-preview]] recebeu a §4 (sair com rascunho sujo pergunta antes em toda rota do cromo, no `beforeunload` e no controle do host) e a §4.1 (teto de 250 ms por escolha e as travas de contagem).
+> - **160:** foi para a [[06-painel-de-customizacao-e-preview]]:
+>   - [[06-painel-de-customizacao-e-preview]] §2.4: a paleta espia;
+>   - [[06-painel-de-customizacao-e-preview]] §6.2 e §6.2.2: o desktop a 1920 px reduzido, portal na moldura, prévia sem marca;
+>   - [[06-painel-de-customizacao-e-preview]] §6.3: as telas por grupo, a seção Elevação e o `tableCellPadding` nas duas tabelas;
+>   - [[06-painel-de-customizacao-e-preview]] §6.4: a espiada leva à tela do grupo, e toda opção destacada muda a prévia, com as quatro exceções;
+>   - [[06-painel-de-customizacao-e-preview]] §6.6 e §11: os casos de navegador.
+> - **163:** foi para a [[09-temas-e-presets]]:
+>   - [[09-temas-e-presets]] §4.3.4: a régua de deslocamento, com tetos e exceções nomeadas; o `beat` do ativo sobre o inativo; os pares na parada clara do degradê; a tinta de superfície no escuro; o interruptor ligado e desligado a 3:1;
+>   - [[09-temas-e-presets]] §5: a curadoria sem exceção e as chaves de nome das paletas;
+>   - [[09-temas-e-presets]] §6.5 e §10: o que o gate de contraste deixa aos testes de unidade, e os testes.
+> - **165:** foi para a [[05-cromo-e-slots]]:
+>   - [[05-cromo-e-slots]] §2.1 e §2.1.4: a anatomia da barra lateral, as sub-abas e `brandDisplay`;
+>   - [[05-cromo-e-slots]] §2.2.1 e §2.2.2: os widgets sem conexão ausentes em produção e o padrão de fábrica da composição;
+>   - [[05-cromo-e-slots]] §2.4, §8 e §9: os tokens novos da barra, os critérios e os testes.
+>
+>   E para a [[09-temas-e-presets]]: §4.3.4 (as faixas da marca na primária exata nos dois modos, o texto por contraste, o papel da barra nos tons contrastantes), §5 (`sidebar-compact` em Superfície) e §5.3 (a faixa é exceção à simetria).
+> - **`00-contexto` revisado:** a Stack passa a dizer "sem regressão visual contra imagem de referência". Os specs de navegador comparam pixels contra uma base da própria rodada, e não contra imagem gravada.
+> - **Ficou de fora:**
+>   - vereditos, medições, prévias, bases e cores por paleta (histórico do Git e `docs/migracoes.md`);
+>   - os bugs corrigidos.
+>
+>   Os ADR-026 e ADR-014 são imutáveis e não foram tocados. Dois pontos do ADR-026 ficaram datados, e a verdade vale pela [[09-temas-e-presets]] §4.3.4: o tom escolhido vence o do host no cálculo, e o custo no boot, que o ADR dava como não medido, foi medido na execução.
+> - **Riscos em aberto:** backlog #80, #83, #84, #85, #86 e #87.
+
+> ⚪ **A `plan-162` foi SINTETIZADA e REMOVIDA em 2026-11-12** (commit da execução `5214a31f`).
+> - [[09-temas-e-presets]] §4.3: quem cai no tema padrão em cada porta, `SARAK_REMOVED_THEME_IDS` e `resolvedThemeId` com id desconhecido.
+> - [[09-temas-e-presets]] §5: os sete temas resgatados da lib antiga (sufixo `-classic` quando há homônimo) e a regra do tema que sai do catálogo.
+> - O mapa de tokens e os sete JSONs dos originais saíram com a plan; os originais seguem em `git show 7c4dbaed:src/core/Design/presets/themes/`.
+
+> ⚪ **A `plan-119` foi SINTETIZADA e REMOVIDA em 2026-11-12.**
+> - [[09-temas-e-presets]] §4.6: os gestos do painel (Salvar, Salvar como novo, Duplicar, Novo tema), a operação `'create'`/`'replace'` da porta `onSave`, a imutabilidade do tema embarcado, o id único e o que acontece quando `onSave` ou `onDelete` rejeitam.
+> - [[12-kit-do-consumidor]] §2.4.1 e a nota do subpath `testing`: `designTokens.removed` e o gerador que exige o destino de cada token removido; `installSarakTestEnvironment`.
+> - [[13-instalacao-e-atualizacao]] §2.1, §2.4 e §9.4.1: o pin de tag exata e como o `update` o move; o nonce de CSP.
+> - **Ficou de fora, por falta de confirmação no código:** o mapa "o que a lib já faz" e as seções do guia (valor por dispositivo, árvore de decisão), que vivem no `GUIA-FRONTEND.md` gerado; o contrato do `SarakOptionalPeerFallback` e os pisos de dependência (§2.3 da 13), os avisos do Vite sem peers e as fontes em dev, só relatados nos resumos; e os vereditos. Nada a acrescentar na [[15-divida-conhecida]].
+> - **Retido:** o anexo `plan-119-perspectiva-final-login.md`, citado pela `plan-158`; sai junto com ela.
+
+> ⚪ **A `plan-157` foi SINTETIZADA e REMOVIDA em 2026-11-12.**
+> - [[12-kit-do-consumidor]] §2.5: o kit de verificação (núcleo único, duas portas, chave `verification` do catálogo, tags de JSDoc, as treze regras, o `recommended` de cinco e o que o kit não vê).
+> - [[03-superficie-publica]] §7.2: o subpath `./eslint` e a entrada `verify` fora do boot, o peer opcional `eslint` e a regra de não importar tipo da lib.
+> - [[13-instalacao-e-atualizacao]] §2.3 e §4: o peer opcional `eslint` e o subcomando `verify`.
+> - `adr/025` já nasceu no lote 0 (aceito em 2026-11-11) e não foi tocado além de uma frase de Consequências.
+> - **Ficou de fora:** o anexo `plan-157-catalogo-de-regras.md` (a medição nos três importadores, no histórico do Git), os vereditos e as correções de regra caso a caso. Os moldes que ensinam o que o kit barra seguem na `plan-119` (I53).
+
+> ⚪ **A `plan-156` foi SINTETIZADA e REMOVIDA em 2026-11-05.**
+> - [[10-seguranca-e-acessibilidade]] §2.4 b: rótulos ligados, botão de senha nomeado pelo estado e `role="alert"` no `SarakAuthScreen`.
+> - [[03-versionamento-e-release]] §5 e §5.2, e §6 na lista do gancho `version`: a lista de tokens em toda versão e o gate `token-release-notes:check`, com os limites dele.
+> - [[12-kit-do-consumidor]] §2.4: os alvos de teste estáveis viram contrato do kit, junto com o filtro do aviso de CSS.
+> - Acréscimos fora do destino declarado: [[01-gates-e-baseline]], na tabela de gates e na matriz, e `00-contexto` §3.1, onde estão os gates do `version`.
+> - **Ficou de fora:** os vereditos, as medições e a correção do R6, que saiu da plan porque a galeria tinha saído na 8.0.0 (histórico do Git). A documentação do kit (R3 a R9) fica no próprio guia e em `docs/persistencia-de-tema.md`, que a 12 §12 não duplica.
+
+> 🚦 **Fila da rc.5 (2026-11-02):** decisão do dono: todas as plans abertas entram na `8.0.0-rc.5`, salvo o lote final da `plan-119`, que espera os importadores. A `rc.5` e a `8.0.0` saíram. `npm run build` e a bateria de navegador rodam **um executor por vez**. Contrato em `anexos/rc5-contrato.md`.
 
 > ⚪ **A `plan-145` foi SINTETIZADA e REMOVIDA em 2026-11-03.**
 > - [[09-temas-e-presets]] §3: a Personalidade entre preset e tema.

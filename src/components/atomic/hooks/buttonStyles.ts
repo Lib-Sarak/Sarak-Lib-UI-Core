@@ -1,6 +1,10 @@
 import type React from 'react';
 import type { SarakThemePayload } from '../../../core/Provider/types';
 import { neumorphismButtonShadow } from './neumorphismStyles';
+import { sarakGetDefaultDesignState } from '../../../core/Design/master-map';
+
+/** A espessura de borda de fábrica do schema, que o acabamento usa quando o contorno não vem de uma variável. */
+const DEFAULT_BORDER_WIDTH = `${sarakGetDefaultDesignState().borderWidth}px`;
 
 export const CYBERPUNK_TEXT_COLORS: Readonly<Record<string, string>> = {
     primary: 'var(--sarak-primary-color, #19e3f0)',
@@ -24,20 +28,24 @@ const getNeonButtonStyles = (variant: string, isHovered: boolean): React.CSSProp
 
     if (variant === 'primary' || variant === 'danger') {
         return {
+            // sarak-allow-hardcode: o raio do brilho neon (5 a 20 px) é desenho do acabamento, não medida de layout; nenhum token o declara.
             boxShadow: isHovered ? `0 0 20px ${glowColor}, inset 0 0 10px ${glowColor}` : `0 0 10px ${glowColor}`,
-            border: `1px solid ${glowColor}`,
+            border: `${DEFAULT_BORDER_WIDTH} solid ${glowColor}`,
         };
     }
     if (variant === 'secondary') {
         return {
+            // sarak-allow-hardcode: o raio do brilho neon (5 a 20 px) é desenho do acabamento, não medida de layout; nenhum token o declara.
             boxShadow: isHovered ? `0 0 15px ${glowColor}` : `0 0 5px ${glowColor}`,
-            border: `1px solid ${glowColor}`,
+            border: `${DEFAULT_BORDER_WIDTH} solid ${glowColor}`,
             backgroundColor: 'var(--sarak-btn-secondary-bg, rgba(255, 255, 255, 0.05))',
         };
     }
     if (variant === 'ghost') {
         return {
+            // sarak-allow-hardcode: o raio do brilho neon (5 a 20 px) é desenho do acabamento, não medida de layout; nenhum token o declara.
             boxShadow: isHovered ? `0 0 15px ${glowColor}` : 'none',
+            // sarak-allow-hardcode: o raio do brilho neon (5 a 20 px) é desenho do acabamento, não medida de layout; nenhum token o declara.
             ...(isHovered ? { textShadow: `0 0 8px ${glowColor}` } : {}),
         };
     }
@@ -53,6 +61,7 @@ const getCyberpunkButtonStyles = (variant: string, isHovered: boolean): React.CS
         ...(ownColor ? { color: ownColor } : {}),
         border: `var(--sarak-border-width, 1px) solid ${glowColor}`,
         borderRadius: 0,
+        // sarak-allow-hardcode: o raio do brilho neon (5 a 20 px) é desenho do acabamento, não medida de layout; nenhum token o declara.
         boxShadow: isHovered ? `0 0 10px ${glowColor}` : 'none',
     };
 };
@@ -65,7 +74,7 @@ const getFrostedButtonStyles = (
     if (!isFrostedTarget) return {};
 
     const dynamicStyle: React.CSSProperties = {
-        border: '1px solid var(--color-theme-border, rgba(255,255,255,0.09))',
+        border: `${DEFAULT_BORDER_WIDTH} solid var(--color-theme-border, rgba(255,255,255,0.09))`,
     };
     const blurAmount = design?.btnBackdropBlur || 0;
 
@@ -74,6 +83,7 @@ const getFrostedButtonStyles = (
         dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
     }
     if (variant === 'primary' || variant === 'danger') {
+        // sarak-allow-hardcode: a sombra de 4/12 px é só a reserva de var(--sarak-dynamic-shadow), composta de vários valores; o detector só limpa reserva de valor único.
         dynamicStyle.boxShadow = 'var(--sarak-dynamic-shadow, 0 4px 12px rgba(0,0,0,0.1))';
     }
     if (variant === 'secondary') {

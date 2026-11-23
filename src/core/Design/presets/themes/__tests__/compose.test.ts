@@ -38,6 +38,25 @@ describe('composeThemeDesign — a troca de tema nunca herda token do tema anter
         });
     });
 
+    it('o tema que traz o padrão do schema (o que o painel salva) não desliga keepPalette nem apaga a paleta escolhida', () => {
+        const panelSavedTheme = { ...defaults, primaryColor: '#0000ff' } as Record<string, unknown>;
+        const previous = { keepPalette: true, colorPalette: 'oceano', savedPalettes: 'sp-1|Marca|custom:analogous:#c2410c', systemName: 'ERP' };
+        const out = composeThemeDesign(panelSavedTheme, previous);
+        expect(out.keepPalette).toBe(true);
+        expect(out.colorPalette).toBe('oceano');
+        expect(out.savedPalettes).toBe(previous.savedPalettes);
+        expect(out.systemName).toBe('ERP');
+    });
+
+    it('toda chave preservada com padrão no schema sobrevive a um tema que só traz o padrão', () => {
+        const previous: Record<string, unknown> = {};
+        THEME_PRESERVED_KEYS.forEach((key) => {
+            if (key in defaults) previous[key] = typeof defaults[key as keyof typeof defaults] === 'boolean' ? !defaults[key as keyof typeof defaults] : 'do-anterior';
+        });
+        const out = composeThemeDesign({ ...defaults } as Record<string, unknown>, previous) as Record<string, unknown>;
+        THEME_PRESERVED_KEYS.filter((key) => key in defaults).forEach((key) => expect(out[key], key).toBe(previous[key]));
+    });
+
     it('sem anterior, parte do padrão do schema', () => {
         const out = composeThemeDesign({ primaryColor: '#abcdef' });
         expect(out.primaryColor).toBe('#abcdef');
@@ -85,10 +104,10 @@ describe('composeThemeDesign — a troca de tema nunca herda token do tema anter
         expect(userAdjusted.primaryColor).toBe('#123abc');
     });
 
-    it('mantém chave por chave a composição rc.3 dos 19 temas sem colorPalette', () => {
+    it('mantém chave por chave a composição rc.3 dos 25 temas sem colorPalette', () => {
         const defaultsWithoutPalette = { ...defaults } as Record<string, unknown>;
         delete defaultsWithoutPalette.colorPalette;
-        expect(SARAK_ALL_THEMES).toHaveLength(19);
+        expect(SARAK_ALL_THEMES).toHaveLength(25);
 
         SARAK_ALL_THEMES.forEach((embedded) => {
             const { colorPalette: _palette, ...withoutPalette } = embedded.design as Record<string, SarakTokenValue>;
@@ -140,33 +159,38 @@ describe('composeThemeDesign — o texto da paleta se corrige contra o fundo que
         expect(out.sidebarItemTextColor).toBe(palette.sidebarItemTextColor);
     });
 
-    it('tema embarcado com fundo próprio: só texto é movido contra o fundo declarado, e todo par passa', () => {
-        const textTokens = new Set(PAIRS.map((pair) => pair.fg.replace(/^(mix:|on:)/, '')));
-        const withPalette = SARAK_ALL_THEMES.filter((theme) => (theme.design as Record<string, unknown>).colorPalette);
-        expect(withPalette.length).toBeGreaterThan(0);
+    const textTokens = new Set(PAIRS.map((pair) => pair.fg.replace(/^(mix:|on:)/, '')));
+    const themeModeCases = SARAK_ALL_THEMES
+        .filter((theme) => (theme.design as Record<string, unknown>).colorPalette)
+        .flatMap((theme) => (['light', 'dark'] as const).map((mode) => [theme.id, mode, theme] as const));
 
-        withPalette.forEach((theme) => {
-            (['light', 'dark'] as const).forEach((mode) => {
-                const resolved = resolveThemeForMode({
-                    design: theme.design as Record<string, SarakTokenValue>,
-                    ...(theme.contraparte ? { contraparte: theme.contraparte } : {}),
-                }, mode) as Record<string, unknown>;
-                const input = parsePaletteValue(resolved.colorPalette)!;
-                // O tom das barras muda o fundo calculado e não é correção de texto: a referência já o leva.
-                const alone = resolvePalette(input, mode, { sidebarTone: resolved.sidebarTone, topbarTone: resolved.topbarTone });
-                const withDeclared = resolvePalette(input, mode, resolved);
-                const moved = Object.keys(alone).filter((tokenId) => resolved[tokenId] === undefined && withDeclared[tokenId] !== alone[tokenId]);
+    it('há tema embarcado com fundo próprio para conferir', () => {
+        expect(themeModeCases.length).toBeGreaterThan(0);
+        expect(themeModeCases.some(([id, mode]) => id === 'neo-brutalism' && mode === 'light')).toBe(true);
+    });
 
-                // Fora o texto, só o véu de hover/ativo de uma barra de papel contrastante acompanha o fundo que o tema fixou.
-                const contrasting = (['sidebar', 'topbar'] as const).filter((bar) => ['primary', 'secondary', 'inverse'].includes(String(resolved[`${bar}Tone`])));
-                const veilTokens = new Set(contrasting.flatMap((bar) => [`${bar}HoverColor`, `${bar}ActiveColor`]));
-                moved.forEach((tokenId) => expect(textTokens.has(tokenId) || veilTokens.has(tokenId), `${theme.id}/${mode}/${tokenId} não é texto nem véu da barra`).toBe(true));
-                const design = { ...sarakGetDefaultDesignState(), ...withDeclared, ...resolved } as never;
-                pairsFor(design as unknown as Record<string, unknown>).forEach((pair) => {
-                    const result = evaluatePair(pair, design);
-                    if (!result.pulado) expect(result.pass, `${theme.id}/${mode} ${pair.fg} → ${pair.bgChain.join(' → ')}`).toBe(true);
-                });
-            });
+    it.each(themeModeCases)('tema embarcado com fundo próprio (%s, %s): só texto é movido contra o fundo declarado, e todo par passa', (_id, mode, theme) => {
+        const resolved = resolveThemeForMode({
+            design: theme.design as Record<string, SarakTokenValue>,
+            ...(theme.contraparte ? { contraparte: theme.contraparte } : {}),
+        }, mode) as Record<string, unknown>;
+        const input = parsePaletteValue(resolved.colorPalette)!;
+        // O tom das barras muda o fundo calculado e não é correção de texto: a referência já o leva.
+        const alone = resolvePalette(input, mode, { sidebarTone: resolved.sidebarTone, topbarTone: resolved.topbarTone });
+        const withDeclared = resolvePalette(input, mode, resolved);
+        const moved = Object.keys(alone).filter((tokenId) => resolved[tokenId] === undefined && withDeclared[tokenId] !== alone[tokenId]);
+        if (theme.id === 'neo-brutalism' && mode === 'light') {
+            expect(moved, `${theme.id}/${mode}: o texto acompanha o fundo declarado`).toContain('sidebarItemTextColor');
+        }
+
+        // Fora o texto, só o véu de hover/ativo de uma barra de papel contrastante acompanha o fundo que o tema fixou.
+        const contrasting = (['sidebar', 'topbar'] as const).filter((bar) => ['primary', 'secondary', 'inverse'].includes(String(resolved[`${bar}Tone`])));
+        const veilTokens = new Set(contrasting.flatMap((bar) => [`${bar}HoverColor`, `${bar}ActiveColor`]));
+        moved.forEach((tokenId) => expect(textTokens.has(tokenId) || veilTokens.has(tokenId), `${theme.id}/${mode}/${tokenId} não é texto nem véu da barra`).toBe(true));
+        const design = { ...sarakGetDefaultDesignState(), ...withDeclared, ...resolved } as never;
+        pairsFor(design as unknown as Record<string, unknown>).forEach((pair) => {
+            const result = evaluatePair(pair, design);
+            if (!result.pulado) expect(result.pass, `${theme.id}/${mode} ${pair.fg} → ${pair.bgChain.join(' → ')}`).toBe(true);
         });
     });
 });

@@ -193,26 +193,54 @@ export const namesFromFileExports = (file) => {
  *
  * A regra virou VARREDURA RECURSIVA NÃO, de propósito: recursão publicaria
  * exatamente as peças `Impl` que a fronteira lazy existe para esconder.
- * `collectFromCategoryRoot.test.mjs` prova as duas metades com fixture: um
- * componente na raiz é coletado, um componente idêntico numa subpasta não é
- * — a mesma função, dois lugares, dois resultados, por design.
+ *
+ * **Subpasta COM barril próprio (`<Sub>/index.ts`) é módulo de componente** —
+ * `SarakCarousel/`, `SarakPDFViewer/`, `SarakDataTable/` — e o que o barril
+ * DELA exporta como valor entra na fonte, quer o barril da categoria o
+ * re-exporte, quer não. Antes, em categoria com barril, a fonte era só o
+ * barril da categoria: esquecer o `export * from './SarakCarousel'` tirava o
+ * componente da fonte e o `barrel:check` fechava verde sem ele. Ler o barril
+ * da subpasta, e não os arquivos dela, mantém a fronteira lazy: ele exporta o
+ * `lazy()`, nunca a `Impl`. Subpasta SEM barril (`internal/`, `hooks/`,
+ * `Layout/chrome/`) segue privada.
+ *
+ * `scripts/__tests__/publicComponents.test.mjs` prova cada metade com fixture:
+ * componente na raiz é coletado; subpasta sem barril não é; subpasta com
+ * barril é, mesmo esquecida pelo barril da categoria, e só pelo que o barril
+ * dela exporta.
  *
  * Consequência para quem escreve componente novo: se ele é consumidor-facing,
- * o arquivo mora na raiz da categoria (ou a categoria ganha um barril próprio
- * que o re-exporte por `export *`). Subpasta é, por definição, implementação.
+ * o arquivo mora na raiz da categoria ou numa subpasta com `index.ts` próprio.
+ * Subpasta sem barril é, por definição, implementação.
  * -------------------------------------------------------------------------
  */
+const findIndexFile = (dir) =>
+    ['index.ts', 'index.tsx'].map((f) => path.join(dir, f)).find((f) => fs.existsSync(f));
+
+const addValueNamesOf = (indexFile, names) => {
+    for (const n of collectExportedValueNames(indexFile)) {
+        if (/^[A-Z]/.test(n)) names.add(n);
+    }
+};
+
+/** Valores que o barril de cada subpasta de `dir` exporta — só das subpastas que TÊM barril. */
+export const collectFromSubfolderBarrels = (dir, names) => {
+    for (const entry of fs.readdirSync(dir)) {
+        const sub = path.join(dir, entry);
+        if (!fs.statSync(sub).isDirectory() || NON_CATEGORY_DIRS.has(entry)) continue;
+        const indexFile = findIndexFile(sub);
+        if (indexFile) addValueNamesOf(indexFile, names);
+    }
+};
+
 export const collectFromCategoryRoot = (root, names) => {
     for (const category of fs.readdirSync(root)) {
         const dir = path.join(root, category);
         if (!fs.statSync(dir).isDirectory() || NON_CATEGORY_DIRS.has(category)) continue;
-        const indexFile = ['index.ts', 'index.tsx']
-            .map((f) => path.join(dir, f))
-            .find((f) => fs.existsSync(f));
+        collectFromSubfolderBarrels(dir, names);
+        const indexFile = findIndexFile(dir);
         if (indexFile) {
-            for (const n of collectExportedValueNames(indexFile)) {
-                if (/^[A-Z]/.test(n)) names.add(n);
-            }
+            addValueNamesOf(indexFile, names);
         } else {
             for (const entry of fs.readdirSync(dir)) {
                 const full = path.join(dir, entry);
@@ -227,7 +255,7 @@ export const collectFromCategoryRoot = (root, names) => {
 /**
  * Nomes públicos derivados do código-fonte: as duas raízes por categoria
  * (`components/atomic/` e `components/engines/`) mais `components/Layout/`, que não
- * tem categorias e varre os `.tsx` de raiz.
+ * tem categorias e varre os `.tsx` de raiz e as subpastas com barril próprio.
  *
  * `engines/` entrou no escopo em P26 (decisão D2). Antes disso o gate varria menos do
  * que a regra exigia, e 3 dos 4 engines viviam fora do barril público sem que nada
@@ -240,6 +268,7 @@ export const collectPublicComponentNames = () => {
     if (fs.existsSync(ENGINES_ROOT)) collectFromCategoryRoot(ENGINES_ROOT, names);
 
     if (fs.existsSync(LAYOUT_ROOT)) {
+        collectFromSubfolderBarrels(LAYOUT_ROOT, names);
         for (const entry of fs.readdirSync(LAYOUT_ROOT)) {
             const full = path.join(LAYOUT_ROOT, entry);
             if (entry.endsWith('.tsx') && fs.statSync(full).isFile()) {

@@ -2,7 +2,7 @@ import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OptionTile } from '../OptionTile';
-import { canPeekHere, PEEK_DELAY_MS } from '../peek';
+import { canPeekHere, PEEK_DELAY_MS, usePeekHandlers } from '../peek';
 
 const stubTouch = (touchOnly: boolean) => {
     window.matchMedia = vi.fn().mockImplementation((query: string) => ({
@@ -90,5 +90,61 @@ describe('espiada de uma opção', () => {
 
         fireEvent.click(option);
         expect(onApply).toHaveBeenCalledTimes(1);
+    });
+
+    describe('tema que ainda vai chegar (promessa)', () => {
+        const renderAsync = (promise: Promise<Record<string, unknown> | null>) => {
+            const onPeek = vi.fn();
+            render(<OptionTile name="Assíncrona" onApply={() => {}} peekTokens={() => promise} onPeek={onPeek}><span /></OptionTile>);
+            return { onPeek, tile: screen.getByRole('button', { name: 'Assíncrona' }).parentElement! };
+        };
+
+        it('compõe os tokens quando chegam e o mouse ainda está na opção', async () => {
+            const { onPeek, tile } = renderAsync(Promise.resolve({ primaryColor: '#00ff00' }));
+            fireEvent.mouseEnter(tile);
+            await act(async () => { vi.advanceTimersByTime(PEEK_DELAY_MS); });
+            expect(onPeek).toHaveBeenCalledWith({ primaryColor: '#00ff00' });
+        });
+
+        it('sair antes de chegar não aplica nada', async () => {
+            let arrive: (tokens: Record<string, unknown>) => void = () => {};
+            const { onPeek, tile } = renderAsync(new Promise((resolve) => { arrive = resolve; }));
+            fireEvent.mouseEnter(tile);
+            await act(async () => { vi.advanceTimersByTime(PEEK_DELAY_MS); });
+            fireEvent.mouseLeave(tile);
+            await act(async () => { arrive({ primaryColor: '#00ff00' }); });
+            expect(onPeek).not.toHaveBeenCalled();
+        });
+
+        it('promessa que falha deixa a prévia como está', async () => {
+            const { onPeek, tile } = renderAsync(Promise.reject(new Error('sem rede')));
+            fireEvent.mouseEnter(tile);
+            await act(async () => { vi.advanceTimersByTime(PEEK_DELAY_MS); });
+            expect(onPeek).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('elemento que nasce sob o ponteiro', () => {
+        const Born: React.FC<{ onPeek: () => void }> = ({ onPeek }) => {
+            const root = React.useRef<HTMLButtonElement>(null);
+            const handlers = usePeekHandlers(onPeek, () => ({ primaryColor: '#abcdef' }), root);
+            return <button ref={root} {...handlers}>nasceu</button>;
+        };
+
+        it('espia sem novo movimento do mouse quando já está sob o ponteiro', () => {
+            const matches = vi.spyOn(HTMLElement.prototype, 'matches').mockImplementation((selector: string) => selector === ':hover');
+            const onPeek = vi.fn();
+            render(<Born onPeek={onPeek} />);
+            act(() => { vi.advanceTimersByTime(PEEK_DELAY_MS); });
+            expect(onPeek).toHaveBeenCalledWith({ primaryColor: '#abcdef' });
+            matches.mockRestore();
+        });
+
+        it('fora do ponteiro não espia', () => {
+            const onPeek = vi.fn();
+            render(<Born onPeek={onPeek} />);
+            act(() => { vi.advanceTimersByTime(PEEK_DELAY_MS * 2); });
+            expect(onPeek).not.toHaveBeenCalled();
+        });
     });
 });

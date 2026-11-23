@@ -13,10 +13,16 @@ vi.mock('framer-motion', async () => {
 });
 
 describe('AtmosphereCatalog', () => {
-    it('renderiza as abas de mídia/textura do catálogo', () => {
+    it('renderiza as atmosferas sem abas, com a opacidade', () => {
         const { container } = render(<AtmosphereCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
-        expect(screen.getByText('Atmosferas')).toBeInTheDocument();
-        expect(screen.getByText('Texturas')).toBeInTheDocument();
+        expect(screen.queryByText('Texturas')).toBeNull();
+        expect(screen.getByText('Opacidade')).toBeInTheDocument();
         expect(container).toMatchSnapshot();
+    });
+
+    it('a textura do fundo é um grupo à parte: a mesma tela, com as texturas e sem aba', () => {
+        const { container } = render(<AtmosphereCatalog onApplyPreset={vi.fn()} currentMode="dark" section="textures" />);
+        expect(container.querySelector('[data-preset-group="textures"]')).not.toBeNull();
+        expect(screen.queryByRole('button', { name: /^Texturas$/ })).toBeNull();
     });
 });

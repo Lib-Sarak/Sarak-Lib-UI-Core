@@ -1,8 +1,16 @@
 import type { SarakLibraryLanguage } from './catalog.types';
+import { CATALOG_PALETTE_PRESETS_MONOCHROMATIC } from './catalogEntries.palettePresetsMono';
+import { CATALOG_PALETTE_PRESETS_ANALOGOUS } from './catalogEntries.palettePresetsAnalogous';
+import { CATALOG_PALETTE_PRESETS_COMPLEMENTARY } from './catalogEntries.palettePresetsComplementary';
+import { CATALOG_PALETTE_PRESETS_SPLIT_COMPLEMENTARY } from './catalogEntries.palettePresetsSplit';
+import { CATALOG_PALETTE_PRESETS_TRIADIC } from './catalogEntries.palettePresetsTriadic';
 
 type LibraryTextEntry = Record<SarakLibraryLanguage, string>;
 
-/** Nomes dos tipos de harmonia oferecidos pelo motor de paletas. */
+/**
+ * Nomes dos tipos de harmonia oferecidos pelo motor de paletas e das 19 paletas prontas de origem. As demais paletas prontas ficam
+ * em `catalogEntries.palettePresets<Tipo>.ts`, um arquivo por tipo de harmonia, para cada arquivo caber no teto de linhas.
+ */
 export const CATALOG_PALETTE = {
     paletteTypeMonochromatic: {
         pt: 'Monocromática', en: 'Monochromatic', es: 'Monocromática',
@@ -35,6 +43,26 @@ export const CATALOG_PALETTE = {
         fr: 'Choisissez une palette prête ou créez-en une à partir d’une couleur. Elle reste un brouillon jusqu’à l’application.',
         de: 'Wählen Sie eine fertige Palette oder erstellen Sie eine aus einer Farbe. Sie bleibt ein Entwurf, bis Sie anwenden.',
         it: 'Scegli una tavolozza pronta o creane una da un colore. Resta una bozza finché non applichi.',
+    },
+    paletteKeepLabel: {
+        pt: 'Manter minha paleta', en: 'Keep my palette', es: 'Mantener mi paleta',
+        fr: 'Garder ma palette', de: 'Meine Palette behalten', it: 'Mantieni la mia tavolozza',
+    },
+    paletteKeepOff: {
+        pt: 'Desligado: escolher um tema aplica as cores dele.',
+        en: 'Off: choosing a theme applies its own colors.',
+        es: 'Desactivado: elegir un tema aplica los colores de ese tema.',
+        fr: 'Désactivé : choisir un thème applique ses propres couleurs.',
+        de: 'Aus: Die Wahl eines Themas wendet dessen eigene Farben an.',
+        it: 'Disattivato: scegliere un tema applica i suoi colori.',
+    },
+    paletteKeepOn: {
+        pt: 'A paleta escolhida vale por cima do tema, inclusive das cores que o tema declara. Desligar volta às cores do tema.',
+        en: 'The chosen palette applies on top of the theme, including the colors the theme declares. Turning it off returns to the theme colors.',
+        es: 'La paleta elegida se aplica sobre el tema, incluidos los colores que el tema declara. Al desactivarla vuelven los colores del tema.',
+        fr: 'La palette choisie s’applique par-dessus le thème, y compris les couleurs que le thème déclare. La désactiver rétablit les couleurs du thème.',
+        de: 'Die gewählte Palette gilt über dem Thema, auch über den Farben, die das Thema festlegt. Ausschalten stellt die Themenfarben wieder her.',
+        it: 'La tavolozza scelta vale sopra il tema, anche sui colori che il tema dichiara. Disattivarla ripristina i colori del tema.',
     },
     paletteGalleryLabel: {
         pt: 'Paletas prontas', en: 'Ready-made palettes', es: 'Paletas listas',
@@ -201,4 +229,9 @@ export const CATALOG_PALETTE = {
         pt: 'Tinta e vinho', en: 'Ink and wine', es: 'Tinta y vino',
         fr: 'Encre et vin', de: 'Tinte und Wein', it: 'Inchiostro e vino',
     },
+    ...CATALOG_PALETTE_PRESETS_MONOCHROMATIC,
+    ...CATALOG_PALETTE_PRESETS_ANALOGOUS,
+    ...CATALOG_PALETTE_PRESETS_COMPLEMENTARY,
+    ...CATALOG_PALETTE_PRESETS_SPLIT_COMPLEMENTARY,
+    ...CATALOG_PALETTE_PRESETS_TRIADIC,
 } satisfies Record<string, LibraryTextEntry>;

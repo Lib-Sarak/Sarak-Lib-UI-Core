@@ -29,6 +29,7 @@ export type {
     SarakBrandingState,
 } from './core/Provider/types';
 export type { SarakUIProviderProps } from './core/Provider/providerProps';
+export type { SarakDesignFormat, SarakSavedDesign } from './core/Provider/designFormatTypes';
 export type { SarakFontSource, SarakFontsOption, SarakFontsOptions } from './core/Provider/providerProps';
 export type { SarakCustomFont, SarakCustomFontFile, SarakFontFallback } from './core/Provider/providerProps';
 // Preferências do usuário como camada separada do tema — sobreposta ao
@@ -107,7 +108,7 @@ export type {
 export { SARAK_THEME_AXES, sarakFindMissingThemeAxes, sarakWarnOnIncompleteTheme } from './core/Design/utils/themeAxes';
 // Painel do Design Engine atrás de fronteira lazy (o índice declara o `React.lazy` e o
 // `Suspense` interno) — ele arrasta o Design Engine inteiro e não pode sair eager do barril.
-export { SarakCustomizationPanel } from './features/DesignEngine/Library/CustomizationPanel';
+export { SarakCustomizationPanel, type SarakCustomizationPanelProps, type SarakPanelLeaveControl } from './features/DesignEngine/Library/CustomizationPanel';
 export * from './components/atomic/Atoms';
 export { SarakValue } from './components/atomic/Atoms/SarakValue';
 export type { SarakValueProps } from './components/atomic/Atoms/SarakValue';

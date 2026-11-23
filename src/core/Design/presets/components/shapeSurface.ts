@@ -14,7 +14,7 @@ export const SHADOW_PRESETS: ComponentPreset[] = [
         name: 'Suave',
         description: 'Sombra leve e espalhada, só para descolar os blocos do fundo.',
         keywords: ['suave', 'soft', 'leve', 'discreta'],
-        design: { shadowIntensity: 0.4, layeredShadows: 1, shadowColorMode: 'neutral', shadowProjectionBlur: 36, shadowProjectionAlpha: 0.15, shadowAmbientAlpha: 0.3 },
+        design: { shadowIntensity: 0.8, layeredShadows: 1, shadowColorMode: 'neutral', shadowProjectionBlur: 56, shadowProjectionAlpha: 0.4, shadowAmbientAlpha: 0.55 },
     },
     {
         id: 'shadow-defined',

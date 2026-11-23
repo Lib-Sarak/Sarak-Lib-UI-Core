@@ -44,7 +44,7 @@ O escopo são **duas raízes organizadas por categoria** — `src/components/ato
 
 > **`engines/` entrou no escopo em P26** (decisão D2). Até ali o gate varria menos do que a regra R14 exigia, e três dos quatro engines viviam fora do barril público sem que nada acendesse. Ver §8.
 
-> ⚠️ **Limitação conhecida, escrita no próprio código (`:167-172`): categoria SEM barril só tem a RAIZ varrida.** Um componente colocado em subpasta **escapa do gate** e do catálogo. Isso é usado deliberadamente em alguns casos — as peças internas do cromo vivem em `Layout/chrome/` justamente para não virarem peça de barril — mas é uma faca de dois lados: um componente público esquecido numa subpasta passa em silêncio.
+> ⚠️ **Limitação conhecida, escrita no próprio código (`scripts/publicComponents.mjs` e o cabeçalho de `check-barrel-parity.mjs`): subpasta só entra se tiver barril próprio (`<Sub>/index.ts`).** A subpasta com barril entra pelo que esse barril exporta (a `lazy()`, nunca a `Impl`), mesmo que o barril da categoria a esqueça. Um componente em subpasta **sem** barril **escapa do gate** e do catálogo. Isso é usado deliberadamente — as peças internas do cromo vivem em `Layout/chrome/` justamente para não virarem peça de barril —, mas um componente público largado numa subpasta sem barril passa em silêncio.
 
 ## 3.1 Onde o componente MORA decide o que os gates enxergam
 
@@ -584,6 +584,18 @@ barril**, só para gates e testes. Travadas por `theme-boot:check` (fonte e `dis
 biblioteca, e só o chunk `SarakKanbanImpl-*.js` a importa. O `Suspense` é interno e direto, sem o
 `LazyEngineWrapper` — o wrapper exige Provider, e o quadro renderiza sem ele (R34). A lógica pura
 (`sarakMoveCard`) fica fora da fronteira e é exportada.
+
+## 7.2 O subpath `./eslint` e o `verify`
+
+O plugin do kit de verificação ([[12-kit-do-consumidor]] §2.5) é uma entrada de pacote separada: `exports["./eslint"]` aponta para
+`dist/eslint.js`, `.cjs` e `.d.ts`, gerados por `src/eslint.ts` no `build:js`. O `src/verify.ts` é a outra entrada do `tsup`, e só a CLI
+`sarak-ui verify` a carrega (`bin/sarak-ui.mjs` importa `dist/verify.js`): ela **não** é subpath público.
+
+- **Fora do boot.** Nenhuma das duas entra no `dist/index.js` nem no fecho estático dele; quem não as importa não as paga. O
+  `boot:measure` e o cenário do `test:optional-peers` conferem a cada release.
+- **`eslint` é peer opcional** (`>=9.0.0`, config plana): quem não o instala não vê erro nem aviso.
+- **O plugin não importa tipo da lib.** Tipo da lib num arquivo de entrada novo faz o build mover o tipo do barril para um `.d.ts`
+  compartilhado e esvazia o `dist/index.d.ts` (o mesmo vale para o `testing`); só `npm run build` completo acusa.
 
 # 8. Dívidas nomeadas — as duas ondas de limpeza
 

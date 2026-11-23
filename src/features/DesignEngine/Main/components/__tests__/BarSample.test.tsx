@@ -33,17 +33,23 @@ describe('BarSample', () => {
     it('a amostra segue o rascunho: a posição da marca na base muda o lugar dela', () => {
         const top = renderSample({ sidebarLogoPlacement: 'top' });
         expect(top.container.querySelector('[data-sarak-sidebar-header] .sarak-chrome-brand')).not.toBeNull();
-        top.unmount();
-        const bottom = renderSample({ sidebarLogoPlacement: 'bottom' });
-        expect(bottom.container.querySelector('[data-sarak-sidebar-header] .sarak-chrome-brand')).toBeNull();
-        expect(bottom.container.querySelector('[data-sarak-sidebar-footer] .sarak-chrome-brand')).not.toBeNull();
+        top.rerender(
+            <SarakUIProvider>
+                <BarSample draft={{ sidebarLogoPlacement: 'bottom' } as unknown as SarakDesignState} mode="light" />
+            </SarakUIProvider>,
+        );
+        expect(top.container.querySelector('[data-sarak-sidebar-header] .sarak-chrome-brand')).toBeNull();
+        expect(top.container.querySelector('[data-sarak-sidebar-footer] .sarak-chrome-brand')).not.toBeNull();
     });
 
     it('a amostra segue o rascunho: a alça de largura aparece com sidebarResizable', () => {
         const off = renderSample({});
         expect(off.container.querySelector('[role="separator"]')).toBeNull();
-        off.unmount();
-        const on = renderSample({ sidebarResizable: true });
-        expect(on.container.querySelector('[role="separator"]')).not.toBeNull();
+        off.rerender(
+            <SarakUIProvider>
+                <BarSample draft={{ sidebarResizable: true } as unknown as SarakDesignState} mode="light" />
+            </SarakUIProvider>,
+        );
+        expect(off.container.querySelector('[role="separator"]')).not.toBeNull();
     });
 });

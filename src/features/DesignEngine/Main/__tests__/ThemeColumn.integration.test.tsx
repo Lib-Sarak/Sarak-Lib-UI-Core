@@ -57,7 +57,7 @@ describe('coluna de decisões — só pelo teclado, do início ao "Aplicar"', ()
 
         const apply = screen.getByRole('button', { name: 'Aplicar' });
         expect(apply).toBeDisabled();
-        await tabUntil(user, () => (document.activeElement as HTMLElement | null)?.closest('[data-option-group="fonts"]') !== null && document.activeElement?.tagName === 'BUTTON');
+        await tabUntil(user, () => (document.activeElement as HTMLElement | null)?.closest('[data-option-group] [data-option-tile]') !== null && document.activeElement?.tagName === 'BUTTON');
         await user.keyboard('{Enter}');
         await waitFor(() => expect(apply).toBeEnabled());
 

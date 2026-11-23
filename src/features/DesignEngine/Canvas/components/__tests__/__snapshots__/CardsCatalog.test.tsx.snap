@@ -1,589 +1,1073 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] = `
+exports[`CardsCatalog > renderiza os cards curados por padrão, sem abas, e faz snapshot 1`] = `
 <div>
   <div
     class="flex flex-col gap-6"
   >
     <div
-      class="flex items-center gap-2 p-1 bg-theme-body/20 rounded-xl border border-theme-border w-fit"
-    >
-      <button
-        class="px-4 py-2 rounded-lg text-[length:var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 bg-theme-primary text-theme-on-primary shadow-lg"
-      >
-        <svg
-          class="lucide lucide-sparkles"
-          fill="none"
-          height="12"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          viewBox="0 0 24 24"
-          width="12"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
-          />
-          <path
-            d="M5 3v4"
-          />
-          <path
-            d="M19 17v4"
-          />
-          <path
-            d="M3 5h4"
-          />
-          <path
-            d="M17 19h4"
-          />
-        </svg>
-        Curados
-      </button>
-      <button
-        class="px-4 py-2 rounded-lg text-[length:var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 text-theme-muted hover:text-theme-text hover:bg-theme-text/5"
-      >
-        <svg
-          class="lucide lucide-grid3x3"
-          fill="none"
-          height="12"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          viewBox="0 0 24 24"
-          width="12"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <rect
-            height="18"
-            rx="2"
-            width="18"
-            x="3"
-            y="3"
-          />
-          <path
-            d="M3 9h18"
-          />
-          <path
-            d="M3 15h18"
-          />
-          <path
-            d="M9 3v18"
-          />
-          <path
-            d="M15 3v18"
-          />
-        </svg>
-        Texturas
-      </button>
-    </div>
-    <div
-      class="flex flex-col gap-4"
+      class="flex flex-col gap-3"
       data-preset-group="cards"
     >
       <div
         class="flex flex-col gap-3"
       >
         <div
-          class="grid grid-cols-1 @min-[768px]:grid-cols-2 gap-6"
+          class="grid grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))] gap-3"
         >
           <div
-            class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
             data-option-tile=""
+            title="Vidro translúcido com desfoque leve e borda quase invisível."
           >
             <div
               aria-hidden="true"
               class="pointer-events-none"
             >
               <div
-                class="min-h-48"
-                data-sx-lazy="shown"
+                class="relative w-full overflow-hidden"
+                data-option-sample=""
+                style="aspect-ratio: 300 / 240;"
               >
                 <div
-                  class="sarak-design-scope sarak-scope-r0 dark flex items-center justify-center p-6"
-                  style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
+                  class="absolute left-0 top-0 flex origin-top-left flex-col [&>*:not([data-testid=bar-sample])]:h-full [&_[data-sx-lazy]]:h-full [&_[data-sx-lazy]>*]:flex [&_[data-sx-lazy]>*]:min-h-full [&_[data-sx-lazy]>*]:flex-col [&_[data-sx-lazy]>*]:justify-center"
+                  style="width: 300px; height: 240px; transform: scale(0.5);"
                 >
                   <div
-                    class="w-full"
-                    style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
+                    class="min-h-48"
+                    data-sx-lazy="shown"
                   >
                     <div
-                      class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
+                      class="sarak-design-scope sarak-scope-r0 dark flex items-center justify-center p-6"
+                      style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
                     >
-                      <header
-                        class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)]"
-                      >
-                        <h3
-                          data-testid="sample-card-title"
-                        >
-                          Receita do mês
-                        </h3>
-                      </header>
                       <div
-                        class=""
+                        class="relative w-full"
+                        style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
                       >
-                        <p
-                          class="text-2xl font-bold"
-                          data-testid="sample-card-value"
+                        <div
+                          class="flex flex-col sarak-card group transition-all relative overflow-hidden "
+                          data-border-beam="0"
+                          data-spotlight="0"
+                          data-sx-card-interactive="true"
+                          data-sx-card-texture-type="none"
+                          style="transition-duration: var(--duration-normal, 0.3s); padding: var(--sarak-card-padding-md, 24px);"
                         >
-                          R$ 12.480,00
-                        </p>
-                      </div>
-                      <footer
-                        class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)] py-[var(--sarak-card-header-padding,12px)]"
-                      >
-                        <span
-                          class="inline-flex"
-                        >
-                          <button
-                            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
-                            tabindex="-1"
+                          <div
+                            class="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-[var(--duration-slow,0.6s)]"
+                          />
+                          <div
+                            class="border-beam-effect"
+                          />
+                          <div
+                            class="relative z-10 flex flex-1 w-full flex-col h-full justify-between items-start text-left"
                           >
-                            <span>
-                              Ver detalhes
-                            </span>
-                          </button>
-                        </span>
-                      </footer>
+                            <div
+                              class="flex w-full mb-4 justify-between items-start"
+                            >
+                              <div
+                                class="flex flex-1 min-w-0"
+                                style="flex-direction: column; padding-right: var(--sarak-layout-gap-sm, 8px);"
+                              >
+                                <span
+                                  class="font-black text-[var(--sarak-subtitle-color,var(--sarak-text-sec,rgba(242,246,251,0.72)))] uppercase"
+                                  data-contrast-part="subtitle"
+                                  style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 11px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
+                                >
+                                  Node-04-PR
+                                </span>
+                                <h4
+                                  class="text-[var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb))] group-hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_60%,var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb)))] tracking-tight transition-colors truncate"
+                                  data-contrast-part="title"
+                                  style="font-size: var(--sarak-card-title-font-size, 20px); font-weight: var(--sarak-card-title-font-weight, 900); letter-spacing: var(--sarak-card-title-letter-spacing, 0px);"
+                                >
+                                  CPU Cluster
+                                </h4>
+                              </div>
+                              <div
+                                class="bg-[var(--color-theme-card,#101622)] border-[var(--border-color,rgba(255,255,255,0.09))] flex items-center justify-center relative shrink-0 transition-all group-hover:border-[var(--sarak-primary-color,#19e3f0)]"
+                                style="padding: calc(var(--sarak-layout-gap-md, 16px) * 0.75); border-radius: var(--sarak-card-radius,10px); box-shadow: 0 0 var(--sarak-card-title-icon-glow-blur, 15px) var(--sarak-card-title-icon-glow, rgba(25,227,240,0.22));"
+                              >
+                                <svg
+                                  class="text-[var(--sarak-primary-color,#19e3f0)] group-hover:scale-110 transition-transform"
+                                  fill="none"
+                                  height="18"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  viewBox="0 0 24 24"
+                                  width="18"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <rect
+                                    height="16"
+                                    rx="2"
+                                    width="16"
+                                    x="4"
+                                    y="4"
+                                  />
+                                  <rect
+                                    height="6"
+                                    width="6"
+                                    x="9"
+                                    y="9"
+                                  />
+                                  <path
+                                    d="M15 2v2"
+                                  />
+                                  <path
+                                    d="M15 20v2"
+                                  />
+                                  <path
+                                    d="M2 15h2"
+                                  />
+                                  <path
+                                    d="M2 9h2"
+                                  />
+                                  <path
+                                    d="M20 15h2"
+                                  />
+                                  <path
+                                    d="M20 9h2"
+                                  />
+                                  <path
+                                    d="M9 2v2"
+                                  />
+                                  <path
+                                    d="M9 20v2"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                            <div
+                              class="flex gap-2 w-full mt-auto justify-start"
+                            >
+                              <div
+                                class="flex w-full"
+                                style="flex-direction: column; gap: calc(var(--sarak-layout-gap-md, 16px) * 0.75);"
+                              >
+                                <div
+                                  class="flex items-center justify-between text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))] tracking-wider"
+                                >
+                                  <span>
+                                    Contexto
+                                  </span>
+                                  <span
+                                    class="text-2xs font-mono text-[var(--text-muted,rgba(242,246,251,0.55))]"
+                                  >
+                                    42k
+                                     tokens
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             <div
-              class="flex flex-col gap-1 border-t border-theme-border p-3"
+              class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
             >
               <h3
-                class="text-sm font-bold uppercase tracking-wider text-theme-text"
+                class="break-words text-xs font-semibold leading-tight text-theme-text"
               >
                 Vidro mínimo
               </h3>
               <p
-                class="text-xs text-theme-muted"
+                class="sr-only"
               >
                 Vidro translúcido com desfoque leve e borda quase invisível.
               </p>
             </div>
             <button
               aria-label="Vidro mínimo"
-              class="absolute inset-0 p-0 rounded-2xl"
+              class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+              data-preset-id="card-glass-minimal"
               type="button"
             />
           </div>
           <div
-            class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
             data-option-tile=""
+            title="Cantos suaves, borda fina e nenhuma sombra: o card some e deixa o conteúdo falar."
           >
             <div
               aria-hidden="true"
               class="pointer-events-none"
             >
               <div
-                class="min-h-48"
-                data-sx-lazy="shown"
+                class="relative w-full overflow-hidden"
+                data-option-sample=""
+                style="aspect-ratio: 300 / 240;"
               >
                 <div
-                  class="sarak-design-scope sarak-scope-r1 dark flex items-center justify-center p-6"
-                  style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
+                  class="absolute left-0 top-0 flex origin-top-left flex-col [&>*:not([data-testid=bar-sample])]:h-full [&_[data-sx-lazy]]:h-full [&_[data-sx-lazy]>*]:flex [&_[data-sx-lazy]>*]:min-h-full [&_[data-sx-lazy]>*]:flex-col [&_[data-sx-lazy]>*]:justify-center"
+                  style="width: 300px; height: 240px; transform: scale(0.5);"
                 >
                   <div
-                    class="w-full"
-                    style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
+                    class="min-h-48"
+                    data-sx-lazy="shown"
                   >
                     <div
-                      class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
+                      class="sarak-design-scope sarak-scope-r1 dark flex items-center justify-center p-6"
+                      style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
                     >
-                      <header
-                        class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)]"
-                      >
-                        <h3
-                          data-testid="sample-card-title"
-                        >
-                          Receita do mês
-                        </h3>
-                      </header>
                       <div
-                        class=""
+                        class="relative w-full"
+                        style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
                       >
-                        <p
-                          class="text-2xl font-bold"
-                          data-testid="sample-card-value"
+                        <div
+                          class="flex flex-col sarak-card group transition-all relative overflow-hidden "
+                          data-border-beam="0"
+                          data-spotlight="0"
+                          data-sx-card-interactive="true"
+                          data-sx-card-texture-type="none"
+                          style="transition-duration: var(--duration-normal, 0.3s); padding: var(--sarak-card-padding-md, 24px);"
                         >
-                          R$ 12.480,00
-                        </p>
-                      </div>
-                      <footer
-                        class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)] py-[var(--sarak-card-header-padding,12px)]"
-                      >
-                        <span
-                          class="inline-flex"
-                        >
-                          <button
-                            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
-                            tabindex="-1"
+                          <div
+                            class="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-[var(--duration-slow,0.6s)]"
+                          />
+                          <div
+                            class="border-beam-effect"
+                          />
+                          <div
+                            class="relative z-10 flex flex-1 w-full flex-col h-full justify-between items-start text-left"
                           >
-                            <span>
-                              Ver detalhes
-                            </span>
-                          </button>
-                        </span>
-                      </footer>
+                            <div
+                              class="flex w-full mb-4 justify-between items-start"
+                            >
+                              <div
+                                class="flex flex-1 min-w-0"
+                                style="flex-direction: column; padding-right: var(--sarak-layout-gap-sm, 8px);"
+                              >
+                                <span
+                                  class="font-black text-[var(--sarak-subtitle-color,var(--sarak-text-sec,rgba(242,246,251,0.72)))] uppercase"
+                                  data-contrast-part="subtitle"
+                                  style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 11px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
+                                >
+                                  Node-04-PR
+                                </span>
+                                <h4
+                                  class="text-[var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb))] group-hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_60%,var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb)))] tracking-tight transition-colors truncate"
+                                  data-contrast-part="title"
+                                  style="font-size: var(--sarak-card-title-font-size, 20px); font-weight: var(--sarak-card-title-font-weight, 900); letter-spacing: var(--sarak-card-title-letter-spacing, 0px);"
+                                >
+                                  CPU Cluster
+                                </h4>
+                              </div>
+                              <div
+                                class="bg-[var(--color-theme-card,#101622)] border-[var(--border-color,rgba(255,255,255,0.09))] flex items-center justify-center relative shrink-0 transition-all group-hover:border-[var(--sarak-primary-color,#19e3f0)]"
+                                style="padding: calc(var(--sarak-layout-gap-md, 16px) * 0.75); border-radius: var(--sarak-card-radius,10px); box-shadow: 0 0 var(--sarak-card-title-icon-glow-blur, 15px) var(--sarak-card-title-icon-glow, rgba(25,227,240,0.22));"
+                              >
+                                <svg
+                                  class="text-[var(--sarak-primary-color,#19e3f0)] group-hover:scale-110 transition-transform"
+                                  fill="none"
+                                  height="18"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  viewBox="0 0 24 24"
+                                  width="18"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <rect
+                                    height="16"
+                                    rx="2"
+                                    width="16"
+                                    x="4"
+                                    y="4"
+                                  />
+                                  <rect
+                                    height="6"
+                                    width="6"
+                                    x="9"
+                                    y="9"
+                                  />
+                                  <path
+                                    d="M15 2v2"
+                                  />
+                                  <path
+                                    d="M15 20v2"
+                                  />
+                                  <path
+                                    d="M2 15h2"
+                                  />
+                                  <path
+                                    d="M2 9h2"
+                                  />
+                                  <path
+                                    d="M20 15h2"
+                                  />
+                                  <path
+                                    d="M20 9h2"
+                                  />
+                                  <path
+                                    d="M9 2v2"
+                                  />
+                                  <path
+                                    d="M9 20v2"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                            <div
+                              class="flex gap-2 w-full mt-auto justify-start"
+                            >
+                              <div
+                                class="flex w-full"
+                                style="flex-direction: column; gap: calc(var(--sarak-layout-gap-md, 16px) * 0.75);"
+                              >
+                                <div
+                                  class="flex items-center justify-between text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))] tracking-wider"
+                                >
+                                  <span>
+                                    Contexto
+                                  </span>
+                                  <span
+                                    class="text-2xs font-mono text-[var(--text-muted,rgba(242,246,251,0.55))]"
+                                  >
+                                    42k
+                                     tokens
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             <div
-              class="flex flex-col gap-1 border-t border-theme-border p-3"
+              class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
             >
               <h3
-                class="text-sm font-bold uppercase tracking-wider text-theme-text"
+                class="break-words text-xs font-semibold leading-tight text-theme-text"
               >
                 Plano e discreto
               </h3>
               <p
-                class="text-xs text-theme-muted"
+                class="sr-only"
               >
                 Cantos suaves, borda fina e nenhuma sombra: o card some e deixa o conteúdo falar.
               </p>
             </div>
             <button
               aria-label="Plano e discreto"
-              class="absolute inset-0 p-0 rounded-2xl"
+              class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+              data-preset-id="card-flat-minimal"
               type="button"
             />
           </div>
           <div
-            class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
             data-option-tile=""
+            title="Sem borda, cantos generosos e uma sombra longa e difusa que descola o card do fundo."
           >
             <div
               aria-hidden="true"
               class="pointer-events-none"
             >
               <div
-                class="min-h-48"
-                data-sx-lazy="shown"
+                class="relative w-full overflow-hidden"
+                data-option-sample=""
+                style="aspect-ratio: 300 / 240;"
               >
                 <div
-                  class="sarak-design-scope sarak-scope-r2 dark flex items-center justify-center p-6"
-                  style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
+                  class="absolute left-0 top-0 flex origin-top-left flex-col [&>*:not([data-testid=bar-sample])]:h-full [&_[data-sx-lazy]]:h-full [&_[data-sx-lazy]>*]:flex [&_[data-sx-lazy]>*]:min-h-full [&_[data-sx-lazy]>*]:flex-col [&_[data-sx-lazy]>*]:justify-center"
+                  style="width: 300px; height: 240px; transform: scale(0.5);"
                 >
                   <div
-                    class="w-full"
-                    style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
+                    class="min-h-48"
+                    data-sx-lazy="shown"
                   >
                     <div
-                      class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
+                      class="sarak-design-scope sarak-scope-r2 dark flex items-center justify-center p-6"
+                      style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
                     >
-                      <header
-                        class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)]"
-                      >
-                        <h3
-                          data-testid="sample-card-title"
-                        >
-                          Receita do mês
-                        </h3>
-                      </header>
                       <div
-                        class=""
+                        class="relative w-full"
+                        style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
                       >
-                        <p
-                          class="text-2xl font-bold"
-                          data-testid="sample-card-value"
+                        <div
+                          class="flex flex-col sarak-card group transition-all relative overflow-hidden "
+                          data-border-beam="0"
+                          data-spotlight="0"
+                          data-sx-card-interactive="true"
+                          data-sx-card-texture-type="none"
+                          style="transition-duration: var(--duration-normal, 0.3s); padding: var(--sarak-card-padding-md, 24px);"
                         >
-                          R$ 12.480,00
-                        </p>
-                      </div>
-                      <footer
-                        class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)] py-[var(--sarak-card-header-padding,12px)]"
-                      >
-                        <span
-                          class="inline-flex"
-                        >
-                          <button
-                            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
-                            tabindex="-1"
+                          <div
+                            class="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-[var(--duration-slow,0.6s)]"
+                          />
+                          <div
+                            class="border-beam-effect"
+                          />
+                          <div
+                            class="relative z-10 flex flex-1 w-full flex-col h-full justify-between items-start text-left"
                           >
-                            <span>
-                              Ver detalhes
-                            </span>
-                          </button>
-                        </span>
-                      </footer>
+                            <div
+                              class="flex w-full mb-4 justify-between items-start"
+                            >
+                              <div
+                                class="flex flex-1 min-w-0"
+                                style="flex-direction: column; padding-right: var(--sarak-layout-gap-sm, 8px);"
+                              >
+                                <span
+                                  class="font-black text-[var(--sarak-subtitle-color,var(--sarak-text-sec,rgba(242,246,251,0.72)))] uppercase"
+                                  data-contrast-part="subtitle"
+                                  style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 11px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
+                                >
+                                  Node-04-PR
+                                </span>
+                                <h4
+                                  class="text-[var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb))] group-hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_60%,var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb)))] tracking-tight transition-colors truncate"
+                                  data-contrast-part="title"
+                                  style="font-size: var(--sarak-card-title-font-size, 20px); font-weight: var(--sarak-card-title-font-weight, 900); letter-spacing: var(--sarak-card-title-letter-spacing, 0px);"
+                                >
+                                  CPU Cluster
+                                </h4>
+                              </div>
+                              <div
+                                class="bg-[var(--color-theme-card,#101622)] border-[var(--border-color,rgba(255,255,255,0.09))] flex items-center justify-center relative shrink-0 transition-all group-hover:border-[var(--sarak-primary-color,#19e3f0)]"
+                                style="padding: calc(var(--sarak-layout-gap-md, 16px) * 0.75); border-radius: var(--sarak-card-radius,10px); box-shadow: 0 0 var(--sarak-card-title-icon-glow-blur, 15px) var(--sarak-card-title-icon-glow, rgba(25,227,240,0.22));"
+                              >
+                                <svg
+                                  class="text-[var(--sarak-primary-color,#19e3f0)] group-hover:scale-110 transition-transform"
+                                  fill="none"
+                                  height="18"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  viewBox="0 0 24 24"
+                                  width="18"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <rect
+                                    height="16"
+                                    rx="2"
+                                    width="16"
+                                    x="4"
+                                    y="4"
+                                  />
+                                  <rect
+                                    height="6"
+                                    width="6"
+                                    x="9"
+                                    y="9"
+                                  />
+                                  <path
+                                    d="M15 2v2"
+                                  />
+                                  <path
+                                    d="M15 20v2"
+                                  />
+                                  <path
+                                    d="M2 15h2"
+                                  />
+                                  <path
+                                    d="M2 9h2"
+                                  />
+                                  <path
+                                    d="M20 15h2"
+                                  />
+                                  <path
+                                    d="M20 9h2"
+                                  />
+                                  <path
+                                    d="M9 2v2"
+                                  />
+                                  <path
+                                    d="M9 20v2"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                            <div
+                              class="flex gap-2 w-full mt-auto justify-start"
+                            >
+                              <div
+                                class="flex w-full"
+                                style="flex-direction: column; gap: calc(var(--sarak-layout-gap-md, 16px) * 0.75);"
+                              >
+                                <div
+                                  class="flex items-center justify-between text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))] tracking-wider"
+                                >
+                                  <span>
+                                    Contexto
+                                  </span>
+                                  <span
+                                    class="text-2xs font-mono text-[var(--text-muted,rgba(242,246,251,0.55))]"
+                                  >
+                                    42k
+                                     tokens
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             <div
-              class="flex flex-col gap-1 border-t border-theme-border p-3"
+              class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
             >
               <h3
-                class="text-sm font-bold uppercase tracking-wider text-theme-text"
+                class="break-words text-xs font-semibold leading-tight text-theme-text"
               >
                 Elevado e macio
               </h3>
               <p
-                class="text-xs text-theme-muted"
+                class="sr-only"
               >
                 Sem borda, cantos generosos e uma sombra longa e difusa que descola o card do fundo.
               </p>
             </div>
             <button
               aria-label="Elevado e macio"
-              class="absolute inset-0 p-0 rounded-2xl"
+              class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+              data-preset-id="card-soft-elevated"
               type="button"
             />
           </div>
           <div
-            class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
             data-option-tile=""
+            title="Cantos afiados, brilho neon forte e textura de grade técnica."
           >
             <div
               aria-hidden="true"
               class="pointer-events-none"
             >
               <div
-                class="min-h-48"
-                data-sx-lazy="shown"
+                class="relative w-full overflow-hidden"
+                data-option-sample=""
+                style="aspect-ratio: 300 / 240;"
               >
                 <div
-                  class="sarak-design-scope sarak-scope-r3 dark flex items-center justify-center p-6"
-                  style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
+                  class="absolute left-0 top-0 flex origin-top-left flex-col [&>*:not([data-testid=bar-sample])]:h-full [&_[data-sx-lazy]]:h-full [&_[data-sx-lazy]>*]:flex [&_[data-sx-lazy]>*]:min-h-full [&_[data-sx-lazy]>*]:flex-col [&_[data-sx-lazy]>*]:justify-center"
+                  style="width: 300px; height: 240px; transform: scale(0.5);"
                 >
                   <div
-                    class="w-full"
-                    style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
+                    class="min-h-48"
+                    data-sx-lazy="shown"
                   >
                     <div
-                      class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
+                      class="sarak-design-scope sarak-scope-r3 dark flex items-center justify-center p-6"
+                      style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
                     >
-                      <header
-                        class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)]"
-                      >
-                        <h3
-                          data-testid="sample-card-title"
-                        >
-                          Receita do mês
-                        </h3>
-                      </header>
                       <div
-                        class=""
+                        class="relative w-full"
+                        style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
                       >
-                        <p
-                          class="text-2xl font-bold"
-                          data-testid="sample-card-value"
+                        <div
+                          class="flex flex-col sarak-card group transition-all relative overflow-hidden "
+                          data-border-beam="0"
+                          data-spotlight="0"
+                          data-sx-card-interactive="true"
+                          data-sx-card-texture-type="none"
+                          style="transition-duration: var(--duration-normal, 0.3s); padding: var(--sarak-card-padding-md, 24px);"
                         >
-                          R$ 12.480,00
-                        </p>
-                      </div>
-                      <footer
-                        class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)] py-[var(--sarak-card-header-padding,12px)]"
-                      >
-                        <span
-                          class="inline-flex"
-                        >
-                          <button
-                            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
-                            tabindex="-1"
+                          <div
+                            class="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-[var(--duration-slow,0.6s)]"
+                          />
+                          <div
+                            class="border-beam-effect"
+                          />
+                          <div
+                            class="relative z-10 flex flex-1 w-full flex-col h-full justify-between items-start text-left"
                           >
-                            <span>
-                              Ver detalhes
-                            </span>
-                          </button>
-                        </span>
-                      </footer>
+                            <div
+                              class="flex w-full mb-4 justify-between items-start"
+                            >
+                              <div
+                                class="flex flex-1 min-w-0"
+                                style="flex-direction: column; padding-right: var(--sarak-layout-gap-sm, 8px);"
+                              >
+                                <span
+                                  class="font-black text-[var(--sarak-subtitle-color,var(--sarak-text-sec,rgba(242,246,251,0.72)))] uppercase"
+                                  data-contrast-part="subtitle"
+                                  style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 11px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
+                                >
+                                  Node-04-PR
+                                </span>
+                                <h4
+                                  class="text-[var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb))] group-hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_60%,var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb)))] tracking-tight transition-colors truncate"
+                                  data-contrast-part="title"
+                                  style="font-size: var(--sarak-card-title-font-size, 20px); font-weight: var(--sarak-card-title-font-weight, 900); letter-spacing: var(--sarak-card-title-letter-spacing, 0px);"
+                                >
+                                  CPU Cluster
+                                </h4>
+                              </div>
+                              <div
+                                class="bg-[var(--color-theme-card,#101622)] border-[var(--border-color,rgba(255,255,255,0.09))] flex items-center justify-center relative shrink-0 transition-all group-hover:border-[var(--sarak-primary-color,#19e3f0)]"
+                                style="padding: calc(var(--sarak-layout-gap-md, 16px) * 0.75); border-radius: var(--sarak-card-radius,10px); box-shadow: 0 0 var(--sarak-card-title-icon-glow-blur, 15px) var(--sarak-card-title-icon-glow, rgba(25,227,240,0.22));"
+                              >
+                                <svg
+                                  class="text-[var(--sarak-primary-color,#19e3f0)] group-hover:scale-110 transition-transform"
+                                  fill="none"
+                                  height="18"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  viewBox="0 0 24 24"
+                                  width="18"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <rect
+                                    height="16"
+                                    rx="2"
+                                    width="16"
+                                    x="4"
+                                    y="4"
+                                  />
+                                  <rect
+                                    height="6"
+                                    width="6"
+                                    x="9"
+                                    y="9"
+                                  />
+                                  <path
+                                    d="M15 2v2"
+                                  />
+                                  <path
+                                    d="M15 20v2"
+                                  />
+                                  <path
+                                    d="M2 15h2"
+                                  />
+                                  <path
+                                    d="M2 9h2"
+                                  />
+                                  <path
+                                    d="M20 15h2"
+                                  />
+                                  <path
+                                    d="M20 9h2"
+                                  />
+                                  <path
+                                    d="M9 2v2"
+                                  />
+                                  <path
+                                    d="M9 20v2"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                            <div
+                              class="flex gap-2 w-full mt-auto justify-start"
+                            >
+                              <div
+                                class="flex w-full"
+                                style="flex-direction: column; gap: calc(var(--sarak-layout-gap-md, 16px) * 0.75);"
+                              >
+                                <div
+                                  class="flex items-center justify-between text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))] tracking-wider"
+                                >
+                                  <span>
+                                    Contexto
+                                  </span>
+                                  <span
+                                    class="text-2xs font-mono text-[var(--text-muted,rgba(242,246,251,0.55))]"
+                                  >
+                                    42k
+                                     tokens
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             <div
-              class="flex flex-col gap-1 border-t border-theme-border p-3"
+              class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
             >
               <h3
-                class="text-sm font-bold uppercase tracking-wider text-theme-text"
+                class="break-words text-xs font-semibold leading-tight text-theme-text"
               >
                 Neon cibernético
               </h3>
               <p
-                class="text-xs text-theme-muted"
+                class="sr-only"
               >
                 Cantos afiados, brilho neon forte e textura de grade técnica.
               </p>
             </div>
             <button
               aria-label="Neon cibernético"
-              class="absolute inset-0 p-0 rounded-2xl"
+              class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+              data-preset-id="card-cyberpunk-neon"
               type="button"
             />
           </div>
           <div
-            class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
             data-option-tile=""
+            title="Só a borda esquerda é grossa, como um marcador de seção; as outras três somem."
           >
             <div
               aria-hidden="true"
               class="pointer-events-none"
             >
               <div
-                class="min-h-48"
-                data-sx-lazy="shown"
+                class="relative w-full overflow-hidden"
+                data-option-sample=""
+                style="aspect-ratio: 300 / 240;"
               >
                 <div
-                  class="sarak-design-scope sarak-scope-r4 dark flex items-center justify-center p-6"
-                  style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
+                  class="absolute left-0 top-0 flex origin-top-left flex-col [&>*:not([data-testid=bar-sample])]:h-full [&_[data-sx-lazy]]:h-full [&_[data-sx-lazy]>*]:flex [&_[data-sx-lazy]>*]:min-h-full [&_[data-sx-lazy]>*]:flex-col [&_[data-sx-lazy]>*]:justify-center"
+                  style="width: 300px; height: 240px; transform: scale(0.5);"
                 >
                   <div
-                    class="w-full"
-                    style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
+                    class="min-h-48"
+                    data-sx-lazy="shown"
                   >
                     <div
-                      class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
+                      class="sarak-design-scope sarak-scope-r4 dark flex items-center justify-center p-6"
+                      style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
                     >
-                      <header
-                        class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)]"
-                      >
-                        <h3
-                          data-testid="sample-card-title"
-                        >
-                          Receita do mês
-                        </h3>
-                      </header>
                       <div
-                        class=""
+                        class="relative w-full"
+                        style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
                       >
-                        <p
-                          class="text-2xl font-bold"
-                          data-testid="sample-card-value"
+                        <div
+                          class="flex flex-col sarak-card group transition-all relative overflow-hidden "
+                          data-border-beam="0"
+                          data-spotlight="0"
+                          data-sx-card-interactive="true"
+                          data-sx-card-texture-type="none"
+                          style="transition-duration: var(--duration-normal, 0.3s); padding: var(--sarak-card-padding-md, 24px);"
                         >
-                          R$ 12.480,00
-                        </p>
-                      </div>
-                      <footer
-                        class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)] py-[var(--sarak-card-header-padding,12px)]"
-                      >
-                        <span
-                          class="inline-flex"
-                        >
-                          <button
-                            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
-                            tabindex="-1"
+                          <div
+                            class="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-[var(--duration-slow,0.6s)]"
+                          />
+                          <div
+                            class="border-beam-effect"
+                          />
+                          <div
+                            class="relative z-10 flex flex-1 w-full flex-col h-full justify-between items-start text-left"
                           >
-                            <span>
-                              Ver detalhes
-                            </span>
-                          </button>
-                        </span>
-                      </footer>
+                            <div
+                              class="flex w-full mb-4 justify-between items-start"
+                            >
+                              <div
+                                class="flex flex-1 min-w-0"
+                                style="flex-direction: column; padding-right: var(--sarak-layout-gap-sm, 8px);"
+                              >
+                                <span
+                                  class="font-black text-[var(--sarak-subtitle-color,var(--sarak-text-sec,rgba(242,246,251,0.72)))] uppercase"
+                                  data-contrast-part="subtitle"
+                                  style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 11px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
+                                >
+                                  Node-04-PR
+                                </span>
+                                <h4
+                                  class="text-[var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb))] group-hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_60%,var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb)))] tracking-tight transition-colors truncate"
+                                  data-contrast-part="title"
+                                  style="font-size: var(--sarak-card-title-font-size, 20px); font-weight: var(--sarak-card-title-font-weight, 900); letter-spacing: var(--sarak-card-title-letter-spacing, 0px);"
+                                >
+                                  CPU Cluster
+                                </h4>
+                              </div>
+                              <div
+                                class="bg-[var(--color-theme-card,#101622)] border-[var(--border-color,rgba(255,255,255,0.09))] flex items-center justify-center relative shrink-0 transition-all group-hover:border-[var(--sarak-primary-color,#19e3f0)]"
+                                style="padding: calc(var(--sarak-layout-gap-md, 16px) * 0.75); border-radius: var(--sarak-card-radius,10px); box-shadow: 0 0 var(--sarak-card-title-icon-glow-blur, 15px) var(--sarak-card-title-icon-glow, rgba(25,227,240,0.22));"
+                              >
+                                <svg
+                                  class="text-[var(--sarak-primary-color,#19e3f0)] group-hover:scale-110 transition-transform"
+                                  fill="none"
+                                  height="18"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  viewBox="0 0 24 24"
+                                  width="18"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <rect
+                                    height="16"
+                                    rx="2"
+                                    width="16"
+                                    x="4"
+                                    y="4"
+                                  />
+                                  <rect
+                                    height="6"
+                                    width="6"
+                                    x="9"
+                                    y="9"
+                                  />
+                                  <path
+                                    d="M15 2v2"
+                                  />
+                                  <path
+                                    d="M15 20v2"
+                                  />
+                                  <path
+                                    d="M2 15h2"
+                                  />
+                                  <path
+                                    d="M2 9h2"
+                                  />
+                                  <path
+                                    d="M20 15h2"
+                                  />
+                                  <path
+                                    d="M20 9h2"
+                                  />
+                                  <path
+                                    d="M9 2v2"
+                                  />
+                                  <path
+                                    d="M9 20v2"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                            <div
+                              class="flex gap-2 w-full mt-auto justify-start"
+                            >
+                              <div
+                                class="flex w-full"
+                                style="flex-direction: column; gap: calc(var(--sarak-layout-gap-md, 16px) * 0.75);"
+                              >
+                                <div
+                                  class="flex items-center justify-between text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))] tracking-wider"
+                                >
+                                  <span>
+                                    Contexto
+                                  </span>
+                                  <span
+                                    class="text-2xs font-mono text-[var(--text-muted,rgba(242,246,251,0.55))]"
+                                  >
+                                    42k
+                                     tokens
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             <div
-              class="flex flex-col gap-1 border-t border-theme-border p-3"
+              class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
             >
               <h3
-                class="text-sm font-bold uppercase tracking-wider text-theme-text"
+                class="break-words text-xs font-semibold leading-tight text-theme-text"
               >
                 Faixa lateral
               </h3>
               <p
-                class="text-xs text-theme-muted"
+                class="sr-only"
               >
                 Só a borda esquerda é grossa, como um marcador de seção; as outras três somem.
               </p>
             </div>
             <button
               aria-label="Faixa lateral"
-              class="absolute inset-0 p-0 rounded-2xl"
+              class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+              data-preset-id="card-side-accent"
               type="button"
             />
           </div>
           <div
-            class="group relative flex flex-col overflow-hidden rounded-2xl border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
             data-option-tile=""
+            title="Texto centralizado e cantos redondos: vitrine de destaque ou número grande."
           >
             <div
               aria-hidden="true"
               class="pointer-events-none"
             >
               <div
-                class="min-h-48"
-                data-sx-lazy="shown"
+                class="relative w-full overflow-hidden"
+                data-option-sample=""
+                style="aspect-ratio: 300 / 240;"
               >
                 <div
-                  class="sarak-design-scope sarak-scope-r5 dark flex items-center justify-center p-6"
-                  style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
+                  class="absolute left-0 top-0 flex origin-top-left flex-col [&>*:not([data-testid=bar-sample])]:h-full [&_[data-sx-lazy]]:h-full [&_[data-sx-lazy]>*]:flex [&_[data-sx-lazy]>*]:min-h-full [&_[data-sx-lazy]>*]:flex-col [&_[data-sx-lazy]>*]:justify-center"
+                  style="width: 300px; height: 240px; transform: scale(0.5);"
                 >
                   <div
-                    class="w-full"
-                    style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
+                    class="min-h-48"
+                    data-sx-lazy="shown"
                   >
                     <div
-                      class="sarak-card w-full flex flex-col gap-[var(--sarak-card-padding-md,var(--theme-card-padding,24px))]"
+                      class="sarak-design-scope sarak-scope-r5 dark flex items-center justify-center p-6"
+                      style="width: 100%; height: 100%; color: var(--sarak-text-main); background-color: var(--sarak-bg-base); position: relative;"
                     >
-                      <header
-                        class="bg-[var(--sarak-card-header-bg,transparent)] py-[var(--sarak-card-header-padding,12px)] shadow-[inset_0_calc(var(--sarak-card-border-width,1px)*-1)_0_var(--sarak-card-header-border,transparent)] [&_h1]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h2]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h3]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h4]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h5]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] [&_h6]:!text-[length:min(var(--sarak-card-title-font-size),var(--sarak-h2-size))] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)]"
-                      >
-                        <h3
-                          data-testid="sample-card-title"
-                        >
-                          Receita do mês
-                        </h3>
-                      </header>
                       <div
-                        class=""
+                        class="relative w-full"
+                        style="max-width: var(--sarak-preset-mini-card-max-width,280px);"
                       >
-                        <p
-                          class="text-2xl font-bold"
-                          data-testid="sample-card-value"
+                        <div
+                          class="flex flex-col sarak-card group transition-all relative overflow-hidden "
+                          data-border-beam="0"
+                          data-spotlight="0"
+                          data-sx-card-interactive="true"
+                          data-sx-card-texture-type="none"
+                          style="transition-duration: var(--duration-normal, 0.3s); padding: var(--sarak-card-padding-md, 24px);"
                         >
-                          R$ 12.480,00
-                        </p>
-                      </div>
-                      <footer
-                        class="bg-[var(--sarak-card-footer-bg,transparent)] shadow-[inset_0_var(--sarak-card-border-width,1px)_0_var(--sarak-card-footer-border,transparent)] mx-[calc(var(--sarak-card-padding-md,24px)*-1)] px-[var(--sarak-card-padding-md,24px)] py-[var(--sarak-card-header-padding,12px)]"
-                      >
-                        <span
-                          class="inline-flex"
-                        >
-                          <button
-                            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-2 px-4 text-sm bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.98] shadow-xl shadow-[var(--sarak-primary-color,#19e3f0)]/20"
-                            tabindex="-1"
+                          <div
+                            class="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-[var(--duration-slow,0.6s)]"
+                          />
+                          <div
+                            class="border-beam-effect"
+                          />
+                          <div
+                            class="relative z-10 flex flex-1 w-full flex-col h-full justify-between items-start text-left"
                           >
-                            <span>
-                              Ver detalhes
-                            </span>
-                          </button>
-                        </span>
-                      </footer>
+                            <div
+                              class="flex w-full mb-4 justify-between items-start"
+                            >
+                              <div
+                                class="flex flex-1 min-w-0"
+                                style="flex-direction: column; padding-right: var(--sarak-layout-gap-sm, 8px);"
+                              >
+                                <span
+                                  class="font-black text-[var(--sarak-subtitle-color,var(--sarak-text-sec,rgba(242,246,251,0.72)))] uppercase"
+                                  data-contrast-part="subtitle"
+                                  style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 11px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
+                                >
+                                  Node-04-PR
+                                </span>
+                                <h4
+                                  class="text-[var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb))] group-hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_60%,var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb)))] tracking-tight transition-colors truncate"
+                                  data-contrast-part="title"
+                                  style="font-size: var(--sarak-card-title-font-size, 20px); font-weight: var(--sarak-card-title-font-weight, 900); letter-spacing: var(--sarak-card-title-letter-spacing, 0px);"
+                                >
+                                  CPU Cluster
+                                </h4>
+                              </div>
+                              <div
+                                class="bg-[var(--color-theme-card,#101622)] border-[var(--border-color,rgba(255,255,255,0.09))] flex items-center justify-center relative shrink-0 transition-all group-hover:border-[var(--sarak-primary-color,#19e3f0)]"
+                                style="padding: calc(var(--sarak-layout-gap-md, 16px) * 0.75); border-radius: var(--sarak-card-radius,10px); box-shadow: 0 0 var(--sarak-card-title-icon-glow-blur, 15px) var(--sarak-card-title-icon-glow, rgba(25,227,240,0.22));"
+                              >
+                                <svg
+                                  class="text-[var(--sarak-primary-color,#19e3f0)] group-hover:scale-110 transition-transform"
+                                  fill="none"
+                                  height="18"
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  viewBox="0 0 24 24"
+                                  width="18"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <rect
+                                    height="16"
+                                    rx="2"
+                                    width="16"
+                                    x="4"
+                                    y="4"
+                                  />
+                                  <rect
+                                    height="6"
+                                    width="6"
+                                    x="9"
+                                    y="9"
+                                  />
+                                  <path
+                                    d="M15 2v2"
+                                  />
+                                  <path
+                                    d="M15 20v2"
+                                  />
+                                  <path
+                                    d="M2 15h2"
+                                  />
+                                  <path
+                                    d="M2 9h2"
+                                  />
+                                  <path
+                                    d="M20 15h2"
+                                  />
+                                  <path
+                                    d="M20 9h2"
+                                  />
+                                  <path
+                                    d="M9 2v2"
+                                  />
+                                  <path
+                                    d="M9 20v2"
+                                  />
+                                </svg>
+                              </div>
+                            </div>
+                            <div
+                              class="flex gap-2 w-full mt-auto justify-start"
+                            >
+                              <div
+                                class="flex w-full"
+                                style="flex-direction: column; gap: calc(var(--sarak-layout-gap-md, 16px) * 0.75);"
+                              >
+                                <div
+                                  class="flex items-center justify-between text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))] tracking-wider"
+                                >
+                                  <span>
+                                    Contexto
+                                  </span>
+                                  <span
+                                    class="text-2xs font-mono text-[var(--text-muted,rgba(242,246,251,0.55))]"
+                                  >
+                                    42k
+                                     tokens
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             <div
-              class="flex flex-col gap-1 border-t border-theme-border p-3"
+              class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
             >
               <h3
-                class="text-sm font-bold uppercase tracking-wider text-theme-text"
+                class="break-words text-xs font-semibold leading-tight text-theme-text"
               >
                 Centralizado
               </h3>
               <p
-                class="text-xs text-theme-muted"
+                class="sr-only"
               >
                 Texto centralizado e cantos redondos: vitrine de destaque ou número grande.
               </p>
             </div>
             <button
               aria-label="Centralizado"
-              class="absolute inset-0 p-0 rounded-2xl"
+              class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+              data-preset-id="card-centered"
               type="button"
             />
           </div>
@@ -595,7 +1079,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
         data-preset-toggle="cards"
         type="button"
       >
-        Ver todas (28)
+        Ver todas (53)
       </button>
     </div>
   </div>

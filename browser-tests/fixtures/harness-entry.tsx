@@ -123,7 +123,7 @@ const hostWidth = searchParams.get('host') === 'narrow'
  *   - `orientacao-<bottom|center|top|diagonal|dinamica>`: `shadowOrientation` (diagonal = `bottom-right`).
  *   - `camadas-zero` / `camadas-dobro`: `layeredShadows` 0 e 2 (o padrão é 1).
  *   - `vidro-cartao` / `vidro-cartao-fosco`: `cardBackdropBlur` = 24 (o padrão é 12), sob o material `sleek` e sob o `frosted` padrão.
- *   - `cor-profunda` / `cor-variada`: `colorDepth` e `colorVariation` altos, sobre uma primária de matiz médio.
+ *   - `cor-base`: uma primária de matiz médio, sem ajuste de variantes (as variantes `-hover`/`-active` saem com o fator 1).
  *   - `dono-raio-mestre` / `dono-raio-canto`: o raio mestre do cartão (20) e do botão (30) sozinho, e com um canto declarado
  *     (`cardRadiusTL` e `btnRadiusTR` = 0). O padrão do canto é 8/12/12 e 6/8/8: com o mestre em outro valor, só o mestre chega.
  *   - `dono-mestre-escalar` / `dono-mestre-escalar-canto-responsivo` / `dono-mestre-responsivo-canto-escalar`: o raio mestre do cartão
@@ -147,8 +147,7 @@ const hostWidth = searchParams.get('host') === 'narrow'
  *   - `busca-topo-esquerda` / `busca-topo-centro`: `searchPositionTopbar` (com `?chrome=topbar&itens=3`); `alinhamento-removido`: a chave
  *     `contentAlignment`, que saiu do schema, num tema salvo; `raio-responsivo`: `borderRadius` = `{ mob: 3, tab: 7, desk: 11 }`.
  *   - `acao-brilho-base` / `-y` / `-desfoque` / `-espalhamento`: um dos três `actionGlowShadow*` num extremo, com `btnStyleType: 'matte'` fixado (o único estilo que preserva o `style`; não é mais o padrão).
- *   - `faixa-ativa`: `rangeActiveColor` = `#e11d48`. `cor-hover-base` / `cor-profunda` / `cor-variada`: a primária de matiz médio com
- *     `colorDepth`/`colorVariation` no mínimo e num extremo.
+ *   - `faixa-ativa`: `rangeActiveColor` = `#e11d48`. `cor-hover-base`: a primária de matiz médio, para o hover e o pressionado globais.
  *   - `raio-item-zero` / `raio-item-vinte`: `navItemRadius` 0 e 20 (o padrão é 12); `raio-item-recolhido`: 20 com `isNavHidden` (o item recolhido da barra do topo).
  *   - `schema-cartao`, `schema-campos`, `schema-atmosfera`, `schema-movimento`, `schema-ruido`, `schema-sem-suavizacao`:
  *     o recorte "alterado" de cada grupo da `plan-113` (o padrão é a mesma cena sem `?tema=`).
@@ -237,8 +236,6 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'camadas-dobro': { layeredShadows: 2 },
     'vidro-cartao': { cardBackdropBlur: 24, surfaceMaterial: 'sleek' },
     'vidro-cartao-fosco': { cardBackdropBlur: 24 },
-    'cor-profunda': { primaryColor: '#808040', colorDepth: 3 },
-    'cor-variada': { primaryColor: '#808040', colorVariation: 5 },
     'cor-base': { primaryColor: '#808040' },
     // As cenas de textura medem a cor de CADA textura sob o atributo do invólucro; o padrão do tema padrão (`micro-dots` no
     // cartão) vira disputa de ancestral e vence as que o CSS declara antes dele. Estes dois temas zeram o padrão da cena.
@@ -352,7 +349,7 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'acao-brilho-desfoque': { btnStyleType: 'matte', actionGlowShadowBlur: 45 },
     'acao-brilho-espalhamento': { btnStyleType: 'matte', actionGlowShadowSpread: 2 },
     'faixa-ativa': { rangeActiveColor: '#e11d48' },
-    'cor-hover-base': { primaryColor: '#808040', colorDepth: 1, colorVariation: 1 },
+    'cor-hover-base': { primaryColor: '#808040' },
     'raio-item-zero': { navItemRadius: 0 },
     'raio-item-vinte': { navItemRadius: 20 },
     'raio-item-recolhido': { navItemRadius: 20, isNavHidden: true },
@@ -360,8 +357,11 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
 
 function resolveHarnessConfig(): Record<string, unknown> {
     const variant = TOKEN_VARIANTS[searchParams.get('tema') ?? ''] ?? {};
-    if (hasGlobalBackground) return { ...variant, globalBackgroundImageUrl: 'https://harness.local/bg.png' };
-    return variant;
+    const selectorPositions = searchParams.get('seletores') === 'barra'
+        ? { preferenceFontSizePosition: 'pinned', preferenceNavigationStylePosition: 'pinned' }
+        : {};
+    if (hasGlobalBackground) return { ...variant, ...selectorPositions, globalBackgroundImageUrl: 'https://harness.local/bg.png' };
+    return { ...variant, ...selectorPositions };
 }
 
 /**
@@ -499,6 +499,26 @@ const App: React.FC = () => {
  */
 const SCENE_ITEM = { nome: 'Cartão de prova' };
 const SCENE_MAPPING = { title: 'nome' };
+const TITLE_CARD_CONTRAST_ITEM = {
+    title: 'Assistente multimodal',
+    subtitle: 'Modelo de linguagem',
+    context: 128000,
+    input_caps: ['vision', 'chat'],
+};
+const TITLE_CARD_CONTRAST_MAPPING = {
+    title: 'title',
+    subtitle: 'subtitle',
+    context: 'context',
+    input_caps: 'input_caps',
+};
+
+const TitleCardContrastScene: React.FC = () => (
+    <div style={{ width: '640px', padding: '32px' }}>
+        <div data-probe="titlecard-contraste">
+            <SarakTitleCard item={TITLE_CARD_CONTRAST_ITEM} mapping={TITLE_CARD_CONTRAST_MAPPING} />
+        </div>
+    </div>
+);
 
 const TextureScene: React.FC = () => (
     <div style={{ padding: '16px' }}>
@@ -888,7 +908,7 @@ const MATERIAL_IMAGES = [{ src: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKA
 const CardYieldsScene: React.FC = () => (
     <div style={{ padding: '16px' }}>
         <div data-probe="cartao-puro"><div className="sarak-card">Cartão puro</div></div>
-        <div data-probe="cartao-gradiente"><div className="sarak-card bg-gradient-to-r from-[var(--sarak-secondary-color,#7000ff)] to-[var(--sarak-status-info-color,#3b82f6)]">Gradiente por classe</div></div>
+        <div data-probe="cartao-gradiente"><div className="sarak-card bg-gradient-to-r" style={{ '--tw-gradient-from': 'var(--sarak-secondary-color, #7000ff)', '--tw-gradient-to': 'var(--sarak-status-info-color, #3b82f6)', '--tw-gradient-stops': 'var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)' } as React.CSSProperties}>Gradiente por classe</div></div>
         <div data-probe="cartao-desfoque"><div className="sarak-card backdrop-blur-sm">Desfoque por classe</div></div>
         <div data-probe="cartao-moldura"><div className="sarak-card border-dashed">Moldura por classe</div></div>
         <div data-probe="cartao-preenchimento"><div className="sarak-card p-8">Preenchimento por classe</div></div>
@@ -938,6 +958,10 @@ const LegibleScene: React.FC = () => (
 /** Os botões, o botão de sair do usuário e os de ícone, nos estados em que o texto senta sobre uma tinta ou sobre o fundo transparente. */
 const ContrastButtonsScene: React.FC = () => (
     <div style={{ padding: '16px' }}>
+        <div style={{ backgroundColor: 'var(--theme-surface)', padding: '16px' }}>
+            <button type="button" data-probe="neutro" style={{ color: 'var(--text-main)' }}>Botão neutro</button>
+            <button type="button" data-probe="texto-apagado" style={{ color: 'var(--text-muted)' }}>Botão de texto apagado</button>
+        </div>
         <div data-probe="fantasma"><SarakButton variant="ghost">Fantasma</SarakButton></div>
         <div data-probe="contorno"><SarakButton variant="outline">Contorno</SarakButton></div>
         <div data-probe="primario"><SarakButton variant="primary">Primário</SarakButton></div>
@@ -1080,6 +1104,7 @@ const SCENES: Record<string, React.FC> = {
     'schema-modal': SchemaModalScene,
     'focus-ring': FocusRingScene,
     'cartao-movimento': CardMotionScene,
+    'contraste-card-titulo': TitleCardContrastScene,
     'cartao-beam-grade': CardBeamGridScene,
     'saida-sobreposicao': OverlayExitScene,
     'arsenal-lote4': ArsenalLote4Scene,

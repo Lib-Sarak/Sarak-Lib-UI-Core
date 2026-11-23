@@ -113,17 +113,17 @@ describe('tema embarcado forçado por código que ainda não está em memória',
     it('falha do import() libera a porta e registra o erro — a aplicação nunca fica presa', async () => {
         const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
-        vi.spyOn(SARAK_THEME_LOADERS, 'synthwave-retro').mockRejectedValue(new Error('rede'));
+        vi.spyOn(SARAK_THEME_LOADERS, 'blueprint-protocol').mockRejectedValue(new Error('rede'));
         const { Probe } = makeProbe();
 
         render(
-            <SarakUIProvider initialTheme="synthwave-retro" loadingFallback={<p data-testid="fallback" />}>
+            <SarakUIProvider initialTheme="blueprint-protocol" loadingFallback={<p data-testid="fallback" />}>
                 <Probe />
             </SarakUIProvider>,
         );
 
         await waitFor(() => expect(screen.getByTestId('primary')).toBeInTheDocument());
-        expect(error.mock.calls.some((call) => String(call[0]).includes('"synthwave-retro"'))).toBe(true);
+        expect(error.mock.calls.some((call) => String(call[0]).includes('"blueprint-protocol"'))).toBe(true);
         expect(warn).toBeDefined();
     });
 });

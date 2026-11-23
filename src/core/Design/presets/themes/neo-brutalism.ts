@@ -56,6 +56,9 @@ export const neobrutalismTheme: SarakThemePreset = {
         topbarTone: 'surface',
         sidebarBackgroundStyle: 'solid',
         sidebarActiveItemStyle: 'filled',
+        sidebarActiveGlass: 'on',
+        brandDisplay: 'both',
+        userAvatarStyle: 'initials',
         sidebarItemDensity: 'spacious',
         sidebarIconSize: 20,
         // borda preta chapada é a assinatura brutalista
@@ -216,8 +219,6 @@ export const neobrutalismTheme: SarakThemePreset = {
         // --- Paletas e Gradientes ---
         // papel creme quente do brutalismo; a neutra da paleta é cinza frio
         surfaceColor: '#ffffff',
-        colorDepth: 1,
-        colorVariation: 1,
         // papel creme quente do brutalismo; a neutra da paleta é cinza frio
         cardBackgroundColor: '#ffffff',
         // borda preta chapada é a assinatura brutalista

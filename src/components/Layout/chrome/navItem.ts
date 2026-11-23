@@ -1,6 +1,7 @@
 import React from 'react';
 import type { SarakSearchItem } from '../../atomic/Inputs/SarakSearch';
 import { SarakIcon } from '../../atomic/Icon/SarakIcon';
+import type { SarakShellNavItem } from '../../atomic/Navigation/SarakShellNav';
 
 /**
  * Item de navegação estruturado do `SarakAppChrome` (Spec 40.2 — L1).
@@ -37,7 +38,42 @@ export interface SarakNavItem {
     target?: string;
     /** Agrupamento visual — mesmo campo do `ShellNavItem`; itens sem categoria ficam no grupo raiz. */
     category?: string;
+    /**
+     * Sub-abas: o item vira um grupo recolhível (botão com seta) e a `href` dele deixa de navegar. Um nível só —
+     * filhos de filhos são ignorados. Um filho pode ser o `active`: o grupo dele abre sozinho.
+     */
+    children?: SarakNavItem[];
+    /** Grupo aberto de saída; o grupo do item ativo abre sozinho, com ou sem isto. */
+    defaultExpanded?: boolean;
 }
+
+const toShellNavItem = (
+    { label, href, icon, category, disabled, badge, target }: SarakNavItem,
+): SarakShellNavItem => ({ label, route: href, icon, category, disabled, badge, target });
+
+/**
+ * O modelo estruturado (`navItems`) no contrato do `SarakShellNav`: os mesmos campos com `href` como rota, e os
+ * filhos de um nível repassados com `defaultExpanded`. Quem não passa `children` recebe exatamente o de antes.
+ */
+export const toShellNavItems = (items: readonly SarakNavItem[]): SarakShellNavItem[] => items.map((item) => {
+    const base = toShellNavItem(item);
+    if (!item.children || item.children.length === 0) return base;
+    return {
+        ...base,
+        children: item.children.map(toShellNavItem),
+        ...(item.defaultExpanded !== undefined ? { defaultExpanded: item.defaultExpanded } : {}),
+    };
+});
+
+/** A `href` do item marcado `active`, procurado também entre os filhos (o primeiro achado vence). */
+export const findActiveNavItemHref = (items: readonly SarakNavItem[]): string | undefined => {
+    for (const item of items) {
+        if (item.active) return item.href;
+        const child = item.children?.find((entry) => entry.active);
+        if (child) return child.href;
+    }
+    return undefined;
+};
 
 export const getSarakSearchItems = (items: readonly {
     route: string;

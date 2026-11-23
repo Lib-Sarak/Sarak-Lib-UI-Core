@@ -9,8 +9,10 @@
  *   1. Durante a marca, a transição computada de um botão é `none` — lida no instante em que a marca entra, pelo
  *      MutationObserver, depois de as variáveis novas já estarem escritas (prova a ORDEM: marca antes da pintura).
  *   2. Depois da troca a transição computada volta ao valor do tema, e o hover volta a animar.
- *   3. Orçamento: as transições iniciadas e os recálculos de estilo durante a troca ficam abaixo de um teto. Sem a
- *      marca a mesma troca inicia perto de 1.900 transições (medido em 2026-10-31).
+ *   3. Orçamento: as transições COM EFEITO (as que mudam o valor) e os recálculos de estilo durante a troca ficam
+ *      abaixo de um teto. Uma transição de um valor para ele mesmo não anima nada: é anotada à parte e não conta.
+ *      Sem a marca a mesma troca inicia perto de 1.900 transições (medido em 2026-10-31) e, com o contador novo,
+ *      946 (App) e 1.041 (Embarcado) com efeito (medido em 2026-11-12, numa cópia com a marca desligada).
  *
  * -------------------------------------------------------------------------
  * LIMITES DECLARADOS (R18) — o que esta medição NÃO vê
@@ -20,7 +22,11 @@
  * 2. Não afirma tempo. A meta de 300 ms (1,5 s com CPU 4× mais lenta) é conferida na tabela do resumo da plan, por
  *    medição manual com `Performance.getMetrics`, e não é um teste: varia por máquina.
  * 3. Os tetos são o valor medido + 20%; uma máquina que renderize mais quadros durante a troca pode passar do teto
- *    de recálculos sem regressão. O teto de transições é o que separa a regressão (perto de 1.900) do normal.
+ *    de recálculos sem regressão. O teto de transições é o que separa a regressão (mais de mil) do normal.
+ *    O filtro só desconta o que consegue LER: o `transitionrun` chega depois de a animação (150 ms) já ter acabado em
+ *    boa parte dos casos. A transição sem animação para ler conta como com efeito, salvo se a propriedade dela teve
+ *    leituras suficientes e todas de um valor para ele mesmo (hoje, `scrollbar-color`): aí entra como sem efeito, anotada
+ *    como "inferida". Uma leitura com efeito na propriedade desliga a inferência.
  * 4. Não cobre o arrastar de um slider (a marca não entra); isso é teste de unidade do `DesignInjector`.
  *    O caso do mouse conta os elementos que cada recálculo de estilo visitou (`UpdateLayoutTree.elementCount`, do
  *    Tracing do CDP): mede o alcance do recálculo, não o tempo, e só vê o `mousemove` com a luz dinâmica desligada.
@@ -35,11 +41,17 @@ import { buildHarness } from './build-harness.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ENTRY = path.join(HERE, 'fixtures', 'troca-de-tema-entry.tsx');
-const THEME_CARD = /Cyberpunk Neon/;
+const THEME_CARD = /Cyberpunk Neon(?! Classic)/;
 
 /** Medido em 2026-11-01 com a galeria aberta (hoje a decisão Tema, na coluna), 8 trocas nos dois modos: de 23 a 27 recálculos; teto = maior medida + 20%. */
 const RECALC_STYLE_COUNT_BUDGET = 32;
-/** Medido nas mesmas 8 trocas: de 139 a 145 transições (o resto da tela mudando de estado); teto = maior + 20%. Sem a marca: perto de 1.900. */
+/**
+ * Medido nas mesmas 8 trocas: de 139 a 145 transições (o resto da tela mudando de estado); teto = maior + 20%. Vale só para as
+ * transições COM EFEITO (valor final diferente do inicial) e as que não deu para ler e não se infere sem efeito; as de um valor
+ * para ele mesmo (hoje só `scrollbar-color`, 201 por troca: 48 a 63 lidas e o resto inferido, herdado da rolagem do painel) são
+ * anotadas e não contam. Medido em 2026-11-12 com 25 cartões na galeria, 6 execuções nos dois modos: 8 com efeito, 201 sem efeito
+ * (209 no total, o que o contador antigo dava). Sem a marca: 946 (App) e 1.041 (Embarcado) com efeito.
+ */
 const TRANSITION_RUNS_BUDGET = 174;
 
 /** Medido: mover o mouse na galeria visita no máximo 470 de 2.055 elementos (23%, o hover de um cartão); a escrita de `--mouse-x/y` no `:root` visitava 2.124 (a tela inteira). O teto fica no meio. */
@@ -80,6 +92,12 @@ declare global {
     interface Window {
         __switchRecords: SwitchRecord[];
         __transitionRuns: number;
+        /** Propriedades das transições iniciadas cujo valor final difere do inicial. */
+        __effectiveTransitions: string[];
+        /** Propriedades das transições de um valor para ele mesmo. */
+        __noEffectTransitions: string[];
+        /** Transições cuja animação já não existia quando o evento chegou: contam no teto, por cautela. */
+        __unreadableTransitions: string[];
     }
 }
 
@@ -110,6 +128,56 @@ const settle = async (page: Page, cdp: CDPSession): Promise<void> => {
         previous = current;
         await page.waitForTimeout(500);
     }
+};
+
+/**
+ * Conta as transições iniciadas desde agora, separando as que MUDAM o valor das que vão de um valor para ele mesmo.
+ * O `transitionrun` chega com atraso (quadros de 100 a 300 ms numa troca), então a animação é lida no próprio
+ * evento; se ela já não existe, a transição não pode ser classificada e conta como com efeito.
+ */
+const watchTransitions = (page: Page): Promise<void> => page.evaluate(() => {
+    window.__effectiveTransitions = [];
+    window.__noEffectTransitions = [];
+    window.__unreadableTransitions = [];
+    const camelCase = (name: string): string => (name.startsWith('--') ? name : name.replace(/-([a-z])/g, (_match, letter: string) => letter.toUpperCase()));
+    document.addEventListener('transitionrun', (event) => {
+        const target = event.target as Element;
+        const name = event.propertyName;
+        const animation = target.getAnimations().find((candidate) => candidate instanceof CSSTransition && candidate.transitionProperty === name);
+        const frames = animation?.effect?.getKeyframes();
+        if (!frames || frames.length < 2) {
+            window.__unreadableTransitions.push(name);
+            return;
+        }
+        const key = camelCase(name);
+        const sameValue = String(frames[0][key]) === String(frames[frames.length - 1][key]);
+        (sameValue ? window.__noEffectTransitions : window.__effectiveTransitions).push(name);
+    }, true);
+});
+
+/** Quantas leituras de uma propriedade precisam existir, todas de um valor para ele mesmo, para as não lidas dela contarem como sem efeito. */
+const MIN_READS_TO_INFER_NO_EFFECT = 10;
+
+/**
+ * As não lidas de uma propriedade cujas transições lidas foram TODAS de um valor para ele mesmo (e foram pelo menos
+ * `MIN_READS_TO_INFER_NO_EFFECT`) entram como sem efeito. Basta UMA leitura com efeito na propriedade para as não lidas dela
+ * voltarem a contar: sem a marca, a mesma propriedade aparece lida com valor diferente e o teto estoura.
+ */
+const classifyUnreadable = (effective: string[], noEffect: string[], unreadable: string[]): { counted: string[]; inferred: string[] } => {
+    const reads = (list: string[], name: string): number => list.filter((candidate) => candidate === name).length;
+    const counted: string[] = [];
+    const inferred: string[] = [];
+    unreadable.forEach((name) => {
+        const canInfer = reads(effective, name) === 0 && reads(noEffect, name) >= MIN_READS_TO_INFER_NO_EFFECT;
+        (canInfer ? inferred : counted).push(name);
+    });
+    return { counted, inferred };
+};
+
+const countByProperty = (properties: string[]): string => {
+    const counts = new Map<string, number>();
+    properties.forEach((name) => counts.set(name, (counts.get(name) ?? 0) + 1));
+    return [...counts.entries()].sort((a, b) => b[1] - a[1]).map(([name, count]) => `${name} ×${count}`).join(', ') || 'nenhuma';
 };
 
 /** Anota o estilo computado do botão de prova no instante em que a marca entra e no instante em que sai. */
@@ -181,13 +249,17 @@ for (const mode of MODES) {
             expect(beforeSwitch.duration).not.toBe('0s');
 
             await watchSwitchMark(page);
+            await watchTransitions(page);
             await page.evaluate(() => { window.__transitionRuns = 0; });
             const recalcsBefore = await recalcStyleCount(cdp);
+            let recalcsAtSwitchEnd = recalcsBefore;
 
             const { sizes, total } = await styleRecalcSizes(page, cdp, async () => {
                 await page.getByRole('button', { name: THEME_CARD }).click();
                 await expect.poll(() => page.evaluate(() => window.__switchRecords.map((record) => record.phase)), { timeout: 60_000 })
                     .toEqual(['on', 'off']);
+                await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())));
+                recalcsAtSwitchEnd = await recalcStyleCount(cdp);
                 await settle(page, cdp);
             });
 
@@ -204,10 +276,20 @@ for (const mode of MODES) {
             expect({ property: after.transitionProperty, duration: after.transitionDuration }).toEqual(settled);
 
             // 3. Orçamento: contagem, não tempo.
-            const transitionRuns = await page.evaluate(() => window.__transitionRuns);
-            const recalcs = (await recalcStyleCount(cdp)) - recalcsBefore;
-            test.info().annotations.push({ type: 'medido', description: `${transitionRuns} transições, ${recalcs} recálculos de estilo` });
-            expect(transitionRuns, 'transições iniciadas na troca').toBeLessThanOrEqual(TRANSITION_RUNS_BUDGET);
+            const { effective, noEffect, unreadable: unreadableList } = await page.evaluate(() => ({
+                effective: window.__effectiveTransitions,
+                noEffect: window.__noEffectTransitions,
+                unreadable: window.__unreadableTransitions,
+            }));
+            // Só a transição que muda o valor (e a que não deu para ler) conta no teto; a de um valor para ele mesmo é anotada.
+            const { counted, inferred } = classifyUnreadable(effective, noEffect, unreadableList);
+            const transitionRuns = effective.length + counted.length;
+            const recalcs = recalcsAtSwitchEnd - recalcsBefore;
+            test.info().annotations.push({
+                type: 'medido',
+                description: `${transitionRuns} transições com efeito (${effective.length} lidas + ${counted.length} sem leitura contadas por cautela: ${countByProperty([...effective, ...counted])}); ${noEffect.length + inferred.length} sem efeito, de um valor para ele mesmo (${noEffect.length} lidas + ${inferred.length} inferidas: ${countByProperty([...noEffect, ...inferred])}); ${recalcs} recálculos de estilo`,
+            });
+            expect(transitionRuns, 'transições com efeito iniciadas na troca').toBeLessThanOrEqual(TRANSITION_RUNS_BUDGET);
             expect(recalcs, 'recálculos de estilo na troca').toBeLessThanOrEqual(RECALC_STYLE_COUNT_BUDGET);
             // A troca e a retirada da marca são os dois recálculos da tela inteira esperados; um terceiro é regressão.
             const wholeTree = sizes.filter((size) => size >= total * WHOLE_TREE_SHARE).length;

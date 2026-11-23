@@ -1,9 +1,10 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, expect, it, vi } from 'vitest';
 import SarakUIProvider from '../../../../../core/Provider/SarakUIProvider';
 import { DecisionQuestionList } from '../DecisionQuestionList';
+import { ForceOpenSections } from '../CollapsibleSection';
 import { NavigationSchema } from '../../../../../core/Design/schema/navigation';
 import type { DecisionQuestion } from '../../../utils/decisions';
 import type { SarakDesignState } from '../../../../../core/Provider/types';
@@ -16,8 +17,9 @@ const QUESTIONS: DecisionQuestion[] = [
     { id: 'brand', textKey: 'barQuestionBrand', tokens: [token('sidebarLogoPlacement')] },
 ];
 
-const renderList = (questions: DecisionQuestion[] = QUESTIONS) => render(
+const renderList = (questions: DecisionQuestion[] = QUESTIONS, open = true) => render(
     <SarakUIProvider>
+        <ForceOpenSections.Provider value={open}>
         <DecisionQuestionList
             questions={questions}
             mode="light"
@@ -26,6 +28,7 @@ const renderList = (questions: DecisionQuestion[] = QUESTIONS) => render(
             updateDraft={vi.fn()}
             previewDevice="desktop"
         />
+        </ForceOpenSections.Provider>
     </SarakUIProvider>,
 );
 
@@ -47,5 +50,14 @@ describe('DecisionQuestionList', () => {
     it('sem perguntas não desenha nada', () => {
         const { container } = renderList([]);
         expect(container.querySelector('[data-decision-question]')).toBeNull();
+    });
+
+    it('as perguntas abrem recolhidas, sem desenhar a amostra, e o título abre cada uma', () => {
+        const { container, getAllByRole } = renderList(QUESTIONS, false);
+        expect(container.querySelector('[data-testid="bar-sample"]')).toBeNull();
+        const toggles = getAllByRole('button');
+        expect(toggles.every((toggle) => toggle.getAttribute('aria-expanded') === 'false')).toBe(true);
+        fireEvent.click(toggles[0]);
+        expect(container.querySelectorAll('[data-testid="bar-sample"]')).toHaveLength(1);
     });
 });

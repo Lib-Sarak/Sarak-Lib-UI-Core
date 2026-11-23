@@ -11,13 +11,12 @@ const DARK_SEEDS: SarakPaletteInput = { type: 'triadic', base: '#2563eb', second
 
 const TEXT = [
     ['subtitleColor', 'secondary'],
-    ['sidebarCategoryColor', 'secondary'],
     ['secondaryColor', 'secondary'],
     ['emphasisColor', 'accent'],
 ] as const;
 /** `secondaryColor` só tem par misturado (40% da cor sobre o texto do corpo), que passa mesmo com a semente reprovando sozinha. */
 const ADJUSTED = TEXT.filter(([token]) => token !== 'secondaryColor');
-const SMALL = [['chartColorPalette', 'secondary'], ['navActiveMarkerColor', 'accent']] as const;
+const SMALL = [['chartColorPalette', 'secondary'], ['navActiveMarkerColor', 'base']] as const;
 const MODES: SarakPaletteMode[] = ['light', 'dark'];
 const lightnessOf = (hex: string): number => hexToOklch(hex)!.lightness;
 

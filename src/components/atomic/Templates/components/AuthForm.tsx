@@ -111,6 +111,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
                             initial={{ opacity: 0, height: 0, y: -20 }}
                             animate={{ opacity: 1, height: 'auto', y: 0 }}
                             exit={{ opacity: 0, height: 0, y: -20 }}
+                            role={errorVariant === 'warning' ? 'status' : 'alert'}
                             className={`border rounded-xl flex items-center text-sm font-medium shadow-lg transition-all ${
                                 errorVariant === 'warning'
                                     ? "bg-[color-mix(in_srgb,var(--sarak-status-warning-color,#f59e0b)_10%,transparent)] border-[color-mix(in_srgb,var(--sarak-status-warning-color,#f59e0b)_30%,transparent)] text-[color-mix(in_srgb,var(--sarak-status-warning-color,#f59e0b)_40%,var(--sarak-on-surface,#ffffff))]"

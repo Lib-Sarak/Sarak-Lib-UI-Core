@@ -69,6 +69,9 @@ export const highContrastTheme: SarakThemePreset = {
     "topbarTone": "surface",
     "sidebarBackgroundStyle": "solid",
     "sidebarActiveItemStyle": "bar",
+    "sidebarActiveGlass": "on",
+        "brandDisplay": "both",
+        "userAvatarStyle": "initials",
     "sidebarItemDensity": "comfortable",
     "sidebarIconSize": 20,
     // borda de contraste máximo, sem translucidez
@@ -301,8 +304,6 @@ export const highContrastTheme: SarakThemePreset = {
     "switchBackdropBlur": 4,
     // preto e branco puros: o contraste máximo é a razão do tema
     "surfaceColor": "#000000",
-    "colorDepth": 1,
-    "colorVariation": 1,
     // preto e branco puros: o contraste máximo é a razão do tema
     "cardBackgroundColor": "#000000",
     // borda de contraste máximo, sem translucidez

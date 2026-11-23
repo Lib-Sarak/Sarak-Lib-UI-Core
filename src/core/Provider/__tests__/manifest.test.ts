@@ -1,4 +1,6 @@
 // @vitest-environment node
+import fs from 'node:fs';
+import path from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { SARAK_DESIGN_MANIFEST } from '../manifest';
 import * as colorEngine from '../utils/color-engine';
@@ -10,6 +12,16 @@ vi.mock('../utils/color-engine', () => ({
 }));
 
 describe('DESIGN_MANIFEST', () => {
+    it('todo nome de `vars` é público (existe em `tokens.cssVars` do catálogo do kit)', () => {
+        const catalog = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'sarak-ui/catalog.json'), 'utf-8')) as {
+            tokens: { cssVars: string[] };
+        };
+        const publicNames = new Set(catalog.tokens.cssVars);
+        const ghosts = Object.entries(SARAK_DESIGN_MANIFEST).flatMap(([key, entry]) =>
+            (entry.vars ?? []).filter((name) => !publicNames.has(name)).map((name) => `${key}: ${name}`));
+        expect(ghosts).toEqual([]);
+    });
+
     it('não publica aliases de largura sem leitor', () => {
         expect(SARAK_DESIGN_MANIFEST.maxContentWidth).toBeUndefined();
     });
@@ -44,11 +56,16 @@ describe('DESIGN_MANIFEST', () => {
         });
     });
 
-    it('should transform integers correctly', () => {
-        expect(SARAK_DESIGN_MANIFEST.colorDepth.transform?.('2')).toBe(2);
-        expect(SARAK_DESIGN_MANIFEST.colorDepth.transform?.('invalid')).toBe(1);
-        expect(SARAK_DESIGN_MANIFEST.colorVariation.transform?.('3')).toBe(3);
-        expect(SARAK_DESIGN_MANIFEST.colorVariation.transform?.('invalid')).toBe(1);
+    it('should transform numbers correctly', () => {
+        expect(SARAK_DESIGN_MANIFEST.sidebarMinWidth.transform?.('240')).toBe(240);
+        expect(SARAK_DESIGN_MANIFEST.sidebarMinWidth.transform?.('invalid')).toBe(200);
+        expect(SARAK_DESIGN_MANIFEST.sidebarMaxWidth.transform?.('500')).toBe(500);
+        expect(SARAK_DESIGN_MANIFEST.sidebarMaxWidth.transform?.('invalid')).toBe(450);
+    });
+
+    it('não declara mais colorDepth nem colorVariation', () => {
+        expect(SARAK_DESIGN_MANIFEST).not.toHaveProperty('colorDepth');
+        expect(SARAK_DESIGN_MANIFEST).not.toHaveProperty('colorVariation');
     });
 
     // `logoScale`/`hapticIntensity` saíram desta lista (plan-21, 2026-08-10):

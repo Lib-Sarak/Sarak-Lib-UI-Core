@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { DecisionTokenList, enhanceToken, type ColumnTokenProps } from './DecisionTokenList';
-import { useLibraryText } from '../../../../core/i18n/useLibraryText';
+import { useLibraryLanguage, useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { COLUMN_DECISIONS, getDecision, type DecisionId, type TokenLocation } from '../../utils/decisions';
 import {
     AREAS_FIRST_THRESHOLD, MAX_PER_GROUP, findOptionEntries, findPresetHits, groupByDecision, type LocatedResult, type ResultGroup,
@@ -155,13 +155,14 @@ const EmptyState: React.FC<{ query: string; suggestion: string | null; text: Tra
  */
 export const ThemeSearchResults: React.FC<ThemeSearchResultsProps> = ({ query, results, tokenIndex, onOpenToken, ...tokenProps }) => {
     const text = useLibraryText();
+    const language = useLibraryLanguage();
     const [area, setArea] = useState<DecisionId | null>(null);
     const [expanded, setExpanded] = useState<ReadonlySet<DecisionId>>(new Set());
     useEffect(() => { setArea(null); setExpanded(new Set()); }, [query]);
 
     const located = results.flatMap((token) => {
         const location = tokenIndex.get(token.id);
-        return location ? [{ token: enhanceToken(token, tokenProps.catalogMap), location }] : [];
+        return location ? [{ token: enhanceToken(token, tokenProps.catalogMap, language), location }] : [];
     });
     const orphans = results.filter((token) => !tokenIndex.has(token.id));
     const groups = groupByDecision(located);

@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { SarakShellNav, type SarakShellNavItem } from '../../atomic/Navigation/SarakShellNav';
 import { SarakShellSearchWidget } from '../../atomic/Navigation/SarakShellSearchWidget';
+import { VERTICAL_NAV_GAP, VERTICAL_NAV_PADDING, VERTICAL_NAV_SECTION_GAP } from '../../atomic/Navigation/menuItemMetrics';
 import { SarakSearch } from '../../atomic/Inputs/SarakSearch';
 import type { SarakShellUser } from '../../atomic/Navigation/SarakShellUserWidget';
 import { ChromeFrame } from './ChromeFrame';
@@ -18,7 +19,9 @@ import { useChromeAutoHide } from './useChromeAutoHide';
 import { useChromeDesignTokens } from './useChromeDesignTokens';
 import { useChromeDefaultWidgets } from './useChromeDefaultWidgets';
 import { chromeNoiseLayerStyle } from './noiseTexture';
+import { resolveSidebarFrameStyle } from './sidebarFrame';
 import type { SarakChromeWidgets } from './chromeWidgets';
+import type { SarakPreferenceId } from '../../../core/Provider/preferencesTypes';
 import { getSarakSearchItems } from './navItem';
 
 export interface ChromeSidebarBodyProps {
@@ -49,6 +52,13 @@ export interface ChromeSidebarBodyProps {
 }
 
 /**
+ * A busca na coluna dos itens: o recuo lateral da lista, e abaixo do topo o mesmo respiro que separa as seções da lista
+ * (a lista já começa com o próprio recuo, então embaixo dela não sobra vão).
+ */
+const SEARCH_TOP_STYLE: React.CSSProperties = { paddingInline: VERTICAL_NAV_PADDING, paddingTop: VERTICAL_NAV_SECTION_GAP };
+const SEARCH_BOTTOM_STYLE: React.CSSProperties = { paddingInline: VERTICAL_NAV_PADDING, paddingTop: VERTICAL_NAV_GAP };
+
+/**
  * Corpo do modo SIDEBAR do `SarakAppChrome` — extraído de `SarakAppChrome.tsx`
  * para o arquivo caber no teto de 250 linhas (R9) antes de ganhar o consumo
  * dos tokens de cromo que faltavam.
@@ -58,7 +68,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
     search, banner, footer, decoration, user, logout, notifications, onNotificationSelect, widgets, className, rootStyle, children,
 }) => {
     const {
-        sidebarPosition, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled,
+        design, sidebarPosition, layoutDensity, maxContentWidth, isSplitViewEnabled, isNavHidden, isAutoHideEnabled,
         searchPositionSidebar, sidebarBorderSide, sidebarBorderStyle, sidebarBackgroundStyle,
         sidebarLogoPlacement, sidebarTone, sidebarResizable,
     } = useChromeDesignTokens();
@@ -76,6 +86,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
         ? <SarakShellSearchWidget
             variant={isNavHidden ? 'icon' : 'bar'}
             compact={isNavHidden}
+            menuItemHeight
             onClick={w.openSearch}
             items={getSarakSearchItems(nav)}
             onSelect={onNavigate ? (item) => onNavigate(item.id) : undefined}
@@ -84,19 +95,23 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
     const showFontSize = w.preferencePlacement.pinned.includes('fontSize');
     const showNavigationStyle = w.preferencePlacement.pinned.includes('navigationStyle');
     const showLanguage = w.preferencePlacement.pinned.includes('language');
-    // Sidebar recolhida (ícone-only) não tem coluna para o controle com rótulo —
-    // mas a preferência continua oferecida (Spec 05 §2.3, "nada some"), então o ⚙
-    // a recebe, mesmo quando nenhuma está em posição `menu` (que já a levaria).
-    const collapsedExtras = w.preferencePlacement.pinned.filter((id) => id !== 'colorMode' && id !== 'navCollapsed');
-    const menuIdsToShow = isNavHidden ? [...new Set([...w.preferencePlacement.menu, ...collapsedExtras])] : w.preferencePlacement.menu;
+    // A barra mostra o que é fixado e o ⚙ guarda o resto: o que já tem controle na barra não se repete no ⚙. Recolhida
+    // (ícone-only), não há coluna para o controle com rótulo — a preferência fixada sem ícone próprio vai para o ⚙ (Spec 05
+    // §2.3, "nada some"); só o modo e a seta de recolher têm ícone recolhido.
+    const hasOwnControl = (id: SarakPreferenceId): boolean =>
+        w.preferencePlacement.pinned.includes(id) && (!isNavHidden || id === 'colorMode' || id === 'navCollapsed');
+    const menuIdsToShow = w.preferencePlacement.offered.filter((id) => !hasOwnControl(id));
+    const searchInMenu = w.showSearchInMenu && !w.showSearch;
+    const userInMenu = w.showUserInMenu && !w.showUser;
+    const notificationsInMenu = w.showNotificationsInMenu && !w.showNotifications;
     const menuWidgets = (
         <>
-            {w.showSearchInMenu && <SarakShellSearchWidget variant="icon" onClick={w.openSearch} />}
-            {w.showUserInMenu && <ChromeUserWidget user={user} logout={logout} variant="vertical" />}
-            {w.showNotificationsInMenu && <ChromeNotificationsWidget notifications={notifications} onSelect={onNotificationSelect} variant="vertical" />}
+            {searchInMenu && <SarakShellSearchWidget variant="icon" onClick={w.openSearch} />}
+            {userInMenu && <ChromeUserWidget user={user} logout={logout} variant="vertical" />}
+            {notificationsInMenu && <ChromeNotificationsWidget notifications={notifications} onSelect={onNotificationSelect} variant="vertical" />}
         </>
     );
-    const hasPreferencesMenu = w.widgetPlacement.menu.length > 0 || menuIdsToShow.length > 0;
+    const hasPreferencesMenu = menuIdsToShow.length > 0 || searchInMenu || userInMenu || notificationsInMenu;
 
     return (
         <ChromeFrame decoration={decoration} banner={banner} footer={footer} className={className} rootStyle={rootStyle}>
@@ -125,18 +140,18 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                             margin: 'var(--sarak-tab-section-margin, 8px)',
                             height: 'calc(100% - (var(--sarak-tab-section-margin, 8px) * 2))',
                             background: resolveChromeBackground(sidebarBackgroundStyle, '--sarak-sidebar-bg', 'var(--theme-sidebar-bg, transparent)'),
-                            ...resolveChromeSurfaceBorderStyle({
+                            ...resolveSidebarFrameStyle(sidebarPosition, sidebarBorderSide, resolveChromeSurfaceBorderStyle({
                                 side: sidebarBorderSide,
                                 style: sidebarBorderStyle,
                                 widthVariable: '--sarak-sidebar-border-width',
                                 colorVariable: '--sarak-sidebar-border-color',
                                 surface: 'sidebar',
                                 sidebarPosition,
-                            }),
+                            })),
                             // `sidebarBlur`/`sidebarShadow` (Spec 05 §2.4) — sombra no lugar do shadow-2xl.
                             backdropFilter: 'blur(var(--sarak-sidebar-blur, 10px))',
                             boxShadow: 'var(--sarak-sidebar-shadow, 10px 0 30px rgba(0,0,0,0.5))', // sarak-allow-hardcode: fallback = defaultValue do token
-                            ...resolveChromeToneStyle(sidebarTone, 'sidebar'),
+                            ...resolveChromeToneStyle(sidebarTone, 'sidebar', design),
                         }}
                     >
                         {/* `sidebarNoiseOpacity` (Spec 05 §2.4). */}
@@ -152,14 +167,14 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                         {/* Sem barra superior, `topbarStart`/`topbarEnd` degradam para topo/rodapé da sidebar. */}
                         <ChromeTopbarSlot region="start" className="px-2">{topbarStart}</ChromeTopbarSlot>
                         {searchPositionSidebar === 'top' && (
-                            <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pb-2">{effectiveSearch}</ChromeSearchSlot>
+                            <ChromeSearchSlot position={searchPositionSidebar} style={SEARCH_TOP_STYLE}>{effectiveSearch}</ChromeSearchSlot>
                         )}
                         <ChromeSidebarSlot region="header">{sidebarHeader}</ChromeSidebarSlot>
                         {nav.length > 0 && (
                             <SarakShellNav items={nav} activeRoute={activeRoute} onNavigate={onNavigate} orientation="vertical" collapsed={isNavHidden} className="flex-1 min-h-0" />
                         )}
                         {searchPositionSidebar === 'bottom' && (
-                            <ChromeSearchSlot position={searchPositionSidebar} className="px-2 pt-2">{effectiveSearch}</ChromeSearchSlot>
+                            <ChromeSearchSlot position={searchPositionSidebar} style={SEARCH_BOTTOM_STYLE}>{effectiveSearch}</ChromeSearchSlot>
                         )}
                         <ChromeSidebarFooter
                             brand={brand}

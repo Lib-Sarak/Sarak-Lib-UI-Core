@@ -82,10 +82,10 @@ export const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
             options={SCREEN_OPTIONS}
             onChange={(event) => selectPreviewApp(event.target.value)}
         />
-        <p role={isPeeking ? 'status' : undefined} className={'min-w-0 flex-1 truncate text-[var(--sarak-type-scale-caption,12px)] ' + PREVIEW_TOOLBAR_HINT + ' ' + (isPeeking ? 'font-bold text-theme-primary' : 'text-[var(--theme-muted)]')}>
+        <p role={isPeeking ? 'status' : undefined} className={'min-w-0 flex-1 text-[var(--sarak-type-scale-caption,12px)] leading-snug ' + PREVIEW_TOOLBAR_HINT + ' ' + (isPeeking ? 'font-bold text-theme-primary' : 'text-[var(--theme-muted)]')}>
             {isPeeking ? text('peekNotice') : text('previewHint')}
         </p>
-        <div role="group" aria-label={PREVIEW_TOOLBAR_LABELS.deviceGroup} className="flex shrink-0 gap-1">
+        <div role="group" aria-label={PREVIEW_TOOLBAR_LABELS.deviceGroup} className="flex flex-wrap gap-1">
             {DEVICE_OPTIONS.map(({ value, label, icon: Icon }) => (
                 <SarakButton
                     key={value}

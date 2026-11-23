@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 
 import { SarakIcon } from "../../Icon/SarakIcon";
 import { SarakInput } from '../../Inputs';
@@ -45,14 +45,19 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
     const { getFlexStyles } = useStructuralStyles();
     const text = useLibraryText();
     const authText = (key: AuthLabelKey): string => labels?.[key] ?? text(key);
+    const baseId = useId();
+    const emailId = `${baseId}-email`;
+    const passwordId = `${baseId}-password`;
+    const mfaId = `${baseId}-mfa`;
 
     return (
         <>
             {!mfaStep ? (
                 <>
                     <div className={getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sarak-layout-gap-md,16px)*0.25)').className} style={getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sarak-layout-gap-md,16px)*0.25)').style}>
-                        <label className="text-xs font-bold text-theme-muted uppercase tracking-widest" style={{ marginLeft: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>{authText('authEmailLabel')}</label>
+                        <label htmlFor={emailId} className="text-xs font-bold text-theme-muted uppercase tracking-widest" style={{ marginLeft: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>{authText('authEmailLabel')}</label>
                         <SarakInput
+                            id={emailId}
                             type="email"
                             required
                             value={username}
@@ -66,7 +71,7 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
 
                     <div className={getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sarak-layout-gap-md,16px)*0.25)').className} style={getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sarak-layout-gap-md,16px)*0.25)').style}>
                         <div className="flex items-center justify-between" style={{ paddingLeft: 'calc(var(--sarak-layout-gap-md,16px)*0.25)', paddingRight: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>
-                            <label className="text-xs font-bold text-theme-muted uppercase tracking-widest">{authText('authPasswordLabel')}</label>
+                            <label htmlFor={passwordId} className="text-xs font-bold text-theme-muted uppercase tracking-widest">{authText('authPasswordLabel')}</label>
                             {!isRegistering && onForgot && (
                                 <SarakButton 
                                     onClick={onForgot}
@@ -79,6 +84,7 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
                             )}
                         </div>
                         <SarakInput
+                            id={passwordId}
                             type={showPassword ? "text" : "password"}
                             required
                             value={password || ''}
@@ -89,6 +95,7 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
                             rightIcon={setShowPassword ? (
                                 <SarakIconButton
                                     onClick={() => setShowPassword(!showPassword)}
+                                    aria-label={authText(showPassword ? 'authHidePassword' : 'authShowPassword')}
                                     icon={showPassword ? <SarakIcon name="EyeOff" className="h-5 w-5" /> : <SarakIcon name="Eye" className="h-5 w-5" />}
                                     variant="ghost"
                                     className="text-[var(--sarak-input-icon-color,var(--text-muted,rgba(242,246,251,0.55)))] hover:text-theme-text"
@@ -101,8 +108,9 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
                 </>
             ) : (
                 <div className={getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sarak-layout-gap-md,16px)*0.25)').className} style={getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sarak-layout-gap-md,16px)*0.25)').style}>
-                    <label className="text-xs font-bold text-theme-muted uppercase tracking-widest" style={{ marginLeft: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>{authText('authMfaLabel')}</label>
+                    <label htmlFor={mfaId} className="text-xs font-bold text-theme-muted uppercase tracking-widest" style={{ marginLeft: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>{authText('authMfaLabel')}</label>
                     <SarakInput
+                        id={mfaId}
                         type="text"
                         required
                         maxLength={6}

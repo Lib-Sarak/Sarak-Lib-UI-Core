@@ -207,8 +207,7 @@
     "databaseColumn": "components_base",
     "schemaOrigin": "overlays.ts",
     "digitalTwins": [
-      "SarakModal",
-      "SarakOverlay"
+      "SarakModal"
     ],
     "cssVariables": [
       "--sarak-modal-overlay"
@@ -237,8 +236,7 @@
     "databaseColumn": "components_base",
     "schemaOrigin": "overlays.ts",
     "digitalTwins": [
-      "SarakModal",
-      "SarakOverlay"
+      "SarakModal"
     ],
     "cssVariables": [
       "--sarak-modal-blur"
@@ -558,7 +556,7 @@
   {
     "tokenId": "tableHeaderBg",
     "name": "Fundo do Cabeçalho da Tabela",
-    "description": "Cor de fundo para a primeira linha (cabeçalho) de tabelas e grids de dados.",
+    "description": "Cor de fundo para a primeira linha, a de títulos de coluna, de tabelas e grids de dados.",
     "type": "color",
     "importance": 70,
     "categories": [

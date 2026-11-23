@@ -55,6 +55,9 @@ export const REMOVED_TOKEN_KEYS = new Set<string>([
     'cardContentAlignment', // redundante: `cardTextAlign` já distribui o conteúdo do cartão
     'tableActionPosition', // a `SarakTable` não tem coluna de ações
     'contentAlignment', // `maxContentWidth` já limita e centraliza a região; a classe de centralização perdia para o estilo em linha
+    // Moldavam só `--theme-primary-hover`/`-active`, que nenhum componente lê (ver docs/migracoes.md, `## 9.0.0`): o valor salvo cai fora, com aviso.
+    'colorDepth',
+    'colorVariation',
     'cardImagePosition', // só `right` com direção em linha mudava algo; a ordem dos blocos é do `className` do importador
 ]);
 

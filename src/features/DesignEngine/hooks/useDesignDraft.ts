@@ -2,10 +2,16 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { MASTER_DESIGN_MAP, sarakGetAllDesignTokens } from '../../../core/Design/master-map';
 import { useDesignDraftSync } from './useDesignDraftSync';
 import { useLastAppliedSnapshot } from './useLastAppliedSnapshot';
+import { useDraftToast } from './useDraftToast';
 import { SarakUIContextType, SarakDesignState } from '../../../core/Provider/types';
 import { SarakTokenValue } from '../../../core/Design/types';
 import { applyColorMode, overlayPreferences } from '../../../core/Provider/utils/overlayPreferences';
 import { composeThemeDesign } from '../../../core/Design/presets/themes/compose';
+import { findThemeEntry, replaceDesignChoice } from '../../../core/Provider/utils/designChoices';
+import { toggleKeepPalette } from '../utils/keepPalette';
+import { discardsCustomColor } from '../utils/discardsCustomColor';
+
+const BAR_TONE_KEYS: ReadonlySet<string> = new Set(['sidebarTone', 'topbarTone']);
 
 const areValuesEqual = (valA: unknown, valB: unknown): boolean => {
     if (valA === valB) return true;
@@ -62,11 +68,7 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
         );
     }, [draft, draftTheme, sarak.design?.mode, sarak.preferences?.colorMode]);
 
-    const [toast, setToast] = useState<{ type: 'success' | 'warning', message: string } | null>(null);
-    const showToast = useCallback((type: 'success' | 'warning', message: string) => {
-        setToast({ type, message });
-        setTimeout(() => setToast(null), 3000);
-    }, []);
+    const { toast, showToast } = useDraftToast();
     const { canUndoLastApply, captureBeforeApply, undoLastApply: undoLastApplyRaw } = useLastAppliedSnapshot(sarak, showToast);
     // Mantém o estado local para não ecoar pela ponte bidirecional de sincronização.
     const undoLastApply = useCallback(() => { undoLastApplyRaw(); setDraftState(null); }, [undoLastApplyRaw]);
@@ -128,21 +130,8 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
             const targetMode = value;
             const activeTheme = draftTheme;
             const current = draft as SarakDesignState;
-            const currentMode = current.mode === 'light' ? 'light' : 'dark';
-            const counterpart = activeTheme?.contraparte;
-            const nativeMode = activeTheme?.design?.mode === 'light' ? 'light' : 'dark';
-            const sourceForCurrentMode = (currentMode === nativeMode ? activeTheme?.design : counterpart) as
-                Record<string, SarakTokenValue> | undefined;
             const nextModeDraft = applyColorMode(current, targetMode, activeTheme);
-            const discardedCustomization = Boolean(counterpart && currentMode !== targetMode && Object.keys(counterpart).some((tokenId) =>
-                !areValuesEqual(
-                    (current as Record<string, SarakTokenValue>)[tokenId],
-                    sourceForCurrentMode?.[tokenId],
-                ) && !areValuesEqual(
-                    (current as Record<string, SarakTokenValue>)[tokenId],
-                    (nextModeDraft as Record<string, SarakTokenValue>)[tokenId],
-                ),
-            ));
+            const discardedCustomization = discardsCustomColor(current, nextModeDraft, activeTheme);
             setDraftState((prev: SarakDesignState | null) => {
                 const currentDraft = prev || draft;
                 if (currentDraft.mode === targetMode) return prev;
@@ -154,13 +143,23 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
             return;
         }
 
+        // "Manter minha paleta" decide quais cores valem, a do tema ou a da paleta: o rascunho as refaz.
+        if (key === 'keepPalette') {
+            const theme = findThemeEntry(sarak.allThemes, draftTheme?.id);
+            setDraftState((prev: SarakDesignState | null) => toggleKeepPalette(prev, draft, value === true, { theme, hostConfig: sarak.getHostConfig?.() as Record<string, unknown> | undefined }));
+            return;
+        }
+
+        // O tom da barra decide cores que a paleta calcula: elas são refeitas, e o que foi escolhido à mão fica.
+        const theme = BAR_TONE_KEYS.has(key) ? findThemeEntry(sarak.allThemes, draftTheme?.id) : undefined;
         setDraftState((prev: SarakDesignState | null) => {
             const current = prev || draft;
             const currentAsRecord = current as Record<string, SarakTokenValue>;
             if (currentAsRecord[key] === value) return prev;
+            if (theme) return replaceDesignChoice(currentAsRecord, { [key]: value }, theme, sarak.getHostConfig?.() as Record<string, unknown>);
             return { ...current, [key]: value } as SarakDesignState;
         });
-    }, [draft, draftTheme, showToast]);
+    }, [draft, draftTheme, showToast, sarak.allThemes, sarak.getHostConfig]);
 
     const resetComponent = useCallback((schemaIdOrSchemas: string | string[]) => {
         const componentKeys = typeof schemaIdOrSchemas === 'string'

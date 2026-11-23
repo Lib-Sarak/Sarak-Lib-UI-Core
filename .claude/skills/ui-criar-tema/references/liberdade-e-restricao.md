@@ -54,7 +54,7 @@ não como ponto de partida:
 - Um **brutalista** (`neo-brutalism`) — contraste geométrico, cor quase binária, zero suavização.
 - Um **minimalista** (`minimalist-airy`, a referência clonável — `SARAK_REFERENCE_THEMES`) — claro, neutro,
   respiro generoso.
-- Um **neon/cyberpunk** (`cyberpunk-neon` / `synthwave-retro`) — saturação alta, glow, contraste elétrico.
+- Um **neon/cyberpunk** (`cyberpunk-neon` / `cyber-retro-wave`) — saturação alta, glow, contraste elétrico.
 
 Abra qualquer um em `src/core/Design/presets/themes/` e veja a amplitude real — não o replique.
 

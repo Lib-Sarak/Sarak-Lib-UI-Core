@@ -50,6 +50,9 @@ ela dá um **procedimento**, um **fallback** e um **loop**. Comece sempre por aq
 | pôr imagem, vídeo ou animação no layout | [§3.11](#311-imagem-animação-e-conteúdo-custom-no-layout--dois-níveis) |
 | definir nome da aba, favicon, marca do produto | [§3.12](#312-identidade-da-página--é-sua-sempre) |
 | isolar apps, evitar acoplamento entre módulos | [§3.13](#313-estrutura-e-isolamento) |
+| carregar as fontes do tema, ou a da marca do cliente | [§3.14](#314-fontes--a-lib-já-carrega-do-próprio-pacote) |
+| conferir por máquina o uso da lib (lint ou CI) | [§3.15](#315-verificar-o-uso--o-kit-de-verificação-opcional) |
+| subi a versão e a tela não mudou | [§2.8](#troquei-a-versão-e-a-tela-não-mudou--qual-build-a-página-executa) |
 | copiar um esqueleto pronto e adaptar | [§4 Templates](#4--templates-copiáveis) |
 | compor uma tela de lista com busca, filtros e linhas de recurso | [§4 Templates](#4--templates-copiáveis) — `tela-lista.tsx` |
 | compor uma tela de detalhe com campos e atividade | [§4 Templates](#4--templates-copiáveis) — `tela-detalhe.tsx` |
@@ -91,12 +94,21 @@ um template novo) na próxima versão do kit. Enquanto isso, a regra de fallback
 ```bash
 # garanta um package.json na raiz do diretório-alvo ANTES de instalar
 npm init -y                      # só se ainda não existir
-npm install @sarak/lib-ui-core   # ou o spec git/registry que a sua organização usa
+npm install @sarak/lib-ui-core   # o spec git da sua organização; em produção, pela tag (abaixo)
 ```
 
 > **Por que o `npm init -y` importa:** sem um `package.json` local, o `npm install` sobe a árvore de
 > diretórios, encontra um `package.json` ancestral e instala **lá** — em silêncio, poluindo um projeto
 > alheio. É um erro real, já observado, e sem mensagem nenhuma.
+
+**De onde instalar.** Em produção a lib vem **pela tag**, com pin exato: `npm install "github:Lib-Sarak/Sarak-Lib-UI-Core#v<versão>"`.
+Nada muda até você trocar o pin, e as notas da versão nova se leem antes da troca (§2.8). `file:` e `link:` servem **só para iterar
+localmente** ao lado da lib: não valide uma instalação real com eles. ⚠️ Com `github:…#<tag>` o npm grava no `package-lock.json` a
+origem como `git+ssh://git@github.com/…` (os dois logins viram isso), e o `npm ci` passa a pedir uma chave SSH. Numa CI sem chave,
+troque o protocolo no git antes do `npm ci`: `git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"`.
+
+**A ordem:** (1) `package.json` na raiz · (2) instalar pela tag · (3) `npx sarak-ui init`, que grava as peers e copia este kit ·
+(4) `npm install` · (5) o Provider e o cromo (§1.2) · (6) as telas (§3), uma a uma, pelo catálogo.
 
 O caminho assistido é `npx sarak-ui init`, que grava as `peerDependencies`, gera o starter e copia
 este kit. Detalhes e flags na skill (`sarak-ui/skill/`).
@@ -134,6 +146,11 @@ peer e mostra o fallback se ela faltar.
 | `recharts` | `ResponsiveContainer`, `BarChart`, `LineChart`, `Line`, `XAxis`, `YAxis`, `Tooltip`, `Bar` | `SarakChartEngine` no motor Recharts |
 | `react-syntax-highlighter` | `Prism`; `react-syntax-highlighter/dist/esm/styles/prism`: `oneDark`, `oneLight`, `atomDark` | `SarakChatEngine` e `SarakMarkdownRenderer` |
 | `reactflow` | `BackgroundVariant` | `SarakFlowEngine` |
+
+O `pdfjs-dist` não tem linha nessa tabela porque não gera esse aviso: o `SarakPDFViewer` o importa por namespace e lê
+`getDocument` e `GlobalWorkerOptions` em tempo de execução, e o build de um consumidor Vite 8.3.5 sem as peers (medido) não emitiu
+nenhum `IMPORT_IS_UNDEFINED` para ele. Sem o pacote, a mensagem de "instale o `pdfjs-dist`" aparece no lugar do visualizador, como
+nos outros.
 
 Ao compilar um consumidor client com Vite 8, o bundler pode avisar que não preserva a diretiva
 `"use client"` encontrada em módulos do `framer-motion`. É um aviso esperado do pacote instalado, não
@@ -236,6 +253,54 @@ it('mostra os pedidos', async () => {
 ```
 
 `createSarakKitMock({ useOverlay: () => overlayDeTeste })` troca ou acrescenta qualquer nome.
+
+Com a porta única (§2.2: só o `ui-kit` importa a lib), o `vi.mock` aponta para a **porta**, que é o módulo que os seus arquivos de
+fato importam. Mantenha o que é do `ui-kit` e ponha os dublês da lib por cima:
+
+```tsx
+vi.mock('@meu-sistema/ui-kit', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()), // os componentes do seu ui-kit, reais
+  ...(await createSarakKitMock()),                       // a lib, com os dublês por cima do `export *`
+}));
+```
+
+### Testar com a lib
+
+O que a lib garante a quem testa a tela do importador, por alvo estável. Renomear qualquer um dos alvos abaixo é quebra
+de contrato.
+
+- **A versão da lib** que o teste está exercitando: `SARAK_BUILD_INFO.libVersion`, exportado do barril
+  (`import { SARAK_BUILD_INFO } from '@sarak/lib-ui-core'`). Não leia o `package.json` do pacote: ele não faz parte do
+  `exports`.
+- **O aviso de CSS no jsdom.** O jsdom não carrega CSS, então a lib avisa "[Sarak] CSS não detectado" em todo teste. O
+  `filterSarakTestConsoleLog` (acima) descarta esse aviso do modo app, e só ele; o aviso do modo embarcado ("CSS
+  escopado não detectado") continua passando. A supressão é opt-in, no seu `vitest.config`: a lib não se cala sozinha.
+- **O diálogo de `useOverlay().confirm`.** Passe `confirmTestId` e `cancelTestId` para receber `data-testid` nos botões
+  Confirmar e Cancelar, sem depender do texto deles (que muda com o idioma e com `confirmLabel`/`cancelLabel`). Sem as
+  opções, os botões não levam o atributo.
+- **O painel de customização.** Estes `data-testid` existem hoje:
+
+  | Gesto | `data-testid` |
+  |---|---|
+  | Aplicar | `sarak-panel-apply` |
+  | Salvar tema | `sarak-panel-save-theme` |
+  | Novo tema | `sarak-panel-new-theme` |
+  | Apagar tema | `sarak-panel-delete-theme` |
+  | Exportar JSON | `sarak-panel-export-json` |
+  | Confirmar no modal de salvar | `sarak-save-theme-confirm` |
+
+  Salvar, Novo, Apagar e Exportar são itens do menu **Mais ações**: abra o menu antes de procurá-los. O modal de salvar
+  usa o mesmo botão para salvar e para exportar, com o mesmo `data-testid`.
+- **Os cartões de tema.** Cada cartão leva `data-theme-id="<id do tema>"`, tanto o já carregado quanto o que ainda
+  carrega. Eles moram na decisão **Tema** do painel.
+- **O `SarakRadio`.** O `<input type="radio">` é `sr-only`, dentro de um `<label>`: em navegador real, clique no
+  **rótulo**, não no `<input>`. Num teste com Testing Library, `getByLabelText` devolve o `<input>`, e clicar nele também
+  marca o radio no jsdom.
+- **A galeria de temas saiu na 8.0.0**, com os botões "Abrir galeria" e "Fechar galeria". Os temas ficam na decisão
+  **Tema**; escolher um cartão põe o tema no **rascunho**, e só o **Aplicar** o grava. A saída está registrada em
+  `docs/migracoes.md`, na entrada "O painel de customização navega por seis decisões, com a prévia sempre à vista e o
+  ajuste fino em níveis". O "Fechar galeria" que ainda existe é o do `SarakLightbox`, componente de mídia, que não tem
+  relação com o painel.
 
 ---
 
@@ -402,9 +467,26 @@ terminal interativo, o comando falha em voz alta em vez de atravessar um major s
 > nova" não pode ser medido** — o comando avisa disso e mostra TODAS as notas registradas, em vez de
 > fingir um intervalo que não conferiu.
 
+Com pin de tag exata (`#v<X.Y.Z>`, a instalação recomendada na §1.1), o `update` **troca o pin** no `package.json`: sem `--latest`, para a maior tag do mesmo major; com `--latest`, para a mais nova, e atravessar um major passa pela confirmação acima.
+
 O `update` funciona nos dois modos de dependência: git (`github:…#semver:`) e `file:`/`link:`
 (desenvolvimento lado a lado) — no segundo, `--latest` não se aplica (não há major para pular), e o
 comando só refaz o link/cópia do gerenciador de verdade.
+
+### Troquei a versão e a tela não mudou — qual build a página executa
+
+Entre o `dist/` da lib e a tela há **três camadas de cache, e as três falham em silêncio**: (1) `file:` no pnpm **copia** o pacote
+para o store, então todo rebuild pede reinstalar; (2) o pré-bundle do bundler (Vite: `node_modules/.vite/`) se refaz por lockfile,
+versão e configuração, **nunca por conteúdo**; (3) o navegador guarda esse pré-bundle como `immutable`. Medir a lib por uma
+instalação que não foi refeita, ou por um cache quente, é medir o passado.
+
+Dois carimbos dizem em que camada você está. O código e o teste leem a versão por `SARAK_BUILD_INFO.libVersion`, exportada do
+barril (`import { SARAK_BUILD_INFO } from '@sarak/lib-ui-core'`): é a porta para a versão, porque o `package.json` do pacote não faz
+parte do `exports`. A página mostra o build que **executa** no atributo `data-sarak-build-info` de um elemento da lib (JSON com
+`libVersion`, `baseCommitShort` e `builtAt`); o arquivo `node_modules/@sarak/lib-ui-core/dist/BUILD_INFO.json` mostra o que está
+**instalado**. Iguais: o navegador executa o instalado. Diferentes: é cache, e o procedimento para limpar cada camada, na ordem, está
+na skill (`sarak-ui/skill/`, seção "Rebuildou a lib e a tela não mudou"). O `baseCommit` desse arquivo fica sempre um passo atrás
+do commit que o publica; para "estou atualizado?", use `npx sarak-ui check`, não o `BUILD_INFO`.
 
 ---
 
@@ -505,21 +587,25 @@ A regra única: **estilize por `var(--sarak-*)`**, com fallback. É isso que faz
 seu componente.
 
 ```tsx
+import { SarakTypography } from '@sarak/lib-ui-core';
+
 export function MeuPainel({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
-    <section
+    <div
       style={{
         background: 'var(--sarak-card-bg, transparent)',
-        border: 'var(--sarak-card-border, none)',
+        border: 'var(--sarak-card-border-width, 0) solid var(--sarak-card-border-color, transparent)',
         borderRadius: 'var(--sarak-card-radius, 8px)',
         padding: 'var(--sarak-card-padding-md, 16px)',
+        display: 'flex',
+        flexDirection: 'column',
         gap: 'var(--sarak-layout-gap-md, 16px)',
       }}
     >
-      {/* A cor do texto comum é herdada do escopo pintado pelo Provider — não force. */}
-      <h2 style={{ color: 'var(--sarak-title-color, inherit)' }}>{titulo}</h2>
+      {/* O título vem da peça pública: ela já lê fonte, tamanho e cor do tema. O texto comum herda a cor do escopo — não force. */}
+      <SarakTypography variant="h2">{titulo}</SarakTypography>
       {children}
-    </section>
+    </div>
   );
 }
 ```
@@ -602,27 +688,37 @@ Escolha a base pela marca e pelo contexto do produto; depois ajuste os tokens, n
 3. **Tokens de marca:** derive do preset completo e sobrescreva `primaryColor`, `accentColor` e os tokens de marca que a identidade pedir. Confira contraste nas duas aparências.
 4. **Ajustes de superfície:** só então refine tipografia, cartões, botões, fundo e gráficos. Preserve a `contraparte` gerada pela derivação.
 
+<!-- SARAK-KIT:ARQUETIPOS:INICIO -->
+
 | Arquétipo embarcado | Demonstra |
 | --- | --- |
-| `sarak-sovereign` | referência completa; vidro, atmosfera, identidade e contraparte (`surfaceMaterial`, `texture`, `contraparte`) |
-| `cyberpunk-neon` | cor neon com contraste controlado, quinas e botão wireframe (`primaryColor`, `cardGeometricCut`, `btnStyleType`) |
-| `industrial-terminal` | material industrial, alto contraste e movimento mecânico (`cardTextureType`, `btnStyleType`, `motion*`) |
-| `neo-brutalism` | papel claro, contorno grosso e sombra dura (`cardBorderWidth`, `cardShadow*`, `borderRadius`) |
-| `synthwave-retro` | arte vetorial, grade e acentos luminosos (`globalBackgroundImageUrl`, `bgGradient*`, `texture`) |
-| `nebula-space` | vidro profundo, raios grandes e transição longa (`cardBackdropBlur`, `cardBorderRadius`, `pageTransitionType`) |
-| `kinetic-flow` | movimento elástico e foco luminoso (`motionEase*`, `cardHoverGlow`, `cardInnerGlow*`) |
-| `cyber-retro-wave` | acabamento prismático e cromo de inspiração Y2K (`texture`, `btnStyleType`, `iconFamily`) |
-| `minimalist-airy` | referência clara com espaço e leitura de conteúdo (`layoutDensity`, `layoutPadding`, `headingFont`) |
-| `data-terminal` | caderno técnico compacto e monoespaçado (`layoutDensity`, `monoFont`, `chartType`) |
-| `neumorphic-mobile` | superfície tátil e controles amplos (`surfaceMaterial`, `cardShadow*`, `btnStyleType`) |
-| `golden-hour` | papel quente, tipografia editorial e grão (`headingFont`, `texture`, `textureOpacity`) |
-| `aurora-veil` | vidro claro e aurora difusa (`cardBackdropBlur`, `bgGradient*`, `surfaceMaterial`) |
-| `blueprint-protocol` | grade técnica, cotas e marcação de revisão (`texture`, `monoFont`, `borderStyle`) |
-| `editorial-ink` | coluna editorial, serifada e espaçosa (`headingFont`, `bodySize`, `maxContentWidth`) |
-| `organic-clay` | material terroso, contorno orgânico e calma tátil (`cardTextureType`, `surfaceMaterial`, `borderRadius`) |
-| `high-contrast` | extremos tonais, leitura ampliada e contornos definidos (`bodySize`, `cardBorderWidth`, pares de contraste) |
-| `corporate-ledger` | tabela densa e relatório de negócios (`layoutDensity`, `table*`, `chartColorPalette`) |
-| `playful-pastel` | cor pastel, formas macias e pequenos gestos de movimento (`primaryColor`, `cardBorderRadius`, `motion*`) |
+| `sarak-sovereign` — Sarak Sovereign | Sala de comando: vidro escuro sobre constelação, ciano contido, Outfit nos títulos e Phosphor preenchido. |
+| `cyberpunk-neon` — Cyberpunk Neon | Néon ácido: verde sobre preto, quina cortada, mono maiúsculo e botão wireframe. |
+| `industrial-terminal` — Industrial Terminal | CRT âmbar de chão de fábrica: chapa, listra de perigo, zero raio, estêncil e movimento mecânico. |
+| `neo-brutalism` — Neo Brutalism | Brutalismo claro: papel creme, borda preta grossa, cor chapada, sombra dura deslocada. |
+| `nebula-space` — Nebula Space | Espaço profundo: violeta e gelo sobre azul-noite, vidro espesso, estrelas, ícone fino e movimento longo. |
+| `kinetic-flow` — Kinetic Flow | Performance em grafite, coral, âmbar e menta; curva elástica e foco de luz nos cartões. |
+| `cyber-retro-wave` — Cyber Retro Wave | Y2K prateado com prisma, ciano elétrico, violeta e verde ácido; geometria polida e brilho neon controlado. |
+| `minimalist-airy` — Minimalist Airy | Referência clara do conjunto: papel branco, tinta de alto contraste, azul preciso e espaço generoso. |
+| `data-terminal` — Data Terminal | Caderno de laboratório em verde técnico, mono e compacto; a contraparte leva a grade ao terminal escuro. |
+| `neumorphic-mobile` — Neumorphic Mobile | Interface móvel tátil em cinza suave, com relevo neumórfico, rosa controlado e controles amplos. |
+| `golden-hour` — Golden Hour | Editorial de fim de tarde em papel creme, tinta serifada, ouro quente e grão fotográfico. |
+| `aurora-veil` — Aurora Veil | Véu de vidro lavanda com aurora verde-água e rosa, difuso e luminoso nos dois modos. |
+| `blueprint-protocol` — Blueprint Protocol | Cianótipo técnico em azul médio, grade de engenharia, cotas monoespaçadas e linha vermelha de revisão. |
+| `editorial-ink` — Editorial Ink | Papel quente, tinta precisa e uma coluna de leitura com ritmo editorial. |
+| `organic-clay` — Organic Clay | Barro, madeira e contornos topográficos em uma superfície tátil e tranquila. |
+| `high-contrast` — High Contrast | Preto e branco absolutos, amarelo de ação e contornos definidos para leitura imediata. |
+| `corporate-ledger` — Corporate Ledger | Um caderno de dados preciso, denso e pronto para tabelas e relatórios. |
+| `playful-pastel` — Playful Pastel | Pastéis vivos, formas macias e pequenos gestos de movimento com leitura clara. |
+| `sarak-sovereign-classic` — Sarak Sovereign Classic | O Sovereign de origem: vidro escuro, ciano vivo com violeta e magenta, Inter no corpo, Outfit nos títulos e marcador de item ativo com brilho. |
+| `cyberpunk-neon-classic` — Cyberpunk Neon Classic | Hacker de terminal: verde #00ff41 sobre preto, cantos retos com quina cortada, mono em tudo, grade de HUD e botão wireframe. |
+| `industrial-terminal-classic` — Industrial Terminal Classic | Painel de máquina: âmbar #ff9900 sobre grafite, zero raio, borda grossa, listra de perigo, mono maiúsculo e movimento nulo. |
+| `cyber-retro-wave-classic` — Cyber Retro-Wave 2077 Classic | Neon dos anos 80: magenta e ciano sobre violeta-escuro, quina cortada, Orbitron maiúsculo, VT323 no código e scanlines. |
+| `nature-breeze` — Nature Breeze | Brisa de jardim: verde #2e7d32 com amarelo e verde-azulado sobre papel esverdeado, Lora nos títulos, vidro leve de cantos de 32 px e botão em pílula. No escuro, o preto da foto com o verde da marca. |
+| `neo-brutalism-classic` — Neo Brutalism Classic | Brutalismo de origem: vermelho #ff0000 com amarelo e azul puros sobre papel neutro, borda preta de 4 px, sombra dura deslocada, Space Grotesk e cantos retos. No escuro, o preto da foto, sem sombra. |
+| `dot-matrix-elegant` — Dot Matrix Elegant | Matriz de pontos elegante: dourado #d4af37 sobre preto, pontos de fundo, Outfit leve nos títulos, cantos de 4 px e respiro largo. No claro, marfim com dourado-escuro. |
+
+<!-- SARAK-KIT:ARQUETIPOS:FIM -->
 
 Os nomes ajudam a escolher um ponto de partida; confirme os ids, amostras e modos do catálogo no runtime. A vitrine gerada mede cada preset nas duas aparências e nos tamanhos desktop e celular.
 
@@ -684,6 +780,12 @@ Esse é o envelope completo; os campos de `design` são tokens estéticos declar
   Ele ajusta tokens ao vivo e **exporta o JSON** completo em **Exportar → Exportar JSON**. Exportar
   produz um arquivo; salvar um tema novo é outra operação, que chama `options.theme.onSave` para a
   persistência escolhida pelo app. Sem essa porta, a ação de salvar não aparece no painel.
+- **Os gestos do painel, com `options.theme.onSave` ligado:** **Salvar** substitui o tema seu que está em edição (mesmo id);
+  **Salvar como novo**, **Duplicar** e **Novo tema** criam (o último parte da referência completa); **Apagar** só existe para tema seu,
+  pede confirmação e chama `options.theme.onDelete`. Tema embarcado nunca é sobrescrito — editá-lo é duplicá-lo — e um id seu que
+  colide com o de um embarcado ou de outro tema seu ganha sufixo, com aviso. `onSave(theme, operation)` diz se foi `'create'` ou
+  `'replace'`. Porta que falha **rejeita**: um `catch` que engole o erro faz a tela dizer que salvou o que o banco não guardou. O
+  exemplo copiável das duas portas está em `docs/persistencia-de-tema.md` (§5).
 - **Persistência sem backend:** a seleção do usuário vai para `localStorage` sozinha. Quer guardar no
   seu backend? Use `options.persistence.onSave`/`onLoad` ou `onThemeChange` — a lib entrega o payload,
   quem faz a chamada é você. **O formato do dado, o schema de referência (Postgres e SQLite) e um
@@ -710,14 +812,41 @@ organização e a chave local também fica separada por ela:
       tenantId: organizacao.id,
       preferConfigOverCache: true,
       onLoad: () => buscarTemaAplicado(organizacao.id),
-      onSave: (design, activeThemeId) =>
-        salvarTemaAplicado(organizacao.id, { design, activeThemeId }),
+      // `format`: guarde e devolva no onLoad — sem ele, a lib lê o gravado como do formato anterior.
+      onSave: (design, activeThemeId, format) =>
+        salvarTemaAplicado(organizacao.id, { design, activeThemeId, format }),
     },
   }}
 >
   <Aplicacao />
 </SarakUIProvider>
 ```
+
+**Da tela pública (sem tenant) para o login (com tenant).** Antes do login não há organização: monte o Provider sem
+`tenantId` e sem portas de servidor, e o tema vive só no `localStorage`, na chave base (`storageKey`). Depois do login, passe as
+mesmas opções com `tenantId` e as portas fechadas sobre a organização:
+
+```tsx
+// Antes do login: sem tenant, sem portas do servidor.
+<SarakUIProvider config={temaDeBoot.design} options={{ persistence: { strategy: 'hybrid' } }}>
+
+// Depois do login: o mesmo Provider, agora com a organização.
+<SarakUIProvider
+  config={temaDeBoot.design}
+  options={{
+    persistence: {
+      strategy: 'hybrid',
+      tenantId: organizacao.id,
+      onLoad: () => buscarTemaAplicado(organizacao.id),
+      onSave: (design, activeThemeId, format) => salvarTemaAplicado(organizacao.id, { design, activeThemeId, format }),
+    },
+  }}
+>
+```
+
+Com `tenantId`, a chave local passa a ser `${storageKey}::tenant:${tenantId}`: o tema que o visitante deixou na chave base
+**não é lido** pela organização, e o `onLoad` da organização decide o que aparece. Não é preciso remontar o Provider. Se o login
+trouxer o tema da organização no HTML, mantenha `config` com ele e `preferConfigOverCache: true` (abaixo).
 
 Ao trocar a organização, atualize `tenantId` e as portas; o Provider carrega o estado novo sem
 remontar e cancela a gravação pendente da organização anterior. Não passe `activeThemeId` controlado
@@ -765,6 +894,10 @@ const design = { ...estruturaDoTema, colorPalette: 'custom:analogous:#2563eb' };
   cor e deixe a paleta calcular.
 - Para ver o resultado antes de aplicar: `sarakResolvePalette(valor, 'light' | 'dark')`. No painel, o usuário escolhe uma
   pronta ou cria uma a partir de uma cor; o valor segue no tema salvo, pelo `onSave` que você já tem.
+- **Paleta de marca com nome.** Quem cria uma paleta no painel pode salvá-la ("Salvar paleta"): ela entra em "Minhas paletas", é
+  escolhível como qualquer paleta e o atalho "Usar minha marca" a oferece. A lista mora no design, na chave `savedPalettes` — o mesmo
+  `onSave` que você já tem a grava, sem porta nova; a troca de tema não a apaga. Para ver um tema numa paleta específica, ligue
+  "Manter minha paleta" (`keepPalette`): a paleta escolhida vale por cima de qualquer tema, inclusive das cores que ele declara.
 
 ### Estrutura vem da Personalidade
 
@@ -790,6 +923,15 @@ celular/tablet/desktop: o cromo e as primitivas de layout leem o dispositivo soz
 O tipo público `SarakResponsiveValue<T>` recebe um objeto com as chaves exatas `mob`, `tab` e
 `desk`, cada uma com um valor do tipo `T`. Para saber quais props aceitam esse formato, consulte a
 lista atualizada em `catalog.json` → `responsive.responsiveProps`; nem toda prop de layout é responsiva.
+
+### A malha padrão do `SarakGrid` põe os irmãos lado a lado
+
+Sem `templateColumns` nem `columns`, o `SarakGrid` usa a malha `auto-fit`: `repeat(auto-fit, minmax(<piso>, 1fr))`, com o
+piso de célula vindo do token `layoutGridMinCell` (padrão 280px). Dois blocos irmãos cabem lado a lado assim que o
+contêiner comporta duas células, e quem espera uma pilha vertical vê uma fileira.
+
+Para a pilha vertical, declare-a: `<SarakGrid templateColumns="1fr">` (uma coluna fixa) ou
+`<SarakFlex direction="column">` (quando não há malha a fazer).
 
 ### Grade de 12 colunas e spans dos filhos
 
@@ -881,8 +1023,11 @@ de fonte do painel; no tema, a fonte vai pelo **`value` exato** que o seletor gr
   para uma família do catálogo: a lib carregaria de novo e a fonte deixaria de seguir a troca de tema.
 - **A origem é `options.fonts`:** omitido = `'bundled'` (o padrão); `{ baseUrl }` quando o seu bundler não acha os
   arquivos (esbuild puro, CJS no navegador) ou você os serve de uma CDN própria — copie a pasta `fonts/` do pacote e
-  aponte para ela; `'google'` só se você **quer** o Google Fonts; `'none'` se você carrega tudo. Vite (dev e `build`)
-  acha os arquivos sozinho.
+  aponte para ela; `'google'` só se você **quer** o Google Fonts; `'none'` se você carrega tudo. **No Vite não precisa de `baseUrl`**: medido num consumidor
+  Vite 8.3.5 com o pacote instalado em `node_modules`, o `build` emite as 60 fontes com hash e o dev server reescreve cada URL para
+  `/node_modules/@sarak/lib-ui-core/dist/fonts/…`, que responde `200 font/woff2`. Se o seu dev server não achar as fontes (a lib
+  instalada fora da raiz do Vite, num workspace, por exemplo), o sintoma é o aviso "não carregou" abaixo, e `baseUrl` aponta para uma
+  cópia da pasta `fonts/`.
 - **A fonte da marca do cliente vai em `options.fonts.custom`**, não em `baseUrl`: `custom` acrescenta uma família
   que a lib não tem, servida por você; `baseUrl` só muda de onde vêm as fontes da lib.
 
@@ -905,6 +1050,64 @@ de fonte do painel; no tema, a fonte vai pelo **`value` exato** que o seletor gr
   uma vez por família, e a página segue com a genérica da pilha.
 
 Detalhe e a tabela por bundler: `docs/migracoes.md`, `## 8.0.0`.
+
+## 3.15 Verificar o uso → o kit de verificação (opcional)
+
+A lib traz, dentro do pacote, regras que dizem por máquina **onde você usa a lib errado ou mantém à mão algo que ela já entrega**. Cada achado traz `arquivo:linha`, o que está errado e o nome público que substitui. **Nenhuma regra nasce ligada**: você liga uma a uma, e desliga com motivo.
+
+**Duas portas, o mesmo dado** (as listas vêm de `catalog.json › verification` e do resto do catálogo, nunca de cópia):
+
+- **Plugin de ESLint** — `@sarak/lib-ui-core/eslint`, para `.ts`/`.tsx`/`.js`. Peer opcional: `eslint >= 9`, config plana.
+- **Comando** — `npx sarak-ui verify`, para o que o seu ESLint não lê (`.css`, `package.json`, a cópia do kit) e para rodar fora do ESLint, na CI.
+
+**1. Plugin — instalar e ligar regra a regra**
+
+```js
+// eslint.config.mjs
+import sarak from '@sarak/lib-ui-core/eslint';
+
+export default [
+  {
+    files: ['**/*.{ts,tsx}'],
+    plugins: { sarak },
+    rules: {
+      'sarak/known-css-var': 'error',
+      'sarak/valid-spacing-value': 'error',
+      'sarak/prefer-sarak-component': ['error', { allow: ['src/documentos/**'] }],
+      'sarak/single-entrypoint': ['error', { allow: ['packages/ui-kit/src/**'] }],
+    },
+  },
+];
+```
+
+As regras do plugin: `single-entrypoint`, `no-deep-import`, `known-css-var`, `prefer-sarak-component`, `no-reimplemented-piece`, `no-literal-color-font`, `no-direct-wrapped-lib`, `no-internal-class-selector`, `valid-spacing-value`, `known-icon-name`, `known-theme-id`. O conjunto `sarak/recommended` liga em `error` as cinco que a medição nos importadores reais não acusou em falso e que não pedem opção: `no-deep-import`, `known-css-var`, `no-internal-class-selector`, `valid-spacing-value` e `known-icon-name` (`...sarak.configs.recommended.rules` dentro de `rules`, com `plugins: { sarak }`). As outras ficam de fora por um motivo que você pode ler: `prefer-sarak-component` e `no-literal-color-font` acusam o dublê de teste e o documento impresso (ligue-as com `allow`) — os moldes de `templates/` passam nelas, e um teste da lib trava isso; `no-reimplemented-piece` é heurística de nome; `single-entrypoint` e `known-theme-id` pedem opção.
+
+**2. Comando — `.css`, `package.json`, carimbo do kit**
+
+```bash
+npx sarak-ui verify --list                       # as regras, a porta e a severidade proposta
+npx sarak-ui verify --rule known-css-var --rule pinned-install
+npx sarak-ui verify --format json                # para a CI ou para o seu gate
+```
+
+Ou um `sarak-verify.json` na raiz: `{ "rules": { "known-css-var": "error", "single-entrypoint": ["error", { "allow": ["packages/ui-kit/package.json"] }], "kit-in-sync": "warn" }, "exclude": ["**/vendor/**"] }`. Regras do comando: `known-css-var`, `no-literal-color-font` e `no-internal-class-selector` (nos `.css`), `single-entrypoint` e `pinned-install` (no `package.json`) e `kit-in-sync`. Sai com 1 quando há achado `error`; sem regra ligada, sai com 2 e não faz nada.
+
+**3. Ler o achado**
+
+```
+src/pages/proposal-ui.css:129  error  known-css-var
+    `--sarak-border-radius-md` não é variável pública da lib: o `var()` cai no valor de reserva sem aviso e a tela sai do tema. Nomes parecidos: …
+```
+
+A mensagem diz o que está errado e o nome público que entra no lugar. A regra `no-reimplemented-piece` é heurística (compara o **nome** do que você exporta com o das peças públicas): trate o achado como a pergunta "isto faz o mesmo?", não como sentença.
+
+**4. Desligar uma regra com motivo** — use a opção da regra (`allow` por glob de arquivo, `ignore` por nome) ou o comentário do ESLint com o porquê, para o próximo leitor saber:
+
+```ts
+// eslint-disable-next-line sarak/prefer-sarak-component -- HTML de contrato gerado, sem componente equivalente
+```
+
+**O que o kit não vê:** variável CSS montada por concatenação, id ou nome em variável, `React.createElement(tag)` e o comportamento de uma peça reescrita. Quem não instala o `eslint` não vê erro nem aviso novo, e o kit não entra no boot da página.
 
 ---
 
@@ -953,12 +1156,10 @@ Antes de escrever um componente seu, procure a necessidade aqui. Cada linha diz 
 reconstruir custa mais** e **o que o tema já controla**. O que a lib faz de verdade, com tipo e prop, está no
 `catalog.json` (A.1 e A.4b abaixo); este mapa só aponta e ensina o que a medição mostrou.
 
-> **Estado do mapa:** cartões, sobreposições e tabelas estão preenchidos com o que foi medido em navegador. O lote 2
-> acrescenta o alcance dos leitores de tipografia, botões, campos, alternadores, cores, gráficos, chat e status. O lote 3
-> acrescenta fundo, vidro, sombra, rolagem, movimento, camadas e os componentes especializados, **medidos em
-> navegador** (o que cada valor mudou na tela, não só quem o lê). O lote 4 acrescenta o cromo, a estrutura, a marca e as
-> preferências do usuário (§6.8). Neste mapa, calendário, Gantt e Kanban continuam pendentes; para outras necessidades,
-> consulte o catálogo antes de construir.
+> **O que o mapa cobre:** cartões, sobreposições e tabelas, o alcance dos leitores de tipografia, botões, campos, alternadores,
+> cores, gráficos, chat e status, fundo, vidro, sombra, rolagem, movimento, camadas, os componentes especializados, o cromo, a
+> estrutura, a marca e as preferências do usuário (§6.8), **medidos em navegador** (o que cada valor mudou na tela, não só quem o
+> lê). Para uma necessidade que não está aqui, consulte o catálogo antes de construir.
 
 | Preciso de… | A lib já tem | Por que não reconstruir |
 | --- | --- | --- |
@@ -972,6 +1173,8 @@ reconstruir custa mais** e **o que o tema já controla**. O que a lib faz de ver
 | aviso de alterações não salvas | `useSarakUnsavedChanges` · `SarakForm` com `warnOnUnsaved` | o aviso do navegador e a confirmação pelo overlay já estão ligados; você só liga `confirmLeave` no roteador |
 | paginação com link real | `SarakPagination` com `getPageHref` | Ctrl+clique e clique do meio funcionam, e o clique simples segue em `onChange`, sem recarregar a página |
 | mensagem de erro para o usuário | `sarakErrorMessage` | lê as respostas comuns de API e barra rastro de pilha, HTML e erro do motor JS |
+| validar CPF e CNPJ, formatar CPF, CNPJ e CEP | `sarakIsValidCpf` · `sarakIsValidCnpj` · `sarakFormatDocument` (o `SarakMaskedInput` usa as mesmas validações) | o cálculo do dígito verificador e a máscara já estão feitos e testados |
+| documento para ver e imprimir (A4, carta, celular) | `SarakDocumentFrame` com `sarakPrint` | a folha escala para o contêiner, as ações ficam fora da impressão e só o documento sai no papel; `window.print()` imprime a tela inteira |
 | testes com Provider e mock do kit | `renderWithSarak` · `createSarakKitMock` (`@sarak/lib-ui-core/testing`) | um mock por módulo envelhece a cada componente novo; os dublês daqui acompanham a lib |
 | dica ao passar o ponteiro / menu de contexto | `SarakTooltip` · `SarakContextMenu` | o menu de contexto se desloca para dentro da tela e fecha por clique fora e por Escape; o tooltip já lê fundo, texto, borda e raio do tema |
 | carregar as fontes do tema (e a da marca) | o Provider, com `options.fonts` e `options.fonts.custom` (§3.14) | só a família em uso é baixada, sem rede de terceiros, e a fonte segue a troca de tema; um `@font-face` seu fica fora disso |
@@ -988,7 +1191,7 @@ reconstruir custa mais** e **o que o tema já controla**. O que a lib faz de ver
 | camadas de empilhamento | tokens `zIndex*` | menus, busca, modais, gavetas, dicas e avisos derivam da mesma escada; um `z-index` fixo seu entra na disputa |
 | estado vazio, esqueleto de carga, motor de fluxo, matriz expansível | `SarakEmptyState` · `SarakSkeleton` · `SarakFlowEngine` · `SarakExpandableMatrix` | geometria, desfoque e cores têm tokens (`emptyState*`, `skeleton*`, `flow*`, `matrix*`) |
 | navegação, cromo e slots | `SarakAppChrome` (§2 e A.3), com `SarakShellNav` e os widgets de busca, usuário, notificações e preferências | lateral ou topo, barra do celular, recolher, marca, cores, sombra, grão e posição de cada widget vêm dos tokens `sidebar*`, `topbar*`, `nav*`, `identity*`, `chrome*Position` e `preference*Position` (§6.8); um cromo escrito à mão perde tudo isso e a barra do celular |
-| calendário, Gantt e Kanban | ⏳ `SarakKanban` | ⏳ lote seguinte |
+| calendário, Gantt e quadro Kanban | `SarakCalendar` · `SarakGantt` · `SarakKanban` | as três já existem e leem o tema; as props de cada uma estão no catálogo (A.1), e os tokens delas não foram medidos neste mapa |
 | escolha de modo, tamanho da fonte, orientação da navegação e idioma pelo usuário | os widgets do cromo e `useSarakPreferences` (preferências sobrepostas ao tema, nunca gravadas nele) | o administrador decide por token se cada escolha fica fixa na barra, no menu ⚙ ou não é oferecida (`preference*Position`, §6.8); um alternador seu não aplica a contraparte do tema |
 | idioma (textos da lib) | `language` no Provider e nos widgets de preferências | os textos internos acompanham a língua configurada; não replique mensagens da biblioteca |
 | persistência do tema | `localStorage` no Provider; `options.persistence.onSave`/`onLoad` para servidor | a seleção local já persiste; o host controla o armazenamento compartilhado e guarda o payload sem reconstruí-lo |
@@ -1113,7 +1316,7 @@ O que a medição em navegador mostrou, e que o schema sozinho não diz:
 
 ## 6.8 Cromo, estrutura, marca e preferências do usuário
 
-Medido em navegador (lote 4):
+Medido em navegador:
 
 - **A preferência do usuário vence o tema.** `navigationStyle`, `bodySize` e o modo claro/escuro têm uma preferência
   sobreposta (`useSarakPreferences`): com a preferência definida, o valor do tema não aparece. A paleta **só inverte
@@ -1161,9 +1364,9 @@ Medido em navegador (lote 4):
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v8.0.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **561** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **565** nomes (componentes, tipos, hooks e helpers).
 
-### A.1 Componentes públicos (143)
+### A.1 Componentes públicos (144)
 
 Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada prop, com descrição, estão em `catalog.json` → `components.<Nome>.props` (e em `docs/component-catalog.md`).
 
@@ -1185,6 +1388,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Cards | **SarakExpandableCard** | `title` · `iconContent` · `helpButton` · `children` · `className` · `contentClassName` · `baseHeight` |
 | Cards | **SarakSearchCard** | `item` · `mapping` · `className` · `onSearchChange` · `onToggleCapability` · `design` · `label` |
 | Cards | **SarakTitleCard** | `item` · `mapping` · `className` · `design` · `label` |
+| Core | **SarakCustomizationPanel** | `onUnsavedChangesControl` |
 | Core | **SarakDesignScope** | `design` · `children` · `className` · `style` |
 | Core | **SarakDeviceProvider** | `children` · `overrideDevice` · `breakpoints` |
 | Core | **SarakUIProvider** | `children` · `config` · `token` · `userId` · `options` · `customThemes` · `activeThemeId` · `initialTheme` · `onThemeChange` · `loadingFallback` · `onMediaUpload` |
@@ -1263,7 +1467,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Navigation | **SarakPagination** | `current` · `total` · `pageSize` · `pageSizeOptions` · `totalItems` · `onPageSizeChange` · `maxVisible` · `onChange` · `getPageHref` · `className` |
 | Navigation | **SarakShellLanguageSelector** | `variant` |
 | Navigation | **SarakShellNav** | `items` · `activeRoute` · `brand` · `onNavigate` · `onChange` · `orientation` · `collapsed` · `className` |
-| Navigation | **SarakShellSearchWidget** | `variant` · `compact` · `items` · `onClick` · `onSelect` |
+| Navigation | **SarakShellSearchWidget** | `variant` · `compact` · `items` · `onClick` · `onSelect` · `menuItemHeight` |
 | Navigation | **SarakShellThemeToggle** | `variant` |
 | Navigation | **SarakShellUserWidget** | `user` · `logout` · `variant` |
 | Navigation | **SarakSpotlight** | `items` · `shortcut` · `open` · `onOpenChange` · `onSelect` · `placeholder` |
@@ -1354,28 +1558,30 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 
 **Espaçamento semântico** (aceito por `gap`/`padding` das primitivas): `spacing-xs` · `spacing-sm` · `spacing-md` · `spacing-lg` · `spacing-xl`
 
-**CSS Variables públicas** (748) — as ÚNICAS que a central emite; use sempre com fallback, `var(--sarak-x, valor)`. Nome fora desta lista não pinta nada:
+**CSS Variables públicas** (756) — as ÚNICAS que a central emite; use sempre com fallback, `var(--sarak-x, valor)`. Nome fora desta lista não pinta nada:
 
-`--sarak-accent-color` · `--sarak-action-glow-shadow-blur` · `--sarak-action-glow-shadow-offset-y` · `--sarak-action-glow-shadow-spread` · `--sarak-ai-glow` · `--sarak-ai-glow-color` · `--sarak-anim-enabled` · `--sarak-auth-hero-orb-blur` · `--sarak-b-weight` · `--sarak-badge-radius` · `--sarak-bg-base` · `--sarak-bg-base-color` · `--sarak-bg-body` · `--sarak-bg-body-rgb` · `--sarak-bg-gradient-angle` · `--sarak-bg-gradient-mode` · `--sarak-bg-layer-1` · `--sarak-bg-layer-2` · `--sarak-bg-modal` · `--sarak-bg-noise-animation` · `--sarak-bg-noise-density` · `--sarak-bg-opacity` · `--sarak-bg-pattern-id` · `--sarak-bg-pattern-opacity` · `--sarak-body-font` · `--sarak-body-lh` · `--sarak-body-line-height` · `--sarak-body-size` · `--sarak-body-weight` · `--sarak-border-beam-enabled` · `--sarak-border-radius` · `--sarak-border-style` · `--sarak-border-type` · `--sarak-border-width` · `--sarak-brand-logo-size-collapsed` · `--sarak-breakpoint-desktop` · `--sarak-breakpoint-tablet` · `--sarak-btn-active-scale` · `--sarak-btn-backdrop-blur` · `--sarak-btn-border-radius` · `--sarak-btn-ghost-hover` · `--sarak-btn-ghost-hover-bg` · `--sarak-btn-hover-scale` · `--sarak-btn-neon-glow-color` · `--sarak-btn-neon-pulse-speed` · `--sarak-btn-primary-bg` · `--sarak-btn-primary-bg-10` · `--sarak-btn-primary-bg-20` · `--sarak-btn-primary-bg-30` · `--sarak-btn-primary-bg-40` · `--sarak-btn-primary-bg-50` · `--sarak-btn-primary-bg-active` · `--sarak-btn-primary-bg-bg` · `--sarak-btn-primary-bg-border` · `--sarak-btn-primary-bg-hover` · `--sarak-btn-primary-bg-light` · `--sarak-btn-primary-bg-rgb` · `--sarak-btn-primary-text` · `--sarak-btn-radius-bl` · `--sarak-btn-radius-br` · `--sarak-btn-radius-tl` · `--sarak-btn-radius-tr` · `--sarak-btn-secondary-bg` · `--sarak-btn-secondary-bg-10` · `--sarak-btn-secondary-bg-20` · `--sarak-btn-secondary-bg-30` · `--sarak-btn-secondary-bg-40` · `--sarak-btn-secondary-bg-50` · `--sarak-btn-secondary-bg-active` · `--sarak-btn-secondary-bg-bg` · `--sarak-btn-secondary-bg-border` · `--sarak-btn-secondary-bg-hover` · `--sarak-btn-secondary-bg-light` · `--sarak-btn-secondary-bg-rgb` · `--sarak-btn-style-type` · `--sarak-button-icon-position` · `--sarak-button-width-strategy` · `--sarak-card-action-btn-bg` · `--sarak-card-action-btn-border-radius` · `--sarak-card-action-btn-hover-bg` · `--sarak-card-action-btn-padding` · `--sarak-card-action-btn-primary-bg` · `--sarak-card-action-btn-radius` · `--sarak-card-action-btn-text` · `--sarak-card-action-click-scale` · `--sarak-card-backdrop-blur` · `--sarak-card-background-color` · `--sarak-card-background-color-10` · `--sarak-card-background-color-20` · `--sarak-card-background-color-30` · `--sarak-card-background-color-40` · `--sarak-card-background-color-50` · `--sarak-card-background-color-bg` · `--sarak-card-background-color-border` · `--sarak-card-background-color-hover` · `--sarak-card-background-color-rgb` · `--sarak-card-bg` · `--sarak-card-bg-10` · `--sarak-card-bg-20` · `--sarak-card-bg-30` · `--sarak-card-bg-40` · `--sarak-card-bg-50` · `--sarak-card-bg-active` · `--sarak-card-bg-bg` · `--sarak-card-bg-border` · `--sarak-card-bg-hover` · `--sarak-card-bg-light` · `--sarak-card-bg-rgb` · `--sarak-card-border-bottom` · `--sarak-card-border-color` · `--sarak-card-border-left` · `--sarak-card-border-opacity` · `--sarak-card-border-radius` · `--sarak-card-border-right` · `--sarak-card-border-top` · `--sarak-card-border-width` · `--sarak-card-clip-path` · `--sarak-card-footer-bg` · `--sarak-card-footer-border` · `--sarak-card-geometric-cut` · `--sarak-card-glow-color` · `--sarak-card-glow-intensity` · `--sarak-card-header-bg` · `--sarak-card-header-border` · `--sarak-card-header-padding` · `--sarak-card-hover-glow` · `--sarak-card-hover-glow-increase` · `--sarak-card-hover-style` · `--sarak-card-hover-translate` · `--sarak-card-hover-y` · `--sarak-card-inner-glow-color` · `--sarak-card-inner-glow-width` · `--sarak-card-layout-direction` · `--sarak-card-opacity` · `--sarak-card-padding-md` · `--sarak-card-radius` · `--sarak-card-radius-bl` · `--sarak-card-radius-br` · `--sarak-card-radius-tl` · `--sarak-card-radius-tr` · `--sarak-card-search-bg-focus` · `--sarak-card-search-border-beam-active` · `--sarak-card-search-placeholder` · `--sarak-card-search-placeholder-color` · `--sarak-card-search-text-focus` · `--sarak-card-search-text-focus-color` · `--sarak-card-shadow` · `--sarak-card-shadow-blur` · `--sarak-card-shadow-expansion` · `--sarak-card-shadow-offset-x` · `--sarak-card-shadow-offset-y` · `--sarak-card-shadow-spread` · `--sarak-card-spotlight-opacity` · `--sarak-card-surface-opacity` · `--sarak-card-text-align` · `--sarak-card-texture-opacity` · `--sarak-card-texture-type` · `--sarak-card-title-color` · `--sarak-card-title-font-size` · `--sarak-card-title-font-weight` · `--sarak-card-title-icon-glow` · `--sarak-card-title-icon-glow-blur` · `--sarak-card-title-letter-spacing` · `--sarak-card-variant` · `--sarak-catalog-filter-min-width` · `--sarak-catalog-item-radius` · `--sarak-catalog-section-radius` · `--sarak-chart-color-palette` · `--sarak-chart-engine-min-h` · `--sarak-chart-engine-min-height` · `--sarak-chart-grid-opacity` · `--sarak-chart-primary` · `--sarak-chart-show-grid` · `--sarak-chart-smoothing` · `--sarak-chart-thickness` · `--sarak-chart-tooltip-bg` · `--sarak-chart-type` · `--sarak-chat-anim-speed` · `--sarak-chat-animation-speed` · `--sarak-chat-attachment-name-max-width` · `--sarak-chat-bubble` · `--sarak-chat-bubble-blur` · `--sarak-chat-bubble-glass-blur` · `--sarak-chat-bubble-radius` · `--sarak-chat-bubble-style` · `--sarak-chat-radius` · `--sarak-chat-token-slider-min-width` · `--sarak-chat-user-bg` · `--sarak-checkbox-active` · `--sarak-checkbox-active-10` · `--sarak-checkbox-active-20` · `--sarak-checkbox-active-30` · `--sarak-checkbox-active-40` · `--sarak-checkbox-active-50` · `--sarak-checkbox-active-active` · `--sarak-checkbox-active-bg` · `--sarak-checkbox-active-border` · `--sarak-checkbox-active-color` · `--sarak-checkbox-active-color-10` · `--sarak-checkbox-active-color-20` · `--sarak-checkbox-active-color-30` · `--sarak-checkbox-active-color-40` · `--sarak-checkbox-active-color-50` · `--sarak-checkbox-active-color-bg` · `--sarak-checkbox-active-color-border` · `--sarak-checkbox-active-color-hover` · `--sarak-checkbox-active-color-rgb` · `--sarak-checkbox-active-hover` · `--sarak-checkbox-active-light` · `--sarak-checkbox-active-rgb` · `--sarak-chrome-notifications-position` · `--sarak-chrome-search-position` · `--sarak-chrome-user-position` · `--sarak-color-bg-body` · `--sarak-color-bg-layer1` · `--sarak-color-bg-layer2` · `--sarak-color-bg-modal` · `--sarak-color-depth` · `--sarak-color-palette` · `--sarak-color-primary` · `--sarak-color-primary-10` · `--sarak-color-primary-20` · `--sarak-color-primary-30` · `--sarak-color-primary-40` · `--sarak-color-primary-50` · `--sarak-color-primary-active` · `--sarak-color-primary-bg` · `--sarak-color-primary-border` · `--sarak-color-primary-hover` · `--sarak-color-primary-light` · `--sarak-color-primary-rgb` · `--sarak-color-secondary` · `--sarak-color-secondary-10` · `--sarak-color-secondary-20` · `--sarak-color-secondary-30` · `--sarak-color-secondary-40` · `--sarak-color-secondary-50` · `--sarak-color-secondary-active` · `--sarak-color-secondary-bg` · `--sarak-color-secondary-border` · `--sarak-color-secondary-hover` · `--sarak-color-secondary-light` · `--sarak-color-secondary-rgb` · `--sarak-color-tertiary` · `--sarak-color-tertiary-10` · `--sarak-color-tertiary-20` · `--sarak-color-tertiary-30` · `--sarak-color-tertiary-40` · `--sarak-color-tertiary-50` · `--sarak-color-tertiary-active` · `--sarak-color-tertiary-bg` · `--sarak-color-tertiary-border` · `--sarak-color-tertiary-hover` · `--sarak-color-tertiary-light` · `--sarak-color-tertiary-rgb` · `--sarak-color-variation` · `--sarak-context-menu-min-width` · `--sarak-contrast` · `--sarak-control-height-toggle` · `--sarak-design-engine-sidebar-max-w` · `--sarak-design-engine-sidebar-max-width` · `--sarak-design-engine-sidebar-min-w` · `--sarak-design-engine-sidebar-min-width` · `--sarak-device-desktop-min-width` · `--sarak-device-frame-radius` · `--sarak-device-phone-height` · `--sarak-device-phone-notch-radius` · `--sarak-device-tablet-height` · `--sarak-dot-grid-dot-offset` · `--sarak-dot-grid-dot-size` · `--sarak-dot-grid-tile-size` · `--sarak-emphasis-color` · `--sarak-empty-state-caption-max-width` · `--sarak-empty-state-orb-blur` · `--sarak-empty-state-orb-inner` · `--sarak-empty-state-orb-outer` · `--sarak-empty-state-ring-radius` · `--sarak-empty-state-void-letter-offset` · `--sarak-engine-min-h-lg` · `--sarak-engine-min-h-sm` · `--sarak-engine-min-height-lg` · `--sarak-engine-min-height-sm` · `--sarak-flow-grid` · `--sarak-flow-grid-style` · `--sarak-flow-handle-size` · `--sarak-flow-node-blur` · `--sarak-flow-node-padding` · `--sarak-flow-node-radius` · `--sarak-flow-radius` · `--sarak-focus-ring-width` · `--sarak-focus-width` · `--sarak-font-b` · `--sarak-font-h` · `--sarak-font-m` · `--sarak-form-field-density` · `--sarak-form-label-position` · `--sarak-glass-blur` · `--sarak-glass-edge-color` · `--sarak-glass-edge-width` · `--sarak-glass-opacity` · `--sarak-glass-roughness` · `--sarak-glass-saturation` · `--sarak-glass-specularity` · `--sarak-global-background-blur` · `--sarak-global-background-image-url` · `--sarak-global-background-opacity` · `--sarak-global-background-position` · `--sarak-global-bg-blur` · `--sarak-global-bg-image` · `--sarak-global-bg-opacity` · `--sarak-global-contrast` · `--sarak-global-flow-align` · `--sarak-global-flow-direction` · `--sarak-global-saturation` · `--sarak-global-section-gap` · `--sarak-h-transform` · `--sarak-h1-letter-spacing` · `--sarak-h1-lh` · `--sarak-h1-line-height` · `--sarak-h1-ls` · `--sarak-h1-size` · `--sarak-h1-weight` · `--sarak-h2-lh` · `--sarak-h2-line-height` · `--sarak-h2-size` · `--sarak-h2-weight` · `--sarak-h3-size` · `--sarak-header-alignment` · `--sarak-heading-font` · `--sarak-heading-transform` · `--sarak-icon-button-frosted-shadow-blur` · `--sarak-icon-button-frosted-shadow-offset-y` · `--sarak-icon-button-glow-blur-lg` · `--sarak-icon-button-glow-blur-md` · `--sarak-icon-button-glow-blur-sm` · `--sarak-icon-family` · `--sarak-icon-stroke` · `--sarak-icon-stroke-width` · `--sarak-icon-weight` · `--sarak-identity-align` · `--sarak-identity-alignment` · `--sarak-identity-font` · `--sarak-identity-font-family` · `--sarak-identity-font-weight` · `--sarak-identity-hover` · `--sarak-identity-hover-effect` · `--sarak-identity-padding` · `--sarak-identity-tracking` · `--sarak-identity-weight` · `--sarak-image-card-glow-blur` · `--sarak-image-card-hover-zoom` · `--sarak-image-card-overlay-opacity` · `--sarak-image-card-shadow-blur` · `--sarak-image-card-shadow-offset-y` · `--sarak-image-card-shadow-spread` · `--sarak-input-backdrop-blur` · `--sarak-input-bg` · `--sarak-input-bg-10` · `--sarak-input-bg-20` · `--sarak-input-bg-30` · `--sarak-input-bg-40` · `--sarak-input-bg-50` · `--sarak-input-bg-active` · `--sarak-input-bg-bg` · `--sarak-input-bg-border` · `--sarak-input-bg-hover` · `--sarak-input-bg-light` · `--sarak-input-bg-rgb` · `--sarak-input-border-color` · `--sarak-input-border-radius` · `--sarak-input-border-type` · `--sarak-input-error-color` · `--sarak-input-focus-border-color` · `--sarak-input-icon-color` · `--sarak-input-icon-position` · `--sarak-input-padding` · `--sarak-input-padding-horizontal` · `--sarak-input-padding-vertical` · `--sarak-input-shadow` · `--sarak-input-text-color` · `--sarak-is-auto-hide-enabled` · `--sarak-is-nav-hidden` · `--sarak-is-split-view-enabled` · `--sarak-kanban-card-radius` · `--sarak-kanban-header-padding-y` · `--sarak-kanban-header-tracking` · `--sarak-layered-shadows` · `--sarak-layout-density` · `--sarak-layout-gap` · `--sarak-layout-gap-lg` · `--sarak-layout-gap-md` · `--sarak-layout-gap-sm` · `--sarak-layout-grid-min-cell` · `--sarak-layout-grid-template` · `--sarak-layout-padding` · `--sarak-layout-preview-max-h` · `--sarak-line-height` · `--sarak-management-group-list-max-height` · `--sarak-matrix-blur` · `--sarak-matrix-border-color` · `--sarak-matrix-gap` · `--sarak-matrix-item-bg` · `--sarak-matrix-node-min-width` · `--sarak-matrix-radius` · `--sarak-max-content-width` · `--sarak-mobile-navigation-style` · `--sarak-modal-action-alignment` · `--sarak-modal-blur` · `--sarak-modal-border-radius` · `--sarak-modal-header-style` · `--sarak-modal-overlay` · `--sarak-modal-overlay-blur` · `--sarak-modal-overlay-color` · `--sarak-modal-width-full` · `--sarak-modal-width-lg` · `--sarak-modal-width-md` · `--sarak-modal-width-sm` · `--sarak-modal-width-xl` · `--sarak-mode` · `--sarak-mono-font` · `--sarak-motion-dur-fast` · `--sarak-motion-dur-instant` · `--sarak-motion-dur-normal` · `--sarak-motion-dur-slow` · `--sarak-motion-duration-fast` · `--sarak-motion-duration-instant` · `--sarak-motion-duration-normal` · `--sarak-motion-duration-slow` · `--sarak-motion-ease-in` · `--sarak-motion-ease-main` · `--sarak-motion-ease-out` · `--sarak-motion-stagger` · `--sarak-motion-stagger-delay` · `--sarak-multi-select-input-min-width` · `--sarak-nav-active-color` · `--sarak-nav-active-marker-color` · `--sarak-nav-active-marker-glow` · `--sarak-nav-item-active-color` · `--sarak-nav-item-radius` · `--sarak-nav-marker-color` · `--sarak-nav-marker-glow` · `--sarak-nav-style` · `--sarak-navbar-layout` · `--sarak-navigation-style` · `--sarak-noise-density` · `--sarak-noise-speed` · `--sarak-on-chat-user` · `--sarak-on-error` · `--sarak-on-info` · `--sarak-on-muted` · `--sarak-on-nav-active` · `--sarak-on-overlay` · `--sarak-on-secondary` · `--sarak-on-sidebar` · `--sarak-on-success` · `--sarak-on-surface` · `--sarak-on-topbar` · `--sarak-on-warning` · `--sarak-page-transition-type` · `--sarak-preference-font-size-position` · `--sarak-preference-language-position` · `--sarak-preference-mode-position` · `--sarak-preference-nav-collapse-position` · `--sarak-preference-navigation-style-position` · `--sarak-preset-mini-card-max-width` · `--sarak-primary-color` · `--sarak-primary-color-10` · `--sarak-primary-color-20` · `--sarak-primary-color-30` · `--sarak-primary-color-40` · `--sarak-primary-color-50` · `--sarak-primary-color-active` · `--sarak-primary-color-bg` · `--sarak-primary-color-border` · `--sarak-primary-color-hover` · `--sarak-primary-color-light` · `--sarak-primary-color-rgb` · `--sarak-progress-bar-height` · `--sarak-progress-bar-max-width` · `--sarak-progress-bar-radius` · `--sarak-range-active-bg` · `--sarak-range-active-color` · `--sarak-reduced-motion` · `--sarak-saturation` · `--sarak-scroll-padding` · `--sarak-scroll-radius` · `--sarak-scroll-thumb-color` · `--sarak-scroll-thumb-hover-opacity` · `--sarak-scroll-thumb-opacity` · `--sarak-scroll-track-opacity` · `--sarak-scroll-width` · `--sarak-search-backdrop-blur` · `--sarak-search-dropdown-gap` · `--sarak-search-dropdown-width` · `--sarak-search-position-sidebar` · `--sarak-search-position-topbar` · `--sarak-secondary-color` · `--sarak-secondary-color-10` · `--sarak-secondary-color-20` · `--sarak-secondary-color-30` · `--sarak-secondary-color-40` · `--sarak-secondary-color-50` · `--sarak-secondary-color-active` · `--sarak-secondary-color-bg` · `--sarak-secondary-color-border` · `--sarak-secondary-color-hover` · `--sarak-secondary-color-light` · `--sarak-secondary-color-rgb` · `--sarak-shadow-ambient-alpha` · `--sarak-shadow-color-mode` · `--sarak-shadow-intensity` · `--sarak-shadow-orientation` · `--sarak-shadow-projection-alpha` · `--sarak-shadow-projection-blur` · `--sarak-shell-brand-logo-size` · `--sarak-sidebar-active-color` · `--sarak-sidebar-active-item-style` · `--sarak-sidebar-background-style` · `--sarak-sidebar-bg` · `--sarak-sidebar-bg-rgb` · `--sarak-sidebar-blur` · `--sarak-sidebar-border-color` · `--sarak-sidebar-border-side` · `--sarak-sidebar-border-style` · `--sarak-sidebar-border-width` · `--sarak-sidebar-brand-background` · `--sarak-sidebar-brand-bg` · `--sarak-sidebar-brand-color` · `--sarak-sidebar-category-color` · `--sarak-sidebar-collapsed-width` · `--sarak-sidebar-color` · `--sarak-sidebar-footer-background` · `--sarak-sidebar-footer-bg` · `--sarak-sidebar-hover-color` · `--sarak-sidebar-icon-color` · `--sarak-sidebar-icon-size` · `--sarak-sidebar-item-density` · `--sarak-sidebar-item-hover-text-color` · `--sarak-sidebar-item-text-color` · `--sarak-sidebar-label-max-width` · `--sarak-sidebar-logo-placement` · `--sarak-sidebar-max-width` · `--sarak-sidebar-min-width` · `--sarak-sidebar-noise-opacity` · `--sarak-sidebar-position` · `--sarak-sidebar-resizable` · `--sarak-sidebar-shadow` · `--sarak-sidebar-tone` · `--sarak-sidebar-width` · `--sarak-skeleton-circle-size` · `--sarak-skeleton-row-height` · `--sarak-skeleton-row-radius` · `--sarak-split-pane-min-width` · `--sarak-status-error-color` · `--sarak-status-error-color-10` · `--sarak-status-error-color-20` · `--sarak-status-error-color-30` · `--sarak-status-error-color-40` · `--sarak-status-error-color-50` · `--sarak-status-error-color-active` · `--sarak-status-error-color-bg` · `--sarak-status-error-color-border` · `--sarak-status-error-color-hover` · `--sarak-status-error-color-light` · `--sarak-status-error-color-rgb` · `--sarak-status-glow-blur` · `--sarak-status-info-color` · `--sarak-status-info-color-10` · `--sarak-status-info-color-20` · `--sarak-status-info-color-30` · `--sarak-status-info-color-40` · `--sarak-status-info-color-50` · `--sarak-status-info-color-active` · `--sarak-status-info-color-bg` · `--sarak-status-info-color-border` · `--sarak-status-info-color-hover` · `--sarak-status-info-color-light` · `--sarak-status-info-color-rgb` · `--sarak-status-success-color` · `--sarak-status-success-color-10` · `--sarak-status-success-color-20` · `--sarak-status-success-color-30` · `--sarak-status-success-color-40` · `--sarak-status-success-color-50` · `--sarak-status-success-color-active` · `--sarak-status-success-color-bg` · `--sarak-status-success-color-border` · `--sarak-status-success-color-hover` · `--sarak-status-success-color-light` · `--sarak-status-success-color-rgb` · `--sarak-status-warning-color` · `--sarak-status-warning-color-10` · `--sarak-status-warning-color-20` · `--sarak-status-warning-color-30` · `--sarak-status-warning-color-40` · `--sarak-status-warning-color-50` · `--sarak-status-warning-color-active` · `--sarak-status-warning-color-bg` · `--sarak-status-warning-color-border` · `--sarak-status-warning-color-hover` · `--sarak-status-warning-color-light` · `--sarak-status-warning-color-rgb` · `--sarak-subtitle-color` · `--sarak-surface` · `--sarak-surface-color` · `--sarak-surface-intensity` · `--sarak-surface-material` · `--sarak-switch-active-bg` · `--sarak-switch-active-bg-10` · `--sarak-switch-active-bg-20` · `--sarak-switch-active-bg-30` · `--sarak-switch-active-bg-40` · `--sarak-switch-active-bg-50` · `--sarak-switch-active-bg-active` · `--sarak-switch-active-bg-bg` · `--sarak-switch-active-bg-border` · `--sarak-switch-active-bg-hover` · `--sarak-switch-active-bg-light` · `--sarak-switch-active-bg-rgb` · `--sarak-switch-backdrop-blur` · `--sarak-switch-label-position` · `--sarak-switch-pulse-color` · `--sarak-switch-style-type` · `--sarak-switch-thumb` · `--sarak-switch-thumb-bg` · `--sarak-switch-track-active-bg` · `--sarak-switch-track-active-bg-10` · `--sarak-switch-track-active-bg-20` · `--sarak-switch-track-active-bg-30` · `--sarak-switch-track-active-bg-40` · `--sarak-switch-track-active-bg-50` · `--sarak-switch-track-active-bg-bg` · `--sarak-switch-track-active-bg-border` · `--sarak-switch-track-active-bg-hover` · `--sarak-switch-track-active-bg-rgb` · `--sarak-system-tone` · `--sarak-tab-gap` · `--sarak-tab-section-margin` · `--sarak-table-border` · `--sarak-table-border-color` · `--sarak-table-border-radius` · `--sarak-table-cell-padding` · `--sarak-table-density` · `--sarak-table-header-bg` · `--sarak-table-padding` · `--sarak-table-row-hover` · `--sarak-table-row-hover-bg` · `--sarak-table-zebra-striping` · `--sarak-tertiary-color` · `--sarak-tertiary-color-10` · `--sarak-tertiary-color-20` · `--sarak-tertiary-color-30` · `--sarak-tertiary-color-40` · `--sarak-tertiary-color-50` · `--sarak-tertiary-color-active` · `--sarak-tertiary-color-bg` · `--sarak-tertiary-color-border` · `--sarak-tertiary-color-hover` · `--sarak-tertiary-color-light` · `--sarak-tertiary-color-rgb` · `--sarak-text-color-master` · `--sarak-text-color-muted` · `--sarak-text-color-secondary` · `--sarak-text-glow` · `--sarak-text-glow-intensity` · `--sarak-text-main` · `--sarak-text-muted` · `--sarak-text-sec` · `--sarak-text-smoothing` · `--sarak-texture` · `--sarak-texture-color` · `--sarak-texture-color-10` · `--sarak-texture-color-20` · `--sarak-texture-color-30` · `--sarak-texture-color-40` · `--sarak-texture-color-50` · `--sarak-texture-color-active` · `--sarak-texture-color-bg` · `--sarak-texture-color-border` · `--sarak-texture-color-hover` · `--sarak-texture-color-light` · `--sarak-texture-color-rgb` · `--sarak-texture-opacity` · `--sarak-title-color` · `--sarak-toast-accent-width` · `--sarak-toast-max-width` · `--sarak-toast-min-width` · `--sarak-tooltip-bg` · `--sarak-tooltip-border` · `--sarak-tooltip-border-color` · `--sarak-tooltip-radius` · `--sarak-tooltip-text` · `--sarak-tooltip-text-color` · `--sarak-topbar-active-color` · `--sarak-topbar-active-item-style` · `--sarak-topbar-background-style` · `--sarak-topbar-bg` · `--sarak-topbar-blur` · `--sarak-topbar-border-color` · `--sarak-topbar-border-side` · `--sarak-topbar-border-style` · `--sarak-topbar-border-width` · `--sarak-topbar-brand-background` · `--sarak-topbar-brand-bg` · `--sarak-topbar-brand-color` · `--sarak-topbar-collapsed-height` · `--sarak-topbar-color` · `--sarak-topbar-group-separator-color` · `--sarak-topbar-height` · `--sarak-topbar-hover-color` · `--sarak-topbar-icon-color` · `--sarak-topbar-icon-size` · `--sarak-topbar-item-density` · `--sarak-topbar-item-hover-text-color` · `--sarak-topbar-item-text-color` · `--sarak-topbar-label-max-width` · `--sarak-topbar-noise-opacity` · `--sarak-topbar-shadow` · `--sarak-topbar-title-color` · `--sarak-topbar-tone` · `--sarak-touch-target-min` · `--sarak-tracking-snug` · `--sarak-tracking-tight` · `--sarak-tracking-ultra` · `--sarak-tracking-wide` · `--sarak-tracking-wider` · `--sarak-tracking-widest` · `--sarak-type-scale-caption` · `--sarak-type-scale-micro` · `--sarak-type-scale-tiny` · `--sarak-type-scale-xl` · `--sarak-type-scale-xs` · `--sarak-type-scale2xs` · `--sarak-type-scale3xs` · `--sarak-vignette-blend-mode` · `--sarak-vignette-color` · `--sarak-vignette-opacity` · `--sarak-vignette-softness` · `--sarak-z-base` · `--sarak-z-index-base` · `--sarak-z-index-modal` · `--sarak-z-index-sidebar` · `--sarak-z-index-toast` · `--sarak-z-index-tooltip` · `--sarak-z-modal` · `--sarak-z-sidebar` · `--sarak-z-toast` · `--sarak-z-tooltip`
+`--sarak-accent-color` · `--sarak-action-glow-shadow-blur` · `--sarak-action-glow-shadow-offset-y` · `--sarak-action-glow-shadow-spread` · `--sarak-ai-glow` · `--sarak-ai-glow-color` · `--sarak-anim-enabled` · `--sarak-auth-hero-orb-blur` · `--sarak-b-weight` · `--sarak-badge-radius` · `--sarak-bg-base` · `--sarak-bg-base-color` · `--sarak-bg-body` · `--sarak-bg-body-rgb` · `--sarak-bg-gradient-angle` · `--sarak-bg-gradient-mode` · `--sarak-bg-layer-1` · `--sarak-bg-layer-2` · `--sarak-bg-modal` · `--sarak-bg-noise-animation` · `--sarak-bg-noise-density` · `--sarak-bg-opacity` · `--sarak-bg-pattern-id` · `--sarak-bg-pattern-opacity` · `--sarak-body-font` · `--sarak-body-lh` · `--sarak-body-line-height` · `--sarak-body-size` · `--sarak-body-weight` · `--sarak-border-beam-enabled` · `--sarak-border-radius` · `--sarak-border-style` · `--sarak-border-type` · `--sarak-border-width` · `--sarak-brand-display` · `--sarak-brand-logo-size-collapsed` · `--sarak-breakpoint-desktop` · `--sarak-breakpoint-tablet` · `--sarak-btn-active-scale` · `--sarak-btn-backdrop-blur` · `--sarak-btn-border-radius` · `--sarak-btn-ghost-hover` · `--sarak-btn-ghost-hover-bg` · `--sarak-btn-hover-scale` · `--sarak-btn-neon-glow-color` · `--sarak-btn-neon-pulse-speed` · `--sarak-btn-primary-bg` · `--sarak-btn-primary-bg-10` · `--sarak-btn-primary-bg-20` · `--sarak-btn-primary-bg-30` · `--sarak-btn-primary-bg-40` · `--sarak-btn-primary-bg-50` · `--sarak-btn-primary-bg-active` · `--sarak-btn-primary-bg-bg` · `--sarak-btn-primary-bg-border` · `--sarak-btn-primary-bg-hover` · `--sarak-btn-primary-bg-light` · `--sarak-btn-primary-bg-rgb` · `--sarak-btn-primary-text` · `--sarak-btn-radius-bl` · `--sarak-btn-radius-br` · `--sarak-btn-radius-tl` · `--sarak-btn-radius-tr` · `--sarak-btn-secondary-bg` · `--sarak-btn-secondary-bg-10` · `--sarak-btn-secondary-bg-20` · `--sarak-btn-secondary-bg-30` · `--sarak-btn-secondary-bg-40` · `--sarak-btn-secondary-bg-50` · `--sarak-btn-secondary-bg-active` · `--sarak-btn-secondary-bg-bg` · `--sarak-btn-secondary-bg-border` · `--sarak-btn-secondary-bg-hover` · `--sarak-btn-secondary-bg-light` · `--sarak-btn-secondary-bg-rgb` · `--sarak-btn-style-type` · `--sarak-button-icon-position` · `--sarak-button-width-strategy` · `--sarak-card-action-btn-bg` · `--sarak-card-action-btn-border-radius` · `--sarak-card-action-btn-hover-bg` · `--sarak-card-action-btn-padding` · `--sarak-card-action-btn-primary-bg` · `--sarak-card-action-btn-radius` · `--sarak-card-action-btn-text` · `--sarak-card-action-click-scale` · `--sarak-card-backdrop-blur` · `--sarak-card-background-color` · `--sarak-card-background-color-10` · `--sarak-card-background-color-20` · `--sarak-card-background-color-30` · `--sarak-card-background-color-40` · `--sarak-card-background-color-50` · `--sarak-card-background-color-bg` · `--sarak-card-background-color-border` · `--sarak-card-background-color-hover` · `--sarak-card-background-color-rgb` · `--sarak-card-bg` · `--sarak-card-bg-10` · `--sarak-card-bg-20` · `--sarak-card-bg-30` · `--sarak-card-bg-40` · `--sarak-card-bg-50` · `--sarak-card-bg-active` · `--sarak-card-bg-bg` · `--sarak-card-bg-border` · `--sarak-card-bg-hover` · `--sarak-card-bg-light` · `--sarak-card-bg-rgb` · `--sarak-card-border-bottom` · `--sarak-card-border-color` · `--sarak-card-border-left` · `--sarak-card-border-opacity` · `--sarak-card-border-radius` · `--sarak-card-border-right` · `--sarak-card-border-top` · `--sarak-card-border-width` · `--sarak-card-clip-path` · `--sarak-card-footer-bg` · `--sarak-card-footer-border` · `--sarak-card-geometric-cut` · `--sarak-card-glow-color` · `--sarak-card-glow-intensity` · `--sarak-card-header-bg` · `--sarak-card-header-border` · `--sarak-card-header-padding` · `--sarak-card-hover-glow` · `--sarak-card-hover-glow-increase` · `--sarak-card-hover-style` · `--sarak-card-hover-translate` · `--sarak-card-hover-y` · `--sarak-card-inner-glow-color` · `--sarak-card-inner-glow-width` · `--sarak-card-layout-direction` · `--sarak-card-opacity` · `--sarak-card-padding-md` · `--sarak-card-radius` · `--sarak-card-radius-bl` · `--sarak-card-radius-br` · `--sarak-card-radius-tl` · `--sarak-card-radius-tr` · `--sarak-card-search-bg-focus` · `--sarak-card-search-border-beam-active` · `--sarak-card-search-placeholder` · `--sarak-card-search-placeholder-color` · `--sarak-card-search-text-focus` · `--sarak-card-search-text-focus-color` · `--sarak-card-shadow` · `--sarak-card-shadow-blur` · `--sarak-card-shadow-expansion` · `--sarak-card-shadow-offset-x` · `--sarak-card-shadow-offset-y` · `--sarak-card-shadow-spread` · `--sarak-card-spotlight-opacity` · `--sarak-card-surface-opacity` · `--sarak-card-text-align` · `--sarak-card-texture-opacity` · `--sarak-card-texture-type` · `--sarak-card-title-color` · `--sarak-card-title-font-size` · `--sarak-card-title-font-weight` · `--sarak-card-title-icon-glow` · `--sarak-card-title-icon-glow-blur` · `--sarak-card-title-letter-spacing` · `--sarak-card-variant` · `--sarak-catalog-filter-min-width` · `--sarak-catalog-item-radius` · `--sarak-catalog-section-radius` · `--sarak-chart-color-palette` · `--sarak-chart-engine-min-h` · `--sarak-chart-engine-min-height` · `--sarak-chart-grid-opacity` · `--sarak-chart-primary` · `--sarak-chart-show-grid` · `--sarak-chart-smoothing` · `--sarak-chart-thickness` · `--sarak-chart-tooltip-bg` · `--sarak-chart-type` · `--sarak-chat-anim-speed` · `--sarak-chat-animation-speed` · `--sarak-chat-attachment-name-max-width` · `--sarak-chat-bubble` · `--sarak-chat-bubble-blur` · `--sarak-chat-bubble-glass-blur` · `--sarak-chat-bubble-radius` · `--sarak-chat-bubble-style` · `--sarak-chat-radius` · `--sarak-chat-token-slider-min-width` · `--sarak-chat-user-bg` · `--sarak-checkbox-active` · `--sarak-checkbox-active-10` · `--sarak-checkbox-active-20` · `--sarak-checkbox-active-30` · `--sarak-checkbox-active-40` · `--sarak-checkbox-active-50` · `--sarak-checkbox-active-active` · `--sarak-checkbox-active-bg` · `--sarak-checkbox-active-border` · `--sarak-checkbox-active-color` · `--sarak-checkbox-active-color-10` · `--sarak-checkbox-active-color-20` · `--sarak-checkbox-active-color-30` · `--sarak-checkbox-active-color-40` · `--sarak-checkbox-active-color-50` · `--sarak-checkbox-active-color-bg` · `--sarak-checkbox-active-color-border` · `--sarak-checkbox-active-color-hover` · `--sarak-checkbox-active-color-rgb` · `--sarak-checkbox-active-hover` · `--sarak-checkbox-active-light` · `--sarak-checkbox-active-rgb` · `--sarak-chrome-notifications-position` · `--sarak-chrome-search-position` · `--sarak-chrome-user-position` · `--sarak-color-bg-body` · `--sarak-color-bg-layer1` · `--sarak-color-bg-layer2` · `--sarak-color-bg-modal` · `--sarak-color-palette` · `--sarak-color-primary` · `--sarak-color-primary-10` · `--sarak-color-primary-20` · `--sarak-color-primary-30` · `--sarak-color-primary-40` · `--sarak-color-primary-50` · `--sarak-color-primary-active` · `--sarak-color-primary-bg` · `--sarak-color-primary-border` · `--sarak-color-primary-hover` · `--sarak-color-primary-light` · `--sarak-color-primary-rgb` · `--sarak-color-secondary` · `--sarak-color-secondary-10` · `--sarak-color-secondary-20` · `--sarak-color-secondary-30` · `--sarak-color-secondary-40` · `--sarak-color-secondary-50` · `--sarak-color-secondary-active` · `--sarak-color-secondary-bg` · `--sarak-color-secondary-border` · `--sarak-color-secondary-hover` · `--sarak-color-secondary-light` · `--sarak-color-secondary-rgb` · `--sarak-color-tertiary` · `--sarak-color-tertiary-10` · `--sarak-color-tertiary-20` · `--sarak-color-tertiary-30` · `--sarak-color-tertiary-40` · `--sarak-color-tertiary-50` · `--sarak-color-tertiary-active` · `--sarak-color-tertiary-bg` · `--sarak-color-tertiary-border` · `--sarak-color-tertiary-hover` · `--sarak-color-tertiary-light` · `--sarak-color-tertiary-rgb` · `--sarak-context-menu-min-width` · `--sarak-contrast` · `--sarak-control-height-toggle` · `--sarak-design-engine-sidebar-max-w` · `--sarak-design-engine-sidebar-max-width` · `--sarak-design-engine-sidebar-min-w` · `--sarak-design-engine-sidebar-min-width` · `--sarak-device-desktop-min-width` · `--sarak-device-frame-radius` · `--sarak-device-phone-height` · `--sarak-device-phone-notch-radius` · `--sarak-device-tablet-height` · `--sarak-dot-grid-dot-offset` · `--sarak-dot-grid-dot-size` · `--sarak-dot-grid-tile-size` · `--sarak-emphasis-color` · `--sarak-empty-state-caption-max-width` · `--sarak-empty-state-orb-blur` · `--sarak-empty-state-orb-inner` · `--sarak-empty-state-orb-outer` · `--sarak-empty-state-ring-radius` · `--sarak-empty-state-void-letter-offset` · `--sarak-engine-min-h-lg` · `--sarak-engine-min-h-sm` · `--sarak-engine-min-height-lg` · `--sarak-engine-min-height-sm` · `--sarak-flow-grid` · `--sarak-flow-grid-style` · `--sarak-flow-handle-size` · `--sarak-flow-node-blur` · `--sarak-flow-node-padding` · `--sarak-flow-node-radius` · `--sarak-flow-radius` · `--sarak-focus-ring-width` · `--sarak-focus-width` · `--sarak-font-b` · `--sarak-font-h` · `--sarak-font-m` · `--sarak-form-field-density` · `--sarak-form-label-position` · `--sarak-glass-blur` · `--sarak-glass-edge-color` · `--sarak-glass-edge-width` · `--sarak-glass-opacity` · `--sarak-glass-roughness` · `--sarak-glass-saturation` · `--sarak-glass-specularity` · `--sarak-global-background-blur` · `--sarak-global-background-image-url` · `--sarak-global-background-opacity` · `--sarak-global-background-position` · `--sarak-global-bg-blur` · `--sarak-global-bg-image` · `--sarak-global-bg-opacity` · `--sarak-global-contrast` · `--sarak-global-flow-align` · `--sarak-global-flow-direction` · `--sarak-global-saturation` · `--sarak-global-section-gap` · `--sarak-h-transform` · `--sarak-h1-letter-spacing` · `--sarak-h1-lh` · `--sarak-h1-line-height` · `--sarak-h1-ls` · `--sarak-h1-size` · `--sarak-h1-weight` · `--sarak-h2-lh` · `--sarak-h2-line-height` · `--sarak-h2-size` · `--sarak-h2-weight` · `--sarak-h3-size` · `--sarak-header-alignment` · `--sarak-heading-font` · `--sarak-heading-transform` · `--sarak-icon-button-frosted-shadow-blur` · `--sarak-icon-button-frosted-shadow-offset-y` · `--sarak-icon-button-glow-blur-lg` · `--sarak-icon-button-glow-blur-md` · `--sarak-icon-button-glow-blur-sm` · `--sarak-icon-family` · `--sarak-icon-stroke` · `--sarak-icon-stroke-width` · `--sarak-icon-weight` · `--sarak-identity-align` · `--sarak-identity-alignment` · `--sarak-identity-font` · `--sarak-identity-font-family` · `--sarak-identity-font-weight` · `--sarak-identity-hover` · `--sarak-identity-hover-effect` · `--sarak-identity-padding` · `--sarak-identity-tracking` · `--sarak-identity-weight` · `--sarak-image-card-glow-blur` · `--sarak-image-card-hover-zoom` · `--sarak-image-card-overlay-opacity` · `--sarak-image-card-shadow-blur` · `--sarak-image-card-shadow-offset-y` · `--sarak-image-card-shadow-spread` · `--sarak-input-backdrop-blur` · `--sarak-input-bg` · `--sarak-input-bg-10` · `--sarak-input-bg-20` · `--sarak-input-bg-30` · `--sarak-input-bg-40` · `--sarak-input-bg-50` · `--sarak-input-bg-active` · `--sarak-input-bg-bg` · `--sarak-input-bg-border` · `--sarak-input-bg-hover` · `--sarak-input-bg-light` · `--sarak-input-bg-rgb` · `--sarak-input-border-color` · `--sarak-input-border-radius` · `--sarak-input-border-type` · `--sarak-input-error-color` · `--sarak-input-focus-border-color` · `--sarak-input-icon-color` · `--sarak-input-icon-position` · `--sarak-input-padding` · `--sarak-input-padding-horizontal` · `--sarak-input-padding-vertical` · `--sarak-input-shadow` · `--sarak-input-text-color` · `--sarak-is-auto-hide-enabled` · `--sarak-is-nav-hidden` · `--sarak-is-split-view-enabled` · `--sarak-kanban-card-radius` · `--sarak-kanban-header-padding-y` · `--sarak-kanban-header-tracking` · `--sarak-keep-palette` · `--sarak-layered-shadows` · `--sarak-layout-density` · `--sarak-layout-gap` · `--sarak-layout-gap-lg` · `--sarak-layout-gap-md` · `--sarak-layout-gap-sm` · `--sarak-layout-grid-min-cell` · `--sarak-layout-grid-template` · `--sarak-layout-padding` · `--sarak-layout-preview-max-h` · `--sarak-line-height` · `--sarak-management-group-list-max-height` · `--sarak-matrix-blur` · `--sarak-matrix-border-color` · `--sarak-matrix-gap` · `--sarak-matrix-item-bg` · `--sarak-matrix-node-min-width` · `--sarak-matrix-radius` · `--sarak-max-content-width` · `--sarak-mobile-navigation-style` · `--sarak-modal-action-alignment` · `--sarak-modal-blur` · `--sarak-modal-border-radius` · `--sarak-modal-header-style` · `--sarak-modal-overlay` · `--sarak-modal-overlay-blur` · `--sarak-modal-overlay-color` · `--sarak-modal-width-full` · `--sarak-modal-width-lg` · `--sarak-modal-width-md` · `--sarak-modal-width-sm` · `--sarak-modal-width-xl` · `--sarak-mode` · `--sarak-mono-font` · `--sarak-motion-dur-fast` · `--sarak-motion-dur-instant` · `--sarak-motion-dur-normal` · `--sarak-motion-dur-slow` · `--sarak-motion-duration-fast` · `--sarak-motion-duration-instant` · `--sarak-motion-duration-normal` · `--sarak-motion-duration-slow` · `--sarak-motion-ease-in` · `--sarak-motion-ease-main` · `--sarak-motion-ease-out` · `--sarak-motion-stagger` · `--sarak-motion-stagger-delay` · `--sarak-multi-select-input-min-width` · `--sarak-nav-active-color` · `--sarak-nav-active-marker-color` · `--sarak-nav-active-marker-glow` · `--sarak-nav-item-active-color` · `--sarak-nav-item-radius` · `--sarak-nav-marker-color` · `--sarak-nav-marker-glow` · `--sarak-nav-style` · `--sarak-navbar-layout` · `--sarak-navigation-style` · `--sarak-noise-density` · `--sarak-noise-speed` · `--sarak-on-chat-user` · `--sarak-on-error` · `--sarak-on-info` · `--sarak-on-muted` · `--sarak-on-nav-active` · `--sarak-on-overlay` · `--sarak-on-secondary` · `--sarak-on-sidebar` · `--sarak-on-success` · `--sarak-on-surface` · `--sarak-on-topbar` · `--sarak-on-warning` · `--sarak-page-transition-type` · `--sarak-preference-font-size-increase` · `--sarak-preference-font-size-position` · `--sarak-preference-font-size-reduction` · `--sarak-preference-language-position` · `--sarak-preference-mode-position` · `--sarak-preference-nav-collapse-position` · `--sarak-preference-nav-collapse-position-topbar` · `--sarak-preference-navigation-style-position` · `--sarak-preset-mini-card-max-width` · `--sarak-primary-color` · `--sarak-primary-color-10` · `--sarak-primary-color-20` · `--sarak-primary-color-30` · `--sarak-primary-color-40` · `--sarak-primary-color-50` · `--sarak-primary-color-active` · `--sarak-primary-color-bg` · `--sarak-primary-color-border` · `--sarak-primary-color-hover` · `--sarak-primary-color-light` · `--sarak-primary-color-rgb` · `--sarak-progress-bar-height` · `--sarak-progress-bar-max-width` · `--sarak-progress-bar-radius` · `--sarak-range-active-bg` · `--sarak-range-active-color` · `--sarak-reduced-motion` · `--sarak-saturation` · `--sarak-saved-palettes` · `--sarak-scroll-padding` · `--sarak-scroll-radius` · `--sarak-scroll-thumb-color` · `--sarak-scroll-thumb-hover-opacity` · `--sarak-scroll-thumb-opacity` · `--sarak-scroll-track-opacity` · `--sarak-scroll-width` · `--sarak-search-backdrop-blur` · `--sarak-search-dropdown-gap` · `--sarak-search-dropdown-width` · `--sarak-search-position-sidebar` · `--sarak-search-position-topbar` · `--sarak-secondary-color` · `--sarak-secondary-color-10` · `--sarak-secondary-color-20` · `--sarak-secondary-color-30` · `--sarak-secondary-color-40` · `--sarak-secondary-color-50` · `--sarak-secondary-color-active` · `--sarak-secondary-color-bg` · `--sarak-secondary-color-border` · `--sarak-secondary-color-hover` · `--sarak-secondary-color-light` · `--sarak-secondary-color-rgb` · `--sarak-shadow-ambient-alpha` · `--sarak-shadow-color-mode` · `--sarak-shadow-intensity` · `--sarak-shadow-orientation` · `--sarak-shadow-projection-alpha` · `--sarak-shadow-projection-blur` · `--sarak-shell-brand-logo-size` · `--sarak-sidebar-active-color` · `--sarak-sidebar-active-glass` · `--sarak-sidebar-active-item-style` · `--sarak-sidebar-background-style` · `--sarak-sidebar-bg` · `--sarak-sidebar-bg-rgb` · `--sarak-sidebar-blur` · `--sarak-sidebar-border-color` · `--sarak-sidebar-border-side` · `--sarak-sidebar-border-style` · `--sarak-sidebar-border-width` · `--sarak-sidebar-brand-background` · `--sarak-sidebar-brand-bg` · `--sarak-sidebar-brand-color` · `--sarak-sidebar-category-color` · `--sarak-sidebar-collapsed-width` · `--sarak-sidebar-color` · `--sarak-sidebar-footer-background` · `--sarak-sidebar-footer-bg` · `--sarak-sidebar-hover-color` · `--sarak-sidebar-icon-color` · `--sarak-sidebar-icon-size` · `--sarak-sidebar-item-density` · `--sarak-sidebar-item-hover-text-color` · `--sarak-sidebar-item-text-color` · `--sarak-sidebar-label-max-width` · `--sarak-sidebar-logo-placement` · `--sarak-sidebar-max-width` · `--sarak-sidebar-min-width` · `--sarak-sidebar-noise-opacity` · `--sarak-sidebar-position` · `--sarak-sidebar-resizable` · `--sarak-sidebar-shadow` · `--sarak-sidebar-tone` · `--sarak-sidebar-width` · `--sarak-skeleton-circle-size` · `--sarak-skeleton-row-height` · `--sarak-skeleton-row-radius` · `--sarak-split-pane-min-width` · `--sarak-status-error-color` · `--sarak-status-error-color-10` · `--sarak-status-error-color-20` · `--sarak-status-error-color-30` · `--sarak-status-error-color-40` · `--sarak-status-error-color-50` · `--sarak-status-error-color-active` · `--sarak-status-error-color-bg` · `--sarak-status-error-color-border` · `--sarak-status-error-color-hover` · `--sarak-status-error-color-light` · `--sarak-status-error-color-rgb` · `--sarak-status-glow-blur` · `--sarak-status-info-color` · `--sarak-status-info-color-10` · `--sarak-status-info-color-20` · `--sarak-status-info-color-30` · `--sarak-status-info-color-40` · `--sarak-status-info-color-50` · `--sarak-status-info-color-active` · `--sarak-status-info-color-bg` · `--sarak-status-info-color-border` · `--sarak-status-info-color-hover` · `--sarak-status-info-color-light` · `--sarak-status-info-color-rgb` · `--sarak-status-success-color` · `--sarak-status-success-color-10` · `--sarak-status-success-color-20` · `--sarak-status-success-color-30` · `--sarak-status-success-color-40` · `--sarak-status-success-color-50` · `--sarak-status-success-color-active` · `--sarak-status-success-color-bg` · `--sarak-status-success-color-border` · `--sarak-status-success-color-hover` · `--sarak-status-success-color-light` · `--sarak-status-success-color-rgb` · `--sarak-status-warning-color` · `--sarak-status-warning-color-10` · `--sarak-status-warning-color-20` · `--sarak-status-warning-color-30` · `--sarak-status-warning-color-40` · `--sarak-status-warning-color-50` · `--sarak-status-warning-color-active` · `--sarak-status-warning-color-bg` · `--sarak-status-warning-color-border` · `--sarak-status-warning-color-hover` · `--sarak-status-warning-color-light` · `--sarak-status-warning-color-rgb` · `--sarak-subtitle-color` · `--sarak-surface` · `--sarak-surface-color` · `--sarak-surface-intensity` · `--sarak-surface-material` · `--sarak-surface-neon-color` · `--sarak-surface-tint-color` · `--sarak-switch-active-bg` · `--sarak-switch-active-bg-10` · `--sarak-switch-active-bg-20` · `--sarak-switch-active-bg-30` · `--sarak-switch-active-bg-40` · `--sarak-switch-active-bg-50` · `--sarak-switch-active-bg-active` · `--sarak-switch-active-bg-bg` · `--sarak-switch-active-bg-border` · `--sarak-switch-active-bg-hover` · `--sarak-switch-active-bg-light` · `--sarak-switch-active-bg-rgb` · `--sarak-switch-backdrop-blur` · `--sarak-switch-label-position` · `--sarak-switch-pulse-color` · `--sarak-switch-style-type` · `--sarak-switch-thumb` · `--sarak-switch-thumb-bg` · `--sarak-switch-track-active-bg` · `--sarak-switch-track-active-bg-10` · `--sarak-switch-track-active-bg-20` · `--sarak-switch-track-active-bg-30` · `--sarak-switch-track-active-bg-40` · `--sarak-switch-track-active-bg-50` · `--sarak-switch-track-active-bg-bg` · `--sarak-switch-track-active-bg-border` · `--sarak-switch-track-active-bg-hover` · `--sarak-switch-track-active-bg-rgb` · `--sarak-system-tone` · `--sarak-tab-gap` · `--sarak-tab-section-margin` · `--sarak-table-border` · `--sarak-table-border-color` · `--sarak-table-border-radius` · `--sarak-table-cell-padding` · `--sarak-table-density` · `--sarak-table-header-bg` · `--sarak-table-padding` · `--sarak-table-row-hover` · `--sarak-table-row-hover-bg` · `--sarak-table-zebra-striping` · `--sarak-tertiary-color` · `--sarak-tertiary-color-10` · `--sarak-tertiary-color-20` · `--sarak-tertiary-color-30` · `--sarak-tertiary-color-40` · `--sarak-tertiary-color-50` · `--sarak-tertiary-color-active` · `--sarak-tertiary-color-bg` · `--sarak-tertiary-color-border` · `--sarak-tertiary-color-hover` · `--sarak-tertiary-color-light` · `--sarak-tertiary-color-rgb` · `--sarak-text-color-master` · `--sarak-text-color-muted` · `--sarak-text-color-secondary` · `--sarak-text-glow` · `--sarak-text-glow-intensity` · `--sarak-text-main` · `--sarak-text-muted` · `--sarak-text-sec` · `--sarak-text-smoothing` · `--sarak-texture` · `--sarak-texture-color` · `--sarak-texture-color-10` · `--sarak-texture-color-20` · `--sarak-texture-color-30` · `--sarak-texture-color-40` · `--sarak-texture-color-50` · `--sarak-texture-color-active` · `--sarak-texture-color-bg` · `--sarak-texture-color-border` · `--sarak-texture-color-hover` · `--sarak-texture-color-light` · `--sarak-texture-color-rgb` · `--sarak-texture-opacity` · `--sarak-title-color` · `--sarak-toast-accent-width` · `--sarak-toast-max-width` · `--sarak-toast-min-width` · `--sarak-tooltip-bg` · `--sarak-tooltip-border` · `--sarak-tooltip-border-color` · `--sarak-tooltip-radius` · `--sarak-tooltip-text` · `--sarak-tooltip-text-color` · `--sarak-topbar-active-color` · `--sarak-topbar-active-item-style` · `--sarak-topbar-background-style` · `--sarak-topbar-bg` · `--sarak-topbar-blur` · `--sarak-topbar-border-color` · `--sarak-topbar-border-side` · `--sarak-topbar-border-style` · `--sarak-topbar-border-width` · `--sarak-topbar-brand-background` · `--sarak-topbar-brand-bg` · `--sarak-topbar-brand-color` · `--sarak-topbar-collapsed-height` · `--sarak-topbar-color` · `--sarak-topbar-group-separator-color` · `--sarak-topbar-height` · `--sarak-topbar-hover-color` · `--sarak-topbar-icon-color` · `--sarak-topbar-icon-size` · `--sarak-topbar-item-density` · `--sarak-topbar-item-hover-text-color` · `--sarak-topbar-item-text-color` · `--sarak-topbar-label-max-width` · `--sarak-topbar-noise-opacity` · `--sarak-topbar-shadow` · `--sarak-topbar-title-color` · `--sarak-topbar-tone` · `--sarak-touch-target-min` · `--sarak-tracking-snug` · `--sarak-tracking-tight` · `--sarak-tracking-ultra` · `--sarak-tracking-wide` · `--sarak-tracking-wider` · `--sarak-tracking-widest` · `--sarak-type-scale-caption` · `--sarak-type-scale-micro` · `--sarak-type-scale-tiny` · `--sarak-type-scale-xl` · `--sarak-type-scale-xs` · `--sarak-type-scale2xs` · `--sarak-type-scale3xs` · `--sarak-user-avatar-style` · `--sarak-vignette-blend-mode` · `--sarak-vignette-color` · `--sarak-vignette-opacity` · `--sarak-vignette-softness` · `--sarak-z-base` · `--sarak-z-index-base` · `--sarak-z-index-modal` · `--sarak-z-index-sidebar` · `--sarak-z-index-toast` · `--sarak-z-index-tooltip` · `--sarak-z-modal` · `--sarak-z-sidebar` · `--sarak-z-toast` · `--sarak-z-tooltip`
 
-**Tokens de TEMA** (424 chaves válidas de `design` num tema JSON) — lista completa com tipo em `catalog.json` → `designTokens.ids`. 37 deles aceitam `SarakResponsiveValue`.
+**Tokens de TEMA** (430 chaves válidas de `design` num tema JSON) — lista completa com tipo em `catalog.json` → `designTokens.ids`. 37 deles aceitam `SarakResponsiveValue`.
 
-**Temas embutidos** (19): `sarak-sovereign` · `cyberpunk-neon` · `industrial-terminal` · `neo-brutalism` · `synthwave-retro` · `nebula-space` · `kinetic-flow` · `cyber-retro-wave` · `minimalist-airy` · `data-terminal` · `neumorphic-mobile` · `golden-hour` · `aurora-veil` · `blueprint-protocol` · `editorial-ink` · `organic-clay` · `high-contrast` · `corporate-ledger` · `playful-pastel`
+**Tokens que saíram** (59) — `catalog.json` → `designTokens.removed`: o id, a versão em que saiu e o destino (o token que ficou no lugar, ou `sem substituto`). Quem valida o tema por lista de chaves deixa de exigir esses ids.
+
+**Temas embutidos** (25): `sarak-sovereign` · `cyberpunk-neon` · `industrial-terminal` · `neo-brutalism` · `nebula-space` · `kinetic-flow` · `cyber-retro-wave` · `minimalist-airy` · `data-terminal` · `neumorphic-mobile` · `golden-hour` · `aurora-veil` · `blueprint-protocol` · `editorial-ink` · `organic-clay` · `high-contrast` · `corporate-ledger` · `playful-pastel` · `sarak-sovereign-classic` · `cyberpunk-neon-classic` · `industrial-terminal-classic` · `cyber-retro-wave-classic` · `nature-breeze` · `neo-brutalism-classic` · `dot-matrix-elegant`
 
 **Par de referência** (parta destes — completos em todos os eixos): `minimalist-airy` · `sarak-sovereign`
 
 ### A.4b Mapa dos tokens por pilar (gerado do schema)
 
-**424** de 424 tokens já trazem o que mudam na tela. **Estético** = o tema o projeta; **funcional** = igual em todo tema (camadas, alvo de toque, larguras do cromo, comportamento) e o tema embarcado não o declara. **Modo** = o valor muda no modo claro/escuro, então entra na `contraparte` do tema. Opções e faixas ficam em `catalog.json` → `designTokens.ids`.
+**430** de 430 tokens já trazem o que mudam na tela. **Estético** = o tema o projeta; **funcional** = igual em todo tema (camadas, alvo de toque, larguras do cromo, comportamento) e o tema embarcado não o declara. **Modo** = o valor muda no modo claro/escuro, então entra na `contraparte` do tema. Opções e faixas ficam em `catalog.json` → `designTokens.ids`.
 
 #### 0. Configurações Globais (`global`)
 
 | Token | Natureza | Modo | O que muda | Depende de |
 | --- | --- | --- | --- | --- |
-| `bodySize` | estético | não | Tamanho da fonte do `body` (12 a 20 px): todo texto que herda dele muda, e as alturas do cromo acompanham. A preferência de tamanho do usuário (P/M/G) soma-se a este valor. | — |
+| `bodySize` | estético | não | Tamanho da fonte do `body` (12 a 20 px): todo texto que herda dele muda, e as alturas do cromo acompanham. A preferência de tamanho do usuário (P/M/G) parte deste valor: o P reduz `preferenceFontSizeReduction` px e o G soma `preferenceFontSizeIncrease` px. | — |
 | `mobileNavigationStyle` | funcional | não | Onde a navegação fica no celular: barra na base, gaveta atrás do hambúrguer ou automático (barra com até 5 destinos, gaveta acima disso). Tablet e desktop não mudam. | `navigationStyle` |
 | `mode` | estético | não | Declara o modo nativo do tema: define o ícone do alternador e a mistura da vinheta. A paleta só inverte pela preferência de modo do usuário (`colorMode`), que aplica a contraparte; sozinho, o valor não repinta a tela. | `vignetteOpacity` |
-| `navigationStyle` | funcional | não | Escolhe onde fica a navegação: Sidebar (coluna lateral) ou Topbar (cabeçalho). Troca a estrutura inteira do cromo; a preferência do usuário, quando oferecida, vence o valor do tema. | `sidebarPosition` · `mobileNavigationStyle` |
+| `navigationStyle` | funcional | não | Escolhe onde fica a navegação: Sidebar (coluna lateral) ou Topbar (barra horizontal). Troca a estrutura inteira do cromo; a preferência do usuário, quando oferecida, vence o valor do tema. | `sidebarPosition` · `mobileNavigationStyle` |
 
 #### Identidade Visual (`branding`)
 
@@ -1412,41 +1618,43 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 
 | Token | Natureza | Modo | O que muda | Depende de |
 | --- | --- | --- | --- | --- |
-| `brandLogoSizeCollapsed` | funcional | não | Lado do logo na barra do topo recolhida; só aparece com `isNavHidden` ligado. | `isNavHidden` |
+| `brandDisplay` | estético | não | Com "só o logo" e sem imagem de logo, a marca cai no nome; "só o nome" esconde a imagem. O nome nunca é cortado com reticências. | `sidebarLogoPlacement` · `shellBrandLogoSize` |
+| `brandLogoSizeCollapsed` | funcional | não | Lado do logo na Topbar recolhida; só aparece com `isNavHidden` ligado. | `isNavHidden` |
 | `chromeNotificationsPosition` | funcional | não | Posição das notificações no cromo: fixas, no menu de preferências ou não oferecidas. | — |
 | `chromeSearchPosition` | funcional | não | Posição do widget de busca no cromo: fixo na barra, dentro do menu de preferências ou não oferecido; fora da barra ele some do lugar de origem. | `searchPositionTopbar` · `searchPositionSidebar` |
 | `chromeUserPosition` | funcional | não | Posição do widget de usuário no cromo: fixo, no menu de preferências ou não oferecido; sem ele a navegação ganha o espaço. | — |
 | `isNavHidden` | funcional | não | Recolhe a navegação: a lateral estreita para o piso de largura e esconde rótulos; o topo encolhe para a altura recolhida. É o mesmo estado que o usuário alterna pelo botão de recolher. | `sidebarMinWidth` · `topbarCollapsedHeight` · `brandLogoSizeCollapsed` |
 | `navActiveMarkerColor` | estético | sim | Cor do marcador luminoso ao lado do item ativo e do brilho dele. | `navActiveMarkerGlow` |
 | `navActiveMarkerGlow` | estético | não | Raio do brilho do marcador do item ativo; 0 deixa só a barrinha. | `navActiveMarkerColor` |
-| `navbarLayout` | funcional | não | Comportamento da barra do topo: fixa ao rolar, rola junto com o conteúdo ou oculta. Só vale com navegação no topo. | `navigationStyle` |
+| `navbarLayout` | funcional | não | Comportamento da Topbar: fixa ao rolar, rola junto com o conteúdo ou oculta. Só vale com navegação no topo. | `navigationStyle` |
 | `navItemActiveColor` | estético | sim | Cor do item ativo da navegação: texto, ícone e contorno do item atual, na lateral e no topo; também participa dos controles selecionados do cromo. Garanta contraste de texto e ícone nos dois modos. | — |
 | `navItemRadius` | estético | não | Raio dos cantos do item da navegação, o fundo do ativo e do hover, na lateral, no topo e no recolhido; 0 deixa o item reto e 16 ou mais o torna cápsula. | `sidebarActiveColor` · `topbarActiveColor` · `sidebarHoverColor` · `topbarHoverColor` |
 | `searchDropdownGap` | funcional | não | Distância, em rem, entre o topo da tela e a paleta de busca; empurra o painel para baixo. | `searchDropdownWidth` |
 | `searchDropdownWidth` | funcional | não | Largura máxima da paleta de busca. | `searchDropdownGap` |
 | `searchPositionSidebar` | funcional | não | Onde a busca fica na navegação lateral: no topo ou no rodapé do bloco. | `navigationStyle` · `chromeSearchPosition` |
-| `searchPositionTopbar` | funcional | não | Onde a busca fica na barra do topo: esquerda (antes da navegação), centro (no meio do espaço livre entre a navegação e o grupo final, não no centro da barra), direita (no grupo final) ou oculta. | `navigationStyle` · `chromeSearchPosition` |
+| `searchPositionTopbar` | funcional | não | Onde a busca fica na Topbar: esquerda (antes da navegação), centro (no meio do espaço livre entre a navegação e o grupo final, não no centro da barra), direita (no grupo final) ou oculta. | `navigationStyle` · `chromeSearchPosition` |
 | `shellBrandLogoSize` | funcional | não | Lado da imagem do logo na navegação lateral; aumenta a altura do bloco da marca. | `navigationStyle` |
 | `sidebarActiveColor` | estético | sim | Fundo do item ativo da navegação lateral; o padrão é transparente, e o marcador do item vem de `navActiveMarkerColor`. | `navigationStyle` · `navActiveMarkerColor` |
-| `sidebarActiveItemStyle` | estético | não | Tratamento visual do item ativo na barra lateral. | `sidebarActiveColor` · `navItemActiveColor` · `navActiveMarkerColor` |
-| `sidebarBackgroundStyle` | estético | não | Tratamento de fundo da barra lateral. | `sidebarColor` · `sidebarNoiseOpacity` |
+| `sidebarActiveGlass` | estético | não | Acabamento de vidro do item ativo da Sidebar; soma a qualquer estilo do item ativo. | `sidebarActiveItemStyle` · `navActiveMarkerColor` |
+| `sidebarActiveItemStyle` | estético | não | Tratamento visual do item ativo na Sidebar. | `sidebarActiveColor` · `navItemActiveColor` · `navActiveMarkerColor` |
+| `sidebarBackgroundStyle` | estético | não | Tratamento de fundo da Sidebar. | `sidebarColor` · `sidebarNoiseOpacity` |
 | `sidebarBlur` | estético | não | Desfoque do que passa atrás da navegação lateral, útil com cor translúcida. | `sidebarColor` |
-| `sidebarBorderColor` | estético | sim | Cor da moldura da barra lateral. | `sidebarColor` |
-| `sidebarBorderSide` | estético | não | Lados da moldura da barra lateral; a opção externa acompanha sua posição e a barra flutuante usa todos os lados. | — |
-| `sidebarBorderStyle` | estético | não | Estilo de linha da moldura da barra lateral. | — |
-| `sidebarBorderWidth` | estético | não | Largura em pixels da moldura da barra lateral. | — |
-| `sidebarBrandBackground` | estético | sim | Cor de fundo da área da marca na barra lateral. | `sidebarColor` |
-| `sidebarBrandColor` | estético | sim | Cor do nome da marca na barra lateral. | `sidebarColor` · `identityFontFamily` |
-| `sidebarCategoryColor` | estético | sim | Cor do rótulo de categoria na barra lateral; deve contrastar com o fundo da barra. | `sidebarColor` |
+| `sidebarBorderColor` | estético | sim | Cor da moldura da Sidebar. | `sidebarColor` |
+| `sidebarBorderSide` | estético | não | Lados da moldura da Sidebar; a opção externa acompanha sua posição e a barra flutuante usa todos os lados. | — |
+| `sidebarBorderStyle` | estético | não | Estilo de linha da moldura da Sidebar. | — |
+| `sidebarBorderWidth` | estético | não | Largura em pixels da moldura da Sidebar. | — |
+| `sidebarBrandBackground` | estético | sim | Cor de fundo da área da marca na Sidebar. | `sidebarColor` |
+| `sidebarBrandColor` | estético | sim | Cor do nome da marca na Sidebar. | `sidebarColor` · `identityFontFamily` |
+| `sidebarCategoryColor` | estético | sim | Cor do rótulo de categoria na Sidebar; deve contrastar com o fundo da barra. | `sidebarColor` |
 | `sidebarCollapsedWidth` | funcional | não | Largura da navegação lateral recolhida (só ícones); vale sem o piso de `sidebarMinWidth`, que é da lateral aberta. | `isNavHidden` |
 | `sidebarColor` | estético | sim | Pinta o fundo da navegação lateral; a cor entra na paleta derivada do cromo. | `navigationStyle` |
-| `sidebarFooterBackground` | estético | sim | Cor de fundo do rodapé da barra lateral. | `sidebarColor` |
+| `sidebarFooterBackground` | estético | sim | Cor de fundo do rodapé da Sidebar. | `sidebarColor` |
 | `sidebarHoverColor` | estético | sim | Fundo do item da navegação lateral sob o ponteiro; o padrão é um branco translúcido. | `navigationStyle` |
-| `sidebarIconColor` | estético | sim | Cor dos ícones na barra lateral. | `sidebarColor` |
-| `sidebarIconSize` | estético | não | Tamanho dos ícones da barra lateral. | — |
+| `sidebarIconColor` | estético | sim | Cor dos ícones inativos na Sidebar; o padrão acompanha o rótulo do item, e o ativo usa a cor do item ativo. | `sidebarColor` |
+| `sidebarIconSize` | estético | não | Tamanho dos ícones da Sidebar. | — |
 | `sidebarItemDensity` | estético | não | Densidade das linhas de navegação lateral; o alvo de toque mínimo continua sendo aplicado. | — |
-| `sidebarItemHoverTextColor` | estético | sim | Cor do texto de item sob o ponteiro na barra lateral. | `sidebarColor` · `sidebarItemTextColor` |
-| `sidebarItemTextColor` | estético | sim | Cor do texto de item inativo na barra lateral; deve permanecer legível sobre o fundo da barra. | `sidebarColor` |
+| `sidebarItemHoverTextColor` | estético | sim | Cor do texto de item sob o ponteiro na Sidebar. | `sidebarColor` · `sidebarItemTextColor` |
+| `sidebarItemTextColor` | estético | sim | Cor do texto de item inativo na Sidebar; deve permanecer legível sobre o fundo da barra. | `sidebarColor` |
 | `sidebarLabelMaxWidth` | funcional | não | Largura máxima do rótulo da marca na navegação lateral; acima dela o texto é cortado. | `navigationStyle` |
 | `sidebarLogoPlacement` | estético | não | Põe a marca no topo da lateral (padrão) ou na base, acima do rodapé; só vale na lateral. Recolhida, fica só o símbolo. | `sidebarPosition` · `shellBrandLogoSize` |
 | `sidebarMaxWidth` | funcional | não | Teto de largura da navegação lateral; `sidebarWidth` acima dele é cortado. | `sidebarWidth` |
@@ -1455,35 +1663,36 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `sidebarPosition` | funcional | não | Lado da navegação lateral: esquerda, direita (inverte a ordem) ou flutuante (cartão arredondado com margem). Só vale com navegação lateral. | `navigationStyle` |
 | `sidebarResizable` | funcional | não | Liga uma alça na borda da lateral aberta: o usuário arrasta ou usa as setas, entre o piso e o teto de largura. O valor escolhido é preferência do usuário, nunca do tema. | `sidebarWidth` · `sidebarMinWidth` · `sidebarMaxWidth` |
 | `sidebarShadow` | estético | sim | Sombra da navegação lateral, escrita como `box-shadow` completo; a cor da sombra precisa ser trocada na contraparte. | `navigationStyle` |
-| `sidebarTone` | estético | não | Papel de cor do fundo da barra lateral: a paleta calcula o fundo e os textos legíveis sobre ele, nos dois modos. Uma cor declarada em `sidebarColor` continua vencendo. | `sidebarColor` · `sidebarActiveItemStyle` |
+| `sidebarTone` | estético | não | Papel de cor do fundo da Sidebar: a paleta calcula o fundo e os textos legíveis sobre ele, nos dois modos. Uma cor declarada em `sidebarColor` continua vencendo. | `sidebarColor` · `sidebarActiveItemStyle` |
 | `sidebarWidth` | funcional | não | Largura da navegação lateral (um valor por breakpoint), dentro do piso e do teto de `sidebarMinWidth` e `sidebarMaxWidth`. | `sidebarMinWidth` · `sidebarMaxWidth` |
 | `tabGap` | estético | não | Espaço entre os itens da navegação, por breakpoint; a lateral usa metade do valor em cada eixo. | — |
-| `tabSectionMargin` | estético | não | Margem vertical das seções da navegação lateral e da barra do topo, por breakpoint. | — |
-| `topbarActiveColor` | estético | sim | Fundo do item ativo da barra do topo; o padrão é transparente. | `navigationStyle` |
-| `topbarActiveItemStyle` | estético | não | Tratamento visual do item ativo na barra superior. | `topbarActiveColor` · `navItemActiveColor` · `navActiveMarkerColor` |
-| `topbarBackgroundStyle` | estético | não | Tratamento de fundo da barra superior. | `topbarColor` · `topbarNoiseOpacity` |
-| `topbarBlur` | estético | não | Desfoque do conteúdo que passa atrás da barra superior; funciona melhor com fundo translúcido. | — |
-| `topbarBorderColor` | estético | sim | Cor da moldura da barra superior. | `topbarColor` |
-| `topbarBorderSide` | estético | não | Lados da moldura da barra superior; a opção externa fica junto ao conteúdo e se adapta à barra na base do celular. | — |
-| `topbarBorderStyle` | estético | não | Estilo de linha da moldura da barra superior. | — |
-| `topbarBorderWidth` | estético | não | Largura em pixels da moldura da barra superior. | — |
-| `topbarBrandBackground` | estético | sim | Cor de fundo da área da marca na barra superior. | `topbarColor` |
-| `topbarBrandColor` | estético | sim | Cor do nome da marca na barra superior. | `topbarColor` · `identityFontFamily` |
-| `topbarCollapsedHeight` | funcional | não | Altura da barra do topo recolhida; só aparece com `isNavHidden` ligado. Abaixo do alvo mínimo de toque (`touchTargetMin`) os controles da barra transbordam com ponteiro de dedo; por isso o padrão não cai abaixo dele. | `isNavHidden` |
-| `topbarColor` | estético | sim | Pinta o fundo da barra do topo; a cor entra na paleta derivada do cromo. | `navigationStyle` |
+| `tabSectionMargin` | estético | não | Margem vertical das seções da navegação lateral e da Topbar, por breakpoint. | — |
+| `topbarActiveColor` | estético | sim | Fundo do item ativo da Topbar; o padrão é transparente. | `navigationStyle` |
+| `topbarActiveItemStyle` | estético | não | Tratamento visual do item ativo na Topbar. | `topbarActiveColor` · `navItemActiveColor` · `navActiveMarkerColor` |
+| `topbarBackgroundStyle` | estético | não | Tratamento de fundo da Topbar. | `topbarColor` · `topbarNoiseOpacity` |
+| `topbarBlur` | estético | não | Desfoque do conteúdo que passa atrás da Topbar; funciona melhor com fundo translúcido. | — |
+| `topbarBorderColor` | estético | sim | Cor da moldura da Topbar. | `topbarColor` |
+| `topbarBorderSide` | estético | não | Lados da moldura da Topbar; a opção externa fica junto ao conteúdo e se adapta à barra na base do celular. | — |
+| `topbarBorderStyle` | estético | não | Estilo de linha da moldura da Topbar. | — |
+| `topbarBorderWidth` | estético | não | Largura em pixels da moldura da Topbar. | — |
+| `topbarBrandBackground` | estético | sim | Cor de fundo da área da marca na Topbar. | `topbarColor` |
+| `topbarBrandColor` | estético | sim | Cor do nome da marca na Topbar. | `topbarColor` · `identityFontFamily` |
+| `topbarCollapsedHeight` | funcional | não | Altura da Topbar recolhida; só aparece com `isNavHidden` ligado. Abaixo do alvo mínimo de toque (`touchTargetMin`) os controles da barra transbordam com ponteiro de dedo; por isso o padrão não cai abaixo dele. | `isNavHidden` |
+| `topbarColor` | estético | sim | Pinta o fundo da Topbar; a cor entra na paleta derivada do cromo. | `navigationStyle` |
 | `topbarGroupSeparatorColor` | estético | sim | Cor do separador entre grupos de navegação horizontal. | `topbarColor` |
-| `topbarHeight` | funcional | não | Altura da barra do topo, por breakpoint. | `navigationStyle` |
-| `topbarHoverColor` | estético | sim | Fundo do item da barra do topo sob o ponteiro; o padrão é um branco translúcido. | `navigationStyle` |
-| `topbarIconColor` | estético | sim | Cor dos ícones na barra superior. | `topbarColor` |
-| `topbarIconSize` | estético | não | Tamanho dos ícones da barra superior. | — |
-| `topbarItemDensity` | estético | não | Densidade das abas na barra superior; o alvo de toque mínimo continua sendo aplicado. | — |
-| `topbarItemHoverTextColor` | estético | sim | Cor do texto de item sob o ponteiro na barra superior. | `topbarColor` · `topbarItemTextColor` |
-| `topbarItemTextColor` | estético | sim | Cor do texto de item inativo na barra superior; deve permanecer legível sobre o fundo da barra. | `topbarColor` |
-| `topbarLabelMaxWidth` | funcional | não | Largura máxima do rótulo da marca na barra do topo; acima dela o texto é cortado. | `navigationStyle` |
-| `topbarNoiseOpacity` | estético | sim | Opacidade da textura de grão sobre a barra do topo; 0 desliga. | `navigationStyle` |
-| `topbarShadow` | estético | sim | Sombra CSS completa projetada pela barra superior. | `navigationStyle` |
-| `topbarTitleColor` | estético | sim | Cor do nome da marca na barra do topo. | `navigationStyle` |
-| `topbarTone` | estético | não | Papel de cor do fundo da barra do topo: a paleta calcula o fundo e os textos legíveis sobre ele, nos dois modos. Uma cor declarada em `topbarColor` continua vencendo. | `topbarColor` · `topbarActiveItemStyle` |
+| `topbarHeight` | funcional | não | Altura da Topbar, por breakpoint. | `navigationStyle` |
+| `topbarHoverColor` | estético | sim | Fundo do item da Topbar sob o ponteiro; o padrão é um branco translúcido. | `navigationStyle` |
+| `topbarIconColor` | estético | sim | Cor dos ícones na Topbar. | `topbarColor` |
+| `topbarIconSize` | estético | não | Tamanho dos ícones da Topbar. | — |
+| `topbarItemDensity` | estético | não | Densidade das abas na Topbar; o alvo de toque mínimo continua sendo aplicado. | — |
+| `topbarItemHoverTextColor` | estético | sim | Cor do texto de item sob o ponteiro na Topbar. | `topbarColor` · `topbarItemTextColor` |
+| `topbarItemTextColor` | estético | sim | Cor do texto de item inativo na Topbar; deve permanecer legível sobre o fundo da barra. | `topbarColor` |
+| `topbarLabelMaxWidth` | funcional | não | Largura máxima do rótulo da marca na Topbar; acima dela o texto é cortado. | `navigationStyle` |
+| `topbarNoiseOpacity` | estético | sim | Opacidade da textura de grão sobre a Topbar; 0 desliga. | `navigationStyle` |
+| `topbarShadow` | estético | sim | Sombra CSS completa projetada pela Topbar. | `navigationStyle` |
+| `topbarTitleColor` | estético | sim | Cor do nome da marca na Topbar. | `navigationStyle` |
+| `topbarTone` | estético | não | Papel de cor do fundo da Topbar: a paleta calcula o fundo e os textos legíveis sobre ele, nos dois modos. Uma cor declarada em `topbarColor` continua vencendo. | `topbarColor` · `topbarActiveItemStyle` |
+| `userAvatarStyle` | estético | não | Avatar do widget de usuário quando o sistema não entrega imagem; com imagem, ela vale. | `chromeUserPosition` |
 
 #### Card Geral (`cards`)
 
@@ -1724,11 +1933,11 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `cardBackgroundColor` | estético | sim | Pinta o fundo dos cartões e fornece a cor base às suas variantes. | — |
 | `cardBorderColor` | estético | sim | Pinta o contorno dos cartões do sistema. | — |
 | `colorBgModal` | estético | sim | Pinta o painel de conteúdo de modais e diálogos. | — |
-| `colorDepth` | estético | não | Controla a distância tonal das variantes geradas para as cores, incluindo o hover e o pressionado globais dos botões. | — |
 | `colorPalette` | estético | não | Seleciona a regra de cálculo das cores do tema nos dois modos; cores declaradas explicitamente continuam vencendo. | — |
-| `colorVariation` | estético | não | Controla a variação de matiz e saturação das variantes geradas, incluindo o hover e o pressionado globais dos botões. | — |
 | `emphasisColor` | estético | sim | Dá ênfase a texto usando um tom acessível da cor de acento do tema; preserve o matiz e contraste de pelo menos 4,5:1. | `accentColor` · `colorBgBody` · `surfaceColor` · `cardBackgroundColor` |
+| `keepPalette` | funcional | não | Desligado (padrão), escolher um tema aplica as cores dele; ligado, a paleta escolhida vale por cima de qualquer tema, em toda troca, inclusive das cores que o tema declara. | `colorPalette` |
 | `primaryColor` | estético | sim | Define a cor de marca principal usada em links, focos, estados ativos e variantes derivadas; confirme o contraste onde ela aparece como texto nos dois modos. O fundo do botão primário é `btnPrimaryBg`. | — |
+| `savedPalettes` | funcional | não | Guarda as paletas que o administrador criou com nome: aparecem no grupo "Minhas paletas" da galeria e no atalho de marca. Escolher uma é escolher o `colorPalette` dela. | `colorPalette` |
 | `secondaryColor` | estético | sim | Define a segunda cor de marca usada em elementos de apoio e séries dos gráficos. | — |
 | `subtitleColor` | estético | sim | Colore subtítulos entre o texto principal e os títulos; preserve essa hierarquia e contraste de pelo menos 4,5:1. | `textColorMaster` · `titleColor` · `colorBgBody` · `surfaceColor` · `cardBackgroundColor` |
 | `surfaceColor` | estético | sim | Define a cor de superfície elevada publicada pelo tema e usada pelo motor de gráficos. | — |
@@ -1746,7 +1955,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `chartSmoothing` | estético | não | Curva as linhas de dados em vez de ligar os pontos por segmentos retos. | `chartType` |
 | `chartThickness` | estético | não | Controla a espessura das linhas nos gráficos de linha e área. | `chartType` |
 | `chartTooltipBg` | estético | sim | Pinta o fundo das dicas que aparecem sobre os dados dos gráficos. | — |
-| `chartType` | estético | não | Escolhe a forma padrão de visualização dos dados quando o componente não recebe um tipo próprio. | — |
+| `chartType` | estético | não | Define o tipo de gráfico padrão, usado só quando o componente não recebe um `type` próprio. | — |
 
 #### Transições e Animações (`animations`)
 
@@ -1834,8 +2043,8 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 | `authHeroOrbBlur` | estético | não | Desfoque dos orbes de fundo da tela de autenticação (`AuthHero`); 10 px os mostra como discos e 250 px os dilui em atmosfera. | — |
 | `chartEngineMinHeight` | funcional | não | Altura mínima reservada ao gráfico Recharts antes de os dados chegarem, para a página não saltar; é um piso de layout, não de estilo. | — |
 | `chatBubbleGlassBlur` | estético | não | Desfoque do vidro da bolha de resposta do `SarakChatEngine`; só vale com `chatBubbleStyle: glass` (o padrão do motor). | `chatBubbleStyle` |
-| `designEngineSidebarMaxWidth` | funcional | não | Largura máxima da barra lateral do painel de customização; só o painel a lê. | `designEngineSidebarMinWidth` |
-| `designEngineSidebarMinWidth` | funcional | não | Largura mínima da barra lateral do painel de customização; só o painel a lê. | `designEngineSidebarMaxWidth` |
+| `designEngineSidebarMaxWidth` | funcional | não | Largura máxima da Sidebar do painel de customização; só o painel a lê. | `designEngineSidebarMinWidth` |
+| `designEngineSidebarMinWidth` | funcional | não | Largura mínima da Sidebar do painel de customização; só o painel a lê. | `designEngineSidebarMaxWidth` |
 | `dotGridDotOffset` | estético | não | Posição do ponto dentro de cada célula da grade de pontos do estado vazio geométrico e da tela de autenticação (`AuthHero`). | `dotGridTileSize` |
 | `dotGridDotSize` | estético | não | Raio de cada ponto da grade decorativa do estado vazio geométrico e da tela de autenticação (`AuthHero`). | `dotGridTileSize` |
 | `dotGridTileSize` | estético | não | Lado da célula que se repete na grade de pontos do estado vazio geométrico e do `AuthHero`; define o espaçamento entre pontos. | — |
@@ -1931,17 +2140,20 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 
 | Token | Natureza | Modo | O que muda | Depende de |
 | --- | --- | --- | --- | --- |
+| `preferenceFontSizeIncrease` | funcional | não | Aumento, em px, que a preferência G aplica sobre `bodySize`: G = `bodySize` + este valor. Só vale quando a escolha de tamanho da fonte é oferecida ao usuário. | `bodySize` · `preferenceFontSizePosition` |
 | `preferenceFontSizePosition` | funcional | não | Posição da escolha de tamanho da fonte (P/M/G): fixa, no menu de preferências ou não oferecida. | — |
+| `preferenceFontSizeReduction` | funcional | não | Redução, em px, que a preferência P aplica sobre `bodySize`: P = `bodySize` − este valor (piso de 8 px). Só vale quando a escolha de tamanho da fonte é oferecida ao usuário. | `bodySize` · `preferenceFontSizePosition` |
 | `preferenceLanguagePosition` | funcional | não | Posição da escolha de idioma: fixa, no menu de preferências ou não oferecida. | — |
-| `preferenceModePosition` | funcional | não | Posição da escolha de modo claro/escuro do usuário: fixa na barra, no menu de preferências ou não oferecida; quando some, a escolha não existe para o usuário. | — |
-| `preferenceNavCollapsePosition` | funcional | não | Posição do botão de recolher a navegação: fixo, no menu de preferências ou não oferecido. | — |
+| `preferenceModePosition` | funcional | não | Posição da escolha de Light mode ou Dark mode do usuário: fixa na barra, no menu de preferências ou não oferecida; quando some, a escolha não existe para o usuário. | — |
+| `preferenceNavCollapsePosition` | funcional | não | Posição do botão de recolher a navegação na Sidebar: fixo (a seta da própria Sidebar), no menu de preferências ou não oferecido. | — |
+| `preferenceNavCollapsePositionTopbar` | funcional | não | Posição do botão de menu (≡) que compacta a Topbar: fixo, no menu de preferências ou não oferecido; por padrão fica só no menu. | — |
 | `preferenceNavigationStylePosition` | funcional | não | Posição da escolha de orientação da navegação (lateral/topo): fixa, no menu de preferências ou não oferecida. | — |
 
-### A.5 Ícones (117 nomes válidos)
+### A.5 Ícones (119 nomes válidos)
 
 Valores aceitos por `<SarakIcon name>`, `navItems[].icon` e `mapping.icon`. O nome é o mesmo nas três famílias (`lucide`/`phosphor`/`tabler`). Nome fora da lista → `console.warn` + ícone de alerta.
 
-`AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `ListOrdered` · `Grid` · `Layout` · `LayoutDashboard` · `LayoutGrid` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `ZoomIn` · `ZoomOut` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `ShieldCheck` · `Eye` · `EyeOff` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Bold` · `Italic` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Binary` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `Link2` · `ExternalLink` · `Command` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Settings2` · `Zap` · `Sparkles` · `Compass` · `Sun` · `Moon` · `XCircle` · `ToggleLeft` · `ToggleRight`
+`AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `ListOrdered` · `Grid` · `Layout` · `LayoutDashboard` · `LayoutGrid` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `ZoomIn` · `ZoomOut` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `ShieldCheck` · `Eye` · `EyeOff` · `File` · `FileText` · `FileSearch` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Bold` · `Italic` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `GitBranch` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Binary` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `Link2` · `ExternalLink` · `Command` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Settings2` · `Zap` · `Sparkles` · `Compass` · `Sun` · `Moon` · `XCircle` · `ToggleLeft` · `ToggleRight`
 
 ### A.6 Guias que viajam no pacote
 

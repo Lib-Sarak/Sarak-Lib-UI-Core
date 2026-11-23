@@ -12,6 +12,8 @@ export type SarakAuthScreenLabelKey =
     | 'authEmailLabel'
     | 'authEmailPlaceholder'
     | 'authPasswordLabel'
+    | 'authShowPassword'
+    | 'authHidePassword'
     | 'authMfaLabel'
     | 'authForgotPassword'
     | 'authBackToPassword'

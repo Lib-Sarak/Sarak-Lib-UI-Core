@@ -10,4 +10,5 @@ import { lazy } from 'react';
 
 export type { SarakMarkdownRendererProps } from './SarakMarkdownRendererImpl';
 
+/** @encapsulates react-markdown */
 export const SarakMarkdownRenderer = lazy(() => import('./SarakMarkdownRendererImpl'));

@@ -1,6 +1,6 @@
 import React from 'react';
 import { act, fireEvent, renderHook } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import SarakUIProvider, { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
 import { useChromeDefaultWidgets } from '../useChromeDefaultWidgets';
 
@@ -49,14 +49,14 @@ describe('defaults do cromo', () => {
         const { result } = renderHook(() => useChromeDefaultWidgets(undefined, { hasUser: true }), { wrapper });
         expect(result.current.hasProvider).toBe(true);
         expect(result.current.showSearch).toBe(true);
-        expect(result.current.showThemeToggle).toBe(true);
+        expect(result.current.showThemeToggle).toBe(false);
         expect(result.current.showUser).toBe(true);
-        expect(result.current.showCollapse).toBe(false);
+        expect(result.current.showCollapse).toBe(true);
         expect(result.current.widgetPlacement.menu).toEqual(expect.arrayContaining([
-            'fontSize', 'navigationStyle', 'navCollapsed',
+            'colorMode', 'fontSize', 'navigationStyle', 'navCollapsed',
         ]));
         expect(result.current.widgetPlacement.pinned).toEqual(expect.arrayContaining([
-            'colorMode', 'language', 'search', 'user', 'notifications',
+            'language', 'search', 'user', 'notifications',
         ]));
     });
 
@@ -111,7 +111,7 @@ describe('opt-out dos widgets padrão', () => {
         expect(result.current.showThemeToggle).toBe(false);
         expect(result.current.showSearch).toBe(true);
         expect(result.current.showUser).toBe(true);
-        expect(result.current.showCollapse).toBe(false);
+        expect(result.current.showCollapse).toBe(true);
     });
 
     it('sem `hasUser`, oferece o widget para renderizar o estado desabilitado', () => {
@@ -175,5 +175,84 @@ describe('atalho Ctrl/Cmd+K', () => {
         const { result } = renderHook(() => useChromeDefaultWidgets(), { wrapper });
         pressCtrlK();
         expect(result.current.isSearchOpen).toBe(true);
+    });
+});
+
+describe('o recolher é lido por barra', () => {
+    const topbarPinnedWrapper = ({ children }: { children: React.ReactNode }): React.ReactElement => React.createElement(
+        SarakUIProvider,
+        { config: { preferenceNavCollapsePositionTopbar: 'pinned' }, children },
+    );
+    const topbarOffWrapper = ({ children }: { children: React.ReactNode }): React.ReactElement => React.createElement(
+        SarakUIProvider,
+        { config: { preferenceNavCollapsePositionTopbar: 'off' }, children },
+    );
+
+    it('com o padrão, a lateral mostra a seta e o topo não mostra o ≡', () => {
+        const { result: sidebar } = renderHook(() => useChromeDefaultWidgets(undefined, { bar: 'sidebar' }), { wrapper });
+        const { result: topbar } = renderHook(() => useChromeDefaultWidgets(undefined, { bar: 'topbar' }), { wrapper });
+        expect(sidebar.current.showCollapse).toBe(true);
+        expect(topbar.current.showCollapse).toBe(false);
+    });
+
+    it('o topo mostra o ≡ quando o sistema o liga pelo token do topo, e a lateral não muda', () => {
+        const { result: topbar } = renderHook(() => useChromeDefaultWidgets(undefined, { bar: 'topbar' }), { wrapper: topbarPinnedWrapper });
+        const { result: sidebar } = renderHook(() => useChromeDefaultWidgets(undefined, { bar: 'sidebar' }), { wrapper: topbarPinnedWrapper });
+        expect(topbar.current.showCollapse).toBe(true);
+        expect(sidebar.current.showCollapse).toBe(true);
+    });
+
+    it('o topo "não oferecido" tira o recolher da barra e do menu do topo', () => {
+        const { result } = renderHook(() => useChromeDefaultWidgets(undefined, { bar: 'topbar' }), { wrapper: topbarOffWrapper });
+        expect(result.current.widgetPlacement.offered).not.toContain('navCollapsed');
+    });
+
+    it('o valor gravado para a lateral continua valendo para ela e não liga o ≡ do topo', () => {
+        const { result: sidebar } = renderHook(() => useChromeDefaultWidgets(undefined, { bar: 'sidebar' }), { wrapper: pinnedCollapseWrapper });
+        const { result: topbar } = renderHook(() => useChromeDefaultWidgets(undefined, { bar: 'topbar' }), { wrapper: pinnedCollapseWrapper });
+        expect(sidebar.current.showCollapse).toBe(true);
+        expect(topbar.current.showCollapse).toBe(false);
+    });
+});
+
+describe('widget que o sistema não ligou (usuário e notificações)', () => {
+    afterEach(() => {
+        vi.unstubAllEnvs();
+    });
+
+    it('em produção, sem identidade, o usuário não aparece nem é oferecido', () => {
+        vi.stubEnv('NODE_ENV', 'production');
+        const { result } = renderHook(() => useChromeDefaultWidgets(), { wrapper });
+        expect(result.current.showUser).toBe(false);
+        expect(result.current.showUserOffered).toBe(false);
+        expect(result.current.widgetPlacement.offered).not.toContain('user');
+    });
+
+    it('em produção, sem notificações ou sem o seletor, as notificações não aparecem', () => {
+        vi.stubEnv('NODE_ENV', 'production');
+        const { result: semItens } = renderHook(() => useChromeDefaultWidgets(undefined, { hasNotificationHandler: true }), { wrapper });
+        const { result: semSeletor } = renderHook(() => useChromeDefaultWidgets(undefined, { hasNotifications: true }), { wrapper });
+        expect(semItens.current.showNotifications).toBe(false);
+        expect(semSeletor.current.showNotifications).toBe(false);
+    });
+
+    it('em produção, ligados (identidade + sair; itens + seletor), os dois aparecem', () => {
+        vi.stubEnv('NODE_ENV', 'production');
+        const { result } = renderHook(
+            () => useChromeDefaultWidgets(undefined, { hasUser: true, hasLogout: true, hasNotifications: true, hasNotificationHandler: true }),
+            { wrapper },
+        );
+        expect(result.current.showUser).toBe(true);
+        expect(result.current.showNotifications).toBe(true);
+    });
+
+    it('fora de produção, sem dado, os dois continuam aparecendo (linha apagada) e o aviso único sai no console', () => {
+        vi.stubEnv('NODE_ENV', 'development');
+        const warning = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        const { result } = renderHook(() => useChromeDefaultWidgets(undefined, { hasLogout: true }), { wrapper });
+        expect(result.current.showUser).toBe(true);
+        expect(result.current.showNotifications).toBe(true);
+        expect(warning).toHaveBeenCalled();
+        warning.mockRestore();
     });
 });

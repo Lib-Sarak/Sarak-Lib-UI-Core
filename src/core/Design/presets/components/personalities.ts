@@ -43,8 +43,8 @@ export const PERSONALITIES: Personality[] = [
     personality(
         'personality-corporate', 'Corporativo', 'Sóbrio e denso, com tabelas fortes e a lateral escura: o ar de um sistema de empresa.',
         ['corporativo', 'corporate', 'empresa', 'sobrio', 'formal'],
-        ['corners-soft', 'shadow-defined', 'border-solid', 'pair-corporate', 'typescale-standard', 'density-compact', 'sidebar-inverted', 'topbar-solid', 'table-striped', 'motion-agile', 'icons-lucide-fine'],
-        { navigationStyle: 'sidebar', sidebarLogoPlacement: 'top', sidebarTone: 'inverse', topbarTone: 'surface', sidebarActiveItemStyle: 'bar', tableDensity: 'compact', tableCellPadding: 8, tableBorderRadius: 6 },
+        ['corners-soft', 'shadow-defined', 'border-solid', 'pair-corporate', 'typescale-standard', 'density-compact', 'topbar-solid', 'table-striped', 'motion-agile', 'icons-lucide-fine'],
+        { navigationStyle: 'sidebar', sidebarLogoPlacement: 'top', sidebarTone: 'inverse', topbarTone: 'surface', sidebarActiveItemStyle: 'bar', sidebarBorderSide: 'none', sidebarBlur: 0, navItemRadius: 10, sidebarIconSize: 20, tableDensity: 'compact', tableCellPadding: 8, tableBorderRadius: 6 },
     ),
     personality(
         'personality-executive', 'Executivo', 'Espaçoso e serifado, com a navegação no topo: poucas coisas por tela, cada uma com respiro.',
@@ -62,7 +62,7 @@ export const PERSONALITIES: Personality[] = [
         'personality-modern', 'Moderno', 'Arredondado e leve: a lateral flutua solta da tela, na cor da marca, e o movimento tem ricochete.',
         ['moderno', 'modern', 'arredondado', 'leve', 'flutuante'],
         ['corners-round', 'shadow-ambient', 'border-solid', 'pair-modern', 'typescale-standard', 'density-comfortable', 'sidebar-floating', 'topbar-glass', 'table-rounded-striped', 'motion-expressive', 'icons-phosphor-duotone'],
-        { navigationStyle: 'sidebar', sidebarLogoPlacement: 'top', sidebarTone: 'primary', topbarTone: 'surface', sidebarActiveItemStyle: 'pill' },
+        { navigationStyle: 'sidebar', sidebarLogoPlacement: 'top', sidebarTone: 'primary', topbarTone: 'surface', sidebarActiveItemStyle: 'pill', sidebarBorderSide: 'all', sidebarBorderStyle: 'solid', sidebarBorderWidth: 1 },
     ),
     personality(
         'personality-soft', 'Suave', 'Sem bordas e com sombras macias: tudo se separa por volume e não por linha.',
@@ -89,7 +89,7 @@ export const PERSONALITIES: Personality[] = [
         'personality-glass', 'Vidro', 'Translúcido e com atmosfera: vidro cristalino sobre um fundo de manchas de cor, e o topo em pílulas.',
         ['vidro', 'glass', 'translucido', 'atmosfera', 'cristal'],
         ['corners-round', 'shadow-ambient', 'border-none', 'material-frosted', 'glass-crystal', 'bg-vignette-soft', 'bg-gradient-mesh', 'pair-geometric', 'typescale-friendly', 'density-comfortable', 'sidebar-floating', 'topbar-glass', 'table-default', 'motion-expressive', 'icons-phosphor-thin'],
-        { navigationStyle: 'topbar', sidebarLogoPlacement: 'top', sidebarTone: 'surface', topbarTone: 'surface', sidebarActiveItemStyle: 'outline', topbarActiveItemStyle: 'pill' },
+        { navigationStyle: 'topbar', sidebarLogoPlacement: 'top', sidebarTone: 'surface', topbarTone: 'surface', sidebarActiveItemStyle: 'outline', topbarActiveItemStyle: 'pill', sidebarBorderSide: 'all', sidebarBorderStyle: 'solid', sidebarBorderWidth: 1 },
     ),
     personality(
         'personality-erp', 'ERP de alta densidade', 'O máximo de dados por tela: espaços mínimos, tabela de planilha e a marca na base da lateral.',

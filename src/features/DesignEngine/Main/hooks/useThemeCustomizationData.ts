@@ -2,6 +2,8 @@ import { useMemo } from 'react';
 import { MASTER_DESIGN_MAP } from '../../../../core/Design/master-map';
 import { TokenCatalog } from '../../../../core/Design/catalog';
 import { searchTokens, buildCatalogMap } from '../../utils/token-search';
+import { useLibraryLanguage } from '../../../../core/i18n/useLibraryText';
+import { buildSearchableTokens } from './searchableTokens';
 import { buildDecisionContext } from '../../utils/decisionContext';
 import { buildTokenIndex, decisionTokenIds, DECISIONS, type DecisionId } from '../../utils/decisions';
 
@@ -17,6 +19,7 @@ interface CatalogMetadataEntry {
 const CATALOG_ENTRIES: readonly CatalogMetadataEntry[] = TokenCatalog;
 
 export function useThemeCustomizationData(searchQuery: string) {
+    const language = useLibraryLanguage();
     const globalComponent = useMemo(() => MASTER_DESIGN_MAP?.components?.find(c => c.id === 'global'), []);
 
     // Os dados que a coluna consome: folksonomia por pilar, metadados do catálogo e o bloco global.
@@ -37,11 +40,8 @@ export function useThemeCustomizationData(searchQuery: string) {
 
     const filteredResults = useMemo(() => {
         if (!searchQuery) return null;
-        const searchable = MASTER_DESIGN_MAP.components.flatMap(c =>
-            c.tokens.map(t => ({ ...t, componentLabel: c.label }))
-        );
-        return searchTokens(searchQuery, searchable, searchCatalog);
-    }, [searchQuery, searchCatalog]);
+        return searchTokens(searchQuery, buildSearchableTokens(language, catalogMap), searchCatalog);
+    }, [searchQuery, searchCatalog, language, catalogMap]);
 
     return {
         globalComponent,

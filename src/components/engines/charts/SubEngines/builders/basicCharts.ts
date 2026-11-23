@@ -117,7 +117,7 @@ export const buildPieSeries = (
     series: [{
         name: 'Distribuição',
         type: 'pie',
-        radius: ['55%', '85%'],
+        radius: ['55%', '95%'],
         avoidLabelOverlap: true,
         itemStyle: {
             borderRadius: theme.borderRadius,

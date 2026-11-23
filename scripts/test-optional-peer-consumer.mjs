@@ -15,6 +15,7 @@ const PACK_DIR = path.join(TEMP_ROOT, 'pack');
 const CACHE_DIR = path.join(TEMP_ROOT, 'npm-cache');
 const VITEST_ENTRY = path.join(ROOT_MODULES, 'vitest', 'vitest.mjs');
 const OPTIONAL_PEERS = new Set([
+    'eslint',
     '@dnd-kit/core',
     '@dnd-kit/sortable',
     '@tanstack/react-virtual',
@@ -226,6 +227,22 @@ function findVirtualizerChunk() {
     return path.join(distPath, fileName);
 }
 
+/**
+ * O kit de verificação (subpath `eslint`) não pode pesar em quem não o usa: o boot do pacote não o
+ * referencia, e o plugin carrega e funciona SEM o `eslint` instalado (peer opcional).
+ */
+function assertVerificationKitIsIsolated() {
+    const distPath = path.join(PACKAGE_DIR, 'dist');
+    const entry = readFileSync(path.join(distPath, 'index.js'), 'utf8');
+    const importsKit = /(?:from|import)\s*["'](?:\.\/)?(?:verify|eslint)[^"']*["']|require\(["'](?:\.\/)?(?:verify|eslint)[^"']*["']\)/;
+    if (importsKit.test(entry)) throw new Error('dist/index.js referencia o kit de verificação ou o eslint.');
+    const probe = run(process.execPath, ['--input-type=module', '-e',
+        "const m = await import('@sarak/lib-ui-core/eslint'); if (Object.keys(m.rules).length < 11) throw new Error('regras ausentes'); console.log('rules=' + Object.keys(m.rules).length);",
+    ], { cwd: CONSUMER_DIR });
+    if (probe.status !== 0) throw new Error(`O plugin não carregou sem o eslint instalado.\n${probe.output}`);
+    writeReport(`[optional-peer-consumer] pass: kit de verificação isolado do boot e carregável sem o eslint (${probe.output.trim()}).`);
+}
+
 function assertNoOptionalPeersAreLinked() {
     for (const peerName of OPTIONAL_PEERS) {
         const peerPath = path.join(CONSUMER_DIR, 'node_modules', ...peerName.split('/'));
@@ -285,6 +302,7 @@ export default {
         }
         printBuildWarnings('without optional peers', peerFreeBuild.output);
         writeReport('[optional-peer-consumer] pass: Vite 8 build without optional peers.');
+        assertVerificationKitIsIsolated();
 
         writeTestingConsumerFiles();
         const testingConsumer = runTestingConsumer();

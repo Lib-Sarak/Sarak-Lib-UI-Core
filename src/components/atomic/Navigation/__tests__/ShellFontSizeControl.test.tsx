@@ -47,3 +47,13 @@ describe('ShellFontSizeControl — idioma que vale', () => {
         expect(screen.getByRole('button', { name: 'L' })).toBeInTheDocument();
     });
 });
+
+describe('ShellFontSizeControl — variante menu', () => {
+    it('vira linhas de menu com a escolha marcada, e clicar grava a PREFERÊNCIA', () => {
+        mockDesign = {};
+        render(<ShellFontSizeControl variant="menu" />);
+        expect(screen.getByRole('menuitemradio', { name: 'Média' })).toHaveAttribute('aria-checked', 'true');
+        fireEvent.click(screen.getByRole('menuitemradio', { name: 'Pequena' }));
+        expect(updatePreferencesMock).toHaveBeenCalledWith({ fontSize: 'sm' });
+    });
+});

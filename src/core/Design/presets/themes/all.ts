@@ -11,7 +11,6 @@ import { sarakSovereignTheme } from './sarak-sovereign';
 import { cyberpunkneonTheme } from './cyberpunk-neon';
 import { industrialTerminalTheme } from './industrial-terminal';
 import { neobrutalismTheme } from './neo-brutalism';
-import { synthwaveRetroTheme } from './synthwave-retro';
 import { nebulaSpaceTheme } from './nebula-space';
 import { kineticFlowTheme } from './kinetic-flow';
 import { cyberRetroWaveTheme } from './cyber-retro-wave';
@@ -26,13 +25,19 @@ import { organicClayTheme } from './organic-clay';
 import { highContrastTheme } from './high-contrast';
 import { corporateLedgerTheme } from './corporate-ledger';
 import { playfulPastelTheme } from './playful-pastel';
+import { sarakSovereignClassicTheme } from './sarak-sovereign-classic';
+import { cyberpunkNeonClassicTheme } from './cyberpunk-neon-classic';
+import { industrialTerminalClassicTheme } from './industrial-terminal-classic';
+import { cyberRetroWave2077ClassicTheme } from './cyber-retro-wave-classic';
+import { natureBreezeTheme } from './nature-breeze';
+import { neoBrutalismClassicTheme } from './neo-brutalism-classic';
+import { dotMatrixElegantTheme } from './dot-matrix-elegant';
 
 export const SARAK_ALL_THEMES: SarakThemePreset[] = [
     sarakSovereignTheme,
     cyberpunkneonTheme,
     industrialTerminalTheme,
     neobrutalismTheme,
-    synthwaveRetroTheme,
     nebulaSpaceTheme,
     kineticFlowTheme,
     cyberRetroWaveTheme,
@@ -47,4 +52,11 @@ export const SARAK_ALL_THEMES: SarakThemePreset[] = [
     highContrastTheme,
     corporateLedgerTheme,
     playfulPastelTheme,
+    sarakSovereignClassicTheme,
+    cyberpunkNeonClassicTheme,
+    industrialTerminalClassicTheme,
+    cyberRetroWave2077ClassicTheme,
+    natureBreezeTheme,
+    neoBrutalismClassicTheme,
+    dotMatrixElegantTheme,
 ];

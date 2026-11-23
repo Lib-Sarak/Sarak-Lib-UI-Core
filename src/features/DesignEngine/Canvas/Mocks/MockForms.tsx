@@ -5,9 +5,11 @@ import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
 import { SarakIconButton } from '../../../../components/atomic/Buttons/SarakIconButton';
 import { SarakInput } from '../../../../components/atomic/Inputs/SarakInput';
 import { SarakSelect } from '../../../../components/atomic/Inputs/SarakSelect';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { SarakTextarea } from '../../../../components/atomic/Inputs/SarakTextarea';
 
 export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: any, animationStyle: string }> = ({ tokens, animationVariants }) => {
+    const text = useLibraryText();
     const [isLoading, setIsLoading] = useState(false);
     
     return (
@@ -45,7 +47,7 @@ export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: 
                             <label className="text-xs font-bold text-[var(--theme-title)] uppercase tracking-widest opacity-80">Nome da Empresa</label>
                             <SarakInput 
                                 type="text" 
-                                placeholder="Sarak Enterprise"
+                                placeholder={text('sampleTextCompany')}
                             />
                         </div>
                         {/* Input 2 */}
@@ -66,7 +68,7 @@ export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: 
                             </label>
                             <SarakInput 
                                 type="email" 
-                                defaultValue="contato@sarak.io"
+                                defaultValue="nome@example.com"
                                 className="!bg-[var(--sarak-status-success-color,#10b981)]/5 !border-[var(--sarak-status-success-color,#10b981)]/50 !text-[var(--sarak-status-success-color,#10b981)] focus:!border-[var(--sarak-status-success-color,#10b981)]"
                             />
                         </div>

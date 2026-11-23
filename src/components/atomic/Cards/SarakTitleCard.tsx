@@ -78,7 +78,7 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
             {/* DRAFT BADGE (v6.3) */}
             {globalUI?.isDrafting && (
                 <div
-                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-[var(--color-theme-card,#101622)] border border-[var(--sarak-primary-color,#19e3f0)]/20 font-black uppercase text-[var(--sarak-primary-color,#19e3f0)] shadow-[0_0_10px_var(--sarak-card-glow-color,rgba(25,227,240,0.18))]"
+                    className="absolute top-2 left-4 z-40 pointer-events-none hidden @4xl:flex items-center rounded bg-[var(--color-theme-card,#101622)] border border-[var(--sarak-primary-color,#19e3f0)]/20 font-black uppercase text-[var(--sarak-primary-color,#19e3f0)] shadow-[0_0_10px_var(--sarak-card-glow-color,rgba(25,227,240,0.18))]"
                     style={{
                         gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)',
                         paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
@@ -96,11 +96,12 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
                 {/* Header Layout */}
                 <div className={layout.headerClass}>
                     <div className="flex flex-1 min-w-0" style={{ flexDirection: 'column', paddingRight: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                        <span className="font-black text-[var(--sarak-subtitle-color,var(--theme-subtitle,#f2f6fb))] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale3xs, 11px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
+                        <span data-contrast-part="subtitle" className="font-black text-[var(--sarak-subtitle-color,var(--sarak-text-sec,rgba(242,246,251,0.72)))] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale3xs, 11px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
                             {String(subtitle)}
                         </span>
-                        <h4 
-                            className="text-[var(--sarak-card-title-color,var(--theme-title,#f2f6fb))] tracking-tight group-hover:text-[var(--sarak-primary-color,#19e3f0)] transition-colors truncate"
+                        <h4
+                            data-contrast-part="title"
+                            className="text-[var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb))] group-hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_60%,var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb)))] tracking-tight transition-colors truncate"
                             style={{ 
                                 fontSize: 'var(--sarak-card-title-font-size, 20px)',
                                 fontWeight: resolveTitleFontWeight(design.cardTitleFontWeight) as React.CSSProperties['fontWeight'],
@@ -150,7 +151,8 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
                             {(inputCaps as string[]).slice(0, 3).map((cap: string) => (
                                 <div
                                     key={cap}
-                                    className="flex items-center bg-[var(--sarak-primary-color-bg,rgba(25,227,240,0.15))] text-[var(--sarak-primary-color,#19e3f0)] border border-[var(--border-color,rgba(255,255,255,0.09))] text-3xs font-black uppercase"
+                                    data-contrast-part="capability"
+                                    className="flex items-center bg-[var(--sarak-primary-color-bg,rgba(25,227,240,0.15))] text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))] border border-[var(--border-color,rgba(255,255,255,0.09))] text-3xs font-black uppercase"
                                     style={{
                                         gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)',
                                         paddingInline: 'var(--sarak-layout-gap-sm, 8px)',

@@ -23,7 +23,7 @@ export const KitchenSinkPreview: React.FC = () => {
                         <Layout size={20} />
                     </div>
                     <div>
-                        <h1 className="text-xl font-bold tracking-tight text-[var(--theme-title)]">Sarak OS Kitchen Sink</h1>
+                        <h1 className="text-xl font-bold tracking-tight text-[var(--theme-title)]">Kitchen Sink</h1>
                         <p className="text-2xs font-black uppercase tracking-widest text-[var(--theme-muted)]">Manifest v8.5 • Preview Mode</p>
                     </div>
                 </div>

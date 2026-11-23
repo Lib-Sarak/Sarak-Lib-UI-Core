@@ -7,12 +7,14 @@ import { ChromeSidebarHeader } from '../ChromeSidebarHeader';
 const BRAND = { name: 'ERP', logoUrl: '/logo.png' };
 
 describe('ChromeSidebarHeader', () => {
-    it('aberta: marca à esquerda e seta de recolher à direita, com a altura do topo da área de conteúdo', () => {
+    it('aberta: faixa da marca com a altura do topo da área de conteúdo, linha embaixo e fundo da marca; marca à esquerda e seta à direita', () => {
         const { container } = render(
             <ChromeSidebarHeader brand={BRAND} showBrand collapsed={false} showCollapse onToggleCollapse={vi.fn()} />,
         );
         const header = container.firstElementChild as HTMLElement;
-        expect(header.style.minHeight).toBe('var(--sarak-topbar-height, 64px)');
+        expect(header.style.height).toBe('var(--sarak-topbar-height, 64px)');
+        expect(header.style.borderBottom).toContain('var(--sarak-sidebar-border-color');
+        expect(header.style.background).toBe('var(--sarak-sidebar-brand-bg, transparent)');
         expect(header.className).toContain('justify-between');
         const [first, last] = Array.from(header.children);
         expect(last.getAttribute('data-sarak-widget') ?? last.querySelector('[data-sarak-widget]')?.getAttribute('data-sarak-widget')).toBe('collapse');
@@ -49,6 +51,33 @@ describe('ChromeSidebarHeader', () => {
         expect(container.querySelector('img')).toBeNull();
         expect(screen.queryByText('ERP')).toBeNull();
         expect(screen.getByRole('button', { name: 'Recolher navegação' })).toBeInTheDocument();
+    });
+
+    it('sem logo: monograma com a inicial do nome, que fica sozinho na lateral recolhida', () => {
+        const { container, rerender } = render(
+            <ChromeSidebarHeader brand={{ name: 'sarak OS' }} showBrand collapsed={false} showCollapse onToggleCollapse={vi.fn()} />,
+        );
+        expect(container.querySelector('[data-sarak-brand-monogram]')?.textContent).toBe('S');
+        expect(screen.getByText('sarak OS')).toBeInTheDocument();
+        rerender(<ChromeSidebarHeader brand={{ name: 'sarak OS' }} showBrand collapsed showCollapse onToggleCollapse={vi.fn()} />);
+        expect(container.querySelector('[data-sarak-brand-monogram]')?.textContent).toBe('S');
+        expect(screen.queryByText('sarak OS')).toBeNull();
+    });
+
+    it('com a marca na base, o topo é só a seta: sem faixa, sem altura do topo e sem linha', () => {
+        const { container } = render(
+            <ChromeSidebarHeader brand={BRAND} showBrand={false} collapsed={false} showCollapse onToggleCollapse={vi.fn()} />,
+        );
+        const header = container.firstElementChild as HTMLElement;
+        expect(header.style.height).toBe('');
+        expect(header.style.borderBottom).toBe('');
+    });
+
+    it('sem marca no topo e sem seta, o topo não existe', () => {
+        const { container } = render(
+            <ChromeSidebarHeader brand={BRAND} showBrand={false} collapsed={false} showCollapse={false} onToggleCollapse={vi.fn()} />,
+        );
+        expect(container.firstElementChild).toBeNull();
     });
 
     it('sem o widget de recolher não há seta', () => {

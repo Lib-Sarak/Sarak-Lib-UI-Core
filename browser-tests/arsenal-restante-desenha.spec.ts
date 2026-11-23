@@ -2,7 +2,7 @@
  * Medição, em navegador real, do que a `plan-111` deixou na exceção do gate `token-reader:check`
  * e que passou a desenhar: moldura (`borderType`), direção da sombra (`shadowOrientation`) e
  * sombra em camadas (`layeredShadows`), o painel de busca (`--dynamic-shadow`), o desfoque do
- * vidro do cartão, as variantes de hover/active (`colorDepth`/`colorVariation`) e a cor de
+ * vidro do cartão, as variantes de hover/active (fator 1) e a cor de
  * textura nas famílias de leitor de CSS. O `jsdom` não calcula `color-mix`, `backdrop-filter`
  * nem a cascata de stylesheet, então só se mede aqui.
  *
@@ -325,28 +325,15 @@ test('build: nenhuma regra do dist/sarak.css traz só a forma -webkit- de backdr
     expect(onlyPrefixed, `regras só com -webkit-: ${onlyPrefixed.slice(0, 3).join(' | ')}`).toEqual([]);
 });
 
-// ── colorDepth e colorVariation ───────────────────────────────────────────────────────────────────
+// ── variantes de hover/active ─────────────────────────────────────────────────────────────────────
 
-const primaryVariants = (tema: string): Promise<{ hover: string; active: string }> =>
-    withScene('textura', tema, async (page) => ({
+test('hover e active da primária seguem emitidos com o fator 1 (cor base ×1,1 e ×0,9)', async () => {
+    const variants = await withScene('textura', 'cor-base', async (page) => ({
         hover: (await readComputed(page.locator('body'), '--theme-primary-hover')).trim(),
         active: (await readComputed(page.locator('body'), '--theme-primary-active')).trim(),
     }));
 
-test('colorDepth: um valor alto afasta hover e active da cor base', async () => {
-    const base = await primaryVariants('cor-base');
-    const deep = await primaryVariants('cor-profunda');
-
-    expect(base).toEqual({ hover: '#8d8d46', active: '#73733a' });
-    expect(deep).toEqual({ hover: '#a6a653', active: '#5a5a2d' });
-});
-
-test('colorVariation: um valor alto abre o matiz entre hover e active', async () => {
-    const base = await primaryVariants('cor-base');
-    const varied = await primaryVariants('cor-variada');
-
-    expect(varied.hover).not.toBe(base.hover);
-    expect(varied.active).not.toBe(base.active);
+    expect(variants).toEqual({ hover: '#8d8d46', active: '#73733a' });
 });
 
 // ── cor de textura nas famílias de leitor ─────────────────────────────────────────────────────────

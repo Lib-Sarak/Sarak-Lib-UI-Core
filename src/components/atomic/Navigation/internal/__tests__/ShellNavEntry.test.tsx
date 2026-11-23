@@ -22,7 +22,7 @@ describe('ShellNavEntry', () => {
         const { rerender } = render(<ShellNavEntry item={{ label: 'Pedidos', route: '/pedidos' }} isActive={false} horizontal={false} collapsed={false} />);
         expect(screen.getByRole('link').style.paddingInlineStart).toBe('');
         rerender(<ShellNavEntry item={{ label: 'Pedidos', route: '/pedidos' }} isActive={false} horizontal={false} collapsed={false} nested />);
-        expect(screen.getByRole('link').style.paddingInlineStart).toContain('--sarak-layout-gap-md');
+        expect(screen.getByRole('link').style.paddingInlineStart).toBe('calc(0.75rem + var(--sarak-sidebar-icon-size, 18px) + 0.75rem)');
     });
 
     it('recolhido, o nome acessível continua sendo o rótulo', () => {

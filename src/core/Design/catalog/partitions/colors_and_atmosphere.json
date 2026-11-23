@@ -158,6 +158,62 @@
     ]
   },
   {
+    "tokenId": "keepPalette",
+    "visualImpact": "cores",
+    "name": "Manter Minha Paleta",
+    "description": "Quando ativo, a paleta escolhida é aplicada por cima do tema que for selecionado: vence todas as cores que ela calcula, inclusive as que o tema declara.",
+    "type": "boolean",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "branding"
+    ],
+    "tags": [
+      "palette",
+      "color",
+      "theme"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "colorPalette"
+    ]
+  },
+  {
+    "tokenId": "savedPalettes",
+    "visualImpact": "cores",
+    "name": "Paletas Salvas",
+    "description": "As paletas criadas no painel e guardadas com nome: aparecem em \"Minhas paletas\" na galeria e no atalho de marca.",
+    "type": "string",
+    "importance": 40,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "branding"
+    ],
+    "tags": [
+      "palette",
+      "color",
+      "brand"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "colorPalette"
+    ]
+  },
+  {
     "tokenId": "surfaceColor",
     "name": "Cor de Superfície",
     "description": "Tom para objetos elevados e content boxes em cima do background principal.",
@@ -310,72 +366,6 @@
     "relatedTokens": [
       "accentColor",
       "primaryColor"
-    ]
-  },
-  {
-    "tokenId": "colorDepth",
-    "name": "Profundidade da Cor",
-    "description": "Escala de sombras e saturação que adiciona volume (depth) à interface.",
-    "type": "number",
-    "importance": 70,
-    "categories": [
-      "colors-and-atmosphere",
-      "cores",
-      "ajuste"
-    ],
-    "tags": [
-      "depth",
-      "saturation",
-      "color"
-    ],
-    "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "colors.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-color-depth"
-    ],
-    "allowedValues": {
-      "min": 0,
-      "max": 5,
-      "step": 1
-    },
-    "relatedTokens": [
-      "colorVariation"
-    ]
-  },
-  {
-    "tokenId": "colorVariation",
-    "name": "Variação da Cor",
-    "description": "Nível de diversificação nas paletas geradas a partir das cores base.",
-    "type": "number",
-    "importance": 70,
-    "categories": [
-      "colors-and-atmosphere",
-      "cores",
-      "ajuste"
-    ],
-    "tags": [
-      "variation",
-      "palette",
-      "color"
-    ],
-    "databaseColumn": "colors_and_atmosphere",
-    "schemaOrigin": "colors.ts",
-    "digitalTwins": [
-      "DesignInjector"
-    ],
-    "cssVariables": [
-      "--sarak-color-variation"
-    ],
-    "allowedValues": {
-      "min": 1,
-      "max": 5,
-      "step": 1
-    },
-    "relatedTokens": [
-      "colorDepth"
     ]
   },
   {

@@ -43,7 +43,7 @@ STAGED=$(git diff --cached --name-only --diff-filter=ACMR)
 # =============================================================================
 # ANEL 1 (plan×índice) — roda sempre que o staged toca specs/plan/ ou o índice,
 # INDEPENDENTE de tocar código: é justamente o commit "só spec" (revisor
-# aprovando/sincronizando) que historicamente derrapou (plan-02, plan-13).
+# aprovando/sincronizando) que historicamente derrapou (commits que só tocam spec).
 # =============================================================================
 TOCA_PLAN_OU_INDICE=$(echo "$STAGED" | grep -E '^specs/(plan/|00-indice\.md$)' | head -n 1)
 if [ -n "$TOCA_PLAN_OU_INDICE" ]; then
@@ -66,7 +66,7 @@ fi
 # seção, §N.N) NASCE com dívida conhecida (vão nº 7) — por isso ele NÃO é
 # Anel 1 "verde ou nada": entrou no `run_audit.mjs` e é cobrado pelo Anel 2,
 # contra baseline, como os outros auditores com dívida tolerada.
-# `.github/` entrou em 2026-08-18 (plan-05): `.github/workflows/*.yml` é
+# `.github/` entrou em 2026-08-18: `.github/workflows/*.yml` é
 # CONFIGURAÇÃO EXECUTÁVEL — parente direto de `.githooks/`, que já estava na
 # lista. Sem esta linha, um commit que só mexesse no workflow da CI pularia os
 # Anéis 1 e 2 inteiros: a peça que valida todo o resto do pipeline seria a
@@ -91,7 +91,7 @@ if [ -z "$TOCA_CODIGO" ]; then
 fi
 
 # =============================================================================
-# ANEL 1 (kit do mantenedor) — dev-kit:check. plan-52, decisão do dono
+# ANEL 1 (kit do mantenedor) — dev-kit:check. Decisão do dono
 # (2026-08-18): passa a BLOQUEAR o commit. O gatilho é a UNIÃO de TOCA_CODIGO
 # e TOCA_DOC_COM_SECAO, não só TOCA_CODIGO — colocá-lo dentro do `if [ -n
 # "$TOCA_CODIGO" ]` do Anel 1 de contrato NÃO resolveria: sarak-dev/state.json
@@ -131,7 +131,10 @@ anel1() {
   if ! node "$@"; then
     echo ""
     echo "⛔ COMMIT BLOQUEADO — Anel 1: $rotulo"
-    echo "   Regra violada : $regra (specs/specs/00-regras-e-invariantes.md)"
+    case "$regra" in
+      R*) echo "   Regra violada : $regra (specs/specs/00-regras-e-invariantes.md)" ;;
+      *)  echo "   Regra violada : $regra" ;;
+    esac
     echo "   Veja o detalhe: $comando"
     exit 1
   fi
@@ -143,7 +146,7 @@ anel1 "zero-marca"                 "R12 — A lib nunca estampa a própria marca
 anel1 "kit do consumidor"          "R17 — Não transcrever fonte viva" "npm run guide:check" scripts/generate-consumer-kit.mjs --check
 anel1 "zero deep import"           "R27 — O consumidor nunca precisa de deep import" "npm run deep-import:check" gates/scripts/contrato/check-no-deep-import.mjs
 anel1 "limites declarados dos gates" "R18 — Todo gate declara o que NÃO vê" "npm run gate-limits:check" gates/scripts/contrato/check-gate-limits.mjs
-# plan-52: os três abaixo já existiam em package.json, verdes, e não rodavam em
+# Os três abaixo já existiam em package.json, verdes, e não rodavam em
 # lugar nenhum (nem hook, nem gates:full, nem run_audit). Custam o mesmo que os
 # gates acima (~0,7-0,9s) — entram pelo mesmo molde `anel1()`.
 anel1 "container query sem interpolação"   "— (07-responsividade-e-multidispositivo)" "npm run container-query:check" gates/scripts/contrato/check-container-query-literal.mjs

@@ -16,6 +16,7 @@ import { createRequire } from 'node:module';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { resolvePackageImport } from './harness-package-imports.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '..');
@@ -89,7 +90,8 @@ function resolveWorkspaceImport(args, libraryEntry) {
     }
 
     let resolvedPath;
-    if (args.path === '@sarak/lib-ui-core') resolvedPath = libraryEntry;
+    if (args.path.startsWith('#') && args.importer) resolvedPath = resolvePackageImport(args.path, args.importer);
+    else if (args.path === '@sarak/lib-ui-core') resolvedPath = libraryEntry;
     else if (args.path.startsWith('.')) resolvedPath = resolveLocalFile(args.path, args.resolveDir || ROOT);
     else {
         try {
@@ -163,9 +165,11 @@ const HTML_TEMPLATE = `<!doctype html>
  * Builda o harness e devolve o caminho do `index.html` gerado, pronto para
  * `file://`. `entryPath` escolhe o entry point (default: `harness-entry.tsx`, o do
  * `cromo-css-real.spec.ts`); a vitrine de temas passa `showcase-entry.tsx`. A opção
- * `useSourceLibrary` direciona o alias para o barrel do código-fonte.
+ * `useSourceLibrary` direciona o alias para o barrel do código-fonte. A opção `production` empacota o React de produção
+ * (`process.env.NODE_ENV` = `'production'`), o que o usuário roda: quem mede tempo usa esta; sem ela, o React de
+ * desenvolvimento, com os avisos que os demais specs leem.
  */
-export async function buildHarness(entryPath = ENTRY, { useSourceLibrary = false } = {}) {
+export async function buildHarness(entryPath = ENTRY, { useSourceLibrary = false, production = false } = {}) {
     const libraryEntry = useSourceLibrary ? SOURCE_INDEX : DIST_INDEX;
     for (const required of [libraryEntry, DIST_CSS]) {
         if (!fs.existsSync(required)) {
@@ -191,6 +195,7 @@ export async function buildHarness(entryPath = ENTRY, { useSourceLibrary = false
             format: 'iife',
             platform: 'browser',
             jsx: 'automatic',
+            define: { 'process.env.NODE_ENV': JSON.stringify(production ? 'production' : 'development') },
             plugins: [createWorkspaceResolver(libraryEntry)],
             logLevel: 'silent',
         });

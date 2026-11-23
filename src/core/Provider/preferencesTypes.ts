@@ -9,6 +9,8 @@ export {
     getChromeWidgetPosition,
     isPreferenceOffered,
     getPreferencePosition,
+    getNavCollapsePositionTopbar,
+    NAV_COLLAPSE_TOPBAR_POSITION_TOKEN_ID,
 } from '../Design/schema/preferences';
 
 export type SarakColorModePreference = 'light' | 'dark' | 'system';

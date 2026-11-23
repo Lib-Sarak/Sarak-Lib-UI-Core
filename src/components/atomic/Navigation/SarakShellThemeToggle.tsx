@@ -29,29 +29,15 @@ export const SarakShellThemeToggle: React.FC<SarakShellThemeToggleProps> = ({ va
         updatePreferences({ colorMode: isDarkMode ? 'light' : 'dark' });
     };
 
-    if (variant === 'mini') {
-        return (
-            <SarakIconButton
-                onClick={toggleTheme}
-                variant="ghost"
-                size="md"
-                className="w-full rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]"
-                title={isDarkMode ? t('themeToggleTitleToLight') : t('themeToggleTitleToDark')}
-                icon={isDarkMode ? <SarakIcon name="Sun" size={18} /> : <SarakIcon name="Moon" size={18} />}
-            />
-        );
-    }
-
-    if (variant === 'vertical') {
+    // Lateral: uma linha com a métrica do item de menu (recolhida, só o ícone, no eixo dos ícones da lista).
+    if (variant === 'mini' || variant === 'vertical') {
         return (
             <SarakMenuItem
                 onClick={toggleTheme}
-                className="group font-tab"
-                icon={isDarkMode ? (
-                    <SarakIcon name="Sun" size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />
-                ) : (
-                    <SarakIcon name="Moon" size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />
-                )}
+                className="font-tab"
+                collapsed={variant === 'mini'}
+                title={isDarkMode ? t('themeToggleTitleToLight') : t('themeToggleTitleToDark')}
+                icon={isDarkMode ? 'Sun' : 'Moon'}
                 label={isDarkMode ? t('themeToggleLabelLight') : t('themeToggleLabelDark')}
             />
         );

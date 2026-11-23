@@ -6,11 +6,6 @@ import type { SarakDirtyToken } from '../../hooks/useDesignDraft';
 import { ThemeMoreActionsMenu, type ThemeMenuAction } from './ThemeMoreActionsMenu';
 import { ThemePendingChanges } from './ThemePendingChanges';
 
-const ACTION_LABELS = {
-    apply: 'Aplicar',
-    discard: 'Descartar'
-} as const;
-
 interface ThemeActionBarProps {
     isDirty: boolean;
     dirtyTokenCount: number;
@@ -50,32 +45,33 @@ export const ThemeActionBar: React.FC<ThemeActionBarProps> = ({
     const setMenuOpen = useCallback((open: boolean) => setOpenLayer(open ? 'menu' : null), []);
     const menuActions: ThemeMenuAction[] = [
         ...(canSaveToRuntime ? [
-            { id: 'save', label: text('themeSaveDialogTitle'), onSelect: onSave },
-            { id: 'create', label: text('themeCreateAction'), onSelect: onCreateTheme },
+            { id: 'save', label: text('themeSaveDialogTitle'), onSelect: onSave, testId: 'sarak-panel-save-theme' },
+            { id: 'create', label: text('themeCreateAction'), onSelect: onCreateTheme, testId: 'sarak-panel-new-theme' },
         ] : []),
-        { id: 'export', label: text('themeExportJsonAction'), onSelect: onExport },
+        { id: 'export', label: text('themeExportJsonAction'), onSelect: onExport, testId: 'sarak-panel-export-json' },
         ...(canUndoLastApply ? [{ id: 'undo', label: text('themeUndoLastApplyAction'), onSelect: onUndoLastApply }] : []),
-        ...(canDeleteTheme ? [{ id: 'delete', label: text('themeDeleteAction'), onSelect: onDeleteTheme, danger: true }] : []),
+        ...(canDeleteTheme ? [{ id: 'delete', label: text('themeDeleteAction'), onSelect: onDeleteTheme, danger: true, testId: 'sarak-panel-delete-theme' }] : []),
     ];
 
     return (
         <div role="group" aria-label="Ações do tema" className="shrink-0 border-t border-[var(--theme-border)] bg-[var(--theme-surface)] p-3">
             <div className="flex flex-col gap-2">
                 <ThemePendingChanges tokens={dirtyTokens} isOpen={openLayer === 'changes'} onToggle={toggleChanges} />
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                     <SarakButton
                         onClick={onApply}
+                        data-testid="sarak-panel-apply"
                         disabled={dirtyTokenCount === 0}
                         variant="primary"
                         size="md"
                         leftIcon={<Check size={14} />}
                         aria-describedby={dirtyTokenCount > 0 ? 'theme-pending-changes-count' : undefined}
-                        className="min-w-0 flex-1 whitespace-normal break-words disabled:opacity-80"
+                        className="min-w-fit flex-1 whitespace-nowrap disabled:opacity-80"
                     >
-                        {ACTION_LABELS.apply}
+                        {text('themeApplyAction')}
                     </SarakButton>
-                    <SarakButton onClick={onDiscard} disabled={!isDirty} variant="secondary" size="md" className="min-w-0 whitespace-normal break-words disabled:opacity-80">
-                        {ACTION_LABELS.discard}
+                    <SarakButton onClick={onDiscard} disabled={!isDirty} variant="secondary" size="md" className="min-w-fit whitespace-nowrap disabled:opacity-80">
+                        {text('settingsDiscard')}
                     </SarakButton>
                     <ThemeMoreActionsMenu actions={menuActions} isOpen={openLayer === 'menu'} onOpenChange={setMenuOpen} />
                 </div>

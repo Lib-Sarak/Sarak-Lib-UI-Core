@@ -8,6 +8,7 @@ import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { useResponsiveStyles } from '../hooks/useResponsiveStyles';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 import type { SarakCatalogGridProps } from './SarakCatalogGridProps';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 export type { SarakCatalogItem, SarakCatalogGridProps } from './SarakCatalogGridProps';
 
@@ -29,6 +30,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
 }) => {
     const [search, setSearch] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('all');
+    const text = useLibraryText();
 
     const { getContainerStyles, getHeaderStyles, getGridStyles, getFlexStyles } = useStructuralStyles();
     const { getResponsiveStackStyles } = useResponsiveStyles();
@@ -76,7 +78,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                     <div>
                         <div className="flex items-center text-theme-primary" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>
                             <SarakIcon name="Binary" size={14} />
-                            <span className="font-black uppercase tracking-widest" style={{ fontSize: 'var(--sarak-type-scale2xs, 11px)' }}>Sarak Catalog Engine</span>
+                            <span className="font-black uppercase tracking-widest" style={{ fontSize: 'var(--sarak-type-scale2xs, 11px)' }}>{text('catalogLabel')}</span>
                         </div>
                         <h1 className="text-4xl font-black text-theme-title tracking-tighter">
                             {title}

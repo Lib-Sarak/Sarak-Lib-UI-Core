@@ -44,7 +44,7 @@ CREATE UNIQUE INDEX sarak_theme_definitions_tenant_theme_uk
 -- =============================================================================
 -- 2) O tema APLICADO agora — estado corrente, SINGULAR por tenant
 --    (docs/persistencia-de-tema.md §1.1). onLoad pode devolver
---    { design: state_design, activeThemeId: active_theme_id }.
+--    { design: state_design, activeThemeId: active_theme_id, format: design_format }.
 --    No cache local `hybrid`, `design` permanece no formato JSON bruto da chave
 --    efetiva e o id usa a chave companheira `<storageKey>::active-theme-id`.
 -- =============================================================================
@@ -53,7 +53,11 @@ CREATE TABLE sarak_applied_theme_state (
     tenant_key          TEXT GENERATED ALWAYS AS (COALESCE(tenant_id, '')) STORED,
 
     -- OPAQUE. Pode não corresponder a nenhuma linha de sarak_theme_definitions.
+    -- Só as escolhas quando design_format = 2; o payload completo quando é NULL.
     state_design        TEXT NOT NULL,
+
+    -- O 3º argumento de onSave (2 = só as escolhas). Devolva-o no onLoad.
+    design_format       INTEGER,
 
     -- NÃO é foreign key — pode apontar para um tema EMBARCADO da lib, que nunca
     -- ganha linha nesta base. Ver docs/schema/postgres.sql, item 3 do cabeçalho.

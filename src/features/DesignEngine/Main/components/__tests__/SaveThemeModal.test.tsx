@@ -40,11 +40,22 @@ describe('SaveThemeModal', () => {
 
         expect(screen.getByRole('heading', { name: 'Exportar tema (JSON)' })).toBeInTheDocument();
         expect(screen.getByDisplayValue('Meu Tema')).toBeInTheDocument();
-        fireEvent.change(screen.getByPlaceholderText('Ex: Sarak Sovereign Customizado'), { target: { value: 'Tema Corporativo' } });
+        fireEvent.change(screen.getByPlaceholderText('Nome do tema'), { target: { value: 'Tema Corporativo' } });
         fireEvent.click(screen.getByRole('button', { name: 'Exportar JSON' }));
 
         expect(onExport).toHaveBeenCalledWith('Tema Corporativo');
         expect(screen.queryByRole('button', { name: 'Salvar' })).not.toBeInTheDocument();
+    });
+
+    it('dá ao botão de confirmar o alvo estável de teste, ao salvar e ao exportar', () => {
+        const { unmount } = customRenderWithSavePort(
+            <SaveThemeModal isOpen purpose="runtime" onClose={vi.fn()} onExport={vi.fn()} onSave={vi.fn()} />,
+        );
+        expect(screen.getByTestId('sarak-save-theme-confirm')).toBeInTheDocument();
+        unmount();
+
+        customRender(<SaveThemeModal isOpen purpose="export" onClose={vi.fn()} onExport={vi.fn()} />);
+        expect(screen.getByTestId('sarak-save-theme-confirm')).toBeInTheDocument();
     });
 
     it('chama onClose ao cancelar ou fechar', () => {

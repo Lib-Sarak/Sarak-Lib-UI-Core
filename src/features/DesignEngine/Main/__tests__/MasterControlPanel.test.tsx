@@ -5,7 +5,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MasterControlPanel } from '../MasterControlPanel';
 
 // Mock MASTER_DESIGN_MAP
-vi.mock('../../../../core/Design/master-map', () => ({
+vi.mock('../../../../core/Design/master-map', async (importOriginal) => ({
+    // O padrão de fábrica é o real: quem importa o módulo (manifest, helpers) lê dele ao carregar.
+    sarakGetDefaultDesignState: (await importOriginal<typeof import('../../../../core/Design/master-map')>()).sarakGetDefaultDesignState,
     MASTER_DESIGN_MAP: {
         components: [
             {

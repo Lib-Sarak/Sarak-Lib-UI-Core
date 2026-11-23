@@ -1,5 +1,9 @@
-import { computeColorVariants } from '../../Provider/utils/color-engine';
-import { isLiteralColor, pickOnColor } from '../../Provider/utils/on-color';
+import { computeColorVariants, parseToRgba } from '../../Provider/utils/color-engine';
+import { isLiteralColor, MODE_ANCHOR_DARK, MODE_ANCHOR_LIGHT, ON_COLOR_DARK, ON_COLOR_LIGHT, pickOnColor } from '../../Provider/utils/on-color';
+import { sarakGetDefaultDesignState } from '../master-map';
+
+/** O fundo do corpo de fábrica do schema (`colorBgBody`): o padrão do tema escuro. */
+const DEFAULT_BODY_BG = String(sarakGetDefaultDesignState().colorBgBody);
 
 /** Mesmo valor de token; o objeto responsivo se compara por ponto (a validação reordena as chaves). */
 const isSameTokenValue = (a: unknown, b: unknown): boolean => {
@@ -52,13 +56,12 @@ const CHANNEL_SOURCES: Array<[string, string]> = [
 export const emitColorChannels = (
     variables: Record<string, string>,
     anchorColor: string,
-    shape: { depth?: number; variation?: number },
 ): void => {
     CHANNEL_SOURCES.forEach(([channel, source]) => {
         const color = variables[source];
         if (!color) return;
         try {
-            variables[channel] = computeColorVariants(color, anchorColor, shape).rgb;
+            variables[channel] = computeColorVariants(color, anchorColor).rgb;
         } catch {
             // cor não interpretável (ex.: `var()`): sem canal, vale a reserva do CSS
         }
@@ -87,9 +90,9 @@ const ON_COLOR_SOURCES: Record<string, string> = {
  * (`ON_COLOR_SOURCES`). Cor que não é literal (`var()`, `color-mix`) não emite: vale a reserva do componente.
  */
 export function emitOnColors(variables: Record<string, string>, anchorColor: string): void {
-    // O corpo (literal) sustenta a cor translúcida; sem ele, o fundo padrão do modo (a âncora é preta no escuro).
+    // O corpo (literal) sustenta a cor translúcida; sem ele, o fundo padrão do modo: o do schema no escuro, a âncora branca no claro.
     const body = variables['--sarak-bg-body'];
-    const underColor = isLiteralColor(body) ? body : anchorColor === '#000000' ? '#050505' : '#ffffff';
+    const underColor = isLiteralColor(body) ? body : anchorColor === MODE_ANCHOR_DARK ? DEFAULT_BODY_BG : MODE_ANCHOR_LIGHT;
     variables['--sarak-on-surface'] = pickOnColor(underColor);
     Object.entries(ON_COLOR_SOURCES).forEach(([name, sourceVar]) => {
         const source = variables[sourceVar];
@@ -99,11 +102,34 @@ export function emitOnColors(variables: Record<string, string>, anchorColor: str
 
 /**
  * A cor de título (`--color-theme-title`) é do token `titleColor` — `textColorMaster` é o texto corrido. O padrão do token é
- * o do tema ESCURO (`#ffffff`): no modo claro, enquanto o tema não o declarou, o título segue o texto principal.
+ * o do tema ESCURO: no modo claro, enquanto o tema não o declarou, o título segue o texto principal. Sem nada declarado, o
+ * escuro cai no padrão do token e o claro, na tinta escura do motor.
  */
 export const resolveTitleColor = (variables: Record<string, string>, isDark: boolean, tokenDefault: unknown): string => {
     const declared = variables['--sarak-title-color'];
     const isDefault = declared === String(tokenDefault);
     if (declared && (isDark || !isDefault)) return declared;
-    return variables['--text-main'] || declared || (isDark ? '#ffffff' : '#0f172a');
+    return variables['--text-main'] || declared || (isDark ? String(tokenDefault ?? ON_COLOR_LIGHT) : ON_COLOR_DARK);
 };
+
+const NEON_EDGE_LIGHT_ALPHA = 0.4;
+
+/**
+ * Emite `--sarak-surface-tint-color` (a cor que tinge a superfície grande: o degradê de fundo) e `--sarak-surface-neon-color` (a do
+ * contorno e do brilho neon do cartão). No escuro a primária exata é escura demais sobre o fundo e a tinta some; ali as duas usam o tom
+ * que o texto da primária já usa (`--sarak-nav-active-color`). No claro a tinta é a própria primária e o neon, a primária a 40%, como
+ * sempre foi. A 40% só sai quando a primária é literal (um `var()` não se decompõe em canais).
+ */
+export function emitSurfaceTint(variables: Record<string, string>, isDark: boolean): void {
+    const primary = variables['--theme-primary'] || variables['--primary-color'];
+    const tint = (isDark && variables['--sarak-nav-active-color']) || primary;
+    if (!tint) return;
+    variables['--sarak-surface-tint-color'] = tint;
+    if (isDark) {
+        variables['--sarak-surface-neon-color'] = tint;
+        return;
+    }
+    if (!isLiteralColor(primary)) return;
+    const { r, g, b } = parseToRgba(primary);
+    variables['--sarak-surface-neon-color'] = `rgba(${r}, ${g}, ${b}, ${NEON_EDGE_LIGHT_ALPHA})`;
+}

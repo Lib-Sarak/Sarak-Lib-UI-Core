@@ -1,5 +1,6 @@
 import React from 'react';
 import { Search, Zap } from 'lucide-react';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { ThemeAdvancedMenu, type ThemeViewMode } from './ThemeAdvancedMenu';
 
 interface ThemeSidebarHeaderProps {
@@ -18,7 +19,9 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
     searchQuery,
     setSearchQuery,
     onOpenAdvancedTokens,
-}) => (
+}) => {
+    const text = useLibraryText();
+    return (
     <div className="shrink-0 border-b border-[var(--theme-border)] bg-[var(--theme-surface)] p-4">
         <div className="mb-3 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
@@ -35,11 +38,12 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-muted)]" />
             <input
                 type="text"
-                placeholder="Buscar token..."
+                placeholder={text('themeSearchPlaceholder')}
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
                 className="w-full rounded-xl border border-[var(--theme-border)] bg-[var(--theme-surface)] py-2.5 pl-9 pr-4 text-[length:var(--sarak-type-scale-caption,12px)] font-medium tracking-normal text-[var(--theme-title)] placeholder:text-[var(--theme-muted)] focus:border-[var(--theme-primary)]/50 focus:outline-none"
             />
         </div>
     </div>
-);
+    );
+};

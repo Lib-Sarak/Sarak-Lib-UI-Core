@@ -1,16 +1,16 @@
 import React from 'react';
-import { ThemeCustomizationTab } from '../../Main/ThemeCustomizationTab';
+import { ThemeCustomizationTab, type ThemeCustomizationTabProps } from '../../Main/ThemeCustomizationTab';
 
 /**
  * CustomizationPanel (v6.0)
  * Central de Comando Unificada - Foco 100% em Soberania e Gêmeo Digital.
  *
  * O painel monta **uma** aba: a de tema. Dos seis componentes de aba que não eram
- * renderizados, `LanguageTab` e `ShortcutsTab` foram removidos; `AdvancedTab`,
- * `EngineCustomizationTab`, `HyperGranularityTab` e `LayoutTab` continuam em `../Panels/`
+ * renderizados, `LanguageTab`, `ShortcutsTab` e `LayoutTab` foram removidos; `AdvancedTab`,
+ * `EngineCustomizationTab` e `HyperGranularityTab` continuam em `../Panels/`
  * com os seus testes.
  */
-export const CustomizationPanel: React.FC = () => {
+export const CustomizationPanel: React.FC<ThemeCustomizationTabProps> = ({ onUnsavedChangesControl }) => {
     return (
         <div className="flex flex-col h-full animate-in fade-in zoom-in duration-[var(--sarak-motion-dur-slow,0.6s)] overflow-hidden">
             {/* Header */}
@@ -23,7 +23,7 @@ export const CustomizationPanel: React.FC = () => {
             {/* Sub-Components Viewport */}
             <div className="flex-grow p-8 pt-0 overflow-hidden">
                 <div className="h-full bg-theme-body/20 rounded-3xl border border-theme-text/5 flex flex-col backdrop-blur-sm shadow-2xl overflow-hidden">
-                    <ThemeCustomizationTab />
+                    <ThemeCustomizationTab onUnsavedChangesControl={onUnsavedChangesControl} />
                 </div>
             </div>
         </div>

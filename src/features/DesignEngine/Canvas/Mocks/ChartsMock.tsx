@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
+import { SarakChartEngine, type SarakChartEngineProps } from '../../../../components/engines/charts';
 
 interface ChartsMockProps {
     tokens: any;
@@ -9,269 +10,71 @@ interface ChartsMockProps {
     animationStyle: string;
 }
 
-export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariants, animationStyle }) => {
-    // Cores e configurações reativas extraídas dos tokens
-    const primaryColor = 'var(--sarak-chart-primary, #19e3f0)';
-    const strokeThickness = 'var(--sarak-chart-thickness, 2px)';
-    const gridOpacity = 'var(--sarak-chart-grid-opacity, 0.06)';
-    const tooltipBg = 'var(--sarak-chart-tooltip-bg, rgba(11,15,23,0.92))';
+type ChartKind = NonNullable<SarakChartEngineProps['type']>;
+interface ChartSpecimen { type: ChartKind; title: string; icon: string }
 
-    return (
-        <motion.div
-            variants={animationVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            className="w-full h-full flex flex-col gap-6"
-        >
-            <div className="flex justify-between items-end">
-                <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2">
-                        <SarakIcon name="BarChart3" className="text-[var(--theme-primary)]" size={20} />
-                        <h2 className="text-2xl font-black text-theme-text uppercase tracking-widest text-left">Advanced Analytics & Charts</h2>
-                    </div>
-                    <p className="text-sm text-theme-text/40 uppercase tracking-tighter text-left">Galeria de Múltiplos Espécimes de Gráficos Reativos ao Motor Sarak</p>
+/** Os oito tipos do `chartType` do design, na ordem em que o ajuste fino os lista. */
+const SPECIMENS: readonly ChartSpecimen[] = [
+    { type: 'line', title: 'Gráfico de Linha (Line)', icon: 'LineChart' },
+    { type: 'area', title: 'Gráfico de Área (Area)', icon: 'LineChart' },
+    { type: 'bar', title: 'Gráfico de Barras (Bar)', icon: 'BarChart3' },
+    { type: 'pie', title: 'Gráfico de Pizza (Pie)', icon: 'PieChart' },
+    { type: 'radar', title: 'Teia de Performance (Radar)', icon: 'TrendingUp' },
+    { type: 'scatter', title: 'Gráfico de Dispersão (Scatter)', icon: 'ScatterChart' },
+    { type: 'heatmap', title: 'Mapa de Calor (Heatmap)', icon: 'LayoutGrid' },
+    { type: 'gauge', title: 'Medidor (Gauge)', icon: 'Gauge' },
+];
+
+const CHART_HEIGHT = 192;
+const SERIES = [40, 80, 55, 95, 70, 30, 85].map((value, index) => ({ name: `${index + 1}`, value }));
+const SHARES = [
+    { name: 'A', value: 45 }, { name: 'B', value: 25 }, { name: 'C', value: 20 }, { name: 'D', value: 10 },
+];
+const HEATMAP_CELLS = 25;
+const HEATMAP_MAX = 1000;
+const HEATMAP_STEP = 137;
+/** O mapa de calor lê 5 colunas por linha; os valores sobem em degraus e dão a volta, para a escala de cor aparecer inteira. */
+const HEATMAP = Array.from({ length: HEATMAP_CELLS }, (_, index) => ({ name: `${index}`, value: (index * HEATMAP_STEP) % HEATMAP_MAX }));
+const GAUGE = [{ name: 'Node Core', value: 65 }];
+
+const DATA: Record<ChartKind, Array<{ name: string; value: number }>> = {
+    line: SERIES, area: SERIES, bar: SERIES, scatter: SERIES, radar: SERIES, pie: SHARES, heatmap: HEATMAP, gauge: GAUGE,
+} as Record<ChartKind, Array<{ name: string; value: number }>>;
+
+const CONFIG = { xAxisKey: 'name', dataKey: 'value' } as const;
+
+/**
+ * A tela "Gráficos" da prévia: cada tipo de `chartType` desenhado pelo `SarakChartEngine` real, todos com o estilo do
+ * rascunho (traço, curva e grade). O estilo de um preset de gráfico não escolhe o tipo, e aqui se vê o mesmo estilo em todos.
+ * O motor só carrega quando a tela é aberta (o `SarakChartEngine` é uma fronteira lazy).
+ */
+export const MockCharts: React.FC<ChartsMockProps> = ({ animationVariants }) => (
+    <motion.div
+        variants={animationVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        className="w-full h-full flex flex-col gap-6"
+    >
+        <div className="flex justify-between items-end">
+            <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                    <SarakIcon name="BarChart3" className="text-[var(--theme-primary)]" size={20} />
+                    <h2 className="text-2xl font-black text-theme-text uppercase tracking-widest text-left">Advanced Analytics & Charts</h2>
                 </div>
+                <p className="text-sm text-theme-text/40 uppercase tracking-tighter text-left">Galeria de Múltiplos Espécimes de Gráficos Reativos ao Motor de Design</p>
             </div>
+        </div>
 
-            {/* GRID DOS GRÁFICOS */}
-            <div className="grid grid-cols-1 @md:grid-cols-2 @lg:grid-cols-3 gap-6 auto-rows-auto">
-                
-                {/* 1. LINE CHART (SVG) */}
-                <div className="bg-theme-body/40 border border-theme-text/5 p-6 rounded-2xl flex flex-col gap-4">
-                    <div className="flex justify-between items-center">
-                        <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted,rgba(242,246,251,0.55))] flex items-center gap-2">
-                            <SarakIcon name="LineChart" size={14} className="text-[var(--theme-primary)]" /> Gráfico de Linha (Line)
-                        </span>
-                        <SarakIcon name="TrendingUp" size={12} className="text-[var(--sarak-status-success-color,#10b981)]" />
-                    </div>
-                    
-                    <div className="h-48 w-full relative flex items-end">
-                        {/* Grid de Fundo */}
-                        <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-50">
-                            {[1, 2, 3, 4].map(i => (
-                                <div key={i} className="w-full h-[1px] bg-theme-text" style={{ opacity: gridOpacity }} />
-                            ))}
-                        </div>
-                        
-                        {/* Gráfico SVG */}
-                        <svg className="w-full h-full overflow-visible z-10" viewBox="0 0 300 120" preserveAspectRatio="none">
-                            <path 
-                                d="M 0 90 Q 50 30 100 70 T 200 20 T 300 60" 
-                                fill="none" 
-                                stroke={primaryColor} 
-                                strokeWidth={strokeThickness}
-                                className="transition-all duration-[var(--sarak-motion-dur-slow,0.6s)]"
-                            />
-                            {/* Pontos de Interação */}
-                            <circle cx="100" cy="70" r="4" fill="var(--color-theme-title,#f2f6fb)" stroke={primaryColor} strokeWidth="2" className="cursor-pointer hover:scale-150 transition-transform" />
-                            <circle cx="200" cy="20" r="4" fill="var(--color-theme-title,#f2f6fb)" stroke={primaryColor} strokeWidth="2" className="cursor-pointer hover:scale-150 transition-transform" />
-                        </svg>
-
-                        {/* Tooltip Simulado */}
-                        <div 
-                            className="absolute top-4 right-4 px-2 py-1 rounded text-[8px] font-mono border border-theme-text/10 z-20 text-theme-text/90 animate-pulse"
-                            style={{ backgroundColor: tooltipBg }}
-                        >
-                            Valor: 85.4%
-                        </div>
-                    </div>
+        <div className="grid grid-cols-1 @md:grid-cols-2 @lg:grid-cols-3 gap-6 auto-rows-auto">
+            {SPECIMENS.map(({ type, title, icon }) => (
+                <div key={type} data-chart-specimen={type} className="bg-theme-body/40 border border-theme-text/5 p-6 rounded-2xl flex flex-col gap-4">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted,rgba(242,246,251,0.55))] flex items-center gap-2">
+                        <SarakIcon name={icon} size={14} className="text-[var(--theme-primary)]" /> {title}
+                    </span>
+                    <SarakChartEngine type={type} data={DATA[type]} config={CONFIG} height={CHART_HEIGHT} />
                 </div>
-
-                {/* 2. AREA CHART (SVG) */}
-                <div className="bg-theme-body/40 border border-theme-text/5 p-6 rounded-2xl flex flex-col gap-4">
-                    <div className="flex justify-between items-center">
-                        <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted,rgba(242,246,251,0.55))] flex items-center gap-2">
-                            <SarakIcon name="LineChart" size={14} className="text-[var(--theme-primary)]" /> Gráfico de Área (Area)
-                        </span>
-                        <SarakIcon name="Info" size={12} className="text-[var(--text-muted,rgba(242,246,251,0.55))]" />
-                    </div>
-                    
-                    <div className="h-48 w-full relative flex items-end">
-                        {/* Grid de Fundo */}
-                        <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-50">
-                            {[1, 2, 3, 4].map(i => (
-                                <div key={i} className="w-full h-[1px] bg-theme-text" style={{ opacity: gridOpacity }} />
-                            ))}
-                        </div>
-                        
-                        {/* Gráfico SVG */}
-                        <svg className="w-full h-full overflow-visible z-10" viewBox="0 0 300 120" preserveAspectRatio="none">
-                            <defs>
-                                <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor={primaryColor} stopOpacity="0.4" />
-                                    <stop offset="100%" stopColor={primaryColor} stopOpacity="0.0" />
-                                </linearGradient>
-                            </defs>
-                            <path 
-                                d="M 0 100 Q 60 40 120 80 T 240 10 T 300 120 L 300 120 L 0 120 Z" 
-                                fill="url(#areaGrad)"
-                                className="transition-all duration-[var(--sarak-motion-dur-slow,0.6s)]"
-                            />
-                            <path 
-                                d="M 0 100 Q 60 40 120 80 T 240 10 T 300 120" 
-                                fill="none" 
-                                stroke={primaryColor} 
-                                strokeWidth={strokeThickness}
-                                className="transition-all duration-[var(--sarak-motion-dur-slow,0.6s)]"
-                            />
-                        </svg>
-                    </div>
-                </div>
-
-                {/* 3. BAR CHART (SVG/DIVS) */}
-                <div className="bg-theme-body/40 border border-theme-text/5 p-6 rounded-2xl flex flex-col gap-4">
-                    <div className="flex justify-between items-center">
-                        <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted,rgba(242,246,251,0.55))] flex items-center gap-2">
-                            <SarakIcon name="BarChart3" size={14} className="text-[var(--theme-primary)]" /> Gráfico de Barras (Bar)
-                        </span>
-                        <SarakIcon name="HelpCircle" size={12} className="text-[var(--text-muted,rgba(242,246,251,0.55))]" />
-                    </div>
-                    
-                    <div className="h-48 w-full relative flex items-end gap-3 justify-between">
-                        {/* Grid de Fundo */}
-                        <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-50">
-                            {[1, 2, 3, 4].map(i => (
-                                <div key={i} className="w-full h-[1px] bg-theme-text" style={{ opacity: gridOpacity }} />
-                            ))}
-                        </div>
-                        
-                        {[40, 80, 55, 95, 70, 30, 85].map((val, idx) => (
-                            <div key={idx} className="flex-1 flex flex-col justify-end h-full z-10 group relative">
-                                <div 
-                                    className="w-full rounded-t transition-all duration-[var(--sarak-motion-dur-slow,0.6s)] group-hover:brightness-125"
-                                    style={{ 
-                                        height: `${val}%`, 
-                                        backgroundColor: primaryColor,
-                                        opacity: 0.8
-                                    }}
-                                />
-                                <div 
-                                    className="absolute -top-6 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded text-[8px] font-mono text-theme-text opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 border border-theme-text/10"
-                                    style={{ backgroundColor: tooltipBg }}
-                                >
-                                    {val}k
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* 4. PIE CHART */}
-                <div className="bg-theme-body/40 border border-theme-text/5 p-6 rounded-2xl flex flex-col gap-4">
-                    <div className="flex justify-between items-center">
-                        <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted,rgba(242,246,251,0.55))] flex items-center gap-2">
-                            <SarakIcon name="PieChart" size={14} className="text-[var(--theme-primary)]" /> Gráfico de Pizza (Donut)
-                        </span>
-                    </div>
-                    
-                    <div className="h-48 w-full relative flex items-center justify-center">
-                        <svg className="w-32 h-32 transform -rotate-90 overflow-visible" viewBox="0 0 36 36">
-                            {/* Círculo base cinza */}
-                            <circle cx="18" cy="18" r="15.915" fill="none" stroke="color-mix(in srgb, var(--color-theme-text) 3%, transparent)" strokeWidth="4" />
-                            {/* Segmento reativo */}
-                            <circle 
-                                cx="18" 
-                                cy="18" 
-                                r="15.915" 
-                                fill="none" 
-                                stroke={primaryColor} 
-                                strokeWidth="4" 
-                                strokeDasharray="65 35" 
-                                strokeDashoffset="0"
-                                className="transition-all duration-[var(--sarak-motion-dur-slow,0.6s)]"
-                                strokeLinecap="round"
-                            />
-                            {/* Outro segmento decorativo */}
-                            <circle 
-                                cx="18" 
-                                cy="18" 
-                                r="15.915" 
-                                fill="none" 
-                                stroke="color-mix(in srgb, var(--color-theme-text) 15%, transparent)" 
-                                strokeWidth="4" 
-                                strokeDasharray="30 70" 
-                                strokeDashoffset="-65"
-                                strokeLinecap="round"
-                            />
-                        </svg>
-                        <div className="absolute flex flex-col items-center">
-                            <span className="text-xl font-mono font-black text-theme-text">65%</span>
-                            <span className="text-[8px] text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase tracking-widest font-bold">Node Core</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* 5. SCATTER PLOT */}
-                <div className="bg-theme-body/40 border border-theme-text/5 p-6 rounded-2xl flex flex-col gap-4">
-                    <div className="flex justify-between items-center">
-                        <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted,rgba(242,246,251,0.55))] flex items-center gap-2">
-                            <SarakIcon name="ScatterChart" size={14} className="text-[var(--theme-primary)]" /> Gráfico de Dispersão (Scatter)
-                        </span>
-                    </div>
-                    
-                    <div className="h-48 w-full relative flex items-end">
-                        {/* Grid de Fundo */}
-                        <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-50">
-                            {[1, 2, 3, 4].map(i => (
-                                <div key={i} className="w-full h-[1px] bg-theme-text" style={{ opacity: gridOpacity }} />
-                            ))}
-                        </div>
-                        
-                        {/* Pontos dispersos */}
-                        <div className="absolute inset-0 z-10">
-                            {[
-                                { x: '20%', y: '30%', size: 'w-2 h-2' },
-                                { x: '45%', y: '60%', size: 'w-3 h-3' },
-                                { x: '70%', y: '25%', size: 'w-2 h-2' },
-                                { x: '30%', y: '75%', size: 'w-4 h-4' },
-                                { x: '80%', y: '80%', size: 'w-3 h-3' },
-                                { x: '15%', y: '50%', size: 'w-3 h-3' },
-                                { x: '60%', y: '45%', size: 'w-2 h-2' },
-                            ].map((pt, idx) => (
-                                <div 
-                                    key={idx}
-                                    className={`${pt.size} rounded-full absolute -translate-x-1/2 translate-y-1/2 hover:scale-150 transition-transform cursor-pointer border border-theme-text/20`}
-                                    style={{ 
-                                        left: pt.x, 
-                                        bottom: pt.y, 
-                                        backgroundColor: primaryColor,
-                                        opacity: 0.8
-                                    }}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* 6. RADAR CHART */}
-                <div className="bg-theme-body/40 border border-theme-text/5 p-6 rounded-2xl flex flex-col gap-4">
-                    <div className="flex justify-between items-center">
-                        <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted,rgba(242,246,251,0.55))] flex items-center gap-2">
-                            <SarakIcon name="TrendingUp" size={14} className="text-[var(--theme-primary)]" /> Teia de Performance (Radar)
-                        </span>
-                    </div>
-                    
-                    <div className="h-48 w-full relative flex items-center justify-center">
-                        <svg className="w-32 h-32 overflow-visible" viewBox="0 0 100 100">
-                            {/* Grid poligonal (Pentágonos) */}
-                            <polygon points="50,10 90,40 75,90 25,90 10,40" fill="none" stroke="color-mix(in srgb, var(--color-theme-text) 5%, transparent)" strokeWidth="1" />
-                            <polygon points="50,25 80,48 68,80 32,80 20,48" fill="none" stroke="color-mix(in srgb, var(--color-theme-text) 5%, transparent)" strokeWidth="1" />
-                            <polygon points="50,40 70,55 62,70 38,70 30,55" fill="none" stroke="color-mix(in srgb, var(--color-theme-text) 5%, transparent)" strokeWidth="1" />
-                            {/* Dados do Radar reativo */}
-                            <polygon 
-                                points="50,20 85,42 70,75 45,88 28,52" 
-                                fill={primaryColor} 
-                                fillOpacity="0.25" 
-                                stroke={primaryColor} 
-                                strokeWidth="2" 
-                                className="transition-all duration-[var(--sarak-motion-dur-slow,0.6s)]"
-                            />
-                        </svg>
-                    </div>
-                </div>
-
-            </div>
-        </motion.div>
-    );
-};
+            ))}
+        </div>
+    </motion.div>
+);

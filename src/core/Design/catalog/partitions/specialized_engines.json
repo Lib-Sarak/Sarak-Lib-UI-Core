@@ -294,7 +294,7 @@
   {
     "tokenId": "matrixRadius",
     "name": "Arredondamento dos Itens (Matriz)",
-    "description": "Raio da borda (border-radius) para os itens renderizados na Matriz Sarak.",
+    "description": "Raio da borda (border-radius) para os itens renderizados na Matriz.",
     "type": "slider",
     "importance": 60,
     "categories": [

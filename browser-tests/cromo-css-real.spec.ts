@@ -275,6 +275,8 @@ async function readVisibleNavigationItemLabels(page: Page): Promise<string[]> {
         return items
             .filter((item) => {
                 const box = item.getBoundingClientRect();
+                // O item que não coube na topbar fica no fluxo, mas sem visibilidade (e vai para o "Mais"): não está visível.
+                if (getComputedStyle(item).visibility === 'hidden') return false;
                 const intersectsNavigation = box.width > 0 && box.height > 0
                     && box.right > navigationBox.left && box.left < navigationBox.right
                     && box.bottom > navigationBox.top && box.top < navigationBox.bottom;
@@ -721,14 +723,15 @@ test('sob hover, <button> com hover:bg-* computa o fundo da CLASSE', async () =>
     await page.close();
 });
 
-test('NÃO MUDA NADA: sob hover, <button> sem classe de hover computa o fundo de hover do TEMA', async () => {
+test('sob hover, <button> sem classe preserva o fundo de repouso e mantém o movimento global', async () => {
     const page = await openHarness(BREAKPOINTS.desktop);
     const probe = page.getByRole('button', { name: PROBE.hoverWithoutClass });
-    const themeHover = await resolveReference(probe, 'background-color', { inlineValue: 'var(--theme-primary-hover)' });
-    expect(themeHover, 'o hover do tema precisa diferir do fundo em repouso, ou o caso não distingue nada').not.toBe(await readComputed(probe, 'background-color'));
+    const restingBackground = await readComputed(probe, 'background-color');
+    const restingTransform = await readComputed(probe, 'transform');
 
     await probe.hover();
-    await expect(probe, 'sem classe, vale o fundo de hover do tema').toHaveCSS('background-color', themeHover);
+    await expect(probe, 'sem classe, o hover global preserva o fundo de repouso').toHaveCSS('background-color', restingBackground);
+    await expect.poll(() => readComputed(probe, 'transform')).not.toBe(restingTransform);
 
     await page.close();
 });

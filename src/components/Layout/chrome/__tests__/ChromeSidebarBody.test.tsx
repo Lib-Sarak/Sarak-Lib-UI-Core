@@ -23,22 +23,23 @@ describe('ChromeSidebarBody (tokens de cromo no modo sidebar)', () => {
         expect(content.style.padding).toBe('var(--sarak-layout-padding, 16px)');
     });
 
-    it('sidebarPosition="right": a sidebar migra para o fim da linha e a borda externa acompanha a posição', () => {
+    it('sidebarPosition="right": a sidebar migra para o fim da linha; a linha do lado do conteúdo é sempre cheia e as outras só com margem', () => {
         const { container } = renderBody({ sidebarPosition: 'right' });
         const row = container.querySelector('aside')!.parentElement!;
         expect(row.className).toContain('flex-row-reverse');
         const style = container.querySelector('aside')!.getAttribute('style') ?? '';
         expect(style).toContain('border-left-width: var(--sarak-sidebar-border-width, 1px)');
-        expect(style).toContain('border-right-width: 0px');
+        expect(style).toContain('border-right-width: min(var(--sarak-sidebar-border-width, 1px), calc(var(--sarak-tab-section-margin, 8px) * 1000))');
     });
 
-    it('sidebarPosition="left" (default): flex-row e borda externa à direita — comportamento de hoje', () => {
+    it('sidebarPosition="left" (default): flex-row e moldura de cartão, com o raio do tema e o lado colado à tela reto sem margem', () => {
         const { container } = renderBody({});
         const row = container.querySelector('aside')!.parentElement!;
         expect(row.className).toContain('flex-row');
         const style = container.querySelector('aside')!.getAttribute('style') ?? '';
         expect(style).toContain('border-right-width: var(--sarak-sidebar-border-width, 1px)');
-        expect(style).toContain('border-left-width: 0px');
+        expect(style).toContain('border-left-width: min(var(--sarak-sidebar-border-width, 1px), calc(var(--sarak-tab-section-margin, 8px) * 1000))');
+        expect(style).toContain('border-radius: min(var(--sarak-border-radius, 12px), calc(var(--sarak-tab-section-margin, 8px) * 1000))');
     });
 
     it('isNavHidden: a sidebar usa a largura RECOLHIDA em vez da largura cheia', () => {
@@ -175,17 +176,19 @@ describe('ChromeSidebarBody — widgets default (busca/tema/usuário/preferênci
     it('sem `widgets`, os controles de fábrica continuam oferecidos', () => {
         const { container } = renderBody({});
         expect(container.querySelector('[data-sarak-slot="search"]')).not.toBeNull();
-        expect(container.querySelector('[data-sarak-widget="collapse"]')).toBeNull();
+        // A seta de recolher é fixa no cabeçalho por padrão (D2 da anatomia da barra).
+        expect(container.querySelector('[data-sarak-sidebar-header] [data-sarak-widget="collapse"]')).not.toBeNull();
         expect(container.querySelector('[data-sarak-widget="preferences-menu"]')).not.toBeNull();
         expect(container.querySelector('[data-sarak-widget="user-theme"]')).not.toBeNull();
     });
 
-    it('tamanho da fonte, orientação e recolhimento ficam no menu de preferências por padrão', () => {
+    it('modo, tamanho da fonte e orientação ficam no menu de preferências por padrão; o recolher é a seta do cabeçalho', () => {
         renderBody({});
         fireEvent.click(screen.getByRole('button', { name: 'Preferências' }));
         expect(screen.getByText('Tamanho da fonte')).toBeInTheDocument();
         expect(screen.getByText('Navegação')).toBeInTheDocument();
-        expect(screen.getByText('Recolher navegação')).toBeInTheDocument();
+        expect(screen.getByText(/^Modo /)).toBeInTheDocument();
+        expect(screen.queryByText('Recolher navegação')).toBeNull();
     });
 
     it('`widgets` desliga cada default isoladamente', () => {
@@ -273,7 +276,10 @@ describe('ChromeSidebarBody — personalidade da barra', () => {
         const toned = renderBody({ colorPalette: 'oceano', sidebarTone: 'primary' });
         const aside = toned.container.querySelector('aside') as HTMLElement;
         expect(aside.style.getPropertyValue('--text-muted')).toBe('var(--sarak-sidebar-item-text-color)');
-        expect(aside.style.getPropertyValue('--sarak-nav-active-color')).toBe('var(--sarak-sidebar-item-hover-text-color)');
+        // O texto ativo é a cor forte calculada contra a pior parada da barra, a mesma que o hover da barra recebe.
+        const strong = aside.style.getPropertyValue('--sarak-sidebar-item-hover-text-color');
+        expect(strong).toMatch(/^#[0-9a-f]{6}$/i);
+        expect(aside.style.getPropertyValue('--sarak-nav-active-color')).toBe(strong);
     });
 
     it('papel neutral com paleta: nenhuma variável de texto é refeita', () => {

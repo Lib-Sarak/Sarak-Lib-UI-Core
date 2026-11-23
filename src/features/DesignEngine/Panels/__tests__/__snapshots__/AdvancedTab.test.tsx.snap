@@ -184,7 +184,7 @@ exports[`AdvancedTab > matches baseline snapshot 1`] = `
             <h4
               class="text-2xs font-bold text-theme-text/80 uppercase"
             >
-              Sobre a Sarak Matrix v5.0
+              Sobre o motor de design v5.0
             </h4>
             <p
               class="text-2xs text-theme-text/40 leading-relaxed uppercase font-medium"
@@ -279,7 +279,7 @@ exports[`AdvancedTab > matches baseline snapshot 1`] = `
               <p
                 class="text-2xs text-theme-text/30 uppercase font-medium"
               >
-                Apagar tema e idioma guardados pela Sarak neste navegador
+                Apagar tema e idioma guardados neste navegador
               </p>
             </div>
           </div>

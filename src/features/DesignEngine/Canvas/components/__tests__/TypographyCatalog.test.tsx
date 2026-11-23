@@ -102,10 +102,10 @@ describe('TypographyCatalog', () => {
         expect(Object.keys(onApplyPreset.mock.calls[0][0]).sort()).toEqual(['bodyFont', 'headingFont']);
     });
 
-    it('a grade reage a CONTAINER QUERY (@min-[768px]:), não mais a `md:` de viewport (plan-35)', () => {
+    it('a grade é a única do painel: colunas automáticas pela largura da coluna, não da janela', () => {
         const { container } = renderCatalog();
         const grid = container.querySelector('.grid') as HTMLElement;
-        expect(grid.className).not.toMatch(/\bmd:grid-cols-2\b/);
-        expect(grid.className).toMatch(/@min-\[768px\]:grid-cols-2/);
+        expect(grid.className).toContain('grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))]');
+        expect(grid.className).not.toMatch(/md:grid-cols-2/);
     });
 });

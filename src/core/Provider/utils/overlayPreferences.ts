@@ -1,25 +1,47 @@
 import { syncThemeWithMode } from '../../Design/presets/themes/color-engine';
-import { resolvePaletteForDesign } from '../../Design/palette/resolve';
+import { PALETTE_CALCULATED_KEYS, resolvePaletteForDesign } from '../../Design/palette/resolve';
+import { chosenToneKeys } from './designChoices';
 import { isValidPaletteValue } from '../../Design/palette/parser';
 import { isPreferenceOffered } from '../../Design/schema/preferences';
+import { sarakGetDefaultDesignState } from '../../Design/master-map';
 import type { SarakTokenValue } from '../../Design/types';
 import type { SarakDesignState, SarakThemeEntry } from '../types';
 import type { SarakFontSizePreference, SarakUserPreferences } from '../preferencesTypes';
 
-/** As 5 opções de `bodySize` (`schema/global.ts`) — a base de comparação para
- *  a escala RELATIVA da preferência de tamanho de fonte. É o token que de
- *  fato alcança a tela (`--theme-font-size-base`); `fontScale` é legado e não
- *  emite nada. */
-const BODY_SIZE_ORDER = ['12px', '14px', '16px', '18px', '20px'] as const;
-const FONT_SIZE_DELTA: Record<SarakFontSizePreference, number> = { sm: -1, md: 0, lg: 1 };
+/** O menor tamanho que a preferência P entrega: abaixo disso o texto deixa de ser legível, qualquer que seja a redução configurada. */
+const FONT_SIZE_FLOOR_PX = 8;
 
-/** `sm`/`lg` deslocam um degrau da BASE do tema (nunca um valor absoluto);
- *  `md` é exatamente essa base (delta 0). */
-const applyFontSizeDelta = (baseBodySize: string, preference: SarakFontSizePreference): string => {
-    const baseIndex = BODY_SIZE_ORDER.indexOf(baseBodySize as (typeof BODY_SIZE_ORDER)[number]);
-    if (baseIndex === -1) return baseBodySize;
-    const targetIndex = Math.min(BODY_SIZE_ORDER.length - 1, Math.max(0, baseIndex + FONT_SIZE_DELTA[preference]));
-    return BODY_SIZE_ORDER[targetIndex];
+/** Padrão de fábrica da redução de P e do aumento de G, em px — o mesmo `defaultValue` dos tokens (`schema/preferences.ts`). */
+const DEFAULT_FONT_SIZE_STEP_PX = 2;
+
+/** O `bodySize` de fábrica do schema, base da preferência quando o design ainda não o declara. */
+const DEFAULT_BODY_SIZE = String(sarakGetDefaultDesignState().bodySize);
+
+// @sarak-token-reader bodySize direto
+// O valor de `bodySize` é lido como número de px, qualquer uma das opções, e não por uma tabela de opções.
+const PX_VALUE = /^(\d+(?:\.\d+)?)px$/;
+
+const readStepPx = (value: unknown): number =>
+    typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : DEFAULT_FONT_SIZE_STEP_PX;
+
+/**
+ * `sm`/`lg` movem a BASE do tema (`bodySize`, o token que de fato chega à tela em `--theme-font-size-base`) em px: P reduz
+ * `preferenceFontSizeReduction` e G aumenta `preferenceFontSizeIncrease`, nunca um valor absoluto; `md` é exatamente a
+ * base. Sem escala fixa: com base 12, P é 10 e nunca igual a M; com base 20, G é 22. Base que não é px volta como veio.
+ */
+const applyFontSizeDelta = (
+    design: SarakDesignState,
+    baseBodySize: string,
+    preference: SarakFontSizePreference,
+): string => {
+    if (preference === 'md') return baseBodySize;
+    const match = PX_VALUE.exec(baseBodySize);
+    if (!match) return baseBodySize;
+    const record = design as unknown as Record<string, unknown>;
+    const step = preference === 'sm'
+        ? -readStepPx(record.preferenceFontSizeReduction)
+        : readStepPx(record.preferenceFontSizeIncrease);
+    return `${Math.max(FONT_SIZE_FLOOR_PX, Number(match[1]) + step)}px`;
 };
 
 const resolveColorModeTarget = (
@@ -59,7 +81,10 @@ const applyCalculatedPaletteMode = (
     const designRecord = design as unknown as Record<string, unknown>;
     const currentPalette = resolvePaletteForDesign(designRecord, undefined, currentMode);
     const targetPalette = resolvePaletteForDesign(designRecord, undefined, targetMode);
-    const themeOverrides = getPaletteThemeOverrides(theme, targetMode);
+    // Com "manter minha paleta", a cor que o tema declara não volta na troca de modo: a paleta calcula nos dois.
+    const keepPalette = designRecord.keepPalette === true;
+    const chosenTone = chosenToneKeys(designRecord, theme as never, targetMode);
+    const themeOverrides = keepPalette ? {} : Object.fromEntries(Object.entries(getPaletteThemeOverrides(theme, targetMode)).filter(([tokenId]) => !chosenTone.has(tokenId)));
     const next = { ...design } as Record<string, unknown>;
 
     Object.entries(targetPalette).forEach(([tokenId, color]) => {
@@ -76,7 +101,8 @@ const applyCalculatedPaletteMode = (
         const nativeMode = (theme?.design?.mode as 'light' | 'dark') || 'dark';
         const trackedKeys = Object.keys(counterpart);
         const trackedValues = targetMode === nativeMode ? pickKeys(theme?.design, trackedKeys) : counterpart;
-        Object.assign(next, trackedValues);
+        const wanted = Object.fromEntries(Object.entries(trackedValues).filter(([tokenId]) => !chosenTone.has(tokenId) && !(keepPalette && PALETTE_CALCULATED_KEYS.has(tokenId))));
+        Object.assign(next, wanted);
     }
 
     next.mode = targetMode;
@@ -169,7 +195,7 @@ export const overlayPreferences = (
         result = { ...result, sidebarWidth: preferences.sidebarWidth };
     }
     if (offered('fontSize') && preferences.fontSize) {
-        result = { ...result, bodySize: applyFontSizeDelta(String(result.bodySize ?? '14px'), preferences.fontSize) };
+        result = { ...result, bodySize: applyFontSizeDelta(result, String(result.bodySize ?? DEFAULT_BODY_SIZE), preferences.fontSize) };
     }
     if (offered('language') && preferences.language && isLanguageEnabled(design, preferences.language)) {
         result = { ...result, language: preferences.language };

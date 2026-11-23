@@ -53,6 +53,9 @@ export const sarakSovereignTheme: SarakThemePreset = {
         topbarTone: 'neutral',
         sidebarBackgroundStyle: 'solid',
         sidebarActiveItemStyle: 'bar',
+        sidebarActiveGlass: 'on',
+        brandDisplay: 'both',
+        userAvatarStyle: 'initials',
         sidebarItemDensity: 'comfortable',
         sidebarIconSize: 18,
         topbarBorderWidth: 1,
@@ -210,8 +213,6 @@ export const sarakSovereignTheme: SarakThemePreset = {
         switchBackdropBlur: 4,
 
         // --- Paletas e Gradientes ---
-        colorDepth: 1,
-        colorVariation: 1,
 
         // --- Gráficos & Dados ---
         chartGridOpacity: 0.06,

@@ -38,6 +38,15 @@ describe('Sarak test setup helpers', () => {
         expect(filterSarakTestConsoleLog('Error: network request failed')).toBeUndefined();
     });
 
+    it('filters the app-mode missing-CSS notice and only it: the embedded-mode notice still passes', () => {
+        const appNotice = '[Sarak] CSS não detectado. O import do pacote deveria ter carregado o stylesheet';
+        const embeddedNotice = '[Sarak] CSS escopado não detectado no Modo Embarcado. Importe "@sarak/lib-ui-core/dist/sarak-scoped.css"';
+
+        expect(filterSarakTestConsoleLog(appNotice)).toBe(false);
+        expect(filterSarakTestConsoleLog(embeddedNotice)).toBeUndefined();
+        expect(filterSarakTestConsoleLog('[Sarak] outro aviso qualquer')).toBeUndefined();
+    });
+
     it('filters jsdom stylesheet parser warnings through the test environment setup', () => {
         const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
         const stylesheet = document.createElement('style');

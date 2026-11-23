@@ -34,7 +34,7 @@ export const CATALOG_PANEL = {
     sampleButtonFocus: { pt: 'Foco', en: 'Focus', es: 'Foco', fr: 'Focus', de: 'Fokus', it: 'Focus' },
     sampleButtonDisabled: { pt: 'Inativo', en: 'Disabled', es: 'Inactivo', fr: 'Inactif', de: 'Inaktiv', it: 'Inattivo' },
     sampleInputLabel: { pt: 'Nome do cliente', en: 'Customer name', es: 'Nombre del cliente', fr: 'Nom du client', de: 'Kundenname', it: 'Nome del cliente' },
-    sampleInputValue: { pt: 'Maria Souza', en: 'Maria Souza', es: 'María Souza', fr: 'Marie Souza', de: 'Maria Souza', it: 'Maria Souza' },
+    sampleInputValue: { pt: 'Nome', en: 'Name', es: 'Nombre', fr: 'Nom', de: 'Name', it: 'Nome' },
     paletteFilterLabel: {
         pt: 'Filtrar paletas por tipo', en: 'Filter palettes by type', es: 'Filtrar paletas por tipo',
         fr: 'Filtrer les palettes par type', de: 'Paletten nach Typ filtern', it: 'Filtra le tavolozze per tipo',
@@ -59,5 +59,33 @@ export const CATALOG_PANEL = {
     },
     themeChangeDraft: {
         pt: 'rascunho', en: 'draft', es: 'borrador', fr: 'brouillon', de: 'Entwurf', it: 'bozza',
+    },
+    panelLeaveTitle: {
+        pt: 'Sair com alterações pendentes?', en: 'Leave with pending changes?', es: '¿Salir con cambios pendientes?',
+        fr: 'Quitter avec des modifications en attente ?', de: 'Mit ausstehenden Änderungen verlassen?', it: 'Uscire con modifiche in sospeso?',
+    },
+    panelLeaveMessage: {
+        pt: 'Há alterações no painel que ainda não foram aplicadas. Aplique para mantê-las ou descarte para voltar ao que está em uso.',
+        en: 'The panel has changes that were not applied yet. Apply them to keep them, or discard them to go back to what is in use.',
+        es: 'El panel tiene cambios que aún no se aplicaron. Aplícalos para conservarlos o descártalos para volver a lo que está en uso.',
+        fr: 'Le panneau contient des modifications non appliquées. Appliquez-les pour les conserver ou annulez-les pour revenir à ce qui est utilisé.',
+        de: 'Im Panel gibt es Änderungen, die noch nicht angewendet wurden. Wende sie an, um sie zu behalten, oder verwirf sie, um zum aktuellen Stand zurückzukehren.',
+        it: 'Il pannello ha modifiche non ancora applicate. Applicale per mantenerle o scartale per tornare a ciò che è in uso.',
+    },
+    panelLeaveStay: {
+        pt: 'Ficar no painel', en: 'Stay in the panel', es: 'Quedarme en el panel',
+        fr: 'Rester dans le panneau', de: 'Im Panel bleiben', it: 'Resta nel pannello',
+    },
+    panelLeaveApply: {
+        pt: 'Aplicar e sair', en: 'Apply and leave', es: 'Aplicar y salir',
+        fr: 'Appliquer et quitter', de: 'Anwenden und verlassen', it: 'Applica ed esci',
+    },
+    panelLeaveDiscard: {
+        pt: 'Descartar e sair', en: 'Discard and leave', es: 'Descartar y salir',
+        fr: 'Annuler et quitter', de: 'Verwerfen und verlassen', it: 'Scarta ed esci',
+    },
+    themeApplyAction: {
+        pt: 'Aplicar', en: 'Apply', es: 'Aplicar',
+        fr: 'Appliquer', de: 'Anwenden', it: 'Applica',
     },
 } satisfies Record<string, LibraryTextEntry>;

@@ -1,7 +1,7 @@
 /**
  * Medição, em navegador real, dos achados do lote 4 do arsenal: a sombra de ação do botão da categoria selecionada
  * (`actionGlowShadowOffsetY`/`Blur`/`Spread`), a cor ativa da faixa (`rangeActiveColor`), o hover e o pressionado globais
- * do botão (`colorDepth`/`colorVariation`) e os sete formatos de `chartType` com o dado padrão.
+ * do botão e os sete formatos de `chartType` com o dado padrão.
  *
  * Mesmo harness e mesmo artefato do `token-que-desenha.spec.ts` (`dist/index.js` + `dist/sarak.css`), com o Provider e os
  * componentes REAIS: cena `?cena=arsenal-lote4` e recortes `?tema=` (ver `fixtures/harness-entry.tsx`).
@@ -105,11 +105,12 @@ test('P13: a cor ativa do trilho, dos polegares e da dica segue rangeActiveColor
     expect(base.track).not.toBe(extreme.track);
 });
 
-interface Interaction { hover: string; pressed: string; hoverVariable: string; pressedVariable: string }
+interface Interaction { resting: string; hover: string; pressed: string; hoverVariable: string; pressedVariable: string }
 
 async function hoverAndPress(page: Page): Promise<Interaction> {
     const button = page.locator('[data-probe="hover-tema"]');
     const background = (): Promise<string> => button.evaluate((el) => getComputedStyle(el).backgroundColor);
+    const resting = await background();
     await button.hover();
     await page.waitForTimeout(TRANSITION_SETTLE_MS);
     const hover = await background();
@@ -121,19 +122,16 @@ async function hoverAndPress(page: Page): Promise<Interaction> {
         hoverVariable: getComputedStyle(el).getPropertyValue('--theme-primary-hover').trim(),
         pressedVariable: getComputedStyle(el).getPropertyValue('--theme-primary-active').trim(),
     }));
-    return { hover, pressed, ...variables };
+    return { resting, hover, pressed, ...variables };
 }
 
-test('P11: colorDepth e colorVariation alteram o hover e o pressionado globais do botão', async () => {
+test('P11: o hover e o pressionado globais preservam o fundo; os tokens seguem calculados', async () => {
     const base = await measure('cor-hover-base', hoverAndPress);
-    const depth = await measure('cor-profunda', hoverAndPress);
-    const variation = await measure('cor-variada', hoverAndPress);
-    expect(base.hoverVariable).not.toBe('');
-    expect(base.pressedVariable).not.toBe('');
-    expect(depth.hover).not.toBe(base.hover);
-    expect(depth.pressed).not.toBe(base.pressed);
-    expect(variation.hover).not.toBe(base.hover);
-    expect(variation.pressed).not.toBe(base.pressed);
+    expect(base.hover).toBe(base.resting);
+    expect(base.pressed).toBe(base.resting);
+    // As variantes seguem emitidas com o fator 1: a cor base #808040 ×1,1 e ×0,9.
+    expect(base.hoverVariable).toBe('#8d8d46');
+    expect(base.pressedVariable).toBe('#73733a');
 });
 
 for (const type of CHART_TYPES) {

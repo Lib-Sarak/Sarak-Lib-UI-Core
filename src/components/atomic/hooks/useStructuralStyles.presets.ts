@@ -37,6 +37,7 @@ export type ResponsiveSpacingPreset = keyof typeof RESPONSIVE_SPACING_PRESETS;
 // @sarak-token-reader layoutGridTemplate tabela
 export const GRID_LAYOUT_STRATEGIES: Record<string, string> = {
     'col-12': 'grid w-full grid-cols-1 @min-[768px]:grid-cols-12 @min-[768px]:[:where(&)>*]:col-span-6 @min-[1024px]:[:where(&)>*]:col-span-4 @min-[1280px]:[:where(&)>*]:col-span-3',
+    // sarak-allow-hardcode: a coluna mínima de 280 px é o desenho da estratégia auto-fit lida por layoutGridTemplate; o Tailwind exige a classe literal e nenhum token a declara.
     'auto-fit': 'grid w-full grid-cols-[repeat(auto-fit,minmax(280px,1fr))]',
     'masonry': 'columns-1 @min-[768px]:columns-2 @min-[1024px]:columns-3 w-full'
 };

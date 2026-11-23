@@ -20,6 +20,7 @@ const TEXT_CONTRAST = 4.5;
 const ICON_CONTRAST = 3;
 const MODES = ['light', 'dark'] as const;
 const PALETTES = ['oceano', 'ambar-industrial'] as const;
+const KNOWN_BELOW_LIMIT: ReadonlySet<string> = new Set();
 
 let harnessDirectory: string;
 let harnessUrl: string;
@@ -100,7 +101,8 @@ function measure(page: Page, orientation: 'sidebar' | 'topbar'): Promise<Legibil
             idle: against(bar.querySelector('a[href="#home"]')),
             active: against(active),
             name: against(byText('Ana')),
-            avatar: against(byText('A')),
+            // Iniciais ou, no avatar em ícone (`userAvatarStyle: 'icon'`), o desenho do ícone.
+            avatar: against(byText('A') ?? bar.querySelector('[data-sarak-user-strip] [aria-hidden="true"] svg, [data-sarak-widget="user-theme"] div[aria-hidden="true"] svg')),
             language: against(byText('PT')),
             gear: against(gear),
             logout: against(userButtons[userButtons.length - 1]),
@@ -108,30 +110,23 @@ function measure(page: Page, orientation: 'sidebar' | 'topbar'): Promise<Legibil
     }, orientation === 'sidebar' ? 'aside' : 'header');
 }
 
-/**
- * Medidas que já ficavam abaixo do limite antes da plan-145 (mesmo valor no tema publicado), por bem pouco: o item ativo em
- * pílula da topbar escura de dois temas (4,4995:1) e o nome do usuário na lateral escura do `organic-clay` (4,48:1). Não são
- * desta plan; saem desta lista quando o tema for corrigido.
- */
-const KNOWN_BELOW_LIMIT: ReadonlySet<string> = new Set([
-    'nebula-space / topbar / dark|item ativo', 'aurora-veil / topbar / dark|item ativo', 'organic-clay / sidebar / dark|nome',
-]);
-
 function expectLegible(m: Legibility, where: string): void {
     const pieces: Array<[string, number | null, number]> = [
         ['nome da marca', m.brand, TEXT_CONTRAST], ['item comum', m.idle, TEXT_CONTRAST], ['item ativo', m.active, TEXT_CONTRAST], ['nome', m.name, TEXT_CONTRAST],
         ['idioma', m.language, TEXT_CONTRAST], ['avatar', m.avatar, ICON_CONTRAST], ['engrenagem', m.gear, ICON_CONTRAST], ['botão de sair', m.logout, ICON_CONTRAST],
     ];
-    pieces.filter(([label]) => !KNOWN_BELOW_LIMIT.has(`${where}|${label}`)).forEach(([label, value, minimum]) => {
-        expect.soft(value, `${label} (${where})`).toBeGreaterThanOrEqual(minimum);
+    pieces.forEach(([label, value, minimum]) => {
+        expect.soft(value, `${label} (${where}): peça não encontrada na barra`).not.toBeNull();
+        if (value !== null) expect.soft(value, `${label} (${where})`).toBeGreaterThanOrEqual(minimum);
     });
 }
 
 test('Personalidades e temas: o cromo fica legível nos dois modos', async ({ page }) => {
     test.setTimeout(900_000);
+    expect(KNOWN_BELOW_LIMIT.size, 'O conjunto de exceções de contraste deve permanecer vazio.').toBe(0);
     const scenes = await readScenes(page);
     expect(scenes.personalities).toHaveLength(10);
-    expect(scenes.themes).toHaveLength(19);
+    expect(scenes.themes).toHaveLength(25);
 
     for (const id of scenes.personalities) {
         for (const palette of PALETTES) {

@@ -221,7 +221,7 @@ function SarakChartContent(props: SarakChartEngineProps): React.ReactElement {
     }
 
     return (
-        <div ref={frameRef} className="w-full h-full p-6" role="img" aria-label={ariaLabel} style={props.height === undefined ? undefined : { height: props.height }}>
+        <div ref={frameRef} className="w-full h-full" role="img" aria-label={ariaLabel} style={props.height === undefined ? undefined : { height: props.height }}>
             <ReactECharts
                 option={option}
                 style={{ height: '100%', width: '100%' }}

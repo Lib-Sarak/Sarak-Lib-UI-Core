@@ -5,7 +5,25 @@ import { composeThemeDesign } from '../../Design/presets/themes/compose';
 import { SARAK_DEFAULT_THEME_ID } from '../../Design/presets/themes';
 import { getLoadedThemePreset, isSarakThemePresetId } from '../../Design/presets/themes/registry';
 import type { SarakTokenValue } from '../../Design/types';
-import { SarakThemeEntry, SarakThemePayload, SetDesign } from '../types';
+import { SarakDesignState, SarakThemeEntry, SarakThemePayload, SetDesign } from '../types';
+import type { ThemeIdGuard } from './useThemeSeed';
+import { readCachedSavedDesign, type SavedDesign } from './useDesignChoices';
+import { readCachedActiveThemeId } from '../utils/resolveStorageKey';
+
+/** O tema padrão no modo do design que está no ar: o que um id de tema removido recebe, qualquer que seja a porta. */
+export const composeDefaultThemeDesign = (
+    previous: SarakDesignState,
+    hostConfig?: SarakThemePayload,
+): SarakDesignState => {
+    const requestedMode: 'light' | 'dark' = (previous.mode as 'light' | 'dark') || 'dark';
+    const fallback = getLoadedThemePreset(SARAK_DEFAULT_THEME_ID);
+    if (!fallback) return previous;
+    const resolved = resolveThemeForMode(
+        { design: fallback.design as Record<string, SarakTokenValue>, contraparte: fallback.contraparte },
+        requestedMode,
+    );
+    return validateDesign(composeThemeDesign(resolved, previous, hostConfig));
+};
 
 export const useDesignSync = (
     isHydrated: boolean,
@@ -17,6 +35,9 @@ export const useDesignSync = (
     // O `config` do host por REF: estável entre renders, nunca dependência do efeito (spec 02 §3.1).
     configRef?: MutableRefObject<SarakThemePayload | undefined>,
     preferConfigOverCache = false,
+    themeIdGuard?: ThemeIdGuard,
+    // Lê o gravado no formato dele: escolhas refeitas pelo tema, ou o dado antigo pela regra L1 (`useDesignChoices.ts`).
+    restoreSaved?: (previous: SarakDesignState, saved: SavedDesign) => SarakDesignState,
 ) => {
     // Guarda o último `activeThemeId` efetivamente aplicado. Sem isso, qualquer
     // render que produza uma nova referência de `allThemes` (ex.: consumidor que
@@ -70,17 +91,8 @@ export const useDesignSync = (
             // (R33): nunca lança, nunca deixa a tela sem tema — cai na
             // tema padrão no modo atual (a contraparte autorada), com um aviso.
             lastAppliedThemeIdRef.current = activeThemeId;
-            console.warn(`[SarakUIProvider] activeThemeId "${activeThemeId}" não corresponde a nenhum tema conhecido — aplicando o tema padrão "${SARAK_DEFAULT_THEME_ID}" no modo atual.`);
-            setDesign((prev) => {
-                const requestedMode: 'light' | 'dark' = (prev.mode as 'light' | 'dark') || 'dark';
-                const fallback = getLoadedThemePreset(SARAK_DEFAULT_THEME_ID);
-                if (!fallback) return prev;
-                const resolved = resolveThemeForMode(
-                    { design: fallback.design as Record<string, SarakTokenValue>, contraparte: fallback.contraparte },
-                    requestedMode,
-                );
-                return validateDesign(composeThemeDesign(resolved, prev, configRef?.current));
-            });
+            themeIdGuard?.warnUnknownThemeOnce(activeThemeId);
+            setDesign((prev) => composeDefaultThemeDesign(prev, configRef?.current));
             return;
         }
 
@@ -95,15 +107,15 @@ export const useDesignSync = (
         // Se não temos tema ativo, e ainda não hidratamos, tentamos ler do cache local
         if (!hasHydratedRef.current) {
             try {
-                const saved = localStorage.getItem(storageKey);
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    setDesign((prev) => validateDesign({ ...prev, ...parsed }));
+                const saved = readCachedSavedDesign(storageKey, readCachedActiveThemeId(storageKey));
+                // O design gravado sobre um tema removido é descartado: a semente já pôs o tema padrão.
+                if (saved && !themeIdGuard?.isSavedThemeRemoved()) {
+                    setDesign((prev) => (restoreSaved ? restoreSaved(prev, saved) : validateDesign({ ...prev, ...saved.full })));
                 }
             } catch (error) {
                 console.error('[Sarak:Design] localStorage re-hydration error:', error);
             }
             hasHydratedRef.current = true;
         }
-    }, [isHydrated, storageKey, activeThemeId, allThemes, setDesign, hasHydratedRef, preferConfigOverCache]);
+    }, [isHydrated, storageKey, activeThemeId, allThemes, setDesign, hasHydratedRef, preferConfigOverCache, themeIdGuard, restoreSaved]);
 };

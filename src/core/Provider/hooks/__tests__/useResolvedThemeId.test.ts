@@ -43,4 +43,38 @@ describe('useResolvedThemeId', () => {
 
         expect(result.current[0]).toBe('cyber-retro-wave');
     });
+
+    it('`activeThemeId` desconhecido resolve para o tema padrão e volta ao id quando o tema fica conhecido', () => {
+        const resolveSeedThemeId = vi.fn(() => 'sarak-sovereign');
+        const known = new Set<string>();
+        const isUnknownTheme = (id: string | undefined) => Boolean(id) && !known.has(id as string);
+        const { result, rerender } = renderHook(
+            ({ activeThemeId, unknownCheck }: { activeThemeId: string | undefined; unknownCheck: typeof isUnknownTheme }) =>
+                useResolvedThemeId(activeThemeId, resolveSeedThemeId, unknownCheck),
+            { initialProps: { activeThemeId: 'meu-tema' as string | undefined, unknownCheck: isUnknownTheme } },
+        );
+        expect(result.current[0]).toBe('sarak-sovereign');
+
+        // A lista de temas do consumidor chega: o mesmo id passa a ser conhecido (nova função, como `allThemes` novo).
+        known.add('meu-tema');
+        rerender({ activeThemeId: 'meu-tema', unknownCheck: (id) => Boolean(id) && !known.has(id as string) });
+        expect(result.current[0]).toBe('meu-tema');
+
+        // E o inverso: o tema some da lista e o padrão volta.
+        known.delete('meu-tema');
+        rerender({ activeThemeId: 'meu-tema', unknownCheck: (id) => Boolean(id) && !known.has(id as string) });
+        expect(result.current[0]).toBe('sarak-sovereign');
+    });
+
+    it('reavaliar a função com o MESMO resultado não reaplica o id (o painel pode ter anunciado outro tema)', () => {
+        const resolveSeedThemeId = vi.fn(() => 'sarak-sovereign');
+        const { result, rerender } = renderHook(
+            ({ unknownCheck }: { unknownCheck: (id: string | undefined) => boolean }) =>
+                useResolvedThemeId('kinetic-flow', resolveSeedThemeId, unknownCheck),
+            { initialProps: { unknownCheck: () => false } },
+        );
+        act(() => { result.current[1]('cyber-retro-wave'); });
+        rerender({ unknownCheck: () => false });
+        expect(result.current[0]).toBe('cyber-retro-wave');
+    });
 });

@@ -1,6 +1,7 @@
 import type { SarakDesignState } from '../../../Provider/types';
 import { TEXTURE_OPTIONS } from '../../schema/atmosphere';
 import { CARD_STRUCTURE_PRESETS } from './cardsStructure';
+import { THEME_CARD_PRESETS } from './cardsThemes.generated';
 
 export interface ComponentPreset {
     id: string;
@@ -61,8 +62,8 @@ const LEGACY_CARD_PRESETS: ComponentPreset[] = [
         design: {
             cardBorderRadius: 0,
             cardBorderWidth: 1,
-            cardBorderColor: 'var(--theme-primary-focus)',
-            cardGlowColor: 'var(--theme-primary-focus)',
+            cardBorderColor: 'var(--sarak-surface-neon-color, var(--theme-primary-focus))',
+            cardGlowColor: 'var(--sarak-surface-neon-color, var(--theme-primary-focus))',
             cardGlowIntensity: 0.6,
             cardShadowSpread: 20,
             cardBackdropBlur: 4,
@@ -179,7 +180,27 @@ const LEGACY_CARD_PRESETS: ComponentPreset[] = [
     }
 ];
 
-export const CARD_PRESETS: ComponentPreset[] = [...LEGACY_CARD_PRESETS, ...CARD_STRUCTURE_PRESETS];
+export { THEME_CARD_PRESETS };
+
+/** Os cards escritos à mão (curados) e, por último, o card de cada tema, gerado do próprio tema (`npm run card-presets`). */
+export const CARD_PRESETS: ComponentPreset[] = [...LEGACY_CARD_PRESETS, ...CARD_STRUCTURE_PRESETS, ...THEME_CARD_PRESETS];
+
+/**
+ * A opacidade com que cada textura do card aparece ao ser escolhida no painel. A textura só existe numa moldura nas bordas do card (a máscara de
+ * `_atmosphere.css`) e some atrás do texto. Nas destacadas do grupo (`FEATURED_CARD_TEXTURES`, em `registry.ts`) é o MENOR valor em que a
+ * textura difere do card sem textura em mais de 2% dos pixels, nos dois modos (o caso "Forma" do painel mede). Nas demais é o valor de antes da
+ * moldura: a legibilidade do texto, medida sobre o card real do painel. `none` não desenha camada.
+ */
+export const CARD_TEXTURE_OPACITY: Readonly<Record<string, number>> = {
+    grid: 1, dots: 1, noise: 0.35, grain: 0.12, mesh: 1, waves: 1,
+    squares: 1, stripes: 1, topo: 1, diamond: 1, prestige: 1, carbon: 0.25,
+    brushed: 1, frosted: 1, circuit: 1, paper: 0.4, scanlines: 1, hexagon: 1,
+    silk: 1, blueprint: 1, aurora: 0.8, stars: 1, honeycomb: 0.45, isometric: 0.8,
+    radar: 1, crosshatch: 1, 'micro-dots': 1, pinstripes: 1, constellation: 1, 'circuit-pro': 1,
+    'carbon-tech': 1, 'topo-deep': 1, 'prism-mesh': 1, 'cyber-binary': 1, 'blueprint-pro': 1, 'wave-pulse': 1,
+    wood: 1, stucco: 0.12, fluid: 0.2, nebula: 1,
+    none: 0.06,
+};
 
 // Presets gerados dinamicamente a partir das texturas do Schema (1:1 Paridade com atmosphere.ts)
 export const CARD_TEXTURE_PRESETS: ComponentPreset[] = TEXTURE_OPTIONS.map(texture => ({
@@ -187,6 +208,7 @@ export const CARD_TEXTURE_PRESETS: ComponentPreset[] = TEXTURE_OPTIONS.map(textu
     name: texture.label,
     description: `Card com a textura de superfície ${texture.label}.`,
     design: {
-        cardTextureType: texture.value
+        cardTextureType: texture.value,
+        cardTextureOpacity: CARD_TEXTURE_OPACITY[texture.value],
     }
 }));

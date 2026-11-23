@@ -4,6 +4,10 @@ import '@testing-library/jest-dom';
 import { describe, expect, it, vi } from 'vitest';
 import { ChromeSidebarResizeHandle } from '../ChromeSidebarResizeHandle';
 import type { SidebarResize } from '../useSidebarResize';
+import { CATALOG_LAYOUT } from '../../../../core/i18n/catalogEntries.layout';
+
+// Sem Provider, a lib fala português: o rótulo esperado é o do próprio catálogo, não um texto copiado.
+const RESIZE_LABEL = CATALOG_LAYOUT.chromeSidebarResizeLabel.pt;
 
 const makeResize = (): SidebarResize => ({
     width: null,
@@ -16,7 +20,7 @@ const makeResize = (): SidebarResize => ({
 describe('ChromeSidebarResizeHandle', () => {
     it('é um separador vertical focável, com rótulo e a faixa em aria-value*', () => {
         render(<ChromeSidebarResizeHandle resize={makeResize()} side="left" />);
-        const handle = screen.getByRole('separator', { name: 'Ajustar a largura da barra lateral' });
+        const handle = screen.getByRole('separator', { name: RESIZE_LABEL });
         expect(handle).toHaveAttribute('aria-orientation', 'vertical');
         expect(handle).toHaveAttribute('aria-valuemin', '200');
         expect(handle).toHaveAttribute('aria-valuemax', '400');

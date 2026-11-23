@@ -4,6 +4,7 @@ import { describe, it, expect } from 'vitest';
 import * as ComponentModule from '../SarakButton';
 import { SarakButton } from '../SarakButton';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
+import { sarakGetDefaultDesignState } from '../../../../core/Design/master-map';
 
 describe('SarakButton', () => {
     it('should be defined and export its contents without crashing', () => {
@@ -27,7 +28,7 @@ describe('SarakButton', () => {
         // 'matte' é o único styleType que adiciona shadow-xl (SarakButton.tsx:53); neon
         // real chegando prova que a leniência do átomo não vazou para o caminho com Provider.
         expect(button.className).not.toContain('shadow-xl');
-        expect(button.style.border).toContain('1px solid');
+        expect(button.style.border).toContain(`${sarakGetDefaultDesignState().borderWidth}px solid`);
     });
 
     it('a className do chamador VENCE os defaults do átomo — merge, não concatenação', () => {

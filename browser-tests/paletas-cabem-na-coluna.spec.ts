@@ -11,11 +11,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildHarness } from './build-harness.mjs';
-import { LIBRARY_TEXT_CATALOG } from '../src/core/i18n/catalog';
+import { switchPreviewMode } from './preview-mode-toggle';
+import { CATALOG_PALETTE } from '../src/core/i18n/catalogEntries.palette';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ENTRY = path.join(HERE, 'fixtures', 'plan-135-paletas-entry.tsx');
-const LABELS = Object.values(LIBRARY_TEXT_CATALOG.paletteCreateOpen);
+const LABELS = Object.values(CATALOG_PALETTE.paletteCreateOpen);
 
 let browser: Browser;
 let harnessDirectory: string;
@@ -38,7 +39,7 @@ for (const mode of ['escuro', 'claro'] as const) {
     test(`o botão de criar paleta cabe na coluna, em seis idiomas (${mode})`, async () => {
         const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
         await page.goto(harnessUrl);
-        if (mode === 'claro') await page.locator('.sarak-device-desktop').getByRole('button', { name: 'Modo Claro' }).click();
+        if (mode === 'claro') await switchPreviewMode(page, 'Modo Claro');
         await page.getByRole('button', { name: /^Cores/ }).click();
         const section = page.getByRole('region', { name: 'Paleta de cores' });
         const button = section.getByRole('button', { name: 'Criar paleta a partir de uma cor' });

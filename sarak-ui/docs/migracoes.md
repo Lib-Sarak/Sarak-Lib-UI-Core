@@ -5,6 +5,663 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 9.0.0 — a reserva de cor do `SARAK_DESIGN_MANIFEST` passa a ser o padrão do token
+
+A reserva que o manifesto usa quando o valor de uma cor chega vazio deixa de ser um literal repetido no código e passa a ser o `defaultValue` do próprio token no schema, a mesma regra que o `variable-contract` cobra. Um valor que chega preenchido não muda. O `DEFAULT_INDUSTRIAL_SEED`, que só a própria declaração usava e que não saía no barril, foi removido.
+
+**O que muda para o importador:** quem chama o `transform` do `SARAK_DESIGN_MANIFEST` (exportado em `src/index.ts`) com valor vazio recebe as variantes do padrão novo. Nenhum import, prop ou token público muda.
+
+| Onde | Antes | Depois (padrão do schema) |
+|---|---|---|
+| manifesto `primaryColor` | `#3b82f6` | `#19e3f0` |
+| manifesto `secondaryColor` | `#6366f1` | `#7c5cff` |
+| manifesto `tertiaryColor` | `#10b981` | `#34d399` |
+| manifesto `accentColor` | `#f43f5e` | `#ff4fd8` |
+| manifesto `surfaceColor` | `#1e293b` | `#101622` |
+| manifesto `textureColor` | `#ffffff` | `#cfe9ff` |
+| manifesto `sidebarColor`, `topbarColor` | `#000000` | `#04060a` |
+| manifesto `cardBackgroundColor` | `rgba(30, 41, 59, 0.4)` | `#101622` |
+| manifesto `cardBorderColor` | `rgba(255, 255, 255, 0.1)` | `rgba(255, 255, 255, 0.09)` |
+| manifesto `titleColor` | `#ffffff` | `#f2f6fb` |
+| `useDesignVariables`, reserva do primário | `#3b82f6` | `#19e3f0` |
+
+Nos status (erro, sucesso, aviso), na âncora e no texto sobre o primário, o valor não muda.
+
+---
+
+## 9.0.0 — `colorDepth` e `colorVariation` saem do tema
+
+Os dois controles ("Profundidade da Cor" e "Variação da Cor") só moldavam `--theme-primary-hover` e `--theme-primary-active` (e o `-hover`/`-active` das demais cores com variantes), e nenhum componente da lib lê essas variáveis desde que o hover global do `<button>` deixou de pintar o fundo. Ajustá-los não mudava nada na tela. As variáveis `-hover` e `-active` continuam emitidas, agora sempre com o fator 1 (cor base ×1,1 no hover e ×0,9 no aperto).
+
+**O que muda para o importador:**
+1. **O valor salvo é descartado com aviso.** `colorDepth` e `colorVariation` entram na lista de chaves removidas: um tema persistido que as traga perde as duas, com o aviso de token removido, e vale o fator 1.
+2. **As chaves saem do tipo público `SarakDesignTokens`.** Objeto de tema em TypeScript que as cite deixa de compilar; apague as duas linhas.
+3. **`--sarak-color-depth` e `--sarak-color-variation` deixam de existir.** Quem as lia em CSS próprio passa a ter o `var()` sem valor. O único tema com profundidade 0, `industrial-terminal-classic`, passa a emitir `-hover` e `-active` com o fator 1 (antes, com 0, as duas variantes repetiam a cor base).
+
+| | Antes | Depois |
+|---|---|---|
+| `design.colorDepth`, `design.colorVariation` | aceitos (0 a 5 e 1 a 5) | descartados com aviso; fator 1 |
+| `--theme-primary-hover`, `--theme-primary-active` | moldadas pelos dois tokens | emitidas, fator 1 fixo |
+| `--sarak-color-depth`, `--sarak-color-variation` | emitidas | não existem mais |
+
+---
+
+## 9.0.0 — botões deixam de receber fundo global no hover e no aperto
+
+A regra global deixa de pintar o fundo e trocar a cor do texto de `<button>` no hover; no aperto, deixa de pintar o fundo. O movimento de hover e o transform de active permanecem. Cada botão conserva o estado visual definido pelo componente ou pelo importador.
+
+**O que muda para o importador:** um `<button>` cru que dependia do fundo primário automático deixa de receber esse fundo ao passar o ponteiro ou apertar. Defina o estado visual no próprio botão ou use um componente com variante de ação. Nenhum import, prop ou token público muda.
+
+| | Antes | Depois |
+|---|---|---|
+| `SarakActionCard` com paleta gerada | fundo com cor de hover separada | o hover repete a cor primária; o movimento continua |
+| `<button>` sem hover próprio | fundo primário e cor de texto calculada pela lib | cores definidas pelo próprio botão ou herdadas do fundo; o movimento de hover continua |
+| `<button>` no aperto | fundo primário ativo | fundo definido pelo próprio botão; o transform de active continua |
+
+---
+
+## 9.0.0 — o texto do botão `ghost` fica legível sobre superfícies tingidas
+
+O texto do `SarakButton` `variant="ghost"` deixa de ser a cor primária pura e passa a ser 85% primária misturada a 15% de `--sarak-on-surface` (o texto de maior contraste sobre o corpo). No tema claro, sobre a superfície tingida do painel, o texto ficava em 4,10:1; agora fica em 5,22:1 (no escuro, de 4,54:1 para 5,68:1).
+
+**O que muda para o importador:** o texto do botão `ghost` fica um pouco mais próximo da cor de texto do corpo. Nenhum import, prop ou token muda. O `SarakIconButton` não muda.
+
+| | Antes | Depois |
+|---|---|---|
+| Texto do `SarakButton` `ghost` | `--sarak-primary-color` | mistura de 85% de `--sarak-primary-color` com `--sarak-on-surface` |
+
+---
+
+## 9.0.0 — contraste e destaque do cromo nas barras contrastantes
+
+Nas barras com tom `primary`, `secondary` ou `inverse`, os textos e controles do cromo passam a usar cores calculadas contra as duas paradas do degradê. O véu da pílula ativa mantém 20% de opacidade; na parada clara ele escurece, e o texto da pílula usa a cor que passa sobre esse fundo. A pílula ganha um contorno visível com ao menos 3:1 de contraste não textual contra a barra. O seletor de idioma e o botão de sair também recebem cores ajustadas para o fundo efetivo.
+
+**O que muda para o importador:** é uma mudança visual nas barras de tom contrastante: a pílula ativa fica mais marcada, o idioma deixa de ficar esmaecido e o vermelho do botão de sair pode mudar. Nenhum import, prop ou token público muda.
+
+| | Antes | Depois |
+|---|---|---|
+| Pílula ativa no degradê contrastante | véu podia clarear a parada clara e quase se confundir com a barra | véu de 20% escurece a parada clara; texto passa em 4,5:1 e contorno em 3:1 |
+| Idioma e sair | cor podia perder contraste na barra | cor calculada sobre a barra e a parada clara |
+
+---
+
+## 9.0.0 - os oito tipos de gráfico usam melhor o quadro
+
+O `SarakChartEngine` passa a usar mais da área que recebe. Os eixos de valor partem do zero em todos os tipos; linha, área e dispersão não ampliam o eixo para esconder essa origem. Pizza, radar e gauge também passam a ocupar mais do quadro, e os sete rótulos do radar permanecem visíveis.
+
+**O que muda para o importador:** não há alteração de API nem migração de dados. Gráficos existentes podem aparentar escala e proporções diferentes dentro do mesmo `width`/`height`, pois a área de desenho aproveita melhor o componente. Atualize capturas visuais ou comparações que dependam da geometria anterior.
+
+---
+
+## 9.0.0 — escolher um estilo de gráfico no painel não muda mais o tipo padrão
+
+O grupo **Gráficos** do painel passa a listar **estilos**, nunca tipos: cada preset grava só `chartThickness`, `chartSmoothing`, `chartShowGrid` e `chartGridOpacity`. Antes os presets também gravavam `chartType` ("Área suave" gravava `area`, "Barras limpas" gravava `bar`), e como o `SarakChartEngine` usa o `type` do componente primeiro e o `chartType` do design depois, escolher um estilo trocava o tipo de todo gráfico que não passava `type`.
+
+- **Ids e nomes:** `chart-area-smooth`, `chart-line-sharp`, `chart-line-bold`, `chart-bars-clean`, `chart-bars-grid`, `chart-radar-fine` e `chart-scatter` saem; entram `chart-style-smooth` (Suave), `chart-style-straight` (Reta), `chart-style-bold` (Forte), `chart-style-grid` (Com grade) e `chart-style-fine` (Fina), nos seis idiomas.
+- **`chartType`:** o token continua com o mesmo id, as mesmas opções e o mesmo padrão (`area`); só o rótulo do ajuste fino passa a ser "Tipo padrão (quando o componente não define)".
+- **Prévia:** espiar ou escolher um estilo abre a tela "Gráficos", que mostra os oito tipos de `chartType` pelo `SarakChartEngine` com o estilo do rascunho.
+
+**O que muda para o importador:** quem dependia de escolher um estilo no painel para trocar o tipo dos gráficos sem `type` passa a gravar `chartType` pelo ajuste fino do painel ou a passar `type` no componente (o recomendado: o tipo é de quem usa o componente). Quem guardou um dos ids antigos de preset de gráfico (atalho ou tema salvo) troca pelo estilo equivalente; o `chartType` que o preset gravava deixa de vir junto.
+
+---
+
+## 9.0.0 — escolher uma textura de card no painel grava também a opacidade
+
+Cada preset do grupo **Textura do card** (`card-tex-*`) passa a gravar `cardTextureOpacity` junto com `cardTextureType`, num valor próprio de cada textura: o menor em que ela aparece e o texto do card continua legível, nos dois modos. Antes só o tipo era gravado e a textura aparecia na opacidade que o tema ou o rascunho já tinham (0,06 por padrão, quase invisível na maioria).
+
+**O que muda para o importador:** quem aplicava um `card-tex-*` e dependia de a opacidade ficar como estava passa a receber a do preset; para manter a opacidade antiga, regrave `cardTextureOpacity` depois (pelo ajuste fino do painel ou no `design`). O grupo `cardTextures` deixa de ser de um token só no registro (`owns` aceita `cardTextureOpacity`). A miniatura de tema do painel passa a ser a tela "Painel" inteira com o tema aplicado. **A textura do card passa a aparecer nas bordas do card e some atrás do conteúdo** (uma moldura de 14 px com máscara em `.sarak-card::after`), em todo sistema que usa `cardTextureType`, para o texto manter 4,5:1 contra o fundo; o fundo da página e o `cardTextureType` não mudam.
+
+---
+
+## 9.0.0 — nomes visíveis do painel: Sidebar, Topbar, Dark mode e Light mode
+
+Só texto que o painel mostra; nenhum id, token, prop ou export mudou. Termo técnico fica em inglês, igual nos seis idiomas:
+
+- **Títulos de grupo:** "Barra lateral" (e "Barre latérale", "Seitenleiste"…) passa a **Sidebar**; "Barra de topo" ("Top bar", "Barra superior"…) passa a **Topbar**. Rótulos e descrições dos tokens da barra dizem Sidebar/Topbar em vez de "barra lateral", "barra superior" e "barra do topo".
+- **Opções de modo e navegação:** "Dark Mode (Padrão)" e "Light Mode" passam a **Dark mode (padrão)** e **Light mode**; "Sidebar (Esquerda)" e "Topbar (Cabeçalho)" passam a **Sidebar (esquerda)** e **Topbar (horizontal)**; a preferência "Modo Claro/Escuro" passa a "Light mode ou Dark mode".
+- **Cabeçalho do card:** os rótulos "… do Header" dos tokens `cardHeader*` e `headerAlignment` passam a dizer "cabeçalho".
+
+**O que muda para o importador:** quem procura o painel pelo texto (`getByText("Barra lateral")`, `getByRole('button', { name: /Barra de topo/ })`, o rótulo "Dark Mode (Padrão)") troca pelos nomes novos; os atributos `data-group-toggle`, `data-option-group` e `data-decision-row` não mudaram.
+
+---
+
+## 9.0.0 — as barras ganham uma decisão própria no painel, o papel de cor vale para as duas e a troca lateral/topo pelo usuário vira um interruptor
+
+O painel de Design ganha a decisão **Barras**, entre Componentes e Layout (`DecisionId` `bars`). Ela reúne tudo o que é da barra: a orientação, o interruptor "O usuário pode trocar entre lateral e topo", o papel de cor, os presets de Barra lateral e de Barra de topo, as cinco perguntas (onde, como, o que aparece, marca e comportamento) e os ajustes finos de barra. O **Layout** fica com a largura do conteúdo e o resto (bloco global, identidade). Cada token está em exatamente uma das duas; `maxContentWidth` e `zIndexSidebar` mudaram de lugar (a largura foi para o Layout, o z-index da lateral para o Comportamento da barra) e `mobileNavigationStyle` entrou na pergunta "Onde fica a barra". O preset de Barra lateral **Texturizada** ficou mais marcado (grão a 30%, borda tracejada de 2 px, item ativo cheio e raio 4) para se distinguir de Limpa e Contornada. E a espiada de um papel de cor da barra na galeria agora recalcula a cor da barra como a escolha, em vez de deixar a cor que o tema declara por cima.
+
+**O papel de cor vale para as duas barras.** Escolher "Cor da marca", "Secundária", "Superfície", "Neutra" ou "Invertida" grava `sidebarTone` e `topbarTone` juntos (grupo novo `barTone`, presets `bar-tone-*`). O ajuste de uma barra só continua no ajuste fino, token por token. Os presets de estrutura (`sidebar-*`, `topbar-*`) deixam de gravar tom, e quatro saem por serem só tom: `sidebar-brand`, `sidebar-inverted`, `topbar-brand` e `topbar-inverted` (as Personalidades continuam gravando os dois tons por conta própria). O texto de `sidebar-gradient`, `sidebar-clean`, `sidebar-solid`, `topbar-flat` e `topbar-solid` deixou de citar o tom.
+
+**Mudança de comportamento do motor.** O papel de cor escolhido no painel passa a vencer a cor de barra que o tema ou o `config` do host declaram **para aquela barra** (`sidebarColor`, `sidebarHoverColor`, `sidebarItemTextColor`… e as do topo; a faixa da marca fica como está). Antes, um tema que declarava `sidebarColor` ignorava o tom escolhido e a barra não mudava. A barra sem tom escolhido continua com a cor que o tema declara, e nenhum valor de tema mudou.
+
+**O interruptor** grava `preferenceNavigationStylePosition`: ligado é `menu` ou `pinned`, desligado é `off`. Desligado, a escolha some da barra e do ⚙ e a preferência `navigationStyle` que o usuário já gravou no navegador deixa de valer (continua gravada, e volta a valer se o interruptor ligar). Nenhum token novo.
+
+**O que muda para o importador:** quem media o painel por `data-decision-row="layout"` para achar `sidebar`, `topbar` ou as perguntas passa a procurar em `bars`; `data-option-group="barTone"` é novo. Quem aplicava os presets pelos ids removidos aplica `bar-tone-primary` e `bar-tone-inverse`. A lista de decisões tem sete linhas.
+
+---
+
+## 9.0.0 — o painel avisa a preferência pessoal que está por cima do tema, desabilita o controle que não vale e mostra o intervalo da largura da lateral
+
+Três ajustes do painel de Design, sem token novo e sem mudar o que o cromo desenha. (1) O token que uma preferência do próprio administrador sobrepõe (`navigationStyle`, `bodySize`, `mode`, `isNavHidden` e `sidebarWidth`) ganha, junto do controle, "Sua preferência pessoal (<valor>) está por cima do tema" e a ação "Apagar minha preferência", que apaga só aquela chave de `sarak-ui-preferences-v1`; preferência que o tema não oferece (`preference*Position` em `off`) não vence nada e não é avisada. (2) O controle que declara depender de `navigationStyle` (`navbarLayout` e os `topbar*` só do topo; `sidebarPosition`, `shellBrandLogoSize`, `sidebarLabelMaxWidth` e os `sidebar*` só da lateral) fica desabilitado, com o motivo, quando o tema usa a outra navegação. (3) O campo da largura da lateral nasce com o intervalo que vale — o do token cruzado com `sidebarMinWidth`/`sidebarMaxWidth` do dispositivo da prévia — e o mostra; antes 260 virava 300 px em silêncio.
+
+O rótulo de `isNavHidden` passa de "Ocultar Navegação" para "Navegação recolhida" (é o que o token faz: a barra continua na tela como trilho de ícones, o mesmo estado do botão de recolher); `isAutoHideEnabled` mantém "Auto-ocultar Menus", e a descrição dele deixa de dizer "recolhe". "Textura local" já muda pixel na barra (a camada nunca desce de 0,12 de opacidade); a medição agora é um spec de navegador.
+
+**O que muda para o importador:** quem media o painel vê, em cada linha de controle, um `<fieldset>` em volta do controle (desabilitado quando o controle não vale) e, às vezes, uma nota abaixo (`data-testid` `token-personal-note`, `token-inactive-note` e `token-range-note`); a linha `[data-token-row]` continua a mesma. O rótulo antigo de `isNavHidden` some do catálogo e de `sarak-ui/catalog.json`.
+
+---
+
+## 9.0.0 — P e G do tamanho da fonte configuráveis em px, controles de preferência discretos e o ⚙ que não repete o que está na barra
+
+O tamanho da fonte do usuário (P/M/G) deixa de usar uma escala fixa de cinco degraus e passa a se mover em px a partir de `bodySize`: dois tokens novos, `preferenceFontSizeReduction` (quanto o P reduz) e `preferenceFontSizeIncrease` (quanto o G aumenta), ambos em px, de 0 a 6, padrão 2. Com o padrão nada muda nas bases de 14 a 18 px; nas pontas o defeito some: com base 12 px o P era igual ao M, e com base 20 px o G era igual ao M — agora são 10 px e 22 px. O P nunca desce de 8 px. Os dois tokens ficam na decisão Layout, junto da composição da barra.
+
+Os controles ficam discretos. Fixados na barra, P/M/G e Lateral/Topo são um grupo compacto com a altura de um item de navegação e sem véu de fundo (o texto fica direto sobre a barra); no ⚙ e na gaveta do celular viram linhas de menu com a escolha marcada por visto, não pílulas. O ⚙ da barra do topo também deixa de repetir o que já está fixado na barra visível (busca, tamanho, orientação, modo, idioma): uma barra com tudo fixado não mostra o ⚙. Na barra lateral recolhida a exceção continua: o fixado sem ícone próprio vai para o ⚙.
+
+O rótulo das opções de `bodySize` deixa de usar P/M/G e mostra o valor (`12 px`, `14 px`…).
+
+**O que muda para o importador:** quem media a pílula de P/M/G (`aria-pressed` num `<button>` dentro de `[role="group"]` com véu `bg-[…]/10`) vê o mesmo grupo e os mesmos botões, sem o véu; dentro do ⚙ a escolha passa a ser `role="menuitemradio"` com `aria-checked`. `ShellFontSizeControl` e `ShellNavigationStyleControl` ganham as props `variant` (`bar` ou `menu`) e `orientation`; sem elas, valem `bar` e horizontal. Instalação existente não tem as chaves e lê o padrão (2 px), então nada se reescreve.
+
+| | Antes | Depois |
+|---|---|---|
+| P e G | um degrau numa escala fixa de 5 valores (iguais ao M nas pontas) | `bodySize` − `preferenceFontSizeReduction` e `bodySize` + `preferenceFontSizeIncrease` (padrão ±2 px, piso de 8 px) |
+| Rótulo de `bodySize` | `P (Pequeno - 14px)` | `14 px` |
+| P/M/G e Lateral/Topo na barra (1440 px, tema padrão) | pílulas com véu: 146 × 62 px e 153 × 62 px | grupo compacto sem véu: 100 × 28 px e 117 × 28 px (a altura do item de navegação) |
+| P/M/G e Lateral/Topo no ⚙ | pílulas | linhas com seleção marcada (`menuitemradio`) |
+| ⚙ da barra do topo | repetia o fixado na barra: 306 × 510 px | só o que não está na barra: 159 × 310 px na composição de fábrica e 159 × 61 px com tudo fixado, menos o modo |
+
+---
+
+## 9.0.0 — a barra de topo não rola mais para o lado: o que não cabe vai para um botão "Mais" logo depois do último item visível
+
+Na navegação no topo, a lista de itens rolava na horizontal com a barra de rolagem oculta, e o item que não cabia ficava inalcançável sem sinal nenhum. Agora a lista não rola: o item que não cabe sai da lista e aparece dentro de um botão "Mais" (texto nos seis idiomas, sem ícone, com a seta) logo depois do último item que coube, que abre um balão com os itens escondidos, em ordem, e navega pelo mesmo `onNavigate`. Nada de configuração: o comportamento vale para toda barra de topo, e só aparece quando algo não cabe.
+
+**O que muda para o importador:** quem media a lista de navegação do topo por rolagem (`scrollWidth` do `nav`) ou esperava `overflow-x: auto` nela passa a ler o `nav` sem rolagem; cada item de navegação da topbar agora vive numa célula `data-sarak-nav-cell`, e o item escondido fica com `visibility: hidden` (fora do foco e do leitor de tela) até o "Mais" abri-lo. Se o item ativo está escondido, o "Mais" se desenha como ativo. A navegação lateral e a do celular não mudam.
+
+| | Antes | Depois |
+|---|---|---|
+| Item que não cabe na topbar | ficava atrás da borda, alcançável só por rolagem sem barra | vai para o botão "Mais", que abre um balão com ele |
+| `nav` horizontal | `overflow-x: auto` | `overflow-x: hidden`, com o "Mais" a um vão de item do último item visível |
+| Âncoras de teste | — | `data-sarak-nav-cell` (cada item) e `data-sarak-nav-more` (o botão) |
+
+---
+
+## 9.0.0 — o token `keepPalette` ("manter minha paleta"): com ele ligado, a paleta escolhida vale por cima de qualquer tema
+
+Escolher um tema continua aplicando as cores dele, e isso não muda. O token novo `keepPalette` (booleano, padrão `false`, escolha do sistema e não preferência do usuário) liga o outro comportamento: a paleta que estava escolhida (`colorPalette`) é aplicada por cima do tema que entra, em toda troca, e vence todas as cores que ela calcula, inclusive as que o tema declara. O que o tema declara e a paleta não calcula, e o resto do tema, fica como o tema declara. A troca entre claro e escuro também segue a paleta, sem trazer de volta a cor declarada pelo tema.
+
+**O que muda para o importador:** nada, se não ligar o token. Instalação existente não tem a chave e lê o padrão (desligado). O painel de customização ganha o interruptor "Manter minha paleta" junto da galeria de paletas. No design gravado, `keepPalette: true` é uma escolha como `colorPalette`: grava e volta igual ao recarregar. Servidor que valida a lista de chaves do design (como o dos logins) precisa aceitar a chave `keepPalette`.
+
+| | Antes | Depois |
+|---|---|---|
+| Trocar de tema com uma paleta escolhida | as cores do tema novo | as cores do tema novo; com `keepPalette` ligado, a paleta escolhida |
+| Chave `keepPalette` no design | não existia | booleano, padrão `false`; só `true` é gravado |
+
+
+## 9.0.0 — o token `savedPalettes` (paletas salvas com nome) e a galeria de paletas recolhida por grupo
+
+O painel passa a guardar uma paleta criada com nome próprio. O criador ganha o campo "Nome da paleta" e o botão "Salvar paleta"; a galeria ganha o grupo "Minhas paletas" (escolhível, com espiada e com o botão de apagar, que pede confirmação) e o atalho "Usar minha marca" ganha o campo "Paleta da marca", que oferece as salvas. Nome repetido pergunta antes de substituir. Escolher uma paleta salva é escolher o `colorPalette` dela, como com qualquer paleta.
+
+**Onde a lista mora:** no próprio design do sistema, numa chave nova, `savedPalettes` (texto, padrão `''`). Ela é gravada pelo mesmo `onSave` do design, junto do resto, e volta pelo mesmo `onLoad`: **nenhuma porta nova, nenhuma tabela nova, nenhum código novo no importador.** O valor é a lista em texto compacto — entradas `id|nome|valor` separadas por `~`, em que `valor` é um `colorPalette` `custom:<tipo>:<#base>[,sec=<#hex>][,acc=<#hex>]` — porque o dicionário de tokens só guarda valor simples; quem lê a lista no código usa `savedPalettes` da lib, não o texto. A validação do design descarta a entrada inválida e o nome com aspas, chaves ou barras. O teto é de 24 paletas; o nome tem até 40 caracteres.
+
+**A troca de tema não apaga a lista.** As paletas salvas são do sistema, não do tema: nem um tema salvo pelo painel, que carrega o padrão (vazio) de todo token, a zera ao ser aplicado.
+
+**O que muda para o importador:** nada, se ninguém salvar paleta. Instalação existente não tem a chave e lê o padrão (nenhuma paleta). No design gravado, `savedPalettes` com itens é uma escolha como `colorPalette`: grava e volta igual ao recarregar; sem itens, some do gravado. **Servidor que valida a lista de chaves do design (como o dos logins) precisa aceitar a chave `savedPalettes` uma vez**, e o payload cresce com o número de paletas salvas (cerca de 60 caracteres por paleta). Tirar a chave depois de importadores a gravarem é MAJOR para quem a guarda.
+
+Na galeria, os grupos de paletas (`Minhas paletas` e um por tipo) abrem recolhidos, menos o da paleta escolhida; a decisão **Cores** rola no máximo 2,5 alturas da coluna, e os "Ajustes principais" de uma decisão com mais de oito controles abrem recolhidos. Nada disso muda o que o painel grava.
+
+| | Antes | Depois |
+|---|---|---|
+| Guardar uma paleta criada | só como valor de `colorPalette`, sem nome | com nome, em `savedPalettes`, no design do sistema |
+| Chave `savedPalettes` no design | não existia | texto, padrão `''`; só a lista com itens é gravada |
+| Aplicar um tema salvo pelo painel | trazia o padrão de todo token | a lista de paletas salvas do sistema fica |
+
+---
+
+## 9.0.0 — o catálogo de paletas prontas passa de 19 para 78, e a base de seis paletas antigas escurece (ids intactos; a cor do botão muda nelas)
+
+A galeria do painel e `SARAK_PALETTE_PRESETS` ganham 59 paletas, cada uma com o nome nos seis idiomas. Os 19 ids anteriores continuam válidos e nenhum virou apelido de outro. As novas pedem ao motor o mesmo cálculo das antigas (escala, papéis, contraste); a lista completa é o próprio `SARAK_PALETTE_PRESETS` (ou `Object.keys` dele).
+
+**Regra única de luminosidade.** Em toda paleta, o texto da marca anda até 0,04 de luminosidade entre o claro e o escuro (título até 0,06, item ativo até 0,13), e a cor da paleta varia pouco entre os modos. Para isso, a base de uma paleta que passava da régua foi escurecida ou clareada só em luminosidade, com o mesmo matiz, no menor passo que a faz passar. Isso vale para 57 das novas e para seis das antigas, que eram as vivas: `ciano-violeta`, `ciano-azul`, `verde-neon`, `azul-projeto`, `amarelo-contraste` e `ambar-industrial`. A secundária e o acento das seis ficam como estavam.
+
+**O que muda para o importador:** quem salvou um tema com um destes seis ids vê o botão primário (e o que nasce da base) mais escuro que antes, nos dois modos. A mudança aparece em temas embarcados que declaram essas paletas:
+
+| Tema embarcado | Paleta | Base antes | Base agora |
+|---|---|---|---|
+| `sarak-sovereign`, `cyber-retro-wave` | `ciano-violeta` | `#19e3f0` | `#008790` |
+| `cyberpunk-neon` | `verde-neon` | `#00ff6a` | `#008e38` |
+| `industrial-terminal`, `golden-hour` | `ambar-industrial` | `#ff9a1f` | `#b26700` |
+| `high-contrast` | `amarelo-contraste` | `#ffd400` | `#927800` |
+| `blueprint-protocol` | `azul-projeto` | `#6fa3d9` | `#4a7db1` |
+
+`ciano-azul` (`#19e3f0` → `#008790`) não é usada por tema embarcado. Quem precisar do brilho antigo declara a cor como paleta própria (`custom:<tipo>:<hex>`).
+
+**Item ativo da barra lateral.** Com as bases mais escuras, o item ativo perdia em contraste para o inativo no modo escuro. Agora o texto do item ativo tem, no mínimo, o contraste do inativo, e duas cores mudam em toda paleta, mesmo a de um tema salvo antes: no modo escuro o item inativo e o ícone da barra lateral ficam um tom mais apagados (tom 400 → 500 da escala neutra); no modo claro, nas paletas de base verde ou verde-azulada (`ciano-violeta`, `ciano-azul`, `verde-neon`, `oliva-viva`, `verde-tecnico`, `oliva-industrial`, `forest-tech`, `emerald-mist`, `neo-matrix`, `emerald-royal` e `neon-matrix-green`), o texto do item ativo fica mais escuro. Quem declara o texto do item ativo ou do inativo no próprio tema não é afetado.
+
+**Barra com fundo em degradê.** Com `sidebarBackgroundStyle` ou `topbarBackgroundStyle` em `gradient`, o texto do item ativo, o do inativo e o ícone passam a valer 4,5:1 também sobre a parada clara do degradê (a cor da barra com 16% de branco). O texto clareia (no escuro) ou escurece (no claro) o mínimo até passar; a cor da paleta não muda. Com o fundo sólido nada muda.
+
+Em 38 das novas, a secundária e o acento foram recalculados no ângulo que o tipo da paleta pede (o centro da faixa de harmonia), com a luminosidade e o croma da cor original trazidos para dentro do sRGB. Quando o croma ficou abaixo de 60% do da base, a luminosidade da semente andou o mínimo até alcançá-lo, no mesmo matiz. A cor que o painel mostra nelas pode diferir da do rascunho de origem.
+
+| | Antes | Depois |
+|---|---|---|
+| Paletas prontas na galeria | 19 | 78 |
+| Ids dos 19 anteriores | válidos | válidos; a base de seis escurece |
+| Ids novos | não existiam | válidos em `colorPalette` (um deles é `neon-crimson`) |
+
+---
+
+## 9.0.0 — `SarakDataTable` lê os cantos da tabela do design
+
+A moldura da `SarakDataTable` colunar passa a ter o raio do token `tableBorderRadius` (`--sarak-table-border-radius`, que segue o raio do cartão quando o tema não o declara), como a `SarakTableView` já tinha. Sem `SarakUIProvider`, nada muda. Para manter os cantos retos, declare `tableBorderRadius: 0` no tema ou na configuração.
+
+| | Antes | Depois |
+|---|---|---|
+| Moldura da `SarakDataTable` (com Provider) | cantos retos; `tableBorderRadius` não tinha efeito nela | o raio do token |
+
+---
+
+## 9.0.0 — `SarakTableView` lê o respiro da célula (`tableCellPadding`) e a sombra "Suave" do painel ficou mais visível
+
+Duas mudanças de padrão, sem token novo e sem token removido.
+
+- **Respiro horizontal da `SarakTableView`.** A célula passa a ler `--sarak-table-padding` (o que o `tableCellPadding` escreve, em px), como a `SarakDataTable` já lia. A densidade (`tableDensity`) continua dona do respiro vertical e do corpo do texto. Com `SarakUIProvider`, o token sempre chega (padrão 12 px no desktop); sem ele, a reserva também é 12 px: a tabela confortável passa de 16 px para 12 px de respiro horizontal. Para manter o de antes, declare `tableCellPadding` com o valor da densidade (compacta 8, confortável 16, arejada 24).
+- **Sombra "Suave" do painel.** O preset `shadow-soft` (opção "Suave" de Sombra) passa de intensidade 0,4 / projeção 36 px a alfa 0,15 / ambiente 0,3 para intensidade 0,8 / projeção 56 px a alfa 0,4 / ambiente 0,55: mais espalhada e visível na prévia. Quem a tinha gravada continua com os valores antigos; só quem a escolhe de novo recebe os novos.
+
+| | Antes | Depois |
+|---|---|---|
+| Respiro horizontal da célula da `SarakTableView` (com Provider) | 8, 16 ou 24 px, pela densidade | `tableCellPadding` (padrão 12 px) |
+| Preset "Suave" de Sombra | intensidade 0,4, projeção 36 px, alfa 0,15, ambiente 0,3 | intensidade 0,8, projeção 56 px, alfa 0,4, ambiente 0,55 |
+
+---
+
+## 9.0.0 — a faixa da marca é a cor primária sólida, a mesma nos dois modos (muda a cor da faixa em todo tema sem faixa declarada)
+
+`sidebarBrandBackground` (a faixa da marca no topo da barra lateral) e `topbarBrandBackground` (a faixa da marca na barra do topo) deixam de acompanhar o fundo da barra: o padrão da paleta passa a ser a primária exata (a base da paleta, sem transparência), igual no modo claro e no escuro, como o preenchimento de marca do botão primário. Antes, a lateral era a primária a 5% sobre o fundo e a do topo o acento claro/escuro, então a faixa trocava com o modo. O texto sobre ela (`sidebarBrandColor` e `topbarBrandColor`) é escolhido pelo contraste contra a faixa, com 4,5:1: claro se passa, escuro se não, e por isso também é igual nos dois modos. O monograma da marca (sem logo) e a seta de recolher, dentro da faixa, leem esse mesmo texto; o monograma ganha o fundo da marca e um aro, em vez do gradiente da primária, que sumiria na faixa. Nos papéis de barra `surface`, `primary`, `secondary` e `inverse` a faixa também vale a primária e o texto a escolha pelo contraste (antes cada papel trazia uma faixa e um texto próprios). Fundo da barra, ícones, rótulos, item ativo e véu continuam trocando com o modo.
+
+Os quatro temas Classic que declaravam a faixa em cada modo usam um valor só: `sarak-sovereign-classic` `#340029`, `cyberpunk-neon-classic` `#002020` e `industrial-terminal-classic` `#2a1500`, escritos no design e herdados pela contraparte, sem texto declarado. `dot-matrix-elegant` declarava a faixa do topo em cada modo (`#1b1b1b` no escuro e `#eeeeee` no claro) e passa a usar `#1b1b1b` nos dois, com o texto escolhido pelo contraste. O `neo-brutalism-classic` deixou de declarar a faixa (`#e6efff` no claro e `#000b55` no escuro) e a faixa dele é a primária sólida do padrão. Quem clona um desses temas e quer a faixa de antes declara os tokens no próprio tema, nos dois modos.
+
+| | Antes | Depois |
+|---|---|---|
+| Faixa da lateral (padrão) | primária a 5% sobre o fundo da barra, muda com o modo | primária sólida, igual nos dois modos |
+| Faixa do topo (padrão) | acento 100/900, muda com o modo | primária sólida, igual nos dois modos |
+| Texto da faixa | neutro 950/50, por modo | escolhido pelo contraste (4,5:1), o mesmo nos dois modos |
+| Monograma e seta na faixa | gradiente da primária e cor de ação | o texto da marca; monograma com fundo da marca e aro |
+
+---
+
+## 9.0.0 — a barra lateral "Compacta" passa do tom Neutro ao Superfície
+
+A opção "Compacta" do grupo Barra lateral (`sidebar-compact`) deixa de usar `sidebarTone: 'neutral'` e passa a `'surface'`: o fundo da barra sobe do tom neutro para o de superfície, o mesmo dos cartões. Densidade, tamanho de ícone, raio e item ativo não mudaram. Com a faixa da marca sólida na primária, a Compacta e a Limpa (as duas em Neutro) deixaram de se distinguir a olho; o tom é o que as separa. Quem escolheu "Compacta" no painel vê a barra com o fundo de superfície; quem quer o fundo de antes escolhe "Compacta" e muda o tom da barra para "Neutro".
+
+| | Antes | Depois |
+|---|---|---|
+| Fundo da barra da opção "Compacta" | tom Neutro | tom Superfície |
+
+---
+
+## 9.0.0 — os temas resgatados seguem a anatomia da barra, e dois ícones novos
+
+Os sete temas resgatados (`sarak-sovereign-classic`, `cyberpunk-neon-classic`, `industrial-terminal-classic`, `cyber-retro-wave-classic`, `nature-breeze`, `neo-brutalism-classic` e `dot-matrix-elegant`) deixam de sobrescrever os tokens que desmontavam a anatomia e passam a declará-la: item ativo com a barra luminosa na primária (`sidebarActiveItemStyle: 'bar'`) e véu de 12%, ícone, rótulo e título de seção nas cores que a paleta calcula, moldura em cartão (`sidebarBorderSide` sem `'none'`) e avatar em ícone (`userAvatarStyle: 'icon'`). Nenhuma cor de fundo da barra mudou; a faixa da marca, sim (entrada acima). Quem clona um desses temas e quer o desenho anterior declara os tokens no próprio tema. O selo de um item da lista vertical passa a ter o respiro da lista (com teto pela largura da barra), e não o espaçamento de página. `FileSearch` e `GitBranch` entram nos nomes de ícone curados.
+
+| | Antes | Depois |
+|---|---|---|
+| Item ativo dos 7 resgatados | `filled`, `outline` ou `pill`, fundo a 60% | `bar` (barra na primária), véu de 12% |
+| Ícone, rótulo e título de seção desses temas | cores gravadas no tema (destaque, magenta) | as da paleta (neutras) |
+| Avatar do usuário desses temas | iniciais | ícone |
+| Selo de item da lista vertical | respiro = espaçamento de página (48 px num tema largo) | respiro da lista (8 px numa barra de 240) |
+| Ícones `FileSearch` e `GitBranch` | caíam no ícone de aviso | existem nas três famílias |
+
+---
+
+## 9.0.0 — a barra lateral volta à anatomia da lib antiga (padrões que mudaram)
+
+A barra lateral de todo tema volta a nascer com a anatomia que a lib antiga desenhava. **Nenhum token saiu nem mudou de nome** (entraram `sidebarActiveGlass`, `brandDisplay`, `userAvatarStyle` e `preferenceNavCollapsePositionTopbar`, todos aditivos): cada um
+continua editável no painel e declarável pelo tema. O que mudou foram os **padrões** — o valor que vale quando nem o tema nem o host
+declaram o token.
+
+| | Antes | Depois |
+|---|---|---|
+| Marcador do item ativo (`navActiveMarkerColor`, papel da paleta) | cor de destaque (acento) | a primária, exata |
+| Fundo do item ativo (`sidebarActiveColor`, papel da paleta) | primária a 60% | primária a 10% |
+| Ícone inativo (`sidebarIconColor`) | a primária (papel) e `#19e3f0` (padrão sem paleta) | a cor do rótulo do item |
+| Título de seção (`sidebarCategoryColor`, papel da paleta) | a secundária | a cor do texto da barra; 14 px, negrito, espaçamento 0,2 em |
+| Fundo da marca (`sidebarBrandBackground`, papel da paleta) | acento sólido, só atrás do logo | primária a 5%, na faixa inteira do cabeçalho |
+| Recolher a navegação (`preferenceNavCollapsePosition`) | `'menu'` (no ⚙) | `'pinned'`: a seta no cabeçalho da barra lateral |
+| Moldura da barra | cantos retos, linha só do lado do conteúdo | cartão: o raio do tema (`borderRadius`) e, com `sidebarBorderSide: 'edge'`, a linha nos quatro lados; encostada na tela (`tabSectionMargin` 0), o lado colado fica reto |
+| Cabeçalho da marca | só o nome, sem faixa | faixa da altura do topo com linha embaixo; sem logo, monograma (a inicial do nome); com a marca embaixo, o topo é só a seta |
+| Busca da barra | altura de campo de formulário | a altura de um item do menu |
+| Recuo da lista | o espaçamento de página (`--sarak-layout-gap-*`) | o mesmo espaçamento, com teto de 1/15 da largura da barra (16 px em 240) |
+| Item inativo (`sidebarItemTextColor` e `sidebarIconColor`, papéis da paleta) | quase branco (tom 100 no escuro) | apagado (tom 400 no escuro, 600 no claro), sempre a 4,5:1; só o ativo e o passar do mouse acendem |
+| Vidro do item ativo (token novo `sidebarActiveGlass`, `'on'` \| `'off'`) | — | `'on'`: brilho interno da cor do marcador, em qualquer estilo do ativo; `'off'` desliga. No painel, na configuração da barra |
+| Busca no topo da barra | colada no cabeçalho, recuo próprio | abaixo do topo, o mesmo vão que separa as seções da lista, e na coluna dos itens |
+| Sub-aba recuada (`children`) | recuo de 1,5 × o espaçamento de página | o ícone da sub-aba sob o rótulo do pai |
+| `navItems` | sem sub-abas (os filhos do `nav` não tinham porta equivalente) | `children` e `defaultExpanded`, com a regra do `nav`: um nível, o pai não navega, filho `active` abre o grupo. Aditivo |
+| Botão de menu (≡) da barra do topo (token novo `preferenceNavCollapsePositionTopbar`, `'off'` \| `'menu'` \| `'pinned'`) | seguia `preferenceNavCollapsePosition` (na lateral e no topo) | `'menu'`: a lateral mostra a seta e o topo **não** mostra o ≡, como antes. `'pinned'` liga o ≡ no topo. O valor já gravado em `preferenceNavCollapsePosition` continua valendo para a lateral |
+| Composição padrão (`preferenceModePosition`) | `'pinned'` (modo claro/escuro solto na barra) | `'menu'`: modo, tamanho da fonte e lateral/topo no ⚙; idioma, notificações e usuário na barra |
+| ⚙ da lateral | repetia o que já estava fixado na barra | guarda só o que não está na barra (recolhida, também o que não cabe sem rótulo) |
+| Rodapé da lateral | sino solto com contador, pílula de idioma com borda, "Modo claro" solto e ⚙ isolado embaixo do usuário | linhas com a métrica do item de menu, na coluna dos itens: ícone, rótulo e indicador à direita (código do idioma na cor ativa; contador de notificações). O ⚙ é uma linha própria acima do usuário. Recolhida, um ícone por linha no eixo da lista |
+| Usuário e notificações que o sistema não ligou (sem `user`/`logout`, sem `notifications` com itens e `onNotificationSelect`) | linha desabilitada em caixa com borda, em qualquer ambiente | **em produção não aparecem**; fora dela, linha apagada sem caixa e o aviso único no console que diz o que ligar |
+| Faixa do usuário | borda e fundo conforme o tema (alguns sem nada); papel maior que o nome | sempre linha em cima na cor da borda da barra, fundo tingido e o mesmo respiro; nome (14 px, negrito) acima do papel (11 px, caixa alta, com escudo); sair à direita |
+| Avatar do usuário (token novo `userAvatarStyle`, `'initials'` \| `'icon'`) | iniciais | `'initials'` (padrão); `'icon'` mostra o ícone de pessoa. Com imagem (`avatarUrl`), a imagem vale. No painel, na configuração da barra |
+| Marca (token novo `brandDisplay`, `'both'` \| `'logo'` \| `'name'`) | logo e nome, sempre | `'both'` (padrão); `'logo'` só o logo (sem imagem, cai no nome); `'name'` só o nome. No painel, na pergunta da marca |
+| Nome da marca (nas duas barras) | cortado com "…" na largura do token `sidebarLabelMaxWidth`/`topbarLabelMaxWidth` | quebra entre palavras em até duas linhas e, se ainda não couber, a fonte diminui até caber (nunca abaixo do rótulo do item). Na barra do topo a marca não encolhe: quem cede é a lista de abas |
+| Cor do nome da marca (`sidebarBrandColor`, `topbarBrandColor`, papéis da paleta) | acento | o texto forte da barra, como na lib antiga |
+
+**O que fazer.** Nada, para seguir a anatomia. Para manter o desenho anterior, declare o token no `config` ou no tema (por exemplo,
+`preferenceNavCollapsePosition: 'menu'` devolve o recolher ao ⚙, `sidebarBorderSide: 'right'` volta à linha de um lado). **Valor já
+gravado continua valendo**: quem gravou a posição do recolher ou uma cor da barra no design não muda.
+
+---
+
+## 9.0.0 — o painel pergunta antes de descartar o rascunho (aditivo: a prop é opcional)
+
+Antes, sair do painel de personalização com alterações ainda não aplicadas descartava tudo em silêncio. Agora, com o rascunho sujo:
+
+- **Fechar a aba** mostra o aviso do navegador (`beforeunload`), sem ação sua.
+- **Sair para outra rota pelo cromo da lib** (`SarakAppChrome`: barra lateral, topo, barra inferior, busca e drawer do celular) pergunta "Ficar no painel",
+  "Descartar e sair" ou "Aplicar e sair" **sozinho**, sem ligação nenhuma do seu lado: o cromo espera a resposta antes de chamar o seu `onNavigate`.
+  "Ficar" não chama o `onNavigate`; "Descartar e sair" e "Aplicar e sair" chamam. Sem rascunho sujo, o `onNavigate` é chamado na hora.
+- **Navegação que não passa pelo cromo** (voltar do navegador, link no conteúdo) só pergunta se você ligar o painel ao seu roteador — a lib não vê essa
+  navegação. Ligar é opcional:
+
+```tsx
+const leave = useRef<SarakPanelLeaveControl>();
+<SarakCustomizationPanel onUnsavedChangesControl={(control) => { leave.current = control; }} />;
+// No bloqueio de rota do seu roteador: `if (!(await leave.current?.confirmLeave() ?? true)) cancelNavigation();`
+```
+
+`confirmLeave()` resolve `true` para sair (sem perguntar quando não há rascunho sujo) e `false` para ficar. Os tipos `SarakCustomizationPanelProps` e
+`SarakPanelLeaveControl` saem de `@sarak/lib-ui-core`. Nada quebra: quem não passa a prop ganha o aviso do navegador e a pergunta do cromo.
+
+---
+
+## 9.0.0 — o design gravado guarda só as escolhas (MAJOR: `onSave` recebe um dicionário esparso e um marcador de formato)
+
+Trocar tema, paleta, tom da barra ou modo deixava de chegar à tela depois de algumas aplicações: o `Aplicar` gravava também as cores que a
+paleta calcula, e a cor gravada passava a valer como cor declarada (vencendo o tom da barra e a paleta nova), além de trazer o que sobrou do
+tema anterior. Agora a lib grava só o que foi **escolhido** — o tema (pelo id, como antes), a paleta, os tons da barra, o modo e o que foi
+ajustado à mão — e refaz o que a paleta calcula a cada carga.
+
+| | Antes | Depois |
+|---|---|---|
+| `persistence.onSave` | `onSave(design, activeThemeId)`, com o design inteiro | `onSave(escolhas, activeThemeId, 2)`: o dicionário traz só as chaves escolhidas, sem chave nova dentro dele; o `2` é o marcador do formato |
+| `persistence.onLoad` | devolve `design` ou `{ design, activeThemeId }` | devolva também o marcador: `{ design, activeThemeId, format }` |
+| `onLoad` em `'hybrid'` | funde por cima do cache: `{ ...local, ...remoto }` | com `format: 2`, **substitui**: o design é refeito pelo tema e pelas escolhas, e um valor que saiu do servidor sai da tela |
+| Cache local | o design inteiro na chave de sempre | a chave de sempre continua com o design inteiro (é ela que pinta o primeiro quadro); as escolhas ficam ao lado, em `<chave>::choices` |
+
+**O que fazer.** Guarde o terceiro argumento de `onSave` junto do design e do id, e devolva-o no `onLoad`:
+
+```ts
+persistence: {
+  onSave: (design, activeThemeId, format) => salvar({ design, activeThemeId, format }),
+  onLoad: async () => buscar(), // { design, activeThemeId, format }
+}
+```
+
+**O dado que você já tem gravado é corrigido pela lib ao carregar**, sem nada a limpar no banco nem no `localStorage`. Gravado sem o
+marcador, ele é lido como do formato anterior: saem as cores que a paleta calcula e que o tema do id e o `config` do host não declaram (as
+cores de papel — fundo, superfícies, barra, texto, botões; a lista é `PALETTE_ROLE_MAP` mais os papéis de cada tom de barra), e o resto
+fica. A tela passa a mostrar as cores do tema e da paleta escolhida. A correção vale para a tela e não chama `onSave`; o próximo `Aplicar`
+grava no formato novo. **O custo, uma vez:** uma cor de papel ajustada à mão antes desta versão não se distingue do resto de um tema anterior
+e volta ao valor da paleta; refaça o ajuste e ele passa a ser gravado como escolha.
+
+**Quem quebra:**
+- **Servidor que exige todas as chaves no design gravado:** passa a receber só as escolhas (pode ser `{}` para quem aplicou um tema sem
+  mexer em nada). O servidor que valida as chaves por lista (`sarak-ui/catalog.json` → `designTokens.ids`) continua funcionando: nenhuma
+  chave nova entra no dicionário.
+- **Quem lê o design gravado fora da lib** (o CSS de primeiro quadro de `sarakCreateThemeBootCss(design)`, um render no servidor, um
+  relatório) passa a ler só as escolhas. Para o primeiro quadro, use o design que a lib tem em memória (`useSarakUI().design`) ou o da
+  chave de sempre do `localStorage`, que continua inteira.
+- **Quem guarda só o primeiro argumento de `onSave`:** devolve as escolhas sem o marcador, e a lib as lê como dado do formato anterior a cada
+  carga — a cor de papel ajustada à mão volta à da paleta toda vez. Nada se corrompe, mas o ajuste não dura: guarde o `format`.
+- **Quem passa o design gravado como `config` do `SarakUIProvider`** (para pintar o primeiro quadro com o que veio no HTML): o `config` é cor
+  declarada pelo host e vence a paleta e o tom. Com o dado antigo, as cores dele continuam valendo até o primeiro `Aplicar` desta versão, que
+  grava só as escolhas; a partir daí, o `config` passa a trazer só elas.
+
+Quando o tema do id não está em memória no instante de gravar (um tema do importador que ainda não carregou), a lib grava o design inteiro e
+sem marcador, como antes: nenhum valor é descartado por não se saber de onde veio. A decisão e as alternativas estão no ADR-026.
+
+---
+
+## 9.0.0 — `SARAK_DESIGN_MANIFEST.vars` lista só nomes da lista pública de variáveis (aditivo para quem usa; muda o que o objeto exportado devolve)
+
+O `vars` de cada entrada do `SARAK_DESIGN_MANIFEST` listava nomes que não fazem parte da lista pública de variáveis (`tokens.cssVars` do catálogo do kit). Agora ele lista só nomes dessa lista: cada nome fora dela virou o nome público do mesmo papel, ou saiu quando o papel já estava na lista ou não tem nome público. O objeto nunca alimentou CSS; só muda para quem lê `SARAK_DESIGN_MANIFEST[chave].vars`.
+
+**Nomes que nunca existiram** (nenhuma parte da lib os escreveu) viraram o nome público do mesmo papel:
+
+| Antes | Depois |
+|---|---|
+| `--sarak-card-border` (`cardBorderColor`) | `--sarak-card-border-color` |
+| `--sarak-error-color`, `--sarak-success-color`, `--sarak-warning-color` | `--sarak-status-error-color`, `--sarak-status-success-color`, `--sarak-status-warning-color` |
+| `--shadow-orientation`, `--shadow-color-mode`, `--spotlight-opacity` | `--sarak-shadow-orientation`, `--sarak-shadow-color-mode`, `--sarak-card-spotlight-opacity` |
+| `--is-nav-hidden`, `--sidebar-min-width`, `--sidebar-max-width` | `--sarak-is-nav-hidden`, `--sarak-sidebar-min-width`, `--sarak-sidebar-max-width` |
+
+**Nomes internos que continuam emitidos e não são contrato** saíram do manifesto, **não da tela**: `--theme-*` (`--theme-primary`, `--theme-card-bg`, `--theme-font-size-base` e afins), `--font-main`, `--font-heading` e os apelidos sem prefixo `--sarak-` (`--primary-color`, `--radius-theme`, `--topbar-height`). Componentes da lib ainda os leem (o `SarakTypography` lê `--font-main` e `--theme-font-size-base`); quem os usa no seu CSS não perde nada agora, mas eles não são garantidos entre versões. Onde o papel tem nome público (`--sarak-body-font`, `--sarak-heading-font`, `--sarak-primary-color`…), use esse.
+
+`--sarak-font-scale`, `--sarak-font-size` e `--font-size-factor` (`fontScale`) e `--glass-blur` (`glassBlur`, que a lib nunca escreveu; o nome público é `--sarak-glass-blur`, já na lista) saíram sem substituto novo: para `fontScale` não há nome público, e a entrada guarda só a `transform`.
+
+---
+
+## 9.0.0 — sete temas da lib antiga voltam ao catálogo e o `synthwave-retro` sai (MAJOR: o tipo `SarakThemePresetId` perde um id)
+
+O catálogo embarcado ganha, como **temas novos**, versões dos temas da lib antiga, reescritas para o contrato de token de hoje, e perde o `synthwave-retro`. Nenhum outro tema que já existia mudou de valor.
+
+| Tema novo | `id` | Modo nativo | Cor (paleta `custom:`) |
+|---|---|---|---|
+| Sarak Sovereign Classic | `sarak-sovereign-classic` | escuro | `#00f2ff` com violeta e magenta |
+| Cyberpunk Neon Classic | `cyberpunk-neon-classic` | escuro | `#00ff64` com magenta e ciano |
+| Industrial Terminal Classic | `industrial-terminal-classic` | escuro | `#ff9900` |
+| Nature Breeze | `nature-breeze` | claro | `#2e7d32` com amarelo e verde-azulado |
+| Neo Brutalism Classic | `neo-brutalism-classic` | claro | `#ff0000` com amarelo e azul |
+| Dot Matrix Elegant | `dot-matrix-elegant` | escuro | `#d4af37` com dourado-escuro e branco |
+| Cyber Retro-Wave 2077 Classic | `cyber-retro-wave-classic` | escuro | `#ff00ff` com ciano e rosa |
+
+- **O que muda para quem importa:** `SarakThemePresetId` e `SARAK_THEME_PRESET_IDS` ganham os sete ids; `SARAK_THEME_CATALOG` lista os sete; cada um carrega sob demanda, fora do boot. Quem valida id de tema por lista fechada deve aceitá-los.
+- **O que não vem do original, por não existir no contrato de hoje:** a largura da lateral e o `13px` do corpo do Industrial (a largura é funcional e vale o padrão do sistema; o corpo vira `14px`), a posição da navegação, e os valores de token que saíram do schema. O `#00ff41` do Cyberpunk vira `#00ff64`: com a primeira base o motor de paleta reprova um par de contraste no modo claro (4,47:1). O Nature Breeze e o Neo Brutalism Classic nascem claros (a intenção do arquivo original); o escuro deles reproduz a foto do sistema antigo.
+- **Cada tema tem contraparte autorada** para o modo oposto ao nativo; os originais eram só escuros.
+- **O Neo Brutalism Classic no escuro** mantém a borda de 4 px do claro: a espessura da borda não muda com o modo.
+
+### O que saiu: `synthwave-retro`
+
+O tema `synthwave-retro` (Synthwave Retro) foi removido: o arquivo, o id em `SARAK_THEME_PRESET_IDS`, o loader e a entrada do catálogo. O tipo `SarakThemePresetId` perde o literal `'synthwave-retro'`, e é por isso que a versão é MAJOR.
+
+| Antes | Depois |
+|---|---|
+| `<SarakUIProvider initialTheme="synthwave-retro" />` ou `activeThemeId="synthwave-retro"` pintava o Synthwave Retro. | O id não existe mais: o Provider usa o tema padrão (`sarak-sovereign`) no modo pedido (a contraparte autorada quando o modo é claro) e emite `console.warn` nomeando o id. Nada lança, e a tela nunca fica sem tema. |
+| `sarakLoadThemePreset('synthwave-retro')` carregava o tema. | Rejeita, como para qualquer id desconhecido. |
+| `const id: SarakThemePresetId = 'synthwave-retro'` compilava. | Erro de tipo: troque o id. |
+
+- **Quem tem o id gravado** (cache local do Provider, `onLoad` do consumidor, coluna no banco, ou a prop `activeThemeId`): a queda para o tema padrão vale para o id que **a lib removeu** (hoje, só o `synthwave-retro`). O Provider usa o tema padrão (`sarak-sovereign`) no modo pedido (`config.mode`; sem ele, o do design gravado; sem os dois, escuro), **descarta o design que estava gravado sobre o Synthwave Retro** e emite **um** `console.warn` nomeando o id (um por id, somando as portas). Pelo cache local e pelo `onLoad`, `resolvedThemeId` passa a ser `'sarak-sovereign'`. A hidratação não chama `onSave` nem `onThemeChange`; só em `strategy: 'hybrid'`, quando o id removido vem do `onLoad`, o cache local é reescrito com o design e o id do tema padrão. Quando o id removido está só no cache local, o dado antigo fica no `localStorage` até a primeira edição do usuário, e o aviso volta a cada carga até lá. Quem quiser outro tema no lugar grave o id novo.
+- **O tema do importador não é tocado:** pelo cache local e pelo `onLoad`, qualquer **outro** id que a lib não conheça (por exemplo, o de um tema que o seu sistema carrega pela rede e que ainda não chegou em `customThemes`) mantém o design e o id gravados, sem aviso e sem reescrever o cache. Pela prop `activeThemeId` e por `initialTheme` um id desconhecido segue como antes: tema padrão com aviso; nesse caso `resolvedThemeId` é o tema padrão enquanto o id for desconhecido e volta ao id quando o tema entra em `customThemes`.
+- **Substituto mais próximo:** `cyber-retro-wave-classic` (magenta sobre fundo escuro, o mais perto em cor e modo) ou o `cyber-retro-wave` que já existia. Não há apelido automático.
+- **A paleta `rosa-synthwave` continua** no seletor de paletas; ela era usada pelo tema e agora só a galeria a oferece.
+
+---
+
+## 9.0.0 — kit de verificação de uso (aditivo: nada quebra por causa dele)
+
+Nada muda para quem não usa. O pacote ganha o subpath `@sarak/lib-ui-core/eslint` (plugin de ESLint, peer opcional `eslint >= 9`) e o comando `npx sarak-ui verify`, que acusam por máquina o uso errado da lib e a peça reescrita à mão que ela já entrega, com `arquivo:linha` e o nome público que substitui. **Nenhuma regra nasce ligada.** O `sarak-ui/catalog.json` ganha a chave `verification` (equivalências nativo → componente, nomes de peça, bibliotecas encapsuladas, props de ícone e ids de paleta). Detalhe: `GUIA-FRONTEND.md` §3.15.
+
+---
+
+## 9.0.0 — o nome acessível do `SarakSwitch` é só o rótulo (aditivo para quem usa; muda o que o leitor de tela anuncia)
+
+Antes, o `<label>` nativo envolvia o rótulo e a descrição, e o leitor de tela anunciava os dois juntos como **nome** ("Ver pessoasMostra quem está online"). Agora o nome é só o `label`, e a descrição sai pela descrição acessível do controle (`aria-describedby`), que o leitor lê depois do nome.
+
+- **O que a tela desenha não muda:** mesmos textos, mesma ordem, e o clique no rótulo ou na descrição continua alternando.
+- **Para o seu teste:** `getByRole('switch', { name: 'Ver pessoas' })` passa a achar o controle; quem repetia o rótulo em `aria-label` só para o teste achar pode retirá-lo. Sem `label` e com `aria-label` seu, o nome é o `aria-label`, e um `aria-labelledby` seu vence os dois.
+- **Se o seu teste procurava o nome com a descrição junta** (`name: 'Ver pessoasMostra quem está online'`), troque pelo rótulo e confira a descrição por `toHaveAccessibleDescription`.
+
+---
+
+## 8.0.0 — tokens acrescentados, removidos e com valor novo desde a 7.0.0
+
+Esta lista corrige o "nenhum token acrescentado" que as entradas da 8.0.0 abaixo repetem plan por plan: cada uma olha só a sua mudança, e a 8.0.0, vista desde a `v7.0.0`, acrescentou, removeu e mudou tokens. **Quem valida tema por lista de chaves deve aceitar as chaves acrescentadas e deixar de exigir as removidas.** As entradas abaixo continuam como estão.
+
+A lista cobre nome, tipo e gramática de valor (opções de um select, faixa e unidade de um slider); não cobre mudança de valor padrão. A lista inteira de opções de um token mora no schema (`src/core/Design/schema/`), não aqui.
+
+Gramáticas que o schema não expressa por opções:
+
+- `colorPalette` passou de select para texto livre: aceita o identificador de um preset de paleta ou `custom:<tipo>:<#base>[,sec=<#hex>][,acc=<#hex>]`.
+- `maxContentWidth` ganhou a opção `fluid` (margem proporcional ao contêiner, entre `layoutPadding` e 128px por lado), que passou a ser o padrão (era `1440px`).
+
+**Acrescentados (56)**
+
+- `cardShadowBlur` — slider (faixa 0 a 120 px)
+- `cardShadowExpansion` — slider (faixa -40 a 40 px)
+- `cardShadowOffsetX` — slider (faixa -60 a 60 px)
+- `cardShadowOffsetY` — slider (faixa -60 a 60 px)
+- `chromeNotificationsPosition` — select (opções: `menu`, `off`, `pinned`)
+- `chromeSearchPosition` — select (opções: `menu`, `off`, `pinned`)
+- `chromeUserPosition` — select (opções: `menu`, `off`, `pinned`)
+- `emphasisColor` — color
+- `globalBackgroundPosition` — select (opções: `absolute`, `fixed`)
+- `inputPaddingHorizontal` — slider (faixa 0 a 32 px)
+- `mobileNavigationStyle` — select (opções: `auto`, `bottom`, `drawer`)
+- `modalWidthFull` — slider (faixa 640 a 1920 px)
+- `modalWidthLg` — slider (faixa 448 a 896 px)
+- `modalWidthMd` — slider (faixa 384 a 768 px)
+- `modalWidthSm` — slider (faixa 320 a 640 px)
+- `modalWidthXl` — slider (faixa 512 a 1280 px)
+- `navItemRadius` — slider (faixa 0 a 24 px)
+- `progressBarHeight` — slider (faixa 2 a 32 px)
+- `progressBarRadius` — slider (faixa 0 a 32 px)
+- `sidebarActiveItemStyle` — select (opções: `bar`, `filled`, `outline`, `pill`, `underline`)
+- `sidebarBackgroundStyle` — select (opções: `gradient`, `solid`, `texture`)
+- `sidebarBorderColor` — color
+- `sidebarBorderSide` — select (opções: `all`, `bottom`, `edge`, `left`, `none`, `right`, `top`)
+- `sidebarBorderStyle` — select (opções: `dashed`, `dotted`, `double`, `none`, `solid`)
+- `sidebarBorderWidth` — slider (faixa 0 a 8 px)
+- `sidebarBrandBackground` — color
+- `sidebarBrandColor` — color
+- `sidebarCategoryColor` — color
+- `sidebarFooterBackground` — color
+- `sidebarIconColor` — color
+- `sidebarIconSize` — slider (faixa 12 a 32 px)
+- `sidebarItemDensity` — select (opções: `comfortable`, `compact`, `spacious`)
+- `sidebarItemHoverTextColor` — color
+- `sidebarItemTextColor` — color
+- `sidebarLogoPlacement` — select (opções: `bottom`, `top`)
+- `sidebarResizable` — boolean
+- `sidebarTone` — select (opções: `inverse`, `neutral`, `primary`, `secondary`, `surface`)
+- `subtitleColor` — color
+- `topbarActiveItemStyle` — select (opções: `bar`, `filled`, `outline`, `pill`, `underline`)
+- `topbarBackgroundStyle` — select (opções: `gradient`, `solid`, `texture`)
+- `topbarBlur` — slider (faixa 0 a 50 px)
+- `topbarBorderColor` — color
+- `topbarBorderSide` — select (opções: `all`, `bottom`, `edge`, `left`, `none`, `right`, `top`)
+- `topbarBorderStyle` — select (opções: `dashed`, `dotted`, `double`, `none`, `solid`)
+- `topbarBorderWidth` — slider (faixa 0 a 8 px)
+- `topbarBrandBackground` — color
+- `topbarBrandColor` — color
+- `topbarGroupSeparatorColor` — color
+- `topbarIconColor` — color
+- `topbarIconSize` — slider (faixa 12 a 32 px)
+- `topbarItemDensity` — select (opções: `comfortable`, `compact`, `spacious`)
+- `topbarItemHoverTextColor` — color
+- `topbarItemTextColor` — color
+- `topbarShadow` — text
+- `topbarTone` — select (opções: `inverse`, `neutral`, `primary`, `secondary`, `surface`)
+- `touchTargetMin` — slider (faixa 24 a 64 px)
+
+Cada linha de **Removidos** termina no destino, depois de `→`: o token que ficou no lugar ou `sem substituto`. É o que o servidor que valida tema por lista de chaves lê, em forma de dado, em `sarak-ui/catalog.json` → `designTokens.removed`; versão nova que remove token escreve o destino na própria linha (o gerador do kit recusa a linha sem ele).
+
+**Removidos (59)**
+
+- `aiPanelBg` — color → sem substituto
+- `animFast` — slider (faixa 50 a 400 ms) → `motionDurationFast`
+- `animInstant` — slider (faixa 0 a 200 ms) → `motionDurationInstant`
+- `animNormal` — slider (faixa 100 a 800 ms) → `motionDurationNormal`
+- `animSlow` — slider (faixa 200 a 2000 ms) → `motionDurationSlow`
+- `atmosphereNoiseOpacity` — slider (faixa 0 a 1) → `bgNoiseDensity`
+- `borderRadiusLg` — slider (faixa 0 a 60 px) → `borderRadius`
+- `borderRadiusMd` — slider (faixa 0 a 40 px) → `borderRadius`
+- `borderRadiusSm` — slider (faixa 0 a 20 px) → `borderRadius`
+- `cardContentAlignment` — select (opções: `center`, `space-between`, `start`) → `cardTextAlign`
+- `cardHoverLift` — slider (faixa 0 a 12 px) → `cardHoverTranslate`
+- `cardImagePosition` — select (opções: `left`, `none`, `right`, `top`) → sem substituto
+- `contentAlignment` — select (opções: `center`, `stretch`) → sem substituto
+- `contrastCurve` — slider (faixa 0.5 a 4) → `globalContrast`
+- `devicePhoneWidth` — slider (faixa 300 a 450 px) → sem substituto
+- `easeMain` — select (opções: `cubic-bezier(0, 0, 0.2, 1)`, `cubic-bezier(0.16, 1, 0.3, 1)`, `cubic-bezier(0.175, 0.885, 0.32, 1.275)`, `cubic-bezier(0.4, 0, 0.2, 1)`, `cubic-bezier(0.4, 0, 1, 1)`, `cubic-bezier(0.6, 0.05, 0.01, 0.9)`, `linear`) → `motionEaseMain`
+- `easeOut` — select (opções: `cubic-bezier(0, 0, 0.2, 1)`, `cubic-bezier(0.19, 1, 0.22, 1)`, `cubic-bezier(0.23, 1, 0.32, 1)`, `cubic-bezier(0.4, 0, 0.2, 1)`, `linear`) → `motionEaseOut`
+- `formLayoutDirection` — select (opções: `inline`, `stack`) → `formLabelPosition`
+- `identityRedirectUrl` — text → sem substituto
+- `industrialRegistry` — boolean → sem substituto
+- `inputSuccessColor` — color → sem substituto
+- `kbdMinWidth` — slider (faixa 16 a 48 px) → sem substituto
+- `layerBackdropBlur` — slider (faixa 0 a 40 px) → `modalOverlayBlur`
+- `layerBackdropOpacity` — slider (faixa 0 a 1) → `modalOverlayColor`
+- `layerElevationFactor` — slider (faixa 0.5 a 2) → `layeredShadows`
+- `layout` — select (opções: `flex`, `grid`, `masonry`) → `layoutGridTemplate`
+- `managementGroupDescMaxWidth` — slider (faixa 60 a 400 px) → sem substituto
+- `matrixSearchBg` — color → tokens de campo (`input*`)
+- `noiseIntensity` — slider (faixa 0 a 1) → `bgNoiseDensity`
+- `presetCardHoverShadowBlur` — slider (faixa 0 a 80 px) → sem substituto
+- `presetCardHoverShadowOffsetY` — slider (faixa 0 a 30 px) → sem substituto
+- `presetCardHoverShadowSpread` — slider (faixa 0 a 30 px) → sem substituto
+- `presetCardShadowBlur` — slider (faixa 0 a 20 px) → sem substituto
+- `presetCardShadowOffsetY` — slider (faixa 0 a 10 px) → sem substituto
+- `presetCardShadowSpread` — slider (faixa 0 a 10 px) → sem substituto
+- `presetGlowShadowBlur` — slider (faixa 0 a 40 px) → sem substituto
+- `presetGlowShadowBlurLg` — slider (faixa 0 a 60 px) → sem substituto
+- `presetGridTextureSize` — slider (faixa 4 a 20 px) → sem substituto
+- `presetMatteShadowBlur1` — slider (faixa 0 a 30 px) → sem substituto
+- `presetMatteShadowBlur2` — slider (faixa 0 a 12 px) → sem substituto
+- `presetMatteShadowOffsetY2` — slider (faixa 0 a 10 px) → sem substituto
+- `presetMatteShadowSpread1` — slider (faixa 0 a 10 px) → sem substituto
+- `presetMatteShadowSpread2` — slider (faixa 0 a 10 px) → sem substituto
+- `presetMiniCardHeight` — slider (faixa 60 a 300 px) → sem substituto
+- `presetPreviewMinHeight` — slider (faixa 100 a 500 px) → sem substituto
+- `presetPreviewPaddingY` — slider (faixa 0 a 24 px) → sem substituto
+- `scrollbarThumbColor` — color → `scrollThumbColor`
+- `scrollbarWidth` — slider (faixa 2 a 12 px) → `scrollWidth`
+- `securityPulseSpeed` — slider (faixa 0.5 a 5 s) → sem substituto
+- `securityShieldGlow` — slider (faixa 0 a 200 px) → sem substituto
+- `tableActionPosition` — select (opções: `left`, `right`) → sem substituto
+- `themeDropdownMaxHeight` — slider (faixa 200 a 800 px) → sem substituto
+- `trackingSubtle` — slider (faixa 0 a 1 em) → sem substituto
+- `typeScaleDisplay` — slider (faixa 4 a 16 rem) → sem substituto
+- `visualDotGridSize` — slider (faixa 5 a 40 px) → sem substituto
+- `visualOrbBlur` — slider (faixa 0 a 150 px) → sem substituto
+- `visualPerspective` — slider (faixa 400 a 2000 px) → sem substituto
+- `visualTranslateOffsetSm` — slider (faixa 0 a 60 px) → sem substituto
+- `visualTranslateZMd` — slider (faixa 0 a 100 px) → sem substituto
+
+**Com tipo ou valor novo (32)**
+
+- `bodyFont` — font; opções acrescentadas: 22 valores
+- `btnNeonPulseSpeed` — slider; faixa 0 a 4 s (era faixa 0.5 a 4 s)
+- `cardActionBtnBorderRadius` — slider; faixa 0 a 120 px (era faixa 0 a 40 px)
+- `cardHoverStyle` — select; opções removidas: `3d-tilt`
+- `cardShadowSpread` — slider; faixa 0 a 100 (era faixa 0 a 200 px)
+- `cardTitleFontSize` — slider; faixa 11 a 28 px (era faixa 10 a 40 px)
+- `colorDepth` — number; faixa 0 a 5 (era faixa 1 a 5)
+- `colorPalette` — tipo select → string
+- `focusRingWidth` — slider; faixa 1 a 6 px (era faixa 0 a 6 px)
+- `headingFont` — font; opções acrescentadas: 22 valores
+- `identityFontFamily` — font; opções acrescentadas: 43 valores
+- `identityTracking` — slider; faixa -2 a 8 px (era faixa -0.1 a 0.5 em)
+- `maxContentWidth` — select; opções acrescentadas: `fluid`
+- `monoFont` — font; opções acrescentadas: 22 valores
+- `motionDurationFast` — slider; faixa 0 a 0.5 s (era faixa 0.1 a 0.5 s)
+- `motionDurationNormal` — slider; faixa 0 a 1 s (era faixa 0.2 a 1 s)
+- `motionDurationSlow` — slider; faixa 0 a 2 s (era faixa 0.5 a 2 s)
+- `navActiveMarkerGlow` — slider; faixa 0 a 40 (era faixa 0 a 20)
+- `navigationStyle` — select; opções removidas: `dock`
+- `searchPositionSidebar` — select; opções removidas: `hidden`
+- `sidebarMaxWidth` — slider; faixa 240 a 600 px (era faixa 300 a 600 px)
+- `sidebarMinWidth` — slider; faixa 150 a 400 px (era faixa 150 a 300 px)
+- `systemTone` — select; opções acrescentadas: `none`; opções removidas: `dark`, `light`
+- `topbarCollapsedHeight` — slider; faixa 44 a 56 px (era faixa 24 a 56 px)
+- `typeScale2xs` — slider; faixa 11 a 14 px (era faixa 8 a 14 px)
+- `typeScale3xs` — slider; faixa 11 a 14 px (era faixa 6 a 12 px)
+- `typeScaleMicro` — slider; faixa 11 a 14 px (era faixa 6 a 10 px)
+- `typeScaleTiny` — slider; faixa 11 a 14 px (era faixa 6 a 12 px)
+- `vignetteSoftness` — slider; faixa 0 a 60 (era faixa 0 a 200)
+- `zIndexSidebar` — slider; faixa 10 a 790 (era faixa 100 a 1000)
+- `zIndexToast` — number; faixa 1000 a 9900 (era sem faixa)
+- `zIndexTooltip` — slider; faixa 5000 a 9900 (era faixa 5000 a 9999)
+
+---
+
 ## 8.0.0 — Personalidades no painel, e as barras dos temas embarcados com caráter próprio
 
 **Classificação: MINOR (aditivo).** Nenhum `id` de tema ou de preset mudou, nenhum token foi acrescentado ou removido e nenhuma cor mudou.
@@ -2147,7 +2804,7 @@ código seu que faz `switch` exaustivo sobre ela precisa de três casos a mais.
 
 ---
 
-## A barra de preferências do usuário passa a ser configurável pelo administrador (plan-74)
+## 7.0.0 — A barra de preferências do usuário passa a ser configurável pelo administrador (plan-74)
 
 **Classificação: aditiva, não MAJOR.** O token de posição de cada preferência (`preference*Position`,
 schema `preferences.ts`) já existia; esta entrada só cobre a UI nova que o lê — o widget ⚙ "Preferências",
@@ -2187,7 +2844,7 @@ sem teto de `widgets` (que só o `SarakAppChrome` tem). Quem quiser o seletor de
 
 ---
 
-## O seletor de idioma passa a gravar preferência do usuário, e o host pode traduzir a própria aplicação (plan-75)
+## 7.0.0 — O seletor de idioma passa a gravar preferência do usuário, e o host pode traduzir a própria aplicação (plan-75)
 
 **Classificação: MAJOR** — mesmo critério das entradas anteriores desta lista: mudar o default é MAJOR
 mesmo sem tocar em export, prop ou token. `ShellLanguageSelector` deixava a escolha morrer num
@@ -2264,7 +2921,7 @@ Quem quer manter o par fixo de antes, independente do tema, monta o próprio com
 
 ---
 
-## O alternador de tema e o toggle de recolher deixam de mudar o TEMA do sistema — agora gravam preferência do usuário (plan-73)
+## 7.0.0 — O alternador de tema e o toggle de recolher deixam de mudar o TEMA do sistema — agora gravam preferência do usuário (plan-73)
 
 **Classificação: MAJOR** — `ShellThemeToggle` (usado pelos dois cromos, `SarakAppChrome` e `SarakShell`) e o
 toggle de recolher (`ChromeCollapseToggle` no modo ui-kit, o hambúrguer/chevron do `SarakShell` no modo
@@ -2309,7 +2966,7 @@ antes — a porta continua pública, só deixou de ser o caminho dos dois widget
 
 ---
 
-## Revisão da métrica do item de navegação horizontal — a caixa alta sai, o corpo sobe (plan-68)
+## 7.0.0 — Revisão da métrica do item de navegação horizontal — a caixa alta sai, o corpo sobe (plan-68)
 
 **Classificação: MAJOR** — comportamento default muda de novo, sem opt-in, para quem usa
 `navigationStyle: 'topbar'` (o mesmo critério que já classificou majors anteriores desta lista: mudar o
@@ -2443,7 +3100,7 @@ nunca usou os quatro presets de mídia não vê diferença nenhuma.
 
 ---
 
-## Contraparte autorada nos dois temas de referência + porta de derivação `deriveThemeFromReference` (plan-64)
+## 7.0.0 — Contraparte autorada nos dois temas de referência + porta de derivação `deriveThemeFromReference` (plan-64)
 
 **Classificação: MINOR** — capacidade nova, aditiva. `minimalist-airy` e `sarak-sovereign` (os dois
 de `SARAK_REFERENCE_THEMES`) ganharam `contraparte` autorada; nenhum export existente mudou de
@@ -2498,7 +3155,7 @@ contraparte.
 
 ---
 
-## Os quatro widgets do cromo — busca, tema, usuário e idioma — ficam públicos (plan-65)
+## 7.0.0 — Os quatro widgets do cromo — busca, tema, usuário e idioma — ficam públicos (plan-65)
 
 **Classificação: MINOR** — capacidade nova, aditiva: nenhum export existente mudou de forma, e o
 comportamento dentro do `SarakShell` é idêntico ao de antes (os três renderizadores do Shell —
@@ -2550,7 +3207,7 @@ público (`import { ShellUserWidget } from '@sarak/lib-ui-core'`).
 
 ---
 
-## Correção: o átomo de item de navegação passa a se chamar `SarakMenuItem` — `SarakNavItem` nunca chegou a ser importável
+## 7.0.0 — Correção: o átomo de item de navegação passa a se chamar `SarakMenuItem` — `SarakNavItem` nunca chegou a ser importável
 
 **Classificação: correção, não quebra.** O átomo descrito na entrada logo abaixo ("`SarakNavItem` — átomo
 próprio para item de navegação do cromo") **nunca esteve alcançável pelo barril público**, então renomeá-lo
@@ -2587,7 +3244,7 @@ renderizadores de navegação do cromo.
 
 ---
 
-## `SarakNavItem` — átomo próprio para item de navegação do cromo
+## 7.0.0 — `SarakNavItem` — átomo próprio para item de navegação do cromo
 
 **Classificação: MAJOR** — a superfície é aditiva (novo componente, novo tipo), mas o **comportamento
 default muda sem opt-in**: o cromo de todo consumidor troca de métrica de navegação — o mesmo critério que
@@ -2627,7 +3284,7 @@ a métrica de botão de ação, inalterada.
 
 ---
 
-## A `className` passada a `SarakButton`/`SarakIconButton` agora VENCE o default do átomo
+## 7.0.0 — A `className` passada a `SarakButton`/`SarakIconButton` agora VENCE o default do átomo
 
 **Classificação: MAJOR** — nenhum export, prop, token ou assinatura mudou; o que muda é **comportamento
 default e visível**, sem opt-in — o mesmo critério que já classificou majors anteriores desta lista
@@ -2739,7 +3396,7 @@ nem tocar em nada do seu lado.
 
 ---
 
-## O grid zero-config deixa de ser 12 colunas fixas e passa a ser content-aware (plan-47)
+## 6.0.0 — O grid zero-config deixa de ser 12 colunas fixas e passa a ser content-aware (plan-47)
 
 **Classificação: MAJOR** — muda um **comportamento default**, mesmo sem tocar em nenhuma assinatura pública:
 o token `layoutGridTemplate` (schema `structural` e os 5 temas embarcados) tinha `'col-12'` como valor
@@ -2796,7 +3453,7 @@ depender de `templateColumns`, de `span` ou de container query.
 
 ---
 
-## 26 tipos usados em assinatura pública passam a ser importáveis pelo nome (plan-45)
+## 6.0.0 — 26 tipos usados em assinatura pública passam a ser importáveis pelo nome (plan-45)
 
 **Classificação: MINOR** — capacidade nova, aditiva: nenhum tipo mudou de forma, nenhum export
 existente mudou. Só ficou possível importar pelo **nome** tipos que as assinaturas públicas já
@@ -2857,7 +3514,7 @@ build.
 
 ---
 
-## `persistence.onSave` passa a receber o id do tema ativo — segundo parâmetro (plan-42)
+## 6.0.0 — `persistence.onSave` passa a receber o id do tema ativo — segundo parâmetro (plan-42)
 
 **Classificação: MINOR** — capacidade nova, aditiva: o segundo parâmetro é opcional e quem já implementa
 `onSave(design)` continua compilando e sendo chamado exatamente como antes. Nenhum consumidor precisa mudar
@@ -2888,7 +3545,7 @@ com `id` e `name`.
 
 ---
 
-## Container query estrutural agora funciona FORA do `SarakShell` — 10 componentes ganham um `@container` próprio (plan-41)
+## 6.0.0 — Container query estrutural agora funciona FORA do `SarakShell` — 10 componentes ganham um `@container` próprio (plan-41)
 
 **Classificação: MAJOR** — comportamento default muda sem opt-in (mesmo critério da `4.0.0` e da entrada da
 `plan-39` logo abaixo: *"mudar um comportamento default é MAJOR, mesmo mantendo a capacidade — quem dependia
@@ -2946,7 +3603,7 @@ que o estabelece.
 
 ---
 
-## Tema salvo pelo usuário final em runtime — uma porta de escrita nova (ADR-011, plan-38)
+## 5.0.0 — Tema salvo pelo usuário final em runtime — uma porta de escrita nova (ADR-011, plan-38)
 
 **Classificação: MINOR** — capacidade nova retrocompatível: `ThemeEntry.name?`, `options.theme.onSave?` e
 `sarak.saveTheme` são todos **opcionais/aditivos**. Quem não configurar `options.theme.onSave` não vê
@@ -3052,7 +3709,7 @@ falha se um arquivo de produção voltar a montar `@min-[…]` por interpolaçã
 
 ---
 
-## Persistência de tema tenant-aware e `strategy` funcional (ADR-009)
+## 5.0.0 — Persistência de tema tenant-aware e `strategy` funcional (ADR-009)
 
 **Afeta você se** roda **múltiplos tenants na mesma origem** (troca de conta/tenant em runtime, sem
 reload de página) — o tema de um podia vazar para o outro — **ou** se já tem backend próprio e quer que
@@ -3324,7 +3981,7 @@ público** — o outro nunca esteve no barril.
 
 ---
 
-## O "Factory Hard Reset" do painel deixou de apagar o `localStorage` inteiro do seu site
+## 2.0.0 — O "Factory Hard Reset" do painel deixou de apagar o `localStorage` inteiro do seu site
 
 **Se você nunca abriu o painel de customização, nada muda para você.** Esta entrada existe porque
 a mudança é de **comportamento observável**, e o comportamento antigo destruía dado que não era da
@@ -3347,7 +4004,7 @@ O texto do `confirm()` foi reescrito para descrever exatamente isso, e nada alé
 
 ---
 
-## `SarakTable` ganhou `responsive` — o colapso mobile agora tem opt-out
+## 2.0.0 — `SarakTable` ganhou `responsive` — o colapso mobile agora tem opt-out
 
 **Aditivo: não quebra nada.** O default (`true`) é o comportamento que já existia.
 
@@ -3367,7 +4024,7 @@ Mesma prop, mesmo default e mesmo efeito do `SarakDataTable`.
 
 ---
 
-## Engines: `SarakChatEngine` e `SarakFlowEngine` viraram públicos; `SarakVisualEngine` foi removido
+## 1.2.0 — Engines: `SarakChatEngine` e `SarakFlowEngine` viraram públicos; `SarakVisualEngine` foi removido
 
 **Provavelmente não quebra nada para você** — nenhum dos três estava no barril público, então
 não havia como importá-los pela porta oficial. A entrada existe porque o arquivo é o histórico
@@ -3398,7 +4055,7 @@ era importado por ninguém** — código morto que fazia a arquitetura parecer o
 
 ---
 
-## Releases com tag: `#semver:` passa a funcionar — e você não precisa fazer nada
+## 1.1.0 — Releases com tag: `#semver:` passa a funcionar — e você não precisa fazer nada
 
 **Não quebra nada.** Nenhum export mudou, nenhum comportamento mudou, e **nenhuma forma de
 instalar deixou de funcionar**. Esta entrada existe porque uma capacidade NOVA ficou disponível
@@ -3471,7 +4128,7 @@ com a política de MAJOR/MINOR/PATCH descrita em `specs/specs/03-versionamento-e
 
 ---
 
-## CLI do consumidor: comandos reais, multi-gerenciador e aviso de atualização (Spec 51)
+## 1.0.0 — CLI do consumidor: comandos reais, multi-gerenciador e aviso de atualização (Spec 51)
 
 **Não quebra nada.** Tudo abaixo é aditivo: os scripts já gerados em consumidores existentes
 continuam funcionando. A migração é opcional, mas recomendada.
@@ -3508,7 +4165,7 @@ pôde ser feita; **exit 0 sempre**. Ele nunca derruba o seu `dev`.
 
 ---
 
-## Rótulos decorativos — fim da marca da lib estampada em componentes (Spec 49)
+## 1.0.0 — Rótulos decorativos — fim da marca da lib estampada em componentes (Spec 49)
 
 **O que mudou.** A Spec 47 fechou a FONTE do vazamento de identidade (defaults de
 branding → `document.title`/`systemName`), mas alguns componentes **consumidor-facing**
@@ -3549,7 +4206,7 @@ neutros acima.
 
 ---
 
-## Identidade da página — a lib parou de impor a própria marca (Spec 47)
+## 1.0.0 — Identidade da página — a lib parou de impor a própria marca (Spec 47)
 
 **O que mudou.** O `DEFAULT_BRANDING` do Provider trazia `companyName: 'Sarak OS'` e
 `tabName: 'Sarak OS'`. Como o guard a jusante era `if (branding?.tabName)` e o default
@@ -3593,7 +4250,7 @@ Contrato completo em [`identidade-do-host.md`](./identidade-do-host.md).
 
 ---
 
-## `SarakCardGrid.mapping` — fim dos campos de domínio LLM (Spec 42)
+## 1.0.0 — `SarakCardGrid.mapping` — fim dos campos de domínio LLM (Spec 42)
 
 **O que mudou.** O `SarakCoreCard` — a variante `"classic"`, que é a **default** do
 `SarakCardGrid` quando o autor não declara `variant` — carregava um catálogo de modelos

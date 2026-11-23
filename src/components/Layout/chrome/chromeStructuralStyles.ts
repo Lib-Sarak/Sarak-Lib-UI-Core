@@ -1,6 +1,10 @@
 import type { CSSProperties } from 'react';
 import type { ChromeLayoutDensity, ChromeNavbarLayout, ChromeSidebarPosition } from './useChromeDesignTokens';
 import type { ChromeBackgroundStyle, ChromeBorderSide, ChromeBorderStyle } from '../../../core/Provider/useNavigationAppearance';
+import { sarakGetDefaultDesignState } from '../../../core/Design/master-map';
+
+/** A espessura de borda de fábrica do schema: a reserva da variável de largura de cada superfície. */
+const DEFAULT_BORDER_WIDTH = `${sarakGetDefaultDesignState().borderWidth}px`;
 
 /**
  * Converte os tokens estruturais de cromo em classes para `SarakAppChrome`.
@@ -69,7 +73,7 @@ const getChromeBorderSides = ({ side, surface, sidebarPosition }: ChromeBorderOp
 
 export const resolveChromeSurfaceBorderStyle = (options: ChromeBorderOptions): CSSProperties => {
     const sides = getChromeBorderSides(options);
-    const width = `var(${options.widthVariable}, 1px)`;
+    const width = `var(${options.widthVariable}, ${DEFAULT_BORDER_WIDTH})`;
     const inactiveWidth = '0px';
     return {
         borderTopWidth: sides.has('top') ? width : inactiveWidth,

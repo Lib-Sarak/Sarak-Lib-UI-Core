@@ -47,6 +47,7 @@ export interface SarakTabsProps {
     listClassName?: string;
 }
 
+/** @replacesElement nav[contains:a,SarakLink] */
 export const SarakTabs: React.FC<SarakTabsProps> = ({
     tabs,
     activeTab,

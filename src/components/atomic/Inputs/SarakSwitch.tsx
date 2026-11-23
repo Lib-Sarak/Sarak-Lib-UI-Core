@@ -45,6 +45,9 @@ export const SarakSwitch: React.FC<SarakSwitchProps> = ({
     // a11y (Spec 41, Regras 2/5): padrão WAI-ARIA switch + descrição linkada por id.
     const reactId = useId();
     const descId = description ? `${reactId}-desc` : undefined;
+    // O <label> nativo envolve rótulo e descrição; sem isto o nome acessível seria os dois juntos.
+    // O aria-label de quem chama continua mandando no nome.
+    const labelId = label && !props['aria-label'] ? `${reactId}-label` : undefined;
 
     return (
         <label className={baseClass.trim()} style={{ ...layoutStyles.style, ...style }}>
@@ -56,6 +59,7 @@ export const SarakSwitch: React.FC<SarakSwitchProps> = ({
                     disabled={disabled}
                     checked={checked}
                     aria-checked={!!checked}
+                    aria-labelledby={labelId}
                     aria-describedby={descId}
                     {...props}
                 />
@@ -71,7 +75,7 @@ export const SarakSwitch: React.FC<SarakSwitchProps> = ({
             
             {(label || description) && (
                 <div className={layoutStyles.textContainerClass}>
-                    {label && <span className="text-sm font-medium text-[var(--text-muted,rgba(242,246,251,0.55))]">{label}</span>}
+                    {label && <span id={labelId} className="text-sm font-medium text-[var(--text-muted,rgba(242,246,251,0.55))]">{label}</span>}
                     {description && <span id={descId} className="text-xs text-[var(--text-muted,rgba(242,246,251,0.55))]">{description}</span>}
                 </div>
             )}
