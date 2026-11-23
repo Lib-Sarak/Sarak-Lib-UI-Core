@@ -54,11 +54,11 @@ describe('palette contrast correction', () => {
         });
     });
 
-    it('passes every contrast pair for extreme colors, harmonies, and modes', () => {
-        const cases = EXTREME_PALETTE_BASES.flatMap((base) => PALETTE_TYPES.flatMap((type) => PALETTE_MODES.map((mode) =>
-            resolvePalette({ type, base }, mode),
-        )));
-        cases.forEach((colors) => expect(getPairFailures(colors)).toEqual([]));
+    const extremeCases = EXTREME_PALETTE_BASES.flatMap((base) => PALETTE_TYPES.flatMap((type) =>
+        PALETTE_MODES.map((mode) => ({ base, type, mode }))));
+
+    it.each(extremeCases)('passes every contrast pair for base $base, harmony $type, mode $mode', ({ base, type, mode }) => {
+        expect(getPairFailures(resolvePalette({ type, base }, mode))).toEqual([]);
     });
 
     it('corrects a failing mapped pair instead of only passing by its initial tones', () => {

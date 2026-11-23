@@ -52,17 +52,18 @@ describe('raio mestre × canto', () => {
         expect(updateDraft).toHaveBeenCalledWith('cardRadiusTL', tokenById('cardRadiusTL').defaultValue);
     });
 
-    it('o canto declarado ignora o mestre e volta a segui-lo pelo botão; o não declarado só informa', () => {
+    it('o canto declarado ignora o mestre e volta a segui-lo pelo botão', () => {
         const updateDraft = vi.fn();
         const corner = tokenById('cardRadiusTL');
-        const { unmount } = withProvider(
+        withProvider(
             <DynamicTokenControl token={corner} draft={draftOf({ cardRadiusTL: { mob: 0, tab: 0, desk: 0 } })} updateDraft={updateDraft} />,
         );
         fireEvent.click(screen.getByRole('button', { name: 'Voltar ao mestre' }));
         expect(updateDraft).toHaveBeenCalledWith('cardRadiusTL', corner.defaultValue);
-        unmount();
+    });
 
-        withProvider(<DynamicTokenControl token={corner} draft={draftOf({})} updateDraft={updateDraft} />);
+    it('o canto não declarado só informa que segue o mestre', () => {
+        withProvider(<DynamicTokenControl token={tokenById('cardRadiusTL')} draft={draftOf({})} updateDraft={vi.fn()} />);
         expect(screen.getByTestId('exception-relation')).toHaveTextContent('Segue o mestre');
         expect(screen.queryByRole('button', { name: 'Voltar ao mestre' })).toBeNull();
     });
