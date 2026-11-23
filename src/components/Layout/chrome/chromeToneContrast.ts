@@ -9,7 +9,6 @@ type Rgba = { r: number; g: number; b: number; a: number };
 interface ContrastSurface { background: Rgb; minimum: number }
 
 const TEXT_MINIMUM = 4.55;
-const ICON_MINIMUM = 3;
 /** O sair é ícone (3:1) com folga de arredondamento do navegador. */
 const LOGOUT_MINIMUM = 3.05;
 const LOGOUT_ERROR_TINT_SHARE = 0.15;

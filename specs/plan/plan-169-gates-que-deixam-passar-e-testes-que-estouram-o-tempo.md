@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fechar os pontos cegos de quatro gates, gerar a tabela de temas do guia e acabar com os testes que estouram o tempo sob carga"
 objetivo: "Fazer o auditor de hardcode, o chrome-token-parity e o zero-brand verem o que hoje deixam passar, tirar o rastro de plan da 01-gates-e-baseline, gerar a tabela de arquétipos do guia a partir do catálogo de temas e deixar a suíte de unidade verde sob a carga do npm version"
 dominio: "Qualidade / Gates e suíte"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Média"
 tags: ["plan", "gates", "suite", "guia", "release-9-0-0"]
 relacionados: ["[[01-gates-e-baseline]]", "[[05-cromo-e-slots]]", "[[09-temas-e-presets]]"]
@@ -1255,3 +1255,96 @@ commit único.
 - O resumo da correção 9 veio só na conversa. Ele entra no resumo do resto do 2.1.
 
 **Status da plan: 🟡 Em execução.**
+
+## Resumo da execução (correção 9 e resto do passo 2.1) — 2026-11-23
+
+**Resultado:** Concluído com pendências (o resumo da correção 9 entra aqui; as pendências estão no fim).
+
+**Estado do worktree ao iniciar**
+`git status --short`: 111 linhas, 110 delas em `dist/` (chunks apagados e novos de um `build` anterior; `dist/BUILD_INFO.json` e `dist/index.*` alterados) e uma fora dele:
+```
+ M gates/scripts/audit/auditor_hardcoded.mjs
+```
+Essa linha é só o carimbo do índice: `git diff --quiet` do arquivo não acusa diferença e ele é igual ao `HEAD`. O commit `8dc9fa44` (plan-167) já levou as correções 7 a 9 da 169.
+
+**Correção 9 (executada em 2026-11-22, antes do commit da 167; o resumo veio só na conversa)**
+- `src/features/DesignEngine/Main/__tests__/MasterControlPanel.test.tsx`: o mock de `core/Design/master-map` ganhou `sarakGetDefaultDesignState`, que devolve a função real por `importOriginal`. O arquivo passa 7 de 7.
+- `src/core/Provider/constants.ts`: decisão S1 (a), o `DEFAULT_INDUSTRIAL_SEED` saiu inteiro, junto com o import de `master-map` e o `SCHEMA_DEFAULTS` que só ele usava. O diff contra o `HEAD` só apaga a semente.
+- `npx vitest run` inteiro, sem `-u`: 2230 suítes, 7024 testes, 7024 passam, 0 falham. Sem vermelho, não houve controle a fazer.
+- O patch do gate, aplicado numa cópia fora do repositório, deixou 5 achados de Valor e 0 estrutural, todos da área da 167. A cópia e a junção foram removidas e o `node_modules` do repositório ficou intacto.
+
+**O que foi feito (resto do 2.1)**
+1. `git apply --check` e `git apply` de `plan-169-auditor-hardcoded-ts.patch`: os dois passaram. `auditor_hardcoded.mjs` e `__tests__/auditor_hardcoded.ts-scope.test.mjs` voltaram ao worktree. O gate acusou os mesmos 5 achados.
+2. Os 5 achados da área da 167, lidos do schema ou de constante, sem marcador novo:
+   - `src/components/atomic/hooks/buttonStyles.ts`: `DEFAULT_BORDER_WIDTH` vem de `sarakGetDefaultDesignState().borderWidth` e substitui os três `1px solid` (neon primário/perigo, neon secundário, fosco). Valor idêntico ao anterior (1px).
+   - `src/components/Layout/chrome/chromeStructuralStyles.ts`: a reserva de `var(${widthVariable}, …)` é a mesma constante lida do schema. A string resultante não muda (`var(--x, 1px)`).
+   - `src/components/Layout/chrome/noiseTexture.ts`: `NOISE_TILE_SIZE = 200` alimenta o `viewBox` do SVG e o `backgroundSize`, em vez de repetir `200px 200px`.
+   - `src/components/atomic/Buttons/__tests__/SarakButton.test.tsx`: o teste lê a espessura do schema em vez de fixar `1px solid`.
+3. `docs/migracoes.md`: entrada nova "9.0.0 — a reserva de cor do `SARAK_DESIGN_MANIFEST` passa a ser o padrão do token", com a tabela dos valores que mudam. O espelho `sarak-ui/docs/migracoes.md` saiu do `npm run guide`.
+4. `browser-tests/fontes-no-painel.spec.ts`: o `expect` da conferência do peso 700 não mudou. Antes dele, a espera agora pede `document.fonts.load('700 32px "Outfit"')` e só segue quando a conferência fica verdadeira por 1 s seguido.
+5. `src/components/Layout/chrome/chromeToneContrast.ts`: `ICON_MINIMUM` removida (sem nenhum leitor em `src/`).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `gates/scripts/audit/auditor_hardcoded.mjs` | alterado | o gate passa a varrer `.ts` de `components/` (patch) |
+| `gates/scripts/audit/__tests__/auditor_hardcoded.ts-scope.test.mjs` | criado | teste do escopo novo do gate (patch) |
+| `src/components/atomic/hooks/buttonStyles.ts` | alterado | borda lida do schema |
+| `src/components/atomic/Buttons/__tests__/SarakButton.test.tsx` | alterado | espessura lida do schema |
+| `src/components/Layout/chrome/chromeStructuralStyles.ts` | alterado | reserva da largura de borda lida do schema |
+| `src/components/Layout/chrome/noiseTexture.ts` | alterado | constante do ladrilho |
+| `src/components/Layout/chrome/chromeToneContrast.ts` | alterado | remove `ICON_MINIMUM` |
+| `docs/migracoes.md`, `sarak-ui/docs/migracoes.md` | alterado | entrada da reserva de cor do manifesto |
+| `browser-tests/fontes-no-painel.spec.ts` | alterado | espera estável do peso 700 antes do `expect` |
+
+**Verificações executadas**
+- `node gates/scripts/audit/auditor_hardcoded.mjs` → Valor 0, estrutural líquido 0 (antes: 5 e 0).
+- `npm run verify -- --tier=quick` → verde: `tsc --noEmit` 0 erros, `audit:baseline --with-tsc` igual ao baseline, `variable-contract`, `chrome-token-parity`, `guide:check`, `dev-kit:check` e Anel 0 simulado (225 linhas, 0 achados) verdes. O Anel 1 está no `quick`.
+- `npm run dev-kit` (sarak-dev sem mudança) e `npm run guide` (gerou o espelho `sarak-ui/`); os dois `:check` em dia.
+- `npx vitest run src/components/Layout src/components/atomic src/core/Design/presets src/features/DesignEngine/Canvas gates/scripts/audit`, a partir de `C:/`: 1196 arquivos, 3303 testes, 3295 passam, 4 falham e 1 hook estourou, todos em arquivos que não toquei (`SarakAutocomplete`, `SarakSearch`, `SarakDataTableToolbar`, `SarakQRCodeImpl`), com `Error: STACK_TRACE_ERROR` ou "Hook timed out in 30000ms". Reexecutados sozinhos: 4 arquivos, 47 de 47 passam. É estouro de tempo sob carga (outro projeto, o `hub-iarendel`, rodava verificação ao mesmo tempo), não regressão. Não fiz o controle em cópia do `HEAD`: o arquivo passa no próprio worktree.
+- `npx playwright test … fontes-no-painel.spec.ts --repeat-each=5`: com só `document.fonts.load`, 3 de 15 falharam; com `load` repetido dentro de `waitForFunction`, 2 de 15 falharam (a conferência fechava e voltava a falso depois). Com a espera estável de 1 s: 15 de 15; depois `--repeat-each=10`: 30 de 30.
+- `npm run cromo-css-real:check`, uma vez (o `build` mais a bateria): 892 passam, 2 pulados (`amostras-reais-custo.spec.ts:161`, protótipo, escuro e claro: o pulo é declarado no próprio teste), 0 falham, 1,3 h.
+
+**Critérios de aceite**
+- [x] Patch reaplicado sem montar à mão — `git apply --check` e `git apply` verdes.
+- [x] Os 5 achados corrigidos sem marcador de isenção novo — gate em 0.
+- [x] Linha de migração do manifesto e espelho gerado.
+- [x] `fontes-no-painel` estável em repetição.
+- [x] `ICON_MINIMUM` removida.
+- [x] `audit:baseline`, Anel 1 e `tsc` verdes; bateria de navegador verde.
+
+**Decisões e suposições**
+- O `npm run dev-kit` gera `sarak-dev/` e não mexeu em nada; o espelho em `sarak-ui/` sai do `npm run guide`. Rodei os dois.
+- A entrada de migração traz só as linhas do manifesto e do primário do `useDesignVariables`. As linhas do seed (removido na S1), do `emitOnColors` e do `resolveTitleColor` da tabela da correção 8 ficaram de fora, porque não são contrato público; o revisor pode pedi-las de volta.
+- O `expect` de `fontes-no-painel` ficou intacto. A espera ficou mais longa que a sugerida (`load` simples) porque medi que `load` sozinho deixa 3 de 15 falharem.
+
+**Achados fora do escopo (não corrigidos)**
+- Os quatro arquivos de teste citados estouram o tempo quando a máquina está carregada por outro projeto; é a família do que esta plan trata em "testes que estouram o tempo".
+
+**Pendências / riscos**
+- O `build` do `cromo-css-real:check` regenerou `dist/` (110 entradas no worktree), `src/buildInfo.ts` e `src/core/Provider/buildInfo.ts`. Não os tratei: o `npm version` os regrava. O revisor decide o que entra no commit.
+- Sem commit, como pedido. O commit único desta plan leva o gate, o teste dele, os 5 achados, a linha de migração e a espera de `fontes-no-painel`.
+
+## Veredito — 2026-11-23 11:40 — correção 9 e resto do passo 2.1 — 🟢 Aprovada
+
+**Como medi:**
+- li o diff dos 10 arquivos linha a linha;
+- rodei o `auditor_hardcoded` na raiz: Valor 0 e estrutural 0;
+- rodei o `vitest` de `gates/scripts/audit`, `Buttons` e `Layout/chrome` a partir de `C:`: 45 arquivos, 461 de 461;
+- conferi a tabela de `docs/migracoes.md` contra o que `8dc9fa44` apagou do manifesto e contra `sarakGetDefaultDesignState()`: as 11 linhas batem, e erro, sucesso e aviso seguem iguais (`#ef4444`, `#10b981`, `#f59e0b`);
+- rodei `trail-citation:check` e o Anel 0 sobre as linhas adicionadas e o não rastreado: verdes, 0 achados.
+
+Não repeti o `verify --tier=quick` nem a bateria de navegador: o executor rodou os dois, e a bateria deu 892 passados e 0 vermelhos.
+
+**Aprovado:**
+- o patch do gate e o teste de escopo dele;
+- os 5 achados, com o valor de fábrica igual ao anterior (1px e 200px);
+- a linha de migração. A escolha de deixar fora o seed, o `emitOnColors` e o `resolveTitleColor` está certa, porque não são contrato público;
+- a espera de `fontes-no-painel` com o `expect` intacto, medida em 30 de 30;
+- a remoção de `ICON_MINIMUM`.
+
+**Observação para o fechamento:** `SarakAutocomplete`, `SarakSearch`, `SarakDataTableToolbar` e `SarakQRCodeImpl` estouraram o tempo com outro projeto rodando ao mesmo tempo, e passam sozinhos (47 de 47). O `coverage:check` do fechamento roda com a máquina livre. Se um deles cair ali, vira plan nova; não reabre esta.
+
+**Commit:** os 10 arquivos desta entrega, esta plan e o índice. Fica fora o `dist/`, e os dois `buildInfo.ts` voltam ao estado do `HEAD`.
+
+**Status da plan: 🟢 Aprovada.**

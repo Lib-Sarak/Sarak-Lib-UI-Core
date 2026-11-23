@@ -5,6 +5,30 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 9.0.0 — a reserva de cor do `SARAK_DESIGN_MANIFEST` passa a ser o padrão do token
+
+A reserva que o manifesto usa quando o valor de uma cor chega vazio deixa de ser um literal repetido no código e passa a ser o `defaultValue` do próprio token no schema, a mesma regra que o `variable-contract` cobra. Um valor que chega preenchido não muda. O `DEFAULT_INDUSTRIAL_SEED`, que só a própria declaração usava e que não saía no barril, foi removido.
+
+**O que muda para o importador:** quem chama o `transform` do `SARAK_DESIGN_MANIFEST` (exportado em `src/index.ts`) com valor vazio recebe as variantes do padrão novo. Nenhum import, prop ou token público muda.
+
+| Onde | Antes | Depois (padrão do schema) |
+|---|---|---|
+| manifesto `primaryColor` | `#3b82f6` | `#19e3f0` |
+| manifesto `secondaryColor` | `#6366f1` | `#7c5cff` |
+| manifesto `tertiaryColor` | `#10b981` | `#34d399` |
+| manifesto `accentColor` | `#f43f5e` | `#ff4fd8` |
+| manifesto `surfaceColor` | `#1e293b` | `#101622` |
+| manifesto `textureColor` | `#ffffff` | `#cfe9ff` |
+| manifesto `sidebarColor`, `topbarColor` | `#000000` | `#04060a` |
+| manifesto `cardBackgroundColor` | `rgba(30, 41, 59, 0.4)` | `#101622` |
+| manifesto `cardBorderColor` | `rgba(255, 255, 255, 0.1)` | `rgba(255, 255, 255, 0.09)` |
+| manifesto `titleColor` | `#ffffff` | `#f2f6fb` |
+| `useDesignVariables`, reserva do primário | `#3b82f6` | `#19e3f0` |
+
+Nos status (erro, sucesso, aviso), na âncora e no texto sobre o primário, o valor não muda.
+
+---
+
 ## 9.0.0 — `colorDepth` e `colorVariation` saem do tema
 
 Os dois controles ("Profundidade da Cor" e "Variação da Cor") só moldavam `--theme-primary-hover` e `--theme-primary-active` (e o `-hover`/`-active` das demais cores com variantes), e nenhum componente da lib lê essas variáveis desde que o hover global do `<button>` deixou de pintar o fundo. Ajustá-los não mudava nada na tela. As variáveis `-hover` e `-active` continuam emitidas, agora sempre com o fator 1 (cor base ×1,1 no hover e ×0,9 no aperto).

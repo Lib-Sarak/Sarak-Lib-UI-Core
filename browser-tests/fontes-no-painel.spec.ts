@@ -56,7 +56,17 @@ test('origem bundled: cada cartão usa a própria família e a fonte carrega de 
     expect(FIRST_FAMILY(families[0])).toBe('Inter');
     expect(FIRST_FAMILY(families[1])).toBe('Outfit');
 
-    await page.waitForFunction(() => Array.from(document.fonts).some((face) => face.family.replace(/"/g, '') === 'Outfit' && face.status === 'loaded'));
+    // `load` só resolve com a face já registrada, e o cartão a registra ao entrar na tela (e pode registrá-la de novo ao reescrever o <style>).
+    // Pede o peso 700 e só segue quando a conferência fica verdadeira por 1 s seguido.
+    await page.waitForFunction(async () => {
+        const ready = async () => {
+            await document.fonts.load('700 32px "Outfit"');
+            return document.fonts.check('700 32px "Outfit"');
+        };
+        if (!(await ready())) return false;
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        return ready();
+    }, undefined, { timeout: 60_000 });
     expect(await page.evaluate(() => document.fonts.check('700 32px "Outfit"'))).toBe(true);
     await page.close();
 });

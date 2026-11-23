@@ -26,14 +26,48 @@ const VALUE_SCOPE = ['src/components', 'src/features', 'src/core'];
 // legitimamente, por isso não entram aqui. Amplie esta lista se a política mudar.
 const STRUCTURAL_SCOPE = ['src/components/atomic'];
 
-// NOTA (ponto cego conhecido): `collectFiles` só coleta arquivos `.tsx` (ver extFilter
-// abaixo). Hooks Camada 6 em `.ts puro` (ex.: useModalLayoutStyles.ts, useCardLayoutStyles.ts,
-// useStructuralStyles.ts) NUNCA são varridos por nenhum dos dois detectores, mesmo quando
-// contêm Tailwind/valor hardcoded de verdade (ex.: `mb-4`/`mt-6 gap-3` dentro do próprio
-// useModalLayoutStyles.ts). Isso tem sido tratado como aceitável ao longo da campanha
-// (specs 21-26) porque o hook é o destino correto da migração — mas hoje é um efeito
-// colateral do filtro de extensão, não uma isenção documentada. Se um dia isso for uma
-// política deliberada, mova esse comentário para perto de `extFilter` e explicite lá.
+// EXTENSÕES VARRIDAS: `.tsx` e `.ts` (a declaração `.d.ts` fica de fora: não carrega valor).
+// Um gerador de estilo em `.ts` (ex.: `kanbanLayout.ts`, `buttonStyles.ts`) monta a mesma
+// classe e o mesmo estilo que um `.tsx`, e antes passava sem ser visto só pelo filtro de
+// extensão. O detector ESTRUTURAL também lê `.ts`, mas só acha classe dentro de `className`
+// ou de um CLASS_HELPER; a classe guardada num objeto de `.ts` cai no detector de VALOR.
+const SCANNED_EXTENSIONS = ['.tsx', '.ts'];
+
+// ISENÇÕES DE ESCOPO (cada uma com o motivo; fora delas, nenhuma por caminho — a pontual é
+// o marcador `sarak-allow-hardcode:` mais abaixo):
+//
+// 1. Dado de design — `.ts` sob as pastas abaixo. O hex e o px ali SÃO o valor do token
+//    (tema, paleta, padrão do schema, catálogo gerado): não há `var()` para onde levá-los,
+//    porque é deles que a variável nasce. Só `.ts`: um `.tsx` nessas pastas é componente e
+//    continua cobrado.
+const DESIGN_DATA_DIRS = ['src/core/Design/presets/', 'src/core/Design/schema/', 'src/core/Design/palette/'];
+//
+// 2. Matemática de cor e de contraste — os três arquivos abaixo. As constantes (preto e
+//    branco de referência, limiares de luminância) são operandos de cálculo, não estilo: o
+//    resultado é que vira cor na tela, e ele já sai dos tokens.
+const COLOR_MATH_FILES = [
+  'src/components/atomic/Inputs/internal/colorMath.ts',
+  'src/core/Provider/utils/on-color.ts',
+  'src/features/DesignEngine/components/controls/colorParts.ts',
+];
+//
+// 3. Condição de container query (`@min-[768px]:`, `@max-[1024px]:`) — ver
+//    `CONTAINER_QUERY_CONDITION_RE`. A condição vira `@container (min-width: …)`, e o CSS não
+//    aceita `var()` em condição de consulta: não há como tokenizá-la. Só a CONDIÇÃO sai da
+//    leitura; a classe que ela liga (`@min-[768px]:w-[12px]`) continua cobrada.
+const CONTAINER_QUERY_CONDITION_RE = /@(?:min|max)-\[[^\]]*\]/g;
+
+const toPosix = (p) => p.split(path.sep).join('/');
+
+/** O arquivo está fora do detector por uma das isenções de escopo 1 ou 2. */
+function isScopeExempt(fullPath) {
+  const rel = toPosix(path.relative(process.cwd(), fullPath));
+  if (COLOR_MATH_FILES.includes(rel)) return true;
+  return path.extname(rel) === '.ts' && DESIGN_DATA_DIRS.some((dir) => rel.startsWith(dir));
+}
+
+const isScannedFile = (fullPath) =>
+  SCANNED_EXTENSIONS.includes(path.extname(fullPath)) && !fullPath.endsWith('.d.ts') && !isScopeExempt(fullPath);
 
 // Funções utilitárias que recebem classes Tailwind como argumento (além de className).
 const CLASS_HELPERS = new Set(['cn', 'clsx', 'classnames', 'classNames', 'twMerge', 'cva', 'tw']);
@@ -87,15 +121,15 @@ function classifyToken(rawToken) {
 // COLETA DE ARQUIVOS
 // ==========================================================================
 
-function getFiles(dir, extFilter, fileList = []) {
+function getFiles(dir, fileList = []) {
   if (!fs.existsSync(dir)) return fileList;
   for (const file of fs.readdirSync(dir)) {
     const fullPath = path.join(dir, file);
     if (fs.statSync(fullPath).isDirectory()) {
       if (!fullPath.includes('__tests__') && !fullPath.includes('Mocks') && !fullPath.includes('__e2e__')) {
-        getFiles(fullPath, extFilter, fileList);
+        getFiles(fullPath, fileList);
       }
-    } else if (extFilter.includes(path.extname(fullPath))) {
+    } else if (isScannedFile(fullPath)) {
       fileList.push(fullPath);
     }
   }
@@ -105,7 +139,7 @@ function getFiles(dir, extFilter, fileList = []) {
 function collectFiles(scopes) {
   const set = new Set();
   for (const scope of scopes) {
-    for (const f of getFiles(path.resolve(scope), ['.tsx'])) set.add(f);
+    for (const f of getFiles(path.resolve(scope))) set.add(f);
   }
   return [...set];
 }
@@ -140,6 +174,7 @@ function sanitizeFallbacks(text) {
   // valor negativo escrito SOLTO (fora de `var(...)`) segue sendo violação. O que mudou é
   // só o reconhecimento do fallback documentado — nada deixou de ser cobrado.
   return text
+    .replace(CONTAINER_QUERY_CONDITION_RE, '')
     .replace(/var\([^,]+,\s*#[0-9a-fA-F]{3,8}\s*\)/gi, '')
     .replace(/var\([^,]+,\s*[-+]?[0-9.]+(?:px|rem|em)\s*\)/gi, '');
 }
