@@ -4,13 +4,11 @@ import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../breakpoints';
 import { resolveMaxContentWidth } from '../schema/system';
 import { computeColorVariants, parseToRgba, rgbToHsl } from '../../../core/Provider/utils/color-engine';
 import { isSafeMediaString } from '../../../core/Provider/utils/cssSafety';
+import { MODE_ANCHOR_DARK, MODE_ANCHOR_LIGHT, ON_COLOR_DARK, ON_COLOR_LIGHT } from '../../../core/Provider/utils/on-color';
 import type { SarakTokenValue } from '../types';
 import { collectDeclaredExceptionVars, emitColorChannels, emitOnColors, emitSurfaceTint, isUndeclaredException, resolveTitleColor } from './designVariableHelpers';
 
 const toKebabCase = (str: string) => str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
-
-const asFiniteNumber = (value: unknown): number | undefined =>
-    typeof value === 'number' && Number.isFinite(value) ? value : undefined;
 
 /**
  * Segunda barreira contra breakout de CSS/HTML (a primeira é `validateDesign`,
@@ -63,12 +61,7 @@ export const useDesignVariables = (
         const tokens = sarakGetAllDesignTokens();
         
         const isDark = targetMode === 'dark';
-        const anchorColor = isDark ? '#000000' : '#ffffff';
-        // `colorDepth`/`colorVariation` moldam o hover/active de toda cor com variantes.
-        const variantShape = {
-            depth: asFiniteNumber(design.colorDepth),
-            variation: asFiniteNumber(design.colorVariation),
-        };
+        const anchorColor = isDark ? MODE_ANCHOR_DARK : MODE_ANCHOR_LIGHT;
 
         // Breakpoints como dado (Spec 16, Regra 1): lê os tokens do tema (se o
         // tema os declarar) com fallback à fonte única; `@media` não aceita
@@ -139,7 +132,7 @@ export const useDesignVariables = (
                         // Gerador de Variantes Cromáticas (RGB, Hover, Active, Light)
                         if (token.generateVariants && token.type === 'color' && value && value !== 'transparent') {
                             try {
-                                const variants = computeColorVariants(String(value), anchorColor, variantShape);
+                                const variants = computeColorVariants(String(value), anchorColor);
                                 variables[`${v}-rgb`] = variants.rgb;
                                 variables[`${v}-bg`] = variants.bg;
                                 variables[`${v}-border`] = variants.border;
@@ -196,15 +189,15 @@ export const useDesignVariables = (
                 variables[alias] = value;
             }
         });
-        emitColorChannels(variables, anchorColor, variantShape);
+        emitColorChannels(variables, anchorColor);
 
-        const primaryColor = variables['--theme-primary'] || variables['--primary-color'] || '#3b82f6';
+        const primaryColor = variables['--theme-primary'] || variables['--primary-color'] || String(tokens.find((token) => token.id === 'primaryColor')?.defaultValue);
         const { r, g, b } = parseToRgba(primaryColor);
         const [, , primaryLightness] = rgbToHsl(r, g, b);
         emitSurfaceTint(variables, isDark); // tinta do degradê e do neon
         emitOnColors(variables, anchorColor); // texto de maior contraste sobre cada cor sólida
         variables['--theme-title'] = variables['--color-theme-title'] = resolveTitleColor(variables, isDark, tokens.find((token) => token.id === 'titleColor')?.defaultValue);
-        variables['--theme-on-primary'] ??= primaryLightness > 55 ? '#020617' : '#ffffff';
+        variables['--theme-on-primary'] ??= primaryLightness > 55 ? ON_COLOR_DARK : ON_COLOR_LIGHT;
         variables['--sarak-vignette-color'] = isDark
             ? `rgba(0, 0, 0, ${design.vignetteOpacity ?? 0.3})`
             : 'rgba(0, 0, 0, 0)';

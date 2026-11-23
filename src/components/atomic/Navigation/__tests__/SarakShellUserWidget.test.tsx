@@ -60,10 +60,24 @@ describe('SarakShellUserWidget — identidade genérica', () => {
             </SarakUIProvider>,
         );
         const logoutButton = screen.getByRole('button');
-        expect(logoutButton.className).toContain('text-[var(--sarak-status-error-color,#ef4444)]');
+        expect(logoutButton.className).toContain('text-[color:var(--sarak-shell-logout-text-color,color-mix(');
         fireEvent.click(logoutButton);
 
         expect(logout).toHaveBeenCalledOnce();
+    });
+});
+
+describe('SarakShellUserWidget — sair na lateral recolhida', () => {
+    it('a cor do sair vence a do fantasma e o tamanho do botão fica (o `%` do color-mix não vira tamanho de fonte)', () => {
+        render(
+            <SarakUIProvider config={{ language: 'en' }}>
+                <SarakShellUserWidget user={{ name: 'Ana Lima' }} logout={() => undefined} variant="mini" />
+            </SarakUIProvider>,
+        );
+        const classes = screen.getByRole('button').className.split(/\s+/);
+        expect(classes.some((name) => name.startsWith('text-[color:var(--sarak-shell-logout-text-color'))).toBe(true);
+        expect(classes).not.toContain('text-[var(--theme-muted)]');
+        expect(classes).toContain('text-xs');
     });
 });
 

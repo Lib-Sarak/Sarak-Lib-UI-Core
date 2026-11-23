@@ -176,8 +176,6 @@ export const sarakSovereignClassicTheme: SarakThemePreset = {
         switchStyleType: 'tactile',
         switchBackdropBlur: 4,
         colorPalette: 'custom:analogous:#00f2ff,sec=#7000ff,acc=#ff00d4',
-        colorDepth: 1,
-        colorVariation: 1,
         chartGridOpacity: 0.05,
         chartType: 'line',
         chartShowGrid: true,

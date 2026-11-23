@@ -286,8 +286,6 @@ export const editorialInkTheme: SarakThemePreset = {
     "searchBackdropBlur": 8,
     "switchStyleType": "tactile",
     "switchBackdropBlur": 4,
-    "colorDepth": 1,
-    "colorVariation": 1,
     "chartGridOpacity": 0.1,
     "chartType": "line",
     "chartShowGrid": true,

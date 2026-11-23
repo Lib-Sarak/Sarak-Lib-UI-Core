@@ -293,8 +293,6 @@ export const cyberRetroWaveTheme: SarakThemePreset = {
             "switchBackdropBlur": 4,
             // fundo prata do tema; a neutra da paleta seria quase branca
             "surfaceColor": "#ffffff",
-            "colorDepth": 1,
-            "colorVariation": 1,
             // fundo prata do tema; a neutra da paleta seria quase branca
             "cardBackgroundColor": "#ffffff",
             "chartGridOpacity": 0.08,

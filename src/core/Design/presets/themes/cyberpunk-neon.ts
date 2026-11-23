@@ -209,8 +209,6 @@ export const cyberpunkneonTheme: SarakThemePreset = {
         switchStyleType: 'asymmetric',
         switchBackdropBlur: 0,
         // --- Paletas e Gradientes ---
-        colorDepth: 1,
-        colorVariation: 1,
         // --- Gráficos & Dados ---
         chartGridOpacity: 0.1,
         // area: leitura de tendência com preenchimento suave

@@ -210,8 +210,6 @@ export const dataTerminal: SarakThemePreset = {
         "searchBackdropBlur": 8,
         "switchStyleType": "tactile",
         "switchBackdropBlur": 0,
-        "colorDepth": 1,
-        "colorVariation": 1,
         "chartGridOpacity": 0.1,
         "chartType": "area",
         "chartShowGrid": true,

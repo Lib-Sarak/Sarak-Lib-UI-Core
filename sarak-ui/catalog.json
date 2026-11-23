@@ -8008,7 +8008,6 @@
       "--sarak-color-bg-layer1",
       "--sarak-color-bg-layer2",
       "--sarak-color-bg-modal",
-      "--sarak-color-depth",
       "--sarak-color-palette",
       "--sarak-color-primary",
       "--sarak-color-primary-10",
@@ -8046,7 +8045,6 @@
       "--sarak-color-tertiary-hover",
       "--sarak-color-tertiary-light",
       "--sarak-color-tertiary-rgb",
-      "--sarak-color-variation",
       "--sarak-context-menu-min-width",
       "--sarak-contrast",
       "--sarak-control-height-toggle",
@@ -8673,7 +8671,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num SarakThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 432,
+    "count": 430,
     "groups": {
       "global": "0. Configurações Globais",
       "branding": "Identidade Visual",
@@ -10501,16 +10499,6 @@
         "usage": "Pinta o painel de conteúdo de modais e diálogos."
       },
       {
-        "id": "colorDepth",
-        "type": "number",
-        "responsive": false,
-        "group": "colors",
-        "label": "Profundidade da Cor",
-        "kind": "aesthetic",
-        "modeDependent": false,
-        "usage": "Controla a distância tonal das variantes geradas para as cores, incluindo o hover e o pressionado globais dos botões."
-      },
-      {
         "id": "colorPalette",
         "type": "string",
         "responsive": false,
@@ -10519,16 +10507,6 @@
         "kind": "aesthetic",
         "modeDependent": false,
         "usage": "Seleciona a regra de cálculo das cores do tema nos dois modos; cores declaradas explicitamente continuam vencendo."
-      },
-      {
-        "id": "colorVariation",
-        "type": "number",
-        "responsive": false,
-        "group": "colors",
-        "label": "Variação da Cor",
-        "kind": "aesthetic",
-        "modeDependent": false,
-        "usage": "Controla a variação de matiz e saturação das variantes geradas, incluindo o hover e o pressionado globais dos botões."
       },
       {
         "id": "contextMenuMinWidth",
@@ -14349,6 +14327,6 @@
   "kitStamp": {
     "libVersion": "8.0.0",
     "kitSchemaVersion": 1,
-    "kitHash": "a318d6d615d7"
+    "kitHash": "c5333c8f2a31"
   }
 }

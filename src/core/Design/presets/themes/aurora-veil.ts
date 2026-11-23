@@ -210,8 +210,6 @@ export const auroraVeilTheme: SarakThemePreset = {
         "searchBackdropBlur": 8,
         "switchStyleType": "tactile",
         "switchBackdropBlur": 8,
-        "colorDepth": 1,
-        "colorVariation": 1,
         "chartGridOpacity": 0.1,
         "chartType": "line",
         "chartShowGrid": true,

@@ -1239,28 +1239,12 @@
    "usage": "Pinta o painel de conteúdo de modais e diálogos."
   },
   {
-   "id": "colorDepth",
-   "group": "colors",
-   "label": "Profundidade da Cor",
-   "kind": "aesthetic",
-   "modeDependent": false,
-   "usage": "Controla a distância tonal das variantes geradas para as cores, incluindo o hover e o pressionado globais dos botões."
-  },
-  {
    "id": "colorPalette",
    "group": "colors",
    "label": "Paleta de Cores",
    "kind": "aesthetic",
    "modeDependent": false,
    "usage": "Seleciona a regra de cálculo das cores do tema nos dois modos; cores declaradas explicitamente continuam vencendo."
-  },
-  {
-   "id": "colorVariation",
-   "group": "colors",
-   "label": "Variação da Cor",
-   "kind": "aesthetic",
-   "modeDependent": false,
-   "usage": "Controla a variação de matiz e saturação das variantes geradas, incluindo o hover e o pressionado globais dos botões."
   },
   {
    "id": "contextMenuMinWidth",

@@ -203,8 +203,6 @@ export const nebulaSpaceTheme: SarakThemePreset = {
         switchStyleType: 'glass',
         switchBackdropBlur: 8,
         // --- Paletas e Gradientes ---
-        colorDepth: 1,
-        colorVariation: 1,
         // --- Gráficos & Dados ---
         chartGridOpacity: 0.1,
         chartType: 'line',

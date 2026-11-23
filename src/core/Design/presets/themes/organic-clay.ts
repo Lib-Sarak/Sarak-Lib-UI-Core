@@ -300,8 +300,6 @@ export const organicClayTheme: SarakThemePreset = {
     "surfaceColor": "#ece2cf",
     // texto sobre o fundo de argila (tom médio): a escala da paleta fica abaixo de 4,5:1 nele
     "emphasisColor": "#70381f",
-    "colorDepth": 1,
-    "colorVariation": 1,
     // o fundo de argila é o tema; a neutra da paleta é quase branca
     "cardBackgroundColor": "#ece2cf",
     "chartGridOpacity": 0.12,

@@ -7,7 +7,9 @@ import { deriveCategoricalPalette } from './categoricalPalette';
 import type { CategoricalPaletteMode } from './categoricalPalette';
 import { rgbToHex } from './oklch';
 
+// sarak-allow-hardcode: o ECharts desenha em canvas, que não lê var(); esta cor é só a reserva do cálculo quando o tema não resolve uma cor, não estilo aplicado por CSS.
 const CHART_THEME_FALLBACK_COLOR = '#3b82f6';
+// sarak-allow-hardcode: o ECharts desenha em canvas, que não lê var(); esta cor é só a reserva do cálculo quando o tema não resolve uma cor, não estilo aplicado por CSS.
 const SURFACE_FALLBACK: Record<CategoricalPaletteMode, string> = { light: '#fcfcfb', dark: '#1a1a19' };
 const RGB_CHANNEL_MAX = 255;
 const DEFAULT_CHART_GRID_OPACITY = 0.05;

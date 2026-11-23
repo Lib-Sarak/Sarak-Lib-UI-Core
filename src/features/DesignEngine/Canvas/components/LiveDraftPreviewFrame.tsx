@@ -1,5 +1,6 @@
 import React from 'react';
 import { Monitor } from 'lucide-react';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { getPreviewLayoutPreset } from '../panelResponsive.presets';
 
 interface LiveDraftPreviewFrameProps {
@@ -51,20 +52,26 @@ const PreviewDeviceHardware = (props: {
 
 const PreviewInspectionButton = (
     props: Pick<LiveDraftPreviewFrameProps, 'isInspecting' | 'setIsInspecting'>,
-): React.ReactElement => (
-    <button
-        onClick={() => props.setIsInspecting(!props.isInspecting)}
-        className={'absolute top-4 right-4 z-[9999] p-2 rounded-full backdrop-blur-md border shadow-2xl transition-all ' + (
-            props.isInspecting
-                ? 'bg-[var(--theme-primary)] text-theme-on-primary border-[var(--theme-primary)] animate-pulse scale-110'
-                : 'bg-theme-body/40 border-theme-text/10 text-theme-text/50 hover:text-theme-on-primary hover:bg-theme-body/60 opacity-0 group-hover:opacity-100'
-        )}
-        style={props.isInspecting ? { backgroundColor: 'var(--theme-primary, #19e3f0)', borderColor: 'var(--theme-primary, #19e3f0)' } : {}}
-        title="Modo de Inspeção (Selecionar elemento)"
-    >
-        <Monitor size={16} />
-    </button>
-);
+): React.ReactElement => {
+    const text = useLibraryText();
+    const inspectLabel = text('previewInspect');
+
+    return (
+        <button
+            aria-label={inspectLabel}
+            onClick={() => props.setIsInspecting(!props.isInspecting)}
+            className={'absolute top-4 right-4 z-[9999] p-2 rounded-full backdrop-blur-md border shadow-2xl transition-all ' + (
+                props.isInspecting
+                    ? 'bg-[var(--theme-primary)] text-theme-on-primary border-[var(--theme-primary)] animate-pulse scale-110'
+                    : 'bg-theme-body/40 border-theme-text/10 text-[var(--theme-primary)] hover:bg-theme-body/60 opacity-0 group-hover:opacity-100'
+            )}
+            style={props.isInspecting ? { backgroundColor: 'var(--theme-primary, #19e3f0)', borderColor: 'var(--theme-primary, #19e3f0)' } : {}}
+            title="Modo de Inspeção (Selecionar elemento)"
+        >
+            <Monitor size={16} />
+        </button>
+    );
+};
 
 const PreviewInspectionOverlay = (props: { isInspecting: boolean }): React.ReactElement | null => {
     if (!props.isInspecting) return null;

@@ -183,8 +183,6 @@ export const natureBreezeTheme: SarakThemePreset = {
         switchBackdropBlur: 4,
         colorPalette: 'custom:analogous:#2e7d32,sec=#fbc02d,acc=#00695c',
         titleColor: '#29782d',
-        colorDepth: 1,
-        colorVariation: 1,
         cardBackgroundColor: '#edf6ed',
         cardBorderColor: 'rgba(216, 225, 216, 0.72)',
         chartGridOpacity: 0.12,

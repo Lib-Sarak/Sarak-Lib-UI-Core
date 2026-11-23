@@ -14,12 +14,12 @@ export interface SarakShellUser {
     email?: string;
 }
 
-/** O botão de sair usa a cor de erro do tema; o cromo contrastante a ajusta para o degradê e o hover fica sólido. */
+/** O botão de sair: a tinta do erro (a variante `-bg` que o motor emite, 15%), o texto misturado ao de maior contraste (o par é `mix:` em `contrast-pairs.ts`) e sólido no hover. A barra contrastante entrega a cor já calculada em `--sarak-shell-logout-text-color`, sem tocar a cor de erro que pinta o fundo sólido do hover. O prefixo `color:` é obrigatório: sem ele o `tailwind-merge` lê o `%` do `color-mix` como tamanho de fonte, não remove a cor do fantasma e apaga o `text-xs`. */
 const LOGOUT_TINT = 'bg-[var(--theme-error-bg,rgba(239,68,68,0.15))]';
-const LOGOUT_TEXT = 'text-[var(--sarak-status-error-color,#ef4444)]';
+const LOGOUT_TEXT = 'text-[color:var(--sarak-shell-logout-text-color,color-mix(in_srgb,var(--sarak-status-error-color,#ef4444)_40%,var(--sarak-on-surface,#ffffff)))]';
 const LOGOUT_BORDER = 'border-[var(--theme-error-border,rgba(239,68,68,0.25))]';
 const LOGOUT_HOVER_TINT = 'hover:bg-[var(--theme-error-bg,rgba(239,68,68,0.15))]';
-const LOGOUT_HOVER_TEXT = 'hover:text-[var(--sarak-status-error-color,#ef4444)]';
+const LOGOUT_HOVER_TEXT = 'hover:text-[color:var(--sarak-shell-logout-text-color,color-mix(in_srgb,var(--sarak-status-error-color,#ef4444)_40%,var(--sarak-on-surface,#ffffff)))]';
 const LOGOUT_HOVER_SOLID = 'hover:bg-[var(--sarak-status-error-color,#ef4444)] hover:text-[var(--sarak-on-error,#020617)]';
 
 export interface SarakShellUserWidgetProps {

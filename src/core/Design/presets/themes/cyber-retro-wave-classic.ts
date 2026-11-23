@@ -176,8 +176,6 @@ export const cyberRetroWave2077ClassicTheme: SarakThemePreset = {
         switchStyleType: 'tactile',
         switchBackdropBlur: 4,
         colorPalette: 'custom:analogous:#ff00ff,sec=#00ffff,acc=#ff0055',
-        colorDepth: 1,
-        colorVariation: 1,
         chartGridOpacity: 0.05,
         chartType: 'line',
         chartShowGrid: true,

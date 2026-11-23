@@ -4,6 +4,13 @@ import {
     transformLayeredShadows
 } from './utils/manifest-transformers';
 import type { SarakTokenValue } from '../Design/types';
+import { sarakGetDefaultDesignState } from '../Design/master-map';
+
+const SCHEMA_DEFAULTS = sarakGetDefaultDesignState();
+
+/** Variantes da cor recebida; sem valor, as do padrão do token no schema (a reserva nunca é uma cor escrita aqui). */
+const colorVariantsWithSchemaDefault = (tokenId: string) =>
+    (v: SarakTokenValue) => computeColorVariants(String(v), String(SCHEMA_DEFAULTS[tokenId]));
 
 /**
  * SOVEREIGN DESIGN MANIFEST (v10.1)
@@ -26,61 +33,59 @@ export const SARAK_DESIGN_MANIFEST: Record<string, {
     mode: { vars: ['--sarak-mode'], transform: (v: SarakTokenValue) => v === 'dark' ? 'dark' : 'light' },
     primaryColor: {
         vars: ['--sarak-primary-color'],
-        transform: (v: SarakTokenValue) => computeColorVariants(String(v), '#3b82f6')
+        transform: colorVariantsWithSchemaDefault('primaryColor')
     },
     secondaryColor: {
         vars: ['--sarak-secondary-color'],
-        transform: (v: SarakTokenValue) => computeColorVariants(String(v), '#6366f1')
+        transform: colorVariantsWithSchemaDefault('secondaryColor')
     },
     tertiaryColor: {
         vars: ['--sarak-tertiary-color'],
-        transform: (v: SarakTokenValue) => computeColorVariants(String(v), '#10b981')
+        transform: colorVariantsWithSchemaDefault('tertiaryColor')
     },
-    colorDepth: { vars: ['--sarak-color-depth'], transform: (v: SarakTokenValue) => parseInt(String(v)) || 1 },
-    colorVariation: { vars: ['--sarak-color-variation'], transform: (v: SarakTokenValue) => parseInt(String(v)) || 1 },
     accentColor: {
         vars: ['--sarak-accent-color'],
-        transform: (v: SarakTokenValue) => computeColorVariants(String(v), '#f43f5e')
+        transform: colorVariantsWithSchemaDefault('accentColor')
     },
     surfaceColor: {
         vars: ['--sarak-surface-color'],
-        transform: (v: SarakTokenValue) => computeColorVariants(String(v), '#1e293b')
+        transform: colorVariantsWithSchemaDefault('surfaceColor')
     },
     errorColor: {
         vars: ['--sarak-status-error-color'],
-        transform: (v: SarakTokenValue) => computeColorVariants(String(v), '#ef4444')
+        transform: colorVariantsWithSchemaDefault('statusErrorColor')
     },
     successColor: {
         vars: ['--sarak-status-success-color'],
-        transform: (v: SarakTokenValue) => computeColorVariants(String(v), '#10b981')
+        transform: colorVariantsWithSchemaDefault('statusSuccessColor')
     },
     warningColor: {
         vars: ['--sarak-status-warning-color'],
-        transform: (v: SarakTokenValue) => computeColorVariants(String(v), '#f59e0b')
+        transform: colorVariantsWithSchemaDefault('statusWarningColor')
     },
     textureColor: {
         vars: ['--sarak-texture-color'],
-        transform: (v: SarakTokenValue) => computeColorVariants(String(v), '#ffffff')
+        transform: colorVariantsWithSchemaDefault('textureColor')
     },
     sidebarColor: {
         vars: ['--sarak-sidebar-bg'],
-        transform: (v: SarakTokenValue) => computeColorVariants(String(v), '#000000')
+        transform: colorVariantsWithSchemaDefault('sidebarColor')
     },
     topbarColor: {
         vars: ['--sarak-topbar-bg'],
-        transform: (v: SarakTokenValue) => computeColorVariants(String(v), '#000000')
+        transform: colorVariantsWithSchemaDefault('topbarColor')
     },
     cardBackgroundColor: {
         vars: ['--sarak-card-bg'],
-        transform: (v: SarakTokenValue) => computeColorVariants(String(v), 'rgba(30, 41, 59, 0.4)')
+        transform: colorVariantsWithSchemaDefault('cardBackgroundColor')
     },
     cardBorderColor: {
         vars: ['--sarak-card-border-color'],
-        transform: (v: SarakTokenValue) => computeColorVariants(String(v), 'rgba(255, 255, 255, 0.1)')
+        transform: colorVariantsWithSchemaDefault('cardBorderColor')
     },
     titleColor: {
         vars: ['--sarak-title-color'],
-        transform: (v: SarakTokenValue) => computeColorVariants(String(v), '#ffffff')
+        transform: colorVariantsWithSchemaDefault('titleColor')
     },
     layoutDensity: { vars: ['--sarak-layout-density'], classPrefix: 'density-' },
     texture: { vars: ['--sarak-texture'], classPrefix: 'texture-' },

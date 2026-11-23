@@ -42,6 +42,8 @@ export const resolveChromeToneStyle = (tone: NavigationBarTone, bar: Bar, design
         return {
             [`--sarak-${bar}-item-hover-text-color`]: resolvedStrong,
             '--sarak-nav-active-color': resolvedStrong,
+            // A cor forte também pinta o fundo do controle escolhido (Lateral, P/M/G): o texto sobre ele é o fundo da barra, o par oposto, e não o texto do botão primário.
+            '--sarak-on-nav-active': BAR_BACKGROUND[bar],
             '--theme-title': resolvedStrong,
         } as CSSProperties;
     }
@@ -81,6 +83,6 @@ export const resolveChromeToneStyle = (tone: NavigationBarTone, bar: Bar, design
     };
     if (contrastColors.idleTextColor) style[`--sarak-${bar}-item-text-color`] = contrastColors.idleTextColor;
     if (contrastColors.activeBackgroundColor) style[`--sarak-${bar}-active-color`] = contrastColors.activeBackgroundColor;
-    if (contrastColors.logoutTextColor) style['--sarak-status-error-color'] = contrastColors.logoutTextColor;
+    if (contrastColors.logoutTextColor) Object.assign(style, { '--sarak-shell-logout-text-color': contrastColors.logoutTextColor });
     return style as CSSProperties;
 };

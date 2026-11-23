@@ -252,11 +252,14 @@ for (const mode of MODES) {
             await watchTransitions(page);
             await page.evaluate(() => { window.__transitionRuns = 0; });
             const recalcsBefore = await recalcStyleCount(cdp);
+            let recalcsAtSwitchEnd = recalcsBefore;
 
             const { sizes, total } = await styleRecalcSizes(page, cdp, async () => {
                 await page.getByRole('button', { name: THEME_CARD }).click();
                 await expect.poll(() => page.evaluate(() => window.__switchRecords.map((record) => record.phase)), { timeout: 60_000 })
                     .toEqual(['on', 'off']);
+                await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())));
+                recalcsAtSwitchEnd = await recalcStyleCount(cdp);
                 await settle(page, cdp);
             });
 
@@ -281,7 +284,7 @@ for (const mode of MODES) {
             // Só a transição que muda o valor (e a que não deu para ler) conta no teto; a de um valor para ele mesmo é anotada.
             const { counted, inferred } = classifyUnreadable(effective, noEffect, unreadableList);
             const transitionRuns = effective.length + counted.length;
-            const recalcs = (await recalcStyleCount(cdp)) - recalcsBefore;
+            const recalcs = recalcsAtSwitchEnd - recalcsBefore;
             test.info().annotations.push({
                 type: 'medido',
                 description: `${transitionRuns} transições com efeito (${effective.length} lidas + ${counted.length} sem leitura contadas por cautela: ${countByProperty([...effective, ...counted])}); ${noEffect.length + inferred.length} sem efeito, de um valor para ele mesmo (${noEffect.length} lidas + ${inferred.length} inferidas: ${countByProperty([...noEffect, ...inferred])}); ${recalcs} recálculos de estilo`,

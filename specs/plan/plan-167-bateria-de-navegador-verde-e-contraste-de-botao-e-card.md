@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Deixar a bateria de navegador verde num build novo e corrigir o contraste do hover de botão e do SarakTitleCard"
 objetivo: "Fazer o cromo-css-real:check passar inteiro num build novo do HEAD antes da tag 9.0.0, decidindo caso a caso se o teste ficou velho ou se o código perdeu algo, e levar a 4,5:1 o botão sob o ponteiro e o texto do SarakTitleCard"
 dominio: "Qualidade / Bateria de navegador e contraste"
-status: "🔵 Em correção"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "navegador", "contraste", "acessibilidade", "release-9-0-0"]
 relacionados: ["[[10-seguranca-e-acessibilidade]]", "[[05-cromo-e-slots]]", "[[06-painel-de-customizacao-e-preview]]"]
@@ -1107,3 +1107,40 @@ Ok do dono nas capturas recebido (passo6). Rodei `npm run cromo-css-real:check` 
 - **Dono:** plan-168 (`catalogEntries.decisionTokens.ts`). Não editei: é arquivo da 168 e o conserto (o spec não pode importar o catálogo que puxa JSON, ou o catálogo precisa ler o JSON de outro jeito) é decisão dela. Não afrouxei nem toquei o spec.
 - Os cinco specs desta plan e os demais que rodei isolados passam; só o carregamento da suíte inteira cai.
 - A bateria na raiz (duas rodadas verdes) fica pendente desse conserto da 168.
+
+## Resumo da execução (correção 2, bateria final na raiz) — 2026-11-23
+
+Ok do dono nas capturas (passo6) e carregamento do Playwright já consertado pela 168 (`486ff521`). Raiz, uma única cadeia (uma primeira tentativa teve duas cadeias concorrentes no mesmo `dist/` e foi descartada; processos encerrados eram meus):
+
+- **`npm run cromo-css-real:check` (build novo + 894 testes):** rodada 1 → 892 passados, 2 pulados, exit 0 (1,5 h).
+- **Rodada 2 (`playwright test`, mesmo build):** 891 passados, 2 pulados e **1 vermelho: `fontes-no-painel.spec.ts:49` ("origem bundled")**, em `document.fonts.check('700 32px "Outfit"')` logo depois de a face `Outfit` aparecer como `loaded`. **Intermitente:** o mesmo spec passa 15 de 15 isolado (`--repeat-each=5`, 3 testes), a spec não foi tocada por esta plan (sem diff) e passou na rodada 1. Não rodei o controle no `HEAD`: com 5 de 5 verdes isolado, não há vermelho a atribuir. **As duas rodadas inteiras seguidas, ambas verdes, não se cumpriram por esse caso** (uma terceira rodada inteira, 1,5 h, fica a critério do dono).
+- **`npx vitest run` (sem `-u`, caminho com `C:` maiúsculo):** 783 arquivos, 7024 testes, tudo verde, exit 0. O `MasterControlPanel.test.tsx` voltou a carregar.
+- Logs: `%TEMP%\sarak-167-final\rodada1.log`, `rodada2.log`, `vitest.log`.
+
+## Veredito — 2026-11-23 01:30 — correção 2, achados 2 a 6 e bateria final — 🟢 Aprovada
+
+**Como medi:** diff dos achados 3, 4 e 5 lido linha a linha (`SarakShellUserWidget.tsx`, `chromeToneContrast.ts`, `chromeToneStyle.ts`,
+`SarakTitleCard.tsx`). Li os três logs da raiz em `C:\Users\Igor\AppData\Local\Temp\sarak-167-final\`: rodada 1 com 892 passados e 2
+pulados; rodada 2 com 891, 2 pulados e 1 vermelho; `vitest` com 7024 de 7024. Rodei na raiz os 24 gates do pre-commit e
+`audit:baseline --with-tsc`, todos verdes, e o Anel 0 sobre as linhas adicionadas e os não rastreados, com 0 achados.
+
+**O vermelho da rodada 2 não é desta plan.** O teste é `fontes-no-painel.spec.ts:49`, que a plan não tocou (último commit `89404236`). A
+linha 59 espera qualquer face `Outfit` carregada, e a linha 60 exige a de peso 700. Quando o peso normal chega primeiro, a espera termina
+e a conferência cai. É uma corrida do próprio teste. O dono aceitou as duas rodadas como estão (decisão de 2026-11-23), e o conserto vai
+para a plan-169.
+
+**Aprovados:**
+- **Achado 2:** só os snapshots nomeados, mais os do card, que mudam com o achado 4.
+- **Achado 3:** `color:` nas duas classes e a cor do sair calculada também na lateral. A `plan-149` confere a cor pintada nas duas barras.
+- **Achado 4:** o título segue `--sarak-card-title-color` e o subtítulo segue `--sarak-subtitle-color`.
+- **Achado 5:** o inativo e o forte se resolvem juntos, e `--sarak-on-nav-active` vem do fundo da barra. Os 28 de
+  `tom-contrastante-legivel` passaram verdes nas duas rodadas.
+- **Achado 6:** as 32 capturas, com o ok do dono.
+
+**Nit, que vai para a plan-169:** `ICON_MINIMUM` (`chromeToneContrast.ts:12`) ficou sem leitor.
+
+**Commit:** um commit só, com esta plan, a 170 e as correções 7 a 9 da plan-169. Os arquivos são os mesmos: os quatro de `manifest` e de
+`useDesignVariables` têm a D1 e as reservas do schema, e os marcadores ficam nos ganchos de estilo. Foi esse conjunto que passou nas duas
+baterias e na suíte inteira.
+
+**Status da plan: 🟢 Aprovada.**

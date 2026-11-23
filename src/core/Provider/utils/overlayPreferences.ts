@@ -3,6 +3,7 @@ import { PALETTE_CALCULATED_KEYS, resolvePaletteForDesign } from '../../Design/p
 import { chosenToneKeys } from './designChoices';
 import { isValidPaletteValue } from '../../Design/palette/parser';
 import { isPreferenceOffered } from '../../Design/schema/preferences';
+import { sarakGetDefaultDesignState } from '../../Design/master-map';
 import type { SarakTokenValue } from '../../Design/types';
 import type { SarakDesignState, SarakThemeEntry } from '../types';
 import type { SarakFontSizePreference, SarakUserPreferences } from '../preferencesTypes';
@@ -12,6 +13,9 @@ const FONT_SIZE_FLOOR_PX = 8;
 
 /** Padrão de fábrica da redução de P e do aumento de G, em px — o mesmo `defaultValue` dos tokens (`schema/preferences.ts`). */
 const DEFAULT_FONT_SIZE_STEP_PX = 2;
+
+/** O `bodySize` de fábrica do schema, base da preferência quando o design ainda não o declara. */
+const DEFAULT_BODY_SIZE = String(sarakGetDefaultDesignState().bodySize);
 
 // @sarak-token-reader bodySize direto
 // O valor de `bodySize` é lido como número de px, qualquer uma das opções, e não por uma tabela de opções.
@@ -191,7 +195,7 @@ export const overlayPreferences = (
         result = { ...result, sidebarWidth: preferences.sidebarWidth };
     }
     if (offered('fontSize') && preferences.fontSize) {
-        result = { ...result, bodySize: applyFontSizeDelta(result, String(result.bodySize ?? '14px'), preferences.fontSize) };
+        result = { ...result, bodySize: applyFontSizeDelta(result, String(result.bodySize ?? DEFAULT_BODY_SIZE), preferences.fontSize) };
     }
     if (offered('language') && preferences.language && isLanguageEnabled(design, preferences.language)) {
         result = { ...result, language: preferences.language };

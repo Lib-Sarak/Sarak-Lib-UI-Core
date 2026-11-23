@@ -70,13 +70,15 @@ exports[`CardsCatalog > renderiza os cards curados por padrão, sem abas, e faz 
                                 style="flex-direction: column; padding-right: var(--sarak-layout-gap-sm, 8px);"
                               >
                                 <span
-                                  class="font-black text-[var(--sarak-subtitle-color,var(--theme-subtitle,#f2f6fb))] uppercase"
+                                  class="font-black text-[var(--sarak-subtitle-color,var(--sarak-text-sec,rgba(242,246,251,0.72)))] uppercase"
+                                  data-contrast-part="subtitle"
                                   style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 11px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
                                 >
                                   Node-04-PR
                                 </span>
                                 <h4
-                                  class="text-[var(--sarak-card-title-color,var(--theme-title,#f2f6fb))] tracking-tight group-hover:text-[var(--sarak-primary-color,#19e3f0)] transition-colors truncate"
+                                  class="text-[var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb))] group-hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_60%,var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb)))] tracking-tight transition-colors truncate"
+                                  data-contrast-part="title"
                                   style="font-size: var(--sarak-card-title-font-size, 20px); font-weight: var(--sarak-card-title-font-weight, 900); letter-spacing: var(--sarak-card-title-letter-spacing, 0px);"
                                 >
                                   CPU Cluster
@@ -244,13 +246,15 @@ exports[`CardsCatalog > renderiza os cards curados por padrão, sem abas, e faz 
                                 style="flex-direction: column; padding-right: var(--sarak-layout-gap-sm, 8px);"
                               >
                                 <span
-                                  class="font-black text-[var(--sarak-subtitle-color,var(--theme-subtitle,#f2f6fb))] uppercase"
+                                  class="font-black text-[var(--sarak-subtitle-color,var(--sarak-text-sec,rgba(242,246,251,0.72)))] uppercase"
+                                  data-contrast-part="subtitle"
                                   style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 11px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
                                 >
                                   Node-04-PR
                                 </span>
                                 <h4
-                                  class="text-[var(--sarak-card-title-color,var(--theme-title,#f2f6fb))] tracking-tight group-hover:text-[var(--sarak-primary-color,#19e3f0)] transition-colors truncate"
+                                  class="text-[var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb))] group-hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_60%,var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb)))] tracking-tight transition-colors truncate"
+                                  data-contrast-part="title"
                                   style="font-size: var(--sarak-card-title-font-size, 20px); font-weight: var(--sarak-card-title-font-weight, 900); letter-spacing: var(--sarak-card-title-letter-spacing, 0px);"
                                 >
                                   CPU Cluster
@@ -418,13 +422,15 @@ exports[`CardsCatalog > renderiza os cards curados por padrão, sem abas, e faz 
                                 style="flex-direction: column; padding-right: var(--sarak-layout-gap-sm, 8px);"
                               >
                                 <span
-                                  class="font-black text-[var(--sarak-subtitle-color,var(--theme-subtitle,#f2f6fb))] uppercase"
+                                  class="font-black text-[var(--sarak-subtitle-color,var(--sarak-text-sec,rgba(242,246,251,0.72)))] uppercase"
+                                  data-contrast-part="subtitle"
                                   style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 11px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
                                 >
                                   Node-04-PR
                                 </span>
                                 <h4
-                                  class="text-[var(--sarak-card-title-color,var(--theme-title,#f2f6fb))] tracking-tight group-hover:text-[var(--sarak-primary-color,#19e3f0)] transition-colors truncate"
+                                  class="text-[var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb))] group-hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_60%,var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb)))] tracking-tight transition-colors truncate"
+                                  data-contrast-part="title"
                                   style="font-size: var(--sarak-card-title-font-size, 20px); font-weight: var(--sarak-card-title-font-weight, 900); letter-spacing: var(--sarak-card-title-letter-spacing, 0px);"
                                 >
                                   CPU Cluster
@@ -592,13 +598,15 @@ exports[`CardsCatalog > renderiza os cards curados por padrão, sem abas, e faz 
                                 style="flex-direction: column; padding-right: var(--sarak-layout-gap-sm, 8px);"
                               >
                                 <span
-                                  class="font-black text-[var(--sarak-subtitle-color,var(--theme-subtitle,#f2f6fb))] uppercase"
+                                  class="font-black text-[var(--sarak-subtitle-color,var(--sarak-text-sec,rgba(242,246,251,0.72)))] uppercase"
+                                  data-contrast-part="subtitle"
                                   style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 11px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
                                 >
                                   Node-04-PR
                                 </span>
                                 <h4
-                                  class="text-[var(--sarak-card-title-color,var(--theme-title,#f2f6fb))] tracking-tight group-hover:text-[var(--sarak-primary-color,#19e3f0)] transition-colors truncate"
+                                  class="text-[var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb))] group-hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_60%,var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb)))] tracking-tight transition-colors truncate"
+                                  data-contrast-part="title"
                                   style="font-size: var(--sarak-card-title-font-size, 20px); font-weight: var(--sarak-card-title-font-weight, 900); letter-spacing: var(--sarak-card-title-letter-spacing, 0px);"
                                 >
                                   CPU Cluster
@@ -766,13 +774,15 @@ exports[`CardsCatalog > renderiza os cards curados por padrão, sem abas, e faz 
                                 style="flex-direction: column; padding-right: var(--sarak-layout-gap-sm, 8px);"
                               >
                                 <span
-                                  class="font-black text-[var(--sarak-subtitle-color,var(--theme-subtitle,#f2f6fb))] uppercase"
+                                  class="font-black text-[var(--sarak-subtitle-color,var(--sarak-text-sec,rgba(242,246,251,0.72)))] uppercase"
+                                  data-contrast-part="subtitle"
                                   style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 11px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
                                 >
                                   Node-04-PR
                                 </span>
                                 <h4
-                                  class="text-[var(--sarak-card-title-color,var(--theme-title,#f2f6fb))] tracking-tight group-hover:text-[var(--sarak-primary-color,#19e3f0)] transition-colors truncate"
+                                  class="text-[var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb))] group-hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_60%,var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb)))] tracking-tight transition-colors truncate"
+                                  data-contrast-part="title"
                                   style="font-size: var(--sarak-card-title-font-size, 20px); font-weight: var(--sarak-card-title-font-weight, 900); letter-spacing: var(--sarak-card-title-letter-spacing, 0px);"
                                 >
                                   CPU Cluster
@@ -940,13 +950,15 @@ exports[`CardsCatalog > renderiza os cards curados por padrão, sem abas, e faz 
                                 style="flex-direction: column; padding-right: var(--sarak-layout-gap-sm, 8px);"
                               >
                                 <span
-                                  class="font-black text-[var(--sarak-subtitle-color,var(--theme-subtitle,#f2f6fb))] uppercase"
+                                  class="font-black text-[var(--sarak-subtitle-color,var(--sarak-text-sec,rgba(242,246,251,0.72)))] uppercase"
+                                  data-contrast-part="subtitle"
                                   style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 11px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
                                 >
                                   Node-04-PR
                                 </span>
                                 <h4
-                                  class="text-[var(--sarak-card-title-color,var(--theme-title,#f2f6fb))] tracking-tight group-hover:text-[var(--sarak-primary-color,#19e3f0)] transition-colors truncate"
+                                  class="text-[var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb))] group-hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_60%,var(--sarak-card-title-color,var(--theme-text-primary,#f2f6fb)))] tracking-tight transition-colors truncate"
+                                  data-contrast-part="title"
                                   style="font-size: var(--sarak-card-title-font-size, 20px); font-weight: var(--sarak-card-title-font-weight, 900); letter-spacing: var(--sarak-card-title-letter-spacing, 0px);"
                                 >
                                   CPU Cluster

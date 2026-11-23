@@ -204,8 +204,6 @@ export const industrialTerminalTheme: SarakThemePreset = {
         switchStyleType: 'tactile',
         switchBackdropBlur: 0,
         // --- Paletas e Gradientes ---
-        colorDepth: 1,
-        colorVariation: 1,
         // --- Gráficos & Dados ---
         chartGridOpacity: 0.14,
         // bar: leitura de medição discreta (turno, lote), sem suavização

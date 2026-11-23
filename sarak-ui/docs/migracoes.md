@@ -5,6 +5,70 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 9.0.0 — `colorDepth` e `colorVariation` saem do tema
+
+Os dois controles ("Profundidade da Cor" e "Variação da Cor") só moldavam `--theme-primary-hover` e `--theme-primary-active` (e o `-hover`/`-active` das demais cores com variantes), e nenhum componente da lib lê essas variáveis desde que o hover global do `<button>` deixou de pintar o fundo. Ajustá-los não mudava nada na tela. As variáveis `-hover` e `-active` continuam emitidas, agora sempre com o fator 1 (cor base ×1,1 no hover e ×0,9 no aperto).
+
+**O que muda para o importador:**
+1. **O valor salvo é descartado com aviso.** `colorDepth` e `colorVariation` entram na lista de chaves removidas: um tema persistido que as traga perde as duas, com o aviso de token removido, e vale o fator 1.
+2. **As chaves saem do tipo público `SarakDesignTokens`.** Objeto de tema em TypeScript que as cite deixa de compilar; apague as duas linhas.
+3. **`--sarak-color-depth` e `--sarak-color-variation` deixam de existir.** Quem as lia em CSS próprio passa a ter o `var()` sem valor. O único tema com profundidade 0, `industrial-terminal-classic`, passa a emitir `-hover` e `-active` com o fator 1 (antes, com 0, as duas variantes repetiam a cor base).
+
+| | Antes | Depois |
+|---|---|---|
+| `design.colorDepth`, `design.colorVariation` | aceitos (0 a 5 e 1 a 5) | descartados com aviso; fator 1 |
+| `--theme-primary-hover`, `--theme-primary-active` | moldadas pelos dois tokens | emitidas, fator 1 fixo |
+| `--sarak-color-depth`, `--sarak-color-variation` | emitidas | não existem mais |
+
+---
+
+## 9.0.0 — botões deixam de receber fundo global no hover e no aperto
+
+A regra global deixa de pintar o fundo e trocar a cor do texto de `<button>` no hover; no aperto, deixa de pintar o fundo. O movimento de hover e o transform de active permanecem. Cada botão conserva o estado visual definido pelo componente ou pelo importador.
+
+**O que muda para o importador:** um `<button>` cru que dependia do fundo primário automático deixa de receber esse fundo ao passar o ponteiro ou apertar. Defina o estado visual no próprio botão ou use um componente com variante de ação. Nenhum import, prop ou token público muda.
+
+| | Antes | Depois |
+|---|---|---|
+| `SarakActionCard` com paleta gerada | fundo com cor de hover separada | o hover repete a cor primária; o movimento continua |
+| `<button>` sem hover próprio | fundo primário e cor de texto calculada pela lib | cores definidas pelo próprio botão ou herdadas do fundo; o movimento de hover continua |
+| `<button>` no aperto | fundo primário ativo | fundo definido pelo próprio botão; o transform de active continua |
+
+---
+
+## 9.0.0 — o texto do botão `ghost` fica legível sobre superfícies tingidas
+
+O texto do `SarakButton` `variant="ghost"` deixa de ser a cor primária pura e passa a ser 85% primária misturada a 15% de `--sarak-on-surface` (o texto de maior contraste sobre o corpo). No tema claro, sobre a superfície tingida do painel, o texto ficava em 4,10:1; agora fica em 5,22:1 (no escuro, de 4,54:1 para 5,68:1).
+
+**O que muda para o importador:** o texto do botão `ghost` fica um pouco mais próximo da cor de texto do corpo. Nenhum import, prop ou token muda. O `SarakIconButton` não muda.
+
+| | Antes | Depois |
+|---|---|---|
+| Texto do `SarakButton` `ghost` | `--sarak-primary-color` | mistura de 85% de `--sarak-primary-color` com `--sarak-on-surface` |
+
+---
+
+## 9.0.0 — contraste e destaque do cromo nas barras contrastantes
+
+Nas barras com tom `primary`, `secondary` ou `inverse`, os textos e controles do cromo passam a usar cores calculadas contra as duas paradas do degradê. O véu da pílula ativa mantém 20% de opacidade; na parada clara ele escurece, e o texto da pílula usa a cor que passa sobre esse fundo. A pílula ganha um contorno visível com ao menos 3:1 de contraste não textual contra a barra. O seletor de idioma e o botão de sair também recebem cores ajustadas para o fundo efetivo.
+
+**O que muda para o importador:** é uma mudança visual nas barras de tom contrastante: a pílula ativa fica mais marcada, o idioma deixa de ficar esmaecido e o vermelho do botão de sair pode mudar. Nenhum import, prop ou token público muda.
+
+| | Antes | Depois |
+|---|---|---|
+| Pílula ativa no degradê contrastante | véu podia clarear a parada clara e quase se confundir com a barra | véu de 20% escurece a parada clara; texto passa em 4,5:1 e contorno em 3:1 |
+| Idioma e sair | cor podia perder contraste na barra | cor calculada sobre a barra e a parada clara |
+
+---
+
+## 9.0.0 - os oito tipos de gráfico usam melhor o quadro
+
+O `SarakChartEngine` passa a usar mais da área que recebe. Os eixos de valor partem do zero em todos os tipos; linha, área e dispersão não ampliam o eixo para esconder essa origem. Pizza, radar e gauge também passam a ocupar mais do quadro, e os sete rótulos do radar permanecem visíveis.
+
+**O que muda para o importador:** não há alteração de API nem migração de dados. Gráficos existentes podem aparentar escala e proporções diferentes dentro do mesmo `width`/`height`, pois a área de desenho aproveita melhor o componente. Atualize capturas visuais ou comparações que dependam da geometria anterior.
+
+---
+
 ## 9.0.0 — escolher um estilo de gráfico no painel não muda mais o tipo padrão
 
 O grupo **Gráficos** do painel passa a listar **estilos**, nunca tipos: cada preset grava só `chartThickness`, `chartSmoothing`, `chartShowGrid` e `chartGridOpacity`. Antes os presets também gravavam `chartType` ("Área suave" gravava `area`, "Barras limpas" gravava `bar`), e como o `SarakChartEngine` usa o `type` do componente primeiro e o `chartType` do design depois, escolher um estilo trocava o tipo de todo gráfico que não passava `type`.

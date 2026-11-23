@@ -28,6 +28,12 @@ import { test, expect, chromium, type Browser, type Locator, type Page } from '@
 
 const DESKTOP = { width: 1280, height: 900 } as const;
 
+declare global {
+    interface Window {
+        __identityHoverTransitionEnded: boolean;
+    }
+}
+
 const harnessUrl = process.env.SARAK_CROMO_HARNESS_URL;
 if (!harnessUrl) {
     throw new Error('O globalSetup não preparou o harness de CSS para esta execução do Playwright.');
@@ -36,7 +42,8 @@ if (!harnessUrl) {
 let browser: Browser;
 
 test.beforeAll(async () => {
-    browser = await chromium.launch();
+    const executablePath = process.env.SARAK_CHROMIUM_EXECUTABLE_PATH;
+    browser = await chromium.launch(executablePath ? { executablePath } : {});
 });
 
 test.afterAll(async () => {
@@ -74,6 +81,16 @@ const computed = (target: Locator, property: string, pseudo?: string): Promise<s
 
 const brand = (page: Page): Locator => page.locator('.sarak-chrome-brand').first();
 
+const waitTwiceDurationFast = async (page: Page, target: Locator): Promise<void> => {
+    const durationMs = await target.evaluate((element) => {
+        const duration = getComputedStyle(element).getPropertyValue('--duration-fast').trim();
+        const amount = Number.parseFloat(duration);
+        if (!Number.isFinite(amount)) throw new Error(`--duration-fast computado inválido: "${duration}"`);
+        return duration.endsWith('ms') ? amount : amount * 1000;
+    });
+    await page.waitForTimeout(durationMs * 2);
+};
+
 for (const mode of MODES) {
     test.describe(`modo ${mode}`, () => {
         test('identityAlignment: a marca do cromo se alinha (esquerda é o padrão)', async () => {
@@ -89,11 +106,29 @@ for (const mode of MODES) {
         });
 
         test('identityHoverEffect: a marca reage ao ponteiro na opção escolhida, e não reage em none', async () => {
-            const hovered = async (theme: string, property: string): Promise<string> => {
+            const hovered = async (theme: string, property: string, waitForTransition = true): Promise<string> => {
                 let value = '';
                 await withScene(undefined, theme, mode, async (page) => {
+                    if (waitForTransition) {
+                        await page.evaluate((transitionProperty) => {
+                            window.__identityHoverTransitionEnded = false;
+                            const target = document.querySelector('.sarak-chrome-brand');
+                            if (!target) throw new Error('marca do cromo ausente');
+                            target.addEventListener('transitionend', (event) => {
+                                if (event.target === target && event.propertyName === transitionProperty) {
+                                    window.__identityHoverTransitionEnded = true;
+                                }
+                            });
+                        }, property);
+                    }
                     await brand(page).hover();
-                    await page.waitForTimeout(400); // a transição de `--duration-fast` (0,2 s) termina
+                    if (waitForTransition) {
+                        await expect.poll(() => page.evaluate(() => window.__identityHoverTransitionEnded), {
+                            message: `transitionend de ${property}`,
+                        }).toBe(true);
+                    } else {
+                        await waitTwiceDurationFast(page, brand(page));
+                    }
                     value = await computed(brand(page), property);
                 });
                 return value;
@@ -101,8 +136,8 @@ for (const mode of MODES) {
             expect(Number(await hovered('identidade-hover-opacidade', 'opacity')), 'opacity').toBeLessThan(1);
             expect(await hovered('identidade-hover-escala', 'transform'), 'scale').toMatch(/^matrix\(1\.0/);
             expect(await hovered('identidade-hover-brilho', 'filter'), 'glow').toContain('drop-shadow');
-            expect(Number(await hovered('identidade-hover-nenhum', 'opacity')), 'CONTRAPROVA: none').toBe(1);
-            expect(await hovered('identidade-hover-nenhum', 'filter'), 'CONTRAPROVA: none, sem filtro').toBe('none');
+            expect(Number(await hovered('identidade-hover-nenhum', 'opacity', false)), 'CONTRAPROVA: none').toBe(1);
+            expect(await hovered('identidade-hover-nenhum', 'filter', false), 'CONTRAPROVA: none, sem filtro').toBe('none');
         });
 
         test('glassRoughness e glassSpecularity: o vidro fosqueia e ganha o brilho da quina; o padrão é sutil', async () => {

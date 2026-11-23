@@ -192,8 +192,6 @@ export const neoBrutalismClassicTheme: SarakThemePreset = {
         switchBackdropBlur: 4,
         colorPalette: 'custom:analogous:#ff0000,sec=#ffff00,acc=#0000ff',
         titleColor: '#000000',
-        colorDepth: 1,
-        colorVariation: 1,
         cardBackgroundColor: '#ffffff',
         cardBorderColor: '#000000',
         chartGridOpacity: 0.12,

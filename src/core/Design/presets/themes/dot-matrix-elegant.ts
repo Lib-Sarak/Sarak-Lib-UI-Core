@@ -194,8 +194,6 @@ export const dotMatrixElegantTheme: SarakThemePreset = {
         switchBackdropBlur: 0,
         colorPalette: 'custom:analogous:#d4af37,sec=#a67c00,acc=#ffffff',
         titleColor: '#ffffff',
-        colorDepth: 1,
-        colorVariation: 1,
         cardBackgroundColor: 'rgba(10, 10, 10, 0.9)',
         cardBorderColor: 'rgba(212, 175, 55, 0.1)',
         chartGridOpacity: 0.05,

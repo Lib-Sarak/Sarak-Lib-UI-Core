@@ -87,6 +87,8 @@ const MANIFEST_FILE = path.resolve('src/core/Provider/manifest.ts');
 const RUNTIME_VARS_FILES = [
   path.resolve('src/core/Design/hooks/useDesignVariables.ts'),
   path.resolve('src/core/Design/hooks/designVariableHelpers.ts'),
+  // O cromo contrastante escreve variáveis em runtime (estilo inline da barra), com chaves por extenso: fonte real.
+  path.resolve('src/components/Layout/chrome/chromeToneStyle.ts'),
 ];
 const CONSUMER_DIRS = [
   path.resolve('src/components'),

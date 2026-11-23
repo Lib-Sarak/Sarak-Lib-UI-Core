@@ -105,7 +105,11 @@ test('escolher uma pronta, criar a partir de uma cor, ajustar um token e aplicar
     await page.getByRole('button', { name: 'Voltar para a lista de decisões' }).click();
     await page.getByRole('button', { name: /^Cores/ }).click();
 
-    await gallery.getByRole('radio').first().click();
+    // A paleta criada não pertence a um grupo pronto; abra a família e troque por outra paleta pronta.
+    await gallery.locator('[data-palette-group="triadic"] [data-group-toggle]').click();
+    const alternatePalette = gallery.getByRole('radio', { name: 'Grafite e rosa' });
+    await expect(alternatePalette).toHaveAttribute('aria-checked', 'false');
+    await alternatePalette.click();
     const dialog = page.getByRole('dialog');
     await expect(dialog).toContainText('Trocar de paleta?');
     await capture(page, '5-troca-com-ajustes.png', 'Trocar de paleta com um ajuste manual: o painel pergunta se o ajuste fica.');

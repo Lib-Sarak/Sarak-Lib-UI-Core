@@ -56,11 +56,16 @@ describe('DESIGN_MANIFEST', () => {
         });
     });
 
-    it('should transform integers correctly', () => {
-        expect(SARAK_DESIGN_MANIFEST.colorDepth.transform?.('2')).toBe(2);
-        expect(SARAK_DESIGN_MANIFEST.colorDepth.transform?.('invalid')).toBe(1);
-        expect(SARAK_DESIGN_MANIFEST.colorVariation.transform?.('3')).toBe(3);
-        expect(SARAK_DESIGN_MANIFEST.colorVariation.transform?.('invalid')).toBe(1);
+    it('should transform numbers correctly', () => {
+        expect(SARAK_DESIGN_MANIFEST.sidebarMinWidth.transform?.('240')).toBe(240);
+        expect(SARAK_DESIGN_MANIFEST.sidebarMinWidth.transform?.('invalid')).toBe(200);
+        expect(SARAK_DESIGN_MANIFEST.sidebarMaxWidth.transform?.('500')).toBe(500);
+        expect(SARAK_DESIGN_MANIFEST.sidebarMaxWidth.transform?.('invalid')).toBe(450);
+    });
+
+    it('não declara mais colorDepth nem colorVariation', () => {
+        expect(SARAK_DESIGN_MANIFEST).not.toHaveProperty('colorDepth');
+        expect(SARAK_DESIGN_MANIFEST).not.toHaveProperty('colorVariation');
     });
 
     // `logoScale`/`hapticIntensity` saíram desta lista (plan-21, 2026-08-10):

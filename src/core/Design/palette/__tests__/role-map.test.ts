@@ -98,4 +98,5 @@ describe('PALETTE_ROLE_MAP — a área define o tratamento da cor', () => {
             expect(PALETTE_ROLE_MAP[token].shiftFrom, token).toBeUndefined();
         });
     });
+
 });

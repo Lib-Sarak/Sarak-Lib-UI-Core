@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Levar a 4,5:1 o item ativo, o idioma, o botão de sair e o nome do usuário nas barras de tom contrastante e em degradê"
 objetivo: "Fazer cada peça do cromo ficar em ao menos 4,5:1 (texto) ou 3:1 (ícone) sobre a barra que a desenha, inclusive nas paradas claras do degradê, e esvaziar a lista de exceções do teste das Personalidades"
 dominio: "Cromo / Contraste"
-status: "🔵 Em correção"
+status: "🟢 Aprovada"
 prioridade: "Média"
 tags: ["plan", "cromo", "contraste", "acessibilidade", "release-9-0-0"]
 relacionados: ["[[05-cromo-e-slots]]", "[[09-temas-e-presets]]", "[[10-seguranca-e-acessibilidade]]"]
@@ -770,3 +770,12 @@ execução da plan-168 fecha `contraste-do-que-faltava`, mas não pinta a cor na
 `plan-149-barras-personalidade` verdes juntos num build novo, e o ok do dono nas capturas novas do sair.
 
 **Status da plan: 🔵 Em correção.**
+
+## Veredito — 2026-11-23 01:30 — prova pela plan-167 — 🟢 Aprovada
+
+**Como medi:** fiz uma única cadeia na raiz, com build novo, rodando `cromo-css-real:check` duas vezes. As quatro specs que o veredito
+"2026-11-22 16:00" pede (`contraste-do-que-faltava`, `contraste-do-cromo-nas-barras`, `tom-contrastante-legivel` e
+`plan-149-barras-personalidade`) ficaram verdes nas duas rodadas. O dono deu o ok nas capturas novas do sair, na lateral recolhida e no
+topo. O código vai no mesmo commit da plan-167.
+
+**Status da plan: 🟢 Aprovada.**

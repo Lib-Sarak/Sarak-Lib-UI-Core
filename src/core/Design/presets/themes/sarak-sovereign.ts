@@ -213,8 +213,6 @@ export const sarakSovereignTheme: SarakThemePreset = {
         switchBackdropBlur: 4,
 
         // --- Paletas e Gradientes ---
-        colorDepth: 1,
-        colorVariation: 1,
 
         // --- Gráficos & Dados ---
         chartGridOpacity: 0.06,

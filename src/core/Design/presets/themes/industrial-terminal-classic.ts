@@ -176,8 +176,6 @@ export const industrialTerminalClassicTheme: SarakThemePreset = {
         switchStyleType: 'tactile',
         switchBackdropBlur: 0,
         colorPalette: 'custom:analogous:#ff9900,sec=#cc7a00,acc=#ff3300',
-        colorDepth: 0,
-        colorVariation: 1,
         chartGridOpacity: 0.2,
         chartType: 'bar',
         chartShowGrid: true,

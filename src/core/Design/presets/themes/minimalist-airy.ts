@@ -287,8 +287,6 @@ export const minimalistAiry: SarakThemePreset = {
             "searchBackdropBlur": 8,
             "switchStyleType": "tactile",
             "switchBackdropBlur": 4,
-            "colorDepth": 1,
-            "colorVariation": 1,
             "chartGridOpacity": 0.08,
             "chartType": "line",
             "chartShowGrid": true,

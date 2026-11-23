@@ -84,7 +84,7 @@ export const ThemeMoreActionsMenu: React.FC<ThemeMoreActionsMenuProps> = ({ acti
                 aria-expanded={isOpen}
                 aria-label={text('themeMoreActions')}
                 onClick={() => onOpenChange(!isOpen)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--theme-border)] text-[var(--theme-muted)] transition-colors hover:text-[var(--color-theme-title,#f2f6fb)] focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]"
+                className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--theme-border)] text-[var(--theme-muted)] transition-colors focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]"
             >
                 <MoreHorizontal size={16} aria-hidden="true" />
             </button>

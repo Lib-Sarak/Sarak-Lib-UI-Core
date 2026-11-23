@@ -318,9 +318,17 @@ test('rodapé nas barras contrastantes: nome, avatar, idioma e engrenagem legív
                     const icon = buttons[buttons.length - 1];
                     if (!icon) return null;
                     const [hi, lo] = [lum(parse(getComputedStyle(icon).color)), lum(flat)].sort((x, y) => y - x);
-                    return (hi + 0.05) / (lo + 0.05);
+                    // A cor pintada é a que a barra calculou (`--sarak-shell-logout-text-color`): o `tailwind-merge` já a perdeu para a do fantasma.
+                    const calculated = getComputedStyle(icon).getPropertyValue('--sarak-shell-logout-text-color').trim();
+                    const painted = parse(getComputedStyle(icon).color);
+                    const expected = calculated ? parse(calculated) : null;
+                    return {
+                        ratio: (hi + 0.05) / (lo + 0.05),
+                        paintsCalculatedColor: expected === null || expected.every((channel, index) => Math.abs(channel - painted[index]) < 1.5),
+                    };
                 }, scene.bar);
-                expect(logout, `botão de sair, ${scene.name} (${where})`).toBeGreaterThanOrEqual(ICON_CONTRAST);
+                expect(logout?.ratio, `botão de sair, ${scene.name} (${where})`).toBeGreaterThanOrEqual(ICON_CONTRAST);
+                expect(logout?.paintsCalculatedColor, `o sair pinta a cor que a barra calculou, ${scene.name} (${where})`).toBe(true);
             }
         }
     }

@@ -47,7 +47,7 @@ export const COVERAGE_GAPS: ReadonlyMap<string, CoverageGap> = new Map<string, C
 ]);
 
 /** O que a paleta e o modo de cor decidem: preset de estrutura não os escreve. */
-const PALETTE_IDS: ReadonlySet<string> = new Set(['mode', 'colorPalette', 'colorDepth', 'colorVariation']);
+const PALETTE_IDS: ReadonlySet<string> = new Set(['mode', 'colorPalette']);
 
 /** Token que o mapa mede: estético e que não é cor. Cor é da paleta, e o funcional vale o padrão do sistema. */
 export const isStructuralToken = (token: SarakDesignToken): boolean =>

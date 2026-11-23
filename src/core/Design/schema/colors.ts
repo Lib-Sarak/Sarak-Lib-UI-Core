@@ -157,32 +157,6 @@ export const ColorsSchema: ComponentSchema = {
             defaultValue: '#19e3f0',
             cssVars: ['--sarak-emphasis-color', '--theme-emphasis']
         },
-        {
-            id: 'colorDepth',
-            kind: 'aesthetic',
-            modeDependent: false,
-            usage: "Controla a distância tonal das variantes geradas para as cores, incluindo o hover e o pressionado globais dos botões.",
-            label: 'Profundidade da Cor',
-            type: 'number',
-            description: 'Fator passado ao gerador das variantes de cores declaradas com `generateVariants`. Nas variantes da cor primária, os valores resultantes alimentam `--theme-primary-hover` e `--theme-primary-active`, lidos pelos estados globais de hover e pressionado de `button` em `_elements.css`.',
-            axis: 'color',
-            constraints: { min: 0, max: 5, step: 1 },
-            defaultValue: 1,
-            cssVars: ['--sarak-color-depth']
-        },
-        {
-            id: 'colorVariation',
-            kind: 'aesthetic',
-            modeDependent: false,
-            usage: "Controla a variação de matiz e saturação das variantes geradas, incluindo o hover e o pressionado globais dos botões.",
-            label: 'Variação da Cor',
-            type: 'number',
-            description: 'Fator passado ao gerador das variantes de cores declaradas com `generateVariants`. Nas variantes da cor primária, os valores resultantes alimentam `--theme-primary-hover` e `--theme-primary-active`, lidos pelos estados globais de hover e pressionado de `button` em `_elements.css`.',
-            axis: 'color',
-            constraints: { min: 1, max: 5, step: 1 },
-            defaultValue: 1,
-            cssVars: ['--sarak-color-variation']
-        },
         // --- CORES DE SUPERFÍCIE ---
         {
             id: 'colorBgModal',

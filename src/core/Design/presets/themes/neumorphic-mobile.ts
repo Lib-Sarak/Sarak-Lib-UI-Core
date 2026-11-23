@@ -187,8 +187,6 @@ export const neumorphicMobile: SarakThemePreset = {
         "switchBackdropBlur": 0,
         // o relevo neumórfico pede o cinza médio do fundo; a neutra da paleta é clara ou escura demais
         "surfaceColor": "#e3e7ee",
-        "colorDepth": 1,
-        "colorVariation": 1,
         // o relevo neumórfico pede o cinza médio do fundo; a neutra da paleta é clara ou escura demais
         "cardBackgroundColor": "#e3e7ee",
         "chartGridOpacity": 0.1,

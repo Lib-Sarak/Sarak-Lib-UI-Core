@@ -215,29 +215,26 @@ describe('useDesignVariables — cor de textura chega aos leitores', () => {
     });
 });
 
-describe('useDesignVariables — colorDepth e colorVariation moldam hover e active', () => {
+describe('useDesignVariables — hover e active da cor com variantes', () => {
     const hoverActive = (design: Record<string, unknown>) => {
         const { variables } = renderHook(() => useDesignVariables({ ...sarakGetDefaultDesignState(), primaryColor: '#808040', ...design })).result.current;
         return { hover: variables['--theme-primary-hover'], active: variables['--theme-primary-active'] };
     };
 
-    it('o padrão (1 e 1) é o desenho de sempre: hover ×1,1 e active ×0,9', () => {
-        expect(hoverActive({ colorDepth: 1, colorVariation: 1 })).toEqual({ hover: '#8d8d46', active: '#73733a' });
+    it('seguem emitidas com o fator 1: hover ×1,1 e active ×0,9 da cor base', () => {
+        expect(hoverActive({})).toEqual({ hover: '#8d8d46', active: '#73733a' });
     });
 
-    it('colorDepth afasta hover e active da cor base', () => {
-        const base = hoverActive({ colorDepth: 1 });
-        const deep = hoverActive({ colorDepth: 3 });
-
-        expect(deep.hover).not.toBe(base.hover);
-        expect(deep).toEqual({ hover: '#a6a653', active: '#5a5a2d' });
+    it('um colorDepth ou colorVariation que sobrou no objeto do tema não muda a saída', () => {
+        expect(hoverActive({ colorDepth: 3, colorVariation: 5 })).toEqual({ hover: '#8d8d46', active: '#73733a' });
+        expect(hoverActive({ colorDepth: 0 })).toEqual({ hover: '#8d8d46', active: '#73733a' });
     });
 
-    it('colorVariation abre o matiz entre hover e active', () => {
-        const flat = hoverActive({ colorVariation: 1 });
-        const varied = hoverActive({ colorVariation: 5 });
+    it('não emite --sarak-color-depth nem --sarak-color-variation', () => {
+        const stale: Record<string, unknown> = { colorDepth: 3, colorVariation: 5 };
+        const { variables } = renderHook(() => useDesignVariables({ ...sarakGetDefaultDesignState(), ...stale })).result.current;
 
-        expect(varied.hover).not.toBe(flat.hover);
-        expect(varied.active).not.toBe(flat.active);
+        expect(variables).not.toHaveProperty('--sarak-color-depth');
+        expect(variables).not.toHaveProperty('--sarak-color-variation');
     });
 });

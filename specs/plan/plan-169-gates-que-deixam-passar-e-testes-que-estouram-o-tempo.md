@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Fechar os pontos cegos de quatro gates, gerar a tabela de temas do guia e acabar com os testes que estouram o tempo sob carga"
 objetivo: "Fazer o auditor de hardcode, o chrome-token-parity e o zero-brand verem o que hoje deixam passar, tirar o rastro de plan da 01-gates-e-baseline, gerar a tabela de arquétipos do guia a partir do catálogo de temas e deixar a suíte de unidade verde sob a carga do npm version"
 dominio: "Qualidade / Gates e suíte"
-status: "🔵 Em correção"
+status: "🟡 Em execução"
 prioridade: "Média"
 tags: ["plan", "gates", "suite", "guia", "release-9-0-0"]
 relacionados: ["[[01-gates-e-baseline]]", "[[05-cromo-e-slots]]", "[[09-temas-e-presets]]"]
@@ -1226,3 +1226,32 @@ declaração, e ela não sai no barril. Com (a), a leitura do schema no import d
 
 O `DEFAULT_INDUSTRIAL_SEED` sai inteiro de `src/core/Provider/constants.ts`, preservando a D1 da 167 no arquivo. O resto do veredito
 "correção 8" vale como está.
+
+## Veredito — 2026-11-22 21:02 — correção 9 (achados 1 e 2 do veredito "correção 8", S1 a) — 🟡 Aprovado; o resto do 2.1 espera o commit da 167
+
+**Como medi:**
+- `constants.ts`: o diff contra o `HEAD` só apaga a semente, e ela não tem mais nenhum uso fora de `specs/` e `dist/`;
+- o mock do `MasterControlPanel` devolve a função real;
+- `vitest` de `src/core` e de `DesignEngine/Main` na raiz: 2395 de 2395, em 196 arquivos;
+- `tsc` 0; `audit:baseline`, `variable-contract:check` e `dev-kit:check` verdes.
+
+**Aceito da execução:** a suíte inteira, 7024 de 7024, e os 5 achados restantes com o patch do gate, todos na área da 167.
+
+**Falta no registro:** o resumo desta correção veio só na conversa. Ele entra nesta plan junto com o resto do 2.1.
+
+**Segue, depois do commit da 167:** a reaplicação do patch, os 5 achados, a linha da migração, o `cromo-css-real:check` sozinho e o
+commit único.
+
+**Status da plan: 🟡 Em execução.**
+
+## Nota do revisor — 2026-11-23 01:30 — o commit da 167 leva as correções 7 a 9; dois itens entram no resto do 2.1
+
+- As correções 7 a 9 vão no commit da plan-167, porque dividem arquivos com ela e foram testadas juntas (duas baterias e 7024 de 7024). O
+  commit único desta plan fica com o patch do gate, os 5 achados, a linha da migração e os dois itens abaixo.
+- **`fontes-no-painel.spec.ts:59`:** a espera aceita qualquer face `Outfit` carregada, mas a linha 60 confere o peso 700. Esperar por
+  `document.fonts.load('700 32px "Outfit"')`, ou pela própria conferência, antes do `expect`. Sem afrouxar o `expect`. Rodar com
+  `--repeat-each`.
+- **`chromeToneContrast.ts:12`:** `ICON_MINIMUM` ficou sem leitor desde a plan-167. Remover a constante.
+- O resumo da correção 9 veio só na conversa. Ele entra no resumo do resto do 2.1.
+
+**Status da plan: 🟡 Em execução.**

@@ -176,8 +176,6 @@ export const cyberpunkNeonClassicTheme: SarakThemePreset = {
         switchStyleType: 'tactile',
         switchBackdropBlur: 4,
         colorPalette: 'custom:analogous:#00ff64,sec=#ff00ff,acc=#00ffff',
-        colorDepth: 1,
-        colorVariation: 1,
         chartGridOpacity: 0.05,
         chartType: 'line',
         chartShowGrid: true,

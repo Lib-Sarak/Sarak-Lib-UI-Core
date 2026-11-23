@@ -36,6 +36,9 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
     usePauseBeamOffscreen(spotlight.ref, design.borderBeamEnabled === true);
     const { getGridStyles, getFlexStyles } = useStructuralStyles();
     const [isExpanded, setIsExpanded] = useState(false);
+    const actionButtonStyle = design.btnStyleType === 'borderline'
+        ? undefined
+        : { '--sarak-card-action-btn-hover-bg': 'var(--sarak-card-action-btn-bg)' } as React.CSSProperties;
 
     const getVal = (obj: Record<string, unknown>, path: string | undefined): unknown => {
         if (!path) return undefined;
@@ -126,7 +129,8 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                         variant="primary"
                         onClick={() => onAction && onAction(item)}
                         rightIcon={<SarakIcon name="ExternalLink" size={10} className="stroke-[3]" />}
-                        className={`flex-1 text-3xs font-black uppercase tracking-widest sarak-card-action-btn${design.btnStyleType === 'borderline' ? '' : ' sarak-card-action-btn--filled'}`}
+                        className={`flex-1 text-3xs font-black uppercase tracking-widest sarak-card-action-btn${design.btnStyleType === 'borderline' ? '' : ' sarak-card-action-btn--filled hover:brightness-100'}`}
+                        style={actionButtonStyle}
                     >
                         {actionLabel}
                     </SarakButton>

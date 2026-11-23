@@ -94,7 +94,7 @@ export const ThemeAdvancedMenu: React.FC<ThemeAdvancedMenuProps> = ({ viewMode, 
                     'flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-[length:var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-colors focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]',
                     isAdvancedActive
                         ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/15 text-[var(--theme-title)]'
-                        : 'border-[var(--theme-border)] text-[var(--theme-muted)] hover:text-[var(--theme-title)]'
+                        : 'border-[var(--theme-border)] text-[var(--theme-muted)]'
                 ].join(' ')}
             >
                 {ADVANCED_MENU_LABELS.trigger}

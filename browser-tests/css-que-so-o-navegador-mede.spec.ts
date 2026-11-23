@@ -107,26 +107,25 @@ test('NÃO MUDA NADA: sob a mesma textura, um cartão real da lib computa a supe
 
 // ── Item 2 — custom property cíclica no `body` ───────────────────────────────────────────────────
 
-test('item 2: sem SarakUIProvider, o botão computa um fundo de hover diferente do repouso', async () => {
+test('item 2: sem SarakUIProvider, o hover global preserva o fundo de repouso do botão', async () => {
     await withScene('sem-provider', undefined, async (page) => {
         const button = page.getByRole('button', { name: 'Prova hover sem Provider' });
         const rest = await readComputed(button, 'background-color');
 
         await button.hover();
-        await expect(button, 'sem Provider, a reserva do hover precisa valer').not.toHaveCSS('background-color', rest);
+        await expect(button, 'sem Provider, o hover global não pinta o fundo').toHaveCSS('background-color', rest);
     });
 });
 
-test('NÃO MUDA NADA: com Provider, o hover do botão continua sendo o do tema', async () => {
+test('com Provider, o hover global preserva o fundo de repouso do botão', async () => {
     const page = await browser.newPage({ viewport: DESKTOP });
     try {
         await page.goto(harnessUrl);
         const button = page.getByRole('button', { name: 'Prova hover sem classe' });
-        const themeHover = await resolveExpression(button, 'background-color', 'var(--theme-primary-hover)');
-        expect(themeHover, 'o hover do tema precisa diferir do repouso, ou o caso não distingue nada').not.toBe(await readComputed(button, 'background-color'));
+        const restingBackground = await readComputed(button, 'background-color');
 
         await button.hover();
-        await expect(button).toHaveCSS('background-color', themeHover);
+        await expect(button).toHaveCSS('background-color', restingBackground);
     } finally {
         await page.close();
     }
