@@ -241,6 +241,7 @@ topbar, que por padrão não mostra o ≡. Valor que o sistema já salvou contin
 **Regras que fecham o comportamento:**
 - **O ⚙ só nasce quando pelo menos um widget está *no menu*.** Uma barra só com fixados não o faz aparecer — não há botão que abre painel vazio. Busca, usuário e notificações fixos na barra também não se repetem no ⚙.
 - **O ⚙ é superfície.** As linhas dele leem o texto da superfície, e não o da barra de tom contrastante que o abriu (`ShellPreferencesMenu.tsx`).
+- **A escolha marcada é legível.** No menu, a linha selecionada fica em ao menos 4,5:1 contra a superfície. Na barra, a opção escolhida do grupo compacto fica em ao menos 4,5:1 contra o fundo do item ativo que ela pinta: o texto sobre ele é `--sarak-on-nav-active`, que nas barras de tom contrastante e no papel `surface` é o fundo da barra. Guarda `seletor-da-barra-legivel.spec.ts`, com item ativo escuro e claro e com os temas em que a cor do ativo mais se afasta da barra.
 - **Sidebar recolhida:** o ⚙ continua — é um ícone e cabe — e recebe o que é fixado e não tem ícone próprio. Recolher a navegação nunca tira do usuário o acesso a um widget oferecido.
 - **Celular:** tudo o que é oferecido vai para o drawer, fixado ou não, sem ⚙ separado; a navegação recolhida não ganha linha, porque o hambúrguer já é o colapso. Nada some (§2.3).
 - **Duas camadas de controle:** a prop `widgets` do `SarakAppChrome` é do **código** e é o teto — o que o desenvolvedor desligou não volta pelo painel. A posição é do **sistema** e escolhe dentro desse teto.

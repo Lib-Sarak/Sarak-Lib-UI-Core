@@ -432,6 +432,15 @@ do item ativo, o do inativo, o ícone e o do hover passam a valer também sobre 
 (`GRADIENT_LIGHT_ID` na cadeia de fundo). O texto anda o mínimo até passar nas duas paradas, e a cor da paleta não muda. Com fundo sólido, o
 cálculo é o de sempre.
 
+**Nos tons contrastantes, a peça do cromo calcula a cor contra a parada menos favorável.** `chromeToneContrast.ts` mede o texto forte,
+o inativo e o do sair sobre cada parada da barra e sobre os fundos que cada um pisa: a faixa do usuário (5% do marcador), o botão de
+idioma (10% da cor inativa), o véu do item ativo e a tinta de erro do sair (15%). Texto fica em 4,5:1 e ícone em 3:1. O inativo e o forte
+se resolvem juntos, porque o idioma tinge o fundo com a cor inativa e o inativo precisa ficar abaixo do forte no item ativo. A barra
+entrega a cor do sair em `--sarak-shell-logout-text-color`, sem tocar a cor de erro. No papel `surface`, o texto sobre o controle
+escolhido é o fundo da barra (`--sarak-on-nav-active`). **O par da paleta mede o que a barra desenha:** o item ativo de tom
+contrastante é medido sobre o véu na opacidade declarada (20%) e comparado com o inativo (`contrast-pairs.ts`, `tone-plan.ts`). A
+cor do tema não muda.
+
 **O fundo tem cor.** A neutra leva o matiz da base, com régua própria de luminosidade; a faixa de croma e de L está em `scale.ts` e `seeds.ts`, com teste sobre os presets.
 
 **60-30-10.** O mapa de papéis (`role-map.ts`) distribui a primária (ações e títulos), a secundária (subtítulo, botão secundário, cabeçalhos, categoria do menu, gráfico) e o acento
@@ -1065,6 +1074,7 @@ Os testes que cobrem esta spec **já existem** — ela documenta o que eles cobr
 | O gravado guarda só escolhas; o dado antigo é corrigido ao carregar (L1) | `src/core/Provider/utils/__tests__/designChoices.test.ts` · `src/features/DesignEngine/hooks/__tests__/designGravadoEscolhas.persistenceIntegration.test.tsx` |
 | Régua de deslocamento do texto de marca em toda paleta | `src/core/Design/palette/__tests__/anchor-and-shift.test.ts` |
 | Item ativo acima do inativo; texto da barra nas duas paradas do degradê | `src/core/Design/palette/__tests__/nav-active-over-inactive.test.ts` · `gradient-bar-contrast.test.ts` |
+| Peça do cromo em 4,5:1 (texto) e 3:1 (ícone) nos tons contrastantes e em degradê, sem exceção | `src/components/Layout/chrome/__tests__/chromeToneStyle.test.ts` · `src/core/Design/palette/__tests__/tone-plan.test.ts` · `browser-tests/tom-contrastante-legivel.spec.ts` · `contraste-do-cromo-nas-barras.spec.ts` · `plan-145-personalidades.spec.ts` |
 | Interruptor a 3:1, ligado e desligado | `src/core/Design/palette/__tests__/switch-glass-border.test.ts` · `switch-idle-thumb.test.ts` |
 | Faixas da marca iguais nos dois modos em todo tema | `src/core/Design/presets/themes/__tests__/themePalettes.test.ts` |
 | Cada um dos sete tokens de gráfico muda a opção entregue ao ECharts | `src/components/engines/charts/SubEngines/__tests__/useEChartsTheme.test.ts` · `src/components/engines/charts/__tests__/SarakChartEngine.test.tsx` |

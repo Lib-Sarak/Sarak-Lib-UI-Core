@@ -75,6 +75,8 @@ O painel tem **uma coluna só**, sem seletor de modo. Ela lista **sete decisões
 
 Os **"Ajustes principais"** de uma decisão com mais de oito controles abrem recolhidos (`MAIN_TOKENS_OPEN_LIMIT`, `ThemeDecisionView.tsx`).
 
+**Os tokens das decisões principais falam o idioma do painel.** Os "Ajustes principais" (`mainTokens`) e as perguntas de cada decisão (`questionTokenIds`), calculados por `decisionLayers`, mostram nome, descrição e opções nos seis idiomas (`catalogEntries.decisionTokens.ts`, `catalogEntries.decisionTokenDescriptions*.ts`, `catalogEntries.decisionOptions.ts`). A ordem de recuo, em `enhanceToken` (`DecisionTokenList.tsx`): o texto do idioma, depois o do catálogo em português, depois o do schema. Em português vale o catálogo. A busca de token acha pelo texto traduzido (`searchableTokens.ts`). O ajuste fino fora dessas decisões segue em português.
+
 **Cada decisão cabe em 2,5 alturas da coluna**, a 1440×900, como abre (`MAX_SCROLL_SCREENS`, `plan-161-catalogo-proporcional.spec.ts`). Para isso, os grupos de opção abrem fechados (`CollapsibleSection`, título com `aria-expanded`, conteúdo montado só aberto). Abre só o grupo em uso, o primeiro com uma opção aplicada no rascunho, ou o primeiro sem nenhuma, e na decisão Tema a galeria de temas (`initialOpenGroups`, `ThemeDecisionOptions.tsx`). A busca de token abre todos. Abrir mais grupos é escolha de quem usa, fora da meta.
 
 Ao abrir uma decisão, a tela troca na mesma coluna, com voltar. Esc volta. O foco vai ao título ao entrar e à linha ao voltar.
@@ -494,7 +496,12 @@ janela: colunas por `@min-[448px]`/`@min-[768px]`, e a etiqueta de rascunho dos 
 | --- | --- |
 | **Componentes** (`ComponentsMock`) | `SarakSwitch`, `SarakBadge`, `SarakAlert` e `SarakEmptyState` reais. A seção **Elevação** tem três blocos com `box-shadow: var(--dynamic-shadow)`, sobre uma faixa mais clara que o fundo. A lista rolável refaz as variáveis `--scroll-*` a partir das do escopo. O diálogo e os avisos de sistema são réplicas com as mesmas variáveis (o diálogo lê `--sarak-modal-border-radius`): os reais abrem em portal no `body`, fora da moldura. Cada seção leva `data-peek-group` com o grupo que ela mostra |
 | **Tabela** (`TableMock`) | duas `SarakDataTable` reais, com `SarakBadge` no status. A `SarakDataTable` lê listras (`tableZebraStriping`), raio (`tableBorderRadius`, só com o token no design) e respiro (`--sarak-table-padding`, que o `tableCellPadding` escreve) |
-| **Gráficos** (`ChartsMock`) | os oito tipos de `chartType` (linha, área, barras, pizza, radar, dispersão, mapa de calor e medidor), cada um num `SarakChartEngine` real com o estilo do rascunho. O motor só carrega quando a tela abre |
+| **Gráficos** (`ChartsMock`) | os oito tipos de `chartType` (linha, área, barras, pizza, radar, dispersão, mapa de calor e medidor), cada um num `SarakChartEngine` real com o estilo do rascunho. O motor só carrega quando a tela abre. Cada tipo ocupa ao menos 60% da altura do quadro, no da tela e no de 600×300, nos dois modos (`graficos-ocupam-o-quadro.spec.ts`) |
+
+**O gráfico usa o quadro que recebe**, na prévia e em todo importador. O `SarakChartEngine` não põe respiro interno, e o `grid`
+reserva em cima e embaixo o dobro do tamanho da fonte e, à esquerda, a margem do rótulo do eixo (`useEChartsTheme.ts`). O eixo de valor
+parte do zero. A pizza vai a 95% do raio, o medidor a 90% e o radar a 70%, com o máximo dos eixos no maior valor dos dados mais 5% e
+os rótulos inteiros dentro do quadro (`builders/`).
 
 A `SarakTableView` lê o mesmo respiro horizontal (`--sarak-table-padding`, `useTableLayoutStyles.ts`). A densidade (`tableDensity`)
 fica com o respiro vertical e o corpo do texto.
