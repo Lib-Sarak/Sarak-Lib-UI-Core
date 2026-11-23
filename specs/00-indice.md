@@ -42,7 +42,6 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-169-gates-que-deixam-passar-e-testes-que-estouram-o-tempo](plan/plan-169-gates-que-deixam-passar-e-testes-que-estouram-o-tempo.md) | Fazer o auditor de hardcode, o chrome-token-parity e o zero-brand verem o que hoje deixam passar, tirar o rastro de plan da 01-gates-e-baseline, gerar a tabela de arquétipos do guia a partir do catálogo de temas e deixar a suíte de unidade verde sob a carga do npm version | — | 🟢 Aprovada | specs/01-gates-e-baseline.md + specs/05-cromo-e-slots.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🚦 **Campanha da `8.0.0-rc.4` (2026-10-27).** Contrato aceito: [`anexos/rc4-contrato.md`](plan/anexos/rc4-contrato.md). Ordem: a `plan-128` vai **sozinha** (cria o hook de idioma e os arquivos de catálogo das outras); depois `plan-129` ‖ `plan-130` ‖ `plan-131` ‖ `plan-132` ‖ `plan-119` lote 8 ‖ `plan-133`, em paralelo (pastas disjuntas; arquivos compartilhados só por acréscimo); depois da 133, `plan-134` ‖ `plan-135`. A 134 e a 135 geram prévias em `C:\tmp\sarak-rc4-previa\` que o dono aprova durante a revisão. Verificação pelo protocolo do contrato §9: uma vez por plan e a bateria completa uma vez, no fechamento, depois do lote 2 do ERP. A versão (`npm version`) é do dono.
@@ -64,6 +63,12 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > **Temas e paletas (2026-11-16).** A `plan-164` (paleta do tema, paleta por cima e paletas salvas) tem o ADR-026 e o ADR-027 aceitos e o lote 1 liberado; roda em paralelo com a 159 e a 161, que mexem no cromo e no catálogo do painel. **A próxima versão é `9.0.0`**.
 
 > **Fechamento da 9.0.0 (2026-11-21, decisão do dono).** As correções que sobraram entram antes da tag, em duas plans paralelas e sem arquivo em comum: a `plan-167` (bateria de navegador verde num build novo, backlog #92, mais o contraste do hover de botão, #90, e do `SarakTitleCard`, #91) e a `plan-168` (gráficos que ocupam o quadro, #93, e os ajustes principais do painel nos seis idiomas). Em 2026-11-21 entraram também a `plan-169` (gates que deixam passar e testes que estouram o tempo sob carga, backlog #10, #21, #22, #77, #84 e #89; sem build nem navegador) e a `plan-170` (contraste do cromo nas barras de tom contrastante, #70, #86 e #88), e os #85 e #87 entraram na 167. Com as quatro: síntese, a nota de fechamento da campanha e o `npm version major`, que é do dono. As baterias de navegador da 167, da 168 e da 170 rodam uma de cada vez.
+
+> ⚪ **A `plan-169` foi SINTETIZADA e REMOVIDA em 2026-11-23.** Código nos commits `b6734c53`, `1277ffde`, `8dc9fa44` e `143a2a4d`. Destino demonstrado:
+> - **[[01-gates-e-baseline]]:** a §2.1 diz o que o `auditor_hardcoded` lê (`.ts` e `.tsx`) e as três isenções de escopo. A linha do Kit na §2.2 diz que a tabela de arquétipos sai do catálogo de temas. A §2.4 traz a regra de que o teste que estoura o tempo se conserta no próprio teste. As linhas do `zero-brand` e do `chrome-token-parity` e a coluna *Cobra* sem rastro de plan já estavam no commit `1277ffde`.
+> - **[[05-cromo-e-slots]] §2.4.1:** o escopo do `chrome-token-parity` em qualquer schema, que já estava no commit `1277ffde`.
+> - **[[09-temas-e-presets]] §5 e [[12-kit-do-consumidor]]:** a tabela de arquétipos do guia é gerada (divergência corrigida na hora).
+> - **Ficou de fora:** vereditos e medições (histórico do Git). As amostras com nomes genéricos, o Assistente e o Catálogo no idioma do painel e a remoção de `DEFAULT_INDUSTRIAL_SEED` são correção de defeito. As reservas do manifesto lidas do schema já são regra da R42 (`variable-contract`) e estão em `docs/migracoes.md`. O `coverage:check` duas vezes sai no fechamento, com a máquina livre. `00-contexto` revisto, nada a mudar.
 
 > ⚪ **As `plan-167`, `plan-168` e `plan-170` foram SINTETIZADAS e REMOVIDAS em 2026-11-23.** Código da 167 no commit `8dc9fa44`; da 168 nos commits `3b8aab35`, `7febd22b` e `486ff521`; da 170 nos commits `685d83f5` e `8dc9fa44`. Destino demonstrado:
 >

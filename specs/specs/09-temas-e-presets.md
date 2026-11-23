@@ -902,7 +902,8 @@ modo —, com uma direção própria (lateral distinta do topo onde faz sentido)
 modos, e a diversidade do conjunto (§5.2) cobre os eixos da barra: estilos de item ativo e tratamentos de fundo distintos entre os 19.
 
 O que cada tema embarcado demonstra da lib (o arquétipo, os tokens que carregam a personalidade) está no guia do kit,
-na tabela de arquétipos da §3.9 ("Importe por identidade visual") de `sarak-ui/GUIA-FRONTEND.md`, e não se
+na tabela de arquétipos da §3.9 ("Importe por identidade visual") de `sarak-ui/GUIA-FRONTEND.md`, gerada do catálogo de temas
+(`scripts/generate-consumer-kit.mjs`), e não se
 transcreve aqui (§5.2). O roteiro de
 conferência visual de cada tema, nos dois modos, em desktop e celular, é `docs/roteiro-de-validacao-dos-temas.md`.
 

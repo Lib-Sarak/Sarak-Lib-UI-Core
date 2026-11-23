@@ -49,7 +49,7 @@ carregador** (nada de `@fontsource`, `<link>` do Google ou `@font-face` à mão 
 `options.fonts` e quando usar cada uma; `custom` para a fonte da marca e `baseUrl` só para servir **as mesmas** fontes
 de outro lugar; `font-src` e LGPD. O importador de temas também aprende a regra do `value` exato.
 
-O que o kit ensina sobre **criar o tema do cliente** (prosa à mão: `GUIA-FRONTEND.md` §3.9 e a skill espelhada) é o
+O que o kit ensina sobre **criar o tema do cliente** (prosa à mão em `GUIA-FRONTEND.md` §3.9 e na skill espelhada; só a tabela de arquétipos é gerada, do catálogo de temas) é o
 diferencial da lib, a granularidade token a token: da identidade visual (marca, tipografia, cantos, densidade, tom,
 movimento) ao arquétipo embarcado mais próximo e aos tokens que a carregam, nessa ordem; os temas embarcados como
 **exemplos de capacidade**, não como produto final; a receita mínima (poucas chaves sobre uma referência) e a completa

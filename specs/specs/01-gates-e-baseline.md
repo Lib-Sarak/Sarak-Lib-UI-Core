@@ -58,6 +58,19 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 
 > ⚠️ **Relatório × FAIL.** O balde **deduzido** do `auditor_hardcoded` (ícones, `w-full`/`h-full`, alinhamento) é **relatório**: aparece na reconciliação, é contado, e **não reprova**. Só o líquido reprova. Já a linha final de `verify_parity` é relatório de contagem **bruta**; o número que importa para paridade é o das **três fontes**, que hoje batem em **423**. Ver [[04-contrato-de-tokens-e-paridade]] §2.
 
+**O que o `auditor_hardcoded` lê.** O detector de valor varre `.tsx` e `.ts` de `src/components`, `src/features` e `src/core`, e o
+estrutural varre `src/components/atomic`. Ficam fora `.d.ts`, `__tests__/`, `Mocks` e `__e2e__`. Um gerador de estilo em `.ts`
+(`buttonStyles.ts`, `kanbanLayout.ts`) é cobrado como o `.tsx` que o usa. As isenções de escopo são três, escritas no gate com o motivo:
+
+- o `.ts` de `core/Design/presets/`, `schema/` e `palette/`, porque ali o literal é o valor do token. Um `.tsx` dessas pastas
+  continua cobrado;
+- três arquivos de matemática de cor (`colorMath.ts`, `on-color.ts` e `colorParts.ts`), em que o literal é operando de cálculo;
+- a condição de container query (`@min-[768px]:`), porque o CSS não aceita `var()` em condição de consulta. A classe que a condição
+  liga continua cobrada.
+
+Fora delas, a isenção é pontual: o marcador `sarak-allow-hardcode:` com o motivo na linha de cima. Guarda
+`gates/scripts/audit/__tests__/auditor_hardcoded.ts-scope.test.mjs`.
+
 ## 2.2 Os gates de contrato
 
 | Gate | Comando | Garante | Cobra | Custo |
@@ -65,7 +78,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Barril | `npm run barrel:check` | Todo componente derivado por AST está no barril **e o nome RESOLVE para o componente** (type checker, não presença sintática), com o `<Nome>Props` | R14 | ~5,6 s |
 | Catálogo | `npm run catalog:check` | `docs/component-catalog.{json,md}` commitado == gerado agora | R17 | ~1,5 s |
 | Zero-marca | `npm run zero-brand:check` | Nenhuma marca da lib em literal de texto de `src/` (`.ts` e `.tsx`: JSX, catálogo de idiomas, objeto, constante, `document.title`), por padrão e não por lista de frases. Varre também os `.json` do catálogo e procura a marca como trecho, não como palavra. Cada isenção casa só o uso técnico real: pacote, prefixos e utilitárias em minúsculas, etiqueta de diagnóstico nas formas exatas, identificador que existe em `src/`, chave de armazenamento em minúsculas, o nome dos dois temas embarcados só nos arquivos do tema, o argumento de `console.*`, o caminho de módulo e o tipo literal; a allowlist de arquivos é vazia, porque os painéis do Design Engine chegam ao importador | R12 | ~1,3 s |
-| Kit | `npm run guide:check` | `sarak-ui/` commitado == gerado agora (6 arquivos) | R17 | ~1,8 s |
+| Kit | `npm run guide:check` | `sarak-ui/` commitado == gerado agora (6 arquivos). A tabela de arquétipos do `GUIA-FRONTEND.md`, entre os marcadores `SARAK-KIT:ARQUETIPOS`, sai de `SARAK_THEME_CATALOG` (`catalog.generated.ts`): um tema novo ou removido muda a tabela sem tocar no guia, e a tabela velha reprova | R17 | ~1,8 s |
 | Kit do mantenedor | `npm run dev-kit:check` | `sarak-dev/` commitado == gerado agora (3 arquivos) **e zero ponteiro morto** na prosa | R17 · R23 · R29 | ~2,0 s |
 | Pacote | `npm run package:check` | O tarball não leva proibido nem esquece obrigatório | **R19** | precisa de `dist/` |
 | Deep import | `npm run deep-import:check` | `package.json.exports` só expõe raiz + subcaminhos `.css` | **R27** | ~0,3 s |
@@ -220,6 +233,8 @@ npx vitest run
 **Cobra R6 · R13 · R24 · R25 · R26 · R28.** A suíte **é** gate: ela roda no Anel 3 do `pre-push` e bloqueia ([[02-enforcement-por-commit]] §4). Seis regras dependem exclusivamente dela, e cada uma nomeia o arquivo do seu teste em [[00-regras-e-invariantes]] — `tokenContractParity`, `HostIdentity`/`EmbeddedMode`, `scopeCss`, `shippedThemesConsoleClean`, `iconCatalogParity`/`iconContract`, `checkUpdateCli.contract.test.mjs`. Todo gate novo das plans 12/16 também nasceu com **self-test** próprio (um caso pego, um liberado) — 51 casos, em 12 arquivos.
 
 > **Regra dura: "suítes verdes" exige a suíte INTEIRA.** Rodar pasta a dedo esconde snapshot de terceiro que quebrou. Esta regra não é preferência de estilo; ela já custou uma spec aprovada com snapshot vermelho fora da pasta olhada.
+
+> **Regra dura: teste que estoura o tempo se conserta no próprio teste.** O tempo padrão do vitest não sobe para a suíte. O `preversion` roda a suíte inteira com cobertura, e um teste que passa de 5 s sob carga derruba a release. O conserto ataca a causa: um laço grande vira um caso por item (`it.each`), a montagem cara acontece uma vez, e o teste confere o dado em vez de desenhar o que não precisa. Se um teste precisar de prazo próprio, como a espera de um módulo carregado sob demanda, a constante fica no teste, com o motivo ao lado (`PresetSamples.test.tsx`).
 
 Duas coisas do `vitest.config.ts` que importam para quem lê a saída:
 
