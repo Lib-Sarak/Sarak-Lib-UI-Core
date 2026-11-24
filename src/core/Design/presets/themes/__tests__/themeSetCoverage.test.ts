@@ -71,19 +71,18 @@ describe('cobertura do conjunto de temas embarcados', () => {
         expect(hasRequiredCoverage(coverage)).toBe(true);
     });
 
-    it('declara cores hierárquicas acessíveis no tema e em cada contraparte', () => {
-        const roles = ['titleColor', 'subtitleColor', 'emphasisColor', 'cardTitleColor'] as const;
+    const hierarchyRoles = ['titleColor', 'subtitleColor', 'emphasisColor', 'cardTitleColor'] as const;
+    const hierarchyCases = SARAK_ALL_THEMES.flatMap((theme) =>
+        (['light', 'dark'] as const).map((mode) => ({ theme, mode, id: theme.id })));
 
-        SARAK_ALL_THEMES.forEach((theme) => {
-            // o design composto de cada modo: a hierarquia vem da paleta, que o tema não declara
-            (['light', 'dark'] as const).map((mode) => composeThemeForMode(theme as never, mode) as unknown as Record<string, unknown>).forEach((design, index) => {
-                expect(design, `${theme.id} modo ${index}`).toBeDefined();
-                roles.forEach((role) => {
-                    expect(typeof design?.[role], `${theme.id}.${role} modo ${index}`).toBe('string');
-                    expect(design?.[role], `${theme.id}.${role} não pode repetir textColorMaster no modo ${index}`)
-                        .not.toBe(design?.textColorMaster);
-                });
-            });
+    // o design composto de cada modo: a hierarquia vem da paleta, que o tema não declara
+    it.each(hierarchyCases)('declara cores hierárquicas acessíveis no tema $id, modo $mode', ({ theme, mode }) => {
+        const design = composeThemeForMode(theme as never, mode) as unknown as Record<string, unknown>;
+        expect(design, `${theme.id} modo ${mode}`).toBeDefined();
+        hierarchyRoles.forEach((role) => {
+            expect(typeof design?.[role], `${theme.id}.${role} modo ${mode}`).toBe('string');
+            expect(design?.[role], `${theme.id}.${role} não pode repetir textColorMaster no modo ${mode}`)
+                .not.toBe(design?.textColorMaster);
         });
     });
 

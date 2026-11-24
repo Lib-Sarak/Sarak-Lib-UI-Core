@@ -236,6 +236,11 @@ npx vitest run
 
 > **Regra dura: teste que estoura o tempo se conserta no próprio teste.** O tempo padrão do vitest não sobe para a suíte. O `preversion` roda a suíte inteira com cobertura, e um teste que passa de 5 s sob carga derruba a release. O conserto ataca a causa: um laço grande vira um caso por item (`it.each`), a montagem cara acontece uma vez, e o teste confere o dado em vez de desenhar o que não precisa. Se um teste precisar de prazo próprio, como a espera de um módulo carregado sob demanda, a constante fica no teste, com o motivo ao lado (`PresetSamples.test.tsx`).
 
+> **A carga da máquina pesa mais que o custo do teste.** Medido em 2026-11-23: casos que levaram de 1,1 s a 1,3 s numa rodada da suíte
+> inteira passaram de 5 s no `preversion`, e na rodada seguinte caiu um caso de uma montagem só. A regra dura acima vale para o teste que
+> tem custo próprio a repartir, e não fecha a queda por carga. Por isso o `npm version` roda com a máquina ociosa: sem outra suíte,
+> navegador de teste ou build ao mesmo tempo. A alavanca estrutural ainda está em aberto ([[00-backlog]] #1).
+
 Duas coisas do `vitest.config.ts` que importam para quem lê a saída:
 
 - `pool: 'forks'` + `execArgv: ['--max-old-space-size=8192']`. O teto de heap é **explícito e comentado**: workers reutilizados acumulavam heap do jsdom e o run completo caía por OOM. Em Vitest 4 a opção é *top-level* — `poolOptions` foi removido e era **ignorado em silêncio**.
