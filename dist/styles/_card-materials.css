@@ -15,7 +15,13 @@
    a sombra sob o ponteiro, no fim, vem depois do material.
 
    O que NÃO mora aqui, de propósito: o `.border-theme` (classe da lib que é `!important` por desenho,
-   `_utilities.css`) recebe a moldura em `_surfaces.css`, na camada final. */
+   `_utilities.css`) recebe a moldura em `_surfaces.css`, na camada final.
+
+   O ESCOPO MAIS PRÓXIMO MANDA: toda regra abaixo que lê um `data-sx-*` do ANCESTRAL (o `html`/`body`, o tema da página)
+   não vale para o cartão que está dentro de um `.sarak-design-scope` com outro valor do mesmo atributo — o escopo
+   emite todos os atributos, então ele É o ancestral mais próximo. Sem isso a amostra de uma opção do painel (um
+   escopo dentro da página) herdava o material, a moldura e a sombra do tema atual. O `:where()` zera a
+   especificidade da exclusão: a ordem de empate dentro da camada continua a mesma. */
 
 /* Leitor de `surfaceMaterial` (`data-sx-surface-material`) e de `surfaceIntensity`.
    O motor emite o atributo no `html`/`body`; o material pinta as SUPERFÍCIES — os cartões —, nunca o
@@ -29,20 +35,20 @@
 /* Vidro fosco: translúcido, com desfoque forte e saturação. O desfoque parte do que o tema pediu em
    `cardBackdropBlur` (12px por padrão) e a intensidade do material soma até +24px: no padrão (12px, 0,5)
    dá os mesmos 24px de antes, e o token deixa de ser sobrescrito. */
-[data-sx-surface-material="frosted"] .sarak-card {
+[data-sx-surface-material="frosted"] .sarak-card:where(:not(.sarak-design-scope:not([data-sx-surface-material="frosted"]) .sarak-card)) {
     backdrop-filter: blur(calc(var(--sarak-card-backdrop-blur, 12px) + var(--surface-intensity, 0.5) * 24px)) saturate(160%);
     background-image: linear-gradient(135deg, rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.18 + var(--glass-opacity, 0.1) * 0.4)), rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.04)));
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.3)), var(--sarak-card-shadow-full, 0 20px 50px -12px rgba(0, 0, 0, 0.2));
 }
 
 /* Polido: liso e reflexivo, com um reflexo diagonal e uma quina de luz. */
-[data-sx-surface-material="sleek"] .sarak-card {
+[data-sx-surface-material="sleek"] .sarak-card:where(:not(.sarak-design-scope:not([data-sx-surface-material="sleek"]) .sarak-card)) {
     background-image: linear-gradient(115deg, rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.24)) 0%, rgba(255, 255, 255, 0) 42%, rgba(0, 0, 0, calc(var(--surface-intensity, 0.5) * 0.14)) 100%);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.4)), var(--sarak-card-shadow-full, 0 20px 50px -12px rgba(0, 0, 0, 0.2));
 }
 
 /* Industrial: chapa metálica — veio fino, bisel claro em cima e escuro embaixo. */
-[data-sx-surface-material="industrial"] .sarak-card {
+[data-sx-surface-material="industrial"] .sarak-card:where(:not(.sarak-design-scope:not([data-sx-surface-material="industrial"]) .sarak-card)) {
     background-image:
         repeating-linear-gradient(90deg, rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.12)) 0, rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.12)) 1px, transparent 1px, transparent 3px),
         linear-gradient(180deg, rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.14)), rgba(0, 0, 0, calc(var(--surface-intensity, 0.5) * 0.22)));
@@ -50,7 +56,7 @@
 }
 
 /* Orgânico: fosco e macio — sem desfoque nem brilho, só uma sombra interna suave. */
-[data-sx-surface-material="organic"] .sarak-card {
+[data-sx-surface-material="organic"] .sarak-card:where(:not(.sarak-design-scope:not([data-sx-surface-material="organic"]) .sarak-card)) {
     backdrop-filter: none;
     background-image: radial-gradient(120% 120% at 30% 20%, rgba(255, 255, 255, calc(var(--surface-intensity, 0.5) * 0.06)), transparent 62%);
     box-shadow: inset 0 2px 10px rgba(0, 0, 0, calc(var(--surface-intensity, 0.5) * 0.16)), var(--sarak-card-shadow-full, 0 20px 50px -12px rgba(0, 0, 0, 0.2));
@@ -59,28 +65,28 @@
 /* MOLDURA — leitor de `borderType` (`data-sx-border-type`).
    Age no cartão e desenha só o contorno: cor, raio e geometria continuam do tema. A sombra do cartão é
    recomposta (`--sarak-card-shadow-full`) para o contorno não a apagar. */
-[data-sx-border-type="solid"] .sarak-card {
+[data-sx-border-type="solid"] .sarak-card:where(:not(.sarak-design-scope:not([data-sx-border-type="solid"]) .sarak-card)) {
     /* A moldura sólida deixa o estilo do traço para `borderStyle` (tracejado, pontilhado, sem borda). */
     border-style: var(--border-style, solid);
 }
 /* Tech segmentado: traço interrompido na cor de textura, com um filete interno. */
-[data-sx-border-type="cyber"] .sarak-card {
+[data-sx-border-type="cyber"] .sarak-card:where(:not(.sarak-design-scope:not([data-sx-border-type="cyber"]) .sarak-card)) {
     border-style: dashed;
     border-color: color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 70%, transparent);
     box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 18%, transparent), var(--sarak-card-shadow-full, 0 0 0 0 transparent);
 }
 /* Dupla linha: `double` só aparece a partir de 3px de espessura. */
-[data-sx-border-type="double"] .sarak-card {
+[data-sx-border-type="double"] .sarak-card:where(:not(.sarak-design-scope:not([data-sx-border-type="double"]) .sarak-card)) {
     border-style: double;
     border-width: max(3px, var(--sarak-card-border-width, 1px));
 }
 /* Neon: contorno e halo na cor de textura. */
-[data-sx-border-type="glow"] .sarak-card {
+[data-sx-border-type="glow"] .sarak-card:where(:not(.sarak-design-scope:not([data-sx-border-type="glow"]) .sarak-card)) {
     border-color: color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 50%, transparent);
     box-shadow: 0 0 10px color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 20%, transparent), inset 0 0 5px color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 10%, transparent), var(--sarak-card-shadow-full, 0 0 0 0 transparent);
 }
 /* Sem moldura: o contorno some, mas a caixa mantém a espessura (nada se desloca). */
-[data-sx-border-type="none"] .sarak-card {
+[data-sx-border-type="none"] .sarak-card:where(:not(.sarak-design-scope:not([data-sx-border-type="none"]) .sarak-card)) {
     border-color: transparent;
 }
 
@@ -97,13 +103,13 @@
 }
 
 /* SOMBRA DECLARADA (`cardShadow`, texto livre) sob o ponteiro: a mesma sombra declarada, sem o deslocamento. */
-[data-sx-card-shadow]:not([data-sx-card-shadow="none"]) .sarak-card:hover {
+[data-sx-card-shadow]:not([data-sx-card-shadow="none"]) .sarak-card:hover:where(:not(.sarak-design-scope[data-sx-card-shadow="none"] .sarak-card)) {
     box-shadow: var(--sarak-card-shadow-full);
 }
 
 /* `cardHoverStyle: glow-only` não move o cartão e acende o halo na cor primária (a sombra declarada vale,
    somada ao halo). O brilho (`::before`) e o deslocamento dos outros estilos ficam em `_cards.css`. */
-[data-sx-card-hover-style="glow-only"] .sarak-card[data-sx-card-interactive="true"]:hover {
+[data-sx-card-hover-style="glow-only"] .sarak-card[data-sx-card-interactive="true"]:hover:where(:not(.sarak-design-scope:not([data-sx-card-hover-style="glow-only"]) .sarak-card)) {
     box-shadow:
         var(--sarak-card-shadow-full),
         0 0 calc(var(--sarak-card-shadow-blur, 50px) * 0.5) color-mix(in srgb, var(--sarak-primary-color, #19e3f0) 40%, transparent);
