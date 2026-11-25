@@ -3,6 +3,7 @@ import { type SarakShellNavItem } from '../atomic/Navigation/SarakShellNav';
 import { useNavigationStyle } from '../../core/Provider/useNavigationStyle';
 import { useGuardedNavigate } from '../../core/Provider/navigationGuard';
 import { useChromeRootBackground } from './chrome/useChromeRootBackground';
+import { useEffectiveBrand } from './chrome/useEffectiveBrand';
 import { useSarakDevice } from '../../core/Provider/DeviceProvider';
 import type { SarakShellUser } from '../atomic/Navigation/SarakShellUserWidget';
 import { SarakAppChromeMobile } from './SarakAppChromeMobile';
@@ -135,7 +136,7 @@ export interface SarakAppChromeProps {
 export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     children,
     secondaryContent,
-    brand,
+    brand: brandProp,
     navItems,
     nav = [],
     activeRoute,
@@ -162,8 +163,8 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     // Toda porta do cromo que navega (lateral, topo, barra inferior, busca, drawer) passa por aqui:
     // com trabalho a perder (rascunho do painel), o guarda pergunta antes de chamar o `onNavigate` do host.
     const onNavigate = useGuardedNavigate(hostNavigate);
-    const designNav = useNavigationStyle();
-    const device = useSarakDevice();
+    const brand = useEffectiveBrand(brandProp); // campo omitido cai na marca gravada
+    const designNav = useNavigationStyle(), device = useSarakDevice();
     const resolved = navigationStyle === 'auto' ? (designNav === 'topbar' ? 'topbar' : 'sidebar') : navigationStyle;
 
     // Multidispositivo por padrão (Spec 40.3 — L1), zero-config via `useSarakDevice`:
@@ -236,8 +237,7 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     const shared = {
         brand, logo, nav: effectiveNav, activeRoute: effectiveActiveRoute, onNavigate,
         topbarStart, endSlot, search, banner, footer, decoration, user, logout, notifications,
-        onNotificationSelect, widgets, className, rootStyle,
-        secondaryContent,
+        onNotificationSelect, widgets, className, rootStyle, secondaryContent,
     };
 
     if (mode === 'topbar') {

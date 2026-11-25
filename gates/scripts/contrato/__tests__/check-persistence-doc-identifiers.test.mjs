@@ -37,11 +37,7 @@ afterEach(() => {
 
 const HEALTHY_TYPES_TS = `
 export interface SarakUIOptions {
-    persistence?: {
-        storageKey?: string;
-        onSave?: (design: SarakThemePayload, activeThemeId?: string) => Promise<void> | void;
-        onLoad?: () => Promise<SarakThemePayload> | SarakThemePayload;
-    };
+    persistence?: SarakPersistenceOptions;
     theme?: {
         defaultTheme?: string;
         onSave?: (theme: ThemeEntry) => Promise<void> | void;
@@ -51,6 +47,14 @@ export interface SarakUIOptions {
 export interface SarakUIContextType {
     design: SarakThemePayload;
     saveTheme: (theme: ThemeEntry) => Promise<void>;
+}
+`;
+
+const HEALTHY_PERSISTENCE_TS = `
+export interface SarakPersistenceOptions {
+    storageKey?: string;
+    onSave?: (design: SarakThemePayload, activeThemeId?: string) => Promise<void> | void;
+    onLoad?: () => Promise<SarakThemePayload> | SarakThemePayload;
 }
 `;
 
@@ -82,6 +86,7 @@ describe('checkSourceDeclares — plan-43', () => {
     it('não acusa nada num par de arquivos saudável (os 5 identificadores presentes)', () => {
         const root = makeFixture({
             'src/core/Provider/types.ts': HEALTHY_TYPES_TS,
+            'src/core/Provider/persistenceTypes.ts': HEALTHY_PERSISTENCE_TS,
             'src/core/Provider/providerProps.ts': HEALTHY_PROVIDER_PROPS_TS,
         });
         expect(checkSourceDeclares({ root })).toEqual([]);
@@ -89,7 +94,8 @@ describe('checkSourceDeclares — plan-43', () => {
 
     it('PLANTADO: persistence.onSave renomeado — o gate acusa', () => {
         const root = makeFixture({
-            'src/core/Provider/types.ts': HEALTHY_TYPES_TS.replace('onSave?: (design: SarakThemePayload', 'onSaveNovo?: (design: SarakThemePayload'),
+            'src/core/Provider/types.ts': HEALTHY_TYPES_TS,
+            'src/core/Provider/persistenceTypes.ts': HEALTHY_PERSISTENCE_TS.replace('onSave?: (design: SarakThemePayload', 'onSaveNovo?: (design: SarakThemePayload'),
             'src/core/Provider/providerProps.ts': HEALTHY_PROVIDER_PROPS_TS,
         });
         const problems = checkSourceDeclares({ root });
@@ -100,7 +106,8 @@ describe('checkSourceDeclares — plan-43', () => {
 
     it('PLANTADO: bloco persistence?: removido inteiro — onSave e onLoad são acusados juntos', () => {
         const root = makeFixture({
-            'src/core/Provider/types.ts': HEALTHY_TYPES_TS.replace(/persistence\?:\s*\{[^]*?\};/, ''),
+            'src/core/Provider/types.ts': HEALTHY_TYPES_TS,
+            'src/core/Provider/persistenceTypes.ts': HEALTHY_PERSISTENCE_TS.replace(/export interface SarakPersistenceOptions\s*\{[^]*?\n\}/, ''),
             'src/core/Provider/providerProps.ts': HEALTHY_PROVIDER_PROPS_TS,
         });
         const problems = checkSourceDeclares({ root });
@@ -111,6 +118,7 @@ describe('checkSourceDeclares — plan-43', () => {
     it('PLANTADO: customThemes removido de providerProps.ts — o gate acusa', () => {
         const root = makeFixture({
             'src/core/Provider/types.ts': HEALTHY_TYPES_TS,
+            'src/core/Provider/persistenceTypes.ts': HEALTHY_PERSISTENCE_TS,
             'src/core/Provider/providerProps.ts': 'export interface SarakUIProviderProps {}',
         });
         const problems = checkSourceDeclares({ root });
@@ -120,6 +128,7 @@ describe('checkSourceDeclares — plan-43', () => {
     it('PLANTADO: arquivo inteiro ausente — reporta o caminho que falta, não estoura', () => {
         const root = makeFixture({
             'src/core/Provider/types.ts': HEALTHY_TYPES_TS,
+            'src/core/Provider/persistenceTypes.ts': HEALTHY_PERSISTENCE_TS,
         });
         const problems = checkSourceDeclares({ root });
         expect(problems).toEqual(['customThemes: src/core/Provider/providerProps.ts não existe.']);

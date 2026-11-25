@@ -26,11 +26,23 @@ const DEFAULT_BRANDING: SarakBrandingState = {
  *
  * A lib não faz fetch para nenhum servidor: `options.branding.initial` semeia o
  * estado e `options.branding.onChange` é a porta "traga sua persistência" — só
- * dispara se o CONSUMIDOR passar o callback, para o backend dele.
+ * dispara se o CONSUMIDOR passar o callback, para o backend dele. Quando
+ * `options.persistence.tenantId` muda, o estado é semeado de novo a partir de `initial`.
  */
 export function useBrandingManager(options: SarakUIOptions) {
     const brandingRef = useRef<SarakBrandingState>({ ...DEFAULT_BRANDING, ...options?.branding?.initial });
     const [branding, setBranding] = useState<SarakBrandingState>(brandingRef.current);
+
+    // Organização nova = marca nova: a semeadura é carga, não edição, então `onChange` não é chamado.
+    // Com o mesmo `tenantId`, uma mudança de `initial` não reescreve o que o usuário editou.
+    const tenantId = options?.persistence?.tenantId;
+    const [seededTenant, setSeededTenant] = useState(tenantId);
+    if (seededTenant !== tenantId) {
+        const seeded = { ...DEFAULT_BRANDING, ...options?.branding?.initial };
+        brandingRef.current = seeded;
+        setSeededTenant(tenantId);
+        setBranding(seeded);
+    }
 
     const updateBranding = useCallback(async (partial: Partial<SarakBrandingState>) => {
         const next = { ...brandingRef.current, ...partial };

@@ -353,6 +353,26 @@ vence a semente. Quando o host injeta o design de boot como fonte da verdade, de
 `persistence.preferConfigOverCache: true`: o `config` pinta já no primeiro render e o cache antigo
 não o substitui. Um `onLoad` posterior ainda vence esse design e, em `hybrid`, atualiza o cache.
 
+### O `config` que é o design gravado do usuário — `persistence.configIsSavedDesign`
+
+Por padrão o `config` é o **valor do host**: vence a paleta e o tom e não é gravado como escolha. Quem devolve o design gravado do usuário
+como `config` (o white label: cada organização personaliza o sistema e o servidor injeta o gravado no HTML) tem, nesse padrão, as escolhas
+que vieram no `config` descartadas na troca de tema: a paleta mantida, o "Manter minha paleta" e as paletas salvas somem do que a lib grava.
+
+Declare que o `config` é o design gravado com `configIsSavedDesign: true`. Com ela, o que veio no `config` conta como escolha do usuário,
+sobrevive à troca de tema e é gravado em `onSave` junto com o resto das escolhas (sempre esparso: só o que difere do tema).
+
+```tsx
+<SarakUIProvider
+  config={designGravadoDaOrganizacao}   // o que o seu `onSave` recebeu da última vez
+  initialTheme={idGravado}
+  options={{ persistence: { configIsSavedDesign: true, onSave, onLoad } }}
+/>
+```
+
+**A regra:** ligue quando o `config` for o que o usuário gravou; **não ligue** quando for um valor fixo do host (a cor que o sistema impõe),
+porque ligada a opção deixa de tratá-lo como imposição e o grava como escolha.
+
 ## 7. Modelagem de referência
 
 `docs/schema/postgres.sql` e `docs/schema/sqlite.sql` trazem o DDL comentado, nos dois dialetos.

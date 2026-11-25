@@ -522,6 +522,9 @@ lateral e `topbar*` com a do topo; `searchPositionTopbar: center` centra a busca
   (`options.branding.initial.tabName` ou `config.systemName`). **Se a marca da biblioteca aparecer no
   produto do consumidor, é defeito da lib — reporte, não contorne.** Detalhes em
   `docs/identidade-do-host.md`.
+- **Pergunte na integração: "o sistema é white label?"** (cada organização com nome e logo próprios). Se sim, o cromo
+  **não** leva `brand` fixo: a marca vai em `options.branding.initial`/`onChange`, a organização em
+  `options.persistence.tenantId`, o logo por `onMediaUpload`. Caminho: seção "White label" de `docs/identidade-do-host.md`.
 - **Defeito da lib se corrige NA LIB.** Nunca oriente um patch no projeto do consumidor para contornar
   comportamento quebrado da base.
 

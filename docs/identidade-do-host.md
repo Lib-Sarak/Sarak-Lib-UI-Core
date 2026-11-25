@@ -93,3 +93,127 @@ rótulo da tela de acesso (default `'Acesso ao Sistema'`) — texto genérico, n
 > marca da lib ao montar. Se o seu app dependia (intencionalmente ou não) desse valor,
 > passe o nome que você quer por uma das duas portas acima. Nenhuma capacidade foi
 > removida — só o default que vazava.
+
+## 5. White label — a marca é da organização
+
+Num sistema white label cada organização tem nome, logo, nome da aba e texto de login próprios. O importador guarda, o administrador edita
+no painel, e a lib mostra. A lib não faz requisição nenhuma e não tem marca padrão: tudo passa pelas portas abaixo.
+
+**Marca × tema.** A marca é da organização; o tema é estilo. Por isso a marca fica numa tabela própria, e trocar de tema não a toca.
+
+**Os campos** (`SarakBrandingState`), editados no painel de customização (e pelo atalho "Usar minha marca"):
+
+| Campo | O que é |
+|---|---|
+| `companyName` | nome exibido no cromo |
+| `tabName` | título da aba |
+| `loginName` | texto da tela de acesso |
+| `logoBase64` | logo no cromo e favicon; aceita data URI **ou URL** |
+
+**O fluxo completo:**
+
+1. Carregue a marca da organização **antes do primeiro render** e passe em `options.branding.initial`.
+2. Grave em `options.branding.onChange` (recebe o estado inteiro da marca).
+3. Envie o logo por `onMediaUpload` (prop do `SarakUIProvider`), devolvendo a **URL do storage** em vez de guardar base64 na linha.
+4. **Não passe `brand` fixo** ao `SarakAppChrome`: sem ele, o cromo mostra a marca gravada. `brand={{ name, logoUrl }}` continua valendo e vence
+   campo a campo; o slot `logo` vence a imagem.
+
+**Por organização.** A tabela tem a chave da organização e `options.persistence.tenantId` leva essa chave. Quando o `tenantId` muda, a marca é
+semeada de novo a partir de `options.branding.initial` (sem chamar `onChange`: é carga, não edição). Com o mesmo `tenantId`, uma mudança de
+`initial` não reescreve o que o usuário editou. Carregue a marca da organização nova antes de trocar o `tenantId`.
+
+**Precedência:**
+
+- na barra do cromo: `brand` > marca gravada > `systemName`/`logoUrl` do design (campo a campo; string vazia conta como ausente);
+- no título da aba: `tabName` > `systemName`;
+- favicon: só com logo.
+
+**Modo embarcado** (`mode: 'embedded'`) não escreve título nem favicon.
+
+**Primeiro quadro.** O servidor pode injetar a marca no HTML junto com o tema, para a aba e a barra já nascerem com a marca certa.
+
+**Tema personalizado pela organização.** Quando a organização personaliza o tema (paleta, "Manter minha paleta", paletas salvas) e o servidor
+injeta o design gravado dela como `config` do `SarakUIProvider`, ligue `options.persistence.configIsSavedDesign: true`. Sem ela, o `config` é
+o valor do host e a troca de tema descarta essas escolhas. Veja `docs/persistencia-de-tema.md` (§6).
+
+**O que a lib não faz:** nenhuma requisição, nenhum default de marca. Sem marca gravada e sem `brand`, o cromo fica sem nome.
+
+### Exemplo completo
+
+Tabela sugerida (nomes genéricos):
+
+| Coluna | Tipo |
+|---|---|
+| `organization_id` | chave da organização |
+| `company_name` | texto |
+| `tab_name` | texto |
+| `login_name` | texto |
+| `logo_url` | texto (URL do storage) |
+
+Rotas: `GET /api/organizations/:id/brand` devolve a linha; `PUT /api/organizations/:id/brand` grava a marca inteira (nas mesmas colunas que o `GET` devolve).
+
+```tsx
+import { useEffect, useState } from 'react';
+import { SarakUIProvider, SarakAppChrome, type SarakBrandingState } from '@sarak/lib-ui-core';
+
+type Brand = { company_name: string; tab_name: string; login_name: string; logo_url: string | null };
+
+const toState = (row: Brand): Partial<SarakBrandingState> => ({
+  companyName: row.company_name,
+  tabName: row.tab_name,
+  loginName: row.login_name,
+  logoBase64: row.logo_url,
+});
+
+// A conversão inversa: o `onChange` entrega o estado em camelCase, a tabela guarda em snake_case.
+const toRow = (state: SarakBrandingState): Brand => ({
+  company_name: state.companyName ?? '',
+  tab_name: state.tabName ?? '',
+  login_name: state.loginName,
+  logo_url: state.logoBase64,
+});
+
+export function Root({ organizationId }: { organizationId: string }) {
+  // A marca carregada guarda a organização a que pertence.
+  const [loaded, setLoaded] = useState<{ organizationId: string; initial: Partial<SarakBrandingState> } | null>(null);
+
+  useEffect(() => {
+    fetch(`/api/organizations/${organizationId}/brand`)
+      .then((r) => r.json())
+      .then((row) => setLoaded({ organizationId, initial: toState(row) }));
+  }, [organizationId]);
+
+  // O Provider só monta quando a marca carregada é a da organização atual: no render em que `organizationId`
+  // muda, `loaded` ainda é a da anterior, e o `tenantId` novo nunca chega com a marca antiga.
+  if (!loaded || loaded.organizationId !== organizationId) return null;
+
+  return (
+    <SarakUIProvider
+      options={{
+        persistence: { tenantId: organizationId },
+        branding: {
+          initial: loaded.initial,
+          onChange: async (brand) => {
+            await fetch(`/api/organizations/${organizationId}/brand`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(toRow(brand)),
+            });
+          },
+        },
+      }}
+      onMediaUpload={async (file) => {
+        const body = new FormData();
+        body.append('file', file);
+        const res = await fetch(`/api/organizations/${organizationId}/brand/logo`, { method: 'POST', body });
+        return (await res.json()).url; // URL do storage, não base64
+      }}
+    >
+      {/* sem `brand`: o cromo mostra a marca gravada */}
+      <SarakAppChrome navItems={[]}>
+        <Telas />
+      </SarakAppChrome>
+    </SarakUIProvider>
+  );
+}
+```

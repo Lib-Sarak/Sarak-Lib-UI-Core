@@ -67,22 +67,25 @@ export const restoreSavedDesign = (
 export const useDesignChoices = (
     allThemes: SarakThemeEntry[] | undefined,
     configRef: MutableRefObject<SarakThemePayload>,
+    configIsSavedDesign = false,
 ) => {
     const allThemesRef = useRef(allThemes);
     allThemesRef.current = allThemes;
     const pendingRef = useRef<SavedDesign | null>(null);
+    // O `config` que é o design gravado do usuário não é referência do host: sem ele, o baseline é o do tema e o que veio nele é escolha.
+    const hostOf = useCallback((): DesignRecord | undefined => (configIsSavedDesign ? undefined : configRef.current as DesignRecord), [configRef, configIsSavedDesign]);
 
     const restore = useCallback((previous: SarakDesignState, saved: SavedDesign): SarakDesignState => {
-        const result = restoreSavedDesign(previous, saved, allThemesRef.current, configRef.current as DesignRecord);
+        const result = restoreSavedDesign(previous, saved, allThemesRef.current, hostOf());
         pendingRef.current = result.restored ? null : saved;
         return result.design;
-    }, [configRef]);
+    }, [hostOf]);
 
     const toPersisted = useCallback((design: SarakDesignState, themeId: string | undefined): PersistedDesign => {
         const theme = findThemeEntry(allThemesRef.current, themeId);
         if (!theme) return { design: design as unknown as DesignRecord };
-        return { design: extractDesignChoices(design as unknown as DesignRecord, theme, configRef.current as DesignRecord), format: SARAK_DESIGN_FORMAT_CHOICES };
-    }, [configRef]);
+        return { design: extractDesignChoices(design as unknown as DesignRecord, theme, hostOf()), format: SARAK_DESIGN_FORMAT_CHOICES };
+    }, [hostOf]);
 
     return { restore, toPersisted, pendingRef };
 };

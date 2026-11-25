@@ -854,7 +854,9 @@ se o usuário puder escolher outro tema. O cache restaura o par design/id até `
 resposta com id substitui o cache sem chamar `onSave`.
 
 Quando o servidor injeta `temaDeBoot` como fonte da verdade, `preferConfigOverCache: true` faz o
-`config` vencer o cache local no primeiro render. Para o primeiro quadro antes do JavaScript, o
+`config` vencer o cache local no primeiro render. Se esse `config` é o design que o **usuário** gravou
+(white label: a organização personaliza o tema), ligue também `persistence.configIsSavedDesign: true`: sem ela
+o `config` é valor do host e a troca de tema descarta a paleta mantida e as paletas salvas dele. Para o primeiro quadro antes do JavaScript, o
 servidor precisa inserir o CSS crítico no HTML inicial, antes dos scripts do app. Use a função
 pública `sarakCreateThemeBootCss`: ela recebe o design, valida a cor de fundo e devolve as regras
 para `html`, `body` e `color-scheme`.
@@ -998,6 +1000,26 @@ Se você **quiser** que a lib gerencie a identidade, é opt-in explícito:
 Também dá para alimentar só o rótulo do cromo via `config.systemName`. Precedência e detalhes em
 `docs/identidade-do-host.md`. **Se você vir a marca da biblioteca aparecendo no seu produto, isso é
 um defeito da lib — reporte (§5), não contorne.**
+
+### White label (marca por organização)
+
+Se cada organização do seu sistema tem nome e logo próprios, não fixe `brand` no `SarakAppChrome`: carregue a marca antes do render, passe em
+`options.branding.initial`, grave em `branding.onChange` e leve a chave da organização em `options.persistence.tenantId`. O cromo mostra a
+marca gravada e acompanha a troca de organização.
+
+```tsx
+<SarakUIProvider
+  options={{
+    persistence: { tenantId: organizationId },
+    branding: { initial: marcaDaOrganizacao, onChange: salvarMarca },
+  }}
+  onMediaUpload={enviarLogoERetornarUrl}
+>
+  <SarakAppChrome navItems={itens}>{/* sem `brand` */}</SarakAppChrome>
+</SarakUIProvider>
+```
+
+O fluxo completo, a tabela sugerida e a precedência estão em `docs/identidade-do-host.md` (seção "White label").
 
 ## 3.13 Estrutura e isolamento
 
@@ -1364,7 +1386,7 @@ Medido em navegador:
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v9.0.0-rc.1; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **565** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **566** nomes (componentes, tipos, hooks e helpers).
 
 ### A.1 Componentes públicos (144)
 

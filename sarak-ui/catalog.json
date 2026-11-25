@@ -342,6 +342,7 @@
     "SarakPermissionMatrix",
     "SarakPermissionMatrixProps",
     "SarakPermissionRole",
+    "SarakPersistenceOptions",
     "SarakPinnedOffsets",
     "SarakPopover",
     "SarakPopoverPlacement",
@@ -14327,6 +14328,6 @@
   "kitStamp": {
     "libVersion": "9.0.0-rc.1",
     "kitSchemaVersion": 1,
-    "kitHash": "aeea55b21a46"
+    "kitHash": "a0613a453305"
   }
 }

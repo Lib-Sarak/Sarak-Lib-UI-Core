@@ -39,14 +39,14 @@ const DOC_FILE = path.join(ROOT, 'docs', 'persistencia-de-tema.md');
 export const IDENTIFIERS = [
     {
         label: 'persistence.onSave',
-        file: 'src/core/Provider/types.ts',
-        blockStart: /persistence\?:\s*\{/,
+        file: 'src/core/Provider/persistenceTypes.ts',
+        blockStart: /interface\s+SarakPersistenceOptions\s*\{/,
         memberRe: /\bonSave\?:/,
     },
     {
         label: 'persistence.onLoad',
-        file: 'src/core/Provider/types.ts',
-        blockStart: /persistence\?:\s*\{/,
+        file: 'src/core/Provider/persistenceTypes.ts',
+        blockStart: /interface\s+SarakPersistenceOptions\s*\{/,
         memberRe: /\bonLoad\?:/,
     },
     {

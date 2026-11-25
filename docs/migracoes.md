@@ -5,6 +5,26 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 9.0.0 — `options.persistence.configIsSavedDesign`: o `config` como design gravado do usuário (aditivo)
+
+Nova opção, padrão `false`. Com `configIsSavedDesign: true`, o `config` do `SarakUIProvider` deixa de ser o valor do host e passa a ser o
+design gravado do usuário: a paleta, o "Manter minha paleta" e as paletas salvas que vieram nele sobrevivem à troca de tema, e `onSave`
+recebe as escolhas que diferem do tema (esparso, como sempre).
+
+**O que muda para o importador:** nada, até ligar. Sem a opção, o `config` continua vencendo a paleta e o tom e não é gravado como escolha.
+Ligue quando o servidor devolver o design gravado do usuário como `config` (o white label). Não ligue para um `config` fixo do host: ligada,
+a lib o trata como escolha e o grava. A regra completa está em `docs/persistencia-de-tema.md` (§6).
+
+---
+
+## 9.0.0 — o cromo mostra a marca do sistema sem a prop brand, e a marca acompanha a organização (aditivo)
+
+O `SarakAppChrome` (e a versão do celular) passa a completar a marca por campo: o `name` e o `logoUrl` que faltarem em `brand` (ou vierem vazios) caem no `systemName`/`logoUrl` de `useSarakUI()`, que já trazem a marca gravada (`options.branding`) por cima do design. O slot `logo` continua vencendo a imagem. Além disso, `options.branding.initial` é semeado de novo quando `options.persistence.tenantId` muda, sem chamar `onChange`.
+
+**O que muda para o importador:** quem passa `brand` completo não vê diferença. Quem passa só um campo (por exemplo só `name`) e tem logo na marca gravada ou no design passa a ver esse logo na barra, ao lado do nome que já passava; o inverso vale para quem passa só `logoUrl`. Quem não passa `brand` e tem marca gravada (ou `systemName` no tema) vê a barra, que ficava sem nome, passar a mostrar nome e logo. Sem marca e sem `brand`, nada aparece, como antes. Nenhum import, prop ou token público muda. Guia do white label: seção "White label" de `docs/identidade-do-host.md`.
+
+---
+
 ## 9.0.0 — a reserva de cor do `SARAK_DESIGN_MANIFEST` passa a ser o padrão do token
 
 A reserva que o manifesto usa quando o valor de uma cor chega vazio deixa de ser um literal repetido no código e passa a ser o `defaultValue` do próprio token no schema, a mesma regra que o `variable-contract` cobra. Um valor que chega preenchido não muda. O `DEFAULT_INDUSTRIAL_SEED`, que só a própria declaração usava e que não saía no barril, foi removido.
@@ -413,7 +433,10 @@ e volta ao valor da paleta; refaça o ajuste e ele passa a ser gravado como esco
   carga — a cor de papel ajustada à mão volta à da paleta toda vez. Nada se corrompe, mas o ajuste não dura: guarde o `format`.
 - **Quem passa o design gravado como `config` do `SarakUIProvider`** (para pintar o primeiro quadro com o que veio no HTML): o `config` é cor
   declarada pelo host e vence a paleta e o tom. Com o dado antigo, as cores dele continuam valendo até o primeiro `Aplicar` desta versão, que
-  grava só as escolhas; a partir daí, o `config` passa a trazer só elas.
+  grava só as escolhas; a partir daí, o `config` passa a trazer só elas. **Sem `options.persistence.configIsSavedDesign: true`, a troca de
+  tema descarta as escolhas que vieram no `config`** (a paleta mantida, o "Manter minha paleta" e as paletas salvas), porque elas parecem
+  declaradas pelo host. Quem passa o design gravado do usuário como `config` liga a opção (uma linha em `options.persistence`) e as
+  escolhas passam a sobreviver; quem passa um valor fixo do host não liga e nada muda.
 
 Quando o tema do id não está em memória no instante de gravar (um tema do importador que ainda não carregou), a lib grava o design inteiro e
 sem marcador, como antes: nenhum valor é descartado por não se saber de onde veio. A decisão e as alternativas estão no ADR-026.

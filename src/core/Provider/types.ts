@@ -4,7 +4,7 @@ import type { SarakPreferencesOptions, SarakUserPreferences } from './preference
 import type { SarakThemeCatalogEntry } from '../Design/presets/themes';
 import type { SarakFontsOption } from './providerProps';
 import type { SarakThemeEntry, SarakThemeSaveOperation } from './themeTypes';
-import type { SarakDesignFormat, SarakSavedDesign } from './designFormatTypes';
+import type { SarakPersistenceOptions } from './persistenceTypes';
 
 export type { SarakThemeEntry, SarakThemeSaveOperation } from './themeTypes';
 
@@ -142,30 +142,7 @@ export interface SarakUIOptions {
     };
     /** Origem das fontes do tema; padrão `'bundled'` (ver `SarakFontsOption`). */
     fonts?: SarakFontsOption;
-    persistence?: {
-        /** Estratégia de persistência (ADR-009 §2.2). Default `'hybrid'` = localStorage + onSave/onLoad; `'local'` ignora as duas portas; `'remote'` para de gravar localStorage e SUBSTITUI pelo que `onLoad` resolver, degradando para `'local'` com aviso único sem porta configurada. */
-        strategy?: 'local' | 'remote' | 'hybrid';
-        storageKey?: string;
-        /** Escopa a chave por tenant (ADR-009 §2.1): vira `${storageKey}::tenant:${tenantId}`. Opaco, não validado. */
-        tenantId?: string;
-        /** Quando true, o config fornecido pelo host vence o cache local no primeiro quadro. Default false preserva cache-wins. */
-        preferConfigOverCache?: boolean;
-        /** `activeThemeId` (2º parâmetro, ADITIVO — plan-42): o id do tema EFETIVAMENTE
-         *  no ar (`resolvedThemeId`) no instante deste save. Vem preenchido sempre que a
-         *  sessão resolveu um tema (seed ou aplicado em runtime); vem `undefined` só
-         *  quando não há tema resolvido ainda. NÃO faz parte de `design` — é identidade,
-         *  não token; o payload continua sendo o mesmo objeto que o export de tema
-         *  produz. Quem já implementa `onSave(design)` continua funcionando: em
-         *  JavaScript, argumento extra não declarado é ignorado. `format` (3º): `2` quando `design` traz só as escolhas;
-         *  devolva-o no `onLoad` (`SarakSavedDesign`) — sem ele, o gravado é lido como do formato anterior. */
-        onSave?: (design: SarakThemePayload, activeThemeId?: string, format?: SarakDesignFormat) => Promise<void> | void;
-        onLoad?: () => Promise<SarakThemePayload | SarakSavedDesign | null | undefined>
-            | SarakThemePayload | SarakSavedDesign | null | undefined;
-        /** Segura os filhos até `onLoad` resolver — troca flash por tela vazia (ver "o primeiro paint" em `docs/persistencia-de-tema.md`). Default `false`. */
-        strictBackendSync?: boolean;
-        /** Sincroniza o tema entre abas/apps que compartilham a `storageKey`. Escuta `storage` e reaplica o design (validado) quando outra aba grava a mesma chave. Default `true`. */
-        crossTabSync?: boolean;
-    };
+    persistence?: SarakPersistenceOptions;
     theme?: {
         defaultTheme?: string;
         extraTokens?: Record<string, unknown>;

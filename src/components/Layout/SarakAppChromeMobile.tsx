@@ -27,6 +27,7 @@ import { useChromeDesignTokens } from './chrome/useChromeDesignTokens';
 import { useChromeDefaultWidgets } from './chrome/useChromeDefaultWidgets';
 import type { SarakChromeWidgets } from './chrome/chromeWidgets';
 import { getSarakSearchItems } from './chrome/navItem';
+import { useEffectiveBrand } from './chrome/useEffectiveBrand';
 
 /**
  * Cromo móvel com barra compacta, navegação por drawer e foco acessível.
@@ -73,7 +74,7 @@ const DRAWER_ID = 'sarak-chrome-drawer';
 export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     children,
     secondaryContent,
-    brand,
+    brand: brandProp,
     logo,
     nav,
     activeRoute,
@@ -94,6 +95,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     className = '',
     rootStyle,
 }) => {
+    const brand = useEffectiveBrand(brandProp);
     const [open, setOpen] = useState(false);
     const close = () => setOpen(false);
     const { containerRef, handleTrap } = useFocusTrap(open, close);

@@ -30,8 +30,8 @@ export type {
 } from './core/Provider/types';
 export type { SarakUIProviderProps } from './core/Provider/providerProps';
 export type { SarakDesignFormat, SarakSavedDesign } from './core/Provider/designFormatTypes';
-export type { SarakFontSource, SarakFontsOption, SarakFontsOptions } from './core/Provider/providerProps';
-export type { SarakCustomFont, SarakCustomFontFile, SarakFontFallback } from './core/Provider/providerProps';
+export type { SarakPersistenceOptions } from './core/Provider/persistenceTypes';
+export type { SarakFontSource, SarakFontsOption, SarakFontsOptions, SarakCustomFont, SarakCustomFontFile, SarakFontFallback } from './core/Provider/providerProps';
 // Preferências do usuário como camada separada do tema — sobreposta ao
 // renderizar, nunca gravada nele.
 export { useSarakPreferences } from './core/Provider/hooks/useSarakPreferences';

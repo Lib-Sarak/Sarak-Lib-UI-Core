@@ -4,7 +4,7 @@ import { NoiseOverlay } from '../../effects/NoiseOverlay';
 import { SarakStyleNonceContext } from './components/SarakStyle';
 
 // Novos Módulos Refatorados
-import type { SarakUIProviderProps, SarakThemeEntry } from './types';
+import type { SarakUIProviderProps, SarakThemeEntry, SarakThemePayload } from './types';
 import { useDesignManager } from './hooks/useDesignManager';
 import { useBrandingManager } from './hooks/useBrandingManager';
 import { useSarakUIEffects } from './hooks/useSarakUIEffects';
@@ -41,6 +41,7 @@ export { useSarakUI, useSarakUIOptional } from './hooks/useSarakUI';
 // uma referência NOVA a cada render — metade do loop de render infinito da Spec 43 §5.1
 // (a correção definitiva é o guard em `useDesignSync`; isto é só o default seguro).
 const EMPTY_CUSTOM_THEMES: SarakThemeEntry[] = [];
+const NO_HOST_CONFIG = {} as SarakThemePayload;
 
 const PersistenceSaveFailureToast: React.FC<{ failureCount: number }> = ({ failureCount }) => {
     const toast = useToast();
@@ -83,7 +84,9 @@ const SarakUIProviderCore: React.FC<SarakUIProviderProps> = ({
     const { allThemes, themeCatalog, loadTheme, saveTheme, deleteTheme: deleteThemeFromCollection } = useThemeCollection(customThemes, options);
     const hostConfigRef = useRef(initialPropsConfig);
     hostConfigRef.current = initialPropsConfig;
-    const getHostConfig = useCallback(() => hostConfigRef.current, []);
+    // O `config` que é o design gravado do usuário não é referência do host: a prévia do painel compõe sem ele, como a extração do gravado.
+    const configIsSavedDesign = options?.persistence?.configIsSavedDesign === true;
+    const getHostConfig = useCallback(() => (configIsSavedDesign ? NO_HOST_CONFIG : hostConfigRef.current), [configIsSavedDesign]);
 
     // 2. Gerenciamento do Estado de Design e Persistência
     const { design, setDesign, applyConfig, applyFullConfig, persistDesign, isBackendLoaded, persistenceSaveFailureCount, resolvedThemeId, setResolvedThemeId } = useDesignManager({

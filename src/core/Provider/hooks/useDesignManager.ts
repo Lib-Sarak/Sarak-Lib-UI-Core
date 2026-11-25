@@ -75,7 +75,7 @@ export const useDesignManager = (props: {
         allThemes, activeThemeId, initialTheme, optionsRef, configRef,
     });
     // O gravado guarda só as escolhas; o que a paleta calcula é refeito ao carregar (`useDesignChoices.ts`).
-    const designChoices = useDesignChoices(allThemes, configRef);
+    const designChoices = useDesignChoices(allThemes, configRef, options?.persistence?.configIsSavedDesign === true);
 
     // plan-27 — o tema EFETIVAMENTE no ar (não a prop `activeThemeId` crua); ver
     // `useResolvedThemeId.ts`. ADITIVO: não muda a semântica de `activeThemeId`/
