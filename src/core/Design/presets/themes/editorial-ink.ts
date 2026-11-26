@@ -6,6 +6,9 @@ export const editorialInkTheme: SarakThemePreset = {
   "name": "Editorial Ink",
   "description": "Papel quente, tinta precisa e uma coluna de leitura com ritmo editorial.",
   "design": {
+    "subtitleColor": "#7e6069",
+    "titleColor": "#a7496b",
+    "sidebarColor": "#f7eef0",
     "mode": "light",
     // as cores saem da paleta; abaixo ficam só as sobrescritas justificadas
     "colorPalette": "tinta-vinho",
@@ -397,6 +400,9 @@ export const editorialInkTheme: SarakThemePreset = {
     ]
   },
   "contraparte": {
+    "sidebarColor": "#140b0e",
+    "subtitleColor": "#ad969d",
+    "titleColor": "#d388a2",
     "mode": "dark",
     "sidebarNoiseOpacity": 0,
     "topbarNoiseOpacity": 0,

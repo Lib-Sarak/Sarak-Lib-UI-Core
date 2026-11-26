@@ -7,6 +7,9 @@ export const blueprintProtocolTheme: SarakThemePreset = {
     description: "Cianótipo técnico em azul médio, grade de engenharia, cotas monoespaçadas e linha vermelha de revisão.",
     design:
         {
+            "navItemActiveColor": "#a0cefe",
+            "subtitleColor": "#e0bfe9",
+            "titleColor": "#a9cdf3",
             "mode": "dark",
             // as cores saem da paleta; abaixo ficam só as sobrescritas justificadas
             "colorPalette": "azul-projeto",
@@ -58,7 +61,7 @@ export const blueprintProtocolTheme: SarakThemePreset = {
             "sidebarColor": "#102b49",
             "sidebarNoiseOpacity": 0,
             // o azul de planta técnica é o fundo do tema; a neutra da paleta é quase preta
-            "topbarColor": "#15375b",
+            "topbarColor": "#0b1e32",
             // a barra tem fundo próprio do tema: o realce de hover parte dele, não da neutra da paleta
             "sidebarHoverColor": "rgba(255, 255, 255, 0.06)",
             "topbarHoverColor": "rgba(255, 255, 255, 0.06)",
@@ -418,9 +421,12 @@ export const blueprintProtocolTheme: SarakThemePreset = {
         },
     contraparte:
         {
+            "subtitleColor": "#855890",
+            "titleColor": "#3a6c9f",
+            "navItemActiveColor": "#2a5d8f",
             "mode": "light",
             // o azul de planta técnica é o fundo do tema; a neutra da paleta é quase preta
-            "sidebarColor": "#dfeaf5",
+            "sidebarColor": "#ebf2f9",
             "sidebarNoiseOpacity": 0,
             // o azul de planta técnica é o fundo do tema; a neutra da paleta é quase preta
             "topbarColor": "#e9f1f8",

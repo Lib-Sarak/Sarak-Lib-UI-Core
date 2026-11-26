@@ -6,6 +6,7 @@ export const organicClayTheme: SarakThemePreset = {
   "name": "Organic Clay",
   "description": "Barro, madeira e contornos topográficos em uma superfície tátil e tranquila.",
   "design": {
+    "textColorMaster": "#0b0705",
     "mode": "light",
     // as cores saem da paleta; abaixo ficam só as sobrescritas justificadas
     "colorPalette": "terra-argila",
@@ -425,6 +426,7 @@ export const organicClayTheme: SarakThemePreset = {
     ]
   },
   "contraparte": {
+    "textColorMaster": "#fdf0eb",
     "mode": "dark",
     // o fundo de argila é o tema; a neutra da paleta é quase branca
     "sidebarColor": "#29231a",

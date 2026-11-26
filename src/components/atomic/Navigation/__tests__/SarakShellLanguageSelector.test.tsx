@@ -36,6 +36,18 @@ describe('ShellLanguageSelector', () => {
         expect(languageCode?.className).toContain('opacity-100');
     });
 
+    it.each([
+        ['no tom do tema', TWO_LANGUAGES],
+        ['numa topbar contrastante', { ...TWO_LANGUAGES, colorPalette: 'oceano', topbarTone: 'primary' }],
+    ])('o botão da topbar não tem tinta e se distingue pelo contorno na cor do texto de item da barra (%s)', (_caso, config) => {
+        renderWithProvider(<SarakShellLanguageSelector variant="horizontal" />, config);
+        const button = screen.getByText('pt').closest('button') as HTMLElement;
+
+        expect(button.className).toContain('bg-transparent');
+        expect(button.className).toContain('outline-[color:var(--sarak-topbar-item-text-color,var(--theme-muted))]');
+        expect(button.className).not.toContain('bg-[var(--theme-muted)]/10');
+    });
+
     it('renderiza com variante horizontal, listando os idiomas habilitados no tema', () => {
         renderWithProvider(<SarakShellLanguageSelector variant="horizontal" />);
         expect(screen.getByText('pt')).toBeInTheDocument();

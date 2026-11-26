@@ -9,6 +9,7 @@ export const cyberRetroWave2077ClassicTheme: SarakThemePreset = {
     name: 'Cyber Retro-Wave 2077 Classic',
     description: 'Neon dos anos 80: magenta e ciano sobre violeta-escuro, quina cortada, Orbitron maiúsculo, VT323 no código e scanlines.',
     design: {
+        sidebarActiveColor: 'rgba(255, 0, 255, 0.12)',
         mode: 'dark',
         bodySize: '14px',
         identityAlignment: 'left',
@@ -275,6 +276,7 @@ export const cyberRetroWave2077ClassicTheme: SarakThemePreset = {
         enabledLanguages: ['pt', 'en', 'es', 'fr', 'de', 'it'],
     },
     contraparte: {
+        sidebarActiveColor: 'rgba(255, 0, 255, 0.12)',
         mode: 'light',
         sidebarNoiseOpacity: 0,
         topbarNoiseOpacity: 0,
@@ -310,7 +312,7 @@ export const cyberRetroWave2077ClassicTheme: SarakThemePreset = {
         colorBgLayer1: '#f3e3f2',
         colorBgLayer2: '#e8d9e7',
         bgBaseColor: '#feeefc',
-        sidebarColor: '#d5f6f5',
+        sidebarColor: '#d9f7f6',
         topbarColor: '#d5f6f5',
         titleColor: '#b900b9',
         cardTitleColor: '#c400c4',

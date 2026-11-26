@@ -6,6 +6,7 @@ export const goldenHourTheme: SarakThemePreset = {
     name: "Golden Hour",
     description: "Editorial de fim de tarde em papel creme, tinta serifada, ouro quente e grão fotográfico.",
     design: {
+        "sidebarColor": "#f4eeeb",
         "mode": "light",
         // as cores saem da paleta; abaixo ficam só as sobrescritas justificadas
         "colorPalette": "ambar-industrial",
@@ -301,6 +302,7 @@ export const goldenHourTheme: SarakThemePreset = {
         ]
     },
     contraparte: {
+        "sidebarColor": "#1f1914",
         "sidebarNoiseOpacity": 0,
         "topbarNoiseOpacity": 0,
         "topbarShadow": "0 2px 18px rgba(231,184,76,0.14)",

@@ -322,7 +322,7 @@ export const industrialTerminalClassicTheme: SarakThemePreset = {
         titleColor: '#995a00',
         cardTitleColor: '#a25f00',
         topbarTitleColor: '#140d07',
-        textColorMaster: '#4d2e00',
+        textColorMaster: '#1f1300',
         btnSecondaryBg: '#feebd9',
         cardBackgroundColor: '#fcf1e8',
         cardBorderColor: 'rgba(231, 220, 211, 0.72)',

@@ -10,6 +10,7 @@ export const natureBreezeTheme: SarakThemePreset = {
     name: 'Nature Breeze',
     description: 'Brisa de jardim: verde #2e7d32 com amarelo e verde-azulado sobre papel esverdeado, Lora nos títulos, vidro leve de cantos de 32 px e botão em pílula. No escuro, o preto da foto com o verde da marca.',
     design: {
+        sidebarActiveColor: 'rgba(46, 125, 50, 0.12)',
         mode: 'light',
         bodySize: '14px',
         identityAlignment: 'left',
@@ -31,7 +32,7 @@ export const natureBreezeTheme: SarakThemePreset = {
         iconFamily: 'lucide',
         iconWeight: 'light',
         iconStrokeWidth: 2,
-        sidebarColor: '#faedd4',
+        sidebarColor: '#fbf0db',
         sidebarNoiseOpacity: 0,
         sidebarBorderWidth: 1,
         sidebarBorderStyle: 'solid',
@@ -273,6 +274,7 @@ export const natureBreezeTheme: SarakThemePreset = {
         enabledLanguages: ['pt', 'en', 'es', 'fr', 'de', 'it'],
     },
     contraparte: {
+        sidebarActiveColor: 'rgba(46, 125, 50, 0.12)',
         mode: 'dark',
         sidebarNoiseOpacity: 0,
         topbarNoiseOpacity: 0,

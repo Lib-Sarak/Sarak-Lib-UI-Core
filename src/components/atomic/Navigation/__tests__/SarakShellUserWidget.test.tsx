@@ -122,3 +122,13 @@ describe('SarakShellUserWidget — faixa e avatar da lateral', () => {
         expect(container.querySelector('img')).toHaveAttribute('src', avatarUrl);
     });
 });
+
+describe('SarakShellUserWidget — cargo na barra de topo', () => {
+    it('a classe de tamanho do cargo não disputa `color` com a da cor do subtítulo', () => {
+        renderWidget({ name: 'Ana Lima', role: 'Finance Manager' }, 'horizontal');
+        const classes = screen.getByText('Finance Manager').className.split(/\s+/);
+        // `text-[var(...)]` sem tipo vira `color:` no Tailwind e a escala vence a cor, que cai na herdada da barra.
+        expect(classes.some((name) => name.startsWith('text-[length:var(--sarak-type-scale-micro'))).toBe(true);
+        expect(classes.filter((name) => /^text-\[var\(/.test(name))).toHaveLength(1);
+    });
+});

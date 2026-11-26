@@ -7,6 +7,7 @@ export const minimalistAiry: SarakThemePreset = {
     description: "Referência clara do conjunto: papel branco, tinta de alto contraste, azul preciso e espaço generoso.",
     design:
         {
+            "topbarColor": "#dff1ff",
             "mode": "light",
             // as cores saem da paleta; abaixo ficam só as sobrescritas justificadas
             "colorPalette": "oceano",
@@ -399,6 +400,7 @@ export const minimalistAiry: SarakThemePreset = {
         },
     contraparte:
         {
+            "topbarColor": "#051722",
             "mode": "dark",
             "sidebarNoiseOpacity": 0,
             "topbarNoiseOpacity": 0,

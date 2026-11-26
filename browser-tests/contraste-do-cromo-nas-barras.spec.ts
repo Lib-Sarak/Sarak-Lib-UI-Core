@@ -4,34 +4,42 @@ import { expect, test, type Page } from '@playwright/test';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildHarness } from './build-harness.mjs';
 import { GRADIENT_LIGHT_SHARE } from '../src/core/Design/palette/contrast-pairs';
+import { SARAK_ALL_THEMES } from '../src/core/Design/presets/themes/all';
 
 const ENTRY = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'plan-145-entry.tsx');
 const MODES = ['light', 'dark'] as const;
 const TONES = ['inverse', 'primary', 'secondary'] as const;
 const TEXT_MIN = 4.5;
 const ICON_MIN = 3;
-const GRADIENT_THEMES = [
-    ['nebula-space', 'topbar'],
-    ['cyberpunk-neon', 'topbar'],
-    ['corporate-ledger', 'topbar'],
-    ['industrial-terminal', 'sidebar'],
-] as const;
+const BARS = ['sidebar', 'topbar'] as const;
+/** Os 25 temas embarcados, nas duas barras: o degradê se liga pelo token, e não pelo tema. */
+const GRADIENT_THEMES = SARAK_ALL_THEMES.flatMap((theme) => BARS.map((bar) => [theme.id, bar] as const));
 
 let harnessDirectory: string;
 let harnessUrl: string;
 
 test.beforeAll(async () => {
+    // A cena monta como o importador (`initialTheme` + `defaultColorMode`), para o tema passar pelo caminho de modo do Provider. O tom e o
+    // degradê entram no próprio tema da cena (cópia do embarcado com os tokens de barra trocados): o tom do tema vence o do `config`.
     const fixture = fs.readFileSync(ENTRY, 'utf8');
-    const original = 'const composed = composeThemeForMode({ design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte }, mode) as unknown as Record<string, unknown>;';
+    const appDeclaration = 'const App = (): React.ReactElement => {';
+    const original = '<SarakUIProvider config={sceneDesign()}>';
+    const sceneTheme = [
+        "const sceneBase = SARAK_ALL_THEMES.find((item) => item.id === params.get('theme'));",
+        "const sceneToneKey = params.get('bar') === 'topbar' ? 'topbarTone' : 'sidebarTone';",
+        // Escolher o papel da barra vence as cores que o tema declara para ela, como no painel (`TONE_DRIVEN_KEYS`).
+        "const sceneBar = params.get('bar') === 'topbar' ? 'topbar' : 'sidebar';",
+        "const sceneWithoutBarColors = (record: Record<string, unknown> | undefined) => (params.get('tone') && record ? Object.fromEntries(Object.entries(record).filter(([key]) => !TONE_DRIVEN_KEYS[sceneBar].includes(key))) : record);",
+        "const sceneThemes = sceneBase ? [{ ...sceneBase, id: 'scene-theme', design: { ...sceneWithoutBarColors(sceneBase.design), sidebarBackgroundStyle: 'gradient', topbarBackgroundStyle: 'gradient', ...(params.get('tone') ? { [sceneToneKey]: params.get('tone') } : {}) }, contraparte: sceneWithoutBarColors(sceneBase.contraparte) }] : [];",
+    ].join(String.fromCharCode(10));
     const replacement = [
-        "const tone = params.get('tone');",
-        "const toneKey = params.get('bar') === 'topbar' ? 'topbarTone' : 'sidebarTone';",
-        'const themeDesign = { ...theme.design, ...(tone ? { [toneKey]: tone } : {}) };',
-        'const composed = composeThemeForMode({ design: themeDesign as Record<string, SarakTokenValue>, contraparte: theme.contraparte }, mode) as unknown as Record<string, unknown>;',
-    ].join('\n    ');
-    if (!fixture.includes(original)) throw new Error('A fixture-base não contém o ponto de composição esperado.');
+        "<SarakUIProvider customThemes={sceneThemes as never} initialTheme=\"scene-theme\"",
+        "config={{ navigationStyle: params.get('bar') === 'topbar' ? 'topbar' : 'sidebar' }}",
+        "options={{ preferences: { defaultColorMode: mode } }}>",
+    ].join(' ');
+    if (!fixture.includes(original) || !fixture.includes(appDeclaration)) throw new Error('A fixture-base não contém o ponto de montagem esperado.');
     const temporaryEntry = path.join(path.dirname(ENTRY), 'plan-170-harness-entry.tsx');
-    fs.writeFileSync(temporaryEntry, fixture.replace(original, replacement), 'utf8');
+    fs.writeFileSync(temporaryEntry, fixture.replace("import React", `import { TONE_DRIVEN_KEYS } from '../../src/core/Provider/utils/designChoices';${String.fromCharCode(10)}import React`).replace(appDeclaration, `${sceneTheme}${String.fromCharCode(10)}${appDeclaration}`).replace(original, replacement), 'utf8');
     try {
         const harness = await buildHarness(temporaryEntry);
         harnessDirectory = harness.outDir;
@@ -74,6 +82,14 @@ async function open(page: Page, url: string): Promise<void> {
     await page.goto(url);
     await expect(page.getByTestId('content')).toBeVisible();
     await page.waitForFunction(() => getComputedStyle(document.documentElement).getPropertyValue('--sarak-topbar-bg').trim() !== '');
+    // O tema chega por import dinâmico: espera as variáveis do cromo pararem de mudar.
+    await page.waitForFunction(() => {
+        const root = getComputedStyle(document.documentElement);
+        const key = ['--sarak-topbar-bg', '--sarak-sidebar-bg', '--sarak-primary-color', '--sarak-title-color'].map((name) => root.getPropertyValue(name)).join('|');
+        const win = window as unknown as { __sceneKey?: string; __sceneSince?: number };
+        if (win.__sceneKey !== key) { win.__sceneKey = key; win.__sceneSince = performance.now(); return false; }
+        return performance.now() - (win.__sceneSince ?? 0) > 400;
+    }, undefined, { polling: 100 });
 }
 
 function sceneUrl(themeId: string, bar: 'sidebar' | 'topbar', tone: typeof TONES[number], mode: typeof MODES[number]): string {
@@ -151,7 +167,7 @@ function measureInBrowser({ theme, bar, tone, mode, lightShare }: MeasurementSce
 }
 
 test('barras contrastantes em degradê: cada peça passa nas duas paradas e ativo não perde para inativo', async ({ page }) => {
-    test.setTimeout(900_000);
+    test.setTimeout(3_600_000);
     const results: Measurement[] = [];
     for (const [theme, bar] of GRADIENT_THEMES) {
         for (const tone of TONES) {

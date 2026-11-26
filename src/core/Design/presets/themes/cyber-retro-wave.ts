@@ -7,6 +7,8 @@ export const cyberRetroWaveTheme: SarakThemePreset = {
     description: "Y2K prateado com prisma, ciano elétrico, violeta e verde ácido; geometria polida e brilho neon controlado.",
     design:
         {
+            "subtitleColor": "#6640b0",
+            "titleColor": "#006168",
             "mode": "light",
             // as cores saem da paleta; abaixo ficam só as sobrescritas justificadas
             "colorPalette": "ciano-violeta",
@@ -415,6 +417,8 @@ export const cyberRetroWaveTheme: SarakThemePreset = {
         },
     contraparte:
         {
+            "subtitleColor": "#a284e7",
+            "titleColor": "#1fa5af",
             "mode": "dark",
             // fundo prata do tema; a neutra da paleta seria quase branca
             "sidebarColor": "#04060a",

@@ -11,6 +11,8 @@ export const dotMatrixElegantTheme: SarakThemePreset = {
     name: 'Dot Matrix Elegant',
     description: 'Matriz de pontos elegante: dourado #d4af37 sobre preto, pontos de fundo, Outfit leve nos títulos, cantos de 4 px e respiro largo. No claro, marfim com dourado-escuro.',
     design: {
+        sidebarBrandBackground: '#1b1b1b',
+        sidebarActiveColor: 'rgba(212, 175, 55, 0.12)',
         mode: 'dark',
         bodySize: '14px',
         identityAlignment: 'left',
@@ -284,6 +286,7 @@ export const dotMatrixElegantTheme: SarakThemePreset = {
         enabledLanguages: ['pt', 'en', 'es', 'fr', 'de', 'it'],
     },
     contraparte: {
+        sidebarActiveColor: 'rgba(212, 175, 55, 0.12)',
         mode: 'light',
         sidebarNoiseOpacity: 0,
         topbarNoiseOpacity: 0,

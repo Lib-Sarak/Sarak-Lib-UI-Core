@@ -6,6 +6,10 @@ export const neumorphicMobile: SarakThemePreset = {
     name: "Neumorphic Mobile",
     description: "Interface móvel tátil em cinza suave, com relevo neumórfico, rosa controlado e controles amplos.",
     design: {
+        "subtitleColor": "#b23f59",
+        "titleColor": "#516a80",
+        "primaryColor": "#516a80",
+        "navItemActiveColor": "#2b4357",
         "mode": "light",
         // as cores saem da paleta; abaixo ficam só as sobrescritas justificadas
         "colorPalette": "grafite-rosa",
@@ -288,11 +292,15 @@ export const neumorphicMobile: SarakThemePreset = {
         ]
     },
     contraparte: {
+        "navItemActiveColor": "#abc5dc",
+        "primaryColor": "#89a2b7",
+        "subtitleColor": "#f3b3bf",
+        "titleColor": "#b5c5d2",
         // o relevo neumórfico pede o cinza médio do fundo; a neutra da paleta é clara ou escura demais
         "sidebarColor": "#292e37",
         "sidebarNoiseOpacity": 0,
         // o relevo neumórfico pede o cinza médio do fundo; a neutra da paleta é clara ou escura demais
-        "topbarColor": "#292e37",
+        "topbarColor": "#191c21",
         // a barra tem fundo próprio do tema: o realce de hover parte dele, não da neutra da paleta
         "sidebarHoverColor": "rgba(183, 201, 217, 0.10)",
         "topbarHoverColor": "rgba(183, 201, 217, 0.10)",

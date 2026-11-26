@@ -11,6 +11,7 @@ export const industrialTerminalTheme: SarakThemePreset = {
     name: 'Industrial Terminal',
     description: 'CRT âmbar de chão de fábrica: chapa, listra de perigo, zero raio, estêncil e movimento mecânico.',
     design: {
+        sidebarColor: '#130d07',
         // --- 0. Configurações Globais ---
         mode: 'dark',
         // as cores saem da paleta; abaixo ficam só as sobrescritas justificadas
@@ -309,6 +310,7 @@ export const industrialTerminalTheme: SarakThemePreset = {
         enabledLanguages: ['pt', 'en', 'es', 'fr', 'de', 'it'],
     },
     contraparte: {
+        sidebarColor: '#f6efe9',
         mode: 'light',
         sidebarNoiseOpacity: 0,
         topbarNoiseOpacity: 0,

@@ -6,6 +6,8 @@ export const corporateLedgerTheme: SarakThemePreset = {
   "name": "Corporate Ledger",
   "description": "Um caderno de dados preciso, denso e pronto para tabelas e relatórios.",
   "design": {
+    "subtitleColor": "#8a6100",
+    "primaryColor": "#8158c9",
     "mode": "light",
     // as cores saem da paleta; abaixo ficam só as sobrescritas justificadas
     "colorPalette": "ametista-petroleo",
@@ -397,6 +399,8 @@ export const corporateLedgerTheme: SarakThemePreset = {
     ]
   },
   "contraparte": {
+    "primaryColor": "#9a75de",
+    "subtitleColor": "#d0a34c",
     "mode": "dark",
     "sidebarNoiseOpacity": 0,
     "topbarNoiseOpacity": 0,

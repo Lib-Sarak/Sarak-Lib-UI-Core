@@ -104,7 +104,7 @@ export const SarakShellUserWidget: React.FC<SarakShellUserWidgetProps> = ({
                         {displayName}
                     </span>
                     {user?.role && (
-                        <span className="text-[var(--sarak-type-scale-micro,11px)] text-[var(--sarak-subtitle-color,var(--theme-subtitle,#f2f6fb))] font-bold tracking-[var(--sarak-tracking-tight,0.2em)]">
+                        <span className="text-[length:var(--sarak-type-scale-micro,11px)] text-[var(--sarak-subtitle-color,var(--theme-subtitle,#f2f6fb))] font-bold tracking-[var(--sarak-tracking-tight,0.2em)]">
                             {user.role}
                         </span>
                     )}

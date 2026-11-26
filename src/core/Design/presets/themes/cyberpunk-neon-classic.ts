@@ -321,7 +321,7 @@ export const cyberpunkNeonClassicTheme: SarakThemePreset = {
         titleColor: '#007a2c',
         cardTitleColor: '#00822f',
         topbarTitleColor: '#071108',
-        textColorMaster: '#0a3d14',
+        textColorMaster: '#041808',
         cardBackgroundColor: '#e9f9ea',
         cardBorderColor: 'rgba(212, 227, 213, 0.72)',
         sidebarBorderColor: 'rgba(63, 76, 64, 0.64)',

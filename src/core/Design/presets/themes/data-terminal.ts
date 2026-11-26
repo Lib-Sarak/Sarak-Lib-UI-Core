@@ -6,6 +6,7 @@ export const dataTerminal: SarakThemePreset = {
     name: "Data Terminal",
     description: "Caderno de laboratório em verde técnico, mono e compacto; a contraparte leva a grade ao terminal escuro.",
     design: {
+        "topbarColor": "#e3f0ff",
         "mode": "light",
         // as cores saem da paleta; abaixo ficam só as sobrescritas justificadas
         "colorPalette": "verde-tecnico",
@@ -301,6 +302,7 @@ export const dataTerminal: SarakThemePreset = {
         ]
     },
     contraparte: {
+        "topbarColor": "#0a1723",
         "sidebarNoiseOpacity": 0,
         "topbarNoiseOpacity": 0,
         "topbarShadow": "0 2px 18px rgba(88,211,149,0.14)",

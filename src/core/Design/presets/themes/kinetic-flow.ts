@@ -7,6 +7,7 @@ export const kineticFlowTheme: SarakThemePreset = {
     description: "Performance em grafite, coral, âmbar e menta; curva elástica e foco de luz nos cartões.",
     design:
         {
+            "topbarColor": "#041712",
             "mode": "dark",
             // as cores saem da paleta; abaixo ficam só as sobrescritas justificadas
             "colorPalette": "coral-cinetico",
@@ -399,6 +400,7 @@ export const kineticFlowTheme: SarakThemePreset = {
         },
     contraparte:
         {
+            "topbarColor": "#e0f4ec",
             "mode": "light",
             "sidebarNoiseOpacity": 0,
             "topbarNoiseOpacity": 0,

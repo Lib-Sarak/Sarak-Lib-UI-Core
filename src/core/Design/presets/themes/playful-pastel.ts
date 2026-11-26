@@ -6,6 +6,7 @@ export const playfulPastelTheme: SarakThemePreset = {
   "name": "Playful Pastel",
   "description": "Pastéis vivos, formas macias e pequenos gestos de movimento com leitura clara.",
   "design": {
+    "topbarColor": "#e8f3de",
     "mode": "light",
     // as cores saem da paleta; abaixo ficam só as sobrescritas justificadas
     "colorPalette": "rosa-pastel",
@@ -397,6 +398,7 @@ export const playfulPastelTheme: SarakThemePreset = {
     ]
   },
   "contraparte": {
+    "topbarColor": "#0e1604",
     "mode": "dark",
     "sidebarNoiseOpacity": 0,
     "topbarNoiseOpacity": 0,

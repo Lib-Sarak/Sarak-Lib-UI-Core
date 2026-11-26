@@ -10,6 +10,8 @@ export const cyberpunkneonTheme: SarakThemePreset = {
     name: 'Cyberpunk Neon',
     description: 'Néon ácido: verde sobre preto, quina cortada, mono maiúsculo e botão wireframe.',
     design: {
+        subtitleColor: '#29aeae',
+        titleColor: '#1db54e',
         // --- 0. Configurações Globais ---
         mode: 'dark',
         // as cores saem da paleta; abaixo ficam só as sobrescritas justificadas
@@ -318,6 +320,8 @@ export const cyberpunkneonTheme: SarakThemePreset = {
         enabledLanguages: ['pt', 'en', 'es', 'fr', 'de', 'it'],
     },
     contraparte: {
+        subtitleColor: '#007575',
+        titleColor: '#007a2f',
         mode: 'light',
         sidebarNoiseOpacity: 0,
         topbarNoiseOpacity: 0,

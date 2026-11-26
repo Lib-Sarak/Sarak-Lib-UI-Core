@@ -73,6 +73,17 @@ const getPaletteThemeOverrides = (
         : { ...theme?.design, ...theme?.contraparte };
 };
 
+/** A entrada da paleta: o que o tema declara para o modo (sem os padrões do schema), com a paleta que o design escolheu. Sem tema, o próprio design. */
+const themePaletteInput = (
+    design: Record<string, unknown>,
+    theme: SarakThemeEntry | undefined,
+    mode: 'light' | 'dark',
+): Record<string, unknown> => {
+    if (!theme?.design) return design;
+    const declared = getPaletteThemeOverrides(theme, mode);
+    return { ...declared, colorPalette: design.colorPalette, mode };
+};
+
 const applyCalculatedPaletteMode = (
     design: SarakDesignState,
     targetMode: 'light' | 'dark',
@@ -80,8 +91,10 @@ const applyCalculatedPaletteMode = (
 ): SarakDesignState => {
     const currentMode = design.mode === 'light' ? 'light' : 'dark';
     const designRecord = design as unknown as Record<string, unknown>;
-    const currentPalette = resolvePaletteForDesign(designRecord, undefined, currentMode);
-    const targetPalette = resolvePaletteForDesign(designRecord, undefined, targetMode);
+    // A paleta se calcula sobre o que o TEMA declara no modo (como `composeThemeDesign` a calculou quando o tema entrou), e não sobre o
+    // design já composto: lá os padrões do schema e as cores calculadas entram na conta e o resultado diverge do que está na tela.
+    const currentPalette = resolvePaletteForDesign(themePaletteInput(designRecord, theme, currentMode), undefined, currentMode);
+    const targetPalette = resolvePaletteForDesign(themePaletteInput(designRecord, theme, targetMode), undefined, targetMode);
     // Com "manter minha paleta", a cor que o tema declara não volta na troca de modo: a paleta calcula nos dois.
     const keepPalette = designRecord.keepPalette === true;
     const chosenTone = chosenToneKeys(designRecord, theme as never, targetMode);

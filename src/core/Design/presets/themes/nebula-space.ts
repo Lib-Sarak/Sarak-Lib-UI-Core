@@ -11,6 +11,8 @@ export const nebulaSpaceTheme: SarakThemePreset = {
     name: 'Nebula Space',
     description: 'Espaço profundo: violeta e gelo sobre azul-noite, vidro espesso, estrelas, ícone fino e movimento longo.',
     design: {
+        primaryColor: '#9a75de',
+        subtitleColor: '#d0a34c',
         // --- 0. Configurações Globais ---
         mode: 'dark',
         // as cores saem da paleta; abaixo ficam só as sobrescritas justificadas
@@ -306,6 +308,8 @@ export const nebulaSpaceTheme: SarakThemePreset = {
         enabledLanguages: ['pt', 'en', 'es', 'fr', 'de', 'it'],
     },
     contraparte: {
+        subtitleColor: '#8a6100',
+        primaryColor: '#8158c9',
         mode: 'light',
         sidebarNoiseOpacity: 0,
         topbarNoiseOpacity: 0,

@@ -88,6 +88,10 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
     const isContrastTone = isValidPaletteValue(design?.colorPalette)
         && (tone === 'primary' || tone === 'secondary' || tone === 'inverse');
     const languageCodeOpacity = isContrastTone ? 'opacity-100' : 'opacity-60';
+    // O botão não leva tinta: ela clareia o fundo sob o código do idioma (e a parada clara do degradê) e tira contraste do texto. Ele se
+    // distingue por um contorno na cor do texto de item da barra (4,5:1 contra ela). É `outline`, e não `border`: o estilo do botão
+    // (`getButtonStyles`) escreve borda e largura de borda por token inline, e um tema sem borda apagaria o contorno.
+    const buttonSurface = 'bg-transparent outline outline-1 -outline-offset-1 outline-[color:var(--sarak-topbar-item-text-color,var(--theme-muted))] hover:outline-[color:var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]';
 
     const dropdown = (
         <AnimatePresence>
@@ -131,7 +135,7 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
                 <SarakButton
                     variant="ghost"
                     onClick={() => setIsOpen(!isOpen)}
-                    className="group normal-case font-normal font-tab tracking-normal h-9 rounded-xl bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] hover:border-[var(--theme-primary)]/40 hover:bg-[var(--theme-muted)]/15"
+                    className={`group normal-case font-normal font-tab tracking-normal h-9 rounded-xl ${buttonSurface}`}
                 >
                     <div className="flex items-center w-full" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                         <span className="text-2xs">{currentLang.flag}</span>
