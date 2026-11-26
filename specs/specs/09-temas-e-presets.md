@@ -434,8 +434,9 @@ cálculo é o de sempre.
 
 **Nos tons contrastantes, a peça do cromo calcula a cor contra a parada menos favorável.** `chromeToneContrast.ts` mede o texto forte,
 o inativo e o do sair sobre cada parada da barra e sobre os fundos que cada um pisa: a faixa do usuário (5% do marcador), o botão de
-idioma (10% da cor inativa), o véu do item ativo e a tinta de erro do sair (15%). Texto fica em 4,5:1 e ícone em 3:1. O inativo e o forte
-se resolvem juntos, porque o idioma tinge o fundo com a cor inativa e o inativo precisa ficar abaixo do forte no item ativo. A barra
+idioma (10% da cor inativa), o véu do item ativo e a tinta de erro do sair (15%). O botão de idioma não desenha mais essa tinta
+([[10-seguranca-e-acessibilidade]] §2.4 d): a conta dele é mais rígida que a tela. Texto fica em 4,5:1 e ícone em 3:1. O inativo e o forte
+se resolvem juntos, porque o inativo precisa ficar abaixo do forte no item ativo. A barra
 entrega a cor do sair em `--sarak-shell-logout-text-color`, sem tocar a cor de erro. No papel `surface`, o texto sobre o controle
 escolhido é o fundo da barra (`--sarak-on-nav-active`). **O par da paleta mede o que a barra desenha:** o item ativo de tom
 contrastante é medido sobre o véu na opacidade declarada (20%) e comparado com o inativo (`contrast-pairs.ts`, `tone-plan.ts`). A

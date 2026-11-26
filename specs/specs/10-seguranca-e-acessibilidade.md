@@ -280,10 +280,20 @@ lista de exceções:
 
 - **O cromo nas barras de tom contrastante** (`primary`, `secondary`, `inverse`) **e em degradê.** O texto da barra (marca, item,
   item ativo, nome do usuário, código do idioma) fica em ao menos 4,5:1, e o ícone (avatar, ⚙, sair) em ao menos 3:1. A conta vale sobre
-  cada parada do degradê e sobre os fundos que a peça pisa: a faixa do usuário (5% do marcador), o botão de idioma (10% da própria cor) e
-  a tinta de erro do sair (15%). A cor sai do cálculo (`chromeToneContrast.ts`), e a do tema não muda ([[09-temas-e-presets]]
+  cada parada do degradê e sobre os fundos que a peça pisa: a faixa do usuário (5% do marcador) e a tinta de erro do sair (15%).
+  O botão de idioma não tem tinta: o fundo dele é o da barra, e o contorno de 1 px (`outline`, na cor do texto de item da barra) fica em
+  ao menos 3:1 contra cada parada. A cor sai do cálculo (`chromeToneContrast.ts`), e a do tema não muda ([[09-temas-e-presets]]
   §4.3.4). Guardam `tom-contrastante-legivel`, `contraste-do-cromo-nas-barras`, `contraste-do-que-faltava`,
   `plan-149-barras-personalidade` e `plan-145-personalidades`, este com `KNOWN_BELOW_LIMIT` vazio.
+- **O cromo no tom padrão dos temas embarcados.** Nos 25 temas, nos dois modos, na lateral e no topo, o texto do cromo (marca, item,
+  item ativo, nome e cargo do usuário, idioma) fica em ao menos 4,5:1. O ícone e o contorno do botão de idioma ficam em ao menos 3:1.
+  - **Como se mede:** com a opacidade aplicada (canal alfa da cor e `opacity` de cada ancestral), na montagem do importador
+    (`initialTheme` + `options.preferences.defaultColorMode`).
+  - **O tema no modo oposto ao nativo** fica igual a `composeThemeForMode(tema, modo)`, porque a troca de modo calcula a paleta sobre o
+    que o tema declara (`overlayPreferences.ts`, guardado por `overlayPreferences.chromeColors.test.ts`).
+  - **Onde se corrige:** no dado do tema, nunca no cálculo ([[09-temas-e-presets]] §4.3.4). Um tema nativo de um modo que declara uma
+    cor de papel declara a irmã do outro modo (`themePalettes.test.ts`).
+  - **Guarda:** `contraste-do-cromo-tom-padrao`, que também mede o título do `SarakTitleCard` no escuro.
 - **O botão sob o ponteiro.** A regra de elemento de `<button>` (`src/styles/_elements.css`) só move o botão (`transform`) no hover e
   no aperto, sem pintar fundo. O fundo do hover é de cada componente. O `ghost` do `SarakButton` usa no repouso a primária a 85%
   misturada ao texto da superfície. `contraste-hover-botao.spec.ts` mede onde o hover muda a cor ou o fundo e reprova abaixo de 4,5:1

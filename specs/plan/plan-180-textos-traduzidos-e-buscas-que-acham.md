@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Textos da lib traduzidos, plural certo e buscas que acham o que o usuário procura"
 objetivo: "Fazer todo texto visível da lib sair do catálogo nos seis idiomas com singular e plural, fazer a busca da barra achar sub-abas e a busca do painel abrir o token geral para frases vagas"
 dominio: "Idiomas / Busca"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Média"
 tags: ["plan", "i18n", "busca", "painel", "cromo"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[05-cromo-e-slots]]", "[[12-kit-do-consumidor]]"]

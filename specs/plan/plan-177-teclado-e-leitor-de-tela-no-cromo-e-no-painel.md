@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Teclado e leitor de tela no cromo e no painel"
 objetivo: "Fazer todo controle do cromo e do painel ter foco visível em ao menos 3:1 e nome acessível, tirar do Tab o que não age, dar à gaveta móvel semântica e foco de diálogo, fazer o idioma fechar com Esc e a barra do topo mostrar os itens que cabem sem transbordar"
 dominio: "Cromo / Painel de customização / Acessibilidade"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "rc2", "acessibilidade", "teclado", "foco", "cromo", "painel"]
 relacionados: ["[[10-seguranca-e-acessibilidade]]", "[[05-cromo-e-slots]]", "[[06-painel-de-customizacao-e-preview]]", "[[07-responsividade-e-multidispositivo]]"]
@@ -76,9 +76,13 @@ Defeitos medidos pela validação da 9.0.0-rc.1 (plan-173, lote 4, e plan-172), 
 - `browser-tests/barra-de-topo-estreita.spec.ts`: estender para D14 e N11.
 
 ## 3.2 Fora
-- Cores de tema e contraste de texto. São da `plan-176`, que pode correr em paralelo. Esta plan não toca
-  `src/core/Design/presets/themes/`.
-- Provider, persistência e presets. São da `plan-178`.
+- Cores de tema e contraste de texto: a régua está na [[10-seguranca-e-acessibilidade]] §2.4 d e é guardada por
+  `contraste-do-cromo-tom-padrao` e `contraste-do-cromo-nas-barras`. Esta plan não toca `src/core/Design/presets/themes/`. No botão de
+  idioma, mantenha o fundo sem tinta e o contorno, e rode as duas specs se mexer nele.
+- Provider, persistência e presets.
+- **A `plan-180` corre em paralelo.** Em `src/core/i18n/`, as chaves novas entram só por acréscimo, e o arquivo é relido antes de cada
+  edição. Nos componentes do painel em que a 180 troca literais por chaves (`ThemeAdvancedMenu.tsx`, `LiveDraftPreviewFrame.tsx`,
+  `CustomizationPanelImpl.tsx`, `TokenControl.tsx`), mexa só no que a sua tabela pede.
 - O "Mais" sobreposto que só acontece no hub: a causa não foi isolada na lib e o caso fica com o hub.
 - Leitor de tela real: a medida é a árvore de acessibilidade.
 

@@ -1,7 +1,7 @@
 ---
 tipo: "plan"
 titulo: "Higiene interna de código e de testes"
-objetivo: "Fechar dez pendências internas que não mudam a tela: seletor por nome de classe, selo de dispositivo, disputa de textura, leituras e classes mortas, recorte de teste incompleto, nomes de teste com rastro de plan, teste que não protege o que diz, função com dez parâmetros e o config inteiro como host com a opção ligada"
+objetivo: "Fechar onze pendências internas que não mudam a tela: seletor por nome de classe, selo de dispositivo, disputa de textura, leituras e classes mortas, recorte de teste incompleto, nomes de teste com rastro de plan, teste que não protege o que diz, função com dez parâmetros e o config inteiro como host com a opção ligada"
 dominio: "Manutenção"
 status: "🔴 A executar"
 prioridade: "Baixa"
@@ -14,7 +14,7 @@ destino_sintese: "—"
 
 # 1. Objetivo
 
-As dez pendências da tabela deixam de existir. A tela não muda, e cada item fica com um teste ou uma medida que o prova.
+As onze pendências da tabela deixam de existir. A tela não muda, e cada item fica com um teste ou uma medida que o prova.
 
 # 2. Contexto
 
@@ -32,6 +32,7 @@ Promovidos do backlog em 2026-11-25. Cada lote é independente e pequeno. Faça 
 | H60 | `browser-tests/troca-de-tema.spec.ts` passa mesmo com `useEffect` de volta em `src/features/DesignEngine/hooks/useDesignDraftSync.ts`. Falta o caso que proteja a fusão dos commits da prévia e da raiz |
 | H79 | `useDesignSync` (`src/core/Provider/hooks/useDesignSync.ts:28`) recebe 10 parâmetros posicionais, e o teto é 4. Trocar por um objeto de opções e tirar a entrada do baseline |
 | H95 | Com `options.persistence.configIsSavedDesign` ligado, `useDesignSync` (`:79` e `:95`, com `activeThemeId` controlado) e `useThemeSeed` (`src/core/Provider/hooks/useThemeSeed.ts:151-156`) ainda compõem o `config` inteiro como host. Usar a mesma porta do `getHostConfig` do `SarakUIProvider`. Fazer junto com o H79, porque é o mesmo arquivo |
+| H96 | `src/components/Layout/chrome/chromeToneContrast.ts` (`LANGUAGE_BUTTON_TINT_SHARE`, `:16`, `:85-87`, `:148`, `:188`) ainda calcula a tinta de 10% do botão de idioma, que o botão não desenha mais (ele tem fundo transparente e contorno). Tirar a tinta da conta, manter as specs `contraste-do-cromo-nas-barras` e `contraste-do-cromo-tom-padrao` verdes e corrigir a frase da [[09-temas-e-presets]] §4.3.4 que a descreve |
 
 # 3. Escopo
 
@@ -68,7 +69,7 @@ Playwright).
 
 # 6. Critérios de aceite
 
-- [ ] Os 10 ids têm, no resumo, o antes e o depois.
+- [ ] Os 11 ids têm, no resumo, o antes e o depois.
 - [ ] Nenhuma referência a `plan-NNN` sobra em nome de arquivo de `browser-tests/` nem em variável de ambiente.
 - [ ] `useDesignSync` sai do baseline do auditor.
 - [ ] `git diff --stat` mostra só caminhos da §3.1.
