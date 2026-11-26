@@ -2,6 +2,7 @@ import React from 'react';
 import { getPresetGroup } from '../../../../core/Design/presets/components/registry';
 import { textureFamilyOf } from '../../../../core/Design/presets/components/textureFamilies';
 import { usePresetText } from '../../hooks/usePresetText';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { CuratedGrid } from './CuratedGrid';
 import { ComponentPreset } from '../../../../core/Design/presets/components/cards';
 import { SarakBackgroundRenderer } from '../../../../core/Design/components/SarakBackgroundRenderer';
@@ -24,15 +25,17 @@ interface AtmosphereCatalogProps {
 
 export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPreset, currentMode, draft, onPeek, section = 'media' }) => {
     const text = usePresetText();
+    const libraryText = useLibraryText();
 
     return (
         <div className="flex flex-col gap-6">
             <div className="flex items-center justify-end gap-4">
                 <div className="flex items-center gap-3 px-4 py-2 bg-theme-body/20 rounded-xl border border-theme-border">
-                    <span className="text-[length:var(--sarak-type-scale2xs,11px)] font-black text-theme-text uppercase tracking-widest">Opacidade</span>
+                    <span className="text-[length:var(--sarak-type-scale2xs,11px)] font-black text-theme-text uppercase tracking-widest">{libraryText('opacityLabel')}</span>
                     <input
                         key={section}
                         type="range"
+                        aria-label={libraryText('opacityLabel')}
                         min="0" max="1" step="0.01"
                         defaultValue={section === 'textures' ? 0.08 : 1}
                         onChange={(e) => onApplyPreset(

@@ -38,7 +38,8 @@ export const ShellNavMore: React.FC<ShellNavMoreProps> = ({ hiddenItems, activeR
             {...{ [NAV_MORE_ATTRIBUTE]: 'true' }}
             className="absolute z-10 w-max"
             style={{
-                insetInlineStart: `${start}px`,
+                // Sem nada de fora o botão fica medido mas invisível, no começo da barra: depois do último item ele estenderia a rolagem da barra.
+                insetInlineStart: visible ? `${start}px` : 0,
                 top: '50%',
                 transform: 'translateY(-50%)',
                 visibility: visible ? undefined : 'hidden',

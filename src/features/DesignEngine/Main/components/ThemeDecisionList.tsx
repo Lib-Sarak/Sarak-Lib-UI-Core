@@ -16,7 +16,7 @@ interface ThemeDecisionListProps {
     restoreFocusId?: string;
 }
 
-const ROW_CLASS = 'flex w-full items-center gap-3 rounded-[var(--sarak-card-radius,10px)] px-3 py-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]';
+const ROW_CLASS = 'flex w-full items-center gap-3 rounded-[var(--sarak-card-radius,10px)] px-3 py-2 text-left';
 
 const colorOf = (draft: Readonly<Record<string, unknown>>, id: string): string => (typeof draft[id] === 'string' ? (draft[id] as string) : 'transparent');
 
@@ -80,7 +80,7 @@ export const ThemeDecisionList: React.FC<ThemeDecisionListProps> = ({ draft, the
                 type="button"
                 data-decision-row="brand"
                 onClick={onOpenBrand}
-                className="mb-2 flex w-full items-center gap-3 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-primary)]/50 bg-[var(--theme-surface)] p-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]"
+                className="mb-2 flex w-full items-center gap-3 rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-primary)]/50 bg-[var(--theme-surface)] p-3 text-left"
             >
                 <span aria-hidden="true" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--theme-primary)]/20 text-[var(--theme-primary)]"><Sparkles size={16} /></span>
                 <span className="min-w-0">

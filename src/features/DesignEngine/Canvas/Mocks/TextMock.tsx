@@ -102,7 +102,7 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                         <textarea
                             value={reportText}
                             onChange={(e) => setReportText(e.target.value)}
-                            className="flex-1 w-full p-6 bg-transparent border-0 resize-none font-mono text-xs text-theme-text leading-relaxed focus:outline-none focus:ring-0 custom-scrollbar"
+                            className="flex-1 w-full p-6 bg-transparent border-0 resize-none font-mono text-xs text-theme-text leading-relaxed custom-scrollbar"
                             style={{
                                 fontFamily: 'var(--font-mono, monospace)'
                             }}
@@ -117,8 +117,9 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                             style={{ borderRadius: 'var(--sarak-input-border-radius, 8px)' }}
                         >
                             <label className="text-[10px] font-black text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase tracking-widest block mb-2 text-left">Classificação de Sigilo</label>
-                            <select 
-                                className="w-full px-4 py-2 border border-theme-text/10 rounded-lg text-xs font-mono text-theme-text placeholder-theme-text/30 focus:outline-none focus:border-[var(--theme-primary)] transition-colors"
+                            <select
+                                aria-label="Classificação de Sigilo"
+                                className="w-full px-4 py-2 border border-theme-text/10 rounded-lg text-xs font-mono text-theme-text placeholder-theme-text/30 focus:border-[var(--theme-primary)] transition-colors"
                                 style={{
                                     backgroundColor: 'var(--sarak-input-bg, rgba(255,255,255,0.04))',
                                     borderRadius: 'var(--sarak-input-border-radius, 8px)'
@@ -134,7 +135,8 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                             style={{ borderRadius: 'var(--sarak-input-border-radius, 8px)' }}
                         >
                             <label className="text-[10px] font-black text-[var(--text-muted,rgba(242,246,251,0.55))] uppercase tracking-widest block mb-2 text-left">Meta-Tag do Relatório</label>
-                            <SarakInput 
+                            <SarakInput
+                                aria-label="Meta-Tag do Relatório"
                                 type="text"
                                 defaultValue="#relatorio-perf-v13"
                                 fullWidth

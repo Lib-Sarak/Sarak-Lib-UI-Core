@@ -14,6 +14,7 @@ const renderDrawer = (isOpen: boolean, onClose = vi.fn()) => {
                 drawerId="mobile-drawer-test"
                 onClose={onClose}
                 closeLabel="Fechar navegação"
+                label="Menu de navegação"
                 onKeyDown={focusTrap.handleTrap}
                 containerRef={focusTrap.containerRef}
                 backgroundStyle="solid"
@@ -58,6 +59,7 @@ describe('ChromeMobileDrawer — papel de cor da lateral', () => {
                     drawerId="tone-drawer"
                     onClose={vi.fn()}
                     closeLabel="Fechar navegação"
+                label="Menu de navegação"
                     onKeyDown={focusTrap.handleTrap}
                     containerRef={focusTrap.containerRef}
                     backgroundStyle="solid"
@@ -74,5 +76,14 @@ describe('ChromeMobileDrawer — papel de cor da lateral', () => {
         toned.unmount();
         const neutral = render(<Harness />);
         expect((neutral.container.querySelector('#tone-drawer') as HTMLElement).style.getPropertyValue('--text-muted')).toBe('');
+    });
+
+    it('é um diálogo modal com nome, para o leitor de tela', () => {
+        const { container } = renderDrawer(true);
+        const drawer = container.querySelector('#mobile-drawer-test') as HTMLElement;
+
+        expect(drawer).toHaveAttribute('role', 'dialog');
+        expect(drawer).toHaveAttribute('aria-modal', 'true');
+        expect(drawer).toHaveAttribute('aria-label', 'Menu de navegação');
     });
 });

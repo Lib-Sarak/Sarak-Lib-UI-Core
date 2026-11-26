@@ -54,7 +54,7 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
         lg: 'w-12 h-12 text-lg'
     };
 
-    const baseClasses = `inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn flex-shrink-0 ${sizeClasses[size]}`;
+    const baseClasses = `inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] rounded-btn flex-shrink-0 ${sizeClasses[size]}`;
 
     // Computar cores base
     const localGlow = variant === 'danger'

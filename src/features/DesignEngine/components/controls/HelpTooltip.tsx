@@ -1,17 +1,25 @@
 import React from 'react';
 import { HelpCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 
 export const HelpTooltip: React.FC<{ label: string, description?: string }> = ({ label, description }) => {
     const [isOpen, setIsOpen] = React.useState(false);
+    const text = useLibraryText();
     
     return (
         <div className="relative inline-flex items-center">
-            <button 
+            <button
+                type="button"
+                aria-label={text('helpTooltipLabel', { label })}
+                aria-expanded={isOpen}
+                onFocus={() => setIsOpen(true)}
+                onBlur={() => setIsOpen(false)}
+                onKeyDown={(event) => { if (event.key === 'Escape') setIsOpen(false); }}
                 onMouseEnter={() => setIsOpen(true)}
                 onMouseLeave={() => setIsOpen(false)}
                 onClick={() => setIsOpen(!isOpen)}
-                className="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#101622)] cursor-help"
+                className="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors p-1 rounded-full hover:bg-[var(--color-theme-card,#101622)] cursor-help"
             >
                 <HelpCircle size={10} />
             </button>

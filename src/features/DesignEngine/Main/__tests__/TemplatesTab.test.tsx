@@ -6,7 +6,8 @@ import { TemplatesTab } from '../TemplatesTab';
 import { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
 
 vi.mock('../../../../core/Provider/SarakUIProvider', () => ({
-    useSarakUI: vi.fn()
+    useSarakUI: vi.fn(),
+    useSarakUIOptional: () => null,
 }));
 
 vi.mock('../../../../core/Design/presets/themes/registry', () => ({

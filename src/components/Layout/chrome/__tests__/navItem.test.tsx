@@ -68,6 +68,17 @@ describe('navItem — a porta `navItems` no contrato do menu', () => {
         expect(screen.getByRole('button', { name: /Vendas/ })).toHaveAttribute('aria-expanded', 'true');
     });
 
+    it('a busca devolve o pai e os filhos, e cada filho leva a categoria do pai', () => {
+        const items = getSarakSearchItems([{
+            route: '#vendas', label: 'Vendas', category: 'Comercial',
+            children: [{ route: '#pedidos', label: 'Pedidos' }, { route: '#orcamentos', label: 'Orçamentos', disabled: true }],
+        }]);
+        expect(items.map((item) => [item.id, item.label, item.category])).toEqual([
+            ['#vendas', 'Vendas', 'Comercial'],
+            ['#pedidos', 'Pedidos', 'Comercial'],
+        ]);
+    });
+
     it('os itens de busca saem sem os desativados', () => {
         expect(getSarakSearchItems([{ route: '#a', label: 'A' }, { route: '#b', label: 'B', disabled: true }]).map((item) => item.id)).toEqual(['#a']);
     });

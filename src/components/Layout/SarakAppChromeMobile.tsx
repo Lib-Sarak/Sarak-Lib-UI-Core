@@ -14,6 +14,7 @@ import { ChromeBrand, ChromeSearchSlot, ChromeSidebarSlot, ChromeTopbarSlot } fr
 import { ChromeUserThemeGroup } from './chrome/ChromeUserThemeGroup';
 import { ChromeBottomNav } from './chrome/ChromeBottomNav';
 import { ChromeMobileDrawer } from './chrome/ChromeMobileDrawer';
+import { useInertBackground } from './chrome/useInertBackground';
 import { chromeNoiseLayerStyle } from './chrome/noiseTexture';
 import { resolveChromeToneStyle } from './chrome/chromeToneStyle';
 import { resolveMobileNavigationMode } from './chrome/mobileNavigation';
@@ -99,6 +100,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     const [open, setOpen] = useState(false);
     const close = () => setOpen(false);
     const { containerRef, handleTrap } = useFocusTrap(open, close);
+    useInertBackground(open, DRAWER_ID);
     const {
         layoutDensity, maxContentWidth, isSplitViewEnabled, searchPositionSidebar, mobileNavigationStyle,
         sidebarBorderSide, sidebarBorderStyle, sidebarBackgroundStyle, topbarBorderSide, topbarBorderStyle, topbarBackgroundStyle,
@@ -189,6 +191,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                 onKeyDown={handleTrap}
                 containerRef={containerRef}
                 closeLabel={t('mobileMenuCloseAriaLabel')}
+                label={t('chromeDrawerLabel')}
                 backgroundStyle={sidebarBackgroundStyle}
                 borderSide={sidebarBorderSide}
                 borderStyle={sidebarBorderStyle}

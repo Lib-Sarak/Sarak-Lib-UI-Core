@@ -5,6 +5,27 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 9.0.0 — o anel de foco vale para todo controle focável, em dois tons
+
+Antes, o anel de foco era desenhado só para `button` (na cor primária ou da textura), e `SarakButton`, `SarakIconButton`, `SarakInput`, `SarakSelect` e `SarakTextarea` carregavam `outline-none`, o que apagava o foco no teclado. Agora a camada global de elementos (`_elements.css`) desenha o anel em todo focável (`a[href]`, `button`, `input`, `select`, `textarea`, `summary`, `[tabindex]` e os `role` de controle), com `:focus-visible`.
+
+**O que muda para o importador:**
+- a cor do anel passa da primária (ou da textura) para a **cor do texto do tema**, com um halo na cor do fundo, para ler com 3:1 sobre qualquer superfície, nos dois modos; a largura continua vindo do token `focusRingWidth`;
+- `SarakButton`, `SarakIconButton`, `SarakInput`, `SarakSelect` e `SarakTextarea` perdem o `outline-none`: quem o recolocava por cima para esconder o anel deve parar, o foco agora aparece;
+- `SarakSwitch`, `SarakCheckbox` e `SarakRadio` desenham o anel na peça visual (o `<input>` real é invisível, `sr-only`); seletor ou teste que procurava o anel no `<input>` deve olhar a peça ao lado (`peer-focus-visible`);
+- o `nav` horizontal do `SarakShellNav` ganha um contêiner `data-sarak-nav-row` entre ele e os itens: seletor CSS ou teste que dependia dos itens serem filhos diretos do `nav` deve descer um nível;
+- a gaveta do cromo móvel é um diálogo (`role="dialog"`, `aria-modal`): o foco entra nela, o `Tab` circula dentro e o fundo fica `inert` enquanto ela está aberta.
+
+---
+
+## 9.0.0 — o `actionLabel` padrão do `SarakActionCard` sai no idioma da lib
+
+Antes, o botão de ação do `SarakActionCard` sem a prop `actionLabel` mostrava sempre **"Executar"**. Agora o padrão vem do catálogo de textos da lib e segue o idioma que vale (`pt` "Executar", `en` "Run", `es` "Ejecutar", `fr` "Exécuter", `de` "Ausführen", `it` "Esegui").
+
+**O que muda para o importador:** quem usa a lib em outro idioma que não o português e não passava `actionLabel` passa a ver o texto traduzido (por exemplo, "Run" em inglês). Quem passa `actionLabel` não muda nada, e em português o texto é o mesmo. Para manter um texto fixo em qualquer idioma, passe `actionLabel`.
+
+---
+
 ## 9.0.0 — o `SarakAppChrome` mantém o conteúdo montado quando troca de barra (lateral, topo, celular)
 
 Antes, trocar a barra do cromo (por exemplo, escolher uma personalidade com a navegação no topo no painel de design) desmontava e montava de novo tudo o que o cromo envolve, e o conteúdo com estado próprio voltava ao começo: o painel de design perdia o rascunho, voltava à lista de decisões e deixava o "Aplicar" desabilitado. Agora o conteúdo é renderizado por um portal num nó que vive tanto quanto o cromo, e cada barra só encaixa esse nó no lugar certo.

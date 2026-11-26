@@ -6,7 +6,7 @@
     "grao": ["grao", "granulado", "grain", "ruido", "noise", "ruidoso"],
     "card": ["card", "cards", "cartao", "cartoes"],
     "borda": ["borda", "bordas", "contorno", "moldura", "border", "stroke"],
-    "arredondamento": ["arredondamento", "corner", "corners", "arredondar", "arredondado", "arredondados", "arredondada", "arredondadas", "redondo", "redonda", "redondos", "round", "rounded", "raio", "radius", "cantos", "canto", "quina", "quinas", "curvatura"],
+    "arredondamento": ["arredondamento", "corner", "corners", "arredondar", "arredondado", "arredondados", "arredondada", "arredondadas", "redondo", "redonda", "redondos", "round", "rounded", "raio", "radius", "cantos", "canto", "quina", "quinas", "curvatura", "reto", "retos", "reta", "retas", "quadrado", "quadrados", "square", "sharp"],
     "sombra": ["sombra", "sombras", "sombreado", "shadow", "shadows", "elevacao", "elevation", "profundidade", "depth"],
     "vidro": ["vidro", "glass", "glassmorphism", "fosco", "frosted"],
     "desfoque": ["desfoque", "desfocar", "desfocado", "blur", "borrar", "borrado", "backdrop"],
@@ -44,8 +44,9 @@
     "bolha": ["bolha", "bolhas", "balao", "baloes", "bubble", "chat"],
     "intensidade": ["intensidade", "intensity", "forte", "fraco", "suave", "intenso"],
     "posicao": ["posicao", "posicoes", "position", "local", "lugar", "placement", "mover", "onde"],
-    "pagina": ["pagina", "paginas", "tela", "telas", "page", "screen", "body", "global", "conteudo", "content"],
+    "pagina": ["pagina", "paginas", "tela", "telas", "page", "screen", "body", "global", "conteudo", "content", "site", "sites"],
     "caixa": ["maiuscula", "maiusculas", "minuscula", "minusculas", "caixa", "case", "uppercase", "lowercase", "transform", "transformacao"],
     "titulo": ["titulo", "titulos", "heading", "headings"],
-    "hover": ["hover", "mouse", "sobre"]
+    "hover": ["hover", "mouse", "sobre"],
+    "espessura": ["espessura", "grossura", "grossa", "grossas", "grosso", "grossos", "fina", "finas", "fino", "finos", "thickness", "thick", "thin"]
 }

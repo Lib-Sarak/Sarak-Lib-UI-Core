@@ -4,7 +4,7 @@ import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
 import { SarakSelect } from '../../../../components/atomic/Inputs/SarakSelect';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { PREVIEW_TOOLBAR_HINT } from '../panelResponsive.presets';
-import { ADDITIONAL_PREVIEW_SCREENS, MAIN_PREVIEW_SCREENS, MORE_PREVIEW_SCREEN_ID } from '../previewScreens';
+import { ADDITIONAL_PREVIEW_SCREENS, MAIN_PREVIEW_SCREENS, MORE_PREVIEW_SCREEN_ID, type PreviewScreen } from '../previewScreens';
 
 const DEVICE_OPTIONS = [
     { value: 'desktop', label: 'Desktop', icon: Monitor },
@@ -12,16 +12,11 @@ const DEVICE_OPTIONS = [
     { value: 'smartphone', label: 'Mobile', icon: Smartphone }
 ] as const;
 
-const PREVIEW_TOOLBAR_LABELS = {
-    deviceGroup: 'Dispositivo do preview',
-    moreScreens: 'Mais telas',
-} as const;
-
-const SCREEN_OPTIONS = [
+const SCREENS: readonly PreviewScreen[] = [
     ...MAIN_PREVIEW_SCREENS,
     ...ADDITIONAL_PREVIEW_SCREENS,
-    { id: MORE_PREVIEW_SCREEN_ID, label: PREVIEW_TOOLBAR_LABELS.moreScreens },
-].map(({ id, label }) => ({ value: id, label }));
+    { id: MORE_PREVIEW_SCREEN_ID, label: 'Mais telas', labelKey: 'previewMoreScreens' },
+];
 
 type PreviewDevice = 'desktop' | 'tablet' | 'smartphone';
 type PreviewMode = 'light' | 'dark';
@@ -72,6 +67,7 @@ export const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
     isPeeking = false,
 }) => {
     const text = useLibraryText();
+    const screenOptions = SCREENS.map(({ id, labelKey }) => ({ value: id, label: text(labelKey) }));
     return (
     <div className="flex shrink-0 flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-[var(--theme-border)] bg-[var(--theme-surface)] p-3">
         <ModeSwitch mode={mode} onModeChange={onModeChange} />
@@ -79,13 +75,13 @@ export const PreviewToolbar: React.FC<PreviewToolbarProps> = ({
             label={text('previewScreenLabel')}
             hideLabel
             value={activePreviewApp}
-            options={SCREEN_OPTIONS}
+            options={screenOptions}
             onChange={(event) => selectPreviewApp(event.target.value)}
         />
-        <p role={isPeeking ? 'status' : undefined} className={'min-w-0 flex-1 text-[var(--sarak-type-scale-caption,12px)] leading-snug ' + PREVIEW_TOOLBAR_HINT + ' ' + (isPeeking ? 'font-bold text-theme-primary' : 'text-[var(--theme-muted)]')}>
+        <p role={isPeeking ? 'status' : undefined} className={'text-[var(--sarak-type-scale-caption,12px)] leading-snug ' + PREVIEW_TOOLBAR_HINT + ' ' + (isPeeking ? 'font-bold text-theme-primary' : 'text-[var(--theme-muted)]')}>
             {isPeeking ? text('peekNotice') : text('previewHint')}
         </p>
-        <div role="group" aria-label={PREVIEW_TOOLBAR_LABELS.deviceGroup} className="flex flex-wrap gap-1">
+        <div role="group" aria-label={text('previewDeviceGroup')} className="flex flex-wrap gap-1">
             {DEVICE_OPTIONS.map(({ value, label, icon: Icon }) => (
                 <SarakButton
                     key={value}

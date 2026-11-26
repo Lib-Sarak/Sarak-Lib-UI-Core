@@ -21,7 +21,7 @@ type Translate = ReturnType<typeof useLibraryText>;
 
 const PATH_SEPARATOR = ' › ';
 const captionClass = 'text-[length:var(--sarak-type-scale-caption,12px)]';
-const pillClass = 'rounded-[var(--sarak-card-radius,10px)] px-3 py-1.5 text-left hover:bg-[var(--theme-primary)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]';
+const pillClass = 'rounded-[var(--sarak-card-radius,10px)] px-3 py-1.5 text-left hover:bg-[var(--theme-primary)]/10';
 
 const decisionName = (text: Translate, id: DecisionId): string => {
     const decision = getDecision(id);
@@ -46,7 +46,7 @@ const ResultRow: React.FC<{ item: LocatedResult; text: Translate; onOpen: ThemeS
                 data-search-result={item.token.id}
                 aria-label={text('searchResultOpen', { name: item.token.label, place })}
                 onClick={() => onOpen(item.location.decisionId, item.token.id)}
-                className="flex w-full items-center gap-2 rounded-[var(--sarak-card-radius,10px)] px-3 py-2 text-left hover:bg-[var(--theme-primary)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]"
+                className="flex w-full items-center gap-2 rounded-[var(--sarak-card-radius,10px)] px-3 py-2 text-left hover:bg-[var(--theme-primary)]/10"
             >
                 <span className="min-w-0 flex-1">
                     <span className={`block truncate ${captionClass} font-semibold text-[var(--theme-title)]`}>{item.token.label}</span>

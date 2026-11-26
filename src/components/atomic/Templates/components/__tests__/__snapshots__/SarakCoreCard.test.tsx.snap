@@ -198,7 +198,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
         style="gap: calc(var(--sarak-layout-gap-md,16px) / 2.5);"
       >
         <button
-          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-4 px-6 text-sm bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))] text-[var(--text-muted,rgba(242,246,251,0.55))] hover:bg-[var(--sarak-btn-primary-bg,#19e3f0)] hover:text-[var(--sarak-btn-primary-text,#04121a)] border border-[var(--sarak-primary-color,#19e3f0)]/20 active:scale-[0.98] flex-1"
+          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] rounded-btn py-4 px-6 text-sm bg-[var(--sarak-btn-secondary-bg,rgba(255,255,255,0.05))] text-[var(--text-muted,rgba(242,246,251,0.55))] hover:bg-[var(--sarak-btn-primary-bg,#19e3f0)] hover:text-[var(--sarak-btn-primary-text,#04121a)] border border-[var(--sarak-primary-color,#19e3f0)]/20 active:scale-[0.98] flex-1"
           style="border: 1px solid var(--color-theme-border, rgba(255,255,255,0.09)); backdrop-filter: blur(8px); background-color: var(--sarak-btn-secondary-bg, rgba(255, 255, 255, 0.05));"
         >
           <span>
@@ -218,7 +218,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
           </span>
         </button>
         <button
-          class="inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn flex-shrink-0 w-10 h-10 text-base bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.95] shadow-lg"
+          class="inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] rounded-btn flex-shrink-0 w-10 h-10 text-base bg-[var(--sarak-btn-primary-bg,#19e3f0)] text-[var(--sarak-btn-primary-text,#04121a)] hover:brightness-110 active:scale-[0.95] shadow-lg"
           style="backdrop-filter: blur(8px); border: var(--sarak-border-width, 1px) solid color-mix(in srgb, var(--text-main, #f2f6fb) 10%, transparent); box-shadow: 0 var(--sarak-icon-button-frosted-shadow-offset-y, 4px) var(--sarak-icon-button-frosted-shadow-blur, 16px) 0 color-mix(in srgb, var(--sarak-card-shadow-color, #000000) 30%, transparent);"
         >
           <svg

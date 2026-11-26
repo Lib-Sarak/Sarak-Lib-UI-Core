@@ -9,6 +9,7 @@ import { PRESET_TEXTS_FONTS } from './fonts';
 import { PRESET_TEXTS_PERSONALITIES } from './personalities';
 import { BUTTON_STYLE_DESCRIPTION, BUTTON_STYLE_NAMES, FONT_CATEGORY_DESCRIPTIONS, TEXTURE_DESCRIPTION_TEMPLATES, TEXTURE_NAMES, THEME_CARD_DESCRIPTION } from './textures';
 import { PRESET_FAMILY_TITLES, PRESET_FONT_CATEGORY_TITLES, PRESET_GROUP_TITLES, PRESET_UI_TEXT } from './groups';
+import { THEME_DESCRIPTIONS } from './themeDescriptions';
 import { PRESET_TEXT_LANGUAGES, type PresetTextTable } from './types';
 
 /**
@@ -64,6 +65,13 @@ const THEME_CARD_PREFIX = 'card-theme-';
 const themeCardText = (preset: PresetTextSource, language: SarakLibraryLanguage): PresetText | undefined =>
     (preset.id.startsWith(THEME_CARD_PREFIX) ? { name: preset.name, description: fill(THEME_CARD_DESCRIPTION, language, preset.name) } : undefined);
 
+/** O tema da galeria: o nome é próprio (igual nos seis idiomas) e a descrição vem da tabela de temas. */
+const themeText = (preset: PresetTextSource, language: SarakLibraryLanguage): PresetText | undefined => {
+    const tuple = THEME_DESCRIPTIONS[preset.id];
+    if (!tuple) return undefined;
+    return { name: preset.name, description: language === 'pt' ? preset.description : tuple[PRESET_TEXT_LANGUAGES[language]] };
+};
+
 const fontText = (preset: PresetTextSource, language: SarakLibraryLanguage): PresetText | undefined => {
     if (!preset.id.startsWith('typo-')) return undefined;
     const font = THEME_FONTS.find((candidate) => candidate.name === preset.name);
@@ -74,7 +82,7 @@ const fontText = (preset: PresetTextSource, language: SarakLibraryLanguage): Pre
 /** O nome e a descrição do preset no idioma pedido; o que não tem tradução cai no texto do próprio preset (português). */
 export const resolvePresetText = (preset: PresetTextSource, language: SarakLibraryLanguage): PresetText => {
     const own: PresetText = { name: preset.name, description: preset.description };
-    const derived = textureText(preset.id, language) ?? buttonStyleText(preset.id, language) ?? themeCardText(preset, language) ?? fontText(preset, language);
+    const derived = textureText(preset.id, language) ?? buttonStyleText(preset.id, language) ?? themeCardText(preset, language) ?? fontText(preset, language) ?? themeText(preset, language);
     if (derived) return derived;
     const entry = PRESET_TEXT_TABLE[preset.id];
     if (!entry || language === 'pt') return own;

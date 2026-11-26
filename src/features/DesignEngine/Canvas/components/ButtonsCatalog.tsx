@@ -5,6 +5,7 @@ import { CATALOG_GRID_3COL } from '../panelResponsive.presets';
 import { Sparkles, MousePointer2 } from 'lucide-react';
 import { ButtonPresetPreview } from './ButtonPresetPreview';
 import type { PeekHandler } from './peek';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 
 import { SarakDesignState } from '../../../../core/Provider/types';
 
@@ -16,6 +17,7 @@ interface ButtonsCatalogProps {
 }
 
 export const ButtonsCatalog: React.FC<ButtonsCatalogProps> = ({ onApplyPreset, currentMode, draft, onPeek }) => {
+    const text = useLibraryText();
     const [activeTab, setActiveTab] = useState<'curated' | 'styles'>('curated');
     const group = getPresetGroup(activeTab === 'curated' ? 'buttons' : 'buttonStyles')!;
 
@@ -27,14 +29,14 @@ export const ButtonsCatalog: React.FC<ButtonsCatalogProps> = ({ onApplyPreset, c
                     className={`px-4 py-2 rounded-lg text-[length:var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'curated' ? 'bg-theme-primary text-theme-on-primary shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
                 >
                     <Sparkles size={12} />
-                    Curados
+                    {text('catalogTabCurated')}
                 </button>
                 <button
                     onClick={() => setActiveTab('styles')}
                     className={`px-4 py-2 rounded-lg text-[length:var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'styles' ? 'bg-theme-primary text-theme-on-primary shadow-lg' : 'text-theme-muted hover:text-theme-text hover:bg-theme-text/5'}`}
                 >
                     <MousePointer2 size={12} />
-                    Por Estilo
+                    {text('catalogTabByStyle')}
                 </button>
             </div>
 

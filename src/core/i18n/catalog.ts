@@ -22,6 +22,8 @@ import { CATALOG_TOKEN_NOTES } from './catalogEntries.tokenNotes';
 import { CATALOG_DECISION_TOKENS } from './catalogEntries.decisionTokens';
 import { CATALOG_DECISION_OPTIONS } from './catalogEntries.decisionOptions';
 import { CATALOG_PANEL_LITERALS } from './catalogEntries.panelLiterals';
+import { CATALOG_KEYBOARD } from './catalogEntries.keyboard';
+import { CATALOG_VISIBLE_TEXTS } from './catalogEntries.visibleTexts';
 
 export type { SarakLibraryLanguage } from './catalog.types';
 import type { SarakLibraryLanguage } from './catalog.types';
@@ -67,6 +69,8 @@ export const LIBRARY_TEXT_CATALOG = {
     ...CATALOG_DECISION_TOKENS,
     ...CATALOG_DECISION_OPTIONS,
     ...CATALOG_PANEL_LITERALS,
+    ...CATALOG_KEYBOARD,
+    ...CATALOG_VISIBLE_TEXTS,
 } satisfies Record<string, LibraryTextEntry>;
 
 export type LibraryTextKey = keyof typeof LIBRARY_TEXT_CATALOG;

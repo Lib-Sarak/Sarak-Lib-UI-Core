@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLibraryText } from '../../../../core/i18n/useLibraryText';
+import { useLibraryLanguage, useLibraryText, type LibraryTextFn } from '../../../../core/i18n/useLibraryText';
 import { SarakAppChrome, type SarakChromeNotification, type SarakNavItem } from '../../../../components/Layout/SarakAppChrome';
 import { SarakDeviceProvider } from '../../../../core/Provider/DeviceProvider';
 import { SarakDesignScope } from '../../../../core/Design/components/DesignScope';
@@ -39,9 +39,6 @@ export const arePreviewPropsEqual = (
 export const PREVIEW_DESKTOP_SYSTEM_WIDTH = 1920;
 const DESKTOP_SCALE_RULE: ContainerScaleRule = { referenceWidth: PREVIEW_DESKTOP_SYSTEM_WIDTH, minScale: 0.2, maxScale: 1 };
 
-/** Nome de exemplo da barra enquanto o painel não recebe um do host: neutro, sem marca da lib. */
-const SAMPLE_BRAND_NAME = 'Meu sistema';
-
 /**
  * Nada na prévia leva o navegador para fora do painel: a rota de exemplo (`#tela`) não existe no sistema de quem importa a lib.
  * O clique simples já é tratado pelo item; aqui caem o que sobra: âncora sem tratador, Ctrl/Cmd/Shift/Alt+clique, botão do meio
@@ -65,23 +62,23 @@ const previewBaseStyle = (globalBackgroundImageUrl: string | undefined): React.C
 });
 
 /** A prévia é amostra: usuário, sair e notificações de exemplo, sem efeito, para a barra mostrar o que o painel configura. */
-const SAMPLE_USER_ROLE = 'Administradora';
-const SAMPLE_NOTIFICATIONS: SarakChromeNotification[] = [
-    { id: 'sample-1', label: 'Novo pedido recebido', description: 'Há 5 minutos' },
-    { id: 'sample-2', label: 'Relatório mensal pronto', description: 'Há 1 hora' },
-    { id: 'sample-3', label: 'Convite aceito', description: 'Ontem' },
+const createSampleNotifications = (text: LibraryTextFn): SarakChromeNotification[] => [
+    { id: 'sample-1', label: text('previewSampleNotificationOrder'), description: text('previewSampleNotificationOrderWhen') },
+    { id: 'sample-2', label: text('previewSampleNotificationReport'), description: text('previewSampleNotificationReportWhen') },
+    { id: 'sample-3', label: text('previewSampleNotificationInvite'), description: text('previewSampleNotificationInviteWhen') },
 ];
 const noop = (): void => undefined;
 
 function createNavigationItems(
     apps: PreviewSystemRendererProps['apps'],
     activePreviewApp: string,
+    text: LibraryTextFn,
 ): SarakNavItem[] {
     const mainScreenItems = MAIN_PREVIEW_SCREENS
         .filter(({ id }) => Object.prototype.hasOwnProperty.call(apps, id))
-        .map(({ id, label }) => ({
+        .map(({ id, labelKey }) => ({
             id,
-            label,
+            label: text(labelKey),
             href: `#${id}`,
             active: activePreviewApp === id,
         }));
@@ -92,7 +89,7 @@ function createNavigationItems(
         ...mainScreenItems,
         {
             id: MORE_PREVIEW_SCREEN_ID,
-            label: 'Mais telas',
+            label: text('previewMoreScreens'),
             href: `#${MORE_PREVIEW_SCREEN_ID}`,
             active: activePreviewApp === MORE_PREVIEW_SCREEN_ID || isAdditionalPreviewScreen(activePreviewApp),
         },
@@ -122,6 +119,9 @@ interface PreviewDeviceSurfaceProps {
 const PreviewDeviceSurface = (props: PreviewDeviceSurfaceProps): React.ReactElement => {
     const text = useLibraryText();
     const { activeDesign, previewDevice, containerRef, scale, navigationItems, onNavigate, activeApp } = props;
+    const language = useLibraryLanguage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `text` muda a cada render; o idioma é o que o faz mudar de fato.
+    const sampleNotifications = React.useMemo(() => createSampleNotifications(text), [language]);
     const layerRef = React.useRef<HTMLDivElement | null>(null);
     const [portalNode, setPortalNode] = React.useState<HTMLDivElement | null>(null);
     // Popover do cromo (⚙, balão da navegação) abre dentro da camada reduzida: as coordenadas da janela viram as da camada.
@@ -153,12 +153,12 @@ const PreviewDeviceSurface = (props: PreviewDeviceSurfaceProps): React.ReactElem
                 >
                     <SarakPortalFrameProvider value={portalFrame}>
                     <SarakAppChrome
-                        brand={{ name: activeDesign.systemName || SAMPLE_BRAND_NAME }}
+                        brand={{ name: activeDesign.systemName || text('previewSampleSystem') }}
                         navItems={navigationItems}
                         onNavigate={onNavigate}
-                        user={{ name: text('sampleTextName'), role: SAMPLE_USER_ROLE }}
+                        user={{ name: text('sampleTextName'), role: text('previewSampleRole') }}
                         logout={noop}
-                        notifications={SAMPLE_NOTIFICATIONS}
+                        notifications={sampleNotifications}
                         onNotificationSelect={noop}
                         style={{ width: '100%', height: '100%' }}
                     >
@@ -180,10 +180,13 @@ function PreviewSystemRendererImpl(props: PreviewSystemRendererProps): React.Rea
         selectPreviewApp,
         apps,
     } = props;
+    const text = useLibraryText();
+    const language = useLibraryLanguage();
     const { containerRef, scale } = useContainerScale(0.95, previewDevice === 'desktop' ? DESKTOP_SCALE_RULE : null);
     const navigationItems = React.useMemo<SarakNavItem[]>(
-        () => createNavigationItems(apps, activePreviewApp),
-        [apps, activePreviewApp],
+        () => createNavigationItems(apps, activePreviewApp, text),
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- `text` muda a cada render; o idioma é o que o faz mudar de fato.
+        [apps, activePreviewApp, language],
     );
     const activeApp = apps[activePreviewApp] ?? Object.values(apps)[0] ?? null;
     const navigateToApp = React.useMemo(

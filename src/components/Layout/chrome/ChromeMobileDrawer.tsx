@@ -10,6 +10,8 @@ export interface ChromeMobileDrawerProps {
     drawerId: string;
     onClose: () => void;
     closeLabel: string;
+    /** O nome do diálogo para o leitor de tela. */
+    label: string;
     onKeyDown: FocusTrap['handleTrap'];
     containerRef: FocusTrap['containerRef'];
     backgroundStyle: ChromeBackgroundStyle;
@@ -41,10 +43,13 @@ function createChromeMobileDrawerStyle({ backgroundStyle, borderSide, borderStyl
 }
 
 function ChromeMobileDrawerPanel(props: ChromeMobileDrawerPanelProps): React.ReactElement {
-    const { drawerId, onKeyDown, containerRef, backgroundStyle, children } = props;
+    const { drawerId, label, onKeyDown, containerRef, backgroundStyle, children } = props;
     return (
         <aside
             id={drawerId}
+            role="dialog"
+            aria-modal="true"
+            aria-label={label}
             ref={containerRef}
             onKeyDown={onKeyDown}
             className="fixed inset-y-0 left-0 z-50 flex flex-col shrink-0 overflow-y-auto overflow-x-hidden max-w-[85vw]"

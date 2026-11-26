@@ -41,7 +41,7 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
                 placeholder={text('themeSearchPlaceholder')}
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
-                className="w-full rounded-xl border border-[var(--theme-border)] bg-[var(--theme-surface)] py-2.5 pl-9 pr-4 text-[length:var(--sarak-type-scale-caption,12px)] font-medium tracking-normal text-[var(--theme-title)] placeholder:text-[var(--theme-muted)] focus:border-[var(--theme-primary)]/50 focus:outline-none"
+                className="w-full rounded-xl border border-[var(--theme-border)] bg-[var(--theme-surface)] py-2.5 pl-9 pr-4 text-[length:var(--sarak-type-scale-caption,12px)] font-medium tracking-normal text-[var(--theme-title)] placeholder:text-[var(--theme-muted)] focus:border-[var(--theme-primary)]/50"
             />
         </div>
     </div>

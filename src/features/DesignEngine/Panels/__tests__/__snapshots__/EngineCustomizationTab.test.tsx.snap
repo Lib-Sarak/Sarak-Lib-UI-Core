@@ -51,7 +51,10 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
               class="relative inline-flex items-center"
             >
               <button
-                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#101622)] cursor-help"
+                aria-expanded="false"
+                aria-label="Ajuda: Estilo de Bolha"
+                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors p-1 rounded-full hover:bg-[var(--color-theme-card,#101622)] cursor-help"
+                type="button"
               >
                 <svg
                   class="lucide lucide-help-circle"
@@ -211,7 +214,10 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
               class="relative inline-flex items-center"
             >
               <button
-                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#101622)] cursor-help"
+                aria-expanded="false"
+                aria-label="Ajuda: Estilo do Grid"
+                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors p-1 rounded-full hover:bg-[var(--color-theme-card,#101622)] cursor-help"
+                type="button"
               >
                 <svg
                   class="lucide lucide-help-circle"
@@ -353,7 +359,10 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
               class="relative inline-flex items-center"
             >
               <button
-                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#101622)] cursor-help"
+                aria-expanded="false"
+                aria-label="Ajuda: Tipo de Visualização"
+                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors p-1 rounded-full hover:bg-[var(--color-theme-card,#101622)] cursor-help"
+                type="button"
               >
                 <svg
                   class="lucide lucide-help-circle"
@@ -436,7 +445,10 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
                 class="relative inline-flex items-center"
               >
                 <button
-                  class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#101622)] cursor-help"
+                  aria-expanded="false"
+                  aria-label="Ajuda: Mostrar Grid de Fundo"
+                  class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors p-1 rounded-full hover:bg-[var(--color-theme-card,#101622)] cursor-help"
+                  type="button"
                 >
                   <svg
                     class="lucide lucide-help-circle"
@@ -481,12 +493,12 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
               <input
                 aria-checked="true"
                 checked=""
-                class="sr-only"
+                class="peer sr-only"
                 role="switch"
                 type="checkbox"
               />
               <div
-                class="block w-10 h-6 rounded-full transition-all duration-[var(--duration-normal,0.3s)] ease-in-out"
+                class="block w-10 h-6 rounded-full transition-all duration-[var(--duration-normal,0.3s)] ease-in-out peer-focus-visible:outline peer-focus-visible:outline-[length:var(--sarak-focus-width,2px)] peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[color:var(--theme-text-primary,var(--sarak-text-main,CanvasText))]"
                 style="background-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#19e3f0));"
               />
               <div

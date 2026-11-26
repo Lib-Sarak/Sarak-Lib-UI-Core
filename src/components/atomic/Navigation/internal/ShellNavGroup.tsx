@@ -54,6 +54,8 @@ export const ShellNavGroup: React.FC<ShellNavGroupProps> = ({ item, activeRoute,
                 collapsed={collapsed}
                 active={markActive && hasActiveChild}
                 data-sarak-nav-group-active={hasActiveChild ? 'true' : undefined}
+                // O grupo não é a página, mas a contém: `true` avisa o leitor de tela de que o item ativo está dentro dele.
+                aria-current={hasActiveChild ? 'true' : undefined}
                 orientation={horizontal ? 'horizontal' : 'vertical'}
                 aria-expanded={open}
                 aria-controls={useFlyout && !open ? undefined : panelId}

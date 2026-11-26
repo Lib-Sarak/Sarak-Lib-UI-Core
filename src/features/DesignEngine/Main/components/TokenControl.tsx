@@ -9,6 +9,7 @@ import {
 } from '../../components/DesignControls';
 import { ExceptionRelation } from '../../components/ExceptionRelation';
 import { FontSelectControl } from '../../components/controls/FontSelectControl';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { getTokenBounds } from '../../../../core/Design/utils/tokenBounds';
 import type { SarakDesignToken, SarakTokenValue } from '../../../../core/Design/types';
 
@@ -62,23 +63,23 @@ export const ControlRegistry: Record<string, React.FC<WidgetProps>> = {
 };
 
 const DEVICE_BADGES = {
-    mob: { badge: 'Só no Mobile', device: 'Mobile' },
-    tab: { badge: 'Só no Tablet', device: 'Tablet' },
-    desk: { badge: 'Desktop', device: 'Desktop' }
+    mob: { badge: 'deviceBadgeMobile', device: 'deviceNameMobile' },
+    tab: { badge: 'deviceBadgeTablet', device: 'deviceNameTablet' },
+    desk: { badge: 'deviceBadgeDesktop', device: 'deviceNameDesktop' }
 } as const;
 
-const deviceBadgeTitle = (device: string) =>
-    `Este valor vale só para ${device}. Troque o dispositivo na barra do preview para editar os outros.`;
-
-const DeviceBadge: React.FC<{ deviceKey: keyof typeof DEVICE_BADGES }> = ({ deviceKey }) => (
-    <span
-        data-testid="token-device-badge"
-        title={deviceBadgeTitle(DEVICE_BADGES[deviceKey].device)}
-        className="mb-1 inline-block rounded-md border border-[var(--theme-border)] px-1.5 text-[var(--sarak-type-scale-caption,12px)] font-medium normal-case tracking-normal text-[var(--theme-primary)]"
-    >
-        {DEVICE_BADGES[deviceKey].badge}
-    </span>
-);
+const DeviceBadge: React.FC<{ deviceKey: keyof typeof DEVICE_BADGES }> = ({ deviceKey }) => {
+    const text = useLibraryText();
+    return (
+        <span
+            data-testid="token-device-badge"
+            title={text('deviceBadgeHint', { device: text(DEVICE_BADGES[deviceKey].device) })}
+            className="mb-1 inline-block rounded-md border border-[var(--theme-border)] px-1.5 text-[var(--sarak-type-scale-caption,12px)] font-medium normal-case tracking-normal text-[var(--theme-primary)]"
+        >
+            {text(DEVICE_BADGES[deviceKey].badge)}
+        </span>
+    );
+};
 
 interface TokenControlProps {
     token: SarakDesignToken;

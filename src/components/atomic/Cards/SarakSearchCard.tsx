@@ -149,7 +149,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                             <SarakIcon name="Eye" size={12} className="text-[var(--sarak-primary-color,#19e3f0)]" />
                             <span className="text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))]">Visão Computacional</span>
                         </div>
-                        <SarakSwitch checked={caps.vision} onChange={() => handleToggle('vision')} />
+                        <SarakSwitch aria-label="Visão Computacional" checked={caps.vision} onChange={() => handleToggle('vision')} />
                     </div>
 
                     {/* Web Switch */}
@@ -162,7 +162,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                             <SarakIcon name="Globe" size={12} className="text-[var(--sarak-shadow-glow,rgba(25,227,240,0.18))]" />
                             <span className="text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))]">Navegação Web</span>
                         </div>
-                        <SarakSwitch checked={caps.web} onChange={() => handleToggle('web')} />
+                        <SarakSwitch aria-label="Navegação Web" checked={caps.web} onChange={() => handleToggle('web')} />
                     </div>
 
                     {/* Chat Switch */}
@@ -175,7 +175,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                             <SarakIcon name="MessageSquare" size={12} className="text-[var(--sarak-primary-color,#19e3f0)]" />
                             <span className="text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))]">Modo Conversacional</span>
                         </div>
-                            <SarakSwitch checked={caps.chat} onChange={() => handleToggle('chat')} />
+                            <SarakSwitch aria-label="Modo Conversacional" checked={caps.chat} onChange={() => handleToggle('chat')} />
                         </div>
                     </div>
                 </div>

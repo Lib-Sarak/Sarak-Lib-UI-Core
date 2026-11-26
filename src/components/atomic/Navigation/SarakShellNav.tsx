@@ -152,17 +152,8 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
         );
     };
 
-    return (
-        <nav
-            ref={navRef}
-            aria-label={t('shellNavAriaLabel')}
-            className={`relative z-10 flex ${horizontal ? 'items-center overflow-x-hidden shrink-0' : 'h-full min-h-0 overflow-y-auto overflow-x-hidden'} ${className}`}
-            style={{
-                flexDirection: horizontal ? 'row' : 'column',
-                gap: horizontal ? 'var(--sarak-layout-gap-sm, 8px)' : VERTICAL_NAV_GAP,
-                padding: horizontal ? 'var(--sarak-layout-gap-md, 16px)' : VERTICAL_NAV_PADDING,
-            }}
-        >
+    const rowContent = (
+        <>
             {brand && (brand.name || brand.logoUrl) ? <ShellNavBrand brand={brand} horizontal={horizontal} /> : null}
 
             {Array.from(groups.entries()).map(([category, groupItems], index) => (
@@ -207,6 +198,27 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                     </div>
                 </React.Fragment>
             ))}
+        </>
+    );
+
+    return (
+        <nav
+            ref={navRef}
+            aria-label={t('shellNavAriaLabel')}
+            className={`relative z-10 flex ${horizontal ? 'items-center overflow-x-hidden shrink-0' : 'h-full min-h-0 overflow-y-auto overflow-x-hidden'} ${className}`}
+            style={{
+                flexDirection: horizontal ? 'row' : 'column',
+                gap: horizontal ? 'var(--sarak-layout-gap-sm, 8px)' : VERTICAL_NAV_GAP,
+                padding: horizontal ? 'var(--sarak-layout-gap-md, 16px)' : VERTICAL_NAV_PADDING,
+            }}
+        >
+            {horizontal ? (
+                // A linha dos itens corta o que passa dela: os itens do "Mais" ficam no fluxo, só sem visibilidade, e sem este corte
+                // somariam à rolagem da barra (`scrollWidth` maior que `clientWidth`) mesmo sem aparecer.
+                <div data-sarak-nav-row="true" className="flex min-w-0 w-full items-center overflow-x-clip" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
+                    {rowContent}
+                </div>
+            ) : rowContent}
 
             {horizontal ? (
                 <ShellNavMore

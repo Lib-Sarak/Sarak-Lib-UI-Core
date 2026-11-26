@@ -200,3 +200,23 @@ describe('ShellLanguageSelector', () => {
     });
 
 });
+
+describe('ShellLanguageSelector — teclado', () => {
+    it.each(['horizontal', 'vertical'] as const)('na %s, o Esc fecha a lista e devolve o foco ao botão', (variant) => {
+        renderWithProvider(<SarakShellLanguageSelector variant={variant} />);
+        const button = screen.getAllByRole('button')[0];
+        button.focus();
+        fireEvent.click(button);
+        expect(button).toHaveAttribute('aria-expanded', 'true');
+
+        fireEvent.keyDown(document, { key: 'Escape' });
+
+        expect(button).toHaveAttribute('aria-expanded', 'false');
+        expect(document.activeElement).toBe(button);
+    });
+
+    it('o botão da barra expõe aria-haspopup', () => {
+        renderWithProvider(<SarakShellLanguageSelector variant="horizontal" />);
+        expect(screen.getAllByRole('button')[0]).toHaveAttribute('aria-haspopup', 'menu');
+    });
+});

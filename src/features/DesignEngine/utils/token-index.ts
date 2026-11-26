@@ -6,7 +6,14 @@ export interface SearchableToken extends SarakDesignToken {
     localizedLabel?: string;
     /** Os rótulos das opções no idioma em uso. */
     localizedOptions?: string[];
+    /** O ajuste vale para o sistema todo (schema geral), não para um componente: numa frase vaga ele vem antes do específico. */
+    general?: boolean;
 }
+
+/** Os schemas de alcance geral: o ajuste de um deles muda o sistema inteiro, e não um componente. */
+const GENERAL_SCHEMA_IDS: ReadonlySet<string> = new Set(['global', 'system', 'colors', 'motion', 'typography']);
+
+export const isGeneralSchema = (schemaId: string): boolean => GENERAL_SCHEMA_IDS.has(schemaId);
 
 export interface CatalogSearchEntry {
     name?: string;
@@ -28,7 +35,7 @@ export interface TokenIndex {
 
 /** Palavras de ligação e de pedido ("mudar a largura"): não dizem o que mudar, então nunca filtram. */
 const STOP_WORDS = new Set(
-    'de do da dos das o a os as e em no na nos nas para com um uma ao aos sem mudar trocar alterar deixar colocar ajustar quero mais menos muito pouco quando abrir fechar passa seletor'.split(' '),
+    'de do da dos das o a os as e em no na nos nas para com um uma ao aos sem mudar trocar alterar deixar deixo como colocar ajustar quero mais menos muito pouco quando abrir fechar passa seletor'.split(' '),
 );
 
 export const normalizeText = (text: string): string =>

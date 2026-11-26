@@ -47,7 +47,8 @@ export const PANEL_SPLIT_PREVIEW = '@min-[640px]:h-full @min-[640px]:flex-1';
 export const PANEL_STACKED_COLUMN_HEIGHT = 'h-[32rem]';
 // sarak-allow-hardcode: a altura de 32rem da coluna empilhada do painel é o mínimo para a prévia ler; o Tailwind exige a classe literal e nenhum token a declara.
 export const PANEL_STACKED_PREVIEW_MIN_HEIGHT = 'min-h-[32rem]';
-export const PREVIEW_TOOLBAR_HINT = 'hidden @min-[900px]:block';
+// sarak-allow-hardcode: 10rem (160 px) é a menor largura em que o texto de ajuda da prévia se lê em linhas; abaixo disso a barra o leva para a linha de baixo. O Tailwind exige a classe literal.
+export const PREVIEW_TOOLBAR_HINT = 'hidden @min-[900px]:block min-w-[10rem] flex-1 basis-[10rem]';
 
 export interface PreviewLayoutPreset {
     rowClassName: string;

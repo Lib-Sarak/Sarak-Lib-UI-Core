@@ -13,13 +13,14 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         .sarak-theme-miniature,.sarak-theme-miniature::before,.sarak-theme-miniature::after,.sarak-theme-miniature *,.sarak-theme-miniature *::before,.sarak-theme-miniature *::after{animation:none;transition:none}
       </style>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Sala de comando: vidro escuro sobre constelação, ciano contido, Outfit nos títulos e Phosphor preenchido."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -41,7 +42,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Sarak Sovereign
           </h3>
@@ -53,19 +54,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Sarak Sovereign"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="sarak-sovereign"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Néon ácido: verde sobre preto, quina cortada, mono maiúsculo e botão wireframe."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -87,7 +89,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Cyberpunk Neon
           </h3>
@@ -99,19 +101,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Cyberpunk Neon"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="cyberpunk-neon"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="CRT âmbar de chão de fábrica: chapa, listra de perigo, zero raio, estêncil e movimento mecânico."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -133,7 +136,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Industrial Terminal
           </h3>
@@ -145,19 +148,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Industrial Terminal"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="industrial-terminal"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Brutalismo claro: papel creme, borda preta grossa, cor chapada, sombra dura deslocada."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -179,7 +183,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Neo Brutalism
           </h3>
@@ -191,19 +195,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Neo Brutalism"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="neo-brutalism"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Espaço profundo: violeta e gelo sobre azul-noite, vidro espesso, estrelas, ícone fino e movimento longo."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -225,7 +230,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Nebula Space
           </h3>
@@ -237,19 +242,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Nebula Space"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="nebula-space"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Performance em grafite, coral, âmbar e menta; curva elástica e foco de luz nos cartões."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -271,7 +277,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Kinetic Flow
           </h3>
@@ -283,19 +289,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Kinetic Flow"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="kinetic-flow"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Y2K prateado com prisma, ciano elétrico, violeta e verde ácido; geometria polida e brilho neon controlado."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -317,7 +324,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Cyber Retro Wave
           </h3>
@@ -329,19 +336,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Cyber Retro Wave"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="cyber-retro-wave"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Referência clara do conjunto: papel branco, tinta de alto contraste, azul preciso e espaço generoso."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -363,7 +371,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Minimalist Airy
           </h3>
@@ -375,19 +383,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Minimalist Airy"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="minimalist-airy"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Caderno de laboratório em verde técnico, mono e compacto; a contraparte leva a grade ao terminal escuro."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -409,7 +418,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Data Terminal
           </h3>
@@ -421,19 +430,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Data Terminal"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="data-terminal"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Interface móvel tátil em cinza suave, com relevo neumórfico, rosa controlado e controles amplos."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -455,7 +465,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Neumorphic Mobile
           </h3>
@@ -467,19 +477,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Neumorphic Mobile"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="neumorphic-mobile"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Editorial de fim de tarde em papel creme, tinta serifada, ouro quente e grão fotográfico."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -501,7 +512,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Golden Hour
           </h3>
@@ -513,19 +524,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Golden Hour"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="golden-hour"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Véu de vidro lavanda com aurora verde-água e rosa, difuso e luminoso nos dois modos."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -547,7 +559,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Aurora Veil
           </h3>
@@ -559,19 +571,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Aurora Veil"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="aurora-veil"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Cianótipo técnico em azul médio, grade de engenharia, cotas monoespaçadas e linha vermelha de revisão."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -593,7 +606,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Blueprint Protocol
           </h3>
@@ -605,19 +618,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Blueprint Protocol"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="blueprint-protocol"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Papel quente, tinta precisa e uma coluna de leitura com ritmo editorial."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -639,7 +653,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Editorial Ink
           </h3>
@@ -651,19 +665,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Editorial Ink"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="editorial-ink"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Barro, madeira e contornos topográficos em uma superfície tátil e tranquila."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -685,7 +700,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Organic Clay
           </h3>
@@ -697,19 +712,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Organic Clay"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="organic-clay"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Preto e branco absolutos, amarelo de ação e contornos definidos para leitura imediata."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -731,7 +747,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             High Contrast
           </h3>
@@ -743,19 +759,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="High Contrast"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="high-contrast"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Um caderno de dados preciso, denso e pronto para tabelas e relatórios."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -777,7 +794,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Corporate Ledger
           </h3>
@@ -789,19 +806,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Corporate Ledger"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="corporate-ledger"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Pastéis vivos, formas macias e pequenos gestos de movimento com leitura clara."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -823,7 +841,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Playful Pastel
           </h3>
@@ -835,19 +853,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Playful Pastel"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="playful-pastel"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="O Sovereign de origem: vidro escuro, ciano vivo com violeta e magenta, Inter no corpo, Outfit nos títulos e marcador de item ativo com brilho."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -869,7 +888,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Sarak Sovereign Classic
           </h3>
@@ -881,19 +900,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Sarak Sovereign Classic"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="sarak-sovereign-classic"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Hacker de terminal: verde #00ff41 sobre preto, cantos retos com quina cortada, mono em tudo, grade de HUD e botão wireframe."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -915,7 +935,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Cyberpunk Neon Classic
           </h3>
@@ -927,19 +947,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Cyberpunk Neon Classic"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="cyberpunk-neon-classic"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Painel de máquina: âmbar #ff9900 sobre grafite, zero raio, borda grossa, listra de perigo, mono maiúsculo e movimento nulo."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -961,7 +982,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Industrial Terminal Classic
           </h3>
@@ -973,19 +994,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Industrial Terminal Classic"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="industrial-terminal-classic"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Neon dos anos 80: magenta e ciano sobre violeta-escuro, quina cortada, Orbitron maiúsculo, VT323 no código e scanlines."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -1007,7 +1029,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Cyber Retro-Wave 2077 Classic
           </h3>
@@ -1019,19 +1041,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Cyber Retro-Wave 2077 Classic"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="cyber-retro-wave-classic"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Brisa de jardim: verde #2e7d32 com amarelo e verde-azulado sobre papel esverdeado, Lora nos títulos, vidro leve de cantos de 32 px e botão em pílula. No escuro, o preto da foto com o verde da marca."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -1053,7 +1076,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Nature Breeze
           </h3>
@@ -1065,19 +1088,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Nature Breeze"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="nature-breeze"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Brutalismo de origem: vermelho #ff0000 com amarelo e azul puros sobre papel neutro, borda preta de 4 px, sombra dura deslocada, Space Grotesk e cantos retos. No escuro, o preto da foto, sem sombra."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -1099,7 +1123,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Neo Brutalism Classic
           </h3>
@@ -1111,19 +1135,20 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Neo Brutalism Classic"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="neo-brutalism-classic"
           type="button"
         />
       </div>
       <div
-        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+        class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
         data-option-tile=""
         title="Matriz de pontos elegante: dourado #d4af37 sobre preto, pontos de fundo, Outfit leve nos títulos, cantos de 4 px e respiro largo. No claro, marfim com dourado-escuro."
       >
         <div
           aria-hidden="true"
           class="pointer-events-none"
+          inert=""
         >
           <div
             class="relative w-full overflow-hidden"
@@ -1145,7 +1170,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
           class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
         >
           <h3
-            class="break-words text-xs font-semibold leading-tight text-theme-text"
+            class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
           >
             Dot Matrix Elegant
           </h3>
@@ -1157,7 +1182,7 @@ exports[`PresetsCatalog — um grupo por vez, sem cromo próprio > o grupo de te
         </div>
         <button
           aria-label="Dot Matrix Elegant"
-          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+          class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
           data-theme-id="dot-matrix-elegant"
           type="button"
         />

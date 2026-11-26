@@ -5,6 +5,7 @@ import type { SarakDesignState } from '../../../../core/Provider/types';
 import { MASTER_DESIGN_MAP } from '../../../../core/Design/master-map';
 import { TokenCatalog } from '../../../../core/Design/catalog';
 import { searchTokens, matchesText, buildCatalogMap } from '../../utils/token-search';
+import { isGeneralSchema } from '../../utils/token-index';
 import { sanitizeCategory } from '../../utils/dynamic-categories';
 import DesignPillars from '../../config/design-pillars.json';
 
@@ -52,7 +53,7 @@ export const useSovereignSearch = (draft: Partial<SarakDesignState>, searchQuery
     const filteredComponents = useMemo(() => {
         if (searchQuery) {
             return MASTER_DESIGN_MAP.components.map((component) => {
-                const searchable = component.tokens.map((token) => ({ ...token, componentLabel: component.label }));
+                const searchable = component.tokens.map((token) => ({ ...token, componentLabel: component.label, general: isGeneralSchema(component.id) }));
                 const tokens = searchTokens(searchQuery, searchable, searchCatalog);
 
                 if (tokens.length > 0 || matchesText(searchQuery, component.label)) {

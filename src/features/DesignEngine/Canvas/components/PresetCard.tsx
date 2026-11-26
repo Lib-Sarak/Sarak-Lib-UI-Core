@@ -8,6 +8,7 @@ import { resolveThemeForMode } from '../../../../core/Design/presets/themes/colo
 import { withThemePalette } from '../../../../core/Design/presets/themes/compose';
 import type { SarakTokenValue } from '../../../../core/Design/types';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
+import { usePresetText } from '../../hooks/usePresetText';
 import type { SarakDesignState } from '../../../../core/Provider/types';
 import { MockDashboard } from '../Mocks/DashboardMock';
 import { LazyWhenVisible } from './LazyWhenVisible';
@@ -113,10 +114,12 @@ const noTokens = (): null => null;
  * A opção de um tema na galeria: a miniatura é o sistema real com o tema aplicado (desenhada só quando visível), e o nome
  * fica embaixo, proporcional. A miniatura e o botão seguem o `OptionTile`: o nome acessível é só o nome do tema.
  */
-export const PresetCard = ({ theme, currentMode, onApply, peekTokens, onPeek }: PresetCardProps) => (
+export const PresetCard = ({ theme, currentMode, onApply, peekTokens, onPeek }: PresetCardProps) => {
+    const shown = usePresetText().preset(theme);
+    return (
     <OptionTile
-        name={theme.name}
-        description={theme.description}
+        name={shown.name}
+        description={shown.description}
         onApply={onApply}
         peekTokens={peekTokens ?? noTokens}
         onPeek={onPeek}
@@ -129,4 +132,5 @@ export const PresetCard = ({ theme, currentMode, onApply, peekTokens, onPeek }: 
             <ThemeMiniature theme={theme} currentMode={currentMode} />
         </LazyWhenVisible>
     </OptionTile>
-);
+    );
+};

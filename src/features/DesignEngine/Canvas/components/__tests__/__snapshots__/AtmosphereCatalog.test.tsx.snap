@@ -17,6 +17,7 @@ exports[`AtmosphereCatalog > renderiza as atmosferas sem abas, com a opacidade 1
           Opacidade
         </span>
         <input
+          aria-label="Opacidade"
           class="w-32 accent-[var(--theme-primary)] cursor-pointer"
           max="1"
           min="0"
@@ -37,13 +38,14 @@ exports[`AtmosphereCatalog > renderiza as atmosferas sem abas, com a opacidade 1
           class="grid grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))] gap-3"
         >
           <div
-            class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
             data-option-tile=""
             title="Remove vídeos e imagens de fundo."
           >
             <div
               aria-hidden="true"
               class="pointer-events-none"
+              inert=""
             >
               <div
                 class="relative w-full overflow-hidden"
@@ -674,7 +676,7 @@ exports[`AtmosphereCatalog > renderiza as atmosferas sem abas, com a opacidade 1
               class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
             >
               <h3
-                class="break-words text-xs font-semibold leading-tight text-theme-text"
+                class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
               >
                 Nenhuma (Sem Mídia)
               </h3>
@@ -686,18 +688,19 @@ exports[`AtmosphereCatalog > renderiza as atmosferas sem abas, com a opacidade 1
             </div>
             <button
               aria-label="Nenhuma (Sem Mídia)"
-              class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+              class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
               type="button"
             />
           </div>
           <div
-            class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
             data-option-tile=""
             title="Faixas de cor em fluxo contínuo, geradas pela própria lib — sem vídeo externo."
           >
             <div
               aria-hidden="true"
               class="pointer-events-none"
+              inert=""
             >
               <div
                 class="relative w-full overflow-hidden"
@@ -1329,7 +1332,7 @@ exports[`AtmosphereCatalog > renderiza as atmosferas sem abas, com a opacidade 1
               class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
             >
               <h3
-                class="break-words text-xs font-semibold leading-tight text-theme-text"
+                class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
               >
                 Aurora Cinética
               </h3>
@@ -1341,18 +1344,19 @@ exports[`AtmosphereCatalog > renderiza as atmosferas sem abas, com a opacidade 1
             </div>
             <button
               aria-label="Aurora Cinética"
-              class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+              class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
               type="button"
             />
           </div>
           <div
-            class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
             data-option-tile=""
             title="Nebulosa e campo de estrelas gerados pela própria lib — sem foto de terceiro."
           >
             <div
               aria-hidden="true"
               class="pointer-events-none"
+              inert=""
             >
               <div
                 class="relative w-full overflow-hidden"
@@ -1984,7 +1988,7 @@ exports[`AtmosphereCatalog > renderiza as atmosferas sem abas, com a opacidade 1
               class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
             >
               <h3
-                class="break-words text-xs font-semibold leading-tight text-theme-text"
+                class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
               >
                 Nebulosa Estelar
               </h3>
@@ -1996,18 +2000,19 @@ exports[`AtmosphereCatalog > renderiza as atmosferas sem abas, com a opacidade 1
             </div>
             <button
               aria-label="Nebulosa Estelar"
-              class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+              class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
               type="button"
             />
           </div>
           <div
-            class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar transition-colors hover:border-theme-primary"
+            class="group relative flex flex-col overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] transition-colors hover:border-theme-primary"
             data-option-tile=""
             title="Grão de filme e vinheta acentuada, para telas de teste de contraste — sem mídia de terceiro."
           >
             <div
               aria-hidden="true"
               class="pointer-events-none"
+              inert=""
             >
               <div
                 class="relative w-full overflow-hidden"
@@ -2639,7 +2644,7 @@ exports[`AtmosphereCatalog > renderiza as atmosferas sem abas, com a opacidade 1
               class="flex flex-col gap-1 border-t border-theme-border px-2 py-1.5"
             >
               <h3
-                class="break-words text-xs font-semibold leading-tight text-theme-text"
+                class="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]"
               >
                 Cinemático Escuro
               </h3>
@@ -2651,7 +2656,7 @@ exports[`AtmosphereCatalog > renderiza as atmosferas sem abas, com a opacidade 1
             </div>
             <button
               aria-label="Cinemático Escuro"
-              class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)]"
+              class="absolute inset-0 p-0 rounded-[var(--sarak-card-radius,10px)] focus-visible:-outline-offset-4 focus-visible:shadow-[inset_0_0_0_2px_var(--bg-body,var(--color-theme-body,Canvas))]"
               type="button"
             />
           </div>
@@ -2659,7 +2664,7 @@ exports[`AtmosphereCatalog > renderiza as atmosferas sem abas, com a opacidade 1
       </div>
       <button
         aria-expanded="false"
-        class="self-start rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] px-3 py-1.5 text-[length:var(--sarak-type-scale-caption,12px)] font-semibold text-[var(--theme-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]"
+        class="self-start rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] px-3 py-1.5 text-[length:var(--sarak-type-scale-caption,12px)] font-semibold text-[var(--theme-primary)]"
         data-preset-toggle="atmosphere"
         type="button"
       >

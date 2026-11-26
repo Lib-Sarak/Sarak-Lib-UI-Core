@@ -1,21 +1,24 @@
 import React from 'react';
 import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { ADDITIONAL_PREVIEW_SCREENS } from '../previewScreens';
 
 interface MoreScreensMockProps {
     selectPreviewApp: (appId: string) => void;
 }
 
-export const MoreScreensMock: React.FC<MoreScreensMockProps> = ({ selectPreviewApp }) => (
+export const MoreScreensMock: React.FC<MoreScreensMockProps> = ({ selectPreviewApp }) => {
+    const text = useLibraryText();
+    return (
     <main className="@container flex h-full min-h-0 flex-col gap-[var(--sarak-layout-gap-md,16px)] overflow-y-auto bg-[var(--theme-bg,#06080d)] p-[var(--sarak-layout-gap-md,16px)] text-[var(--theme-title,#f2f6fb)]">
         <header className="flex flex-col gap-[var(--sarak-layout-gap-sm,12px)]">
-            <h1 className="text-[var(--sarak-type-scale-xl,20px)] font-semibold">Mais telas</h1>
+            <h1 className="text-[var(--sarak-type-scale-xl,20px)] font-semibold">{text('previewMoreScreens')}</h1>
             <p className="text-[var(--sarak-type-scale-caption,12px)] text-[var(--theme-muted,rgba(242,246,251,0.55))]">
-                Escolha outra tela para continuar a prévia.
+                {text('previewMoreScreensHint')}
             </p>
         </header>
         <div className="grid grid-cols-1 gap-[var(--sarak-layout-gap-sm,12px)] @min-[768px]:grid-cols-2">
-            {ADDITIONAL_PREVIEW_SCREENS.map(({ id, label }) => (
+            {ADDITIONAL_PREVIEW_SCREENS.map(({ id, labelKey }) => (
                 <SarakButton
                     key={id}
                     variant="secondary"
@@ -23,9 +26,10 @@ export const MoreScreensMock: React.FC<MoreScreensMockProps> = ({ selectPreviewA
                     fullWidth
                     onClick={() => selectPreviewApp(id)}
                 >
-                    {label}
+                    {text(labelKey)}
                 </SarakButton>
             ))}
         </div>
     </main>
-);
+    );
+};

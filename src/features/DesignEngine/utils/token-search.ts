@@ -16,6 +16,7 @@ interface Ranked<T> {
     verbHits: number;
     exact: boolean;
     hasImpact: boolean;
+    general: boolean;
     importance: number;
     idWords: number;
     density: number;
@@ -88,13 +89,23 @@ const scoreTerm = (term: string, isLast: boolean, index: TokenIndex, byCategory 
 
 interface QueryTerms {
     hard: string[];
+    /** Os termos sem os verbos, com as palavras de escopo: o nome inteiro de um ajuste ainda os pode conter. */
+    named: string[];
     soft: string[];
 }
 
+/** Onde o ajuste mora ("da página", "do site"): com outro termo na consulta, não filtra — o ajuste geral mora no sistema todo. */
+const SCOPE_WORDS = new Set(['pagina', 'paginas', 'site', 'sites']);
+
 /** Com algum termo que não é verbo, os verbos viram desempate; só verbos, e eles buscam como qualquer palavra. */
 const splitTerms = (terms: string[]): QueryTerms => {
-    const hard = terms.filter((term) => !ACTION_VERBS.has(term));
-    return hard.length > 0 ? { hard, soft: terms.filter((term) => ACTION_VERBS.has(term)) } : { hard: terms, soft: [] };
+    const named = terms.filter((term) => !SCOPE_WORDS.has(term));
+    const content = named.length > 0 ? named : terms;
+    const hard = content.filter((term) => !ACTION_VERBS.has(term));
+    const nonVerbs = terms.filter((term) => !ACTION_VERBS.has(term));
+    return hard.length > 0
+        ? { hard, named: nonVerbs, soft: content.filter((term) => ACTION_VERBS.has(term)) }
+        : { hard: content, named: content, soft: [] };
 };
 
 interface TokenScore {
@@ -125,7 +136,8 @@ const scoreTokenIndex = (query: QueryTerms, index: TokenIndex, partial = false):
     }
     if (matched === 0) return null;
     const verbHits = query.soft.filter((verb) => (scoreTerm(verb, false, index)?.tier ?? 0) >= SCORE_TITLE_CONCEPT).length;
-    const exact = index.names.some((name) => name.size === new Set(query.hard).size && query.hard.every((term) => name.has(term)));
+    const isName = (terms: string[]) => index.names.some((name) => name.size === new Set(terms).size && terms.every((term) => name.has(term)));
+    const exact = isName(query.hard) || isName(query.named);
     return { matched, minTier, sumTier, verbHits, exact, density };
 };
 
@@ -135,6 +147,7 @@ const compareRanked = <T>(a: Ranked<T>, b: Ranked<T>): number =>
     b.matched - a.matched
     || b.verbHits - a.verbHits
     || Number(b.exact) - Number(a.exact)
+    || Number(b.general) - Number(a.general)
     || b.minTier - a.minTier
     || b.sumTier - a.sumTier
     || b.importance - a.importance
@@ -158,6 +171,7 @@ const rankTokens = <T extends SearchableToken>(
         ranked.push({
             token, order, ...score,
             hasImpact: Boolean(entry?.visualImpact),
+            general: token.general === true,
             importance: entry?.importance ?? 0,
             idWords: token.id.split(/(?=[A-Z0-9])/).length,
         });
@@ -178,7 +192,7 @@ const tokenVocabulary = <T extends SearchableToken>(tokens: readonly T[], catalo
 
 /**
  * Devolve os tokens que casam com TODOS os termos da consulta (verbos de ação só desempatam). A ordem: nível de
- * verbo de ação, nome idêntico à consulta, nível de casamento, importância, efeito visual provado e, por fim, o geral antes do específico.
+ * verbo de ação, nome idêntico à consulta, o ajuste geral (de schema do sistema todo) antes do de um componente, nível de casamento, importância, efeito visual provado e, por fim, o geral antes do específico.
  * Sem nenhum resultado, tenta de novo com cada palavra trocada pela mais próxima do vocabulário (um erro de digitação)
  * e, ainda sem nenhum, cai para o melhor casamento parcial: a frase longa nunca zera por uma palavra sem par.
  */

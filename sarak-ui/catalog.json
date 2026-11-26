@@ -665,7 +665,7 @@
           "name": "actionLabel",
           "type": "string",
           "optional": true,
-          "doc": "Texto do botão de ação principal (default: \"Executar\")."
+          "doc": "Texto do botão de ação principal (default: o texto do catálogo no idioma da lib, \"Executar\" em português)."
         }
       ]
     },
@@ -14328,6 +14328,6 @@
   "kitStamp": {
     "libVersion": "9.0.0-rc.1",
     "kitSchemaVersion": 1,
-    "kitHash": "33ead6bb008d"
+    "kitHash": "100fbbdf7706"
   }
 }

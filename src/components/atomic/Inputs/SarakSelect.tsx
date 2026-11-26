@@ -76,7 +76,7 @@ const SarakSelectControl = (props: SarakSelectControlProps): React.ReactElement 
         <div className={`relative group ${widthClass}`}>
             <select
                 className={mergeSarakClasses(
-                    'block text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))] font-medium outline-none transition-all bg-[var(--sarak-input-bg,var(--color-theme-card,#101622))] rounded-input py-[var(--sarak-input-padding,16px)] appearance-none',
+                    'block text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))] font-medium transition-all bg-[var(--sarak-input-bg,var(--color-theme-card,#101622))] rounded-input py-[var(--sarak-input-padding,16px)] appearance-none',
                     SELECT_LEFT_PADDING,
                     SELECT_RIGHT_PADDING,
                     widthClass,

@@ -101,11 +101,16 @@ button:active:not(.p-0) {
 
 /* Anel de foco global governado pelo token `focusRingWidth` (schema `engineering`,
    emite `--sarak-focus-width`) — a mesma variável que o `SarakLink` honra, para que
-   mexer no token mova o anel de botão e de link juntos. */
-button:focus-visible {
-    outline: var(--sarak-focus-width, 2px) solid var(--theme-texture-color, var(--theme-primary));
+   mexer no token mova o anel de botão e de link juntos. Vale para todo elemento focável.
+   O anel tem dois tons: o contorno na cor do texto do tema e, no vão de 2px entre ele e o
+   elemento, um halo na cor do fundo do tema. Texto e fundo se contrastam entre si, então ao
+   menos um dos dois fica em 3:1 ou mais contra a superfície onde o elemento pousa, seja ela
+   qual for. Componente nenhum tira o contorno sem pôr outro: `outline-none` num focável só
+   se justifica com um estilo de foco no lugar. */
+:is(a[href], button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"]), [role="switch"], [role="button"], [role="tab"], [role="menuitem"], [role="checkbox"], [role="radio"], [role="slider"]):focus-visible {
+    outline: var(--sarak-focus-width, 2px) solid var(--theme-text-primary, var(--sarak-text-main, CanvasText));
     outline-offset: 2px;
-    box-shadow: 0 0 0 4px var(--theme-primary-focus);
+    box-shadow: 0 0 0 2px var(--bg-body, var(--color-theme-body, Canvas));
 }
 
 /* Peso e caixa dos títulos e do corpo: o valor da opção (`300`…`900`, `uppercase`…) é o próprio valor CSS,

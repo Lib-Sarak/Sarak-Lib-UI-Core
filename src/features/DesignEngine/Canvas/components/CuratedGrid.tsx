@@ -46,7 +46,7 @@ export const CuratedGrid: React.FC<CuratedGridProps> = ({ group, gridClassName, 
                     aria-expanded={expanded}
                     data-preset-toggle={group.id}
                     onClick={() => setExpanded((current) => !current)}
-                    className="self-start rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] px-3 py-1.5 text-[length:var(--sarak-type-scale-caption,12px)] font-semibold text-[var(--theme-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]"
+                    className="self-start rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] px-3 py-1.5 text-[length:var(--sarak-type-scale-caption,12px)] font-semibold text-[var(--theme-primary)]"
                 >
                     {expanded ? text.ui('seeFewer') : text.ui('seeAllCount', { count: group.presets.length })}
                 </button>

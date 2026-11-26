@@ -5,6 +5,8 @@ import { Copy, Check, FileJson, ExternalLink, Code } from 'lucide-react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import type { SarakDesignState } from '../../../core/Provider/types';
 import type { SarakThemeCatalogEntry } from '../../../core/Design/presets/themes';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
+import { usePresetText } from '../hooks/usePresetText';
 import { useCatalogThemes } from '../Canvas/components/useCatalogThemes';
 
 interface TemplatesTabProps {
@@ -21,6 +23,8 @@ export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) 
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const copiedTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
     const sarak = useSarakUI();
+    const text = useLibraryText();
+    const presetText = usePresetText();
     const { rows, loadTheme } = useCatalogThemes(sarak);
 
     // Desmonta com o aviso pendente: sem isto o timer dispararia setState num componente morto.
@@ -59,21 +63,23 @@ export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) 
                     Templates & <span className="text-[var(--theme-primary)]">Manifest</span>
                 </div>
                 <p className="text-[var(--sarak-type-scale-tiny,11px)] text-theme-text/30 font-medium uppercase tracking-[var(--sarak-tracking-tight,0.2em)]">
-                    Integração Host
+                    {text('templatesHostIntegration')}
                 </p>
             </div>
 
             {/* Template Grid - Single Column */}
             <div className="flex flex-col gap-4">
-                {rows.map(({ entry, theme }) => (
+                {rows.map(({ entry, theme }) => {
+                    const shown = presetText.preset(entry);
+                    return (
                     <div key={entry.id} className="group bg-theme-text/[0.02] border border-theme-text/5 hover:border-theme-text/10 p-5 rounded-2xl transition-all">
                         <div className="flex flex-col gap-3 mb-4">
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
                                     <FileJson size={12} className="text-[var(--theme-primary)]" />
-                        <div className="text-[var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-tight">{entry.name || entry.id}</div>
+                        <div className="text-[var(--sarak-type-scale2xs,11px)] font-black uppercase tracking-tight">{shown.name || entry.id}</div>
                                 </div>
-                        <p className="text-[var(--sarak-type-scale3xs,11px)] text-theme-text/30">{entry.description || 'Tema customizado.'}</p>
+                        <p className="text-[var(--sarak-type-scale3xs,11px)] text-theme-text/30">{shown.description || text('templatesCustomTheme')}</p>
                             </div>
                             <div className="flex gap-2">
                                 <button 
@@ -85,7 +91,7 @@ export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) 
                                     }`}
                                 >
                                     <Check size={10} />
-                                    {selectedId === entry.id ? 'Selecionado' : 'Escolher tema'}
+                                    {selectedId === entry.id ? text('templatesSelected') : text('templatesChoose')}
                                 </button>
                                 <button 
                                     onClick={() => handleCopy(entry, theme)}
@@ -102,11 +108,12 @@ export const TemplatesTab: React.FC<TemplatesTabProps> = ({ onApplyFullTheme }) 
 
                         <div className="relative">
                             <pre className="bg-theme-body/40 rounded-xl p-4 text-[var(--sarak-type-scale-tiny,11px)] font-mono text-theme-text/20 overflow-x-auto border border-theme-text/5 max-h-[var(--sarak-layout-preview-max-h,120px)] custom-scrollbar">
-                                {theme ? JSON.stringify(theme.design, null, 2) : 'Carregando…'}
+                                {theme ? JSON.stringify(theme.design, null, 2) : text('templatesLoading')}
                             </pre>
                         </div>
                     </div>
-                ))}
+                    );
+                })}
             </div>
 
             {/* External Links */}

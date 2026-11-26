@@ -12,7 +12,7 @@ export interface ThemeMenuAction {
     testId?: string;
 }
 
-const ITEM_CLASS = 'flex w-full items-center rounded-md px-3 py-2 text-left text-[var(--sarak-type-scale-caption,12px)] font-medium normal-case tracking-normal hover:bg-[var(--theme-primary)]/15 focus:bg-[var(--theme-primary)]/15 focus:outline-none ';
+const ITEM_CLASS = 'flex w-full items-center rounded-md px-3 py-2 text-left text-[var(--sarak-type-scale-caption,12px)] font-medium normal-case tracking-normal hover:bg-[var(--theme-primary)]/15 focus:bg-[var(--theme-primary)]/15 ';
 const ITEM_NORMAL = 'text-[var(--color-theme-title,#f2f6fb)]';
 const ITEM_DANGER = 'text-[var(--theme-error,#ef4444)]';
 
@@ -84,7 +84,7 @@ export const ThemeMoreActionsMenu: React.FC<ThemeMoreActionsMenuProps> = ({ acti
                 aria-expanded={isOpen}
                 aria-label={text('themeMoreActions')}
                 onClick={() => onOpenChange(!isOpen)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--theme-border)] text-[var(--theme-muted)] transition-colors focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]"
+                className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--theme-border)] text-[var(--theme-muted)] transition-colors"
             >
                 <MoreHorizontal size={16} aria-hidden="true" />
             </button>

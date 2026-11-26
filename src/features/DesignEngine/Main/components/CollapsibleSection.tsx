@@ -34,7 +34,7 @@ export const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({ title, t
                     data-group-toggle={toggleId}
                     aria-expanded={isOpen}
                     onClick={isControlled ? onToggle : () => setOwnOpen((current) => !current)}
-                    className="flex w-full items-center gap-1 rounded-lg px-1 py-1 text-left text-xs font-semibold hover:bg-[var(--theme-primary)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]"
+                    className="flex w-full items-center gap-1 rounded-lg px-1 py-1 text-left text-xs font-semibold hover:bg-[var(--theme-primary)]/10"
                 >
                     {isOpen ? <ChevronDown size={14} aria-hidden="true" /> : <ChevronRight size={14} aria-hidden="true" />}
                     {title}

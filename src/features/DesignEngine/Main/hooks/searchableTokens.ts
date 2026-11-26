@@ -2,7 +2,7 @@ import { MASTER_DESIGN_MAP } from '../../../../core/Design/master-map';
 import type { SarakLibraryLanguage } from '../../../../core/i18n/catalog';
 import { DECISION_TOKEN_IDS } from '../../../../core/i18n/catalogEntries.decisionTokens';
 import { enhanceToken } from '../components/DecisionTokenList';
-import type { SearchableToken } from '../../utils/token-index';
+import { isGeneralSchema, type SearchableToken } from '../../utils/token-index';
 
 type CatalogNames = ReadonlyMap<string, { name?: string; description?: string }>;
 const MAIN_TOKEN_IDS: ReadonlySet<string> = new Set(DECISION_TOKEN_IDS);
@@ -18,4 +18,4 @@ const withLocalizedTexts = (token: SearchableToken, language: SarakLibraryLangua
 /** Todos os tokens do schema, prontos para a busca no idioma do painel. */
 export const buildSearchableTokens = (language: SarakLibraryLanguage, catalogMap: CatalogNames): SearchableToken[] =>
     MASTER_DESIGN_MAP.components.flatMap((component) =>
-        component.tokens.map((token) => withLocalizedTexts({ ...token, componentLabel: component.label }, language, catalogMap)));
+        component.tokens.map((token) => withLocalizedTexts({ ...token, componentLabel: component.label, general: isGeneralSchema(component.id) }, language, catalogMap)));

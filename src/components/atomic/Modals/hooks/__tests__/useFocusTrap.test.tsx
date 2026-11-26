@@ -70,3 +70,30 @@ describe('useFocusTrap (Spec 41 — modelo de foco dos overlays)', () => {
         container.remove();
     });
 });
+
+describe('useFocusTrap — só alcança o que aparece', () => {
+    const Overlay: React.FC = () => {
+        const { containerRef, handleTrap } = useFocusTrap(true, () => undefined);
+        return (
+            <div ref={containerRef} onKeyDown={handleTrap} tabIndex={-1}>
+                <div style={{ display: 'none' }}><button type="button">escondido no início</button></div>
+                <button type="button">primeiro visível</button>
+                <button type="button">último visível</button>
+                <div style={{ display: 'none' }}><button type="button">escondido no fim</button></div>
+            </div>
+        );
+    };
+
+    it('entra no primeiro focável visível, e o Tab do último volta ao primeiro (não a um alvo que não recebe foco)', () => {
+        const { getByText } = render(<Overlay />);
+        const first = getByText('primeiro visível');
+        const last = getByText('último visível');
+        expect(document.activeElement).toBe(first);
+
+        last.focus();
+        const event = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
+        act(() => { last.dispatchEvent(event); });
+        expect(event.defaultPrevented).toBe(true);
+        expect(document.activeElement).toBe(first);
+    });
+});

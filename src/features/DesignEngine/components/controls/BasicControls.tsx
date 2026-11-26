@@ -45,6 +45,7 @@ export const SliderControl: React.FC<SliderControlProps> = ({ label, description
                 step={step}
                 value={localValue}
                 // O valor já aparece ao lado do rótulo, em cor legível; o slider só o anuncia (o rótulo dele é na cor de destaque).
+                aria-label={label}
                 aria-valuetext={`${localValue}${suffix || unit}`}
                 onChange={(e) => commitValue(parseFloat(e.target.value))}
             />

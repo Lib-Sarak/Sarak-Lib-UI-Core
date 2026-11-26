@@ -23,6 +23,7 @@
  * -------------------------------------------------------------------------
  */
 import { test, expect, chromium, type Browser, type Page } from '@playwright/test';
+import { SARAK_ALL_THEMES } from '../src/core/Design/presets/themes/all';
 
 const harnessUrl = process.env.SARAK_CROMO_HARNESS_URL;
 if (!harnessUrl) {
@@ -56,7 +57,8 @@ interface TopbarMeasure {
 async function openTopbar(theme: string, width: number): Promise<Page> {
     const page = await browser.newPage({ viewport: { width, height: 800 } });
     await page.goto(`${harnessUrl}?chrome=topbar&rotulos=longos&tema-ativo=${theme}`);
-    await page.getByRole('link', { name: 'Início' }).waitFor({ state: 'visible' });
+    // 'attached', e não 'visible': a 820 px um tema pode mandar todos os itens ao "Mais", e o link de dentro da lista fica invisível.
+    await page.locator('header nav a').first().waitFor({ state: 'attached' });
     // O tema embarcado chega sob demanda e a barra se recompõe; mede só depois de assentar.
     await page.waitForTimeout(1500);
     return page;
@@ -103,6 +105,76 @@ for (const theme of THEMES) {
                     await page.locator('header nav [data-sarak-nav-more] button').click();
                     const reachable = await page.locator('[data-sarak-nav-flyout]').getByRole('link').allTextContents();
                     expect(reachable.map((text) => text.trim()), 'o que não coube está no "Mais"').toEqual(hidden);
+                }
+            } finally {
+                await page.close();
+            }
+        });
+    }
+}
+
+/**
+ * D14 e N11. A 820 px a barra mostra os itens que cabem antes de mandar o resto ao "Mais": o botão só aparece quando o próximo item
+ * não cabe ao lado do que ficou. E a barra não ganha rolagem por causa do botão invisível: `scrollWidth` igual a `clientWidth`,
+ * a 1440 e a 820 px. Os 25 temas, no modo nativo de cada um, com os três itens de rótulo longo.
+ */
+const ALL_THEME_IDS = SARAK_ALL_THEMES.map((theme) => theme.id);
+
+interface FitMeasure {
+    visible: number;
+    hidden: number;
+    moreVisible: boolean;
+    spaceLeft: number;
+    nextWidth: number;
+    moreWidth: number;
+    gap: number;
+    scrollWidth: number;
+    clientWidth: number;
+    /** O que a barra declara e o descendente que passa mais da borda: ajuda a achar quem soma a rolagem. */
+    overflowX: string;
+    widest: string;
+}
+
+const measureFit = (page: Page): Promise<FitMeasure> => page.evaluate(() => {
+    const nav = document.querySelector('header nav') as HTMLElement;
+    const style = getComputedStyle(nav);
+    const cells = [...nav.querySelectorAll<HTMLElement>('[data-sarak-nav-cell]')];
+    const more = nav.querySelector<HTMLElement>('[data-sarak-nav-more]') as HTMLElement;
+    const shown = cells.filter((cell) => getComputedStyle(cell).visibility !== 'hidden');
+    const hiddenCells = cells.filter((cell) => getComputedStyle(cell).visibility === 'hidden');
+    const navRect = nav.getBoundingClientRect();
+    const usableRight = navRect.right - parseFloat(style.paddingRight);
+    const lastRight = shown.length ? Math.max(...shown.map((cell) => cell.getBoundingClientRect().right)) : navRect.left + parseFloat(style.paddingLeft);
+    return {
+        visible: shown.length,
+        hidden: hiddenCells.length,
+        moreVisible: getComputedStyle(more).visibility !== 'hidden',
+        spaceLeft: usableRight - lastRight,
+        nextWidth: hiddenCells[0]?.getBoundingClientRect().width ?? 0,
+        moreWidth: more.getBoundingClientRect().width,
+        gap: parseFloat(style.columnGap) || 0,
+        scrollWidth: nav.scrollWidth,
+        clientWidth: nav.clientWidth,
+        overflowX: style.overflowX,
+        widest: (() => {
+            const all = [...nav.querySelectorAll<HTMLElement>('*')];
+            const top = all.sort((a, b) => b.getBoundingClientRect().right - a.getBoundingClientRect().right)[0];
+            return top ? `${top.tagName}.${String(top.className).slice(0, 60)} right=${Math.round(top.getBoundingClientRect().right)} nav.right=${Math.round(navRect.right)}` : '';
+        })(),
+    };
+});
+
+for (const theme of ALL_THEME_IDS) {
+    for (const width of [1440, 820] as const) {
+        test(`${theme} a ${width}px: o "Mais" só aparece sem espaço para o próximo item e a barra não ganha rolagem`, async () => {
+            const page = await openTopbar(theme, width);
+            try {
+                const fit = await measureFit(page);
+                expect(fit.scrollWidth, `a barra não rola: o botão invisível do "Mais" não soma largura ${JSON.stringify(fit)}`).toBeLessThanOrEqual(fit.clientWidth);
+                if (width === 820 && fit.hidden > 0) {
+                    const needed = fit.gap + fit.nextWidth + (fit.hidden > 1 ? fit.gap + fit.moreWidth : 0);
+                    expect(fit.moreVisible, 'o "Mais" aparece quando há item de fora').toBe(true);
+                    expect(fit.spaceLeft, `o próximo item (${fit.nextWidth}px) não cabe ao lado do que ficou: ${JSON.stringify(fit)}`).toBeLessThan(needed);
                 }
             } finally {
                 await page.close();

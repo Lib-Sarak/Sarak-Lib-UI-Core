@@ -105,7 +105,7 @@ describe('SarakActionCard (Spec 40 §2.5 — card genérico, sem domínio embuti
             </SarakUIProvider>
         );
 
-        fireEvent.click(screen.getByRole('button', { name: '' }));
+        fireEvent.click(screen.getByRole('button', { name: 'Mostrar ou ocultar detalhes' }));
 
         expect(screen.getByText('Valor')).toBeInTheDocument();
         expect(screen.getByText('R$ 18.500,00')).toBeInTheDocument();

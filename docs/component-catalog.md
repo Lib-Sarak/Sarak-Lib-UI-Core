@@ -106,7 +106,7 @@ Props (`SarakActionCardProps` — `src/components/atomic/Cards/SarakActionCard.t
 | `onAction` | `(item: TItem) => void` | não |  |
 | `design` | `SarakThemePayload` | não |  |
 | `label` | `string` | não |  |
-| `actionLabel` | `string` | não | Texto do botão de ação principal (default: "Executar"). |
+| `actionLabel` | `string` | não | Texto do botão de ação principal (default: o texto do catálogo no idioma da lib, "Executar" em português). |
 
 ### SarakActivityFeed
 

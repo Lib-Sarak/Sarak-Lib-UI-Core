@@ -32,11 +32,11 @@ exports[`SarakDataTable sem as props da tabela de trabalho > mantém o DOM da ta
                 <input
                   aria-checked="false"
                   aria-label="Selecionar todas as linhas visíveis"
-                  class="sr-only"
+                  class="peer sr-only"
                   type="checkbox"
                 />
                 <div
-                  class="w-5 h-5 rounded transition-all duration-[var(--duration-fast,0.2s)] flex items-center justify-center border"
+                  class="w-5 h-5 rounded transition-all duration-[var(--duration-fast,0.2s)] flex items-center justify-center border peer-focus-visible:outline peer-focus-visible:outline-[length:var(--sarak-focus-width,2px)] peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[color:var(--theme-text-primary,var(--sarak-text-main,CanvasText))]"
                   style="background-color: transparent; border-color: var(--sarak-input-border-color, var(--border-color, rgba(255,255,255,0.09))); border-width: 1px; border-style: solid; box-shadow: none;"
                 />
               </div>
@@ -60,7 +60,7 @@ exports[`SarakDataTable sem as props da tabela de trabalho > mantém o DOM da ta
           >
             <button
               aria-label="Ordenar por name"
-              class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-1.5 px-3 text-xs bg-transparent text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_85%,var(--sarak-on-surface,#ffffff))] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]"
+              class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] rounded-btn py-1.5 px-3 text-xs bg-transparent text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_85%,var(--sarak-on-surface,#ffffff))] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]"
               draggable="false"
               type="button"
             >
@@ -145,11 +145,11 @@ exports[`SarakDataTable sem as props da tabela de trabalho > mantém o DOM da ta
                 <input
                   aria-checked="false"
                   aria-label="Selecionar linha 1"
-                  class="sr-only"
+                  class="peer sr-only"
                   type="checkbox"
                 />
                 <div
-                  class="w-5 h-5 rounded transition-all duration-[var(--duration-fast,0.2s)] flex items-center justify-center border"
+                  class="w-5 h-5 rounded transition-all duration-[var(--duration-fast,0.2s)] flex items-center justify-center border peer-focus-visible:outline peer-focus-visible:outline-[length:var(--sarak-focus-width,2px)] peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[color:var(--theme-text-primary,var(--sarak-text-main,CanvasText))]"
                   style="background-color: transparent; border-color: var(--sarak-input-border-color, var(--border-color, rgba(255,255,255,0.09))); border-width: 1px; border-style: solid; box-shadow: none;"
                 />
               </div>
@@ -163,7 +163,7 @@ exports[`SarakDataTable sem as props da tabela de trabalho > mantém o DOM da ta
           <button
             aria-expanded="true"
             aria-label="Recolher linha"
-            class="inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn flex-shrink-0 w-6 h-6 text-xs bg-transparent text-[var(--sarak-primary-color,#19e3f0)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]"
+            class="inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] rounded-btn flex-shrink-0 w-6 h-6 text-xs bg-transparent text-[var(--sarak-primary-color,#19e3f0)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]"
             draggable="false"
             type="button"
           >
@@ -236,11 +236,11 @@ exports[`SarakDataTable sem as props da tabela de trabalho > mantém o DOM da ta
                 <input
                   aria-checked="false"
                   aria-label="Selecionar linha 2"
-                  class="sr-only"
+                  class="peer sr-only"
                   type="checkbox"
                 />
                 <div
-                  class="w-5 h-5 rounded transition-all duration-[var(--duration-fast,0.2s)] flex items-center justify-center border"
+                  class="w-5 h-5 rounded transition-all duration-[var(--duration-fast,0.2s)] flex items-center justify-center border peer-focus-visible:outline peer-focus-visible:outline-[length:var(--sarak-focus-width,2px)] peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[color:var(--theme-text-primary,var(--sarak-text-main,CanvasText))]"
                   style="background-color: transparent; border-color: var(--sarak-input-border-color, var(--border-color, rgba(255,255,255,0.09))); border-width: 1px; border-style: solid; box-shadow: none;"
                 />
               </div>
@@ -254,7 +254,7 @@ exports[`SarakDataTable sem as props da tabela de trabalho > mantém o DOM da ta
           <button
             aria-expanded="false"
             aria-label="Expandir linha"
-            class="inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn flex-shrink-0 w-6 h-6 text-xs bg-transparent text-[var(--sarak-primary-color,#19e3f0)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]"
+            class="inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] rounded-btn flex-shrink-0 w-6 h-6 text-xs bg-transparent text-[var(--sarak-primary-color,#19e3f0)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]"
             draggable="false"
             type="button"
           >
@@ -350,7 +350,7 @@ exports[`SarakDataTable sem as props da tabela de trabalho > mantém o DOM da ta
           >
             <button
               aria-label="Ordenar por name"
-              class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn py-1.5 px-3 text-xs bg-transparent text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_85%,var(--sarak-on-surface,#ffffff))] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]"
+              class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] rounded-btn py-1.5 px-3 text-xs bg-transparent text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_85%,var(--sarak-on-surface,#ffffff))] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98]"
               draggable="false"
               type="button"
             >

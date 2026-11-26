@@ -64,7 +64,7 @@ const getInputClasses = (
     const paddingRightClass = iconSlots.some((slot) => slot.side === 'right')
         ? 'pr-11'
         : 'pr-[var(--sarak-input-padding-horizontal,16px)]';
-    const baseClasses = 'block text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#101622))]';
+    const baseClasses = 'block text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))] font-medium transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#101622))]';
     const shapeClasses = 'rounded-input py-[var(--sarak-input-padding-vertical,var(--sarak-input-padding,16px))]';
 
     return {

@@ -76,6 +76,28 @@ describe('SarakAppChromeMobile (Spec 40.3 — L1, drawer atrás de hambúrguer)'
     });
 });
 
+describe('SarakAppChromeMobile — o Tab fica preso na gaveta aberta', () => {
+    it('Tab no último item leva ao primeiro e Shift+Tab no primeiro leva ao último', () => {
+        const { container } = renderMobile(
+            <SarakAppChromeMobile nav={NAV} {...base}><div>x</div></SarakAppChromeMobile>,
+            DRAWER,
+        );
+        fireEvent.click(container.querySelector('[aria-controls="sarak-chrome-drawer"]') as HTMLElement);
+        const drawer = container.querySelector('#sarak-chrome-drawer') as HTMLElement;
+        const items = Array.from(drawer.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'));
+        expect(items.length).toBeGreaterThan(1);
+        const first = items[0];
+        const last = items[items.length - 1];
+
+        last.focus();
+        fireEvent.keyDown(last, { key: 'Tab' });
+        expect(document.activeElement).toBe(first);
+
+        fireEvent.keyDown(first, { key: 'Tab', shiftKey: true });
+        expect(document.activeElement).toBe(last);
+    });
+});
+
 const slotOf = (c: HTMLElement, name: string) => c.querySelector(`[data-sarak-slot="${name}"]`);
 
 describe('SarakAppChromeMobile (Spec 48 — L2, os slots têm lugar coerente no celular)', () => {

@@ -611,7 +611,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
         >
           <button
             aria-label="Inspecionar"
-            class="absolute top-4 right-4 z-[9999] p-2 rounded-full backdrop-blur-md border shadow-2xl transition-all bg-theme-body/40 border-theme-text/10 text-[var(--theme-primary)] hover:bg-theme-body/60 opacity-0 group-hover:opacity-100"
+            class="absolute top-4 right-4 z-[9999] p-2 rounded-full backdrop-blur-md border shadow-2xl transition-all bg-theme-body/40 border-theme-text/10 text-[var(--theme-primary)] hover:bg-theme-body/60 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
             title="Modo de Inspeção (Selecionar elemento)"
           >
             <svg
@@ -1290,7 +1290,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
                           </div>
                           <button
                             aria-label="Recolher navegação"
-                            class="inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn flex-shrink-0 w-8 h-8 text-sm bg-transparent text-[var(--sarak-primary-color,#19e3f0)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98] relative z-10 shrink-0"
+                            class="inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] rounded-btn flex-shrink-0 w-8 h-8 text-sm bg-transparent text-[var(--sarak-primary-color,#19e3f0)] hover:bg-[var(--sarak-btn-ghost-hover,rgba(255,255,255,0.05))] hover:text-[color-mix(in_srgb,var(--sarak-primary-color,#19e3f0)_40%,var(--sarak-on-surface,#ffffff))] active:scale-[0.98] relative z-10 shrink-0"
                             data-sarak-widget="collapse"
                             type="button"
                           >
@@ -1413,7 +1413,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
                                           aria-autocomplete="list"
                                           aria-expanded="false"
                                           aria-keyshortcuts="Control+K"
-                                          class="block text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#101622))] rounded-input py-[var(--sarak-input-padding-vertical,var(--sarak-input-padding,16px))] pl-11 pr-[var(--sarak-input-padding-horizontal,16px)] w-full"
+                                          class="block text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))] font-medium transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,rgba(242,246,251,0.55)))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#101622))] rounded-input py-[var(--sarak-input-padding-vertical,var(--sarak-input-padding,16px))] pl-11 pr-[var(--sarak-input-padding-horizontal,16px)] w-full"
                                           enterkeyhint="search"
                                           id=":r3:"
                                           placeholder="Busca inteligente…"
@@ -1703,7 +1703,7 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
                                 </div>
                               </div>
                               <button
-                                class="inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn flex-shrink-0 w-6 h-6 text-xs bg-transparent active:scale-[0.98] shrink-0 text-[var(--theme-muted)] hover:text-[color:var(--sarak-shell-logout-text-color,color-mix(in_srgb,var(--sarak-status-error-color,#ef4444)_40%,var(--sarak-on-surface,#ffffff)))] hover:bg-[var(--theme-error-bg,rgba(239,68,68,0.15))]"
+                                class="inline-flex items-center justify-center transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] rounded-btn flex-shrink-0 w-6 h-6 text-xs bg-transparent active:scale-[0.98] shrink-0 text-[var(--theme-muted)] hover:text-[color:var(--sarak-shell-logout-text-color,color-mix(in_srgb,var(--sarak-status-error-color,#ef4444)_40%,var(--sarak-on-surface,#ffffff)))] hover:bg-[var(--theme-error-bg,rgba(239,68,68,0.15))]"
                                 title="Sair"
                               >
                                 <svg
@@ -1742,9 +1742,19 @@ body.dark .bg-zinc-950\\/40:not([data-sarak-own-palette] *) {
                         style="color: var(--text-main, var(--theme-text-primary, inherit)); width: 100%; max-width: calc(100% - clamp(var(--sarak-layout-padding, 16px), 5%, 128px) - clamp(var(--sarak-layout-padding, 16px), 5%, 128px)); margin-inline: auto; padding: var(--sarak-layout-padding, 16px);"
                       >
                         <div
-                          data-testid="mock-dashboard"
+                          data-sarak-content-anchor="true"
+                          style="display: contents;"
                         >
-                          Dashboard Mocked
+                          <div
+                            data-sarak-content-host=""
+                            style="display: contents;"
+                          >
+                            <div
+                              data-testid="mock-dashboard"
+                            >
+                              Dashboard Mocked
+                            </div>
+                          </div>
                         </div>
                       </main>
                     </div>

@@ -1,5 +1,5 @@
 import { SarakIcon } from "../Icon/SarakIcon";
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -57,6 +57,19 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
     const { language, setLanguage } = useSarakLanguage();
     const t = useLibraryText();
     const [isOpen, setIsOpen] = useState(false);
+    const root = useRef<HTMLDivElement>(null);
+
+    // O Esc fecha a lista e devolve o foco ao botão que a abriu (o primeiro botão do seletor).
+    useEffect(() => {
+        if (!isOpen) return undefined;
+        const closeOnEscape = (event: KeyboardEvent): void => {
+            if (event.key !== 'Escape') return;
+            setIsOpen(false);
+            root.current?.querySelector<HTMLElement>('button')?.focus();
+        };
+        document.addEventListener('keydown', closeOnEscape);
+        return () => document.removeEventListener('keydown', closeOnEscape);
+    }, [isOpen]);
 
     const OverrideSelector = typeof window !== 'undefined'
         ? (window as Window & {
@@ -91,7 +104,7 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
     // O botão não leva tinta: ela clareia o fundo sob o código do idioma (e a parada clara do degradê) e tira contraste do texto. Ele se
     // distingue por um contorno na cor do texto de item da barra (4,5:1 contra ela). É `outline`, e não `border`: o estilo do botão
     // (`getButtonStyles`) escreve borda e largura de borda por token inline, e um tema sem borda apagaria o contorno.
-    const buttonSurface = 'bg-transparent outline outline-1 -outline-offset-1 outline-[color:var(--sarak-topbar-item-text-color,var(--theme-muted))] hover:outline-[color:var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))]';
+    const buttonSurface = 'bg-transparent outline outline-1 -outline-offset-1 outline-[color:var(--sarak-topbar-item-text-color,var(--theme-muted))] hover:outline-[color:var(--theme-text-primary,var(--sarak-text-main,#f2f6fb))] focus-visible:outline-[length:var(--sarak-focus-width,2px)] focus-visible:outline-offset-2 focus-visible:outline-[color:var(--theme-text-primary,var(--sarak-text-main,CanvasText))]';
 
     const dropdown = (
         <AnimatePresence>
@@ -131,10 +144,12 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
 
     if (isHorizontal) {
         return (
-            <div className="relative">
+            <div ref={root} className="relative">
                 <SarakButton
                     variant="ghost"
                     onClick={() => setIsOpen(!isOpen)}
+                    aria-haspopup="menu"
+                    aria-expanded={isOpen}
                     className={`group normal-case font-normal font-tab tracking-normal h-9 rounded-xl ${buttonSurface}`}
                 >
                     <div className="flex items-center w-full" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
@@ -151,7 +166,7 @@ export const SarakShellLanguageSelector: React.FC<SarakShellLanguageSelectorProp
     }
 
     return (
-        <div className="relative">
+        <div ref={root} className="relative">
             <SarakMenuItem
                 onClick={() => setIsOpen(!isOpen)}
                 className="font-tab"

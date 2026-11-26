@@ -27,7 +27,7 @@ export const CategoryLabel: React.FC<{
                 onToggle();
             }
         }}
-        className="flex-1 px-6 py-4 flex items-center justify-between group cursor-pointer outline-none focus:bg-[var(--color-theme-card,#101622)]"
+        className="flex-1 px-6 py-4 flex items-center justify-between group cursor-pointer focus:bg-[var(--color-theme-card,#101622)]"
     >
         <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">

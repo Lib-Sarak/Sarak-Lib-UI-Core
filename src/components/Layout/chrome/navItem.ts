@@ -75,17 +75,29 @@ export const findActiveNavItemHref = (items: readonly SarakNavItem[]): string | 
     return undefined;
 };
 
-export const getSarakSearchItems = (items: readonly {
+interface SearchableNavItem {
     route: string;
     label: string;
     category?: string;
     icon?: string | React.ReactNode;
     disabled?: boolean;
-}[]): SarakSearchItem[] => items
+    /** Sub-abas: entram na busca logo depois do pai, com a categoria dele. */
+    children?: readonly SearchableNavItem[];
+}
+
+const toSearchItem = ({ route, label, category, icon }: SearchableNavItem): SarakSearchItem => ({
+    id: route,
+    label,
+    category,
+    icon: typeof icon === 'string' ? React.createElement(SarakIcon, { name: icon, size: 14 }) : icon,
+});
+
+/** O pai e, em seguida, os filhos ativos dele (um nível), cada filho com a categoria do pai. */
+export const getSarakSearchItems = (items: readonly SearchableNavItem[]): SarakSearchItem[] => items
     .filter((item) => !item.disabled)
-    .map(({ route, label, category, icon }) => ({
-        id: route,
-        label,
-        category,
-        icon: typeof icon === 'string' ? React.createElement(SarakIcon, { name: icon, size: 14 }) : icon,
-    }));
+    .flatMap((item) => [
+        toSearchItem(item),
+        ...(item.children ?? [])
+            .filter((child) => !child.disabled)
+            .map((child) => toSearchItem({ ...child, category: item.category })),
+    ]);

@@ -1,27 +1,22 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
+import type { LibraryTextKey } from '../../../../core/i18n/catalog';
 
 export type ThemeViewMode = 'preview' | 'catalog' | 'templates' | 'command-center';
-
-const ADVANCED_MENU_LABELS = {
-    trigger: 'Avançado',
-    menu: 'Telas avançadas',
-    backToNormal: 'Voltar ao modo normal'
-} as const;
 
 /** `tokens` não troca de tela do painel: abre o pilar Avançado na própria coluna. */
 type AdvancedEntryKind = ThemeViewMode | 'tokens';
 
-const ADVANCED_ENTRIES: Array<{ mode: AdvancedEntryKind; label: string }> = [
-    { mode: 'catalog', label: 'Tabela de tokens' },
-    { mode: 'command-center', label: 'Busca por pilar' },
-    { mode: 'templates', label: 'Temas e JSON' },
-    { mode: 'tokens', label: '' },
-    { mode: 'preview', label: ADVANCED_MENU_LABELS.backToNormal }
+const ADVANCED_ENTRIES: Array<{ mode: AdvancedEntryKind; labelKey: LibraryTextKey }> = [
+    { mode: 'catalog', labelKey: 'advancedTokenTable' },
+    { mode: 'command-center', labelKey: 'advancedPillarSearch' },
+    { mode: 'templates', labelKey: 'advancedThemesJson' },
+    { mode: 'tokens', labelKey: 'decisionAdvanced' },
+    { mode: 'preview', labelKey: 'advancedBackToNormal' }
 ];
 
-const ITEM_CLASS = 'flex w-full items-center rounded-md px-3 py-2 text-left text-[length:var(--sarak-type-scale-caption,12px)] font-medium normal-case tracking-normal text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/15 focus:bg-[var(--theme-primary)]/15 focus:outline-none';
+const ITEM_CLASS = 'flex w-full items-center rounded-md px-3 py-2 text-left text-[length:var(--sarak-type-scale-caption,12px)] font-medium normal-case tracking-normal text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/15 focus:bg-[var(--theme-primary)]/15';
 
 interface ThemeAdvancedMenuProps {
     viewMode: ThemeViewMode;
@@ -91,19 +86,19 @@ export const ThemeAdvancedMenu: React.FC<ThemeAdvancedMenuProps> = ({ viewMode, 
                 aria-expanded={isOpen}
                 onClick={() => setIsOpen((open) => !open)}
                 className={[
-                    'flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-[length:var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-colors focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]',
+                    'flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-[length:var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal transition-colors',
                     isAdvancedActive
                         ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/15 text-[var(--theme-title)]'
                         : 'border-[var(--theme-border)] text-[var(--theme-muted)]'
                 ].join(' ')}
             >
-                {ADVANCED_MENU_LABELS.trigger}
+                {text('advancedTrigger')}
                 <ChevronDown size={14} aria-hidden="true" />
             </button>
             {isOpen && (
                 <div
                     role="menu"
-                    aria-label={ADVANCED_MENU_LABELS.menu}
+                    aria-label={text('advancedMenu')}
                     className="absolute right-0 z-50 mt-1 min-w-48 rounded-lg border border-[var(--theme-border)] bg-[var(--color-theme-card,#101622)] p-1 shadow-lg"
                 >
                     {ADVANCED_ENTRIES.map((entry, index) => (
@@ -118,7 +113,7 @@ export const ThemeAdvancedMenu: React.FC<ThemeAdvancedMenuProps> = ({ viewMode, 
                             onKeyDown={(event) => handleItemKeyDown(event, index)}
                             className={ITEM_CLASS + (entry.mode === 'preview' ? ' mt-1 border-t border-[var(--theme-border)]' : '')}
                         >
-                            {entry.mode === 'tokens' ? text('decisionAdvanced') : entry.label}
+                            {text(entry.labelKey)}
                         </button>
                     ))}
                 </div>

@@ -54,7 +54,7 @@ export const SarakButton: React.FC<SarakButtonProps> = ({
         lg: 'py-5 px-8 text-base'
     };
 
-    const baseClasses = `${containerClass} ${iconOrderClass} font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] focus:outline-none rounded-btn ${sizeClasses[size]}`;
+    const baseClasses = `${containerClass} ${iconOrderClass} font-black uppercase tracking-widest transition-all active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)] rounded-btn ${sizeClasses[size]}`;
 
     const getTailwindClasses = (v: string, st: string) => {
         const strats: Record<string, () => string> = {

@@ -3,6 +3,7 @@ import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { useAtomicStyles } from '../hooks/useAtomicStyles';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
+import { PEER_FOCUS_RING_CLASS, PEER_INPUT_CLASS } from './internal/peerFocusRing';
 
 export interface SarakRadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
     label?: React.ReactNode;
@@ -90,7 +91,7 @@ export const SarakRadio: React.FC<SarakRadioProps> = ({
                         {...props}
                         ref={inputRef}
                         type="radio"
-                        className="sr-only"
+                        className={PEER_INPUT_CLASS}
                         disabled={disabled}
                         checked={isControlled ? checked : undefined}
                         defaultChecked={isControlled ? undefined : defaultChecked}
@@ -101,7 +102,7 @@ export const SarakRadio: React.FC<SarakRadioProps> = ({
                     />
 
                     <div
-                        className="w-5 h-5 rounded-full transition-all duration-[var(--duration-fast,0.2s)] flex items-center justify-center border"
+                        className={`w-5 h-5 rounded-full transition-all duration-[var(--duration-fast,0.2s)] flex items-center justify-center border ${PEER_FOCUS_RING_CLASS}`}
                         style={radioStyle}
                     >
                         {isChecked && (

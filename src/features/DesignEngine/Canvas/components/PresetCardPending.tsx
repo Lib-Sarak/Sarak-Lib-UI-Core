@@ -3,6 +3,7 @@ import type { SarakThemeCatalogEntry } from '../../../../core/Design/presets/the
 import { OptionTile } from './OptionTile';
 import { THEME_FRAME } from './PresetCard';
 import type { PeekHandler, PeekTokens } from './peek';
+import { usePresetText } from '../../hooks/usePresetText';
 
 interface PresetCardPendingProps {
     entry: SarakThemeCatalogEntry;
@@ -21,11 +22,12 @@ const noTokens = (): null => null;
  * no mesmo tamanho da miniatura real. Vira `PresetCard` quando o `design` chega; escolhida antes disso, carrega o tema e aplica.
  */
 export const PresetCardPending: React.FC<PresetCardPendingProps> = ({ entry, currentMode, onChoose, peekTokens, onPeek }) => {
+    const shown = usePresetText().preset(entry);
     const swatch = entry.mode === currentMode ? entry.swatch : entry.swatchOpposite;
     return (
         <OptionTile
-            name={entry.name}
-            description={entry.description}
+            name={shown.name}
+            description={shown.description}
             onApply={onChoose}
             peekTokens={peekTokens ?? noTokens}
             onPeek={onPeek}

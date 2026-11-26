@@ -22,7 +22,7 @@ export const ThemeDecisionHeader: React.FC<ThemeDecisionHeaderProps> = ({ title,
                 type="button"
                 onClick={onBack}
                 aria-label={text('panelBackLabel')}
-                className="flex shrink-0 items-center gap-1 rounded-lg px-2 py-1.5 text-[length:var(--sarak-type-scale-caption,12px)] font-semibold text-[var(--theme-muted)] hover:bg-[var(--theme-primary)]/10 hover:text-[var(--theme-title)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]"
+                className="flex shrink-0 items-center gap-1 rounded-lg px-2 py-1.5 text-[length:var(--sarak-type-scale-caption,12px)] font-semibold text-[var(--theme-muted)] hover:bg-[var(--theme-primary)]/10 hover:text-[var(--theme-title)]"
             >
                 <ChevronLeft size={16} aria-hidden="true" />
                 {text('panelBack')}
@@ -36,7 +36,7 @@ export const ThemeDecisionHeader: React.FC<ThemeDecisionHeaderProps> = ({ title,
                     onClick={onDiscard}
                     aria-label={text('decisionDiscard')}
                     title={text('decisionDiscard')}
-                    className="shrink-0 rounded-lg p-2 text-[var(--theme-muted)] hover:bg-[var(--theme-primary)]/10 hover:text-[var(--theme-title)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]"
+                    className="shrink-0 rounded-lg p-2 text-[var(--theme-muted)] hover:bg-[var(--theme-primary)]/10 hover:text-[var(--theme-title)]"
                 >
                     <RotateCcw size={14} aria-hidden="true" />
                 </button>

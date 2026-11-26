@@ -63,10 +63,10 @@ const PreviewInspectionButton = (
             className={'absolute top-4 right-4 z-[9999] p-2 rounded-full backdrop-blur-md border shadow-2xl transition-all ' + (
                 props.isInspecting
                     ? 'bg-[var(--theme-primary)] text-theme-on-primary border-[var(--theme-primary)] animate-pulse scale-110'
-                    : 'bg-theme-body/40 border-theme-text/10 text-[var(--theme-primary)] hover:bg-theme-body/60 opacity-0 group-hover:opacity-100'
+                    : 'bg-theme-body/40 border-theme-text/10 text-[var(--theme-primary)] hover:bg-theme-body/60 opacity-0 group-hover:opacity-100 focus-visible:opacity-100'
             )}
             style={props.isInspecting ? { backgroundColor: 'var(--theme-primary, #19e3f0)', borderColor: 'var(--theme-primary, #19e3f0)' } : {}}
-            title="Modo de Inspeção (Selecionar elemento)"
+            title={text('previewInspectTitle')}
         >
             <Monitor size={16} />
         </button>

@@ -19,7 +19,13 @@ const interpolate = (template: string, vars?: Record<string, string | number>): 
     );
 };
 
-export type LibraryTextFn = (key: LibraryTextKey, vars?: Record<string, string | number>) => string;
+/** Com `count` igual a 1, a chave `<nome>One` (se existir) é a forma singular; sem ela, vale a própria chave. */
+export const pluralKey = (key: LibraryTextKey, vars?: Record<string, string | number>): LibraryTextKey => {
+    const singular = `${key}One`;
+    return Number(vars?.count) === 1 && singular in LIBRARY_TEXT_CATALOG ? (singular as LibraryTextKey) : key;
+};
+
+export type LibraryTextFn =(key: LibraryTextKey, vars?: Record<string, string | number>) => string;
 
 /** O idioma do CATÁLOGO de textos (um dos seis) que vale agora — a mesma resolução do `useSarakLanguage`; não serve a `Intl`. */
 export const useLibraryLanguage = (): SarakLibraryLanguage => resolveLibraryLanguage(useSarakLanguage().language);
@@ -33,5 +39,5 @@ export const useLibraryLanguage = (): SarakLibraryLanguage => resolveLibraryLang
 export const useLibraryText = (): LibraryTextFn => {
     const language = useLibraryLanguage();
 
-    return (key, vars) => interpolate(LIBRARY_TEXT_CATALOG[key][language], vars);
+    return (key, vars) => interpolate(LIBRARY_TEXT_CATALOG[pluralKey(key, vars)][language], vars);
 };

@@ -95,3 +95,12 @@ describe('SarakShellNav — grupos recolhíveis', () => {
         expect(screen.queryByRole('link', { name: 'Vendas' })).toBeNull();
     });
 });
+
+describe('SarakShellNav — aria-current no grupo', () => {
+    it('o grupo que contém a rota ativa leva aria-current; o que não contém, não', () => {
+        render(<SarakShellNav items={WITH_GROUP} orientation="vertical" activeRoute="/vendas/pedidos" />);
+
+        expect(screen.getByRole('button', { name: 'Vendas' })).toHaveAttribute('aria-current', 'true');
+        expect(screen.getByRole('button', { name: 'Estoque' })).not.toHaveAttribute('aria-current');
+    });
+});

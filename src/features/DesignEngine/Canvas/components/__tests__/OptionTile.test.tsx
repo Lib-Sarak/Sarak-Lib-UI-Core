@@ -4,6 +4,18 @@ import { describe, expect, it, vi } from 'vitest';
 import { OptionTile } from '../OptionTile';
 
 describe('OptionTile', () => {
+    it('a amostra é inerte: seus botões e campos reais ficam fora do Tab e da árvore de acessibilidade', () => {
+        const { container } = render(
+            <OptionTile name="Glass" onApply={() => {}} peekTokens={() => null}>
+                <button type="button">botão real da amostra</button>
+            </OptionTile>,
+        );
+        const sample = container.querySelector('[aria-hidden="true"]') as HTMLElement;
+
+        expect(sample).toHaveAttribute('inert');
+        expect(sample.querySelector('button')).not.toBeNull();
+    });
+
     it('mostra a amostra escondida do leitor de tela e o nome fora dela', () => {
         const { container } = render(
             <OptionTile name="Glass" description="Vidro fosco" onApply={() => {}} peekTokens={() => null}>

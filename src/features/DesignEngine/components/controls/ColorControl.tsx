@@ -2,6 +2,7 @@ import React from 'react';
 import { HelpTooltip } from './HelpTooltip';
 import { applyAlpha, composeColor, pickerHex, resolveColorParts } from './colorParts';
 import { isValidColor } from '../../../../core/Provider/utils/validation';
+import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 
 interface ColorControlProps {
     label: string;
@@ -18,6 +19,7 @@ const ALPHA_STEPS = 100;
  * canal opaco e **preserva o alfa** que a cor já tinha; o alfa tem controle próprio.
  */
 export const ColorControl: React.FC<ColorControlProps> = ({ label, description, value, onChange }) => {
+    const libraryText = useLibraryText();
     const DISPLAY_DEFAULT = 'var(--sarak-text-main,#f2f6fb)';
     const [text, setText] = React.useState(value || DISPLAY_DEFAULT);
     const [invalid, setInvalid] = React.useState(false);
@@ -56,12 +58,12 @@ export const ColorControl: React.FC<ColorControlProps> = ({ label, description, 
                     type="text"
                     value={text}
                     spellCheck={false}
-                    aria-label={`Cor de ${label}`}
+                    aria-label={libraryText('colorOf', { label })}
                     aria-invalid={invalid}
                     onChange={(e) => setText(e.target.value)}
                     onBlur={commitText}
                     onKeyDown={(e) => { if (e.key === 'Enter') commitText(); }}
-                className={`w-full bg-transparent text-[var(--sarak-type-scale3xs,11px)] font-mono text-[var(--theme-muted)] outline-none border-b ${invalid ? 'border-[var(--sarak-status-error-color,#ef4444)]' : 'border-transparent focus:border-[var(--theme-border)]'}`}
+                className={`w-full bg-transparent text-[var(--sarak-type-scale3xs,11px)] font-mono text-[var(--theme-muted)] border-b ${invalid ? 'border-[var(--sarak-status-error-color,#ef4444)]' : 'border-transparent focus:border-[var(--theme-border)]'}`}
                 />
                 {parts && (
                     <input
@@ -69,17 +71,17 @@ export const ColorControl: React.FC<ColorControlProps> = ({ label, description, 
                         min={0}
                         max={ALPHA_STEPS}
                         value={Math.round(alpha * ALPHA_STEPS)}
-                        aria-label={`Opacidade de ${label}`}
+                        aria-label={libraryText('opacityOf', { label })}
                         onChange={(e) => commit(applyAlpha(value || DISPLAY_DEFAULT, Number(e.target.value) / ALPHA_STEPS))}
                         className="w-full"
                     />
                 )}
             </div>
-            <div className="relative w-8 h-8 shrink-0 rounded-lg overflow-hidden border border-[var(--theme-border)] shadow-lg ring-1 ring-[var(--color-theme-card,#101622)]">
+            <div className="relative w-8 h-8 shrink-0 rounded-lg overflow-hidden has-[:focus-visible]:outline has-[:focus-visible]:outline-[length:var(--sarak-focus-width,2px)] has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[color:var(--theme-text-primary,var(--sarak-text-main,CanvasText))] border border-[var(--theme-border)] shadow-lg ring-1 ring-[var(--color-theme-card,#101622)]">
                 <input
                     type="color"
                     value={pickerHex(value || DISPLAY_DEFAULT)}
-                    aria-label={`Seletor de ${label}`}
+                    aria-label={libraryText('colorPickerOf', { label })}
                     onChange={(e) => commit(composeColor(e.target.value, alpha))}
                     className="absolute inset-0 w-[200%] h-[200%] -top-[50%] -left-[50%] cursor-pointer border-none bg-transparent"
                 />

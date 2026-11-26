@@ -2,6 +2,7 @@ import React, { InputHTMLAttributes, useId } from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useAtomicStyles } from '../hooks/useAtomicStyles';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { PEER_FOCUS_RING_CLASS, PEER_INPUT_CLASS } from './internal/peerFocusRing';
 
 export interface SarakSwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
     /**
@@ -55,7 +56,7 @@ export const SarakSwitch: React.FC<SarakSwitchProps> = ({
                 <input
                     type="checkbox"
                     role="switch"
-                    className="sr-only"
+                    className={PEER_INPUT_CLASS}
                     disabled={disabled}
                     checked={checked}
                     aria-checked={!!checked}
@@ -64,7 +65,7 @@ export const SarakSwitch: React.FC<SarakSwitchProps> = ({
                     {...props}
                 />
                 <div
-                    className="block w-10 h-6 rounded-full transition-all duration-[var(--duration-normal,0.3s)] ease-in-out"
+                    className={`block w-10 h-6 rounded-full transition-all duration-[var(--duration-normal,0.3s)] ease-in-out ${PEER_FOCUS_RING_CLASS}`}
                     style={trackStyle}
                 ></div>
                 <div

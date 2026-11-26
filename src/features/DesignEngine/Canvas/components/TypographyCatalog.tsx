@@ -65,7 +65,7 @@ const TypographyPresetPreview = ({ preset, index, onApply, onPeek }: { preset: C
             data-option-tile=""
             title={shown.description}
             {...peek}
-            className="group flex flex-col text-left overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-theme-sidebar hover:border-theme-primary transition-colors duration-[var(--sarak-motion-dur-normal,0.3s)]"
+            className="group flex flex-col text-left overflow-hidden rounded-[var(--sarak-card-radius,10px)] border border-theme-border bg-[var(--theme-surface)] hover:border-theme-primary transition-colors duration-[var(--sarak-motion-dur-normal,0.3s)]"
         >
             <div data-option-sample="" className="flex w-full flex-col gap-1 bg-[var(--color-theme-bg,#06080d)] p-2 text-theme-text">
                 <div className="flex items-end gap-2">
@@ -77,7 +77,7 @@ const TypographyPresetPreview = ({ preset, index, onApply, onPeek }: { preset: C
                 <p className="break-words text-xs text-theme-text/60" style={{ fontFamily: bodyFont }}>{text('fontSampleNumber')}</p>
             </div>
             <div className="border-t border-theme-border px-2 py-1.5">
-                <h3 className="break-words text-xs font-semibold leading-tight text-theme-text">{shown.name}</h3>
+                <h3 className="break-words text-xs font-semibold leading-tight text-[var(--theme-title)]">{shown.name}</h3>
                 <p className="sr-only">{shown.description}</p>
             </div>
         </motion.button>

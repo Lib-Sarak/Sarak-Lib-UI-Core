@@ -26,7 +26,7 @@ describe('Anel de foco governado por token (F4)', () => {
     });
 
     it('a regra global de foco lê o token, com o default do schema como fallback', () => {
-        expect(elements).toMatch(/button:focus-visible\s*\{[^}]*outline:\s*var\(--sarak-focus-width,\s*2px\)/);
+        expect(elements).toMatch(/button,[^{]*\):focus-visible\s*\{[^}]*outline:\s*var\(--sarak-focus-width,\s*2px\)/);
         expect(focusVar?.defaultValue).toBe(2);
     });
 

@@ -7,6 +7,7 @@ import {
 import { MASTER_DESIGN_MAP } from '../../../core/Design/master-map';
 import { TokenCatalog } from '../../../core/Design/catalog';
 import { searchTokens, buildCatalogMap } from '../utils/token-search';
+import { isGeneralSchema } from '../utils/token-index';
 import { SarakInput } from '../../../components/atomic/Inputs';
 
 import { SarakDesignState } from '../../../core/Provider/types';
@@ -39,13 +40,14 @@ export const MasterControlPanel: React.FC<MasterControlPanelProps> = ({ draft, u
 
     // 1. Processamento de Dados (Planilha)
     const allTokens = useMemo(() => {
-        const tokens: (SarakDesignToken & { componentLabel: string, pilarId: string })[] = [];
+        const tokens: (SarakDesignToken & { componentLabel: string, pilarId: string, general: boolean })[] = [];
         MASTER_DESIGN_MAP.components.forEach(comp => {
             comp.tokens.forEach(token => {
                 tokens.push({
                     ...token,
                     componentLabel: comp.label,
-                    pilarId: comp.id
+                    pilarId: comp.id,
+                    general: isGeneralSchema(comp.id)
                 });
             });
         });
@@ -149,7 +151,8 @@ export const MasterControlPanel: React.FC<MasterControlPanelProps> = ({ draft, u
                                             {token.type === 'slider' && (
                                                 <div className="flex items-center gap-2 flex-1">
                                                     <input 
-                                                        type="range" 
+                                                        type="range"
+                                                        aria-label={token.label}
                                                         min={token.constraints?.min ?? 0}
                                                         max={token.constraints?.max ?? 100}
                                                         step={token.constraints?.step ?? 1}

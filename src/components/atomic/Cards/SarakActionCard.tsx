@@ -8,6 +8,7 @@ import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 import { useSpotlightPointer } from './hooks/useSpotlightPointer';
 import { usePauseBeamOffscreen } from './hooks/usePauseBeamOffscreen';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 
 import { SarakThemePayload } from '../../../core/Provider/types';
 
@@ -24,11 +25,12 @@ export interface SarakActionCardProps<TItem extends Record<string, unknown>> {
     onAction?: (item: TItem) => void;
     design?: SarakThemePayload;
     label?: string;
-    /** Texto do botão de ação principal (default: "Executar"). */
+    /** Texto do botão de ação principal (default: o texto do catálogo no idioma da lib, "Executar" em português). */
     actionLabel?: string;
 }
 
-export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, mapping, className = '', onAction, design: localDesign, label, actionLabel = 'Executar' }: SarakActionCardProps<TItem>) => {
+export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, mapping, className = '', onAction, design: localDesign, label, actionLabel }: SarakActionCardProps<TItem>) => {
+    const text = useLibraryText();
     const globalUI = useSarakUI();
     const design = localDesign || globalUI.design;
     const layout = useCardLayoutStyles(design);
@@ -132,11 +134,14 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                         className={`flex-1 text-3xs font-black uppercase tracking-widest sarak-card-action-btn${design.btnStyleType === 'borderline' ? '' : ' sarak-card-action-btn--filled hover:brightness-100'}`}
                         style={actionButtonStyle}
                     >
-                        {actionLabel}
+                        {actionLabel ?? text('actionCardRun')}
                     </SarakButton>
 
                     {/* Expander Trigger */}
                     <motion.button
+                        type="button"
+                        aria-label={text('actionCardToggleDetails')}
+                        aria-expanded={isExpanded}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setIsExpanded(!isExpanded)}
                         className="bg-[var(--color-theme-card,#101622)] border-[var(--border-color,rgba(255,255,255,0.09))] text-[var(--text-muted,rgba(242,246,251,0.55))] hover:text-[var(--sarak-primary-color,#19e3f0)] hover:border-[var(--theme-secondary-border)] rounded-[var(--sarak-card-radius,10px)] transition-all cursor-pointer flex items-center justify-center"

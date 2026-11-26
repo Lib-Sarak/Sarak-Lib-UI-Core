@@ -12,7 +12,7 @@ interface ThemeFineTuningProps extends ColumnTokenProps {
     initialShowAll?: boolean;
 }
 
-const TOGGLE_CLASS = 'flex w-full items-center justify-between gap-2 rounded-[var(--sarak-card-radius,10px)] px-2 py-2 text-left text-[length:var(--sarak-type-scale-caption,12px)] hover:bg-[var(--theme-primary)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-primary)]';
+const TOGGLE_CLASS = 'flex w-full items-center justify-between gap-2 rounded-[var(--sarak-card-radius,10px)] px-2 py-2 text-left text-[length:var(--sarak-type-scale-caption,12px)] hover:bg-[var(--theme-primary)]/10';
 
 /** O nível 3: recolhido, mostra primeiro os ajustes de `importance >= 80` e só depois, sob pedido, todos os outros. */
 export const ThemeFineTuning: React.FC<ThemeFineTuningProps> = ({ layers, initialOpen = false, initialShowAll = false, ...tokenProps }) => {
