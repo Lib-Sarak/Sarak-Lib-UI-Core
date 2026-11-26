@@ -24,7 +24,7 @@ A contagem não é fixada aqui: o catálogo é a fonte viva ([[00-regras-e-invar
 | Prop | Contrato |
 | --- | --- |
 | `children` | a tela do app (obrigatória) |
-| `brand?: { name?, logoUrl? }` | identidade exibida no cromo — **do consumidor, sempre** ([[08-identidade-do-host-e-zero-marca]]) |
+| `brand?: { name?, logoUrl? }` | identidade exibida no cromo — **do consumidor, sempre** ([[08-identidade-do-host-e-zero-marca]]). Opcional campo a campo: o campo omitido ou vazio cai na marca do contexto (`systemName`/`logoUrl`, com a marca gravada por cima do design), e sem nenhum dos dois o cromo não desenha marca |
 | `navItems?: SarakNavItem[]` | **navegação recomendada**, ícone first-class; tem **precedência** sobre `nav` |
 | `nav?: SarakShellNavItem[]` + `activeRoute?` | modelo declarativo legado (`route`/`activeRoute`), mantido por compatibilidade |
 | `onNavigate?: (route) => void` | **o host decide COMO navegar** — redirect de página inteira, router local, o que for |

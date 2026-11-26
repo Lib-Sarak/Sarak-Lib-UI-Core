@@ -551,6 +551,16 @@ pintar o primeiro quadro **e** ignora o id do cache (o par fica coerente: o id v
 cache continua vencendo, como antes. Para o primeiro quadro **antes do JavaScript**, o host escreve no HTML o CSS de
 `sarakCreateThemeBootCss(design)` (fundo de `html`/`body` e `color-scheme`, com a cor validada pela mesma régua do tema).
 
+**O `config` é o valor do host, salvo quando o host declara que ele é o design gravado.** Por padrão, o `config` vence a paleta e o tom
+e não é gravado como escolha. Com `options.persistence.configIsSavedDesign: true` (`persistenceTypes.ts`), o que vem no `config` conta
+como escolha do usuário:
+- sobrevive à troca de tema, inclusive `keepPalette` e `savedPalettes`;
+- é gravado em `onSave` com o resto das escolhas, sempre esparso.
+
+Com a opção ligada, a extração e o rascunho do painel usam a mesma referência de host, sem o `config`. Assim, a troca de tema não leva
+ao gravado nenhum valor do tema anterior. A opção é para o design que o usuário gravou ([[08-identidade-do-host-e-zero-marca]] §6, white
+label), e não para uma cor que o sistema impõe. Uso: `docs/persistencia-de-tema.md`, seção `persistence.configIsSavedDesign`.
+
 **A porta pode falhar.** `onSave` que rejeita a promessa mantém a alteração na tela, mostra o aviso localizado **só no Provider que
 falhou**, não registra o par como gravado e é tentado de novo na próxima mudança (não em laço).
 

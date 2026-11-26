@@ -214,6 +214,14 @@ npm version <major|minor|patch>
 | `version` | DEPOIS do bump, ANTES do commit | **`migration-anchor:check`, `minor-no-removal:check` e `token-release-notes:check` primeiro** (§5.2), depois `npm run guide && npm run build && npm run dev-kit`, e `git add` de `dist/` + `sarak-ui/` + `sarak-dev/` — os **três** artefatos gerados que carimbam a `version` — **mais** `src/buildInfo.ts` e `src/core/Provider/buildInfo.ts`, os arquivos gerados do selo de build ([[05-build-e-distribuicao]] §6): sem eles a tag sairia com `src/` diferente do `dist/` e a árvore suja |
 | `postversion` | depois do commit e da tag | `git push --follow-tags` |
 
+**O `preversion` é um portão de correção.** Dentro do `gates:full`, a suíte roda por `coverage:release`
+(`gates/scripts/release/run-release-tests.mjs` + `check-coverage-floor.mjs`), com prazo de 30 s por caso e por gancho, para que a carga
+da máquina não reprove uma release correta. O código de saída é o do vitest. Os casos lentos (os 20 mais lentos e a contagem dos que
+passam de 1 s) saem num relatório que não bloqueia, em `%TEMP%\sarak-release-tests\casos-lentos.json`. O job `gates` da CI roda o mesmo
+`gates:full` e tem o mesmo prazo. O uso diário (`npx vitest run`, `verify` e `coverage:check`) mantém o prazo de 5 s do
+`vitest.config.ts`, que é onde a lentidão se corrige. O caso que declara prazo próprio fica com o dele, e por isso a release continua
+rodando com a máquina ociosa ([[01-gates-e-baseline]]).
+
 Formato da tag: **`vX.Y.Z`**, anotada, criada pelo próprio `npm version`.
 
 > **Por que os dois gates novos abrem o gancho `version`, e não o `preversion`:** no `preversion` o número

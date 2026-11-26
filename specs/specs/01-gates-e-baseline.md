@@ -234,12 +234,13 @@ npx vitest run
 
 > **Regra dura: "suítes verdes" exige a suíte INTEIRA.** Rodar pasta a dedo esconde snapshot de terceiro que quebrou. Esta regra não é preferência de estilo; ela já custou uma spec aprovada com snapshot vermelho fora da pasta olhada.
 
-> **Regra dura: teste que estoura o tempo se conserta no próprio teste.** O tempo padrão do vitest não sobe para a suíte. O `preversion` roda a suíte inteira com cobertura, e um teste que passa de 5 s sob carga derruba a release. O conserto ataca a causa: um laço grande vira um caso por item (`it.each`), a montagem cara acontece uma vez, e o teste confere o dado em vez de desenhar o que não precisa. Se um teste precisar de prazo próprio, como a espera de um módulo carregado sob demanda, a constante fica no teste, com o motivo ao lado (`PresetSamples.test.tsx`).
+> **Regra dura: teste que estoura o tempo se conserta no próprio teste.** O tempo padrão do vitest (5 s) não sobe no uso diário. No caminho da release, o `preversion` roda a suíte por `coverage:release`, com prazo de 30 s por caso ([[03-versionamento-e-release]]), e um teste lento e correto não derruba a release. O conserto ataca a causa: um laço grande vira um caso por item (`it.each`), a montagem cara acontece uma vez, e o teste confere o dado em vez de desenhar o que não precisa. Se um teste precisar de prazo próprio, como a espera de um módulo carregado sob demanda, a constante fica no teste, com o motivo ao lado (`PresetSamples.test.tsx`).
 
 > **A carga da máquina pesa mais que o custo do teste.** Medido em 2026-11-23: casos que levaram de 1,1 s a 1,3 s numa rodada da suíte
 > inteira passaram de 5 s no `preversion`, e na rodada seguinte caiu um caso de uma montagem só. A regra dura acima vale para o teste que
-> tem custo próprio a repartir, e não fecha a queda por carga. Por isso o `npm version` roda com a máquina ociosa: sem outra suíte,
-> navegador de teste ou build ao mesmo tempo. A alavanca estrutural ainda está em aberto ([[00-backlog]] #1).
+> tem custo próprio a repartir, e não fecha a queda por carga. A alavanca estrutural é o prazo de 30 s do `coverage:release`. Ele não alcança o
+> caso que declara prazo próprio, e por isso o `npm version` continua rodando com a máquina ociosa: sem outra suíte, navegador de teste ou
+> build ao mesmo tempo.
 
 Duas coisas do `vitest.config.ts` que importam para quem lê a saída:
 

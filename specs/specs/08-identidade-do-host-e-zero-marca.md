@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core / Identidade / Branding"
 status: "🟢 Vigente"
 prioridade: "Alta"
 tags: ["spec", "zero-marca", "identidade", "branding", "soberania-host", "gate"]
-relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[006-zero-marca-soberania-host]]", "[[05-cromo-e-slots]]", "[[06-painel-de-customizacao-e-preview]]"]
+relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[006-zero-marca-soberania-host]]", "[[05-cromo-e-slots]]", "[[06-painel-de-customizacao-e-preview]]", "[[09-temas-e-presets]]"]
 ---
 
 # 1. A regra
@@ -37,6 +37,14 @@ const resolvedTitle = branding?.tabName || systemName;
 
 **Precedência: do mais específico para o mais genérico** (`useSarakUIEffects.ts:28-31`). `tabName` é a porta
 explícita "nome da aba" e vence; `systemName` é o nome do sistema, mais amplo.
+
+**O rótulo de marca no cromo** é o do `SarakAppChrome` e do `SarakAppChromeMobile`, resolvido campo a campo por
+`useEffectiveBrand` (`src/components/Layout/chrome/useEffectiveBrand.ts`):
+- o `brand.name` e o `brand.logoUrl` que o importador passa vencem;
+- o campo ausente ou vazio cai no `systemName` e no `logoUrl` do contexto;
+- o contexto já traz a marca gravada por cima do design: `branding.companyName || design.systemName` e
+  `branding.logoBase64 || design.logoUrl` (`mergeUIContextValue.ts:43-44`);
+- sem nenhum dos dois, o cromo não desenha texto de marca.
 
 **Sem nenhuma das duas: `resolvedTitle` é `undefined` e a lib não escreve — ponto.** O guard é literal
 (`:56-58`): `if (resolvedTitle) { document.title = resolvedTitle; }`.
@@ -125,6 +133,15 @@ const DEFAULT_BRANDING: SarakBrandingState = {
 `useBrandingManager` (`:31-49`) semeia o estado com `{ ...DEFAULT_BRANDING, ...options.branding.initial }` e
 expõe `updateBranding`, que chama `options.branding.onChange` — a porta "traga sua persistência", para o
 backend **do consumidor**. A lib **não faz fetch** ([[003-remocao-backend-proprio]]).
+
+**A marca acompanha a organização.** Quando `options.persistence.tenantId` muda, o estado é semeado de novo de
+`{ ...DEFAULT_BRANDING, ...options.branding.initial }`, sem chamar `onChange` (`useBrandingManager.ts:37-43`).
+Com o mesmo `tenantId`, uma mudança de `initial` não reescreve o que o usuário editou. O fluxo completo do
+importador white label (marca por organização, envio do logo, gravação) está em `docs/identidade-do-host.md`
+§5 "White label".
+
+**O design gravado no `config`.** O importador white label que entrega o design gravado do usuário pela prop
+`config` liga `options.persistence.configIsSavedDesign` ([[09-temas-e-presets]] §4.4).
 
 # 7. O gate `zero-brand:check`
 
