@@ -25,7 +25,7 @@ de correção.
 | Id | Achado |
 |---|---|
 | B72 | **Tema de marca sem como ser só de leitura.** `SarakThemeEntry` (`src/core/Provider/themeTypes.ts:4-10`) traz só `id`, `name`, `design` e `contraparte`, e a imutabilidade vale só para o catálogo da lib. O ERP põe os temas dele (`erp-corporativo`, `erp-noturno`) em `customThemes` e recusa o id no `onSave`. Pelo contrato atual, o painel oferece "Salvar" e "Apagar" sobre eles e o usuário recebe erro, em vez de "Duplicar" |
-| B63 | **O erro do cromo não chega ao importador.** O `SarakAppChrome` contém o erro de render do conteúdo (`src/components/Layout/chrome/ChromeContentRegion.tsx:33,47`, `SarakErrorBoundary` com `resetKeys`) e não expõe `onError`. O mesmo vale para `SarakSection` (`src/components/atomic/Templates/SarakSection.tsx`). Hoje, quem registrava erro com um boundary em volta do cromo precisa pôr outro dentro do conteúdo (`docs/migracoes.md`, perto da linha 794) |
+| B63 | **O erro do cromo não chega ao importador.** O `SarakAppChrome` contém o erro de render do conteúdo (o `SarakErrorBoundary` com `resetKeys` de `src/components/Layout/chrome/useStableContent.tsx`, e o do `secondaryContent` em `ChromeContentRegion.tsx`) e não expõe `onError`. O mesmo vale para `SarakSection` (`src/components/atomic/Templates/SarakSection.tsx`). Hoje, quem registrava erro com um boundary em volta do cromo precisa pôr outro dentro do conteúdo (`docs/migracoes.md`, perto da linha 794) |
 
 # 3. Escopo
 

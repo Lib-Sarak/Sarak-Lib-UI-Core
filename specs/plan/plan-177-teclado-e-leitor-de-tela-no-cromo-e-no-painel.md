@@ -50,6 +50,7 @@ Defeitos medidos pela validação da 9.0.0-rc.1 (plan-173, lote 4, e plan-172), 
 | N11 | `nav.scrollWidth` 977 contra `clientWidth` 920, a 1440 px com os 8 itens visíveis. O invólucro oculto do "Mais" soma 57 px |
 | B82 | Na decisão Layout do painel, os rótulos dos cartões de opção ("LIMPA", "CONTORNADA") saem brancos sobre o cartão claro e não se leem. Visto na prévia do lote 2 da `plan-158`, antes e depois daquele lote. Antes estava no backlog |
 | D6 | O texto "Passe o mouse numa opção…" (`previewHint`, `PreviewToolbar.tsx`) fica com 4 a 284 px de largura, conforme o tema. Fica abaixo de 60 px em 12 dos 25 temas e também no padrão (10 px), uma palavra por linha |
+| FC | **Foco perdido na troca de modo do cromo.** O conteúdo do `SarakAppChrome` passa a viver num nó estável que muda de lugar quando o cromo troca de modo (`src/components/Layout/chrome/useStableContent.tsx`). Ao sair do lugar antigo, o elemento com foco dentro dele perde o foco para o `body`: escolher pelo teclado uma personalidade de topo no painel joga o foco para o início da página. Teste: com o foco num controle do conteúdo, a troca de `navigationStyle` mantém `document.activeElement` nele. O conserto é no `ContentAnchor` do mesmo arquivo |
 
 # 3. Escopo
 
@@ -68,6 +69,7 @@ Defeitos medidos pela validação da 9.0.0-rc.1 (plan-173, lote 4, e plan-172), 
 - `src/components/atomic/Navigation/SarakShellNav.tsx`, `internal/ShellNavGroup.tsx`, `internal/ShellNavMore.tsx` e
   `internal/useHorizontalOverflow.ts`: D12, D14 e N11.
 - `src/features/DesignEngine/Canvas/components/PreviewToolbar.tsx`: D6.
+- `src/components/Layout/chrome/useStableContent.tsx`: FC (o foco volta ao elemento depois de o nó mudar de lugar).
 - Os cartões de opção do painel (`src/features/DesignEngine/Canvas/components/`): a cor do rótulo (B82).
 - `src/core/i18n/`: os textos novos, nos seis idiomas.
 - Testes de unidade dos componentes tocados e uma spec de navegador nova, `browser-tests/teclado-no-cromo-e-no-painel.spec.ts`.
