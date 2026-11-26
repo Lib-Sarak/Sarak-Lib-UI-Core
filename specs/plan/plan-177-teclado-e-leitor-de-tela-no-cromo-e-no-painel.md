@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Teclado e leitor de tela no cromo e no painel"
 objetivo: "Fazer todo controle do cromo e do painel ter foco visível em ao menos 3:1 e nome acessível, tirar do Tab o que não age, dar à gaveta móvel semântica e foco de diálogo, fazer o idioma fechar com Esc e a barra do topo mostrar os itens que cabem sem transbordar"
 dominio: "Cromo / Painel de customização / Acessibilidade"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "rc2", "acessibilidade", "teclado", "foco", "cromo", "painel"]
 relacionados: ["[[10-seguranca-e-acessibilidade]]", "[[05-cromo-e-slots]]", "[[06-painel-de-customizacao-e-preview]]", "[[07-responsividade-e-multidispositivo]]"]
@@ -192,6 +192,153 @@ O revisor **não repete** os comandos do executor. Ele confere:
 
 # 9. Resumo da execução
 
+## Resumo da execução — 2026-11-26
+
+**Resultado:** Concluído com pendências
+
+**Estado do worktree ao iniciar**
+Só `dist/` (rebuild anterior) e, fora dele: `M specs/00-indice.md`, `D plan-176`, `M plan-177`, `D plan-178`, `M plan-180`, `M plan-183`, `M specs/specs/09-temas-e-presets.md`, `M specs/specs/10-seguranca-e-acessibilidade.md`, `M src/buildInfo.ts`, `M src/core/Provider/buildInfo.ts`. A plan-180 corre em paralelo e mexeu em `src/core/i18n/`, `docs/`, `sarak-ui/`, `TemplatesTab`, `TokenControl`, `ThemeAdvancedMenu`, `previewScreens` etc. durante a execução; esses arquivos não são meus.
+
+**Medição antes da correção (reprovações reproduzidas)**
+- Painel, decisão Tema: dezenas de paradas em links/campos/botões das miniaturas (D18) e anel de 1,9–2,9:1 em cartões e itens (D17).
+- Gaveta móvel: o foco não entrava ao abrir (o 1º focável do DOM era a busca, oculta por breakpoint) (D21).
+
+**O que foi feito**
+- `src/styles/_elements.css`: anel de foco para todo focável (a, button, input, select, textarea, summary, tabindex, roles), dois tons (contorno na cor do texto do tema + halo na cor do fundo), largura pelo token `focusRingWidth`.
+- Removidos `outline-none` sem substituto: `SarakButton`, `SarakIconButton`, `SarakInput/Select/Textarea`, `HelpTooltip`, `LayoutControls`, `ColorControl`, `ThemeSidebarHeader`, `TextMock`, e `focus-visible:outline-none/ring-2` nos itens do painel (CollapsibleSection, ThemeAdvancedMenu, ThemeDecisionHeader/List, ThemeFineTuning, ThemeMoreActionsMenu, ThemeSearchResults, CuratedGrid).
+- Controles com `<input sr-only>`: `peerFocusRing.ts` novo; `SarakSwitch/Checkbox/Radio` desenham o anel na peça visual. Botão do seletor de cor ganha anel no contêiner (`has-[:focus-visible]`).
+- `OptionTile`: `inert` na amostra, anel do botão por dentro (o cartão corta); B82: fundo/rótulo passam a `--theme-surface`/`--theme-title` (também em `TypographyCatalog`).
+- Nomes: `HelpTooltip` ("Ajuda: {label}", abre também no foco, Esc fecha), `SliderControl`, opacidade do `AtmosphereCatalog`, `MasterControlPanel`, 3 switches do `SarakSearchCard`, botão expansor do `SarakActionCard`, select/input do `TextMock`. Textos novos em `src/core/i18n/catalogEntries.keyboard.ts` (seis idiomas, acréscimo isolado + 2 linhas em `catalog.ts`).
+- `SarakShellLanguageSelector`: Esc fecha e devolve o foco; botão do topo com `aria-haspopup`/`aria-expanded` (D20) e anel próprio.
+- Gaveta (D21): `role="dialog"`, `aria-modal`, `aria-label`; `useFocusTrap` agora ignora focáveis ocultos (causa do foco que não entrava e do ciclo quebrado); `useInertBackground.ts` novo (inert no fundo, desfeito antes de devolver o foco).
+- D12: `aria-current="true"` no grupo/"Mais" com filho ativo (`ShellNavGroup`, `SarakMenuItem` respeita `aria-current` passado).
+- N11/D14: botão "Mais" invisível fica no começo da barra; linha dos itens com `overflow-x-clip` (`data-sarak-nav-row`) para o `scrollWidth` não somar itens escondidos.
+- D6: `PREVIEW_TOOLBAR_HINT` com `min-w/basis 10rem` (quebra para a linha de baixo).
+- FC: `useStableContent` guarda o elemento focado e o refoca depois de encaixar o nó.
+- `LiveDraftPreviewFrame`: botão "Inspecionar" visível ao focar (`focus-visible:opacity-100`; 1 classe).
+- Testes: spec nova `browser-tests/teclado-no-cromo-e-no-painel.spec.ts` + `fixtures/teclado-entry.tsx`; `barra-de-topo-estreita.spec.ts` estendido (25 temas × 1440/820, `scrollWidth`); unidade: drawer, useFocusTrap, useInertBackground, OptionTile, idioma, aria-current, HelpTooltip; snapshots atualizados.
+
+**Arquivos alterados** — ver `git diff`; os da §3.1 mais os extras listados em "Decisões".
+
+**Verificações executadas**
+- `npx playwright test … teclado-no-cromo-e-no-painel barra-de-topo-estreita` → 80 passed (16,3 min), sem lista de exceções; B82 e D6 nos 25 temas.
+- vitest por pasta (Layout, Inputs, Cards, Modals, Navigation, i18n, styles, DesignEngine/Canvas/Panels/controls) → verde após atualizar snapshots; exceto `designGravadoEscolhas.persistenceIntegration` 1.3 e 1.5, que **falham também numa cópia do `HEAD`** (controle feito; `git status` idêntico antes/depois).
+- `npm run verify -- --tier=quick`: tsc OK, barrel, guide, variable-contract OK. Falham: `catalog:check`, `plan-index:check` e `audit:baseline` (hardcoded 0→25), todos da plan-180 (JSDoc do catálogo, status 🟠 da 180, cores hex em `themeDescriptions.ts`).
+- `npm run build` completo **não rodou** (para em `catalog:check` por causa da 180); rodei `build:js` e `build:css` e rodei as specs sobre eles. `dist/` está regenerado parcialmente (sem `fonts:embed`/inject).
+
+**Critérios de aceite**
+- [x] spec de teclado sem exceções; [x] testes de unidade; [x] barra-de-topo 25 temas; [x] B82; [x] seis idiomas
+- [ ] "comandos da verificação passam": `build` e `quick` bloqueados por itens da plan-180 (acima)
+- [ ] `git diff --stat` só §3.1: ver extras.
+
+**Decisões e suposições**
+- Arquivos fora da §3.1 que a regra "sem exceções" forçou: `SarakSwitch/Checkbox/Radio/Input/Select/Textarea`, `SarakButton/IconButton`, `SarakSearchCard`, `SarakActionCard`, `SarakMenuItem`, `TextMock`, `MasterControlPanel`, `TypographyCatalog`, `LiveDraftPreviewFrame`, `AtmosphereCatalog`, `ColorControl`, `BasicControls`, `LayoutControls`, `ThemeSidebarHeader` e demais itens do painel, `useFocusTrap`, `focusRing.test.ts` (regex generalizada). Revisor decide.
+- Anel de dois tons via `box-shadow`; componentes com `boxShadow` inline (SarakInput) mantêm só o contorno.
+- `-u` em snapshots de PresetsCatalog/PreviewCanvas pode ter absorvido mudanças da plan-180 no mesmo arquivo.
+
+**Achados fora do escopo (não corrigidos)**
+- `dot-matrix-elegant` a 820 px ainda mostra zero itens: o slot de busca encolhido a 0 px ainda soma 2 vãos de 24 px; pela régua da plan (nada cabe ao lado) passa, mas é a causa do "espaço sobrando".
+- `designGravadoEscolhas.persistenceIntegration` 1.3/1.5 falham no `HEAD`.
+- `SarakSearchCard` tem rótulos em português fixos (i18n).
+
+**Pendências / riscos**
+- Rodar `npm run build` completo depois que a 180 regenerar catálogo/guia.
+- Mutações do §7 não feitas por mim (revisor).
+
 ---
 
 # 10. Veredito
+
+## Veredito — 2026-11-26 — 🔴 Devolvida para completar
+
+**O que foi verificado:**
+- `tsc --noEmit`: 0 erros.
+- **Mutação, em cópia fora do repositório:**
+  - sem o `inert` nas miniaturas do `OptionTile`, a decisão Tema reprova. A falha é no anel, com 222 paradas sem foco visível
+    dentro das miniaturas, antes de o teste chegar ao critério do ciclo;
+  - com `focus:outline-none` de volta no botão do `HelpTooltip`, só a decisão Componentes reprova (1,20:1 e 1,02:1). É a única
+    em que o percurso alcança um botão de ajuda;
+  - sem o `handleTrap` na gaveta, a spec de navegador reprova ("o Tab fica dentro da gaveta"), mas os 24 testes de unidade da
+    gaveta (`SarakAppChromeMobile.test.tsx`, `ChromeMobileDrawer.test.tsx`) passam.
+- **Escopo:** os arquivos fora da §3.1 listados em "Decisões" são consequência da regra "sem exceções" e ficam aceitos.
+- **Textos novos:** os três de `catalogEntries.keyboard.ts` estão nos seis idiomas.
+- **Consumidores:** `npx vitest run src/components src/features/DesignEngine src/core/i18n src/styles` deu 3952 passando e 7
+  falhando:
+  - 2 de `designGravadoEscolhas.persistenceIntegration.test.tsx`, que são da `plan-184`;
+  - 1 estouro de prazo no teste de idioma, que é da `plan-180`;
+  - 4 desta plan, nos achados 1 e 2.
+
+**Achados:**
+
+1. **O foco inicial do `SarakPopover` regrediu.** `src/components/atomic/UX/__tests__/SarakPopover.test.tsx` ("foca o primeiro
+   controle do painel ao abrir…") reprova: o foco cai no próprio diálogo.
+   - O popover abre com `visibility: hidden` até ter posição (`SarakPopover.tsx:100`). O `isRendered` novo do `useFocusTrap` pula
+     focáveis invisíveis e não acha o primeiro controle.
+   - O `useFocusTrap` também serve a `SarakDrawer`, `SarakSpotlight`, `ShellPreferencesMenu`, `SarakTour`, `SarakLightbox`, o
+     visualizador de PDF e o seletor de data.
+   - **Correção:** o foco inicial chega ao primeiro controle também quando a camada nasce invisível e aparece depois de posicionada.
+     A gaveta continua pulando o que o breakpoint esconde.
+2. **Snapshots de consumidores fora do filtro:**
+   - `SarakDataTable.semPropsNovas.test.tsx` (2) e `SarakCoreCard.test.tsx` (1) reprovam;
+   - a diferença é só o `focus:outline-none` que saiu do botão e o `peer` com o anel do checkbox;
+   - **Correção:** `-u` só nesses dois arquivos, depois de conferir que a diferença é só essa.
+3. **A spec de teclado não percorre o "Ajuste fino".**
+   - Em Cores, Forma e Componentes, o percurso para em "Ajuste fino · N ajustes" sem abri-lo. Por isso, a maior parte dos 70
+     botões "?" e dos deslizantes sem nome da D19 fica fora da medida.
+   - **Correção:** em cada decisão que tem "Ajuste fino", a spec abre a seção e percorre também o que ela mostra. Corrija o que
+     reprovar, sem lista de exceções.
+4. **A gaveta não tem o teste de unidade que o §6 pede.**
+   - **Correção:** um caso em `SarakAppChromeMobile.test.tsx`: com a gaveta aberta, o `Tab` no último item leva ao primeiro e o
+     `Shift+Tab` no primeiro leva ao último. O caso tem de falhar sem o `handleTrap`.
+5. **Falta a nota de migração.** O importador vê o foco diferente:
+   - o anel vale para todo focável e não só para `button`;
+   - a cor muda da primária ou da textura para a cor do texto do tema, com um halo na cor do fundo;
+   - `SarakButton`, `SarakIconButton`, `SarakInput`, `SarakSelect` e `SarakTextarea` perdem o `outline-none`;
+   - `SarakSwitch`, `SarakCheckbox` e `SarakRadio` desenham o anel na peça visual;
+   - o `nav` horizontal do `SarakShellNav` ganha a linha `data-sarak-nav-row` entre ele e os itens.
+   - **Correção:** uma entrada em `docs/migracoes.md` e `npm run guide`.
+
+**Fica no backlog:** os rótulos fixos em português do `SarakSearchCard` e o `dot-matrix-elegant` a 820 px, que o próprio resumo
+aponta.
+
+**Verificação desta rodada:**
+- `npx vitest run src/components/atomic src/components/Layout` (o `useFocusTrap` e quem o usa);
+- `npx playwright test --config=browser-tests/playwright.config.ts teclado-no-cromo-e-no-painel -g "painel, decisão"`, sobre o
+  `build:js` e o `build:css`;
+- `npm run guide:check`.
+
+**Commit:** junto com a `plan-180`, depois das duas aprovadas.
+
+---
+
+## Resumo da execução — correções do Veredito (2026-11-26)
+
+**Resultado:** Concluído
+
+- **Achado 1:** `useFocusTrap` — o foco inicial escolhe o primeiro focável fora de `display: none` (mesmo com `visibility: hidden`, como o popover nasce) e, se o navegador recusar, tenta de novo no próximo quadro (cancelado ao fechar). O ciclo do `Tab` continua pulando o oculto (gaveta/breakpoint). `SarakPopover.test.tsx` e `Modals` verdes.
+- **Achado 2:** `-u` só em `SarakDataTable.semPropsNovas` e `SarakCoreCard`; diferença conferida: sai `focus:outline-none`, entram `peer sr-only` e o anel do checkbox.
+- **Achado 3:** `openFineTuning` na spec abre "Ajuste fino" e "mostrar todos" antes do percurso (`MAX_STOPS` 700→1500). As 8 decisões passam, sem lista de exceções (nada precisou ser corrigido além do já feito).
+- **Achado 4:** caso em `SarakAppChromeMobile.test.tsx` (Tab no último → primeiro; Shift+Tab no primeiro → último). Mutação sem o `handleTrap` (`onKeyDown={undefined}`): o caso reprova; arquivo restaurado.
+- **Achado 5:** entrada em `docs/migracoes.md`; `npm run guide` regerado, `guide:check` em dia.
+
+**Verificações:** `vitest run src/components/atomic src/components/Layout` → 367 arquivos / 2437 testes passando; `playwright … -g "painel, decisão"` sobre `build:js`+`build:css` → 8 passed (5,6 min); `guide:check` OK.
+**Pendência:** `npm run build` completo segue dependendo da plan-180 (`catalog:check`).
+
+## Veredito (correção 1) — 2026-11-26 — 🟢 Aprovada
+
+**O que foi verificado:**
+- **Os cinco achados foram fechados:**
+  - o foco inicial do `useFocusTrap` considera também a camada que nasce invisível, e o ciclo continua pulando o oculto;
+  - o `-u` saiu só nos dois arquivos pedidos;
+  - a spec abre o "Ajuste fino";
+  - a gaveta ganhou o caso de `Tab`/`Shift+Tab`;
+  - a nota de migração está em `docs/migracoes.md`.
+- **Mutação, em cópia fora do repositório:** com `focus:outline-none` de volta no botão do `HelpTooltip` e o CSS refeito, as decisões
+  Cores e Forma reprovam. O percurso agora passa por 36 botões de ajuda e 33 deslizantes em Cores, e por 29 e 24 em Forma. Antes da
+  correção, o percurso não alcançava nenhum dos dois.
+- **Consumidores:** `npx vitest run src/components src/features/DesignEngine src/core/i18n src/styles` deu 3964 passando e 2
+  falhando. As 2 falhas são de `designGravadoEscolhas.persistenceIntegration.test.tsx` 1.3 e 1.5, que são da `plan-184`.
+- **Tipos e auditoria:** `tsc --noEmit` com 0 erros e `check-audit-baseline.mjs` sem regressão.
+- **Checks do Anel 1:** `catalog:check`, `guide:check`, `dev-kit:check`, `variable-contract:check` e `barrel:check` passam no worktree.
+
+**Commit:** junto com a `plan-180`, num só.

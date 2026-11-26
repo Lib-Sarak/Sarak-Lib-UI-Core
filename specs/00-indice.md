@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "184"
+proximo_numero_plan: "185"
 ---
 
 # 0. O que é este arquivo
@@ -42,11 +42,12 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-177-teclado-e-leitor-de-tela-no-cromo-e-no-painel](plan/plan-177-teclado-e-leitor-de-tela-no-cromo-e-no-painel.md) | Fazer todo controle do cromo e do painel ter foco visível em ao menos 3:1 e nome acessível, tirar do Tab o que não age, dar à gaveta móvel semântica e foco de diálogo, fazer o idioma fechar com Esc e a barra do topo mostrar os itens que cabem sem transbordar | — | 🟡 Em execução | 10-seguranca-e-acessibilidade |
-| 2 | [plan-180-textos-traduzidos-e-buscas-que-acham](plan/plan-180-textos-traduzidos-e-buscas-que-acham.md) | Fazer todo texto visível da lib sair do catálogo nos seis idiomas com singular e plural, fazer a busca da barra achar sub-abas e a busca do painel abrir o token geral para frases vagas | — | 🟡 Em execução | — |
+| 1 | [plan-177-teclado-e-leitor-de-tela-no-cromo-e-no-painel](plan/plan-177-teclado-e-leitor-de-tela-no-cromo-e-no-painel.md) | Fazer todo controle do cromo e do painel ter foco visível em ao menos 3:1 e nome acessível, tirar do Tab o que não age, dar à gaveta móvel semântica e foco de diálogo, fazer o idioma fechar com Esc e a barra do topo mostrar os itens que cabem sem transbordar | — | 🟢 Aprovada | 10-seguranca-e-acessibilidade |
+| 2 | [plan-180-textos-traduzidos-e-buscas-que-acham](plan/plan-180-textos-traduzidos-e-buscas-que-acham.md) | Fazer todo texto visível da lib sair do catálogo nos seis idiomas com singular e plural, fazer a busca da barra achar sub-abas e a busca do painel abrir o token geral para frases vagas | — | 🟢 Aprovada | — |
 | 3 | [plan-181-temas-de-marca-so-leitura-e-erro-do-cromo-ao-importador](plan/plan-181-temas-de-marca-so-leitura-e-erro-do-cromo-ao-importador.md) | Permitir ao importador marcar um tema dele como só leitura, para o painel oferecer Duplicar em vez de Salvar e Apagar, e entregar ao importador os erros que o cromo contém por uma prop onError | — | 🔴 A executar | 09-temas-e-presets; 05-cromo-e-slots |
 | 4 | [plan-182-textos-opcionais-fora-do-boot](plan/plan-182-textos-opcionais-fora-do-boot.md) | Fazer os catálogos de texto das peças opcionais carregarem junto com a peça, devolvendo ao boot do consumidor os cerca de 6,6 KB gzip que ele ganhou na rc.5, e fazer o boot:measure acusar crescimento absoluto | plan-180-textos-traduzidos-e-buscas-que-acham | 🔴 A executar | 01-gates-e-baseline |
 | 5 | [plan-183-higiene-interna-de-codigo-e-de-testes](plan/plan-183-higiene-interna-de-codigo-e-de-testes.md) | Fechar onze pendências internas que não mudam a tela: seletor por nome de classe, selo de dispositivo, disputa de textura, leituras e classes mortas, recorte de teste incompleto, nomes de teste com rastro de plan, teste que não protege o que diz, função com dez parâmetros e o config inteiro como host com a opção ligada | — | 🔴 A executar | — |
+| 6 | [plan-184-troca-de-modo-respeita-o-tom-escolhido-da-barra](plan/plan-184-troca-de-modo-respeita-o-tom-escolhido-da-barra.md) | Fazer a troca entre claro e escuro calcular a paleta com o tom de barra escolhido pelo usuário, sem perder o contraste do cromo no tom padrão que a 9.0.0-rc.2 acabou de garantir | — | 🟡 Em execução | — |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🚦 **Campanha da `8.0.0-rc.4` (2026-10-27).** Contrato aceito: [`anexos/rc4-contrato.md`](plan/anexos/rc4-contrato.md). Ordem: a `plan-128` vai **sozinha** (cria o hook de idioma e os arquivos de catálogo das outras); depois `plan-129` ‖ `plan-130` ‖ `plan-131` ‖ `plan-132` ‖ `plan-119` lote 8 ‖ `plan-133`, em paralelo (pastas disjuntas; arquivos compartilhados só por acréscimo); depois da 133, `plan-134` ‖ `plan-135`. A 134 e a 135 geram prévias em `C:\tmp\sarak-rc4-previa\` que o dono aprova durante a revisão. Verificação pelo protocolo do contrato §9: uma vez por plan e a bateria completa uma vez, no fechamento, depois do lote 2 do ERP. A versão (`npm version`) é do dono.
