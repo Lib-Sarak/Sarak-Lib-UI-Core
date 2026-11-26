@@ -30,7 +30,8 @@ export const ChromeContentRegion: React.FC<ChromeContentRegionProps> = ({
     const secondaryChildren = React.Children.toArray(secondaryContent);
     const shouldRenderSplitView = isSplitViewEnabled && hasRenderableChildren(secondaryContent);
     const regionClassName = shouldRenderSplitView ? `${className} @container` : className;
-    const primaryContent = <SarakErrorBoundary resetKeys={[activeRoute]}>{children}</SarakErrorBoundary>;
+    // O limite de erro do conteúdo principal mora em `useStableContent`, junto do conteúdo; aqui só o do secundário.
+    const primaryContent = children;
 
     return (
         <main data-sarak-content className={regionClassName} style={style}>

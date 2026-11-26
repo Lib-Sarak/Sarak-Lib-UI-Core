@@ -5,6 +5,22 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 9.0.0 — o `SarakAppChrome` mantém o conteúdo montado quando troca de barra (lateral, topo, celular)
+
+Antes, trocar a barra do cromo (por exemplo, escolher uma personalidade com a navegação no topo no painel de design) desmontava e montava de novo tudo o que o cromo envolve, e o conteúdo com estado próprio voltava ao começo: o painel de design perdia o rascunho, voltava à lista de decisões e deixava o "Aplicar" desabilitado. Agora o conteúdo é renderizado por um portal num nó que vive tanto quanto o cromo, e cada barra só encaixa esse nó no lugar certo.
+
+**O que muda para o importador:** o estado do conteúdo sobrevive à troca de barra e à mudança de dispositivo; nenhuma prop muda. A região de conteúdo (`[data-sarak-content]`) passa a ter dois `div` com `display: contents` ao redor do conteúdo (`[data-sarak-content-anchor]` e `[data-sarak-content-host]`), que não criam caixa de layout; seletor CSS ou teste que dependia do conteúdo ser filho direto da região deve descer um nível. O limite de erro do conteúdo continua dentro do cromo. **Renderização no servidor:** o servidor e a primeira renderização de uma hidratação põem o conteúdo direto na região (o HTML bate com o do cliente, sem erro de hidratação); logo depois da hidratação o conteúdo é montado de novo uma vez, dentro do nó estável, antes de qualquer ação do usuário. Num `createRoot` comum o nó estável vale desde o primeiro quadro.
+
+---
+
+## 9.0.0 — no painel, a cor de fundo da página e a base do vidro e dos painéis têm cada uma o seu controle
+
+Em Cores → Ajustes principais, o controle que pinta o fundo da página passa a se chamar **Cor de Fundo da Página** (`colorBgBody`) e aparece junto dos principais; o que se chamava "Cor de Fundo Base" (`bgBaseColor`) passa a se chamar **Cor de Base do Vidro e dos Painéis**, porque pinta as superfícies de vidro, a gaveta e os painéis sobrepostos, e nunca o corpo da página (cada variável CSS tem um só dono: `--bg-body` é de `colorBgBody`, `--sarak-bg-base` é de `bgBaseColor`).
+
+**O que muda para o importador:** nenhum token, valor ou variável muda; só os nomes visíveis (nos seis idiomas) e o lugar de `colorBgBody` no painel. Quem editava "Cor de Fundo Base" esperando pintar a página passa a editar a Cor de Fundo da Página.
+
+---
+
 ## 9.0.0 — `options.persistence.configIsSavedDesign`: o `config` como design gravado do usuário (aditivo)
 
 Nova opção, padrão `false`. Com `configIsSavedDesign: true`, o `config` do `SarakUIProvider` deixa de ser o valor do host e passa a ser o
@@ -102,6 +118,14 @@ Nas barras com tom `primary`, `secondary` ou `inverse`, os textos e controles do
 |---|---|---|
 | Pílula ativa no degradê contrastante | véu podia clarear a parada clara e quase se confundir com a barra | véu de 20% escurece a parada clara; texto passa em 4,5:1 e contorno em 3:1 |
 | Idioma e sair | cor podia perder contraste na barra | cor calculada sobre a barra e a parada clara |
+
+---
+
+## 9.0.0 — o cromo dos temas embarcados passa a ter contraste legível no tom padrão, nos dois modos
+
+Nos 25 temas embarcados, o texto do cromo (marca, item, item ativo, nome, cargo e idioma) fica em ao menos 4,5:1 e os ícones em ao menos 3:1, na lateral e no topo. Duas causas: o tema aberto no modo oposto ao nativo recebia a paleta calculada sobre o design já composto e mantinha cores do outro modo; e algumas cores de barra, texto e destaque dos temas ficavam abaixo da régua.
+
+**O que muda para o importador:** é uma mudança visual. Cores de cromo de 19 temas mudam só em luminosidade, sem trocar o matiz; o fundo da barra de topo escurece no escuro de `neumorphic-mobile` e `blueprint-protocol`. O cargo do usuário na barra de topo passa a usar a cor do subtítulo, e não a herdada da barra. `dot-matrix-elegant` passa a ter a faixa da marca da lateral em `#1b1b1b`, e `dot-matrix-elegant`, `nature-breeze` e `cyber-retro-wave-classic` passam a ter o véu do item ativo da lateral a 12%. Nenhum import, prop ou token público muda. Quem clona um desses temas e quer a cor de antes declara os tokens no próprio tema, nos dois modos.
 
 ---
 

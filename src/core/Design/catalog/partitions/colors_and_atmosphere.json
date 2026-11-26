@@ -370,8 +370,9 @@
   },
   {
     "tokenId": "colorBgBody",
-    "name": "Background Geral (Body)",
-    "description": "Cor base que preenche todo o fundo do site/app e do document body.",
+    "visualImpact": "fundo",
+    "name": "Cor de Fundo da Página",
+    "description": "Cor que preenche o fundo da página inteira (o corpo do documento).",
     "type": "color",
     "importance": 95,
     "categories": [
@@ -560,8 +561,8 @@
   {
     "tokenId": "bgBaseColor",
     "visualImpact": "fundo",
-    "name": "Cor de Fundo Base",
-    "description": "Cor de base mais profunda usada abaixo de qualquer textura ou padrão.",
+    "name": "Cor de Base do Vidro e dos Painéis",
+    "description": "Cor de base das superfícies de vidro, da gaveta e dos painéis sobrepostos. A cor do fundo da página é outra: Cor de Fundo da Página.",
     "type": "color",
     "importance": 90,
     "categories": [

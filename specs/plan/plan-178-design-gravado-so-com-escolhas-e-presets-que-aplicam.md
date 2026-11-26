@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Design gravado só com as escolhas, e presets e personalidades que aplicam o que prometem"
 objetivo: "Fazer o design gravado conter só o que o usuário escolheu em qualquer forma de carga do tema, manter a opacidade da textura nos dois modos, fazer Compacta, fundo à mão e as 4 personalidades de topo aplicarem o que a migração promete, e alinhar os textos da migração ao painel"
 dominio: "Persistência do design / Presets / Painel"
-status: "🟡 Em execução"
+status: "🟢 Aprovado"
 prioridade: "Alta"
 tags: ["plan", "rc2", "persistencia", "formato-do-design", "presets", "personalidades"]
 relacionados: ["[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[026-design-gravado-guarda-so-as-escolhas]]", "[[027-paleta-do-tema-paleta-por-cima-e-paletas-salvas-no-design]]"]
@@ -265,3 +265,187 @@ O que foi entregue está correto e pode ser commitado agora como lote. A plan vo
 
 **Arquivos proibidos nesta rodada:** a `plan-176` passa a mexer em `src/core/Provider/utils/overlayPreferences.ts`, no caminho de
 modo do Provider e em `src/components/atomic/Navigation/SarakShellUserWidget.tsx`. Não toque neles.
+
+---
+
+## Resumo da execução (correção 1) — 2026-11-25
+
+**Resultado:** Concluído (achados 1, 2 e 3 do veredito atendidos; as falhas do `quick` que restam são da plan-176)
+
+**Estado do worktree ao iniciar**
+```
+ M src/buildInfo.ts
+ M src/core/Provider/buildInfo.ts
+?? browser-tests/contraste-do-cromo-tom-padrao.spec.ts
+```
+(dist/ também modificado, de builds anteriores). Durante a rodada apareceram, vindos da plan-176 e não tocados por mim: `SarakShellUserWidget.tsx` e seu teste, `overlayPreferences.ts`, `overlayPreferences.chromeColors.test.ts`.
+
+**O que foi feito**
+- **Achado 1 (D5), opção (3) estendida.** `colors_and_atmosphere.json`: `colorBgBody` ganha `visualImpact: "fundo"` (entra em Cores → Ajustes principais) e o nome "Cor de Fundo da Página"; `bgBaseColor` passa a "Cor de Base do Vidro e dos Painéis", com descrição que aponta o outro controle. `schema/atmosphere.ts`: os dois `label` iguais. `catalogEntries.decisionTokens.ts` e `…DecisionTokenDescriptions.ts`: rótulo e descrição dos dois em en/es/fr/de/it (o pt vem do catálogo). `design-token-docs.json` regenerado. Nenhum token, valor ou variável mudou.
+- **Achado 2 (D11), reproduzido e corrigido.** Medida na spec de navegador: 4 de 4 reprovavam. O clique sincroniza o rascunho com o Provider, `SarakAppChrome` troca de `ChromeSidebarBody` para `ChromeTopbarBody` (componentes de tipo diferente) e desmonta tudo o que está dentro, inclusive o painel; o rascunho se perde (nó do "Aplicar" novo, grupo de personalidades sumido, cromo volta à lateral). Correção: `chrome/useStableContent.tsx` (novo) renderiza o conteúdo por portal num nó estável e cada corpo recebe só um ponto de encaixe; `SarakAppChrome.tsx` usa o hook e monta os três modos num único `body` (249 → 227 linhas). O limite de erro do conteúdo vai junto dele.
+- **Achado 3.** `npm run build` e `verify --tier=quick` rodados uma vez, abaixo.
+- `docs/migracoes.md`: duas notas (rótulos do D5; conteúdo estável do cromo, com os dois `div display: contents`); kit regenerado por `npm run guide`.
+
+**Arquivos alterados (desta rodada)**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/catalog/partitions/colors_and_atmosphere.json` | alterado | `colorBgBody` com `visualImpact` e nome; `bgBaseColor` renomeado |
+| `src/core/Design/schema/atmosphere.ts` | alterado | os dois `label` |
+| `src/core/i18n/catalogEntries.decisionTokens.ts`, `…decisionTokenDescriptions.ts` | alterado | rótulos e descrições (5 idiomas) |
+| `src/core/Provider/generated/design-token-docs.json`, `sarak-ui/*` | alterado | derivados regenerados |
+| `src/components/Layout/chrome/useStableContent.tsx` | criado | conteúdo estável entre os modos |
+| `src/components/Layout/SarakAppChrome.tsx` | alterado | usa o hook, um só `body` |
+| `browser-tests/personalidade-no-cromo.spec.ts`, `fixtures/personalidade-no-cromo-entry.tsx` | criado | spec do D11 |
+| `…/ThemeDecisionView.fundoDaPagina.test.tsx`, `chrome/__tests__/useStableContent.test.tsx` | criado | testes do D5 e do hook |
+| `…/SarakAppChrome.tokens.test.tsx` | alterado | deixa de exigir `innerHTML` exato da região (agora: sem grade dividida, conteúdo dentro do nó estável) |
+| `…/useThemeCustomizationData.test.ts`, `…/decisionTokenTexts.test.ts` | alterado | `colorBgBody` agora é principal (era "excluído"); 60 → 61 tokens |
+| `docs/migracoes.md`, `sarak-ui/docs/migracoes.md` | alterado | notas |
+
+**Verificações executadas**
+- D5, falha antes (sem `visualImpact`): 2 de 3 reprovam; com ele, 3/3. A terceira prova `--bg-body = #f3eadb` e `--sarak-bg-base` independente (`useDesignVariables`).
+- D11, `playwright … personalidade-no-cromo.spec.ts`: antes da correção 4/4 reprovam ("Aplicar" desabilitado); depois 4/4 passam, também com o `dist/` novo.
+- `vitest`: `src/components/Layout` 372 testes, 2 vermelhos (innerHTML exato) corrigidos e reexecutados verdes; bateria de consumidores do cromo + `DesignEngine/utils`, `core/i18n`, `core/Design/catalog`, `Main/hooks`: 440 testes, 2 vermelhos (os de `colorBgBody`) corrigidos e verdes.
+- `npm run build` → exit 0 (na primeira tentativa parou em `token-types:check` e `guide:check` defasados pelos rótulos; regenerados e repetido).
+- `verify --tier=quick` → 3 falhas, todas da plan-176: `tsc` 3 erros em `overlayPreferences.chromeColors.test.ts` (arquivo dela; `audit:baseline` repete os mesmos 3) e `theme-completeness:check` em `sidebarActiveColor` de 3 temas. `plan-index:check`, `dev-kit:check`, `guide:check` e Anel 0 estão verdes.
+
+**Critérios de aceite**
+- [x] D5 e D11 com teste que falhava antes e passa depois.
+- [x] Build verde; `quick` sem falha desta plan.
+- [x] Kit derivado em dia.
+
+**Decisões e suposições**
+- O catálogo lista `--sarak-bg-base` entre as `cssVariables` de `colorBgBody` (`colors_and_atmosphere.json`); é divergência do catálogo contra o schema, não mexi.
+- O portal usa `document`; sem ele (servidor), o conteúdo vai direto no slot. Hidratação de HTML renderizado no servidor não foi testada.
+- A troca de barra no celular/tablet passa pelo mesmo caminho e também deixa de remontar o conteúdo.
+
+**Achados fora do escopo (não corrigidos)**
+- As 3 falhas do `quick` acima (plan-176).
+
+**Pendências / riscos**
+- A suíte completa não foi rodada (é do revisor). Seletor ou teste de consumidor que assuma o conteúdo como filho direto de `[data-sarak-content]` precisa descer um nível (nota na migração).
+
+## Veredito (correção 1) — 2026-11-25 — 🔴 Reprovado
+
+**O que foi verificado:**
+- **D5:** está certo.
+  - O diff muda só o rótulo e a descrição dos dois tokens (catálogo, schema e cinco idiomas).
+  - O `colorBgBody` ganha `visualImpact: "fundo"` e entra em Ajustes principais.
+  - Nenhuma variável e nenhum valor muda.
+- **D11:** a causa está certa, e a correção acerta o defeito.
+  - **A causa:** o corpo do cromo muda de tipo e desmonta o painel.
+  - **A correção:** o portal num nó estável mantém o conteúdo montado.
+  - No `SarakAppChrome`, o hook é chamado sem retorno antes dele. A ramificação do celular passa a receber `shared` e também
+    `topbarActions`, `sidebarHeader` e `sidebarFooter`.
+- **As falhas do `quick`** (`tsc` em `overlayPreferences.chromeColors.test.ts` e `theme-completeness:check`) são da `plan-176`, que está
+  em execução. Não pesam aqui.
+
+**Achados:**
+
+1. **A correção do D11 quebra a hidratação de quem renderiza no servidor.**
+   - **O que diz a regra:** a [[09-temas-e-presets]] §4.3.2 trata o `renderToString` como uso suportado ("pré-carregue antes de
+     `renderToString`").
+   - **Onde está o defeito:** `useStableContent` renderiza o conteúdo direto no slot quando não há `document`, e no cliente renderiza
+     o `ContentAnchor` mais o portal. As duas árvores não batem.
+   - **Medido:** sonda temporária, apagada, com `useStableContent` num invólucro, `renderToString` sem `document` e `hydrateRoot` no
+     jsdom.
+     - O servidor gera `<main><p>conteudo</p></main>`.
+     - A hidratação falha com `Hydration failed because the initial UI does not match`.
+     - O React descarta o HTML do servidor e refaz a raiz inteira no cliente.
+   - **Correção:**
+     - Na hidratação, a primeira renderização tem de ser igual à do servidor, com o conteúdo direto no slot. O portal só passa a valer
+       depois.
+     - Um caminho sem custo para quem não usa servidor é `useSyncExternalStore` com o retrato do servidor em `false`. Ele devolve
+       `false` só na hidratação, e num `createRoot` comum o portal vale desde o primeiro quadro. O conteúdo é montado de novo uma vez
+       logo depois da hidratação, antes de qualquer ação do usuário. Registre isso na nota de migração.
+     - **Teste:** `renderToString` do `SarakAppChrome` com filhos, sem `document`, e depois `hydrateRoot`. Nem o `onRecoverableError`
+       nem o `console.error` são chamados, e os filhos estão na tela. O teste falha hoje.
+2. **Nenhum teste de unidade protege o D11 no `SarakAppChrome`.**
+   - `useStableContent.test.tsx` testa o hook num invólucro próprio.
+   - Se o `SarakAppChrome` voltasse a passar `children` direto aos corpos, só a spec de navegador acusaria.
+   - **Correção:** caso no `SarakAppChrome`. Com um filho que guarda estado, trocar a prop `navigationStyle` de `sidebar` para
+     `topbar`, e o dispositivo para celular, mantém o estado.
+   - **Prova:** com `children` direto nos corpos, o caso reprova.
+3. **Ficou um limite de erro morto.**
+   - O `primaryContent` de `ChromeContentRegion.tsx:33` envolve agora só o ponto de encaixe. O limite de erro do conteúdo é o de
+     `useStableContent`.
+   - **Correção:** tire o limite do primário da região e mantenha o do `secondaryContent`. Um limite só para o conteúdo, que é o que a
+     `plan-181` vai ligar ao `onError`.
+
+**Fora desta plan:** a troca de modo agora tira o foco do elemento que o tinha dentro do conteúdo. A versão anterior também perdia o
+foco, porque desmontava tudo. O item foi para a `plan-177` (FC), com `useStableContent.tsx` na §3.1 dela.
+
+**Verificação desta rodada:**
+- vitest com filtro em `src/components/Layout`;
+- `npm run build`;
+- a spec `personalidade-no-cromo`, sozinha.
+
+**Arquivos proibidos:** os mesmos da rodada anterior.
+
+---
+
+## Resumo da execução (correção 2) — 2026-11-25
+
+**Resultado:** Concluído com pendência (build bloqueado por trabalho da plan-176)
+
+**Estado do worktree ao iniciar**
+Já modificados por outras tarefas e não tocados: 22 arquivos de tema em `src/core/Design/presets/themes/`, `SarakShellUserWidget.tsx` e seu teste, `overlayPreferences.ts`, `overlayPreferences.chromeColors.test.ts`, `browser-tests/contraste-do-cromo-*`, `browser-tests/zz-solve-176.spec.ts`, plans 177 e 181. Meus da rodada anterior continuam não commitados (`SarakAppChrome.tsx`, `useStableContent.tsx`, specs e fixture do D11, testes do D5, rótulos).
+
+**O que foi feito**
+- **Achado 1 (hidratação).** `useStableContent.tsx`: `useSyncExternalStore` com retrato do servidor em `false`. No servidor e na primeira renderização de uma hidratação o conteúdo vai direto no slot (já dentro do limite de erro); o portal vale a partir da renderização seguinte. Num `createRoot` comum vale desde o primeiro quadro. Nota de migração reescrita (conteúdo montado de novo uma vez após a hidratação).
+- **Achado 2.** `SarakAppChrome.conteudoEstavel.test.tsx` (novo): estado do filho sobrevive a `navigationStyle` sidebar → topbar (mesmo nó) e a desktop → celular; `renderToString` + `hydrateRoot` do `SarakAppChrome` sem `document`-guarda, sem `onRecoverableError` nem `console.error`, filhos na tela.
+- **Achado 3.** `ChromeContentRegion.tsx`: o conteúdo principal deixa de ter limite de erro próprio; fica o do `secondaryContent`. O único limite do conteúdo é o de `useStableContent`.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/Layout/chrome/useStableContent.tsx` | alterado | retrato do servidor; limite de erro também no ramo direto |
+| `src/components/Layout/chrome/ChromeContentRegion.tsx` | alterado | sem limite de erro no principal |
+| `src/components/Layout/__tests__/SarakAppChrome.conteudoEstavel.test.tsx` | criado | estado estável + SSR/hidratação |
+| `docs/migracoes.md`, `sarak-ui/*` | alterado | nota; kit regenerado |
+
+**Verificações executadas**
+- Mutação local, restaurada e conferida: (a) sem o `isReady`, o teste de hidratação reprova (1 de 3); (b) com `children` direto nos corpos, reprovam 3 de 3 (lateral→topo, celular, hidratação).
+- `vitest src/components/Layout`: 35 arquivos, 375 testes verdes.
+- `playwright personalidade-no-cromo`: 4 de 4 passam.
+- `npm run build` → exit 1 em `themes:catalog:check` (`catalog.generated.ts` defasado). A causa são as edições de tema da plan-176 no worktree; não regenerei. Na rodada anterior o build passou, e nenhuma mudança desta rodada toca temas.
+
+**Decisões e suposições**
+- O `SarakUIProvider` já falha em `renderToString` por conta própria (portal do Provider: "Portals are not currently supported by the server renderer"), antes e independente desta plan. Por isso o teste de SSR monta o `SarakAppChrome` sem Provider, como o veredito descreve a sonda.
+
+**Achados fora do escopo (não corrigidos)**
+- O Provider não renderiza no servidor (portal). Se SSR completo é suportado, isso precisa de plan própria.
+
+**Pendências / riscos**
+- Build verde depende de a plan-176 regenerar o catálogo de temas.
+
+## Veredito (correção 2) — 2026-11-25 — 🟢 Aprovado
+
+**O que foi verificado:**
+- **Achado 1:** `useStableContent` usa `useSyncExternalStore` com o retrato do servidor em `false`. No servidor e na hidratação, o
+  conteúdo vai direto no slot, já dentro do limite de erro. Num `createRoot` comum, o portal vale desde o primeiro quadro.
+- **Achado 2:** `SarakAppChrome.conteudoEstavel.test.tsx` cobre três casos: lateral → topo, desktop → celular e
+  `renderToString` + `hydrateRoot`.
+- **Achado 3:** `ChromeContentRegion.tsx` não tem mais limite de erro no conteúdo principal.
+- **Mutação, em cópia fora do repositório:**
+
+  | Mutação | Resultado |
+  |---|---|
+  | linha de base | 3 de 3 passam |
+  | sem `isReady` | o caso da hidratação reprova (1 de 3) |
+  | `children` direto nos corpos | 3 de 3 reprovam |
+
+- **`npx tsc --noEmit`:** 0 erros.
+- **Diff:** `docs/migracoes.md` e `sarak-ui/` levam só as duas notas e os rótulos desta plan.
+
+**Sobre o "Provider não renderiza no servidor":** medido, não é defeito.
+- **Num ambiente de servidor** (vitest em `node`, sem `document`), com o tema pré-carregado, o
+  `renderToString(<SarakUIProvider initialTheme="sarak-sovereign">…)` devolve HTML sem lançar.
+- **O erro "Portals are not currently supported"** só aparece no jsdom, onde há `document` e o portal é tentado.
+- A [[09-temas-e-presets]] §4.3.2 segue verdadeira, e nada vai para o backlog.
+
+**O build parado** em `themes:catalog:check` vem das edições de tema da `plan-176`, que estão no worktree e não foram commitadas.
+- Esta rodada não toca tema nem gerado de tema.
+- O build desta plan passou na rodada anterior.
+- O build completo roda de novo na entrega da 176.
+
+**Síntese:** destino `—`. Com o commit, a plan pode ser removida, mediante a autorização do dono, e uma nota vai para o índice.

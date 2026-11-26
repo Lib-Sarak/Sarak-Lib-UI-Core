@@ -9,6 +9,7 @@ import type { SarakShellUser } from '../atomic/Navigation/SarakShellUserWidget';
 import { SarakAppChromeMobile } from './SarakAppChromeMobile';
 import { ChromeSidebarBody } from './chrome/ChromeSidebarBody';
 import { ChromeTopbarBody } from './chrome/ChromeTopbarBody';
+import { useStableContent } from './chrome/useStableContent';
 import type { SarakChromeNotification } from './chrome/ChromeNotificationsWidget';
 import { findActiveNavItemHref, toShellNavItems, type SarakNavItem } from './chrome/navItem';
 import type { SarakChromeWidgets } from './chrome/chromeWidgets';
@@ -201,36 +202,6 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
         ...style,
     };
 
-    if (mode === 'mobile') {
-        return (
-            <SarakAppChromeMobile
-                brand={brand}
-                logo={logo}
-                nav={effectiveNav}
-                activeRoute={effectiveActiveRoute}
-                onNavigate={onNavigate}
-                topbarActions={endSlot}
-                topbarStart={topbarStart}
-                search={search}
-                sidebarHeader={sidebarHeader}
-                sidebarFooter={sidebarFooter}
-                banner={banner}
-                footer={footer}
-                decoration={decoration}
-                user={user}
-                logout={logout}
-                notifications={notifications}
-                onNotificationSelect={onNotificationSelect}
-                widgets={widgets}
-                secondaryContent={secondaryContent}
-                className={className}
-                rootStyle={rootStyle}
-            >
-                {children}
-            </SarakAppChromeMobile>
-        );
-    }
-
     // Os corpos de sidebar/topbar foram extraídos para
     // `chrome/ChromeSidebarBody`/`ChromeTopbarBody` para este arquivo caber no teto de
     // 250 linhas (R9) depois de ganhar o consumo dos tokens de cromo que faltavam.
@@ -240,10 +211,14 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
         onNotificationSelect, widgets, className, rootStyle, secondaryContent,
     };
 
-    if (mode === 'topbar') {
-        return <ChromeTopbarBody {...shared}>{children}</ChromeTopbarBody>;
-    }
-    return <ChromeSidebarBody {...shared} sidebarHeader={sidebarHeader} sidebarFooter={sidebarFooter}>{children}</ChromeSidebarBody>;
+    // O conteúdo não pertence a nenhum corpo: trocar de modo troca o corpo, e o conteúdo segue montado (`useStableContent`).
+    const { slot, portal } = useStableContent(children, effectiveActiveRoute);
+    const body = mode === 'mobile'
+        ? <SarakAppChromeMobile {...shared} topbarActions={endSlot} sidebarHeader={sidebarHeader} sidebarFooter={sidebarFooter}>{slot}</SarakAppChromeMobile>
+        : mode === 'topbar'
+            ? <ChromeTopbarBody {...shared}>{slot}</ChromeTopbarBody>
+            : <ChromeSidebarBody {...shared} sidebarHeader={sidebarHeader} sidebarFooter={sidebarFooter}>{slot}</ChromeSidebarBody>;
+    return <>{body}{portal}</>;
 };
 
 export default SarakAppChrome;

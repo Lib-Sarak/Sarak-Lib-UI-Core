@@ -148,7 +148,10 @@ describe('SarakAppChrome — vista dividida', () => {
         );
         const content = container.querySelector('[data-sarak-content]') as HTMLElement;
 
-        expect(content.innerHTML).toBe('<div>conteúdo principal</div>');
+        // O conteúdo vai direto na região, sem a grade da vista dividida; só o nó estável do conteúdo (`display: contents`) o envolve.
+        expect(content.querySelector('[data-sarak-content-host] > div')).toHaveTextContent('conteúdo principal');
+        expect(content.querySelector('[data-sarak-split-panel]')).toBeNull();
+        expect(content.firstElementChild).not.toHaveClass('grid');
         expect(content.querySelector('[data-sarak-slot="secondaryContent"]')).toBeNull();
     });
 });

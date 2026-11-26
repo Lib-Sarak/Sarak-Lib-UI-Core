@@ -38,11 +38,12 @@ describe('useThemeCustomizationData', () => {
         expect(groupFor('primaryColor')).toBe('cores');
         expect(groupFor('texture')).toBe('fundo');
         expect(groupFor('bgBaseColor')).toBe('fundo');
+        // pinta o corpo da página (`--bg-body`), um efeito que nenhum outro token tem
+        expect(groupFor('colorBgBody')).toBe('fundo');
         [
             'layoutDensity',
             'maxContentWidth',
             'isSplitViewEnabled',
-            'colorBgBody',
             'accentColor',
             'bgGradientMode',
             // escolhe QUAL cartão o SarakCardGrid desenha, não um estilo

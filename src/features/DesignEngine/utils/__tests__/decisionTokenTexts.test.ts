@@ -26,7 +26,7 @@ describe('textos dos ajustes principais das decisões', () => {
     it('registra em catálogo os tokens de todas as decisões principais e perguntas', () => {
         const expected = mainDecisionTokenIds();
         expect(DECISION_TOKEN_IDS.slice().sort()).toEqual(expected);
-        expect(expected).toHaveLength(60);
+        expect(expected).toHaveLength(61);
     });
 
     it('o bloco global da decisão Layout entra na lista: modo do sistema e tamanho global das fontes têm texto', () => {

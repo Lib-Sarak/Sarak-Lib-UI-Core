@@ -9138,7 +9138,7 @@
         "type": "string",
         "responsive": false,
         "group": "atmosphere",
-        "label": "Cor de Fundo Base",
+        "label": "Cor de Base do Vidro e dos Painéis",
         "kind": "aesthetic",
         "modeDependent": true,
         "usage": "Pinta a base das superfícies de vidro (`.sarak-glass`), o fundo da gaveta e a cor dos painéis do motor de fluxo; o corpo da página é `colorBgBody`."
@@ -10458,7 +10458,7 @@
         "type": "string",
         "responsive": false,
         "group": "atmosphere",
-        "label": "Fundo Global (Body)",
+        "label": "Cor de Fundo da Página",
         "kind": "aesthetic",
         "modeDependent": true,
         "usage": "Pinta o fundo da página inteira e a base do gradiente de fundo; as outras camadas e superfícies se leem contra esta cor."
@@ -14328,6 +14328,6 @@
   "kitStamp": {
     "libVersion": "9.0.0-rc.1",
     "kitSchemaVersion": 1,
-    "kitHash": "a0613a453305"
+    "kitHash": "33ead6bb008d"
   }
 }
