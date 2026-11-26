@@ -339,7 +339,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run fonts:check` | `npx tsx gates/scripts/contrato/check-fonts.ts` |
 | `npm run fonts:manifest:check` | `npx tsx scripts/generate-font-manifest.ts --check` |
 | `npm run gate-limits:check` | `node gates/scripts/contrato/check-gate-limits.mjs` |
-| `npm run gates:full` | `npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check && node gates/scripts/release/check-audit-baseline.mjs --with-tsc && npm run themes:diversity && npm run boot:measure` |
+| `npm run gates:full` | `npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:release && node gates/scripts/release/check-audit-baseline.mjs --with-tsc && npm run themes:diversity && npm run boot:measure` |
 | `npm run guide:check` | `node scripts/generate-consumer-kit.mjs --check` |
 | `npm run icon-port:check` | `node gates/scripts/contrato/check-icon-port.mjs` |
 | `npm run kit-names:check` | `node gates/scripts/contrato/check-kit-names.mjs` |

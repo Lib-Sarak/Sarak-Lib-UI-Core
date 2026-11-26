@@ -7,6 +7,7 @@ import { BrandShortcut } from './BrandShortcut';
 import { MasterControlPanel } from '../MasterControlPanel';
 import { TemplatesTab } from '../TemplatesTab';
 import { HyperGranularityTab } from '../../Panels/HyperGranularityTab';
+import { findThemeEntry } from '../../../../core/Provider/utils/designChoices';
 import { getDecision, type DecisionContext, type DecisionId, type TokenLocation } from '../../utils/decisions';
 import type { DecisionOptionsContext } from './ThemeDecisionOptions';
 import type { PanelView } from '../hooks/usePreviewUIState';
@@ -47,6 +48,7 @@ const DecisionColumn: React.FC<ThemeSidebarContentProps> = (props) => {
                 draft={options.draft}
                 appliedDesign={options.sarak.systemDesign as unknown as Record<string, unknown> | undefined}
                 updateDraft={options.updateDraft}
+                theme={findThemeEntry(options.sarak.allThemes, options.draftThemeId ?? options.sarak.resolvedThemeId)}
                 onPeek={options.onPeek}
                 setPendingBranding={props.setPendingBranding}
                 onGenerated={props.onBrandGenerated}

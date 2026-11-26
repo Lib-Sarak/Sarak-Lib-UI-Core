@@ -3,7 +3,7 @@ import type { ComponentPreset } from './cards';
 /**
  * Presets do cromo: barra lateral, barra de topo, o papel de cor das duas barras e a largura do conteúdo. Os de barra escrevem só
  * a estrutura (moldura, item ativo, densidade, fundo); o papel de cor da paleta (`sidebarTone`/`topbarTone`) é do grupo `barTone`,
- * que grava os dois juntos. Nunca uma cor escrita à mão.
+ * que grava os dois juntos — a única exceção é a Compacta, que traz o tom Superfície da lateral para se distinguir da Limpa. Nunca uma cor escrita à mão.
  */
 export const SIDEBAR_PRESETS: ComponentPreset[] = [
     {
@@ -53,7 +53,7 @@ export const SIDEBAR_PRESETS: ComponentPreset[] = [
         keywords: ['compacta', 'compact', 'densa', 'pequena'],
         design: {
             sidebarItemDensity: 'compact', sidebarIconSize: 16, sidebarActiveItemStyle: 'bar',
-            sidebarBorderSide: 'edge', sidebarBorderWidth: 1, navItemRadius: 6,
+            sidebarBorderSide: 'edge', sidebarBorderWidth: 1, navItemRadius: 6, sidebarTone: 'surface',
         },
     },
     {

@@ -22,7 +22,7 @@ const SPECIMENS: readonly ChartSpecimen[] = [
     { type: 'radar', title: 'Teia de Performance (Radar)', icon: 'TrendingUp' },
     { type: 'scatter', title: 'Gráfico de Dispersão (Scatter)', icon: 'ScatterChart' },
     { type: 'heatmap', title: 'Mapa de Calor (Heatmap)', icon: 'LayoutGrid' },
-    { type: 'gauge', title: 'Medidor (Gauge)', icon: 'Gauge' },
+    { type: 'gauge', title: 'Medidor (Gauge)', icon: 'Thermometer' },
 ];
 
 const CHART_HEIGHT = 192;

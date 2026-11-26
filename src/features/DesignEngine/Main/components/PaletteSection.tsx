@@ -9,6 +9,7 @@ import { useSavedPalettes, type SavePaletteOutcome } from '../hooks/useSavedPale
 import { sanitizePaletteName } from '../../../../core/Design/palette/savedPalettes';
 import { barTonesOf, buildPaletteDraftPatch } from '../utils/paletteDraft';
 import type { PeekHandler } from '../../Canvas/components/peek';
+import type { ModeResolvableTheme } from '../../../../core/Design/presets/themes/color-engine';
 import type { SarakDesignState } from '../../../../core/Provider/types';
 import { sarakGetDefaultDesignState } from '../../../../core/Design/master-map';
 import type { SarakTokenValue } from '../../../../core/Design/types';
@@ -17,6 +18,8 @@ interface PaletteSectionProps {
     draft: Record<string, unknown>;
     appliedDesign: Record<string, unknown> | undefined;
     updateDraft: (id: string, value: SarakTokenValue) => void;
+    /** O tema do rascunho: a cor que ele declara por cima da paleta não é ajuste manual. */
+    theme?: ModeResolvableTheme;
     /** Recebe o que a prévia compõe enquanto o mouse ou o foco está numa paleta. */
     onPeek?: PeekHandler;
 }
@@ -25,12 +28,12 @@ const FALLBACK_BASE = String(sarakGetDefaultDesignState().primaryColor);
 const HEX_COLOR = /^#[0-9a-f]{6}$/i;
 
 /** Paletas no painel: galeria de prontas, criação a partir de uma cor e, por cima, o ajuste de cada token. */
-export const PaletteSection: React.FC<PaletteSectionProps> = ({ draft, appliedDesign, updateDraft, onPeek }) => {
+export const PaletteSection: React.FC<PaletteSectionProps> = ({ draft, appliedDesign, updateDraft, theme, onPeek }) => {
     const text = useLibraryText();
     const [isCreating, setIsCreating] = useState(false);
     // O nome da paleta recém-salva: o criador fecha para mostrar "Minhas paletas", e esta mensagem diz o que aconteceu.
     const [savedNotice, setSavedNotice] = useState<string | null>(null);
-    const selectPalette = usePaletteSelection({ draft, appliedDesign, updateDraft });
+    const selectPalette = usePaletteSelection({ draft, appliedDesign, updateDraft, theme });
     const { saved, save, remove } = useSavedPalettes({ draft, updateDraft });
     const primary = draft.primaryColor;
     const initialBase = typeof primary === 'string' && HEX_COLOR.test(primary) ? primary : FALLBACK_BASE;

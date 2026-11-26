@@ -26,6 +26,7 @@ import { SarakToastProvider, useToast } from '../../components/atomic/Feedback/S
 import { useLibraryText } from '../i18n/useLibraryText';
 import { SarakOverlayProvider } from '../../components/atomic/Modals/SarakOverlayProvider';
 import { useThemeDeletionHandler } from './hooks/useThemeDeletionHandler';
+import { useResolvedThemeLoad } from './hooks/useResolvedThemeLoad';
 import { useBodyThemeTransition } from './hooks/useBodyThemeTransition';
 import { SarakNavigationGuardProvider } from './navigationGuard';
 
@@ -98,6 +99,8 @@ const SarakUIProviderCore: React.FC<SarakUIProviderProps> = ({
         initialTheme,
         onThemeChange
     });
+
+    useResolvedThemeLoad(resolvedThemeId);
 
     const deleteTheme = useThemeDeletionHandler({
         deleteThemeFromCollection, resolvedThemeId, loadTheme, design, getHostConfig, setResolvedThemeId, applyFullConfig, persistDesign,

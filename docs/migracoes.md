@@ -138,7 +138,7 @@ Cada preset do grupo **Textura do card** (`card-tex-*`) passa a gravar `cardText
 Só texto que o painel mostra; nenhum id, token, prop ou export mudou. Termo técnico fica em inglês, igual nos seis idiomas:
 
 - **Títulos de grupo:** "Barra lateral" (e "Barre latérale", "Seitenleiste"…) passa a **Sidebar**; "Barra de topo" ("Top bar", "Barra superior"…) passa a **Topbar**. Rótulos e descrições dos tokens da barra dizem Sidebar/Topbar em vez de "barra lateral", "barra superior" e "barra do topo".
-- **Opções de modo e navegação:** "Dark Mode (Padrão)" e "Light Mode" passam a **Dark mode (padrão)** e **Light mode**; "Sidebar (Esquerda)" e "Topbar (Cabeçalho)" passam a **Sidebar (esquerda)** e **Topbar (horizontal)**; a preferência "Modo Claro/Escuro" passa a "Light mode ou Dark mode".
+- **Opções de modo e navegação:** as opções do token `mode` (o modo de fábrica do sistema), "Dark Mode (Padrão)" e "Light Mode", passam a **Dark mode (padrão)** e **Light mode** — o seletor de modo do topo do painel é outro controle e continua "Claro" e "Escuro" ("Light" e "Dark" em inglês); "Sidebar (Esquerda)" e "Topbar (Cabeçalho)" passam a **Sidebar (esquerda)** e **Topbar (horizontal)**; a preferência "Modo Claro/Escuro" passa a "Light mode ou Dark mode".
 - **Cabeçalho do card:** os rótulos "… do Header" dos tokens `cardHeader*` e `headerAlignment` passam a dizer "cabeçalho".
 
 **O que muda para o importador:** quem procura o painel pelo texto (`getByText("Barra lateral")`, `getByRole('button', { name: /Barra de topo/ })`, o rótulo "Dark Mode (Padrão)") troca pelos nomes novos; os atributos `data-group-toggle`, `data-option-group` e `data-decision-row` não mudaram.
@@ -171,7 +171,7 @@ O rótulo de `isNavHidden` passa de "Ocultar Navegação" para "Navegação reco
 
 ## 9.0.0 — P e G do tamanho da fonte configuráveis em px, controles de preferência discretos e o ⚙ que não repete o que está na barra
 
-O tamanho da fonte do usuário (P/M/G) deixa de usar uma escala fixa de cinco degraus e passa a se mover em px a partir de `bodySize`: dois tokens novos, `preferenceFontSizeReduction` (quanto o P reduz) e `preferenceFontSizeIncrease` (quanto o G aumenta), ambos em px, de 0 a 6, padrão 2. Com o padrão nada muda nas bases de 14 a 18 px; nas pontas o defeito some: com base 12 px o P era igual ao M, e com base 20 px o G era igual ao M — agora são 10 px e 22 px. O P nunca desce de 8 px. Os dois tokens ficam na decisão Layout, junto da composição da barra.
+O tamanho da fonte do usuário (P/M/G) deixa de usar uma escala fixa de cinco degraus e passa a se mover em px a partir de `bodySize`: dois tokens novos, `preferenceFontSizeReduction` (quanto o P reduz) e `preferenceFontSizeIncrease` (quanto o G aumenta), ambos em px, de 0 a 6, padrão 2. Com o padrão nada muda nas bases de 14 a 18 px; nas pontas o defeito some: com base 12 px o P era igual ao M, e com base 20 px o G era igual ao M — agora são 10 px e 22 px. O P nunca desce de 8 px. Os dois tokens aparecem na decisão Barras, na pergunta "O que aparece".
 
 Os controles ficam discretos. Fixados na barra, P/M/G e Lateral/Topo são um grupo compacto com a altura de um item de navegação e sem véu de fundo (o texto fica direto sobre a barra); no ⚙ e na gaveta do celular viram linhas de menu com a escolha marcada por visto, não pílulas. O ⚙ da barra do topo também deixa de repetir o que já está fixado na barra visível (busca, tamanho, orientação, modo, idioma): uma barra com tudo fixado não mostra o ⚙. Na barra lateral recolhida a exceção continua: o fixado sem ícone próprio vai para o ⚙.
 

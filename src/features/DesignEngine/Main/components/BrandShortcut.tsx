@@ -10,6 +10,7 @@ import { usePaletteSelection } from '../hooks/usePaletteSelection';
 import { barTonesOf, buildPaletteDraftPatch } from '../utils/paletteDraft';
 import { FONT_OPTIONS, HEX_COLOR, brandPaletteValue, fontPresetOf, useBrandForm } from '../hooks/useBrandForm';
 import type { PeekHandler } from '../../Canvas/components/peek';
+import type { ModeResolvableTheme } from '../../../../core/Design/presets/themes/color-engine';
 import type { PendingBranding } from '../hooks/usePendingBranding';
 import type { SarakDesignState } from '../../../../core/Provider/types';
 import type { SarakTokenValue } from '../../../../core/Design/types';
@@ -18,6 +19,8 @@ interface BrandShortcutProps {
     draft: SarakDesignState;
     appliedDesign: Record<string, unknown> | undefined;
     updateDraft: (id: string, value: SarakTokenValue) => void;
+    /** O tema do rascunho: a cor que ele declara por cima da paleta não é ajuste manual. */
+    theme?: ModeResolvableTheme;
     /** A prévia reage a cada campo sem gravar nada. */
     onPeek?: PeekHandler;
     setPendingBranding: (branding: PendingBranding) => void;
@@ -27,13 +30,13 @@ interface BrandShortcutProps {
 }
 
 /** "Usar minha marca": nome, logo, cor principal e par de fontes viram um tema no rascunho; nada é gravado até o "Aplicar". */
-export const BrandShortcut: React.FC<BrandShortcutProps> = ({ draft, appliedDesign, updateDraft, onPeek, setPendingBranding, onGenerated, initialName = '' }) => {
+export const BrandShortcut: React.FC<BrandShortcutProps> = ({ draft, appliedDesign, updateDraft, theme, onPeek, setPendingBranding, onGenerated, initialName = '' }) => {
     const text = useLibraryText();
     const presetText = usePresetText();
     const { form, change, saved } = useBrandForm(draft, initialName, onPeek);
     const paletteOptions = [{ value: '', label: text('brandPaletteFromColor') }, ...saved.map((entry) => ({ value: entry.id, label: entry.name }))];
     const personalityOptions = [{ value: '', label: presetText.ui('brandPersonalityNone') }, ...PERSONALITIES.map((personality) => ({ value: personality.id, label: presetText.preset(personality).name }))];
-    const selectPalette = usePaletteSelection({ draft: draft as unknown as Record<string, unknown>, appliedDesign, updateDraft });
+    const selectPalette = usePaletteSelection({ draft: draft as unknown as Record<string, unknown>, appliedDesign, updateDraft, theme });
 
     const generate = async () => {
         const value = brandPaletteValue(form, saved);

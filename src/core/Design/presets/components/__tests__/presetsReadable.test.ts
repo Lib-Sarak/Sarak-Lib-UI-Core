@@ -73,9 +73,9 @@ describe('presets de componente — legíveis sobre todo tema embarcado, nos doi
         }));
     }, 120_000);
 
-    it('os presets de tom da barra existem e entram no caminho que recompõe a paleta', () => {
+    it('os presets de tom da barra (e a Compacta, que traz o da lateral) existem e entram no caminho que recompõe a paleta', () => {
         const toned = ALL_COMPONENT_PRESETS.filter((preset) => 'sidebarTone' in preset.design || 'topbarTone' in preset.design);
-        expect(toned.map((preset) => preset.id).sort()).toEqual(['bar-tone-inverse', 'bar-tone-neutral', 'bar-tone-primary', 'bar-tone-secondary', 'bar-tone-surface']);
+        expect(toned.map((preset) => preset.id).sort()).toEqual(['bar-tone-inverse', 'bar-tone-neutral', 'bar-tone-primary', 'bar-tone-secondary', 'bar-tone-surface', 'sidebar-compact']);
         toned.forEach((preset) => expect(changesColor(preset.design as Record<string, unknown>)).toBe(true));
     });
 });

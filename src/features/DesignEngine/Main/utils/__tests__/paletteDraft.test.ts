@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import {
     buildCustomPaletteValue,
     buildPaletteDraftPatch,
@@ -6,10 +6,13 @@ import {
     groupPresetsByType,
     presetLabel,
     presetTextKey,
+    findThemeColorAdjustments,
     toValidPaletteInput,
 } from '../paletteDraft';
 import { parsePaletteValue } from '../../../../../core/Design/palette/parser';
 import { sarakResolvePalette } from '../../../../../core/Design/palette/resolve';
+import { sarakLoadThemePreset } from '../../../../../core/Design/presets/themes/registry';
+import { findThemeEntry, recomposeDesignChoices } from '../../../../../core/Provider/utils/designChoices';
 
 describe('paletteDraft', () => {
     it('agrupa o registro por tipo, na ordem dos tipos, sem grupo vazio', () => {
@@ -67,5 +70,17 @@ describe('paletteDraft', () => {
         const draft = { ...reference, sidebarColor: '#123456', systemName: 'ERP' };
         expect(findManualColorAdjustments(draft, reference)).toEqual(['sidebarColor']);
         expect(findManualColorAdjustments(reference, reference)).toEqual([]);
+    });
+
+    describe('findThemeColorAdjustments', () => {
+        const IDS = ['neo-brutalism', 'cyberpunk-neon', 'industrial-terminal'];
+        beforeAll(async () => { await Promise.all(IDS.map((id) => sarakLoadThemePreset(id))); });
+
+        it.each(IDS)('%s: o design que o tema compõe não tem cor ajustada à mão, e 2 cores trocadas são 2', (id) => {
+            const theme = findThemeEntry(undefined, id)!;
+            const draft = recomposeDesignChoices({}, theme) as unknown as Record<string, unknown>;
+            expect(findThemeColorAdjustments(draft, theme)).toEqual([]);
+            expect(findThemeColorAdjustments({ ...draft, titleColor: '#123456', bgBaseColor: '#654321' }, theme).sort()).toEqual(['bgBaseColor', 'titleColor']);
+        });
     });
 });

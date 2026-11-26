@@ -3,6 +3,8 @@ import { parsePaletteValue } from '../../../../core/Design/palette/parser';
 import { resolvePalette } from '../../../../core/Design/palette/resolve';
 import { parseHexColor } from '../../../../core/Design/palette/color-space';
 import { SARAK_PALETTE_PRESETS, SARAK_PALETTE_PRESET_TEXT_KEYS } from '../../../../core/Design/palette/presets';
+import { extractDesignChoices } from '../../../../core/Provider/utils/designChoices';
+import type { ModeResolvableTheme } from '../../../../core/Design/presets/themes/color-engine';
 import { LIBRARY_TEXT_CATALOG, type LibraryTextKey } from '../../../../core/i18n/catalog';
 import type { SarakPaletteInput, SarakPaletteMode, SarakPaletteType } from '../../../../core/Design/palette/types';
 
@@ -81,6 +83,20 @@ export const barTonesOf = (design: Readonly<Record<string, unknown>>): Record<st
 export const resolveDraftPalette = (value: unknown, mode: SarakPaletteMode, tones?: Record<string, unknown>): Record<string, string> => {
     const input = parsePaletteValue(value);
     return input ? resolvePalette(input, mode, tones) : {};
+};
+
+/**
+ * Tokens de cor de papel que o usuário ajustou à mão num rascunho com tema: os que diferem do que o motor produz para o tema, a
+ * paleta e os tons do rascunho — a mesma linha de base com que o gravado é extraído. A cor que o tema declara por cima da paleta, e
+ * a que a composição corrige contra ela, fazem parte da linha de base e não contam; a referência só da paleta as contaria.
+ */
+export const findThemeColorAdjustments = (
+    draft: Readonly<Record<string, unknown>>,
+    theme: ModeResolvableTheme,
+    hostConfig?: Record<string, unknown>,
+): string[] => {
+    const choices = extractDesignChoices({ ...draft }, theme, hostConfig);
+    return Object.keys(PALETTE_ROLE_MAP).filter((tokenId) => choices[tokenId] !== undefined);
 };
 
 /**

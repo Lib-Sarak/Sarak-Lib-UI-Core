@@ -311,7 +311,7 @@
     },
     {
       "nome": "npm run gates:full",
-      "comando": "npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check && node gates/scripts/release/check-audit-baseline.mjs --with-tsc && npm run themes:diversity && npm run boot:measure"
+      "comando": "npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:release && node gates/scripts/release/check-audit-baseline.mjs --with-tsc && npm run themes:diversity && npm run boot:measure"
     },
     {
       "nome": "npm run guide:check",

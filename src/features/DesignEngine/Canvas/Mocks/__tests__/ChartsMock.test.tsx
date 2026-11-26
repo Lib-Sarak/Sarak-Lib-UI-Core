@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { MockCharts } from '../ChartsMock';
 
 const engine = vi.hoisted(() => ({ calls: [] as Array<{ type: string; data: unknown[] }> }));
@@ -24,7 +24,14 @@ vi.mock('framer-motion', async () => {
 
 const TYPES_OF_CHART_TYPE = ['line', 'area', 'bar', 'pie', 'radar', 'scatter', 'heatmap', 'gauge'];
 
+const iconWarnings: string[] = [];
+
 describe('MockCharts', () => {
+    beforeAll(() => {
+        vi.spyOn(console, 'warn').mockImplementation((...args: unknown[]) => { if (String(args[0]).includes('[Sarak:Icon]')) iconWarnings.push(String(args[0])); });
+    });
+    afterAll(() => vi.restoreAllMocks());
+
     const defaultProps = {
         tokens: {},
         config: {},
@@ -55,5 +62,11 @@ describe('MockCharts', () => {
         expect(screen.getByText(/Gráfico de Barras/i)).toBeInTheDocument();
         expect(screen.getByText(/Mapa de Calor/i)).toBeInTheDocument();
         expect(screen.getByText(/Medidor/i)).toBeInTheDocument();
+    });
+
+    // O aviso sai uma vez por nome de ícone: o espião guarda o que qualquer renderização deste arquivo emitiu, e não só a deste caso.
+    it('abrir a prévia não gera aviso de ícone fora do contrato', () => {
+        render(<MockCharts {...defaultProps} />);
+        expect(iconWarnings).toEqual([]);
     });
 });

@@ -1,6 +1,7 @@
 import { syncThemeWithMode } from '../../Design/presets/themes/color-engine';
 import { PALETTE_CALCULATED_KEYS, resolvePaletteForDesign } from '../../Design/palette/resolve';
 import { chosenToneKeys } from './designChoices';
+import { chosenModeValueKeys } from './chosenModeValues';
 import { isValidPaletteValue } from '../../Design/palette/parser';
 import { isPreferenceOffered } from '../../Design/schema/preferences';
 import { sarakGetDefaultDesignState } from '../../Design/master-map';
@@ -85,6 +86,7 @@ const applyCalculatedPaletteMode = (
     const keepPalette = designRecord.keepPalette === true;
     const chosenTone = chosenToneKeys(designRecord, theme as never, targetMode);
     const themeOverrides = keepPalette ? {} : Object.fromEntries(Object.entries(getPaletteThemeOverrides(theme, targetMode)).filter(([tokenId]) => !chosenTone.has(tokenId)));
+    const chosenValues = chosenModeValueKeys(design, theme as never);
     const next = { ...design } as Record<string, unknown>;
 
     Object.entries(targetPalette).forEach(([tokenId, color]) => {
@@ -101,7 +103,7 @@ const applyCalculatedPaletteMode = (
         const nativeMode = (theme?.design?.mode as 'light' | 'dark') || 'dark';
         const trackedKeys = Object.keys(counterpart);
         const trackedValues = targetMode === nativeMode ? pickKeys(theme?.design, trackedKeys) : counterpart;
-        const wanted = Object.fromEntries(Object.entries(trackedValues).filter(([tokenId]) => !chosenTone.has(tokenId) && !(keepPalette && PALETTE_CALCULATED_KEYS.has(tokenId))));
+        const wanted = Object.fromEntries(Object.entries(trackedValues).filter(([tokenId]) => !chosenTone.has(tokenId) && !chosenValues.has(tokenId) && !(keepPalette && PALETTE_CALCULATED_KEYS.has(tokenId))));
         Object.assign(next, wanted);
     }
 
@@ -148,7 +150,9 @@ export const applyColorMode = (
     const trackedKeys = Object.keys(contraparte);
     const trackedValues = targetMode === nativeMode ? pickKeys(theme?.design, trackedKeys) : contraparte;
 
-    return { ...result, ...trackedValues, mode: targetMode } as SarakDesignState;
+    const chosenValues = chosenModeValueKeys(result, theme as never);
+    const wanted = Object.fromEntries(Object.entries(trackedValues).filter(([tokenId]) => !chosenValues.has(tokenId)));
+    return { ...result, ...wanted, mode: targetMode } as SarakDesignState;
 };
 
 /**

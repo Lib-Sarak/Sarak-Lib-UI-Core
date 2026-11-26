@@ -7,6 +7,7 @@ import { usePersonalitySelection } from '../hooks/usePersonalitySelection';
 import { ThemeGlobalSettings } from './ThemeGlobalSettings';
 import { usePresetText } from '../../hooks/usePresetText';
 import { getPresetGroup } from '../../../../core/Design/presets/components/registry';
+import { findThemeEntry } from '../../../../core/Provider/utils/designChoices';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import type { LibraryTextKey } from '../../../../core/i18n/catalog';
 import type { PeekHandler } from '../../Canvas/components/peek';
@@ -75,6 +76,7 @@ const GroupBody: React.FC<{ group: OptionGroup; context: DecisionOptionsContext 
                 draft={context.draft as unknown as Record<string, unknown>}
                 appliedDesign={context.sarak.systemDesign as unknown as Record<string, unknown> | undefined}
                 updateDraft={context.updateDraft}
+                theme={findThemeEntry(context.sarak.allThemes, context.draftThemeId ?? context.sarak.resolvedThemeId)}
                 onPeek={context.onPeek}
             />
         );

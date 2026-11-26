@@ -47,7 +47,6 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
             }
         });
 
-        if (!resolved.layout) resolved.layout = base.layout || 'glass';
         if (!resolved.mode) resolved.mode = base.mode || 'dark';
         return resolved as unknown as SarakDesignState;
     }, [draftState, sarak.systemDesign]);
