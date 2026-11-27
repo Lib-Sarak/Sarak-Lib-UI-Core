@@ -42,7 +42,6 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-183-higiene-interna-de-codigo-e-de-testes](plan/plan-183-higiene-interna-de-codigo-e-de-testes.md) | Fechar onze pendências internas que não mudam a tela: seletor por nome de classe, selo de dispositivo, disputa de textura, leituras e classes mortas, recorte de teste incompleto, nomes de teste com rastro de plan, teste que não protege o que diz, função com dez parâmetros e o config inteiro como host com a opção ligada | — | 🟢 Aprovada | — |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🚦 **Campanha da `8.0.0-rc.4` (2026-10-27).** Contrato aceito: [`anexos/rc4-contrato.md`](plan/anexos/rc4-contrato.md). Ordem: a `plan-128` vai **sozinha** (cria o hook de idioma e os arquivos de catálogo das outras); depois `plan-129` ‖ `plan-130` ‖ `plan-131` ‖ `plan-132` ‖ `plan-119` lote 8 ‖ `plan-133`, em paralelo (pastas disjuntas; arquivos compartilhados só por acréscimo); depois da 133, `plan-134` ‖ `plan-135`. A 134 e a 135 geram prévias em `C:\tmp\sarak-rc4-previa\` que o dono aprova durante a revisão. Verificação pelo protocolo do contrato §9: uma vez por plan e a bateria completa uma vez, no fechamento, depois do lote 2 do ERP. A versão (`npm version`) é do dono.
@@ -69,6 +68,8 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > `npm run build` e o que lê o `dist/` (navegador, `boot:measure`) rodam um de cada vez, pela trava `C:\tmp\sarak-build.lock` descrita
 > em cada plan. A `plan-183` vem depois das três, porque mexe no Provider e no `chromeToneContrast.ts`. Depois: a suíte completa e o
 > `cromo-css-real:check` uma vez, e o `npm version` da rc.2, que é do dono.
+
+> ⚪ **A `plan-183` foi SINTETIZADA e REMOVIDA em 2026-11-27.** Código no commit `c05f7ca2`. Destino `—`: higiene interna. Os onze itens (H16, H19, H41, H49, H50, H52, H58, H60, H79, H95 e H96) cumprem o que as specs já diziam. As referências de nome nas specs 06, 09 e 10 foram trocadas pelo executor e entraram no commit `fb47ceb4`. O `ResponsiveSliderControl` sem uso foi para o backlog (#6). `00-contexto` revisto, nada a mudar.
 
 > ⚪ **As `plan-181`, `plan-182` e `plan-184` foram SINTETIZADAS e REMOVIDAS em 2026-11-26.** Código da 184 no commit `974ff1f2`; da 181 no `2435c486`; da 182 no `2b71596e`. Destino demonstrado:
 > - **181 → [[09-temas-e-presets]] `§4.6`:** o tema do importador com `readOnly: true` é tratado no painel como os do catálogo (Duplicar, sem Salvar, substituir nem Apagar). **[[05-cromo-e-slots]] `§2.1`:** a prop `onError(error, info)` do `SarakAppChrome`, que recebe o erro dos `children` e do `secondaryContent`; o `SarakSection` tem a mesma prop. **[[12-kit-do-consumidor]]:** a orientação de pôr um boundary dentro do conteúdo para registrar o erro ficou falsa e foi trocada pela prop, como divergência corrigida na hora. Ficou de fora: as notas em `docs/migracoes.md`, que já dizem a classificação.
