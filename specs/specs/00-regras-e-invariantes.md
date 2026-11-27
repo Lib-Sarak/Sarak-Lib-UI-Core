@@ -1176,7 +1176,8 @@ com a concorrente em vez de substituí-la — o mesmo defeito, agora silencioso.
 **Classe própria que nascer depois precisa ser registrada ali, ou não conflita com nada.**
 
 ⚠️ **Merge é de classe, nunca de estilo.** O `style` inline que o Design Engine devolve não passa por aqui
-e não é tocado.
+e não é tocado. O `style` do chamador também vence o do átomo: no `SarakButton`, ele é aplicado depois do que o token
+escreve.
 
 ⚠️ **Conflito entre grupos diferentes não existe, e é onde a regra engana.** `min-w-fit` está em
 `min-width`, não em `width`: ele **sobrevive** a um `w-full` e mantém o piso de largura no conteúdo. Largura

@@ -42,7 +42,6 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-186-quatro-defeitos-de-componente](plan/plan-186-quatro-defeitos-de-componente.md) | Fazer o style do importador vencer o do token no SarakButton, traduzir os textos fixos do SarakSearchCard, fazer a barra do topo do dot-matrix-elegant mostrar itens a 820 px e apagar o ResponsiveSliderControl sem uso | — | 🟠 Em revisão | 00-regras-e-invariantes |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🚦 **Campanha da `8.0.0-rc.4` (2026-10-27).** Contrato aceito: [`anexos/rc4-contrato.md`](plan/anexos/rc4-contrato.md). Ordem: a `plan-128` vai **sozinha** (cria o hook de idioma e os arquivos de catálogo das outras); depois `plan-129` ‖ `plan-130` ‖ `plan-131` ‖ `plan-132` ‖ `plan-119` lote 8 ‖ `plan-133`, em paralelo (pastas disjuntas; arquivos compartilhados só por acréscimo); depois da 133, `plan-134` ‖ `plan-135`. A 134 e a 135 geram prévias em `C:\tmp\sarak-rc4-previa\` que o dono aprova durante a revisão. Verificação pelo protocolo do contrato §9: uma vez por plan e a bateria completa uma vez, no fechamento, depois do lote 2 do ERP. A versão (`npm version`) é do dono.
@@ -69,6 +68,8 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > `npm run build` e o que lê o `dist/` (navegador, `boot:measure`) rodam um de cada vez, pela trava `C:\tmp\sarak-build.lock` descrita
 > em cada plan. A `plan-183` vem depois das três, porque mexe no Provider e no `chromeToneContrast.ts`. Depois: a suíte completa e o
 > `cromo-css-real:check` uma vez, e o `npm version` da rc.2, que é do dono.
+
+> ⚪ **A `plan-186` foi SINTETIZADA e REMOVIDA em 2026-11-27.** Código no commit "fix: quatro defeitos de componente (plan-186)". Prévia da barra do topo aprovada pelo dono. Destino demonstrado: **[[00-regras-e-invariantes]] R35**: o `style` do chamador vence o do átomo, e no `SarakButton` ele é aplicado depois do token. **[[06-painel-de-customizacao-e-preview]] `§3`:** o controle de token responsivo deixou de citar o `ResponsiveSliderControl` apagado; divergência corrigida na hora. Os textos do `SarakSearchCard` no catálogo do boot e a lista horizontal sem respiro lateral cumprem o que a [[10-seguranca-e-acessibilidade]] `§3.6` e a [[05-cromo-e-slots]] `§2.1` já diziam. Ficou de fora: as capturas e as medidas (no histórico do Git). O slot vazio da busca a 820 px foi para o backlog (#3). `00-contexto` revisto, nada a mudar.
 
 > ⚪ **A `plan-187` foi SINTETIZADA e REMOVIDA em 2026-11-27.** Código no commit `752a5401`. Destino demonstrado: **[[12-kit-do-consumidor]] `§2.3`**, a tabela impressa em várias folhas (cabeçalho por folha, nenhuma linha cortada, todo grupo aberto, a tela volta como estava). Ficou de fora: a nota de migração, que já está em `docs/migracoes.md`, e as mutações (no histórico do Git). A garantia de linha inteira na `SarakDataTable` é estrutural, e a mutação só reprova na planilha. `00-contexto` revisto, nada a mudar.
 

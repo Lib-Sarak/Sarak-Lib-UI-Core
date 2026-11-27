@@ -205,7 +205,7 @@ token:
 | `token.type` | Controle | Onde |
 | --- | --- | --- |
 | `color` | `ColorControl` — o seletor edita o canal opaco e **preserva o alfa**, há controle de opacidade, e o campo de texto aceita `var()`/`color-mix()`; só grava o que `isValidColor` aceita | `components/controls/ColorControl.tsx` |
-| `slider` / `number` | slider com a faixa de `tokenBounds` e o sufixo da `unit` declarada (sem unidade, o número vem cru); token responsivo edita `mob`/`tab`/`desk` e grava sempre o objeto inteiro (`ResponsiveSliderControl`) | `components/controls/BasicControls.tsx` |
+| `slider` / `number` | slider com a faixa de `tokenBounds` e o sufixo da `unit` declarada (sem unidade, o número vem cru); token responsivo edita só o ponto do dispositivo da prévia e grava sempre o objeto inteiro | `components/controls/BasicControls.tsx` · `components/DynamicTokenControl.tsx` |
 | `select` / `font` | select populado por `constraints.options`; grava o `value` da opção (o `id` e o `value` coincidem) | idem |
 | `text` / `string` | campo de texto (sombra, curva) | idem |
 | `boolean` | switch | idem |
