@@ -100,9 +100,12 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
     const isSearchCentered = searchPositionTopbar === 'center' && Boolean(effectiveSearch);
     // A busca é a primeira a ceder (fator de encolhimento 40). A barra padrão pede a largura de `w-64` para o contêiner medir a si
     // mesmo e some quando o contêiner fica abaixo do mínimo útil do campo, em vez de se desenhar quebrada por cima da marca;
-    // busca do consumidor e ícone só encolhem.
+    // busca do consumidor e ícone só encolhem. Recolhida a 0 px, a busca não pode somar o vão dela ao da barra (sobrariam dois, e o espaço
+    // faltaria ao primeiro item): o slot recua um vão no fim (margem negativa) e o conteúdo devolve esse vão por dentro (margem final),
+    // e o teto de largura do conteúdo desconta esse vão (sem ele o campo, de largura própria, ocupa o slot inteiro e a margem transborda), de modo que, visível, o vão da barra
+    // continua entre o campo e a lista e, recolhida, resta um vão só.
     // sarak-allow-hardcode: o menor contêiner de container query nomeado do Tailwind (16rem) já é a largura inteira da barra; o mínimo útil do campo não tem nome nem token.
-    const searchSlotClass = search || isNavHidden ? '[flex-shrink:40]' : '@container w-64 [flex-shrink:40] @max-[10rem]:[&>*]:hidden';
+    const searchSlotClass = search || isNavHidden ? '[flex-shrink:40]' : '@container w-64 [flex-shrink:40] @max-[10rem]:[&>*]:hidden me-[calc(var(--sarak-layout-gap-md,16px)*-1)] [&>*]:me-[var(--sarak-layout-gap-md,16px)] [&>*]:max-w-[calc(100%-var(--sarak-layout-gap-md,16px))]';
     const showEndGroup = Boolean(endSlot) || (Boolean(effectiveSearch) && searchPositionTopbar === 'right')
         || w.showThemeToggle || w.showUser || w.showNotifications || showFontSize || showNavigationStyle || showLanguage || hasMenuWidgets;
 

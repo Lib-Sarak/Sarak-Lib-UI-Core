@@ -76,9 +76,10 @@ export const SarakButton: React.FC<SarakButtonProps> = ({
 
     const disabledClass = disabled || isLoading ? 'opacity-50 cursor-not-allowed pointer-events-none' : '';
 
-    const dynamicStyle: React.CSSProperties = { 
-        ...style,
-        ...getButtonStyles(design, variant, isHovered)
+    // O style do chamador entra por último: ele vence o que o token escreve (R35).
+    const dynamicStyle: React.CSSProperties = {
+        ...getButtonStyles(design, variant, isHovered),
+        ...style
     };
     
     return (

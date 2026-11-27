@@ -117,3 +117,14 @@ describe('SarakButton — o aperto dura motionDurationInstant', () => {
             .toContain('active:[transition-duration:var(--sarak-motion-dur-instant,0.1s)]');
     });
 });
+
+describe('SarakButton — o style do chamador vence o do token', () => {
+    it('`borderWidth` do chamador vence a borda que o token neon escreve', () => {
+        render(
+            <SarakUIProvider config={{ btnStyleType: 'neon' }}>
+                <SarakButton style={{ borderWidth: '3px' }}>Salvar</SarakButton>
+            </SarakUIProvider>,
+        );
+        expect(screen.getByRole('button', { name: 'Salvar' }).style.borderWidth).toBe('3px');
+    });
+});

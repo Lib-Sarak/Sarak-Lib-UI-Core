@@ -209,7 +209,9 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
             style={{
                 flexDirection: horizontal ? 'row' : 'column',
                 gap: horizontal ? 'var(--sarak-layout-gap-sm, 8px)' : VERTICAL_NAV_GAP,
-                padding: horizontal ? 'var(--sarak-layout-gap-md, 16px)' : VERTICAL_NAV_PADDING,
+                // Na horizontal o respiro lateral é da barra (o vão entre os blocos dela): a lista não o repete, senão ele se soma ao
+                // vão e come a largura que falta ao primeiro item a 820 px.
+                padding: horizontal ? 'var(--sarak-layout-gap-md, 16px) 0' : VERTICAL_NAV_PADDING,
             }}
         >
             {horizontal ? (

@@ -2,6 +2,7 @@ import { SarakIcon } from "../Icon/SarakIcon";
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
+import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakInput } from '../Inputs/SarakInput';
 import { SarakSwitch } from '../Inputs/SarakSwitch';
@@ -38,6 +39,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
     label
 }: SarakSearchCardProps<TItem>) => {
     const context = useSarakUI();
+    const text = useLibraryText();
     const design = propDesign || context.design || {};
     const layout = useCardLayoutStyles(design);
     const spotlight = useSpotlightPointer(design);
@@ -147,9 +149,9 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                     >
                         <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                             <SarakIcon name="Eye" size={12} className="text-[var(--sarak-primary-color,#19e3f0)]" />
-                            <span className="text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))]">Visão Computacional</span>
+                            <span className="text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))]">{text('searchCardVision')}</span>
                         </div>
-                        <SarakSwitch aria-label="Visão Computacional" checked={caps.vision} onChange={() => handleToggle('vision')} />
+                        <SarakSwitch aria-label={text('searchCardVision')} checked={caps.vision} onChange={() => handleToggle('vision')} />
                     </div>
 
                     {/* Web Switch */}
@@ -160,9 +162,9 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                     >
                         <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                             <SarakIcon name="Globe" size={12} className="text-[var(--sarak-shadow-glow,rgba(25,227,240,0.18))]" />
-                            <span className="text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))]">Navegação Web</span>
+                            <span className="text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))]">{text('searchCardWeb')}</span>
                         </div>
-                        <SarakSwitch aria-label="Navegação Web" checked={caps.web} onChange={() => handleToggle('web')} />
+                        <SarakSwitch aria-label={text('searchCardWeb')} checked={caps.web} onChange={() => handleToggle('web')} />
                     </div>
 
                     {/* Chat Switch */}
@@ -173,9 +175,9 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                     >
                         <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                             <SarakIcon name="MessageSquare" size={12} className="text-[var(--sarak-primary-color,#19e3f0)]" />
-                            <span className="text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))]">Modo Conversacional</span>
+                            <span className="text-3xs font-black uppercase text-[var(--text-muted,rgba(242,246,251,0.55))]">{text('searchCardChat')}</span>
                         </div>
-                            <SarakSwitch aria-label="Modo Conversacional" checked={caps.chat} onChange={() => handleToggle('chat')} />
+                            <SarakSwitch aria-label={text('searchCardChat')} checked={caps.chat} onChange={() => handleToggle('chat')} />
                         </div>
                     </div>
                 </div>

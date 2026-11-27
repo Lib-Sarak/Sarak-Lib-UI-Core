@@ -75,3 +75,25 @@ describe('SarakSearchCard (Characterization)', () => {
         });
     });
 });
+
+describe('SarakSearchCard — textos fixos no idioma que vale', () => {
+    const renderIn = (language: string) => render(
+        <SarakUIProvider config={{ mode: 'dark', language }}>
+            <SarakSearchCard item={{ id: '1' }} />
+        </SarakUIProvider>,
+    );
+
+    it('em inglês, mostra os três textos traduzidos, no texto e no aria-label', () => {
+        renderIn('en');
+        for (const name of ['Computer vision', 'Web browsing', 'Conversational mode']) {
+            expect(screen.getByText(name)).toBeTruthy();
+            expect(screen.getByRole('switch', { name })).toBeTruthy();
+        }
+        expect(screen.queryByText('Visão Computacional')).toBeNull();
+    });
+
+    it('em português, mantém os textos de origem', () => {
+        renderIn('pt');
+        expect(screen.getByRole('switch', { name: 'Visão Computacional' })).toBeTruthy();
+    });
+});

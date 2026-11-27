@@ -182,3 +182,93 @@ for (const theme of ALL_THEME_IDS) {
         });
     }
 }
+
+/**
+ * B4. A 820 px a busca em barra recolhe a 0 px (o contêiner dela fica abaixo de 10rem), e ela não pode deixar vão próprio: entre o que
+ * vem antes dela e a lista de navegação sobra um vão só, o da barra. Antes, a busca recolhida somava os dois vãos (24 px cada no
+ * `dot-matrix-elegant`) e esse espaço faltava à lista.
+ */
+interface CollapsedSearchMeasure {
+    searchWidth: number;
+    /** Da borda direita do que vem antes da busca (recolhida) ou da caixa visível da busca até a lista. */
+    spanBeforeNav: number;
+    barGap: number;
+    /** O contêiner da busca ficou abaixo do mínimo útil do campo e o conteúdo some (`display: none`). */
+    contentHidden: boolean;
+}
+
+const measureCollapsedSearch = (page: Page): Promise<CollapsedSearchMeasure | null> => page.evaluate(() => {
+    const header = document.querySelector('header') as HTMLElement;
+    const slot = header.querySelector<HTMLElement>('[data-sarak-slot="search"]');
+    const navSlot = header.querySelector<HTMLElement>('[data-sarak-slot="nav"]');
+    const before = slot?.previousElementSibling as HTMLElement | null;
+    if (!slot || !navSlot || !before) return null;
+    const searchWidth = slot.getBoundingClientRect().width;
+    const content = slot.firstElementChild as HTMLElement | null;
+    // Visível: o que se vê é a caixa do campo, e o vão que importa é o dela até a lista (a margem do slot não aparece).
+    const contentHidden = content ? getComputedStyle(content).display === 'none' : true;
+    const edge = searchWidth >= 1 && content ? content.getBoundingClientRect().right : before.getBoundingClientRect().right;
+    return {
+        searchWidth,
+        contentHidden,
+        spanBeforeNav: navSlot.getBoundingClientRect().left - edge,
+        barGap: parseFloat(getComputedStyle(header).columnGap) || 0,
+    };
+});
+
+interface ListFitMeasure {
+    firstItemVisible: boolean;
+    /** Área útil da lista menos o que o primeiro item e o "Mais" pedem juntos: não negativo quer dizer que o primeiro item cabe. */
+    roomForFirstItem: number;
+    /** O respiro lateral da própria lista: a barra já dá o vão, e a lista não o repete. */
+    navPaddingInline: number;
+}
+
+const measureListFit = (page: Page): Promise<ListFitMeasure | null> => page.evaluate(() => {
+    const nav = document.querySelector<HTMLElement>('header [data-sarak-slot="nav"] nav');
+    const more = nav?.querySelector<HTMLElement>('[data-sarak-nav-more]');
+    const firstCell = nav?.querySelector<HTMLElement>('[data-sarak-nav-cell]');
+    if (!nav || !more || !firstCell) return null;
+    const navStyle = getComputedStyle(nav);
+    const paddingInline = parseFloat(navStyle.paddingLeft) + parseFloat(navStyle.paddingRight);
+    const usable = nav.getBoundingClientRect().width - paddingInline;
+    const gap = parseFloat(navStyle.columnGap) || 0;
+    return {
+        firstItemVisible: getComputedStyle(firstCell).visibility !== 'hidden',
+        navPaddingInline: paddingInline,
+        roomForFirstItem: usable - (firstCell.getBoundingClientRect().width + gap + more.getBoundingClientRect().width),
+    };
+});
+
+for (const theme of ALL_THEME_IDS) {
+    test(`${theme} a 820px: entre a busca e a lista fica o vão da barra, visível ou recolhida`, async () => {
+        const page = await openTopbar(theme, 820);
+        try {
+            const measured = await measureCollapsedSearch(page);
+            expect(measured, 'a barra tem o slot da busca e o item anterior a ela').not.toBeNull();
+            if (!measured) return;
+            // O slot com largura mas sem campo (contêiner abaixo do mínimo útil) é um espaço vazio que o slot ainda toma: não é a busca
+            // recolhida a 0 px nem a visível, e fica registrado como achado, não medido aqui.
+            test.skip(measured.searchWidth >= 1 && measured.contentHidden, 'o slot da busca tem largura mas o campo está oculto: espaço vazio fora do que este caso mede');
+            // Recolhida (0 px): só o vão da barra separa a lista do que vem antes. Visível: o vão da barra separa a caixa do campo da lista.
+            expect(Math.abs(measured.spanBeforeNav - measured.barGap), `um vão da barra, nem mais nem menos: ${JSON.stringify(measured)}`).toBeLessThanOrEqual(TOLERANCE_PX);
+        } finally {
+            await page.close();
+        }
+    });
+
+    test(`${theme} a 820px: a lista não repete o vão da barra e o primeiro item aparece quando ele e o "Mais" cabem`, async () => {
+        const page = await openTopbar(theme, 820);
+        try {
+            const measured = await measureListFit(page);
+            expect(measured, 'a barra tem a lista, o "Mais" e o primeiro item').not.toBeNull();
+            if (!measured) return;
+            expect(measured.navPaddingInline, `a lista horizontal não repete o vão que a barra já dá: ${JSON.stringify(measured)}`).toBe(0);
+            if (measured.roomForFirstItem >= 0) {
+                expect(measured.firstItemVisible, `o primeiro item cabe com o "Mais" e aparece: ${JSON.stringify(measured)}`).toBe(true);
+            }
+        } finally {
+            await page.close();
+        }
+    });
+}

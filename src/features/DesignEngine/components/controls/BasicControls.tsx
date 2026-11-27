@@ -55,12 +55,6 @@ export const SliderControl: React.FC<SliderControlProps> = ({ label, description
 
 export type ResponsiveNumber = { desk: number; tab: number; mob: number };
 
-const RESPONSIVE_AXES: Array<{ key: keyof ResponsiveNumber; label: string }> = [
-    { key: 'desk', label: 'Desktop' },
-    { key: 'tab', label: 'Tablet' },
-    { key: 'mob', label: 'Mobile' }
-];
-
 /** Valor do token como os três pontos: escalar vale para os três; ponto ausente cai no piso. */
 export const toResponsiveNumber = (value: unknown, floor: number): ResponsiveNumber => {
     if (value !== null && typeof value === 'object') {
@@ -69,46 +63,6 @@ export const toResponsiveNumber = (value: unknown, floor: number): ResponsiveNum
     }
     const flat = numberOrFloor(value, floor);
     return { desk: flat, tab: flat, mob: flat };
-};
-
-interface ResponsiveSliderControlProps extends Omit<SliderControlProps, 'value' | 'onChange'> {
-    value: unknown;
-    onChange: (value: ResponsiveNumber) => void;
-}
-
-/**
- * Slider de token responsivo: um slider por ponto (`desk`/`tab`/`mob`) e o valor gravado é sempre o objeto
- * completo — editar um ponto nunca apaga os outros, nem colapsa o token num escalar.
- */
-export const ResponsiveSliderControl: React.FC<ResponsiveSliderControlProps> = ({ label, description, value, onChange, min = 0, ...rest }) => {
-    const current = toResponsiveNumber(value, min);
-    // Dois pontos editados dentro da janela de debounce: o segundo parte do primeiro, não do valor antigo.
-    const latest = React.useRef(current);
-    latest.current = current;
-
-    const commitAxis = (axis: keyof ResponsiveNumber, next: number) => {
-        latest.current = { ...latest.current, [axis]: next };
-        onChange(latest.current);
-    };
-
-    return (
-        <div className="mb-3" role="group" aria-label={label}>
-            <span className="text-[var(--sarak-type-scale-caption,12px)] font-semibold normal-case tracking-normal text-[var(--theme-muted)] flex items-center gap-1.5 mb-1.5">
-                {label}
-                <HelpTooltip label={label} description={description} />
-            </span>
-            {RESPONSIVE_AXES.map(({ key, label: axisLabel }) => (
-                <SliderControl
-                    key={key}
-                    {...rest}
-                    min={min}
-                    label={axisLabel}
-                    value={current[key]}
-                    onChange={(next) => commitAxis(key, next)}
-                />
-            ))}
-        </div>
-    );
 };
 
 interface SwitchControlProps {

@@ -71,4 +71,7 @@ export const CATALOG_VISIBLE_TEXTS = {
     approvalRejectSelectedOne: { pt: 'Rejeitar 1 selecionado', en: 'Reject 1 selected', es: 'Rechazar 1 seleccionado', fr: 'Rejeter 1 sélectionné', de: '1 Ausgewählten ablehnen', it: 'Rifiuta 1 selezionato' },
     fineTuningCountOne: { pt: '{count} ajuste', en: '{count} setting', es: '{count} ajuste', fr: '{count} réglage', de: '{count} Einstellung', it: '{count} impostazione' },
     tableRowsFoundOne: { pt: '{count} registro encontrado', en: '{count} record found', es: '{count} registro encontrado', fr: '{count} enregistrement trouvé', de: '{count} Eintrag gefunden', it: 'Trovato {count} record' },
+    searchCardVision: { pt: 'Visão Computacional', en: 'Computer vision', es: 'Visión por computadora', fr: 'Vision par ordinateur', de: 'Computer Vision', it: 'Visione artificiale' },
+    searchCardWeb: { pt: 'Navegação Web', en: 'Web browsing', es: 'Navegación web', fr: 'Navigation web', de: 'Websurfen', it: 'Navigazione web' },
+    searchCardChat: { pt: 'Modo Conversacional', en: 'Conversational mode', es: 'Modo conversacional', fr: 'Mode conversationnel', de: 'Konversationsmodus', it: 'Modalità conversazionale' },
 };
