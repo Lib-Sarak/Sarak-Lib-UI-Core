@@ -57,8 +57,35 @@ export const ProgressSample: React.FC = () => (
     </div>
 );
 
+/**
+ * As esferas, o anel e a legenda do estado vazio são desenho de 5% de opacidade: na miniatura as opções não se distinguem.
+ * O guia redesenha, em traço cheio da cor primária e a esta escala, as MESMAS medidas que o componente lê (os mesmos
+ * `--sarak-empty-state-*`, com o mesmo valor de partida): os dois círculos, o anel e a largura da legenda.
+ */
+const GUIDE_SCALE = 0.3;
+const GUIDE_STROKE_PX = 3;
+const GUIDE_RING_BOX_PX = 128;
+const GUIDE_CAPTION_BAR_PX = 10;
+const GUIDE_CAPTION_GAP_PX = 150;
+const GUIDE_STROKE = `${GUIDE_STROKE_PX}px solid var(--theme-primary)`;
+const guideCircle = (diameter: string, style: 'solid' | 'dashed'): React.CSSProperties => ({
+    position: 'absolute', width: diameter, height: diameter, borderRadius: '50%', border: GUIDE_STROKE.replace('solid', style),
+});
+
+const EmptyGeometryGuide: React.FC = () => (
+    <div data-sample-empty-guide="" aria-hidden="true" className="pointer-events-none absolute inset-0 flex items-center justify-center" style={{ opacity: 0.7 }}>
+        <div className="relative flex items-center justify-center" style={{ transform: `scale(${GUIDE_SCALE})` }}>
+            <div style={guideCircle('var(--sarak-empty-state-orb-outer, 500px)', 'solid')} />
+            <div style={guideCircle('var(--sarak-empty-state-orb-inner, 300px)', 'dashed')} />
+            <div style={{ position: 'absolute', width: GUIDE_RING_BOX_PX, height: GUIDE_RING_BOX_PX, borderRadius: 'var(--sarak-empty-state-ring-radius, 2rem)', border: GUIDE_STROKE }} />
+            <div style={{ position: 'absolute', top: GUIDE_CAPTION_GAP_PX, width: 'var(--sarak-empty-state-caption-max-width, 280px)', height: GUIDE_CAPTION_BAR_PX, backgroundColor: 'var(--theme-primary)' }} />
+        </div>
+    </div>
+);
+
 export const EmptySample: React.FC = () => (
     <div className="relative h-full w-full overflow-hidden">
         <SarakEmptyState />
+        <EmptyGeometryGuide />
     </div>
 );

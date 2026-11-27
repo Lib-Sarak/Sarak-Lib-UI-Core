@@ -41,4 +41,14 @@ describe('PresetSamplesReal', () => {
         const { container } = inProvider(<EmptySample />);
         expect(container.querySelector('.overflow-hidden h2')).not.toBeNull();
     });
+
+    it('o guia do estado vazio desenha as quatro medidas do componente, lidas das mesmas variáveis', () => {
+        const { container } = inProvider(<EmptySample />);
+        const guide = container.querySelector('[data-sample-empty-guide]') as HTMLElement;
+        const painted = Array.from(guide.querySelectorAll<HTMLElement>('div div div')).map((node) => node.getAttribute('style') ?? '');
+        for (const variable of ['orb-outer', 'orb-inner', 'ring-radius', 'caption-max-width']) {
+            expect(painted.some((style) => style.includes(`--sarak-empty-state-${variable}`))).toBe(true);
+        }
+        expect(guide).toHaveAttribute('aria-hidden', 'true');
+    });
 });
