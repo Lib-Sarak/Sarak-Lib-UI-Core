@@ -68,6 +68,7 @@ via normal.
 | 3 | `SarakSearchCard` mostra "Visão Computacional", "Navegação Web" e "Modo Conversacional" fixos em português, no texto e no `aria-label`, em qualquer idioma | plan-177 | 2026-11-26 | baixo |
 | 4 | A 820 px, o `dot-matrix-elegant` ainda mostra zero itens na barra do topo: o espaço da busca recolhida a 0 px continua somando dois vãos de 24 px | plan-177 | 2026-11-26 | baixo |
 | 5 | `configIsSavedDesign.persistenceIntegration.test.tsx` (casos das linhas 79 e 85) estoura o prazo padrão de 5 s com a máquina carregada: cai no `HEAD` e, com a carga de plans em paralelo, cai de forma intermitente | plan-184 | 2026-11-26 | baixo |
+| 6 | `ResponsiveSliderControl` (`src/features/DesignEngine/components/controls/BasicControls.tsx:83`) não tem mais uso em produção: o Command Center edita um ponto por vez | plan-183 | 2026-11-27 | baixo |
 | 64 | Impressão da `SarakDataTable`: quebra de página real e cabeçalho repetido por folha não foram medidos (a emulação de mídia não pagina); com `groupBy`, grupo recolhido sai recolhido | achado da `plan-152` | 2026-11-02 | baixo |
 | 69 | Grupos do painel com uma ou duas opções à vista porque a diferença entre elas só aparece em animação ou em interação, ou tem contraste baixo: janela, rolagem, troca de página, movimento, sombra, direção da sombra, moldura e degradê. As outras opções estão em "Ver todas" (`except` em `registry.ts`). Um desenho estático mostraria a diferença, como a curva de easing no movimento | veredito da `plan-141` | 2026-11-03 | baixo |
 
