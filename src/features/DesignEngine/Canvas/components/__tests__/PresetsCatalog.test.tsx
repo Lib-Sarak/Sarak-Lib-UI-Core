@@ -5,6 +5,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, it, expect, vi } 
 import { PEEK_DELAY_MS } from '../peek';
 import { PresetsCatalog } from '../PresetsCatalog';
 
+import { prazoDeTeste } from '../../../../../shared/testing/prazoDeTeste';
 // O cartão real do painel (`SarakTitleCard`) lê o design pelo contexto; sem o Provider, o teste entrega um design vazio.
 vi.mock('../../../../../core/Provider/SarakUIProvider', async (importOriginal) => ({
     ...(await importOriginal<typeof import('../../../../../core/Provider/SarakUIProvider')>()),
@@ -77,17 +78,17 @@ describe('PresetsCatalog — um grupo por vez, sem cromo próprio', () => {
     ] as const)('o grupo %s monta o próprio catálogo', (group, marker) => {
         const { container } = render(<PresetsCatalog {...createProps(group)} />);
         expect(container.querySelector('[data-preset-group="' + marker + '"]')).not.toBeNull();
-    }, 30000);
+    }, prazoDeTeste(30000));
 
     it('o grupo de botões segue com o catálogo próprio (abas Curados e por estilo)', () => {
         render(<PresetsCatalog {...createProps('buttons')} />);
         expect(screen.getByRole('button', { name: 'Curados' })).toBeInTheDocument();
-    }, 30000);
+    }, prazoDeTeste(30000));
 
     it('o grupo de campos monta uma opção por preset de campo', () => {
         const { container } = render(<PresetsCatalog {...createProps('inputs')} />);
         expect(container.querySelectorAll('h3').length).toBeGreaterThan(0);
-    }, 30000);
+    }, prazoDeTeste(30000));
 
     it('carrega UMA fronteira @container que serve o grupo montado (fecha 06-painel-de-customizacao-e-preview.md §6.2)', () => {
         const { container } = render(<PresetsCatalog {...createProps('themes')} />);

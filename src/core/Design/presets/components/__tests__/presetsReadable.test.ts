@@ -9,6 +9,7 @@ import { sarakGetAllDesignTokens } from '../../../master-map';
 import type { SarakTokenValue } from '../../../types';
 import { ALL_COMPONENT_PRESETS } from '../registry';
 
+import { prazoDeTeste } from '../../../../../shared/testing/prazoDeTeste';
 /**
  * Legibilidade: todo preset aplicado sobre cada tema embarcado, nos dois modos, mantém os pares de contraste passando.
  * A aplicação imita a do painel: o tema resolvido para o modo (o que o rascunho guarda) com o preset POR CIMA, e só
@@ -57,7 +58,7 @@ describe('presets de componente — legíveis sobre todo tema embarcado, nos doi
             });
             expect(broken).toEqual([]);
         });
-    }, 120_000);
+    }, prazoDeTeste(120_000));
 
     it('controle do atalho: recompor a paleta dá o mesmo veredito nos presets que não mexem em cor', () => {
         const structural = ALL_COMPONENT_PRESETS.filter((preset) => !changesColor(preset.design as Record<string, unknown>));
@@ -71,7 +72,7 @@ describe('presets de componente — legíveis sobre todo tema embarcado, nos doi
                 expect(failingPairs({ ...base, ...overlay }).sort()).toEqual(recomposed(resolved, overlay).sort());
             });
         }));
-    }, 120_000);
+    }, prazoDeTeste(120_000));
 
     it('os presets de tom da barra (e a Compacta, que traz o da lateral) existem e entram no caminho que recompõe a paleta', () => {
         const toned = ALL_COMPONENT_PRESETS.filter((preset) => 'sidebarTone' in preset.design || 'topbarTone' in preset.design);

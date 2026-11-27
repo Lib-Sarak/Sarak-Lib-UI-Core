@@ -9,6 +9,7 @@ import type { DecisionOptionsContext } from '../ThemeDecisionOptions';
 import { buildDecisionContext } from '../../../utils/decisionContext';
 import { buildTokenIndex, getDecision } from '../../../utils/decisions';
 
+import { prazoDeTeste } from '../../../../../shared/testing/prazoDeTeste';
 vi.mock('../ThemeDecisionOptions', () => ({ ThemeDecisionOptions: () => <div data-testid="options" /> }));
 
 const decisionContext = buildDecisionContext();
@@ -29,7 +30,7 @@ const renderView = (decisionId: string, focusTokenId?: string) => render(
     </SarakUIProvider>,
 );
 
-vi.setConfig({ testTimeout: 30000 });
+vi.setConfig({ testTimeout: prazoDeTeste(30000) });
 
 describe('ThemeDecisionView', () => {
     it('mostra as opções e os ajustes principais (nível 2) e o ajuste fino recolhido (nível 3)', () => {

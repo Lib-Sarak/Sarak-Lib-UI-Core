@@ -14,6 +14,7 @@ import { DecisionTokenList } from '../DecisionTokenList';
 import { ForceOpenSections } from '../CollapsibleSection';
 import { ThemeGlobalSettings } from '../ThemeGlobalSettings';
 
+import { prazoDeTeste } from '../../../../../shared/testing/prazoDeTeste';
 /**
  * Nenhum texto das decisões principais pode chegar em inglês igual ao português: rótulo, ajuda "?", opção do seletor,
  * título e nota. O teste renderiza o painel de verdade nos dois idiomas e compara o que o administrador lê.
@@ -127,7 +128,7 @@ describe('textos das decisões principais em inglês', () => {
         expect(labels.length).toBeGreaterThanOrEqual(58);
         expect([...pt.keys()].filter((key) => key.endsWith('.description')).length).toBeGreaterThanOrEqual(58);
         expect(sameAsPortuguese(pt, en).filter((line) => !line.startsWith('global.'))).toEqual([]);
-    }, 120_000);
+    }, prazoDeTeste(120_000));
 
     it('os dois tokens do bloco global (modo do sistema e tamanho das fontes) saem traduzidos', () => {
         const en = collect('en');
@@ -135,7 +136,7 @@ describe('textos das decisões principais em inglês', () => {
         expect(en.get('bodySize.label')).toBe('Global font size (Body)');
         expect(en.get('mode.option.light')).toBe('Light mode');
         expect(en.get('mode.option.dark')).toBe('Dark mode (default)');
-    }, 120_000);
+    }, prazoDeTeste(120_000));
 
     it('os títulos e campos do bloco global e as notas de mestre × canto não são iguais ao português', () => {
         const pt = collect('pt');
@@ -145,7 +146,7 @@ describe('textos das decisões principais em inglês', () => {
         globals.forEach(([key, text]) => expect(text, key).not.toBe(''));
         expect(sameAsPortuguese(new Map(globals), en)).toEqual([]);
         expect(sameAsPortuguese(collectNotes('pt'), collectNotes('en'))).toEqual([]);
-    }, 120_000);
+    }, prazoDeTeste(120_000));
 
     it('a opção traduzida grava o mesmo valor: id, valor e ordem não mudam', () => {
         const pt = collect('pt');
@@ -153,5 +154,5 @@ describe('textos das decisões principais em inglês', () => {
         const optionKeys = (texts: Texts) => [...texts.keys()].filter((key) => key.includes('.option.'));
         expect(optionKeys(en)).toEqual(optionKeys(pt));
         expect(optionKeys(pt).length).toBeGreaterThan(100);
-    }, 120_000);
+    }, prazoDeTeste(120_000));
 });

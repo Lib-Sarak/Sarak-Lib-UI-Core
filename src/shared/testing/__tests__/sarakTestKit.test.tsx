@@ -5,11 +5,12 @@ import { useLibraryText } from '../../../core/i18n/useLibraryText';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { createSarakKitMock, renderWithSarak } from '../sarakTestKit';
 
+import { prazoDeTeste } from '../prazoDeTeste';
 // O consumidor resolve o nome pelo pacote instalado; aqui o nome aponta para o código-fonte.
 vi.mock('@sarak/lib-ui-core', () => import('../../../index'));
 
 // Cada caso pode ser o primeiro a carregar a lib inteira, e sob a suíte em paralelo isso passa dos 5 s do padrão.
-const LIBRARY_LOAD_TIMEOUT_MS = 30_000;
+const LIBRARY_LOAD_TIMEOUT_MS = prazoDeTeste(30_000);
 
 const WhichTheme = (): React.ReactElement => <p>{useSarakUI().design ? 'com provider' : 'sem provider'}</p>;
 

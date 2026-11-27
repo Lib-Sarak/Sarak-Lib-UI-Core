@@ -6,10 +6,11 @@ import { SARAK_PALETTE_PRESETS } from '../presets';
 import { resolvePalette } from '../resolve';
 import type { SarakPaletteMode, SarakPaletteType } from '../types';
 
+import { prazoDeTeste } from '../../../../shared/testing/prazoDeTeste';
 const ANCHORED = ['btnPrimaryBg', 'rangeActiveColor', 'switchTrackActiveBg', 'checkboxActiveColor'];
 const SHIFTED = ['primaryColor', 'navItemActiveColor', 'titleColor', 'cardTitleColor'];
 /** Estes testes calculam a paleta de todo o catálogo nos dois modos: o tempo cresce com o catálogo, então os 5 s padrão não bastam. */
-const CATALOG_TIMEOUT_MS = 30_000;
+const CATALOG_TIMEOUT_MS = prazoDeTeste(30_000);
 const MODES: SarakPaletteMode[] = ['light', 'dark'];
 const TYPES: SarakPaletteType[] = ['monochromatic', 'analogous', 'complementary', 'split-complementary', 'triadic'];
 const BASES = ['#3a2a78', '#2563eb', '#19e3f0', '#8a8f94', '#e0115f', '#f2c4d0', '#ffd400', '#007a49'];

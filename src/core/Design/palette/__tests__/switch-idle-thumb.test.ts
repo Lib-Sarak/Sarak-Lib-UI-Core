@@ -6,6 +6,7 @@ import { SARAK_PALETTE_PRESETS } from '../presets';
 import { resolvePalette } from '../resolve';
 import type { SarakPaletteMode } from '../types';
 
+import { prazoDeTeste } from '../../../../shared/testing/prazoDeTeste';
 const MODES: SarakPaletteMode[] = ['light', 'dark'];
 const STYLES: SwitchStyleType[] = ['tactile', 'asymmetric', 'pulsing', 'glass'];
 /** Controle de interface: 3:1 entre a bolinha e o trilho desligado, e entre o trilho e o fundo onde o interruptor fica. */
@@ -38,7 +39,7 @@ describe('interruptor desligado — a bolinha e o trilho', () => {
         });
     });
 
-    it('a bolinha tem 3:1 contra o trilho desligado e o trilho tem 3:1 contra o fundo: 4 estilos × 2 modos × 78 paletas', { timeout: 60_000 }, () => {
+    it('a bolinha tem 3:1 contra o trilho desligado e o trilho tem 3:1 contra o fundo: 4 estilos × 2 modos × 78 paletas', { timeout: prazoDeTeste(60_000) }, () => {
         const failures: string[] = [];
         let minThumb = Infinity;
         let minTrack = Infinity;

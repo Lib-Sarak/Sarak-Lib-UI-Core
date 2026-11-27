@@ -6,6 +6,7 @@ import { describe, it, expect, vi } from 'vitest';
 import SarakUIProvider from '../../../../core/Provider/SarakUIProvider';
 import { ThemeCustomizationTab } from '../ThemeCustomizationTab';
 
+import { prazoDeTeste } from '../../../../shared/testing/prazoDeTeste';
 // A prévia grande custa um app inteiro: o que importa aqui é a COLUNA e o que ela entrega à prévia.
 vi.mock('../../Canvas/PreviewCanvas', () => ({
     PreviewCanvas: ({ config, draftTokens }: { config: { systemName?: string }; draftTokens: { logoUrl?: string; colorPalette?: string } }) => (
@@ -13,7 +14,7 @@ vi.mock('../../Canvas/PreviewCanvas', () => ({
     ),
 }));
 
-vi.setConfig({ testTimeout: 60000 });
+vi.setConfig({ testTimeout: prazoDeTeste(60000) });
 
 interface HarnessOptions {
     onBrandingChange?: (branding: unknown) => void;

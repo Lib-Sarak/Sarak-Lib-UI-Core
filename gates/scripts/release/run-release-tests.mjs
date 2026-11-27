@@ -14,6 +14,7 @@
 // 1. Não reprova caso lento: tempo depende da carga da máquina, e um gate
 //    assim seria instável. A lentidão se conserta no uso diário (prazo de 5 s).
 // 2. Um caso que trava de verdade ainda reprova — só que aos 30 s, não aos 5.
+//    Caso com prazo próprio MAIOR que 30 s mantém o dele (a porta devolve o maior).
 // 3. O relatório só existe se o vitest chegou a gravar o JSON (suíte abortada
 //    antes do fim não o produz; o resumo avisa).
 // -------------------------------------------------------------------------
@@ -24,6 +25,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const RELEASE_TIMEOUT_MS = 30000;
+// Teste que declara prazo próprio lê este valor pela porta `prazoDeTeste` (src/shared/testing):
+// prazo declarado vence a flag de linha de comando, então a flag sozinha não o alcança.
+export const RELEASE_TIMEOUT_ENV = 'RELEASE_TEST_TIMEOUT_MS';
 const SLOW_THRESHOLD_MS = 1000;
 const TOP_COUNT = 20;
 const SUMMARY_MAX_LINES = 25;
@@ -90,7 +94,7 @@ function main() {
 
   const vitestBin = path.join(ROOT, 'node_modules', 'vitest', 'vitest.mjs');
   const args = buildVitestArgs({ jsonFile, extra: process.argv.slice(2) });
-  const result = spawnSync(process.execPath, [vitestBin, ...args], { cwd: ROOT, stdio: 'inherit' });
+  const result = spawnSync(process.execPath, [vitestBin, ...args], { cwd: ROOT, stdio: 'inherit', env: { ...process.env, [RELEASE_TIMEOUT_ENV]: String(RELEASE_TIMEOUT_MS) } });
 
   try {
     writeSlowReport(jsonFile, reportFile);

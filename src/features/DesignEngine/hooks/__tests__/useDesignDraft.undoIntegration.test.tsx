@@ -13,6 +13,7 @@ import { SARAK_ALL_THEMES } from '../../../../core/Design/presets/themes/all';
 import { useDesignDraft } from '../useDesignDraft';
 import type { SarakDesignState } from '../../../../core/Provider/types';
 
+import { prazoDeTeste } from '../../../../shared/testing/prazoDeTeste';
 describe('Desfazer — integração com o Provider real', () => {
     // O `localStorage` do jsdom sobrevive entre testes do mesmo arquivo — sem
     // isto, o valor que um teste aplica "vaza" para o boot do próximo Provider.
@@ -125,5 +126,5 @@ describe('Desfazer — integração com o Provider real', () => {
             expect(call[1]).toBe('sarak-sovereign');
         }
         // Prazo próprio de 30 s: o teste espera 1,6 s de salvamento atrasado e, sob a suíte inteira em paralelo, passa dos 5 s padrão.
-    }, 30000);
+    }, prazoDeTeste(30000));
 });

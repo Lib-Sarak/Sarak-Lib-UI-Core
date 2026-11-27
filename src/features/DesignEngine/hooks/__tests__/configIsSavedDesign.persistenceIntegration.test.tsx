@@ -14,6 +14,7 @@ import { resolveThemeForMode } from '../../../../core/Design/presets/themes/colo
 import { encodeSavedPalettes } from '../../../../core/Design/palette/savedPalettes';
 import { useDesignDraft } from '../useDesignDraft';
 import type { SarakThemePayload, SarakUIOptions } from '../../../../core/Provider/types';
+import { prazoDeTeste } from '../../../../shared/testing/prazoDeTeste';
 
 type DesignRecord = Record<string, unknown>;
 type OnSave = NonNullable<NonNullable<SarakUIOptions['persistence']>['onSave']>;
@@ -25,6 +26,8 @@ const SAVED_DESIGN: DesignRecord = { colorPalette: 'emerald-royal', keepPalette:
 const HAND_DESIGN: DesignRecord = { colorPalette: 'emerald-royal', bgBaseColor: '#102030' };
 const FROM_THEME = 'sarak-sovereign';
 const TO_THEME = 'industrial-terminal';
+/** Cada caso monta o Provider duas vezes (hub e controle): ~3 s isolado, o que estoura os 5 s padrão com a máquina carregada. */
+const TWO_MOUNTS_TIMEOUT_MS = prazoDeTeste(30_000);
 
 let targetPayload: DesignRecord;
 
@@ -63,7 +66,7 @@ const savedAfterThemeSwitch = async (props: { config?: SarakThemePayload; initia
     return saved;
 };
 
-describe('troca de tema pelo painel — o `config` como design gravado', () => {
+describe('troca de tema pelo painel — o `config` como design gravado', { timeout: TWO_MOUNTS_TIMEOUT_MS }, () => {
     beforeEach(() => localStorage.clear());
     afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 

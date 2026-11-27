@@ -8,6 +8,7 @@ import { SARAK_PALETTE_PRESETS } from '../presets';
 import { resolvePalette } from '../resolve';
 import type { SarakPaletteMode } from '../types';
 
+import { prazoDeTeste } from '../../../../shared/testing/prazoDeTeste';
 const MODES: SarakPaletteMode[] = ['light', 'dark'];
 const BARS = ['sidebar', 'topbar'] as const;
 const TONES = ['neutral', 'surface'] as const;
@@ -20,7 +21,7 @@ const MAX_ACTIVE_SHIFT = 0.21;
  */
 const DARK_SURFACE_SIDEBAR_CAP = 0.28;
 const PETROLEO_TOPBAR_CAP = 0.215;
-const TIMEOUT_MS = 60_000;
+const TIMEOUT_MS = prazoDeTeste(60_000);
 
 const ratioOf = (design: Record<string, unknown>, fg: string, bgChain: string[]): number => {
     const result = evaluatePair({ fg, bgChain, min: MIN_TEXT_CONTRAST }, { ...design, [GRADIENT_LIGHT_ID]: GRADIENT_LIGHT_COLOR });

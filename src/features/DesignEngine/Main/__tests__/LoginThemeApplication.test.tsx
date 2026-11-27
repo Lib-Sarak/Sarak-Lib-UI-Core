@@ -6,6 +6,7 @@ import { ThemeCustomizationTab } from '../ThemeCustomizationTab';
 import { SarakUIProvider, useSarakUI } from '../../../../core/Provider/SarakUIProvider';
 import { SarakThemeEntry, SarakThemePayload, SarakUIOptions } from '../../../../core/Provider/types';
 
+import { prazoDeTeste } from '../../../../shared/testing/prazoDeTeste';
 const STORAGE_KEY = 'login-theme-application';
 const TENANT_ID = 'tenant-acme';
 const TENANT_STORAGE_KEY = `${STORAGE_KEY}::tenant:${TENANT_ID}`;
@@ -122,7 +123,7 @@ const testSuccessfulTenantThemeApplication = (): void => {
             2,
         );
         expect(onSaveTheme).not.toHaveBeenCalled();
-    }, 15000);
+    }, prazoDeTeste(15000));
 };
 
 const testRejectedTenantSaveApplication = (): void => {
@@ -146,7 +147,7 @@ const testRejectedTenantSaveApplication = (): void => {
         await act(async () => { await vi.advanceTimersByTimeAsync(1800); });
 
         expect(onSave).toHaveBeenCalledTimes(1);
-    }, 15000);
+    }, prazoDeTeste(15000));
 };
 
 const testTenantDesignSurvivesThemeCollectionChange = (): void => {
@@ -162,7 +163,7 @@ const testTenantDesignSurvivesThemeCollectionChange = (): void => {
 
         expect(screen.getByTestId('tenant-primary-color')).toHaveTextContent('#123456');
         expect(screen.getByTestId('tenant-system-background')).toHaveTextContent('#123456');
-    }, 15000);
+    }, prazoDeTeste(15000));
 };
 
 describe('SarakUIProvider — aplicar tema depois do login', () => {

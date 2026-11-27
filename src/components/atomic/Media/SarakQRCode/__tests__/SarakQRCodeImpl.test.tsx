@@ -3,6 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { SarakQRCode } from '../index';
 
+import { prazoDeTeste } from '../../../../../shared/testing/prazoDeTeste';
 const peer = vi.hoisted(() => ({ current: undefined as unknown }));
 
 vi.mock('qrcode', () => ({
@@ -18,10 +19,10 @@ const renderQr = (props: React.ComponentProps<typeof SarakQRCode>): ReturnType<t
 );
 
 // A primeira transformação do módulo lazy é lenta; aquece fora do tempo de espera dos testes.
-const WARM_UP_TIMEOUT_MS = 30000;
+const WARM_UP_TIMEOUT_MS = prazoDeTeste(30000);
 // Sob carga (várias suítes em paralelo) o componente lazy e o efeito do aviso demoram mais que o prazo padrão de 1 s.
 const WAIT = { timeout: 10000 };
-const TEST_TIMEOUT_MS = 20000;
+const TEST_TIMEOUT_MS = prazoDeTeste(20000);
 beforeAll(async () => { await import('../SarakQRCodeImpl'); }, WARM_UP_TIMEOUT_MS);
 
 afterEach(() => { peer.current = undefined; vi.restoreAllMocks(); });

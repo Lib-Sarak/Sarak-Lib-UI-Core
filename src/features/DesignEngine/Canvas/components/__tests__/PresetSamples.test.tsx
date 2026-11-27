@@ -6,6 +6,7 @@ import { PRESET_GROUPS } from '../../../../../core/Design/presets/components/reg
 import SarakUIProvider from '../../../../../core/Provider/SarakUIProvider';
 import { PresetSample } from '../PresetSamples';
 
+import { prazoDeTeste } from '../../../../../shared/testing/prazoDeTeste';
 // O motor de gráfico (echarts) não roda no jsdom: a prova é que a amostra monta O componente real, uma vez, com o tipo.
 vi.mock('../../../../../components/engines/charts', () => ({
     SarakChartEngine: ({ type }: { type?: string }) => <div data-chart-engine={type} />,
@@ -20,11 +21,11 @@ vi.mock('../../../../../components/atomic/DataDisplay/SarakDataTable', () => ({
 const REAL_MARK = { table: '[data-real-table]', badge: '[role="progressbar"]', empty: '[role="status"], h2' } as const;
 
 /** Cada render do Provider leva cerca de 1 s no jsdom e o laço de gráfico renderiza uma vez por opção: o teto padrão de 5 s não cobre o laço. */
-const CHART_LOOP_TIMEOUT_MS = 30_000;
+const CHART_LOOP_TIMEOUT_MS = prazoDeTeste(30_000);
 
 /** Os componentes reais chegam por import sob demanda: com a máquina carregada o módulo leva mais que o 1 s padrão do `waitFor`, e o teto de cada teste acompanha esse prazo. */
 const LAZY_MODULE_WAIT_MS = 10_000;
-const LAZY_TEST_TIMEOUT_MS = 30_000;
+const LAZY_TEST_TIMEOUT_MS = prazoDeTeste(30_000);
 
 /** Uma amostra por tipo declarado no registro: cada uma tem de desenhar alguma coisa e nunca lançar. */
 const KINDS = [...new Map(PRESET_GROUPS.map((group) => [group.sample, group])).values()];

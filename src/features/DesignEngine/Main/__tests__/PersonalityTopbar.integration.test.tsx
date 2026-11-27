@@ -11,11 +11,12 @@ import SarakUIProvider from '../../../../core/Provider/SarakUIProvider';
 import { PERSONALITIES } from '../../../../core/Design/presets/components/personalities';
 import { ThemeCustomizationTab } from '../ThemeCustomizationTab';
 
+import { prazoDeTeste } from '../../../../shared/testing/prazoDeTeste';
 vi.mock('../../Canvas/PreviewCanvas', () => ({
     PreviewCanvas: () => <div data-testid="preview-canvas" />,
 }));
 
-vi.setConfig({ testTimeout: 120000 });
+vi.setConfig({ testTimeout: prazoDeTeste(120000) });
 
 describe('Personalidades pelo painel', () => {
     it('as dez aplicam, uma depois da outra, sem sair da decisão e com o Aplicar habilitado', async () => {

@@ -8,10 +8,11 @@ import { resolvePalette } from '../resolve';
 import { SARAK_LEGACY_PALETTE_IDS, SARAK_PALETTE_PRESET_TEXT_KEYS, SARAK_PALETTE_PRESETS } from '../presets';
 import type { SarakPaletteType } from '../types';
 
+import { prazoDeTeste } from '../../../../shared/testing/prazoDeTeste';
 const TYPES: SarakPaletteType[] = ['monochromatic', 'analogous', 'complementary', 'split-complementary', 'triadic'];
 const ids = Object.keys(SARAK_PALETTE_PRESETS);
 /** Estes testes calculam a paleta de todo o catálogo nos dois modos: o tempo cresce com o catálogo, então os 5 s padrão não bastam. */
-const CATALOG_TIMEOUT_MS = 30_000;
+const CATALOG_TIMEOUT_MS = prazoDeTeste(30_000);
 
 describe('SARAK_PALETTE_PRESETS — o catálogo de paletas prontas', () => {
     it('tem de 12 a 78 presets', () => {

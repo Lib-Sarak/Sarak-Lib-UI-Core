@@ -10,8 +10,9 @@ import { COLUMN_DECISIONS, decisionLayers } from '../../../utils/decisions';
 import { useDesignVariables } from '../../../../../core/Design/hooks/useDesignVariables';
 import { sarakGetDefaultDesignState } from '../../../../../core/Design/master-map';
 
+import { prazoDeTeste } from '../../../../../shared/testing/prazoDeTeste';
 vi.mock('../ThemeDecisionOptions', () => ({ ThemeDecisionOptions: () => <div data-testid="options" /> }));
-vi.setConfig({ testTimeout: 30000 });
+vi.setConfig({ testTimeout: prazoDeTeste(30000) });
 
 const decisionContext = buildDecisionContext();
 const colors = COLUMN_DECISIONS.find((decision) => decision.id === 'colors')!;

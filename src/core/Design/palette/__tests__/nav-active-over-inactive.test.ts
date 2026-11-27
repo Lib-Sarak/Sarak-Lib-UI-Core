@@ -6,12 +6,13 @@ import { SARAK_PALETTE_PRESETS } from '../presets';
 import { resolvePalette } from '../resolve';
 import type { SarakPaletteMode } from '../types';
 
+import { prazoDeTeste } from '../../../../shared/testing/prazoDeTeste';
 const MODES: SarakPaletteMode[] = ['light', 'dark'];
 const MIN_TEXT_CONTRAST = 4.5;
 /** Cada tom de barra de fundo claro, o único em que o item ativo é a cor de ênfase global (nos contrastantes é o texto do hover). */
 const TONES = ['neutral', 'surface'] as const;
 /** Os cálculos de todo o catálogo nos dois modos e dois tons cabem mal nos 5 s padrão. */
-const TIMEOUT_MS = 30_000;
+const TIMEOUT_MS = prazoDeTeste(30_000);
 
 const ratioOf = (design: Record<string, unknown>, fg: string, bgChain: string[]): number => {
     const result = evaluatePair({ fg, bgChain, min: MIN_TEXT_CONTRAST }, design);

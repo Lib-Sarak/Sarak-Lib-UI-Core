@@ -7,6 +7,7 @@ import { SARAK_PALETTE_PRESETS } from '../../palette/presets';
 import { resolvePalette } from '../../palette/resolve';
 import type { SarakPaletteMode } from '../../palette/types';
 
+import { prazoDeTeste } from '../../../../shared/testing/prazoDeTeste';
 const TINT = '--sarak-surface-tint-color';
 const FOCUS = '--sarak-surface-neon-color';
 const MODES: SarakPaletteMode[] = ['light', 'dark'];
@@ -46,7 +47,7 @@ describe('emitSurfaceTint — a tinta do degradê e do brilho neon', () => {
         expect(variables[FOCUS]).toBeUndefined();
     });
 
-    it('nas 78 paletas, a tinta do escuro é mais clara que a base e a do claro é a base exata', { timeout: 60_000 }, () => {
+    it('nas 78 paletas, a tinta do escuro é mais clara que a base e a do claro é a base exata', { timeout: prazoDeTeste(60_000) }, () => {
         const lightnessOf = (hex: string): number => [1, 3, 5].reduce((sum, start) => sum + parseInt(hex.slice(start, start + 2), 16), 0);
         Object.values(SARAK_PALETTE_PRESETS).forEach((preset) => MODES.forEach((mode) => {
             const colors = resolvePalette(preset, mode) as Record<string, string>;

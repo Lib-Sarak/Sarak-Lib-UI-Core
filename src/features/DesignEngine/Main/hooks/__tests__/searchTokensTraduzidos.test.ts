@@ -5,6 +5,7 @@ import { TokenCatalog } from '../../../../../core/Design/catalog';
 import { buildCatalogMap, searchTokens } from '../../../utils/token-search';
 import { buildSearchableTokens } from '../searchableTokens';
 
+import { prazoDeTeste } from '../../../../../shared/testing/prazoDeTeste';
 /** O administrador digita o nome que a tela mostra: o ajuste tem de estar entre os 5 primeiros, em qualquer idioma do painel. */
 const LANGUAGES: readonly SarakLibraryLanguage[] = ['pt', 'en', 'es', 'fr', 'de', 'it'];
 const TOP = 5;
@@ -28,13 +29,13 @@ describe('a busca acha o ajuste pelo nome que a tela mostra', () => {
         it(`${language}: os ajustes ficam entre os ${TOP} primeiros`, () => {
             const outside = ids.map((id) => ({ id, rank: rankOf(language, id) })).filter(({ rank }) => rank < 0 || rank >= TOP);
             expect(outside).toEqual([]);
-        }, 120_000);
+        }, prazoDeTeste(120_000));
     });
 
     it('pt: continua em primeiro lugar (sem piorar)', () => {
         const notFirst = ids.map((id) => ({ id, rank: rankOf('pt', id) })).filter(({ rank }) => rank !== 0);
         expect(notFirst).toEqual([]);
-    }, 120_000);
+    }, prazoDeTeste(120_000));
 
     it('"System theme" acha `mode`', () => {
         const found = searchTokens('System theme', buildSearchableTokens('en', catalogMap), searchCatalog);

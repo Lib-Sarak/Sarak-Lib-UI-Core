@@ -4,16 +4,17 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 
 // Cada opção desenha componentes reais (botão em 4 estados, campo, cartão): a lista inteira em jsdom passa dos 5 s padrão sob carga.
-vi.setConfig({ testTimeout: 30000 });
+vi.setConfig({ testTimeout: prazoDeTeste(30000) });
 import { ButtonsCatalog } from '../ButtonsCatalog';
 
+import { prazoDeTeste } from '../../../../../shared/testing/prazoDeTeste';
 vi.mock('framer-motion', async () => {
     const actual = await vi.importActual('framer-motion');
     return { ...actual as any, motion: { button: ({ children, className, ...props }: any) => <button className={className} {...props}>{children}</button> } };
 });
 
 // Cada opção desenha o botão real em quatro estados; sob a suíte inteira em paralelo a lista passa dos 5 s padrão.
-const HEAVY_RENDER_TIMEOUT_MS = 30000;
+const HEAVY_RENDER_TIMEOUT_MS = prazoDeTeste(30000);
 
 describe('ButtonsCatalog', () => {
     it('renderiza a aba Curados por padrão', () => {

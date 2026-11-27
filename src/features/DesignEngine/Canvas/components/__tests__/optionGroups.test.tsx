@@ -3,7 +3,7 @@ import { fireEvent, render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 // Cada opção desenha componentes reais (botão em 4 estados, campo, cartão): a lista inteira em jsdom passa dos 5 s padrão sob carga.
-vi.setConfig({ testTimeout: 30000 });
+vi.setConfig({ testTimeout: prazoDeTeste(30000) });
 import { CardsCatalog } from '../CardsCatalog';
 import { ButtonsCatalog } from '../ButtonsCatalog';
 import { InputsCatalog } from '../InputsCatalog';
@@ -13,6 +13,7 @@ import { SAMPLE_BUTTON_STATES, SAMPLE_TEXTURE_OPACITY } from '../SampleParts';
 import { getPresetGroup } from '../../../../../core/Design/presets/components/registry';
 import { TYPOGRAPHY_PRESETS } from '../../../../../core/Design/presets/components/typography';
 
+import { prazoDeTeste } from '../../../../../shared/testing/prazoDeTeste';
 // O cartão real do painel (`SarakTitleCard`) lê o design pelo contexto; sem o Provider, o teste entrega um design vazio.
 vi.mock('../../../../../core/Provider/SarakUIProvider', async (importOriginal) => ({
     ...(await importOriginal<typeof import('../../../../../core/Provider/SarakUIProvider')>()),
@@ -32,7 +33,7 @@ const GROUPS = [
 ] as const;
 
 // Cada teste monta o grupo inteiro duas vezes, com componentes reais: sob a suíte em paralelo passa dos 5 s padrão.
-const HEAVY_RENDER_TIMEOUT_MS = 30000;
+const HEAVY_RENDER_TIMEOUT_MS = prazoDeTeste(30000);
 
 const GROUPS_WITH_SCOPE = GROUPS.filter(([name]) => name !== 'TypographyCatalog');
 

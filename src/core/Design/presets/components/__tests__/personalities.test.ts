@@ -8,6 +8,7 @@ import { evaluatePair } from '../../../../../../gates/scripts/audit/verify_contr
 import { composeThemeDesign } from '../../themes/compose';
 import { PERSONALITIES, getPersonality } from '../personalities';
 
+import { prazoDeTeste } from '../../../../../shared/testing/prazoDeTeste';
 const TOKENS = new Map(sarakGetAllDesignTokens().map((token) => [token.id, token]));
 const DEFAULTS = sarakGetDefaultDesignState() as Record<string, unknown>;
 const MODES = ['light', 'dark'] as const;
@@ -147,5 +148,5 @@ describe('Personalidades — legíveis em toda paleta, nos dois modos', () => {
             return failingPairs(applied).filter((pair) => !baseline.has(pair)).map((pair) => `${palette} (${mode}): ${pair}`);
         }));
         expect(broken).toEqual([]);
-    }, 120_000);
+    }, prazoDeTeste(120_000));
 });

@@ -11,6 +11,7 @@ import { sarakGetAllDesignTokens } from '../../../../core/Design/master-map';
 import type { SarakDesignToken, SarakTokenValue } from '../../../../core/Design/types';
 import type { SarakDesignState } from '../../../../core/Provider/types';
 
+import { prazoDeTeste } from '../../../../shared/testing/prazoDeTeste';
 /**
  * O painel grava o que mostra: cada controle devolve ao rascunho um valor que a validação do tema aceita e
  * que é o que a tela exibiu. Os átomos leem `useSarakUI()`, então tudo monta sob o Provider.
@@ -153,7 +154,7 @@ describe('todo tipo do schema tem controle', () => {
             expect(container.innerHTML, `tipo ${type}`).not.toBe('');
             unmount();
         }
-    }, 30_000);
+    }, prazoDeTeste(30_000));
 });
 
 describe('cor do painel', () => {

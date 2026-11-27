@@ -4,12 +4,13 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 
 // Cada opção desenha componentes reais (botão em 4 estados, campo, cartão): a lista inteira em jsdom passa dos 5 s padrão sob carga.
-vi.setConfig({ testTimeout: 30000 });
+vi.setConfig({ testTimeout: prazoDeTeste(30000) });
 import { CardsCatalog } from '../CardsCatalog';
 import { useDesignVariables } from '../../../../../core/Design/hooks/useDesignVariables';
 import { THEME_CARD_PRESETS } from '../../../../../core/Design/presets/components/cards';
 import type { SarakDesignState } from '../../../../../core/Provider/types';
 
+import { prazoDeTeste } from '../../../../../shared/testing/prazoDeTeste';
 // O cartão real do painel (`SarakTitleCard`) lê o design pelo contexto; sem o Provider, o teste entrega um design vazio.
 vi.mock('../../../../../core/Provider/SarakUIProvider', async (importOriginal) => ({
     ...(await importOriginal<typeof import('../../../../../core/Provider/SarakUIProvider')>()),

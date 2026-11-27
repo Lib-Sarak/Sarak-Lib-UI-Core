@@ -20,6 +20,7 @@ vi.mock('../hooks/useSarakTableData', () => ({
 import { SarakTable } from '../SarakTable';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 
+import { prazoDeTeste } from '../../../../shared/testing/prazoDeTeste';
 afterEach(() => {
     tableState.data = [{ id: 1, nome: 'Beto', active: true }, { id: 2, nome: 'Ana', active: false }];
     tableState.filteredData = tableState.data;
@@ -139,5 +140,5 @@ describe('SarakTable — estados de leitura', () => {
         render(<SarakUIProvider><SarakTable error="Indisponível" onRetry={onRetry} /></SarakUIProvider>);
         fireEvent.click(screen.getByRole('button', { name: 'Tentar novamente' }));
         expect(onRetry).toHaveBeenCalledTimes(1);
-    }, 30_000);
+    }, prazoDeTeste(30_000));
 });

@@ -27,6 +27,7 @@ vi.mock('../KitchenSinkPreview', () => ({
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 import type { SarakUIContextType } from '../../../../core/Provider/types';
 
+import { prazoDeTeste } from '../../../../shared/testing/prazoDeTeste';
 const TEST_SIDEBAR_WIDTH = 250;
 const THEME_LOAD_TIMEOUT_MS = 10_000;
 
@@ -60,7 +61,7 @@ describe('PreviewCanvas', () => {
             timeout: THEME_LOAD_TIMEOUT_MS,
         });
         expect(container).toMatchSnapshot();
-    }, 30000); // A montagem do Provider e do catálogo lazy pode exceder o timeout padrão sob coverage.
+    }, prazoDeTeste(30000)); // A montagem do Provider e do catálogo lazy pode exceder o timeout padrão sob coverage.
 });
 
 describe('PreviewCanvas — quadro único', () => {
@@ -88,7 +89,7 @@ describe('PreviewCanvas — quadro único', () => {
         expect(container.querySelector('#presets-catalog')).toBeNull();
         expect(container.querySelector('[data-testid="catalog-preview-frame"]')).toBeNull();
         expect(container.querySelectorAll('[data-testid="device-viewport"]')).toHaveLength(1);
-    }, 30000);
+    }, prazoDeTeste(30000));
 
     it('o quadro rola por conta própria, sem altura calculada nem redimensionador', () => {
         const container = renderCanvas();
@@ -100,7 +101,7 @@ describe('PreviewCanvas — quadro único', () => {
         expect(previewFrame.style.height).toBe('');
         expect(previewFrame.className).not.toMatch(/resize/);
         expect(`${previewFrame.className} ${previewFrame.getAttribute('style')}`).not.toContain('vh');
-    }, 30000);
+    }, prazoDeTeste(30000));
 });
 
 // A medição de estabilidade do `design` do DesignScope externo mora em

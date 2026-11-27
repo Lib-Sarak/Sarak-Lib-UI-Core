@@ -9,6 +9,7 @@ import { SarakActivityFeed } from '../SarakActivityFeed';
 import { SarakAssigneePicker } from '../../Inputs/SarakAssigneePicker';
 import { SarakDrawer } from '../../Modals/SarakDrawer';
 
+import { prazoDeTeste } from '../../../../shared/testing/prazoDeTeste';
 const people = [{ id: 'p1', name: 'Ana Souza' }, { id: 'p2', name: 'Bruno Lima' }];
 const columns = [
     { id: 'todo', title: 'A fazer', cards: [{ id: 'k1', title: 'Subir tela de login' }, { id: 'k2', title: 'Revisar PR' }] },
@@ -47,7 +48,7 @@ function BoardWithDetail() {
 // `findBy*` padrão (1 s) e do teste padrão (5 s). Os limites são declarados para a montagem, não deixados à sorte.
 const MOUNT_TIMEOUT_MS = 30_000;
 configure({ asyncUtilTimeout: MOUNT_TIMEOUT_MS });
-vi.setConfig({ testTimeout: MOUNT_TIMEOUT_MS + 15_000 });
+vi.setConfig({ testTimeout: prazoDeTeste(MOUNT_TIMEOUT_MS + 15_000) });
 
 describe('Detalhe do cartão — composição só com átomos da lib', () => {
     it('clicar no cartão abre o detalhe com título, responsável, checklist, comentários e histórico', async () => {
