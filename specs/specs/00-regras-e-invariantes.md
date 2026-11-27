@@ -172,6 +172,10 @@ O balde deduzido nunca fica invisível: a saída de `npm run audit` imprime a **
 - **Grid sem token 1:1.** Quando a malha responsiva não tem equivalente no catálogo, o mecanismo correto é um **preset nomeado** no companion do hook (`RESPONSIVE_GRID_PRESETS`/`RESPONSIVE_SPACING_PRESETS` em `useStructuralStyles.presets.ts`) — **nunca** um carve-out permanente no auditor.
 - **Componentes `internal/` desacoplados do Provider** (ex.: `CalendarPanel`) podem usar valor estrutural inline: não têm acesso à árvore de tema **por design**, não por omissão.
 - **O `<input type="color">`** é isento pelo mesmo marcador: o `value` de um input de cor nativo **só** aceita hex literal — `var()` quebra o elemento.
+- **Forma de detalhe é desenho fixo** *(decisão do dono, 2026-11-27)*. Raio e sombra por utilitária do Tailwind (`rounded-md`…`rounded-3xl`,
+  `shadow-sm`…`shadow-2xl`) e as molas do `framer-motion` nos componentes e no painel não ganham token. Elas são o acabamento do
+  desenho da peça, e não escolha do tema. O tema decide a forma pelos tokens que já existem: raio do cartão, do botão e do campo,
+  sombra e movimento. Esta isenção não cobre valor solto (`#hex`, `Npx`), que continua no detector de valor.
 
 Isenção sem motivo escrito é violação desta regra, não exceção a ela — e o gate cobra isso: marcador vazio não isenta (§R2.3-bis).
 
