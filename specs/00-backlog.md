@@ -64,6 +64,7 @@ via normal.
 |---|---|---|---|---|
 | 1 | O caso "se distingue a olho" de Forma da `presets-do-painel` reprova no `HEAD` por `cardTextures` (`card-tex-grid` × cartão sem textura = 1,97%); no worktree, quatro texturas caem entre 1,61% e 1,97% | plan-188 | 2026-11-27 | alto |
 | 2 | A medida de distinção da `presets-do-painel` depende da fase da animação nos componentes animados (framer-motion não para com `animations: 'disabled'`): um par pode passar por acaso, como o do estado vazio passava no `HEAD` | plan-189 | 2026-11-27 | médio |
+| 3 | Na barra do topo a 820 px, em 14 temas, o slot da busca fica com largura e o campo oculto (contêiner abaixo de 10rem): cerca de 106 px vazios entre a marca e o primeiro item (`aurora-veil`). A `barra-de-topo-estreita` pula o caso com motivo | plan-186 | 2026-11-27 | médio |
 
 ---
 
