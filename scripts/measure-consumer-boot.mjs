@@ -7,6 +7,9 @@
 //      lib com só o tema padrão e sem catálogo (a referência, medida NESTA execução,
 //      com os loaders e o catálogo trocados por vazios) + o catálogo leve gzipado
 //      + 3 KB de folga. O teto acompanha o resto da lib: nenhum número congelado.
+//   1b. ABSOLUTO — o boot não passa de `BOOT_ABSOLUTE_CEILING_BYTES`. O relativo acompanha a
+//      própria lib (a referência cresce junto), então não vê o boot engordar aos poucos; este é
+//      fixo. Subir o teto é decisão do dono, registrada no commit.
 //   2. ESTRUTURAL — nenhum módulo de tema ≠ padrão (nem `all.ts`) entre os inputs
 //      dos pedaços do fecho estático, lidos do `metafile` do bundler do consumidor.
 //   3. POR TEMA — cada tema, empacotado sozinho e gzipado, ≤ 15 KB.
@@ -38,6 +41,11 @@ export const SLACK_BYTES = 3 * 1024;
 // Decisão do dono: 15 KB aceita tema sob demanda, quase nunca trocado e sem custo no uso;
 // conteúdo pesado fica em arquivo próprio. Nova alta exige medição e decisão; acima, enxugue.
 export const PER_THEME_CEILING_BYTES = 15 * 1024;
+
+// Medido no consumidor mínimo após tirar os catálogos de texto das peças opcionais do boot
+// (480 983 B gzip) + 811 B, metade da menor subida entre os quatro catálogos de volta ao boot, um a um
+// (advanced, +1 623 B; os outros três sobem 2 000 B ou mais). Não suba para caber: tire o que voltou ao boot.
+export const BOOT_ABSOLUTE_CEILING_BYTES = 481_794;
 
 const gzipSize = (content) => zlib.gzipSync(content, { level: 9 }).length;
 const toPosix = (file) => file.split(path.sep).join('/');
@@ -175,6 +183,10 @@ async function main() {
   console.log(`teto relativo (ref + catálogo + 3 KB):   ${kb(result.ceiling)} gzip`);
   if (result.actual.gzip > result.ceiling) {
     problems.push(`boot ${kb(result.actual.gzip)} gzip acima do teto relativo ${kb(result.ceiling)} — algo pesado voltou ao boot.`);
+  }
+  console.log(`teto absoluto:                             ${kb(BOOT_ABSOLUTE_CEILING_BYTES)} gzip`);
+  if (result.actual.gzip > BOOT_ABSOLUTE_CEILING_BYTES) {
+    problems.push(`boot ${kb(result.actual.gzip)} gzip acima do teto absoluto ${kb(BOOT_ABSOLUTE_CEILING_BYTES)} — algo pesado voltou ao boot.`);
   }
   result.leaks.forEach((leak) => problems.push(`o fecho estático do consumidor contém ${leak}.`));
 

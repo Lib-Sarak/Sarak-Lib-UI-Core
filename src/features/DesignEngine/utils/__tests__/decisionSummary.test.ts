@@ -3,7 +3,7 @@ import { LIBRARY_TEXT_CATALOG, type LibraryTextKey } from '../../../../core/i18n
 import { fontFamilyName, paletteName, summarizeDecision } from '../decisionSummary';
 
 const text = (key: LibraryTextKey, vars?: Record<string, string | number>): string =>
-    Object.entries(vars ?? {}).reduce((out, [name, value]) => out.split(`{${name}}`).join(String(value)), LIBRARY_TEXT_CATALOG[key].pt);
+    Object.entries(vars ?? {}).reduce((out, [name, value]) => out.split(`{${name}}`).join(String(value)), LIBRARY_TEXT_CATALOG[key]!.pt);
 
 describe('decisionSummary', () => {
     it('fontFamilyName fica com o nome da família, sem aspas nem reservas', () => {
@@ -39,7 +39,7 @@ describe('decisionSummary', () => {
 
     it.each(['pt', 'en', 'es', 'fr', 'de', 'it'] as const)('a linha sai no idioma %s, sem sobrar o id', (language) => {
         const translate = (key: LibraryTextKey, vars?: Record<string, string | number>): string =>
-            Object.entries(vars ?? {}).reduce((out, [name, value]) => out.split(`{${name}}`).join(String(value)), LIBRARY_TEXT_CATALOG[key][language]);
+            Object.entries(vars ?? {}).reduce((out, [name, value]) => out.split(`{${name}}`).join(String(value)), LIBRARY_TEXT_CATALOG[key]![language]);
 
         const lines = [summarizeDecision('shape', draft, translate), summarizeDecision('components', draft, translate), summarizeDecision('bars', draft, translate), summarizeDecision('layout', draft, translate)];
 

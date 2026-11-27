@@ -11,7 +11,7 @@ const renderRow = (ui: React.ReactNode, config?: Record<string, unknown>) =>
 
 /** `t` de teste — resolve direto do catálogo, no idioma pedido (default: pt, a base da lib). */
 const makeT = (language: SarakLibraryLanguage = 'pt') =>
-    ((key: keyof typeof LIBRARY_TEXT_CATALOG) => LIBRARY_TEXT_CATALOG[key][language]) as Parameters<typeof renderShellPreferenceRow>[1]['t'];
+    ((key: keyof typeof LIBRARY_TEXT_CATALOG) => LIBRARY_TEXT_CATALOG[key]![language]) as Parameters<typeof renderShellPreferenceRow>[1]['t'];
 
 const ctx = (overrides: Partial<Parameters<typeof renderShellPreferenceRow>[1]> = {}) => ({
     isNavHidden: false,

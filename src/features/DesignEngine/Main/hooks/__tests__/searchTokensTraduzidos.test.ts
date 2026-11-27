@@ -12,7 +12,7 @@ const catalogMap = new Map(TokenCatalog.map((entry) => [entry.tokenId, { name: e
 const searchCatalog = buildCatalogMap(TokenCatalog);
 
 const rankOf = (language: SarakLibraryLanguage, tokenId: string): number => {
-    const name = LIBRARY_TEXT_CATALOG[decisionTokenTextKey(tokenId, 'name') as LibraryTextKey][language];
+    const name = LIBRARY_TEXT_CATALOG[decisionTokenTextKey(tokenId, 'name') as LibraryTextKey]![language];
     return searchTokens(name, buildSearchableTokens(language, catalogMap), searchCatalog).findIndex((token) => token.id === tokenId);
 };
 
