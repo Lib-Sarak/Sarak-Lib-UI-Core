@@ -62,8 +62,8 @@ via normal.
 
 | # | Achado | Origem | Registrado em | Peso |
 |---|---|---|---|---|
-| 64 | Impressão da `SarakDataTable`: quebra de página real e cabeçalho repetido por folha não foram medidos (a emulação de mídia não pagina); com `groupBy`, grupo recolhido sai recolhido | achado da `plan-152` | 2026-11-02 | baixo |
-| 69 | Grupos do painel com uma ou duas opções à vista porque a diferença entre elas só aparece em animação ou em interação, ou tem contraste baixo: janela, rolagem, troca de página, movimento, sombra, direção da sombra, moldura e degradê. As outras opções estão em "Ver todas" (`except` em `registry.ts`). Um desenho estático mostraria a diferença, como a curva de easing no movimento | veredito da `plan-141` | 2026-11-03 | baixo |
+| 1 | O caso "se distingue a olho" de Forma da `presets-do-painel` reprova no `HEAD` por `cardTextures` (`card-tex-grid` × cartão sem textura = 1,97%); no worktree, quatro texturas caem entre 1,61% e 1,97% | plan-188 | 2026-11-27 | alto |
+| 2 | A medida de distinção da `presets-do-painel` depende da fase da animação nos componentes animados (framer-motion não para com `animations: 'disabled'`): um par pode passar por acaso, como o do estado vazio passava no `HEAD` | plan-189 | 2026-11-27 | médio |
 
 ---
 

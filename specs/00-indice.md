@@ -5,7 +5,7 @@ dominio: "Governança de Specs (SDD)"
 status: "🟢 Vigente"
 tags: ["processo", "indice", "sdd"]
 relacionados: ["[[00-contexto]]", "[[00-backlog]]", "[[00-prompt-revisor]]", "[[00-prompt-executor]]"]
-proximo_numero_plan: "187"
+proximo_numero_plan: "190"
 ---
 
 # 0. O que é este arquivo
@@ -42,8 +42,11 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-185-suite-estavel-sob-carga](plan/plan-185-suite-estavel-sob-carga.md) | Fazer o caminho da release valer o prazo de 30 s também para os testes que declaram prazo próprio, e tirar do prazo padrão de 5 s o teste de integração que estoura sob carga | — | 🟡 Em execução | 11-testes-e-cobertura |
+| 1 | [plan-185-suite-estavel-sob-carga](plan/plan-185-suite-estavel-sob-carga.md) | Fazer o caminho da release valer o prazo de 30 s também para os testes que declaram prazo próprio, e tirar do prazo padrão de 5 s o teste de integração que estoura sob carga | — | 🟢 Aprovada | 11-testes-e-cobertura |
 | 2 | [plan-186-quatro-defeitos-de-componente](plan/plan-186-quatro-defeitos-de-componente.md) | Fazer o style do importador vencer o do token no SarakButton, traduzir os textos fixos do SarakSearchCard, fazer a barra do topo do dot-matrix-elegant mostrar itens a 820 px e apagar o ResponsiveSliderControl sem uso | — | 🟡 Em execução | 00-regras-e-invariantes |
+| 3 | [plan-187-tabela-impressa-em-varias-folhas](plan/plan-187-tabela-impressa-em-varias-folhas.md) | Fazer a SarakDataTable e a SarakDataGrid saírem inteiras no papel em várias folhas, com o cabeçalho repetido em cada folha, sem linha cortada entre duas, e com todo grupo aberto, provado num PDF de verdade | — | 🟢 Aprovada | 12-kit-do-consumidor |
+| 4 | [plan-188-amostras-que-mostram-a-diferenca](plan/plan-188-amostras-que-mostram-a-diferenca.md) | Dar a cada opção de janela, rolagem, troca de página, movimento, sombra, direção da sombra, moldura e degradê uma amostra estática que a distinga das outras do grupo nos dois modos, e com isso pôr à vista as opções que hoje ficam escondidas em Ver todas | — | 🟢 Aprovada | 06-painel-de-customizacao-e-preview |
+| 5 | [plan-189-estado-vazio-que-se-distingue](plan/plan-189-estado-vazio-que-se-distingue.md) | Fazer as amostras de empty-soft-orbs e empty-ring saírem diferentes no grupo Estado vazio do painel, nos dois modos, e com isso devolver a presets-do-painel ao verde para o fechamento da rc.2 | — | 🟢 Aprovada | 06-painel-de-customizacao-e-preview |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🚦 **Campanha da `8.0.0-rc.4` (2026-10-27).** Contrato aceito: [`anexos/rc4-contrato.md`](plan/anexos/rc4-contrato.md). Ordem: a `plan-128` vai **sozinha** (cria o hook de idioma e os arquivos de catálogo das outras); depois `plan-129` ‖ `plan-130` ‖ `plan-131` ‖ `plan-132` ‖ `plan-119` lote 8 ‖ `plan-133`, em paralelo (pastas disjuntas; arquivos compartilhados só por acréscimo); depois da 133, `plan-134` ‖ `plan-135`. A 134 e a 135 geram prévias em `C:\tmp\sarak-rc4-previa\` que o dono aprova durante a revisão. Verificação pelo protocolo do contrato §9: uma vez por plan e a bateria completa uma vez, no fechamento, depois do lote 2 do ERP. A versão (`npm version`) é do dono.
