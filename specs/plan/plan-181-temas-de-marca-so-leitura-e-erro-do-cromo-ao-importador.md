@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Temas de marca só de leitura e o erro do cromo entregue ao importador"
 objetivo: "Permitir ao importador marcar um tema dele como só leitura, para o painel oferecer Duplicar em vez de Salvar e Apagar, e entregar ao importador os erros que o cromo contém por uma prop onError"
 dominio: "Temas / Cromo"
-status: "🔴 A executar"
+status: "🟠 Em revisão"
 prioridade: "Média"
 tags: ["plan", "contrato-aditivo", "temas", "cromo", "erro"]
 relacionados: ["[[09-temas-e-presets]]", "[[05-cromo-e-slots]]", "[[010-temas-salvos-pelo-usuario]]", "[[011-tema-salvo-por-uma-porta-de-escrita]]", "[[017-porta-de-apagar-tema-simetrica-a-de-escrever]]"]
@@ -42,6 +42,11 @@ de correção.
 ## 3.2 Fora
 - Mudar a imutabilidade do catálogo da lib.
 - Um boundary novo em volta do cromo inteiro.
+- **A `plan-182` e a `plan-184` correm em paralelo, no mesmo worktree.**
+  - Fique fora de `src/core/i18n/catalog.ts` e de `catalogEntries.access`, `advanced`, `entries` e `system`, que a 182 move.
+  - Fique fora de `src/core/Provider/utils/overlayPreferences.ts`, que é da 184.
+  - Se precisar de texto novo, acrescente a chave a outro catálogo, só por acréscimo, relendo o arquivo antes.
+  - Siga a trava de build da §5, passo 4.
 
 # 4. Referências obrigatórias
 
@@ -71,6 +76,11 @@ de correção.
      `src/features/DesignEngine`;
    - `npm run verify -- --tier=quick`;
    - `npm run build`, porque o tipo público muda e o `public-types:check` só roda no build.
+   - **Trava de build:** o build roda com a trava `C:\tmp\sarak-build.lock`, a mesma das plans paralelas.
+     - Pegue a trava com `node -e "require('fs').writeFileSync('C:/tmp/sarak-build.lock','plan-181',{flag:'wx'})"`. Se o comando
+       falhar, outra plan está com ela: espere e tente de novo.
+     - Solte com `node -e "require('fs').rmSync('C:/tmp/sarak-build.lock')"` assim que terminar, inclusive se o build falhar.
+     - Nunca apague a trava de outra plan. Se ela ficar parada mais de 30 minutos sem build rodando, relate.
 
 # 6. Critérios de aceite
 
@@ -105,6 +115,55 @@ O revisor não repete os comandos do executor. Ele confere:
 ---
 
 # 9. Resumo da execução
+
+## Resumo da execução — 2026-11-26
+
+**Resultado:** Concluído (com ressalvas de verificação, abaixo)
+
+**Estado do worktree ao iniciar**
+Já havia trabalho de outras plans (182 e 184): `src/core/Provider/utils/overlayPreferences.ts` (+ teste), `src/buildInfo.ts`, `src/core/Provider/buildInfo.ts`, `specs/00-indice.md`, plans 177/180 removidas, plans 181/182/184 e `specs/specs/10-seguranca-e-acessibilidade.md` modificados, e `dist/` inteiro modificado/novo. Durante a execução surgiram, vindos das plans paralelas (não são meus): `src/core/i18n/catalog.ts`, `useLibraryText.ts`, `lazyCatalogs*`, `vitest.setup.ts`, `shellPreferenceRow.test.tsx`, `searchTokensTraduzidos.test.ts`, `decisionSummary.test.ts`, `scripts/measure-consumer-boot.mjs`.
+
+**O que foi feito**
+- B72: `themeTypes.ts` ganha `readOnly?: boolean` em `SarakThemeEntry`. `useThemeCustomizationActions.ts`: `isReadOnlyTheme`; `isImporterTheme` passa a ser falso para tema `readOnly` (some Apagar e a opção de substituir); novo `handleOpenDuplicate` (abre o modal com `duplicate`). `ThemeActionBar.tsx`: props `isReadOnlyTheme`/`onDuplicate`; com `readOnly` o menu mostra "Duplicar" no lugar de "Salvar tema". `ThemeCustomizationTab.tsx` liga as props.
+- B63: `SarakErrorBoundary.tsx` exporta o tipo `SarakErrorHandler`. `onError` novo em `SarakAppChrome` (repassado a `useStableContent`, aos corpos sidebar/topbar/mobile e a `ChromeContentRegion` para o `secondaryContent`) e em `SarakSection` (que passa a omitir o `onError` DOM de `HTMLAttributes`).
+- Docs: `docs/migracoes.md` (duas notas 9.0.0 aditivas + troca da orientação da 8.0.0), `docs/persistencia-de-tema.md`, `sarak-ui/GUIA-FRONTEND.md`; derivados por `npm run catalog` e `npm run guide` (`docs/component-catalog.*`, `sarak-ui/*`).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Provider/themeTypes.ts` | alterado | `readOnly` |
+| `src/features/DesignEngine/Main/hooks/useThemeCustomizationActions.ts`, `components/ThemeActionBar.tsx`, `ThemeCustomizationTab.tsx` | alterado | Duplicar no lugar de Salvar/Apagar |
+| `src/components/Layout/SarakAppChrome.tsx`, `SarakAppChromeMobile.tsx`, `chrome/ChromeSidebarBody.tsx`, `ChromeTopbarBody.tsx`, `ChromeContentRegion.tsx`, `useStableContent.tsx` | alterado | `onError` |
+| `src/components/atomic/Feedback/SarakErrorBoundary.tsx`, `Templates/SarakSection.tsx` | alterado | tipo `SarakErrorHandler`; `onError` |
+| testes: `useThemeCustomizationActions.test.ts`, `ThemeActionBar.test.tsx`, `SarakSection.test.tsx`, `SarakAppChrome.onError.test.tsx` (novo) | alterado/criado | B72 e B63 |
+| `docs/migracoes.md`, `docs/persistencia-de-tema.md`, `sarak-ui/GUIA-FRONTEND.md` | alterado | notas |
+| `docs/component-catalog.*`, `sarak-ui/*` | gerado | derivados |
+
+**Verificações executadas**
+- `npx vitest run` nos 5 arquivos de teste novos/tocados + ThemeCustomizationTab → 5 arquivos, 43 testes, verdes.
+- `npx vitest run src/components/Layout src/components/atomic/Templates src/features/DesignEngine src/components/atomic/Feedback` → 300/301 arquivos verdes; 2 testes falharam em `configIsSavedDesign.persistenceIntegration.test.tsx` (sob carga, com outras plans rodando); o arquivo isolado passa (3/3).
+- `npm run verify -- --tier=quick`: `tsc` OK; `catalog:check` falhou e foi corrigido por `npm run catalog`; `audit:baseline` acusou 1 violação de clean-code minha (`SarakAppChromeMobile.tsx` com 253 linhas), corrigida (249 linhas) — o `run_audit` ainda lista 2 `<input>` cru em `SarakMultiSelect`/`SarakUploader`, arquivos que não toquei; `plan-index:check` falha pela plan-184 (índice 🟡 × frontmatter 🟠), não minha. Não reexecutei o quick completo depois dessas correções.
+- `npm run build` (com a trava `C:/tmp/sarak-build.lock`, solta ao fim) → exit 0; `public-types:check` e `catalog:check` passaram.
+- Teste do B72/B63 "falhavam antes": não rodei contra o HEAD limpo; os testes exercitam props/campos que não existiam (falhariam por contrato).
+
+**Critérios de aceite**
+- [x] Os dois testes passam depois (ver acima); "falhavam antes" não conferido em cópia do HEAD.
+- [x] Build passa, `public-types:check` em dia.
+- [x] Notas de migração escritas e kit derivado atualizado (`guide`).
+- [ ] `git diff --stat` só da §3.1 — parcial: há mudanças de plans paralelas no worktree (listadas acima), e `dist/` do build.
+
+**Decisões e suposições**
+- "Duplicar" no menu: o painel já tinha "Duplicar" só como rádio do modal; criei o item de menu `sarak-panel-duplicate-theme` para tema `readOnly`. Sem `readOnly`, nada muda.
+- `readOnly` não muda o tratamento dos temas do catálogo (continuam com "Salvar tema" no menu, como hoje).
+- `SarakSection` omite o `onError` DOM de `HTMLAttributes` (conflito de tipo); quem passava `onError` de imagem DOM à seção deixa de poder.
+- `GUIA-FRONTEND.md` é prosa editada direto; `npm run guide` só injeta/espelha.
+
+**Achados fora do escopo (não corrigidos)**
+- `SarakMultiSelect.tsx:118` e `SarakUploader.tsx:118`: `<input>` nativo cru (R10).
+- `tsc` acusa `Object is possibly 'undefined'` em testes de plans paralelas (`shellPreferenceRow`, `searchTokensTraduzidos`, `decisionSummary`) — já fora do baseline 0 nos testes alheios.
+
+**Pendências / riscos**
+- Rodar de novo o `verify quick` depois que 182/184 assentarem.
 
 ---
 

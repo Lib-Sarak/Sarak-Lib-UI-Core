@@ -217,6 +217,24 @@ o re-executariam a cada render, reentrando o foco e **perdendo digitação**. É
 
 **Pilha única de camadas.** `useOverlayLayer` guarda a ordem de abertura de Modal e Drawer: a camada nova fica acima da última aberta, seja qual for o tipo, sem número fixo por tipo. Quem abre uma camada só segue no z-index de sempre. A confirmação sobre uma gaveta recebe o foco preso, e ele volta à gaveta ao fechar. A pilha mora no módulo, porque essas peças funcionam sem Provider.
 
+**O alvo do foco.** O ciclo do `Tab` só passa por focáveis que se veem: os que estão em `display: none` ou `visibility: hidden` ficam
+de fora (`reachableFocusables`). O foco inicial exclui só o que está em `display: none` (`initialCandidates`). Por isso uma camada que
+nasce com `visibility: hidden` até ser posicionada, como o popover, ainda recebe o foco no primeiro controle. O hook tenta de novo no
+quadro seguinte se o navegador recusar o foco enquanto a camada está invisível.
+
+**A gaveta móvel do cromo é um diálogo.** `ChromeMobileDrawer` tem `role="dialog"`, `aria-modal="true"` e o nome `chromeDrawerLabel`.
+`SarakAppChromeMobile` prende o foco nela com o `useFocusTrap`. Ao abrir, o foco entra no primeiro item, e o `Tab` e o `Shift+Tab`
+circulam dentro dela. Enquanto ela está aberta, `useInertBackground` (`src/components/Layout/chrome/useInertBackground.ts`) deixa
+`inert` tudo o que não é ela, exceto o scrim que a fecha. O `inert` sai antes de o foco voltar ao gatilho, porque um elemento inerte
+não recebe foco. O Esc fecha a gaveta e devolve o foco.
+
+**O seletor de idioma** (`SarakShellLanguageSelector`) fecha com Esc, na lateral e no topo, e devolve o foco ao botão que o abriu. O
+botão expõe `aria-haspopup="menu"` e `aria-expanded`.
+
+**A troca de modo do cromo não tira o foco do conteúdo.** O conteúdo do `SarakAppChrome` vive num nó estável que muda de lugar
+quando o cromo troca de modo (`useStableContent.tsx`). O `ContentAnchor` guarda o último elemento focado dentro dele e o foca de novo
+depois de encaixar o nó, se nesse meio-tempo o foco não foi para outro elemento.
+
 ### b) Teclado e ARIA
 
 Navegação por `Tab`/`Shift+Tab`/`Enter`/`Espaço`/`ESC` nos componentes interativos, e ARIA nos não-nativos.
@@ -225,9 +243,19 @@ Navegação por `Tab`/`Shift+Tab`/`Enter`/`Espaço`/`ESC` nos componentes intera
 `SarakStepper`, `chrome/navItem.ts`, `SarakAppChrome`); `aria-expanded` no drawer mobile
 (`SarakAppChromeMobile`) e nos inputs compostos (`SarakDatePicker`, `SarakMultiSelect`).
 
+Na barra do topo, o grupo que contém a rota ativa leva `aria-current="true"` (`internal/ShellNavGroup.tsx`), e o "Mais" também, porque
+é montado com o mesmo grupo.
+
+**Nome e ordem do `Tab` no painel:**
+- O botão "?" do `HelpTooltip` se chama "Ajuda: <rótulo>" (chave `helpTooltipLabel`, nos seis idiomas).
+- O deslizante leva o rótulo visível como `aria-label` (`SliderControl`).
+- As amostras dentro dos cartões de opção são `inert` (`OptionTile.tsx`): os botões e campos reais delas ficam fora do `Tab` e da
+  árvore de acessibilidade. A prévia grande do painel continua interativa.
+
 **Honestidade sobre o alcance:** isto é cobertura **ampla**, não **auditada**. Não existe gate de a11y —
-nenhum `axe`, nenhum teste de árvore de acessibilidade agregado. A cobertura é a que os testes por
-componente exercitam. Ver §5.1.
+nenhum `axe`. A medição agregada que existe é de navegador e não roda no commit:
+`browser-tests/teclado-no-cromo-e-no-painel.spec.ts` percorre só com `Tab` o cromo a 1440 e a 390 px e as decisões do painel. Ela
+reprova parada sem nome na árvore de acessibilidade e parada cujo foco não muda a tela em ao menos 3:1. Ver §5.1.
 
 **A tela de autenticação** (`SarakAuthScreen`) é lida pelo leitor de tela:
 - E-mail, Senha e o código MFA têm `label` ligado ao campo por `htmlFor`/`id` (`useId`), e clicar no rótulo foca o campo.
@@ -236,21 +264,30 @@ componente exercitam. Ver §5.1.
   se contradiz.
 - O erro do formulário é `role="alert"`, e o aviso (`errorVariant="warning"`) é `role="status"`.
 
-### c) ✅ Anel de foco — FECHADO em 2026-08-04 (`plan-08`, F4)
+### c) Anel de foco
 
 O token existe: **`focusRingWidth`** (`src/core/Design/schema/engineering.ts:12-20`), slider 0-6px,
 default 2, emitindo `--sarak-focus-width`; a própria descrição instrui a **não** reduzir abaixo de 2px
 sem motivo validado. O schema que o hospeda chama-se, literalmente, "Acessibilidade e Camadas".
 
-**Agora o token é honrado nos dois lugares:**
+**A regra global vale para todo focável.** O seletor de `src/styles/_elements.css:110` cobre `a[href]`, `button`, `input`, `select`,
+`textarea`, `summary`, `[tabindex]` não negativo e os papéis `switch`, `button`, `tab`, `menuitem`, `checkbox`, `radio` e `slider`, em
+`:focus-visible`. O anel tem dois tons:
+- o contorno, na largura do token e na cor do texto do tema (`--theme-text-primary`), com 2 px de afastamento;
+- no vão entre o contorno e o elemento, um halo na cor do fundo do tema (`box-shadow` com `--bg-body`).
 
-| Onde o anel é desenhado | Respeita o token? |
+Texto e fundo do tema se contrastam entre si, então ao menos um dos dois tons fica em 3:1 ou mais contra a superfície onde o elemento
+pousa, seja ela qual for.
+
+| Onde o anel é desenhado | Como |
 | --- | --- |
-| `SarakLink` (`src/components/atomic/Navigation/SarakLink.tsx:72`) | ✅ `outlineWidth: 'var(--sarak-focus-width, 2px)'` |
-| Regra global de botão (`src/styles/_elements.css:92`) | ✅ `outline: var(--sarak-focus-width, 2px) solid …` — **corrigido em 2026-08-04** |
+| Regra global (`src/styles/_elements.css:110`) | todo focável, nos dois tons acima |
+| `SarakLink` (`src/components/atomic/Navigation/SarakLink.tsx:72`) | `outlineWidth: 'var(--sarak-focus-width, 2px)'` |
+| Controle com `<input>` real `sr-only` (`SarakSwitch`, `SarakCheckbox`, `SarakRadio`) | a peça visual irmã do input desenha o anel com `peer-focus-visible` (`src/components/atomic/Inputs/internal/peerFocusRing.ts`), na mesma largura e cor |
+| Botão de idioma do cromo | o contorno de repouso engrossa para a largura do token e passa à cor do texto do tema no foco |
 
-**Fechado.** A regra global de foco passou a ler o token, junto com o anel de link. Teste dedicado em
-`src/styles/__tests__/focusRing.test.ts` (3 casos).
+**Regra:** nenhum componente tira o contorno sem pôr outro. `outline-none` num focável só se justifica com um estilo de foco no lugar.
+Teste dedicado em `src/styles/__tests__/focusRing.test.ts`.
 
 Agravante estrutural: essa regra vive em `src/styles/*.css`, e `src/styles/` **não é varrido como
 consumidor** por nenhum auditor ([[01-gates-e-baseline]] §4.3a) — nem o hardcode nem o não-consumo do
@@ -444,6 +481,9 @@ decisões principais têm nome, descrição e opções nos seis idiomas ([[06-pa
 **Um nome só para cada peça, nos textos do painel.** O termo técnico fica em inglês: Sidebar, Topbar, Card, Preset, Token, Dark mode e Light mode, Hover, Blur, Badge e Toast. Frases, ações e descrições continuam no idioma do texto ("Aplicar", "Tamanho da fonte"). O glossário vale para o que o administrador lê (rótulos do schema, partições do catálogo, `presetTexts/` e títulos das telas da prévia), em todos os idiomas do catálogo, e não para identificador (`data-*`, ids de token, props). `src/core/i18n/__tests__/glossary.test.ts` tem a lista dos nomes que saíram como dado e reprova o texto que volta a usá-los. Ele lê todo `catalogEntries.*.ts`, e por isso cobre também o nome, a descrição e as opções dos tokens das decisões principais. Texto passado pelo consumidor por prop é dele, e a
 lib não o traduz. Um teste de paridade exige toda chave do catálogo preenchida nos seis idiomas.
 
+**Singular e plural.** Um texto com `{count}` pode ter a forma singular na chave `<nome>One`, e `useLibraryText` a escolhe sozinho
+quando `count` é 1. Sem ela, vale a chave `<nome>` para qualquer `count` (`src/core/i18n/__tests__/plural.test.tsx`).
+
 # 4. Regras derivadas (o que fazer / o que nunca fazer)
 
 1. **Todo dado externo que virar CSS passa por `validateDesign`.** Um caminho novo que aplique design sem
@@ -460,12 +500,12 @@ lib não o traduz. Um teste de paridade exige toda chave do catálogo preenchida
 
 | # | Lacuna | Consequência | Onde |
 | --- | --- | --- | --- |
-| **5.1** | **Nenhum gate de a11y.** Não há `axe`, nem teste de árvore de acessibilidade agregada. A cobertura é a dos testes por componente | uma regressão de ARIA/foco passa se o teste daquele componente não a cobrir | — |
+| **5.1** | **Nenhum gate de a11y no commit.** Não há `axe`. A medição agregada de anel e nome do cromo e do painel é de navegador (`teclado-no-cromo-e-no-painel.spec.ts`) e roda só no `cromo-css-real:check` | uma regressão de ARIA/foco passa no commit se o teste daquele componente não a cobrir, e só a bateria de navegador a acusa | `browser-tests/teclado-no-cromo-e-no-painel.spec.ts` |
 | **5.2** | ⚠️ **Contraste de texto medido por gate; o não textual, não** (§2.4d) — o `auditor_contraste` (`run_audit`) mede os pares de texto dos temas embarcados nos dois modos (**R31**); borda de campo e partes de gráfico (WCAG 1.4.11) ficam fora | um tema embarcado com borda de campo quase invisível passa verde | `gates/scripts/audit/verify_contrast.ts`; achados 18 e **59** em [[15-divida-conhecida]] §4.1 |
 | **5.3** | ✅ **FECHADA em 2026-08-05** — `auditor_authcoupling.mjs` construído (**R32**), nasce verde | o único violador (`SarakSecurityOrchestrator`) já havia saído do contrato público na `plan-09` | — |
 | **5.4** | **`PreviewCanvas` aplica design SEM `validateDesign`** — o boot real valida, o caminho de preview não | valor fora do contrato virava CSS Variable literal no preview; foi o que expôs o drift de 21 tokens | `plan/40.4` §Nota; ver [[06-painel-de-customizacao-e-preview]] |
 | **5.5** | ✅ **FECHADA em 2026-08-04 (`plan-08`, F1)** — `AdvancedTab` chamava `localStorage.clear()`, apagando a origem inteira | `clearSarakStorage()` remove só as chaves da lib; teste prova que chave alheia sobrevive ao reset | ver [[06-painel-de-customizacao-e-preview]] §9.5 |
-| **5.6** | ✅ **FECHADA em 2026-08-04** — `focusRingWidth` agora é honrado pela regra global de foco (§2.4c) | anel de foco consistente entre link e botão | `src/styles/_elements.css:92` |
+| **5.6** | ✅ **FECHADA em 2026-08-04** — `focusRingWidth` agora é honrado pela regra global de foco (§2.4c) | anel de foco consistente entre link e botão | `src/styles/_elements.css:110` |
 | **5.7** | **O não-vazamento do modo embarcado não é medido em CSS renderizado** — o teste de navegador que o cobria saiu com o aparato de component test (achado **45**); a medição que existe (`browser-tests/`) não tem caso de modo embarcado | a garantia mais difícil de manter (não-vazamento) é provada só por estrutura (R24 ⚠️) | [[01-gates-e-baseline]] §2.6 · [[15-divida-conhecida]] §4.1 |
 
 **Nenhuma delas é corrigida por esta spec** — ela só escreve código-documento. As 5.5 e 5.6 são as duas
@@ -496,6 +536,8 @@ que eu recomendaria priorizar: são pequenas, locais, e a 5.5 tem impacto em dad
 | Portal leva a classe de escopo | `src/core/Provider/components/__tests__/SarakPortalScope.test.tsx` | ✅ suíte |
 | Armadilha de foco, ESC e restauração | `src/components/atomic/Modals/hooks/__tests__/useFocusTrap.test.tsx` | ✅ suíte |
 | Jornada só-teclado num overlay | `src/components/atomic/Modals/__tests__/keyboardJourney.test.tsx` | ✅ suíte |
+| Gaveta móvel: foco preso e fundo inerte | `src/components/Layout/__tests__/SarakAppChromeMobile.test.tsx` · `src/components/Layout/chrome/__tests__/useInertBackground.test.ts` | ✅ suíte |
+| Anel de 3:1 e nome em toda parada de `Tab` do cromo e do painel; Esc do idioma; gaveta como diálogo; foco mantido na troca de modo do cromo | `browser-tests/teclado-no-cromo-e-no-painel.spec.ts` | ⚠️ navegador, no `cromo-css-real:check` |
 | Não-vazamento em página real | `src/core/Provider/__e2e__/EmbeddedNoLeak.spec.tsx` | ❌ **manual**, exige `npm run build` |
 
 **A implementar (backlog, não desta spec):** gate de a11y (5.1); o gate de contraste (5.2) depende de

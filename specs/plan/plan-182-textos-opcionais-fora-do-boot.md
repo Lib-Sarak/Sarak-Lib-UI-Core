@@ -3,11 +3,11 @@ tipo: "plan"
 titulo: "Textos das peças opcionais fora do boot"
 objetivo: "Fazer os catálogos de texto das peças opcionais carregarem junto com a peça, devolvendo ao boot do consumidor os cerca de 6,6 KB gzip que ele ganhou na rc.5, e fazer o boot:measure acusar crescimento absoluto"
 dominio: "Bundle / Idiomas"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Média"
 tags: ["plan", "bundle", "boot", "i18n", "lazy"]
 relacionados: ["[[12-kit-do-consumidor]]", "[[01-gates-e-baseline]]"]
-depende_de: "plan-180-textos-traduzidos-e-buscas-que-acham"
+depende_de: ""
 retida_por: ""
 destino_sintese: "01-gates-e-baseline"
 ---
@@ -25,7 +25,7 @@ cresce além de um teto absoluto.
   - somam cerca de 9 KB gzip na fonte;
   - são importados estaticamente por `src/core/i18n/catalog.ts:12-20`.
 - **Por que o gate não acusou:** o teto do `boot:measure` (`scripts/measure-consumer-boot.mjs`) é relativo.
-- **Dependência:** esta plan depende da `plan-180`, que mexe no mesmo catálogo.
+- **Base:** o catálogo já tem os textos da 180 (commit `fa6cb5e1`). A medida de antes é a do `HEAD` atual, não a da rc.5.
 - **Armadilhas conhecidas desta área:**
   - o tsup pode juntar um módulo lazy de volta no boot;
   - o barril público pode anular a fronteira lazy;
@@ -44,6 +44,8 @@ cresce além de um teto absoluto.
 ## 3.2 Fora
 - Os demais catálogos, que são do boot.
 - A configuração do bundler, salvo o mínimo comprovado pela medida.
+- **A `plan-181` e a `plan-184` correm em paralelo, no mesmo worktree.** Fique fora de `src/core/Provider/`, do painel de temas e
+  do `SarakAppChrome`. Siga a trava de build da §5, passo 6.
 
 # 4. Referências obrigatórias
 
@@ -68,6 +70,14 @@ cresce além de um teto absoluto.
    - `npm run verify -- --tier=quick`;
    - `npm run build`;
    - `npm run boot:measure`.
+6. **Trava de build:** cada `npm run build` com o `boot:measure` que o segue (passos 1, 4 e 5) roda com a trava
+   `C:\tmp\sarak-build.lock`, a mesma das plans paralelas.
+   - Pegue a trava com `node -e "require('fs').writeFileSync('C:/tmp/sarak-build.lock','plan-182',{flag:'wx'})"`. Se o comando
+     falhar, outra plan está com ela: espere e tente de novo.
+   - Solte com `node -e "require('fs').rmSync('C:/tmp/sarak-build.lock')"` assim que a medida terminar, inclusive se falhar.
+   - Nunca apague a trava de outra plan. Se ela ficar parada mais de 30 minutos sem build rodando, relate.
+   - O build lê o worktree inteiro, inclusive o que a 181 e a 184 ainda estão escrevendo. Registre no resumo, junto de cada
+     medida, o `git status --short src` daquele momento.
 
 # 6. Critérios de aceite
 

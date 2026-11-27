@@ -42,12 +42,10 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-177-teclado-e-leitor-de-tela-no-cromo-e-no-painel](plan/plan-177-teclado-e-leitor-de-tela-no-cromo-e-no-painel.md) | Fazer todo controle do cromo e do painel ter foco visível em ao menos 3:1 e nome acessível, tirar do Tab o que não age, dar à gaveta móvel semântica e foco de diálogo, fazer o idioma fechar com Esc e a barra do topo mostrar os itens que cabem sem transbordar | — | 🟢 Aprovada | 10-seguranca-e-acessibilidade |
-| 2 | [plan-180-textos-traduzidos-e-buscas-que-acham](plan/plan-180-textos-traduzidos-e-buscas-que-acham.md) | Fazer todo texto visível da lib sair do catálogo nos seis idiomas com singular e plural, fazer a busca da barra achar sub-abas e a busca do painel abrir o token geral para frases vagas | — | 🟢 Aprovada | — |
-| 3 | [plan-181-temas-de-marca-so-leitura-e-erro-do-cromo-ao-importador](plan/plan-181-temas-de-marca-so-leitura-e-erro-do-cromo-ao-importador.md) | Permitir ao importador marcar um tema dele como só leitura, para o painel oferecer Duplicar em vez de Salvar e Apagar, e entregar ao importador os erros que o cromo contém por uma prop onError | — | 🔴 A executar | 09-temas-e-presets; 05-cromo-e-slots |
-| 4 | [plan-182-textos-opcionais-fora-do-boot](plan/plan-182-textos-opcionais-fora-do-boot.md) | Fazer os catálogos de texto das peças opcionais carregarem junto com a peça, devolvendo ao boot do consumidor os cerca de 6,6 KB gzip que ele ganhou na rc.5, e fazer o boot:measure acusar crescimento absoluto | plan-180-textos-traduzidos-e-buscas-que-acham | 🔴 A executar | 01-gates-e-baseline |
-| 5 | [plan-183-higiene-interna-de-codigo-e-de-testes](plan/plan-183-higiene-interna-de-codigo-e-de-testes.md) | Fechar onze pendências internas que não mudam a tela: seletor por nome de classe, selo de dispositivo, disputa de textura, leituras e classes mortas, recorte de teste incompleto, nomes de teste com rastro de plan, teste que não protege o que diz, função com dez parâmetros e o config inteiro como host com a opção ligada | — | 🔴 A executar | — |
-| 6 | [plan-184-troca-de-modo-respeita-o-tom-escolhido-da-barra](plan/plan-184-troca-de-modo-respeita-o-tom-escolhido-da-barra.md) | Fazer a troca entre claro e escuro calcular a paleta com o tom de barra escolhido pelo usuário, sem perder o contraste do cromo no tom padrão que a 9.0.0-rc.2 acabou de garantir | — | 🟡 Em execução | — |
+| 1 | [plan-181-temas-de-marca-so-leitura-e-erro-do-cromo-ao-importador](plan/plan-181-temas-de-marca-so-leitura-e-erro-do-cromo-ao-importador.md) | Permitir ao importador marcar um tema dele como só leitura, para o painel oferecer Duplicar em vez de Salvar e Apagar, e entregar ao importador os erros que o cromo contém por uma prop onError | — | 🟠 Em revisão | 09-temas-e-presets; 05-cromo-e-slots |
+| 2 | [plan-182-textos-opcionais-fora-do-boot](plan/plan-182-textos-opcionais-fora-do-boot.md) | Fazer os catálogos de texto das peças opcionais carregarem junto com a peça, devolvendo ao boot do consumidor os cerca de 6,6 KB gzip que ele ganhou na rc.5, e fazer o boot:measure acusar crescimento absoluto | — | 🟡 Em execução | 01-gates-e-baseline |
+| 3 | [plan-183-higiene-interna-de-codigo-e-de-testes](plan/plan-183-higiene-interna-de-codigo-e-de-testes.md) | Fechar onze pendências internas que não mudam a tela: seletor por nome de classe, selo de dispositivo, disputa de textura, leituras e classes mortas, recorte de teste incompleto, nomes de teste com rastro de plan, teste que não protege o que diz, função com dez parâmetros e o config inteiro como host com a opção ligada | — | 🔴 A executar | — |
+| 4 | [plan-184-troca-de-modo-respeita-o-tom-escolhido-da-barra](plan/plan-184-troca-de-modo-respeita-o-tom-escolhido-da-barra.md) | Fazer a troca entre claro e escuro calcular a paleta com o tom de barra escolhido pelo usuário, sem perder o contraste do cromo no tom padrão que a 9.0.0-rc.2 acabou de garantir | — | 🟢 Aprovada | — |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > 🚦 **Campanha da `8.0.0-rc.4` (2026-10-27).** Contrato aceito: [`anexos/rc4-contrato.md`](plan/anexos/rc4-contrato.md). Ordem: a `plan-128` vai **sozinha** (cria o hook de idioma e os arquivos de catálogo das outras); depois `plan-129` ‖ `plan-130` ‖ `plan-131` ‖ `plan-132` ‖ `plan-119` lote 8 ‖ `plan-133`, em paralelo (pastas disjuntas; arquivos compartilhados só por acréscimo); depois da 133, `plan-134` ‖ `plan-135`. A 134 e a 135 geram prévias em `C:\tmp\sarak-rc4-previa\` que o dono aprova durante a revisão. Verificação pelo protocolo do contrato §9: uma vez por plan e a bateria completa uma vez, no fechamento, depois do lote 2 do ERP. A versão (`npm version`) é do dono.
@@ -69,6 +67,29 @@ ao **sintetizar** uma plan aprovada, quando a linha sai daqui junto com o arquiv
 > **Temas e paletas (2026-11-16).** A `plan-164` (paleta do tema, paleta por cima e paletas salvas) tem o ADR-026 e o ADR-027 aceitos e o lote 1 liberado; roda em paralelo com a 159 e a 161, que mexem no cromo e no catálogo do painel. **A próxima versão é `9.0.0`**.
 
 > **Fechamento da 9.0.0 (2026-11-21, decisão do dono).** As correções que sobraram entram antes da tag, em duas plans paralelas e sem arquivo em comum: a `plan-167` (bateria de navegador verde num build novo, backlog #92, mais o contraste do hover de botão, #90, e do `SarakTitleCard`, #91) e a `plan-168` (gráficos que ocupam o quadro, #93, e os ajustes principais do painel nos seis idiomas). Em 2026-11-21 entraram também a `plan-169` (gates que deixam passar e testes que estouram o tempo sob carga, backlog #10, #21, #22, #77, #84 e #89; sem build nem navegador) e a `plan-170` (contraste do cromo nas barras de tom contrastante, #70, #86 e #88), e os #85 e #87 entraram na 167. Com as quatro: síntese, a nota de fechamento da campanha e o `npm version major`, que é do dono. As baterias de navegador da 167, da 168 e da 170 rodam uma de cada vez.
+
+> 🚦 **Fila de 2026-11-26 — fim da rc.2.** A `plan-184`, a `plan-181` e a `plan-182` correm em paralelo, sem arquivo em comum. O
+> `npm run build` e o que lê o `dist/` (navegador, `boot:measure`) rodam um de cada vez, pela trava `C:\tmp\sarak-build.lock` descrita
+> em cada plan. A `plan-183` vem depois das três, porque mexe no Provider e no `chromeToneContrast.ts`. Depois: a suíte completa e o
+> `cromo-css-real:check` uma vez, e o `npm version` da rc.2, que é do dono.
+
+> ⚪ **As `plan-177` e `plan-180` foram SINTETIZADAS e REMOVIDAS em 2026-11-26.** Código das duas no commit `fa6cb5e1`. Destino demonstrado:
+> - **177 → [[10-seguranca-e-acessibilidade]] §2.4:**
+>   - **a:** o alvo do foco no `useFocusTrap` (ciclo só pelo que se vê; foco inicial também em camada que nasce com `visibility: hidden`);
+>     a gaveta móvel como diálogo, com foco preso e fundo inerte (`useInertBackground`); o Esc e o `aria-haspopup`/`aria-expanded` do
+>     seletor de idioma; o foco que volta ao conteúdo na troca de modo do cromo.
+>   - **b:** o `aria-current` do grupo e do "Mais" na barra do topo; o nome do "?" e dos deslizantes; as amostras dos cartões de
+>     opção `inert`.
+>   - **c:** a regra global de foco para todo focável, nos dois tons, e o anel por `peer` dos controles com input `sr-only`.
+>   - **`§5.1` e `§7`:** a medição de navegador `teclado-no-cromo-e-no-painel` (anel de 3:1 e nome em toda parada de `Tab`).
+>   - Ficou de fora: a barra do topo a 820 px e o "Mais" sem largura (D14, N11), o texto de ajuda da prévia (D6) e o rótulo dos
+>     cartões (B82). São defeitos corrigidos, e as notas estão em `docs/migracoes.md`.
+> - **180** (destino `—`): os textos da lib saem do catálogo nos seis idiomas, a busca da barra acha sub-abas e a busca do painel abre o
+>   token geral, como a `§3.6` da [[10-seguranca-e-acessibilidade]] e a [[06-painel-de-customizacao-e-preview]] já prometiam. A
+>   convenção do singular (`<nome>One`, escolhida por `useLibraryText`) não estava escrita e entrou na `§3.6`, como divergência
+>   corrigida na hora.
+> - `plan-182`: a dependência da 180 saiu.
+> - `00-contexto` revisto, nada a mudar.
 
 > ⚪ **As `plan-176` e `plan-178` foram SINTETIZADAS e REMOVIDAS em 2026-11-26.** Código da 176 no commit `cd9d5c85`; da 178 nos commits `c9325cba` e `9c9bd4dd`. Destino demonstrado:
 > - **176 → [[10-seguranca-e-acessibilidade]] §2.4 d:** a lista "O que a lib calcula e o navegador mede" ganha o item do cromo no tom padrão. Ele cobre os 25 temas, os dois modos e as duas barras, com a opacidade aplicada, na montagem do importador, a correção no dado do tema e a guarda `contraste-do-cromo-tom-padrao`. O item dos tons contrastantes passa a descrever o botão de idioma sem tinta e com contorno de 3:1. **[[09-temas-e-presets]] §4.3.4:** a conta de `chromeToneContrast.ts` ainda considera a tinta que o botão não desenha mais. A divergência foi corrigida na hora na prosa, e o código foi para a `plan-183` (H96). Ficou de fora: as tabelas de cor e as medições (histórico do Git e `docs/migracoes.md`).
