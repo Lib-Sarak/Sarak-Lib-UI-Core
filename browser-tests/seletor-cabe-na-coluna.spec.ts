@@ -17,7 +17,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildHarness } from './build-harness.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const ENTRY = path.join(HERE, 'fixtures', 'plan-141-presets-entry.tsx');
+const ENTRY = path.join(HERE, 'fixtures', 'presets-do-painel-entry.tsx');
 const LANGUAGES = ['pt', 'en', 'es', 'fr', 'de', 'it'] as const;
 const DECISIONS = ['theme', 'colors', 'fonts', 'shape', 'components', 'bars', 'layout'] as const;
 const TOLERANCE_PX = 1;

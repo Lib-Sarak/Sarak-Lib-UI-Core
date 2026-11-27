@@ -2,11 +2,11 @@
  * Os presets do painel no navegador: cada grupo de cada decisão mostra de 6 a 8 opções (ou todas, se são menos), o "Ver todas"
  * abre o resto, e a amostra segue o modo que a prévia mostra (Claro/Escuro), nunca o do tema do rascunho.
  *
- * Prévia para o dono: com `SARAK_PREVIA_141_DIR` definida, o mesmo caso grava uma captura PNG por grupo e por modo, em
+ * Prévia para o dono: com `SARAK_PREVIA_PRESETS_DIR` definida, o mesmo caso grava uma captura PNG por grupo e por modo, em
  * viewport de desktop, e um `index.html` (imagens na mesma pasta, caminhos relativos, abre sem servidor) com o mapa de
- * cobertura. `SARAK_PREVIA_141_ANTES` aponta o texto da cobertura medida antes (saída de `measure-preset-coverage.ts`).
- *   $env:SARAK_PREVIA_141_DIR='C:\tmp\sarak-previa-141'
- *   npx playwright test --config=browser-tests/playwright.config.ts browser-tests/plan-141-presets-do-painel.spec.ts
+ * cobertura. `SARAK_PRESETS_ANTES` aponta o texto da cobertura medida antes (saída de `measure-preset-coverage.ts`).
+ *   $env:SARAK_PREVIA_PRESETS_DIR='C:\tmp\sarak-previa-141'
+ *   npx playwright test --config=browser-tests/playwright.config.ts browser-tests/presets-do-painel.spec.ts
  *
  * LIMITES DECLARADOS (R18): Chromium headless; o tema `sarak-sovereign`; lê `src/` pelo esbuild do harness (não mede o
  * `dist/`); a conferência de luminosidade da amostra é do fundo do escopo, não de cada pixel.
@@ -18,9 +18,9 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildHarness } from './build-harness.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const ENTRY = path.join(HERE, 'fixtures', 'plan-141-presets-entry.tsx');
-const PREVIEW_DIR = process.env.SARAK_PREVIA_141_DIR;
-const COVERAGE_BEFORE = process.env.SARAK_PREVIA_141_ANTES;
+const ENTRY = path.join(HERE, 'fixtures', 'presets-do-painel-entry.tsx');
+const PREVIEW_DIR = process.env.SARAK_PREVIA_PRESETS_DIR;
+const COVERAGE_BEFORE = process.env.SARAK_PRESETS_ANTES;
 type PresetDecisionId = 'fonts' | 'shape' | 'components' | 'bars' | 'layout';
 interface GroupInfo { id: string; decision: PresetDecisionId; count: number; featured: number; featuredIds: string[]; ids: string[] }
 interface Registry { presetCount: number; groups: GroupInfo[]; coverage: { covered: number; total: number; ratio: number; families: Array<{ family: string; covered: number; total: number }> } }
@@ -284,7 +284,7 @@ for (const mode of MODES) {
                     }
                 }
             }
-            if (process.env.SARAK_PLAN141_MATRIX) fs.appendFileSync(process.env.SARAK_PLAN141_MATRIX, `${matrix.join(String.fromCharCode(10))}${String.fromCharCode(10)}`);
+            if (process.env.SARAK_PRESETS_MATRIX) fs.appendFileSync(process.env.SARAK_PRESETS_MATRIX, `${matrix.join(String.fromCharCode(10))}${String.fromCharCode(10)}`);
             await comparer.close();
             await page.close();
             expect(indistinct, 'duplas destacadas que diferem em menos de 2% dos pixels (5% nos grupos de card)').toEqual([]);

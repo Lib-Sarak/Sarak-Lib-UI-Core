@@ -41,6 +41,7 @@ export interface HyperGranularityTabProps {
     resetComponent: (schemaIdOrSchemas: string | string[]) => void;
     resetToken: (tokenId: string) => void;
     toast: { type: 'success' | 'warning'; message: string } | null;
+    previewDevice?: string;
 }
 
 /**
@@ -54,7 +55,7 @@ export interface HyperGranularityTabProps {
  * mesmo padrão que `MasterControlPanel` já usa (plan-36) — fonte única de rascunho.
  */
 export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
-    draft, updateDraft, resetComponent, resetToken, toast
+    draft, updateDraft, resetComponent, resetToken, toast, previewDevice
 }) => {
     const sarak = useSarakUI();
     const { durations } = useMotionTokens();
@@ -148,6 +149,7 @@ export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
                                                                             token={token} 
                                                                             draft={draft} 
                                                                             updateDraft={updateDraft} 
+                                                                            previewDevice={previewDevice}
                                                                         />
                                                                         {isTokenDirty && (
                                                                             <button 

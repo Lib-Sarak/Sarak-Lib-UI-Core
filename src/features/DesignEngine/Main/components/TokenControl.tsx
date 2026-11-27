@@ -62,13 +62,19 @@ export const ControlRegistry: Record<string, React.FC<WidgetProps>> = {
     file: (props) => <MediaUploaderControl label={props.token.label} description={props.token.description} {...props} value={props.value as string} onChange={(val) => props.onChange(val || '')} />
 };
 
+export type DeviceKey = 'mob' | 'tab' | 'desk';
+
+/** O dispositivo da barra da prévia, na chave que o valor responsivo usa. */
+export const deviceKeyOf = (previewDevice: string): DeviceKey =>
+    previewDevice === 'smartphone' ? 'mob' : previewDevice === 'tablet' ? 'tab' : 'desk';
+
 const DEVICE_BADGES = {
     mob: { badge: 'deviceBadgeMobile', device: 'deviceNameMobile' },
     tab: { badge: 'deviceBadgeTablet', device: 'deviceNameTablet' },
     desk: { badge: 'deviceBadgeDesktop', device: 'deviceNameDesktop' }
 } as const;
 
-const DeviceBadge: React.FC<{ deviceKey: keyof typeof DEVICE_BADGES }> = ({ deviceKey }) => {
+export const DeviceBadge: React.FC<{ deviceKey: keyof typeof DEVICE_BADGES }> = ({ deviceKey }) => {
     const text = useLibraryText();
     return (
         <span
@@ -96,7 +102,7 @@ export const TokenControl = ({ token, value, onChange, previewDevice = 'desktop'
     if (!Widget) return null;
 
     const isResponsiveObj = typeof value === 'object' && value !== null && 'mob' in value;
-    const deviceKey = previewDevice === 'smartphone' ? 'mob' : previewDevice === 'tablet' ? 'tab' : 'desk';
+    const deviceKey = deviceKeyOf(previewDevice);
     
     // Fallback: Se for responsivo mas não tiver o objeto (migração de presets antigos)
     const displayValue = isResponsiveObj ? (value as Record<string, string | number | boolean | null>)[deviceKey] : value;

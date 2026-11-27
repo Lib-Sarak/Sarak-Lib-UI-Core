@@ -93,6 +93,7 @@ const AdvancedScreen: React.FC<ThemeSidebarContentProps> = (props) => {
                 resetComponent={props.resetComponent}
                 resetToken={props.resetToken}
                 toast={props.toast}
+                previewDevice={options.previewDevice}
             />
         );
     }

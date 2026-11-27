@@ -8,7 +8,7 @@
  *   - DICA DO FUNIL: mostra o valor recebido, formatado.
  *
  * O canvas não tem DOM: a régua lê a opção resolvida pelo ECharts (cor do rótulo, cor e opacidade do item) e os
- * textos já desenhados (zrender), em `fixtures/plan-147-graficos-entry.tsx`. Lê o `dist/` — sem `npm run build`
+ * textos já desenhados (zrender), em `fixtures/rotulos-e-marcas-dos-graficos-entry.tsx`. Lê o `dist/` — sem `npm run build`
  * recente, mede o build anterior.
  */
 import { test, expect, chromium, type Browser, type Page } from '@playwright/test';
@@ -18,7 +18,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildHarness } from './build-harness.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const ENTRY = path.join(HERE, 'fixtures', 'plan-147-graficos-entry.tsx');
+const ENTRY = path.join(HERE, 'fixtures', 'rotulos-e-marcas-dos-graficos-entry.tsx');
 const AA_NORMAL_TEXT = 4.5;
 const OVERLAP_TOLERANCE = 0.5;
 const NARROW_WIDTHS = [260, 320, 360] as const;
@@ -74,7 +74,7 @@ test.describe('rótulo interno ≥ 4,5:1 em todos os temas × modos', () => {
                     return { funnel: api.labelContrast('funnel'), treemap: api.labelContrast('treemap'), pie: api.pieLabelContrast('pie') };
                 });
                 await page.close();
-                if (process.env.SARAK_147_VERBOSE) console.log(themeId, mode, fmt(read.funnel), '|', fmt(read.treemap), '| pie', read.pie.toFixed(2));
+                if (process.env.SARAK_GRAFICOS_VERBOSE) console.log(themeId, mode, fmt(read.funnel), '|', fmt(read.treemap), '| pie', read.pie.toFixed(2));
                 for (const type of ['funnel', 'treemap'] as const) {
                     const rows = (read[type] as Contrast[]).filter((row) => STAGE_NAMES.includes(row.name));
                     expect(rows.length, `${themeId}/${mode}/${type} sem itens`).toBe(4);

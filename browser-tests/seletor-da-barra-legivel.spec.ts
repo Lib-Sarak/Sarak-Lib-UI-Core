@@ -25,7 +25,7 @@ if (!harnessUrl) {
 }
 
 const MIN_CONTRAST = 4.5;
-const CHROMIUM_EXECUTABLE_PATH = process.env.SARAK_PLAN124_CHROMIUM_PATH;
+const CHROMIUM_EXECUTABLE_PATH = process.env.SARAK_CHROMIUM_EXECUTABLE_PATH;
 
 /** A query do harness que monta o caso: um tema embarcado inteiro ou uma cor sintética do item ativo. */
 const CASES: Array<{ name: string; query: string }> = [

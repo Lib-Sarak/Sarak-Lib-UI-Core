@@ -95,7 +95,7 @@ const REFERENCE_BUTTON_NAME = 'Referência';
 const DRAWER_TOGGLE_NAME = 'Abrir menu de navegação';
 const CHROME_ROOT_SELECTOR = '.sarak-chrome-root';
 const CONTENT_SELECTOR = '[data-sarak-content]';
-const CHROMIUM_EXECUTABLE_PATH = process.env.SARAK_PLAN124_CHROMIUM_PATH;
+const CHROMIUM_EXECUTABLE_PATH = process.env.SARAK_CHROMIUM_EXECUTABLE_PATH;
 
 /** Elementos de prova da fixture (`ElementDefaultProbes`), por nome acessível ou texto. */
 const PROBE = {

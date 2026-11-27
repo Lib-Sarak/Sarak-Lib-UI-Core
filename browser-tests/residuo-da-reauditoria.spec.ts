@@ -30,7 +30,7 @@
 import { test, expect, chromium, type Browser, type Locator, type Page } from '@playwright/test';
 
 const DESKTOP = { width: 1280, height: 900 } as const;
-const CHROMIUM_EXECUTABLE_PATH = process.env.SARAK_PLAN124_CHROMIUM_PATH;
+const CHROMIUM_EXECUTABLE_PATH = process.env.SARAK_CHROMIUM_EXECUTABLE_PATH;
 
 const harnessUrl = process.env.SARAK_CROMO_HARNESS_URL;
 if (!harnessUrl) {

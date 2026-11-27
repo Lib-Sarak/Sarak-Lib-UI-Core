@@ -2,10 +2,12 @@ import React from 'react';
 import { SarakDesignToken } from '../../../core/Design/types';
 import { getTokenBounds } from '../../../core/Design/utils/tokenBounds';
 import {
-    SliderControl, ResponsiveSliderControl, ColorControl, SwitchControl, SelectControl, InputControl, MediaUploaderControl
+    SliderControl, ColorControl, SwitchControl, SelectControl, InputControl, MediaUploaderControl
 } from './DesignControls';
 import { ExceptionRelation } from './ExceptionRelation';
 import { FontSelectControl } from './controls/FontSelectControl';
+import { DeviceBadge, deviceKeyOf, type DeviceKey } from '../Main/components/TokenControl';
+import { toResponsiveNumber } from './controls/BasicControls';
 
 import type { SarakDesignState } from '../../../core/Provider/types';
 import type { SarakTokenValue } from '../../../core/Design/types';
@@ -14,6 +16,8 @@ interface DynamicTokenControlProps {
     token: SarakDesignToken;
     draft: SarakDesignState;
     updateDraft: (key: string, value: SarakTokenValue) => void;
+    /** Dispositivo da barra da prévia: com ele, o token responsivo mostra o selo de dispositivo. */
+    previewDevice?: string;
 }
 
 /** O que o painel desenha quando o schema não declara faixa. */
@@ -31,7 +35,8 @@ const PANEL_STEP = 1;
 export const DynamicTokenControl: React.FC<DynamicTokenControlProps> = ({
     token,
     draft,
-    updateDraft
+    updateDraft,
+    previewDevice = 'desktop'
 }) => {
     const value = (draft as Record<string, SarakTokenValue>)[token.id] !== undefined
         ? (draft as Record<string, SarakTokenValue>)[token.id]
@@ -43,17 +48,18 @@ export const DynamicTokenControl: React.FC<DynamicTokenControlProps> = ({
 
     return (
         <>
-            {renderControl(token, value, handleChange)}
+            {token.isResponsive && <DeviceBadge deviceKey={deviceKeyOf(previewDevice)} />}
+            {renderControl(token, value, handleChange, deviceKeyOf(previewDevice))}
             <ExceptionRelation token={token} draft={draft as Record<string, SarakTokenValue>} updateDraft={updateDraft} />
         </>
     );
 };
 
-function renderControl(token: SarakDesignToken, value: SarakTokenValue, onChange: (value: SarakTokenValue) => void): React.ReactNode {
+function renderControl(token: SarakDesignToken, value: SarakTokenValue, onChange: (value: SarakTokenValue) => void, device: DeviceKey): React.ReactNode {
     switch (token.type) {
         case 'slider':
         case 'number':
-            return renderNumber(token, value, onChange);
+            return renderNumber(token, value, onChange, device);
 
         case 'color':
             return (
@@ -128,7 +134,7 @@ function renderControl(token: SarakDesignToken, value: SarakTokenValue, onChange
     }
 }
 
-function renderNumber(token: SarakDesignToken, value: SarakTokenValue, onChange: (value: SarakTokenValue) => void): React.ReactNode {
+function renderNumber(token: SarakDesignToken, value: SarakTokenValue, onChange: (value: SarakTokenValue) => void, device: DeviceKey): React.ReactNode {
     const bounds = getTokenBounds(token);
     const common = {
         label: token.label,
@@ -139,7 +145,9 @@ function renderNumber(token: SarakDesignToken, value: SarakTokenValue, onChange:
         unit: token.unit,
     };
     if (token.isResponsive) {
-        return <ResponsiveSliderControl {...common} value={value} onChange={onChange} />;
+        // Só o ponto do dispositivo da prévia: os outros dois seguem como estão (o selo acima diz qual é).
+        const points = toResponsiveNumber(value, common.min);
+        return <SliderControl {...common} value={points[device]} onChange={(next) => onChange({ ...points, [device]: next })} />;
     }
     return <SliderControl {...common} value={value as number} onChange={onChange} />;
 }

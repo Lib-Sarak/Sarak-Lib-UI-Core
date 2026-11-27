@@ -25,20 +25,26 @@ export const composeDefaultThemeDesign = (
     return validateDesign(composeThemeDesign(resolved, previous, hostConfig));
 };
 
-export const useDesignSync = (
-    isHydrated: boolean,
-    activeThemeId: string | undefined,
-    allThemes: SarakThemeEntry[] | undefined,
-    storageKey: string,
-    hasHydratedRef: MutableRefObject<boolean>,
-    setDesign: SetDesign,
-    // O `config` do host por REF: estável entre renders, nunca dependência do efeito (spec 02 §3.1).
-    configRef?: MutableRefObject<SarakThemePayload | undefined>,
-    preferConfigOverCache = false,
-    themeIdGuard?: ThemeIdGuard,
+export interface DesignSyncOptions {
+    isHydrated: boolean;
+    activeThemeId: string | undefined;
+    allThemes: SarakThemeEntry[] | undefined;
+    storageKey: string;
+    hasHydratedRef: MutableRefObject<boolean>;
+    setDesign: SetDesign;
+    /** O `config` como referência do host (`resolveHostConfig`), lido na hora de compor, nunca dependência do efeito (spec 02 §3.1). */
+    getHostConfig?: () => SarakThemePayload | undefined;
+    preferConfigOverCache?: boolean;
+    themeIdGuard?: ThemeIdGuard;
     // Lê o gravado no formato dele: escolhas refeitas pelo tema, ou o dado antigo pela regra L1 (`useDesignChoices.ts`).
-    restoreSaved?: (previous: SarakDesignState, saved: SavedDesign) => SarakDesignState,
-) => {
+    restoreSaved?: (previous: SarakDesignState, saved: SavedDesign) => SarakDesignState;
+}
+
+export const useDesignSync = (options: DesignSyncOptions) => {
+    const {
+        isHydrated, activeThemeId, allThemes, storageKey, hasHydratedRef, setDesign,
+        getHostConfig, preferConfigOverCache = false, themeIdGuard, restoreSaved,
+    } = options;
     // Guarda o último `activeThemeId` efetivamente aplicado. Sem isso, qualquer
     // render que produza uma nova referência de `allThemes` (ex.: consumidor que
     // passa `customThemes={[...]}` inline, ou o default antigo `= []` do Provider)
@@ -76,7 +82,7 @@ export const useDesignSync = (
                         { design: activeTheme.design as Record<string, SarakTokenValue>, contraparte: activeTheme.contraparte },
                         requestedMode,
                     );
-                    return validateDesign(composeThemeDesign(resolved, prev, configRef?.current));
+                    return validateDesign(composeThemeDesign(resolved, prev, getHostConfig?.()));
                 });
                 return;
             }
@@ -92,7 +98,7 @@ export const useDesignSync = (
             // tema padrão no modo atual (a contraparte autorada), com um aviso.
             lastAppliedThemeIdRef.current = activeThemeId;
             themeIdGuard?.warnUnknownThemeOnce(activeThemeId);
-            setDesign((prev) => composeDefaultThemeDesign(prev, configRef?.current));
+            setDesign((prev) => composeDefaultThemeDesign(prev, getHostConfig?.()));
             return;
         }
 
@@ -117,5 +123,5 @@ export const useDesignSync = (
             }
             hasHydratedRef.current = true;
         }
-    }, [isHydrated, storageKey, activeThemeId, allThemes, setDesign, hasHydratedRef, preferConfigOverCache, themeIdGuard, restoreSaved]);
+    }, [isHydrated, storageKey, activeThemeId, allThemes, setDesign, hasHydratedRef, getHostConfig, preferConfigOverCache, themeIdGuard, restoreSaved]);
 };

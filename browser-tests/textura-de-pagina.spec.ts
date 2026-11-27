@@ -18,7 +18,6 @@
  * 2. Mede o MÁXIMO do `scrollWidth` amostrado a cada 250 ms; um estouro mais curto que a amostra passaria. A deriva da
  *    `nebula` (60 s por ciclo) e o ciclo de 4 s da `stars` são mais lentos que a amostra.
  * 3. As 41 texturas não são todas medidas: só as que animam (`nebula`, `stars`, `aurora`, `noise`) e uma estática.
- *    `.texture-aurora-classic` (rotação e escala) é uma classe que nenhuma opção de `texture` aplica na página.
  * 4. Só Chromium headless, contra o artefato que o `globalSetup` montou.
  * -------------------------------------------------------------------------
  */

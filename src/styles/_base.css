@@ -57,22 +57,6 @@ body {
   background-color: var(--bg-body) !important;
 }
 
-/* Motor de Fundo (Media Engine) */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -10;
-  pointer-events: none;
-  background-image: var(--sarak-global-bg-image, none);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: var(--sarak-global-bg-opacity, 1);
-  filter: blur(var(--sarak-global-bg-blur, 0px));
-  transition: all var(--duration-slow) var(--ease-sarak);
-}
-
 /* Industrial Safe Area Motor */
 .sarak-safe-container {
     width: 100%;

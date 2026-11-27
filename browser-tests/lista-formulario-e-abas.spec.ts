@@ -11,7 +11,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildHarness } from './build-harness.mjs';
 
-const ENTRY = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'plan-148-entry.tsx');
+const ENTRY = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'lista-formulario-e-abas-entry.tsx');
 const TOUCH_TARGET_MIN = 44;
 const SUBPIXEL = 1;
 

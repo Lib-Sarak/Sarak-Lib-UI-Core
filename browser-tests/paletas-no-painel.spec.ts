@@ -2,10 +2,10 @@
  * Paletas no painel: escolher uma pronta → criar a partir de uma cor → ajustar um token → "Aplicar" → o `onSave`
  * recebe `colorPalette` (formato de vírgulas) e o token ajustado.
  *
- * Prévia para o dono: com `SARAK_PREVIA_135_DIR` definida, o mesmo caso grava as capturas PNG e um `index.html`
+ * Prévia para o dono: com `SARAK_PREVIA_PALETAS_DIR` definida, o mesmo caso grava as capturas PNG e um `index.html`
  * (imagens na mesma pasta, caminhos relativos, abre sem servidor). Regenera com:
- *   $env:SARAK_PREVIA_135_DIR='C:\tmp\sarak-rc4-previa\135'
- *   npx playwright test --config=browser-tests/playwright.config.ts browser-tests/plan-135-paletas-no-painel.spec.ts
+ *   $env:SARAK_PREVIA_PALETAS_DIR='C:\tmp\sarak-rc4-previa\135'
+ *   npx playwright test --config=browser-tests/playwright.config.ts browser-tests/paletas-no-painel.spec.ts
  *
  * LIMITES DECLARADOS (R18): Chromium headless; o tema `sarak-sovereign`; lê `src/` pelo esbuild do harness
  * (não mede o `dist/`); a prévia ao vivo do criador é conferida pelo nome acessível e pelas amostras, não pelo pixel.
@@ -18,8 +18,8 @@ import { buildHarness } from './build-harness.mjs';
 import { switchPreviewMode } from './preview-mode-toggle';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const ENTRY = path.join(HERE, 'fixtures', 'plan-135-paletas-entry.tsx');
-const PREVIEW_DIR = process.env.SARAK_PREVIA_135_DIR;
+const ENTRY = path.join(HERE, 'fixtures', 'paletas-no-painel-entry.tsx');
+const PREVIEW_DIR = process.env.SARAK_PREVIA_PALETAS_DIR;
 const ADJUSTED_SIDEBAR = '#123456';
 
 interface Capture {

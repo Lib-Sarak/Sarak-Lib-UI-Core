@@ -15,7 +15,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildHarness } from './build-harness.mjs';
 
-const ENTRY = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'plan-145-entry.tsx');
+const ENTRY = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'personalidades-legiveis-entry.tsx');
 const TEXT_CONTRAST = 4.5;
 const ICON_CONTRAST = 3;
 const MODES = ['light', 'dark'] as const;

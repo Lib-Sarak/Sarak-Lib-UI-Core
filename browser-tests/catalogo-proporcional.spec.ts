@@ -3,10 +3,10 @@
  * (largura, altura, texto cortado, elemento vazando) e o corte de botão e texto no cabeçalho e na barra de ações, a 1440×900
  * e a 390×844.
  *
- * Os números saem em `console.log` (linhas `[plan-161]`) e, com `SARAK_PREVIA_161_DIR`, num `medidas.json` e nas capturas PNG
+ * Os números saem em `console.log` (linhas `[plan-161]`) e, com `SARAK_PREVIA_CATALOGO_DIR`, num `medidas.json` e nas capturas PNG
  * da prévia para o dono:
- *   $env:SARAK_PREVIA_161_DIR='C:\tmp\sarak-previa-161'
- *   npx playwright test --config=browser-tests/playwright.config.ts browser-tests/plan-161-catalogo-proporcional.spec.ts
+ *   $env:SARAK_PREVIA_CATALOGO_DIR='C:\tmp\sarak-previa-161'
+ *   npx playwright test --config=browser-tests/playwright.config.ts browser-tests/catalogo-proporcional.spec.ts
  *
  * LIMITES DECLARADOS (R18): Chromium headless; o tema `sarak-sovereign`; lê `src/` pelo esbuild do harness (não mede o `dist/`);
  * "vazando" é geométrico — texto, controle ou imagem cuja caixa passa da caixa da amostra — e ignora o que é decoração
@@ -21,8 +21,8 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildHarness } from './build-harness.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const ENTRY = path.join(HERE, 'fixtures', 'plan-140-coluna-entry.tsx');
-const PREVIEW_DIR = process.env.SARAK_PREVIA_161_DIR;
+const ENTRY = path.join(HERE, 'fixtures', 'painel-de-coluna-unica-entry.tsx');
+const PREVIEW_DIR = process.env.SARAK_PREVIA_CATALOGO_DIR;
 const DECISIONS = ['Tema', 'Cores', 'Fontes', 'Forma', 'Componentes', 'Barras', 'Layout'] as const;
 
 /** A meta de rolagem: nenhuma decisão passa de tantas alturas da área da coluna a 1440×900 (a medida de antes chegou a 15×). */
@@ -56,7 +56,7 @@ test.afterAll(async () => {
     if (harnessDirectory) fs.rmSync(harnessDirectory, { recursive: true, force: true });
     if (!PREVIEW_DIR) return;
     fs.mkdirSync(PREVIEW_DIR, { recursive: true });
-    const label = process.env.SARAK_PREVIA_161_LABEL ?? 'depois';
+    const label = process.env.SARAK_PREVIA_CATALOGO_LABEL ?? 'depois';
     fs.writeFileSync(path.join(PREVIEW_DIR, `medidas-${label}.json`), JSON.stringify(report, null, 2), 'utf8');
     const figures = captures.map((item, index) => `<figure><img src="${item.file}" alt="${item.caption}"><figcaption>${index + 1}. ${item.caption}</figcaption></figure>`).join('\n');
     fs.writeFileSync(path.join(PREVIEW_DIR, `index-${label}.html`), `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Plan 161 — ${label}</title>
@@ -76,7 +76,7 @@ const snap = async (page: Page, file: string, caption: string): Promise<void> =>
     if (!PREVIEW_DIR) return;
     await page.waitForTimeout(700);
     fs.mkdirSync(PREVIEW_DIR, { recursive: true });
-    const label = process.env.SARAK_PREVIA_161_LABEL ?? 'depois';
+    const label = process.env.SARAK_PREVIA_CATALOGO_LABEL ?? 'depois';
     const name = `${label}-${file}`;
     await page.screenshot({ path: path.join(PREVIEW_DIR, name) });
     captures.push({ file: name, caption });
@@ -298,7 +298,7 @@ test.describe('custo da miniatura de tema', () => {
         const cost = { openMs: Math.round(median(runs.map((item) => item.openMs))), heapMb: Number(median(runs.map((item) => item.heapMb)).toFixed(1)), nodes: median(runs.map((item) => item.nodes)), cards: runs[0].cards, runs };
         report.narrow.themeCost = cost;
         console.log(`[plan-161] custo do Tema ${JSON.stringify({ ...cost, runs: undefined })}`);
-        const baseline = process.env.SARAK_CUSTO_161_ANTES ? JSON.parse(process.env.SARAK_CUSTO_161_ANTES) as { openMs: number } : null;
+        const baseline = process.env.SARAK_CATALOGO_ANTES ? JSON.parse(process.env.SARAK_CATALOGO_ANTES) as { openMs: number } : null;
         if (baseline) expect(cost.openMs, `abrir o Tema custa no máximo o dobro de antes (${baseline.openMs} ms)`).toBeLessThanOrEqual(baseline.openMs * 2);
         expect(cost.cards).toBeGreaterThan(0);
     });

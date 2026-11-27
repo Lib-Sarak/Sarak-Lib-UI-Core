@@ -9,7 +9,7 @@ import { minimalistAiry } from '../../src/core/Design/presets/themes/minimalist-
 
 const themes = [sarakSovereignTheme, cyberpunkneonTheme, minimalistAiry];
 const rootElement = document.getElementById('root');
-if (!rootElement) throw new Error('plan-123-color-hierarchy-entry: #root ausente no harness.');
+if (!rootElement) throw new Error('hierarquia-de-cor-do-texto-entry: #root ausente no harness.');
 
 createRoot(rootElement).render(
     <main>

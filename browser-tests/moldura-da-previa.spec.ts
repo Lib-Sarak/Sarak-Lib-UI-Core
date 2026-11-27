@@ -13,7 +13,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildHarness } from './build-harness.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const ENTRY = path.join(HERE, 'fixtures', 'plan-160-previa-entry.tsx');
+const ENTRY = path.join(HERE, 'fixtures', 'previa-mostra-a-opcao-entry.tsx');
 const DIST_FONTS = pathToFileURL(path.resolve(HERE, '..', 'dist', 'fonts')).href;
 /** A largura mínima da janela do sistema que a prévia desktop desenha. */
 const MIN_SYSTEM_WIDTH = 1280;

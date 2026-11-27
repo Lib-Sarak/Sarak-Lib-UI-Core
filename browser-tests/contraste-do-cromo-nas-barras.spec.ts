@@ -6,7 +6,7 @@ import { buildHarness } from './build-harness.mjs';
 import { GRADIENT_LIGHT_SHARE } from '../src/core/Design/palette/contrast-pairs';
 import { SARAK_ALL_THEMES } from '../src/core/Design/presets/themes/all';
 
-const ENTRY = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'plan-145-entry.tsx');
+const ENTRY = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'personalidades-legiveis-entry.tsx');
 const MODES = ['light', 'dark'] as const;
 const TONES = ['inverse', 'primary', 'secondary'] as const;
 const TEXT_MIN = 4.5;

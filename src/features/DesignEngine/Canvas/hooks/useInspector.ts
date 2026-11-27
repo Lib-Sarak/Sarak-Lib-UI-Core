@@ -1,5 +1,21 @@
 import { useState, useEffect } from 'react';
 
+// Cada seletor aponta para a classe exata que o componente carrega: `[class*="card"]` casava
+// qualquer utilitária com "card" no nome e a tratava como componente.
+const INSPECTOR_SELECTORS: Array<[string, string]> = [
+    ['button', 'controls'],
+    ['input, select, textarea', 'controls'],
+    ['.sarak-card', 'cards'],
+    ['h1, h2, h3, h4, h5, h6, p, span, a', 'typography']
+];
+
+export const resolveSchemaId = (target: HTMLElement): string => {
+    for (const [selector, id] of INSPECTOR_SELECTORS) {
+        if (target.closest(selector)) return id;
+    }
+    return 'shell';
+};
+
 export const useInspector = (onInspectComponent?: (schemaId: string) => void) => {
     const [isInspecting, setIsInspecting] = useState(false);
 
@@ -10,22 +26,7 @@ export const useInspector = (onInspectComponent?: (schemaId: string) => void) =>
             e.preventDefault();
             e.stopPropagation();
 
-            const target = e.target as HTMLElement;
-            let schemaId = 'shell';
-
-            const selectors: Record<string, string> = {
-                'button': 'controls',
-                'input, select, textarea': 'controls',
-                '.card, [class*="card"], [class*="panel"]': 'cards',
-                'h1, h2, h3, h4, h5, h6, p, span, a': 'typography'
-            };
-
-            for (const [selector, id] of Object.entries(selectors)) {
-                if (target.closest(selector)) {
-                    schemaId = id;
-                    break;
-                }
-            }
+            const schemaId = resolveSchemaId(e.target as HTMLElement);
 
             setIsInspecting(false);
             if (onInspectComponent) {

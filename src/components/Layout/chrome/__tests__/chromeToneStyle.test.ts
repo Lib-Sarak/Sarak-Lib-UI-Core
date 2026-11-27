@@ -87,7 +87,7 @@ describe('resolveChromeToneStyle', () => {
         expect(style['--sarak-on-nav-active']).toBe('var(--sarak-sidebar-bg)');
     });
 
-    it('o texto inativo também passa 4,5:1 sobre a faixa do usuário (5% do marcador) e sobre o botão de idioma (10% da própria cor)', () => {
+    it('o texto inativo também passa 4,5:1 sobre a faixa do usuário (5% do marcador) e, na topbar, sobre a própria barra: o botão de idioma não leva tinta', () => {
         const channels = (hex: string): number[] => [1, 3, 5].map((index) => parseInt(hex.slice(index, index + 2), 16));
         const luminance = (rgb: number[]): number => {
             const [r, g, b] = rgb.map((channel) => {
@@ -114,7 +114,9 @@ describe('resolveChromeToneStyle', () => {
         const sidebarIdle = resolve('sidebar');
         expect(ratio(sidebarIdle, over(channels('#19e3f0'), 0.05, base))).toBeGreaterThanOrEqual(4.5);
         const topbarIdle = resolve('topbar');
-        expect(ratio(topbarIdle, over(topbarIdle, 0.1, base))).toBeGreaterThanOrEqual(4.5);
+        expect(ratio(topbarIdle, base)).toBeGreaterThanOrEqual(4.5);
+        // A tinta de 10% que o botão não desenha mais não pode voltar à conta: com ela o texto saía mais claro que o necessário (3,87:1 sem ela).
+        expect(ratio(topbarIdle, over(topbarIdle, 0.1, base))).toBeLessThan(4.5);
     });
 
     it('ajusta o texto inativo só o necessário para o ativo não perder para ele após escurecer o véu', () => {

@@ -21,7 +21,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ENTRY = path.join(ROOT, 'browser-tests', 'fixtures', 'topbar-mais-entry.tsx');
 const TAILWIND_CLI = path.join(ROOT, 'node_modules', '@tailwindcss', 'cli', 'dist', 'index.mjs');
 
-const CAPTURE_DIRECTORY = process.env.SARAK_PREVIA_159_DIR;
+const CAPTURE_DIRECTORY = process.env.SARAK_PREVIA_PAINEL_DIR;
 
 let harnessDirectory: string | undefined;
 let harnessUrl = '';

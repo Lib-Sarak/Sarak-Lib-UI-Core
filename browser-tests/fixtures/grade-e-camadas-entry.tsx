@@ -16,7 +16,7 @@ const colorMode = searchParams.get('modo') === 'light' ? 'light' : 'dark';
 const isEmbedded = searchParams.get('embarcado') === '1';
 
 const rootElement = document.getElementById('root');
-if (!rootElement) throw new Error('plan-146-entry: #root ausente no harness.');
+if (!rootElement) throw new Error('grade-e-camadas-entry: #root ausente no harness.');
 
 const cell = (id: string): React.ReactElement => (
     <div data-probe={id} style={{ minHeight: 24 }}>{id}</div>

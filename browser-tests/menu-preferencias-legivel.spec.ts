@@ -21,7 +21,7 @@ import { buildHarness } from './build-harness.mjs';
 
 const ENTRY = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'barra-lateral-anatomia-entry.tsx');
 const MIN_TEXT_CONTRAST = 4.5;
-const CAPTURE_DIRECTORY = process.env.SARAK_PREVIA_159_DIR;
+const CAPTURE_DIRECTORY = process.env.SARAK_PREVIA_PAINEL_DIR;
 const SCENES = [
     { name: 'corporate-ledger', theme: 'corporate-ledger', extra: {} },
     { name: 'padrao', theme: '', extra: {} },

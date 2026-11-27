@@ -167,5 +167,5 @@ const App: React.FC = () => (
 );
 
 const container = document.getElementById('root');
-if (!container) throw new Error('plan-147-graficos-entry: #root ausente no harness.');
+if (!container) throw new Error('rotulos-e-marcas-dos-graficos-entry: #root ausente no harness.');
 createRoot(container).render(<App />);

@@ -23,7 +23,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { buildHarness } from './build-harness.mjs';
 
 const ENTRY = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'barras-entry.tsx');
-const CAPTURE_DIRECTORY = process.env.SARAK_PREVIA_159_DIR;
+const CAPTURE_DIRECTORY = process.env.SARAK_PREVIA_PAINEL_DIR;
 const STORAGE_KEY = 'sarak-ui-preferences-v1';
 
 let harnessDirectory: string;

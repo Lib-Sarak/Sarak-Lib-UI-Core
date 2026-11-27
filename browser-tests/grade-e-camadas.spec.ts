@@ -20,7 +20,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildHarness } from './build-harness.mjs';
 import { SARAK_THEME_CATALOG } from '../src/core/Design/presets/themes/catalog.generated';
 
-const ENTRY = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'plan-146-entry.tsx');
+const ENTRY = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'grade-e-camadas-entry.tsx');
 const SUBPIXEL = 0.5;
 
 let harnessDirectory: string;

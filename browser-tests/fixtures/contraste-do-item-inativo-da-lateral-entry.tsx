@@ -4,7 +4,7 @@ import { SarakAppChrome } from '../../src/components/Layout/SarakAppChrome';
 import { SarakUIProvider } from '../../src/core/Provider/SarakUIProvider';
 
 const rootElement = document.getElementById('root');
-if (!rootElement) throw new Error('plan-124-sidebar-contrast-entry: #root ausente no harness.');
+if (!rootElement) throw new Error('contraste-do-item-inativo-da-lateral-entry: #root ausente no harness.');
 
 createRoot(rootElement).render(
     <SarakUIProvider config={{ mode: 'light', colorBgBody: '#ffffff', sidebarColor: '#111111' }}>

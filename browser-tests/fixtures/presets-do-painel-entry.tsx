@@ -21,7 +21,7 @@ const initialMode = params.get('claro') === '1' ? 'light' : 'dark';
 const language = params.get('idioma') ?? 'pt';
 
 const rootElement = document.getElementById('root');
-if (!rootElement) throw new Error('plan-141-presets-entry: #root ausente no harness.');
+if (!rootElement) throw new Error('presets-do-painel-entry: #root ausente no harness.');
 
 createRoot(rootElement).render(
     <SarakUIProvider

@@ -37,37 +37,22 @@ describe('slider de token responsivo', () => {
     beforeEach(() => vi.useFakeTimers());
     afterEach(() => vi.useRealTimers());
 
-    it('mostra os três pontos (nunca NaN) e grava o objeto inteiro ao editar um deles', () => {
+    it('mostra o ponto do dispositivo da prévia (nunca NaN) e grava o objeto inteiro ao editá-lo', () => {
         const updateDraft = vi.fn();
         const { container } = withProvider(
-            <DynamicTokenControl token={responsiveToken} draft={draftOf({ cardBorderRadius: { desk: 12, tab: 10, mob: 8 } })} updateDraft={updateDraft} />,
+            <DynamicTokenControl token={responsiveToken} draft={draftOf({ cardBorderRadius: { desk: 12, tab: 10, mob: 8 } })} updateDraft={updateDraft} previewDevice="tablet" />,
         );
 
         expect(container.textContent).not.toContain('NaN');
-        expect(container.textContent).toContain('12px');
         expect(container.textContent).toContain('10px');
-        expect(container.textContent).toContain('8px');
 
         const sliders = screen.getAllByRole('slider');
-        expect(sliders).toHaveLength(3);
-        fireEvent.change(sliders[1], { target: { value: '20' } });
+        expect(sliders).toHaveLength(1);
+        fireEvent.change(sliders[0], { target: { value: '20' } });
         vi.advanceTimersByTime(150);
 
         expect(updateDraft).toHaveBeenCalledTimes(1);
         expect(updateDraft).toHaveBeenCalledWith('cardBorderRadius', { desk: 12, tab: 20, mob: 8 });
-    });
-
-    it('dois pontos editados dentro da janela de debounce não perdem o primeiro', () => {
-        const updateDraft = vi.fn();
-        withProvider(
-            <DynamicTokenControl token={responsiveToken} draft={draftOf({ cardBorderRadius: { desk: 12, tab: 10, mob: 8 } })} updateDraft={updateDraft} />,
-        );
-        const sliders = screen.getAllByRole('slider');
-        fireEvent.change(sliders[0], { target: { value: '30' } });
-        fireEvent.change(sliders[2], { target: { value: '4' } });
-        vi.advanceTimersByTime(150);
-
-        expect(updateDraft).toHaveBeenLastCalledWith('cardBorderRadius', { desk: 30, tab: 10, mob: 4 });
     });
 
     it('valor escalar salvo vale para os três pontos e a edição o promove ao objeto completo', () => {

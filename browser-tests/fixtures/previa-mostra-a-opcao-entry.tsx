@@ -30,7 +30,7 @@ const atDesktop = (value: unknown): unknown => (value !== null && typeof value =
 })));
 
 const rootElement = document.getElementById('root');
-if (!rootElement) throw new Error('plan-160-previa-entry: #root ausente no harness.');
+if (!rootElement) throw new Error('previa-mostra-a-opcao-entry: #root ausente no harness.');
 
 createRoot(rootElement).render(
     <SarakUIProvider

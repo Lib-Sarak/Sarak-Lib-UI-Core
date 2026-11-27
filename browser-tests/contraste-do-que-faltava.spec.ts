@@ -163,7 +163,7 @@ for (const theme of THEMES) {
 
 for (const theme of ['contraste-cyberpunk-claro', 'contraste-cyberpunk-escuro'] as const) {
     test.describe(`recorte ${theme}`, () => {
-        for (const name of ['primario', 'perigo', 'sucesso']) {
+        for (const name of ['primario', 'secundario', 'perigo', 'sucesso']) {
             test(`estilo cyberpunk: o texto do botão ${name} passa de 4,5:1 sobre o fundo transparente`, async () => {
                 await withScene('contraste-botoes', { tema: theme }, async (page) => {
                     const button = probe(page, name).getByRole('button');

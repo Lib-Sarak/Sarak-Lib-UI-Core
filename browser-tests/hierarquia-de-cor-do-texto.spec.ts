@@ -5,7 +5,7 @@ import { chromium, expect, test } from '@playwright/test';
 import { buildHarness } from './build-harness.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const ENTRY = path.join(ROOT, 'browser-tests', 'fixtures', 'plan-123-color-hierarchy-entry.tsx');
+const ENTRY = path.join(ROOT, 'browser-tests', 'fixtures', 'hierarquia-de-cor-do-texto-entry.tsx');
 
 test('título, subtítulo e destaque diferem do corpo nos três temas', async () => {
     const { outDir, htmlPath } = await buildHarness(ENTRY);

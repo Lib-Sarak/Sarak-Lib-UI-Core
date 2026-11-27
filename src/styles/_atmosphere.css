@@ -126,9 +126,9 @@
 /* Texture Library Implementations */
 .texture-grid::before,
 [data-sx-texture="grid"]::before,
-[data-sx-card-texture-type="grid"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="grid"]) .sarak-card))::after,
+[data-sx-card-texture-type="grid"] .sarak-card:where(:not([data-sx-card-texture-type="grid"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="grid"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="grid"])))::after,
 .sarak-card[data-sx-card-texture-type="grid"]::after,
-[data-sx-card-texture-type="grid"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="grid"]) .card))::after,
+[data-sx-card-texture-type="grid"] .card:where(:not([data-sx-card-texture-type="grid"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="grid"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="grid"])))::after,
 .card[data-sx-card-texture-type="grid"]::after {
     background-image: linear-gradient(var(--sarak-card-border-color, var(--theme-border)) 1px, transparent 1px), 
                       linear-gradient(90deg, var(--sarak-card-border-color, var(--theme-border)) 1px, transparent 1px);
@@ -137,9 +137,9 @@
 
 /* No card a grade é a moldura da borda e desenha na cor de destaque da textura (a primária quando o tema não declara `textureColor`) e com traço de 2px, não na
    cor da borda do card, que é quase igual ao fundo e a apagava. A textura do fundo segue a regra de cima. */
-[data-sx-card-texture-type="grid"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="grid"]) .sarak-card))::after,
+[data-sx-card-texture-type="grid"] .sarak-card:where(:not([data-sx-card-texture-type="grid"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="grid"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="grid"])))::after,
 .sarak-card[data-sx-card-texture-type="grid"]::after,
-[data-sx-card-texture-type="grid"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="grid"]) .card))::after,
+[data-sx-card-texture-type="grid"] .card:where(:not([data-sx-card-texture-type="grid"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="grid"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="grid"])))::after,
 .card[data-sx-card-texture-type="grid"]::after {
     background-image: linear-gradient(var(--theme-texture-color, var(--theme-primary)) 2px, transparent 2px),
                       linear-gradient(90deg, var(--theme-texture-color, var(--theme-primary)) 2px, transparent 2px);
@@ -147,18 +147,18 @@
 
 .texture-dots::before,
 [data-sx-texture="dots"]::before,
-[data-sx-card-texture-type="dots"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="dots"]) .sarak-card))::after,
+[data-sx-card-texture-type="dots"] .sarak-card:where(:not([data-sx-card-texture-type="dots"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="dots"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="dots"])))::after,
 .sarak-card[data-sx-card-texture-type="dots"]::after,
-[data-sx-card-texture-type="dots"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="dots"]) .card))::after,
+[data-sx-card-texture-type="dots"] .card:where(:not([data-sx-card-texture-type="dots"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="dots"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="dots"])))::after,
 .card[data-sx-card-texture-type="dots"]::after {
     background-image: radial-gradient(var(--sarak-color-primary, var(--theme-primary)) 1px, transparent 1px);
     background-size: 16px 16px;
 }
 
 /* Textura do card: na moldura os pontos desenham com 2px (a textura do fundo não passa por aqui). */
-[data-sx-card-texture-type="dots"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="dots"]) .sarak-card))::after,
+[data-sx-card-texture-type="dots"] .sarak-card:where(:not([data-sx-card-texture-type="dots"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="dots"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="dots"])))::after,
 .sarak-card[data-sx-card-texture-type="dots"]::after,
-[data-sx-card-texture-type="dots"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="dots"]) .card))::after,
+[data-sx-card-texture-type="dots"] .card:where(:not([data-sx-card-texture-type="dots"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="dots"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="dots"])))::after,
 .card[data-sx-card-texture-type="dots"]::after {
     background-image: radial-gradient(var(--sarak-color-primary, var(--theme-primary)) 2px, transparent 2px);
 }
@@ -170,9 +170,9 @@
     animation: sarak-noise-shift var(--sarak-noise-speed, 0s) steps(1, end) infinite;
 }
 
-[data-sx-card-texture-type="noise"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="noise"]) .sarak-card))::after,
+[data-sx-card-texture-type="noise"] .sarak-card:where(:not([data-sx-card-texture-type="noise"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="noise"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="noise"])))::after,
 .sarak-card[data-sx-card-texture-type="noise"]::after,
-[data-sx-card-texture-type="noise"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="noise"]) .card))::after,
+[data-sx-card-texture-type="noise"] .card:where(:not([data-sx-card-texture-type="noise"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="noise"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="noise"])))::after,
 .card[data-sx-card-texture-type="noise"]::after {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     opacity: var(--sarak-card-texture-opacity, 0.06);
@@ -180,9 +180,9 @@
 
 .texture-grain::before,
 [data-sx-texture="grain"]::before,
-[data-sx-card-texture-type="grain"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="grain"]) .sarak-card))::after,
+[data-sx-card-texture-type="grain"] .sarak-card:where(:not([data-sx-card-texture-type="grain"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="grain"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="grain"])))::after,
 .sarak-card[data-sx-card-texture-type="grain"]::after,
-[data-sx-card-texture-type="grain"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="grain"]) .card))::after,
+[data-sx-card-texture-type="grain"] .card:where(:not([data-sx-card-texture-type="grain"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="grain"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="grain"])))::after,
 .card[data-sx-card-texture-type="grain"]::after {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-size: 200px 200px;
@@ -191,9 +191,9 @@
 
 .texture-mesh::before,
 [data-sx-texture="mesh"]::before,
-[data-sx-card-texture-type="mesh"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="mesh"]) .sarak-card))::after,
+[data-sx-card-texture-type="mesh"] .sarak-card:where(:not([data-sx-card-texture-type="mesh"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="mesh"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="mesh"])))::after,
 .sarak-card[data-sx-card-texture-type="mesh"]::after,
-[data-sx-card-texture-type="mesh"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="mesh"]) .card))::after,
+[data-sx-card-texture-type="mesh"] .card:where(:not([data-sx-card-texture-type="mesh"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="mesh"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="mesh"])))::after,
 .card[data-sx-card-texture-type="mesh"]::after {
     background: 
         radial-gradient(at 0% 0%, rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.15) 0px, transparent 50%),
@@ -205,9 +205,9 @@
 
 .texture-waves::before,
 [data-sx-texture="waves"]::before,
-[data-sx-card-texture-type="waves"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="waves"]) .sarak-card))::after,
+[data-sx-card-texture-type="waves"] .sarak-card:where(:not([data-sx-card-texture-type="waves"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="waves"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="waves"])))::after,
 .sarak-card[data-sx-card-texture-type="waves"]::after,
-[data-sx-card-texture-type="waves"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="waves"]) .card))::after,
+[data-sx-card-texture-type="waves"] .card:where(:not([data-sx-card-texture-type="waves"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="waves"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="waves"])))::after,
 .card[data-sx-card-texture-type="waves"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='20' viewBox='0 0 100 20'%3E%3Cpath d='M0 10 Q 25 0 50 10 T 100 10' fill='none' stroke='white' stroke-opacity='0.3' stroke-width='1'/%3E%3C/svg%3E");
     --sarak-tex-shape-size: 200px 40px;
@@ -219,18 +219,18 @@
 }
 
 /* Textura do card: na moldura o traço fino desenha com 2px e opacidade cheia (a textura do fundo não passa por aqui). */
-[data-sx-card-texture-type="waves"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="waves"]) .sarak-card))::after,
+[data-sx-card-texture-type="waves"] .sarak-card:where(:not([data-sx-card-texture-type="waves"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="waves"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="waves"])))::after,
 .sarak-card[data-sx-card-texture-type="waves"]::after,
-[data-sx-card-texture-type="waves"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="waves"]) .card))::after,
+[data-sx-card-texture-type="waves"] .card:where(:not([data-sx-card-texture-type="waves"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="waves"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="waves"])))::after,
 .card[data-sx-card-texture-type="waves"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='20' viewBox='0 0 100 20'%3E%3Cpath d='M0 10 Q 25 0 50 10 T 100 10' fill='none' stroke='white' stroke-opacity='1' stroke-width='2'/%3E%3C/svg%3E");
 }
 
 .texture-squares::before,
 [data-sx-texture="squares"]::before,
-[data-sx-card-texture-type="squares"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="squares"]) .sarak-card))::after,
+[data-sx-card-texture-type="squares"] .sarak-card:where(:not([data-sx-card-texture-type="squares"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="squares"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="squares"])))::after,
 .sarak-card[data-sx-card-texture-type="squares"]::after,
-[data-sx-card-texture-type="squares"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="squares"]) .card))::after,
+[data-sx-card-texture-type="squares"] .card:where(:not([data-sx-card-texture-type="squares"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="squares"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="squares"])))::after,
 .card[data-sx-card-texture-type="squares"]::after {
     background-image: 
         linear-gradient(45deg, rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.1) 25%, transparent 25%),
@@ -242,18 +242,18 @@
 
 .texture-stripes::before,
 [data-sx-texture="stripes"]::before,
-[data-sx-card-texture-type="stripes"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="stripes"]) .sarak-card))::after,
+[data-sx-card-texture-type="stripes"] .sarak-card:where(:not([data-sx-card-texture-type="stripes"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="stripes"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="stripes"])))::after,
 .sarak-card[data-sx-card-texture-type="stripes"]::after,
-[data-sx-card-texture-type="stripes"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="stripes"]) .card))::after,
+[data-sx-card-texture-type="stripes"] .card:where(:not([data-sx-card-texture-type="stripes"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="stripes"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="stripes"])))::after,
 .card[data-sx-card-texture-type="stripes"]::after {
     background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.05) 20px, rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.05) 40px);
 }
 
 .texture-topo::before,
 [data-sx-texture="topo"]::before,
-[data-sx-card-texture-type="topo"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="topo"]) .sarak-card))::after,
+[data-sx-card-texture-type="topo"] .sarak-card:where(:not([data-sx-card-texture-type="topo"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="topo"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="topo"])))::after,
 .sarak-card[data-sx-card-texture-type="topo"]::after,
-[data-sx-card-texture-type="topo"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="topo"]) .card))::after,
+[data-sx-card-texture-type="topo"] .card:where(:not([data-sx-card-texture-type="topo"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="topo"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="topo"])))::after,
 .card[data-sx-card-texture-type="topo"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 100 100'%3E%3Cpath d='M0 10 Q 25 35 50 10 T 100 10 M0 30 Q 25 55 50 30 T 100 30 M0 50 Q 25 75 50 50 T 100 50' fill='none' stroke='white' stroke-opacity='0.2' stroke-width='0.5'/%3E%3C/svg%3E");
     --sarak-tex-shape-size: 300px 300px;
@@ -265,18 +265,18 @@
 }
 
 /* Textura do card: na moldura o traço fino desenha com 2px e opacidade cheia (a textura do fundo não passa por aqui). */
-[data-sx-card-texture-type="topo"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="topo"]) .sarak-card))::after,
+[data-sx-card-texture-type="topo"] .sarak-card:where(:not([data-sx-card-texture-type="topo"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="topo"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="topo"])))::after,
 .sarak-card[data-sx-card-texture-type="topo"]::after,
-[data-sx-card-texture-type="topo"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="topo"]) .card))::after,
+[data-sx-card-texture-type="topo"] .card:where(:not([data-sx-card-texture-type="topo"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="topo"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="topo"])))::after,
 .card[data-sx-card-texture-type="topo"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 100 100'%3E%3Cpath d='M0 10 Q 25 35 50 10 T 100 10 M0 30 Q 25 55 50 30 T 100 30 M0 50 Q 25 75 50 50 T 100 50' fill='none' stroke='white' stroke-opacity='1' stroke-width='1'/%3E%3C/svg%3E");
 }
 
 .texture-diamond::before,
 [data-sx-texture="diamond"]::before,
-[data-sx-card-texture-type="diamond"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="diamond"]) .sarak-card))::after,
+[data-sx-card-texture-type="diamond"] .sarak-card:where(:not([data-sx-card-texture-type="diamond"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="diamond"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="diamond"])))::after,
 .sarak-card[data-sx-card-texture-type="diamond"]::after,
-[data-sx-card-texture-type="diamond"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="diamond"]) .card))::after,
+[data-sx-card-texture-type="diamond"] .card:where(:not([data-sx-card-texture-type="diamond"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="diamond"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="diamond"])))::after,
 .card[data-sx-card-texture-type="diamond"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M20 0L40 20L20 40L0 20Z' fill='none' stroke='white' stroke-opacity='0.2' stroke-width='1'/%3E%3C/svg%3E");
     --sarak-tex-shape-size: 40px 40px;
@@ -288,18 +288,18 @@
 }
 
 /* Textura do card: na moldura o traço fino desenha com 2px e opacidade cheia (a textura do fundo não passa por aqui). */
-[data-sx-card-texture-type="diamond"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="diamond"]) .sarak-card))::after,
+[data-sx-card-texture-type="diamond"] .sarak-card:where(:not([data-sx-card-texture-type="diamond"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="diamond"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="diamond"])))::after,
 .sarak-card[data-sx-card-texture-type="diamond"]::after,
-[data-sx-card-texture-type="diamond"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="diamond"]) .card))::after,
+[data-sx-card-texture-type="diamond"] .card:where(:not([data-sx-card-texture-type="diamond"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="diamond"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="diamond"])))::after,
 .card[data-sx-card-texture-type="diamond"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M20 0L40 20L20 40L0 20Z' fill='none' stroke='white' stroke-opacity='1' stroke-width='2'/%3E%3C/svg%3E");
 }
 
 .texture-prestige::before,
 [data-sx-texture="prestige"]::before,
-[data-sx-card-texture-type="prestige"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="prestige"]) .sarak-card))::after,
+[data-sx-card-texture-type="prestige"] .sarak-card:where(:not([data-sx-card-texture-type="prestige"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="prestige"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="prestige"])))::after,
 .sarak-card[data-sx-card-texture-type="prestige"]::after,
-[data-sx-card-texture-type="prestige"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="prestige"]) .card))::after,
+[data-sx-card-texture-type="prestige"] .card:where(:not([data-sx-card-texture-type="prestige"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="prestige"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="prestige"])))::after,
 .card[data-sx-card-texture-type="prestige"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='white' fill-opacity='0.05'/%3E%3Cpath d='M30 10L50 30L30 50L10 30Z' fill='none' stroke='white' stroke-opacity='0.1' stroke-width='1'/%3E%3C/svg%3E");
     background-color: var(--theme-texture-color, var(--theme-primary));
@@ -308,18 +308,18 @@
 }
 
 /* Textura do card: na moldura o traço fino desenha com 2px e opacidade cheia (a textura do fundo não passa por aqui). */
-[data-sx-card-texture-type="prestige"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="prestige"]) .sarak-card))::after,
+[data-sx-card-texture-type="prestige"] .sarak-card:where(:not([data-sx-card-texture-type="prestige"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="prestige"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="prestige"])))::after,
 .sarak-card[data-sx-card-texture-type="prestige"]::after,
-[data-sx-card-texture-type="prestige"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="prestige"]) .card))::after,
+[data-sx-card-texture-type="prestige"] .card:where(:not([data-sx-card-texture-type="prestige"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="prestige"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="prestige"])))::after,
 .card[data-sx-card-texture-type="prestige"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='white' fill-opacity='0.05'/%3E%3Cpath d='M30 10L50 30L30 50L10 30Z' fill='none' stroke='white' stroke-opacity='1' stroke-width='2'/%3E%3C/svg%3E");
 }
 
 .texture-carbon::before,
 [data-sx-texture="carbon"]::before,
-[data-sx-card-texture-type="carbon"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="carbon"]) .sarak-card))::after,
+[data-sx-card-texture-type="carbon"] .sarak-card:where(:not([data-sx-card-texture-type="carbon"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="carbon"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="carbon"])))::after,
 .sarak-card[data-sx-card-texture-type="carbon"]::after,
-[data-sx-card-texture-type="carbon"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="carbon"]) .card))::after,
+[data-sx-card-texture-type="carbon"] .card:where(:not([data-sx-card-texture-type="carbon"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="carbon"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="carbon"])))::after,
 .card[data-sx-card-texture-type="carbon"]::after {
     /* Os seis tons do tecido (antes cinzas fixos 21…36, porque a variável `-rgb` não existia):
        cada um é a cor de textura do tema misturada com preto na proporção que, com a textura
@@ -344,9 +344,9 @@
 
 .texture-brushed::before,
 [data-sx-texture="brushed"]::before,
-[data-sx-card-texture-type="brushed"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="brushed"]) .sarak-card))::after,
+[data-sx-card-texture-type="brushed"] .sarak-card:where(:not([data-sx-card-texture-type="brushed"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="brushed"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="brushed"])))::after,
 .sarak-card[data-sx-card-texture-type="brushed"]::after,
-[data-sx-card-texture-type="brushed"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="brushed"]) .card))::after,
+[data-sx-card-texture-type="brushed"] .card:where(:not([data-sx-card-texture-type="brushed"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="brushed"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="brushed"])))::after,
 .card[data-sx-card-texture-type="brushed"]::after {
     background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 22%, transparent) 0px, color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 22%, transparent) 1px, transparent 1px, transparent 2px);
     background-size: 4px 100%;
@@ -354,9 +354,9 @@
 
 .texture-frosted::before,
 [data-sx-texture="frosted"]::before,
-[data-sx-card-texture-type="frosted"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="frosted"]) .sarak-card))::after,
+[data-sx-card-texture-type="frosted"] .sarak-card:where(:not([data-sx-card-texture-type="frosted"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="frosted"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="frosted"])))::after,
 .sarak-card[data-sx-card-texture-type="frosted"]::after,
-[data-sx-card-texture-type="frosted"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="frosted"]) .card))::after,
+[data-sx-card-texture-type="frosted"] .card:where(:not([data-sx-card-texture-type="frosted"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="frosted"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="frosted"])))::after,
 .card[data-sx-card-texture-type="frosted"]::after {
     background: linear-gradient(135deg, color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 20%, transparent), color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 5%, transparent));
     backdrop-filter: blur(30px);
@@ -364,9 +364,9 @@
 
 .texture-circuit::before,
 [data-sx-texture="circuit"]::before,
-[data-sx-card-texture-type="circuit"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="circuit"]) .sarak-card))::after,
+[data-sx-card-texture-type="circuit"] .sarak-card:where(:not([data-sx-card-texture-type="circuit"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="circuit"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="circuit"])))::after,
 .sarak-card[data-sx-card-texture-type="circuit"]::after,
-[data-sx-card-texture-type="circuit"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="circuit"]) .card))::after,
+[data-sx-card-texture-type="circuit"] .card:where(:not([data-sx-card-texture-type="circuit"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="circuit"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="circuit"])))::after,
 .card[data-sx-card-texture-type="circuit"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='white' stroke-width='1'%3E%3Cpath d='M10 10h20v20h-20z'/%3E%3Cpath d='M30 20h40M70 20v40'/%3E%3Ccircle cx='10' cy='10' r='2' fill='white'/%3E%3C/g%3E%3C/svg%3E");
     --sarak-tex-shape-size: 150px 150px;
@@ -379,18 +379,18 @@
 }
 
 /* Textura do card: na moldura o traço fino desenha com 2px e opacidade cheia (a textura do fundo não passa por aqui). */
-[data-sx-card-texture-type="circuit"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="circuit"]) .sarak-card))::after,
+[data-sx-card-texture-type="circuit"] .sarak-card:where(:not([data-sx-card-texture-type="circuit"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="circuit"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="circuit"])))::after,
 .sarak-card[data-sx-card-texture-type="circuit"]::after,
-[data-sx-card-texture-type="circuit"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="circuit"]) .card))::after,
+[data-sx-card-texture-type="circuit"] .card:where(:not([data-sx-card-texture-type="circuit"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="circuit"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="circuit"])))::after,
 .card[data-sx-card-texture-type="circuit"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M10 10h20v20h-20z'/%3E%3Cpath d='M30 20h40M70 20v40'/%3E%3Ccircle cx='10' cy='10' r='2' fill='white'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 .texture-paper::before,
 [data-sx-texture="paper"]::before,
-[data-sx-card-texture-type="paper"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="paper"]) .sarak-card))::after,
+[data-sx-card-texture-type="paper"] .sarak-card:where(:not([data-sx-card-texture-type="paper"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="paper"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="paper"])))::after,
 .sarak-card[data-sx-card-texture-type="paper"]::after,
-[data-sx-card-texture-type="paper"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="paper"]) .card))::after,
+[data-sx-card-texture-type="paper"] .card:where(:not([data-sx-card-texture-type="paper"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="paper"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="paper"])))::after,
 .card[data-sx-card-texture-type="paper"]::after {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     filter: sepia(20%) brightness(1.1) contrast(0.9);
@@ -399,9 +399,9 @@
 
 .texture-scanlines::before,
 [data-sx-texture="scanlines"]::before,
-[data-sx-card-texture-type="scanlines"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="scanlines"]) .sarak-card))::after,
+[data-sx-card-texture-type="scanlines"] .sarak-card:where(:not([data-sx-card-texture-type="scanlines"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="scanlines"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="scanlines"])))::after,
 .sarak-card[data-sx-card-texture-type="scanlines"]::after,
-[data-sx-card-texture-type="scanlines"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="scanlines"]) .card))::after,
+[data-sx-card-texture-type="scanlines"] .card:where(:not([data-sx-card-texture-type="scanlines"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="scanlines"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="scanlines"])))::after,
 .card[data-sx-card-texture-type="scanlines"]::after {
     background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
     background-size: 100% 4px;
@@ -409,9 +409,9 @@
 
 .texture-hexagon::before,
 [data-sx-texture="hexagon"]::before,
-[data-sx-card-texture-type="hexagon"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="hexagon"]) .sarak-card))::after,
+[data-sx-card-texture-type="hexagon"] .sarak-card:where(:not([data-sx-card-texture-type="hexagon"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="hexagon"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="hexagon"])))::after,
 .sarak-card[data-sx-card-texture-type="hexagon"]::after,
-[data-sx-card-texture-type="hexagon"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="hexagon"]) .card))::after,
+[data-sx-card-texture-type="hexagon"] .card:where(:not([data-sx-card-texture-type="hexagon"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="hexagon"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="hexagon"])))::after,
 .card[data-sx-card-texture-type="hexagon"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='98' viewBox='0 0 28 49'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5z' fill='none' stroke='white' stroke-opacity='0.3' stroke-width='1'/%3E%3C/svg%3E");
     --sarak-tex-shape-size: 56px 98px;
@@ -423,27 +423,27 @@
 }
 
 /* Textura do card: na moldura o traço fino desenha com 2px e opacidade cheia (a textura do fundo não passa por aqui). */
-[data-sx-card-texture-type="hexagon"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="hexagon"]) .sarak-card))::after,
+[data-sx-card-texture-type="hexagon"] .sarak-card:where(:not([data-sx-card-texture-type="hexagon"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="hexagon"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="hexagon"])))::after,
 .sarak-card[data-sx-card-texture-type="hexagon"]::after,
-[data-sx-card-texture-type="hexagon"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="hexagon"]) .card))::after,
+[data-sx-card-texture-type="hexagon"] .card:where(:not([data-sx-card-texture-type="hexagon"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="hexagon"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="hexagon"])))::after,
 .card[data-sx-card-texture-type="hexagon"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='98' viewBox='0 0 28 49'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5z' fill='none' stroke='white' stroke-opacity='1' stroke-width='1'/%3E%3C/svg%3E");
 }
 
 .texture-silk::before,
 [data-sx-texture="silk"]::before,
-[data-sx-card-texture-type="silk"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="silk"]) .sarak-card))::after,
+[data-sx-card-texture-type="silk"] .sarak-card:where(:not([data-sx-card-texture-type="silk"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="silk"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="silk"])))::after,
 .sarak-card[data-sx-card-texture-type="silk"]::after,
-[data-sx-card-texture-type="silk"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="silk"]) .card))::after,
+[data-sx-card-texture-type="silk"] .card:where(:not([data-sx-card-texture-type="silk"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="silk"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="silk"])))::after,
 .card[data-sx-card-texture-type="silk"]::after {
     background: linear-gradient(135deg, rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.1) 0%, transparent 50%, rgba(0,0,0,0.2) 100%);
 }
 
 .texture-blueprint::before,
 [data-sx-texture="blueprint"]::before,
-[data-sx-card-texture-type="blueprint"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="blueprint"]) .sarak-card))::after,
+[data-sx-card-texture-type="blueprint"] .sarak-card:where(:not([data-sx-card-texture-type="blueprint"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="blueprint"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="blueprint"])))::after,
 .sarak-card[data-sx-card-texture-type="blueprint"]::after,
-[data-sx-card-texture-type="blueprint"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="blueprint"]) .card))::after,
+[data-sx-card-texture-type="blueprint"] .card:where(:not([data-sx-card-texture-type="blueprint"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="blueprint"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="blueprint"])))::after,
 .card[data-sx-card-texture-type="blueprint"]::after {
     background-image: linear-gradient(rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.2) 1px, transparent 1px);
     background-size: 40px 40px;
@@ -451,9 +451,9 @@
 
 .texture-aurora::before,
 [data-sx-texture="aurora"]::before,
-[data-sx-card-texture-type="aurora"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="aurora"]) .sarak-card))::after,
+[data-sx-card-texture-type="aurora"] .sarak-card:where(:not([data-sx-card-texture-type="aurora"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="aurora"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="aurora"])))::after,
 .sarak-card[data-sx-card-texture-type="aurora"]::after,
-[data-sx-card-texture-type="aurora"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="aurora"]) .card))::after,
+[data-sx-card-texture-type="aurora"] .card:where(:not([data-sx-card-texture-type="aurora"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="aurora"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="aurora"])))::after,
 .card[data-sx-card-texture-type="aurora"]::after {
     background: linear-gradient(217deg, rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)),.4), rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)),0) 70.71%), linear-gradient(127deg, rgba(139, 92, 246, .4), rgba(139, 92, 246, 0) 70.71%), linear-gradient(336deg, rgba(6, 182, 212, .4), rgba(6, 182, 212, 0) 70.71%);
     background-size: 200% 200%;
@@ -469,9 +469,9 @@
 
 .texture-stars::before,
 [data-sx-texture="stars"]::before,
-[data-sx-card-texture-type="stars"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="stars"]) .sarak-card))::after,
+[data-sx-card-texture-type="stars"] .sarak-card:where(:not([data-sx-card-texture-type="stars"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="stars"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="stars"])))::after,
 .sarak-card[data-sx-card-texture-type="stars"]::after,
-[data-sx-card-texture-type="stars"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="stars"]) .card))::after,
+[data-sx-card-texture-type="stars"] .card:where(:not([data-sx-card-texture-type="stars"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="stars"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="stars"])))::after,
 .card[data-sx-card-texture-type="stars"]::after {
     background-image: radial-gradient(1.5px 1.5px at 20px 30px, var(--theme-texture-color, #cfe9ff), rgba(0,0,0,0)), radial-gradient(1px 1px at 40px 70px, var(--theme-texture-color, #cfe9ff), rgba(0,0,0,0)), radial-gradient(2px 2px at 50px 160px, var(--theme-texture-color, #cfe9ff), rgba(0,0,0,0)), radial-gradient(1.5px 1.5px at 90px 40px, var(--theme-texture-color, #cfe9ff), rgba(0,0,0,0)), radial-gradient(1px 1px at 130px 80px, var(--theme-texture-color, #cfe9ff), rgba(0,0,0,0)), radial-gradient(2px 2px at 160px 120px, var(--theme-texture-color, #cfe9ff), rgba(0,0,0,0));
     background-size: 250px 250px;
@@ -484,25 +484,12 @@
     to { opacity: 0.6; }
 }
 
-.texture-aurora-classic::before {
-    background: radial-gradient(circle at 20% 30%, var(--theme-texture-color, var(--theme-primary)) 0%, transparent 50%), radial-gradient(circle at 80% 70%, var(--theme-secondary, #7c5cff) 0%, transparent 50%), radial-gradient(circle at 50% 50%, var(--theme-accent, #ff4fd8) 0%, transparent 50%);
-    filter: blur(100px);
-    opacity: var(--sarak-card-texture-opacity, var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.3)));
-    animation: aurora-classic-drift 30s linear infinite;
-}
-
-@keyframes aurora-classic-drift {
-    0% { transform: rotate(0deg) scale(1); }
-    50% { transform: rotate(180deg) scale(1.2); }
-    100% { transform: rotate(360deg) scale(1); }
-}
-
 /* ADVANCED TEXTURES (v12.2) */
 .texture-honeycomb::before,
 [data-sx-texture="honeycomb"]::before,
-[data-sx-card-texture-type="honeycomb"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="honeycomb"]) .sarak-card))::after,
+[data-sx-card-texture-type="honeycomb"] .sarak-card:where(:not([data-sx-card-texture-type="honeycomb"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="honeycomb"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="honeycomb"])))::after,
 .sarak-card[data-sx-card-texture-type="honeycomb"]::after,
-[data-sx-card-texture-type="honeycomb"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="honeycomb"]) .card))::after,
+[data-sx-card-texture-type="honeycomb"] .card:where(:not([data-sx-card-texture-type="honeycomb"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="honeycomb"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="honeycomb"])))::after,
 .card[data-sx-card-texture-type="honeycomb"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg width='28' height='49' viewBox='0 0 28 49' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='none' stroke='white' stroke-width='1'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     --sarak-tex-shape-size: 28px 49px;
@@ -514,18 +501,18 @@
 }
 
 /* Textura do card: na moldura o traço fino desenha com 2px e opacidade cheia (a textura do fundo não passa por aqui). */
-[data-sx-card-texture-type="honeycomb"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="honeycomb"]) .sarak-card))::after,
+[data-sx-card-texture-type="honeycomb"] .sarak-card:where(:not([data-sx-card-texture-type="honeycomb"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="honeycomb"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="honeycomb"])))::after,
 .sarak-card[data-sx-card-texture-type="honeycomb"]::after,
-[data-sx-card-texture-type="honeycomb"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="honeycomb"]) .card))::after,
+[data-sx-card-texture-type="honeycomb"] .card:where(:not([data-sx-card-texture-type="honeycomb"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="honeycomb"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="honeycomb"])))::after,
 .card[data-sx-card-texture-type="honeycomb"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg width='28' height='49' viewBox='0 0 28 49' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
 .texture-isometric::before,
 [data-sx-texture="isometric"]::before,
-[data-sx-card-texture-type="isometric"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="isometric"]) .sarak-card))::after,
+[data-sx-card-texture-type="isometric"] .sarak-card:where(:not([data-sx-card-texture-type="isometric"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="isometric"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="isometric"])))::after,
 .sarak-card[data-sx-card-texture-type="isometric"]::after,
-[data-sx-card-texture-type="isometric"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="isometric"]) .card))::after,
+[data-sx-card-texture-type="isometric"] .card:where(:not([data-sx-card-texture-type="isometric"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="isometric"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="isometric"])))::after,
 .card[data-sx-card-texture-type="isometric"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg width='40' height='69' viewBox='0 0 40 69' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='white' stroke-width='1'%3E%3Cpath d='M20 0v23l20 11.5V11.5L20 0zM0 11.5l20 11.5v23L0 34.5V11.5z'/%3E%3C/g%3E%3C/svg%3E");
     --sarak-tex-shape-size: 40px 69px;
@@ -537,18 +524,18 @@
 }
 
 /* Textura do card: na moldura o traço fino desenha com 2px e opacidade cheia (a textura do fundo não passa por aqui). */
-[data-sx-card-texture-type="isometric"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="isometric"]) .sarak-card))::after,
+[data-sx-card-texture-type="isometric"] .sarak-card:where(:not([data-sx-card-texture-type="isometric"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="isometric"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="isometric"])))::after,
 .sarak-card[data-sx-card-texture-type="isometric"]::after,
-[data-sx-card-texture-type="isometric"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="isometric"]) .card))::after,
+[data-sx-card-texture-type="isometric"] .card:where(:not([data-sx-card-texture-type="isometric"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="isometric"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="isometric"])))::after,
 .card[data-sx-card-texture-type="isometric"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg width='40' height='69' viewBox='0 0 40 69' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M20 0v23l20 11.5V11.5L20 0zM0 11.5l20 11.5v23L0 34.5V11.5z'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 .texture-radar::before,
 [data-sx-texture="radar"]::before,
-[data-sx-card-texture-type="radar"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="radar"]) .sarak-card))::after,
+[data-sx-card-texture-type="radar"] .sarak-card:where(:not([data-sx-card-texture-type="radar"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="radar"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="radar"])))::after,
 .sarak-card[data-sx-card-texture-type="radar"]::after,
-[data-sx-card-texture-type="radar"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="radar"]) .card))::after,
+[data-sx-card-texture-type="radar"] .card:where(:not([data-sx-card-texture-type="radar"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="radar"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="radar"])))::after,
 .card[data-sx-card-texture-type="radar"]::after {
     background-image: repeating-radial-gradient(circle at 50% 50%, transparent 0, transparent 20px, var(--theme-border) 20px, var(--theme-border) 21px);
     background-size: 100% 100%;
@@ -556,9 +543,9 @@
 
 .texture-crosshatch::before,
 [data-sx-texture="crosshatch"]::before,
-[data-sx-card-texture-type="crosshatch"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="crosshatch"]) .sarak-card))::after,
+[data-sx-card-texture-type="crosshatch"] .sarak-card:where(:not([data-sx-card-texture-type="crosshatch"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="crosshatch"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="crosshatch"])))::after,
 .sarak-card[data-sx-card-texture-type="crosshatch"]::after,
-[data-sx-card-texture-type="crosshatch"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="crosshatch"]) .card))::after,
+[data-sx-card-texture-type="crosshatch"] .card:where(:not([data-sx-card-texture-type="crosshatch"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="crosshatch"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="crosshatch"])))::after,
 .card[data-sx-card-texture-type="crosshatch"]::after {
     background-image: repeating-linear-gradient(45deg, var(--theme-border) 0, var(--theme-border) 1px, transparent 1px, transparent 15px), repeating-linear-gradient(-45deg, var(--theme-border) 0, var(--theme-border) 1px, transparent 1px, transparent 15px);
     background-size: 100% 100%;
@@ -566,9 +553,9 @@
 
 .texture-micro-dots::before,
 [data-sx-texture="micro-dots"]::before,
-[data-sx-card-texture-type="micro-dots"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="micro-dots"]) .sarak-card))::after,
+[data-sx-card-texture-type="micro-dots"] .sarak-card:where(:not([data-sx-card-texture-type="micro-dots"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="micro-dots"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="micro-dots"])))::after,
 .sarak-card[data-sx-card-texture-type="micro-dots"]::after,
-[data-sx-card-texture-type="micro-dots"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="micro-dots"]) .card))::after,
+[data-sx-card-texture-type="micro-dots"] .card:where(:not([data-sx-card-texture-type="micro-dots"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="micro-dots"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="micro-dots"])))::after,
 .card[data-sx-card-texture-type="micro-dots"]::after {
     background-image: radial-gradient(var(--theme-texture-color, var(--theme-primary)) 0.5px, transparent 0.5px);
     background-size: 8px 8px;
@@ -576,9 +563,9 @@
 
 .texture-pinstripes::before,
 [data-sx-texture="pinstripes"]::before,
-[data-sx-card-texture-type="pinstripes"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="pinstripes"]) .sarak-card))::after,
+[data-sx-card-texture-type="pinstripes"] .sarak-card:where(:not([data-sx-card-texture-type="pinstripes"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="pinstripes"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="pinstripes"])))::after,
 .sarak-card[data-sx-card-texture-type="pinstripes"]::after,
-[data-sx-card-texture-type="pinstripes"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="pinstripes"]) .card))::after,
+[data-sx-card-texture-type="pinstripes"] .card:where(:not([data-sx-card-texture-type="pinstripes"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="pinstripes"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="pinstripes"])))::after,
 .card[data-sx-card-texture-type="pinstripes"]::after {
     background-image: repeating-linear-gradient(90deg, var(--theme-border) 0, var(--theme-border) 1px, transparent 1px, transparent 30px);
     background-size: 100% 100%;
@@ -586,9 +573,9 @@
 
 .texture-constellation::before,
 [data-sx-texture="constellation"]::before,
-[data-sx-card-texture-type="constellation"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="constellation"]) .sarak-card))::after,
+[data-sx-card-texture-type="constellation"] .sarak-card:where(:not([data-sx-card-texture-type="constellation"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="constellation"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="constellation"])))::after,
 .sarak-card[data-sx-card-texture-type="constellation"]::after,
-[data-sx-card-texture-type="constellation"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="constellation"]) .card))::after,
+[data-sx-card-texture-type="constellation"] .card:where(:not([data-sx-card-texture-type="constellation"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="constellation"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="constellation"])))::after,
 .card[data-sx-card-texture-type="constellation"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg width='300' height='300' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 60 L90 150 L150 90 L240 270 L270 30' stroke='white' stroke-width='0.5' fill='none'/%3E%3C/svg%3E");
     background-image: radial-gradient(1.5px 1.5px at 10% 20%, var(--theme-texture-color, white), transparent), radial-gradient(1.5px 1.5px at 30% 50%, var(--theme-texture-color, white), transparent), radial-gradient(1.5px 1.5px at 50% 30%, var(--theme-texture-color, white), transparent), radial-gradient(1.5px 1.5px at 80% 90%, var(--theme-texture-color, white), transparent), radial-gradient(1.5px 1.5px at 90% 10%, var(--theme-texture-color, white), transparent);
@@ -598,18 +585,18 @@
 }
 
 /* Textura do card: na moldura o traço fino desenha com 2px e opacidade cheia (a textura do fundo não passa por aqui). */
-[data-sx-card-texture-type="constellation"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="constellation"]) .sarak-card))::after,
+[data-sx-card-texture-type="constellation"] .sarak-card:where(:not([data-sx-card-texture-type="constellation"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="constellation"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="constellation"])))::after,
 .sarak-card[data-sx-card-texture-type="constellation"]::after,
-[data-sx-card-texture-type="constellation"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="constellation"]) .card))::after,
+[data-sx-card-texture-type="constellation"] .card:where(:not([data-sx-card-texture-type="constellation"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="constellation"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="constellation"])))::after,
 .card[data-sx-card-texture-type="constellation"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg width='300' height='300' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 60 L90 150 L150 90 L240 270 L270 30' stroke='white' stroke-width='2' fill='none'/%3E%3C/svg%3E");
 }
 
 .texture-circuit-pro::before,
 [data-sx-texture="circuit-pro"]::before,
-[data-sx-card-texture-type="circuit-pro"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="circuit-pro"]) .sarak-card))::after,
+[data-sx-card-texture-type="circuit-pro"] .sarak-card:where(:not([data-sx-card-texture-type="circuit-pro"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="circuit-pro"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="circuit-pro"])))::after,
 .sarak-card[data-sx-card-texture-type="circuit-pro"]::after,
-[data-sx-card-texture-type="circuit-pro"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="circuit-pro"]) .card))::after,
+[data-sx-card-texture-type="circuit-pro"] .card:where(:not([data-sx-card-texture-type="circuit-pro"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="circuit-pro"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="circuit-pro"])))::after,
 .card[data-sx-card-texture-type="circuit-pro"]::after {
     background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='currentColor' stroke-width='0.5' stroke-opacity='0.2'%3E%3Cpath d='M10 10 L10 40 L30 40 L30 70 L60 70 L60 90'/%3E%3Cpath d='M90 10 L90 30 L70 30 L70 50 L40 50 L40 10'/%3E%3Ccircle cx='10' cy='10' r='1.5' fill='currentColor' fill-opacity='0.3'/%3E%3Ccircle cx='60' cy='90' r='1.5' fill='currentColor' fill-opacity='0.3'/%3E%3Ccircle cx='90' cy='10' r='1.5' fill='currentColor' fill-opacity='0.3'/%3E%3C/g%3E%3C/svg%3E");
     background-size: 200px 200px;
@@ -617,9 +604,9 @@
 
 .texture-carbon-tech::before,
 [data-sx-texture="carbon-tech"]::before,
-[data-sx-card-texture-type="carbon-tech"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="carbon-tech"]) .sarak-card))::after,
+[data-sx-card-texture-type="carbon-tech"] .sarak-card:where(:not([data-sx-card-texture-type="carbon-tech"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="carbon-tech"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="carbon-tech"])))::after,
 .sarak-card[data-sx-card-texture-type="carbon-tech"]::after,
-[data-sx-card-texture-type="carbon-tech"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="carbon-tech"]) .card))::after,
+[data-sx-card-texture-type="carbon-tech"] .card:where(:not([data-sx-card-texture-type="carbon-tech"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="carbon-tech"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="carbon-tech"])))::after,
 .card[data-sx-card-texture-type="carbon-tech"]::after {
     background: linear-gradient(45deg, var(--theme-texture-color, #cfe9ff) 25%, transparent 25%, transparent 75%, var(--theme-texture-color, #cfe9ff) 75%, var(--theme-texture-color, #cfe9ff)), linear-gradient(45deg, var(--theme-texture-color, #cfe9ff) 25%, transparent 25%, transparent 75%, var(--theme-texture-color, #cfe9ff) 75%, var(--theme-texture-color, #cfe9ff));
     background-size: 8px 8px;
@@ -629,9 +616,9 @@
 
 .texture-topo-deep::before,
 [data-sx-texture="topo-deep"]::before,
-[data-sx-card-texture-type="topo-deep"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="topo-deep"]) .sarak-card))::after,
+[data-sx-card-texture-type="topo-deep"] .sarak-card:where(:not([data-sx-card-texture-type="topo-deep"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="topo-deep"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="topo-deep"])))::after,
 .sarak-card[data-sx-card-texture-type="topo-deep"]::after,
-[data-sx-card-texture-type="topo-deep"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="topo-deep"]) .card))::after,
+[data-sx-card-texture-type="topo-deep"] .card:where(:not([data-sx-card-texture-type="topo-deep"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="topo-deep"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="topo-deep"])))::after,
 .card[data-sx-card-texture-type="topo-deep"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg width='400' height='400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.01' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='0.3'/%3E%3Cpath d='M0 50 Q 100 0 200 50 T 400 50 M0 150 Q 100 100 200 150 T 400 150 M0 250 Q 100 200 200 250 T 400 250 M0 350 Q 100 300 200 350 T 400 350' stroke='white' stroke-opacity='0.8' fill='none' stroke-width='1'/%3E%3C/svg%3E");
     --sarak-tex-shape-size: 400px 400px;
@@ -643,18 +630,18 @@
 }
 
 /* Textura do card: na moldura o traço fino desenha com 2px e opacidade cheia (a textura do fundo não passa por aqui). */
-[data-sx-card-texture-type="topo-deep"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="topo-deep"]) .sarak-card))::after,
+[data-sx-card-texture-type="topo-deep"] .sarak-card:where(:not([data-sx-card-texture-type="topo-deep"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="topo-deep"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="topo-deep"])))::after,
 .sarak-card[data-sx-card-texture-type="topo-deep"]::after,
-[data-sx-card-texture-type="topo-deep"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="topo-deep"]) .card))::after,
+[data-sx-card-texture-type="topo-deep"] .card:where(:not([data-sx-card-texture-type="topo-deep"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="topo-deep"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="topo-deep"])))::after,
 .card[data-sx-card-texture-type="topo-deep"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg width='400' height='400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.01' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='0.3'/%3E%3Cpath d='M0 50 Q 100 0 200 50 T 400 50 M0 150 Q 100 100 200 150 T 400 150 M0 250 Q 100 200 200 250 T 400 250 M0 350 Q 100 300 200 350 T 400 350' stroke='white' stroke-opacity='1' fill='none' stroke-width='2'/%3E%3C/svg%3E");
 }
 
 .texture-prism-mesh::before,
 [data-sx-texture="prism-mesh"]::before,
-[data-sx-card-texture-type="prism-mesh"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="prism-mesh"]) .sarak-card))::after,
+[data-sx-card-texture-type="prism-mesh"] .sarak-card:where(:not([data-sx-card-texture-type="prism-mesh"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="prism-mesh"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="prism-mesh"])))::after,
 .sarak-card[data-sx-card-texture-type="prism-mesh"]::after,
-[data-sx-card-texture-type="prism-mesh"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="prism-mesh"]) .card))::after,
+[data-sx-card-texture-type="prism-mesh"] .card:where(:not([data-sx-card-texture-type="prism-mesh"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="prism-mesh"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="prism-mesh"])))::after,
 .card[data-sx-card-texture-type="prism-mesh"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0 L30 30 L0 60 Z M60 0 L30 30 L60 60 Z' fill='white' fill-opacity='0.3' stroke='white' stroke-width='0.5'/%3E%3C/svg%3E");
     --sarak-tex-shape-size: 60px 60px;
@@ -666,18 +653,18 @@
 }
 
 /* Textura do card: na moldura o traço fino desenha com 2px e opacidade cheia (a textura do fundo não passa por aqui). */
-[data-sx-card-texture-type="prism-mesh"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="prism-mesh"]) .sarak-card))::after,
+[data-sx-card-texture-type="prism-mesh"] .sarak-card:where(:not([data-sx-card-texture-type="prism-mesh"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="prism-mesh"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="prism-mesh"])))::after,
 .sarak-card[data-sx-card-texture-type="prism-mesh"]::after,
-[data-sx-card-texture-type="prism-mesh"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="prism-mesh"]) .card))::after,
+[data-sx-card-texture-type="prism-mesh"] .card:where(:not([data-sx-card-texture-type="prism-mesh"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="prism-mesh"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="prism-mesh"])))::after,
 .card[data-sx-card-texture-type="prism-mesh"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0 L30 30 L0 60 Z M60 0 L30 30 L60 60 Z' fill='white' fill-opacity='0.3' stroke='white' stroke-width='2'/%3E%3C/svg%3E");
 }
 
 .texture-cyber-binary::before,
 [data-sx-texture="cyber-binary"]::before,
-[data-sx-card-texture-type="cyber-binary"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="cyber-binary"]) .sarak-card))::after,
+[data-sx-card-texture-type="cyber-binary"] .sarak-card:where(:not([data-sx-card-texture-type="cyber-binary"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="cyber-binary"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="cyber-binary"])))::after,
 .sarak-card[data-sx-card-texture-type="cyber-binary"]::after,
-[data-sx-card-texture-type="cyber-binary"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="cyber-binary"]) .card))::after,
+[data-sx-card-texture-type="cyber-binary"] .card:where(:not([data-sx-card-texture-type="cyber-binary"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="cyber-binary"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="cyber-binary"])))::after,
 .card[data-sx-card-texture-type="cyber-binary"]::after {
     content: "0101101001101010100101010110";
     font-family: monospace; font-size: 10px; color: var(--theme-primary); opacity: 0.05; white-space: pre; display: flex; flex-wrap: wrap; line-height: 1; letter-spacing: 5px; word-break: break-all;
@@ -685,9 +672,9 @@
 
 .texture-blueprint-pro::before,
 [data-sx-texture="blueprint-pro"]::before,
-[data-sx-card-texture-type="blueprint-pro"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="blueprint-pro"]) .sarak-card))::after,
+[data-sx-card-texture-type="blueprint-pro"] .sarak-card:where(:not([data-sx-card-texture-type="blueprint-pro"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="blueprint-pro"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="blueprint-pro"])))::after,
 .sarak-card[data-sx-card-texture-type="blueprint-pro"]::after,
-[data-sx-card-texture-type="blueprint-pro"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="blueprint-pro"]) .card))::after,
+[data-sx-card-texture-type="blueprint-pro"] .card:where(:not([data-sx-card-texture-type="blueprint-pro"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="blueprint-pro"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="blueprint-pro"])))::after,
 .card[data-sx-card-texture-type="blueprint-pro"]::after {
     background-image: linear-gradient(color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 25%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 25%, transparent) 1px, transparent 1px), radial-gradient(circle at 100px 100px, transparent 50px, color-mix(in srgb, var(--theme-texture-color, var(--theme-primary)) 15%, transparent) 50.5px, transparent 51px);
     background-size: 100px 100px, 100px 100px, 200px 200px;
@@ -695,9 +682,9 @@
 
 .texture-wave-pulse::before,
 [data-sx-texture="wave-pulse"]::before,
-[data-sx-card-texture-type="wave-pulse"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="wave-pulse"]) .sarak-card))::after,
+[data-sx-card-texture-type="wave-pulse"] .sarak-card:where(:not([data-sx-card-texture-type="wave-pulse"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="wave-pulse"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="wave-pulse"])))::after,
 .sarak-card[data-sx-card-texture-type="wave-pulse"]::after,
-[data-sx-card-texture-type="wave-pulse"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="wave-pulse"]) .card))::after,
+[data-sx-card-texture-type="wave-pulse"] .card:where(:not([data-sx-card-texture-type="wave-pulse"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="wave-pulse"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="wave-pulse"])))::after,
 .card[data-sx-card-texture-type="wave-pulse"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg width='100' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='15' width='2' height='10' fill='white'/%3E%3Crect x='10' y='5' width='2' height='30' fill='white'/%3E%3Crect x='20' y='10' width='2' height='20' fill='white'/%3E%3Crect x='30' y='18' width='2' height='4' fill='white'/%3E%3Crect x='40' y='12' width='2' height='16' fill='white'/%3E%3C/svg%3E");
     --sarak-tex-shape-size: 100px 40px;
@@ -709,9 +696,9 @@
 }
 
 /* Textura do card: na moldura o traço fino desenha com 2px e opacidade cheia (a textura do fundo não passa por aqui). */
-[data-sx-card-texture-type="wave-pulse"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="wave-pulse"]) .sarak-card))::after,
+[data-sx-card-texture-type="wave-pulse"] .sarak-card:where(:not([data-sx-card-texture-type="wave-pulse"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="wave-pulse"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="wave-pulse"])))::after,
 .sarak-card[data-sx-card-texture-type="wave-pulse"]::after,
-[data-sx-card-texture-type="wave-pulse"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="wave-pulse"]) .card))::after,
+[data-sx-card-texture-type="wave-pulse"] .card:where(:not([data-sx-card-texture-type="wave-pulse"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="wave-pulse"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="wave-pulse"])))::after,
 .card[data-sx-card-texture-type="wave-pulse"]::after {
     --sarak-tex-shape: url("data:image/svg+xml,%3Csvg width='100' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='15' width='2' height='10' fill='white'/%3E%3Crect x='10' y='5' width='2' height='30' fill='white'/%3E%3Crect x='20' y='10' width='2' height='20' fill='white'/%3E%3Crect x='30' y='18' width='2' height='4' fill='white'/%3E%3Crect x='40' y='12' width='2' height='16' fill='white'/%3E%3C/svg%3E");
 }
@@ -719,9 +706,9 @@
 /* NEW ORGANIC & MATERIAL TEXTURES (v12.3) */
 .texture-wood::before,
 [data-sx-texture="wood"]::before,
-[data-sx-card-texture-type="wood"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="wood"]) .sarak-card))::after,
+[data-sx-card-texture-type="wood"] .sarak-card:where(:not([data-sx-card-texture-type="wood"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="wood"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="wood"])))::after,
 .sarak-card[data-sx-card-texture-type="wood"]::after,
-[data-sx-card-texture-type="wood"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="wood"]) .card))::after,
+[data-sx-card-texture-type="wood"] .card:where(:not([data-sx-card-texture-type="wood"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="wood"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="wood"])))::after,
 .card[data-sx-card-texture-type="wood"]::after {
     --sarak-tex-shape: repeating-linear-gradient(90deg,
         rgba(0,0,0,1) 0px, rgba(0,0,0,1) 1px,
@@ -748,9 +735,9 @@
 
 .texture-stucco::before,
 [data-sx-texture="stucco"]::before,
-[data-sx-card-texture-type="stucco"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="stucco"]) .sarak-card))::after,
+[data-sx-card-texture-type="stucco"] .sarak-card:where(:not([data-sx-card-texture-type="stucco"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="stucco"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="stucco"])))::after,
 .sarak-card[data-sx-card-texture-type="stucco"]::after,
-[data-sx-card-texture-type="stucco"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="stucco"]) .card))::after,
+[data-sx-card-texture-type="stucco"] .card:where(:not([data-sx-card-texture-type="stucco"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="stucco"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="stucco"])))::after,
 .card[data-sx-card-texture-type="stucco"]::after {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02' numOctaves='5' stitchTiles='stitch'/%3E%3CfeDiffuseLighting surfaceScale='50' lighting-color='white'%3E%3CfeDistantLight azimuth='45' elevation='60'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
     background-size: 512px 512px;
@@ -760,9 +747,9 @@
 
 .texture-fluid::before,
 [data-sx-texture="fluid"]::before,
-[data-sx-card-texture-type="fluid"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="fluid"]) .sarak-card))::after,
+[data-sx-card-texture-type="fluid"] .sarak-card:where(:not([data-sx-card-texture-type="fluid"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="fluid"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="fluid"])))::after,
 .sarak-card[data-sx-card-texture-type="fluid"]::after,
-[data-sx-card-texture-type="fluid"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="fluid"]) .card))::after,
+[data-sx-card-texture-type="fluid"] .card:where(:not([data-sx-card-texture-type="fluid"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="fluid"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="fluid"])))::after,
 .card[data-sx-card-texture-type="fluid"]::after {
     background: radial-gradient(circle at 50% 50%, var(--theme-primary) 0%, transparent 50%),
                 radial-gradient(circle at 100% 0%, var(--theme-secondary) 0%, transparent 40%),
@@ -773,9 +760,9 @@
 
 .texture-nebula::before,
 [data-sx-texture="nebula"]::before,
-[data-sx-card-texture-type="nebula"] .sarak-card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="nebula"]) .sarak-card))::after,
+[data-sx-card-texture-type="nebula"] .sarak-card:where(:not([data-sx-card-texture-type="nebula"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="nebula"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="nebula"])))::after,
 .sarak-card[data-sx-card-texture-type="nebula"]::after,
-[data-sx-card-texture-type="nebula"] .card:where(:not(.sarak-design-scope[data-sx-card-texture-type]:not([data-sx-card-texture-type="nebula"]) .card))::after,
+[data-sx-card-texture-type="nebula"] .card:where(:not([data-sx-card-texture-type="nebula"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="nebula"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="nebula"])))::after,
 .card[data-sx-card-texture-type="nebula"]::after {
     background: radial-gradient(circle at 30% 20%, rgba(var(--theme-primary-rgb), 0.4) 0%, transparent 50%),
                 radial-gradient(circle at 70% 80%, rgba(var(--theme-secondary-rgb), 0.3) 0%, transparent 50%),

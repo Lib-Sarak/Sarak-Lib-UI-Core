@@ -18,7 +18,7 @@
  * O spec trava nos dois sentidos: zero fora das listas reprova (regressão), e item de lista que passou a mudar reprova (tire-o).
  *
  * A contagem por grupo sai no relatório de cada decisão (`CONTAGEM <decisão> <grupo> <mudam>/<total>`). Com
- * `SARAK_PLAN160_MATRIZ=<arquivo>`, cada opção medida é gravada ali (decisão|grupo|opção|fração|aplicada|variáveis).
+ * `SARAK_PREVIA_MATRIZ=<arquivo>`, cada opção medida é gravada ali (decisão|grupo|opção|fração|aplicada|variáveis).
  *
  * LIMITES DECLARADOS (R18): Chromium headless, 1600×1000, tema `sarak-sovereign`, modo escuro; lê o `dist/` (sem `npm run
  * build` recente, mede o build anterior) com as fontes do `dist/fonts`. Mede `[data-option-tile]`, os radios de paleta e os
@@ -32,12 +32,12 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildHarness } from './build-harness.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const ENTRY = path.join(HERE, 'fixtures', 'plan-160-previa-entry.tsx');
+const ENTRY = path.join(HERE, 'fixtures', 'previa-mostra-a-opcao-entry.tsx');
 const DIST_FONTS = pathToFileURL(path.resolve(HERE, '..', 'dist', 'fonts')).href;
 const DECISIONS_FILE = path.resolve(HERE, '..', 'src', 'features', 'DesignEngine', 'config', 'design-decisions.json');
-const MATRIX_FILE = process.env.SARAK_PLAN160_MATRIZ;
+const MATRIX_FILE = process.env.SARAK_PREVIA_MATRIZ;
 /** Depuração: mede só esta decisão (id). */
-const ONLY = process.env.SARAK_PLAN160_SO;
+const ONLY = process.env.SARAK_PREVIA_SO;
 
 const DECISIONS = [
     { id: 'theme', name: 'Tema' }, { id: 'colors', name: 'Cores' }, { id: 'fonts', name: 'Fontes' },

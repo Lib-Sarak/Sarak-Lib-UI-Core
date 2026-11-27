@@ -5,6 +5,7 @@ import { resolveEffectiveStrategy } from '../utils/persistenceStrategy';
 import { useThemeSeed } from './useThemeSeed';
 import { deliverToOnSave, readCachedSavedDesign, useDeferredDesignRestore, useDesignChoices } from './useDesignChoices';
 import { useDesignSync } from './useDesignSync';
+import { resolveHostConfig } from '../utils/hostConfig';
 import { useDesignRemoteLoader } from './useDesignRemoteLoader';
 import { useDesignStorageSync } from './useDesignStorageSync';
 import { useResolvedThemeId } from './useResolvedThemeId';
@@ -71,11 +72,14 @@ export const useDesignManager = (props: {
     }, []);
 
     // O id do tema que a SEMENTE resolveu e os tokens semeados — `useThemeSeed.ts`.
+    // Com `configIsSavedDesign` o `config` é o gravado, não o host: a troca de tema não o compõe. A semente parte dele (é o estado inicial).
+    const configIsSavedDesign = options?.persistence?.configIsSavedDesign === true;
+    const getHostConfig = useCallback(() => resolveHostConfig(configRef.current, configIsSavedDesign), [configIsSavedDesign]);
     const { resolveSeedThemeId, getSeedConfig, themeIdGuard } = useThemeSeed({
         allThemes, activeThemeId, initialTheme, optionsRef, configRef,
     });
     // O gravado guarda só as escolhas; o que a paleta calcula é refeito ao carregar (`useDesignChoices.ts`).
-    const designChoices = useDesignChoices(allThemes, configRef, options?.persistence?.configIsSavedDesign === true);
+    const designChoices = useDesignChoices(allThemes, configRef, configIsSavedDesign);
 
     // plan-27 — o tema EFETIVAMENTE no ar (não a prop `activeThemeId` crua); ver
     // `useResolvedThemeId.ts`. ADITIVO: não muda a semântica de `activeThemeId`/
@@ -182,18 +186,11 @@ export const useDesignManager = (props: {
         return () => clearTimeout(timer);
     }, [design, getSeedConfig, isBackendLoaded, isHydrated, persistDesign, resolvedThemeId, storageKey, setResolvedThemeId]);
 
-    useDesignSync(
-        isHydrated,
-        activeThemeId,
-        allThemes,
-        storageKey,
-        hasHydratedRef,
-        setDesign,
-        configRef,
-        options?.persistence?.preferConfigOverCache === true,
-        themeIdGuard,
-        designChoices.restore,
-    );
+    useDesignSync({
+        isHydrated, activeThemeId, allThemes, storageKey, hasHydratedRef, setDesign, getHostConfig, themeIdGuard,
+        preferConfigOverCache: options?.persistence?.preferConfigOverCache === true,
+        restoreSaved: designChoices.restore,
+    });
     useDeferredDesignRestore(designChoices.pendingRef, allThemes, activeThemeId, designChoices.restore, setDesign);
     useDesignRemoteLoader({
         isHydrated,

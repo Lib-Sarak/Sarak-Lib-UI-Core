@@ -4,7 +4,7 @@ import { SarakUIProvider } from '../../src/core/Provider/SarakUIProvider';
 import { CustomizationPanel } from '../../src/features/DesignEngine/Library/CustomizationPanel/CustomizationPanelImpl';
 
 const rootElement = document.getElementById('root');
-if (!rootElement) throw new Error('plan-135-paletas-entry: #root ausente no harness.');
+if (!rootElement) throw new Error('paletas-no-painel-entry: #root ausente no harness.');
 
 /** Mostra o último payload que o `onSave` recebeu — é o que o backend do importador veria. */
 const SavedProbe: React.FC<{ saved: string }> = ({ saved }) => (

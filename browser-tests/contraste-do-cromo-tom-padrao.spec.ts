@@ -5,7 +5,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildHarness } from './build-harness.mjs';
 import { GRADIENT_LIGHT_SHARE } from '../src/core/Design/palette/contrast-pairs';
 
-const ENTRY = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'plan-145-entry.tsx');
+const ENTRY = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'personalidades-legiveis-entry.tsx');
 const MODES = ['light', 'dark'] as const;
 const BARS = ['sidebar', 'topbar'] as const;
 const TEXT_MIN = 4.5;

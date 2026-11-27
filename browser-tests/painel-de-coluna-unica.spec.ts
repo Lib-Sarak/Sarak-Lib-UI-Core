@@ -3,10 +3,10 @@
  * níveis, "Usar minha marca" sem gravar nada até o "Aplicar", e o painel estreito (empilhado), nos dois modos de cor e no
  * modo embarcado.
  *
- * Prévia para o dono: com `SARAK_PREVIA_140_DIR` definida, o mesmo caso grava as capturas PNG e um `index.html`
+ * Prévia para o dono: com `SARAK_PREVIA_COLUNA_DIR` definida, o mesmo caso grava as capturas PNG e um `index.html`
  * (imagens na mesma pasta, caminhos relativos, abre sem servidor). Regenera com:
- *   $env:SARAK_PREVIA_140_DIR='C:\tmp\sarak-previa-140'
- *   npx playwright test --config=browser-tests/playwright.config.ts browser-tests/plan-140-painel-coluna-unica.spec.ts
+ *   $env:SARAK_PREVIA_COLUNA_DIR='C:\tmp\sarak-previa-140'
+ *   npx playwright test --config=browser-tests/playwright.config.ts browser-tests/painel-de-coluna-unica.spec.ts
  *
  * LIMITES DECLARADOS (R18): Chromium headless; o tema `sarak-sovereign`; lê `src/` pelo esbuild do harness (não mede o
  * `dist/`); a cobertura de interseção é geométrica (a caixa da prévia contra a caixa de cada opção), não de pixel.
@@ -19,8 +19,8 @@ import { buildHarness } from './build-harness.mjs';
 import { columnContrasts, type TextContrast } from './fixtures/column-contrast';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const ENTRY = path.join(HERE, 'fixtures', 'plan-140-coluna-entry.tsx');
-const PREVIEW_DIR = process.env.SARAK_PREVIA_140_DIR;
+const ENTRY = path.join(HERE, 'fixtures', 'painel-de-coluna-unica-entry.tsx');
+const PREVIEW_DIR = process.env.SARAK_PREVIA_COLUNA_DIR;
 const DECISIONS = ['Tema', 'Cores', 'Fontes', 'Forma', 'Componentes', 'Barras', 'Layout'] as const;
 
 interface Capture { file: string; caption: string }

@@ -9,7 +9,7 @@ const isEmbedded = params.get('modo') === 'embarcado';
 const initialMode = params.get('claro') === '1' ? 'light' : 'dark';
 
 const rootElement = document.getElementById('root');
-if (!rootElement) throw new Error('plan-140-coluna-entry: #root ausente no harness.');
+if (!rootElement) throw new Error('painel-de-coluna-unica-entry: #root ausente no harness.');
 
 /** Mostra o que o `onSave` e a porta de marca receberam: é o que o backend do importador veria. */
 const Probe: React.FC<{ saved: string; branding: string }> = ({ saved, branding }) => (

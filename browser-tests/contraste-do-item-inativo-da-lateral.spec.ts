@@ -6,7 +6,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { buildHarness } from './build-harness.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const ENTRY = path.join(ROOT, 'browser-tests', 'fixtures', 'plan-124-sidebar-contrast-entry.tsx');
+const ENTRY = path.join(ROOT, 'browser-tests', 'fixtures', 'contraste-do-item-inativo-da-lateral-entry.tsx');
 const TAILWIND_CLI = path.join(ROOT, 'node_modules', '@tailwindcss', 'cli', 'dist', 'index.mjs');
 const SOURCE_STYLESHEET = path.join(ROOT, 'src', 'styles', 'sarak-base.css');
 const MINIMUM_CONTRAST = 4.5;

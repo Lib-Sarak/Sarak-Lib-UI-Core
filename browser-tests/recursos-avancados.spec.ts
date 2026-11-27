@@ -13,7 +13,7 @@ import { chromium, expect, test, type Browser, type Page } from '@playwright/tes
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { buildHarness } from './build-harness.mjs';
 
-const ENTRY = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'plan-155-entry.tsx');
+const ENTRY = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures', 'recursos-avancados-entry.tsx');
 const MODES = ['light', 'dark'] as const;
 const WIDE = 900;
 const NARROW = 320;

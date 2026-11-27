@@ -111,5 +111,5 @@ const App: React.FC = () => (
 );
 
 const container = document.getElementById('root');
-if (!container) throw new Error('plan-155-entry: #root ausente no harness.');
+if (!container) throw new Error('recursos-avancados-entry: #root ausente no harness.');
 createRoot(container).render(<App />);

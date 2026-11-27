@@ -13,7 +13,6 @@ const TEXT_MINIMUM = 4.55;
 const LOGOUT_MINIMUM = 3.05;
 const LOGOUT_ERROR_TINT_SHARE = 0.15;
 const STRIP_TINT_SHARE = 0.05;
-const LANGUAGE_BUTTON_TINT_SHARE = 0.1;
 
 const readColor = (value: unknown): Rgba | undefined => {
     if (!isLiteralColor(value)) return undefined;
@@ -82,9 +81,9 @@ const resolveSafeForeground = (source: Rgba, surfaces: readonly ContrastSurface[
     return nearest?.color ?? source;
 };
 
-/** Os fundos que o texto inativo também pisa: a faixa do usuário (tinta do marcador, 5%) na lateral e o botão de idioma (10% da própria cor) na topbar. */
-const idleExtraBackgrounds = (bar: Bar, design: Record<string, unknown>, stops: readonly Rgb[], candidate: Rgba): Rgb[] => {
-    if (bar === 'topbar') return stops.map((stop) => composite(withOpacityShare(candidate, LANGUAGE_BUTTON_TINT_SHARE), stop));
+/** Os fundos que o texto inativo também pisa: a faixa do usuário (tinta do marcador, 5%), só na lateral. O botão de idioma da topbar não leva tinta. */
+const idleExtraBackgrounds = (bar: Bar, design: Record<string, unknown>, stops: readonly Rgb[]): Rgb[] => {
+    if (bar === 'topbar') return [];
     const marker = readColor(design.navActiveMarkerColor) ?? readColor(design.primaryColor);
     return marker ? stops.map((stop) => composite(withOpacityShare(marker, STRIP_TINT_SHARE), stop)) : [];
 };
@@ -94,14 +93,14 @@ const resolveIdleForeground = (
     stops: readonly Rgb[],
     activeForeground: Rgba,
     activeSurfaces: readonly ContrastSurface[],
-    extraBackgrounds: (candidate: Rgba) => readonly Rgb[] = () => [],
+    extraBackgrounds: readonly Rgb[] = [],
 ): Rgba => {
     const activeBackgrounds = stops.map((stop, index) => activeSurfaces[index]?.background ?? stop);
     const maximums = activeBackgrounds.map((background) => contrastRatio(activeForeground, background) - 0.05);
     const fits = (candidate: Rgba): boolean => stops.every((stop, index) => {
         const ratio = contrastRatio(candidate, stop);
         return ratio >= 4.5 && ratio <= maximums[index];
-    }) && extraBackgrounds(candidate).every((background) => contrastRatio(candidate, background) >= TEXT_MINIMUM);
+    }) && extraBackgrounds.every((background) => contrastRatio(candidate, background) >= TEXT_MINIMUM);
     if (fits(source)) return source;
     let nearest: { color: Rgba; step: number } | undefined;
     [ON_COLOR_DARK, ON_COLOR_LIGHT].forEach((value) => {
@@ -134,18 +133,12 @@ const activeSurfaces = (
     return { surfaces, renderedActiveColor };
 };
 
-const additionalSurfaces = (bar: Bar, design: Record<string, unknown>, stops: readonly Rgb[], idle: Rgba | undefined): ContrastSurface[] => {
+const additionalSurfaces = (bar: Bar, design: Record<string, unknown>, stops: readonly Rgb[]): ContrastSurface[] => {
     const surfaces: ContrastSurface[] = [];
     if (bar === 'sidebar') {
         const marker = readColor(design.navActiveMarkerColor) ?? readColor(design.primaryColor);
         if (marker) stops.forEach((stop) => surfaces.push({
             background: composite(withOpacityShare(marker, STRIP_TINT_SHARE), stop),
-            minimum: TEXT_MINIMUM,
-        }));
-    }
-    if (bar === 'topbar') {
-        if (idle) stops.forEach((stop) => surfaces.push({
-            background: composite(withOpacityShare(idle, LANGUAGE_BUTTON_TINT_SHARE), stop),
             minimum: TEXT_MINIMUM,
         }));
     }
@@ -185,15 +178,14 @@ export const resolveChromeToneContrastColors = (
     );
     const isContrasting = tone === 'primary' || tone === 'secondary' || tone === 'inverse';
     const declaredIdle = readColor(design[`${bar}ItemTextColor`]);
-    // O texto inativo e o forte se apoiam um no outro: o botão de idioma tinge o fundo com a própria cor inativa, e o inativo precisa
-    // ficar abaixo do forte no item ativo. Resolvem-se juntos, até estabilizar.
+    // O texto inativo e o forte se apoiam um no outro: o inativo precisa ficar abaixo do forte no item ativo. Resolvem-se juntos, até estabilizar.
     let idleColor = declaredIdle;
     let safeStrong = strong;
     for (let round = 0; round < 4; round += 1) {
         const surfaces = [
             ...stops.map((background) => ({ background, minimum: TEXT_MINIMUM })),
             ...active.surfaces,
-            ...additionalSurfaces(bar, design, stops, idleColor),
+            ...additionalSurfaces(bar, design, stops),
         ];
         safeStrong = resolveSafeForeground(strong, surfaces);
         if (!declaredIdle || !isContrasting) break;
@@ -202,7 +194,7 @@ export const resolveChromeToneContrastColors = (
             stops,
             safeStrong,
             active.surfaces,
-            (candidate) => idleExtraBackgrounds(bar, design, stops, candidate),
+            idleExtraBackgrounds(bar, design, stops),
         );
         if (idleColor && formatColor(nextIdle) === formatColor(idleColor)) break;
         idleColor = nextIdle;

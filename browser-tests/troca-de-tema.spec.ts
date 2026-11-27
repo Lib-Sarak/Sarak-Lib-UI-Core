@@ -98,6 +98,8 @@ declare global {
         __noEffectTransitions: string[];
         /** Transições cuja animação já não existia quando o evento chegou: contam no teto, por cautela. */
         __unreadableTransitions: string[];
+        /** O quadro (contado por `requestAnimationFrame`) em que a raiz e a prévia do painel tiveram o estilo reescrito. */
+        __frameOfWrites: { root: number[]; preview: number[] };
     }
 }
 
@@ -200,6 +202,25 @@ const watchSwitchMark = (page: Page): Promise<void> => page.evaluate(() => {
         });
     };
     new MutationObserver(record).observe(document, { subtree: true, attributes: true, attributeFilter: ['data-sarak-theme-switching'] });
+});
+
+/**
+ * Anota em que QUADRO a raiz (`:root`, alimentada pelo rascunho do Provider) e a prévia do painel (o escopo de design dela, alimentado
+ * pelo rascunho do painel) tiveram o estilo reescrito. O quadro é o contador de `requestAnimationFrame`: duas escritas no mesmo
+ * quadro caem no mesmo commit visível.
+ */
+const watchFrameOfWrites = (page: Page): Promise<void> => page.evaluate(() => {
+    let frame = 0;
+    const tick = (): void => { frame += 1; requestAnimationFrame(tick); };
+    requestAnimationFrame(tick);
+    window.__frameOfWrites = { root: [], preview: [] };
+    const observe = (target: Element, into: number[]): void => {
+        new MutationObserver(() => { into.push(frame); }).observe(target, { attributes: true, attributeFilter: ['style'] });
+    };
+    observe(document.documentElement, window.__frameOfWrites.root);
+    const previews = document.querySelectorAll('.sarak-design-scope');
+    if (previews.length === 0) throw new Error('escopo de design da prévia ausente');
+    previews.forEach((preview) => observe(preview, window.__frameOfWrites.preview));
 });
 
 const probeTransition = (page: Page): Promise<{ property: string; duration: string }> =>
@@ -305,3 +326,26 @@ for (const mode of MODES) {
         });
     });
 }
+
+/** Só o Modo App: no Embarcado a raiz é a ilha `.sarak-scope`, não o `:root`. */
+    test('a prévia do painel e a raiz reescrevem o estilo no mesmo quadro: um commit, não dois', async () => {
+    const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
+    await page.goto(harnessUrl);
+    await page.getByRole('button', { name: /^Tema/ }).click();
+    await expect(page.getByRole('heading', { level: 2, name: 'Tema' })).toBeVisible();
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send('Performance.enable');
+    await settle(page, cdp);
+
+    await watchFrameOfWrites(page);
+    await page.getByRole('button', { name: THEME_CARD }).click();
+    await expect.poll(() => page.evaluate(() => window.__frameOfWrites.root.length), { timeout: 60_000 }).toBeGreaterThan(0);
+    await settle(page, cdp);
+
+    const { root, preview } = await page.evaluate(() => window.__frameOfWrites);
+    test.info().annotations.push({ type: 'medido', description: `quadros da raiz: ${[...new Set(root)].join(', ')}; quadros da prévia: ${[...new Set(preview)].join(', ')}` });
+    expect(preview.length, 'a prévia do painel reescreveu o estilo').toBeGreaterThan(0);
+    // A primeira escrita da prévia e a primeira da raiz caem no mesmo quadro: com o efeito do rascunho passivo, a raiz espera outro commit.
+    expect(Math.min(...root), 'quadro da primeira escrita da raiz').toBe(Math.min(...preview));
+    await page.close();
+});

@@ -311,7 +311,7 @@ const TOKEN_VARIANTS: Record<string, Record<string, unknown>> = {
     'dono-superficie': { surfaceColor: '#123456', cardBackgroundColor: '#654321' },
     'contraste-claro': { mode: 'light', colorBgBody: '#ffffff', cardBackgroundColor: '#ffffff', textColorMaster: '#0f172a', titleColor: '#0f172a', textColorMuted: '#475569', primaryColor: '#22d3ee', statusErrorColor: '#fca5a5', statusSuccessColor: '#86efac', statusWarningColor: '#fde047', btnGhostHoverBg: 'rgba(15, 23, 42, 0.05)', reducedMotion: true },
     'contraste-escuro': { mode: 'dark', colorBgBody: '#050505', cardBackgroundColor: '#0f172a', textColorMaster: '#ffffff', primaryColor: '#1e3a8a', statusErrorColor: '#7f1d1d', statusSuccessColor: '#14532d', statusWarningColor: '#78350f', btnGhostHoverBg: 'rgba(255, 255, 255, 0.05)', reducedMotion: true },
-    'contraste-cyberpunk-claro': { mode: 'light', colorBgBody: '#ffffff', cardBackgroundColor: '#ffffff', textColorMaster: '#0f172a', primaryColor: '#0e7490', statusErrorColor: '#b91c1c', statusSuccessColor: '#047857', btnStyleType: 'cyberpunk', reducedMotion: true },
+    'contraste-cyberpunk-claro': { mode: 'light', colorBgBody: '#ffffff', cardBackgroundColor: '#ffffff', textColorMaster: '#0f172a', textColorMuted: '#475569', primaryColor: '#0e7490', statusErrorColor: '#b91c1c', statusSuccessColor: '#047857', btnStyleType: 'cyberpunk', reducedMotion: true },
     'contraste-cyberpunk-escuro': { mode: 'dark', colorBgBody: '#050505', cardBackgroundColor: '#0f172a', textColorMaster: '#ffffff', primaryColor: '#22d3ee', statusErrorColor: '#f87171', statusSuccessColor: '#34d399', btnStyleType: 'cyberpunk', reducedMotion: true },
     'fixos-movimento': { switchStyleType: 'pulsing', motionDurationSlow: 0.9, matrixRadius: 3 },
     'fixos-pulso-padrao': { switchStyleType: 'pulsing' },
@@ -965,6 +965,7 @@ const ContrastButtonsScene: React.FC = () => (
         <div data-probe="fantasma"><SarakButton variant="ghost">Fantasma</SarakButton></div>
         <div data-probe="contorno"><SarakButton variant="outline">Contorno</SarakButton></div>
         <div data-probe="primario"><SarakButton variant="primary">Primário</SarakButton></div>
+        <div data-probe="secundario"><SarakButton variant="secondary">Secundário</SarakButton></div>
         <div data-probe="perigo"><SarakButton variant="danger">Perigo</SarakButton></div>
         <div data-probe="sucesso"><SarakButton variant="success">Sucesso</SarakButton></div>
         <div data-probe="sair"><SarakShellUserWidget variant="horizontal" user={{ name: 'Ana' }} logout={NOOP} /></div>

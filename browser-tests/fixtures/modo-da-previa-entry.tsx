@@ -31,7 +31,7 @@ window.__sovereignBody = {
 };
 
 const rootElement = document.getElementById('root');
-if (!rootElement) throw new Error('plan-122-preview-mode-entry: #root ausente no harness.');
+if (!rootElement) throw new Error('modo-da-previa-entry: #root ausente no harness.');
 
 createRoot(rootElement).render(
     <SarakUIProvider

@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useDesignSync } from '../useDesignSync';
 import type { SarakThemeEntry } from '../../types';
+import { resolveHostConfig } from '../../utils/hostConfig';
 
 describe('useDesignSync', () => {
     it('aplica o tema ativo uma única vez, mesmo que `allThemes` mude de referência a cada render (regressão do loop infinito — Spec 43 §5.1)', () => {
@@ -11,7 +12,7 @@ describe('useDesignSync', () => {
 
         const { rerender } = renderHook(
             ({ allThemes }: { allThemes: SarakThemeEntry[] }) =>
-                useDesignSync(true, 'dark-neon', allThemes, 'test-key', hasHydratedRef, setDesign),
+                useDesignSync({ isHydrated: true, activeThemeId: 'dark-neon', allThemes, storageKey: 'test-key', hasHydratedRef, setDesign }),
             { initialProps: { allThemes: [theme] } }
         );
 
@@ -39,7 +40,7 @@ describe('useDesignSync', () => {
 
         const { rerender } = renderHook(
             ({ activeThemeId }: { activeThemeId: string }) =>
-                useDesignSync(true, activeThemeId, allThemes, 'test-key', hasHydratedRef, setDesign),
+                useDesignSync({ isHydrated: true, activeThemeId, allThemes, storageKey: 'test-key', hasHydratedRef, setDesign }),
             { initialProps: { activeThemeId: 'a' } }
         );
         expect(setDesign).toHaveBeenCalledTimes(1);
@@ -58,7 +59,7 @@ describe('useDesignSync', () => {
         // Tema nativamente ESCURO, sem `contraparte` — é o caso dos 18 legados (fallback).
         const darkTheme: SarakThemeEntry = { id: 'dark-theme', design: { mode: 'dark', colorBgBody: '#050505', textColorMaster: '#ffffff' } };
 
-        renderHook(() => useDesignSync(true, 'dark-theme', [darkTheme], 'test-key', hasHydratedRef, setDesign));
+        renderHook(() => useDesignSync({ isHydrated: true, activeThemeId: 'dark-theme', allThemes: [darkTheme], storageKey: 'test-key', hasHydratedRef, setDesign }));
         expect(setDesign).toHaveBeenCalledTimes(1);
 
         const updater = setDesign.mock.calls[0][0] as (prev: Record<string, unknown>) => Record<string, unknown>;
@@ -76,7 +77,7 @@ describe('useDesignSync', () => {
         const hasHydratedRef = { current: false };
         const theme: SarakThemeEntry = { id: 'a', design: { primaryColor: '#000000' } };
 
-        renderHook(() => useDesignSync(false, 'a', [theme], 'test-key', hasHydratedRef, setDesign));
+        renderHook(() => useDesignSync({ isHydrated: false, activeThemeId: 'a', allThemes: [theme], storageKey: 'test-key', hasHydratedRef, setDesign }));
 
         expect(setDesign).not.toHaveBeenCalled();
     });
@@ -90,7 +91,7 @@ describe('useDesignSync', () => {
         const themeIdGuard = { isUnknownTheme: () => true, isRemovedTheme: () => true, isSavedThemeRemoved: () => false, warnUnknownThemeOnce: vi.fn() };
 
         expect(() =>
-            renderHook(() => useDesignSync(true, 'tema-removido-do-catalogo', [themeA], 'test-key', hasHydratedRef, setDesign, undefined, false, themeIdGuard)),
+            renderHook(() => useDesignSync({ isHydrated: true, activeThemeId: 'tema-removido-do-catalogo', allThemes: [themeA], storageKey: 'test-key', hasHydratedRef, setDesign, themeIdGuard })),
         ).not.toThrow();
 
         expect(setDesign).toHaveBeenCalledTimes(1);
@@ -105,5 +106,33 @@ describe('useDesignSync', () => {
         expect(result.mode).toBe('dark');
 
         warnSpy.mockRestore();
+    });
+
+    describe('com `persistence.configIsSavedDesign` e `activeThemeId` controlado', () => {
+        // O `config` é o gravado do tema A: carrega um token que o tema B não declara.
+        const savedOfThemeA = { primaryColor: '#111111', cardBorderRadius: 7 };
+        const themeA: SarakThemeEntry = { id: 'a', design: { primaryColor: '#111111', cardBorderRadius: 7 } };
+        const themeB: SarakThemeEntry = { id: 'b', design: { primaryColor: '#eeeeee' } };
+
+        const composeOnSwitchTo = (configIsSavedDesign: boolean): Record<string, unknown> => {
+            const setDesign = vi.fn();
+            const hasHydratedRef = { current: false };
+            const getHostConfig = () => resolveHostConfig(savedOfThemeA, configIsSavedDesign);
+            renderHook(() => useDesignSync({
+                isHydrated: true, activeThemeId: 'b', allThemes: [themeA, themeB], storageKey: 'k', hasHydratedRef, setDesign, getHostConfig,
+            }));
+            const updater = setDesign.mock.calls[0][0] as (prev: Record<string, unknown>) => Record<string, unknown>;
+            return updater({ mode: 'dark', ...savedOfThemeA });
+        };
+
+        it('a troca de tema pela prop não traz o resto do tema anterior', () => {
+            const result = composeOnSwitchTo(true);
+            expect(result.primaryColor).toBe('#eeeeee');
+            expect(result.cardBorderRadius).not.toBe(7);
+        });
+
+        it('contraprova: sem a opção, o `config` é o host e o token que o tema novo não declara vale o do host', () => {
+            expect(composeOnSwitchTo(false).cardBorderRadius).toBe(7);
+        });
     });
 });

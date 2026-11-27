@@ -6,7 +6,7 @@ import { buildHarness } from './build-harness.mjs';
 import { closePreviewMenu, openPreviewModeItem, switchPreviewMode } from './preview-mode-toggle';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const ENTRY = path.join(HERE, 'fixtures', 'plan-122-preview-mode-entry.tsx');
+const ENTRY = path.join(HERE, 'fixtures', 'modo-da-previa-entry.tsx');
 
 const rgbChannels = (color: string): [number, number, number] => {
     const values = color.match(/[\d.]+/g)?.slice(0, 3).map(Number);

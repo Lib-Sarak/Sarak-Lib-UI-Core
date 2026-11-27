@@ -4,9 +4,9 @@
  * primeiro cartão pintado, a memória do JavaScript depois de coletar o lixo, os nós do DOM com todas as opções desenhadas e, na
  * troca de modo, os recálculos de estilo e o tempo de estilo + layout + script. Mediana de 3 rodadas, cada uma numa página nova.
  *
- * Os números saem em `console.log` (linhas `[plan-166]`) e, com `SARAK_PREVIA_166_DIR`, num `medidas.json`, nas capturas lado a
+ * Os números saem em `console.log` (linhas `[plan-166]`) e, com `SARAK_PREVIA_CUSTO_DIR`, num `medidas.json`, nas capturas lado a
  * lado (hoje × protótipo) e num `index.html` para o dono:
- *   $env:SARAK_PREVIA_166_DIR='C:\tmp\sarak-previa-166'
+ *   $env:SARAK_PREVIA_CUSTO_DIR='C:\tmp\sarak-previa-166'
  *   npx playwright test --config=browser-tests/playwright.config.ts browser-tests/amostras-reais-custo.spec.ts
  *
  * LIMITES DECLARADOS (R18): Chromium headless; React de desenvolvimento (o mesmo que a medida de hoje da plan-161 usou, para as duas
@@ -24,8 +24,8 @@ import { buildHarness } from './build-harness.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ENTRY = path.join(HERE, 'fixtures', 'amostras-reais-custo-entry.tsx');
-const PREVIEW_DIR = process.env.SARAK_PREVIA_166_DIR;
-const RUNS = Number(process.env.SARAK_CUSTO_166_RODADAS ?? 3);
+const PREVIEW_DIR = process.env.SARAK_PREVIA_CUSTO_DIR;
+const RUNS = Number(process.env.SARAK_CUSTO_RODADAS ?? 3);
 
 /** Os grupos com protótipo, na ordem da tabela: a decisão a que pertencem e o que a amostra de hoje desenha. */
 const GROUPS = [
@@ -180,7 +180,7 @@ test.describe('custo de abrir cada grupo: hoje × protótipo', () => {
 });
 
 /** As rodadas alternadas da miniatura de tema: em cada uma, hoje e a tela inteira (o produto), nessa ordem, cada um numa página nova. */
-const THEME_ROUNDS = Number(process.env.SARAK_RODADAS_TEMA_166 ?? 5);
+const THEME_ROUNDS = Number(process.env.SARAK_CUSTO_RODADAS_TEMA ?? 5);
 const THEME_VARIANTS = ['hoje', 'atual'] as const;
 const THEME_LABEL: Record<string, string> = { hoje: 'Hoje', atual: 'Tela inteira' };
 const themeReport: Record<string, { rounds: Array<Record<string, Cost>>; ratio: Record<string, number>; ratios: Record<string, number[]>; nodes: Record<string, number> }> = {};
@@ -220,7 +220,7 @@ test.describe('capturas lado a lado', () => {
         test.setTimeout(600_000);
         const dir = PREVIEW_DIR ?? '';
         if (dir) fs.mkdirSync(dir, { recursive: true });
-        for (const group of GROUPS.filter((item) => !process.env.SARAK_GRUPO_166 || item.id === process.env.SARAK_GRUPO_166)) {
+        for (const group of GROUPS.filter((item) => !process.env.SARAK_CUSTO_GRUPO || item.id === process.env.SARAK_CUSTO_GRUPO)) {
             const prototyped = await hasPrototype(group.id);
             for (const variant of group.id === 'themes' ? THEME_VARIANTS : variantsOf(group)) {
                 if (variant === 'prototipo' && !prototyped) continue;

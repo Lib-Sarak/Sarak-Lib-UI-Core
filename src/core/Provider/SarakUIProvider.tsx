@@ -29,6 +29,7 @@ import { useThemeDeletionHandler } from './hooks/useThemeDeletionHandler';
 import { useResolvedThemeLoad } from './hooks/useResolvedThemeLoad';
 import { useBodyThemeTransition } from './hooks/useBodyThemeTransition';
 import { SarakNavigationGuardProvider } from './navigationGuard';
+import { resolveHostConfig } from './utils/hostConfig';
 
 // Re-exports para manter compatibilidade com arquivos que importam do Provider
 export * from './types';
@@ -42,7 +43,6 @@ export { useSarakUI, useSarakUIOptional } from './hooks/useSarakUI';
 // uma referência NOVA a cada render — metade do loop de render infinito da Spec 43 §5.1
 // (a correção definitiva é o guard em `useDesignSync`; isto é só o default seguro).
 const EMPTY_CUSTOM_THEMES: SarakThemeEntry[] = [];
-const NO_HOST_CONFIG = {} as SarakThemePayload;
 
 const PersistenceSaveFailureToast: React.FC<{ failureCount: number }> = ({ failureCount }) => {
     const toast = useToast();
@@ -87,7 +87,7 @@ const SarakUIProviderCore: React.FC<SarakUIProviderProps> = ({
     hostConfigRef.current = initialPropsConfig;
     // O `config` que é o design gravado do usuário não é referência do host: a prévia do painel compõe sem ele, como a extração do gravado.
     const configIsSavedDesign = options?.persistence?.configIsSavedDesign === true;
-    const getHostConfig = useCallback(() => (configIsSavedDesign ? NO_HOST_CONFIG : hostConfigRef.current), [configIsSavedDesign]);
+    const getHostConfig = useCallback(() => resolveHostConfig(hostConfigRef.current, configIsSavedDesign) as SarakThemePayload, [configIsSavedDesign]);
 
     // 2. Gerenciamento do Estado de Design e Persistência
     const { design, setDesign, applyConfig, applyFullConfig, persistDesign, isBackendLoaded, persistenceSaveFailureCount, resolvedThemeId, setResolvedThemeId } = useDesignManager({
