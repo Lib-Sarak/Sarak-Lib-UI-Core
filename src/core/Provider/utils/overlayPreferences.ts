@@ -1,6 +1,6 @@
 import { syncThemeWithMode } from '../../Design/presets/themes/color-engine';
 import { PALETTE_CALCULATED_KEYS, resolvePaletteForDesign } from '../../Design/palette/resolve';
-import { chosenToneKeys } from './designChoices';
+import { chosenToneKeys, TONE_DRIVEN_KEYS } from './designChoices';
 import { chosenModeValueKeys } from './chosenModeValues';
 import { isValidPaletteValue } from '../../Design/palette/parser';
 import { isPreferenceOffered } from '../../Design/schema/preferences';
@@ -73,7 +73,23 @@ const getPaletteThemeOverrides = (
         : { ...theme?.design, ...theme?.contraparte };
 };
 
-/** A entrada da paleta: o que o tema declara para o modo (sem os padrões do schema), com a paleta que o design escolheu. Sem tema, o próprio design. */
+/** As escolhas de cada barra que a paleta lê: o papel de cor e o estilo de fundo. */
+const BAR_CHOICE_KEYS = ['sidebar', 'topbar'] as const;
+
+/** Só as escolhas das barras cujo papel o usuário trocou (a mesma noção de `chosenToneKeys`): o que o tema declara fica como está. */
+const chosenBarChoices = (
+    design: Record<string, unknown>,
+    theme: SarakThemeEntry | undefined,
+    mode: 'light' | 'dark',
+): Record<string, unknown> => {
+    const chosen = chosenToneKeys(design, theme as never, mode);
+    const picked = BAR_CHOICE_KEYS
+        .filter((bar) => TONE_DRIVEN_KEYS[bar].some((key) => chosen.has(key)))
+        .flatMap((bar) => [`${bar}Tone`, `${bar}BackgroundStyle`]);
+    return pickKeys(design, picked) as Record<string, unknown>;
+};
+
+/** A entrada da paleta: o que o tema declara para o modo (sem os padrões do schema), com a paleta e o tom de barra que o design escolheu. Sem tema, o próprio design. */
 const themePaletteInput = (
     design: Record<string, unknown>,
     theme: SarakThemeEntry | undefined,
@@ -81,7 +97,7 @@ const themePaletteInput = (
 ): Record<string, unknown> => {
     if (!theme?.design) return design;
     const declared = getPaletteThemeOverrides(theme, mode);
-    return { ...declared, colorPalette: design.colorPalette, mode };
+    return { ...declared, ...chosenBarChoices(design, theme, mode), colorPalette: design.colorPalette, mode };
 };
 
 const applyCalculatedPaletteMode = (
