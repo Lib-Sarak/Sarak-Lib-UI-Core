@@ -5,7 +5,9 @@ import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import type { PresetSampleKind } from '../../../../core/Design/presets/components/registry';
 import type { ComponentPreset } from '../../../../core/Design/presets/components/cards';
 import { SampleButton, SampleInputStates, SampleTitleCard } from './SampleParts';
-import { Frame, MotionSample, PageSample, WidthSample } from './PresetSamplesMotion';
+import { Frame, WidthSample } from './PresetSamplesMotion';
+import { BorderCornerSample, GradientAreaSample, ShadowPanelSample, ShadowDirectionSample } from './PresetSamplesDepth';
+import { ModalWindowSample, MotionCurveSample, PageStageSample, ScrollBarSample } from './PresetSamplesStatic';
 
 /**
  * Gráfico, tabela, selo e progresso e estado vazio são o componente real da lib. O módulo deles carrega só quando uma destas
@@ -22,20 +24,6 @@ const Real: React.FC<{ children: React.ReactNode }> = ({ children }) => <Suspens
 const ICON_NAMES = ['Home', 'Settings', 'User', 'Bell', 'Search', 'FileText'] as const;
 const noop = (): void => undefined;
 const SWITCH_SAMPLE_ZOOM = 2.5;
-
-const ModalSample: React.FC = () => {
-    const text = useLibraryText();
-    return (
-        <Frame className="relative">
-            <div aria-hidden="true" className="absolute inset-0" style={{ backdropFilter: 'blur(var(--sarak-modal-overlay-blur, 8px))' }} />
-            <div className="relative flex w-3/4 flex-col gap-3 border border-[var(--theme-border)] p-4" style={{ borderRadius: 'var(--sarak-modal-border-radius, 16px)', backgroundColor: 'var(--theme-card)' }}>
-                <h4 className="text-sm font-bold">{text('sampleCardTitle')}</h4>
-                <p className="text-xs opacity-70">{text('fontSampleNumber')}</p>
-                <div className="flex justify-end"><SampleButton state="rest" /></div>
-            </div>
-        </Frame>
-    );
-};
 
 const NoticeSample: React.FC = () => {
     const text = useLibraryText();
@@ -78,6 +66,10 @@ const SAMPLES: Record<PresetSampleKind, (props: { preset: ComponentPreset }) => 
     width: ({ preset }) => <WidthSample preset={preset} />,
     card: () => <Frame><SampleTitleCard /></Frame>,
     cardTexture: () => <Frame><SampleTitleCard /></Frame>,
+    shadowCorner: () => <ShadowPanelSample />,
+    shadowDirection: ({ preset }) => <ShadowDirectionSample preset={preset} />,
+    borderCorner: () => <BorderCornerSample />,
+    gradient: ({ preset }) => <GradientAreaSample preset={preset} />,
     surface: () => <Frame><SampleTitleCard /></Frame>,
     glass: () => (
         <Frame className="relative overflow-hidden">
@@ -92,20 +84,14 @@ const SAMPLES: Record<PresetSampleKind, (props: { preset: ComponentPreset }) => 
     input: () => <SampleInputStates />,
     table: () => <Real><RealTable /></Real>,
     chart: () => <div className="flex w-full justify-center p-2"><Real><RealChart /></Real></div>,
-    modal: () => <ModalSample />,
+    modal: ({ preset }) => <ModalWindowSample preset={preset} />,
     notice: () => <NoticeSample />,
     switch: () => <Frame><SwitchStage /></Frame>,
-    scroll: () => (
-        <Frame>
-            <div data-sample-scroll="" className="sarak-scrollbar h-28 w-full overflow-y-scroll rounded-[var(--sarak-card-radius,10px)] border border-[var(--theme-border)] p-3 text-xs">
-                {Array.from({ length: 12 }, (_, index) => <p key={index}>{index + 1} — Lorem ipsum</p>)}
-            </div>
-        </Frame>
-    ),
+    scroll: () => <ScrollBarSample />,
     badge: () => <Real><RealProgress /></Real>,
     empty: () => <Real><RealEmpty /></Real>,
-    motion: () => <MotionSample />,
-    page: ({ preset }) => <PageSample preset={preset} />,
+    motion: ({ preset }) => <MotionCurveSample preset={preset} />,
+    page: ({ preset }) => <PageStageSample preset={preset} />,
     icons: () => <Frame className="gap-4">{ICON_NAMES.map((name) => <SarakIcon key={name} name={name} size={24} />)}</Frame>,
     fontPair: () => <FontSample />,
     typeScale: () => <FontSample />,

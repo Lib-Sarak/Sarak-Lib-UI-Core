@@ -230,8 +230,8 @@ const shotOfNoneCard = async (page: Page, groupId: string): Promise<string> => {
     await sample.locator('[data-sx-lazy="pending"]').first().waitFor({ state: 'detached', timeout: 30_000 });
     return (await sample.screenshot({ animations: 'disabled' })).toString('base64');
 };
-/** As amostras de card desenham o card real do painel, num quadro maior, e a de gráfico é o gráfico real: entre duas opções destacadas a diferença é de ao menos 5% dos pixels. */
-const CARD_GROUPS: ReadonlySet<string> = new Set(['cards', 'shadow', 'shadowDirection', 'material', 'corners', 'density', 'border', 'charts']);
+/** As amostras de card desenham o card real do painel, num quadro maior, e a de gráfico é o gráfico real: entre duas opções destacadas a diferença é de ao menos 5% dos pixels. Sombra, direção da sombra e moldura têm amostra própria (o painel ou o canto ampliado) e seguem a regra dos 2%. */
+const CARD_GROUPS: ReadonlySet<string> = new Set(['cards', 'material', 'corners', 'density', 'charts']);
 /** O gráfico real desenha num canvas, depois do módulo do motor: a foto só vale com o canvas pintado. */
 const CANVAS_GROUPS: ReadonlySet<string> = new Set(['charts']);
 /** As amostras que são o componente real chegam num módulo à parte (o quadro vazio segura o lugar): a foto só vale depois dele, e o estado vazio ainda tem a entrada animada. */

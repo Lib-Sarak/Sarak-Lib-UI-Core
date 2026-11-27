@@ -18,7 +18,7 @@ export type PresetDecisionId = 'fonts' | 'shape' | 'components' | 'bars' | 'layo
 /** O desenho que a galeria usa para mostrar a opção: sempre o componente real, nunca uma imagem. */
 export type PresetSampleKind =
     | 'bar' | 'width' | 'card' | 'cardTexture' | 'surface' | 'glass' | 'atmosphere' | 'texture' | 'button' | 'input' | 'table' | 'chart'
-    | 'modal' | 'notice' | 'switch' | 'scroll' | 'badge' | 'empty' | 'motion' | 'page' | 'icons' | 'fontPair' | 'typeScale' | 'font';
+    | 'shadowCorner' | 'shadowDirection' | 'borderCorner' | 'gradient' | 'modal' | 'notice' | 'switch' | 'scroll' | 'badge' | 'empty' | 'motion' | 'page' | 'icons' | 'fontPair' | 'typeScale' | 'font';
 
 export interface PresetGroupDef {
     id: string;
@@ -58,13 +58,13 @@ export const PRESET_GROUPS: readonly PresetGroupDef[] = [
     { id: 'cardTextures', decision: 'shape', sample: 'cardTexture', presets: CARD_TEXTURE_PRESETS, featured: FEATURED_CARD_TEXTURES.map((texture) => `card-tex-${texture}`), areas: ['cards'], owns: /^cardTexture(Type|Opacity)$/, optionsOfTokenAndSetting: true },
     { id: 'corners', decision: 'shape', sample: 'surface', presets: CORNER_PRESETS, featured: except(idsOf(CORNER_PRESETS), ['corners-rounded', 'corners-round']), areas: ['system', 'cards', 'buttons', 'inputs', 'tables', 'overlays', 'status', 'navigation'], owns: /Radius$/ },
     { id: 'density', decision: 'shape', sample: 'surface', presets: DENSITY_PRESETS, featured: idsOf(DENSITY_PRESETS), areas: ['system', 'cards', 'tables', 'navigation', 'structural'], owns: /^(layout|cardPaddingMd|cardHeaderPadding|table(Density|CellPadding)|sidebarItemDensity|topbarItemDensity|formFieldDensity|globalSectionGap|tabGap)/ },
-    { id: 'shadow', decision: 'shape', sample: 'card', presets: SHADOW_PRESETS, featured: except(idsOf(SHADOW_PRESETS), ['shadow-defined', 'shadow-colored', 'shadow-ambient', 'shadow-dramatic']), areas: ['atmosphere'], owns: /^(shadow|layeredShadows)/ },
-    { id: 'shadowDirection', decision: 'shape', sample: 'card', presets: SHADOW_DIRECTION_PRESETS, featured: except(idsOf(SHADOW_DIRECTION_PRESETS), ['shadow-dir-top', 'shadow-dir-diagonal', 'shadow-dir-follow']), areas: ['atmosphere'], owns: /^shadowOrientation$/, optionsOfOneToken: true },
-    { id: 'border', decision: 'shape', sample: 'surface', presets: BORDER_PRESETS, featured: except(idsOf(BORDER_PRESETS), ['border-cyber', 'border-glow', 'border-none']), areas: ['atmosphere'], owns: /^borderType$/, optionsOfOneToken: true },
+    { id: 'shadow', decision: 'shape', sample: 'shadowCorner', presets: SHADOW_PRESETS, featured: idsOf(SHADOW_PRESETS), areas: ['atmosphere'], owns: /^(shadow|layeredShadows)/ },
+    { id: 'shadowDirection', decision: 'shape', sample: 'shadowDirection', presets: SHADOW_DIRECTION_PRESETS, featured: idsOf(SHADOW_DIRECTION_PRESETS), areas: ['atmosphere'], owns: /^shadowOrientation$/, optionsOfOneToken: true },
+    { id: 'border', decision: 'shape', sample: 'borderCorner', presets: BORDER_PRESETS, featured: idsOf(BORDER_PRESETS), areas: ['atmosphere'], owns: /^borderType$/, optionsOfOneToken: true },
     { id: 'material', decision: 'shape', sample: 'card', presets: MATERIAL_PRESETS, featured: idsOf(MATERIAL_PRESETS), areas: ['atmosphere'], owns: /^surfaceMaterial$/, optionsOfOneToken: true },
     { id: 'glass', decision: 'shape', sample: 'glass', presets: GLASS_PRESETS, featured: except(idsOf(GLASS_PRESETS), ['glass-frosted', 'glass-heavy']), areas: ['atmosphere'], owns: /^glass/ },
     { id: 'atmosphere', decision: 'shape', sample: 'atmosphere', presets: [...MEDIA_PRESETS, ...AMBIENT_PRESETS], featured: except(FEATURED_ATMOSPHERE, ['bg-vignette-soft', 'bg-film-grain', 'bg-vivid', 'bg-tone-cyber']), areas: ['atmosphere', 'media'] },
-    { id: 'gradient', decision: 'shape', sample: 'atmosphere', presets: GRADIENT_PRESETS, featured: except(idsOf(GRADIENT_PRESETS), ['bg-gradient-radial', 'bg-gradient-mesh']), areas: ['atmosphere'], owns: /^bgGradient/, optionsOfOneToken: true },
+    { id: 'gradient', decision: 'shape', sample: 'gradient', presets: GRADIENT_PRESETS, featured: idsOf(GRADIENT_PRESETS), areas: ['atmosphere'], owns: /^bgGradient/, optionsOfOneToken: true },
     { id: 'textures', decision: 'shape', sample: 'texture', presets: TEXTURE_PRESETS, featured: FEATURED_TEXTURES.map((texture) => `tex-${texture}`), areas: ['atmosphere'], owns: /^texture$/, optionsOfOneToken: true },
 
     { id: 'buttons', decision: 'components', sample: 'button', presets: BUTTON_PRESETS, featured: except(FEATURED_BUTTONS, ['btn-bouncy']), areas: ['buttons'] },
@@ -72,14 +72,14 @@ export const PRESET_GROUPS: readonly PresetGroupDef[] = [
     { id: 'inputs', decision: 'components', sample: 'input', presets: INPUT_PRESETS, featured: except(FEATURED_INPUTS, ['input-sharp-outline', 'input-flat-filled', 'input-search-pill']), areas: ['inputs'] },
     { id: 'tables', decision: 'components', sample: 'table', presets: TABLE_PRESETS, featured: idsOf(TABLE_PRESETS), areas: ['tables'], owns: /^table/ },
     { id: 'charts', decision: 'components', sample: 'chart', presets: CHART_PRESETS, featured: except(idsOf(CHART_PRESETS), ['chart-style-straight', 'chart-style-grid']), areas: ['data'], owns: /^chart(Thickness|Smoothing|ShowGrid|GridOpacity)$/ },
-    { id: 'modal', decision: 'components', sample: 'modal', presets: MODAL_PRESETS, featured: except(idsOf(MODAL_PRESETS), ['modal-stacked-center', 'modal-floating-sharp', 'modal-frosted-backdrop']), areas: ['overlays'], owns: /^modal/ },
+    { id: 'modal', decision: 'components', sample: 'modal', presets: MODAL_PRESETS, featured: idsOf(MODAL_PRESETS), areas: ['overlays'], owns: /^modal/ },
     { id: 'notice', decision: 'components', sample: 'notice', presets: NOTICE_PRESETS, featured: idsOf(NOTICE_PRESETS), areas: ['overlays'], owns: /^(tooltip|toast)/ },
     { id: 'switch', decision: 'components', sample: 'switch', presets: SWITCH_PRESETS, featured: except(idsOf(SWITCH_PRESETS), ['switch-pulsing']), areas: ['switches'], owns: /^switch/, optionsOfOneToken: true },
-    { id: 'scroll', decision: 'components', sample: 'scroll', presets: SCROLL_PRESETS, featured: except(idsOf(SCROLL_PRESETS), ['scroll-standard', 'scroll-bold', 'scroll-pill']), areas: ['scrollbars'] },
+    { id: 'scroll', decision: 'components', sample: 'scroll', presets: SCROLL_PRESETS, featured: idsOf(SCROLL_PRESETS), areas: ['scrollbars'] },
     { id: 'badge', decision: 'components', sample: 'badge', presets: BADGE_PRESETS, featured: idsOf(BADGE_PRESETS), areas: ['status'] },
     { id: 'emptyState', decision: 'components', sample: 'empty', presets: EMPTY_STATE_PRESETS, featured: idsOf(EMPTY_STATE_PRESETS), areas: ['specialized'], owns: /^(emptyState|skeleton)/ },
-    { id: 'motion', decision: 'components', sample: 'motion', presets: MOTION_PRESETS, featured: except(idsOf(MOTION_PRESETS), ['motion-calm', 'motion-expressive', 'motion-agile']), areas: ['motion'] },
-    { id: 'pageTransition', decision: 'components', sample: 'page', presets: PAGE_TRANSITION_PRESETS, featured: except(idsOf(PAGE_TRANSITION_PRESETS), ['page-slide-up', 'page-slide-side', 'page-zoom', 'page-none']), areas: ['animations'], owns: /^pageTransitionType$/, optionsOfOneToken: true },
+    { id: 'motion', decision: 'components', sample: 'motion', presets: MOTION_PRESETS, featured: idsOf(MOTION_PRESETS), areas: ['motion'] },
+    { id: 'pageTransition', decision: 'components', sample: 'page', presets: PAGE_TRANSITION_PRESETS, featured: idsOf(PAGE_TRANSITION_PRESETS), areas: ['animations'], owns: /^pageTransitionType$/, optionsOfOneToken: true },
     { id: 'icons', decision: 'components', sample: 'icons', presets: ICON_PRESETS, featured: except(idsOf(ICON_PRESETS), ['icons-tabler-light']), areas: ['system'], owns: /^icon/ },
 
     { id: 'barTone', decision: 'bars', sample: 'bar', presets: BAR_TONE_PRESETS, featured: idsOf(BAR_TONE_PRESETS), areas: ['navigation'], owns: /^(sidebar|topbar)Tone$/ },

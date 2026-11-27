@@ -80,7 +80,7 @@ export const barToneColors = (draft: Partial<SarakDesignState> | undefined, over
 };
 
 /** As amostras que desenham o card real do painel pedem o quadro mais largo. */
-const CARD_KINDS: ReadonlySet<string> = new Set(['card', 'cardTexture', 'surface']);
+const CARD_KINDS: ReadonlySet<string> = new Set(['card', 'cardTexture', 'surface', 'shadowCorner', 'shadowDirection', 'borderCorner']);
 
 const Tile: React.FC<PresetGroupCatalogProps & { preset: ComponentPreset; kind: Parameters<typeof PresetSample>[0]['kind'] }> = ({ groupId, preset, kind, onApplyPreset, currentMode, draft, onPeek }) => {
     const text = usePresetText();
