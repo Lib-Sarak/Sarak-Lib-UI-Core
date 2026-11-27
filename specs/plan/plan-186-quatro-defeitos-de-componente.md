@@ -41,12 +41,9 @@ destino_sintese: "00-regras-e-invariantes"
 
 ## 3.2 Fora
 - Cores de tema e o botão de idioma: ele continua sem tinta e com contorno.
-- **A `plan-188` corre em paralelo.** Fique fora de `registry.ts`, `PresetSamples.tsx` e `presets-do-painel.spec.ts`, e siga a
-  mesma trava de build.
 - **A `plan-187` corre em paralelo.** Fique fora de `src/styles/_print.css`, da `SarakDataTable` e da `SarakDataGrid`, e siga a trava
   de build da §5, passo 6.
-- **A `plan-185` corre em paralelo.** Fique fora de `gates/scripts/release/` e não declare prazo literal em teste: se precisar de
-  prazo, espere a porta da 185 ou relate.
+- Fique fora de `gates/scripts/release/`. Prazo próprio em teste passa por `prazoDeTeste` (`src/shared/testing/prazoDeTeste.ts`), nunca literal.
 
 # 4. Referências obrigatórias
 

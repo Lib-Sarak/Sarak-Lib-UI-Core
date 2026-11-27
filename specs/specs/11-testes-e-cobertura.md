@@ -102,6 +102,10 @@ que abortava por timeout, chegou à comparação com o piso em 3/3.
 > o teto de 4 **não** é a explicação medida; o que ficou provado é a fragilidade do teste sob carga. Registro e
 > destino em [[15-divida-conhecida]] achado **58**.
 
+**Prazo próprio de teste passa pela porta do prazo** (`prazoDeTeste`, `src/shared/testing/prazoDeTeste.ts`). No caminho da
+release (`RELEASE_TEST_TIMEOUT_MS`), ela devolve o maior entre o prazo declarado e o da release (30 s). Prazo literal fora dela é
+reprovado pela trava (`gates/scripts/release/find-own-timeouts.mjs`, exercida em `run-release-tests.test.mjs`).
+
 > O que segue abaixo é o registro da investigação **anterior à causa**, mantido porque o procedimento de
 > captura continua valendo para qualquer intermitência futura.
 
