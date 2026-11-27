@@ -321,7 +321,7 @@ lista de exceções:
   O botão de idioma não tem tinta: o fundo dele é o da barra, e o contorno de 1 px (`outline`, na cor do texto de item da barra) fica em
   ao menos 3:1 contra cada parada. A cor sai do cálculo (`chromeToneContrast.ts`), e a do tema não muda ([[09-temas-e-presets]]
   §4.3.4). Guardam `tom-contrastante-legivel`, `contraste-do-cromo-nas-barras`, `contraste-do-que-faltava`,
-  `plan-149-barras-personalidade` e `plan-145-personalidades`, este com `KNOWN_BELOW_LIMIT` vazio.
+  `personalidade-das-barras` e `personalidades-legiveis`, este com `KNOWN_BELOW_LIMIT` vazio.
 - **O cromo no tom padrão dos temas embarcados.** Nos 25 temas, nos dois modos, na lateral e no topo, o texto do cromo (marca, item,
   item ativo, nome e cargo do usuário, idioma) fica em ao menos 4,5:1. O ícone e o contorno do botão de idioma ficam em ao menos 3:1.
   - **Como se mede:** com a opacidade aplicada (canal alfa da cor e `opacity` de cada ancestral), na montagem do importador
@@ -480,6 +480,10 @@ decisões principais têm nome, descrição e opções nos seis idiomas ([[06-pa
 
 **Um nome só para cada peça, nos textos do painel.** O termo técnico fica em inglês: Sidebar, Topbar, Card, Preset, Token, Dark mode e Light mode, Hover, Blur, Badge e Toast. Frases, ações e descrições continuam no idioma do texto ("Aplicar", "Tamanho da fonte"). O glossário vale para o que o administrador lê (rótulos do schema, partições do catálogo, `presetTexts/` e títulos das telas da prévia), em todos os idiomas do catálogo, e não para identificador (`data-*`, ids de token, props). `src/core/i18n/__tests__/glossary.test.ts` tem a lista dos nomes que saíram como dado e reprova o texto que volta a usá-los. Ele lê todo `catalogEntries.*.ts`, e por isso cobre também o nome, a descrição e as opções dos tokens das decisões principais. Texto passado pelo consumidor por prop é dele, e a
 lib não o traduz. Um teste de paridade exige toda chave do catálogo preenchida nos seis idiomas.
+
+**Os textos das peças opcionais não entram no boot.** Os catálogos `access`, `advanced`, `entries` e `system` formam um pedaço
+alcançado só por `import()` (`lazyCatalogs.ts`). A primeira leitura de uma chave dele pede a carga. Até o pedaço chegar, o texto sai
+vazio, nunca a chave crua, e a peça repinta quando ele chega (`useLibraryText`, por `useSyncExternalStore`).
 
 **Singular e plural.** Um texto com `{count}` pode ter a forma singular na chave `<nome>One`, e `useLibraryText` a escolhe sozinho
 quando `count` é 1. Sem ela, vale a chave `<nome>` para qualquer `count` (`src/core/i18n/__tests__/plural.test.tsx`).

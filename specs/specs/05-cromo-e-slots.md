@@ -32,6 +32,7 @@ A contagem não é fixada aqui: o catálogo é a fonte viva ([[00-regras-e-invar
 | `widgets?: { search?, themeToggle?, user?, notifications?, collapse?, fontSize?, navigationStyle?, language? }` | opt-out dos widgets que nascem montados (§2.2.1) — omitido = ligado, só `false` desliga aquele; é teto: tira o widget da barra e do ⚙, e nunca liga preferência que o tema não oferece |
 | `user?: SarakShellUser` · `logout?: () => void` | identidade e sessão **do consumidor**: `{ name, role?, avatarUrl?, email? }` alimenta o widget de usuário (só `avatarUrl` `http(s)` ou relativo vira imagem; sem ela, o avatar de `userAvatarStyle`, §2.1.4). Sem `user` ou sem `logout`, o widget **não aparece em produção** e aparece desabilitado fora dela (§2.2.1) |
 | `notifications?: SarakChromeNotification[]` · `onNotificationSelect?` | itens e tratamento do widget de notificações; sem os dois, a mesma regra do usuário (§2.2.1) |
+| `onError?: (error, info) => void` | recebe o erro de render que o cromo contém no conteúdo, nos `children` e no `secondaryContent`. O conteúdo que falhou mostra o fallback do limite de erro, e o resto do cromo continua na tela. Sem a prop, o erro continua contido, só não chega ao host. O `SarakSection` tem a mesma prop |
 | `className?` / `style?` | escape hatch; o `style` sobrescreve a altura própria (§5) |
 
 `SarakNavItem` (`src/components/Layout/chrome/navItem.ts`):

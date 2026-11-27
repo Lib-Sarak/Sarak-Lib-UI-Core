@@ -330,7 +330,8 @@ A porta fecha **uma vez**: depois do primeiro quadro, uma troca por código nunc
 **Travas** (R18 no cabeçalho de cada uma): `theme-boot:check` — nenhum tema além do padrão, nem `themes/all.ts`, no
 fecho estático do entry em `src/` e no `dist/` (no `build`); `boot:measure` (`scripts/measure-consumer-boot.mjs`) — o
 boot no bundler do consumidor cabe em *o boot só com o tema padrão e sem catálogo, medido na mesma execução, + o
-catálogo + 3 KB* gzip, e cada tema embarcado respeita o teto de peso por tema da §5.3 (no `gates:full`). O teto relativo tem folga: um
+catálogo + 3 KB* gzip, e cada tema embarcado respeita o teto de peso por tema da §5.3 (no `gates:full`). O boot também tem
+um teto absoluto, `BOOT_ABSOLUTE_CEILING_BYTES` ([[01-gates-e-baseline]] §2.2). O teto relativo tem folga: um
 tema isolado que volte ao boot acende a trava estrutural, não a medida.
 
 ### 4.3.3 A troca de tema compõe, nunca herda
@@ -433,9 +434,9 @@ do item ativo, o do inativo, o ícone e o do hover passam a valer também sobre 
 cálculo é o de sempre.
 
 **Nos tons contrastantes, a peça do cromo calcula a cor contra a parada menos favorável.** `chromeToneContrast.ts` mede o texto forte,
-o inativo e o do sair sobre cada parada da barra e sobre os fundos que cada um pisa: a faixa do usuário (5% do marcador), o botão de
-idioma (10% da cor inativa), o véu do item ativo e a tinta de erro do sair (15%). O botão de idioma não desenha mais essa tinta
-([[10-seguranca-e-acessibilidade]] §2.4 d): a conta dele é mais rígida que a tela. Texto fica em 4,5:1 e ícone em 3:1. O inativo e o forte
+o inativo e o do sair sobre cada parada da barra e sobre os fundos que cada um pisa: a faixa do usuário (5% do marcador), o véu do item
+ativo e a tinta de erro do sair (15%). O botão de idioma não leva tinta ([[10-seguranca-e-acessibilidade]] §2.4 d): é transparente, com
+contorno na cor do texto de item, e a conta não o inclui. Texto fica em 4,5:1 e ícone em 3:1. O inativo e o forte
 se resolvem juntos, porque o inativo precisa ficar abaixo do forte no item ativo. A barra
 entrega a cor do sair em `--sarak-shell-logout-text-color`, sem tocar a cor de erro. No papel `surface`, o texto sobre o controle
 escolhido é o fundo da barra (`--sarak-on-nav-active`). **O par da paleta mede o que a barra desenha:** o item ativo de tom
@@ -662,6 +663,9 @@ Duplicar (nome `"X (cópia)"`) e Novo tema. A porta recebe `onSave(theme, operat
 
 - **Tema embarcado não se sobrescreve nem se apaga.** `saveTheme` e `deleteTheme` lançam para id do catálogo da lib; editar um
   embarcado é salvar uma cópia com outro id.
+- **Tema do importador só de leitura.** Um tema em `customThemes` com `readOnly: true` (`SarakThemeEntry`, `themeTypes.ts`) é tratado
+  no painel como os do catálogo da lib. O menu oferece "Duplicar" no lugar de "Salvar tema", o painel não oferece substituir nem
+  apagar, e o `onSave` nunca recebe aquele id (`useThemeCustomizationActions.ts`). Sem `readOnly`, valem os quatro gestos.
 - **O id novo é único** contra o catálogo inteiro (embarcados e do importador), com sufixo `-2`, `-3`… (`createUniqueThemeId`).
 - **O tema entra na coleção da sessão antes do `onSave`.** Se o importador rejeita, o erro propaga, o painel avisa e o tema permanece
   na sessão: perder o tema por falha do backend do importador é o pior desfecho.
@@ -1086,7 +1090,7 @@ Os testes que cobrem esta spec **já existem** — ela documenta o que eles cobr
 | O gravado guarda só escolhas; o dado antigo é corrigido ao carregar (L1) | `src/core/Provider/utils/__tests__/designChoices.test.ts` · `src/features/DesignEngine/hooks/__tests__/designGravadoEscolhas.persistenceIntegration.test.tsx` |
 | Régua de deslocamento do texto de marca em toda paleta | `src/core/Design/palette/__tests__/anchor-and-shift.test.ts` |
 | Item ativo acima do inativo; texto da barra nas duas paradas do degradê | `src/core/Design/palette/__tests__/nav-active-over-inactive.test.ts` · `gradient-bar-contrast.test.ts` |
-| Peça do cromo em 4,5:1 (texto) e 3:1 (ícone) nos tons contrastantes e em degradê, sem exceção | `src/components/Layout/chrome/__tests__/chromeToneStyle.test.ts` · `src/core/Design/palette/__tests__/tone-plan.test.ts` · `browser-tests/tom-contrastante-legivel.spec.ts` · `contraste-do-cromo-nas-barras.spec.ts` · `plan-145-personalidades.spec.ts` |
+| Peça do cromo em 4,5:1 (texto) e 3:1 (ícone) nos tons contrastantes e em degradê, sem exceção | `src/components/Layout/chrome/__tests__/chromeToneStyle.test.ts` · `src/core/Design/palette/__tests__/tone-plan.test.ts` · `browser-tests/tom-contrastante-legivel.spec.ts` · `contraste-do-cromo-nas-barras.spec.ts` · `personalidades-legiveis.spec.ts` |
 | Interruptor a 3:1, ligado e desligado | `src/core/Design/palette/__tests__/switch-glass-border.test.ts` · `switch-idle-thumb.test.ts` |
 | Faixas da marca iguais nos dois modos em todo tema | `src/core/Design/presets/themes/__tests__/themePalettes.test.ts` |
 | Cada um dos sete tokens de gráfico muda a opção entregue ao ECharts | `src/components/engines/charts/SubEngines/__tests__/useEChartsTheme.test.ts` · `src/components/engines/charts/__tests__/SarakChartEngine.test.tsx` |

@@ -3,7 +3,7 @@ tipo: "plan"
 titulo: "Higiene interna de código e de testes"
 objetivo: "Fechar onze pendências internas que não mudam a tela: seletor por nome de classe, selo de dispositivo, disputa de textura, leituras e classes mortas, recorte de teste incompleto, nomes de teste com rastro de plan, teste que não protege o que diz, função com dez parâmetros e o config inteiro como host com a opção ligada"
 dominio: "Manutenção"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Baixa"
 tags: ["plan", "higiene", "testes", "refactor"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[11-testes-e-cobertura]]", "[[09-temas-e-presets]]"]
@@ -42,7 +42,7 @@ Playwright).
 
 ## 3.2 Fora
 - Qualquer mudança visível. Se um item mudar a tela, pare e relate.
-- Os arquivos que as plans 176, 177 e 178 estiverem tocando. Faça esses itens depois que elas forem commitadas.
+- Nenhuma plan corre em paralelo com esta: as anteriores já estão commitadas.
 
 # 4. Referências obrigatórias
 
