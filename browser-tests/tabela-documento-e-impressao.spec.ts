@@ -171,7 +171,7 @@ test('impressão: sem cromo nem ações, sem sombra, com a tabela inteira no flu
     await expect(root.locator('[role="row"]')).toHaveCount(ROW_COUNT + 1);
     const m = await root.evaluate((element) => {
         const first = element.querySelectorAll('[role="row"]')[1];
-        const last = element.querySelector('[role="row"]:last-child')!;
+        const last = [...element.querySelectorAll('[role="row"]')].at(-1)!;
         const hidden = (selector: string) => [...document.querySelectorAll(selector)].every((node) => getComputedStyle(node).display === 'none');
         return {
             position: getComputedStyle(first).position,

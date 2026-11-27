@@ -5,8 +5,9 @@
    rolagem escrevem medida e `overflow` em estilo inline, e nada mais vence o inline; tudo aqui
    mora dentro de `@media print`, então a tela não muda.
 
-   A tabela não depende destas regras para sair inteira: `useIsPrinting` troca a janela virtual
-   pelas linhas no fluxo, e isso não se resolve em CSS.
+   A tabela e a planilha não dependem destas regras para sair inteiras: `useIsPrinting` troca a janela
+   virtual pelas linhas no fluxo e abre todo grupo, e isso não se resolve em CSS. Aqui fica só a
+   paginação: o cabeçalho repete em cada folha e a linha não se parte entre duas.
 
    `CanvasText` com `color-scheme: light` dá texto escuro em qualquer tema, sem cor fixa, e o
    fundo sai transparente: o papel é o fundo. */
@@ -37,6 +38,36 @@
     * {
         box-shadow: none !important;
         text-shadow: none !important;
+    }
+
+    /* No fluxo a folha da tabela é um `<table>` nativo, com o `display: block` da tela: no papel ele volta a
+       ser tabela, e o Chromium repete o `<thead>` no topo de cada folha e não parte a linha entre duas. Cada
+       linha continua `flex` dentro da própria célula, então as colunas não mudam de medida. */
+    [data-sarak-datatable] > table {
+        display: table !important;
+        width: 100% !important;
+    }
+
+    [data-sarak-datatable] > table > thead {
+        display: table-header-group !important;
+    }
+
+    [data-sarak-datatable] > table > tbody {
+        display: table-row-group !important;
+    }
+
+    [data-sarak-datatable] > table > :is(thead, tbody) > tr {
+        display: table-row !important;
+        break-inside: avoid;
+    }
+
+    [data-sarak-datatable] > table > :is(thead, tbody) > tr > td {
+        display: table-cell !important;
+    }
+
+    [data-sarak-datatable] [role="row"],
+    [data-sarak-datagrid] > * {
+        break-inside: avoid;
     }
 
     /* O tom da célula continua colorido: é regra de negócio, não tema. */

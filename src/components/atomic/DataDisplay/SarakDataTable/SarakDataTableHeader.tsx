@@ -1,6 +1,7 @@
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent, ReactElement, PointerEvent as ReactPointerEvent } from 'react';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { SarakCheckbox } from '../../Inputs/SarakCheckbox';
+import { SarakDataTableFlowHead } from './SarakDataTableFlowParts';
 import { SarakTableSortButton } from './SarakTableSortButton';
 import { pinnedStyle, sarakWidthOf, SELECTION_COLUMN_WIDTH } from './columnModel';
 import { columnAlign } from './columnValue';
@@ -83,11 +84,12 @@ export function SarakDataTableHeader<T>(props: SarakDataTableHeaderProps<T>): Re
     const text = useLibraryText();
     const selectionWidth = props.selectable ? SELECTION_COLUMN_WIDTH : 0;
     const leadingWidth = leadingWidthOf(props);
-    return (
+    const row = (
         <div role="row" style={{ position: props.flow ? undefined : 'sticky', top: props.flow ? undefined : 0, zIndex: props.flow ? undefined : HEADER_STICKY_LAYER, display: 'flex', height: props.headerHeight, background: props.background, borderBottom: 'var(--sarak-border-width, 1px) solid var(--sarak-table-border, var(--border-color,rgba(255,255,255,0.09)))' }}>
             {props.selectable && <div role="columnheader" aria-label={text('tableSelectionColumn')} style={{ width: selectionWidth, flex: '0 0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><SarakCheckbox aria-label={text('selectAllVisibleRows')} checked={props.allVisibleSelected} indeterminate={props.partiallySelected} onChange={(event) => props.onToggleAll(event.currentTarget.checked)} /></div>}
             {props.hasExpander && <div role="columnheader" aria-hidden="true" style={{ width: EXPANDER_WIDTH, flex: '0 0 auto' }} />}
             {props.columns.map((column) => <SarakDataTableHeaderCell key={column.id} column={column} props={props} leadingWidth={leadingWidth} />)}
         </div>
     );
+    return props.flow ? <SarakDataTableFlowHead>{row}</SarakDataTableFlowHead> : row;
 }

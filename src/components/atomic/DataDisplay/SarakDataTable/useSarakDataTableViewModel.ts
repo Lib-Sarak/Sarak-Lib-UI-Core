@@ -99,7 +99,7 @@ const entryOf = <T,>(display: SarakDisplayRow<T>): SarakDataTableVirtualRow<T>['
         ? { row: display.rows[0], index: -1, key: display.id }
         : display.entry;
 
-const useRowState = <T,>(props: SarakDataTableProps<T>, valueColumns: Array<SarakValueColumn<T>>, locale: string, flow: boolean): SarakDataTableRowState<T> => {
+const useRowState = <T,>(props: SarakDataTableProps<T>, valueColumns: Array<SarakValueColumn<T>>, locale: string, view: { flow: boolean; printing: boolean }): SarakDataTableRowState<T> => {
     const scrollRef = useRef<HTMLDivElement>(null);
     const rows = useMemo(() => filterBySearch(props.rows, valueColumns, props.searchQuery, locale), [props.rows, valueColumns, props.searchQuery, locale]);
     const byId = useMemo(() => new Map(valueColumns.map((column) => [column.id, column])), [valueColumns]);
@@ -111,14 +111,15 @@ const useRowState = <T,>(props: SarakDataTableProps<T>, valueColumns: Array<Sara
     const { displayRows, toggleRow, toggleGroup } = useTableDisplayRows({
         entries: interactions.entries, groupBy: props.groupBy, hasDetail: Boolean(props.renderExpanded), getChildren: props.getChildren,
         getRowKey: props.getRowKey, defaultExpandedDepth: props.defaultExpandedDepth, expandedKeys: props.expandedKeys, onExpandedChange: props.onExpandedChange,
+        openAllGroups: view.printing,
     });
     const virtualizer = requireTanstackUseVirtualizer()({
-        count: flow ? 0 : displayRows.length,
+        count: view.flow ? 0 : displayRows.length,
         getScrollElement: () => scrollRef.current,
         estimateSize: (index) => estimateDisplayHeight(props, displayRows[index]),
         overscan: props.overscan ?? 8,
     });
-    const virtualRows = flow
+    const virtualRows = view.flow
         ? displayRows.map((display, index) => ({ entry: entryOf(display), display, virtualIndex: index, virtualKey: display.id, start: 0, size: 0 }))
         : virtualizer.getVirtualItems().flatMap((item) => {
             const display = displayRows[item.index];
@@ -138,7 +139,7 @@ export const useSarakDataTableViewModel = <T,>(props: SarakDataTableProps<T>, de
     const [viewQuery, setViewQuery] = useState<string | undefined>();
     const query = props.searchQuery ?? viewQuery;
     const valueColumns = useMemo(() => props.columns.map((column) => toValueColumn<T>(column)), [props.columns]);
-    const rowState = useRowState({ ...props, searchQuery: query }, valueColumns, locale, flow);
+    const rowState = useRowState({ ...props, searchQuery: query }, valueColumns, locale, { flow, printing });
     const views = useTableViews({
         views: props.views, activeView: props.activeView, onViewChange: props.onViewChange, onViewSave: props.onViewSave, onSearchQueryChange: props.onSearchQueryChange,
         query, setQuery: setViewQuery, columnState: columns.state, commitColumns: columns.commitState, resetColumns: columns.resetState,

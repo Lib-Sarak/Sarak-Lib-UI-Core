@@ -14,6 +14,7 @@
 import React, { useRef } from 'react';
 import { getOptionalTanstackUseVirtualizer, requireTanstackUseVirtualizer } from '../optional-tanstack-virtualizer';
 import { SarakOptionalPeerFallback } from '../../Feedback/SarakOptionalPeerFallback';
+import { useIsPrinting } from '../SarakDataTable/useIsPrinting';
 
 const OPTIONAL_PEER = '@tanstack/react-virtual';
 
@@ -47,15 +48,25 @@ const SarakDataGridContent: React.FC<SarakDataGridProps> = ({
     className,
 }) => {
     const parentRef = useRef<HTMLDivElement>(null);
+    const printing = useIsPrinting();
 
     const virtualizer = requireTanstackUseVirtualizer()({
-        count,
+        count: printing ? 0 : count,
         getScrollElement: () => parentRef.current,
         estimateSize: () => estimateSize,
         overscan,
     });
 
     const virtualRows = virtualizer.getVirtualItems();
+
+    // No papel não há rolagem: todas as linhas entram no fluxo da página, em vez da janela virtual.
+    if (printing) {
+        return (
+            <div data-sarak-datagrid="true" className={className}>
+                {Array.from({ length: count }, (_, index) => <div key={index} data-index={index}>{renderRow(index)}</div>)}
+            </div>
+        );
+    }
 
     return (
         <div

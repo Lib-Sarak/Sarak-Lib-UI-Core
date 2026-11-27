@@ -13,6 +13,8 @@ export interface UseTableDisplayRowsOptions<T> {
     defaultExpandedDepth?: number;
     expandedKeys?: Key[];
     onExpandedChange?: (keys: Key[]) => void;
+    /** Todo grupo sai aberto, sem tocar no que o usuário alternou: no papel não há clique para abrir o que a tela fechou. */
+    openAllGroups?: boolean;
 }
 
 export interface TableDisplayRowsResult<T> {
@@ -34,7 +36,8 @@ export function useTableDisplayRows<T>(options: UseTableDisplayRowsOptions<T>): 
         if (controlled) return controlled.has(key);
         return rowOverrides.get(key) ?? depth < defaultExpandedDepth;
     }, [controlled, rowOverrides, defaultExpandedDepth]);
-    const isGroupExpanded = useCallback((groupId: string, fallback: boolean): boolean => groupOverrides.get(groupId) ?? fallback, [groupOverrides]);
+    const { openAllGroups = false } = options;
+    const isGroupExpanded = useCallback((groupId: string, fallback: boolean): boolean => openAllGroups || (groupOverrides.get(groupId) ?? fallback), [groupOverrides, openAllGroups]);
     const { entries, groupBy, hasDetail, getChildren, getRowKey } = options;
     const displayRows = useMemo(
         () => buildDisplayRows({ entries, groupBy, hasDetail, getChildren, getRowKey, isRowExpanded, isGroupExpanded }),

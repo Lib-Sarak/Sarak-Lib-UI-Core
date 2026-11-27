@@ -50,4 +50,23 @@ describe('useTableDisplayRows', () => {
         act(() => result.current.toggleGroup('group:A'));
         expect(keys(result)).toEqual([1, 2]);
     });
+
+    it('openAllGroups abre o grupo recolhido sem apagar o que o usuário alternou', () => {
+        const entries = options().entries;
+        const { result, rerender } = renderHook(({ printing }) => useTableDisplayRows(options({ entries, groupBy: { key: 'group' }, getChildren: undefined, openAllGroups: printing })), { initialProps: { printing: false } });
+        act(() => result.current.toggleGroup('group:A'));
+        expect(keys(result), 'na tela o grupo A está recolhido').toEqual([2]);
+        rerender({ printing: true });
+        expect(keys(result), 'no papel todo grupo sai aberto').toEqual([1, 2]);
+        rerender({ printing: false });
+        expect(keys(result), 'depois de imprimir a tela volta recolhida').toEqual([2]);
+    });
+
+    it('openAllGroups abre também o grupo que nasce recolhido por defaultExpanded', () => {
+        const entries = options().entries;
+        const { result, rerender } = renderHook(({ printing }) => useTableDisplayRows(options({ entries, groupBy: { key: 'group', defaultExpanded: false }, getChildren: undefined, openAllGroups: printing })), { initialProps: { printing: false } });
+        expect(keys(result)).toEqual([]);
+        rerender({ printing: true });
+        expect(keys(result)).toEqual([1, 2]);
+    });
 });

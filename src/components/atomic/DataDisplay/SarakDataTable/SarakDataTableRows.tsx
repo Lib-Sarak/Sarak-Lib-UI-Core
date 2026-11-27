@@ -3,6 +3,7 @@ import type { SarakColumn, SarakPinnedOffsets } from './columnModel';
 import type { SarakCellBehavior } from './SarakCellContent';
 import type { SarakDisplayRow } from './tableDisplayRows';
 import type { TableInteractionEntry } from './useTableInteractions';
+import { SarakDataTableFlowRow } from './SarakDataTableFlowParts';
 import { SarakDataTableRow } from './SarakDataTableRow';
 import { SarakDataTableDetailRow, SarakDataTableGroupRow, SarakDataTableSubtotalRow } from './SarakDataTableSpecialRows';
 
@@ -55,5 +56,8 @@ const renderVirtualRow = <T,>(row: SarakDataTableVirtualRow<T>, props: SarakData
 };
 
 export function SarakDataTableRows<T>(props: SarakDataTableRowsProps<T>): ReactElement[] {
-    return props.rows.map((row) => renderVirtualRow(row, props));
+    return props.rows.map((row) => {
+        const element = renderVirtualRow(row, props);
+        return props.flow ? <SarakDataTableFlowRow key={element.key ?? row.virtualKey}>{element}</SarakDataTableFlowRow> : element;
+    });
 }

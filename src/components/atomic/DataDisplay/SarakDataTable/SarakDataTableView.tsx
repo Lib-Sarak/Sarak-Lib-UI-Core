@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactElement } from 'react';
+import type { CSSProperties, ReactElement, ReactNode } from 'react';
 import { useLibraryText } from '../../../../core/i18n/useLibraryText';
 import { useSarakUIOptional } from '../../../../core/Provider/SarakUIProvider';
 import { SarakButton } from '../../Buttons/SarakButton';
@@ -6,6 +6,7 @@ import { hasFooter } from './columnValue';
 import SarakDataCards from './SarakDataCards';
 import { SarakDataTableHeader } from './SarakDataTableHeader';
 import { SarakDataTableRows } from './SarakDataTableRows';
+import { SarakDataTableFlowBody, SarakDataTableFlowRow, SarakDataTableSheet } from './SarakDataTableFlowParts';
 import { SarakDataTableFooter } from './SarakDataTableSpecialRows';
 import { SarakDataTableSkeleton } from './SarakDataTableSkeleton';
 import { SarakDataTableToolbar } from './SarakDataTableToolbar';
@@ -58,6 +59,14 @@ const CardsView = <T,>({ model }: SarakDataTableViewProps<T>): ReactElement => (
     />
 );
 
+/** No fluxo as linhas e o rodapé moram num `<tbody>`; na janela virtual ficam soltas, posicionadas pela altura. */
+const TableBody = ({ flow, children }: { flow: boolean; children: ReactNode }): ReactElement => (flow ? <SarakDataTableFlowBody>{children}</SarakDataTableFlowBody> : <>{children}</>);
+
+const TableFooter = <T,>({ model, props, height, headerHeight }: SarakDataTableViewProps<T> & { props: ReturnType<typeof rowsProps<T>>; height: number; headerHeight: number }): ReactElement => {
+    const footer = <SarakDataTableFooter rows={model.footerRows} props={props} top={headerHeight + model.virtualTotalSize} height={height} />;
+    return model.flow ? <SarakDataTableFlowRow>{footer}</SarakDataTableFlowRow> : footer;
+};
+
 const TableGrid = <T,>({ model }: SarakDataTableViewProps<T>): ReactElement => {
     // Átomo-de-dados: tolera montar sem SarakUIProvider (sem listras).
     const design = useSarakUIOptional()?.design;
@@ -73,11 +82,13 @@ const TableGrid = <T,>({ model }: SarakDataTableViewProps<T>): ReactElement => {
     const sheet: CSSProperties = model.flow ? { width: '100%' } : { width: model.containerWidth, position: 'relative', height: headerHeight + model.virtualTotalSize + footerHeight };
     return (
         <div ref={model.scrollRef} data-sarak-datatable="true" data-density={model.report ? 'report' : undefined} role="table" aria-busy={model.props.loading ? true : undefined} className={model.props.className} style={frame}>
-            <div style={sheet}>
+            <SarakDataTableSheet flow={model.flow} style={sheet}>
                 <SarakDataTableHeader columns={model.ordered} widths={model.widths} offsets={model.offsets} background={model.report ? REPORT_BACKGROUND : HEADER_BACKGROUND} headerHeight={headerHeight} dragId={model.dragId} sort={model.interactions.sort} selectable={props.selectable} flow={model.flow} onResizeKey={model.columns.managed ? model.columns.onResizeKey : undefined} hasExpander={model.hasExpander} reorderable={model.props.reorderable} allVisibleSelected={model.interactions.allVisibleSelected} partiallySelected={model.interactions.partiallySelected} onDragStart={model.setDragId} onDrop={model.onDrop} onSort={model.interactions.changeSort} onToggleAll={model.interactions.toggleAll} onResizeStart={model.onResizeStart} />
-                <SarakDataTableRows {...props} />
-                {footer && <SarakDataTableFooter rows={model.footerRows} props={props} top={headerHeight + model.virtualTotalSize} height={footerHeight} />}
-            </div>
+                <TableBody flow={model.flow}>
+                    <SarakDataTableRows {...props} />
+                    {footer && <TableFooter model={model} props={props} height={footerHeight} headerHeight={headerHeight} />}
+                </TableBody>
+            </SarakDataTableSheet>
         </div>
     );
 };

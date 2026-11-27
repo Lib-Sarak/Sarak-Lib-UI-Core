@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import SarakDataGridImpl from '../SarakDataGridImpl';
 
@@ -41,5 +41,18 @@ describe('Spec 12 (base) — SarakDataGridImpl: windowing e reserva de altura', 
         );
 
         expect(seen.every((i) => i >= 0 && i < 50)).toBe(true);
+    });
+
+    it('ao imprimir, todas as linhas entram no fluxo, sem janela virtual nem rolagem', () => {
+        const { container } = render(<SarakDataGridImpl count={300} estimateSize={44} height={300} renderRow={(i) => <span data-row>{`row-${i}`}</span>} />);
+        expect(container.querySelectorAll('[data-row]').length, 'na tela a janela é virtual').toBeLessThan(300);
+
+        act(() => { window.dispatchEvent(new Event('beforeprint')); });
+        expect(container.querySelectorAll('[data-row]')).toHaveLength(300);
+        const grid = container.querySelector<HTMLElement>('[data-sarak-datagrid="true"]')!;
+        expect(grid.style.overflow).toBe('');
+
+        act(() => { window.dispatchEvent(new Event('afterprint')); });
+        expect(container.querySelectorAll('[data-row]').length).toBeLessThan(300);
     });
 });

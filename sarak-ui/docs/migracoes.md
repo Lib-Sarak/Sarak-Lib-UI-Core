@@ -5,6 +5,24 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 9.0.0 — tabela impressa em várias folhas: todo grupo sai aberto
+
+**Classificação: MINOR (comportamento no papel).** A tela não muda.
+
+Antes, a `SarakDataTable` com `groupBy` imprimia o grupo recolhido na tela **recolhido**: as linhas dele não eram renderizadas, o botão
+do grupo some no papel e o papel não avisava que havia linhas escondidas. Agora, ao imprimir, **todo grupo sai aberto**, e a tela volta
+ao estado de antes quando a impressão termina (o que o usuário recolheu continua recolhido).
+
+Junto vieram duas garantias no papel: o cabeçalho das colunas se repete no topo de cada folha e nenhuma linha é cortada entre duas
+folhas. A `SarakDataGrid` passa a pôr **todas** as linhas no fluxo ao imprimir (antes saía só a janela virtual da tela).
+
+**Se você seleciona a tabela por estrutura:** no fluxo (relatório e impressão) a folha da tabela agora é um `<table>` com `<thead>`,
+`<tbody>` e `<tr>`/`<td>` apresentacionais (`role="presentation"`) ao redor das linhas `role="row"`, e não mais `div`s. Seletor do tipo
+`[role="row"]:last-child` deixa de achar a última linha, porque cada linha mora na própria `<tr>`; use
+`[...raiz.querySelectorAll('[role="row"]')].at(-1)`. As `role` de linha e célula não mudaram.
+
+---
+
 ## 9.0.0 — `SarakThemeEntry.readOnly`: tema do importador que o painel só duplica
 
 **Classificação: MINOR (aditivo).** Campo opcional novo; sem ele, nada muda.
