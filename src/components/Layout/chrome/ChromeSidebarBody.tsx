@@ -23,6 +23,7 @@ import { resolveSidebarFrameStyle } from './sidebarFrame';
 import type { SarakChromeWidgets } from './chromeWidgets';
 import type { SarakPreferenceId } from '../../../core/Provider/preferencesTypes';
 import { getSarakSearchItems } from './navItem';
+import type { SarakErrorHandler } from '../../atomic/Feedback/SarakErrorBoundary';
 
 export interface ChromeSidebarBodyProps {
     brand?: { name?: string; logoUrl?: string };
@@ -35,6 +36,7 @@ export interface ChromeSidebarBodyProps {
     sidebarHeader?: React.ReactNode;
     sidebarFooter?: React.ReactNode;
     secondaryContent?: React.ReactNode;
+    onError?: SarakErrorHandler;
     search?: React.ReactNode;
     banner?: React.ReactNode;
     footer?: React.ReactNode;
@@ -64,7 +66,7 @@ const SEARCH_BOTTOM_STYLE: React.CSSProperties = { paddingInline: VERTICAL_NAV_P
  * dos tokens de cromo que faltavam.
  */
 export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
-    brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot, sidebarHeader, sidebarFooter, secondaryContent,
+    brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot, onError, sidebarHeader, sidebarFooter, secondaryContent,
     search, banner, footer, decoration, user, logout, notifications, onNotificationSelect, widgets, className, rootStyle, children,
 }) => {
     const {
@@ -205,6 +207,7 @@ export const ChromeSidebarBody: React.FC<ChromeSidebarBodyProps> = ({
                 )}
                 <ChromeContentRegion
                     secondaryContent={secondaryContent}
+                    onError={onError}
                     isSplitViewEnabled={isSplitViewEnabled}
                     activeRoute={activeRoute}
                     className={`relative flex-1 min-w-0 min-h-0 overflow-auto`}

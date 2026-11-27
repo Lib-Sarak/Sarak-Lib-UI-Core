@@ -21,6 +21,7 @@ import { chromeNoiseLayerStyle } from './noiseTexture';
 import { resolveChromeToneStyle } from './chromeToneStyle';
 import type { SarakChromeWidgets } from './chromeWidgets';
 import { getSarakSearchItems } from './navItem';
+import type { SarakErrorHandler } from '../../atomic/Feedback/SarakErrorBoundary';
 
 export interface ChromeTopbarBodyProps {
     brand?: { name?: string; logoUrl?: string };
@@ -35,6 +36,7 @@ export interface ChromeTopbarBodyProps {
     footer?: React.ReactNode;
     decoration?: React.ReactNode;
     secondaryContent?: React.ReactNode;
+    onError?: SarakErrorHandler;
     /** Identidade exibida no widget de usuário default (fora do slot `topbarEnd`). */
     user?: SarakShellUser;
     logout?: () => void;
@@ -52,7 +54,7 @@ export interface ChromeTopbarBodyProps {
  * pelo mesmo motivo do `ChromeSidebarBody` (teto de 250 linhas, R9).
  */
 export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
-    brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot, secondaryContent,
+    brand, logo, nav, activeRoute, onNavigate, topbarStart, endSlot, onError, secondaryContent,
     search, banner, footer, decoration, user, logout, notifications, onNotificationSelect, widgets, className, rootStyle, children,
 }) => {
     const {
@@ -190,6 +192,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
             )}
             <ChromeContentRegion
                 secondaryContent={secondaryContent}
+                    onError={onError}
                 isSplitViewEnabled={isSplitViewEnabled}
                 activeRoute={activeRoute}
                 className={`relative flex-1 min-w-0 min-h-0 overflow-auto`}

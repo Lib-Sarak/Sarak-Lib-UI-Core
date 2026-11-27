@@ -72,13 +72,15 @@ const useSourceThemeState = (
     const sourceTheme = sourceThemeOverride?.id === sourceThemeId
         ? sourceThemeOverride
         : sarak.allThemes?.find((theme) => theme.id === sourceThemeId);
-    const isImporterTheme = Boolean(sourceTheme && !SARAK_THEME_CATALOG.some((theme) => theme.id === sourceTheme.id));
+    // Tema marcado `readOnly` pelo importador vale como o do catálogo da lib: só se duplica, nunca se substitui nem se apaga.
+    const isReadOnlyTheme = Boolean(sourceTheme?.readOnly);
+    const isImporterTheme = Boolean(sourceTheme && !isReadOnlyTheme && !SARAK_THEME_CATALOG.some((theme) => theme.id === sourceTheme.id));
     const existingThemeIds = useMemo(
         () => new Set((sarak.themeCatalog ?? []).map((theme) => theme.id)),
         [sarak.themeCatalog],
     );
 
-    return { sourceTheme, isImporterTheme, existingThemeIds, setSourceThemeId, setSourceThemeOverride };
+    return { sourceTheme, isImporterTheme, isReadOnlyTheme, existingThemeIds, setSourceThemeId, setSourceThemeOverride };
 };
 
 const useSaveDialogActions = (
@@ -92,13 +94,18 @@ const useSaveDialogActions = (
         setInitialSaveAction(isImporterTheme ? 'replace' : 'new');
         setIsSaveModalOpen(true);
     }, [isImporterTheme, setIsSaveModalOpen]);
+    const handleOpenDuplicate = useCallback(() => {
+        setModalPurpose('runtime');
+        setInitialSaveAction('duplicate');
+        setIsSaveModalOpen(true);
+    }, [setIsSaveModalOpen]);
     const handleOpenExport = useCallback(() => {
         setModalPurpose('export');
         setInitialSaveAction('new');
         setIsSaveModalOpen(true);
     }, [setIsSaveModalOpen]);
 
-    return { modalPurpose, initialSaveAction, setModalPurpose, setInitialSaveAction, handleOpenRuntimeSave, handleOpenExport };
+    return { modalPurpose, initialSaveAction, setModalPurpose, setInitialSaveAction, handleOpenRuntimeSave, handleOpenDuplicate, handleOpenExport };
 };
 
 const useThemeCreationAction = (props: ThemeCreationActionProps) => {

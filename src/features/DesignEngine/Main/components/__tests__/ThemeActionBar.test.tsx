@@ -119,6 +119,21 @@ describe('ThemeActionBar', () => {
         expect(handlers.onDeleteTheme).toHaveBeenCalledTimes(1);
     });
 
+    it('tema só de leitura: o menu oferece Duplicar, nunca Salvar tema nem Apagar tema', async () => {
+        const user = userEvent.setup();
+        const onDuplicate = vi.fn();
+        const onSave = vi.fn();
+        render(<ThemeActionBar {...createProps({ canSaveToRuntime: true, canDeleteTheme: false, isReadOnlyTheme: true, onDuplicate, onSave })} />);
+
+        const menu = await openMenu(user);
+        const names = within(menu).getAllByRole('menuitem').map((item) => item.textContent);
+        expect(names).toEqual(['Duplicar', 'Novo tema', 'Exportar JSON']);
+        await user.click(within(menu).getByRole('menuitem', { name: 'Duplicar' }));
+
+        expect(onDuplicate).toHaveBeenCalledTimes(1);
+        expect(onSave).not.toHaveBeenCalled();
+    });
+
     it('dá alvos estáveis de teste ao Aplicar e a cada gesto do menu', async () => {
         const user = userEvent.setup();
         render(<ThemeActionBar {...createProps({ canSaveToRuntime: true, canDeleteTheme: true })} />);

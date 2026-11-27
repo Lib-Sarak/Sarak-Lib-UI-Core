@@ -87,3 +87,17 @@ describe('SarakSection', () => {
         });
     });
 });
+
+describe('SarakSection onError', () => {
+    it('entrega ao host o erro que o conteúdo lança e mantém o cabeçalho na tela', () => {
+        const spy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        const onError = vi.fn();
+        const Broken = (): React.ReactElement => { throw new Error('quebrou na seção'); };
+        render(<SarakSection title="Registros" onError={onError}><Broken /></SarakSection>);
+
+        expect(onError).toHaveBeenCalledTimes(1);
+        expect((onError.mock.calls[0][0] as Error).message).toBe('quebrou na seção');
+        expect(screen.getByRole('heading', { name: 'Registros' })).toBeInTheDocument();
+        spy.mockRestore();
+    });
+});

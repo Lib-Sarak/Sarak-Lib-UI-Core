@@ -783,7 +783,7 @@ Esse é o envelope completo; os campos de `design` são tokens estéticos declar
 - **Os gestos do painel, com `options.theme.onSave` ligado:** **Salvar** substitui o tema seu que está em edição (mesmo id);
   **Salvar como novo**, **Duplicar** e **Novo tema** criam (o último parte da referência completa); **Apagar** só existe para tema seu,
   pede confirmação e chama `options.theme.onDelete`. Tema embarcado nunca é sobrescrito — editá-lo é duplicá-lo — e um id seu que
-  colide com o de um embarcado ou de outro tema seu ganha sufixo, com aviso. `onSave(theme, operation)` diz se foi `'create'` ou
+  colide com o de um embarcado ou de outro tema seu ganha sufixo, com aviso. Um tema seu com `readOnly: true` (campo de `SarakThemeEntry`) é tratado como o embarcado: o painel oferece **Duplicar**, e não **Salvar** nem **Apagar**; use para os temas de marca que o seu sistema não deixa o usuário alterar. `onSave(theme, operation)` diz se foi `'create'` ou
   `'replace'`. Porta que falha **rejeita**: um `catch` que engole o erro faz a tela dizer que salvou o que o banco não guardou. O
   exemplo copiável das duas portas está em `docs/persistencia-de-tema.md` (§5).
 - **Persistência sem backend:** a seleção do usuário vai para `localStorage` sozinha. Quer guardar no
@@ -1191,7 +1191,7 @@ reconstruir custa mais** e **o que o tema já controla**. O que a lib faz de ver
 | uma tabela de dados | `SarakTable` (simples, com cartões no celular) ou `SarakDataTable` (virtualizada, colunas redimensionáveis) | ordenação, seleção, listra, hover e a troca por cartões no smartphone são do componente; veja a diferença de tokens abaixo |
 | um diálogo | `SarakModal` (tamanhos nomeados, passos, foco preso, Escape); para painel lateral, `SarakDrawer` | foco preso, Escape, véu e animação são resolvidos; um `div` fixo com `z-index` próprio entra na disputa de camadas |
 | aviso passageiro | `useToast().notify(...)` | empilhamento, tipo e largura vêm de `overlays` e do Provider |
-| conter erro de render no bloco | `SarakErrorBoundary` (`SarakSection` e `SarakAppChrome` já usam) | o aviso segue o tema e o idioma, tem "Tentar de novo" e limpa com `resetKeys`; passe `onError` para registrar |
+| conter erro de render no bloco | `SarakErrorBoundary` (`SarakSection` e `SarakAppChrome` já usam) | o aviso segue o tema e o idioma, tem "Tentar de novo" e limpa com `resetKeys`; passe `onError` para registrar (`SarakAppChrome` e `SarakSection` têm `onError(error, info)` próprio: o erro que o boundary interno contém chega ao seu registro, sem boundary seu dentro do conteúdo) |
 | aviso de alterações não salvas | `useSarakUnsavedChanges` · `SarakForm` com `warnOnUnsaved` | o aviso do navegador e a confirmação pelo overlay já estão ligados; você só liga `confirmLeave` no roteador |
 | paginação com link real | `SarakPagination` com `getPageHref` | Ctrl+clique e clique do meio funcionam, e o clique simples segue em `onChange`, sem recarregar a página |
 | mensagem de erro para o usuário | `sarakErrorMessage` | lê as respostas comuns de API e barra rastro de pilha, HTML e erro do motor JS |
@@ -1386,7 +1386,7 @@ Medido em navegador:
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v9.0.0-rc.1; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **566** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **567** nomes (componentes, tipos, hooks e helpers).
 
 ### A.1 Componentes públicos (144)
 
@@ -1464,8 +1464,8 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Inputs | **SarakTimePicker** | `label` · `value` · `minuteStep` · `disabled` · `error` · `className` · `style` · `onChange` |
 | Inputs | **SarakUploader** | `label` · `accept` · `maxSize` · `multiple` · `disabled` · `hint` · `error` · `className` · `style` · `onChange` · `onReject` |
 | Layout | **SarakAnalyticalPage** | `navBar` · `mainContent` · `sidePanel` · `sidePanelAsDrawerOnMobile` · `centeredOnDesktop` · `sidePanelWidth` · `fillHeight` |
-| Layout | **SarakAppChrome** | `children` · `secondaryContent` · `brand` · `navItems` · `nav` · `activeRoute` · `onNavigate` · `navigationStyle` · `topbarActions` · `logo` · `topbarStart` · `topbarEnd` · `search` · `sidebarHeader` · `sidebarFooter` · `banner` · `footer` · `decoration` · `user` · `logout` · `notifications` · `onNotificationSelect` · `widgets` · `className` · `style` |
-| Layout | **SarakAppChromeMobile** | `children` · `secondaryContent` · `brand` · `logo` · `nav` · `activeRoute` · `onNavigate` · `topbarActions` · `topbarStart` · `search` · `sidebarHeader` · `sidebarFooter` · `banner` · `footer` · `decoration` · `user` · `logout` · `notifications` · `onNotificationSelect` · `widgets` · `className` · `rootStyle` |
+| Layout | **SarakAppChrome** | `children` · `secondaryContent` · `onError` · `brand` · `navItems` · `nav` · `activeRoute` · `onNavigate` · `navigationStyle` · `topbarActions` · `logo` · `topbarStart` · `topbarEnd` · `search` · `sidebarHeader` · `sidebarFooter` · `banner` · `footer` · `decoration` · `user` · `logout` · `notifications` · `onNotificationSelect` · `widgets` · `className` · `style` |
+| Layout | **SarakAppChromeMobile** | `children` · `secondaryContent` · `onError` · `brand` · `logo` · `nav` · `activeRoute` · `onNavigate` · `topbarActions` · `topbarStart` · `search` · `sidebarHeader` · `sidebarFooter` · `banner` · `footer` · `decoration` · `user` · `logout` · `notifications` · `onNotificationSelect` · `widgets` · `className` · `rootStyle` |
 | Layout | **SarakHidden** | `children` · `on` |
 | Layouts | **SarakAccordion** | `title` · `children` · `defaultOpen` · `className` |
 | Layouts | **SarakDivider** | `orientation` · `label` · `decorative` |
@@ -1522,7 +1522,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Templates | **SarakPermissionMatrix** | `roles` · `groups` · `granted` · `inherited` · `onToggle` · `readOnly` · `label` · `className` |
 | Templates | **SarakResourceRow** | `title` · `description` · `badges` · `metadata` · `actions` · `href` · `onNavigate` · `layout` · `density` |
 | Templates | **SarakRunProgress** | `title` · `phases` · `progress` · `elapsedMs` · `onCancel` · `cancelling` · `lastError` · `className` |
-| Templates | **SarakSection** | `title` · `description` · `actions` · `children` · `headingLevel` · `variant` · `loading` · `loadingLabel` · `emptyState` · `error` |
+| Templates | **SarakSection** | `title` · `description` · `actions` · `children` · `headingLevel` · `variant` · `onError` · `loading` · `loadingLabel` · `emptyState` · `error` |
 | Templates | **SarakSegmentedControl** | `options` · `ariaLabel` · `value` · `defaultValue` · `onValueChange` |
 | Templates | **SarakSessionList** | `sessions` · `onRevoke` · `onRevokeOthers` · `className` |
 | Templates | **SarakSettingsPage** | `title` · `description` · `sections` · `isDirty` · `saving` · `saveError` · `onSave` · `onDiscard` · `onUnsavedChangesControl` |

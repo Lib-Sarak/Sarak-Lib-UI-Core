@@ -93,6 +93,24 @@ describe('useThemeCustomizationActions', () => {
         expect(embeddedHook.result.current.initialSaveAction).toBe('new');
     });
 
+    it('treats an importer theme marked readOnly like a catalog theme: duplicate only, no replace, no delete', async () => {
+        const props = createProps();
+        props.sarak.allThemes[0] = { ...importerTheme, readOnly: true };
+        const { result } = renderHook(() => useThemeCustomizationActions(props as never));
+
+        expect(result.current.isReadOnlyTheme).toBe(true);
+        expect(result.current.isImporterTheme).toBe(false);
+
+        act(() => result.current.handleOpenDuplicate());
+        expect(result.current.initialSaveAction).toBe('duplicate');
+        expect(props.setIsSaveModalOpen).toHaveBeenCalledWith(true);
+
+        await act(async () => { await result.current.handleDeleteTheme(); });
+        expect(confirmOverlay).not.toHaveBeenCalled();
+        expect(props.sarak.deleteTheme).not.toHaveBeenCalled();
+        expect(props.sarak.options.theme.onSave).not.toHaveBeenCalled();
+    });
+
     it('creates a new theme from the reference matching the current mode', async () => {
         const lightReference: SarakThemeEntry = {
             id: 'referencia-clara',

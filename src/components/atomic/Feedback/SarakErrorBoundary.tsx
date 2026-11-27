@@ -10,12 +10,15 @@ export interface SarakErrorBoundaryFallbackContext {
     reset: () => void;
 }
 
+/** Assinatura de `onError`: o erro capturado e a pilha de componentes do React. */
+export type SarakErrorHandler = (error: unknown, info: React.ErrorInfo) => void;
+
 export interface SarakErrorBoundaryProps {
     children?: React.ReactNode;
     /** Substitui o aviso padrão: um nó fixo ou uma função que recebe o erro e `reset`. */
     fallback?: React.ReactNode | ((context: SarakErrorBoundaryFallbackContext) => React.ReactNode);
     /** Recebe o erro capturado, para o host registrar. */
-    onError?: (error: unknown, info: React.ErrorInfo) => void;
+    onError?: SarakErrorHandler;
     /** Quando um destes valores muda (a rota, por exemplo), o erro é limpo e o conteúdo remonta. */
     resetKeys?: readonly unknown[];
 }

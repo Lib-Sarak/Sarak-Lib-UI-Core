@@ -13,6 +13,7 @@ import { useStableContent } from './chrome/useStableContent';
 import type { SarakChromeNotification } from './chrome/ChromeNotificationsWidget';
 import { findActiveNavItemHref, toShellNavItems, type SarakNavItem } from './chrome/navItem';
 import type { SarakChromeWidgets } from './chrome/chromeWidgets';
+import type { SarakErrorHandler } from '../atomic/Feedback/SarakErrorBoundary';
 
 /** Contrato de navegação estruturada com ícone first-class (Spec 40.2 — L1). */
 export type { SarakNavItem } from './chrome/navItem';
@@ -46,6 +47,8 @@ export interface SarakAppChromeProps {
     children: React.ReactNode;
     /** Slot `secondaryContent`: segundo painel, exibido quando `isSplitViewEnabled` está ligado. */
     secondaryContent?: React.ReactNode;
+    /** Recebe o erro de render que o cromo contém no conteúdo (principal ou secundário), para o host registrar; o resto do cromo segue na tela. */
+    onError?: SarakErrorHandler;
     /** Identidade exibida no cromo (topo da sidebar / início da topbar). */
     brand?: { name?: string; logoUrl?: string };
     /**
@@ -137,6 +140,7 @@ export interface SarakAppChromeProps {
 export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     children,
     secondaryContent,
+    onError,
     brand: brandProp,
     navItems,
     nav = [],
@@ -208,11 +212,11 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     const shared = {
         brand, logo, nav: effectiveNav, activeRoute: effectiveActiveRoute, onNavigate,
         topbarStart, endSlot, search, banner, footer, decoration, user, logout, notifications,
-        onNotificationSelect, widgets, className, rootStyle, secondaryContent,
+        onNotificationSelect, widgets, className, rootStyle, secondaryContent, onError,
     };
 
     // O conteúdo não pertence a nenhum corpo: trocar de modo troca o corpo, e o conteúdo segue montado (`useStableContent`).
-    const { slot, portal } = useStableContent(children, effectiveActiveRoute);
+    const { slot, portal } = useStableContent(children, effectiveActiveRoute, onError);
     const body = mode === 'mobile'
         ? <SarakAppChromeMobile {...shared} topbarActions={endSlot} sidebarHeader={sidebarHeader} sidebarFooter={sidebarFooter}>{slot}</SarakAppChromeMobile>
         : mode === 'topbar'

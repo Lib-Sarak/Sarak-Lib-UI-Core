@@ -1,19 +1,21 @@
 import React, { useId } from 'react';
 import { SarakAlert } from '../Feedback/SarakAlert';
 import { SarakEmptyState } from '../Feedback/SarakEmptyState';
-import { SarakErrorBoundary } from '../Feedback/SarakErrorBoundary';
+import { SarakErrorBoundary, type SarakErrorHandler } from '../Feedback/SarakErrorBoundary';
 import { SarakSkeleton } from '../Feedback/SarakSkeleton';
 import { SarakCard } from '../Cards/SarakCard';
 import { SarakFlex } from '../Layouts/SarakFlex';
 import { mergeSarakClasses } from '../hooks/mergeSarakClasses';
 
-export interface SarakSectionProps extends Omit<React.HTMLAttributes<HTMLElement>, 'title'> {
+export interface SarakSectionProps extends Omit<React.HTMLAttributes<HTMLElement>, 'title' | 'onError'> {
     title: React.ReactNode;
     description?: React.ReactNode;
     actions?: React.ReactNode;
     children?: React.ReactNode;
     headingLevel?: 2 | 3 | 4 | 5 | 6;
     variant?: 'plain' | 'card';
+    /** Recebe o erro de render que o conteúdo da seção lança e o limite interno contém, para o host registrar. */
+    onError?: SarakErrorHandler;
     loading?: boolean;
     loadingLabel?: string;
     emptyState?: {
@@ -41,6 +43,7 @@ export const SarakSection = ({
     loadingLabel,
     emptyState,
     error,
+    onError,
     className,
     style,
     ...props
@@ -75,7 +78,7 @@ export const SarakSection = ({
                     action={error.onRetry && error.retryLabel ? { label: error.retryLabel, onClick: error.onRetry } : undefined}
                 />
             )}
-            <SarakErrorBoundary resetKeys={[loading]}>{content}</SarakErrorBoundary>
+            <SarakErrorBoundary resetKeys={[loading]} onError={onError}>{content}</SarakErrorBoundary>
         </SarakFlex>
     );
 

@@ -204,6 +204,7 @@
     "SarakErrorBoundaryFallbackContext",
     "SarakErrorBoundaryProps",
     "SarakErrorBoundaryState",
+    "SarakErrorHandler",
     "SarakExpandableCard",
     "SarakExpandableCardProps",
     "SarakExpandableMatrix",
@@ -794,6 +795,12 @@
           "doc": "Slot `secondaryContent`: segundo painel, exibido quando `isSplitViewEnabled` está ligado."
         },
         {
+          "name": "onError",
+          "type": "SarakErrorHandler",
+          "optional": true,
+          "doc": "Recebe o erro de render que o cromo contém no conteúdo (principal ou secundário), para o host registrar; o resto do cromo segue na tela."
+        },
+        {
           "name": "brand",
           "type": "{ name?: string; logoUrl?: string }",
           "optional": true,
@@ -946,6 +953,12 @@
         {
           "name": "secondaryContent",
           "type": "React.ReactNode",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "onError",
+          "type": "React.ComponentProps<typeof ChromeContentRegion>['onError']",
           "optional": true,
           "doc": ""
         },
@@ -3272,7 +3285,7 @@
         },
         {
           "name": "onError",
-          "type": "(error: unknown, info: React.ErrorInfo) => void",
+          "type": "SarakErrorHandler",
           "optional": true,
           "doc": "Recebe o erro capturado, para o host registrar."
         },
@@ -5581,7 +5594,7 @@
     "SarakSection": {
       "propsInterface": "SarakSectionProps",
       "source": "src/components/atomic/Templates/SarakSection.tsx",
-      "extends": "Omit<React.HTMLAttributes<HTMLElement>, 'title'>",
+      "extends": "Omit<React.HTMLAttributes<HTMLElement>, 'title' | 'onError'>",
       "props": [
         {
           "name": "title",
@@ -5618,6 +5631,12 @@
           "type": "'plain' | 'card'",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "onError",
+          "type": "SarakErrorHandler",
+          "optional": true,
+          "doc": "Recebe o erro de render que o conteúdo da seção lança e o limite interno contém, para o host registrar."
         },
         {
           "name": "loading",
@@ -14328,6 +14347,6 @@
   "kitStamp": {
     "libVersion": "9.0.0-rc.1",
     "kitSchemaVersion": 1,
-    "kitHash": "100fbbdf7706"
+    "kitHash": "f24f47f4fa70"
   }
 }

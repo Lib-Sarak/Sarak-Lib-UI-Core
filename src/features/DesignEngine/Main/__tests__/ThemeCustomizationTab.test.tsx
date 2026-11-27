@@ -155,6 +155,31 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
         expect(fetchSpy).not.toHaveBeenCalled();
     });
 
+    it('tema do importador com readOnly: o menu do painel oferece Duplicar, nunca Salvar tema nem Apagar tema', () => {
+        const onSave = vi.fn();
+        vi.mocked(useThemeEngineState).mockReturnValue({
+            ...baseThemeEngineState,
+            sarak: {
+                ...baseThemeEngineState.sarak,
+                resolvedThemeId: 'marca-corporativo',
+                allThemes: [{ id: 'marca-corporativo', name: 'Corporativo', design: { mode: 'dark' }, readOnly: true }],
+                themeCatalog: [{ id: 'marca-corporativo' }],
+                options: { theme: { onSave } },
+                saveTheme: vi.fn(),
+                deleteTheme: vi.fn(),
+            },
+        } as any);
+        render(<ThemeCustomizationTab />);
+
+        fireEvent.click(screen.getByRole('button', { name: 'Mais ações' }));
+        const items = screen.getAllByRole('menuitem').map((item) => item.textContent);
+
+        expect(items).toContain('Duplicar');
+        expect(items).not.toContain('Salvar tema');
+        expect(items).not.toContain('Apagar tema');
+        expect(onSave).not.toHaveBeenCalled();
+    });
+
     it('a prévia está sempre à vista: não há galeria nem interruptor para abri-la', () => {
         render(<ThemeCustomizationTab />);
 

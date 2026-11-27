@@ -1,6 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { SarakErrorBoundary } from '../../atomic/Feedback/SarakErrorBoundary';
+import { SarakErrorBoundary, type SarakErrorHandler } from '../../atomic/Feedback/SarakErrorBoundary';
 
 /**
  * O elemento do conteúdo que tinha o foco quando o nó estável saiu do lugar. Mover o nó tira o foco de quem estava dentro dele (o
@@ -40,12 +40,12 @@ const isServerSnapshot = (): boolean => false;
  * painel de design, um formulário) perderia o que o usuário fez. O conteúdo é renderizado por um portal num nó que vive o mesmo tanto
  * que o cromo, e cada modo só recebe o ponto (`slot`) onde esse nó é encaixado. No servidor e na primeira renderização de uma hidratação, o conteúdo vai direto no slot (o HTML do servidor e a primeira árvore do cliente têm de bater); o portal vale a partir da renderização seguinte, e o conteúdo é montado de novo uma vez, logo depois da hidratação. Num `createRoot` comum o portal vale desde o primeiro quadro.
  */
-export const useStableContent = (children: React.ReactNode, activeRoute?: string): { slot: React.ReactNode; portal: React.ReactNode } => {
+export const useStableContent = (children: React.ReactNode, activeRoute?: string, onError?: SarakErrorHandler): { slot: React.ReactNode; portal: React.ReactNode } => {
     const host = React.useMemo(createHost, []);
     // `false` só no servidor e na hidratação: o React usa o retrato do servidor nelas e o do cliente em toda outra renderização.
     const isReady = React.useSyncExternalStore(subscribeNothing, isClientSnapshot, isServerSnapshot);
     // O limite de erro do conteúdo mora junto do conteúdo: o portal responde à árvore do cromo, não à região onde o nó foi encaixado.
-    const content = <SarakErrorBoundary resetKeys={[activeRoute]}>{children}</SarakErrorBoundary>;
+    const content = <SarakErrorBoundary resetKeys={[activeRoute]} onError={onError}>{children}</SarakErrorBoundary>;
     if (!host || !isReady) return { slot: content, portal: null };
     return { slot: <ContentAnchor host={host} />, portal: createPortal(content, host) };
 };

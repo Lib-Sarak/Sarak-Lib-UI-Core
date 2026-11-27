@@ -5,6 +5,36 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 9.0.0 — `SarakThemeEntry.readOnly`: tema do importador que o painel só duplica
+
+**Classificação: MINOR (aditivo).** Campo opcional novo; sem ele, nada muda.
+
+Antes, todo tema em `customThemes` (fora do catálogo da lib) aparecia no painel com **Salvar** e **Apagar**, e quem recusava o id no
+`onSave` (um tema de marca, por exemplo) fazia o usuário receber erro. Agora `readOnly: true` no `SarakThemeEntry` faz o painel tratar o
+tema como os da lib: oferece **Duplicar** e não oferece **Salvar** nem **Apagar**.
+
+```ts
+const TEMAS = [{ id: 'marca-corporativo', name: 'Corporativo', design: { /* … */ }, readOnly: true }];
+```
+
+---
+
+## 9.0.0 — `onError` no `SarakAppChrome` e no `SarakSection`
+
+**Classificação: MINOR (aditivo) no `SarakAppChrome`; no `SarakSection`, uma troca de significado (abaixo).** Sem a prop, o cromo não muda.
+
+O cromo e a seção já continham o erro de render do conteúdo, mas o erro não chegava ao importador. Agora `onError(error, info)` recebe o
+que o boundary interno contém (no cromo, o do conteúdo principal e o do `secondaryContent`). **Isto substitui a orientação da entrada
+8.0.0 abaixo:** não é mais preciso pôr um `SarakErrorBoundary` dentro do conteúdo só para registrar; passe `onError` ao cromo.
+
+```tsx
+<SarakAppChrome nav={nav} activeRoute={rota} onError={registrar}><Tela /></SarakAppChrome>
+```
+
+**Atenção no `SarakSection`:** o `onError` dele **deixa de ser o manipulador DOM do `<section>`** (o `onError` de `HTMLAttributes`, evento de erro de elemento) e passa a receber `(error, info)` do boundary interno. Quem passava um manipulador DOM ao `SarakSection` deve tirá-lo: ele passaria a ser chamado com outra assinatura. Na prática o `<section>` não dispara esse evento, então a perda é de tipagem, não de comportamento.
+
+---
+
 ## 9.0.0 — o anel de foco vale para todo controle focável, em dois tons
 
 Antes, o anel de foco era desenhado só para `button` (na cor primária ou da textura), e `SarakButton`, `SarakIconButton`, `SarakInput`, `SarakSelect` e `SarakTextarea` carregavam `outline-none`, o que apagava o foco no teclado. Agora a camada global de elementos (`_elements.css`) desenha o anel em todo focável (`a[href]`, `button`, `input`, `select`, `textarea`, `summary`, `[tabindex]` e os `role` de controle), com `:focus-visible`.
@@ -836,7 +866,7 @@ cada um tem forma e palavra.
 
 - **`SarakSection` e `SarakAppChrome` passam a conter erro de render.** Um erro dentro do conteúdo vira um aviso com "Tentar de
   novo" naquele bloco, e o resto da tela segue. Se você tem um error boundary **em volta** deles, ele deixa de receber esses erros.
-  Para continuar registrando, coloque um `SarakErrorBoundary` com `onError` **dentro** do conteúdo:
+  Para continuar registrando, passe `onError` ao `SarakAppChrome` ou ao `SarakSection` (a entrada `9.0.0 — onError` acima); na 8.0.0, a saída era um `SarakErrorBoundary` com `onError` **dentro** do conteúdo:
 
   ```tsx
   // Antes: o seu boundary, fora do cromo, recebia o erro e trocava a tela inteira.

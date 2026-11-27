@@ -38,6 +38,7 @@ import { useEffectiveBrand } from './chrome/useEffectiveBrand';
 export interface SarakAppChromeMobileProps {
     children: React.ReactNode;
     secondaryContent?: React.ReactNode;
+    onError?: React.ComponentProps<typeof ChromeContentRegion>['onError'];
     brand?: { name?: string; logoUrl?: string };
     logo?: React.ReactNode;
     nav: SarakShellNavItem[];
@@ -74,7 +75,7 @@ const DRAWER_ID = 'sarak-chrome-drawer';
 
 export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
     children,
-    secondaryContent,
+    secondaryContent, onError,
     brand: brandProp,
     logo,
     nav,
@@ -224,7 +225,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
             </ChromeMobileDrawer>
 
             <ChromeContentRegion
-                secondaryContent={secondaryContent}
+                secondaryContent={secondaryContent} onError={onError}
                 isSplitViewEnabled={isSplitViewEnabled}
                 activeRoute={activeRoute}
                 className={`relative flex-1 min-w-0 min-h-0 overflow-auto`}

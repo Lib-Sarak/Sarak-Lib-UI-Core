@@ -152,6 +152,7 @@ Props (`SarakAppChromeProps` — `src/components/Layout/SarakAppChrome.tsx`):
 | --- | --- | --- | --- |
 | `children` | `React.ReactNode` | sim | Conteúdo do app (a tela do próprio módulo). |
 | `secondaryContent` | `React.ReactNode` | não | Slot `secondaryContent`: segundo painel, exibido quando `isSplitViewEnabled` está ligado. |
+| `onError` | `SarakErrorHandler` | não | Recebe o erro de render que o cromo contém no conteúdo (principal ou secundário), para o host registrar; o resto do cromo segue na tela. |
 | `brand` | `{ name?: string; logoUrl?: string }` | não | Identidade exibida no cromo (topo da sidebar / início da topbar). |
 | `navItems` | `SarakNavItem[]` | não | Navegação ESTRUTURADA com ícone first-class (Spec 40.2 — L1). Renderiza ícone (via `SarakIcon`/`SarakIconMap`) + label, temável por token, com estado ativo acessível (`aria-current`, foco por teclado). É o caminho recomendado para o cromo por-app; tem precedência sobre `nav` quando ambos são passados. |
 | `nav` | `SarakShellNavItem[]` | não | Itens de navegação como DADO no contrato do `SarakShellNav` (modelo declarativo, `route`/`activeRoute`). Mantido para compatibilidade; prefira `navItems`. |
@@ -184,6 +185,7 @@ Props (`SarakAppChromeMobileProps` — `src/components/Layout/SarakAppChromeMobi
 | --- | --- | --- | --- |
 | `children` | `React.ReactNode` | sim |  |
 | `secondaryContent` | `React.ReactNode` | não |  |
+| `onError` | `React.ComponentProps<typeof ChromeContentRegion>['onError']` | não |  |
 | `brand` | `{ name?: string; logoUrl?: string }` | não |  |
 | `logo` | `React.ReactNode` | não |  |
 | `nav` | `SarakShellNavItem[]` | sim |  |
@@ -820,7 +822,7 @@ Props (`SarakErrorBoundaryProps` — `src/components/atomic/Feedback/SarakErrorB
 | --- | --- | --- | --- |
 | `children` | `React.ReactNode` | não |  |
 | `fallback` | `React.ReactNode \| ((context: SarakErrorBoundaryFallbackContext) => React.ReactNode)` | não | Substitui o aviso padrão: um nó fixo ou uma função que recebe o erro e `reset`. |
-| `onError` | `(error: unknown, info: React.ErrorInfo) => void` | não | Recebe o erro capturado, para o host registrar. |
+| `onError` | `SarakErrorHandler` | não | Recebe o erro capturado, para o host registrar. |
 | `resetKeys` | `readonly unknown[]` | não | Quando um destes valores muda (a rota, por exemplo), o erro é limpo e o conteúdo remonta. |
 
 ### SarakExpandableCard
@@ -1545,12 +1547,13 @@ Props (`SarakSectionProps` — `src/components/atomic/Templates/SarakSection.tsx
 | `children` | `React.ReactNode` | não |  |
 | `headingLevel` | `2 \| 3 \| 4 \| 5 \| 6` | não |  |
 | `variant` | `'plain' \| 'card'` | não |  |
+| `onError` | `SarakErrorHandler` | não | Recebe o erro de render que o conteúdo da seção lança e o limite interno contém, para o host registrar. |
 | `loading` | `boolean` | não |  |
 | `loadingLabel` | `string` | não |  |
 | `emptyState` | `{ title?: React.ReactNode; description?: React.ReactNode; action?: React.ReactNode; }` | não |  |
 | `error` | `{ title: string; message: string; retryLabel?: string; onRetry?: () => void; }` | não |  |
 
-Estende: `Omit<React.HTMLAttributes<HTMLElement>, 'title'>`
+Estende: `Omit<React.HTMLAttributes<HTMLElement>, 'title' | 'onError'>`
 
 ### SarakSegmentedControl
 

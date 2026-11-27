@@ -15,7 +15,10 @@ interface ThemeActionBarProps {
     onDiscard: () => void;
     canSaveToRuntime: boolean;
     canDeleteTheme: boolean;
+    /** Tema só de leitura: o menu oferece Duplicar no lugar de Salvar. */
+    isReadOnlyTheme?: boolean;
     onSave: () => void;
+    onDuplicate?: () => void;
     onExport: () => void;
     onCreateTheme: () => void;
     onDeleteTheme: () => void;
@@ -32,7 +35,9 @@ export const ThemeActionBar: React.FC<ThemeActionBarProps> = ({
     onDiscard,
     canSaveToRuntime,
     canDeleteTheme,
+    isReadOnlyTheme = false,
     onSave,
+    onDuplicate,
     onExport,
     onCreateTheme,
     onDeleteTheme,
@@ -45,7 +50,9 @@ export const ThemeActionBar: React.FC<ThemeActionBarProps> = ({
     const setMenuOpen = useCallback((open: boolean) => setOpenLayer(open ? 'menu' : null), []);
     const menuActions: ThemeMenuAction[] = [
         ...(canSaveToRuntime ? [
-            { id: 'save', label: text('themeSaveDialogTitle'), onSelect: onSave, testId: 'sarak-panel-save-theme' },
+            isReadOnlyTheme
+                ? { id: 'duplicate', label: text('themeDuplicateAction'), onSelect: onDuplicate ?? onSave, testId: 'sarak-panel-duplicate-theme' }
+                : { id: 'save', label: text('themeSaveDialogTitle'), onSelect: onSave, testId: 'sarak-panel-save-theme' },
             { id: 'create', label: text('themeCreateAction'), onSelect: onCreateTheme, testId: 'sarak-panel-new-theme' },
         ] : []),
         { id: 'export', label: text('themeExportJsonAction'), onSelect: onExport, testId: 'sarak-panel-export-json' },

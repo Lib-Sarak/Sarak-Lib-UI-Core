@@ -236,6 +236,11 @@ ajusta valores; ao salvar, o que chega em `theme.onSave` já é essa cópia deri
 própria. Não existe operação "editar tema embarcado" — o resultado sempre nasce como um `SarakThemeEntry`
 novo, do seu lado.
 
+**Tema seu que o painel só duplica.** Um tema que o seu sistema não deixa o usuário alterar (a marca, por exemplo) entra em
+`customThemes` com `readOnly: true`. O painel o trata como os da lib: oferece **Duplicar** (que cria um tema novo, derivado) e não
+oferece **Salvar** nem **Apagar**, então `onSave` e `onDelete` nunca recebem o id dele. Sem `readOnly`, o tema seu segue editável e
+apagável como antes.
+
 ## 4. O escopo é do sistema, não do usuário
 
 A lib **nunca teve conceito de usuário**. `onSave` recebe o design; `onLoad` não recebe argumento

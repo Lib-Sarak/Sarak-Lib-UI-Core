@@ -1,5 +1,5 @@
 import React from 'react';
-import { SarakErrorBoundary } from '../../atomic/Feedback/SarakErrorBoundary';
+import { SarakErrorBoundary, type SarakErrorHandler } from '../../atomic/Feedback/SarakErrorBoundary';
 import { CHROME_SPLIT_CONTENT_LAYOUT_CLASS } from './chromeStructuralStyles';
 
 const hasRenderableChildren = (children: React.ReactNode): boolean =>
@@ -15,6 +15,8 @@ export interface ChromeContentRegionProps {
     isSplitViewEnabled: boolean;
     /** Trocar de rota limpa o erro: sem isso, o menu levaria a outra tela e o aviso continuaria ali. */
     activeRoute?: string;
+    /** Recebe o erro que o limite do conteúdo secundário contém. */
+    onError?: SarakErrorHandler;
     className: string;
     style: React.CSSProperties;
 }
@@ -24,6 +26,7 @@ export const ChromeContentRegion: React.FC<ChromeContentRegionProps> = ({
     secondaryContent,
     isSplitViewEnabled,
     activeRoute,
+    onError,
     className,
     style,
 }) => {
@@ -45,7 +48,7 @@ export const ChromeContentRegion: React.FC<ChromeContentRegionProps> = ({
                         data-sarak-split-panel="secondary"
                         className="min-w-0"
                     >
-                        <SarakErrorBoundary resetKeys={[activeRoute]}>{secondaryChildren}</SarakErrorBoundary>
+                        <SarakErrorBoundary resetKeys={[activeRoute]} onError={onError}>{secondaryChildren}</SarakErrorBoundary>
                     </div>
                 </div>
             ) : primaryContent}
