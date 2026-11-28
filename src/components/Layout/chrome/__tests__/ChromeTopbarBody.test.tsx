@@ -69,14 +69,14 @@ describe('ChromeTopbarBody — quem cede quando a barra aperta (o item de navega
         expect((container.querySelector('header .ml-auto') as HTMLElement).className).toContain('shrink-0');
     });
 
-    it('a barra de busca PADRÃO pede 16rem para o contêiner se medir e some abaixo de 10rem; a do consumidor só encolhe', () => {
+    it('a barra de busca PADRÃO pede 16rem para o contêiner se medir (quem a recolhe em ícone é a medida da barra, não o CSS); a do consumidor só encolhe', () => {
         const own = renderBody({}, { search: <div>buscar</div> }).container;
         expect((own.querySelector('[data-sarak-slot="search"]') as HTMLElement).className).not.toContain('@container');
         const factory = renderBody({}).container;
         const slot = factory.querySelector('[data-sarak-slot="search"]') as HTMLElement;
         expect(slot.className).toContain('@container');
         expect(slot.className).toContain('w-64');
-        expect(slot.className).toContain('@max-[10rem]:[&>*]:hidden');
+        expect(slot.className).not.toContain('@max-[10rem]:[&>*]:hidden');
     });
 
     it('com a barra recolhida (ícone) a busca não pede largura fixa', () => {

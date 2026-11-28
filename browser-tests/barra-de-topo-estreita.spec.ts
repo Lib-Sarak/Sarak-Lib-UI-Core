@@ -5,7 +5,7 @@
  * temas com cromo de topo, a 1440 px: a lista ficava com 246 de 341 px (`industrial-terminal`: "Configurações" cortada), a
  * 1280 px com 86 px e a 1024 px com 32 px, enquanto a busca (256 px) e o grupo final (740 a 820 px) ficavam inteiros.
  *
- * O que cede, nesta ordem, quando a barra aperta: (1) a busca em barra encolhe e some abaixo de 10rem; (2) os rótulos dos
+ * O que cede, nesta ordem, quando a barra aperta: (1) a busca em barra encolhe e, abaixo de 10rem, vira o ícone que abre a paleta (o slot passa a ter a largura do ícone e devolve o resto à lista); (2) os rótulos dos
  * widgets indisponíveis (usuário, notificações) somem abaixo do breakpoint `2xl` (1536 px) e ficam só os ícones; (3) o item que não cabe
  * sai da lista e vai para o "Mais" (cada item continua inteiro; a lista não rola mais). O grupo final (seletores, idioma, tema, usuário, notificações) é rígido: nunca passa da borda
  * da barra, e a página não ganha largura. O `jsdom` não calcula largura de flex nem o encolhimento da barra.
@@ -16,7 +16,8 @@
  * 1. Só o cromo de fábrica do harness (busca, seletores de fonte e de navegação, idioma, tema, usuário e notificações
  *    indisponíveis), três itens com rótulos longos e o tema embarcado de cada caso; não mede widgets que o consumidor passa
  *    (`user`, `notifications`, `topbarEnd`) nem `searchPositionTopbar` `center`/`right`.
- * 2. Só 1440, 1280 e 1024 px, no modo nativo do tema. Abaixo de 1024 px a lista rola mais e o gate do celular é outro.
+ * 2. Os primeiros casos medem só 1440, 1280 e 1024 px; os de 820 px (os 25 temas) medem o "Mais", o vão da barra e a busca recolhida em ícone, e a
+ *    troca de tema em tempo de execução a 820 px. Todos no modo nativo do tema. Abaixo de 820 px o gate do celular é outro.
  * 3. A 1024 px pode haver item no "Mais": a medição prova que o item não encolhe, que nada sai da barra e que o que não coube está no
  *    "Mais"; o desenho do botão e o teclado dele são medidos por `topbar-mais.spec.ts`.
  * 4. Só Chromium headless, contra o artefato que o `globalSetup` montou.
@@ -247,9 +248,6 @@ for (const theme of ALL_THEME_IDS) {
             const measured = await measureCollapsedSearch(page);
             expect(measured, 'a barra tem o slot da busca e o item anterior a ela').not.toBeNull();
             if (!measured) return;
-            // O slot com largura mas sem campo (contêiner abaixo do mínimo útil) é um espaço vazio que o slot ainda toma: não é a busca
-            // recolhida a 0 px nem a visível, e fica registrado como achado, não medido aqui.
-            test.skip(measured.searchWidth >= 1 && measured.contentHidden, 'o slot da busca tem largura mas o campo está oculto: espaço vazio fora do que este caso mede');
             // Recolhida (0 px): só o vão da barra separa a lista do que vem antes. Visível: o vão da barra separa a caixa do campo da lista.
             expect(Math.abs(measured.spanBeforeNav - measured.barGap), `um vão da barra, nem mais nem menos: ${JSON.stringify(measured)}`).toBeLessThanOrEqual(TOLERANCE_PX);
         } finally {
@@ -272,3 +270,105 @@ for (const theme of ALL_THEME_IDS) {
         }
     });
 }
+
+/**
+ * Plan 191. Sem espaço para o campo, a busca vira o ícone (Spec 05 §2.1.3) e o slot não guarda a largura do campo: a 820 px não sobra
+ * slot de busca com largura e sem nada visível dentro, e a busca segue alcançável pelo ícone, com nome acessível.
+ */
+interface SearchSlotMeasure {
+    slotWidth: number;
+    fieldVisible: boolean;
+    iconVisible: boolean;
+    iconWidth: number;
+    iconHeight: number;
+    iconName: string;
+}
+
+const measureSearchSlot = (page: Page): Promise<SearchSlotMeasure | null> => page.evaluate(() => {
+    const slot = document.querySelector<HTMLElement>('header [data-sarak-slot="search"]');
+    if (!slot) return null;
+    const shown = (el: Element | null): boolean => {
+        if (!el) return false;
+        const rect = el.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0 && getComputedStyle(el).visibility !== 'hidden';
+    };
+    const icon = slot.querySelector<HTMLElement>('button');
+    return {
+        slotWidth: slot.getBoundingClientRect().width,
+        fieldVisible: shown(slot.querySelector('input')),
+        iconVisible: shown(icon),
+        iconWidth: icon?.getBoundingClientRect().width ?? 0,
+        iconHeight: icon?.getBoundingClientRect().height ?? 0,
+        iconName: (icon?.getAttribute('aria-label') ?? icon?.getAttribute('title') ?? icon?.textContent ?? '').trim(),
+    };
+});
+
+for (const theme of ALL_THEME_IDS) {
+    test(`${theme} a 820px: a busca é o campo ou o ícone, nunca um slot vazio com largura`, async () => {
+        const page = await openTopbar(theme, 820);
+        try {
+            const measured = await measureSearchSlot(page);
+            expect(measured, 'a barra tem o slot da busca').not.toBeNull();
+            if (!measured) return;
+            const blank = measured.slotWidth >= 1 && !measured.fieldVisible && !measured.iconVisible;
+            expect(blank, `slot de busca com largura e sem conteúdo visível: ${JSON.stringify(measured)}`).toBe(false);
+            if (!measured.fieldVisible) {
+                expect(measured.iconVisible, `sem o campo, o ícone de busca está visível: ${JSON.stringify(measured)}`).toBe(true);
+                expect(measured.iconName, 'o ícone tem nome acessível').not.toBe('');
+                // O ícone compacto é quase quadrado (48 x 41 px medidos): esticado pelo slot ele passa de 2 x (83 x 41 px).
+                expect(measured.iconWidth, `o ícone não é esticado pelo slot: ${JSON.stringify(measured)}`).toBeLessThanOrEqual(measured.iconHeight * 1.5);
+                // O slot é o ícone: não guarda a largura do campo.
+                expect(measured.slotWidth, `o slot da busca tem a largura do ícone: ${JSON.stringify(measured)}`).toBeLessThanOrEqual(measured.iconWidth + TOLERANCE_PX);
+            }
+        } finally {
+            await page.close();
+        }
+    });
+}
+
+for (const width of [1024, 1440] as const) {
+    test(`a ${width}px: a busca não alterna entre campo e ícone`, async () => {
+        const page = await openTopbar(ALL_THEME_IDS[0], width);
+        try {
+            const first = await measureSearchSlot(page);
+            await page.waitForTimeout(600);
+            const second = await measureSearchSlot(page);
+            expect(second?.fieldVisible, 'o estado é o mesmo depois de assentar').toBe(first?.fieldVisible);
+            expect(second?.slotWidth).toBe(first?.slotWidth);
+        } finally {
+            await page.close();
+        }
+    });
+}
+
+/**
+ * Plan 191, achado 2. O campo volta quando cabe, qualquer que seja a causa: a 820 px, `aurora-veil` não comporta o campo e
+ * `cyberpunk-neon` comporta. A troca de um pelo outro em tempo de execução leva o estado junto, nos dois sentidos.
+ */
+const switchThemeAt820 = async (from: string, to: string): Promise<{ before: SearchSlotMeasure | null; after: SearchSlotMeasure | null }> => {
+    const page = await browser.newPage({ viewport: { width: 820, height: 800 } });
+    try {
+        await page.goto(`${harnessUrl}?chrome=topbar&rotulos=longos&tema-ativo=${from}&trocar-tema=${to}`);
+        await page.locator('header nav a').first().waitFor({ state: 'attached' });
+        await page.waitForTimeout(1500);
+        const before = await measureSearchSlot(page);
+        await page.locator('[data-probe="trocar-tema"]').click();
+        await page.waitForTimeout(2000);
+        return { before, after: await measureSearchSlot(page) };
+    } finally {
+        await page.close();
+    }
+};
+
+test('a 820px: trocar de aurora-veil (ícone) para cyberpunk-neon (campo) devolve o campo', async () => {
+    const { before, after } = await switchThemeAt820('aurora-veil', 'cyberpunk-neon');
+    expect(before?.fieldVisible, `aurora-veil começa com o ícone: ${JSON.stringify(before)}`).toBe(false);
+    expect(after?.fieldVisible, `cyberpunk-neon cabe o campo: ${JSON.stringify(after)}`).toBe(true);
+});
+
+test('a 820px: trocar de cyberpunk-neon (campo) para aurora-veil (ícone) recolhe em ícone', async () => {
+    const { before, after } = await switchThemeAt820('cyberpunk-neon', 'aurora-veil');
+    expect(before?.fieldVisible, `cyberpunk-neon começa com o campo: ${JSON.stringify(before)}`).toBe(true);
+    expect(after?.fieldVisible, `aurora-veil recolhe: ${JSON.stringify(after)}`).toBe(false);
+    expect(after?.iconVisible, 'o ícone aparece').toBe(true);
+});

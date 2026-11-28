@@ -394,6 +394,9 @@ const ElementDefaultProbes: React.FC = () => (
 );
 
 const App: React.FC = () => {
+    // `?trocar-tema=<id>`: o botão `data-probe="trocar-tema"` liga esse tema embarcado em tempo de execução (a busca do topo reage à troca).
+    const [activeThemeId, setActiveThemeId] = React.useState(searchParams.get('tema-ativo') ?? undefined);
+    const switchTarget = searchParams.get('trocar-tema');
     const chrome = (
         <SarakAppChrome
             navItems={searchParams.get('rotulos') === 'longos' ? LONG_LABEL_NAV_ITEMS : navItemCount ? NAV_ITEMS.slice(0, navItemCount) : NAV_ITEMS}
@@ -415,7 +418,8 @@ const App: React.FC = () => {
 
     // `?tema-ativo=<id>` liga um tema embarcado inteiro (a barra de topo medida com o tema real: `barra-de-topo-estreita.spec.ts`).
     return (
-        <SarakUIProvider config={resolveHarnessConfig()} activeThemeId={searchParams.get('tema-ativo') ?? undefined}>
+        <SarakUIProvider config={resolveHarnessConfig()} activeThemeId={activeThemeId}>
+            {switchTarget && <button type="button" data-probe="trocar-tema" style={{ position: 'fixed', bottom: 0, right: 0, zIndex: 9999 }} onClick={() => setActiveThemeId(switchTarget)}>Trocar de tema</button>}
             {hostWidth ? (
                 <div data-harness-host style={{ width: hostWidth, height: '100dvh' }}>
                     {chrome}

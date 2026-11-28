@@ -14,9 +14,11 @@ import { ChromeCollapseToggle } from './ChromeCollapseToggle';
 import { ChromeUserThemeGroup, ChromeUserWidget } from './ChromeUserThemeGroup';
 import { ChromeNotificationsWidget, type SarakChromeNotification } from './ChromeNotificationsWidget';
 import { resolveChromeBackground, resolveChromeContentStyle, resolveChromeNavbarLayoutClass, resolveChromeSurfaceBorderStyle } from './chromeStructuralStyles';
+import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { useChromeAutoHide } from './useChromeAutoHide';
 import { useChromeDesignTokens } from './useChromeDesignTokens';
 import { useChromeDefaultWidgets } from './useChromeDefaultWidgets';
+import { useSearchSlotCollapse } from './useSearchSlotCollapse';
 import { chromeNoiseLayerStyle } from './noiseTexture';
 import { resolveChromeToneStyle } from './chromeToneStyle';
 import type { SarakChromeWidgets } from './chromeWidgets';
@@ -70,9 +72,14 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
         hasNotificationHandler: Boolean(onNotificationSelect),
         bar: 'topbar',
     });
+    const sarakUI = useSarakUIOptional();
+    // Só a busca de fábrica em barra recolhe: a do consumidor e o ícone da barra recolhida seguem como estão.
+    const searchCollapse = useSearchSlotCollapse(!search && w.showSearch && !isNavHidden, [sarakUI?.resolvedThemeId, ...nav.map((item) => item.label)].join('\u0001'));
+    const searchAsIcon = isNavHidden || searchCollapse.collapsed;
     const effectiveSearch = search ?? (w.showSearch
         ? <SarakShellSearchWidget
-            variant={isNavHidden ? 'icon' : 'bar'}
+            variant={searchAsIcon ? 'icon' : 'bar'}
+            compact={searchCollapse.collapsed}
             onClick={w.openSearch}
             items={getSarakSearchItems(nav)}
             onSelect={onNavigate ? (item) => onNavigate(item.id) : undefined}
@@ -98,14 +105,13 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
     // `center`: a busca ocupa o meio do espaço livre entre a navegação e o grupo final (não o centro geométrico da barra);
     // por isso a navegação deixa de tomar o espaço (`flex-1`) e a busca vem depois dela, num contêiner que o toma.
     const isSearchCentered = searchPositionTopbar === 'center' && Boolean(effectiveSearch);
-    // A busca é a primeira a ceder (fator de encolhimento 40). A barra padrão pede a largura de `w-64` para o contêiner medir a si
-    // mesmo e some quando o contêiner fica abaixo do mínimo útil do campo, em vez de se desenhar quebrada por cima da marca;
-    // busca do consumidor e ícone só encolhem. Recolhida a 0 px, a busca não pode somar o vão dela ao da barra (sobrariam dois, e o espaço
-    // faltaria ao primeiro item): o slot recua um vão no fim (margem negativa) e o conteúdo devolve esse vão por dentro (margem final),
-    // e o teto de largura do conteúdo desconta esse vão (sem ele o campo, de largura própria, ocupa o slot inteiro e a margem transborda), de modo que, visível, o vão da barra
-    // continua entre o campo e a lista e, recolhida, resta um vão só.
+    // A busca é a primeira a ceder (fator de encolhimento 40). A barra padrão pede a largura de `w-64` e, quando o slot fica abaixo do mínimo
+    // útil do campo, `useSearchSlotCollapse` a troca pelo ícone: o slot deixa a largura do campo e a devolve à lista, em vez de ficar vazio
+    // entre a marca e o primeiro item. O ícone da busca recolhida não encolhe (o slot dele é o próprio ícone); busca do consumidor e ícone da barra recolhida só encolhem. Com o campo visível, o slot recua um vão no fim (margem
+    // negativa) e o conteúdo o devolve por dentro (margem final, com teto de largura que o desconta, senão o campo de largura própria
+    // ocupa o slot inteiro e a margem transborda): entre o campo e a lista resta o vão da barra, um só.
     // sarak-allow-hardcode: o menor contêiner de container query nomeado do Tailwind (16rem) já é a largura inteira da barra; o mínimo útil do campo não tem nome nem token.
-    const searchSlotClass = search || isNavHidden ? '[flex-shrink:40]' : '@container w-64 [flex-shrink:40] @max-[10rem]:[&>*]:hidden me-[calc(var(--sarak-layout-gap-md,16px)*-1)] [&>*]:me-[var(--sarak-layout-gap-md,16px)] [&>*]:max-w-[calc(100%-var(--sarak-layout-gap-md,16px))]';
+    const searchSlotClass = searchCollapse.collapsed ? 'shrink-0' : search || isNavHidden ? '[flex-shrink:40]' : '@container w-64 [flex-shrink:40] me-[calc(var(--sarak-layout-gap-md,16px)*-1)] [&>*]:me-[var(--sarak-layout-gap-md,16px)] [&>*]:max-w-[calc(100%-var(--sarak-layout-gap-md,16px))]';
     const showEndGroup = Boolean(endSlot) || (Boolean(effectiveSearch) && searchPositionTopbar === 'right')
         || w.showThemeToggle || w.showUser || w.showNotifications || showFontSize || showNavigationStyle || showLanguage || hasMenuWidgets;
 
@@ -116,6 +122,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
             )}
             {isVisible && (
                 <header
+                    ref={searchCollapse.barRef}
                     {...surfaceProps}
                     className={`relative flex items-center shrink-0 transition-[height] duration-[var(--duration-normal,0.3s)] ${resolveChromeNavbarLayoutClass(navbarLayout)}`}
                     style={{
@@ -164,7 +171,7 @@ export const ChromeTopbarBody: React.FC<ChromeTopbarBodyProps> = ({
                         espaço livre entre si (regra de auto-margin do flexbox) e abririam um
                         vão indesejado entre a busca e o `topbarEnd` quando não há nav. */}
                     {showEndGroup && (
-                        <div className="relative z-10 ml-auto flex items-center gap-2 min-w-0 shrink-0">
+                        <div data-sarak-chrome-end-group className="relative z-10 ml-auto flex items-center gap-2 min-w-0 shrink-0">
                             {searchPositionTopbar === 'right' && (
                                 <ChromeSearchSlot position={searchPositionTopbar}>{effectiveSearch}</ChromeSearchSlot>
                             )}
