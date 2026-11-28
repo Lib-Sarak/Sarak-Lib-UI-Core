@@ -461,6 +461,15 @@
     filter: blur(60px);
 }
 
+/* Textura aurora do card, no claro: o traço de .4 de opacidade some sobre o fundo claro do card (1,6% de pixels que diferem do card liso), então no modo claro cada degradê sobe para a opacidade `--sarak-aurora-card-alpha-light`. O escuro (`light-dark` pega o segundo valor) segue com .4. Só o card; a textura do fundo não passa por aqui. */
+[data-sx-card-texture-type="aurora"] .sarak-card:where(:not([data-sx-card-texture-type="aurora"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="aurora"]) .sarak-card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="aurora"])))::after,
+.sarak-card[data-sx-card-texture-type="aurora"]::after,
+[data-sx-card-texture-type="aurora"] .card:where(:not([data-sx-card-texture-type="aurora"] [data-sx-card-texture-type]:not([data-sx-card-texture-type="aurora"]) .card, [data-sx-card-texture-type]:not([data-sx-card-texture-type="aurora"])))::after,
+.card[data-sx-card-texture-type="aurora"]::after {
+    --sarak-aurora-card-alpha-light: .8;
+    background-image: linear-gradient(217deg, light-dark(rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), var(--sarak-aurora-card-alpha-light)), rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), .4)), rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0) 70.71%), linear-gradient(127deg, light-dark(rgba(139, 92, 246, var(--sarak-aurora-card-alpha-light)), rgba(139, 92, 246, .4)), rgba(139, 92, 246, 0) 70.71%), linear-gradient(336deg, light-dark(rgba(6, 182, 212, var(--sarak-aurora-card-alpha-light)), rgba(6, 182, 212, .4)), rgba(6, 182, 212, 0) 70.71%);
+}
+
 @keyframes aurora-flow {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }

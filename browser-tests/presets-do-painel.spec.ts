@@ -99,6 +99,9 @@ const open = async (query: string): Promise<{ page: Page; errors: string[] }> =>
 const pendingIn = (area: string): string => `${area} [data-sx-lazy="pending"]`;
 const groupArea = (groupId: string): string => `[data-option-group="${groupId}"]`;
 
+/** A foto só vale com as fontes da página carregadas: texto que troca de fonte entre uma rodada e outra muda uns pixels. */
+const fontsReady = (page: Page): Promise<unknown> => page.evaluate(() => document.fonts.ready);
+
 const settle = async (page: Page, area: string): Promise<void> => {
     // As amostras só desenham ao entrar na área visível: rola até as da área pedida, até nenhuma ficar pendente.
     const pending = pendingIn(area);
@@ -228,6 +231,7 @@ const shotOfNoneCard = async (page: Page, groupId: string): Promise<string> => {
     const sample = tile.locator('> div').first();
     await sample.scrollIntoViewIfNeeded();
     await sample.locator('[data-sx-lazy="pending"]').first().waitFor({ state: 'detached', timeout: 30_000 });
+    await fontsReady(page);
     return (await sample.screenshot({ animations: 'disabled' })).toString('base64');
 };
 /** As amostras de card desenham o card real do painel, num quadro maior, e a de gráfico é o gráfico real: entre duas opções destacadas a diferença é de ao menos 5% dos pixels. Sombra, direção da sombra e moldura têm amostra própria (o painel ou o canto ampliado) e seguem a regra dos 2%. */
@@ -260,6 +264,7 @@ for (const mode of MODES) {
                     await sample.locator('[data-sx-lazy="pending"]').first().waitFor({ state: 'detached', timeout: 30_000 });
                     if (REAL_COMPONENT_GROUPS.has(group.id)) { await sample.locator('[data-sample-loading]').first().waitFor({ state: 'detached', timeout: 30_000 }); await page.waitForTimeout(REAL_COMPONENT_GROUPS.get(group.id) ?? 0); }
                     if (CANVAS_GROUPS.has(group.id)) { await sample.locator('canvas').first().waitFor({ timeout: 30_000 }); await page.waitForTimeout(400); }
+                    await fontsReady(page);
                     shots.push((await sample.screenshot({ animations: 'disabled' })).toString('base64'));
                 }
                 collected.push({ group, shots, reference: group.id === 'cardTextures' ? await shotOfNoneCard(page, group.id) : undefined });

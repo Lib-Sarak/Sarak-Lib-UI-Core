@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { getPresetGroup } from '../../../../../core/Design/presets/components/registry';
 import SarakUIProvider from '../../../../../core/Provider/SarakUIProvider';
 import { prazoDeTeste } from '../../../../../shared/testing/prazoDeTeste';
-import { BorderCornerSample, GradientAreaSample, ShadowPanelSample, ShadowDirectionSample } from '../PresetSamplesDepth';
+import { BorderCornerSample, CardTextureCornerSample, GradientAreaSample, ShadowPanelSample, ShadowDirectionSample } from '../PresetSamplesDepth';
 
 /** Cada render do Provider leva cerca de 1 s no jsdom: os casos com várias opções pedem teto próprio. */
 const RENDER_LOOP_TIMEOUT_MS = prazoDeTeste(30_000);
@@ -23,6 +23,14 @@ describe('PresetSamplesDepth', () => {
     it('a sombra desenha o painel e a moldura recorta o canto do cartão ampliado', () => {
         expect(inProvider(<ShadowPanelSample />).container.querySelector('[data-sample-shadow]')?.hasAttribute('data-sample-shadow')).toBe(true);
         expect(inProvider(<BorderCornerSample />).container.querySelector('[data-sample-border]')?.getAttribute('data-sample-border')).toBe('top-left');
+    }, RENDER_LOOP_TIMEOUT_MS);
+
+    it('a textura do cartão amplia a borda do cartão real, o mesmo quadro para qualquer opção', () => {
+        const sample = inProvider(<CardTextureCornerSample texture="grid" />).container.querySelector('[data-sample-card-texture]') as HTMLElement;
+        expect(sample.getAttribute('data-sample-card-texture')).toBe('bottom-left');
+        expect(sample.querySelector('.sarak-card')?.getAttribute('data-sx-card-texture-type')).toBe('grid');
+        expect((sample.firstElementChild as HTMLElement).style.transform).toMatch(/scale\(\d/);
+        expect(sample.textContent).toBe('');
     }, RENDER_LOOP_TIMEOUT_MS);
 
     it('a direção da sombra marca a luz: uma para cada lado, quatro no halo, e a órbita só na que segue o ponteiro', () => {

@@ -6,6 +6,7 @@ import { usePresetText } from '../../hooks/usePresetText';
 import { CuratedGrid } from './CuratedGrid';
 import { OptionTile } from './OptionTile';
 import { SampleTitleCard } from './SampleParts';
+import { CardTextureCornerSample } from './PresetSamplesDepth';
 import { CARD_FRAME_WIDTH } from './OptionSampleFrame';
 import { SampleScope } from './SampleScope';
 import type { PeekHandler } from './peek';
@@ -60,10 +61,10 @@ export const CardsCatalog: React.FC<CardsCatalogProps> = ({ onApplyPreset, curre
                             draft={draft}
                             tokens={preset.design}
                             mode={currentMode}
-                            className="flex items-center justify-center p-6"
+                            className={section === 'textures' ? 'overflow-hidden' : 'flex items-center justify-center p-6'}
                             scopeProps={section === 'textures' ? { 'data-sx-card-texture-type': String(preset.design.cardTextureType) } : undefined}
                         >
-                            <SampleTitleCard texture={section === 'textures' ? String(preset.design.cardTextureType) : undefined} />
+                            {section === 'textures' ? <CardTextureCornerSample texture={String(preset.design.cardTextureType)} /> : <SampleTitleCard />}
                         </SampleScope>
                     </OptionTile>
                     );

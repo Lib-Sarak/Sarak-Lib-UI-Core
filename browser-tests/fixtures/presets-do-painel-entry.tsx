@@ -1,5 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import { MotionGlobalConfig } from 'framer-motion';
 import { SarakUIProvider } from '../../src/core/Provider/SarakUIProvider';
 import { CustomizationPanel } from '../../src/features/DesignEngine/Library/CustomizationPanel/CustomizationPanelImpl';
 
@@ -14,6 +15,9 @@ const coverage = measurePresetCoverage(MASTER_DESIGN_MAP.components, ALL_COMPONE
     coverage: { covered: coverage.covered, total: coverage.total, ratio: coverage.ratio, families: coverage.families.map(({ family, covered, total }) => ({ family, covered, total })) },
     groups: PRESET_GROUPS.map((group) => ({ id: group.id, decision: group.decision, count: group.presets.length, featured: group.featured.length, featuredIds: group.featured.filter((id) => group.presets.some((preset) => preset.id === id)), ids: group.presets.map((preset) => preset.id) })),
 };
+
+/** A medida de distinção compara fotos: o framer-motion para antes do painel montar, para a fase de uma animação não entrar na conta (`animations: 'disabled'` do Playwright só cobre CSS). */
+MotionGlobalConfig.skipAnimations = true;
 
 const params = new URLSearchParams(window.location.search);
 const height = params.get('alto') ?? '900px';

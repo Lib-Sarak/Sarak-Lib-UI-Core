@@ -8,6 +8,8 @@ import { SampleTitleCard } from './SampleParts';
  */
 
 const BORDER_SCALE = 5;
+/** A textura do cartão desenha numa moldura de 20 px com opacidade baixa de propósito: o canto do cartão real, ampliado, deixa o desenho ocupar a miniatura. */
+const TEXTURE_SCALE = 4;
 /** A sombra mais larga das opções passa de 200 px: o painel e a sombra dele são desenhados em tamanho real e reduzidos, para a sombra inteira caber na faixa. */
 const SHADOW_REDUCE = 0.4;
 const SHADOW_REDUCED_BOX = `${100 / SHADOW_REDUCE}%`;
@@ -41,6 +43,16 @@ export const ShadowPanelSample: React.FC = () => (
 export const BorderCornerSample: React.FC = () => (
     <div data-sample-border="top-left" className="relative h-full min-h-48 w-full overflow-hidden">
         <div className="absolute left-[30%] top-[30%] w-[70%]" style={{ transform: `scale(${BORDER_SCALE})`, transformOrigin: 'top left' }}><SampleTitleCard /></div>
+    </div>
+);
+
+/**
+ * O canto de baixo à esquerda de um cartão real (a classe e o atributo da aplicação), ampliado, com a textura da opção e a opacidade do preset. Sem o título: a moldura
+ * da textura é a borda do cartão, e o texto cortado só atrapalharia. A opção "Nenhuma" usa o mesmo quadro.
+ */
+export const CardTextureCornerSample: React.FC<{ texture: string }> = ({ texture }) => (
+    <div data-sample-card-texture="bottom-left" className="relative h-full min-h-48 w-full overflow-hidden">
+        <div aria-hidden="true" className="sarak-card absolute bottom-[10%] left-[10%] h-24 w-[90%]" data-sx-card-texture-type={texture} style={{ transform: `scale(${TEXTURE_SCALE})`, transformOrigin: 'bottom left' }} />
     </div>
 );
 
